@@ -1,0 +1,16 @@
+﻿@using TestBucket.Identity
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navigationManager
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var urlTenant = TenantResolver.ResolveTenantIdFromUrl(navigationManager.Uri);
+        var state = await authStateProvider.GetAuthenticationStateAsync();
+        var authTenant = state.User.Claims.FirstOrDefault(x => x.Type == "tenant")?.Value;
+        if (urlTenant != authTenant)
+        {
+            navigationManager.NavigateTo($"/{urlTenant}/Account/Login");
+        }
+    }
+}

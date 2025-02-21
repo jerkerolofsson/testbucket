@@ -1,0 +1,18 @@
+﻿@using TestBucket.Identity
+@inject NavigationManager NavigationManager
+@inject IHttpContextAccessor httpContextAccessor
+
+@code {
+    protected override void OnInitialized()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(NavigationManager.Uri);
+        if (string.IsNullOrEmpty(tenantId))
+        {
+            NavigationManager.NavigateTo($"Account/Login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}", forceLoad: true);
+        }
+        else
+        {
+            NavigationManager.NavigateTo($"/{tenantId}/Account/Login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}", forceLoad: true);
+        }
+    }
+}

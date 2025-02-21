@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TestBucket.Contracts;
+
+/// <summary>
+/// Base query
+/// </summary>
+public class SearchQuery
+{
+    /// <summary>
+    /// Free text search
+    /// </summary>
+    public string? Text { get; set; }
+
+    /// <summary>
+    /// Offset for paged results (default 0)
+    /// </summary>
+    public int Offset { get; set; } = 0;
+
+    /// <summary>
+    /// Number of results to return (default 20)
+    /// </summary>
+    public int Count { get; set; } = 20;
+}

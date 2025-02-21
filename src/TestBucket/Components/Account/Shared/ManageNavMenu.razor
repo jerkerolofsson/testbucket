@@ -1,0 +1,48 @@
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@inject IdentityUserAccessor UserAccessor
+
+@{
+    string profileUrl = $"{TenantId}/Account/Manage";
+    string emailUrl = $"{TenantId}/Account/Manage/Email";
+    string changePasswordUrl = $"{TenantId}/Account/Manage/ChangePassword";
+    string externalLoginsUrl = $"{TenantId}/Account/Manage/ExternalLogins";
+    string twoFactorAuthenticationUrl = $"{TenantId}/Account/Manage/TwoFactorAuthentication";
+    string personalDataUrl = $"{TenantId}/Account/Manage/PersonalData";
+}
+
+<ul class="nav nav-pills flex-column">
+    <li class="nav-item">
+        <NavLink class="nav-link" href="@profileUrl" Match="NavLinkMatch.All">Profile</NavLink>
+    </li>
+    <li class="nav-item">
+        <NavLink class="nav-link" href="@emailUrl">Email</NavLink>
+    </li>
+    <li class="nav-item">
+        <NavLink class="nav-link" href="@changePasswordUrl">Password</NavLink>
+    </li>
+    @if (hasExternalLogins)
+    {
+        <li class="nav-item">
+            <NavLink class="nav-link" href="@externalLoginsUrl">External logins</NavLink>
+        </li>
+    }
+    <li class="nav-item">
+        <NavLink class="nav-link" href="@twoFactorAuthenticationUrl">Two-factor authentication</NavLink>
+    </li>
+    <li class="nav-item">
+        <NavLink class="nav-link" href="@personalDataUrl">Personal data</NavLink>
+    </li>
+</ul>
+
+@code {
+    private bool hasExternalLogins;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+    [Parameter] public string? TenantId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    }
+}

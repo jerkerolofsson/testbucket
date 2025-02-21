@@ -1,0 +1,73 @@
+﻿@attribute [Authorize(Roles = "SUPERADMIN")]
+@page "/{tenantId}/tenants/manage/{manageTenantId}"
+@using TestBucket.Components.Projects
+@using TestBucket.Components.Tenants.Dialogs
+@using TestBucket.Data.Identity
+@inject TenantService tenantService
+@inject IDialogService dialogService
+@inject NavigationManager navigationManager
+@inject IUserService userService
+
+<MudTabs>
+    <MudTabPanel Text="Users">
+
+        <MudButton OnClick="AddAdminAsync">Add administrator</MudButton>
+
+
+        <MudDataGrid ServerData="LoadAdminsAsync"
+                     Dense="true"
+                     Hover="true"
+                     T="ApplicationUser"
+                     SortMode="SortMode.None">
+            <Columns>
+                <PropertyColumn Property="x => x.UserName" />
+                <PropertyColumn Property="x => x.Email" />
+                <PropertyColumn Property="x => x.PhoneNumber" />
+            </Columns>
+
+            <PagerContent>
+                <MudDataGridPager T="ApplicationUser" />
+            </PagerContent>
+        </MudDataGrid>
+
+    </MudTabPanel>
+</MudTabs>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+
+    /// <summary>
+    /// The tenant we are administrating
+    /// </summary>
+    [Parameter] public string? ManageTenantId { get; set; }
+
+
+    private async Task<GridData<ApplicationUser>> LoadAdminsAsync(GridState<ApplicationUser> state)
+    {
+        var query = new Contracts.SearchQuery
+            {
+                Offset = state.Page * state.PageSize,
+                Count = state.PageSize
+            };
+
+        var result = await userService.SearchAsync(ManageTenantId ?? "", query);
+
+        GridData<ApplicationUser> data = new()
+            {
+                Items = result.Items,
+                TotalItems = (int)result.TotalCount
+            };
+
+        return data;
+    }
+
+    private async Task AddAdminAsync()
+    {
+        var parameters = new DialogParameters<AddAdminUserToTenantDialog>
+        {
+            { x => x.TenantId, ManageTenantId }
+        };
+        var dialog = await dialogService.ShowAsync<AddAdminUserToTenantDialog>("", parameters);
+        var result = await dialog.Result;
+    }
+}

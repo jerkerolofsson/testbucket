@@ -1,0 +1,67 @@
+﻿@page "/{tenantId}/projects"
+@using TestBucket.Components.Projects.Dialogs
+@using TestBucket.Components.Users.Controls
+@using TestBucket.Data.Projects.Models
+@attribute [Authorize(Roles = "ADMIN")]
+@inject ProjectService projectService
+@inject IDialogService dialogService
+
+<MudButton>Projects</MudButton>
+
+<MudDataGrid ServerData="LoadGridData"
+             Dense="true"
+             Hover="true"
+             T="TestProject"
+             @ref="_dataGrid"
+             SortMode="SortMode.None">
+
+    <ToolBarContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddProjectAsync"></MudIconButton>
+
+        </MudStack>
+    </ToolBarContent>
+
+    <Columns>
+        <PropertyColumn Property="x => x.ShortName" />
+        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.Slug" />
+    </Columns>
+
+    <PagerContent>
+        <MudDataGridPager T="TestProject" />
+    </PagerContent>
+</MudDataGrid>
+
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+
+
+    private MudDataGrid<TestProject>? _dataGrid;
+
+    private async Task AddProjectAsync()
+    {
+        var dialog = await dialogService.ShowAsync<AddProjectDialog>();
+        var result = await dialog.Result;
+        _dataGrid?.ReloadServerData();
+    }
+
+    private async Task<GridData<TestProject>> LoadGridData(GridState<TestProject> state)
+    {
+        var result = await projectService.SearchAsync(new Contracts.SearchQuery
+            {
+                Offset = state.Page * state.PageSize,
+                Count = state.PageSize
+            });
+
+        GridData<TestProject> data = new()
+            {
+                Items = result.Items,
+                TotalItems = (int)result.TotalCount
+            };
+
+        return data;
+    }
+}

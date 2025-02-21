@@ -1,0 +1,70 @@
+﻿@using TestBucket.Components.Users
+@using TestBucket.Data.Identity
+@attribute [Authorize(Roles = "SUPERADMIN")]
+@inject TenantService tenantService
+@inject ISuperAdminUserService userService
+
+<EditForm Model="@_model" OnValidSubmit="async () => await OnValidSubmitAsync()">
+    <MudDialog>
+        <TitleContent>Add new tenant</TitleContent>
+        <DialogContent>
+            <MudStack>
+                <MudStack Spacing="0">
+
+                    <MudTextField @bind-Value="_model.Name"></MudTextField>
+                    @if(_errorMessage is not null)
+                    {
+                        <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+                    }
+                </MudStack>
+
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+
+    private sealed class InputModel
+    {
+        [Required]
+        [Display(Name = "Name")]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+        public string Name { get; set; } = "";
+    }
+
+    private InputModel _model = new();
+    private string? _errorMessage;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        await tenantService.GuardAsync();
+        var result = await tenantService.CreateAsync(_model.Name);
+        if(result.IsT0)
+        {
+            MudDialog.Close();
+        }
+        else
+        {
+            _errorMessage = result.Match(
+                (success) => null,
+                (alreadyExists) => "Already exists"
+            );
+        }
+    }
+}

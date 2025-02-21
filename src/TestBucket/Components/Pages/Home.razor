@@ -1,0 +1,24 @@
+﻿@inject AuthenticationStateProvider authenticationStateProvider
+@inject IdentityRedirectManager identityRedirectManager
+@page "/"
+@using TestBucket.Components.Account
+@using TestBucket.Identity
+
+<PageTitle>Home</PageTitle>
+
+@code {
+
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var tenantId = authState.User.Claims.Where(x => x.Type == "tenant").Select(x => x.Value).FirstOrDefault();
+
+        if(!string.IsNullOrEmpty(tenantId))
+        {
+            identityRedirectManager.RedirectTo($"/{tenantId}");
+        }
+    }
+}

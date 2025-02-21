@@ -1,0 +1,93 @@
+﻿@using TestBucket.Components.Users
+@using TestBucket.Data.Identity
+@attribute [Authorize(Roles = "SUPERADMIN")]
+@inject TenantService tenantService
+@inject ISuperAdminUserService userService
+
+<EditForm Model="@_model" OnValidSubmit="async () => await OnValidSubmitAsync()">
+    <MudDialog>
+        <TitleContent>Add new administrator account</TitleContent>
+        <DialogContent>
+            <MudStack>
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.h1">Administrator</MudText>
+
+                    <MudTextField @bind-Value="_model.Email" For="@(() => _model.Email)" Label="Email"></MudTextField>
+                    <MudTextField @bind-Value="_model.Password" For="@(() => _model.Password)" Label="Password"></MudTextField>
+                    <MudTextField @bind-Value="_model.ConfirmPassword" For="@(() => _model.ConfirmPassword)" Label="Confirm Password"></MudTextField>
+                </MudStack>
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+
+    [Parameter] public string? TenantId { get; set; }
+
+    private sealed class InputModel
+    {
+
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; } = "";
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; } = "";
+    }
+
+    private InputModel _model = new();
+    private string? _errorMessage;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private async Task<bool> RegisterUserAsync(string tenantId)
+    {
+        bool res = false;
+        try
+        {
+            res = await userService.RegisterAndConfirmUserAsync(tenantId, _model.Email, _model.Password);
+        }
+        catch
+        {
+            res = false;
+        }
+        return res;
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        await tenantService.GuardAsync();
+
+        var result = await RegisterUserAsync(TenantId ?? throw new Exception("TenantId is null"));
+        if(result)
+        {
+            MudDialog.Close();
+        }
+        else
+        {
+            _errorMessage = "Failed to create user. Make sure the email is not already registered with another tenant.";
+        }
+    }
+}

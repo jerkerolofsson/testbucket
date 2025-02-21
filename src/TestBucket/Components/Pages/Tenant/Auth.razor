@@ -1,0 +1,17 @@
+﻿@page "/{tenantId}/auth"
+@using Microsoft.AspNetCore.Authorization
+@using TestBucket.Components.Controls
+@inject AuthenticationStateProvider authStateProvider
+@attribute [Authorize]
+
+<PageTitle>Auth</PageTitle>
+<TenantRedirect />
+
+<AuthorizeView>
+    Hello @context.User.Identity?.Name!
+</AuthorizeView>
+
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+}

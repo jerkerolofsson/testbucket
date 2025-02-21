@@ -1,0 +1,21 @@
+﻿@page "/Account/Login"
+@using TestBucket.Identity
+
+@inject NavigationManager navigationManager
+
+@code {
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (ReturnUrl is not null)
+        {
+            var tenant = TenantResolver.ResolveTenantIdFromUrl(ReturnUrl);
+            if (!string.IsNullOrWhiteSpace(tenant))
+            {
+                navigationManager.NavigateTo($"/{tenant}/Account/Login");
+            }
+        }
+    }
+}

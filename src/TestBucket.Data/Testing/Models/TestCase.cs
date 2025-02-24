@@ -50,7 +50,7 @@ public class TestCase
     /// <summary>
     /// ID of project
     /// </summary>
-    public long TestProjectId { get; set; }
+    public long? TestProjectId { get; set; }
 
     /// <summary>
     /// ID of test suite
@@ -60,7 +60,7 @@ public class TestCase
     /// <summary>
     /// ID of test suite folder
     /// </summary>
-    public long TestSuiteFolderId { get; set; }
+    public long? TestSuiteFolderId { get; set; }
 
     // Navigation
     public Tenant? Tenant { get; set; }

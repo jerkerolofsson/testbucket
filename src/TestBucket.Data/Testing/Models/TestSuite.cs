@@ -44,7 +44,7 @@ public class TestSuite
     /// <summary>
     /// ID of project
     /// </summary>
-    public long TestProjectId { get; set; }
+    public long? TestProjectId { get; set; }
 
     // Navigation
     public Tenant? Tenant { get; set; }

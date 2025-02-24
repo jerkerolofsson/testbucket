@@ -8,6 +8,7 @@
     string projectAdminUrl = $"{tenantId}/projects";
     string homeUrl = $"/{tenantId}";
     string authUrl = $"/{tenantId}/Auth";
+    string testsUrl = $"/{tenantId}/Tests";
     string manageUrl = $"/{tenantId}/Account/Manage";
     string registerUrl = $"/{tenantId}/Account/Register";
     string loginUrl = $"/{tenantId}/Account/Login?returnUrl=/{tenantId}";
@@ -29,6 +30,7 @@
                 <Authorized>
                     <MudNavLink Href="@homeUrl">Home</MudNavLink>
                     <MudNavLink Href="@authUrl">Auth</MudNavLink>
+                    <MudNavLink Href="@testsUrl">Tests</MudNavLink>
                 </Authorized>
                 <NotAuthorized>
                     <MudNavLink Href="@loginUrl">Login</MudNavLink>
@@ -43,9 +45,7 @@
                     <MudNavLink Href="@projectAdminUrl">Projects</MudNavLink>
 
                     <AuthorizeView Roles="SUPERADMIN" Context="superContext">
-                        <MudNavGroup Title="Server Admin">
-                            <MudNavLink Href="@tenantAdminUrl">Tenants</MudNavLink>
-                        </MudNavGroup>
+                        <MudNavLink Href="@tenantAdminUrl">Tenants</MudNavLink>
                     </AuthorizeView>
 
                 </MudNavGroup>

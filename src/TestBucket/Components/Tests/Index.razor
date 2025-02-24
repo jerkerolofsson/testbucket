@@ -1,0 +1,47 @@
+﻿@page "/{TenantId}/Tests"
+@using TestBucket.Components.Projects.Controls
+@using TestBucket.Components.Tests.Controls
+@using TestBucket.Data.Projects.Models
+@using TestBucket.Data.Testing.Models
+
+<CascadingValue Value="@_project">
+    <MudToolBar Style="background: var(--mud-palette-dark)">
+        <ProjectDropDown @bind-SelectedProject="@_project"/>
+    </MudToolBar>
+
+    <div style="display: flex">
+        <TestTreeView OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" />
+
+        <TestCaseGrid Folder="@_selectedFolder" TestSuiteId="@_selectedTestSuiteId" />
+    </div>
+
+    <MudDrawer @bind-Open="@_openFolder" Anchor="@Anchor.Right" Elevation="1" Variant="@DrawerVariant.Temporary" OverlayAutoClose="true">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">My App</MudText>
+        </MudDrawerHeader>
+
+        <FolderPanel Folder="@_selectedFolder"/>
+    </MudDrawer>
+
+</CascadingValue>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+
+    private bool _openFolder = false;
+
+    private TestProject? _project;
+    private TestSuiteFolder? _selectedFolder;
+    private long? _selectedTestSuiteId;
+
+    private void OnTestSuiteClicked(TestSuite suite)
+    {
+        _selectedFolder = null;
+        _selectedTestSuiteId = suite.Id;
+    }
+    private void OnFolderClicked(TestSuiteFolder folder)
+    {
+        _selectedFolder = folder;
+        _selectedTestSuiteId = folder.TestSuiteId;
+    }
+}

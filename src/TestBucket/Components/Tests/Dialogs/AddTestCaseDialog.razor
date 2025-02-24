@@ -1,0 +1,60 @@
+﻿@using TestBucket.Components.Tests.Controls
+@using TestBucket.Components.Tests.Services
+@using TestBucket.Data.Projects.Models
+@using TestBucket.Data.Testing.Models
+@attribute [Authorize(Roles = "ADMIN")]
+@inject TestSuiteService testSuiteService
+
+<EditForm Model="@_testCase" OnValidSubmit="async () => await OnValidSubmitAsync()">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <DialogContent>
+            <TestCaseEditor @bind-Test="@_testCase" />
+
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    private string? _errorMessage;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public TestSuiteFolder? Folder { get; set; }
+
+    private TestCase _testCase = new() { Name = "", TenantId = "" };
+
+    protected override void OnParametersSet()
+    {
+        if(Folder is not null)
+        {
+            _testCase.TestSuiteFolderId = Folder.Id;
+            _testCase.TestSuiteId = Folder.TestSuiteId;
+        }
+        base.OnParametersSet();
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_testCase.Name))
+        {
+            _errorMessage = "Invalid name";
+            return;
+        }
+
+        await testSuiteService.AddTestCaseAsync(_testCase);
+        MudDialog.Close(_testCase);
+    }
+}
+

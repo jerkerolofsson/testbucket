@@ -13,6 +13,7 @@ using TestBucket.Components.Tenants;
 using TestBucket.Components.Projects;
 using MudBlazor.Services;
 using TestBucket.Components.Users;
+using TestBucket.Components.Tests.Services;
 
 namespace TestBucket;
 
@@ -71,6 +72,9 @@ public class Program
         builder.Services.AddScoped<UserRegistrationService>();
         builder.Services.AddScoped<TenantService>();
         builder.Services.AddScoped<ProjectService>();
+        builder.Services.AddScoped<TestSuiteService>();
+        builder.Services.AddScoped<TestService>();
+        builder.Services.AddScoped<TestBrowser>();
         builder.Services.AddDataServices();
 
         builder.Services.AddMudServices(config =>

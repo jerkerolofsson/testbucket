@@ -39,7 +39,12 @@ public class TestSuiteFolder
     /// <summary>
     /// ID of project
     /// </summary>
-    public long TestProjectId { get; set; }
+    public long? TestProjectId { get; set; }
+
+    /// <summary>
+    /// ID of test suite
+    /// </summary>
+    public long TestSuiteId { get; set; }
 
     // Navigation
 
@@ -48,4 +53,5 @@ public class TestSuiteFolder
     public IEnumerable<TestCase>? TestCases { get; set; }
     public Tenant? Tenant { get; set; }
     public TestProject? TestProject { get; set; }
+    public TestSuite? TestSuite { get; set; }
 }

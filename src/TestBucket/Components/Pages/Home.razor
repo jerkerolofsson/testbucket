@@ -20,5 +20,10 @@
         {
             identityRedirectManager.RedirectTo($"/{tenantId}");
         }
+        else
+        {
+            // Default tenant
+            identityRedirectManager.RedirectTo($"/admin");
+        }
     }
 }

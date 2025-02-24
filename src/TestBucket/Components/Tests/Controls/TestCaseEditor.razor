@@ -1,0 +1,21 @@
+﻿@using TestBucket.Data.Testing.Models
+
+@if(Test is not  null)
+{
+    <MudTextField Label="Name" Value="@Test.Name" ValueChanged="OnNameChanged" T="string"/>
+}
+
+
+@code {
+    [Parameter] public TestCase? Test { get; set; }
+    [Parameter] public EventCallback<TestCase?> TestChanged { get; set; }
+
+    public async Task OnNameChanged(string name)
+    {
+        if(Test is not null)
+        {
+            Test.Name = name;
+            await TestChanged.InvokeAsync(Test);
+        }
+    }
+}

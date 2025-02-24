@@ -17,6 +17,7 @@ public static class DataServiceExtensions
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<ISuperAdminUserService, SuperAdminUserService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ITestCaseRepository, TestCaseRepository>();
 
         return services;
     }

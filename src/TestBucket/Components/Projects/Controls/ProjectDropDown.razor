@@ -1,5 +1,28 @@
-﻿<h3>ProjectDropDown</h3>
+﻿@using TestBucket.Contracts
+@using TestBucket.Data.Projects.Models
+@inject ProjectService projectService
+
+<MudSelect Value="@SelectedProject" Text="@SelectedProject?.Name" T="TestProject" ValueChanged="OnSelectedProjectChanged">
+    @foreach(var project in _projects)
+    {
+        <MudSelectItem Value="@project">@project.Name</MudSelectItem>
+    }
+</MudSelect>
 
 @code {
+    private TestProject[] _projects = [];
 
+    [Parameter] public TestProject? SelectedProject { get; set; }
+    [Parameter] public EventCallback<TestProject?> SelectedProjectChanged { get; set; }
+
+    private async Task OnSelectedProjectChanged(TestProject testProject)
+    {
+        await SelectedProjectChanged.InvokeAsync(testProject);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await projectService.SearchAsync(new SearchQuery() { Offset = 0, Count = 1000 });
+        _projects = result.Items;
+    }
 }

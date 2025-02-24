@@ -1,0 +1,231 @@
+﻿@using TestBucket.Components.Tests.Dialogs
+@using TestBucket.Components.Tests.Models
+@using TestBucket.Components.Tests.Services
+@using TestBucket.Data.Projects.Models
+@using TestBucket.Data.Testing.Models
+@inject TestBrowser testBrowser
+@inject IDialogService dialogService
+@inject TestSuiteService testSuiteService
+
+<MudStack Spacing="0" Class="pa-2" Style="width: 20vw; background: rgba(0,0,0,0.2)">
+    <MudStack Row="true" Style="border-bottom: solid 1px #333" Spacing="0">
+        <MudTooltip Text="Add test suite">
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTestSuiteAsync"/>
+        </MudTooltip>
+
+        <MudSpacer/>
+
+        @if (_selectedTreeItem is not null)
+        {
+            <MudTooltip Text="Add folder">
+                <MudIconButton Icon="@Icons.Material.Filled.CreateNewFolder"  OnClick="AddTestSuiteFolderAsync" />
+            </MudTooltip>
+
+            @if (_selectedTreeItem.Folder is not null)
+            {
+                <MudTooltip Text="Delete folder">
+                    <MudIconButton Icon="@Icons.Material.Filled.FolderDelete" style="color: lightcoral" OnClick="DeleteSelectedTestSuiteFolderAsync" />
+                </MudTooltip>
+            }
+            @if (_selectedTreeItem.TestSuite is not null)
+            {
+                <MudTooltip Text="Delete test suite">
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" style="color: lightcoral" OnClick="DeleteSelectedTestSuiteFolderAsync" />
+                </MudTooltip>
+            }
+        }
+    </MudStack>
+
+    <MudTreeView 
+        Class="pa-2"
+        @ref="_treeView"
+        SelectionMode="@SelectionMode.ToggleSelection"
+        T="BrowserItem"
+        SelectedValue="@_selectedTreeItem"
+        SelectedValueChanged="OnSelectedValueChangedAsync"
+        Hover="true" Color="Color.Tertiary" ServerData="@LoadServerData" Items="@_rootItems">
+
+        <ItemTemplate>
+            <MudTreeViewItem Value="@context.Value"
+            Items="@context.Children"
+            ItemsChanged="@(new Action<IReadOnlyCollection<TreeItemData<BrowserItem>>>(items => OnItemsLoaded(context, items)))"
+            @bind-Expanded="@context.Expanded"
+            CanExpand="@context.Expandable"
+            Icon="@context.Icon"
+            Text="@context.Text"
+            LoadingIconColor="Color.Info" />
+
+        </ItemTemplate>
+    </MudTreeView>
+</MudStack>
+
+@code {
+    [CascadingParameter]
+    protected TestProject? Project { get; set; }
+
+    private TestProject? _project;
+
+    [Parameter] public EventCallback<TestSuiteFolder> OnFolderClicked { get; set; }
+    [Parameter] public EventCallback<TestSuite> OnTestSuiteClicked { get; set; }
+
+    private MudTreeView<BrowserItem> _treeView = default!;
+
+    private List<TreeItemData<BrowserItem>> _rootItems = [];
+    private BrowserItem? _selectedTreeItem;
+
+    private async Task OnSelectedValueChangedAsync(BrowserItem? item)
+    {
+        _selectedTreeItem = item;
+        if(item is not null)
+        {
+            if(item.Folder is not null)
+            {
+                await OnFolderClicked.InvokeAsync(item.Folder);
+            }
+            if (item.TestSuite is not null)
+            {
+                await OnTestSuiteClicked.InvokeAsync(item.TestSuite);
+            }
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_rootItems.Count == 0 || _project != Project)
+        {
+            _project = Project;
+            _rootItems = await testBrowser.BrowseAsync(Project?.Id, null);
+        }
+    }
+
+    public async Task<IReadOnlyCollection<TreeItemData<BrowserItem>>> LoadServerData(BrowserItem? browserItem)
+    {
+        // wait 500ms to simulate a server load
+
+        if(Project is not null)
+        {
+            return await testBrowser.BrowseAsync(Project.Id, browserItem);
+        }
+
+        return [];
+    }
+
+    private void OnItemsLoaded(TreeItemData<BrowserItem> treeItemData, IReadOnlyCollection<TreeItemData<BrowserItem>> children)
+    {
+        // here we store the server-loaded children in the treeItemData so that they are available in the InitialTreeItems
+        // if you don't do this you loose already loaded children on next render update
+        treeItemData.Children = children?.ToList();
+    }
+
+    private async Task AddTestSuiteFolderAsync()
+    {
+        if (Project is not null && _selectedTreeItem?.Folder is not null)
+        {
+            var parameters = new DialogParameters<AddTestSuiteFolderDialog>
+            {
+                { x => x.ProjectId, Project.Id },
+                { x => x.TestSuiteId, _selectedTreeItem.Folder.TestSuiteId },
+                { x => x.ParentFolderId, _selectedTreeItem.Folder.Id },
+            };
+            var dialog = await dialogService.ShowAsync<AddTestSuiteFolderDialog>("Add folder", parameters);
+            var result = await dialog.Result;
+            if(result?.Data is TestSuiteFolder folder)
+            {
+                AddFolderToTreeView(folder, _selectedTreeItem.Folder, _rootItems);
+            }
+        }
+        else if (Project is not null && _selectedTreeItem?.TestSuite is not null)
+        {
+            var parameters = new DialogParameters<AddTestSuiteFolderDialog>
+            {
+                { x => x.ProjectId, Project.Id },
+                { x => x.TestSuiteId, _selectedTreeItem.TestSuite.Id },
+            };
+            var dialog = await dialogService.ShowAsync<AddTestSuiteFolderDialog>("Add folder", parameters);
+            var result = await dialog.Result;
+            if (result?.Data is TestSuiteFolder folder)
+            {
+                AddFolderToTreeView(folder, _selectedTreeItem.TestSuite, _rootItems);
+            }
+        }
+    }
+
+
+    private void AddFolderToTreeView(TestSuiteFolder folder, TestSuite parent, IEnumerable<TreeItemData<BrowserItem>> items)
+    {
+        foreach (var item in items)
+        {
+            if (item.Value?.TestSuite is not null && item.Value.TestSuite.Id == parent.Id)
+            {
+                item.Expanded = true;
+                item.Children ??= new();
+                item.Children.Add(testBrowser.CreateTreeItemDataFromFolder(folder));
+                return;
+            }
+            else if (item.Children is not null)
+            {
+                AddFolderToTreeView(folder, parent, item.Children);
+            }
+        }
+    }
+    private void AddFolderToTreeView(TestSuiteFolder folder, TestSuiteFolder parent, IEnumerable<TreeItemData<BrowserItem>> items)
+    {
+        foreach(var item in items)
+        {
+            if(item.Value?.Folder is not null && item.Value.Folder.Id == parent.Id)
+            {
+                item.Expanded = true;
+                item.Children ??= new();
+                item.Children.Add(testBrowser.CreateTreeItemDataFromFolder(folder));
+                return;
+            }
+            else if(item.Children is not null)
+            {
+                AddFolderToTreeView(folder, parent, item.Children);
+            }
+        }
+    }
+    private void RemoveFolderFromTreeView(long folderId, long? parentId, IEnumerable<TreeItemData<BrowserItem>> items)
+    {
+        foreach (var item in items)
+        {
+            if (item.Value?.Folder is not null && item.Value.Folder.Id == parentId && item.Children is not null)
+            {
+                item.Children = item.Children.Where(x => x.Value?.Folder?.Id != folderId).ToList();
+                return;
+            }
+            if (item.Value?.TestSuite is not null && parentId is null && item.Children is not null)
+            {
+                item.Children = item.Children.Where(x => x.Value?.Folder?.Id != folderId).ToList();
+                return;
+            }
+            else if (item.Children is not null)
+            {
+                RemoveFolderFromTreeView(folderId, parentId, item.Children);
+            }
+        }
+    }
+
+    private async Task DeleteSelectedTestSuiteFolderAsync()
+    {
+        if(_selectedTreeItem?.Folder is not null)
+        {
+            await testSuiteService.DeleteFolderByIdAsync(_selectedTreeItem.Folder.Id);
+            RemoveFolderFromTreeView(_selectedTreeItem.Folder.Id, _selectedTreeItem.Folder.ParentId, _rootItems);
+        }
+    }
+
+    private async Task AddTestSuiteAsync()
+    {
+        var parameters = new DialogParameters<AddTestSuiteDialog>
+        {
+            { x => x.Project, Project }
+        };
+        var dialog = await dialogService.ShowAsync<AddTestSuiteDialog>("Add test suite", parameters);
+        var result = await dialog.Result;
+        if (result?.Data is TestSuite)
+        {
+            _rootItems = await testBrowser.BrowseAsync(Project?.Id, null);
+        }
+    }
+}

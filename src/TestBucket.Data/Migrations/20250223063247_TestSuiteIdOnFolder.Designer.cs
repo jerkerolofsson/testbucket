@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Data;
@@ -11,9 +12,11 @@ using TestBucket.Data;
 namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250223063247_TestSuiteIdOnFolder")]
+    partial class TestSuiteIdOnFolder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -341,10 +344,10 @@ namespace TestBucket.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long?>("TestProjectId")
+                    b.Property<long>("TestProjectId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("TestSuiteFolderId")
+                    b.Property<long>("TestSuiteFolderId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("TestSuiteId")
@@ -475,7 +478,7 @@ namespace TestBucket.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long?>("TestProjectId")
+                    b.Property<long>("TestProjectId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -509,7 +512,7 @@ namespace TestBucket.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long?>("TestProjectId")
+                    b.Property<long>("TestProjectId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("TestSuiteId")
@@ -614,11 +617,15 @@ namespace TestBucket.Data.Migrations
 
                     b.HasOne("TestBucket.Data.Projects.Models.TestProject", "TestProject")
                         .WithMany()
-                        .HasForeignKey("TestProjectId");
+                        .HasForeignKey("TestProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TestBucket.Data.Testing.Models.TestSuiteFolder", "TestSuiteFolder")
                         .WithMany("TestCases")
-                        .HasForeignKey("TestSuiteFolderId");
+                        .HasForeignKey("TestSuiteFolderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TestBucket.Data.Testing.Models.TestSuite", "TestSuite")
                         .WithMany()
@@ -699,7 +706,9 @@ namespace TestBucket.Data.Migrations
 
                     b.HasOne("TestBucket.Data.Projects.Models.TestProject", "TestProject")
                         .WithMany()
-                        .HasForeignKey("TestProjectId");
+                        .HasForeignKey("TestProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Tenant");
 
@@ -720,7 +729,9 @@ namespace TestBucket.Data.Migrations
 
                     b.HasOne("TestBucket.Data.Projects.Models.TestProject", "TestProject")
                         .WithMany()
-                        .HasForeignKey("TestProjectId");
+                        .HasForeignKey("TestProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("TestBucket.Data.Testing.Models.TestSuite", "TestSuite")
                         .WithMany()

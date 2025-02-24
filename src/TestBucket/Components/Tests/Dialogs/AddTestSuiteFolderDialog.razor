@@ -1,0 +1,71 @@
+﻿@using TestBucket.Components.Tests.Services
+@attribute [Authorize(Roles = "ADMIN")]
+@inject TestSuiteService testSuiteService
+
+<EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <DialogContent>
+            <MudStack Spacing="0">
+                @if (_name is not null)
+                {
+                    <MudTextField 
+                        AutoFocus="true"
+                        Label="Name" T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+
+                    <MudStack Spacing="1" Row="true">
+                        <MudTooltip Text="Slug"><MudText Style="background: black; font-size: 7pt">@_slug</MudText></MudTooltip>
+                        <MudTooltip Text="Short Name"><MudText Style="background: black; font-size: 7pt">@_shortName</MudText></MudTooltip>
+                    </MudStack>
+                }
+                @if (_errorMessage is not null)
+                {
+                    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+                }
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    private string _name = "";
+    private string _slug = "";
+    private string _shortName = "";
+
+    private string? _errorMessage;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public long ProjectId { get; set; }
+    [Parameter] public long TestSuiteId { get; set; }
+    [Parameter] public long? ParentFolderId { get; set; }
+
+    private void OnValueChanged(string name)
+    {
+        _name = name;
+
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_name))
+        {
+            _errorMessage = "Invalid name";
+            return;
+        }
+
+        var testSuiteFolder = await testSuiteService.AddTestSuiteFolderAsync(ProjectId, TestSuiteId, ParentFolderId, _name);
+        MudDialog.Close(testSuiteFolder);
+    }
+}

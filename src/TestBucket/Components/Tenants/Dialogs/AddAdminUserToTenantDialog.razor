@@ -15,6 +15,11 @@
                     <MudTextField @bind-Value="_model.Email" For="@(() => _model.Email)" Label="Email"></MudTextField>
                     <MudTextField @bind-Value="_model.Password" For="@(() => _model.Password)" Label="Password"></MudTextField>
                     <MudTextField @bind-Value="_model.ConfirmPassword" For="@(() => _model.ConfirmPassword)" Label="Confirm Password"></MudTextField>
+
+                    @if (_errorMessage is not null)
+                    {
+                        @_errorMessage
+                    }
                 </MudStack>
             </MudStack>
         </DialogContent>
@@ -63,6 +68,7 @@
         try
         {
             res = await userService.RegisterAndConfirmUserAsync(tenantId, _model.Email, _model.Password);
+            await userService.AssignRoleAsync(tenantId, _model.Email, Roles.ADMIN);
         }
         catch
         {

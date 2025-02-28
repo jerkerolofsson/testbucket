@@ -1,0 +1,103 @@
+﻿@inherits LayoutComponentBase
+@inject NavigationManager navigationManager
+@inject TenantResolver tenantResolver
+@inject AuthenticationStateProvider authStateProvider
+
+<MudThemeProvider IsDarkMode="true" />
+<MudSnackbarProvider />
+<MudPopoverProvider />
+<MudDialogProvider MaxWidth="MaxWidth.ExtraExtraLarge" />
+
+@{
+    string tenantAdminUrl = $"{tenantId}/tenants";
+    string projectAdminUrl = $"{tenantId}/projects";
+    string homeUrl = $"/{tenantId}";
+    string authUrl = $"/{tenantId}/Auth";
+    string testsUrl = $"/{tenantId}/Tests";
+    string runsUrl = $"/{tenantId}/Runs";
+    string manageUrl = $"/{tenantId}/Account/Manage";
+    string registerUrl = $"/{tenantId}/Account/Register";
+    string loginUrl = $"/{tenantId}/Account/Login?returnUrl=/{tenantId}";
+}
+
+<CascadingValue Value="@_project">
+
+    <div style="display: grid; grid-template-rows: auto 1fr; height: 100%">
+
+        <MudToolBar Style="background: var(--mud-palette-dark); width: 100%">
+            <MudStack Row="true" Style="width: 100%">
+                <ProjectDropDown @bind-SelectedProject="@_project"/>
+                <MudSpacer/>
+
+                <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+
+                    <!-- Pages -->
+                    <MudMenuItem Icon="@Icons.Material.Filled.ViewList" Label="Tests" Href="@testsUrl"></MudMenuItem>
+                    <MudMenuItem Icon="@Icons.Material.Filled.SmartDisplay" Label="Runs" Href="@runsUrl"></MudMenuItem>
+
+                    <!-- Admin -->
+                    <AuthorizeView Roles="ADMIN">
+                        <MudDivider/>
+                        <MudMenuItem Icon="@Icons.Material.Filled.Settings" Label="Projects" Href="@projectAdminUrl"></MudMenuItem>
+                    </AuthorizeView>
+                    <AuthorizeView Roles="SUPERADMIN">
+                        <MudMenuItem Icon="@Icons.Material.Filled.AdminPanelSettings" Label="Tenants" Href="@tenantAdminUrl"></MudMenuItem>
+                    </AuthorizeView>
+
+                    <!-- Profile / Logout -->
+                    <AuthorizeView>
+                        <MudDivider />
+                        <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="Profile" Href="@manageUrl"></MudMenuItem>
+                        <MudMenuItem>
+                            <form action="Account/Logout" method="post">
+                                <AntiforgeryToken />
+                                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                                <button type="submit">Logout</button>
+                            </form>
+                        </MudMenuItem>
+                    </AuthorizeView>
+                </MudMenu>
+            </MudStack>
+        </MudToolBar>
+
+        <main>
+            <article class="content">
+                @Body
+            </article>
+        </main>
+
+    </div>
+</CascadingValue>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+
+@code {
+    private TestProject? _project;
+    private string? tenantId;
+    private string? currentUrl;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await authStateProvider.GetAuthenticationStateAsync();
+        tenantId = state.User.Claims.FirstOrDefault(x => x.Type == "tenant")?.Value;
+
+        currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
+        navigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = navigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        navigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

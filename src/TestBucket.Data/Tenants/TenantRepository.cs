@@ -1,7 +1,8 @@
 ﻿using OneOf;
 
-using TestBucket.Data.Errors;
-using TestBucket.Data.Identity.Models;
+using TestBucket.Domain.Errors;
+using TestBucket.Domain.Tenants;
+using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Data.Tenants;
 internal class TenantRepository : ITenantRepository

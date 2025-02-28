@@ -1,19 +1,18 @@
-﻿@using TestBucket.Components.Tests.Services
-@using TestBucket.Data.Projects.Models
-@attribute [Authorize(Roles = "ADMIN")]
+﻿@attribute [Authorize(Roles = "ADMIN")]
 @inject TestSuiteService testSuiteService
 
 <EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <DialogContent>
-            <MudStack Spacing="0">
+            <MudStack Spacing="1">
                 @if (_name is not null)
                 {
                     <MudTextField 
                     AutoFocus="true"
-                    Label="Name" T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+                    Variant="Variant.Outlined"
+                    T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
 
-                    <MudStack Spacing="1" Row="true">
+                    <MudStack Spacing="1" Row="true" Class="mt-2">
                         <MudTooltip Text="Slug"><MudText Style="background: black; font-size: 7pt">@_slug</MudText></MudTooltip>
                         <MudTooltip Text="Short Name"><MudText Style="background: black; font-size: 7pt">@_shortName</MudText></MudTooltip>
                     </MudStack>

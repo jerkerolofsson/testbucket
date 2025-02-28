@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
-using TestBucket.Data.Identity.Models;
-using TestBucket.Data.Projects.Models;
+using TestBucket.Domain.Settings.Models;
 
 namespace TestBucket.Data;
 
@@ -15,6 +13,16 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<TestCase> TestCases { get; set; }
     internal DbSet<TestRun> TestRuns { get; set; }
     internal DbSet<TestCaseRun> TestCaseRuns { get; set; }
+
+    /// <summary>
+    /// Settings common for all tenants
+    /// </summary>
+    internal DbSet<GlobalSettings> GlobalSettings { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+    }
 
 
 }

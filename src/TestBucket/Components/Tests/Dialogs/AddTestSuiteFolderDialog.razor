@@ -10,12 +10,9 @@
                 {
                     <MudTextField 
                         AutoFocus="true"
-                        Label="Name" T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+                        Variant="Variant.Outlined"
+                        T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
 
-                    <MudStack Spacing="1" Row="true">
-                        <MudTooltip Text="Slug"><MudText Style="background: black; font-size: 7pt">@_slug</MudText></MudTooltip>
-                        <MudTooltip Text="Short Name"><MudText Style="background: black; font-size: 7pt">@_shortName</MudText></MudTooltip>
-                    </MudStack>
                 }
                 @if (_errorMessage is not null)
                 {
@@ -34,8 +31,6 @@
 
 @code {
     private string _name = "";
-    private string _slug = "";
-    private string _shortName = "";
 
     private string? _errorMessage;
 

@@ -1,7 +1,4 @@
 ﻿@page "/{tenantId}/projects"
-@using TestBucket.Components.Projects.Dialogs
-@using TestBucket.Components.Users.Controls
-@using TestBucket.Data.Projects.Models
 @attribute [Authorize(Roles = "ADMIN")]
 @inject ProjectService projectService
 @inject IDialogService dialogService

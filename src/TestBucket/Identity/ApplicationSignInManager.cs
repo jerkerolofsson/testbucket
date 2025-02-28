@@ -11,7 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-using TestBucket.Data.Identity.Models;
+using TestBucket.Components.Tenants;
+using TestBucket.Domain.Identity.Models;
 
 namespace TestBucket.Identity;
 

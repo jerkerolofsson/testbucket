@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TestBucket.Data.Identity.Models;
+using TestBucket.Domain.Identity;
+using TestBucket.Domain.Identity.Models;
 
 namespace TestBucket.Data.Identity;
 internal class UserService : IUserService

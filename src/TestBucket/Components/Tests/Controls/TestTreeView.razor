@@ -1,11 +1,8 @@
-﻿@using TestBucket.Components.Tests.Dialogs
-@using TestBucket.Components.Tests.Models
-@using TestBucket.Components.Tests.Services
-@using TestBucket.Data.Projects.Models
-@using TestBucket.Data.Testing.Models
+﻿@using TestBucket.Components.Shared
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject TestSuiteService testSuiteService
+@inject TestCaseEditorService testCaseEditor
 
 <MudStack Spacing="0" Class="pa-2" Style="width: 20vw; background: rgba(0,0,0,0.2)">
     <MudStack Row="true" Style="border-bottom: solid 1px #333" Spacing="0">
@@ -18,42 +15,59 @@
         @if (_selectedTreeItem is not null)
         {
             <MudTooltip Text="Add folder">
-                <MudIconButton Icon="@Icons.Material.Filled.CreateNewFolder"  OnClick="AddTestSuiteFolderAsync" />
+                <MudIconButton Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="AddTestSuiteFolderAsync" />
             </MudTooltip>
-
-            @if (_selectedTreeItem.Folder is not null)
-            {
-                <MudTooltip Text="Delete folder">
-                    <MudIconButton Icon="@Icons.Material.Filled.FolderDelete" style="color: lightcoral" OnClick="DeleteSelectedTestSuiteFolderAsync" />
-                </MudTooltip>
-            }
-            @if (_selectedTreeItem.TestSuite is not null)
-            {
-                <MudTooltip Text="Delete test suite">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" style="color: lightcoral" OnClick="DeleteSelectedTestSuiteFolderAsync" />
-                </MudTooltip>
-            }
         }
+        <MudMenu Icon="@Icons.Material.Filled.MoreHoriz">
+
+            @if (_selectedTreeItem?.Folder is not null)
+            {
+                <MudMenuItem Icon="@Icons.Material.Filled.Palette" Label="Customize folder" />
+                <MudMenuItem Icon="@Icons.Material.Filled.FolderDelete" OnClick="DeleteSelectedTestSuiteFolderAsync" Label="Delete folder"/>
+            }
+            else if (_selectedTreeItem?.TestSuite is not null)
+            {
+                <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="EditTestSuiteAsync" Label="Edit" />
+                <MudMenuItem Icon="@Icons.Material.Filled.Delete" OnClick="DeleteSelectedTestSuiteAsync" Label="Delete test suite" />
+            }
+            else
+            {
+                <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import"/>
+            }
+        </MudMenu>
+
     </MudStack>
 
     <MudTreeView 
-        Class="pa-2"
-        @ref="_treeView"
-        SelectionMode="@SelectionMode.ToggleSelection"
-        T="BrowserItem"
-        SelectedValue="@_selectedTreeItem"
-        SelectedValueChanged="OnSelectedValueChangedAsync"
-        Hover="true" Color="Color.Tertiary" ServerData="@LoadServerData" Items="@_rootItems">
+    Class="pa-2"
+    @ref="_treeView"
+    SelectionMode="@SelectionMode.ToggleSelection"
+    T="BrowserItem"
+    SelectedValue="@_selectedTreeItem"
+    SelectedValueChanged="OnSelectedValueChangedAsync"
+    Hover="true" Color="Color.Tertiary" ServerData="@LoadServerData" Items="@_rootItems">
 
         <ItemTemplate>
-            <MudTreeViewItem Value="@context.Value"
-            Items="@context.Children"
-            ItemsChanged="@(new Action<IReadOnlyCollection<TreeItemData<BrowserItem>>>(items => OnItemsLoaded(context, items)))"
-            @bind-Expanded="@context.Expanded"
-            CanExpand="@context.Expandable"
-            Icon="@context.Icon"
-            Text="@context.Text"
-            LoadingIconColor="Color.Info" />
+
+            @{
+                string style = "";
+                if (context.Value?.Color is not null)
+                {
+                    style += $"color: {context.Value.Color}";
+                }
+            }
+
+            <DropZone T="TestCase" OnDrop="(test) => OnDrop(test, context.Value)">
+                <MudTreeViewItem Value="@context.Value"
+                    Style="@style"
+                    Items="@context.Children"
+                    ItemsChanged="@(new Action<IReadOnlyCollection<TreeItemData<BrowserItem>>>(items => OnItemsLoaded(context, items)))"
+                    @bind-Expanded="@context.Expanded"
+                    CanExpand="@context.Expandable"
+                    Icon="@context.Icon"
+                    Text="@context.Text"
+                    LoadingIconColor="Color.Info" />
+            </DropZone>
 
         </ItemTemplate>
     </MudTreeView>
@@ -72,6 +86,32 @@
 
     private List<TreeItemData<BrowserItem>> _rootItems = [];
     private BrowserItem? _selectedTreeItem;
+
+    private async Task OnDrop(TestCase testCase, BrowserItem? item)
+    {
+        if(item?.Folder is not null)
+        {
+            testCase.TestSuiteFolderId = item.Folder.Id;
+            testCase.TestSuiteId = item.Folder.TestSuiteId;
+
+            await testCaseEditor.SaveTestCaseAsync(testCase);
+        }
+    }
+
+    private async Task EditTestSuiteAsync()
+    {
+        if(_selectedTreeItem?.TestSuite is not null)
+        {
+            _selectedTreeItem.TestSuite.Color = "yellow";
+            _selectedTreeItem.TestSuite.Icon = MudBlazor.Icons.Custom.Brands.MicrosoftAzureDevOps;
+            await testSuiteService.SaveTestSuiteAsync(_selectedTreeItem.TestSuite);
+        }
+    }
+
+    private async Task ImportAsync()
+    {
+        await testBrowser.ImportAsync(_project);
+    }
 
     private async Task OnSelectedValueChangedAsync(BrowserItem? item)
     {
@@ -94,6 +134,7 @@
         if (_rootItems.Count == 0 || _project != Project)
         {
             _project = Project;
+            _selectedTreeItem = null;
             _rootItems = await testBrowser.BrowseAsync(Project?.Id, null);
         }
     }
@@ -212,6 +253,13 @@
         {
             await testSuiteService.DeleteFolderByIdAsync(_selectedTreeItem.Folder.Id);
             RemoveFolderFromTreeView(_selectedTreeItem.Folder.Id, _selectedTreeItem.Folder.ParentId, _rootItems);
+        }
+    }
+    private async Task DeleteSelectedTestSuiteAsync()
+    {
+        if (_selectedTreeItem?.TestSuite is not null)
+        {
+            await testSuiteService.DeleteTestSuiteByIdAsync(_selectedTreeItem.TestSuite.Id);
         }
     }
 

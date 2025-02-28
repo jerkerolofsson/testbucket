@@ -10,7 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using TestBucket.Data.Identity.Models;
+using TestBucket.Domain.Identity;
+using TestBucket.Domain.Identity.Models;
 
 namespace TestBucket.Data.Identity;
 

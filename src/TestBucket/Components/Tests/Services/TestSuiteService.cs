@@ -1,13 +1,4 @@
-﻿using System.Xml.Linq;
-
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.CodeAnalysis;
-
-using TestBucket.Components.Shared;
-using TestBucket.Contracts;
-using TestBucket.Data.Testing;
-using TestBucket.Data.Testing.Models;
-
+﻿
 namespace TestBucket.Components.Tests.Services;
 
 internal class TestSuiteService : TenantBaseService
@@ -20,16 +11,16 @@ internal class TestSuiteService : TenantBaseService
         _testCaseRepo = testCaseRepo;
     }
 
-    public async Task AddTestCaseAsync(TestCase testCase)
-    {
-        testCase.TenantId = await GetTenantIdAsync();
-        await _testCaseRepo.AddTestCaseAsync(testCase);
-    }
 
-    public async Task DeleteFolderByIdAsync(long testSuiteId)
+    public async Task DeleteFolderByIdAsync(long folderId)
     {
         var tenantId = await GetTenantIdAsync();
-        await _testCaseRepo.DeleteFolderByIdAsync(tenantId, testSuiteId);
+        await _testCaseRepo.DeleteFolderByIdAsync(tenantId, folderId);
+    }
+    public async Task DeleteTestSuiteByIdAsync(long testSuiteId)
+    {
+        var tenantId = await GetTenantIdAsync();
+        await _testCaseRepo.DeleteTestSuiteByIdAsync(tenantId, testSuiteId);
     }
 
     public async Task<TestSuite> AddTestSuiteAsync(long? projectId, string name)
@@ -37,6 +28,17 @@ internal class TestSuiteService : TenantBaseService
         var tenantId = await GetTenantIdAsync();
         return await _testCaseRepo.AddTestSuiteAsync(tenantId, projectId, name);
     }
+
+    public async Task SaveTestSuiteAsync(TestSuite suite)
+    {
+        var tenantId = await GetTenantIdAsync();
+        if (suite.TenantId != tenantId)
+        {
+            throw new InvalidOperationException("TenantId mismatch");
+        }
+        await _testCaseRepo.UpdateTestSuiteAsync(suite);
+    }
+
 
     public async Task<TestSuiteFolder> AddTestSuiteFolderAsync(long? projectId, long testSuiteId, long? parentFolderId, string name)
     {

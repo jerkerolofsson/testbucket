@@ -18,10 +18,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
-using TestBucket.Data.Identity.Models;
 using System.Threading;
-using TestBucket.Data.Identity;
-using TestBucket.Data.Tenants;
+using TestBucket.Domain.Identity.Models;
+using TestBucket.Domain.Identity;
+using TestBucket.Domain.Tenants;
+using TestBucket.Domain.Settings.Models;
+using TestBucket.Domain.Settings;
 
 
 namespace TestBucket.Data.Migrations;
@@ -108,10 +110,19 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
 
         string superAdminUserEmail = configuration["ADMIN_USER"] ?? "admin@admin.com";
         string adminUserPassword = configuration["ADMIN_PASSWORD"] ?? "Password123!";
-        string adminTenant = "admin";
+        string adminTenant = Environment.GetEnvironmentVariable("DEFAULT_TENANT") ?? "admin";
 
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        // Update settings
+        var settingsProvider = scope.ServiceProvider.GetRequiredService<ISettingsProvider>();
+        var settings = await settingsProvider.LoadGlobalSettingsAsync();
+        if (settings.DefaultTenant != adminTenant)
+        {
+            settings.DefaultTenant = adminTenant;
+            await settingsProvider.SaveGlobalSettingsAsync(settings);
+        }
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>

@@ -1,46 +1,67 @@
-﻿@page "/{TenantId}/Tests"
-@using TestBucket.Components.Projects.Controls
-@using TestBucket.Components.Tests.Controls
-@using TestBucket.Data.Projects.Models
-@using TestBucket.Data.Testing.Models
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Tests"
+@using Humanizer
+@using TestBucket.Components.Layout
+@layout AppLayout
+@inject TestCaseEditorService testCaseEditor
 
-<CascadingValue Value="@_project">
-    <MudToolBar Style="background: var(--mud-palette-dark)">
-        <ProjectDropDown @bind-SelectedProject="@_project"/>
-    </MudToolBar>
+<TenantRedirect/>
 
-    <div style="display: flex">
-        <TestTreeView OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" />
+<div style="display: grid; grid-template-columns: auto 1fr; height: 100%">
+    <TestTreeView OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" />
 
-        <TestCaseGrid Folder="@_selectedFolder" TestSuiteId="@_selectedTestSuiteId" />
-    </div>
-
-    <MudDrawer @bind-Open="@_openFolder" Anchor="@Anchor.Right" Elevation="1" Variant="@DrawerVariant.Temporary" OverlayAutoClose="true">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">My App</MudText>
-        </MudDrawerHeader>
-
-        <FolderPanel Folder="@_selectedFolder"/>
-    </MudDrawer>
-
-</CascadingValue>
+    @if(_selectedTestCase is not null)
+    {
+        <TestCaseEditor Test="@_selectedTestCase" TestChanged="OnTestModified"/>
+    }
+    else
+    {
+        <TestCaseGrid Folder="@_selectedFolder" TestSuiteId="@_selectedTestSuiteId" OnTestCaseClicked="OnTestCaseClicked" />
+    }
+</div>
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";
-
-    private bool _openFolder = false;
+    [CascadingParameter] TestProject? Project { get; set; }
 
     private TestProject? _project;
+    private TestCase? _selectedTestCase;
     private TestSuiteFolder? _selectedFolder;
     private long? _selectedTestSuiteId;
 
+    protected override void OnParametersSet()
+    {
+        if(_project != Project)
+        {
+            _project = Project;
+
+            // Clear selection
+            _selectedFolder = null;
+            _selectedTestCase = null;
+            _selectedTestSuiteId = null;
+        }
+    }
+
+    private void OnTestCaseClicked(TestCase test)
+    {
+        _selectedTestCase = test;
+    }
+
+    private async Task OnTestModified(TestCase test)
+    {
+        _selectedTestCase = test;
+        await testCaseEditor.SaveTestCaseAsync(test);
+    }
+
     private void OnTestSuiteClicked(TestSuite suite)
     {
+        _selectedTestCase = null;
         _selectedFolder = null;
         _selectedTestSuiteId = suite.Id;
     }
     private void OnFolderClicked(TestSuiteFolder folder)
     {
+        _selectedTestCase = null;
         _selectedFolder = folder;
         _selectedTestSuiteId = folder.TestSuiteId;
     }

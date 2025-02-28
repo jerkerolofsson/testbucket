@@ -1,26 +1,36 @@
 ﻿
-using MudBlazor;
-
-using TestBucket.Components.Tenants;
-using TestBucket.Components.Tests.Models;
-using TestBucket.Contracts;
-using TestBucket.Data.Testing.Models;
-
 namespace TestBucket.Components.Tests.Services;
 
-internal class TestBrowser
+internal class TestBrowser : TenantBaseService
 {
     private readonly TestSuiteService _testSuiteService;
+    private readonly ITextTestResultsImporter _textImporter;
+    public TestBrowser(TestSuiteService testSuiteService,
+        AuthenticationStateProvider authenticationStateProvider,
+        ITextTestResultsImporter textImporter) : base(authenticationStateProvider)
 
-    public TestBrowser(TestSuiteService testSuiteService)
     {
         _testSuiteService = testSuiteService;
+        _textImporter = textImporter;
     }
 
-    public async Task<PagedResult<TestCase>> SearchTestCasesAsync(long? testSuiteId, long? folderId, int offset, int count = 20)
+    public async Task ImportAsync(TestProject? project)
     {
+        var tenantId = await GetTenantIdAsync();
+        string xml = await File.ReadAllTextAsync(@"c:\temp\junit.xml");
+        await _textImporter.ImportTextAsync(tenantId, project?.Id, Domain.Testing.Formats.TestResultFormat.JUnitXml, xml);
+    }
+
+    public async Task<PagedResult<TestCase>> SearchTestCasesAsync(long? testSuiteId, long? folderId, string? searchText, int offset, int count = 20)
+    {
+        if(string.IsNullOrWhiteSpace(searchText))
+        {
+            searchText = null;
+        }
+
         return await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
         {
+            Text = searchText,
             TestSuiteId = testSuiteId,
             FolderId = folderId,
             Count = count,
@@ -66,13 +76,48 @@ internal class TestBrowser
     private async Task<List<TreeItemData<BrowserItem>>> BrowseRootAsync(long? projectId)
     {
         var suites = await _testSuiteService.GetTestSuitesAsync(projectId);
-        return suites.Items.Select(x => 
+        var suiteItems = suites.Items.Select(x => 
             new TreeItemData<BrowserItem>
             {
-                Value = new BrowserItem { TestSuite = x },
+                Value = new BrowserItem { TestSuite = x, Color = x.Color },
                 Text = x.Name,
-                Icon = Icons.Material.Filled.Article,
+                Icon = x.Icon ?? Icons.Material.Filled.Article,
                 Children = null,
             }).ToList();
+
+        return new List<TreeItemData<BrowserItem>>
+        {
+            new TreeItemData<BrowserItem>
+            {
+                Text = "Test Suites",
+                Children = suiteItems,
+                Expanded = true,
+                Icon = Icons.Material.Filled.FolderSpecial,
+            },
+            new TreeItemData<BrowserItem>
+            {
+                Text = "Test Runs",
+                Expanded = false,
+                Icon = Icons.Material.Filled.FolderSpecial,
+            },
+            new TreeItemData<BrowserItem>
+            {
+                Text = "Reports",
+                Expanded = false,
+                Icon = Icons.Material.Filled.FolderSpecial,
+            },
+            new TreeItemData<BrowserItem>
+            {
+                Text = "Environments",
+                Expanded = false,
+                Icon = Icons.Material.Filled.FolderSpecial,
+            },
+            new TreeItemData<BrowserItem>
+            {
+                Text = "Test Parameters",
+                Expanded = false,
+                Icon = Icons.Material.Filled.FolderSpecial,
+            }
+        };
     }
 }

@@ -5,7 +5,7 @@
 @inject ISuperAdminUserService userService
 
 <EditForm Model="@_model" OnValidSubmit="async () => await OnValidSubmitAsync()">
-    <MudDialog>
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>Add new administrator account</TitleContent>
         <DialogContent>
             <MudStack>

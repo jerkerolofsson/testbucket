@@ -10,7 +10,7 @@ using Microsoft.Extensions.Primitives;
 
 using TestBucket.Components.Account.Pages;
 using TestBucket.Components.Account.Pages.Manage;
-using TestBucket.Data.Identity.Models;
+using TestBucket.Domain.Identity.Models;
 
 namespace Microsoft.AspNetCore.Routing;
 

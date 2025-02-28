@@ -1,8 +1,24 @@
-﻿@using TestBucket.Data.Testing.Models
-
-@if(Test is not  null)
+﻿@if(Test is not  null)
 {
-    <MudTextField Label="Name" Value="@Test.Name" ValueChanged="OnNameChanged" T="string"/>
+    <div class="pa-3">
+        <MudStack>
+            <MudTextField Variant="Variant.Outlined"
+                Label="Name" Value="@Test.Name" ValueChanged="OnNameChanged" T="string"/>
+    
+            <MudTextField 
+                Variant="Variant.Outlined"
+                Label="Description" AutoGrow="true" Lines="15" MaxLines="15" Value="@Test.Description" ValueChanged="OnDescriptionChanged" T="string"/>
+
+                Slug:
+                @Test.Slug
+
+            TestProjectId:
+                @Test.TestProjectId
+
+            TestSuiteFolderId:
+                @Test.TestSuiteFolderId
+        </MudStack>
+    </div>
 }
 
 
@@ -15,6 +31,15 @@
         if(Test is not null)
         {
             Test.Name = name;
+            await TestChanged.InvokeAsync(Test);
+        }
+    }
+
+    public async Task OnDescriptionChanged(string description)
+    {
+        if (Test is not null)
+        {
+            Test.Description = description;
             await TestChanged.InvokeAsync(Test);
         }
     }

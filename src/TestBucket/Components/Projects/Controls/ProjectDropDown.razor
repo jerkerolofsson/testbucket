@@ -1,13 +1,23 @@
 ﻿@using TestBucket.Contracts
-@using TestBucket.Data.Projects.Models
 @inject ProjectService projectService
+@inject IDialogService dialogService
 
-<MudSelect Value="@SelectedProject" Text="@SelectedProject?.Name" T="TestProject" ValueChanged="OnSelectedProjectChanged">
-    @foreach(var project in _projects)
-    {
-        <MudSelectItem Value="@project">@project.Name</MudSelectItem>
-    }
-</MudSelect>
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+    <MudSelect 
+        Style="min-width: 200px"
+        Variant="Variant.Outlined" 
+        Label="Project" 
+        Value="@SelectedProject" Text="@SelectedProject?.Name" T="TestProject" ValueChanged="OnSelectedProjectChanged">
+        @foreach(var project in _projects)
+        {
+            <MudSelectItem Value="@project">@project.Name</MudSelectItem>
+        }
+    </MudSelect>
+
+    <AuthorizeView Roles="ADMIN">
+        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddProject"></MudIconButton>
+    </AuthorizeView>
+</MudStack>
 
 @code {
     private TestProject[] _projects = [];
@@ -18,6 +28,17 @@
     private async Task OnSelectedProjectChanged(TestProject testProject)
     {
         await SelectedProjectChanged.InvokeAsync(testProject);
+    }
+
+    private async Task AddProject()
+    {
+        var dialog = await dialogService.ShowAsync<AddProjectDialog>();
+        var result = await dialog.Result;
+        if(result?.Data is TestProject testProject)
+        {
+            _projects = [testProject, .. _projects];
+            await SelectedProjectChanged.InvokeAsync(testProject);
+        }
     }
 
     protected override async Task OnInitializedAsync()

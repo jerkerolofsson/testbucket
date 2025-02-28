@@ -8,4 +8,13 @@ global using Microsoft.AspNetCore.Components.Authorization;
 global using Microsoft.EntityFrameworkCore;
 
 global using TestBucket.Contracts;
-global using TestBucket.Data.Testing.Models;
+global using TestBucket.Domain.Testing;
+global using TestBucket.Domain.Testing.Models;
+global using TestBucket.Domain.Projects;
+global using TestBucket.Domain.Projects.Models;
+global using TestBucket.Domain.Tenants;
+global using TestBucket.Domain.Tenants.Models;
+global using TestBucket.Domain.Identity;
+global using TestBucket.Domain.Identity.Models;
+
+

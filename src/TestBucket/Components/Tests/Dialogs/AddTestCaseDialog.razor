@@ -1,14 +1,15 @@
-﻿@using TestBucket.Components.Tests.Controls
-@using TestBucket.Components.Tests.Services
-@using TestBucket.Data.Projects.Models
-@using TestBucket.Data.Testing.Models
-@attribute [Authorize(Roles = "ADMIN")]
-@inject TestSuiteService testSuiteService
+﻿@attribute [Authorize(Roles = "ADMIN")]
+@inject TestCaseEditorService testCaseEditorService
 
 <EditForm Model="@_testCase" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <DialogContent>
             <TestCaseEditor @bind-Test="@_testCase" />
+
+            @if(_errorMessage is not null)
+            {
+                @_errorMessage
+            }
 
         </DialogContent>
 
@@ -27,6 +28,7 @@
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter] public TestSuiteFolder? Folder { get; set; }
+    [Parameter] public long? TestSuiteId { get; set; }
 
     private TestCase _testCase = new() { Name = "", TenantId = "" };
 
@@ -36,6 +38,10 @@
         {
             _testCase.TestSuiteFolderId = Folder.Id;
             _testCase.TestSuiteId = Folder.TestSuiteId;
+        }
+        if(TestSuiteId is not null)
+        {
+            _testCase.TestSuiteId = TestSuiteId.Value;
         }
         base.OnParametersSet();
     }
@@ -53,7 +59,7 @@
             return;
         }
 
-        await testSuiteService.AddTestCaseAsync(_testCase);
+        await testCaseEditorService.AddTestCaseAsync(_testCase);
         MudDialog.Close(_testCase);
     }
 }

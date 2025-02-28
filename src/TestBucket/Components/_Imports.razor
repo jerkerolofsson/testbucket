@@ -1,23 +1,48 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Components.Forms
-@using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.AspNetCore.Components.Web
-@using static Microsoft.AspNetCore.Components.Web.RenderMode
-@using Microsoft.AspNetCore.Components.Web.Virtualization
-@using Microsoft.JSInterop
-@using TestBucket
-@using TestBucket.Components
 @using System.ComponentModel.DataAnnotations
 @using System.Security.Claims
 @using System.Text
 @using System.Text.Encodings.Web
+
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
-@using TestBucket.Data;
-@using TestBucket.Data.Identity.Models
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+
 @using MudBlazor
 
+@using TestBucket
+@using TestBucket.Identity
+
+@using TestBucket.Components
+@using TestBucket.Components.Controls
+@using TestBucket.Components.Tests.Dialogs
+@using TestBucket.Components.Tests.Models
+@using TestBucket.Components.Tests.Services
+@using TestBucket.Components.Tests.Controls
+
+@using TestBucket.Components.Projects.Controls
+@using TestBucket.Components.Users
+@using TestBucket.Components.Users.Controls
+@using TestBucket.Components.Projects
+@using TestBucket.Components.Projects.Dialogs
+@using TestBucket.Components.Tenants
+@using TestBucket.Components.Tenants.Dialogs
+
+@using TestBucket.Data;
+@using TestBucket.Data.Identity
+
+@using TestBucket.Domain.Identity
+@using TestBucket.Domain.Identity.Models
+@using TestBucket.Domain.Projects.Models
+@using TestBucket.Domain.Tenants.Models
+@using TestBucket.Domain.Testing.Models

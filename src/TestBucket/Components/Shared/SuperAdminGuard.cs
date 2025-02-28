@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Components.Authorization;
 
-using TestBucket.Data.Identity;
+using TestBucket.Domain.Identity;
 
 namespace TestBucket.Components.Shared;
 public class SuperAdminGuard

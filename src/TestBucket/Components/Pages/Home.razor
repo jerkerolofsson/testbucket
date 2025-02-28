@@ -1,7 +1,9 @@
 ﻿@inject AuthenticationStateProvider authenticationStateProvider
 @inject IdentityRedirectManager identityRedirectManager
+@inject ISettingsProvider settingsProvider
 @page "/"
 @using TestBucket.Components.Account
+@using TestBucket.Domain.Settings
 @using TestBucket.Identity
 
 <PageTitle>Home</PageTitle>
@@ -23,7 +25,8 @@
         else
         {
             // Default tenant
-            identityRedirectManager.RedirectTo($"/admin");
+            var settings = await settingsProvider.LoadGlobalSettingsAsync();
+            identityRedirectManager.RedirectTo($"/{settings.DefaultTenant}");
         }
     }
 }

@@ -1,0 +1,36 @@
+<assemblies timestamp="11/05/2024 10:24:12">
+  <assembly id="asm1" name="Ecordia.CloudNative.Storage.UnitTests.dll" run-date="2024-11-05" run-time="10:24:12" total="4" passed="3" failed="1" skipped="0" time="1.011" errors="0">
+    <errors />
+    <collection total="4" passed="3" failed="1" skipped="0" id="collection1" name="Ecordia.CloudNative.Storage.UnitTests.V4AuthenticatorTests" time="0.034">
+      <test name="Ecordia.CloudNative.Storage.UnitTests.V4AuthenticatorTests.ValidateSignature_WithModifiedHeader_IsFalse" type="Ecordia.CloudNative.Storage.UnitTests.V4AuthenticatorTests" method="ValidateSignature_WithModifiedHeader_IsFalse" time="0.0326798" result="Pass">
+        <traits>
+          <trait name="category" value="UnitTests" />
+        </traits>
+      </test>
+      <test name="Ecordia.CloudNative.Storage.UnitTests.V4AuthenticatorTests.ValidateSignature_WithValidSignatureAndRequest_IsTrue" type="Ecordia.CloudNative.Storage.UnitTests.V4AuthenticatorTests" method="ValidateSignature_WithValidSignatureAndRequest_IsTrue" time="0.0003707" result="Pass">
+        <traits>
+          <trait name="category" value="UnitTests" />
+        </traits>
+      </test>
+      <test name="Ecordia.CloudNative.Storage.UnitTests.V4AuthenticatorTests.ValidateSignature_WithInvalidSecretKey_IsFalse" type="Ecordia.CloudNative.Storage.UnitTests.V4AuthenticatorTests" method="ValidateSignature_WithInvalidSecretKey_IsFalse" time="0.0002045" result="Pass">
+        <traits>
+          <trait name="category" value="UnitTests" />
+        </traits>
+        <traits>
+          <trait name="rat" value="LTE" />
+        </traits>
+      </test>
+      <test name="Ecordia.CloudNative.Storage.UnitTests.V4AuthenticatorTests.ShouldFail" type="Ecordia.CloudNative.Storage.UnitTests.V4AuthenticatorTests" method="ShouldFail" time="0.0006151" result="Fail">
+        <failure>
+          <message>Forced Fail</message>
+          <stack-trace>   at Ecordia.CloudNative.Storage.UnitTests.V4AuthenticatorTests.ShouldFail() in d:\local\code\ess\tests\Ecordia.CloudNative.Storage.UnitTests\V4AuthenticatorTests.cs:line 15
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)</stack-trace>
+        </failure>
+        <traits>
+          <trait name="category" value="UnitTests" />
+        </traits>
+      </test>
+    </collection>
+  </assembly>
+</assemblies>

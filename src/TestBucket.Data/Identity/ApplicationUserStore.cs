@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using TestBucket.Data.Identity.Models;
+
+using TestBucket.Domain.Identity.Models;
 
 namespace TestBucket.Data.Identity;
 public class ApplicationUserStore : UserStore<ApplicationUser>

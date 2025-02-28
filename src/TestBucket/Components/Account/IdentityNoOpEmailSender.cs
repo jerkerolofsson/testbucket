@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 
-using TestBucket.Data.Identity.Models;
+using TestBucket.Domain.Identity.Models;
 
 namespace TestBucket.Components.Account;
 

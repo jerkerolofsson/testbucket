@@ -1,8 +1,4 @@
 ﻿
-
-using TestBucket.Contracts.Testing.Models;
-using TestBucket.Data.Identity.Models;
-
 namespace TestBucket.Data.Testing;
 internal class TestCaseRepository : ITestCaseRepository
 {
@@ -17,8 +13,87 @@ internal class TestCaseRepository : ITestCaseRepository
     {
         testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await LookupProjectIdFromSuiteId(testCase, dbContext);
+        await CalculatePathAsync(dbContext, testCase);
+
         await dbContext.TestCases.AddAsync(testCase);
         await dbContext.SaveChangesAsync();
+
+        await GenerateTestSlugIfMissingAsync(testCase, dbContext);
+    }
+
+    private static async Task LookupProjectIdFromSuiteId(TestCase testCase, ApplicationDbContext dbContext)
+    {
+        if (testCase.TestProjectId is null && testCase.TestSuiteId > 0)
+        {
+            var testSuite = await dbContext.TestSuites.AsNoTracking().Where(x => x.Id == testCase.TestSuiteId).FirstOrDefaultAsync();
+            if (testSuite is not null)
+            {
+                testCase.TestProjectId = testSuite.TestProjectId;
+            }
+        }
+    }
+
+    private static async Task GenerateTestSlugIfMissingAsync(TestCase testCase, ApplicationDbContext dbContext)
+    {
+        if (string.IsNullOrEmpty(testCase.Slug))
+        {
+            testCase.Slug = "TC-" + testCase.Id;
+            if (testCase.TestProjectId is not null)
+            {
+                var project = dbContext.Projects.AsNoTracking().Where(x => x.Id == testCase.TestProjectId).FirstOrDefault();
+                if (project is not null)
+                {
+                    testCase.Slug = project.ShortName + "-" + testCase.Id;
+                }
+            }
+
+            dbContext.TestCases.Update(testCase);
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
+    public async Task UpdateTestCaseAsync(TestCase testCase)
+    {
+        //testCase.Created = DateTimeOffset.UtcNow;
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await CalculatePathAsync(dbContext, testCase);
+
+        dbContext.TestCases.Update(testCase);
+        await dbContext.SaveChangesAsync();
+
+        await GenerateTestSlugIfMissingAsync(testCase, dbContext);
+    }
+
+    private async Task CalculatePathAsync(ApplicationDbContext dbContext, TestCase testCase)
+    {
+        List<string> pathComponents = new();
+        await CalculatePathAsync(dbContext, testCase.TestSuiteFolderId, pathComponents);
+        pathComponents.Reverse();
+        testCase.Path = string.Join('/', pathComponents);
+    }
+
+    private async Task CalculatePathAsync(ApplicationDbContext dbContext, long? folderId, List<string> pathComponents)
+    {
+        while (folderId is not null)
+        {
+            var folder = await dbContext.TestSuiteFolders.AsNoTracking().Where(x => x.Id == folderId).FirstOrDefaultAsync();
+            if (folder is null)
+            {
+                return;
+            }
+            pathComponents.Add(folder.Name);
+            folderId = folder.ParentId;
+        }
+    }
+
+    public async Task<TestSuiteFolder?> GetTestSuiteFolderByNameAsync(string tenantId, long testSuiteId, long? parentId, string folderName)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var folders = dbContext.TestSuiteFolders.AsNoTracking().Where(x => x.TenantId == tenantId && x.TestSuiteId == testSuiteId && x.ParentId == parentId && x.Name == folderName);
+        return await folders.FirstOrDefaultAsync();
     }
 
     public async Task<TestSuiteFolder> AddTestSuiteFolderAsync(string tenantId, long? projectId, long testSuiteId, long? parentFolderId, string name)
@@ -100,6 +175,16 @@ internal class TestCaseRepository : ITestCaseRepository
         };
     }
 
+
+    public async Task UpdateTestSuiteAsync(TestSuite suite)
+    {
+        //testCase.Created = DateTimeOffset.UtcNow;
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        dbContext.TestSuites.Update(suite);
+        await dbContext.SaveChangesAsync();
+    }
+
     public async Task<TestSuite> AddTestSuiteAsync(string tenantId, long? projectId, string name)
     {
         var testSuite = new TestSuite { Name = name, Created = DateTimeOffset.UtcNow, TenantId = tenantId, TestProjectId = projectId };
@@ -140,4 +225,46 @@ internal class TestCaseRepository : ITestCaseRepository
         }
     }
 
+    public async Task<TestSuite?> GetTestSuiteByNameAsync(string tenantId, long? projectId, string suiteName)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestSuites.AsNoTracking().Where(x => x.TenantId == tenantId && x.TestProjectId == projectId && x.Name == suiteName).FirstOrDefaultAsync();
+    }
+
+    public async Task AddTestRunAsync(TestRun testRun)
+    {
+        testRun.Created = DateTimeOffset.UtcNow;
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.TestRuns.AddAsync(testRun);
+    }
+
+    public async Task<TestCase?> GetTestCaseByExternalIdAsync(string tenantId, long testSuiteId, string? externalId)
+    {
+        if(externalId is null)
+        {
+            return null;
+        }
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestCases.AsNoTracking().Where(x => x.TenantId == tenantId && x.TestSuiteId == testSuiteId && x.ExternalId == externalId).FirstOrDefaultAsync();
+    }
+
+    public async Task AddTestCaseRunAsync(TestCaseRun testCaseRun)
+    {
+        testCaseRun.Created = DateTimeOffset.UtcNow;
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.TestCaseRuns.AddAsync(testCaseRun);
+    }
+
+    public async Task DeleteTestSuiteByIdAsync(string tenantId, long testSuiteId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        foreach(var folder in dbContext.TestSuiteFolders.Where(x=>x.ParentId == null && x.TestSuiteId == testSuiteId))
+        {
+            await DeleteFolderByIdAsync(tenantId, folder.Id, dbContext);
+        }
+        await dbContext.TestSuites.Where(x => x.Id == testSuiteId).ExecuteDeleteAsync();
+    }
 }

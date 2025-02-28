@@ -7,13 +7,14 @@ using TestBucket.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Extensions;
 using TestBucket.Data.Migrations;
 using TestBucket.Identity;
-using TestBucket.Data.Identity.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using TestBucket.Components.Tenants;
 using TestBucket.Components.Projects;
 using MudBlazor.Services;
 using TestBucket.Components.Users;
 using TestBucket.Components.Tests.Services;
+using TestBucket.Domain.Identity.Models;
+using TestBucket.Components.Shared;
 
 namespace TestBucket;
 
@@ -70,12 +71,16 @@ public class Program
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
         builder.Services.AddScoped<UserRegistrationService>();
+        builder.Services.AddScoped<TenantResolver>();
         builder.Services.AddScoped<TenantService>();
         builder.Services.AddScoped<ProjectService>();
         builder.Services.AddScoped<TestSuiteService>();
         builder.Services.AddScoped<TestService>();
         builder.Services.AddScoped<TestBrowser>();
+        builder.Services.AddScoped<TestCaseEditorService>();
+        builder.Services.AddScoped(typeof(DragAndDropService<>));
         builder.Services.AddDataServices();
+        builder.Services.AddDomainServices();
 
         builder.Services.AddMudServices(config =>
         {

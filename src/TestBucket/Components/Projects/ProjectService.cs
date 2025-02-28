@@ -4,9 +4,9 @@ using OneOf;
 
 using TestBucket.Components.Shared;
 using TestBucket.Contracts;
-using TestBucket.Data.Errors;
-using TestBucket.Data.Projects.Models;
-using TestBucket.Data.Testing;
+using TestBucket.Domain.Errors;
+using TestBucket.Domain.Projects;
+using TestBucket.Domain.Projects.Models;
 
 namespace TestBucket.Components.Projects;
 

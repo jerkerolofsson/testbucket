@@ -1,0 +1,17 @@
+﻿@typeparam T
+@inject DragAndDropService<T> service
+
+<div draggable="true" @ondragstart=OnDragStart>
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public T? Data { get; set; }
+
+
+    private void OnDragStart(DragEventArgs e)
+    {
+        service.Data = this.Data;
+    }
+}

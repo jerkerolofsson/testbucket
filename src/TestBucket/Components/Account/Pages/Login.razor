@@ -1,20 +1,19 @@
 ﻿@page "/Account/Login"
-@using TestBucket.Identity
-
 @inject NavigationManager navigationManager
+@inject TenantResolver tenantResolver
 
 @code {
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         if (ReturnUrl is not null)
         {
-            var tenant = TenantResolver.ResolveTenantIdFromUrl(ReturnUrl);
-            if (!string.IsNullOrWhiteSpace(tenant))
+            var tenantId = await tenantResolver.ResolveTenantIdFromUrlAsync(ReturnUrl);
+            if (!string.IsNullOrEmpty(tenantId))
             {
-                navigationManager.NavigateTo($"/{tenant}/Account/Login");
+                navigationManager.NavigateTo($"/{tenantId}/Account/Login?returnUrl={Uri.EscapeDataString(ReturnUrl)}", forceLoad: true);
             }
         }
     }

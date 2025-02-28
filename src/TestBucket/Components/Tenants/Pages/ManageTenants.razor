@@ -1,7 +1,5 @@
 ﻿@attribute [Authorize(Roles = "SUPERADMIN")]
 @page "/{tenantId}/tenants"
-@using TestBucket.Components.Projects
-@using TestBucket.Components.Tenants.Dialogs
 @inject TenantService tenantService
 @inject IDialogService dialogService
 @inject NavigationManager navigationManager

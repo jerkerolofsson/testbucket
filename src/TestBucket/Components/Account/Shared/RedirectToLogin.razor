@@ -1,18 +1,15 @@
-﻿@using TestBucket.Identity
-@inject NavigationManager NavigationManager
+﻿@using TestBucket.Components.Tenants
+@inject NavigationManager navigationManager
 @inject IHttpContextAccessor httpContextAccessor
+@inject TenantResolver tenantResolver
 
 @code {
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        var tenantId = TenantResolver.ResolveTenantIdFromUrl(NavigationManager.Uri);
-        if (string.IsNullOrEmpty(tenantId))
+        var tenantId = await tenantResolver.ResolveTenantIdFromUrlAsync(navigationManager.Uri);
+        if (!string.IsNullOrEmpty(tenantId))
         {
-            NavigationManager.NavigateTo($"Account/Login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}", forceLoad: true);
-        }
-        else
-        {
-            NavigationManager.NavigateTo($"/{tenantId}/Account/Login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}", forceLoad: true);
+            navigationManager.NavigateTo($"/{tenantId}/Account/Login?returnUrl={Uri.EscapeDataString(navigationManager.Uri)}", forceLoad: true);
         }
     }
 }

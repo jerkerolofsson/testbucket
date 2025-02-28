@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Data", "TestBuck
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Contracts", "TestBucket.Contracts\TestBucket.Contracts.csproj", "{AE6C58C4-C7E3-4345-AF91-F88E0C919507}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Domain", "TestBucket.Domain\TestBucket.Domain.csproj", "{C2FF2882-FAE3-4499-B269-7511DA75CBAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{AE6C58C4-C7E3-4345-AF91-F88E0C919507}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE6C58C4-C7E3-4345-AF91-F88E0C919507}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE6C58C4-C7E3-4345-AF91-F88E0C919507}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2FF2882-FAE3-4499-B269-7511DA75CBAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2FF2882-FAE3-4499-B269-7511DA75CBAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2FF2882-FAE3-4499-B269-7511DA75CBAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2FF2882-FAE3-4499-B269-7511DA75CBAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

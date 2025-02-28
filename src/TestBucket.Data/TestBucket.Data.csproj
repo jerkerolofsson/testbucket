@@ -27,5 +27,14 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TestBucket.Contracts\TestBucket.Contracts.csproj" />
+      <ProjectReference Include="..\TestBucket.Domain\TestBucket.Domain.csproj" />
+    </ItemGroup>
+
+
+
+    <ItemGroup>
+      <Folder Include="Identity\Models\" />
+      <Folder Include="Projects\Models\" />
+      <Folder Include="Testing\Models\" />
     </ItemGroup>
 </Project>

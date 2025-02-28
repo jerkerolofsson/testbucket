@@ -5,10 +5,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 
 using OneOf;
-
-using TestBucket.Data.Errors;
-using TestBucket.Data.Identity.Models;
-using TestBucket.Data.Projects.Models;
+using TestBucket.Domain.Errors;
+using TestBucket.Domain.Projects;
+using TestBucket.Domain.Projects.Models;
 
 namespace TestBucket.Data.Testing;
 internal class ProjectRepository : IProjectRepository

@@ -9,7 +9,7 @@ public interface IProjectRepository
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    Task<OneOf<TestProject, AlreadyExistsError>> CreateAsync(string tenantId, string name);
+    Task<OneOf<TestProject, AlreadyExistsError>> CreateAsync(long? teamId, string tenantId, string name);
 
     /// <summary>
     /// Generates a short name
@@ -33,6 +33,14 @@ public interface IProjectRepository
     /// <param name="slug"></param>
     /// <returns></returns>
     Task<TestProject?> GetBySlugAsync(string tenantId, string slug);
+    
+    /// <summary>
+    /// Returns a project by ID
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    Task<TestProject?> GetProjectByIdAsync(string tenantId, long projectId);
 
     /// <summary>
     /// Returns true if a project exists with the specified name
@@ -55,4 +63,5 @@ public interface IProjectRepository
     /// <param name="slug"></param>
     /// <returns></returns>
     Task<bool> SlugExistsAsync(string tenantId, string slug);
+    Task UpdateProjectAsync(TestProject project);
 }

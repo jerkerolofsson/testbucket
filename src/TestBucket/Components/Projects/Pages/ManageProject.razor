@@ -1,0 +1,28 @@
+﻿@page "/{tenantId}/projects/{projectSlug}"
+@layout AppLayout
+@attribute [Authorize(Roles = "ADMIN")]
+@inject ProjectService projectService
+@inject IDialogService dialogService
+
+<TenantRedirect/>
+
+@if(_project is not null)
+{
+    <ProjectEditor Project="@_project"/>
+}
+
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+    [Parameter] public string? ProjectSlug { get; set; }
+
+    private TestProject? _project = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ProjectSlug is not null)
+        {
+            _project = await projectService.GetProjectBySlugAsync(ProjectSlug);
+        }
+    }
+}

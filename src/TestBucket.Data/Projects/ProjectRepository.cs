@@ -29,21 +29,43 @@ internal class ProjectRepository : IProjectRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.Projects.Where(x => x.Slug == slug && x.TenantId == tenantId).SingleOrDefaultAsync();
     }
+    /// <summary>
+    /// Returns a project by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public async Task<TestProject?> GetProjectByIdAsync(string tenantId, long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.Projects.Where(x => x.Id == id && x.TenantId == tenantId).SingleOrDefaultAsync();
+    }
+
+    public async Task UpdateProjectAsync(TestProject testProject)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        dbContext.Projects.Update(testProject);
+        await dbContext.SaveChangesAsync();
+    }
 
 
     public async Task<PagedResult<TestProject>> SearchAsync(string tenantId, SearchQuery query)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var tests = dbContext.Projects.Where(x => x.TenantId == tenantId);
+        var projects = dbContext.Projects.Where(x => x.TenantId == tenantId);
 
         // Apply filter
+        if (query.TeamId is not null)
+        {
+            projects = projects.Where(x => x.TeamId == query.TeamId);
+        }
         if (query.Text is not null)
         {
-            tests = tests.Where(x => x.Name.ToLower().Contains(query.Text.ToLower()));
+            projects = projects.Where(x => x.Name.ToLower().Contains(query.Text.ToLower()));
         }
 
-        long totalCount = await tests.LongCountAsync();
-        var items = tests.OrderBy(x => x.Name).Skip(query.Offset).Take(query.Count);
+        long totalCount = await projects.LongCountAsync();
+        var items = projects.OrderBy(x => x.Name).Skip(query.Offset).Take(query.Count);
 
         return new PagedResult<TestProject>
         {
@@ -57,10 +79,11 @@ internal class ProjectRepository : IProjectRepository
     /// </summary>
     /// <param name="name">Name of project</param>
     /// <returns></returns>
-    public async Task<OneOf<TestProject, AlreadyExistsError>> CreateAsync(string tenantId, string name)
+    public async Task<OneOf<TestProject, AlreadyExistsError>> CreateAsync(long? teamId, string tenantId, string name)
     {
         var project = new TestProject()
         {
+            TeamId = teamId,
             Name = name,
             Slug = GenerateSlug(name),
             TenantId = tenantId,

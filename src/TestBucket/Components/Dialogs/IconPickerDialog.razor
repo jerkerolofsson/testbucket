@@ -1,0 +1,31 @@
+﻿
+<MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <TitleContent>Add new project</TitleContent>
+    <DialogContent>
+        <IconGridPicker IconChanged="OnIconChanged" />
+
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Close">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+    private Task OnIconChanged(string? icon)
+    {
+        //await IconChanged.InvokeAsync(icon);
+        MudDialog.Close(icon);
+        return Task.CompletedTask;
+
+    }
+}

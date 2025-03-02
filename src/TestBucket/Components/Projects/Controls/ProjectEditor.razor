@@ -1,5 +1,74 @@
-﻿
+﻿@using TestBucket.Components.Teams
+@using TestBucket.Components.Teams.Controls
+@using TestBucket.Components.Uploads.Controls
+@using TestBucket.Domain.Files.Models
+@using TestBucket.Domain.Teams.Models
+@inject ProjectService projectService
+@inject TeamService teamService
+
+@if (Project is not null)
+{
+    <EditForm Model="@Project" OnValidSubmit="async () => await OnValidSubmitAsync()">
+        <MudStack>
+
+            <MudText>Image</MudText>
+            <UploadImage FileUploaded="OnImageUploaded"/>
+
+            <MudText>Name</MudText>
+            <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Project.Name"></MudTextField>
+
+            <MudText>Slug</MudText>
+            <MudText>@Project?.Slug</MudText>
+
+            <MudText>ID</MudText>
+            <MudText>@Project?.Id</MudText>
+
+            <MudText>Team</MudText>
+            <TeamDropDown SelectedTeam="_team" SelectedTeamChanged="OnTeamChanged"/>
+
+            <MudText>Grant access to all users</MudText>
+            <MudText>@Project?.GrantAccessToAllTenantUsers</MudText>
+
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Save</MudButton>
+        </MudStack>
+    </EditForm>
+}
 
 @code {
     [Parameter] public TestProject? Project { get; set; }
+
+    private Team? _team;
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (Project is not null)
+        {
+            await projectService.SaveProjectAsync(Project);
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Project?.TeamId is not null)
+        {
+            _team = await teamService.GetTeamByIdAsync(Project.TeamId.Value);
+        }
+    }
+
+    private void OnTeamChanged(Team? team)
+    {
+        _team = team;
+        if(Project is not null)
+        {
+            Project.TeamId = team?.Id;
+        }
+    }
+
+    private void OnImageUploaded(FileResource file)
+    {
+        if(Project is not null)
+        {
+            Project.IconUrl = $"/api/resources/{file.Id}";
+        }
+    }
 }

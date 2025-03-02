@@ -1,24 +1,33 @@
 ﻿
+using MudBlazor;
+using TestBucket.Components.Projects.Dialogs;
+using TestBucket.Components.Tests.Browser.Controls;
+using TestBucket.Domain.Teams.Models;
+
 namespace TestBucket.Components.Tests.Services;
 
 internal class TestBrowser : TenantBaseService
 {
     private readonly TestSuiteService _testSuiteService;
+    private readonly IDialogService _dialogService;
     private readonly ITextTestResultsImporter _textImporter;
+
     public TestBrowser(TestSuiteService testSuiteService,
         AuthenticationStateProvider authenticationStateProvider,
+        IDialogService dialogService,
         ITextTestResultsImporter textImporter) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
+        _dialogService = dialogService;
         _textImporter = textImporter;
     }
 
-    public async Task ImportAsync(TestProject? project)
+    public async Task ImportAsync(Team? team, TestProject? project)
     {
         var tenantId = await GetTenantIdAsync();
         string xml = await File.ReadAllTextAsync(@"c:\temp\junit.xml");
-        await _textImporter.ImportTextAsync(tenantId, project?.Id, Domain.Testing.Formats.TestResultFormat.JUnitXml, xml);
+        await _textImporter.ImportTextAsync(tenantId, team?.Id, project?.Id, Domain.Testing.Formats.TestResultFormat.JUnitXml, xml);
     }
 
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(long? testSuiteId, long? folderId, string? searchText, int offset, int count = 20)
@@ -38,44 +47,86 @@ internal class TestBrowser : TenantBaseService
         });
     }
 
-    public async Task<List<TreeItemData<BrowserItem>>> BrowseAsync(long? projectId, BrowserItem? parent)
+    public async Task<List<TreeItemData<BrowserItem>>> BrowseAsync(long? teamId, long? projectId, BrowserItem? parent)
     {
         if(parent is not null)
         {
+            if(parent.TestCase is not null)
+            {
+                return [];
+            }
             if(parent.Folder is not null)
             {
                 var folders = await _testSuiteService.GetTestSuiteFoldersAsync(projectId, parent.Folder.TestSuiteId, parent.Folder.Id);
-                return MapFoldersToTreeItemData(folders);
+                var items = MapFoldersToTreeItemData(folders);
+
+                var tests = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
+                {
+                    Count = 1_000,
+                    Offset = 0,
+                    FolderId = parent.Folder.Id,
+                    TestSuiteId = parent.Folder.TestSuiteId,
+                });
+                items.AddRange(MapTestsToTreeItemData(tests.Items));
+
+                return items;
             }
             else if(parent.TestSuite is not null)
             {
                 long? parentFolderId = null;
                 var folders = await _testSuiteService.GetTestSuiteFoldersAsync(projectId, parent.TestSuite.Id, parentFolderId);
-                return MapFoldersToTreeItemData(folders);
+                var items = MapFoldersToTreeItemData(folders);
+                return items;
             }
         }
-        return await BrowseRootAsync(projectId);
+        return await BrowseRootAsync(teamId, projectId);
     }
 
+    public async Task CustomizeFolderAsync(TestSuiteFolder folder)
+    {
+        var parameters = new DialogParameters<EditFolderDialog>()
+        {
+            { x => x.Folder, folder }
+        };
+        var dialog = await _dialogService.ShowAsync<EditFolderDialog>(null, parameters);
+        var result = await dialog.Result;
+    }
+
+    private List<TreeItemData<BrowserItem>> MapTestsToTreeItemData(TestCase[] tests)
+    {
+        return tests.Select(x => CreateTreeItemDataFromTestCase(x)).ToList();
+    }
     private List<TreeItemData<BrowserItem>> MapFoldersToTreeItemData(TestSuiteFolder[] folders)
     {
         return folders.Select(x => CreateTreeItemDataFromFolder(x)).ToList();
     }
 
+    public TreeItemData<BrowserItem> CreateTreeItemDataFromTestCase(TestCase x)
+    {
+        return new TreeItemData<BrowserItem>
+        {
+            Value = new BrowserItem { TestCase = x },
+            Text = x.Name,
+            Icon = Icons.Material.Filled.PlaylistAddCheck,
+            Expandable = false,
+            Children = null,
+        };
+    }
     public TreeItemData<BrowserItem> CreateTreeItemDataFromFolder(TestSuiteFolder x)
     {
         return new TreeItemData<BrowserItem>
         {
-            Value = new BrowserItem { Folder = x },
+            Value = new BrowserItem { Folder = x, Color = x.Color },
             Text = x.Name,
-            Icon = Icons.Material.Filled.Folder,
+            Icon = x.Icon ?? Icons.Material.Filled.Folder,
+            Expandable = true,
             Children = null,
         };
     }
 
-    private async Task<List<TreeItemData<BrowserItem>>> BrowseRootAsync(long? projectId)
+    private async Task<List<TreeItemData<BrowserItem>>> BrowseRootAsync(long? teamId, long? projectId)
     {
-        var suites = await _testSuiteService.GetTestSuitesAsync(projectId);
+        var suites = await _testSuiteService.GetTestSuitesAsync(teamId, projectId);
         var suiteItems = suites.Items.Select(x => 
             new TreeItemData<BrowserItem>
             {

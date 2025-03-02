@@ -1,12 +1,19 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
+using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Settings.Models;
+using TestBucket.Domain.Teams.Models;
 
 namespace TestBucket.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
     internal DbSet<Tenant> Tenants { get; set; }
+    internal DbSet<FileResource> Files { get; set; }
+
+    internal DbSet<UserPreferences> UserPreferences { get; set; }
+
+    internal DbSet<Team> Teams { get; set; }
     internal DbSet<TestProject> Projects { get; set; }
     internal DbSet<TestSuite> TestSuites { get; set; }
     internal DbSet<TestSuiteFolder> TestSuiteFolders { get; set; }

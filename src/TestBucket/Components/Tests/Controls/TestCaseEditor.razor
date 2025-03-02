@@ -1,30 +1,86 @@
-﻿@if(Test is not  null)
+﻿@if(Test is not null && _boundDescription is not null)
 {
-    <div class="pa-3">
-        <MudStack>
-            <MudTextField Variant="Variant.Outlined"
+    <MudStack>
+        <MudStack Row="true" Style="background: rgba(0,0,0,0.2); border-bottom: solid 1px #333; height: 40px">
+            <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Style="color: greenyellow"/>
+
+            <div style="width: 1px; background: #555; height: 90%"></div>
+
+            @Test.Slug
+        </MudStack>
+
+        <div class="pa-3">
+            <MudStack>
+                <MudTextField Variant="Variant.Outlined"
                 Label="Name" Value="@Test.Name" ValueChanged="OnNameChanged" T="string"/>
-    
-            <MudTextField 
-                Variant="Variant.Outlined"
-                Label="Description" AutoGrow="true" Lines="15" MaxLines="15" Value="@Test.Description" ValueChanged="OnDescriptionChanged" T="string"/>
+
+                <MarkdownEditor 
+                Value="@_boundDescription"
+                ShowIcons="@_icons"
+                @ref=_editor
+                MinHeight="50vh"
+                ValueChanged="OnDescriptionChanged"
+                SpellChecker="false">
+                    <Toolbar>
+                    </Toolbar>
+                </MarkdownEditor>
+
 
                 Slug:
                 @Test.Slug
 
-            TestProjectId:
+                TestProjectId:
                 @Test.TestProjectId
 
-            TestSuiteFolderId:
+                TestSuiteFolderId:
                 @Test.TestSuiteFolderId
-        </MudStack>
-    </div>
+            </MudStack>
+        </div>
+    </MudStack>
 }
 
 
 @code {
     [Parameter] public TestCase? Test { get; set; }
     [Parameter] public EventCallback<TestCase?> TestChanged { get; set; }
+
+    private string[] _icons = ["bold", "preview"];
+
+    private MarkdownEditor? _editor;
+    private string? _boundDescription;
+
+    protected override void OnParametersSet()
+    {
+        if(Test is null)
+        {
+            _boundDescription = null;
+        }
+        else
+        {
+            if(Test.Description != _boundDescription)
+            {
+                _boundDescription = null;
+            }
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(Test is not null)
+        {
+            Test.Description ??= "";
+            if(_boundDescription != Test.Description)
+            {
+                _boundDescription = Test.Description;
+
+                if(_editor is not null)
+                {
+                    await _editor.SetValueAsync(_boundDescription);
+                }
+                this.StateHasChanged();
+            }
+        }
+    }
 
     public async Task OnNameChanged(string name)
     {
@@ -39,6 +95,7 @@
     {
         if (Test is not null)
         {
+            _boundDescription = description;
             Test.Description = description;
             await TestChanged.InvokeAsync(Test);
         }

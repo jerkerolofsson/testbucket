@@ -2,19 +2,34 @@
 @inject ProjectService projectService
 @inject IDialogService dialogService
 
-<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="dropdown-container">
     <MudSelect 
-        Style="min-width: 200px"
-        Variant="Variant.Outlined" 
-        Label="Project" 
-        Value="@SelectedProject" Text="@SelectedProject?.Name" T="TestProject" ValueChanged="OnSelectedProjectChanged">
+    Style="min-width: 200px"
+    Variant="Variant.Outlined" 
+    Label="Project" 
+    Value="@SelectedProject" Text="@SelectedProject?.Name" T="TestProject" ValueChanged="OnSelectedProjectChanged">
         @foreach(var project in _projects)
         {
-            <MudSelectItem Value="@project">@project.Name</MudSelectItem>
+            <MudSelectItem Value="@project">
+                <MudStack Row="true" AlignItems="AlignItems.Center">
+                    @if(project.IconUrl is not null)
+                    {
+                        <MudImage Src="@project.IconUrl" Width="24" Height="24"/>
+                    }
+                    <MudText>@project.Name</MudText>
+                </MudStack>
+
+
+            </MudSelectItem>
         }
     </MudSelect>
 
     <AuthorizeView Roles="ADMIN">
+        @if(SelectedProject is not null)
+        {
+            string projectAdminUrl = $"{SelectedProject.TenantId}/projects/{SelectedProject.Slug}";
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Settings" Href="@projectAdminUrl"></MudIconButton>
+        }
         <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddProject"></MudIconButton>
     </AuthorizeView>
 </MudStack>
@@ -22,6 +37,7 @@
 @code {
     private TestProject[] _projects = [];
 
+    [Parameter] public Team? Team { get; set; }
     [Parameter] public TestProject? SelectedProject { get; set; }
     [Parameter] public EventCallback<TestProject?> SelectedProjectChanged { get; set; }
 
@@ -32,7 +48,11 @@
 
     private async Task AddProject()
     {
-        var dialog = await dialogService.ShowAsync<AddProjectDialog>();
+        var parameters = new DialogParameters<AddProjectDialog>
+        {
+            { x=>x.Team, Team }
+        };
+        var dialog = await dialogService.ShowAsync<AddProjectDialog>(null, parameters);
         var result = await dialog.Result;
         if(result?.Data is TestProject testProject)
         {
@@ -41,9 +61,9 @@
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        var result = await projectService.SearchAsync(new SearchQuery() { Offset = 0, Count = 1000 });
+        var result = await projectService.SearchAsync(new SearchQuery() { TeamId = Team?.Id, Offset = 0, Count = 1000 });
         _projects = result.Items;
     }
 }

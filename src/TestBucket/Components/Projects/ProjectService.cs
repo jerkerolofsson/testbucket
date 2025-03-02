@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using Blazored.LocalStorage;
+
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.CodeAnalysis;
 
 using OneOf;
 
+using TestBucket.Components.Account;
 using TestBucket.Components.Shared;
 using TestBucket.Contracts;
 using TestBucket.Domain.Errors;
@@ -13,14 +17,60 @@ namespace TestBucket.Components.Projects;
 internal class ProjectService : TenantBaseService
 {
     private readonly IProjectRepository _projectRepository;
+    private readonly UserPreferencesService _userPreferencesService;
 
     public ProjectService(
         IProjectRepository projectRepository,
+        UserPreferencesService userPreferencesService,
         AuthenticationStateProvider authenticationStateProvider) : base(authenticationStateProvider)
     {
         _projectRepository = projectRepository;
+        _userPreferencesService = userPreferencesService;
     }
 
+    public async Task SetActiveProjectAsync(TestProject? project)
+    {
+        var preferences = await _userPreferencesService.GetUserPreferencesAsync();
+        if(preferences is not null)
+        {
+            preferences.ActiveProjectId = project?.Id;
+            await _userPreferencesService.SaveUserPreferencesAsync(preferences);    
+        }
+    }
+
+    public async Task<TestProject?> GetActiveProjectAsync()
+    {
+        var preferences = await _userPreferencesService.GetUserPreferencesAsync();
+        if (preferences?.ActiveProjectId is not null)
+        {
+            var tenantId = await GetTenantIdAsync();
+            var project = await _projectRepository.GetProjectByIdAsync(tenantId, preferences.ActiveProjectId.Value);
+            return project;
+        }
+        return null;
+    }
+
+    public async Task<TestProject?> GetProjectBySlugAsync(string slug)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _projectRepository.GetBySlugAsync(tenantId, slug);
+    }
+    public async Task<TestProject?> GetProjectByIdAsync(long id)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _projectRepository.GetProjectByIdAsync(tenantId, projectId: id);
+    }
+
+    public async Task SaveProjectAsync(TestProject project)
+    {
+        var tenantId = await GetTenantIdAsync();
+        if(tenantId != project.TenantId)
+        {
+            throw new InvalidOperationException("Tenant ID mismatch");
+        }
+
+        await _projectRepository.UpdateProjectAsync(project);
+    }
 
     /// <summary>
     /// Generates a short name
@@ -50,9 +100,9 @@ internal class ProjectService : TenantBaseService
         var tenantId = await GetTenantIdAsync();
         return await _projectRepository.SearchAsync(tenantId, query);
     }
-    public async Task<OneOf<TestProject, AlreadyExistsError>> CreateAsync(string name)
+    public async Task<OneOf<TestProject, AlreadyExistsError>> CreateAsync(long? teamId, string name)
     {
         var tenantId = await GetTenantIdAsync();
-        return await _projectRepository.CreateAsync(tenantId, name);   
+        return await _projectRepository.CreateAsync(teamId, tenantId, name);   
     }
 }

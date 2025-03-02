@@ -201,7 +201,7 @@ namespace Brightest.Testing.Domain.Formats.Xml.XUnit
                 {
                     collection.Add(new XAttribute("id", testSuite.ExternalId));
                 }
-
+                testSuite.Tests ??= new();
                 foreach (var test in testSuite.Tests)
                 {
                     var testElement = new XElement("test");

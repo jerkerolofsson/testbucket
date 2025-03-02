@@ -12,3 +12,47 @@ html, body {
     transform: translate(4px, 10px) scale(1);
     font-size: 8pt;
 }
+
+.EasyMDEContainer .editor-preview-full pre {
+    background: transparent;
+    margin: 0;
+}
+
+.EasyMDEContainer .editor-preview-full pre:has(code) {
+    padding: 12px;
+    background: var(--mud-palette-dark-darken);
+    border: solid 1px var(--mud-palette-dark);
+    color: cyan;
+}
+
+.EasyMDEContainer .editor-preview-full .note {
+    background: var(--mud-palette-surface);
+    border: 0;
+}
+
+.EasyMDEContainer .editor-toolbar {
+    background: var(--mud-palette-dark);
+    border-color: var(--mud-palette-dark-lighten);
+}
+
+.EasyMDEContainer .editor-preview-full,
+.EasyMDEContainer .CodeMirror {
+    background: var(--mud-palette-dark);
+    border-color: var(--mud-palette-dark-lighten);
+    color: white;
+}
+
+.EasyMDEContainer .editor-preview-full blockquote {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 200%;
+}
+
+.dropdown-container .mud-icon-button {
+    opacity: 0;
+    transition: opacity linear 100ms;
+}
+
+.dropdown-container:hover .mud-icon-button {
+    opacity: 1;
+}

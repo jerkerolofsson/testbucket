@@ -1,0 +1,46 @@
+﻿@inject TeamService teamService
+
+@if (Team is not null)
+{
+    <EditForm Model="@Team" OnValidSubmit="async () => await OnValidSubmitAsync()">
+        <MudStack>
+
+            <MudText>Image</MudText>
+            <UploadImage FileUploaded="OnImageUploaded"/>
+
+            <MudText>Name</MudText>
+            <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Team.Name"></MudTextField>
+
+            <MudText>Slug</MudText>
+            <MudText>@Team?.Slug</MudText>
+
+            <MudText>ID</MudText>
+            <MudText>@Team?.Id</MudText>
+
+            <MudText>Grant access to all users</MudText>
+            <MudText>@Team?.GrantAccessToAllTenantUsers</MudText>
+
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Save</MudButton>
+        </MudStack>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public Team? Team { get; set; }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (Team is not null)
+        {
+            await teamService.SaveTeamAsync(Team);
+        }
+    }
+
+    private void OnImageUploaded(FileResource file)
+    {
+        if(Team is not null)
+        {
+            Team.IconUrl = $"/api/resources/{file.Id}";
+        }
+    }
+}

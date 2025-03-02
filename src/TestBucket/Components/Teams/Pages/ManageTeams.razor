@@ -1,0 +1,67 @@
+﻿@page "/{tenantId}/teams"
+@using TestBucket.Components.Teams.Dialogs
+@using TestBucket.Domain.Teams.Models
+@layout AppLayout
+@attribute [Authorize(Roles = "ADMIN")]
+@inject TeamService teamService
+@inject IDialogService dialogService
+
+<MudButton>TEams</MudButton>
+
+<MudDataGrid ServerData="LoadGridData"
+             Dense="true"
+             Hover="true"
+             T="Team"
+             @ref="_dataGrid"
+             SortMode="SortMode.None">
+
+    <ToolBarContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTeamAsync"></MudIconButton>
+
+        </MudStack>
+    </ToolBarContent>
+
+    <Columns>
+        <PropertyColumn Property="x => x.ShortName" />
+        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.Slug" />
+    </Columns>
+
+    <PagerContent>
+        <MudDataGridPager T="Team" />
+    </PagerContent>
+</MudDataGrid>
+
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+
+
+    private MudDataGrid<Team>? _dataGrid;
+
+    private async Task AddTeamAsync()
+    {
+        var dialog = await dialogService.ShowAsync<AddTeamDialog>();
+        var result = await dialog.Result;
+        _dataGrid?.ReloadServerData();
+    }
+
+    private async Task<GridData<Team>> LoadGridData(GridState<Team> state)
+    {
+        var result = await teamService.SearchAsync(new Contracts.SearchQuery
+            {
+                Offset = state.Page * state.PageSize,
+                Count = state.PageSize
+            });
+
+        GridData<Team> data = new()
+            {
+                Items = result.Items,
+                TotalItems = (int)result.TotalCount
+            };
+
+        return data;
+    }
+}

@@ -12,13 +12,23 @@ internal class TestCaseEditorService : TenantBaseService
         _testCaseRepo = testCaseRepo;
     }
 
+    /// <summary>
+    /// Adds a test case
+    /// </summary>
+    /// <param name="testCase"></param>
+    /// <returns></returns>
     public async Task AddTestCaseAsync(TestCase testCase)
     {
         testCase.TenantId = await GetTenantIdAsync();
         await _testCaseRepo.AddTestCaseAsync(testCase);
     }
 
-
+    /// <summary>
+    /// Saves a test case
+    /// </summary>
+    /// <param name="testCase"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task SaveTestCaseAsync(TestCase testCase)
     {
         var tenantId = await GetTenantIdAsync();

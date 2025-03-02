@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Shared
+@using TestBucket.Domain.Teams.Models
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject TestSuiteService testSuiteService
@@ -22,7 +23,7 @@
 
             @if (_selectedTreeItem?.Folder is not null)
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.Palette" Label="Customize folder" />
+                <MudMenuItem Icon="@Icons.Material.Filled.Palette" OnClick="EditTestSuiteFolderAsync" Label="Customize folder" />
                 <MudMenuItem Icon="@Icons.Material.Filled.FolderDelete" OnClick="DeleteSelectedTestSuiteFolderAsync" Label="Delete folder"/>
             }
             else if (_selectedTreeItem?.TestSuite is not null)
@@ -45,7 +46,10 @@
     T="BrowserItem"
     SelectedValue="@_selectedTreeItem"
     SelectedValueChanged="OnSelectedValueChangedAsync"
-    Hover="true" Color="Color.Tertiary" ServerData="@LoadServerData" Items="@_rootItems">
+    Hover="true" 
+    Color="Color.Tertiary" 
+    ServerData="@LoadServerData" 
+    Items="@_rootItems">
 
         <ItemTemplate>
 
@@ -57,16 +61,16 @@
                 }
             }
 
-            <DropZone T="TestCase" OnDrop="(test) => OnDrop(test, context.Value)">
+            <DropZone T="TestCase" OnDrop="(test) => OnDrop(test, context)">
                 <MudTreeViewItem Value="@context.Value"
-                    Style="@style"
-                    Items="@context.Children"
-                    ItemsChanged="@(new Action<IReadOnlyCollection<TreeItemData<BrowserItem>>>(items => OnItemsLoaded(context, items)))"
-                    @bind-Expanded="@context.Expanded"
-                    CanExpand="@context.Expandable"
-                    Icon="@context.Icon"
-                    Text="@context.Text"
-                    LoadingIconColor="Color.Info" />
+                Style="@style"
+                Items="@context.Children"
+                ItemsChanged="@(new Action<IReadOnlyCollection<TreeItemData<BrowserItem>>>(items => OnItemsLoaded(context, items)))"
+                @bind-Expanded="@context.Expanded"
+                CanExpand="@context.Expandable"
+                Icon="@context.Icon"
+                Text="@context.Text"
+                LoadingIconColor="Color.Info" />
             </DropZone>
 
         </ItemTemplate>
@@ -77,24 +81,84 @@
     [CascadingParameter]
     protected TestProject? Project { get; set; }
 
+    [CascadingParameter]
+    protected Team? Team { get; set; }
+
     private TestProject? _project;
+    private Team? _team;
 
     [Parameter] public EventCallback<TestSuiteFolder> OnFolderClicked { get; set; }
     [Parameter] public EventCallback<TestSuite> OnTestSuiteClicked { get; set; }
+    [Parameter] public EventCallback<TestCase> OnTestCaseClicked { get; set; }
 
     private MudTreeView<BrowserItem> _treeView = default!;
 
     private List<TreeItemData<BrowserItem>> _rootItems = [];
     private BrowserItem? _selectedTreeItem;
 
-    private async Task OnDrop(TestCase testCase, BrowserItem? item)
+    private TreeItemData<BrowserItem>? FindTreeItemData(Predicate<BrowserItem> predicate)
     {
-        if(item?.Folder is not null)
+        return FindTreeItemData(_rootItems, predicate);
+    }
+
+    private TreeItemData<BrowserItem>? FindTreeItemData(IEnumerable<TreeItemData<BrowserItem>> treeItems, Predicate<BrowserItem> predicate)
+    {
+        foreach(var node in treeItems)
         {
-            testCase.TestSuiteFolderId = item.Folder.Id;
-            testCase.TestSuiteId = item.Folder.TestSuiteId;
+            if(node.Value is not null && predicate(node.Value))
+            {
+                return node;
+            }
+            else if(node.Children is not null)
+            {
+                var match = FindTreeItemData(node.Children, predicate);
+                if(match is not null)
+                {
+                    return match;
+                }
+            }
+        }
+        return null;
+    }
+
+    private async Task OnDrop(TestCase testCase, TreeItemData<BrowserItem>? targetNode)
+    {
+        var target = targetNode?.Value;
+        if(target?.Folder is not null && targetNode is not null)
+        {
+            var fromFolderId = testCase.TestSuiteFolderId;
+
+            // Find the source
+            TreeItemData<BrowserItem>? sourceNode = FindTreeItemData(x => x.Folder?.Id == fromFolderId);
+
+            testCase.TestSuiteFolderId = target.Folder.Id;
+            testCase.TestSuiteId = target.Folder.TestSuiteId;
 
             await testCaseEditor.SaveTestCaseAsync(testCase);
+
+            // Refresh the target
+            targetNode.Children = await testBrowser.BrowseAsync(_team?.Id, _project?.Id, target);
+
+            // Refresh the source node
+            if (sourceNode is not null)
+            {
+                sourceNode.Children = await testBrowser.BrowseAsync(_team?.Id, _project?.Id, sourceNode.Value);
+            }
+        }
+    }
+
+    private async Task EditTestSuiteFolderAsync()
+    {
+        if (_selectedTreeItem?.Folder is not null)
+        {
+            await testBrowser.CustomizeFolderAsync(_selectedTreeItem.Folder);
+
+            // Refresh tree node
+            var treeNode = FindTreeItemData(x => x.Folder?.Id == _selectedTreeItem.Folder.Id);
+            if(treeNode is not null)
+            {
+                treeNode.Text = _selectedTreeItem.Folder.Name;
+            }
         }
     }
 
@@ -110,7 +174,7 @@
 
     private async Task ImportAsync()
     {
-        await testBrowser.ImportAsync(_project);
+        await testBrowser.ImportAsync(_team, _project);
     }
 
     private async Task OnSelectedValueChangedAsync(BrowserItem? item)
@@ -122,20 +186,25 @@
             {
                 await OnFolderClicked.InvokeAsync(item.Folder);
             }
-            if (item.TestSuite is not null)
+            else if (item.TestSuite is not null)
             {
                 await OnTestSuiteClicked.InvokeAsync(item.TestSuite);
+            }
+            else if (item.TestCase is not null)
+            {
+                await OnTestCaseClicked.InvokeAsync(item.TestCase);
             }
         }
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        if (_rootItems.Count == 0 || _project != Project)
+        if (_rootItems.Count == 0 || _project != Project || _team != Team)
         {
+            _team = Team;
             _project = Project;
             _selectedTreeItem = null;
-            _rootItems = await testBrowser.BrowseAsync(Project?.Id, null);
+            _rootItems = await testBrowser.BrowseAsync(_team?.Id, _project?.Id, null);
         }
     }
 
@@ -143,12 +212,7 @@
     {
         // wait 500ms to simulate a server load
 
-        if(Project is not null)
-        {
-            return await testBrowser.BrowseAsync(Project.Id, browserItem);
-        }
-
-        return [];
+        return await testBrowser.BrowseAsync(_team?.Id, _project?.Id, browserItem);
     }
 
     private void OnItemsLoaded(TreeItemData<BrowserItem> treeItemData, IReadOnlyCollection<TreeItemData<BrowserItem>> children)
@@ -160,19 +224,34 @@
 
     private async Task AddTestSuiteFolderAsync()
     {
-        if (Project is not null && _selectedTreeItem?.Folder is not null)
+        if (Project is not null && _selectedTreeItem?.Folder is not null || _selectedTreeItem?.TestCase is not null)
         {
+            var parentFolderId = _selectedTreeItem?.Folder?.Id ?? _selectedTreeItem?.TestCase?.TestSuiteFolder?.Id;
+            var projectId = Project?.Id ?? _selectedTreeItem?.Folder?.TestProjectId ?? _selectedTreeItem?.TestCase?.TestProjectId;
+            var testSuiteId = _selectedTreeItem?.Folder?.TestSuiteId ?? _selectedTreeItem?.TestCase?.TestSuiteId;
+
+            if(projectId is null || testSuiteId is null)
+            {
+                return;
+            }
             var parameters = new DialogParameters<AddTestSuiteFolderDialog>
             {
-                { x => x.ProjectId, Project.Id },
-                { x => x.TestSuiteId, _selectedTreeItem.Folder.TestSuiteId },
-                { x => x.ParentFolderId, _selectedTreeItem.Folder.Id },
+                { x => x.ProjectId, projectId.Value },
+                { x => x.TestSuiteId, testSuiteId.Value },
+                { x => x.ParentFolderId, parentFolderId },
             };
             var dialog = await dialogService.ShowAsync<AddTestSuiteFolderDialog>("Add folder", parameters);
             var result = await dialog.Result;
             if(result?.Data is TestSuiteFolder folder)
             {
-                AddFolderToTreeView(folder, _selectedTreeItem.Folder, _rootItems);
+                if (_selectedTreeItem?.Folder is not null)
+                {
+                    AddFolderToTreeView(folder, _selectedTreeItem.Folder, _rootItems);
+                }
+                if (_selectedTreeItem?.TestCase is not null)
+                {
+                    // Todo, find folder
+                }
             }
         }
         else if (Project is not null && _selectedTreeItem?.TestSuite is not null)
@@ -267,13 +346,14 @@
     {
         var parameters = new DialogParameters<AddTestSuiteDialog>
         {
-            { x => x.Project, Project }
+            { x => x.Project, Project },
+            { x => x.Team, Team },
         };
         var dialog = await dialogService.ShowAsync<AddTestSuiteDialog>("Add test suite", parameters);
         var result = await dialog.Result;
         if (result?.Data is TestSuite)
         {
-            _rootItems = await testBrowser.BrowseAsync(Project?.Id, null);
+            _rootItems = await testBrowser.BrowseAsync(Team?.Id, Project?.Id, null);
         }
     }
 }

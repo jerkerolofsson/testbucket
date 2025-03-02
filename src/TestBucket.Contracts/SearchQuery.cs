@@ -12,6 +12,16 @@ namespace TestBucket.Contracts;
 public class SearchQuery
 {
     /// <summary>
+    /// Filter by team
+    /// </summary>
+    public long? TeamId { get; set; }
+
+    /// <summary>
+    /// Filter by project
+    /// </summary>
+    public long? ProjectId { get; set; }
+
+    /// <summary>
     /// Free text search
     /// </summary>
     public string? Text { get; set; }

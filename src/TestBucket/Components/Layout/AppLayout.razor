@@ -1,15 +1,23 @@
-﻿@inherits LayoutComponentBase
+﻿@using TestBucket.Components.Account
+@using TestBucket.Components.Teams
+@using TestBucket.Components.Teams.Controls
+@using TestBucket.Domain.Teams.Models
+@inherits LayoutComponentBase
 @inject NavigationManager navigationManager
 @inject TenantResolver tenantResolver
 @inject AuthenticationStateProvider authStateProvider
+@inject ProjectService projectService
+@inject TeamService teamService
+@inject UserPreferencesService userPreferencesService
 
-<MudThemeProvider IsDarkMode="true" />
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" />
 <MudSnackbarProvider />
 <MudPopoverProvider />
 <MudDialogProvider MaxWidth="MaxWidth.ExtraExtraLarge" />
 
 @{
     string tenantAdminUrl = $"{tenantId}/tenants";
+    string teamAdminUrl = $"{tenantId}/teams";
     string projectAdminUrl = $"{tenantId}/projects";
     string homeUrl = $"/{tenantId}";
     string authUrl = $"/{tenantId}/Auth";
@@ -21,52 +29,56 @@
 }
 
 <CascadingValue Value="@_project">
+    <CascadingValue Value="@_team">
 
-    <div style="display: grid; grid-template-rows: auto 1fr; height: 100%">
+        <div style="display: grid; grid-template-rows: auto 1fr; height: 100%">
 
-        <MudToolBar Style="background: var(--mud-palette-dark); width: 100%">
-            <MudStack Row="true" Style="width: 100%">
-                <ProjectDropDown @bind-SelectedProject="@_project"/>
-                <MudSpacer/>
+            <MudToolBar Style="background: var(--mud-palette-dark); width: 100%">
+                <MudStack Row="true" Style="width: 100%">
+                    <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" />
+                    <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged"/>
+                    <MudSpacer/>
 
-                <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                    <MudMenu Icon="@Icons.Material.Filled.MoreVert">
 
-                    <!-- Pages -->
-                    <MudMenuItem Icon="@Icons.Material.Filled.ViewList" Label="Tests" Href="@testsUrl"></MudMenuItem>
-                    <MudMenuItem Icon="@Icons.Material.Filled.SmartDisplay" Label="Runs" Href="@runsUrl"></MudMenuItem>
+                        <!-- Pages -->
+                        <MudMenuItem Icon="@Icons.Material.Filled.ViewList" Label="Tests" Href="@testsUrl"></MudMenuItem>
+                        <MudMenuItem Icon="@Icons.Material.Filled.SmartDisplay" Label="Runs" Href="@runsUrl"></MudMenuItem>
 
-                    <!-- Admin -->
-                    <AuthorizeView Roles="ADMIN">
-                        <MudDivider/>
-                        <MudMenuItem Icon="@Icons.Material.Filled.Settings" Label="Projects" Href="@projectAdminUrl"></MudMenuItem>
-                    </AuthorizeView>
-                    <AuthorizeView Roles="SUPERADMIN">
-                        <MudMenuItem Icon="@Icons.Material.Filled.AdminPanelSettings" Label="Tenants" Href="@tenantAdminUrl"></MudMenuItem>
-                    </AuthorizeView>
+                        <!-- Admin -->
+                        <AuthorizeView Roles="ADMIN">
+                            <MudDivider/>
+                            <MudMenuItem Icon="@Icons.Material.Filled.Settings" Label="Teams" Href="@teamAdminUrl"></MudMenuItem>
+                            <MudMenuItem Icon="@Icons.Material.Filled.Settings" Label="Projects" Href="@projectAdminUrl"></MudMenuItem>
+                        </AuthorizeView>
+                        <AuthorizeView Roles="SUPERADMIN">
+                            <MudMenuItem Icon="@Icons.Material.Filled.AdminPanelSettings" Label="Tenants" Href="@tenantAdminUrl"></MudMenuItem>
+                        </AuthorizeView>
 
-                    <!-- Profile / Logout -->
-                    <AuthorizeView>
-                        <MudDivider />
-                        <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="Profile" Href="@manageUrl"></MudMenuItem>
-                        <MudMenuItem>
-                            <form action="Account/Logout" method="post">
-                                <AntiforgeryToken />
-                                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                                <button type="submit">Logout</button>
-                            </form>
-                        </MudMenuItem>
-                    </AuthorizeView>
-                </MudMenu>
-            </MudStack>
-        </MudToolBar>
+                        <!-- Profile / Logout -->
+                        <AuthorizeView>
+                            <MudDivider />
+                            <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="Profile" Href="@manageUrl"></MudMenuItem>
+                            <MudMenuItem>
+                                <form action="Account/Logout" method="post">
+                                    <AntiforgeryToken />
+                                    <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                                    <button type="submit">Logout</button>
+                                </form>
+                            </MudMenuItem>
+                        </AuthorizeView>
+                    </MudMenu>
+                </MudStack>
+            </MudToolBar>
 
-        <main>
-            <article class="content">
-                @Body
-            </article>
-        </main>
+            <main>
+                <article class="content">
+                    @Body
+                </article>
+            </main>
 
-    </div>
+        </div>
+    </CascadingValue>
 </CascadingValue>
 
 <div id="blazor-error-ui" data-nosnippet>
@@ -77,9 +89,13 @@
 
 
 @code {
+    private Team? _team;
     private TestProject? _project;
     private string? tenantId;
     private string? currentUrl;
+    private string cssClass = "";
+    private bool _isDarkMode;
+    private MudThemeProvider _mudThemeProvider = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -88,6 +104,53 @@
 
         currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
         navigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (_project is null)
+            {
+                _project = await projectService.GetActiveProjectAsync();
+            }
+            if (_team is null)
+            {
+                _team = await teamService.GetActiveTeamAsync();
+            }
+
+            var userPreferences = await userPreferencesService.GetUserPreferencesAsync();
+            if(userPreferences is not null)
+            {
+                _isDarkMode = userPreferences.DarkMode;
+            }
+            else
+            {
+                _isDarkMode = true;
+            }
+            if (_isDarkMode)
+            {
+                cssClass = "dark-mode";
+            }
+            else
+            {
+                cssClass = "light-mode";
+            }
+            StateHasChanged();
+        }
+    }
+
+
+    private async Task OnSelectedTeamChanged(Team? team)
+    {
+        _project = null;
+        _team = team;
+        await teamService.SetActiveTeamAsync(team);
+    }
+    private async Task OnSelectedProjectChanged(TestProject? testProject)
+    {
+        _project = testProject;
+        await projectService.SetActiveProjectAsync(testProject);
     }
 
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)

@@ -22,7 +22,7 @@ internal class TextImporter : ITextTestResultsImporter
         _testCaseRepository = testCaseRepository;
     }
 
-    public async Task ImportTextAsync(string tenantId, long? projectId, TestResultFormat format, string text)
+    public async Task ImportTextAsync(string tenantId, long? teamId, long? projectId, TestResultFormat format, string text)
     {
         ITestResultSerializer serializer = format switch
         {
@@ -33,15 +33,15 @@ internal class TextImporter : ITextTestResultsImporter
 
         var run = serializer.Deserialize(text);
 
-        await ImportRunAsync(tenantId, projectId, run);
+        await ImportRunAsync(tenantId, teamId, projectId, run);
     }
 
-    private async Task ImportRunAsync(string tenantId, long? projectId, TestRunDto run)
+    private async Task ImportRunAsync(string tenantId, long? teamId, long? projectId, TestRunDto run)
     {
-        await ImportTestCasesAsync(tenantId, projectId, run);
+        await ImportTestCasesAsync(tenantId, teamId, projectId, run);
     }
 
-    private async Task ImportTestCasesAsync(string tenantId, long? projectId, TestRunDto run)
+    private async Task ImportTestCasesAsync(string tenantId, long? teamId, long? projectId, TestRunDto run)
     {
         if (run.Suites is not null)
         {
@@ -52,10 +52,10 @@ internal class TextImporter : ITextTestResultsImporter
                 {
                     continue;
                 }
-                TestSuite? suite = await _testCaseRepository.GetTestSuiteByNameAsync(tenantId, projectId, suiteName);
+                TestSuite? suite = await _testCaseRepository.GetTestSuiteByNameAsync(tenantId, teamId, projectId, suiteName);
                 if (suite is null)
                 {
-                    suite = await _testCaseRepository.AddTestSuiteAsync(tenantId, projectId, suiteName);
+                    suite = await _testCaseRepository.AddTestSuiteAsync(tenantId, teamId, projectId, suiteName);
                 }
 
                 // Add test suite run

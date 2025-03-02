@@ -2,13 +2,14 @@
 @page "/{TenantId}/Tests"
 @using Humanizer
 @using TestBucket.Components.Layout
+@using TestBucket.Domain.Teams.Models
 @layout AppLayout
 @inject TestCaseEditorService testCaseEditor
 
 <TenantRedirect/>
 
 <div style="display: grid; grid-template-columns: auto 1fr; height: 100%">
-    <TestTreeView OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" />
+    <TestTreeView OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" OnTestCaseClicked="OnTestCaseClicked"/>
 
     @if(_selectedTestCase is not null)
     {
@@ -23,7 +24,9 @@
 @code {
     [Parameter] public string TenantId { get; set; } = "";
     [CascadingParameter] TestProject? Project { get; set; }
+    [CascadingParameter] Team? Team { get; set; }
 
+    private Team? _team;
     private TestProject? _project;
     private TestCase? _selectedTestCase;
     private TestSuiteFolder? _selectedFolder;
@@ -31,9 +34,10 @@
 
     protected override void OnParametersSet()
     {
-        if(_project != Project)
+        if(_project != Project || _team != Team)
         {
             _project = Project;
+            _team = Team;
 
             // Clear selection
             _selectedFolder = null;

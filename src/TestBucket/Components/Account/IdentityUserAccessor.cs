@@ -17,7 +17,7 @@ internal sealed class IdentityUserAccessor(UserManager<ApplicationUser> userMana
     {
         var user = await userManager.GetUserAsync(context.User);
 
-        string tenantId = TenantResolver.ResolveTenantIdFromPath(context.Request.Path);
+        string? tenantId = TenantResolver.ResolveTenantIdFromPath(context.Request.Path);
         if (user is null)
         {
             redirectManager.RedirectToWithStatus($"/{tenantId}/Account/InvalidUser", $"Error: Unable to load user with ID '{userManager.GetUserId(context.User)}'.", context);

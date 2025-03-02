@@ -1,0 +1,30 @@
+﻿@page "/{tenantId}/teams/{teamSlug}"
+@using TestBucket.Components.Teams.Controls
+@using TestBucket.Domain.Teams.Models
+@layout AppLayout
+@attribute [Authorize(Roles = "ADMIN")]
+@inject TeamService teamService
+@inject IDialogService dialogService
+
+<TenantRedirect/>
+
+@if (_team is not null)
+{
+    <TeamEditor Team="@_team"/>
+}
+
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+    [Parameter] public string? TeamSlug { get; set; }
+
+    private Team? _team = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (TeamSlug is not null)
+        {
+            _team = await teamService.GetTeamBySlugAsync(TeamSlug);
+        }
+    }
+}

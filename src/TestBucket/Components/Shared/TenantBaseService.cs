@@ -33,4 +33,9 @@ internal abstract class TenantBaseService
         return _tenantId ?? throw new InvalidDataException("User is not authenticated or is missing the tenant claim");
     }
 
+    protected async Task<string?> GetUserNameAsync()
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        return authState.User.Identity?.Name;
+    }
 }

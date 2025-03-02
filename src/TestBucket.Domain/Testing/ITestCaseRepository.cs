@@ -13,16 +13,17 @@ public interface ITestCaseRepository
     Task<TestSuiteFolder?> GetTestSuiteFolderByNameAsync(string tenantId, long testsuiteId, long? parentId, string folderName);
     Task DeleteFolderByIdAsync(string tenantId, long folderId);
     Task<TestSuiteFolder[]> GetTestSuiteFoldersAsync(string tenantId, long? projectId, long testSuiteId, long? parentFolderId);
+    Task UpdateTestSuiteFolderAsync(TestSuiteFolder folder);
 
 
 
 
-    Task<TestSuite> AddTestSuiteAsync(string tenantId, long? projectId, string name);
+    Task<TestSuite> AddTestSuiteAsync(string tenantId, long? teamId, long? projectId, string name);
+    Task UpdateTestSuiteAsync(TestSuite suite);
     Task DeleteTestSuiteByIdAsync(string tenantId, long testSuiteId);
-    Task<PagedResult<TestSuite>> SearchTestSuitesAsync(string tenantId, long? projectId, SearchQuery query);
-    Task<TestSuite?> GetTestSuiteByNameAsync(string tenantId, long? projectId, string suiteName);
+    Task<PagedResult<TestSuite>> SearchTestSuitesAsync(string tenantId, SearchQuery query);
+    Task<TestSuite?> GetTestSuiteByNameAsync(string tenantId, long? teamId, long? projectId, string suiteName);
 
     Task AddTestRunAsync(TestRun testRun);
     Task AddTestCaseRunAsync(TestCaseRun testCaseRun);
-    Task UpdateTestSuiteAsync(TestSuite suite);
 }

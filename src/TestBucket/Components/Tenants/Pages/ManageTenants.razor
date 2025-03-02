@@ -1,4 +1,5 @@
 ﻿@attribute [Authorize(Roles = "SUPERADMIN")]
+@layout AppLayout
 @page "/{tenantId}/tenants"
 @inject TenantService tenantService
 @inject IDialogService dialogService

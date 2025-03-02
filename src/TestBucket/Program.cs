@@ -15,6 +15,9 @@ using TestBucket.Components.Users;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Identity.Models;
 using TestBucket.Components.Shared;
+using Blazored.LocalStorage;
+using TestBucket.Components.Uploads.Services;
+using TestBucket.Components.Teams;
 
 namespace TestBucket;
 
@@ -30,6 +33,8 @@ public class Program
         // Add services to the container.
         builder.Services.AddRazorComponents()
             .AddInteractiveServerComponents();
+
+        builder.Services.AddBlazoredLocalStorage();
 
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<IdentityUserAccessor>();
@@ -73,11 +78,14 @@ public class Program
         builder.Services.AddScoped<UserRegistrationService>();
         builder.Services.AddScoped<TenantResolver>();
         builder.Services.AddScoped<TenantService>();
+        builder.Services.AddScoped<TeamService>();
         builder.Services.AddScoped<ProjectService>();
         builder.Services.AddScoped<TestSuiteService>();
         builder.Services.AddScoped<TestService>();
+        builder.Services.AddScoped<UserPreferencesService>();
         builder.Services.AddScoped<TestBrowser>();
         builder.Services.AddScoped<TestCaseEditorService>();
+        builder.Services.AddScoped<UploadService>();
         builder.Services.AddScoped(typeof(DragAndDropService<>));
         builder.Services.AddDataServices();
         builder.Services.AddDomainServices();
@@ -85,6 +93,8 @@ public class Program
         builder.Services.AddMudServices(config =>
         {
         });
+
+        builder.Services.AddControllers();
 
         var app = builder.Build();
 
@@ -107,6 +117,7 @@ public class Program
         app.UseAntiforgery();
 
         app.MapStaticAssets();
+        app.MapControllers();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();
 

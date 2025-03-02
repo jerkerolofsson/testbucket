@@ -154,6 +154,34 @@ namespace TestBucket.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Files.Models.FileResource", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Files");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Identity.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -199,6 +227,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TenantId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -221,6 +252,8 @@ namespace TestBucket.Data.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("TeamId");
 
                     b.HasIndex("TestProjectId");
 
@@ -256,7 +289,101 @@ namespace TestBucket.Data.Migrations
                     b.ToTable("ApplicationUserApiKey");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Identity.Models.UserPreferences", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long?>("ActiveProjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("ActiveTeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("DarkMode")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserPreferences");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Projects.Models.TestProject", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("GrantAccessToAllTeamUsers")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("GrantAccessToAllTenantUsers")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("IconUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ShortName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("projects");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Settings.Models.GlobalSettings", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("DefaultTenant")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Revision")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GlobalSettings");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Teams.Models.Team", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -289,27 +416,7 @@ namespace TestBucket.Data.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("projects");
-                });
-
-            modelBuilder.Entity("TestBucket.Domain.Settings.Models.GlobalSettings", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("DefaultTenant")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Revision")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GlobalSettings");
+                    b.ToTable("teams");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Tenants.Models.Tenant", b =>
@@ -559,6 +666,9 @@ namespace TestBucket.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TenantId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -567,6 +677,8 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
 
                     b.HasIndex("TestProjectId");
 
@@ -675,6 +787,10 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Identity.Models.ApplicationUser", b =>
                 {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", null)
+                        .WithMany("TeamMembers")
+                        .HasForeignKey("TeamId");
+
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", null)
                         .WithMany("ProjectMembers")
                         .HasForeignKey("TestProjectId");
@@ -691,8 +807,23 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Projects.Models.TestProject", b =>
                 {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany("TestProjects")
+                        .HasForeignKey("TeamId");
+
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany("TestProjects")
+                        .HasForeignKey("TenantId");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Teams.Models.Team", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
                         .HasForeignKey("TenantId");
 
                     b.Navigation("Tenant");
@@ -794,6 +925,10 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestSuite", b =>
                 {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
@@ -803,6 +938,8 @@ namespace TestBucket.Data.Migrations
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
                         .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Team");
 
                     b.Navigation("Tenant");
 
@@ -848,6 +985,13 @@ namespace TestBucket.Data.Migrations
             modelBuilder.Entity("TestBucket.Domain.Projects.Models.TestProject", b =>
                 {
                     b.Navigation("ProjectMembers");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Teams.Models.Team", b =>
+                {
+                    b.Navigation("TeamMembers");
+
+                    b.Navigation("TestProjects");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Tenants.Models.Tenant", b =>

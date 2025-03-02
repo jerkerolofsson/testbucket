@@ -1,4 +1,5 @@
-﻿@attribute [Authorize(Roles = "ADMIN")]
+﻿@using TestBucket.Domain.Teams.Models
+@attribute [Authorize(Roles = "ADMIN")]
 @inject TestSuiteService testSuiteService
 
 <EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
@@ -45,12 +46,15 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
+    [Parameter] public Team? Team { get; set; }
     [Parameter] public TestProject? Project { get; set; }
 
     private TestProject? _project;
+    private Team? _team;
 
     protected override void OnParametersSet()
     {
+        _team = Team;
         _project = Project;
     }
 
@@ -73,7 +77,7 @@
             return;
         }
 
-        var testSuite = await testSuiteService.AddTestSuiteAsync(_project?.Id, _name);
+        var testSuite = await testSuiteService.AddTestSuiteAsync(_team?.Id, _project?.Id, _name);
         MudDialog.Close(testSuite);
     }
 }

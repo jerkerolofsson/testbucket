@@ -6,6 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Projects\Models\**" />
+    <Compile Remove="Testing\Models\**" />
+    <EmbeddedResource Remove="Projects\Models\**" />
+    <EmbeddedResource Remove="Testing\Models\**" />
+    <None Remove="Projects\Models\**" />
+    <None Remove="Testing\Models\**" />
+  </ItemGroup>
+
 
 
     <ItemGroup>
@@ -34,7 +43,5 @@
 
     <ItemGroup>
       <Folder Include="Identity\Models\" />
-      <Folder Include="Projects\Models\" />
-      <Folder Include="Testing\Models\" />
     </ItemGroup>
 </Project>

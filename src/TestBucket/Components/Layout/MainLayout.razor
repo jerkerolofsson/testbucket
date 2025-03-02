@@ -5,7 +5,9 @@
 <MudPopoverProvider />
 <MudDialogProvider MaxWidth="MaxWidth.ExtraExtraLarge" />
 
-<div class="page">
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" />
+
+<div class="page @_isDarkMode">
     <div class="sidebar">
         <NavMenu />
     </div>
@@ -22,3 +24,25 @@
     <a href="." class="reload">Reload</a>
     <span class="dismiss">🗙</span>
 </div>
+
+@code {
+    private string cssClass = "";
+    private bool _isDarkMode;
+    private MudThemeProvider _mudThemeProvider = default!;
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+            if(_isDarkMode)
+            {
+                cssClass = "dark-mode";
+            }
+            else
+            {
+                cssClass = "light-mode";
+            }
+            StateHasChanged();
+        }
+    }
+}

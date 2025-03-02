@@ -54,6 +54,29 @@ internal class TestCaseRepository : ITestCaseRepository
         }
     }
 
+
+    public async Task UpdateTestSuiteFolderAsync(TestSuiteFolder folder)
+    {
+        //testCase.Created = DateTimeOffset.UtcNow;
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var existingFolder = await dbContext.TestSuiteFolders.AsNoTracking().Where(x => x.Id == folder.Id).FirstOrDefaultAsync();
+        if(existingFolder is null)
+        {
+            throw new InvalidOperationException("Folder does not exist!");
+        }
+
+        var hasPathChanged = existingFolder.Name != folder.Name;
+        if(hasPathChanged)
+        {
+            // todo: process all tests
+        }
+
+        dbContext.TestSuiteFolders.Update(folder);
+        await dbContext.SaveChangesAsync();
+    }
+
+
     public async Task UpdateTestCaseAsync(TestCase testCase)
     {
         //testCase.Created = DateTimeOffset.UtcNow;
@@ -114,10 +137,10 @@ internal class TestCaseRepository : ITestCaseRepository
         return folder;
     }
 
-    public async Task<PagedResult<TestSuite>> SearchTestSuitesAsync(string tenantId, long? projectId, SearchQuery query)
+    public async Task<PagedResult<TestSuite>> SearchTestSuitesAsync(string tenantId, SearchQuery query)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var suites = dbContext.TestSuites.Where(x => x.TenantId == tenantId && x.TestProjectId == projectId);
+        var suites = dbContext.TestSuites.Where(x => x.TenantId == tenantId && x.TestProjectId == query.ProjectId);
 
         // Apply filter
         if (query.Text is not null)
@@ -185,9 +208,16 @@ internal class TestCaseRepository : ITestCaseRepository
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<TestSuite> AddTestSuiteAsync(string tenantId, long? projectId, string name)
+    public async Task<TestSuite> AddTestSuiteAsync(string tenantId, long? teamId, long? projectId, string name)
     {
-        var testSuite = new TestSuite { Name = name, Created = DateTimeOffset.UtcNow, TenantId = tenantId, TestProjectId = projectId };
+        var testSuite = new TestSuite 
+        { 
+            Name = name, 
+            Created = DateTimeOffset.UtcNow, 
+            TeamId = teamId,
+            TenantId = tenantId, 
+            TestProjectId = projectId 
+        };
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         await dbContext.TestSuites.AddAsync(testSuite);
@@ -225,10 +255,15 @@ internal class TestCaseRepository : ITestCaseRepository
         }
     }
 
-    public async Task<TestSuite?> GetTestSuiteByNameAsync(string tenantId, long? projectId, string suiteName)
+    public async Task<TestSuite?> GetTestSuiteByNameAsync(string tenantId, long? teamId, long? projectId, string suiteName)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestSuites.AsNoTracking().Where(x => x.TenantId == tenantId && x.TestProjectId == projectId && x.Name == suiteName).FirstOrDefaultAsync();
+        return await dbContext.TestSuites.AsNoTracking()
+            .Where(x =>
+            x.TenantId == tenantId &&
+            x.TeamId == teamId &&
+            x.TestProjectId == projectId && 
+            x.Name == suiteName).FirstOrDefaultAsync();
     }
 
     public async Task AddTestRunAsync(TestRun testRun)

@@ -1,0 +1,51 @@
+﻿@attribute [Authorize(Roles = "SUPERADMIN")]
+@inject TestSuiteService testSuiteService
+
+@if (Folder is not null)
+{
+    <EditForm Model="@Folder" OnValidSubmit="async () => await OnValidSubmitAsync()">
+        <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+            <TitleContent>@Folder.Name</TitleContent>
+            <DialogContent>
+                <MudStack>
+                    <MudStack Spacing="3">
+                        <MudTextField @bind-Value="Folder.Name"></MudTextField>
+
+                        <MudColorPicker Label="Color" @bind-Text="Folder.Color" Style="@($"color: {Folder.Color};")" Placeholder="Select Color" />
+                        
+                        <IconPicker @bind-Icon="Folder.Icon"/>
+
+                    </MudStack>
+
+                </MudStack>
+            </DialogContent>
+
+            <DialogActions>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+                <MudButton OnClick="Close">Cancel</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public TestSuiteFolder? Folder { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (Folder is not null)
+        {
+            await testSuiteService.SaveTestSuiteFolderAsync(Folder);
+        }
+
+        MudDialog.Close();
+    }
+}

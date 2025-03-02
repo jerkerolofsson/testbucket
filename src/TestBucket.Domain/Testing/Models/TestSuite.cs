@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Domain.Teams.Models;
+
+namespace TestBucket.Domain.Testing.Models;
 
 [Table("testsuites")]
 [Index(nameof(TenantId), nameof(Created))]
@@ -32,10 +34,15 @@ public class TestSuite
     /// <summary>
     /// ID of project
     /// </summary>
+    public long? TeamId { get; set; }
+
+    /// <summary>
+    /// ID of project
+    /// </summary>
     public long? TestProjectId { get; set; }
 
     // Customization
-    
+
     /// <summary>
     /// SVG icon
     /// </summary>
@@ -47,6 +54,7 @@ public class TestSuite
     public string? Color { get; set; }
 
     // Navigation
+    public Team? Team { get; set; }
     public Tenant? Tenant { get; set; }
     public TestProject? TestProject { get; set; }
 }

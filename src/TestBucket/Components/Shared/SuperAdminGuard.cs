@@ -18,6 +18,11 @@ public class SuperAdminGuard
         _authenticationStateProvider = authenticationStateProvider;
     }
 
+    /// <summary>
+    /// Throws an exception if the user is not a super admin user
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public async Task GuardAsync()
     {
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();

@@ -1,0 +1,69 @@
+﻿@using TestBucket.Components.Teams.Dialogs
+@using TestBucket.Contracts
+@using TestBucket.Domain.Teams.Models
+@inject TeamService teamService
+@inject IDialogService dialogService
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="dropdown-container">
+    <MudSelect 
+        Style="min-width: 200px"
+        Variant="Variant.Outlined" 
+        Label="Team"
+        Value="@SelectedTeam" 
+        Text="@SelectedTeam?.Name" 
+        T="Team" 
+        ValueChanged="OnSelectedTeamChanged">
+        @foreach(var team in _teams)
+        {
+            <MudSelectItem Value="@team">
+                <MudStack Row="true" AlignItems="AlignItems.Center">
+                    @if(team.IconUrl is not null)
+                    {
+                        <MudImage Src="@team.IconUrl" Width="24" Height="24"/>
+                    }
+                    <MudText>@team.Name</MudText>
+                </MudStack>
+                
+
+            </MudSelectItem>
+        }
+    </MudSelect>
+
+    <AuthorizeView Roles="ADMIN">
+        @if (SelectedTeam is not null)
+        {
+            string projectAdminUrl = $"{SelectedTeam.TenantId}/teams/{SelectedTeam.Slug}";
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Settings" Href="@projectAdminUrl"></MudIconButton>
+        }
+        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddTeamAsync"></MudIconButton>
+    </AuthorizeView>
+</MudStack>
+
+@code {
+    private Team[] _teams = [];
+
+    [Parameter] public Team? SelectedTeam { get; set; }
+    [Parameter] public EventCallback<Team?> SelectedTeamChanged { get; set; }
+
+    private async Task OnSelectedTeamChanged(Team team)
+    {
+        await SelectedTeamChanged.InvokeAsync(team);
+    }
+
+    private async Task AddTeamAsync()
+    {
+        var dialog = await dialogService.ShowAsync<AddTeamDialog>();
+        var result = await dialog.Result;
+        if(result?.Data is Team team)
+        {
+            _teams = [team, .. _teams];
+            await SelectedTeamChanged.InvokeAsync(team);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await teamService.SearchAsync(new SearchQuery() { Offset = 0, Count = 1000 });
+        _teams = result.Items;
+    }
+}

@@ -56,11 +56,13 @@ p.mud-typography-subtitle1 {
 }
 
 .dropdown-container .mud-icon-button {
+    display: none;
     opacity: 0;
-    transition: opacity linear 100ms;
+    transition: opacity linear 200ms;
 }
 
 .dropdown-container:hover .mud-icon-button {
+    display: block;
     opacity: 1;
 }
 

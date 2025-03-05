@@ -60,7 +60,16 @@ internal class FieldService : TenantBaseService
     public async Task AddAsync(FieldDefinition fieldDefinition)
     {
         fieldDefinition.TenantId = await GetTenantIdAsync();
+        RemoveOptionsIfNotSelection(fieldDefinition);
         await _repository.AddAsync(fieldDefinition);
+    }
+
+    private void RemoveOptionsIfNotSelection(FieldDefinition fieldDefinition)
+    {
+        if(fieldDefinition.Type is not Domain.Fields.Models.FieldType.SingleSelection)
+        {
+            fieldDefinition.Options = null;
+        }
     }
 
     public async Task DeleteAsync(FieldDefinition fieldDefinition)
@@ -80,6 +89,7 @@ internal class FieldService : TenantBaseService
         {
             throw new InvalidOperationException("Tenant ID mismatch");
         }
+        RemoveOptionsIfNotSelection(fieldDefinition);
         await _repository.UpdateAsync(fieldDefinition);
     }
 }

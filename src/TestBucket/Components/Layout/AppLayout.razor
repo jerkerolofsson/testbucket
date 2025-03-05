@@ -20,6 +20,7 @@
     string tenantAdminUrl = $"{tenantId}/tenants";
     string teamAdminUrl = $"{tenantId}/teams";
     string projectAdminUrl = $"{tenantId}/projects";
+    string projectSettingsUrl = $"{tenantId}/projects/settings";
     string homeUrl = $"/{tenantId}";
     string authUrl = $"/{tenantId}/Auth";
     string testsUrl = $"/{tenantId}/Tests";
@@ -32,7 +33,8 @@
 <CascadingValue Value="@_project">
     <CascadingValue Value="@_team">
 
-        <div style="display: grid; grid-template-rows: auto 1fr; height: 100%">
+
+        <div style="display: grid; grid-template-rows: auto auto 1fr; height: 100%">
 
             <MudToolBar Style="@MenuStyle">
                 <MudStack Row="true" Style="width: 100%">
@@ -73,6 +75,14 @@
                     </MudMenu>
                 </MudStack>
             </MudToolBar>
+
+            <MudStack Class="tb-inner-toolbar" Row="true">
+                <MudNavLink Href="@testsUrl">Testing</MudNavLink>
+                <MudNavLink Href="@testsUrl">Reporting</MudNavLink>
+                <MudSpacer/>
+                <MudNavLink Href="@testsUrl">Environments</MudNavLink>
+                <MudNavLink Href="@projectSettingsUrl">Project</MudNavLink>
+            </MudStack>
 
             <main>
                 <article class="content">

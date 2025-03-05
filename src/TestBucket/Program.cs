@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using MudExtensions.Services;
 using TestBucket.Components;
 using TestBucket.Components.Account;
 using TestBucket.Data;
@@ -21,6 +19,7 @@ using TestBucket.Components.Teams;
 using TestBucket.Components.Shared.Fields;
 using Npgsql;
 using TestBucket.Components.Shared.Themeing;
+using MudExtensions.Services;
 
 namespace TestBucket;
 
@@ -102,6 +101,7 @@ public class Program
         builder.Services.AddMudServices(config =>
         {
         });
+        builder.Services.AddMudExtensions();
 
         builder.Services.AddControllers();
 

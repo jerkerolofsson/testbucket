@@ -2,12 +2,12 @@
 
 @if(Test is not null && _boundDescription is not null)
 {
-    <MudStack>
+    <MudStack Style="width: 100%">
         <MudStack 
-        Spacing="3"
-        Row="true" 
-        AlignItems="AlignItems.Center"
-        Style="border-bottom: solid 1px var(--mud-palette-dark-darken); height: 40px">
+            Spacing="3"
+            Row="true" 
+            AlignItems="AlignItems.Center"
+            Style="border-bottom: solid 1px var(--mud-palette-dark-darken); height: 40px; width: 100%">
 
             <MudItem Class="mr-2"/>
 
@@ -19,7 +19,8 @@
 
             <div style="width: 1px; background: var(--mud-palette-dark-lighten); height: 90%"></div>
 
-            <MudMenu Icon="@Icons.Material.Filled.MoreHoriz">
+            <MudSpacer/>
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
                 <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="async x => await DeleteTestCaseAsync()">Delete</MudMenuItem>
             </MudMenu>
 

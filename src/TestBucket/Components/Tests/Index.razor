@@ -8,18 +8,22 @@
 
 <TenantRedirect/>
 
-<div style="display: grid; grid-template-columns: auto 1fr; height: 100%">
-    <TestTreeView OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" OnTestCaseClicked="OnTestCaseClicked"/>
+<MudSplitter Style="height: 100%" Color="Color.Primary" Bordered="false" Dimension="20" EnableMargin="false">
+    <StartContent>
+        <TestTreeView OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" OnTestCaseClicked="OnTestCaseClicked" />
+    </StartContent>
 
-    @if(_selectedTestCase is not null)
-    {
-        <TestCaseEditor Test="@_selectedTestCase" TestChanged="OnTestModified" DeleteTestClicked="OnDeleteTest"/>
-    }
-    else
-    {
-        <TestCaseGrid Folder="@_selectedFolder" TestSuiteId="@_selectedTestSuiteId" OnTestCaseClicked="OnTestCaseClicked" />
-    }
-</div>
+    <EndContent>
+        @if (_selectedTestCase is not null)
+        {
+            <TestCaseEditor Test="@_selectedTestCase" TestChanged="OnTestModified" DeleteTestClicked="OnDeleteTest" />
+        }
+        else
+        {
+            <TestCaseGrid Folder="@_selectedFolder" TestSuiteId="@_selectedTestSuiteId" OnTestCaseClicked="OnTestCaseClicked" />
+        }
+    </EndContent>
+</MudSplitter>
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";

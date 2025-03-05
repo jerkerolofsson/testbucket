@@ -18,6 +18,15 @@
                 {
                     @Field.DoubleValue
                 }
+                else if (Field.FieldDefinition.Type == FieldType.ChipField && Field.StringValue is not null)
+                {
+                    <MudChipSet T="string">
+                        @foreach(var tag in Field.StringValue.Split(' '))
+                        {
+                            <MudChip T="string">@tag</MudChip>
+                        }
+                    </MudChipSet>
+                }
             </MudText>
         }
         else
@@ -27,7 +36,7 @@
             {
                 <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined"/>
             }
-            @if(Field.FieldDefinition.Type == FieldType.SingleSelection)
+            else if(Field.FieldDefinition.Type == FieldType.SingleSelection)
             {
                 <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined">
                     @if(Field.FieldDefinition.Options is not null)
@@ -39,9 +48,15 @@
                     }
                 </MudSelect>
             }
-            @if(Field.FieldDefinition.Type == FieldType.Boolean)
+            else if(Field.FieldDefinition.Type == FieldType.Boolean)
             {
-                <MudSwitch Value="@Field.BooleanValue" T="bool?" ValueChanged="OnBooleanValueChanged" Color="Color.Primary"/>
+                <MudSwitchM3 Value="@Field.BooleanValue" T="bool?" ValueChanged="OnBooleanValueChanged" Color="Color.Tertiary" />
+            }
+            else if (Field.FieldDefinition.Type == FieldType.ChipField)
+            {
+                <MudChipField T="string" @bind-Value="Field.StringValue" ChipColor="Color.Tertiary" Variant="Variant.Outlined">
+
+                </MudChipField>
             }
         }
     </Field>

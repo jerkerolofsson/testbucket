@@ -1088,23 +1088,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Jerker\\.nuget\\packages\\": {},
+    "C:\\Users\\jerke\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\local\\code\\testbucket\\tests\\TestBucket.Formats.UnitTests\\TestBucket.Formats.UnitTests.csproj",
+      "projectUniqueName": "C:\\local\\code\\testbucket\\tests\\TestBucket.Formats.UnitTests\\TestBucket.Formats.UnitTests.csproj",
       "projectName": "TestBucket.Formats.UnitTests",
-      "projectPath": "d:\\local\\code\\testbucket\\tests\\TestBucket.Formats.UnitTests\\TestBucket.Formats.UnitTests.csproj",
-      "packagesPath": "C:\\Users\\Jerker\\.nuget\\packages\\",
-      "outputPath": "d:\\local\\code\\testbucket\\tests\\TestBucket.Formats.UnitTests\\obj\\",
+      "projectPath": "C:\\local\\code\\testbucket\\tests\\TestBucket.Formats.UnitTests\\TestBucket.Formats.UnitTests.csproj",
+      "packagesPath": "C:\\Users\\jerke\\.nuget\\packages\\",
+      "outputPath": "C:\\local\\code\\testbucket\\tests\\TestBucket.Formats.UnitTests\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Jerker\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\jerke\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -1113,18 +1113,17 @@
       ],
       "sources": {
         "C:\\Program Files\\dotnet\\library-packs": {},
-        "https://api.nuget.org/v3/index.json": {},
-        "https://nuget.ec.lan/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "d:\\local\\code\\testbucket\\src\\TestBucket.Formats\\TestBucket.Formats.csproj": {
-              "projectPath": "d:\\local\\code\\testbucket\\src\\TestBucket.Formats\\TestBucket.Formats.csproj"
+            "C:\\local\\code\\testbucket\\src\\TestBucket.Formats\\TestBucket.Formats.csproj": {
+              "projectPath": "C:\\local\\code\\testbucket\\src\\TestBucket.Formats\\TestBucket.Formats.csproj"
             },
-            "d:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj": {
-              "projectPath": "d:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj"
+            "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj": {
+              "projectPath": "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj"
             }
           }
         }
@@ -1190,7 +1189,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

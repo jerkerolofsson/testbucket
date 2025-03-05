@@ -20,7 +20,6 @@ SortMode="SortMode.None">
 
     <Columns>
         <PropertyColumn Property="x => x.Name" />
-        <PropertyColumn Property="x => x.Trait" />
         <PropertyColumn Property="x => x.Type" />
         <TemplateColumn Title="Options">
             <CellTemplate>
@@ -28,6 +27,12 @@ SortMode="SortMode.None">
                 {
                     @string.Join(", ", context.Item.Options);
                 }
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn>
+            <CellTemplate>
+                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Clear" OnClick="async () => await DeleteAsync(context.Item)"/>
             </CellTemplate>
         </TemplateColumn>
     </Columns>
@@ -53,12 +58,18 @@ SortMode="SortMode.None">
         await ReloadFieldsAsync();
     }
 
+    private async Task DeleteAsync(FieldDefinition definition)
+    {
+        await fieldService.DeleteAsync(definition);
+        await ReloadFieldsAsync();
+    }
+
     private async Task AddFieldAsync()
     {
         FieldDefinition definition = new()
             {
+                IsVisible = true,
                 Name = "Priority",
-                Trait = "prio",
                 Options = ["Low", "Medium", "High"],
                 TestProjectId = ProjectId,
                 Type = Domain.Fields.Models.FieldType.String

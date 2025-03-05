@@ -1,5 +1,4 @@
-﻿
-using TestBucket.Domain.Testing.Formats;
+﻿using TestBucket.Formats;
 
 namespace TestBucket.Domain.Testing;
 public interface ITextTestResultsImporter

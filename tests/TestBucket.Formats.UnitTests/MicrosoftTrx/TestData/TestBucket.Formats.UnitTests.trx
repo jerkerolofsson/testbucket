@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="f7556ba5-df9f-451f-9fd6-05a5468aa3f6" name="Jerker@DESKTOP-E71H2EF 2025-03-05 13:57:44" runUser="DESKTOP-E71H2EF\Jerker" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2025-03-05T13:57:44.0774237+08:00" queuing="2025-03-05T13:57:44.0774240+08:00" start="2025-03-05T13:57:43.4628050+08:00" finish="2025-03-05T13:57:44.0816319+08:00" />
+  <TestSettings name="default" id="dd976754-e170-4b0a-b8f4-dde2a0eb7eec">
+    <Deployment runDeploymentRoot="Jerker_DESKTOP-E71H2EF_2025-03-05_13_57_44" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9a1a7203-6e98-486d-a53d-630ca41d3932" testId="5b0c5e4a-fbcc-3335-8169-2b0ef4a1bd74" testName="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" computerName="DESKTOP-E71H2EF" duration="00:00:00.0004980" startTime="2025-03-05T13:57:43.9908195+08:00" endTime="2025-03-05T13:57:43.9908195+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9a1a7203-6e98-486d-a53d-630ca41d3932" />
+    <UnitTestResult executionId="710152aa-902b-433c-b723-e894f11ff156" testId="f81c55ef-1548-8c4b-1859-42912c5334fb" testName="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" computerName="DESKTOP-E71H2EF" duration="00:00:00.0169233" startTime="2025-03-05T13:57:43.9880771+08:00" endTime="2025-03-05T13:57:43.9880937+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="710152aa-902b-433c-b723-e894f11ff156" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" storage="d:\local\code\testbucket\tests\testbucket.formats.unittests\bin\debug\net9.0\testbucket.formats.unittests.dll" id="f81c55ef-1548-8c4b-1859-42912c5334fb">
+      <Execution id="710152aa-902b-433c-b723-e894f11ff156" />
+      <TestMethod codeBase="D:\local\code\testbucket\tests\TestBucket.Formats.UnitTests\bin\Debug\net9.0\TestBucket.Formats.UnitTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" name="Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" />
+    </UnitTest>
+    <UnitTest name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" storage="d:\local\code\testbucket\tests\testbucket.formats.unittests\bin\debug\net9.0\testbucket.formats.unittests.dll" id="5b0c5e4a-fbcc-3335-8169-2b0ef4a1bd74">
+      <Execution id="9a1a7203-6e98-486d-a53d-630ca41d3932" />
+      <TestMethod codeBase="D:\local\code\testbucket\tests\TestBucket.Formats.UnitTests\bin\Debug\net9.0\TestBucket.Formats.UnitTests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" name="Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="5b0c5e4a-fbcc-3335-8169-2b0ef4a1bd74" executionId="9a1a7203-6e98-486d-a53d-630ca41d3932" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f81c55ef-1548-8c4b-1859-42912c5334fb" executionId="710152aa-902b-433c-b723-e894f11ff156" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="2" executed="2" passed="2" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 9.0.0)&#xD;
+[xUnit.net 00:00:00.06]   Discovering: TestBucket.Formats.UnitTests&#xD;
+[xUnit.net 00:00:00.09]   Discovered:  TestBucket.Formats.UnitTests&#xD;
+[xUnit.net 00:00:00.09]   Starting:    TestBucket.Formats.UnitTests&#xD;
+[xUnit.net 00:00:00.15]   Finished:    TestBucket.Formats.UnitTests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

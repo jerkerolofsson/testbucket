@@ -4,22 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Brightest.Testing.Domain.Formats.Xml.XUnit;
-
-using TestBucket.Domain.Testing.Formats;
-using TestBucket.Domain.Testing.Formats.Dtos;
-using TestBucket.Domain.Testing.Formats.JUnit;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Formats;
+using TestBucket.Formats.Dtos;
+using TestBucket.Formats.JUnit;
+using TestBucket.Formats.XUnit;
 
 namespace TestBucket.Domain.Testing;
 
 internal class TextImporter : ITextTestResultsImporter
 {
     private readonly ITestCaseRepository _testCaseRepository;
+    private readonly IFieldRepository _fieldRepository;
 
-    public TextImporter(ITestCaseRepository testCaseRepository)
+    public TextImporter(ITestCaseRepository testCaseRepository, IFieldRepository fieldRepository)
     {
         _testCaseRepository = testCaseRepository;
+        _fieldRepository = fieldRepository;
     }
 
     public async Task ImportTextAsync(string tenantId, long? teamId, long? projectId, TestResultFormat format, string text)
@@ -70,6 +72,8 @@ internal class TextImporter : ITextTestResultsImporter
                 };
                 await _testCaseRepository.AddTestRunAsync(testRun);
 
+                // Get field definitions to map traits to them
+                var fieldDefinitions = await _fieldRepository.SearchAsync(tenantId, new SearchQuery { ProjectId = projectId });
 
                 foreach (var test in runSuite.Tests)
                 {
@@ -82,6 +86,30 @@ internal class TextImporter : ITextTestResultsImporter
                     {
                         TestCase testCase = await GetOrCreateTestCaseAsync(tenantId, projectId, suite, test);
                         await AddTestCaseRunAsync(tenantId, testRun, test, testCase);
+
+                        // Add traits
+                        foreach(var trait in test.Traits)
+                        {
+                            var fieldDefinition = fieldDefinitions.Where(x => x.Trait == trait.Name || x.Name == trait.Name).FirstOrDefault();  
+                            if(fieldDefinition is not null)
+                            {
+                                var field = new TestCaseField
+                                {
+                                    TenantId = tenantId,
+                                    TestCaseId = testCase.Id,
+                                    FieldDefinitionId = fieldDefinition.Id,
+                                    StringValue = trait.Value
+                                };
+
+                                // Todo: Extract conversion method
+                                if(fieldDefinition.Type == Fields.Models.FieldType.Boolean)
+                                {
+                                    field.BooleanValue = trait.Value == "true";
+                                }
+
+                                await _fieldRepository.UpsertTestCaseFieldsAsync(field);
+                            }
+                        }
                     }
                 }
             }
@@ -111,12 +139,12 @@ internal class TextImporter : ITextTestResultsImporter
         if (testCase is null)
         {
             long? folderId = null;
-            if(test.ClassName is not null)
+            if (test.ClassName is not null)
             {
                 long? parentId = null;
                 string folderName = test.ClassName;
                 TestSuiteFolder? folder = await _testCaseRepository.GetTestSuiteFolderByNameAsync(tenantId, suite.Id, parentId, folderName);
-                if(folder is null)
+                if (folder is null)
                 {
                     folder = await _testCaseRepository.AddTestSuiteFolderAsync(tenantId, projectId, suite.Id, parentId, folderName);
                 }
@@ -133,8 +161,22 @@ internal class TextImporter : ITextTestResultsImporter
                 TestProjectId = projectId,
                 TestSuiteId = suite.Id,
                 TestSuiteFolderId = folderId,
+                Description = test.Description,
             };
             await _testCaseRepository.AddTestCaseAsync(testCase);
+        }
+        else
+        {
+            bool changed = false;
+            if (string.IsNullOrEmpty(testCase.Description) && !string.IsNullOrEmpty(test.Description))
+            {
+                testCase.Description = test.Description;
+                changed = true;
+            }
+            if (changed)
+            {
+                await _testCaseRepository.UpdateTestCaseAsync(testCase);
+            }
         }
 
         return testCase;

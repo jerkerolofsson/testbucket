@@ -5,26 +5,38 @@
     {
         <MudStack>
             <h3>Field</h3>
-            <MudStack Spacing="0">
+            <Field>
                 <MudTextField Value="@FieldDefinition.Name" ValueChanged="OnNameChanged" T="string" Variant="Variant.Outlined"/>
                 <MudText Typo="Typo.subtitle1">Field label</MudText>
-            </MudStack>
+            </Field>
 
-            <MudStack Spacing="0">
+            <Field>
                 <MudSelect Value="@FieldDefinition.Type" ValueChanged="OnTypeChanged" T="FieldType" Variant="Variant.Outlined">
                     <MudSelectItem Value="@FieldType.String">String</MudSelectItem>
                     <MudSelectItem Value="@FieldType.Boolean">Boolean</MudSelectItem>
                     <MudSelectItem Value="@FieldType.SingleSelection">Single Selection</MudSelectItem>
                 </MudSelect>
                 <MudText Typo="Typo.subtitle1">The type of field defines what data can be stored and how it can be selected</MudText>
-            </MudStack>
+            </Field>
 
             @if(FieldDefinition.Type == FieldType.SingleSelection)
             {
-                <MudTextField Value="@_options" ValueChanged="OnOptionsChanged" T="string" Variant="Variant.Outlined" />
-                <MudText Typo="Typo.subtitle1">Options separated by comma (,)</MudText>
+                <Field>
+                    <MudTextField Value="@_options" ValueChanged="OnOptionsChanged" T="string" Variant="Variant.Outlined" />
+                    <MudText Typo="Typo.subtitle1">Options separated by comma (,)</MudText>
+                </Field>
             }
-            
+
+            <Field>
+                <FieldHeader>Read-Only</FieldHeader>
+                <MudSwitch Value="FieldDefinition.ReadOnly" ValueChanged="OnReadOnlyChanged" T="bool" Color="Color.Tertiary"></MudSwitch>
+            </Field>
+
+            <Field>
+                <FieldHeader>Visible</FieldHeader>
+                <MudSwitch Value="FieldDefinition.IsVisible" ValueChanged="OnIsVisibleChanged" T="bool" Color="Color.Tertiary"></MudSwitch>
+            </Field>
+
         </MudStack>
 
         <MudStack>
@@ -41,6 +53,24 @@
 
     private string _options = "";
     private FieldValue _dummy = new FieldValue() { FieldDefinitionId = 0  };
+
+    private async Task OnReadOnlyChanged(bool readOnly)
+    {
+        if (FieldDefinition is not null)
+        {
+            FieldDefinition.ReadOnly = readOnly;
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
+
+    private async Task OnIsVisibleChanged(bool isVisible)
+    {
+        if (FieldDefinition is not null)
+        {
+            FieldDefinition.IsVisible = isVisible;
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
 
     protected override void OnParametersSet()
     {

@@ -13,8 +13,15 @@ public enum TestTraitType
     /// ID from original source
     /// </summary>
     ExternalId,
+
+    /// <summary>
+    /// Name
+    /// </summary>
     Name,
 
+    /// <summary>
+    /// Result
+    /// </summary>
     TestResult,
 
     // Failures
@@ -51,7 +58,20 @@ public enum TestTraitType
     Project,
 
     Version,
+
+    /// <summary>
+    /// 
+    /// </summary>
     Ci,
+
+    /// <summary>
+    /// Collection name
+    /// </summary>
+    CollectionName,
+
+    /// <summary>
+    /// Commit hash
+    /// </summary>
     Commit,
     Environment,
     Browser,

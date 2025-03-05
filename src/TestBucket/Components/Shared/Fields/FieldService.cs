@@ -60,6 +60,26 @@ internal class FieldService : TenantBaseService
     public async Task AddAsync(FieldDefinition fieldDefinition)
     {
         fieldDefinition.TenantId = await GetTenantIdAsync();
-        await _repository.AddAsync(fieldDefinition);    
+        await _repository.AddAsync(fieldDefinition);
+    }
+
+    public async Task DeleteAsync(FieldDefinition fieldDefinition)
+    {
+        var tenantId = await GetTenantIdAsync();
+        if (tenantId != fieldDefinition.TenantId)
+        {
+            throw new InvalidOperationException("Tenant ID mismatch");
+        }
+        await _repository.DeleteAsync(fieldDefinition);
+    }
+
+    public async Task UpdateAsync(FieldDefinition fieldDefinition)
+    {
+        var tenantId = await GetTenantIdAsync();
+        if(tenantId != fieldDefinition.TenantId)
+        {
+            throw new InvalidOperationException("Tenant ID mismatch");
+        }
+        await _repository.UpdateAsync(fieldDefinition);
     }
 }

@@ -30,6 +30,30 @@ internal class FieldRepository : IFieldRepository
         await UpdateAsync(fieldDefinition);
     }
 
+    public async Task UpsertTestCaseFieldsAsync(TestCaseField field)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var existingField = await dbContext.TestCaseFields
+            .Where(x => x.FieldDefinitionId == field.FieldDefinitionId && x.TestCaseId == field.TestCaseId && x.TenantId == field.TenantId).FirstOrDefaultAsync();
+        if (existingField is not null)
+        {
+            existingField.StringValue = field.StringValue;
+            existingField.DoubleValue = field.DoubleValue;
+            existingField.BooleanValue = field.BooleanValue;
+            existingField.LongValue = field.LongValue;
+            dbContext.TestCaseFields.Update(existingField);
+        }
+        else
+        {
+            var tmp = field.FieldDefinition;
+            field.FieldDefinition = null;
+            await dbContext.TestCaseFields.AddAsync(field);
+            field.FieldDefinition = tmp;
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
 
     public async Task SaveTestCaseFieldsAsync(IEnumerable<TestCaseField> fields)
     {

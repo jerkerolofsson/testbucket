@@ -1,0 +1,40 @@
+<assemblies timestamp="03/05/2025 07:30:50">
+  <assembly name="D:\local\code\testbucket\tests\TestBucket.Formats.UnitTests\bin\Debug\net9.0\TestBucket.Formats.UnitTests.dll" run-date="2025-03-05" run-time="07:30:50" total="5" passed="5" failed="0" skipped="0" time="0.652" errors="0">
+    <errors />
+    <collection total="3" passed="3" failed="0" skipped="0" name="Test collection for TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" time="0.019">
+      <test name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" type="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" method="Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" time="0.0173826" result="Pass">
+        <traits>
+          <trait name="Product Component" value="TestBucket.Formats" />
+          <trait name="Format" value="JUnit" />
+        </traits>
+      </test>
+      <test name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits" type="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" method="Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits" time="0.0014230" result="Pass">
+        <traits>
+          <trait name="Product Component" value="TestBucket.Formats" />
+          <trait name="Format" value="JUnit" />
+        </traits>
+      </test>
+      <test name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" type="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" method="Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" time="0.0003802" result="Pass">
+        <traits>
+          <trait name="Product Component" value="TestBucket.Formats" />
+          <trait name="Format" value="JUnit" />
+        </traits>
+      </test>
+    </collection>
+    <collection total="2" passed="2" failed="0" skipped="0" name="Test collection for TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests" time="0.019">
+      <test name="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTraitsOnTest_TwoTestsDeserializedWithCorrectTraits" type="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests" method="Deserialize_WithTraitsOnTest_TwoTestsDeserializedWithCorrectTraits" time="0.0185988" result="Pass">
+        <traits>
+          <trait name="Description" value="Verifies that a xunit xml containing traits on the test element are extracted as traits" />
+          <trait name="Product Component" value="TestBucket.Formats" />
+          <trait name="Format" value="XUnit" />
+        </traits>
+      </test>
+      <test name="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" type="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests" method="Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" time="0.0003577" result="Pass">
+        <traits>
+          <trait name="Product Component" value="TestBucket.Formats" />
+          <trait name="Format" value="XUnit" />
+        </traits>
+      </test>
+    </collection>
+  </assembly>
+</assemblies>

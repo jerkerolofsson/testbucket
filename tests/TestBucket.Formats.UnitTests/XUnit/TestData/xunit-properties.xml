@@ -1,0 +1,17 @@
+<assemblies timestamp="03/05/2025 06:01:02">
+  <assembly name="D:\local\code\testbucket\tests\TestBucket.Formats.UnitTests\bin\Debug\net9.0\TestBucket.Formats.UnitTests.dll" run-date="2025-03-05" run-time="06:01:02" total="2" passed="2" failed="0" skipped="0" time="0.568" errors="0">
+    <errors />
+    <collection total="2" passed="2" failed="0" skipped="0" name="Test collection for TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" time="0.017">
+      <test name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" type="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" method="Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" time="0.0161017" result="Pass">
+		  <traits>
+			  <trait name="Product Component" value="TestBucket.Formats" />
+		  </traits>
+	  </test>
+      <test name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" type="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" method="Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" time="0.0004653" result="Pass">
+		  <traits>
+			<trait name="Product Component" value="TestBucket.Formats" />
+		  </traits>
+	  </test>
+    </collection>
+  </assembly>
+</assemblies>

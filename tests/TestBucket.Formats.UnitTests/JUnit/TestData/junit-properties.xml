@@ -1,0 +1,24 @@
+<testsuites>
+  <testsuite name="TestBucket.Formats.UnitTests.dll" tests="2" skipped="0" failures="0" errors="0" time="0.0170216" timestamp="2025-03-05T06:04:56" hostname="DESKTOP-E71H2EF" id="0" package="TestBucket.Formats.UnitTests.dll">
+    <properties />
+    <testcase classname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" name="Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" time="0.0165238">
+      <properties>
+        <property name="Product Component" value="TestBucket.Formats" />
+      </properties>
+    </testcase>
+    <testcase classname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" name="Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" time="0.0004978">
+      <properties>
+        <property name="Product Component" value="TestBucket.Formats" />
+      </properties>
+    </testcase>
+    <system-out>
+Test Framework Informational Messages:
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 9.0.0)
+[xUnit.net 00:00:00.06]   Discovering: TestBucket.Formats.UnitTests
+[xUnit.net 00:00:00.09]   Discovered:  TestBucket.Formats.UnitTests
+[xUnit.net 00:00:00.10]   Starting:    TestBucket.Formats.UnitTests
+[xUnit.net 00:00:00.15]   Finished:    TestBucket.Formats.UnitTests
+</system-out>
+    <system-err></system-err>
+  </testsuite>
+</testsuites>

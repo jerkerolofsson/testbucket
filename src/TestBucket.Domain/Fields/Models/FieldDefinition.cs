@@ -42,6 +42,21 @@ public class FieldDefinition
     /// </summary>
     public bool IsDeleted { get; set; }
 
+    /// <summary>
+    /// If read only, the field can be displayed but not edited
+    /// </summary>
+    public bool ReadOnly { get; set; }
+
+    /// <summary>
+    /// Can be used to save field values in the database when importing but not display the values in the UI
+    /// </summary>
+    public bool IsVisible { get; set; }
+
+    /// <summary>
+    /// Target usage for a field
+    /// </summary>
+    public FieldTarget Target { get; set; }
+
     // Navigation
 
     public string? TenantId { get; set; }

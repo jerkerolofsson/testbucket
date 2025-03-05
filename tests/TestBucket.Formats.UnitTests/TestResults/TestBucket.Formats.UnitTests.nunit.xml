@@ -1,0 +1,50 @@
+<test-run id="2" duration="0.037715700000000005" testcasecount="5" total="5" passed="5" failed="0" inconclusive="0" skipped="0" result="Passed" start-time="2025-03-05T07:30:55Z" end-time="2025-03-05T07:30:56Z">
+  <test-suite type="Assembly" name="TestBucket.Formats.UnitTests.dll" fullname="D:\local\code\testbucket\tests\TestBucket.Formats.UnitTests\bin\Debug\net9.0\TestBucket.Formats.UnitTests.dll" total="5" passed="5" failed="0" inconclusive="0" skipped="0" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0377157">
+    <test-suite type="TestSuite" name="TestBucket" fullname="TestBucket" total="5" passed="5" failed="0" inconclusive="0" skipped="0" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0377157">
+      <test-suite type="TestSuite" name="Formats" fullname="TestBucket.Formats" total="5" passed="5" failed="0" inconclusive="0" skipped="0" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0377157">
+        <test-suite type="TestSuite" name="UnitTests" fullname="TestBucket.Formats.UnitTests" total="5" passed="5" failed="0" inconclusive="0" skipped="0" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0377157">
+          <test-suite type="TestSuite" name="JUnit" fullname="TestBucket.Formats.UnitTests.JUnit" total="3" passed="3" failed="0" inconclusive="0" skipped="0" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0187232">
+            <test-suite type="TestFixture" name="JUnitSerializerTests" fullname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" classname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" total="3" passed="3" failed="0" inconclusive="0" skipped="0" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0187232">
+              <test-case name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" fullname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" methodname="Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" classname="JUnitSerializerTests" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0171341" asserts="0">
+                <properties>
+                  <property name="Product Component" value="TestBucket.Formats" />
+                  <property name="Format" value="JUnit" />
+                </properties>
+              </test-case>
+              <test-case name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits" fullname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits" methodname="Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits" classname="JUnitSerializerTests" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0012396" asserts="0">
+                <properties>
+                  <property name="Product Component" value="TestBucket.Formats" />
+                  <property name="Format" value="JUnit" />
+                </properties>
+              </test-case>
+              <test-case name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" fullname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" methodname="Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" classname="JUnitSerializerTests" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0003495" asserts="0">
+                <properties>
+                  <property name="Product Component" value="TestBucket.Formats" />
+                  <property name="Format" value="JUnit" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+          <test-suite type="TestSuite" name="XUnit" fullname="TestBucket.Formats.UnitTests.XUnit" total="2" passed="2" failed="0" inconclusive="0" skipped="0" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0189925">
+            <test-suite type="TestFixture" name="XUnitSerializerTests" fullname="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests" classname="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests" total="2" passed="2" failed="0" inconclusive="0" skipped="0" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0189925">
+              <test-case name="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTraitsOnTest_TwoTestsDeserializedWithCorrectTraits" fullname="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTraitsOnTest_TwoTestsDeserializedWithCorrectTraits" methodname="Deserialize_WithTraitsOnTest_TwoTestsDeserializedWithCorrectTraits" classname="XUnitSerializerTests" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.0186865" asserts="0">
+                <properties>
+                  <property name="Description" value="Verifies that a xunit xml containing traits on the test element are extracted as traits" />
+                  <property name="Product Component" value="TestBucket.Formats" />
+                  <property name="Format" value="XUnit" />
+                </properties>
+              </test-case>
+              <test-case name="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" fullname="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" methodname="Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" classname="XUnitSerializerTests" result="Passed" start-time="2025-03-05T07:30:56Z" end-time="2025-03-05T07:30:56Z" duration="0.000306" asserts="0">
+                <properties>
+                  <property name="Product Component" value="TestBucket.Formats" />
+                  <property name="Format" value="XUnit" />
+                </properties>
+              </test-case>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+    <errors />
+  </test-suite>
+</test-run>

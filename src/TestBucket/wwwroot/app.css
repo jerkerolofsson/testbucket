@@ -75,3 +75,17 @@ p.mud-typography-subtitle1 {
  .mud-toolbar fieldset legend {
     color: white;
 }
+
+ .mud-treeview-item p {
+     font-size: 8pt;
+ }
+
+ .mud-treeview-item-icon {
+     margin-right: 2px;
+     width: 24px;
+ }
+
+ .tb-read-only-field {
+     opacity: 0.75;
+     font-size: 75%;
+ }

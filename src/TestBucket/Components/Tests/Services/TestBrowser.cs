@@ -1,10 +1,15 @@
 ﻿
+using System.Text;
+
 using MudBlazor;
 
 using TestBucket.Components.Projects.Dialogs;
 using TestBucket.Components.Tenants;
 using TestBucket.Components.Tests.Browser.Controls;
+using TestBucket.Components.Tests.Dialogs;
+using TestBucket.Domain.Files;
 using TestBucket.Domain.Teams.Models;
+using TestBucket.Formats;
 
 namespace TestBucket.Components.Tests.Services;
 
@@ -13,23 +18,37 @@ internal class TestBrowser : TenantBaseService
     private readonly TestSuiteService _testSuiteService;
     private readonly IDialogService _dialogService;
     private readonly ITextTestResultsImporter _textImporter;
+    private readonly IFileRepository _fileRepository;
 
     public TestBrowser(TestSuiteService testSuiteService,
         AuthenticationStateProvider authenticationStateProvider,
         IDialogService dialogService,
-        ITextTestResultsImporter textImporter) : base(authenticationStateProvider)
+        ITextTestResultsImporter textImporter,
+        IFileRepository fileRepository) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
         _dialogService = dialogService;
         _textImporter = textImporter;
+        _fileRepository = fileRepository;
     }
 
     public async Task ImportAsync(Team? team, TestProject? project)
     {
         var tenantId = await GetTenantIdAsync();
-        string xml = await File.ReadAllTextAsync(@"c:\temp\junit.xml");
-        await _textImporter.ImportTextAsync(tenantId, team?.Id, project?.Id, Domain.Testing.Formats.TestResultFormat.JUnitXml, xml);
+
+        var dialog = await _dialogService.ShowAsync<ImportResultsDialog>(null);
+        var result = await dialog.Result;
+
+        if (result?.Data is ImportOptions importOptions && importOptions.File?.Id is not null)
+        {
+            var resource = await _fileRepository.GetResourceByIdAsync(tenantId, importOptions.File.Id);
+            if (resource is not null)
+            {
+                string xml = Encoding.UTF8.GetString(resource.Data);
+                await _textImporter.ImportTextAsync(tenantId, team?.Id, project?.Id, importOptions.Format, xml);
+            }
+        }
     }
 
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(long? testSuiteId, long? folderId, string? searchText, int offset, int count = 20)

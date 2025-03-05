@@ -1,0 +1,60 @@
+﻿@using TestBucket.Formats
+@attribute [Authorize(Roles = "ADMIN")]
+@inject TestCaseEditorService testCaseEditorService
+
+<EditForm Model="@_options" OnValidSubmit="Submit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <DialogContent>
+
+            <Field>
+                <FieldHeader>Format</FieldHeader>
+                <MudSelect T="TestResultFormat" @bind-Value="_options.Format">
+                    <MudSelectItem Value="@TestResultFormat.JUnitXml">JUnit XML</MudSelectItem>
+                    <MudSelectItem Value="@TestResultFormat.xUnitXml">xUnit XML</MudSelectItem>
+                </MudSelect>
+            </Field>
+
+            <Field>
+                <UploadResults FileUploaded="OnFileUploaded"/>
+            </Field>
+
+        </DialogContent>
+
+        <DialogActions>
+            @if(_options.File is not null)
+            {
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            }
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    private string? _errorMessage;
+
+    private ImportOptions _options = new();
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private void OnFileUploaded(FileResource file)
+    {
+        _options.File = file;
+    }
+
+    private void Submit()
+    {
+        if (_options.File is not null)
+        {
+            MudDialog.Close(_options);
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+}
+

@@ -4,10 +4,11 @@
 @inject IDialogService dialogService
 
 <MudDataGrid Items="_fields"
-             Dense="true"
-             Hover="true"
-             T="FieldDefinition"
-             SortMode="SortMode.None">
+Dense="true"
+Hover="true"
+T="FieldDefinition"
+RowClick="async e => await EditFieldAsync(e.Item)"
+SortMode="SortMode.None">
 
     <ToolBarContent>
         <MudStack Row="true" AlignItems="AlignItems.Center">
@@ -41,6 +42,17 @@
 
     private IReadOnlyList<FieldDefinition> _fields = [];
 
+    private async Task EditFieldAsync(FieldDefinition fieldDefinition)
+    {
+        var parameters = new DialogParameters<EditFieldDefinitionDialog>
+        {
+            { x=>x.FieldDefinition, fieldDefinition }
+        };
+        var dialog = await dialogService.ShowAsync<EditFieldDefinitionDialog>(null, parameters);
+        var result = await dialog.Result;
+        await ReloadFieldsAsync();
+    }
+
     private async Task AddFieldAsync()
     {
         FieldDefinition definition = new()
@@ -58,32 +70,15 @@
         };
         var dialog = await dialogService.ShowAsync<AddFieldDefinitionDialog>(null, parameters);
         var result = await dialog.Result;
-       
-
-
-        // FieldDefinition definition = new()
-        // {
-        //     Name = "Quality Characteristic",
-        //     Trait = "quality-characteristic",
-        //     Options = ["Functionality", "Reliability", "Performance", "Interoperability", "Compliance", "Other"],
-        //     TestProjectId = ProjectId,
-        //     Type = Domain.Fields.Models.FieldType.String
-        // };
-
-        // FieldDefinition definition = new()
-        //     {
-        //         Name = "Test Execution Type",
-        //         Trait = "",
-        //         Options = ["Automated", "Manual", "Other"],
-        //         TestProjectId = ProjectId,
-        //         Type = Domain.Fields.Models.FieldType.String
-        //     };
-       
-
-        //await fieldService.AddAsync(definition);
+        await ReloadFieldsAsync();
     }
 
     protected override async Task OnParametersSetAsync()
+    {
+        await ReloadFieldsAsync();
+    }
+
+    private async Task ReloadFieldsAsync()
     {
         _fields = await fieldService.SearchDefinitionsAsync(new SearchQuery() { ProjectId = ProjectId });
     }

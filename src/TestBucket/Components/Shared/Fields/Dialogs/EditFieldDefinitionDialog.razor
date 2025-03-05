@@ -1,0 +1,53 @@
+﻿@using TestBucket.Components.Teams.Controls
+@attribute [Authorize(Roles = "ADMIN")]
+@inject FieldService fieldService
+
+<EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>Add new field</TitleContent>
+        <DialogContent>
+            <FieldDefinitionEditor @bind-FieldDefinition="_fieldDefinition" />
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    private string _name = "";
+    private string _slug = "";
+    private string _shortName = "";
+
+    private string? _errorMessage;
+
+    [Parameter]
+    public FieldDefinition? FieldDefinition { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+    private FieldDefinition? _fieldDefinition;
+
+    protected override void OnParametersSet()
+    {
+        _fieldDefinition = FieldDefinition;
+        base.OnParametersSet();
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (_fieldDefinition is not null)
+        {
+            await fieldService.UpdateAsync(_fieldDefinition);
+            MudDialog.Close(_fieldDefinition);
+        }
+    }
+}

@@ -166,12 +166,21 @@ namespace TestBucket.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<List<string>>("Options")
                         .HasColumnType("jsonb");
+
+                    b.Property<bool>("ReadOnly")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Target")
+                        .HasColumnType("integer");
 
                     b.Property<string>("TenantId")
                         .HasColumnType("text");

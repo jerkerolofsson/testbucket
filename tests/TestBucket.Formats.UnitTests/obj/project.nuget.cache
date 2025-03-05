@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "dgSpecHash": "GL8oq/4jlyc=",
+  "success": true,
+  "projectFilePath": "d:\\local\\code\\testbucket\\tests\\TestBucket.Formats.UnitTests\\TestBucket.Formats.UnitTests.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Jerker\\.nuget\\packages\\coverlet.collector\\6.0.2\\coverlet.collector.6.0.2.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\junitxml.testlogger\\6.0.0\\junitxml.testlogger.6.0.0.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\microsoft.codecoverage\\17.11.1\\microsoft.codecoverage.17.11.1.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\microsoft.net.test.sdk\\17.11.1\\microsoft.net.test.sdk.17.11.1.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\microsoft.testplatform.objectmodel\\17.11.1\\microsoft.testplatform.objectmodel.17.11.1.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\microsoft.testplatform.testhost\\17.11.1\\microsoft.testplatform.testhost.17.11.1.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\nunitxml.testlogger\\6.0.0\\nunitxml.testlogger.6.0.0.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\system.reflection.metadata\\1.6.0\\system.reflection.metadata.1.6.0.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\xunit\\2.9.2\\xunit.2.9.2.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\xunit.abstractions\\2.0.3\\xunit.abstractions.2.0.3.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\xunit.analyzers\\1.16.0\\xunit.analyzers.1.16.0.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\xunit.assert\\2.9.2\\xunit.assert.2.9.2.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\xunit.core\\2.9.2\\xunit.core.2.9.2.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\xunit.extensibility.core\\2.9.2\\xunit.extensibility.core.2.9.2.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\xunit.extensibility.execution\\2.9.2\\xunit.extensibility.execution.2.9.2.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\xunit.runner.visualstudio\\2.8.2\\xunit.runner.visualstudio.2.8.2.nupkg.sha512",
+    "C:\\Users\\Jerker\\.nuget\\packages\\xunitxml.testlogger\\6.0.0\\xunitxml.testlogger.6.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

@@ -4,10 +4,10 @@
 {
     <MudStack Style="width: 100%">
         <MudStack 
-            Spacing="3"
-            Row="true" 
-            AlignItems="AlignItems.Center"
-            Style="border-bottom: solid 1px var(--mud-palette-dark-darken); height: 40px; width: 100%">
+        Spacing="3"
+        Row="true" 
+        AlignItems="AlignItems.Center"
+        Style="border-bottom: solid 1px var(--mud-palette-dark-darken); height: 40px; width: 100%">
 
             <MudItem Class="mr-2"/>
 
@@ -32,6 +32,7 @@
                 Label="Name" Value="@Test.Name" ValueChanged="OnNameChanged" T="string"/>
 
                 <MarkdownEditor 
+                    AutoDownloadFontAwesome="true"
                 Value="@_boundDescription"
                 ShowIcons="@_icons"
                 @ref=_editor
@@ -39,8 +40,6 @@
                 MaxHeight="30vh"
                 ValueChanged="OnDescriptionChanged"
                 SpellChecker="false">
-                    <Toolbar>
-                    </Toolbar>
                 </MarkdownEditor>
 
                 <FieldsEditor TestCase="@Test"/>
@@ -71,14 +70,20 @@
 
     private IReadOnlyList<FieldDefinition> _fields = [];
 
-    private string[] _icons = ["bold", "preview"];
+    private string[] _icons = ["undo", "redo", "bold", "italic", "heading", "heading-1", "heading-2", "heading-3", "code", "quote", "unordered-list", "ordered-list", "link", "fullscreen"];
 
     private MarkdownEditor? _editor;
     private string? _boundDescription;
 
+    private long? _projectId;
+
     protected override async Task OnParametersSetAsync()
     {
-        _fields = await fieldService.SearchDefinitionsAsync(new SearchQuery() { ProjectId = Test?.TestProjectId });
+        if(_projectId != Test?.TestProjectId && Test?.TestProjectId is not null)
+        {
+            _projectId = Test?.TestProjectId;
+            _fields = await fieldService.SearchDefinitionsAsync(new SearchQuery() { ProjectId = Test?.TestProjectId });
+        }
     }
 
     protected override void OnParametersSet()

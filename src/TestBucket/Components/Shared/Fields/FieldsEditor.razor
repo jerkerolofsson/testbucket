@@ -10,10 +10,13 @@
 
     private List<TestCaseField> _testCaseFields = [];
 
+    private long? _testCaseId;
+
     protected override async Task OnParametersSetAsync()
     {
-        if(TestCase is not null)
+        if(TestCase is not null && _testCaseId != TestCase.Id)
         {
+            _testCaseId = TestCase.Id;
             var definitions = await fieldService.SearchDefinitionsAsync(new SearchQuery { ProjectId = TestCase.TestProjectId });
             _testCaseFields = (await fieldService.GetTestCaseFieldsAsync(TestCase.Id, definitions)).ToList();
         }

@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Formats.Dtos
+﻿using TestBucket.Traits.Core;
+
+namespace TestBucket.Formats.Dtos
 {
     public class TestTraitCollection
     {
@@ -12,8 +14,8 @@
         /// </summary>
         public string? ExternalId
         {
-            get => GetAttribute(TestTraitType.ExternalId);
-            set => SetAttribute(TestTraitType.ExternalId, value);
+            get => GetAttribute(TraitType.TestId);
+            set => SetAttribute(TraitType.TestId, value);
         }
 
         /// <summary>
@@ -21,8 +23,8 @@
         /// </summary>
         public string? Name
         {
-            get => GetAttribute(TestTraitType.Name);
-            set => SetAttribute(TestTraitType.Name, value);
+            get => GetAttribute(TraitType.Name);
+            set => SetAttribute(TraitType.Name, value);
         }
 
         /// <summary>
@@ -30,8 +32,8 @@
         /// </summary>
         public string? Module
         {
-            get => GetAttribute(TestTraitType.Module);
-            set => SetAttribute(TestTraitType.Module, value);
+            get => GetAttribute(TraitType.Module);
+            set => SetAttribute(TraitType.Module, value);
         }
 
         /// <summary>
@@ -39,8 +41,8 @@
         /// </summary>
         public string? Area
         {
-            get => GetAttribute(TestTraitType.Area);
-            set => SetAttribute(TestTraitType.Area, value);
+            get => GetAttribute(TraitType.Area);
+            set => SetAttribute(TraitType.Area, value);
         }
 
 
@@ -49,8 +51,8 @@
         /// </summary>
         public string? HardwareVersion
         {
-            get => GetAttribute(TestTraitType.TestedHardwareVersion);
-            set => SetAttribute(TestTraitType.TestedHardwareVersion, value);
+            get => GetAttribute(TraitType.HardwareVersion);
+            set => SetAttribute(TraitType.HardwareVersion, value);
         }
 
         /// <summary>
@@ -58,8 +60,8 @@
         /// </summary>
         public string? SystemOut
         {
-            get => GetAttribute(TestTraitType.SystemOut);
-            set => SetAttribute(TestTraitType.SystemOut, value);
+            get => GetAttribute(TraitType.SystemOut);
+            set => SetAttribute(TraitType.SystemOut, value);
         }
 
 
@@ -68,8 +70,8 @@
         /// </summary>
         public string? SystemErr
         {
-            get => GetAttribute(TestTraitType.SystemErr);
-            set => SetAttribute(TestTraitType.SystemErr, value);
+            get => GetAttribute(TraitType.SystemErr);
+            set => SetAttribute(TraitType.SystemErr, value);
         }
 
         /// <summary>
@@ -77,8 +79,8 @@
         /// </summary>
         public string? Version
         {
-            get => GetAttribute(TestTraitType.Version);
-            set => SetAttribute(TestTraitType.Version, value);
+            get => GetAttribute(TraitType.Version);
+            set => SetAttribute(TraitType.Version, value);
         }
 
         /// <summary>
@@ -86,16 +88,16 @@
         /// </summary>
         public string? SoftwareVersion
         {
-            get => GetAttribute(TestTraitType.TestedSoftwareVersion);
-            set => SetAttribute(TestTraitType.TestedSoftwareVersion, value);
+            get => GetAttribute(TraitType.SoftwareVersion);
+            set => SetAttribute(TraitType.SoftwareVersion, value);
         }
         /// <summary>
         /// Environment attribute
         /// </summary>
         public string? Environment
         {
-            get => GetAttribute(TestTraitType.Environment);
-            set => SetAttribute(TestTraitType.Environment, value);
+            get => GetAttribute(TraitType.Environment);
+            set => SetAttribute(TraitType.Environment, value);
         }
 
         /// <summary>
@@ -103,8 +105,8 @@
         /// </summary>
         public string? TestCategory
         {
-            get => GetAttribute(TestTraitType.TestCategory);
-            set => SetAttribute(TestTraitType.TestCategory, value);
+            get => GetAttribute(TraitType.TestCategory);
+            set => SetAttribute(TraitType.TestCategory, value);
         }
 
         /// <summary>
@@ -112,8 +114,8 @@
         /// </summary>
         public DateTimeOffset? EndedTime
         {
-            get => GetAttributeAsDateTimeOffset(TestTraitType.EndedTime);
-            set => SetAttribute(TestTraitType.EndedTime, value);
+            get => GetAttributeAsDateTimeOffset(TraitType.EndedTime);
+            set => SetAttribute(TraitType.EndedTime, value);
         }
 
         /// <summary>
@@ -121,16 +123,16 @@
         /// </summary>
         public DateTimeOffset? StartedTime
         {
-            get => GetAttributeAsDateTimeOffset(TestTraitType.StartedTime);
-            set => SetAttribute(TestTraitType.StartedTime, value);
+            get => GetAttributeAsDateTimeOffset(TraitType.StartedTime);
+            set => SetAttribute(TraitType.StartedTime, value);
         }
         /// <summary>
         /// CreatedTime attribute
         /// </summary>
         public DateTimeOffset? CreatedTime
         {
-            get => GetAttributeAsDateTimeOffset(TestTraitType.CreatedTime);
-            set => SetAttribute(TestTraitType.CreatedTime, value);
+            get => GetAttributeAsDateTimeOffset(TraitType.CreatedTime);
+            set => SetAttribute(TraitType.CreatedTime, value);
         }
 
         /// <summary>
@@ -138,18 +140,27 @@
         /// </summary>
         public string? Project
         {
-            get => GetAttribute(TestTraitType.Project);
-            set => SetAttribute(TestTraitType.Project, value);
+            get => GetAttribute(TraitType.Project);
+            set => SetAttribute(TraitType.Project, value);
         }
+
+        /// <summary>
+        /// TestId attribute
+        /// </summary>
+        public string? TestId
+        {
+            get => GetAttribute(TraitType.TestId);
+            set => SetAttribute(TraitType.TestId, value);
+        }
+
         /// <summary>
         /// Tag attribute
         /// </summary>
         public string? Tag
         {
-            get => GetAttribute(TestTraitType.Tag);
-            set => SetAttribute(TestTraitType.Tag, value);
+            get => GetAttribute(TraitType.Tag);
+            set => SetAttribute(TraitType.Tag, value);
         }
-
 
         /// <summary>
         /// Adds a test category
@@ -157,7 +168,7 @@
         /// <param name="value"></param>
         public void AddTestCategory(string value)
         {
-            Traits.Add(new TestTrait(TestTraitType.TestCategory, value));
+            Traits.Add(new TestTrait(TraitType.TestCategory, value));
         }
 
         /// <summary>
@@ -166,10 +177,10 @@
         /// <param name="value"></param>
         public void AddTag(string value)
         {
-            Traits.Add(new TestTrait(TestTraitType.Tag, value));
+            Traits.Add(new TestTrait(TraitType.Tag, value));
         }
 
-        public void SetAttribute(TestTraitType type, int? value)
+        public void SetAttribute(TraitType type, int? value)
         {
             Traits.RemoveAll(x => x.Type == type);
             if (value is not null)
@@ -177,7 +188,7 @@
                 Traits.Add(new TestTrait(type, value.Value.ToString()));
             }
         }
-        public void SetAttribute(TestTraitType type, DateTimeOffset? value)
+        public void SetAttribute(TraitType type, DateTimeOffset? value)
         {
             Traits.RemoveAll(x => x.Type == type);
             if (value is not null)
@@ -185,7 +196,7 @@
                 Traits.Add(new TestTrait(type, value.Value.ToString("O")));
             }
         }
-        public void SetAttribute(TestTraitType type, TimeSpan? value)
+        public void SetAttribute(TraitType type, TimeSpan? value)
         {
             Traits.RemoveAll(x => x.Type == type);
             if (value is not null)
@@ -193,7 +204,7 @@
                 Traits.Add(new TestTrait(type, value.Value.ToString()));
             }
         }
-        public void SetAttribute(TestTraitType type, string? value)
+        public void SetAttribute(TraitType type, string? value)
         {
             Traits.RemoveAll(x => x.Type == type);
             if (value is not null)
@@ -202,7 +213,7 @@
             }
         }
 
-        public string? GetAttribute(TestTraitType type)
+        public string? GetAttribute(TraitType type)
         {
             foreach (var attr in Traits
                 .Where(x => x.Type == type))
@@ -211,7 +222,7 @@
             }
             return default;
         }
-        public int? GetAttributeAsInt32(TestTraitType type)
+        public int? GetAttributeAsInt32(TraitType type)
         {
             foreach (var attr in Traits
                 .Where(x => x.Type == type))
@@ -223,7 +234,7 @@
             }
             return null;
         }
-        public TimeSpan? GetAttributeAsTimeSpan(TestTraitType type)
+        public TimeSpan? GetAttributeAsTimeSpan(TraitType type)
         {
             foreach (var attr in Traits
                 .Where(x => x.Type == type))
@@ -235,7 +246,7 @@
             }
             return null;
         }
-        public DateTimeOffset? GetAttributeAsDateTimeOffset(TestTraitType type)
+        public DateTimeOffset? GetAttributeAsDateTimeOffset(TraitType type)
         {
             foreach (var attr in Traits
                 .Where(x => x.Type == type))
@@ -247,7 +258,7 @@
             }
             return null;
         }
-        public bool HasAttribute(TestTraitType type)
+        public bool HasAttribute(TraitType type)
         {
             return Traits.Where(x => x.Type == type).Any();
         }

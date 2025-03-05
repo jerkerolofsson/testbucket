@@ -96,7 +96,6 @@
     private TestProject? _project;
     private string? tenantId;
     private string? currentUrl;
-    private string cssClass = "";
     private bool _isDarkMode = true;
     private MudThemeProvider _mudThemeProvider = default!;
 
@@ -141,14 +140,6 @@
             {
                 _isDarkMode = isDarkMode;
                 StateHasChanged();
-            }
-            if (_isDarkMode)
-            {
-                cssClass = "dark-mode";
-            }
-            else
-            {
-                cssClass = "light-mode";
             }
             StateHasChanged();
         }

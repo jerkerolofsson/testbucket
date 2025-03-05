@@ -1,37 +1,25 @@
-﻿namespace TestBucket.Formats.XUnit
+﻿using TestBucket.Traits.Core;
+
+namespace TestBucket.Formats.XUnit
 {
     public class XUnitSerializer : ITestResultSerializer
     {
         private static readonly CultureInfo _culture = new CultureInfo("en-US");
 
-        private static readonly Dictionary<TestTraitType, string> _propertyNames = new Dictionary<TestTraitType, string>
-        {
-            [TestTraitType.Description] = "Description",
-            [TestTraitType.Version] = "version",
-            [TestTraitType.Ci] = "ci",
-            [TestTraitType.Commit] = "commit",
-            [TestTraitType.TestCategory] = "category",
-            [TestTraitType.Tag] = "tag",
-            [TestTraitType.Area] = "area",
-            [TestTraitType.Project] = "project",
-            [TestTraitType.TestedSoftwareVersion] = "sw",
-            [TestTraitType.TestedHardwareVersion] = "hw",
-        };
-
         /// <summary>
-        /// Attributes not serialized as traits/properties
+        /// Traits that will not be serialized as they are handled by xunit itself (as XML attributes or elements)
         /// </summary>
-        private static readonly HashSet<TestTraitType> _nativeAttributes =
+        private static readonly HashSet<TraitType> _nativeAttributes =
         [
-            TestTraitType.ExternalId,
-            TestTraitType.Name,
-            TestTraitType.TestResult,
-            TestTraitType.ClassName,
-            TestTraitType.Method,
-            TestTraitType.Module,
-            TestTraitType.Message,
-            TestTraitType.Line,
-            TestTraitType.Duration,
+            TraitType.TestId,
+            TraitType.Name,
+            TraitType.TestResult,
+            TraitType.ClassName,
+            TraitType.Method,
+            TraitType.Module,
+            TraitType.FailureMessage,
+            TraitType.Line,
+            TraitType.Duration,
         ];
 
         public string Serialize(TestRunDto testRun)
@@ -92,14 +80,13 @@
 
                             if (collectionName is not null)
                             {
-                                testCaseRun.Traits.Add(new TestTrait { Type = TestTraitType.CollectionName, Name = "Collection", Value = collectionName });
+                                testCaseRun.Traits.Add(new TestTrait { Type = TraitType.CollectionName, Name = "Collection", Value = collectionName });
                             }
-                            testCaseRun.ExternalId = resultNode.Attribute("id")?.Value;
                             testCaseRun.Name = resultNode.Attribute("name")?.Value;
                             testCaseRun.ClassName = resultNode.Attribute("type")?.Value;
                             testCaseRun.Method = resultNode.Attribute("method")?.Value;
                             testCaseRun.Result = TestResult.Passed;
-                            testCaseRun.ExternalId = ImportDefaults.GetExternalId(testRun, testSuite, testCaseRun);
+                            testCaseRun.ExternalId ??= ImportDefaults.GetExternalId(testRun, testSuite, testCaseRun);
 
                             var resultString = resultNode.Attribute("result")?.Value;
                             if (resultString is not null)
@@ -281,7 +268,7 @@
                     if (name is not null && value is not null)
                     {
                         var attributeType = GetTestTraitType(name);
-                        if (attributeType == TestTraitType.Custom)
+                        if (attributeType == TraitType.Custom)
                         {
                             attributes.Traits.Add(new TestTrait(attributeType, name, value));
                         }
@@ -305,50 +292,41 @@
                 if (!_nativeAttributes.Contains(attribute.Type))
                 {
                     var property = new XElement("trait",
-                        new XAttribute("name", GetAttributeName(attribute)),
+                        new XAttribute("name", GetTraitName(attribute)),
                         new XAttribute("value", attribute.Value));
                     traits.Add(property);
                 }
             }
         }
 
-        private static TestTraitType GetTestTraitType(string name)
+        private static TraitType GetTestTraitType(string name)
         {
-            var types = _propertyNames.Where(x => x.Value == name).Select(x => x.Key);
-            foreach (var type in types)
+            // Well known traits
+            if(TraitTypeConverter.TryConvert(name, out var traitType))
             {
-                return type;
+                return traitType.Value;
             }
 
-            if (Enum.TryParse(typeof(TestTraitType), name, true, out object? enumType))
+            if (Enum.TryParse(typeof(TraitType), name, true, out object? enumType))
             {
-                return (TestTraitType)enumType;
+                return (TraitType)enumType;
             }
-            return TestTraitType.Custom;
+            return TraitType.Custom;
         }
 
-        private static string GetAttributeName(TestTrait attribute)
+        private static string GetTraitName(TestTrait attribute)
         {
-            if (_propertyNames.TryGetValue(attribute.Type, out var name))
+            // Well known traits
+            if (TraitTypeConverter.TryConvert(attribute.Type, out var name))
             {
                 return name;
             }
+
             if (attribute.Name is not null)
             {
                 return attribute.Name;
             }
             return attribute.Type.ToString();
         }
-
-        private string FormatTime(TimeSpan duration)
-        {
-            var numberFormat = new NumberFormatInfo();
-            numberFormat.NumberDecimalSeparator = ".";
-            numberFormat.NumberGroupSeparator = "";
-
-            var seconds = duration.TotalSeconds;
-            return Convert.ToString(seconds, numberFormat);
-        }
-
     }
 }

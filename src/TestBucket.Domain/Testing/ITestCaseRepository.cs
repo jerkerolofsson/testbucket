@@ -8,6 +8,8 @@ public interface ITestCaseRepository
     Task<TestCase?> GetTestCaseByExternalIdAsync(string tenantId, long testSuiteId, string? externalId);
     Task<PagedResult<TestCase>> SearchTestCasesAsync(string tenantId, SearchTestQuery query);
 
+    Task DeleteTestCaseByIdAsync(long testCaseId);
+
 
     Task<TestSuiteFolder> AddTestSuiteFolderAsync(string tenantId, long? projectId, long testSuiteId, long? parentFolderId, string name);
     Task<TestSuiteFolder?> GetTestSuiteFolderByNameAsync(string tenantId, long testsuiteId, long? parentId, string folderName);

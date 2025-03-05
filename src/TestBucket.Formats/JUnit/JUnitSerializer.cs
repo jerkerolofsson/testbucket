@@ -1,37 +1,29 @@
-﻿namespace TestBucket.Formats.JUnit
+﻿using TestBucket.Traits.Core;
+
+namespace TestBucket.Formats.JUnit
 {
     public class JUnitSerializer : ITestResultSerializer
     {
-        private static readonly Dictionary<TestTraitType, string> _propertyNames = new Dictionary<TestTraitType, string>
-        {
-            [TestTraitType.Description] = "Description",
-            [TestTraitType.Version] = "version",
-            [TestTraitType.Ci] = "ci",
-            [TestTraitType.Commit] = "commit",
-            [TestTraitType.TestCategory] = "category",
-            [TestTraitType.Tag] = "tag",
-        };
-
         /// <summary>
-        /// Attributes not serialized as properties
+        /// Attributes not serialized as properties as they are supported natively by junit
         /// </summary>
-        private static readonly HashSet<TestTraitType> _nativeAttributes =
+        private static readonly HashSet<TraitType> _nativeAttributes =
         [
-            TestTraitType.ExternalId,
-            TestTraitType.Name,
-            TestTraitType.TestResult,
-            TestTraitType.SystemOut,
-            TestTraitType.SystemErr,
-            TestTraitType.Line,
-            TestTraitType.Duration,
-            TestTraitType.ClassName,
+            TraitType.TestId,
+            TraitType.Name,
+            TraitType.TestResult,
+            TraitType.SystemOut,
+            TraitType.SystemErr,
+            TraitType.Line,
+            TraitType.Duration,
+            TraitType.ClassName,
 
-            TestTraitType.SystemOut,
-            TestTraitType.SystemErr,
+            TraitType.SystemOut,
+            TraitType.SystemErr,
 
-            TestTraitType.Message,
-            TestTraitType.CallStack,
-            TestTraitType.FailureType
+            TraitType.FailureMessage,
+            TraitType.CallStack,
+            TraitType.FailureType
         ];
 
         public string Serialize(TestRunDto testRun)
@@ -274,7 +266,7 @@
                     if (name is not null && value is not null)
                     {
                         var attributeType = GetTestTraitType(name);
-                        if (attributeType == TestTraitType.Custom)
+                        if (attributeType == TraitType.Custom)
                         {
                             attributes.Traits.Add(new TestTrait(attributeType, name, value));
                         }
@@ -286,8 +278,7 @@
                 }
             }
         }
-
-
+        
         private static void WriteProperties(TestTraitCollection attributeCollection, XElement testSuitesElement)
         {
             var properties = new XElement("properties");
@@ -297,34 +288,36 @@
                 if (!_nativeAttributes.Contains(attribute.Type))
                 {
                     var property = new XElement("property",
-                        new XAttribute("name", GetAttributeName(attribute)),
+                        new XAttribute("name", GetTraitName(attribute)),
                         new XAttribute("value", attribute.Value));
                     properties.Add(property);
                 }
             }
         }
 
-        private static TestTraitType GetTestTraitType(string name)
+        private static TraitType GetTestTraitType(string name)
         {
-            var types = _propertyNames.Where(x => x.Value == name).Select(x => x.Key);
-            foreach (var type in types)
+            // Well known traits
+            if (TraitTypeConverter.TryConvert(name, out var traitType))
             {
-                return type;
+                return traitType.Value;
             }
 
-            if (Enum.TryParse(typeof(TestTraitType), name, true, out object? enumType))
+            if (Enum.TryParse(typeof(TraitType), name, true, out object? enumType))
             {
-                return (TestTraitType)enumType;
+                return (TraitType)enumType;
             }
-            return TestTraitType.Custom;
+            return TraitType.Custom;
         }
 
-        private static string GetAttributeName(TestTrait attribute)
+        private static string GetTraitName(TestTrait attribute)
         {
-            if (_propertyNames.TryGetValue(attribute.Type, out var name))
+            // Well known traits
+            if (TraitTypeConverter.TryConvert(attribute.Type, out var name))
             {
                 return name;
             }
+
             if (attribute.Name is not null)
             {
                 return attribute.Name;

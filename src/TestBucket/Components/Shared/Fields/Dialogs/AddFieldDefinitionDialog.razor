@@ -2,7 +2,7 @@
 @attribute [Authorize(Roles = "ADMIN")]
 @inject FieldService fieldService
 
-<EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
+<EditForm Model="@_fieldDefinition" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>Add new field</TitleContent>
         <DialogContent>
@@ -18,12 +18,6 @@
 
 
 @code {
-    private string _name = "";
-    private string _slug = "";
-    private string _shortName = "";
-
-    private string? _errorMessage;
-
     [Parameter]
     public FieldDefinition? FieldDefinition { get; set; }
 
@@ -44,7 +38,10 @@
 
     private async Task OnValidSubmitAsync()
     {
-        await fieldService.AddAsync(_fieldDefinition);
-        MudDialog.Close(_fieldDefinition);
+        if (_fieldDefinition is not null)
+        {
+            await fieldService.AddAsync(_fieldDefinition);
+            MudDialog.Close(_fieldDefinition);
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Formats.Dtos
+﻿using TestBucket.Traits.Core;
+
+namespace TestBucket.Formats.Dtos
 {
     public class TestCaseRunDto : TestTraitCollection
     {
@@ -9,11 +11,11 @@
         {
             get
             {
-                if (!HasAttribute(TestTraitType.TestResult))
+                if (!HasAttribute(TraitType.TestResult))
                 {
                     return TestResult.NoRun;
                 }
-                var intResult = GetAttributeAsInt32(TestTraitType.TestResult);
+                var intResult = GetAttributeAsInt32(TraitType.TestResult);
                 if (intResult is null)
                 {
                     return TestResult.NoRun;
@@ -24,11 +26,11 @@
             {
                 if (value is null)
                 {
-                    SetAttribute(TestTraitType.TestResult, (string?)null);
+                    SetAttribute(TraitType.TestResult, (string?)null);
                 }
                 else
                 {
-                    SetAttribute(TestTraitType.TestResult, (int)value);
+                    SetAttribute(TraitType.TestResult, (int)value);
                 }
             }
         }
@@ -38,8 +40,8 @@
         /// </summary>
         public TimeSpan? Duration
         {
-            get => GetAttributeAsTimeSpan(TestTraitType.Duration);
-            set => SetAttribute(TestTraitType.Duration, value);
+            get => GetAttributeAsTimeSpan(TraitType.Duration);
+            set => SetAttribute(TraitType.Duration, value);
         }
 
         /// <summary>
@@ -47,8 +49,8 @@
         /// </summary>
         public string? Description
         {
-            get => GetAttribute(TestTraitType.Description);
-            set => SetAttribute(TestTraitType.Description, value);
+            get => GetAttribute(TraitType.TestDescription);
+            set => SetAttribute(TraitType.TestDescription, value);
         }
 
         /// <summary>
@@ -56,8 +58,8 @@
         /// </summary>
         public string? Message
         {
-            get => GetAttribute(TestTraitType.Message);
-            set => SetAttribute(TestTraitType.Message, value);
+            get => GetAttribute(TraitType.FailureMessage);
+            set => SetAttribute(TraitType.FailureMessage, value);
         }
 
         /// <summary>
@@ -65,8 +67,8 @@
         /// </summary>
         public string? FailureType
         {
-            get => GetAttribute(TestTraitType.FailureType);
-            set => SetAttribute(TestTraitType.FailureType, value);
+            get => GetAttribute(TraitType.FailureType);
+            set => SetAttribute(TraitType.FailureType, value);
         }
 
         /// <summary>
@@ -74,8 +76,8 @@
         /// </summary>
         public string? CallStack
         {
-            get => GetAttribute(TestTraitType.CallStack);
-            set => SetAttribute(TestTraitType.CallStack, value);
+            get => GetAttribute(TraitType.CallStack);
+            set => SetAttribute(TraitType.CallStack, value);
         }
 
         /// <summary>
@@ -83,8 +85,8 @@
         /// </summary>
         public int? Line
         {
-            get => GetAttributeAsInt32(TestTraitType.Line);
-            set => SetAttribute(TestTraitType.Line, value);
+            get => GetAttributeAsInt32(TraitType.Line);
+            set => SetAttribute(TraitType.Line, value);
         }
 
 
@@ -93,8 +95,8 @@
         /// </summary>
         public string? ClassName
         {
-            get => GetAttribute(TestTraitType.ClassName);
-            set => SetAttribute(TestTraitType.ClassName, value);
+            get => GetAttribute(TraitType.ClassName);
+            set => SetAttribute(TraitType.ClassName, value);
         }
 
         /// <summary>
@@ -102,8 +104,8 @@
         /// </summary>
         public string? Method
         {
-            get => GetAttribute(TestTraitType.Method);
-            set => SetAttribute(TestTraitType.Method, value);
+            get => GetAttribute(TraitType.Method);
+            set => SetAttribute(TraitType.Method, value);
         }
     }
 }

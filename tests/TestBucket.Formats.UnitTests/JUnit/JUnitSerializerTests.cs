@@ -1,5 +1,6 @@
 ﻿using TestBucket.Formats.JUnit;
 using TestBucket.Formats.UnitTests.Utilities;
+using TestBucket.Traits.XUnit;
 
 namespace TestBucket.Formats.UnitTests.JUnit
 {
@@ -10,7 +11,8 @@ namespace TestBucket.Formats.UnitTests.JUnit
         /// Verifies that a junit xml without a name attribute on the testsuites node gets the name from the first testsuite node
         /// </summary>
         [Fact]
-        [Trait("Product Component", "TestBucket.Formats")]
+        [TestId("JUNIT-001")]
+        [Component("TestBucket.Formats")]
         public void Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-basic.xml");
@@ -26,7 +28,8 @@ namespace TestBucket.Formats.UnitTests.JUnit
         /// Verifies that a junit xml is contains the correct number of test suites
         /// </summary>
         [Fact]
-        [Trait("Product Component", "TestBucket.Formats")]
+        [TestId("JUNIT-002")]
+        [Component("TestBucket.Formats")]
         public void Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-basic.xml");
@@ -43,7 +46,8 @@ namespace TestBucket.Formats.UnitTests.JUnit
         /// Verifies that a junit xml containing properties on the testcase element are extracted as traits
         /// </summary>
         [Fact]
-        [Trait("Product Component", "TestBucket.Formats")]
+        [TestId("JUNIT-003")]
+        [Component("TestBucket.Formats")]
         public void Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-properties.xml");

@@ -433,6 +433,9 @@
       "TestBucket.Contracts/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "TestBucket.Traits.Core": "1.0.0"
+        },
         "compile": {
           "bin/placeholder/TestBucket.Contracts.dll": {}
         },
@@ -451,6 +454,30 @@
         },
         "runtime": {
           "bin/placeholder/TestBucket.Formats.dll": {}
+        }
+      },
+      "TestBucket.Traits.Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "compile": {
+          "bin/placeholder/TestBucket.Traits.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/TestBucket.Traits.Core.dll": {}
+        }
+      },
+      "TestBucket.Traits.XUnit/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v9.0",
+        "dependencies": {
+          "TestBucket.Traits.Core": "1.0.0",
+          "xunit": "2.9.2"
+        },
+        "compile": {
+          "bin/placeholder/TestBucket.Traits.XUnit.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/TestBucket.Traits.XUnit.dll": {}
         }
       }
     }
@@ -1035,6 +1062,16 @@
       "type": "project",
       "path": "../../src/TestBucket.Formats/TestBucket.Formats.csproj",
       "msbuildProject": "../../src/TestBucket.Formats/TestBucket.Formats.csproj"
+    },
+    "TestBucket.Traits.Core/1.0.0": {
+      "type": "project",
+      "path": "../../src/Traits/TestBucket.Traits.Core/TestBucket.Traits.Core.csproj",
+      "msbuildProject": "../../src/Traits/TestBucket.Traits.Core/TestBucket.Traits.Core.csproj"
+    },
+    "TestBucket.Traits.XUnit/1.0.0": {
+      "type": "project",
+      "path": "../../src/Traits/TestBucket.Traits.XUnit/TestBucket.Traits.XUnit.csproj",
+      "msbuildProject": "../../src/Traits/TestBucket.Traits.XUnit/TestBucket.Traits.XUnit.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -1043,6 +1080,7 @@
       "Microsoft.NET.Test.Sdk >= 17.11.1",
       "NunitXml.TestLogger >= 6.0.0",
       "TestBucket.Formats >= 1.0.0",
+      "TestBucket.Traits.XUnit >= 1.0.0",
       "XunitXml.TestLogger >= 6.0.0",
       "coverlet.collector >= 6.0.2",
       "xunit >= 2.9.2",
@@ -1084,6 +1122,9 @@
           "projectReferences": {
             "d:\\local\\code\\testbucket\\src\\TestBucket.Formats\\TestBucket.Formats.csproj": {
               "projectPath": "d:\\local\\code\\testbucket\\src\\TestBucket.Formats\\TestBucket.Formats.csproj"
+            },
+            "d:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj": {
+              "projectPath": "d:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj"
             }
           }
         }

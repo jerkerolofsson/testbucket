@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Formats.Dtos
+﻿using TestBucket.Traits.Core;
+
+namespace TestBucket.Formats.Dtos
 {
     public class TestTrait : IComparable<TestTrait>
     {
@@ -6,7 +8,7 @@
         /// <summary>
         /// Well-known type of trait
         /// </summary>
-        public TestTraitType Type { get; set; }
+        public TraitType Type { get; set; }
 
         /// <summary>
         /// Value
@@ -20,17 +22,17 @@
 
         public TestTrait()
         {
-            Type = TestTraitType.Description;
+            Type = TraitType.TestDescription;
             Value = "";
             Name = "Description";
         }
-        public TestTrait(TestTraitType type, string value)
+        public TestTrait(TraitType type, string value)
         {
             Name = type.ToString();
             Type = type;
             Value = value;
         }
-        public TestTrait(TestTraitType type, string name, string value)
+        public TestTrait(TraitType type, string name, string value)
         {
             Name = name;
             Type = type;
@@ -39,7 +41,7 @@
         public TestTrait(string name, string value)
         {
             Name = name;
-            Type = TestTraitType.Custom;
+            Type = TraitType.Custom;
             Value = value;
         }
 

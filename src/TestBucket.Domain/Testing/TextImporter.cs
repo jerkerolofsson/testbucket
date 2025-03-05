@@ -138,6 +138,7 @@ internal class TextImporter : ITextTestResultsImporter
         TestCase? testCase = await _testCaseRepository.GetTestCaseByExternalIdAsync(tenantId, suite.Id, test.ExternalId);
         if (testCase is null)
         {
+            // Create folder for the test case
             long? folderId = null;
             if (test.ClassName is not null)
             {
@@ -150,10 +151,11 @@ internal class TextImporter : ITextTestResultsImporter
                 }
                 folderId = folder?.Id;
             }
+
             testCase = new TestCase
             {
                 Name = test.Name ?? "",
-                ExternalId = test.ExternalId,
+                ExternalId = test.TestId ?? test.ExternalId,
                 ClassName = test.ClassName,
                 Method = test.Method,
                 Module = test.Module,

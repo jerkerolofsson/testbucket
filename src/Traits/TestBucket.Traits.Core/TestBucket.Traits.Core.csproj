@@ -6,8 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Traits\TestBucket.Traits.Core\TestBucket.Traits.Core.csproj" />
-  </ItemGroup>
-
 </Project>

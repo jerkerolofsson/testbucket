@@ -4,11 +4,11 @@
 {
     <MudStack>
         <MudStack 
-            Spacing="3"
-            Row="true" 
-            AlignItems="AlignItems.Center"
-                  Style="border-bottom: solid 1px var(--mud-palette-dark-darken); height: 40px">
-            
+        Spacing="3"
+        Row="true" 
+        AlignItems="AlignItems.Center"
+        Style="border-bottom: solid 1px var(--mud-palette-dark-darken); height: 40px">
+
             <MudItem Class="mr-2"/>
 
             <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Style="color: greenyellow"/>
@@ -16,6 +16,13 @@
             <div style="width: 1px; background: var(--mud-palette-dark-lighten); height: 90%"></div>
 
             @Test.Slug
+
+            <div style="width: 1px; background: var(--mud-palette-dark-lighten); height: 90%"></div>
+
+            <MudMenu Icon="@Icons.Material.Filled.MoreHoriz">
+                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="async x => await DeleteTestCaseAsync()">Delete</MudMenuItem>
+            </MudMenu>
+
         </MudStack>
 
         <div class="pa-3">
@@ -24,15 +31,15 @@
                 Label="Name" Value="@Test.Name" ValueChanged="OnNameChanged" T="string"/>
 
                 <MarkdownEditor 
-                    Value="@_boundDescription"
-                    ShowIcons="@_icons"
-                    @ref=_editor
-                    MinHeight="30vh"
-                    MaxHeight="30vh"
-                    ValueChanged="OnDescriptionChanged"
-                    SpellChecker="false">
-                        <Toolbar>
-                        </Toolbar>
+                Value="@_boundDescription"
+                ShowIcons="@_icons"
+                @ref=_editor
+                MinHeight="30vh"
+                MaxHeight="30vh"
+                ValueChanged="OnDescriptionChanged"
+                SpellChecker="false">
+                    <Toolbar>
+                    </Toolbar>
                 </MarkdownEditor>
 
                 <FieldsEditor TestCase="@Test"/>
@@ -54,6 +61,13 @@
 @code {
     [Parameter] public TestCase? Test { get; set; }
     [Parameter] public EventCallback<TestCase?> TestChanged { get; set; }
+    [Parameter] public EventCallback<TestCase?> DeleteTestClicked { get; set; }
+
+    private async Task DeleteTestCaseAsync()
+    {
+        await DeleteTestClicked.InvokeAsync(Test);
+    }
+
     private IReadOnlyList<FieldDefinition> _fields = [];
 
     private string[] _icons = ["bold", "preview"];

@@ -2,9 +2,17 @@
 
 namespace TestBucket.Components.Tests.Services;
 
+
+internal interface ITestBrowserObserver
+{
+    Task OnTestDeletedAsync(TestCase testCase);
+}
+
+
 internal class TestCaseEditorService : TenantBaseService
 {
     private readonly ITestCaseRepository _testCaseRepo;
+    private readonly List<ITestBrowserObserver> _observers = new();
 
     public event EventHandler<TestCase>? TestCaseSaved;
 
@@ -13,6 +21,18 @@ internal class TestCaseEditorService : TenantBaseService
     {
         _testCaseRepo = testCaseRepo;
     }
+
+    /// <summary>
+    /// Adds an observer
+    /// </summary>
+    /// <param name="listener"></param>
+    public void AddObserver(ITestBrowserObserver observer) => _observers.Add(observer);
+
+    /// <summary>
+    /// Remopves an observer
+    /// </summary>
+    /// <param name="observer"></param>
+    public void RemoveObserver(ITestBrowserObserver observer) => _observers.Remove(observer);
 
     /// <summary>
     /// Adds a test case
@@ -26,6 +46,28 @@ internal class TestCaseEditorService : TenantBaseService
     }
 
     /// <summary>
+    /// Deletes a test case
+    /// </summary>
+    /// <param name="testCase"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public async Task DeleteTestCaseAsync(TestCase testCase)
+    {
+        var tenantId = await GetTenantIdAsync();
+        if (tenantId != testCase.TenantId)
+        {
+            throw new InvalidOperationException("Tenant ID mismatch");
+        }
+        await _testCaseRepo.DeleteTestCaseByIdAsync(testCase.Id);
+
+        // Notify observers
+        foreach(var observer in _observers)
+        {
+            await observer.OnTestDeletedAsync(testCase);
+        }
+    }
+
+    /// <summary>
     /// Saves a test case
     /// </summary>
     /// <param name="testCase"></param>
@@ -36,9 +78,18 @@ internal class TestCaseEditorService : TenantBaseService
         var tenantId = await GetTenantIdAsync();
         if(tenantId != testCase.TenantId)
         {
-            throw new InvalidOperationException("TenantId mismatch");
+            throw new InvalidOperationException("Tenant ID mismatch");
         }
+
+        //todo
+        //var oldTestCAse = await _testCaseRepo.GetTestCaseByIdAsync
+
+        // Todo: detect changed
+
         await _testCaseRepo.UpdateTestCaseAsync(testCase);
         TestCaseSaved?.Invoke(this,testCase);
+
+        // observer.OnTestCaseFolderChangedAsync
+        // observer...
     }
 }

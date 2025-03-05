@@ -13,7 +13,7 @@
 
     @if(_selectedTestCase is not null)
     {
-        <TestCaseEditor Test="@_selectedTestCase" TestChanged="OnTestModified"/>
+        <TestCaseEditor Test="@_selectedTestCase" TestChanged="OnTestModified" DeleteTestClicked="OnDeleteTest"/>
     }
     else
     {
@@ -51,6 +51,14 @@
         _selectedTestCase = test;
     }
 
+    private async Task OnDeleteTest(TestCase? test)
+    {
+        _selectedTestCase = null;
+        if(test is not null)
+        {
+            await testCaseEditor.DeleteTestCaseAsync(test);
+        }
+    }
     private async Task OnTestModified(TestCase test)
     {
         _selectedTestCase = test;

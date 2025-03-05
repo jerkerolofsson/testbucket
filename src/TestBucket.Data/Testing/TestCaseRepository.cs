@@ -76,6 +76,28 @@ internal class TestCaseRepository : ITestCaseRepository
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task DeleteTestCaseByIdAsync(long id)
+    {
+        //testCase.Created = DateTimeOffset.UtcNow;
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await foreach (var run in dbContext.TestCaseRuns.Where(x => x.TestCaseId == id).AsAsyncEnumerable())
+        {
+            dbContext.TestCaseRuns.Remove(run);
+        }
+
+        await foreach (var field in dbContext.TestCaseFields.Where(x => x.TestCaseId == id).AsAsyncEnumerable())
+        {
+            dbContext.TestCaseFields.Remove(field);
+        }
+
+        await foreach (var test in dbContext.TestCases.Where(x=>x.Id == id).AsAsyncEnumerable())
+        {
+            dbContext.TestCases.Remove(test);
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
 
     public async Task UpdateTestCaseAsync(TestCase testCase)
     {

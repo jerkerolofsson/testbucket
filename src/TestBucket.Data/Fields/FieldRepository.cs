@@ -1,0 +1,83 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using TestBucket.Domain.Fields;
+using TestBucket.Domain.Fields.Models;
+
+namespace TestBucket.Data.Fields;
+internal class FieldRepository : IFieldRepository
+{
+    private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+
+    public FieldRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory)
+    {
+        _dbContextFactory = dbContextFactory;
+    }
+
+    public async Task AddAsync(FieldDefinition fieldDefinition)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.AddAsync(fieldDefinition);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteAsync(FieldDefinition fieldDefinition)
+    {
+        fieldDefinition.IsDeleted = true;
+        await UpdateAsync(fieldDefinition);
+    }
+
+
+    public async Task SaveTestCaseFieldsAsync(IEnumerable<TestCaseField> fields)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        foreach(var field in fields)
+        {
+            if(field.Id > 0)
+            {
+                dbContext.TestCaseFields.Update(field);
+            }
+            else
+            {
+                var tmp = field.FieldDefinition;
+                field.FieldDefinition = null;
+                await dbContext.TestCaseFields.AddAsync(field);
+                field.FieldDefinition = tmp;
+            }
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<IReadOnlyList<TestCaseField>> GetTestCaseFieldsAsync(string tenantId, long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var fields = dbContext.TestCaseFields.AsNoTracking()
+            .Include(x=>x.FieldDefinition)
+            .Where(x => x.TenantId == tenantId && x.TestCaseId == id);
+        return await fields.ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<FieldDefinition>> SearchAsync(string tenantId, SearchQuery query)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var fields = dbContext.FieldDefinitions.AsNoTracking().Where(x=>x.TenantId == tenantId && x.IsDeleted == false);
+        if(query.ProjectId is not null)
+        {
+            fields = fields.Where(x => x.TestProjectId == query.ProjectId);
+        }
+
+        return await fields.OrderBy(x => x.Name).Skip(query.Offset).Take(query.Count).ToListAsync();
+    }
+
+    public async Task UpdateAsync(FieldDefinition fieldDefinition)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        dbContext.Update(fieldDefinition);
+        await dbContext.SaveChangesAsync();
+    }
+}

@@ -1,0 +1,82 @@
+﻿@using TestBucket.Domain.Fields.Models
+
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem">
+    @if(FieldDefinition is not null)
+    {
+        <MudStack>
+            <h3>Field</h3>
+            <MudStack Spacing="0">
+                <MudTextField Value="@FieldDefinition.Name" ValueChanged="OnNameChanged" T="string" Variant="Variant.Outlined"/>
+                <MudText Typo="Typo.subtitle1">Field label</MudText>
+            </MudStack>
+
+            <MudStack Spacing="0">
+                <MudSelect Value="@FieldDefinition.Type" ValueChanged="OnTypeChanged" T="FieldType" Variant="Variant.Outlined">
+                    <MudSelectItem Value="@FieldType.String">String</MudSelectItem>
+                    <MudSelectItem Value="@FieldType.Boolean">Boolean</MudSelectItem>
+                    <MudSelectItem Value="@FieldType.SingleSelection">Single Selection</MudSelectItem>
+                </MudSelect>
+                <MudText Typo="Typo.subtitle1">The type of field defines what data can be stored and how it can be selected</MudText>
+            </MudStack>
+
+            @if(FieldDefinition.Type == FieldType.SingleSelection)
+            {
+                <MudTextField Value="@_options" ValueChanged="OnOptionsChanged" T="string" Variant="Variant.Outlined" />
+                <MudText Typo="Typo.subtitle1">Options separated by comma (,)</MudText>
+            }
+            
+        </MudStack>
+
+        <MudStack>
+            <h3>Preview</h3>
+
+            <FieldEditor @bind-Field="_dummy"/>
+        </MudStack>
+    }
+</div>
+
+@code {
+    [Parameter] public FieldDefinition? FieldDefinition { get; set; }
+    [Parameter] public EventCallback<FieldDefinition> FieldDefinitionChanged { get; set; }
+
+    private string _options = "";
+    private FieldValue _dummy = new FieldValue() { FieldDefinitionId = 0  };
+
+    protected override void OnParametersSet()
+    {
+        _dummy.FieldDefinition = FieldDefinition;
+
+        _options = "";
+        if(FieldDefinition?.Options is not null)
+        {
+            _options = string.Join(", ", FieldDefinition.Options);
+        }
+    }
+
+    private async Task OnTypeChanged(FieldType value)
+    {
+        if (FieldDefinition is not null)
+        {
+            FieldDefinition.Type = value;
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
+
+    private async Task OnOptionsChanged(string value)
+    {
+        if (FieldDefinition is not null)
+        {
+            _options = value;
+            FieldDefinition.Options = _options.Split(',', StringSplitOptions.TrimEntries|StringSplitOptions.RemoveEmptyEntries).ToList();
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
+    private async Task OnNameChanged(string value)
+    {
+        if (FieldDefinition is not null)
+        {
+            FieldDefinition.Name = value;
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
+}

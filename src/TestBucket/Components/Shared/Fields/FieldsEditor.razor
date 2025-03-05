@@ -1,0 +1,29 @@
+﻿@inject FieldService fieldService
+
+@foreach(var field in _testCaseFields)
+{
+    <FieldEditor Field="@field" FieldChanged="OnFieldChangedAsync"/>
+}
+
+@code {
+    [Parameter] public TestCase? TestCase { get; set; }
+
+    private IReadOnlyList<TestCaseField> _testCaseFields = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(TestCase is not null)
+        {
+            var definitions = await fieldService.SearchDefinitionsAsync(new SearchQuery { ProjectId = TestCase.TestProjectId });
+            _testCaseFields = await fieldService.GetTestCaseFieldsAsync(TestCase.Id, definitions);
+        }
+    }
+
+    private async Task OnFieldChangedAsync()
+    {
+        if(_testCaseFields.Count > 0)
+        {
+           await fieldService.SaveTestCaseFieldsAsync(_testCaseFields);
+        }
+    }
+}

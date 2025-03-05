@@ -1,0 +1,49 @@
+﻿@if(Field?.FieldDefinition is not null)
+{
+    <MudStack Spacing="0" Class="pa-2" Style="background: rgba(0,0,0,0.05); border: solid 1px rgba(0,0,0,0.075)">
+        <h6 style="font-weight: bold; font-size: 10pt; color: var(--mud-palette-tertiary)">@Field.FieldDefinition.Name</h6>
+
+        @if(Field.FieldDefinition.Type == Domain.Fields.Models.FieldType.String)
+        {
+            <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined"/>
+        }
+        @if(Field.FieldDefinition.Type == Domain.Fields.Models.FieldType.SingleSelection)
+        {
+            <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined">
+                @if(Field.FieldDefinition.Options is not null)
+                {
+                    @foreach(var item in Field.FieldDefinition.Options)
+                    {
+                        <MudSelectItem Value="@item">@item</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        }
+        @if(Field.FieldDefinition.Type == Domain.Fields.Models.FieldType.Boolean)
+        {
+            <MudSwitch Value="@Field.BooleanValue" T="bool?" ValueChanged="OnBooleanValueChanged" Color="Color.Primary"/>
+        }
+    </MudStack>
+}
+
+@code {
+    [Parameter] public FieldValue? Field { get; set; }
+    [Parameter] public EventCallback<FieldValue?> FieldChanged { get; set; }
+
+    private async Task OnStringValueChanged(string value)
+    {
+        if (Field is not null)
+        {
+            Field.StringValue = value;
+            await FieldChanged.InvokeAsync(Field);
+        }
+    }
+    private async Task OnBooleanValueChanged(bool? value)
+    {
+        if (Field is not null)
+        {
+            Field.BooleanValue = value;
+            await FieldChanged.InvokeAsync(Field);
+        }
+    }
+}

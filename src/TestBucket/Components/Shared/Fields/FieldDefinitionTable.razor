@@ -1,0 +1,90 @@
+﻿@using TestBucket.Components.Shared.Fields.Dialogs
+@using TestBucket.Domain.Fields.Models
+@inject FieldService fieldService
+@inject IDialogService dialogService
+
+<MudDataGrid Items="_fields"
+             Dense="true"
+             Hover="true"
+             T="FieldDefinition"
+             SortMode="SortMode.None">
+
+    <ToolBarContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddFieldAsync"></MudIconButton>
+
+        </MudStack>
+    </ToolBarContent>
+
+    <Columns>
+        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.Trait" />
+        <PropertyColumn Property="x => x.Type" />
+        <TemplateColumn Title="Options">
+            <CellTemplate>
+                @if(context.Item.Options is not null)
+                {
+                    @string.Join(", ", context.Item.Options);
+                }
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <PagerContent>
+        <MudDataGridPager T="FieldDefinition" />
+    </PagerContent>
+</MudDataGrid>
+
+@code {
+    [Parameter] public long? ProjectId { get; set; }
+
+    private IReadOnlyList<FieldDefinition> _fields = [];
+
+    private async Task AddFieldAsync()
+    {
+        FieldDefinition definition = new()
+            {
+                Name = "Priority",
+                Trait = "prio",
+                Options = ["Low", "Medium", "High"],
+                TestProjectId = ProjectId,
+                Type = Domain.Fields.Models.FieldType.String
+            };
+
+        var parameters = new DialogParameters<AddFieldDefinitionDialog>
+        {
+            { x=>x.FieldDefinition, definition }
+        };
+        var dialog = await dialogService.ShowAsync<AddFieldDefinitionDialog>(null, parameters);
+        var result = await dialog.Result;
+       
+
+
+        // FieldDefinition definition = new()
+        // {
+        //     Name = "Quality Characteristic",
+        //     Trait = "quality-characteristic",
+        //     Options = ["Functionality", "Reliability", "Performance", "Interoperability", "Compliance", "Other"],
+        //     TestProjectId = ProjectId,
+        //     Type = Domain.Fields.Models.FieldType.String
+        // };
+
+        // FieldDefinition definition = new()
+        //     {
+        //         Name = "Test Execution Type",
+        //         Trait = "",
+        //         Options = ["Automated", "Manual", "Other"],
+        //         TestProjectId = ProjectId,
+        //         Type = Domain.Fields.Models.FieldType.String
+        //     };
+       
+
+        //await fieldService.AddAsync(definition);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _fields = await fieldService.SearchDefinitionsAsync(new SearchQuery() { ProjectId = ProjectId });
+    }
+}

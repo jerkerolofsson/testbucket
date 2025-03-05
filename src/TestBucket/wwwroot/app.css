@@ -37,15 +37,16 @@ p.mud-typography-subtitle1 {
 }
 
 .EasyMDEContainer .editor-toolbar {
-    background: var(--mud-palette-dark);
-    border-color: var(--mud-palette-dark-lighten);
+    background: var(--mud-palette-primary);
+    border-color: var(--mud-palette-primary-darken);
+    color: white;
 }
 
 .EasyMDEContainer .editor-preview-full,
 .EasyMDEContainer .CodeMirror {
     background: var(--mud-palette-dark);
     border-color: var(--mud-palette-dark-lighten);
-    color: white;
+    color: var(--mud-palette-text-primary);
 }
 
 .EasyMDEContainer .editor-preview-full blockquote {
@@ -61,4 +62,16 @@ p.mud-typography-subtitle1 {
 
 .dropdown-container:hover .mud-icon-button {
     opacity: 1;
+}
+
+.mud-toolbar .mud-icon-button {
+    color: white;
+}
+
+ .mud-toolbar .mud-input>input.mud-input-root, div.mud-input-slot.mud-input-root {
+    color: white;
+}
+
+ .mud-toolbar fieldset legend {
+    color: white;
 }

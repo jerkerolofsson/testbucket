@@ -5,8 +5,8 @@
 @inject TestSuiteService testSuiteService
 @inject TestCaseEditorService testCaseEditor
 
-<MudStack Spacing="0" Class="pa-2" Style="width: 20vw; background: rgba(0,0,0,0.2)">
-    <MudStack Row="true" Style="border-bottom: solid 1px #333" Spacing="0">
+<MudStack Spacing="0" Class="pa-2" Style="width: 20vw; background: var(--mud-palette-surface)">
+    <MudStack Row="true" Style="border-bottom: solid 1px var(--mud-palette-darken)" Spacing="0">
         <MudTooltip Text="Add test suite">
             <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTestSuiteAsync"/>
         </MudTooltip>

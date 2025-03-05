@@ -3,10 +3,17 @@
 @if(Test is not null && _boundDescription is not null)
 {
     <MudStack>
-        <MudStack Row="true" Style="background: rgba(0,0,0,0.2); border-bottom: solid 1px #333; height: 40px">
+        <MudStack 
+            Spacing="3"
+            Row="true" 
+            AlignItems="AlignItems.Center"
+                  Style="border-bottom: solid 1px var(--mud-palette-dark-darken); height: 40px">
+            
+            <MudItem Class="mr-2"/>
+
             <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Style="color: greenyellow"/>
 
-            <div style="width: 1px; background: #555; height: 90%"></div>
+            <div style="width: 1px; background: var(--mud-palette-dark-lighten); height: 90%"></div>
 
             @Test.Slug
         </MudStack>

@@ -12,6 +12,7 @@
         Value="@SelectedTeam" 
         Text="@SelectedTeam?.Name" 
         T="Team" 
+        Clearable="true"
         ValueChanged="OnSelectedTeamChanged">
         @foreach(var team in _teams)
         {
@@ -45,7 +46,7 @@
     [Parameter] public Team? SelectedTeam { get; set; }
     [Parameter] public EventCallback<Team?> SelectedTeamChanged { get; set; }
 
-    private async Task OnSelectedTeamChanged(Team team)
+    private async Task OnSelectedTeamChanged(Team? team)
     {
         await SelectedTeamChanged.InvokeAsync(team);
     }

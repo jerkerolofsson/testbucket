@@ -1,4 +1,4 @@
-﻿@page "/{tenantId}/projects/{projectSlug}"
+﻿@page "/{tenantId}/projects/settings"
 @layout AppLayout
 @attribute [Authorize(Roles = "ADMIN")]
 @inject ProjectService projectService
@@ -6,23 +6,13 @@
 
 <TenantRedirect/>
 
-@if(_project is not null)
+@if (Project is not null)
 {
-    <ProjectEditor Project="@_project"/>
+    <ProjectEditor Project="@Project" />
 }
 
 
 @code {
     [Parameter] public string? TenantId { get; set; }
-    [Parameter] public string? ProjectSlug { get; set; }
-
-    private TestProject? _project = null;
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (ProjectSlug is not null)
-        {
-            _project = await projectService.GetProjectBySlugAsync(ProjectSlug);
-        }
-    }
+    [CascadingParameter] public TestProject? Project { get; set; }
 }

@@ -20,6 +20,7 @@ using TestBucket.Components.Uploads.Services;
 using TestBucket.Components.Teams;
 using TestBucket.Components.Shared.Fields;
 using Npgsql;
+using TestBucket.Components.Shared.Themeing;
 
 namespace TestBucket;
 
@@ -82,6 +83,7 @@ public class Program
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
         builder.Services.AddScoped<UserRegistrationService>();
+        builder.Services.AddScoped<ThemingService>();
         builder.Services.AddScoped<TenantResolver>();
         builder.Services.AddScoped<TenantService>();
         builder.Services.AddScoped<TeamService>();

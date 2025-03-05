@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Account
+@using TestBucket.Components.Shared.Themeing
 @using TestBucket.Components.Teams
 @using TestBucket.Components.Teams.Controls
 @using TestBucket.Domain.Teams.Models
@@ -8,9 +9,9 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject ProjectService projectService
 @inject TeamService teamService
-@inject UserPreferencesService userPreferencesService
+@inject ThemingService themingService
 
-<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" />
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="@themingService.Theme"/>
 <MudSnackbarProvider />
 <MudPopoverProvider />
 <MudDialogProvider MaxWidth="MaxWidth.ExtraExtraLarge" />
@@ -33,12 +34,14 @@
 
         <div style="display: grid; grid-template-rows: auto 1fr; height: 100%">
 
-            <MudToolBar Style="background: var(--mud-palette-dark); width: 100%">
+            <MudToolBar Style="@MenuStyle">
                 <MudStack Row="true" Style="width: 100%">
+
                     <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" />
                     <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged"/>
                     <MudSpacer/>
 
+                    <DarkModeToggle IsDarkMode="@_isDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
                     <MudMenu Icon="@Icons.Material.Filled.MoreVert">
 
                         <!-- Pages -->
@@ -94,8 +97,16 @@
     private string? tenantId;
     private string? currentUrl;
     private string cssClass = "";
-    private bool _isDarkMode;
+    private bool _isDarkMode = true;
     private MudThemeProvider _mudThemeProvider = default!;
+
+    public string MenuStyle => $"width: 100%; background: {MenuBackground}; color: white;";
+    // public string MenuBackground => _isDarkMode ? 
+    //     "linear-gradient(90deg, rgba(205,0,52,1) 0%, rgba(103,0,27,1) 24%, rgba(34,34,51,1) 56%, rgba(34,34,51,1) 100%);" : 
+    //     "linear-gradient(90deg, rgba(255,0,52,1) 0%, rgba(133,0,27,1) 24%, rgba(134,134,134,1) 56%, rgba(134,134,134,1) 100%);";
+    public string MenuBackground => _isDarkMode ?
+        "var(--mud-palette-primary)" :
+        "var(--mud-palette-primary)";
 
     protected override async Task OnInitializedAsync()
     {
@@ -104,6 +115,12 @@
 
         currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
         navigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private async Task OnDarkModeChanged(bool isDarkMode)
+    {
+        _isDarkMode = isDarkMode;
+        await themingService.SetDarkModeAsync(isDarkMode);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -119,14 +136,11 @@
                 _team = await teamService.GetActiveTeamAsync();
             }
 
-            var userPreferences = await userPreferencesService.GetUserPreferencesAsync();
-            if(userPreferences is not null)
+            var isDarkMode = await themingService.IsDarkModeAsync();
+            if(isDarkMode != _isDarkMode)
             {
-                _isDarkMode = userPreferences.DarkMode;
-            }
-            else
-            {
-                _isDarkMode = true;
+                _isDarkMode = isDarkMode;
+                StateHasChanged();
             }
             if (_isDarkMode)
             {

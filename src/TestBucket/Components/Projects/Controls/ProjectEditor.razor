@@ -14,22 +14,32 @@
             <MudTabPanel Text="General">
                 <MudStack>
 
-                    <MudText>Image</MudText>
-                    <UploadImage FileUploaded="OnImageUploaded" />
+                    <Field>
+                        <FieldHeader>Image</FieldHeader>
+                        <UploadImage FileUploaded="OnImageUploaded" />
+                    </Field>
 
-                    <MudText>Name</MudText>
-                    <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Project.Name"></MudTextField>
+                    <Field>
+                        <FieldHeader>Name</FieldHeader>
+                        <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Project.Name"></MudTextField>
+                    </Field>
 
-                    <MudText>Slug</MudText>
-                    <MudText>@Project?.Slug</MudText>
+                    <Field>
+                        <FieldHeader>Slug</FieldHeader>
+                        <MudText>@Project?.Slug</MudText>
+                    </Field>
 
-                    <MudText>ID</MudText>
-                    <MudText>@Project?.Id</MudText>
+                    <Field>
+                        <FieldHeader>ID</FieldHeader>
+                        <MudText>@Project?.Id</MudText>
+                    </Field>
 
-                    <MudText>Team</MudText>
-                    <TeamDropDown SelectedTeam="_team" SelectedTeamChanged="OnTeamChanged" />
+                    <Field>
+                        <FieldHeader>Team</FieldHeader>
+                        <TeamDropDown SelectedTeam="_team" SelectedTeamChanged="OnTeamChanged" />
+                    </Field>
 
-                    <MudText>Grant access to all users</MudText>
+                    <FieldHeader>Grant access to all users</FieldHeader>
                     <MudText>@Project?.GrantAccessToAllTenantUsers</MudText>
                 </MudStack>
             </MudTabPanel>

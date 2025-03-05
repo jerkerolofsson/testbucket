@@ -1,0 +1,24 @@
+﻿@if (IsDarkMode)
+{
+    <MudIconButton Icon="@Icons.Material.Filled.DarkMode" OnClick="SetLightMode" />
+}
+else
+{
+    <MudIconButton Icon="@Icons.Material.Filled.DarkMode" OnClick="SetDarkMode" />
+}
+@code {
+    [Parameter] public bool IsDarkMode { get; set; }
+
+    [Parameter] public EventCallback<bool> IsDarkModeChanged { get; set; }
+
+    private async Task SetLightMode()
+    {
+        await IsDarkModeChanged.InvokeAsync(false);
+    }
+
+    private async Task SetDarkMode()
+    {
+        await IsDarkModeChanged.InvokeAsync(true);
+    }
+
+}

@@ -1,4 +1,5 @@
 ﻿
+using TestBucket.Components.Tenants;
 using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Components.Tests.Services;

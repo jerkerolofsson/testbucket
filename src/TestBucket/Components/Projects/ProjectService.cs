@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis;
 using OneOf;
 
 using TestBucket.Components.Account;
-using TestBucket.Components.Shared;
+using TestBucket.Components.Tenants;
 using TestBucket.Contracts;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Projects;

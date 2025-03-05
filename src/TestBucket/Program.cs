@@ -18,6 +18,8 @@ using TestBucket.Components.Shared;
 using Blazored.LocalStorage;
 using TestBucket.Components.Uploads.Services;
 using TestBucket.Components.Teams;
+using TestBucket.Components.Shared.Fields;
+using Npgsql;
 
 namespace TestBucket;
 
@@ -47,8 +49,12 @@ public class Program
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             })
             .AddIdentityCookies();
-
-        builder.AddNpgsqlDbContext<ApplicationDbContext>("testbucketdb", null, dbContextBuilder =>
+        NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
+        builder.AddNpgsqlDbContext<ApplicationDbContext>("testbucketdb", configureSettings =>
+        {
+            
+        }, 
+        dbContextBuilder =>
         {
             if (builder.Environment.IsDevelopment())
             {
@@ -86,6 +92,7 @@ public class Program
         builder.Services.AddScoped<TestBrowser>();
         builder.Services.AddScoped<TestCaseEditorService>();
         builder.Services.AddScoped<UploadService>();
+        builder.Services.AddScoped<FieldService>();
         builder.Services.AddScoped(typeof(DragAndDropService<>));
         builder.Services.AddDataServices();
         builder.Services.AddDomainServices();

@@ -9,28 +9,39 @@
 @if (Project is not null)
 {
     <EditForm Model="@Project" OnValidSubmit="async () => await OnValidSubmitAsync()">
-        <MudStack>
 
-            <MudText>Image</MudText>
-            <UploadImage FileUploaded="OnImageUploaded"/>
+        <MudTabs>
+            <MudTabPanel Text="General">
+                <MudStack>
 
-            <MudText>Name</MudText>
-            <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Project.Name"></MudTextField>
+                    <MudText>Image</MudText>
+                    <UploadImage FileUploaded="OnImageUploaded" />
 
-            <MudText>Slug</MudText>
-            <MudText>@Project?.Slug</MudText>
+                    <MudText>Name</MudText>
+                    <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Project.Name"></MudTextField>
 
-            <MudText>ID</MudText>
-            <MudText>@Project?.Id</MudText>
+                    <MudText>Slug</MudText>
+                    <MudText>@Project?.Slug</MudText>
 
-            <MudText>Team</MudText>
-            <TeamDropDown SelectedTeam="_team" SelectedTeamChanged="OnTeamChanged"/>
+                    <MudText>ID</MudText>
+                    <MudText>@Project?.Id</MudText>
 
-            <MudText>Grant access to all users</MudText>
-            <MudText>@Project?.GrantAccessToAllTenantUsers</MudText>
+                    <MudText>Team</MudText>
+                    <TeamDropDown SelectedTeam="_team" SelectedTeamChanged="OnTeamChanged" />
 
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Save</MudButton>
-        </MudStack>
+                    <MudText>Grant access to all users</MudText>
+                    <MudText>@Project?.GrantAccessToAllTenantUsers</MudText>
+                </MudStack>
+            </MudTabPanel>
+
+            <MudTabPanel Text="Fields">
+                <FieldDefinitionTable ProjectId="@Project.Id"/>
+            </MudTabPanel>
+
+        </MudTabs>
+
+
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Save</MudButton>
     </EditForm>
 }
 

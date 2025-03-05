@@ -1,4 +1,6 @@
-﻿@if(Test is not null && _boundDescription is not null)
+﻿@inject FieldService fieldService
+
+@if(Test is not null && _boundDescription is not null)
 {
     <MudStack>
         <MudStack Row="true" Style="background: rgba(0,0,0,0.2); border-bottom: solid 1px #333; height: 40px">
@@ -15,16 +17,18 @@
                 Label="Name" Value="@Test.Name" ValueChanged="OnNameChanged" T="string"/>
 
                 <MarkdownEditor 
-                Value="@_boundDescription"
-                ShowIcons="@_icons"
-                @ref=_editor
-                MinHeight="50vh"
-                ValueChanged="OnDescriptionChanged"
-                SpellChecker="false">
-                    <Toolbar>
-                    </Toolbar>
+                    Value="@_boundDescription"
+                    ShowIcons="@_icons"
+                    @ref=_editor
+                    MinHeight="50vh"
+                    MaxHeight="50vh"
+                    ValueChanged="OnDescriptionChanged"
+                    SpellChecker="false">
+                        <Toolbar>
+                        </Toolbar>
                 </MarkdownEditor>
 
+                <FieldsEditor TestCase="@Test"/>
 
                 Slug:
                 @Test.Slug
@@ -43,11 +47,17 @@
 @code {
     [Parameter] public TestCase? Test { get; set; }
     [Parameter] public EventCallback<TestCase?> TestChanged { get; set; }
+    private IReadOnlyList<FieldDefinition> _fields = [];
 
     private string[] _icons = ["bold", "preview"];
 
     private MarkdownEditor? _editor;
     private string? _boundDescription;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _fields = await fieldService.SearchDefinitionsAsync(new SearchQuery() { ProjectId = Test?.TestProjectId });
+    }
 
     protected override void OnParametersSet()
     {

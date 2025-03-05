@@ -2,6 +2,12 @@ html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     width: 100dvw;
     height: 100dvh;
+
+/*    --mud-typography-subtitle1-size: 7pt;*/
+}
+
+p.mud-typography-subtitle1 {
+    color: #888;
 }
 
 .mud-input>input.mud-input-root-outlined, div.mud-input-slot.mud-input-root-outlined {

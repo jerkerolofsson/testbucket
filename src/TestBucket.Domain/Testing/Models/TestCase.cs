@@ -89,6 +89,6 @@ public class TestCase
     public TestProject? TestProject { get; set; }
     public TestSuite? TestSuite { get; set; }
     public TestSuiteFolder? TestSuiteFolder { get; set; }
-
+    public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }
     public virtual IEnumerable<TestStep>? TestSteps { get; set; }
 }

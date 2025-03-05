@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Data.Fields;
 using TestBucket.Data.Files;
 using TestBucket.Data.Identity;
 using TestBucket.Data.Settings;
 using TestBucket.Data.Teams;
 using TestBucket.Data.Tenants;
 using TestBucket.Data.Testing;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Settings;
@@ -25,6 +27,7 @@ public static class DataServiceExtensions
         services.AddScoped<ITenantRepository, TenantRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();
+        services.AddScoped<IFieldRepository, FieldRepository>();
         services.AddScoped<ISuperAdminUserService, SuperAdminUserService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<ISettingsProvider, SettingsRepository>();

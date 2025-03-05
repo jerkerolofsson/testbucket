@@ -1,4 +1,6 @@
 ﻿
+using TestBucket.Components.Tenants;
+
 namespace TestBucket.Components.Users;
 
 public record class CreateUserResponse(ApplicationUser? User, IdentityError[] Errors);

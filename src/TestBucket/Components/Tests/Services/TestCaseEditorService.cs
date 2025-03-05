@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Components.Tests.Services;
+﻿using TestBucket.Components.Tenants;
+
+namespace TestBucket.Components.Tests.Services;
 
 internal class TestCaseEditorService : TenantBaseService
 {

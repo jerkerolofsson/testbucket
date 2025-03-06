@@ -27,6 +27,11 @@ public class FieldDefinition
     public string? Trait { get; set; }
 
     /// <summary>
+    /// Target entity / Usage
+    /// </summary>
+    public FieldTarget Target { get; set; } = FieldTarget.TestCase;
+
+    /// <summary>
     /// Value Type
     /// </summary>
     public FieldType Type { get; set; }
@@ -36,6 +41,16 @@ public class FieldDefinition
     /// </summary>
     [Column(TypeName = "jsonb")]
     public List<string>? Options { get; set; }
+
+    /// <summary>
+    /// Description of the field
+    /// </summary>
+    public string? Description { get; set; }
+
+    /// <summary>
+    /// If true, the description is shown in the FieldEditor
+    /// </summary>
+    public bool ShowDescription { get; set; }
 
     /// <summary>
     /// Flag for soft deleted fields
@@ -51,11 +66,6 @@ public class FieldDefinition
     /// Can be used to save field values in the database when importing but not display the values in the UI
     /// </summary>
     public bool IsVisible { get; set; }
-
-    /// <summary>
-    /// Target usage for a field
-    /// </summary>
-    public FieldTarget Target { get; set; }
 
     // Navigation
 

@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Teams.Controls
+@using TestBucket.Traits.Core
 @attribute [Authorize(Roles = "ADMIN")]
 @inject FieldService fieldService
 
@@ -38,7 +39,7 @@
 
     private async Task OnValidSubmitAsync()
     {
-        if (_fieldDefinition is not null)
+        if (_fieldDefinition?.Name is not null && _fieldDefinition.Name.Length > 1)
         {
             await fieldService.AddAsync(_fieldDefinition);
             MudDialog.Close(_fieldDefinition);

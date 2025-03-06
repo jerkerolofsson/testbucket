@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ApplicationIcon>psc_logo.ico</ApplicationIcon>
+    <PackageIcon>psc_logo.png</PackageIcon>
+    <PackageIconUrl />
+    <Authors>Enrico Rossini</Authors>
+    <Company>Enrico Rossini - PureSourceCode.com</Company>
+    <Description>Another Markdown editor for Blazor</Description>
+    <RepositoryUrl>https://github.com/erossini/BlazorMarkdownEditor</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>blazor, blazor-webassembly, blazor-server</PackageTags>
+    <PackageReleaseNotes>Add functions to delete clear data created by Markdown Editor</PackageReleaseNotes>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://www.puresourcecode.com/dotnet/blazor/markdown-editor-component-for-blazor/</PackageProjectUrl>
+    <Copyright>Enrico Rossini - PureSourceCode.com</Copyright>
+    <Title>Markdown Editor for Blazor</Title>
+  </PropertyGroup>
+
+  
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="MudBlazor" Version="8.2.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.12" />
+    <PackageReference Include="PSC.Blazor.Components.Common" Version="6.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\css\easymde.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

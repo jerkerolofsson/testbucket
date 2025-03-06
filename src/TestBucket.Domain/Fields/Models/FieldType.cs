@@ -17,5 +17,13 @@ public enum FieldType
     Boolean = 3,
     DateTimeOffset = 4,
 
+    /// <summary>
+    /// Single item can be selected from options
+    /// </summary>
     SingleSelection = 5,
+
+    /// <summary>
+    /// Multiple strings
+    /// </summary>
+    StringArray = 6,
 }

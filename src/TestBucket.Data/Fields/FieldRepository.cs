@@ -86,10 +86,21 @@ internal class FieldRepository : IFieldRepository
         return await fields.ToListAsync();
     }
 
-    public async Task<IReadOnlyList<FieldDefinition>> SearchAsync(string tenantId, SearchQuery query)
+    /// <summary>
+    /// Searches for field definitions for a specific target
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="targets"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<FieldDefinition>> SearchAsync(string tenantId, FieldTarget? target, SearchQuery query)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var fields = dbContext.FieldDefinitions.AsNoTracking().Where(x=>x.TenantId == tenantId && x.IsDeleted == false);
+        if(target is not null)
+        {
+            fields = fields.Where(x => (x.Target & target) != 0);
+        }
         if(query.ProjectId is not null)
         {
             fields = fields.Where(x => x.TestProjectId == query.ProjectId);

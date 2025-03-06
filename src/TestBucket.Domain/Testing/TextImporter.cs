@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Fields;
+﻿using TestBucket.Domain.Fields;
+using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Formats;
 using TestBucket.Formats.Dtos;
@@ -24,6 +19,16 @@ internal class TextImporter : ITextTestResultsImporter
         _fieldRepository = fieldRepository;
     }
 
+    /// <summary>
+    /// Imports a text based test result document
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="teamId"></param>
+    /// <param name="projectId"></param>
+    /// <param name="format"></param>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public async Task ImportTextAsync(string tenantId, long? teamId, long? projectId, TestResultFormat format, string text)
     {
         ITestResultSerializer serializer = format switch
@@ -40,15 +45,11 @@ internal class TextImporter : ITextTestResultsImporter
 
     private async Task ImportRunAsync(string tenantId, long? teamId, long? projectId, TestRunDto run)
     {
-        await ImportTestCasesAsync(tenantId, teamId, projectId, run);
-    }
-
-    private async Task ImportTestCasesAsync(string tenantId, long? teamId, long? projectId, TestRunDto run)
-    {
         if (run.Suites is not null)
         {
             foreach (var runSuite in run.Suites)
             {
+                // Create a new test suite if it doesn't exist
                 var suiteName = runSuite.Name ?? run.Name;
                 if (runSuite.Tests is null || suiteName is null)
                 {
@@ -72,9 +73,9 @@ internal class TextImporter : ITextTestResultsImporter
                 };
                 await _testCaseRepository.AddTestRunAsync(testRun);
 
-                // Get field definitions to map traits to them
-                var fieldDefinitions = await _fieldRepository.SearchAsync(tenantId, new SearchQuery { ProjectId = projectId });
-
+                // Get field definitions to imported entities
+                var testCaseFieldDefinitions = await _fieldRepository.SearchAsync(tenantId, FieldTarget.TestCase, new SearchQuery { ProjectId = projectId });
+                var testCaseRunFieldDefinitions = await _fieldRepository.SearchAsync(tenantId, FieldTarget.TestCaseRun, new SearchQuery { ProjectId = projectId });
                 foreach (var test in runSuite.Tests)
                 {
                     // Get the existing case or create a new one
@@ -84,31 +85,16 @@ internal class TextImporter : ITextTestResultsImporter
                     }
                     else
                     {
+                        // Get or create the test case and add a test case run
                         TestCase testCase = await GetOrCreateTestCaseAsync(tenantId, projectId, suite, test);
-                        await AddTestCaseRunAsync(tenantId, testRun, test, testCase);
+                        TestCaseRun testCaseRun = await AddTestCaseRunAsync(tenantId, testRun, test, testCase);
 
-                        // Add traits
-                        foreach(var trait in test.Traits)
+                        // Add traits to the test case
+                        foreach(var traitName in test.Traits.Select(x=>x.Name))
                         {
-                            var fieldDefinition = fieldDefinitions.Where(x => x.Trait == trait.Name || x.Name == trait.Name).FirstOrDefault();  
-                            if(fieldDefinition is not null)
-                            {
-                                var field = new TestCaseField
-                                {
-                                    TenantId = tenantId,
-                                    TestCaseId = testCase.Id,
-                                    FieldDefinitionId = fieldDefinition.Id,
-                                    StringValue = trait.Value
-                                };
-
-                                // Todo: Extract conversion method
-                                if(fieldDefinition.Type == Fields.Models.FieldType.Boolean)
-                                {
-                                    field.BooleanValue = trait.Value == "true";
-                                }
-
-                                await _fieldRepository.UpsertTestCaseFieldsAsync(field);
-                            }
+                            // Get all traits for the specific name
+                            var traits = test.Traits.Where(x => x.Name == traitName).ToArray();
+                            await UpsertTestCaseTraitsAsync(tenantId, testCaseFieldDefinitions, testCase, traits);
                         }
                     }
                 }
@@ -116,7 +102,40 @@ internal class TextImporter : ITextTestResultsImporter
         }
     }
 
-    private async Task AddTestCaseRunAsync(string tenantId, TestRun testRun, TestCaseRunDto test, TestCase testCase)
+    private async Task UpsertTestCaseTraitsAsync(string tenantId, IReadOnlyList<FieldDefinition> testCaseFieldDefinitions, TestCase testCase, TestTrait[] traits)
+    {
+        if(traits.Length == 0)
+        {
+            return;
+        }
+        var trait = traits[0];
+
+        var fieldDefinition = testCaseFieldDefinitions.Where(x => x.Trait == trait.Name || x.Name == trait.Name).FirstOrDefault();
+        if (fieldDefinition is not null)
+        {
+            // Create a new field
+            var field = new TestCaseField
+            {
+                TenantId = tenantId,
+                TestCaseId = testCase.Id,
+                FieldDefinitionId = fieldDefinition.Id,
+            };
+            
+            // In the test case, a trait can have multiple values, but we may save them as an array if that's the
+            // target field
+            var values = traits.Select(x => x.Value).ToArray();
+            if (FieldValueConverter.TryAssignValue(fieldDefinition, field, values))
+            {
+                await _fieldRepository.UpsertTestCaseFieldsAsync(field);
+            }
+        }
+        else
+        {
+            // Update?
+        }
+    }
+
+    private async Task<TestCaseRun> AddTestCaseRunAsync(string tenantId, TestRun testRun, TestCaseRunDto test, TestCase testCase)
     {
         var testCaseRun = new TestCaseRun()
         {
@@ -131,6 +150,7 @@ internal class TextImporter : ITextTestResultsImporter
         };
 
         await _testCaseRepository.AddTestCaseRunAsync(testCaseRun);
+        return testCaseRun;
     }
 
     private async Task<TestCase> GetOrCreateTestCaseAsync(string tenantId, long? projectId, TestSuite suite, TestCaseRunDto test)

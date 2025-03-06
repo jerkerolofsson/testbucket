@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+    <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.1" />
@@ -21,10 +22,10 @@
       </PackageReference>
       <PackageReference Include="MudBlazor" Version="8.2.0" />
       <PackageReference Include="OneOf" Version="3.0.271" />
-      <PackageReference Include="PSC.Blazor.Components.MarkdownEditor" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PSC.Blazor.Components.MarkdownEditor\PSC.Blazor.Components.MarkdownEditor.csproj" />
     <ProjectReference Include="..\TestBucket.Data\TestBucket.Data.csproj" />
     <ProjectReference Include="..\TestBucket.ServiceDefaults\TestBucket.ServiceDefaults.csproj" />
   </ItemGroup>
@@ -35,4 +36,5 @@
     <Folder Include="Components\Tests\Browser\Services\" />
     <Folder Include="Services\" />
   </ItemGroup>
+
 </Project>

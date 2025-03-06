@@ -4,7 +4,7 @@
 
 <EditForm Model="@_fieldDefinition" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
-        <TitleContent>Add new field</TitleContent>
+        <TitleContent>@FieldDefinition?.Name</TitleContent>
         <DialogContent>
             <FieldDefinitionEditor @bind-FieldDefinition="_fieldDefinition" />
         </DialogContent>

@@ -1,0 +1,14 @@
+﻿<MudStack 
+    Spacing="3"
+    Row="true"
+    AlignItems="AlignItems.Center"
+    Class="pr-2 pl-2"
+    Style="border-bottom: solid 1px var(--mud-palette-dark-darken); height: 50px; width: 100%">
+
+    @ChildContent
+
+</MudStack>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent{ get; set; }
+}

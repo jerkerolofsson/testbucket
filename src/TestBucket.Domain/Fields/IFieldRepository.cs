@@ -35,7 +35,7 @@ public interface IFieldRepository
     /// Searches for fields
     /// </summary>
     /// <returns></returns>
-    Task<IReadOnlyList<FieldDefinition>> SearchAsync(string tenantId, SearchQuery query);
+    Task<IReadOnlyList<FieldDefinition>> SearchAsync(string tenantId, FieldTarget? target, SearchQuery query);
     Task<IReadOnlyList<TestCaseField>> GetTestCaseFieldsAsync(string tenantId, long id);
 
     /// <summary>

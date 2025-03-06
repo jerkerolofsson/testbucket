@@ -163,6 +163,9 @@ namespace TestBucket.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -177,6 +180,9 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("jsonb");
 
                     b.Property<bool>("ReadOnly")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ShowDescription")
                         .HasColumnType("boolean");
 
                     b.Property<int>("Target")
@@ -580,6 +586,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<long?>("LongValue")
                         .HasColumnType("bigint");
+
+                    b.PrimitiveCollection<string[]>("StringArrayValue")
+                        .HasColumnType("text[]");
 
                     b.Property<string>("StringValue")
                         .HasColumnType("text");

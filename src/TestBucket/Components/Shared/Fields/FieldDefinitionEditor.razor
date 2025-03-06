@@ -6,36 +6,72 @@
         <MudStack>
             <h3>Field</h3>
             <Field>
-                <MudTextField Value="@FieldDefinition.Name" ValueChanged="OnNameChanged" T="string" Variant="Variant.Outlined"/>
-                <MudText Typo="Typo.subtitle1">Field label</MudText>
+                <FieldHeader>Name</FieldHeader>
+                <MudTextField Value="@FieldDefinition.Name" ValueChanged="OnNameChanged" T="string" Variant="Variant.Outlined" />
+                <FieldDescription>The name of the field should match the trait/property when importing items</FieldDescription>
             </Field>
 
             <Field>
+                <FieldHeader>Description</FieldHeader>
+                <MudTextField Value="@FieldDefinition.Description" ValueChanged="OnDescriptionChanged" T="string" Variant="Variant.Outlined" />
+            </Field>
+
+            <Field>
+                <FieldHeader>Type</FieldHeader>
                 <MudSelect Value="@FieldDefinition.Type" ValueChanged="OnTypeChanged" T="FieldType" Variant="Variant.Outlined">
                     <MudSelectItem Value="@FieldType.String">String</MudSelectItem>
                     <MudSelectItem Value="@FieldType.Boolean">Boolean</MudSelectItem>
                     <MudSelectItem Value="@FieldType.SingleSelection">Single Selection</MudSelectItem>
+                    <MudSelectItem Value="@FieldType.StringArray">Chip Field</MudSelectItem>
                 </MudSelect>
-                <MudText Typo="Typo.subtitle1">The type of field defines what data can be stored and how it can be selected</MudText>
+                <FieldDescription>The type of field defines what data can be stored and how it can be selected</FieldDescription>
+            </Field>
+            <Field>
+                <FieldHeader>Usage</FieldHeader>
+                <MudStack Row="true">
+                    <MudCheckBox 
+                        Color="Color.Tertiary" T="bool" 
+                        Value="@((FieldDefinition.Target&FieldTarget.TestCase) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCase, x)">Test Case</MudCheckBox>
+
+                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                 Value="@((FieldDefinition.Target&FieldTarget.Project) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Project, x)">Project</MudCheckBox>
+
+                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                 Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Run</MudCheckBox>
+                </MudStack>
+                <FieldDescription>The type of field defines what data can be stored and how it can be selected</FieldDescription>
             </Field>
 
             @if(FieldDefinition.Type == FieldType.SingleSelection)
             {
                 <Field>
                     <MudTextField Value="@_options" ValueChanged="OnOptionsChanged" T="string" Variant="Variant.Outlined" />
-                    <MudText Typo="Typo.subtitle1">Options separated by comma (,)</MudText>
+                    <FieldDescription>Options separated by comma (,)</FieldDescription>
                 </Field>
             }
 
-            <Field>
-                <FieldHeader>Read-Only</FieldHeader>
-                <MudSwitch Value="FieldDefinition.ReadOnly" ValueChanged="OnReadOnlyChanged" T="bool" Color="Color.Tertiary"></MudSwitch>
-            </Field>
+            <MudStack Row="true" Wrap="Wrap.Wrap">
+                <Field>
+                    <FieldHeader>Visible</FieldHeader>
+                    <MudSwitchM3 Value="FieldDefinition.IsVisible" ValueChanged="OnIsVisibleChanged" T="bool" Color="Color.Tertiary"></MudSwitchM3>
+                    <FieldDescription>Shows the field in the user interface</FieldDescription>
+                </Field>
 
-            <Field>
-                <FieldHeader>Visible</FieldHeader>
-                <MudSwitch Value="FieldDefinition.IsVisible" ValueChanged="OnIsVisibleChanged" T="bool" Color="Color.Tertiary"></MudSwitch>
-            </Field>
+                <Field>
+                    <FieldHeader>Read-Only</FieldHeader>
+                    <MudSwitchM3 Value="FieldDefinition.ReadOnly" ValueChanged="OnReadOnlyChanged" T="bool" Color="Color.Tertiary"></MudSwitchM3>
+                    <FieldDescription>Read-Only fields cannot be edited in the user interface</FieldDescription>
+                </Field>
+
+                @if (FieldDefinition.IsVisible)
+                {
+                    <Field>
+                        <FieldHeader>Show Description</FieldHeader>
+                        <MudSwitchM3 Value="FieldDefinition.ShowDescription" ValueChanged="OnShowDescriptionChanged" T="bool" Color="Color.Tertiary"></MudSwitchM3>
+                        <FieldDescription>Shows the description in the user interface</FieldDescription>
+                    </Field>
+                }
+            </MudStack>
 
         </MudStack>
 
@@ -53,6 +89,15 @@
 
     private string _options = "";
     private FieldValue _dummy = new FieldValue() { FieldDefinitionId = 0  };
+
+    private async Task OnShowDescriptionChanged(bool showDescription)
+    {
+        if (FieldDefinition is not null)
+        {
+            FieldDefinition.ShowDescription = showDescription;
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
 
     private async Task OnReadOnlyChanged(bool readOnly)
     {
@@ -83,6 +128,23 @@
         }
     }
 
+    private async Task OnTargetChanged(FieldTarget value, bool enabled)
+    {
+        if (FieldDefinition is not null)
+        {
+            var flag = value;
+            if(enabled)
+            {
+                FieldDefinition.Target |= value;
+            }
+            else
+            {
+                FieldDefinition.Target &= ~value;
+            }
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
+
     private async Task OnTypeChanged(FieldType value)
     {
         if (FieldDefinition is not null)
@@ -92,6 +154,15 @@
         }
     }
 
+    private async Task OnDescriptionChanged(string value)
+    {
+        if (FieldDefinition is not null)
+        {
+            _options = value;
+            FieldDefinition.Description = value;
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
     private async Task OnOptionsChanged(string value)
     {
         if (FieldDefinition is not null)

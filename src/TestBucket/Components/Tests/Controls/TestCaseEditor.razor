@@ -1,57 +1,68 @@
-﻿@inject FieldService fieldService
+﻿@using TestBucket.Components.Shared
+@inject FieldService fieldService
 
 @if(Test is not null && _boundDescription is not null)
 {
-    <MudStack>
-        <MudStack 
-        Spacing="3"
-        Row="true" 
-        AlignItems="AlignItems.Center"
-        Style="border-bottom: solid 1px var(--mud-palette-dark-darken); height: 40px">
+    <MudStack Style="width: 100%">
+        <TbToolbar>
 
-            <MudItem Class="mr-2"/>
+            <MudTooltip Text="Run">
+                <MudIconButton Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Primary"/>
+            </MudTooltip>
 
-            <MudIcon Icon="@Icons.Material.Filled.PlayArrow" Style="color: greenyellow"/>
+            <VerticalDivider />
 
-            <div style="width: 1px; background: var(--mud-palette-dark-lighten); height: 90%"></div>
+            @if (!_preview)
+            {
+                <MudTooltip Text="Save Changes">
+                    <MudIconButton Color="Color.Tertiary" Icon="@Icons.Material.Filled.RemoveRedEye" OnClick="async () => await SaveChangesAsync()" />
+                </MudTooltip>
+            }
+            else
+            {
+                <MudTooltip Text="Edit">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => BeginEdit()" />
+                </MudTooltip>
+            }
 
-            @Test.Slug
+            <MudSpacer/>
 
-            <div style="width: 1px; background: var(--mud-palette-dark-lighten); height: 90%"></div>
+            <MudText>@Test.Slug</MudText>
 
-            <MudMenu Icon="@Icons.Material.Filled.MoreHoriz">
+            <VerticalDivider />
+
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
                 <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="async x => await DeleteTestCaseAsync()">Delete</MudMenuItem>
             </MudMenu>
 
-        </MudStack>
+        </TbToolbar>
 
         <div class="pa-3">
             <MudStack>
-                <MudTextField Variant="Variant.Outlined"
-                Label="Name" Value="@Test.Name" ValueChanged="OnNameChanged" T="string"/>
 
-                <MarkdownEditor 
-                Value="@_boundDescription"
-                ShowIcons="@_icons"
-                @ref=_editor
-                MinHeight="30vh"
-                MaxHeight="30vh"
-                ValueChanged="OnDescriptionChanged"
-                SpellChecker="false">
-                    <Toolbar>
-                    </Toolbar>
-                </MarkdownEditor>
+                @if (!_preview)
+                {
+                    <MudTextField Style="width: auto" Variant="Variant.Text" Label="Name" Value="@Test.Name" ValueChanged="OnNameChanged" T="string" AutoFocus="true" />
+                }
+                else
+                {
+                    <MudText Typo="Typo.h3">@Test.Name</MudText>
+                }
+                <MudMarkdownEditorTheming>
+                    <MarkdownEditor 
+                        MaxHeight="500px"
+                        Color="Color.Primary"
+                        AllowResize="true"
+                        @bind-Preview="_preview"
+                        Value="@_boundDescription"
+                        @ref=_editor
+                        ValueChanged="OnDescriptionChanged"
+                        SpellChecker="false">
+                    </MarkdownEditor>
+                </MudMarkdownEditorTheming>
 
                 <FieldsEditor TestCase="@Test"/>
 
-                Slug:
-                @Test.Slug
-
-                TestProjectId:
-                @Test.TestProjectId
-
-                TestSuiteFolderId:
-                @Test.TestSuiteFolderId
             </MudStack>
         </div>
     </MudStack>
@@ -63,6 +74,19 @@
     [Parameter] public EventCallback<TestCase?> TestChanged { get; set; }
     [Parameter] public EventCallback<TestCase?> DeleteTestClicked { get; set; }
 
+    private bool _preview = false;
+    
+    private void BeginEdit()
+    {
+        _preview = false;
+    }
+
+    private async Task SaveChangesAsync()
+    {
+        _preview = true;
+        await TestChanged.InvokeAsync(Test);
+    }
+
     private async Task DeleteTestCaseAsync()
     {
         await DeleteTestClicked.InvokeAsync(Test);
@@ -70,14 +94,18 @@
 
     private IReadOnlyList<FieldDefinition> _fields = [];
 
-    private string[] _icons = ["bold", "preview"];
-
     private MarkdownEditor? _editor;
     private string? _boundDescription;
 
+    private long? _projectId;
+
     protected override async Task OnParametersSetAsync()
     {
-        _fields = await fieldService.SearchDefinitionsAsync(new SearchQuery() { ProjectId = Test?.TestProjectId });
+        if(_projectId != Test?.TestProjectId && Test?.TestProjectId is not null)
+        {
+            _projectId = Test?.TestProjectId;
+            _fields = await fieldService.SearchDefinitionsAsync(FieldTarget.TestCase, new SearchQuery() { ProjectId = Test?.TestProjectId });
+        }
     }
 
     protected override void OnParametersSet()

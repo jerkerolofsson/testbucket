@@ -7,6 +7,7 @@ var db = postgres.AddDatabase("testbucketdb");
 builder.AddProject<Projects.TestBucket>("testbucket")
     .WithReference(db)
     .WithEnvironment("DEFAULT_TENANT", "jerkerolofsson")
+    .WithEnvironment("ADMIN_API_KEY", "123456")
     .WaitFor(db);
 
 builder.Build().Run();

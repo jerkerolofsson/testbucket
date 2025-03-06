@@ -207,12 +207,12 @@
         }
       }
     },
-    "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj": {
+    "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.Xunit.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj",
-        "projectName": "TestBucket.Traits.XUnit",
-        "projectPath": "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj",
+        "projectUniqueName": "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.Xunit.csproj",
+        "projectName": "TestBucket.Traits.Xunit",
+        "projectPath": "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.Xunit.csproj",
         "packagesPath": "C:\\Users\\jerke\\.nuget\\packages\\",
         "outputPath": "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\obj\\",
         "projectStyle": "PackageReference",
@@ -313,8 +313,8 @@
               "C:\\local\\code\\testbucket\\src\\TestBucket.Formats\\TestBucket.Formats.csproj": {
                 "projectPath": "C:\\local\\code\\testbucket\\src\\TestBucket.Formats\\TestBucket.Formats.csproj"
               },
-              "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj": {
-                "projectPath": "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj"
+              "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.Xunit.csproj": {
+                "projectPath": "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.Xunit.csproj"
               }
             }
           }

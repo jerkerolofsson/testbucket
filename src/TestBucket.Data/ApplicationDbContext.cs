@@ -12,6 +12,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<FieldDefinition> FieldDefinitions { get; set; }
     internal DbSet<TestCaseField> TestCaseFields { get; set; }
 
+    internal DbSet<ApplicationUserApiKey> ApiKeys { get; set; }
     internal DbSet<Tenant> Tenants { get; set; }
     internal DbSet<FileResource> Files { get; set; }
     internal DbSet<UserPreferences> UserPreferences { get; set; }

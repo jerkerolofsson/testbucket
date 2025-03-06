@@ -466,7 +466,7 @@
           "bin/placeholder/TestBucket.Traits.Core.dll": {}
         }
       },
-      "TestBucket.Traits.XUnit/1.0.0": {
+      "TestBucket.Traits.Xunit/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v9.0",
         "dependencies": {
@@ -474,10 +474,10 @@
           "xunit": "2.9.2"
         },
         "compile": {
-          "bin/placeholder/TestBucket.Traits.XUnit.dll": {}
+          "bin/placeholder/TestBucket.Traits.Xunit.dll": {}
         },
         "runtime": {
-          "bin/placeholder/TestBucket.Traits.XUnit.dll": {}
+          "bin/placeholder/TestBucket.Traits.Xunit.dll": {}
         }
       }
     }
@@ -1068,10 +1068,10 @@
       "path": "../../src/Traits/TestBucket.Traits.Core/TestBucket.Traits.Core.csproj",
       "msbuildProject": "../../src/Traits/TestBucket.Traits.Core/TestBucket.Traits.Core.csproj"
     },
-    "TestBucket.Traits.XUnit/1.0.0": {
+    "TestBucket.Traits.Xunit/1.0.0": {
       "type": "project",
-      "path": "../../src/Traits/TestBucket.Traits.XUnit/TestBucket.Traits.XUnit.csproj",
-      "msbuildProject": "../../src/Traits/TestBucket.Traits.XUnit/TestBucket.Traits.XUnit.csproj"
+      "path": "../../src/Traits/TestBucket.Traits.XUnit/TestBucket.Traits.Xunit.csproj",
+      "msbuildProject": "../../src/Traits/TestBucket.Traits.XUnit/TestBucket.Traits.Xunit.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -1080,7 +1080,7 @@
       "Microsoft.NET.Test.Sdk >= 17.11.1",
       "NunitXml.TestLogger >= 6.0.0",
       "TestBucket.Formats >= 1.0.0",
-      "TestBucket.Traits.XUnit >= 1.0.0",
+      "TestBucket.Traits.Xunit >= 1.0.0",
       "XunitXml.TestLogger >= 6.0.0",
       "coverlet.collector >= 6.0.2",
       "xunit >= 2.9.2",
@@ -1122,8 +1122,8 @@
             "C:\\local\\code\\testbucket\\src\\TestBucket.Formats\\TestBucket.Formats.csproj": {
               "projectPath": "C:\\local\\code\\testbucket\\src\\TestBucket.Formats\\TestBucket.Formats.csproj"
             },
-            "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj": {
-              "projectPath": "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.XUnit.csproj"
+            "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.Xunit.csproj": {
+              "projectPath": "C:\\local\\code\\testbucket\\src\\Traits\\TestBucket.Traits.XUnit\\TestBucket.Traits.Xunit.csproj"
             }
           }
         }

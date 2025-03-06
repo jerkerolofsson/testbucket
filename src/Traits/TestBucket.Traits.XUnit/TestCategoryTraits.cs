@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using TestBucket.Traits.Core;
 
-namespace TestBucket.Traits.XUnit;
+namespace TestBucket.Traits.Xunit;
 
 /// <summary>
 /// Adds a custom TestCategory trait
@@ -34,6 +34,14 @@ public class IntegrationTestAttribute : CustomTraitAttribute
 {
     public IntegrationTestAttribute() :
         base(TestTraitNames.TestCategory, "Integration")
+    {
+    }
+}
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
+public class ApiTestAttribute : CustomTraitAttribute
+{
+    public ApiTestAttribute() :
+        base(TestTraitNames.TestCategory, "API")
     {
     }
 }

@@ -1,6 +1,6 @@
 ﻿using TestBucket.Formats.JUnit;
 using TestBucket.Formats.UnitTests.Utilities;
-using TestBucket.Traits.XUnit;
+using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.JUnit
 {

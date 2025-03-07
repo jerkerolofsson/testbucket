@@ -24,6 +24,7 @@ using TestBucket.Domain.Identity;
 using TestBucket.Domain.Tenants;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Domain.Settings;
+using TestBucket.Domain.Tenants.Models;
 
 
 namespace TestBucket.Data.Migrations;
@@ -111,6 +112,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         string superAdminUserEmail = configuration["ADMIN_USER"] ?? "admin@admin.com";
         string adminUserPassword = configuration["ADMIN_PASSWORD"] ?? "Password123!";
         string adminTenant = Environment.GetEnvironmentVariable("DEFAULT_TENANT") ?? "admin";
+        string adminApiKey = Environment.GetEnvironmentVariable("ADMIN_API_KEY") ?? Guid.NewGuid().ToString();
 
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -145,6 +147,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
 
                 await CreateTenantAsync(scope, adminTenant, adminTenant);
                 await CreateDefaultTenantAdminUserAsync(dbContext, scope, adminTenant, superAdminUserEmail, adminUserPassword);
+                await CreateApiKeyAsync(dbContext, scope, adminTenant, superAdminUserEmail, adminApiKey);
 
             }
             catch (Exception ex)
@@ -226,6 +229,31 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         if (!await repo.ExistsAsync(tenantId))
         {
             await repo.CreateAsync(name, tenantId);
+        }
+    }
+
+    private async Task CreateApiKeyAsync(ApplicationDbContext dbContext, IServiceScope scope, string tenantId, string email, string key)
+    {
+        var user = await dbContext.Users.Where(x => x.TenantId == tenantId && x.Email == email).Include(x=>x.ApplicationUserApiKeys).FirstOrDefaultAsync();
+        if(user?.ApplicationUserApiKeys is not null)
+        {
+            var hasTheKey = dbContext.ApiKeys.Where(x => x.Key == key && x.ApplicationUserId == user.Id).Any();
+            if(!hasTheKey)
+            {
+                var apiKey = new ApplicationUserApiKey
+                {
+                    Expiry = DateTimeOffset.UtcNow.AddDays(365),
+                    ApplicationUserId = user.Id,
+                    Key = key,
+                    Name = "Initial DB seeding API key"
+                };
+                dbContext.ApiKeys.Add(apiKey);
+                await dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                // Expired?
+            }
         }
     }
 

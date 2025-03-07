@@ -15,7 +15,7 @@ public class ResourceController : ControllerBase
         _repo = repo;
     }
 
-    [Authorize]
+    [Authorize("ApiKeyOrBearer")]
     [HttpGet("/api/resources/{resourceId:long}")]
     public async Task<IActionResult> GetApiResourceAsync([FromRoute] long resourceId)
     {

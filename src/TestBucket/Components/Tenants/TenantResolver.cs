@@ -35,9 +35,14 @@ public class TenantResolver
         {
             return null;
         }
+        path = path.Split('?')[0].Split('#')[0];
 
         var pathItems = path.Trim('/').Split('/');
-        var tenantId = pathItems[0].Split('?')[0].Split('#')[0];
+        var tenantId = pathItems[0];
+        if(tenantId == "api" && pathItems.Length > 1)
+        {
+            tenantId = pathItems[1];
+        }
         return tenantId;
     }
 

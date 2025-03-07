@@ -1,4 +1,5 @@
 ﻿@page "/{TenantId}/Account/Login"
+@using TestBucket.Components.Account.Shared
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Login> Logger
@@ -75,6 +76,12 @@
 
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
+
+    [SupplyParameterFromQuery(Name = "u")]
+    private string? UserName { get; set; }
+
+    [SupplyParameterFromQuery(Name = "p")]
+    private string? Password { get; set; }
 
     protected override async Task OnInitializedAsync()
     {

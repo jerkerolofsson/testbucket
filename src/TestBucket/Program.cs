@@ -19,7 +19,11 @@ using TestBucket.Components.Teams;
 using TestBucket.Components.Shared.Fields;
 using Npgsql;
 using TestBucket.Components.Shared.Themeing;
-using MudExtensions.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using TestBucket.Domain.ApiKeys;
 
 namespace TestBucket;
 
@@ -43,26 +47,59 @@ public class Program
         builder.Services.AddScoped<IdentityRedirectManager>();
         builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
+        builder.Services.AddAuthentication("ApiKey").AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>("ApiKey", null);
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("ApiKeyOrBearer", policy =>
+            {
+                policy.AddAuthenticationSchemes(IdentityConstants.ApplicationScheme, "ApiKey");
+                policy.RequireAuthenticatedUser();
+            });
+        });
         builder.Services.AddAuthentication(options =>
             {
                 options.DefaultScheme = IdentityConstants.ApplicationScheme;
                 options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
             })
             .AddIdentityCookies();
-        NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
+        //NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
+        string? connectionString = null;
         builder.AddNpgsqlDbContext<ApplicationDbContext>("testbucketdb", configureSettings =>
         {
-            
+            connectionString = configureSettings.ConnectionString;
         }, 
         dbContextBuilder =>
         {
+            dbContextBuilder.UseNpgsql(builder =>
+            {
+                builder.ConfigureDataSource(dataSource =>
+                {
+                    dataSource.EnableDynamicJson();
+                });
+            });
+
             if (builder.Environment.IsDevelopment())
             {
                 dbContextBuilder.EnableSensitiveDataLogging();
                 dbContextBuilder.EnableDetailedErrors();
             }
         });
-        builder.Services.AddDbContextFactory<ApplicationDbContext>(dbContextOptionsBuilder => dbContextOptionsBuilder.UseNpgsql());
+        builder.Services.AddDbContextFactory<ApplicationDbContext>();
+
+        var localhostOrigin = "localhost";
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: localhostOrigin,
+                              policy =>
+                              {
+                                  policy.WithOrigins("https://localhost", "https://127.0.0.1", "https://::1");
+                                  policy.AllowAnyHeader();
+                                  policy.AllowAnyMethod();
+                                  policy.AllowCredentials();
+                              });
+        });
+        // dbContextOptionsBuilder =>  dbContextOptionsBuilder.UseNpgsql()
 
         //var connectionString = builder.Configuration.GetConnectionString("ConnectionStrings__testbucket") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         //builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -77,6 +114,31 @@ public class Program
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();
+
+        builder.Services.ConfigureApplicationCookie(o =>
+        {
+            o.Events = new CookieAuthenticationEvents()
+            {
+                OnRedirectToLogin = (ctx) =>
+                {
+                    if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                    {
+                        ctx.Response.StatusCode = 401;
+                    }
+
+                    return Task.CompletedTask;
+                },
+                OnRedirectToAccessDenied = (ctx) =>
+                {
+                    if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == 200)
+                    {
+                        ctx.Response.StatusCode = 403;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
+        });
 
         builder.Services.AddScoped<SignInManager<ApplicationUser>, ApplicationSignInManager>();
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
@@ -103,7 +165,13 @@ public class Program
         });
         builder.Services.AddMudExtensions();
 
-        builder.Services.AddControllers();
+        builder.Services.AddControllers(options =>
+        {
+            var policy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .Build();
+            options.Filters.Add(new AuthorizeFilter(policy));
+        });
 
         var app = builder.Build();
 
@@ -120,10 +188,10 @@ public class Program
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
+        app.UseAntiforgery();
 
         app.UseHttpsRedirection();
-
-        app.UseAntiforgery();
+        app.UseCors(localhostOrigin);
 
         app.MapStaticAssets();
         app.MapControllers();

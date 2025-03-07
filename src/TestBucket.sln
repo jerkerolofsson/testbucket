@@ -33,7 +33,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Traits", "Traits", "{23D65E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Traits.Core", "Traits\TestBucket.Traits.Core\TestBucket.Traits.Core.csproj", "{56E22580-0795-4AD0-87E4-28F68DF1EA4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Traits.XUnit", "Traits\TestBucket.Traits.XUnit\TestBucket.Traits.XUnit.csproj", "{A305FB1F-7FE8-4048-9F79-859316746F8F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Traits.Xunit", "Traits\TestBucket.Traits.XUnit\TestBucket.Traits.Xunit.csproj", "{A305FB1F-7FE8-4048-9F79-859316746F8F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Domain.UnitTests", "..\tests\TestBucket.Domain.UnitTests\TestBucket.Domain.UnitTests.csproj", "{F6D1C953-BF4C-4D78-9C6A-FCB7BB427FD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Traits.TUnit", "..\Traits\TestBucket.Traits.TUnit\TestBucket.Traits.TUnit.csproj", "{5450AD1C-56E8-435C-B381-DC9610DB95D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.AspireTests.TestProject", "..\tests\TestBucket.AspireTests\TestBucket.AspireTests.TestProject.csproj", "{F484D72C-13EE-47F1-9D80-1B977D5DE187}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSC.Blazor.Components.MarkdownEditor", "PSC.Blazor.Components.MarkdownEditor\PSC.Blazor.Components.MarkdownEditor.csproj", "{E3A7E5BF-6CA4-4252-AEE5-D542119EA783}"
 EndProject
@@ -83,10 +89,25 @@ Global
 		{A305FB1F-7FE8-4048-9F79-859316746F8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A305FB1F-7FE8-4048-9F79-859316746F8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A305FB1F-7FE8-4048-9F79-859316746F8F}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
 		{E3A7E5BF-6CA4-4252-AEE5-D542119EA783}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E3A7E5BF-6CA4-4252-AEE5-D542119EA783}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3A7E5BF-6CA4-4252-AEE5-D542119EA783}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3A7E5BF-6CA4-4252-AEE5-D542119EA783}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+		{F6D1C953-BF4C-4D78-9C6A-FCB7BB427FD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6D1C953-BF4C-4D78-9C6A-FCB7BB427FD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6D1C953-BF4C-4D78-9C6A-FCB7BB427FD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6D1C953-BF4C-4D78-9C6A-FCB7BB427FD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5450AD1C-56E8-435C-B381-DC9610DB95D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5450AD1C-56E8-435C-B381-DC9610DB95D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5450AD1C-56E8-435C-B381-DC9610DB95D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5450AD1C-56E8-435C-B381-DC9610DB95D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F484D72C-13EE-47F1-9D80-1B977D5DE187}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F484D72C-13EE-47F1-9D80-1B977D5DE187}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F484D72C-13EE-47F1-9D80-1B977D5DE187}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F484D72C-13EE-47F1-9D80-1B977D5DE187}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> 83d3f4bbb2acc3415c101b943747ead8c7dc565f
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,5 +123,8 @@ Global
 		{477FEA49-011C-4EAD-82D6-8A8C5797E1B7} = {C173DE7F-3373-4306-A1AE-1BD799D2F4BE}
 		{56E22580-0795-4AD0-87E4-28F68DF1EA4E} = {23D65EC5-905A-406F-94B0-808DA0E67E2A}
 		{A305FB1F-7FE8-4048-9F79-859316746F8F} = {23D65EC5-905A-406F-94B0-808DA0E67E2A}
+		{F6D1C953-BF4C-4D78-9C6A-FCB7BB427FD5} = {C173DE7F-3373-4306-A1AE-1BD799D2F4BE}
+		{5450AD1C-56E8-435C-B381-DC9610DB95D6} = {23D65EC5-905A-406F-94B0-808DA0E67E2A}
+		{F484D72C-13EE-47F1-9D80-1B977D5DE187} = {C173DE7F-3373-4306-A1AE-1BD799D2F4BE}
 	EndGlobalSection
 EndGlobal

@@ -36,7 +36,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TestBucket.Formats\TestBucket.Formats.csproj" />
-    <ProjectReference Include="..\..\src\Traits\TestBucket.Traits.XUnit\TestBucket.Traits.XUnit.csproj" />
+    <ProjectReference Include="..\..\src\Traits\TestBucket.Traits.XUnit\TestBucket.Traits.Xunit.csproj" />
   </ItemGroup>
 
 </Project>

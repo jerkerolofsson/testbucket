@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Data;
@@ -12,9 +13,11 @@ using TestBucket.Data;
 namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250306145500_apikeys")]
+    partial class apikeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,9 +166,6 @@ namespace TestBucket.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -180,9 +180,6 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("jsonb");
 
                     b.Property<bool>("ReadOnly")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("ShowDescription")
                         .HasColumnType("boolean");
 
                     b.Property<int>("Target")
@@ -586,9 +583,6 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<long?>("LongValue")
                         .HasColumnType("bigint");
-
-                    b.PrimitiveCollection<string[]>("StringArrayValue")
-                        .HasColumnType("text[]");
 
                     b.Property<string>("StringValue")
                         .HasColumnType("text");

@@ -17,6 +17,11 @@ internal class UserService : IUserService
         _dbContextFactory = dbContextFactory;
     }
 
+    //public async Task<List<ApplicationUserApiKey>?> GetApiKeysAsync(string tenantId, long userId)
+    //{
+
+    //}
+
     public async Task<PagedResult<ApplicationUser>> SearchAsync(string tenantId, SearchQuery query, Predicate<ApplicationUser> predicate, CancellationToken cancellationToken = default)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();

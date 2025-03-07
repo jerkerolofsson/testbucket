@@ -2,7 +2,7 @@
 using TestBucket.Formats.UnitTests.Utilities;
 using TestBucket.Formats.XUnit;
 using TestBucket.Traits.Core;
-using TestBucket.Traits.XUnit;
+using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.XUnit
 {

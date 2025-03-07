@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using TestBucket.Traits.Core;
 
-namespace TestBucket.Traits.XUnit;
+namespace TestBucket.Traits.Xunit;
 
 /// <summary>
 /// Defines an attribute that will add create a Description trait

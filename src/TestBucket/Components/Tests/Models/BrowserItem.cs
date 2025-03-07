@@ -11,4 +11,5 @@ public record class BrowserItem
     public TestCase? TestCase { get; set; }
     public TestSuite? TestSuite { get; set; }
     public TestSuiteFolder? Folder { get; set; }
+    public TestRun? TestRun { get; set; }
 }

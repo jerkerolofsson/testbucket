@@ -32,6 +32,6 @@
             }
         }
 
-        public List<TestCaseRunDto>? Tests { get; set; }
+        public List<TestCaseRunDto> Tests { get; set; } = [];
     }
 }

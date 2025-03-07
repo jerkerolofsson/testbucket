@@ -3,31 +3,32 @@
 @inject IDialogService dialogService
 @inject TestCaseEditorService testCaseEditor
 @implements IDisposable
+@implements ITestBrowserObserver
 
 <MudDataGrid ServerData="LoadGridData"
-        Style="width: 100%"
-        Dense="true"
-        Hover="true"
-        T="TestCase"
-        RowClick="(e) => OnTestClicked(e.Item)"
-        @ref="_dataGrid"
-        SortMode="SortMode.None">
+             Style="width: 100%"
+             Dense="true"
+             Hover="true"
+             T="TestCase"
+             RowClick="(e) => OnTestClicked(e.Item)"
+             @ref="_dataGrid"
+             SortMode="SortMode.None">
 
     <ToolBarContent>
         <MudStack Row="true" AlignItems="AlignItems.Center">
 
-            <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch" 
-                Style="min-width: 15vw"
-                Clearable="true"
-                Variant="Variant.Outlined"
-                IconSize="Size.Small"
-                Adornment="Adornment.Start"
-                AdornmentIcon="@Icons.Material.Filled.Search"/>
+            <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
+                          Style="min-width: 15vw"
+                          Clearable="true"
+                          Variant="Variant.Outlined"
+                          IconSize="Size.Small"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search" />
 
             <MudSpacer />
             @if (TestSuiteId is not null || Folder is not null)
             {
-                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTestCaseAsync"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateNewTestCaseAsync"></MudIconButton>
             }
 
         </MudStack>
@@ -52,76 +53,3 @@
         <MudDataGridPager T="TestCase" />
     </PagerContent>
 </MudDataGrid>
-
-@code {
-    [Parameter] public TestSuiteFolder? Folder { get; set; }
-    [Parameter] public long? TestSuiteId { get; set; }
-    [Parameter] public EventCallback<TestCase> OnTestCaseClicked { get; set; }
-
-    private string? _searchText;
-
-    private MudDataGrid<TestCase?> _dataGrid = default!;
-
-    protected override void OnInitialized()
-    {
-        testCaseEditor.TestCaseSaved += OnTestCaseSaved;
-    }
-
-    public void Dispose()
-    {
-        testCaseEditor.TestCaseSaved -= OnTestCaseSaved;
-    }
-
-    private void OnTestCaseSaved(object? sender, TestCase testCase)
-    {
-        _dataGrid?.ReloadServerData();
-    }
-
-    protected override void OnParametersSet()
-    {
-        _dataGrid?.ReloadServerData();
-    }
-
-    private async Task OnTestClicked(TestCase testCase)
-    {
-        await OnTestCaseClicked.InvokeAsync(testCase);
-        //navigationManager.NavigateTo($"/{TenantId}/tenants/manage/{tenant.Id}");
-    }
-
-    private async Task AddTestCaseAsync()
-    {
-        if (TestSuiteId is not null || Folder is not null)
-        {
-            var parameters = new DialogParameters<AddTestCaseDialog>
-        {
-            { x => x.Folder, Folder },
-            { x => x.TestSuiteId, TestSuiteId}
-        };
-            var dialog = await dialogService.ShowAsync<AddTestCaseDialog>("Add test case", parameters);
-            var result = await dialog.Result;
-            if (result?.Data is TestCase)
-            {
-                _dataGrid?.ReloadServerData();
-            }
-        }
-    }
-
-    private void OnSearch(string text)
-    {
-        _searchText = text;
-        _dataGrid?.ReloadServerData();
-    }
-
-    private async Task<GridData<TestCase>> LoadGridData(GridState<TestCase> state)
-    {
-        var result = await testBrowser.SearchTestCasesAsync(TestSuiteId, Folder?.Id, _searchText, state.Page*state.PageSize, state.PageSize);
-
-        GridData<TestCase> data = new()
-            {
-                Items = result.Items,
-                TotalItems = (int)result.TotalCount
-            };
-
-        return data;
-    }
-}

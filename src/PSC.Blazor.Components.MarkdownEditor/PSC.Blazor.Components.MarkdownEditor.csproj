@@ -16,6 +16,7 @@
     <PackageProjectUrl>https://www.puresourcecode.com/dotnet/blazor/markdown-editor-component-for-blazor/</PackageProjectUrl>
     <Copyright>Enrico Rossini - PureSourceCode.com</Copyright>
     <Title>Markdown Editor for Blazor</Title>
+      <Nullable>enable</Nullable>
   </PropertyGroup>
 
   

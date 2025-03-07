@@ -26,6 +26,11 @@ public class TestTraitNames
     public const string TestEnvironment = nameof(TestEnvironment);
 
     /// <summary>
+    /// Machine name of test host 
+    /// </summary>
+    public const string MachineName = nameof(MachineName);
+
+    /// <summary>
     /// Test ID
     /// </summary>
     public const string TestId = nameof(TestId);

@@ -32,8 +32,6 @@
 
   <ItemGroup>
     <Folder Include="Components\Controls\" />
-    <Folder Include="Components\Tests\Browser\Dialogs\" />
-    <Folder Include="Components\Tests\Browser\Services\" />
     <Folder Include="Services\" />
   </ItemGroup>
 

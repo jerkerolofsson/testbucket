@@ -44,7 +44,7 @@
         /// <summary>
         /// Gets the Markdown event name for the specified action.
         /// </summary>
-        public static string Event(MarkdownAction? action) =>
+        public static string? Event(MarkdownAction? action) =>
             action switch
             {
                 MarkdownAction.Bold => "toggleBold",

@@ -14,6 +14,19 @@ internal class TestSuiteService : TenantBaseService
         _testCaseRepo = testCaseRepo;
     }
 
+    #region Test Runs
+    public async Task<int[]> GetTestRunYearsAsync(long? teamId, long? projectId)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _testCaseRepo.GetTestRunYearsAsync(tenantId, teamId, projectId);
+    }
+    public async Task<PagedResult<TestRun>> SearchTestRunsAsync(SearchQuery query)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _testCaseRepo.SearchTestRunsAsync(tenantId, query);
+    }
+    #endregion
+
     /// <summary>
     /// Saves a folder
     /// </summary>

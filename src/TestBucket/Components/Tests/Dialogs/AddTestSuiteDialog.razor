@@ -8,15 +8,18 @@
             <MudStack Spacing="1">
                 @if (_name is not null)
                 {
-                    <MudTextField 
-                    AutoFocus="true"
-                    Variant="Variant.Outlined"
-                    T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+                    <Field>
+                        <FieldHeader>Name</FieldHeader>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+                    </Field>
 
-                    <MudStack Spacing="1" Row="true" Class="mt-2">
-                        <MudTooltip Text="Slug"><MudText Style="background: black; font-size: 7pt">@_slug</MudText></MudTooltip>
-                        <MudTooltip Text="Short Name"><MudText Style="background: black; font-size: 7pt">@_shortName</MudText></MudTooltip>
-                    </MudStack>
+                    <Field>
+                        <FieldHeader>ID</FieldHeader>
+                        <MudStack Spacing="1" Row="true" Class="mt-2">
+                            <MudTooltip Text="Slug"><MudText Style="background: black; font-size: 7pt">@_slug</MudText></MudTooltip>
+                            <MudTooltip Text="Short Name"><MudText Style="background: black; font-size: 7pt">@_shortName</MudText></MudTooltip>
+                        </MudStack>
+                    </Field>
                 }
                 @if (_errorMessage is not null)
                 {

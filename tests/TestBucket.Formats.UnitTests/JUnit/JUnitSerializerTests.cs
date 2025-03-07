@@ -4,7 +4,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.JUnit
 {
+    [UnitTest]
     [Trait("Format", "JUnit")]
+    [EnrichedTest]
     public class JUnitSerializerTests
     {
         /// <summary>
@@ -24,12 +26,10 @@ namespace TestBucket.Formats.UnitTests.JUnit
             Assert.Equal(run.Name, run.Suites[0].Name);
         }
 
-        /// <summary>
-        /// Verifies that a junit xml is contains the correct number of test suites
-        /// </summary>
         [Fact]
         [TestId("JUNIT-002")]
         [Component("TestBucket.Formats")]
+        [TestDescription("Verifies that a junit xml is contains the correct number of test suites")]
         public void Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-basic.xml");
@@ -42,12 +42,10 @@ namespace TestBucket.Formats.UnitTests.JUnit
             Assert.Equal("Tests.Authentication", run.Suites[1].Name);
         }
 
-        /// <summary>
-        /// Verifies that a junit xml containing properties on the testcase element are extracted as traits
-        /// </summary>
         [Fact]
         [TestId("JUNIT-003")]
         [Component("TestBucket.Formats")]
+        [TestDescription("Verifies that a junit xml containing properties on the testcase element are extracted as traits")]
         public void Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-properties.xml");
@@ -69,6 +67,115 @@ namespace TestBucket.Formats.UnitTests.JUnit
                 Assert.NotNull(trait);
                 Assert.Equal("TestBucket.Formats", trait.Value);
             }
+        }
+
+        [Fact]
+        [TestId("JUNIT-004")]
+        [Component("TestBucket.Formats")]
+        [TestDescription("Verifies that the assembly name is read from the testsuite name if no assembly trait is defined")]
+        public void Deserialize_WithoutAssemblyName_AssemblyNameSuiteName()
+        {
+            var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-basic.xml");
+            var serializer = new JUnitSerializer();
+            var run = serializer.Deserialize(xml);
+
+            Assert.NotNull(run.Suites);
+            Assert.NotEmpty(run.Suites);
+            Assert.Equal(2, run.Suites.Count);
+            Assert.NotNull(run.Suites[0]);
+            Assert.NotNull(run.Suites[1]);
+            Assert.NotNull(run.Suites[0].Tests);
+            Assert.NotNull(run.Suites[1].Tests);
+
+            foreach (var test in run.Suites[0].Tests!)
+            {
+                Assert.Equal("Tests.Registration", test.Assembly);
+            }
+
+            foreach (var test in run.Suites[1].Tests!)
+            {
+                Assert.Equal("Tests.Authentication", test.Assembly);
+            }
+        }
+
+        [Fact]
+        [TestId("JUNIT-005")]
+        [Component("TestBucket.Formats")]
+        [TestDescription("Verifies that tests from nested testsuites are flattened")]
+        public void Deserialize_WithNestedTestSuites_AllTestsInParentContainer()
+        {
+            var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-basic.xml");
+            var serializer = new JUnitSerializer();
+            var run = serializer.Deserialize(xml);
+
+            Assert.NotNull(run.Suites);
+            Assert.NotEmpty(run.Suites);
+            Assert.Equal(2, run.Suites.Count);
+            Assert.NotNull(run.Suites[0]);
+            Assert.NotNull(run.Suites[1]);
+            Assert.NotNull(run.Suites[0].Tests);
+            Assert.NotNull(run.Suites[1].Tests);
+
+            Assert.Equal(3, run.Suites[0].Tests!.Count);
+            Assert.Equal(6, run.Suites[1].Tests!.Count);
+        }
+
+        [Fact]
+        [TestId("JUNIT-006")]
+        [Component("TestBucket.Formats")]
+        [TestDescription("Verifies that tests from nested testsuites have a folder extracted from the nested testsuite name")]
+        public void Deserialize_WithNestedTestSuites_FolderExtractedForNestedTests()
+        {
+            var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-basic.xml");
+            var serializer = new JUnitSerializer();
+            var run = serializer.Deserialize(xml);
+
+            Assert.NotNull(run.Suites);
+            Assert.NotEmpty(run.Suites);
+            Assert.Equal(2, run.Suites.Count);
+            Assert.NotNull(run.Suites[0]);
+            Assert.NotNull(run.Suites[1]);
+            Assert.NotNull(run.Suites[0].Tests);
+            Assert.NotNull(run.Suites[1].Tests);
+
+            Assert.Equal(3, run.Suites[0].Tests!.Count);
+            Assert.Equal(6, run.Suites[1].Tests!.Count);
+
+            // Tests.Authentication
+            // - testCase7
+            // - testCase8
+            // - testCase9
+            // - Tests.Authentication.Login
+            //   - testCase4
+            //   - testCase5
+            //   - testCase6
+
+            var tests = run.Suites[1].Tests!;
+            for (int i = 3; i < 6; i++)
+            {
+                Assert.Single(tests[i].Folders);
+                Assert.Equal("Login", tests[i].Folders[0]);
+            }
+        }
+
+
+        [Fact]
+        [TestId("JUNIT-007")]
+        [Component("TestBucket.Formats")]
+        [TestDescription("Verifies that if a TestId trait exists it will be used for ExternalId")]
+        public void Deserialize_WithTestIdTrait_TestIdTraitUsedAsExternalId()
+        {
+            var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-testid-trait.xml");
+            var serializer = new JUnitSerializer();
+            var run = serializer.Deserialize(xml);
+
+            Assert.NotNull(run.Suites);
+            Assert.NotEmpty(run.Suites);
+            Assert.NotEmpty(run.Suites[0].Tests);
+            var test = run.Suites.First().Tests.First();
+
+            Assert.Equal("MY-EXTERNAL-ID", test.ExternalId);
+            Assert.Equal("MY-EXTERNAL-ID", test.TestId);
         }
     }
 }

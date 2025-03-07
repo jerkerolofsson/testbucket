@@ -64,7 +64,9 @@ internal class TextImporter : ITextTestResultsImporter
                 // Add test suite run
                 TestRun testRun = new TestRun()
                 {
-                    Name = suiteName,
+                    Created = suite.Created,
+                    Name = suiteName + " - " + suite.Created.ToString("yyyy-MM-dd HHmmss"),
+                    TeamId = teamId,
                     TenantId = tenantId,
                     TestProjectId = projectId,
                     ExternalId = run.ExternalId,
@@ -74,6 +76,7 @@ internal class TextImporter : ITextTestResultsImporter
                 await _testCaseRepository.AddTestRunAsync(testRun);
 
                 // Get field definitions to imported entities
+                var testRunFieldDefinitions = await _fieldRepository.SearchAsync(tenantId, FieldTarget.TestRun, new SearchQuery { ProjectId = projectId });
                 var testCaseFieldDefinitions = await _fieldRepository.SearchAsync(tenantId, FieldTarget.TestCase, new SearchQuery { ProjectId = projectId });
                 var testCaseRunFieldDefinitions = await _fieldRepository.SearchAsync(tenantId, FieldTarget.TestCaseRun, new SearchQuery { ProjectId = projectId });
                 foreach (var test in runSuite.Tests)
@@ -155,7 +158,22 @@ internal class TextImporter : ITextTestResultsImporter
 
     private async Task<TestCase> GetOrCreateTestCaseAsync(string tenantId, long? projectId, TestSuite suite, TestCaseRunDto test)
     {
-        TestCase? testCase = await _testCaseRepository.GetTestCaseByExternalIdAsync(tenantId, suite.Id, test.ExternalId);
+        // We try to map the test case by the external ID first.
+        // This allows tests to define [TestId] traits for simplicity
+        TestCase? testCase = await _testCaseRepository.GetTestCaseByExternalIdAsync(tenantId, test.ExternalId);
+
+        if(testCase is null)
+        {
+            var className = test.ClassName;
+            var method = test.Method;
+            var module = test.Module;
+            var assemblyName = test.Assembly;
+            if (className is not null || method is not null || assemblyName is not null || module is not null)
+            {
+                testCase = await _testCaseRepository.GetTestCaseByAutomationImplementationAttributesAsync(tenantId, assemblyName, module, className, method);
+            }
+        }
+
         if (testCase is null)
         {
             // Create folder for the test case
@@ -176,6 +194,7 @@ internal class TextImporter : ITextTestResultsImporter
             {
                 Name = test.Name ?? "",
                 ExternalId = test.TestId ?? test.ExternalId,
+                AutomationAssembly = test.Assembly,
                 ClassName = test.ClassName,
                 Method = test.Method,
                 Module = test.Module,

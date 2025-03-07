@@ -9,14 +9,21 @@
             <DialogContent>
                 <MudStack>
                     <MudStack Spacing="3">
-                        <MudTextField @bind-Value="Folder.Name"></MudTextField>
-
-                        <MudColorPicker Label="Color" @bind-Text="Folder.Color" Style="@($"color: {Folder.Color};")" Placeholder="Select Color" />
+                        <Field>
+                            <FieldHeader>Name</FieldHeader>
+                            <MudTextField Variant="Variant.Outlined" @bind-Value="Folder.Name"></MudTextField>
+                        </Field>
                         
-                        <IconPicker @bind-Icon="Folder.Icon"/>
-
+                        <Field>
+                            <FieldHeader>Color</FieldHeader>
+                            <MudColorPicker Label="Color" @bind-Text="Folder.Color" Style="@($"color: {Folder.Color};")" Placeholder="Select Color" />
+                        </Field>
+                        
+                        <Field>
+                            <FieldHeader>Icon</FieldHeader>
+                            <IconPicker @bind-Icon="Folder.Icon" />
+                        </Field>
                     </MudStack>
-
                 </MudStack>
             </DialogContent>
 

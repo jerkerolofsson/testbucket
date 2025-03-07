@@ -1,0 +1,69 @@
+﻿@attribute [Authorize(Roles = "ADMIN")]
+@inject TestCaseEditorService testCaseEditorService
+
+@if (TestCase is not null)
+{
+    <EditForm Model="@TestCase" OnValidSubmit="async () => await OnValidSubmitAsync()">
+        <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+            <DialogContent>
+                <MudStack Spacing="1">
+
+                    <h1>Link by Test ID</h1>
+                    <Field>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@TestCase.ExternalId"></MudTextField>
+                    </Field>
+
+                    <MudText>--- or ---</MudText>
+
+                    <h1>Link by Test Automation Attributes</h1>
+                    <Field>
+                        <FieldHeader>Assembly name</FieldHeader>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@TestCase.AutomationAssembly"></MudTextField>
+
+                        <FieldHeader>Module name</FieldHeader>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@TestCase.Module"></MudTextField>
+
+                        <FieldHeader>Class name</FieldHeader>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@TestCase.ClassName"></MudTextField>
+
+                        <FieldHeader>Method</FieldHeader>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@TestCase.Method"></MudTextField>
+                    </Field>
+
+                </MudStack>
+            </DialogContent>
+
+            <DialogActions>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+                <MudButton OnClick="Close">Cancel</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </EditForm>
+}
+
+@code {
+    private string? _errorMessage;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public TestCase? TestCase { get; set; }
+
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if(TestCase is null)
+        {
+            MudDialog.Close();
+            return;
+        }
+        await testCaseEditorService.SaveTestCaseAsync(TestCase);
+        MudDialog.Close(TestCase);
+    }
+}
+

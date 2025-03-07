@@ -32,6 +32,6 @@
             }
         }
 
-        public List<TestSuiteRunDto>? Suites { get; set; }
+        public List<TestSuiteRunDto> Suites { get; set; } = [];
     }
 }

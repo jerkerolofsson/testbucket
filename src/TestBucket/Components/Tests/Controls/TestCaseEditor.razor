@@ -1,5 +1,6 @@
 ﻿@using TestBucket.Components.Shared
 @inject FieldService fieldService
+@inject TestCaseEditorService testCaseEditorService
 
 @if(Test is not null && _boundDescription is not null)
 {
@@ -50,14 +51,14 @@
                 }
                 <MudMarkdownEditorTheming>
                     <MarkdownEditor 
-                        MaxHeight="500px"
-                        Color="Color.Primary"
-                        AllowResize="true"
-                        @bind-Preview="_preview"
-                        Value="@_boundDescription"
-                        @ref=_editor
-                        ValueChanged="OnDescriptionChanged"
-                        SpellChecker="false">
+                    MaxHeight="500px"
+                    Color="Color.Primary"
+                    AllowResize="true"
+                    @bind-Preview="_preview"
+                    Value="@_boundDescription"
+                    @ref=_editor
+                    ValueChanged="OnDescriptionChanged"
+                    SpellChecker="false">
                     </MarkdownEditor>
                 </MudMarkdownEditorTheming>
 
@@ -72,10 +73,9 @@
 @code {
     [Parameter] public TestCase? Test { get; set; }
     [Parameter] public EventCallback<TestCase?> TestChanged { get; set; }
-    [Parameter] public EventCallback<TestCase?> DeleteTestClicked { get; set; }
 
     private bool _preview = false;
-    
+
     private void BeginEdit()
     {
         _preview = false;
@@ -89,7 +89,11 @@
 
     private async Task DeleteTestCaseAsync()
     {
-        await DeleteTestClicked.InvokeAsync(Test);
+        if(Test is null)
+        {
+            return;
+        }
+        await testCaseEditorService.DeleteTestCaseAsync(Test);
     }
 
     private IReadOnlyList<FieldDefinition> _fields = [];

@@ -26,9 +26,17 @@ namespace TestBucket.Formats.Dtos
             get => GetAttribute(TraitType.Name);
             set => SetAttribute(TraitType.Name, value);
         }
+        /// <summary>
+        /// Assembly attribute
+        /// </summary>
+        public string? Assembly
+        {
+            get => GetAttribute(TraitType.Assembly);
+            set => SetAttribute(TraitType.Assembly, value);
+        }
 
         /// <summary>
-        /// Module/Assembly attribute
+        /// Module attribute
         /// </summary>
         public string? Module
         {

@@ -1,9 +1,5 @@
-using System.Text.RegularExpressions;
-
 using MudBlazor;
 using MudBlazor.Utilities;
-
-using static MudBlazor.CategoryTypes;
 
 namespace PSC.Blazor.Components.MarkdownEditor
 {
@@ -29,12 +25,12 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// <summary>
         /// The dotnet object reference
         /// </summary>
-        private DotNetObjectReference<MarkdownEditor> dotNetObjectRef;
+        private DotNetObjectReference<MarkdownEditor>? dotNetObjectRef;
 
         /// <summary>
         /// Gets or sets the <see cref = "JSMarkdownInterop"/> instance.
         /// </summary>
-        protected JSMarkdownInterop JSModule { get; private set; }
+        protected JSMarkdownInterop? JSModule { get; private set; }
 
         #endregion Inject and JavaScript
         #region Element references
@@ -45,7 +41,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// <value>
         /// The element identifier.
         /// </value>
-        private string ElementId { get; set; }
+        private string ElementId { get; set; } = $"markdown-{Guid.NewGuid()}";
 
         /// <summary>
         /// Gets or sets the element reference.
@@ -76,7 +72,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// <summary>
         /// The toolbar buttons
         /// </summary>
-        private List<MarkdownToolbarButton> toolbarButtons;
+        private List<MarkdownToolbarButton>? toolbarButtons;
 
         /// <summary>
         /// Indicates if markdown editor is properly initialized.
@@ -85,6 +81,12 @@ namespace PSC.Blazor.Components.MarkdownEditor
 
         /// <inheritdoc/>
         protected bool ShouldAutoGenerateId => true;
+
+        /// <summary>
+        /// Keep track of the preview state
+        /// </summary>
+        private bool? _currentPreviewState = null;
+
         #endregion Local variable
         #region AutoSave
 
@@ -119,7 +121,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// The automatic save identifier.
         /// </value>
         [Parameter]
-        public string AutoSaveId { get; set; }
+        public string? AutoSaveId { get; set; }
 
         /// <summary>
         /// Gets or sets the automatic save submit delay.
@@ -261,7 +263,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// or internationalization.
         /// </summary>
         [Parameter]
-        public MarkdownErrorMessages ErrorMessages { get; set; }
+        public MarkdownErrorMessages? ErrorMessages { get; set; }
 
         /// <summary>
         /// An array of icon names to hide. Can be used to hide specific icons shown by default without
@@ -281,7 +283,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// CSRF token to include with AJAX call to upload image. For instance used with Django backend.
         /// </summary>
         [Parameter]
-        public string ImageCSRFToken { get; set; }
+        public string? ImageCSRFToken { get; set; }
 
         /// <summary>
         /// Maximum image size in bytes, checked before upload (note: never trust client, always check image
@@ -295,7 +297,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// an absolute rather than relative path, i.e. not prepend window.location.origin to it.
         /// </summary>
         [Parameter]
-        public string ImagePathAbsolute { get; set; }
+        public string? ImagePathAbsolute { get; set; }
 
         /// <summary>
         /// Texts displayed to the user (mainly on the status bar) for the import image feature, where
@@ -303,7 +305,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// can be used for customization or internationalization.
         /// </summary>
         [Parameter]
-        public MarkdownImageTexts ImageTexts { get; set; }
+        public MarkdownImageTexts? ImageTexts { get; set; }
 
         /// <summary>
         /// Occurs every time the selected image has changed.
@@ -322,7 +324,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// save this image, and return a json response.
         /// </summary>
         [Parameter]
-        public string ImageUploadEndpoint { get; set; }
+        public string? ImageUploadEndpoint { get; set; }
 
         /// <summary>
         /// Gets or sets the image upload authentication schema (for example Bearer)
@@ -331,7 +333,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// The image upload authentication schema by default is empty
         /// </value>
         [Parameter]
-        public string ImageUploadAuthenticationSchema { get; set; }
+        public string? ImageUploadAuthenticationSchema { get; set; }
 
         /// <summary>
         /// Gets or sets the image upload authentication token.
@@ -340,7 +342,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// The image upload authentication token by default is empty
         /// </value>
         [Parameter]
-        public string ImageUploadAuthenticationToken { get; set; }
+        public string? ImageUploadAuthenticationToken { get; set; }
 
         /// <summary>
         /// Notifies the progress of image being written to the destination stream.
@@ -416,7 +418,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// If set, displays a custom placeholder message.
         /// </summary>
         [Parameter]
-        public string Placeholder { get; set; }
+        public string? Placeholder { get; set; }
 
         /// <summary>
         /// Gets or sets the Segment Fetch Timeout when uploading the file.
@@ -463,7 +465,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// [Optional] Gets or sets the content of the toolbar.
         /// </summary>
         [Parameter]
-        public RenderFragment Toolbar { get; set; }
+        public RenderFragment? Toolbar { get; set; }
 
         /// <summary>
         /// If set to false, disable toolbar button tips. Defaults to true.
@@ -483,23 +485,14 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// Gets or sets the markdown value.
         /// </summary>
         [Parameter]
-        public string Value {
-            get => _value;
-            set
-            {
-                if (_value == value) return;
-                _value = value;
-
-                ValueChanged.InvokeAsync(value);
-            }
-        }
-        private string _value;
+        public string? Value { get; set; }
+        private string? _value = null;
 
         /// <summary>
         /// Gets or sets the HTML from markdown value.
         /// </summary>
         [Parameter]
-        public string ValueHTML { get; set; }
+        public string? ValueHTML { get; set; }
 
         /// <summary>
         /// Gets or sets the words status text.
@@ -509,279 +502,8 @@ namespace PSC.Blazor.Components.MarkdownEditor
         public string? WordsStatusText { get; set; } = "words: ";
 
         #endregion Parameters
+        #region JSInvokable
 
-        /// <summary>
-        /// Cleans all automatic save.
-        /// </summary>
-        public async Task CleanAllAutoSave()
-        {
-            await JSModule.DeleteAllAutoSave();
-        }
-
-        /// <summary>
-        /// Cleans the automatic save in the local storage in the browser
-        /// </summary>
-        public async Task CleanAutoSave()
-        {
-            await JSModule.DeleteAutoSave(AutoSaveId);
-        }
-
-        /// <summary>
-        /// Gets the markdown value.
-        /// </summary>
-        /// <returns>Markdown value.</returns>
-        public async Task<string> GetValueAsync()
-        {
-            if (!Initialized)
-                return null;
-
-            return await JSModule.GetValue(ElementId);
-        }
-
-        /// <summary>
-        /// Notifies the custom button clicked.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        [JSInvokable]
-        public Task NotifyCustomButtonClicked(string name, object value)
-        {
-            return CustomButtonClicked.InvokeAsync(new MarkdownButtonEventArgs(name, value));
-        }
-
-        /// <summary>
-        /// Notifies the error message.
-        /// </summary>
-        /// <param name="errorMessage">The error message.</param>
-        /// <returns></returns>
-        [JSInvokable]
-        public Task NotifyErrorMessage(string errorMessage)
-        {
-            if (ErrorCallback is not null)
-                return ErrorCallback.Invoke(errorMessage);
-
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Notifies the component that file input value has changed.
-        /// </summary>
-        /// <param name = "file">Changed file.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        [JSInvokable]
-        public async Task NotifyImageUpload(FileEntry file)
-        {
-            if (ImageUploadChanged is not null)
-                await ImageUploadChanged.Invoke(new(file));
-
-            if (string.IsNullOrEmpty(ImageUploadEndpoint))
-                await JSModule.NotifyImageUploadError(ElementId, $"The property ImageUploadEndpoint is not specified.");
-
-            await InvokeAsync(StateHasChanged);
-        }
-
-        /// <summary>
-        /// Inserts an image
-        /// </summary>
-        public async Task DrawImageAsync()
-        {
-            if (!Initialized)
-                return;
-
-            await JSModule.DrawImage(ElementId);
-        }
-
-        /// <summary>
-        /// Inserts a link
-        /// </summary>
-        public async Task DrawLinkAsync()
-        {
-            if (!Initialized)
-                return;
-
-            await JSModule.DrawLink(ElementId);
-        }
-
-        /// <summary>
-        /// Inserts a table
-        /// </summary>
-        public async Task DrawTableAsync()
-        {
-            if (!Initialized)
-                return;
-
-            await JSModule.DrawTable(ElementId);
-        }
-
-        /// <summary>
-        /// Inserts a unordered list (ul)
-        /// </summary>
-        public async Task ToggleUnorderedListAsync()
-        {
-            if (!Initialized)
-                return;
-
-            await JSModule.ToggleUnorderedList(ElementId);
-        }
-        /// <summary>
-        /// Inserts a ordered list (ol)
-        /// </summary>
-        public async Task ToggleOrderedListAsync()
-        {
-            if (!Initialized)
-                return;
-
-            await JSModule.ToggleOrderedList(ElementId);
-        }
-
-        /// <summary>
-        /// Toggle code block
-        /// </summary>
-        public async Task ToggleCodeBlockAsync()
-        {
-            if (!Initialized)
-                return;
-
-            await JSModule.ToggleCodeBlock(ElementId);
-        }
-
-        /// <summary>
-        /// Toggles italic
-        /// </summary>
-        public async Task ToggleItalicAsync()
-        {
-            if (!Initialized)
-                return;
-
-            await JSModule.ToggleItalic(ElementId);
-        }
-        /// <summary>
-        /// Toggles bold
-        /// </summary>
-        public async Task ToggleBoldAsync()
-        {
-            if (!Initialized)
-                return;
-
-            await JSModule.ToggleBold(ElementId);
-        }
-
-        /// <summary>
-        /// Toggles fullscreen
-        /// </summary>
-        public async Task ToggleFullScreenAsync()
-        {
-            if (!Initialized)
-                return;
-
-            await JSModule.ToggleFullScreen(ElementId);
-        }
-
-        /// <summary>
-        /// Toggles preview mode
-        /// </summary>
-        public async Task TogglePreviewAsync()
-        {
-            if(_currentPreviewState == true)
-            {
-                await SetPreviewAsync(false);
-            }
-            else
-            {
-                await SetPreviewAsync(true);
-            }
-        }
-
-        /// <summary>
-        /// Enables or disables the preview
-        /// </summary>
-        /// <param name="elementId">The element identifier.</param>
-        public async Task SetPreviewAsync(bool wantedState)
-        {
-            if (!Initialized)
-                return;
-
-            await JSModule.SetPreview(ElementId, wantedState);
-
-            // Keep track of the state to support changing the state with the Preview parameter
-            if (_currentPreviewState != wantedState)
-            {
-                _currentPreviewState = wantedState;
-                await PreviewChanged.InvokeAsync(wantedState);
-            }
-        }
-
-        /// <summary>
-        /// Sets the markdown value.
-        /// </summary>
-        /// <param name = "value">Value to set.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        public async Task SetValueAsync(string value)
-        {
-            if (!Initialized)
-                return;
-
-            await JSModule.SetValue(ElementId, value);
-        }
-
-        /// <summary>
-        /// Updates the file ended asynchronous.
-        /// </summary>
-        /// <param name="fileEntry">The file entry.</param>
-        /// <param name="success">if set to <c>true</c> [success].</param>
-        /// <param name="fileInvalidReason">The file invalid reason.</param>
-        public async Task UpdateFileEndedAsync(FileEntry fileEntry, bool success, string fileInvalidReason)
-        {
-            if (ImageUploadEnded is not null)
-                await ImageUploadEnded.Invoke(new(fileEntry, success, fileInvalidReason));
-
-            if (success)
-                await JSModule.NotifyImageUploadSuccess(ElementId, fileEntry.UploadUrl);
-            else
-                await JSModule.NotifyImageUploadError(ElementId, fileEntry.ErrorMessage);
-        }
-
-        /// <summary>
-        /// Updates the file progress asynchronous.
-        /// </summary>
-        /// <param name="fileEntry">The file entry.</param>
-        /// <param name="progressProgress">The progress progress.</param>
-        /// <returns></returns>
-        public Task UpdateFileProgressAsync(FileEntry fileEntry, long progressProgress)
-        {
-            ProgressProgress += progressProgress;
-
-            var progress = Math.Round((double)ProgressProgress / ProgressTotal, 3);
-
-            if (Math.Abs(progress - Progress) > double.Epsilon)
-            {
-                Progress = progress;
-
-                if (ImageUploadProgressed is not null)
-                    return ImageUploadProgressed.Invoke(new(fileEntry, Progress));
-            }
-
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Updates the file started asynchronous.
-        /// </summary>
-        /// <param name="fileEntry">The file entry.</param>
-        /// <returns></returns>
-        public Task UpdateFileStartedAsync(FileEntry fileEntry)
-        {
-            // reset all
-            ProgressProgress = 0;
-            ProgressTotal = 100;
-            Progress = 0;
-
-            if (ImageUploadStarted is not null)
-                return ImageUploadStarted.Invoke(new(fileEntry));
-
-            return Task.CompletedTask;
-        }
 
         /// <summary>
         /// Updates the internal markdown value. This method should only be called internally!
@@ -794,6 +516,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         [JSInvokable]
         public async Task UpdateInternalValue(string value, string valueHTML)
         {
+            _value = Value;
             await ValueChanged.InvokeAsync(value);
 
             var match = valueHTML.ExtractTagContent("body");
@@ -808,15 +531,27 @@ namespace PSC.Blazor.Components.MarkdownEditor
         public async Task UploadFile(FileEntry fileInfo)
         {
             bool success = false;
+            if (JSModule is null)
+            {
+                return;
+            }
 
             if (fileInfo is null || string.IsNullOrEmpty(fileInfo.ContentBase64))
+            {
                 await JSModule.NotifyImageUploadError(ElementId, $"Can't upload an empty file");
+                return;
+            }
 
-            if(string.IsNullOrEmpty(ImageUploadEndpoint))
+            if (string.IsNullOrEmpty(ImageUploadEndpoint))
+            {
                 await JSModule.NotifyImageUploadError(ElementId, $"The property ImageUploadEndpoint is not specified.");
+                return;
+            }
 
             if (ImageUploadStarted is not null)
+            {
                 await ImageUploadStarted.Invoke(new(fileInfo));
+            }
 
             if (CustomImageUpload is not null)
             {
@@ -842,7 +577,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
             using (HttpClient httpClient = new HttpClient())
             {
                 if (!string.IsNullOrWhiteSpace(ImageUploadAuthenticationSchema) && !string.IsNullOrWhiteSpace(ImageUploadAuthenticationToken))
-                    httpClient.DefaultRequestHeaders.Authorization = 
+                    httpClient.DefaultRequestHeaders.Authorization =
                         new AuthenticationHeaderValue(ImageUploadAuthenticationSchema, ImageUploadAuthenticationToken);
 
                 byte[] file = Convert.FromBase64String(fileInfo.ContentBase64);
@@ -884,6 +619,326 @@ namespace PSC.Blazor.Components.MarkdownEditor
                 await UpdateFileEndedAsync(fileInfo, success, fileInfo.ErrorMessage);
             }
         }
+        /// <summary>
+        /// Notifies the custom button clicked.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        [JSInvokable]
+        public Task NotifyCustomButtonClicked(string name, object value)
+        {
+            return CustomButtonClicked.InvokeAsync(new MarkdownButtonEventArgs(name, value));
+        }
+
+        /// <summary>
+        /// Notifies the error message.
+        /// </summary>
+        /// <param name="errorMessage">The error message.</param>
+        /// <returns></returns>
+        [JSInvokable]
+        public Task NotifyErrorMessage(string errorMessage)
+        {
+            if (ErrorCallback is not null)
+                return ErrorCallback.Invoke(errorMessage);
+
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Notifies the component that file input value has changed.
+        /// </summary>
+        /// <param name = "file">Changed file.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        [JSInvokable]
+        public async Task NotifyImageUpload(FileEntry file)
+        {
+            if (ImageUploadChanged is not null)
+            {
+                await ImageUploadChanged.Invoke(new(file));
+            }
+
+            if (JSModule is not null && string.IsNullOrEmpty(ImageUploadEndpoint))
+            { 
+                await JSModule.NotifyImageUploadError(ElementId, $"The property ImageUploadEndpoint is not specified.");
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+
+        #endregion JSInvokable
+        #region Public Methods
+
+        /// <summary>
+        /// Inserts an image
+        /// </summary>
+        public async Task DrawImageAsync()
+        {
+            if (!Initialized || JSModule is null)
+            {
+                return;
+            }
+
+            await JSModule.DrawImage(ElementId);
+        }
+
+        /// <summary>
+        /// Inserts a link
+        /// </summary>
+        public async Task DrawLinkAsync()
+        {
+            if (!Initialized || JSModule is null)
+            {
+                return;
+            }
+            await JSModule.DrawLink(ElementId);
+        }
+
+        /// <summary>
+        /// Inserts a table
+        /// </summary>
+        public async Task DrawTableAsync()
+        {
+            if (!Initialized || JSModule is null)
+            {
+                return;
+            }
+            await JSModule.DrawTable(ElementId);
+        }
+
+        /// <summary>
+        /// Inserts a unordered list (ul)
+        /// </summary>
+        public async Task ToggleUnorderedListAsync()
+        {
+            if (!Initialized || JSModule is null)
+            {
+                return;
+            }
+            await JSModule.ToggleUnorderedList(ElementId);
+        }
+        /// <summary>
+        /// Inserts a ordered list (ol)
+        /// </summary>
+        public async Task ToggleOrderedListAsync()
+        {
+            if (!Initialized || JSModule is null)
+            {
+                return;
+            }
+            await JSModule.ToggleOrderedList(ElementId);
+        }
+
+        /// <summary>
+        /// Toggle code block
+        /// </summary>
+        public async Task ToggleCodeBlockAsync()
+        {
+            if (!Initialized || JSModule is null)
+            {
+                return;
+            }
+            await JSModule.ToggleCodeBlock(ElementId);
+        }
+
+        /// <summary>
+        /// Toggles italic
+        /// </summary>
+        public async Task ToggleItalicAsync()
+        {
+            if (!Initialized || JSModule is null)
+            {
+                return;
+            }
+            await JSModule.ToggleItalic(ElementId);
+        }
+
+        /// <summary>
+        /// Toggles bold
+        /// </summary>
+        public async Task ToggleBoldAsync()
+        {
+            if (!Initialized || JSModule is null)
+            {
+                return;
+            }
+            await JSModule.ToggleBold(ElementId);
+        }
+
+        /// <summary>
+        /// Toggles fullscreen
+        /// </summary>
+        public async Task ToggleFullScreenAsync()
+        {
+            if (!Initialized || JSModule is null)
+            {
+                return;
+            }
+            await JSModule.ToggleFullScreen(ElementId);
+        }
+
+        /// <summary>
+        /// Toggles preview mode
+        /// </summary>
+        public async Task TogglePreviewAsync()
+        {
+            if (_currentPreviewState == true)
+            {
+                await SetPreviewAsync(false);
+            }
+            else
+            {
+                await SetPreviewAsync(true);
+            }
+        }
+
+        /// <summary>
+        /// Enables or disables the preview
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        public async Task SetPreviewAsync(bool wantedState)
+        {
+            if (!Initialized || JSModule is null)
+            {
+                return;
+            }
+
+            await JSModule.SetPreview(ElementId, wantedState);
+
+            // Keep track of the state to support changing the state with the Preview parameter
+            if (_currentPreviewState != wantedState)
+            {
+                _currentPreviewState = wantedState;
+                await PreviewChanged.InvokeAsync(wantedState);
+            }
+        }
+
+        /// <summary>
+        /// Sets the markdown value.
+        /// </summary>
+        /// <param name = "value">Value to set.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public async Task SetValueAsync(string value)
+        {
+            if (!Initialized || JSModule is null)
+            { 
+                return;
+            }
+
+            await JSModule.SetValue(ElementId, value);
+        }
+
+        /// <summary>
+        /// Cleans all automatic save.
+        /// </summary>
+        public async Task CleanAllAutoSave()
+        {
+            if (JSModule is null)
+            {
+                return;
+            }
+            await JSModule.DeleteAllAutoSave();
+        }
+
+        /// <summary>
+        /// Cleans the automatic save in the local storage in the browser
+        /// </summary>
+        public async Task CleanAutoSave()
+        {
+            if (JSModule is null || AutoSaveId is null)
+            {
+                return;
+            }
+
+            await JSModule.DeleteAutoSave(AutoSaveId);
+        }
+
+        /// <summary>
+        /// Gets the markdown value.
+        /// </summary>
+        /// <returns>Markdown value.</returns>
+        public async Task<string?> GetValueAsync()
+        {
+            if (!Initialized || JSModule is null)
+            {
+                return null;
+            }
+
+            return await JSModule.GetValue(ElementId);
+        }
+        /// <summary>
+        /// Updates the file ended asynchronous.
+        /// </summary>
+        /// <param name="fileEntry">The file entry.</param>
+        /// <param name="success">if set to <c>true</c> [success].</param>
+        /// <param name="fileInvalidReason">The file invalid reason.</param>
+        public async Task UpdateFileEndedAsync(FileEntry fileEntry, bool success, string fileInvalidReason)
+        {
+            if (ImageUploadEnded is not null)
+            {
+                await ImageUploadEnded.Invoke(new(fileEntry, success, fileInvalidReason));
+            }
+
+            if (JSModule is null)
+            {
+                return;
+            }
+            if (success)
+            {
+                await JSModule.NotifyImageUploadSuccess(ElementId, fileEntry.UploadUrl);
+            }
+            else
+            {
+                await JSModule.NotifyImageUploadError(ElementId, fileEntry.ErrorMessage);
+            }
+        }
+
+        /// <summary>
+        /// Updates the file progress asynchronous.
+        /// </summary>
+        /// <param name="fileEntry">The file entry.</param>
+        /// <param name="progressProgress">The progress progress.</param>
+        /// <returns></returns>
+        public Task UpdateFileProgressAsync(FileEntry fileEntry, long progressProgress)
+        {
+            ProgressProgress += progressProgress;
+
+            var progress = Math.Round((double)ProgressProgress / ProgressTotal, 3);
+
+            if (Math.Abs(progress - Progress) > double.Epsilon)
+            {
+                Progress = progress;
+
+                if (ImageUploadProgressed is not null)
+                {
+                    return ImageUploadProgressed.Invoke(new(fileEntry, Progress));
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Updates the file started asynchronous.
+        /// </summary>
+        /// <param name="fileEntry">The file entry.</param>
+        /// <returns></returns>
+        public Task UpdateFileStartedAsync(FileEntry fileEntry)
+        {
+            // reset all
+            ProgressProgress = 0;
+            ProgressTotal = 100;
+            Progress = 0;
+
+            if (ImageUploadStarted is not null)
+            {
+                return ImageUploadStarted.Invoke(new(fileEntry));
+            }
+
+            return Task.CompletedTask;
+        }
+        #endregion
+
 
         /// <summary>
         /// Adds the custom toolbar button.
@@ -901,10 +956,8 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// <param name = "toolbarButton">Button instance.</param>
         protected internal void RemoveMarkdownToolbarButton(MarkdownToolbarButton toolbarButton)
         {
-            toolbarButtons.Remove(toolbarButton);
+            toolbarButtons?.Remove(toolbarButton);
         }
-
-        private bool? _currentPreviewState = null;
 
         protected override async Task OnParametersSetAsync()
         {
@@ -912,6 +965,15 @@ namespace PSC.Blazor.Components.MarkdownEditor
             if (_currentPreviewState is null)
             {
                 _currentPreviewState = Preview;
+            }
+            if (_value is null)
+            {
+                _value = Value;
+            }
+
+            if (Initialized && _value != Value)
+            {
+                await SetValueAsync(Value ?? "");
             }
 
             if (Initialized && _currentPreviewState != Preview)
@@ -939,9 +1001,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
 
             if (firstRender)
             {
-                if (JSModule == null)
-                    JSModule = new JSMarkdownInterop(JSRuntime);
-
+                JSModule ??= new JSMarkdownInterop(JSRuntime);
                 dotNetObjectRef ??= DotNetObjectReference.Create(this);
 
                 await JSModule.Initialize(dotNetObjectRef, ElementRef, ElementId, new
@@ -1026,11 +1086,14 @@ namespace PSC.Blazor.Components.MarkdownEditor
         protected override void OnInitialized()
         {
             if (JSModule == null)
+            {
                 JSModule = new JSMarkdownInterop(JSRuntime);
+            }
 
-            ElementId = $"markdown-{Guid.NewGuid()}";
             if (string.IsNullOrEmpty(AutoSaveId))
+            {
                 AutoSaveId = ElementId;
+            }
 
             base.OnInitialized();
         }
@@ -1040,7 +1103,10 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// </summary>
         public void Dispose()
         {
-            JSModule?.Destroy(ElementRef, ElementId);
+            if (ElementId is not null)
+            {
+                JSModule?.Destroy(ElementRef, ElementId);
+            }
         }
     }
 }

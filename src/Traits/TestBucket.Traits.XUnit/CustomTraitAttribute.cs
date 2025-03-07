@@ -1,13 +1,9 @@
-﻿using Xunit.Abstractions;
-using Xunit.Sdk;
-
+﻿
 namespace TestBucket.Traits.Xunit;
-
 
 /// <summary>
 /// Base class for custom traits
 /// </summary>
-[TraitDiscoverer("TestBucket.Traits.XUnit.CustomTraitDiscoverer", "TestBucket.Traits.XUnit")]
 public class CustomTraitAttribute : Attribute, ITraitAttribute
 {
     public string Key { get; init; }
@@ -17,5 +13,10 @@ public class CustomTraitAttribute : Attribute, ITraitAttribute
     {
         Key = key;
         Value = value;
+    }
+
+    public IReadOnlyCollection<KeyValuePair<string, string>> GetTraits()
+    {
+        return [new KeyValuePair<string, string>(Key, Value)];
     }
 }

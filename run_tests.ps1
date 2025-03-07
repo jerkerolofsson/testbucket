@@ -1,12 +1,12 @@
-cd tests/TestBucket.Formats.UnitTests 
+cd tests/TestBucket.AspireTests
+dotnet test  --logger "xunit;LogFileName=TestBucket.AspireTests.xunit.xml"
+
+cd ../TestBucket.Formats.UnitTests 
 
 dotnet test  --logger "xunit;LogFileName=TestBucket.Formats.UnitTests.xunit.xml"
 
 cd ../TestBucket.Domain.UnitTests
 dotnet test  --logger "xunit;LogFileName=TestBucket.Domain.UnitTests.xunit.xml"
-
-cd ../TestBucket.AspireTests
-dotnet test  --logger "xunit;LogFileName=TestBucket.AspireTests.xunit.xml"
 
 #dotnet test  --logger "trx;LogFileName=TestBucket.Formats.UnitTests.trx"
 #dotnet test  --logger "junit;LogFileName=TestBucket.Formats.UnitTests.junit.xml"

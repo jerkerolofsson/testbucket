@@ -22,18 +22,17 @@
       </PackageReference>
       <PackageReference Include="MudBlazor" Version="8.2.0" />
       <PackageReference Include="OneOf" Version="3.0.271" />
-      <PackageReference Include="PSC.Blazor.Components.MarkdownEditor" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PSC.Blazor.Components.MarkdownEditor\PSC.Blazor.Components.MarkdownEditor.csproj" />
     <ProjectReference Include="..\TestBucket.Data\TestBucket.Data.csproj" />
     <ProjectReference Include="..\TestBucket.ServiceDefaults\TestBucket.ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Controls\" />
-    <Folder Include="Components\Tests\Browser\Dialogs\" />
-    <Folder Include="Components\Tests\Browser\Services\" />
+    <Folder Include="Components\Administration\" />
     <Folder Include="Services\" />
   </ItemGroup>
+
 </Project>

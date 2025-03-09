@@ -1,0 +1,122 @@
+﻿@using Microsoft.Extensions.AI
+@using TestBucket.Domain.AI
+@using TestBucket.Domain.AI.Models
+@attribute [Authorize(Roles = "ADMIN")]
+@inject TestCaseEditorService testCaseEditorService
+@inject ITestCaseGenerator testCaseGenerator
+
+@if(!testCaseGenerator.Enabled)
+{
+    <div>No LLMs are configured</div>
+}
+else
+{
+    <EditForm Model="@_prompt" OnValidSubmit="async () => await OnValidSubmitAsync()">
+        <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+            <DialogContent>
+                <MudStack Spacing="1">
+
+                    <Field>
+                        <FieldHeader>Number of tests</FieldHeader>
+                        <MudNumericField @bind-Value="@_numTests"/>
+                    </Field>
+                    <Field>
+                        <FieldHeader>Heuristic</FieldHeader>
+                        <MudSelect @bind-Value="@_heuristic">
+                            @foreach (var heuristic in _heuristics)
+                            {
+                                <MudSelectItem Value="@heuristic">@heuristic.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </Field>
+
+                    @if(_loading)
+                    {
+                        <MudText>Generating text from prompt:</MudText>
+                        <pre>@_prompt</pre>
+                        <MudProgressLinear Indeterminate="true" Color="Color.Secondary"/>
+
+                        <pre>@_reply</pre>
+                    }
+                    else
+                    {
+                        <Field>
+                            <FieldHeader>Describe the feature under test</FieldHeader>
+                            <MudTextField Style="min-width: 400px" Lines="10" AutoFocus Variant="Variant.Outlined" T="string" @bind-Value="@_prompt"></MudTextField>
+                        </Field>
+                    }
+                </MudStack>
+            </DialogContent>
+
+            <DialogActions>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Generate</MudButton>
+                <MudButton OnClick="Close">Cancel</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </EditForm>
+}
+@code {
+    private string _prompt = "Login on a web with username and password";
+    private string _reply = "";
+    private int _numTests = 5;
+
+    private Heuristic? _heuristic = null;
+    private IReadOnlyList<Heuristic> _heuristics = [];
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public TestSuiteFolder? Folder { get; set; }
+    [Parameter] public long? TestSuiteId { get; set; }
+
+    private bool _loading = false;
+
+    protected override void OnParametersSet()
+    {
+        _heuristics = testCaseGenerator.Heuristics;
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+
+    private async Task OnValidSubmitAsync()
+    {
+        _loading = true;
+        this.StateHasChanged();
+
+        _reply = "";
+        var results = new List<LlmGeneratedTestCase>();
+        await foreach (var llmTestCase in testCaseGenerator.GetStreamingResponseAsync(new GenerateTestOptions() { UserPrompt = _prompt, Heuristic = _heuristic, NumTests = _numTests }))
+        {
+            if (llmTestCase?.Name is not null)
+            {
+                results.Add(llmTestCase);
+
+                _reply += $"Created test: {llmTestCase.Name}\n";
+                this.StateHasChanged();
+
+                var description = llmTestCase.AsTestMarkup();
+
+                var testCase = new TestCase() { Name = llmTestCase.Name, Description = description.ToString(), TenantId = Folder?.TenantId ?? ""};
+                if (Folder is not null)
+                {
+                    testCase.TestSuiteFolderId = Folder.Id;
+                    testCase.TestSuiteId = Folder.TestSuiteId;
+                }
+                if (TestSuiteId is not null)
+                {
+                    testCase.TestSuiteId = TestSuiteId.Value;
+                }
+
+                await testCaseEditorService.AddTestCaseAsync(testCase);
+            }
+        }
+
+        // Close the dialog
+        Close();
+    }
+}
+

@@ -8,6 +8,7 @@ namespace TestBucket.Formats.UnitTests.XUnit
 {
     [UnitTest]
     [Trait("Format", "XUnit")]
+    [EnrichedTest]
     public class XUnitSerializerTests
     {
         [Fact]

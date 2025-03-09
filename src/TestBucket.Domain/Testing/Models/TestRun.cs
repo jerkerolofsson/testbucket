@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Domain.Teams.Models;
+
+namespace TestBucket.Domain.Testing.Models;
 
 /// <summary>
 /// Represents a group of tests executed together
@@ -48,6 +50,11 @@ public class TestRun
     public long? TestProjectId { get; set; }
 
     /// <summary>
+    /// ID of team
+    /// </summary>
+    public long? TeamId { get; set; }
+
+    /// <summary>
     /// External identifer, other system, or when importing
     /// </summary>
     public string? ExternalId { get; set; }
@@ -55,4 +62,5 @@ public class TestRun
     // Navigation
     public Tenant? Tenant { get; set; }
     public TestProject? TestProject { get; set; }
+    public Team? Team { get; set; }
 }    

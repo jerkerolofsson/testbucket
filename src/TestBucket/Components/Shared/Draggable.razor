@@ -1,14 +1,29 @@
 ﻿@typeparam T
 @inject DragAndDropService<T> service
 
-<div draggable="true" @ondragstart=OnDragStart>
-    @ChildContent
-</div>
+@if (UseDragHandle)
+{
+    <div class="tb-draggable">
+        <MudStack Row Spacing="0" AlignItems="AlignItems.Center">
+            <div class="drag-handle" draggable="true" @ondragstart="OnDragStart">
+                <MudIcon Size="Size.Small" Icon="@MudBlazor.Icons.Material.Filled.DragIndicator"/>
+            </div>
+            @ChildContent
+        </MudStack>
+    </div>
+}
+else
+{
+    <div class="tb-draggable" draggable="true" @ondragstart="OnDragStart">
+        @ChildContent
+    </div>
+}
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public T? Data { get; set; }
 
+    [Parameter] public bool UseDragHandle { get; set; } = false;
 
     private void OnDragStart(DragEventArgs e)
     {

@@ -1,10 +1,32 @@
 ﻿@page "/Account/Login"
+@using TestBucket.Domain.Settings
+@layout EmptyLayout
 @inject NavigationManager navigationManager
 @inject TenantResolver tenantResolver
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject ISettingsProvider settingsProvider
 
 @code {
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (ReturnUrl is not null)
+        {
+            var tenantId = await tenantResolver.ResolveTenantIdFromUrlAsync(ReturnUrl);
+            if (!string.IsNullOrEmpty(tenantId))
+            {
+                navigationManager.NavigateTo($"/{tenantId}/Account/Login?returnUrl={Uri.EscapeDataString(ReturnUrl)}", forceLoad: true);
+                return;
+            }
+        }
+        else
+        {
+            var settings = await settingsProvider.LoadGlobalSettingsAsync();
+            navigationManager.NavigateTo($"/{settings.DefaultTenant}/Account/Login?returnUrl=/{settings.DefaultTenant}", true);
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {

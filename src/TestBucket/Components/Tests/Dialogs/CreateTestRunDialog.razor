@@ -1,0 +1,81 @@
+﻿@attribute [Authorize(Roles = "ADMIN")]
+@inject TestCaseEditorService testCaseEditorService
+@inject ProjectService projectService
+
+<EditForm Model="@_run" OnValidSubmit="async () => await OnValidSubmitAsync()">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>Create new test run</TitleContent>
+        <DialogContent>
+            <MudStack Spacing="1">
+                @if (_run is not null)
+                {
+                    <Field>
+                        <FieldHeader>Name</FieldHeader>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_run.Name"></MudTextField>
+                    </Field>
+                }
+                @if (_errorMessage is not null)
+                {
+                    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+                }
+
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    private string? _errorMessage;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public long? TestProjectId { get; set; }
+
+    private TestRun _run = new() { Name = "", TenantId = "", Created = DateTimeOffset.UtcNow };
+
+    private long? _teamId;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(TestProjectId is not null)
+        {
+            var project = await projectService.GetProjectByIdAsync(TestProjectId.Value);
+            _teamId = project?.TeamId;
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_run.Name))
+        {
+            _errorMessage = "Invalid name";
+            return;
+        }
+        if (TestProjectId is null)
+        {
+            _errorMessage = "project not found";
+            return;
+        }
+        if (_teamId is null)
+        {
+            _errorMessage = "project/team not found";
+            return;
+        }
+        _run.TestProjectId = TestProjectId;
+        _run.TeamId = _teamId;
+        await testCaseEditorService.AddTestRunAsync(_run);
+        MudDialog.Close(_run);
+    }
+}
+

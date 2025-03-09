@@ -60,9 +60,19 @@ public class TestCase
     public ScriptType ScriptType { get; set; } = ScriptType.ScriptedDefault;
 
     /// <summary>
+    /// For automation, the assembly implementing the test
+    /// </summary>
+    public string? AutomationAssembly { get; set; }
+
+    /// <summary>
     /// Folder path for the test case, separated with /
     /// </summary>
     public string Path { get; set; } = "";
+
+    /// <summary>
+    /// IDs for the path, for navigation
+    /// </summary>
+    public long[]? PathIds { get; set; }
 
     /// <summary>
     /// ID of tenant

@@ -15,10 +15,30 @@ public class FieldValue
 
     // Values (based on FieldDefinition.Type)
 
+    /// <summary>
+    /// The field is a boolean
+    /// </summary>
     public bool? BooleanValue { get; set; }
+
+    /// <summary>
+    /// The field is an integer
+    /// </summary>
     public long? LongValue { get; set; }
+
+    /// <summary>
+    /// The field is a double
+    /// </summary>
     public double? DoubleValue { get; set; }
+
+    /// <summary>
+    /// The field has is a single string
+    /// </summary>
     public string? StringValue { get; set; }
+
+    /// <summary>
+    /// The field has multiple strings
+    /// </summary>
+    public string[]? StringArrayValue { get; set; }
 
     // Navigation
     public string? TenantId { get; set; }

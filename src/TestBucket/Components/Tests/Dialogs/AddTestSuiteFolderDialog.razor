@@ -59,6 +59,11 @@
             _errorMessage = "Invalid name";
             return;
         }
+        if (_name.Contains('/'))
+        {
+            _errorMessage = "Invalid name, folders cannot have / in the name";
+            return;
+        }
 
         var testSuiteFolder = await testSuiteService.AddTestSuiteFolderAsync(ProjectId, TestSuiteId, ParentFolderId, _name);
         MudDialog.Close(testSuiteFolder);

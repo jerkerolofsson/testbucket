@@ -1,32 +1,39 @@
 ﻿@inject AuthenticationStateProvider authenticationStateProvider
-@inject IdentityRedirectManager identityRedirectManager
+@inject NavigationManager navigationManager
 @inject ISettingsProvider settingsProvider
+@layout EmptyLayout
 @page "/"
 @using TestBucket.Components.Account
 @using TestBucket.Domain.Settings
 @using TestBucket.Identity
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Test Bucket</PageTitle>
+
+<MudStack Style="width: 50vw">
+    <MudProgressLinear Color="Color.Tertiary" Indeterminate="true"/>
+</MudStack>
 
 @code {
 
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var tenantId = authState.User.Claims.Where(x => x.Type == "tenant").Select(x => x.Value).FirstOrDefault();
 
+        //await Task.Delay(12000);
+
         if(!string.IsNullOrEmpty(tenantId))
         {
-            identityRedirectManager.RedirectTo($"/{tenantId}");
+            navigationManager.NavigateTo($"/{tenantId}", true);
         }
         else
         {
             // Default tenant
             var settings = await settingsProvider.LoadGlobalSettingsAsync();
-            identityRedirectManager.RedirectTo($"/{settings.DefaultTenant}");
+            navigationManager.NavigateTo($"/{settings.DefaultTenant}/Account/Login?returnUrl=/{settings.DefaultTenant}", true);
         }
     }
 }

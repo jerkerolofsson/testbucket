@@ -1,6 +1,7 @@
 ﻿
 using TestBucket.Components.Tenants;
 using TestBucket.Domain.Tenants.Models;
+using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Components.Tests.Services;
 
@@ -13,6 +14,26 @@ internal class TestSuiteService : TenantBaseService
     {
         _testCaseRepo = testCaseRepo;
     }
+
+    #region Test Runs
+
+    internal async Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(SearchTestQuery searchTestQuery)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _testCaseRepo.SearchTestCaseRunsAsync(tenantId, searchTestQuery);
+    }
+
+    public async Task<int[]> GetTestRunYearsAsync(long? teamId, long? projectId)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _testCaseRepo.GetTestRunYearsAsync(tenantId, teamId, projectId);
+    }
+    public async Task<PagedResult<TestRun>> SearchTestRunsAsync(SearchQuery query)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _testCaseRepo.SearchTestRunsAsync(tenantId, query);
+    }
+    #endregion
 
     /// <summary>
     /// Saves a folder
@@ -124,5 +145,11 @@ internal class TestSuiteService : TenantBaseService
     {
         var tenantId = await GetTenantIdAsync();
         return await _testCaseRepo.SearchTestCasesAsync(tenantId, searchTestQuery);
+    }
+
+    internal async Task<TestSuiteFolder?> GetTestSuiteFolderByIdAsync(long folderId)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _testCaseRepo.GetTestSuiteFolderByIdAsync(tenantId, folderId);
     }
 }

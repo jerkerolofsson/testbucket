@@ -8,9 +8,11 @@ using OneOf;
 using TestBucket.Components.Account;
 using TestBucket.Components.Tenants;
 using TestBucket.Contracts;
+using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Models;
+using TestBucket.Domain.States;
 
 namespace TestBucket.Components.Projects;
 
@@ -18,14 +20,17 @@ internal class ProjectService : TenantBaseService
 {
     private readonly IProjectRepository _projectRepository;
     private readonly UserPreferencesService _userPreferencesService;
+    private readonly IStateService _stateService;
 
     public ProjectService(
         IProjectRepository projectRepository,
         UserPreferencesService userPreferencesService,
-        AuthenticationStateProvider authenticationStateProvider) : base(authenticationStateProvider)
+        AuthenticationStateProvider authenticationStateProvider,
+        IStateService stateService) : base(authenticationStateProvider)
     {
         _projectRepository = projectRepository;
         _userPreferencesService = userPreferencesService;
+        _stateService = stateService;
     }
 
     public async Task SetActiveProjectAsync(TestProject? project)
@@ -36,6 +41,16 @@ internal class ProjectService : TenantBaseService
             preferences.ActiveProjectId = project?.Id;
             await _userPreferencesService.SaveUserPreferencesAsync(preferences);    
         }
+    }
+
+    public async Task<TestState[]> GetStatesAsync(long? projectId)
+    {
+        var tenantId = await GetTenantIdAsync();
+        if(projectId is null)
+        {
+            return _stateService.GetDefaultStates();
+        }
+        return await _stateService.GetProjectStatesAsync(tenantId, projectId.Value);
     }
 
     public async Task<TestProject?> GetActiveProjectAsync()

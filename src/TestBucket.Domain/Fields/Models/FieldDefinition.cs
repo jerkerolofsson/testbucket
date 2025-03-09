@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Traits.Core;
+
 namespace TestBucket.Domain.Fields.Models;
 
 
@@ -22,9 +24,21 @@ public class FieldDefinition
     public required string Name { get; set; }
 
     /// <summary>
-    /// Trait. This represents the field when importing, such as a xUnit trait, or a JUnit property
+    /// Trait Name. This represents the field when importing, such as a xUnit trait, or a JUnit property
     /// </summary>
     public string? Trait { get; set; }
+
+    /// <summary>
+    /// A well-know trait type
+    /// 
+    /// Some traits are treated can have rules like states
+    /// </summary>
+    public TraitType TraitType { get; set; } = TraitType.Custom;
+
+    /// <summary>
+    /// Target entity / Usage
+    /// </summary>
+    public FieldTarget Target { get; set; } = FieldTarget.TestCase;
 
     /// <summary>
     /// Value Type
@@ -36,6 +50,16 @@ public class FieldDefinition
     /// </summary>
     [Column(TypeName = "jsonb")]
     public List<string>? Options { get; set; }
+
+    /// <summary>
+    /// Description of the field
+    /// </summary>
+    public string? Description { get; set; }
+
+    /// <summary>
+    /// If true, the description is shown in the FieldEditor
+    /// </summary>
+    public bool ShowDescription { get; set; }
 
     /// <summary>
     /// Flag for soft deleted fields
@@ -51,11 +75,6 @@ public class FieldDefinition
     /// Can be used to save field values in the database when importing but not display the values in the UI
     /// </summary>
     public bool IsVisible { get; set; }
-
-    /// <summary>
-    /// Target usage for a field
-    /// </summary>
-    public FieldTarget Target { get; set; }
 
     // Navigation
 

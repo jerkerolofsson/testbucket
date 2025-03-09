@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<testsuites name="Test results" time="0.103" tests="9" failures="0" errors="0" skipped="0">
+  <testsuite name="Test collection for TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests (id: da8cd3d88ee6e9d4988dcd095d84dc5287c1fa9c88564f2d34192c011f8ae07e)" time="0.042" tests="3" failures="0" skipped="0">
+    <testcase name="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" classname="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests" time="0.0380107">
+      <properties>
+        <property name="trait:TestCategory" value="Unit" />
+        <property name="trait:Format" value="XUnit" />
+        <property name="trait:Component" value="TestBucket.Formats" />
+        <property name="trait:TestDescription" value="Verifies that a xunit xml run name is from the first assembly" />
+        <property name="trait:TestId" value="XUNIT-001" />
+      </properties>
+    </testcase>
+    <testcase name="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTestIdTrait_ExternalIdSetToTestIdValue" classname="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests" time="0.0033191">
+      <properties>
+        <property name="trait:TestCategory" value="Unit" />
+        <property name="trait:Format" value="XUnit" />
+        <property name="trait:Component" value="TestBucket.Formats" />
+        <property name="trait:TestDescription" value="Verifies that external ID is set to the TestId if specified" />
+        <property name="trait:TestId" value="XUNIT-003" />
+      </properties>
+    </testcase>
+    <testcase name="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTraitsOnTest_TwoTestsDeserializedWithCorrectTraits" classname="TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests" time="0.0005079">
+      <properties>
+        <property name="trait:TestCategory" value="Unit" />
+        <property name="trait:Format" value="XUnit" />
+        <property name="trait:Component" value="TestBucket.Formats" />
+        <property name="trait:TestDescription" value="Verifies that a xunit xml containing traits on the test element are extracted as traits" />
+        <property name="trait:TestId" value="XUNIT-002" />
+      </properties>
+    </testcase>
+  </testsuite>
+  <testsuite name="Test collection for TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests (id: 4738e6402f0b051247f0d3a422ab4c4292dc3f3b9c7246420723d8cad186a128)" time="0.037" tests="6" failures="0" skipped="0">
+    <testcase name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" classname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" time="0.0323301">
+      <properties>
+        <property name="attachment:TestEnvironment">DESKTOP-E71H2EF</property>
+        <property name="trait:Format" value="JUnit" />
+        <property name="trait:Component" value="TestBucket.Formats" />
+        <property name="trait:TestDescription" value="Verifies that a junit xml is contains the correct number of test suites" />
+        <property name="trait:TestId" value="JUNIT-002" />
+      </properties>
+    </testcase>
+    <testcase name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite" classname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" time="0.0006348">
+      <properties>
+        <property name="attachment:TestEnvironment">DESKTOP-E71H2EF</property>
+        <property name="trait:Format" value="JUnit" />
+        <property name="trait:Component" value="TestBucket.Formats" />
+        <property name="trait:TestId" value="JUNIT-001" />
+      </properties>
+    </testcase>
+    <testcase name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithoutAssemblyName_AssemblyNameSuiteName" classname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" time="0.0004921">
+      <properties>
+        <property name="attachment:TestEnvironment">DESKTOP-E71H2EF</property>
+        <property name="trait:Format" value="JUnit" />
+        <property name="trait:Component" value="TestBucket.Formats" />
+        <property name="trait:TestDescription" value="Verifies that the assembly name is read from the testsuite name if no assembly trait is defined" />
+        <property name="trait:TestId" value="JUNIT-004" />
+      </properties>
+    </testcase>
+    <testcase name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithNestedTestSuites_AllTestsInParentContainer" classname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" time="0.0003958">
+      <properties>
+        <property name="attachment:TestEnvironment">DESKTOP-E71H2EF</property>
+        <property name="trait:Format" value="JUnit" />
+        <property name="trait:Component" value="TestBucket.Formats" />
+        <property name="trait:TestDescription" value="Verifies that tests from nested testsuites are flattened" />
+        <property name="trait:TestId" value="JUNIT-005" />
+      </properties>
+    </testcase>
+    <testcase name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits" classname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" time="0.0029742">
+      <properties>
+        <property name="attachment:TestEnvironment">DESKTOP-E71H2EF</property>
+        <property name="trait:Format" value="JUnit" />
+        <property name="trait:Component" value="TestBucket.Formats" />
+        <property name="trait:TestDescription" value="Verifies that a junit xml containing properties on the testcase element are extracted as traits" />
+        <property name="trait:TestId" value="JUNIT-003" />
+      </properties>
+    </testcase>
+    <testcase name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithNestedTestSuites_FolderExtractedForNestedTests" classname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" time="0.0005614">
+      <properties>
+        <property name="attachment:TestEnvironment">DESKTOP-E71H2EF</property>
+        <property name="trait:Format" value="JUnit" />
+        <property name="trait:Component" value="TestBucket.Formats" />
+        <property name="trait:TestDescription" value="Verifies that tests from nested testsuites have a folder extracted from the nested testsuite name" />
+        <property name="trait:TestId" value="JUNIT-006" />
+      </properties>
+    </testcase>
+  </testsuite>
+</testsuites>

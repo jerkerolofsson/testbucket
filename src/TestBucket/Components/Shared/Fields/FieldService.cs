@@ -19,6 +19,7 @@ internal class FieldService : TenantBaseService
         _repository = repository;
     }
 
+    #region Test Case
     public async Task SaveTestCaseFieldsAsync(IEnumerable<TestCaseField> fields)
     {
         var tenantId = await GetTenantIdAsync();
@@ -51,10 +52,48 @@ internal class FieldService : TenantBaseService
         return fields;
     }
 
-    public async Task<IReadOnlyList<FieldDefinition>> SearchDefinitionsAsync(SearchQuery query)
+    #endregion Test Case
+
+    #region Test Case Run
+    public async Task SaveTestCaseRunFieldsAsync(IEnumerable<TestCaseRunField> fields)
     {
         var tenantId = await GetTenantIdAsync();
-        return await _repository.SearchAsync(tenantId, query);
+        foreach (var field in fields)
+        {
+            field.TenantId = tenantId;
+        }
+        await _repository.SaveTestCaseRunFieldsAsync(fields);
+    }
+    public async Task<IReadOnlyList<TestCaseRunField>> GetTestCaseRunFieldsAsync(long testRunId, long testCaseRunId, IEnumerable<FieldDefinition> fieldDefinitions)
+    {
+        var tenantId = await GetTenantIdAsync();
+        var fields = (await _repository.GetTestCaseRunFieldsAsync(tenantId, testCaseRunId)).ToList();
+
+        // Add missing fields
+        foreach (var fieldDefinition in fieldDefinitions)
+        {
+            var field = fields.Where(x => x.FieldDefinitionId == fieldDefinition.Id).FirstOrDefault();
+            if (field is null)
+            {
+                fields.Add(new TestCaseRunField
+                {
+                    FieldDefinition = fieldDefinition,
+                    TestRunId = testRunId,
+                    TestCaseRunId = testCaseRunId,
+                    FieldDefinitionId = fieldDefinition.Id
+                });
+            }
+        }
+
+        return fields;
+    }
+
+    #endregion Test Case Run
+    #region Field Definitions
+    public async Task<IReadOnlyList<FieldDefinition>> SearchDefinitionsAsync(FieldTarget? target, SearchQuery query)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _repository.SearchAsync(tenantId, target, query);
     }
 
     public async Task AddAsync(FieldDefinition fieldDefinition)
@@ -92,4 +131,5 @@ internal class FieldService : TenantBaseService
         RemoveOptionsIfNotSelection(fieldDefinition);
         await _repository.UpdateAsync(fieldDefinition);
     }
+    #endregion Field Definitions
 }

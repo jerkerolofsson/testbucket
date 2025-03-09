@@ -1,0 +1,39 @@
+﻿@using TestBucket.Contracts.Testing.Models
+@inject TestBrowser testBrowser
+@inject TestCaseEditorService testCaseEditorService
+
+<MudStack Spacing="0" Style="width: 100%">
+
+    <MudStack Spacing="0" Class="pa-2">
+        <MudText Typo="Typo.h3" Color="Color.Tertiary">@TestRun?.Name</MudText>
+        <MudText Typo="Typo.subtitle1">@TestRun?.Created</MudText>
+    </MudStack>
+
+    <MudSplitter Style="height: 100%" Color="Color.Primary" Bordered="false" Dimension="80" EnableMargin="false">
+        <StartContent>
+            <MudStack Class="pa-2" Style="width: 100%">
+                <TestCaseRunGrid Run="@TestRun" OnTestCaseRunClicked="OnTestCaseRunClicked" />
+            </MudStack>
+        </StartContent>
+        <EndContent>
+            <MudStack Class="pa-2" Style="width: 100%">
+                @if(_selectedTestCaseRun is not null) 
+                {
+                    <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis">
+                        <MudText Typo="Typo.h3" Color="Color.Tertiary">@_selectedTestCaseRun.Name</MudText>
+                    </div>
+
+                    <TestResultPicker Result="@_selectedTestCaseRun.Result" ResultChanged="OnTestCaseRunResultChanged"/>
+                    <TestRunStatePicker State="@_selectedTestCaseRun.State" StateChanged="OnTestCaseRunStateChanged"/>
+
+                    <FieldsEditor TestCaseRun="@_selectedTestCaseRun"/>
+                }
+            </MudStack>
+
+        </EndContent>
+    </MudSplitter>
+
+
+</MudStack>
+@code {
+}

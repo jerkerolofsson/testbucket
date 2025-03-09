@@ -1,8 +1,9 @@
-﻿using TestBucket.Traits.Core;
+﻿using TestBucket.Formats.Abstractions;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Formats.Dtos
 {
-    public class TestCaseRunDto : TestTraitCollection
+    public class TestCaseRunDto : TestTraitCollection, ITestAttachmentSource
     {
         /// <summary>
         /// Passed/Failed etc
@@ -34,6 +35,10 @@ namespace TestBucket.Formats.Dtos
                 }
             }
         }
+        /// <summary>
+        /// Attachments
+        /// </summary>
+        public List<AttachmentDto> Attachments { get; set; } = [];
 
         /// <summary>
         /// Execution duration
@@ -107,5 +112,10 @@ namespace TestBucket.Formats.Dtos
             get => GetAttribute(TraitType.Method);
             set => SetAttribute(TraitType.Method, value);
         }
+
+        /// <summary>
+        /// Folders
+        /// </summary>
+        public string[] Folders { get; set; } = [];
     }
 }

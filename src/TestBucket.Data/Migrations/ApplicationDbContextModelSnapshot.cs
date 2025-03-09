@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using TestBucket.Contracts.Testing.Models;
 using TestBucket.Data;
 
 #nullable disable
@@ -163,6 +164,9 @@ namespace TestBucket.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -179,6 +183,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<bool>("ReadOnly")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("ShowDescription")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("Target")
                         .HasColumnType("integer");
 
@@ -190,6 +197,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<string>("Trait")
                         .HasColumnType("text");
+
+                    b.Property<int>("TraitType")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Type")
                         .HasColumnType("integer");
@@ -403,6 +413,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("TenantId")
                         .HasColumnType("text");
 
+                    b.Property<TestState[]>("TestStates")
+                        .HasColumnType("jsonb");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TeamId");
@@ -499,6 +512,9 @@ namespace TestBucket.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("AutomationAssembly")
+                        .HasColumnType("text");
+
                     b.Property<string>("ClassName")
                         .HasColumnType("text");
 
@@ -524,6 +540,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("Path")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.PrimitiveCollection<long[]>("PathIds")
+                        .HasColumnType("bigint[]");
 
                     b.Property<int>("ScriptType")
                         .HasColumnType("integer");
@@ -581,6 +600,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<long?>("LongValue")
                         .HasColumnType("bigint");
 
+                    b.PrimitiveCollection<string[]>("StringArrayValue")
+                        .HasColumnType("text[]");
+
                     b.Property<string>("StringValue")
                         .HasColumnType("text");
 
@@ -634,6 +656,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<int>("Result")
                         .HasColumnType("integer");
 
+                    b.Property<string>("State")
+                        .HasColumnType("text");
+
                     b.Property<string>("TenantId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -664,6 +689,54 @@ namespace TestBucket.Data.Migrations
                     b.ToTable("testcaseruns");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestCaseRunField", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool?>("BooleanValue")
+                        .HasColumnType("boolean");
+
+                    b.Property<double?>("DoubleValue")
+                        .HasColumnType("double precision");
+
+                    b.Property<long>("FieldDefinitionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("LongValue")
+                        .HasColumnType("bigint");
+
+                    b.PrimitiveCollection<string[]>("StringArrayValue")
+                        .HasColumnType("text[]");
+
+                    b.Property<string>("StringValue")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long>("TestCaseRunId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("TestRunId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FieldDefinitionId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestCaseRunId");
+
+                    b.HasIndex("TestRunId");
+
+                    b.ToTable("test_case_run_fields");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRun", b =>
                 {
                     b.Property<long>("Id")
@@ -691,6 +764,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("SystemOut")
                         .HasColumnType("text");
 
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TenantId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -700,11 +776,56 @@ namespace TestBucket.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TeamId");
+
                     b.HasIndex("TestProjectId");
 
                     b.HasIndex("TenantId", "Created");
 
                     b.ToTable("runs");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRunField", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool?>("BooleanValue")
+                        .HasColumnType("boolean");
+
+                    b.Property<double?>("DoubleValue")
+                        .HasColumnType("double precision");
+
+                    b.Property<long>("FieldDefinitionId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("LongValue")
+                        .HasColumnType("bigint");
+
+                    b.PrimitiveCollection<string[]>("StringArrayValue")
+                        .HasColumnType("text[]");
+
+                    b.Property<string>("StringValue")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long>("TestRunId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FieldDefinitionId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestRunId");
+
+                    b.ToTable("test_run_fields");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestStep", b =>
@@ -799,6 +920,12 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<long?>("ParentId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<long[]>("PathIds")
+                        .HasColumnType("bigint[]");
 
                     b.Property<string>("TenantId")
                         .IsRequired()
@@ -1024,8 +1151,45 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("TestRun");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestCaseRunField", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Fields.Models.FieldDefinition", "FieldDefinition")
+                        .WithMany()
+                        .HasForeignKey("FieldDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestCaseRun", "TestCaseRun")
+                        .WithMany()
+                        .HasForeignKey("TestCaseRunId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestRun", "TestRun")
+                        .WithMany()
+                        .HasForeignKey("TestRunId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FieldDefinition");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestCaseRun");
+
+                    b.Navigation("TestRun");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRun", b =>
                 {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId")
@@ -1036,9 +1200,36 @@ namespace TestBucket.Data.Migrations
                         .WithMany()
                         .HasForeignKey("TestProjectId");
 
+                    b.Navigation("Team");
+
                     b.Navigation("Tenant");
 
                     b.Navigation("TestProject");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRunField", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Fields.Models.FieldDefinition", "FieldDefinition")
+                        .WithMany()
+                        .HasForeignKey("FieldDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestRun", "TestRun")
+                        .WithMany()
+                        .HasForeignKey("TestRunId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FieldDefinition");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestRun");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestStep", b =>

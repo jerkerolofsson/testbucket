@@ -1,70 +1,128 @@
 ﻿@if(Field?.FieldDefinition is not null) 
 {
-    <Field>
-        <FieldHeader>@Field.FieldDefinition.Name</FieldHeader>
+    <MudTooltip Text="@Field.FieldDefinition.Description">
+        <Field>
+            <FieldHeader>@Field.FieldDefinition.Name</FieldHeader>
 
-        @if(Field.FieldDefinition.ReadOnly)
-        {
-            <MudText Class="tb-read-only-field">
-                @if (Field.FieldDefinition.Type is (FieldType.String or FieldType.SingleSelection) )
+            @if(Field.FieldDefinition.ReadOnly)
+            {
+                <MudText Class="tb-read-only-field">
+                    @if (Field.FieldDefinition.Type is (FieldType.String or FieldType.SingleSelection) )
+                    {
+                        @Field.StringValue
+                    }
+                    else if (Field.FieldDefinition.Type == FieldType.Boolean)
+                    {
+                        @Field.BooleanValue
+                    }
+                    else if (Field.FieldDefinition.Type == FieldType.Double)
+                    {
+                        @Field.DoubleValue
+                    }
+                    else if (Field.FieldDefinition.Type == FieldType.StringArray && Field.StringArrayValue is not null)
+                    {
+                        <MudChipSet T="string">
+                            @foreach (var value in Field.StringArrayValue)
+                            {
+                                <MudChip T="string" Color="Color.Tertiary">@value</MudChip>
+                            }
+                        </MudChipSet>
+                    }
+                </MudText>
+            }
+            else
+            {
+
+                @if(Field.FieldDefinition.Type == FieldType.String)
                 {
-                    @Field.StringValue
+                    <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined"/>
                 }
-                else if (Field.FieldDefinition.Type == FieldType.Boolean)
+                else if(Field.FieldDefinition.Type == FieldType.SingleSelection)
                 {
-                    @Field.BooleanValue
-                }
-                else if (Field.FieldDefinition.Type == FieldType.Double)
-                {
-                    @Field.DoubleValue
-                }
-                else if (Field.FieldDefinition.Type == FieldType.ChipField && Field.StringValue is not null)
-                {
-                    <MudChipSet T="string">
-                        @foreach(var tag in Field.StringValue.Split(' '))
+                    <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable="true">
+                        @if(Field.FieldDefinition.Options is not null)
                         {
-                            <MudChip T="string">@tag</MudChip>
+                            @foreach(var item in Field.FieldDefinition.Options)
+                            {
+                                <MudSelectItem Value="@item">@item</MudSelectItem>
+                            }
+                        }
+                    </MudSelect>
+                }
+                else if(Field.FieldDefinition.Type == FieldType.Boolean)
+                {
+                    <MudSwitchM3 Value="@Field.BooleanValue" T="bool?" ValueChanged="OnBooleanValueChanged" Color="Color.Tertiary" />
+                }
+                else if (Field.FieldDefinition.Type == FieldType.StringArray && Field.StringArrayValue is not null)
+                {
+                    <MudChipSet T="string" AllClosable="true">
+                        @foreach (var value in Field.StringArrayValue)
+                        {
+                            <MudChip T="string" Value="@value" Color="Color.Tertiary" OnClose="async x => await RemoveStringArrayValueAsync(x.Value)">@value</MudChip>
                         }
                     </MudChipSet>
+
+                    @* Add value to array *@
+                    <EditForm Model="_addStringArrayValue" OnValidSubmit="async x => await AddStringArrayValueAsync(_addStringArrayValue)">
+                        <MudStack Row="true" AlignItems="AlignItems.Center">
+                            <MudTextField @bind-Value="_addStringArrayValue"/>
+                            <MudButton ButtonType="ButtonType.Submit">Add</MudButton>
+                        </MudStack>
+                    </EditForm>
                 }
-            </MudText>
-        }
-        else
-        {
+            }
 
-            @if(Field.FieldDefinition.Type == FieldType.String)
+            @if(Field.FieldDefinition.ShowDescription)
             {
-                <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined"/>
+                <FieldDescription>@Field.FieldDefinition.Description</FieldDescription>
             }
-            else if(Field.FieldDefinition.Type == FieldType.SingleSelection)
-            {
-                <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined">
-                    @if(Field.FieldDefinition.Options is not null)
-                    {
-                        @foreach(var item in Field.FieldDefinition.Options)
-                        {
-                            <MudSelectItem Value="@item">@item</MudSelectItem>
-                        }
-                    }
-                </MudSelect>
-            }
-            else if(Field.FieldDefinition.Type == FieldType.Boolean)
-            {
-                <MudSwitchM3 Value="@Field.BooleanValue" T="bool?" ValueChanged="OnBooleanValueChanged" Color="Color.Tertiary" />
-            }
-            else if (Field.FieldDefinition.Type == FieldType.ChipField)
-            {
-                <MudChipField T="string" @bind-Value="Field.StringValue" ChipColor="Color.Tertiary" Variant="Variant.Outlined">
 
-                </MudChipField>
-            }
-        }
-    </Field>
+        </Field>
+    </MudTooltip>
 }
 
 @code {
     [Parameter] public FieldValue? Field { get; set; }
     [Parameter] public EventCallback<FieldValue?> FieldChanged { get; set; }
+
+    private string _addStringArrayValue = "";
+
+    private async Task RemoveStringArrayValueAsync(string? value)
+    {
+        if(Field is null || value is null)
+        {
+            return;
+        }
+        Field.StringArrayValue ??= [];
+        Field.StringArrayValue = Field.StringArrayValue.Where(x => x != value).ToArray();
+        this.StateHasChanged();
+
+        await FieldChanged.InvokeAsync(Field);
+    }
+
+    private async Task AddStringArrayValueAsync(string value)
+    {
+        if (Field is null || string.IsNullOrEmpty(value))
+        {
+            return;
+        }
+        Field.StringArrayValue ??= [];
+        Field.StringArrayValue = [.. Field.StringArrayValue, value];
+
+        _addStringArrayValue = "";
+        this.StateHasChanged();
+
+        await FieldChanged.InvokeAsync(Field);
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(Field?.FieldDefinition?.Type == FieldType.StringArray)
+        {
+            Field.StringArrayValue ??= [];
+        }
+        base.OnParametersSet();
+    }
 
     private async Task OnStringValueChanged(string value)
     {

@@ -5,15 +5,24 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+	  <OutputType>Exe</OutputType>
+	  <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+	  <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Ctrf\TestData\TestBucket.Formats.UnitTests.crtf.json" />
     <None Remove="JUnit\TestData\junit-basic.xml" />
     <None Remove="JUnit\TestData\junit-properties.xml" />
     <None Remove="XUnit\TestData\xunit-testid.xml" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Ctrf\TestData\TestBucket.Formats.UnitTests.crtf.json" />
+    <EmbeddedResource Include="JUnit\TestData\junit-testid-trait.xml" />
+    <EmbeddedResource Include="JUnit\TestData\created-by-xunit-v3-attachment-with-mime.xml" />
+    <EmbeddedResource Include="JUnit\TestData\created-by-xunit-v3-attachment.xml" />
+    <EmbeddedResource Include="JUnit\TestData\created-by-xunit-v3.xml" />
     <EmbeddedResource Include="JUnit\TestData\junit-basic.xml" />
     <EmbeddedResource Include="JUnit\TestData\junit-properties.xml" />
     <EmbeddedResource Include="XUnit\TestData\xunit-properties.xml" />
@@ -22,12 +31,9 @@
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.2" />
-    <PackageReference Include="JunitXml.TestLogger" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-    <PackageReference Include="NunitXml.TestLogger" Version="6.0.0" />
-    <PackageReference Include="xunit" Version="2.9.2" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
-    <PackageReference Include="XunitXml.TestLogger" Version="6.0.0" />
+	  <PackageReference Include="xunit.v3" Version="2.0.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.2" />
   </ItemGroup>
 
   <ItemGroup>

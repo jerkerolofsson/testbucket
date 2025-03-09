@@ -1,0 +1,35 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestSuites/{SuiteId:long}"
+@using TestBucket.Components.Tests.Layouts
+@layout TestingLayout
+@inject TestBrowser testBrowser
+@inject AppNavigationManager appNavigationManager
+
+<TestCaseGrid TestSuiteId="@SuiteId" CompareFolder="false" OnTestCaseClicked="OnTestCaseClicked" />
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    [Parameter] public long SuiteId { get; set; }
+
+    private TestSuite? _testSuite = null;
+
+    /// <summary>
+    /// Load the test case when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_testSuite is null || _testSuite.Id != SuiteId)
+        {
+            _testSuite = await testBrowser.GetTestSuiteByIdAsync(SuiteId);
+        }
+    }
+
+    private void OnTestCaseClicked(TestCase testCase)
+    {
+        appNavigationManager.NavigateTo(testCase);
+    }
+}

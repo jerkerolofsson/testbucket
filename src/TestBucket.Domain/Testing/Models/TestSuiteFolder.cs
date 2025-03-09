@@ -45,6 +45,17 @@ public class TestSuiteFolder
     /// HTML color
     /// </summary>
     public string? Color { get; set; }
+
+    /// <summary>
+    /// Path of the folder, separated by /
+    /// </summary>
+    public string? Path { get; set; }
+
+    /// <summary>
+    /// IDs for the path, for navigation
+    /// </summary>
+    public long[]? PathIds { get; set; }
+
     // Navigation
 
     public long? ParentId { get; set; }

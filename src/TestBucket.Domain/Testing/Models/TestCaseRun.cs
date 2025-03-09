@@ -39,6 +39,11 @@ public class TestCaseRun
     public TestResult Result { get; set; } = TestResult.NoRun;
 
     /// <summary>
+    /// Test state
+    /// </summary>
+    public string? State { get; set; }
+
+    /// <summary>
     /// Message/Error
     /// </summary>
     public string? Message { get; set; }

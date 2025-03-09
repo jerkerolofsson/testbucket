@@ -21,9 +21,19 @@ public class TestTraitNames
     public const string TestPriority = nameof(TestPriority);
 
     /// <summary>
+    /// Test state
+    /// </summary>
+    public const string TestState = nameof(TestState);
+
+    /// <summary>
     /// Name of test environment
     /// </summary>
     public const string TestEnvironment = nameof(TestEnvironment);
+
+    /// <summary>
+    /// Machine name of test host 
+    /// </summary>
+    public const string MachineName = nameof(MachineName);
 
     /// <summary>
     /// Test ID

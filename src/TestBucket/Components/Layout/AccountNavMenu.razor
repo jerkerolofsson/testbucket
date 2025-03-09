@@ -1,0 +1,77 @@
+﻿@implements IDisposable
+@rendermode InteractiveServer
+
+@inject NavigationManager NavigationManager
+@{
+    string manageUrl = $"/{tenantId}/Account/Manage";
+    string emailUrl = $"/{tenantId}/Account/Manage/Email";
+    string changePasswordUrl = $"/{tenantId}/Account/Manage/ChangePassword";
+    string personalDataUrl = $"/{tenantId}/Account/Manage/PersonalData";
+    string twoFactorAuthenticationUrl = $"/{tenantId}/Account/Manage/TwoFactorAuthentication";
+
+    string loginUrl = $"/{tenantId}/Account/Login?returnUrl=/{tenantId}";
+    string registerUrl = $"/{tenantId}/Account/Register";
+}
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">TestBucket</a>
+    </div>
+</div>
+
+<div class="nav-scrollable" >
+
+    <MudPaper Class="pa-2">
+        <MudNavMenu>
+            <AuthorizeView>
+                <Authorized>
+                    <MudNavLink Href="@manageUrl">Profile</MudNavLink>
+                    <MudNavLink Href="@emailUrl">Email</MudNavLink>
+                    <MudNavLink Href="@changePasswordUrl">Change Password</MudNavLink>
+                    <MudNavLink Href="@twoFactorAuthenticationUrl">TwoFactorAuthentication</MudNavLink>
+                    <MudNavLink Href="@personalDataUrl">Personal Data</MudNavLink>
+                </Authorized>
+                <NotAuthorized>
+                    <MudNavLink Href="@loginUrl">Login</MudNavLink>
+                    <MudNavLink Href="@registerUrl">Register</MudNavLink>
+                </NotAuthorized>
+            </AuthorizeView>
+        </MudNavMenu>
+    </MudPaper>
+
+     <AuthorizeView>
+        <Authorized>
+            <form action="Account/Logout" method="post">
+                <AntiforgeryToken />
+                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                <button class="mt-3" type="submit">Logout</button>
+            </form>
+        </Authorized>
+        </AuthorizeView>
+
+</div>
+
+@code {
+    private string? currentUrl;
+    private string? tenantId;
+
+    protected override void OnInitialized()
+    {
+        tenantId = TenantResolver.ResolveTenantIdFromUrl(NavigationManager.Uri);
+
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}
+

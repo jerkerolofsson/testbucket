@@ -1,0 +1,29 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestSuites/{SuiteId:long}/Folders/{FolderId:long}"
+@using TestBucket.Components.Tests.Layouts
+@layout TestingLayout
+@inject TestBrowser testBrowser
+@inject AppNavigationManager appNavigationManager
+
+ <MudStack Style="width: 100%; background: var(--mud-palette-surface)">
+    <MudToolBar Style="background: var(--mud-palette-primary)">
+        <PathNavigation FolderId="@FolderId" />
+    </MudToolBar>
+
+    <TestCaseGrid TestSuiteId="@SuiteId" FolderId="@FolderId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" />
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    [Parameter] public long SuiteId { get; set; }
+    [Parameter] public long FolderId { get; set; }
+
+    private void OnTestCaseClicked(TestCase testCase)
+    {
+        appNavigationManager.NavigateTo(testCase);
+    }
+
+}

@@ -28,6 +28,12 @@ public class TraitTypeConverter
         [TraitType.HardwareVersion] = TargetTraitNames.HardwareVersion,
         [TraitType.Commit] = TargetTraitNames.Commit,
 
+        [TraitType.Assembly] = AutomationTraitNames.Assembly,
+        [TraitType.Module] = AutomationTraitNames.Module,
+        [TraitType.ClassName] = AutomationTraitNames.ClassName,
+        [TraitType.Method] = AutomationTraitNames.MethodName,
+
+        [TraitType.TestState] = TestTraitNames.TestState,
         [TraitType.TestDescription] = TestTraitNames.TestDescription,
         [TraitType.TestCategory] = TestTraitNames.TestCategory,
         [TraitType.TestPriority] = TestTraitNames.TestPriority,

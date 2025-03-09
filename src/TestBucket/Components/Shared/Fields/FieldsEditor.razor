@@ -1,32 +1,53 @@
 ﻿@inject FieldService fieldService
 
-@foreach(var field in _testCaseFields)
+@foreach (var field in _testCaseFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
 {
-    <FieldEditor Field="@field" FieldChanged="OnFieldChangedAsync"/>
+    <FieldEditor Field="@field" FieldChanged="OnTestCaseFieldChangedAsync"/>
+}
+@foreach (var field in _testCaseRunFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
+{
+    <FieldEditor Field="@field" FieldChanged="OnTestCaseRunFieldChangedAsync"/>
 }
 
 @code {
     [Parameter] public TestCase? TestCase { get; set; }
+    [Parameter] public TestCaseRun? TestCaseRun { get; set; }
 
     private List<TestCaseField> _testCaseFields = [];
+    private List<TestCaseRunField> _testCaseRunFields = [];
 
     private long? _testCaseId;
+    private long? _testCaseRunId;
 
     protected override async Task OnParametersSetAsync()
     {
         if(TestCase is not null && _testCaseId != TestCase.Id)
         {
             _testCaseId = TestCase.Id;
-            var definitions = await fieldService.SearchDefinitionsAsync(new SearchQuery { ProjectId = TestCase.TestProjectId });
+            var definitions = await fieldService.SearchDefinitionsAsync(FieldTarget.TestCase, new SearchQuery { ProjectId = TestCase.TestProjectId });
             _testCaseFields = (await fieldService.GetTestCaseFieldsAsync(TestCase.Id, definitions)).ToList();
+        }
+        if (TestCaseRun is not null && _testCaseRunId != TestCaseRun.Id)
+        {
+            _testCaseRunId = TestCaseRun.Id;
+            var definitions = await fieldService.SearchDefinitionsAsync(FieldTarget.TestCaseRun, new SearchQuery { ProjectId = TestCaseRun.TestProjectId });
+            _testCaseRunFields = (await fieldService.GetTestCaseRunFieldsAsync(TestCaseRun.TestRunId, TestCaseRun.Id, definitions)).ToList();
         }
     }
 
-    private async Task OnFieldChangedAsync()
+    private async Task OnTestCaseRunFieldChangedAsync()
     {
-        if(_testCaseFields.Count > 0)
+        if(_testCaseRunFields.Count > 0)
         {
-           await fieldService.SaveTestCaseFieldsAsync(_testCaseFields);
+           await fieldService.SaveTestCaseRunFieldsAsync(_testCaseRunFields);
+        }
+    }
+
+    private async Task OnTestCaseFieldChangedAsync()
+    {
+        if (_testCaseFields.Count > 0)
+        {
+            await fieldService.SaveTestCaseFieldsAsync(_testCaseFields);
         }
     }
 }

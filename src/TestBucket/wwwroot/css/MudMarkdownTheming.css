@@ -1,0 +1,222 @@
+﻿.EasyMDEContainer {
+}
+
+
+.EasyMDEContainer .editor-preview pre {
+    background: transparent;
+    margin: 0;
+}
+
+.EasyMDEContainer .editor-preview pre:has(code) {
+    padding: 12px;
+    background: var(--mud-palette-black);
+    border: solid 1px var(--mud-palette-dark);
+    color: var(--mud-palette-tertiary);
+}
+
+.EasyMDEContainer .editor-preview .note {
+    background: var(--mud-palette-surface);
+    border: 0;
+}
+
+.mud-markdown-editor-root {
+    color: var(--mud-palette-text-primary);
+    height: auto;
+    border: solid 1px var(--mud-palette-dark);
+}
+
+.mud-markdown-editor-root .mud-markdown-toolbar {
+    --mud-internal-toolbar-height: auto;
+    padding: 8px;
+}
+/*
+@media (min-width: 600px) {
+    .mud-markdown-editor-root .mud-toolbar {
+        --mud-internal-toolbar-height: auto;
+    }
+}*/
+
+.mud-markdown-editor-root:focus-within {
+    outline: solid 2px var(--mud-palette-primary);
+    border-color: transparent;
+}
+
+.mud-markdown-editor-root:focus-within:has(.mud-secondary-markdown-toolbar) {
+    outline-color: var(--mud-palette-secondary);
+}
+
+.mud-markdown-editor-root:focus-within:has(.mud-tertiary-markdown-toolbar) {
+    outline-color: var(--mud-palette-tertiary);
+}
+
+.EasyMDEContainer .editor-toolbar {
+    background: var(--mud-palette-primary);
+    border-color: var(--mud-palette-primary-darken);
+    color: var(--mud-palette-primary-text);
+}
+
+.EasyMDEContainer .editor-toolbar {
+    display: none;
+    height: 0px;
+}
+
+    .EasyMDEContainer .CodeMirror-fullscreen {
+        top: 0px;
+    }
+
+.EasyMDEContainer .editor-preview,
+.EasyMDEContainer .CodeMirror {
+    
+    background: var(--mud-palette-background);
+    border: none;
+/*    background: var(--mud-palette-background);
+        border-color: var(--mud-palette-dark-lighten);
+    */
+    color: var(--mud-palette-text-primary);
+}
+
+
+
+.EasyMDEContainer .CodeMirror {
+    font-family: monospace;
+}
+.EasyMDEContainer .editor-preview {
+    font-family: var(--mud-typography-default-family);
+}
+
+.EasyMDEContainer .editor-preview blockquote {
+    font-weight: bold;
+    font-style: italic;
+    font-size: 200%;
+}
+
+
+.editor-toolbar button:hover {
+background: var(--mud-palette-primary);
+border-color: var(--mud-palette-primary-darken);
+}
+
+.CodeMirror-gutters {
+    background: var(--mud-palette-dark);
+    border: none;
+}
+
+.editor-toolbar button.active {
+    background: var(--mud-palette-primary-lighten);
+    border-color: var(--mud-palette-primary);
+}
+
+.EasyMDEContainer .editor-preview  a[href] {
+    text-decoration: underline;
+    color: var(--mud-palette-secondary);
+}
+
+.EasyMDEContainer .editor-preview p, 
+.EasyMDEContainer .editor-preview ol, 
+.EasyMDEContainer .editor-preview ul, 
+.EasyMDEContainer .editor-preview pre:has(code) {
+
+    margin-bottom: 1rem;
+}
+.EasyMDEContainer .editor-preview ol li,
+.EasyMDEContainer .editor-preview ul li {
+    margin-left: 20px;
+}
+
+.CodeMirror-focused .CodeMirror-selected,
+.CodeMirror-focused .CodeMirror-selectedtext,
+.CodeMirror-selectedtext,
+.CodeMirror-selected {
+    background: var(--mud-palette-primary-darken) !important;
+}
+
+.CodeMirror-cursor {
+    border-left-color: var(--mud-palette-text-primary);
+    
+}
+
+ .cm-header.cm-header-1,
+ h1 {
+     font-size: var(--mud-typography-h1-size);
+     font-weight: var(--mud-typography-h1-weight);
+     line-height: var(--mud-typography-h1-lineheight);
+     letter-spacing: var(--mud-typography-h1-letterspacing);
+     text-transform: var(--mud-typography-h1-text-transform);
+ }
+
+.cm-header.cm-header-2,
+h2 {
+     font-size: var(--mud-typography-h2-size);
+     font-weight: var(--mud-typography-h2-weight);
+     line-height: var(--mud-typography-h2-lineheight);
+     letter-spacing: var(--mud-typography-h2-letterspacing);
+     text-transform: var(--mud-typography-h2-text-transform);
+ }
+
+
+.cm-header.cm-header-3,
+h3 {
+     font-size: var(--mud-typography-h3-size);
+     font-weight: var(--mud-typography-h3-weight);
+     line-height: var(--mud-typography-h3-lineheight);
+     letter-spacing: var(--mud-typography-h3-letterspacing);
+     text-transform: var(--mud-typography-h3-text-transform);
+ }
+
+.cm-header.cm-header-4,
+h4 {
+     font-size: var(--mud-typography-h4-size);
+     font-weight: var(--mud-typography-h4-weight);
+     line-height: var(--mud-typography-h4-lineheight);
+     letter-spacing: var(--mud-typography-h4-letterspacing);
+     text-transform: var(--mud-typography-h4-text-transform);
+ }
+
+
+.cm-header.cm-header-5,
+h5 {
+     font-size: var(--mud-typography-h5-size);
+     font-weight: var(--mud-typography-h5-weight);
+     line-height: var(--mud-typography-h5-lineheight);
+     letter-spacing: var(--mud-typography-h5-letterspacing);
+     text-transform: var(--mud-typography-h5-text-transform);
+ }
+
+.cm-header.cm-header-6,
+h6 {
+     font-size: var(--mud-typography-h6-size);
+     font-weight: var(--mud-typography-h6-weight);
+     line-height: var(--mud-typography-h6-lineheight);
+     letter-spacing: var(--mud-typography-h6-letterspacing);
+     text-transform: var(--mud-typography-h6-text-transform);
+ }
+
+.mud-markdown-toolbar.mud-primary-markdown-toolbar {
+    background: var(--mud-palette-primary);
+    color: var(--mud-palette-primary-text)
+}
+.mud-markdown-toolbar.mud-secondary-markdown-toolbar {
+    background: var(--mud-palette-secondary);
+    color: var(--mud-palette-secondary-text)
+}
+.mud-markdown-toolbar.mud-tertiary-markdown-toolbar {
+    background: var(--mud-palette-tertiary);
+    color: var(--mud-palette-tertiary-text)
+}
+.mud-markdown-toolbar.mud-dark-markdown-toolbar {
+    background: var(--mud-palette-dark);
+    color: var(--mud-palette-dark-text);
+}
+.mud-markdown-toolbar.mud-light-markdown-toolbar {
+    background: var(--mud-palette-light);
+    color: var(--mud-palette-light-text);
+}
+
+.mud-markdown-toolbar.mud-surface-markdown-toolbar {
+    background: var(--mud-palette-surface);
+    color: var(--mud-palette-text-primary);
+}
+
+.mud-markdown-toolbar.mud-toolbar .mud-icon-button {
+    color: inherit;
+}

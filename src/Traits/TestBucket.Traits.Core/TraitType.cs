@@ -27,6 +27,11 @@ public enum TraitType
     TestResult,
 
     /// <summary>
+    /// Test case run state (Completed, Started, Assigned..)
+    /// </summary>
+    TestState,
+
+    /// <summary>
     /// Test case priority
     /// </summary>
     TestPriority,
@@ -63,9 +68,29 @@ public enum TraitType
     /// </summary>
     CallStack,
 
-    Module, // or assembly
+    /// <summary>
+    /// Assembly implementing the automated test
+    /// </summary>
+    Assembly,
+
+    /// <summary>
+    /// Module implementing the automated test (e.g. python file)
+    /// </summary>
+    Module,
+
+    /// <summary>
+    /// Class implementing the automated test
+    /// </summary>
     ClassName,
+
+    /// <summary>
+    /// Method implementing the automated test
+    /// </summary>
     Method,
+
+    /// <summary>
+    /// Line number of failure
+    /// </summary>
     Line,
 
     /// <summary>

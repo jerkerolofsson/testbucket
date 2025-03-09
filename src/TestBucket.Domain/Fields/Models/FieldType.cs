@@ -25,5 +25,5 @@ public enum FieldType
     /// <summary>
     /// Multiple strings
     /// </summary>
-    ChipField = 6,
+    StringArray = 6,
 }

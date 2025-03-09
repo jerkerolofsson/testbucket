@@ -3,7 +3,24 @@ html, body {
     width: 100dvw;
     height: 100dvh;
 
-/*    --mud-typography-subtitle1-size: 7pt;*/
+    --mud-typography-h1-size: 22pt;
+    --mud-typography-h2-size: 20pt;
+    --mud-typography-h3-size: 18pt;
+    --mud-typography-h4-size: 16pt;
+    --mud-typography-h5-size: 14pt;
+    --mud-typography-h6-size: 12pt;
+}
+
+.tb-draggable:not(:has(.drag-handle)):hover {
+    color: var(--mud-palette-secondary);
+}
+
+.tb-draggable .drag-handle {
+    cursor: grab;
+    opacity: 0;
+}
+.tb-draggable:hover .drag-handle {
+    opacity: 1;
 }
 
 p.mud-typography-subtitle1 {
@@ -17,42 +34,6 @@ p.mud-typography-subtitle1 {
 .mud-input-control > .mud-input-control-input-container > .mud-input-label-inputcontrol  {
     transform: translate(4px, 10px) scale(1);
     font-size: 8pt;
-}
-
-.EasyMDEContainer .editor-preview-full pre {
-    background: transparent;
-    margin: 0;
-}
-
-.EasyMDEContainer .editor-preview-full pre:has(code) {
-    padding: 12px;
-    background: var(--mud-palette-dark-darken);
-    border: solid 1px var(--mud-palette-dark);
-    color: cyan;
-}
-
-.EasyMDEContainer .editor-preview-full .note {
-    background: var(--mud-palette-surface);
-    border: 0;
-}
-
-.EasyMDEContainer .editor-toolbar {
-    background: var(--mud-palette-primary);
-    border-color: var(--mud-palette-primary-darken);
-    color: white;
-}
-
-.EasyMDEContainer .editor-preview-full,
-.EasyMDEContainer .CodeMirror {
-    background: var(--mud-palette-dark);
-    border-color: var(--mud-palette-dark-lighten);
-    color: var(--mud-palette-text-primary);
-}
-
-.EasyMDEContainer .editor-preview-full blockquote {
-    font-weight: bold;
-    font-style: italic;
-    font-size: 200%;
 }
 
 .dropdown-container .mud-icon-button {
@@ -73,6 +54,10 @@ p.mud-typography-subtitle1 {
  .mud-toolbar .mud-input>input.mud-input-root, div.mud-input-slot.mud-input-root {
     color: white;
 }
+
+ .editor-toolbar button.active, .editor-toolbar button:hover {
+     background: var(--mud-palette-primary-darken);
+ }
 
  .mud-toolbar fieldset legend {
     color: white;

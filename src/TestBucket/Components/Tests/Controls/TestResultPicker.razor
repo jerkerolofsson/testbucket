@@ -1,0 +1,34 @@
+﻿@using TestBucket.Contracts.Testing.Models
+@using TestBucket.Domain.States
+
+<Field>
+    <FieldHeader>Result</FieldHeader>
+
+    <MudSelect Variant="Variant.Outlined" T="TestResult" Value="@Result" ValueChanged="OnResultChanged">
+        @foreach (var result in _results)
+        {
+            <MudSelectItem Value="@result">@result</MudSelectItem>
+        }
+    </MudSelect>
+
+    <MudStack Row>
+        @if(Result == TestResult.NoRun)
+        {
+            <MudButton OnClick="() => OnResultChanged(TestResult.Passed)" StartIcon="@Icons.Material.Filled.CheckCircle" Color="Color.Success">PASS</MudButton>
+            <MudButton OnClick="() => OnResultChanged(TestResult.Failed)" StartIcon="@Icons.Material.Filled.RemoveCircle" Color="Color.Error">FAIL</MudButton>
+        }
+    </MudStack>
+</Field>
+
+@code {
+    [Parameter] public long? TestProjectId { get; set; }
+    [Parameter] public TestResult Result { get; set; } = TestResult.NoRun;
+    [Parameter] public EventCallback<TestResult> ResultChanged { get; set; }
+
+    private TestResult[] _results = [TestResult.Passed, TestResult.Failed, TestResult.Blocked, TestResult.NoRun];
+
+    private async Task OnResultChanged(TestResult result)
+    {
+        await ResultChanged.InvokeAsync(result);
+    }
+}

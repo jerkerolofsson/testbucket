@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<testsuites name="Test results" time="0.103" tests="9" failures="0" errors="0" skipped="0">
+  <testsuite name="Test collection for TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests (id: da8cd3d88ee6e9d4988dcd095d84dc5287c1fa9c88564f2d34192c011f8ae07e)" time="0.042" tests="3" failures="0" skipped="0">
+
+	  <testcase name="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames" classname="TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests" time="0.0323301">
+		  <properties>
+			  <attachment name="MachineName" media-type="application/secret">REVTS1RPUC1FNzFIMkVG</attachment>
+		  </properties>
+	  </testcase>
+
+  </testsuite>
+</testsuites>

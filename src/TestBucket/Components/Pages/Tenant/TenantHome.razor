@@ -1,12 +1,15 @@
 ﻿@page "/{tenantId}"
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navigationManager
-@attribute [Authorize]
 <PageTitle>@TenantId</PageTitle>
 <TenantRedirect/>
 
-<h1>Welcome to @TenantId</h1>
-
 @code {
     [Parameter] public string TenantId { get; set; } = "";
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        navigationManager.NavigateTo($"/{TenantId}/Testing");
+        return base.OnAfterRenderAsync(firstRender);
+    }
 }

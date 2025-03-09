@@ -1,0 +1,44 @@
+﻿@implements IDisposable
+@inject IJSRuntime JSRuntime
+
+<CascadingValue Value="@this" IsFixed="true">
+
+    <div class="mud-markdown-editor-root">
+
+        @if (ShowToolbar)
+        {
+            <MudToolBar Class="@ToolbarClassname">
+                @if (!Preview)
+                {
+                    <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.FormatBold" OnClick="ToggleBoldAsync" Class="rounded-0"></MudIconButton>
+                    <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.FormatItalic" OnClick="ToggleItalicAsync" Class="rounded-0"></MudIconButton>
+
+                    <MudDivider Vertical="true" FlexItem="true" />
+
+                    <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.FormatListNumbered" OnClick="ToggleOrderedListAsync" Class="rounded-0"></MudIconButton>
+                    <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.FormatListBulleted" OnClick="ToggleUnorderedListAsync" Class="rounded-0"></MudIconButton>
+
+                    <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Code" OnClick="ToggleCodeBlockAsync" Class="rounded-0"></MudIconButton>
+
+                    <MudDivider Vertical="true" FlexItem="true" />
+
+                    <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Grid3x3" OnClick="DrawTableAsync" Class="rounded-0"></MudIconButton>
+                    <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.AddLink" OnClick="DrawLinkAsync" Class="rounded-0"></MudIconButton>
+                    <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Image" OnClick="DrawImageAsync" Class="rounded-0"></MudIconButton>
+
+                    <MudDivider Vertical="true" FlexItem="true" />
+                }
+                <MudSpacer/>
+                <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.RemoveRedEye" OnClick="TogglePreviewAsync" Class="rounded-0"></MudIconButton>
+                <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Fullscreen" OnClick="ToggleFullScreenAsync" Class="rounded-0"></MudIconButton>
+                </MudToolBar>
+            }
+
+        <textarea @ref="@ElementRef" id="@ElementId" class="@CSSClass resizable">
+            @if (Toolbar != null)
+            {
+                @Toolbar
+            }
+        </textarea>
+    </div>
+</CascadingValue>

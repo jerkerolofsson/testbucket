@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TestBucket.Traits.Core;
-
 namespace TestBucket.Traits.Xunit;
 
 /// <summary>

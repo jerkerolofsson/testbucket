@@ -49,6 +49,12 @@ public class TestProject
     /// </summary>
     public bool GrantAccessToAllTeamUsers { get; set; }
 
+    /// <summary>
+    /// Applicable states for test execution that a user can select
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public TestState[]? TestStates { get; set; }
+
     // Navigation
 
     public string? TenantId { get; set; }

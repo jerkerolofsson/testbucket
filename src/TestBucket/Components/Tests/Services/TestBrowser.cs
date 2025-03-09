@@ -1,9 +1,12 @@
 ﻿using System.Collections.Concurrent;
 
-using TestBucket.Components.Tests.Browser.Controls;
+using Microsoft.CodeAnalysis;
+using MudBlazor;
+
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Teams.Models;
+using TestBucket.Formats;
 
 namespace TestBucket.Components.Tests.Services;
 internal class TestBrowser : TenantBaseService
@@ -12,38 +15,82 @@ internal class TestBrowser : TenantBaseService
     private readonly IDialogService _dialogService;
     private readonly ITextTestResultsImporter _textImporter;
     private readonly IFileRepository _fileRepository;
+    private readonly ITestCaseRepository _testCaseRepository;
 
     public TestBrowser(TestSuiteService testSuiteService,
         AuthenticationStateProvider authenticationStateProvider,
         IDialogService dialogService,
         ITextTestResultsImporter textImporter,
-        IFileRepository fileRepository) : base(authenticationStateProvider)
+        IFileRepository fileRepository,
+        ITestCaseRepository testCaseRepository) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
         _dialogService = dialogService;
         _textImporter = textImporter;
         _fileRepository = fileRepository;
+        _testCaseRepository = testCaseRepository;
     }
 
+    public async Task<TestRun?> GetTestRunByIdAsync(long id)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _testCaseRepository.GetTestRunByIdAsync(tenantId, id);
+    }
+
+    public async Task<TestSuiteFolder?> GetTestSuiteFolderByIdAsync(long id)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _testCaseRepository.GetTestSuiteFolderByIdAsync(tenantId, id);
+    }
+
+    public async Task<TestSuite?> GetTestSuiteByIdAsync(long id)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _testCaseRepository.GetTestSuiteByIdAsync(tenantId, id);
+    }
+
+    public async Task<TestCase?> GetTestCaseByIdAsync(long id)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _testCaseRepository.GetTestCaseByIdAsync(tenantId, id);
+    }
+
+    /// <summary>
+    /// Imports test cases for the specified team/project
+    /// </summary>
+    /// <param name="team"></param>
+    /// <param name="project"></param>
+    /// <returns></returns>
     public async Task ImportAsync(Team? team, TestProject? project)
     {
         var tenantId = await GetTenantIdAsync();
 
+        // Show dialog
         var dialog = await _dialogService.ShowAsync<ImportResultsDialog>(null);
         var result = await dialog.Result;
 
         if (result?.Data is ImportOptions importOptions && importOptions.File?.Id is not null)
         {
+            // Get the uploaded file and import it
             var resource = await _fileRepository.GetResourceByIdAsync(tenantId, importOptions.File.Id);
             if (resource is not null)
             {
                 string xml = Encoding.UTF8.GetString(resource.Data);
-                await _textImporter.ImportTextAsync(tenantId, team?.Id, project?.Id, importOptions.Format, xml);
+                await _textImporter.ImportTextAsync(tenantId, team?.Id, project?.Id, importOptions.Format, xml, new TestResultImportOptions());
             }
         }
     }
 
+    /// <summary>
+    /// Searches for test cases
+    /// </summary>
+    /// <param name="testSuiteId"></param>
+    /// <param name="folderId"></param>
+    /// <param name="searchText"></param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(long? testSuiteId, long? folderId, string? searchText, int offset, int count = 20)
     {
         if(string.IsNullOrWhiteSpace(searchText))
@@ -59,6 +106,13 @@ internal class TestBrowser : TenantBaseService
             Count = count,
             Offset = offset,
         });
+    }
+    public async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery query, int offset, int count = 20)
+    {
+        query.Offset = offset;
+        query.Count = count;
+
+        return await _testSuiteService.SearchTestCasesAsync(query);
     }
 
     public async Task<List<TreeItemData<BrowserItem>>> BrowseAsync(long? teamId, long? projectId, BrowserItem? parent)
@@ -85,12 +139,26 @@ internal class TestBrowser : TenantBaseService
 
                 return items;
             }
-            else if(parent.TestSuite is not null)
+            else if (parent.TestSuite is not null)
             {
                 long? parentFolderId = null;
                 var folders = await _testSuiteService.GetTestSuiteFoldersAsync(projectId, parent.TestSuite.Id, parentFolderId);
                 var items = MapFoldersToTreeItemData(folders);
+
+                var tests = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
+                {
+                    Count = 1_000,
+                    Offset = 0,
+                    FolderId = null,
+                    TestSuiteId = parent.TestSuite.Id,
+                });
+                items.AddRange(MapTestsToTreeItemData(tests.Items));
+
                 return items;
+            }
+            else if (parent.TestRun is not null)
+            {
+                return [];
             }
         }
         return await BrowseRootAsync(teamId, projectId);
@@ -138,6 +206,32 @@ internal class TestBrowser : TenantBaseService
         };
     }
 
+
+    /// <summary>
+    /// Searches for test case runs
+    /// </summary>
+    /// <param name="testRunId"></param>
+    /// <param name="searchText"></param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
+    public async Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(long testRunId, string? searchText, int offset, int count = 20)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            searchText = null;
+        }
+
+        return await _testSuiteService.SearchTestCaseRunsAsync(new SearchTestQuery
+        {
+            Text = searchText,
+            TestRunId = testRunId,
+            Count = count,
+            Offset = offset,
+        });
+    }
+
+
     private async Task<List<TreeItemData<BrowserItem>>> BrowseRootAsync(long? teamId, long? projectId)
     {
         var suites = await _testSuiteService.GetTestSuitesAsync(teamId, projectId);
@@ -146,9 +240,23 @@ internal class TestBrowser : TenantBaseService
             {
                 Value = new BrowserItem { TestSuite = x, Color = x.Color },
                 Text = x.Name,
-                Icon = x.Icon ?? Icons.Material.Filled.Article,
+                Icon = x.Icon ?? Icons.Material.Outlined.Article,
                 Children = null,
             }).ToList();
+
+        // For test runs, as there can be a huge amount, sort them by year
+        List<TreeItemData<BrowserItem>> recentRuns = [];
+        var recentRunsResult = await _testSuiteService.SearchTestRunsAsync(new SearchQuery() { ProjectId = projectId, Count = 50, TeamId = teamId, Offset = 0 });
+        foreach (var testRun in recentRunsResult.Items)
+        {
+            recentRuns.Add(new TreeItemData<BrowserItem>
+            {
+                Value = new BrowserItem() {  TestRun = testRun },
+                Text = testRun.Name,
+                Icon = Icons.Material.Filled.PlaylistPlay,
+                Children = [],
+            });
+        }
 
         return new List<TreeItemData<BrowserItem>>
         {
@@ -162,6 +270,7 @@ internal class TestBrowser : TenantBaseService
             new TreeItemData<BrowserItem>
             {
                 Text = "Test Runs",
+                Children = recentRuns,
                 Expanded = false,
                 Icon = Icons.Material.Filled.FolderSpecial,
             },
@@ -184,5 +293,23 @@ internal class TestBrowser : TenantBaseService
                 Icon = Icons.Material.Filled.FolderSpecial,
             }
         };
+    }
+
+    internal async Task<TestSuite?> AddTestSuiteAsync(Team? team, TestProject? project)
+    {
+
+        var parameters = new DialogParameters<AddTestSuiteDialog>
+        {
+            { x => x.Project, project },
+            { x => x.Team, team },
+        };
+        var dialog = await _dialogService.ShowAsync<AddTestSuiteDialog>("Add test suite", parameters);
+        var result = await dialog.Result;
+        if (result?.Data is TestSuite testSuite)
+        {
+            return testSuite;
+        }
+        return null;
+
     }
 }

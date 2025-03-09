@@ -1,0 +1,52 @@
+﻿@using TestBucket.Components.Shared
+@inject TestBrowser testBrowser
+@inject IDialogService dialogService
+@inject TestCaseEditorService testCaseEditor
+@inject TestRunCreationService testRunCreationService
+@implements IDisposable
+@implements ITestCaseObserver
+
+<DropZone T="TestCase" OnDrop="OnTestCaseDropped">
+    <MudDataGrid ServerData="LoadGridData"
+                 Style="width: 100%"
+                 Dense="true"
+                 Hover="true"
+                 T="TestCaseRun"
+                 RowClick="(e) => OnClicked(e.Item)"
+                 @ref="_dataGrid"
+                 SortMode="SortMode.None">
+
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+
+                <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
+                              Style="min-width: 15vw"
+                              Clearable="true"
+                              Variant="Variant.Outlined"
+                              IconSize="Size.Small"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search" />
+
+                <MudSpacer />
+
+            </MudStack>
+        </ToolBarContent>
+
+        <Columns>
+            <PropertyColumn Property="x => x.State" Title="State" />
+
+            <TemplateColumn Title="Name">
+                <CellTemplate>
+                    @context.Item.Name
+                </CellTemplate>
+            </TemplateColumn>
+
+            <PropertyColumn Property="x => x.AssignedToUserName" Title="Assigned To" />
+            <PropertyColumn Property="x => x.Result" Title="Result" />
+        </Columns>
+
+        <PagerContent>
+            <MudDataGridPager T="TestCaseRun" />
+        </PagerContent>
+    </MudDataGrid>
+</DropZone>

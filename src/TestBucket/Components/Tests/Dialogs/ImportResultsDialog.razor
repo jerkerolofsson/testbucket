@@ -3,7 +3,7 @@
 @inject TestCaseEditorService testCaseEditorService
 
 <EditForm Model="@_options" OnValidSubmit="Submit">
-    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
         <DialogContent>
 
             <Field>
@@ -40,6 +40,13 @@
     private void OnFileUploaded(FileResource file)
     {
         _options.File = file;
+
+        // Todo: Try to guess the format
+        // junit: <testsuites
+        // nunit: <test-results 
+        // trx: <TestRun 
+        // xunit: <assemblies 
+        // 
     }
 
     private void Submit()

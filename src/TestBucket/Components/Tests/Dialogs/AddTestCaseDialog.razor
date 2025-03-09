@@ -4,13 +4,20 @@
 <EditForm Model="@_testCase" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <DialogContent>
-            <TestCaseEditor @bind-Test="@_testCase" />
+            <MudStack Spacing="1">
+                @if (_testCase is not null)
+                {
+                    <Field>
+                        <FieldHeader>Name</FieldHeader>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_testCase.Name"></MudTextField>
+                    </Field>
+                }
+                @if (_errorMessage is not null)
+                {
+                    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+                }
 
-            @if(_errorMessage is not null)
-            {
-                @_errorMessage
-            }
-
+            </MudStack>
         </DialogContent>
 
         <DialogActions>
@@ -19,7 +26,6 @@
         </DialogActions>
     </MudDialog>
 </EditForm>
-
 
 @code {
     private string? _errorMessage;

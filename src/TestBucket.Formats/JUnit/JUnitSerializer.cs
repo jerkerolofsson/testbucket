@@ -1,4 +1,7 @@
-﻿using TestBucket.Traits.Core;
+﻿using System.Text.RegularExpressions;
+
+using TestBucket.Formats.Abstractions;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Formats.JUnit
 {
@@ -33,6 +36,12 @@ namespace TestBucket.Formats.JUnit
 
         public TestRunDto Deserialize(string xml)
         {
+            var options = new JUnitSerializerOptions();
+            return Deserialize(xml, options);
+        }
+
+        public TestRunDto Deserialize(string xml, JUnitSerializerOptions options)
+        {
             var testRun = new TestRunDto();
             testRun.Suites = new();
 
@@ -44,85 +53,163 @@ namespace TestBucket.Formats.JUnit
             {
                 testRun.ExternalId = testSuitesNode.Attribute("id")?.Value;
                 testRun.Name = testSuitesNode.Attribute("name")?.Value;
-                ReadProperties(testRun, testSuitesNode);
+                ReadProperties(null, testRun, testSuitesNode);
+                testRun.Assembly ??= testRun.Name;
+                testRun.Module ??= testRun.Name;
 
                 foreach (var testSuiteNode in testSuitesNode.Elements("testsuite"))
                 {
                     var testSuite = new TestSuiteRunDto();
-                    ReadProperties(testSuite, testSuiteNode);
-                    testSuite.ExternalId = testSuiteNode.Attribute("id")?.Value;
-                    testSuite.Name = testSuiteNode.Attribute("name")?.Value;
-                    testRun.Name ??= testSuite.Name;
                     testRun.Suites.Add(testSuite);
 
+                    ReadProperties(null, testSuite, testSuiteNode);
+                    testSuite.Name = testSuiteNode.Attribute("name")?.Value;
+                    if (options.ProcessXunitCollectionName)
+                    {
+                        HandleXunitNameFormat(testSuite);
+                    }
+                    testSuite.ExternalId ??= testSuiteNode.Attribute("id")?.Value;
+
+                    testSuite.Assembly ??= testSuite.Name;
+                    testSuite.Module ??= testSuite.Name;
                     testSuite.SystemOut = testSuiteNode.Element("system-out")?.Value;
                     testSuite.SystemErr = testSuiteNode.Element("system-err")?.Value;
 
-                    foreach (var resultNode in testSuiteNode.Elements("testcase"))
-                    {
-                        var testCaseRun = new TestCaseRunDto();
-                        ReadProperties(testCaseRun, resultNode);
-                        testCaseRun.ExternalId = resultNode.Attribute("id")?.Value;
-                        testCaseRun.Name = resultNode.Attribute("name")?.Value;
-                        testCaseRun.ClassName = resultNode.Attribute("classname")?.Value;
-                        testCaseRun.Result = TestResult.Passed;
-                        testCaseRun.ExternalId = ImportDefaults.GetExternalId(testRun, testSuite, testCaseRun);
+                    // Copy some fields to the parent
+                    testRun.Name ??= testSuite.Name;
 
-                        testSuite.Tests ??= new();
-                        testSuite.Tests.Add(testCaseRun);
-
-                        string? timeString = resultNode.Attribute("time")?.Value;
-                        if (timeString is not null && double.TryParse(timeString, CultureInfo.InvariantCulture, out var time))
-                        {
-                            testCaseRun.Duration = TimeSpan.FromSeconds(time);
-                        }
-
-                        var failure = resultNode.Element("failure");
-                        var blocked = resultNode.Element("blocked");
-                        var skipped = resultNode.Element("skipped");
-                        var error = resultNode.Element("error");
-                        var crashed = resultNode.Element("crashed");
-                        var assert = resultNode.Element("assert");
-
-                        if (skipped is not null)
-                        {
-                            testCaseRun.Result = TestResult.Skipped;
-                        }
-                        if (blocked is not null)
-                        {
-                            testCaseRun.Result = TestResult.Blocked;
-                        }
-                        if (failure is not null)
-                        {
-                            testCaseRun.Result = TestResult.Failed;
-                        }
-                        if (error is not null)
-                        {
-                            testCaseRun.Result = TestResult.Error;
-                        }
-                        if (crashed is not null)
-                        {
-                            testCaseRun.Result = TestResult.Crashed;
-                        }
-                        if (assert is not null)
-                        {
-                            testCaseRun.Result = TestResult.Assert;
-                        }
-
-                        var failureElement = failure ?? blocked ?? skipped ?? error;
-                        if (failureElement is not null)
-                        {
-                            testCaseRun.FailureType = failureElement.Attribute("type")?.Value;
-                            testCaseRun.Message = failureElement.Attribute("message")?.Value;
-
-                            testCaseRun.CallStack = failureElement.Value;
-                        }
-                    }
+                    var folders = new Stack<string>();
+                    ReadTestsFromSuite(testRun, testSuiteNode, testSuite, testSuite.Name??"", folders, options);
                 }
             }
 
 
             return testRun;
+        }
+
+        private void HandleXunitNameFormat(TestSuiteRunDto testSuite)
+        {
+            if(string.IsNullOrEmpty(testSuite.Name))
+            {
+                return;
+            }
+
+            // Test collection for TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests (id: da8cd3d88ee6e9d4988dcd095d84dc5287c1fa9c88564f2d34192c011f8ae07e)
+            Regex regex = new Regex("Test collection for (.*) \\(id: (.*)\\)");
+            var match = regex.Match(testSuite.Name);
+            if(match.Success && match.Groups.Count == 3)
+            {
+                testSuite.Name = match.Groups[1].Value;
+                testSuite.ExternalId ??= match.Groups[2].Value;
+            }
+        }
+
+        private static void ReadTestsFromSuite(TestRunDto testRun, XElement testSuiteNode, TestSuiteRunDto testSuite, string testSuiteElementName, Stack<string> folders, JUnitSerializerOptions options)
+        {
+            foreach (var resultNode in testSuiteNode.Elements("testcase"))
+            {
+                var testCaseRun = new TestCaseRunDto();
+                ReadProperties(testCaseRun, testCaseRun, resultNode);
+                testCaseRun.Name = resultNode.Attribute("name")?.Value;
+                testCaseRun.ClassName = resultNode.Attribute("classname")?.Value;
+                testCaseRun.Result = TestResult.Passed;
+                testCaseRun.ExternalId ??= resultNode.Attribute("id")?.Value;
+                testCaseRun.ExternalId ??= ImportDefaults.GetExternalId(testRun, testSuite, testCaseRun);
+
+                testCaseRun.Method ??= testCaseRun.Name;
+
+                // There can be an assembly trait on a test case, which is more accurate than what is defined in the 
+                // junst, if there is, use that
+                if (testCaseRun.Assembly is not null)
+                {
+                    testRun.Assembly = testSuite.Assembly = testCaseRun.Assembly;
+                }
+                else
+                {
+                    // inherit
+                    testCaseRun.Assembly ??= testSuite.Assembly ?? testRun.Assembly;
+                }
+                testCaseRun.Folders = folders.ToArray();
+
+                testSuite.Tests ??= new();
+                testSuite.Tests.Add(testCaseRun);
+
+                string? timeString = resultNode.Attribute("time")?.Value;
+                if (timeString is not null && double.TryParse(timeString, CultureInfo.InvariantCulture, out var time))
+                {
+                    testCaseRun.Duration = TimeSpan.FromSeconds(time);
+                }
+
+                var failure = resultNode.Element("failure");
+                var blocked = resultNode.Element("blocked");
+                var skipped = resultNode.Element("skipped");
+                var error = resultNode.Element("error");
+                var crashed = resultNode.Element("crashed");
+                var assert = resultNode.Element("assert");
+
+                if (skipped is not null)
+                {
+                    testCaseRun.Result = TestResult.Skipped;
+                }
+                if (blocked is not null)
+                {
+                    testCaseRun.Result = TestResult.Blocked;
+                }
+                if (failure is not null)
+                {
+                    testCaseRun.Result = TestResult.Failed;
+                }
+                if (error is not null)
+                {
+                    testCaseRun.Result = TestResult.Error;
+                }
+                if (crashed is not null)
+                {
+                    testCaseRun.Result = TestResult.Crashed;
+                }
+                if (assert is not null)
+                {
+                    testCaseRun.Result = TestResult.Assert;
+                }
+
+                var failureElement = failure ?? blocked ?? skipped ?? error;
+                if (failureElement is not null)
+                {
+                    testCaseRun.FailureType = failureElement.Attribute("type")?.Value;
+                    testCaseRun.Message = failureElement.Attribute("message")?.Value;
+
+                    testCaseRun.CallStack = failureElement.Value;
+                }
+            }
+
+            foreach (var innerTestSuiteNode in testSuiteNode.Elements("testsuite"))
+            {
+                // Nested testsuite may have a name that matches the namespace, like:
+                // Tests.Registration
+                //  Tests.Registration.Email
+
+                // If that's the case, we'll crop the name so that the folder name is "Email"
+                var name = innerTestSuiteNode.Attribute("name")?.Value;
+                if (name != null)
+                {
+                    var croppedName = name;
+                    if(testSuiteElementName is not null && name is not null)
+                    {
+                        if(name.Length-1 > testSuiteElementName.Length && name.StartsWith(testSuiteElementName))
+                        {
+                            croppedName = name.Substring(testSuiteElementName.Length+1);
+                        }
+                    }
+                    folders.Push(croppedName);
+                }
+
+                ReadTestsFromSuite(testRun, innerTestSuiteNode, testSuite, name??"", folders, options);
+
+                if (name != null)
+                {
+                    folders.Pop();
+                }
+            }
         }
 
         private string BuildXml(TestRunDto testRun)
@@ -255,30 +342,80 @@ namespace TestBucket.Formats.JUnit
             return doc.ToString(SaveOptions.OmitDuplicateNamespaces);
         }
 
-        private static void ReadProperties(TestTraitCollection attributes, XElement node)
+        private static void ReadProperties(ITestAttachmentSource? attachmentSource, TestTraitCollection attributes, XElement node)
         {
             foreach (var propertiesNode in node.Elements("properties"))
             {
+                if (attachmentSource is not null)
+                {
+                    ReadAttachmentsFromPropertiesNode(attachmentSource, propertiesNode);
+                }
+
                 foreach (var propertyNode in propertiesNode.Elements("property"))
                 {
-                    var name = propertyNode.Attribute("name")?.Value;
-                    var value = propertyNode.Attribute("value")?.Value;
-                    if (name is not null && value is not null)
+                    ReadTraitsAndAttachmentsFromPropertyNode(attachmentSource, attributes, propertyNode);
+                }
+            }
+        }
+
+        private static void ReadTraitsAndAttachmentsFromPropertyNode(ITestAttachmentSource? attachmentSource, TestTraitCollection attributes, XElement propertyNode)
+        {
+            var traitPrefix = "trait:";
+            var attachmentPrefix = "attachment:";
+
+            var name = propertyNode.Attribute("name")?.Value;
+            var value = propertyNode.Attribute("value")?.Value ?? propertyNode.Value;
+
+            // Trait
+            if (name is not null && value is not null)
+            {
+                if (name.StartsWith(attachmentPrefix))
+                {
+                    name = name[attachmentPrefix.Length..];
+                }
+                if (name.StartsWith(traitPrefix))
+                {
+                    name = name[traitPrefix.Length..];
+                }
+                var attributeType = GetTestTraitType(name);
+                if (attributeType == TraitType.Custom)
+                {
+                    attributes.Traits.Add(new TestTrait(attributeType, name, value));
+                }
+                else
+                {
+                    attributes.Traits.Add(new TestTrait(attributeType, value));
+                }
+            }
+        }
+
+        private static void ReadAttachmentsFromPropertiesNode(ITestAttachmentSource? attachmentSource, XElement propertiesNode)
+        {
+            foreach (var propertyNode in propertiesNode.Elements("attachment"))
+            {
+                var name = propertyNode.Attribute("name")?.Value;
+                var mimeType = propertyNode.Attribute("media-type")?.Value ??
+                    propertyNode.Attribute("content-type")?.Value ??
+                    propertyNode.Attribute("mime-type")?.Value ??
+                    "application/octet-stream";
+                var value = propertyNode.Value ?? propertyNode.Attribute("value")?.Value;
+                if (name is not null)
+                {
+                    if (attachmentSource is not null)
                     {
-                        var attributeType = GetTestTraitType(name);
-                        if (attributeType == TraitType.Custom)
+                        byte[] data = [];
+                        if (value is not null)
                         {
-                            attributes.Traits.Add(new TestTrait(attributeType, name, value));
+                            data = Convert.FromBase64String(value);
                         }
-                        else
-                        {
-                            attributes.Traits.Add(new TestTrait(attributeType, value));
-                        }
+
+                        var attachment = new AttachmentDto() { Name = name, ContentType = mimeType, Data = data };
+                        attachmentSource.Attachments.Add(attachment);
                     }
                 }
             }
         }
-        
+
         private static void WriteProperties(TestTraitCollection attributeCollection, XElement testSuitesElement)
         {
             var properties = new XElement("properties");

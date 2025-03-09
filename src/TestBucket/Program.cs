@@ -24,6 +24,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using TestBucket.Domain.ApiKeys;
+using OllamaSharp.Models;
+using OllamaSharp;
+using System;
 
 namespace TestBucket;
 
@@ -31,7 +34,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        
+
 
         var builder = WebApplication.CreateBuilder(args);
         builder.AddServiceDefaults();
@@ -49,6 +52,8 @@ public class Program
 
         builder.Services.AddAuthentication("ApiKey").AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>("ApiKey", null);
 
+        AddOllama(builder);
+
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("ApiKeyOrBearer", policy =>
@@ -58,17 +63,17 @@ public class Program
             });
         });
         builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-            })
+        {
+            options.DefaultScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+        })
             .AddIdentityCookies();
         //NpgsqlConnection.GlobalTypeMapper.EnableDynamicJson();
         string? connectionString = null;
         builder.AddNpgsqlDbContext<ApplicationDbContext>("testbucketdb", configureSettings =>
         {
             connectionString = configureSettings.ConnectionString;
-        }, 
+        },
         dbContextBuilder =>
         {
             dbContextBuilder.UseNpgsql(builder =>
@@ -107,7 +112,8 @@ public class Program
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         builder.Services.AddHostedService<MigrationService>();
 
-        builder.Services.AddIdentityCore<ApplicationUser>(options => {
+        builder.Services.AddIdentityCore<ApplicationUser>(options =>
+        {
             options.SignIn.RequireConfirmedAccount = true;
         })
             .AddRoles<IdentityRole>()
@@ -150,6 +156,9 @@ public class Program
         builder.Services.AddScoped<TeamService>();
         builder.Services.AddScoped<ProjectService>();
         builder.Services.AddScoped<TestSuiteService>();
+        builder.Services.AddScoped<TestRunCreationService>();
+        builder.Services.AddScoped<AppNavigationManager>();
+
         builder.Services.AddScoped<TestService>();
         builder.Services.AddScoped<UserPreferencesService>();
         builder.Services.AddScoped<TestBrowser>();
@@ -202,5 +211,17 @@ public class Program
         app.MapAdditionalIdentityEndpoints();
 
         app.Run();
+    }
+
+    private static void AddOllama(WebApplicationBuilder builder)
+    {
+        var ollamaBaseUrl = builder.Configuration["OLLAMA_BASE_URL"];
+        if (ollamaBaseUrl is not null)
+        {
+            // deepseek-r1:7b
+            //var ollama = new OllamaApiClient(ollamaBaseUrl, "deepseek-r1:7b");
+            var ollama = new OllamaApiClient(ollamaBaseUrl, "deepseek-r1:1.5b");
+            builder.Services.AddSingleton<Microsoft.Extensions.AI.IChatClient>(ollama);
+        }
     }
 }

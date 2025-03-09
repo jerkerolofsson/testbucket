@@ -91,6 +91,7 @@ SortMode="SortMode.None">
 
     private async Task ReloadFieldsAsync()
     {
-        _fields = await fieldService.SearchDefinitionsAsync(new SearchQuery() { ProjectId = ProjectId });
+        FieldTarget? target = null;
+        _fields = await fieldService.SearchDefinitionsAsync(target, new SearchQuery() { ProjectId = ProjectId });
     }
 }

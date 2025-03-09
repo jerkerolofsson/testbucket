@@ -84,6 +84,8 @@ namespace TestBucket.Formats.XUnit
                             }
                             testCaseRun.Name = resultNode.Attribute("name")?.Value;
                             testCaseRun.ClassName = resultNode.Attribute("type")?.Value;
+                            testCaseRun.Assembly = assemblyName;
+                            testCaseRun.Method ??= testCaseRun.Name;
                             testCaseRun.Method = resultNode.Attribute("method")?.Value;
                             testCaseRun.Result = TestResult.Passed;
                             testCaseRun.ExternalId ??= ImportDefaults.GetExternalId(testRun, testSuite, testCaseRun);

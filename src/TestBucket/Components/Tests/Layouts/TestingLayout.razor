@@ -4,8 +4,6 @@
 @using TestBucket.Components.Layout
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Domain.Teams.Models
-@implements ITestCaseObserver
-@implements IDisposable
 @inject TestCaseEditorService testCaseEditor
 @inject NavigationManager navigationManager
 
@@ -27,10 +25,6 @@
 
     private Team? _team;
     private TestProject? _project;
-    private TestCase? _selectedTestCase;
-    private TestRun? _selectedTestRun;
-    private TestSuiteFolder? _selectedFolder;
-    private long? _selectedTestSuiteId;
 
     protected override void OnParametersSet()
     {
@@ -38,36 +32,7 @@
         {
             _project = Project;
             _team = Team;
-
-            // Clear selection
-            _selectedFolder = null;
-            _selectedTestCase = null;
-            _selectedTestSuiteId = null;
-            _selectedTestRun = null;
         }
-    }
-
-
-    public async Task OnTestDeletedAsync(TestCase testCase)
-    {
-        await InvokeAsync(() =>
-        {
-            if (_selectedTestCase?.Id == testCase.Id)
-            {
-                _selectedTestCase = null;
-                this.StateHasChanged();
-            }
-        });
-    }
-
-    public Task OnTestCreatedAsync(TestCase testCase)
-    {
-        return Task.CompletedTask;
-    }
-
-    public Task OnTestSavedAsync(TestCase testCase)
-    {
-        return Task.CompletedTask;
     }
 
     private void OnTestCaseClicked(TestCase test)
@@ -92,15 +57,4 @@
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(navigationManager.Uri);
         navigationManager.NavigateTo($"/{tenantId}/Testing/TestRuns/{run.Id}");
     }
-
-    #region Lifecycle
-    protected override void OnInitialized()
-    {
-        testCaseEditor.AddObserver(this);
-    }
-    public void Dispose()
-    {
-        testCaseEditor.RemoveObserver(this);
-    }
-    #endregion
 }

@@ -18,11 +18,11 @@ else
 
                     <Field>
                         <FieldHeader>Number of tests</FieldHeader>
-                        <MudNumericField @bind-Value="@_numTests"/>
+                        <MudNumericField Variant="Variant.Outlined" @bind-Value="@_numTests"/>
                     </Field>
                     <Field>
                         <FieldHeader>Heuristic</FieldHeader>
-                        <MudSelect @bind-Value="@_heuristic">
+                        <MudSelect Variant="Variant.Outlined" @bind-Value="@_heuristic">
                             @foreach (var heuristic in _heuristics)
                             {
                                 <MudSelectItem Value="@heuristic">@heuristic.Name</MudSelectItem>
@@ -74,6 +74,11 @@ else
     protected override void OnParametersSet()
     {
         _heuristics = testCaseGenerator.Heuristics;
+
+        if(Folder is not null && Folder.IsFeature && Folder.FeatureDescription is not null)
+        {
+            _prompt = Folder.FeatureDescription;
+        }
     }
 
     private void Close()

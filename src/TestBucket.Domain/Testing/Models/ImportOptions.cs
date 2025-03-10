@@ -19,4 +19,9 @@ public class ImportOptions
     /// The file to import
     /// </summary>
     public FileResource? File { get; set; }
+
+    /// <summary>
+    /// Handling configuration
+    /// </summary>
+    public ImportHandlingOptions HandlingOptions { get; set; } = new();
 }

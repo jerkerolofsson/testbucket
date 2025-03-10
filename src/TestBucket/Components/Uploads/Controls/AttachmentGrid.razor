@@ -1,0 +1,66 @@
+﻿@using Humanizer
+@using TestBucket.Components.Uploads.Services
+@inject AttachmentsService attachmentsService
+
+<MudStack Class="@Class" Style="@Style">
+
+    @if (_attachments.Count > 0)
+    {
+        <MudPaper Style="height: 100%; width: 100%" Outlined="true">
+            <MudToolBar Gutters="false" Style="height: auto; padding: 4px" Class="d-flex justify-end gap-4">
+                <MudIconButton Size="Size.Small" Color="@GridColor" Icon="@Icons.Material.Filled.ViewModule" OnClick="() => _isGrid = true"/>
+                <MudIconButton Size="Size.Small" Color="@ListColor" Icon="@Icons.Material.Filled.ViewList" OnClick="() => _isGrid = false" />
+            </MudToolBar>
+            @if (_isGrid)
+            {
+                <MudStack Class="pa-2" Spacing="3" Row Wrap="Wrap.Wrap" Style="overflow: auto; max-height: 200px; width: 100%">
+                    @foreach (var attachment in _attachments)
+                    {
+                        <ResourceThumbnail Resource="@attachment" />
+                    }
+                </MudStack>
+            }
+            else
+            {
+                <MudDataGrid Items="_attachments"
+                Style="overflow: auto; max-height: 200px; width: 100%"
+                Dense="true"
+                Hover="true"
+                T="FileResource"
+                SortMode="SortMode.Single">
+                    <Columns>
+                        <PropertyColumn Property="x => x.Name" Title="Name" />
+                        <PropertyColumn Property="x => x.ContentType" Title="Type" />
+                        <TemplateColumn Title="Created">
+                            <CellTemplate>
+                                @if (context.Item.Created is not null)
+                                { 
+                                    @context.Item.Created.Value.Humanize()
+                                }
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                        <TemplateColumn Title="Length">
+                            <CellTemplate>
+                                @context.Item.Length.Bytes().Humanize()
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                </MudDataGrid>
+            }
+        </MudPaper>
+    }
+        
+    <UploadFile
+        Style="width: 100%; height: 100%"
+        FileUploaded="OnFileUploadedAsync"
+        Label="Upload attachment"
+        TestProjectId="@TestProjectId"
+        TestSuiteFolderId="@TestSuiteFolderId"
+        TestSuiteId="@TestSuiteId"
+        TestCaseRunId="@TestCaseRunId"
+        TestRunId="@TestRunId"
+        TestCaseId="@TestCaseId">
+    </UploadFile>
+
+</MudStack>

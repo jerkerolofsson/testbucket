@@ -2,23 +2,53 @@
 @using TestBucket.Domain.Files.Models
 @inject UploadService uploadService
 
-<MudFileUpload T="IBrowserFile" FilesChanged="UploadFilesAsync" Accept=".xml, .trx" MaximumFileCount="1">
+<MudFileUpload T="IBrowserFile" FilesChanged="UploadFilesAsync" Accept=".xml, .trx, .json, .ctrf, .junitxml, .xunitxml, .nunitxml" MaximumFileCount="1">
     <ActivatorContent>
-        <MudButton Variant="Variant.Filled"
-            Color="Color.Primary"
-            StartIcon="@Icons.Material.Filled.CloudUpload">
-            Select File
-        </MudButton>
+
+        <MudPaper Height="200px"
+                  Outlined="true"
+                  Class="relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full">
+            <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="mud-width-full mud-height-full">
+                @if (!_loading)
+                {
+                    <MudText Typo="Typo.h6">
+                        Drag and drop files here or click
+                    </MudText>
+                }
+            </MudStack>
+        </MudPaper>
+
+        @if (_loading)
+        {
+            <MudProgressLinear Color="Color.Secondary" Indeterminate />
+        }
+        else
+        {
+            <MudButton Variant="Variant.Filled"
+                Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.CloudUpload">
+                Select File
+            </MudButton>
+        }
     </ActivatorContent>
 </MudFileUpload>
 
 @code {
+    [Parameter] public EventCallback FileUploadStarted { get; set; }
     [Parameter] public EventCallback<FileResource> FileUploaded { get; set; }
     [Parameter] public long MaxFileSize { get; set; } = 512000;
 
+    private bool _loading = false;
+
     private async Task UploadFilesAsync(IBrowserFile file)
     {
+        _loading = true;
+        await FileUploadStarted.InvokeAsync();
+        this.StateHasChanged();
+
         var fileResource = await uploadService.UploadAsync(file, MaxFileSize);
         await FileUploaded.InvokeAsync(fileResource);
+
+        _loading = false;
     }
 }

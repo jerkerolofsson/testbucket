@@ -24,7 +24,7 @@ public class TagAttribute : CustomTraitAttribute
 /// Defines an attribute that will add create a Description trait
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public class TestDescriptionAttribute : CustomTraitAttribute
+public class TestDescriptionAttribute : TraitAttachmentPropertyAttribute
 {
     public TestDescriptionAttribute(string description) : 
         base(TestTraitNames.TestDescription, description)
@@ -36,7 +36,7 @@ public class TestDescriptionAttribute : CustomTraitAttribute
 /// Defines an attribute that will define a Test ID trait
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public class TestIdAttribute : CustomTraitAttribute
+public class TestIdAttribute : TraitAttachmentPropertyAttribute
 {
     public TestIdAttribute(string componentUnderTestName) :
         base(TestTraitNames.TestId, componentUnderTestName)

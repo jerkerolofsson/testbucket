@@ -1,0 +1,28 @@
+﻿@if(Resource is not null)
+{
+    <MudStack AlignItems="AlignItems.Center" Class="file-resource-thumbnail pa-1" @onclick="FileClicked">
+        @if(Resource.ContentType is not null && Resource.ContentType.StartsWith("image/"))
+        {
+            string src = $"/api/resources/{Resource.Id}";
+            <MudImage Src="@src" Style="max-width: 64px; max-height: 64px"/>
+        }
+        else
+        {
+            // Icon by type
+            <MudIcon Icon="@Icons.Custom.FileFormats.FileDocument" Size="Size.Large" Style="width: 64px; height: 64px" />
+        }
+        <MudSpacer/>
+        <MudTooltip Text="@Resource.ContentType">
+            <MudText Class="filename">@Resource.Name</MudText>
+        </MudTooltip>
+    </MudStack>
+}
+
+@code {
+    [Parameter] public FileResource? Resource { get; set; }
+
+    private void FileClicked(MouseEventArgs e)
+    {
+        
+    }
+}

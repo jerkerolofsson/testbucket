@@ -1,8 +1,12 @@
-﻿using TestBucket.Domain.Fields;
+﻿
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
+using TestBucket.Domain.Files;
+using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Formats;
+using TestBucket.Formats.Ctrf;
 using TestBucket.Formats.Dtos;
 using TestBucket.Formats.JUnit;
 using TestBucket.Formats.XUnit;
@@ -14,14 +18,16 @@ internal class TextImporter : ITextTestResultsImporter
     private readonly IStateService _stateService;
     private readonly ITestCaseRepository _testCaseRepository;
     private readonly IFieldRepository _fieldRepository;
+    private readonly IFileRepository _fileRepository;
 
     public TextImporter(
         IStateService stateService,
-        ITestCaseRepository testCaseRepository, IFieldRepository fieldRepository)
+        ITestCaseRepository testCaseRepository, IFieldRepository fieldRepository, IFileRepository fileRepository)
     {
         _stateService = stateService;
         _testCaseRepository = testCaseRepository;
         _fieldRepository = fieldRepository;
+        _fileRepository = fileRepository;
     }
 
     /// <summary>
@@ -34,21 +40,21 @@ internal class TextImporter : ITextTestResultsImporter
     /// <param name="text"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task ImportTextAsync(string tenantId, long? teamId, long? projectId, TestResultFormat format, string text, TestResultImportOptions options)
+    public async Task ImportTextAsync(string tenantId, long? teamId, long? projectId, TestResultFormat format, string text, ImportHandlingOptions options)
     {
         ITestResultSerializer serializer = format switch
         {
             TestResultFormat.JUnitXml => new JUnitSerializer(),
             TestResultFormat.xUnitXml => new XUnitSerializer(),
+            TestResultFormat.CommonTestReportFormat => new CtrfXunitSerializer(),
             _ => throw new ArgumentException("Unknown format", nameof(format))
-        };
+        };    
 
         var run = serializer.Deserialize(text);
-
         await ImportRunAsync(tenantId, teamId, projectId, run, options);
     }
 
-    private async Task ImportRunAsync(string tenantId, long? teamId, long? projectId, TestRunDto run, TestResultImportOptions options)
+    private async Task ImportRunAsync(string tenantId, long? teamId, long? projectId, TestRunDto run, ImportHandlingOptions options)
     {
         if (run.Suites is not null)
         {
@@ -85,7 +91,6 @@ internal class TextImporter : ITextTestResultsImporter
                 }
                 TestSuite? suite = await _testCaseRepository.GetTestSuiteByNameAsync(tenantId, teamId, projectId, suiteName);
                 suite ??= await _testCaseRepository.AddTestSuiteAsync(tenantId, teamId, projectId, suiteName);
-
 
                 // Get field definitions to imported entities
                 var testRunFieldDefinitions = await _fieldRepository.SearchAsync(tenantId, FieldTarget.TestRun, new SearchQuery { ProjectId = projectId });
@@ -174,10 +179,33 @@ internal class TextImporter : ITextTestResultsImporter
         };
 
         await _testCaseRepository.AddTestCaseRunAsync(testCaseRun);
+
+        await AddAttachmentsAsync(testCaseRun, test.Attachments);
+
         return testCaseRun;
     }
 
-    private async Task<TestCase> GetOrCreateTestCaseAsync(string tenantId, long? projectId, TestSuite suite, TestCaseRunDto test, TestResultImportOptions options)
+    private async Task AddAttachmentsAsync(TestCaseRun testCaseRun, List<AttachmentDto>? attachments)
+    {
+        if(attachments is not null)
+        {
+            foreach(var attachment in attachments)
+            {
+                var dbo = new FileResource()
+                {
+                    ContentType = attachment.ContentType ?? "application/octet-stream",
+                    Data = attachment.Data ?? [],
+                    TenantId = testCaseRun.TenantId,
+                    TestCaseRunId = testCaseRun.Id,
+                    Name = attachment.Name ?? "Attachment"
+                };
+
+                await _fileRepository.AddResourceAsync(dbo);
+            }
+        }
+    }
+
+    private async Task<TestCase> GetOrCreateTestCaseAsync(string tenantId, long? projectId, TestSuite suite, TestCaseRunDto test, ImportHandlingOptions options)
     {
         // We try to map the test case by the external ID first.
         // This allows tests to define [TestId] traits for simplicity

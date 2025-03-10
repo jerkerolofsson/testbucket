@@ -1,6 +1,8 @@
-﻿@using TestBucket.Formats
+﻿@using TestBucket.Components.Uploads.Services
+@using TestBucket.Formats
 @attribute [Authorize(Roles = "ADMIN")]
 @inject TestCaseEditorService testCaseEditorService
+@inject AttachmentsService attachmentsService
 
 <EditForm Model="@_options" OnValidSubmit="Submit">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
@@ -11,7 +13,27 @@
                 <MudSelect T="TestResultFormat" @bind-Value="_options.Format">
                     <MudSelectItem Value="@TestResultFormat.JUnitXml">JUnit XML</MudSelectItem>
                     <MudSelectItem Value="@TestResultFormat.xUnitXml">xUnit XML</MudSelectItem>
+                    <MudSelectItem Value="@TestResultFormat.MicrosoftTrx">Microsoft TRX</MudSelectItem>
+                    <MudSelectItem Value="@TestResultFormat.CommonTestReportFormat">CTRF</MudSelectItem>
                 </MudSelect>
+            </Field>
+
+            <Field>
+                <FieldHeader>Remove Class Name From Test Name</FieldHeader>
+                <MudSwitchM3 @bind-Value="@_options.HandlingOptions.RemoveClassNameFromTestName" Color="Color.Tertiary"/>
+                <FieldDescription>If the test name starts with the class name, it is removed from the name</FieldDescription>
+            </Field>
+
+            <Field>
+                <FieldHeader>Create Folders From Package/Namespace</FieldHeader>
+                <MudSwitchM3 @bind-Value="@_options.HandlingOptions.CreateFoldersFromClassNamespace" Color="Color.Tertiary" />
+                <FieldDescription>Creates test suite folders from the package/namespace if present instead of using test hierarchy defined in the source file</FieldDescription>
+            </Field>
+
+            <Field>
+                <FieldHeader>Create Test Suit eFrom Assembly Name</FieldHeader>
+                <MudSwitchM3 @bind-Value="@_options.HandlingOptions.CreateTestSuiteFromAssemblyName" Color="Color.Tertiary" />
+                <FieldDescription>If an assembly name is present, use this to as the name for the test suite even if test suite names are defined in the source file</FieldDescription>
             </Field>
 
             <Field>
@@ -21,7 +43,7 @@
         </DialogContent>
 
         <DialogActions>
-            @if(_options.File is not null)
+            @if (_options.File is not null)
             {
                 <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
             }
@@ -37,16 +59,37 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
-    private void OnFileUploaded(FileResource file)
+    private Task OnFileUploaded(FileResource file)
     {
         _options.File = file;
 
-        // Todo: Try to guess the format
-        // junit: <testsuites
-        // nunit: <test-results 
-        // trx: <TestRun 
-        // xunit: <assemblies 
-        // 
+        DetectFormat(file);
+        return Task.CompletedTask;
+    }
+
+    private void DetectFormat(FileResource file)
+    {
+        var text = Encoding.UTF8.GetString(file.Data, 0, 1000);
+        if (text.Contains("<testsuites"))
+        {
+            _options.Format = TestResultFormat.JUnitXml;
+        }
+        else if (text.Contains("<test-results"))
+        {
+            _options.Format = TestResultFormat.NUnitXml;
+        }
+        else if (text.Contains("<TestRun"))
+        {
+            _options.Format = TestResultFormat.MicrosoftTrx;
+        }
+        else if (text.Contains("<assemblies "))
+        {
+            _options.Format = TestResultFormat.xUnitXml;
+        }
+        else if (text.Contains("{\"results\""))
+        {
+            _options.Format = TestResultFormat.CommonTestReportFormat;
+        }        
     }
 
     private void Submit()

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TestBucket.Formats;
-public class TestResultImportOptions
+public class ImportHandlingOptions
 {
     /// <summary>
     /// Creates folders from the class package/namespace:
@@ -27,5 +27,8 @@ public class TestResultImportOptions
     /// </summary>
     public bool CreateTestSuiteFromAssemblyName { get; set; } = true;
 
+    /// <summary>
+    /// Special options for junit
+    /// </summary>
     public JUnit.JUnitSerializerOptions Junit { get; set; } = new();
 }

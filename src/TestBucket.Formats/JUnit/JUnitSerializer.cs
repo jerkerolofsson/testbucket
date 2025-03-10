@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 
 using TestBucket.Formats.Abstractions;
+using TestBucket.Formats.Shared;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Formats.JUnit
@@ -365,10 +366,30 @@ namespace TestBucket.Formats.JUnit
 
             var name = propertyNode.Attribute("name")?.Value;
             var value = propertyNode.Attribute("value")?.Value ?? propertyNode.Value;
-
-            // Trait
-            if (name is not null && value is not null)
+            if(value is null)
             {
+                value = propertyNode.Descendants().Where(x => x.NodeType == XmlNodeType.Text).Select(x => x.Value).FirstOrDefault();
+            }
+
+            // <property name="attachment:file.png">data:image/png;base64,iVB..
+            if (name is not null && name.StartsWith(attachmentPrefix) && value is not null && value.StartsWith("data:"))
+            {
+                if (name.StartsWith(attachmentPrefix))
+                {
+                    name = name[attachmentPrefix.Length..];
+
+                    // get value from inner text
+                    if (attachmentSource is not null)
+                    {
+                        var attachment = DataUriParser.ParseDataUri(value);
+                        attachment.Name = name;
+                        attachmentSource.Attachments.Add(attachment);
+                    }
+                }
+            }
+            else if (name is not null && value is not null)
+            {
+                // Trait, even with attachment prefix
                 if (name.StartsWith(attachmentPrefix))
                 {
                     name = name[attachmentPrefix.Length..];

@@ -77,7 +77,7 @@ internal class TestBrowser : TenantBaseService
             if (resource is not null)
             {
                 string xml = Encoding.UTF8.GetString(resource.Data);
-                await _textImporter.ImportTextAsync(tenantId, team?.Id, project?.Id, importOptions.Format, xml, new TestResultImportOptions());
+                await _textImporter.ImportTextAsync(tenantId, team?.Id, project?.Id, importOptions.Format, xml, importOptions.HandlingOptions);
             }
         }
     }
@@ -196,11 +196,13 @@ internal class TestBrowser : TenantBaseService
     }
     public TreeItemData<BrowserItem> CreateTreeItemDataFromFolder(TestSuiteFolder x)
     {
+        var defaultFolder = x.IsFeature ? Icons.Material.Filled.Stars : Icons.Material.Filled.Folder;
+
         return new TreeItemData<BrowserItem>
         {
             Value = new BrowserItem { Folder = x, Color = x.Color },
             Text = x.Name,
-            Icon = x.Icon ?? Icons.Material.Filled.Folder,
+            Icon = x.Icon ?? defaultFolder,
             Expandable = true,
             Children = null,
         };
@@ -265,32 +267,32 @@ internal class TestBrowser : TenantBaseService
                 Text = "Test Suites",
                 Children = suiteItems,
                 Expanded = true,
-                Icon = Icons.Material.Filled.FolderSpecial,
+                Icon = Icons.Material.Filled.FolderOpen,
             },
             new TreeItemData<BrowserItem>
             {
                 Text = "Test Runs",
                 Children = recentRuns,
                 Expanded = false,
-                Icon = Icons.Material.Filled.FolderSpecial,
+                Icon = Icons.Material.Filled.FolderOpen,
             },
             new TreeItemData<BrowserItem>
             {
                 Text = "Reports",
                 Expanded = false,
-                Icon = Icons.Material.Filled.FolderSpecial,
+                Icon = Icons.Material.Filled.FolderOpen,
             },
             new TreeItemData<BrowserItem>
             {
                 Text = "Environments",
                 Expanded = false,
-                Icon = Icons.Material.Filled.FolderSpecial,
+                Icon = Icons.Material.Filled.FolderOpen,
             },
             new TreeItemData<BrowserItem>
             {
                 Text = "Test Parameters",
                 Expanded = false,
-                Icon = Icons.Material.Filled.FolderSpecial,
+                Icon = Icons.Material.Filled.FolderOpen,
             }
         };
     }

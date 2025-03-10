@@ -1,0 +1,560 @@
+{
+  "results": {
+    "environment": {
+      "osPlatform": "Windows",
+      "osRelease": "Microsoft Windows 10.0.19045"
+    },
+    "extra": {
+      "computer": "DESKTOP-E71H2EF",
+      "suites": [
+        {
+          "collections": [
+            {
+              "id": "ef395112-e11c-4d6a-9eae-191c46a847ba",
+              "name": "Test collection for TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests (id: da8cd3d88ee6e9d4988dcd095d84dc5287c1fa9c88564f2d34192c011f8ae07e)"
+            },
+            {
+              "id": "b7f891aa-1076-4cf2-b35f-e74cf848948b",
+              "name": "Test collection for TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests (id: 82bc811ae45b23e244df5e66ab6c1d7fcfc39dcf6eae04c5118bc398cb0929b5)"
+            },
+            {
+              "id": "89972e83-80d4-4131-a313-cfbf26b5b5fd",
+              "name": "Test collection for TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests (id: 4738e6402f0b051247f0d3a422ab4c4292dc3f3b9c7246420723d8cad186a128)"
+            }
+          ],
+          "duration": 124,
+          "environment": "64-bit (x64) .NET 9.0.2 [collection-per-class, parallel (16 threads)]",
+          "errors": [],
+          "filePath": "D:\\local\\code\\testbucket\\tests\\TestBucket.Formats.UnitTests\\bin\\Debug\\net9.0\\TestBucket.Formats.UnitTests.dll",
+          "id": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3",
+          "start": 1741341497,
+          "stop": 1741341497,
+          "targetFramework": ".NETCoreApp,Version=v9.0",
+          "testFramework": "xUnit.net v3 2.0.0+229879b765"
+        }
+      ],
+      "user": "Jerker"
+    },
+    "summary": {
+      "failed": 0,
+      "other": 0,
+      "passed": 15,
+      "pending": 0,
+      "skipped": 0,
+      "start": 1741341497,
+      "stop": 1741341497,
+      "suites": 1,
+      "tests": 15
+    },
+    "tests": [
+      {
+        "duration": 47,
+        "extra": {
+          "collection": "ef395112-e11c-4d6a-9eae-191c46a847ba",
+          "id": "49e4572a-2c0b-426e-bb8c-739ca50e3d58",
+          "method": "Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "XUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that a xunit xml run name is from the first assembly"
+            ],
+            "TestId": [
+              "XUNIT-001"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 3,
+        "extra": {
+          "collection": "ef395112-e11c-4d6a-9eae-191c46a847ba",
+          "id": "3c4b3dd6-53aa-4aee-b283-970dc6259797",
+          "method": "Deserialize_WithTestIdTrait_ExternalIdSetToTestIdValue",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "XUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that external ID is set to the TestId if specified"
+            ],
+            "TestId": [
+              "XUNIT-003"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTestIdTrait_ExternalIdSetToTestIdValue",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 0,
+        "extra": {
+          "collection": "ef395112-e11c-4d6a-9eae-191c46a847ba",
+          "id": "ee33c092-2553-451a-84f0-c4207b71db8e",
+          "method": "Deserialize_WithTraitsOnTest_TwoTestsDeserializedWithCorrectTraits",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "XUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that a xunit xml containing traits on the test element are extracted as traits"
+            ],
+            "TestId": [
+              "XUNIT-002"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests.Deserialize_WithTraitsOnTest_TwoTestsDeserializedWithCorrectTraits",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 48,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithTraitPrefixInProperty_TraitPrefixRemoved"
+          },
+          "collection": "b7f891aa-1076-4cf2-b35f-e74cf848948b",
+          "id": "0046b63a-9cb7-4fb1-9a8b-526caa5cff74",
+          "method": "Deserialize_WithTraitPrefixInProperty_TraitPrefixRemoved",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that a junit xml created by xunit that properties with trait: prefix are removed"
+            ],
+            "TestId": [
+              "JUNIT-IOT-XUNIT-V3-001"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests.Deserialize_WithTraitPrefixInProperty_TraitPrefixRemoved",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 1,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithXunitTestCollectionName_NameTrimmedCorrectly"
+          },
+          "collection": "b7f891aa-1076-4cf2-b35f-e74cf848948b",
+          "id": "9ac31b00-5da7-4884-a13c-05a6676483e3",
+          "method": "Deserialize_WithXunitTestCollectionName_NameTrimmedCorrectly",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that name 'Test collection for' and ID is removed from the run name"
+            ],
+            "TestId": [
+              "JUNIT-IOT-XUNIT-V3-004"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests.Deserialize_WithXunitTestCollectionName_NameTrimmedCorrectly",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 0,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithAttachmentPrefixInPropertyWithMimeType_AddedAsAttachmentWithCorrectDataAndContentType"
+          },
+          "collection": "b7f891aa-1076-4cf2-b35f-e74cf848948b",
+          "id": "7618a089-1238-4e98-b789-aa91a6497883",
+          "method": "Deserialize_WithAttachmentPrefixInPropertyWithMimeType_AddedAsAttachmentWithCorrectDataAndContentType",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that a JUnit XML with attachment and mime-type have correct content type and decoded from base64"
+            ],
+            "TestId": [
+              "JUNIT-IOT-XUNIT-V3-004"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests.Deserialize_WithAttachmentPrefixInPropertyWithMimeType_AddedAsAttachmentWithCorrectDataAndContentType",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 1,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithAttachmentPrefixInProperty_AddedAsAttachmentWithCorrectName"
+          },
+          "collection": "b7f891aa-1076-4cf2-b35f-e74cf848948b",
+          "id": "d17e9f42-197f-4508-b7b3-ffef3551a7c2",
+          "method": "Deserialize_WithAttachmentPrefixInProperty_AddedAsAttachmentWithCorrectName",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that traits with attachment: prefix are not added as traits"
+            ],
+            "TestId": [
+              "JUNIT-IOT-XUNIT-V3-002"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests.Deserialize_WithAttachmentPrefixInProperty_AddedAsAttachmentWithCorrectName",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 0,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithAttachmentPrefixInPropertyWithoutMimeType_AddedAsAttachmentWithTextPlain"
+          },
+          "collection": "b7f891aa-1076-4cf2-b35f-e74cf848948b",
+          "id": "3ba26c69-7a2e-4c9c-8f67-e21bc4521165",
+          "method": "Deserialize_WithAttachmentPrefixInPropertyWithoutMimeType_AddedAsAttachmentWithTextPlain",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that traits with attachment does not have the attachment: prefix"
+            ],
+            "TestId": [
+              "JUNIT-IOT-XUNIT-V3-003"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.XunitInteroperabilityTests.Deserialize_WithAttachmentPrefixInPropertyWithoutMimeType_AddedAsAttachmentWithTextPlain",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 48,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithTestIdTrait_TestIdTraitUsedAsExternalId"
+          },
+          "collection": "89972e83-80d4-4131-a313-cfbf26b5b5fd",
+          "id": "93bb404d-f693-4833-a352-0362796d47b1",
+          "method": "Deserialize_WithTestIdTrait_TestIdTraitUsedAsExternalId",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that if a TestId trait exists it will be used for ExternalId"
+            ],
+            "TestId": [
+              "JUNIT-007"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithTestIdTrait_TestIdTraitUsedAsExternalId",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 4,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames"
+          },
+          "collection": "89972e83-80d4-4131-a313-cfbf26b5b5fd",
+          "id": "8b810cb2-7590-4aa6-b0fe-64dd417fe4a5",
+          "method": "Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that a junit xml is contains the correct number of test suites"
+            ],
+            "TestId": [
+              "JUNIT-002"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 0,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite"
+          },
+          "collection": "89972e83-80d4-4131-a313-cfbf26b5b5fd",
+          "id": "8a7027f9-19e1-49fe-b53d-bbaf4787db2c",
+          "method": "Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestId": [
+              "JUNIT-001"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithoutTestSuitesName_RunNameFromFirstSuite",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 0,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithoutAssemblyName_AssemblyNameSuiteName"
+          },
+          "collection": "89972e83-80d4-4131-a313-cfbf26b5b5fd",
+          "id": "bc8d2780-e613-4120-abb8-cc7c0df2a14c",
+          "method": "Deserialize_WithoutAssemblyName_AssemblyNameSuiteName",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that the assembly name is read from the testsuite name if no assembly trait is defined"
+            ],
+            "TestId": [
+              "JUNIT-004"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithoutAssemblyName_AssemblyNameSuiteName",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 0,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithNestedTestSuites_AllTestsInParentContainer"
+          },
+          "collection": "89972e83-80d4-4131-a313-cfbf26b5b5fd",
+          "id": "7ba0de4c-44e0-444e-8a48-d8d7d626fd13",
+          "method": "Deserialize_WithNestedTestSuites_AllTestsInParentContainer",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that tests from nested testsuites are flattened"
+            ],
+            "TestId": [
+              "JUNIT-005"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithNestedTestSuites_AllTestsInParentContainer",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 0,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits"
+          },
+          "collection": "89972e83-80d4-4131-a313-cfbf26b5b5fd",
+          "id": "4ad2cf8d-6c01-4292-a0cc-b07535b4655b",
+          "method": "Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that a junit xml containing properties on the testcase element are extracted as traits"
+            ],
+            "TestId": [
+              "JUNIT-003"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      },
+      {
+        "duration": 0,
+        "extra": {
+          "attachments": {
+            "Assembly": "TestBucket.Formats.UnitTests",
+            "ClassName": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests",
+            "MachineName": "DESKTOP-E71H2EF",
+            "MethodName": "Deserialize_WithNestedTestSuites_FolderExtractedForNestedTests"
+          },
+          "collection": "89972e83-80d4-4131-a313-cfbf26b5b5fd",
+          "id": "6ec63f30-d92d-4dc2-aabb-f22b4d8a60ef",
+          "method": "Deserialize_WithNestedTestSuites_FolderExtractedForNestedTests",
+          "traits": {
+            "Component": [
+              "TestBucket.Formats"
+            ],
+            "Format": [
+              "JUnit"
+            ],
+            "TestCategory": [
+              "Unit"
+            ],
+            "TestDescription": [
+              "Verifies that tests from nested testsuites have a folder extracted from the nested testsuite name"
+            ],
+            "TestId": [
+              "JUNIT-006"
+            ]
+          },
+          "type": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests"
+        },
+        "name": "TestBucket.Formats.UnitTests.JUnit.JUnitSerializerTests.Deserialize_WithNestedTestSuites_FolderExtractedForNestedTests",
+        "status": "passed",
+        "suite": "ba1d9651-7515-44d3-9d7c-c6a0564cdea3"
+      }
+    ],
+    "tool": {
+      "name": "xUnit.net v3",
+      "version": "2.0.0+229879b765"
+    }
+  }
+}

@@ -25,15 +25,6 @@ public class TestTraitNames
     /// </summary>
     public const string TestState = nameof(TestState);
 
-    /// <summary>
-    /// Name of test environment
-    /// </summary>
-    public const string TestEnvironment = nameof(TestEnvironment);
-
-    /// <summary>
-    /// Machine name of test host 
-    /// </summary>
-    public const string MachineName = nameof(MachineName);
 
     /// <summary>
     /// Test ID
@@ -49,5 +40,30 @@ public class TestTraitNames
     /// Name of browser used for testing
     /// </summary>
     public const string Browser = nameof(Browser);
+
+    /// <summary>
+    /// Name of test environment
+    /// </summary>
+    public const string TestEnvironment = nameof(TestEnvironment);
+
+    /// <summary>
+    /// Machine name of test host 
+    /// </summary>
+    public const string MachineName = nameof(MachineName);
+
+    /// <summary>
+    /// Operating System
+    /// </summary>
+    public const string OperatingSystemPlatform = nameof(OperatingSystemPlatform);
+
+    /// <summary>
+    /// Operating System Release
+    /// </summary>
+    public const string OperatingSystemRelease = nameof(OperatingSystemRelease);
+
+    /// <summary>
+    /// Operating System Version
+    /// </summary>
+    public const string OperatingSystemVersion = nameof(OperatingSystemVersion);
 
 }

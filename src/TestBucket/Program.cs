@@ -157,6 +157,7 @@ public class Program
         builder.Services.AddScoped<ProjectService>();
         builder.Services.AddScoped<TestSuiteService>();
         builder.Services.AddScoped<TestRunCreationService>();
+        builder.Services.AddScoped<AttachmentsService>();
         builder.Services.AddScoped<AppNavigationManager>();
 
         builder.Services.AddScoped<TestService>();

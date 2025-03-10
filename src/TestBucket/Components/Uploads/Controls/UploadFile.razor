@@ -1,0 +1,93 @@
+﻿@using TestBucket.Components.Uploads.Services
+@using TestBucket.Domain.Files.Models
+@inject UploadService uploadService
+
+
+<MudStack Style="@Style" Class="@Class">
+    <MudFileUpload T="IBrowserFile"
+    @ref="@_fileUpload"
+    Accept="@Accept"
+    FilesChanged="UploadFilesAsync"
+    Hidden="@false"
+    InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+    InputStyle="opacity:0"
+    tabindex="-1"
+    @ondrop="@ClearDragClass"
+    @ondragenter="@SetDragClass"
+    @ondragleave="@ClearDragClass"
+    @ondragend="@ClearDragClass">
+        <ActivatorContent>
+
+            <MudPaper Outlined="true" Class="@_dragClass">
+                @if(ChildContent is null)
+                {
+                    <MudText Typo="Typo.h6">
+                        Drag and drop files here or click
+                    </MudText>
+                }
+                else
+                {
+                    @ChildContent;
+                }
+            </MudPaper>
+        </ActivatorContent>
+    </MudFileUpload>
+    @* <MudToolBar Gutters="@false" *@
+    @* Class="relative d-flex justify-end gap-4"> *@
+    @*     <MudButton Color="Color.Primary" *@
+    @*     OnClick="@OpenFilePickerAsync" *@
+    @*     Variant="Variant.Filled"> *@
+    @*         @Label *@
+    @*     </MudButton> *@
+    @* </MudToolBar> *@
+</MudStack>
+
+
+@code {
+    [Parameter] public EventCallback FileUploadStarted { get; set; }
+    [Parameter] public EventCallback<FileResource> FileUploaded { get; set; }
+    [Parameter] public long MaxFileSize { get; set; } = 512000;
+    [Parameter] public string? Accept { get; set; }
+    [Parameter] public string? Label { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string Style { get; set; } = "width: 100%";
+
+    [Parameter] public RenderFragment? ChildContent{ get; set; }
+
+    [Parameter] public long? TestCaseId { get; set; }
+    [Parameter] public long? TestRunId { get; set; }
+    [Parameter] public long? TestCaseRunId { get; set; }
+    [Parameter] public long? TestProjectId { get; set; }
+    [Parameter] public long? TestSuiteId { get; set; }
+    [Parameter] public long? TestSuiteFolderId { get; set; }
+
+    private MudFileUpload<IBrowserFile>? _fileUpload;
+
+    private bool _loading = false;
+    private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
+    private string _dragClass = DefaultDragClass;
+    private void SetDragClass()
+        => _dragClass = $"{DefaultDragClass} mud-border-primary";
+
+    private void ClearDragClass()
+        => _dragClass = DefaultDragClass;
+
+    private Task OpenFilePickerAsync()
+       => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
+
+
+    private async Task UploadFilesAsync(IBrowserFile file)
+    {
+        ClearDragClass();
+        _loading = true;
+        await FileUploadStarted.InvokeAsync();
+
+        this.StateHasChanged();
+
+        var fileResource = await uploadService.UploadAsync(file, TestCaseId, TestRunId, TestCaseRunId, TestSuiteId, TestSuiteFolderId, TestProjectId, MaxFileSize);
+        await FileUploaded.InvokeAsync(fileResource);
+
+        _loading = false;
+    }
+}

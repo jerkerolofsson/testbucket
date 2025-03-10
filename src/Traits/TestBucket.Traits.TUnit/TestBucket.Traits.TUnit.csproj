@@ -9,9 +9,9 @@
   <ItemGroup>
     <PackageReference Include="TUnit.Core" Version="0.16.23" />
   </ItemGroup>
-
+	
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Traits\TestBucket.Traits.Core\TestBucket.Traits.Core.csproj" />
+    <ProjectReference Include="..\TestBucket.Traits.Core\TestBucket.Traits.Core.csproj" />
   </ItemGroup>
 
 </Project>

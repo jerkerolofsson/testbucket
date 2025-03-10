@@ -91,15 +91,28 @@
                 </MudStack>
             </StartContent>
             <EndContent>
-                <MudStack Class="pa-2" Style="width: 100%">
+                <MudTabs Style="width: 100%">
+                    <MudTabPanel Text="Metadata">
+                        <MudStack Class="pa-2" Style="width: 100%">
 
-                    <Field>
-                        <FieldHeader>Created</FieldHeader>
-                        @Test.Created.Humanize()
-                    </Field>
+                            <Field>
+                                <FieldHeader>Created</FieldHeader>
+                                @Test.Created.Humanize()
+                            </Field>
 
-                    <FieldsEditor TestCase="@Test" />
-                </MudStack>
+                            <FieldsEditor TestCase="@Test" />
+                        </MudStack>
+                    </MudTabPanel>
+                    <MudTabPanel Text="Attachments">
+                        <MudStack Class="pa-2" Style="width: 100%">
+
+                            <Field>
+                                <FieldHeader>Attachments</FieldHeader>
+                                <AttachmentGrid TestCaseId="@Test.Id" Style="width: 100%"/>
+                            </Field>
+                        </MudStack>
+                    </MudTabPanel>
+                </MudTabs>
             </EndContent>
         </MudSplitter>
 

@@ -11,14 +11,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Ctrf\TestData\ctrf-attachment.json" />
     <None Remove="Ctrf\TestData\TestBucket.Formats.UnitTests.crtf.json" />
+    <None Remove="JUnit\TestData\created-by-xunit-v3-image-attachment.xml" />
     <None Remove="JUnit\TestData\junit-basic.xml" />
     <None Remove="JUnit\TestData\junit-properties.xml" />
     <None Remove="XUnit\TestData\xunit-testid.xml" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Ctrf\TestData\ctrf-summary.json" />
+    <EmbeddedResource Include="Ctrf\TestData\ctrf-screenshot.json" />
+    <EmbeddedResource Include="Ctrf\TestData\ctrf-attachment.json" />
     <EmbeddedResource Include="Ctrf\TestData\TestBucket.Formats.UnitTests.crtf.json" />
+    <EmbeddedResource Include="JUnit\TestData\created-by-xunit-v3-image-attachment.xml" />
     <EmbeddedResource Include="JUnit\TestData\junit-testid-trait.xml" />
     <EmbeddedResource Include="JUnit\TestData\created-by-xunit-v3-attachment-with-mime.xml" />
     <EmbeddedResource Include="JUnit\TestData\created-by-xunit-v3-attachment.xml" />

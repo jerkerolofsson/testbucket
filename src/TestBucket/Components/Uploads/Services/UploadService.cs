@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using TestBucket.Components.Tenants;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
+using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Components.Uploads.Services;
 
@@ -18,6 +19,13 @@ internal class UploadService : TenantBaseService
 
     public async Task<FileResource> UploadAsync(IBrowserFile file, long maxFileSize = 512_000, CancellationToken cancellationToken = default)
     {
+        return await UploadAsync(file, null, null, null, null, null, null, maxFileSize, cancellationToken);
+    }
+
+    public async Task<FileResource> UploadAsync(IBrowserFile file, 
+        long? testCaseId, long? testRunId, long? testCaseRunId, long? testSuiteId, long? testSuiteFolderId, long? testProjectId,
+        long maxFileSize = 512_000, CancellationToken cancellationToken = default)
+    {
         var tenantId = await GetTenantIdAsync();
 
         using var stream = file.OpenReadStream(maxFileSize, cancellationToken);
@@ -29,7 +37,16 @@ internal class UploadService : TenantBaseService
             Name = file.Name,
             ContentType = file.ContentType,
             Data = data,
-            TenantId = tenantId
+            TenantId = tenantId,
+            Length = data.Length,
+            Created = DateTime.UtcNow,
+
+            TestCaseId = testCaseId,
+            TestRunId = testRunId,
+            TestCaseRunId = testCaseRunId,
+            TestProjectId = testProjectId,
+            TestSuiteId = testSuiteId,
+            TestSuiteFolderId = testSuiteFolderId
         };
 
         await _repo.AddResourceAsync(resource);

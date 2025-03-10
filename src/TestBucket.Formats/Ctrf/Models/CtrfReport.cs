@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text.Json;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace TestBucket.Formats.Ctrf.Models
 {
@@ -14,12 +15,16 @@ namespace TestBucket.Formats.Ctrf.Models
         /// <summary>
         /// Report format
         /// </summary>
+        [JsonPropertyName("reportFormat")] 
         public string? ReportFormat { get; set; }
+        
+        [JsonPropertyName("specVersion")] 
         public string? SpecVersion { get; set; }
 
         /// <summary>
         /// Test results
         /// </summary>
+        [JsonPropertyName("results")]
         public required CtrfResults<TEnvironmentExtra, TTestsExtra> Results { get; set; }
     }
 
@@ -27,9 +32,16 @@ namespace TestBucket.Formats.Ctrf.Models
         where TEnvironmentExtra : EnvironmentExtra
         where TTestsExtra : TestExtra
     {
+        [JsonPropertyName("tool")] 
         public required CtrfTool Tool { get; set; }
+        
+        [JsonPropertyName("summary")] 
         public required CtrfSummary Summary { get; set; }
+        
+        [JsonPropertyName("tests")] 
         public required CtrfTest<TTestsExtra>[] Tests { get; set; }
+        
+        [JsonPropertyName("environment")] 
         public CtrfEnvironment<TEnvironmentExtra>? Environment { get; set; }
     }
 
@@ -98,67 +110,119 @@ namespace TestBucket.Formats.Ctrf.Models
         /// <summary>
         /// custom data relevant to the environment
         /// </summary>
-        public TResultsExtra? Extra { get; set; }
+        public TEnvironmentExtra? Extra { get; set; }
     }
 
     public class CtrfTool
     {
+        [JsonPropertyName("name")]
         public required string Name { get; set; }
+        
+        [JsonPropertyName("version")] 
         public string? Version { get; set; }
     }
 
     public class CtrfSummary
     {
+        [JsonPropertyName("tests")]
         public int Tests { get; set; }
+
+        [JsonPropertyName("passed")]
         public int Passed { get; set; }
+        
+        [JsonPropertyName("failed")] 
         public int Failed { get; set; }
+        
+        [JsonPropertyName("pending")] 
         public int Pending { get; set; }
+        
+        [JsonPropertyName("skipped")] 
         public int Skipped { get; set; }
+        
+        [JsonPropertyName("other")] 
         public int Other { get; set; }
+
+        [JsonPropertyName("suites")] 
         public int Suites { get; set; }
 
         /// <summary>
-        /// Start timestamps, epochs
+        /// Start timestamps, millisecond unix time
         /// </summary>
-        public int Start { get; set; }
+        [JsonPropertyName("start")] 
+        public long Start { get; set; }
 
         /// <summary>
-        /// End timestamp, epochs
+        /// End timestamp, millisecond unix time
         /// </summary>
-        public int Stop { get; set; }
+        [JsonPropertyName("stop")] 
+        public long Stop { get; set; }
     }
 
     public class CtrfTest<TTestExtra> where TTestExtra : TestExtra
     {
+        [JsonPropertyName("name")] 
         public required string Name { get; set; }
 
         /// <summary>
         /// https://ctrf.io/docs/specification/status
         /// passed, failed, skipped, pending, or other
         /// </summary>
+        [JsonPropertyName("status")] 
         public required string Status { get; set; }
 
         /// <summary>
-        /// Duration, in milliseconds?
+        /// Duration, in milliseconds
         /// </summary>
-        public required int Duration { get; set; }
+        [JsonPropertyName("duration")] public required int Duration { get; set; }
+        /// <summary>
+        /// Start timestamps, millisecond unix time
+        /// </summary>
+        [JsonPropertyName("start")]
         public long Start { get; set; }
+
+        /// <summary>
+        /// End timestamp, millisecond unix time
+        /// </summary>
+        [JsonPropertyName("stop")]
         public long Stop { get; set; }
+        
+        [JsonPropertyName("suite")] 
         public string? Suite { get; set; }
+
+        [JsonPropertyName("rawStatus")] 
         public string? RawStatus { get; set; }
+        
+        [JsonPropertyName("tags")] 
         public string[]? Tags { get; set; }
 
         /// <summary>
         /// Example: "Integration"
         /// </summary>
+        [JsonPropertyName("type")] 
         public string? Type { get; set; }
+        
+        [JsonPropertyName("filePath")] 
         public string? FilePath { get; set; }
+        
+        [JsonPropertyName("retries")] 
         public int? Retries { get; set; }
+        
+        [JsonPropertyName("flaky")] 
         public bool? Flaky { get; set; }
+
+        [JsonPropertyName("browser")] 
         public string? Browser { get; set; }
+
+        [JsonPropertyName("extra")] 
         public TTestExtra? Extra { get; set; }
+
+        [JsonPropertyName("screenshot")]
         public string? Screenshot { get; set; }
+
+        [JsonPropertyName("message")] 
         public string? Message { get; set; }
+        
+        [JsonPropertyName("trace")]
         public string? Trace { get; set; }
     }
 

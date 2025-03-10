@@ -20,6 +20,27 @@ public class TestSuiteFolder
     public required string Name { get; set; }
 
     /// <summary>
+    /// Path of the folder, separated by /
+    /// </summary>
+    public string? Path { get; set; }
+
+    /// <summary>
+    /// IDs for the path, for navigation
+    /// </summary>
+    public long[]? PathIds { get; set; }
+
+    /// <summary>
+    /// Flag to indicate that the folder is a feature/function
+    /// This is used by LLMs to provide relevant requirements to the suite
+    /// </summary>
+    public bool IsFeature { get; set; }
+
+    /// <summary>
+    /// Feature description
+    /// </summary>
+    public string? FeatureDescription { get; set; }
+
+    /// <summary>
     /// ID of tenant
     /// </summary>
     public required string TenantId { get; set; }
@@ -46,15 +67,6 @@ public class TestSuiteFolder
     /// </summary>
     public string? Color { get; set; }
 
-    /// <summary>
-    /// Path of the folder, separated by /
-    /// </summary>
-    public string? Path { get; set; }
-
-    /// <summary>
-    /// IDs for the path, for navigation
-    /// </summary>
-    public long[]? PathIds { get; set; }
 
     // Navigation
 

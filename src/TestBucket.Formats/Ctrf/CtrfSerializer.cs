@@ -14,18 +14,25 @@ namespace TestBucket.Formats.Ctrf
         where TEnvironmentExtra : EnvironmentExtra
         where TTestsExtra : TestExtra
     {
-        public TestRunDto Deserialize(string text)
+        public TestRunDto Deserialize(string json)
         {
-            var report = JsonSerializer.Deserialize<CtrfReport<TEnvironmentExtra, TTestsExtra>>(text);
+            var options = new JsonSerializerOptions {  PropertyNamingPolicy = JsonNamingPolicy.CamelCase, AllowTrailingCommas = true };
+            var report = JsonSerializer.Deserialize<CtrfReport<TEnvironmentExtra, TTestsExtra>>(json);
 
             var name = report?.Results?.Environment?.ReportName ?? "";
 
             var run = new TestRunDto() { Name = name };
 
+            // CTRF does not have a hierarchy for suites, each test reference a test suite
+            Dictionary<string, TestSuiteRunDto> suites = new();
+
             if(report?.Results?.Tests is not null)
             {
                 foreach (var test in report.Results.Tests)
                 {
+                    var suiteName = test.Suite ?? "unknown";
+                    TestSuiteRunDto suite = GetOrCreateSuiteByName(suiteName, suites, report, run);
+
                     var testDto = new TestCaseRunDto()
                     {
                         Name = test.Name,
@@ -36,13 +43,14 @@ namespace TestBucket.Formats.Ctrf
                         
                         Module = test.FilePath,
                         TestFilePath = test.FilePath
-
                     };
+                    suite.Tests.Add(testDto);
 
                     if(test.Screenshot is not null && test.Screenshot.StartsWith("data:"))
                     {
                         // "data:image/png;base64,aGVsbG93b3JsZA=="
                         var attachment = DataUriParser.ParseDataUri(test.Screenshot);
+                        attachment.Name ??= "Screenshot";
                         attachment.IsScreenshot = true;
                         testDto.Attachments.Add(attachment);
                     }
@@ -63,6 +71,26 @@ namespace TestBucket.Formats.Ctrf
             }
 
             return run;
+        }
+
+        private TestSuiteRunDto GetOrCreateSuiteByName(string suiteName, Dictionary<string, TestSuiteRunDto> suites, CtrfReport<TEnvironmentExtra, TTestsExtra> report, TestRunDto run)
+        {
+            if(!suites.TryGetValue(suiteName, out var suite))
+            {
+                suite = new TestSuiteRunDto { Name = suiteName };
+
+                if (report.Results?.Tool is not null)
+                {
+                }
+                if (report.Results?.Summary is not null)
+                {
+                    run.StartedTime = DateTimeOffset.FromUnixTimeMilliseconds(report.Results.Summary.Start);
+                    run.EndedTime = DateTimeOffset.FromUnixTimeMilliseconds(report.Results.Summary.Stop);
+                }
+
+                run.Suites.Add(suite);
+            }
+            return suite;
         }
 
         protected virtual void ParseTestExtra(CtrfTest<TTestsExtra> test, TestCaseRunDto testDto)

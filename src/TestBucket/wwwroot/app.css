@@ -76,3 +76,20 @@ p.mud-typography-subtitle1 {
      opacity: 0.75;
      font-size: 75%;
  }
+
+ .file-resource-thumbnail {
+     padding: 16px;
+     border-radius: 4px;
+     overflow: hidden;
+     width: 128px;
+ }
+
+ .file-resource-thumbnail:hover {
+     background: var(--mud-palette-primary);
+ }
+
+ .file-resource-thumbnail .filename {
+     font-size: 8pt;
+     text-overflow: ellipsis;
+     white-space: nowrap;
+ }

@@ -13,10 +13,26 @@
                             <FieldHeader>Name</FieldHeader>
                             <MudTextField Variant="Variant.Outlined" @bind-Value="Folder.Name"></MudTextField>
                         </Field>
+
+                        <Field>
+                            <FieldHeader>Feature</FieldHeader>
+                            <MudSwitchM3 @bind-Value="Folder.IsFeature" Color="Color.Tertiary"/>
+                        </Field>
+
+                        @if (Folder.IsFeature)
+                        {
+                            <Field>
+                                <FieldHeader>Feature Description</FieldHeader>
+                                <MudTextField  Variant="Variant.Outlined" Lines="10" @bind-Value="Folder.FeatureDescription"/>
+                                <FieldDescription>Describe the feature and enter requirements. This information is used as input the the AI when generating test cases</FieldDescription>
+                            </Field>
+                        }
+
+                        <MudDivider/>
                         
                         <Field>
                             <FieldHeader>Color</FieldHeader>
-                            <MudColorPicker Label="Color" @bind-Text="Folder.Color" Style="@($"color: {Folder.Color};")" Placeholder="Select Color" />
+                            <MudColorPicker Variant="Variant.Outlined" Label="Color" @bind-Text="Folder.Color" Style="@($"color: {Folder.Color};")" Placeholder="Select Color" />
                         </Field>
                         
                         <Field>

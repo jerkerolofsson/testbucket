@@ -19,14 +19,30 @@
             <MudStack Class="pa-2" Style="width: 100%">
                 @if(_selectedTestCaseRun is not null) 
                 {
-                    <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis">
-                        <MudText Typo="Typo.h3" Color="Color.Tertiary">@_selectedTestCaseRun.Name</MudText>
-                    </div>
+                    <MudTabs Style="width: 100%">
+                        <MudTabPanel Text="Metadata">
+                            <MudStack Class="pa-2" Style="width: 100%">
+                                <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis">
+                                    <MudText Typo="Typo.h3" Color="Color.Tertiary">@_selectedTestCaseRun.Name</MudText>
+                                </div>
 
-                    <TestResultPicker Result="@_selectedTestCaseRun.Result" ResultChanged="OnTestCaseRunResultChanged"/>
-                    <TestRunStatePicker State="@_selectedTestCaseRun.State" StateChanged="OnTestCaseRunStateChanged"/>
+                                <TestResultPicker Result="@_selectedTestCaseRun.Result" ResultChanged="OnTestCaseRunResultChanged" />
+                                <TestRunStatePicker State="@_selectedTestCaseRun.State" StateChanged="OnTestCaseRunStateChanged" />
 
-                    <FieldsEditor TestCaseRun="@_selectedTestCaseRun"/>
+                                <FieldsEditor TestCaseRun="@_selectedTestCaseRun" />
+                            </MudStack>
+                        </MudTabPanel>
+                        <MudTabPanel Text="Attachments">
+                            <MudStack Class="pa-2" Style="width: 100%">
+
+                                <Field>
+                                    <FieldHeader>Attachments</FieldHeader>
+                                    <AttachmentGrid TestCaseRunId="@_selectedTestCaseRun.Id" Style="width: 100%" />
+                                </Field>
+                            </MudStack>
+                        </MudTabPanel>
+                    </MudTabs>
+
                 }
             </MudStack>
 

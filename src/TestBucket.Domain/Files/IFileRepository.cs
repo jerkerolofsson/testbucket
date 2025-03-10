@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 using TestBucket.Domain.Files.Models;
 
 namespace TestBucket.Domain.Files;
+
+/// <summary>
+/// Contains files/attachments
+/// </summary>
 public interface IFileRepository
 {
     /// <summary>
@@ -31,4 +35,44 @@ public interface IFileRepository
     /// <param name="id"></param>
     /// <returns></returns>
     Task DeleteResourceByIdAsync(string tenantId, long id);
+
+    /// <summary>
+    /// Returns attachments to a test case
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="testCaseId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<FileResource>> GetTestCaseAttachmentsAsync(string tenantId, long testCaseId);
+
+    /// <summary>
+    /// Returns attachments to a test case run
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="testCaseRunId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<FileResource>> GetTestCaseRunAttachmentsAsync(string tenantId, long testCaseRunId);
+
+    /// <summary>
+    /// Returns attachments for a test suite
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="testSuiteId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<FileResource>> GetTestSuiteAttachmentsAsync(string tenantId, long testSuiteId);
+
+    /// <summary>
+    /// Returns attachments for a project
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="testProjectId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<FileResource>> GetTestProjectAttachmentsAsync(string tenantId, long testProjectId);
+
+    /// <summary>
+    /// Returns attachments to a test suite folder (like a feature)
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="testSuiteFolderId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<FileResource>> GetTestSuiteFolderAttachmentsAsync(string tenantId, long testSuiteFolderId);
 }

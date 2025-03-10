@@ -11,6 +11,11 @@
             return 0;
         }
 
+        /// <summary>
+        /// Attachments for the test run
+        /// </summary>
+        public AttachmentCollectionDto Attachments { get; set; } = new();
+
         public int Passed => Count(TestResult.Passed);
         public int Failed => Count(TestResult.Failed);
         public int Errors => Count(TestResult.Error);

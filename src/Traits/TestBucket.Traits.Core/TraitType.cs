@@ -47,6 +47,11 @@ public enum TraitType
     TestCategory,
 
     /// <summary>
+    /// Filename / path of test
+    /// </summary>
+    TestFilePath,
+
+    /// <summary>
     /// For browser tests, name of the browser used
     /// </summary>
     Browser,

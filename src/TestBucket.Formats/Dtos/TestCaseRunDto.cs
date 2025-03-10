@@ -59,6 +59,15 @@ namespace TestBucket.Formats.Dtos
         }
 
         /// <summary>
+        /// Browser used
+        /// </summary>
+        public string? Browser
+        {
+            get => GetAttribute(TraitType.Browser);
+            set => SetAttribute(TraitType.Browser, value);
+        }
+
+        /// <summary>
         /// Message attribute (failure message, skipped message etc..)
         /// </summary>
         public string? Message

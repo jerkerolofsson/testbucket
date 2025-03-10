@@ -118,6 +118,15 @@ namespace TestBucket.Formats.Dtos
         }
 
         /// <summary>
+        /// Path/name of test
+        /// </summary>
+        public string? TestFilePath
+        {
+            get => GetAttribute(TraitType.TestFilePath);
+            set => SetAttribute(TraitType.TestFilePath, value);
+        }
+
+        /// <summary>
         /// EndedTime attribute
         /// </summary>
         public DateTimeOffset? EndedTime

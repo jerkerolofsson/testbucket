@@ -35,4 +35,14 @@ public class SearchQuery
     /// Number of results to return (default 20)
     /// </summary>
     public int Count { get; set; } = 20;
+
+    /// <summary>
+    /// Inclusive
+    /// </summary>
+    public DateTimeOffset? CreatedFrom { get; set; }
+
+    /// <summary>
+    /// Inclusive
+    /// </summary>
+    public DateTimeOffset? CreatedUntil { get; set; }
 }

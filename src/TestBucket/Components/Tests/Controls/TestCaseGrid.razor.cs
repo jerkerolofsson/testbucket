@@ -1,4 +1,8 @@
-﻿namespace TestBucket.Components.Tests.Controls;
+﻿using Microsoft.CodeAnalysis;
+using TestBucket.Components.Tests.Dialogs;
+using TestBucket.Domain.Testing.Models;
+
+namespace TestBucket.Components.Tests.Controls;
 
 public partial class TestCaseGrid
 {
@@ -10,7 +14,7 @@ public partial class TestCaseGrid
 
     private TestSuiteFolder? _folder;
 
-    private string? _searchText;
+    private SearchTestQuery _query = new();
 
     private MudDataGrid<TestCase?> _dataGrid = default!;
 
@@ -67,6 +71,21 @@ public partial class TestCaseGrid
         await OnTestCaseClicked.InvokeAsync(testCase);
     }
 
+    private async Task ShowFilterAsync()
+    {
+        var parameters = new DialogParameters<EditTestCaseQueryDialog>
+        {
+            { x => x.Query, _query }
+        };
+        var dialog = await dialogService.ShowAsync<EditTestCaseQueryDialog>("Filter Tests", parameters);
+        var result = await dialog.Result;
+        if (result?.Data is SearchTestQuery query)
+        {
+            _query = query;
+            _dataGrid?.ReloadServerData();
+        }
+    }
+
     private async Task CreateNewTestCaseAsync()
     {
         if (TestSuiteId is not null || _folder is not null)
@@ -81,7 +100,7 @@ public partial class TestCaseGrid
 
     private void OnSearch(string text)
     {
-        _searchText = text;
+        _query.Text = text;
         _dataGrid?.ReloadServerData();
     }
 
@@ -92,7 +111,10 @@ public partial class TestCaseGrid
             CompareFolder = CompareFolder,
             TestSuiteId = TestSuiteId,
             FolderId = _folder?.Id,
-            Text = string.IsNullOrWhiteSpace(_searchText) ? null : _searchText,
+            CreatedFrom = _query.CreatedFrom,
+            CreatedUntil = _query.CreatedUntil,
+
+            Text = string.IsNullOrWhiteSpace(_query.Text) ? null : _query.Text,
         };
 
         var result = await testBrowser.SearchTestCasesAsync(query, state.Page * state.PageSize, state.PageSize);

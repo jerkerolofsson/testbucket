@@ -18,7 +18,7 @@
     <ToolBarContent>
         <MudStack Row="true" AlignItems="AlignItems.Center">
 
-            <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
+            <MudTextField Value="@_query.Text" T="string" ValueChanged="OnSearch"
                           Style="min-width: 15vw"
                           Clearable="true"
                           Variant="Variant.Outlined"
@@ -27,6 +27,7 @@
                           AdornmentIcon="@Icons.Material.Filled.Search" />
 
             <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="async () => await ShowFilterAsync()"></MudIconButton>
             @if (TestSuiteId is not null || Folder is not null)
             {
                 <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateNewTestCaseAsync"></MudIconButton>

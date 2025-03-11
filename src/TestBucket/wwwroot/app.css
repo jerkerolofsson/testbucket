@@ -93,3 +93,22 @@ p.mud-typography-subtitle1 {
      text-overflow: ellipsis;
      white-space: nowrap;
  }
+
+ .tb-nav-link {
+     height: 100%;
+     color: white;
+     transition: all linear 150ms;
+     padding: 6px;
+     cursor: pointer;
+     border: solid 1px transparent;
+     border-radius: 4px;
+ }
+
+ .tb-nav-link:hover {
+     background: rgba(255,255,255,0.05);
+ }
+
+ .tb-nav-link.active {
+     background: rgba(255,255,255,0.1);
+     border: solid 1px rgba(255,255,255,0.15);
+ }

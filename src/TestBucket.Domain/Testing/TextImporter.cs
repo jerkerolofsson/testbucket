@@ -197,7 +197,8 @@ internal class TextImporter : ITextTestResultsImporter
                     Data = attachment.Data ?? [],
                     TenantId = testCaseRun.TenantId,
                     TestCaseRunId = testCaseRun.Id,
-                    Name = attachment.Name ?? "Attachment"
+                    Name = attachment.Name ?? "Attachment",
+                    Category = ResourceCategory.Attachment,
                 };
 
                 await _fileRepository.AddResourceAsync(dbo);

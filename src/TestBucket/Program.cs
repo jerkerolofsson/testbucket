@@ -32,7 +32,7 @@ namespace TestBucket;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
 
 
@@ -52,7 +52,7 @@ public class Program
 
         builder.Services.AddAuthentication("ApiKey").AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>("ApiKey", null);
 
-        AddOllama(builder);
+        await AddOllamaAsync(builder);
 
         builder.Services.AddAuthorization(options =>
         {
@@ -214,14 +214,23 @@ public class Program
         app.Run();
     }
 
-    private static void AddOllama(WebApplicationBuilder builder)
+    private static async Task AddOllamaAsync(WebApplicationBuilder builder)
     {
         var ollamaBaseUrl = builder.Configuration["OLLAMA_BASE_URL"];
         if (ollamaBaseUrl is not null)
         {
+            //string model = "deepseek-r1:7b";
+            string model = "deepseek-r1:30b";
             // deepseek-r1:7b
             //var ollama = new OllamaApiClient(ollamaBaseUrl, "deepseek-r1:7b");
-            var ollama = new OllamaApiClient(ollamaBaseUrl, "deepseek-r1:1.5b");
+            var ollama = new OllamaApiClient(ollamaBaseUrl, model);
+            await foreach(var response in ollama.PullModelAsync(model))
+            {
+                if (response is not null)
+                {
+                    Console.WriteLine($"{response.Status}: {response.Completed}/{response.Total} ({response.Percent})");
+                }
+            }
             builder.Services.AddSingleton<Microsoft.Extensions.AI.IChatClient>(ollama);
         }
     }

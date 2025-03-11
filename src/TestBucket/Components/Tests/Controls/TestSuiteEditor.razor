@@ -1,0 +1,8 @@
+﻿@if(TestSuite is not null)
+{
+    <AttachmentGrid TestSuiteId="@TestSuite.Id"/>
+}
+
+@code {
+    [Parameter] public TestSuite? TestSuite { get; set; }
+}

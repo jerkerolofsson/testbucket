@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Account
+@using TestBucket.Components.Layout.Controls
 @using TestBucket.Components.Shared.Themeing
 @using TestBucket.Components.Teams
 @using TestBucket.Components.Teams.Controls
@@ -23,7 +24,7 @@
     string projectSettingsUrl = $"{tenantId}/projects/settings";
     string homeUrl = $"/{tenantId}";
     string authUrl = $"/{tenantId}/Auth";
-    string testsUrl = $"/{tenantId}/Tests";
+    string testsUrl = $"/{tenantId}/Testing";
     string runsUrl = $"/{tenantId}/Runs";
     string manageUrl = $"/{tenantId}/Account/Manage";
     string registerUrl = $"/{tenantId}/Account/Register";
@@ -34,13 +35,19 @@
     <CascadingValue Value="@_team">
 
 
-        <div style="display: grid; grid-template-rows: auto auto 1fr; height: 100%">
+        <div style="display: grid; grid-template-rows: auto 1fr; height: 100%">
 
             <MudToolBar Style="@MenuStyle">
-                <MudStack Row="true" Style="width: 100%">
+                <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
 
                     <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" />
                     <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged"/>
+
+                    <TbNavLink Href="@testsUrl">Testing</TbNavLink>
+                    <TbNavLink Href="@testsUrl">Reporting</TbNavLink>
+                    <TbNavLink Href="@testsUrl">Environments</TbNavLink>
+                    <TbNavLink Href="@projectSettingsUrl">Project</TbNavLink>
+                    
                     <MudSpacer/>
 
                     <DarkModeToggle IsDarkMode="@_isDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
@@ -75,15 +82,7 @@
                     </MudMenu>
                 </MudStack>
             </MudToolBar>
-
-            <MudStack Class="tb-inner-toolbar" Style="border-bottom: solid 2px var(--mud-palette-primary)" Row="true">
-                <MudNavLink Href="@testsUrl">Testing</MudNavLink>
-                <MudNavLink Href="@testsUrl">Reporting</MudNavLink>
-                <MudSpacer/>
-                <MudNavLink Href="@testsUrl">Environments</MudNavLink>
-                <MudNavLink Href="@projectSettingsUrl">Project</MudNavLink>
-            </MudStack>
-
+ 
             <main>
                 <article class="content">
                     @Body

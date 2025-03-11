@@ -61,6 +61,7 @@
     [Parameter] public long? TestProjectId { get; set; }
     [Parameter] public long? TestSuiteId { get; set; }
     [Parameter] public long? TestSuiteFolderId { get; set; }
+    [Parameter] public ResourceCategory UploadCategory { get; set; } = ResourceCategory.Attachment;
 
     private MudFileUpload<IBrowserFile>? _fileUpload;
 
@@ -85,7 +86,7 @@
 
         this.StateHasChanged();
 
-        var fileResource = await uploadService.UploadAsync(file, TestCaseId, TestRunId, TestCaseRunId, TestSuiteId, TestSuiteFolderId, TestProjectId, MaxFileSize);
+        var fileResource = await uploadService.UploadAsync(UploadCategory, file, TestCaseId, TestRunId, TestCaseRunId, TestSuiteId, TestSuiteFolderId, TestProjectId, MaxFileSize);
         await FileUploaded.InvokeAsync(fileResource);
 
         _loading = false;

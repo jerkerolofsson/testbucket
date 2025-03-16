@@ -1,4 +1,7 @@
-﻿using Microsoft.CodeAnalysis;
+﻿
+using Microsoft.CodeAnalysis;
+
+using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Domain.Testing.Models;
 
@@ -17,6 +20,7 @@ public partial class TestCaseGrid
     private SearchTestQuery _query = new();
 
     private MudDataGrid<TestCase?> _dataGrid = default!;
+    private IReadOnlyList<FieldDefinition> _definitions;
 
     public Task OnTestCreatedAsync(TestCase testCase)
     {
@@ -54,11 +58,17 @@ public partial class TestCaseGrid
                 _dataGrid?.ReloadServerData();
             }
         }
+
+        if(_folder is not null)
+        {
+            _definitions = await fieldService.SearchDefinitionsAsync(FieldTarget.TestCase, new SearchQuery { ProjectId = _folder.TestProjectId });
+        }
     }
     protected override void OnInitialized()
     {
         testCaseEditor.AddObserver(this);
     }
+
 
     public void Dispose()
     {

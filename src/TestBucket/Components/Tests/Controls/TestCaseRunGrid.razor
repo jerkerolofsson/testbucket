@@ -42,7 +42,13 @@
             </TemplateColumn>
 
             <PropertyColumn Property="x => x.AssignedToUserName" Title="Assigned To" />
-            <PropertyColumn Property="x => x.Result" Title="Result" />
+
+            <TemplateColumn Title="Result">
+                <CellTemplate>
+                    <ResultPill Result="@context.Item.Result" />
+                </CellTemplate>
+            </TemplateColumn>
+
         </Columns>
 
         <PagerContent>

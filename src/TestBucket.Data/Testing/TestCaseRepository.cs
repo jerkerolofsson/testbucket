@@ -18,7 +18,7 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(string tenantId, SearchTestQuery query)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var tests = dbContext.TestCases.Where(x => x.TenantId == tenantId);
+        var tests = dbContext.TestCases.Include(x=>x.TestCaseFields).Where(x => x.TenantId == tenantId);
 
         // Apply filter
         if (query.TeamId is not null)

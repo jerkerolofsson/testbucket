@@ -1,0 +1,8 @@
+﻿@using TestBucket.Contracts.Testing.Models
+<div class="@CssClass">@Result</div>
+
+@code {
+    [Parameter] public TestResult Result { get; set; } = TestResult.NoRun;
+
+    private string CssClass => "result-pill result-" + Result.ToString().ToLower();
+}

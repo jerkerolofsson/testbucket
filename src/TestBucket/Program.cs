@@ -1,32 +1,27 @@
-using MudExtensions.Services;
-using TestBucket.Components;
-using TestBucket.Components.Account;
-using TestBucket.Data;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Extensions;
-using TestBucket.Data.Migrations;
-using TestBucket.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using TestBucket.Components.Tenants;
-using TestBucket.Components.Projects;
-using MudBlazor.Services;
-using TestBucket.Components.Users;
-using TestBucket.Components.Tests.Services;
-using TestBucket.Domain.Identity.Models;
-using TestBucket.Components.Shared;
 using Blazored.LocalStorage;
-using TestBucket.Components.Uploads.Services;
-using TestBucket.Components.Teams;
-using TestBucket.Components.Shared.Fields;
-using Npgsql;
-using TestBucket.Components.Shared.Themeing;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using TestBucket.Domain.ApiKeys;
-using OllamaSharp.Models;
+
+using MudBlazor.Services;
+
+using MudExtensions.Services;
+
 using OllamaSharp;
-using System;
+
+using TestBucket.Components;
+using TestBucket.Components.Account;
+using TestBucket.Components.Projects;
+using TestBucket.Components.Shared.Fields;
+using TestBucket.Components.Shared.Themeing;
+using TestBucket.Components.Teams;
+using TestBucket.Components.Tests.Services;
+using TestBucket.Components.Uploads.Services;
+using TestBucket.Components.Users;
+using TestBucket.Data.Migrations;
+using TestBucket.Domain.ApiKeys;
+using TestBucket.Identity;
 
 namespace TestBucket;
 
@@ -34,8 +29,6 @@ public class Program
 {
     public static void Main(string[] args)
     {
-
-
         var builder = WebApplication.CreateBuilder(args);
         builder.AddServiceDefaults();
 
@@ -199,7 +192,6 @@ public class Program
             app.UseHsts();
         }
         app.UseAntiforgery();
-
         app.UseHttpsRedirection();
         app.UseCors(localhostOrigin);
 

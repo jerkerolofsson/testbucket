@@ -1,0 +1,41 @@
+@page "/"
+@using MudBlazor
+@using TestBucket.AdbProxy.Models
+@inject IAdbDeviceRepository devices
+@inject IDeviceInformer informer
+
+<PageTitle>ADB Devices</PageTitle>
+
+<MudDataGrid Items="@devices.Devices" Dense="true" Hover="true" T="AdbDevice" SortMode="SortMode.Single">
+
+    <ToolBarContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudText Color="Color.Tertiary" Typo="Typo.h6">ADB Devices</MudText>
+            <MudSpacer />
+        </MudStack>
+    </ToolBarContent>
+
+    <Columns>
+        <PropertyColumn Property="x => x.DeviceId" />
+        <PropertyColumn Property="x => x.Status" />
+        <TemplateColumn Title="Connect">
+            <CellTemplate>
+                <pre style="background: #111; padding: 5px; border-radius: 5px; border: solid 1px #222">
+                    <span style="color: cornflowerblue">adb</span>&nbsp;<span style="color: cornflowerblue">connect</span>&nbsp;<span style="color: lightcoral">@context.Item.Url</span>
+                </pre>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.ModelInfo.Manufacturer" />
+        <PropertyColumn Property="x => x.ModelInfo.Name" />
+
+        <PropertyColumn Property="x => x.Version.VersionName" />
+        <PropertyColumn Property="x => x.Version.CodeName" />
+    </Columns>
+</MudDataGrid>
+
+<MudText Color="Color.Tertiary" Typo="Typo.h6">Settings</MudText>
+@if (_settings is not null)
+{
+    <MudTextField T="string" Label="Inform URL" Value="@_settings.Url" ValueChanged="OnInformUrlChangedAsync"></MudTextField>
+    <MudText Color="Color.Tertiary" Typo="Typo.subtitle1">Changes in devices will trigger an HTTP post to this URL</MudText>
+}

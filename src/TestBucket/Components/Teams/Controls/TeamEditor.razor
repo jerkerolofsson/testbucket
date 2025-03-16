@@ -6,7 +6,7 @@
         <MudStack>
 
             <MudText>Image</MudText>
-            <UploadImage FileUploaded="OnImageUploaded"/>
+            <UploadFile Accept=".png" FileUploaded="OnImageUploaded"/>
 
             <MudText>Name</MudText>
             <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Team.Name"></MudTextField>

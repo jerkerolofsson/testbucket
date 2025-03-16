@@ -6,7 +6,7 @@ public partial class TestRunView
 {
     [Parameter] public TestRun? TestRun { get; set; }
 
-    private TestCase? _selectedTestCase = null;
+    //private TestCase? _selectedTestCase = null;
     private TestCaseRun? _selectedTestCaseRun = null;
 
     private async Task OnTestCaseRunStateChanged(string? state)

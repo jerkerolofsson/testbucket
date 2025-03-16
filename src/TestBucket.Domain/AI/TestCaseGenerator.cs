@@ -18,22 +18,12 @@ internal class TestCaseGenerator : ITestCaseGenerator
         - Premise
         - TestSteps
 
-        A TestStep has an action which is performed by the tester. A TestStep may also have an ExpectedResult.
+        A TestStep has one or more actions which should be performed by the tester. A TestStep may also have an ExpectedResult.
 
         The user will provide a description of a feature, a function or a use-case that defines the scope of the test cases. 
 
         Start by defining the Premise of the test from the "description" provided by the user. 
         The Premise defines the intent of a test.
-
-        [[HEURISTIC]]
-
-        Examples of a Premise is to verify that:
-        - A function works as expected.
-        - That proper error handling exists if input is invalid.
-        - That it works in combination with other functions.
-        - That abnormal sequences doesn't break anything.
-        - That a function takes a suitable time to execute.
-        - That reasonable system resources like CPU, GPY and RAM are used.
 
         After defining the premise, define the steps (TestSteps) a user needs to perform to evaluate the premise. 
 
@@ -87,6 +77,27 @@ internal class TestCaseGenerator : ITestCaseGenerator
                 For multiple dates, consider using different time zones if that can be selected.
                 """
             },
+
+            new Heuristic ()
+            {
+                Name = "Performance",
+                Prompt = """
+                - That the action completes in a suitable time frame
+                - For actions that take a long time to execute, a loading indicator should be displayed
+                """
+            },
+
+
+            new Heuristic ()
+            {
+                Name = "Resource Utilization",
+                Prompt = """
+                - That the action doesn't use an unreasonable amount of CPU
+                - That the action doesn't use an unreasonable amount of GPU
+                - That the action doesn't use an unreasonable amount of RAM
+                - That the action doesn't use an unreasonable amount of storage space
+                """
+            },
         ];
 
     public TestCaseGenerator(IEnumerable<IChatClient> chatClients)
@@ -96,7 +107,7 @@ internal class TestCaseGenerator : ITestCaseGenerator
 
     public async IAsyncEnumerable<LlmGeneratedTestCase?> GetStreamingResponseAsync(GenerateTestOptions options)
     {
-        string userPrompt = "description: " + options.UserPrompt;
+        string userPrompt = "Function Description: \n" + options.UserPrompt;
 
         // Determine the response format
         string systemPrompt = _systemPrompt;
@@ -111,14 +122,11 @@ internal class TestCaseGenerator : ITestCaseGenerator
             systemPrompt = _systemPrompt + $"\n\nEXAMPLE JSON OUTPUT:\n{ChatResponseFormatting.ExampleJson}\n\n";
         }
 
+
         if (options.Heuristic?.Prompt is not null)
         {
-            var heuristicText = $"Use the following heuristic as a guide to what premise to create: {options.Heuristic.Prompt}";
-            systemPrompt = systemPrompt.Replace("[[HEURISTIC]]", heuristicText);
-        }
-        else
-        {
-            systemPrompt = systemPrompt.Replace("[[HEURISTIC]]", "");
+            var heuristicText = $"\n\nUse one or more of the following constraints to define a premise for testing:\n{options.Heuristic.Prompt}";
+            userPrompt += heuristicText;
         }
 
         if (_chatClients.Count > 0)
@@ -190,7 +198,9 @@ internal class TestCaseGenerator : ITestCaseGenerator
             }
         }
         catch (Exception ex)
-        { }
+        { 
+        // todo, handle exception and show message
+        }
 
         return null;
     }

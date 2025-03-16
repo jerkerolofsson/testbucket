@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\android\TestBucket.Servers.AdbProxy\TestBucket.Servers.AdbProxy.csproj" />
     <ProjectReference Include="..\TestBucket\TestBucket.csproj" />
   </ItemGroup>
 

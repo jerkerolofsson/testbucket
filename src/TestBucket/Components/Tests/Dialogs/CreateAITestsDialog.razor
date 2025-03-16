@@ -45,6 +45,11 @@ else
                             <MudTextField Style="min-width: 400px" Lines="10" AutoFocus Variant="Variant.Outlined" T="string" @bind-Value="@_prompt"></MudTextField>
                         </Field>
                     }
+
+                    @if(_errorMessage is not null)
+                    {
+                        <MudText Color="Color.Error">@_errorMessage</MudText>
+                    }
                 </MudStack>
             </DialogContent>
 
@@ -70,6 +75,7 @@ else
     [Parameter] public long? TestSuiteId { get; set; }
 
     private bool _loading = false;
+    private string? _errorMessage = null;
 
     protected override void OnParametersSet()
     {
@@ -86,12 +92,8 @@ else
         MudDialog.Close();
     }
 
-
-    private async Task OnValidSubmitAsync()
+    private async Task GenerateTestsAsync()
     {
-        _loading = true;
-        this.StateHasChanged();
-
         _reply = "";
         var results = new List<LlmGeneratedTestCase>();
         await foreach (var llmTestCase in testCaseGenerator.GetStreamingResponseAsync(new GenerateTestOptions() { UserPrompt = _prompt, Heuristic = _heuristic, NumTests = _numTests }))
@@ -105,7 +107,7 @@ else
 
                 var description = llmTestCase.AsTestMarkup();
 
-                var testCase = new TestCase() { Name = llmTestCase.Name, Description = description.ToString(), TenantId = Folder?.TenantId ?? ""};
+                var testCase = new TestCase() { Name = llmTestCase.Name, Description = description.ToString(), TenantId = Folder?.TenantId ?? "" };
                 if (Folder is not null)
                 {
                     testCase.TestSuiteFolderId = Folder.Id;
@@ -119,9 +121,23 @@ else
                 await testCaseEditorService.AddTestCaseAsync(testCase);
             }
         }
+    }
 
-        // Close the dialog
-        Close();
+    private async Task OnValidSubmitAsync()
+    {
+        _loading = true;
+        this.StateHasChanged();
+
+        try
+        {
+            await GenerateTestsAsync();
+            Close();
+        }
+        catch(Exception ex)
+        {
+            _errorMessage = $"Failed: {ex.Message}";
+            _loading = false;
+        }
     }
 }
 

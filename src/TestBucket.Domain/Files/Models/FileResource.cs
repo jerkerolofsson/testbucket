@@ -37,6 +37,14 @@ public class FileResource
     /// </summary>
     public int Length { get; set; } = 0;
 
+    /// <summary>
+    /// Type of resource
+    /// </summary>
+    public ResourceCategory Category { get; set; } = ResourceCategory.Other;
+
+    /// <summary>
+    /// Timestamp
+    /// </summary>
     public DateTimeOffset? Created { get; set; }
 
     /// <summary>

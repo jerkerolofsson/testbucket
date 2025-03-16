@@ -17,12 +17,12 @@ internal class UploadService : TenantBaseService
         _repo = repo;
     }
 
-    public async Task<FileResource> UploadAsync(IBrowserFile file, long maxFileSize = 512_000, CancellationToken cancellationToken = default)
+    public async Task<FileResource> UploadAsync(ResourceCategory category, IBrowserFile file, long maxFileSize = 512_000, CancellationToken cancellationToken = default)
     {
-        return await UploadAsync(file, null, null, null, null, null, null, maxFileSize, cancellationToken);
+        return await UploadAsync(category, file, null, null, null, null, null, null, maxFileSize, cancellationToken);
     }
 
-    public async Task<FileResource> UploadAsync(IBrowserFile file, 
+    public async Task<FileResource> UploadAsync(ResourceCategory category, IBrowserFile file, 
         long? testCaseId, long? testRunId, long? testCaseRunId, long? testSuiteId, long? testSuiteFolderId, long? testProjectId,
         long maxFileSize = 512_000, CancellationToken cancellationToken = default)
     {

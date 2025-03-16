@@ -40,9 +40,25 @@ public partial class AttachmentGrid
         {
             _attachments = (await attachmentsService.GetTestCaseAttachmentsAsync(TestCaseId.Value)).ToList();
         }
+        else if (TestProjectId is not null)
+        {
+            _attachments = (await attachmentsService.GetTestProjectAttachmentsAsync(TestProjectId.Value)).ToList();
+        }
+        else if (TestSuiteFolderId is not null)
+        {
+            _attachments = (await attachmentsService.GetTestSuiteFolderAttachmentsAsync(TestSuiteFolderId.Value)).ToList();
+        }
+        else if (TestSuiteId is not null)
+        {
+            _attachments = (await attachmentsService.GetTestSuiteAttachmentsAsync(TestSuiteId.Value)).ToList();
+        }
         else if (TestCaseRunId is not null)
         {
             _attachments = (await attachmentsService.GetTestCaseRunAttachmentsAsync(TestCaseRunId.Value)).ToList();
+        }
+        else if (TestRunId is not null)
+        {
+            //_attachments = (await attachmentsService.GetTestRunAttachmentsAsync(TestRunId.Value)).ToList();
         }
     }
 }

@@ -46,7 +46,7 @@
         await FileUploadStarted.InvokeAsync();
         this.StateHasChanged();
 
-        var fileResource = await uploadService.UploadAsync(file, MaxFileSize);
+        var fileResource = await uploadService.UploadAsync(ResourceCategory.TestResults, file, MaxFileSize);
         await FileUploaded.InvokeAsync(fileResource);
 
         _loading = false;

@@ -23,7 +23,12 @@ public enum FieldType
     SingleSelection = 5,
 
     /// <summary>
-    /// Multiple strings
+    /// Multiple strings that can be freely selected
     /// </summary>
     StringArray = 6,
+
+    /// <summary>
+    /// Multiple strings, but can only be selected from a pre-defined set
+    /// </summary>
+    MultiSelection = 7,
 }

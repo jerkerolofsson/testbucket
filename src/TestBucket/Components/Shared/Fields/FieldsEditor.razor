@@ -1,4 +1,5 @@
-﻿@inject FieldService fieldService
+﻿@using TestBucket.Domain.Requirements.Models
+@inject FieldService fieldService
 
 @foreach (var field in _testCaseFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
 {

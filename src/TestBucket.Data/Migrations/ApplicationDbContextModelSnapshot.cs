@@ -452,6 +452,171 @@ namespace TestBucket.Data.Migrations
                     b.ToTable("projects");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Requirements.Models.Requirement", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<long[]>("PathIds")
+                        .HasColumnType("bigint[]");
+
+                    b.Property<long?>("RequirementSpecificationFolderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("RequirementSpecificationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Created");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("RequirementSpecificationFolderId");
+
+                    b.HasIndex("RequirementSpecificationId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.ToTable("requirements");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Requirements.Models.RequirementSpecification", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Color")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("FileResourceId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.HasIndex("TenantId", "Created");
+
+                    b.ToTable("spec");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Requirements.Models.RequirementSpecificationFolder", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Color")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("ParentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<long[]>("PathIds")
+                        .HasColumnType("bigint[]");
+
+                    b.Property<long>("RequirementSpecificationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("RequirementSpecificationId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.HasIndex("TenantId", "Created");
+
+                    b.ToTable("spec__folders");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Settings.Models.GlobalSettings", b =>
                 {
                     b.Property<long>("Id")
@@ -627,6 +792,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<long?>("LongValue")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("RequirementId")
+                        .HasColumnType("bigint");
+
                     b.PrimitiveCollection<string[]>("StringArrayValue")
                         .HasColumnType("text[]");
 
@@ -642,6 +810,8 @@ namespace TestBucket.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("FieldDefinitionId");
+
+                    b.HasIndex("RequirementId");
 
                     b.HasIndex("TenantId");
 
@@ -1084,6 +1254,91 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("Tenant");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Requirements.Models.Requirement", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Requirements.Models.RequirementSpecificationFolder", "RequirementSpecificationFolder")
+                        .WithMany("Requirements")
+                        .HasForeignKey("RequirementSpecificationFolderId");
+
+                    b.HasOne("TestBucket.Domain.Requirements.Models.RequirementSpecification", "RequirementSpecification")
+                        .WithMany()
+                        .HasForeignKey("RequirementSpecificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("RequirementSpecification");
+
+                    b.Navigation("RequirementSpecificationFolder");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Requirements.Models.RequirementSpecification", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Requirements.Models.RequirementSpecificationFolder", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Requirements.Models.RequirementSpecificationFolder", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+
+                    b.HasOne("TestBucket.Domain.Requirements.Models.RequirementSpecification", "RequirementSpecification")
+                        .WithMany()
+                        .HasForeignKey("RequirementSpecificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("RequirementSpecification");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Teams.Models.Team", b =>
                 {
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
@@ -1131,6 +1386,10 @@ namespace TestBucket.Data.Migrations
                         .HasForeignKey("FieldDefinitionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Requirements.Models.Requirement", null)
+                        .WithMany("TestCaseFields")
+                        .HasForeignKey("RequirementId");
 
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany()
@@ -1338,6 +1597,16 @@ namespace TestBucket.Data.Migrations
             modelBuilder.Entity("TestBucket.Domain.Projects.Models.TestProject", b =>
                 {
                     b.Navigation("ProjectMembers");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Requirements.Models.Requirement", b =>
+                {
+                    b.Navigation("TestCaseFields");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Requirements.Models.RequirementSpecificationFolder", b =>
+                {
+                    b.Navigation("Requirements");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Teams.Models.Team", b =>

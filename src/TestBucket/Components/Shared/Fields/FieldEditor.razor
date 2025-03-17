@@ -19,7 +19,7 @@
                     {
                         @Field.DoubleValue
                     }
-                    else if (Field.FieldDefinition.Type == FieldType.StringArray && Field.StringArrayValue is not null)
+                    else if ((Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection) && Field.StringArrayValue is not null)
                     {
                         <MudChipSet T="string">
                             @foreach (var value in Field.StringArrayValue)
@@ -70,6 +70,21 @@
                         </MudStack>
                     </EditForm>
                 }
+                else if (Field.FieldDefinition.Type == FieldType.MultiSelection && Field.StringArrayValue is not null)
+                {
+                    @if(Field.FieldDefinition.Options is not null)
+                    {
+                        <MudStack Row Wrap="Wrap.Wrap">
+                            @foreach (var item in Field.FieldDefinition.Options)
+                            {
+                                var isChecked = Field.StringArrayValue.Contains(item);
+
+                                <MudCheckBox Value="@isChecked" T="bool" ValueChanged="async () => await ToggleStringArrayValueAsync(item)">@item</MudCheckBox>
+                            }
+                        </MudStack>
+                    }
+                }
+
             }
 
             @if(Field.FieldDefinition.ShowDescription)
@@ -100,6 +115,27 @@
         await FieldChanged.InvokeAsync(Field);
     }
 
+    private async Task ToggleStringArrayValueAsync(string value)
+    {
+        if (Field is null || string.IsNullOrEmpty(value))
+        {
+            return;
+        }
+        Field.StringArrayValue ??= [];
+        if(!Field.StringArrayValue.Contains(value))
+        {
+            Field.StringArrayValue = [.. Field.StringArrayValue, value];
+        }
+        else
+        {
+            Field.StringArrayValue = Field.StringArrayValue.Where(x => x != value).ToArray();
+        }
+
+        this.StateHasChanged();
+
+        await FieldChanged.InvokeAsync(Field);
+    }
+
     private async Task AddStringArrayValueAsync(string value)
     {
         if (Field is null || string.IsNullOrEmpty(value))
@@ -117,7 +153,7 @@
 
     protected override void OnParametersSet()
     {
-        if(Field?.FieldDefinition?.Type == FieldType.StringArray)
+        if(Field?.FieldDefinition?.Type is FieldType.StringArray or FieldType.MultiSelection)
         {
             Field.StringArrayValue ??= [];
         }

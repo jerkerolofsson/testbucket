@@ -1,8 +1,9 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+
 using System.Xml.Linq;
 
-using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Data.Testing;
 internal class TestCaseRepository : ITestCaseRepository
@@ -161,7 +162,7 @@ internal class TestCaseRepository : ITestCaseRepository
     /// <param name="projectId"></param>
     /// <param name="testSuiteId"></param>
     /// <param name="parentFolderId">Parent location</param>
-    /// <param name="folder">Name of folder</param>
+    /// <param name="folderName">Name of folder</param>
     /// <returns></returns>
     public async Task<TestSuiteFolder?> GetTestSuiteFolderByNameAsync(string tenantId, long? projectId, long testSuiteId, long? parentFolderId, string folderName)
     {
@@ -185,7 +186,7 @@ internal class TestCaseRepository : ITestCaseRepository
             throw new InvalidOperationException("Folder does not exist!");
         }
 
-        var hasPathChanged = existingFolder.Name != folder.Name;
+        var hasPathChanged = existingFolder.Name != folder.Name || existingFolder.ParentId != folder.ParentId;
         if (hasPathChanged)
         {
             await CalculatePathAsync(dbContext, folder);
@@ -249,6 +250,8 @@ internal class TestCaseRepository : ITestCaseRepository
             TestProjectId = projectId,
             ParentId = parentFolderId
         };
+
+        await CalculatePathAsync(dbContext, folder);
 
         await dbContext.TestSuiteFolders.AddAsync(folder);
         await dbContext.SaveChangesAsync();

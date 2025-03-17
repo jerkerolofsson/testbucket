@@ -105,7 +105,7 @@ internal class FieldService : TenantBaseService
 
     private void RemoveOptionsIfNotSelection(FieldDefinition fieldDefinition)
     {
-        if(fieldDefinition.Type is not Domain.Fields.Models.FieldType.SingleSelection)
+        if(fieldDefinition.Type is not (Domain.Fields.Models.FieldType.SingleSelection or Domain.Fields.Models.FieldType.MultiSelection))
         {
             fieldDefinition.Options = null;
         }

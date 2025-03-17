@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Files.Models;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Domain.Teams.Models;
 
@@ -24,6 +25,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<TestCase> TestCases { get; set; }
     internal DbSet<TestRun> TestRuns { get; set; }
     internal DbSet<TestCaseRun> TestCaseRuns { get; set; }
+
+    internal DbSet<RequirementSpecification> RequirementSpecifications { get; set; }
+    internal DbSet<RequirementSpecificationFolder> RequirementSpecificationFolders { get; set; }
+    internal DbSet<Requirement> Requirements { get; set; }
 
     /// <summary>
     /// Settings common for all tenants

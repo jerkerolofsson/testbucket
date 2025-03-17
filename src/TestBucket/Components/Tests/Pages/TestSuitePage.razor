@@ -1,6 +1,7 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Testing/TestSuites/{SuiteId:long}"
 @using TestBucket.Components.Tests.Layouts
+@using TestBucket.Domain.Requirements.Models
 @layout TestingLayout
 @inject TestBrowser testBrowser
 @inject AppNavigationManager appNavigationManager
@@ -26,7 +27,7 @@
     private TestSuite? _testSuite = null;
 
     /// <summary>
-    /// Load the test case when changed
+    /// Load the test suite when changed
     /// </summary>
     /// <returns></returns>
     protected override async Task OnParametersSetAsync()

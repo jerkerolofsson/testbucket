@@ -12,42 +12,42 @@
 
 <PageTitle>Register</PageTitle>
 
-<h1>Register</h1>
+<MudPaper Class="tb-login-container" Style="min-width: 400px">
 
-<div class="row">
-    <div class="col-lg-6">
-        <StatusMessage Message="@Message" />
-        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-            <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" id="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="Input.Email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="Input.Password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" id="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="Input.ConfirmPassword">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </EditForm>
-    </div>
-    <div class="col-lg-4 col-lg-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
-    </div>
-</div>
+    <MudText Typo="Typo.h1" Color="Color.Tertiary">Register</MudText>
+    <MudText>Create a new account.</MudText>
+
+    <StatusMessage Message="@Message" />
+    <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" role="alert" />
+
+        <MudStack Spacing="0" Class="mt-5">
+            <InputText @bind-Value="Input.Email" id="Input.Email" autocomplete="username" aria-required="true" Placeholder="name@example.com" />
+            <ValidationMessage For="() => Input.Email" class="text-danger" />
+        </MudStack>
+        <MudStack Spacing="0" Class="mt-3">
+            <InputText type="password" @bind-Value="Input.Password" id="Input.Password" autocomplete="current-password" aria-required="true" placeholder="Password" />
+            <ValidationMessage For="() => Input.Password" class="text-danger" />
+        </MudStack>
+        <MudStack Spacing="0" Class="mt-3">
+            <InputText type="password" @bind-Value="Input.ConfirmPassword" id="Input.ConfirmPassword" autocomplete="current-password" aria-required="true" placeholder="Confirm password" />
+            <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+        </MudStack>
+
+        <MudStack Row Class="mt-3">
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled">Register</MudButton>
+        </MudStack>
+    </EditForm>
+
+    @* <div class="col-lg-4 col-lg-offset-2"> *@
+    @*     <section> *@
+    @*         <h3>Use another service to register.</h3> *@
+    @*         <hr /> *@
+    @*         <ExternalLoginPicker /> *@
+    @*     </section> *@
+    @* </div> *@
+</MudPaper>
 
 @code {
     private IEnumerable<IdentityError>? identityErrors;

@@ -1,7 +1,7 @@
 ﻿
 using TestBucket.Components.Tenants;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Tenants.Models;
-using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Components.Tests.Services;
 
@@ -145,6 +145,12 @@ internal class TestSuiteService : TenantBaseService
     {
         var tenantId = await GetTenantIdAsync();
         return await _testCaseRepo.SearchTestCasesAsync(tenantId, searchTestQuery);
+    }
+
+    internal async Task<TestSuite?> GetTestSuiteByIdAsync(long testSuiteId)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _testCaseRepo.GetTestSuiteByIdAsync(tenantId, testSuiteId);
     }
 
     internal async Task<TestSuiteFolder?> GetTestSuiteFolderByIdAsync(long folderId)

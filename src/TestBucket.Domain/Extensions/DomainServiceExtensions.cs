@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TestBucket.Domain.AI;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Tenants;
@@ -20,6 +21,8 @@ public static class DomainServiceExtensions
         services.AddScoped<IStateService, StateService>();
         services.AddScoped<ITextTestResultsImporter, TextImporter>();
         services.AddScoped<ITestCaseGenerator, TestCaseGenerator>();
+
+        services.AddScoped<IRequirementImporter, RequirementImporter>();
 
         return services;
     }

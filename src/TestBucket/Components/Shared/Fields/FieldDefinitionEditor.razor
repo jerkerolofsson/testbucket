@@ -9,9 +9,21 @@
             <Field>
                 <FieldHeader>Name</FieldHeader>
                 <MudTextField Value="@FieldDefinition.Name" ValueChanged="OnNameChanged" T="string" Variant="Variant.Outlined" />
-                <FieldDescription>The name of the field should match the trait/property when importing items</FieldDescription>
             </Field>
-            
+             
+            <Field>
+                <FieldHeader>Trait</FieldHeader>
+                <MudTextField Value="@FieldDefinition.Trait" ValueChanged="OnTraitChanged" T="string" Variant="Variant.Outlined" />
+                <FieldDescription>The name of the trait should match the trait/property when importing items</FieldDescription>
+                @if(FieldDefinition.TraitType != TraitType.Custom)
+                {
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Size="Size.Small" Color="Color.Success" Icon="@Icons.Material.Filled.Check"/>
+                        <MudText Color="Color.Success" Typo="Typo.subtitle1">@FieldDefinition.TraitType</MudText>
+                    </MudStack>
+                }
+            </Field>
+
             @* <Field> *@
             @*     <FieldHeader>Trait Type</FieldHeader> *@
             @*     <MudSelect Value="@FieldDefinition.TraitType" ValueChanged="OnTraitTypeChanged" T="TraitType" Variant="Variant.Outlined"> *@
@@ -32,33 +44,35 @@
                     <MudSelectItem Value="@FieldType.String">String</MudSelectItem>
                     <MudSelectItem Value="@FieldType.Boolean">Boolean</MudSelectItem>
                     <MudSelectItem Value="@FieldType.SingleSelection">Single Selection</MudSelectItem>
+                    <MudSelectItem Value="@FieldType.MultiSelection">Multi Selection</MudSelectItem>
                     <MudSelectItem Value="@FieldType.StringArray">Chip Field</MudSelectItem>
                 </MudSelect>
                 <FieldDescription>The type of field defines what data can be stored and how it can be selected</FieldDescription>
+
+                @if(FieldDefinition.Type == FieldType.SingleSelection || FieldDefinition.Type == FieldType.MultiSelection)
+                {
+                    <MudTextField Class="mt-3" Value="@_options" ValueChanged="OnOptionsChanged" T="string" Variant="Variant.Outlined" />
+                    <FieldDescription>Options separated by comma (,)</FieldDescription>
+                }
             </Field>
+
+
             <Field>
                 <FieldHeader>Usage</FieldHeader>
                 <MudStack Row="true">
                     <MudCheckBox 
-                        Color="Color.Tertiary" T="bool" 
-                        Value="@((FieldDefinition.Target&FieldTarget.TestCase) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCase, x)">Test Case</MudCheckBox>
+                    Color="Color.Tertiary" T="bool" 
+                    Value="@((FieldDefinition.Target&FieldTarget.TestCase) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCase, x)">Test Case</MudCheckBox>
 
                     <MudCheckBox Color="Color.Tertiary" T="bool"
-                                 Value="@((FieldDefinition.Target&FieldTarget.Project) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Project, x)">Project</MudCheckBox>
+                    Value="@((FieldDefinition.Target&FieldTarget.Project) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Project, x)">Project</MudCheckBox>
 
                     <MudCheckBox Color="Color.Tertiary" T="bool"
-                                 Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Run</MudCheckBox>
+                    Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Run</MudCheckBox>
                 </MudStack>
                 <FieldDescription>The type of field defines what data can be stored and how it can be selected</FieldDescription>
             </Field>
 
-            @if(FieldDefinition.Type == FieldType.SingleSelection)
-            {
-                <Field>
-                    <MudTextField Value="@_options" ValueChanged="OnOptionsChanged" T="string" Variant="Variant.Outlined" />
-                    <FieldDescription>Options separated by comma (,)</FieldDescription>
-                </Field>
-            }
 
             <MudStack Row="true" Wrap="Wrap.Wrap">
                 <Field>
@@ -191,11 +205,32 @@
             await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
         }
     }
+    private async Task OnTraitChanged(string value)
+    {
+        if (FieldDefinition is not null)
+        {
+            FieldDefinition.Trait = value;
+            FieldDefinition.TraitType = TraitType.Custom;
+            if(TraitTypeConverter.TryConvert(FieldDefinition.Trait, out var traitType))
+            {
+                FieldDefinition.TraitType = traitType.Value;
+            }
+
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
     private async Task OnNameChanged(string value)
     {
         if (FieldDefinition is not null)
         {
             FieldDefinition.Name = value;
+            FieldDefinition.Trait = value.Replace(" ", "");
+            FieldDefinition.TraitType = TraitType.Custom;
+            if(TraitTypeConverter.TryConvert(FieldDefinition.Trait, out var traitType))
+            {
+                FieldDefinition.TraitType = traitType.Value;
+            }
+
             await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
         }
     }

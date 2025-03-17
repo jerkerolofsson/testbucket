@@ -1,6 +1,7 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Testing/TestCases/{TestCaseId:long}"
 @using TestBucket.Components.Tests.Layouts
+@using TestBucket.Domain.Requirements.Models
 @layout TestingLayout
 @inject TestBrowser testBrowser
 @inject TestCaseEditorService testCaseEditorService

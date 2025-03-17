@@ -1,6 +1,8 @@
 ﻿@page "/{tenantId}"
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navigationManager
+@layout EmptyLayout
+
 <PageTitle>@TenantId</PageTitle>
 <TenantRedirect/>
 

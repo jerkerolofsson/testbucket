@@ -1,4 +1,4 @@
-﻿using TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Components.Tests.Controls;
 

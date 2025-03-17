@@ -33,6 +33,8 @@ public class TraitTypeConverter
         [TraitType.ClassName] = AutomationTraitNames.ClassName,
         [TraitType.Method] = AutomationTraitNames.MethodName,
 
+        [TraitType.QualityCharacteristic] = TestTraitNames.QualityCharacteristic,
+
         [TraitType.TestState] = TestTraitNames.TestState,
         [TraitType.TestDescription] = TestTraitNames.TestDescription,
         [TraitType.TestCategory] = TestTraitNames.TestCategory,
@@ -47,12 +49,12 @@ public class TraitTypeConverter
 
     static TraitTypeConverter()
     {
-        var reverse = new Dictionary<string, TraitType>();
-        foreach(var kvp in _traitsToStrings)
+        var stringToTraits = new Dictionary<string, TraitType>();
+        foreach (var kvp in _traitsToStrings)
         {
-            reverse[kvp.Value] = kvp.Key;
+            stringToTraits[kvp.Value.ToLower()] = kvp.Key;
         }
-        _stringToTraits = reverse.ToFrozenDictionary();
+        _stringToTraits = stringToTraits.ToFrozenDictionary();
     }
 
     /// <summary>
@@ -81,7 +83,7 @@ public class TraitTypeConverter
     public static bool TryConvert(string? input, [NotNullWhen(true)] out TraitType? traitType)
     {
         traitType = null;
-        if(input is not null && _stringToTraits.TryGetValue(input, out var trait))
+        if(input is not null && _stringToTraits.TryGetValue(input.ToLower(), out var trait))
         {
             traitType = trait;
             return true;

@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Shared
+@using TestBucket.Domain.Requirements.Models
 @using TestBucket.Domain.Teams.Models
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
@@ -68,7 +69,7 @@
             }
 
 
-            <DropZone T="TestCase" OnDrop="(test) => OnDrop(test, context)">
+            <DropZone T="TestEntity" OnDrop="(test) => OnDrop(test, context)">
                 <MudTreeViewItem Value="@context.Value"
                 Style="@style"
                 Items="@context.Children"
@@ -85,7 +86,13 @@
                             <ActivatorContent>
                                 @if(treeNode.Value?.TestCase is not null)
                                 {
-                                    <Draggable Data="@treeNode.Value.TestCase">
+                                    <Draggable T="TestEntity" Data="@treeNode.Value.TestCase">
+                                        @treeNode.Text
+                                    </Draggable>
+                                }
+                                else if (treeNode.Value?.Folder is not null)
+                                {
+                                    <Draggable T="TestEntity" Data="@treeNode.Value.Folder">
                                         @treeNode.Text
                                     </Draggable>
                                 }

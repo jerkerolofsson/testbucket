@@ -1,6 +1,7 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Testing/TestSuites/{SuiteId:long}/Folders/{FolderId:long}"
 @using TestBucket.Components.Tests.Layouts
+@using TestBucket.Domain.Requirements.Models
 @layout TestingLayout
 @inject TestBrowser testBrowser
 @inject AppNavigationManager appNavigationManager
@@ -10,7 +11,17 @@
         <PathNavigation FolderId="@FolderId" />
     </MudToolBar>
 
-    <TestCaseGrid TestSuiteId="@SuiteId" FolderId="@FolderId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" />
+    <MudSplitter Style="height: 100%; width:100%" Color="Color.Primary" Bordered="false" Dimension="80" EnableMargin="false">
+        <StartContent>
+            <TestCaseGrid TestSuiteId="@SuiteId" FolderId="@FolderId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" />
+        </StartContent>
+        <EndContent>
+            <MudStack Class="pa-2" Style="width: 100%">
+                <TestSuiteFolderEditor Folder="@_testSuiteFolder" />
+            </MudStack>
+        </EndContent>
+    </MudSplitter>
+
 </MudStack>
 
 @code {
@@ -20,6 +31,21 @@
 
     [Parameter] public long SuiteId { get; set; }
     [Parameter] public long FolderId { get; set; }
+
+    private TestSuiteFolder? _testSuiteFolder = null;
+
+
+    /// <summary>
+    /// Load the test suite when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_testSuiteFolder is null || _testSuiteFolder.Id != FolderId)
+        {
+            _testSuiteFolder = await testBrowser.GetTestSuiteFolderByIdAsync(FolderId);
+        }
+    }
 
     private void OnTestCaseClicked(TestCase testCase)
     {

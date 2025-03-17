@@ -1,5 +1,6 @@
 ﻿@using Humanizer
 @using TestBucket.Components.Shared
+@using TestBucket.Domain.Requirements.Models
 @inject FieldService fieldService
 @inject TestCaseEditorService testCaseEditorService
 @inject TestRunCreationService testRunCreationService
@@ -73,10 +74,10 @@
 
         <MudSplitter Style="height: 100%" Color="Color.Primary" Bordered="false" Dimension="80" EnableMargin="false">
             <StartContent>
-                <MudStack Class="pa-2" Style="width: 100%">
+                <MudStack Class="pa-2" Style="width: 100%; height: 100%">
                     <MarkdownEditor 
                     ShowToolbar="false"
-                    MaxHeight="500px"
+                    MaxHeight="100%"
                     Color="Color.Primary"
                     AllowResize="true"
                     @bind-Preview="_preview"
@@ -86,7 +87,7 @@
                     SpellChecker="false">
                     </MarkdownEditor>
 
-                    <FieldsEditor TestCase="@Test"/>
+                    @* <FieldsEditor TestCase="@Test"/> *@
 
                 </MudStack>
             </StartContent>

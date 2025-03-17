@@ -14,7 +14,10 @@
 
     private async Task OnDropEvent(DragEventArgs e)
     {
-        await OnDrop.InvokeAsync(service.Data);
-        service.Data = default(T);
+        if (service.HasData)
+        {
+            await OnDrop.InvokeAsync(service.Data);
+            service.Data = default(T);
+        }
     }
 }

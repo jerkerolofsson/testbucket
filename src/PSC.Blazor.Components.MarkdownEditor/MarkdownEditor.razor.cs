@@ -1,6 +1,8 @@
 using MudBlazor;
 using MudBlazor.Utilities;
 
+using static MudBlazor.Colors;
+
 namespace PSC.Blazor.Components.MarkdownEditor
 {
     /// <summary>
@@ -211,12 +213,6 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// </summary>
         [Parameter]
         public EventCallback<string> ValueChanged { get; set; }
-
-        /// <summary>
-        /// An event that occurs after the markdown value has changed and return the HTML from the Markdown
-        /// </summary>
-        [Parameter]
-        public EventCallback<string> ValueHTMLChanged { get; set; }
         #endregion Event Callback
         #region Parameters
 
@@ -491,12 +487,6 @@ namespace PSC.Blazor.Components.MarkdownEditor
         private string? _value = null;
 
         /// <summary>
-        /// Gets or sets the HTML from markdown value.
-        /// </summary>
-        [Parameter]
-        public string? ValueHTML { get; set; }
-
-        /// <summary>
         /// Gets or sets the words status text.
         /// </summary>
         /// <value>The words status text.</value>
@@ -506,26 +496,62 @@ namespace PSC.Blazor.Components.MarkdownEditor
         #endregion Parameters
         #region JSInvokable
 
+        private string? _prevValueBeforeUpdate = null;
 
         /// <summary>
         /// Updates the internal markdown value. This method should only be called internally!
         /// </summary>
         /// <param name="value">New value.</param>
-        /// <param name="valueHTML">The value HTML.</param>
         /// <returns>
         /// A task that represents the asynchronous operation.
         /// </returns>
         [JSInvokable]
-        public async Task UpdateInternalValue(string value, string valueHTML)
+        public async Task UpdateInternalValue(string value)
         {
             if (_value != value)
             {
                 _value = value;
                 await ValueChanged.InvokeAsync(value);
-
-                var match = valueHTML.ExtractTagContent("body");
-                await ValueHTMLChanged.InvokeAsync(match);
             }
+        }
+
+        /// <summary>
+        /// Updates the internal markdown value. This method should only be called internally!
+        /// </summary>
+        /// <param name="value">New value.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.
+        /// </returns>
+        [JSInvokable]
+        public Task BeginAppendInternalValue()
+        {
+            _prevValueBeforeUpdate = _value;
+            _value = "";
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Updates the internal markdown value. This method should only be called internally!
+        /// </summary>
+        /// <param name="value">New value.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.
+        /// </returns>
+        [JSInvokable]
+        public Task AppendInternalValue(string value)
+        {
+            _value += value;
+            return Task.CompletedTask;
+        }
+
+        [JSInvokable]
+        public async Task EndAppendInternalValue()
+        {
+            if(_value != _prevValueBeforeUpdate)
+            {
+                await ValueChanged.InvokeAsync(_value);
+            }
+            _prevValueBeforeUpdate = "";
         }
 
         /// <summary>
@@ -1009,6 +1035,17 @@ namespace PSC.Blazor.Components.MarkdownEditor
                 JSModule ??= new JSMarkdownInterop(JSRuntime);
                 dotNetObjectRef ??= DotNetObjectReference.Create(this);
 
+                //string Value = this.Value;
+
+                string initialValue = this.Value ?? "";
+                bool useChunkedSetValue = false;
+                if(initialValue.Length > 30_000)
+                {
+                    useChunkedSetValue = true;
+                    initialValue = "";
+                }
+
+
                 await JSModule.Initialize(dotNetObjectRef, ElementRef, ElementId, new
                 {
                     AutoSave = new
@@ -1031,7 +1068,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
                         },
                         text = AutoSaveText
                     },
-                    Value,
+                    Value = initialValue,
                     AutoDownloadFontAwesome,
                     HideIcons,
                     ShowIcons,
@@ -1081,6 +1118,11 @@ namespace PSC.Blazor.Components.MarkdownEditor
                 }
 
                 Initialized = true;
+
+                if (useChunkedSetValue)
+                {
+                    await SetValueAsync(this.Value??"");
+                }
             }
         }
 

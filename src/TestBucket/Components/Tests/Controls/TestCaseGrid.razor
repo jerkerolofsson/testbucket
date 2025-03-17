@@ -1,4 +1,6 @@
 ﻿@using TestBucket.Components.Shared
+@using TestBucket.Domain.Requirements.Models
+@using TestBucket.Traits.Core
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject TestSuiteService testSuiteServer
@@ -41,7 +43,7 @@ SortMode="SortMode.None">
         <PropertyColumn Property="x => x.Slug" Title="ID" />
         <TemplateColumn Title="Name">
             <CellTemplate>
-                <Draggable T="TestCase" Data="@context.Item">
+                <Draggable T="TestEntity" Data="@context.Item">
                     @context.Item.Name
                 </Draggable>
             </CellTemplate>
@@ -51,21 +53,20 @@ SortMode="SortMode.None">
         <PropertyColumn Property="x => x.TestSuiteId" Title="TestSuiteId" />
         <PropertyColumn Property="x => x.TestSuiteFolderId" Title="TestSuiteFolderId" />
 
-        <TemplateColumn Title="Test Category">
-            <CellTemplate>
-                @if(context.Item.TestCaseFields is not null && _definitions is not null)
-                {
-                    var fieldDefinition = _definitions.Where(x => x.Name == "TestCategory").FirstOrDefault();
-                    if (fieldDefinition is not null)
+        @foreach(var column in _columns)
+        {
+            <TemplateColumn Title="@column.Name">
+                <CellTemplate>
+                    @if(context.Item.TestCaseFields is not null)
                     {
-                        foreach (var field in context.Item.TestCaseFields.Where(x => x.FieldDefinitionId == fieldDefinition.Id))
+                        foreach (var field in context.Item.TestCaseFields.Where(x => x.FieldDefinitionId == column.Id))
                         {
                             <MudText>@field.StringValue?.ToString()</MudText>
                         }
                     }
-                }
-            </CellTemplate>
-        </TemplateColumn>
+                </CellTemplate>
+            </TemplateColumn>
+            }
     </Columns>
 
     <PagerContent>

@@ -24,6 +24,7 @@
     string projectSettingsUrl = $"{tenantId}/projects/settings";
     string homeUrl = $"/{tenantId}";
     string authUrl = $"/{tenantId}/Auth";
+    string requirementsUrl = $"/{tenantId}/Requirements";
     string testsUrl = $"/{tenantId}/Testing";
     string runsUrl = $"/{tenantId}/Runs";
     string manageUrl = $"/{tenantId}/Account/Manage";
@@ -43,6 +44,7 @@
                     <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" />
                     <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged"/>
 
+                    <TbNavLink Href="@requirementsUrl">Requirements</TbNavLink>
                     <TbNavLink Href="@testsUrl">Testing</TbNavLink>
                     <TbNavLink Href="@testsUrl">Reporting</TbNavLink>
                     <TbNavLink Href="@testsUrl">Environments</TbNavLink>

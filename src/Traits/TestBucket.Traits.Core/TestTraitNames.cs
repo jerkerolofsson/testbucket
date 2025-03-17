@@ -66,4 +66,9 @@ public class TestTraitNames
     /// </summary>
     public const string OperatingSystemVersion = nameof(OperatingSystemVersion);
 
+    /// <summary>
+    /// Quality Characteristic
+    /// </summary>
+    public const string QualityCharacteristic = nameof(QualityCharacteristic);
+
 }

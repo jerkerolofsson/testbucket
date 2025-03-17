@@ -1,6 +1,6 @@
 ﻿using TestBucket.Components.Tests.Dialogs;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Teams.Models;
-using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Components.Tests.Controls;
 
@@ -105,10 +105,72 @@ public partial class TestTreeView
         return null;
     }
 
-    private async Task OnDrop(TestCase? testCase, TreeItemData<BrowserItem>? targetNode)
+    private async Task OnDropTestSuiteFolderAsync(TestSuiteFolder folder, TreeItemData<BrowserItem> targetNode)
     {
         var target = targetNode?.Value;
-        if (target?.Folder is not null && targetNode is not null && testCase is not null)
+        if (target?.Folder is not null && targetNode is not null)
+        {
+            var targetFolder = target.Folder;
+            if(targetFolder.PathIds is null)
+            {
+                return;
+            }
+
+            // Cannot drop a parent to a child
+            if(targetFolder.PathIds.Contains(folder.Id))
+            {
+                return;
+            }
+
+            // Find the source
+            TreeItemData<BrowserItem>? sourceNode = FindTreeItemData(x => x.Folder?.Id == folder.Id);
+            folder.ParentId = targetFolder.Id;
+
+            await testSuiteService.SaveTestSuiteFolderAsync(folder);
+
+            //    testCase.TestSuiteFolderId = target.Folder.Id;
+            //    testCase.TestSuiteId = target.Folder.TestSuiteId;
+
+            //    await testCaseEditor.SaveTestCaseAsync(testCase);
+
+            // Update the UI
+            RemoveTreeItemData(x => x.Folder?.Id == folder.Id);
+            if (targetNode.Children is null)
+            {
+                targetNode.Children = await testBrowser.BrowseAsync(_team?.Id, _project?.Id, target);
+            }
+            else
+            {
+                targetNode.Children = [.. targetNode.Children, testBrowser.CreateTreeItemDataFromFolder(folder)];
+            }
+        }
+    }
+
+    private async Task OnDrop(TestEntity? testEntity, TreeItemData<BrowserItem>? targetNode)
+    {
+        if (testEntity is null || targetNode is null)
+        {
+            return;
+        }
+        var target = targetNode.Value;
+        if (target is null)
+        {
+            return;
+        }
+        if (testEntity is TestCase testCase)
+        {
+            await OnDropTestCaseAsync(testCase, targetNode);
+        }
+        if (testEntity is TestSuiteFolder testSuiteFolder)
+        {
+            await OnDropTestSuiteFolderAsync(testSuiteFolder, targetNode);
+        }
+    }
+
+    private async Task OnDropTestCaseAsync(TestCase testCase, TreeItemData<BrowserItem> targetNode)
+    {
+        var target = targetNode?.Value;
+        if (target?.Folder is not null && targetNode is not null)
         {
             var fromFolderId = testCase.TestSuiteFolderId;
 
@@ -135,15 +197,17 @@ public partial class TestTreeView
 
     private async Task EditTestSuiteFolderAsync(TestSuiteFolder? folder)
     {
-        if (_selectedTreeItem?.Folder is not null)
+        if (folder is not null)
         {
-            await testBrowser.CustomizeFolderAsync(_selectedTreeItem.Folder);
+            await testBrowser.CustomizeFolderAsync(folder);
 
             // Refresh tree node
-            var treeNode = FindTreeItemData(x => x.Folder?.Id == _selectedTreeItem.Folder.Id);
-            if (treeNode is not null)
+            var treeNode = FindTreeItemData(x => x.Folder?.Id == folder.Id);
+            if (treeNode?.Value is not null)
             {
-                treeNode.Text = _selectedTreeItem.Folder.Name;
+                treeNode.Text = folder.Name;
+                treeNode.Value.Color = folder.Color;
+                treeNode.Value.Icon = folder.Icon;
             }
         }
     }

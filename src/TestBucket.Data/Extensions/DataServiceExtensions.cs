@@ -1,29 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Data.Fields;
+﻿using TestBucket.Data.Fields;
 using TestBucket.Data.Files;
 using TestBucket.Data.Identity;
+using TestBucket.Data.Requirements;
 using TestBucket.Data.Settings;
 using TestBucket.Data.Teams;
 using TestBucket.Data.Tenants;
 using TestBucket.Data.Testing;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
-using TestBucket.Domain.Projects;
+using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Teams;
-using TestBucket.Domain.Tenants;
-using TestBucket.Domain.Testing;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class DataServiceExtensions
 {
     public static IServiceCollection AddDataServices(this IServiceCollection services)
     {
+        services.AddScoped<IRequirementRepository, RequirementRepository>();
         services.AddScoped<ITenantRepository, TenantRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
         services.AddScoped<ITeamRepository, TeamRepository>();

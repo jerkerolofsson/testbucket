@@ -3,8 +3,8 @@
 using TestBucket.Components.Tenants;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Contracts.Testing.Models;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.States;
-using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Components.Tests.Services;
 

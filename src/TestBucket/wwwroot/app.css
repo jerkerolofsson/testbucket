@@ -160,3 +160,17 @@ p.mud-typography-subtitle1 {
      background: rgba(255,255,255,0.1);
      border: solid 1px rgba(255,255,255,0.15);
  }
+
+ .tb-login-container {
+     padding: 16px;
+ }
+
+ ul,
+ ol {
+     margin-left: 20px;
+ }
+
+ .alert-danger,
+ .text-danger {
+     color: var(--mud-palette-error);
+ }

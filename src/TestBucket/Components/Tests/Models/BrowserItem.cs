@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Components.Tests.Models;
+﻿using TestBucket.Domain.Requirements.Models;
+
+namespace TestBucket.Components.Tests.Models;
 
 /// <summary>
 /// An item representing either a test suite or a folder

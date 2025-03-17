@@ -1,4 +1,5 @@
-﻿@attribute [Authorize(Roles = "ADMIN")]
+﻿@using TestBucket.Domain.Requirements.Models
+@attribute [Authorize(Roles = "ADMIN")]
 @inject TestCaseEditorService testCaseEditorService
 
 @if (TestCase is not null)

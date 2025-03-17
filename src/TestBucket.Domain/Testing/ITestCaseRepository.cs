@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Testing.Models;
 
 
 public interface ITestCaseRepository

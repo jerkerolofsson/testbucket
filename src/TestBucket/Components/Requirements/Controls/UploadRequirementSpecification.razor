@@ -1,0 +1,43 @@
+﻿@using TestBucket.Domain.Requirements
+@using TestBucket.Domain.Requirements.Import
+@inject IRequirementImporter requirementImporter
+
+@if(Project is not null)
+{
+    <UploadFile MaxFileSize="10_000_000" TestProjectId="@Project.Id" Accept=".pdf,.md,.txt" FileUploadStarted="OnFileUploadStarted" FileUploaded="OnFileUploaded">
+
+        @if(_loading)
+        {
+            <MudProgressLinear Indeterminate Color="Color.Tertiary"/>
+        }
+        else
+        {
+            <MudText Typo="Typo.h6">
+                Drag and drop requirement specifications here or click to select a file
+            </MudText>
+            <MudText Typo="Typo.subtitle1">Supported formats: .pdf, .md, .txt</MudText>
+        }
+    </UploadFile>
+}
+@code {
+    [CascadingParameter] TestProject? Project { get; set; }
+    [CascadingParameter] Team? Team { get; set; }
+
+    private bool _loading = false;
+
+    public void OnFileUploadStarted()
+    {
+        _loading = true;
+    }
+
+    public async Task OnFileUploaded(FileResource fileResource)
+    {
+        if(Project?.TenantId is null)
+        {
+            return;
+        }
+
+        var spec = await requirementImporter.ImportAsync(Project.TenantId, Project.Id, fileResource);
+        _loading = false;
+    }
+}

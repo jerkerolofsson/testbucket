@@ -5,6 +5,7 @@ using MudBlazor;
 
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Domain.Files;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Teams.Models;
 using TestBucket.Formats;
 

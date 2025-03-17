@@ -136,8 +136,28 @@
         /// <returns></returns>
         public async ValueTask SetValue(string elementId, string value)
         {
-            await jsRuntime.InvokeVoidAsync("setValue", elementId, value);
-            await jsRuntime.InvokeVoidAsync("setInitValue", elementId, value);
+            int maxLength = 30_000;
+            int remaining = value.Length;
+            int offset = 0;
+
+            while(remaining > 0)
+            {
+                var chunkSize = Math.Min(maxLength, remaining);
+                var chunk = value.Substring(offset, chunkSize);
+
+                if (offset == 0)
+                {
+                    await jsRuntime.InvokeVoidAsync("setValue", elementId, chunk);
+                }
+                else
+                {
+                    await jsRuntime.InvokeVoidAsync("appendValue", elementId, chunk);
+                }
+                remaining -= chunkSize;
+                offset += chunkSize;
+            }
+
+            //await jsRuntime.InvokeVoidAsync("setInitValue", elementId, value);
         }
 
         /// <summary>

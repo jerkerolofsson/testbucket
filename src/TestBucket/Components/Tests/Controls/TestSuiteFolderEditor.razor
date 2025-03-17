@@ -1,0 +1,8 @@
+﻿@if (Folder is not null)
+{
+    <AttachmentGrid TestSuiteFolderId="@Folder.Id" />
+}
+
+@code {
+    [Parameter] public TestSuiteFolder? Folder { get; set; }
+}

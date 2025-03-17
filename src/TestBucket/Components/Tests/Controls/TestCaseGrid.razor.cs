@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Tests.Dialogs;
-using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Components.Tests.Controls;
 
@@ -20,7 +20,9 @@ public partial class TestCaseGrid
     private SearchTestQuery _query = new();
 
     private MudDataGrid<TestCase?> _dataGrid = default!;
-    private IReadOnlyList<FieldDefinition> _definitions;
+    private IReadOnlyList<FieldDefinition> _definitions = [];
+
+    private List<FieldDefinition> _columns = [];
 
     public Task OnTestCreatedAsync(TestCase testCase)
     {
@@ -42,11 +44,19 @@ public partial class TestCaseGrid
 
     protected override async Task OnParametersSetAsync()
     {
+        long? testProjectId = null;
+        if(TestSuiteId is not null)
+        {
+            var testSuite = await testSuiteServer.GetTestSuiteByIdAsync(TestSuiteId.Value);
+            testProjectId = testSuite?.TestProjectId;
+
+        }
         if (FolderId is not null)
         {
             if(FolderId != _folder?.Id)
             {
                 _folder = await testSuiteServer.GetTestSuiteFolderByIdAsync(FolderId.Value);
+                testProjectId = _folder?.TestProjectId;
                 _dataGrid?.ReloadServerData();
             }
         }
@@ -55,13 +65,27 @@ public partial class TestCaseGrid
             if(_folder?.Id != Folder.Id)
             {
                 _folder = Folder;
+                testProjectId = _folder.TestProjectId;
                 _dataGrid?.ReloadServerData();
             }
         }
 
-        if(_folder is not null)
+        _columns = [];
+        if(testProjectId is not null)
         {
-            _definitions = await fieldService.SearchDefinitionsAsync(FieldTarget.TestCase, new SearchQuery { ProjectId = _folder.TestProjectId });
+            _definitions = await fieldService.SearchDefinitionsAsync(FieldTarget.TestCase, new SearchQuery { ProjectId = testProjectId });
+
+            var category = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestCategory);
+            if (category is not null && !_columns.Any(x=>x.TraitType == Traits.Core.TraitType.TestCategory))
+            {
+                _columns.Add(category);
+            }
+
+            var prio = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestPriority);
+            if (prio is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestPriority))
+            {
+                _columns.Add(prio);
+            }
         }
     }
     protected override void OnInitialized()

@@ -90,6 +90,13 @@
     font-size: 200%;
 }
 
+    .EasyMDEContainer .editor-preview hr {
+        margin-top: 4px;
+        margin-bottom: 4px;
+        background: var(--mud-palette-primary);
+        height: 1px;
+    }
+
 
 .editor-toolbar button:hover {
 background: var(--mud-palette-primary);

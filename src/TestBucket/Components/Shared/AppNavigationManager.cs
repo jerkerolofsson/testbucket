@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Components.Shared;
+﻿using TestBucket.Domain.Requirements.Models;
+
+namespace TestBucket.Components.Shared;
 
 public class AppNavigationManager
 {

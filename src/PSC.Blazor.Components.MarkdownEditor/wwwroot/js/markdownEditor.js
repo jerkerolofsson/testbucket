@@ -199,8 +199,41 @@ function initialize(dotNetObjectRef, element, elementId, options) {
     });
 
     easyMDE.codemirror.on("change", function () {
-        var text = easyMDE.value();
-        dotNetObjectRef.invokeMethodAsync("UpdateInternalValue", text, easyMDE.options.previewRender(text));
+        const text = easyMDE.value();
+        if (text === null || text === undefined) {
+            return;
+        }
+
+        // Blazor will disconnect if too large payload, so we fragment it
+        const maxSize = 20000;
+
+        
+        try {
+            if (text.length < maxSize || false) {
+                console.log("UpdateInternalValue: " + text.length);
+                dotNetObjectRef.invokeMethodAsync("UpdateInternalValue", text);
+            } else {
+                let remainingChars = text.length;
+                let offset = 0;
+
+                dotNetObjectRef.invokeMethodAsync("BeginAppendInternalValue");
+
+                while (remainingChars > 0) {
+                    let numChars = Math.min(remainingChars, maxSize);
+                    let packet = text.substr(offset, numChars);
+
+                    console.log("AppendInternalValue: " + numChars);
+                    dotNetObjectRef.invokeMethodAsync("AppendInternalValue", packet);
+
+                    offset += numChars;
+                    remainingChars -= numChars;
+
+                }
+                dotNetObjectRef.invokeMethodAsync("EndAppendInternalValue");
+            }
+        } catch (err) {
+            console.error("Error invoking dotnet");
+        }
     });
 
     function renderAttention(editor) {
@@ -270,7 +303,7 @@ function initialize(dotNetObjectRef, element, elementId, options) {
         imageUploadNotifier: imageUploadNotifier
     };
 
-    console.log("easyMDE", easyMDE);
+    //console.log("easyMDE", easyMDE);
 
     if (options.preview === true) {
         // Set initial state to preview if requested
@@ -281,8 +314,8 @@ function initialize(dotNetObjectRef, element, elementId, options) {
     }
 
     // update the first time
-    var text = easyMDE.value();
-    dotNetObjectRef.invokeMethodAsync("UpdateInternalValue", text, easyMDE.options.previewRender(text));
+    //var text = easyMDE.value();
+    //dotNetObjectRef.invokeMethodAsync("UpdateInternalValue", text, easyMDE.options.previewRender(text));
 }
 
 function allowResize(id) {
@@ -630,7 +663,19 @@ function setValue(elementId, value) {
 
     if (instance) {
         console.log("SetValue changes value");
+        instance.isChangingValue = true;
         instance.editor.value(value);
+        instance.isChangingValue = false;
+    }
+}
+function appendValue(elementId, value) {
+    const instance = _instances[elementId];
+
+    if (instance) {
+        value = instance.editor.value() + value;
+        instance.isChangingValue = true;
+        instance.editor.value(value);
+        instance.isChangingValue = false;
     }
 }
 

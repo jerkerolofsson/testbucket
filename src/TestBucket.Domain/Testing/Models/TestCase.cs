@@ -5,7 +5,7 @@ namespace TestBucket.Domain.Testing.Models;
 [Table("testcases")]
 [Index(nameof(Created))]
 [Index(nameof(Name))]
-public class TestCase
+public class TestCase : TestEntity
 {
     /// <summary>
     /// Database ID

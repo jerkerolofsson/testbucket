@@ -2,7 +2,7 @@
 
 [Table("testsuite__folders")]
 [Index(nameof(TenantId), nameof(Created))]
-public class TestSuiteFolder
+public class TestSuiteFolder : TestEntity
 {
     /// <summary>
     /// Database ID

@@ -25,5 +25,6 @@ namespace TestBucket.Domain.Requirements
         /// <param name="query"></param>
         /// <returns></returns>
         Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(string tenantId, SearchQuery query);
+        Task UpdateRequirementSpecificationAsync(RequirementSpecification specification);
     }
 }

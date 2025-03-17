@@ -24,25 +24,21 @@ namespace TestBucket.Domain.Requirements.Import
             _requirementRepository = requirementRepository;
         }
 
-        public async Task<RequirementSpecification?> ImportAsync(string tenantId, long testProjectId, FileResource fileResource)
+        public async Task<RequirementSpecification?> ImportAsync(string tenantId, long teamId, long testProjectId, FileResource fileResource)
         {
             try
             {
                 var extension = Path.GetExtension(fileResource.Name);
                 if (extension == ".pdf")
                 {
-                    var spec = await ImportPdfAsync(tenantId, testProjectId, fileResource);
+                    var spec = await ImportPdfAsync(tenantId, teamId, testProjectId, fileResource);
                     spec.FileResourceId = fileResource.Id;
-
-                    await _requirementRepository.AddRequirementSpecificationAsync(tenantId, spec);
                     return spec;
                 }
                 if (extension == ".md" || extension == ".txt")
                 {
-                    var spec = await ImportTextAsync(tenantId, testProjectId, fileResource, fileResource.Name ?? "spec");
+                    var spec = await ImportTextAsync(tenantId, teamId, testProjectId, fileResource, fileResource.Name ?? "spec");
                     spec.FileResourceId = fileResource.Id;
-
-                    await _requirementRepository.AddRequirementSpecificationAsync(tenantId, spec);
                     return spec;
                 }
                 return null;
@@ -54,12 +50,13 @@ namespace TestBucket.Domain.Requirements.Import
             }
         }
 
-        private async Task<RequirementSpecification> ImportTextAsync(string tenantId, long testProjectId, FileResource fileResource, string name)
+        private async Task<RequirementSpecification> ImportTextAsync(string tenantId, long teamId, long testProjectId, FileResource fileResource, string name)
         {
             var spec = new RequirementSpecification
             {
                 Name = "",
                 TenantId = tenantId,
+                TeamId = teamId,
                 TestProjectId = testProjectId,
                 Description = ""
             };
@@ -76,14 +73,15 @@ namespace TestBucket.Domain.Requirements.Import
         }
 
 
-        private async Task<RequirementSpecification> ImportPdfAsync(string tenantId, long testProjectId, FileResource fileResource)
+        private async Task<RequirementSpecification> ImportPdfAsync(string tenantId, long teamId, long testProjectId, FileResource fileResource)
         {
             var spec = new RequirementSpecification
             {
                 Name = "",
                 TenantId = tenantId,
                 TestProjectId = testProjectId,
-                Description = ""
+                Description = "",
+                TeamId = teamId,
             };
 
             await new PdfImporter().ImportAsync(spec, fileResource);

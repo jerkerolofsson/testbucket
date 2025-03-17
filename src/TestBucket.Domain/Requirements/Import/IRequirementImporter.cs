@@ -4,5 +4,5 @@ using TestBucket.Domain.Requirements.Models;
 namespace TestBucket.Domain.Requirements.Import;
 public interface IRequirementImporter
 {
-    Task<RequirementSpecification?> ImportAsync(string tenantId, long testProjectId, FileResource fileResource);
+    Task<RequirementSpecification?> ImportAsync(string tenantId, long teamId, long testProjectId, FileResource fileResource);
 }

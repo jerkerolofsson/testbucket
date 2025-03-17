@@ -11,12 +11,20 @@
 
 <MudSplitter Style="height: 100%" Color="Color.Primary" Bordered="false" Dimension="20" EnableMargin="false">
     <StartContent>
-        <RequirementSpecTableView/>
+        <RequirementTreeView OnSpecificationClicked="OnSpecificationClicked"/>
     </StartContent>
 
     <EndContent>
-        <MudStack Class="pa-3">
-            <UploadRequirementSpecification/>
+        <MudStack Class="pa-3" Style="width: 100%">
+
+            @if (_specification is not null)
+            {
+                <RequirementSpecificationEditor Specification="@_specification"/>
+            }
+            else
+            {
+                <UploadRequirementSpecification/>
+            }
         </MudStack>
     </EndContent>
 </MudSplitter>
@@ -28,6 +36,16 @@
 
     private Team? _team;
     private TestProject? _project;
+    private RequirementSpecification? _specification;
+    private Requirement? _requirement;
+    private RequirementSpecificationFolder? _requirementFolder;
+
+    private async Task OnSpecificationClicked(RequirementSpecification specification)
+    {
+        _requirementFolder = null;
+        _requirement = null;
+        _specification = specification;
+    }
 
     protected override void OnParametersSet()
     {

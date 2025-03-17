@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <Folder Include="Components\Administration\" />
+    <Folder Include="Components\Tests\Models\" />
     <Folder Include="Services\" />
   </ItemGroup>
 

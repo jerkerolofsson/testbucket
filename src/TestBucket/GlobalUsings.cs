@@ -25,7 +25,6 @@ global using TestBucket.Components.Tenants;
 global using TestBucket.Domain.Fields.Models;
 
 global using TestBucket.Components.Shared;
-global using TestBucket.Components.Tests.Models;
 
 
 

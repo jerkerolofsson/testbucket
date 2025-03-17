@@ -1,0 +1,250 @@
+﻿@implements IRequirementObserver
+@implements IDisposable
+@inject RequirementBrowser browser
+@inject RequirementEditorService editor
+
+
+<MudStack Spacing="0" Class="pa-2" Style="width: 100%; background: var(--mud-palette-surface)">
+    <MudStack Row="true" Style="border-bottom: solid 1px var(--mud-palette-darken)" Spacing="0">
+        <MudTooltip Text="Add test suite">
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementSpecificationAsync" />
+        </MudTooltip>
+        <MudSpacer />
+    </MudStack>
+
+    <MudTreeView Class="pa-2"
+    @ref="_treeView"
+    SelectionMode="@SelectionMode.ToggleSelection"
+    T="BrowserItem"
+    SelectedValue="@_selectedTreeItem"
+    SelectedValueChanged="OnSelectedValueChangedAsync"
+    Hover="true"
+    Color="Color.Tertiary"
+    ServerData="@LoadServerData"
+    Items="@_rootItems">
+
+        <ItemTemplate>
+
+            @{
+                string style = "";
+                if (context.Value?.Color is not null)
+                {
+                    style += $"color: {context.Value.Color}";
+                }
+            }
+
+            <DropZone T="Requirement" OnDrop="(test) => OnDrop(test, context)">
+                <MudTreeViewItem Value="@context.Value"
+                Style="@style"
+                Items="@context.Children"
+                ItemsChanged="@(new Action<IReadOnlyCollection<TreeItemData<BrowserItem>>>(items => OnItemsLoaded(context, items)))"
+                @bind-Expanded="@context.Expanded"
+                CanExpand="@context.Expandable"
+                Icon="@context.Icon"
+                Text="@context.Text"
+                Context="treeNode"
+                LoadingIconColor="Color.Info">
+                    <BodyContent>
+
+                        <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true">
+                            <ActivatorContent>
+                                @if (treeNode.Value?.Requirement is not null)
+                                {
+                                    <Draggable T="Requirement" Data="@treeNode.Value.Requirement">
+                                        @treeNode.Text
+                                    </Draggable>
+                                }
+                                else
+                                {
+                                    @treeNode.Text
+                                }
+                            </ActivatorContent>
+                            <ChildContent>
+                                @* <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import" /> *@
+
+                            </ChildContent>
+                        </MudMenu>
+                    </BodyContent>
+                </MudTreeViewItem>
+            </DropZone>
+        </ItemTemplate>
+    </MudTreeView>
+</MudStack>
+
+
+@code {
+    /// <summary>
+    /// Instance of the tree view UI
+    /// </summary>
+    private MudTreeView<BrowserItem> _treeView = default!;
+
+    /// <summary>
+    /// Root items in the tree view
+    /// </summary>
+    private List<TreeItemData<BrowserItem>> _rootItems = [];
+
+    /// <summary>
+    /// currently selected item
+    /// </summary>
+    private BrowserItem? _selectedTreeItem;
+
+    /// <summary>
+    /// Invoked when a specification is clicked
+    /// </summary>
+    [Parameter] public EventCallback<RequirementSpecification> OnSpecificationClicked { get; set; }
+
+    /// <summary>
+    /// Invoked when a specification is clicked
+    /// </summary>
+    [Parameter] public EventCallback<Requirement> OnRequirementClicked { get; set; }
+
+    /// <summary>
+    /// Invoked when a folder is clicked
+    /// </summary>
+    [Parameter] public EventCallback<RequirementSpecificationFolder> OnFolderClicked { get; set; }
+
+    [CascadingParameter] protected TestProject? Project { get; set; }
+
+    [CascadingParameter] protected Team? Team { get; set; }
+
+    private async Task OnSelectedValueChangedAsync(BrowserItem? item)
+    {
+        _selectedTreeItem = item;
+        if (item is not null)
+        {
+            if (item.Requirement is not null)
+            {
+                await OnRequirementClicked.InvokeAsync(item.Requirement);
+            }
+            else if (item.RequirementSpecification is not null)
+            {
+                await OnSpecificationClicked.InvokeAsync(item.RequirementSpecification);
+            }
+            else if (item.RequirementFolder is not null)
+            {
+                await OnFolderClicked.InvokeAsync(item.RequirementFolder);
+            }
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        editor.AddObserver(this);
+    }
+
+    public void Dispose()
+    {
+        editor.RemoveObserver(this);
+    }
+
+    private void SetRootItems(List<TreeItemData<BrowserItem>> rootItems)
+    {
+        // Copy state and children from existing nodes
+        foreach (var item in rootItems)
+        {
+            var existing = _rootItems.FirstOrDefault(x => x.Text == item.Text);
+            if (existing is not null)
+            {
+                item.Expanded = existing.Expanded;
+                item.Expandable = existing.Expandable;
+
+                if (existing.Children is not null && item.Children is not null)
+                {
+                    foreach(var existingChild in existing.Children)
+                    {
+                        var itemChild = item.Children.Where(x=>x.Value?.RequirementSpecification == existingChild.Value?.RequirementSpecification).FirstOrDefault();
+                        if(itemChild is not null)
+                        {
+                            itemChild.Children = existingChild.Children;
+                            itemChild.Expanded = existingChild.Expanded;
+                        }
+                    }
+                }
+            }
+        }
+
+        _rootItems = rootItems;
+        this.StateHasChanged();
+    }
+
+    public async Task OnSpecificationCreatedAsync(RequirementSpecification spec)
+    {
+        SetRootItems(await browser.BrowseAsync(_team?.Id, _project?.Id, null));
+        // foreach (var specFolder in _rootItems.Where(x=>x.Text == "Specifications"))
+        // {
+        //     if(specFolder.Children is not null)
+        //     {
+        //         specFolder.Children = [.. specFolder.Children, browser.CreateSpecificationNode(spec)];
+        //     }
+        // }
+    }
+    public async Task OnSpecificationDeletedAsync(RequirementSpecification spec)
+    {
+        SetRootItems(await browser.BrowseAsync(_team?.Id, _project?.Id, null));
+    }
+    public async Task OnSpecificationSavedAsync(RequirementSpecification spec)
+    {
+        SetRootItems(await browser.BrowseAsync(_team?.Id, _project?.Id, null));
+    }
+
+
+    public async Task<IReadOnlyCollection<TreeItemData<BrowserItem>>> LoadServerData(BrowserItem? browserItem)
+    {
+        if (Team is null || Project is null)
+        {
+            return [];
+        }
+
+        return await browser.BrowseAsync(Team?.Id, Project?.Id, browserItem);
+    }
+
+    private void OnItemsLoaded(TreeItemData<BrowserItem> treeItemData, IReadOnlyCollection<TreeItemData<BrowserItem>> children)
+    {
+        // here we store the server-loaded children in the treeItemData so that they are available in the InitialTreeItems
+        // if you don't do this you loose already loaded children on next render update
+        treeItemData.Children = children?.ToList();
+    }
+
+    private async Task AddRequirementSpecificationAsync()
+    {
+        var spec = new RequirementSpecification()
+        {
+            Name = "New Specification",
+            TenantId = Project?.TenantId ?? "",
+            TestProjectId = Project?.Id,
+            TeamId = Team?.Id,
+        };
+
+        await editor.AddRequirementSpecificationAsync(spec);
+    }
+
+    private async Task OnDrop(Requirement? requirement, TreeItemData<BrowserItem>? targetNode)
+    {
+        if (requirement is null || targetNode is null)
+        {
+            return;
+        }
+        var target = targetNode.Value;
+        if (target is null)
+        {
+            return;
+        }
+    }
+
+    private TestProject? _project;
+    private Team? _team;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_rootItems.Count == 0 || _project != Project || _team != Team)
+        {
+            _team = Team;
+            _project = Project;
+            _selectedTreeItem = null;
+            if (Project is not null && Team is not null)
+            {
+                _rootItems = await browser.BrowseAsync(_team?.Id, _project?.Id, null);
+            }
+        }
+    }
+}

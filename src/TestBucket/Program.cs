@@ -13,6 +13,7 @@ using OllamaSharp;
 using TestBucket.Components;
 using TestBucket.Components.Account;
 using TestBucket.Components.Projects;
+using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Themeing;
 using TestBucket.Components.Teams;
@@ -152,6 +153,9 @@ public class Program
         builder.Services.AddScoped<TestRunCreationService>();
         builder.Services.AddScoped<AttachmentsService>();
         builder.Services.AddScoped<AppNavigationManager>();
+
+        builder.Services.AddScoped<RequirementBrowser>();
+        builder.Services.AddScoped<RequirementEditorService>();
 
         builder.Services.AddScoped<TestService>();
         builder.Services.AddScoped<UserPreferencesService>();

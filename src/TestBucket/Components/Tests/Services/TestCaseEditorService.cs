@@ -47,7 +47,7 @@ internal class TestCaseEditorService : TenantBaseService
     public void AddObserver(ITestCaseObserver observer) => _testCaseObservers.Add(observer);
 
     /// <summary>
-    /// Remopves an observer
+    /// Removes an observer
     /// </summary>
     /// <param name="observer"></param>
     public void RemoveObserver(ITestCaseObserver observer) => _testCaseObservers.Remove(observer);

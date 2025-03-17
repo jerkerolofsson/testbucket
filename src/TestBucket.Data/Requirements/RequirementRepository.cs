@@ -56,5 +56,14 @@ namespace TestBucket.Data.Requirements
             await dbContext.RequirementSpecifications.AddAsync(spec);
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task UpdateRequirementSpecificationAsync(RequirementSpecification specification)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+            dbContext.RequirementSpecifications.Update(specification);
+            await dbContext.SaveChangesAsync();
+
+        }
     }
 }

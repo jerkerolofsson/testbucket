@@ -10,65 +10,86 @@
             <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementSpecificationAsync" />
         </MudTooltip>
         <MudSpacer />
+
+        <MudTextField 
+            Clearable
+            Variant="Variant.Outlined"
+            Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
+
     </MudStack>
 
-    <MudTreeView Class="pa-2"
-    @ref="_treeView"
-    SelectionMode="@SelectionMode.ToggleSelection"
-    T="BrowserItem"
-    SelectedValue="@_selectedTreeItem"
-    SelectedValueChanged="OnSelectedValueChangedAsync"
-    Hover="true"
-    Color="Color.Tertiary"
-    ServerData="@LoadServerData"
-    Items="@_rootItems">
+    @if (_isSearching)
+    {
+        <MudProgressLinear Indeterminate Color="Color.Secondary"/>
+    }
+    else
+    {
+        <MudTreeView Class="pa-2"
+            SelectionMode="@SelectionMode.ToggleSelection"
+            T="BrowserItem"
+            SelectedValue="@_selectedTreeItem"
+            SelectedValueChanged="OnSelectedValueChangedAsync"
+            Hover="true"
+            Color="Color.Tertiary"
+            ServerData="@LoadServerData"
+            Items="@_rootItems">
 
-        <ItemTemplate>
+            <ItemTemplate>
 
-            @{
-                string style = "";
-                if (context.Value?.Color is not null)
-                {
-                    style += $"color: {context.Value.Color}";
+                @{
+                    string style = "";
+                    if (context.Value?.Color is not null)
+                    {
+                        style += $"color: {context.Value.Color}";
+                    }
                 }
-            }
 
-            <DropZone T="Requirement" OnDrop="(test) => OnDrop(test, context)">
-                <MudTreeViewItem Value="@context.Value"
-                Style="@style"
-                Items="@context.Children"
-                ItemsChanged="@(new Action<IReadOnlyCollection<TreeItemData<BrowserItem>>>(items => OnItemsLoaded(context, items)))"
-                @bind-Expanded="@context.Expanded"
-                CanExpand="@context.Expandable"
-                Icon="@context.Icon"
-                Text="@context.Text"
-                Context="treeNode"
-                LoadingIconColor="Color.Info">
-                    <BodyContent>
+                <DropZone T="Requirement" OnDrop="(test) => OnDrop(test, context)">
+                    <MudTreeViewItem Value="@context.Value"
+                    Style="@style"
+                    Items="@context.Children"
+                    ItemsChanged="@(new Action<IReadOnlyCollection<TreeItemData<BrowserItem>>>(items => OnItemsLoaded(context, items)))"
+                    @bind-Expanded="@context.Expanded"
+                    CanExpand="@context.Expandable"
+                    Icon="@context.Icon"
+                    Text="@context.Text"
+                    Context="treeNode"
+                    LoadingIconColor="Color.Info">
+                        <BodyContent>
 
-                        <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true">
-                            <ActivatorContent>
-                                @if (treeNode.Value?.Requirement is not null)
-                                {
-                                    <Draggable T="Requirement" Data="@treeNode.Value.Requirement">
+                            <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true">
+                                <ActivatorContent>
+                                    @if (treeNode.Value?.Requirement is not null)
+                                    {
+                                        <Draggable T="Requirement" Data="@treeNode.Value.Requirement">
+                                            @treeNode.Text
+                                        </Draggable>
+                                    }
+                                    else
+                                    {
                                         @treeNode.Text
-                                    </Draggable>
-                                }
-                                else
-                                {
-                                    @treeNode.Text
-                                }
-                            </ActivatorContent>
-                            <ChildContent>
-                                @* <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import" /> *@
+                                    }
+                                </ActivatorContent>
+                                <ChildContent>
+                                    <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => AddRequirementSpecificationAsync()">Add Specification</MudMenuItem>
 
-                            </ChildContent>
-                        </MudMenu>
-                    </BodyContent>
-                </MudTreeViewItem>
-            </DropZone>
-        </ItemTemplate>
-    </MudTreeView>
+                                    @* <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import" /> *@
+                                    @if (context.Value?.RequirementSpecification is not null)
+                                    {
+                                        <MudDivider />
+                                        <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="() => ExtractRequirementsFromSpecificationAsync(context.Value?.RequirementSpecification)" Label="Extract Requirements" />
+                                        <MudDivider />
+                                        <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteRequirementSpecificationAsync(context.Value?.RequirementSpecification)" Label="Delete" />
+                                    }
+
+                                </ChildContent>
+                            </MudMenu>
+                        </BodyContent>
+                    </MudTreeViewItem>
+                </DropZone>
+            </ItemTemplate>
+        </MudTreeView>
+    }
 </MudStack>
 
 
@@ -106,6 +127,8 @@
     [CascadingParameter] protected TestProject? Project { get; set; }
 
     [CascadingParameter] protected Team? Team { get; set; }
+
+    private bool _isSearching = false;
 
     private async Task OnSelectedValueChangedAsync(BrowserItem? item)
     {
@@ -205,6 +228,24 @@
         treeItemData.Children = children?.ToList();
     }
 
+    private async Task ExtractRequirementsFromSpecificationAsync(RequirementSpecification? specification)
+    {
+        if(specification is null)
+        {
+            return;
+        }
+        await editor.ExtractRequirementsFromSpecificationAsync(specification);
+    }
+
+    private async Task DeleteRequirementSpecificationAsync(RequirementSpecification? specification)
+    {
+        if (specification is null)
+        {
+            return;
+        }
+        await editor.DeleteRequirementSpecificationAsync(specification);
+    }
+
     private async Task AddRequirementSpecificationAsync()
     {
         var spec = new RequirementSpecification()
@@ -233,6 +274,25 @@
 
     private TestProject? _project;
     private Team? _team;
+    private string _searchText = "";
+
+    private async Task OnSearchTextChangedAsync(string text)
+    {
+        _isSearching = true;
+        this.StateHasChanged();
+
+        _searchText = text;
+        if(string.IsNullOrWhiteSpace(_searchText))
+        {
+            _rootItems = await browser.BrowseAsync(_team?.Id, _project?.Id, null);
+        }
+        else
+        {
+            _rootItems = await browser.SearchAsync(_team?.Id, _project?.Id, _searchText);
+        }
+
+        _isSearching = false;
+    }
 
     protected override async Task OnParametersSetAsync()
     {

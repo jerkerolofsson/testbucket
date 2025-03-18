@@ -58,12 +58,45 @@ namespace TestBucket.Data.Requirements
                 Items = items.ToArray()
             };
         }
-        public async Task AddRequirementSpecificationAsync(RequirementSpecification spec)
+        public async Task AddRequirementSpecificationAsync(RequirementSpecification specification)
         {
-            spec.Created = DateTimeOffset.UtcNow;
+            specification.Created = DateTimeOffset.UtcNow;
 
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-            await dbContext.RequirementSpecifications.AddAsync(spec);
+            await dbContext.RequirementSpecifications.AddAsync(specification);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteRequirementSpecificationAsync(RequirementSpecification specification)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+            foreach (var requirement in dbContext.Requirements.Where(x => x.RequirementSpecificationId == specification.Id))
+            {
+                dbContext.Requirements.Remove(requirement);
+            }
+            foreach (var folder in dbContext.RequirementSpecificationFolders.Where(x => x.RequirementSpecificationId == specification.Id))
+            {
+                dbContext.RequirementSpecificationFolders.Remove(folder);
+            }
+            dbContext.RequirementSpecifications.Remove(specification);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteSpecificationRequirementsAndFoldersAsync(RequirementSpecification specification)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+            foreach (var requirement in dbContext.Requirements.Where(x => x.RequirementSpecificationId == specification.Id))
+            {
+                dbContext.Requirements.Remove(requirement);
+            }
+            foreach (var folder in dbContext.RequirementSpecificationFolders.Where(x => x.RequirementSpecificationId == specification.Id))
+            {
+                dbContext.RequirementSpecificationFolders.Remove(folder);
+            }
+
             await dbContext.SaveChangesAsync();
         }
 
@@ -76,6 +109,13 @@ namespace TestBucket.Data.Requirements
         }
 
         public async Task AddRequirementAsync(Requirement requirement)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            await dbContext.Requirements.AddAsync(requirement);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateRequirementAsync(Requirement requirement)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             dbContext.Requirements.Update(requirement);

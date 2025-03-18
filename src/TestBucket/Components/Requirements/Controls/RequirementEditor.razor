@@ -1,13 +1,13 @@
 ﻿@inject RequirementEditorController editor
 
-@if(Specification is not null)
+@if(Requirement is not null)
 {
     <MudStack Style="width: 100%">
         <MudToolBar Style="background: var(--mud-palette-primary)">
 
             @if (!_preview && _editor is not null)
             {
-                <MudTextField Variant="Variant.Outlined" Label="Name" AdornmentColor="Color.Tertiary" Value="@Specification.Name" ValueChanged="OnNameChanged" T="string" AutoFocus="true" />
+                <MudTextField Variant="Variant.Outlined" Label="Name" AdornmentColor="Color.Tertiary" Value="@Requirement.Name" ValueChanged="OnNameChanged" T="string" AutoFocus="true" />
 
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 
@@ -55,7 +55,7 @@
             MaxHeight="100%"
             Color="Color.Primary"
             AllowResize="true"
-            Value="@Specification.Description"
+            Value="@Requirement.Description"
             ValueChanged="OnDescriptionChanged"
             SpellChecker="false">
             </MarkdownEditor>
@@ -63,7 +63,7 @@
 }
 
 @code {
-    [Parameter] public RequirementSpecification? Specification { get;set; }
+    [Parameter] public Requirement? Requirement { get; set; }
     private MarkdownEditor? _editor;
     private bool _preview = true;
 
@@ -75,28 +75,28 @@
     private async Task SaveChangesAsync()
     {
         _preview = true;
-        if (Specification is not null)
+        if (Requirement is not null)
         {
-            await editor.SaveRequirementSpecificationAsync(Specification);
+            await editor.SaveRequirementAsync(Requirement);
         }
     }
 
 
     private void OnNameChanged(string name)
     {
-        if(Specification is null)
+        if (Requirement is null)
         {
             return;
         }
-        Specification.Name = name;
+        Requirement.Name = name;
     }
 
     private void OnDescriptionChanged(string description)
     {
-        if (Specification is null)
+        if (Requirement is null)
         {
             return;
         }
-        Specification.Description = description;
+        Requirement.Description = description;
     }
 }

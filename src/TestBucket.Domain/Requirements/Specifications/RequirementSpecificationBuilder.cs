@@ -15,6 +15,10 @@ namespace TestBucket.Domain.Requirements.Specifications
         {
             var specifications = new List<FilterSpecification<Requirement>>();
 
+            if (!string.IsNullOrWhiteSpace(query.Text))
+            {
+                specifications.Add(new FilterRequirementByText(query.Text));
+            }
             if (query.RequirementSpecificationId is not null)
             {
                 specifications.Add(new FilterRequirementBySpecification(query.RequirementSpecificationId.Value));

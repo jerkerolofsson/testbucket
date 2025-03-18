@@ -1,11 +1,13 @@
-﻿namespace TestBucket.Domain.Markdown
+﻿using System.Text;
+
+namespace TestBucket.Domain.Markdown
 {
     internal class MarkdownSectionParser
     {
         public static IEnumerable<MarkdownSection> ReadSections(string text, CancellationToken cancellationToken)
         {
             Stack<string> path = new();
-            foreach (var section in TextSectionReader.ReadSections(text))
+            foreach (var section in ReadSections(text))
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -25,6 +27,37 @@
                 }
             }
             return 0;
+        }
+
+        /// <summary>
+        /// Reads sections where a heading marks a section
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static IEnumerable<string> ReadSections(string text)
+        {
+            var sb = new StringBuilder();
+
+            foreach (var line in text.Split('\n'))
+            {
+                bool isHeader = line.Trim().StartsWith('#');
+                if (isHeader)
+                {
+                    if (sb.Length > 0)
+                    {
+                        yield return sb.ToString();
+                        sb.Clear();
+                    }
+                }
+
+                sb.Append(line);
+                sb.Append('\n');
+            }
+
+            if (sb.Length > 0)
+            {
+                yield return sb.ToString();
+            }
         }
 
         private static MarkdownSection ExtractSection(Stack<string> path, string section)

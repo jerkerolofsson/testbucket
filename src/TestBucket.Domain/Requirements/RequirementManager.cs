@@ -31,9 +31,24 @@ namespace TestBucket.Domain.Requirements
         }
 
         /// <summary>
+        /// Updates a requirement
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="requirement"></param>
+        /// <returns></returns>
+        public Task UpdateRequirementAsync(ClaimsPrincipal principal, Requirement requirement)
+        {
+            principal.ThrowIfEntityTenantIsDifferent(requirement);
+            requirement.ModifiedBy = principal.Identity?.Name;
+            requirement.Modified = DateTimeOffset.UtcNow;
+            return _repository.UpdateRequirementAsync(requirement);
+        }
+
+        /// <summary>
         /// Adds a new requirement specification
         /// </summary>
-        /// <param name="spec"></param>
+        /// <param name="principal">User making changes</param>
+        /// <param name="specification">Entity to save</param>
         /// <returns></returns>
         public Task AddRequirementSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification)
         {
@@ -43,6 +58,19 @@ namespace TestBucket.Domain.Requirements
             specification.CreatedBy = principal.Identity?.Name;
             specification.ModifiedBy = principal.Identity?.Name;
             return _repository.AddRequirementSpecificationAsync(specification);
+        }
+
+
+        public async Task DeleteRequirementSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification)
+        {
+            principal.ThrowIfEntityTenantIsDifferent(specification);
+            await _repository.DeleteRequirementSpecificationAsync(specification);
+        }
+
+        public async Task DeleteSpecificationRequirementsAndFoldersAsync(ClaimsPrincipal principal, RequirementSpecification specification)
+        {
+            principal.ThrowIfEntityTenantIsDifferent(specification);
+            await _repository.DeleteSpecificationRequirementsAndFoldersAsync(specification);
         }
 
         public async Task<PagedResult<Requirement>> SearchRequirementsAsync(ClaimsPrincipal principal, SearchRequirementQuery query)

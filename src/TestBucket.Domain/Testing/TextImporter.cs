@@ -1,4 +1,5 @@
 ﻿
+using System.Diagnostics;
 using System.Security.Claims;
 
 using TestBucket.Domain.Fields;
@@ -195,6 +196,8 @@ internal class TextImporter : ITextTestResultsImporter
 
     private async Task AddAttachmentsAsync(TestCaseRun testCaseRun, List<AttachmentDto>? attachments)
     {
+        Debug.Assert(testCaseRun.TenantId != null);
+
         if(attachments is not null)
         {
             foreach(var attachment in attachments)
@@ -203,7 +206,7 @@ internal class TextImporter : ITextTestResultsImporter
                 {
                     ContentType = attachment.ContentType ?? "application/octet-stream",
                     Data = attachment.Data ?? [],
-                    TenantId = testCaseRun.TenantId,
+                    TenantId = testCaseRun.TenantId!,
                     TestCaseRunId = testCaseRun.Id,
                     Name = attachment.Name ?? "Attachment",
                     Category = ResourceCategory.Attachment,

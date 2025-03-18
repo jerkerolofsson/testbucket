@@ -19,13 +19,19 @@ internal class RequirementEditorController : TenantBaseService
     private readonly List<IRequirementObserver> _requirementObservers = new();
     private readonly IRequirementImporter _importer;
     private readonly IRequirementManager _manager;
+
+    private readonly IDialogService _dialogService;
+
+
     public RequirementEditorController(
-        AuthenticationStateProvider authenticationStateProvider, 
-        IRequirementImporter importer, 
-        IRequirementManager manager) : base(authenticationStateProvider)
+        AuthenticationStateProvider authenticationStateProvider,
+        IRequirementImporter importer,
+        IRequirementManager manager,
+        IDialogService dialogService) : base(authenticationStateProvider)
     {
         _importer = importer;
         _manager = manager;
+        _dialogService = dialogService;
     }
 
     /// <summary>
@@ -42,9 +48,25 @@ internal class RequirementEditorController : TenantBaseService
 
     public async Task ExtractRequirementsFromSpecificationAsync(RequirementSpecification specification, CancellationToken cancellationToken = default)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            Title = "Extract requirements from specification",
+            MarkupMessage = new MarkupString("Extracting requirements from the specification will overwrite any existing requirements in this specification. Do you really want to continue?")
+        });
+
+        if (result == false)
+        {
+            return;
+        }
+
         var requirements = await _importer.ExtractRequirementsAsync(specification, cancellationToken);
 
-        var principal = await GetUserClaimsPrincipalAsync();
+        // Delete all old
+        await _manager.DeleteSpecificationRequirementsAndFoldersAsync(principal, specification);
+
+        // Import all new
         foreach (var requirement in requirements)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -68,6 +90,29 @@ internal class RequirementEditorController : TenantBaseService
 
         return specification;
     }
+
+    public async Task DeleteRequirementSpecificationAsync(RequirementSpecification specification)
+    {
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            Title = "Delete specification and all requirements?",
+            MarkupMessage = new MarkupString("Do you really want to delete this requirement specification and all requirements?")
+        });
+
+        if(result == false)
+        {
+            return;
+        }
+
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.DeleteRequirementSpecificationAsync(principal, specification);
+
+        foreach (var observer in _requirementObservers)
+        {
+            await observer.OnSpecificationDeletedAsync(specification);
+        }
+    }
+
     public async Task AddRequirementSpecificationAsync(RequirementSpecification specification)
     {
         var principal = await GetUserClaimsPrincipalAsync();
@@ -80,12 +125,6 @@ internal class RequirementEditorController : TenantBaseService
     }
     public async Task SaveRequirementSpecificationAsync(RequirementSpecification specification)
     {
-        var tenantId = await GetTenantIdAsync();
-        if(specification.TenantId != specification.TenantId)
-        {
-            throw new InvalidOperationException("Tenant ID mismatch");
-        }
-
         var principal = await GetUserClaimsPrincipalAsync();
         await _manager.UpdateRequirementSpecificationAsync(principal, specification);
 
@@ -93,6 +132,17 @@ internal class RequirementEditorController : TenantBaseService
         {
             await observer.OnSpecificationSavedAsync(specification);
         }
+    }
+
+    public async Task SaveRequirementAsync(Requirement requirement)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.UpdateRequirementAsync(principal, requirement);
+
+        //foreach (var observer in _requirementObservers)
+        //{
+        //    await observer.OnReq(specification);
+        //}
     }
 
     public async Task<PagedResult<RequirementSpecification>> GetRequirementSpecificationsAsync(long? teamId, long? projectId, int offset = 0, int count = 100)

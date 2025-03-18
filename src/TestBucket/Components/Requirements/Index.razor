@@ -11,7 +11,7 @@
 
 <MudSplitter Style="height: 100%" Color="Color.Primary" Bordered="false" Dimension="20" EnableMargin="false">
     <StartContent>
-        <RequirementTreeView OnSpecificationClicked="OnSpecificationClicked"/>
+        <RequirementTreeView OnSpecificationClicked="OnSpecificationClicked" OnRequirementClicked="OnRequirementClicked" />
     </StartContent>
 
     <EndContent>
@@ -20,6 +20,10 @@
             @if (_specification is not null)
             {
                 <RequirementSpecificationEditor Specification="@_specification"/>
+            }
+            else if (_requirement is not null)
+            {
+                <RequirementEditor Requirement="@_requirement" />
             }
             else
             {
@@ -40,11 +44,19 @@
     private Requirement? _requirement;
     private RequirementSpecificationFolder? _requirementFolder;
 
-    private async Task OnSpecificationClicked(RequirementSpecification specification)
+    private Task OnSpecificationClicked(RequirementSpecification specification)
     {
         _requirementFolder = null;
         _requirement = null;
         _specification = specification;
+        return Task.CompletedTask;
+    }
+    private Task OnRequirementClicked(Requirement requirement)
+    {
+        _requirementFolder = null;
+        _requirement = requirement;
+        _specification = null;
+        return Task.CompletedTask;
     }
 
     protected override void OnParametersSet()

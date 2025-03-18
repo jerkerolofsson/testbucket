@@ -11,25 +11,25 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// Gets or sets the custom name corresponding to the action.
         /// </summary>
         [Parameter]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         /// <summary>
         /// Gets or sets the custom value corresponding to the action.
         /// </summary>
         [Parameter]
-        public object Value { get; set; }
+        public object? Value { get; set; }
 
         /// <summary>
         /// Gets or sets the custom icon name corresponding to the action.
         /// </summary>
         [Parameter]
-        public string Icon { get; set; }
+        public string? Icon { get; set; }
 
         /// <summary>
         /// Gets or sets the small tooltip that appears via the <c>title=""</c> attribute.
         /// </summary>
         [Parameter]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
         /// <summary>
         /// If true, separator will be placed before the button.
@@ -41,7 +41,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// Gets or sets the parent markdown instance.
         /// </summary>
         [CascadingParameter]
-        protected MarkdownEditor ParentMarkdown { get; set; }
+        protected MarkdownEditor? ParentMarkdown { get; set; }
 
         /// <summary>
         /// The toolbar action.

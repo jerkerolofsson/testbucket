@@ -27,6 +27,20 @@ namespace TestBucket.Domain.Requirements
         Task AddRequirementSpecificationAsync(RequirementSpecification spec);
 
         /// <summary>
+        /// Deletes a requirement specification, all folders and all requirements
+        /// </summary>
+        /// <param name="specification"></param>
+        /// <returns></returns>
+        Task DeleteRequirementSpecificationAsync(RequirementSpecification specification);
+
+        /// <summary>
+        /// Deletes all requirements and folders in the specification
+        /// </summary>
+        /// <param name="specification"></param>
+        /// <returns></returns>
+        Task DeleteSpecificationRequirementsAndFoldersAsync(RequirementSpecification specification);
+
+        /// <summary>
         /// Searches for requirements
         /// </summary>
         /// <param name="filters"></param>
@@ -39,6 +53,7 @@ namespace TestBucket.Domain.Requirements
         /// <param name="filters"></param>
         /// <returns></returns>
         Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(IEnumerable<FilterSpecification<RequirementSpecification>> filters, int offset, int count);
+        Task UpdateRequirementAsync(Requirement requirement);
 
         /// <summary>
         /// Updates a requirement specification

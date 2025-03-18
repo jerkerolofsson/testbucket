@@ -17,6 +17,61 @@ internal class RequirementBrowser : TenantBaseService
         _requirementManager = requirementManager;
     }
 
+    public async Task<List<TreeItemData<BrowserItem>>> SearchAsync(long? teamId, long? projectId, string searchText)
+    {
+        var specs = await _requirementEditorService.GetRequirementSpecificationsAsync(teamId, projectId);
+        var specificationNodes = specs.Items.Select(x => CreateSpecificationNode(x)).ToList();
+
+        var specificationNode = new TreeItemData<BrowserItem>
+        {
+            Text = "Specifications",
+            Children = specificationNodes,
+            Expanded = true,
+            Icon = Icons.Material.Filled.FolderOpen,
+        };
+
+        var rootItems = new List<TreeItemData<BrowserItem>>
+        {
+            specificationNode
+        };
+
+        var principal = await GetUserClaimsPrincipalAsync();
+        var result = await _requirementManager.SearchRequirementsAsync(principal, new SearchRequirementQuery
+        {
+            Count = 100,
+            Offset = 0,
+            ProjectId = projectId,
+            TeamId = teamId,
+            Text = searchText
+        });
+
+        foreach(var requirement in result.Items)
+        {
+            // Find specification node
+            var specNode = rootItems[0].Children!.Where(x => x.Value?.RequirementSpecification?.Id == requirement.RequirementSpecificationId).FirstOrDefault();
+            if(specNode is not null)
+            {
+                specNode.Children ??= [];
+                specNode.Expanded = true;
+                specNode.Children.Add(CreateRequirementNode(requirement));
+            }
+        }
+
+        // Remove empty specificati0ons
+        foreach(var item in specificationNodes.ToList())
+        {
+            if(item.Children is null || item.Children.Count == 0)
+            {
+                specificationNodes.Remove(item);
+            }
+        }
+        specificationNode.Children = specificationNodes;
+
+
+
+        return rootItems;
+    }
+
     public async Task<List<TreeItemData<BrowserItem>>> BrowseAsync(long? teamId, long? projectId, BrowserItem? parent)
     {
         if (parent is not null)
@@ -41,13 +96,13 @@ internal class RequirementBrowser : TenantBaseService
                 var principal = await GetUserClaimsPrincipalAsync();
                 PagedResult<Requirement> result = await _requirementManager.SearchRequirementsAsync(principal, query);
 
-                return result.Items.Select(x=>CreateSpecificationNode(x)).ToList();
+                return result.Items.Select(x=>CreateRequirementNode(x)).ToList();
             }
         }
         return await BrowseRootAsync(teamId, projectId);
     }
 
-    public TreeItemData<BrowserItem> CreateSpecificationNode(Requirement requirement)
+    public TreeItemData<BrowserItem> CreateRequirementNode(Requirement requirement)
     {
         return new TreeItemData<BrowserItem>
         {
@@ -62,6 +117,8 @@ internal class RequirementBrowser : TenantBaseService
     {
         return new TreeItemData<BrowserItem>
         {
+            Expandable = true,
+            Expanded = false,
             Value = new BrowserItem { RequirementSpecification = specification, Color = specification.Color },
             Text = specification.Name,
             Icon = specification.Icon ?? Icons.Material.Outlined.Article,
@@ -72,14 +129,14 @@ internal class RequirementBrowser : TenantBaseService
     private async Task<List<TreeItemData<BrowserItem>>> BrowseRootAsync(long? teamId, long? projectId)
     {
         var specs = await _requirementEditorService.GetRequirementSpecificationsAsync(teamId, projectId);
-        var suiteItems = specs.Items.Select(x =>CreateSpecificationNode(x)).ToList();
+        var specificationNodes = specs.Items.Select(x =>CreateSpecificationNode(x)).ToList();
 
         return new List<TreeItemData<BrowserItem>>
         {
             new TreeItemData<BrowserItem>
             {
                 Text = "Specifications",
-                Children = suiteItems,
+                Children = specificationNodes,
                 Expanded = true,
                 Icon = Icons.Material.Filled.FolderOpen,
             }

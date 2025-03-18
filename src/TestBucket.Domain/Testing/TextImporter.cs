@@ -1,4 +1,6 @@
 ﻿
+using System.Security.Claims;
+
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Files;
@@ -18,16 +20,16 @@ internal class TextImporter : ITextTestResultsImporter
 {
     private readonly IStateService _stateService;
     private readonly ITestCaseRepository _testCaseRepository;
-    private readonly IFieldRepository _fieldRepository;
+    private readonly IFieldDefinitionManager _fieldDefinitionManager;
     private readonly IFileRepository _fileRepository;
 
     public TextImporter(
         IStateService stateService,
-        ITestCaseRepository testCaseRepository, IFieldRepository fieldRepository, IFileRepository fileRepository)
+        ITestCaseRepository testCaseRepository, IFieldDefinitionManager fieldDefinitionManager, IFileRepository fileRepository)
     {
         _stateService = stateService;
         _testCaseRepository = testCaseRepository;
-        _fieldRepository = fieldRepository;
+        _fieldDefinitionManager = fieldDefinitionManager;
         _fileRepository = fileRepository;
     }
 
@@ -41,7 +43,7 @@ internal class TextImporter : ITextTestResultsImporter
     /// <param name="text"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task ImportTextAsync(string tenantId, long? teamId, long? projectId, TestResultFormat format, string text, ImportHandlingOptions options)
+    public async Task ImportTextAsync(ClaimsPrincipal principal, long? teamId, long? projectId, TestResultFormat format, string text, ImportHandlingOptions options)
     {
         ITestResultSerializer serializer = format switch
         {
@@ -52,11 +54,13 @@ internal class TextImporter : ITextTestResultsImporter
         };    
 
         var run = serializer.Deserialize(text);
-        await ImportRunAsync(tenantId, teamId, projectId, run, options);
+        await ImportRunAsync(principal, teamId, projectId, run, options);
     }
 
-    private async Task ImportRunAsync(string tenantId, long? teamId, long? projectId, TestRunDto run, ImportHandlingOptions options)
+    private async Task ImportRunAsync(ClaimsPrincipal principal, long? teamId, long? projectId, TestRunDto run, ImportHandlingOptions options)
     {
+        var tenantId = principal.GetTentantIdOrThrow();
+
         if (run.Suites is not null)
         {
             var now = DateTimeOffset.UtcNow;
@@ -94,9 +98,10 @@ internal class TextImporter : ITextTestResultsImporter
                 suite ??= await _testCaseRepository.AddTestSuiteAsync(tenantId, teamId, projectId, suiteName);
 
                 // Get field definitions to imported entities
-                var testRunFieldDefinitions = await _fieldRepository.SearchAsync(tenantId, FieldTarget.TestRun, new SearchQuery { ProjectId = projectId });
-                var testCaseFieldDefinitions = await _fieldRepository.SearchAsync(tenantId, FieldTarget.TestCase, new SearchQuery { ProjectId = projectId });
-                var testCaseRunFieldDefinitions = await _fieldRepository.SearchAsync(tenantId, FieldTarget.TestCaseRun, new SearchQuery { ProjectId = projectId });
+                var testRunFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.TestRun);
+                var testCaseFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.TestCase);
+                var testCaseRunFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.TestCaseRun);
+
                 foreach (var test in runSuite.Tests)
                 {
                     // Get the existing case or create a new one
@@ -115,7 +120,7 @@ internal class TextImporter : ITextTestResultsImporter
                         {
                             // Get all traits for the specific name
                             var traits = test.Traits.Where(x => x.Name == traitName).ToArray();
-                            await UpsertTestCaseTraitsAsync(tenantId, testCaseFieldDefinitions, testCase, traits);
+                            await UpsertTestCaseTraitsAsync(principal, testCaseFieldDefinitions, testCase, traits);
                         }
                     }
                 }
@@ -123,9 +128,11 @@ internal class TextImporter : ITextTestResultsImporter
         }
     }
 
-    private async Task UpsertTestCaseTraitsAsync(string tenantId, IReadOnlyList<FieldDefinition> testCaseFieldDefinitions, TestCase testCase, TestTrait[] traits)
+    private async Task UpsertTestCaseTraitsAsync(ClaimsPrincipal principal, IReadOnlyList<FieldDefinition> testCaseFieldDefinitions, TestCase testCase, TestTrait[] traits)
     {
-        if(traits.Length == 0)
+        string tenantId = principal.GetTentantIdOrThrow();
+
+        if (traits.Length == 0)
         {
             return;
         }
@@ -147,7 +154,7 @@ internal class TextImporter : ITextTestResultsImporter
             var values = traits.Select(x => x.Value).ToArray();
             if (FieldValueConverter.TryAssignValue(fieldDefinition, field, values))
             {
-                await _fieldRepository.UpsertTestCaseFieldsAsync(field);
+                await _fieldDefinitionManager.UpsertTestCaseFieldsAsync(principal, field);
             }
         }
         else

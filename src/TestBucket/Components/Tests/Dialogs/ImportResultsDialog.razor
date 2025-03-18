@@ -1,7 +1,7 @@
 ﻿@using TestBucket.Components.Uploads.Services
 @using TestBucket.Formats
 @attribute [Authorize(Roles = "ADMIN")]
-@inject TestCaseEditorService testCaseEditorService
+@inject TestCaseEditorController testCaseEditorService
 @inject AttachmentsService attachmentsService
 
 <EditForm Model="@_options" OnValidSubmit="Submit">

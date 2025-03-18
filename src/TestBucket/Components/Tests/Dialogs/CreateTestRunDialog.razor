@@ -1,5 +1,5 @@
 ﻿@attribute [Authorize(Roles = "ADMIN")]
-@inject TestCaseEditorService testCaseEditorService
+@inject TestCaseEditorController testCaseEditorService
 @inject ProjectService projectService
 
 <EditForm Model="@_run" OnValidSubmit="async () => await OnValidSubmitAsync()">

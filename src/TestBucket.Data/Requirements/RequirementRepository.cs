@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Data.Requirements
@@ -19,27 +20,32 @@ namespace TestBucket.Data.Requirements
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(string tenantId, SearchQuery query)
+        public async Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(IEnumerable<FilterSpecification<RequirementSpecification>> filters, int offset, int count)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-            var suites = dbContext.RequirementSpecifications.Where(x => x.TenantId == tenantId);
+            var requirementSpecifications = dbContext.RequirementSpecifications.AsQueryable();
 
-            // Apply filter
-            if (query.TeamId is not null)
+            foreach(var filter in filters)
             {
-                suites = suites.Where(x => x.TeamId == query.TeamId);
-            }
-            if (query.ProjectId is not null)
-            {
-                suites = suites.Where(x => x.TestProjectId == query.ProjectId);
-            }
-            if (query.Text is not null)
-            {
-                suites = suites.Where(x => x.Name.ToLower().Contains(query.Text.ToLower()));
+                requirementSpecifications = requirementSpecifications.Where(filter.Expression);
             }
 
-            long totalCount = await suites.LongCountAsync();
-            var items = suites.OrderBy(x => x.Name).Skip(query.Offset).Take(query.Count);
+            //// Apply filter
+            //if (query.TeamId is not null)
+            //{
+            //    suites = suites.Where(x => x.TeamId == query.TeamId);
+            //}
+            //if (query.ProjectId is not null)
+            //{
+            //    suites = suites.Where(x => x.TestProjectId == query.ProjectId);
+            //}
+            //if (query.Text is not null)
+            //{
+            //    suites = suites.Where(x => x.Name.ToLower().Contains(query.Text.ToLower()));
+            //}
+
+            long totalCount = await requirementSpecifications.LongCountAsync();
+            var items = requirementSpecifications.OrderBy(x => x.Name).Skip(offset).Take(count);
 
             return new PagedResult<RequirementSpecification>
             {
@@ -47,9 +53,8 @@ namespace TestBucket.Data.Requirements
                 Items = items.ToArray()
             };
         }
-        public async Task AddRequirementSpecificationAsync(string tenantId, RequirementSpecification spec)
+        public async Task AddRequirementSpecificationAsync(RequirementSpecification spec)
         {
-            spec.TenantId = tenantId;
             spec.Created = DateTimeOffset.UtcNow;
 
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();

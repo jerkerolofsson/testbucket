@@ -1,7 +1,6 @@
 ﻿@using TestBucket.Domain.Requirements
 @using TestBucket.Domain.Requirements.Import
-@inject RequirementEditorService editor
-@inject IRequirementImporter requirementImporter
+@inject RequirementEditorController editor
 
 @if(Project is not null)
 {
@@ -33,13 +32,12 @@
 
     public async Task OnFileUploaded(FileResource fileResource)
     {
-        if(Project?.TenantId is null || Project.TeamId is null)
+        if(Project?.TenantId is null)
         {
             return;
         }
 
-        var spec = await requirementImporter.ImportAsync(Project.TenantId, Project.TeamId.Value, Project.Id, fileResource);
-        await editor.AddRequirementSpecificationAsync(spec);
+        var spec = await editor.ImportAsync(Project.TeamId, Project.Id, fileResource);
         _loading = false;
     }
 }

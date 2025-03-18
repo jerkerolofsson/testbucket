@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Domain.Fields.Models;
+using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Fields;
 public interface IFieldRepository
 {
+    #region Field Definitions
     /// <summary>
     /// Adds a new field definition
     /// </summary>
@@ -32,10 +34,13 @@ public interface IFieldRepository
     Task UpdateAsync(FieldDefinition fieldDefinition);
 
     /// <summary>
-    /// Searches for fields
+    /// Searches for field definitions
     /// </summary>
+    /// <param name="specifications"></param>
     /// <returns></returns>
-    Task<IReadOnlyList<FieldDefinition>> SearchAsync(string tenantId, FieldTarget? target, SearchQuery query);
+    Task<IReadOnlyList<FieldDefinition>> SearchAsync(IReadOnlyList<FilterSpecification<FieldDefinition>> specifications);
+
+    #endregion Field Definitions
 
     #region Test Case
 
@@ -74,6 +79,7 @@ public interface IFieldRepository
     /// <param name="field"></param>
     /// <returns></returns>
     Task UpsertTestCaseRunFieldsAsync(TestCaseRunField field);
+
 
     #endregion
 

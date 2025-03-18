@@ -7,7 +7,7 @@ namespace TestBucket.Domain.Testing.Models;
 /// </summary>
 [Table("runs")]
 [Index(nameof(TenantId), nameof(Created))]
-public class TestRun
+public class TestRun : TestEntity
 {
     /// <summary>
     /// Database ID
@@ -15,14 +15,24 @@ public class TestRun
     public long Id { get; set; }
 
     /// <summary>
-    /// Timestamp when the test case was created
+    /// Created by user name
+    /// </summary>
+    public string? CreatedBy { get; set; }
+
+    /// <summary>
+    /// Timestamp when the entity was created
     /// </summary>
     public DateTimeOffset Created { get; set; }
 
     /// <summary>
-    /// Created by
+    /// Modified by user name
     /// </summary>
-    public string? Creator { get; set; }
+    public string? ModifiedBy { get; set; }
+
+    /// <summary>
+    /// Timestamp when the entity was Modified
+    /// </summary>
+    public DateTimeOffset Modified { get; set; }
 
     /// <summary>
     /// Name of the test case
@@ -39,28 +49,10 @@ public class TestRun
     /// </summary>
     public string? SystemOut { get; set; }
 
-    /// <summary>
-    /// ID of tenant
-    /// </summary>
-    public required string TenantId { get; set; }
-
-    /// <summary>
-    /// ID of project
-    /// </summary>
-    public long? TestProjectId { get; set; }
-
-    /// <summary>
-    /// ID of team
-    /// </summary>
-    public long? TeamId { get; set; }
 
     /// <summary>
     /// External identifer, other system, or when importing
     /// </summary>
     public string? ExternalId { get; set; }
 
-    // Navigation
-    public Tenant? Tenant { get; set; }
-    public TestProject? TestProject { get; set; }
-    public Team? Team { get; set; }
 }    

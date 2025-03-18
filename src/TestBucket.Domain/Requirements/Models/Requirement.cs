@@ -19,27 +19,42 @@ public class Requirement
     public string? ExternalId { get; set; }
 
     /// <summary>
-    /// Timestamp when the test case was created
+    /// Created by user name
+    /// </summary>
+    public string? CreatedBy { get; set; }
+
+    /// <summary>
+    /// Timestamp when the entity was created
     /// </summary>
     public DateTimeOffset Created { get; set; }
 
     /// <summary>
-    /// Name of the test case
+    /// Modified by user name
+    /// </summary>
+    public string? ModifiedBy { get; set; }
+
+    /// <summary>
+    /// Timestamp when the entity was Modified
+    /// </summary>
+    public DateTimeOffset Modified { get; set; }
+
+    /// <summary>
+    /// Name of the requirement
     /// </summary>
     public required string Name { get; set; }
 
     /// <summary>
-    /// User friendly ID of the test case
+    /// User friendly ID of the requirement
     /// </summary>
     public string? Slug { get; set; }
 
     /// <summary>
-    /// Test case description
+    /// Requirement description
     /// </summary>
     public string? Description { get; set; }
 
     /// <summary>
-    /// Folder path for the test case, separated with /
+    /// Folder path for the requirement, separated with /
     /// </summary>
     public string Path { get; set; } = "";
 

@@ -4,7 +4,7 @@
 @using TestBucket.Domain.Requirements.Models
 @layout TestingLayout
 @inject TestBrowser testBrowser
-@inject TestCaseEditorService testCaseEditorService
+@inject TestCaseEditorController testCaseEditorService
 
 <TestCaseEditor Test="@_testCase" TestChanged="OnTestModified" />
 

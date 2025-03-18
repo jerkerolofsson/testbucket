@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Fields;
+﻿using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
+using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Data.Fields;
 internal class FieldRepository : IFieldRepository
@@ -26,28 +21,21 @@ internal class FieldRepository : IFieldRepository
         await dbContext.SaveChangesAsync();
     }
 
-    /// <summary>
-    /// Searches for field definitions for a specific target
-    /// </summary>
-    /// <param name="tenantId"></param>
-    /// <param name="targets"></param>
-    /// <param name="query"></param>
-    /// <returns></returns>
-    public async Task<IReadOnlyList<FieldDefinition>> SearchAsync(string tenantId, FieldTarget? target, SearchQuery query)
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<FieldDefinition>> SearchAsync(IReadOnlyList<FilterSpecification<FieldDefinition>> specifications)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var fields = dbContext.FieldDefinitions.AsNoTracking().Where(x => x.TenantId == tenantId && x.IsDeleted == false);
-        if (target is not null)
+        var fields = dbContext.FieldDefinitions.AsNoTracking().Where(x =>x.IsDeleted == false);
+
+        foreach(var spec in specifications)
         {
-            fields = fields.Where(x => (x.Target & target) != 0);
-        }
-        if (query.ProjectId is not null)
-        {
-            fields = fields.Where(x => x.TestProjectId == query.ProjectId);
+            fields = fields.Where(spec.Expression);
         }
 
-        return await fields.OrderBy(x => x.Name).Skip(query.Offset).Take(query.Count).ToListAsync();
+        return await fields.OrderBy(x => x.Name).ToListAsync();
     }
+
+
 
     public async Task UpdateAsync(FieldDefinition fieldDefinition)
     {
@@ -179,7 +167,6 @@ internal class FieldRepository : IFieldRepository
             .Where(x => x.TenantId == tenantId && x.TestCaseRunId == id);
         return await fields.ToListAsync();
     }
+
     #endregion Test Case
-
-
 }

@@ -20,17 +20,17 @@ public partial class TestRunView
 
     private async Task OnTestCaseRunResultChanged(TestResult result)
     {
-        if (_selectedTestCaseRun is not null)
+        if (_selectedTestCaseRun?.TestProjectId is not null)
         {
             _selectedTestCaseRun.Result = result;
             if (_selectedTestCaseRun.Result != TestResult.NoRun)
             {
-                TestState completedState = await testCaseEditorService.GetProjectFinalStateAsync(_selectedTestCaseRun.TestProjectId);
+                TestState completedState = await testCaseEditorService.GetProjectFinalStateAsync(_selectedTestCaseRun.TestProjectId.Value);
                 _selectedTestCaseRun.State = completedState.Name;
             }
             else
             {
-                TestState initialState = await testCaseEditorService.GetProjectInitialStateAsync(_selectedTestCaseRun.TestProjectId);
+                TestState initialState = await testCaseEditorService.GetProjectInitialStateAsync(_selectedTestCaseRun.TestProjectId.Value);
                 _selectedTestCaseRun.State = initialState.Name;
             }
 

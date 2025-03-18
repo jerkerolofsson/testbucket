@@ -2,7 +2,7 @@
 @using TestBucket.Domain.AI
 @using TestBucket.Domain.AI.Models
 @attribute [Authorize(Roles = "ADMIN")]
-@inject TestCaseEditorService testCaseEditorService
+@inject TestCaseEditorController testCaseEditorService
 @inject ITestCaseGenerator testCaseGenerator
 
 @if(!testCaseGenerator.Enabled)

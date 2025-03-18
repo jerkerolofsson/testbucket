@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Domain.Requirements
 {
@@ -16,15 +17,20 @@ namespace TestBucket.Domain.Requirements
         /// <param name="tenantId"></param>
         /// <param name="spec"></param>
         /// <returns></returns>
-        Task AddRequirementSpecificationAsync(string tenantId, RequirementSpecification spec);
+        Task AddRequirementSpecificationAsync(RequirementSpecification spec);
 
         /// <summary>
         /// Searches for requirement specifications
         /// </summary>
-        /// <param name="tenantId"></param>
-        /// <param name="query"></param>
+        /// <param name="filters"></param>
         /// <returns></returns>
-        Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(string tenantId, SearchQuery query);
+        Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(IEnumerable<FilterSpecification<RequirementSpecification>> filters, int offset, int count);
+
+        /// <summary>
+        /// Updates a requirement specification
+        /// </summary>
+        /// <param name="specification"></param>
+        /// <returns></returns>
         Task UpdateRequirementSpecificationAsync(RequirementSpecification specification);
     }
 }

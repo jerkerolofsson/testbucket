@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace TestBucket.Domain.Testing.Models;
 
 [Table("steps")]
-public class TestStep
+public class TestStep : TestEntity
 {
     public long Id { get; set; }
     public string? Description { get; set; }

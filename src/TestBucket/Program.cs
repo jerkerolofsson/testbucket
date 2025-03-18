@@ -150,19 +150,19 @@ public class Program
         builder.Services.AddScoped<TeamService>();
         builder.Services.AddScoped<ProjectService>();
         builder.Services.AddScoped<TestSuiteService>();
-        builder.Services.AddScoped<TestRunCreationService>();
+        builder.Services.AddScoped<TestRunCreationController>();
         builder.Services.AddScoped<AttachmentsService>();
         builder.Services.AddScoped<AppNavigationManager>();
 
         builder.Services.AddScoped<RequirementBrowser>();
-        builder.Services.AddScoped<RequirementEditorService>();
+        builder.Services.AddScoped<RequirementEditorController>();
 
         builder.Services.AddScoped<TestService>();
         builder.Services.AddScoped<UserPreferencesService>();
         builder.Services.AddScoped<TestBrowser>();
-        builder.Services.AddScoped<TestCaseEditorService>();
+        builder.Services.AddScoped<TestCaseEditorController>();
         builder.Services.AddScoped<UploadService>();
-        builder.Services.AddScoped<FieldService>();
+        builder.Services.AddScoped<FieldController>();
         builder.Services.AddScoped(typeof(DragAndDropService<>));
         builder.Services.AddDataServices();
         builder.Services.AddDomainServices();
@@ -219,15 +219,19 @@ public class Program
             string model = "deepseek-r1:30b";
             // deepseek-r1:7b
             //var ollama = new OllamaApiClient(ollamaBaseUrl, "deepseek-r1:7b");
-            var ollama = new OllamaApiClient(ollamaBaseUrl, model);
-            await foreach(var response in ollama.PullModelAsync(model))
+            try
             {
-                if (response is not null)
+                var ollama = new OllamaApiClient(ollamaBaseUrl, model);
+                await foreach (var response in ollama.PullModelAsync(model))
                 {
-                    Console.WriteLine($"{response.Status}: {response.Completed}/{response.Total} ({response.Percent})");
+                    if (response is not null)
+                    {
+                        Console.WriteLine($"{response.Status}: {response.Completed}/{response.Total} ({response.Percent})");
+                    }
                 }
+                builder.Services.AddSingleton<Microsoft.Extensions.AI.IChatClient>(ollama);
             }
-            builder.Services.AddSingleton<Microsoft.Extensions.AI.IChatClient>(ollama);
+            catch (Exception) { }
         }
     }
 }

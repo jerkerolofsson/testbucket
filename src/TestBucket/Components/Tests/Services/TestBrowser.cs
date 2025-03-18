@@ -66,6 +66,7 @@ internal class TestBrowser : TenantBaseService
     /// <returns></returns>
     public async Task ImportAsync(Team? team, TestProject? project)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
         var tenantId = await GetTenantIdAsync();
 
         // Show dialog
@@ -79,7 +80,7 @@ internal class TestBrowser : TenantBaseService
             if (resource is not null)
             {
                 string xml = Encoding.UTF8.GetString(resource.Data);
-                await _textImporter.ImportTextAsync(tenantId, team?.Id, project?.Id, importOptions.Format, xml, importOptions.HandlingOptions);
+                await _textImporter.ImportTextAsync(principal, team?.Id, project?.Id, importOptions.Format, xml, importOptions.HandlingOptions);
             }
         }
     }

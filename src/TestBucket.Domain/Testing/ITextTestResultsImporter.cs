@@ -1,4 +1,6 @@
-﻿using TestBucket.Formats;
+﻿using System.Security.Claims;
+
+using TestBucket.Formats;
 
 namespace TestBucket.Domain.Testing;
 public interface ITextTestResultsImporter
@@ -12,5 +14,5 @@ public interface ITextTestResultsImporter
     /// <param name="format"></param>
     /// <param name="text"></param>
     /// <returns></returns>
-    Task ImportTextAsync(string tenantId, long? teamId, long? projectId, TestResultFormat format, string text, ImportHandlingOptions options);
+    Task ImportTextAsync(ClaimsPrincipal principal, long? teamId, long? projectId, TestResultFormat format, string text, ImportHandlingOptions options);
 }

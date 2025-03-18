@@ -1,9 +1,9 @@
 ﻿@using Humanizer
 @using TestBucket.Components.Shared
 @using TestBucket.Domain.Requirements.Models
-@inject FieldService fieldService
-@inject TestCaseEditorService testCaseEditorService
-@inject TestRunCreationService testRunCreationService
+@inject FieldController fieldService
+@inject TestCaseEditorController testCaseEditorController
+@inject TestRunCreationController testRunCreation
 @inject NavigationManager navigationManager
 
 @if(Test is not null && _boundDescription is not null)
@@ -74,10 +74,10 @@
 
         <MudSplitter Style="height: 100%" Color="Color.Primary" Bordered="false" Dimension="80" EnableMargin="false">
             <StartContent>
-                <MudStack Class="pa-2" Style="width: 100%; height: 100%">
+                <MudStack Class="pa-2" Style="width: 100%">
                     <MarkdownEditor 
                     ShowToolbar="false"
-                    MaxHeight="100%"
+                    MaxHeight="500px"
                     Color="Color.Primary"
                     AllowResize="true"
                     @bind-Preview="_preview"
@@ -87,7 +87,7 @@
                     SpellChecker="false">
                     </MarkdownEditor>
 
-                    @* <FieldsEditor TestCase="@Test"/> *@
+                    <FieldsEditor TestCase="@Test"/>
 
                 </MudStack>
             </StartContent>
@@ -138,7 +138,7 @@
         {
             return;
         }
-        var run = await testRunCreationService.CreateTestRunAsync(Test.TestProjectId.Value, Test.Id);
+        var run = await testRunCreation.CreateTestRunAsync(Test.TestProjectId.Value, Test.Id);
         if(run is not null)
         {
             var tenantId = TenantResolver.ResolveTenantIdFromUrl(navigationManager.Uri);
@@ -158,7 +158,7 @@
         {
             return;
         }
-        await testCaseEditorService.DeleteTestCaseAsync(Test);
+        await testCaseEditorController.DeleteTestCaseAsync(Test);
     }
 
     private IReadOnlyList<FieldDefinition> _fields = [];
@@ -173,7 +173,7 @@
         if(_projectId != Test?.TestProjectId && Test?.TestProjectId is not null)
         {
             _projectId = Test?.TestProjectId;
-            _fields = await fieldService.SearchDefinitionsAsync(FieldTarget.TestCase, new SearchQuery() { ProjectId = Test?.TestProjectId });
+            _fields = await fieldService.SearchDefinitionsAsync(new SearchFieldQuery() { ProjectId = Test?.TestProjectId, Target = FieldTarget.TestCase });
         }
     }
 

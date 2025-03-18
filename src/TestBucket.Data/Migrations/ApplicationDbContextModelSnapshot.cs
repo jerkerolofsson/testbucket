@@ -167,6 +167,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<bool>("Inherit")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -189,6 +192,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<int>("Target")
                         .HasColumnType("integer");
 
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TenantId")
                         .HasColumnType("text");
 
@@ -205,6 +211,8 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
 
                     b.HasIndex("TestProjectId");
 
@@ -463,10 +471,19 @@ namespace TestBucket.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<string>("ExternalId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -527,6 +544,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -534,6 +554,12 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -544,7 +570,6 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("TenantId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long?>("TestProjectId")
@@ -713,6 +738,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -720,6 +748,12 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Method")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
                     b.Property<string>("Module")
@@ -742,8 +776,10 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("Slug")
                         .HasColumnType("text");
 
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TenantId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long?>("TestProjectId")
@@ -761,13 +797,13 @@ namespace TestBucket.Data.Migrations
 
                     b.HasIndex("Name");
 
+                    b.HasIndex("TeamId");
+
                     b.HasIndex("TenantId");
 
                     b.HasIndex("TestProjectId");
 
                     b.HasIndex("TestSuiteFolderId");
-
-                    b.HasIndex("TestSuiteId");
 
                     b.ToTable("testcases");
                 });
@@ -840,10 +876,19 @@ namespace TestBucket.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<int>("Duration")
                         .HasColumnType("integer");
 
                     b.Property<string>("Message")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -856,14 +901,16 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("State")
                         .HasColumnType("text");
 
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TenantId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long>("TestCaseId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("TestProjectId")
+                    b.Property<long?>("TestProjectId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("TestRunId")
@@ -874,6 +921,8 @@ namespace TestBucket.Data.Migrations
                     b.HasIndex("Created");
 
                     b.HasIndex("Name");
+
+                    b.HasIndex("TeamId");
 
                     b.HasIndex("TenantId");
 
@@ -945,13 +994,19 @@ namespace TestBucket.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Creator")
+                    b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<string>("ExternalId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -965,7 +1020,6 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("TenantId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long?>("TestProjectId")
@@ -1039,12 +1093,27 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("ExpectedResult")
                         .HasColumnType("text");
 
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
                     b.Property<long>("TestCaseId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TestProjectId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
                     b.HasIndex("TestCaseId");
+
+                    b.HasIndex("TestProjectId");
 
                     b.ToTable("steps");
                 });
@@ -1063,10 +1132,19 @@ namespace TestBucket.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -1077,7 +1155,6 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("TenantId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long?>("TestProjectId")
@@ -1130,8 +1207,10 @@ namespace TestBucket.Data.Migrations
                     b.PrimitiveCollection<long[]>("PathIds")
                         .HasColumnType("bigint[]");
 
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TenantId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long?>("TestProjectId")
@@ -1143,6 +1222,8 @@ namespace TestBucket.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ParentId");
+
+                    b.HasIndex("TeamId");
 
                     b.HasIndex("TestProjectId");
 
@@ -1206,6 +1287,10 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Fields.Models.FieldDefinition", b =>
                 {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany()
                         .HasForeignKey("TenantId");
@@ -1213,6 +1298,8 @@ namespace TestBucket.Data.Migrations
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
                         .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Team");
 
                     b.Navigation("Tenant");
 
@@ -1293,9 +1380,7 @@ namespace TestBucket.Data.Migrations
 
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TenantId");
 
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
@@ -1350,11 +1435,13 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestCase", b =>
                 {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TenantId");
 
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
@@ -1364,17 +1451,11 @@ namespace TestBucket.Data.Migrations
                         .WithMany("TestCases")
                         .HasForeignKey("TestSuiteFolderId");
 
-                    b.HasOne("TestBucket.Domain.Testing.Models.TestSuite", "TestSuite")
-                        .WithMany()
-                        .HasForeignKey("TestSuiteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Team");
 
                     b.Navigation("Tenant");
 
                     b.Navigation("TestProject");
-
-                    b.Navigation("TestSuite");
 
                     b.Navigation("TestSuiteFolder");
                 });
@@ -1410,11 +1491,13 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestCaseRun", b =>
                 {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TenantId");
 
                     b.HasOne("TestBucket.Domain.Testing.Models.TestCase", "TestCase")
                         .WithMany()
@@ -1424,15 +1507,15 @@ namespace TestBucket.Data.Migrations
 
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
-                        .HasForeignKey("TestProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TestProjectId");
 
                     b.HasOne("TestBucket.Domain.Testing.Models.TestRun", "TestRun")
                         .WithMany()
                         .HasForeignKey("TestRunId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Team");
 
                     b.Navigation("Tenant");
 
@@ -1484,9 +1567,7 @@ namespace TestBucket.Data.Migrations
 
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TenantId");
 
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
@@ -1526,13 +1607,31 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestStep", b =>
                 {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
                     b.HasOne("TestBucket.Domain.Testing.Models.TestCase", "TestCase")
                         .WithMany("TestSteps")
                         .HasForeignKey("TestCaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
                     b.Navigation("TestCase");
+
+                    b.Navigation("TestProject");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestSuite", b =>
@@ -1543,9 +1642,7 @@ namespace TestBucket.Data.Migrations
 
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TenantId");
 
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
@@ -1564,11 +1661,13 @@ namespace TestBucket.Data.Migrations
                         .WithMany()
                         .HasForeignKey("ParentId");
 
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TenantId");
 
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
@@ -1581,6 +1680,8 @@ namespace TestBucket.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Parent");
+
+                    b.Navigation("Team");
 
                     b.Navigation("Tenant");
 

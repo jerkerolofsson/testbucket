@@ -4,7 +4,7 @@
 /// Represents a group of tests executed together
 /// </summary>
 [Table("stepruns")]
-public class TestStepRun
+public class TestStepRun : TestEntity
 {
     /// <summary>
     /// Database ID

@@ -11,7 +11,7 @@ namespace TestBucket.Domain.Fields.Models;
 
 [Index(nameof(TenantId),nameof(IsDeleted))]
 [Table("field_definitions")]
-public class FieldDefinition
+public class FieldDefinition : ProjectEntity
 {
     /// <summary>
     /// DB ID
@@ -46,6 +46,16 @@ public class FieldDefinition
     public FieldType Type { get; set; }
 
     /// <summary>
+    /// Inherit the field from a parent
+    /// 
+    /// TestSuite => TestCase 
+    /// TestCase => TestCaseRun
+    /// TestRun => TestCaseRun (after TestCase)
+    /// 
+    /// </summary>
+    public bool Inherit { get; set; }
+
+    /// <summary>
     /// Options that can be selected in the UI
     /// </summary>
     [Column(TypeName = "jsonb")]
@@ -75,11 +85,4 @@ public class FieldDefinition
     /// Can be used to save field values in the database when importing but not display the values in the UI
     /// </summary>
     public bool IsVisible { get; set; }
-
-    // Navigation
-
-    public string? TenantId { get; set; }
-    public Tenant? Tenant { get; set; }
-    public long? TestProjectId { get; set; }
-    public TestProject? TestProject { get; set; }
 }

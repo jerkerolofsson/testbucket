@@ -10,3 +10,6 @@ global using TestBucket.Domain.Errors;
 global using TestBucket.Domain.Projects.Models;
 global using TestBucket.Contracts;
 global using TestBucket.Contracts.Testing.Models;
+global using TestBucket.Domain.Fields.Models;
+global using TestBucket.Domain.Shared;
+

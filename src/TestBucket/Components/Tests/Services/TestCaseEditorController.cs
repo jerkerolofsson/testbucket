@@ -22,7 +22,7 @@ internal interface ITestRunObserver
 }
 
 
-internal class TestCaseEditorService : TenantBaseService
+internal class TestCaseEditorController : TenantBaseService
 {
     private readonly ITestCaseRepository _testCaseRepo;
     private readonly List<ITestCaseObserver> _testCaseObservers = new();
@@ -30,7 +30,7 @@ internal class TestCaseEditorService : TenantBaseService
     private readonly IDialogService _dialogService;
     private readonly IStateService _stateService;
 
-    public TestCaseEditorService(ITestCaseRepository testCaseRepo,
+    public TestCaseEditorController(ITestCaseRepository testCaseRepo,
         AuthenticationStateProvider authenticationStateProvider,
         IDialogService dialogService,
         IStateService stateService) : base(authenticationStateProvider)

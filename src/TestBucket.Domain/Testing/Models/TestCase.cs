@@ -23,6 +23,21 @@ public class TestCase : TestEntity
     public DateTimeOffset Created { get; set; }
 
     /// <summary>
+    /// Modified by user name
+    /// </summary>
+    public string? ModifiedBy { get; set; }
+
+    /// <summary>
+    /// Timestamp when the test case was Modified
+    /// </summary>
+    public DateTimeOffset Modified { get; set; }
+
+    /// <summary>
+    /// Created by user name
+    /// </summary>
+    public string? CreatedBy { get; set; }
+
+    /// <summary>
     /// Name of the test case
     /// </summary>
     public required string Name { get; set; }
@@ -74,15 +89,6 @@ public class TestCase : TestEntity
     /// </summary>
     public long[]? PathIds { get; set; }
 
-    /// <summary>
-    /// ID of tenant
-    /// </summary>
-    public required string TenantId { get; set; }
-
-    /// <summary>
-    /// ID of project
-    /// </summary>
-    public long? TestProjectId { get; set; }
 
     /// <summary>
     /// ID of test suite
@@ -95,9 +101,6 @@ public class TestCase : TestEntity
     public long? TestSuiteFolderId { get; set; }
 
     // Navigation
-    public Tenant? Tenant { get; set; }
-    public TestProject? TestProject { get; set; }
-    public TestSuite? TestSuite { get; set; }
     public TestSuiteFolder? TestSuiteFolder { get; set; }
     public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }
     public virtual IEnumerable<TestStep>? TestSteps { get; set; }

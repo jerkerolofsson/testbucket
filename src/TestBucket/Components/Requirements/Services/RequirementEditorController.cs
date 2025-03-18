@@ -1,6 +1,8 @@
 ﻿
 using TestBucket.Components.Tests.Services;
+using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements;
+using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Components.Requirements.Services;
@@ -12,16 +14,18 @@ internal interface IRequirementObserver
     Task OnSpecificationDeletedAsync(RequirementSpecification spec);
     Task OnSpecificationSavedAsync(RequirementSpecification spec);
 }
-internal class RequirementEditorService : TenantBaseService
+internal class RequirementEditorController : TenantBaseService
 {
     private readonly List<IRequirementObserver> _requirementObservers = new();
-    private readonly IRequirementRepository _repository;
-
-    public RequirementEditorService(
-        IRequirementRepository repository,
-        AuthenticationStateProvider authenticationStateProvider) : base(authenticationStateProvider)
+    private readonly IRequirementImporter _importer;
+    private readonly IRequirementManager _manager;
+    public RequirementEditorController(
+        AuthenticationStateProvider authenticationStateProvider, 
+        IRequirementImporter importer, 
+        IRequirementManager manager) : base(authenticationStateProvider)
     {
-        _repository = repository;
+        _importer = importer;
+        _manager = manager;
     }
 
     /// <summary>
@@ -36,11 +40,22 @@ internal class RequirementEditorService : TenantBaseService
     /// <param name="observer"></param>
     public void RemoveObserver(IRequirementObserver observer) => _requirementObservers.Remove(observer);
 
+    public async Task<RequirementSpecification?> ImportAsync(long? teamId, long? testProjectId, FileResource fileResource)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var specification = await _importer.ImportAsync(principal, teamId, testProjectId, fileResource);
+
+        if (specification is not null)
+        {
+            await AddRequirementSpecificationAsync(specification);
+        }
+
+        return specification;
+    }
     public async Task AddRequirementSpecificationAsync(RequirementSpecification specification)
     {
-        var tenantId = await GetTenantIdAsync();
-        specification.TenantId = tenantId;
-        await _repository.AddRequirementSpecificationAsync(tenantId, specification);
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.AddRequirementSpecificationAsync(principal, specification);
 
         foreach (var observer in _requirementObservers)
         {
@@ -54,7 +69,9 @@ internal class RequirementEditorService : TenantBaseService
         {
             throw new InvalidOperationException("Tenant ID mismatch");
         }
-        await _repository.UpdateRequirementSpecificationAsync(specification);
+
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.UpdateRequirementSpecificationAsync(principal, specification);
 
         foreach(var observer in _requirementObservers)
         {
@@ -64,8 +81,8 @@ internal class RequirementEditorService : TenantBaseService
 
     public async Task<PagedResult<RequirementSpecification>> GetRequirementSpecificationsAsync(long? teamId, long? projectId, int offset = 0, int count = 100)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _repository.SearchRequirementSpecificationsAsync(tenantId, new SearchQuery
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.SearchRequirementSpecificationsAsync(principal, new SearchQuery
         {
             TeamId = teamId,
             ProjectId = projectId,

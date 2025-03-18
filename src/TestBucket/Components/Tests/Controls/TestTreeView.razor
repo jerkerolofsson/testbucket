@@ -4,7 +4,7 @@
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject TestSuiteService testSuiteService
-@inject TestCaseEditorService testCaseEditor
+@inject TestCaseEditorController testCaseEditor
 @implements ITestCaseObserver 
 @implements IDisposable
 
@@ -69,7 +69,7 @@
             }
 
 
-            <DropZone T="TestEntity" OnDrop="(test) => OnDrop(test, context)">
+            <DropZone T="TestCase" OnDrop="(test) => OnDrop(test, context)">
                 <MudTreeViewItem Value="@context.Value"
                 Style="@style"
                 Items="@context.Children"
@@ -86,13 +86,7 @@
                             <ActivatorContent>
                                 @if(treeNode.Value?.TestCase is not null)
                                 {
-                                    <Draggable T="TestEntity" Data="@treeNode.Value.TestCase">
-                                        @treeNode.Text
-                                    </Draggable>
-                                }
-                                else if (treeNode.Value?.Folder is not null)
-                                {
-                                    <Draggable T="TestEntity" Data="@treeNode.Value.Folder">
+                                    <Draggable Data="@treeNode.Value.TestCase">
                                         @treeNode.Text
                                     </Draggable>
                                 }

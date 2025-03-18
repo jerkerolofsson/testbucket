@@ -9,7 +9,7 @@ namespace TestBucket.Domain.Fields.Models;
 /// <summary>
 /// Base class for custom field values mapped to projects/test suites/test cases/runs..
 /// </summary>
-public class FieldValue
+public class FieldValue : Entity
 {
     public long Id { get; set; }
 
@@ -40,11 +40,12 @@ public class FieldValue
     /// </summary>
     public string[]? StringArrayValue { get; set; }
 
-    // Navigation
-    public string? TenantId { get; set; }
-
-    public Tenant? Tenant { get; set; }
-
+    /// <summary>
+    /// Foreign key to the definition of the field
+    /// </summary>
     public required long FieldDefinitionId { get; set; }
+
+    // Navigation
+
     public FieldDefinition? FieldDefinition { get; set; }
 }

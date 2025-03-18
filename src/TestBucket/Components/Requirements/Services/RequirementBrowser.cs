@@ -5,9 +5,9 @@ namespace TestBucket.Components.Requirements.Services;
 
 internal class RequirementBrowser
 {
-    private readonly RequirementEditorService _requirementEditorService;
+    private readonly RequirementEditorController _requirementEditorService;
 
-    public RequirementBrowser(RequirementEditorService requirementEditorService)
+    public RequirementBrowser(RequirementEditorController requirementEditorService)
     {
         _requirementEditorService = requirementEditorService;
     }

@@ -73,7 +73,7 @@ public partial class TestCaseGrid
         _columns = [];
         if(testProjectId is not null)
         {
-            _definitions = await fieldService.SearchDefinitionsAsync(FieldTarget.TestCase, new SearchQuery { ProjectId = testProjectId });
+            _definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = testProjectId, Target = FieldTarget.TestCase });
 
             var category = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestCategory);
             if (category is not null && !_columns.Any(x=>x.TraitType == Traits.Core.TraitType.TestCategory))

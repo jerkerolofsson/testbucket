@@ -18,6 +18,12 @@ internal abstract class TenantBaseService
         _authenticationStateProvider = authenticationStateProvider;
     }
 
+    protected async Task<ClaimsPrincipal> GetUserClaimsPrincipalAsync()
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        return authState.User;
+    }
+
     /// <summary>
     /// Returns the tenant from the authenticated users claims
     /// </summary>
@@ -29,6 +35,7 @@ internal abstract class TenantBaseService
             return _tenantId;
         }
         var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var claims = authState.User.Claims;
         _tenantId = authState.User.Claims.Where(x => x.Type == "tenant").Select(x => x.Value).FirstOrDefault();
         return _tenantId ?? throw new InvalidDataException("User is not authenticated or is missing the tenant claim");
     }

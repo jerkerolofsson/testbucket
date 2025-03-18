@@ -1,6 +1,6 @@
 ﻿@using TestBucket.Components.Teams.Controls
 @attribute [Authorize(Roles = "ADMIN")]
-@inject FieldService fieldService
+@inject FieldController fieldService
 
 <EditForm Model="@_fieldDefinition" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">

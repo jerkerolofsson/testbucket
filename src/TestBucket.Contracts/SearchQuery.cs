@@ -11,6 +11,7 @@ namespace TestBucket.Contracts;
 /// </summary>
 public class SearchQuery
 {
+
     /// <summary>
     /// Filter by team
     /// </summary>

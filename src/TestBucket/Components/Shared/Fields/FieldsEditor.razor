@@ -1,5 +1,5 @@
 ﻿@using TestBucket.Domain.Requirements.Models
-@inject FieldService fieldService
+@inject FieldController fieldController
 
 @foreach (var field in _testCaseFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
 {
@@ -25,14 +25,14 @@
         if(TestCase is not null && _testCaseId != TestCase.Id)
         {
             _testCaseId = TestCase.Id;
-            var definitions = await fieldService.SearchDefinitionsAsync(FieldTarget.TestCase, new SearchQuery { ProjectId = TestCase.TestProjectId });
-            _testCaseFields = (await fieldService.GetTestCaseFieldsAsync(TestCase.Id, definitions)).ToList();
+            var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = TestCase.TestProjectId, Target = FieldTarget.TestCase });
+            _testCaseFields = (await fieldController.GetTestCaseFieldsAsync(TestCase.Id, definitions)).ToList();
         }
         if (TestCaseRun is not null && _testCaseRunId != TestCaseRun.Id)
         {
             _testCaseRunId = TestCaseRun.Id;
-            var definitions = await fieldService.SearchDefinitionsAsync(FieldTarget.TestCaseRun, new SearchQuery { ProjectId = TestCaseRun.TestProjectId });
-            _testCaseRunFields = (await fieldService.GetTestCaseRunFieldsAsync(TestCaseRun.TestRunId, TestCaseRun.Id, definitions)).ToList();
+            var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = TestCaseRun.TestProjectId, Target = FieldTarget.TestCaseRun });
+            _testCaseRunFields = (await fieldController.GetTestCaseRunFieldsAsync(TestCaseRun.TestRunId, TestCaseRun.Id, definitions)).ToList();
         }
     }
 
@@ -40,7 +40,7 @@
     {
         if(_testCaseRunFields.Count > 0)
         {
-           await fieldService.SaveTestCaseRunFieldsAsync(_testCaseRunFields);
+           await fieldController.SaveTestCaseRunFieldsAsync(_testCaseRunFields);
         }
     }
 
@@ -48,7 +48,7 @@
     {
         if (_testCaseFields.Count > 0)
         {
-            await fieldService.SaveTestCaseFieldsAsync(_testCaseFields);
+            await fieldController.SaveTestCaseFieldsAsync(_testCaseFields);
         }
     }
 }

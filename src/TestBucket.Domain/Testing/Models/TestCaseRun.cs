@@ -6,7 +6,7 @@
 [Table("testcaseruns")]
 [Index(nameof(Created))]
 [Index(nameof(Name))]
-public class TestCaseRun
+public class TestCaseRun : TestEntity
 {
     /// <summary>
     /// Database ID
@@ -14,9 +14,24 @@ public class TestCaseRun
     public long Id { get; set; }
 
     /// <summary>
-    /// Timestamp when the test case was created
+    /// Created by user name
+    /// </summary>
+    public string? CreatedBy { get; set; }
+
+    /// <summary>
+    /// Timestamp when the entity was created
     /// </summary>
     public DateTimeOffset Created { get; set; }
+
+    /// <summary>
+    /// Modified by user name
+    /// </summary>
+    public string? ModifiedBy { get; set; }
+
+    /// <summary>
+    /// Timestamp when the entity was Modified
+    /// </summary>
+    public DateTimeOffset Modified { get; set; }
 
     /// <summary>
     /// Name of the test case
@@ -59,14 +74,6 @@ public class TestCaseRun
     public int Duration { get; set; }
 
     /// <summary>
-    /// ID of tenant
-    /// </summary>
-    public required string TenantId { get; set; }
-
-    /// <summary>
-    /// ID of project
-    /// </summary>
-    public long TestProjectId { get; set; }
 
     /// <summary>
     /// ID of test case
@@ -81,6 +88,4 @@ public class TestCaseRun
     // Navigation
     public TestRun? TestRun { get; set; }
     public TestCase? TestCase { get; set; }
-    public Tenant? Tenant { get; set; }
-    public TestProject? TestProject { get; set; }
 }

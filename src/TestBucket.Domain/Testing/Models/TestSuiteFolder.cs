@@ -41,16 +41,6 @@ public class TestSuiteFolder : TestEntity
     public string? FeatureDescription { get; set; }
 
     /// <summary>
-    /// ID of tenant
-    /// </summary>
-    public required string TenantId { get; set; }
-
-    /// <summary>
-    /// ID of project
-    /// </summary>
-    public long? TestProjectId { get; set; }
-
-    /// <summary>
     /// ID of test suite
     /// </summary>
     public long TestSuiteId { get; set; }
@@ -67,13 +57,16 @@ public class TestSuiteFolder : TestEntity
     /// </summary>
     public string? Color { get; set; }
 
+    /// <summary>
+    /// Foreign key to parent folder. 
+    /// If null it is a root folder
+    /// </summary>
+    public long? ParentId { get; set; }
+
 
     // Navigation
 
-    public long? ParentId { get; set; }
     public TestSuiteFolder? Parent { get; set; }
     public IEnumerable<TestCase>? TestCases { get; set; }
-    public Tenant? Tenant { get; set; }
-    public TestProject? TestProject { get; set; }
     public TestSuite? TestSuite { get; set; }
 }

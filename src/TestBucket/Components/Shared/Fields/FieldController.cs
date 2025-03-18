@@ -1,22 +1,27 @@
 ﻿
 
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Fields.Specifications;
+using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Tenants.Models;
 
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace TestBucket.Components.Shared.Fields;
 
-internal class FieldService : TenantBaseService
+internal class FieldController : TenantBaseService
 {
     private readonly IFieldRepository _repository;
+    private readonly IFieldDefinitionManager _manager;
 
-    public FieldService(
-        AuthenticationStateProvider authenticationStateProvider, 
-        IFieldRepository repository) : 
+    public FieldController(
+        AuthenticationStateProvider authenticationStateProvider,
+        IFieldRepository repository,
+        IFieldDefinitionManager manager) :
         base(authenticationStateProvider)
     {
         _repository = repository;
+        _manager = manager;
     }
 
     #region Test Case
@@ -89,11 +94,36 @@ internal class FieldService : TenantBaseService
     }
 
     #endregion Test Case Run
+
     #region Field Definitions
-    public async Task<IReadOnlyList<FieldDefinition>> SearchDefinitionsAsync(FieldTarget? target, SearchQuery query)
+
+    /// <summary>
+    /// Searches for field definitions
+    /// </summary>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<FieldDefinition>> SearchDefinitionsAsync(SearchFieldQuery query)
     {
         var tenantId = await GetTenantIdAsync();
-        return await _repository.SearchAsync(tenantId, target, query);
+        var specifications = FieldSpecificationBuilder.From(query);
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        return await _manager.SearchAsync(principal, specifications);
+    }
+
+    /// <summary>
+    /// Returns all field definitions for the specified project and target
+    /// </summary>
+    /// <param name="testProjectId"></param>
+    /// <param name="target"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<FieldDefinition>> GetDefinitionsAsync(long testProjectId, FieldTarget target)
+    {
+        return await SearchDefinitionsAsync(new SearchFieldQuery
+        {
+            ProjectId = testProjectId,
+            Target = target
+        });
     }
 
     public async Task AddAsync(FieldDefinition fieldDefinition)

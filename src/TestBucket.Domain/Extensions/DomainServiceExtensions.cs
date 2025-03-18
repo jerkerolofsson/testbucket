@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Domain.AI;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.States;
@@ -23,6 +25,9 @@ public static class DomainServiceExtensions
         services.AddScoped<ITestCaseGenerator, TestCaseGenerator>();
 
         services.AddScoped<IRequirementImporter, RequirementImporter>();
+        services.AddScoped<IRequirementManager, RequirementManager>();
+
+        services.AddScoped<IFieldDefinitionManager, FieldDefinitionManager>();
 
         return services;
     }

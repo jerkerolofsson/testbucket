@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestBucket.Domain.Testing
 {
-    public class TestEntity
+    public class TestEntity : ProjectEntity
     {
     }
 }

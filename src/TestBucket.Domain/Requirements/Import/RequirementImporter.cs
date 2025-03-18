@@ -17,7 +17,7 @@ namespace TestBucket.Domain.Requirements.Import
             _logger = logger;
         }
 
-        public async Task<RequirementSpecification?> ImportAsync(ClaimsPrincipal principal, long? teamId, long? testProjectId, FileResource fileResource)
+        public async Task<RequirementSpecification?> ImportFileAsync(ClaimsPrincipal principal, long? teamId, long? testProjectId, FileResource fileResource)
         {
             try
             {
@@ -82,5 +82,39 @@ namespace TestBucket.Domain.Requirements.Import
             await new PdfImporter().ImportAsync(spec, fileResource);
             return spec;
         }
+
+        public async Task<IReadOnlyList<Requirement>> ExtractRequirementsAsync(RequirementSpecification specification, CancellationToken cancellationToken)
+        {
+            List<Requirement> results = new();
+
+            if (specification.Description is not null)
+            {
+                await Task.Run(() =>
+                {
+                    foreach (var section in Markdown.MarkdownSectionParser.ReadSections(specification.Description, cancellationToken))
+                    {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            break;
+                        }
+
+                        if (section.Heading is not null && section.Text is not null && section.Text.Length > 0)
+                        {
+                            var requirement = new Requirement()
+                            {
+                                TenantId = "",
+                                Name = section.Heading,
+                                Path = string.Join(',', section.Path),
+                                Description = section.Text
+                            };
+                            results.Add(requirement);
+                        }
+                    }
+                });
+            }
+
+            return results;
+        }
+
     }
 }

@@ -19,6 +19,17 @@ namespace TestBucket.Domain.Requirements
             _repository = repository;
         }
 
+        public async Task AddRequirementAsync(ClaimsPrincipal principal, Requirement requirement)
+        {
+            requirement.TenantId = principal.GetTentantIdOrThrow();
+            requirement.Created = DateTimeOffset.UtcNow;
+            requirement.Modified = DateTimeOffset.UtcNow;
+            requirement.CreatedBy = principal.Identity?.Name;
+            requirement.ModifiedBy = principal.Identity?.Name;
+
+            await _repository.AddRequirementAsync(requirement);
+        }
+
         /// <summary>
         /// Adds a new requirement specification
         /// </summary>
@@ -26,12 +37,20 @@ namespace TestBucket.Domain.Requirements
         /// <returns></returns>
         public Task AddRequirementSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification)
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            specification.TenantId = principal.GetTentantIdOrThrow();
             specification.Created = DateTimeOffset.UtcNow;
             specification.Modified = DateTimeOffset.UtcNow;
             specification.CreatedBy = principal.Identity?.Name;
             specification.ModifiedBy = principal.Identity?.Name;
             return _repository.AddRequirementSpecificationAsync(specification);
+        }
+
+        public async Task<PagedResult<Requirement>> SearchRequirementsAsync(ClaimsPrincipal principal, SearchRequirementQuery query)
+        {
+            var filters = Specifications.RequirementSpecificationBuilder.From(query);
+            filters = [.. filters, new FilterByTenant<Requirement>(principal.GetTentantIdOrThrow())];
+
+            return await _repository.SearchRequirementsAsync(filters, query.Offset, query.Count);
         }
 
         /// <summary>

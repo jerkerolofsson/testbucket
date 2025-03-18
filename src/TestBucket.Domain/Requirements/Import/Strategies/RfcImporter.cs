@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Domain.Files.Models;
+using TestBucket.Domain.Markdown;
 using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Domain.Requirements.Import.Strategies
@@ -17,7 +18,7 @@ namespace TestBucket.Domain.Requirements.Import.Strategies
 
             var sb = new StringBuilder();
 
-            var sections = ReadSections(text).ToArray();
+            var sections = TextSectionReader.ReadSections(text).ToArray();
             if(sections.Length >= 3)
             {
                 spec.Name = sections[2].Replace("\r", "").Replace("\n", "").Trim();
@@ -64,33 +65,6 @@ namespace TestBucket.Domain.Requirements.Import.Strategies
             return Task.FromResult(spec);
         }
 
-        private IEnumerable<string> ReadSections(string text)
-        {
-            bool wasLastLineEmpty = false;
-
-            var sb = new StringBuilder();
-
-            foreach (var line in text.Split('\n'))
-            {
-                sb.Append(line);
-                sb.Append('\n');
-
-                bool isEmptyLine = string.IsNullOrWhiteSpace(line);
-                if(isEmptyLine)
-                {
-                    if(!wasLastLineEmpty)
-                    {
-                        yield return sb.ToString();
-                        sb.Clear();
-                    }
-
-                    wasLastLineEmpty = true;
-                }
-                else
-                {
-                    wasLastLineEmpty = false;
-                }
-            }
-        }
+        
     }
 }

@@ -6,7 +6,7 @@ namespace TestBucket.Domain.Requirements.Models;
 [Table("requirements")]
 [Index(nameof(Created))]
 [Index(nameof(Name))]
-public class Requirement
+public class Requirement : ProjectEntity
 {
     /// <summary>
     /// Database ID
@@ -63,15 +63,6 @@ public class Requirement
     /// </summary>
     public long[]? PathIds { get; set; }
 
-    /// <summary>
-    /// ID of tenant
-    /// </summary>
-    public required string TenantId { get; set; }
-
-    /// <summary>
-    /// ID of project
-    /// </summary>
-    public long? TestProjectId { get; set; }
 
     /// <summary>
     /// ID of test suite
@@ -84,8 +75,6 @@ public class Requirement
     public long? RequirementSpecificationFolderId { get; set; }
 
     // Navigation
-    public Tenant? Tenant { get; set; }
-    public TestProject? TestProject { get; set; }
     public RequirementSpecification? RequirementSpecification { get; set; }
     public RequirementSpecificationFolder? RequirementSpecificationFolder { get; set; }
     public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }

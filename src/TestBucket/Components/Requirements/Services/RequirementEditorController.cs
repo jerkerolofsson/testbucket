@@ -40,10 +40,26 @@ internal class RequirementEditorController : TenantBaseService
     /// <param name="observer"></param>
     public void RemoveObserver(IRequirementObserver observer) => _requirementObservers.Remove(observer);
 
+    public async Task ExtractRequirementsFromSpecificationAsync(RequirementSpecification specification, CancellationToken cancellationToken = default)
+    {
+        var requirements = await _importer.ExtractRequirementsAsync(specification, cancellationToken);
+
+        var principal = await GetUserClaimsPrincipalAsync();
+        foreach (var requirement in requirements)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            requirement.TestProjectId = specification.TestProjectId;
+            requirement.TeamId = specification.TeamId;
+            requirement.RequirementSpecificationId = specification.Id;
+            await _manager.AddRequirementAsync(principal, requirement);
+        }
+    }
+
     public async Task<RequirementSpecification?> ImportAsync(long? teamId, long? testProjectId, FileResource fileResource)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        var specification = await _importer.ImportAsync(principal, teamId, testProjectId, fileResource);
+        var specification = await _importer.ImportFileAsync(principal, teamId, testProjectId, fileResource);
 
         if (specification is not null)
         {

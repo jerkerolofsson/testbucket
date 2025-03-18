@@ -16,4 +16,13 @@
     <ProjectReference Include="..\..\src\Traits\TestBucket.Traits.TUnit\TestBucket.Traits.TUnit.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Requirements\Import\TestData\sections.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Requirements\Import\TestData\srs.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

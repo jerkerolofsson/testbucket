@@ -5,7 +5,7 @@
     <MudStack Style="width: 100%">
         <MudTextField Value="@Specification.Name" ValueChanged="OnNameChanged" T="string" Variant="Variant.Outlined" />
 
-        <MudButton Variant="Variant.Filled" Color="Color.Primary">Extract requirements from specification</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ExtractRequirementsFromSpecificationAsync">Extract requirements from specification</MudButton>
 
         <MarkdownEditor 
         ShowToolbar="false"
@@ -30,6 +30,15 @@
         }
         Specification.Name = name;
         await editor.SaveRequirementSpecificationAsync(Specification);
+    }
+
+    private async Task ExtractRequirementsFromSpecificationAsync()
+    {
+        if (Specification is null)
+        {
+            return;
+        }
+        await editor.ExtractRequirementsFromSpecificationAsync(Specification);
     }
 
     private async Task OnDescriptionChanged(string description)

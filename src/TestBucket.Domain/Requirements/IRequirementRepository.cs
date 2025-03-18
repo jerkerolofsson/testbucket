@@ -12,12 +12,26 @@ namespace TestBucket.Domain.Requirements
     public interface IRequirementRepository
     {
         /// <summary>
+        /// Adds a requirement
+        /// </summary>
+        /// <param name="requirement"></param>
+        /// <returns></returns>
+        Task AddRequirementAsync(Requirement requirement);
+
+        /// <summary>
         /// Adds a new requirement specification
         /// </summary>
         /// <param name="tenantId"></param>
         /// <param name="spec"></param>
         /// <returns></returns>
         Task AddRequirementSpecificationAsync(RequirementSpecification spec);
+
+        /// <summary>
+        /// Searches for requirements
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <returns></returns>
+        Task<PagedResult<Requirement>> SearchRequirementsAsync(IEnumerable<FilterSpecification<Requirement>> filters, int offset, int count);
 
         /// <summary>
         /// Searches for requirement specifications

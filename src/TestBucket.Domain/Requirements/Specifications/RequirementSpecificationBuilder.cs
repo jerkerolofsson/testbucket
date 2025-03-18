@@ -11,6 +11,25 @@ namespace TestBucket.Domain.Requirements.Specifications
 {
     public class RequirementSpecificationBuilder
     {
+        public static IReadOnlyList<FilterSpecification<Requirement>> From(SearchRequirementQuery query)
+        {
+            var specifications = new List<FilterSpecification<Requirement>>();
+
+            if (query.RequirementSpecificationId is not null)
+            {
+                specifications.Add(new FilterRequirementBySpecification(query.RequirementSpecificationId.Value));
+            }
+            if (query.TeamId is not null)
+            {
+                specifications.Add(new FilterByTeam<Requirement>(query.TeamId.Value));
+            }
+            if (query.ProjectId is not null)
+            {
+                specifications.Add(new FilterByProject<Requirement>(query.ProjectId.Value));
+            }
+
+            return specifications;
+        }
         public static IReadOnlyList<FilterSpecification<RequirementSpecification>> From(SearchQuery query)
         {
             var specifications = new List<FilterSpecification<RequirementSpecification>>();

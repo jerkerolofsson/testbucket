@@ -20,6 +20,25 @@ namespace TestBucket.Data.Requirements
             _dbContextFactory = dbContextFactory;
         }
 
+        public async Task<PagedResult<Requirement>> SearchRequirementsAsync(IEnumerable<FilterSpecification<Requirement>> filters, int offset, int count)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            var requirements = dbContext.Requirements.AsQueryable();
+
+            foreach (var filter in filters)
+            {
+                requirements = requirements.Where(filter.Expression);
+            }
+
+            long totalCount = await requirements.LongCountAsync();
+            var items = requirements.OrderBy(x => x.Name).Skip(offset).Take(count);
+
+            return new PagedResult<Requirement>
+            {
+                TotalCount = totalCount,
+                Items = items.ToArray()
+            };
+        }
         public async Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(IEnumerable<FilterSpecification<RequirementSpecification>> filters, int offset, int count)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -29,20 +48,6 @@ namespace TestBucket.Data.Requirements
             {
                 requirementSpecifications = requirementSpecifications.Where(filter.Expression);
             }
-
-            //// Apply filter
-            //if (query.TeamId is not null)
-            //{
-            //    suites = suites.Where(x => x.TeamId == query.TeamId);
-            //}
-            //if (query.ProjectId is not null)
-            //{
-            //    suites = suites.Where(x => x.TestProjectId == query.ProjectId);
-            //}
-            //if (query.Text is not null)
-            //{
-            //    suites = suites.Where(x => x.Name.ToLower().Contains(query.Text.ToLower()));
-            //}
 
             long totalCount = await requirementSpecifications.LongCountAsync();
             var items = requirementSpecifications.OrderBy(x => x.Name).Skip(offset).Take(count);
@@ -68,7 +73,13 @@ namespace TestBucket.Data.Requirements
 
             dbContext.RequirementSpecifications.Update(specification);
             await dbContext.SaveChangesAsync();
+        }
 
+        public async Task AddRequirementAsync(Requirement requirement)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            dbContext.Requirements.Update(requirement);
+            await dbContext.SaveChangesAsync();
         }
     }
 }

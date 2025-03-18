@@ -37,7 +37,7 @@
 
         <div style="display: grid; grid-template-rows: auto 1fr;" class="container-fill">
 
-            <MudToolBar Style="@MenuStyle">
+            <MudToolBar Style="@MenuStyle" Class="@MenuClass">
                 <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
 
                     <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" />
@@ -48,7 +48,7 @@
                     <TbNavLink Href="@testsUrl">Reporting</TbNavLink>
                     <TbNavLink Href="@testsUrl">Environments</TbNavLink>
                     <TbNavLink Href="@projectSettingsUrl">Project</TbNavLink>
-                    
+
                     <MudSpacer/>
 
                     <DarkModeToggle IsDarkMode="@_isDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
@@ -83,7 +83,7 @@
                     </MudMenu>
                 </MudStack>
             </MudToolBar>
- 
+
             <main class="container-fill">
                 <article class="content container-fill">
                     @Body
@@ -109,13 +109,11 @@
     private bool _isDarkMode = true;
     private MudThemeProvider _mudThemeProvider = default!;
 
-    public string MenuStyle => $"width: 100%; background: {MenuBackground};";
+    public string MenuStyle => $"width: 100%; ";
+    public string MenuClass => $"tb-toolbar main " + (_isDarkMode ? "dark" : "light");
     // public string MenuBackground => _isDarkMode ? 
     //     "linear-gradient(90deg, rgba(205,0,52,1) 0%, rgba(103,0,27,1) 24%, rgba(34,34,51,1) 56%, rgba(34,34,51,1) 100%);" : 
     //     "linear-gradient(90deg, rgba(255,0,52,1) 0%, rgba(133,0,27,1) 24%, rgba(134,134,134,1) 56%, rgba(134,134,134,1) 100%);";
-    public string MenuBackground => _isDarkMode ?
-        "var(--mud-palette-dark-lighten); color: white;" :
-        "var(--mud-palette-gray-default); color: black;";
 
     protected override async Task OnInitializedAsync()
     {

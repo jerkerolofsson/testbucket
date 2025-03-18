@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager navigationManager
 @implements IDisposable
 
-<div class="@CssClass" @onclick="OnClick">@ChildContent</div>
+<nav class="@CssClass" @onclick="OnClick">@ChildContent</nav>
 
 @code {
     [Parameter] public string? Href { get; set; }

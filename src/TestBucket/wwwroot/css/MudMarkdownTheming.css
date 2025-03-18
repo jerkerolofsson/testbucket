@@ -1,8 +1,4 @@
-﻿.EasyMDEContainer {
-}
-
-
-.EasyMDEContainer .editor-preview pre {
+﻿.EasyMDEContainer .editor-preview pre {
     background: transparent;
     margin: 0;
 }
@@ -67,15 +63,12 @@
 .EasyMDEContainer .editor-preview,
 .EasyMDEContainer .CodeMirror {
     
+    padding: 20px;
+
     background: var(--mud-palette-background);
     border: none;
-/*    background: var(--mud-palette-background);
-        border-color: var(--mud-palette-dark-lighten);
-    */
     color: var(--mud-palette-text-primary);
 }
-
-
 
 .EasyMDEContainer .CodeMirror {
     font-family: monospace;
@@ -149,6 +142,9 @@ border-color: var(--mud-palette-primary-darken);
      line-height: var(--mud-typography-h1-lineheight);
      letter-spacing: var(--mud-typography-h1-letterspacing);
      text-transform: var(--mud-typography-h1-text-transform);
+     margin-top: 0.75rem;
+     margin-bottom: 1.25rem;
+
  }
 
 .cm-header.cm-header-2,
@@ -158,6 +154,7 @@ h2 {
      line-height: var(--mud-typography-h2-lineheight);
      letter-spacing: var(--mud-typography-h2-letterspacing);
      text-transform: var(--mud-typography-h2-text-transform);
+     margin-bottom: 0.75rem;
  }
 
 
@@ -168,6 +165,7 @@ h3 {
      line-height: var(--mud-typography-h3-lineheight);
      letter-spacing: var(--mud-typography-h3-letterspacing);
      text-transform: var(--mud-typography-h3-text-transform);
+     margin-bottom: 0.75rem;
  }
 
 .cm-header.cm-header-4,
@@ -177,6 +175,7 @@ h4 {
      line-height: var(--mud-typography-h4-lineheight);
      letter-spacing: var(--mud-typography-h4-letterspacing);
      text-transform: var(--mud-typography-h4-text-transform);
+     margin-bottom: 0.75rem;
  }
 
 
@@ -187,6 +186,7 @@ h5 {
      line-height: var(--mud-typography-h5-lineheight);
      letter-spacing: var(--mud-typography-h5-letterspacing);
      text-transform: var(--mud-typography-h5-text-transform);
+     margin-bottom: 0.5rem;
  }
 
 .cm-header.cm-header-6,
@@ -196,6 +196,7 @@ h6 {
      line-height: var(--mud-typography-h6-lineheight);
      letter-spacing: var(--mud-typography-h6-letterspacing);
      text-transform: var(--mud-typography-h6-text-transform);
+     margin-bottom: 0.5rem;
  }
 
 .mud-markdown-toolbar.mud-primary-markdown-toolbar {

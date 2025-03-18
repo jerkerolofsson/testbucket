@@ -20,6 +20,8 @@ html, body {
     --clr-skipped-alt: rgb(50,50,50);
 
     --mud-typography-h1-size: 22pt;
+    --mud-typography-h1-weight: 800;
+
     --mud-typography-h2-size: 20pt;
     --mud-typography-h3-size: 18pt;
     --mud-typography-h4-size: 16pt;
@@ -97,14 +99,6 @@ p.mud-typography-subtitle1 {
     opacity: 1;
 }
 
-.mud-toolbar .mud-icon-button {
-    color: white;
-}
-
- .mud-toolbar .mud-input>input.mud-input-root, div.mud-input-slot.mud-input-root {
-    color: white;
-}
-
  .editor-toolbar button.active, .editor-toolbar button:hover {
      background: var(--mud-palette-primary-darken);
  }
@@ -146,7 +140,6 @@ p.mud-typography-subtitle1 {
 
  .tb-nav-link {
      height: 100%;
-     color: white;
      transition: all linear 150ms;
      padding: 6px;
      cursor: pointer;
@@ -202,5 +195,23 @@ p.mud-typography-subtitle1 {
 
  .tb-toolbar {
      background: var(--mud-palette-surface);
-     color: #fff;
+     color: var(--mud-palette-text-primary);
+ }
+
+ .tb-toolbar.main.light {
+      
+     background: #ddd;
+     border-bottom: solid 1px #ccc;
+
+     color: black;
+     --mud-palette-text-primary: black;
+     --mud-palette-action-default: black;
+ }
+
+ .tb-toolbar.main.dark {
+      
+     background: #111;
+     color: white;
+     --mud-palette-text-primary: white;
+     --mud-palette-action-default: white;
  }

@@ -23,6 +23,14 @@ public interface IRequirementManager
     Task UpdateRequirementAsync(ClaimsPrincipal principal, Requirement requirement);
     Task<PagedResult<Requirement>> SearchRequirementsAsync(ClaimsPrincipal principal, SearchRequirementQuery query);
 
+    /// <summary>
+    /// Deletes the specified requirement
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="requirement"></param>
+    /// <returns></returns>
+    Task DeleteRequirementAsync(ClaimsPrincipal principal, Requirement requirement);
+
     #endregion Requirements
 
     #region Requirement Specifications

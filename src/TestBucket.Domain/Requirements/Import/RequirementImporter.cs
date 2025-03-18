@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 using Microsoft.Extensions.Logging;
 
@@ -107,6 +108,9 @@ namespace TestBucket.Domain.Requirements.Import
                                 Path = string.Join(',', section.Path),
                                 Description = section.Text
                             };
+
+                            ExtractMetadataFromDescription(requirement);
+
                             results.Add(requirement);
                         }
                     }
@@ -116,5 +120,18 @@ namespace TestBucket.Domain.Requirements.Import
             return results;
         }
 
+        private readonly Regex s_requirementIdInBrackes = new Regex(@"\[.*\]");
+        private void ExtractMetadataFromDescription(Requirement requirement)
+        {
+            if (requirement.Description is null)
+            {
+                return;
+            }
+            var match = s_requirementIdInBrackes.Match(requirement.Description);
+            if (match.Success && match.Groups.Count >= 1)
+            {
+                requirement.ExternalId = match.Groups[0].Value.TrimStart('[').TrimEnd(']'); 
+            }
+        }
     }
 }

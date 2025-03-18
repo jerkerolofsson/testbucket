@@ -52,29 +52,28 @@ internal class RequirementEditorController : TenantBaseService
 
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
         {
+            YesText = "YES", NoText = "NO",
             Title = "Extract requirements from specification",
             MarkupMessage = new MarkupString("Extracting requirements from the specification will overwrite any existing requirements in this specification. Do you really want to continue?")
         });
 
-        if (result == false)
+        if (result == true)
         {
-            return;
-        }
+            var requirements = await _importer.ExtractRequirementsAsync(specification, cancellationToken);
 
-        var requirements = await _importer.ExtractRequirementsAsync(specification, cancellationToken);
+            // Delete all old
+            await _manager.DeleteSpecificationRequirementsAndFoldersAsync(principal, specification);
 
-        // Delete all old
-        await _manager.DeleteSpecificationRequirementsAndFoldersAsync(principal, specification);
+            // Import all new
+            foreach (var requirement in requirements)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-        // Import all new
-        foreach (var requirement in requirements)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            requirement.TestProjectId = specification.TestProjectId;
-            requirement.TeamId = specification.TeamId;
-            requirement.RequirementSpecificationId = specification.Id;
-            await _manager.AddRequirementAsync(principal, requirement);
+                requirement.TestProjectId = specification.TestProjectId;
+                requirement.TeamId = specification.TeamId;
+                requirement.RequirementSpecificationId = specification.Id;
+                await _manager.AddRequirementAsync(principal, requirement);
+            }
         }
     }
 
@@ -91,10 +90,31 @@ internal class RequirementEditorController : TenantBaseService
         return specification;
     }
 
+    public async Task DeleteRequirementAsync(Requirement requirement)
+    {
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = "YES", NoText = "NO",
+            Title = "Delete requirement?",
+            MarkupMessage = new MarkupString("Do you really want to delete this requirement?")
+        });
+
+        if (result == false)
+        {
+            return;
+        }
+
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.DeleteRequirementAsync(principal, requirement);
+
+    }
+
     public async Task DeleteRequirementSpecificationAsync(RequirementSpecification specification)
     {
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
         {
+            YesText = "YES",
+            NoText = "NO",
             Title = "Delete specification and all requirements?",
             MarkupMessage = new MarkupString("Do you really want to delete this requirement specification and all requirements?")
         });

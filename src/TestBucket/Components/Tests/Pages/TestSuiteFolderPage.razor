@@ -6,12 +6,12 @@
 @inject TestBrowser testBrowser
 @inject AppNavigationManager appNavigationManager
 
- <MudStack Style="width: 100%; background: var(--mud-palette-surface)">
+<div class="container-fill-2-rows">
     <MudToolBar Style="background: var(--mud-palette-primary)">
         <PathNavigation FolderId="@FolderId" />
     </MudToolBar>
 
-    <MudSplitter Style="height: 100%; width:100%" Color="Color.Primary" Bordered="false" Dimension="80" EnableMargin="false">
+    <MudSplitter Style="height: 100%; width:100%" Bordered="false" Dimension="80" EnableMargin="false">
         <StartContent>
             <TestCaseGrid TestSuiteId="@SuiteId" FolderId="@FolderId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" />
         </StartContent>
@@ -21,8 +21,7 @@
             </MudStack>
         </EndContent>
     </MudSplitter>
-
-</MudStack>
+</div>
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";

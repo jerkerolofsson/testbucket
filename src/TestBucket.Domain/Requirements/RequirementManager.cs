@@ -30,6 +30,12 @@ namespace TestBucket.Domain.Requirements
             await _repository.AddRequirementAsync(requirement);
         }
 
+        public async Task DeleteRequirementAsync(ClaimsPrincipal principal, Requirement requirement)
+        {
+            principal.ThrowIfEntityTenantIsDifferent(requirement);
+            await _repository.DeleteRequirementAsync(requirement);
+        }
+
         /// <summary>
         /// Updates a requirement
         /// </summary>

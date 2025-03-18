@@ -6,16 +6,19 @@
 @inject TestBrowser testBrowser
 @inject AppNavigationManager appNavigationManager
 
-<MudSplitter Style="height: 100%; width:100%" Color="Color.Primary" Bordered="false" Dimension="80" EnableMargin="false" >
-    <StartContent>
-        <TestCaseGrid TestSuiteId="@SuiteId" CompareFolder="false" OnTestCaseClicked="OnTestCaseClicked" />
-    </StartContent>
-    <EndContent>
-        <MudStack Class="pa-2" Style="width: 100%">
-            <TestSuiteEditor TestSuite="@_testSuite" />
-        </MudStack>
-    </EndContent>
-</MudSplitter>
+<div class="container-fill-2-rows">
+    <div></div>
+    <MudSplitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false">
+        <StartContent>
+            <TestCaseGrid TestSuiteId="@SuiteId" CompareFolder="false" OnTestCaseClicked="OnTestCaseClicked" />
+        </StartContent>
+        <EndContent>
+            <MudStack Class="pa-2" Style="width: 100%">
+                <TestSuiteEditor TestSuite="@_testSuite" />
+            </MudStack>
+        </EndContent>
+    </MudSplitter>
+</div>
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";

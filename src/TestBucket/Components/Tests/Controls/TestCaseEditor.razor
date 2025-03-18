@@ -8,8 +8,8 @@
 
 @if(Test is not null && _boundDescription is not null)
 {
-    <MudStack Style="width: 100%; background: var(--mud-palette-surface)">
-        <MudToolBar Style="background: var(--mud-palette-primary)">
+    <div class="container-fill-2-rows">
+        <MudToolBar Class="tb-toolbar">
 
             @if (!_preview && _editor is not null)
             {
@@ -72,7 +72,7 @@
 
         </MudToolBar>
 
-        <MudSplitter Style="height: 100%" Color="Color.Primary" Bordered="false" Dimension="80" EnableMargin="false">
+        <MudSplitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false">
             <StartContent>
                 <MudStack Class="pa-2" Style="width: 100%">
                     <MarkdownEditor 
@@ -117,7 +117,7 @@
             </EndContent>
         </MudSplitter>
 
-    </MudStack>
+    </div>
 }
 
 

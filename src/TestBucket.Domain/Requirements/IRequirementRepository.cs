@@ -19,6 +19,13 @@ namespace TestBucket.Domain.Requirements
         Task AddRequirementAsync(Requirement requirement);
 
         /// <summary>
+        /// Deletes the requirement
+        /// </summary>
+        /// <param name="requirement"></param>
+        /// <returns></returns>
+        Task DeleteRequirementAsync(Requirement requirement);
+
+        /// <summary>
         /// Adds a new requirement specification
         /// </summary>
         /// <param name="tenantId"></param>

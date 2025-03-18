@@ -1,7 +1,9 @@
 ﻿
-<MudStack Spacing="@Spacing" Row="@Row" Class="pa-2" Style="background: rgba(0,0,0,0.05); border: solid 1px rgba(0,0,0,0.075)">
-    @ChildContent
-</MudStack>
+<MudPaper Class="pa-3" Style="border: solid 1px rgba(0,0,0,0.055); background: rgba(0,0,0,0.1)">
+    <MudStack Spacing="@Spacing" Row="@Row">
+        @ChildContent
+    </MudStack>
+</MudPaper>
 
 @code {
     [Parameter] public RenderFragment? ChildContent { get; set; }

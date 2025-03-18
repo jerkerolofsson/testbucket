@@ -47,6 +47,19 @@ namespace TestBucket.Domain.UnitTests.Requirements.Import
             await Assert.That(requirements[1].Path).IsEqualTo("1. TITLE");
         }
 
+        [Test]
+        public async Task ExtractRequirementsAsync_WithRequirementIdInBrackes_ExtractedAsExternalId()
+        {
+            (RequirementImporter importer, Domain.Requirements.Models.RequirementSpecification? requirementSpecification) = await ImportTestDataAsync("sections.md");
+
+            var requirements = await importer.ExtractRequirementsAsync(requirementSpecification!, default);
+            await Assert.That(requirements.Count).IsEqualTo(2);
+
+            await Assert.That(requirements[0].ExternalId).IsEqualTo("REQ-1.1");
+            await Assert.That(requirements[1].ExternalId).IsEqualTo("REQ-1.2");
+        }
+
+
         /// <summary>
         /// Helper 
         /// </summary>

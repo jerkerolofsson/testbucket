@@ -12,35 +12,50 @@
 
         <MudTabs>
             <MudTabPanel Text="General">
-                <MudStack>
+                <MudStack Class="pa-5" Style="max-width: 800px">
 
-                    <Field>
-                        <FieldHeader>Image</FieldHeader>
-                        <UploadFile Accept=".png" FileUploaded="OnImageUploaded" />
-                    </Field>
-
-                    <Field>
-                        <FieldHeader>Name</FieldHeader>
+                    <MudText Typo="Typo.h3">Name</MudText>
+                    <Field Row>
+                        <FieldHeader>Name of the project</FieldHeader>
+                        <MudSpacer/>
                         <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Project.Name"></MudTextField>
                     </Field>
 
+                    <MudText Typo="Typo.h3" Class="pa-3">Appearance</MudText>
                     <Field>
-                        <FieldHeader>Slug</FieldHeader>
-                        <MudText>@Project?.Slug</MudText>
+                        <MudStack Row AlignItems="AlignItems.Start"> 
+                            <FieldHeader>Project Icon</FieldHeader>
+                            <MudSpacer/>
+                            @if(!string.IsNullOrEmpty(Project.IconUrl))
+                            {
+                                <MudImage Src="@Project.IconUrl" Width="64" Height="64"/>
+                            }
+                        </MudStack>
+                        
+                        <UploadFile Accept=".png" FileUploaded="OnImageUploaded" />
                     </Field>
 
-                    <Field>
-                        <FieldHeader>ID</FieldHeader>
-                        <MudText>@Project?.Id</MudText>
-                    </Field>
-
-                    <Field>
+                    
+                    <MudText Typo="Typo.h3" Class="pa-3">Access</MudText>
+                    <Field Row>
                         <FieldHeader>Team</FieldHeader>
+                        <MudSpacer/>
                         <TeamDropDown SelectedTeam="_team" SelectedTeamChanged="OnTeamChanged" />
                     </Field>
 
-                    <FieldHeader>Grant access to all users</FieldHeader>
-                    <MudText>@Project?.GrantAccessToAllTenantUsers</MudText>
+                    <Field Row>
+                        <FieldHeader>Grant access to all users</FieldHeader>
+                        <MudSpacer/>
+                        <MudSwitchM3 T="bool" @bind-Value="@Project.GrantAccessToAllTenantUsers"/>
+                    </Field>
+
+                    <Field Row Spacing="3">
+                        <FieldHeader>Slug</FieldHeader>
+                        <MudText>@Project.Slug</MudText>
+
+                        <FieldHeader>ID</FieldHeader>
+                        <MudText>@Project.Id</MudText>
+                    </Field>
                 </MudStack>
             </MudTabPanel>
 

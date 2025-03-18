@@ -35,8 +35,7 @@
 <CascadingValue Value="@_project">
     <CascadingValue Value="@_team">
 
-
-        <div style="display: grid; grid-template-rows: auto 1fr; height: 100%">
+        <div style="display: grid; grid-template-rows: auto 1fr;" class="container-fill">
 
             <MudToolBar Style="@MenuStyle">
                 <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
@@ -85,8 +84,8 @@
                 </MudStack>
             </MudToolBar>
  
-            <main>
-                <article class="content">
+            <main class="container-fill">
+                <article class="content container-fill">
                     @Body
                 </article>
             </main>
@@ -110,13 +109,13 @@
     private bool _isDarkMode = true;
     private MudThemeProvider _mudThemeProvider = default!;
 
-    public string MenuStyle => $"width: 100%; background: {MenuBackground}; color: white;";
+    public string MenuStyle => $"width: 100%; background: {MenuBackground};";
     // public string MenuBackground => _isDarkMode ? 
     //     "linear-gradient(90deg, rgba(205,0,52,1) 0%, rgba(103,0,27,1) 24%, rgba(34,34,51,1) 56%, rgba(34,34,51,1) 100%);" : 
     //     "linear-gradient(90deg, rgba(255,0,52,1) 0%, rgba(133,0,27,1) 24%, rgba(134,134,134,1) 56%, rgba(134,134,134,1) 100%);";
     public string MenuBackground => _isDarkMode ?
-        "var(--mud-palette-primary)" :
-        "var(--mud-palette-primary)";
+        "var(--mud-palette-dark-lighten); color: white;" :
+        "var(--mud-palette-gray-default); color: black;";
 
     protected override async Task OnInitializedAsync()
     {

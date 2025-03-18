@@ -9,13 +9,13 @@
 
 <TenantRedirect />
 
-<MudSplitter Style="height: 100%" Color="Color.Primary" Bordered="false" Dimension="20" EnableMargin="false">
+<MudSplitter Class="container-fill" Bordered="false" Dimension="25" EnableMargin="false">
     <StartContent>
         <RequirementTreeView OnSpecificationClicked="OnSpecificationClicked" OnRequirementClicked="OnRequirementClicked" />
     </StartContent>
 
     <EndContent>
-        <MudStack Class="pa-3" Style="width: 100%">
+        <MudStack Class="container-fill">
 
             @if (_specification is not null)
             {
@@ -27,7 +27,9 @@
             }
             else
             {
-                <UploadRequirementSpecification/>
+                <MudItem Class="pa-2">
+                    <UploadRequirementSpecification/>
+                </MudItem>
             }
         </MudStack>
     </EndContent>

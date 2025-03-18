@@ -121,5 +121,12 @@ namespace TestBucket.Data.Requirements
             dbContext.Requirements.Update(requirement);
             await dbContext.SaveChangesAsync();
         }
+
+        public async Task DeleteRequirementAsync(Requirement requirement)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            dbContext.Requirements.Remove(requirement);
+            await dbContext.SaveChangesAsync();
+        }
     }
 }

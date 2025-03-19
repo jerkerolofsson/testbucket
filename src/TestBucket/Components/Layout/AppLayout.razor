@@ -4,6 +4,7 @@
 @using TestBucket.Components.Teams
 @using TestBucket.Components.Teams.Controls
 @using TestBucket.Domain.Teams.Models
+
 @inherits LayoutComponentBase
 @inject NavigationManager navigationManager
 @inject TenantResolver tenantResolver
@@ -12,21 +13,26 @@
 @inject TeamService teamService
 @inject ThemingService themingService
 
-<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" Theme="@themingService.Theme"/>
+<MudThemeProvider @ref="@_mudThemeProvider" IsDarkMode="@_isDarkMode" Theme="@themingService.Theme"/>
+<TbThemeProvider UserPreferencesChanged="OnUserPreferencesChanged"/>
 <MudSnackbarProvider />
 <MudPopoverProvider />
 <MudDialogProvider MaxWidth="MaxWidth.ExtraExtraLarge" />
 
 @{
     string tenantAdminUrl = $"{tenantId}/tenants";
-    string teamAdminUrl = $"{tenantId}/teams";
+    string teamAdminUrl = $"{tenantId}/Settings/Teams";
     string projectAdminUrl = $"{tenantId}/projects";
-    string projectSettingsUrl = $"{tenantId}/projects/settings";
+    string projectSettingsUrl = $"{tenantId}/Settings/Projects/{_project?.Slug}";
+    if(_project is null)
+    {
+        projectSettingsUrl = $"{tenantId}/Settings/Projects";
+    }
     string homeUrl = $"/{tenantId}";
     string authUrl = $"/{tenantId}/Auth";
     string requirementsUrl = $"/{tenantId}/Requirements";
     string testsUrl = $"/{tenantId}/Testing";
-    string runsUrl = $"/{tenantId}/Runs";
+    string settingsUrl = $"/{tenantId}/Settings";
     string manageUrl = $"/{tenantId}/Account/Manage";
     string registerUrl = $"/{tenantId}/Account/Register";
     string loginUrl = $"/{tenantId}/Account/Login?returnUrl=/{tenantId}";
@@ -51,27 +57,31 @@
 
                     <MudSpacer/>
 
+                    <MudMenu Icon="@Icons.Material.Filled.Add">
+                        <MudMenuItem>New Test Suite</MudMenuItem>
+                        <MudMenuItem>New Test Case</MudMenuItem>
+                        <MudMenuItem>New Run</MudMenuItem>
+                        <MudDivider />
+                        <MudMenuItem>New Requirement Specification</MudMenuItem>
+                        <MudMenuItem>New Requirement</MudMenuItem>
+                        <MudDivider />
+                        <MudMenuItem>New Project</MudMenuItem>
+                        <MudMenuItem>New Team</MudMenuItem>
+                    </MudMenu>
+
                     <DarkModeToggle IsDarkMode="@_isDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
                     <MudMenu Icon="@Icons.Material.Filled.MoreVert">
 
                         <!-- Pages -->
-                        <MudMenuItem Icon="@Icons.Material.Filled.ViewList" Label="Tests" Href="@testsUrl"></MudMenuItem>
-                        <MudMenuItem Icon="@Icons.Material.Filled.SmartDisplay" Label="Runs" Href="@runsUrl"></MudMenuItem>
+                        <MudMenuItem Icon="@Icons.Material.Filled.ViewList" Label="Testing" Href="@testsUrl"></MudMenuItem>
 
                         <!-- Admin -->
-                        <AuthorizeView Roles="ADMIN">
-                            <MudDivider/>
-                            <MudMenuItem Icon="@Icons.Material.Filled.Settings" Label="Teams" Href="@teamAdminUrl"></MudMenuItem>
-                            <MudMenuItem Icon="@Icons.Material.Filled.Settings" Label="Projects" Href="@projectAdminUrl"></MudMenuItem>
-                        </AuthorizeView>
-                        <AuthorizeView Roles="SUPERADMIN">
-                            <MudMenuItem Icon="@Icons.Material.Filled.AdminPanelSettings" Label="Tenants" Href="@tenantAdminUrl"></MudMenuItem>
-                        </AuthorizeView>
+                        <MudMenuItem Icon="@Icons.Material.Filled.Settings" Label="Settings" Href="@settingsUrl"></MudMenuItem>
 
                         <!-- Profile / Logout -->
                         <AuthorizeView>
                             <MudDivider />
-                            <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="Profile" Href="@manageUrl"></MudMenuItem>
+                            <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="Account" Href="@manageUrl"></MudMenuItem>
                             <MudMenuItem>
                                 <form action="Account/Logout" method="post">
                                     <AntiforgeryToken />
@@ -111,9 +121,6 @@
 
     public string MenuStyle => $"width: 100%; ";
     public string MenuClass => $"tb-toolbar main " + (_isDarkMode ? "dark" : "light");
-    // public string MenuBackground => _isDarkMode ? 
-    //     "linear-gradient(90deg, rgba(205,0,52,1) 0%, rgba(103,0,27,1) 24%, rgba(34,34,51,1) 56%, rgba(34,34,51,1) 100%);" : 
-    //     "linear-gradient(90deg, rgba(255,0,52,1) 0%, rgba(133,0,27,1) 24%, rgba(134,134,134,1) 56%, rgba(134,134,134,1) 100%);";
 
     protected override async Task OnInitializedAsync()
     {
@@ -122,6 +129,11 @@
 
         currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
         navigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnUserPreferencesChanged(UserPreferences preferences)
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     private async Task OnDarkModeChanged(bool isDarkMode)

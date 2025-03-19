@@ -1,4 +1,4 @@
-﻿@page "/{tenantId}/Settings/Projects/{projectSlug}"
+﻿@page "/{tenantId}/Settings/Projects/{projectSlug}/Fields"
 @layout SettingsLayout
 @attribute [Authorize(Roles = "ADMIN")]
 @inject ProjectService projectService
@@ -9,7 +9,7 @@
 <MudStack Class="container-settings-page">
     @if (_project is not null)
     {
-        <ProjectEditor Project="@_project" />
+        <ProjectFieldsEditor Project="@_project" />
     }
 </MudStack>
 

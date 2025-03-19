@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Settings.Models;
-
-namespace TestBucket.Data.Identity;
+﻿namespace TestBucket.Data.Identity;
 internal class UserPreferenceRepository : IUserPreferenceRepository
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;

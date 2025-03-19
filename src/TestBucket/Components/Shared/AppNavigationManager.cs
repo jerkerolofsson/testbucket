@@ -39,9 +39,22 @@ public class AppNavigationManager
         return $"/{tenantId}/Testing/TestCases/{testCase.Id}";
     }
 
+
+    public string GetUrl(TestProject project)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/Projects/{project.Slug}";
+    }
+
     public void NavigateTo(TestCase testCase, bool forceLoad = false)
     {
         var url = GetUrl(testCase);
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
+
+    public void NavigateTo(TestProject project, bool forceLoad = false)
+    {
+        var url = GetUrl(project);
         _navigationManager.NavigateTo(url, forceLoad);
     }
 }

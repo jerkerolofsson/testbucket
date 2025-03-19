@@ -1,6 +1,6 @@
 ﻿@attribute [Authorize(Roles = "SUPERADMIN")]
-@layout AppLayout
-@page "/{tenantId}/tenants"
+@layout SettingsLayout
+@page "/{tenantId}/Settings/Tenants"
 @inject TenantService tenantService
 @inject IDialogService dialogService
 @inject NavigationManager navigationManager

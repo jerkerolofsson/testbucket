@@ -1,23 +1,23 @@
-﻿@page "/{tenantId}/projects"
-@layout AppLayout
+﻿@page "/{tenantId}/Settings/Projects"
+@using System.Diagnostics.CodeAnalysis
+@layout SettingsLayout
 @attribute [Authorize(Roles = "ADMIN")]
 @inject ProjectService projectService
 @inject IDialogService dialogService
-
-<MudButton>Projects</MudButton>
+@inject AppNavigationManager appNavigationManager
 
 <MudDataGrid ServerData="LoadGridData"
              Dense="true"
              Hover="true"
              T="TestProject"
              @ref="_dataGrid"
+             RowClick="x => OnRowClicked(x.Item)"
              SortMode="SortMode.None">
 
     <ToolBarContent>
         <MudStack Row="true" AlignItems="AlignItems.Center">
             <MudSpacer />
             <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddProjectAsync"></MudIconButton>
-
         </MudStack>
     </ToolBarContent>
 
@@ -38,6 +38,12 @@
     [CascadingParameter] public Team? Team { get; set; }
 
     private MudDataGrid<TestProject>? _dataGrid;
+
+    [DoesNotReturn]
+    private void OnRowClicked(TestProject project)
+    {
+        appNavigationManager.NavigateTo(project, false);
+    }
 
     private async Task AddProjectAsync()
     {

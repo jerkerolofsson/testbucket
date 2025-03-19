@@ -1,17 +1,9 @@
-﻿using Blazored.LocalStorage;
+﻿using OneOf;
 
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.CodeAnalysis;
-
-using OneOf;
-
-using TestBucket.Components.Account;
-using TestBucket.Components.Tenants;
-using TestBucket.Contracts;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Errors;
+using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
-using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.States;
 
 namespace TestBucket.Components.Projects;
@@ -19,12 +11,12 @@ namespace TestBucket.Components.Projects;
 internal class ProjectService : TenantBaseService
 {
     private readonly IProjectRepository _projectRepository;
-    private readonly UserPreferencesService _userPreferencesService;
+    private readonly IUserPreferencesManager _userPreferencesService;
     private readonly IStateService _stateService;
 
     public ProjectService(
         IProjectRepository projectRepository,
-        UserPreferencesService userPreferencesService,
+        IUserPreferencesManager userPreferencesService,
         AuthenticationStateProvider authenticationStateProvider,
         IStateService stateService) : base(authenticationStateProvider)
     {
@@ -35,11 +27,12 @@ internal class ProjectService : TenantBaseService
 
     public async Task SetActiveProjectAsync(TestProject? project)
     {
-        var preferences = await _userPreferencesService.GetUserPreferencesAsync();
+        var principal = await GetUserClaimsPrincipalAsync();
+        var preferences = await _userPreferencesService.LoadUserPreferencesAsync(principal);
         if(preferences is not null)
         {
             preferences.ActiveProjectId = project?.Id;
-            await _userPreferencesService.SaveUserPreferencesAsync(preferences);    
+            await _userPreferencesService.SaveUserPreferencesAsync(principal, preferences);    
         }
     }
 
@@ -55,7 +48,8 @@ internal class ProjectService : TenantBaseService
 
     public async Task<TestProject?> GetActiveProjectAsync()
     {
-        var preferences = await _userPreferencesService.GetUserPreferencesAsync();
+        var principal = await GetUserClaimsPrincipalAsync();
+        var preferences = await _userPreferencesService.LoadUserPreferencesAsync(principal);
         if (preferences?.ActiveProjectId is not null)
         {
             var tenantId = await GetTenantIdAsync();

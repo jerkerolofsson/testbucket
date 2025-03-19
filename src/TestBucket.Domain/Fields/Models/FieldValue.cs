@@ -11,6 +11,8 @@ namespace TestBucket.Domain.Fields.Models;
 /// </summary>
 public class FieldValue : Entity
 {
+    public static FieldValue Empty => new FieldValue { FieldDefinitionId = 0 };
+
     public long Id { get; set; }
 
     // Values (based on FieldDefinition.Type)

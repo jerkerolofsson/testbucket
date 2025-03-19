@@ -33,7 +33,7 @@
     <AuthorizeView Roles="ADMIN">
         @if (SelectedTeam is not null)
         {
-            string projectAdminUrl = $"{SelectedTeam.TenantId}/teams/{SelectedTeam.Slug}";
+            string projectAdminUrl = $"{SelectedTeam.TenantId}/Settings/Teams/{SelectedTeam.Slug}";
             <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Settings" Href="@projectAdminUrl"></MudIconButton>
         }
         <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddTeamAsync"></MudIconButton>

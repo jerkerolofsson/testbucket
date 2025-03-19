@@ -148,12 +148,17 @@ p.mud-typography-subtitle1 {
      border-top-right-radius: 5px;
  }
 
+ .container-settings-page {
+     padding: 2rem;
+     max-width: 1000px;
+ }
+
  .tb-nav-link:hover {
      background: rgba(255,255,255,0.05);
  }
 
  .tb-nav-link.active {
-     border-color: var(--mud-palette-info);
+     border-color: var(--mud-palette-tertiary);
  }
 
  .tb-login-container {
@@ -200,7 +205,7 @@ p.mud-typography-subtitle1 {
 
  .tb-toolbar.main.light {
       
-     background: #ddd;
+     background: var(--mud-palette-surface);
      border-bottom: solid 1px #ccc;
 
      color: black;
@@ -210,8 +215,13 @@ p.mud-typography-subtitle1 {
 
  .tb-toolbar.main.dark {
       
-     background: #111;
+     background: var(--mud-palette-surface);
      color: white;
      --mud-palette-text-primary: white;
      --mud-palette-action-default: white;
+ }
+
+ input.form-control {
+     padding: 4px;
+
  }

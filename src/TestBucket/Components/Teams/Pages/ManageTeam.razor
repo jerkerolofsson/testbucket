@@ -1,4 +1,4 @@
-﻿@page "/{tenantId}/teams/{teamSlug}"
+﻿@page "/{tenantId}/Settings/Teams/{teamSlug}"
 @using TestBucket.Components.Teams.Controls
 @using TestBucket.Domain.Teams.Models
 @layout AppLayout
@@ -22,7 +22,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (TeamSlug is not null)
+        if (TeamSlug is not null && _team?.Slug != TeamSlug)
         {
             _team = await teamService.GetTeamBySlugAsync(TeamSlug);
         }

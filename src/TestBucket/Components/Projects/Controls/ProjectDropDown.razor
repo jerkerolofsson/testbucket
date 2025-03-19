@@ -27,7 +27,7 @@
     <AuthorizeView Roles="ADMIN">
         @if(SelectedProject is not null)
         {
-            string projectAdminUrl = $"{SelectedProject.TenantId}/projects/settings";
+            string projectAdminUrl = $"{SelectedProject.TenantId}/Settings/Projects/{SelectedProject.Slug}";
             <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Settings" Href="@projectAdminUrl"></MudIconButton>
         }
         <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddProject"></MudIconButton>

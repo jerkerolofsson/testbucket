@@ -1,0 +1,15 @@
+﻿@using TestBucket.Components.Teams
+@using TestBucket.Components.Teams.Controls
+@using TestBucket.Components.Uploads.Controls
+@using TestBucket.Domain.Files.Models
+@using TestBucket.Domain.Teams.Models
+@inject ProjectService projectService
+
+@if (Project is not null)
+{
+    <FieldDefinitionTable ProjectId="@Project.Id"/>
+}
+
+@code {
+    [Parameter] public TestProject? Project { get; set; }
+}

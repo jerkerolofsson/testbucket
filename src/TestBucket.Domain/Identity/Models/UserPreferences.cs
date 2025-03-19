@@ -33,4 +33,14 @@ public class UserPreferences
     /// Use dark mode
     /// </summary>
     public bool DarkMode { get; set; } = true;
+
+    /// <summary>
+    /// Custom Theme
+    /// </summary>
+    public string? Theme { get; set; }
+
+    /// <summary>
+    /// Increased contrast
+    /// </summary>
+    public bool IncreasedContrast { get; set; }
 }

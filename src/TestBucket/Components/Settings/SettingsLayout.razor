@@ -1,0 +1,107 @@
+﻿@inherits LayoutComponentBase
+@layout AppLayout
+@using Humanizer
+@using TestBucket.Components.Layout
+@using TestBucket.Domain.Settings
+@using TestBucket.Domain.Settings.Models
+@inject NavigationManager navigationManager
+@inject ISettingsManager settingsManager
+
+<TenantRedirect />
+
+<MudSplitter Style="height: 100%" Bordered="false" Dimension="15" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+
+        <div class="pa-5">
+
+            <MudText Typo="Typo.h1">Settings</MudText>
+
+            <MudTextField Placeholder="Search Settings"
+            Class="mt-3 mb-3"
+            Clearable
+            Variant="Variant.Outlined"
+            Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChanged" />
+
+
+            <MudNavMenu>
+
+                @foreach(var category in _categories)
+                {
+                    string url = $"/{TenantId}/Settings/Categories/{category.Name}";
+                    <MudNavLink Icon="@Icons.Material.Outlined.Palette" Href="@url">@category.Name</MudNavLink>
+                }
+
+
+                @if(Project is not null)
+                {
+                    string projectUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}";
+                    string projectFieldsUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}/Fields";
+
+                    <AuthorizeView Roles="ADMIN">
+                        <MudDivider />
+                        <MudNavLink Icon="@Icons.Material.Outlined.Article" Href="@projectUrl">@Project.Name</MudNavLink>
+                        <MudNavLink Icon="@Icons.Material.Outlined.Article" Href="@projectFieldsUrl">@Project.Name Fields</MudNavLink>
+
+                    </AuthorizeView>
+                }
+
+                <AuthorizeView Roles="ADMIN">
+                    <MudNavLink Icon="@Icons.Material.Outlined.Devices" Href="@ProjectsUrl">Other Projects</MudNavLink>
+                    <MudDivider />
+                    <MudNavLink Icon="@Icons.Material.Outlined.Groups" Href="@TeamsUrl">Teams</MudNavLink>
+                </AuthorizeView>
+
+                <AuthorizeView Roles="SUPERADMIN">
+                    <MudDivider />
+                    <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" Href="@TenantsUrl">Tenants</MudNavLink>
+                </AuthorizeView>
+            </MudNavMenu>
+        </div>
+
+    </StartContent>
+
+    <EndContent>
+        <MudStack Style="width: 100%; overflow: auto; ">
+            @Body
+        </MudStack>
+    </EndContent>
+</MudSplitter>
+
+@code {
+    private string _searchText = "";
+
+    private ISetting[]? _searchResult;
+
+    private SettingsCategory[] _categories = [];
+
+    [CascadingParameter] public TestProject? Project { get; set; }
+
+    private void OnSearchTextChanged(string text)
+    {
+        _searchText = text;
+
+        if(!string.IsNullOrEmpty(text))
+        {
+            var settings = settingsManager.Search(_searchText);
+            _categories = settings.Select(x => x.Metadata.Category).Distinct().ToArray();
+            navigationManager.NavigateTo($"/{TenantId}/Settings/Search?q={_searchText}");
+        }
+        else
+        {
+            _categories = settingsManager.Categories;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        _categories = settingsManager.Categories;
+    }
+
+    private string TenantId => TenantResolver.ResolveTenantIdFromUrl(navigationManager.Uri) ?? "default";
+
+    private string AppearanceUrl => $"{TenantId}/Settings/Appearance";
+    private string TenantsUrl => $"{TenantId}/Settings/Tenants";
+    private string ProjectsUrl => $"{TenantId}/Settings/Projects";
+    private string TeamsUrl => $"{TenantId}/Settings/Teams";
+    private string UsersUrl => $"{TenantId}/Settings/Users";
+}

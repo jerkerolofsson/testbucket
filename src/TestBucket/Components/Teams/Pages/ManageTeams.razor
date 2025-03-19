@@ -1,12 +1,10 @@
-﻿@page "/{tenantId}/teams"
+﻿@page "/{tenantId}/Settings/Teams"
 @using TestBucket.Components.Teams.Dialogs
 @using TestBucket.Domain.Teams.Models
-@layout AppLayout
+@layout SettingsLayout
 @attribute [Authorize(Roles = "ADMIN")]
 @inject TeamService teamService
 @inject IDialogService dialogService
-
-<MudButton>TEams</MudButton>
 
 <MudDataGrid ServerData="LoadGridData"
              Dense="true"

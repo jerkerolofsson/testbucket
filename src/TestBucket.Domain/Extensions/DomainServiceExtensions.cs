@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.AI;
+﻿using TestBucket.Domain.AI;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
-using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Settings;
+using TestBucket.Domain.Settings.Appearance;
+using TestBucket.Domain.Settings.Server;
 using TestBucket.Domain.States;
-using TestBucket.Domain.Tenants;
 using TestBucket.Domain.Testing;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -28,6 +22,14 @@ public static class DomainServiceExtensions
         services.AddScoped<IRequirementManager, RequirementManager>();
 
         services.AddScoped<IFieldDefinitionManager, FieldDefinitionManager>();
+
+        // Settings
+        services.AddScoped<IUserPreferencesManager, UserPreferencesManager>();
+        services.AddScoped<ISettingsManager, SettingsManager>();
+        services.AddScoped<ISetting, DefaultTenantSetting>();
+        services.AddScoped<ISetting, DarkModeSetting>();
+        services.AddScoped<ISetting, ThemeSetting>();
+        services.AddScoped<ISetting, IncreasedContrastSetting>();
 
         return services;
     }

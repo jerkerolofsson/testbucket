@@ -1,0 +1,26 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/Categories/{Category}"
+@using TestBucket.Domain.Settings
+@layout SettingsLayout
+@inject ISettingsManager settingsManager
+@inject AuthenticationStateProvider authenticationStateProvider
+
+<MudStack Class="container-settings-page">
+    
+    <MudText Class="mt-3 mb-3" Typo="Typo.h1">@Category</MudText>
+
+    @foreach(var section in _sections)
+    {
+        <MudText Class="mt-2 mb-2" Typo="Typo.h2">@(section.Name)</MudText>
+        <MudStack Spacing="1">
+            @foreach (var setting in _settings.Where(x => x.Metadata.Section.Name == section.Name))
+            {
+                if(_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
+                {
+                    <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                    </FieldEditor>
+                }
+            }
+        </MudStack>
+    }
+</MudStack>

@@ -14,9 +14,8 @@ namespace TestBucket.Domain.Settings
     public interface ISetting
     {
         Setting Metadata { get; }
-
-        Task WriteAsync(ClaimsPrincipal principal, FieldValue value);
-        Task<FieldValue> ReadAsync(ClaimsPrincipal principal);
+        Task WriteAsync(SettingContext context, FieldValue value);
+        Task<FieldValue> ReadAsync(SettingContext context);
     }
 
     public abstract class SettingAdapter : ISetting
@@ -35,7 +34,7 @@ namespace TestBucket.Domain.Settings
         public string Category { get; set; } = "General";
         public string Section { get; set; } = "Common";
 
-        public abstract Task<FieldValue> ReadAsync(ClaimsPrincipal principal);
-        public abstract Task WriteAsync(ClaimsPrincipal principal, FieldValue value);
+        public abstract Task<FieldValue> ReadAsync(SettingContext context);
+        public abstract Task WriteAsync(SettingContext context, FieldValue value);
     }
 }

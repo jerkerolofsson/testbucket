@@ -1,0 +1,42 @@
+﻿@attribute [Authorize(Roles = "SUPERADMIN")]
+@inject TestCaseEditorController testCaseEditorController
+@using TestBucket.Components.Tests.Controls
+
+@if (TestCaseRun is not null)
+{
+    <EditForm Model="@TestCaseRun" OnValidSubmit="async () => await OnValidSubmitAsync()">
+        <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+            <TitleContent>@TestCaseRun.Name</TitleContent>
+            <DialogContent>
+                   <TestCaseRunFailureEditor @bind-Message="@TestCaseRun.Message" @bind-CallStack="@TestCaseRun.CallStack"/>
+            </DialogContent>
+
+            <DialogActions>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+                <MudButton OnClick="Close">Cancel</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public TestCaseRun? TestCaseRun { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (TestCaseRun is not null)
+        {
+            await testCaseEditorController.SaveTestCaseRunAsync(TestCaseRun);
+        }
+
+        MudDialog.Close();
+    }
+}

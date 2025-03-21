@@ -7,7 +7,12 @@ public class SearchTestQuery : SearchQuery
     public long? FolderId { get; set; }
 
     /// <summary>
-    /// Compare the folder
+    /// Compare the folder. If false, FolderId is ignored
     /// </summary>
     public bool CompareFolder { get; set; } = true;
+
+    /// <summary>
+    /// If comparing folder, returns all descendants, not only the direct children
+    /// </summary>
+    public bool Recurse { get; set; } = false;
 }

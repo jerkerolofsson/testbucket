@@ -21,9 +21,16 @@
             <MudPaper Outlined="true" Class="@_dragClass">
                 @if(ChildContent is null)
                 {
-                    <MudText Typo="Typo.h6">
-                        Drag and drop files here or click to select a file
-                    </MudText>
+                    if(_loading)
+                    {
+
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.h6">
+                            Drag and drop files here or click to select a file
+                        </MudText>
+                    }
                 }
                 else
                 {
@@ -57,6 +64,8 @@
 
     [Parameter] public long? TestCaseId { get; set; }
     [Parameter] public long? TestRunId { get; set; }
+    [Parameter] public long? RequirementId { get; set; }
+    [Parameter] public long? RequirementSpecificationId { get; set; }
     [Parameter] public long? TestCaseRunId { get; set; }
     [Parameter] public long? TestProjectId { get; set; }
     [Parameter] public long? TestSuiteId { get; set; }
@@ -86,7 +95,10 @@
 
         this.StateHasChanged();
 
-        var fileResource = await uploadService.UploadAsync(UploadCategory, file, TestCaseId, TestRunId, TestCaseRunId, TestSuiteId, TestSuiteFolderId, TestProjectId, MaxFileSize);
+        var fileResource = await uploadService.UploadAsync(UploadCategory, file, 
+            TestCaseId, TestRunId, TestCaseRunId, TestSuiteId, TestSuiteFolderId, TestProjectId, 
+            RequirementId, RequirementSpecificationId,
+            MaxFileSize);
         await FileUploaded.InvokeAsync(fileResource);
 
         _loading = false;

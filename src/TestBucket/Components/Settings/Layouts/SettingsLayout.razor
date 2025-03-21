@@ -6,29 +6,29 @@
 @using TestBucket.Domain.Settings.Models
 @inject NavigationManager navigationManager
 @inject ISettingsManager settingsManager
+@inject AuthenticationStateProvider authenticationStateProvider
 
 <TenantRedirect />
 
 <MudSplitter Style="height: 100%" Bordered="false" Dimension="15" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
 
-        <div class="pa-5">
+        <div class="pa-5" style="width: 100%">
 
             <MudText Typo="Typo.h1">Settings</MudText>
 
             <MudTextField Placeholder="Search Settings"
-            Class="mt-3 mb-3"
-            Clearable
-            Variant="Variant.Outlined"
-            Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChanged" />
-
+                Class="mt-3 mb-3"
+                Clearable
+                Variant="Variant.Outlined"
+                Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
 
             <MudNavMenu>
 
                 @foreach(var category in _categories)
                 {
                     string url = $"/{TenantId}/Settings/Categories/{category.Name}";
-                    <MudNavLink Icon="@Icons.Material.Outlined.Palette" Href="@url">@category.Name</MudNavLink>
+                    <MudNavLink Icon="@SettingIcons.GetIcon(category.Icon)" Href="@url">@category.Name</MudNavLink>
                 }
 
 
@@ -38,22 +38,25 @@
                     string projectFieldsUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}/Fields";
 
                     <AuthorizeView Roles="ADMIN">
-                        <MudDivider />
+                        <MudItem Class="mt-5"/>
+
                         <MudNavLink Icon="@Icons.Material.Outlined.Article" Href="@projectUrl">@Project.Name</MudNavLink>
-                        <MudNavLink Icon="@Icons.Material.Outlined.Article" Href="@projectFieldsUrl">@Project.Name Fields</MudNavLink>
+                        <MudNavLink Icon="@Icons.Material.Outlined.TextFields" Href="@projectFieldsUrl">@Project.Name Fields</MudNavLink>
 
                     </AuthorizeView>
                 }
 
                 <AuthorizeView Roles="ADMIN">
-                    <MudNavLink Icon="@Icons.Material.Outlined.Devices" Href="@ProjectsUrl">Other Projects</MudNavLink>
-                    <MudDivider />
-                    <MudNavLink Icon="@Icons.Material.Outlined.Groups" Href="@TeamsUrl">Teams</MudNavLink>
+
+                    <MudItem Class="mt-5"/>
+
+                    <MudNavLink Icon="@Icons.Material.Outlined.Devices" Href="@ProjectsUrl">Manage Projects</MudNavLink>
+                    <MudNavLink Icon="@Icons.Material.Outlined.PeopleAlt" Href="@UsersUrl">Manage Users</MudNavLink>
+                    <MudNavLink Icon="@Icons.Material.Outlined.Groups" Href="@TeamsUrl">Manage Teams</MudNavLink>
                 </AuthorizeView>
 
                 <AuthorizeView Roles="SUPERADMIN">
-                    <MudDivider />
-                    <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" Href="@TenantsUrl">Tenants</MudNavLink>
+                    <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" Href="@TenantsUrl">Manage Tenants</MudNavLink>
                 </AuthorizeView>
             </MudNavMenu>
         </div>
@@ -70,38 +73,46 @@
 @code {
     private string _searchText = "";
 
-    private ISetting[]? _searchResult;
-
     private SettingsCategory[] _categories = [];
 
     [CascadingParameter] public TestProject? Project { get; set; }
 
-    private void OnSearchTextChanged(string text)
+    private async Task<SettingContext> CreateSettingContextAsync()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var principal = authState.User;
+
+        return new SettingContext { Principal = principal, ProjectId = Project?.Id };
+    }
+
+    private async Task OnSearchTextChangedAsync(string text)
     {
         _searchText = text;
-
         if(!string.IsNullOrEmpty(text))
         {
-            var settings = settingsManager.Search(_searchText);
-            _categories = settings.Select(x => x.Metadata.Category).Distinct().ToArray();
+            var context = await CreateSettingContextAsync();
+
+            var settings = settingsManager.Search(context, _searchText);
+            _categories = settings.Select(x => x.Metadata.Category).Distinct().OrderBy(x => x.Name).ToArray();
             navigationManager.NavigateTo($"/{TenantId}/Settings/Search?q={_searchText}");
         }
         else
         {
-            _categories = settingsManager.Categories;
+            _categories = settingsManager.Categories.OrderBy(x => x.Name).ToArray();
         }
     }
 
     protected override void OnInitialized()
     {
-        _categories = settingsManager.Categories;
+        _categories = settingsManager.Categories.OrderBy(x=>x.Name).ToArray();
+        
     }
 
     private string TenantId => TenantResolver.ResolveTenantIdFromUrl(navigationManager.Uri) ?? "default";
 
     private string AppearanceUrl => $"{TenantId}/Settings/Appearance";
     private string TenantsUrl => $"{TenantId}/Settings/Tenants";
-    private string ProjectsUrl => $"{TenantId}/Settings/Projects";
+    private string ProjectsUrl => $"{TenantId}/Settings/ManageProjects";
     private string TeamsUrl => $"{TenantId}/Settings/Teams";
     private string UsersUrl => $"{TenantId}/Settings/Users";
 }

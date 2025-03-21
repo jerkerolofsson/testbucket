@@ -13,7 +13,7 @@ namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250224072223_initial")]
-    partial class initial
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

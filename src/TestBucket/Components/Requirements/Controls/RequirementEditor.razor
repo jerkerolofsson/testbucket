@@ -1,4 +1,6 @@
-﻿@inject RequirementEditorController editor
+﻿@using TestBucket.Domain.Requirements
+@inject RequirementEditorController editor
+@inject RequirementBrowser browser
 
 @if(Requirement is not null)
 {
@@ -45,20 +47,51 @@
                 <MudTooltip Text="Edit">
                     <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => BeginEdit()" Class="rounded-0" />
                 </MudTooltip>
+
+                <MudSpacer/>
+
+                <MudTooltip Text="Linked test cases">
+                    @(_links.Length) tests
+                </MudTooltip>
             }
         </MudToolBar>
 
-        <MarkdownEditor 
-            @ref="_editor"
-            @bind-Preview="_preview"
-            ShowToolbar="false"
-            MaxHeight="100%"
-            Color="Color.Primary"
-            AllowResize="true"
-            Value="@Requirement.Description"
-            ValueChanged="OnDescriptionChanged"
-            SpellChecker="false">
-            </MarkdownEditor>
+        <MudSplitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
+            <StartContent>
+                <MudStack Class="pa-2" Style="width: 100%; height: 100%">
+                    <MarkdownEditor 
+                    @ref="_editor"
+                    @bind-Preview="_preview"
+                    ShowToolbar="false"
+                    MaxHeight="100%"
+                    MinHeight="100%"
+                    Color="Color.Primary"
+                    AllowResize="true"
+                    Value="@Requirement.Description"
+                    ValueChanged="OnDescriptionChanged"
+                    SpellChecker="false">
+                    </MarkdownEditor>
+                </MudStack>
+            </StartContent>
+            <EndContent>
+                <MudTabs Style="width: 100%">
+                    <MudTabPanel Text="Coverage">
+                       
+                        <RequirementTestLinksTable Requirement="@Requirement"/>
+
+                    </MudTabPanel>
+                    <MudTabPanel Text="Attachments">
+                        <MudStack Class="pa-2" Style="width: 100%">
+                            <Field>
+                                <FieldHeader>Attachments</FieldHeader>
+                                <AttachmentGrid RequirementId="@Requirement.Id" Style="width: 100%"/>
+                            </Field>
+                        </MudStack>
+                    </MudTabPanel>
+                </MudTabs>
+            </EndContent>
+        </MudSplitter>
+
     </div>
 }
 
@@ -67,9 +100,19 @@
     private MarkdownEditor? _editor;
     private bool _preview = true;
 
+    private RequirementTestLink[] _links = [];
+
     private void BeginEdit()
     {
         _preview = false;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Requirement is not null)
+        {
+            _links = await browser.GetLinksForRequirementAsync(Requirement);
+        }
     }
 
     private async Task SaveChangesAsync()

@@ -9,6 +9,23 @@ namespace TestBucket.Domain.Shared
 {
     public static class AuthenticationGuard
     {
+        public static void ThrowIfNotAdmin(this ClaimsPrincipal principal)
+        {
+            if (principal.IsInRole("ADMIN"))
+            {
+                return;
+            }
+            throw new InvalidOperationException("This resource can only be accessed by administrators");
+        }
+        public static void ThrowIfNotSuperAdmin(this ClaimsPrincipal principal)
+        {
+            if (principal.IsInRole("SUPERADMIN"))
+            {
+                return;
+            }
+            throw new InvalidOperationException("This resource can only be accessed by administrators");
+        }
+
         public static string GetTentantIdOrThrow(this ClaimsPrincipal principal)
         {
             var claims = principal.Claims.Where(x => x.Type == "tenant" && !string.IsNullOrEmpty(x.Value)).ToList();

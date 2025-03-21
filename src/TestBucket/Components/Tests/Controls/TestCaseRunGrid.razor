@@ -2,12 +2,13 @@
 @using TestBucket.Domain.Requirements.Models
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
+@inject ITestCaseManager testCaseManager
 @inject TestCaseEditorController testCaseEditor
 @inject TestRunCreationController testRunCreationService
 @implements IDisposable
 @implements ITestCaseObserver
 
-<DropZone T="TestCase" OnDrop="OnTestCaseDropped">
+<DropZone T="TestEntity" OnDrop="OnDrop">
     <MudDataGrid ServerData="LoadGridData"
                  Style="width: 100%"
                  Dense="true"

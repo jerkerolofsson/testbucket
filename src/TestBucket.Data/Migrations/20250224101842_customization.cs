@@ -5,7 +5,7 @@
 namespace TestBucket.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class customization : Migration
+    public partial class Customization : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

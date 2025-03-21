@@ -13,7 +13,7 @@ namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250224101842_customization")]
-    partial class customization
+    partial class Customization
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

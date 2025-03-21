@@ -4,10 +4,14 @@ using Microsoft.CodeAnalysis;
 
 using MudBlazor;
 
+using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams.Models;
+using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Specifications;
 using TestBucket.Formats;
 
 namespace TestBucket.Components.Tests.Services;
@@ -118,7 +122,7 @@ internal class TestBrowser : TenantBaseService
         return await _testSuiteService.SearchTestCasesAsync(query);
     }
 
-    public async Task<List<TreeItemData<BrowserItem>>> BrowseAsync(long? teamId, long? projectId, BrowserItem? parent)
+    public async Task<List<TreeNode<BrowserItem>>> BrowseAsync(long? teamId, long? projectId, BrowserItem? parent, string? searchText)
     {
         if(parent is not null)
         {
@@ -129,7 +133,7 @@ internal class TestBrowser : TenantBaseService
             if(parent.Folder is not null)
             {
                 var folders = await _testSuiteService.GetTestSuiteFoldersAsync(projectId, parent.Folder.TestSuiteId, parent.Folder.Id);
-                var items = MapFoldersToTreeItemData(folders);
+                var items = MapFoldersToTreeNode(folders);
 
                 var tests = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
                 {
@@ -138,7 +142,7 @@ internal class TestBrowser : TenantBaseService
                     FolderId = parent.Folder.Id,
                     TestSuiteId = parent.Folder.TestSuiteId,
                 });
-                items.AddRange(MapTestsToTreeItemData(tests.Items));
+                items.AddRange(MapTestsToTreeNode(tests.Items));
 
                 return items;
             }
@@ -146,7 +150,7 @@ internal class TestBrowser : TenantBaseService
             {
                 long? parentFolderId = null;
                 var folders = await _testSuiteService.GetTestSuiteFoldersAsync(projectId, parent.TestSuite.Id, parentFolderId);
-                var items = MapFoldersToTreeItemData(folders);
+                var items = MapFoldersToTreeNode(folders);
 
                 var tests = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
                 {
@@ -155,7 +159,7 @@ internal class TestBrowser : TenantBaseService
                     FolderId = null,
                     TestSuiteId = parent.TestSuite.Id,
                 });
-                items.AddRange(MapTestsToTreeItemData(tests.Items));
+                items.AddRange(MapTestsToTreeNode(tests.Items));
 
                 return items;
             }
@@ -164,6 +168,12 @@ internal class TestBrowser : TenantBaseService
                 return [];
             }
         }
+
+        if(searchText is not null)
+        {
+            return await SearchAsync(teamId, projectId, searchText);
+        }
+
         return await BrowseRootAsync(teamId, projectId);
     }
 
@@ -177,18 +187,18 @@ internal class TestBrowser : TenantBaseService
         var result = await dialog.Result;
     }
 
-    private List<TreeItemData<BrowserItem>> MapTestsToTreeItemData(TestCase[] tests)
+    private List<TreeNode<BrowserItem>> MapTestsToTreeNode(TestCase[] tests)
     {
-        return tests.Select(x => CreateTreeItemDataFromTestCase(x)).ToList();
+        return tests.Select(x => CreateTreeNodeFromTestCase(x)).ToList();
     }
-    private List<TreeItemData<BrowserItem>> MapFoldersToTreeItemData(TestSuiteFolder[] folders)
+    private List<TreeNode<BrowserItem>> MapFoldersToTreeNode(TestSuiteFolder[] folders)
     {
-        return folders.Select(x => CreateTreeItemDataFromFolder(x)).ToList();
+        return folders.Select(x => CreateTreeNodeFromFolder(x)).ToList();
     }
 
-    public TreeItemData<BrowserItem> CreateTreeItemDataFromTestCase(TestCase x)
+    public TreeNode<BrowserItem> CreateTreeNodeFromTestCase(TestCase x)
     {
-        return new TreeItemData<BrowserItem>
+        return new TreeNode<BrowserItem>
         {
             Value = new BrowserItem { TestCase = x },
             Text = x.Name,
@@ -197,11 +207,11 @@ internal class TestBrowser : TenantBaseService
             Children = null,
         };
     }
-    public TreeItemData<BrowserItem> CreateTreeItemDataFromFolder(TestSuiteFolder x)
+    public TreeNode<BrowserItem> CreateTreeNodeFromFolder(TestSuiteFolder x)
     {
         var defaultFolder = x.IsFeature ? Icons.Material.Filled.Stars : Icons.Material.Filled.Folder;
 
-        return new TreeItemData<BrowserItem>
+        return new TreeNode<BrowserItem>
         {
             Value = new BrowserItem { Folder = x, Color = x.Color },
             Text = x.Name,
@@ -237,11 +247,32 @@ internal class TestBrowser : TenantBaseService
     }
 
 
-    private async Task<List<TreeItemData<BrowserItem>>> BrowseRootAsync(long? teamId, long? projectId)
+    private async Task<List<TreeNode<BrowserItem>>> SearchAsync(long? teamId, long? projectId, string searchText)
+    {
+        var rootItems = new List<TreeNode<BrowserItem>>();
+
+        var recentRunsResult = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery() 
+        { 
+            CompareFolder = false,
+            ProjectId = projectId, 
+            Count = 50, 
+            TeamId = teamId, 
+            Offset = 0,
+            Text = searchText
+        });
+        foreach (var testCase in recentRunsResult.Items)
+        {
+            var testCaseNode = CreateTreeNodeFromTestCase(testCase);
+            rootItems.Add(testCaseNode);
+        }
+        return rootItems;
+    }
+
+    private async Task<List<TreeNode<BrowserItem>>> BrowseRootAsync(long? teamId, long? projectId)
     {
         var suites = await _testSuiteService.GetTestSuitesAsync(teamId, projectId);
         var suiteItems = suites.Items.Select(x => 
-            new TreeItemData<BrowserItem>
+            new TreeNode<BrowserItem>
             {
                 Value = new BrowserItem { TestSuite = x, Color = x.Color },
                 Text = x.Name,
@@ -250,11 +281,11 @@ internal class TestBrowser : TenantBaseService
             }).ToList();
 
         // For test runs, as there can be a huge amount, sort them by year
-        List<TreeItemData<BrowserItem>> recentRuns = [];
+        List<TreeNode<BrowserItem>> recentRuns = [];
         var recentRunsResult = await _testSuiteService.SearchTestRunsAsync(new SearchQuery() { ProjectId = projectId, Count = 50, TeamId = teamId, Offset = 0 });
         foreach (var testRun in recentRunsResult.Items)
         {
-            recentRuns.Add(new TreeItemData<BrowserItem>
+            recentRuns.Add(new TreeNode<BrowserItem>
             {
                 Value = new BrowserItem() {  TestRun = testRun },
                 Text = testRun.Name,
@@ -263,38 +294,29 @@ internal class TestBrowser : TenantBaseService
             });
         }
 
-        return new List<TreeItemData<BrowserItem>>
+        return new List<TreeNode<BrowserItem>>
         {
-            new TreeItemData<BrowserItem>
+            new TreeNode<BrowserItem>
             {
                 Text = "Test Suites",
                 Children = suiteItems,
                 Expanded = true,
+                Value = new BrowserItem() { RootFolderName = "TestSuites" },
                 Icon = Icons.Material.Filled.FolderOpen,
             },
-            new TreeItemData<BrowserItem>
+            new TreeNode<BrowserItem>
             {
                 Text = "Test Runs",
                 Children = recentRuns,
                 Expanded = false,
+                Value = new BrowserItem() { RootFolderName = "TestRuns" },
                 Icon = Icons.Material.Filled.FolderOpen,
             },
-            new TreeItemData<BrowserItem>
-            {
-                Text = "Reports",
-                Expanded = false,
-                Icon = Icons.Material.Filled.FolderOpen,
-            },
-            new TreeItemData<BrowserItem>
-            {
-                Text = "Environments",
-                Expanded = false,
-                Icon = Icons.Material.Filled.FolderOpen,
-            },
-            new TreeItemData<BrowserItem>
+            new TreeNode<BrowserItem>
             {
                 Text = "Test Parameters",
                 Expanded = false,
+                Value = new BrowserItem() { RootFolderName = "TestParamaters" },
                 Icon = Icons.Material.Filled.FolderOpen,
             }
         };
@@ -316,5 +338,29 @@ internal class TestBrowser : TenantBaseService
         }
         return null;
 
+    }
+
+    /// <summary>
+    /// Returns an array of test case IDs for a folder
+    /// </summary>
+    /// <param name="folder"></param>
+    /// <returns></returns>
+    internal async Task<long[]> GetTestSuiteSuiteFolderTestsAsync(TestSuiteFolder folder, bool includeAllDescendants)
+    {
+        var tenantId = await GetTenantIdAsync();
+        FilterSpecification<TestCase>[] specifications = [new FilterByTenant<TestCase>(tenantId), new FilterTestCasesByTestSuiteFolder(folder.Id, includeAllDescendants)];
+        return await _testCaseRepository.SearchTestCaseIdsAsync(specifications);
+    }
+
+    /// <summary>
+    /// Returns an array of test case IDs for a test suite
+    /// </summary>
+    /// <param name="testSuite"></param>
+    /// <returns></returns>
+    internal async Task<long[]> GetTestSuiteSuiteTestsAsync(TestSuite testSuite)
+    {
+        var tenantId = await GetTenantIdAsync();
+        FilterSpecification<TestCase>[] specifications = [new FilterByTenant<TestCase>(tenantId), new FilterTestCasesByTestSuite(testSuite.Id)];
+        return await _testCaseRepository.SearchTestCaseIdsAsync(specifications);
     }
 }

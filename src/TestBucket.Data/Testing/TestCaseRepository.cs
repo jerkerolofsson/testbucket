@@ -1,9 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
-
-using System.Xml.Linq;
-
-using TestBucket.Domain.Requirements.Models;
+﻿using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Data.Testing;
 internal class TestCaseRepository : ITestCaseRepository
@@ -16,6 +11,37 @@ internal class TestCaseRepository : ITestCaseRepository
     }
 
     #region Test Cases
+
+
+    public async Task<PagedResult<TestCase>> SearchTestCasesAsync(int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCases.Include(x => x.TestCaseFields).AsQueryable();
+        foreach (var spec in filters)
+        {
+            tests = tests.Where(spec.Expression);
+        }
+        long totalCount = await tests.LongCountAsync();
+        var items = tests.OrderBy(x => x.Created).Skip(offset).Take(count).ToArray();
+
+        return new PagedResult<TestCase>
+        {
+            TotalCount = totalCount,
+            Items = items,
+        };
+    }
+
+    public async Task<long[]> SearchTestCaseIdsAsync(IEnumerable<FilterSpecification<TestCase>> filters)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCases.Include(x => x.TestCaseFields).AsQueryable();
+        foreach (var spec in filters)
+        {
+            tests = tests.Where(spec.Expression);
+        }
+        var items = tests.Select(x=>x.Id).ToArray();
+        return items;
+    }
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(string tenantId, SearchTestQuery query)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -42,8 +68,6 @@ internal class TestCaseRepository : ITestCaseRepository
         {
             tests = tests.Where(x => x.TestSuiteId == query.TestSuiteId);
         }
-
-        var allTests = await tests.ToArrayAsync();
 
         long totalCount = await tests.LongCountAsync();
         var items = tests.OrderBy(x => x.Created).Skip(query.Offset).Take(query.Count).ToArray();
@@ -112,6 +136,11 @@ internal class TestCaseRepository : ITestCaseRepository
     {
         //testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await foreach (var link in dbContext.RequirementTestLinks.Where(x => x.TestCaseId == id).AsAsyncEnumerable())
+        {
+            dbContext.RequirementTestLinks.Remove(link);
+        }
 
         await foreach (var run in dbContext.TestCaseRuns.Where(x => x.TestCaseId == id).AsAsyncEnumerable())
         {
@@ -186,7 +215,7 @@ internal class TestCaseRepository : ITestCaseRepository
             throw new InvalidOperationException("Folder does not exist!");
         }
 
-        var hasPathChanged = existingFolder.Name != folder.Name || existingFolder.ParentId != folder.ParentId;
+        var hasPathChanged = existingFolder.Name != folder.Name || existingFolder.ParentId != folder.ParentId || existingFolder.TestSuiteId != folder.TestSuiteId;
         if (hasPathChanged)
         {
             await CalculatePathAsync(dbContext, folder);
@@ -197,21 +226,22 @@ internal class TestCaseRepository : ITestCaseRepository
 
         if(hasPathChanged)
         {
-            await UpdateChildTestSuiteFolderPathsAsync(dbContext, folder.Id);
+            await UpdateChildTestSuiteFolderPathsAsync(dbContext, folder.Id, folder.TestSuiteId);
             await dbContext.SaveChangesAsync();
         }
     }
 
-    private async Task UpdateChildTestSuiteFolderPathsAsync(ApplicationDbContext dbContext, long id)
+    private async Task UpdateChildTestSuiteFolderPathsAsync(ApplicationDbContext dbContext, long id, long testSuiteId)
     {
         foreach (var folder in await dbContext.TestSuiteFolders.Where(x => x.ParentId == id).ToListAsync())
         {
             await CalculatePathAsync(dbContext, folder);
-            await UpdateChildTestSuiteFolderPathsAsync(dbContext, folder.Id);
+            await UpdateChildTestSuiteFolderPathsAsync(dbContext, folder.Id, testSuiteId);
         }
 
         foreach (var testCase in await dbContext.TestCases.Where(x => x.TestSuiteFolderId == id).ToListAsync())
         {
+            testCase.TestSuiteId = testSuiteId;
             await CalculatePathAsync(dbContext, testCase);
         }
     }
@@ -458,7 +488,7 @@ internal class TestCaseRepository : ITestCaseRepository
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteTestRunByIdAsync(string tenantId, long id)
+    public async Task DeleteTestRunByIdAsync(long id)
     {
         //testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -473,12 +503,12 @@ internal class TestCaseRepository : ITestCaseRepository
         //    dbContext.TestRunFields.Remove(field);
         //}
 
-        await foreach (var run in dbContext.TestCaseRuns.Where(x => x.TestRunId == id && x.TenantId == tenantId).AsAsyncEnumerable())
+        await foreach (var run in dbContext.TestCaseRuns.Where(x => x.TestRunId == id).AsAsyncEnumerable())
         {
             dbContext.TestCaseRuns.Remove(run);
         }
 
-        await foreach (var run in dbContext.TestRuns.Where(x => x.Id == id && x.TenantId == tenantId).AsAsyncEnumerable())
+        await foreach (var run in dbContext.TestRuns.Where(x => x.Id == id).AsAsyncEnumerable())
         {
             dbContext.TestRuns.Remove(run);
         }
@@ -645,5 +675,6 @@ internal class TestCaseRepository : ITestCaseRepository
             folderId = folder.ParentId;
         }
     }
+
     #endregion Helpers
 }

@@ -1,0 +1,51 @@
+﻿@inject RequirementEditorController editor
+
+@if (RequirementSpecification is not null)
+{
+    <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => AddRequirementSpecificationAsync()">Add Specification</MudMenuItem>
+
+    <MudDivider />
+    <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="() => ExtractRequirementsFromSpecificationAsync()" Label="Extract Requirements" />
+
+    <MudDivider />
+    <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteRequirementSpecificationAsync()" Label="Delete" />
+}
+@code {
+    [Parameter] public RequirementSpecification? RequirementSpecification { get; set; }
+
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+
+    private async Task AddRequirementSpecificationAsync()
+    {
+        var spec = new RequirementSpecification()
+            {
+                Name = "New Specification",
+                TenantId = Project?.TenantId ?? "",
+                TestProjectId = Project?.Id,
+                TeamId = Team?.Id,
+            };
+
+        await editor.AddRequirementSpecificationAsync(spec);
+    }
+
+    private async Task DeleteRequirementSpecificationAsync()
+    {
+        if (RequirementSpecification is null)
+        {
+            return;
+        }
+        await editor.DeleteRequirementSpecificationAsync(RequirementSpecification);
+    }
+
+
+    private async Task ExtractRequirementsFromSpecificationAsync()
+    {
+        if (RequirementSpecification is null)
+        {
+            return;
+        }
+        await editor.ExtractRequirementsFromSpecificationAsync(RequirementSpecification);
+    }
+
+}

@@ -7,19 +7,17 @@ using System.Threading.Tasks;
 
 using TestBucket.Domain.AI.Models;
 
-using static System.Net.Mime.MediaTypeNames;
-
 namespace TestBucket.Domain.AI;
 internal class ChatResponseFormatting
 {
-    public static LlmGeneratedTestCase Example = new LlmGeneratedTestCase
+    public static GeneratedTest Example = new GeneratedTest
         {
-            Name = "Name of Test Case",
+            TestCaseName = "Name of Test Case",
             TestSteps =
                 [
-                    new LlmGeneratedTestStep { Action = "Description of first action", ExpectedResult = "Expected result of first action" },
-                    new LlmGeneratedTestStep { Action = "Description of second action", ExpectedResult = "Expected result of second action" },
-                    new LlmGeneratedTestStep { Action = "Description of third action", ExpectedResult = "Expected result of third action" }
+                    new GeneratedTestStep { Action = "Description of first action", ExpectedResult = "Expected result of first action" },
+                    new GeneratedTestStep { Action = "Description of second action", ExpectedResult = "Expected result of second action" },
+                    new GeneratedTestStep { Action = "Description of third action", ExpectedResult = "Expected result of third action" }
                 ]
     };
 

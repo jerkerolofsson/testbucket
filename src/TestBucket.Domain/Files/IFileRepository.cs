@@ -75,4 +75,22 @@ public interface IFileRepository
     /// <param name="testSuiteFolderId"></param>
     /// <returns></returns>
     Task<IReadOnlyList<FileResource>> GetTestSuiteFolderAttachmentsAsync(string tenantId, long testSuiteFolderId);
+
+    /// <summary>
+    /// Returns attachments to requirement
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="requirementId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<FileResource>> GetRequirementAttachmentsAsync(string tenantId, long requirementId);
+
+    /// <summary>
+    /// Returns attachments to requirement spec.
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="requirementSpecificationId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<FileResource>> GetRequirementSpecificationAttachmentsAsync(string tenantId, long requirementSpecificationId);
+
+
 }

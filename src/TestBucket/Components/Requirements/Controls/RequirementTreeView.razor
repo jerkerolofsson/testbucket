@@ -1,20 +1,23 @@
-﻿@implements IRequirementObserver
+﻿@using TestBucket.Components.Shared.Tree
+
+@implements IRequirementObserver
 @implements IDisposable
 @inject RequirementBrowser browser
 @inject RequirementEditorController editor
-
+@inject AppNavigationManager appNav
 
 <MudStack Spacing="0" Class="pa-2" Style="width: 100%; background: var(--mud-palette-surface)">
     <MudStack Row="true" Class="pr-2 pl-2" Spacing="0" AlignItems="AlignItems.Center">
         <MudTextField 
-            Placeholder="Search Requirements"
-            Clearable
-            Variant="Variant.Outlined"
-            Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
+        Placeholder="Search Requirements"
+        Clearable
+        Variant="Variant.Outlined"
+        Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
 
         <MudSpacer />
-        <MudTooltip Text="Add test suite">
+        <MudTooltip Text="Add specification">
             <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementSpecificationAsync" />
+            <MudIconButton Icon="@Icons.Material.Filled.ImportExport" Href="@(appNav.GetImportSpecificationsUrl())" />
         </MudTooltip>
 
     </MudStack>
@@ -25,15 +28,13 @@
     }
     else
     {
-        <MudTreeView Class="pa-2"
-            SelectionMode="@SelectionMode.ToggleSelection"
-            T="BrowserItem"
-            SelectedValue="@_selectedTreeItem"
-            SelectedValueChanged="OnSelectedValueChangedAsync"
-            Hover="true"
-            Color="Color.Tertiary"
-            ServerData="@LoadServerData"
-            Items="@_rootItems">
+        <TreeView Class="pa-2"
+        T="BrowserItem"
+        SelectedValue="@_selectedTreeItem"
+        SelectedValueChanged="OnSelectedValueChangedAsync"
+        Color="Color.Tertiary"
+        ServerData="@LoadServerData"
+        Items="@_rootItems">
 
             <ItemTemplate>
 
@@ -46,60 +47,45 @@
                 }
 
                 <DropZone T="Requirement" OnDrop="(test) => OnDrop(test, context)">
-                    <MudTreeViewItem Value="@context.Value"
-                    Style="@style"
-                    Items="@context.Children"
-                    ItemsChanged="@(new Action<IReadOnlyCollection<TreeItemData<BrowserItem>>>(items => OnItemsLoaded(context, items)))"
-                    @bind-Expanded="@context.Expanded"
-                    CanExpand="@context.Expandable"
-                    Icon="@context.Icon"
-                    Text="@context.Text"
-                    Context="treeNode"
-                    LoadingIconColor="Color.Info">
-                        <BodyContent>
-
-                            <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true">
-                                <ActivatorContent>
-                                    @if (treeNode.Value?.Requirement is not null)
+                    <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true">
+                        <ActivatorContent>
+                            @if (context.Value?.Requirement is not null)
+                            {
+                                <Draggable T="Requirement" Data="@context.Value.Requirement">
+                                    @context.Text
+                                    @if (!string.IsNullOrEmpty(context.Value.Requirement.ExternalId))
                                     {
-                                        <Draggable T="Requirement" Data="@treeNode.Value.Requirement">
-                                            @treeNode.Text
-                                            @if (!string.IsNullOrEmpty(treeNode.Value.Requirement.ExternalId))
-                                            {
-                                                <MudText Style="white-space: nowrap; word-wrap: nowrap;">@treeNode.Value.Requirement.ExternalId</MudText>
-                                            }
-                                        </Draggable>
+                                        <MudText Style="white-space: nowrap; word-wrap: nowrap;">@context.Value.Requirement.ExternalId</MudText>
                                     }
-                                    else
-                                    {
-                                        @treeNode.Text
-                                    }
-                                </ActivatorContent>
-                                <ChildContent>
-                                    <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => AddRequirementSpecificationAsync()">Add Specification</MudMenuItem>
+                                </Draggable>
+                            }
+                            else
+                            {
+                                @context.Text
+                            }
+                        </ActivatorContent>
+                        <ChildContent>
+                            @if (context.Value?.RequirementSpecification is not null)
+                            {
+                                <RequirementSpecificationMenuItems RequirementSpecification="@context.Value.RequirementSpecification"/>
+                            }
+                            else if (context.Value?.Requirement is not null)
+                            {
+                                <RequirementMenuItems 
+                                Project="@Project" Team="@Team"
+                                Requirement="context.Value.Requirement"/>
+                            }
+                            else
+                            {
+                                <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => AddRequirementSpecificationAsync()">Add Specification</MudMenuItem>
+                            }
+                            <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" Href="@(appNav.GetImportSpecificationsUrl())">Import Specification</MudMenuItem>
 
-                                    @* <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import" /> *@
-                                    @if (context.Value?.RequirementSpecification is not null)
-                                    {
-                                        <MudDivider />
-                                        <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="() => ExtractRequirementsFromSpecificationAsync(context.Value?.RequirementSpecification)" Label="Extract Requirements" />
-                                        <MudDivider />
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteRequirementSpecificationAsync(context.Value?.RequirementSpecification)" Label="Delete" />
-                                    }
-
-                                    @if (context.Value?.Requirement is not null)
-                                    {
-                                        <MudDivider />
-                                        <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteRequirementAsync(context.Value?.Requirement)" Label="Delete" />
-                                    }
-
-                                </ChildContent>
-                            </MudMenu>
-                        </BodyContent>
-                    </MudTreeViewItem>
+                        </ChildContent>
+                    </MudMenu>
                 </DropZone>
             </ItemTemplate>
-        </MudTreeView>
+        </TreeView>
     }
 </MudStack>
 
@@ -113,7 +99,7 @@
     /// <summary>
     /// Root items in the tree view
     /// </summary>
-    private List<TreeItemData<BrowserItem>> _rootItems = [];
+    private List<TreeNode<BrowserItem>> _rootItems = [];
 
     /// <summary>
     /// currently selected item
@@ -171,7 +157,7 @@
         editor.RemoveObserver(this);
     }
 
-    private void SetRootItems(List<TreeItemData<BrowserItem>> rootItems)
+    private void SetRootItems(List<TreeNode<BrowserItem>> rootItems)
     {
         // Copy state and children from existing nodes
         foreach (var item in rootItems)
@@ -222,7 +208,7 @@
     }
 
 
-    public async Task<IReadOnlyCollection<TreeItemData<BrowserItem>>> LoadServerData(BrowserItem? browserItem)
+    public async Task<IReadOnlyCollection<TreeNode<BrowserItem>>> LoadServerData(BrowserItem? browserItem)
     {
         if (Team is null || Project is null)
         {
@@ -230,40 +216,6 @@
         }
 
         return await browser.BrowseAsync(Team?.Id, Project?.Id, browserItem);
-    }
-
-    private void OnItemsLoaded(TreeItemData<BrowserItem> treeItemData, IReadOnlyCollection<TreeItemData<BrowserItem>> children)
-    {
-        // here we store the server-loaded children in the treeItemData so that they are available in the InitialTreeItems
-        // if you don't do this you loose already loaded children on next render update
-        treeItemData.Children = children?.ToList();
-    }
-
-    private async Task ExtractRequirementsFromSpecificationAsync(RequirementSpecification? specification)
-    {
-        if(specification is null)
-        {
-            return;
-        }
-        await editor.ExtractRequirementsFromSpecificationAsync(specification);
-    }
-
-    private async Task DeleteRequirementSpecificationAsync(RequirementSpecification? specification)
-    {
-        if (specification is null)
-        {
-            return;
-        }
-        await editor.DeleteRequirementSpecificationAsync(specification);
-    }
-
-    private async Task DeleteRequirementAsync(Requirement? requirement)
-    {
-        if (requirement is null)
-        {
-            return;
-        }
-        await editor.DeleteRequirementAsync(requirement);
     }
 
     private async Task AddRequirementSpecificationAsync()
@@ -279,17 +231,18 @@
         await editor.AddRequirementSpecificationAsync(spec);
     }
 
-    private async Task OnDrop(Requirement? requirement, TreeItemData<BrowserItem>? targetNode)
+    private Task OnDrop(Requirement? requirement, TreeNode<BrowserItem>? targetNode)
     {
         if (requirement is null || targetNode is null)
         {
-            return;
+            return Task.CompletedTask;
         }
         var target = targetNode.Value;
         if (target is null)
         {
-            return;
+            return Task.CompletedTask;
         }
+        return Task.CompletedTask;
     }
 
     private TestProject? _project;

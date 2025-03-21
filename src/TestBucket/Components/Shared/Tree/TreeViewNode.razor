@@ -1,0 +1,110 @@
+﻿@typeparam T
+
+@if(Item is not null && Item.Visible)
+{
+    <div class="@CssClass" aria-role="treeitem">
+
+        <div class="body">
+            <div class="toggle">
+                @if(Item.Expandable && (Item.Children is null || Item.HasChildren))
+                {
+                    if(Item.Expanded)
+                    {
+                        <MudIconButton Size="@Size.Small" Icon="@MudBlazor.Icons.Material.Outlined.KeyboardArrowDown" OnClick="Contract"></MudIconButton>
+                    }
+                    else
+                    {
+                        <MudIconButton Size="@Size.Small" Icon="@MudBlazor.Icons.Material.Outlined.KeyboardArrowRight" OnClick="Expand"></MudIconButton>
+                    }
+                }
+            </div>
+
+            <div class="icon">
+                @if (!string.IsNullOrEmpty(Item.Icon))
+                {
+                    <svg>
+                        @(new MarkupString(Item.Icon))
+                    </svg>
+                }
+            </div>
+
+            <div @onclick="OnClicked">
+                @if(TreeView.ItemTemplate is not null)
+                {
+                    @TreeView.ItemTemplate(Item)
+                }
+                else
+                {
+                    @Item.Text
+                }
+            </div>
+        </div>
+
+        @if(Item.Expanded && Item.Children is not null)
+        {
+            @foreach(TreeNode<T?> child in Item.Children)
+            {
+                <TreeViewNode Item="@child" SelectedValue="@SelectedValue" />
+            }
+        }
+
+    </div>
+}
+
+@code {
+    [Parameter] public TreeNode<T>? Item { get; set; }
+    [Parameter] public T? SelectedValue { get; set; }
+    [CascadingParameter] public TreeView<T> TreeView { get; set; } = default!;
+
+    private string CssClass => $"node " + (IsSelected ? "selected" : "");
+
+    private bool IsSelected 
+    {
+        get
+        {
+            if(Item is not null && Item.Value is not null && TreeView is not null)
+            {
+                if (Item.Value.Equals(SelectedValue))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    private Size IconSize => TreeView?.IconSize ?? Size.Medium;
+
+    private async Task Expand()
+    {
+        if(Item is null || TreeView?.ServerData is null)
+        {
+            return;
+        }
+
+        if(Item.Children is null)
+        {
+            Item.Children = await TreeView.ServerData(Item.Value);
+        }
+
+        Item.Expanded = true;
+    }
+
+    private async Task OnClicked()
+    {
+        if(TreeView is not null && Item is not null)
+        {
+            await TreeView.SelectedValueChanged.InvokeAsync(Item.Value);
+        }
+    }
+
+    private void Contract()
+    {
+        if (Item is null)
+        {
+            return;
+        }
+        Item.Expanded = false;
+    }
+}

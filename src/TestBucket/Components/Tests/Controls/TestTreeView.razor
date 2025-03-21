@@ -1,20 +1,30 @@
 ﻿@using TestBucket.Components.Shared
+@using TestBucket.Components.Shared.Tree
 @using TestBucket.Domain.Requirements.Models
 @using TestBucket.Domain.Teams.Models
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
+@inject ITestCaseManager testCaseManager
 @inject TestSuiteService testSuiteService
 @inject TestCaseEditorController testCaseEditor
-@implements ITestCaseObserver 
+@inject TestRunCreationController testRunCreation
+@inject AppNavigationManager appNavigationManager
+@implements ITestCaseObserver
 @implements IDisposable
 
 <MudStack Spacing="0" Class="pa-2" Style="width: 100%; background: var(--mud-palette-surface)">
     <MudStack Row="true" Style="border-bottom: solid 1px var(--mud-palette-darken)" Spacing="0">
+
+        <MudTextField Placeholder="Search Requirements"
+                      Clearable
+                      Variant="Variant.Outlined"
+                      Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
+
+        <MudSpacer />
+
         <MudTooltip Text="Add test suite">
             <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTestSuiteAsync"/>
         </MudTooltip>
-
-        <MudSpacer/>
 
         @if (_selectedTreeItem is not null)
         {
@@ -45,19 +55,16 @@
         </MudMenu>
 
     </MudStack>
-
-    <MudTreeView 
+    
+    <TreeView 
         Class="pa-2"
         @ref="_treeView"
-        SelectionMode="@SelectionMode.ToggleSelection"
         T="BrowserItem"
         SelectedValue="@_selectedTreeItem"
         SelectedValueChanged="OnSelectedValueChangedAsync"
-        Hover="true" 
         Color="Color.Tertiary" 
         ServerData="@LoadServerData" 
         Items="@_rootItems">
-
         <ItemTemplate>
 
             @{
@@ -68,69 +75,85 @@
                 }
             }
 
-
-            <DropZone T="TestCase" OnDrop="(test) => OnDrop(test, context)">
-                <MudTreeViewItem Value="@context.Value"
-                Style="@style"
-                Items="@context.Children"
-                ItemsChanged="@(new Action<IReadOnlyCollection<TreeItemData<BrowserItem>>>(items => OnItemsLoaded(context, items)))"
-                @bind-Expanded="@context.Expanded"
-                CanExpand="@context.Expandable"
-                Icon="@context.Icon"
-                Text="@context.Text"
-                Context="treeNode"
-                LoadingIconColor="Color.Info">
-                    <BodyContent>
-
-                        <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true">
-                            <ActivatorContent>
-                                @if(treeNode.Value?.TestCase is not null)
-                                {
-                                    <Draggable Data="@treeNode.Value.TestCase">
-                                        @treeNode.Text
-                                    </Draggable>
-                                }
-                                else
-                                {
-                                    @treeNode.Text
-                                }
-                            </ActivatorContent>
-                            <ChildContent>
-                                <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import" />
-                                <MudDivider/>
-                                @if (context.Value?.TestCase is not null)
-                                {
-                                    <MudMenuItem Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="() => AddTestSuiteFolderAsync(null, null, context.Value.TestCase)">Create Folder</MudMenuItem>
-                                    <MudDivider />
-                                    <MudMenuItem Icon="@Icons.Material.Filled.Code" OnClick="() => EditTestCaseAutomationLinkAsync(context.Value.TestCase)">Link to automated test</MudMenuItem>
-                                    <MudDivider />
-                                    <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteTestCaseAsync(context.Value?.TestCase)" Label="Delete test case" />
-                                }
-                                else if (context.Value?.TestRun is not null)
-                                {
-                                    <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteTestRunAsync(context.Value.TestRun)" Label="Delete run" />
-                                }
-                                else if (context.Value?.Folder is not null)
-                                {
-                                    <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => CreateNewTestCaseAsync(context.Value.Folder)">Create New Test</MudMenuItem>
-                                    <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => GenerateAiTestsAsync(context.Value.Folder)">Generate New Tests with AI</MudMenuItem>
-                                    <MudDivider />
-                                    <MudMenuItem Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="() => AddTestSuiteFolderAsync(null, context.Value.Folder, null)">Create Folder</MudMenuItem>
-                                    <MudMenuItem Icon="@Icons.Material.Filled.Palette" OnClick="() => EditTestSuiteFolderAsync(context.Value.Folder)" Label="Customize folder" />
-                                    <MudDivider />
-                                    <MudMenuItem Icon="@Icons.Material.Filled.FolderDelete" IconColor="Color.Error" OnClick="() => DeleteTestSuiteFolderAsync(context.Value.Folder)" Label="Delete folder" />
-                                }
-                                else if(context.Value?.TestSuite is not null)
-                                {
-                                    <MudMenuItem Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="() => AddTestSuiteFolderAsync(context.Value.TestSuite, null, null)">Create Folder</MudMenuItem>
-                                    <MudDivider />
-                                    <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteTestSuiteAsync(context.Value.TestSuite)" Label="Delete test suite" />
-                                }
-                            </ChildContent>
-                        </MudMenu>
-                    </BodyContent>
-                </MudTreeViewItem>
+            <DropZone T="TestEntity" OnDrop="(test) => OnDrop(test, context)">
+               
+                <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true">
+                    <ActivatorContent>
+                        @if (context.Value?.TestCase is not null)
+                        {
+                            <Draggable T="TestEntity" Data="@context.Value.TestCase">
+                                <div style="@style">@context.Text</div>
+                            </Draggable>
+                        }
+                        else if (context.Value?.Folder is not null)
+                        {
+                            <Draggable T="TestEntity" Data="@context.Value.Folder">
+                                <div style="@style">@context.Text</div>
+                            </Draggable>
+                        }
+                        else if (context.Value?.TestSuite is not null)
+                        {
+                            <Draggable T="TestEntity" Data="@context.Value.TestSuite">
+                                <div style="@style">@context.Text</div>
+                            </Draggable>
+                        }
+                        else
+                        {
+                            <div style="@style">@context.Text</div>
+                        }
+                    </ActivatorContent>
+                    <ChildContent>
+                        <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import" />
+                        <MudDivider />
+                        @if (context.Value?.TestCase is not null)
+                        {
+                            <MudMenuItem Icon="@Icons.Material.Filled.PlayArrow" OnClick="() => RunAsync(context.Value.TestCase)">Run</MudMenuItem>
+                            <MudMenuItem Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="() => AddTestSuiteFolderAsync(null, null, context.Value.TestCase)">Create Folder</MudMenuItem>
+                            <MudDivider />
+                            <MudMenuItem Icon="@Icons.Material.Filled.Code" OnClick="() => EditTestCaseAutomationLinkAsync(context.Value.TestCase)">Link to automated test</MudMenuItem>
+                            <MudDivider />
+                            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteTestCaseAsync(context.Value?.TestCase)" Label="Delete test case" />
+                        }
+                        else if (context.Value?.TestRun is not null)
+                        {
+                            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteTestRunAsync(context.Value.TestRun)" Label="Delete run" />
+                        }
+                        else if (context.Value?.Folder is not null)
+                        {
+                            <MudMenuItem Icon="@Icons.Material.Filled.PlayArrow" OnClick="() => RunAsync(context.Value.Folder)">Run</MudMenuItem>
+                            <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => CreateNewTestCaseAsync(context.Value.Folder)">Create New Test</MudMenuItem>
+                            <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => GenerateAiTestsAsync(context.Value.Folder)">Generate New Tests with AI</MudMenuItem>
+                            <MudDivider />
+                            <MudMenuItem Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="() => AddTestSuiteFolderAsync(null, context.Value.Folder, null)">Create Folder</MudMenuItem>
+                            <MudMenuItem Icon="@Icons.Material.Filled.Palette" OnClick="() => EditTestSuiteFolderAsync(context.Value.Folder)" Label="Customize folder" />
+                            <MudDivider />
+                            <MudMenuItem Icon="@Icons.Material.Filled.FolderDelete" IconColor="Color.Error" OnClick="() => DeleteTestSuiteFolderAsync(context.Value.Folder)" Label="Delete folder" />
+                        }
+                        else if (context.Value?.TestSuite is not null)
+                        {
+                            <MudMenuItem Icon="@Icons.Material.Filled.PlayArrow" OnClick="() => RunAsync(context.Value.TestSuite)">Run</MudMenuItem>
+                            <MudMenuItem Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="() => AddTestSuiteFolderAsync(context.Value.TestSuite, null, null)">Create Folder</MudMenuItem>
+                            <MudDivider />
+                            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteTestSuiteAsync(context.Value.TestSuite)" Label="Delete test suite" />
+                        }
+                    </ChildContent>
+                </MudMenu>
             </DropZone>
         </ItemTemplate>
-    </MudTreeView>
+
+    </TreeView>
+
+    @* <MudTreeView  *@
+    @*     Class="pa-2" *@
+    @*     @ref="_treeView" *@
+    @*     SelectionMode="@SelectionMode.SingleSelection" *@
+    @*     T="BrowserItem" *@
+    @*     SelectedValue="@_selectedTreeItem" *@
+    @*     SelectedValueChanged="OnSelectedValueChangedAsync" *@
+    @*     Hover="true"  *@
+    @*     Color="Color.Tertiary"  *@
+    @*     ServerData="@LoadServerData"  *@
+    @*     Items="@_rootItems"> *@
+
+    @* </MudTreeView> *@
 </MudStack>

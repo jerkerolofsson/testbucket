@@ -1,0 +1,17 @@
+﻿<TestTreeView Project="@Project" Team="@Team" OnTestCaseClicked="OnTestCaseClicked" />
+
+@code {
+
+    [Parameter]
+    public EventCallback<TestCase> TestCaseSelected { get; set; }
+
+    [Parameter] public TestProject? Project { get; set; }
+
+    [Parameter] public Team? Team { get; set; }
+
+
+    private async Task OnTestCaseClicked(TestCase test)
+    {
+        await TestCaseSelected.InvokeAsync(test);
+    }
+}

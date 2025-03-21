@@ -1,0 +1,47 @@
+﻿@using TestBucket.Domain.Requirements.Models
+
+<MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <DialogContent>
+        <TestCasePicker Project="@Project" Team="@Team"
+            TestCaseSelected="OnTestCaseSelected"/>
+    </DialogContent>
+
+    <DialogActions>
+        @if(_testCase is not null)
+        {
+            <MudButton OnClick="OnValidSubmit" Color="Color.Primary">OK</MudButton>
+        }
+        <MudButton OnClick="Close">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public TestProject? Project { get; set; }
+
+    [Parameter] public Team? Team { get; set; }
+
+    private TestCase? _testCase;
+
+    private void OnTestCaseSelected(TestCase test)
+    {
+        _testCase = test;
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+        if (_testCase is null)
+        {
+            return;
+        }
+        MudDialog.Close(_testCase);
+    }
+}
+

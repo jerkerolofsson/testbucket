@@ -73,6 +73,11 @@ namespace TestBucket.Data.Requirements
 
             foreach (var requirement in dbContext.Requirements.Where(x => x.RequirementSpecificationId == specification.Id))
             {
+                foreach (var link in dbContext.RequirementTestLinks.Where(x => x.RequirementId == requirement.Id))
+                {
+                    dbContext.RequirementTestLinks.Remove(link);
+                }
+
                 dbContext.Requirements.Remove(requirement);
             }
             foreach (var folder in dbContext.RequirementSpecificationFolders.Where(x => x.RequirementSpecificationId == specification.Id))
@@ -122,11 +127,46 @@ namespace TestBucket.Data.Requirements
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task AddRequirementLinkAsync(RequirementTestLink link)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            await dbContext.RequirementTestLinks.AddAsync(link);
+            await dbContext.SaveChangesAsync();
+        }
+        public async Task DeleteRequirementLinkAsync(RequirementTestLink link)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            dbContext.RequirementTestLinks.Remove(link);
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task DeleteRequirementAsync(Requirement requirement)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+            foreach (var link in dbContext.RequirementTestLinks.Where(x => x.RequirementId == requirement.Id))
+            {
+                dbContext.RequirementTestLinks.Remove(link);
+            }
+
             dbContext.Requirements.Remove(requirement);
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<RequirementTestLink[]> SearchRequirementLinksAsync(FilterSpecification<RequirementTestLink>[] filters)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            var requirements = dbContext.RequirementTestLinks
+                .Include(x => x.Requirement)
+                .Include(x => x.TestCase)
+                .AsQueryable();
+
+            foreach (var filter in filters)
+            {
+                requirements = requirements.Where(filter.Expression);
+            }
+
+            return await requirements.ToArrayAsync();
         }
     }
 }

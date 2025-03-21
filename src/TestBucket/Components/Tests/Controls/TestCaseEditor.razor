@@ -3,8 +3,9 @@
 @using TestBucket.Domain.Requirements.Models
 @inject FieldController fieldService
 @inject TestCaseEditorController testCaseEditorController
-@inject TestRunCreationController testRunCreation
 @inject NavigationManager navigationManager
+@inject TestRunCreationController testRunCreation
+@inject AppNavigationManager appNavigationManager
 
 @if(Test is not null && _boundDescription is not null)
 {
@@ -74,20 +75,18 @@
 
         <MudSplitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
             <StartContent>
-                <MudStack Class="pa-2" Style="width: 100%">
-                    <MarkdownEditor 
-                    ShowToolbar="false"
-                    MaxHeight="500px"
+                <MudStack Class="pa-2" Style="width: 100%; height: 100%">
+                    <MarkdownEditor ShowToolbar="false"
+                    MaxHeight="100%"
+                    MinHeight="100%"
                     Color="Color.Primary"
-                    AllowResize="true"
+                    AllowResize="false"
                     @bind-Preview="_preview"
                     Value="@_boundDescription"
                     @ref=_editor
                     ValueChanged="OnDescriptionChanged"
                     SpellChecker="false">
                     </MarkdownEditor>
-
-                    <FieldsEditor TestCase="@Test"/>
 
                 </MudStack>
             </StartContent>
@@ -138,11 +137,10 @@
         {
             return;
         }
-        var run = await testRunCreation.CreateTestRunAsync(Test.TestProjectId.Value, Test.Id);
+        var run = await testRunCreation.CreateTestRunAsync(Test.TestProjectId.Value, [Test.Id]);
         if(run is not null)
         {
-            var tenantId = TenantResolver.ResolveTenantIdFromUrl(navigationManager.Uri);
-            navigationManager.NavigateTo($"/{tenantId}/Testing/TestRuns/{run.Id}");
+            appNavigationManager.NavigateTo(run);
         }
     }
 

@@ -12,7 +12,9 @@
 
 <MudSplitter Style="height: 100%" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
-        <TestTreeView OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" OnTestCaseClicked="OnTestCaseClicked" OnTestRunClicked="OnTestRunClicked" />
+        <TestTreeView 
+            Project="@_project" Team="@_team"
+            OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" OnTestCaseClicked="OnTestCaseClicked" OnTestRunClicked="OnTestRunClicked" />
     </StartContent>
 
     <EndContent>

@@ -1,0 +1,58 @@
+﻿@attribute [Authorize(Roles = "ADMIN")]
+@page "/{TenantId}/Settings/Users"
+@using TestBucket.Domain.Settings
+@layout SettingsLayout
+@inject IUserManager userManager
+@inject AuthenticationStateProvider authenticationStateProvider
+
+<MudStack Class="container-settings-page">
+
+    <MudText Class="mb-3" Typo="Typo.h1">Users</MudText>
+
+
+    <MudDataGrid ServerData="LoadGridData"
+                 Style="width: 100%"
+                 Dense="true"
+                 Hover="true"
+                 T="ApplicationUser"
+                 SortMode="SortMode.None">
+                 @* RowClick="(e) => OnTestClicked(e.Item)" *@
+
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+
+            </MudStack>
+        </ToolBarContent>
+
+        <Columns>
+            <PropertyColumn Property="x => x.UserName" Title="UserName" />
+            <PropertyColumn Property="x => x.Email" Title="Email" />
+            <PropertyColumn Property="x => x.AccessFailedCount" Title="AccessFailedCount" />
+        </Columns>
+
+        <PagerContent>
+            <MudDataGridPager T="ApplicationUser" />
+        </PagerContent>
+    </MudDataGrid>
+</MudStack>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+
+
+
+    private async Task<GridData<ApplicationUser>> LoadGridData(GridState<ApplicationUser> state)
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+
+        var result = await userManager.BrowseAsync(authState.User, state.Page*state.PageSize, state.PageSize);
+
+        GridData<ApplicationUser> data = new()
+            {
+                Items = result.Items,
+                TotalItems = (int)result.TotalCount
+            };
+
+        return data;
+    }
+}

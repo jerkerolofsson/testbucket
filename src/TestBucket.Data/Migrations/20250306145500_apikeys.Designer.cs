@@ -14,7 +14,7 @@ namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20250306145500_apikeys")]
-    partial class apikeys
+    partial class Apikeys
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

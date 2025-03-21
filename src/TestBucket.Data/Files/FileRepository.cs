@@ -50,6 +50,20 @@ public class FileRepository : IFileRepository
         return projected.Select(x => new FileResource() { ContentType = x.ContentType, Name = x.Name, Id = x.Id, Created = x.Created, Data = [], TenantId = x.TenantId, Length = x.Length }).ToList();
     }
 
+    public async Task<IReadOnlyList<FileResource>> GetRequirementAttachmentsAsync(string tenantId, long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var resources = dbContext.Files.Where(x => x.RequirementId == id && x.TenantId == tenantId).AsQueryable();
+        return await GetFilesWithoutDataAsync(resources);
+    }
+
+    public async Task<IReadOnlyList<FileResource>> GetRequirementSpecificationAttachmentsAsync(string tenantId, long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var resources = dbContext.Files.Where(x => x.RequirementSpecificationId == id && x.TenantId == tenantId).AsQueryable();
+        return await GetFilesWithoutDataAsync(resources);
+    }
+
     public async Task<IReadOnlyList<FileResource>> GetTestCaseAttachmentsAsync(string tenantId, long testCaseId)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();

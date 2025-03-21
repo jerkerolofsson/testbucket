@@ -48,6 +48,16 @@ public class FileResource
     public DateTimeOffset? Created { get; set; }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public long? RequirementId { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public long? RequirementSpecificationId { get; set; }
+
+    /// <summary>
     /// For test run attachments, like screenshots or log files
     /// </summary>
     public long? TestRunId { get; set; }

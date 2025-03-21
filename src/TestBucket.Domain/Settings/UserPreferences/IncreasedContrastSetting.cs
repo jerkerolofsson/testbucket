@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Domain.Identity;
+using TestBucket.Domain.Settings.Models;
 using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Domain.Settings.Appearance
@@ -21,13 +22,15 @@ namespace TestBucket.Domain.Settings.Appearance
             Metadata.Name = "Increased Contrast";
             Metadata.Description = "Increases color contrast to make the user interface easier to navigate";
             Metadata.Category.Name = "Accessibility";
+            Metadata.Category.Icon = SettingIcon.Accessibility;
             Metadata.Section.Name = "Colors";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.Boolean;
         }
 
-        public override async Task<FieldValue> ReadAsync(ClaimsPrincipal principal)
+        public override async Task<FieldValue> ReadAsync(SettingContext context)
         {
+            var principal = context.Principal;
             if (principal.Identity?.Name is null)
             {
                 return FieldValue.Empty;
@@ -41,8 +44,9 @@ namespace TestBucket.Domain.Settings.Appearance
             return new FieldValue { BooleanValue = preferences.IncreasedContrast, FieldDefinitionId = 0 };
         }
 
-        public override async Task WriteAsync(ClaimsPrincipal principal, FieldValue value)
+        public override async Task WriteAsync(SettingContext context, FieldValue value)
         {
+            var principal = context.Principal;
             if (principal.Identity?.Name is null)
             {
                 return;

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,7 @@ namespace TestBucket.Data.Identity;
 /// <summary>
 /// Contains sensitive functions not for normal users
 /// 
-/// All calls to this service should be validated with SUPERUSER permissions
+/// All calls to this service should be validated for permission
 /// </summary>
 internal class SuperAdminUserService : ISuperAdminUserService
 {
@@ -29,6 +30,16 @@ internal class SuperAdminUserService : ISuperAdminUserService
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
+    }
+
+    public async Task<PagedResult<ApplicationUser>> BrowseAsync(string tenantId, int offset, int count)
+    {
+        var userStore = _serviceProvider.GetRequiredService<IUserStore<ApplicationUser>>();
+        var storeContext = userStore.GetType().GetProperty("Context")!.GetValue(userStore) as DbContext;
+        var tenantUserStore = new ApplicationUserStore(storeContext!, tenantId);
+        tenantUserStore.TenantId = tenantId;
+
+        return await tenantUserStore.BrowseAsync(offset, count);
     }
 
     public async Task AssignRoleAsync(string tenantId, string email, string roleName)

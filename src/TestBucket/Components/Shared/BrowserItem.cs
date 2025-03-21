@@ -10,6 +10,8 @@ public record class BrowserItem
     public string? Color { get; set; }
     public string? Icon { get; set; }
 
+    public string? RootFolderName { get; set; }
+
     public RequirementSpecification? RequirementSpecification { get; set; }
     public RequirementSpecificationFolder? RequirementFolder { get; set; }
     public Requirement? Requirement { get; set; }

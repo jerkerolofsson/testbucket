@@ -21,6 +21,24 @@ public class ApplicationUserStore : UserStore<ApplicationUser>
 
     public string TenantId { get; set; }
 
+    public async Task<PagedResult<ApplicationUser>> BrowseAsync(int offset, int count)
+    {
+        var users = this.Users.Where(x => x.TenantId == TenantId);
+
+        var totalCount = await users.LongCountAsync();
+        var items = await users
+            .OrderBy(x => x.UserName)
+            .Skip(offset)
+            .Take(count)
+            .ToArrayAsync();
+
+        return new PagedResult<ApplicationUser>()
+        {
+            Items = items,
+            TotalCount = totalCount
+        };
+    }
+
     public override Task<IdentityResult> CreateAsync(ApplicationUser user, CancellationToken cancellationToken = default)
     {
         if (user == null)

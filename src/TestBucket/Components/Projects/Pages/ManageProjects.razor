@@ -1,4 +1,4 @@
-﻿@page "/{tenantId}/Settings/Projects"
+﻿@page "/{tenantId}/Settings/ManageProjects"
 @using System.Diagnostics.CodeAnalysis
 @layout SettingsLayout
 @attribute [Authorize(Roles = "ADMIN")]
@@ -6,32 +6,36 @@
 @inject IDialogService dialogService
 @inject AppNavigationManager appNavigationManager
 
-<MudDataGrid ServerData="LoadGridData"
-             Dense="true"
-             Hover="true"
-             T="TestProject"
-             @ref="_dataGrid"
-             RowClick="x => OnRowClicked(x.Item)"
-             SortMode="SortMode.None">
+<MudStack Class="container-settings-page">
 
-    <ToolBarContent>
-        <MudStack Row="true" AlignItems="AlignItems.Center">
-            <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddProjectAsync"></MudIconButton>
-        </MudStack>
-    </ToolBarContent>
+    <MudText Class="mb-3" Typo="Typo.h1">Projects</MudText>
 
-    <Columns>
-        <PropertyColumn Property="x => x.ShortName" />
-        <PropertyColumn Property="x => x.Name" />
-        <PropertyColumn Property="x => x.Slug" />
-    </Columns>
+    <MudDataGrid ServerData="LoadGridData"
+                 Dense="true"
+                 Hover="true"
+                 T="TestProject"
+                 @ref="_dataGrid"
+                 RowClick="x => OnRowClicked(x.Item)"
+                 SortMode="SortMode.None">
 
-    <PagerContent>
-        <MudDataGridPager T="TestProject" />
-    </PagerContent>
-</MudDataGrid>
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddProjectAsync"></MudIconButton>
+            </MudStack>
+        </ToolBarContent>
 
+        <Columns>
+            <PropertyColumn Property="x => x.ShortName" />
+            <PropertyColumn Property="x => x.Name" />
+            <PropertyColumn Property="x => x.Slug" />
+        </Columns>
+
+        <PagerContent>
+            <MudDataGridPager T="TestProject" />
+        </PagerContent>
+    </MudDataGrid>
+</MudStack>
 
 @code {
     [Parameter] public string? TenantId { get; set; }
@@ -39,7 +43,6 @@
 
     private MudDataGrid<TestProject>? _dataGrid;
 
-    [DoesNotReturn]
     private void OnRowClicked(TestProject project)
     {
         appNavigationManager.NavigateTo(project, false);

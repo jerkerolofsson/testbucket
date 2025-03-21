@@ -1,0 +1,48 @@
+﻿@using Humanizer
+@using TestBucket.Components.Layout
+@using TestBucket.Components.Requirements.Controls
+@using TestBucket.Domain.Requirements.Models
+@using TestBucket.Domain.Teams.Models
+@layout AppLayout
+@inherits LayoutComponentBase
+@inject AppNavigationManager appNav
+
+<TenantRedirect />
+
+<MudSplitter Class="container-fill" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+        <RequirementTreeView OnSpecificationClicked="OnSpecificationClicked" OnRequirementClicked="OnRequirementClicked" />
+    </StartContent>
+
+    <EndContent>
+        @Body
+    </EndContent>
+</MudSplitter>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] TestProject? Project { get; set; }
+    [CascadingParameter] Team? Team { get; set; }
+
+    private Team? _team;
+    private TestProject? _project;
+
+
+    private void OnSpecificationClicked(RequirementSpecification specification)
+    {
+        appNav.NavigateTo(specification);
+    }
+    private void OnRequirementClicked(Requirement requirement)
+    {
+        appNav.NavigateTo(requirement);
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (_project != Project || _team != Team)
+        {
+            _project = Project;
+            _team = Team;
+        }
+    }
+}

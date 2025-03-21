@@ -7,6 +7,11 @@ public partial class CategoryPage
     [Parameter] public string TenantId { get; set; } = "";
     [Parameter] public string Category { get; set; } = "";
 
+    /// <summary>
+    /// Currently selected project
+    /// </summary>
+    [CascadingParameter] public TestProject? Project { get; set; }
+
     private ISetting[] _settings = [];
     private SettingsSection[] _sections = [];
 
@@ -15,35 +20,51 @@ public partial class CategoryPage
 
     private async Task OnFieldChangedAsync(FieldValue fieldValue)
     {
-        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        var principal = authState.User;
         if (_settingsMap.TryGetValue(fieldValue.FieldDefinitionId, out var setting))
         {
-            await setting.WriteAsync(principal, fieldValue);
+            _context ??= await CreateSettingContextAsync();
+            await setting.WriteAsync(_context, fieldValue);
         }
     }
 
-    protected override async Task OnParametersSetAsync()
+    private async Task<SettingContext> CreateSettingContextAsync()
     {
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var principal = authState.User;
 
-        _settings = settingsManager.Settings.Where(x=>x.Metadata.Category.Name == Category).ToArray();
-        _sections = _settings.Select(x => x.Metadata.Section).Distinct().ToArray();
+        return new SettingContext { Principal = principal, ProjectId = Project?.Id };
+    }
 
-        long id = 1;
-        foreach(var setting in _settings)
+    private SettingContext? _context;
+    private string? _category;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _context ??= await CreateSettingContextAsync();
+
+        if (_category != Category)
         {
-            var value = await setting.ReadAsync(principal);
+            _category = Category;
 
-            setting.Metadata.Id = id;
-            value.FieldDefinitionId = id;
-            value.FieldDefinition = setting.Metadata;
+            _settings = settingsManager.GetSettings(_context).Where(x => x.Metadata.Category.Name == Category).ToArray();
+            _sections = _settings.Select(x => x.Metadata.Section).Distinct().ToArray();
 
-            _fieldMap[id] = value;
-            _settingsMap[id] = setting;
+            long id = 1;
+            foreach (var setting in _settings)
+            {
+                var value = await setting.ReadAsync(_context);
 
-            id++;
+                setting.Metadata.Id = id;
+                value.FieldDefinitionId = id;
+                value.FieldDefinition = setting.Metadata;
+
+                _fieldMap[id] = value;
+                _settingsMap[id] = setting;
+
+                id++;
+            }
+
+            this.StateHasChanged();
         }
     }
 }

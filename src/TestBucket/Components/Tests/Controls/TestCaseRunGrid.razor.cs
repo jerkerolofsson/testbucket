@@ -1,4 +1,6 @@
-﻿using TestBucket.Domain.Requirements.Models;
+﻿using TestBucket.Components.Shared.Tree;
+using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Testing;
 
 namespace TestBucket.Components.Tests.Controls;
 
@@ -27,7 +29,7 @@ public partial class TestCaseRunGrid
     #region Lifecycle
     protected override void OnInitialized()
     {
-        testCaseEditor.AddObserver(this);
+        testCaseManager.AddObserver(this);
     }
 
     protected override void OnParametersSet()
@@ -37,11 +39,43 @@ public partial class TestCaseRunGrid
 
     public void Dispose()
     {
-        testCaseEditor.RemoveObserver(this);
+        testCaseManager.RemoveObserver(this);
     }
     #endregion
 
-    private async Task OnTestCaseDropped(TestCase testCase)
+    private async Task OnDrop(TestEntity? testEntity)
+    {
+        if (testEntity is null)
+        {
+            return;
+        }
+       
+        if (testEntity is TestCase testCase)
+        {
+            await OnDropTestCaseAsync(testCase);
+        }
+        if (testEntity is TestSuiteFolder testSuiteFolder)
+        {
+            await OnDropTestSuiteFolderAsync(testSuiteFolder);
+        }
+    }
+
+    private async Task OnDropTestSuiteFolderAsync(TestSuiteFolder folder)
+    {
+        if (Run is null || Run.TestProjectId is null)
+        {
+            return;
+        }
+
+        long[] testCaseIds = await testBrowser.GetTestSuiteSuiteFolderTestsAsync(folder, true);
+        foreach (var testCaseId in testCaseIds)
+        {
+            await testRunCreationService.AddTestCaseToRunAsync(Run, testCaseId);
+        }
+
+        _dataGrid?.ReloadServerData();
+    }
+    private async Task OnDropTestCaseAsync(TestCase testCase)
     {
         if(Run is null || Run.TestProjectId is null)
         {

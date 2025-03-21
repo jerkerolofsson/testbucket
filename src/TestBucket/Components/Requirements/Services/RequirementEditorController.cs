@@ -1,13 +1,17 @@
 ﻿
+using Microsoft.CodeAnalysis;
+
+using OllamaSharp.Models.Chat;
+
+using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Teams.Models;
 
 namespace TestBucket.Components.Requirements.Services;
-
-
 internal interface IRequirementObserver
 {
     Task OnSpecificationCreatedAsync(RequirementSpecification spec);
@@ -88,6 +92,24 @@ internal class RequirementEditorController : TenantBaseService
         }
 
         return specification;
+    }
+
+    public async Task LinkRequirementToTestCaseAsync(Requirement requirement, TestProject? project, Team? team)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        var parameters = new DialogParameters<PickTestCaseDialog>()
+        {
+            { x => x.Project, project },
+            { x => x.Team, team },
+        };
+
+        var dialog = await _dialogService.ShowAsync<PickTestCaseDialog>("Select test", parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is TestCase testCase)
+        {
+            await _manager.AddRequirementLinkAsync(principal, requirement, testCase);
+        }
     }
 
     public async Task DeleteRequirementAsync(Requirement requirement)

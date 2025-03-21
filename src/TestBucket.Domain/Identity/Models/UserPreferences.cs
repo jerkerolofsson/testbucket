@@ -29,6 +29,8 @@ public class UserPreferences
     /// </summary>
     public long? ActiveProjectId { get; set; }
 
+    #region User Interface
+
     /// <summary>
     /// Use dark mode
     /// </summary>
@@ -43,4 +45,15 @@ public class UserPreferences
     /// Increased contrast
     /// </summary>
     public bool IncreasedContrast { get; set; }
+
+    #endregion User Interface
+
+    #region Test Execution
+
+    /// <summary>
+    /// Shows a dialog that let's the user enter a failure message
+    /// </summary>
+    public bool ShowFailureMessageDialogWhenFailingTestCaseRun { get; set; } = true;
+
+    #endregion Test Execution
 }

@@ -249,6 +249,12 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<long?>("RequirementId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("RequirementSpecificationId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TenantId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -401,6 +407,9 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IncreasedContrast")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ShowFailureMessageDialogWhenFailingTestCaseRun")
                         .HasColumnType("boolean");
 
                     b.Property<string>("TenantId")
@@ -652,6 +661,34 @@ namespace TestBucket.Data.Migrations
                     b.ToTable("spec__folders");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Requirements.Models.RequirementTestLink", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("RequirementId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long>("TestCaseId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequirementId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestCaseId");
+
+                    b.ToTable("requirement_test_links");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Settings.Models.GlobalSettings", b =>
                 {
                     b.Property<long>("Id")
@@ -660,7 +697,24 @@ namespace TestBucket.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("AiProvider")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("AiProviderUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("AzureAiProductionKey")
+                        .HasColumnType("text");
+
                     b.Property<string>("DefaultTenant")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("GithubModelsDeveloperKey")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LlmModel")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1436,6 +1490,31 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("Tenant");
 
                     b.Navigation("TestProject");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Requirements.Models.RequirementTestLink", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Requirements.Models.Requirement", "Requirement")
+                        .WithMany()
+                        .HasForeignKey("RequirementId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestCase", "TestCase")
+                        .WithMany()
+                        .HasForeignKey("TestCaseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Requirement");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestCase");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Teams.Models.Team", b =>

@@ -1,7 +1,11 @@
 ﻿
 using TestBucket.Components.Tenants;
+using TestBucket.Domain.Fields.Specifications;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Tenants.Models;
+using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Specifications;
 
 namespace TestBucket.Components.Tests.Services;
 
@@ -144,7 +148,12 @@ internal class TestSuiteService : TenantBaseService
     internal async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery searchTestQuery)
     {
         var tenantId = await GetTenantIdAsync();
-        return await _testCaseRepo.SearchTestCasesAsync(tenantId, searchTestQuery);
+
+        var filters = TestCaseFilterSpecificationBuilder.From(searchTestQuery);
+
+        filters = [new FilterByTenant<TestCase>(tenantId), .. filters];
+        return await _testCaseRepo.SearchTestCasesAsync(searchTestQuery.Offset, searchTestQuery.Count, filters);
+        //return await _testCaseRepo.SearchTestCasesAsync(tenantId, searchTestQuery);
     }
 
     internal async Task<TestSuite?> GetTestSuiteByIdAsync(long testSuiteId)

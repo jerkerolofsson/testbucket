@@ -1,8 +1,5 @@
 ﻿
-
-using TestBucket.Components.Tests.Controls;
 using TestBucket.Components.Tests.Dialogs;
-using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Components.Tests.Services;
 
@@ -23,13 +20,16 @@ internal class TestRunCreationController : TenantBaseService
         _testCaseRepository = testCaseRepository;
     }
 
-    public async Task<TestRun?> CreateTestRunAsync(long projectId, long testCaseId)
+    public async Task<TestRun?> CreateTestRunAsync(long projectId, long[] testCaseIds)
     {
         var testRun = await CreateTestRunAsync(projectId);
         if(testRun is not null)
         {
             // Add test case to run
-            await AddTestCaseToRunAsync(testRun, testCaseId);
+            foreach (var testCaseId in testCaseIds)
+            {
+                await AddTestCaseToRunAsync(testRun, testCaseId);
+            }
 
         }
         return testRun;

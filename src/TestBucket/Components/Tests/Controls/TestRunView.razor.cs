@@ -22,19 +22,7 @@ public partial class TestRunView
     {
         if (_selectedTestCaseRun?.TestProjectId is not null)
         {
-            _selectedTestCaseRun.Result = result;
-            if (_selectedTestCaseRun.Result != TestResult.NoRun)
-            {
-                TestState completedState = await testCaseEditorService.GetProjectFinalStateAsync(_selectedTestCaseRun.TestProjectId.Value);
-                _selectedTestCaseRun.State = completedState.Name;
-            }
-            else
-            {
-                TestState initialState = await testCaseEditorService.GetProjectInitialStateAsync(_selectedTestCaseRun.TestProjectId.Value);
-                _selectedTestCaseRun.State = initialState.Name;
-            }
-
-            await testCaseEditorService.SaveTestCaseRunAsync(_selectedTestCaseRun);
+            await testExecutionController.SetTestCaseRunResultAsync(_selectedTestCaseRun, result);
         }
     }
 

@@ -13,6 +13,29 @@ internal class AttachmentsService : TenantBaseService
     }
 
     /// <summary>
+    /// Returns attachments to a requirement
+    /// </summary>
+    /// <param name="testCaseId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<FileResource>> GetRequirementAttachmentsAsync(long id)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _fileRepository.GetRequirementAttachmentsAsync(tenantId, id);
+    }
+
+    
+    /// <summary>
+    /// Returns attachments to a requirement
+    /// </summary>
+    /// <param name="testCaseId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<FileResource>> GetRequirementSpecificationAttachmentsAsync(long id)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _fileRepository.GetRequirementSpecificationAttachmentsAsync(tenantId, id);
+    }
+
+    /// <summary>
     /// Returns attachments to a test case
     /// </summary>
     /// <param name="testCaseId"></param>

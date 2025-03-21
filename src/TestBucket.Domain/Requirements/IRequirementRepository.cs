@@ -60,6 +60,12 @@ namespace TestBucket.Domain.Requirements
         /// <param name="filters"></param>
         /// <returns></returns>
         Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(IEnumerable<FilterSpecification<RequirementSpecification>> filters, int offset, int count);
+
+        /// <summary>
+        /// Saves changes to a requirement
+        /// </summary>
+        /// <param name="requirement"></param>
+        /// <returns></returns>
         Task UpdateRequirementAsync(Requirement requirement);
 
         /// <summary>
@@ -68,5 +74,26 @@ namespace TestBucket.Domain.Requirements
         /// <param name="specification"></param>
         /// <returns></returns>
         Task UpdateRequirementSpecificationAsync(RequirementSpecification specification);
+
+        /// <summary>
+        /// Deletes a requirement link
+        /// </summary>
+        /// <param name="link"></param>
+        /// <returns></returns>
+        Task DeleteRequirementLinkAsync(RequirementTestLink link);
+
+        /// <summary>
+        /// Adds a requirement link
+        /// </summary>
+        /// <param name="link"></param>
+        /// <returns></returns>
+        Task AddRequirementLinkAsync(RequirementTestLink link);
+
+        /// <summary>
+        /// Searches for requirement links
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <returns></returns>
+        Task<RequirementTestLink[]> SearchRequirementLinksAsync(FilterSpecification<RequirementTestLink>[] filters);
     }
 }

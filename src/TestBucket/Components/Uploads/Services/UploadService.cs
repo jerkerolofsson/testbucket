@@ -19,11 +19,12 @@ internal class UploadService : TenantBaseService
 
     public async Task<FileResource> UploadAsync(ResourceCategory category, IBrowserFile file, long maxFileSize = 512_000, CancellationToken cancellationToken = default)
     {
-        return await UploadAsync(category, file, null, null, null, null, null, null, maxFileSize, cancellationToken);
+        return await UploadAsync(category, file, null, null, null, null, null, null, null, null, maxFileSize, cancellationToken);
     }
 
     public async Task<FileResource> UploadAsync(ResourceCategory category, IBrowserFile file, 
         long? testCaseId, long? testRunId, long? testCaseRunId, long? testSuiteId, long? testSuiteFolderId, long? testProjectId,
+        long? requirementId, long? requirementSpecificationId,
         long maxFileSize = 512_000, CancellationToken cancellationToken = default)
     {
         var tenantId = await GetTenantIdAsync();
@@ -40,6 +41,9 @@ internal class UploadService : TenantBaseService
             TenantId = tenantId,
             Length = data.Length,
             Created = DateTime.UtcNow,
+
+            RequirementId = requirementId,
+            RequirementSpecificationId = requirementSpecificationId,
 
             TestCaseId = testCaseId,
             TestRunId = testRunId,

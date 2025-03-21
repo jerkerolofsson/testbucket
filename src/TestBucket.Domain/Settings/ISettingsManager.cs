@@ -11,10 +11,7 @@ public interface ISettingsManager
 {
     public SettingsCategory[] Categories { get; }
 
-    /// <summary>
-    /// Returns all settings that can be changed
-    /// </summary>
-    public ISetting[] Settings { get; }
+    ISetting[] Search(SettingContext context, string text);
 
-    ISetting[] Search(string text);
+    ISetting[] GetSettings(SettingContext context);
 }

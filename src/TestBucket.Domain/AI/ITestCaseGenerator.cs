@@ -1,4 +1,6 @@
 ﻿
+using System.Security.Claims;
+
 using Microsoft.Extensions.AI;
 
 using TestBucket.Domain.AI.Models;
@@ -10,5 +12,5 @@ public interface ITestCaseGenerator
 
     IReadOnlyList<Heuristic> Heuristics { get; }
 
-    IAsyncEnumerable<LlmGeneratedTestCase?> GetStreamingResponseAsync(GenerateTestOptions options);
+    Task GenerateTestsAsync(ClaimsPrincipal principal, GenerateTestOptions options);
 }

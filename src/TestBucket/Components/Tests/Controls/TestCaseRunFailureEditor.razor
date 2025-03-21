@@ -1,0 +1,33 @@
+﻿
+<MudStack>
+    <MudText>Failure Description</MudText>
+    <MarkdownEditor 
+        ShowToolbar="false"
+        MaxHeight="200px"
+        Preview="false"
+        Color="Color.Primary"
+        AllowResize="true"
+        Value="@Message"
+        ValueChanged="MessageChanged"
+        SpellChecker="true">
+    </MarkdownEditor>
+
+    <MudText>Call Stack</MudText>
+    <MarkdownEditor ShowToolbar="false"
+        MaxHeight="200px"
+        Preview="false"
+        Color="Color.Primary"
+        AllowResize="true"
+        Value="@CallStack"
+        ValueChanged="CallStackChanged"
+        SpellChecker="true">
+    </MarkdownEditor>
+</MudStack>
+
+@code {
+    [Parameter] public string? CallStack { get; set; }
+    [Parameter] public EventCallback<string?> CallStackChanged { get; set; }
+
+    [Parameter] public string? Message { get; set; }
+    [Parameter] public EventCallback<string?> MessageChanged { get; set; }
+}

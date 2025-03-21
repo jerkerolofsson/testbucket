@@ -225,3 +225,63 @@ p.mud-typography-subtitle1 {
      padding: 4px;
 
  }
+
+ .treeview {
+ }
+
+ .treeview .node {
+     padding: 0px 2px;
+     margin-left: 12px;
+ }
+
+ .treeview > .node  {
+     margin-left: 0px;
+ }
+
+    .treeview .node .body {
+        min-height: 40px;
+
+        display: grid;
+        grid-template-columns: auto auto 1fr;
+        align-items: center;
+    }
+
+.treeview .node.selected > .body {
+    color: var(--mud-palette-tertiary);
+    background: var(--mud-palette-tertiary-hover);
+}
+
+.treeview .node > .body:hover {
+    background-color: var(--mud-palette-action-default-hover);
+}
+
+ .treeview .node .toggle {
+     width: 32px;
+     height: 32px;
+      display: grid;
+     align-items: center;
+     justify-content: center;
+ }
+
+ .treeview .node .icon > svg {
+     width: 22px;
+     height: 22px;
+ }
+
+ .treeview .node .icon {
+    margin-right: 4px;
+    width: 32px;     
+    height: 32px;
+
+    display: grid;
+    align-items: center;
+    justify-content: center;
+
+    fill: currentColor;
+ }
+
+ .mud-dialog .mud-dialog-title,
+ .mud-dialog-title h6.mud-typography.mud-typography-h6 {
+     font-weight: bold;
+     color: var(--mud-palette-tertiary);
+ }

@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Requirements;
 public interface IRequirementManager
@@ -30,6 +31,7 @@ public interface IRequirementManager
     /// <param name="requirement"></param>
     /// <returns></returns>
     Task DeleteRequirementAsync(ClaimsPrincipal principal, Requirement requirement);
+    Task<Requirement?> GetRequirementByIdAsync(ClaimsPrincipal principal, long id);
 
     #endregion Requirements
 
@@ -60,6 +62,14 @@ public interface IRequirementManager
     /// <param name="specification"></param>
     /// <returns></returns>
     Task UpdateRequirementSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification);
+    Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(ClaimsPrincipal principal, long id);
 
     #endregion Requirement Specifications
+
+    #region Requirement Links
+    Task<RequirementTestLink[]> GetLinksForRequirementAsync(ClaimsPrincipal principal, Requirement requirement);
+    Task<RequirementTestLink[]> GetLinksForTestAsync(ClaimsPrincipal principal, TestCase test);
+    Task AddRequirementLinkAsync(ClaimsPrincipal principal, Requirement requirement, TestCase testCase);
+    Task DeleteRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
+    #endregion
 }

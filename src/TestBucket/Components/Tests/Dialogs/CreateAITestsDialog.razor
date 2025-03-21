@@ -4,6 +4,7 @@
 @attribute [Authorize(Roles = "ADMIN")]
 @inject TestCaseEditorController testCaseEditorService
 @inject ITestCaseGenerator testCaseGenerator
+@inject AuthenticationStateProvider authenticationStateProvider
 
 @if(!testCaseGenerator.Enabled)
 {
@@ -94,33 +95,41 @@ else
 
     private async Task GenerateTestsAsync()
     {
-        _reply = "";
-        var results = new List<LlmGeneratedTestCase>();
-        await foreach (var llmTestCase in testCaseGenerator.GetStreamingResponseAsync(new GenerateTestOptions() { UserPrompt = _prompt, Heuristic = _heuristic, NumTests = _numTests }))
+        if(TestSuiteId is null)
         {
-            if (llmTestCase?.Name is not null)
-            {
-                results.Add(llmTestCase);
-
-                _reply += $"Created test: {llmTestCase.Name}\n";
-                this.StateHasChanged();
-
-                var description = llmTestCase.AsTestMarkup();
-
-                var testCase = new TestCase() { Name = llmTestCase.Name, Description = description.ToString(), TenantId = Folder?.TenantId ?? "" };
-                if (Folder is not null)
-                {
-                    testCase.TestSuiteFolderId = Folder.Id;
-                    testCase.TestSuiteId = Folder.TestSuiteId;
-                }
-                if (TestSuiteId is not null)
-                {
-                    testCase.TestSuiteId = TestSuiteId.Value;
-                }
-
-                await testCaseEditorService.AddTestCaseAsync(testCase);
-            }
+            return;
         }
+
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var principal = authState.User;
+
+        var options = new GenerateTestOptions() { UserPrompt = _prompt, Heuristic = _heuristic, NumTests = _numTests, Folder = Folder, TestSuiteId = TestSuiteId.Value };
+        var task = testCaseGenerator.GenerateTestsAsync(principal, options);
+
+        // _reply = "";
+        // await foreach (var llmTestCase in testCaseGenerator.GetStreamingResponseAsync(new GenerateTestOptions() { UserPrompt = _prompt, Heuristic = _heuristic, NumTests = _numTests }))
+        // {
+        //     if (llmTestCase?.TestCaseName is not null)
+        //     {
+        //         _reply += $"Created test: {llmTestCase.TestCaseName}\n";
+        //         this.StateHasChanged();
+
+        //         var description = llmTestCase.AsTestMarkup();
+
+        //         var testCase = new TestCase() { Name = llmTestCase.TestCaseName, Description = description.ToString(), TenantId = Folder?.TenantId ?? "" };
+        //         if (Folder is not null)
+        //         {
+        //             testCase.TestSuiteFolderId = Folder.Id;
+        //             testCase.TestSuiteId = Folder.TestSuiteId;
+        //         }
+        //         if (TestSuiteId is not null)
+        //         {
+        //             testCase.TestSuiteId = TestSuiteId.Value;
+        //         }
+
+        //         await testCaseEditorService.AddTestCaseAsync(testCase);
+        //     }
+        // }
     }
 
     private async Task OnValidSubmitAsync()

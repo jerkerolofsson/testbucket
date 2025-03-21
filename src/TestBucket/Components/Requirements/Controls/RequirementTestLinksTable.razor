@@ -1,0 +1,43 @@
+﻿@inject RequirementBrowser browser
+
+<MudDataGrid Items="_links"
+Dense="true"
+Hover="true"
+T="RequirementTestLink"
+SortMode="SortMode.Single">
+    <Columns>
+        <PropertyColumn Property="x => x.TestCase!.Name" Title="Test Case"/>
+        <TemplateColumn>
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteLinkAsync(context.Item)"/>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+</MudDataGrid>
+
+@code {
+    [Parameter] public Requirement? Requirement { get; set; }
+
+    private RequirementTestLink[] _links = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadDataAsync();
+    }
+
+    private async Task LoadDataAsync()
+    {
+        if (Requirement is not null)
+        {
+            _links = await browser.GetLinksForRequirementAsync(Requirement);
+        }
+
+    }
+
+    private async Task DeleteLinkAsync(RequirementTestLink link)
+    {
+        await browser.DeleteRequirementLinkAsync(link);
+        await LoadDataAsync();
+    }
+}

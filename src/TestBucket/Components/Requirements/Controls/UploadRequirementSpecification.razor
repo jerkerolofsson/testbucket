@@ -1,6 +1,8 @@
-﻿@using TestBucket.Domain.Requirements
+﻿@using TestBucket.Domain.Progress
+@using TestBucket.Domain.Requirements
 @using TestBucket.Domain.Requirements.Import
 @inject RequirementEditorController editor
+@inject IProgressManager progressManager
 
 @if(Project is not null)
 {
@@ -12,9 +14,12 @@
         }
         else
         {
-            <MudText Typo="Typo.h6">
-                Drag and drop requirement specifications here or click to select a file
-            </MudText>
+            <MudStack Row>
+                <MudIcon Icon="@Icons.Material.Filled.FileUpload" />
+                <MudText Typo="Typo.h6">
+                    Drag and drop documents here or click to browse for a file
+                </MudText>
+            </MudStack>
             <MudText Typo="Typo.subtitle1">Supported formats: .pdf, .md, .txt</MudText>
         }
     </UploadFile>
@@ -36,6 +41,8 @@
         {
             return;
         }
+
+        await using var progressTask = progressManager.CreateProgressTask("Importing " + fileResource.Name + "..");
 
         var spec = await editor.ImportAsync(Project.TeamId, Project.Id, fileResource);
         _loading = false;

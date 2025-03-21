@@ -1,0 +1,26 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Requirements/Requirements/{Id:long}"
+@using TestBucket.Components.Requirements.Layouts
+@layout RequirementsLayout
+@inject RequirementBrowser browser
+
+<RequirementEditor Requirement="@_requirement"/>
+
+@code {
+    [Parameter] public long Id { get; set; }
+    [Parameter] public string TenantId { get; set; } = "";
+
+    private Requirement? _requirement = null;
+
+    /// <summary>
+    /// Load the test case when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_requirement is null || _requirement.Id != Id)
+        {
+            _requirement = await browser.GetRequirementByIdAsync(Id);
+        }
+    }
+}

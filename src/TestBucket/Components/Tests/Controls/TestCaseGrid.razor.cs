@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Testing;
 
 namespace TestBucket.Components.Tests.Controls;
 
@@ -90,13 +91,13 @@ public partial class TestCaseGrid
     }
     protected override void OnInitialized()
     {
-        testCaseEditor.AddObserver(this);
+        testCaseManager.AddObserver(this);
     }
 
 
     public void Dispose()
     {
-        testCaseEditor.RemoveObserver(this);
+        testCaseManager.RemoveObserver(this);
     }
     #endregion
 

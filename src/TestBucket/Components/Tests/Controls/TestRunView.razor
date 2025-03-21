@@ -1,6 +1,7 @@
 ﻿@using TestBucket.Contracts.Testing.Models
 @inject TestBrowser testBrowser
 @inject TestCaseEditorController testCaseEditorService
+@inject TestExecutionController testExecutionController
 
 <MudStack Spacing="0" Style="width: 100%">
 
@@ -9,7 +10,7 @@
         <MudText Typo="Typo.subtitle1">@TestRun?.Created</MudText>
     </MudStack>
 
-    <MudSplitter Style="height: 100%" Color="Color.Primary" Bordered="false" Dimension="80" EnableMargin="false">
+    <MudSplitter Style="height: 100%" Color="Color.Tertiary" Bordered="false" Dimension="70" EnableMargin="false">
         <StartContent>
             <MudStack Class="pa-2" Style="width: 100%">
                 <TestCaseRunGrid Run="@TestRun" OnTestCaseRunClicked="OnTestCaseRunClicked" />
@@ -22,7 +23,7 @@
                     <MudTabs Style="width: 100%">
                         <MudTabPanel Text="Metadata">
                             <MudStack Class="pa-2" Style="width: 100%">
-                                <div style="max-width: 200px; overflow: hidden; text-overflow: ellipsis">
+                                <div style="max-width: 100%; overflow: hidden; text-overflow: ellipsis">
                                     <MudText Typo="Typo.h3" Color="Color.Tertiary">@_selectedTestCaseRun.Name</MudText>
                                 </div>
 

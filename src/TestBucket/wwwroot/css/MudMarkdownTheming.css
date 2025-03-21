@@ -135,6 +135,11 @@ border-color: var(--mud-palette-primary-darken);
     
 }
 
+.editor-preview table td, .editor-preview table th {
+    border: 1px solid var(--mud-palette-table-lines);
+    padding: 5px;
+}
+
  .cm-header.cm-header-1,
  h1 {
      font-size: var(--mud-typography-h1-size);

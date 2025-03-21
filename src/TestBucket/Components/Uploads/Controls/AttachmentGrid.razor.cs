@@ -10,6 +10,8 @@ public partial class AttachmentGrid
     [Parameter] public long? TestProjectId { get; set; }
     [Parameter] public long? TestSuiteId { get; set; }
     [Parameter] public long? TestSuiteFolderId { get; set; }
+    [Parameter] public long? RequirementId { get; set; }
+    [Parameter] public long? RequirementSpecificationId { get; set; }
     [Parameter] public bool AllowUpload { get; set; } = false;
 
     [Parameter] public string? Style { get; set; }
@@ -55,6 +57,14 @@ public partial class AttachmentGrid
         else if (TestCaseRunId is not null)
         {
             _attachments = (await attachmentsService.GetTestCaseRunAttachmentsAsync(TestCaseRunId.Value)).ToList();
+        }
+        else if (RequirementId is not null)
+        {
+            _attachments = (await attachmentsService.GetRequirementAttachmentsAsync(RequirementId.Value)).ToList();
+        }
+        else if (RequirementSpecificationId is not null)
+        {
+            _attachments = (await attachmentsService.GetRequirementSpecificationAttachmentsAsync(RequirementSpecificationId.Value)).ToList();
         }
         else if (TestRunId is not null)
         {

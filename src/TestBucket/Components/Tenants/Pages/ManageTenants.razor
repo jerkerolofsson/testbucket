@@ -5,31 +5,36 @@
 @inject IDialogService dialogService
 @inject NavigationManager navigationManager
 
-<MudDataGrid ServerData="LoadGridData"
-    Dense="true"
-    Hover="true"
-    T="Tenant"
-             RowClick="(e) => OnRowClicked(e.Item)"
-    @ref="_dataGrid"
-    SortMode="SortMode.None">
+<MudStack Class="container-settings-page">
 
-    <ToolBarContent>
-        <MudStack Row="true" AlignItems="AlignItems.Center">
-            <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTenantAsync"></MudIconButton>
+    <MudText Class="mb-3" Typo="Typo.h1">Tenants</MudText>
 
-        </MudStack>
-    </ToolBarContent>
+    <MudDataGrid ServerData="LoadGridData"
+        Dense="true"
+        Hover="true"
+        T="Tenant"
+                 RowClick="(e) => OnRowClicked(e.Item)"
+        @ref="_dataGrid"
+        SortMode="SortMode.None">
 
-    <Columns>
-        <PropertyColumn Property="x => x.Id" Title="ID" />
-        <PropertyColumn Property="x => x.Name" Title="Name"/>
-    </Columns>
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTenantAsync"></MudIconButton>
 
-    <PagerContent>
-        <MudDataGridPager T="Tenant" />
-    </PagerContent>
-</MudDataGrid>
+            </MudStack>
+        </ToolBarContent>
+
+        <Columns>
+            <PropertyColumn Property="x => x.Id" Title="ID" />
+            <PropertyColumn Property="x => x.Name" Title="Name"/>
+        </Columns>
+
+        <PagerContent>
+            <MudDataGridPager T="Tenant" />
+        </PagerContent>
+    </MudDataGrid>
+</MudStack>
 
 @code {
     [Parameter] public string? TenantId { get; set; }

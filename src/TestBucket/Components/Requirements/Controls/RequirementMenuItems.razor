@@ -1,0 +1,34 @@
+﻿@inject RequirementEditorController editor
+
+@if(Requirement is not null)
+{
+    <MudMenuItem Icon="@Icons.Material.Filled.Link" OnClick="() => LinkRequirementToTestCaseAsync()" Label="Test Links" />
+    <MudDivider />
+    <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteRequirementAsync()" Label="Delete" />
+}
+@code {
+    [Parameter] public Requirement? Requirement { get; set; }
+    [Parameter] public TestProject? Project { get; set; }
+
+    [Parameter] public Team? Team { get; set; }
+
+    private async Task LinkRequirementToTestCaseAsync()
+    {
+        if (Requirement is null)
+        {
+            return;
+        }
+
+        await editor.LinkRequirementToTestCaseAsync(Requirement, Project, Team);
+    }
+
+    private async Task DeleteRequirementAsync()
+    {
+        if (Requirement is null)
+        {
+            return;
+        }
+        await editor.DeleteRequirementAsync(Requirement);
+    }
+
+}

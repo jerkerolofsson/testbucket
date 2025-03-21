@@ -1,3 +1,5 @@
+using Microsoft.CodeAnalysis;
+
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Models;
 
@@ -13,28 +15,39 @@ public partial class SearchPage
     private readonly Dictionary<long, FieldValue> _fieldMap = [];
     private readonly Dictionary<long, ISetting> _settingsMap = [];
 
-    private async Task OnFieldChangedAsync(FieldValue fieldValue)
+    /// <summary>
+    /// Currently selected project
+    /// </summary>
+    [CascadingParameter] public TestProject? Project { get; set; }
+
+
+    private async Task<SettingContext> CreateSettingContextAsync()
     {
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var principal = authState.User;
+
+        return new SettingContext { Principal = principal, ProjectId = Project?.Id };
+    }
+    private async Task OnFieldChangedAsync(FieldValue fieldValue)
+    {
         if (_settingsMap.TryGetValue(fieldValue.FieldDefinitionId, out var setting))
         {
-            await setting.WriteAsync(principal, fieldValue);
+            var context = await CreateSettingContextAsync();
+            await setting.WriteAsync(context, fieldValue);
         }
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        var principal = authState.User;
+        var context = await CreateSettingContextAsync();
 
-        _settings = settingsManager.Search(SearchPhrase);
+        _settings = settingsManager.Search(context,SearchPhrase);
         _sections = _settings.Select(x => x.Metadata.Section).Distinct().ToArray();
 
         long id = 1;
         foreach(var setting in _settings)
         {
-            var value = await setting.ReadAsync(principal);
+            var value = await setting.ReadAsync(context);
 
             setting.Metadata.Id = id;
             value.FieldDefinitionId = id;

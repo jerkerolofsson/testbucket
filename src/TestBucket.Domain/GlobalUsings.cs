@@ -13,3 +13,5 @@ global using TestBucket.Contracts.Testing.Models;
 global using TestBucket.Domain.Fields.Models;
 global using TestBucket.Domain.Shared;
 
+global using TestBucket.Domain.Settings;
+global using TestBucket.Domain.Settings.Models;

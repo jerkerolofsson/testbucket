@@ -3,6 +3,7 @@
 @using TestBucket.Traits.Core
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
+@inject ITestCaseManager testCaseManager
 @inject TestSuiteService testSuiteServer
 @inject TestCaseEditorController testCaseEditor
 @inject FieldController fieldController
@@ -10,13 +11,13 @@
 @implements ITestCaseObserver
 
 <MudDataGrid ServerData="LoadGridData"
-Style="width: 100%"
-Dense="true"
-Hover="true"
-T="TestCase"
-RowClick="(e) => OnTestClicked(e.Item)"
-@ref="_dataGrid"
-SortMode="SortMode.None">
+    Style="width: 100%"
+    Dense="true"
+    Hover="true"
+    T="TestCase"
+    RowClick="(e) => OnTestClicked(e.Item)"
+    @ref="_dataGrid"
+    SortMode="SortMode.None">
 
     <ToolBarContent>
         <MudStack Row="true" AlignItems="AlignItems.Center">

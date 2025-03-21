@@ -1,0 +1,56 @@
+﻿@using TestBucket.Domain.Progress
+@inject IProgressManager progressManager
+@implements IProgressObserver
+@implements IDisposable
+
+@if(IsVisible)
+{
+    <div 
+        aria-role="status"
+        style="position: absolute; right: 50px; bottom: 50px; display: flex; flex-direction: column; gap: 8px; z-index: 100; width: 20vw">
+        @foreach(var task in _tasks)
+        {
+            <MudStack Style="background: var(--mud-palette-surface); padding: 1rem; border-radius: 4px;">
+
+                <MudText Typo="Typo.h1">@task.Title</MudText>
+
+                <MudProgressLinear Color="Color.Tertiary" Value="@task.Percent" Max="100"/>
+                <MudText>@task.Status</MudText>
+            </MudStack>
+        }
+    </div>
+}
+
+@code {
+    private readonly List<ProgressTask> _tasks = new();
+
+    private bool IsVisible => _tasks.Count > 0;
+
+    public async Task NotifyAsync(ProgressTask task)
+    {
+        if(!task.Completed)
+        {
+            var exists = _tasks.Contains(task);
+            if(!exists)
+            {
+                _tasks.Add(task);
+            }
+        }
+        else
+        {
+            _tasks.Remove(task);
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    protected override void OnInitialized()
+    {
+        progressManager.AddObserver(this);
+    }
+
+    public void Dispose()
+    {
+        progressManager.RemoveObserver(this);
+    }
+}

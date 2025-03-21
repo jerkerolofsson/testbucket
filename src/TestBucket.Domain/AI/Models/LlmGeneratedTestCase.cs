@@ -5,21 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TestBucket.Domain.AI.Models;
-public class LlmGeneratedTestCase
+public record class GeneratedTest
 {
-    public string? Name { get; set; }
-    public string? Premise { get; set; }
+    public string? TestCaseName { get; set; }
+    public string? TestDescription { get; set; }
 
     /// <summary>
     /// Generated test steps
     /// </summary>
-    public List<LlmGeneratedTestStep> TestSteps { get; set; } = [];
+    public List<GeneratedTestStep> TestSteps { get; set; } = [];
 
     public string AsTestMarkup()
     {
         var description = new StringBuilder();
-        description.AppendLine("# Premise");
-        description.AppendLine(Premise);
+        description.AppendLine("# Description");
+        description.AppendLine(TestDescription);
         description.AppendLine();
         description.AppendLine("# Steps");
         description.AppendLine("| Action                           | Expected Result                  |");

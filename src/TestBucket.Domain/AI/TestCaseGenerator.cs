@@ -1,38 +1,35 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Security.Claims;
+using System.Text;
 using System.Text.Json;
 
 using Microsoft.Extensions.AI;
 
 using TestBucket.Domain.AI.Models;
+using TestBucket.Domain.Progress;
+using TestBucket.Domain.Testing;
+using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.AI;
 internal class TestCaseGenerator : ITestCaseGenerator
 {
-    private readonly IReadOnlyList<IChatClient> _chatClients;
+    private readonly IChatClientFactory _chatClientFactory;
+    private readonly IProgressManager _progressManager;
+    private readonly ITestCaseManager _testCaseManager;
 
+    /// <summary>
+    /// Base prompt
+    /// </summary>
     private readonly string _systemPrompt = """
-        You are a technical test designer whos role is to create multiple test cases that verify that the product works correctly.
-
-        A test has the following properties:
-        - Name
-        - Premise
-        - TestSteps
-
-        A TestStep has one or more actions which should be performed by the tester. A TestStep may also have an ExpectedResult.
+        You are a technical test designer whose role is to design test cases that verify that the product works correctly.
 
         The user will provide a description of a feature, a function or a use-case that defines the scope of the test cases. 
 
-        Start by defining the Premise of the test from the "description" provided by the user. 
-        The Premise defines the intent of a test.
-
-        After defining the premise, define the steps (TestSteps) a user needs to perform to evaluate the premise. 
-
-        Finally, summarize the Premise and TestSteps into a short and suitable name for the test case.
-
-        Please create a test case based on the Premise and the TestSteps and output them in JSON format. 
+        Find a heuristic by using a tool and use this to define the type of test to create.
         """;
+    private GenerateTestOptions? _options;
 
-    public bool Enabled => _chatClients.Count > 0;
+    public bool Enabled => true;
 
     public IReadOnlyList<Heuristic> Heuristics => 
         [
@@ -100,76 +97,105 @@ internal class TestCaseGenerator : ITestCaseGenerator
             },
         ];
 
-    public TestCaseGenerator(IEnumerable<IChatClient> chatClients)
+    public TestCaseGenerator(IChatClientFactory chatClientFactory, IProgressManager progressManager, ITestCaseManager testCaseManager)
     {
-        _chatClients = chatClients.ToList();
+        _chatClientFactory = chatClientFactory;
+        _progressManager = progressManager;
+        _testCaseManager = testCaseManager;
     }
 
-    public async IAsyncEnumerable<LlmGeneratedTestCase?> GetStreamingResponseAsync(GenerateTestOptions options)
+    public Task GenerateTestsAsync(ClaimsPrincipal principal, GenerateTestOptions options)
+    {
+        return Task.Run(async () =>
+        {
+            var folder = options.Folder;
+
+            await foreach (var llmTestCase in GetStreamingResponseAsync(options))
+            {
+                if (llmTestCase?.TestCaseName is not null)
+                {
+                    var description = llmTestCase.AsTestMarkup();
+
+                    var testCase = new TestCase() { Name = llmTestCase.TestCaseName, Description = description.ToString(), TenantId = folder?.TenantId ?? "" };
+                    if (folder is not null)
+                    {
+                        testCase.TestSuiteFolderId = folder.Id;
+                        testCase.TestSuiteId = folder.TestSuiteId;
+                    }
+                    testCase.TestSuiteId = options.TestSuiteId;
+
+                    await _testCaseManager.AddTestCaseAsync(principal, testCase);
+                }
+            }
+        });
+    }
+
+    public async IAsyncEnumerable<GeneratedTest?> GetStreamingResponseAsync(GenerateTestOptions options)
     {
         string userPrompt = "Function Description: \n" + options.UserPrompt;
+        _options = options;
+
+        await using var progress = _progressManager.CreateProgressTask("Generating tests..");
 
         // Determine the response format
         string systemPrompt = _systemPrompt;
-        ChatResponseFormat responseFormat = ChatResponseFormat.Text;
-        if (options.ResponseMode == GenerateTestResponseMode.JsonResponse)
-        {
-            JsonElement rootElement = JsonDocument.Parse(ChatResponseFormatting.ExampleJson).RootElement;
-            responseFormat = ChatResponseFormatJson.ForJsonSchema(rootElement, "test_case", "Test cases");
-        }
-        else
-        {
-            systemPrompt = _systemPrompt + $"\n\nEXAMPLE JSON OUTPUT:\n{ChatResponseFormatting.ExampleJson}\n\n";
-        }
 
+        var llm = await _chatClientFactory.CreateChatClientAsync();
 
-        if (options.Heuristic?.Prompt is not null)
+        if (llm is not null)
         {
-            var heuristicText = $"\n\nUse one or more of the following constraints to define a premise for testing:\n{options.Heuristic.Prompt}";
-            userPrompt += heuristicText;
-        }
-
-        if (_chatClients.Count > 0)
-        {
-            var llm = _chatClients.First();
-
             var systemPromptMessage = new ChatMessage(ChatRole.System, systemPrompt);
             var chatMessage = new ChatMessage(ChatRole.User, userPrompt);
             List<ChatMessage> chatHistory = [systemPromptMessage, chatMessage];
 
-            LlmGeneratedTestCase? generatedTest = await GenereateTestAsync(responseFormat, llm, chatHistory);
-            if (generatedTest?.Name is not null)
+            var generatedTest = await GenereateTestAsync(llm, chatHistory, progress);
+            if (generatedTest?.TestCaseName is not null)
             {
+                await progress.ReportStatusAsync("Generating test #1..", 0);
+
                 yield return generatedTest;
             }
 
             for (int i = 1; i < options.NumTests; i++)
             {
-                chatHistory.Add(new ChatMessage(ChatRole.User, "Generate another test case with a different Premise"));
-                LlmGeneratedTestCase? generatedTest2 = await GenereateTestAsync(responseFormat, llm, chatHistory);
-                if (generatedTest2?.Name is not null)
+                await progress.ReportStatusAsync($"Generating test #{i+1}..", (i*100.0/options.NumTests));
+                chatHistory.Add(new ChatMessage(ChatRole.User, "Generate another test case with different parameters"));
+                var generatedTest2 = await GenereateTestAsync(llm, chatHistory, progress);
+                if (generatedTest2?.TestCaseName is not null)
                 {
                     yield return generatedTest2;
                 }
-
             }
-
         }
     }
 
-    private static async Task<LlmGeneratedTestCase?> GenereateTestAsync(ChatResponseFormat responseFormat, IChatClient llm, List<ChatMessage> chatHistory, CancellationToken cancellationToken = default)
+    [Description("Gets the heuristic")]
+    string GetHeuristic() 
     {
-        //var response = await llm.GetResponseAsync(chatHistory, new ChatOptions { ResponseFormat = responseFormat });
-        var sb = new StringBuilder();
-        await foreach (var stream in llm.GetStreamingResponseAsync(chatHistory, new ChatOptions { ResponseFormat = responseFormat }, cancellationToken))
+        if(_options?.Heuristic?.Prompt is not null)
         {
-            sb.Append(stream.Text);
+            return _options.Heuristic.Prompt;
         }
-        LlmGeneratedTestCase? generatedTest = ParseTestFromResponse(sb.ToString());
-        return generatedTest;
+        return Heuristics.First().Prompt;
     }
 
-    private static LlmGeneratedTestCase? ParseTestFromResponse(string text)
+    private async Task<GeneratedTest?> GenereateTestAsync(IChatClient llm, List<ChatMessage> chatHistory, ProgressTask progress, CancellationToken cancellationToken = default)
+    {
+        var chatOptions = new ChatOptions()
+        {
+            Tools = [AIFunctionFactory.Create(GetHeuristic)]
+        };
+        //llm.CompleteAsync<GeneratedTest>("");
+        var response = await llm.GetResponseAsync<GeneratedTest>(chatHistory, chatOptions);
+
+        if(response.TryGetResult(out var testCase))
+        {
+            return testCase;
+        }
+        return null;
+    }
+
+    private static GeneratedTest? ParseTestFromResponse(string text)
     {
         try
         {
@@ -193,7 +219,7 @@ internal class TestCaseGenerator : ITestCaseGenerator
 
                 }
 
-                var generatedTest = JsonSerializer.Deserialize<LlmGeneratedTestCase>(json);
+                var generatedTest = JsonSerializer.Deserialize<GeneratedTest>(json);
                 return generatedTest;
             }
         }

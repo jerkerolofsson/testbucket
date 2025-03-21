@@ -25,7 +25,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<TestCase> TestCases { get; set; }
     internal DbSet<TestRun> TestRuns { get; set; }
     internal DbSet<TestCaseRun> TestCaseRuns { get; set; }
-
+    internal DbSet<RequirementTestLink> RequirementTestLinks { get; set; }
     internal DbSet<RequirementSpecification> RequirementSpecifications { get; set; }
     internal DbSet<RequirementSpecificationFolder> RequirementSpecificationFolders { get; set; }
     internal DbSet<Requirement> Requirements { get; set; }

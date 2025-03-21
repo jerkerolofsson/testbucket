@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
+using TestBucket.Components.Shared.Tree;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
 namespace TestBucket.Components.Requirements.Services;
@@ -17,12 +18,40 @@ internal class RequirementBrowser : TenantBaseService
         _requirementManager = requirementManager;
     }
 
-    public async Task<List<TreeItemData<BrowserItem>>> SearchAsync(long? teamId, long? projectId, string searchText)
+    public async Task<RequirementTestLink[]> GetLinksForTestAsync(TestCase test)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _requirementManager.GetLinksForTestAsync(principal, test);
+    }
+    public async Task<RequirementTestLink[]> GetLinksForRequirementAsync(Requirement requirement)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _requirementManager.GetLinksForRequirementAsync(principal, requirement);
+    }
+
+    public async Task DeleteRequirementLinkAsync(RequirementTestLink link)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _requirementManager.DeleteRequirementLinkAsync(principal, link);
+    }
+
+    public async Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(long id)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _requirementManager.GetRequirementSpecificationByIdAsync(principal, id);
+    }
+    public async Task<Requirement?> GetRequirementByIdAsync(long id)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _requirementManager.GetRequirementByIdAsync(principal, id);
+    }
+
+    public async Task<List<TreeNode<BrowserItem>>> SearchAsync(long? teamId, long? projectId, string searchText)
     {
         var specs = await _requirementEditorService.GetRequirementSpecificationsAsync(teamId, projectId);
         var specificationNodes = specs.Items.Select(x => CreateSpecificationNode(x)).ToList();
 
-        var specificationNode = new TreeItemData<BrowserItem>
+        var specificationNode = new TreeNode<BrowserItem>
         {
             Text = "Specifications",
             Children = specificationNodes,
@@ -30,7 +59,7 @@ internal class RequirementBrowser : TenantBaseService
             Icon = Icons.Material.Filled.FolderOpen,
         };
 
-        var rootItems = new List<TreeItemData<BrowserItem>>
+        var rootItems = new List<TreeNode<BrowserItem>>
         {
             specificationNode
         };
@@ -51,9 +80,16 @@ internal class RequirementBrowser : TenantBaseService
             var specNode = rootItems[0].Children!.Where(x => x.Value?.RequirementSpecification?.Id == requirement.RequirementSpecificationId).FirstOrDefault();
             if(specNode is not null)
             {
-                specNode.Children ??= [];
+                var requirementNode = CreateRequirementNode(requirement);
+                if (specNode.Children is null)
+                {
+                    specNode.Children = [requirementNode];
+                }
+                else
+                {
+                    specNode.Children = [.. specNode.Children, requirementNode];
+                }
                 specNode.Expanded = true;
-                specNode.Children.Add(CreateRequirementNode(requirement));
             }
         }
 
@@ -72,7 +108,7 @@ internal class RequirementBrowser : TenantBaseService
         return rootItems;
     }
 
-    public async Task<List<TreeItemData<BrowserItem>>> BrowseAsync(long? teamId, long? projectId, BrowserItem? parent)
+    public async Task<List<TreeNode<BrowserItem>>> BrowseAsync(long? teamId, long? projectId, BrowserItem? parent)
     {
         if (parent is not null)
         {
@@ -102,9 +138,9 @@ internal class RequirementBrowser : TenantBaseService
         return await BrowseRootAsync(teamId, projectId);
     }
 
-    public TreeItemData<BrowserItem> CreateRequirementNode(Requirement requirement)
+    public TreeNode<BrowserItem> CreateRequirementNode(Requirement requirement)
     {
-        return new TreeItemData<BrowserItem>
+        return new TreeNode<BrowserItem>
         {
             Value = new BrowserItem { Requirement = requirement },
             Text = requirement.Name,
@@ -113,9 +149,9 @@ internal class RequirementBrowser : TenantBaseService
             Expandable = false
         };
     }
-    public TreeItemData<BrowserItem> CreateSpecificationNode(RequirementSpecification specification)
+    public TreeNode<BrowserItem> CreateSpecificationNode(RequirementSpecification specification)
     {
-        return new TreeItemData<BrowserItem>
+        return new TreeNode<BrowserItem>
         {
             Expandable = true,
             Expanded = false,
@@ -126,18 +162,19 @@ internal class RequirementBrowser : TenantBaseService
         };
     }
 
-    private async Task<List<TreeItemData<BrowserItem>>> BrowseRootAsync(long? teamId, long? projectId)
+    private async Task<List<TreeNode<BrowserItem>>> BrowseRootAsync(long? teamId, long? projectId)
     {
         var specs = await _requirementEditorService.GetRequirementSpecificationsAsync(teamId, projectId);
         var specificationNodes = specs.Items.Select(x =>CreateSpecificationNode(x)).ToList();
 
-        return new List<TreeItemData<BrowserItem>>
+        return new List<TreeNode<BrowserItem>>
         {
-            new TreeItemData<BrowserItem>
+            new TreeNode<BrowserItem>
             {
                 Text = "Specifications",
                 Children = specificationNodes,
                 Expanded = true,
+                Value = new BrowserItem() { RootFolderName = "Specifications" },
                 Icon = Icons.Material.Filled.FolderOpen,
             }
         };

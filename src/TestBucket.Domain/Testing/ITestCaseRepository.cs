@@ -1,4 +1,5 @@
 ﻿using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 
 
@@ -47,9 +48,17 @@ public interface ITestCaseRepository
     /// Searches for test cases
     /// </summary>
     /// <param name="tenantId"></param>
-    /// <param name="query"></param>
+    /// <param name="filters"></param>
     /// <returns></returns>
-    Task<PagedResult<TestCase>> SearchTestCasesAsync(string tenantId, SearchTestQuery query);
+    Task<PagedResult<TestCase>> SearchTestCasesAsync(int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters);
+
+    /// <summary>
+    /// Searches for test cases
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="filters"></param>
+    /// <returns></returns>
+    Task<long[]> SearchTestCaseIdsAsync(IEnumerable<FilterSpecification<TestCase>> filters);
 
     /// <summary>
     /// Deletes a test case
@@ -223,10 +232,9 @@ public interface ITestCaseRepository
     /// <summary>
     /// Deletes a test run
     /// </summary>
-    /// <param name="tenantId"></param>
     /// <param name="id"></param>
     /// <returns></returns>
-    Task DeleteTestRunByIdAsync(string tenantId, long id);
+    Task DeleteTestRunByIdAsync(long id);
 
     /// <summary>
     /// Updates a test case run / saves changes

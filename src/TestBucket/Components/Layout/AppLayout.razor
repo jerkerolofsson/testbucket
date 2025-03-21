@@ -18,11 +18,12 @@
 <MudSnackbarProvider />
 <MudPopoverProvider />
 <MudDialogProvider MaxWidth="MaxWidth.ExtraExtraLarge" />
+<ProgressStatus/>
 
 @{
     string tenantAdminUrl = $"{tenantId}/tenants";
     string teamAdminUrl = $"{tenantId}/Settings/Teams";
-    string projectAdminUrl = $"{tenantId}/projects";
+    string projectAdminUrl = $"{tenantId}/Settings/ManageProjects";
     string projectSettingsUrl = $"{tenantId}/Settings/Projects/{_project?.Slug}";
     if(_project is null)
     {

@@ -5,33 +5,36 @@
 @attribute [Authorize(Roles = "ADMIN")]
 @inject TeamService teamService
 @inject IDialogService dialogService
+<MudStack Class="container-settings-page">
 
-<MudDataGrid ServerData="LoadGridData"
-             Dense="true"
-             Hover="true"
-             T="Team"
-             @ref="_dataGrid"
-             SortMode="SortMode.None">
+    <MudText Class="mb-3" Typo="Typo.h1">Teams</MudText>
 
-    <ToolBarContent>
-        <MudStack Row="true" AlignItems="AlignItems.Center">
-            <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTeamAsync"></MudIconButton>
+    <MudDataGrid ServerData="LoadGridData"
+                 Dense="true"
+                 Hover="true"
+                 T="Team"
+                 @ref="_dataGrid"
+                 SortMode="SortMode.None">
 
-        </MudStack>
-    </ToolBarContent>
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTeamAsync"></MudIconButton>
 
-    <Columns>
-        <PropertyColumn Property="x => x.ShortName" />
-        <PropertyColumn Property="x => x.Name" />
-        <PropertyColumn Property="x => x.Slug" />
-    </Columns>
+            </MudStack>
+        </ToolBarContent>
 
-    <PagerContent>
-        <MudDataGridPager T="Team" />
-    </PagerContent>
-</MudDataGrid>
+        <Columns>
+            <PropertyColumn Property="x => x.ShortName" />
+            <PropertyColumn Property="x => x.Name" />
+            <PropertyColumn Property="x => x.Slug" />
+        </Columns>
 
+        <PagerContent>
+            <MudDataGridPager T="Team" />
+        </PagerContent>
+    </MudDataGrid>
+</MudStack>
 
 @code {
     [Parameter] public string? TenantId { get; set; }

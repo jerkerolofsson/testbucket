@@ -11,6 +11,11 @@ internal class TestExecutionController : TenantBaseService
     private readonly TestCaseEditorController _editorController;
     private readonly IUserPreferencesManager _userPreferencesManager;
 
+    /// <summary>
+    /// Invoked when a result is set, unless the result is NoRun
+    /// </summary>
+    public event EventHandler<TestCaseRun>? TestCompleted;
+
     public TestExecutionController(
         AuthenticationStateProvider authenticationStateProvider,
         TestCaseEditorController testCaseEditor,
@@ -57,6 +62,11 @@ internal class TestExecutionController : TenantBaseService
         if (result == TestResult.Failed && userPreferences.ShowFailureMessageDialogWhenFailingTestCaseRun)
         {
             await ShowTestCaseRunFailureDialogAsync(testCaseRun);
+        }
+
+        if(result != TestResult.NoRun && userPreferences.AdvanceToNextNotCompletedTestWhenSettingResult)
+        {
+            TestCompleted?.Invoke(this, testCaseRun);
         }
     }
 

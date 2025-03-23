@@ -1,7 +1,5 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Testing/TestSuites/{SuiteId:long}/Folders/{FolderId:long}"
-@using TestBucket.Components.Tests.Layouts
-@using TestBucket.Domain.Requirements.Models
 @layout TestingLayout
 @inject TestBrowser testBrowser
 @inject AppNavigationManager appNavigationManager
@@ -11,16 +9,18 @@
         <PathNavigation FolderId="@FolderId" />
     </MudToolBar>
 
-    <MudSplitter Style="height: 100%; width:100%" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
+    <Splitter Style="height: 100%; width:100%" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
         <StartContent>
-            <TestCaseGrid TestSuiteId="@SuiteId" FolderId="@FolderId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" />
+            <TestCaseGrid 
+                Project="@Project"
+                TestSuiteId="@SuiteId" FolderId="@FolderId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" />
         </StartContent>
         <EndContent>
             <MudStack Class="pa-2" Style="width: 100%">
                 <TestSuiteFolderEditor Folder="@_testSuiteFolder" />
             </MudStack>
         </EndContent>
-    </MudSplitter>
+    </Splitter>
 </div>
 
 @code {

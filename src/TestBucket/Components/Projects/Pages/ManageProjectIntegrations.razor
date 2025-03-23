@@ -1,0 +1,42 @@
+﻿@page "/{tenantId}/Settings/Projects/{projectSlug}/Integrations"
+@layout SettingsLayout
+@attribute [Authorize(Roles = "ADMIN")]
+@inject ProjectController projectController
+@inject IDialogService dialogService
+
+<TenantRedirect/>
+
+<MudStack Class="container-settings-page">
+
+    <ExternalIntegrationEditor Name="GitLab" Integration="@_gitlab" IntegrationChanged="OnGitlabChanged"/>
+    @* <ExternalIntegrationEditor Name="Github" Integration="@_github" Icon="@Icons.Custom.Brands.GitHub"/> *@
+</MudStack>
+
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+    [Parameter] public string? ProjectSlug { get; set; }
+
+    private ExternalSystem? _github = null;
+    private ExternalSystem? _gitlab = null;
+
+
+    private async Task OnGitlabChanged(ExternalSystem integration)
+    {
+        if (ProjectSlug is not null)
+        {
+            _gitlab = integration;
+            await projectController.SaveProjectIntegrationsAsync(ProjectSlug, integration);
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (ProjectSlug is not null)
+        {
+            IReadOnlyList<ExternalSystem> integrations = await projectController.GetProjectIntegrationsAsync(ProjectSlug);
+            _gitlab = integrations.Where(x => x.Name == "GitLab").FirstOrDefault();
+            _github = integrations.Where(x => x.Name == "GitHub").FirstOrDefault();
+        }
+    }
+}

@@ -1,5 +1,7 @@
 ﻿using System.Security.Claims;
 
+using Microsoft.AspNetCore.Identity;
+
 using TestBucket.Domain.Identity.Models;
 
 namespace TestBucket.Domain.Identity;
@@ -9,6 +11,8 @@ namespace TestBucket.Domain.Identity;
 /// </summary>
 public interface IUserManager
 {
+    Task<IdentityResult> AddUserAsync(ClaimsPrincipal principal, string email, string password);
+
     /// <summary>
     /// Lists users
     /// Administrators can list users

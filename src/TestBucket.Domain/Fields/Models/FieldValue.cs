@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Testing.Models;
+
 namespace TestBucket.Domain.Fields.Models;
 
 /// <summary>
@@ -50,4 +52,24 @@ public class FieldValue : Entity
     // Navigation
 
     public FieldDefinition? FieldDefinition { get; set; }
+
+    public bool HasValue()
+    {
+        return BooleanValue is not null ||
+            StringValue is not null ||
+            LongValue is not null ||
+            StringArrayValue is not null ||
+            DoubleValue is not null;
+    }
+
+    public void CopyTo<T>(T copy) where T : FieldValue
+    {
+        copy.FieldDefinitionId = FieldDefinitionId;
+        copy.BooleanValue = BooleanValue;
+        copy.StringValue = StringValue;
+        copy.DoubleValue = DoubleValue;
+        copy.LongValue = LongValue;
+        copy.StringArrayValue = StringArrayValue;
+        copy.TenantId = TenantId;
+    }
 }

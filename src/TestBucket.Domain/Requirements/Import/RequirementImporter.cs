@@ -105,7 +105,7 @@ namespace TestBucket.Domain.Requirements.Import
                             {
                                 TenantId = "",
                                 Name = section.Heading,
-                                Path = string.Join(',', section.Path),
+                                Path = string.Join('/', section.Path.Select(x=>x.Replace("/", "_"))),
                                 Description = section.Text
                             };
 

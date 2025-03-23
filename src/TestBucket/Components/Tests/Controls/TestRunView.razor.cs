@@ -1,4 +1,6 @@
-﻿using TestBucket.Contracts.Testing.Models;
+﻿using Mono.TextTemplating;
+
+using TestBucket.Contracts.Testing.Models;
 
 namespace TestBucket.Components.Tests.Controls;
 
@@ -8,6 +10,15 @@ public partial class TestRunView
 
     //private TestCase? _selectedTestCase = null;
     private TestCaseRun? _selectedTestCaseRun = null;
+    private TestCaseRunGrid? testCaseRunGrid;
+
+    protected override void OnParametersSet()
+    {
+        _selectedTestCaseRun = null;
+
+
+        base.OnParametersSet();
+    }
 
     private async Task OnTestCaseRunStateChanged(string? state)
     {
@@ -26,10 +37,26 @@ public partial class TestRunView
         }
     }
 
-    private Task OnTestCaseRunClicked(TestCaseRun testCaseRun)
+    //private Task OnTestCaseRunClicked(TestCaseRun testCaseRun)
+    //{
+    //    _selectedTestCaseRun = testCaseRun;
+    //    return Task.CompletedTask;
+    //}
+
+    private void OnTestCompleted(object? sender, TestCaseRun testCaseRun)
     {
-        _selectedTestCaseRun = testCaseRun;
-        return Task.CompletedTask;
+        if (_selectedTestCaseRun == testCaseRun && testCaseRunGrid is not null)
+        {
+            InvokeAsync(() => testCaseRunGrid.SelectNextTestCaseRun() );
+        }
+    }
+    protected override void OnInitialized()
+    {
+        testExecutionController.TestCompleted += OnTestCompleted;
     }
 
+    public void Dispose()
+    {
+        testExecutionController.TestCompleted -= OnTestCompleted;
+    }
 }

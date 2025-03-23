@@ -1,13 +1,22 @@
 ﻿@inject RequirementBrowser browser
+@inject RequirementEditorController editor
 
 <MudDataGrid Items="_links"
 Dense="true"
 Hover="true"
 T="RequirementTestLink"
 SortMode="SortMode.Single">
+
+    <ToolBarContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+            <MudText>Test Coverage</MudText>
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTestLinkAsync"></MudIconButton>
+        </MudStack>
+    </ToolBarContent>
     <Columns>
-        <PropertyColumn Property="x => x.TestCase!.Name" Title="Test Case"/>
-        <TemplateColumn>
+        <PropertyColumn Property="x => x.TestCase!.Name" Title=""/>
+        <TemplateColumn CellStyle="width: 1%">
             <CellTemplate>
                 <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteLinkAsync(context.Item)"/>
             </CellTemplate>
@@ -18,9 +27,21 @@ SortMode="SortMode.Single">
 
 @code {
     [Parameter] public Requirement? Requirement { get; set; }
+    [Parameter] public TestProject? Project { get; set; }
+    [Parameter] public Team? Team { get; set; }
 
     private RequirementTestLink[] _links = [];
 
+    private async Task AddTestLinkAsync()
+    {
+        if(Requirement is null)
+        {
+            return;
+        }
+
+        await editor.LinkRequirementToTestCaseAsync(Requirement, Project, Team);
+        await LoadDataAsync();
+    }
     protected override async Task OnParametersSetAsync()
     {
         await LoadDataAsync();

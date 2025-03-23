@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Fields;
+﻿using TestBucket.Contracts.Integrations;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Shared.Specifications;
 
@@ -110,6 +111,66 @@ internal class FieldRepository : IFieldRepository
     }
     #endregion Test Case
 
+    #region Test Run
+
+    public async Task UpsertTestRunFieldsAsync(TestRunField field)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var existingField = await dbContext.TestRunFields
+            .Where(x => x.FieldDefinitionId == field.FieldDefinitionId && x.TestRunId == field.TestRunId && x.TenantId == field.TenantId).FirstOrDefaultAsync();
+        if (existingField is not null)
+        {
+            existingField.StringValue = field.StringValue;
+            existingField.DoubleValue = field.DoubleValue;
+            existingField.BooleanValue = field.BooleanValue;
+            existingField.LongValue = field.LongValue;
+            dbContext.TestRunFields.Update(existingField);
+        }
+        else
+        {
+            var tmp = field.FieldDefinition;
+            field.FieldDefinition = null;
+            await dbContext.TestRunFields.AddAsync(field);
+            field.FieldDefinition = tmp;
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task SaveTestRunFieldsAsync(IEnumerable<TestRunField> fields)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        foreach (var field in fields)
+        {
+            if (field.Id > 0)
+            {
+                dbContext.TestRunFields.Update(field);
+            }
+            else
+            {
+                var tmp = field.FieldDefinition;
+                field.FieldDefinition = null;
+                await dbContext.TestRunFields.AddAsync(field);
+                field.FieldDefinition = tmp;
+            }
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(string tenantId, long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var fields = dbContext.TestRunFields.AsNoTracking()
+            .Include(x => x.FieldDefinition)
+            .Where(x => x.TenantId == tenantId && x.TestRunId == id);
+        return await fields.ToListAsync();
+    }
+
+    #endregion Test Case Run
+
     #region Test Case Run
 
     public async Task UpsertTestCaseRunFieldsAsync(TestCaseRunField field)
@@ -168,5 +229,6 @@ internal class FieldRepository : IFieldRepository
         return await fields.ToListAsync();
     }
 
-    #endregion Test Case
+    #endregion Test Case Run
+
 }

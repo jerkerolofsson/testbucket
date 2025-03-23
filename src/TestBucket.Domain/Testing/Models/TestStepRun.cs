@@ -12,11 +12,6 @@ public class TestStepRun : TestEntity
     public long Id { get; set; }
 
     /// <summary>
-    /// Timestamp when the test case was created
-    /// </summary>
-    public DateTimeOffset Created { get; set; }
-
-    /// <summary>
     /// Result of the step
     /// </summary>
     public string? Result { get; set; }

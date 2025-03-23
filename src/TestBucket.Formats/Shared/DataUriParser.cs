@@ -13,7 +13,7 @@ namespace TestBucket.Formats.Shared
     /// data:text/html,lots of text…<p><a name%3D"bottom">bottom</a>?arg=val</p>
     /// 
     /// </summary>
-    internal class DataUriParser
+    public class DataUriParser
     {
         public static AttachmentDto ParseDataUri(string uri)
         {

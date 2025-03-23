@@ -285,3 +285,63 @@ p.mud-typography-subtitle1 {
      font-weight: bold;
      color: var(--mud-palette-tertiary);
  }
+
+.splitter {
+    display: grid;
+
+    --bar-size: 6px;
+}
+
+.tb-splitter-bar {
+    display: flex;
+    background: rgba(255,255,255,0.2);
+}
+
+.tb-splitter-bar-fill {
+    background: var(--bar-color);
+}
+
+.splitter > .tb-splitter-content-start,
+.splitter > .tb-splitter-content-end {
+    overflow: auto;
+}
+
+.splitter.vertical  > .tb-splitter-bar> .tb-splitter-bar-fill {
+    width: 100%;
+    height: 2px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.splitter.horizontal  > .tb-splitter-bar> .tb-splitter-bar-fill {
+    width: 2px;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.splitter.vertical > .tb-splitter-bar {
+    cursor: row-resize;
+    height: var(--bar-size, 5px);
+}
+
+.splitter.horizontal > .tb-splitter-bar {
+    cursor: col-resize;
+    width: var(--bar-size, 5px);
+}
+
+.mud-markdown-editor-root,
+.EasyMDEContainer,
+.CodeMirror {
+    height: 100%;
+    width: 100%;
+}
+
+.EasyMDEContainer  {
+    display: grid;
+    grid-template-rows: 1fr auto;
+}
+
+.EasyMDEContainer .editor-preview {
+    height: 100%;
+}

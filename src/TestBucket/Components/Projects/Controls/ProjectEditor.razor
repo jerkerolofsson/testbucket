@@ -3,11 +3,15 @@
 @using TestBucket.Components.Uploads.Controls
 @using TestBucket.Domain.Files.Models
 @using TestBucket.Domain.Teams.Models
-@inject ProjectService projectService
+@inject ProjectController projectService
 @inject TeamService teamService
 
 @if (Project is not null)
 {
+    string projectFieldsUrl = $"/{Project.TenantId}/Settings/Projects/{Project.Slug}/Fields";
+    string projectIntegrationsUrl = $"/{Project.TenantId}/Settings/Projects/{Project.Slug}/Integrations";
+
+
     <EditForm Model="@Project" OnValidSubmit="async () => await OnValidSubmitAsync()">
 
         <MudStack Class="pa-5">
@@ -18,6 +22,9 @@
                 <MudSpacer/>
                 <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Project.Name"></MudTextField>
             </Field>
+
+            <FieldLink Href="@projectFieldsUrl" HeaderText="Fields" Description="Manage custom fields and traits"/>
+            <FieldLink Href="@projectIntegrationsUrl" HeaderText="Integrations" Description="Manage integrations with external systems" />
 
             <MudText Typo="Typo.h3" Class="pa-3">Appearance</MudText>
             <Field>

@@ -151,10 +151,25 @@ public partial class TestTreeView
 
             await testSuiteService.SaveTestSuiteFolderAsync(folder);
 
-            //    testCase.TestSuiteFolderId = target.Folder.Id;
-            //    testCase.TestSuiteId = target.Folder.TestSuiteId;
+            // Update the UI
+            RemoveTreeNode(x => x.Folder?.Id == folder.Id);
+            if (targetNode.Children is null)
+            {
+                targetNode.Children = await testBrowser.BrowseAsync(_team?.Id, _project?.Id, target, null);
+            }
+            else
+            {
+                targetNode.Children = [.. targetNode.Children, testBrowser.CreateTreeNodeFromFolder(folder)];
+            }
+        }
+        else if (target?.TestSuite is not null && targetNode is not null)
+        {
+            // Find the source
+            TreeNode<BrowserItem>? sourceNode = FindTreeNode(x => x.Folder?.Id == folder.Id);
+            folder.ParentId = null;
+            folder.TestSuiteId = target.TestSuite.Id;
 
-            //    await testCaseEditor.SaveTestCaseAsync(testCase);
+            await testSuiteService.SaveTestSuiteFolderAsync(folder);
 
             // Update the UI
             RemoveTreeNode(x => x.Folder?.Id == folder.Id);
@@ -209,6 +224,29 @@ public partial class TestTreeView
             RemoveTreeNode(x => x.TestCase?.Id == testCase.Id);
             if (targetNode.Children is null)
             { 
+                targetNode.Children = await testBrowser.BrowseAsync(_team?.Id, _project?.Id, target, null);
+            }
+            else
+            {
+                targetNode.Children = [.. targetNode.Children, testBrowser.CreateTreeNodeFromTestCase(testCase)];
+            }
+        }
+        else if(target?.TestSuite is not null && targetNode is not null)
+        {
+            var fromFolderId = testCase.TestSuiteFolderId;
+
+            // Find the source
+            TreeNode<BrowserItem>? sourceNode = FindTreeNode(x => x.Folder?.Id == fromFolderId);
+
+            testCase.TestSuiteFolderId = null;
+            testCase.TestSuiteId = target.TestSuite.Id;
+
+            await testCaseEditor.SaveTestCaseAsync(testCase);
+
+            // Remove the test from the tree
+            RemoveTreeNode(x => x.TestCase?.Id == testCase.Id);
+            if (targetNode.Children is null)
+            {
                 targetNode.Children = await testBrowser.BrowseAsync(_team?.Id, _project?.Id, target, null);
             }
             else
@@ -325,7 +363,7 @@ public partial class TestTreeView
             return;
         }
         long[] testCaseIds = await testBrowser.GetTestSuiteSuiteTestsAsync(testSuite);
-        var run = await testRunCreation.CreateTestRunAsync(testSuite.TestProjectId.Value, testCaseIds);
+        var run = await testRunCreation.CreateTestRunAsync(testSuite.Name, testSuite.TestProjectId.Value, testCaseIds);
         if (run is not null)
         {
             appNavigationManager.NavigateTo(run);
@@ -338,7 +376,7 @@ public partial class TestTreeView
             return;
         }
         long[] testCaseIds = await testBrowser.GetTestSuiteSuiteFolderTestsAsync(folder, true);
-        var run = await testRunCreation.CreateTestRunAsync(folder.TestProjectId.Value, testCaseIds);
+        var run = await testRunCreation.CreateTestRunAsync(folder.Name, folder.TestProjectId.Value, testCaseIds);
         if (run is not null)
         {
             appNavigationManager.NavigateTo(run);
@@ -350,7 +388,7 @@ public partial class TestTreeView
         {
             return;
         }
-        var run = await testRunCreation.CreateTestRunAsync(testCase.TestProjectId.Value, [testCase.Id]);
+        var run = await testRunCreation.CreateTestRunAsync(testCase.Name, testCase.TestProjectId.Value, [testCase.Id]);
         if (run is not null)
         {
             appNavigationManager.NavigateTo(run);
@@ -504,11 +542,13 @@ public partial class TestTreeView
     protected override void OnInitialized()
     {
         testCaseManager.AddObserver(this);
+        testRunManager.AddObserver(this);
     }
 
     public void Dispose()
     {
         testCaseManager.RemoveObserver(this);
+        testRunManager.RemoveObserver(this);
     }
     #endregion
 
@@ -519,6 +559,7 @@ public partial class TestTreeView
             var node = FindTreeNode(x => x.TestCase?.Id == testCase?.Id);
             if (node?.Value is not null)
             {
+                node.Text = testCase.Name;
                 node.Value.TestCase = testCase;
                 this.StateHasChanged();
             }
@@ -539,11 +580,42 @@ public partial class TestTreeView
         });
     }
 
+    public async Task OnRunCreatedAsync(TestRun testRun)
+    {
+        await InvokeAsync(() =>
+        {
+            var testrunsNode = FindTreeNode(x => x.RootFolderName == "TestRuns");
+            if(testrunsNode is not null)
+            {
+                var childNode = testBrowser.CreateTestRunTreeNode(testRun);
+                testrunsNode.Expanded = true;
+                if (testrunsNode.Children is null)
+                {
+                    testrunsNode.Children = [childNode];
+                }
+                else
+                {
+                    testrunsNode.Children = [.. testrunsNode.Children, childNode];
+                }
+                return;
+            }
+            this.StateHasChanged();
+        });
+    }
+    public async Task OnRunDeletedAsync(TestRun testRun)
+    {
+        await InvokeAsync(() =>
+        {
+            RemoveTreeNode(x => x.TestRun == testRun);
+            this.StateHasChanged();
+        });
+    }
+
     public async Task OnTestCreatedAsync(TestCase testCase)
     {
         if (testCase.TestSuiteFolderId is null)
         {
-            // Root test
+            // The test case is in the root of a test suite
             var testSuiteNode = FindTreeNode(x => x.TestSuite?.Id == testCase.TestSuiteId);
             if (testSuiteNode?.Children is not null)
             {

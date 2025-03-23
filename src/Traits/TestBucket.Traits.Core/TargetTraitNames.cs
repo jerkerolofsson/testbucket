@@ -13,6 +13,16 @@ public class TargetTraitNames
     // Runtime, not suitable for Attributes
 
     /// <summary>
+    /// Project milestone
+    /// </summary>
+    public const string Milestone = nameof(Milestone);
+
+    /// <summary>
+    /// Project release
+    /// </summary>
+    public const string Release = nameof(Release);
+
+    /// <summary>
     /// SW Version under test
     /// </summary>
     public const string SoftwareVersion = nameof(SoftwareVersion);

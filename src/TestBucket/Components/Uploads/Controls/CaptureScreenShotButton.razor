@@ -1,5 +1,38 @@
-﻿<h3>CaptureScreenShotButton</h3>
+﻿@using TestBucket.Components.Uploads.Services
+@using TestBucket.Formats.Shared
+@inject UploadService uploadService
+@inject IJSRuntime js
+
+<MudButton 
+    StartIcon="@Icons.Material.Filled.ScreenshotMonitor"
+    Variant="Variant.Filled" 
+    Color="Color.Primary" 
+    OnClick="CaptureScreenShot">Capture Screenshot</MudButton>
 
 @code {
+    [Parameter] public long? TestCaseId { get; set; }
+    [Parameter] public long? TestRunId { get; set; }
+    [Parameter] public long? TestCaseRunId { get; set; }
+    [Parameter] public long? TestProjectId { get; set; }
+    [Parameter] public long? TestSuiteId { get; set; }
+    [Parameter] public long? TestSuiteFolderId { get; set; }
+    [Parameter] public long? RequirementId { get; set; }
+    [Parameter] public long? RequirementSpecificationId { get; set; }
 
+    private async Task CaptureScreenShot()
+    {
+        var dataUrl = await js.InvokeAsync<string>("captureDesktopScreenshot");
+        if(dataUrl is not null)
+        {
+            var attachment = DataUriParser.ParseDataUri(dataUrl);
+
+            ResourceCategory category = ResourceCategory.TestResults;
+
+            await uploadService.UploadAsync(category, attachment,
+                TestCaseId, TestRunId, TestCaseRunId,
+                TestSuiteId, TestSuiteFolderId,
+                TestProjectId,
+                RequirementId, RequirementSpecificationId);
+        }
+    }
 }

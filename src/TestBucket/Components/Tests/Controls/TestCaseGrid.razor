@@ -11,24 +11,25 @@
 @implements ITestCaseObserver
 
 <MudDataGrid ServerData="LoadGridData"
-    Style="width: 100%"
-    Dense="true"
-    Hover="true"
-    T="TestCase"
-    RowClick="(e) => OnTestClicked(e.Item)"
-    @ref="_dataGrid"
-    SortMode="SortMode.None">
+             Style="width: 100%"
+             Dense="true"
+             Hover="true"
+             T="TestCase"
+             RowClick="(e) => OnTestClicked(e.Item)"
+             @ref="_dataGrid"
+             SortMode="SortMode.None">
 
     <ToolBarContent>
-        <MudStack Row="true" AlignItems="AlignItems.Center">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
 
             <MudTextField Value="@_query.Text" T="string" ValueChanged="OnSearch"
-            Style="min-width: 15vw"
-            Clearable="true"
-            Variant="Variant.Outlined"
-            IconSize="Size.Small"
-            Adornment="Adornment.Start"
-            AdornmentIcon="@Icons.Material.Filled.Search" />
+                          Style="min-width: 15vw"
+                          Clearable="true"
+                          Variant="Variant.Outlined"
+                          IconSize="Size.Small"
+                          Adornment="Adornment.Start"
+                          Placeholder="Search Tests"
+                          AdornmentIcon="@Icons.Material.Filled.Search" />
 
             <MudSpacer />
             <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="async () => await ShowFilterAsync()"></MudIconButton>
@@ -51,23 +52,28 @@
         </TemplateColumn>
 
         <PropertyColumn Property="x => x.Path" Title="Path" />
-        <PropertyColumn Property="x => x.TestSuiteId" Title="TestSuiteId" />
-        <PropertyColumn Property="x => x.TestSuiteFolderId" Title="TestSuiteFolderId" />
 
-        @foreach(var column in _columns)
+        @foreach (var column in _columns)
         {
             <TemplateColumn Title="@column.Name">
                 <CellTemplate>
-                    @if(context.Item.TestCaseFields is not null)
+                    @if (context.Item.TestCaseFields is not null)
                     {
                         foreach (var field in context.Item.TestCaseFields.Where(x => x.FieldDefinitionId == column.Id))
                         {
-                            <MudText>@field.StringValue?.ToString()</MudText>
+                            if (field.StringValue is not null)
+                            {
+                                <MudText>@field.StringValue?.ToString()</MudText>
+                            }
+                            if (field.StringArrayValue is not null)
+                            {
+                                <MudText>@string.Join(", ", field.StringArrayValue)</MudText>
+                            }
                         }
                     }
                 </CellTemplate>
             </TemplateColumn>
-            }
+        }
     </Columns>
 
     <PagerContent>

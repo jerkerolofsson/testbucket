@@ -114,7 +114,7 @@ internal class TextImporter : ITextTestResultsImporter
                     {
                         // Get or create the test case and add a test case run
                         TestCase testCase = await GetOrCreateTestCaseAsync(tenantId, projectId, suite, test, options);
-                        TestCaseRun testCaseRun = await AddTestCaseRunAsync(tenantId, testRun, test, testCase);
+                        TestCaseRun testCaseRun = await AddTestCaseRunAsync(principal, testRun, test, testCase);
 
                         // Add traits to the test case
                         foreach(var traitName in test.Traits.Select(x=>x.Name))
@@ -164,15 +164,15 @@ internal class TextImporter : ITextTestResultsImporter
         }
     }
 
-    private async Task<TestCaseRun> AddTestCaseRunAsync(string tenantId, TestRun testRun, TestCaseRunDto test, TestCase testCase)
+    private async Task<TestCaseRun> AddTestCaseRunAsync(ClaimsPrincipal principal, TestRun testRun, TestCaseRunDto test, TestCase testCase)
     {
         if(testRun.TestProjectId is null)
         {
             throw new InvalidOperationException("Test runs must have a project");
         }
+        var tenantId = principal.GetTentantIdOrThrow();
 
-        var completedState = await _stateService.GetProjectFinalStateAsync(tenantId, testRun.TestProjectId.Value);
-
+        var completedState = await _stateService.GetProjectFinalStateAsync(principal, testRun.TestProjectId.Value);
         var testCaseRun = new TestCaseRun()
         {
             Name = test.Name ?? "-",

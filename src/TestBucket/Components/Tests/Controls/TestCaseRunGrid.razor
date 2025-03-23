@@ -13,13 +13,16 @@
                  Style="width: 100%"
                  Dense="true"
                  Hover="true"
+                 SelectOnRowClick="true"
+                 MultiSelection="false"
                  T="TestCaseRun"
                  RowClick="(e) => OnClicked(e.Item)"
                  @ref="_dataGrid"
                  SortMode="SortMode.None">
 
         <ToolBarContent>
-            <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+
 
                 <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
                               Style="min-width: 15vw"
@@ -31,15 +34,25 @@
 
                 <MudSpacer />
 
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="ShowFilterAsync"></MudIconButton>
             </MudStack>
         </ToolBarContent>
 
         <Columns>
+
             <PropertyColumn Property="x => x.State" Title="State" />
 
             <TemplateColumn Title="Name">
                 <CellTemplate>
-                    @context.Item.Name
+                    @if(_selectedItem == context.Item)
+                    {
+                        <span style="color: var(--mud-palette-tertiary)">@context.Item.Name</span>
+                    }
+                    else
+                    {
+                        @context.Item.Name
+                    }
                 </CellTemplate>
             </TemplateColumn>
 

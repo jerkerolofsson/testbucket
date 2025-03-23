@@ -1,0 +1,47 @@
+﻿@using TestBucket.Domain.Requirements.Models
+
+<MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <DialogContent>
+        <RequirementPicker Project="@Project" Team="@Team"
+            RequirementSelected="OnRequirementSelected"/>
+    </DialogContent>
+
+    <DialogActions>
+        @if (_requirement is not null)
+        {
+            <MudButton OnClick="OnValidSubmit" Color="Color.Primary">OK</MudButton>
+        }
+        <MudButton OnClick="Close">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public TestProject? Project { get; set; }
+
+    [Parameter] public Team? Team { get; set; }
+
+    private Requirement? _requirement;
+
+    private void OnRequirementSelected(Requirement requirement)
+    {
+        _requirement = requirement;
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+        if (_requirement is null)
+        {
+            return;
+        }
+        MudDialog.Close(_requirement);
+    }
+}
+

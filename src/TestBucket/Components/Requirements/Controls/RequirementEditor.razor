@@ -1,4 +1,5 @@
-﻿@using TestBucket.Domain.Requirements
+﻿@using TestBucket.Components.Shared.Splitter
+@using TestBucket.Domain.Requirements
 @inject RequirementEditorController editor
 @inject RequirementBrowser browser
 
@@ -56,7 +57,7 @@
             }
         </MudToolBar>
 
-        <MudSplitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
+        <Splitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
             <StartContent>
                 <MudStack Class="pa-2" Style="width: 100%; height: 100%">
                     <MarkdownEditor 
@@ -76,8 +77,8 @@
             <EndContent>
                 <MudTabs Style="width: 100%">
                     <MudTabPanel Text="Coverage">
-                       
-                        <RequirementTestLinksTable Requirement="@Requirement"/>
+
+                        <RequirementTestLinksTable Team="@Team" Project="@Project" Requirement="@Requirement"/>
 
                     </MudTabPanel>
                     <MudTabPanel Text="Attachments">
@@ -90,13 +91,16 @@
                     </MudTabPanel>
                 </MudTabs>
             </EndContent>
-        </MudSplitter>
+        </Splitter>
 
     </div>
 }
 
 @code {
     [Parameter] public Requirement? Requirement { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public TestProject? Project {get;set;}
+
     private MarkdownEditor? _editor;
     private bool _preview = true;
 

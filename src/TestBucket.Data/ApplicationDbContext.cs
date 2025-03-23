@@ -19,7 +19,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<FileResource> Files { get; set; }
     internal DbSet<UserPreferences> UserPreferences { get; set; }
     internal DbSet<Team> Teams { get; set; }
+
     internal DbSet<TestProject> Projects { get; set; }
+    internal DbSet<ExternalSystem> ExternalSystems { get; set; }
+
     internal DbSet<TestSuite> TestSuites { get; set; }
     internal DbSet<TestSuiteFolder> TestSuiteFolders { get; set; }
     internal DbSet<TestCase> TestCases { get; set; }

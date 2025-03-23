@@ -11,6 +11,11 @@ public class TestTraitNames
     public const string TestCategory = nameof(TestCategory);
 
     /// <summary>
+    /// Test activity (Smoke, Regression, Sanity,...)
+    /// </summary>
+    public const string TestActivity = nameof(TestActivity);
+
+    /// <summary>
     /// Test description
     /// </summary>
     public const string TestDescription = nameof(TestDescription);

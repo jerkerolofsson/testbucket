@@ -95,5 +95,11 @@ namespace TestBucket.Domain.Requirements
         /// <param name="filters"></param>
         /// <returns></returns>
         Task<RequirementTestLink[]> SearchRequirementLinksAsync(FilterSpecification<RequirementTestLink>[] filters);
+
+        #region Folders
+        Task<RequirementSpecificationFolder[]> SearchRequirementFoldersAsync(FilterSpecification<RequirementSpecificationFolder>[] filters);
+        Task AddRequirementFolderAsync(RequirementSpecificationFolder folder);
+        Task UpdateRequirementFolderAsync(RequirementSpecificationFolder folder);
+        #endregion Folders
     }
 }

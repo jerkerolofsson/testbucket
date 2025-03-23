@@ -1,13 +1,9 @@
 ﻿
-
-
-using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 
 using OneOf;
+
 using TestBucket.Domain.Errors;
-using TestBucket.Domain.Projects;
-using TestBucket.Domain.Projects.Models;
 
 namespace TestBucket.Data.Testing;
 internal class ProjectRepository : IProjectRepository
@@ -162,5 +158,42 @@ internal class ProjectRepository : IProjectRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.Projects.AsNoTracking().Where(x => x.Name == name && x.TenantId == tenantId).AnyAsync();
+    }
+
+    public async Task AddProjectIntegrationsAsync(string tenantId, string slug, ExternalSystem system)
+    {
+        var project = await GetBySlugAsync(tenantId, slug);
+        if(project is null)
+        {
+            throw new InvalidOperationException("Project not found: " + slug);
+        }
+        system.TestProjectId = project.Id;
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.ExternalSystems.AsNoTracking().Where(x => x.TenantId == tenantId && x.TestProjectId == project.Id && x.Name == system.Name).ExecuteDeleteAsync();
+        await dbContext.ExternalSystems.AddAsync(system);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(string tenantId, long projectId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.ExternalSystems.Where(x => x.TenantId == tenantId && x.TestProjectId == projectId).ToListAsync();
+    }
+    public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(string tenantId, string slug)
+    {
+        var project = await GetBySlugAsync(tenantId, slug);
+        if (project is null)
+        {
+            throw new InvalidOperationException("Project not found: " + slug);
+        }
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.ExternalSystems.Where(x => x.TenantId == tenantId && x.TestProjectId == project.Id).ToListAsync();
+    }
+
+    public async Task UpdateProjectIntegrationsAsync(string tenantId, string slug, ExternalSystem system)
+    {
+        await AddProjectIntegrationsAsync(tenantId, slug, system);
     }
 }

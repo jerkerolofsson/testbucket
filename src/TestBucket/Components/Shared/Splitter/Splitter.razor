@@ -1,0 +1,16 @@
+﻿@namespace TestBucket.Components.Shared.Splitter
+@using MudBlazor.Extensions
+@inherits MudComponentBase
+@inject IJSRuntime js
+
+<div @ref="@ElementRef" class="@Classname" style="@Style" id="@ElementId">
+    <div class="@StartContentClassname" style="@EffectiveStartStyle">
+        @StartContent
+    </div>
+    <div class="tb-splitter-bar">
+        <div class="tb-splitter-bar-fill" style="@BarStyle" />
+    </div>
+    <div class="@EndContentClassname" style="@EffectiveEndStyle">
+        @EndContent
+    </div>
+</div>

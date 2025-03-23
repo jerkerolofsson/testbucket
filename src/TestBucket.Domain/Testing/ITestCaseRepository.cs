@@ -196,7 +196,7 @@ public interface ITestCaseRepository
     /// <param name="tenantId"></param>
     /// <param name="searchTestQuery"></param>
     /// <returns></returns>
-    Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(string tenantId, SearchTestQuery searchTestQuery);
+    Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(IReadOnlyList<FilterSpecification<TestCaseRun>> filters, int offset, int count);
 
     /// <summary>
     /// Returns run years
@@ -224,10 +224,8 @@ public interface ITestCaseRepository
     /// <summary>
     /// Searches for test runs
     /// </summary>
-    /// <param name="tenantId"></param>
-    /// <param name="query"></param>
     /// <returns></returns>
-    Task<PagedResult<TestRun>> SearchTestRunsAsync(string tenantId, SearchQuery query);
+    Task<PagedResult<TestRun>> SearchTestRunsAsync(IReadOnlyList<FilterSpecification<TestRun>> filters, int offset, int count);
 
     /// <summary>
     /// Deletes a test run

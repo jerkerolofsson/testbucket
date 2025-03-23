@@ -2,6 +2,7 @@
 @layout AppLayout
 @using Humanizer
 @using TestBucket.Components.Layout
+@using TestBucket.Components.Shared.Splitter
 @using TestBucket.Domain.Settings
 @using TestBucket.Domain.Settings.Models
 @inject NavigationManager navigationManager
@@ -10,7 +11,7 @@
 
 <TenantRedirect />
 
-<MudSplitter Style="height: 100%" Bordered="false" Dimension="15" EnableMargin="false" Color="Color.Tertiary">
+<Splitter Style="height: 100%" Bordered="false" Dimension="15" EnableMargin="false" Color="Color.Default">
     <StartContent>
 
         <div class="pa-5" style="width: 100%">
@@ -35,13 +36,11 @@
                 @if(Project is not null)
                 {
                     string projectUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}";
-                    string projectFieldsUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}/Fields";
 
                     <AuthorizeView Roles="ADMIN">
                         <MudItem Class="mt-5"/>
 
                         <MudNavLink Icon="@Icons.Material.Outlined.Article" Href="@projectUrl">@Project.Name</MudNavLink>
-                        <MudNavLink Icon="@Icons.Material.Outlined.TextFields" Href="@projectFieldsUrl">@Project.Name Fields</MudNavLink>
 
                     </AuthorizeView>
                 }
@@ -68,7 +67,7 @@
             @Body
         </MudStack>
     </EndContent>
-</MudSplitter>
+</Splitter>
 
 @code {
     private string _searchText = "";

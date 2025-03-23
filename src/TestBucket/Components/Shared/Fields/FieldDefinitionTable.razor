@@ -21,11 +21,16 @@ SortMode="SortMode.None">
     <Columns>
         <PropertyColumn Property="x => x.Name" />
         <PropertyColumn Property="x => x.Type" />
+        <TemplateColumn Title="Target">
+            <CellTemplate>
+                @string.Join(", ", context.Item.Target)
+            </CellTemplate>
+        </TemplateColumn>
         <TemplateColumn Title="Options">
             <CellTemplate>
                 @if(context.Item.Options is not null)
                 {
-                    @string.Join(", ", context.Item.Options);
+                    @string.Join(", ", context.Item.Options)
                 }
             </CellTemplate>
         </TemplateColumn>

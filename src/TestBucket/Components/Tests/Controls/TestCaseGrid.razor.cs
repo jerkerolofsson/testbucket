@@ -13,6 +13,7 @@ public partial class TestCaseGrid
     [Parameter] public bool CompareFolder { get; set; } = true;
     [Parameter] public TestSuiteFolder? Folder { get; set; }
     [Parameter] public long? FolderId { get; set; }
+    [Parameter] public TestProject? Project { get; set; }
     [Parameter] public long? TestSuiteId { get; set; }
     [Parameter] public EventCallback<TestCase> OnTestCaseClicked { get; set; }
 
@@ -74,14 +75,18 @@ public partial class TestCaseGrid
         _columns = [];
         if(testProjectId is not null)
         {
-            _definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = testProjectId, Target = FieldTarget.TestCase });
+            _definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = testProjectId, Target = FieldTarget.TestCase, Count = 100 });
 
             var category = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestCategory);
-            if (category is not null && !_columns.Any(x=>x.TraitType == Traits.Core.TraitType.TestCategory))
+            if (category is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestCategory))
             {
                 _columns.Add(category);
             }
-
+            var activity = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestActivity);
+            if (activity is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestActivity))
+            {
+                _columns.Add(activity);
+            }
             var prio = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestPriority);
             if (prio is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestPriority))
             {
@@ -108,11 +113,12 @@ public partial class TestCaseGrid
 
     private async Task ShowFilterAsync()
     {
-        var parameters = new DialogParameters<EditTestCaseQueryDialog>
+        var parameters = new DialogParameters<EditTestCaseFilterDialog>
         {
-            { x => x.Query, _query }
+            { x => x.Query, _query },
+            { x => x.Project, Project },
         };
-        var dialog = await dialogService.ShowAsync<EditTestCaseQueryDialog>("Filter Tests", parameters);
+        var dialog = await dialogService.ShowAsync<EditTestCaseFilterDialog>("Filter Tests", parameters);
         var result = await dialog.Result;
         if (result?.Data is SearchTestQuery query)
         {
@@ -148,6 +154,8 @@ public partial class TestCaseGrid
             FolderId = _folder?.Id,
             CreatedFrom = _query.CreatedFrom,
             CreatedUntil = _query.CreatedUntil,
+            Category = _query.Category,
+            Priority = _query.Priority,
 
             Text = string.IsNullOrWhiteSpace(_query.Text) ? null : _query.Text,
         };

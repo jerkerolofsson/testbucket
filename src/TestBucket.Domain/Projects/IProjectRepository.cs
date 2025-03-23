@@ -1,9 +1,12 @@
 ﻿
+
 using TestBucket.Contracts;
 
 namespace TestBucket.Domain.Projects;
 public interface IProjectRepository
 {
+    Task AddProjectIntegrationsAsync(string tenantId, string slug, ExternalSystem system);
+
     /// <summary>
     /// Creates a new project
     /// </summary>
@@ -43,6 +46,22 @@ public interface IProjectRepository
     Task<TestProject?> GetProjectByIdAsync(string tenantId, long projectId);
 
     /// <summary>
+    /// Returns all integrations for a project
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="slug"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(string tenantId, string slug);
+
+    /// <summary>
+    /// Returns all integrations for a project
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(string tenantId, long projectId);
+
+    /// <summary>
     /// Returns true if a project exists with the specified name
     /// </summary>
     /// <param name="slug"></param>
@@ -63,5 +82,12 @@ public interface IProjectRepository
     /// <param name="slug"></param>
     /// <returns></returns>
     Task<bool> SlugExistsAsync(string tenantId, string slug);
+
+    /// <summary>
+    /// Saves changes to a project
+    /// </summary>
+    /// <param name="project"></param>
+    /// <returns></returns>
     Task UpdateProjectAsync(TestProject project);
+    Task UpdateProjectIntegrationsAsync(string tenantId, string slug, ExternalSystem system);
 }

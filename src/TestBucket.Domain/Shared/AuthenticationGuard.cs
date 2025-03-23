@@ -54,5 +54,13 @@ namespace TestBucket.Domain.Shared
                 throw new InvalidOperationException($"Failed to modify entity. The entity belongs to tenant {entity.TenantId} and user belongs to {tenantId}");
             }
         }
+        public static void ThrowIfEntityTenantIsDifferent(this ClaimsPrincipal principal, string? entityTenantId)
+        {
+            var tenantId = AuthenticationGuard.GetTentantIdOrThrow(principal);
+            if (tenantId != entityTenantId)
+            {
+                throw new InvalidOperationException($"Failed to modify entity. The entity belongs to tenant {entityTenantId} and user belongs to {tenantId}");
+            }
+        }
     }
 }

@@ -112,6 +112,7 @@
         {
             return;
         }
+        Field.StringValue = null;
         Field.StringArrayValue ??= [];
         Field.StringArrayValue = Field.StringArrayValue.Where(x => x != value).ToArray();
         this.StateHasChanged();
@@ -125,6 +126,7 @@
         {
             return;
         }
+        Field.StringValue = null;
         Field.StringArrayValue ??= [];
         if(!Field.StringArrayValue.Contains(value))
         {
@@ -146,6 +148,7 @@
         {
             return;
         }
+        Field.StringValue = null;
         Field.StringArrayValue ??= [];
         Field.StringArrayValue = [.. Field.StringArrayValue, value];
 
@@ -168,6 +171,7 @@
     {
         if (Field is not null)
         {
+            Field.StringArrayValue = null;
             Field.StringValue = value;
             await FieldChanged.InvokeAsync(Field);
         }
@@ -176,6 +180,8 @@
     {
         if (Field is not null)
         {
+            Field.StringValue = null;
+            Field.StringArrayValue = null;
             Field.BooleanValue = value;
             await FieldChanged.InvokeAsync(Field);
         }

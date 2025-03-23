@@ -5,7 +5,11 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Fields;
+using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
+using TestBucket.Domain.Testing.Specifications.TestRuns;
 
 namespace TestBucket.Domain.Testing;
 internal class TestRunManager : ITestRunManager
@@ -13,10 +17,14 @@ internal class TestRunManager : ITestRunManager
     private readonly List<ITestRunObserver> _testRunObservers = new();
 
     private readonly ITestCaseRepository _testCaseRepo;
+    private readonly IFieldDefinitionManager _fieldDefinitionManager;
+    private readonly IFieldManager _fieldManager;
 
-    public TestRunManager(ITestCaseRepository testCaseRepo)
+    public TestRunManager(ITestCaseRepository testCaseRepo, IFieldDefinitionManager fieldDefinitionManager, IFieldManager fieldManager)
     {
         _testCaseRepo = testCaseRepo;
+        _fieldDefinitionManager = fieldDefinitionManager;
+        _fieldManager = fieldManager;
     }
 
     /// <summary>
@@ -62,11 +70,58 @@ internal class TestRunManager : ITestRunManager
 
         await _testCaseRepo.AddTestCaseRunAsync(testCaseRun);
 
+        await CreateInheritedTestCaseRunFieldsAsync(principal, testCaseRun);
+
         //// Notify observers
         //foreach (var observer in _testRunObservers.ToList())
         //{
         //    await observer.OnRunCreatedAsync(testRun);
         //}
+    }
+
+    /// <summary>
+    /// Adds fields with values copied from TestRun and TestCase
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testCaseRun"></param>
+    /// <returns></returns>
+    private async Task CreateInheritedTestCaseRunFieldsAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
+    {
+        // Add inherited fields from test run to the test case run
+        var runFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, testCaseRun.TestProjectId, FieldTarget.TestRun);
+        var testCaseDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, testCaseRun.TestCaseId, FieldTarget.TestRun);
+
+        var testRunFields = await _fieldManager.GetTestRunFieldsAsync(principal, testCaseRun.TestRunId, runFieldDefinitions);
+        var testCaseFields = await _fieldManager.GetTestCaseFieldsAsync(principal, testCaseRun.TestCaseId, runFieldDefinitions);
+        List<TestCaseRunField> testCaseRunFields = new();
+        foreach (var field in testCaseFields)
+        {
+            AppendField(testCaseRun, testCaseRunFields, field);
+        }
+        foreach (var field in testRunFields)
+        {
+            AppendField(testCaseRun, testCaseRunFields, field);
+        }
+        if (testCaseRunFields.Count > 0)
+        {
+            await _fieldManager.SaveTestCaseRunFieldsAsync(principal, testCaseRunFields);
+        }
+    }
+
+    private static void AppendField(TestCaseRun testCaseRun, List<TestCaseRunField> testCaseRunFields, FieldValue field)
+    {
+        if ((field.FieldDefinition!.Target & FieldTarget.TestCaseRun) == FieldTarget.TestCaseRun && field.HasValue())
+        {
+            TestCaseRunField testCaseRunField = new TestCaseRunField
+            {
+                FieldDefinitionId = field.FieldDefinitionId,
+                TestRunId = testCaseRun.TestRunId,
+                TestCaseRunId = testCaseRun.Id
+            };
+            field.CopyTo(testCaseRunField);
+            testCaseRunFields.RemoveAll(x => x.FieldDefinitionId == field.FieldDefinitionId);
+            testCaseRunFields.Add(testCaseRunField);
+        }
     }
 
     public async Task SaveTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
@@ -77,5 +132,24 @@ internal class TestRunManager : ITestRunManager
         testCaseRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 
         await _testCaseRepo.UpdateTestCaseRunAsync(testCaseRun);
+    }
+
+    public async Task<PagedResult<TestRun>> SearchTestRunsAsync(ClaimsPrincipal principal, SearchTestRunQuery query)
+    {
+        var tenantId = principal.GetTentantIdOrThrow();
+        List<FilterSpecification<TestRun>> filters = TestRunFilterSpecificationBuilder.From(query);
+        filters.Add(new FilterByTenant<TestRun>(tenantId));
+
+        return await _testCaseRepo.SearchTestRunsAsync(filters, query.Offset, query.Count);
+    }
+
+
+    public async Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
+    {
+        var tenantId = principal.GetTentantIdOrThrow();
+        List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
+        filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
+
+        return await _testCaseRepo.SearchTestCaseRunsAsync(filters, query.Offset, query.Count);
     }
 }

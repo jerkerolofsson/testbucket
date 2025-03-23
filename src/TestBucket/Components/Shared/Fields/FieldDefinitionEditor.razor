@@ -68,7 +68,10 @@
                     Value="@((FieldDefinition.Target&FieldTarget.Project) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Project, x)">Project</MudCheckBox>
 
                     <MudCheckBox Color="Color.Tertiary" T="bool"
-                    Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Run</MudCheckBox>
+                    Value="@((FieldDefinition.Target&FieldTarget.TestRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestRun, x)">Test Run</MudCheckBox>
+
+                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                 Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Run</MudCheckBox>
                 </MudStack>
                 <FieldDescription>The type of field defines what data can be stored and how it can be selected</FieldDescription>
             </Field>

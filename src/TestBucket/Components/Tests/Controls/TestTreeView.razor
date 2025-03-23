@@ -5,17 +5,19 @@
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject ITestCaseManager testCaseManager
+@inject ITestRunManager testRunManager
 @inject TestSuiteService testSuiteService
 @inject TestCaseEditorController testCaseEditor
 @inject TestRunCreationController testRunCreation
 @inject AppNavigationManager appNavigationManager
 @implements ITestCaseObserver
+@implements ITestRunObserver
 @implements IDisposable
 
 <MudStack Spacing="0" Class="pa-2" Style="width: 100%; background: var(--mud-palette-surface)">
     <MudStack Row="true" Style="border-bottom: solid 1px var(--mud-palette-darken)" Spacing="0">
 
-        <MudTextField Placeholder="Search Requirements"
+        <MudTextField Placeholder="Search Tests"
                       Clearable
                       Variant="Variant.Outlined"
                       Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />

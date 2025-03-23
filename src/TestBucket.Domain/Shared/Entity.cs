@@ -12,7 +12,27 @@ namespace TestBucket.Domain.Shared
         /// Tenant identifier
         /// </summary>
         public string? TenantId { get; set; }
-        
+
+        /// <summary>
+        /// Timestamp when the test case was created
+        /// </summary>
+        public DateTimeOffset Created { get; set; }
+
+        /// <summary>
+        /// Modified by user name
+        /// </summary>
+        public string? ModifiedBy { get; set; }
+
+        /// <summary>
+        /// Timestamp when the test case was Modified
+        /// </summary>
+        public DateTimeOffset Modified { get; set; }
+
+        /// <summary>
+        /// Created by user name
+        /// </summary>
+        public string? CreatedBy { get; set; }
+
         // Navigation
         public Tenant? Tenant { get; set; }
     }

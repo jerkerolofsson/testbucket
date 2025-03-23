@@ -9,148 +9,163 @@ public enum TraitType
     /// <summary>
     /// Special representation of a trait that does not have a conversion from a string to a custom type
     /// </summary>
-    Custom,
+    Custom = 0,
 
     /// <summary>
     /// ID from original source
     /// </summary>
-    TestId,
+    TestId = 1,
 
     /// <summary>
     /// Name
     /// </summary>
-    Name,
+    Name = 2,
 
     /// <summary>
     /// Test case result
     /// </summary>
-    TestResult,
+    TestResult = 3,
 
     /// <summary>
     /// Test case run state (Completed, Started, Assigned..)
     /// </summary>
-    TestState,
+    TestState = 4,
+
+    /// <summary>
+    /// Test activity or applicable for test activity
+    /// </summary>
+    TestActivity = 5,
 
     /// <summary>
     /// Test case priority
     /// </summary>
-    TestPriority,
+    TestPriority = 6,
 
     /// <summary>
     /// Description of the test case
     /// </summary>
-    TestDescription,
+    TestDescription = 7,
 
     /// <summary>
     /// Category of test (Integration, Unit, E2E)
     /// </summary>
-    TestCategory,
+    TestCategory = 8,
 
     /// <summary>
     /// Filename / path of test
     /// </summary>
-    TestFilePath,
+    TestFilePath = 9,
 
     /// <summary>
     /// For browser tests, name of the browser used
     /// </summary>
-    Browser,
+    Browser = 10,
 
     // Failures
 
     /// <summary>
     /// Type of failure
     /// </summary>
-    FailureType,
+    FailureType = 11,
 
     /// <summary>
     /// Failure message
     /// </summary>
-    FailureMessage,
+    FailureMessage = 12,
 
     /// <summary>
     /// Stacktrace / call stack
     /// </summary>
-    CallStack,
+    CallStack = 13,
 
     /// <summary>
     /// Assembly implementing the automated test
     /// </summary>
-    Assembly,
+    Assembly = 14,
 
     /// <summary>
     /// Module implementing the automated test (e.g. python file)
     /// </summary>
-    Module,
+    Module = 15,
 
     /// <summary>
     /// Class implementing the automated test
     /// </summary>
-    ClassName,
+    ClassName = 16,
 
     /// <summary>
     /// Method implementing the automated test
     /// </summary>
-    Method,
+    Method = 17,
 
     /// <summary>
     /// Line number of failure
     /// </summary>
-    Line,
+    Line = 18,
 
     /// <summary>
     /// Duration to run the test
     /// </summary>
-    Duration,
+    Duration = 19,
 
     // Target
 
     /// <summary>
     /// Commit hash
     /// </summary>
-    Commit,
+    Commit = 20,
 
     /// <summary>
     /// SW Version
     /// </summary>
-    SoftwareVersion,
+    SoftwareVersion = 21,
+
+    /// <summary>
+    /// Project milestone
+    /// </summary>
+    Milestone =22,
+
+    /// <summary>
+    /// Project release
+    /// </summary>
+    Release = 23,
 
     /// <summary>
     /// HW Version
     /// </summary>
-    HardwareVersion,
+    HardwareVersion =24,
 
-    CreatedTime,
-    StartedTime,
-    EndedTime,
+    CreatedTime = 25,
+    StartedTime = 26,
+    EndedTime = 27,
 
     /// <summary>
     /// stdout
     /// </summary>
-    SystemOut,
+    SystemOut = 28,
 
     /// <summary>
     /// stderr
     /// </summary>
-    SystemErr,
+    SystemErr = 29,
 
-    Project,
+    Project = 30,
 
-    Version,
+    Version = 31,
 
     /// <summary>
     /// 
     /// </summary>
-    Ci,
+    Ci = 32,
 
     /// <summary>
     /// Collection name
     /// </summary>
-    CollectionName,
+    CollectionName = 33,
 
-    Environment,
-    Tag,
-    QualityCharacteristic,
-    Area,
-    Component,
+    Environment = 34,
+    Tag = 35,
+    QualityCharacteristic = 36,
+    Area = 37,
+    Component = 38,
 }

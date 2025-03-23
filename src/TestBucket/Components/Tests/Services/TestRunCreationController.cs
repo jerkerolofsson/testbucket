@@ -20,9 +20,9 @@ internal class TestRunCreationController : TenantBaseService
         _testCaseRepository = testCaseRepository;
     }
 
-    public async Task<TestRun?> CreateTestRunAsync(long projectId, long[] testCaseIds)
+    public async Task<TestRun?> CreateTestRunAsync(string name, long projectId, long[] testCaseIds)
     {
-        var testRun = await CreateTestRunAsync(projectId);
+        var testRun = await CreateTestRunAsync(name, projectId);
         if(testRun is not null)
         {
             // Add test case to run
@@ -40,10 +40,11 @@ internal class TestRunCreationController : TenantBaseService
     /// </summary>
     /// <param name="projectId"></param>
     /// <returns></returns>
-    public async Task<TestRun?> CreateTestRunAsync(long projectId)
+    public async Task<TestRun?> CreateTestRunAsync(string name, long projectId)
     {
         var parameters = new DialogParameters<CreateTestRunDialog>()
         {
+            { x => x.Name, name },
             { x => x.TestProjectId, projectId }
         };
         var dialog = await _dialogService.ShowAsync<CreateTestRunDialog>(null, parameters);
@@ -100,8 +101,6 @@ internal class TestRunCreationController : TenantBaseService
         };
 
         await _testCaseEditor.AddTestCaseRunAsync(testCaseRun);
-
-        // Todo: Copy traits from test case to test case run (inherit)
 
         // Todo: Assign?
 

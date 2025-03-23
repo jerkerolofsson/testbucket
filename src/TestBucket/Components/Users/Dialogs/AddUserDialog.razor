@@ -1,0 +1,90 @@
+﻿@using TestBucket.Components.Account.Shared
+@using TestBucket.Components.Users.Services
+@using TestBucket.Domain.Requirements.Models
+@attribute [Authorize(Roles = "ADMIN")]
+@inject UserController userController
+
+<EditForm Model="@_model" OnValidSubmit="async () => await OnValidSubmitAsync()">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <DialogContent>
+            <MudStack Spacing="1">
+
+                <DataAnnotationsValidator />
+                <ValidationSummary class="text-danger" role="alert" />
+
+                <Field>
+                    <FieldHeader>Email</FieldHeader>
+                    <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_model.Email"></MudTextField>
+                    <ValidationMessage For="() => _model.Email" class="text-danger" />
+                </Field>
+
+                <Field>
+                    <FieldHeader>Password</FieldHeader>
+                    <MudTextField AutoFocus="true" Variant="Variant.Outlined" InputType="InputType.Password" T="string" @bind-Value="@_model.Password"></MudTextField>
+                    <ValidationMessage For="() => _model.Password" class="text-danger" />
+                </Field>
+
+                <Field>
+                    <FieldHeader>Confirm Password</FieldHeader>
+                    <MudTextField AutoFocus="true" Variant="Variant.Outlined" InputType="InputType.Password" T="string" @bind-Value="@_model.ConfirmPassword"></MudTextField>
+                    <ValidationMessage For="() => _model.ConfirmPassword" class="text-danger" />
+                </Field>
+
+                @_errorMessage
+
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private InputModel _model = new();
+    private IEnumerable<IdentityError> _identityErrors = [];
+    private string? _errorMessage => _identityErrors is null ? null : $"Error: {string.Join(", ", _identityErrors.Select(error => error.Description))}";
+
+    private sealed class InputModel
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; } = "";
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; } = "";
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        var result = await userController.CreateUserAsync(_model.Email, _model.Password);
+        if (result.Succeeded)
+        {
+            MudDialog.Close();
+        }
+        else
+        {
+            _identityErrors = result.Errors;
+        }
+    }
+}
+

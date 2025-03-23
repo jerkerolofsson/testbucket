@@ -74,7 +74,7 @@ internal class SuperAdminUserService : ISuperAdminUserService
         }
         return (IUserEmailStore<ApplicationUser>)userStore;
     }
-    public async Task<bool> RegisterAndConfirmUserAsync(string tenantId, string email, string password)
+    public async Task<IdentityResult> RegisterAndConfirmUserAsync(string tenantId, string email, string password)
     {
         var user = new ApplicationUser() { TenantId = tenantId };
 
@@ -107,7 +107,7 @@ internal class SuperAdminUserService : ISuperAdminUserService
         }
         else
         {
-            return false;
+            return result;
         }
 
         await userManager.AddClaimAsync(user, new Claim("tenant", tenantId));
@@ -115,13 +115,13 @@ internal class SuperAdminUserService : ISuperAdminUserService
         if (!(await userManager.IsEmailConfirmedAsync(user)))
         {
             _logger.LogWarning("Default user's email is not confirmed");
-            return false;
+            return IdentityResult.Failed([new IdentityError() { Description = "Email could not be confirmed" }]);
         }
         if (!(await confirmation.IsConfirmedAsync(userManager, user)))
         {
             _logger.LogWarning("Default user's account is not confirmed");
-            return false;
+            return IdentityResult.Failed([new IdentityError() { Description = "Account could not be confirmed" }]);
         }
-        return true;
+        return IdentityResult.Success;
     }
 }

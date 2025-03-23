@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,33 +31,34 @@ public class StateService : IStateService
             ];
     }
 
-    public async Task<TestState> GetProjectInitialStateAsync(string tenantId, long projectId)
+    public async Task<TestState> GetProjectInitialStateAsync(ClaimsPrincipal principal, long projectId)
     {
-        var states = await GetProjectStatesAsync(tenantId, projectId);
+        var states = await GetProjectStatesAsync(principal, projectId);
         var state = states.Where(x => x.IsInitial).FirstOrDefault();
         if (state is null)
         {
             states = GetDefaultStates();
             state = states.Where(x => x.IsInitial).First();
         }
-        return state;
+        return state ?? new TestState() { Name = "Not Started", IsFinal = false, IsInitial = true };
     }
 
-    public async Task<TestState> GetProjectFinalStateAsync(string tenantId, long projectId)
+    public async Task<TestState> GetProjectFinalStateAsync(ClaimsPrincipal principal, long projectId)
     {
-        var states = await GetProjectStatesAsync(tenantId, projectId);
+        var states = await GetProjectStatesAsync(principal, projectId);
         var state = states.Where(x => x.IsFinal).FirstOrDefault();
         if (state is null)
         {
             states = GetDefaultStates();
             state = states.Where(x => x.IsFinal).First();
         }
-        return state;
+        return state ?? new TestState() { Name = "Completed", IsFinal = true, IsInitial = false }; ;
     }
 
 
-    public async Task<TestState[]> GetProjectStatesAsync(string tenantId, long projectId)
+    public async Task<TestState[]> GetProjectStatesAsync(ClaimsPrincipal principal, long projectId)
     {
+        var tenantId = principal.GetTentantIdOrThrow();
         var project = await _projectRepository.GetProjectByIdAsync(tenantId, projectId);
         if(project?.TestStates is not null && project.TestStates.Length > 0)
         {

@@ -164,6 +164,12 @@ namespace TestBucket.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -175,6 +181,12 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<bool>("IsVisible")
                         .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -403,6 +415,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<long?>("ActiveTeamId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("AdvanceToNextNotCompletedTestWhenSettingResult")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("DarkMode")
                         .HasColumnType("boolean");
 
@@ -426,6 +441,65 @@ namespace TestBucket.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserPreferences");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Projects.Models.ExternalSystem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("AccessToken")
+                        .HasColumnType("text");
+
+                    b.Property<string>("BaseUrl")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ExternalProjectId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("ReadOnly")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.ToTable("external_systems");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Projects.Models.TestProject", b =>
@@ -619,10 +693,19 @@ namespace TestBucket.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -641,8 +724,10 @@ namespace TestBucket.Data.Migrations
                     b.Property<long>("RequirementSpecificationId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("TenantId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<long?>("TestProjectId")
@@ -653,6 +738,8 @@ namespace TestBucket.Data.Migrations
                     b.HasIndex("ParentId");
 
                     b.HasIndex("RequirementSpecificationId");
+
+                    b.HasIndex("TeamId");
 
                     b.HasIndex("TestProjectId");
 
@@ -668,6 +755,18 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("bigint");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
 
                     b.Property<long>("RequirementId")
                         .HasColumnType("bigint");
@@ -883,6 +982,12 @@ namespace TestBucket.Data.Migrations
                     b.Property<bool?>("BooleanValue")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<double?>("DoubleValue")
                         .HasColumnType("double precision");
 
@@ -891,6 +996,12 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<long?>("LongValue")
                         .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
 
                     b.Property<long?>("RequirementId")
                         .HasColumnType("bigint");
@@ -1010,6 +1121,12 @@ namespace TestBucket.Data.Migrations
                     b.Property<bool?>("BooleanValue")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<double?>("DoubleValue")
                         .HasColumnType("double precision");
 
@@ -1018,6 +1135,12 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<long?>("LongValue")
                         .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
 
                     b.PrimitiveCollection<string[]>("StringArrayValue")
                         .HasColumnType("text[]");
@@ -1111,6 +1234,12 @@ namespace TestBucket.Data.Migrations
                     b.Property<bool?>("BooleanValue")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<double?>("DoubleValue")
                         .HasColumnType("double precision");
 
@@ -1119,6 +1248,12 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<long?>("LongValue")
                         .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
 
                     b.PrimitiveCollection<string[]>("StringArrayValue")
                         .HasColumnType("text[]");
@@ -1151,10 +1286,22 @@ namespace TestBucket.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
                     b.Property<string>("ExpectedResult")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
                     b.Property<long?>("TeamId")
@@ -1249,6 +1396,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<string>("FeatureDescription")
                         .HasColumnType("text");
 
@@ -1257,6 +1407,12 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<bool>("IsFeature")
                         .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1390,6 +1546,27 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Projects.Models.ExternalSystem", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany("ExternalSystems")
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Projects.Models.TestProject", b =>
                 {
                     b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
@@ -1473,11 +1650,13 @@ namespace TestBucket.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
                     b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
                         .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TenantId");
 
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
@@ -1486,6 +1665,8 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("Parent");
 
                     b.Navigation("RequirementSpecification");
+
+                    b.Navigation("Team");
 
                     b.Navigation("Tenant");
 
@@ -1790,6 +1971,8 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Projects.Models.TestProject", b =>
                 {
+                    b.Navigation("ExternalSystems");
+
                     b.Navigation("ProjectMembers");
                 });
 

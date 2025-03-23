@@ -1,96 +1,73 @@
 ﻿
-
+using TestBucket.Components.Tests.Controls;
+using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Specifications;
-using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Tenants.Models;
-
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-
+using TestBucket.Domain.Projects;
+using TestBucket.Domain.Testing.Models;
 namespace TestBucket.Components.Shared.Fields;
 
 internal class FieldController : TenantBaseService
 {
+    private readonly IProjectManager _projectManager;
     private readonly IFieldRepository _repository;
-    private readonly IFieldDefinitionManager _manager;
+    private readonly IFieldDefinitionManager _definitionManager;
+    private readonly IFieldManager _manager;
 
     public FieldController(
         AuthenticationStateProvider authenticationStateProvider,
+        IProjectManager projectManager,
         IFieldRepository repository,
-        IFieldDefinitionManager manager) :
+        IFieldManager manager,
+        IFieldDefinitionManager definitionManager) :
         base(authenticationStateProvider)
     {
+        _projectManager = projectManager;
         _repository = repository;
         _manager = manager;
+        _definitionManager = definitionManager;
     }
 
     #region Test Case
     public async Task SaveTestCaseFieldsAsync(IEnumerable<TestCaseField> fields)
     {
-        var tenantId = await GetTenantIdAsync();
-        foreach (var field in fields)
-        {
-            field.TenantId = tenantId;
-        }
-        await _repository.SaveTestCaseFieldsAsync(fields);
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.SaveTestCaseFieldsAsync(principal, fields);
+
     }
     public async Task<IReadOnlyList<TestCaseField>> GetTestCaseFieldsAsync(long id, IEnumerable<FieldDefinition> fieldDefinitions)
     {
-        var tenantId = await GetTenantIdAsync();
-        var fields = (await _repository.GetTestCaseFieldsAsync(tenantId, id)).ToList();
-
-        // Add missing fields
-        foreach(var fieldDefinition in fieldDefinitions)
-        {
-            var field = fields.Where(x => x.FieldDefinitionId == fieldDefinition.Id).FirstOrDefault();
-            if (field is null)
-            {
-                fields.Add(new TestCaseField 
-                { 
-                    FieldDefinition = fieldDefinition,
-                    TestCaseId = id,
-                    FieldDefinitionId = fieldDefinition.Id 
-                });
-            }
-        }
-
-        return fields;
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.GetTestCaseFieldsAsync(principal, id, fieldDefinitions);
     }
 
     #endregion Test Case
 
+    #region Test Run
+    public async Task SaveTestRunFieldsAsync(IEnumerable<TestRunField> fields)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.SaveTestRunFieldsAsync(principal, fields);
+    }
+    public async Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(long testRunId, IEnumerable<FieldDefinition> fieldDefinitions)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.GetTestRunFieldsAsync(principal, testRunId, fieldDefinitions);
+    }
+
+    #endregion Test Run
+
     #region Test Case Run
     public async Task SaveTestCaseRunFieldsAsync(IEnumerable<TestCaseRunField> fields)
     {
-        var tenantId = await GetTenantIdAsync();
-        foreach (var field in fields)
-        {
-            field.TenantId = tenantId;
-        }
-        await _repository.SaveTestCaseRunFieldsAsync(fields);
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.SaveTestCaseRunFieldsAsync(principal, fields);
     }
+
     public async Task<IReadOnlyList<TestCaseRunField>> GetTestCaseRunFieldsAsync(long testRunId, long testCaseRunId, IEnumerable<FieldDefinition> fieldDefinitions)
     {
-        var tenantId = await GetTenantIdAsync();
-        var fields = (await _repository.GetTestCaseRunFieldsAsync(tenantId, testCaseRunId)).ToList();
-
-        // Add missing fields
-        foreach (var fieldDefinition in fieldDefinitions)
-        {
-            var field = fields.Where(x => x.FieldDefinitionId == fieldDefinition.Id).FirstOrDefault();
-            if (field is null)
-            {
-                fields.Add(new TestCaseRunField
-                {
-                    FieldDefinition = fieldDefinition,
-                    TestRunId = testRunId,
-                    TestCaseRunId = testCaseRunId,
-                    FieldDefinitionId = fieldDefinition.Id
-                });
-            }
-        }
-
-        return fields;
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.GetTestCaseRunFieldsAsync(principal, testRunId, testCaseRunId, fieldDefinitions);
     }
 
     #endregion Test Case Run
@@ -108,7 +85,22 @@ internal class FieldController : TenantBaseService
         var specifications = FieldSpecificationBuilder.From(query);
         var principal = await GetUserClaimsPrincipalAsync();
 
-        return await _manager.SearchAsync(principal, specifications);
+        var fieldDefinitions = await _definitionManager.SearchAsync(principal, specifications);
+
+        // Assign options from external data source
+        foreach (var fieldDefinition in fieldDefinitions)
+        {
+            if (fieldDefinition.TestProjectId is not null)
+            {
+                string[]? options = await _projectManager.GetFieldOptionsAsync(principal, fieldDefinition.TestProjectId.Value, fieldDefinition.TraitType, default);
+                if (options is not null)
+                {
+                    fieldDefinition.Options = options.ToList();
+                }
+            }
+        }
+
+        return fieldDefinitions;
     }
 
     /// <summary>

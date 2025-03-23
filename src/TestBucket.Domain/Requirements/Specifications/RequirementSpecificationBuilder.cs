@@ -31,6 +31,10 @@ namespace TestBucket.Domain.Requirements.Specifications
             {
                 specifications.Add(new FilterByProject<Requirement>(query.ProjectId.Value));
             }
+            if (query.CompareFolder)
+            {
+                specifications.Add(new FilterRequirementByParentFolder(query.FolderId));
+            }
 
             return specifications;
         }

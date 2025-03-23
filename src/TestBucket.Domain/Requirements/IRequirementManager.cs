@@ -22,6 +22,13 @@ public interface IRequirementManager
     /// <param name="requirement">Entity to save</param>
     /// <returns></returns>
     Task UpdateRequirementAsync(ClaimsPrincipal principal, Requirement requirement);
+
+    /// <summary>
+    /// Searches for requirements
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
     Task<PagedResult<Requirement>> SearchRequirementsAsync(ClaimsPrincipal principal, SearchRequirementQuery query);
 
     /// <summary>
@@ -34,6 +41,19 @@ public interface IRequirementManager
     Task<Requirement?> GetRequirementByIdAsync(ClaimsPrincipal principal, long id);
 
     #endregion Requirements
+
+    #region Folders
+
+    /// <summary>
+    /// Searches for requirements
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    Task<RequirementSpecificationFolder[]> SearchRequirementFoldersAsync(ClaimsPrincipal principal, SearchRequirementQuery query);
+
+    #endregion
+
 
     #region Requirement Specifications
 

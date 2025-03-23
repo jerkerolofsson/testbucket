@@ -55,5 +55,10 @@ public class UserPreferences
     /// </summary>
     public bool ShowFailureMessageDialogWhenFailingTestCaseRun { get; set; } = true;
 
+    /// <summary>
+    /// Advances to the next test when passing/failing etc a test
+    /// </summary>
+    public bool AdvanceToNextNotCompletedTestWhenSettingResult { get; set; } = true;
+
     #endregion Test Execution
 }

@@ -27,6 +27,8 @@ public class TraitTypeConverter
         [TraitType.SoftwareVersion] = TargetTraitNames.SoftwareVersion,
         [TraitType.HardwareVersion] = TargetTraitNames.HardwareVersion,
         [TraitType.Commit] = TargetTraitNames.Commit,
+        [TraitType.Release] = TargetTraitNames.Release,
+        [TraitType.Milestone] = TargetTraitNames.Milestone,
 
         [TraitType.Assembly] = AutomationTraitNames.Assembly,
         [TraitType.Module] = AutomationTraitNames.Module,
@@ -35,10 +37,11 @@ public class TraitTypeConverter
 
         [TraitType.QualityCharacteristic] = TestTraitNames.QualityCharacteristic,
 
-        [TraitType.TestState] = TestTraitNames.TestState,
-        [TraitType.TestDescription] = TestTraitNames.TestDescription,
         [TraitType.TestCategory] = TestTraitNames.TestCategory,
         [TraitType.TestPriority] = TestTraitNames.TestPriority,
+        [TraitType.TestActivity] = TestTraitNames.TestActivity,
+        [TraitType.TestState] = TestTraitNames.TestState,
+        [TraitType.TestDescription] = TestTraitNames.TestDescription,
         [TraitType.TestId] = TestTraitNames.TestId,
         [TraitType.Browser] = TestTraitNames.Browser,
 

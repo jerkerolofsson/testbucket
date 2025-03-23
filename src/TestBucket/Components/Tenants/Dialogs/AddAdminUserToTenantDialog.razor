@@ -1,4 +1,5 @@
-﻿@using TestBucket.Components.Users
+﻿@using TestBucket.Components.Account.Shared
+@using TestBucket.Components.Users
 @using TestBucket.Data.Identity
 @attribute [Authorize(Roles = "SUPERADMIN")]
 @inject TenantService tenantService
@@ -10,16 +11,33 @@
         <DialogContent>
             <MudStack>
                 <MudStack Spacing="0">
-                    <MudText Typo="Typo.h1">Administrator</MudText>
 
-                    <MudTextField @bind-Value="_model.Email" For="@(() => _model.Email)" Label="Email"></MudTextField>
-                    <MudTextField @bind-Value="_model.Password" For="@(() => _model.Password)" Label="Password"></MudTextField>
-                    <MudTextField @bind-Value="_model.ConfirmPassword" For="@(() => _model.ConfirmPassword)" Label="Confirm Password"></MudTextField>
+                    <MudText Typo="Typo.h1">Add Administrator</MudText>
 
-                    @if (_errorMessage is not null)
-                    {
-                        @_errorMessage
-                    }
+                    <DataAnnotationsValidator />
+                    <ValidationSummary class="text-danger" role="alert" />
+
+                    <Field>
+                        <FieldHeader>Email</FieldHeader>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_model.Email"></MudTextField>
+                        <ValidationMessage For="() => _model.Email" class="text-danger" />
+                    </Field>
+
+                    <Field>
+                        <FieldHeader>Password</FieldHeader>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" InputType="InputType.Password" @bind-Value="@_model.Password"></MudTextField>
+                        <ValidationMessage For="() => _model.Password" class="text-danger" />
+                    </Field>
+
+                    <Field>
+                        <FieldHeader>Confirm Password</FieldHeader>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" InputType="InputType.Password" @bind-Value="@_model.ConfirmPassword"></MudTextField>
+                        <ValidationMessage For="() => _model.ConfirmPassword" class="text-danger" />
+                    </Field>
+
+
+                    @_errorMessage
+
                 </MudStack>
             </MudStack>
         </DialogContent>
@@ -57,24 +75,28 @@
     }
 
     private InputModel _model = new();
-    private string? _errorMessage;
+    private IEnumerable<IdentityError> _identityErrors = [];
+    private string? _errorMessage => _identityErrors is null ? null : $"Error: {string.Join(", ", _identityErrors.Select(error => error.Description))}";
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
-    private async Task<bool> RegisterUserAsync(string tenantId)
+    private async Task<IdentityResult> RegisterUserAsync(string tenantId)
     {
-        bool res = false;
         try
         {
-            res = await userService.RegisterAndConfirmUserAsync(tenantId, _model.Email, _model.Password);
+            var result = await userService.RegisterAndConfirmUserAsync(tenantId, _model.Email, _model.Password);
+            if(!result.Succeeded)
+            {
+                return result;
+            }
             await userService.AssignRoleAsync(tenantId, _model.Email, Roles.ADMIN);
         }
-        catch
+        catch(Exception ex)
         {
-            res = false;
+            return IdentityResult.Failed(new IdentityError() { Description = ex.Message });
         }
-        return res;
+        return IdentityResult.Success;
     }
 
     private void Close()
@@ -87,13 +109,13 @@
         await tenantService.GuardAsync();
 
         var result = await RegisterUserAsync(TenantId ?? throw new Exception("TenantId is null"));
-        if(result)
+        if(result.Succeeded)
         {
             MudDialog.Close();
         }
         else
         {
-            _errorMessage = "Failed to create user. Make sure the email is not already registered with another tenant.";
+            _identityErrors = result.Errors;
         }
     }
 }

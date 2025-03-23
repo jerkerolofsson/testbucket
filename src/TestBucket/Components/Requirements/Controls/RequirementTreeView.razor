@@ -121,9 +121,9 @@
     /// </summary>
     [Parameter] public EventCallback<RequirementSpecificationFolder> OnFolderClicked { get; set; }
 
-    [CascadingParameter] protected TestProject? Project { get; set; }
+    [Parameter] public TestProject? Project { get; set; }
 
-    [CascadingParameter] protected Team? Team { get; set; }
+    [Parameter] public Team? Team { get; set; }
 
     private bool _isSearching = false;
 

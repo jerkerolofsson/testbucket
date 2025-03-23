@@ -15,4 +15,14 @@ public class SearchTestQuery : SearchQuery
     /// If comparing folder, returns all descendants, not only the direct children
     /// </summary>
     public bool Recurse { get; set; } = false;
+
+    /// <summary>
+    /// Test category field
+    /// </summary>
+    public string? Category { get; set; }
+
+    /// <summary>
+    /// Test priority field
+    /// </summary>
+    public string? Priority { get; set; }
 }

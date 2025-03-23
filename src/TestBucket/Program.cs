@@ -18,8 +18,11 @@ using TestBucket.Components.Teams;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Components.Uploads.Services;
 using TestBucket.Components.Users;
+using TestBucket.Components.Users.Services;
+using TestBucket.Contracts.Integrations;
 using TestBucket.Data.Migrations;
 using TestBucket.Domain.ApiKeys;
+using TestBucket.Gitlab;
 using TestBucket.Identity;
 
 namespace TestBucket;
@@ -33,9 +36,16 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddRazorComponents()
-            .AddInteractiveServerComponents();
+            .AddInteractiveServerComponents()
+            .AddHubOptions(hubOptions =>
+            {
+                // We set this to quite large to handle capture screenshots etc
+                hubOptions.MaximumReceiveMessageSize = 2_000_000;
+                //hubOptions.ClientTimeoutInterval = TimeSpan.FromSeconds(10);
+            });
 
         builder.Services.AddBlazoredLocalStorage();
+        builder.Services.AddMemoryCache();
 
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<IdentityUserAccessor>();
@@ -146,7 +156,7 @@ public class Program
         builder.Services.AddScoped<TenantResolver>();
         builder.Services.AddScoped<TenantService>();
         builder.Services.AddScoped<TeamService>();
-        builder.Services.AddScoped<ProjectService>();
+        builder.Services.AddScoped<ProjectController>();
         builder.Services.AddScoped<TestSuiteService>();
         builder.Services.AddScoped<TestRunCreationController>();
         builder.Services.AddScoped<AttachmentsService>();
@@ -161,9 +171,14 @@ public class Program
         builder.Services.AddScoped<TestCaseEditorController>();
         builder.Services.AddScoped<UploadService>();
         builder.Services.AddScoped<FieldController>();
+        builder.Services.AddScoped<UserController>();
+
         builder.Services.AddScoped(typeof(DragAndDropService<>));
         builder.Services.AddDataServices();
         builder.Services.AddDomainServices();
+
+        // Integrations
+        builder.Services.AddSingleton<IProjectDataSource, GitlabProjectDataSource>();
 
         builder.Services.AddMudServices(config =>
         {

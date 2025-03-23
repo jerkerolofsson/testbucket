@@ -3,6 +3,7 @@ using TestBucket.Domain.AI.Settings;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Progress;
+using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Settings;
@@ -27,6 +28,8 @@ public static class DomainServiceExtensions
         services.AddScoped<IRequirementManager, RequirementManager>();
         services.AddScoped<IUserManager, UserManager>();
         services.AddScoped<IFieldDefinitionManager, FieldDefinitionManager>();
+        services.AddScoped<IFieldManager, FieldManager>();
+        services.AddScoped<IProjectManager, ProjectManager>();
 
         services.AddScoped<IProgressManager, ProgressManager>();
         services.AddScoped<IChatClientFactory, ChatClientFactory>();
@@ -46,6 +49,7 @@ public static class DomainServiceExtensions
 
         // Test settings
         services.AddScoped<ISetting, ShowFailureMessageDialogWhenFailingTestCaseRunSetting>();
+        services.AddScoped<ISetting, AdvanceToNextNotCompletedTestWhenSettingResultSetting>();
 
         return services;
     }

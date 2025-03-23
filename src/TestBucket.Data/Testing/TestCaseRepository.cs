@@ -42,42 +42,6 @@ internal class TestCaseRepository : ITestCaseRepository
         var items = tests.Select(x=>x.Id).ToArray();
         return items;
     }
-    public async Task<PagedResult<TestCase>> SearchTestCasesAsync(string tenantId, SearchTestQuery query)
-    {
-        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var tests = dbContext.TestCases.Include(x=>x.TestCaseFields).Where(x => x.TenantId == tenantId);
-
-        // Apply filter
-        if (query.TeamId is not null)
-        {
-            //tests = tests.Where(x => x.TeamId == query.TeamId);
-        }
-        if (query.ProjectId is not null)
-        {
-            tests = tests.Where(x => x.TestProjectId == query.ProjectId);
-        }
-        if (query.Text is not null)
-        {
-            tests = tests.Where(x => x.Name.ToLower().Contains(query.Text.ToLower()));
-        }
-        if (query.CompareFolder)
-        {
-            tests = tests.Where(x => x.TestSuiteFolderId == query.FolderId);
-        }
-        if (query.TestSuiteId is not null)
-        {
-            tests = tests.Where(x => x.TestSuiteId == query.TestSuiteId);
-        }
-
-        long totalCount = await tests.LongCountAsync();
-        var items = tests.OrderBy(x => x.Created).Skip(query.Offset).Take(query.Count).ToArray();
-
-        return new PagedResult<TestCase>
-        {
-            TotalCount = totalCount,
-            Items = items,
-        };
-    }
 
     /// <inheritdoc/>
     public async Task<TestCase?> GetTestCaseByIdAsync(string tenantId, long testCaseId)
@@ -441,28 +405,18 @@ internal class TestCaseRepository : ITestCaseRepository
     }
 
     /// <inheritdoc/>
-    public async Task<PagedResult<TestRun>> SearchTestRunsAsync(string tenantId, SearchQuery query)
+    public async Task<PagedResult<TestRun>> SearchTestRunsAsync(IReadOnlyList<FilterSpecification<TestRun>> filters, int offset, int count)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var runs = dbContext.TestRuns.Where(x => x.TenantId == tenantId);
-        var total = await dbContext.TestRuns.LongCountAsync();
+        var runs = dbContext.TestRuns.AsQueryable();
 
-        // Apply filter
-        if (query.TeamId is not null)
+        foreach(var filter in filters)
         {
-            runs = runs.Where(x => x.TeamId == query.TeamId);
-        }
-        if (query.ProjectId is not null)
-        {
-            runs = runs.Where(x => x.TestProjectId == query.ProjectId);
-        }
-        if (query.Text is not null)
-        {
-            runs = runs.Where(x => x.Name.ToLower().Contains(query.Text.ToLower()));
+            runs = runs.Where(filter.Expression);
         }
 
         long totalCount = await runs.LongCountAsync();
-        var items = runs.OrderByDescending(x => x.Created).Skip(query.Offset).Take(query.Count);
+        var items = runs.OrderByDescending(x => x.Created).Skip(offset).Take(count);
 
         return new PagedResult<TestRun>
         {
@@ -523,44 +477,25 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<TestCaseRun?> GetTestCaseRunByIdAsync(string tenantId, long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestCaseRuns.AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
+        return await dbContext.TestCaseRuns.AsNoTracking()
+            .Include(x=>x.TestCase)
+            .Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
     }
 
-    public async Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(string tenantId, SearchTestQuery query)
+    public async Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(IReadOnlyList<FilterSpecification<TestCaseRun>> filters, int offset,int count)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var tests = dbContext.TestCaseRuns.Where(x => x.TenantId == tenantId);
+        var tests = dbContext.TestCaseRuns
+            .Include(x => x.TestCase)
+            .AsQueryable();
 
-        // Apply filter
-        if (query.TeamId is not null)
+        foreach(var filter in filters)
         {
-            //tests = tests.Where(x => x.TeamId == query.TeamId);
+            tests = tests.Where(filter.Expression);
         }
-        if (query.ProjectId is not null)
-        {
-            tests = tests.Where(x => x.TestProjectId == query.ProjectId);
-        }
-        if (query.Text is not null)
-        {
-            tests = tests.Where(x => x.Name.ToLower().Contains(query.Text.ToLower()));
-        }
-        if (query.TestRunId is not null)
-        {
-            tests = tests.Where(x => x.TestRunId == query.TestRunId);
-        }
-        if (query.TestSuiteId is not null)
-        {
-            tests = tests.Where(x => x.TestCase != null && x.TestCase.TestSuiteId == query.TestSuiteId);
-        }
-        if (query.FolderId is not null)
-        {
-            tests = tests.Where(x => x.TestCase != null && x.TestCase.TestSuiteFolderId == query.FolderId);
-        }
-
-        var allTests = await tests.ToArrayAsync();
 
         long totalCount = await tests.LongCountAsync();
-        var items = tests.OrderBy(x => x.Name).Skip(query.Offset).Take(query.Count).ToArray();
+        var items = tests.OrderBy(x => x.Name).Skip(offset).Take(count).ToArray();
 
         return new PagedResult<TestCaseRun>
         {
@@ -571,8 +506,6 @@ internal class TestCaseRepository : ITestCaseRepository
 
     public async Task AddTestCaseRunAsync(TestCaseRun testCaseRun)
     {
-        testCaseRun.Created = DateTimeOffset.UtcNow;
-
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         await dbContext.TestCaseRuns.AddAsync(testCaseRun);
         await dbContext.SaveChangesAsync();
@@ -580,7 +513,6 @@ internal class TestCaseRepository : ITestCaseRepository
 
     public async Task UpdateTestCaseRunAsync(TestCaseRun testCaseRun)
     {
-        //testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         dbContext.TestCaseRuns.Update(testCaseRun);

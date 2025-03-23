@@ -1,0 +1,17 @@
+﻿<RequirementTreeView Project="@Project" Team="@Team" OnRequirementClicked="OnRequirementClicked" />
+
+@code {
+
+    [Parameter]
+    public EventCallback<Requirement> RequirementSelected { get; set; }
+
+    [Parameter] public TestProject? Project { get; set; }
+
+    [Parameter] public Team? Team { get; set; }
+
+
+    private async Task OnRequirementClicked(Requirement requirement)
+    {
+        await RequirementSelected.InvokeAsync(requirement);
+    }
+}

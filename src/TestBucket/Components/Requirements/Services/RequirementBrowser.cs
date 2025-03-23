@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+
+using Microsoft.CodeAnalysis;
 
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Domain.Requirements;
@@ -108,34 +110,80 @@ internal class RequirementBrowser : TenantBaseService
         return rootItems;
     }
 
+    /// <summary>
+    /// Browsing requirement structure / folders..
+    /// </summary>
+    /// <param name="teamId"></param>
+    /// <param name="projectId"></param>
+    /// <param name="parent"></param>
+    /// <returns></returns>
     public async Task<List<TreeNode<BrowserItem>>> BrowseAsync(long? teamId, long? projectId, BrowserItem? parent)
     {
         if (parent is not null)
         {
+            List<TreeNode<BrowserItem>> items = [];
+            var principal = await GetUserClaimsPrincipalAsync();
+
             if (parent.Requirement is not null)
             {
                 return [];
             }
             if (parent.RequirementFolder is not null)
             {
-                return [];
+                var query = new SearchRequirementQuery
+                {
+                    RequirementSpecificationId = parent.RequirementFolder.RequirementSpecificationId,
+                    FolderId = parent.RequirementFolder.Id,
+                    CompareFolder = true,
+                    Offset = 0,
+                    Count = 1_000
+                };
+
+                // Add folders
+                var folders = await _requirementManager.SearchRequirementFoldersAsync(principal, query);
+                items.AddRange(folders.Select(x => CreateTreeNodeFromFolder(x)));
+
+                // Add requirements
+                PagedResult<Requirement> result = await _requirementManager.SearchRequirementsAsync(principal, query);
+                items.AddRange(result.Items.Select(x => CreateRequirementNode(x)));
+
+                return items;
             }
             if (parent.RequirementSpecification is not null)
             {
                 var query = new SearchRequirementQuery
                 {
+                    FolderId = null,
+                    CompareFolder = true,
                     RequirementSpecificationId = parent.RequirementSpecification.Id,
                     Offset = 0,
                     Count = 1_000
                 };
 
-                var principal = await GetUserClaimsPrincipalAsync();
-                PagedResult<Requirement> result = await _requirementManager.SearchRequirementsAsync(principal, query);
+                // Add folders
+                var folders = await _requirementManager.SearchRequirementFoldersAsync(principal, query);
+                items.AddRange(folders.Select(x => CreateTreeNodeFromFolder(x)));
 
-                return result.Items.Select(x=>CreateRequirementNode(x)).ToList();
+                // Add requirements
+                PagedResult <Requirement> result = await _requirementManager.SearchRequirementsAsync(principal, query);
+                items.AddRange(result.Items.Select(x=>CreateRequirementNode(x)));
+
+                return items;
             }
         }
         return await BrowseRootAsync(teamId, projectId);
+    }
+
+    public TreeNode<BrowserItem> CreateTreeNodeFromFolder(RequirementSpecificationFolder x)
+    {
+        return new TreeNode<BrowserItem>
+        {
+            Value = new BrowserItem { RequirementFolder = x, Color = x.Color },
+            Text = x.Name,
+            Icon = x.Icon ?? Icons.Material.Filled.Folder,
+            Expandable = true,
+            Children = null,
+        };
     }
 
     public TreeNode<BrowserItem> CreateRequirementNode(Requirement requirement)

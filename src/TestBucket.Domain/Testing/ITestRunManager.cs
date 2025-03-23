@@ -19,5 +19,10 @@ public interface ITestRunManager
     Task DeleteTestRunAsync(ClaimsPrincipal principal, TestRun testRun);
     #endregion Test Runs
 
+    #region Test Case Runs
     Task SaveTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun);
+    Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
+    Task<PagedResult<TestRun>> SearchTestRunsAsync(ClaimsPrincipal principal, SearchTestRunQuery query);
+
+    #endregion Test Case Runs
 }

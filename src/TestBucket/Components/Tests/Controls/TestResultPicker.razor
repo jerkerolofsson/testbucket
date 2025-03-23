@@ -3,7 +3,6 @@
 
 <Field>
     <FieldHeader>Result</FieldHeader>
-
     <MudSelect Variant="Variant.Outlined" T="TestResult" Value="@Result" ValueChanged="OnResultChanged">
         @foreach (var result in _results)
         {
@@ -11,15 +10,15 @@
         }
     </MudSelect>
 
-    <MudStack Row>
-        @if(Result == TestResult.NoRun)
-        {
+    @if(Result == TestResult.NoRun)
+    {
+        <MudStack Row>
             <MudButton OnClick="() => OnResultChanged(TestResult.Passed)" StartIcon="@Icons.Material.Filled.CheckCircle" Style="color: var(--clr-passed)" Color="Color.Success">PASS</MudButton>
             <MudButton OnClick="() => OnResultChanged(TestResult.Failed)" StartIcon="@Icons.Material.Filled.RemoveCircle" Style="color: var(--clr-failed)" Color="Color.Error">FAIL</MudButton>
             <MudButton OnClick="() => OnResultChanged(TestResult.Blocked)" StartIcon="@Icons.Material.Filled.StopCircle" Style="color: var(--clr-blocked)" Color="Color.Warning">BLOCK</MudButton>
             <MudButton OnClick="() => OnResultChanged(TestResult.Skipped)" StartIcon="@Icons.Material.Filled.SkipNext" Style="color: var(--clr-skipped)" Color="Color.Warning">SKIP</MudButton>
-        }
-    </MudStack>
+        </MudStack>
+    }
 </Field>
 
 @code {

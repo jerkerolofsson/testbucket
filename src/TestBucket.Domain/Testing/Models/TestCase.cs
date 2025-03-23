@@ -18,26 +18,6 @@ public class TestCase : TestEntity
     public string? ExternalId { get; set; }
 
     /// <summary>
-    /// Timestamp when the test case was created
-    /// </summary>
-    public DateTimeOffset Created { get; set; }
-
-    /// <summary>
-    /// Modified by user name
-    /// </summary>
-    public string? ModifiedBy { get; set; }
-
-    /// <summary>
-    /// Timestamp when the test case was Modified
-    /// </summary>
-    public DateTimeOffset Modified { get; set; }
-
-    /// <summary>
-    /// Created by user name
-    /// </summary>
-    public string? CreatedBy { get; set; }
-
-    /// <summary>
     /// Name of the test case
     /// </summary>
     public required string Name { get; set; }
@@ -88,7 +68,6 @@ public class TestCase : TestEntity
     /// IDs for the path, for navigation
     /// </summary>
     public long[]? PathIds { get; set; }
-
 
     /// <summary>
     /// ID of test suite

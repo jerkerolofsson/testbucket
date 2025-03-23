@@ -5,6 +5,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Identity;
+
 using TestBucket.Domain.Identity.Models;
 
 namespace TestBucket.Domain.Identity;
@@ -15,6 +17,13 @@ internal class UserManager : IUserManager
     public UserManager(ISuperAdminUserService superAdminUserService)
     {
         _superAdminUserService = superAdminUserService;
+    }
+
+    public async Task<IdentityResult> AddUserAsync(ClaimsPrincipal principal, string email, string password)
+    {
+        principal.ThrowIfNotAdmin();
+        var tenantId = principal.GetTentantIdOrThrow();
+        return await _superAdminUserService.RegisterAndConfirmUserAsync(tenantId, email, password);
     }
 
     public async Task<PagedResult<ApplicationUser>> BrowseAsync(ClaimsPrincipal principal, int offset, int count)

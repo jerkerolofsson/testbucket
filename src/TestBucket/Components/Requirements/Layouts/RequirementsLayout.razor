@@ -1,6 +1,7 @@
 ﻿@using Humanizer
 @using TestBucket.Components.Layout
 @using TestBucket.Components.Requirements.Controls
+@using TestBucket.Components.Shared.Splitter
 @using TestBucket.Domain.Requirements.Models
 @using TestBucket.Domain.Teams.Models
 @layout AppLayout
@@ -9,15 +10,18 @@
 
 <TenantRedirect />
 
-<MudSplitter Class="container-fill" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
+<Splitter Class="container-fill" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
-        <RequirementTreeView OnSpecificationClicked="OnSpecificationClicked" OnRequirementClicked="OnRequirementClicked" />
+        <RequirementTreeView 
+            Project="@Project"
+            Team="@Team"
+            OnSpecificationClicked="OnSpecificationClicked" OnRequirementClicked="OnRequirementClicked" />
     </StartContent>
 
     <EndContent>
         @Body
     </EndContent>
-</MudSplitter>
+</Splitter>
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";

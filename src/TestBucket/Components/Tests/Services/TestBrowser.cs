@@ -12,6 +12,7 @@ using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications;
+using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Formats;
 
 namespace TestBucket.Components.Tests.Services;
@@ -21,6 +22,9 @@ internal class TestBrowser : TenantBaseService
     private readonly IDialogService _dialogService;
     private readonly ITextTestResultsImporter _textImporter;
     private readonly IFileRepository _fileRepository;
+    private readonly ITestRunManager _testRunManager;
+
+    // todo: migrate to domain manager!
     private readonly ITestCaseRepository _testCaseRepository;
 
     public TestBrowser(TestSuiteService testSuiteService,
@@ -28,7 +32,8 @@ internal class TestBrowser : TenantBaseService
         IDialogService dialogService,
         ITextTestResultsImporter textImporter,
         IFileRepository fileRepository,
-        ITestCaseRepository testCaseRepository) : base(authenticationStateProvider)
+        ITestCaseRepository testCaseRepository,
+        ITestRunManager testRunManager) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
@@ -36,6 +41,7 @@ internal class TestBrowser : TenantBaseService
         _textImporter = textImporter;
         _fileRepository = fileRepository;
         _testCaseRepository = testCaseRepository;
+        _testRunManager = testRunManager;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -98,22 +104,22 @@ internal class TestBrowser : TenantBaseService
     /// <param name="offset"></param>
     /// <param name="count"></param>
     /// <returns></returns>
-    public async Task<PagedResult<TestCase>> SearchTestCasesAsync(long? testSuiteId, long? folderId, string? searchText, int offset, int count = 20)
-    {
-        if(string.IsNullOrWhiteSpace(searchText))
-        {
-            searchText = null;
-        }
+    //public async Task<PagedResult<TestCase>> SearchTestCasesAsync(long? testSuiteId, long? folderId, string? searchText, int offset, int count = 20)
+    //{
+    //    if(string.IsNullOrWhiteSpace(searchText))
+    //    {
+    //        searchText = null;
+    //    }
 
-        return await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
-        {
-            Text = searchText,
-            TestSuiteId = testSuiteId,
-            FolderId = folderId,
-            Count = count,
-            Offset = offset,
-        });
-    }
+    //    return await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
+    //    {
+    //        Text = searchText,
+    //        TestSuiteId = testSuiteId,
+    //        FolderId = folderId,
+    //        Count = count,
+    //        Offset = offset,
+    //    });
+    //}
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery query, int offset, int count = 20)
     {
         query.Offset = offset;
@@ -236,14 +242,15 @@ internal class TestBrowser : TenantBaseService
         {
             searchText = null;
         }
-
-        return await _testSuiteService.SearchTestCaseRunsAsync(new SearchTestQuery
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testRunManager.SearchTestCaseRunsAsync(principal, new SearchTestCaseRunQuery
         {
             Text = searchText,
             TestRunId = testRunId,
             Count = count,
             Offset = offset,
         });
+
     }
 
 
@@ -263,6 +270,7 @@ internal class TestBrowser : TenantBaseService
         foreach (var testCase in recentRunsResult.Items)
         {
             var testCaseNode = CreateTreeNodeFromTestCase(testCase);
+
             rootItems.Add(testCaseNode);
         }
         return rootItems;
@@ -282,16 +290,15 @@ internal class TestBrowser : TenantBaseService
 
         // For test runs, as there can be a huge amount, sort them by year
         List<TreeNode<BrowserItem>> recentRuns = [];
-        var recentRunsResult = await _testSuiteService.SearchTestRunsAsync(new SearchQuery() { ProjectId = projectId, Count = 50, TeamId = teamId, Offset = 0 });
+
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        var query = new SearchTestRunQuery() { ProjectId = projectId, Count = 50, TeamId = teamId, Offset = 0 };
+        var recentRunsResult = await _testRunManager.SearchTestRunsAsync(principal, query);
+
         foreach (var testRun in recentRunsResult.Items)
         {
-            recentRuns.Add(new TreeNode<BrowserItem>
-            {
-                Value = new BrowserItem() {  TestRun = testRun },
-                Text = testRun.Name,
-                Icon = Icons.Material.Filled.PlaylistPlay,
-                Children = [],
-            });
+            recentRuns.Add(CreateTestRunTreeNode(testRun));
         }
 
         return new List<TreeNode<BrowserItem>>
@@ -319,6 +326,17 @@ internal class TestBrowser : TenantBaseService
                 Value = new BrowserItem() { RootFolderName = "TestParamaters" },
                 Icon = Icons.Material.Filled.FolderOpen,
             }
+        };
+    }
+
+    public TreeNode<BrowserItem> CreateTestRunTreeNode(TestRun testRun)
+    {
+        return new TreeNode<BrowserItem>
+        {
+            Value = new BrowserItem() { TestRun = testRun },
+            Text = testRun.Name,
+            Icon = Icons.Material.Filled.PlaylistPlay,
+            Children = [],
         };
     }
 

@@ -3,10 +3,12 @@
 @using TestBucket.Components.Uploads.Controls
 @using TestBucket.Domain.Files.Models
 @using TestBucket.Domain.Teams.Models
-@inject ProjectService projectService
+@inject ProjectController projectService
 
 @if (Project is not null)
 {
+    <MudText Class="mb-3" Typo="Typo.h1">Fields</MudText>
+
     <FieldDefinitionTable ProjectId="@Project.Id"/>
 }
 

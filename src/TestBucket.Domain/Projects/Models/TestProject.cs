@@ -63,6 +63,8 @@ public class TestProject
     public long? TeamId { get; set; }
     public Team? Team { get; set; }
 
+    public IEnumerable<ExternalSystem>? ExternalSystems { get; set; }
+
     public IEnumerable<ApplicationUser>? ProjectMembers { get; set; }
 
 }

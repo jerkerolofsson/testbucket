@@ -7,9 +7,12 @@ namespace TestBucket.Components.Tests.Controls;
 public partial class TestCaseRunGrid
 {
     [Parameter] public TestRun? Run { get; set; }
-    [Parameter] public EventCallback<TestCaseRun> OnTestCaseRunClicked { get; set; }
+    [Parameter] public TestCaseRun? SelectedTestCaseRun { get; set; }
+    [Parameter] public EventCallback<TestCaseRun> SelectedTestCaseRunChanged { get; set; }
 
     private string? _searchText;
+
+    private TestCaseRun? _selectedItem;
 
     private MudDataGrid<TestCaseRun?> _dataGrid = default!;
 
@@ -29,12 +32,21 @@ public partial class TestCaseRunGrid
     #region Lifecycle
     protected override void OnInitialized()
     {
+        _selectedItem = SelectedTestCaseRun;
         testCaseManager.AddObserver(this);
     }
 
+    private TestRun? _run;
+
     protected override void OnParametersSet()
     {
-        _dataGrid?.ReloadServerData();
+        if (_selectedItem != SelectedTestCaseRun || SelectedTestCaseRun is null || _run != Run)
+        {
+            _run = Run;
+
+            _selectedItem = SelectedTestCaseRun;
+            _dataGrid?.ReloadServerData();
+        }
     }
 
     public void Dispose()
@@ -89,7 +101,8 @@ public partial class TestCaseRunGrid
 
     private async Task OnClicked(TestCaseRun testCaseRun)
     {
-        await OnTestCaseRunClicked.InvokeAsync(testCaseRun);
+        _selectedItem = testCaseRun;
+        await SelectedTestCaseRunChanged.InvokeAsync(testCaseRun);
     }
 
     //private async Task CreateNewTestCaseAsync()
@@ -110,9 +123,41 @@ public partial class TestCaseRunGrid
         _dataGrid?.ReloadServerData();
     }
 
+    private async Task ShowFilterAsync()
+    {
+        await Task.Yield();
+    }
+
+    public async Task SelectNextTestCaseRun()
+    {
+        if(_items.Length > 0)
+        {
+            if(_selectedItem is null)
+            {
+                _selectedItem = _items[0];
+                await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
+                return;
+            }
+
+            var index = Array.IndexOf(_items, _selectedItem);
+            index++;
+            if(index < _items.Length)
+            {
+                _selectedItem = _items[index];
+                await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
+            }
+            else
+            {
+                // Next page?
+            }
+        }
+    }
+
+    private TestCaseRun[] _items = [];
+
     private async Task<GridData<TestCaseRun>> LoadGridData(GridState<TestCaseRun> state)
     {
-        if(Run is null)
+        if (Run is null)
         {
             return new()
             {
@@ -121,6 +166,9 @@ public partial class TestCaseRunGrid
             };
         }
         var result = await testBrowser.SearchTestCaseRunsAsync(Run.Id, _searchText, state.Page * state.PageSize, state.PageSize);
+        _items = result.Items;
+
+        await SelectFirstItemIfNoSelectionOrCurrentSelectionIsNotFoundAsync();
 
         GridData<TestCaseRun> data = new()
         {
@@ -131,4 +179,15 @@ public partial class TestCaseRunGrid
         return data;
     }
 
+    private async Task SelectFirstItemIfNoSelectionOrCurrentSelectionIsNotFoundAsync()
+    {
+        if (_items.Length > 0)
+        {
+            if (_selectedItem is null || !_items.Contains(_selectedItem))
+            {
+                _selectedItem = _items[0];
+                await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
+            }
+        }
+    }
 }

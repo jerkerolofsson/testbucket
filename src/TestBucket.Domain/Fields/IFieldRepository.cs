@@ -62,6 +62,31 @@ public interface IFieldRepository
 
     #endregion
 
+    #region Test Run
+
+    /// <summary>
+    /// Gets all test run fields
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="testCaseRunId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(string tenantId, long testCaseRunId);
+
+    /// <summary>
+    /// Saves all test run fields
+    /// </summary>
+    /// <param name="fields"></param>
+    /// <returns></returns>
+    Task SaveTestRunFieldsAsync(IEnumerable<TestRunField> fields);
+
+    /// <summary>
+    /// Adds a new field for the test run if it doesn't exist or replaces the value
+    /// </summary>
+    /// <param name="field"></param>
+    /// <returns></returns>
+    Task UpsertTestRunFieldsAsync(TestRunField field);
+
+    #endregion Test Case Runs
     #region Test Case Run
 
     Task<IReadOnlyList<TestCaseRunField>> GetTestCaseRunFieldsAsync(string tenantId, long testCaseRunId);
@@ -80,7 +105,6 @@ public interface IFieldRepository
     /// <returns></returns>
     Task UpsertTestCaseRunFieldsAsync(TestCaseRunField field);
 
-
-    #endregion
+    #endregion Test Case Runs
 
 }

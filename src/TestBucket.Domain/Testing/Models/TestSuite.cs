@@ -12,26 +12,6 @@ public class TestSuite : TestEntity
     public long Id { get; set; }
 
     /// <summary>
-    /// Created by user name
-    /// </summary>
-    public string? CreatedBy { get; set; }
-
-    /// <summary>
-    /// Timestamp when the entity was created
-    /// </summary>
-    public DateTimeOffset Created { get; set; }
-
-    /// <summary>
-    /// Modified by user name
-    /// </summary>
-    public string? ModifiedBy { get; set; }
-
-    /// <summary>
-    /// Timestamp when the entity was Modified
-    /// </summary>
-    public DateTimeOffset Modified { get; set; }
-
-    /// <summary>
     /// Name of the test case
     /// </summary>
     public required string Name { get; set; }

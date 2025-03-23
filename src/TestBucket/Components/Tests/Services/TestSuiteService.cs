@@ -1,42 +1,40 @@
 ﻿
 using TestBucket.Components.Tenants;
-using TestBucket.Domain.Fields.Specifications;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications;
+using TestBucket.Domain.Testing.Specifications.TestCases;
 
 namespace TestBucket.Components.Tests.Services;
 
 internal class TestSuiteService : TenantBaseService
 {
     private readonly ITestCaseRepository _testCaseRepo;
+    private readonly IFieldDefinitionManager _fieldDefinitionManager;
 
     public TestSuiteService(ITestCaseRepository testCaseRepo,
-        AuthenticationStateProvider authenticationStateProvider) : base(authenticationStateProvider)
+        AuthenticationStateProvider authenticationStateProvider,
+        IFieldDefinitionManager fieldDefinitionManager) : base(authenticationStateProvider)
     {
         _testCaseRepo = testCaseRepo;
+        _fieldDefinitionManager = fieldDefinitionManager;
     }
 
     #region Test Runs
 
-    internal async Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(SearchTestQuery searchTestQuery)
-    {
-        var tenantId = await GetTenantIdAsync();
-        return await _testCaseRepo.SearchTestCaseRunsAsync(tenantId, searchTestQuery);
-    }
-
-    public async Task<int[]> GetTestRunYearsAsync(long? teamId, long? projectId)
-    {
-        var tenantId = await GetTenantIdAsync();
-        return await _testCaseRepo.GetTestRunYearsAsync(tenantId, teamId, projectId);
-    }
-    public async Task<PagedResult<TestRun>> SearchTestRunsAsync(SearchQuery query)
-    {
-        var tenantId = await GetTenantIdAsync();
-        return await _testCaseRepo.SearchTestRunsAsync(tenantId, query);
-    }
+    //public async Task<int[]> GetTestRunYearsAsync(long? teamId, long? projectId)
+    //{
+    //    var tenantId = await GetTenantIdAsync();
+    //    return await _testCaseRepo.GetTestRunYearsAsync(tenantId, teamId, projectId);
+    //}
+    //public async Task<PagedResult<TestRun>> SearchTestRunsAsync(SearchQuery query)
+    //{
+    //    var tenantId = await GetTenantIdAsync();
+    //    return await _testCaseRepo.SearchTestRunsAsync(tenantId, query);
+    //}
     #endregion
 
     /// <summary>
@@ -148,8 +146,10 @@ internal class TestSuiteService : TenantBaseService
     internal async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery searchTestQuery)
     {
         var tenantId = await GetTenantIdAsync();
+        var principal = await GetUserClaimsPrincipalAsync();
+        var fields = await _fieldDefinitionManager.GetDefinitionsAsync(principal, searchTestQuery.ProjectId, FieldTarget.TestCase);
 
-        var filters = TestCaseFilterSpecificationBuilder.From(searchTestQuery);
+        var filters = TestCaseFilterSpecificationBuilder.From(searchTestQuery, fields);
 
         filters = [new FilterByTenant<TestCase>(tenantId), .. filters];
         return await _testCaseRepo.SearchTestCasesAsync(searchTestQuery.Offset, searchTestQuery.Count, filters);

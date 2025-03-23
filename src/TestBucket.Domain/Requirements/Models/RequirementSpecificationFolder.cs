@@ -2,7 +2,7 @@
 
 [Table("spec__folders")]
 [Index(nameof(TenantId), nameof(Created))]
-public class RequirementSpecificationFolder
+public class RequirementSpecificationFolder : ProjectEntity
 {
     /// <summary>
     /// Database ID
@@ -34,15 +34,6 @@ public class RequirementSpecificationFolder
     /// </summary>
     public string? Description { get; set; }
 
-    /// <summary>
-    /// ID of tenant
-    /// </summary>
-    public required string TenantId { get; set; }
-
-    /// <summary>
-    /// ID of project
-    /// </summary>
-    public long? TestProjectId { get; set; }
 
     /// <summary>
     /// ID of requirement specification
@@ -67,7 +58,5 @@ public class RequirementSpecificationFolder
     public long? ParentId { get; set; }
     public RequirementSpecificationFolder? Parent { get; set; }
     public IEnumerable<Requirement>? Requirements { get; set; }
-    public Tenant? Tenant { get; set; }
-    public TestProject? TestProject { get; set; }
     public RequirementSpecification? RequirementSpecification { get; set; }
 }

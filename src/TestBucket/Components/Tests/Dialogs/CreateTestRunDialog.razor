@@ -1,6 +1,7 @@
 ﻿@attribute [Authorize(Roles = "ADMIN")]
 @inject TestCaseEditorController testCaseEditorService
-@inject ProjectService projectService
+@inject ProjectController projectService
+@inject FieldController fieldController
 
 <EditForm Model="@_run" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
@@ -14,10 +15,13 @@
                         <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_run.Name"></MudTextField>
                     </Field>
                 }
+
                 @if (_errorMessage is not null)
                 {
                     <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
                 }
+
+                <FieldsEditor AutoSaveChanges="false" @ref="_fieldsEditor" TestRun="@_run" />
 
             </MudStack>
         </DialogContent>
@@ -31,11 +35,13 @@
 
 @code {
     private string? _errorMessage;
+    private FieldsEditor? _fieldsEditor;
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter] public long? TestProjectId { get; set; }
+    [Parameter] public string? Name { get; set; }
 
     private TestRun _run = new() { Name = "", TenantId = "", Created = DateTimeOffset.UtcNow };
 
@@ -43,6 +49,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        _run.Name = Name ?? "New Run";
         if(TestProjectId is not null)
         {
             var project = await projectService.GetProjectByIdAsync(TestProjectId.Value);
@@ -75,6 +82,22 @@
         _run.TestProjectId = TestProjectId;
         _run.TeamId = _teamId;
         await testCaseEditorService.AddTestRunAsync(_run);
+
+        // Add fields
+        if(_fieldsEditor is not null)
+        {
+            if(_fieldsEditor.TestRunFields.Count > 0)
+            {
+                var fields = _fieldsEditor.TestRunFields;
+                foreach(var field in fields)
+                {
+                    field.TestRunId = _run.Id;
+                }
+
+                await fieldController.SaveTestRunFieldsAsync(fields);
+            }
+        }
+
         MudDialog.Close(_run);
     }
 }

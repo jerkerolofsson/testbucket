@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.Specifications;
+using TestBucket.Domain.Requirements.Specifications.Folders;
+using TestBucket.Domain.Requirements.Specifications.Links;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
@@ -70,8 +72,8 @@ namespace TestBucket.Domain.Requirements
         {
             principal.ThrowIfNotAdmin();
 
-            var teantId = principal.GetTentantIdOrThrow();
-            var requirementLink = new RequirementTestLink { RequirementId = requirement.Id, TestCaseId = testCase.Id, TenantId = teantId };
+            var tenantId = principal.GetTentantIdOrThrow();
+            var requirementLink = new RequirementTestLink { RequirementId = requirement.Id, TestCaseId = testCase.Id, TenantId = tenantId };
             await _repository.AddRequirementLinkAsync(requirementLink);
         }
 
@@ -83,7 +85,59 @@ namespace TestBucket.Domain.Requirements
             requirement.CreatedBy = principal.Identity?.Name;
             requirement.ModifiedBy = principal.Identity?.Name;
 
+            await GenerateFoldersFromPathAsync(requirement);
+
             await _repository.AddRequirementAsync(requirement);
+        }
+
+        public async Task<RequirementSpecificationFolder[]> SearchRequirementFoldersAsync(ClaimsPrincipal principal, SearchRequirementQuery query)
+        {
+            var tenantId = principal.GetTentantIdOrThrow();
+
+            List<FilterSpecification<RequirementSpecificationFolder>> filters = [ new FilterByTenant<RequirementSpecificationFolder>(tenantId) ];
+            if(query.CompareFolder)
+            {
+                filters.Add(new FilterRequirementFoldersByParentId(query.FolderId));
+            }
+            if (query.RequirementSpecificationId is not null)
+            {
+                filters.Add(new FilterRequirementFoldersBySpecification(query.RequirementSpecificationId));
+            }
+
+            return await _repository.SearchRequirementFoldersAsync(filters.ToArray());
+        }
+
+        private async Task GenerateFoldersFromPathAsync(Requirement requirement)
+        {
+            if (requirement.Path is not null)
+            {
+                long? parentId = null;
+                foreach (var folderName in requirement.Path.Split('/', StringSplitOptions.TrimEntries|StringSplitOptions.RemoveEmptyEntries))
+                {
+                    FilterSpecification<RequirementSpecificationFolder>[] filters = [
+                        new FilterByTenant<RequirementSpecificationFolder>(requirement.TenantId!),
+                        new FilterRequirementFoldersBySpecification(requirement.RequirementSpecificationId),
+                        new FilterRequirementFoldersByParentId(parentId),
+                        ];
+
+                    var folder = (await _repository.SearchRequirementFoldersAsync(filters)).FirstOrDefault();
+                    if (folder is null)
+                    {
+                        folder = new RequirementSpecificationFolder
+                        {
+                            Name = folderName,
+                            TestProjectId = requirement.TestProjectId,
+                            TenantId = requirement.TenantId,
+                            RequirementSpecificationId = requirement.RequirementSpecificationId,
+                            ParentId = parentId
+                        };
+                        await _repository.AddRequirementFolderAsync(folder);
+                    }
+
+                    parentId = folder.Id;
+                    requirement.RequirementSpecificationFolderId = folder.Id;
+                }
+            }
         }
 
         public async Task DeleteRequirementAsync(ClaimsPrincipal principal, Requirement requirement)

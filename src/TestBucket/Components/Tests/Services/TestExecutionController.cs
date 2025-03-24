@@ -70,7 +70,7 @@ internal class TestExecutionController : TenantBaseService
         }
     }
 
-    private async Task ShowTestCaseRunFailureDialogAsync(TestCaseRun testCaseRun)
+    public async Task ShowTestCaseRunFailureDialogAsync(TestCaseRun testCaseRun)
     {
         var parameters = new DialogParameters<TestCaseRunFailureDialog>()
         {

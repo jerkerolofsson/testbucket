@@ -85,4 +85,9 @@ public class FieldDefinition : ProjectEntity
     /// Can be used to save field values in the database when importing but not display the values in the UI
     /// </summary>
     public bool IsVisible { get; set; }
+
+    /// <summary>
+    /// If true, the field can be calculated using AI Classification
+    /// </summary>
+    public bool UseClassifier { get; set; }
 }

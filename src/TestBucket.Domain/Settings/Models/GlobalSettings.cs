@@ -21,9 +21,19 @@ public class GlobalSettings
     public string AiProvider { get; set; } = "ollama";
 
     /// <summary>
-    /// Model to use for LLM
+    /// Default model to use for LLM
     /// </summary>
     public string LlmModel { get; set; } = "deepseek-r1:30b";
+
+    /// <summary>
+    /// Model to use for LLM test case generation. If null the default model will be used
+    /// </summary>
+    public string? LlmTestGenerationModel { get; set; }
+
+    /// <summary>
+    /// Model to use for LLM classification. If null the default model will be used
+    /// </summary>
+    public string? LlmClassificationModel { get; set; }
 
     /// <summary>
     /// URL to ollama/azure etc..

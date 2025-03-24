@@ -16,8 +16,12 @@ public static class FieldValueConverter
         {
             return false;
         }
+        fieldValue.StringValue = null;
+        fieldValue.DoubleValue = null;
+        fieldValue.LongValue = null;
+        fieldValue.StringValuesList = null;
 
-        switch(fieldDefinition.Type)
+        switch (fieldDefinition.Type)
         {
             case FieldType.Boolean:
                 fieldValue.BooleanValue = values[0] == "true";
@@ -39,9 +43,10 @@ public static class FieldValueConverter
                 }
                 break;
 
+            case FieldType.MultiSelection:
             case FieldType.StringArray:
-                fieldValue.StringArrayValue = values;
-                break;
+                fieldValue.StringValuesList = values.ToList();
+                return true;
 
             case FieldType.SingleSelection:
             case FieldType.String:

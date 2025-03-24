@@ -3,11 +3,7 @@
 @inject UploadService uploadService
 @inject IJSRuntime js
 
-<MudButton 
-    StartIcon="@Icons.Material.Filled.ScreenshotMonitor"
-    Variant="Variant.Filled" 
-    Color="Color.Primary" 
-    OnClick="CaptureScreenShot">Capture Screenshot</MudButton>
+<MudLink OnClick="CaptureScreenShot">Capture Screenshot on this device</MudLink>
 
 @code {
     [Parameter] public long? TestCaseId { get; set; }

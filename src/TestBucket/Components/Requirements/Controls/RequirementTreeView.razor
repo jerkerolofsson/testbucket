@@ -28,7 +28,11 @@
     }
     else
     {
-        <TreeView Class="pa-2"
+        <TreeView 
+        Class="pa-2"
+        ItemEdited="OnRenamed"
+        ItemEditCanceled="OnItemEditCanceled"
+        EditItem="@_editItem"
         T="BrowserItem"
         SelectedValue="@_selectedTreeItem"
         SelectedValueChanged="OnSelectedValueChangedAsync"
@@ -67,6 +71,7 @@
                         <ChildContent>
                             @if (context.Value?.RequirementSpecification is not null)
                             {
+                                <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">Rename</MudMenuItem>
                                 <RequirementSpecificationMenuItems RequirementSpecification="@context.Value.RequirementSpecification"/>
                             }
                             else if (context.Value?.Requirement is not null)
@@ -126,6 +131,32 @@
     [Parameter] public Team? Team { get; set; }
 
     private bool _isSearching = false;
+
+    private TreeNode<BrowserItem>? _editItem;
+
+    private void BeginRename(TreeNode<BrowserItem> item)
+    {
+        _editItem = item;
+    }
+
+    private void OnItemEditCanceled()
+    {
+        _editItem = null;
+    }
+
+    private async Task OnRenamed(string text)
+    {
+        if(_editItem is not null)
+        {
+            if(_editItem.Value?.RequirementSpecification is not null)
+            {
+                _editItem.Text = text;
+                _editItem.Value.RequirementSpecification.Name = text;
+                await editor.SaveRequirementSpecificationAsync(_editItem.Value.RequirementSpecification);
+            }
+        }
+        _editItem = null;
+    }
 
     private async Task OnSelectedValueChangedAsync(BrowserItem? item)
     {

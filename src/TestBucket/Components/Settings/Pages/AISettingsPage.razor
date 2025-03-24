@@ -1,0 +1,100 @@
+﻿@attribute [Authorize(Roles="SUPERADMIN")]
+@page "/{TenantId}/Settings/Categories/AI"
+@using TestBucket.Domain.Settings
+@layout SettingsLayout
+@inject ISettingsManager settingsManager
+@inject ISettingsProvider settingsProvider
+@inject AuthenticationStateProvider authenticationStateProvider
+
+<MudStack Class="container-settings-page">
+
+    <MudText Typo="Typo.h1">AI</MudText>
+    <MudText Class="" Typo="Typo.body1">
+        Test Bucket can use an external AI service to enrich the experience.
+        <ul>
+            <li>Generate test cases.</li>
+            <li>Automatically classify metadata for test cases and other entities.</li>
+        </ul>
+    </MudText>
+
+    @if (_globalSettings is not null)
+    {
+        <MudText Class="mt-5" Typo="Typo.h2">Provider</MudText>
+        <MudStack>
+            <MudStack Row>
+                <MudRadioGroup Value="_globalSettings.AiProvider" ValueChanged="OnAiProviderChanged" T="string">
+                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("ollama")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Ollama"/>  Ollama</MudRadio>
+                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("github-models")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.GitHub" /> Github Models</MudRadio>
+                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("azure-ai")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.MicrosoftAzure" /> Azure AI</MudRadio>
+                </MudRadioGroup>
+            </MudStack>
+
+            @if(_globalSettings.AiProvider == "ollama")
+            {
+                <MudText>Ollama URL</MudText>
+                <MudTextField T="string" Placeholder="Ollama URL" Variant="Variant.Text" Value="@_globalSettings.AiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
+            }
+
+            @if(_globalSettings.AiProvider == "azure-ai")
+            {
+                <MudText>Azure URL</MudText>
+                <MudTextField T="string"Placeholder="Azure URL"  Variant="Variant.Text" Value="@_globalSettings.AiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
+            }
+            @if(_globalSettings.AiProvider == "github-models")
+            {
+                <MudText>Github Models URL</MudText>
+                <MudTextField T="string"Placeholder="Github Models URL"  Variant="Variant.Text" Value="@_globalSettings.AiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
+                <MudText Typo="Typo.subtitle1" Color="Color.Warning">Gibhub models should only be used for prototyping</MudText>
+            }
+
+        </MudStack>
+        
+        <MudText Class="mt-5" Typo="Typo.h2">Default Model</MudText>
+        <MudStack Row Spacing="5">
+            <MudRadioGroup Value="_globalSettings.LlmModel" ValueChanged="OnDefaultModelChanged" T="string">
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:3b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 3b</MudRadio>
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:1b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 1b</MudRadio>
+            </MudRadioGroup>
+            <MudLink Href="@($"/{TenantId}/Settings/Searchq=?Model")">More</MudLink>
+        </MudStack>
+
+        <MudText Class="mt-2" Typo="Typo.h2">Classification Model</MudText>
+        <MudStack Row Spacing="5">
+            <MudRadioGroup Value="_globalSettings.LlmClassificationModel" ValueChanged="OnClassificationModelChanged" T="string">
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:3b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 3b</MudRadio>
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:1b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 1b</MudRadio>
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("deepseek-r1:1.5b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Deepseek" /> deepseek-R1 1.5b</MudRadio>
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("phi3:3.8b")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.Microsoft" /> phi3 3.8b</MudRadio>
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("phi4")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.Microsoft" /> phi4</MudRadio>
+            </MudRadioGroup>
+            <MudLink Href="@($"/{TenantId}/Settings/Searchq=?Model")">More</MudLink>
+        </MudStack>
+
+        <MudText Class="mt-5" Typo="Typo.h2">Test Generator Model</MudText>
+        <MudStack Row Spacing="5">
+            <MudRadioGroup Value="_globalSettings.LlmTestGenerationModel" ValueChanged="OnGeneratorModelChanged" T="string">
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:3b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 3b</MudRadio>
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:1b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 1b</MudRadio>
+            </MudRadioGroup>
+        </MudStack>
+        <MudLink Href="@($"/{TenantId}/Settings/Searchq=?Model")">More</MudLink>
+
+    }
+
+    <MudText Class="mt-5" Typo="Typo.h1">Advanced</MudText>
+
+    @foreach(var section in _sections)
+    {
+        <MudText Class="mt-2 mb-2" Typo="Typo.h2">@(section.Name)</MudText>
+        <MudStack Spacing="1">
+            @foreach (var setting in _settings.Where(x => x.Metadata.Section.Name == section.Name))
+            {
+                if(_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
+                {
+                    <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                    </FieldEditor>
+                }
+            }
+        </MudStack>
+    }
+</MudStack>

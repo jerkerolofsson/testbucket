@@ -1,4 +1,4 @@
-﻿@typeparam T
+﻿@typeparam T where T : class
 
 @if(Item is not null && Item.Visible)
 {
@@ -29,22 +29,38 @@
             </div>
 
             <div @onclick="OnClicked">
-                @if(TreeView.ItemTemplate is not null)
+                @if (EditItem == Item)
                 {
-                    @TreeView.ItemTemplate(Item)
+                    <MudFocusTrap>
+                        <EditForm Model="@_text" OnValidSubmit="OnRenamed">
+                            <MudTextField @bind-Value="@_text" T="string" />
+                        </EditForm>
+                    </MudFocusTrap>
                 }
                 else
                 {
-                    @Item.Text
+                    @if(TreeView.ItemTemplate is not null)
+                    {
+                        @TreeView.ItemTemplate(Item)
+                    }
+                    else
+                    {
+                        @Item.Text
+                    }
                 }
             </div>
         </div>
 
         @if(Item.Expanded && Item.Children is not null)
         {
-            @foreach(TreeNode<T?> child in Item.Children)
+            @foreach(TreeNode<T> child in Item.Children)
             {
-                <TreeViewNode Item="@child" SelectedValue="@SelectedValue" />
+                <TreeViewNode 
+                    Item="@child" 
+                    SelectedValue="@SelectedValue" 
+                    EditItem="@EditItem" 
+                    ItemEditCanceled="async() => await ItemEditCanceled.InvokeAsync()"
+                    ItemEdited="async (text) => await ItemEdited.InvokeAsync(text)" />
             }
         }
 
@@ -52,11 +68,38 @@
 }
 
 @code {
+    [Parameter] public TreeNode<T>? EditItem { get; set; }
     [Parameter] public TreeNode<T>? Item { get; set; }
     [Parameter] public T? SelectedValue { get; set; }
+    [Parameter] public EventCallback<string> ItemEdited { get; set; }
+    [Parameter] public EventCallback ItemEditCanceled { get; set; }
     [CascadingParameter] public TreeView<T> TreeView { get; set; } = default!;
 
     private string CssClass => $"node " + (IsSelected ? "selected" : "");
+
+    private string _text = "";
+
+    protected async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape")
+        {
+            await ItemEditCanceled.InvokeAsync();
+        }
+    }
+
+    private async Task OnRenamed()
+    {
+        if(Item is not null)
+        {
+            await ItemEdited.InvokeAsync(_text);
+        }
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        _text = Item?.Text ?? "";
+    }
 
     private bool IsSelected 
     {

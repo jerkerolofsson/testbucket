@@ -222,6 +222,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("UseClassifier")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TeamId");
@@ -813,8 +816,14 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("GithubModelsDeveloperKey")
                         .HasColumnType("text");
 
+                    b.Property<string>("LlmClassificationModel")
+                        .HasColumnType("text");
+
                     b.Property<string>("LlmModel")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LlmTestGenerationModel")
                         .HasColumnType("text");
 
                     b.Property<int>("Revision")
@@ -897,6 +906,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<string>("ClassName")
                         .HasColumnType("text");
+
+                    b.Property<bool>("ClassificationRequired")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
@@ -1006,11 +1018,11 @@ namespace TestBucket.Data.Migrations
                     b.Property<long?>("RequirementId")
                         .HasColumnType("bigint");
 
-                    b.PrimitiveCollection<string[]>("StringArrayValue")
-                        .HasColumnType("text[]");
-
                     b.Property<string>("StringValue")
                         .HasColumnType("text");
+
+                    b.Property<List<string>>("StringValuesList")
+                        .HasColumnType("jsonb");
 
                     b.Property<string>("TenantId")
                         .HasColumnType("text");
@@ -1142,11 +1154,11 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
-                    b.PrimitiveCollection<string[]>("StringArrayValue")
-                        .HasColumnType("text[]");
-
                     b.Property<string>("StringValue")
                         .HasColumnType("text");
+
+                    b.Property<List<string>>("StringValuesList")
+                        .HasColumnType("jsonb");
 
                     b.Property<string>("TenantId")
                         .HasColumnType("text");
@@ -1255,11 +1267,11 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
-                    b.PrimitiveCollection<string[]>("StringArrayValue")
-                        .HasColumnType("text[]");
-
                     b.Property<string>("StringValue")
                         .HasColumnType("text");
+
+                    b.Property<List<string>>("StringValuesList")
+                        .HasColumnType("jsonb");
 
                     b.Property<string>("TenantId")
                         .HasColumnType("text");

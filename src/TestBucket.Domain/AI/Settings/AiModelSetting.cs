@@ -15,11 +15,11 @@ namespace TestBucket.Domain.AI.Settings
             _settingsProvider = settingsProvider;
             _progressManager = progressManager;
 
-            Metadata.Name = "LLM Model";
-            Metadata.Description = "Model to use for inference";
+            Metadata.Name = "Default model";
+            Metadata.Description = "Default model to use for inference";
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
-            Metadata.Section.Name = "Provider";
+            Metadata.Section.Name = "Models";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;
             Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;

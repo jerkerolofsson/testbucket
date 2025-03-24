@@ -11,6 +11,7 @@ using TestBucket.Domain.Settings.Appearance;
 using TestBucket.Domain.Settings.Server;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Testing;
+using TestBucket.Domain.Testing.Services.Classification;
 using TestBucket.Domain.Testing.Settings;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -18,12 +19,15 @@ public static class DomainServiceExtensions
 {
     public static IServiceCollection AddDomainServices(this IServiceCollection services)
     {
+        services.AddMediatR(o =>
+        {
+            o.RegisterServicesFromAssembly(typeof(DomainServiceExtensions).Assembly);
+        });
+
         services.AddScoped<IStateService, StateService>();
         services.AddScoped<ITextTestResultsImporter, TextImporter>();
-        services.AddScoped<ITestCaseGenerator, TestCaseGenerator>();
         services.AddScoped<ITestCaseManager, TestCaseManager>();
         services.AddScoped<ITestRunManager, TestRunManager>();
-
         services.AddScoped<IRequirementImporter, RequirementImporter>();
         services.AddScoped<IRequirementManager, RequirementManager>();
         services.AddScoped<IUserManager, UserManager>();
@@ -32,7 +36,12 @@ public static class DomainServiceExtensions
         services.AddScoped<IProjectManager, ProjectManager>();
 
         services.AddScoped<IProgressManager, ProgressManager>();
+
+        // AI
         services.AddScoped<IChatClientFactory, ChatClientFactory>();
+        services.AddScoped<ITestCaseGenerator, TestCaseGenerator>();
+        services.AddScoped<IClassifier, GenericClassifier>();
+        services.AddHostedService<BackgroundClassificationService>();
 
         // Settings
         services.AddScoped<IUserPreferencesManager, UserPreferencesManager>();
@@ -44,6 +53,8 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, AiProviderSetting>();
         services.AddScoped<ISetting, AiProviderUrlSetting>();
         services.AddScoped<ISetting, AiModelSetting>();
+        services.AddScoped<ISetting, AiLlmClassificationModelSetting>();
+        services.AddScoped<ISetting, AiLlmTestGenerationModelSetting>();
         services.AddScoped<ISetting, GithubModelsDeveloperKeySetting>();
         services.AddScoped<ISetting, AzureAiProductionKeySetting>();
 

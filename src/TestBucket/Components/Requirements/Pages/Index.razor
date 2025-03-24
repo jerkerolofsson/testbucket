@@ -3,6 +3,18 @@
 
 @layout RequirementsLayout
 
+<MudStack Class="pa-2">
+    <MudText Class="mb-3" Typo="Typo.h1">Oracle</MudText>
+    <MudText Typo="Typo.h2">
+        Documentation, Requirements and Information about the system under test (SUT).
+    </MudText>
+
+    <MudText Typo="Typo.h2">
+        Manage requirements, evaluate requirement coverage, or upload user documentation.
+        Documentation is useful to get value of AI to generate test cases.
+    </MudText>
+</MudStack>
+
 @code {
     [Parameter] public string TenantId { get; set; } = "";
     [CascadingParameter] TestProject? Project { get; set; }

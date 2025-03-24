@@ -20,7 +20,10 @@ public partial class SearchPage
     /// </summary>
     [CascadingParameter] public TestProject? Project { get; set; }
 
-
+    /// <summary>
+    /// Creates a context that holds information about the current user and project
+    /// </summary>
+    /// <returns></returns>
     private async Task<SettingContext> CreateSettingContextAsync()
     {
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
@@ -28,6 +31,12 @@ public partial class SearchPage
 
         return new SettingContext { Principal = principal, ProjectId = Project?.Id };
     }
+
+    /// <summary>
+    /// Field changed, update the setting
+    /// </summary>
+    /// <param name="fieldValue"></param>
+    /// <returns></returns>
     private async Task OnFieldChangedAsync(FieldValue fieldValue)
     {
         if (_settingsMap.TryGetValue(fieldValue.FieldDefinitionId, out var setting))

@@ -345,3 +345,31 @@ p.mud-typography-subtitle1 {
 .EasyMDEContainer .editor-preview {
     height: 100%;
 }
+
+.settings-radio-lg .mud-radio > span {
+    display:none;
+}
+
+.settings-radio-lg {
+    border: solid 2px transparent;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.settings-radio-lg p svg {
+    margin-right: 8px;
+}
+
+.settings-radio-lg p {
+    display: flex;
+    align-items: center;
+}
+
+.settings-radio-lg:hover {
+    background: var(--mud-palette-primary-hover);
+}
+
+.settings-radio-lg:has(.mud-radio .mud-checked) {
+    border-color: var(--mud-palette-tertiary);
+    color: var(--mud-palette-tertiary);
+}

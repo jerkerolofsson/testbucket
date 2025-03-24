@@ -140,7 +140,7 @@ internal class TestCaseGenerator : ITestCaseGenerator
         // Determine the response format
         string systemPrompt = _systemPrompt;
 
-        var llm = await _chatClientFactory.CreateChatClientAsync();
+        var llm = await _chatClientFactory.CreateChatClientAsync(ModelType.TestGenerator);
 
         if (llm is not null)
         {

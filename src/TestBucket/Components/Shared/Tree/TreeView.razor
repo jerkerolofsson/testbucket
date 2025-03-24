@@ -1,29 +1,35 @@
-﻿@typeparam T
+﻿@typeparam T where T : class
 
 <CascadingValue Value="this">
 
     <div class="@CssClass" style="@Style" aria-role="tree">
         @foreach(var item in Items)
         {
-            <TreeViewNode T="T" Item="item" SelectedValue="@SelectedValue">
+            <TreeViewNode T="T" 
+                Item="item" SelectedValue="@SelectedValue" EditItem="@EditItem" 
+                ItemEdited="async (text) => await ItemEdited.InvokeAsync(text)"
+                ItemEditCanceled="async () => await ItemEditCanceled.InvokeAsync()" >
             </TreeViewNode>
         }
     </div>
 </CascadingValue>
 
 @code {
-        private string CssClass => $"treeview {Class} treeview-{Color.ToDescriptionString()}";
+    private string CssClass => $"treeview {Class} treeview-{Color.ToDescriptionString()}";
+
+    [Parameter] public TreeNode<T>? EditItem { get; set; }
 
     [Parameter] public string? Class { get; set; }
     [Parameter] public string? Style { get; set; }
     [Parameter] public Color Color { get; set; } = Color.Primary;
     [Parameter] public Size IconSize { get; set; } = Size.Medium;
-    
 
     [Parameter] public T? SelectedValue { get; set; }
     [Parameter] public EventCallback<T?> SelectedValueChanged { get; set; }
     [Parameter] public IReadOnlyCollection<T>? SelectedValues { get; set; }
     [Parameter] public EventCallback<IReadOnlyCollection<T>?> SelectedValuesChanged { get; set; }
+    [Parameter] public EventCallback<string> ItemEdited { get; set; }
+    [Parameter] public EventCallback<string> ItemEditCanceled { get; set; }
 
     [Parameter] 
     public Func<T?, Task<IReadOnlyCollection<TreeNode<T>>>>? ServerData { get; set; }
@@ -31,4 +37,8 @@
     [Parameter] public IReadOnlyCollection<TreeNode<T>> Items { get; set; } = [];
 
     [Parameter] public RenderFragment<TreeNode<T>>? ItemTemplate { get; set; }
+
+    protected override void OnParametersSet()
+    {
+    }
 }

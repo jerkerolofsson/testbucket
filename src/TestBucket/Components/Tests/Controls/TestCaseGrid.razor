@@ -65,9 +65,9 @@
                             {
                                 <MudText>@field.StringValue?.ToString()</MudText>
                             }
-                            if (field.StringArrayValue is not null)
+                            if (field.StringValuesList is not null)
                             {
-                                <MudText>@string.Join(", ", field.StringArrayValue)</MudText>
+                                <MudText>@string.Join(", ", field.StringValuesList)</MudText>
                             }
                         }
                     }

@@ -62,10 +62,7 @@ internal class FieldRepository : IFieldRepository
             .Where(x => x.FieldDefinitionId == field.FieldDefinitionId && x.TestCaseId == field.TestCaseId && x.TenantId == field.TenantId).FirstOrDefaultAsync();
         if (existingField is not null)
         {
-            existingField.StringValue = field.StringValue;
-            existingField.DoubleValue = field.DoubleValue;
-            existingField.BooleanValue = field.BooleanValue;
-            existingField.LongValue = field.LongValue;
+            field.CopyTo(existingField);
             dbContext.TestCaseFields.Update(existingField);
         }
         else
@@ -81,21 +78,21 @@ internal class FieldRepository : IFieldRepository
 
     public async Task SaveTestCaseFieldsAsync(IEnumerable<TestCaseField> fields)
     {
+        if (fields.Count() == 0)
+        {
+            return;
+        }
+
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await dbContext.TestCaseFields.AsNoTracking().Where(x => x.TestCaseId == fields.First().TestCaseId).ExecuteDeleteAsync();
 
         foreach(var field in fields)
         {
-            if(field.Id > 0)
-            {
-                dbContext.TestCaseFields.Update(field);
-            }
-            else
-            {
-                var tmp = field.FieldDefinition;
-                field.FieldDefinition = null;
-                await dbContext.TestCaseFields.AddAsync(field);
-                field.FieldDefinition = tmp;
-            }
+            var tmp = field.FieldDefinition;
+            field.FieldDefinition = null;
+            await dbContext.TestCaseFields.AddAsync(field);
+            field.FieldDefinition = tmp;
         }
 
         await dbContext.SaveChangesAsync();
@@ -121,10 +118,7 @@ internal class FieldRepository : IFieldRepository
             .Where(x => x.FieldDefinitionId == field.FieldDefinitionId && x.TestRunId == field.TestRunId && x.TenantId == field.TenantId).FirstOrDefaultAsync();
         if (existingField is not null)
         {
-            existingField.StringValue = field.StringValue;
-            existingField.DoubleValue = field.DoubleValue;
-            existingField.BooleanValue = field.BooleanValue;
-            existingField.LongValue = field.LongValue;
+            field.CopyTo(existingField);
             dbContext.TestRunFields.Update(existingField);
         }
         else
@@ -181,10 +175,7 @@ internal class FieldRepository : IFieldRepository
             .Where(x => x.FieldDefinitionId == field.FieldDefinitionId && x.TestCaseRunId == field.TestCaseRunId && x.TenantId == field.TenantId).FirstOrDefaultAsync();
         if (existingField is not null)
         {
-            existingField.StringValue = field.StringValue;
-            existingField.DoubleValue = field.DoubleValue;
-            existingField.BooleanValue = field.BooleanValue;
-            existingField.LongValue = field.LongValue;
+            field.CopyTo(existingField);
             dbContext.TestCaseRunFields.Update(existingField);
         }
         else

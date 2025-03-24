@@ -5,6 +5,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.AI;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Testing
@@ -12,11 +14,19 @@ namespace TestBucket.Domain.Testing
     public class TestCaseManager : ITestCaseManager
     {
         private readonly List<ITestCaseObserver> _testCaseObservers = new();
+        private readonly IClassifier _classifier;
         private readonly ITestCaseRepository _testCaseRepo;
+        private readonly IFieldManager _fieldManager;
+        private readonly IFieldDefinitionManager _fieldDefinitionManager;
 
-        public TestCaseManager(ITestCaseRepository testCaseRepo)
+        public TestCaseManager(
+            IClassifier classifier,
+            ITestCaseRepository testCaseRepo, IFieldManager fieldManager, IFieldDefinitionManager fieldDefinitionManager)
         {
+            _classifier = classifier;
             _testCaseRepo = testCaseRepo;
+            _fieldManager = fieldManager;
+            _fieldDefinitionManager = fieldDefinitionManager;
         }
 
         /// <summary>
@@ -43,6 +53,7 @@ namespace TestBucket.Domain.Testing
 
             testCase.Modified = testCase.Created = DateTimeOffset.UtcNow;
             testCase.CreatedBy = testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
+            testCase.ClassificationRequired = testCase.Description is not null && testCase.Description.Length > 0;
 
             await _testCaseRepo.AddTestCaseAsync(testCase);
 
@@ -74,6 +85,11 @@ namespace TestBucket.Domain.Testing
         public async Task SaveTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
         {
             principal.GetTentantIdOrThrow(testCase);
+
+            testCase.Modified = DateTimeOffset.UtcNow;
+            testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
+            testCase.ClassificationRequired = testCase.Description is not null && testCase.Description.Length > 0;
+
             await _testCaseRepo.UpdateTestCaseAsync(testCase);
 
             // Notify observers
@@ -82,5 +98,6 @@ namespace TestBucket.Domain.Testing
                 await observer.OnTestSavedAsync(testCase);
             }
         }
+
     }
 }

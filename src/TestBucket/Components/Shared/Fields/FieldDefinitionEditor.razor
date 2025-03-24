@@ -85,6 +85,12 @@
                 </Field>
 
                 <Field>
+                    <FieldHeader>Automatic Classification</FieldHeader>
+                    <MudSwitchM3 Value="FieldDefinition.UseClassifier" ValueChanged="OnUseClassifierChanged" T="bool" Color="Color.Tertiary"></MudSwitchM3>
+                    <FieldDescription>Uses AI to update this field, if it is empty</FieldDescription>
+                </Field>
+
+                <Field>
                     <FieldHeader>Read-Only</FieldHeader>
                     <MudSwitchM3 Value="FieldDefinition.ReadOnly" ValueChanged="OnReadOnlyChanged" T="bool" Color="Color.Tertiary"></MudSwitchM3>
                     <FieldDescription>Read-Only fields cannot be edited in the user interface</FieldDescription>
@@ -135,6 +141,14 @@
         }
     }
 
+    private async Task OnUseClassifierChanged(bool useClassifier)
+    {
+        if (FieldDefinition is not null)
+        {
+            FieldDefinition.UseClassifier = useClassifier;
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
     private async Task OnIsVisibleChanged(bool isVisible)
     {
         if (FieldDefinition is not null)

@@ -2,7 +2,7 @@
 
 namespace TestBucket.Components.Shared.Tree;
 
-public class TreeNode<T> : IEquatable<TreeNode<T>>
+public class TreeNode<T> : IEquatable<TreeNode<T>> where T : class
 {
     public virtual string? Text { get; set; }
 

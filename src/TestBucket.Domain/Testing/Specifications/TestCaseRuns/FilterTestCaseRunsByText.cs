@@ -7,7 +7,7 @@ namespace TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 
 public class FilterTestCaseRunsByText : FilterSpecification<TestCaseRun>
 {
-    private readonly string? _query;
+    private readonly string _query;
 
     public FilterTestCaseRunsByText(string searchPhrase)
     {

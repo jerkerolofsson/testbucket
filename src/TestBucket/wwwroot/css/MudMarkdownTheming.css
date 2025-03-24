@@ -78,9 +78,18 @@
 }
 
 .EasyMDEContainer .editor-preview blockquote {
-    font-weight: bold;
     font-style: italic;
-    font-size: 200%;
+    font-size: 10pt;
+    padding: 8px;
+    border-radius: 4px;
+    background: var(--mud-palette-secondary);
+    color: var(--mud-palette-secondary-text);
+    margin-bottom: 1rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
+}
+.EasyMDEContainer .editor-preview blockquote p {
+    margin: 0;
 }
 
     .EasyMDEContainer .editor-preview hr {
@@ -115,9 +124,13 @@ border-color: var(--mud-palette-primary-darken);
 .EasyMDEContainer .editor-preview ol, 
 .EasyMDEContainer .editor-preview ul, 
 .EasyMDEContainer .editor-preview pre:has(code) {
-
     margin-bottom: 1rem;
 }
+
+.EasyMDEContainer .editor-preview pre:has(code) {
+    overflow: auto;
+}
+
 .EasyMDEContainer .editor-preview ol li,
 .EasyMDEContainer .editor-preview ul li {
     margin-left: 20px;

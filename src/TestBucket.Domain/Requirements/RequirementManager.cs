@@ -118,6 +118,7 @@ namespace TestBucket.Domain.Requirements
                         new FilterByTenant<RequirementSpecificationFolder>(requirement.TenantId!),
                         new FilterRequirementFoldersBySpecification(requirement.RequirementSpecificationId),
                         new FilterRequirementFoldersByParentId(parentId),
+                        new FilterRequirementFoldersByName(folderName),
                         ];
 
                     var folder = (await _repository.SearchRequirementFoldersAsync(filters)).FirstOrDefault();

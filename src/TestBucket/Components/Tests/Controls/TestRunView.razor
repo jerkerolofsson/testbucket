@@ -16,7 +16,7 @@
                     @if (_selectedTestCaseRun?.TestCase is not null)
                     {
                         <div class="container-fill-2-rows">
-                            <MudStack Row>
+                            <MudStack Row Class="pl-2 pr-2">
                                 <TestResultQuickPicker Result="@_selectedTestCaseRun.Result" ResultChanged="OnTestCaseRunResultChanged" />
                             </MudStack>
 
@@ -43,32 +43,23 @@
             <MudStack Class="pa-2" Style="width: 100%">
                 @if(_selectedTestCaseRun is not null) 
                 {
-                    <MudTabs Style="width: 100%">
-                        <MudTabPanel Text="Metadata">
-                            <MudStack Class="pa-2" Style="width: 100%">
-                                <div style="max-width: 100%; overflow: hidden; text-overflow: ellipsis">
-                                    <MudText Typo="Typo.h3">@_selectedTestCaseRun.Name</MudText>
-                                </div>
+                    <MudStack Class="pa-2" Style="width: 100%">
+                        <div style="max-width: 100%; overflow: hidden; text-overflow: ellipsis">
+                            <MudText Typo="Typo.h3">@_selectedTestCaseRun.Name</MudText>
+                        </div>
 
-                                <TestResultPicker Result="@_selectedTestCaseRun.Result" ResultChanged="OnTestCaseRunResultChanged" />
-                                <TestRunStatePicker State="@_selectedTestCaseRun.State" StateChanged="OnTestCaseRunStateChanged" />
+                        <TestResultPicker TestCaseRun="@_selectedTestCaseRun" Result="@_selectedTestCaseRun.Result" ResultChanged="OnTestCaseRunResultChanged" />
+                        <TestRunStatePicker State="@_selectedTestCaseRun.State" StateChanged="OnTestCaseRunStateChanged" />
 
-                                <FieldsEditor TestCaseRun="@_selectedTestCaseRun" />
-                            </MudStack>
-                        </MudTabPanel>
-                        <MudTabPanel Text="Attachments">
-                            <MudStack Class="pa-2" Style="width: 100%">
 
-                                <Field>
-                                    <FieldHeader>Attachments</FieldHeader>
-                                    <AttachmentGrid TestCaseRunId="@_selectedTestCaseRun.Id" Style="width: 100%" />
+                        <Field>
+                            <FieldHeader>Attachments</FieldHeader>
+                            <AttachmentGrid TestCaseRunId="@_selectedTestCaseRun.Id" Style="width: 100%" />
+                            <CaptureScreenShotButton TestCaseRunId="@_selectedTestCaseRun.Id" />
+                        </Field>
 
-                                    <CaptureScreenShotButton TestCaseRunId="@_selectedTestCaseRun.Id" />
-                                </Field>
-                            </MudStack>
-                        </MudTabPanel>
-                    </MudTabs>
-
+                        <FieldsEditor TestCaseRun="@_selectedTestCaseRun" />
+                    </MudStack>
                 }
             </MudStack>
         </EndContent>

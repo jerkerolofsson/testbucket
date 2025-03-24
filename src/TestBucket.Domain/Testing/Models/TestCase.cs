@@ -79,6 +79,12 @@ public class TestCase : TestEntity
     /// </summary>
     public long? TestSuiteFolderId { get; set; }
 
+    /// <summary>
+    /// Flag that indicates that the test case requires classification by a background service
+    /// 
+    /// </summary>
+    public bool ClassificationRequired { get; set; }
+
     // Navigation
     public TestSuiteFolder? TestSuiteFolder { get; set; }
     public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }

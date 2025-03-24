@@ -39,10 +39,12 @@ public class FieldValue : Entity
     /// </summary>
     public string? StringValue { get; set; }
 
+
     /// <summary>
     /// The field has multiple strings
     /// </summary>
-    public string[]? StringArrayValue { get; set; }
+    [Column(TypeName = "jsonb")]
+    public List<string>? StringValuesList { get; set; }
 
     /// <summary>
     /// Foreign key to the definition of the field
@@ -55,10 +57,12 @@ public class FieldValue : Entity
 
     public bool HasValue()
     {
+        bool hasArrayValue = (StringValuesList is not null && StringValuesList.Count() > 0);
+        bool hasStringValue = !string.IsNullOrEmpty(StringValue);
         return BooleanValue is not null ||
-            StringValue is not null ||
+            hasStringValue ||
+            hasArrayValue ||
             LongValue is not null ||
-            StringArrayValue is not null ||
             DoubleValue is not null;
     }
 
@@ -69,7 +73,7 @@ public class FieldValue : Entity
         copy.StringValue = StringValue;
         copy.DoubleValue = DoubleValue;
         copy.LongValue = LongValue;
-        copy.StringArrayValue = StringArrayValue;
+        copy.StringValuesList = StringValuesList;
         copy.TenantId = TenantId;
     }
 }

@@ -62,7 +62,7 @@ namespace TestBucket.Domain.Markdown
 
         private static MarkdownSection ExtractSection(Stack<string> path, string section)
         {
-            var lines = section.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+            var lines = section.Split('\n');
             string? header = null;
             string[] currentPath = path.Reverse().ToArray();
 

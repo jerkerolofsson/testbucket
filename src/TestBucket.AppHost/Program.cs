@@ -1,6 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 var postgres = builder.AddPostgres("testbucket-postgres")
+    .WithPgAdmin()
     .WithDataVolume("testbucket-dev", isReadOnly: false); 
 var db = postgres.AddDatabase("testbucketdb");
 

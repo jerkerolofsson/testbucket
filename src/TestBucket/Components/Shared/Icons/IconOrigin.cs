@@ -2,6 +2,7 @@
 
 public enum IconOrigin
 {
+    Internal,
     Material,
     Custom
 }

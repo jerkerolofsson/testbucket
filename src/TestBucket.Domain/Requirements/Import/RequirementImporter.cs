@@ -101,17 +101,20 @@ namespace TestBucket.Domain.Requirements.Import
 
                         if (section.Heading is not null && section.Text is not null && section.Text.Length > 0)
                         {
-                            var requirement = new Requirement()
+                            if (section.Text.Trim().Length > 0)
                             {
-                                TenantId = "",
-                                Name = section.Heading,
-                                Path = string.Join('/', section.Path.Select(x=>x.Replace("/", "_"))),
-                                Description = section.Text
-                            };
+                                var requirement = new Requirement()
+                                {
+                                    TenantId = "",
+                                    Name = section.Heading,
+                                    Path = string.Join('/', section.Path.Select(x => x.Replace("/", "_"))),
+                                    Description = section.Text
+                                };
 
-                            ExtractMetadataFromDescription(requirement);
+                                ExtractMetadataFromDescription(requirement);
 
-                            results.Add(requirement);
+                                results.Add(requirement);
+                            }
                         }
                     }
                 });

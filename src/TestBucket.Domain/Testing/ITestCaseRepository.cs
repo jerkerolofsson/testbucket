@@ -145,12 +145,8 @@ public interface ITestCaseRepository
     /// <summary>
     /// Adds a test suite
     /// </summary>
-    /// <param name="tenantId"></param>
-    /// <param name="teamId"></param>
-    /// <param name="projectId"></param>
-    /// <param name="name"></param>
     /// <returns></returns>
-    Task<TestSuite> AddTestSuiteAsync(string tenantId, long? teamId, long? projectId, string name);
+    Task<TestSuite> AddTestSuiteAsync(TestSuite testSuite);
 
     /// <summary>
     /// Updates a test suite / saves changes

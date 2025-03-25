@@ -11,10 +11,29 @@ namespace TestBucket.Domain.Fields.Models;
 /// </summary>
 public enum FieldType
 {
+    /// <summary>
+    /// string
+    /// </summary>
     String = 0,
+
+    /// <summary>
+    /// int64 / integer / long
+    /// </summary>
     Integer = 1,
+
+    /// <summary>
+    /// double / floating point
+    /// </summary>
     Double = 2,
+
+    /// <summary>
+    /// bool
+    /// </summary>
     Boolean = 3,
+
+    /// <summary>
+    /// DateTimeOffset
+    /// </summary>
     DateTimeOffset = 4,
 
     /// <summary>

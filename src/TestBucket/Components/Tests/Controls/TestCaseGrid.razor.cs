@@ -129,9 +129,14 @@ public partial class TestCaseGrid
 
     private async Task CreateNewTestCaseAsync()
     {
+        if(Project is null)
+        {
+            return;
+        }
+
         if (TestSuiteId is not null || _folder is not null)
         {
-            TestCase? testCase = await testCaseEditor.CreateNewTestCaseAsync(_folder, TestSuiteId);
+            TestCase? testCase = await testCaseEditor.CreateNewTestCaseAsync(Project, _folder, TestSuiteId);
             if (testCase is not null)
             {
                 _dataGrid?.ReloadServerData();

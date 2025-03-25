@@ -58,6 +58,12 @@ internal class TestRunManager : ITestRunManager
     {
         principal.GetTentantIdOrThrow(testRun);
         await _testCaseRepo.DeleteTestRunByIdAsync(testRun.Id);
+
+        // Notify observers
+        foreach (var observer in _testRunObservers.ToList())
+        {
+            await observer.OnRunDeletedAsync(testRun);
+        }
     }
 
     /// <inheritdoc/>

@@ -29,16 +29,16 @@
     else
     {
         <TreeView 
-        Class="pa-2"
-        ItemEdited="OnRenamed"
-        ItemEditCanceled="OnItemEditCanceled"
-        EditItem="@_editItem"
-        T="BrowserItem"
-        SelectedValue="@_selectedTreeItem"
-        SelectedValueChanged="OnSelectedValueChangedAsync"
-        Color="Color.Tertiary"
-        ServerData="@LoadServerData"
-        Items="@_rootItems">
+            Class="pa-2"
+            ItemEdited="OnRenamed"
+            ItemEditCanceled="OnItemEditCanceled"
+            EditItem="@_editItem"
+            T="BrowserItem"
+            SelectedValue="@_selectedTreeItem"
+            SelectedValueChanged="OnSelectedValueChangedAsync"
+            Color="Color.Tertiary"
+            ServerData="@LoadServerData"
+            Items="@_rootItems">
 
             <ItemTemplate>
 
@@ -77,13 +77,11 @@
                             else if (context.Value?.Requirement is not null)
                             {
                                 <RequirementMenuItems 
-                                Project="@Project" Team="@Team"
-                                Requirement="context.Value.Requirement"/>
+                                    Project="@Project" Team="@Team"
+                                    Requirement="context.Value.Requirement"/>
                             }
-                            else
-                            {
-                                <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => AddRequirementSpecificationAsync()">Add Specification</MudMenuItem>
-                            }
+
+                            <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => AddRequirementSpecificationAsync()">Add Specification</MudMenuItem>
                             <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" Href="@(appNav.GetImportSpecificationsUrl())">Import Specification</MudMenuItem>
 
                         </ChildContent>

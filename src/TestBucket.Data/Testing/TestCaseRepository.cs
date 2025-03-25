@@ -256,6 +256,18 @@ internal class TestCaseRepository : ITestCaseRepository
         await dbContext.SaveChangesAsync();
         return folder;
     }
+
+    public async Task<TestSuiteFolder> AddTestSuiteFolderAsync(TestSuiteFolder folder)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await CalculatePathAsync(dbContext, folder);
+
+        await dbContext.TestSuiteFolders.AddAsync(folder);
+        await dbContext.SaveChangesAsync();
+        return folder;
+    }
+
     #endregion Test Suite Folders
 
     #region Test Suites
@@ -324,17 +336,9 @@ internal class TestCaseRepository : ITestCaseRepository
         await dbContext.TestSuites.Where(x => x.Id == testSuiteId).ExecuteDeleteAsync();
     }
 
-    public async Task<TestSuite> AddTestSuiteAsync(string tenantId, long? teamId, long? projectId, string name)
+    public async Task<TestSuite> AddTestSuiteAsync(TestSuite testSuite)
     {
-        var testSuite = new TestSuite 
-        { 
-            Name = name, 
-            Created = DateTimeOffset.UtcNow, 
-            TeamId = teamId,
-            TenantId = tenantId, 
-            TestProjectId = projectId 
-        };
-
+       
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         await dbContext.TestSuites.AddAsync(testSuite);
         await dbContext.SaveChangesAsync();

@@ -1,5 +1,10 @@
 ﻿
+using Microsoft.CodeAnalysis;
+
+using NGitLab.Models;
+
 using TestBucket.Components.Tenants;
+using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
@@ -14,28 +19,20 @@ internal class TestSuiteService : TenantBaseService
 {
     private readonly ITestCaseRepository _testCaseRepo;
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
+    private readonly ITestSuiteManager _testSuiteManager;
+    private readonly IDialogService _dialogService;
 
     public TestSuiteService(ITestCaseRepository testCaseRepo,
         AuthenticationStateProvider authenticationStateProvider,
-        IFieldDefinitionManager fieldDefinitionManager) : base(authenticationStateProvider)
+        IFieldDefinitionManager fieldDefinitionManager,
+        ITestSuiteManager testSuiteManager,
+        IDialogService dialogService) : base(authenticationStateProvider)
     {
         _testCaseRepo = testCaseRepo;
         _fieldDefinitionManager = fieldDefinitionManager;
+        _testSuiteManager = testSuiteManager;
+        _dialogService = dialogService;
     }
-
-    #region Test Runs
-
-    //public async Task<int[]> GetTestRunYearsAsync(long? teamId, long? projectId)
-    //{
-    //    var tenantId = await GetTenantIdAsync();
-    //    return await _testCaseRepo.GetTestRunYearsAsync(tenantId, teamId, projectId);
-    //}
-    //public async Task<PagedResult<TestRun>> SearchTestRunsAsync(SearchQuery query)
-    //{
-    //    var tenantId = await GetTenantIdAsync();
-    //    return await _testCaseRepo.SearchTestRunsAsync(tenantId, query);
-    //}
-    #endregion
 
     /// <summary>
     /// Saves a folder
@@ -44,13 +41,8 @@ internal class TestSuiteService : TenantBaseService
     /// <returns></returns>
     public async Task SaveTestSuiteFolderAsync(TestSuiteFolder folder)
     {
-        var tenantId = await GetTenantIdAsync();
-        if (folder.TenantId != tenantId)
-        {
-            throw new InvalidOperationException("TenantId mismatch");
-        }
-
-        await _testCaseRepo.UpdateTestSuiteFolderAsync(folder);
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _testSuiteManager.SaveTestSuiteFolderAsync(principal, folder);
     }
 
     /// <summary>
@@ -63,8 +55,8 @@ internal class TestSuiteService : TenantBaseService
     /// <returns></returns>
     public async Task<TestSuiteFolder> AddTestSuiteFolderAsync(long? projectId, long testSuiteId, long? parentFolderId, string name)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _testCaseRepo.AddTestSuiteFolderAsync(tenantId, projectId, testSuiteId, parentFolderId, name);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testSuiteManager.AddTestSuiteFolderAsync(principal, projectId, testSuiteId, parentFolderId, name);
     }
 
     /// <summary>
@@ -76,10 +68,26 @@ internal class TestSuiteService : TenantBaseService
     /// <returns></returns>
     public async Task<TestSuiteFolder[]> GetTestSuiteFoldersAsync(long? projectId, long testSuiteId, long? parentFolderId)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _testCaseRepo.GetTestSuiteFoldersAsync(tenantId, projectId, testSuiteId, parentFolderId);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testSuiteManager.GetTestSuiteFoldersAsync(principal, projectId, testSuiteId, parentFolderId);
     }
 
+
+    public async Task<TestSuiteFolder?> PickFolderAsync(TestProject project)
+    {
+        var parameters = new DialogParameters<PickTestFolderDialog>()
+        {
+            { x => x.Project, project },
+        };
+
+        var dialog = await _dialogService.ShowAsync<PickTestFolderDialog>("Select folder", parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is TestSuiteFolder folder)
+        {
+            return folder;
+        }
+        return null;
+    }
 
     /// <summary>
     /// Deletes a folder
@@ -88,8 +96,8 @@ internal class TestSuiteService : TenantBaseService
     /// <returns></returns>
     public async Task DeleteFolderByIdAsync(long folderId)
     {
-        var tenantId = await GetTenantIdAsync();
-        await _testCaseRepo.DeleteFolderByIdAsync(tenantId, folderId);
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _testSuiteManager.DeleteTestSuiteFolderByIdAsync(principal, folderId);
     }
 
     /// <summary>
@@ -99,8 +107,8 @@ internal class TestSuiteService : TenantBaseService
     /// <returns></returns>
     public async Task DeleteTestSuiteByIdAsync(long testSuiteId)
     {
-        var tenantId = await GetTenantIdAsync();
-        await _testCaseRepo.DeleteTestSuiteByIdAsync(tenantId, testSuiteId);
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _testSuiteManager.DeleteTestSuiteByIdAsync(principal, testSuiteId);
     }
 
     /// <summary>
@@ -111,8 +119,8 @@ internal class TestSuiteService : TenantBaseService
     /// <returns></returns>
     public async Task<TestSuite> AddTestSuiteAsync(long? teamId, long? projectId, string name)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _testCaseRepo.AddTestSuiteAsync(tenantId, teamId, projectId, name);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testSuiteManager.AddTestSuiteAsync(principal, teamId, projectId, name);
     }
 
     /// <summary>
@@ -123,18 +131,14 @@ internal class TestSuiteService : TenantBaseService
     /// <exception cref="InvalidOperationException"></exception>
     public async Task SaveTestSuiteAsync(TestSuite suite)
     {
-        var tenantId = await GetTenantIdAsync();
-        if (suite.TenantId != tenantId)
-        {
-            throw new InvalidOperationException("TenantId mismatch");
-        }
-        await _testCaseRepo.UpdateTestSuiteAsync(suite);
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _testSuiteManager.UpdateTestSuiteAsync(principal, suite);
     }
 
     public async Task<PagedResult<TestSuite>> GetTestSuitesAsync(long? teamId, long? projectId, int offset=0, int count = 100)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _testCaseRepo.SearchTestSuitesAsync(tenantId, new SearchQuery
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testSuiteManager.SearchTestSuitesAsync(principal, new SearchQuery
         {
             TeamId = teamId,
             ProjectId = projectId,

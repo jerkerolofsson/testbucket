@@ -33,6 +33,7 @@ namespace TestBucket.Domain.Settings
                 text = text.ToLower();
                 return GetSettings(context)
                     .Where(x =>
+                        x.Metadata.SearchText.ToLower().Contains(text) ||
                         x.Metadata.Name.ToLower().Contains(text) ||
                         (x.Metadata.Description is not null && x.Metadata.Description.ToLower().Contains(text)))
                     .ToArray();

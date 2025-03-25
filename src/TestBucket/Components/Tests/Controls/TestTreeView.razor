@@ -10,7 +10,10 @@
 @inject TestCaseEditorController testCaseEditor
 @inject TestRunCreationController testRunCreation
 @inject AppNavigationManager appNavigationManager
+@inject ITestSuiteManager testSuiteManager
 @implements ITestCaseObserver
+@implements ITestSuiteObserver
+@implements ITestSuiteFolderObserver
 @implements ITestRunObserver
 @implements IDisposable
 
@@ -28,32 +31,25 @@
             <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTestSuiteAsync"/>
         </MudTooltip>
 
-        @if (_selectedTreeItem is not null)
-        {
-            <MudTooltip Text="Add folder">
-                <MudIconButton Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="() => AddTestSuiteFolderAsync(_selectedTreeItem?.TestSuite, _selectedTreeItem?.Folder, _selectedTreeItem?.TestCase)" />
-            </MudTooltip>
-        }
         <MudMenu Icon="@Icons.Material.Filled.MoreHoriz">
 
             @if (_selectedTreeItem?.Folder is not null)
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.Palette" OnClick="() => EditTestSuiteFolderAsync(_selectedTreeItem.Folder)" Label="Customize folder" />
-                <MudMenuItem Icon="@Icons.Material.Filled.FolderDelete" IconColor="Color.Error" OnClick="() => DeleteTestSuiteFolderAsync(_selectedTreeItem?.Folder)" Label="Delete folder" />
+                <FolderMenuItems Folder="@_selectedTreeItem.Folder" Project="@Project" Team="@Team"/>
             }
             else if (_selectedTreeItem?.TestCase is not null)
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteTestCaseAsync(_selectedTreeItem?.TestCase)" Label="Delete test case" />
+                <TestCaseMenuItems TestCase="@_selectedTreeItem.TestCase" Project="@Project" Team="@Team" />
             }
             else if (_selectedTreeItem?.TestSuite is not null)
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="EditTestSuiteAsync" Label="Edit" />
-                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteTestSuiteAsync(_selectedTreeItem?.TestSuite)" Label="Delete test suite" />
+                <TestSuiteMenuItems Suite="_selectedTreeItem.TestSuite" Project="@Project" Team="@Team" />
             }
-            else
+            else if (_selectedTreeItem?.TestRun is not null)
             {
-                <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import" />
+                <TestRunMenuItems Run="_selectedTreeItem.TestRun" Project="@Project" Team="@Team" />
             }
+            <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import results" />
         </MudMenu>
 
     </MudStack>
@@ -61,6 +57,9 @@
     <TreeView 
         Class="pa-2"
         @ref="_treeView"
+        ItemEdited="OnRenamed"
+        ItemEditCanceled="OnItemEditCanceled"
+        EditItem="@_editItem"
         T="BrowserItem"
         SelectedValue="@_selectedTreeItem"
         SelectedValueChanged="OnSelectedValueChangedAsync"
@@ -105,57 +104,34 @@
                         }
                     </ActivatorContent>
                     <ChildContent>
-                        <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import" />
-                        <MudDivider />
+
                         @if (context.Value?.TestCase is not null)
                         {
-                            <MudMenuItem Icon="@Icons.Material.Filled.PlayArrow" OnClick="() => RunAsync(context.Value.TestCase)">Run</MudMenuItem>
-                            <MudMenuItem Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="() => AddTestSuiteFolderAsync(null, null, context.Value.TestCase)">Create Folder</MudMenuItem>
-                            <MudDivider />
-                            <MudMenuItem Icon="@Icons.Material.Filled.Code" OnClick="() => EditTestCaseAutomationLinkAsync(context.Value.TestCase)">Link to automated test</MudMenuItem>
-                            <MudDivider />
-                            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteTestCaseAsync(context.Value?.TestCase)" Label="Delete test case" />
+                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">Rename</MudMenuItem>
+                            <TestCaseMenuItems TestCase="@context.Value.TestCase" Project="@Project" Team="@Team" />
                         }
                         else if (context.Value?.TestRun is not null)
                         {
-                            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteTestRunAsync(context.Value.TestRun)" Label="Delete run" />
+                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">Rename</MudMenuItem>
+                            <TestRunMenuItems Run="@context.Value.TestRun" Project="@Project" Team="@Team" />
                         }
                         else if (context.Value?.Folder is not null)
                         {
-                            <MudMenuItem Icon="@Icons.Material.Filled.PlayArrow" OnClick="() => RunAsync(context.Value.Folder)">Run</MudMenuItem>
-                            <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => CreateNewTestCaseAsync(context.Value.Folder)">Create New Test</MudMenuItem>
-                            <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => GenerateAiTestsAsync(context.Value.Folder)">Generate New Tests with AI</MudMenuItem>
-                            <MudDivider />
-                            <MudMenuItem Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="() => AddTestSuiteFolderAsync(null, context.Value.Folder, null)">Create Folder</MudMenuItem>
-                            <MudMenuItem Icon="@Icons.Material.Filled.Palette" OnClick="() => EditTestSuiteFolderAsync(context.Value.Folder)" Label="Customize folder" />
-                            <MudDivider />
-                            <MudMenuItem Icon="@Icons.Material.Filled.FolderDelete" IconColor="Color.Error" OnClick="() => DeleteTestSuiteFolderAsync(context.Value.Folder)" Label="Delete folder" />
+                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">Rename</MudMenuItem>
+                            <FolderMenuItems Folder="@context.Value.Folder" Project="@Project" Team="@Team" />
                         }
                         else if (context.Value?.TestSuite is not null)
                         {
-                            <MudMenuItem Icon="@Icons.Material.Filled.PlayArrow" OnClick="() => RunAsync(context.Value.TestSuite)">Run</MudMenuItem>
-                            <MudMenuItem Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="() => AddTestSuiteFolderAsync(context.Value.TestSuite, null, null)">Create Folder</MudMenuItem>
-                            <MudDivider />
-                            <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteTestSuiteAsync(context.Value.TestSuite)" Label="Delete test suite" />
+                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">Rename</MudMenuItem>
+                            <TestSuiteMenuItems Suite="@context.Value.TestSuite" Project="@Project" Team="@Team" />
                         }
+
+                        <MudDivider />
+                        <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import results" />
+
                     </ChildContent>
                 </MudMenu>
             </DropZone>
         </ItemTemplate>
-
     </TreeView>
-
-    @* <MudTreeView  *@
-    @*     Class="pa-2" *@
-    @*     @ref="_treeView" *@
-    @*     SelectionMode="@SelectionMode.SingleSelection" *@
-    @*     T="BrowserItem" *@
-    @*     SelectedValue="@_selectedTreeItem" *@
-    @*     SelectedValueChanged="OnSelectedValueChangedAsync" *@
-    @*     Hover="true"  *@
-    @*     Color="Color.Tertiary"  *@
-    @*     ServerData="@LoadServerData"  *@
-    @*     Items="@_rootItems"> *@
-
-    @* </MudTreeView> *@
 </MudStack>

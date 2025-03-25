@@ -1,0 +1,47 @@
+﻿@using TestBucket.Domain.Requirements.Models
+
+<MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <DialogContent>
+        <TestSuiteFolderPicker Project="@Project" Team="@Team"
+            FolderSelected="OnFolderSelected"/>
+    </DialogContent>
+
+    <DialogActions>
+        @if (_folder is not null)
+        {
+            <MudButton OnClick="OnValidSubmit" Color="Color.Primary">OK</MudButton>
+        }
+        <MudButton OnClick="Close">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public TestProject? Project { get; set; }
+
+    [Parameter] public Team? Team { get; set; }
+
+    private TestSuiteFolder? _folder;
+
+    private void OnFolderSelected(TestSuiteFolder folder)
+    {
+        _folder = folder;
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+        if (_folder is null)
+        {
+            return;
+        }
+        MudDialog.Close(_folder);
+    }
+}
+

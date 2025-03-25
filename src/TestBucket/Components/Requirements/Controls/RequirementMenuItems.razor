@@ -1,7 +1,9 @@
 ﻿@inject RequirementEditorController editor
+@inject TestCaseEditorController testCaseEditor
 
 @if(Requirement is not null)
 {
+    <MudMenuItem Icon="@TbIcons.Filled.PaperPlane" OnClick="() => CreateNewTestCaseAsync()" Label="Create Test" />
     <MudMenuItem Icon="@Icons.Material.Filled.Link" OnClick="() => LinkRequirementToTestCaseAsync()" Label="Test Links" />
     <MudDivider />
     <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteRequirementAsync()" Label="Delete" />
@@ -9,7 +11,6 @@
 @code {
     [Parameter] public Requirement? Requirement { get; set; }
     [Parameter] public TestProject? Project { get; set; }
-
     [Parameter] public Team? Team { get; set; }
 
     private async Task LinkRequirementToTestCaseAsync()
@@ -20,6 +21,15 @@
         }
 
         await editor.LinkRequirementToTestCaseAsync(Requirement, Project, Team);
+    }
+
+    private async Task CreateNewTestCaseAsync()
+    {
+        if(Requirement is null)
+        {
+            return;
+        }
+        //var testCase = await testCaseEditor.CreateNewTestCaseAsync(Requirement.Name);
     }
 
     private async Task DeleteRequirementAsync()

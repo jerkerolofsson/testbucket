@@ -20,6 +20,7 @@ namespace TestBucket.Domain.AI.Settings
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
             Metadata.Section.Name = "Models";
+            Metadata.SearchText = "ai-models";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;
             Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;

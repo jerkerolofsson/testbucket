@@ -2,51 +2,86 @@
 @using TestBucket.Domain.Files.Models
 @inject UploadService uploadService
 
-<MudFileUpload T="IBrowserFile" FilesChanged="UploadFilesAsync" Accept=".xml, .trx, .json, .ctrf, .junitxml, .xunitxml, .nunitxml" MaximumFileCount="1">
-    <ActivatorContent>
+<MudStack Style="@Style" Class="@Class">
+    <MudFileUpload T="IBrowserFile"
+                   @ref="@_fileUpload"
+                   Accept="@Accept"
+                   FilesChanged="UploadFilesAsync"
+                   Hidden="@false"
+                   InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                   InputStyle="opacity:0"
+                   tabindex="-1"
+                   @ondrop="@ClearDragClass"
+                   @ondragenter="@SetDragClass"
+                   @ondragleave="@ClearDragClass"
+                   @ondragend="@ClearDragClass">
+        <ActivatorContent>
 
-        <MudPaper Height="200px"
-                  Outlined="true"
-                  Class="relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full">
-            <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="mud-width-full mud-height-full">
-                @if (!_loading)
+            <MudPaper Outlined="true" Class="@_dragClass">
+                @if (ChildContent is null)
                 {
-                    <MudText Typo="Typo.h6">
-                        Drag and drop files here or click
-                    </MudText>
+                    <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="mud-width-full mud-height-full" Row>
+                        @if (!_loading)
+                        {
+                            <MudIcon Size="Size.Large" Icon="@Icons.Material.Outlined.CloudUpload" />
+                            <MudText Typo="Typo.h6">
+                                Drag and drop files here or click to select a file
+                            </MudText>
+                        }
+                    </MudStack>
                 }
-            </MudStack>
-        </MudPaper>
+                else
+                {
+                    @ChildContent
+                    ;
+                }
+            </MudPaper>
+        </ActivatorContent>
+    </MudFileUpload>
+</MudStack>
 
-        @if (_loading)
-        {
-            <MudProgressLinear Color="Color.Secondary" Indeterminate />
-        }
-        else
-        {
-            <MudButton Variant="Variant.Filled"
-                Color="Color.Primary"
-               StartIcon="@Icons.Material.Filled.CloudUpload">
-                Select File
-            </MudButton>
-        }
-    </ActivatorContent>
-</MudFileUpload>
 
 @code {
     [Parameter] public EventCallback FileUploadStarted { get; set; }
     [Parameter] public EventCallback<FileResource> FileUploaded { get; set; }
     [Parameter] public long MaxFileSize { get; set; } = 512000;
+    [Parameter] public string? Accept { get; set; }
+    [Parameter] public string? Label { get; set; }
+
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public string Style { get; set; } = "width: 100%";
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+  
+    [Parameter] public ResourceCategory UploadCategory { get; set; } = ResourceCategory.TestResults;
+
+    private MudFileUpload<IBrowserFile>? _fileUpload;
 
     private bool _loading = false;
+    private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
+    private string _dragClass = DefaultDragClass;
+    private void SetDragClass()
+        => _dragClass = $"{DefaultDragClass} mud-border-primary";
+
+    private void ClearDragClass()
+        => _dragClass = DefaultDragClass;
+
+    private Task OpenFilePickerAsync()
+       => _fileUpload?.OpenFilePickerAsync() ?? Task.CompletedTask;
+
 
     private async Task UploadFilesAsync(IBrowserFile file)
     {
+        ClearDragClass();
         _loading = true;
         await FileUploadStarted.InvokeAsync();
+
         this.StateHasChanged();
 
-        var fileResource = await uploadService.UploadAsync(ResourceCategory.TestResults, file, MaxFileSize);
+        var fileResource = await uploadService.UploadAsync(UploadCategory, file,
+            null,null,null,null,null,null,null,null,
+            MaxFileSize);
         await FileUploaded.InvokeAsync(fileResource);
 
         _loading = false;

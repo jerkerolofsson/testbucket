@@ -1,0 +1,29 @@
+﻿@if(Field?.FieldDefinition is not null) 
+{
+    <MudText Class="tb-read-only-field">
+    @if (Field.FieldDefinition.Type is (FieldType.String or FieldType.SingleSelection) )
+    {
+        @Field.StringValue
+    }
+    else if (Field.FieldDefinition.Type == FieldType.Boolean)
+    {
+        @Field.BooleanValue
+    }
+    else if (Field.FieldDefinition.Type == FieldType.Double)
+    {
+        @Field.DoubleValue
+    }
+    else if ((Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection) && Field.StringValuesList is not null)
+    {
+        <MudChipSet T="string">
+            @foreach (var value in Field.StringValuesList)
+            {
+                <MudChip T="string" Color="Color.Tertiary">@value</MudChip>
+            }
+        </MudChipSet>
+    }
+    </MudText>
+}
+@code {
+    [Parameter] public FieldValue? Field { get; set; }
+}

@@ -13,6 +13,10 @@ namespace TestBucket.Domain.Settings.Models
         public required SettingsCategory Category { get; set; }
         public required SettingsSection Section { get; set; }
 
+        /// <summary>
+        /// Keywords for search
+        /// </summary>
+        public string SearchText { get; set; } = "";
         public AccessLevel AccessLevel { get; set; } = AccessLevel.User;
     }
 }

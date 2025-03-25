@@ -67,6 +67,27 @@ html, body {
     color: var(--mud-palette-secondary);
 }
 
+.tb-field:hover:has(.field-link) {
+    background: var(--mud-palette-primary-hover);
+}
+
+.tb-field a {
+    color: var(--mud-palette-text-primary) !important;
+    font-size: 8pt;
+    align-self: flex-end;
+    text-decoration: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .tb-field .mud-link.mud-link-underline-hover:hover {
+        text-decoration: none;
+    }
+}
+
+tb-field .mud-link.mud-link-underline-hover:hover {
+    text-decoration: none;
+}
+
 .tb-draggable .drag-handle {
     cursor: grab;
     opacity: 0;
@@ -117,8 +138,6 @@ p.mud-typography-subtitle1 {
  }
 
  .tb-read-only-field {
-     opacity: 0.75;
-     font-size: 75%;
  }
 
  .file-resource-thumbnail {
@@ -129,7 +148,7 @@ p.mud-typography-subtitle1 {
  }
 
  .file-resource-thumbnail:hover {
-     background: var(--mud-palette-primary);
+     background: var(--mud-palette-primary-hover);
  }
 
  .file-resource-thumbnail .filename {

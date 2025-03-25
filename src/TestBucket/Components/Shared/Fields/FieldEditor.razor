@@ -7,7 +7,7 @@
             <MudStack Spacing="0" Row="@row">
                 <FieldHeader>@Field.FieldDefinition.Name</FieldHeader>
 
-                @if(Field.FieldDefinition.ReadOnly)
+                @if (!_editing)
                 {
                     <MudText Class="tb-read-only-field">
                         @if (Field.FieldDefinition.Type is (FieldType.String or FieldType.SingleSelection) )
@@ -32,6 +32,11 @@
                             </MudChipSet>
                         }
                     </MudText>
+
+                    @if (_canEdit)
+                    {
+                        <MudLink OnClick="BeginEdit">Edit</MudLink>
+                    }
                 }
                 else
                 {
@@ -106,6 +111,14 @@
 
     private string _addStringArrayValue = "";
 
+    private bool _editing = false;
+    private bool _canEdit;
+
+    private void BeginEdit()
+    {
+        _editing = _canEdit;
+    }
+
     private async Task RemoveStringArrayValueAsync(string? value)
     {
         if(Field is null || value is null)
@@ -161,11 +174,16 @@
 
     protected override void OnParametersSet()
     {
-        if(Field?.FieldDefinition?.Type is FieldType.StringArray or FieldType.MultiSelection)
+        if (Field?.FieldDefinition is not null)
         {
-            Field.StringValuesList ??= [];
+            _canEdit = !Field.FieldDefinition.ReadOnly;
+            _editing = true;
+            if (Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection)
+            {
+                _editing = false;
+                Field.StringValuesList ??= [];
+            }
         }
-        base.OnParametersSet();
     }
 
     private async Task OnStringValueChanged(string value)

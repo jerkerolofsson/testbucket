@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Settings;
-using TestBucket.Domain.Tenants.Models;
-
+﻿
 namespace TestBucket.Domain.AI.Settings
 {
     class GithubModelsDeveloperKeySetting : SettingAdapter
@@ -24,7 +15,9 @@ namespace TestBucket.Domain.AI.Settings
             Metadata.Category.Icon = SettingIcon.AI;
             Metadata.Section.Name = "Provider";
             Metadata.ShowDescription = true;
+            Metadata.SearchText = "github-models";
             Metadata.Type = FieldType.String;
+            Metadata.WriteOnly = true;
             Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;
         }
 

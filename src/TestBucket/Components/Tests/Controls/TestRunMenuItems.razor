@@ -1,0 +1,22 @@
+﻿@inject TestBrowser testBrowser
+@inject TestCaseEditorController testCaseEditor
+
+@if (Run is not null)
+{
+ 
+    <MudMenuItem Icon="@Icons.Material.Filled.FolderDelete" IconColor="Color.Error" OnClick="DeleteAsync" Label="Delete run" />
+}
+@code {
+    [Parameter] public TestRun? Run { get; set; }
+    [Parameter] public TestProject? Project { get; set; }
+    [Parameter] public Team? Team { get; set; }
+
+    private async Task DeleteAsync()
+    {
+        if (Run is null)
+        {
+            return;
+        }
+        await testCaseEditor.DeleteTestRunAsync(Run);
+    }
+}

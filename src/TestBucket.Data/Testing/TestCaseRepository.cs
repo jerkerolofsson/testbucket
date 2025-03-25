@@ -1,4 +1,8 @@
-﻿using TestBucket.Domain.Shared.Specifications;
+﻿using TestBucket.Contracts.Testing.Models;
+using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing.Aggregates;
+
+using UglyToad.PdfPig.Filters;
 
 namespace TestBucket.Data.Testing;
 internal class TestCaseRepository : ITestCaseRepository
@@ -12,6 +16,7 @@ internal class TestCaseRepository : ITestCaseRepository
 
     #region Test Cases
 
+    /// <inheritdoc/>
 
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters)
     {
@@ -101,14 +106,26 @@ internal class TestCaseRepository : ITestCaseRepository
         //testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
+        await RemoveTestCaseByIdAsync(id, dbContext);
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static async Task RemoveTestCaseByIdAsync(long id, ApplicationDbContext dbContext)
+    {
         await foreach (var link in dbContext.RequirementTestLinks.Where(x => x.TestCaseId == id).AsAsyncEnumerable())
         {
             dbContext.RequirementTestLinks.Remove(link);
         }
 
-        await foreach (var run in dbContext.TestCaseRuns.Where(x => x.TestCaseId == id).AsAsyncEnumerable())
+        foreach (var testCaseRun in await dbContext.TestCaseRuns.Where(x => x.TestCaseId == id).ToListAsync())
         {
-            dbContext.TestCaseRuns.Remove(run);
+            foreach (var field in await dbContext.TestCaseRunFields.Where(x => x.TestCaseRunId == testCaseRun.Id).ToListAsync())
+            {
+                dbContext.TestCaseRunFields.Remove(field);
+            }
+
+            dbContext.TestCaseRuns.Remove(testCaseRun);
         }
 
         await foreach (var field in dbContext.TestCaseFields.Where(x => x.TestCaseId == id).AsAsyncEnumerable())
@@ -116,12 +133,10 @@ internal class TestCaseRepository : ITestCaseRepository
             dbContext.TestCaseFields.Remove(field);
         }
 
-        await foreach (var test in dbContext.TestCases.Where(x=>x.Id == id).AsAsyncEnumerable())
+        await foreach (var test in dbContext.TestCases.Where(x => x.Id == id).AsAsyncEnumerable())
         {
             dbContext.TestCases.Remove(test);
         }
-
-        await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateTestCaseAsync(TestCase testCase)
@@ -251,6 +266,18 @@ internal class TestCaseRepository : ITestCaseRepository
         await dbContext.SaveChangesAsync();
         return folder;
     }
+
+    public async Task<TestSuiteFolder> AddTestSuiteFolderAsync(TestSuiteFolder folder)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await CalculatePathAsync(dbContext, folder);
+
+        await dbContext.TestSuiteFolders.AddAsync(folder);
+        await dbContext.SaveChangesAsync();
+        return folder;
+    }
+
     #endregion Test Suite Folders
 
     #region Test Suites
@@ -316,20 +343,13 @@ internal class TestCaseRepository : ITestCaseRepository
         {
             await DeleteFolderByIdAsync(tenantId, folder.Id, dbContext);
         }
+        await dbContext.SaveChangesAsync();
         await dbContext.TestSuites.Where(x => x.Id == testSuiteId).ExecuteDeleteAsync();
     }
 
-    public async Task<TestSuite> AddTestSuiteAsync(string tenantId, long? teamId, long? projectId, string name)
+    public async Task<TestSuite> AddTestSuiteAsync(TestSuite testSuite)
     {
-        var testSuite = new TestSuite 
-        { 
-            Name = name, 
-            Created = DateTimeOffset.UtcNow, 
-            TeamId = teamId,
-            TenantId = tenantId, 
-            TestProjectId = projectId 
-        };
-
+       
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         await dbContext.TestSuites.AddAsync(testSuite);
         await dbContext.SaveChangesAsync();
@@ -355,13 +375,9 @@ internal class TestCaseRepository : ITestCaseRepository
             await DeleteFolderByIdAsync(tenantId, childFolder.Id, dbContext);
         }
 
-        foreach(var testCase in await dbContext.TestCases.Where(x=>x.TestSuiteFolderId == folderId).ToListAsync())
+        foreach (var testCase in await dbContext.TestCases.Where(x=>x.TestSuiteFolderId == folderId).ToListAsync())
         {
-            foreach(var testCaseRun in await dbContext.TestCaseRuns.Where(x=>x.TestCaseId == testCase.Id && x.TenantId == tenantId).ToListAsync())
-            {
-                dbContext.TestCaseRuns.Remove(testCaseRun);
-            }
-            dbContext.TestCases.Remove(testCase);
+            await RemoveTestCaseByIdAsync(testCase.Id, dbContext);
         }
 
         var folder = await dbContext.TestSuiteFolders.Where(x => x.TenantId == tenantId && x.Id == folderId).FirstOrDefaultAsync();
@@ -487,6 +503,7 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var tests = dbContext.TestCaseRuns
             .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
             .AsQueryable();
 
         foreach(var filter in filters)
@@ -607,6 +624,37 @@ internal class TestCaseRepository : ITestCaseRepository
             folderId = folder.ParentId;
         }
     }
-
     #endregion Helpers
+
+
+    public async Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
+    {
+        var result = new TestExecutionResultSummary();
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCaseRuns
+            .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            tests = tests.Where(filter.Expression);
+        }
+
+        var results = await tests.GroupBy(x => x.Result).Select(g => new { Count = g.Count(), Result = g.Key }).ToListAsync();
+        result.Total        = results.Sum(x=>x.Count);
+        result.Completed    = results.Where(x => x.Result != TestResult.NoRun   ).Sum(x => x.Count);
+        result.Passed       = results.Where(x => x.Result == TestResult.Passed  ).Sum(x => x.Count);
+        result.Failed       = results.Where(x => x.Result == TestResult.Failed  ).Sum(x => x.Count);
+        result.Blocked      = results.Where(x => x.Result == TestResult.Blocked ).Sum(x => x.Count);
+        result.Skipped      = results.Where(x => x.Result == TestResult.Skipped ).Sum(x => x.Count);
+        result.Error        = results.Where(x => x.Result == TestResult.Error   ).Sum(x => x.Count);
+        result.Assert       = results.Where(x => x.Result == TestResult.Assert  ).Sum(x => x.Count);
+        result.Hang         = results.Where(x => x.Result == TestResult.Hang    ).Sum(x => x.Count);
+
+        return result;
+    }
+
+
 }

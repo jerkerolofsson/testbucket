@@ -82,6 +82,11 @@ public class FieldDefinition : ProjectEntity
     public bool ReadOnly { get; set; }
 
     /// <summary>
+    /// If write only, the field cannot be displayed but can be edited
+    /// </summary>
+    public bool WriteOnly { get; set; }
+
+    /// <summary>
     /// Can be used to save field values in the database when importing but not display the values in the UI
     /// </summary>
     public bool IsVisible { get; set; }

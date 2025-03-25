@@ -1,18 +1,30 @@
 ﻿@using TestBucket.Domain.Requirements.Models
 @attribute [Authorize(Roles = "ADMIN")]
 @inject TestCaseEditorController testCaseEditorService
+@inject TestSuiteService testSuiteController
 
 <EditForm Model="@_testCase" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <DialogContent>
-            <MudStack Spacing="1">
+            <MudStack Spacing="1" Style="min-width: 50vw">
                 @if (_testCase is not null)
                 {
-                    <Field>
+                    <Field Row>
                         <FieldHeader>Name</FieldHeader>
+                        <MudSpacer />
                         <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_testCase.Name"></MudTextField>
                     </Field>
                 }
+
+                <Field Row>
+                    <FieldHeader>Path</FieldHeader>
+                    <MudSpacer />
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <MudText>@FolderPath</MudText>
+                        <MudIconButton Icon="@Icons.Material.Outlined.FolderOpen" Color="Color.Warning" OnClick="ChangeFolderAsync"/>
+                    </MudStack>
+                </Field>
+
                 @if (_errorMessage is not null)
                 {
                     <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
@@ -22,7 +34,10 @@
         </DialogContent>
 
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            @if (_testSuiteId is not null && !string.IsNullOrEmpty(_testCase.Name))
+            {
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            }
             <MudButton OnClick="Close">Cancel</MudButton>
         </DialogActions>
     </MudDialog>
@@ -34,23 +49,86 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
+    [Parameter] public string? Name { get; set; }
+    [Parameter] public TestProject? Project { get; set; }
+    [Parameter] public Team? Team { get; set; }
     [Parameter] public TestSuiteFolder? Folder { get; set; }
     [Parameter] public long? TestSuiteId { get; set; }
 
-    private TestCase _testCase = new() { Name = "", TenantId = "" };
+    private long? _testSuiteId;
 
-    protected override void OnParametersSet()
+    private TestCase _testCase = new() { Name = "", TenantId = "" };
+    private TestSuite? _testSuite;
+    private TestSuiteFolder? _folder;
+
+    private string FolderPath
     {
-        if(Folder is not null)
+        get
         {
+            var path = new StringBuilder();
+
+            if(_testSuite is not null)
+            {
+                path.Append(_testSuite.Name);
+                path.Append("/");
+            }
+            if (!string.IsNullOrEmpty(_folder?.Path))
+            {
+                path.Append(_folder.Path);
+                path.Append("/");
+            }
+            if (!string.IsNullOrEmpty(_folder?.Name))
+            {
+                path.Append(_folder.Name);
+            }
+            return path.ToString().TrimEnd('/');
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _testCase.Name = Name ?? "New Test";
+        if (Folder is not null)
+        {
+            _folder = Folder;
             _testCase.TestSuiteFolderId = Folder.Id;
             _testCase.TestSuiteId = Folder.TestSuiteId;
         }
-        if(TestSuiteId is not null)
+        if (TestSuiteId is not null)
         {
             _testCase.TestSuiteId = TestSuiteId.Value;
         }
+
+        _testSuiteId = _testCase.TestSuiteId;
+
+        if (_testSuite is null && _testSuiteId is not null)
+        {
+            _testSuite = await testSuiteController.GetTestSuiteByIdAsync(_testSuiteId.Value);
+        }
+
         base.OnParametersSet();
+    }
+
+
+    public async Task ChangeFolderAsync()
+    {
+        if (Project is not null)
+        {
+            var folder = await testSuiteController.PickFolderAsync(Project);
+            if (folder is not null)
+            {
+                _testCase.TestSuiteFolderId = folder.Id;
+
+                if (folder.TestSuiteId != _testCase.TestSuiteId)
+                {
+                    _testSuite = await testSuiteController.GetTestSuiteByIdAsync(folder.TestSuiteId);
+                    _testSuiteId = folder.TestSuiteId;
+                    _testCase.TestSuiteId = folder.TestSuiteId;
+                }
+
+                _folder = folder;
+            }
+        }
     }
 
     private void Close()

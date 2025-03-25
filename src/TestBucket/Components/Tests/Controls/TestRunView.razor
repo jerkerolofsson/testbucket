@@ -15,9 +15,9 @@
 
                     @if (_selectedTestCaseRun?.TestCase is not null)
                     {
-                        <div class="container-fill-2-rows">
+                        <div class="container-fill-3-rows">
                             <MudStack Row Class="pl-2 pr-2">
-                                <TestResultQuickPicker Result="@_selectedTestCaseRun.Result" ResultChanged="OnTestCaseRunResultChanged" />
+                                <MudText>@TestRun?.Name</MudText>
                             </MudStack>
 
                             <MarkdownEditor ShowToolbar="false"
@@ -28,6 +28,10 @@
                                     Value="@_selectedTestCaseRun.TestCase.Description"
                                     SpellChecker="false">
                             </MarkdownEditor>
+
+                            <MudStack Row Class="pl-2 pr-2">
+                                <TestResultQuickPicker Result="@_selectedTestCaseRun.Result" ResultChanged="OnTestCaseRunResultChanged" />
+                            </MudStack>
                         </div>
                     }
 

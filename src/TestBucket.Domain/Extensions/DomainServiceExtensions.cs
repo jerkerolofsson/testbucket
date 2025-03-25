@@ -27,6 +27,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IStateService, StateService>();
         services.AddScoped<ITextTestResultsImporter, TextImporter>();
         services.AddScoped<ITestCaseManager, TestCaseManager>();
+        services.AddScoped<ITestSuiteManager, TestSuiteManager>();
         services.AddScoped<ITestRunManager, TestRunManager>();
         services.AddScoped<IRequirementImporter, RequirementImporter>();
         services.AddScoped<IRequirementManager, RequirementManager>();

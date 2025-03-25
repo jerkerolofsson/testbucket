@@ -72,7 +72,7 @@ namespace TestBucket.Domain.Testing
         /// <returns></returns>
         public async Task DeleteTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
         {
-            principal.GetTentantIdOrThrow(testCase);
+            principal.ThrowIfEntityTenantIsDifferent(testCase);
             await _testCaseRepo.DeleteTestCaseByIdAsync(testCase.Id);
 
             // Notify observers
@@ -84,7 +84,7 @@ namespace TestBucket.Domain.Testing
 
         public async Task SaveTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
         {
-            principal.GetTentantIdOrThrow(testCase);
+            principal.ThrowIfEntityTenantIsDifferent(testCase);
 
             testCase.Modified = DateTimeOffset.UtcNow;
             testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
@@ -98,6 +98,5 @@ namespace TestBucket.Domain.Testing
                 await observer.OnTestSavedAsync(testCase);
             }
         }
-
     }
 }

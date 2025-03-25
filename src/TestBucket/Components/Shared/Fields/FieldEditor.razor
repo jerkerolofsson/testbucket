@@ -1,4 +1,4 @@
-﻿@if(Field?.FieldDefinition is not null) 
+﻿@if (Field?.FieldDefinition is not null)
 {
     bool row = Field.FieldDefinition.Type == FieldType.Boolean;
 
@@ -7,96 +7,33 @@
             <MudStack Spacing="0" Row="@row">
                 <FieldHeader>@Field.FieldDefinition.Name</FieldHeader>
 
-                @if (!_editing)
+                @if (Field.FieldDefinition.WriteOnly)
                 {
-                    <MudText Class="tb-read-only-field">
-                        @if (Field.FieldDefinition.Type is (FieldType.String or FieldType.SingleSelection) )
-                        {
-                            @Field.StringValue
-                        }
-                        else if (Field.FieldDefinition.Type == FieldType.Boolean)
-                        {
-                            @Field.BooleanValue
-                        }
-                        else if (Field.FieldDefinition.Type == FieldType.Double)
-                        {
-                            @Field.DoubleValue
-                        }
-                        else if ((Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection) && Field.StringValuesList is not null)
-                        {
-                            <MudChipSet T="string">
-                                @foreach (var value in Field.StringValuesList)
-                                {
-                                    <MudChip T="string" Color="Color.Tertiary">@value</MudChip>
-                                }
-                            </MudChipSet>
-                        }
-                    </MudText>
-
-                    @if (_canEdit)
+                    @if(_editingWriteOnlyField)
                     {
-                        <MudLink OnClick="BeginEdit">Edit</MudLink>
+                        <FieldValueEditor Field="@Field" FieldChanged="async (f) => await OnWriteOnlyFieldChangedAsync(f)" />
                     }
+                    else
+                    {
+                        <MudStack Row Style="width: 100%">
+                            <MudText Class="tb-write-only-field">****</MudText>
+                            <MudSpacer/>
+                            <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="EditField">Change</MudButton>
+                        </MudStack>
+                    }
+
+                }
+                else if (Field.FieldDefinition.ReadOnly)
+                {
+                    <FieldReadOnlyValue Field="@Field" />
                 }
                 else
                 {
-
-                    @if(Field.FieldDefinition.Type == FieldType.String)
-                    {
-                        <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined"/>
-                    }
-                    else if(Field.FieldDefinition.Type == FieldType.SingleSelection)
-                    {
-                        <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable="true">
-                            @if(Field.FieldDefinition.Options is not null)
-                            {
-                                @foreach(var item in Field.FieldDefinition.Options)
-                                {
-                                    <MudSelectItem Value="@item">@item</MudSelectItem>
-                                }
-                            }
-                        </MudSelect>
-                    }
-                    else if(Field.FieldDefinition.Type == FieldType.Boolean)
-                    {
-                        <MudSpacer/>
-                        <MudSwitchM3 Value="@Field.BooleanValue" T="bool?" ValueChanged="OnBooleanValueChanged" Color="Color.Tertiary" />
-                    }
-                    else if (Field.FieldDefinition.Type == FieldType.StringArray && Field.StringValuesList is not null)
-                    {
-                        <MudChipSet T="string" AllClosable="true">
-                            @foreach (var value in Field.StringValuesList)
-                            {
-                                <MudChip T="string" Value="@value" Color="Color.Tertiary" OnClose="async x => await RemoveStringArrayValueAsync(x.Value)">@value</MudChip>
-                            }
-                        </MudChipSet>
-
-                        @* Add value to array *@
-                        <EditForm Model="_addStringArrayValue" OnValidSubmit="async x => await AddStringArrayValueAsync(_addStringArrayValue)">
-                            <MudStack Row="true" AlignItems="AlignItems.Center">
-                                <MudTextField @bind-Value="_addStringArrayValue"/>
-                                <MudButton ButtonType="ButtonType.Submit">Add</MudButton>
-                            </MudStack>
-                        </EditForm>
-                    }
-                    else if (Field.FieldDefinition.Type == FieldType.MultiSelection && Field.StringValuesList is not null)
-                    {
-                        @if(Field.FieldDefinition.Options is not null)
-                        {
-                            <MudStack Row Wrap="Wrap.Wrap">
-                                @foreach (var item in Field.FieldDefinition.Options)
-                                {
-                                    var isChecked = Field.StringValuesList.Contains(item);
-
-                                    <MudCheckBox Value="@isChecked" T="bool" ValueChanged="async () => await ToggleStringArrayValueAsync(item)">@item</MudCheckBox>
-                                }
-                            </MudStack>
-                        }
-                    }
+                    <FieldValueEditor Field="@Field" FieldChanged="async (f) => await FieldChanged.InvokeAsync(f)" />
                 }
             </MudStack>
 
-            @if(Field.FieldDefinition.ShowDescription)
+            @if (Field.FieldDefinition.ShowDescription)
             {
                 <FieldDescription>@Field.FieldDefinition.Description</FieldDescription>
             }
@@ -109,100 +46,32 @@
     [Parameter] public FieldValue? Field { get; set; }
     [Parameter] public EventCallback<FieldValue?> FieldChanged { get; set; }
 
-    private string _addStringArrayValue = "";
+    private bool _editingWriteOnlyField = false;
 
-    private bool _editing = false;
-    private bool _canEdit;
-
-    private void BeginEdit()
+    private void EditField()
     {
-        _editing = _canEdit;
+        if(Field is not null)
+        {
+            Field.DoubleValue = null;
+            Field.StringValuesList = [];
+            Field.StringValue = null;
+            Field.BooleanValue = null;
+            Field.LongValue = null;
+        }
+        _editingWriteOnlyField = true;
     }
 
-    private async Task RemoveStringArrayValueAsync(string? value)
+    private async Task OnWriteOnlyFieldChangedAsync(FieldValue field)
     {
-        if(Field is null || value is null)
-        {
-            return;
-        }
-        Field.StringValue = null;
-        Field.StringValuesList ??= [];
-        Field.StringValuesList = Field.StringValuesList.Where(x => x != value).ToList();
-        this.StateHasChanged();
-
-        await FieldChanged.InvokeAsync(Field);
-    }
-
-    private async Task ToggleStringArrayValueAsync(string value)
-    {
-        if (Field is null || string.IsNullOrEmpty(value))
-        {
-            return;
-        }
-        Field.StringValue = null;
-        Field.StringValuesList ??= [];
-        if(!Field.StringValuesList.Contains(value))
-        {
-            Field.StringValuesList.Add(value);
-        }
-        else
-        {
-            Field.StringValuesList.Remove(value);
-        }
-
-        this.StateHasChanged();
-
-        await FieldChanged.InvokeAsync(Field);
-    }
-
-    private async Task AddStringArrayValueAsync(string value)
-    {
-        if (Field is null || string.IsNullOrEmpty(value))
-        {
-            return;
-        }
-        Field.StringValue = null;
-        Field.StringValuesList ??= [];
-        Field.StringValuesList.Add(value);
-        //Field.StringValues = [.. Field.StringValues, value];
-
-        _addStringArrayValue = "";
-        this.StateHasChanged();
-
-        await FieldChanged.InvokeAsync(Field);
+        _editingWriteOnlyField = false;
+        await FieldChanged.InvokeAsync(field);
     }
 
     protected override void OnParametersSet()
     {
         if (Field?.FieldDefinition is not null)
         {
-            _canEdit = !Field.FieldDefinition.ReadOnly;
-            _editing = true;
-            if (Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection)
-            {
-                _editing = false;
-                Field.StringValuesList ??= [];
-            }
-        }
-    }
-
-    private async Task OnStringValueChanged(string value)
-    {
-        if (Field is not null)
-        {
-            Field.StringValuesList = null;
-            Field.StringValue = value;
-            await FieldChanged.InvokeAsync(Field);
-        }
-    }
-    private async Task OnBooleanValueChanged(bool? value)
-    {
-        if (Field is not null)
-        {
-            Field.StringValue = null;
-            Field.StringValuesList = null;
-            Field.BooleanValue = value;
-            await FieldChanged.InvokeAsync(Field);
+            Field.StringValuesList ??= [];
         }
     }
 }

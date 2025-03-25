@@ -1,5 +1,6 @@
 ﻿using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
 
 
@@ -144,12 +145,8 @@ public interface ITestCaseRepository
     /// <summary>
     /// Adds a test suite
     /// </summary>
-    /// <param name="tenantId"></param>
-    /// <param name="teamId"></param>
-    /// <param name="projectId"></param>
-    /// <param name="name"></param>
     /// <returns></returns>
-    Task<TestSuite> AddTestSuiteAsync(string tenantId, long? teamId, long? projectId, string name);
+    Task<TestSuite> AddTestSuiteAsync(TestSuite testSuite);
 
     /// <summary>
     /// Updates a test suite / saves changes
@@ -241,5 +238,15 @@ public interface ITestCaseRepository
     /// <returns></returns>
     Task UpdateTestCaseRunAsync(TestCaseRun testCaseRun);
 
+    #endregion
+
+    #region Queries
+
+    /// <summary>
+    /// Returns a summary containing passed tests, total tests based on the filter
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <returns></returns>
+    Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
     #endregion
 }

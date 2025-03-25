@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Settings;
-using TestBucket.Domain.Tenants.Models;
-
+﻿
 namespace TestBucket.Domain.AI.Settings
 {
     class AzureAiProductionKeySetting : SettingAdapter
@@ -22,8 +13,9 @@ namespace TestBucket.Domain.AI.Settings
             Metadata.Description = "Production Key for Azure AI";
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
-
+            Metadata.WriteOnly = true;
             Metadata.Section.Name = "Provider";
+            Metadata.SearchText = "azure-ai";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;
             Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;

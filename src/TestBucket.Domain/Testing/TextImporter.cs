@@ -8,6 +8,7 @@ using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.States;
+using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Formats;
 using TestBucket.Formats.Ctrf;
@@ -23,15 +24,19 @@ internal class TextImporter : ITextTestResultsImporter
     private readonly ITestCaseRepository _testCaseRepository;
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
     private readonly IFileRepository _fileRepository;
+    private readonly ITestSuiteManager _testSuiteManager;
+    private readonly ITestRunManager _testRunManager;
 
     public TextImporter(
         IStateService stateService,
-        ITestCaseRepository testCaseRepository, IFieldDefinitionManager fieldDefinitionManager, IFileRepository fileRepository)
+        ITestCaseRepository testCaseRepository, IFieldDefinitionManager fieldDefinitionManager, IFileRepository fileRepository, ITestSuiteManager testSuiteManager, ITestRunManager testRunManager)
     {
         _stateService = stateService;
         _testCaseRepository = testCaseRepository;
         _fieldDefinitionManager = fieldDefinitionManager;
         _fileRepository = fileRepository;
+        _testSuiteManager = testSuiteManager;
+        _testRunManager = testRunManager;
     }
 
     /// <summary>
@@ -72,7 +77,6 @@ internal class TextImporter : ITextTestResultsImporter
             {
                 Created = now,
                 Name = (run.Name ?? "Test Results") + " - " + dateString,
-                //Name = suiteName + " - " + suite.Created.ToString("yyyy-MM-dd HHmmss"),
                 TeamId = teamId,
                 TenantId = tenantId,
                 TestProjectId = projectId,
@@ -80,7 +84,7 @@ internal class TextImporter : ITextTestResultsImporter
                 Description = "Imported",
                 SystemOut = run.SystemOut,
             };
-            await _testCaseRepository.AddTestRunAsync(testRun);
+            await _testRunManager.AddTestRunAsync(principal, testRun);
 
             foreach (var runSuite in run.Suites)
             {
@@ -95,8 +99,8 @@ internal class TextImporter : ITextTestResultsImporter
                 {
                     continue;
                 }
-                TestSuite? suite = await _testCaseRepository.GetTestSuiteByNameAsync(tenantId, teamId, projectId, suiteName);
-                suite ??= await _testCaseRepository.AddTestSuiteAsync(tenantId, teamId, projectId, suiteName);
+                TestSuite? suite = await _testSuiteManager.GetTestSuiteByNameAsync(principal, teamId, projectId, suiteName);
+                suite ??= await _testSuiteManager.AddTestSuiteAsync(principal, teamId, projectId, suiteName);
 
                 // Get field definitions to imported entities
                 var testRunFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.TestRun);
@@ -172,10 +176,11 @@ internal class TextImporter : ITextTestResultsImporter
         }
         var tenantId = principal.GetTentantIdOrThrow();
 
+        var testName = testCase.Name ?? "-";
         var completedState = await _stateService.GetProjectFinalStateAsync(principal, testRun.TestProjectId.Value);
         var testCaseRun = new TestCaseRun()
         {
-            Name = test.Name ?? "-",
+            Name = testName,
             TenantId = tenantId,
             TestRunId = testRun.Id,
             TestProjectId = testRun.TestProjectId.Value,
@@ -235,63 +240,10 @@ internal class TextImporter : ITextTestResultsImporter
             }
         }
 
+        // Do we need to create a new test case?
         if (testCase is null)
         {
-            // Create folder for the test case
-            long? folderId = null;
-            if (options.CreateFoldersFromClassNamespace)
-            {
-                if (test.ClassName is not null)
-                {
-                    test.Folders = test.ClassName.Split('.', StringSplitOptions.RemoveEmptyEntries|StringSplitOptions.TrimEntries);
-                    folderId = await GetOrCreateTestCaseFolderPathAsync(tenantId, projectId, suite.Id, test.Folders);
-                }
-            }
-
-            if(folderId is null)
-            {
-                if(test.Folders.Length == 0 && test.ClassName is not null)
-                {
-                    test.Folders = [test.ClassName];
-                }
-                folderId = await GetOrCreateTestCaseFolderPathAsync(tenantId, projectId, suite.Id, test.Folders);
-            }
-            //if (test.ClassName is not null)
-            //{
-            //    long? parentId = null;
-            //    string folderName = test.ClassName;
-            //    TestSuiteFolder? folder = await _testCaseRepository.GetTestSuiteFolderByNameAsync(tenantId, suite.Id, parentId, folderName);
-            //    if (folder is null)
-            //    {
-            //        folder = await _testCaseRepository.AddTestSuiteFolderAsync(tenantId, projectId, suite.Id, parentId, folderName);
-            //    }
-            //    folderId = folder?.Id;
-            //}
-
-            var testName = test.Name ?? "";
-            if(options.RemoveClassNameFromTestName && test.ClassName is not null)
-            {
-                if(testName.StartsWith(test.ClassName))
-                {
-                    testName = testName[test.ClassName.Length..].TrimStart('.', '/');
-                }
-            }
-
-            testCase = new TestCase
-            {
-                Name = testName,
-                ExternalId = test.TestId ?? test.ExternalId,
-                AutomationAssembly = test.Assembly,
-                ClassName = test.ClassName,
-                Method = test.Method,
-                Module = test.Module,
-                TenantId = tenantId,
-                TestProjectId = projectId,
-                TestSuiteId = suite.Id,
-                TestSuiteFolderId = folderId,
-                Description = test.Description,
-            };
-            await _testCaseRepository.AddTestCaseAsync(testCase);
+            testCase = await CreateNewTestCaseAsync(tenantId, projectId, suite, test, options);
         }
         else
         {
@@ -307,6 +259,55 @@ internal class TextImporter : ITextTestResultsImporter
             }
         }
 
+        return testCase;
+    }
+
+    private async Task<TestCase> CreateNewTestCaseAsync(string tenantId, long? projectId, TestSuite suite, TestCaseRunDto test, ImportHandlingOptions options)
+    {
+        // Create folder for the test case
+        long? folderId = null;
+        if (options.CreateFoldersFromClassNamespace)
+        {
+            if (test.ClassName is not null)
+            {
+                test.Folders = test.ClassName.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                folderId = await GetOrCreateTestCaseFolderPathAsync(tenantId, projectId, suite.Id, test.Folders);
+            }
+        }
+
+        if (folderId is null)
+        {
+            if (test.Folders.Length == 0 && test.ClassName is not null)
+            {
+                test.Folders = [test.ClassName];
+            }
+            folderId = await GetOrCreateTestCaseFolderPathAsync(tenantId, projectId, suite.Id, test.Folders);
+        }
+
+        var testName = test.Name ?? "";
+        if (options.RemoveClassNameFromTestName && test.ClassName is not null)
+        {
+            if (testName.StartsWith(test.ClassName))
+            {
+                testName = testName[test.ClassName.Length..].TrimStart('.', '/');
+            }
+        }
+
+        var testCase = new TestCase
+        {
+            Name = testName,
+            ExternalId = test.TestId ?? test.ExternalId,
+            AutomationAssembly = test.Assembly,
+            ClassName = test.ClassName,
+            Method = test.Method,
+            Module = test.Module,
+            TenantId = tenantId,
+            TestProjectId = projectId,
+            TestSuiteId = suite.Id,
+            TestSuiteFolderId = folderId,
+            Description = test.Description,
+        };
+        await _testCaseRepository.AddTestCaseAsync(testCase);
         return testCase;
     }
 

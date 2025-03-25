@@ -3,38 +3,42 @@
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject ITestCaseManager testCaseManager
+@inject ITestRunManager testRunManager
 @inject TestCaseEditorController testCaseEditor
 @inject TestRunCreationController testRunCreationService
 @implements IDisposable
-@implements ITestCaseObserver
+@implements ITestRunObserver
 
 <DropZone T="TestEntity" OnDrop="OnDrop">
     <MudDataGrid ServerData="LoadGridData"
-                 Style="width: 100%"
-                 Dense="true"
-                 Hover="true"
-                 SelectOnRowClick="true"
-                 MultiSelection="false"
-                 T="TestCaseRun"
-                 RowClick="(e) => OnClicked(e.Item)"
-                 @ref="_dataGrid"
-                 SortMode="SortMode.None">
+    Style="width: 100%"
+    Dense="true"
+    Hover="true"
+    SelectOnRowClick="true"
+    MultiSelection="false"
+    T="TestCaseRun"
+    RowClick="(e) => OnClicked(e.Item)"
+    @ref="_dataGrid"
+    SortMode="SortMode.None">
 
         <ToolBarContent>
             <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
 
-                <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
-                              Style="min-width: 15vw"
-                              Clearable="true"
-                              Placeholder="Search Tests"
-                              Variant="Variant.Outlined"
-                              IconSize="Size.Small"
-                              Adornment="Adornment.Start"
-                              AdornmentIcon="@Icons.Material.Filled.Search" />
+                <MudTextField Value="_query.Text" T="string" ValueChanged="OnSearch"
+                Style="min-width: 15vw"
+                Clearable="true"
+                Placeholder="Search Tests"
+                Variant="Variant.Outlined"
+                IconSize="Size.Small"
+                Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Search" />
 
                 <MudSpacer />
 
-                <MudSpacer />
+                @if(_results is not null)
+                {
+                    <TestResultSummaryBar Style="width: 100px" Summary="@_results"/>
+                }
                 <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="ShowFilterAsync"></MudIconButton>
             </MudStack>
         </ToolBarContent>

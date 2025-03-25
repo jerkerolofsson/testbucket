@@ -18,27 +18,33 @@
                 </MudSelect>
             </Field>
 
-            <Field>
+            <Field Row>
                 <FieldHeader>Remove Class Name From Test Name</FieldHeader>
+                <MudSpacer/>
                 <MudSwitchM3 @bind-Value="@_options.HandlingOptions.RemoveClassNameFromTestName" Color="Color.Tertiary"/>
+            </Field>
                 <FieldDescription>If the test name starts with the class name, it is removed from the name</FieldDescription>
-            </Field>
 
-            <Field>
+            <Field Row>
                 <FieldHeader>Create Folders From Package/Namespace</FieldHeader>
+                <MudSpacer />
                 <MudSwitchM3 @bind-Value="@_options.HandlingOptions.CreateFoldersFromClassNamespace" Color="Color.Tertiary" />
-                <FieldDescription>Creates test suite folders from the package/namespace if present instead of using test hierarchy defined in the source file</FieldDescription>
             </Field>
+            <FieldDescription>Creates test suite folders from the package/namespace if present instead of using test hierarchy defined in the source file</FieldDescription>
 
-            <Field>
-                <FieldHeader>Create Test Suit eFrom Assembly Name</FieldHeader>
+            <Field Row>
+                <FieldHeader>Create Test Suite From Assembly Name</FieldHeader>
+                <MudSpacer />
                 <MudSwitchM3 @bind-Value="@_options.HandlingOptions.CreateTestSuiteFromAssemblyName" Color="Color.Tertiary" />
-                <FieldDescription>If an assembly name is present, use this to as the name for the test suite even if test suite names are defined in the source file</FieldDescription>
             </Field>
+            <FieldDescription>If an assembly name is present, use this to as the name for the test suite even if test suite names are defined in the source file</FieldDescription>
 
-            <Field>
-                <UploadResults FileUploaded="OnFileUploaded"/>
-            </Field>
+            @if (_options.File is null)
+            {
+                <Field>
+                    <UploadResults FileUploaded="OnFileUploaded"/>
+                </Field>
+            }
 
         </DialogContent>
 

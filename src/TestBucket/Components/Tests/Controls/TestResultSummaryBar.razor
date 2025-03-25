@@ -1,0 +1,68 @@
+﻿@using System.Globalization
+@using TestBucket.Domain.Testing.Aggregates
+@if (Summary is not null)
+{
+    <MudStack Row>
+
+        <MudTooltip Text="Passrate">
+            <MudText Class="tb-passrate-text">@(PassRate) passed</MudText>
+        </MudTooltip>
+
+        <div class="tb-result-summary-bar" style="@Style">
+            @if (Summary.Passed > 0)
+            {
+                <div class="tb-fill-passed" style="@PassedStyle">@Summary.Passed</div>
+            }
+            @if (Summary.Failed > 0)
+            {
+                <div class="tb-fill-failed" style="@FailedStyle">@Summary.Failed</div>
+            }
+            @if (Summary.Blocked > 0)
+            {
+                <div class="tb-fill-blocked" style="@BlockedStyle">@Summary.Blocked</div>
+            }
+            @if (Summary.Skipped > 0)
+            {
+                <div class="tb-fill-skipped" style="@SkippedStyle">@Summary.Skipped</div>
+            }
+            @if (Summary.NoRun > 0)
+            {
+                <div class="tb-fill-norun" style="@NoRunStyle">@Summary.NoRun</div>
+            }
+        </div>
+    </MudStack>
+}
+
+@code {
+    [Parameter] public TestExecutionResultSummary? Summary { get; set; }
+    [Parameter] public string Style { get; set; } = "width: 200px";
+
+    private string PassRate
+    {
+        get
+        {
+            if (Summary is not null && Summary.Total > 0)
+            {
+                var percent = 100.0 * Summary.Passed / Summary.Total;
+                return Math.Round(percent, 1).ToString(CultureInfo.InvariantCulture) + "%";
+            }
+            return "0%";
+        }
+    }
+
+    private string PassedStyle => $"width: {GetWidthString(Summary?.Passed)}";
+    private string FailedStyle => $"width: {GetWidthString(Summary?.Failed)}";
+    private string BlockedStyle => $"width: {GetWidthString(Summary?.Blocked)}";
+    private string SkippedStyle => $"width: {GetWidthString(Summary?.Skipped)}";
+    private string NoRunStyle => $"width: {GetWidthString(Summary?.NoRun)}";
+
+    private string GetWidthString(long? value)
+    {
+        if(value is not null && Summary is not null && Summary.Total > 0)
+        {
+            var percent = value.Value * 100.0 / Summary.Total;
+            return Math.Round(percent, 4).ToString(CultureInfo.InvariantCulture) + "%";
+        }
+        return "0%";
+    }
+}

@@ -20,16 +20,15 @@
             <MudPaper Outlined="true" Class="@_dragClass">
                 @if(ChildContent is null)
                 {
-                    if(_loading)
-                    {
-
-                    }
-                    else
-                    {
-                        <MudText Typo="Typo.h6">
-                            Drag and drop files here or click to select a file
-                        </MudText>
-                    }
+                    <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="mud-width-full mud-height-full" Row>
+                        @if(!_loading)
+                        {
+                            <MudIcon Size="Size.Large" Icon="@Icons.Material.Outlined.CloudUpload"/>
+                            <MudText Typo="Typo.h6">
+                                Drag and drop files here or click to select a file
+                            </MudText>
+                        }
+                    </MudStack>
                 }
                 else
                 {
@@ -38,14 +37,6 @@
             </MudPaper>
         </ActivatorContent>
     </MudFileUpload>
-    @* <MudToolBar Gutters="@false" *@
-    @* Class="relative d-flex justify-end gap-4"> *@
-    @*     <MudButton Color="Color.Primary" *@
-    @*     OnClick="@OpenFilePickerAsync" *@
-    @*     Variant="Variant.Filled"> *@
-    @*         @Label *@
-    @*     </MudButton> *@
-    @* </MudToolBar> *@
 </MudStack>
 
 
@@ -59,7 +50,7 @@
     [Parameter] public string? Class { get; set; }
     [Parameter] public string Style { get; set; } = "width: 100%";
 
-    [Parameter] public RenderFragment? ChildContent{ get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
     [Parameter] public long? TestCaseId { get; set; }
     [Parameter] public long? TestRunId { get; set; }

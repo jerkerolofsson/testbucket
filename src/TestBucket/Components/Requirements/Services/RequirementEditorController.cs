@@ -106,6 +106,13 @@ internal class RequirementEditorController : TenantBaseService
         }
     }
 
+
+    public async Task LinkRequirementToTestCaseAsync(Requirement requirement, TestCase testCase)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.AddRequirementLinkAsync(principal, requirement, testCase);
+    }
+
     public async Task DeleteRequirementAsync(Requirement requirement)
     {
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions

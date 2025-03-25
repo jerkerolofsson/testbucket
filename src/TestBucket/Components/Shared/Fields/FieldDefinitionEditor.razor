@@ -78,31 +78,28 @@
 
 
             <MudStack Row="true" Wrap="Wrap.Wrap">
-                <Field>
-                    <FieldHeader>Visible</FieldHeader>
-                    <MudSwitchM3 Value="FieldDefinition.IsVisible" ValueChanged="OnIsVisibleChanged" T="bool" Color="Color.Tertiary"></MudSwitchM3>
-                    <FieldDescription>Shows the field in the user interface</FieldDescription>
-                </Field>
 
-                <Field>
-                    <FieldHeader>Automatic Classification</FieldHeader>
-                    <MudSwitchM3 Value="FieldDefinition.UseClassifier" ValueChanged="OnUseClassifierChanged" T="bool" Color="Color.Tertiary"></MudSwitchM3>
-                    <FieldDescription>Uses AI to update this field, if it is empty</FieldDescription>
-                </Field>
+                <MudTooltip Text="Inherits the value from a related entity, for example executed test cases inherits from the test run and from the test case.">
+                    <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.Inherit" ValueChanged="OnInheritChanged">Inherit value</MudCheckBox>
+                </MudTooltip>
 
-                <Field>
-                    <FieldHeader>Read-Only</FieldHeader>
-                    <MudSwitchM3 Value="FieldDefinition.ReadOnly" ValueChanged="OnReadOnlyChanged" T="bool" Color="Color.Tertiary"></MudSwitchM3>
-                    <FieldDescription>Read-Only fields cannot be edited in the user interface</FieldDescription>
-                </Field>
+                <MudTooltip Text="Uses AI to update this field, if it is empty">
+                    <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.UseClassifier" ValueChanged="OnUseClassifierChanged">Automatic Classification</MudCheckBox>
+                </MudTooltip>
+
+                <MudTooltip Text="Shows the field in the user interface">
+                    <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.IsVisible" ValueChanged="OnIsVisibleChanged">Visible</MudCheckBox>
+                </MudTooltip>
 
                 @if (FieldDefinition.IsVisible)
                 {
-                    <Field>
-                        <FieldHeader>Show Description</FieldHeader>
-                        <MudSwitchM3 Value="FieldDefinition.ShowDescription" ValueChanged="OnShowDescriptionChanged" T="bool" Color="Color.Tertiary"></MudSwitchM3>
-                        <FieldDescription>Shows the description in the user interface</FieldDescription>
-                    </Field>
+                    <MudTooltip Text="Read-Only fields cannot be edited by a user">
+                        <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.ReadOnly" ValueChanged="OnReadOnlyChanged">Read Only</MudCheckBox>
+                    </MudTooltip>
+
+                    <MudTooltip Text="Shows the description in the user interface">
+                        <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.ShowDescription" ValueChanged="OnShowDescriptionChanged">Show description in UI</MudCheckBox>
+                    </MudTooltip>
                 }
             </MudStack>
 
@@ -154,6 +151,14 @@
         if (FieldDefinition is not null)
         {
             FieldDefinition.IsVisible = isVisible;
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
+    private async Task OnInheritChanged(bool inherit)
+    {
+        if (FieldDefinition is not null)
+        {
+            FieldDefinition.Inherit = inherit;
             await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
         }
     }

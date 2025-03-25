@@ -1,4 +1,6 @@
-﻿using TestBucket.Components.Requirements.Dialogs;
+﻿using MudBlazor;
+
+using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Requirements;
@@ -53,10 +55,14 @@ internal class TestCaseEditorController : TenantBaseService
         var result = await dialog.Result;
       
     }
-    public async Task<TestCase?> CreateNewTestCaseAsync(TestSuiteFolder? folder, long? testSuiteId)
+
+
+    public async Task<TestCase?> CreateNewTestCaseAsync(TestProject project, TestSuiteFolder? folder, long? testSuiteId, string name = "")
     {
         var parameters = new DialogParameters<AddTestCaseDialog>
         {
+            { x => x.Name, name },
+            { x => x.Project, project },
             { x => x.Folder, folder },
             { x => x.TestSuiteId, testSuiteId ?? folder?.TestSuiteId}
         };

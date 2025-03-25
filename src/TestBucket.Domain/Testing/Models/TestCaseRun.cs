@@ -66,6 +66,7 @@ public class TestCaseRun : TestEntity
     public long TestRunId { get; set; }
 
     // Navigation
+    public virtual IEnumerable<TestCaseRunField>? TestCaseRunFields { get; set; }
     public TestRun? TestRun { get; set; }
     public TestCase? TestCase { get; set; }
 }

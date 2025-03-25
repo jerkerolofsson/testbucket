@@ -1,4 +1,8 @@
-﻿using TestBucket.Domain.Shared.Specifications;
+﻿using TestBucket.Contracts.Testing.Models;
+using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing.Aggregates;
+
+using UglyToad.PdfPig.Filters;
 
 namespace TestBucket.Data.Testing;
 internal class TestCaseRepository : ITestCaseRepository
@@ -12,6 +16,7 @@ internal class TestCaseRepository : ITestCaseRepository
 
     #region Test Cases
 
+    /// <inheritdoc/>
 
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters)
     {
@@ -487,6 +492,7 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var tests = dbContext.TestCaseRuns
             .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
             .AsQueryable();
 
         foreach(var filter in filters)
@@ -607,6 +613,37 @@ internal class TestCaseRepository : ITestCaseRepository
             folderId = folder.ParentId;
         }
     }
-
     #endregion Helpers
+
+
+    public async Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
+    {
+        var result = new TestExecutionResultSummary();
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCaseRuns
+            .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            tests = tests.Where(filter.Expression);
+        }
+
+        var results = await tests.GroupBy(x => x.Result).Select(g => new { Count = g.Count(), Result = g.Key }).ToListAsync();
+        result.Total        = results.Sum(x=>x.Count);
+        result.Completed    = results.Where(x => x.Result != TestResult.NoRun   ).Sum(x => x.Count);
+        result.Passed       = results.Where(x => x.Result == TestResult.Passed  ).Sum(x => x.Count);
+        result.Failed       = results.Where(x => x.Result == TestResult.Failed  ).Sum(x => x.Count);
+        result.Blocked      = results.Where(x => x.Result == TestResult.Blocked ).Sum(x => x.Count);
+        result.Skipped      = results.Where(x => x.Result == TestResult.Skipped ).Sum(x => x.Count);
+        result.Error        = results.Where(x => x.Result == TestResult.Error   ).Sum(x => x.Count);
+        result.Assert       = results.Where(x => x.Result == TestResult.Assert  ).Sum(x => x.Count);
+        result.Hang         = results.Where(x => x.Result == TestResult.Hang    ).Sum(x => x.Count);
+
+        return result;
+    }
+
+
 }

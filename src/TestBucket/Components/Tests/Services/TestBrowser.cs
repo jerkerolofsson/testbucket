@@ -10,6 +10,7 @@ using TestBucket.Domain.Files;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams.Models;
+using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications;
 using TestBucket.Domain.Testing.Specifications.TestCases;
@@ -227,6 +228,11 @@ internal class TestBrowser : TenantBaseService
         };
     }
 
+    public async Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(SearchTestCaseRunQuery query)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testRunManager.SearchTestCaseRunsAsync(principal, query);
+    }
 
     /// <summary>
     /// Searches for test case runs
@@ -238,19 +244,42 @@ internal class TestBrowser : TenantBaseService
     /// <returns></returns>
     public async Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(long testRunId, string? searchText, int offset, int count = 20)
     {
-        if (string.IsNullOrWhiteSpace(searchText))
-        {
-            searchText = null;
-        }
-        var principal = await GetUserClaimsPrincipalAsync();
-        return await _testRunManager.SearchTestCaseRunsAsync(principal, new SearchTestCaseRunQuery
+        return await SearchTestCaseRunsAsync(new SearchTestCaseRunQuery
         {
             Text = searchText,
             TestRunId = testRunId,
             Count = count,
             Offset = offset,
         });
-
+    }
+    /// <summary>
+    /// Returns a summary report of results (passed, failed..) filtered by the query
+    /// </summary>
+    /// <param name="testRunId"></param>
+    /// <param name="searchText"></param>
+    /// <returns></returns>
+    public async Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(SearchTestCaseRunQuery query)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testRunManager.GetTestExecutionResultSummaryAsync(principal, query);
+    }
+    /// <summary>
+    /// Returns a summary report of results (passed, failed..) filtered by the query
+    /// </summary>
+    /// <param name="testRunId"></param>
+    /// <param name="searchText"></param>
+    /// <returns></returns>
+    public async Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(long testRunId, string? searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            searchText = null;
+        }
+        return await GetTestExecutionResultSummaryAsync(new SearchTestCaseRunQuery
+        {
+            Text = searchText,
+            TestRunId = testRunId,
+        });
     }
 
 

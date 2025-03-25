@@ -580,6 +580,15 @@ public partial class TestTreeView
         });
     }
 
+    public Task OnTestCaseRunCreatedAsync(TestCaseRun testCaseRun)
+    {
+        return Task.CompletedTask;
+    }
+    public Task OnTestCaseRunUpdatedAsync(TestCaseRun testCaseRun)
+    {
+        return Task.CompletedTask;
+    }
+
     public async Task OnRunCreatedAsync(TestRun testRun)
     {
         await InvokeAsync(() =>

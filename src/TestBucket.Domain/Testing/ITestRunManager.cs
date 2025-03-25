@@ -5,24 +5,85 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Testing;
 public interface ITestRunManager
 {
+    /// <summary>
+    /// Adds an observer that will receive notifications when things are changing
+    /// </summary>
+    /// <param name="observer"></param>
     void AddObserver(ITestRunObserver observer);
+
+    /// <summary>
+    /// Removes the observer
+    /// </summary>
+    /// <param name="observer"></param>
     void RemoveObserver(ITestRunObserver observer);
 
     #region Test Runs
-    Task AddTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun);
+
+    /// <summary>
+    /// Adds a TestRun (a collection of test cases for execution)
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testRun"></param>
+    /// <returns></returns>
     Task AddTestRunAsync(ClaimsPrincipal principal, TestRun testRun);
+
+    /// <summary>
+    /// Deletes a run and all references items such as test case runs
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testRun"></param>
+    /// <returns></returns>
     Task DeleteTestRunAsync(ClaimsPrincipal principal, TestRun testRun);
+
+    /// <summary>
+    /// Searches for test runs using a filter
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    Task<PagedResult<TestRun>> SearchTestRunsAsync(ClaimsPrincipal principal, SearchTestRunQuery query);
+
     #endregion Test Runs
 
     #region Test Case Runs
+
+    /// <summary>
+    /// Adds a TestCaseRun (a test case for execution)
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testCaseRun"></param>
+    /// <returns></returns>
+    Task AddTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun);
+
+    /// <summary>
+    /// Saves changes made to a test case run
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testCaseRun"></param>
+    /// <returns></returns>
     Task SaveTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun);
+
+    /// <summary>
+    /// Searches for test case runs using a filter
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
     Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
-    Task<PagedResult<TestRun>> SearchTestRunsAsync(ClaimsPrincipal principal, SearchTestRunQuery query);
+
+    /// <summary>
+    /// Returns a summary report of results (passed, failed..) filtered by the query
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
 
     #endregion Test Case Runs
 }

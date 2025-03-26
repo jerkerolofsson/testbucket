@@ -51,7 +51,7 @@ internal class TestCaseEditorController : TenantBaseService
             { x => x.Folder, folder },
             { x => x.TestSuiteId, testSuiteId ?? folder?.TestSuiteId}
         };
-        var dialog = await _dialogService.ShowAsync<CreateAITestsDialog>("Generate test cases", parameters);
+        var dialog = await _dialogService.ShowAsync<CreateAITestsDialog>("Generate test cases", parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
       
     }
@@ -66,7 +66,7 @@ internal class TestCaseEditorController : TenantBaseService
             { x => x.Folder, folder },
             { x => x.TestSuiteId, testSuiteId ?? folder?.TestSuiteId}
         };
-        var dialog = await _dialogService.ShowAsync<AddTestCaseDialog>("Add test case", parameters);
+        var dialog = await _dialogService.ShowAsync<AddTestCaseDialog>("Add test case", parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if (result?.Data is TestCase testCase)
         {

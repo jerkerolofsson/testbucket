@@ -1,50 +1,62 @@
 ﻿@if (Field?.FieldDefinition is not null)
 {
-    bool row = Field.FieldDefinition.Type == FieldType.Boolean;
-
-    <MudTooltip Text="@Field.FieldDefinition.Description">
-        <Field>
-            <MudStack Spacing="0" Row="@row">
+    <Field>
+        <MudStack Spacing="0" Row="@Row">
+            <MudTooltip Text="@Field.FieldDefinition.Description">
                 <FieldHeader>@Field.FieldDefinition.Name</FieldHeader>
+            </MudTooltip>
 
-                @if (Field.FieldDefinition.WriteOnly)
-                {
-                    @if(_editingWriteOnlyField)
-                    {
-                        <FieldValueEditor Field="@Field" FieldChanged="async (f) => await OnWriteOnlyFieldChangedAsync(f)" />
-                    }
-                    else
-                    {
-                        <MudStack Row Style="width: 100%">
-                            <MudText Class="tb-write-only-field">****</MudText>
-                            <MudSpacer/>
-                            <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="EditField">Change</MudButton>
-                        </MudStack>
-                    }
+            @if (Row && !Field.FieldDefinition.WriteOnly)
+            {
+                <MudSpacer/>
+            }
 
-                }
-                else if (Field.FieldDefinition.ReadOnly)
+            @if (Field.FieldDefinition.WriteOnly)
+            {
+                @if(_editingWriteOnlyField)
                 {
-                    <FieldReadOnlyValue Field="@Field" />
+                    <FieldValueEditor Field="@Field" FieldChanged="async (f) => await OnWriteOnlyFieldChangedAsync(f)" />
                 }
                 else
                 {
-                    <FieldValueEditor Field="@Field" FieldChanged="async (f) => await FieldChanged.InvokeAsync(f)" />
+                    <MudStack Row Style="width: 100%">
+                        <MudText Class="tb-write-only-field">****</MudText>
+                        <MudSpacer/>
+                        <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="EditField">Change</MudButton>
+                    </MudStack>
                 }
-            </MudStack>
-
-            @if (Field.FieldDefinition.ShowDescription)
-            {
-                <FieldDescription>@Field.FieldDefinition.Description</FieldDescription>
             }
+            else if (Field.FieldDefinition.ReadOnly)
+            {
+                <FieldReadOnlyValue Field="@Field" />
+            }
+            else
+            {
+                <MudItem Style="@ValueStyle">
+                    <FieldValueEditor Field="@Field" FieldChanged="async (f) => await FieldChanged.InvokeAsync(f)" />
+                </MudItem>
+            }
+        </MudStack>
 
-        </Field>
-    </MudTooltip>
+        @if (Field.FieldDefinition.ShowDescription)
+        {
+            <FieldDescription>@Field.FieldDefinition.Description</FieldDescription>
+        }
+
+    </Field>
 }
 
 @code {
     [Parameter] public FieldValue? Field { get; set; }
     [Parameter] public EventCallback<FieldValue?> FieldChanged { get; set; }
+
+    private bool Row => Field?.FieldDefinition?.Type == FieldType.Boolean ||
+                Field?.FieldDefinition?.Type == FieldType.String || 
+                Field?.FieldDefinition?.Type == FieldType.SingleSelection || 
+                Field?.FieldDefinition?.Type == FieldType.Integer ||
+                Field?.FieldDefinition?.Type == FieldType.Double;
+
+    private string ValueStyle => Row ? "max-width: 200px; min-width: 50px" : "";
 
     private bool _editingWriteOnlyField = false;
 

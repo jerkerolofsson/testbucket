@@ -1,0 +1,47 @@
+﻿@using TestBucket.Domain.Commands
+@using TestBucket.Domain.Keyboard
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject ICommandManager commandManager
+
+@if (TypeName is not null)
+{
+    @foreach (var command in commandManager.GetCommandByContextMenuType(TypeName))
+    {
+        var binding = GetBinding(command.Id);
+        <MudMenuItem Icon="@command.Icon" OnClick="async () => await command.ExecuteAsync()">
+            <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center">
+                @command.Name
+
+                @if(binding is not null)
+                {
+                    <MudSpacer/>
+                    <KeyboardShortcutLabel Modifiers="@binding.ModifierKeys" KeyCode="@binding.Key"/>
+                }
+            </MudStack>
+
+        </MudMenuItem>
+    }
+}
+
+@code {
+    [Parameter] public string? TypeName { get; set; }
+
+    private KeyboardBindings? _bindings;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var principal = authState.User;
+        _bindings = await commandManager.GetKeyboardBindingsAsync(principal);
+    }
+
+    private KeyboardBinding? GetBinding(string commandId)
+    {
+        if(_bindings?.Commands is null)
+        {
+            return null;
+        }
+        _bindings.Commands.TryGetValue(commandId, out var binding);
+        return binding;
+    }
+}

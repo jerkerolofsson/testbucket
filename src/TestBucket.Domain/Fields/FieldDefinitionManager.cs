@@ -1,4 +1,9 @@
-﻿using System.Security.Claims;
+﻿using System.Linq;
+using System.Security.Claims;
+
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Primitives;
+
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Fields.Specifications;
 using TestBucket.Domain.Shared.Specifications;
@@ -8,23 +13,38 @@ namespace TestBucket.Domain.Fields
 {
     public class FieldDefinitionManager : IFieldDefinitionManager
     {
+        private readonly IMemoryCache _memoryCache;
         private readonly IFieldRepository _fieldRepository;
 
-        public FieldDefinitionManager(IFieldRepository fieldRepository)
+        public FieldDefinitionManager(
+            IMemoryCache memoryCache,
+            IFieldRepository fieldRepository)
         {
+            _memoryCache = memoryCache;
             _fieldRepository = fieldRepository;
         }
 
         public async Task AddAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition)
         {
-            fieldDefinition.TenantId = principal.GetTentantIdOrThrow();
+            var cacheKey = GetCacheKey(principal);
+            _memoryCache.Remove(cacheKey);
+
+            fieldDefinition.TenantId = principal.GetTenantIdOrThrow();
 
             await _fieldRepository.AddAsync(fieldDefinition);
         }
 
+        private static string GetCacheKey(ClaimsPrincipal principal)
+        {
+            return "fielddefinitions:" + principal.GetTenantIdOrThrow();
+        }
+
         public async Task UpdateAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition)
         {
-            fieldDefinition.TenantId = principal.GetTentantIdOrThrow();
+            var cacheKey = GetCacheKey(principal);
+            _memoryCache.Remove(cacheKey);
+
+            fieldDefinition.TenantId = principal.GetTenantIdOrThrow();
 
             await _fieldRepository.UpdateAsync(fieldDefinition);
         }
@@ -37,31 +57,54 @@ namespace TestBucket.Domain.Fields
         /// <returns></returns>
         public async Task<IReadOnlyList<FieldDefinition>> GetDefinitionsAsync(ClaimsPrincipal principal, long? testProjectId, FieldTarget target)
         {
-            var specifications = FieldSpecificationBuilder.From(new SearchFieldQuery
+            var query = new SearchFieldQuery
             {
                 Target = target,
-                ProjectId = testProjectId
-            });
-            return await SearchAsync(principal, specifications);
+                ProjectId = testProjectId,
+                Offset = 0,
+                Count = 200
+            };
+            return await SearchAsync(principal, query);
         }
         public async Task DeleteAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition)
         {
-            fieldDefinition.TenantId = principal.GetTentantIdOrThrow();
+            var cacheKey = GetCacheKey(principal);
+            _memoryCache.Remove(cacheKey);
 
+            fieldDefinition.TenantId = principal.GetTenantIdOrThrow();
             await _fieldRepository.DeleteAsync(fieldDefinition);
         }
-        public async Task<IReadOnlyList<FieldDefinition>> SearchAsync(ClaimsPrincipal principal, IReadOnlyList<FilterSpecification<FieldDefinition>> specifications)
+        public async Task<IReadOnlyList<FieldDefinition>> SearchAsync(ClaimsPrincipal principal, SearchFieldQuery query)
         {
-            var tenantId = principal.GetTentantIdOrThrow();
-            specifications = [new FilterByTenant<FieldDefinition>(tenantId), .. specifications];
+            var cacheKey = GetCacheKey(principal);
+            var fieldDefinitions = (await _memoryCache.GetOrCreateAsync(cacheKey, async (e) =>
+            {
+                var tenantId = principal.GetTenantIdOrThrow();
+                var definitions = await GetAllFilterDefinitionsForTenantAsync(tenantId);
+                e.AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(15);
 
-            return await _fieldRepository.SearchAsync(specifications);
+                return definitions;
+            }) ?? []).AsQueryable();
+
+            // We cached all field definitions, so filter them now
+            var filters = FieldSpecificationBuilder.From(query);
+            foreach(var filter in filters)
+            {
+                fieldDefinitions = fieldDefinitions.Where(filter.Expression);
+            }
+            return fieldDefinitions.ToList();
         }
 
+        private async Task<IReadOnlyList<FieldDefinition>> GetAllFilterDefinitionsForTenantAsync(string tenantId)
+        {
+            IReadOnlyList<FilterSpecification<FieldDefinition>> specifications = [new FilterByTenant<FieldDefinition>(tenantId)];
+            var definitions = await _fieldRepository.SearchAsync(specifications);
+            return definitions;
+        }
 
         public async Task UpsertTestCaseFieldsAsync(ClaimsPrincipal principal, TestCaseField field)
         {
-            field.TenantId = principal.GetTentantIdOrThrow();
+            field.TenantId = principal.GetTenantIdOrThrow();
             await _fieldRepository.UpsertTestCaseFieldsAsync(field);
         }
     }

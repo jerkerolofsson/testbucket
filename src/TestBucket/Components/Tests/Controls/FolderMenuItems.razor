@@ -10,10 +10,13 @@
 @if (Folder is not null)
 {
     <MudMenuItem Icon="@Icons.Material.Filled.PlayArrow" OnClick="RunAsync">Run</MudMenuItem>
+
+    <CommandMenuItems TypeName="TestSuiteFolder" />
+
+
     <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => CreateNewTestCaseAsync(Folder)">Create New Test</MudMenuItem>
     <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => GenerateAiTestsAsync(Folder)">Generate New Tests with AI</MudMenuItem>
     <MudDivider />
-    <MudMenuItem Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="AddTestSuiteFolderAsync">Create Folder</MudMenuItem>
     <MudMenuItem Icon="@Icons.Material.Filled.Palette" OnClick="EditTestSuiteFolderAsync" Label="Customize folder" />
     <MudDivider />
     <MudMenuItem Icon="@Icons.Material.Filled.FolderDelete" IconColor="Color.Error" OnClick="DeleteTestSuiteFolderAsync" Label="Delete folder" />

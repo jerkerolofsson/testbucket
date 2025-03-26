@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Keyboard;
+
 namespace TestBucket.Domain.Identity.Models;
 public class UserPreferences
 {
@@ -30,6 +32,12 @@ public class UserPreferences
     public long? ActiveProjectId { get; set; }
 
     #region User Interface
+
+    /// <summary>
+    /// Keyboard bindings
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public KeyboardBindings? KeyboardBindings { get; set; }
 
     /// <summary>
     /// Use dark mode

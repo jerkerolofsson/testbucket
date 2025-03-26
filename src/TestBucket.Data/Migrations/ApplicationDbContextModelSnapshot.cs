@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Data;
+using TestBucket.Domain.Keyboard;
 
 #nullable disable
 
@@ -429,6 +430,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<bool>("IncreasedContrast")
                         .HasColumnType("boolean");
+
+                    b.Property<KeyboardBindings>("KeyboardBindings")
+                        .HasColumnType("jsonb");
 
                     b.Property<bool>("ShowFailureMessageDialogWhenFailingTestCaseRun")
                         .HasColumnType("boolean");

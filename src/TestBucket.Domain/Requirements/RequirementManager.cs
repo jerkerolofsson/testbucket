@@ -26,7 +26,7 @@ namespace TestBucket.Domain.Requirements
         public async Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(ClaimsPrincipal principal, long id)
         {
             FilterSpecification<RequirementSpecification>[] filters = [
-                new FilterByTenant<RequirementSpecification>(principal.GetTentantIdOrThrow()), 
+                new FilterByTenant<RequirementSpecification>(principal.GetTenantIdOrThrow()), 
                 new FilterRequirementSpecificationById(id)
                 ];
 
@@ -36,7 +36,7 @@ namespace TestBucket.Domain.Requirements
 
         public async Task<Requirement?> GetRequirementByIdAsync(ClaimsPrincipal principal, long id)
         {
-            FilterSpecification<Requirement>[] filters = [new FilterByTenant<Requirement>(principal.GetTentantIdOrThrow()),new FilterRequirementById(id)];
+            FilterSpecification<Requirement>[] filters = [new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow()),new FilterRequirementById(id)];
 
             var result = await _repository.SearchRequirementsAsync(filters, 0, 1);
             return result.Items.FirstOrDefault();
@@ -55,7 +55,7 @@ namespace TestBucket.Domain.Requirements
 
         public async Task<RequirementTestLink[]> SearchRequirementLinksAsync(ClaimsPrincipal principal, FilterSpecification<RequirementTestLink>[] filterSpecifications)
         {
-            FilterSpecification<RequirementTestLink>[] filters = [new FilterByTenant<RequirementTestLink>(principal.GetTentantIdOrThrow()), .. filterSpecifications];
+            FilterSpecification<RequirementTestLink>[] filters = [new FilterByTenant<RequirementTestLink>(principal.GetTenantIdOrThrow()), .. filterSpecifications];
             return await _repository.SearchRequirementLinksAsync(filters);
         }
 
@@ -72,14 +72,14 @@ namespace TestBucket.Domain.Requirements
         {
             principal.ThrowIfNotAdmin();
 
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
             var requirementLink = new RequirementTestLink { RequirementId = requirement.Id, TestCaseId = testCase.Id, TenantId = tenantId };
             await _repository.AddRequirementLinkAsync(requirementLink);
         }
 
         public async Task AddRequirementAsync(ClaimsPrincipal principal, Requirement requirement)
         {
-            requirement.TenantId = principal.GetTentantIdOrThrow();
+            requirement.TenantId = principal.GetTenantIdOrThrow();
             requirement.Created = DateTimeOffset.UtcNow;
             requirement.Modified = DateTimeOffset.UtcNow;
             requirement.CreatedBy = principal.Identity?.Name;
@@ -92,7 +92,7 @@ namespace TestBucket.Domain.Requirements
 
         public async Task<RequirementSpecificationFolder[]> SearchRequirementFoldersAsync(ClaimsPrincipal principal, SearchRequirementQuery query)
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
 
             List<FilterSpecification<RequirementSpecificationFolder>> filters = [ new FilterByTenant<RequirementSpecificationFolder>(tenantId) ];
             if(query.CompareFolder)
@@ -171,7 +171,7 @@ namespace TestBucket.Domain.Requirements
         /// <returns></returns>
         public Task AddRequirementSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification)
         {
-            specification.TenantId = principal.GetTentantIdOrThrow();
+            specification.TenantId = principal.GetTenantIdOrThrow();
             specification.Created = DateTimeOffset.UtcNow;
             specification.Modified = DateTimeOffset.UtcNow;
             specification.CreatedBy = principal.Identity?.Name;
@@ -197,7 +197,7 @@ namespace TestBucket.Domain.Requirements
         public async Task<PagedResult<Requirement>> SearchRequirementsAsync(ClaimsPrincipal principal, SearchRequirementQuery query)
         {
             var filters = Specifications.RequirementSpecificationBuilder.From(query);
-            filters = [.. filters, new FilterByTenant<Requirement>(principal.GetTentantIdOrThrow())];
+            filters = [.. filters, new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow())];
 
             return await _repository.SearchRequirementsAsync(filters, query.Offset, query.Count);
         }
@@ -211,7 +211,7 @@ namespace TestBucket.Domain.Requirements
         public async Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(ClaimsPrincipal principal, SearchQuery query)
         {
             var filters = Specifications.RequirementSpecificationBuilder.From(query);
-            filters = [.. filters, new FilterByTenant<RequirementSpecification>(principal.GetTentantIdOrThrow())];
+            filters = [.. filters, new FilterByTenant<RequirementSpecification>(principal.GetTenantIdOrThrow())];
 
             return await _repository.SearchRequirementSpecificationsAsync(filters, query.Offset, query.Count);
         }

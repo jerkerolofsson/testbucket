@@ -19,7 +19,7 @@ internal class FieldManager : IFieldManager
 
     public async Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(ClaimsPrincipal principal, long testRunId, IEnumerable<FieldDefinition> fieldDefinitions)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
         var fields = (await _repository.GetTestRunFieldsAsync(tenantId, testRunId)).ToList();
 
         // Add missing fields
@@ -42,7 +42,7 @@ internal class FieldManager : IFieldManager
 
     public async Task<IReadOnlyList<TestCaseRunField>> GetTestCaseRunFieldsAsync(ClaimsPrincipal principal, long testRunId, long testCaseRunId, IEnumerable<FieldDefinition> fieldDefinitions)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
         var fields = (await _repository.GetTestCaseRunFieldsAsync(tenantId, testCaseRunId)).ToList();
 
         // Add missing fields
@@ -73,7 +73,7 @@ internal class FieldManager : IFieldManager
     /// <returns></returns>
     public async Task<IReadOnlyList<TestCaseField>> GetTestCaseFieldsAsync(ClaimsPrincipal principal, long id, IEnumerable<FieldDefinition> fieldDefinitions)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
 
         var fields = (await _repository.GetTestCaseFieldsAsync(tenantId, id)).ToList();
 
@@ -97,7 +97,7 @@ internal class FieldManager : IFieldManager
 
     public async Task SaveTestCaseFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseField> fields)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
         foreach (var field in fields)
         {
             field.TenantId = tenantId;
@@ -107,7 +107,7 @@ internal class FieldManager : IFieldManager
 
     public async Task SaveTestCaseRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseRunField> fields)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
         foreach (var field in fields)
         {
             field.TenantId = tenantId;
@@ -117,7 +117,7 @@ internal class FieldManager : IFieldManager
 
     public async Task SaveTestRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestRunField> fields)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
         foreach (var field in fields)
         {
             field.TenantId = tenantId;

@@ -3,15 +3,22 @@
 @using TestBucket.Components.Shared.Themeing
 @using TestBucket.Components.Teams
 @using TestBucket.Components.Teams.Controls
+@using TestBucket.Domain.Search
+@using TestBucket.Domain.Search.Models
 @using TestBucket.Domain.Teams.Models
+@using Toolbelt.Blazor.HotKeys2
 
 @inherits LayoutComponentBase
+@inject HotKeys HotKeys
 @inject NavigationManager navigationManager
 @inject TenantResolver tenantResolver
 @inject AuthenticationStateProvider authStateProvider
 @inject ProjectController projectService
+@inject TestCaseEditorController testCaseEditor
 @inject TeamService teamService
 @inject ThemingService themingService
+@inject AppNavigationManager appNavigationManager
+@inject IUnifiedSearchManager unifiedSearchManager
 
 <MudThemeProvider @ref="@_mudThemeProvider" IsDarkMode="@_isDarkMode" Theme="@themingService.Theme"/>
 <TbThemeProvider UserPreferencesChanged="OnUserPreferencesChanged"/>
@@ -19,6 +26,7 @@
 <MudPopoverProvider />
 <MudDialogProvider MaxWidth="MaxWidth.ExtraExtraLarge" />
 <ProgressStatus/>
+<CommandBindings/>
 
 @{
     string tenantAdminUrl = $"{tenantId}/tenants";
@@ -32,6 +40,8 @@
     string homeUrl = $"/{tenantId}";
     string authUrl = $"/{tenantId}/Auth";
     string requirementsUrl = $"/{tenantId}/Requirements";
+    string environmentsUrl = $"/{tenantId}/Environments";
+    string reportingUrl = $"/{tenantId}/Reporting";
     string testsUrl = $"/{tenantId}/Testing";
     string settingsUrl = $"/{tenantId}/Settings";
     string manageUrl = $"/{tenantId}/Account/Manage";
@@ -52,22 +62,17 @@
 
                     <TbNavLink Href="@requirementsUrl">Oracle</TbNavLink>
                     <TbNavLink Href="@testsUrl">Testing</TbNavLink>
-                    <TbNavLink Href="@testsUrl">Reporting</TbNavLink>
-                    <TbNavLink Href="@testsUrl">Environments</TbNavLink>
+                    <TbNavLink Href="@reportingUrl">Reporting</TbNavLink>
+                    <TbNavLink Href="@environmentsUrl">Environments</TbNavLink>
                     <TbNavLink Href="@projectSettingsUrl">Project</TbNavLink>
 
                     <MudSpacer/>
 
+                    <UnifiedSearch/>
+
+
                     <MudMenu Icon="@Icons.Material.Filled.Add">
-                        <MudMenuItem>New Test Suite</MudMenuItem>
-                        <MudMenuItem>New Test Case</MudMenuItem>
-                        <MudMenuItem>New Run</MudMenuItem>
-                        <MudDivider />
-                        <MudMenuItem>New Requirement Specification</MudMenuItem>
-                        <MudMenuItem>New Requirement</MudMenuItem>
-                        <MudDivider />
-                        <MudMenuItem>New Project</MudMenuItem>
-                        <MudMenuItem>New Team</MudMenuItem>
+                        <CommandMenuItems TypeName="menu-new"/>
                     </MudMenu>
 
                     <DarkModeToggle IsDarkMode="@_isDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
@@ -132,6 +137,8 @@
         navigationManager.LocationChanged += OnLocationChanged;
     }
 
+
+
     private void OnUserPreferencesChanged(UserPreferences preferences)
     {
         InvokeAsync(StateHasChanged);
@@ -155,6 +162,7 @@
             {
                 _team = await teamService.GetActiveTeamAsync();
             }
+
 
             var isDarkMode = await themingService.IsDarkModeAsync();
             if(isDarkMode != _isDarkMode)

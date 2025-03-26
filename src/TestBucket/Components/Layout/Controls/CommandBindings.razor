@@ -1,0 +1,59 @@
+﻿@using TestBucket.Domain.Commands
+@using TestBucket.Domain.Keyboard
+@using Toolbelt.Blazor.HotKeys2
+
+@inject HotKeys HotKeys
+@inject ICommandManager commandManager
+@inject AuthenticationStateProvider authStateProvider
+@inject HotKeysService hotKeysService 
+
+@implements IAsyncDisposable
+
+@code {
+    private HotKeysContext? _hotKeysContext;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            hotKeysService.Context = _hotKeysContext = this.HotKeys.CreateContext();
+
+
+            var authState = await authStateProvider.GetAuthenticationStateAsync();
+            var principal = authState.User;
+            var bindings = await commandManager.GetKeyboardBindingsAsync(principal);
+
+            if (bindings.Commands is not null)
+            {
+                foreach (var commandBinding in bindings.Commands)
+                {
+                    var commandId = commandBinding.Key;
+                    var command = commandManager.GetCommandById(commandId);
+                    if(command is null)
+                    {
+                        continue;                        
+                    }
+                    var binding = commandBinding.Value;
+                    var modCode = HotKeysService.MapModCode(binding.ModifierKeys);
+                    Code key = new Code(binding.Key);
+                    HotKeyOptions options = new()
+                        {
+                            Description = command.Name,
+                            Exclude = Exclude.InputNonText | Exclude.TextArea
+                        };
+
+                    _hotKeysContext.Add(modCode, key, command.ExecuteAsync, options);
+                }
+            }
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        hotKeysService.Context = null;
+        if (_hotKeysContext != null)
+        {
+            await _hotKeysContext.DisposeAsync();
+        }
+    }
+}

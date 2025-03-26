@@ -58,7 +58,7 @@ public class StateService : IStateService
 
     public async Task<TestState[]> GetProjectStatesAsync(ClaimsPrincipal principal, long projectId)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
         var project = await _projectRepository.GetProjectByIdAsync(tenantId, projectId);
         if(project?.TestStates is not null && project.TestStates.Length > 0)
         {

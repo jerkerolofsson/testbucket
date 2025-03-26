@@ -1,0 +1,25 @@
+﻿@using System.Globalization
+@using TestBucket.Domain.Testing.Aggregates
+@if (Summary is not null)
+{
+    <MudTooltip Text="Passrate">
+        <MudText Class="tb-passrate-text">@(PassRate) passed</MudText>
+    </MudTooltip>
+}
+
+@code {
+    [Parameter] public TestExecutionResultSummary? Summary { get; set; }
+
+    private string PassRate
+    {
+        get
+        {
+            if (Summary is not null && Summary.Total > 0)
+            {
+                var percent = 100.0 * Summary.Passed / Summary.Total;
+                return Math.Round(percent, 1).ToString(CultureInfo.InvariantCulture) + "%";
+            }
+            return "0%";
+        }
+    }
+}

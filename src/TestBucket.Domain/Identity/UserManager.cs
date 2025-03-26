@@ -22,7 +22,7 @@ internal class UserManager : IUserManager
     public async Task<IdentityResult> AddUserAsync(ClaimsPrincipal principal, string email, string password)
     {
         principal.ThrowIfNotAdmin();
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
         return await _superAdminUserService.RegisterAndConfirmUserAsync(tenantId, email, password);
     }
 
@@ -30,7 +30,7 @@ internal class UserManager : IUserManager
     {
         // Access guard for protected API
         principal.ThrowIfNotAdmin();
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
 
         return await _superAdminUserService.BrowseAsync(tenantId, offset, count);
     }

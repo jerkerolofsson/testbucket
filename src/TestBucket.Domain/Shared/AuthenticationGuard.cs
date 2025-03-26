@@ -26,7 +26,7 @@ namespace TestBucket.Domain.Shared
             throw new InvalidOperationException("This resource can only be accessed by administrators");
         }
 
-        public static string GetTentantIdOrThrow(this ClaimsPrincipal principal)
+        public static string GetTenantIdOrThrow(this ClaimsPrincipal principal)
         {
             var claims = principal.Claims.Where(x => x.Type == "tenant" && !string.IsNullOrEmpty(x.Value)).ToList();
             if(claims.Count == 0)
@@ -36,9 +36,9 @@ namespace TestBucket.Domain.Shared
             return claims.First().Value;
         }
 
-        public static string GetTentantIdOrThrow(this ClaimsPrincipal principal, Entity entity)
+        public static string GetTenantIdOrThrow(this ClaimsPrincipal principal, Entity entity)
         {
-            var tenantId = AuthenticationGuard.GetTentantIdOrThrow(principal);
+            var tenantId = AuthenticationGuard.GetTenantIdOrThrow(principal);
             if(tenantId != entity.TenantId)
             {
                 throw new InvalidOperationException($"Failed to modify entity. The entity belongs to tenant {entity.TenantId} and user belongs to {tenantId}");
@@ -48,7 +48,7 @@ namespace TestBucket.Domain.Shared
 
         public static void ThrowIfEntityTenantIsDifferent(this ClaimsPrincipal principal, Entity entity)
         {
-            var tenantId = AuthenticationGuard.GetTentantIdOrThrow(principal);
+            var tenantId = AuthenticationGuard.GetTenantIdOrThrow(principal);
             if (tenantId != entity.TenantId)
             {
                 throw new InvalidOperationException($"Failed to modify entity. The entity belongs to tenant {entity.TenantId} and user belongs to {tenantId}");
@@ -56,7 +56,7 @@ namespace TestBucket.Domain.Shared
         }
         public static void ThrowIfEntityTenantIsDifferent(this ClaimsPrincipal principal, string? entityTenantId)
         {
-            var tenantId = AuthenticationGuard.GetTentantIdOrThrow(principal);
+            var tenantId = AuthenticationGuard.GetTenantIdOrThrow(principal);
             if (tenantId != entityTenantId)
             {
                 throw new InvalidOperationException($"Failed to modify entity. The entity belongs to tenant {entityTenantId} and user belongs to {tenantId}");

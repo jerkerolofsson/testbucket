@@ -1,0 +1,99 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Reporting"
+@using System.Text.Json
+@using TestBucket.Components.Reporting.Layouts
+@using TestBucket.Components.Reporting.Controls
+@using TestBucket.Domain.Testing.Aggregates
+@layout ReportingLayout
+@inject TestBrowser testBrowser
+@inject FieldController fieldController
+
+@if(_results is not null)
+{
+    <MudStack Class="pa-2" Style="width: 100%;">
+
+        <MudText Typo="Typo.h3">Total</MudText>
+
+        <TestResultSummaryBar Style="width: 100%" Summary="@_results" />
+
+        <MudStack Row Spacing="3">
+            <MudText Typo="Typo.h5">@_results.Total tests</MudText>
+            <MudText Typo="Typo.h5">@_results.Passed passed</MudText>
+            <MudText Typo="Typo.h5">@_results.Failed failed</MudText>
+            <MudText Typo="Typo.h5">@_results.Skipped skipped</MudText>
+        </MudStack>
+
+        @foreach(var field in _groupedByField.Keys)
+        {
+            var tables = _groupedByField[field];
+
+            <MudText Typo="Typo.h3">@field.Name</MudText>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Total</th>
+                        <th>Passed</th>
+                        <th>Failed</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var table in tables)
+                    {
+                        var results = table.Value;
+                        <tr>
+                            <td>@table.Key</td>
+                            <td>@results.Total</td>
+                            <td>@results.Passed</td>
+                            <td>@results.Failed</td>
+                            <td>
+                                <TestResultSummaryBar Style="width: 200px" Summary="@results" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
+    </MudStack>
+}
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public SearchTestCaseRunQuery? Query { get; set; }
+
+    private TestExecutionResultSummary? _results;
+    private Dictionary<FieldDefinition, Dictionary<string, TestExecutionResultSummary>> _groupedByField = [];
+
+    private string _queryKey = "";
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Query is not null && Project is not null)
+        {
+            var queryKey = Query.AsCacheKey();
+            if(queryKey != _queryKey)
+            {
+                _queryKey = queryKey;
+
+                _results = await testBrowser.GetTestExecutionResultSummaryAsync(Query);
+
+
+                if (Project is not null)
+                {
+                    var fields = await fieldController.GetDefinitionsAsync(Project.Id, FieldTarget.TestCaseRun);
+                    _groupedByField.Clear();
+                    foreach(var field in fields.Where(x=>x.Type == FieldType.SingleSelection))
+                    {
+                        var results = await testBrowser.GetTestExecutionResultSummaryByFieldAsync(Query, field);
+                        _groupedByField[field] = results;
+                    }
+                }
+            }
+        }
+    }
+}

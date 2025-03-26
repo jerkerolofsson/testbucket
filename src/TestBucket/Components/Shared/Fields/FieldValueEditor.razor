@@ -18,7 +18,6 @@
     }
     else if (Field.FieldDefinition.Type == FieldType.Boolean)
     {
-        <MudSpacer />
         <MudSwitchM3 Value="@Field.BooleanValue" T="bool?" ValueChanged="OnBooleanValueChanged" Color="Color.Tertiary" />
     }
     else if (Field.FieldDefinition.Type == FieldType.StringArray && Field.StringValuesList is not null)
@@ -57,7 +56,6 @@
 @code {
     [Parameter] public FieldValue? Field { get; set; }
     [Parameter] public EventCallback<FieldValue?> FieldChanged { get; set; }
-
 
     private string _addStringArrayValue = "";
 
@@ -132,6 +130,12 @@
             await FieldChanged.InvokeAsync(Field);
         }
     }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
     private async Task OnBooleanValueChanged(bool? value)
     {
         if (Field is not null)

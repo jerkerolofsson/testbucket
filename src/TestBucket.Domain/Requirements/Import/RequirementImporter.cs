@@ -46,7 +46,7 @@ namespace TestBucket.Domain.Requirements.Import
 
         private async Task<RequirementSpecification> ImportTextAsync(ClaimsPrincipal principal, long? teamId, long? testProjectId, FileResource fileResource, string name)
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
             var spec = new RequirementSpecification
             {
                 Name = name,
@@ -70,7 +70,7 @@ namespace TestBucket.Domain.Requirements.Import
 
         private async Task<RequirementSpecification> ImportPdfAsync(ClaimsPrincipal principal, long? teamId, long? testProjectId, FileResource fileResource)
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
             var spec = new RequirementSpecification
             {
                 Name = fileResource.Name ?? "",

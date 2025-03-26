@@ -4,6 +4,7 @@ using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Specifications;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Shared;
 using TestBucket.Domain.Testing.Models;
 namespace TestBucket.Components.Shared.Fields;
 
@@ -81,11 +82,9 @@ internal class FieldController : TenantBaseService
     /// <returns></returns>
     public async Task<IReadOnlyList<FieldDefinition>> SearchDefinitionsAsync(SearchFieldQuery query)
     {
-        var tenantId = await GetTenantIdAsync();
-        var specifications = FieldSpecificationBuilder.From(query);
         var principal = await GetUserClaimsPrincipalAsync();
 
-        var fieldDefinitions = await _definitionManager.SearchAsync(principal, specifications);
+        var fieldDefinitions = await _definitionManager.SearchAsync(principal, query);
 
         // Assign options from external data source
         foreach (var fieldDefinition in fieldDefinitions)
@@ -120,9 +119,11 @@ internal class FieldController : TenantBaseService
 
     public async Task AddAsync(FieldDefinition fieldDefinition)
     {
-        fieldDefinition.TenantId = await GetTenantIdAsync();
+        var principal = await GetUserClaimsPrincipalAsync();
+        fieldDefinition.TenantId = principal.GetTenantIdOrThrow();
         RemoveOptionsIfNotSelection(fieldDefinition);
-        await _repository.AddAsync(fieldDefinition);
+
+        await _definitionManager.AddAsync(principal, fieldDefinition);
     }
 
     private void RemoveOptionsIfNotSelection(FieldDefinition fieldDefinition)

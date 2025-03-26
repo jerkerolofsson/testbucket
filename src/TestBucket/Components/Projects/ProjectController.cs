@@ -1,5 +1,6 @@
 ﻿using OneOf;
 
+using TestBucket.Components.Shared;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Identity;
@@ -13,24 +14,29 @@ internal class ProjectController : TenantBaseService
 {
     private readonly IProjectRepository _projectRepository;
     private readonly IUserPreferencesManager _userPreferencesService;
+    private readonly AppNavigationManager _appNavigationManager;
     private readonly IStateService _stateService;
     private readonly IProjectManager _projectManager;
 
     public ProjectController(
         IProjectRepository projectRepository,
         IUserPreferencesManager userPreferencesService,
+        AppNavigationManager appNavigationManager,
         AuthenticationStateProvider authenticationStateProvider,
         IStateService stateService,
         IProjectManager projectManager) : base(authenticationStateProvider)
     {
         _projectRepository = projectRepository;
         _userPreferencesService = userPreferencesService;
+        _appNavigationManager = appNavigationManager;
         _stateService = stateService;
         _projectManager = projectManager;
     }
 
     public async Task SetActiveProjectAsync(TestProject? project)
     {
+        _appNavigationManager.State.SelectedProject = project;
+
         var principal = await GetUserClaimsPrincipalAsync();
         var preferences = await _userPreferencesService.LoadUserPreferencesAsync(principal);
         if(preferences is not null)
@@ -58,6 +64,12 @@ internal class ProjectController : TenantBaseService
         {
             var tenantId = await GetTenantIdAsync();
             var project = await _projectRepository.GetProjectByIdAsync(tenantId, preferences.ActiveProjectId.Value);
+
+            if(project is not null)
+            {
+                _appNavigationManager.State.SelectedProject = project;
+            }
+
             return project;
         }
         return null;

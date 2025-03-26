@@ -1,0 +1,104 @@
+﻿@using TestBucket.Components.Account
+@using TestBucket.Components.Layout.Controls
+@using TestBucket.Components.Shared.Themeing
+@using TestBucket.Components.Teams
+@using TestBucket.Components.Teams.Controls
+@using TestBucket.Domain.Search
+@using TestBucket.Domain.Search.Models
+@using TestBucket.Domain.Teams.Models
+@using Toolbelt.Blazor.HotKeys2
+@inject AppNavigationManager appNavigationManager
+@inject IUnifiedSearchManager unifiedSearchManager
+@inject AuthenticationStateProvider authStateProvider
+@inject IUserPreferencesManager _userPreferencesManager
+@inject HotKeysService hotKeysService
+@implements IAsyncDisposable
+
+<MudAutocomplete 
+@ref="_element"
+AdornmentIcon="@Icons.Material.Filled.Search" Clearable
+T="SearchResult" Placeholder="/" Value="_searchState" ValueChanged="SearchStateChanged" SearchFunc="@Search" Variant="Variant.Outlined" />
+
+@code {
+    private SearchResult? _searchState;
+    private MudAutocomplete<SearchResult>? _element;
+
+    #region Search
+    /// <summary>
+    /// User has selected an item or cleared the state
+    /// </summary>
+    /// <param name="state"></param>
+    private void SearchStateChanged(SearchResult? state)
+    {
+        _searchState = state;
+        if (state?.TestCase is not null)
+        {
+            appNavigationManager.NavigateTo(state.TestCase);
+        }
+    }
+
+    /// <summary>
+    /// Performs the search
+    /// </summary>
+    /// <param name="text"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    private async Task<IEnumerable<SearchResult>> Search(string text, CancellationToken token)
+    {
+        var state = await authStateProvider.GetAuthenticationStateAsync();
+        return await unifiedSearchManager.SearchAsync(state.User, appNavigationManager.State.SelectedProject, text, token);
+    }
+    #endregion Search
+
+    private async ValueTask FocusAsync()
+    {
+        if(_element is not null)
+        {
+            await _element.FocusAsync();
+        }
+    }
+
+
+    public ValueTask DisposeAsync()
+    {
+        if(hotKeysService?.Context is not null && _keyCode is not null)
+        {
+            hotKeysService.Context.Remove(_modCode, _keyCode.Value, "", Exclude.Default);
+        }
+        return ValueTask.CompletedTask;
+    }
+
+    private ModCode _modCode;
+    private Code? _keyCode;
+
+    /// <summary>
+    /// Setup key bindings
+    /// </summary>
+    /// <param name="firstRender"></param>
+    /// <returns></returns>
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var state = await authStateProvider.GetAuthenticationStateAsync();
+            var userPreferences = await _userPreferencesManager.LoadUserPreferencesAsync(state.User);
+            userPreferences.KeyboardBindings ??= new();
+            var binding = userPreferences.KeyboardBindings.UnifiedSearchBinding;
+            if (binding is not null)
+            {
+                HotKeyOptions options = new()
+                    {
+                        Description = "Search",
+                        Exclude = Exclude.Default
+                    };
+
+                if(hotKeysService?.Context is not null)
+                {
+                    _modCode = HotKeysService.MapModCode(binding.ModifierKeys);
+                    _keyCode = new Code(binding.Key);
+                    hotKeysService.Context.Add(_modCode, _keyCode.Value, FocusAsync, options);
+                }
+            }
+        }
+    }
+}

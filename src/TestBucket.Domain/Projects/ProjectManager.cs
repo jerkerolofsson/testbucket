@@ -33,7 +33,7 @@ internal class ProjectManager : IProjectManager
     public Task AddAsync(ClaimsPrincipal principal, TestProject project)
     {
         principal.ThrowIfNotAdmin();
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
 
         project.TenantId = tenantId;
         //project.CreatedBy..
@@ -70,13 +70,13 @@ internal class ProjectManager : IProjectManager
 
     public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(ClaimsPrincipal principal, string slug)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
 
         return await _projectRepository.GetProjectIntegrationsAsync(tenantId, slug);
     }
     public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(ClaimsPrincipal principal, long testProjectId)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
 
         var key = "integration:" + testProjectId + ":" + tenantId;
         var result = await _memoryCache.GetOrCreateAsync(key, async (e) =>
@@ -91,7 +91,7 @@ internal class ProjectManager : IProjectManager
     public async Task SaveProjectIntegrationsAsync(ClaimsPrincipal principal, string slug, ExternalSystem system)
     {
         principal.ThrowIfNotAdmin();
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
         system.TenantId = tenantId;
 
         var project = await _projectRepository.GetBySlugAsync(tenantId, slug);

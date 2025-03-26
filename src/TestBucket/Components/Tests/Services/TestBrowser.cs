@@ -102,31 +102,6 @@ internal class TestBrowser : TenantBaseService
         }
     }
 
-    /// <summary>
-    /// Searches for test cases
-    /// </summary>
-    /// <param name="testSuiteId"></param>
-    /// <param name="folderId"></param>
-    /// <param name="searchText"></param>
-    /// <param name="offset"></param>
-    /// <param name="count"></param>
-    /// <returns></returns>
-    //public async Task<PagedResult<TestCase>> SearchTestCasesAsync(long? testSuiteId, long? folderId, string? searchText, int offset, int count = 20)
-    //{
-    //    if(string.IsNullOrWhiteSpace(searchText))
-    //    {
-    //        searchText = null;
-    //    }
-
-    //    return await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
-    //    {
-    //        Text = searchText,
-    //        TestSuiteId = testSuiteId,
-    //        FolderId = folderId,
-    //        Count = count,
-    //        Offset = offset,
-    //    });
-    //}
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery query, int offset, int count = 20)
     {
         query.Offset = offset;
@@ -299,6 +274,19 @@ internal class TestBrowser : TenantBaseService
             Offset = offset,
         });
     }
+
+    /// <summary>
+    /// Returns a summary report of results (passed, failed..) filtered by the query
+    /// </summary>
+    /// <param name="testRunId"></param>
+    /// <param name="searchText"></param>
+    /// <returns></returns>
+    public async Task<Dictionary<string,TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(SearchTestCaseRunQuery query, FieldDefinition fieldDefinition)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testRunManager.GetTestExecutionResultSummaryByFieldAsync(principal, query, fieldDefinition.Id);
+    }
+
     /// <summary>
     /// Returns a summary report of results (passed, failed..) filtered by the query
     /// </summary>
@@ -308,8 +296,12 @@ internal class TestBrowser : TenantBaseService
     public async Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(SearchTestCaseRunQuery query)
     {
         var principal = await GetUserClaimsPrincipalAsync();
+
+        var test = await _testRunManager.GetTestExecutionResultSummaryByFieldAsync(principal, query, 11);
+
         return await _testRunManager.GetTestExecutionResultSummaryAsync(principal, query);
     }
+
     /// <summary>
     /// Returns a summary report of results (passed, failed..) filtered by the query
     /// </summary>

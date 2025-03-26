@@ -1,11 +1,13 @@
 ﻿using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Settings;
+using TestBucket.Domain.Commands;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Import;
+using TestBucket.Domain.Search;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Appearance;
 using TestBucket.Domain.Settings.Server;
@@ -35,7 +37,8 @@ public static class DomainServiceExtensions
         services.AddScoped<IFieldDefinitionManager, FieldDefinitionManager>();
         services.AddScoped<IFieldManager, FieldManager>();
         services.AddScoped<IProjectManager, ProjectManager>();
-
+        services.AddScoped<ICommandManager, CommandManager>();
+        services.AddScoped<IUnifiedSearchManager, UnifiedSearchManager>();
         services.AddScoped<IProgressManager, ProgressManager>();
 
         // AI

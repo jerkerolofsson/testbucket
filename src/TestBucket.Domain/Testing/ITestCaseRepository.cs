@@ -248,5 +248,6 @@ public interface ITestCaseRepository
     /// <param name="filter"></param>
     /// <returns></returns>
     Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
+    Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters, long fieldDefinitionId);
     #endregion
 }

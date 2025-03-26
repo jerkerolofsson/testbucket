@@ -25,12 +25,12 @@
 
     private async Task CreateNewTestCaseAsync()
     {
-        if(Requirement is null || Project is null)
+        if (Requirement is null || Project is null)
         {
             return;
         }
         var testCase = await testCaseEditor.CreateNewTestCaseAsync(Project, null, null, Requirement.Name);
-        if(testCase is not null)
+        if (testCase is not null)
         {
             await editor.LinkRequirementToTestCaseAsync(Requirement, testCase);
         }

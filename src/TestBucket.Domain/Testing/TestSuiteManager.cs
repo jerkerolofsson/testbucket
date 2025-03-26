@@ -46,13 +46,13 @@ namespace TestBucket.Domain.Testing
         #region Test Suites
         public async Task<TestSuite?> GetTestSuiteByIdAsync(ClaimsPrincipal principal, long id)
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
             return await _testCaseRepository.GetTestSuiteByIdAsync(tenantId, id);
         }
 
         public async Task<TestSuiteFolder[]> GetTestSuiteFoldersAsync(ClaimsPrincipal principal, long? projectId, long testSuiteId, long? parentFolderId)
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
             // todo: convert to specifications
             return await _testCaseRepository.GetTestSuiteFoldersAsync(tenantId, projectId, testSuiteId, parentFolderId);
         }
@@ -68,7 +68,7 @@ namespace TestBucket.Domain.Testing
         /// <returns></returns>
         public async Task<TestSuite> AddTestSuiteAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string name)
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
 
             var suite = new TestSuite { Name = name, TestProjectId = projectId, TeamId = teamId, TenantId = tenantId };
             suite.Modified = suite.Created = DateTimeOffset.UtcNow;
@@ -108,7 +108,7 @@ namespace TestBucket.Domain.Testing
         /// <returns></returns>
         public async Task DeleteTestSuiteByIdAsync(ClaimsPrincipal principal, long testSuiteId)
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
             var suite = await _testCaseRepository.GetTestSuiteByIdAsync(tenantId, testSuiteId);
             if(suite is null)
             {
@@ -131,7 +131,7 @@ namespace TestBucket.Domain.Testing
         /// <returns></returns>
         public async Task<PagedResult<TestSuite>> SearchTestSuitesAsync(ClaimsPrincipal principal, SearchQuery query) 
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
             // todo: convert to specifications
             return await _testCaseRepository.SearchTestSuitesAsync(tenantId, query);
         }
@@ -146,7 +146,7 @@ namespace TestBucket.Domain.Testing
         /// <returns></returns>
         public async Task<TestSuite?> GetTestSuiteByNameAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string suiteName) 
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
             // todo: convert to specifications
             return await _testCaseRepository.GetTestSuiteByNameAsync(tenantId, teamId, projectId, suiteName);
         }
@@ -165,7 +165,7 @@ namespace TestBucket.Domain.Testing
         /// <returns></returns>
         public async Task<TestSuiteFolder> AddTestSuiteFolderAsync(ClaimsPrincipal principal, long? projectId, long testSuiteId, long? parentFolderId, string name)
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
 
             //testCase.Modified = testCase.Created = DateTimeOffset.UtcNow;
             //testCase.CreatedBy = testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
@@ -212,7 +212,7 @@ namespace TestBucket.Domain.Testing
         /// <returns></returns>
         public async Task DeleteTestSuiteFolderByIdAsync(ClaimsPrincipal principal, long folderId)
         {
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
             var folder = await _testCaseRepository.GetTestSuiteFolderByIdAsync(tenantId, folderId);
             if (folder is not null)
             {
@@ -229,7 +229,7 @@ namespace TestBucket.Domain.Testing
         public async Task DeleteTestSuiteFolderAsync(ClaimsPrincipal principal, TestSuiteFolder folder)
         {
             principal.ThrowIfEntityTenantIsDifferent(folder);
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
             await _testCaseRepository.DeleteFolderByIdAsync(tenantId, folder.Id);
 
             // Notify observers

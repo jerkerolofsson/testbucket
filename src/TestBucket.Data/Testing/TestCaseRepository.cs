@@ -86,11 +86,17 @@ internal class TestCaseRepository : ITestCaseRepository
     }
 
 
+
+
     /// <inheritdoc/>
     public async Task AddTestCaseAsync(TestCase testCase)
     {
+        ArgumentNullException.ThrowIfNull(testCase.TestProjectId);
+        ArgumentNullException.ThrowIfNull(testCase.TeamId);
+
         testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tenantId = testCase.TenantId ?? throw new ArgumentException("TenantId missing");
 
         await LookupProjectIdFromSuiteId(testCase, dbContext);
         await CalculatePathAsync(dbContext, testCase);
@@ -250,12 +256,16 @@ internal class TestCaseRepository : ITestCaseRepository
             return existingFolder;
         }
 
+        var testSuite = await dbContext.TestSuites.Where(x => x.Id == testSuiteId).FirstOrDefaultAsync();
+        long? teamId = testSuite?.TeamId;
+
         var folder = new TestSuiteFolder
         {
             Name = name,
             TestSuiteId = testSuiteId,
             Created = DateTimeOffset.UtcNow,
             TenantId = tenantId,
+            TeamId = teamId,
             TestProjectId = projectId,
             ParentId = parentFolderId
         };
@@ -626,6 +636,44 @@ internal class TestCaseRepository : ITestCaseRepository
     }
     #endregion Helpers
 
+    public async Task<Dictionary<string,TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters, long fieldDefinitionId)
+    {
+        var table = new Dictionary<string, TestExecutionResultSummary>();
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCaseRuns
+            .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
+            .Where(x=>x.TestCaseRunFields!.Any(f => f.FieldDefinitionId == fieldDefinitionId))
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            tests = tests.Where(filter.Expression);
+        }
+
+        var allResults = await tests.GroupBy(x => new { x.Result, x.TestCaseRunFields!.First(x => x.FieldDefinitionId == fieldDefinitionId).StringValue }).
+            Select(g => new { Count = g.Count(),g.Key.Result, FieldValue = g.Key.StringValue }).ToListAsync();
+
+        foreach(var fieldValue in allResults.Select(x=>x.FieldValue).Distinct())
+        {
+            var name = fieldValue ?? "(null)";
+
+            var result = new TestExecutionResultSummary();
+            result.Total = allResults.Where(x=>x.FieldValue == fieldValue).Sum(x => x.Count);
+            result.Completed = allResults.Where(x => x.FieldValue == fieldValue && x.Result != TestResult.NoRun).Sum(x => x.Count);
+            result.Passed = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Passed).Sum(x => x.Count);
+            result.Failed = allResults.Where(x => x.FieldValue == fieldValue && x.FieldValue == fieldValue && x.Result == TestResult.Failed).Sum(x => x.Count);
+            result.Blocked = allResults.Where(x => x.Result == TestResult.Blocked).Sum(x => x.Count);
+            result.Skipped = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Skipped).Sum(x => x.Count);
+            result.Error = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Error).Sum(x => x.Count);
+            result.Assert = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Assert).Sum(x => x.Count);
+            result.Hang = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Hang).Sum(x => x.Count);
+            table[name] = result;
+        }
+
+        return table;
+    }
 
     public async Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
     {

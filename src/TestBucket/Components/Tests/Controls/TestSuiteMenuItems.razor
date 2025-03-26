@@ -1,4 +1,6 @@
-﻿@inject TestBrowser testBrowser
+﻿@using TestBucket.Domain.Commands
+@using TestBucket.Domain.Keyboard
+@inject TestBrowser testBrowser
 @inject TestSuiteService testSuiteController
 @inject TestRunCreationController testRunCreation
 @inject AppNavigationManager appNavigationManager
@@ -6,8 +8,10 @@
 @if (Suite is not null)
 {
     <MudMenuItem Icon="@Icons.Material.Filled.PlayArrow" OnClick="RunAsync">Run</MudMenuItem>
+
+    <CommandMenuItems TypeName="TestSuite"/>
+
     <MudDivider />
-    <MudMenuItem Icon="@Icons.Material.Filled.CreateNewFolder" OnClick="AddTestSuiteFolderAsync">Create Folder</MudMenuItem>
     <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="EditTestSuiteAsync" Label="Edit" />
     <MudDivider />
     <MudMenuItem Icon="@Icons.Material.Filled.FolderDelete" IconColor="Color.Error" OnClick="DeleteAsync" Label="Delete suite" />
@@ -16,7 +20,6 @@
     [Parameter] public TestSuite? Suite { get; set; }
     [Parameter] public TestProject? Project { get; set; }
     [Parameter] public Team? Team { get; set; }
-
 
     private async Task RunAsync()
     {

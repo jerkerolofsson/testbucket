@@ -84,6 +84,8 @@ public interface ITestRunManager
     /// <param name="query"></param>
     /// <returns></returns>
     Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
+    Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId);
+
 
     #endregion Test Case Runs
 }

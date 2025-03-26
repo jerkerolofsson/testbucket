@@ -39,7 +39,7 @@ internal class TestRunManager : ITestRunManager
     /// <inheritdoc/>
     public async Task AddTestRunAsync(ClaimsPrincipal principal, TestRun testRun)
     {
-        testRun.TenantId = principal.GetTentantIdOrThrow();
+        testRun.TenantId = principal.GetTenantIdOrThrow();
 
         testRun.Modified = testRun.Created = DateTimeOffset.UtcNow;
         testRun.CreatedBy = testRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
@@ -56,7 +56,7 @@ internal class TestRunManager : ITestRunManager
     /// <inheritdoc/>
     public async Task DeleteTestRunAsync(ClaimsPrincipal principal, TestRun testRun)
     {
-        principal.GetTentantIdOrThrow(testRun);
+        principal.GetTenantIdOrThrow(testRun);
         await _testCaseRepo.DeleteTestRunByIdAsync(testRun.Id);
 
         // Notify observers
@@ -69,7 +69,7 @@ internal class TestRunManager : ITestRunManager
     /// <inheritdoc/>
     public Task DeleteTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
     {
-        principal.GetTentantIdOrThrow(testCaseRun);
+        principal.GetTenantIdOrThrow(testCaseRun);
         //await _testCaseRepo.DeleteTestRunByIdAsync(testRun.Id);
 
         throw new NotImplementedException("todo");
@@ -78,7 +78,7 @@ internal class TestRunManager : ITestRunManager
     /// <inheritdoc/>
     public async Task AddTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
     {
-        testCaseRun.TenantId = principal.GetTentantIdOrThrow();
+        testCaseRun.TenantId = principal.GetTenantIdOrThrow();
 
         testCaseRun.Modified = testCaseRun.Created = DateTimeOffset.UtcNow;
         testCaseRun.CreatedBy = testCaseRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
@@ -160,7 +160,7 @@ internal class TestRunManager : ITestRunManager
     /// <inheritdoc/>
     public async Task SaveTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
     {
-        principal.GetTentantIdOrThrow(testCaseRun);
+        principal.GetTenantIdOrThrow(testCaseRun);
 
         testCaseRun.Modified =  DateTimeOffset.UtcNow;
         testCaseRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
@@ -176,7 +176,7 @@ internal class TestRunManager : ITestRunManager
     /// <inheritdoc/>
     public async Task<PagedResult<TestRun>> SearchTestRunsAsync(ClaimsPrincipal principal, SearchTestRunQuery query)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
         List<FilterSpecification<TestRun>> filters = TestRunFilterSpecificationBuilder.From(query);
         filters.Add(new FilterByTenant<TestRun>(tenantId));
 
@@ -186,16 +186,24 @@ internal class TestRunManager : ITestRunManager
     /// <inheritdoc/>
     public async Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
         List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
         filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
         return await _testCaseRepo.GetTestExecutionResultSummaryAsync(filters);
+    }
+    /// <inheritdoc/>
+    public async Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
+        filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
+        return await _testCaseRepo.GetTestExecutionResultSummaryByFieldAsync(filters, fieldDefinitionId);
     }
 
     /// <inheritdoc/>
     public async Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
         List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
         filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
 

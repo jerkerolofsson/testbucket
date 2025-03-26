@@ -65,7 +65,7 @@ internal class TextImporter : ITextTestResultsImporter
 
     private async Task ImportRunAsync(ClaimsPrincipal principal, long? teamId, long? projectId, TestRunDto run, ImportHandlingOptions options)
     {
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
 
         if (run.Suites is not null)
         {
@@ -135,7 +135,7 @@ internal class TextImporter : ITextTestResultsImporter
 
     private async Task UpsertTestCaseTraitsAsync(ClaimsPrincipal principal, IReadOnlyList<FieldDefinition> testCaseFieldDefinitions, TestCase testCase, TestTrait[] traits)
     {
-        string tenantId = principal.GetTentantIdOrThrow();
+        string tenantId = principal.GetTenantIdOrThrow();
 
         if (traits.Length == 0)
         {
@@ -174,7 +174,7 @@ internal class TextImporter : ITextTestResultsImporter
         {
             throw new InvalidOperationException("Test runs must have a project");
         }
-        var tenantId = principal.GetTentantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow();
 
         var testName = testCase.Name ?? "-";
         var completedState = await _stateService.GetProjectFinalStateAsync(principal, testRun.TestProjectId.Value);

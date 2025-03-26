@@ -1,12 +1,42 @@
-﻿using TestBucket.Domain.Requirements.Models;
+﻿using NGitLab.Models;
+
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Components.Shared;
 
+/// <summary>
+/// Contains helper functions for navigations within the application
+/// </summary>
 public class AppNavigationManager
 {
     private readonly NavigationManager _navigationManager;
+
+    internal class NavigationState
+    {
+        /// <summary>
+        /// Selected test case
+        /// </summary>
+        public TestCase? SelectedTestCase { get; set; }
+
+        /// <summary>
+        /// Selected test suite
+        /// </summary>
+        public TestSuite? SelectedTestSuite { get; set; }
+
+        /// <summary>
+        /// Selected test suite
+        /// </summary>
+        public TestSuiteFolder? SelectedTestSuiteFolder { get; set; }
+
+        /// <summary>
+        /// Selected project
+        /// </summary>
+        public TestProject? SelectedProject { get; set; }
+    }
+
+    internal NavigationState State { get; } = new();
 
     public AppNavigationManager(NavigationManager navigationManager)
     {
@@ -80,8 +110,26 @@ public class AppNavigationManager
         var url = GetUrl(testRun);
         _navigationManager.NavigateTo(url, forceLoad);
     }
+
+    public void NavigateTo(TestSuiteFolder folder, bool forceLoad = false)
+    {
+        this.State.SelectedTestSuiteFolder = folder;
+        this.State.SelectedTestCase = null;
+        var url = GetUrl(folder);
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
+
+    public void NavigateTo(TestSuite suite, bool forceLoad = false)
+    {
+        this.State.SelectedTestSuite = suite;
+        this.State.SelectedTestSuiteFolder = null;
+        this.State.SelectedTestCase = null;
+        var url = GetUrl(suite);
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
     public void NavigateTo(TestCase testCase, bool forceLoad = false)
     {
+        this.State.SelectedTestCase = testCase;
         var url = GetUrl(testCase);
         _navigationManager.NavigateTo(url, forceLoad);
     }

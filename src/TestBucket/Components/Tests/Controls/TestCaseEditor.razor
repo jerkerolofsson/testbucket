@@ -51,9 +51,13 @@
 
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 
-                <MudTooltip Text="Edit">
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => BeginEdit()" Class="rounded-0" />
-                </MudTooltip>
+                <AuthorizeView Roles="ADMIN">
+                    <Authorized>
+                        <MudTooltip Text="Edit">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => BeginEdit()" Class="rounded-0" />
+                        </MudTooltip>
+                    </Authorized>
+                </AuthorizeView>
             }
 
             <MudSpacer/>

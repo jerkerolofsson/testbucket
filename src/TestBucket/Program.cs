@@ -10,11 +10,13 @@ using MudExtensions.Services;
 
 using TestBucket.Components;
 using TestBucket.Components.Account;
+using TestBucket.Components.Layout.Controls;
 using TestBucket.Components.Projects;
 using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Themeing;
 using TestBucket.Components.Teams;
+using TestBucket.Components.Tests;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Components.Uploads.Services;
 using TestBucket.Components.Users;
@@ -22,8 +24,11 @@ using TestBucket.Components.Users.Services;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Data.Migrations;
 using TestBucket.Domain.ApiKeys;
+using TestBucket.Domain.Commands;
 using TestBucket.Gitlab;
 using TestBucket.Identity;
+
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace TestBucket;
 
@@ -173,6 +178,10 @@ public class Program
         builder.Services.AddScoped<FieldController>();
         builder.Services.AddScoped<UserController>();
 
+        builder.Services.AddScoped<HotKeysService>();
+        builder.Services.AddScoped<ICommand, NewTestCommand>();
+        builder.Services.AddScoped<ICommand, NewFolderCommand>();
+
         builder.Services.AddScoped(typeof(DragAndDropService<>));
         builder.Services.AddDataServices();
         builder.Services.AddDomainServices();
@@ -180,6 +189,7 @@ public class Program
         // Integrations
         builder.Services.AddSingleton<IProjectDataSource, GitlabProjectDataSource>();
 
+        builder.Services.AddHotKeys2();
         builder.Services.AddMudServices(config =>
         {
         });

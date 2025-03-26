@@ -36,7 +36,7 @@ namespace TestBucket.Domain.Settings.Appearance
                 return FieldValue.Empty;
             }
 
-            var tenantId = principal.GetTentantIdOrThrow();
+            var tenantId = principal.GetTenantIdOrThrow();
             var username = principal.Identity.Name;
 
             var preferences = await _userPreferencesManager.LoadUserPreferencesAsync(principal);

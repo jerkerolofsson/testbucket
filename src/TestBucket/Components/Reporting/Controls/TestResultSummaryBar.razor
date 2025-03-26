@@ -4,10 +4,6 @@
 {
     <MudStack Row>
 
-        <MudTooltip Text="Passrate">
-            <MudText Class="tb-passrate-text">@(PassRate) passed</MudText>
-        </MudTooltip>
-
         <div class="tb-result-summary-bar" style="@Style">
             @if (Summary.Passed > 0)
             {
@@ -37,18 +33,6 @@
     [Parameter] public TestExecutionResultSummary? Summary { get; set; }
     [Parameter] public string Style { get; set; } = "width: 200px";
 
-    private string PassRate
-    {
-        get
-        {
-            if (Summary is not null && Summary.Total > 0)
-            {
-                var percent = 100.0 * Summary.Passed / Summary.Total;
-                return Math.Round(percent, 1).ToString(CultureInfo.InvariantCulture) + "%";
-            }
-            return "0%";
-        }
-    }
 
     private string PassedStyle => $"width: {GetWidthString(Summary?.Passed)}";
     private string FailedStyle => $"width: {GetWidthString(Summary?.Failed)}";

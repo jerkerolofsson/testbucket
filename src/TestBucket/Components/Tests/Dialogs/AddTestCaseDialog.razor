@@ -12,7 +12,7 @@
                     <Field Row>
                         <FieldHeader>Name</FieldHeader>
                         <MudSpacer />
-                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_testCase.Name"></MudTextField>
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" Value="@_name" ValueChanged="OnNameChanged"></MudTextField>
                     </Field>
                 }
 
@@ -34,7 +34,9 @@
         </DialogContent>
 
         <DialogActions>
-            @if (_testSuiteId is not null && !string.IsNullOrEmpty(_testCase.Name))
+            @if (_testSuite is not null &&
+            !string.IsNullOrEmpty(_testCase.Name) && 
+             _testCase.TestProjectId is not null)
             {
                 <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
             }
@@ -60,7 +62,11 @@
     private TestCase _testCase = new() { Name = "", TenantId = "" };
     private TestSuite? _testSuite;
     private TestSuiteFolder? _folder;
+    private string _name = "";
 
+    /// <summary>
+    /// Returns the name shown in the UI
+    /// </summary>
     private string FolderPath
     {
         get
@@ -80,33 +86,76 @@
             if (!string.IsNullOrEmpty(_folder?.Name))
             {
                 path.Append(_folder.Name);
+                path.Append("/");
+            }
+            if (!string.IsNullOrEmpty(_testCase?.Path))
+            {
+                path.Append(_testCase?.Path);
             }
             return path.ToString().TrimEnd('/');
         }
     }
 
+    private void OnNameChanged(string name)
+    {
+        _name = name;
+        var components = _name.Split('/');
+        if(components.Length == 1)
+        {
+            _testCase.Name = name;
+            _testCase.Path = "";
+        }
+        else
+        {
+            _testCase.Name = components.Last();
+            _testCase.Path = string.Join('/', components.Take(components.Length-1));
+        }
+    }
+
     protected override async Task OnParametersSetAsync()
     {
-        _testCase.Name = Name ?? "New Test";
-        if (Folder is not null)
+        this.OnNameChanged(Name ?? "New Test");
+
+        if(TestSuiteId is not null)
         {
-            _folder = Folder;
-            _testCase.TestSuiteFolderId = Folder.Id;
-            _testCase.TestSuiteId = Folder.TestSuiteId;
-        }
-        if (TestSuiteId is not null)
-        {
-            _testCase.TestSuiteId = TestSuiteId.Value;
+            var testSuite = await testSuiteController.GetTestSuiteByIdAsync(TestSuiteId.Value);
+            ChangeTestSuite(testSuite);
         }
 
-        _testSuiteId = _testCase.TestSuiteId;
+        await OnFolderChangedAsync(Folder);
+    }
 
-        if (_testSuite is null && _testSuiteId is not null)
+    private void ChangeTestSuite(TestSuite? suite)
+    {
+        _testSuite = suite;
+        if(_testSuite is not null)
         {
-            _testSuite = await testSuiteController.GetTestSuiteByIdAsync(_testSuiteId.Value);
-        }
+            _testCase.TestSuiteId = _testSuite.Id;
+            _testCase.TeamId = _testSuite.TeamId ?? Team?.Id;
+            _testCase.TestProjectId = _testSuite.TestProjectId ?? Project?.Id;
 
-        base.OnParametersSet();
+            if (_folder?.TestSuiteId != _testSuite.Id)
+            {
+                _folder = null;
+                _testCase.TestSuiteFolderId = null;
+            }
+        }
+    }
+    private async Task OnFolderChangedAsync(TestSuiteFolder? folder)
+    {
+        _folder = folder;
+        if (folder is not null)
+        {
+            _testCase.TestSuiteFolderId = folder.Id;
+            _testCase.TeamId = folder.TeamId ?? Team?.Id;
+            _testCase.TestProjectId = folder.TestProjectId ?? Project?.Id;
+
+            if (folder.TestSuiteId != _testCase.TestSuiteId)
+            {
+                var testSuite = await testSuiteController.GetTestSuiteByIdAsync(folder.TestSuiteId);
+                ChangeTestSuite(testSuite);
+            }
+        }
     }
 
 
@@ -117,16 +166,7 @@
             var folder = await testSuiteController.PickFolderAsync(Project);
             if (folder is not null)
             {
-                _testCase.TestSuiteFolderId = folder.Id;
-
-                if (folder.TestSuiteId != _testCase.TestSuiteId)
-                {
-                    _testSuite = await testSuiteController.GetTestSuiteByIdAsync(folder.TestSuiteId);
-                    _testSuiteId = folder.TestSuiteId;
-                    _testCase.TestSuiteId = folder.TestSuiteId;
-                }
-
-                _folder = folder;
+                await OnFolderChangedAsync(folder);
             }
         }
     }

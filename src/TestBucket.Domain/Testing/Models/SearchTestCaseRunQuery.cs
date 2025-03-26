@@ -21,6 +21,16 @@ public class SearchTestCaseRunQuery : SearchQuery
             sb.Append("t=");
             sb.Append(TeamId);
         }
+        if (CreatedFrom is not null)
+        {
+            sb.Append("from=");
+            sb.Append(CreatedFrom);
+        }
+        if (CreatedUntil is not null)
+        {
+            sb.Append("until=");
+            sb.Append(CreatedUntil);
+        }
         if (Text is not null)
         {
             sb.Append("x=");

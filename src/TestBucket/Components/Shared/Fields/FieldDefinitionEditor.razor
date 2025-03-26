@@ -6,102 +6,102 @@
     {
         <MudStack>
             <h3>Field</h3>
-            <Field>
-                <FieldHeader>Name</FieldHeader>
-                <MudTextField Value="@FieldDefinition.Name" ValueChanged="OnNameChanged" T="string" Variant="Variant.Outlined" />
-            </Field>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr">
+                <Field Row>
+                    <FieldHeader>Name</FieldHeader>
+                    <MudSpacer/>
+                    <MudTextField Value="@FieldDefinition.Name" ValueChanged="OnNameChanged" T="string" Variant="Variant.Outlined" />
+                </Field>
              
-            <Field>
-                <FieldHeader>Trait</FieldHeader>
-                <MudTextField Value="@FieldDefinition.Trait" ValueChanged="OnTraitChanged" T="string" Variant="Variant.Outlined" />
-                <FieldDescription>The name of the trait should match the trait/property when importing items</FieldDescription>
-                @if(FieldDefinition.TraitType != TraitType.Custom)
-                {
-                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-                        <MudIcon Size="Size.Small" Color="Color.Success" Icon="@Icons.Material.Filled.Check"/>
-                        <MudText Color="Color.Success" Typo="Typo.subtitle1">@FieldDefinition.TraitType</MudText>
+                <Field>
+                    <MudStack Row>
+                        <FieldHeader>Trait</FieldHeader>
+                        <MudSpacer/>
+                        <MudTextField Value="@FieldDefinition.Trait" ValueChanged="OnTraitChanged" T="string" Variant="Variant.Outlined" />
                     </MudStack>
-                }
-            </Field>
+                    <FieldDescription>The name of the trait should match the trait/property when importing items</FieldDescription>
+                    @if(FieldDefinition.TraitType != TraitType.Custom)
+                    {
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Size="Size.Small" Color="Color.Success" Icon="@Icons.Material.Filled.Check"/>
+                            <MudText Color="Color.Success" Typo="Typo.subtitle1">@FieldDefinition.TraitType</MudText>
+                        </MudStack>
+                    }
+                </Field>
+            </div>
 
-            @* <Field> *@
-            @*     <FieldHeader>Trait Type</FieldHeader> *@
-            @*     <MudSelect Value="@FieldDefinition.TraitType" ValueChanged="OnTraitTypeChanged" T="TraitType" Variant="Variant.Outlined"> *@
-            @*         <MudSelectItem Value="@TraitType.Custom">Custom</MudSelectItem> *@
-            @*         <MudSelectItem Value="@TraitType.TestState">Custom</MudSelectItem> *@
-            @*     </MudSelect> *@
-            @*     <FieldDescription>The type of field defines what data can be stored and how it can be selected</FieldDescription> *@
-            @* </Field> *@
-
-            <Field>
+            <Field Row>
                 <FieldHeader>Description</FieldHeader>
-                <MudTextField Value="@FieldDefinition.Description" ValueChanged="OnDescriptionChanged" T="string" Variant="Variant.Outlined" />
+                <MudSpacer />
+                <MudTextField 
+                    Lines="5"
+                    MaxLines="5"
+                    Value="@FieldDefinition.Description" ValueChanged="OnDescriptionChanged" T="string" Variant="Variant.Outlined" />
             </Field>
 
             <Field>
-                <FieldHeader>Data Type</FieldHeader>
-                <MudSelect Value="@FieldDefinition.Type" ValueChanged="OnTypeChanged" T="FieldType" Variant="Variant.Outlined">
-                    <MudSelectItem Value="@FieldType.String">String</MudSelectItem>
-                    <MudSelectItem Value="@FieldType.Boolean">Boolean</MudSelectItem>
-                    <MudSelectItem Value="@FieldType.SingleSelection">Single Selection</MudSelectItem>
-                    <MudSelectItem Value="@FieldType.MultiSelection">Multi Selection</MudSelectItem>
-                    <MudSelectItem Value="@FieldType.StringArray">Chip Field</MudSelectItem>
-                </MudSelect>
+                <MudStack Row>
+                    <FieldHeader>Data Type</FieldHeader>
+                    <MudSpacer/>
+                    <MudSelect Value="@FieldDefinition.Type" ValueChanged="OnTypeChanged" T="FieldType" Variant="Variant.Outlined">
+                        <MudSelectItem Value="@FieldType.String">String</MudSelectItem>
+                        <MudSelectItem Value="@FieldType.Boolean">Boolean</MudSelectItem>
+                        <MudSelectItem Value="@FieldType.SingleSelection">Single Selection</MudSelectItem>
+                        <MudSelectItem Value="@FieldType.MultiSelection">Multi Selection</MudSelectItem>
+                        <MudSelectItem Value="@FieldType.StringArray">Chip Field</MudSelectItem>
+                    </MudSelect>
+                </MudStack>
                 <FieldDescription>The type of field defines what data can be stored and how it can be selected</FieldDescription>
 
                 @if(FieldDefinition.Type == FieldType.SingleSelection || FieldDefinition.Type == FieldType.MultiSelection)
                 {
-                    <MudTextField Class="mt-3" Value="@_options" ValueChanged="OnOptionsChanged" T="string" Variant="Variant.Outlined" />
-                    <FieldDescription>Options separated by comma (,)</FieldDescription>
+                    <MudStack Row>
+                        <FieldHeader>Options</FieldHeader>
+                        <MudSpacer />
+                        <MudTextField Class="mt-3" Value="@_options" ValueChanged="OnOptionsChanged" T="string" Variant="Variant.Outlined" />
+                    </MudStack>
+                    <FieldDescription>Separate multiple options using comma (,)</FieldDescription>
                 }
             </Field>
 
-
             <Field>
-                <FieldHeader>Usage</FieldHeader>
-                <MudStack Row="true">
+                <FieldHeader>Applicable for..</FieldHeader>
+                <MudStack Row="true" Wrap="Wrap.Wrap">
                     <MudCheckBox 
                     Color="Color.Tertiary" T="bool" 
-                    Value="@((FieldDefinition.Target&FieldTarget.TestCase) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCase, x)">Test Case</MudCheckBox>
+                    Value="@((FieldDefinition.Target&FieldTarget.TestCase) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCase, x)">Test Cases</MudCheckBox>
 
                     <MudCheckBox Color="Color.Tertiary" T="bool"
-                    Value="@((FieldDefinition.Target&FieldTarget.Project) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Project, x)">Project</MudCheckBox>
+                    Value="@((FieldDefinition.Target&FieldTarget.Project) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Project, x)">Projects</MudCheckBox>
 
                     <MudCheckBox Color="Color.Tertiary" T="bool"
-                    Value="@((FieldDefinition.Target&FieldTarget.TestRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestRun, x)">Test Run</MudCheckBox>
+                    Value="@((FieldDefinition.Target&FieldTarget.TestRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestRun, x)">Test Runs</MudCheckBox>
 
                     <MudCheckBox Color="Color.Tertiary" T="bool"
-                                 Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Run</MudCheckBox>
+                                 Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Runs</MudCheckBox>
                 </MudStack>
                 <FieldDescription>The type of field defines what data can be stored and how it can be selected</FieldDescription>
             </Field>
 
+            <Field>
+                <FieldHeader>Behavior</FieldHeader>
 
-            <MudStack Row="true" Wrap="Wrap.Wrap">
+                <MudStack Row Wrap="Wrap.Wrap">
 
-                <MudTooltip Text="Inherits the value from a related entity, for example executed test cases inherits from the test run and from the test case.">
-                    <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.Inherit" ValueChanged="OnInheritChanged">Inherit value</MudCheckBox>
-                </MudTooltip>
+                    <MudTooltip Text="Inherits the value from a related entity, for example executed test cases inherits from the test run and from the test case.">
+                        <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.Inherit" ValueChanged="OnInheritChanged">Inherit value</MudCheckBox>
+                    </MudTooltip>
 
-                <MudTooltip Text="Uses AI to update this field, if it is empty">
-                    <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.UseClassifier" ValueChanged="OnUseClassifierChanged">Automatic Classification</MudCheckBox>
-                </MudTooltip>
+                    <MudTooltip Text="Uses AI to update this field, if it is empty">
+                        <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.UseClassifier" ValueChanged="OnUseClassifierChanged">Automatic Classification</MudCheckBox>
+                    </MudTooltip>
 
-                <MudTooltip Text="Shows the field in the user interface">
-                    <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.IsVisible" ValueChanged="OnIsVisibleChanged">Visible</MudCheckBox>
-                </MudTooltip>
-
-                @if (FieldDefinition.IsVisible)
-                {
                     <MudTooltip Text="Read-Only fields cannot be edited by a user">
                         <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.ReadOnly" ValueChanged="OnReadOnlyChanged">Read Only</MudCheckBox>
                     </MudTooltip>
-
-                    <MudTooltip Text="Shows the description in the user interface">
-                        <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.ShowDescription" ValueChanged="OnShowDescriptionChanged">Show description in UI</MudCheckBox>
-                    </MudTooltip>
-                }
-            </MudStack>
+                </MudStack>
+            </Field>
 
         </MudStack>
 
@@ -109,6 +109,29 @@
             <h3>Preview</h3>
 
             <FieldEditor @bind-Field="_dummy"/>
+
+            <Field>
+                <FieldHeader>Appearance</FieldHeader>
+                <MudStack Row Wrap="Wrap.Wrap">
+
+                    <MudTooltip Text="Shows the field in the user interface">
+                        <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.IsVisible" ValueChanged="OnIsVisibleChanged">Visible</MudCheckBox>
+                    </MudTooltip>
+
+                    <MudTooltip Text="Shows the description in the user interface">
+                        <MudCheckBox Color="Color.Tertiary" T="bool" Value="@FieldDefinition.ShowDescription" ValueChanged="OnShowDescriptionChanged">Show description in UI</MudCheckBox>
+                    </MudTooltip>
+                </MudStack>
+
+            </Field>
+
+            <Field>
+                <FieldHeader>Icons</FieldHeader>
+                <IconPicker @bind-Icon="@FieldDefinition.Icon"/>
+
+
+
+            </Field>
         </MudStack>
     }
 </div>

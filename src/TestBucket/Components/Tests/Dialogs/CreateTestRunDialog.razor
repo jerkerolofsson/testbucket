@@ -53,6 +53,7 @@
         if(TestProjectId is not null)
         {
             var project = await projectService.GetProjectByIdAsync(TestProjectId.Value);
+            _run.TestProjectId = project?.Id;
             _teamId = project?.TeamId;
         }
     }

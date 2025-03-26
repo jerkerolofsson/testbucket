@@ -72,6 +72,17 @@ public class FieldDefinition : ProjectEntity
     public bool ShowDescription { get; set; }
 
     /// <summary>
+    /// Icon for the label
+    /// </summary>
+    public string? Icon { get; set; }
+
+    /// <summary>
+    /// Icons for each option
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public Dictionary<string, string>? OptionIcons { get; set; }
+
+    /// <summary>
     /// Flag for soft deleted fields
     /// </summary>
     public bool IsDeleted { get; set; }

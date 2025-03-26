@@ -3,7 +3,7 @@
     <Field>
         <MudStack Spacing="0" Row="@Row">
             <MudTooltip Text="@Field.FieldDefinition.Description">
-                <FieldHeader>@Field.FieldDefinition.Name</FieldHeader>
+                <FieldHeader Icon="@Field.FieldDefinition.Icon">@Field.FieldDefinition.Name</FieldHeader>
             </MudTooltip>
 
             @if (Row && !Field.FieldDefinition.WriteOnly)

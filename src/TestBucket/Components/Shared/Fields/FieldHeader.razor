@@ -1,7 +1,16 @@
 ﻿
-<h6 class="tb-field-header">@ChildContent</h6>
+<h6 class="tb-field-header">
+
+    @if(Icon is not null)
+    {
+        <MudIcon Icon="@Icon"/>
+    }
+
+    @ChildContent
+</h6>
 
 @code {
+    [Parameter] public string? Icon { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
 }

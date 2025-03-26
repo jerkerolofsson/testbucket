@@ -32,31 +32,35 @@
     private long? _testCaseId;
     private long? _testCaseRunId;
     private long? _testRunId;
+    private long? _testProjectId;
 
     protected override async Task OnParametersSetAsync()
     {
-        if(TestCase is not null && _testCaseId != TestCase.Id)
+        if (TestCase is not null && (_testCaseId != TestCase.Id || _testProjectId != TestCase.TestProjectId))
         {
             _testCaseId = TestCase.Id;
+            _testProjectId = TestCase.TestProjectId;
             var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = TestCase.TestProjectId, Target = FieldTarget.TestCase });
             _testCaseFields = (await fieldController.GetTestCaseFieldsAsync(TestCase.Id, definitions)).OrderBy(x => x.FieldDefinition!.Name).ToList();
         }
-        if (TestCaseRun is not null && _testCaseRunId != TestCaseRun.Id)
+        if (TestCaseRun is not null && (_testCaseRunId != TestCaseRun.Id || _testProjectId != TestCaseRun.TestProjectId))
         {
             _testCaseRunId = TestCaseRun.Id;
+            _testProjectId = TestCaseRun.TestProjectId;
             var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = TestCaseRun.TestProjectId, Target = FieldTarget.TestCaseRun });
             _testCaseRunFields = (await fieldController.GetTestCaseRunFieldsAsync(TestCaseRun.TestRunId, TestCaseRun.Id, definitions)).OrderBy(x=>x.FieldDefinition!.Name).ToList();
         }
-        else if (TestRun is not null && _testRunId != TestRun.Id)
+        else if (TestRun is not null && (_testRunId != TestRun.Id || _testProjectId != TestRun.TestProjectId))
         {
             _testRunId = TestRun.Id;
+            _testProjectId = TestRun.TestProjectId;
             var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = TestRun.TestProjectId, Target = FieldTarget.TestRun });
             _testRunFields = (await fieldController.GetTestRunFieldsAsync(TestRun.Id, definitions)).OrderBy(x => x.FieldDefinition!.Name).ToList();
         }
     }
     private async Task OnTestRunFieldChangedAsync()
     {
-        if (_testCaseRunFields.Count > 0 && AutoSaveChanges)
+        if (_testRunFields.Count > 0 && AutoSaveChanges)
         {
             await fieldController.SaveTestRunFieldsAsync(_testRunFields);
         }

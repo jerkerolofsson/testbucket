@@ -466,13 +466,24 @@ p.mud-typography-subtitle1 {
 }
 
 .tb-field-header {
-    display: flex;
-    align-items: center;
     font-weight: bold; 
     font-size: 12pt; 
     margin: 0; 
     text-decoration: none;
     margin-right: 5px;
+}
+
+.tb-field-header:has(.mud-svg-icon) {
+    display: flex;
+    align-items: center;
+}
+
+.tb-field-header .mud-svg-icon {
+    margin-right: 8px;
+}
+
+.tb-field .mud-grid-item:has(.mud-checkbox) {
+    margin-top: 8px;
 }
 
 .tb-field-description {

@@ -42,7 +42,7 @@
 
             <Field>
                 <MudStack Row>
-                    <FieldHeader>Data Type</FieldHeader>
+                    <FieldHeader>Input Type</FieldHeader>
                     <MudSpacer/>
                     <MudSelect Value="@FieldDefinition.Type" ValueChanged="OnTypeChanged" T="FieldType" Variant="Variant.Outlined">
                         <MudSelectItem Value="@FieldType.String">String</MudSelectItem>
@@ -52,12 +52,12 @@
                         <MudSelectItem Value="@FieldType.StringArray">Chip Field</MudSelectItem>
                     </MudSelect>
                 </MudStack>
-                <FieldDescription>The type of field defines what data can be stored and how it can be selected</FieldDescription>
+                <FieldDescription>Defines what data can be entered for the field</FieldDescription>
 
                 @if(FieldDefinition.Type == FieldType.SingleSelection || FieldDefinition.Type == FieldType.MultiSelection)
                 {
                     <MudStack Row>
-                        <FieldHeader>Options</FieldHeader>
+                        <FieldHeader>Options / Auto Complete</FieldHeader>
                         <MudSpacer />
                         <MudTextField Class="mt-3" Value="@_options" ValueChanged="OnOptionsChanged" T="string" Variant="Variant.Outlined" />
                     </MudStack>
@@ -81,7 +81,7 @@
                     <MudCheckBox Color="Color.Tertiary" T="bool"
                                  Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Runs</MudCheckBox>
                 </MudStack>
-                <FieldDescription>The type of field defines what data can be stored and how it can be selected</FieldDescription>
+                <FieldDescription>Defines the entities that will have this field</FieldDescription>
             </Field>
 
             <Field>
@@ -110,8 +110,10 @@
 
             <FieldEditor @bind-Field="_dummy"/>
 
+            <h3>Appearance</h3>
+
             <Field>
-                <FieldHeader>Appearance</FieldHeader>
+                <FieldHeader>Appearance Options</FieldHeader>
                 <MudStack Row Wrap="Wrap.Wrap">
 
                     <MudTooltip Text="Shows the field in the user interface">
@@ -126,12 +128,17 @@
             </Field>
 
             <Field>
-                <FieldHeader>Icons</FieldHeader>
+                <FieldHeader>Label Icon</FieldHeader>
                 <IconPicker @bind-Icon="@FieldDefinition.Icon"/>
-
-
-
             </Field>
+
+            @if(FieldDefinition.Type == FieldType.SingleSelection || FieldDefinition.Type == FieldType.MultiSelection)
+            {
+                <Field>
+                    <FieldHeader>Option Icons</FieldHeader>
+                    <FieldDescription>Icons for the options that can be selected</FieldDescription>
+                </Field>
+            }
         </MudStack>
     }
 </div>

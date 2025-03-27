@@ -33,7 +33,10 @@
             else
             {
                 <MudItem Style="@ValueStyle">
-                    <FieldValueEditor Field="@Field" FieldChanged="async (f) => await FieldChanged.InvokeAsync(f)" />
+                    <FieldValueEditor 
+                        AllowMultiSelection="@AllowMultiSelection" 
+                        Field="@Field" 
+                        FieldChanged="async (f) => await FieldChanged.InvokeAsync(f)" />
                 </MudItem>
             }
         </MudStack>
@@ -49,6 +52,7 @@
 @code {
     [Parameter] public FieldValue? Field { get; set; }
     [Parameter] public EventCallback<FieldValue?> FieldChanged { get; set; }
+    [Parameter] public bool AllowMultiSelection { get; set; } = true;
 
     private bool Row => Field?.FieldDefinition?.Type == FieldType.Boolean ||
                 Field?.FieldDefinition?.Type == FieldType.String || 

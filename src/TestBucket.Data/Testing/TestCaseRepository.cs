@@ -109,11 +109,8 @@ internal class TestCaseRepository : ITestCaseRepository
 
     public async Task DeleteTestCaseByIdAsync(long id)
     {
-        //testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-
         await RemoveTestCaseByIdAsync(id, dbContext);
-
         await dbContext.SaveChangesAsync();
     }
 
@@ -147,7 +144,6 @@ internal class TestCaseRepository : ITestCaseRepository
 
     public async Task UpdateTestCaseAsync(TestCase testCase)
     {
-        //testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         await CalculatePathAsync(dbContext, testCase);

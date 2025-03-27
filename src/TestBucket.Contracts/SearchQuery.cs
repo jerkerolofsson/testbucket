@@ -46,4 +46,16 @@ public class SearchQuery
     /// Inclusive
     /// </summary>
     public DateTimeOffset? CreatedUntil { get; set; }
+
+    public List<FieldFilter> Fields { get; set; } = [];
+
+    public void AddFieldFilter(FieldFilter filter)
+    {
+        Fields.Add(filter);
+    }
+
+    public void RemoveFieldFilter(Predicate<FieldFilter> predicate)
+    {
+        Fields.RemoveAll(predicate);
+    }
 }

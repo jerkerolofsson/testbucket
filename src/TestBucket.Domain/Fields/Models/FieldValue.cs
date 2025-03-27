@@ -55,6 +55,23 @@ public class FieldValue : Entity
 
     public FieldDefinition? FieldDefinition { get; set; }
 
+    public FieldFilter ToFieldFilter()
+    {
+        return new FieldFilter
+        {
+            FilterDefinitionId = FieldDefinitionId,
+            StringValuesList = this.StringValuesList,
+            LongValue = this.LongValue,
+            DoubleValue = this.DoubleValue,
+            BooleanValue = this.BooleanValue,
+            StringValue = this.StringValue,
+        };
+    }
+
+    /// <summary>
+    /// Returns true if the field contains any values
+    /// </summary>
+    /// <returns></returns>
     public bool HasValue()
     {
         bool hasArrayValue = (StringValuesList is not null && StringValuesList.Count() > 0);
@@ -66,6 +83,12 @@ public class FieldValue : Entity
             DoubleValue is not null;
     }
 
+
+    /// <summary>
+    /// Copies fields this object to another fields value
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="copy"></param>
     public void CopyTo<T>(T copy) where T : FieldValue
     {
         copy.FieldDefinitionId = FieldDefinitionId;

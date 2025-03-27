@@ -11,36 +11,11 @@
                 <Field>
                     <FieldHeader>Created</FieldHeader>
                     <MudDateRangePicker 
-                        DateRange="@_dateRange" Margin="Margin.Dense" DateRangeChanged="OnDateRangeChanged" Clearable
-                        PlaceholderStart="Start Date" PlaceholderEnd="End Date" Label="Created" />
+                    DateRange="@_dateRange" Margin="Margin.Dense" DateRangeChanged="OnDateRangeChanged" Clearable
+                    PlaceholderStart="Start Date" PlaceholderEnd="End Date" Label="Created" />
                 </Field>
 
-                @if(_fieldCategory is not null)
-                {
-                    <FieldHeader>Category</FieldHeader>
-                    <MudSelect T="string" @bind-Value="Query.Category" Variant="Variant.Outlined" Clearable="true">
-                        @if (_fieldCategory.Options is not null)
-                        {
-                            @foreach (var item in _fieldCategory.Options)
-                            {
-                                <MudSelectItem Value="@item">@item</MudSelectItem>
-                            }
-                        }
-                    </MudSelect>
-                }
-                @if (_fieldPriority is not null)
-                {
-                    <FieldHeader>Priority</FieldHeader>
-                    <MudSelect T="string" @bind-Value="Query.Priority" Variant="Variant.Outlined" Clearable="true">
-                        @if (_fieldPriority.Options is not null)
-                        {
-                            @foreach (var item in _fieldPriority.Options)
-                            {
-                                <MudSelectItem Value="@item">@item</MudSelectItem>
-                            }
-                        }
-                    </MudSelect>
-                }
+                <FieldsEditor Fields="@_fields" AllowMultiSelection="false" AutoSaveChanges="false" FieldChanged="OnFieldChanged"/>
 
             </DialogContent>
 
@@ -62,6 +37,7 @@
     private FieldDefinition? _fieldCategory;
     private FieldDefinition? _fieldPriority;
     private IReadOnlyList<FieldDefinition> _fieldDefinitions = [];
+    private List<FieldValue> _fields = [];
     private DateRange _dateRange { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
@@ -70,9 +46,31 @@
         {
             _fieldDefinitions = await fieldController.GetDefinitionsAsync(Project.Id, FieldTarget.TestCase);
 
-            _fieldCategory = _fieldDefinitions.Where(x => x.TraitType == TraitType.TestCategory).FirstOrDefault();
-            _fieldPriority = _fieldDefinitions.Where(x => x.TraitType == TraitType.TestPriority).FirstOrDefault();
-            //_fieldPriority = _fieldDefinitions.Where(x => x.TraitType == TraitType.TestAc).FirstOrDefault();
+            // We filter some fields here, not all types of fields are suitable for the filter, 
+            // such as ReadOnly or WriteOnly
+            foreach(var fieldDefinition in _fieldDefinitions.Where(x=>!x.ReadOnly && !x.WriteOnly))
+            {
+                _fields.Add(new FieldValue
+                {
+                    FieldDefinitionId = fieldDefinition.Id,
+                    FieldDefinition = fieldDefinition
+                });
+            }
+        }
+    }
+
+    private void OnFieldChanged(FieldValue field)
+    {
+        if(Query is not null)
+        {
+            if(field.HasValue())
+            {
+                var filter = field.ToFieldFilter();
+                Query.AddFieldFilter(filter);
+            }
+            else{
+                Query.RemoveFieldFilter(x => x.FilterDefinitionId == field.FieldDefinitionId);
+            }
         }
     }
 

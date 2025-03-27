@@ -1,4 +1,5 @@
-﻿@using TestBucket.Domain.Fields.Models
+﻿@using System.Diagnostics
+@using TestBucket.Domain.Fields.Models
 @using TestBucket.Traits.Core
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem">
@@ -13,7 +14,7 @@
                     <MudSpacer/>
                     <MudTextField Value="@FieldDefinition.Name" ValueChanged="OnNameChanged" T="string" Variant="Variant.Outlined" />
                 </Field>
-             
+
                 <Field>
                     <MudStack Row>
                         <FieldHeader>Trait</FieldHeader>
@@ -35,9 +36,9 @@
                 <FieldHeader>Description</FieldHeader>
                 <MudSpacer />
                 <MudTextField 
-                    Lines="5"
-                    MaxLines="5"
-                    Value="@FieldDefinition.Description" ValueChanged="OnDescriptionChanged" T="string" Variant="Variant.Outlined" />
+                Lines="5"
+                MaxLines="5"
+                Value="@FieldDefinition.Description" ValueChanged="OnDescriptionChanged" T="string" Variant="Variant.Outlined" />
             </Field>
 
             <Field>
@@ -79,7 +80,7 @@
                     Value="@((FieldDefinition.Target&FieldTarget.TestRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestRun, x)">Test Runs</MudCheckBox>
 
                     <MudCheckBox Color="Color.Tertiary" T="bool"
-                                 Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Runs</MudCheckBox>
+                    Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Runs</MudCheckBox>
                 </MudStack>
                 <FieldDescription>Defines the entities that will have this field</FieldDescription>
             </Field>
@@ -127,16 +128,35 @@
 
             </Field>
 
-            <Field>
-                <FieldHeader>Label Icon</FieldHeader>
-                <IconPicker @bind-Icon="@FieldDefinition.Icon"/>
-            </Field>
-
-            @if(FieldDefinition.Type == FieldType.SingleSelection || FieldDefinition.Type == FieldType.MultiSelection)
+            @if((FieldDefinition.Type == FieldType.SingleSelection || FieldDefinition.Type == FieldType.MultiSelection) && FieldDefinition.OptionIcons is not null)
             {
-                <Field>
-                    <FieldHeader>Option Icons</FieldHeader>
-                    <FieldDescription>Icons for the options that can be selected</FieldDescription>
+                <Field Row>
+                    <FieldHeader>Icons</FieldHeader>
+                    <MudSpacer />
+
+                    <table style="width: 300px">
+                        <thead>
+                            <tr>
+                                <th>Option</th>
+                                <th>Icon</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td>Label</td>
+                                <td><IconPicker @bind-Icon="@FieldDefinition.Icon" /></td>
+                            </tr>
+
+                            @foreach (var option in FieldDefinition.OptionIcons)
+                            {
+                                <tr>
+                                    <td>@option.Key</td>
+                                    <td><IconPicker Icon="@option.Value" IconChanged="(icon) => FieldDefinition.OptionIcons[option.Key] = icon" /></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </Field>
             }
         </MudStack>
@@ -254,9 +274,44 @@
         {
             _options = value;
             FieldDefinition.Options = _options.Split(',', StringSplitOptions.TrimEntries|StringSplitOptions.RemoveEmptyEntries).ToList();
+            FieldDefinition.OptionIcons ??= [];
+            AddOrRemoveOptionIcons();
+
             await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
         }
     }
+
+    private void AddOrRemoveOptionIcons()
+    {
+        Debug.Assert(FieldDefinition is not null);
+        Debug.Assert(FieldDefinition.Options is not null);
+        Debug.Assert(FieldDefinition.OptionIcons is not null);
+        if (FieldDefinition?.Options is null)
+        {
+            return;
+        }
+        if (FieldDefinition?.OptionIcons is null)
+        {
+            return;
+        }
+
+        foreach (var newOption in FieldDefinition.Options)
+        {
+            if (!FieldDefinition.OptionIcons.ContainsKey(newOption))
+            {
+                FieldDefinition.OptionIcons.Add(newOption, "");
+            }
+        }
+        foreach (var oldOption in FieldDefinition.OptionIcons.Keys.ToList())
+        {
+            if (!FieldDefinition.Options.Contains(oldOption))
+            {
+                FieldDefinition.OptionIcons.Remove(oldOption);
+            }
+        }
+
+    }
+
     private async Task OnTraitChanged(string value)
     {
         if (FieldDefinition is not null)

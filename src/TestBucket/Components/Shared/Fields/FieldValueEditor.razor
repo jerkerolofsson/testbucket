@@ -1,26 +1,45 @@
 ﻿@if(Field?.FieldDefinition is not null) 
 {
-    @if (Field.FieldDefinition.Type == FieldType.String)
+    var type = Field.FieldDefinition.Type;
+    if (!AllowMultiSelection)
+    {
+        if(type == FieldType.MultiSelection)
+        {
+            type = FieldType.SingleSelection;
+        }
+        if (type == FieldType.StringArray)
+        {
+            type = FieldType.String;
+        }
+    }
+
+    @if (type == FieldType.String)
     {
         <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" />
     }
-    else if (Field.FieldDefinition.Type == FieldType.SingleSelection)
+    else if (type == FieldType.SingleSelection)
     {
         <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable="true">
             @if (Field.FieldDefinition.Options is not null)
             {
                 @foreach (var item in Field.FieldDefinition.Options)
                 {
-                    <MudSelectItem Value="@item">@item</MudSelectItem>
+                    <MudSelectItem Value="@item">
+                        @if (Field.FieldDefinition.OptionIcons is not null && Field.FieldDefinition.OptionIcons.TryGetValue(item, out var optionIcon) && !string.IsNullOrEmpty(optionIcon))
+                        {
+                            <MudIcon Icon="@optionIcon" />
+                        }
+                        @item
+                    </MudSelectItem>
                 }
             }
         </MudSelect>
     }
-    else if (Field.FieldDefinition.Type == FieldType.Boolean)
+    else if (type == FieldType.Boolean)
     {
         <MudSwitchM3 Value="@Field.BooleanValue" T="bool?" ValueChanged="OnBooleanValueChanged" Color="Color.Tertiary" />
     }
-    else if (Field.FieldDefinition.Type == FieldType.StringArray && Field.StringValuesList is not null)
+    else if (type == FieldType.StringArray && Field.StringValuesList is not null)
     {
         <MudChipSet T="string" AllClosable="true">
             @foreach (var value in Field.StringValuesList)
@@ -37,7 +56,7 @@
             </MudStack>
         </EditForm>
     }
-    else if (Field.FieldDefinition.Type == FieldType.MultiSelection && Field.StringValuesList is not null)
+    else if (type == FieldType.MultiSelection && Field.StringValuesList is not null)
     {
         @if (Field.FieldDefinition.Options is not null)
         {
@@ -56,6 +75,7 @@
 @code {
     [Parameter] public FieldValue? Field { get; set; }
     [Parameter] public EventCallback<FieldValue?> FieldChanged { get; set; }
+    [Parameter] public bool AllowMultiSelection { get; set; } = true;
 
     private string _addStringArrayValue = "";
 

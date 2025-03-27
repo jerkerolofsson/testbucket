@@ -213,6 +213,10 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// </summary>
         [Parameter]
         public EventCallback<string> ValueChanged { get; set; }
+
+        [Parameter]
+        public EventCallback<string> RunCode { get; set; }
+
         #endregion Event Callback
         #region Parameters
 
@@ -513,6 +517,12 @@ namespace PSC.Blazor.Components.MarkdownEditor
                 _value = value;
                 await ValueChanged.InvokeAsync(value);
             }
+        }
+
+        [JSInvokable]
+        public async Task RunCodeInternal(string code)
+        {
+            await RunCode.InvokeAsync(code);
         }
 
         /// <summary>

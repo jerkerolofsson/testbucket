@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\integrations\TestBucket.ApiTests\TestBucket.ApiTests.csproj" />
     <ProjectReference Include="..\integrations\TestBucket.Gitlab\TestBucket.Gitlab.csproj" />
     <ProjectReference Include="..\PSC.Blazor.Components.MarkdownEditor\PSC.Blazor.Components.MarkdownEditor.csproj" />
     <ProjectReference Include="..\TestBucket.Data\TestBucket.Data.csproj" />

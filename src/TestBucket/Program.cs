@@ -188,6 +188,7 @@ public class Program
 
         // Integrations
         builder.Services.AddSingleton<IProjectDataSource, GitlabProjectDataSource>();
+        builder.Services.AddDotHttpApiTestExtension();
 
         builder.Services.AddHotKeys2();
         builder.Services.AddMudServices(config =>

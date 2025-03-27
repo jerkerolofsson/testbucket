@@ -112,10 +112,10 @@ function initialize(dotNetObjectRef, element, elementId, options) {
                 langPrefix: "",
                 highlight: function (code, lang) {
                     if (lang === "mermaid" && mermaidInstalled) {
-                        var tempDiv = document.createElement("div");
+                        const tempDiv = document.createElement("div");
                         tempDiv.className = "mermaid-container";
 
-                        var svg = mermaid.render("mermaid0", code);
+                        const svg = mermaid.render("mermaid0", code);
                         tempDiv.innerHTML = svg;
                         return tempDiv;
                     }
@@ -154,7 +154,22 @@ function initialize(dotNetObjectRef, element, elementId, options) {
                     }
                     else if (lang && hljsInstalled) {
                         const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-                        return hljs.highlight(code, { language }).value;
+                        let highlighted = hljs.highlight(code, { language }).value;
+
+                        const wrapperCssClass = `tb-code-overlay-${parseInt(Math.random()*100000)}`;
+
+                        highlighted += `<div class='tb-code-overlay ${wrapperCssClass}'><svg width="16" height="16" viewBox="0 0 24 24"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M8 5v14l11-7z\"/></svg> ${language}</div>`;
+
+                        // Register click event, but no callback function when rendered
+                        window.setTimeout(() => {
+                            const selector = `.${wrapperCssClass}`;
+                            const buttonElement = document.querySelector(selector);
+                            buttonElement.addEventListener("click", () => {
+                                dotNetObjectRef.invokeMethodAsync("RunCodeInternal", code);
+                            });
+                        },100);
+
+                        return highlighted;
                     }
                     return code;
                 }

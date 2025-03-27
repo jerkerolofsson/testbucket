@@ -89,6 +89,7 @@
                     @bind-Preview="_preview"
                     Value="@_boundDescription"
                     @ref=_editor
+                                    RunCode="OnRunCodeClickedAsync"
                     ValueChanged="OnDescriptionChanged"
                     SpellChecker="false">
                     </MarkdownEditor>

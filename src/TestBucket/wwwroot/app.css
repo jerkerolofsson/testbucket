@@ -388,6 +388,33 @@ p.mud-typography-subtitle1 {
     width: 100%;
 }
 
+    .EasyMDEContainer pre:has(code),
+    .CodeMirror pre:has(code) {
+        position: relative;
+    }
+
+    .EasyMDEContainer code .tb-code-overlay {
+        position: absolute;
+        right:0;
+        top:0;
+        padding: 4px;
+        background: rgba(0,0,0,0.25);
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        height: 32px;
+    }
+
+    .EasyMDEContainer code .tb-code-overlay:hover svg {
+        fill: var(--mud-palette-success);
+    }
+
+    .EasyMDEContainer code .tb-code-overlay svg {
+        fill: var(--mud-palette-text-primary);
+    }
+
+
 .EasyMDEContainer  {
     display: grid;
     grid-template-rows: 1fr auto;

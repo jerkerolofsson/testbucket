@@ -17,6 +17,14 @@ public partial class TestCaseEditor
         _preview = false;
     }
 
+    private async Task OnRunCodeClickedAsync(string code)
+    {
+        if (Test is null || Test.TestProjectId is null)
+        {
+            return;
+        }
+        var run = await testRunCreation.CreateTestRunAsync(Test.Name, Test.TestProjectId.Value, [Test.Id]);
+    }
     private async Task RunTestAsync()
     {
         if (Test is null || Test.TestProjectId is null)

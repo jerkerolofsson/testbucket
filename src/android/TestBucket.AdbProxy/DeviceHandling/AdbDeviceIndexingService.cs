@@ -29,7 +29,14 @@ namespace TestBucket.AdbProxy.DeviceHandling
             while (!stoppingToken.IsCancellationRequested)
             {
                 _logger.LogDebug("Periodic scan of connected devices");
-                await _repo.UpdateAsync(stoppingToken);
+                try
+                {
+                    await _repo.UpdateAsync(stoppingToken);
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, "Error updating");
+                }
 
                 await Task.Delay(10_000, stoppingToken);
             }

@@ -259,14 +259,17 @@ internal class TextImporter : ITextTestResultsImporter
         {
             foreach(var attachment in attachments)
             {
+                var data = attachment.Data ?? [];
                 var dbo = new FileResource()
                 {
+                    Created = DateTimeOffset.UtcNow,
                     ContentType = attachment.ContentType ?? "application/octet-stream",
-                    Data = attachment.Data ?? [],
+                    Data = data,
                     TenantId = testCaseRun.TenantId!,
                     TestCaseRunId = testCaseRun.Id,
                     Name = attachment.Name ?? "Attachment",
                     Category = ResourceCategory.Attachment,
+                    Length = data.Length
                 };
 
                 await _fileRepository.AddResourceAsync(dbo);

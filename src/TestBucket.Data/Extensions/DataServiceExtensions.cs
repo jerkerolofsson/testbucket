@@ -5,7 +5,9 @@ using TestBucket.Data.Requirements;
 using TestBucket.Data.Settings;
 using TestBucket.Data.Teams;
 using TestBucket.Data.Tenants;
+using TestBucket.Data.TestEnvironments;
 using TestBucket.Data.Testing;
+using TestBucket.Domain.Environments;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Requirements;
@@ -28,6 +30,8 @@ public static class DataServiceExtensions
         services.AddScoped<ITestCaseRepository, TestCaseRepository>();
         services.AddScoped<IUserPreferenceRepository, UserPreferenceRepository>();
         services.AddScoped<IFileRepository, FileRepository>();
+        services.AddScoped<ITestEnvironmentRepository, TestEnvironmentRepository>();
+        
 
         return services;
     }

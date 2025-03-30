@@ -1,7 +1,9 @@
+using Aspire.Hosting;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var postgres = builder.AddPostgres("testbucket-postgres")
-    .WithPgAdmin()
+    //.WithPgAdmin()
     .WithDataVolume("testbucket-dev", isReadOnly: false); 
 var db = postgres.AddDatabase("testbucketdb");
 
@@ -10,6 +12,7 @@ var testBucket = builder.AddProject<Projects.TestBucket>("testbucket")
     .WithEnvironment("DEFAULT_TENANT", "jerkerolofsson")
     .WithEnvironment("ADMIN_API_KEY", "123456")
     .WithEnvironment("OLLAMA_BASE_URL", "http://localhost:11434")
+    .WithEnvironment("TEST_BUCKET_PUBLIC_ENDPOINT", "https://localhost:7067")
     //.WithEnvironment("OLLAMA_BASE_URL", "http://172.18.70.121:17050")
     //.WithEnvironment("OLLAMA_BASE_URL", "http://172.18.30.118:17335")
     //.WithEnvironment("OLLAMA_BASE_URL", "http://172.18.70.121:17050")

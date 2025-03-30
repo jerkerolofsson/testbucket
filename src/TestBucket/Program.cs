@@ -10,6 +10,7 @@ using MudExtensions.Services;
 
 using TestBucket.Components;
 using TestBucket.Components.Account;
+using TestBucket.Components.Environments.Services;
 using TestBucket.Components.Layout.Controls;
 using TestBucket.Components.Projects;
 using TestBucket.Components.Requirements.Services;
@@ -51,6 +52,11 @@ public class Program
 
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddMemoryCache();
+
+
+        builder.Services.AddLocalization(options =>
+        {
+        });
 
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<IdentityUserAccessor>();
@@ -166,6 +172,7 @@ public class Program
         builder.Services.AddScoped<TestRunCreationController>();
         builder.Services.AddScoped<AttachmentsService>();
         builder.Services.AddScoped<AppNavigationManager>();
+        builder.Services.AddScoped<TestEnvironmentController>();
 
         builder.Services.AddScoped<RequirementBrowser>();
         builder.Services.AddScoped<RequirementEditorController>();
@@ -222,6 +229,13 @@ public class Program
         app.UseAntiforgery();
         app.UseHttpsRedirection();
         app.UseCors(localhostOrigin);
+
+
+        var requestLocalizationOptions = new RequestLocalizationOptions()
+             .AddSupportedCultures(["en-US", "sv-SE"])
+             .AddSupportedUICultures(["en-US", "sv-SE"]);
+        requestLocalizationOptions.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-US");
+        app.UseRequestLocalization(requestLocalizationOptions);
 
         app.MapStaticAssets();
         app.MapControllers();

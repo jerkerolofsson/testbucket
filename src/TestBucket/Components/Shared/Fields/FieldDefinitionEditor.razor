@@ -71,7 +71,10 @@
                 <MudStack Row="true" Wrap="Wrap.Wrap">
                     <MudCheckBox 
                     Color="Color.Tertiary" T="bool" 
-                    Value="@((FieldDefinition.Target&FieldTarget.TestCase) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCase, x)">Test Cases</MudCheckBox>
+                    Value="@((FieldDefinition.Target&FieldTarget.TestSuite) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestSuite, x)">Test Suite</MudCheckBox>
+
+                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                 Value="@((FieldDefinition.Target&FieldTarget.TestCase) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCase, x)">Test Cases</MudCheckBox>
 
                     <MudCheckBox Color="Color.Tertiary" T="bool"
                     Value="@((FieldDefinition.Target&FieldTarget.Project) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Project, x)">Projects</MudCheckBox>

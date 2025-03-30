@@ -1,6 +1,8 @@
 ﻿using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Settings;
+using TestBucket.Domain.Automation.Services;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Environments;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Progress;
@@ -13,6 +15,7 @@ using TestBucket.Domain.Settings.Appearance;
 using TestBucket.Domain.Settings.Server;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Testing;
+using TestBucket.Domain.Testing.Compiler;
 using TestBucket.Domain.Testing.Services.Classification;
 using TestBucket.Domain.Testing.Settings;
 
@@ -26,6 +29,7 @@ public static class DomainServiceExtensions
             o.RegisterServicesFromAssembly(typeof(DomainServiceExtensions).Assembly);
         });
 
+        services.AddScoped<ITestCompiler, TestCompiler>();
         services.AddScoped<IStateService, StateService>();
         services.AddScoped<ITextTestResultsImporter, TextImporter>();
         services.AddScoped<ITestCaseManager, TestCaseManager>();
@@ -40,6 +44,10 @@ public static class DomainServiceExtensions
         services.AddScoped<ICommandManager, CommandManager>();
         services.AddScoped<IUnifiedSearchManager, UnifiedSearchManager>();
         services.AddScoped<IProgressManager, ProgressManager>();
+        services.AddScoped<ITestEnvironmentManager, TestEnvironmentManager>();
+
+        // automation
+        services.AddScoped<IMarkdownAutomationRunner, MarkdownAutomationRunner>();
 
         // AI
         services.AddScoped<IChatClientFactory, ChatClientFactory>();

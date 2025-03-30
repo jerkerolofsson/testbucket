@@ -3,10 +3,13 @@
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Contracts.Testing.Models;
+using TestBucket.Domain.Environments;
+using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Teams.Models;
+using TestBucket.Domain.Testing.Compiler;
 
 namespace TestBucket.Components.Tests.Services;
 
@@ -17,6 +20,8 @@ internal class TestCaseEditorController : TenantBaseService
     private readonly ITestRunManager _testRunManager;
     private readonly ITestCaseManager _testCaseManager;
     private readonly IRequirementManager _requirementManager;
+    private readonly ITestCompiler _testCompiler;
+    private readonly ITestEnvironmentManager _testEnvironmentManager;
 
     public TestCaseEditorController(
         ITestCaseManager testCaseManager,
@@ -24,13 +29,87 @@ internal class TestCaseEditorController : TenantBaseService
         AuthenticationStateProvider authenticationStateProvider,
         IDialogService dialogService,
         IStateService stateService,
-        IRequirementManager requirementManager) : base(authenticationStateProvider)
+        IRequirementManager requirementManager,
+        ITestCompiler testComplier,
+        ITestEnvironmentManager testEnvironmentManager) : base(authenticationStateProvider)
     {
         _testCaseManager = testCaseManager;
         _testRunManager = testRunManager;
         _dialogService = dialogService;
         _stateService = stateService;
         _requirementManager = requirementManager;
+        _testCompiler = testComplier;
+        _testEnvironmentManager = testEnvironmentManager;
+    }
+
+    /// <summary>
+    /// Compiles a preview for a test case with a specific context
+    /// </summary>
+    /// <param name="testCase"></param>
+    /// <param name="context"></param>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public async Task<string?> CompileTestCaseRunPreviewAsync(TestCase testCase, long runId, string? text)
+    {
+        if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null)
+        {
+            var principal = await GetUserClaimsPrincipalAsync();
+
+            var run = await _testRunManager.GetTestRunByIdAsync(principal, runId);
+            if(run?.TestProjectId is null)
+            {
+                return null;
+            }
+
+            var context = new TestExecutionContext()
+            {
+                TestCaseId = testCase.Id,
+                ProjectId = run.TestProjectId.Value,
+                TestRunId = run.Id,
+                TeamId = testCase.TeamId.Value,
+                TestEnvironmentId = run.TestEnvironmentId
+            };
+
+            return await CompilePreviewAsync(testCase, context, text);
+        }
+        return text;
+    }
+    /// <summary>
+    /// Compiles a preview for a test case with a specific context
+    /// </summary>
+    /// <param name="testCase"></param>
+    /// <param name="context"></param>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public async Task<string?> CompilePreviewAsync(TestCase testCase, TestExecutionContext context, string? text)
+    {
+        if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null)
+        {
+            var principal = await GetUserClaimsPrincipalAsync();
+
+            await _testCompiler.ResolveVariablesAsync(principal, context);
+            return await _testCompiler.CompileAsync(principal, context, text);
+        }
+        return text;
+    }
+    public async Task<string?> CompilePreviewAsync(TestCase testCase, string? text)
+    {
+        if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null)
+        {
+            var principal = await GetUserClaimsPrincipalAsync();
+            var defaultEnvironment = await _testEnvironmentManager.GetDefaultTestEnvironmentAsync(principal, testCase.TestProjectId.Value);
+
+            var context = new TestExecutionContext()
+            {
+                TestCaseId = testCase.Id,
+                ProjectId = testCase.TestProjectId.Value,
+                TestRunId = 0,
+                TeamId = testCase.TeamId.Value,
+                TestEnvironmentId = defaultEnvironment?.Id
+            };
+            return await CompilePreviewAsync(testCase, context, text);
+        }
+        return text;
     }
 
     /// <summary>

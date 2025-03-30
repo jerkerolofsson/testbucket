@@ -1,14 +1,20 @@
 ﻿@page "/{tenantId}/Settings/Projects/{projectSlug}"
 @layout SettingsLayout
 @attribute [Authorize(Roles = "ADMIN")]
-@inject ProjectController projectService
+@inject ProjectController projectController
+@inject AppNavigationManager appNav
+@inject IStringLocalizer<SharedStrings> loc
 @inject IDialogService dialogService
 
 <TenantRedirect/>
 
 <MudStack Class="container-settings-page">
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
     @if (_project is not null)
     {
+
+
         <ProjectEditor Project="@_project" />
     }
 </MudStack>
@@ -20,11 +26,32 @@
 
     private TestProject? _project = null;
 
+    private List<BreadcrumbItem> _nav = [];
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["projects"], appNav.GetManageProjectsUrl()));
+        if(_project is not null)
+        {
+            _nav.Add(new BreadcrumbItem(_project.Name, appNav.GetUrl(_project)));
+        }
+    }
+
+
+
     protected override async Task OnParametersSetAsync()
     {
         if (ProjectSlug is not null && _project?.Slug != ProjectSlug)
         {
-            _project = await projectService.GetProjectBySlugAsync(ProjectSlug);
+            _project = await projectController.GetProjectBySlugAsync(ProjectSlug);
+            SetupBreadcrumbs();
         }
     }
 }

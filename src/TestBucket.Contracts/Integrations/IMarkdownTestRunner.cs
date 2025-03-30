@@ -35,5 +35,5 @@ public interface IMarkdownTestRunner
     /// </summary>
     /// <param name="code"></param>
     /// <returns></returns>
-    Task<TestRunnerResult> RunAsync(TestExecutionContext context, string code);
+    Task<TestRunnerResult> RunAsync(TestExecutionContext context, string code, CancellationToken cancellationToken);
 }

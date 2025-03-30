@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
+using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements.Models;
@@ -19,10 +20,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<FileResource> Files { get; set; }
     internal DbSet<UserPreferences> UserPreferences { get; set; }
     internal DbSet<Team> Teams { get; set; }
-
     internal DbSet<TestProject> Projects { get; set; }
-    internal DbSet<ExternalSystem> ExternalSystems { get; set; }
 
+    /// <summary>
+    /// Information about other integrated systems
+    /// </summary>
+    internal DbSet<ExternalSystem> ExternalSystems { get; set; }
     internal DbSet<TestSuite> TestSuites { get; set; }
     internal DbSet<TestSuiteFolder> TestSuiteFolders { get; set; }
     internal DbSet<TestCase> TestCases { get; set; }
@@ -32,6 +35,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<RequirementSpecification> RequirementSpecifications { get; set; }
     internal DbSet<RequirementSpecificationFolder> RequirementSpecificationFolders { get; set; }
     internal DbSet<Requirement> Requirements { get; set; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    internal DbSet<TestEnvironment> TestEnvironments { get; set; }
 
     /// <summary>
     /// Settings common for all tenants

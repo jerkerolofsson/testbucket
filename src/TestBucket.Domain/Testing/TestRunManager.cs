@@ -36,6 +36,13 @@ internal class TestRunManager : ITestRunManager
     /// <param name="observer"></param>
     public void RemoveObserver(ITestRunObserver observer) => _testRunObservers.Remove(observer);
 
+
+    /// <inheritdoc/>
+    public async Task<TestRun?> GetTestRunByIdAsync(ClaimsPrincipal principal, long id)
+    {
+        return await _testCaseRepo.GetTestRunByIdAsync(principal.GetTenantIdOrThrow(), id);
+    }
+
     /// <inheritdoc/>
     public async Task AddTestRunAsync(ClaimsPrincipal principal, TestRun testRun)
     {

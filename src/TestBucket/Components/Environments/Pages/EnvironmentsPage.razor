@@ -1,0 +1,76 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/ManageEnvironments"
+@using TestBucket.Components.Environments.Controls
+@using TestBucket.Components.Environments.Services
+@using TestBucket.Domain.Environments.Models
+@layout SettingsLayout
+@inject TestEnvironmentController controller
+@inject AppNavigationManager appNav
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<TestEnvironmentStrings> testEnvLoc
+
+<MudStack Class="container-settings-page">
+
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
+    <MudDataGrid Items="@_testEnvironments"
+                 Dense="true"
+                 Hover="true"
+                 RowClick="(row) => OnTestEnvironmentClicked(row.Item)"
+                 T="TestEnvironment"
+                 SortMode="SortMode.None">
+
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+                <MudIcon Icon="@TbIcons.Filled.Leaf" />
+                <MudText Typo="Typo.h1">@loc["test-environments"]</MudText>
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTestEnvironmentAsync"></MudIconButton>
+            </MudStack>
+        </ToolBarContent>
+
+        <Columns>
+            <PropertyColumn Property="x => x.Id" />
+            <PropertyColumn Property="x => x.Name" />
+            <PropertyColumn Property="x => x.Description" />
+        </Columns>
+
+    </MudDataGrid>
+
+    <MudText Class="" Typo="Typo.subtitle1">@testEnvLoc["test-environment-description"]</MudText>
+
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private IReadOnlyList<TestEnvironment> _testEnvironments = [];
+    private List<BreadcrumbItem> _nav = [];
+
+
+    private async Task AddTestEnvironmentAsync()
+    {
+        await controller.AddTestEnvironmentAsync(Team, Project);
+        _testEnvironments = await controller.GetTestEnvironmentsAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _testEnvironments = await controller.GetTestEnvironmentsAsync();
+        SetupBreadcrumbs();
+    }
+
+    private void OnTestEnvironmentClicked(TestEnvironment testEnvironment)
+    {
+        appNav.NavigateTo(testEnvironment);
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["test-environments"], appNav.GetTestEnvironmentSettingsUrl()));
+    }
+}

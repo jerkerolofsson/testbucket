@@ -4,11 +4,12 @@
 @attribute [Authorize(Roles = "ADMIN")]
 @inject ProjectController projectService
 @inject IDialogService dialogService
-@inject AppNavigationManager appNavigationManager
+@inject AppNavigationManager appNav
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Class="container-settings-page">
 
-    <MudText Class="mb-3" Typo="Typo.h1">Projects</MudText>
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudDataGrid ServerData="LoadGridData"
                  Dense="true"
@@ -19,7 +20,8 @@
                  SortMode="SortMode.None">
 
         <ToolBarContent>
-            <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+                <MudText Typo="Typo.h1">@loc["projects"]</MudText>
                 <MudSpacer />
                 <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddProjectAsync"></MudIconButton>
             </MudStack>
@@ -43,9 +45,23 @@
 
     private MudDataGrid<TestProject>? _dataGrid;
 
+    private List<BreadcrumbItem> _nav = [];
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["projects"], appNav.GetManageProjectsUrl()));
+    }
+
     private void OnRowClicked(TestProject project)
     {
-        appNavigationManager.NavigateTo(project, false);
+        appNav.NavigateTo(project, false);
     }
 
     private async Task AddProjectAsync()

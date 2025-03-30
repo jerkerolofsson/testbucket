@@ -1,6 +1,6 @@
 ﻿@using TestBucket.Components.Shared.Fields.Dialogs
 @using TestBucket.Domain.Fields.Models
-@inject FieldController fieldService
+@inject FieldController fieldController
 @inject IDialogService dialogService
 
 <MudDataGrid Items="_fields"
@@ -66,7 +66,7 @@ SortMode="SortMode.None">
 
     private async Task DeleteAsync(FieldDefinition definition)
     {
-        await fieldService.DeleteAsync(definition);
+        await fieldController.DeleteAsync(definition);
         await ReloadFieldsAsync();
     }
 
@@ -98,6 +98,6 @@ SortMode="SortMode.None">
     private async Task ReloadFieldsAsync()
     {
         FieldTarget? target = null;
-        _fields = await fieldService.SearchDefinitionsAsync(new SearchFieldQuery() { ProjectId = ProjectId, Target = target });
+        _fields = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery() { ProjectId = ProjectId, Target = target });
     }
 }

@@ -32,12 +32,10 @@
             }
             else
             {
-                <MudItem Style="@ValueStyle">
-                    <FieldValueEditor 
-                        AllowMultiSelection="@AllowMultiSelection" 
-                        Field="@Field" 
-                        FieldChanged="async (f) => await FieldChanged.InvokeAsync(f)" />
-                </MudItem>
+                <FieldValueEditor 
+                    AllowMultiSelection="@AllowMultiSelection" 
+                    Field="@Field" 
+                    FieldChanged="async (f) => await FieldChanged.InvokeAsync(f)" />
             }
         </MudStack>
 
@@ -59,8 +57,6 @@
                 Field?.FieldDefinition?.Type == FieldType.SingleSelection || 
                 Field?.FieldDefinition?.Type == FieldType.Integer ||
                 Field?.FieldDefinition?.Type == FieldType.Double;
-
-    private string ValueStyle => Row ? "max-width: 200px; min-width: 50px" : "";
 
     private bool _editingWriteOnlyField = false;
 

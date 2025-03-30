@@ -1,0 +1,94 @@
+﻿@using Microsoft.Extensions.Localization
+@using TestBucket.Localization
+@attribute [Authorize(Roles = "ADMIN")]
+@inject TestEnvironmentController controller
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<TestEnvironmentStrings> testEnvLoc
+
+<EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>@testEnvLoc["add-new-test-environment"]</TitleContent>
+        <DialogContent>
+            <MudStack Style="min-width: var(--min-dialog-width)">
+
+                <DataAnnotationsValidator />
+                <ValidationSummary class="text-danger" role="alert" />
+
+                <Field Row>
+                    <FieldHeader>@loc["name"]</FieldHeader>
+                    <MudSpacer/>
+                    <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_model.Name"></MudTextField>
+                </Field>
+                <ValidationMessage For="() => _model.Name" />
+
+                <Field Row>
+                    <FieldHeader>@loc["description"]</FieldHeader>
+                    <MudSpacer />
+                    <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_model.Description"></MudTextField>
+                </Field>
+                <ValidationMessage For="() => _model.Description" />
+
+                <Field Row>
+                    <FieldHeader>@loc["project"]</FieldHeader>
+                    <MudSpacer />
+                    <ProjectDropDown EnableAdd="true" @bind-SelectedProject="@_model.Project" />
+                </Field>
+                <Field Row>
+                    <FieldHeader>@loc["team"]</FieldHeader>
+                    <MudSpacer />
+                    <TeamDropDown EnableAdd="true" @bind-SelectedTeam="@_model.Team" />
+                </Field>
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    [Parameter] public Team? Team { get; set; }
+    [Parameter] public TestProject? Project { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private InputModel _model = new();
+
+    private sealed class InputModel
+    {
+        [Required]
+        public string Name { get; set; } = "";
+
+        public string Description { get; set; } = "";
+
+        public Team? Team { get; set; }
+        public TestProject? Project { get; set; }
+    }
+
+    protected override void OnParametersSet()
+    {
+        _model.Project = Project;
+        _model.Team = Team;
+        base.OnParametersSet();
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+        var result = new TestEnvironment {
+                TestProjectId = _model.Project?.Id,
+                TeamId = _model.Team?.Id,
+                Name = _model.Name,
+                Description = _model.Description,
+            };
+        MudDialog.Close(result);
+    }
+}

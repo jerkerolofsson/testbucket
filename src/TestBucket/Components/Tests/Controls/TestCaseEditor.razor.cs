@@ -1,6 +1,9 @@
 
 using TestBucket.Domain.Teams.Models;
 using PSC.Blazor.Components.MarkdownEditor;
+using TestBucket.Domain.Automation.Services;
+using PSC.Blazor.Components.MarkdownEditor.Models;
+using TestBucket.Contracts.Testing.Models;
 
 namespace TestBucket.Components.Tests.Controls;
 public partial class TestCaseEditor
@@ -12,18 +15,30 @@ public partial class TestCaseEditor
 
     private bool _preview = true;
 
+    public string? Text
+    {
+        get
+        {
+            if(_preview && _previewText is not null)
+            {
+                return _previewText;
+            }
+            return _descriptionText;
+        }
+    }
+
     private void BeginEdit()
     {
         _preview = false;
     }
 
-    private async Task OnRunCodeClickedAsync(string code)
+    private async Task OnRunCodeClickedAsync(RunCodeRequest request)
     {
-        if (Test is null || Test.TestProjectId is null)
+        if (Test is null || Test.TestProjectId is null || request.Code is null || request.Language is null)
         {
             return;
         }
-        var run = await testRunCreation.CreateTestRunAsync(Test.Name, Test.TestProjectId.Value, [Test.Id]);
+        await testRunCreation.RunMarkdownCodeAsync(this.Test, request.Language, request.Code);
     }
     private async Task RunTestAsync()
     {
@@ -56,7 +71,8 @@ public partial class TestCaseEditor
     private IReadOnlyList<FieldDefinition> _fields = [];
 
     private MarkdownEditor? _editor;
-    private string? _boundDescription;
+    private string? _descriptionText;
+    private string? _previewText;
 
     private long? _projectId;
 
@@ -73,14 +89,24 @@ public partial class TestCaseEditor
     {
         if (Test is null)
         {
-            _boundDescription = null;
+            _previewText = null;
+            _descriptionText = null;
         }
         else
         {
-            if (Test.Description != _boundDescription)
+            if (Test.Description != _descriptionText)
             {
-                _boundDescription = null;
+                _previewText = null;
+                _descriptionText = null;
             }
+        }
+    }
+
+    private async Task CompilePreviewAsync()
+    {
+        if (Test is not null)
+        {
+            _previewText = await testCaseEditorController.CompilePreviewAsync(Test, _descriptionText);
         }
     }
 
@@ -89,13 +115,14 @@ public partial class TestCaseEditor
         if (Test is not null)
         {
             Test.Description ??= "";
-            if (_boundDescription != Test.Description)
+            if (_descriptionText != Test.Description)
             {
-                _boundDescription = Test.Description;
+                _descriptionText = Test.Description;
+                await CompilePreviewAsync();
 
                 if (_editor is not null)
                 {
-                    await _editor.SetValueAsync(_boundDescription);
+                    await _editor.SetValueAsync(Text!);
                 }
                 this.StateHasChanged();
             }
@@ -113,10 +140,16 @@ public partial class TestCaseEditor
 
     public async Task OnDescriptionChanged(string description)
     {
+        if(_preview)
+        {
+            return;
+        }
         if (Test is not null)
         {
-            _boundDescription = description;
+            _descriptionText = description;
             Test.Description = description;
+            await CompilePreviewAsync();
+
             await TestChanged.InvokeAsync(Test);
         }
     }

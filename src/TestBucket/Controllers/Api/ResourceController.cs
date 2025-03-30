@@ -16,6 +16,18 @@ public class ResourceController : ControllerBase
     }
 
     [Authorize("ApiKeyOrBearer")]
+    [HttpGet("/api/resources/_health")]
+    public IActionResult GetHealth()
+    {
+        var tenantId = User.Claims.Where(x => x.Type == "tenant").Select(x => x.Value).FirstOrDefault();
+        if (tenantId is null)
+        {
+            return Unauthorized();
+        }
+        return Ok();
+    }
+
+    [Authorize("ApiKeyOrBearer")]
     [HttpGet("/api/resources/{resourceId:long}")]
     public async Task<IActionResult> GetApiResourceAsync([FromRoute] long resourceId)
     {

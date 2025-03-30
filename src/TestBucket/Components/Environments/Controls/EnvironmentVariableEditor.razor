@@ -1,0 +1,42 @@
+﻿@using TestBucket.Components.Environments.ViewModels
+@inject IStringLocalizer<SharedStrings> loc
+<MudDataGrid Items="@Variables"
+    Dense="true"
+    Hover="true"
+    EditMode="DataGridEditMode.Cell"
+    ReadOnly="false"
+    T="EnvironmentVariable"
+    CommittedItemChanges="OnChanged"
+    SortMode="SortMode.None">
+
+    <ToolBarContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+            <MudText Typo="Typo.h1">@loc["variables"]</MudText>
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="Add"></MudIconButton>
+        </MudStack>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Key"/>
+        <PropertyColumn Property="x => x.Value" />
+    </Columns>
+
+</MudDataGrid>
+
+@code {
+    [Parameter] public List<EnvironmentVariable>? Variables { get; set; } = [];
+    [Parameter] public EventCallback<List<EnvironmentVariable>> VariablesChanged { get; set; }
+
+    public async Task OnChanged()
+    {
+        var variables = Variables ?? [];
+        await VariablesChanged.InvokeAsync(variables);
+    }
+
+    public async Task Add()
+    {
+        var variable = new EnvironmentVariable() { Key = "KEY", Value = "" };
+        var variables = Variables ?? [];
+        await VariablesChanged.InvokeAsync([..variables, variable]);
+    }
+}

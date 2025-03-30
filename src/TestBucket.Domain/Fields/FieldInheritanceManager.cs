@@ -21,9 +21,9 @@ namespace TestBucket.Domain.Fields
         /// </summary>
         /// <param name="testCase"></param>
         /// <returns></returns>
-        public async Task AssignInheritedFieldsAsync(TestCase testCase)
+        public Task AssignInheritedFieldsAsync(TestCase testCase)
         {
-
+            throw new NotImplementedException("todo");
         }
     }
 }

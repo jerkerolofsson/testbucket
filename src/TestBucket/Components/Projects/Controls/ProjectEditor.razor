@@ -1,10 +1,15 @@
-﻿@using TestBucket.Components.Teams
+﻿@using TestBucket.Components.Environments.Controls
+@using TestBucket.Components.Teams
 @using TestBucket.Components.Teams.Controls
 @using TestBucket.Components.Uploads.Controls
 @using TestBucket.Domain.Files.Models
 @using TestBucket.Domain.Teams.Models
-@inject ProjectController projectService
+@inject ProjectController projectController
+@inject TestEnvironmentController testEnvironmentController
 @inject TeamService teamService
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<TestEnvironmentStrings> testEnvLoc
+@inject IStringLocalizer<ProjectStrings> projectLoc
 
 @if (Project is not null)
 {
@@ -18,10 +23,20 @@
 
             <MudText Typo="Typo.h3">Name</MudText>
             <Field Row>
-                <FieldHeader>Name of the project</FieldHeader>
+                <FieldHeader>@projectLoc["name-of-the-project"]</FieldHeader>
                 <MudSpacer/>
                 <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Project.Name"></MudTextField>
             </Field>
+
+
+            <Field Row>
+                <FieldHeader>@testEnvLoc["default-environment"]</FieldHeader>
+                <MudSpacer/>
+                <EnvironmentDropDown Project="Project"
+                    Team="_team"
+                    SelectedEnvironment="@_selectedEnvironment" SelectedEnvironmentChanged="OnDefaultEnvironmentChanged" EnableAdd EnableSettings/>
+            </Field>
+
 
             <FieldLink Href="@projectFieldsUrl" HeaderText="Fields" Description="Manage custom fields and traits"/>
             <FieldLink Href="@projectIntegrationsUrl" HeaderText="Integrations" Description="Manage integrations with external systems" />
@@ -36,11 +51,10 @@
                         <MudImage Src="@Project.IconUrl" Width="64" Height="64"/>
                     }
                 </MudStack>
-                        
-                <UploadFile Accept=".png" FileUploaded="OnImageUploaded" />
+
+                <UploadFile Style="width: 100%" Accept=".png" FileUploaded="OnImageUploaded" />
             </Field>
 
-                    
             <MudText Typo="Typo.h3" Class="pa-3">Access</MudText>
             <Field Row>
                 <FieldHeader>Team</FieldHeader>
@@ -62,7 +76,7 @@
                 <MudText>@Project.Id</MudText>
             </Field>
         </MudStack>
-          
+
         <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Save</MudButton>
     </EditForm>
 }
@@ -71,12 +85,21 @@
     [Parameter] public TestProject? Project { get; set; }
 
     private Team? _team;
+    private TestEnvironment? _selectedEnvironment;
 
+    private async Task OnDefaultEnvironmentChanged(TestEnvironment testEnvironment)
+    {
+        _selectedEnvironment = testEnvironment;
+        if(Project is not null)
+        {
+            await testEnvironmentController.SetDefaultEnvironmentAsync(Project.Id, testEnvironment);
+        }
+    }
     private async Task OnValidSubmitAsync()
     {
         if (Project is not null)
         {
-            await projectService.SaveProjectAsync(Project);
+            await projectController.SaveProjectAsync(Project);
         }
     }
 
@@ -85,6 +108,11 @@
         if(Project?.TeamId is not null)
         {
             _team = await teamService.GetTeamByIdAsync(Project.TeamId.Value);
+        }
+
+        if(Project is not null)
+        {
+            _selectedEnvironment = await testEnvironmentController.GetDefaultEnvironmentAsync(Project.Id);
         }
     }
 

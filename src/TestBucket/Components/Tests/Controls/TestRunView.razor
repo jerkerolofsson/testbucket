@@ -2,7 +2,7 @@
 @using TestBucket.Contracts.Testing.Models
 @implements IDisposable
 @inject TestBrowser testBrowser
-@inject TestCaseEditorController testCaseEditorService
+@inject TestCaseEditorController testCaseEditorController
 @inject TestExecutionController testExecutionController
 
 <MudStack Spacing="0" Style="width: 100%">
@@ -25,7 +25,7 @@
                                     MinHeight="100%"
                                     AllowResize="false"
                                     Preview="true"
-                                    Value="@_selectedTestCaseRun.TestCase.Description"
+                                            Value="@_markdown"
                                     SpellChecker="false">
                             </MarkdownEditor>
 
@@ -38,7 +38,7 @@
                 </StartContent>
                 <EndContent>
                     <MudStack Style="width: 100%">
-                        <TestCaseRunGrid @ref="testCaseRunGrid" Run="@TestRun" @bind-SelectedTestCaseRun="_selectedTestCaseRun" />
+                        <TestCaseRunGrid @ref="testCaseRunGrid" Run="@TestRun" SelectedTestCaseRun="_selectedTestCaseRun" SelectedTestCaseRunChanged="OnSelectedTestCaseRunChanged" />
                     </MudStack>
                 </EndContent>
             </Splitter>

@@ -215,10 +215,20 @@ namespace PSC.Blazor.Components.MarkdownEditor
         public EventCallback<string> ValueChanged { get; set; }
 
         [Parameter]
-        public EventCallback<string> RunCode { get; set; }
+        public EventCallback<RunCodeRequest> RunCode { get; set; }
 
         #endregion Event Callback
         #region Parameters
+
+        /// <summary>
+        /// Adds a button to run code embedded in the markdown
+        /// </summary>
+        [Parameter] public bool EnableRunCode { get; set; }
+
+        /// <summary>
+        /// Adds a button to run code embedded in the markdown
+        /// </summary>
+        [Parameter] public bool EnableCopyCodeToClipboard { get; set; } = true;
 
         /// <summary>
         /// Gets or sets a value indicating whether the textarea where the component is hosted can be resizable.
@@ -520,9 +530,9 @@ namespace PSC.Blazor.Components.MarkdownEditor
         }
 
         [JSInvokable]
-        public async Task RunCodeInternal(string code)
+        public async Task RunCodeInternal(string language, string code)
         {
-            await RunCode.InvokeAsync(code);
+            await RunCode.InvokeAsync(new RunCodeRequest() { Code = code, Language= language});
         }
 
         /// <summary>
@@ -1108,6 +1118,8 @@ namespace PSC.Blazor.Components.MarkdownEditor
                     ImageUploadEndpoint,
                     ImagePathAbsolute,
                     ImageCSRFToken,
+                    EnableRunCode,
+                    EnableCopyCodeToClipboard,
                     ImageTexts = ImageTexts == null ? null : new
                     {
                         SbInit = ImageTexts.Init,

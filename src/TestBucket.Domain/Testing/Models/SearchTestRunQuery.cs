@@ -7,4 +7,5 @@ using System.Threading.Tasks;
 namespace TestBucket.Domain.Testing.Models;
 public class SearchTestRunQuery : SearchQuery
 {
+    public long? TestRunId { get; set; }
 }

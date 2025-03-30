@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Formats;
+
 namespace TestBucket.Contracts.Testing.Models;
 
 /// <summary>
@@ -12,12 +14,12 @@ namespace TestBucket.Contracts.Testing.Models;
 public class TestRunnerResult
 {
     /// <summary>
-    /// The test result
+    /// Serialized test result (e.g. a JUnitXml)
     /// </summary>
-    public required TestResult Result { get; set; }
+    public required string Result { get; set; }
 
     /// <summary>
-    /// Error message
+    /// Test result format (of Result)
     /// </summary>
-    public string? Message { get; set; }
+    public required TestResultFormat Format { get; set; }
 }

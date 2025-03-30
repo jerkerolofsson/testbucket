@@ -9,7 +9,7 @@ namespace TestBucket.Domain.Environments.Models
     /// <summary>
     /// An environment contains information about the system, expressed through variables
     /// </summary>
-    public class Environment : ProjectEntity
+    public class TestEnvironment : ProjectEntity
     {
         public long Id { get; set; }
 
@@ -22,5 +22,15 @@ namespace TestBucket.Domain.Environments.Models
         /// Markdown
         /// </summary>
         public string? Description { get; set; }
+
+        /// <summary>
+        /// Variables
+        /// </summary>
+        public Dictionary<string, string> Variables { get; set; } = [];
+
+        /// <summary>
+        /// Flag to indicate that the environment is the default environment
+        /// </summary>
+        public bool Default { get; set; }
     }
 }

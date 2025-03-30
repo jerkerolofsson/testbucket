@@ -1,23 +1,36 @@
 ﻿
 using TestBucket.Components.Tests.Dialogs;
+using TestBucket.Contracts.Testing.Models;
+using TestBucket.Domain.Automation.Services;
+using TestBucket.Domain.Environments;
+using TestBucket.Domain.Environments.Models;
 
 namespace TestBucket.Components.Tests.Services;
 
 internal class TestRunCreationController : TenantBaseService
 {
+    private readonly AppNavigationManager _appNavigationManager;
     private readonly TestCaseEditorController _testCaseEditor;
     private readonly ITestCaseRepository _testCaseRepository;
     private readonly IDialogService _dialogService;
+    private readonly IMarkdownAutomationRunner _markdownAutomationRunner;
+    private readonly ITestEnvironmentManager _testEnvironmentManager;
 
     public TestRunCreationController(
         AuthenticationStateProvider authenticationStateProvider,
         TestCaseEditorController testCaseEditor,
         IDialogService dialogService,
-        ITestCaseRepository testCaseRepository) : base(authenticationStateProvider)
+        ITestCaseRepository testCaseRepository,
+        IMarkdownAutomationRunner markdownAutomationRunner,
+        ITestEnvironmentManager testEnvironmentManager,
+        AppNavigationManager appNavigationManager) : base(authenticationStateProvider)
     {
         _testCaseEditor = testCaseEditor;
         _dialogService = dialogService;
         _testCaseRepository = testCaseRepository;
+        _markdownAutomationRunner = markdownAutomationRunner;
+        _testEnvironmentManager = testEnvironmentManager;
+        _appNavigationManager = appNavigationManager;
     }
 
     public async Task<TestRun?> CreateTestRunAsync(string name, long projectId, long[] testCaseIds)
@@ -42,6 +55,9 @@ internal class TestRunCreationController : TenantBaseService
     /// <returns></returns>
     public async Task<TestRun?> CreateTestRunAsync(string name, long projectId)
     {
+        // Default test environment
+        var principal = await GetUserClaimsPrincipalAsync();
+
         var parameters = new DialogParameters<CreateTestRunDialog>()
         {
             { x => x.Name, name },
@@ -104,5 +120,42 @@ internal class TestRunCreationController : TenantBaseService
 
         // Todo: Assign?
 
+    }
+
+    internal async Task RunMarkdownCodeAsync(TestCase test, string language, string code)
+    {
+        ArgumentNullException.ThrowIfNull(test.TestProjectId);
+
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        if(_markdownAutomationRunner.SupportsLanguage(language))
+        {
+            var run = await CreateTestRunAsync(test.Name, test.TestProjectId.Value, []);
+
+            if (run is not null)
+            {
+                ArgumentNullException.ThrowIfNull(run.TestProjectId);
+                ArgumentNullException.ThrowIfNull(run.TeamId);
+
+                var context = new TestExecutionContext
+                {
+                    ProjectId = run.TestProjectId.Value,
+                    TeamId = run.TeamId.Value,
+                    TestRunId = run.Id,
+                    TestCaseId = test.Id,
+                };
+                await _markdownAutomationRunner.RunAsync(principal, context, language, code);
+                _appNavigationManager.NavigateTo(run);
+            }
+        }
+        else
+        {
+            // Create an empty test and let the user run it
+            var run = await CreateTestRunAsync(test.Name, test.TestProjectId.Value, [test.Id]);
+            if (run is not null)
+            {
+                _appNavigationManager.NavigateTo(run);
+            }
+        }
     }
 }

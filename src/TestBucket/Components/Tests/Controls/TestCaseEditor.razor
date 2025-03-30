@@ -2,13 +2,15 @@
 @using TestBucket.Components.Shared
 @using TestBucket.Components.Shared.Splitter
 @using TestBucket.Domain.Requirements.Models
+@using TestBucket.Domain.Testing.Compiler
 @inject FieldController fieldService
 @inject TestCaseEditorController testCaseEditorController
 @inject NavigationManager navigationManager
 @inject TestRunCreationController testRunCreation
 @inject AppNavigationManager appNavigationManager
+@inject ITestCompiler compiler
 
-@if(Test is not null && _boundDescription is not null)
+@if(Test is not null && Text is not null)
 {
     <div class="container-fill-2-rows">
         <MudToolBar Class="tb-toolbar">
@@ -82,16 +84,18 @@
             <StartContent>
                 <MudStack Class="pa-2" Style="width: 100%; height: 100%">
                     <MarkdownEditor ShowToolbar="false"
-                    MaxHeight="100%"
-                    MinHeight="100%"
-                    Color="Color.Primary"
-                    AllowResize="false"
-                    @bind-Preview="_preview"
-                    Value="@_boundDescription"
-                    @ref=_editor
+                                    MaxHeight="100%"
+                                    MinHeight="100%"
+                                    EnableRunCode="true"
+                                    EnableCopyCodeToClipboard="true"
+                                    Color="Color.Primary"
+                                    AllowResize="false"
+                                    @bind-Preview="_preview"
+                                    Value="@Text"
+                                    @ref=_editor
                                     RunCode="OnRunCodeClickedAsync"
-                    ValueChanged="OnDescriptionChanged"
-                    SpellChecker="false">
+                                    ValueChanged="OnDescriptionChanged"
+                                    SpellChecker="false">
                     </MarkdownEditor>
 
                 </MudStack>

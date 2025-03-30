@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Teams.Models;
+﻿using TestBucket.Domain.Environments.Models;
+using TestBucket.Domain.Teams.Models;
 
 namespace TestBucket.Domain.Testing.Models;
 
@@ -34,5 +35,8 @@ public class TestRun : TestEntity
     /// External identifer, other system, or when importing
     /// </summary>
     public string? ExternalId { get; set; }
+
+    public long? TestEnvironmentId { get; set; }
+    public TestEnvironment? TestEnvironment { get; set; }
 
 }    

@@ -34,8 +34,6 @@
     [Parameter] public TestProject? Project{ get; set; }
     [Parameter] public SearchTestQuery? Query { get; set; }
 
-    private FieldDefinition? _fieldCategory;
-    private FieldDefinition? _fieldPriority;
     private IReadOnlyList<FieldDefinition> _fieldDefinitions = [];
     private List<FieldValue> _fields = [];
     private DateRange _dateRange { get; set; } = new();

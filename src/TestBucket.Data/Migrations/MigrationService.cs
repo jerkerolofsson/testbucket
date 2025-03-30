@@ -64,7 +64,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         }
         catch (Exception ex)
         {
-            activity?.RecordException(ex);
+            activity?.AddException(ex);
             throw;
         }
     }

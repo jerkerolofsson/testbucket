@@ -31,4 +31,14 @@ public class ImportHandlingOptions
     /// Special options for junit
     /// </summary>
     public JUnit.JUnitSerializerOptions Junit { get; set; } = new();
+    
+    /// <summary>
+    /// Test run, if null: a new one will be created
+    /// </summary>
+    public long? TestRunId { get; set; }
+
+    /// <summary>
+    /// If set, the results will be imported and linked to a single test case
+    /// </summary>
+    public long? TestCaseId { get; set; }
 }

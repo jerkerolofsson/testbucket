@@ -1,0 +1,76 @@
+﻿@inject TestEnvironmentController controller
+@inject IDialogService dialogService
+@inject IStringLocalizer<SharedStrings> loc
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="dropdown-container">
+    <MudSelect 
+    Variant="Variant.Outlined" 
+    Label="@loc["test-environment"]"
+    Value="@SelectedEnvironment" 
+    Text="@SelectedEnvironment?.Name" 
+    T="TestEnvironment" 
+    ValueChanged="OnSelectedEnvironmentChanged">
+        @foreach (var environment in _environments)
+        {
+            <MudSelectItem Value="@environment">
+                <MudStack Row="true" AlignItems="AlignItems.Center">
+                    <MudText>@environment.Name</MudText>
+                </MudStack>
+
+            </MudSelectItem>
+        }
+    </MudSelect>
+
+    <AuthorizeView Roles="ADMIN">
+        @if (SelectedEnvironment is not null && EnableSettings)
+        {
+            string projectAdminUrl = $"{SelectedEnvironment.TenantId}/Settings/ManageEnvironments/{SelectedEnvironment.Id}";
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Settings" Href="@projectAdminUrl"></MudIconButton>
+        }
+        @if(EnableAdd)
+        {
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"></MudIconButton>
+        }
+    </AuthorizeView>
+</MudStack>
+
+@code {
+    private IReadOnlyList<TestEnvironment> _environments = [];
+
+    [Parameter] public TestProject? Project { get; set; }
+    [Parameter] public Team? Team { get; set; }
+    [Parameter] public TestEnvironment? SelectedEnvironment { get; set; }
+    [Parameter] public EventCallback<TestEnvironment?> SelectedEnvironmentChanged { get; set; }
+
+    /// <summary>
+    /// Enables the settings button
+    /// </summary>
+    [Parameter] public bool EnableSettings { get; set; }
+
+    /// <summary>
+    /// Enables the add button
+    /// </summary>
+    [Parameter] public bool EnableAdd { get; set; }
+
+    private async Task OnSelectedEnvironmentChanged(TestEnvironment testEnvironment)
+    {
+        await SelectedEnvironmentChanged.InvokeAsync(testEnvironment);
+    }
+
+    private async Task AddAsync()
+    {
+        await controller.AddTestEnvironmentAsync(Team, Project);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Project is not null)
+        {
+            _environments = await controller.GetProjectTestEnvironmentsAsync(Project.Id);
+        }
+        else
+        {
+            _environments = await controller.GetTestEnvironmentsAsync();
+        }
+    }
+}

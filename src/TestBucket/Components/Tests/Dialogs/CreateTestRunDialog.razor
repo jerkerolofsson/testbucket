@@ -1,7 +1,10 @@
-﻿@attribute [Authorize(Roles = "ADMIN")]
+﻿@using TestBucket.Components.Environments.Controls
+@attribute [Authorize(Roles = "ADMIN")]
 @inject TestCaseEditorController testCaseEditorService
-@inject ProjectController projectService
+@inject ProjectController projectController
+@inject TestEnvironmentController testEnvironmentController
 @inject FieldController fieldController
+@inject IStringLocalizer<SharedStrings> loc
 
 <EditForm Model="@_run" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
@@ -10,9 +13,16 @@
             <MudStack Spacing="1">
                 @if (_run is not null)
                 {
-                    <Field>
+                    <Field Row>
                         <FieldHeader>Name</FieldHeader>
+                        <MudSpacer/>
                         <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_run.Name"></MudTextField>
+                    </Field>
+
+                    <Field Row>
+                        <FieldHeader>@loc["test-environment"]</FieldHeader>
+                        <MudSpacer />
+                        <EnvironmentDropDown Project="@_project" SelectedEnvironment="@_testEnvironment" SelectedEnvironmentChanged="OnTestEnvironmentChanged" />
                     </Field>
                 }
 
@@ -40,6 +50,9 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
+    private TestProject? _project;
+    private TestEnvironment? _testEnvironment;
+
     [Parameter] public long? TestProjectId { get; set; }
     [Parameter] public string? Name { get; set; }
 
@@ -47,14 +60,21 @@
 
     private long? _teamId;
 
+    private void OnTestEnvironmentChanged(TestEnvironment testEnvironment)
+    {
+        _testEnvironment = testEnvironment;
+        _run.TestEnvironmentId = testEnvironment?.Id;
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         _run.Name = Name ?? "New Run";
         if(TestProjectId is not null)
         {
-            var project = await projectService.GetProjectByIdAsync(TestProjectId.Value);
-            _run.TestProjectId = project?.Id;
-            _teamId = project?.TeamId;
+            _project = await projectController.GetProjectByIdAsync(TestProjectId.Value);
+            _testEnvironment = await testEnvironmentController.GetDefaultEnvironmentAsync(TestProjectId.Value);
+            _run.TestProjectId = _project?.Id;
+            _teamId = _project?.TeamId;
         }
     }
 
@@ -82,9 +102,10 @@
         }
         _run.TestProjectId = TestProjectId;
         _run.TeamId = _teamId;
+        _run.TestEnvironmentId = _testEnvironment?.Id;
         await testCaseEditorService.AddTestRunAsync(_run);
 
-        // Add fields
+        // Save fields for the run
         if(_fieldsEditor is not null)
         {
             if(_fieldsEditor.TestRunFields.Count > 0)

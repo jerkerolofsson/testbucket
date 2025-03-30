@@ -3,6 +3,8 @@ html, body {
     width: 100dvw;
     height: 100dvh;
 
+    --min-dialog-width: 35vw;
+
     scrollbar-color: var(--mud-palette-primary) transparent !important;
 
     --clr-passed: rgba(11, 186, 131, 1);
@@ -22,6 +24,8 @@ html, body {
     --mud-typography-h1-size: 22pt;
     --mud-typography-h1-weight: 800;
 
+    --mud-typography-subtitle1-size: 10pt;
+    --mud-typography-default-size: 10pt;
     --mud-typography-h2-size: 20pt;
     --mud-typography-h3-size: 18pt;
     --mud-typography-h4-size: 16pt;
@@ -115,7 +119,7 @@ p.mud-typography-subtitle1 {
 }
 
 .mud-input>input.mud-input-root-outlined, div.mud-input-slot.mud-input-root-outlined {
-    padding: 8.5px 4px;
+    padding: 8px 4px;
 }
 
 .mud-input-control > .mud-input-control-input-container > .mud-input-label-inputcontrol  {
@@ -124,14 +128,12 @@ p.mud-typography-subtitle1 {
 }
 
 .dropdown-container .mud-icon-button {
-    display: none;
-    opacity: 0;
-    transition: opacity linear 200ms;
+    transition: background linear 200ms;
+    background-color: transparent;
 }
 
 .dropdown-container:hover .mud-icon-button {
-    display: block;
-    opacity: 1;
+     background: var(--mud-palette-primary-hover);
 }
 
  .editor-toolbar button.active, .editor-toolbar button:hover {
@@ -244,6 +246,23 @@ p.mud-typography-subtitle1 {
      max-height: 100%;
      overflow: hidden;
  }
+
+ .tb-field > div[role="group"] .dropdown-container,
+ .tb-field > div[role="group"] .mud-select,
+ .tb-field > div[role="group"] .mud-input-control {
+     max-width: 220px;
+     min-width: 220px;
+ }
+
+ .tb-field > div[role="group"] .mud-input-control.mud-file-upload {
+    max-width: 100%;
+     min-width: 100%;
+ }
+
+  .tb-field > div[role="group"] .dropdown-container .mud-select {
+     max-width: unset;
+     min-width: unset;
+  }
  
  .container-fill-3-rows > div:nth-child(2) {
      overflow: auto;
@@ -388,31 +407,44 @@ p.mud-typography-subtitle1 {
     width: 100%;
 }
 
+.mud-markdown-editor-root textarea {
+    background: var(--mud-palette-background);
+    color: var(--mud-palette-background);
+}
+
+.hljs-punctuation {
+    color: white;
+}
+
     .EasyMDEContainer pre:has(code),
     .CodeMirror pre:has(code) {
         position: relative;
     }
 
+    .EasyMDEContainer code .tb-code-overlay > * {
+        background: rgba(0,0,0,0.25);
+        color: #ddd;
+        cursor: pointer;
+        border-radius: 4px;
+        width: 32px;
+        height: 32px;
+        display: grid;
+        place-items: center;
+    }
+
     .EasyMDEContainer code .tb-code-overlay {
         position: absolute;
-        right:0;
-        top:0;
+        right:4px;
+        top:4px;
         padding: 4px;
-        background: rgba(0,0,0,0.25);
-        color: white;
-        cursor: pointer;
         display: flex;
-        align-items: center;
-        height: 32px;
+        gap: 4px;
     }
 
-    .EasyMDEContainer code .tb-code-overlay:hover svg {
-        fill: var(--mud-palette-success);
+    .EasyMDEContainer code .tb-code-overlay > *:hover {
+        background: var(--mud-palette-primary-hover);
     }
 
-    .EasyMDEContainer code .tb-code-overlay svg {
-        fill: var(--mud-palette-text-primary);
-    }
 
 
 .EasyMDEContainer  {
@@ -493,8 +525,7 @@ p.mud-typography-subtitle1 {
 }
 
 .tb-field-header {
-    font-weight: bold; 
-    font-size: 12pt; 
+    font-size: 10pt; 
     margin: 0; 
     text-decoration: none;
     margin-right: 5px;

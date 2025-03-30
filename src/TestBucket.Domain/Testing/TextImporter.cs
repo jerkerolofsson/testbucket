@@ -69,28 +69,14 @@ internal class TextImporter : ITextTestResultsImporter
 
         if (run.Suites is not null)
         {
-            var now = DateTimeOffset.UtcNow;
-            var dateString = now.ToLocalTime().ToString("yyyy-MM-dd HHmmss");
-
             // Add test suite run
-            TestRun testRun = new TestRun()
-            {
-                Created = now,
-                Name = (run.Name ?? "Test Results") + " - " + dateString,
-                TeamId = teamId,
-                TenantId = tenantId,
-                TestProjectId = projectId,
-                ExternalId = run.ExternalId,
-                Description = "Imported",
-                SystemOut = run.SystemOut,
-            };
-            await _testRunManager.AddTestRunAsync(principal, testRun);
+            TestRun testRun = await ResolveTestRunAsync(principal, teamId, projectId, run, options);
 
             foreach (var runSuite in run.Suites)
             {
                 // Create a new test suite if it doesn't exist
                 var suiteName = runSuite.Name ?? run.Name;
-                if(options.CreateTestSuiteFromAssemblyName && runSuite.Assembly is not null)
+                if (options.CreateTestSuiteFromAssemblyName && runSuite.Assembly is not null)
                 {
                     suiteName = runSuite.Assembly;
                 }
@@ -99,8 +85,9 @@ internal class TextImporter : ITextTestResultsImporter
                 {
                     continue;
                 }
-                TestSuite? suite = await _testSuiteManager.GetTestSuiteByNameAsync(principal, teamId, projectId, suiteName);
-                suite ??= await _testSuiteManager.AddTestSuiteAsync(principal, teamId, projectId, suiteName);
+
+                // Get the test suite
+                TestSuite suite = await ResolveTestSuiteAsync(principal, teamId, projectId, options, suiteName);
 
                 // Get field definitions to imported entities
                 var testRunFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.TestRun);
@@ -117,11 +104,19 @@ internal class TextImporter : ITextTestResultsImporter
                     else
                     {
                         // Get or create the test case and add a test case run
-                        TestCase testCase = await GetOrCreateTestCaseAsync(tenantId, projectId, suite, test, options);
+                        TestCase? testCase = null;
+                        if(options.TestCaseId is not null)
+                        {
+                            testCase = await _testCaseRepository.GetTestCaseByIdAsync(tenantId, options.TestCaseId.Value);
+                        }
+                        if (testCase is null)
+                        {
+                            testCase = await GetOrCreateTestCaseAsync(tenantId, projectId, suite, test, options);
+                        }
                         TestCaseRun testCaseRun = await AddTestCaseRunAsync(principal, testRun, test, testCase);
 
                         // Add traits to the test case
-                        foreach(var traitName in test.Traits.Select(x=>x.Name))
+                        foreach (var traitName in test.Traits.Select(x => x.Name))
                         {
                             // Get all traits for the specific name
                             var traits = test.Traits.Where(x => x.Name == traitName).ToArray();
@@ -131,6 +126,63 @@ internal class TextImporter : ITextTestResultsImporter
                 }
             }
         }
+    }
+
+    private async Task<TestRun> ResolveTestRunAsync(ClaimsPrincipal principal, long? teamId, long? projectId, TestRunDto run, ImportHandlingOptions options)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+
+        var now = DateTimeOffset.UtcNow;
+        var dateString = now.ToLocalTime().ToString("yyyy-MM-dd HHmmss");
+
+        TestRun testRun;
+        if (options.TestRunId is null)
+        {
+            testRun = new TestRun()
+            {
+                Created = now,
+                Name = (run.Name ?? "Test Results") + " - " + dateString,
+                TeamId = teamId,
+                TenantId = tenantId,
+                TestProjectId = projectId,
+                ExternalId = run.ExternalId,
+                Description = "Imported",
+                SystemOut = run.SystemOut,
+            };
+            await _testRunManager.AddTestRunAsync(principal, testRun);
+        }
+        else
+        {
+            var existingRun = await _testRunManager.GetTestRunByIdAsync(principal, options.TestRunId.Value);
+            if (existingRun is null)
+            {
+                throw new InvalidOperationException("Test run not found!");
+            }
+            testRun = existingRun;
+        }
+
+        return testRun;
+    }
+
+    private async Task<TestSuite> ResolveTestSuiteAsync(ClaimsPrincipal principal, long? teamId, long? projectId, ImportHandlingOptions options, string suiteName)
+    {
+        TestSuite? suite = null;
+        if (options.TestCaseId is not null)
+        {
+            var testCase = await _testCaseRepository.GetTestCaseByIdAsync(principal.GetTenantIdOrThrow(), options.TestCaseId.Value);
+            if (testCase is not null)
+            {
+                suite = await _testSuiteManager.GetTestSuiteByIdAsync(principal, testCase.TestSuiteId);
+            }
+        }
+        if (suite is null)
+        {
+            // Get or create a tesat suite
+            suite = await _testSuiteManager.GetTestSuiteByNameAsync(principal, teamId, projectId, suiteName);
+            suite ??= await _testSuiteManager.AddTestSuiteAsync(principal, teamId, projectId, suiteName);
+        }
+
+        return suite;
     }
 
     private async Task UpsertTestCaseTraitsAsync(ClaimsPrincipal principal, IReadOnlyList<FieldDefinition> testCaseFieldDefinitions, TestCase testCase, TestTrait[] traits)
@@ -302,6 +354,7 @@ internal class TextImporter : ITextTestResultsImporter
             Method = test.Method,
             Module = test.Module,
             TenantId = tenantId,
+            TeamId = suite.TeamId,
             TestProjectId = projectId,
             TestSuiteId = suite.Id,
             TestSuiteFolderId = folderId,

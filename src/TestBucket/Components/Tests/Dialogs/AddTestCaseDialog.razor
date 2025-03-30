@@ -57,8 +57,6 @@
     [Parameter] public TestSuiteFolder? Folder { get; set; }
     [Parameter] public long? TestSuiteId { get; set; }
 
-    private long? _testSuiteId;
-
     private TestCase _testCase = new() { Name = "", TenantId = "" };
     private TestSuite? _testSuite;
     private TestSuiteFolder? _folder;

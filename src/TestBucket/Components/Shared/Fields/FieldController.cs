@@ -136,23 +136,15 @@ internal class FieldController : TenantBaseService
 
     public async Task DeleteAsync(FieldDefinition fieldDefinition)
     {
-        var tenantId = await GetTenantIdAsync();
-        if (tenantId != fieldDefinition.TenantId)
-        {
-            throw new InvalidOperationException("Tenant ID mismatch");
-        }
-        await _repository.DeleteAsync(fieldDefinition);
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _definitionManager.DeleteAsync(principal, fieldDefinition);
     }
 
     public async Task UpdateAsync(FieldDefinition fieldDefinition)
     {
-        var tenantId = await GetTenantIdAsync();
-        if(tenantId != fieldDefinition.TenantId)
-        {
-            throw new InvalidOperationException("Tenant ID mismatch");
-        }
+        var principal = await GetUserClaimsPrincipalAsync();
         RemoveOptionsIfNotSelection(fieldDefinition);
-        await _repository.UpdateAsync(fieldDefinition);
+        await _definitionManager.UpdateAsync(principal, fieldDefinition);
     }
     #endregion Field Definitions
 }

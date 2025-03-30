@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TestBucket.Domain.AI;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Testing
@@ -73,11 +74,11 @@ namespace TestBucket.Domain.Testing
         public async Task AddTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
         {
             testCase.TenantId = principal.GetTenantIdOrThrow();
-
             testCase.Modified = testCase.Created = DateTimeOffset.UtcNow;
             testCase.CreatedBy = testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
             testCase.ClassificationRequired = testCase.Description is not null && testCase.Description.Length > 0;
 
+            await AssignTeamIfNotAssignedAsync(testCase, testCase.TenantId);
             await CreateTestCaseFoldersAsync(principal, testCase);
 
             if (testCase.TeamId is null && testCase.TestProjectId is not null)
@@ -115,7 +116,10 @@ namespace TestBucket.Domain.Testing
 
         public async Task SaveTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
         {
+            var tenantId = principal.GetTenantIdOrThrow();
             principal.ThrowIfEntityTenantIsDifferent(testCase);
+
+            await AssignTeamIfNotAssignedAsync(testCase, tenantId);
 
             testCase.Modified = DateTimeOffset.UtcNow;
             testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
@@ -127,6 +131,15 @@ namespace TestBucket.Domain.Testing
             foreach (var observer in _testCaseObservers.ToList())
             {
                 await observer.OnTestSavedAsync(testCase);
+            }
+        }
+
+        private async Task AssignTeamIfNotAssignedAsync(TestCase testCase, string tenantId)
+        {
+            if (testCase.TeamId is null && testCase.TestProjectId is not null)
+            {
+                var project = await _projectRepo.GetProjectByIdAsync(tenantId, testCase.TestProjectId.Value);
+                testCase.TeamId = project?.TeamId;
             }
         }
     }

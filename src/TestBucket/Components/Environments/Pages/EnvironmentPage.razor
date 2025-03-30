@@ -1,0 +1,92 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/ManageEnvironments/{TestEnvironmentId:long}"
+@using TestBucket.Components.Environments.Controls
+@using TestBucket.Components.Environments.Services
+@using TestBucket.Components.Environments.ViewModels
+@using TestBucket.Domain.Environments.Models
+@layout SettingsLayout
+@inject TestEnvironmentController controller
+@inject IStringLocalizer<SharedStrings> loc
+@inject AppNavigationManager appNav
+
+<MudStack Class="container-settings-page">
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
+    @if(_selectedEnvironment is not null)
+    {
+        <Field Row>
+            <FieldHeader>@loc["name"]</FieldHeader>
+            <MudSpacer />
+            <MudTextField Variant="Variant.Outlined" T="string" Value="@_selectedEnvironment.Name" ValueChanged="OnNameChangedAsync"></MudTextField>
+        </Field>
+
+        <Field Row>
+            <FieldHeader>@loc["description"]</FieldHeader>
+            <MudSpacer />
+            <MudTextField Variant="Variant.Outlined" T="string" Value="@_selectedEnvironment.Description" ValueChanged="OnDescriptionChangedAsync"></MudTextField>
+        </Field>
+
+        <EnvironmentVariableEditor Variables="@_environmentVariables" VariablesChanged="OnEnvironmentVariablesChangedAsync" />
+    }
+
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [Parameter] public long TestEnvironmentId { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private TestEnvironment? _selectedEnvironment = null;
+    private List<EnvironmentVariable> _environmentVariables = [];
+    private List<BreadcrumbItem> _nav = [];
+
+    private async Task OnNameChangedAsync(string text)
+    {
+        if (_selectedEnvironment is not null)
+        {
+            _selectedEnvironment.Name = text;
+            await controller.UpdateTestEnvironmentAsync(_selectedEnvironment);
+        }
+    }
+    private async Task OnDescriptionChangedAsync(string text)
+    {
+        if (_selectedEnvironment is not null)
+        {
+            _selectedEnvironment.Description = text;
+            await controller.UpdateTestEnvironmentAsync(_selectedEnvironment);
+        }
+    }
+    private async Task OnEnvironmentVariablesChangedAsync(List<EnvironmentVariable> environmentVariables)
+    {
+        if(_selectedEnvironment is not null)
+        {
+            _environmentVariables = environmentVariables;
+
+            _selectedEnvironment.Variables = environmentVariables.ToDictionary();
+            await controller.UpdateTestEnvironmentAsync(_selectedEnvironment);
+        }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _selectedEnvironment = await controller.GetTestEnvironmentByIdAsync(TestEnvironmentId);
+        if(_selectedEnvironment is not null)
+        {
+            _environmentVariables = _selectedEnvironment.Variables.ToEnvironmentVariables();
+        }
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["test-environments"], appNav.GetTestEnvironmentSettingsUrl()));
+        if(_selectedEnvironment is not null)
+        {
+            _nav.Add(new BreadcrumbItem(_selectedEnvironment.Name, appNav.GetUrl(_selectedEnvironment)));
+        }
+    }
+}

@@ -1,12 +1,11 @@
-﻿@using TestBucket.Contracts
-@inject ProjectController projectService
+﻿@inject ProjectController projectService
 @inject IDialogService dialogService
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="dropdown-container">
     <MudSelect 
-    Style="min-width: 200px"
     Variant="Variant.Outlined" 
-    Label="Project" 
+    Label="@loc["project"]" 
     Value="@SelectedProject" Text="@SelectedProject?.Name" T="TestProject" ValueChanged="OnSelectedProjectChanged">
         @foreach(var project in _projects)
         {
@@ -25,12 +24,15 @@
     </MudSelect>
 
     <AuthorizeView Roles="ADMIN">
-        @if(SelectedProject is not null)
+        @if (SelectedProject is not null && EnableSettings)
         {
             string projectAdminUrl = $"{SelectedProject.TenantId}/Settings/Projects/{SelectedProject.Slug}";
             <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Settings" Href="@projectAdminUrl"></MudIconButton>
         }
-        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddProject"></MudIconButton>
+        @if(EnableAdd)
+        {
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddProject"></MudIconButton>
+        }
     </AuthorizeView>
 </MudStack>
 
@@ -40,6 +42,16 @@
     [Parameter] public Team? Team { get; set; }
     [Parameter] public TestProject? SelectedProject { get; set; }
     [Parameter] public EventCallback<TestProject?> SelectedProjectChanged { get; set; }
+
+    /// <summary>
+    /// Enables the settings button
+    /// </summary>
+    [Parameter] public bool EnableSettings { get; set; }
+
+    /// <summary>
+    /// Enables the add button
+    /// </summary>
+    [Parameter] public bool EnableAdd { get; set; }
 
     private async Task OnSelectedProjectChanged(TestProject testProject)
     {
@@ -52,7 +64,7 @@
         {
             { x=>x.Team, Team }
         };
-        var dialog = await dialogService.ShowAsync<AddProjectDialog>(null, parameters);
+        var dialog = await dialogService.ShowAsync<AddProjectDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if(result?.Data is TestProject testProject)
         {

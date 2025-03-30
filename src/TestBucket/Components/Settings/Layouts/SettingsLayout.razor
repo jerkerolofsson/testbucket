@@ -49,6 +49,7 @@
 
                     <MudItem Class="mt-5"/>
 
+                    <MudNavLink Icon="@TbIcons.Filled.Leaf" Href="@EnvironmentsUrl">Manage Environments</MudNavLink>
                     <MudNavLink Icon="@Icons.Material.Outlined.Devices" Href="@ProjectsUrl">Manage Projects</MudNavLink>
                     <MudNavLink Icon="@Icons.Material.Outlined.PeopleAlt" Href="@UsersUrl">Manage Users</MudNavLink>
                     <MudNavLink Icon="@Icons.Material.Outlined.Groups" Href="@TeamsUrl">Manage Teams</MudNavLink>
@@ -112,6 +113,7 @@
     private string AppearanceUrl => $"{TenantId}/Settings/Appearance";
     private string TenantsUrl => $"{TenantId}/Settings/Tenants";
     private string ProjectsUrl => $"{TenantId}/Settings/ManageProjects";
+    private string EnvironmentsUrl => $"{TenantId}/Settings/ManageEnvironments";
     private string TeamsUrl => $"{TenantId}/Settings/Teams";
     private string UsersUrl => $"{TenantId}/Settings/Users";
 }

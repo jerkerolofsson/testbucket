@@ -1,5 +1,6 @@
 ﻿using NGitLab.Models;
 
+using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.Testing.Models;
@@ -41,6 +42,22 @@ public class AppNavigationManager
     public AppNavigationManager(NavigationManager navigationManager)
     {
         _navigationManager = navigationManager;
+    }
+
+    public string GetSettingsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings";
+    }
+    public string GetManageProjectsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/ManageProjects";
+    }
+    public string GetTestEnvironmentSettingsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/ManageEnvironments";
     }
 
     public string GetImportSpecificationsUrl()
@@ -93,7 +110,16 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Settings/Projects/{project.Slug}";
     }
+    public string GetUrl(TestEnvironment testEnvironment)
+    {
+        return $"{GetTestEnvironmentSettingsUrl()}/{testEnvironment.Id}";
+    }
 
+    public void NavigateTo(TestEnvironment testEnvironment, bool forceLoad = false)
+    {
+        var url = GetUrl(testEnvironment);
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
     public void NavigateTo(Requirement requirement, bool forceLoad = false)
     {
         var url = GetUrl(requirement);

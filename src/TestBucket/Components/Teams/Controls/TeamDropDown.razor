@@ -6,14 +6,13 @@
 
 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="dropdown-container">
     <MudSelect 
-        Style="min-width: 200px"
-        Variant="Variant.Outlined" 
-        Label="Team"
-        Value="@SelectedTeam" 
-        Text="@SelectedTeam?.Name" 
-        T="Team" 
-        Clearable="true"
-        ValueChanged="OnSelectedTeamChanged">
+    Variant="Variant.Outlined" 
+    Label="Team"
+    Value="@SelectedTeam" 
+    Text="@SelectedTeam?.Name" 
+    T="Team" 
+    Clearable="true"
+    ValueChanged="OnSelectedTeamChanged">
         @foreach(var team in _teams)
         {
             <MudSelectItem Value="@team">
@@ -24,19 +23,22 @@
                     }
                     <MudText>@team.Name</MudText>
                 </MudStack>
-                
+
 
             </MudSelectItem>
         }
     </MudSelect>
 
     <AuthorizeView Roles="ADMIN">
-        @if (SelectedTeam is not null)
+        @if (SelectedTeam is not null && EnableSettings)
         {
             string projectAdminUrl = $"{SelectedTeam.TenantId}/Settings/Teams/{SelectedTeam.Slug}";
             <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Settings" Href="@projectAdminUrl"></MudIconButton>
         }
-        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddTeamAsync"></MudIconButton>
+        @if (EnableAdd)
+        { 
+            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddTeamAsync"></MudIconButton>
+        }
     </AuthorizeView>
 </MudStack>
 
@@ -45,6 +47,16 @@
 
     [Parameter] public Team? SelectedTeam { get; set; }
     [Parameter] public EventCallback<Team?> SelectedTeamChanged { get; set; }
+
+    /// <summary>
+    /// Enables the settings button
+    /// </summary>
+    [Parameter] public bool EnableSettings { get; set; }
+
+    /// <summary>
+    /// Enables the add button
+    /// </summary>
+    [Parameter] public bool EnableAdd { get; set; }
 
     private async Task OnSelectedTeamChanged(Team? team)
     {

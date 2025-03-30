@@ -156,18 +156,43 @@ function initialize(dotNetObjectRef, element, elementId, options) {
                         const language = hljs.getLanguage(lang) ? lang : 'plaintext';
                         let highlighted = hljs.highlight(code, { language }).value;
 
-                        const wrapperCssClass = `tb-code-overlay-${parseInt(Math.random()*100000)}`;
+                        console.log("highlight, options", options);
 
-                        highlighted += `<div class='tb-code-overlay ${wrapperCssClass}'><svg width="16" height="16" viewBox="0 0 24 24"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path d=\"M8 5v14l11-7z\"/></svg> ${language}</div>`;
+                        highlighted += `<div class='tb-code-overlay'>`;
+                        if (options.enableRunCode) {
+                            const wrapperCssClass = `tb-code-run-overlay-${parseInt(Math.random() * 100000)}`;
+                            highlighted += `<div class='tb-code-run-overlay ${wrapperCssClass}'>
+                                                <svg width="24" height="24" viewBox="0 0 24 24"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path fill=\"currentColor\" d=\"M8 5v14l11-7z\"/></svg>
+                                            </div>`;
 
-                        // Register click event, but no callback function when rendered
-                        window.setTimeout(() => {
-                            const selector = `.${wrapperCssClass}`;
-                            const buttonElement = document.querySelector(selector);
-                            buttonElement.addEventListener("click", () => {
-                                dotNetObjectRef.invokeMethodAsync("RunCodeInternal", code);
-                            });
-                        },100);
+                            // Register click event, but no callback function when rendered
+                            window.setTimeout(() => {
+                                const selector = `.${wrapperCssClass}`;
+                                const buttonElement = document.querySelector(selector);
+                                buttonElement.addEventListener("click", () => {
+                                    dotNetObjectRef.invokeMethodAsync("RunCodeInternal", lang, code);
+                                });
+                            }, 100);
+                        }
+
+                        if (options.enableCopyCodeToClipboard) {
+                            const wrapperCssClass = `tb-code-clipboard-overlay-${parseInt(Math.random() * 100000)}`;
+                            highlighted += `<div class='tb-code-clipboard-overlay ${wrapperCssClass}'>
+                                                <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M19.5 16.5L19.5 4.5L18.75 3.75H9L8.25 4.5L8.25 7.5L5.25 7.5L4.5 8.25V20.25L5.25 21H15L15.75 20.25V17.25H18.75L19.5 16.5ZM15.75 15.75L15.75 8.25L15 7.5L9.75 7.5V5.25L18 5.25V15.75H15.75ZM6 9L14.25 9L14.25 19.5L6 19.5L6 9Z" fill="currentColor"/>
+                                                </svg>
+                                            </div>`;
+
+                            // Register click event, but no callback function when rendered
+                            window.setTimeout(() => {
+                                const selector = `.${wrapperCssClass}`;
+                                const buttonElement = document.querySelector(selector);
+                                buttonElement.addEventListener("click", async () => {
+                                    await navigator.clipboard.writeText(code);
+                                });
+                            }, 100);
+                        }
+                        highlighted += `</div>`;
 
                         return highlighted;
                     }

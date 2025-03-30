@@ -15,7 +15,6 @@
 }
 @foreach (var field in Fields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
 {
-    int bp = 0;
     <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="async(f) => await FieldChanged.InvokeAsync(f)" />
 }
 

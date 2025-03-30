@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotHttpTest" Version="2.0.5" />
+    <PackageReference Include="DotHttpTest" Version="3.0.2" />
+      <PackageReference Include="FluentAssertions" Version="[7.2.0]" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.3" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>

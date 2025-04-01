@@ -212,13 +212,6 @@ public interface ITestCaseRepository
     Task AddTestRunAsync(TestRun testRun);
 
     /// <summary>
-    /// Adds a test case run
-    /// </summary>
-    /// <param name="testCaseRun"></param>
-    /// <returns></returns>
-    Task AddTestCaseRunAsync(TestCaseRun testCaseRun);
-
-    /// <summary>
     /// Searches for test runs
     /// </summary>
     /// <returns></returns>
@@ -230,6 +223,23 @@ public interface ITestCaseRepository
     /// <param name="id"></param>
     /// <returns></returns>
     Task DeleteTestRunByIdAsync(long id);
+
+    /// <summary>
+    /// Updates a test run / saves changes
+    /// </summary>
+    /// <param name="testRun"></param>
+    /// <returns></returns>
+    Task UpdateTestRunAsync(TestRun testRun);
+    #endregion Test Runs
+
+    #region Test Case Runs
+
+    /// <summary>
+    /// Adds a test case run
+    /// </summary>
+    /// <param name="testCaseRun"></param>
+    /// <returns></returns>
+    Task AddTestCaseRunAsync(TestCaseRun testCaseRun);
 
     /// <summary>
     /// Updates a test case run / saves changes

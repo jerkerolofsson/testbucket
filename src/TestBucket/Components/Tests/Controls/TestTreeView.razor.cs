@@ -1,19 +1,8 @@
 ﻿using MediatR;
 
-using Microsoft.AspNetCore.Components.Forms;
-
-using NGitLab.Models;
-
-using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Tree;
-using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Services;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Teams.Models;
-using TestBucket.Domain.Testing;
-using TestBucket.Domain.Testing.Models;
-
-using static MudBlazor.CategoryTypes;
 
 namespace TestBucket.Components.Tests.Controls;
 
@@ -288,6 +277,14 @@ public partial class TestTreeView
 
     private async Task ImportAsync()
     {
+        if(_team is null)
+        {
+            return;
+        }
+        if(_project is null)
+        {
+            return;
+        }
         await testBrowser.ImportAsync(_team, _project);
     }
 
@@ -517,7 +514,19 @@ public partial class TestTreeView
             this.StateHasChanged();
         });
     }
-
+    public async Task OnRunUpdatedAsync(TestRun testRun)
+    {
+        await InvokeAsync(() =>
+        {
+            var testrunsNode = FindTreeNode(x => x.TestRun?.Id == testRun.Id);
+            if (testrunsNode?.Value is not null)
+            {
+                testrunsNode.Text = testRun.Name;
+                testrunsNode.Value.TestRun = testRun;
+                this.StateHasChanged();
+            }
+        });
+    }
     public async Task OnRunCreatedAsync(TestRun testRun)
     {
         await InvokeAsync(() =>
@@ -635,6 +644,7 @@ public partial class TestTreeView
             {
                 _editItem.Text = text;
                 _editItem.Value.TestRun.Name = text;
+                await testCaseEditor.SaveTestRunAsync(_editItem.Value.TestRun);
                 //await testCaseEditor.saveTest(_editItem.Value.Folder);
             }
         }

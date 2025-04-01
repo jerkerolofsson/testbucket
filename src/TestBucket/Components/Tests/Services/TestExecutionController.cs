@@ -73,6 +73,14 @@ internal class TestExecutionController : TenantBaseService
         }
     }
 
+
+    public async Task SetTestCaseRunMessageAsync(TestCaseRun testCaseRun, string message)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        testCaseRun.Message = message;
+        await _editorController.SaveTestCaseRunAsync(testCaseRun);
+    }
+
     public async Task ShowTestCaseRunFailureDialogAsync(TestCaseRun testCaseRun)
     {
         var parameters = new DialogParameters<TestCaseRunFailureDialog>()

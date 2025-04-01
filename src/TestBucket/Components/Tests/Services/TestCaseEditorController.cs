@@ -222,6 +222,25 @@ internal class TestCaseEditorController : TenantBaseService
         await _testRunManager.SaveTestCaseRunAsync(principal, testCaseRun);
     }
 
+    internal async Task DuplicateTestAsync(TestCase testCase)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var copy = new TestCase
+        {
+            Name = testCase.Name + " copy",
+            Description = testCase.Description,
+
+            TestSuiteId = testCase.TestSuiteId,
+            TestProjectId = testCase.TestProjectId,
+            TestSuiteFolderId = testCase.TestSuiteFolderId,
+            TeamId = testCase.TeamId,
+        };
+
+        // todo: copy fields
+
+        await _testCaseManager.AddTestCaseAsync(principal, copy);
+    }
+
     internal async Task EditTestCaseAutomationLinkAsync(TestCase testCase)
     {
         var parameters = new DialogParameters<EditTestCaseAutomationLinkDialog>
@@ -242,6 +261,12 @@ internal class TestCaseEditorController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         await _testRunManager.AddTestRunAsync(principal, testRun);
+    }
+
+    internal async Task SaveTestRunAsync(TestRun testRun)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _testRunManager.SaveTestRunAsync(principal, testRun);
     }
 
     internal async Task<TestState> GetProjectFinalStateAsync(long testProjectId)

@@ -1,0 +1,82 @@
+﻿@using TestBucket.Components.Shared.Splitter
+@using TestBucket.Contracts.Testing.Models
+@implements IDisposable
+@inject TestBrowser testBrowser
+@inject TestCaseEditorController testCaseEditorController
+@inject TestExecutionController testExecutionController
+@inject IStringLocalizer<SharedStrings> loc
+
+<MudStack Spacing="0" Style="width: 100%">
+
+    <Splitter Style="height: 100%" Color="Color.Tertiary" Bordered="false" Dimension="70" EnableMargin="false">
+        <StartContent>
+
+            <Splitter Style="width: 100%; height: 100%" Color="Color.Tertiary" Bordered="false" Dimension="50" EnableMargin="false" Vertical>
+                <StartContent>
+
+                    <MudTabs Style="width: 100%" ActivePanelIndex="@_activePanelIndex" ActivePanelIndexChanged="OnActivePanelIndexChanged">
+                        <MudTabPanel Text="@loc["overview"]">
+                        </MudTabPanel>
+                        @if (_selectedTestCaseRun is not null)
+                        {
+                            if(_selectedTestCaseRun.Result != TestResult.NoRun)
+                            {
+                                <MudTabPanel Text="@_selectedTestCaseRun.TestCase?.Name">
+                                    <MudStack Style="width: 100%; overflow: auto; height: 100%" Class="pa-2">
+                                        <TestCaseRunReadOnlyView TestCaseRun="@_selectedTestCaseRun" />
+                                    </MudStack>
+                                </MudTabPanel>
+                            }
+                            else
+                            {
+                                <MudTabPanel Text="@_selectedTestCaseRun.TestCase?.Name">
+                                    <MudStack Style="width: 100%; overflow: auto; height: 100%" Class="pa-2">
+                                        <TestCaseRunEditor TestCaseRun="@_selectedTestCaseRun" />
+                                    </MudStack>
+                                </MudTabPanel>
+                            }
+                        }
+                    </MudTabs>
+
+                </StartContent>
+                <EndContent>
+                    <MudStack Style="width: 100%">
+                        <TestCaseRunGrid 
+                            @ref="testCaseRunGrid" 
+                            Run="@TestRun" 
+                            SelectedTestCaseRun="_selectedTestCaseRun" 
+                            SelectedTestCaseRunChanged="OnSelectedTestCaseRunChanged" />
+                    </MudStack>
+                </EndContent>
+            </Splitter>
+        </StartContent>
+        <EndContent>
+            <MudStack Class="pa-2" Style="width: 100%">
+                @if (_selectedTestCaseRun is not null)
+                {
+                    <MudStack Class="pa-2" Style="width: 100%">
+                        @* <div style="max-width: 100%; white-space: nowrap; text-overflow: ellipsis; height: auto"> *@
+                        @*     <MudText Typo="Typo.h3">@_selectedTestCaseRun.Name</MudText> *@
+                        @* </div> *@
+
+                        <MarkdownEditor ShowToolbar="false"
+                                        MaxHeight="100%"
+                                        MinHeight="100%"
+                                        AllowResize="false"
+                                        Preview="true"
+                                        Value="@_markdown"
+                                        SpellChecker="false">
+                        </MarkdownEditor>
+                        <TestRunStatePicker State="@_selectedTestCaseRun.State" StateChanged="OnTestCaseRunStateChanged" />
+
+                        <FieldsEditor TestCaseRun="@_selectedTestCaseRun" />
+                    </MudStack>
+                }
+            </MudStack>
+        </EndContent>
+    </Splitter>
+
+
+</MudStack>
+@code {
+}

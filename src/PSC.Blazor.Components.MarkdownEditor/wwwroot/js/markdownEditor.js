@@ -1,6 +1,6 @@
 ﻿const _instances = [];
 
-function initialize(dotNetObjectRef, element, elementId, options) {
+function initialize(dotNetObjectRef, element, elementId, previewElementId, options) {
     const instances = _instances;
 
     if (!options.toolbar) {
@@ -246,7 +246,6 @@ function initialize(dotNetObjectRef, element, elementId, options) {
 
         // Blazor will disconnect if too large payload, so we fragment it
         const maxSize = 20000;
-
         
         try {
             if (text.length < maxSize || false) {
@@ -339,6 +338,7 @@ function initialize(dotNetObjectRef, element, elementId, options) {
     instances[elementId] = {
         dotNetObjectRef: dotNetObjectRef,
         elementId: elementId,
+        previewElementId: previewElementId,
         editor: easyMDE,
         imageUploadNotifier: imageUploadNotifier
     };
@@ -346,16 +346,10 @@ function initialize(dotNetObjectRef, element, elementId, options) {
     //console.log("easyMDE", easyMDE);
 
     if (options.preview === true) {
-        // Set initial state to preview if requested
-        const isActive = easyMDE.isPreviewActive()
-        if (!isActive) {
-            easyMDE.togglePreview();
-        }
+        setPreview(elementId, true);
+    } else {
+        setPreview(elementId, false);
     }
-
-    // update the first time
-    //var text = easyMDE.value();
-    //dotNetObjectRef.invokeMethodAsync("UpdateInternalValue", text, easyMDE.options.previewRender(text));
 }
 
 function allowResize(id) {
@@ -677,11 +671,33 @@ function setPreview(elementId, wantedState) {
     const instance = _instances[elementId];
     if (instance && instance.editor) {
 
-        const isActive = instance.editor.isPreviewActive()
+        //const isActive = instance.editor.isPreviewActive();
 
-        if (isActive != wantedState) {
-            instance.editor.togglePreview();
+        if (instance.previewElementId) {
+            const rootElement = document.querySelector(`#root-${instance.elementId} > .EasyMDEContainer`);
+            const previewElement = document.getElementById(instance.previewElementId);
+            if (wantedState) {
+                const previewHtml = instance.editor.options.previewRender(instance.editor.value());
+
+                console.log(">> Rendered preview", previewHtml);
+                instance.previewEnabled = true;
+
+                previewElement.innerHTML = previewHtml;
+                previewElement.style.display = "block";
+                rootElement.style.display = "none";
+            } else {
+                console.log(">> Disabled preview", instance.editor.value());
+                previewElement.innerHTML = "";
+                previewElement.style.display = "none";
+                rootElement.style.display = "grid";
+                instance.previewEnabled = false;
+                setValue(elementId, instance.editor.value());
+            }
         }
+
+    //    if (isActive != wantedState) {
+    //        instance.editor.togglePreview();
+    //    }
     }
 }
 
@@ -698,14 +714,19 @@ function destroy(element, elementId) {
 }
 
 function setValue(elementId, value) {
-    console.log("SetValue called");
     const instance = _instances[elementId];
 
     if (instance) {
-        console.log("SetValue changes value");
         instance.isChangingValue = true;
         instance.editor.value(value);
         instance.isChangingValue = false;
+
+        if (instance.previewEnabled) {
+            console.log("SetValue in preview");
+            setPreview(elementId, true);
+        } else {
+            console.log("SetValue, not in preview");
+        }
     }
 }
 function appendValue(elementId, value) {
@@ -716,6 +737,10 @@ function appendValue(elementId, value) {
         instance.isChangingValue = true;
         instance.editor.value(value);
         instance.isChangingValue = false;
+
+        if (instance.previewEnabled) {
+            setPreview(elementId);
+        }
     }
 }
 

@@ -55,6 +55,16 @@ public class TestCase : TestEntity
     public ScriptType ScriptType { get; set; } = ScriptType.ScriptedDefault;
 
     /// <summary>
+    /// Defines how the test should be executed
+    /// </summary>
+    public TestExecutionType ExecutionType { get; set; }
+
+    /// <summary>
+    /// Defines the runner language that is needed
+    /// </summary>
+    public string? RunnerLanguage { get; set; }
+
+    /// <summary>
     /// For automation, the assembly implementing the test
     /// </summary>
     public string? AutomationAssembly { get; set; }
@@ -84,6 +94,11 @@ public class TestCase : TestEntity
     /// 
     /// </summary>
     public bool ClassificationRequired { get; set; }
+
+    /// <summary>
+    /// Template flag
+    /// </summary>
+    public bool IsTemplate { get; set; }
 
     // Navigation
     public TestSuiteFolder? TestSuiteFolder { get; set; }

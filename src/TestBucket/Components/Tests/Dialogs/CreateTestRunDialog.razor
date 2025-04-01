@@ -11,6 +11,10 @@
         <TitleContent>Create new test run</TitleContent>
         <DialogContent>
             <MudStack Spacing="1">
+                @if (_loading)
+                {
+                    <MudProgressLinear Indeterminate Color="Color.Secondary"/>
+                }
                 @if (_run is not null)
                 {
                     <Field Row>
@@ -37,7 +41,10 @@
         </DialogContent>
 
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            @if (!_loading)
+            {
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            }
             <MudButton OnClick="Close">Cancel</MudButton>
         </DialogActions>
     </MudDialog>
@@ -59,6 +66,7 @@
     private TestRun _run = new() { Name = "", TenantId = "", Created = DateTimeOffset.UtcNow };
 
     private long? _teamId;
+    private bool _loading = true;
 
     private void OnTestEnvironmentChanged(TestEnvironment testEnvironment)
     {
@@ -76,6 +84,7 @@
             _run.TestProjectId = _project?.Id;
             _teamId = _project?.TeamId;
         }
+        _loading = false;
     }
 
     private void Close()

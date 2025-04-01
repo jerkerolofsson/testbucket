@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Text;
-using System.Threading.Tasks;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace TestBucket.Formats.Ctrf.Models
 {
 
-    public class CtrfReport<TEnvironmentExtra, TTestsExtra> 
+    public class CtrfReport<TResultsExtra, TEnvironmentExtra, TTestsExtra>
+        where TResultsExtra : ResultsExtra
         where TEnvironmentExtra : EnvironmentExtra 
         where TTestsExtra : TestExtra
     {
@@ -25,10 +21,11 @@ namespace TestBucket.Formats.Ctrf.Models
         /// Test results
         /// </summary>
         [JsonPropertyName("results")]
-        public required CtrfResults<TEnvironmentExtra, TTestsExtra> Results { get; set; }
+        public required CtrfResults<TResultsExtra, TEnvironmentExtra, TTestsExtra> Results { get; set; }
     }
 
-    public class CtrfResults<TEnvironmentExtra, TTestsExtra>
+    public class CtrfResults<TResultsExtra,TEnvironmentExtra, TTestsExtra>
+        where TResultsExtra : ResultsExtra
         where TEnvironmentExtra : EnvironmentExtra
         where TTestsExtra : TestExtra
     {
@@ -43,6 +40,10 @@ namespace TestBucket.Formats.Ctrf.Models
         
         [JsonPropertyName("environment")] 
         public CtrfEnvironment<TEnvironmentExtra>? Environment { get; set; }
+
+        [JsonPropertyName("extra")]
+        public TResultsExtra? Extra { get; set; }
+
     }
 
     public class CtrfEnvironment<TEnvironmentExtra> where TEnvironmentExtra : EnvironmentExtra
@@ -173,7 +174,8 @@ namespace TestBucket.Formats.Ctrf.Models
         /// <summary>
         /// Duration, in milliseconds
         /// </summary>
-        [JsonPropertyName("duration")] public required int Duration { get; set; }
+        [JsonPropertyName("duration")] public required long Duration { get; set; }
+
         /// <summary>
         /// Start timestamps, millisecond unix time
         /// </summary>
@@ -191,7 +193,10 @@ namespace TestBucket.Formats.Ctrf.Models
 
         [JsonPropertyName("rawStatus")] 
         public string? RawStatus { get; set; }
-        
+
+        [JsonPropertyName("line")]
+        public int? Line { get; set; }
+
         [JsonPropertyName("tags")] 
         public string[]? Tags { get; set; }
 
@@ -235,6 +240,9 @@ namespace TestBucket.Formats.Ctrf.Models
     {
     }
 
+    public class SummaryExtra : Extra { }
+    public class ToolExtra : Extra { }
+    public class ResultsExtra : Extra { }
     public class EnvironmentExtra : Extra { }
     public class TestExtra : Extra { }
 

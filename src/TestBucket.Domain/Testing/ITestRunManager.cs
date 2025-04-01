@@ -34,6 +34,14 @@ public interface ITestRunManager
     Task AddTestRunAsync(ClaimsPrincipal principal, TestRun testRun);
 
     /// <summary>
+    /// Saves changes to a test run
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testRun"></param>
+    /// <returns></returns>
+    Task SaveTestRunAsync(ClaimsPrincipal principal, TestRun testRun);
+
+    /// <summary>
     /// Deletes a run and all references items such as test case runs
     /// </summary>
     /// <param name="principal"></param>

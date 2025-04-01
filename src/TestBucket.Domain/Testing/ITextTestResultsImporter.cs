@@ -14,5 +14,5 @@ public interface ITextTestResultsImporter
     /// <param name="format"></param>
     /// <param name="text"></param>
     /// <returns></returns>
-    Task ImportTextAsync(ClaimsPrincipal principal, long? teamId, long? projectId, TestResultFormat format, string text, ImportHandlingOptions options);
+    Task ImportTextAsync(ClaimsPrincipal principal, long teamId, long projectId, TestResultFormat format, string text, ImportHandlingOptions options);
 }

@@ -164,6 +164,23 @@ internal class TestRunManager : ITestRunManager
         }
     }
 
+
+    /// <inheritdoc/>
+    public async Task SaveTestRunAsync(ClaimsPrincipal principal, TestRun testRun)
+    {
+        principal.ThrowIfEntityTenantIsDifferent(testRun);
+
+        testRun.Modified = DateTimeOffset.UtcNow;
+        testRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
+
+        await _testCaseRepo.UpdateTestRunAsync(testRun);
+
+        foreach (var observer in _testRunObservers)
+        {
+            await observer.OnRunUpdatedAsync(testRun);
+        }
+    }
+
     /// <inheritdoc/>
     public async Task SaveTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
     {

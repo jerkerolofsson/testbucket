@@ -101,10 +101,12 @@
         /// <param name="elementId">The element identifier.</param>
         /// <param name="options">The options.</param>
         /// <returns></returns>
-        public async ValueTask Initialize(DotNetObjectReference<MarkdownEditor> dotNetObjectRef, ElementReference elementRef,
-            string elementId, object options)
+        public async ValueTask Initialize(
+            DotNetObjectReference<MarkdownEditor> dotNetObjectRef, 
+            ElementReference elementRef,
+            string elementId, string previewElementId, object options)
         {
-            await jsRuntime.InvokeVoidAsync("initialize", dotNetObjectRef, elementRef, elementId, options);
+            await jsRuntime.InvokeVoidAsync("initialize", dotNetObjectRef, elementRef, elementId, previewElementId, options);
         }
         /// <summary>
         /// Notifies the image upload error.

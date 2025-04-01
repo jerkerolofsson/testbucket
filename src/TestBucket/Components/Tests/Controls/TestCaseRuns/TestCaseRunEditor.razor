@@ -1,0 +1,46 @@
+﻿@using TestBucket.Contracts.Testing.Models
+@inject IStringLocalizer<SharedStrings> loc
+@inject TestExecutionController controller
+
+@if(TestCaseRun is not null)
+{
+    <TestResultQuickPicker Result="@TestCaseRun.Result" ResultChanged="OnResultChanged"/>
+
+    <Field>
+        <FieldHeader>@loc["message"]</FieldHeader>
+        <MarkdownEditor ShowToolbar="false"
+            Value="@TestCaseRun.Message" ValueChanged="OnMessageChanged" />
+
+    </Field>
+
+    <TestResultPicker 
+        ResultChanged="OnResultChanged"
+        TestCaseRun="@TestCaseRun" TestProjectId="@TestCaseRun.TestProjectId"></TestResultPicker>
+
+    <Field>
+        <FieldHeader>@loc["attachments"]</FieldHeader>
+        <AttachmentGrid TestCaseRunId="@TestCaseRun.Id" Style="width: 100%" AllowUpload />
+        <CaptureScreenShotButton TestCaseRunId="@TestCaseRun.Id" />
+    </Field>
+}
+
+@code {
+    [Parameter] public TestCaseRun? TestCaseRun { get; set; }
+    private async Task OnResultChanged(TestResult result)
+    {
+        if(TestCaseRun is null)
+        {
+            return;
+        }
+        await controller.SetTestCaseRunResultAsync(TestCaseRun, result);
+    }
+
+    private async Task OnMessageChanged(string message)
+    {
+        if (TestCaseRun is null)
+        {
+            return;
+        }
+        await controller.SetTestCaseRunMessageAsync(TestCaseRun, message);
+    }
+}

@@ -9,6 +9,7 @@ using TestBucket.Domain.AI;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Tenants.Models;
+using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Testing
@@ -16,13 +17,16 @@ namespace TestBucket.Domain.Testing
     public class TestCaseManager : ITestCaseManager
     {
         private readonly List<ITestCaseObserver> _testCaseObservers = new();
+        private readonly IReadOnlyList<IMarkdownDetector> _markdownDetectors;
         private readonly ITestCaseRepository _testCaseRepo;
         private readonly IProjectRepository _projectRepo;
         private readonly ITestSuiteManager _testSuiteManager;
 
         public TestCaseManager(
+            IEnumerable<IMarkdownDetector> markdownDetectors,
             ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo)
         {
+            _markdownDetectors = markdownDetectors.ToList();
             _testCaseRepo = testCaseRepo;
             _testSuiteManager = testSuiteManager;
             _projectRepo = projectRepo;
@@ -86,7 +90,7 @@ namespace TestBucket.Domain.Testing
                 var project = await _projectRepo.GetProjectByIdAsync(testCase.TenantId, testCase.TestProjectId.Value);
                 testCase.TeamId = project?.TeamId;
             }
-
+            await DetectThingsWithMarkdownDetectorsAsync(principal, testCase);
             await _testCaseRepo.AddTestCaseAsync(testCase);
 
             // Notify observers
@@ -119,6 +123,8 @@ namespace TestBucket.Domain.Testing
             var tenantId = principal.GetTenantIdOrThrow();
             principal.ThrowIfEntityTenantIsDifferent(testCase);
 
+            await DetectThingsWithMarkdownDetectorsAsync(principal, testCase);
+
             await AssignTeamIfNotAssignedAsync(testCase, tenantId);
 
             testCase.Modified = DateTimeOffset.UtcNow;
@@ -131,6 +137,14 @@ namespace TestBucket.Domain.Testing
             foreach (var observer in _testCaseObservers.ToList())
             {
                 await observer.OnTestSavedAsync(testCase);
+            }
+        }
+
+        private async Task DetectThingsWithMarkdownDetectorsAsync(ClaimsPrincipal principal, TestCase testCase)
+        {
+            foreach (var detector in _markdownDetectors)
+            {
+                await detector.ProcessAsync(principal, testCase);
             }
         }
 

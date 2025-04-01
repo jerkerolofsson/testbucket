@@ -1,0 +1,41 @@
+﻿@inject IStringLocalizer<SharedStrings> loc
+@using TestBucket.Contracts.Testing.Models
+@using TestBucket.Domain.States
+@inject TestExecutionController controller
+
+<Field Row>
+    <FieldHeader>@loc["test-result"]</FieldHeader>
+    <MudSpacer/>
+    <MudSelect Variant="Variant.Outlined" T="TestResult" Value="@Result" ValueChanged="OnResultChanged">
+        @foreach (var result in _results)
+        {
+            <MudSelectItem Value="@result">
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+                    <div class="result-color-highlight @(result.ToString().ToLower())"/>
+                    @GetLocalizedResult(result)
+                </MudStack>
+            </MudSelectItem>
+        }
+    </MudSelect>
+</Field>
+
+
+@code {
+    [Parameter] public TestCaseRun? TestCaseRun { get; set; }
+    [Parameter] public long? TestProjectId { get; set; }
+    [Parameter] public TestResult Result { get; set; } = TestResult.NoRun;
+    [Parameter] public EventCallback<TestResult> ResultChanged { get; set; }
+
+    private TestResult[] _results = [TestResult.Passed, TestResult.Failed, TestResult.Blocked, TestResult.Skipped, TestResult.NoRun];
+
+    public string GetLocalizedResult(TestResult res)
+    {
+        var key = "result-" + res.ToString().ToLower();
+        return loc[key];
+    }
+
+    private async Task OnResultChanged(TestResult result)
+    {
+        await ResultChanged.InvokeAsync(result);
+    }
+}

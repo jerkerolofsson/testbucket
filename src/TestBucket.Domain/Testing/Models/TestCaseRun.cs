@@ -69,4 +69,17 @@ public class TestCaseRun : TestEntity
     public virtual IEnumerable<TestCaseRunField>? TestCaseRunFields { get; set; }
     public TestRun? TestRun { get; set; }
     public TestCase? TestCase { get; set; }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
+    public override bool Equals(object? obj)
+    {
+        if(obj is TestCaseRun other)
+        {
+            return Id == other.Id;
+        }
+        return base.Equals(obj);
+    }
 }

@@ -987,8 +987,14 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<int>("ExecutionType")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ExternalId")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsTemplate")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Method")
                         .HasColumnType("text");
@@ -1012,6 +1018,9 @@ namespace TestBucket.Data.Migrations
 
                     b.PrimitiveCollection<long[]>("PathIds")
                         .HasColumnType("bigint[]");
+
+                    b.Property<string>("RunnerLanguage")
+                        .HasColumnType("text");
 
                     b.Property<int>("ScriptType")
                         .HasColumnType("integer");

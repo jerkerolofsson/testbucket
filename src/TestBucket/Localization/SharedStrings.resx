@@ -144,4 +144,43 @@
   <data name="test-environments" xml:space="preserve">
     <value>Test Environments</value>
   </data>
+  <data name="attachments" xml:space="preserve">
+    <value>Attachments</value>
+  </data>
+  <data name="callstack" xml:space="preserve">
+    <value>Call Stack</value>
+  </data>
+  <data name="message" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="test-result" xml:space="preserve">
+    <value>Test Result</value>
+  </data>
+  <data name="result-passed" xml:space="preserve">
+    <value>Passed</value>
+  </data>
+  <data name="result-norun" xml:space="preserve">
+    <value>Not Executed</value>
+  </data>
+  <data name="result-blocked" xml:space="preserve">
+    <value>Blocked</value>
+  </data>
+  <data name="result-skipped" xml:space="preserve">
+    <value>Skipped</value>
+  </data>
+  <data name="result-failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="unassigned" xml:space="preserve">
+    <value>Unassigned</value>
+  </data>
+  <data name="assigned-to-me" xml:space="preserve">
+    <value>Assigned to me</value>
+  </data>
+  <data name="run-test-again" xml:space="preserve">
+    <value>Run again</value>
+  </data>
+  <data name="assigned-to" xml:space="preserve">
+    <value>Assigned to</value>
+  </data>
 </root>

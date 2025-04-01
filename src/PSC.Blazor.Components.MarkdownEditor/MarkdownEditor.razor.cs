@@ -46,6 +46,8 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// The element identifier.
         /// </value>
         private string ElementId { get; set; } = $"markdown-{Guid.NewGuid()}";
+        private string RootElementId => "root-" + ElementId;
+        private string PreviewElementId { get; set; } = $"markdown-preview-{Guid.NewGuid()}";
 
         /// <summary>
         /// Gets or sets the element reference.
@@ -1066,7 +1068,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
                 }
 
 
-                await JSModule.Initialize(dotNetObjectRef, ElementRef, ElementId, new
+                await JSModule.Initialize(dotNetObjectRef, ElementRef, ElementId, PreviewElementId, new
                 {
                     AutoSave = new
                     {

@@ -16,6 +16,7 @@ using TestBucket.Domain.Settings.Server;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Compiler;
+using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Services.Classification;
 using TestBucket.Domain.Testing.Settings;
 
@@ -29,6 +30,8 @@ public static class DomainServiceExtensions
             o.RegisterServicesFromAssembly(typeof(DomainServiceExtensions).Assembly);
         });
 
+        services.AddScoped<IMarkdownDetector,TemplateDetector>();
+        services.AddScoped<IMarkdownDetector,HybridDetector>();
         services.AddScoped<ITestCompiler, TestCompiler>();
         services.AddScoped<IStateService, StateService>();
         services.AddScoped<ITextTestResultsImporter, TextImporter>();

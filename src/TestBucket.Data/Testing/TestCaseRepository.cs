@@ -405,6 +405,16 @@ internal class TestCaseRepository : ITestCaseRepository
     }
 
     /// <inheritdoc/>
+    public async Task UpdateTestRunAsync(TestRun testRun)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        dbContext.TestRuns.Update(testRun);
+        await dbContext.SaveChangesAsync();
+    }
+
+
+    /// <inheritdoc/>
     public async Task AddTestRunAsync(TestRun testRun)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();

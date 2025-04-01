@@ -1,6 +1,7 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.ComponentModel;
+using System.Text.RegularExpressions;
 
-using TestBucket.Formats.Abstractions;
+using TestBucket.Contracts.Abstractions;
 using TestBucket.Formats.Shared;
 using TestBucket.Traits.Core;
 
@@ -16,8 +17,6 @@ namespace TestBucket.Formats.JUnit
             TraitType.TestId,
             TraitType.Name,
             TraitType.TestResult,
-            TraitType.SystemOut,
-            TraitType.SystemErr,
             TraitType.Line,
             TraitType.Duration,
             TraitType.ClassName,
@@ -147,6 +146,7 @@ namespace TestBucket.Formats.JUnit
                 var error = resultNode.Element("error");
                 var crashed = resultNode.Element("crashed");
                 var assert = resultNode.Element("assert");
+                var passed = resultNode.Element("passed");
 
                 if (skipped is not null)
                 {
@@ -173,12 +173,11 @@ namespace TestBucket.Formats.JUnit
                     testCaseRun.Result = TestResult.Assert;
                 }
 
-                var failureElement = failure ?? blocked ?? skipped ?? error;
+                var failureElement = failure ?? blocked ?? skipped ?? error ?? passed ?? crashed;
                 if (failureElement is not null)
                 {
                     testCaseRun.FailureType = failureElement.Attribute("type")?.Value;
                     testCaseRun.Message = failureElement.Attribute("message")?.Value;
-
                     testCaseRun.CallStack = failureElement.Value;
                 }
             }
@@ -272,7 +271,7 @@ namespace TestBucket.Formats.JUnit
                 foreach (var result in testSuite.Tests)
                 {
                     var resultElement = new XElement("testcase");
-                    WriteProperties(result, resultElement);
+                    WriteAttachments(result, resultElement);
                     testSuiteElement.Add(resultElement);
 
                     if (result.Name is not null)
@@ -316,6 +315,9 @@ namespace TestBucket.Formats.JUnit
                         case TestResult.Crashed:
                             failureElement = new XElement("crashed");
                             break;
+                        case TestResult.Passed:
+                            failureElement = new XElement("passed");
+                            break;
                     }
 
                     if (failureElement is not null)
@@ -325,7 +327,7 @@ namespace TestBucket.Formats.JUnit
                         {
                             failureElement.Add(new XAttribute("message", result.Message));
                         }
-                        if (result.FailureType is not null)
+                        if (result.FailureType is not null && result.FailureType is not null)
                         {
                             failureElement.Add(new XAttribute("type", result.FailureType));
                         }
@@ -333,6 +335,9 @@ namespace TestBucket.Formats.JUnit
                         {
                             failureElement.Add(new XText(result.CallStack));
                         }
+                    }
+                    else if(!string.IsNullOrEmpty(result.Message))
+                    {
 
                     }
                 }
@@ -437,10 +442,33 @@ namespace TestBucket.Formats.JUnit
             }
         }
 
+        private static void WriteAttachments(TestCaseRunDto test, XElement testSuitesElement)
+        {
+            var properties = new XElement("properties");
+            testSuitesElement.Add(properties);
+            WritePropertiesToPropertiesElement(test, properties);
+            foreach (var attachment in test.Attachments)
+            {
+                if(attachment.Data is null)
+                {
+                    continue;
+                }
+                var name = "attachment:" + attachment.Name;
+                var innerText = $"data:{attachment.ContentType};base64,{Convert.ToBase64String(attachment.Data)}";
+
+                var property = new XElement("property",new XAttribute("name", name), new XText(innerText));
+                properties.Add(property);
+            }
+        }
         private static void WriteProperties(TestTraitCollection attributeCollection, XElement testSuitesElement)
         {
             var properties = new XElement("properties");
             testSuitesElement.Add(properties);
+            WritePropertiesToPropertiesElement(attributeCollection, properties);
+        }
+
+        private static void WritePropertiesToPropertiesElement(TestTraitCollection attributeCollection, XElement properties)
+        {
             foreach (var attribute in attributeCollection.Traits)
             {
                 if (!_nativeAttributes.Contains(attribute.Type))

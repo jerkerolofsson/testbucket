@@ -47,7 +47,7 @@ class Splitter {
     #beginDrag(e) {
         if (this.destroyed) return;
 
-        console.log(e);
+        //console.log(e);
 
         this.dragging = true;
         if (e.touches?.length > 0) {
@@ -149,7 +149,7 @@ class Splitter {
         if (this.destroyed) return;
         e.preventDefault();
 
-        console.log("onMouseDown", e);
+        //console.log("onMouseDown", e);
         this.#beginDrag(e, "mouse");
     }
 
@@ -158,7 +158,7 @@ class Splitter {
     }
 
     #end() {
-        console.log("RESIZE END");
+        //console.log("RESIZE END");
         this.dragging = false;
     }
 

@@ -50,19 +50,21 @@
             }
         </MudPaper>
     }
-        
-    <UploadFile
-        Style="width: 100%; height: 100%"
-        FileUploaded="OnFileUploadedAsync"
-        Label="Upload attachment"
-        TestProjectId="@TestProjectId"
-        TestSuiteFolderId="@TestSuiteFolderId"
-        TestSuiteId="@TestSuiteId"
-        TestCaseRunId="@TestCaseRunId"
-        TestRunId="@TestRunId"
-        RequirementId="@RequirementId"
-                RequirementSpecificationId="@RequirementSpecificationId"
-        TestCaseId="@TestCaseId">
-    </UploadFile>
+    @if (AllowUpload)
+    {
+        <UploadFile
+            Style="width: 100%; height: 100%"
+            FileUploaded="OnFileUploadedAsync"
+            Label="Upload attachment"
+            TestProjectId="@TestProjectId"
+            TestSuiteFolderId="@TestSuiteFolderId"
+            TestSuiteId="@TestSuiteId"
+            TestCaseRunId="@TestCaseRunId"
+            TestRunId="@TestRunId"
+            RequirementId="@RequirementId"
+            RequirementSpecificationId="@RequirementSpecificationId"
+            TestCaseId="@TestCaseId">
+        </UploadFile>
+    }
 
 </MudStack>

@@ -14,6 +14,7 @@ using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Aggregates;
+using TestBucket.Domain.Testing.ImportExport;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications;
 using TestBucket.Domain.Testing.Specifications.TestCases;
@@ -81,7 +82,7 @@ internal class TestBrowser : TenantBaseService
     /// <param name="team"></param>
     /// <param name="project"></param>
     /// <returns></returns>
-    public async Task ImportAsync(Team? team, TestProject? project)
+    public async Task ImportAsync(Team team, TestProject project)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         var tenantId = await GetTenantIdAsync();
@@ -96,8 +97,8 @@ internal class TestBrowser : TenantBaseService
             var resource = await _fileRepository.GetResourceByIdAsync(tenantId, importOptions.File.Id);
             if (resource is not null)
             {
-                string xml = Encoding.UTF8.GetString(resource.Data);
-                await _textImporter.ImportTextAsync(principal, team?.Id, project?.Id, importOptions.Format, xml, importOptions.HandlingOptions);
+                string xml = TextConversionUtils.FromUtf8(resource.Data, removeBom: true);
+                await _textImporter.ImportTextAsync(principal, team.Id, project.Id, importOptions.Format, xml, importOptions.HandlingOptions);
             }
         }
     }
@@ -215,7 +216,7 @@ internal class TestBrowser : TenantBaseService
     }
     public TreeNode<BrowserItem> CreateTreeNodeFromTestCase(TestCase x)
     {
-        return new TreeNode<BrowserItem>
+        var treeNode = new TreeNode<BrowserItem>
         {
             Value = new BrowserItem { TestCase = x },
             Text = x.Name,
@@ -223,6 +224,21 @@ internal class TestBrowser : TenantBaseService
             Expandable = false,
             Children = null,
         };
+
+        if(x.IsTemplate)
+        {
+            treeNode.Icon = Icons.Material.Filled.DocumentScanner;
+        }
+        if (x.ExecutionType == Contracts.Testing.Models.TestExecutionType.Automated)
+        {
+            treeNode.Icon = Icons.Material.Filled.BrightnessAuto;
+        }
+        if (x.ExecutionType == Contracts.Testing.Models.TestExecutionType.Hybrid)
+        {
+            treeNode.Icon = Icons.Material.Filled.Api;
+        }
+
+        return treeNode;
     }
     public async Task AddTestSuiteFolderAsync(long projectId, long testSuiteId, long? parentFolderId)
     {

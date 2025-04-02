@@ -4,6 +4,8 @@ using PSC.Blazor.Components.MarkdownEditor;
 using TestBucket.Domain.Automation.Services;
 using PSC.Blazor.Components.MarkdownEditor.Models;
 using TestBucket.Contracts.Testing.Models;
+using TestBucket.Components.Environments.ViewModels;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TestBucket.Components.Tests.Controls.TestCases;
 public partial class TestCaseEditor
@@ -98,6 +100,19 @@ public partial class TestCaseEditor
         await testCaseEditorController.DeleteTestCaseAsync(Test);
     }
 
+    private List<EnvironmentVariable> _testParameters = [];
+
+    private async Task OnTestParametersChangedAsync(List<EnvironmentVariable> environmentVariables)
+    {
+        if (Test is not null)
+        {
+            _testParameters = environmentVariables;
+
+            Test.TestParameters = environmentVariables.ToDictionary();
+            await TestChanged.InvokeAsync(Test);
+        }
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         if (_projectId != Test?.TestProjectId && Test?.TestProjectId is not null)
@@ -108,6 +123,9 @@ public partial class TestCaseEditor
 
         if (Test is not null)
         {
+            Test.TestParameters ??= new();
+            _testParameters = Test.TestParameters.ToEnvironmentVariables();
+
             if (Test.Description != _descriptionText)
             {
                 this.StateHasChanged();

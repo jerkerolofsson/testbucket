@@ -1,4 +1,5 @@
 ﻿@using Humanizer
+@using TestBucket.Components.Environments.Controls
 @using TestBucket.Components.Shared
 @using TestBucket.Components.Shared.Splitter
 @using TestBucket.Domain.Requirements.Models
@@ -125,6 +126,9 @@
                                 <FieldHeader>Created</FieldHeader>
                                 @Test.Created.Humanize()
                             </Field>
+
+                            <MudText>VARIABLES</MudText>
+                            <EnvironmentVariableEditor Variables="@_testParameters" VariablesChanged="OnTestParametersChangedAsync" />
 
                             <FieldsEditor TestCase="@Test" />
                         </MudStack>

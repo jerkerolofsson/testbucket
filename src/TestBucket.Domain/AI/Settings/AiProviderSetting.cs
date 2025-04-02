@@ -47,7 +47,7 @@ namespace TestBucket.Domain.AI.Settings
                 switch(settings.AiProvider)
                 {
                     case "ollama":
-                        settings.AiProviderUrl = Environment.GetEnvironmentVariable("OLLAMA_BASE_URL") ?? "http://localhost:11434";
+                        settings.AiProviderUrl = Environment.GetEnvironmentVariable("TB_OLLAMA_BASE_URL") ?? "http://localhost:11434";
                         break;
                     default:
                         settings.AiProviderUrl = "https://models.inference.ai.azure.com";

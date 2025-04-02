@@ -16,9 +16,13 @@
     <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\android\TestBucket.Servers.AdbProxy\TestBucket.Servers.AdbProxy.csproj" />
-    <ProjectReference Include="..\TestBucket\TestBucket.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\TestBucket.Contracts\TestBucket.Contracts.csproj"  IsAspireProjectResource="false"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\android\TestBucket.Servers.AdbProxy\TestBucket.Servers.AdbProxy.csproj" />
+        <ProjectReference Include="..\TestBucket\TestBucket.csproj"/>
+    </ItemGroup>
 
 </Project>

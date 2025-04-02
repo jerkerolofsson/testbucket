@@ -1,5 +1,6 @@
 ﻿using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Settings;
+using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Automation.Services;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Environments;
@@ -29,6 +30,8 @@ public static class DomainServiceExtensions
         {
             o.RegisterServicesFromAssembly(typeof(DomainServiceExtensions).Assembly);
         });
+
+        services.AddSingleton<IApiKeyAuthenticator,ApiKeyAuthenticator>();
 
         services.AddScoped<IMarkdownDetector,TemplateDetector>();
         services.AddScoped<IMarkdownDetector,HybridDetector>();

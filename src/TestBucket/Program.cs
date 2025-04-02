@@ -14,6 +14,7 @@ using TestBucket.Components.Environments.Services;
 using TestBucket.Components.Layout.Controls;
 using TestBucket.Components.Projects;
 using TestBucket.Components.Requirements.Services;
+using TestBucket.Components.Settings.ApiKeys;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Themeing;
 using TestBucket.Components.Teams;
@@ -162,7 +163,8 @@ public class Program
         builder.Services.AddScoped<SignInManager<ApplicationUser>, ApplicationSignInManager>();
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-        builder.Services.AddScoped<UserRegistrationService>();
+        builder.Services.AddScoped<UserApiKeysController>();
+        builder.Services.AddScoped<UserRegistrationController>();
         builder.Services.AddScoped<ThemingService>();
         builder.Services.AddScoped<TenantResolver>();
         builder.Services.AddScoped<TenantService>();
@@ -247,29 +249,4 @@ public class Program
 
         app.Run();
     }
-
-    //private static async Task AddOllamaAsync(WebApplicationBuilder builder)
-    //{
-    //    var ollamaBaseUrl = builder.Configuration["OLLAMA_BASE_URL"];
-    //    if (ollamaBaseUrl is not null)
-    //    {
-    //        //string model = "deepseek-r1:7b";
-    //        string model = "deepseek-r1:30b";
-    //        // deepseek-r1:7b
-    //        //var ollama = new OllamaApiClient(ollamaBaseUrl, "deepseek-r1:7b");
-    //        try
-    //        {
-    //            var ollama = new OllamaApiClient(ollamaBaseUrl, model);
-    //            await foreach (var response in ollama.PullModelAsync(model))
-    //            {
-    //                if (response is not null)
-    //                {
-    //                    Console.WriteLine($"{response.Status}: {response.Completed}/{response.Total} ({response.Percent})");
-    //                }
-    //            }
-    //            builder.Services.AddSingleton<Microsoft.Extensions.AI.IChatClient>(ollama);
-    //        }
-    //        catch (Exception) { }
-    //    }
-    //}
 }

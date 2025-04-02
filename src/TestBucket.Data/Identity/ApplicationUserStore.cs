@@ -21,6 +21,12 @@ public class ApplicationUserStore : UserStore<ApplicationUser>
 
     public string TenantId { get; set; }
 
+    /// <summary>
+    /// Browse all users
+    /// </summary>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
     public async Task<PagedResult<ApplicationUser>> BrowseAsync(int offset, int count)
     {
         var users = this.Users.Where(x => x.TenantId == TenantId);

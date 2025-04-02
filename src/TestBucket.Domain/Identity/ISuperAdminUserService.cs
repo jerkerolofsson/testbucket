@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Claims;
+
+using Microsoft.AspNetCore.Identity;
 
 using TestBucket.Domain.Identity.Models;
 

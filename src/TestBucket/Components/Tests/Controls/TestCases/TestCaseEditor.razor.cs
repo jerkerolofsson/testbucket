@@ -38,7 +38,14 @@ public partial class TestCaseEditor
         {
             return;
         }
-        await testRunCreation.RunMarkdownCodeAsync(this.Test, request.Language, request.Code);
+        try
+        {
+            await testRunCreation.RunMarkdownCodeAsync(Test, request.Language, request.Code);
+        }
+        catch(Exception ex)
+        {
+            snackbar.Add(ex.Message, Severity.Error, (options) => { });
+        }
     }
     private async Task RunTestAsync()
     {
@@ -115,7 +122,7 @@ public partial class TestCaseEditor
         if (Test is not null)
         {
             Test.Description ??= "";
-            if (_descriptionText != Test.Description)
+            if (_descriptionText != Test.Description || _previewText is null)
             {
                 _descriptionText = Test.Description;
                 await CompilePreviewAsync();

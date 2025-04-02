@@ -19,12 +19,16 @@ public class ApiKeyAuthenticationOptions : AuthenticationSchemeOptions
 }
 public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthenticationOptions>
 {
+    private readonly IApiKeyAuthenticator _apiKeyAuthenticator;
+
     public ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeyAuthenticationOptions> options,
+        IApiKeyAuthenticator apiKeyAuthenticator,
                                        ILoggerFactory logger,
                                        UrlEncoder encoder,
                                        Microsoft.AspNetCore.Authentication.ISystemClock clock)
         : base(options, logger, encoder, clock)
     {
+        _apiKeyAuthenticator = apiKeyAuthenticator;
     }
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -56,19 +60,13 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthentic
             return AuthenticateResult.Fail("Missing API Key");
         }
 
-        // TODO: DB
-        await Task.Delay(200);
-
-        var claims = new[] 
-        { 
-            new Claim(ClaimTypes.Name, "admin@admin.com"),
-            new Claim("tenant", "jerkerolofsson"),
-        };
-
-        var identity = new ClaimsIdentity(claims, Scheme.Name);
-        var principal = new ClaimsPrincipal(identity);
+        ClaimsPrincipal? principal = await _apiKeyAuthenticator.AuthenticateAsync(apiKey);
+        if(principal is null)
+        {
+            return AuthenticateResult.Fail("Invalid API Key");
+        }
+       
         var ticket = new AuthenticationTicket(principal, Scheme.Name);
-
         return AuthenticateResult.Success(ticket);
     }
 }

@@ -451,6 +451,12 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("text");
 
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
                     b.Property<DateTimeOffset>("Expiry")
                         .HasColumnType("timestamp with time zone");
 
@@ -458,13 +464,24 @@ namespace TestBucket.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TenantId")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("ApiKeys");
                 });
@@ -884,6 +901,12 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("GithubModelsDeveloperKey")
                         .HasColumnType("text");
 
+                    b.Property<string>("JwtAudience")
+                        .HasColumnType("text");
+
+                    b.Property<string>("JwtIssuer")
+                        .HasColumnType("text");
+
                     b.Property<string>("LlmClassificationModel")
                         .HasColumnType("text");
 
@@ -896,6 +919,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<int>("Revision")
                         .HasColumnType("integer");
+
+                    b.Property<string>("SymmetricJwtKey")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -1658,7 +1684,13 @@ namespace TestBucket.Data.Migrations
                         .WithMany("ApplicationUserApiKeys")
                         .HasForeignKey("ApplicationUserId");
 
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Projects.Models.ExternalSystem", b =>

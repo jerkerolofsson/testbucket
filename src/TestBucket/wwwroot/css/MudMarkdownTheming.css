@@ -23,7 +23,7 @@
 }
 
 .mud-markdown-editor-root {
-    color: var(--mud-palette-text-primary);
+    color: var(--mud-palette-text-primary); 
     height: auto;
     border: solid 1px var(--mud-palette-dark);
 }

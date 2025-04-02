@@ -1,24 +1,23 @@
-﻿
-using TestBucket.Components.Tenants;
+﻿using TestBucket.Components.Tenants;
 
 namespace TestBucket.Components.Users;
 
 public record class CreateUserResponse(ApplicationUser? User, IdentityError[] Errors);
 
-internal class UserRegistrationService : TenantBaseService
+internal class UserRegistrationController : TenantBaseService
 {
     private readonly IUserStore<ApplicationUser> _userStore;
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly ILogger<UserRegistrationService> _logger;
+    private readonly ILogger<UserRegistrationController> _logger;
     private readonly NavigationManager _navigationManager;
     private readonly IEmailSender<ApplicationUser> _emailSender;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
-    public UserRegistrationService(
+    public UserRegistrationController(
         IUserStore<ApplicationUser> userStore, 
         UserManager<ApplicationUser> userManager, 
-        ILogger<UserRegistrationService> logger, 
+        ILogger<UserRegistrationController> logger, 
         NavigationManager navigationManager, 
         IEmailSender<ApplicationUser> emailSender, 
         SignInManager<ApplicationUser> signInManager,

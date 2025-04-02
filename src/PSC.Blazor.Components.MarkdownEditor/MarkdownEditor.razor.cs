@@ -219,6 +219,11 @@ namespace PSC.Blazor.Components.MarkdownEditor
         [Parameter]
         public EventCallback<RunCodeRequest> RunCode { get; set; }
 
+        /// <summary>
+        /// A space delimited list of code languages to show a run icon for 
+        /// </summary>
+        [Parameter] public string? RunCodeLanguages { get; set; }
+
         #endregion Event Callback
         #region Parameters
 
@@ -1121,6 +1126,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
                     ImagePathAbsolute,
                     ImageCSRFToken,
                     EnableRunCode,
+                    RunCodeLanguages,
                     EnableCopyCodeToClipboard,
                     ImageTexts = ImageTexts == null ? null : new
                     {

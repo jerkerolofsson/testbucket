@@ -25,32 +25,31 @@ public class DotHttpMarkdownTestRunner : IMarkdownTestRunner
 
     public async Task<TestRunnerResult> RunAsync(TestExecutionContext context, string code, CancellationToken cancellationToken)
     {
-        var optionsBuilder = new ClientOptionsBuilder()
-        {
-
-        };
-        optionsBuilder.UseDefaultVariableProvider();
-        optionsBuilder.UseJsonVariableProvider();
-        optionsBuilder.UseDynamicVariableProvider();
-        optionsBuilder.UseEnvironmentVariablesProviders();
-
-        // Add custom variables
-        if (context.Variables is not null)
-        {
-            foreach (var variable in context.Variables)
+        var logger = new DotHttpLogger();
+        var runnerOptions = new TestPlanRunnerOptionsBuilder()
+            .ConfigureClientOptions((optionsBuilder) =>
             {
-                optionsBuilder.WithVariable(variable.Key, variable.Value);
-            }
-        }
-        var options = optionsBuilder.Build();
+                optionsBuilder.UseDefaultVariableProvider();
+                optionsBuilder.UseJsonVariableProvider();
+                optionsBuilder.UseDynamicVariableProvider();
+                optionsBuilder.UseEnvironmentVariablesProviders();
 
-        var plan = new TestPlanBuilder()
-            .LoadHttpText(code, (configure) =>
+                // Add custom variables
+                if (context.Variables is not null)
+                {
+                    foreach (var variable in context.Variables)
+                    {
+                        optionsBuilder.WithVariable(variable.Key, variable.Value);
+                    }
+                }
+            })
+            .ConfigureTestPlan((planBuilder, clientOptions) =>
             {
-            }, options)
-            .Build();
+                planBuilder.LoadHttpText(code, (configure) => {}, clientOptions);
+            })
+            .AddCallback(logger);
 
-        var runner = new TestPlanRunner(plan, new TestPlanRunnerOptions());
+        var runner = runnerOptions.Build();
 
         var run = new TestRunDto();
         run.StartedTime = DateTimeOffset.UtcNow;
@@ -60,16 +59,15 @@ public class DotHttpMarkdownTestRunner : IMarkdownTestRunner
 
         // Format the result as JUnit XML and return it
 
-        TestRunDto testRun = CreateTestRun(testStatus, run);
+        TestRunDto testRun = CreateTestRun(testStatus, run, logger);
 
         var serializer = new JUnitSerializer();
         var xml = serializer.Serialize(testRun);
 
-        //var xml = new JUnitXmlWriter("").GetXml(testStatus);
         return new TestRunnerResult { Format = Formats.TestResultFormat.JUnitXml, Result = xml };
     }
 
-    private TestRunDto CreateTestRun(TestStatus status, TestRunDto run)
+    private TestRunDto CreateTestRun(TestStatus status, TestRunDto run, DotHttpLogger logger)
     {
         var report = status.TestReport;
         var plan = status.TestReport.TestPlan;
@@ -80,6 +78,7 @@ public class DotHttpMarkdownTestRunner : IMarkdownTestRunner
         suite.Name = run.Name;
         suite.StartedTime = run.StartedTime;
         suite.EndedTime = run.EndedTime;
+        suite.SystemOut = logger.ToString();
 
         foreach (var stage in report.Stages)
         {

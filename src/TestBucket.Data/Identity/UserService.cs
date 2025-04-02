@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Identity;
-using TestBucket.Domain.Identity.Models;
+using System.Security.Claims;
 
 namespace TestBucket.Data.Identity;
 internal class UserService : IUserService
@@ -17,10 +13,35 @@ internal class UserService : IUserService
         _dbContextFactory = dbContextFactory;
     }
 
-    //public async Task<List<ApplicationUserApiKey>?> GetApiKeysAsync(string tenantId, long userId)
-    //{
+    #region API Keys
+    public async Task AddApiKeyAsync(ApplicationUserApiKey apiKey)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.ApiKeys.AddAsync(apiKey);
+        await dbContext.SaveChangesAsync();
+    }
 
-    //}
+    public async Task DeleteApiKeyAsync(string userId, string tenantId, long apiKeyId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.ApiKeys.Where(x => x.ApplicationUserId == userId && x.TenantId == tenantId && x.Id == apiKeyId).ExecuteDeleteAsync();
+    }
+
+    public async Task<ApplicationUserApiKey[]> GetApiKeysAsync(string userId, string tenantId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.ApiKeys.AsNoTracking().Where(x => x.ApplicationUserId == userId && x.TenantId == tenantId).ToArrayAsync();
+    }
+    #endregion
+
+    public async Task<ApplicationUser?> FindAsync(ClaimsPrincipal principal, string tenantId)
+    {
+        var email = principal.Claims.Where(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").FirstOrDefault() ?? throw new Exception("principal has no email");
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.Users.AsNoTracking().Where(x => x.TenantId == tenantId && x.Email == email.Value).FirstOrDefaultAsync();
+    }
+
 
     public async Task<PagedResult<ApplicationUser>> SearchAsync(string tenantId, SearchQuery query, Predicate<ApplicationUser> predicate, CancellationToken cancellationToken = default)
     {

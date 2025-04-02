@@ -21,6 +21,21 @@ public class GlobalSettings
     public string AiProvider { get; set; } = "ollama";
 
     /// <summary>
+    /// Symmetric key for signing
+    /// </summary>
+    public string? SymmetricJwtKey { get; set; }
+
+    /// <summary>
+    /// JWT issuer
+    /// </summary>
+    public string? JwtIssuer { get; set; }
+
+    /// <summary>
+    /// JWT audience
+    /// </summary>
+    public string? JwtAudience { get; set; }
+
+    /// <summary>
     /// Default model to use for LLM
     /// </summary>
     public string LlmModel { get; set; } = "deepseek-r1:30b";

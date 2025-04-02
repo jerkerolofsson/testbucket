@@ -70,7 +70,7 @@ public partial class AISettingsPage
 
             if (provider == "ollama")
             {
-                _globalSettings.AiProviderUrl = Environment.GetEnvironmentVariable("OLLAMA_BASE_URL") ?? "http://localhost:11434";
+                _globalSettings.AiProviderUrl = Environment.GetEnvironmentVariable("TB_OLLAMA_BASE_URL") ?? "http://localhost:11434";
             }
             await settingsProvider.SaveGlobalSettingsAsync(_globalSettings);
             await LoadSettingsAsync();

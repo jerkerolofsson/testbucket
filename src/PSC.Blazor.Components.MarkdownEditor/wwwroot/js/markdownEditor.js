@@ -159,20 +159,26 @@ function initialize(dotNetObjectRef, element, elementId, previewElementId, optio
                         console.log("highlight, options", options);
 
                         highlighted += `<div class='tb-code-overlay'>`;
-                        if (options.enableRunCode) {
-                            const wrapperCssClass = `tb-code-run-overlay-${parseInt(Math.random() * 100000)}`;
-                            highlighted += `<div class='tb-code-run-overlay ${wrapperCssClass}'>
-                                                <svg width="24" height="24" viewBox="0 0 24 24"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path fill=\"currentColor\" d=\"M8 5v14l11-7z\"/></svg>
-                                            </div>`;
+                        if (options.enableRunCode && options.runCodeLanguages) {
 
-                            // Register click event, but no callback function when rendered
-                            window.setTimeout(() => {
-                                const selector = `.${wrapperCssClass}`;
-                                const buttonElement = document.querySelector(selector);
-                                buttonElement.addEventListener("click", () => {
-                                    dotNetObjectRef.invokeMethodAsync("RunCodeInternal", lang, code);
-                                });
-                            }, 100);
+                            // Only show play button for some languages
+                            const supportedLanguages = options.runCodeLanguages.split(' ');
+                            if (supportedLanguages.indexOf(language) != -1) {
+
+                                const wrapperCssClass = `tb-code-run-overlay-${parseInt(Math.random() * 100000)}`;
+                                highlighted += `<div class='tb-code-run-overlay ${wrapperCssClass}'>
+                                                    <svg width="24" height="24" viewBox="0 0 24 24"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path fill=\"currentColor\" d=\"M8 5v14l11-7z\"/></svg>
+                                                </div>`;
+
+                                // Register click event, but no callback function when rendered
+                                window.setTimeout(() => {
+                                    const selector = `.${wrapperCssClass}`;
+                                    const buttonElement = document.querySelector(selector);
+                                    buttonElement.addEventListener("click", () => {
+                                        dotNetObjectRef.invokeMethodAsync("RunCodeInternal", lang, code);
+                                    });
+                                }, 100);
+                            }
                         }
 
                         if (options.enableCopyCodeToClipboard) {

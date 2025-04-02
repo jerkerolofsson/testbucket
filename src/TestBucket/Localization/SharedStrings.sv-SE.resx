@@ -183,4 +183,31 @@
   <data name="assigned-to" xml:space="preserve">
     <value>Allockerat till</value>
   </data>
+  <data name="tenant" xml:space="preserve">
+    <value>Tenant</value>
+  </data>
+  <data name="tenants" xml:space="preserve">
+    <value>Tenants</value>
+  </data>
+  <data name="id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="expiry" xml:space="preserve">
+    <value>Utgången</value>
+  </data>
+  <data name="confirm-delete-title" xml:space="preserve">
+    <value>Ta bort?</value>
+  </data>
+  <data name="confirm-delete-message" xml:space="preserve">
+    <value>Vill du verkligen ta bort denna saken?</value>
+  </data>
+  <data name="api-keys" xml:space="preserve">
+    <value>API Nycklar</value>
+  </data>
+  <data name="api-key" xml:space="preserve">
+    <value>API Nyckel</value>
+  </data>
+  <data name="search-settings" xml:space="preserve">
+    <value>Sök inställningar..</value>
+  </data>
 </root>

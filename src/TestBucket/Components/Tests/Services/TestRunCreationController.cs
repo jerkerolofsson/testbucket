@@ -143,6 +143,7 @@ internal class TestRunCreationController : TenantBaseService
                     TeamId = run.TeamId.Value,
                     TestRunId = run.Id,
                     TestCaseId = test.Id,
+                    TestEnvironmentId = run.TestEnvironmentId
                 };
                 await _markdownAutomationRunner.RunAsync(principal, context, language, code);
                 _appNavigationManager.NavigateTo(run);

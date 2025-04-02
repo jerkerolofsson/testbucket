@@ -1,6 +1,7 @@
 ﻿
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Text;
 
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
@@ -74,16 +75,14 @@ internal class TextImporter : ITextTestResultsImporter
             // Add test suite run
             TestRun testRun = await ResolveTestRunAsync(principal, teamId, projectId, run, options);
 
-            foreach(var suite in run.Suites)
-            {
-                foreach(var test in suite.Tests)
-                {
-                    if (!string.IsNullOrEmpty(test.Assembly))
-                    {
-                        suite.Assembly = test.Assembly;
-                    }
-                }
-            }
+            // Copy some attributes from tests to the run
+            AssignRunPropertiesFromTests(run);
+            AssignRunPropertiesFromSuites(run);
+
+            // Update test run
+            testRun.SystemOut = run.SystemOut;
+            //testRun.SystemErr = run.SystemErr;
+            await _testRunManager.SaveTestRunAsync(principal, testRun);
 
             foreach (var runSuite in run.Suites)
             {
@@ -118,7 +117,7 @@ internal class TextImporter : ITextTestResultsImporter
                     {
                         // Get or create the test case and add a test case run
                         TestCase? testCase = null;
-                        if(options.TestCaseId is not null)
+                        if (options.TestCaseId is not null)
                         {
                             testCase = await _testCaseRepository.GetTestCaseByIdAsync(tenantId, options.TestCaseId.Value);
                         }
@@ -136,6 +135,50 @@ internal class TextImporter : ITextTestResultsImporter
                             await UpsertTestCaseTraitsAsync(principal, testCaseFieldDefinitions, testCase, traits);
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private static void AssignRunPropertiesFromSuites(TestRunDto run)
+    {
+        if (string.IsNullOrEmpty(run.SystemOut))
+        {
+            var stdout = new StringBuilder();
+
+            foreach (var suite in run.Suites)
+            {
+                if (!string.IsNullOrEmpty(suite.SystemOut))
+                {
+                    stdout.AppendLine(suite.SystemOut);
+                }
+            }
+            run.SystemOut = stdout.ToString();
+        }
+
+        if (string.IsNullOrEmpty(run.SystemErr))
+        {
+            var stderr = new StringBuilder();
+
+            foreach (var suite in run.Suites)
+            {
+                if (!string.IsNullOrEmpty(suite.SystemErr))
+                {
+                    stderr.AppendLine(suite.SystemErr);
+                }
+            }
+            run.SystemErr = stderr.ToString();
+        }
+    }
+    private static void AssignRunPropertiesFromTests(TestRunDto run)
+    {
+        foreach (var suite in run.Suites)
+        {
+            foreach (var test in suite.Tests)
+            {
+                if (!string.IsNullOrEmpty(test.Assembly))
+                {
+                    suite.Assembly = test.Assembly;
                 }
             }
         }
@@ -171,6 +214,7 @@ internal class TextImporter : ITextTestResultsImporter
             {
                 throw new InvalidOperationException("Test run not found!");
             }
+
             testRun = existingRun;
         }
 

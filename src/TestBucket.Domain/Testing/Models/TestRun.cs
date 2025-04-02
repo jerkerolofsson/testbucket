@@ -30,7 +30,6 @@ public class TestRun : TestEntity
     /// </summary>
     public string? SystemOut { get; set; }
 
-
     /// <summary>
     /// External identifer, other system, or when importing
     /// </summary>

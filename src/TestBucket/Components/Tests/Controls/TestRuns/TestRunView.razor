@@ -16,6 +16,16 @@
 
                     <MudTabs Style="width: 100%" ActivePanelIndex="@_activePanelIndex" ActivePanelIndexChanged="OnActivePanelIndexChanged">
                         <MudTabPanel Text="@loc["overview"]">
+                            @if(TestRun is not null)
+                            {
+                                @if (TestRun.SystemOut is not null)
+                                { 
+                                    <pre>
+                                        <code>@TestRun.SystemOut</code>
+                                    </pre>
+                                }
+                            }
+
                         </MudTabPanel>
                         @if (_selectedTestCaseRun is not null)
                         {

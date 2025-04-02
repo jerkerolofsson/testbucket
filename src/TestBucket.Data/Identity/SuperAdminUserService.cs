@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Models;
+using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Data.Identity;
 
@@ -31,6 +32,9 @@ internal class SuperAdminUserService : ISuperAdminUserService
         _logger = logger;
         _serviceProvider = serviceProvider;
     }
+
+
+
 
     public async Task<PagedResult<ApplicationUser>> BrowseAsync(string tenantId, int offset, int count)
     {

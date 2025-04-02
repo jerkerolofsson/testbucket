@@ -110,22 +110,16 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
     private async Task SeedDataAsync(CancellationToken cancellationToken)
     {
 
-        string superAdminUserEmail = configuration["ADMIN_USER"] ?? "admin@admin.com";
-        string adminUserPassword = configuration["ADMIN_PASSWORD"] ?? "Password123!";
-        string adminTenant = Environment.GetEnvironmentVariable("DEFAULT_TENANT") ?? "admin";
-        string adminApiKey = Environment.GetEnvironmentVariable("ADMIN_API_KEY") ?? Guid.NewGuid().ToString();
+        string superAdminUserEmail = configuration["TB_ADMIN_USER"] ?? "admin@admin.com";
+        string adminUserPassword = configuration["TB_ADMIN_PASSWORD"] ?? "Password123!";
+        string adminTenant = Environment.GetEnvironmentVariable("TB_DEFAULT_TENANT") ?? "admin";
+        string adminApiKey = Environment.GetEnvironmentVariable("TB_ADMIN_ACCESS_TOKEN") ?? Guid.NewGuid().ToString();
 
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         // Update settings
-        var settingsProvider = scope.ServiceProvider.GetRequiredService<ISettingsProvider>();
-        var settings = await settingsProvider.LoadGlobalSettingsAsync();
-        if (settings.DefaultTenant != adminTenant)
-        {
-            settings.DefaultTenant = adminTenant;
-            await settingsProvider.SaveGlobalSettingsAsync(settings);
-        }
+        await SeedSettingsAsync(adminTenant, scope);
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
@@ -168,6 +162,59 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
                 logger.LogError(ex, "Failed to assign roles");
             }
         });
+    }
+
+    private static async Task SeedSettingsAsync(string adminTenant, IServiceScope scope)
+    {
+        var settingsProvider = scope.ServiceProvider.GetRequiredService<ISettingsProvider>();
+        var settings = await settingsProvider.LoadGlobalSettingsAsync();
+        bool changed = false;
+        string? jwtSymmetricKey = Environment.GetEnvironmentVariable("TB_JWT_SYMMETRIC_KEY");
+        string? jwtIssuer = Environment.GetEnvironmentVariable("TB_JWT_ISS");
+        string? jwtAudience = Environment.GetEnvironmentVariable("TB_JWT_AUD");
+
+        // Default values if not set in environment variables
+        if (settings.SymmetricJwtKey is null)
+        {
+            settings.SymmetricJwtKey = Guid.NewGuid().ToString();
+            changed = true;
+        }
+        if (settings.JwtIssuer is null)
+        {
+            settings.JwtIssuer = "testbucket";
+            changed = true;
+        }
+        if (settings.JwtAudience is null)
+        {
+            settings.JwtAudience = "testbucket";
+            changed = true;
+        }
+
+        // Update settings if provided
+        if (settings.DefaultTenant != adminTenant)
+        {
+            settings.DefaultTenant = adminTenant;
+            changed = true;
+        }
+        if (settings.SymmetricJwtKey != jwtSymmetricKey && jwtSymmetricKey is not null)
+        {
+            settings.SymmetricJwtKey = jwtSymmetricKey;
+            changed = true;
+        }
+        if (settings.JwtIssuer != jwtIssuer)
+        {
+            settings.JwtIssuer = jwtIssuer;
+            changed = true;
+        }
+        if (settings.JwtAudience != jwtAudience)
+        {
+            settings.JwtAudience = jwtAudience;
+            changed = true;
+        }
+        if (changed)
+        {
+            await settingsProvider.SaveGlobalSettingsAsync(settings);
+        }
     }
 
     private async Task AssignRolesAsync(ApplicationDbContext dbContext, IServiceScope scope, string tenantId, string email, string roleName)
@@ -238,22 +285,40 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         var user = await dbContext.Users.Where(x => x.TenantId == tenantId && x.Email == email).Include(x=>x.ApplicationUserApiKeys).FirstOrDefaultAsync();
         if(user?.ApplicationUserApiKeys is not null)
         {
-            var hasTheKey = dbContext.ApiKeys.Where(x => x.Key == key && x.ApplicationUserId == user.Id).Any();
-            if(!hasTheKey)
+            string name = "Initial DB seeding API key";
+            var apiKey = await dbContext.ApiKeys.Where(x => x.ApplicationUserId == user.Id && x.Name == name && x.TenantId == tenantId).FirstOrDefaultAsync();
+            if(apiKey is null)
             {
-                var apiKey = new ApplicationUserApiKey
+                apiKey = new ApplicationUserApiKey
                 {
                     Expiry = DateTimeOffset.UtcNow.AddDays(365),
                     ApplicationUserId = user.Id,
                     Key = key,
-                    Name = "Initial DB seeding API key"
+                    Name = name,
+                    TenantId = tenantId
                 };
                 dbContext.ApiKeys.Add(apiKey);
                 await dbContext.SaveChangesAsync();
             }
             else
             {
-                // Expired?
+                var changed = false;
+                if (apiKey.Key != key)
+                {
+                    changed = true;
+                    apiKey.Key = key;
+                }
+                if (apiKey.Expiry > DateTimeOffset.UtcNow.AddDays(30))
+                {
+                    changed = true;
+                    apiKey.Expiry = DateTimeOffset.UtcNow.AddDays(365);
+                }
+
+                if (changed)
+                {
+                    dbContext.ApiKeys.Update(apiKey);
+                    await dbContext.SaveChangesAsync();
+                }
             }
         }
     }

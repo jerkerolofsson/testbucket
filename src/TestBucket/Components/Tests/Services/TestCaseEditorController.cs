@@ -49,7 +49,7 @@ internal class TestCaseEditorController : TenantBaseService
     /// <param name="context"></param>
     /// <param name="text"></param>
     /// <returns></returns>
-    public async Task<string?> CompileTestCaseRunPreviewAsync(TestCase testCase, long runId, string? text)
+    public async Task<string?> CompileTestCaseRunPreviewAsync(TestCase testCase, long runId, string? text, List<CompilerError> errors)
     {
         if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null)
         {
@@ -70,7 +70,10 @@ internal class TestCaseEditorController : TenantBaseService
                 TestEnvironmentId = run.TestEnvironmentId
             };
 
-            return await CompilePreviewAsync(testCase, context, text);
+            errors.Clear();
+            var result = await CompilePreviewAsync(testCase, context, text);
+            errors.AddRange(context.CompilerErrors);
+            return result;
         }
         return text;
     }
@@ -81,7 +84,7 @@ internal class TestCaseEditorController : TenantBaseService
     /// <param name="context"></param>
     /// <param name="text"></param>
     /// <returns></returns>
-    public async Task<string?> CompilePreviewAsync(TestCase testCase, TestExecutionContext context, string? text)
+    private async Task<string?> CompilePreviewAsync(TestCase testCase, TestExecutionContext context, string? text)
     {
         if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null)
         {
@@ -92,7 +95,7 @@ internal class TestCaseEditorController : TenantBaseService
         }
         return text;
     }
-    public async Task<string?> CompilePreviewAsync(TestCase testCase, string? text)
+    public async Task<string?> CompilePreviewAsync(TestCase testCase, string? text, List<CompilerError> errors)
     {
         if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null)
         {
@@ -107,7 +110,10 @@ internal class TestCaseEditorController : TenantBaseService
                 TeamId = testCase.TeamId.Value,
                 TestEnvironmentId = defaultEnvironment?.Id
             };
-            return await CompilePreviewAsync(testCase, context, text);
+            var result = await CompilePreviewAsync(testCase, context, text);
+            errors.Clear();
+            errors.AddRange(context.CompilerErrors);
+            return result;
         }
         return text;
     }

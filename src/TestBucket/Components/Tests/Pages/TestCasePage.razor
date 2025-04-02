@@ -5,6 +5,7 @@
 @layout TestingLayout
 @inject TestBrowser testBrowser
 @inject TestCaseEditorController testCaseEditorService
+@inject AppNavigationManager appNavigationManager
 
 <TestCaseEditor Test="@_testCase" TestChanged="OnTestModified" />
 
@@ -26,6 +27,7 @@
         if (_testCase is null || _testCase.Id != TestCaseId)
         {
             _testCase = await testBrowser.GetTestCaseByIdAsync(TestCaseId);
+            appNavigationManager.State.SelectedTestCase = _testCase;
         }
     }
 

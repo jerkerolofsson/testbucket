@@ -1,5 +1,6 @@
 ﻿using MediatR;
 
+using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Teams.Models;
@@ -649,6 +650,67 @@ public partial class TestTreeView
             }
         }
         _editItem = null;
+    }
+
+    internal async Task SyncWithActiveDocumentAsync()
+    {
+        if (appNavigationManager.State.SelectedTestCase is not null)
+        {
+            await GoToTestCaseAsync(appNavigationManager.State.SelectedTestCase);
+        }
+    }
+
+    internal async Task GoToTestCaseAsync(TestCase testCase)
+    {
+        // Find the test suite node
+        var testSuiteNode = FindTreeNode(x => x.TestSuite?.Id == testCase.TestSuiteId);
+        if (testSuiteNode is null)
+        {
+            return;
+        }
+        testSuiteNode.Expanded = true;
+
+        // Next traverse all folders
+        if (testCase.PathIds is not null)
+        {
+            TreeNode<BrowserItem> parent = testSuiteNode;
+            foreach (var folderId in testCase.PathIds)
+            {
+                var folderNode = FindTreeNode(x => x.Folder?.Id == folderId);
+                if (folderNode is null)
+                {
+                    var request = CreateRequest();
+                    request.Parent = parent.Value;
+                    
+                    var items = await testBrowser.BrowseAsync(request);
+                    parent.Children = items;
+                    folderNode = FindTreeNode(x => x.Folder?.Id == folderId);
+                }
+                if(folderNode is null)
+                {
+                    return;
+                }
+                folderNode.Expanded = true;
+                parent = folderNode;
+
+                // Browse items in the folder, this will include tests, if any..
+                if (folderNode.Children is null)
+                {
+                    var request = CreateRequest();
+                    request.Parent = folderNode.Value;
+
+                    var items = await testBrowser.BrowseAsync(request);
+                    folderNode.Children = items;
+                }
+            }
+        }
+
+        var testCaseTreeNode = FindTreeNode(x => x.TestCase?.Id == testCase.Id);
+        if (testCaseTreeNode is not null)
+        {
+            _selectedTreeItem = testCaseTreeNode?.Value;
+        }
+        await InvokeAsync(StateHasChanged);
     }
 
     #endregion

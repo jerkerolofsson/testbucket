@@ -1,11 +1,10 @@
-﻿
-using TestBucket.Components.Shared;
+﻿using TestBucket.Components.Shared;
 using TestBucket.Components.Tests.Controls;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
 
-namespace TestBucket.Components.Tests;
+namespace TestBucket.Components.Tests.Commands;
 
 internal class NewTestCommand : ICommand
 {
@@ -22,7 +21,7 @@ internal class NewTestCommand : ICommand
     public string Id => "new-test";
     public string Name => "New Test";
     public string Description => "Create a new test case";
-    public KeyboardBinding DefaultKeyboardBinding => new KeyboardBinding() { CommandId = "new-test", Key = "KeyA", ModifierKeys = ModifierKey.Ctrl | ModifierKey.Shift };
+    public KeyboardBinding? DefaultKeyboardBinding => new KeyboardBinding() { CommandId = "new-test", Key = "KeyA", ModifierKeys = ModifierKey.Ctrl | ModifierKey.Shift };
     public string? Icon => Icons.Material.Filled.Add;
     public string[] ContextMenuTypes => ["TestSuite", "TestSuiteFolder", "menu-new"];
 

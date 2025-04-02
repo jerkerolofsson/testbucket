@@ -27,16 +27,25 @@ namespace TestBucket.Domain.ApiKeys
         {
             if(_settings is null)
             {
-                using var scope = _serviceProvider.CreateScope();
-                var settingsProvider = scope.ServiceProvider.GetRequiredService<ISettingsProvider>();
-                _settings = await settingsProvider.LoadGlobalSettingsAsync();
+                await ReloadSettingsAsync();
             }
+        }
+
+        private async Task ReloadSettingsAsync()
+        {
+            using var scope = _serviceProvider.CreateScope();
+            var settingsProvider = scope.ServiceProvider.GetRequiredService<ISettingsProvider>();
+            _settings = await settingsProvider.LoadGlobalSettingsAsync();
         }
 
         public async Task<ClaimsPrincipal?> AuthenticateAsync(string token)
         {
             await EnsureInitializedAsync();
-            if(_settings?.SymmetricJwtKey is null || _settings?.JwtIssuer is null || _settings.JwtAudience is null)
+            if (_settings?.SymmetricJwtKey is null || _settings?.JwtIssuer is null || _settings.JwtAudience is null)
+            {
+                await ReloadSettingsAsync();
+            }
+            if (_settings?.SymmetricJwtKey is null || _settings?.JwtIssuer is null || _settings.JwtAudience is null)
             {
                 return null;
             }

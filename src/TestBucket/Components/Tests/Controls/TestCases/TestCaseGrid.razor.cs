@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Tests.Dialogs;
+using TestBucket.Components.Tests.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing;
 
@@ -16,12 +17,13 @@ public partial class TestCaseGrid
     [Parameter] public TestProject? Project { get; set; }
     [Parameter] public long? TestSuiteId { get; set; }
     [Parameter] public EventCallback<TestCase> OnTestCaseClicked { get; set; }
+    [Parameter] public EventCallback<TestSuiteFolder> OnTestSuiteFolderClicked { get; set; }
 
     private TestSuiteFolder? _folder;
 
     private SearchTestQuery _query = new();
 
-    private MudDataGrid<TestCase?> _dataGrid = default!;
+    private MudDataGrid<TestSuiteItem?> _dataGrid = default!;
     private IReadOnlyList<FieldDefinition> _definitions = [];
 
     private List<FieldDefinition> _columns = [];
@@ -44,55 +46,73 @@ public partial class TestCaseGrid
 
     #region Lifecycle
 
+    private long? _testSuiteId = null;
+    private long? _folderId = null;
+    private long? _testProjectId = null;
+    private TestSuite? _testSuite;
+
     protected override async Task OnParametersSetAsync()
     {
-        long? testProjectId = null;
-        if(TestSuiteId is not null)
+        bool changed = false;
+        if(_testSuiteId != TestSuiteId)
         {
-            var testSuite = await testSuiteServer.GetTestSuiteByIdAsync(TestSuiteId.Value);
-            testProjectId = testSuite?.TestProjectId;
+            _testSuiteId = TestSuiteId;
+            _testSuite = null;
+            changed = true;
+            if (_testSuiteId is not null)
+            {
+                _testSuite = await testSuiteServer.GetTestSuiteByIdAsync(_testSuiteId.Value);
+                _testProjectId = _testSuite?.TestProjectId;
+            }
 
         }
-        if (FolderId is not null)
+        if (_folderId != FolderId)
         {
-            if(FolderId != _folder?.Id)
+            _folderId = FolderId;
+            _folder = null;
+            changed = true;
+            if (_folderId is not null)
             {
-                _folder = await testSuiteServer.GetTestSuiteFolderByIdAsync(FolderId.Value);
-                testProjectId = _folder?.TestProjectId;
-                _dataGrid?.ReloadServerData();
+                _folder = await testSuiteServer.GetTestSuiteFolderByIdAsync(_folderId.Value);
+                _testProjectId = _folder?.TestProjectId;
             }
         }
         else if(Folder is not null)
         {
             if(_folder?.Id != Folder.Id)
             {
+                changed = true;
                 _folder = Folder;
-                testProjectId = _folder.TestProjectId;
-                _dataGrid?.ReloadServerData();
+                _testProjectId = _folder.TestProjectId;
             }
+        }
+
+        if (changed)
+        {
+            _dataGrid?.ReloadServerData();
         }
 
         _columns = [];
-        if(testProjectId is not null)
-        {
-            _definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = testProjectId, Target = FieldTarget.TestCase, Count = 100 });
+        //if(testProjectId is not null)
+        //{
+        //    _definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = testProjectId, Target = FieldTarget.TestCase, Count = 100 });
 
-            var category = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestCategory);
-            if (category is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestCategory))
-            {
-                _columns.Add(category);
-            }
-            var activity = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestActivity);
-            if (activity is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestActivity))
-            {
-                _columns.Add(activity);
-            }
-            var prio = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestPriority);
-            if (prio is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestPriority))
-            {
-                _columns.Add(prio);
-            }
-        }
+        //    var category = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestCategory);
+        //    if (category is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestCategory))
+        //    {
+        //        _columns.Add(category);
+        //    }
+        //    var activity = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestActivity);
+        //    if (activity is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestActivity))
+        //    {
+        //        _columns.Add(activity);
+        //    }
+        //    var prio = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestPriority);
+        //    if (prio is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestPriority))
+        //    {
+        //        _columns.Add(prio);
+        //    }
+        //}
     }
     protected override void OnInitialized()
     {
@@ -106,6 +126,22 @@ public partial class TestCaseGrid
     }
     #endregion
 
+    private async Task OnItemClicked(TestSuiteItem item)
+    {
+        if (item.TestCase is not null)
+        {
+            await OnTestClicked(item.TestCase);
+        }
+        if (item.Folder is not null)
+        {
+            await OnFolderClicked(item.Folder);
+        }
+    }
+
+    private async Task OnFolderClicked(TestSuiteFolder folder)
+    {
+        await OnTestSuiteFolderClicked.InvokeAsync(folder);
+    }
     private async Task OnTestClicked(TestCase testCase)
     {
         await OnTestCaseClicked.InvokeAsync(testCase);
@@ -150,7 +186,7 @@ public partial class TestCaseGrid
         _dataGrid?.ReloadServerData();
     }
 
-    private async Task<GridData<TestCase>> LoadGridData(GridState<TestCase> state)
+    private async Task<GridData<TestSuiteItem>> LoadGridData(GridState<TestSuiteItem> state)
     {
         var query = new SearchTestQuery
         {
@@ -161,13 +197,14 @@ public partial class TestCaseGrid
             CreatedUntil = _query.CreatedUntil,
             Category = _query.Category,
             Priority = _query.Priority,
+            ProjectId = Project?.Id,
 
             Text = string.IsNullOrWhiteSpace(_query.Text) ? null : _query.Text,
         };
 
-        var result = await testBrowser.SearchTestCasesAsync(query, state.Page * state.PageSize, state.PageSize);
+        var result = await testBrowser.SearchItemsAsync(query, state.Page * state.PageSize, state.PageSize);
 
-        GridData<TestCase> data = new()
+        GridData<TestSuiteItem> data = new()
         {
             Items = result.Items,
             TotalItems = (int)result.TotalCount

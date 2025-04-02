@@ -23,25 +23,33 @@
         }
     }
 
-    protected override async void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
+        List<BreadcrumbItem> nav = new();
         if (Test?.PathIds is not null)
         {
             var tenantId = TenantResolver.ResolveTenantIdFromUrl(navigationManager.Uri);
             var testSuiteId = Test.TestSuiteId;
 
-            _nav.Clear();
+            var testSuite = await testBrowser.GetTestSuiteByIdAsync(Test.TestSuiteId);
+            if(testSuite is not null)
+            {
+                var testSuiteUrl = appNavigationManager.GetUrl(testSuite);
+                nav.Add(new BreadcrumbItem(testSuite.Name, testSuiteUrl));
+                _navUpUrl = testSuiteUrl;
+            }
+
             var pathItems = Test.Path.Split('/');
             var len = Math.Min(pathItems.Length, Test.PathIds.Length);
             for (int i = 0; i < Test.PathIds.Length; i++)
             {
                 var url = appNavigationManager.GetFolderUrl(testSuiteId, Test.PathIds[i]);
-                _nav.Add(new BreadcrumbItem(pathItems[i], url));
+                nav.Add(new BreadcrumbItem(pathItems[i], url));
 
                 // Parent dir is the last one
                 _navUpUrl = url;
             }
-            _nav.Add(new BreadcrumbItem(Test.Name, appNavigationManager.GetUrl(Test)));
+            nav.Add(new BreadcrumbItem(Test.Name, appNavigationManager.GetUrl(Test)));
         }
         else if (FolderId is not null)
         {
@@ -51,21 +59,29 @@
                 var tenantId = TenantResolver.ResolveTenantIdFromUrl(navigationManager.Uri);
                 var testSuiteId = folder.TestSuiteId;
 
-                _nav.Clear();
+                var testSuite = await testBrowser.GetTestSuiteByIdAsync(folder.TestSuiteId);
+                if (testSuite is not null)
+                {
+                    var testSuiteUrl = appNavigationManager.GetUrl(testSuite);
+                    nav.Add(new BreadcrumbItem(testSuite.Name, testSuiteUrl));
+                    _navUpUrl = testSuiteUrl;
+                }
+
                 var pathItems = folder.Path.Split('/');
                 var len = Math.Min(pathItems.Length, folder.PathIds.Length);
                 for (int i = 0; i < folder.PathIds.Length; i++)
                 {
                     var url = appNavigationManager.GetFolderUrl(folder.TestSuiteId, folder.PathIds[i]);
-                    _nav.Add(new BreadcrumbItem(pathItems[i], url));
+                    nav.Add(new BreadcrumbItem(pathItems[i], url));
 
                     // Parent dir is the last one
                     _navUpUrl = url;
                 }
 
-                _nav.Add(new BreadcrumbItem(folder.Name, appNavigationManager.GetUrl(folder)));
+                nav.Add(new BreadcrumbItem(folder.Name, appNavigationManager.GetUrl(folder)));
             }
         }
+        _nav = nav;
         this.StateHasChanged();
     }
 }

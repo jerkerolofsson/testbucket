@@ -167,9 +167,6 @@ namespace TestBucket.Domain.Testing
         {
             var tenantId = principal.GetTenantIdOrThrow();
 
-            //testCase.Modified = testCase.Created = DateTimeOffset.UtcNow;
-            //testCase.CreatedBy = testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
-
             var folder = await _testCaseRepository.AddTestSuiteFolderAsync(tenantId, projectId, testSuiteId, parentFolderId, name);
 
             // Notify observers

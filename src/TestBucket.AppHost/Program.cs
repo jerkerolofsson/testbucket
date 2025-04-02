@@ -51,4 +51,11 @@ builder.AddProject<Projects.TestBucket_Servers_AdbProxy>("testbucket-adbproxy")
     .WithEnvironment("ADB_PROXY_AUTH_HEADER", $"Bearer {accessToken}")
     .WaitFor(testBucket);
 
+
+builder.AddProject<Projects.TestBucket_Runner>("testbucket-runner")
+    .WithReference(testBucket)
+    .WithEnvironment("TB_ACCESS_TOKEN", accessToken)
+    .WithReference(testBucket)
+    .WaitFor(testBucket);
+
 builder.Build().Run();

@@ -198,6 +198,18 @@ p.mud-typography-subtitle1 {
      border-top-right-radius: 5px;
  }
 
+ article.center {
+     display: flex;
+     align-items: center;
+     flex-direction: column;
+     padding: 2rem;
+     width: 100%;
+ }
+
+ article.center > * {
+     max-width: 1000px;
+ }
+
  .container-settings-page {
      padding: 2rem;
      max-width: 1000px;
@@ -280,7 +292,8 @@ p.mud-typography-subtitle1 {
      overflow: auto;
  }
  .tb-toolbar {
-     background: var(--mud-palette-surface);
+/*     background: var(--mud-palette-surface);*/
+     background: transparent;
      color: var(--mud-palette-text-primary);
  }
 

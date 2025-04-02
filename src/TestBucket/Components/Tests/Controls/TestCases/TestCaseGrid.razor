@@ -1,12 +1,15 @@
-﻿@using TestBucket.Components.Shared
+﻿@using Humanizer
+@using TestBucket.Components.Shared
 @using TestBucket.Domain.Requirements.Models
 @using TestBucket.Traits.Core
+@using TestBucket.Components.Tests.Models
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject ITestCaseManager testCaseManager
 @inject TestSuiteService testSuiteServer
 @inject TestCaseEditorController testCaseEditor
 @inject FieldController fieldController
+@inject IStringLocalizer<SharedStrings> loc
 @implements IDisposable
 @implements ITestCaseObserver
 
@@ -14,8 +17,8 @@
              Style="width: 100%"
              Dense="true"
              Hover="true"
-             T="TestCase"
-             RowClick="(e) => OnTestClicked(e.Item)"
+             T="TestSuiteItem"
+             RowClick="(e) => OnItemClicked(e.Item)"
              @ref="_dataGrid"
              SortMode="SortMode.None">
 
@@ -42,41 +45,69 @@
     </ToolBarContent>
 
     <Columns>
-        <PropertyColumn Property="x => x.Slug" Title="ID" />
-        <TemplateColumn Title="Name">
+        <TemplateColumn Title="@loc["name"]">
             <CellTemplate>
-                <Draggable T="TestEntity" Data="@context.Item">
-                    @context.Item.Name
-                </Draggable>
+                @if (context.Item.TestCase is not null)
+                {
+                    <Draggable T="TestEntity" Data="@context.Item.TestCase">
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@testBrowser.GetIcon(context.Item.TestCase)"/>
+                            @context.Item.TestCase.Name
+                        </MudStack>
+                    </Draggable>
+                }
+                @if (context.Item.Folder is not null)
+                {
+                    <Draggable T="TestEntity" Data="@context.Item.Folder">
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@testBrowser.GetIcon(context.Item.Folder)" />
+                            @context.Item.Folder.Name
+                        </MudStack>
+
+                    </Draggable>
+                }
             </CellTemplate>
         </TemplateColumn>
 
-        <PropertyColumn Property="x => x.Path" Title="Path" />
+        <TemplateColumn Title="@loc["modified"]">
+            <CellTemplate>
+                @if (context.Item.TestCase is not null)
+                {
+                    @context.Item.TestCase.Modified.Humanize()
+                }
+                @if (context.Item.Folder is not null)
+                {
+                    @context.Item.Folder.Modified.Humanize()
+                }
+            </CellTemplate>
+        </TemplateColumn>
 
-        @foreach (var column in _columns)
-        {
-            <TemplateColumn Title="@column.Name">
-                <CellTemplate>
-                    @if (context.Item.TestCaseFields is not null)
-                    {
-                        foreach (var field in context.Item.TestCaseFields.Where(x => x.FieldDefinitionId == column.Id))
-                        {
-                            if (field.StringValue is not null)
-                            {
-                                <MudText>@field.StringValue?.ToString()</MudText>
-                            }
-                            if (field.StringValuesList is not null)
-                            {
-                                <MudText>@string.Join(", ", field.StringValuesList)</MudText>
-                            }
-                        }
-                    }
-                </CellTemplate>
-            </TemplateColumn>
-        }
+        @* <PropertyColumn Property="x => x.Path" Title="Path" /> *@
+
+        @* @foreach (var column in _columns) *@
+        @* { *@
+        @*     <TemplateColumn Title="@column.Name"> *@
+        @*         <CellTemplate> *@
+        @*             @if (context.Item.TestCaseFields is not null) *@
+        @*             { *@
+        @*                 foreach (var field in context.Item.TestCaseFields.Where(x => x.FieldDefinitionId == column.Id)) *@
+        @*                 { *@
+        @*                     if (field.StringValue is not null) *@
+        @*                     { *@
+        @*                         <MudText>@field.StringValue?.ToString()</MudText> *@
+        @*                     } *@
+        @*                     if (field.StringValuesList is not null) *@
+        @*                     { *@
+        @*                         <MudText>@string.Join(", ", field.StringValuesList)</MudText> *@
+        @*                     } *@
+        @*                 } *@
+        @*             } *@
+        @*         </CellTemplate> *@
+        @*     </TemplateColumn> *@
+        @* } *@
     </Columns>
 
     <PagerContent>
-        <MudDataGridPager T="TestCase" />
+        <MudDataGridPager T="TestSuiteItem" />
     </PagerContent>
 </MudDataGrid>

@@ -13,7 +13,15 @@ public partial class TestCaseEditor
     [Parameter] public TestCase? Test { get; set; }
     [Parameter] public EventCallback<TestCase?> TestChanged { get; set; }
 
+    private IReadOnlyList<FieldDefinition> _fields = [];
+    private long? _projectId;
+
     private bool _preview = true;
+    private MarkdownEditor? _editor;
+    private string? _descriptionText;
+    private string? _previewText;
+    private readonly List<CompilerError> _errors = new List<CompilerError>();
+
 
     public string? Text
     {
@@ -27,6 +35,21 @@ public partial class TestCaseEditor
         }
     }
 
+    public async Task OnDescriptionChanged(string description)
+    {
+        if (_preview)
+        {
+            return;
+        }
+        if (Test is not null)
+        {
+            _descriptionText = description;
+            Test.Description = description;
+            await CompilePreviewAsync();
+
+            await TestChanged.InvokeAsync(Test);
+        }
+    }
     private void BeginEdit()
     {
         _preview = false;
@@ -75,14 +98,6 @@ public partial class TestCaseEditor
         await testCaseEditorController.DeleteTestCaseAsync(Test);
     }
 
-    private IReadOnlyList<FieldDefinition> _fields = [];
-
-    private MarkdownEditor? _editor;
-    private string? _descriptionText;
-    private string? _previewText;
-
-    private long? _projectId;
-
     protected override async Task OnParametersSetAsync()
     {
         if (_projectId != Test?.TestProjectId && Test?.TestProjectId is not null)
@@ -90,21 +105,12 @@ public partial class TestCaseEditor
             _projectId = Test?.TestProjectId;
             _fields = await fieldService.SearchDefinitionsAsync(new SearchFieldQuery() { ProjectId = Test?.TestProjectId, Target = FieldTarget.TestCase });
         }
-    }
 
-    protected override void OnParametersSet()
-    {
-        if (Test is null)
-        {
-            _previewText = null;
-            _descriptionText = null;
-        }
-        else
+        if (Test is not null)
         {
             if (Test.Description != _descriptionText)
             {
-                _previewText = null;
-                _descriptionText = null;
+                this.StateHasChanged();
             }
         }
     }
@@ -113,13 +119,13 @@ public partial class TestCaseEditor
     {
         if (Test is not null)
         {
-            _previewText = await testCaseEditorController.CompilePreviewAsync(Test, _descriptionText);
+            _previewText = await testCaseEditorController.CompilePreviewAsync(Test, _descriptionText, _errors);
         }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (Test is not null)
+        if (Test is not null && _editor is not null) 
         {
             Test.Description ??= "";
             if (_descriptionText != Test.Description || _previewText is null)
@@ -130,8 +136,8 @@ public partial class TestCaseEditor
                 if (_editor is not null)
                 {
                     await _editor.SetValueAsync(Text!);
+                    this.StateHasChanged();
                 }
-                this.StateHasChanged();
             }
         }
     }
@@ -145,19 +151,4 @@ public partial class TestCaseEditor
         }
     }
 
-    public async Task OnDescriptionChanged(string description)
-    {
-        if(_preview)
-        {
-            return;
-        }
-        if (Test is not null)
-        {
-            _descriptionText = description;
-            Test.Description = description;
-            await CompilePreviewAsync();
-
-            await TestChanged.InvokeAsync(Test);
-        }
-    }
 }

@@ -177,7 +177,7 @@ function initialize(dotNetObjectRef, element, elementId, previewElementId, optio
                                     buttonElement.addEventListener("click", () => {
                                         dotNetObjectRef.invokeMethodAsync("RunCodeInternal", lang, code);
                                     });
-                                }, 100);
+                                }, 1000);
                             }
                         }
 
@@ -196,7 +196,7 @@ function initialize(dotNetObjectRef, element, elementId, previewElementId, optio
                                 buttonElement.addEventListener("click", async () => {
                                     await navigator.clipboard.writeText(code);
                                 });
-                            }, 100);
+                            }, 1000);
                         }
                         highlighted += `</div>`;
 
@@ -721,6 +721,8 @@ function destroy(element, elementId) {
 
 function setValue(elementId, value) {
     const instance = _instances[elementId];
+
+    console.log("setValue()");
 
     if (instance) {
         instance.isChangingValue = true;

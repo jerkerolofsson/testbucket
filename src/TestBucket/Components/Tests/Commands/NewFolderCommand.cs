@@ -2,7 +2,7 @@
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
 
-namespace TestBucket.Components.Tests;
+namespace TestBucket.Components.Tests.Commands;
 
 internal class NewFolderCommand : ICommand
 {
@@ -19,7 +19,7 @@ internal class NewFolderCommand : ICommand
     public string Id => "new-folder";
     public string Name => "New Folder";
     public string Description => "Create a new folder";
-    public KeyboardBinding DefaultKeyboardBinding => new KeyboardBinding() { CommandId = "new-folder", Key = "F7", ModifierKeys = ModifierKey.None };
+    public KeyboardBinding? DefaultKeyboardBinding => new KeyboardBinding() { CommandId = "new-folder", Key = "F7", ModifierKeys = ModifierKey.None };
     public string? Icon => Icons.Material.Filled.CreateNewFolder;
     public string[] ContextMenuTypes => ["TestSuite", "TestSuiteFolder"];
 

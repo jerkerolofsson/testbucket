@@ -138,6 +138,13 @@
         /// <returns></returns>
         public async ValueTask SetValue(string elementId, string value)
         {
+            if(value.Length == 0)
+            {
+                await jsRuntime.InvokeVoidAsync("setValue", elementId, "");
+                return;
+            }
+
+            // Should be SignalR HubOptions max length
             int maxLength = 30_000;
             int remaining = value.Length;
             int offset = 0;

@@ -24,6 +24,11 @@
 
         <MudSpacer />
 
+        @if (appNavigationManager.State.SelectedTestCase is not null)
+        {
+            <MudIconButton OnClick="SyncWithActiveDocumentAsync" Icon="@Icons.Material.Filled.CompareArrows"/>
+        }
+
         <MudMenu Icon="@Icons.Material.Filled.MoreHoriz">
 
             @if (_selectedTreeItem?.Folder is not null)

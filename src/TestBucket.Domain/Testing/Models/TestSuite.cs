@@ -17,7 +17,7 @@ public class TestSuite : TestEntity
     public required string Name { get; set; }
 
     /// <summary>
-    /// Test case description
+    /// Test suite description
     /// </summary>
     public string? Description { get; set; }
 

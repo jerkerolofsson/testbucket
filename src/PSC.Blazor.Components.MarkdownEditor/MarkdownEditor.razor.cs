@@ -1032,6 +1032,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
             if (Initialized && _value != Value)
             {
                 await SetValueAsync(Value ?? "");
+                _value = Value;
             }
 
             if (Initialized && _currentPreviewState != Preview)

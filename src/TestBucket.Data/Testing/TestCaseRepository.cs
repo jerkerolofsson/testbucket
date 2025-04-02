@@ -260,6 +260,7 @@ internal class TestCaseRepository : ITestCaseRepository
             Name = name,
             TestSuiteId = testSuiteId,
             Created = DateTimeOffset.UtcNow,
+            Modified = DateTimeOffset.UtcNow,
             TenantId = tenantId,
             TeamId = teamId,
             TestProjectId = projectId,

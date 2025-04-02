@@ -1,5 +1,6 @@
 ﻿using NGitLab.Models;
 
+using TestBucket.Components.Tests.Controls;
 using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Tenants.Models;
@@ -35,6 +36,8 @@ public class AppNavigationManager
         /// Selected project
         /// </summary>
         public TestProject? SelectedProject { get; set; }
+
+        public TestTreeView? TestTreeView { get; set; }
     }
 
     internal NavigationState State { get; } = new();

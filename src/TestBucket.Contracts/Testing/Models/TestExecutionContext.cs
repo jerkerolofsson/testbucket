@@ -36,4 +36,6 @@ public class TestExecutionContext
     /// ID if test environment to use
     /// </summary>
     public long? TestEnvironmentId { get; set; }
+
+    public List<CompilerError> CompilerErrors { get; } = [];
 }

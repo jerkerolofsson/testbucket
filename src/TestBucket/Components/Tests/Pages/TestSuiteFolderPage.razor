@@ -11,9 +11,14 @@
 
     <Splitter Style="height: 100%; width:100%" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
         <StartContent>
-            <TestCaseGrid 
-                Project="@Project"
-                TestSuiteId="@SuiteId" FolderId="@FolderId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" />
+
+            <article class="center">
+                <MudStack>
+                    <MudText Typo="Typo.h1">@_testSuiteFolder?.Name</MudText>
+                    <TestCaseGrid Project="@Project" TestSuiteId="@SuiteId" FolderId="@FolderId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" OnTestSuiteFolderClicked="OnFolderClicked" />
+
+                </MudStack>
+            </article>
         </StartContent>
         <EndContent>
             <MudStack Class="pa-2" Style="width: 100%">
@@ -43,9 +48,14 @@
         if (_testSuiteFolder is null || _testSuiteFolder.Id != FolderId)
         {
             _testSuiteFolder = await testBrowser.GetTestSuiteFolderByIdAsync(FolderId);
+            appNavigationManager.State.SelectedTestSuiteFolder = _testSuiteFolder;
         }
     }
 
+    private void OnFolderClicked(TestSuiteFolder folder)
+    {
+        appNavigationManager.NavigateTo(folder);
+    }
     private void OnTestCaseClicked(TestCase testCase)
     {
         appNavigationManager.NavigateTo(testCase);

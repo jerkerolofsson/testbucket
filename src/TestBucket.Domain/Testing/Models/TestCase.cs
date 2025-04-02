@@ -100,6 +100,14 @@ public class TestCase : TestEntity
     /// </summary>
     public bool IsTemplate { get; set; }
 
+
+    /// <summary>
+    /// Variables for the test case
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public Dictionary<string, string>? TestParameters { get; set; }
+
+
     // Navigation
     public TestSuiteFolder? TestSuiteFolder { get; set; }
     public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }

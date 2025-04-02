@@ -28,11 +28,12 @@ using TestBucket.Domain.Tenants.Models;
 
 
 namespace TestBucket.Data.Migrations;
-public class MigrationService(IServiceProvider serviceProvider, ILogger<MigrationService> logger, IConfiguration configuration) : BackgroundService
+public class MigrationService(IServiceProvider serviceProvider, ILogger<MigrationService> logger, IConfiguration configuration, SeedConfiguration seedConfiguration) : BackgroundService
 {
     public const string ActivitySourceName = "Migrations";
     private static readonly ActivitySource s_activitySource = new(ActivitySourceName);
     private static readonly SemaphoreSlim s_lock = new(1);
+
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -92,7 +93,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         {
             // Run migration in a transaction to avoid partial migration if it fails.
             //await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
-            
+
             await dbContext.Database.MigrateAsync(cancellationToken);
             //await transaction.CommitAsync(cancellationToken);
         });
@@ -110,10 +111,10 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
     private async Task SeedDataAsync(CancellationToken cancellationToken)
     {
 
-        string superAdminUserEmail = configuration["TB_ADMIN_USER"] ?? "admin@admin.com";
-        string adminUserPassword = configuration["TB_ADMIN_PASSWORD"] ?? "Password123!";
-        string adminTenant = Environment.GetEnvironmentVariable("TB_DEFAULT_TENANT") ?? "admin";
-        string adminApiKey = Environment.GetEnvironmentVariable("TB_ADMIN_ACCESS_TOKEN") ?? Guid.NewGuid().ToString();
+        string superAdminUserEmail = seedConfiguration.Email ?? "admin@admin.com";
+        string adminUserPassword = seedConfiguration.Password ?? "Password123!";
+        string adminTenant = seedConfiguration.Tenant ?? "admin";
+        string adminApiKey = seedConfiguration.AccessToken ?? Guid.NewGuid().ToString();
 
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -164,14 +165,14 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         });
     }
 
-    private static async Task SeedSettingsAsync(string adminTenant, IServiceScope scope)
+    private async Task SeedSettingsAsync(string adminTenant, IServiceScope scope)
     {
         var settingsProvider = scope.ServiceProvider.GetRequiredService<ISettingsProvider>();
         var settings = await settingsProvider.LoadGlobalSettingsAsync();
         bool changed = false;
-        string? jwtSymmetricKey = Environment.GetEnvironmentVariable("TB_JWT_SYMMETRIC_KEY");
-        string? jwtIssuer = Environment.GetEnvironmentVariable("TB_JWT_ISS");
-        string? jwtAudience = Environment.GetEnvironmentVariable("TB_JWT_AUD");
+        string? jwtSymmetricKey = seedConfiguration.SymmetricKey;
+        string? jwtIssuer = seedConfiguration.Issuer;
+        string? jwtAudience = seedConfiguration.Audience;
 
         // Default values if not set in environment variables
         if (settings.SymmetricJwtKey is null)
@@ -256,7 +257,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
         var exists = await roleManager.RoleExistsAsync(roleName);
-        if(!exists)
+        if (!exists)
         {
             var role = new IdentityRole
             {
@@ -264,7 +265,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
                 NormalizedName = roleName
             };
             var result = await roleManager.CreateAsync(role);
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 logger.LogError("Failed to create role: {roleName}", roleName);
             }
@@ -282,12 +283,12 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
 
     private async Task CreateApiKeyAsync(ApplicationDbContext dbContext, IServiceScope scope, string tenantId, string email, string key)
     {
-        var user = await dbContext.Users.Where(x => x.TenantId == tenantId && x.Email == email).Include(x=>x.ApplicationUserApiKeys).FirstOrDefaultAsync();
-        if(user?.ApplicationUserApiKeys is not null)
+        var user = await dbContext.Users.Where(x => x.TenantId == tenantId && x.Email == email).Include(x => x.ApplicationUserApiKeys).FirstOrDefaultAsync();
+        if (user?.ApplicationUserApiKeys is not null)
         {
             string name = "Initial DB seeding API key";
             var apiKey = await dbContext.ApiKeys.Where(x => x.ApplicationUserId == user.Id && x.Name == name && x.TenantId == tenantId).FirstOrDefaultAsync();
-            if(apiKey is null)
+            if (apiKey is null)
             {
                 apiKey = new ApplicationUserApiKey
                 {
@@ -374,6 +375,6 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
 
             //await dbContext.SaveChangesAsync();
         }
-   
+
     }
 }

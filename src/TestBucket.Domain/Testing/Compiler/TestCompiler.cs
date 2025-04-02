@@ -52,6 +52,22 @@ internal class TestCompiler : ITestCompiler
             if (test is not null)
             {
                 context.Variables["TEST_CASE_NAME"] = test.Name;
+                if (test.ModifiedBy is not null)
+                {
+                    context.Variables["TEST_CASE_MODIFIED_BY"] = test.ModifiedBy;
+                }
+                if (test.CreatedBy is not null)
+                {
+                    context.Variables["TEST_CASE_CREATED_BY"] = test.CreatedBy;
+                }
+
+                if (test.TestParameters is not null)
+                {
+                    foreach (var envVar in test.TestParameters)
+                    {
+                        context.Variables[envVar.Key] = envVar.Value;
+                    }
+                }
             }
         }
     }
@@ -71,22 +87,77 @@ internal class TestCompiler : ITestCompiler
 
     public async Task<string> CompileAsync(ClaimsPrincipal principal, TestExecutionContext context, string source)
     {
+        context.CompilerErrors.Clear();
         var compiledWithTemplate = await GetTemplateMarkupAsync(principal, context, source);
 
-        var descriptionWithReplacedVariables = ReplaceVariables(context.Variables, compiledWithTemplate);
+        var descriptionWithReplacedVariables = ReplaceVariables(context.Variables, compiledWithTemplate, context);
 
         return descriptionWithReplacedVariables;
     }
 
-    public static string ReplaceVariables(Dictionary<string,string> variables, string compiledWithTemplate)
+    private static readonly Regex s_regexVariable = new Regex("{{([^}]+)}}");
+
+    public static string ReplaceVariables(Dictionary<string,string> variables, string compiledWithTemplate, TestExecutionContext context)
     {
-        // @(VARIABLENAME)
-        foreach (var variable in variables)
+        var lines = compiledWithTemplate.Split('\n');
+        List<string> outputLines = new List<string>(lines.Length);
+
+        int lineNumber = 0;
+        foreach (var line in lines)
         {
-            var pattern = "{{" + variable.Key + "}}";
-            compiledWithTemplate = compiledWithTemplate.Replace(pattern, variable.Value);   
+            var outputLine = line;
+
+            lineNumber++;
+            int count = 0;
+            int pos = 0;
+            while (true)
+            {
+                var match = s_regexVariable.Match(outputLine, pos);
+                if (!match.Success)
+                {
+                    break;
+                }
+
+                var start = outputLine[0..match.Index];
+                var variablePatternMatch = outputLine[match.Index..(match.Length+match.Index)];
+                var end = outputLine[(match.Index + match.Length)..];
+
+                var variable = variablePatternMatch.TrimStart('{').TrimEnd('}');
+                if (variables.TryGetValue(variable, out var value))
+                {
+                    pos = match.Index + 1;
+
+                    outputLine = start + value + end;
+                }
+                else
+                {
+                    // The variable could not be found
+                    context.CompilerErrors.Add(new Contracts.Testing.Models.CompilerError
+                    {
+                        Code = 1,
+                        Line = lineNumber,
+                        Column = match.Index + 1,
+                        Message = $"The variable {variablePatternMatch} was not found"
+                    });
+
+                    pos = match.Index + match.Length;
+                }
+
+                count++;
+                if (count > 10000)
+                {
+                    throw new Exception("Failed to replace variable, perhaps a variable value contains a variable itself");
+                }
+            }
+            outputLines.Add(outputLine);
         }
-        return compiledWithTemplate;
+
+        //foreach (var variable in variables)
+        //{
+        //    var pattern = "{{" + variable.Key + "}}";
+        //    compiledWithTemplate = compiledWithTemplate.Replace(pattern, variable.Value);   
+        //}
+        return string.Join("\n", outputLines);
     }
 
     private async Task<TestCase?> FindTestCaseByNameAsync(ClaimsPrincipal principal, string name)

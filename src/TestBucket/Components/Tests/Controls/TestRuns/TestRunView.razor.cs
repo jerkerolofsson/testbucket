@@ -38,7 +38,8 @@ public partial class TestRunView
             TestCase testCase = _selectedTestCaseRun.TestCase!;
             string description = testCase.Description ?? "";
             long testRunId = _selectedTestCaseRun.TestRunId;
-            _markdown = (await testCaseEditorController.CompileTestCaseRunPreviewAsync(testCase, testRunId, description)) ?? "";
+            List<CompilerError> errors = new List<CompilerError>(); 
+            _markdown = (await testCaseEditorController.CompileTestCaseRunPreviewAsync(testCase, testRunId, description, errors)) ?? "";
         }
     }
 

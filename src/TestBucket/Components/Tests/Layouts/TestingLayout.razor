@@ -14,6 +14,7 @@
 <Splitter Style="height: 100%" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
         <TestTreeView 
+        @ref="_testTreeView"
         Project="@_project" Team="@_team"
         OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" OnTestCaseClicked="OnTestCaseClicked" OnTestRunClicked="OnTestRunClicked" />
     </StartContent>
@@ -29,6 +30,7 @@
 
     private Team? _team;
     private TestProject? _project;
+    private TestTreeView? _testTreeView;
 
     protected override void OnParametersSet()
     {
@@ -38,6 +40,13 @@
             _team = Team;
         }
     }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        appNavigationManager.State.TestTreeView = _testTreeView;
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
     private void OnTestCaseClicked(TestCase test)
     {
         appNavigationManager.NavigateTo(test);

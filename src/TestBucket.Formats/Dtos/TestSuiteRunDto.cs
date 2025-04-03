@@ -11,6 +11,7 @@
             return 0;
         }
 
+        #region Count by test result
         public int Passed => Count(TestResult.Passed);
         public int Failed => Count(TestResult.Failed);
         public int Errors => Count(TestResult.Error);
@@ -31,7 +32,11 @@
                 return 0;
             }
         }
+        #endregion
 
+        /// <summary>
+        /// One item per executed test
+        /// </summary>
         public List<TestCaseRunDto> Tests { get; set; } = [];
     }
 }

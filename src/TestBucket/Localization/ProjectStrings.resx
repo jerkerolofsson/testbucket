@@ -117,7 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="integrations-description" xml:space="preserve">
+    <value>Manage integrations with external systems</value>
+  </data>
+  <data name="intergrations" xml:space="preserve">
+    <value>Integrations</value>
+  </data>
   <data name="name-of-the-project" xml:space="preserve">
     <value>Name of the project</value>
+  </data>
+  <data name="project-icon" xml:space="preserve">
+    <value>Project Icon</value>
   </data>
 </root>

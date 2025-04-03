@@ -1,7 +1,12 @@
-﻿using TestBucket.Traits.Core;
+﻿using System.Text.Json.Serialization;
+
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Formats.Dtos
 {
+    /// <summary>
+    /// Collection of traits/properties/attributes
+    /// </summary>
     public class TestTraitCollection
     {
         /// <summary>
@@ -9,9 +14,12 @@ namespace TestBucket.Formats.Dtos
         /// </summary>
         public List<TestTrait> Traits { get; set; } = [];
 
+        #region Convenience trait access properties
+
         /// <summary>
         /// ID attribute
         /// </summary>
+        [JsonIgnore]
         public string? ExternalId
         {
             get => GetAttribute(TraitType.TestId);
@@ -21,6 +29,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Name attribute
         /// </summary>
+        [JsonIgnore]
         public string? Name
         {
             get => GetAttribute(TraitType.Name);
@@ -29,6 +38,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Assembly attribute
         /// </summary>
+        [JsonIgnore]
         public string? Assembly
         {
             get => GetAttribute(TraitType.Assembly);
@@ -38,6 +48,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Module attribute
         /// </summary>
+        [JsonIgnore]
         public string? Module
         {
             get => GetAttribute(TraitType.Module);
@@ -47,6 +58,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Area attribute
         /// </summary>
+        [JsonIgnore]
         public string? Area
         {
             get => GetAttribute(TraitType.Area);
@@ -57,6 +69,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// TestedHardwareVersion attribute
         /// </summary>
+        [JsonIgnore]
         public string? HardwareVersion
         {
             get => GetAttribute(TraitType.HardwareVersion);
@@ -66,6 +79,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// SystemOut attribute
         /// </summary>
+        [JsonIgnore]
         public string? SystemOut
         {
             get => GetAttribute(TraitType.SystemOut);
@@ -76,6 +90,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// SystemErr attribute
         /// </summary>
+        [JsonIgnore]
         public string? SystemErr
         {
             get => GetAttribute(TraitType.SystemErr);
@@ -85,6 +100,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Version attribute
         /// </summary>
+        [JsonIgnore]
         public string? Version
         {
             get => GetAttribute(TraitType.Version);
@@ -94,14 +110,17 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// TestedSoftwareVersion attribute
         /// </summary>
+        [JsonIgnore]
         public string? SoftwareVersion
         {
             get => GetAttribute(TraitType.SoftwareVersion);
             set => SetAttribute(TraitType.SoftwareVersion, value);
         }
+
         /// <summary>
         /// Environment attribute
         /// </summary>
+        [JsonIgnore]
         public string? Environment
         {
             get => GetAttribute(TraitType.Environment);
@@ -111,6 +130,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// TestCategory attribute
         /// </summary>
+        [JsonIgnore]
         public string? TestCategory
         {
             get => GetAttribute(TraitType.TestCategory);
@@ -120,6 +140,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Path/name of test
         /// </summary>
+        [JsonIgnore]
         public string? TestFilePath
         {
             get => GetAttribute(TraitType.TestFilePath);
@@ -129,6 +150,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// EndedTime attribute
         /// </summary>
+        [JsonIgnore]
         public DateTimeOffset? EndedTime
         {
             get => GetAttributeAsDateTimeOffset(TraitType.EndedTime);
@@ -138,14 +160,17 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// StartedTime attribute
         /// </summary>
+        [JsonIgnore]
         public DateTimeOffset? StartedTime
         {
             get => GetAttributeAsDateTimeOffset(TraitType.StartedTime);
             set => SetAttribute(TraitType.StartedTime, value);
         }
+
         /// <summary>
         /// CreatedTime attribute
         /// </summary>
+        [JsonIgnore]
         public DateTimeOffset? CreatedTime
         {
             get => GetAttributeAsDateTimeOffset(TraitType.CreatedTime);
@@ -155,6 +180,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Project attribute
         /// </summary>
+        [JsonIgnore]
         public string? Project
         {
             get => GetAttribute(TraitType.Project);
@@ -164,6 +190,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// TestId attribute
         /// </summary>
+        [JsonIgnore]
         public string? TestId
         {
             get => GetAttribute(TraitType.TestId);
@@ -173,11 +200,14 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Tag attribute
         /// </summary>
+        [JsonIgnore]
         public string? Tag
         {
             get => GetAttribute(TraitType.Tag);
             set => SetAttribute(TraitType.Tag, value);
         }
+
+        #endregion Convenience trait access properties
 
         /// <summary>
         /// Adds a test category
@@ -197,6 +227,11 @@ namespace TestBucket.Formats.Dtos
             Traits.Add(new TestTrait(TraitType.Tag, value));
         }
 
+        /// <summary>
+        /// Sets an attribute, overwriting any attributes with the same type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
         public void SetAttribute(TraitType type, int? value)
         {
             Traits.RemoveAll(x => x.Type == type);
@@ -205,6 +240,12 @@ namespace TestBucket.Formats.Dtos
                 Traits.Add(new TestTrait(type, value.Value.ToString()));
             }
         }
+
+        /// <summary>
+        /// Sets an attribute, overwriting any attributes with the same type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
         public void SetAttribute(TraitType type, DateTimeOffset? value)
         {
             Traits.RemoveAll(x => x.Type == type);
@@ -213,6 +254,12 @@ namespace TestBucket.Formats.Dtos
                 Traits.Add(new TestTrait(type, value.Value.ToString("O")));
             }
         }
+
+        /// <summary>
+        /// Sets an attribute, overwriting any attributes with the same type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
         public void SetAttribute(TraitType type, TimeSpan? value)
         {
             Traits.RemoveAll(x => x.Type == type);
@@ -221,6 +268,12 @@ namespace TestBucket.Formats.Dtos
                 Traits.Add(new TestTrait(type, value.Value.ToString()));
             }
         }
+
+        /// <summary>
+        /// Sets an attribute, overwriting any attributes with the same type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="value"></param>
         public void SetAttribute(TraitType type, string? value)
         {
             Traits.RemoveAll(x => x.Type == type);
@@ -230,6 +283,13 @@ namespace TestBucket.Formats.Dtos
             }
         }
 
+        /// <summary>
+        /// Gets an attribute of the specified type.
+        /// If there are multiple only the first will be returned.
+        /// If there are none null will be returned
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public string? GetAttribute(TraitType type)
         {
             foreach (var attr in Traits
@@ -239,6 +299,14 @@ namespace TestBucket.Formats.Dtos
             }
             return default;
         }
+        
+        /// <summary>
+        /// Gets an attribute of the specified type.
+        /// If there are multiple only the first will be returned.
+        /// If there are none null will be returned
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public int? GetAttributeAsInt32(TraitType type)
         {
             foreach (var attr in Traits
@@ -251,6 +319,14 @@ namespace TestBucket.Formats.Dtos
             }
             return null;
         }
+
+        /// <summary>
+        /// Gets an attribute of the specified type.
+        /// If there are multiple only the first will be returned.
+        /// If there are none null will be returned
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public TimeSpan? GetAttributeAsTimeSpan(TraitType type)
         {
             foreach (var attr in Traits
@@ -263,6 +339,14 @@ namespace TestBucket.Formats.Dtos
             }
             return null;
         }
+
+        /// <summary>
+        /// Gets an attribute of the specified type.
+        /// If there are multiple only the first will be returned.
+        /// If there are none null will be returned
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public DateTimeOffset? GetAttributeAsDateTimeOffset(TraitType type)
         {
             foreach (var attr in Traits
@@ -275,6 +359,12 @@ namespace TestBucket.Formats.Dtos
             }
             return null;
         }
+
+        /// <summary>
+        /// Returns true if there are atleast one attribute of the specified type
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public bool HasAttribute(TraitType type)
         {
             return Traits.Where(x => x.Type == type).Any();

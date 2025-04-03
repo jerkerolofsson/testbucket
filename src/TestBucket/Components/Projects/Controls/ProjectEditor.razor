@@ -16,7 +16,6 @@
     string projectFieldsUrl = $"/{Project.TenantId}/Settings/Projects/{Project.Slug}/Fields";
     string projectIntegrationsUrl = $"/{Project.TenantId}/Settings/Projects/{Project.Slug}/Integrations";
 
-
     <EditForm Model="@Project" OnValidSubmit="async () => await OnValidSubmitAsync()">
 
         <MudStack Class="pa-5">
@@ -39,12 +38,12 @@
 
 
             <FieldLink Href="@projectFieldsUrl" HeaderText="Fields" Description="Manage custom fields and traits"/>
-            <FieldLink Href="@projectIntegrationsUrl" HeaderText="Integrations" Description="Manage integrations with external systems" />
+            <FieldLink Href="@projectIntegrationsUrl" HeaderText="@projectLoc["integrations"]" Description="@projectLoc["integrations-description"]" />
 
             <MudText Typo="Typo.h3" Class="pa-3">Appearance</MudText>
             <Field>
-                <MudStack Row AlignItems="AlignItems.Start"> 
-                    <FieldHeader>Project Icon</FieldHeader>
+                <MudStack Row AlignItems="AlignItems.Start">
+                    <FieldHeader>@projectLoc["project-icon"]</FieldHeader>
                     <MudSpacer/>
                     @if(!string.IsNullOrEmpty(Project.IconUrl))
                     {
@@ -57,7 +56,7 @@
 
             <MudText Typo="Typo.h3" Class="pa-3">Access</MudText>
             <Field Row>
-                <FieldHeader>Team</FieldHeader>
+                <FieldHeader>@loc["team"]</FieldHeader>
                 <MudSpacer/>
                 <TeamDropDown SelectedTeam="_team" SelectedTeamChanged="OnTeamChanged" />
             </Field>
@@ -69,15 +68,15 @@
             </Field>
 
             <Field Row Spacing="3">
-                <FieldHeader>Slug</FieldHeader>
+                <FieldHeader>@loc["slug"]</FieldHeader>
                 <MudText>@Project.Slug</MudText>
 
-                <FieldHeader>ID</FieldHeader>
+                <FieldHeader>@loc["id"]</FieldHeader>
                 <MudText>@Project.Id</MudText>
             </Field>
         </MudStack>
 
-        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Save</MudButton>
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["save"]</MudButton>
     </EditForm>
 }
 

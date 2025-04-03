@@ -1,13 +1,20 @@
-﻿using TestBucket.Formats.Abstractions;
+﻿using System.Text.Json.Serialization;
+
+using TestBucket.Formats.Abstractions;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Formats.Dtos
 {
+    /// <summary>
+    /// Contains metadata and results related to one executed test case
+    /// </summary>
     public class TestCaseRunDto : TestTraitCollection, ITestAttachmentSource
     {
+        #region Convenience trait access properties
         /// <summary>
         /// Passed/Failed etc
         /// </summary>
+        [JsonIgnore]
         public TestResult? Result
         {
             get
@@ -35,14 +42,11 @@ namespace TestBucket.Formats.Dtos
                 }
             }
         }
-        /// <summary>
-        /// Attachments
-        /// </summary>
-        public List<AttachmentDto> Attachments { get; set; } = [];
 
         /// <summary>
         /// Execution duration
         /// </summary>
+        [JsonIgnore]
         public TimeSpan? Duration
         {
             get => GetAttributeAsTimeSpan(TraitType.Duration);
@@ -52,6 +56,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Description of entity
         /// </summary>
+        [JsonIgnore]
         public string? Description
         {
             get => GetAttribute(TraitType.TestDescription);
@@ -61,6 +66,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Browser used
         /// </summary>
+        [JsonIgnore]
         public string? Browser
         {
             get => GetAttribute(TraitType.Browser);
@@ -70,6 +76,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Message attribute (failure message, skipped message etc..)
         /// </summary>
+        [JsonIgnore]
         public string? Message
         {
             get => GetAttribute(TraitType.FailureMessage);
@@ -79,6 +86,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Failure type (could be exception name)
         /// </summary>
+        [JsonIgnore]
         public string? FailureType
         {
             get => GetAttribute(TraitType.FailureType);
@@ -88,6 +96,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// CallStack attribute
         /// </summary>
+        [JsonIgnore]
         public string? CallStack
         {
             get => GetAttribute(TraitType.CallStack);
@@ -97,6 +106,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Line attribute
         /// </summary>
+        [JsonIgnore]
         public int? Line
         {
             get => GetAttributeAsInt32(TraitType.Line);
@@ -107,6 +117,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// ClassName attribute
         /// </summary>
+        [JsonIgnore]
         public string? ClassName
         {
             get => GetAttribute(TraitType.ClassName);
@@ -116,15 +127,27 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Method attribute
         /// </summary>
+        [JsonIgnore]
         public string? Method
         {
             get => GetAttribute(TraitType.Method);
             set => SetAttribute(TraitType.Method, value);
         }
+        #endregion Convenience trait access properties
 
         /// <summary>
-        /// Folders
+        /// Attachments
+        /// </summary>
+        public List<AttachmentDto> Attachments { get; set; } = [];
+
+        /// <summary>
+        /// Folder path
         /// </summary>
         public string[] Folders { get; set; } = [];
+
+        /// <summary>
+        /// Numerical results
+        /// </summary>
+        public List<NumericalResultDto> NumericalResults { get; set; } = [];
     }
 }

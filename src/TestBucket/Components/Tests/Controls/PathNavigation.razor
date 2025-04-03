@@ -11,6 +11,7 @@
 @code {
     [Parameter] public TestCase? Test { get; set; }
     [Parameter] public long? FolderId { get; set; }
+    [Parameter] public IEnumerable<BreadcrumbItem>? TailItems { get; set; }
 
     private List<BreadcrumbItem> _nav = [];
     private string? _navUpUrl;
@@ -81,6 +82,12 @@
                 nav.Add(new BreadcrumbItem(folder.Name, appNavigationManager.GetUrl(folder)));
             }
         }
+
+        if(TailItems is not null)
+        {
+            nav.AddRange(TailItems);
+        }
+
         _nav = nav;
         this.StateHasChanged();
     }

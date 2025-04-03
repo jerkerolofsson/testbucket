@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Models;
+using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Shared;
 using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Data.Identity;
@@ -32,9 +34,6 @@ internal class SuperAdminUserService : ISuperAdminUserService
         _logger = logger;
         _serviceProvider = serviceProvider;
     }
-
-
-
 
     public async Task<PagedResult<ApplicationUser>> BrowseAsync(string tenantId, int offset, int count)
     {
@@ -78,6 +77,9 @@ internal class SuperAdminUserService : ISuperAdminUserService
         }
         return (IUserEmailStore<ApplicationUser>)userStore;
     }
+
+
+
     public async Task<IdentityResult> RegisterAndConfirmUserAsync(string tenantId, string email, string password)
     {
         var user = new ApplicationUser() { TenantId = tenantId };

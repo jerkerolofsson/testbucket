@@ -210,4 +210,46 @@
   <data name="search-settings" xml:space="preserve">
     <value>Sök inställningar..</value>
   </data>
+  <data name="test-case-variables-description" xml:space="preserve">
+    <value>Test variabler är värden som ersätter placeholders i testfallet som {{Name}} med värdet definerat i i tabellen. Om en testmiljö används så kan värdet från testmiljön användas, men om variablen finns definerad i båda så används värdet från testfallet. </value>
+  </data>
+  <data name="variable-key" xml:space="preserve">
+    <value>Namn</value>
+  </data>
+  <data name="variable-value" xml:space="preserve">
+    <value>Innehåll</value>
+  </data>
+  <data name="requirement-coverage" xml:space="preserve">
+    <value>Krav täckning</value>
+  </data>
+  <data name="users" xml:space="preserve">
+    <value>Användare</value>
+  </data>
+  <data name="permission-none" xml:space="preserve">
+    <value>Inga</value>
+  </data>
+  <data name="permission-read" xml:space="preserve">
+    <value>Läsa</value>
+  </data>
+  <data name="permission-write" xml:space="preserve">
+    <value>Editera/Skapa</value>
+  </data>
+  <data name="permission-delete" xml:space="preserve">
+    <value>Fulla rättigheter</value>
+  </data>
+  <data name="role-read-only" xml:space="preserve">
+    <value>Read Only</value>
+  </data>
+  <data name="role-site-admin" xml:space="preserve">
+    <value>Sajt administratör</value>
+  </data>
+  <data name="role-tenant-admin" xml:space="preserve">
+    <value>Tenant administratör</value>
+  </data>
+  <data name="role-regular-user" xml:space="preserve">
+    <value>Vanlig användare</value>
+  </data>
+  <data name="missing-permission-general" xml:space="preserve">
+    <value>Du saknar rättigheter för denna resurs</value>
+  </data>
 </root>

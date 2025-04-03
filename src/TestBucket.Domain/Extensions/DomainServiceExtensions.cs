@@ -1,4 +1,6 @@
-﻿using TestBucket.Domain.AI;
+﻿using Microsoft.AspNetCore.Authentication;
+
+using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Settings;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Automation.Services;
@@ -6,6 +8,7 @@ using TestBucket.Domain.Commands;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
@@ -32,6 +35,8 @@ public static class DomainServiceExtensions
         });
 
         services.AddSingleton<IApiKeyAuthenticator,ApiKeyAuthenticator>();
+        services.AddScoped<IUserPermissionsManager, UserPermissionsManager>();
+        services.AddScoped<IClaimsTransformation, PermissionClaimsTransformation>();
 
         services.AddScoped<IMarkdownDetector,TemplateDetector>();
         services.AddScoped<IMarkdownDetector,HybridDetector>();

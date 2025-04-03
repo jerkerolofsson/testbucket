@@ -45,6 +45,7 @@ internal class UserManager : IUserManager
         await _userService.AddApiKeyAsync(apiKey);
     }
 
+
     public async Task DeleteApiKeyAsync(ClaimsPrincipal principal, ApplicationUserApiKey apiKey)
     {
         var user = await FindAsync(principal) ?? throw new InvalidOperationException("User not found"); ;
@@ -53,6 +54,12 @@ internal class UserManager : IUserManager
         await _userService.DeleteApiKeyAsync(user.Id, tenantId, apiKey.Id);
     }
 
+
+    public async Task<ApplicationUser?> GetUserByNormalizedUserNameAsync(ClaimsPrincipal principal, string normalizedUserName)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        return await _userService.FindByNormalizedEmailAsync(principal, normalizedUserName);
+    }
     public async Task<ApplicationUser?> FindAsync(ClaimsPrincipal principal)
     {
         var tenantId = principal.GetTenantIdOrThrow();

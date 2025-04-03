@@ -12,6 +12,7 @@ public partial class TestCaseEditor
 {
     [CascadingParameter] public TestProject? Project { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public Tenant? Tenant { get; set; }
     [Parameter] public TestCase? Test { get; set; }
     [Parameter] public EventCallback<TestCase?> TestChanged { get; set; }
 
@@ -23,7 +24,6 @@ public partial class TestCaseEditor
     private string? _descriptionText;
     private string? _previewText;
     private readonly List<CompilerError> _errors = new List<CompilerError>();
-
 
     public string? Text
     {
@@ -100,18 +100,6 @@ public partial class TestCaseEditor
         await testCaseEditorController.DeleteTestCaseAsync(Test);
     }
 
-    private List<EnvironmentVariable> _testParameters = [];
-
-    private async Task OnTestParametersChangedAsync(List<EnvironmentVariable> environmentVariables)
-    {
-        if (Test is not null)
-        {
-            _testParameters = environmentVariables;
-
-            Test.TestParameters = environmentVariables.ToDictionary();
-            await TestChanged.InvokeAsync(Test);
-        }
-    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -123,9 +111,6 @@ public partial class TestCaseEditor
 
         if (Test is not null)
         {
-            Test.TestParameters ??= new();
-            _testParameters = Test.TestParameters.ToEnvironmentVariables();
-
             if (Test.Description != _descriptionText)
             {
                 this.StateHasChanged();

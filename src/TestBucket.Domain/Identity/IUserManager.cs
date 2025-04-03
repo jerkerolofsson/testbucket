@@ -53,4 +53,5 @@ public interface IUserManager
     /// <returns></returns>
     Task<PagedResult<ApplicationUser>> BrowseAsync(ClaimsPrincipal principal, int offset, int count);
     Task<ApplicationUser?> FindAsync(ClaimsPrincipal principal);
+    Task<ApplicationUser?> GetUserByNormalizedUserNameAsync(ClaimsPrincipal principal, string normalizedUserName);
 }

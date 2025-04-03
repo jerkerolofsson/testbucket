@@ -90,6 +90,8 @@ public interface IRequirementManager
     Task<RequirementTestLink[]> GetLinksForRequirementAsync(ClaimsPrincipal principal, Requirement requirement);
     Task<RequirementTestLink[]> GetLinksForTestAsync(ClaimsPrincipal principal, TestCase test);
     Task AddRequirementLinkAsync(ClaimsPrincipal principal, Requirement requirement, TestCase testCase);
+    Task AddRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
     Task DeleteRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
+    Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification);
     #endregion
 }

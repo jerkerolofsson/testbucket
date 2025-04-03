@@ -3,7 +3,7 @@
     <MudStack AlignItems="AlignItems.Center" Class="file-resource-thumbnail pa-1" @onclick="FileClicked">
         @if(Resource.ContentType is not null && Resource.ContentType.StartsWith("image/"))
         {
-            string src = $"/api/files/{Resource.Id}";
+            string src = $"/api/resources/{Resource.Id}";
             <MudImage Src="@src" Style="max-width: 64px; max-height: 64px"/>
         }
         else

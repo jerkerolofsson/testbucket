@@ -22,12 +22,23 @@ public class RequirementTestLink : Entity
     public required long RequirementId { get; set; }
 
     /// <summary>
+    /// External requirement ID / slug
+    /// </summary>
+    public string? RequirementExternalId { get; set; }
+
+    /// <summary>
     /// FK for test case
     /// </summary>
     public required long TestCaseId { get; set; }
 
+    /// <summary>
+    /// Specification
+    /// </summary>
+    public long? RequirementSpecificationId { get; set; }
+
     // Navigation
 
     public Requirement? Requirement { get; set; }
+    public RequirementSpecification? RequirementSpecification { get; set; }
     public TestCase? TestCase { get; set; }
 }

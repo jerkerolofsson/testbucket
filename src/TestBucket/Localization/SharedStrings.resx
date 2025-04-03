@@ -210,4 +210,48 @@
   <data name="search-settings" xml:space="preserve">
     <value>Search Settings..</value>
   </data>
+  <data name="test-case-variables-description" xml:space="preserve">
+    <value>Test case variables contain parameters that override environment variables and can be used with templates to customize templates. A test parameter name is unique and there can only be one with the specific name. Data-driven test cases can have multiple configuration sets and a test case is executed once for each data-row.
+
+Variables are defined in a test case as {{Key}} and when running a test case the {{Key}} will be replaced by a variable named {{Key}}. </value>
+  </data>
+  <data name="variable-key" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="variable-value" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="requirement-coverage" xml:space="preserve">
+    <value>Requirement Coverage</value>
+  </data>
+  <data name="users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="permission-none" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="permission-read" xml:space="preserve">
+    <value>Read-Only</value>
+  </data>
+  <data name="permission-write" xml:space="preserve">
+    <value>Create/Edit</value>
+  </data>
+  <data name="permission-delete" xml:space="preserve">
+    <value>Full Permission</value>
+  </data>
+  <data name="role-read-only" xml:space="preserve">
+    <value>Read Only</value>
+  </data>
+  <data name="role-site-admin" xml:space="preserve">
+    <value>Site Administrator</value>
+  </data>
+  <data name="role-tenant-admin" xml:space="preserve">
+    <value>Tenant Administrator</value>
+  </data>
+  <data name="role-regular-user" xml:space="preserve">
+    <value>Regular User</value>
+  </data>
+  <data name="missing-permission-general" xml:space="preserve">
+    <value>You don't have the necessary permissions to view this content</value>
+  </data>
 </root>

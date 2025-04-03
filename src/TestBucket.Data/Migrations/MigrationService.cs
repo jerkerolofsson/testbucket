@@ -25,10 +25,11 @@ using TestBucket.Domain.Tenants;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Tenants.Models;
+using TestBucket.Domain.Identity.Permissions;
 
 
 namespace TestBucket.Data.Migrations;
-public class MigrationService(IServiceProvider serviceProvider, ILogger<MigrationService> logger, IConfiguration configuration, SeedConfiguration seedConfiguration) : BackgroundService
+public class MigrationService(IServiceProvider serviceProvider, ILogger<MigrationService> logger, SeedConfiguration seedConfiguration) : BackgroundService
 {
     public const string ActivitySourceName = "Migrations";
     private static readonly ActivitySource s_activitySource = new(ActivitySourceName);
@@ -145,6 +146,14 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
                 await CreateDefaultTenantAdminUserAsync(dbContext, scope, adminTenant, superAdminUserEmail, adminUserPassword);
                 await CreateApiKeyAsync(dbContext, scope, adminTenant, superAdminUserEmail, adminApiKey);
 
+                try
+                {
+                    await CreateDefaultRolePermissionsAsync(dbContext, adminTenant, scope);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Failed to create default user");
+                }
             }
             catch (Exception ex)
             {
@@ -250,6 +259,80 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
     {
         await CreateRoleIfNotExistsAsync(scope, Roles.SUPERADMIN); // Can create new tenants
         await CreateRoleIfNotExistsAsync(scope, Roles.ADMIN); // Tenant admin
+        await CreateRoleIfNotExistsAsync(scope, Roles.REGULAR_USER);
+        await CreateRoleIfNotExistsAsync(scope, Roles.READ_ONLY);
+    }
+
+    private async Task CreateDefaultRolePermissionsAsync(ApplicationDbContext dbContext, string tenantId, IServiceScope scope)
+    {
+        var role = Roles.SUPERADMIN;
+        var has = await dbContext.RolePermissions.Where(x => x.Role == role).AnyAsync();
+        if(!has)
+        {
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Tenant });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.User });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Project });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestSuite });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCase });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Requirement });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.RequirementSpecification });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestRun });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCaseRun });
+            await dbContext.SaveChangesAsync();
+        }
+
+        role = Roles.ADMIN;
+        has = await dbContext.RolePermissions.Where(x => x.Role == role).AnyAsync();
+        if (!has)
+        {
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Tenant });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.User });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Project });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestSuite });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCase });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Requirement });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.RequirementSpecification });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestRun });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCaseRun });
+            await dbContext.SaveChangesAsync();
+        }
+
+        role = Roles.REGULAR_USER;
+        has = await dbContext.RolePermissions.Where(x => x.Role == role).AnyAsync();
+        if (!has)
+        {
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Tenant });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Project });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.User });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestSuite });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCase });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Requirement });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.RequirementSpecification });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestRun });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCaseRun });
+            await dbContext.SaveChangesAsync();
+        }
+
+        role = Roles.READ_ONLY;
+        has = await dbContext.RolePermissions.Where(x => x.Role == role).AnyAsync();
+        if (!has)
+        {
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Tenant });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Project });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.User });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestSuite });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestCase });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.Requirement });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.RequirementSpecification });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestRun });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestCaseRun });
+            await dbContext.SaveChangesAsync();
+        }
+
+        //await yield;
+        //await CreateRoleIfNotExistsAsync(scope, Roles.SUPERADMIN); // Can create new tenants
+        //await CreateRoleIfNotExistsAsync(scope, Roles.ADMIN); // Tenant admin
+        //await CreateRoleIfNotExistsAsync(scope, Roles.REGULAR_USER); // Tenant admin
     }
 
     private async Task CreateRoleIfNotExistsAsync(IServiceScope scope, string roleName)

@@ -1,0 +1,122 @@
+﻿@attribute [Authorize(Roles = "ADMIN")]
+@layout SettingsLayout
+@inject RolesController rolesController
+@page "/{tenantId}/settings/roles"
+@using TestBucket.Components.Shared.Permissions
+@using TestBucket.Domain.Identity.Permissions
+@inject IStringLocalizer<SharedStrings> loc
+@inject RoleLocalizer roleLocalizer
+
+<MudStack Class="container-settings-page">
+
+    <MudText Class="mb-3" Typo="Typo.h1">@loc["roles"]</MudText>
+
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                @foreach(var role in _roles)
+                {
+                    <th>@roleLocalizer.GetLocalizedRole(role)</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entityType in _entities)
+            {
+                <tr>
+                    <td>@entityType</td>
+                    @foreach (var role in _roles)
+                    {
+                        <td>
+                            @{
+                                var permission = _permissions.Where(x => x.Entity == entityType && x.Role == role).FirstOrDefault();
+                            }
+                            @if(permission is not null)
+                            {
+                                <div class="tb-permission-level" @onclick="async () => await ToggleLevelAsync(permission)">
+                                    @roleLocalizer.GetLocalizedPermissionLevel(permission.Level)
+                                </div>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @* <PermissionView Entity="PermissionEntityType.User" Level="PermissionLevel.Read"> *@
+    @*     <Authorized>User read:OK!</Authorized> *@
+    @*     <NotAuthorized>User read:not authorized</NotAuthorized> *@
+    @* </PermissionView> *@
+    
+    @* <PermissionView Entity="PermissionEntityType.User" Level="PermissionLevel.Write"> *@
+    @*     <Authorized>User Write:OK!</Authorized> *@
+    @*     <NotAuthorized>User Write:not authorized</NotAuthorized> *@
+    @* </PermissionView> *@
+
+    
+    @* <PermissionView Entity="PermissionEntityType.User" Level="PermissionLevel.Delete"> *@
+    @*     <Authorized>User Delete:OK!</Authorized> *@
+    @*     <NotAuthorized>User Delete:not authorized</NotAuthorized> *@
+    @* </PermissionView> *@
+</MudStack>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+
+    private PermissionEntityType[] _entities = [PermissionEntityType.Project, PermissionEntityType.User, PermissionEntityType.TestCase, PermissionEntityType.Requirement, PermissionEntityType.TestRun];
+    private List<RolePermission> _permissions = [];
+    private string[] _roles = [Roles.READ_ONLY, Roles.REGULAR_USER, Roles.ADMIN, Roles.SUPERADMIN];
+
+
+    protected async Task ToggleLevelAsync(RolePermission permission)
+    {
+        if(permission.Level == PermissionLevel.None)
+        {
+            permission.Level = PermissionLevel.Read;
+        }
+        else if ((permission.Level & PermissionLevel.Delete) == PermissionLevel.Delete)
+        {
+            permission.Level = PermissionLevel.None;
+        }
+        else if ((permission.Level & PermissionLevel.Write) == PermissionLevel.Write)
+        {
+            permission.Level = PermissionLevel.Write | PermissionLevel.Read | PermissionLevel.Delete;
+        }
+        else if ((permission.Level & PermissionLevel.Read) == PermissionLevel.Read)
+        {
+            permission.Level = PermissionLevel.Write | PermissionLevel.Read;
+        }
+        else
+        {
+            permission.Level = PermissionLevel.None;
+        }
+        await rolesController.UpdateAsync(permission);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _permissions = (await rolesController.GetTenantRolePermissionsAsync()).ToList();
+
+        // Add missing permissions
+        foreach(var role in _roles)
+        {
+            foreach(var entity in _entities)
+            {
+                var permission = _permissions.Where(x => x.Entity == entity && x.Role == role).FirstOrDefault();
+                if(permission is null)
+                {
+                    permission = new RolePermission
+                    {
+                        Role = role,
+                        Entity = entity,
+                        Level = PermissionLevel.None
+                    };
+                    await rolesController.AddAsync(permission);
+                    _permissions.Add(permission);
+                }
+            }
+        }
+    }
+}

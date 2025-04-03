@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Shared;
+using TestBucket.Domain.Tenants.Models;
+
 namespace TestBucket.Data.Identity;
 internal class UserService : IUserService
 {
@@ -34,14 +40,36 @@ internal class UserService : IUserService
     }
     #endregion
 
+    /// <summary>
+    /// Finds the current user as identified by the principal
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="tenantId"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task<ApplicationUser?> FindAsync(ClaimsPrincipal principal, string tenantId)
     {
         var email = principal.Claims.Where(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").FirstOrDefault() ?? throw new Exception("principal has no email");
-
-        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Users.AsNoTracking().Where(x => x.TenantId == tenantId && x.Email == email.Value).FirstOrDefaultAsync();
+        return await FindByEmailAsync(principal, email.Value);
     }
-
+    public async Task<ApplicationUser?> FindByEmailAsync(ClaimsPrincipal principal, string email)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.Users.AsNoTracking().Where(x => x.TenantId == tenantId && x.Email == email).FirstOrDefaultAsync();
+    }
+    public async Task<ApplicationUser?> FindByNormalizedEmailAsync(ClaimsPrincipal principal, string normalizedEmail)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.Users.AsNoTracking().Where(x => x.TenantId == tenantId && x.NormalizedEmail == normalizedEmail).FirstOrDefaultAsync();
+    }
+    public async Task<ApplicationUser?> FindByNormalizedUserNameAsync(ClaimsPrincipal principal, string normalizedUserName)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.Users.AsNoTracking().Where(x => x.TenantId == tenantId && x.NormalizedUserName == normalizedUserName).FirstOrDefaultAsync();
+    }
 
     public async Task<PagedResult<ApplicationUser>> SearchAsync(string tenantId, SearchQuery query, Predicate<ApplicationUser> predicate, CancellationToken cancellationToken = default)
     {

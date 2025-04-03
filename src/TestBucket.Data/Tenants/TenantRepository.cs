@@ -18,7 +18,8 @@ internal class TenantRepository : ITenantRepository
     /// <summary>
     /// Creates a new tenant
     /// </summary>
-    /// <param name="name">Name of project</param>
+    /// <param name="name">Name of tenant</param>
+    /// <param name="tenantId">Tenant ID</param>
     /// <returns></returns>
     public async Task<OneOf<Tenant, AlreadyExistsError>> CreateAsync(string name, string tenantId)
     {
@@ -41,6 +42,15 @@ internal class TenantRepository : ITenantRepository
         return tenant;
     }
 
+    /// <inheritdoc/>
+    public async Task<Tenant?> GetTenantByIdAsync(string tenantId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.Tenants.Where(x => x.Id == tenantId).FirstOrDefaultAsync();
+
+    }
+
+    /// <inheritdoc/>
     public async Task<bool> ExistsAsync(string tenantId)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -48,6 +58,7 @@ internal class TenantRepository : ITenantRepository
 
     }
 
+    /// <inheritdoc/>
     public async Task<PagedResult<Tenant>> SearchAsync(SearchQuery query)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();

@@ -68,12 +68,39 @@ namespace TestBucket.Domain.Requirements
             await _repository.DeleteRequirementLinkAsync(requirementLink);
         }
 
+        /// <summary>
+        /// Returns all requirement links for a specification
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="specification"></param>
+        /// <returns></returns>
+        public async Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification)
+        {
+            principal.ThrowIfEntityTenantIsDifferent(specification);
+            var tenantId = principal.GetTenantIdOrThrow();
+
+            return await _repository.GetRequirementLinksForSpecificationAsync(tenantId, specification.Id);
+        }
+
         public async Task AddRequirementLinkAsync(ClaimsPrincipal principal, Requirement requirement, TestCase testCase)
         {
             principal.ThrowIfNotAdmin();
 
             var tenantId = principal.GetTenantIdOrThrow();
-            var requirementLink = new RequirementTestLink { RequirementId = requirement.Id, TestCaseId = testCase.Id, TenantId = tenantId };
+            var requirementLink = new RequirementTestLink 
+            { 
+                RequirementId = requirement.Id, 
+                RequirementSpecificationId = requirement.RequirementSpecificationId,
+                RequirementExternalId = requirement.ExternalId,
+                TestCaseId = testCase.Id, 
+                TenantId = tenantId 
+            };
+            await _repository.AddRequirementLinkAsync(requirementLink);
+        }
+
+        public async Task AddRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink requirementLink)
+        {
+            principal.ThrowIfEntityTenantIsDifferent(requirementLink);
             await _repository.AddRequirementLinkAsync(requirementLink);
         }
 

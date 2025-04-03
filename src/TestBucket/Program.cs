@@ -15,6 +15,7 @@ using TestBucket.Components.Layout.Controls;
 using TestBucket.Components.Projects;
 using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Settings.ApiKeys;
+using TestBucket.Components.Settings.Roles;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Themeing;
 using TestBucket.Components.Teams;
@@ -27,6 +28,7 @@ using TestBucket.Contracts.Integrations;
 using TestBucket.Data.Migrations;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Gitlab;
 using TestBucket.Identity;
@@ -55,7 +57,7 @@ public class Program
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddMemoryCache();
 
-
+        builder.Services.AddSingleton<RoleLocalizer>();
         builder.Services.AddLocalization(options =>
         {
         });
@@ -180,7 +182,8 @@ public class Program
         builder.Services.AddScoped<UserRegistrationController>();
         builder.Services.AddScoped<ThemingService>();
         builder.Services.AddScoped<TenantResolver>();
-        builder.Services.AddScoped<TenantService>();
+        builder.Services.AddScoped<TenantController>();
+        builder.Services.AddScoped<RolesController>();
         builder.Services.AddScoped<TeamService>();
         builder.Services.AddScoped<ProjectController>();
         builder.Services.AddScoped<TestSuiteService>();

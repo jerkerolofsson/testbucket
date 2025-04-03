@@ -113,6 +113,12 @@ namespace TestBucket.Domain.Requirements.Import
 
                                 ExtractMetadataFromDescription(requirement);
 
+                                // In order to keep the mapping for test cases when re-importing, we prefer to have an external ID
+                                if(string.IsNullOrEmpty(requirement.ExternalId))
+                                {
+                                    GenerateExternalId(requirement);
+                                }
+
                                 results.Add(requirement);
                             }
                         }
@@ -121,6 +127,12 @@ namespace TestBucket.Domain.Requirements.Import
             }
 
             return results;
+        }
+
+        private void GenerateExternalId(Requirement requirement)
+        {
+            var slug = new Slugify.SlugHelper().GenerateSlug(requirement.Name);
+            requirement.ExternalId = slug;
         }
 
         private readonly Regex s_requirementIdInBrackes = new Regex(@"\[.*\]");

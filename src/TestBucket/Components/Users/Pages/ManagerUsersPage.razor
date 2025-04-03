@@ -4,10 +4,12 @@
 @using TestBucket.Domain.Settings
 @layout SettingsLayout
 @inject UserController userController
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Class="container-settings-page">
 
-    <MudText Class="mb-3" Typo="Typo.h1">Users</MudText>
+    <MudText Class="mb-3" Typo="Typo.h1">@loc["users"]</MudText>
 
     <MudDataGrid ServerData="LoadGridData"
                  Style="width: 100%"
@@ -15,8 +17,8 @@
                  Hover="true"
                  T="ApplicationUser"
                  @ref="_dataGrid"
+                 RowClick="(e) => OnRowClicked(e.Item)"
                  SortMode="SortMode.None">
-                 @* RowClick="(e) => OnTestClicked(e.Item)" *@
 
         <ToolBarContent>
             <MudStack Row="true" AlignItems="AlignItems.Center">
@@ -48,6 +50,10 @@
         _dataGrid?.ReloadServerData();
     }
 
+    private void OnRowClicked(ApplicationUser user)
+    {
+        appNavigationManager.NavigateTo(user);
+    }
 
     private async Task<GridData<ApplicationUser>> LoadGridData(GridState<ApplicationUser> state)
     {

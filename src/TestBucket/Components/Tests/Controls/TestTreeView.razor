@@ -26,10 +26,10 @@
 
         @if (appNavigationManager.State.SelectedTestCase is not null)
         {
-            <MudIconButton OnClick="SyncWithActiveDocumentAsync" Icon="@Icons.Material.Filled.CompareArrows"/>
+            <MudIconButton Class="rounded-0" Size="Size.Small" OnClick="SyncWithActiveDocumentAsync" Icon="@Icons.Material.Filled.CompareArrows" />
         }
 
-        <MudMenu Icon="@Icons.Material.Filled.MoreHoriz">
+        <MudMenu Class="rounded-0" Size="Size.Small" Icon="@Icons.Material.Filled.MoreVert">
 
             @if (_selectedTreeItem?.Folder is not null)
             {

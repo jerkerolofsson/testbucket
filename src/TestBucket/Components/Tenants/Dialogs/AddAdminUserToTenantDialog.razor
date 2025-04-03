@@ -2,7 +2,7 @@
 @using TestBucket.Components.Users
 @using TestBucket.Data.Identity
 @attribute [Authorize(Roles = "SUPERADMIN")]
-@inject TenantService tenantService
+@inject TenantController tenantController
 @inject ISuperAdminUserService userService
 
 <EditForm Model="@_model" OnValidSubmit="async () => await OnValidSubmitAsync()">
@@ -106,7 +106,7 @@
 
     private async Task OnValidSubmitAsync()
     {
-        await tenantService.GuardAsync();
+        await tenantController.GuardAsync();
 
         var result = await RegisterUserAsync(TenantId ?? throw new Exception("TenantId is null"));
         if(result.Succeeded)

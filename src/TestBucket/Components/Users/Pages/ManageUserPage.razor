@@ -1,0 +1,34 @@
+﻿@attribute [Authorize(Roles = "ADMIN")]
+@page "/{TenantId}/Settings/Users/{NormalizedUserName}"
+@using TestBucket.Components.Users.Services
+@using TestBucket.Domain.Settings
+@layout SettingsLayout
+@inject UserController userController
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+
+<MudStack Class="container-settings-page">
+
+    @if(_user is not null)
+    {
+        <MudText Class="mb-3" Typo="Typo.h1">@_user.UserName</MudText>
+
+        
+    }
+
+</MudStack>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+    [Parameter] public string? NormalizedUserName { get; set; }
+
+    private ApplicationUser? _user;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (NormalizedUserName is not null && _user?.NormalizedUserName != NormalizedUserName)
+        {
+            _user = await userController.GetUserByNormalizedUserNameAsync(NormalizedUserName);
+        }
+    }
+}

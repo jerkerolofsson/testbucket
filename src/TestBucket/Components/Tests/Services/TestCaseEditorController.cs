@@ -198,6 +198,12 @@ internal class TestCaseEditorController : TenantBaseService
         }
     }
 
+    public async Task LinkTestCaseToRequirementAsync(TestCase testCase, Requirement requirement)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _requirementManager.AddRequirementLinkAsync(principal, requirement, testCase);
+    }
+
     /// <summary>
     /// Saves a test case
     /// </summary>
@@ -240,6 +246,11 @@ internal class TestCaseEditorController : TenantBaseService
             TestProjectId = testCase.TestProjectId,
             TestSuiteFolderId = testCase.TestSuiteFolderId,
             TeamId = testCase.TeamId,
+
+            TestParameters = testCase.TestParameters,
+            ExecutionType = testCase.ExecutionType,
+            ScriptType = testCase.ScriptType,
+            RunnerLanguage = testCase.RunnerLanguage,
         };
 
         // todo: copy fields

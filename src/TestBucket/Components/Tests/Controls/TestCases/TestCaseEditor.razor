@@ -11,6 +11,7 @@
 @inject AppNavigationManager appNavigationManager
 @inject ITestCompiler compiler
 @inject ISnackbar snackbar
+@inject IStringLocalizer<SharedStrings> loc
 
 @if(Test is not null)
 {
@@ -23,7 +24,7 @@
 
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 
-                <MudTooltip Text="Save Changes">
+                <MudTooltip Text="@loc["save"]">
                     <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="SaveChangesAsync" Class="rounded-0" />
                 </MudTooltip>
 
@@ -57,7 +58,7 @@
 
                 <AuthorizeView Roles="ADMIN">
                     <Authorized>
-                        <MudTooltip Text="Edit">
+                        <MudTooltip Text="@loc["edit"]">
                             <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => BeginEdit()" Class="rounded-0" />
                         </MudTooltip>
                     </Authorized>
@@ -76,8 +77,14 @@
 
             <MudDivider DividerType="DividerType.Middle" Vertical />
 
+            <MudTooltip Text="@loc["variables"]">
+                <MudIconButton Icon="@Icons.Material.Filled.Abc" Href="@appNavigationManager.GetTestCaseVariablesUrl()" Class="rounded-0" />
+            </MudTooltip>
+
             <MudMenu Icon="@Icons.Material.Filled.MoreVert">
-                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="async x => await DeleteTestCaseAsync()">Delete</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.AttachFile" Href="@appNavigationManager.GetTestCaseAttachmentsUrl()">@loc["attachments"]</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Tag" Href="@appNavigationManager.GetTestCaseFieldsUrl()">@loc["fields"]</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="async x => await DeleteTestCaseAsync()">@loc["delete"]</MudMenuItem>
             </MudMenu>
 
         </MudToolBar>
@@ -118,36 +125,18 @@
                 </MudStack>
             </StartContent>
             <EndContent>
-                <MudTabs Style="width: 100%">
-                    <MudTabPanel Text="Metadata">
-                        <MudStack Class="pa-2" Style="width: 100%">
 
-                            <Field>
-                                <FieldHeader>Created</FieldHeader>
-                                @Test.Created.Humanize()
-                            </Field>
+                <MudStack Class="pa-2">
 
-                            <MudText>VARIABLES</MudText>
-                            <EnvironmentVariableEditor Variables="@_testParameters" VariablesChanged="OnTestParametersChangedAsync" />
+                    <Field>
+                        <FieldHeader>Created</FieldHeader>
+                        @Test.Created.Humanize()
+                    </Field>
 
-                            <FieldsEditor TestCase="@Test" />
-                        </MudStack>
-                    </MudTabPanel>
+                    <FieldsEditor TestCase="@Test" />
+                    <MudLink Href="@appNavigationManager.GetTestCaseFieldsUrl()">@loc["more"]</MudLink>
 
-                    <MudTabPanel Text="Coverage">
-                        <TestRequirementLinksTable TestCase="@Test" Project="@Project" Team="@Team"/>
-                    </MudTabPanel>
-
-                    <MudTabPanel Text="Attachments">
-                        <MudStack Class="pa-2" Style="width: 100%">
-
-                            <Field>
-                                <FieldHeader>Attachments</FieldHeader>
-                                <AttachmentGrid AllowUpload="true" TestCaseId="@Test.Id" Style="width: 100%"/>
-                            </Field>
-                        </MudStack>
-                    </MudTabPanel>
-                </MudTabs>
+                </MudStack>
             </EndContent>
         </Splitter>
 

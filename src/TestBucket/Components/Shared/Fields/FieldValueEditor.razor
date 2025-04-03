@@ -28,7 +28,7 @@
                         <MudStack Row AlignItems="AlignItems.Center">
                         @if (Field.FieldDefinition.OptionIcons is not null && Field.FieldDefinition.OptionIcons.TryGetValue(item, out var optionIcon) && !string.IsNullOrEmpty(optionIcon))
                         {
-                            <MudIcon Icon="@optionIcon" />
+                                <MudIcon Size="Size.Small" Icon="@optionIcon" />
                         }
                         <MudText>@item</MudText>
                         </MudStack>

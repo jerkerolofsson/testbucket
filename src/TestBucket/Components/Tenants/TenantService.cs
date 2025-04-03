@@ -10,15 +10,25 @@ using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Components.Tenants;
 
-public class TenantService : SuperAdminGuard
+public class TenantController : SuperAdminGuard
 {
     private readonly ITenantRepository _repository;
 
-    public TenantService(
+    public TenantController(
         ITenantRepository repository,
         AuthenticationStateProvider authenticationStateProvider) : base(authenticationStateProvider)
     {
         _repository = repository;
+    }
+
+    public async Task<Tenant?> GetTenantAsync()
+    {
+        var tenantId = await GetTenantIdAsync();
+        if(tenantId is null)
+        {
+            return null;
+        }
+        return await _repository.GetTenantByIdAsync(tenantId);
     }
 
     public async Task<OneOf<Tenant, AlreadyExistsError>> CreateAsync(string name)

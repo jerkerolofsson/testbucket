@@ -17,8 +17,13 @@
         </MudStack>
     </ToolBarContent>
     <Columns>
-        <PropertyColumn Property="x => x.Key"/>
-        <PropertyColumn Property="x => x.Value" />
+        <PropertyColumn Property="x => x.Key" Title="@loc["variable-key"]" />
+        <PropertyColumn Property="x => x.Value" Title="@loc["variable-value"]" / />
+        <TemplateColumn>
+            <EditTemplate>
+                <MudIconButton Icon="@Icons.Material.Filled.Clear" OnClick="async() => await DeleteAsync(context.Item)"></MudIconButton>
+            </EditTemplate>
+        </TemplateColumn>
     </Columns>
 
 </MudDataGrid>
@@ -26,6 +31,15 @@
 @code {
     [Parameter] public List<EnvironmentVariable>? Variables { get; set; } = [];
     [Parameter] public EventCallback<List<EnvironmentVariable>> VariablesChanged { get; set; }
+
+    private async Task DeleteAsync(EnvironmentVariable? variable)
+    {
+        if(variable is not null)
+        {
+            var variables = (Variables ?? []).Where(x => x != variable).ToList();
+            await VariablesChanged.InvokeAsync(variables);
+        }
+    }
 
     public async Task OnChanged()
     {

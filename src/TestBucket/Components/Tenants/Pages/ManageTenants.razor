@@ -1,7 +1,7 @@
 ﻿@attribute [Authorize(Roles = "SUPERADMIN")]
 @layout SettingsLayout
 @page "/{tenantId}/Settings/Tenants"
-@inject TenantService tenantService
+@inject TenantController tenantService
 @inject IDialogService dialogService
 @inject NavigationManager navigationManager
 @inject IStringLocalizer<SharedStrings> loc

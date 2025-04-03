@@ -214,6 +214,7 @@ public class Program
 
         // Integrations
         builder.Services.AddSingleton<IProjectDataSource, GitlabProjectDataSource>();
+        builder.Services.AddSingleton<IExternalPipelineRunner, GitlabPipelineRunner>();
         builder.Services.AddDotHttpApiTestExtension();
 
         builder.Services.AddHotKeys2();

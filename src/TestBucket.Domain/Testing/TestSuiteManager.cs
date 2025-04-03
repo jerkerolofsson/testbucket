@@ -66,11 +66,11 @@ namespace TestBucket.Domain.Testing
         /// <param name="projectId"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<TestSuite> AddTestSuiteAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string name)
+        public async Task<TestSuite> AddTestSuiteAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string name, string? ciCdSystem, string? ciCdRef)
         {
             var tenantId = principal.GetTenantIdOrThrow();
 
-            var suite = new TestSuite { Name = name, TestProjectId = projectId, TeamId = teamId, TenantId = tenantId };
+            var suite = new TestSuite { Name = name, TestProjectId = projectId, TeamId = teamId, TenantId = tenantId, DefaultCiCdRef = ciCdRef, CiCdSystem = ciCdSystem };
             suite.Modified = suite.Created = DateTimeOffset.UtcNow;
             suite.CreatedBy = suite.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 

@@ -52,6 +52,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IFieldDefinitionManager, FieldDefinitionManager>();
         services.AddScoped<IFieldManager, FieldManager>();
         services.AddScoped<IProjectManager, ProjectManager>();
+        services.AddScoped<IPipelineProjectManager, PipelineProjectManager>();
         services.AddScoped<ICommandManager, CommandManager>();
         services.AddScoped<IUnifiedSearchManager, UnifiedSearchManager>();
         services.AddScoped<IProgressManager, ProgressManager>();

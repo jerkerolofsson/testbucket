@@ -32,4 +32,20 @@ public class TestSuite : TestEntity
     /// HTML color
     /// </summary>
     public string? Color { get; set; }
+
+    /// <summary>
+    /// Variables for the test suite, typically for CI/CD
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public Dictionary<string, string>? Variables { get; set; }
+
+    /// <summary>
+    /// Default branch/tag/commit when running CI/CD
+    /// </summary>
+    public string? DefaultCiCdRef { get; set; }
+
+    /// <summary>
+    /// Which integration to use
+    /// </summary>
+    public string? CiCdSystem { get; set; }
 }

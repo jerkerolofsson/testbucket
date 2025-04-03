@@ -252,4 +252,7 @@
   <data name="missing-permission-general" xml:space="preserve">
     <value>Du saknar rättigheter för denna resurs</value>
   </data>
+  <data name="ci-cd" xml:space="preserve">
+    <value />
+  </data>
 </root>

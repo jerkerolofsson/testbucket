@@ -107,10 +107,10 @@ internal class TestSuiteService : TenantBaseService
     /// <param name="projectId"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public async Task<TestSuite> AddTestSuiteAsync(long? teamId, long? projectId, string name)
+    public async Task<TestSuite> AddTestSuiteAsync(long? teamId, long? projectId, string name, string? ciCdSystem, string? ciCdRef = null)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        return await _testSuiteManager.AddTestSuiteAsync(principal, teamId, projectId, name);
+        return await _testSuiteManager.AddTestSuiteAsync(principal, teamId, projectId, name, ciCdSystem, ciCdRef);
     }
 
     /// <summary>

@@ -19,5 +19,7 @@ public interface IProjectDataSource
     /// </summary>
     TraitType[] SupportedTraits { get; }
 
-    Task<string[]> GetFieldOptionsAsync(ExternalSystemDto[] systems, TraitType trait, CancellationToken cancellationToken);
+    string SystemName { get; }
+
+    Task<string[]> GetFieldOptionsAsync(ExternalSystemDto system, TraitType trait, CancellationToken cancellationToken);
 }

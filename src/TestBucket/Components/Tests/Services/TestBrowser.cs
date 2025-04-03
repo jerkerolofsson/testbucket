@@ -451,7 +451,7 @@ internal class TestBrowser : TenantBaseService
             { x => x.Project, project },
             { x => x.Team, team },
         };
-        var dialog = await _dialogService.ShowAsync<AddTestSuiteDialog>("Add test suite", parameters);
+        var dialog = await _dialogService.ShowAsync<AddTestSuiteDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if (result?.Data is TestSuite testSuite)
         {
@@ -484,6 +484,18 @@ internal class TestBrowser : TenantBaseService
         FilterSpecification<TestCase>[] specifications = [new FilterByTenant<TestCase>(tenantId), new FilterTestCasesByTestSuite(testSuite.Id)];
         return await _testCaseRepository.SearchTestCaseIdsAsync(specifications);
     }
+
+    internal async Task<long[]> GetTestSuiteSuiteTestsAsync(TestSuite testSuite, bool excludeAutomated)
+    {
+        var tenantId = await GetTenantIdAsync();
+        List<FilterSpecification<TestCase>> specifications = [new FilterByTenant<TestCase>(tenantId), new FilterTestCasesByTestSuite(testSuite.Id)];
+        if (excludeAutomated)
+        {
+            specifications.Add(new FilterTestCasesExcludeAutomated());
+        }
+        return await _testCaseRepository.SearchTestCaseIdsAsync(specifications);
+    }
+
 
     internal async Task SyncWithActiveDocumentAsync(TestCase selectedTestCase)
     {

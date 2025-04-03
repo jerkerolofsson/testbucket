@@ -25,6 +25,9 @@
                         <TestCaseGrid  Project="@Project" TestSuiteId="@SuiteId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" OnTestSuiteFolderClicked="OnFolderClicked"/>
 
                         <BasicMarkdownEditor ToolbarTitle="@loc["readme"]" Text="@_testSuite.Description" TextChanged="OnDescriptionChanged"/>
+
+                        <MudText Typo="Typo.h2">@loc["variables"]</MudText>
+                        <TestSuiteVariables TestSuite="@_testSuite" TestSuiteChanged="OnTestSuiteVariablesChanged"/>
                     }
                 </MudStack>
             </article>
@@ -65,7 +68,12 @@
         }
         _testSuite.Description = description;
         await controller.SaveTestSuiteAsync(_testSuite);
+    }
 
+    private async Task OnTestSuiteVariablesChanged(TestSuite testSuite)
+    {
+        _testSuite = testSuite;
+        await controller.SaveTestSuiteAsync(_testSuite);
     }
 
     private void OnFolderClicked(TestSuiteFolder folder)

@@ -18,6 +18,8 @@ public class GitlabProjectDataSource : IProjectDataSource
 
     private readonly IMemoryCache _memoryCache;
 
+    public string SystemName => "GitLab";
+
     public GitlabProjectDataSource(IMemoryCache memoryCache)
     {
         _memoryCache = memoryCache;
@@ -26,14 +28,12 @@ public class GitlabProjectDataSource : IProjectDataSource
     /// <summary>
     /// Reads the specified options for a trait
     /// </summary>
-    /// <param name="systems"></param>
-    /// <param name="trait"></param>
+    /// <param name="system">Gitlab configuration</param>
+    /// <param name="trait">The field we should resolve</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<string[]> GetFieldOptionsAsync(ExternalSystemDto[] systems, TraitType trait, CancellationToken cancellationToken)
+    public async Task<string[]> GetFieldOptionsAsync(ExternalSystemDto system, TraitType trait, CancellationToken cancellationToken)
     {
-        var system = systems.Where(x => x.Name == "GitLab").FirstOrDefault();
-
         if (system is not null &&
             system.ExternalProjectId is not null &&
             system.BaseUrl is not null &&

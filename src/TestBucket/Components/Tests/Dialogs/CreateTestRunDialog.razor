@@ -28,6 +28,17 @@
                         <MudSpacer />
                         <EnvironmentDropDown Project="@_project" SelectedEnvironment="@_testEnvironment" SelectedEnvironmentChanged="OnTestEnvironmentChanged" />
                     </Field>
+
+                    @if (_ciCdSystem is not null)
+                    {
+                        <Field Row>
+                            <FieldHeader>CI/CD ref</FieldHeader>
+                            <MudSpacer />
+                            <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_ciCdRef"></MudTextField>
+                        </Field>
+
+                    }
+
                 }
 
                 @if (_errorMessage is not null)
@@ -53,6 +64,8 @@
 @code {
     private string? _errorMessage;
     private FieldsEditor? _fieldsEditor;
+    private string? _ciCdSystem;
+    private string? _ciCdRef;
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
@@ -60,6 +73,7 @@
     private TestProject? _project;
     private TestEnvironment? _testEnvironment;
 
+    [Parameter] public TestSuite? TestSuite{ get; set; }
     [Parameter] public long? TestProjectId { get; set; }
     [Parameter] public string? Name { get; set; }
 
@@ -84,6 +98,8 @@
             _run.TestProjectId = _project?.Id;
             _teamId = _project?.TeamId;
         }
+        _ciCdSystem = TestSuite?.CiCdSystem;
+        _ciCdRef = TestSuite?.DefaultCiCdRef;
         _loading = false;
     }
 
@@ -111,6 +127,8 @@
         }
         _run.TestProjectId = TestProjectId;
         _run.TeamId = _teamId;
+        _run.CiCdRef = _ciCdRef;
+        _run.CiCdSystem = _ciCdSystem;
         _run.TestEnvironmentId = _testEnvironment?.Id;
         await testCaseEditorService.AddTestRunAsync(_run);
 

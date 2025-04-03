@@ -27,8 +27,8 @@
         {
             return;
         }
-        long[] testCaseIds = await testBrowser.GetTestSuiteSuiteTestsAsync(Suite);
-        var run = await testRunCreation.CreateTestRunAsync(Suite.Name, Suite.TestProjectId.Value, testCaseIds);
+        long[] testCaseIds = await testBrowser.GetTestSuiteSuiteTestsAsync(Suite, excludeAutomated: true);
+        var run = await testRunCreation.CreateTestRunAsync(Suite, testCaseIds, true);
         if (run is not null)
         {
             appNavigationManager.NavigateTo(run);

@@ -5,5 +5,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+    
+    <PropertyGroup>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <Description>Shared library. Do not reference directly. Use TestBucket.Traits.Xunit, TestBucket.Traits.TUnit etc</Description>
+        <Title>TestBucket.Traits.Xunit</Title>
+        <Authors>Jerker Olofsson</Authors>
+        <Company>Jerker Olofsson</Company>
+        <PackageId>TestBucket.Traits.Core</PackageId>
+        <Version>1.0.0</Version>
+    </PropertyGroup>
 </Project>

@@ -1,5 +1,8 @@
-﻿using NGitLab.Models;
+﻿using Microsoft.AspNetCore.Components;
 
+using NGitLab.Models;
+
+using TestBucket.Components.Tests.Controls;
 using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Tenants.Models;
@@ -35,6 +38,8 @@ public class AppNavigationManager
         /// Selected project
         /// </summary>
         public TestProject? SelectedProject { get; set; }
+
+        public TestTreeView? TestTreeView { get; set; }
     }
 
     internal NavigationState State { get; } = new();
@@ -42,6 +47,39 @@ public class AppNavigationManager
     public AppNavigationManager(NavigationManager navigationManager)
     {
         _navigationManager = navigationManager;
+    }
+
+    public long? GetTestCaseIdFromCurrentUri()
+    {
+        return ResolveTestCaseIdFromUrl(_navigationManager.Uri);
+    }
+
+    public static long? ResolveTestCaseIdFromPath(string? path)
+    {
+        if (path is null)
+        {
+            return null;
+        }
+        path = path.Split('?')[0].Split('#')[0];
+
+        var pathItems = path.Trim('/').Split('/');
+        if (pathItems.Length >= 4)
+        {
+            if (long.TryParse(pathItems[3], out var testCaseId))
+            {
+                return testCaseId;
+            }
+        }
+        return null;
+    }
+
+    public static long? ResolveTestCaseIdFromUrl(string url)
+    {
+        if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
+        {
+            return ResolveTestCaseIdFromPath(uri.PathAndQuery);
+        }
+        return null;
     }
 
     public string GetSettingsUrl()
@@ -64,6 +102,36 @@ public class AppNavigationManager
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Requirements/Import";
+    }
+
+    public string GetTestCaseVariablesUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var testCaseId = ResolveTestCaseIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestCases/{testCaseId}/variables";
+    }
+    public string GetTestCaseFieldsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var testCaseId = ResolveTestCaseIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestCases/{testCaseId}/fields";
+    }
+    public string GetTestCaseAttachmentsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var testCaseId = ResolveTestCaseIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestCases/{testCaseId}/attachments";
+    }
+
+    /// <summary>
+    /// Map requirements to test cases
+    /// </summary>
+    /// <returns></returns>
+    public string GetTestCaseRequimentsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var testCaseId = ResolveTestCaseIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestCases/{testCaseId}/requirements";
     }
 
     public string GetUrl(Requirement requirement)
@@ -110,11 +178,21 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Settings/Projects/{project.Slug}";
     }
+    public string GetUrl(ApplicationUser user)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/Users/{user.NormalizedUserName}";
+    }
     public string GetUrl(TestEnvironment testEnvironment)
     {
         return $"{GetTestEnvironmentSettingsUrl()}/{testEnvironment.Id}";
     }
 
+    public void NavigateTo(ApplicationUser user, bool forceLoad = false)
+    {
+        var url = GetUrl(user);
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
     public void NavigateTo(TestEnvironment testEnvironment, bool forceLoad = false)
     {
         var url = GetUrl(testEnvironment);

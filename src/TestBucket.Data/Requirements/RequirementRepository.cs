@@ -1,4 +1,6 @@
-﻿using TestBucket.Domain.Requirements;
+﻿using OpenTelemetry.Trace;
+
+using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
@@ -65,6 +67,7 @@ namespace TestBucket.Data.Requirements
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
+            // Delete requirements and links
             foreach (var requirement in dbContext.Requirements.Where(x => x.RequirementSpecificationId == specification.Id))
             {
                 foreach (var link in dbContext.RequirementTestLinks.Where(x => x.RequirementId == requirement.Id))
@@ -74,10 +77,14 @@ namespace TestBucket.Data.Requirements
 
                 dbContext.Requirements.Remove(requirement);
             }
+
+            // Delete folders
             foreach (var folder in dbContext.RequirementSpecificationFolders.Where(x => x.RequirementSpecificationId == specification.Id))
             {
                 dbContext.RequirementSpecificationFolders.Remove(folder);
             }
+
+            // Delete the spec!
             dbContext.RequirementSpecifications.Remove(specification);
 
             await dbContext.SaveChangesAsync();
@@ -87,10 +94,18 @@ namespace TestBucket.Data.Requirements
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
+            // Delete requirements and links
             foreach (var requirement in dbContext.Requirements.Where(x => x.RequirementSpecificationId == specification.Id))
             {
+                foreach(var link in dbContext.RequirementTestLinks.Where(x=>x.RequirementId == requirement.Id))
+                {
+                    dbContext.RequirementTestLinks.Remove(link);
+                }
+
                 dbContext.Requirements.Remove(requirement);
             }
+
+            // Delete folders
             foreach (var folder in dbContext.RequirementSpecificationFolders.Where(x => x.RequirementSpecificationId == specification.Id))
             {
                 dbContext.RequirementSpecificationFolders.Remove(folder);
@@ -124,6 +139,12 @@ namespace TestBucket.Data.Requirements
 
             dbContext.Requirements.Update(requirement);
             await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(string tenantId, long requirementSpecificationId)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            return await dbContext.RequirementTestLinks.AsNoTracking().Where(link => link.TenantId == tenantId && link.RequirementSpecificationId == requirementSpecificationId).ToListAsync();
         }
 
         public async Task AddRequirementLinkAsync(RequirementTestLink link)

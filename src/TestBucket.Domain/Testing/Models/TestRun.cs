@@ -30,11 +30,22 @@ public class TestRun : TestEntity
     /// </summary>
     public string? SystemOut { get; set; }
 
-
     /// <summary>
     /// External identifer, other system, or when importing
     /// </summary>
     public string? ExternalId { get; set; }
+
+    /// <summary>
+    /// Automation only:
+    /// Default branch/tag/commit when running CI/CD
+    /// </summary>
+    public string? CiCdRef { get; set; }
+
+    /// <summary>
+    /// Automation only:
+    /// Which integration to use (e.g. GitLab/GitHub..)
+    /// </summary>
+    public string? CiCdSystem { get; set; }
 
     public long? TestEnvironmentId { get; set; }
     public TestEnvironment? TestEnvironment { get; set; }

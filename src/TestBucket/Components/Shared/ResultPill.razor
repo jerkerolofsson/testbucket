@@ -1,8 +1,19 @@
 ﻿@using TestBucket.Contracts.Testing.Models
-<div class="@CssClass">@Result</div>
+@inject IStringLocalizer<SharedStrings> loc
+
+<MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+    <div class="result-color-highlight @(Result.ToString().ToLower())" />
+    @GetLocalizedResult(Result)
+</MudStack>
 
 @code {
     [Parameter] public TestResult Result { get; set; } = TestResult.NoRun;
 
     private string CssClass => "result-pill result-" + Result.ToString().ToLower();
+
+    public string GetLocalizedResult(TestResult res)
+    {
+        var key = "result-" + res.ToString().ToLower();
+        return loc[key];
+    }
 }

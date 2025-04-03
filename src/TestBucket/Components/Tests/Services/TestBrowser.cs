@@ -1,23 +1,13 @@
-﻿using System.Collections.Concurrent;
-
-using Microsoft.CodeAnalysis;
-
-using MudBlazor;
-
-using NGitLab.Models;
-
-using TestBucket.Components.Shared.Icons;
+﻿using TestBucket.Components.Shared.Icons;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Dialogs;
+using TestBucket.Components.Tests.Models;
 using TestBucket.Domain.Files;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Aggregates;
-using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Testing.Specifications;
+using TestBucket.Domain.Testing.ImportExport;
 using TestBucket.Domain.Testing.Specifications.TestCases;
-using TestBucket.Formats;
 
 namespace TestBucket.Components.Tests.Services;
 internal class TestBrowser : TenantBaseService
@@ -27,6 +17,7 @@ internal class TestBrowser : TenantBaseService
     private readonly ITextTestResultsImporter _textImporter;
     private readonly IFileRepository _fileRepository;
     private readonly ITestRunManager _testRunManager;
+    private readonly AppNavigationManager _appNavigationManager;
 
     // todo: migrate to domain manager!
     private readonly ITestCaseRepository _testCaseRepository;
@@ -40,7 +31,8 @@ internal class TestBrowser : TenantBaseService
         ITextTestResultsImporter textImporter,
         IFileRepository fileRepository,
         ITestCaseRepository testCaseRepository,
-        ITestRunManager testRunManager) : base(authenticationStateProvider)
+        ITestRunManager testRunManager,
+        AppNavigationManager appNavigationManager) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
@@ -49,6 +41,7 @@ internal class TestBrowser : TenantBaseService
         _fileRepository = fileRepository;
         _testCaseRepository = testCaseRepository;
         _testRunManager = testRunManager;
+        _appNavigationManager = appNavigationManager;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -81,7 +74,7 @@ internal class TestBrowser : TenantBaseService
     /// <param name="team"></param>
     /// <param name="project"></param>
     /// <returns></returns>
-    public async Task ImportAsync(Team? team, TestProject? project)
+    public async Task ImportAsync(Team team, TestProject project)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         var tenantId = await GetTenantIdAsync();
@@ -96,11 +89,42 @@ internal class TestBrowser : TenantBaseService
             var resource = await _fileRepository.GetResourceByIdAsync(tenantId, importOptions.File.Id);
             if (resource is not null)
             {
-                string xml = Encoding.UTF8.GetString(resource.Data);
-                await _textImporter.ImportTextAsync(principal, team?.Id, project?.Id, importOptions.Format, xml, importOptions.HandlingOptions);
+                string xml = TextConversionUtils.FromUtf8(resource.Data, removeBom: true);
+                await _textImporter.ImportTextAsync(principal, team.Id, project.Id, importOptions.Format, xml, importOptions.HandlingOptions);
             }
         }
     }
+
+    public async Task<PagedResult<TestSuiteItem>> SearchItemsAsync(SearchTestQuery query, int offset, int count = 20)
+    {
+        if(query.TestSuiteId == null)
+        {
+            return new PagedResult<TestSuiteItem>() { Items = [], TotalCount = 0 };
+        }
+
+        List<TestSuiteItem> items = new();
+
+        // Get all folders
+        var folders = await _testSuiteService.GetTestSuiteFoldersAsync(query.ProjectId, query.TestSuiteId.Value, query.FolderId);
+        items.AddRange(folders.Select(x=>new TestSuiteItem() { Folder = x }).Skip(offset).Take(count));
+        int visibleFolderCount = items.Count;
+
+        // Get tests
+        int testCount = Math.Max(0,count - items.Count);
+        int testCaseOffset = Math.Max(0, offset - folders.Length);
+
+        query.Offset = testCaseOffset;
+        query.Count = testCount;
+        var tests = await _testSuiteService.SearchTestCasesAsync(query);
+        items.AddRange(tests.Items.Select(x => new TestSuiteItem() { TestCase = x }));
+
+        return new PagedResult<TestSuiteItem>()
+        {
+            TotalCount = folders.Length + tests.TotalCount,
+            Items = items.ToArray(),
+        };
+    }
+
 
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery query, int offset, int count = 20)
     {
@@ -213,16 +237,45 @@ internal class TestBrowser : TenantBaseService
             Children = [],
         };
     }
+
+    public string GetIcon(TestSuiteFolder folder)
+    {
+        if(!string.IsNullOrEmpty(folder.Icon))
+        {
+            return folder.Icon;
+        }
+
+        return Icons.Material.Filled.Folder;
+    }
+    public string GetIcon(TestCase x)
+    {
+        if (x.IsTemplate)
+        {
+            return Icons.Material.Filled.DocumentScanner;
+        }
+        if (x.ExecutionType == Contracts.Testing.Models.TestExecutionType.Automated)
+        {
+            return Icons.Material.Filled.BrightnessAuto;
+        }
+        if (x.ExecutionType == Contracts.Testing.Models.TestExecutionType.Hybrid)
+        {
+            return Icons.Material.Filled.Api;
+        }
+        return TbIcons.Filled.PaperPlane;
+    }
+
     public TreeNode<BrowserItem> CreateTreeNodeFromTestCase(TestCase x)
     {
-        return new TreeNode<BrowserItem>
+        var treeNode = new TreeNode<BrowserItem>
         {
             Value = new BrowserItem { TestCase = x },
             Text = x.Name,
-            Icon = TbIcons.Filled.PaperPlane,
+            Icon = GetIcon(x),
             Expandable = false,
             Children = null,
         };
+
+        return treeNode;
     }
     public async Task AddTestSuiteFolderAsync(long projectId, long testSuiteId, long? parentFolderId)
     {
@@ -232,19 +285,18 @@ internal class TestBrowser : TenantBaseService
             { x => x.TestSuiteId, testSuiteId },
             { x => x.ParentFolderId, parentFolderId },
         };
-        var dialog = await _dialogService.ShowAsync<AddTestSuiteFolderDialog>("Add folder", parameters);
+        var dialog = await _dialogService.ShowAsync<AddTestSuiteFolderDialog>("Add folder", parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
     }
 
     public TreeNode<BrowserItem> CreateTreeNodeFromFolder(TestSuiteFolder x)
     {
-        var defaultFolder = x.IsFeature ? Icons.Material.Filled.Stars : Icons.Material.Filled.Folder;
 
         return new TreeNode<BrowserItem>
         {
             Value = new BrowserItem { Folder = x, Color = x.Color },
             Text = x.Name,
-            Icon = x.Icon ?? defaultFolder,
+            Icon = GetIcon(x),
             Expandable = true,
             Children = null,
         };
@@ -399,7 +451,7 @@ internal class TestBrowser : TenantBaseService
             { x => x.Project, project },
             { x => x.Team, team },
         };
-        var dialog = await _dialogService.ShowAsync<AddTestSuiteDialog>("Add test suite", parameters);
+        var dialog = await _dialogService.ShowAsync<AddTestSuiteDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if (result?.Data is TestSuite testSuite)
         {
@@ -431,5 +483,26 @@ internal class TestBrowser : TenantBaseService
         var tenantId = await GetTenantIdAsync();
         FilterSpecification<TestCase>[] specifications = [new FilterByTenant<TestCase>(tenantId), new FilterTestCasesByTestSuite(testSuite.Id)];
         return await _testCaseRepository.SearchTestCaseIdsAsync(specifications);
+    }
+
+    internal async Task<long[]> GetTestSuiteSuiteTestsAsync(TestSuite testSuite, bool excludeAutomated)
+    {
+        var tenantId = await GetTenantIdAsync();
+        List<FilterSpecification<TestCase>> specifications = [new FilterByTenant<TestCase>(tenantId), new FilterTestCasesByTestSuite(testSuite.Id)];
+        if (excludeAutomated)
+        {
+            specifications.Add(new FilterTestCasesExcludeAutomated());
+        }
+        return await _testCaseRepository.SearchTestCaseIdsAsync(specifications);
+    }
+
+
+    internal async Task SyncWithActiveDocumentAsync(TestCase selectedTestCase)
+    {
+        if(_appNavigationManager.State.TestTreeView is not null)
+        {
+
+            await _appNavigationManager.State.TestTreeView.GoToTestCaseAsync(selectedTestCase);
+        }
     }
 }

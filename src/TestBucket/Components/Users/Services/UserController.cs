@@ -35,6 +35,11 @@ internal class UserController : TenantBaseService
         return await _userManager.AddUserAsync(principal, email, password);
     }
 
+    public async Task<ApplicationUser?> GetUserByNormalizedUserNameAsync(string normalizedUserName)
+    {
+        ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();
+        return await _userManager.GetUserByNormalizedUserNameAsync(principal, normalizedUserName);
+    }
     public async Task<PagedResult<ApplicationUser>> BrowseAsync(int offset, int count)
     {
         ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();

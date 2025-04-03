@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Sdk Name="Aspire.AppHost.Sdk" Version="9.0.0" />
 
@@ -16,9 +16,14 @@
     <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="9.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\android\TestBucket.Servers.AdbProxy\TestBucket.Servers.AdbProxy.csproj" />
-    <ProjectReference Include="..\TestBucket\TestBucket.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\runner\TestBucket.Runner\TestBucket.Runner.csproj" />
+        <ProjectReference Include="..\TestBucket.Contracts\TestBucket.Contracts.csproj" IsAspireProjectResource="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\android\TestBucket.Servers.AdbProxy\TestBucket.Servers.AdbProxy.csproj" />
+        <ProjectReference Include="..\TestBucket\TestBucket.csproj" />
+    </ItemGroup>
 
 </Project>

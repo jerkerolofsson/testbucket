@@ -1,0 +1,43 @@
+﻿@using TestBucket.Contracts.Integrations
+@inject ProjectController controller
+
+<MudSelect Variant="Variant.Outlined" T="string" Value="@ExternalPipelineRunner?.SystemName" ValueChanged="OnValueChanged" Clearable>
+    @foreach(var item in _names)
+    {
+        <MudSelectItem Value="@item">@item</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter] public TestProject? Project { get; set; }
+    [Parameter] public IExternalPipelineRunner? ExternalPipelineRunner { get; set; }
+    [Parameter] public EventCallback<IExternalPipelineRunner> ExternalPipelineRunnerChanged { get; set; }
+
+    private TestProject? _project;
+    private IReadOnlyList<IExternalPipelineRunner> _runners = [];
+    private string[] _names = [];
+
+    private async Task OnValueChanged(string name)
+    {
+        var runner = _runners.Where(x => x.SystemName == name).FirstOrDefault();
+        await ExternalPipelineRunnerChanged.InvokeAsync(runner);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(_project?.Id != Project?.Id)
+        {
+            _project = Project;
+            if (_project is null)
+            {
+                _runners = [];
+                _names = [];
+            }
+            else
+            {
+                _runners = await controller.GetPipelineRunnersAsync(_project.Id);
+                _names = _runners.Select(x => x.SystemName).ToArray();
+            }
+        }
+    }
+}

@@ -16,6 +16,7 @@
 @inject ProjectController projectService
 @inject TestCaseEditorController testCaseEditor
 @inject TeamService teamService
+@inject TenantController tenantController
 @inject ThemingService themingService
 @inject AppNavigationManager appNavigationManager
 @inject IUnifiedSearchManager unifiedSearchManager
@@ -48,63 +49,65 @@
     string loginUrl = $"/{tenantId}/Account/Login?returnUrl=/{tenantId}";
 }
 
-<CascadingValue Value="@_project">
-    <CascadingValue Value="@_team">
+<CascadingValue Value="@_tenant">
+    <CascadingValue Value="@_project">
+        <CascadingValue Value="@_team">
 
-        <div style="display: grid; grid-template-rows: auto 1fr;" class="container-fill">
+            <div style="display: grid; grid-template-rows: auto 1fr;" class="container-fill">
 
-            <MudToolBar Style="@MenuStyle" Class="@MenuClass">
-                <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
+                <MudToolBar Style="@MenuStyle" Class="@MenuClass">
+                    <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
 
-                    <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" />
-                    <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged"/>
+                        <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" />
+                        <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged"/>
 
-                    <TbNavLink Href="@requirementsUrl">Oracle</TbNavLink>
-                    <TbNavLink Href="@testsUrl">Testing</TbNavLink>
-                    <TbNavLink Href="@reportingUrl">Reporting</TbNavLink>
-                    <TbNavLink Href="@projectSettingsUrl">Project</TbNavLink>
+                        <TbNavLink Href="@requirementsUrl">Oracle</TbNavLink>
+                        <TbNavLink Href="@testsUrl">Testing</TbNavLink>
+                        <TbNavLink Href="@reportingUrl">Reporting</TbNavLink>
+                        <TbNavLink Href="@projectSettingsUrl">Project</TbNavLink>
 
-                    <MudSpacer/>
+                        <MudSpacer/>
 
-                    <UnifiedSearch/>
+                        <UnifiedSearch/>
 
 
-                    <MudMenu Icon="@Icons.Material.Filled.Add">
-                        <CommandMenuItems TypeName="menu-new"/>
-                    </MudMenu>
+                        <MudMenu Icon="@Icons.Material.Filled.Add">
+                            <CommandMenuItems TypeName="menu-new"/>
+                        </MudMenu>
 
-                    <DarkModeToggle IsDarkMode="@_isDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
-                    <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                        <DarkModeToggle IsDarkMode="@_isDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
+                        <MudMenu Icon="@Icons.Material.Filled.MoreVert">
 
-                        <!-- Pages -->
-                        <MudMenuItem Icon="@Icons.Material.Filled.ViewList" Label="Testing" Href="@testsUrl"></MudMenuItem>
+                            <!-- Pages -->
+                            <MudMenuItem Icon="@Icons.Material.Filled.ViewList" Label="Testing" Href="@testsUrl"></MudMenuItem>
 
-                        <!-- Admin -->
-                        <MudMenuItem Icon="@Icons.Material.Filled.Settings" Label="Settings" Href="@settingsUrl"></MudMenuItem>
+                            <!-- Admin -->
+                            <MudMenuItem Icon="@Icons.Material.Filled.Settings" Label="Settings" Href="@settingsUrl"></MudMenuItem>
 
-                        <!-- Profile / Logout -->
-                        <AuthorizeView>
-                            <MudDivider />
-                            <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="Account" Href="@manageUrl"></MudMenuItem>
-                            <MudMenuItem>
-                                <form action="Account/Logout" method="post">
-                                    <AntiforgeryToken />
-                                    <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                                    <button type="submit">Logout</button>
-                                </form>
-                            </MudMenuItem>
-                        </AuthorizeView>
-                    </MudMenu>
-                </MudStack>
-            </MudToolBar>
+                            <!-- Profile / Logout -->
+                            <AuthorizeView>
+                                <MudDivider />
+                                <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="Account" Href="@manageUrl"></MudMenuItem>
+                                <MudMenuItem>
+                                    <form action="Account/Logout" method="post">
+                                        <AntiforgeryToken />
+                                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                                        <button type="submit">Logout</button>
+                                    </form>
+                                </MudMenuItem>
+                            </AuthorizeView>
+                        </MudMenu>
+                    </MudStack>
+                </MudToolBar>
 
-            <main class="container-fill">
-                <article class="content container-fill">
-                    @Body
-                </article>
-            </main>
+                <main class="container-fill">
+                    <article class="content container-fill">
+                        @Body
+                    </article>
+                </main>
 
-        </div>
+            </div>
+        </CascadingValue>
     </CascadingValue>
 </CascadingValue>
 
@@ -118,6 +121,7 @@
 @code {
     private Team? _team;
     private TestProject? _project;
+    private Tenant? _tenant;
     private string? tenantId;
     private string? currentUrl;
     private bool _isDarkMode = true;
@@ -130,6 +134,7 @@
     {
         var state = await authStateProvider.GetAuthenticationStateAsync();
         tenantId = state.User.Claims.FirstOrDefault(x => x.Type == "tenant")?.Value;
+        _tenant = await tenantController.GetTenantAsync();
 
         currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
         navigationManager.LocationChanged += OnLocationChanged;

@@ -1,16 +1,6 @@
-﻿
-using Microsoft.CodeAnalysis;
-
-using NGitLab.Models;
-
-using TestBucket.Components.Tenants;
-using TestBucket.Components.Tests.Dialogs;
+﻿using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Domain.Fields;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Tenants.Models;
-using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Testing.Specifications;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 
 namespace TestBucket.Components.Tests.Services;
@@ -117,10 +107,10 @@ internal class TestSuiteService : TenantBaseService
     /// <param name="projectId"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public async Task<TestSuite> AddTestSuiteAsync(long? teamId, long? projectId, string name)
+    public async Task<TestSuite> AddTestSuiteAsync(long? teamId, long? projectId, string name, string? ciCdSystem, string? ciCdRef = null)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        return await _testSuiteManager.AddTestSuiteAsync(principal, teamId, projectId, name);
+        return await _testSuiteManager.AddTestSuiteAsync(principal, teamId, projectId, name, ciCdSystem, ciCdRef);
     }
 
     /// <summary>

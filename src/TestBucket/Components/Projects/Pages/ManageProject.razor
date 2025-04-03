@@ -11,11 +11,17 @@
 <MudStack Class="container-settings-page">
     <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
+
     @if (_project is not null)
     {
-
-
-        <ProjectEditor Project="@_project" />
+        <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Write" Entity="PermissionEntityType.Project">
+            <Authorized>
+                <ProjectEditor Project="@_project" />
+            </Authorized>
+            <NotAuthorized>
+                <MudText>@loc["missing-permission-general"]</MudText>
+            </NotAuthorized>
+        </PermissionView>
     }
 </MudStack>
 

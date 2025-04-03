@@ -16,6 +16,29 @@ public static class TestCaseRunsFilterSpecificationBuilder
     {
         var specifications = ProjectEntityFilterSpecificationBuilder.From<TestCaseRun>(query);
 
+        if (query.Unassigned == true)
+        {
+            specifications.Add(new FilterTestCaseRunsUnassigned());
+        }
+        else if (query.Unassigned == false)
+        {
+            specifications.Add(new FilterTestCaseRunsAssigned());
+        }
+
+        if (query.Completed == true)
+        {
+            specifications.Add(new FilterTestCaseRunsCompleted());
+        }
+        else if (query.Completed == false)
+        {
+            specifications.Add(new FilterTestCaseRunsIncomplete());
+        }
+
+        if (query.AssignedToUser is not null)
+        {
+            specifications.Add(new FilterTestCaseRunsByAssignment(query.AssignedToUser));
+        }
+
         if (query.TestSuiteId is not null)
         {
             specifications.Add(new FilterTestCaseRunsByTestSuite(query.TestSuiteId.Value));

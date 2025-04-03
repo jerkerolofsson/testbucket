@@ -55,7 +55,7 @@ namespace TestBucket.Domain.Commands
             // Add default bindings for commands
             foreach (var command in _commands.Values)
             {
-                if(!bindings.Commands.ContainsKey(command.Id))
+                if(!bindings.Commands.ContainsKey(command.Id) && command.DefaultKeyboardBinding is not null)
                 {
                     bindings.Commands[command.Id] = command.DefaultKeyboardBinding;
                 }

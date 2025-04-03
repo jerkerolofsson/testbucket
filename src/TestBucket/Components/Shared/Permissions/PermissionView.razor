@@ -1,0 +1,28 @@
+﻿@using TestBucket.Domain.Identity.Permissions
+@inject AuthenticationStateProvider authenticationStateProvider
+
+@if (Entity is not null && Level is not null && _state is not null)
+{
+    @if (PermissionClaims.HasPermission(_state.User, Entity.Value, Level.Value))
+    {
+        @Authorized
+    }
+    else
+    {
+        @NotAuthorized
+    }
+}
+
+@code {
+    [Parameter] public PermissionLevel? Level { get; set; }
+    [Parameter] public PermissionEntityType? Entity { get; set; }
+    [Parameter] public RenderFragment? Authorized { get; set; }
+    [Parameter] public RenderFragment? NotAuthorized { get; set; }
+
+    private AuthenticationState? _state;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state = await authenticationStateProvider.GetAuthenticationStateAsync();
+    }
+}

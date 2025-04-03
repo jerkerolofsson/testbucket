@@ -1,15 +1,18 @@
 ﻿
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Text;
 
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Formats;
 using TestBucket.Formats.Ctrf;
 using TestBucket.Formats.Dtos;
@@ -26,10 +29,16 @@ internal class TextImporter : ITextTestResultsImporter
     private readonly IFileRepository _fileRepository;
     private readonly ITestSuiteManager _testSuiteManager;
     private readonly ITestRunManager _testRunManager;
+    private readonly ITestCaseManager _testCaseManager;
 
     public TextImporter(
         IStateService stateService,
-        ITestCaseRepository testCaseRepository, IFieldDefinitionManager fieldDefinitionManager, IFileRepository fileRepository, ITestSuiteManager testSuiteManager, ITestRunManager testRunManager)
+        ITestCaseRepository testCaseRepository, 
+        IFieldDefinitionManager fieldDefinitionManager, 
+        IFileRepository fileRepository, 
+        ITestSuiteManager testSuiteManager, 
+        ITestRunManager testRunManager,
+        ITestCaseManager testCaseManager)
     {
         _stateService = stateService;
         _testCaseRepository = testCaseRepository;
@@ -37,33 +46,27 @@ internal class TextImporter : ITextTestResultsImporter
         _fileRepository = fileRepository;
         _testSuiteManager = testSuiteManager;
         _testRunManager = testRunManager;
+        _testCaseManager = testCaseManager;
     }
 
     /// <summary>
     /// Imports a text based test result document
     /// </summary>
-    /// <param name="tenantId"></param>
+    /// <param name="principal"></param>
     /// <param name="teamId"></param>
     /// <param name="projectId"></param>
     /// <param name="format"></param>
     /// <param name="text"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task ImportTextAsync(ClaimsPrincipal principal, long? teamId, long? projectId, TestResultFormat format, string text, ImportHandlingOptions options)
+    public async Task ImportTextAsync(ClaimsPrincipal principal, long teamId, long projectId, TestResultFormat format, string text, ImportHandlingOptions options)
     {
-        ITestResultSerializer serializer = format switch
-        {
-            TestResultFormat.JUnitXml => new JUnitSerializer(),
-            TestResultFormat.xUnitXml => new XUnitSerializer(),
-            TestResultFormat.CommonTestReportFormat => new CtrfXunitSerializer(),
-            _ => throw new ArgumentException("Unknown format", nameof(format))
-        };    
-
+        var serializer = TestResultSerializerFactory.Create(format);
         var run = serializer.Deserialize(text);
         await ImportRunAsync(principal, teamId, projectId, run, options);
     }
 
-    private async Task ImportRunAsync(ClaimsPrincipal principal, long? teamId, long? projectId, TestRunDto run, ImportHandlingOptions options)
+    private async Task ImportRunAsync(ClaimsPrincipal principal, long teamId, long projectId, TestRunDto run, ImportHandlingOptions options)
     {
         var tenantId = principal.GetTenantIdOrThrow();
 
@@ -71,6 +74,15 @@ internal class TextImporter : ITextTestResultsImporter
         {
             // Add test suite run
             TestRun testRun = await ResolveTestRunAsync(principal, teamId, projectId, run, options);
+
+            // Copy some attributes from tests to the run
+            AssignRunPropertiesFromTests(run);
+            AssignRunPropertiesFromSuites(run);
+
+            // Update test run
+            testRun.SystemOut = run.SystemOut;
+            //testRun.SystemErr = run.SystemErr;
+            await _testRunManager.SaveTestRunAsync(principal, testRun);
 
             foreach (var runSuite in run.Suites)
             {
@@ -105,13 +117,13 @@ internal class TextImporter : ITextTestResultsImporter
                     {
                         // Get or create the test case and add a test case run
                         TestCase? testCase = null;
-                        if(options.TestCaseId is not null)
+                        if (options.TestCaseId is not null)
                         {
                             testCase = await _testCaseRepository.GetTestCaseByIdAsync(tenantId, options.TestCaseId.Value);
                         }
                         if (testCase is null)
                         {
-                            testCase = await GetOrCreateTestCaseAsync(tenantId, projectId, suite, test, options);
+                            testCase = await GetOrCreateTestCaseAsync(principal, projectId, suite, test, options);
                         }
                         TestCaseRun testCaseRun = await AddTestCaseRunAsync(principal, testRun, test, testCase);
 
@@ -123,6 +135,50 @@ internal class TextImporter : ITextTestResultsImporter
                             await UpsertTestCaseTraitsAsync(principal, testCaseFieldDefinitions, testCase, traits);
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private static void AssignRunPropertiesFromSuites(TestRunDto run)
+    {
+        if (string.IsNullOrEmpty(run.SystemOut))
+        {
+            var stdout = new StringBuilder();
+
+            foreach (var suite in run.Suites)
+            {
+                if (!string.IsNullOrEmpty(suite.SystemOut))
+                {
+                    stdout.AppendLine(suite.SystemOut);
+                }
+            }
+            run.SystemOut = stdout.ToString();
+        }
+
+        if (string.IsNullOrEmpty(run.SystemErr))
+        {
+            var stderr = new StringBuilder();
+
+            foreach (var suite in run.Suites)
+            {
+                if (!string.IsNullOrEmpty(suite.SystemErr))
+                {
+                    stderr.AppendLine(suite.SystemErr);
+                }
+            }
+            run.SystemErr = stderr.ToString();
+        }
+    }
+    private static void AssignRunPropertiesFromTests(TestRunDto run)
+    {
+        foreach (var suite in run.Suites)
+        {
+            foreach (var test in suite.Tests)
+            {
+                if (!string.IsNullOrEmpty(test.Assembly))
+                {
+                    suite.Assembly = test.Assembly;
                 }
             }
         }
@@ -158,6 +214,7 @@ internal class TextImporter : ITextTestResultsImporter
             {
                 throw new InvalidOperationException("Test run not found!");
             }
+
             testRun = existingRun;
         }
 
@@ -277,48 +334,57 @@ internal class TextImporter : ITextTestResultsImporter
         }
     }
 
-    private async Task<TestCase> GetOrCreateTestCaseAsync(string tenantId, long? projectId, TestSuite suite, TestCaseRunDto test, ImportHandlingOptions options)
+    private async Task<TestCase> GetOrCreateTestCaseAsync(ClaimsPrincipal principal, long projectId, TestSuite suite, TestCaseRunDto test, ImportHandlingOptions options)
     {
+        var tenantId = principal.GetTenantIdOrThrow();
         // We try to map the test case by the external ID first.
         // This allows tests to define [TestId] traits for simplicity
-        TestCase? testCase = await _testCaseRepository.GetTestCaseByExternalIdAsync(tenantId, test.ExternalId);
 
-        if(testCase is null)
+        if (test.ExternalId is not null)
         {
-            var className = test.ClassName;
-            var method = test.Method;
-            var module = test.Module;
-            var assemblyName = test.Assembly;
-            if (className is not null || method is not null || assemblyName is not null || module is not null)
+            FilterSpecification<TestCase>[] filters = [
+                new FilterByTenant<TestCase>(tenantId),
+                new FilterTestCasesByTestSuite(suite.Id),
+                new FilterByProject<TestCase>(projectId),
+                new FilterTestCasesByExternalId(test.ExternalId)
+            ];
+            var testCase = (await _testCaseRepository.SearchTestCasesAsync(0, 1, filters)).Items.FirstOrDefault();
+            if (testCase is not null)
             {
-                testCase = await _testCaseRepository.GetTestCaseByAutomationImplementationAttributesAsync(tenantId, assemblyName, module, className, method);
+                return testCase;
+            }
+        }
+
+        //TestCase? testCase = await _testCaseRepository.GetTestCaseByExternalIdAsync(tenantId, test.ExternalId);
+
+        var className = test.ClassName;
+        var method = test.Method;
+        var module = test.Module;
+        var assemblyName = test.Assembly;
+        if (className is not null || method is not null || assemblyName is not null || module is not null)
+        {
+            FilterSpecification<TestCase>[] filters = [
+                new FilterByTenant<TestCase>(tenantId),
+                new FilterTestCasesByTestSuite(suite.Id),
+                new FilterByProject<TestCase>(projectId),
+                new FilterTestCasesByAutomationImplementation(className, method, module, assemblyName)
+            ];
+            var testCase = (await _testCaseRepository.SearchTestCasesAsync(0, 1, filters)).Items.FirstOrDefault();
+            if (testCase is not null)
+            {
+                return testCase;
             }
         }
 
         // Do we need to create a new test case?
-        if (testCase is null)
-        {
-            testCase = await CreateNewTestCaseAsync(tenantId, projectId, suite, test, options);
-        }
-        else
-        {
-            bool changed = false;
-            if (string.IsNullOrEmpty(testCase.Description) && !string.IsNullOrEmpty(test.Description))
-            {
-                testCase.Description = test.Description;
-                changed = true;
-            }
-            if (changed)
-            {
-                await _testCaseRepository.UpdateTestCaseAsync(testCase);
-            }
-        }
-
-        return testCase;
+        var newTestCase = await CreateNewTestCaseAsync(principal, projectId, suite, test, options);
+        return newTestCase;
     }
 
-    private async Task<TestCase> CreateNewTestCaseAsync(string tenantId, long? projectId, TestSuite suite, TestCaseRunDto test, ImportHandlingOptions options)
+    private async Task<TestCase> CreateNewTestCaseAsync(ClaimsPrincipal principal, long? projectId, TestSuite suite, TestCaseRunDto test, ImportHandlingOptions options)
     {
+        var tenantId = principal.GetTenantIdOrThrow();
+
         // Create folder for the test case
         long? folderId = null;
         if (options.CreateFoldersFromClassNamespace)
@@ -362,8 +428,9 @@ internal class TextImporter : ITextTestResultsImporter
             TestSuiteId = suite.Id,
             TestSuiteFolderId = folderId,
             Description = test.Description,
+            ExecutionType = TestExecutionType.Automated
         };
-        await _testCaseRepository.AddTestCaseAsync(testCase);
+        await _testCaseManager.AddTestCaseAsync(principal, testCase);
         return testCase;
     }
 

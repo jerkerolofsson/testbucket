@@ -6,19 +6,17 @@
 @inject RequirementEditorController editor
 @inject AppNavigationManager appNav
 
-<MudStack Spacing="0" Class="pa-2" Style="width: 100%; background: var(--mud-palette-surface)">
+<MudStack Spacing="0" Class="pa-2" Style="width: 100%;">
     <MudStack Row="true" Class="pr-2 pl-2" Spacing="0" AlignItems="AlignItems.Center">
         <MudTextField 
-        Placeholder="Search Requirements"
-        Clearable
-        Variant="Variant.Outlined"
-        Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
+            Placeholder="Search Requirements"
+            Clearable
+            Variant="Variant.Outlined"
+            Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
 
         <MudSpacer />
-        <MudTooltip Text="Add specification">
-            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementSpecificationAsync" />
-            <MudIconButton Icon="@Icons.Material.Filled.ImportExport" Href="@(appNav.GetImportSpecificationsUrl())" />
-        </MudTooltip>
+        <MudIconButton Class="rounded-0"  Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementSpecificationAsync" />
+        <MudIconButton Class="rounded-0" Icon="@Icons.Material.Filled.ImportExport" Href="@(appNav.GetImportSpecificationsUrl())" />
 
     </MudStack>
 
@@ -97,7 +95,7 @@
     /// <summary>
     /// Instance of the tree view UI
     /// </summary>
-    private MudTreeView<BrowserItem> _treeView = default!;
+    //private MudTreeView<BrowserItem> _treeView = default!;
 
     /// <summary>
     /// Root items in the tree view

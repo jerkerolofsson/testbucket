@@ -3,38 +3,40 @@
 @inject RequirementBrowser browser
 @inject TestCaseEditorController editor
 
-<MudDataGrid Items="_links"
-Dense="true"
-Hover="true"
-T="RequirementTestLink"
-SortMode="SortMode.Single">
+<DropZone T="Requirement" OnDrop="OnDrop">
+    <MudDataGrid Items="_links"
+    Dense="true"
+    Hover="true"
+    T="RequirementTestLink"
+    SortMode="SortMode.Single">
 
-    <ToolBarContent>
-        <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
-            <MudText>Requirement Coverage</MudText>
-            <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementLinkAsync"></MudIconButton>
-        </MudStack>
-    </ToolBarContent>
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+                <MudText>Requirement Coverage</MudText>
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementLinkAsync"></MudIconButton>
+            </MudStack>
+        </ToolBarContent>
 
-    <Columns>
-        <TemplateColumn Title="">
-            <CellTemplate>
-                @{
-                    string url = $"{context.Item.Requirement!.TenantId}/Requirements/Requirements/{context.Item.RequirementId}";
-                }
-                <MudLink Href="@url">@context.Item.Requirement!.Name</MudLink>
-            </CellTemplate>
-        </TemplateColumn>
+        <Columns>
+            <TemplateColumn Title="">
+                <CellTemplate>
+                    @{
+                        string url = $"{context.Item.Requirement!.TenantId}/Requirements/Requirements/{context.Item.RequirementId}";
+                    }
+                    <MudLink Href="@url">@context.Item.Requirement!.Name</MudLink>
+                </CellTemplate>
+            </TemplateColumn>
 
-        <TemplateColumn CellStyle="width: 1%">
-            <CellTemplate>
-                <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteLinkAsync(context.Item)" />
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
+            <TemplateColumn CellStyle="width: 1%">
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteLinkAsync(context.Item)" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
 
-</MudDataGrid>
+    </MudDataGrid>
+</DropZone>
 
 @code {
     [Parameter] public TestCase? TestCase { get; set; }
@@ -42,6 +44,17 @@ SortMode="SortMode.Single">
     [Parameter] public Team? Team { get; set; }
 
     private RequirementTestLink[] _links = [];
+
+
+    private async Task OnDrop(Requirement? requirement)
+    {
+        if(TestCase is null || requirement is null)
+        {
+            return;
+        }
+        await editor.LinkTestCaseToRequirementAsync(TestCase, requirement);
+        await LoadDataAsync();
+    }
 
     protected override async Task OnParametersSetAsync()
     {

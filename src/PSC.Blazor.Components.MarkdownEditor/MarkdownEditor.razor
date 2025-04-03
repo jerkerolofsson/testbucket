@@ -3,7 +3,7 @@
 
 <CascadingValue Value="@this" IsFixed="true">
 
-    <div class="mud-markdown-editor-root">
+    <div class="mud-markdown-editor-root" id="@(RootElementId)">
 
         @if (ShowToolbar)
         {
@@ -34,6 +34,7 @@
                 </MudToolBar>
             }
 
+        <div class="mud-markdown-preview" id="@PreviewElementId"></div>
         <textarea @ref="@ElementRef" id="@ElementId" class="@CSSClass resizable">
             @if (Toolbar != null)
             {

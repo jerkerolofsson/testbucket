@@ -2,6 +2,8 @@
 @attribute [Authorize(Roles = "ADMIN")]
 @inject TestCaseEditorController testCaseEditorService
 @inject FieldController fieldController
+@inject IStringLocalizer<SharedStrings> loc
+
 @if (Query is not null)
 {
     <EditForm Model="@Query" OnValidSubmit="OnValidSubmit">

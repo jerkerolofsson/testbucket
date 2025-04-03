@@ -8,8 +8,9 @@
     <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
         <DialogContent>
 
-            <Field>
+            <Field Row>
                 <FieldHeader>Format</FieldHeader>
+                <MudSpacer/>
                 <MudSelect T="TestResultFormat" @bind-Value="_options.Format">
                     <MudSelectItem Value="@TestResultFormat.JUnitXml">JUnit XML</MudSelectItem>
                     <MudSelectItem Value="@TestResultFormat.xUnitXml">xUnit XML</MudSelectItem>

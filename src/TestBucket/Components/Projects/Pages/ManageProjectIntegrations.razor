@@ -9,7 +9,7 @@
 <MudStack Class="container-settings-page">
 
     <ExternalIntegrationEditor Name="GitLab" Integration="@_gitlab" IntegrationChanged="OnGitlabChanged" Icon="@TbIcons.Brands.Gitlab"/>
-    @* <ExternalIntegrationEditor Name="Github" Integration="@_github" Icon="@Icons.Custom.Brands.GitHub"/> *@
+    <ExternalIntegrationEditor Name="GitHub" Integration="@_github" IntegrationChanged="OnGithubChanged" Icon="@Icons.Custom.Brands.GitHub" />
 </MudStack>
 
 
@@ -20,6 +20,14 @@
     private ExternalSystem? _github = null;
     private ExternalSystem? _gitlab = null;
 
+    private async Task OnGithubChanged(ExternalSystem integration)
+    {
+        if (ProjectSlug is not null)
+        {
+            _github = integration;
+            await projectController.SaveProjectIntegrationsAsync(ProjectSlug, integration);
+        }
+    }
 
     private async Task OnGitlabChanged(ExternalSystem integration)
     {

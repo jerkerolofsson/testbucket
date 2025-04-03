@@ -1,0 +1,70 @@
+﻿@attribute [Authorize(Roles = "ADMIN")]
+@page "/{TenantId}/Settings/Users"
+@using TestBucket.Components.Users.Services
+@using TestBucket.Domain.Settings
+@layout SettingsLayout
+@inject UserController userController
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+
+<MudStack Class="container-settings-page">
+
+    <MudText Class="mb-3" Typo="Typo.h1">@loc["users"]</MudText>
+
+    <MudDataGrid ServerData="LoadGridData"
+                 Style="width: 100%"
+                 Dense="true"
+                 Hover="true"
+                 T="ApplicationUser"
+                 @ref="_dataGrid"
+                 RowClick="(e) => OnRowClicked(e.Item)"
+                 SortMode="SortMode.None">
+
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+                <MudSpacer/>
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddUserAsync"></MudIconButton>
+            </MudStack>
+        </ToolBarContent>
+
+        <Columns>
+            <PropertyColumn Property="x => x.UserName" Title="UserName" />
+            <PropertyColumn Property="x => x.Email" Title="Email" />
+            <PropertyColumn Property="x => x.AccessFailedCount" Title="AccessFailedCount" />
+        </Columns>
+
+        <PagerContent>
+            <MudDataGridPager T="ApplicationUser" />
+        </PagerContent>
+    </MudDataGrid>
+</MudStack>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+
+    private MudDataGrid<ApplicationUser>? _dataGrid;
+
+    private async Task AddUserAsync()
+    {
+        await userController.AddUserAsync();
+        _dataGrid?.ReloadServerData();
+    }
+
+    private void OnRowClicked(ApplicationUser user)
+    {
+        appNavigationManager.NavigateTo(user);
+    }
+
+    private async Task<GridData<ApplicationUser>> LoadGridData(GridState<ApplicationUser> state)
+    {
+        var result = await userController.BrowseAsync(state.Page*state.PageSize, state.PageSize);
+
+        GridData<ApplicationUser> data = new()
+            {
+                Items = result.Items,
+                TotalItems = (int)result.TotalCount
+            };
+
+        return data;
+    }
+}

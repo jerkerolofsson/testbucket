@@ -260,6 +260,7 @@ internal class TestCaseRepository : ITestCaseRepository
             Name = name,
             TestSuiteId = testSuiteId,
             Created = DateTimeOffset.UtcNow,
+            Modified = DateTimeOffset.UtcNow,
             TenantId = tenantId,
             TeamId = teamId,
             TestProjectId = projectId,
@@ -403,6 +404,16 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.TestRuns.AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
     }
+
+    /// <inheritdoc/>
+    public async Task UpdateTestRunAsync(TestRun testRun)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        dbContext.TestRuns.Update(testRun);
+        await dbContext.SaveChangesAsync();
+    }
+
 
     /// <inheritdoc/>
     public async Task AddTestRunAsync(TestRun testRun)

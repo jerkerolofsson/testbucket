@@ -49,7 +49,7 @@ internal class TestCaseEditorController : TenantBaseService
     /// <param name="context"></param>
     /// <param name="text"></param>
     /// <returns></returns>
-    public async Task<string?> CompileTestCaseRunPreviewAsync(TestCase testCase, long runId, string? text)
+    public async Task<string?> CompileTestCaseRunPreviewAsync(TestCase testCase, long runId, string? text, List<CompilerError> errors)
     {
         if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null)
         {
@@ -70,7 +70,10 @@ internal class TestCaseEditorController : TenantBaseService
                 TestEnvironmentId = run.TestEnvironmentId
             };
 
-            return await CompilePreviewAsync(testCase, context, text);
+            errors.Clear();
+            var result = await CompilePreviewAsync(testCase, context, text);
+            errors.AddRange(context.CompilerErrors);
+            return result;
         }
         return text;
     }
@@ -81,7 +84,7 @@ internal class TestCaseEditorController : TenantBaseService
     /// <param name="context"></param>
     /// <param name="text"></param>
     /// <returns></returns>
-    public async Task<string?> CompilePreviewAsync(TestCase testCase, TestExecutionContext context, string? text)
+    private async Task<string?> CompilePreviewAsync(TestCase testCase, TestExecutionContext context, string? text)
     {
         if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null)
         {
@@ -92,7 +95,7 @@ internal class TestCaseEditorController : TenantBaseService
         }
         return text;
     }
-    public async Task<string?> CompilePreviewAsync(TestCase testCase, string? text)
+    public async Task<string?> CompilePreviewAsync(TestCase testCase, string? text, List<CompilerError> errors)
     {
         if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null)
         {
@@ -107,7 +110,10 @@ internal class TestCaseEditorController : TenantBaseService
                 TeamId = testCase.TeamId.Value,
                 TestEnvironmentId = defaultEnvironment?.Id
             };
-            return await CompilePreviewAsync(testCase, context, text);
+            var result = await CompilePreviewAsync(testCase, context, text);
+            errors.Clear();
+            errors.AddRange(context.CompilerErrors);
+            return result;
         }
         return text;
     }
@@ -192,6 +198,12 @@ internal class TestCaseEditorController : TenantBaseService
         }
     }
 
+    public async Task LinkTestCaseToRequirementAsync(TestCase testCase, Requirement requirement)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _requirementManager.AddRequirementLinkAsync(principal, requirement, testCase);
+    }
+
     /// <summary>
     /// Saves a test case
     /// </summary>
@@ -222,6 +234,30 @@ internal class TestCaseEditorController : TenantBaseService
         await _testRunManager.SaveTestCaseRunAsync(principal, testCaseRun);
     }
 
+    internal async Task DuplicateTestAsync(TestCase testCase)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var copy = new TestCase
+        {
+            Name = testCase.Name + " copy",
+            Description = testCase.Description,
+
+            TestSuiteId = testCase.TestSuiteId,
+            TestProjectId = testCase.TestProjectId,
+            TestSuiteFolderId = testCase.TestSuiteFolderId,
+            TeamId = testCase.TeamId,
+
+            TestParameters = testCase.TestParameters,
+            ExecutionType = testCase.ExecutionType,
+            ScriptType = testCase.ScriptType,
+            RunnerLanguage = testCase.RunnerLanguage,
+        };
+
+        // todo: copy fields
+
+        await _testCaseManager.AddTestCaseAsync(principal, copy);
+    }
+
     internal async Task EditTestCaseAutomationLinkAsync(TestCase testCase)
     {
         var parameters = new DialogParameters<EditTestCaseAutomationLinkDialog>
@@ -242,6 +278,12 @@ internal class TestCaseEditorController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         await _testRunManager.AddTestRunAsync(principal, testRun);
+    }
+
+    internal async Task SaveTestRunAsync(TestRun testRun)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _testRunManager.SaveTestRunAsync(principal, testRun);
     }
 
     internal async Task<TestState> GetProjectFinalStateAsync(long testProjectId)

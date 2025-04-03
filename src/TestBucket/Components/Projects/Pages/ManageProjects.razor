@@ -1,7 +1,6 @@
 ﻿@page "/{tenantId}/Settings/ManageProjects"
 @using System.Diagnostics.CodeAnalysis
 @layout SettingsLayout
-@attribute [Authorize(Roles = "ADMIN")]
 @inject ProjectController projectService
 @inject IDialogService dialogService
 @inject AppNavigationManager appNav
@@ -23,7 +22,12 @@
             <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
                 <MudText Typo="Typo.h1">@loc["projects"]</MudText>
                 <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddProjectAsync"></MudIconButton>
+
+                <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Write" Entity="PermissionEntityType.Project">
+                    <Authorized>
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddProjectAsync"></MudIconButton>
+                    </Authorized>
+                </PermissionView>
             </MudStack>
         </ToolBarContent>
 

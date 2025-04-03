@@ -11,7 +11,9 @@ namespace TestBucket.Domain.Testing;
 public interface ITestRunObserver
 {
     Task OnRunCreatedAsync(TestRun testRun);
+    Task OnRunUpdatedAsync(TestRun testRun);
     Task OnRunDeletedAsync(TestRun testRun);
+
     Task OnTestCaseRunCreatedAsync(TestCaseRun testCaseRun);
     Task OnTestCaseRunUpdatedAsync(TestCaseRun testCaseRun);
 }

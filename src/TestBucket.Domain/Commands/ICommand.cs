@@ -29,7 +29,7 @@ namespace TestBucket.Domain.Commands
         /// <summary>
         /// The default keyboard binding
         /// </summary>
-        public KeyboardBinding DefaultKeyboardBinding { get; }
+        public KeyboardBinding? DefaultKeyboardBinding { get; }
 
         /// <summary>
         /// Icon

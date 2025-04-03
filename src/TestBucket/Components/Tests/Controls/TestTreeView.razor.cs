@@ -1,19 +1,9 @@
 ﻿using MediatR;
 
-using Microsoft.AspNetCore.Components.Forms;
-
-using NGitLab.Models;
-
 using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Tree;
-using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Services;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Teams.Models;
-using TestBucket.Domain.Testing;
-using TestBucket.Domain.Testing.Models;
-
-using static MudBlazor.CategoryTypes;
 
 namespace TestBucket.Components.Tests.Controls;
 
@@ -288,6 +278,14 @@ public partial class TestTreeView
 
     private async Task ImportAsync()
     {
+        if(_team is null)
+        {
+            return;
+        }
+        if(_project is null)
+        {
+            return;
+        }
         await testBrowser.ImportAsync(_team, _project);
     }
 
@@ -517,7 +515,19 @@ public partial class TestTreeView
             this.StateHasChanged();
         });
     }
-
+    public async Task OnRunUpdatedAsync(TestRun testRun)
+    {
+        await InvokeAsync(() =>
+        {
+            var testrunsNode = FindTreeNode(x => x.TestRun?.Id == testRun.Id);
+            if (testrunsNode?.Value is not null)
+            {
+                testrunsNode.Text = testRun.Name;
+                testrunsNode.Value.TestRun = testRun;
+                this.StateHasChanged();
+            }
+        });
+    }
     public async Task OnRunCreatedAsync(TestRun testRun)
     {
         await InvokeAsync(() =>
@@ -635,10 +645,72 @@ public partial class TestTreeView
             {
                 _editItem.Text = text;
                 _editItem.Value.TestRun.Name = text;
+                await testCaseEditor.SaveTestRunAsync(_editItem.Value.TestRun);
                 //await testCaseEditor.saveTest(_editItem.Value.Folder);
             }
         }
         _editItem = null;
+    }
+
+    internal async Task SyncWithActiveDocumentAsync()
+    {
+        if (appNavigationManager.State.SelectedTestCase is not null)
+        {
+            await GoToTestCaseAsync(appNavigationManager.State.SelectedTestCase);
+        }
+    }
+
+    internal async Task GoToTestCaseAsync(TestCase testCase)
+    {
+        // Find the test suite node
+        var testSuiteNode = FindTreeNode(x => x.TestSuite?.Id == testCase.TestSuiteId);
+        if (testSuiteNode is null)
+        {
+            return;
+        }
+        testSuiteNode.Expanded = true;
+
+        // Next traverse all folders
+        if (testCase.PathIds is not null)
+        {
+            TreeNode<BrowserItem> parent = testSuiteNode;
+            foreach (var folderId in testCase.PathIds)
+            {
+                var folderNode = FindTreeNode(x => x.Folder?.Id == folderId);
+                if (folderNode is null)
+                {
+                    var request = CreateRequest();
+                    request.Parent = parent.Value;
+                    
+                    var items = await testBrowser.BrowseAsync(request);
+                    parent.Children = items;
+                    folderNode = FindTreeNode(x => x.Folder?.Id == folderId);
+                }
+                if(folderNode is null)
+                {
+                    return;
+                }
+                folderNode.Expanded = true;
+                parent = folderNode;
+
+                // Browse items in the folder, this will include tests, if any..
+                if (folderNode.Children is null)
+                {
+                    var request = CreateRequest();
+                    request.Parent = folderNode.Value;
+
+                    var items = await testBrowser.BrowseAsync(request);
+                    folderNode.Children = items;
+                }
+            }
+        }
+
+        var testCaseTreeNode = FindTreeNode(x => x.TestCase?.Id == testCase.Id);
+        if (testCaseTreeNode is not null)
+        {
+            _selectedTreeItem = testCaseTreeNode?.Value;
+        }
+        await InvokeAsync(StateHasChanged);
     }
 
     #endregion

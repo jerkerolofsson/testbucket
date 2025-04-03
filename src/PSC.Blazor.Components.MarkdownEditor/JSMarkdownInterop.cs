@@ -101,10 +101,12 @@
         /// <param name="elementId">The element identifier.</param>
         /// <param name="options">The options.</param>
         /// <returns></returns>
-        public async ValueTask Initialize(DotNetObjectReference<MarkdownEditor> dotNetObjectRef, ElementReference elementRef,
-            string elementId, object options)
+        public async ValueTask Initialize(
+            DotNetObjectReference<MarkdownEditor> dotNetObjectRef, 
+            ElementReference elementRef,
+            string elementId, string previewElementId, object options)
         {
-            await jsRuntime.InvokeVoidAsync("initialize", dotNetObjectRef, elementRef, elementId, options);
+            await jsRuntime.InvokeVoidAsync("initialize", dotNetObjectRef, elementRef, elementId, previewElementId, options);
         }
         /// <summary>
         /// Notifies the image upload error.
@@ -136,6 +138,13 @@
         /// <returns></returns>
         public async ValueTask SetValue(string elementId, string value)
         {
+            if(value.Length == 0)
+            {
+                await jsRuntime.InvokeVoidAsync("setValue", elementId, "");
+                return;
+            }
+
+            // Should be SignalR HubOptions max length
             int maxLength = 30_000;
             int remaining = value.Length;
             int offset = 0;

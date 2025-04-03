@@ -1,5 +1,5 @@
 ﻿@attribute [Authorize(Roles = "SUPERADMIN")]
-@inject TenantService tenantService
+@inject TenantController tenantService
 @inject ISuperAdminUserService userService
 
 <EditForm Model="@_model" OnValidSubmit="async () => await OnValidSubmitAsync()">

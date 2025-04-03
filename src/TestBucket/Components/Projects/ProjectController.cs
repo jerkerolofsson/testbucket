@@ -1,6 +1,7 @@
 ﻿using OneOf;
 
 using TestBucket.Components.Shared;
+using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Identity;
@@ -17,6 +18,7 @@ internal class ProjectController : TenantBaseService
     private readonly AppNavigationManager _appNavigationManager;
     private readonly IStateService _stateService;
     private readonly IProjectManager _projectManager;
+    private readonly IPipelineProjectManager _pipelineManager;
 
     public ProjectController(
         IProjectRepository projectRepository,
@@ -24,13 +26,15 @@ internal class ProjectController : TenantBaseService
         AppNavigationManager appNavigationManager,
         AuthenticationStateProvider authenticationStateProvider,
         IStateService stateService,
-        IProjectManager projectManager) : base(authenticationStateProvider)
+        IProjectManager projectManager,
+        IPipelineProjectManager pipelineManager) : base(authenticationStateProvider)
     {
         _projectRepository = projectRepository;
         _userPreferencesService = userPreferencesService;
         _appNavigationManager = appNavigationManager;
         _stateService = stateService;
         _projectManager = projectManager;
+        _pipelineManager = pipelineManager;
     }
 
     public async Task SetActiveProjectAsync(TestProject? project)
@@ -46,6 +50,16 @@ internal class ProjectController : TenantBaseService
         }
     }
 
+    /// <summary>
+    /// Returns available pipeline runners for the specified project
+    /// </summary>
+    /// <param name="testProjectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<IExternalPipelineRunner>> GetPipelineRunnersAsync(long testProjectId)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _pipelineManager.GetExternalPipelineRunnersAsync(principal, testProjectId);
+    }
     public async Task<TestState[]> GetStatesAsync(long? projectId)
     {
         if(projectId is null)

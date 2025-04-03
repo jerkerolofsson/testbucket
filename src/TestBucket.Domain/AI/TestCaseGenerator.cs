@@ -195,39 +195,39 @@ internal class TestCaseGenerator : ITestCaseGenerator
         return null;
     }
 
-    private static GeneratedTest? ParseTestFromResponse(string text)
-    {
-        try
-        {
-            if (!string.IsNullOrWhiteSpace(text))
-            {
-                var jsonMarkdownStartMarker = "```json";
+    //private static GeneratedTest? ParseTestFromResponse(string text)
+    //{
+    //    try
+    //    {
+    //        if (!string.IsNullOrWhiteSpace(text))
+    //        {
+    //            var jsonMarkdownStartMarker = "```json";
 
-                // If the output is text, and not json, extract the json from within
-                bool isTextWithJson = text.Contains(jsonMarkdownStartMarker);
-                string json = text;
-                if(isTextWithJson)
-                {
-                    var p = text.IndexOf(jsonMarkdownStartMarker);
-                    p = text.IndexOf('{', p);
-                    if (p > 0)
-                    {
-                        var p2 = text.IndexOf("```", p);
-                        var len = p2 - p;
-                        json = text.Substring(p, len);
-                    }
+    //            // If the output is text, and not json, extract the json from within
+    //            bool isTextWithJson = text.Contains(jsonMarkdownStartMarker);
+    //            string json = text;
+    //            if(isTextWithJson)
+    //            {
+    //                var p = text.IndexOf(jsonMarkdownStartMarker);
+    //                p = text.IndexOf('{', p);
+    //                if (p > 0)
+    //                {
+    //                    var p2 = text.IndexOf("```", p);
+    //                    var len = p2 - p;
+    //                    json = text.Substring(p, len);
+    //                }
 
-                }
+    //            }
 
-                var generatedTest = JsonSerializer.Deserialize<GeneratedTest>(json);
-                return generatedTest;
-            }
-        }
-        catch (Exception ex)
-        { 
-        // todo, handle exception and show message
-        }
+    //            var generatedTest = JsonSerializer.Deserialize<GeneratedTest>(json);
+    //            return generatedTest;
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    { 
+    //    // todo, handle exception and show message
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
 }

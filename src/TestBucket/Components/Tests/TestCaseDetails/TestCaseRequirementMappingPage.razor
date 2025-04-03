@@ -1,0 +1,62 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/requirements"
+@using TestBucket.Components.Requirements.Controls
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Domain.Requirements.Models
+@layout TestCaseDetailsLayout
+@inject TestBrowser testBrowser
+@inject TestCaseEditorController testCaseEditorController
+@inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+
+@if (Test is not null)
+{
+    <div style="display: grid; grid-template-rows: auto 1fr;" class="container-fill">
+        <MudToolBar Class="tb-toolbar">
+            <PathNavigation Test="@Test" TailItems="_nav"/>
+        </MudToolBar>
+
+        <CascadingValue Value="@Test">
+
+            <Splitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
+                <StartContent>
+                    <MudStack Class="pa-2">
+                        <MudText Typo="Typo.h1">@loc["requirement-coverage"]</MudText>
+                        <TestRequirementLinksTable TestCase="@Test" />
+                    </MudStack>
+                </StartContent>
+                <EndContent>
+                    <RequirementTreeView Project="@Project" Team="@Team" />
+                </EndContent>
+            </Splitter>
+        </CascadingValue>
+    </div>
+}
+
+@code {
+    [Parameter] public long TestCaseId { get; set; }
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public TestCase? Test { get; set; }
+
+    private List<BreadcrumbItem> _nav = new();
+
+    protected override void OnInitialized()
+    {
+        _nav = [new BreadcrumbItem(loc["variables"], navigationManager.Uri)];
+    }
+
+    //private TestCase? _testCase = null;
+
+    private async Task SaveAsync(TestCase test)
+    {
+        await testCaseEditorController.SaveTestCaseAsync(test);
+    }
+
+    private async Task OnTestModified(TestCase test)
+    {
+        await testCaseEditorController.SaveTestCaseAsync(test);
+    }
+}

@@ -36,4 +36,17 @@ public class TestExecutionContext
     /// ID if test environment to use
     /// </summary>
     public long? TestEnvironmentId { get; set; }
+
+    public List<CompilerError> CompilerErrors { get; } = [];
+
+    /// <summary>
+    /// Branch/Tag
+    /// </summary>
+    public string? CiCdRef { get; set; }
+
+    /// <summary>
+    /// This is the ID returned from the external CI/CD system when running
+    /// </summary>
+    public string? CiCdPipelineIdentifier { get; set; }
+    public string? CiCdSystem { get; set; }
 }

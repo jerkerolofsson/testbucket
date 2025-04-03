@@ -1,8 +1,4 @@
-﻿@using TestBucket.Components.Shared
-@using TestBucket.Components.Shared.Tree
-@using TestBucket.Domain.Requirements.Models
-@using TestBucket.Domain.Teams.Models
-@inject TestBrowser testBrowser
+﻿@inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject ITestCaseManager testCaseManager
 @inject ITestRunManager testRunManager
@@ -11,23 +7,29 @@
 @inject TestRunCreationController testRunCreation
 @inject AppNavigationManager appNavigationManager
 @inject ITestSuiteManager testSuiteManager
+@inject IStringLocalizer<SharedStrings> loc
 @implements ITestCaseObserver
 @implements ITestSuiteObserver
 @implements ITestSuiteFolderObserver
 @implements ITestRunObserver
 @implements IDisposable
 
-<MudStack Spacing="0" Class="pa-2" Style="width: 100%; background: var(--mud-palette-surface)">
+<MudStack Spacing="0" Class="pa-2" Style="width: 100%;">
     <MudStack Row="true" Style="border-bottom: solid 1px var(--mud-palette-darken)" Spacing="0">
 
         <MudTextField Placeholder="Search Tests"
-                      Clearable
-                      Variant="Variant.Outlined"
-                      Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
+        Clearable
+        Variant="Variant.Outlined"
+        Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
 
         <MudSpacer />
 
-        <MudMenu Icon="@Icons.Material.Filled.MoreHoriz">
+        @if (appNavigationManager.State.SelectedTestCase is not null)
+        {
+            <MudIconButton Class="rounded-0" Size="Size.Small" OnClick="SyncWithActiveDocumentAsync" Icon="@Icons.Material.Filled.CompareArrows" />
+        }
+
+        <MudMenu Class="rounded-0" Size="Size.Small" Icon="@Icons.Material.Filled.MoreVert">
 
             @if (_selectedTreeItem?.Folder is not null)
             {
@@ -55,19 +57,19 @@
         </MudMenu>
 
     </MudStack>
-    
+
     <TreeView 
-        Class="pa-2"
-        @ref="_treeView"
-        ItemEdited="OnRenamed"
-        ItemEditCanceled="OnItemEditCanceled"
-        EditItem="@_editItem"
-        T="BrowserItem"
-        SelectedValue="@_selectedTreeItem"
-        SelectedValueChanged="OnSelectedValueChangedAsync"
-        Color="Color.Tertiary" 
-        ServerData="@LoadServerData" 
-        Items="@_rootItems">
+    Class="pa-2"
+    @ref="_treeView"
+    ItemEdited="OnRenamed"
+    ItemEditCanceled="OnItemEditCanceled"
+    EditItem="@_editItem"
+    T="BrowserItem"
+    SelectedValue="@_selectedTreeItem"
+    SelectedValueChanged="OnSelectedValueChangedAsync"
+    Color="Color.Tertiary" 
+    ServerData="@LoadServerData" 
+    Items="@_rootItems">
         <ItemTemplate>
 
             @{
@@ -79,13 +81,35 @@
             }
 
             <DropZone T="TestEntity" OnDrop="(test) => OnDrop(test, context)">
-               
+
                 <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true">
                     <ActivatorContent>
                         @if (context.Value?.TestCase is not null)
                         {
                             <Draggable T="TestEntity" Data="@context.Value.TestCase">
-                                <div style="@style">@context.Text</div>
+
+                                @{
+                                    string cssClass = "";
+                                    string name = context.Text ?? "";
+                                    if (context.Value.TestCase.IsTemplate)
+                                    {
+                                        cssClass += " template";
+                                    }
+                                    switch(context.Value.TestCase.ExecutionType)
+                                    {
+                                        case Contracts.Testing.Models.TestExecutionType.Automated:
+                                            cssClass += " automated";
+                                            break;
+                                        case Contracts.Testing.Models.TestExecutionType.Hybrid:
+                                            cssClass += " hybrid";
+                                            break;
+                                        case Contracts.Testing.Models.TestExecutionType.Manual:
+                                            cssClass += " manual";
+                                            break;
+                                    }
+                                }
+
+                                <div style="@style" class="@cssClass">@context.Text</div>
                             </Draggable>
                         }
                         else if (context.Value?.Folder is not null)

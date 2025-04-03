@@ -4,38 +4,41 @@
 @using TestBucket.Domain.Files.Models
 @using TestBucket.Domain.Teams.Models
 @inject ProjectController projectService
+@inject IStringLocalizer<IntegrationStrings> loc
 
 @if (Name is not null)
 {
     <MudPaper Class="mb-3 pa-3">
-        @if(Icon is not null)
-        {
-            <MudIcon Size="Size.Large" Icon="@Icon"/>
-        }
-        <MudText class="mb-3" Typo="Typo.h1">@Name</MudText>
+        <MudStack Row AlignItems="AlignItems.Center" Class="tb-integration-title mb-5">
+            @if (Icon is not null)
+            {
+                <MudIcon Size="Size.Large" Icon="@Icon" />
+            }
+            <MudText Typo="Typo.h1">@Name</MudText>
+        </MudStack>
 
         @if(Integration is null)
         {
-            <MudText>No existing integration found. Create one now?</MudText>
+            <MudText>@loc["no-integration"]</MudText>
 
-            <MudStack Row>
-                <MudButton Variant="Variant.Outlined" OnClick="AddAsync">Add Integration</MudButton>
+            <MudStack Row Class="mt-5">
+                <MudButton Variant="Variant.Outlined" OnClick="AddAsync">@loc["add-integration"]</MudButton>
             </MudStack>
         }
         else
         {
             <Field Row>
-                <FieldHeader>GitLab address</FieldHeader>
+                <FieldHeader>@loc["integration-base-url"]</FieldHeader>
                 <MudSpacer/>
                 <MudTextField Value="Integration.BaseUrl" T="string" ValueChanged="BaseUrlChanged" />
             </Field>
             <Field Row>
-                <FieldHeader>GitLab project ID</FieldHeader>
+                <FieldHeader>@loc["project-id"]</FieldHeader>
                 <MudSpacer />
                 <MudTextField Value="Integration.ExternalProjectId" T="string" ValueChanged="ExternalProjectIdChanged" />
             </Field>
             <Field Row>
-                <FieldHeader>GitLab project access token</FieldHeader>
+                <FieldHeader>@loc["access-token"]</FieldHeader>
                 <MudSpacer />
                 <MudTextField InputType="InputType.Password" Value="Integration.AccessToken" T="string" ValueChanged="AccessTokenChanged" />
             </Field>

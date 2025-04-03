@@ -58,10 +58,14 @@ internal class ProjectManager : IProjectManager
         {
             if (dataSource.SupportedTraits.Contains(traitType))
             {
-                var options = await dataSource.GetFieldOptionsAsync(dtos, traitType, cancellationToken);
-                if(options.Length > 0)
+                var dto = dtos.Where(x => x.Name == dataSource.SystemName).FirstOrDefault();
+                if (dto is not null)
                 {
-                    return options;
+                    var options = await dataSource.GetFieldOptionsAsync(dto, traitType, cancellationToken);
+                    if (options.Length > 0)
+                    {
+                        return options;
+                    }
                 }
             }
         }

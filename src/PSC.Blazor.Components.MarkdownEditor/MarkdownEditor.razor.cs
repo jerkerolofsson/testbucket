@@ -46,6 +46,8 @@ namespace PSC.Blazor.Components.MarkdownEditor
         /// The element identifier.
         /// </value>
         private string ElementId { get; set; } = $"markdown-{Guid.NewGuid()}";
+        private string RootElementId => "root-" + ElementId;
+        private string PreviewElementId { get; set; } = $"markdown-preview-{Guid.NewGuid()}";
 
         /// <summary>
         /// Gets or sets the element reference.
@@ -216,6 +218,11 @@ namespace PSC.Blazor.Components.MarkdownEditor
 
         [Parameter]
         public EventCallback<RunCodeRequest> RunCode { get; set; }
+
+        /// <summary>
+        /// A space delimited list of code languages to show a run icon for 
+        /// </summary>
+        [Parameter] public string? RunCodeLanguages { get; set; }
 
         #endregion Event Callback
         #region Parameters
@@ -1025,6 +1032,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
             if (Initialized && _value != Value)
             {
                 await SetValueAsync(Value ?? "");
+                _value = Value;
             }
 
             if (Initialized && _currentPreviewState != Preview)
@@ -1066,7 +1074,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
                 }
 
 
-                await JSModule.Initialize(dotNetObjectRef, ElementRef, ElementId, new
+                await JSModule.Initialize(dotNetObjectRef, ElementRef, ElementId, PreviewElementId, new
                 {
                     AutoSave = new
                     {
@@ -1119,6 +1127,7 @@ namespace PSC.Blazor.Components.MarkdownEditor
                     ImagePathAbsolute,
                     ImageCSRFToken,
                     EnableRunCode,
+                    RunCodeLanguages,
                     EnableCopyCodeToClipboard,
                     ImageTexts = ImageTexts == null ? null : new
                     {

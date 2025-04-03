@@ -14,10 +14,12 @@ using TestBucket.Components.Environments.Services;
 using TestBucket.Components.Layout.Controls;
 using TestBucket.Components.Projects;
 using TestBucket.Components.Requirements.Services;
+using TestBucket.Components.Settings.ApiKeys;
+using TestBucket.Components.Settings.Roles;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Themeing;
 using TestBucket.Components.Teams;
-using TestBucket.Components.Tests;
+using TestBucket.Components.Tests.Commands;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Components.Uploads.Services;
 using TestBucket.Components.Users;
@@ -26,6 +28,8 @@ using TestBucket.Contracts.Integrations;
 using TestBucket.Data.Migrations;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Settings.Models;
 using TestBucket.Gitlab;
 using TestBucket.Identity;
 
@@ -53,7 +57,7 @@ public class Program
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddMemoryCache();
 
-
+        builder.Services.AddSingleton<RoleLocalizer>();
         builder.Services.AddLocalization(options =>
         {
         });
@@ -122,6 +126,18 @@ public class Program
         //var connectionString = builder.Configuration.GetConnectionString("ConnectionStrings__testbucket") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
         //builder.Services.AddDbContext<ApplicationDbContext>(options =>
         //    options.UseNpgsql(connectionString));
+
+        var seedConfiguration = new SeedConfiguration
+        {
+            Tenant = Environment.GetEnvironmentVariable("TB_DEFAULT_TENANT"),
+            Email = Environment.GetEnvironmentVariable("TB_ADMIN_USER"),
+            SymmetricKey = Environment.GetEnvironmentVariable("TB_JWT_SYMMETRIC_KEY"),
+            Issuer = Environment.GetEnvironmentVariable("TB_JWT_ISS"),
+            Audience = Environment.GetEnvironmentVariable("TB_JWT_AUD"),
+            AccessToken = Environment.GetEnvironmentVariable("TB_ADMIN_ACCESS_TOKEN"),
+        };
+        builder.Services.AddSingleton(seedConfiguration);
+
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         builder.Services.AddHostedService<MigrationService>();
 
@@ -162,10 +178,12 @@ public class Program
         builder.Services.AddScoped<SignInManager<ApplicationUser>, ApplicationSignInManager>();
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-        builder.Services.AddScoped<UserRegistrationService>();
+        builder.Services.AddScoped<UserApiKeysController>();
+        builder.Services.AddScoped<UserRegistrationController>();
         builder.Services.AddScoped<ThemingService>();
         builder.Services.AddScoped<TenantResolver>();
-        builder.Services.AddScoped<TenantService>();
+        builder.Services.AddScoped<TenantController>();
+        builder.Services.AddScoped<RolesController>();
         builder.Services.AddScoped<TeamService>();
         builder.Services.AddScoped<ProjectController>();
         builder.Services.AddScoped<TestSuiteService>();
@@ -188,6 +206,7 @@ public class Program
         builder.Services.AddScoped<HotKeysService>();
         builder.Services.AddScoped<ICommand, NewTestCommand>();
         builder.Services.AddScoped<ICommand, NewFolderCommand>();
+        builder.Services.AddScoped<ICommand, SyncWithActiveDocumentCommand>();
 
         builder.Services.AddScoped(typeof(DragAndDropService<>));
         builder.Services.AddDataServices();
@@ -195,6 +214,7 @@ public class Program
 
         // Integrations
         builder.Services.AddSingleton<IProjectDataSource, GitlabProjectDataSource>();
+        builder.Services.AddSingleton<IExternalPipelineRunner, GitlabPipelineRunner>();
         builder.Services.AddDotHttpApiTestExtension();
 
         builder.Services.AddHotKeys2();
@@ -247,29 +267,4 @@ public class Program
 
         app.Run();
     }
-
-    //private static async Task AddOllamaAsync(WebApplicationBuilder builder)
-    //{
-    //    var ollamaBaseUrl = builder.Configuration["OLLAMA_BASE_URL"];
-    //    if (ollamaBaseUrl is not null)
-    //    {
-    //        //string model = "deepseek-r1:7b";
-    //        string model = "deepseek-r1:30b";
-    //        // deepseek-r1:7b
-    //        //var ollama = new OllamaApiClient(ollamaBaseUrl, "deepseek-r1:7b");
-    //        try
-    //        {
-    //            var ollama = new OllamaApiClient(ollamaBaseUrl, model);
-    //            await foreach (var response in ollama.PullModelAsync(model))
-    //            {
-    //                if (response is not null)
-    //                {
-    //                    Console.WriteLine($"{response.Status}: {response.Completed}/{response.Total} ({response.Percent})");
-    //                }
-    //            }
-    //            builder.Services.AddSingleton<Microsoft.Extensions.AI.IChatClient>(ollama);
-    //        }
-    //        catch (Exception) { }
-    //    }
-    //}
 }

@@ -11,11 +11,20 @@ public partial class Index
         _settings = await informer.LoadInformSettingsAsync();
     }
 
-    private async  Task OnInformUrlChangedAsync(string url)
+    private async Task OnInformUrlChangedAsync(string url)
     {
-        if(_settings is not null)
+        if (_settings is not null)
         {
             _settings.Url = url;
+            await informer.SaveInformSettingsAsync(_settings);
+        }
+    }
+
+    private async Task OnAuthHeaderChangedAsync(string authHeader)
+    {
+        if (_settings is not null)
+        {
+            _settings.AuthHeader = authHeader;
             await informer.SaveInformSettingsAsync(_settings);
         }
     }

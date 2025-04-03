@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace TestBucket.Domain.Testing.Models;
 public class SearchTestCaseRunQuery : SearchQuery
@@ -10,6 +6,12 @@ public class SearchTestCaseRunQuery : SearchQuery
     public long? TestRunId { get; set; }
     public long? TestSuiteId { get; set; }
 
+    /// <summary>
+    /// Completed tests
+    /// </summary>
+    public bool? Completed { get; set; }
+    public bool? Unassigned { get; set; }
+    public string? AssignedToUser { get; set; }
     public TestResult? Result { get; set; }
     public string? State { get; set; }
 
@@ -20,6 +22,21 @@ public class SearchTestCaseRunQuery : SearchQuery
         {
             sb.Append("t=");
             sb.Append(TeamId);
+        }
+        if (Completed is not null)
+        {
+            sb.Append("Completed=");
+            sb.Append(Completed);
+        }
+        if (Unassigned is not null)
+        {
+            sb.Append("Unassigned=");
+            sb.Append(Unassigned);
+        }
+        if (AssignedToUser is not null)
+        {
+            sb.Append("AssignedToUser=");
+            sb.Append(AssignedToUser);
         }
         if (CreatedFrom is not null)
         {

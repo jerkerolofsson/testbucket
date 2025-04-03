@@ -1,5 +1,6 @@
 ﻿@inject RequirementBrowser browser
 @inject RequirementEditorController editor
+@inject AppNavigationManager appNavigationManager
 
 <MudDataGrid Items="_links"
 Dense="true"
@@ -15,6 +16,15 @@ SortMode="SortMode.Single">
         </MudStack>
     </ToolBarContent>
     <Columns>
+
+        <TemplateColumn Title="">
+            <CellTemplate>
+                @if(context.Item.TestCase is not null)
+                {
+                    <MudLink Href="@appNavigationManager.GetUrl(context.Item.TestCase)">@context.Item.TestCase!.Name</MudLink>
+                }
+            </CellTemplate>
+        </TemplateColumn>
         <PropertyColumn Property="x => x.TestCase!.Name" Title=""/>
         <TemplateColumn CellStyle="width: 1%">
             <CellTemplate>

@@ -25,14 +25,16 @@ using TestBucket.Domain.Tenants;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Tenants.Models;
+using TestBucket.Domain.Identity.Permissions;
 
 
 namespace TestBucket.Data.Migrations;
-public class MigrationService(IServiceProvider serviceProvider, ILogger<MigrationService> logger, IConfiguration configuration) : BackgroundService
+public class MigrationService(IServiceProvider serviceProvider, ILogger<MigrationService> logger, SeedConfiguration seedConfiguration) : BackgroundService
 {
     public const string ActivitySourceName = "Migrations";
     private static readonly ActivitySource s_activitySource = new(ActivitySourceName);
     private static readonly SemaphoreSlim s_lock = new(1);
+
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -92,7 +94,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         {
             // Run migration in a transaction to avoid partial migration if it fails.
             //await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
-            
+
             await dbContext.Database.MigrateAsync(cancellationToken);
             //await transaction.CommitAsync(cancellationToken);
         });
@@ -110,22 +112,16 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
     private async Task SeedDataAsync(CancellationToken cancellationToken)
     {
 
-        string superAdminUserEmail = configuration["ADMIN_USER"] ?? "admin@admin.com";
-        string adminUserPassword = configuration["ADMIN_PASSWORD"] ?? "Password123!";
-        string adminTenant = Environment.GetEnvironmentVariable("DEFAULT_TENANT") ?? "admin";
-        string adminApiKey = Environment.GetEnvironmentVariable("ADMIN_API_KEY") ?? Guid.NewGuid().ToString();
+        string superAdminUserEmail = seedConfiguration.Email ?? "admin@admin.com";
+        string adminUserPassword = seedConfiguration.Password ?? "Password123!";
+        string adminTenant = seedConfiguration.Tenant ?? "admin";
+        string adminApiKey = seedConfiguration.AccessToken ?? Guid.NewGuid().ToString();
 
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         // Update settings
-        var settingsProvider = scope.ServiceProvider.GetRequiredService<ISettingsProvider>();
-        var settings = await settingsProvider.LoadGlobalSettingsAsync();
-        if (settings.DefaultTenant != adminTenant)
-        {
-            settings.DefaultTenant = adminTenant;
-            await settingsProvider.SaveGlobalSettingsAsync(settings);
-        }
+        await SeedSettingsAsync(adminTenant, scope);
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
@@ -150,6 +146,14 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
                 await CreateDefaultTenantAdminUserAsync(dbContext, scope, adminTenant, superAdminUserEmail, adminUserPassword);
                 await CreateApiKeyAsync(dbContext, scope, adminTenant, superAdminUserEmail, adminApiKey);
 
+                try
+                {
+                    await CreateDefaultRolePermissionsAsync(dbContext, adminTenant, scope);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "Failed to create default user");
+                }
             }
             catch (Exception ex)
             {
@@ -168,6 +172,59 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
                 logger.LogError(ex, "Failed to assign roles");
             }
         });
+    }
+
+    private async Task SeedSettingsAsync(string adminTenant, IServiceScope scope)
+    {
+        var settingsProvider = scope.ServiceProvider.GetRequiredService<ISettingsProvider>();
+        var settings = await settingsProvider.LoadGlobalSettingsAsync();
+        bool changed = false;
+        string? jwtSymmetricKey = seedConfiguration.SymmetricKey;
+        string? jwtIssuer = seedConfiguration.Issuer;
+        string? jwtAudience = seedConfiguration.Audience;
+
+        // Default values if not set in environment variables
+        if (settings.SymmetricJwtKey is null)
+        {
+            settings.SymmetricJwtKey = Guid.NewGuid().ToString();
+            changed = true;
+        }
+        if (settings.JwtIssuer is null)
+        {
+            settings.JwtIssuer = "testbucket";
+            changed = true;
+        }
+        if (settings.JwtAudience is null)
+        {
+            settings.JwtAudience = "testbucket";
+            changed = true;
+        }
+
+        // Update settings if provided
+        if (settings.DefaultTenant != adminTenant)
+        {
+            settings.DefaultTenant = adminTenant;
+            changed = true;
+        }
+        if (settings.SymmetricJwtKey != jwtSymmetricKey && jwtSymmetricKey is not null)
+        {
+            settings.SymmetricJwtKey = jwtSymmetricKey;
+            changed = true;
+        }
+        if (settings.JwtIssuer != jwtIssuer)
+        {
+            settings.JwtIssuer = jwtIssuer;
+            changed = true;
+        }
+        if (settings.JwtAudience != jwtAudience)
+        {
+            settings.JwtAudience = jwtAudience;
+            changed = true;
+        }
+        if (changed)
+        {
+            await settingsProvider.SaveGlobalSettingsAsync(settings);
+        }
     }
 
     private async Task AssignRolesAsync(ApplicationDbContext dbContext, IServiceScope scope, string tenantId, string email, string roleName)
@@ -202,6 +259,80 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
     {
         await CreateRoleIfNotExistsAsync(scope, Roles.SUPERADMIN); // Can create new tenants
         await CreateRoleIfNotExistsAsync(scope, Roles.ADMIN); // Tenant admin
+        await CreateRoleIfNotExistsAsync(scope, Roles.REGULAR_USER);
+        await CreateRoleIfNotExistsAsync(scope, Roles.READ_ONLY);
+    }
+
+    private async Task CreateDefaultRolePermissionsAsync(ApplicationDbContext dbContext, string tenantId, IServiceScope scope)
+    {
+        var role = Roles.SUPERADMIN;
+        var has = await dbContext.RolePermissions.Where(x => x.Role == role).AnyAsync();
+        if(!has)
+        {
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Tenant });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.User });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Project });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestSuite });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCase });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Requirement });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.RequirementSpecification });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestRun });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCaseRun });
+            await dbContext.SaveChangesAsync();
+        }
+
+        role = Roles.ADMIN;
+        has = await dbContext.RolePermissions.Where(x => x.Role == role).AnyAsync();
+        if (!has)
+        {
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Tenant });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.User });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Project });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestSuite });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCase });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Requirement });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.RequirementSpecification });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestRun });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCaseRun });
+            await dbContext.SaveChangesAsync();
+        }
+
+        role = Roles.REGULAR_USER;
+        has = await dbContext.RolePermissions.Where(x => x.Role == role).AnyAsync();
+        if (!has)
+        {
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Tenant });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Project });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.User });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestSuite });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCase });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Requirement });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.RequirementSpecification });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestRun });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCaseRun });
+            await dbContext.SaveChangesAsync();
+        }
+
+        role = Roles.READ_ONLY;
+        has = await dbContext.RolePermissions.Where(x => x.Role == role).AnyAsync();
+        if (!has)
+        {
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Tenant });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Project });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.User });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestSuite });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestCase });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.Requirement });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.RequirementSpecification });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestRun });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestCaseRun });
+            await dbContext.SaveChangesAsync();
+        }
+
+        //await yield;
+        //await CreateRoleIfNotExistsAsync(scope, Roles.SUPERADMIN); // Can create new tenants
+        //await CreateRoleIfNotExistsAsync(scope, Roles.ADMIN); // Tenant admin
+        //await CreateRoleIfNotExistsAsync(scope, Roles.REGULAR_USER); // Tenant admin
     }
 
     private async Task CreateRoleIfNotExistsAsync(IServiceScope scope, string roleName)
@@ -209,7 +340,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
         var exists = await roleManager.RoleExistsAsync(roleName);
-        if(!exists)
+        if (!exists)
         {
             var role = new IdentityRole
             {
@@ -217,7 +348,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
                 NormalizedName = roleName
             };
             var result = await roleManager.CreateAsync(role);
-            if(!result.Succeeded)
+            if (!result.Succeeded)
             {
                 logger.LogError("Failed to create role: {roleName}", roleName);
             }
@@ -235,25 +366,43 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
 
     private async Task CreateApiKeyAsync(ApplicationDbContext dbContext, IServiceScope scope, string tenantId, string email, string key)
     {
-        var user = await dbContext.Users.Where(x => x.TenantId == tenantId && x.Email == email).Include(x=>x.ApplicationUserApiKeys).FirstOrDefaultAsync();
-        if(user?.ApplicationUserApiKeys is not null)
+        var user = await dbContext.Users.Where(x => x.TenantId == tenantId && x.Email == email).Include(x => x.ApplicationUserApiKeys).FirstOrDefaultAsync();
+        if (user?.ApplicationUserApiKeys is not null)
         {
-            var hasTheKey = dbContext.ApiKeys.Where(x => x.Key == key && x.ApplicationUserId == user.Id).Any();
-            if(!hasTheKey)
+            string name = "Initial DB seeding API key";
+            var apiKey = await dbContext.ApiKeys.Where(x => x.ApplicationUserId == user.Id && x.Name == name && x.TenantId == tenantId).FirstOrDefaultAsync();
+            if (apiKey is null)
             {
-                var apiKey = new ApplicationUserApiKey
+                apiKey = new ApplicationUserApiKey
                 {
                     Expiry = DateTimeOffset.UtcNow.AddDays(365),
                     ApplicationUserId = user.Id,
                     Key = key,
-                    Name = "Initial DB seeding API key"
+                    Name = name,
+                    TenantId = tenantId
                 };
                 dbContext.ApiKeys.Add(apiKey);
                 await dbContext.SaveChangesAsync();
             }
             else
             {
-                // Expired?
+                var changed = false;
+                if (apiKey.Key != key)
+                {
+                    changed = true;
+                    apiKey.Key = key;
+                }
+                if (apiKey.Expiry > DateTimeOffset.UtcNow.AddDays(30))
+                {
+                    changed = true;
+                    apiKey.Expiry = DateTimeOffset.UtcNow.AddDays(365);
+                }
+
+                if (changed)
+                {
+                    dbContext.ApiKeys.Update(apiKey);
+                    await dbContext.SaveChangesAsync();
+                }
             }
         }
     }
@@ -309,6 +458,6 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
 
             //await dbContext.SaveChangesAsync();
         }
-   
+
     }
 }

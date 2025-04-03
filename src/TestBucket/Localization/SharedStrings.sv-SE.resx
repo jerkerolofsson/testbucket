@@ -144,4 +144,115 @@
   <data name="test-environments" xml:space="preserve">
     <value>Testmiljöer</value>
   </data>
+  <data name="attachments" xml:space="preserve">
+    <value>Bilagor</value>
+  </data>
+  <data name="callstack" xml:space="preserve">
+    <value>Call Stack</value>
+  </data>
+  <data name="message" xml:space="preserve">
+    <value>Meddelande</value>
+  </data>
+  <data name="test-result" xml:space="preserve">
+    <value>Test Resultat</value>
+  </data>
+  <data name="result-passed" xml:space="preserve">
+    <value>Passerat</value>
+  </data>
+  <data name="result-norun" xml:space="preserve">
+    <value>Inte Testat</value>
+  </data>
+  <data name="result-blocked" xml:space="preserve">
+    <value>Blockerat</value>
+  </data>
+  <data name="result-skipped" xml:space="preserve">
+    <value>Skippat</value>
+  </data>
+  <data name="result-failed" xml:space="preserve">
+    <value>Falerat</value>
+  </data>
+  <data name="unassigned" xml:space="preserve">
+    <value>Icke Allokerade</value>
+  </data>
+  <data name="assigned-to-me" xml:space="preserve">
+    <value>Mina</value>
+  </data>
+  <data name="run-test-again" xml:space="preserve">
+    <value>Test en gång till</value>
+  </data>
+  <data name="assigned-to" xml:space="preserve">
+    <value>Allockerat till</value>
+  </data>
+  <data name="tenant" xml:space="preserve">
+    <value>Tenant</value>
+  </data>
+  <data name="tenants" xml:space="preserve">
+    <value>Tenants</value>
+  </data>
+  <data name="id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="expiry" xml:space="preserve">
+    <value>Utgången</value>
+  </data>
+  <data name="confirm-delete-title" xml:space="preserve">
+    <value>Ta bort?</value>
+  </data>
+  <data name="confirm-delete-message" xml:space="preserve">
+    <value>Vill du verkligen ta bort denna saken?</value>
+  </data>
+  <data name="api-keys" xml:space="preserve">
+    <value>API Nycklar</value>
+  </data>
+  <data name="api-key" xml:space="preserve">
+    <value>API Nyckel</value>
+  </data>
+  <data name="search-settings" xml:space="preserve">
+    <value>Sök inställningar..</value>
+  </data>
+  <data name="test-case-variables-description" xml:space="preserve">
+    <value>Test variabler är värden som ersätter placeholders i testfallet som {{Name}} med värdet definerat i i tabellen. Om en testmiljö används så kan värdet från testmiljön användas, men om variablen finns definerad i båda så används värdet från testfallet. </value>
+  </data>
+  <data name="variable-key" xml:space="preserve">
+    <value>Namn</value>
+  </data>
+  <data name="variable-value" xml:space="preserve">
+    <value>Innehåll</value>
+  </data>
+  <data name="requirement-coverage" xml:space="preserve">
+    <value>Krav täckning</value>
+  </data>
+  <data name="users" xml:space="preserve">
+    <value>Användare</value>
+  </data>
+  <data name="permission-none" xml:space="preserve">
+    <value>Inga</value>
+  </data>
+  <data name="permission-read" xml:space="preserve">
+    <value>Läsa</value>
+  </data>
+  <data name="permission-write" xml:space="preserve">
+    <value>Editera/Skapa</value>
+  </data>
+  <data name="permission-delete" xml:space="preserve">
+    <value>Fulla rättigheter</value>
+  </data>
+  <data name="role-read-only" xml:space="preserve">
+    <value>Read Only</value>
+  </data>
+  <data name="role-site-admin" xml:space="preserve">
+    <value>Sajt administratör</value>
+  </data>
+  <data name="role-tenant-admin" xml:space="preserve">
+    <value>Tenant administratör</value>
+  </data>
+  <data name="role-regular-user" xml:space="preserve">
+    <value>Vanlig användare</value>
+  </data>
+  <data name="missing-permission-general" xml:space="preserve">
+    <value>Du saknar rättigheter för denna resurs</value>
+  </data>
+  <data name="ci-cd" xml:space="preserve">
+    <value />
+  </data>
 </root>

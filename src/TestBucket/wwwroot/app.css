@@ -24,6 +24,7 @@ html, body {
     --mud-typography-h1-size: 22pt;
     --mud-typography-h1-weight: 800;
 
+    --mud-typography-body1-size: 10pt;
     --mud-typography-subtitle1-size: 10pt;
     --mud-typography-default-size: 10pt;
     --mud-typography-h2-size: 20pt;
@@ -33,14 +34,25 @@ html, body {
     --mud-typography-h6-size: 12pt;
 }
 
-.result-pill {
+/*.result-pill {
     padding: 4px;
     border-radius: 4px;
     display: grid;
     place-items: center;
     font-size: 9pt;
     border: solid 1px transparent;
+}*/
+
+.treeview .template {
+    font-style: italic;
 }
+/*
+.treeview .automated::after {
+    content: ' (automated)';
+}
+.treeview .hybrid::after {
+    content: ' (hybrid)';
+}*/
 
 .tb-passrate-text {
     font-weight: bold;
@@ -186,6 +198,18 @@ p.mud-typography-subtitle1 {
      border-top-right-radius: 5px;
  }
 
+ article.center {
+     display: flex;
+     align-items: center;
+     flex-direction: column;
+     padding: 2rem;
+     width: 100%;
+ }
+
+ article.center > * {
+     max-width: 1000px;
+ }
+
  .container-settings-page {
      padding: 2rem;
      max-width: 1000px;
@@ -268,7 +292,8 @@ p.mud-typography-subtitle1 {
      overflow: auto;
  }
  .tb-toolbar {
-     background: var(--mud-palette-surface);
+/*     background: var(--mud-palette-surface);*/
+     background: transparent;
      color: var(--mud-palette-text-primary);
  }
 
@@ -402,7 +427,7 @@ p.mud-typography-subtitle1 {
 
 .mud-markdown-editor-root,
 .EasyMDEContainer,
-.CodeMirror {
+.EasyMDEContainer .CodeMirror {
     height: 100%;
     width: 100%;
 }
@@ -416,11 +441,13 @@ p.mud-typography-subtitle1 {
     color: white;
 }
 
+    .mud-markdown-preview pre:has(code),
     .EasyMDEContainer pre:has(code),
     .CodeMirror pre:has(code) {
         position: relative;
     }
 
+    .mud-markdown-preview  code .tb-code-overlay > *,
     .EasyMDEContainer code .tb-code-overlay > * {
         background: rgba(0,0,0,0.25);
         color: #ddd;
@@ -432,6 +459,7 @@ p.mud-typography-subtitle1 {
         place-items: center;
     }
 
+    .mud-markdown-preview .tb-code-overlay,
     .EasyMDEContainer code .tb-code-overlay {
         position: absolute;
         right:4px;
@@ -441,6 +469,7 @@ p.mud-typography-subtitle1 {
         gap: 4px;
     }
 
+    .mud-markdown-preview code .tb-code-overlay > *:hover,
     .EasyMDEContainer code .tb-code-overlay > *:hover {
         background: var(--mud-palette-primary-hover);
     }
@@ -455,6 +484,8 @@ p.mud-typography-subtitle1 {
 .EasyMDEContainer .editor-preview {
     height: 100%;
 }
+
+
 
 .settings-radio-lg .mud-radio > span {
     display:none;
@@ -564,4 +595,28 @@ table thead tr th,
 table tbody tr td {
     padding: 4px;
     text-align: left;
+}
+
+.result-color-highlight {
+    width: 4px;
+    height: 12px;
+}
+.result-color-highlight.passed {
+    background: var(--clr-passed);
+}
+.result-color-highlight.failed {
+    background: var(--clr-failed);
+}
+.result-color-highlight.blocked {
+    background: var(--clr-blocked);
+}
+.result-color-highlight.norun {
+    background: var(--clr-norun);
+}
+.result-color-highlight.skipped {
+    background: var(--clr-skipped);
+}
+
+.tb-integration-title > * {
+    margin: 0;
 }

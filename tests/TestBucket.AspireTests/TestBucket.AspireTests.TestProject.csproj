@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TestBucket.AppHost\TestBucket.AppHost.csproj" />
+    <ProjectReference Include="..\..\src\TestBucket.Domain\TestBucket.Domain.csproj" />
     <ProjectReference Include="..\..\src\Traits\TestBucket.Traits.TUnit\TestBucket.Traits.TUnit.csproj" />
   </ItemGroup>
 

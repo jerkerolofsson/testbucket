@@ -1,10 +1,14 @@
-﻿using TestBucket.Domain.AI;
+﻿using Microsoft.AspNetCore.Authentication;
+
+using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Settings;
+using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Automation.Services;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
@@ -16,6 +20,7 @@ using TestBucket.Domain.Settings.Server;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Compiler;
+using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Services.Classification;
 using TestBucket.Domain.Testing.Settings;
 
@@ -29,6 +34,12 @@ public static class DomainServiceExtensions
             o.RegisterServicesFromAssembly(typeof(DomainServiceExtensions).Assembly);
         });
 
+        services.AddSingleton<IApiKeyAuthenticator,ApiKeyAuthenticator>();
+        services.AddScoped<IUserPermissionsManager, UserPermissionsManager>();
+        services.AddScoped<IClaimsTransformation, PermissionClaimsTransformation>();
+
+        services.AddScoped<IMarkdownDetector,TemplateDetector>();
+        services.AddScoped<IMarkdownDetector,HybridDetector>();
         services.AddScoped<ITestCompiler, TestCompiler>();
         services.AddScoped<IStateService, StateService>();
         services.AddScoped<ITextTestResultsImporter, TextImporter>();
@@ -41,6 +52,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IFieldDefinitionManager, FieldDefinitionManager>();
         services.AddScoped<IFieldManager, FieldManager>();
         services.AddScoped<IProjectManager, ProjectManager>();
+        services.AddScoped<IPipelineProjectManager, PipelineProjectManager>();
         services.AddScoped<ICommandManager, CommandManager>();
         services.AddScoped<IUnifiedSearchManager, UnifiedSearchManager>();
         services.AddScoped<IProgressManager, ProgressManager>();

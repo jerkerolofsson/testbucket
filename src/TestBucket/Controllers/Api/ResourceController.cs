@@ -2,9 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 
 using TestBucket.Domain.Files;
+using TestBucket.Domain.Shared;
 
 namespace TestBucket.Controllers.Api;
 
+/// <summary>
+/// File resources
+/// </summary>
 [ApiController]
 public class ResourceController : ControllerBase
 {
@@ -19,11 +23,6 @@ public class ResourceController : ControllerBase
     [HttpGet("/api/resources/_health")]
     public IActionResult GetHealth()
     {
-        var tenantId = User.Claims.Where(x => x.Type == "tenant").Select(x => x.Value).FirstOrDefault();
-        if (tenantId is null)
-        {
-            return Unauthorized();
-        }
         return Ok();
     }
 
@@ -31,12 +30,7 @@ public class ResourceController : ControllerBase
     [HttpGet("/api/resources/{resourceId:long}")]
     public async Task<IActionResult> GetApiResourceAsync([FromRoute] long resourceId)
     {
-        var tenantId = User.Claims.Where(x => x.Type == "tenant").Select(x=>x.Value).FirstOrDefault();
-        if(tenantId is null)
-        {
-            return Unauthorized();
-        }
-
+        var tenantId = this.User.GetTenantIdOrThrow();
         var file = await _repo.GetResourceByIdAsync(tenantId, resourceId);
         if(file is null)
         {

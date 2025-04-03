@@ -1,0 +1,102 @@
+﻿@using TestBucket.Components.Shared
+@using TestBucket.Domain.Requirements.Models
+@using TestBucket.Components.Reporting.Controls
+@inject TestBrowser testBrowser
+@inject IDialogService dialogService
+@inject ITestCaseManager testCaseManager
+@inject ITestRunManager testRunManager
+@inject TestCaseEditorController testCaseEditor
+@inject TestRunCreationController testRunCreationService
+@inject TestExecutionController testExecutionController
+@implements IDisposable
+@implements ITestRunObserver
+@inject IStringLocalizer<SharedStrings> loc
+@inject AuthenticationStateProvider authStateProvider
+
+<DropZone T="TestEntity" OnDrop="OnDrop">
+    <MudDataGrid ServerData="LoadGridData"
+    Style="width: 100%"
+    Dense="true"
+    Hover="true"
+    SelectOnRowClick="true"
+    MultiSelection="false"
+    T="TestCaseRun"
+    RowClick="(e) => OnClicked(e.Item)"
+    @ref="_dataGrid"
+    SortMode="SortMode.None">
+
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+
+                <MudTextField Value="_query.Text" T="string" ValueChanged="OnSearch"
+                Style="min-width: 15vw"
+                Clearable="true"
+                Placeholder="Search Tests"
+                Variant="Variant.Outlined"
+                IconSize="Size.Small"
+                Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Search" />
+
+                <MudSpacer />
+
+                @if(_results is not null)
+                {
+                    <TestResultSummaryBar Style="width: 100px" Summary="@_results"/>
+
+                    if(_results.Failed > 0)
+                    {
+                        <MudLink OnClick="FilterFailed">@loc["result-failed"]</MudLink>
+                    }
+                    if (_results.NoRun > 0)
+                    {
+                        <MudLink OnClick="FilterIncomplete">@loc["result-norun"]</MudLink>
+                    }
+                    <MudLink OnClick="FilterUnassigned">@loc["unassigned"]</MudLink>
+                    <MudLink OnClick="FilterAssignedToMe">@loc["assigned-to-me"]</MudLink>
+                }
+                <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="ShowFilterAsync"></MudIconButton>
+            </MudStack>
+        </ToolBarContent>
+
+        <Columns>
+
+            <PropertyColumn Property="x => x.State" Title="@loc["state"]" />
+
+            <TemplateColumn Title="@loc["name"]" CellStyle="max-width: 100%; overflow: hidden">
+                <CellTemplate>
+                    @if(_selectedItem is not null && _selectedItem.Equals(context.Item))
+                    {
+                        <span style="color: var(--mud-palette-tertiary)">@context.Item.Name</span>
+                    }
+                    else
+                    {
+                        @context.Item.Name
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+            <PropertyColumn Property="x => x.AssignedToUserName" Title="@loc["assigned-to"]" />
+
+            <TemplateColumn Title="@loc["test-result"]">
+                <CellTemplate>
+                    <ResultPill Result="@context.Item.Result" />
+                </CellTemplate>
+            </TemplateColumn>
+
+
+            <TemplateColumn Title="">
+                <CellTemplate>
+                    @if(context.Item.Result != Contracts.Testing.Models.TestResult.NoRun)
+                    {
+                        <MudLink OnClick="RunTestAgain">@loc["run-test-again"]</MudLink>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+        </Columns>
+
+        <PagerContent>
+            <MudDataGridPager T="TestCaseRun" />
+        </PagerContent>
+    </MudDataGrid>
+</DropZone>

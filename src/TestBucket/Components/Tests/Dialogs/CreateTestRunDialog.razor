@@ -11,6 +11,10 @@
         <TitleContent>Create new test run</TitleContent>
         <DialogContent>
             <MudStack Spacing="1">
+                @if (_loading)
+                {
+                    <MudProgressLinear Indeterminate Color="Color.Secondary"/>
+                }
                 @if (_run is not null)
                 {
                     <Field Row>
@@ -24,6 +28,17 @@
                         <MudSpacer />
                         <EnvironmentDropDown Project="@_project" SelectedEnvironment="@_testEnvironment" SelectedEnvironmentChanged="OnTestEnvironmentChanged" />
                     </Field>
+
+                    @if (_ciCdSystem is not null)
+                    {
+                        <Field Row>
+                            <FieldHeader>CI/CD ref</FieldHeader>
+                            <MudSpacer />
+                            <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_ciCdRef"></MudTextField>
+                        </Field>
+
+                    }
+
                 }
 
                 @if (_errorMessage is not null)
@@ -37,7 +52,10 @@
         </DialogContent>
 
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            @if (!_loading)
+            {
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            }
             <MudButton OnClick="Close">Cancel</MudButton>
         </DialogActions>
     </MudDialog>
@@ -46,6 +64,8 @@
 @code {
     private string? _errorMessage;
     private FieldsEditor? _fieldsEditor;
+    private string? _ciCdSystem;
+    private string? _ciCdRef;
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
@@ -53,12 +73,14 @@
     private TestProject? _project;
     private TestEnvironment? _testEnvironment;
 
+    [Parameter] public TestSuite? TestSuite{ get; set; }
     [Parameter] public long? TestProjectId { get; set; }
     [Parameter] public string? Name { get; set; }
 
     private TestRun _run = new() { Name = "", TenantId = "", Created = DateTimeOffset.UtcNow };
 
     private long? _teamId;
+    private bool _loading = true;
 
     private void OnTestEnvironmentChanged(TestEnvironment testEnvironment)
     {
@@ -76,6 +98,9 @@
             _run.TestProjectId = _project?.Id;
             _teamId = _project?.TeamId;
         }
+        _ciCdSystem = TestSuite?.CiCdSystem;
+        _ciCdRef = TestSuite?.DefaultCiCdRef;
+        _loading = false;
     }
 
     private void Close()
@@ -102,6 +127,8 @@
         }
         _run.TestProjectId = TestProjectId;
         _run.TeamId = _teamId;
+        _run.CiCdRef = _ciCdRef;
+        _run.CiCdSystem = _ciCdSystem;
         _run.TestEnvironmentId = _testEnvironment?.Id;
         await testCaseEditorService.AddTestRunAsync(_run);
 

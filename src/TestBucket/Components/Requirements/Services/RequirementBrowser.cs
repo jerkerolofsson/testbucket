@@ -192,7 +192,7 @@ internal class RequirementBrowser : TenantBaseService
         {
             Value = new BrowserItem { Requirement = requirement },
             Text = requirement.Name,
-            Icon = Icons.Material.Outlined.AssignmentTurnedIn,
+            Icon = Icons.Material.Filled.FactCheck,
             Children = null,
             Expandable = false
         };

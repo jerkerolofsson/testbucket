@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Files.Models;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Domain.Teams.Models;
@@ -11,12 +12,17 @@ namespace TestBucket.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
+    internal DbSet<Tenant> Tenants { get; set; }
+
+    internal DbSet<RolePermission> RolePermissions { get; set; }
+    internal DbSet<ProjectUserPermission> ProjectUserPermissions { get; set; }
+
+
     internal DbSet<FieldDefinition> FieldDefinitions { get; set; }
     internal DbSet<TestCaseField> TestCaseFields { get; set; }
     internal DbSet<TestRunField> TestRunFields { get; set; }
     internal DbSet<TestCaseRunField> TestCaseRunFields { get; set; }
     internal DbSet<ApplicationUserApiKey> ApiKeys { get; set; }
-    internal DbSet<Tenant> Tenants { get; set; }
     internal DbSet<FileResource> Files { get; set; }
     internal DbSet<UserPreferences> UserPreferences { get; set; }
     internal DbSet<Team> Teams { get; set; }

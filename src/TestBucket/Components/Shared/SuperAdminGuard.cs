@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Authorization;
 
 using TestBucket.Domain.Identity;
+using TestBucket.Domain.Shared;
 
 namespace TestBucket.Components.Shared;
 public class SuperAdminGuard
@@ -31,5 +32,11 @@ public class SuperAdminGuard
         {
             throw new InvalidOperationException("This method can only be called by users with the 'SUPERADMIN' role");
         }
+    }
+
+    public async Task<string> GetTenantIdAsync()
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        return AuthenticationGuard.GetTenantIdOrThrow(authState.User);
     }
 }

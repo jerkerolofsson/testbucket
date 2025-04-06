@@ -6,14 +6,16 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject ThemingService themingService
 
-@if (_layout is not null && Results is not null)
-{
-    <PlotlyChart style="height: 10vh; min-height: 350px" @ref="_chart" @bind-Config="_config" @bind-Layout="_layout" @bind-Data="_data" />
-}
-else
-{
-    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="350px" />
-}
+<MudPaper Elevation="2">
+    @if (_layout is not null && Results is not null)
+    {
+        <PlotlyChart style="height: 10vh; min-height: 350px" @ref="_chart" @bind-Config="_config" @bind-Layout="_layout" @bind-Data="_data" />
+    }
+    else
+    {
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="350px" />
+    }
+</MudPaper>
 
 @code {
 
@@ -27,16 +29,23 @@ else
     // Using of the interface IList is important for the event callback!
     private IList<ITrace> _data = new List<ITrace>
     {
+        new Bar
+        {
+            Name = "Results",
+            X = new List<object> { "passed", "failed", "blocked", "skipped" },
+            Y = new List<object> { 0,0,0,0,0 },
+            Marker = new Plotly.Blazor.Traces.BarLib.Marker
+            {
+                ColorArray = ["rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)"]
+            }
+        }        
     };
 
     [Parameter] public TestExecutionResultSummary? Results { get; set; }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        _layout = null;
-        this.StateHasChanged();
-
-        _layout = new Layout()
+        _layout ??= new Layout()
             {
                 Title = new Plotly.Blazor.LayoutLib.Title { Text = "Summary" },
                 BarCornerRadius = 5,
@@ -50,24 +59,26 @@ else
 
         if (Results is not null)
         {
-            var data = new List<ITrace>
+            if(_data.Count > 0 && _data[0] is Bar bar)
             {
-                new Bar
-                {
-                    Name = "Results",
-                    X = new List<object> { "passed", "failed", "blocked", "skipped" },
-                    Y = new List<object> { Results.Passed, Results.Failed, Results.Blocked, Results.Skipped, Results.NoRun },
-                    Marker = new Plotly.Blazor.Traces.BarLib.Marker
-                    {
-                        ColorArray = ["rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)"]
-                    }
-                }
-            };
-            _data = data;
-            // if(_chart is not null)
+                bar.Y = [Results.Passed, Results.Failed, Results.Blocked, Results.Skipped, Results.NoRun];
+            }
+            // var bar = new Bar
             // {
-            //     await _chart.Update(data[0]);
-            // }
+            //     Name = "Results",
+            //     X = ["passed", "failed", "blocked", "skipped"],
+            //     Y = [Results.Passed, Results.Failed, Results.Blocked, Results.Skipped, Results.NoRun],
+            //     Marker = new Plotly.Blazor.Traces.BarLib.Marker
+            //     {
+            //         ColorArray = ["rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)"]
+            //     }
+            // };
+
+            // _data[0] = bar;
+            if (_chart is not null)
+            {
+                await _chart.React();
+            }
         }
     }
 }

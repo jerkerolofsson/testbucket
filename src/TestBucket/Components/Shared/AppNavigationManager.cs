@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-using NGitLab.Models;
-
-using TestBucket.Components.Tests.Controls;
+using TestBucket.Components.Tests.TestCases.Controls;
+using TestBucket.Domain.Automation.Models;
 using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Tenants.Models;
+using TestBucket.Domain.TestAccounts.Models;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.TestResources.Models;
 
 namespace TestBucket.Components.Shared;
 
@@ -92,10 +93,20 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Settings/ManageProjects";
     }
+    public string GetTestAccountsSettingsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/Accounts";
+    }
     public string GetTestEnvironmentSettingsUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Settings/ManageEnvironments";
+    }
+    public string GetTestResourcesSettingsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/Resources";
     }
 
     public string GetImportSpecificationsUrl()
@@ -150,6 +161,11 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Testing/TestRuns/{testrun.Id}";
     }
+    public string GetUrl(Pipeline pipeline)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Testing/TestRuns/{pipeline.TestRunId}/Pipelines/{pipeline.Id}";
+    }
     public string GetUrl(TestSuiteFolder testSuiteFolder)
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
@@ -172,7 +188,6 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Testing/TestCases/{testCase.Id}";
     }
-
     public string GetUrl(TestProject project)
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
@@ -187,10 +202,30 @@ public class AppNavigationManager
     {
         return $"{GetTestEnvironmentSettingsUrl()}/{testEnvironment.Id}";
     }
+    public string GetUrl(TestResource resource)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/Resources/{resource.Id}";
+    }
+    public string GetUrl(TestAccount account)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/Accounts/{account.Id}";
+    }
 
     public void NavigateTo(ApplicationUser user, bool forceLoad = false)
     {
         var url = GetUrl(user);
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
+    public void NavigateTo(TestAccount account, bool forceLoad = false)
+    {
+        var url = GetUrl(account);
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
+    public void NavigateTo(TestResource resource, bool forceLoad = false)
+    {
+        var url = GetUrl(resource);
         _navigationManager.NavigateTo(url, forceLoad);
     }
     public void NavigateTo(TestEnvironment testEnvironment, bool forceLoad = false)
@@ -220,6 +255,11 @@ public class AppNavigationManager
         this.State.SelectedTestSuiteFolder = folder;
         this.State.SelectedTestCase = null;
         var url = GetUrl(folder);
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
+    public void NavigateTo(Pipeline pipeline, bool forceLoad = false)
+    {
+        var url = GetUrl(pipeline);
         _navigationManager.NavigateTo(url, forceLoad);
     }
 

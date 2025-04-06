@@ -15,5 +15,7 @@ namespace TestBucket.Domain.Settings.Models
         public string? Audience { get; set; }
         public string? Issuer { get; set; }
         public string? AccessToken { get; set; }
+
+        public string? PublicEndpointUrl { get; set; }
     }
 }

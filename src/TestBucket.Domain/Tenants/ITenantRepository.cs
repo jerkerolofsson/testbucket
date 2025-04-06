@@ -14,4 +14,5 @@ public interface ITenantRepository
     Task<bool> ExistsAsync(string tenantId);
     Task<Tenant?> GetTenantByIdAsync(string tenantId);
     Task<PagedResult<Tenant>> SearchAsync(SearchQuery query);
+    Task UpdateTenantAsync(Tenant tenant);
 }

@@ -1,10 +1,15 @@
 ﻿
 using TestBucket.Components.Tests.Dialogs;
+using TestBucket.Components.Tests.TestCases.Services;
+using TestBucket.Components.Tests.TestRuns.Dialogs;
+using TestBucket.Contracts.Identity;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Automation.Services;
 using TestBucket.Domain.Environments;
-using TestBucket.Domain.Environments.Models;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Tenants;
+using TestBucket.Domain.Testing.Compiler;
 
 namespace TestBucket.Components.Tests.Services;
 
@@ -17,6 +22,7 @@ internal class TestRunCreationController : TenantBaseService
     private readonly IMarkdownAutomationRunner _markdownAutomationRunner;
     private readonly ITestEnvironmentManager _testEnvironmentManager;
     private readonly IPipelineProjectManager _pipelineProjectManager;
+    private readonly ITenantManager _tenantManager;
 
     public TestRunCreationController(
         AuthenticationStateProvider authenticationStateProvider,
@@ -26,7 +32,8 @@ internal class TestRunCreationController : TenantBaseService
         IMarkdownAutomationRunner markdownAutomationRunner,
         ITestEnvironmentManager testEnvironmentManager,
         AppNavigationManager appNavigationManager,
-        IPipelineProjectManager pipelineProjectManager) : base(authenticationStateProvider)
+        IPipelineProjectManager pipelineProjectManager,
+        ITenantManager tenantManager) : base(authenticationStateProvider)
     {
         _testCaseEditor = testCaseEditor;
         _dialogService = dialogService;
@@ -35,6 +42,7 @@ internal class TestRunCreationController : TenantBaseService
         _testEnvironmentManager = testEnvironmentManager;
         _appNavigationManager = appNavigationManager;
         _pipelineProjectManager = pipelineProjectManager;
+        _tenantManager = tenantManager;
     }
 
     public async Task<TestRun?> CreateTestRunAsync(TestSuite testSuite, long[]testCaseIds, bool startAutomation)
@@ -49,16 +57,23 @@ internal class TestRunCreationController : TenantBaseService
             }
 
             // Start automation pipeline
-            if(startAutomation)
+            if(startAutomation && !string.IsNullOrEmpty(testSuite.CiCdSystem))
             {
-                await StartAutomationAsync(testRun, testSuite.Variables);
+                await StartAutomationAsync(testRun, testSuite.Variables, testSuite?.Id);
             }
-
         }
         return testRun;
     }
 
-    private async Task StartAutomationAsync(TestRun testRun, Dictionary<string,string>? variables)
+    /// <summary>
+    /// Starts an automation test with the specified test suite
+    /// </summary>
+    /// <param name="testRun"></param>
+    /// <param name="variables"></param>
+    /// <param name="testSuiteId"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public async Task StartAutomationAsync(TestRun testRun, Dictionary<string,string>? variables, long? testSuiteId)
     {
         if (testRun.CiCdSystem is null)
         {
@@ -77,16 +92,21 @@ internal class TestRunCreationController : TenantBaseService
             throw new ArgumentException("team not set");
         }
 
+        variables ??= new();
+
         TestExecutionContext context = new TestExecutionContext
         {
+            TestSuiteId = testSuiteId,
+            TenantId = testRun.TenantId,
             TestRunId = testRun.Id,
             ProjectId = testRun.TestProjectId.Value,
-            CiCdRef = testRun.CiCdRef,  
+            CiCdRef = testRun.CiCdRef,
             CiCdSystem = testRun.CiCdSystem,
             TeamId = testRun.TeamId.Value,
             TestEnvironmentId = testRun.TestEnvironmentId,
-            Variables = variables ?? []
+            Variables = variables
         };
+
         var principal = await GetUserClaimsPrincipalAsync();
         await _pipelineProjectManager.CreatePipelineAsync(principal, context);
     }
@@ -121,7 +141,7 @@ internal class TestRunCreationController : TenantBaseService
             { x => x.Name, name },
             { x => x.TestProjectId, projectId }
         };
-        var dialog = await _dialogService.ShowAsync<CreateTestRunDialog>(null, parameters);
+        var dialog = await _dialogService.ShowAsync<CreateTestRunDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if(result?.Data is TestRun testRun)
         {

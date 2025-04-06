@@ -1,0 +1,62 @@
+﻿@using Plotly.Blazor.LayoutLib
+@using TestBucket.Domain.Testing.Aggregates
+@inject TestBrowser testBrowser
+@inject TestCaseEditorController testCaseEditorController
+@inject TestExecutionController testExecutionController
+@inject IStringLocalizer<SharedStrings> loc
+@inject ThemingService themingService
+
+<MudStack Spacing="0" Style="width: 100%" Class="pa-2">
+
+    @if (TestRun is not null)
+    {
+        <MudText Typo="Typo.h1">@TestRun.Name</MudText>
+
+
+        @if (_results is not null)
+        {
+            <TestResultSummaryBar Summary="@_results" />
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                <ResultChart Results="@_results" />
+                <ResultChart Results="@_results" />
+                <ResultChart Results="@_results" />
+            </div>
+        }
+        else
+        {
+            
+        }
+        @if (TestRun.SystemOut is not null)
+        {
+            <pre>
+                <code>@TestRun.SystemOut</code>
+            </pre>
+        }
+    }
+</MudStack>
+@code {
+
+    [Parameter] public TestRun? TestRun { get; set; }
+
+    private TestExecutionResultSummary? _results;
+    private string? _queryKey;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (TestRun is not null)
+        {
+            var query = new SearchTestCaseRunQuery()
+            {
+                TestRunId = TestRun.Id
+            };
+
+            var queryKey = query.AsCacheKey();
+            if (queryKey != _queryKey)
+            {
+                _queryKey = queryKey;
+                _results = await testBrowser.GetTestExecutionResultSummaryAsync(query);
+            }
+        }
+    }
+}

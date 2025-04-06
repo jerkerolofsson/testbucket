@@ -49,6 +49,16 @@ public class TestCaseRun : TestEntity
     public string? CallStack { get; set; }
 
     /// <summary>
+    /// stdout during test
+    /// </summary>
+    public string? SystemOut { get; set; }
+
+    /// <summary>
+    /// stderr during test
+    /// </summary>
+    public string? SystemErr { get; set; }
+
+    /// <summary>
     /// Total time to execute the test, in milliseconds
     /// </summary>
     public int Duration { get; set; }

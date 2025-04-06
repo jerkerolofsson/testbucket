@@ -69,4 +69,9 @@ public class GlobalSettings
     /// Keep track of the changes
     /// </summary>
     public int Revision { get; set; }
+
+    /// <summary>
+    /// Base url where the Test Bucket server is publicly accessible from
+    /// </summary>
+    public string? PublicEndpointUrl { get; set; }
 }

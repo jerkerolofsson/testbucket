@@ -39,7 +39,7 @@ public class AdbDeviceRepository : IAdbDeviceRepository
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task UpdateAsync(CancellationToken cancellationToken)
+    public async Task UpdateAsync(bool isFirstUpdate, CancellationToken cancellationToken)
     {
         var adb = new AdbHostClient(_adbProxyOptions);
         var devices = await adb.ListDevicesAsync(cancellationToken);
@@ -64,7 +64,7 @@ public class AdbDeviceRepository : IAdbDeviceRepository
             changed = true;
         }
 
-        if(changed)
+        if(changed || isFirstUpdate)
         {
             try
             {

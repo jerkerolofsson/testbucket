@@ -10,25 +10,27 @@ public enum TestResultFormat
     /// <summary>
     /// JUnit XML
     /// </summary>
-    JUnitXml,
+    JUnitXml = 0,
 
     /// <summary>
     /// XUnit XML
     /// </summary>
-    xUnitXml,
+    xUnitXml = 1,
 
     /// <summary>
     /// Microsoft TRX XML
     /// </summary>
-    MicrosoftTrx,
+    MicrosoftTrx = 2,
 
     /// <summary>
     /// NUnit
     /// </summary>
-    NUnitXml,
+    NUnitXml = 3,
 
     /// <summary>
     /// https://ctrf.io/docs/specification/overview
     /// </summary>
-    CommonTestReportFormat,
+    CommonTestReportFormat = 4,
+
+    UnknownFormat = -1,
 }

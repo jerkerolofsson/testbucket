@@ -99,4 +99,25 @@ public class FieldValue : Entity
         copy.StringValuesList = StringValuesList;
         copy.TenantId = TenantId;
     }
+
+    public string GetValueAsString()
+    {
+        if(FieldDefinition is null)
+        {
+            return StringValue ?? "";
+        }
+        switch(FieldDefinition.Type)
+        {
+            case FieldType.String:
+            case FieldType.SingleSelection:
+            case FieldType.MultiSelection:
+                return StringValue ?? "";
+
+            case FieldType.Integer:
+                return LongValue?.ToString() ?? "";
+
+            default:
+                throw new NotImplementedException();
+        }
+    }
 }

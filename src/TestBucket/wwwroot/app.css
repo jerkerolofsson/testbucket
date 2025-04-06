@@ -292,12 +292,18 @@ p.mud-typography-subtitle1 {
      overflow: auto;
  }
  .tb-toolbar {
-/*     background: var(--mud-palette-surface);*/
      background: transparent;
      color: var(--mud-palette-text-primary);
  }
 
- .tb-toolbar.main.light {
+ .tb-toolbar.environment-variable-toolbar {
+     padding-left: 0px;
+ }
+
+ table.tb-environment-variables {
+ }
+
+  .tb-toolbar.main.light {
       
      background: var(--mud-palette-surface);
      border-bottom: solid 1px #ccc;
@@ -619,4 +625,15 @@ table tbody tr td {
 
 .tb-integration-title > * {
     margin: 0;
+}
+
+.tb-field-template {
+    padding: 1rem;
+    border: solid 1px var(--mud-palette-info-hover);
+    cursor: pointer;
+    max-width: 10vw;
+}
+
+.tb-field-template:hover {
+    background: var(--mud-palette-info-hover);
 }

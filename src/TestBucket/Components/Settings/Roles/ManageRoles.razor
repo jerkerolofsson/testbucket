@@ -45,27 +45,12 @@
         </tbody>
     </table>
 
-    @* <PermissionView Entity="PermissionEntityType.User" Level="PermissionLevel.Read"> *@
-    @*     <Authorized>User read:OK!</Authorized> *@
-    @*     <NotAuthorized>User read:not authorized</NotAuthorized> *@
-    @* </PermissionView> *@
-    
-    @* <PermissionView Entity="PermissionEntityType.User" Level="PermissionLevel.Write"> *@
-    @*     <Authorized>User Write:OK!</Authorized> *@
-    @*     <NotAuthorized>User Write:not authorized</NotAuthorized> *@
-    @* </PermissionView> *@
-
-    
-    @* <PermissionView Entity="PermissionEntityType.User" Level="PermissionLevel.Delete"> *@
-    @*     <Authorized>User Delete:OK!</Authorized> *@
-    @*     <NotAuthorized>User Delete:not authorized</NotAuthorized> *@
-    @* </PermissionView> *@
 </MudStack>
 
 @code {
     [Parameter] public string? TenantId { get; set; }
 
-    private PermissionEntityType[] _entities = [PermissionEntityType.Project, PermissionEntityType.User, PermissionEntityType.TestCase, PermissionEntityType.Requirement, PermissionEntityType.TestRun];
+    private PermissionEntityType[] _entities = [PermissionEntityType.Project, PermissionEntityType.User, PermissionEntityType.TestAccount, PermissionEntityType.TestResource, PermissionEntityType.TestCase, PermissionEntityType.Requirement, PermissionEntityType.TestRun];
     private List<RolePermission> _permissions = [];
     private string[] _roles = [Roles.READ_ONLY, Roles.REGULAR_USER, Roles.ADMIN, Roles.SUPERADMIN];
 

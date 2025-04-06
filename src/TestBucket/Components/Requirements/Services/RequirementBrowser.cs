@@ -222,7 +222,7 @@ internal class RequirementBrowser : TenantBaseService
                 Text = "Specifications",
                 Children = specificationNodes,
                 Expanded = true,
-                Value = new BrowserItem() { RootFolderName = "Specifications" },
+                Value = new BrowserItem() { VirtualFolderName = "Specifications" },
                 Icon = Icons.Material.Filled.FolderOpen,
             }
         };

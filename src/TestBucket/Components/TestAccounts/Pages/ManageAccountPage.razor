@@ -1,0 +1,48 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/Accounts/{Id:long}"
+@layout SettingsLayout
+@inject AppNavigationManager appNav
+@inject IStringLocalizer<SharedStrings> loc
+@inject TestAccountController controller
+
+<MudStack Class="container-settings-page">
+
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [Parameter] public long? Id { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private TestAccount? _account;
+
+    private List<BreadcrumbItem> _nav = [];
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(_account?.Id != Id && Id is not null)
+        {
+            _account = await controller.GetAccountByIdAsync(Id.Value);
+            SetupBreadcrumbs();
+        }
+    }
+
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["test-accounts"], appNav.GetTestAccountsSettingsUrl()));
+        if(_account is not null)
+        {
+            _nav.Add(new BreadcrumbItem(_account.Name, appNav.GetUrl(_account)));
+        }
+    }
+}

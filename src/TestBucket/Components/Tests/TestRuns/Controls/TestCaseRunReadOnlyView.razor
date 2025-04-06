@@ -1,0 +1,41 @@
+﻿@inject IStringLocalizer<SharedStrings> loc
+
+@if(TestCaseRun is not null)
+{
+    <Field Row>
+        <FieldHeader>@loc["test-result"]</FieldHeader>
+        <MudSpacer />
+        <ResultPill Result="@TestCaseRun.Result" />
+    </Field>
+
+    if (!string.IsNullOrEmpty(TestCaseRun.Message))
+    {
+        <MarkdownEditor ShowToolbar="false" Preview Value="@TestCaseRun.Message" />
+    }
+
+    if (!string.IsNullOrEmpty(TestCaseRun.CallStack))
+    {
+        <Field>
+            <FieldHeader>@loc["call-stack"]</FieldHeader>
+            <MudText><pre>@TestCaseRun.CallStack</pre></MudText>
+        </Field>
+    }
+
+    if (!string.IsNullOrEmpty(TestCaseRun.SystemOut))
+    {
+        <Field>
+            <FieldHeader>@loc["system-out"]</FieldHeader>
+            <MudText><pre>@TestCaseRun.SystemOut</pre></MudText>
+        </Field>
+    }
+
+
+    <Field>
+        <FieldHeader>@loc["attachments"]</FieldHeader>
+        <AttachmentGrid TestCaseRunId="@TestCaseRun.Id" Style="width: 100%" AllowUpload="false"/>
+    </Field>
+}
+
+@code {
+    [Parameter] public TestCaseRun? TestCaseRun { get; set; }
+}

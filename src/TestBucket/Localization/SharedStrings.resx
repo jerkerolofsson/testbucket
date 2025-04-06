@@ -207,9 +207,6 @@
   <data name="api-key" xml:space="preserve">
     <value>API Key</value>
   </data>
-  <data name="search-settings" xml:space="preserve">
-    <value>Search Settings..</value>
-  </data>
   <data name="test-case-variables-description" xml:space="preserve">
     <value>Test case variables contain parameters that override environment variables and can be used with templates to customize templates. A test parameter name is unique and there can only be one with the specific name. Data-driven test cases can have multiple configuration sets and a test case is executed once for each data-row.
 
@@ -246,7 +243,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Site Administrator</value>
   </data>
   <data name="role-tenant-admin" xml:space="preserve">
-    <value>Tenant Administrator</value>
+    <value>Administrator</value>
   </data>
   <data name="role-regular-user" xml:space="preserve">
     <value>Regular User</value>
@@ -256,5 +253,47 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="ci-cd" xml:space="preserve">
     <value>CI/CD</value>
+  </data>
+  <data name="test-suite-variables-description" xml:space="preserve">
+    <value>These variables are added to tests executed from this test suite</value>
+  </data>
+  <data name="automation" xml:space="preserve">
+    <value>Automation</value>
+  </data>
+  <data name="ci-cd-ref" xml:space="preserve">
+    <value>CI/CD Ref. (Git)</value>
+  </data>
+  <data name="test-accounts" xml:space="preserve">
+    <value>Test Accounts</value>
+  </data>
+  <data name="test-resources" xml:space="preserve">
+    <value>Test Resources</value>
+  </data>
+  <data name="manufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
+  </data>
+  <data name="model" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="modified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="roles" xml:space="preserve">
+    <value>Roles</value>
+  </data>
+  <data name="field" xml:space="preserve">
+    <value>Field</value>
+  </data>
+  <data name="fields" xml:space="preserve">
+    <value>Fields</value>
+  </data>
+  <data name="requirements" xml:space="preserve">
+    <value>Requirements</value>
+  </data>
+  <data name="add-to-run" xml:space="preserve">
+    <value>Add to run</value>
+  </data>
+  <data name="run" xml:space="preserve">
+    <value>Run</value>
   </data>
 </root>

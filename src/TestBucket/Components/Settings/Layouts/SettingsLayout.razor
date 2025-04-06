@@ -9,6 +9,7 @@
 @inject ISettingsManager settingsManager
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<SettingStrings> settingsLoc
 
 <TenantRedirect />
 
@@ -17,9 +18,9 @@
 
         <div class="pa-5" style="width: 100%">
 
-            <MudText Typo="Typo.h1">Settings</MudText>
+            <MudText Typo="Typo.h1">@loc["settings"]</MudText>
 
-            <MudTextField Placeholder="@loc["search-settings"]"
+            <MudTextField Placeholder="@settingsLoc["search-settings"]"
                 Class="mt-3 mb-3"
                 Clearable
                 Variant="Variant.Outlined"
@@ -49,12 +50,14 @@
                 <MudNavLink Icon="@Icons.Material.Filled.Security" Href="@ApiKeysUrl">@loc["api-keys"]</MudNavLink>
                 <MudItem Class="mt-5"/>
 
-                <MudNavLink Icon="@TbIcons.Filled.Leaf" Href="@EnvironmentsUrl">Manage Environments</MudNavLink>
+                <MudNavLink Icon="@TbIcons.Filled.Leaf" Href="@EnvironmentsUrl">@settingsLoc["manage-environments"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.AccountCircle" Href="@AccountsUrl">@settingsLoc["manage-accounts"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Outlined.Devices" Href="@ResourcesUrl">@settingsLoc["manage-resources"]</MudNavLink>
 
-                <MudNavLink Icon="@Icons.Material.Outlined.Groups" Href="@TeamsUrl">Manage Teams</MudNavLink>
-                <MudNavLink Icon="@Icons.Material.Outlined.Devices" Href="@ProjectsUrl">Manage Projects</MudNavLink>
-                <MudNavLink Icon="@Icons.Material.Outlined.PeopleAlt" Href="@UsersUrl">Manage Users</MudNavLink>
-                <MudNavLink Icon="@Icons.Material.Outlined.SecurityUpdate" Href="@RolesUrl">Manage Roles</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Outlined.Groups" Href="@TeamsUrl">@settingsLoc["manage-teams"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.ViewTimeline" Href="@ProjectsUrl">@settingsLoc["manage-projects"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Outlined.PeopleAlt" Href="@UsersUrl">@settingsLoc["manage-users"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Outlined.SecurityUpdate" Href="@RolesUrl">@settingsLoc["manage-roles"]</MudNavLink>
 
                 <AuthorizeView Roles="SUPERADMIN">
                     <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" Href="@TenantsUrl">Manage Tenants</MudNavLink>
@@ -115,7 +118,9 @@
     private string TenantsUrl => $"{TenantId}/Settings/Tenants";
     private string ProjectsUrl => $"{TenantId}/Settings/ManageProjects";
     private string EnvironmentsUrl => $"{TenantId}/Settings/ManageEnvironments";
-    private string ApiKeysUrl   => $"{TenantId}/Settings/ManageApiKeys";
+    private string AccountsUrl => $"{TenantId}/Settings/Accounts";
+    private string ResourcesUrl => $"{TenantId}/Settings/Resources";
+    private string ApiKeysUrl => $"{TenantId}/Settings/ManageApiKeys";
     private string TeamsUrl => $"{TenantId}/Settings/Teams";
     private string UsersUrl => $"{TenantId}/Settings/Users";
     private string RolesUrl => $"{TenantId}/Settings/Roles";

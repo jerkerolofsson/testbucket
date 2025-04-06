@@ -13,6 +13,7 @@ using Microsoft.Extensions.Caching.Memory;
 using TestBucket.Traits.Core;
 using TestBucket.Contracts.Projects;
 using TestBucket.Domain.Projects.Models;
+using TestBucket.Domain.Identity.Permissions;
 
 namespace TestBucket.Domain.Projects;
 internal class ProjectManager : IProjectManager
@@ -33,10 +34,12 @@ internal class ProjectManager : IProjectManager
     public Task AddAsync(ClaimsPrincipal principal, TestProject project)
     {
         principal.ThrowIfNotAdmin();
-        var tenantId = principal.GetTenantIdOrThrow();
 
-        project.TenantId = tenantId;
-        //project.CreatedBy..
+        //project.Created = DateTimeOffset.UtcNow;
+        //project.Modified = DateTimeOffset.UtcNow;
+        //project.CreatedBy = principal.Identity?.Name ?? throw new Exception("No identity in current principal");
+        //project.ModifiedBy = principal.Identity?.Name ?? throw new Exception("No identity in current principal");
+        project.TenantId = principal.GetTenantIdOrThrow();
 
         throw new Exception("TODO");
     }
@@ -61,11 +64,15 @@ internal class ProjectManager : IProjectManager
                 var dto = dtos.Where(x => x.Name == dataSource.SystemName).FirstOrDefault();
                 if (dto is not null)
                 {
-                    var options = await dataSource.GetFieldOptionsAsync(dto, traitType, cancellationToken);
-                    if (options.Length > 0)
+                    try
                     {
-                        return options;
+                        var options = await dataSource.GetFieldOptionsAsync(dto, traitType, cancellationToken);
+                        if (options.Length > 0)
+                        {
+                            return options;
+                        }
                     }
+                    catch { }
                 }
             }
         }
@@ -90,6 +97,12 @@ internal class ProjectManager : IProjectManager
         });
 
         return result!;
+    }
+
+    public async Task<TestProject?> GetTestProjectByIdAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        return await _projectRepository.GetProjectByIdAsync(tenantId, projectId);
     }
 
     public async Task SaveProjectIntegrationsAsync(ClaimsPrincipal principal, string slug, ExternalSystem system)

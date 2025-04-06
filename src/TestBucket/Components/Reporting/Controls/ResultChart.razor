@@ -1,0 +1,73 @@
+﻿@using Plotly.Blazor.LayoutLib
+@using TestBucket.Domain.Testing.Aggregates
+@inject TestBrowser testBrowser
+@inject TestCaseEditorController testCaseEditorController
+@inject TestExecutionController testExecutionController
+@inject IStringLocalizer<SharedStrings> loc
+@inject ThemingService themingService
+
+@if (_layout is not null && Results is not null)
+{
+    <PlotlyChart style="height: 10vh; min-height: 350px" @ref="_chart" @bind-Config="_config" @bind-Layout="_layout" @bind-Data="_data" />
+}
+else
+{
+    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="350px" />
+}
+
+@code {
+
+    private PlotlyChart? _chart;
+    private Config? _config = new Config()
+    {
+        Responsive = true
+    };
+    private Layout? _layout;
+
+    // Using of the interface IList is important for the event callback!
+    private IList<ITrace> _data = new List<ITrace>
+    {
+    };
+
+    [Parameter] public TestExecutionResultSummary? Results { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _layout = null;
+        this.StateHasChanged();
+
+        _layout = new Layout()
+            {
+                Title = new Plotly.Blazor.LayoutLib.Title { Text = "Summary" },
+                BarCornerRadius = 5,
+                PaperBgColor = themingService.IsDarkMode ? "rgba(55,55,64,1)" : "#fff",
+                PlotBgColor = themingService.IsDarkMode ? "rgba(55,55,64,1)" : "#fff",
+                Font = new Font
+                {
+                    Color = themingService.IsDarkMode ? "#eee" : "#111",
+                }
+            };
+
+        if (Results is not null)
+        {
+            var data = new List<ITrace>
+            {
+                new Bar
+                {
+                    Name = "Results",
+                    X = new List<object> { "passed", "failed", "blocked", "skipped" },
+                    Y = new List<object> { Results.Passed, Results.Failed, Results.Blocked, Results.Skipped, Results.NoRun },
+                    Marker = new Plotly.Blazor.Traces.BarLib.Marker
+                    {
+                        ColorArray = ["rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)"]
+                    }
+                }
+            };
+            _data = data;
+            // if(_chart is not null)
+            // {
+            //     await _chart.Update(data[0]);
+            // }
+        }
+    }
+}

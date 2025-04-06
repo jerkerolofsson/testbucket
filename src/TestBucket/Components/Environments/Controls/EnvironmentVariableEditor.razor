@@ -1,56 +1,77 @@
 ﻿@using TestBucket.Components.Environments.ViewModels
 @inject IStringLocalizer<SharedStrings> loc
-<MudDataGrid Items="@Variables"
-    Dense="true"
-    Hover="true"
-    EditMode="DataGridEditMode.Cell"
-    ReadOnly="false"
-    T="EnvironmentVariable"
-    CommittedItemChanges="OnChanged"
-    SortMode="SortMode.None">
 
-    <ToolBarContent>
-        <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
-            <MudText Typo="Typo.h1">@loc["variables"]</MudText>
-            <MudSpacer />
+<MudToolBar Class="tb-toolbar environment-variable-toolbar" Style="width=unset; max-width: unset; min-width: unset">
+    @if (_editing)
+    {
+        @ToolbarTitle
+        <MudSpacer />
+        <MudTooltip Text="@loc["save"]">
             <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="Add"></MudIconButton>
-        </MudStack>
-    </ToolBarContent>
-    <Columns>
-        <PropertyColumn Property="x => x.Key" Title="@loc["variable-key"]" />
-        <PropertyColumn Property="x => x.Value" Title="@loc["variable-value"]" / />
-        <TemplateColumn>
-            <EditTemplate>
-                <MudIconButton Icon="@Icons.Material.Filled.Clear" OnClick="async() => await DeleteAsync(context.Item)"></MudIconButton>
-            </EditTemplate>
-        </TemplateColumn>
-    </Columns>
-
-</MudDataGrid>
-
-@code {
-    [Parameter] public List<EnvironmentVariable>? Variables { get; set; } = [];
-    [Parameter] public EventCallback<List<EnvironmentVariable>> VariablesChanged { get; set; }
-
-    private async Task DeleteAsync(EnvironmentVariable? variable)
-    {
-        if(variable is not null)
-        {
-            var variables = (Variables ?? []).Where(x => x != variable).ToList();
-            await VariablesChanged.InvokeAsync(variables);
-        }
+            <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="SaveChangesAsync" Class="rounded-0" Disabled="@_saveDisabled" />
+        </MudTooltip>
     }
-
-    public async Task OnChanged()
+    else
     {
-        var variables = Variables ?? [];
-        await VariablesChanged.InvokeAsync(variables);
+        @ToolbarTitle
+        <MudSpacer />
+        <MudTooltip Text="@loc["edit"]">
+            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="Add"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="BeginEdit" Class="rounded-0" />
+        </MudTooltip>
     }
+</MudToolBar>
 
-    public async Task Add()
-    {
-        var variable = new EnvironmentVariable() { Key = "KEY", Value = "" };
-        var variables = Variables ?? [];
-        await VariablesChanged.InvokeAsync([..variables, variable]);
-    }
+@if(_editing)
+{
+    <MudDataGrid Items="@_variables"
+        Dense="true"
+        Hover="true"
+        EditMode="DataGridEditMode.Cell"
+        ReadOnly="false"
+        T="EnvironmentVariable"
+        CommittedItemChanges="OnChanged"
+        SortMode="SortMode.None">
+
+
+        <ColGroup>
+            <col />
+            <col />
+            <col style="width: 10%;" />
+        </ColGroup>
+
+        <Columns>
+            <PropertyColumn Property="x => x.Key" Title="@loc["variable-key"]" />
+            <PropertyColumn Property="x => x.Value" Title="@loc["variable-value"]" />
+            <TemplateColumn>
+                <EditTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Clear" OnClick="() => Delete(context.Item)" Color="Color.Error"></MudIconButton>
+                </EditTemplate>
+            </TemplateColumn>
+        </Columns>
+
+    </MudDataGrid>
+}
+else
+{
+    <table class="tb-environment-variables">
+        <thead>
+            <tr>
+                <th>@loc["key"]</th>
+                <th>@loc["value"]</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(_variables is not null)
+            {
+                @foreach (var variable in _variables)
+                {
+                    <tr>
+                        <td>@variable.Key</td>
+                        <td>●●●●●●●●</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
 }

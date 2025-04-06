@@ -8,5 +8,6 @@ public interface IProjectManager
     Task AddAsync(ClaimsPrincipal principal, TestProject project);
     Task<string[]?> GetFieldOptionsAsync(ClaimsPrincipal principal, long testProjectId, TraitType traitType, CancellationToken cancellationToken);
     Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(ClaimsPrincipal principal, string slug);
+    Task<TestProject?> GetTestProjectByIdAsync(ClaimsPrincipal principal, long projectId);
     Task SaveProjectIntegrationsAsync(ClaimsPrincipal principal, string slug, ExternalSystem system);
 }

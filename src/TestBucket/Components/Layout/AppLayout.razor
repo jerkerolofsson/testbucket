@@ -1,13 +1,4 @@
-﻿@using TestBucket.Components.Account
-@using TestBucket.Components.Layout.Controls
-@using TestBucket.Components.Shared.Themeing
-@using TestBucket.Components.Teams
-@using TestBucket.Components.Teams.Controls
-@using TestBucket.Domain.Search
-@using TestBucket.Domain.Search.Models
-@using TestBucket.Domain.Teams.Models
-@using Toolbelt.Blazor.HotKeys2
-
+﻿
 @inherits LayoutComponentBase
 @inject HotKeys HotKeys
 @inject NavigationManager navigationManager
@@ -15,7 +6,7 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject ProjectController projectService
 @inject TestCaseEditorController testCaseEditor
-@inject TeamService teamService
+@inject TeamController teamService
 @inject TenantController tenantController
 @inject ThemingService themingService
 @inject AppNavigationManager appNavigationManager
@@ -25,7 +16,7 @@
 <TbThemeProvider UserPreferencesChanged="OnUserPreferencesChanged"/>
 <MudSnackbarProvider />
 <MudPopoverProvider />
-<MudDialogProvider MaxWidth="MaxWidth.ExtraExtraLarge" />
+<MudDialogProvider MaxWidth="MaxWidth.ExtraLarge" />
 <ProgressStatus/>
 <CommandBindings/>
 

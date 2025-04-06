@@ -1,3 +1,4 @@
+using System.Net;
 using System.Security.Claims;
 
 using Aspire.Hosting;
@@ -26,9 +27,12 @@ var apiKeyGenerator = new ApiKeyGenerator(symmetricKey, issuer, audience);
 string accessToken = apiKeyGenerator.GenerateAccessToken(principal, DateTime.UtcNow.AddDays(100));
 
 var postgres = builder.AddPostgres("testbucket-postgres")
-    .WithPgAdmin()
+    //.WithPgAdmin()
     .WithDataVolume("testbucket-dev", isReadOnly: false); 
 var db = postgres.AddDatabase("testbucketdb");
+
+//var publicEndpoint = $"http://{Dns.GetHostName()}:5002";
+var publicEndpoint = $"http://192.168.0.241:5002";
 
 var testBucket = builder.AddProject<Projects.TestBucket>("testbucket")
     .WithReference(db)
@@ -39,7 +43,11 @@ var testBucket = builder.AddProject<Projects.TestBucket>("testbucket")
     .WithEnvironment("TB_JWT_AUD", audience)
     .WithEnvironment("TB_ADMIN_ACCESS_TOKEN", accessToken)
     .WithEnvironment("TB_OLLAMA_BASE_URL", "http://localhost:11434")
-    .WithEnvironment("TB_PUBLIC_ENDPOINT", "https://localhost:7067")
+    .WithEnvironment("TB_PUBLIC_ENDPOINT", publicEndpoint)
+
+    // Disable HTTPS redirect so we can test without proper certificates
+    .WithEnvironment("TB_HTTPS_REDIRECT", "disabled")
+
     //.WithEnvironment("TB_OLLAMA_BASE_URL", "http://172.18.70.121:17050")
     //.WithEnvironment("TB_OLLAMA_BASE_URL", "http://172.18.30.118:17335")
     //.WithEnvironment("TB_OLLAMA_BASE_URL", "http://172.18.70.121:17050")
@@ -47,7 +55,8 @@ var testBucket = builder.AddProject<Projects.TestBucket>("testbucket")
 
 builder.AddProject<Projects.TestBucket_Servers_AdbProxy>("testbucket-adbproxy")
     .WithReference(testBucket)
-    .WithEnvironment("ADB_PROXY_INFORM_URL", "https+http://testbucket/api/integrations/adb-proxy/inform")
+    .WithEnvironment("SERVER_UUID", "11111111")
+    .WithEnvironment("ADB_PROXY_INFORM_URL", "https+http://testbucket/api/test-resources")
     .WithEnvironment("ADB_PROXY_AUTH_HEADER", $"Bearer {accessToken}")
     .WaitFor(testBucket);
 

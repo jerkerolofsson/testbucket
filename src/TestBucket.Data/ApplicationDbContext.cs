@@ -7,6 +7,9 @@ using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Domain.Teams.Models;
+using TestBucket.Domain.TestResources.Models;
+using TestBucket.Domain.TestAccounts.Models;
+using TestBucket.Domain.Automation.Models;
 
 namespace TestBucket.Data;
 
@@ -43,7 +46,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<Requirement> Requirements { get; set; }
 
     /// <summary>
-    /// 
+    /// Variable configuration for different test environments
     /// </summary>
     internal DbSet<TestEnvironment> TestEnvironments { get; set; }
 
@@ -51,6 +54,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     /// Settings common for all tenants
     /// </summary>
     internal DbSet<GlobalSettings> GlobalSettings { get; set; }
+
+    internal DbSet<TestResource> TestResources { get; set; }
+    internal DbSet<TestAccount> TestAccounts { get; set; }
+
+    internal DbSet<Pipeline> Pipelines { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

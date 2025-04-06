@@ -2,13 +2,15 @@
 @using TestBucket.Domain.Fields.Models
 @inject FieldController fieldController
 @inject IDialogService dialogService
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<FieldStrings> fieldLoc
 
-<MudDataGrid Items="_fields"
-Dense="true"
-Hover="true"
-T="FieldDefinition"
-RowClick="async e => await EditFieldAsync(e.Item)"
-SortMode="SortMode.None">
+<MudDataGrid    Items="_fields"
+                Dense="true"
+                Hover="true"
+                T="FieldDefinition"
+                RowClick="async e => await EditFieldAsync(e.Item)"
+                SortMode="SortMode.None">
 
     <ToolBarContent>
         <MudStack Row="true" AlignItems="AlignItems.Center">
@@ -18,16 +20,47 @@ SortMode="SortMode.None">
         </MudStack>
     </ToolBarContent>
 
+    <ColGroup>
+        <col style="width: 15%;" />
+        <col style="width: 15%;"/>
+        <col style="width: 5%;" />
+        <col style="width: 20%;"/>
+        <col style="width: 40%;" />
+        <col style="width: 5%;" />
+    </ColGroup>
+
     <Columns>
-        <PropertyColumn Property="x => x.Id" />
-        <PropertyColumn Property="x => x.Name" />
-        <PropertyColumn Property="x => x.Type" />
-        <TemplateColumn Title="Target">
+        <TemplateColumn Title="@loc["name"]">
+            <CellTemplate>
+                <MudStack Row AlignItems="AlignItems.Center">
+                    @context.Item.Name
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+        
+        <PropertyColumn Property="x => x.Type" Title="@fieldLoc["field-type"]" />
+
+        <TemplateColumn Title="@fieldLoc["inherited"]">
+            <CellTemplate>
+                @if(context.Item.Inherit)
+                {
+                    <MudText Color="Color.Success">●</MudText>
+                }
+                else
+                {
+                    <MudText Color="Color.Error">●</MudText>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+      
+
+        <TemplateColumn Title="@fieldLoc["field-target"]">
             <CellTemplate>
                 @string.Join(", ", context.Item.Target)
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="Options">
+
+        <TemplateColumn Title="@fieldLoc["field-options"]">
             <CellTemplate>
                 @if(context.Item.Options is not null)
                 {

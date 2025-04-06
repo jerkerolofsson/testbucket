@@ -18,11 +18,14 @@ using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Appearance;
 using TestBucket.Domain.Settings.Server;
 using TestBucket.Domain.States;
+using TestBucket.Domain.Tenants;
+using TestBucket.Domain.TestAccounts;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Compiler;
 using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Services.Classification;
 using TestBucket.Domain.Testing.Settings;
+using TestBucket.Domain.TestResources;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class DomainServiceExtensions
@@ -37,6 +40,7 @@ public static class DomainServiceExtensions
         services.AddSingleton<IApiKeyAuthenticator,ApiKeyAuthenticator>();
         services.AddScoped<IUserPermissionsManager, UserPermissionsManager>();
         services.AddScoped<IClaimsTransformation, PermissionClaimsTransformation>();
+        services.AddScoped<ITenantManager, TenantManager>();
 
         services.AddScoped<IMarkdownDetector,TemplateDetector>();
         services.AddScoped<IMarkdownDetector,HybridDetector>();
@@ -51,8 +55,15 @@ public static class DomainServiceExtensions
         services.AddScoped<IUserManager, UserManager>();
         services.AddScoped<IFieldDefinitionManager, FieldDefinitionManager>();
         services.AddScoped<IFieldManager, FieldManager>();
+        
         services.AddScoped<IProjectManager, ProjectManager>();
         services.AddScoped<IPipelineProjectManager, PipelineProjectManager>();
+        services.AddScoped<IProjectTokenGenerator, ProjectTokenGenerator>();
+        services.AddScoped<IPipelineManager, PipelineManager>();
+
+        services.AddScoped<ITestResourceManager, TestResourceManager>();
+        services.AddScoped<ITestAccountManager, TestAccountManager>();
+
         services.AddScoped<ICommandManager, CommandManager>();
         services.AddScoped<IUnifiedSearchManager, UnifiedSearchManager>();
         services.AddScoped<IProgressManager, ProgressManager>();

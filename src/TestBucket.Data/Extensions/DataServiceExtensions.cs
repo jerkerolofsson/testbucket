@@ -1,12 +1,16 @@
-﻿using TestBucket.Data.Fields;
+﻿using TestBucket.Data.Automation;
+using TestBucket.Data.Fields;
 using TestBucket.Data.Files;
 using TestBucket.Data.Identity;
 using TestBucket.Data.Requirements;
 using TestBucket.Data.Settings;
 using TestBucket.Data.Teams;
 using TestBucket.Data.Tenants;
+using TestBucket.Data.TestAccounts;
 using TestBucket.Data.TestEnvironments;
 using TestBucket.Data.Testing;
+using TestBucket.Data.TestResources;
+using TestBucket.Domain.Automation;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
@@ -14,12 +18,15 @@ using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Teams;
+using TestBucket.Domain.TestAccounts;
+using TestBucket.Domain.TestResources;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class DataServiceExtensions
 {
     public static IServiceCollection AddDataServices(this IServiceCollection services)
     {
+        services.AddScoped<IPipelineRepository, PipelineRepository>();
         services.AddScoped<IRequirementRepository, RequirementRepository>();
         services.AddScoped<ITenantRepository, TenantRepository>();
         services.AddScoped<IProjectRepository, ProjectRepository>();
@@ -33,7 +40,8 @@ public static class DataServiceExtensions
         services.AddScoped<IPermissionsRepository, PermissionsRepository>();
         services.AddScoped<IFileRepository, FileRepository>();
         services.AddScoped<ITestEnvironmentRepository, TestEnvironmentRepository>();
-        
+        services.AddScoped<ITestResourceRepository, TestResourceRepository>();
+        services.AddScoped<ITestAccountRepository, TestAccountRepository>();
 
         return services;
     }

@@ -26,10 +26,20 @@ namespace TestBucket.Domain.Shared
             throw new InvalidOperationException("This resource can only be accessed by administrators");
         }
 
+        public static string? GetTenantId(this ClaimsPrincipal principal)
+        {
+            var claims = principal.Claims.Where(x => x.Type == "tenant" && !string.IsNullOrEmpty(x.Value)).ToList();
+            if (claims.Count == 0)
+            {
+                return null;
+            }
+            return claims.First().Value;
+        }
+
         public static string GetTenantIdOrThrow(this ClaimsPrincipal principal)
         {
             var claims = principal.Claims.Where(x => x.Type == "tenant" && !string.IsNullOrEmpty(x.Value)).ToList();
-            if(claims.Count == 0)
+            if (claims.Count == 0)
             {
                 throw new InvalidOperationException("User is not authenticated / no tenant was found");
             }

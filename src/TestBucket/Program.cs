@@ -10,6 +10,7 @@ using MudExtensions.Services;
 
 using TestBucket.Components;
 using TestBucket.Components.Account;
+using TestBucket.Components.Automation;
 using TestBucket.Components.Environments.Services;
 using TestBucket.Components.Layout.Controls;
 using TestBucket.Components.Projects;
@@ -19,8 +20,13 @@ using TestBucket.Components.Settings.Roles;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Themeing;
 using TestBucket.Components.Teams;
-using TestBucket.Components.Tests.Commands;
+using TestBucket.Components.TestAccounts.Services;
+using TestBucket.Components.TestResources.Services;
 using TestBucket.Components.Tests.Services;
+using TestBucket.Components.Tests.TestCases.Commands;
+using TestBucket.Components.Tests.TestCases.Services;
+using TestBucket.Components.Tests.TestSuites.Commands;
+using TestBucket.Components.Tests.TestSuites.Services;
 using TestBucket.Components.Uploads.Services;
 using TestBucket.Components.Users;
 using TestBucket.Components.Users.Services;
@@ -135,6 +141,7 @@ public class Program
             Issuer = Environment.GetEnvironmentVariable("TB_JWT_ISS"),
             Audience = Environment.GetEnvironmentVariable("TB_JWT_AUD"),
             AccessToken = Environment.GetEnvironmentVariable("TB_ADMIN_ACCESS_TOKEN"),
+            PublicEndpointUrl = Environment.GetEnvironmentVariable("TB_PUBLIC_ENDPOINT"),
         };
         builder.Services.AddSingleton(seedConfiguration);
 
@@ -184,13 +191,16 @@ public class Program
         builder.Services.AddScoped<TenantResolver>();
         builder.Services.AddScoped<TenantController>();
         builder.Services.AddScoped<RolesController>();
-        builder.Services.AddScoped<TeamService>();
+        builder.Services.AddScoped<TeamController>();
         builder.Services.AddScoped<ProjectController>();
         builder.Services.AddScoped<TestSuiteService>();
         builder.Services.AddScoped<TestRunCreationController>();
         builder.Services.AddScoped<AttachmentsService>();
         builder.Services.AddScoped<AppNavigationManager>();
         builder.Services.AddScoped<TestEnvironmentController>();
+        builder.Services.AddScoped<TestResourceController>();
+        builder.Services.AddScoped<TestAccountController>();
+        builder.Services.AddScoped<PipelineController>();
 
         builder.Services.AddScoped<RequirementBrowser>();
         builder.Services.AddScoped<RequirementEditorController>();
@@ -204,6 +214,8 @@ public class Program
         builder.Services.AddScoped<UserController>();
 
         builder.Services.AddScoped<HotKeysService>();
+        builder.Services.AddScoped<ICommand, RunTestSuiteCommand>();
+        builder.Services.AddScoped<ICommand, AddTestSuiteToRunCommand>();
         builder.Services.AddScoped<ICommand, NewTestCommand>();
         builder.Services.AddScoped<ICommand, NewFolderCommand>();
         builder.Services.AddScoped<ICommand, SyncWithActiveDocumentCommand>();
@@ -247,7 +259,11 @@ public class Program
             app.UseHsts();
         }
         app.UseAntiforgery();
-        app.UseHttpsRedirection();
+
+        if (Environment.GetEnvironmentVariable("TB_HTTPS_REDIRECT") != "disabled")
+        {
+            app.UseHttpsRedirection();
+        }
         app.UseCors(localhostOrigin);
 
 

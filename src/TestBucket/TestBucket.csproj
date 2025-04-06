@@ -27,6 +27,7 @@
       <PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.3.0-preview.1.25161.3" />
       <PackageReference Include="MudBlazor" Version="8.3.0" />
       <PackageReference Include="OneOf" Version="3.0.271" />
+      <PackageReference Include="Plotly.Blazor" Version="6.0.1" />
       <PackageReference Include="Toolbelt.Blazor.HotKeys2" Version="6.0.1" />
   </ItemGroup>
 
@@ -41,6 +42,7 @@
   <ItemGroup>
     <Folder Include="Components\Administration\" />
     <Folder Include="Components\Environments\Layouts\" />
+    <Folder Include="Components\Tests\TestRuns\Services\" />
     <Folder Include="Services\" />
   </ItemGroup>
 

@@ -79,4 +79,11 @@ internal class TenantRepository : ITenantRepository
             Items = items.ToArray()
         };
     }
+
+    public async Task UpdateTenantAsync(Tenant tenant)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        dbContext.Tenants.Update(tenant);
+        await dbContext.SaveChangesAsync();
+    }
 }

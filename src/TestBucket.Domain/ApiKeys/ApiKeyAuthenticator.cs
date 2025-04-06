@@ -61,7 +61,8 @@ namespace TestBucket.Domain.ApiKeys
                 ValidateLifetime = true,
                 ValidateAudience = true,
                 ValidateIssuer = true,
-                ValidateIssuerSigningKey = true
+                ValidateIssuerSigningKey = true,
+                NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();

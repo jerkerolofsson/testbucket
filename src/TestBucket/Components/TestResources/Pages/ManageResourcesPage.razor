@@ -1,0 +1,90 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/Resources"
+@layout SettingsLayout
+@inject AppNavigationManager appNav
+@inject IStringLocalizer<SharedStrings> loc
+@inject TestResourceController controller
+
+<MudStack Class="container-settings-page">
+
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
+    <MudDataGrid ServerData="LoadGridData"
+                 Dense="true"
+                 Hover="true"
+                 RowClick="(row) => OnRowClicked(row.Item)"
+                 T="TestResource"
+                 SortMode="SortMode.None">
+
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+                <MudText Typo="Typo.h1">@loc["test-resources"]</MudText>
+                <MudSpacer />
+            </MudStack>
+        </ToolBarContent>
+
+        <Columns>
+            <TemplateColumn>
+                <CellTemplate>
+                    @if (context.Item.Enabled)
+                    {
+                        <MudText Color="Color.Success">●</MudText>
+                    }
+                    else
+                    {
+                        <MudText Color="Color.Error">●</MudText>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.ResourceId" Title="@loc["id"]"/>
+            <PropertyColumn Property="x => x.Name" Title="@loc["name"]" />
+            <PropertyColumn Property="x => x.Manufacturer" Title="@loc["manufacturer"]" />
+            <PropertyColumn Property="x => x.Model" Title="@loc["model"]" />
+            <TemplateColumn>
+                <CellTemplate>@context.Item.Modified.Humanize()</CellTemplate>
+            </TemplateColumn>
+        </Columns>
+
+    </MudDataGrid>
+
+    <MudText Class="" Typo="Typo.subtitle1">@loc["test-resources-description"]</MudText>
+
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private List<BreadcrumbItem> _nav = [];
+
+    private async Task<GridData<TestResource>> LoadGridData(GridState<TestResource> state)
+    {
+        var result = await controller.GetResourcesAsync(state.Page * state.PageSize, state.PageSize);
+
+        GridData<TestResource> data = new()
+            {
+                Items = result.Items,
+                TotalItems = (int)result.TotalCount
+            };
+
+        return data;
+    }
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    private void OnRowClicked(TestResource resource)
+    {
+        appNav.NavigateTo(resource);
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["test-resources"], appNav.GetTestResourcesSettingsUrl()));
+    }
+}

@@ -1,0 +1,31 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestRuns/{RunId:long}/Tests"
+@using TestBucket.Components.Automation
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Domain.Automation.Models
+@layout TestingLayout
+@inject TestBrowser testBrowser
+
+<TestRunView TestRun="@_testRun" />
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    [Parameter] public long RunId { get; set; }
+
+    private TestRun? _testRun = null;
+
+    /// <summary>
+    /// Load the test case when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_testRun is null || _testRun.Id != RunId)
+        {
+            _testRun = await testBrowser.GetTestRunByIdAsync(RunId);
+        }
+    }
+}

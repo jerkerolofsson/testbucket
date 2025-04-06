@@ -1,0 +1,71 @@
+﻿@using TestBucket.Domain.Requirements.Models
+@attribute [Authorize(Roles = "ADMIN")]
+@inject UserApiKeysController controller
+@inject IStringLocalizer<SecurityStrings> loc
+
+<EditForm Model="@_model" OnValidSubmit="async () => await OnValidSubmitAsync()">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <DialogContent>
+            <MudStack Spacing="1" Style="min-width: 25vw">
+                @if (_model is not null)
+                {
+                    <Field Row>
+                        <FieldHeader>@loc["access-token-name"]</FieldHeader>
+                        <MudSpacer />
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_model.Name" />
+                    </Field>
+
+                    <Field Row>
+                        <FieldHeader>@loc["expires"]</FieldHeader>
+                        <MudSpacer />
+                        <TestBucket.Components.Settings.ApiKeys.Controls.ExpiryPicker @bind-Expiry="@_model.Expiry"/>
+                    </Field>
+                }
+
+                @if(_errorMessage is not null)
+                {
+                    <MudText>@_errorMessage</MudText>
+                }
+
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    private string? _errorMessage;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private Model _model = new();
+
+    private class Model
+    {
+        public string Name { get; set; } = "New Key";
+        public TimeSpan Expiry { get; set; } = TimeSpan.FromDays(365);
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_model.Name))
+        {
+            _errorMessage = "Invalid name";
+            return;
+        }
+        var expires = DateTimeOffset.UtcNow.Add(_model.Expiry);
+        var apiKey = await controller.AddApiKeyAsync(_model.Name, expires);
+        MudDialog.Close(apiKey);
+    }
+}
+

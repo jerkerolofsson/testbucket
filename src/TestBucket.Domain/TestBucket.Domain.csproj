@@ -43,6 +43,7 @@
 
     <ItemGroup>
       <Folder Include="Testing\Formats\" />
+      <Folder Include="TestResources\Services\" />
     </ItemGroup>
 
 </Project>

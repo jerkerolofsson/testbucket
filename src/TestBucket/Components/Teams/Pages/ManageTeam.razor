@@ -3,7 +3,7 @@
 @using TestBucket.Domain.Teams.Models
 @layout AppLayout
 @attribute [Authorize(Roles = "ADMIN")]
-@inject TeamService teamService
+@inject TeamController teamService
 @inject IDialogService dialogService
 
 <TenantRedirect/>

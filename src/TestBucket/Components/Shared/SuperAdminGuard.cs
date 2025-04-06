@@ -10,11 +10,11 @@ using TestBucket.Domain.Identity;
 using TestBucket.Domain.Shared;
 
 namespace TestBucket.Components.Shared;
-public class SuperAdminGuard
+internal class SuperAdminGuard : TenantBaseService
 {
     private readonly AuthenticationStateProvider _authenticationStateProvider;
 
-    public SuperAdminGuard(AuthenticationStateProvider authenticationStateProvider)
+    public SuperAdminGuard(AuthenticationStateProvider authenticationStateProvider) : base(authenticationStateProvider)
     {
         _authenticationStateProvider = authenticationStateProvider;
     }
@@ -34,9 +34,9 @@ public class SuperAdminGuard
         }
     }
 
-    public async Task<string> GetTenantIdAsync()
-    {
-        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
-        return AuthenticationGuard.GetTenantIdOrThrow(authState.User);
-    }
+    //public async Task<string> GetTenantIdAsync()
+    //{
+    //    var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+    //    return AuthenticationGuard.GetTenantIdOrThrow(authState.User);
+    //}
 }

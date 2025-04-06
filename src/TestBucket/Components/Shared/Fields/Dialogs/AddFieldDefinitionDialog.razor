@@ -1,18 +1,42 @@
 ﻿@using TestBucket.Components.Teams.Controls
 @using TestBucket.Traits.Core
+@using TestBucket.Domain.Fields.Helpers
 @attribute [Authorize(Roles = "ADMIN")]
 @inject FieldController fieldService
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<FieldStrings> fieldLoc
 
 <EditForm Model="@_fieldDefinition" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
-        <TitleContent>Add new field</TitleContent>
+        <TitleContent>@fieldLoc["add-new-field"]</TitleContent>
         <DialogContent>
-            <FieldDefinitionEditor @bind-FieldDefinition="_fieldDefinition" />
+
+            @if(_templateType != "custom")
+            {
+                <MudText Typo="Typo.h2" Class="mt-5 mb-2">@fieldLoc["use-predefined-field"]</MudText>
+
+                <MudGrid Class="pa-3">
+                    @foreach(var template in FieldDefinitionTemplates.Templates)
+                    {
+                        FieldDefinition fieldDefinition = template;
+
+                        <div @onclick="async()=>await SubmitAsync(fieldDefinition)" class="tb-field-template">
+                            <MudText Typo="Typo.h3">@template.Name</MudText>
+                            <MudText Typo="Typo.subtitle1">@template.Description</MudText>
+                        </div>
+                    }
+                </MudGrid>
+                <MudLink OnClick="UseCustomTemplate">@fieldLoc["add-custom-field"]</MudLink>
+            }
+            else
+            {
+                <FieldDefinitionEditor @bind-FieldDefinition="_fieldDefinition" />
+            }
         </DialogContent>
 
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
-            <MudButton OnClick="Close">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
@@ -21,6 +45,13 @@
 @code {
     [Parameter]
     public FieldDefinition? FieldDefinition { get; set; }
+
+    private string? _templateType = "";
+
+    private void UseCustomTemplate()
+    {
+        _templateType = "custom";
+    }
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
@@ -41,8 +72,33 @@
     {
         if (_fieldDefinition?.Name is not null && _fieldDefinition.Name.Length > 1)
         {
-            await fieldService.AddAsync(_fieldDefinition);
-            MudDialog.Close(_fieldDefinition);
+            await SubmitAsync(_fieldDefinition);
+        }
+    }
+    private async Task SubmitAsync(FieldDefinition fieldDefinition)
+    {
+        if (fieldDefinition?.Name is not null && fieldDefinition.Name.Length > 1)
+        {
+            fieldDefinition = new FieldDefinition
+            {
+                Name = fieldDefinition.Name,
+                Type = fieldDefinition.Type,
+                Trait = fieldDefinition.Trait,
+                TraitType = fieldDefinition.TraitType,
+                Target = fieldDefinition.Target,
+                Options = fieldDefinition.Options,
+                Inherit = fieldDefinition.Inherit,
+                Description = fieldDefinition.Description,
+                Icon = fieldDefinition.Icon,
+                OptionIcons = fieldDefinition.OptionIcons,
+                ReadOnly = fieldDefinition.ReadOnly,
+                WriteOnly = fieldDefinition.WriteOnly,
+                IsVisible = fieldDefinition.IsVisible,
+                UseClassifier = fieldDefinition.UseClassifier,
+            };
+
+            await fieldService.AddAsync(fieldDefinition);
+            MudDialog.Close(fieldDefinition);
         }
     }
 }

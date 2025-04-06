@@ -1,4 +1,7 @@
-﻿using TestBucket.Components.Users;
+﻿using MudBlazor;
+
+using TestBucket.Components.Settings.ApiKeys.Dialogs;
+using TestBucket.Contracts.Identity;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Shared;
 
@@ -6,21 +9,30 @@ namespace TestBucket.Components.Settings.ApiKeys;
 
 internal class UserApiKeysController : TenantBaseService
 {
+    private readonly IDialogService _dialogService;
     private readonly IUserManager _userManager;
     private readonly ILogger<UserApiKeysController> _logger;
 
     public UserApiKeysController(
         AuthenticationStateProvider authenticationStateProvider,
         IUserManager userManager,
-        ILogger<UserApiKeysController> logger) : base(authenticationStateProvider)
+        ILogger<UserApiKeysController> logger,
+        IDialogService dialogService) : base(authenticationStateProvider)
     {
         _userManager = userManager;
         _logger = logger;
+        _dialogService = dialogService;
     }
 
-    public Task AddApiKeyAsync()
+    /// <summary>
+    /// Shows a dialog that lets the user add an API key
+    /// </summary>
+    /// <returns></returns>
+    public async Task<ApplicationUserApiKey?> AddApiKeyAsync()
     {
-        return Task.CompletedTask;
+        var dialog = await _dialogService.ShowAsync<AddApiKeyDialog>();
+        var result = await dialog.Result;
+        return result?.Data as ApplicationUserApiKey;
     }
 
     public async Task<ApplicationUserApiKey[]> GetApiKeysAsync()

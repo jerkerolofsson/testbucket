@@ -20,6 +20,8 @@ namespace TestBucket.Formats.XUnit
             TraitType.FailureMessage,
             TraitType.Line,
             TraitType.Duration,
+            TraitType.SystemOut,
+            TraitType.FailureType
         ];
 
         public string Serialize(TestRunDto testRun)
@@ -90,6 +92,9 @@ namespace TestBucket.Formats.XUnit
                             testCaseRun.Result = TestResult.Passed;
                             testCaseRun.ExternalId ??= ImportDefaults.GetExternalId(testRun, testSuite, testCaseRun);
 
+                            var outputNode = resultNode.Element("output");
+                            testCaseRun.SystemOut = outputNode?.Value;
+
                             var resultString = resultNode.Attribute("result")?.Value;
                             if (resultString is not null)
                             {
@@ -108,6 +113,7 @@ namespace TestBucket.Formats.XUnit
                             {
                                 testCaseRun.Message = failure.Element("message")?.Value;
                                 testCaseRun.CallStack = failure.Element("stack-trace")?.Value;
+                                testCaseRun.FailureType = failure.Element("exception-type")?.Value;
                             }
 
                             testSuite.Tests.Add(testCaseRun);
@@ -226,6 +232,12 @@ namespace TestBucket.Formats.XUnit
                         testElement.Add(new XAttribute("time", seconds));
                         totalTestSuiteSeconds += seconds;
                     }
+                    if(!string.IsNullOrEmpty(test.SystemOut))
+                    {
+                        var outputElement = new XElement("output");
+                        outputElement.Value = test.SystemOut;
+                        testElement.Add(outputElement);
+                    }
 
                     var resultName = test.Result switch
                     {
@@ -249,6 +261,10 @@ namespace TestBucket.Formats.XUnit
                         if (test.CallStack is not null)
                         {
                             failureElement.Add(new XElement("stack-trace", test.CallStack));
+                        }
+                        if (test.FailureType is not null)
+                        {
+                            failureElement.Add(new XAttribute("failure-type", test.FailureType));
                         }
                         testElement.Add(failureElement);
                     }

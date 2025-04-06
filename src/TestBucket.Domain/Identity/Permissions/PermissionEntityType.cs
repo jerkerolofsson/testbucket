@@ -24,6 +24,10 @@ namespace TestBucket.Domain.Identity.Permissions
 
         TestRun,
 
-        TestCaseRun
+        TestCaseRun,
+
+        TestAccount,
+
+        TestResource,
     }
 }

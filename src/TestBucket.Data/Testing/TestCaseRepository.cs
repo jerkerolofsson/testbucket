@@ -1,6 +1,7 @@
 ﻿using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
+using TestBucket.Domain.Testing.Models;
 
 using UglyToad.PdfPig.Filters;
 
@@ -110,36 +111,28 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task DeleteTestCaseByIdAsync(long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        await RemoveTestCaseByIdAsync(id, dbContext);
+        await DeleteTestCaseByIdAsync(id, dbContext);
         await dbContext.SaveChangesAsync();
     }
 
-    private static async Task RemoveTestCaseByIdAsync(long id, ApplicationDbContext dbContext)
+    private static async Task DeleteTestCaseByIdAsync(long testCaseId, ApplicationDbContext dbContext)
     {
-        await foreach (var link in dbContext.RequirementTestLinks.Where(x => x.TestCaseId == id).AsAsyncEnumerable())
-        {
-            dbContext.RequirementTestLinks.Remove(link);
-        }
+        await dbContext.RequirementTestLinks.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
 
-        foreach (var testCaseRun in await dbContext.TestCaseRuns.Where(x => x.TestCaseId == id).ToListAsync())
-        {
-            foreach (var field in await dbContext.TestCaseRunFields.Where(x => x.TestCaseRunId == testCaseRun.Id).ToListAsync())
-            {
-                dbContext.TestCaseRunFields.Remove(field);
-            }
+        // Delete all test case runs
+        await DeleteTestCaseRunsByTestCaseIdAsync(testCaseId, dbContext);
 
-            dbContext.TestCaseRuns.Remove(testCaseRun);
-        }
+        await dbContext.TestCaseFields.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
+        await dbContext.TestCases.Where(x => x.Id == testCaseId).ExecuteDeleteAsync();
+    }
 
-        await foreach (var field in dbContext.TestCaseFields.Where(x => x.TestCaseId == id).AsAsyncEnumerable())
+    private static async Task DeleteTestCaseRunsByTestCaseIdAsync(long testCaseId, ApplicationDbContext dbContext)
+    {
+        foreach (var testCaseRun in dbContext.TestCaseRuns.Where(x => x.TestCaseId == testCaseId))
         {
-            dbContext.TestCaseFields.Remove(field);
+            await dbContext.TestCaseRunFields.Where(x => x.TestCaseRunId == testCaseRun.Id).ExecuteDeleteAsync();
         }
-
-        await foreach (var test in dbContext.TestCases.Where(x => x.Id == id).AsAsyncEnumerable())
-        {
-            dbContext.TestCases.Remove(test);
-        }
+        await dbContext.TestCaseRuns.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
     }
 
     public async Task UpdateTestCaseAsync(TestCase testCase)
@@ -196,6 +189,12 @@ internal class TestCaseRepository : ITestCaseRepository
             throw new InvalidOperationException("Folder does not exist!");
         }
 
+        var hasTestSuiteChanged = existingFolder.TestSuiteId != folder.TestSuiteId;
+        if(hasTestSuiteChanged)
+        {
+            await ChangeFolderTestSuiteAsync(folder.Id, folder.TestSuiteId, dbContext);
+        }
+
         var hasPathChanged = existingFolder.Name != folder.Name || existingFolder.ParentId != folder.ParentId || existingFolder.TestSuiteId != folder.TestSuiteId;
         if (hasPathChanged)
         {
@@ -209,6 +208,22 @@ internal class TestCaseRepository : ITestCaseRepository
         {
             await UpdateChildTestSuiteFolderPathsAsync(dbContext, folder.Id, folder.TestSuiteId);
             await dbContext.SaveChangesAsync();
+        }
+    }
+
+    private async Task ChangeFolderTestSuiteAsync(long folderId, long testSuiteId, ApplicationDbContext dbContext)
+    {
+        await foreach (var testCase in dbContext.TestCases.Where(x => x.TestSuiteFolderId == folderId).AsAsyncEnumerable())
+        {
+            testCase.TestSuiteId = testSuiteId;
+            dbContext.TestCases.Update(testCase);
+        }
+        foreach (var folder in dbContext.TestSuiteFolders.Where(x => x.ParentId == folderId))
+        {
+            folder.TestSuiteId = testSuiteId;
+            dbContext.TestSuiteFolders.Update(folder);
+
+            await ChangeFolderTestSuiteAsync(folder.Id, testSuiteId, dbContext);
         }
     }
 
@@ -346,9 +361,24 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task DeleteTestSuiteByIdAsync(string tenantId, long testSuiteId)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        foreach (var folder in dbContext.TestSuiteFolders.Where(x => x.ParentId == null && x.TestSuiteId == testSuiteId))
+
+        // Delete all test cases
+        foreach (var testCase in dbContext.TestCases.Where(x => x.TestSuiteId == testSuiteId))
         {
-            await DeleteFolderByIdAsync(tenantId, folder.Id, dbContext);
+            await DeleteTestCaseByIdAsync(testCase.Id, dbContext);
+        }
+        await dbContext.SaveChangesAsync();
+
+        // Delete all root test suites
+        foreach (var folder in dbContext.TestSuiteFolders.Where(x => x.TestSuiteId == testSuiteId && x.ParentId == null))
+        {
+            await DeleteFolderByIdAsync(folder.Id, dbContext, recurse: true);
+        }
+
+        // Delete any dangling folders
+        foreach (var folder in dbContext.TestSuiteFolders.Where(x => x.TestSuiteId == testSuiteId))
+        {
+            await DeleteFolderByIdAsync(folder.Id, dbContext, recurse: true);
         }
         await dbContext.SaveChangesAsync();
         await dbContext.TestSuites.Where(x => x.Id == testSuiteId).ExecuteDeleteAsync();
@@ -370,28 +400,27 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task DeleteFolderByIdAsync(string tenantId, long folderId)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        await DeleteFolderByIdAsync(tenantId, folderId, dbContext);
+        await DeleteFolderByIdAsync(folderId, dbContext, recurse: true);
         await dbContext.SaveChangesAsync();
     }
 
     /// <inheritdoc/>
-    private async Task DeleteFolderByIdAsync(string tenantId, long folderId, ApplicationDbContext dbContext)
+    private async Task DeleteFolderByIdAsync(long folderId, ApplicationDbContext dbContext, bool recurse)
     {
-        foreach (var childFolder in await dbContext.TestSuiteFolders.Where(x => x.TenantId == tenantId && x.ParentId == folderId).ToListAsync())
+        if (recurse)
         {
-            await DeleteFolderByIdAsync(tenantId, childFolder.Id, dbContext);
+            foreach (var childFolder in dbContext.TestSuiteFolders.Where(x => x.ParentId == folderId))
+            {
+                await DeleteFolderByIdAsync(childFolder.Id, dbContext, recurse:true);
+            }
         }
 
-        foreach (var testCase in await dbContext.TestCases.Where(x=>x.TestSuiteFolderId == folderId).ToListAsync())
+        foreach (var testCase in dbContext.TestCases.Where(x=>x.TestSuiteFolderId == folderId))
         {
-            await RemoveTestCaseByIdAsync(testCase.Id, dbContext);
+            await DeleteTestCaseByIdAsync(testCase.Id, dbContext);
         }
 
-        var folder = await dbContext.TestSuiteFolders.Where(x => x.TenantId == tenantId && x.Id == folderId).FirstOrDefaultAsync();
-        if (folder is not null)
-        {
-            dbContext.TestSuiteFolders.Remove(folder);
-        }
+        await dbContext.TestSuiteFolders.Where(x =>  x.Id == folderId).ExecuteDeleteAsync();
     }
 
     #endregion
@@ -402,7 +431,9 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<TestRun?> GetTestRunByIdAsync(string tenantId, long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestRuns.AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
+        return await dbContext.TestRuns.AsNoTracking()
+            .Include(x=>x.TestRunFields)
+            .Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
     }
 
     /// <inheritdoc/>

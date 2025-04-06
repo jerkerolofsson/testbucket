@@ -50,4 +50,5 @@ public class TestRun : TestEntity
     public long? TestEnvironmentId { get; set; }
     public TestEnvironment? TestEnvironment { get; set; }
 
-}    
+    public virtual IEnumerable<TestRunField>? TestRunFields { get; set; }
+}

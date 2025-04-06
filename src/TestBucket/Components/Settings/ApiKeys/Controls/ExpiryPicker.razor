@@ -1,0 +1,14 @@
+﻿@inject IStringLocalizer<SecurityStrings> loc
+
+<MudSelect T="TimeSpan" Value="@Expiry" ValueChanged="async(x) => await ExpiryChanged.InvokeAsync(x)">
+    <MudSelectItem Value="TimeSpan.FromDays(10)">@loc["expiry-10"]</MudSelectItem>
+    <MudSelectItem Value="TimeSpan.FromDays(30)">@loc["expiry-30"]</MudSelectItem>
+    <MudSelectItem Value="TimeSpan.FromDays(365)">@loc["expiry-365"]</MudSelectItem>
+    <MudSelectItem Value="TimeSpan.FromDays(730)">@loc["expiry-730"]</MudSelectItem>
+    <MudSelectItem Value="TimeSpan.FromDays(3650)">@loc["expiry-3650"]</MudSelectItem>
+</MudSelect>
+
+@code {
+    [Parameter] public TimeSpan Expiry { get; set; } = TimeSpan.FromDays(30);
+    [Parameter] public EventCallback<TimeSpan> ExpiryChanged { get; set; }
+}

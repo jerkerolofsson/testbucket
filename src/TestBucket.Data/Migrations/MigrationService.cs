@@ -1,31 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using System.Diagnostics;
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-
-using OpenTelemetry.Trace;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System.Security.Claims;
-using Microsoft.Extensions.Configuration;
-using System.Threading;
-using TestBucket.Domain.Identity.Models;
-using TestBucket.Domain.Identity;
-using TestBucket.Domain.Tenants;
-using TestBucket.Domain.Settings.Models;
-using TestBucket.Domain.Settings;
-using TestBucket.Domain.Tenants.Models;
+
 using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Settings;
+using TestBucket.Domain.Settings.Models;
 
 
 namespace TestBucket.Data.Migrations;
@@ -127,7 +111,6 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         await strategy.ExecuteAsync(async () =>
         {
             // Seed the database
-
             try
             {
                 await CreateDefaultRolesAsync(dbContext, scope);
@@ -145,6 +128,9 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
                 await CreateTenantAsync(scope, adminTenant, adminTenant);
                 await CreateDefaultTenantAdminUserAsync(dbContext, scope, adminTenant, superAdminUserEmail, adminUserPassword);
                 await CreateApiKeyAsync(dbContext, scope, adminTenant, superAdminUserEmail, adminApiKey);
+
+                // Generate CI/CD keys
+                await CreateCiCdApiKeysAsync(dbContext, scope);
 
                 try
                 {
@@ -174,6 +160,22 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         });
     }
 
+    /// <summary>
+    /// Makes sure that every tenant has a valid CI/CD access token
+    /// </summary>
+    /// <param name="dbContext"></param>
+    /// <param name="scope"></param>
+    /// <returns></returns>
+    private async Task CreateCiCdApiKeysAsync(ApplicationDbContext dbContext, IServiceScope scope)
+    {
+        var tenantManager = scope.ServiceProvider.GetRequiredService<ITenantManager>();
+
+        await foreach(var tenant in dbContext.Tenants.Select(x=>x.Id).AsAsyncEnumerable())
+        {
+            await tenantManager.UpdateTenantCiCdKeyAsync(tenant);
+        }
+    }
+
     private async Task SeedSettingsAsync(string adminTenant, IServiceScope scope)
     {
         var settingsProvider = scope.ServiceProvider.GetRequiredService<ISettingsProvider>();
@@ -182,6 +184,12 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         string? jwtSymmetricKey = seedConfiguration.SymmetricKey;
         string? jwtIssuer = seedConfiguration.Issuer;
         string? jwtAudience = seedConfiguration.Audience;
+
+        if(seedConfiguration.PublicEndpointUrl is { })
+        {
+            settings.PublicEndpointUrl = seedConfiguration.PublicEndpointUrl;
+            changed = true;
+        }
 
         // Default values if not set in environment variables
         if (settings.SymmetricJwtKey is null)
@@ -269,6 +277,8 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         var has = await dbContext.RolePermissions.Where(x => x.Role == role).AnyAsync();
         if(!has)
         {
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestAccount });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestResource });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Tenant });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.User });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Project });
@@ -285,6 +295,8 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         has = await dbContext.RolePermissions.Where(x => x.Role == role).AnyAsync();
         if (!has)
         {
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestAccount });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestResource });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Tenant });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.User });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Project });
@@ -303,6 +315,8 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         {
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Tenant });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Project });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestAccount });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestResource });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.User });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestSuite });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCase });
@@ -424,40 +438,6 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
 
             var superAdminUserService = scope.ServiceProvider.GetRequiredService<ISuperAdminUserService>();
             await superAdminUserService.RegisterAndConfirmUserAsync(tenantId, email, password);
-
-            //var user = new ApplicationUser() { TenantId = tenantId };
-
-            //var username = email;
-
-            //var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-            //var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            //var userStore = scope.ServiceProvider.GetRequiredService<IUserStore<ApplicationUser>>();
-            //var confirmation = scope.ServiceProvider.GetRequiredService<IUserConfirmation<ApplicationUser>>();
-            //await userManager.SetUserNameAsync(user, username);
-
-            //var emailStore = GetEmailStore(userManager, userStore);
-            //await emailStore.SetEmailAsync(user, (string)email, CancellationToken.None);
-
-            //var result = await userManager.CreateAsync(user, password);
-            //if (result.Succeeded)
-            //{
-            //    var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-            //    await userManager.ConfirmEmailAsync(user, code);
-            //}
-
-            //await userManager.AddClaimAsync(user, new Claim("tenant", tenantId));
-
-            //if (!(await userManager.IsEmailConfirmedAsync(user)))
-            //{
-            //    logger.LogWarning("Default user's email is not confirmed");
-            //}
-            //if (!(await confirmation.IsConfirmedAsync(userManager, user)))
-            //{
-            //    logger.LogWarning("Default user's account is not confirmed");
-            //}
-
-            //await dbContext.SaveChangesAsync();
         }
-
     }
 }

@@ -28,22 +28,23 @@ internal class TestCompiler : ITestCompiler
 
     /// <summary>
     /// Assigns system variable to the context
+    /// 
+    /// 1. Test suite
+    /// 2. Test case
+    /// 3. Environment
+    /// 
     /// </summary>
     /// <param name="principal"></param>
     /// <param name="context"></param>
     /// <returns></returns>
     public async Task ResolveVariablesAsync(ClaimsPrincipal principal, TestExecutionContext context)
     {
-        if(context.TestEnvironmentId is not null)
+        context.Variables["TB_RUN_ID"] = context.TestRunId.ToString();
+        context.Variables["TB_PROJECT_ID"] = context.ProjectId.ToString();
+
+        if (context.TestEnvironmentId is not null)
         {
-            var defaultEnvironment = await _testEnvironmentManager.GetTestEnvironmentByIdAsync(principal, context.TestEnvironmentId.Value);
-            if (defaultEnvironment is not null)
-            {
-                foreach (var envVar in defaultEnvironment.Variables)
-                {
-                    context.Variables[envVar.Key] = envVar.Value;
-                }
-            }
+            context.Variables["TB_ENVIRONMENT_ID"] = context.TestEnvironmentId.Value.ToString();
         }
 
         if (context.TestCaseId is not null)
@@ -67,6 +68,31 @@ internal class TestCompiler : ITestCompiler
                     {
                         context.Variables[envVar.Key] = envVar.Value;
                     }
+                }
+            }
+        }
+
+        if (context.TestSuiteId is not null)
+        {
+            var tenantId = principal.GetTenantIdOrThrow();
+            var testSuite = await _testCaseRepository.GetTestSuiteByIdAsync(tenantId, context.TestSuiteId.Value);
+            if (testSuite?.Variables is not null)
+            {
+                foreach (var envVar in testSuite.Variables)
+                {
+                    context.Variables[envVar.Key] = envVar.Value;
+                }
+            }
+        }
+
+        if (context.TestEnvironmentId is not null)
+        {
+            var defaultEnvironment = await _testEnvironmentManager.GetTestEnvironmentByIdAsync(principal, context.TestEnvironmentId.Value);
+            if (defaultEnvironment is not null)
+            {
+                foreach (var envVar in defaultEnvironment.Variables)
+                {
+                    context.Variables[envVar.Key] = envVar.Value;
                 }
             }
         }

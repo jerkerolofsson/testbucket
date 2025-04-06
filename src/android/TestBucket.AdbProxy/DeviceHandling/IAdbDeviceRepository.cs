@@ -16,5 +16,5 @@ public interface IAdbDeviceRepository
     /// </summary>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task UpdateAsync(CancellationToken cancellationToken);
+    Task UpdateAsync(bool isFirstUpdate, CancellationToken cancellationToken);
 }

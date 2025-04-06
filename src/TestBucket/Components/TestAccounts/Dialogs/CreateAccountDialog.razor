@@ -1,0 +1,60 @@
+﻿@using TestBucket.Domain.TestAccounts.Helpers
+@attribute [Authorize(Roles = "ADMIN")]
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<AccountStrings> accountLoc
+@inject ISnackbar snackbar
+
+<EditForm Model="@_account">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>@accountLoc["add-account"]</TitleContent>
+        <DialogContent>
+            <MudStack Spacing="0" Style="min-width: 50vw">
+                <MudStepperExtended Color="Color.Primary" IconActionButtons HeaderTextView="HeaderTextView.All" ActiveStepChanged="OnActiveStepChanged" ShowStepResultIndicator="false">
+                    <ChildContent>
+                        <MudStepExtended Title="@accountLoc["account"]" Icon="@Icons.Material.Filled.AccountCircle">
+
+                            <MudStack>
+                                <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_account.Name" Placeholder="@accountLoc["account-name"]"></MudTextField>
+
+                                <MudAutocomplete T="string" ValueChanged="AccountTypeChanged" Value="@_account.Type" CoerceText="false" CoerceValue="false" SearchFunc="SearchType" Placeholder="@accountLoc["account-type"]"/>
+
+                                <MudAutocomplete @bind-Value="@_account.SubType" CoerceText="false" CoerceValue="false" SearchFunc="SearchSubType" Placeholder="@accountLoc["account-sub-type"]"/>
+                            </MudStack>
+
+                        </MudStepExtended>
+                        <MudStepExtended Title="@accountLoc["account-details"]" StatusChanged="FinalStatusChanged" Icon="@Icons.Material.Filled.Abc">
+
+                            @if(_fieldDefinitions.Length > 0)
+                            {
+                                @foreach(var field in _fields.Values)
+                                {
+                                    FieldValue fieldValue = field;
+                                    <FieldEditor @bind-Field="fieldValue"/>
+                                }
+                            }
+                            <EnvironmentVariableEditor @bind-Variables="@_customVariables" Editing="true">
+                                <ToolbarTitle>@loc["variables"]</ToolbarTitle>
+                            </EnvironmentVariableEditor>
+                        </MudStepExtended>
+                    </ChildContent>
+                </MudStepperExtended>
+
+                @if(_errorMessage is not null)
+                {
+                    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+                }
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            @if(_page == 1)
+            {
+                <MudButton OnClick="Submit">@loc["ok"]</MudButton>
+            }
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+

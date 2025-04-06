@@ -1,11 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using TestBucket.Domain.Automation.Models
+@inherits LayoutComponentBase
 @layout AppLayout
-@using Humanizer
-@using TestBucket.Components.Layout
-@using TestBucket.Components.Shared.Splitter
-@using TestBucket.Components.Tests.Layouts
-@using TestBucket.Domain.Requirements.Models
-@using TestBucket.Domain.Teams.Models
 @inject TestBrowser browser
 @inject TestCaseEditorController testCaseEditor
 @inject NavigationManager navigationManager
@@ -19,6 +14,8 @@
         <TestTreeView 
         @ref="_testTreeView"
         Project="@_project" Team="@_team"
+        OnPipelineClicked="OnPipelineClicked"
+                      OnTestRunTestsFolderClicked="OnTestRunTestsFolderClicked"
         OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" OnTestCaseClicked="OnTestCaseClicked" OnTestRunClicked="OnTestRunClicked" />
     </StartContent>
 
@@ -69,6 +66,18 @@
         appNavigationManager.NavigateTo(suite);
 
     }
+
+    private void OnPipelineClicked(Pipeline pipeline)
+    {
+        appNavigationManager.NavigateTo(pipeline);
+    }
+
+    private void OnTestRunTestsFolderClicked(TestRun run)
+    {
+        var url = appNavigationManager.GetUrl(run) + "/Tests";
+        navigationManager.NavigateTo(url);
+    }
+
     private void OnFolderClicked(TestSuiteFolder folder)
     {
         appNavigationManager.NavigateTo(folder);

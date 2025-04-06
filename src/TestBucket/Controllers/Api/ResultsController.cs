@@ -1,0 +1,71 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+using TestBucket.Domain.Projects;
+using TestBucket.Domain.Shared;
+using TestBucket.Formats;
+
+namespace TestBucket.Controllers.Api;
+
+[ApiController]
+public class ResultsController : ProjectApiControllerBase
+{
+    private readonly ITextTestResultsImporter _textTestResultsImporter;
+    private readonly IProjectManager _projectManager;
+
+    public ResultsController(ITextTestResultsImporter textTestResultsImporter, IProjectManager projectManager)
+    {
+        _textTestResultsImporter = textTestResultsImporter;
+        _projectManager = projectManager;
+    }
+
+    [Authorize("ApiKeyOrBearer")]
+    [HttpPut("/api/results")]
+    public async Task<IActionResult> ImportResultsAsync()
+    {
+        var tenantId = GetTenantId();
+        var projectId = GetProjectId();
+        var runId = GetTestRunId();
+        var testSuiteId = GetTestSuiteId();
+        if (projectId is null)
+        {
+            return Unauthorized("Access token missing project ID");
+        }
+        if (runId is null )
+        {
+            return Unauthorized("Access token missing run ID");
+        }
+        if (tenantId is null)
+        {
+            return Unauthorized("Access token missing tenant ID");
+        }
+        if (testSuiteId is null)
+        {
+            return Unauthorized("Access token missing testsuite ID");
+        }
+        TestProject? project = await _projectManager.GetTestProjectByIdAsync(User, projectId.Value);
+        if(project is null || project.TeamId is null)
+        {
+            return NotFound("Project not found");
+        }
+
+        var options = new ImportHandlingOptions
+        {
+            TestRunId = runId,
+            TestSuiteId = testSuiteId,
+        };
+
+        var text = await ReadRequestBodyAsync();
+
+        var format = TestResultFormat.xUnitXml;
+        TestResultSerializerFactory.GetFormatFromContentType(Request.ContentType);
+
+        if(string.IsNullOrEmpty(text))
+        {
+            return BadRequest("No body");
+        }
+        await _textTestResultsImporter.ImportTextAsync(User, project.TeamId.Value, projectId.Value, format, text, options);
+
+        return Ok();
+    }
+}

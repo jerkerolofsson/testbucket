@@ -1,8 +1,10 @@
-﻿<MudToolBar Class="tb-toolbar">
+﻿@inject IStringLocalizer<SharedStrings> loc
+
+<MudToolBar Class="tb-toolbar">
 
     @if (!_preview && _editor is not null)
     {
-        <MudTooltip Text="Save Changes">
+        <MudTooltip Text="@loc["save"]">
             <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="SaveChangesAsync" Class="rounded-0" />
         </MudTooltip>
 
@@ -31,7 +33,7 @@
     {
         @ToolbarTitle
         <MudSpacer/>
-        <MudTooltip Text="Edit">
+        <MudTooltip Text="@loc["edit"]">
             <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => BeginEdit()" Class="rounded-0" />
         </MudTooltip>
     }

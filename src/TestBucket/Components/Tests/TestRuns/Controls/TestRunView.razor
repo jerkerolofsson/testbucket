@@ -1,0 +1,52 @@
+﻿@implements IDisposable
+@inject TestBrowser testBrowser
+@inject TestCaseEditorController testCaseEditorController
+@inject TestExecutionController testExecutionController
+@inject IStringLocalizer<SharedStrings> loc
+
+<MudStack Spacing="0" Style="width: 100%">
+
+    <Splitter Style="height: 100%" Color="Color.Tertiary" Bordered="false" Dimension="70" EnableMargin="false">
+        <StartContent>
+
+            <TestCaseRunGrid 
+                @ref="testCaseRunGrid" 
+                Run="@TestRun" 
+                SelectedTestCaseRun="_selectedTestCaseRun" 
+                SelectedTestCaseRunChanged="OnSelectedTestCaseRunChanged" />
+        </StartContent>
+        <EndContent>
+            <MudStack Class="pa-2" Style="width: 100%">
+                @if (_selectedTestCaseRun is not null)
+                {
+                    <MudStack Class="pa-2" Style="width: 100%">
+
+                        <MarkdownEditor ShowToolbar="false"
+                                        MaxHeight="100%"
+                                        MinHeight="100%"
+                                        AllowResize="false"
+                                        Preview="true"
+                                        Value="@_markdown"
+                                        SpellChecker="false">
+                        </MarkdownEditor>
+
+                        @if(_selectedTestCaseRun.Result == TestResult.NoRun)
+                        {
+                            <TestCaseRunEditor TestCaseRun="@_selectedTestCaseRun" />
+                            <TestRunStatePicker State="@_selectedTestCaseRun.State" StateChanged="OnTestCaseRunStateChanged" />
+                            <FieldsEditor TestCaseRun="@_selectedTestCaseRun" />
+                        }
+                        else
+                        {
+                            <TestCaseRunReadOnlyView TestCaseRun="@_selectedTestCaseRun" />
+                        }
+                    </MudStack>
+                }
+            </MudStack>
+        </EndContent>
+    </Splitter>
+
+
+</MudStack>
+@code {
+}

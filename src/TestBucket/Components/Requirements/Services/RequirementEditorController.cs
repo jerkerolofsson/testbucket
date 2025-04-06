@@ -1,4 +1,5 @@
 ﻿using TestBucket.Components.Tests.Dialogs;
+using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Import;

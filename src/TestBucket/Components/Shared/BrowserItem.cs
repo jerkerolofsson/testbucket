@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Requirements.Models;
+﻿using TestBucket.Domain.Automation.Models;
+using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Components.Shared;
 
@@ -10,7 +11,7 @@ public record class BrowserItem
     public string? Color { get; set; }
     public string? Icon { get; set; }
 
-    public string? RootFolderName { get; set; }
+    public string? VirtualFolderName { get; set; }
 
     public RequirementSpecification? RequirementSpecification { get; set; }
     public RequirementSpecificationFolder? RequirementFolder { get; set; }
@@ -20,4 +21,6 @@ public record class BrowserItem
     public TestSuite? TestSuite { get; set; }
     public TestSuiteFolder? Folder { get; set; }
     public TestRun? TestRun { get; set; }
+
+    public Pipeline? Pipeline { get; set; }
 }

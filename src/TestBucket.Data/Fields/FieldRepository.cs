@@ -103,7 +103,7 @@ internal class FieldRepository : IFieldRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var fields = dbContext.TestCaseFields.AsNoTracking()
             .Include(x=>x.FieldDefinition)
-            .Where(x => x.TenantId == tenantId && x.TestCaseId == id);
+            .Where(x => x.TenantId == tenantId && x.TestCaseId == id && x.FieldDefinition!.IsDeleted == false);
         return await fields.ToListAsync();
     }
     #endregion Test Case
@@ -159,7 +159,7 @@ internal class FieldRepository : IFieldRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var fields = dbContext.TestRunFields.AsNoTracking()
             .Include(x => x.FieldDefinition)
-            .Where(x => x.TenantId == tenantId && x.TestRunId == id);
+            .Where(x => x.TenantId == tenantId && x.TestRunId == id && x.FieldDefinition!.IsDeleted == false);
         return await fields.ToListAsync();
     }
 
@@ -216,7 +216,7 @@ internal class FieldRepository : IFieldRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var fields = dbContext.TestCaseRunFields.AsNoTracking()
             .Include(x => x.FieldDefinition)
-            .Where(x => x.TenantId == tenantId && x.TestCaseRunId == id);
+            .Where(x => x.TenantId == tenantId && x.TestCaseRunId == id && x.FieldDefinition!.IsDeleted == false);
         return await fields.ToListAsync();
     }
 

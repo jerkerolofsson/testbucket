@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
+using TestBucket.Contracts.Identity;
 using TestBucket.Domain.Identity.Models;
 using TestBucket.Domain.Tenants.Models;
 
@@ -11,11 +12,13 @@ internal class UserManager : IUserManager
 {
     private readonly ISuperAdminUserService _superAdminUserService;
     private readonly IUserService _userService;
+    private readonly ISettingsProvider _settingsProvider;
 
-    public UserManager(ISuperAdminUserService superAdminUserService, IUserService userService)
+    public UserManager(ISuperAdminUserService superAdminUserService, IUserService userService, ISettingsProvider settingsProvider)
     {
         _superAdminUserService = superAdminUserService;
         _userService = userService;
+        _settingsProvider = settingsProvider;
     }
 
     public async Task<IdentityResult> AddUserAsync(ClaimsPrincipal principal, string email, string password)
@@ -36,8 +39,27 @@ internal class UserManager : IUserManager
 
     public async Task AddApiKeyAsync(ClaimsPrincipal principal, ApplicationUserApiKey apiKey)
     {
+        var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+        if (string.IsNullOrEmpty(settings.SymmetricJwtKey))
+        {
+            throw new InvalidDataException("No symmetric key has been configured");
+        }
+        if (string.IsNullOrEmpty(settings.JwtIssuer))
+        {
+            throw new InvalidDataException("No issuer has been configured");
+        }
+        if (string.IsNullOrEmpty(settings.JwtAudience))
+        {
+            throw new InvalidDataException("No audience has been configured");
+        }
+
         var user = await FindAsync(principal) ?? throw new InvalidOperationException("User not found"); ;
         var tenantId = principal.GetTenantIdOrThrow();
+
+        // Generate the API key
+        var generator = new ApiKeyGenerator(settings.SymmetricJwtKey, settings.JwtIssuer, settings.JwtAudience);
+        apiKey.Key = generator.GenerateAccessToken(principal, apiKey.Expiry.DateTime);
+
         apiKey.TenantId = tenantId;
         apiKey.CreatedBy = principal.Identity?.Name ?? throw new Exception("Missing identity");
         apiKey.Created = DateTimeOffset.UtcNow;

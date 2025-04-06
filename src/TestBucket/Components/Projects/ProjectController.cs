@@ -1,13 +1,12 @@
 ﻿using OneOf;
 
-using TestBucket.Components.Shared;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Testing.Models;
+using TestBucket.Domain.Automation.Services;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.States;
-using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Components.Projects;
 
@@ -18,7 +17,8 @@ internal class ProjectController : TenantBaseService
     private readonly AppNavigationManager _appNavigationManager;
     private readonly IStateService _stateService;
     private readonly IProjectManager _projectManager;
-    private readonly IPipelineProjectManager _pipelineManager;
+    private readonly IPipelineProjectManager _pipelineProjectManager;
+    private readonly IPipelineManager _pipelineManager;
 
     public ProjectController(
         IProjectRepository projectRepository,
@@ -27,13 +27,15 @@ internal class ProjectController : TenantBaseService
         AuthenticationStateProvider authenticationStateProvider,
         IStateService stateService,
         IProjectManager projectManager,
-        IPipelineProjectManager pipelineManager) : base(authenticationStateProvider)
+        IPipelineProjectManager pipelineProjectManager,
+        IPipelineManager pipelineManager) : base(authenticationStateProvider)
     {
         _projectRepository = projectRepository;
         _userPreferencesService = userPreferencesService;
         _appNavigationManager = appNavigationManager;
         _stateService = stateService;
         _projectManager = projectManager;
+        _pipelineProjectManager = pipelineProjectManager;
         _pipelineManager = pipelineManager;
     }
 

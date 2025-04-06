@@ -41,4 +41,9 @@ public class ImportHandlingOptions
     /// If set, the results will be imported and linked to a single test case
     /// </summary>
     public long? TestCaseId { get; set; }
+
+    /// <summary>
+    /// If set, test cases will be imported to an existing test suite instead of finding one by name or creating one
+    /// </summary>
+    public long? TestSuiteId { get; set; }
 }

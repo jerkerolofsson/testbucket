@@ -5,6 +5,7 @@
 @layout SettingsLayout
 @inject UserApiKeysController controller
 @inject  IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<SecurityStrings> securityLoc
 
 <MudStack Class="container-settings-page">
 
@@ -25,8 +26,8 @@
         </ToolBarContent>
 
         <Columns>
-            <PropertyColumn Property="x => x.Name" Title="@loc["name"]" />
-            <TemplateColumn Title="@loc["expiry"]">
+            <PropertyColumn Property="x => x.Name" Title="@securityLoc["access-token-name"]" />
+            <TemplateColumn Title="@securityLoc["expires"]">
                 <CellTemplate>
                     @context.Item.Expiry.Humanize()
                 </CellTemplate>
@@ -37,14 +38,31 @@
             <MudDataGridPager T="ApplicationUserApiKey" />
         </PagerContent>
     </MudDataGrid>
+
+    
+    @if(_newApiKey is not null)
+    {
+        <MudPaper Class="pa-2 mt-2">
+            <MudStack Spacing="1">
+                <MudText Typo="Typo.h2">@securityLoc["token-created"]</MudText>
+                <MudTextField ReadOnly Value="@_newApiKey.Key"/>
+                <MudText Typo="Typo.body1">@securityLoc["access-token-created-message"]</MudText>
+            </MudStack>
+        </MudPaper>
+    }
 </MudStack>
+
 
 @code {
     private ApplicationUserApiKey[] _keys = [];
+    private ApplicationUserApiKey? _newApiKey = null;
 
     [Parameter] public string? TenantId { get; set; }
 
-    private Task AddApiKeyAsync() => controller.AddApiKeyAsync();
+    private async Task AddApiKeyAsync() 
+    {
+        _newApiKey = await controller.AddApiKeyAsync();
+    }
 
     protected override async Task OnInitializedAsync()
     {

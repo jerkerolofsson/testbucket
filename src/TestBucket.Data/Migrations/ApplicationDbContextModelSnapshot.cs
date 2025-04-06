@@ -158,6 +158,63 @@ namespace TestBucket.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Automation.Models.Pipeline", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("CiCdPipelineIdentifier")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CiCdSystem")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("StartError")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TestRunId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.HasIndex("TestRunId");
+
+                    b.ToTable("Pipelines");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Environments.Models.TestEnvironment", b =>
                 {
                     b.Property<long>("Id")
@@ -1019,6 +1076,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("LlmTestGenerationModel")
                         .HasColumnType("text");
 
+                    b.Property<string>("PublicEndpointUrl")
+                        .HasColumnType("text");
+
                     b.Property<int>("Revision")
                         .HasColumnType("integer");
 
@@ -1074,6 +1134,12 @@ namespace TestBucket.Data.Migrations
                     b.Property<bool>("CanRegisterNewUsers")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("CiCdAccessToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("CiCdAccessTokenExpires")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("IconUrl")
                         .HasColumnType("text");
 
@@ -1087,6 +1153,138 @@ namespace TestBucket.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tenants");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.TestAccounts.Models.TestAccount", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockExpires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LockOwner")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Locked")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Owner")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SubType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Dictionary<string, string>>("Variables")
+                        .IsRequired()
+                        .HasColumnType("hstore");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("TestAccounts");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.TestResources.Models.TestResource", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockExpires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LockOwner")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Locked")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Owner")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("ParentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ResourceId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<string[]>("Types")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<Dictionary<string, string>>("Variables")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("TestResources");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestCase", b =>
@@ -1294,6 +1492,12 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("State")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SystemErr")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SystemOut")
                         .HasColumnType("text");
 
                     b.Property<long?>("TeamId")
@@ -1745,6 +1949,33 @@ namespace TestBucket.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Automation.Models.Pipeline", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestRun", "TestRun")
+                        .WithMany()
+                        .HasForeignKey("TestRunId");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
+
+                    b.Navigation("TestRun");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Environments.Models.TestEnvironment", b =>
                 {
                     b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
@@ -2016,6 +2247,24 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("Tenant");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.TestAccounts.Models.TestAccount", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.TestResources.Models.TestResource", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestCase", b =>
                 {
                     b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
@@ -2182,7 +2431,7 @@ namespace TestBucket.Data.Migrations
                         .HasForeignKey("TenantId");
 
                     b.HasOne("TestBucket.Domain.Testing.Models.TestRun", "TestRun")
-                        .WithMany()
+                        .WithMany("TestRunFields")
                         .HasForeignKey("TestRunId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2323,6 +2572,11 @@ namespace TestBucket.Data.Migrations
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestCaseRun", b =>
                 {
                     b.Navigation("TestCaseRunFields");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRun", b =>
+                {
+                    b.Navigation("TestRunFields");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestSuiteFolder", b =>

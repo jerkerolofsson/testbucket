@@ -1,0 +1,41 @@
+﻿@using TestBucket.Components.Environments.Controls
+@using TestBucket.Components.Environments.ViewModels
+@inject IStringLocalizer<SharedStrings> loc
+
+@if (TestSuite is not null)
+{
+    <EnvironmentVariableEditor Variables="@_testParameters" VariablesChanged="OnTestParametersChangedAsync">
+        <ToolbarTitle>
+            <MudText Typo="Typo.h2">@loc["variables"]</MudText>
+        </ToolbarTitle>
+    </EnvironmentVariableEditor>
+    <MudText>@loc["test-suite-variables-description"]</MudText>
+}
+
+@code {
+
+    [Parameter] public TestSuite? TestSuite { get; set; }
+    [Parameter] public EventCallback<TestSuite?> TestSuiteChanged { get; set; }
+
+    private List<EnvironmentVariable> _testParameters = [];
+
+    private async Task OnTestParametersChangedAsync(List<EnvironmentVariable> environmentVariables)
+    {
+        if (TestSuite is not null)
+        {
+            _testParameters = environmentVariables;
+
+            TestSuite.Variables = environmentVariables.ToDictionary();
+            await TestSuiteChanged.InvokeAsync(TestSuite);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (TestSuite is not null)
+        {
+            TestSuite.Variables ??= new();
+            _testParameters = TestSuite.Variables.ToEnvironmentVariables();
+        }
+    }
+}

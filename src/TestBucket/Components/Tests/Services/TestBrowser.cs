@@ -1,7 +1,16 @@
-﻿using TestBucket.Components.Shared.Icons;
+﻿using System.Diagnostics;
+
+using MediatR;
+
+using TestBucket.Components.Automation;
+using TestBucket.Components.Shared.Icons;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Models;
+using TestBucket.Components.Tests.TestSuites.Dialogs;
+using TestBucket.Components.Tests.TestSuites.Services;
+using TestBucket.Domain.Automation.Models;
+using TestBucket.Domain.Automation.Services;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams.Models;
@@ -18,11 +27,29 @@ internal class TestBrowser : TenantBaseService
     private readonly IFileRepository _fileRepository;
     private readonly ITestRunManager _testRunManager;
     private readonly AppNavigationManager _appNavigationManager;
+    private readonly PipelineController _pipelineController;
 
     // todo: migrate to domain manager!
     private readonly ITestCaseRepository _testCaseRepository;
 
+    /// <summary>
+    /// Virtual folder for pipelines
+    /// </summary>
+    public const string FOLDER_PIPELINES = "Pipelines";
+
+    /// <summary>
+    /// Virtual folder for pipelines
+    /// </summary>
+    public const string FOLDER_RUN_TESTS = "TestRunTests";
+
+    /// <summary>
+    /// Virtual folder for test suties
+    /// </summary>
     public const string ROOT_TEST_SUITES = "TestSuites";
+
+    /// <summary>
+    /// Virtual folder for test runs
+    /// </summary>
     public const string ROOT_TEST_RUNS = "TestRuns";
 
     public TestBrowser(TestSuiteService testSuiteService,
@@ -32,7 +59,8 @@ internal class TestBrowser : TenantBaseService
         IFileRepository fileRepository,
         ITestCaseRepository testCaseRepository,
         ITestRunManager testRunManager,
-        AppNavigationManager appNavigationManager) : base(authenticationStateProvider)
+        AppNavigationManager appNavigationManager,
+        PipelineController pipelineManager) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
@@ -42,6 +70,7 @@ internal class TestBrowser : TenantBaseService
         _testCaseRepository = testCaseRepository;
         _testRunManager = testRunManager;
         _appNavigationManager = appNavigationManager;
+        _pipelineController = pipelineManager;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -80,7 +109,7 @@ internal class TestBrowser : TenantBaseService
         var tenantId = await GetTenantIdAsync();
 
         // Show dialog
-        var dialog = await _dialogService.ShowAsync<ImportResultsDialog>(null);
+        var dialog = await _dialogService.ShowAsync<ImportResultsDialog>(null, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
 
         if (result?.Data is ImportOptions importOptions && importOptions.File?.Id is not null)
@@ -147,7 +176,7 @@ internal class TestBrowser : TenantBaseService
             {
                 return [];
             }
-            if(parent.Folder is not null)
+            else if(parent.Folder is not null)
             {
                 var folders = await _testSuiteService.GetTestSuiteFoldersAsync(projectId, parent.Folder.TestSuiteId, parent.Folder.Id);
                 var items = MapFoldersToTreeNode(folders);
@@ -183,9 +212,33 @@ internal class TestBrowser : TenantBaseService
 
                 return items;
             }
-            else if (parent.TestRun is not null)
+            else if (parent.Pipeline is not null)
             {
                 return [];
+            }
+            else if (parent.VirtualFolderName == FOLDER_PIPELINES)
+            {
+                var items = new List<TreeNode<BrowserItem>>();
+
+                if (parent.TestRun is not null)
+                {
+                    var pipelines = await _pipelineController.GetPipelinesForTestRunAsync(parent.TestRun.Id);
+                    items.AddRange(MapPipelinesToTreeNode(pipelines));
+                }
+
+                return items;
+            }
+            else if (parent.VirtualFolderName == FOLDER_RUN_TESTS)
+            {
+                var items = new List<TreeNode<BrowserItem>>();
+                return items;
+            }
+            else if (parent.TestRun is not null)
+            {
+                // This should not happen as child folders are added when creating a tree node for test run
+                // If it happens, it may be a virtual folder that has a test run, that check should be above this in the 
+                // if statement
+                Debug.Assert(false, "TreeNode for test run should never need to call browse");
             }
         }
 
@@ -207,11 +260,16 @@ internal class TestBrowser : TenantBaseService
         var result = await dialog.Result;
     }
 
-    private List<TreeNode<BrowserItem>> MapTestsToTreeNode(TestCase[] tests)
+    private List<TreeNode<BrowserItem>> MapPipelinesToTreeNode(IEnumerable<Pipeline> pipelines)
+    {
+        return pipelines.Select(x => CreateTreeNodeFromPipeline(x)).ToList();
+    }
+
+    private List<TreeNode<BrowserItem>> MapTestsToTreeNode(IEnumerable<TestCase> tests)
     {
         return tests.Select(x => CreateTreeNodeFromTestCase(x)).ToList();
     }
-    private List<TreeNode<BrowserItem>> MapFoldersToTreeNode(TestSuiteFolder[] folders)
+    private List<TreeNode<BrowserItem>> MapFoldersToTreeNode(IEnumerable<TestSuiteFolder> folders)
     {
         return folders.Select(x => CreateTreeNodeFromFolder(x)).ToList();
     }
@@ -227,15 +285,43 @@ internal class TestBrowser : TenantBaseService
         };
     }
 
-    public TreeNode<BrowserItem> CreateTestRunTreeNode(TestRun testRun)
+    public TreeNode<BrowserItem> CreateTestRunTreeNode(TestBrowserRequest request, TestRun testRun)
     {
-        return new TreeNode<BrowserItem>
+        var items = new List<TreeNode<BrowserItem>>();
+        if (request.ShowTestRunPipelines)
+        {
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = "Pipelines",
+                Children = null,
+                Expanded = false,
+                Value = new BrowserItem() { VirtualFolderName = FOLDER_PIPELINES, TestRun = testRun },
+                Icon = Icons.Material.Filled.FolderOpen,
+            });
+        }
+        if (request.ShowTestRunTests)
+        {
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = "Tests",
+                Children = [],
+                Expanded = false,
+                Value = new BrowserItem() { VirtualFolderName = FOLDER_RUN_TESTS, TestRun = testRun },
+                Icon = Icons.Material.Filled.FolderOpen,
+            });
+        }
+
+        var treeNode = new TreeNode<BrowserItem>
         {
             Value = new BrowserItem() { TestRun = testRun },
             Text = testRun.Name,
             Icon = Icons.Material.Filled.PlaylistPlay,
-            Children = [],
+            Expandable = true,
+            Children = items.ToArray(),
         };
+
+
+        return treeNode;
     }
 
     public string GetIcon(TestSuiteFolder folder)
@@ -263,7 +349,24 @@ internal class TestBrowser : TenantBaseService
         }
         return TbIcons.Filled.PaperPlane;
     }
+    public TreeNode<BrowserItem> CreateTreeNodeFromPipeline(Pipeline pipeline)
+    {
+        var treeNode = new TreeNode<BrowserItem>
+        {
+            Value = new BrowserItem { Pipeline = pipeline },
+            Text = "Pipeline " + pipeline.CiCdPipelineIdentifier,
+            Icon = Icons.Material.Filled.RocketLaunch,
+            Expandable = false,
+            Children = null,
+        };
 
+        if(pipeline.CiCdSystem?.ToLower() == "gitlab")
+        {
+            treeNode.Icon = TbIcons.Brands.Gitlab;
+        }
+
+        return treeNode;
+    }
     public TreeNode<BrowserItem> CreateTreeNodeFromTestCase(TestCase x)
     {
         var treeNode = new TreeNode<BrowserItem>
@@ -417,7 +520,7 @@ internal class TestBrowser : TenantBaseService
                 Text = "Test Suites",
                 Children = suiteItems,
                 Expanded = true,
-                Value = new BrowserItem() { RootFolderName = ROOT_TEST_SUITES },
+                Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_SUITES },
                 Icon = Icons.Material.Filled.FolderOpen,
             });
         }
@@ -427,7 +530,7 @@ internal class TestBrowser : TenantBaseService
             var recentRunsResult = await _testRunManager.SearchTestRunsAsync(principal, query);
             foreach (var testRun in recentRunsResult.Items)
             {
-                recentRuns.Add(CreateTestRunTreeNode(testRun));
+                recentRuns.Add(CreateTestRunTreeNode(request, testRun));
             }
 
             items.Add(new TreeNode<BrowserItem>
@@ -435,7 +538,8 @@ internal class TestBrowser : TenantBaseService
                 Text = "Test Runs",
                 Children = recentRuns,
                 Expanded = false,
-                Value = new BrowserItem() { RootFolderName = ROOT_TEST_RUNS },
+                Expandable = true,
+                Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_RUNS },
                 Icon = Icons.Material.Filled.FolderOpen,
             });
         }

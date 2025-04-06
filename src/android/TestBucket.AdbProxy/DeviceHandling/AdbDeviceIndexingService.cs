@@ -15,6 +15,7 @@ namespace TestBucket.AdbProxy.DeviceHandling
     {
         private readonly ILogger<AdbDeviceIndexingService> _logger;
         private readonly IAdbDeviceRepository _repo;
+        private bool _isFirst = true;
 
         public AdbDeviceIndexingService(
             ILogger<AdbDeviceIndexingService> logger,
@@ -31,7 +32,8 @@ namespace TestBucket.AdbProxy.DeviceHandling
                 _logger.LogDebug("Periodic scan of connected devices");
                 try
                 {
-                    await _repo.UpdateAsync(stoppingToken);
+                    await _repo.UpdateAsync(_isFirst, stoppingToken);
+                    _isFirst = false;
                 }
                 catch(Exception ex)
                 {

@@ -1,0 +1,113 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/Accounts"
+@layout SettingsLayout
+@inject AppNavigationManager appNav
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<AccountStrings> accountLoc
+@inject TestAccountController controller
+
+<MudStack Class="container-settings-page">
+
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
+    <MudDataGrid ServerData="LoadGridData"
+                 Dense="true"
+                 Hover="true"
+                 @ref="_dataGrid"
+                 RowClick="(row) => OnRowClicked(row.Item)"
+                 T="TestAccount"
+                 SortMode="SortMode.None">
+
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+                <MudText Typo="Typo.h1">@loc["test-accounts"]</MudText>
+                <MudSpacer />
+                <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
+                    <Authorized>
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"></MudIconButton>
+                    </Authorized>
+                </PermissionView>
+            </MudStack>
+        </ToolBarContent>
+        <ColGroup>
+            <col />
+            <col />
+            <col />
+            <col />
+            <col style="width: 10%;" />
+        </ColGroup>
+        <Columns>
+            <PropertyColumn Property="x => x.Name" Title="@loc["name"]" />
+            <PropertyColumn Property="x => x.Type" Title="@accountLoc["account-type"]" />
+            <PropertyColumn Property="x => x.SubType" Title="@accountLoc["account-subtype"]" />
+            <TemplateColumn Title="@loc["modified"]">
+                <CellTemplate>@context.Item.Modified.Humanize()</CellTemplate>
+            </TemplateColumn>
+             <TemplateColumn>
+                <CellTemplate>
+                    <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Delete">
+                        <Authorized>
+                            <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteAsync(context.Item)" />
+                        </Authorized>
+                    </PermissionView>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+
+    </MudDataGrid>
+
+    <MudText Class="" Typo="Typo.subtitle1">@loc["test-accounts-description"]</MudText>
+
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private List<BreadcrumbItem> _nav = [];
+    private MudDataGrid<TestAccount>? _dataGrid;
+
+    private async Task<GridData<TestAccount>> LoadGridData(GridState<TestAccount> state)
+    {
+        var result = await controller.GetAccountsAsync(state.Page * state.PageSize, state.PageSize);
+
+        GridData<TestAccount> data = new()
+            {
+                Items = result.Items,
+                TotalItems = (int)result.TotalCount
+            };
+
+        return data;
+    }
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    private async Task AddAsync()
+    {
+        await controller.AddAsync();
+        _dataGrid?.ReloadServerData();
+    }
+
+    private async Task DeleteAsync(TestAccount account)
+    {
+        await controller.DeleteAsync(account);
+        _dataGrid?.ReloadServerData();
+    }
+
+
+    private void OnRowClicked(TestAccount account)
+    {
+        appNav.NavigateTo(account);
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["test-accounts"], appNav.GetTestAccountsSettingsUrl()));
+    }
+}

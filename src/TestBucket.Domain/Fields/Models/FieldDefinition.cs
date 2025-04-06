@@ -106,4 +106,9 @@ public class FieldDefinition : ProjectEntity
     /// If true, the field can be calculated using AI Classification
     /// </summary>
     public bool UseClassifier { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Name} IsVisible={IsVisible} IsDeleted={IsDeleted}";
+    }
 }

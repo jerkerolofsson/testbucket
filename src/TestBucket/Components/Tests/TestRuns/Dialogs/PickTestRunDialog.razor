@@ -1,0 +1,65 @@
+﻿@attribute [Authorize(Roles = "ADMIN")]
+@inject TestCaseEditorController testCaseEditorService
+@inject ProjectController projectController
+@inject TestEnvironmentController testEnvironmentController
+@inject FieldController fieldController
+@inject IStringLocalizer<SharedStrings> loc
+
+<MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <TitleContent>@loc["pick-test-run"]</TitleContent>
+    <DialogContent>
+        <MudStack Spacing="1">
+            <TestTreeView ShowTestCases="false" ShowTestSuites="false" OnTestRunClicked="OnTestRunClicked" Project="@_project" />
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        @if (_testRun is not null)
+        {
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" OnClick="Submit">@loc["ok"]</MudButton>
+        }
+        <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private TestRun? _testRun = null;
+
+    private void OnTestRunClicked(TestRun testRun)
+    {
+        _testRun = testRun;
+    }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private TestProject? _project;
+    private TestEnvironment? _testEnvironment;
+
+    [Parameter] public long? TestProjectId { get; set; }
+
+    private long? _teamId;
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(TestProjectId is not null)
+        {
+            _project = await projectController.GetProjectByIdAsync(TestProjectId.Value);
+            _testEnvironment = await testEnvironmentController.GetDefaultEnvironmentAsync(TestProjectId.Value);
+            _teamId = _project?.TeamId;
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void Submit()
+    {
+        
+        MudDialog.Close(_testRun);
+    }
+}
+

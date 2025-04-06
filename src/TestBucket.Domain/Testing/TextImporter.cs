@@ -4,20 +4,15 @@ using System.Security.Claims;
 using System.Text;
 
 using TestBucket.Domain.Fields;
-using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.States;
-using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Services;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Formats;
-using TestBucket.Formats.Ctrf;
 using TestBucket.Formats.Dtos;
-using TestBucket.Formats.JUnit;
-using TestBucket.Formats.XUnit;
 
 namespace TestBucket.Domain.Testing;
 
@@ -30,15 +25,17 @@ internal class TextImporter : ITextTestResultsImporter
     private readonly ITestSuiteManager _testSuiteManager;
     private readonly ITestRunManager _testRunManager;
     private readonly ITestCaseManager _testCaseManager;
+    private readonly IFieldManager _fieldManager;
 
     public TextImporter(
         IStateService stateService,
-        ITestCaseRepository testCaseRepository, 
-        IFieldDefinitionManager fieldDefinitionManager, 
-        IFileRepository fileRepository, 
-        ITestSuiteManager testSuiteManager, 
+        ITestCaseRepository testCaseRepository,
+        IFieldDefinitionManager fieldDefinitionManager,
+        IFileRepository fileRepository,
+        ITestSuiteManager testSuiteManager,
         ITestRunManager testRunManager,
-        ITestCaseManager testCaseManager)
+        ITestCaseManager testCaseManager,
+        IFieldManager fieldManager)
     {
         _stateService = stateService;
         _testCaseRepository = testCaseRepository;
@@ -47,6 +44,7 @@ internal class TextImporter : ITextTestResultsImporter
         _testSuiteManager = testSuiteManager;
         _testRunManager = testRunManager;
         _testCaseManager = testCaseManager;
+        _fieldManager = fieldManager;
     }
 
     /// <summary>
@@ -98,8 +96,16 @@ internal class TextImporter : ITextTestResultsImporter
                     continue;
                 }
 
-                // Get the test suite
-                TestSuite suite = await ResolveTestSuiteAsync(principal, teamId, projectId, options, suiteName);
+                // Get or create the test suite
+                TestSuite? suite = null;
+                if(options.TestSuiteId is not null)
+                {
+                    suite = await _testSuiteManager.GetTestSuiteByIdAsync(principal, options.TestSuiteId.Value);
+                }
+                if (suite is null)
+                {
+                    suite = await ResolveTestSuiteAsync(principal, teamId, projectId, options, suiteName);
+                }
 
                 // Get field definitions to imported entities
                 var testRunFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.TestRun);
@@ -125,7 +131,6 @@ internal class TextImporter : ITextTestResultsImporter
                         {
                             testCase = await GetOrCreateTestCaseAsync(principal, projectId, suite, test, options);
                         }
-                        TestCaseRun testCaseRun = await AddTestCaseRunAsync(principal, testRun, test, testCase);
 
                         // Add traits to the test case
                         foreach (var traitName in test.Traits.Select(x => x.Name))
@@ -134,6 +139,8 @@ internal class TextImporter : ITextTestResultsImporter
                             var traits = test.Traits.Where(x => x.Name == traitName).ToArray();
                             await UpsertTestCaseTraitsAsync(principal, testCaseFieldDefinitions, testCase, traits);
                         }
+
+                        TestCaseRun testCaseRun = await AddTestCaseRunAsync(principal, testRun, test, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRunFieldDefinitions);
                     }
                 }
             }
@@ -194,6 +201,7 @@ internal class TextImporter : ITextTestResultsImporter
         TestRun testRun;
         if (options.TestRunId is null)
         {
+            // Create a new test run
             testRun = new TestRun()
             {
                 Created = now,
@@ -242,6 +250,14 @@ internal class TextImporter : ITextTestResultsImporter
         return suite;
     }
 
+    /// <summary>
+    /// Updates test case fields from result file
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testCaseFieldDefinitions"></param>
+    /// <param name="testCase"></param>
+    /// <param name="traits"></param>
+    /// <returns></returns>
     private async Task UpsertTestCaseTraitsAsync(ClaimsPrincipal principal, IReadOnlyList<FieldDefinition> testCaseFieldDefinitions, TestCase testCase, TestTrait[] traits)
     {
         string tenantId = principal.GetTenantIdOrThrow();
@@ -271,15 +287,18 @@ internal class TextImporter : ITextTestResultsImporter
                 await _fieldDefinitionManager.UpsertTestCaseFieldsAsync(principal, field);
             }
         }
-        else
-        {
-            // Update?
-        }
     }
 
-    private async Task<TestCaseRun> AddTestCaseRunAsync(ClaimsPrincipal principal, TestRun testRun, TestCaseRunDto test, TestCase testCase)
+    private async Task<TestCaseRun> AddTestCaseRunAsync(
+        ClaimsPrincipal principal, 
+        TestRun testRun, 
+        TestCaseRunDto test, 
+        TestCase testCase, 
+        IReadOnlyList<FieldDefinition> testCaseFieldDefinitions, 
+        IReadOnlyList<FieldDefinition> testRunFieldDefinitions, 
+        IReadOnlyList<FieldDefinition> testCaseRunFieldDefinitions)
     {
-        if(testRun.TestProjectId is null)
+        if (testRun.TestProjectId is null)
         {
             throw new InvalidOperationException("Test runs must have a project");
         }
@@ -297,16 +316,26 @@ internal class TextImporter : ITextTestResultsImporter
             TestCaseId = testCase.Id,
             Duration = (int)(test.Duration?.TotalMicroseconds ?? 0),
             CallStack = test.CallStack,
+            SystemOut = test.SystemOut,
+            SystemErr = test.SystemErr,
             Message = test.Message,
             State = completedState.Name
         };
 
         await _testCaseRepository.AddTestCaseRunAsync(testCaseRun);
 
+        // Add traits from the test case (could be manually assigned)
+        List<TestCaseRunField> fields = new();
+
+        TestCaseRunFieldHelper.BuildInheritedFields(testRun, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRun, fields);
+
+        await _fieldManager.SaveTestCaseRunFieldsAsync(principal, fields);
+
         await AddAttachmentsAsync(testCaseRun, test.Attachments);
 
         return testCaseRun;
     }
+
 
     private async Task AddAttachmentsAsync(TestCaseRun testCaseRun, List<AttachmentDto>? attachments)
     {

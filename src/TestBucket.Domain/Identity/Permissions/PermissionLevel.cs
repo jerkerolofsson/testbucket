@@ -26,6 +26,8 @@ namespace TestBucket.Domain.Identity.Permissions
         /// </summary>
         Delete = 4,
 
+        ReadWrite = Write | Read,
+
         All = Delete | Write | Read
     }
 }

@@ -1,0 +1,100 @@
+﻿@using TestBucket.Contracts.Integrations
+@using TestBucket.Domain.Teams.Models
+@attribute [Authorize(Roles = "ADMIN")]
+@inject TestSuiteService testSuiteService
+@inject IStringLocalizer<ProjectStrings> projectLoc
+@inject IStringLocalizer<SharedStrings> loc
+
+<EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <DialogContent>
+            <MudStack Spacing="1">
+                @if (_name is not null)
+                {
+                    <Field Row>
+                        <FieldHeader>@loc["name"]</FieldHeader>
+                        <MudSpacer />
+                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+                    </Field>
+
+                    <Field Row>
+                        <FieldHeader>@loc["project"]</FieldHeader>
+                        <MudSpacer />
+                        <ProjectDropDown @bind-SelectedProject="@_project" />
+                    </Field>
+
+                    <Field Row>
+                        <FieldHeader>@loc["ci-cd"]</FieldHeader>
+                        <MudSpacer />
+                        <PipelineSystemPicker Project="@_project" @bind-ExternalPipelineRunner="@_runner"/>
+                    </Field>
+
+                    @if(_runner is not null)
+                    {
+                        <Field Row>
+                            <FieldHeader>@loc["ci-cd-ref"]</FieldHeader>
+                            <MudSpacer />
+                            <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="_cdCdRef"></MudTextField>
+                        </Field>
+                    }
+                }
+                @if (_errorMessage is not null)
+                {
+                    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+                }
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            <MudButton OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    private string _name = "";
+    private string _cdCdRef = "main";
+
+    private IExternalPipelineRunner? _runner;
+    private string? _errorMessage;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public Team? Team { get; set; }
+    [Parameter] public TestProject? Project { get; set; }
+
+    private TestProject? _project;
+    private Team? _team;
+
+    protected override void OnParametersSet()
+    {
+        _team = Team;
+        _project = Project;
+    }
+
+    private void OnValueChanged(string name)
+    {
+        _name = name;
+
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_name))
+        {
+            _errorMessage = "Invalid name";
+            return;
+        }
+
+        var testSuite = await testSuiteService.AddTestSuiteAsync(_team?.Id, _project?.Id, _name, _runner?.SystemName, _cdCdRef);
+        MudDialog.Close(testSuite);
+    }
+}

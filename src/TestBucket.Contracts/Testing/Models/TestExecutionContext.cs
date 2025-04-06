@@ -23,6 +23,11 @@ public class TestExecutionContext
     public required long TeamId { get; set; }
 
     /// <summary>
+    /// Identifier for the team
+    /// </summary>
+    public long? TestSuiteId { get; set; }
+
+    /// <summary>
     /// Assigned variables, e.g. from the selected environment
     /// </summary>
     public Dictionary<string, string> Variables { get; set; } = [];
@@ -49,4 +54,5 @@ public class TestExecutionContext
     /// </summary>
     public string? CiCdPipelineIdentifier { get; set; }
     public string? CiCdSystem { get; set; }
+    public string? TenantId { get; set; }
 }

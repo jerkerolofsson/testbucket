@@ -1,0 +1,35 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestRuns/{RunId:long}/Pipelines/{PipelineId:long}"
+@using TestBucket.Components.Automation
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Domain.Automation.Models
+@layout TestingLayout
+@inject PipelineController controller
+
+@_pipeline?.Status
+
+@_pipeline?.StartError
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    [Parameter] public long RunId { get; set; }
+    [Parameter] public long PipelineId { get; set; }
+
+    private Pipeline? _pipeline = null;
+
+    /// <summary>
+    /// Load the test case when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        
+        if (_pipeline is null || _pipeline.Id != PipelineId)
+        {
+            _pipeline = await controller.GetPipelineByIdAsync(PipelineId);
+        }
+    }
+}

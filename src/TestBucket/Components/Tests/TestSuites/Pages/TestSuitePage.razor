@@ -1,0 +1,85 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestSuites/{SuiteId:long}"
+@layout TestingLayout
+@inject TestBrowser testBrowser
+@inject TestSuiteService controller
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+
+<div class="container-fill-2-rows">
+    <MudToolBar Class="tb-toolbar">
+        @_testSuite?.Name
+    </MudToolBar>
+
+    <Splitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
+        <StartContent>
+             <article class="center">
+                <MudStack>
+                    <MudText Typo="Typo.h1">@_testSuite?.Name</MudText>
+                    @if(_testSuite is not null)
+                    {
+                        <TestCaseGrid  Project="@Project" TestSuiteId="@SuiteId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" OnTestSuiteFolderClicked="OnFolderClicked"/>
+
+                        <BasicMarkdownEditor ToolbarTitle="@loc["readme"]" Text="@_testSuite.Description" TextChanged="OnDescriptionChanged"/>
+
+                        <TestSuiteEditor TestSuite="@_testSuite" TestSuiteChanged="OnTestSuiteChanged" />
+
+                        <TestSuiteVariables TestSuite="@_testSuite" TestSuiteChanged="OnTestSuiteChanged" />
+                    }
+                </MudStack>
+            </article>
+        </StartContent>
+        <EndContent>
+            
+        </EndContent>
+    </Splitter>
+</div>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    [Parameter] public long SuiteId { get; set; }
+
+    private TestSuite? _testSuite = null;
+
+    /// <summary>
+    /// Load the test suite when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_testSuite is null || _testSuite.Id != SuiteId)
+        {
+            _testSuite = await testBrowser.GetTestSuiteByIdAsync(SuiteId);
+            appNavigationManager.State.SelectedTestSuite = _testSuite;
+        }
+    }
+
+    private async Task OnDescriptionChanged(string description)
+    {
+        if (_testSuite is null)
+        {
+            return;
+        }
+        _testSuite.Description = description;
+        await controller.SaveTestSuiteAsync(_testSuite);
+    }
+
+    private async Task OnTestSuiteChanged(TestSuite testSuite)
+    {
+        _testSuite = testSuite;
+        await controller.SaveTestSuiteAsync(_testSuite);
+    }
+
+    private void OnFolderClicked(TestSuiteFolder folder)
+    {
+        appNavigationManager.NavigateTo(folder);
+    }
+
+    private void OnTestCaseClicked(TestCase testCase)
+    {
+        appNavigationManager.NavigateTo(testCase);
+    }
+}

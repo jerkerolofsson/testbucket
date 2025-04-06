@@ -2,6 +2,8 @@
 using System.Net.Http.Json;
 
 using TestBucket.AdbProxy.Models;
+using TestBucket.Contracts.TestResources;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace TestBucket.AdbProxy.Inform;
 internal class DeviceInformer(HttpClient httpClient) : IDeviceInformer
@@ -74,6 +76,45 @@ internal class DeviceInformer(HttpClient httpClient) : IDeviceInformer
             return;
         }
 
+        List<TestResourceDto> resources = new();
+        var owner = Environment.GetEnvironmentVariable("SERVER_UUID") ?? "no-uuid-configured";
+        foreach (var device in devices)
+        {
+            HealthStatus status = device.Status switch
+            {
+                "device" => HealthStatus.Healthy,
+                "unauhorized" => HealthStatus.Unhealthy,
+                "offline" => HealthStatus.Unhealthy,
+                _ => HealthStatus.Unhealthy
+            };
+
+            var resource = new TestResourceDto
+            {
+                Name = device.ModelInfo.Manufacturer + " " + device.ModelInfo.Name,
+                Types = ["phone", "android"],
+                Health = status,
+                Owner = owner,
+                ResourceId = device.DeviceId,
+                Model = device.ModelInfo.Name,
+                Manufacturer = device.ModelInfo.Manufacturer,
+            };
+            resource.Variables["api-level"] = device.ApiLevel.ToString();
+            if (device.Url is not null)
+            {
+                resource.Variables["url"] = device.Url;
+            }
+            if (device.Version.VersionName is not null)
+            {
+                resource.Variables["version-name"] = device.Version.VersionName;
+            }
+            if (device.Version.CodeName is not null)
+            {
+                resource.Variables["version-code-name"] = device.Version.CodeName;
+            }
+
+            resources.Add(resource);
+        }
+
         using var request = new HttpRequestMessage(HttpMethod.Post, settings.Url);
 
         if (!string.IsNullOrEmpty(settings.AuthHeader))
@@ -81,7 +122,7 @@ internal class DeviceInformer(HttpClient httpClient) : IDeviceInformer
             bool success = request.Headers.TryAddWithoutValidation("Authorization", settings.AuthHeader);
         }
 
-        request.Content = new StringContent(JsonSerializer.Serialize(devices), System.Text.Encoding.UTF8, "application/json");
+        request.Content = new StringContent(JsonSerializer.Serialize(resources), System.Text.Encoding.UTF8, "application/json");
         using var response = await httpClient.SendAsync(request, cancellationToken);
         response.EnsureSuccessStatusCode();
     }

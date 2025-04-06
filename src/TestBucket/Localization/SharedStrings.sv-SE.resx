@@ -193,7 +193,7 @@
     <value>ID</value>
   </data>
   <data name="expiry" xml:space="preserve">
-    <value>Utgången</value>
+    <value>Utgångsdatum</value>
   </data>
   <data name="confirm-delete-title" xml:space="preserve">
     <value>Ta bort?</value>
@@ -206,9 +206,6 @@
   </data>
   <data name="api-key" xml:space="preserve">
     <value>API Nyckel</value>
-  </data>
-  <data name="search-settings" xml:space="preserve">
-    <value>Sök inställningar..</value>
   </data>
   <data name="test-case-variables-description" xml:space="preserve">
     <value>Test variabler är värden som ersätter placeholders i testfallet som {{Name}} med värdet definerat i i tabellen. Om en testmiljö används så kan värdet från testmiljön användas, men om variablen finns definerad i båda så används värdet från testfallet. </value>
@@ -244,7 +241,7 @@
     <value>Sajt administratör</value>
   </data>
   <data name="role-tenant-admin" xml:space="preserve">
-    <value>Tenant administratör</value>
+    <value>Administratör</value>
   </data>
   <data name="role-regular-user" xml:space="preserve">
     <value>Vanlig användare</value>
@@ -253,6 +250,31 @@
     <value>Du saknar rättigheter för denna resurs</value>
   </data>
   <data name="ci-cd" xml:space="preserve">
+    <value>CI/CD</value>
+  </data>
+  <data name="test-suite-variables-description" xml:space="preserve">
+    <value>Dessa variabler kommer att användas för testfall som körs från denna testsvit</value>
+  </data>
+  <data name="automation" xml:space="preserve">
+    <value>Automatisering</value>
+  </data>
+  <data name="ci-cd-ref" xml:space="preserve">
+    <value>CI/CD Ref. (Git)</value>
+  </data>
+  <data name="test-accounts" xml:space="preserve">
+    <value>Testkonton</value>
+  </data>
+  <data name="test-resources" xml:space="preserve">
+    <value>Testresurser</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="manufacturer" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
+  </data>
+  <data name="model" xml:space="preserve">
+    <value>Modell</value>
+  </data>
+  <data name="modified" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
 </root>

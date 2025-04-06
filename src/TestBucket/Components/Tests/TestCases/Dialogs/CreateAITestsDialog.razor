@@ -1,0 +1,149 @@
+﻿@attribute [Authorize(Roles = "ADMIN")]
+@inject TestCaseEditorController testCaseEditorService
+@inject ITestCaseGenerator testCaseGenerator
+@inject AuthenticationStateProvider authenticationStateProvider
+
+@if(!testCaseGenerator.Enabled)
+{
+    <div>No LLMs are configured</div>
+}
+else
+{
+    <EditForm Model="@_prompt" OnValidSubmit="async () => await OnValidSubmitAsync()">
+        <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+            <DialogContent>
+                <MudStack Spacing="1">
+
+                    <Field>
+                        <FieldHeader>Number of tests</FieldHeader>
+                        <MudNumericField Variant="Variant.Outlined" @bind-Value="@_numTests"/>
+                    </Field>
+                    <Field>
+                        <FieldHeader>Heuristic</FieldHeader>
+                        <MudSelect Variant="Variant.Outlined" @bind-Value="@_heuristic">
+                            @foreach (var heuristic in _heuristics)
+                            {
+                                <MudSelectItem Value="@heuristic">@heuristic.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </Field>
+
+                    @if(_loading)
+                    {
+                        <MudText>Generating text from prompt:</MudText>
+                        <pre>@_prompt</pre>
+                        <MudProgressLinear Indeterminate="true" Color="Color.Secondary"/>
+
+                        <pre>@_reply</pre>
+                    }
+                    else
+                    {
+                        <Field>
+                            <FieldHeader>Describe the feature under test</FieldHeader>
+                            <MudTextField Style="min-width: 400px" Lines="10" AutoFocus Variant="Variant.Outlined" T="string" @bind-Value="@_prompt"></MudTextField>
+                        </Field>
+                    }
+
+                    @if(_errorMessage is not null)
+                    {
+                        <MudText Color="Color.Error">@_errorMessage</MudText>
+                    }
+                </MudStack>
+            </DialogContent>
+
+            <DialogActions>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">Generate</MudButton>
+                <MudButton OnClick="Close">Cancel</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </EditForm>
+}
+@code {
+    private string _prompt = "Login on a web with username and password";
+    private string _reply = "";
+    private int _numTests = 5;
+
+    private Heuristic? _heuristic = null;
+    private IReadOnlyList<Heuristic> _heuristics = [];
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public TestSuiteFolder? Folder { get; set; }
+    [Parameter] public long? TestSuiteId { get; set; }
+
+    private bool _loading = false;
+    private string? _errorMessage = null;
+
+    protected override void OnParametersSet()
+    {
+        _heuristics = testCaseGenerator.Heuristics;
+
+        if(Folder is not null && Folder.IsFeature && Folder.FeatureDescription is not null)
+        {
+            _prompt = Folder.FeatureDescription;
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task GenerateTestsAsync()
+    {
+        if(TestSuiteId is null)
+        {
+            return;
+        }
+
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var principal = authState.User;
+
+        var options = new GenerateTestOptions() { UserPrompt = _prompt, Heuristic = _heuristic, NumTests = _numTests, Folder = Folder, TestSuiteId = TestSuiteId.Value };
+        var task = testCaseGenerator.GenerateTestsAsync(principal, options);
+
+        // _reply = "";
+        // await foreach (var llmTestCase in testCaseGenerator.GetStreamingResponseAsync(new GenerateTestOptions() { UserPrompt = _prompt, Heuristic = _heuristic, NumTests = _numTests }))
+        // {
+        //     if (llmTestCase?.TestCaseName is not null)
+        //     {
+        //         _reply += $"Created test: {llmTestCase.TestCaseName}\n";
+        //         this.StateHasChanged();
+
+        //         var description = llmTestCase.AsTestMarkup();
+
+        //         var testCase = new TestCase() { Name = llmTestCase.TestCaseName, Description = description.ToString(), TenantId = Folder?.TenantId ?? "" };
+        //         if (Folder is not null)
+        //         {
+        //             testCase.TestSuiteFolderId = Folder.Id;
+        //             testCase.TestSuiteId = Folder.TestSuiteId;
+        //         }
+        //         if (TestSuiteId is not null)
+        //         {
+        //             testCase.TestSuiteId = TestSuiteId.Value;
+        //         }
+
+        //         await testCaseEditorService.AddTestCaseAsync(testCase);
+        //     }
+        // }
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        _loading = true;
+        this.StateHasChanged();
+
+        try
+        {
+            await GenerateTestsAsync();
+            Close();
+        }
+        catch(Exception ex)
+        {
+            _errorMessage = $"Failed: {ex.Message}";
+            _loading = false;
+        }
+    }
+}
+

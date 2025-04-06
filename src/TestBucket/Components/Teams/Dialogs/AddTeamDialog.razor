@@ -1,5 +1,5 @@
 ﻿@attribute [Authorize(Roles = "ADMIN")]
-@inject TeamService teamService
+@inject TeamController teamService
 
 <EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">

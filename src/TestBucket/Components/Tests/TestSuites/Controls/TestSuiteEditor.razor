@@ -1,0 +1,68 @@
+﻿@using TestBucket.Contracts.Integrations
+@inject IStringLocalizer<SharedStrings> loc
+@inject ProjectController controller
+
+@if (TestSuite is not null)
+{
+    <MudText Typo="Typo.h2">@loc["attachments"]</MudText>
+    <AttachmentGrid TestSuiteId="@TestSuite.Id" AllowUpload/>
+
+    <MudText Typo="Typo.h2">@loc["automation"]</MudText>
+
+    <Field Row>
+        <FieldHeader>@loc["ci-cd"]</FieldHeader>
+        <MudSpacer />
+        <PipelineSystemPicker Project="@_project" ExternalPipelineRunner="@_runner" ExternalPipelineRunnerChanged="OnExternalPipelineRunnerChanged" />
+    </Field>
+
+    @if (_runner is not null)
+    {
+        <Field Row>
+            <FieldHeader>@loc["ci-cd-ref"]</FieldHeader>
+            <MudSpacer />
+            <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdRefChanged" Value="@TestSuite.DefaultCiCdRef"></MudTextField>
+        </Field>
+    }
+}
+
+@code {
+    [Parameter] public TestSuite? TestSuite { get; set; }
+    [Parameter] public EventCallback<TestSuite> TestSuiteChanged { get; set; }
+    private IExternalPipelineRunner? _runner;
+    private TestProject? _project;
+
+    private async Task OnDefaultCiCdRefChanged(string value)
+    {
+        if (TestSuite is null)
+        {
+            return;
+        }
+
+        TestSuite.DefaultCiCdRef = value;
+        await TestSuiteChanged.InvokeAsync(TestSuite);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(TestSuite?.TestProjectId is not null)
+        {
+            if (_project?.Id != TestSuite.TestProjectId)
+            {
+                _project = await controller.GetProjectByIdAsync(TestSuite.TestProjectId.Value);
+            }
+
+            var runners = await controller.GetPipelineRunnersAsync(TestSuite.TestProjectId.Value);
+            _runner = runners.Where(x => x.SystemName == TestSuite.CiCdSystem).FirstOrDefault();
+        }
+    }
+
+    private async Task OnExternalPipelineRunnerChanged(IExternalPipelineRunner runner)
+    {
+        if(TestSuite is null)
+        {
+            return;
+        }
+        TestSuite.CiCdSystem = runner?.SystemName;
+        await TestSuiteChanged.InvokeAsync(TestSuite);
+    }
+}

@@ -36,7 +36,7 @@ jobs:
 
     runs-on: self-hosted
 
-    if: ${{ env.TEST_SUITE == 'UnitTests' }}
+    #if: ${{ env.TEST_SUITE == 'UnitTests' }}
     steps:
      - name: Upload
        shell: bash

@@ -31,3 +31,8 @@ jobs:
       run: dotnet test --no-build --verbosity normal tests/TestBucket.Domain.UnitTests.csproj
     - name: Test Formats
       run: dotnet test --no-build --verbosity normal tests/TestBucket.Formats.UnitTests.csproj
+
+  unittests:
+    if: $TEST_SUITE == 'UnitTests'
+    steps:
+    - echo Hello UnitTests

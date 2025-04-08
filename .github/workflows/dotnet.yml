@@ -37,4 +37,4 @@ jobs:
     steps:
      - name: Upload
        shell: bash
-       run echo "Hello world"
+       run: echo "Hello world"

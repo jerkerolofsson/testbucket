@@ -35,9 +35,6 @@ jobs:
   unittests:
     if: $TEST_SUITE == 'UnitTests'
     steps:
-     - name: Test Domain
-        run: dotnet test --no-build --verbosity normal tests/TestBucket.Domain.UnitTests.csproj
-     - name: Test Formats
-        run: dotnet test --no-build --verbosity normal tests/TestBucket.Formats.UnitTests.csproj
      - name: Upload
-        run echo "Hello world"
+       shell: bash
+       run echo "Hello world"

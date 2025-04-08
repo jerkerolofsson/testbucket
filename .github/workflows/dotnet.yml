@@ -14,12 +14,15 @@ jobs:
 
     runs-on: self-hosted
 
+    env:
+      DOTNET_INSTALL_DIR: "./.dotnet"
+
     steps:
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: 9.0.102
     - name: Restore dependencies
       run: dotnet restore src/TestBucket.sln
     - name: Build

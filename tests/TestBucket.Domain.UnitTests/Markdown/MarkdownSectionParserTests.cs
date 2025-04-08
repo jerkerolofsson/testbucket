@@ -30,9 +30,9 @@ namespace TestBucket.Domain.UnitTests.Markdown
         }
 
         [Test]
-        public async Task ReadSections_WithTwoParagraphs_TwoSectionsReturned()
+        public async Task ReadSections_WithTwoHeaders_TwoSectionsReturned()
         {
-            var sections = MarkdownSectionParser.ReadSections("Section 1\n\nSection 2", default).ToList();
+            var sections = MarkdownSectionParser.ReadSections("# Section 1\n\n#Section 2", default).ToList();
             await Assert.That(sections.Count).IsEqualTo(2);
         }
 

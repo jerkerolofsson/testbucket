@@ -32,7 +32,10 @@ var postgres = builder.AddPostgres("testbucket-postgres")
 var db = postgres.AddDatabase("testbucketdb");
 
 //var publicEndpoint = $"http://{Dns.GetHostName()}:5002";
-var publicEndpoint = $"http://192.168.0.241:5002";
+//var publicEndpoint = $"http://192.168.0.241:5002";
+var hostname = Dns.GetHostName();
+var addresses = Dns.GetHostAddresses(hostname);
+var publicEndpoint = $"http://{addresses.Where(x=>x.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).First()}:5002";
 
 var testBucket = builder.AddProject<Projects.TestBucket>("testbucket")
     .WithReference(db)

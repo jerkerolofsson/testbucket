@@ -5,6 +5,9 @@
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
   </PropertyGroup>
 
   <ItemGroup>

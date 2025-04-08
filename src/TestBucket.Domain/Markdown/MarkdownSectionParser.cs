@@ -50,7 +50,7 @@ namespace TestBucket.Domain.Markdown
                     }
                 }
 
-                sb.Append(line);
+                sb.Append(line.TrimEnd('\r'));
                 sb.Append('\n');
             }
 

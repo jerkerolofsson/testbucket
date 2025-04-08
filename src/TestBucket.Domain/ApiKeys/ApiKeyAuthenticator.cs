@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
+using TestBucket.Domain.ApiKeys.Validation;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.ApiKeys
@@ -50,26 +51,9 @@ namespace TestBucket.Domain.ApiKeys
                 return null;
             }
 
-            var symmetricKey = _settings.SymmetricJwtKey;
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(symmetricKey));
-
-            var validationParameters = new TokenValidationParameters()
-            {
-                IssuerSigningKey = securityKey,
-                ValidAudience = _settings.JwtAudience,
-                ValidIssuer = _settings.JwtAudience,
-                ValidateLifetime = true,
-                ValidateAudience = true,
-                ValidateIssuer = true,
-                ValidateIssuerSigningKey = true,
-                NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken? validatedToken = null;
             try
             {
-                var principal = tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
+                var principal = AccessTokenValidator.ValidateToken(_settings, token);
                 return principal;
             }
             catch (SecurityTokenException)

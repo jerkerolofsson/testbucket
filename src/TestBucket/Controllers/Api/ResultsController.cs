@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using TestBucket.Domain.ApiKeys.Validation;
 using TestBucket.Domain.Projects;
-using TestBucket.Domain.Shared;
 using TestBucket.Formats;
 
 namespace TestBucket.Controllers.Api;
@@ -21,12 +21,15 @@ public class ResultsController : ProjectApiControllerBase
 
     [Authorize("ApiKeyOrBearer")]
     [HttpPut("/api/results")]
+    [HttpPost("/api/results")]
     public async Task<IActionResult> ImportResultsAsync()
     {
-        var tenantId = GetTenantId();
-        var projectId = GetProjectId();
-        var runId = GetTestRunId();
-        var testSuiteId = GetTestSuiteId();
+        var validator = new PrincipalValidator(User);
+
+        var tenantId = validator.GetTenantId();
+        var projectId = validator.GetProjectId();
+        var runId = validator.GetTestRunId();
+        var testSuiteId = validator.GetTestSuiteId();
         if (projectId is null)
         {
             return Unauthorized("Access token missing project ID");

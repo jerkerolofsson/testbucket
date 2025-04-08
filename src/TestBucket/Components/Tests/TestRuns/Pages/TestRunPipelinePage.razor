@@ -6,9 +6,10 @@
 @layout TestingLayout
 @inject PipelineController controller
 
-@_pipeline?.Status
-
-@_pipeline?.StartError
+<MudStack Class="pa-2">
+    Status: @_pipeline?.Status
+    
+</MudStack>
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";

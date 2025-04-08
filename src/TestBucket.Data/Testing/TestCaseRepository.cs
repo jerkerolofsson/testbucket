@@ -531,6 +531,11 @@ internal class TestCaseRepository : ITestCaseRepository
             dbContext.TestRuns.Remove(run);
         }
 
+        await foreach (var pipeline in dbContext.Pipelines.Where(x => x.TestRunId == id).AsAsyncEnumerable())
+        {
+            dbContext.Pipelines.Remove(pipeline);
+        }
+
         await dbContext.SaveChangesAsync();
     }
     #endregion Test Runs

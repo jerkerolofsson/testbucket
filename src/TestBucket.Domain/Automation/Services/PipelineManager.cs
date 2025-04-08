@@ -95,8 +95,11 @@ internal class PipelineManager : IPipelineManager
 
             if (dto is not null)
             {
-                dto.CopyTo(pipeline);
-                await _repository.UpdateAsync(pipeline);
+                var changed = dto.CopyTo(pipeline);
+                if (changed)
+                {
+                    await _repository.UpdateAsync(pipeline);
+                }
             }
 
             return dto;

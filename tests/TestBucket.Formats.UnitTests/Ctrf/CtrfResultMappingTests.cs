@@ -14,7 +14,7 @@ namespace TestBucket.Formats.UnitTests.Ctrf
     public class CtrfResultMappingTests
     {
         [InlineData(TestResult.Passed, "passed")]
-        [InlineData(TestResult.Passed, "failed")]
+        [InlineData(TestResult.Failed, "failed")]
         [InlineData(TestResult.NoRun, "pending")]
         [InlineData(TestResult.Skipped, "skipped")]
         [Theory]
@@ -25,7 +25,7 @@ namespace TestBucket.Formats.UnitTests.Ctrf
         }
 
         [InlineData(TestResult.Passed, "passed")]
-        [InlineData(TestResult.Passed, "failed")]
+        [InlineData(TestResult.Failed, "failed")]
         [InlineData(TestResult.NoRun, "pending")]
         [InlineData(TestResult.Skipped, "skipped")]
         [Theory]

@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Automation.Models;
+
 namespace TestBucket.Domain.Automation.Services;
-internal interface IPipelineObserver
+public interface IPipelineObserver
 {
+    Task OnPipelineUpdatedAsync(Pipeline pipeline);
 }

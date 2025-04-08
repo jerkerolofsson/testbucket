@@ -1,21 +1,46 @@
-cd tests/TestBucket.AspireTests
-#dotnet test  --logger "xunit;LogFileName=TestBucket.AspireTests.xunit.xml"
-dotnet test  -- --report-trx
+function Upload-Xunit-Result-File {
+	
+	param(
+		$project
+	)
+	$xmlPath="tests/${project}/TestResults/results.xml"
 
-cd ../TestBucket.Formats.UnitTests 
+	Write-Host "Uploading to ${env:TB_PUBLIC_ENDPOINT}/api/results"
 
-echo "start"
+	$file = Get-ChildItem $path
+	$data = [System.IO.File]::ReadAllBytes($file.FullName) 
+	$headers = @{
+	    "Authorization"  = "Bearer ${env:TB_TOKEN}"
+	}
+	Invoke-RestMethod -uri ${env:TB_PUBLIC_ENDPOINT}/api/results -Method PUT -Body $data -ContentType 'application/json+xunit' -Headers ${headers}
 
-dotnet test -- --report-ctrf -report-ctrf-filename TestBucket.Formats.UnitTests.crtf.json --report-junit -report-junit-filename TestBucket.Formats.UnitTests.junit.xml --report-xunit -report-xunit-filename TestBucket.Formats.UnitTests.xunit.xml  --report-nunit --report-nunit-filename TestBucket.Formats.UnitTests.nunit.xml --report-xunit-trx --report-xunit-trx-filename TestBucket.Formats.UnitTests.xunit.trx
+}
 
-#cd ../TestBucket.Domain.UnitTests
-#dotnet test  --logger "xunit;LogFileName=TestBucket.Domain.UnitTests.xunit.xml"
+# --report-ctrf -report-ctrf-filename TestBucket.Formats.UnitTests.crtf.json 
+# --report-junit -report-junit-filename TestBucket.Formats.UnitTests.junit.xml 
+# --report-xunit -report-xunit-filename TestBucket.Formats.UnitTests.xunit.xml  
+# --report-nunit --report-nunit-filename TestBucket.Formats.UnitTests.nunit.xml 
+# --report-xunit-trx --report-xunit-trx-filename TestBucket.Formats.UnitTests.xunit.trx
 
-#cd ../TestBucket.AspireTests
-#dotnet test  --logger "xunit;LogFileName=TestBucket.AspireTests.xunit.xml"
+$projects = "TestBucket.Formats.UnitTests","TestBucket.Domain.UnitTests"
 
-#dotnet test  --logger "trx;LogFileName=TestBucket.Formats.UnitTests.trx"
+foreach ($project in $projects)
+{
+	$csproj="tests/${project}/${project}.csproj"
+	dotnet test $csproj  -- --report-xunit --report-xunit-filename=results.xml
+}
 
-#dotnet test  --logger "nunit;LogFileName=TestBucket.Formats.UnitTests.nunit.xml"
+if ( $env:TB_TOKEN -ne $null) 
+{
+	foreach ($project in $projects)
+	{
+		Upload-Xunit-Result-File $project
+	}
 
-cd ../..
+	#Upload-Xunit-Result-File tests/TestBucket.Domain.UnitTests/TestResults/results.xml
+	#Upload-Xunit-Result-File tests/TestBucket.Formats.UnitTests/TestResults/results.xml
+}
+else
+{
+	echo "TB_TOKEN was not set. Will not upload results"
+}

@@ -33,6 +33,9 @@ jobs:
       run: dotnet test --no-build --verbosity normal tests/TestBucket.Formats.UnitTests.csproj
 
   unittests:
+
+    runs-on: self-hosted
+
     if: $TEST_SUITE == 'UnitTests'
     steps:
      - name: Upload

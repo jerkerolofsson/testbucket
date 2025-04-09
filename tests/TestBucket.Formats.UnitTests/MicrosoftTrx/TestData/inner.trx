@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d5b3083c-dff7-436b-8a75-4c24d135d53e" name="amauryleve@MYMACHINE 2022-12-01 13:25:00" runUser="EUROPE\amauryleve" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2022-12-01T13:25:00.3069508+01:00" queuing="2022-12-01T13:25:00.3069508+01:00" start="2022-12-01T13:24:59.4346647+01:00" finish="2022-12-01T13:25:00.3264633+01:00" />
+  <TestSettings name="default" id="deacd315-2d8a-48a3-a4c7-64ddb0f5e289">
+    <Deployment runDeploymentRoot="amauryleve_MYMACHINE_2022-12-01_13_25_00" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9c0d57a8-d2f0-41f3-8f1c-e2078e111123" testId="66a8a2e1-7e13-50b5-f377-6682faafeca4" testName="NormalTestExample" computerName="MYMACHINE" duration="00:00:00.0039350" startTime="2022-12-01T13:25:00.0375473+01:00" endTime="2022-12-01T13:25:00.2111216+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9c0d57a8-d2f0-41f3-8f1c-e2078e111123" />
+    <UnitTestResult executionId="958fdfed-bceb-4bdc-88ba-5c1176640b65" testId="62fe2f89-a518-d72c-f0ed-b325c2641eba" testName="DataTestMethodExample" computerName="MYMACHINE" duration="00:00:00.0251261" startTime="2022-12-01T13:25:00.2171551+01:00" endTime="2022-12-01T13:25:00.2464614+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="958fdfed-bceb-4bdc-88ba-5c1176640b65" resultType="DataDrivenTest">
+      <InnerResults>
+        <UnitTestResult executionId="72d27423-5bbd-4752-99ad-a7382c03f091" parentExecutionId="958fdfed-bceb-4bdc-88ba-5c1176640b65" testId="62fe2f89-a518-d72c-f0ed-b325c2641eba" testName="DataTestMethodExample (1)" computerName="MYMACHINE" duration="00:00:00.0000486" startTime="2022-12-01T13:25:00.2171551+01:00" endTime="2022-12-01T13:25:00.2464614+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="72d27423-5bbd-4752-99ad-a7382c03f091" dataRowInfo="1" resultType="DataDrivenDataRow" />
+        <UnitTestResult executionId="e98daa0f-37e0-4780-927e-87535008412e" parentExecutionId="958fdfed-bceb-4bdc-88ba-5c1176640b65" testId="62fe2f89-a518-d72c-f0ed-b325c2641eba" testName="DataTestMethodExample (2)" computerName="MYMACHINE" duration="00:00:00.0000059" startTime="2022-12-01T13:25:00.2171551+01:00" endTime="2022-12-01T13:25:00.2464614+01:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e98daa0f-37e0-4780-927e-87535008412e" dataRowInfo="2" resultType="DataDrivenDataRow" />
+      </InnerResults>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="NormalTestExample" storage="c:\src\temp\trxtestidissue\trxtestidissue\bin\debug\net48\trxtesting.dll" id="66a8a2e1-7e13-50b5-f377-6682faafeca4">
+      <Execution id="9c0d57a8-d2f0-41f3-8f1c-e2078e111123" />
+      <TestMethod codeBase="C:\src\temp\TrxTestIdIssue\TrxTestIdIssue\bin\Debug\net48\TrxTesting.dll" adapterTypeName="executor://mstestadapter/v2" className="TrxTesting.UnitTest1" name="NormalTestExample" />
+    </UnitTest>
+    <UnitTest name="DataTestMethodExample" storage="c:\src\temp\trxtestidissue\trxtestidissue\bin\debug\net48\trxtesting.dll" id="62fe2f89-a518-d72c-f0ed-b325c2641eba">
+      <Execution id="958fdfed-bceb-4bdc-88ba-5c1176640b65" />
+      <TestMethod codeBase="C:\src\temp\TrxTestIdIssue\TrxTestIdIssue\bin\Debug\net48\TrxTesting.dll" adapterTypeName="executor://mstestadapter/v2" className="TrxTesting.UnitTest1" name="DataTestMethodExample" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="66a8a2e1-7e13-50b5-f377-6682faafeca4" executionId="9c0d57a8-d2f0-41f3-8f1c-e2078e111123" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="62fe2f89-a518-d72c-f0ed-b325c2641eba" executionId="958fdfed-bceb-4bdc-88ba-5c1176640b65" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="4" executed="4" passed="4" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+  </ResultSummary>
+</TestRun>

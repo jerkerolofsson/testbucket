@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 using TestBucket.Formats.Ctrf.Models;
+using TestBucket.Formats.Shared;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Formats.Ctrf
@@ -112,21 +113,7 @@ namespace TestBucket.Formats.Ctrf
 
             return ctrfTest;
         }
-        private static TraitType GetTestTraitType(string name)
-        {
-            // Well known traits
-            if (TraitTypeConverter.TryConvert(name, out var traitType))
-            {
-                return traitType.Value;
-            }
-
-            if (Enum.TryParse(typeof(TraitType), name, true, out object? enumType))
-            {
-                return (TraitType)enumType;
-            }
-            return TraitType.Custom;
-        }
-
+      
         protected override void ParseTestExtra(CtrfTest<XunitTestsExtra> test, TestCaseRunDto testDto)
         {
             if(test.Extra is not null)
@@ -139,7 +126,7 @@ namespace TestBucket.Formats.Ctrf
                         var values = trait.Value;
                         foreach(var value in values)
                         {
-                            var traitType = GetTestTraitType(name);
+                            var traitType = TestTraitHelper.GetTestTraitType(name);
                             testDto.Traits.Add(new TestTrait(traitType, name, value.ToString()));
                         }
                     }
@@ -148,7 +135,7 @@ namespace TestBucket.Formats.Ctrf
                 {
                     foreach (var attachmentTrait in test.Extra.Attachments.Traits)
                     {
-                        var traitType = GetTestTraitType(attachmentTrait.Name);
+                        var traitType = TestTraitHelper.GetTestTraitType(attachmentTrait.Name);
                         testDto.Traits.Add(new TestTrait(traitType, attachmentTrait.Name, attachmentTrait.Value));
                     }
                     foreach (var attachment in test.Extra.Attachments.Attachments)

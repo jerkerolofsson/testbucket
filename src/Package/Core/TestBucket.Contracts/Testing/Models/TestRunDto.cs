@@ -56,6 +56,22 @@ namespace TestBucket.Formats.Dtos
         public int Asserted => Count(TestResult.Assert);
 
         /// <summary>
+        /// Total number of executed tests
+        /// </summary>
+        [JsonIgnore]
+        public int Executed
+        {
+            get
+            {
+                if (Suites is not null)
+                {
+                    return Suites.Sum(x => x.Executed);
+                }
+                return 0;
+            }
+        }
+
+        /// <summary>
         /// Total number of tests, in all suites
         /// </summary>
         [JsonIgnore]

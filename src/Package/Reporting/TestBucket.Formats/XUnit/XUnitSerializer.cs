@@ -1,4 +1,7 @@
-﻿using TestBucket.Traits.Core;
+﻿using System;
+
+using TestBucket.Formats.Shared;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Formats.XUnit
 {
@@ -77,6 +80,7 @@ namespace TestBucket.Formats.XUnit
                         {
                             var testCaseRun = new TestCaseRunDto();
                             ReadTraits(testCaseRun, resultNode);
+                            ReadAttachments(testCaseRun, resultNode);
 
                             CopyTestTraitsToParent(testRun, testSuite, testCaseRun);
 
@@ -98,13 +102,7 @@ namespace TestBucket.Formats.XUnit
                             var resultString = resultNode.Attribute("result")?.Value;
                             if (resultString is not null)
                             {
-                                testCaseRun.Result = resultString switch
-                                {
-                                    "Pass" => TestResult.Passed,
-                                    "Fail" => TestResult.Failed,
-                                    "Skip" => TestResult.Skipped,
-                                    _ => TestResult.Skipped,
-                                };
+                                testCaseRun.Result = XUnitResultMapper.Map(resultString);
                             }
 
                             var failure = resultNode.Element("failure");
@@ -162,6 +160,7 @@ namespace TestBucket.Formats.XUnit
             var doc = new XDocument();
             var assemblies = new XElement("assemblies");
             WriteTraits(testRun, assemblies);
+            WriteAttachments(testRun, assemblies, []);
             doc.Add(assemblies);
 
             if (testRun.CreatedTime is not null)
@@ -192,6 +191,7 @@ namespace TestBucket.Formats.XUnit
                 var collection = new XElement("collection");
                 assembly.Add(collection);
                 WriteTraits(testSuite, collection);
+                WriteAttachments(testSuite, collection, []);
                 collection.Add(new XAttribute("total", testSuite.Total.ToString()));
                 collection.Add(new XAttribute("passed", testSuite.Passed.ToString()));
                 collection.Add(new XAttribute("failed", testSuite.Failed.ToString()));
@@ -208,6 +208,7 @@ namespace TestBucket.Formats.XUnit
                 {
                     var testElement = new XElement("test");
                     WriteTraits(test, testElement);
+                    WriteAttachments(test, testElement, test.Attachments);
                     collection.Add(testElement);
 
                     if (test.Name is not null)
@@ -239,14 +240,7 @@ namespace TestBucket.Formats.XUnit
                         testElement.Add(outputElement);
                     }
 
-                    var resultName = test.Result switch
-                    {
-                        TestResult.Passed => "Pass",
-                        TestResult.Failed => "Fail",
-                        TestResult.Skipped => "Skip",
-                        _ => "Fail"
-                    };
-                    testElement.Add(new XAttribute("result", resultName));
+                    testElement.Add(new XAttribute("result", XUnitResultMapper.Map(test.Result)));
 
                     if (test.Result != TestResult.Passed &&
                         test.Result != TestResult.NoRun &&
@@ -285,66 +279,116 @@ namespace TestBucket.Formats.XUnit
                     var value = propertyNode.Attribute("value")?.Value;
                     if (name is not null && value is not null)
                     {
-                        var attributeType = GetTestTraitType(name);
+                        var attributeType = TestTraitHelper.GetTestTraitType(name);
                         if (attributeType == TraitType.Custom)
                         {
-                            attributes.Traits.Add(new TestTrait(attributeType, name, value));
+                            attributes.Traits.Add(new TestTrait(attributeType, name, value) { ExportType = TraitExportType.Static });
                         }
                         else
                         {
-                            attributes.Traits.Add(new TestTrait(attributeType, value));
+                            attributes.Traits.Add(new TestTrait(attributeType, value) { ExportType = TraitExportType.Static });
                         }
                     }
                 }
             }
         }
 
-
-        private static void WriteTraits(TestTraitCollection attributeCollection, XElement element)
+        private static void ReadAttachments(TestCaseRunDto test, XElement node)
         {
-            var traits = new XElement("traits");
-            element.Add(traits);
-
-            foreach (var attribute in attributeCollection.Traits)
+            foreach (var traits in node.Elements("attachments"))
             {
-                if (!_nativeAttributes.Contains(attribute.Type))
+                foreach (var propertyNode in traits.Elements("attachment"))
                 {
-                    var property = new XElement("trait",
-                        new XAttribute("name", GetTraitName(attribute)),
-                        new XAttribute("value", attribute.Value));
-                    traits.Add(property);
+                    var value = propertyNode.Value;
+                    var name = propertyNode.Attribute("name")?.Value;
+                    var mediaType = propertyNode.Attribute("media-type")?.Value;
+                    if (name is not null)
+                    {
+                        if (mediaType is not null)
+                        {
+                            try
+                            {
+                                var bytes = Convert.FromBase64String(value);
+                                test.Attachments.Add(new AttachmentDto
+                                {
+                                    Name = name,
+                                    ContentType = mediaType,
+                                    Data = bytes.ToArray()
+                                });
+                            }
+                            catch { }
+                        }
+                        else
+                        {
+                            var attributeType = TestTraitHelper.GetTestTraitType(name);
+                            if (attributeType == TraitType.Custom)
+                            {
+                                test.Traits.Add(new TestTrait(attributeType, name, value) { ExportType = TraitExportType.Instance });
+                            }
+                            else
+                            {
+                                test.Traits.Add(new TestTrait(attributeType, value) { ExportType = TraitExportType.Instance });
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        private static TraitType GetTestTraitType(string name)
+        private static void WriteTraits(TestTraitCollection attributeCollection, XElement element)
         {
-            // Well known traits
-            if(TraitTypeConverter.TryConvert(name, out var traitType))
-            {
-                return traitType.Value;
-            }
+            var traits = attributeCollection.Traits.Where(x => x.ExportType == TraitExportType.Static && !_nativeAttributes.Contains(x.Type)).ToArray();
+            var attachments = attributeCollection.Traits.Where(x => x.ExportType == TraitExportType.Instance && !_nativeAttributes.Contains(x.Type)).ToArray();
 
-            if (Enum.TryParse(typeof(TraitType), name, true, out object? enumType))
+            if (traits.Length > 0)
             {
-                return (TraitType)enumType;
+                var traitsElement = new XElement("traits");
+                element.Add(traitsElement);
+
+                foreach (var attribute in traits)
+                {
+                    AddTrait(traitsElement, attribute);
+                }
             }
-            return TraitType.Custom;
         }
 
-        private static string GetTraitName(TestTrait attribute)
-        {
-            // Well known traits
-            if (TraitTypeConverter.TryConvert(attribute.Type, out var name))
-            {
-                return name;
-            }
 
-            if (attribute.Name is not null)
+        private static void WriteAttachments(TestTraitCollection attributeCollection, XElement element, IReadOnlyCollection<AttachmentDto> fileAttachments)
+        {
+            var traits = attributeCollection.Traits.Where(x => x.ExportType == TraitExportType.Instance && !_nativeAttributes.Contains(x.Type)).ToArray();
+
+            if (traits.Length > 0 || fileAttachments.Count > 0)
             {
-                return attribute.Name;
+                var attachmentsElement = new XElement("attachments");
+                element.Add(attachmentsElement);
+
+                foreach (var attribute in traits)
+                {
+                    var attachmentElement = new XElement("attachment", new XAttribute("name", TestTraitHelper.GetTraitName(attribute)), new XCData(attribute.Value));
+                    attachmentsElement.Add(attachmentElement);
+                }
+
+                // Files are attachmetns with a media-type, encoded as base64
+                foreach(var attachment in fileAttachments)
+                {
+                    var data = Convert.ToBase64String(attachment.Data ?? []);
+                    var mediaType = attachment.ContentType ?? "application/octet-stream";
+                    var attachmentElement = new XElement("attachment", 
+                        new XAttribute("name", attachment.Name ?? "attachment"), 
+                        new XAttribute("media-type", mediaType), 
+                        new XText(data));
+                    attachmentsElement.Add(attachmentElement);
+                }
             }
-            return attribute.Type.ToString();
+        }
+
+
+        private static void AddTrait(XElement traitsElement, TestTrait attribute)
+        {
+            var traitElement = new XElement("trait",
+                new XAttribute("name", TestTraitHelper.GetTraitName(attribute)),
+                new XAttribute("value", attribute.Value));
+            traitsElement.Add(traitElement);
         }
     }
 }

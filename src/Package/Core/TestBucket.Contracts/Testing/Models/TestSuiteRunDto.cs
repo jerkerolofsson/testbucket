@@ -38,6 +38,24 @@
         public int Blocked => Count(TestResult.Blocked);
         public int Asserted => Count(TestResult.Assert);
 
+        /// <summary>
+        /// Total number executed of tests
+        /// </summary>
+        public int Executed
+        {
+            get
+            {
+                if (Tests is not null)
+                {
+                    return Tests.Count(x => x.Result is TestResult.Passed or TestResult.Failed or TestResult.Blocked or 
+                    TestResult.Crashed or TestResult.Hang or TestResult.Inconclusive or TestResult.Assert or TestResult.Other);
+                }
+                return 0;
+            }
+        }
+        /// <summary>
+        /// Total number of tests
+        /// </summary>
         public int Total
         {
             get

@@ -39,24 +39,7 @@ namespace TestBucket.Formats.Builders
         /// <returns></returns>
         public string Build(TestResultFormat format)
         {
-            ITestResultSerializer? serializer = null;
-            switch (format)
-            {
-                case TestResultFormat.CommonTestReportFormat:
-                    serializer = new Ctrf.CtrfXunitSerializer();
-                    break;
-                case TestResultFormat.xUnitXml:
-                    serializer = new XUnit.XUnitSerializer();
-                    break;
-                //case TestResultFormat.MicrosoftTrx:
-                //    break;
-                case TestResultFormat.JUnitXml:
-                    serializer = new JUnit.JUnitSerializer();
-                    break;
-                default:
-                    throw new NotSupportedException($"The format '{format}' is not supported");
-            }
-            
+            ITestResultSerializer serializer = TestResultSerializerFactory.Create(format);
             return serializer.Serialize(_testRunDto);
         }
 

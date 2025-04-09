@@ -40,6 +40,18 @@ namespace TestBucket.Formats.Dtos
             }
         }
 
+
+        /// <summary>
+        /// Name associated with an executed test, this may be different than the test case name
+        /// </summary>
+        [JsonIgnore]
+        public string? InstanceName
+        {
+            get => GetAttribute(TraitType.InstanceName);
+            set => SetAttribute(TraitType.InstanceName, value);
+        }
+
+
         /// <summary>
         /// Execution duration
         /// </summary>

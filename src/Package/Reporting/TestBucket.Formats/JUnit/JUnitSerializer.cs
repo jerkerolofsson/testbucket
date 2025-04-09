@@ -222,7 +222,7 @@ namespace TestBucket.Formats.JUnit
 
             WriteProperties(testRun, testSuitesElement);
 
-            // Standard attrfibutes
+            // Standard attributes
             testSuitesElement.Add(new XAttribute("tests", testRun.Total.ToString()));
             testSuitesElement.Add(new XAttribute("passed", testRun.Passed.ToString()));
             testSuitesElement.Add(new XAttribute("failures", testRun.Failed.ToString()));
@@ -403,7 +403,7 @@ namespace TestBucket.Formats.JUnit
                 {
                     name = name[traitPrefix.Length..];
                 }
-                var attributeType = GetTestTraitType(name);
+                var attributeType = TestTraitHelper.GetTestTraitType(name);
                 if (attributeType == TraitType.Custom)
                 {
                     attributes.Traits.Add(new TestTrait(attributeType, name, value));
@@ -479,21 +479,6 @@ namespace TestBucket.Formats.JUnit
                     properties.Add(property);
                 }
             }
-        }
-
-        private static TraitType GetTestTraitType(string name)
-        {
-            // Well known traits
-            if (TraitTypeConverter.TryConvert(name, out var traitType))
-            {
-                return traitType.Value;
-            }
-
-            if (Enum.TryParse(typeof(TraitType), name, true, out object? enumType))
-            {
-                return (TraitType)enumType;
-            }
-            return TraitType.Custom;
         }
 
         private static string GetTraitName(TestTrait attribute)

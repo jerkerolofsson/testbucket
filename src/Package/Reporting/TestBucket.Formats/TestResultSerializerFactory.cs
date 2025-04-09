@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using TestBucket.Formats.Ctrf;
 using TestBucket.Formats.JUnit;
+using TestBucket.Formats.MicrosoftTrx;
 using TestBucket.Formats.XUnit;
 
 namespace TestBucket.Formats
@@ -59,6 +60,7 @@ namespace TestBucket.Formats
         {
             return format switch
             {
+                TestResultFormat.MicrosoftTrx => new TrxSerializer(),
                 TestResultFormat.JUnitXml => new JUnitSerializer(),
                 TestResultFormat.xUnitXml => new XUnitSerializer(),
                 TestResultFormat.CommonTestReportFormat => new CtrfXunitSerializer(),

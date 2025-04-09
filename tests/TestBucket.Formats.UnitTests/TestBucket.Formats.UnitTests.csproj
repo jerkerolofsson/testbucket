@@ -16,6 +16,7 @@
     <None Remove="JUnit\TestData\created-by-xunit-v3-image-attachment.xml" />
     <None Remove="JUnit\TestData\junit-basic.xml" />
     <None Remove="JUnit\TestData\junit-properties.xml" />
+    <None Remove="XUnit\TestData\xunit-attachment.xml" />
     <None Remove="XUnit\TestData\xunit-testid.xml" />
   </ItemGroup>
 
@@ -31,8 +32,15 @@
     <EmbeddedResource Include="JUnit\TestData\created-by-xunit-v3.xml" />
     <EmbeddedResource Include="JUnit\TestData\junit-basic.xml" />
     <EmbeddedResource Include="JUnit\TestData\junit-properties.xml" />
-    <EmbeddedResource Include="XUnit\TestData\xunit-properties.xml" />
-    <EmbeddedResource Include="XUnit\TestData\xunit-testid.xml" />
+    <EmbeddedResource Include="XUnit\TestData\xunit-attachment.xml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XUnit\TestData\xunit-properties.xml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XUnit\TestData\xunit-testid.xml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

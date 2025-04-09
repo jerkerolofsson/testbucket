@@ -18,6 +18,9 @@ namespace TestBucket.Formats.Dtos
 
         /// <summary>
         /// ID attribute
+        /// 
+        /// For TestCaseRun this is the ID of a test case
+        /// 
         /// </summary>
         [JsonIgnore]
         public string? ExternalId
@@ -27,7 +30,17 @@ namespace TestBucket.Formats.Dtos
         }
 
         /// <summary>
-        /// Name attribute
+        /// ID of a specific run
+        /// </summary>
+        [JsonIgnore]
+        public string? InstanceId
+        {
+            get => GetAttribute(TraitType.InstanceId);
+            set => SetAttribute(TraitType.InstanceId, value);
+        }
+
+        /// <summary>
+        /// Name attribute (test case name, test suite name, test run name etc)
         /// </summary>
         [JsonIgnore]
         public string? Name
@@ -35,6 +48,17 @@ namespace TestBucket.Formats.Dtos
             get => GetAttribute(TraitType.Name);
             set => SetAttribute(TraitType.Name, value);
         }
+
+        /// <summary>
+        /// Username of the user running the test
+        /// </summary>
+        [JsonIgnore]
+        public string? InstanceUserName
+        {
+            get => GetAttribute(TraitType.InstanceUserName);
+            set => SetAttribute(TraitType.InstanceUserName, value);
+        }
+
         /// <summary>
         /// Assembly attribute
         /// </summary>
@@ -195,6 +219,16 @@ namespace TestBucket.Formats.Dtos
         {
             get => GetAttribute(TraitType.Project);
             set => SetAttribute(TraitType.Project, value);
+        }
+
+        /// <summary>
+        /// Computer name
+        /// </summary>
+        [JsonIgnore]
+        public string? Computer
+        {
+            get => GetAttribute(TraitType.Computer);
+            set => SetAttribute(TraitType.Computer, value);
         }
 
         /// <summary>

@@ -168,4 +168,28 @@ public enum TraitType
     QualityCharacteristic = 36,
     Area = 37,
     Component = 38,
+
+    /// <summary>
+    /// User running the tests
+    /// </summary>
+    InstanceUserName = 39,
+
+    /// <summary>
+    /// Specific name only for a run. 
+    /// 
+    /// This may be used in some reporting formats where the test name is the same, but data driven arguments are added to the run name
+    /// </summary>
+    InstanceName = 40,
+
+    /// <summary>
+    /// ID for a specific run / instance
+    /// </summary>
+    InstanceId = 41,
+
+    /// <summary>
+    /// Computer name
+    /// </summary>
+    Computer = 42,
+
+
 }

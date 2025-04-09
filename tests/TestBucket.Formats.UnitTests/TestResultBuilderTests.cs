@@ -9,6 +9,7 @@ namespace TestBucket.Formats.UnitTests
     public class TestResultBuilderTests
     {
         [Theory]
+        [InlineData(TestResultFormat.MicrosoftTrx)]
         [InlineData(TestResultFormat.JUnitXml)]
         [InlineData(TestResultFormat.xUnitXml)]
         [InlineData(TestResultFormat.CommonTestReportFormat)]
@@ -36,6 +37,7 @@ namespace TestBucket.Formats.UnitTests
         }
 
         [Theory]
+        [InlineData(TestResultFormat.MicrosoftTrx)]
         [InlineData(TestResultFormat.JUnitXml)]
         [InlineData(TestResultFormat.CommonTestReportFormat)]
         [Component("TestBucket.Formats")]
@@ -64,6 +66,8 @@ namespace TestBucket.Formats.UnitTests
         }
 
         [Theory]
+        [InlineData(TestResultFormat.MicrosoftTrx, TraitType.TestCategory)]
+        [InlineData(TestResultFormat.MicrosoftTrx, TraitType.TestPriority)]
         [InlineData(TestResultFormat.JUnitXml, TraitType.TestCategory)]
         [InlineData(TestResultFormat.JUnitXml, TraitType.TestPriority)]
         [InlineData(TestResultFormat.CommonTestReportFormat, TraitType.TestCategory)]
@@ -94,6 +98,8 @@ namespace TestBucket.Formats.UnitTests
         }
 
         [Theory]
+        [InlineData(TestResultFormat.MicrosoftTrx)]
+        [InlineData(TestResultFormat.xUnitXml)]
         [InlineData(TestResultFormat.JUnitXml)]
         [InlineData(TestResultFormat.CommonTestReportFormat)]
         [Component("TestBucket.Formats")]
@@ -126,6 +132,8 @@ namespace TestBucket.Formats.UnitTests
 
 
         [Theory]
+        [InlineData(TestResultFormat.MicrosoftTrx)]
+        [InlineData(TestResultFormat.xUnitXml)]
         [InlineData(TestResultFormat.JUnitXml)]
         [InlineData(TestResultFormat.CommonTestReportFormat)]
         [Component("TestBucket.Formats")]

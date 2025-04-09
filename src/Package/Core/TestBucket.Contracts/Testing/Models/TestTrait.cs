@@ -4,11 +4,15 @@ namespace TestBucket.Formats.Dtos
 {
     public class TestTrait : IComparable<TestTrait>
     {
-
         /// <summary>
         /// Well-known type of trait
         /// </summary>
         public TraitType Type { get; set; }
+
+        /// <summary>
+        /// Defines how the property is serialized in the output file
+        /// </summary>
+        public TraitExportType ExportType { get; set; } = TraitExportType.Static;
 
         /// <summary>
         /// Value

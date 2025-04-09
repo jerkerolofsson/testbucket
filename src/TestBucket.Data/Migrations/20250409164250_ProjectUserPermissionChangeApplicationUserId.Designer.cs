@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Contracts.Testing.Models;
@@ -14,9 +15,11 @@ using TestBucket.Domain.Keyboard;
 namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250409164250_ProjectUserPermissionChangeApplicationUserId")]
+    partial class ProjectUserPermissionChangeApplicationUserId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,9 +181,6 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
-                    b.Property<TimeSpan?>("Duration")
-                        .HasColumnType("interval");
-
                     b.Property<DateTimeOffset>("Modified")
                         .HasColumnType("timestamp with time zone");
 
@@ -204,9 +204,6 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<long?>("TestRunId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("WebUrl")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

@@ -267,14 +267,37 @@
   <data name="test-resources" xml:space="preserve">
     <value>Testresurser</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="manufacturer" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="model" xml:space="preserve">
     <value>Modell</value>
   </data>
-  <data name="modified" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="roles" xml:space="preserve">
+    <value>Roller</value>
+  </data>
+  <data name="field" xml:space="preserve">
+    <value>Fält</value>
+  </data>
+  <data name="fields" xml:space="preserve">
+    <value>Fält</value>
+  </data>
+  <data name="requirements" xml:space="preserve">
+    <value>Krav</value>
+  </data>
+  <data name="add-to-run" xml:space="preserve">
+    <value>Lägg till körning</value>
+  </data>
+  <data name="run" xml:space="preserve">
+    <value>Körning</value>
+  </data>
+  <data name="duration" xml:space="preserve">
+    <value>Varaktighet</value>
+  </data>
+  <data name="ci-cd-system" xml:space="preserve">
+    <value>CI/CD system</value>
+  </data>
+  <data name="modified" xml:space="preserve">
+    <value>Ändrad</value>
+  </data>
+  <data name="manufacturer" xml:space="preserve">
+    <value>Tillverkare</value>
   </data>
 </root>

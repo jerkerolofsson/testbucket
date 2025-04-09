@@ -269,14 +269,8 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="test-resources" xml:space="preserve">
     <value>Test Resources</value>
   </data>
-  <data name="manufacturer" xml:space="preserve">
-    <value>Manufacturer</value>
-  </data>
   <data name="model" xml:space="preserve">
     <value>Model</value>
-  </data>
-  <data name="modified" xml:space="preserve">
-    <value>Modified</value>
   </data>
   <data name="roles" xml:space="preserve">
     <value>Roles</value>
@@ -295,5 +289,17 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="run" xml:space="preserve">
     <value>Run</value>
+  </data>
+  <data name="duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="ci-cd-system" xml:space="preserve">
+    <value>CI/CD System</value>
+  </data>
+  <data name="modified" xml:space="preserve">
+    <value>Modified</value>
+  </data>
+  <data name="manufacturer" xml:space="preserve">
+    <value>Manufacturer</value>
   </data>
 </root>

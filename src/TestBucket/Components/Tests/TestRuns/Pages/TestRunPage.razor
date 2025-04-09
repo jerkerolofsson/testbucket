@@ -4,7 +4,14 @@
 @layout TestingLayout
 @inject TestBrowser testBrowser
 
-<TestRunMainView TestRun="@_testRun"/>
+@if(_testRun is not null)
+{
+    <TestRunMainView TestRun="@_testRun"/>
+}
+else
+{
+    <MudProgressLinear Indeterminate Color="Color.Tertiary" />
+}
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";

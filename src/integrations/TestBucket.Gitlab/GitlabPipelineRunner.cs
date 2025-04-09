@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +19,31 @@ namespace TestBucket.Gitlab
 {
     public class GitlabPipelineRunner : IExternalPipelineRunner
     {
+        private readonly HttpClient _httpClient;
+
+        public GitlabPipelineRunner(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
         public string SystemName => "GitLab";
+
+        public async Task<string> ReadTraceAsync(ExternalSystemDto system, string jobId, CancellationToken cancellationToken)
+        {
+            if (system is not null &&
+               system.ExternalProjectId is not null &&
+               system.BaseUrl is not null &&
+               system.AccessToken is not null &&
+               long.TryParse(system.ExternalProjectId, out long projectId) &&
+               long.TryParse(jobId, out long id))
+            {
+                var client = new GitLabClient(system.BaseUrl, system.AccessToken);
+                var jobsClient = client.GetJobs(projectId);
+
+                return await jobsClient.GetTraceAsync(id, cancellationToken);
+            }
+            throw new ArgumentException("ReadTraceAsync requires a valid project id and job id");
+        }
 
         public async Task<PipelineDto?> GetPipelineAsync(ExternalSystemDto system, string pipelineId, CancellationToken cancellationToken)
         {
@@ -38,11 +63,22 @@ namespace TestBucket.Gitlab
                 {
                     duration = TimeSpan.FromSeconds(pipeline.Duration.Value);
                 }
+
+                var jobsResponse = pipelineClient.GetJobsAsync(new PipelineJobQuery { PipelineId = id });
+                List<Job> jobs = [];
+                await foreach (var job in jobsResponse)
+                {
+                    jobs.Add(job);
+                }
+
+                //var jobs = pipelineClient.GetJobs(id);
+
                 return new PipelineDto
                 {
                     WebUrl = pipeline.WebUrl,
                     Error = pipeline.YamlError,
                     Duration = duration,
+                    Jobs = MapJobs(jobs),
                     Status = pipeline.Status switch
                     {
                         JobStatus.Running => PipelineStatus.Running,
@@ -63,6 +99,59 @@ namespace TestBucket.Gitlab
                 };
             }
             return null;
+        }
+
+        private List<PipelineJobDto> MapJobs(IEnumerable<Job> jobs)
+        {
+            var dtos = new List<PipelineJobDto>();
+
+            foreach(var job in jobs)
+            {
+                var dto = new PipelineJobDto
+                {
+                    CiCdJobIdentifier = job.Id.ToString(),
+                    AllowFailure = job.AllowFailure,
+                    Name = job.Name,
+                    Coverage = job.Coverage,
+                    CreatedAt = job.CreatedAt.ToUniversalTime(),
+                    FinishedAt = job.FinishedAt.ToUniversalTime(),
+                    Stage = job.Stage,
+                    FailureReason = job.FailureReason,
+                    StartedAt = job.StartedAt.ToUniversalTime(),
+                    TagList = job.TagList,
+                    WebUrl = job.WebUrl,
+                };
+
+                if (job.Duration is not null)
+                {
+                    dto.Duration = TimeSpan.FromSeconds(job.Duration.Value);
+                }
+                if (job.QueuedDuration is not null)
+                {
+                    dto.QueuedDuration = TimeSpan.FromSeconds(job.QueuedDuration.Value);
+                }
+
+                dto.Status = job.Status switch
+                {
+                    JobStatus.Running => PipelineJobStatus.Running,
+                    JobStatus.Canceled => PipelineJobStatus.Canceled,
+                    JobStatus.Pending => PipelineJobStatus.Pending,
+                    JobStatus.Canceling => PipelineJobStatus.Canceling,
+                    JobStatus.Preparing => PipelineJobStatus.Preparing,
+                    JobStatus.Created => PipelineJobStatus.Created,
+                    JobStatus.Failed => PipelineJobStatus.Failed,
+                    JobStatus.NoBuild => PipelineJobStatus.NoBuild,
+                    JobStatus.Success => PipelineJobStatus.Success,
+                    JobStatus.Skipped => PipelineJobStatus.Skipped,
+                    JobStatus.WaitingForResource => PipelineJobStatus.WaitingForResource,
+                    JobStatus.Scheduled => PipelineJobStatus.Scheduled,
+                    JobStatus.Manual => PipelineJobStatus.Manual,
+                    _ => PipelineJobStatus.Unknown,
+                };
+                dtos.Add(dto);
+            }
+
+            return dtos;
         }
 
         public async Task CreateAsync(ExternalSystemDto system, TestExecutionContext context, CancellationToken cancellationToken)

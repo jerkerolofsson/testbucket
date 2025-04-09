@@ -15,7 +15,6 @@ namespace TestBucket.Domain.Identity.Permissions
     public class ProjectUserPermission : ProjectEntity
     {
         public long Id { get; set; }
-        public long ApplicationUserId { get; set; }
 
         /// <summary>
         /// The type of entity
@@ -27,6 +26,8 @@ namespace TestBucket.Domain.Identity.Permissions
         /// </summary>
         public PermissionLevel Level { get; set; }
 
+        // Navigation
+        public required string ApplicationUserId { get; set; }
         public ApplicationUser? ApplicationUser { get; set; }
     }
 }

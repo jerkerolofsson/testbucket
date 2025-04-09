@@ -31,7 +31,7 @@ namespace TestBucket.Data.Identity
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<ProjectUserPermission[]> GetProjectUserPermissionsAsync(string tenantId, long userId, long projectId)
+        public async Task<ProjectUserPermission[]> GetProjectUserPermissionsAsync(string tenantId, string userId, long projectId)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             return await dbContext.ProjectUserPermissions.AsNoTracking().Where(x => x.TestProjectId == projectId && x.TenantId == tenantId && x.ApplicationUserId == userId).ToArrayAsync();

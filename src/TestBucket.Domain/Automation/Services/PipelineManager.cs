@@ -17,6 +17,7 @@ using TestBucket.Domain.Automation.Models;
 using TestBucket.Domain.Automation.Specifications.Pipelines;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing;
 
 namespace TestBucket.Domain.Automation.Services;
 internal class PipelineManager : IPipelineManager
@@ -26,6 +27,8 @@ internal class PipelineManager : IPipelineManager
     private readonly IProjectRepository _projectRepository;
     private readonly List<IExternalPipelineRunner> _pipelineRunners;
     private readonly IMemoryCache _memoryCache;
+
+    private readonly List<IPipelineObserver> _observers = [];
 
     public PipelineManager(
         ILogger<PipelineManager> logger,
@@ -40,6 +43,21 @@ internal class PipelineManager : IPipelineManager
         _projectRepository = projectRepository;
         _memoryCache = memoryCache;
     }
+
+
+    #region Observers
+    /// <summary>
+    /// Adds an observer
+    /// </summary>
+    /// <param name="listener"></param>
+    public void AddObserver(IPipelineObserver observer) => _observers.Add(observer);
+
+    /// <summary>
+    /// Removes an observer
+    /// </summary>
+    /// <param name="observer"></param>
+    public void RemoveObserver(IPipelineObserver observer) => _observers.Remove(observer);
+    #endregion Observers
 
     public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(ClaimsPrincipal principal, long testProjectId)
     {
@@ -99,6 +117,8 @@ internal class PipelineManager : IPipelineManager
                 if (changed)
                 {
                     await _repository.UpdateAsync(pipeline);
+
+                    await OnPipelineUpdatedAsync(pipeline);
                 }
             }
 
@@ -107,6 +127,55 @@ internal class PipelineManager : IPipelineManager
         return null;
     }
 
+    private async Task OnPipelineUpdatedAsync(Pipeline pipeline)
+    {
+        foreach(var observer in _observers)
+        {
+            try
+            {
+                await observer.OnPipelineUpdatedAsync(pipeline);
+            }
+            catch { } // External code may throw, ignore it
+        }
+    }
+
+    /// <summary>
+    /// Returns the job log
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="pipeline"></param>
+    /// <param name="pipelineJobIdentifier"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<string?> ReadTraceAsync(ClaimsPrincipal principal, Pipeline pipeline, string pipelineJobIdentifier, CancellationToken cancellationToken)
+    {
+        if (pipeline.CiCdPipelineIdentifier is null || pipeline.TestProjectId is null)
+        {
+            return null;
+        }
+
+        ExternalSystemDto[] configs = await GetIntegrationConfigsAsync(principal, pipeline.TestProjectId.Value);
+        var config = configs.Where(x => x.Name == pipeline.CiCdSystem).FirstOrDefault();
+        if (config is null)
+        {
+            return null;
+        }
+
+        var runner = GetRunner(pipeline.CiCdSystem);
+        if (runner is not null)
+        {
+            return await runner.ReadTraceAsync(config, pipelineJobIdentifier, cancellationToken);
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Adds a new pipeline in the repository and begins to monitor the state
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="pipeline"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
     public async Task AddAsync(ClaimsPrincipal principal, Pipeline pipeline)
     {
         pipeline.Created = DateTimeOffset.UtcNow;
@@ -141,7 +210,13 @@ internal class PipelineManager : IPipelineManager
         return _pipelineRunners.Where(x => x.SystemName == systemName).FirstOrDefault();
     }
 
-
+    /// <summary>
+    /// Returns the latest pipeline status by calling the external runner and collecting pipeline and job status
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="pipeline"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     private async Task<PipelineDto?> GetPipelineStatusAsync(ClaimsPrincipal principal, Pipeline pipeline, CancellationToken cancellationToken)
     {
         if(pipeline.CiCdPipelineIdentifier is null || pipeline.TestProjectId is null)

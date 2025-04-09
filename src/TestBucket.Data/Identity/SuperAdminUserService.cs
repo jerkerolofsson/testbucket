@@ -45,6 +45,7 @@ internal class SuperAdminUserService : ISuperAdminUserService
         return await tenantUserStore.BrowseAsync(offset, count);
     }
 
+
     public async Task AssignRoleAsync(string tenantId, string email, string roleName)
     {
         var userManager = _serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();

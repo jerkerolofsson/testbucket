@@ -8,11 +8,13 @@ namespace TestBucket.Domain.Identity.Permissions
     {
         private readonly IPermissionsRepository _repository;
         private readonly IMemoryCache _cache;
+        private readonly IUserService _userService;
 
-        public UserPermissionsManager(IPermissionsRepository repository, IMemoryCache cache)
+        public UserPermissionsManager(IPermissionsRepository repository, IMemoryCache cache, IUserService userService)
         {
             _repository = repository;
             _cache = cache;
+            _userService = userService;
         }
 
         #region Permissions
@@ -96,11 +98,12 @@ namespace TestBucket.Domain.Identity.Permissions
         /// </summary>
         /// <param name="principal"></param>
         /// <returns></returns>
-        public async Task<ProjectUserPermission[]> GetProjectUserPermissionsAsync(ClaimsPrincipal principal, long userId, long projectId)
+        public async Task<ProjectUserPermission[]> GetProjectUserPermissionsAsync(ClaimsPrincipal principal, long projectId)
         {
             var tenantId = principal.GetTenantIdOrThrow();
-
-            return await _repository.GetProjectUserPermissionsAsync(tenantId, userId, projectId);
+            
+            var user = await _userService.FindAsync(principal, tenantId);
+            return await _repository.GetProjectUserPermissionsAsync(tenantId, user.Id, projectId);
         }
 
         public async Task UpdateProjectUserPermissionAsync(ClaimsPrincipal principal, ProjectUserPermission userPermission)

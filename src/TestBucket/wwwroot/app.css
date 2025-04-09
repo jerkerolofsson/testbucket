@@ -214,6 +214,11 @@ p.mud-typography-subtitle1 {
      grid-template-rows: auto 1fr auto;
  }
 
+ .tb-test-case-grid > :nth-child(3),
+ .tb-test-case-run-grid > :nth-child(3) {
+     overflow: hidden;
+ }
+
  article.center {
      display: flex;
      align-items: center;

@@ -19,7 +19,7 @@ namespace TestBucket.Domain.Identity.Permissions
         /// <param name="userId"></param>
         /// <param name="projectId"></param>
         /// <returns></returns>
-        Task<ProjectUserPermission[]> GetProjectUserPermissionsAsync(string tenantId, long userId, long projectId);
+        Task<ProjectUserPermission[]> GetProjectUserPermissionsAsync(string tenantId, string userId, long projectId);
         Task<RolePermission[]> GetTenantRolePermissionsAsync(string tenantId, string role);
         Task<RolePermission[]> GetTenantRolePermissionsAsync(string tenantId);
         Task UpdateProjectUserPermissionAsync(ProjectUserPermission userPermission);

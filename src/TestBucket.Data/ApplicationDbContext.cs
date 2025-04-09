@@ -16,18 +16,18 @@ namespace TestBucket.Data;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
     internal DbSet<Tenant> Tenants { get; set; }
-
     internal DbSet<RolePermission> RolePermissions { get; set; }
     internal DbSet<ProjectUserPermission> ProjectUserPermissions { get; set; }
 
+    internal DbSet<UserPreferences> UserPreferences { get; set; }
+    internal DbSet<ApplicationUserApiKey> ApiKeys { get; set; }
 
     internal DbSet<FieldDefinition> FieldDefinitions { get; set; }
     internal DbSet<TestCaseField> TestCaseFields { get; set; }
     internal DbSet<TestRunField> TestRunFields { get; set; }
     internal DbSet<TestCaseRunField> TestCaseRunFields { get; set; }
-    internal DbSet<ApplicationUserApiKey> ApiKeys { get; set; }
+
     internal DbSet<FileResource> Files { get; set; }
-    internal DbSet<UserPreferences> UserPreferences { get; set; }
     internal DbSet<Team> Teams { get; set; }
     internal DbSet<TestProject> Projects { get; set; }
 
@@ -58,7 +58,16 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<TestResource> TestResources { get; set; }
     internal DbSet<TestAccount> TestAccounts { get; set; }
 
+    /// <summary>
+    /// CI/CD pipelines
+    /// </summary>
     internal DbSet<Pipeline> Pipelines { get; set; }
+
+
+    /// <summary>
+    /// CI/CD jobs within pipelines
+    /// </summary>
+    internal DbSet<PipelineJob> PipelineJobs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

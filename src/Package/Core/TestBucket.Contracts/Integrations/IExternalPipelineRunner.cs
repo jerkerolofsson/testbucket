@@ -23,5 +23,6 @@ namespace TestBucket.Contracts.Integrations
         /// <returns></returns>
         Task CreateAsync(ExternalSystemDto system, TestExecutionContext context, CancellationToken cancellationToken);
         Task<PipelineDto?> GetPipelineAsync(ExternalSystemDto system, string pipelineId, CancellationToken cancellationToken);
+        Task<string> ReadTraceAsync(ExternalSystemDto system, string jobId, CancellationToken cancellationToken);
     }
 }

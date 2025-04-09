@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Contracts.Testing.Models;
@@ -14,9 +15,11 @@ using TestBucket.Domain.Keyboard;
 namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250409162803_PipelineJobs")]
+    partial class PipelineJobs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,9 +181,6 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
-                    b.Property<TimeSpan?>("Duration")
-                        .HasColumnType("interval");
-
                     b.Property<DateTimeOffset>("Modified")
                         .HasColumnType("timestamp with time zone");
 
@@ -204,9 +204,6 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<long?>("TestRunId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("WebUrl")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -694,8 +691,10 @@ namespace TestBucket.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
+                    b.Property<long>("ApplicationUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ApplicationUserId1")
                         .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("Created")
@@ -727,7 +726,7 @@ namespace TestBucket.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("ApplicationUserId1");
 
                     b.HasIndex("TeamId");
 
@@ -2179,9 +2178,7 @@ namespace TestBucket.Data.Migrations
                 {
                     b.HasOne("TestBucket.Domain.Identity.Models.ApplicationUser", "ApplicationUser")
                         .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId1");
 
                     b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
                         .WithMany()

@@ -13,7 +13,7 @@ public interface IUserPermissionsManager
 {
     Task AddProjectUserPermissionAsync(ClaimsPrincipal principal, ProjectUserPermission userPermission);
     Task AddTenantRolePermissionAsync(ClaimsPrincipal principal, RolePermission rolePermission);
-    Task<ProjectUserPermission[]> GetProjectUserPermissionsAsync(ClaimsPrincipal principal, long userId, long projectId);
+    Task<ProjectUserPermission[]> GetProjectUserPermissionsAsync(ClaimsPrincipal principal, long projectId);
     Task<RolePermission[]> GetTenantRolePermissionsAsync(ClaimsPrincipal principal);
     Task<RolePermission[]> GetTenantRolePermissionsForCurrentUserAsync(ClaimsPrincipal principal);
     Task UpdateProjectUserPermissionAsync(ClaimsPrincipal principal, ProjectUserPermission userPermission);

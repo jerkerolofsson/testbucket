@@ -166,6 +166,11 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Testing/TestRuns/{pipeline.TestRunId}/Pipelines/{pipeline.Id}";
     }
+    public string GetUrl(Pipeline pipeline, PipelineJob job)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Testing/TestRuns/{pipeline.TestRunId}/Pipelines/{pipeline.Id}/Jobs/{job.Id}";
+    }
     public string GetUrl(TestSuiteFolder testSuiteFolder)
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
@@ -260,6 +265,11 @@ public class AppNavigationManager
     public void NavigateTo(Pipeline pipeline, bool forceLoad = false)
     {
         var url = GetUrl(pipeline);
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
+    public void NavigateTo(Pipeline pipeline,  PipelineJob job, bool forceLoad = false)
+    {
+        var url = GetUrl(pipeline, job);
         _navigationManager.NavigateTo(url, forceLoad);
     }
 

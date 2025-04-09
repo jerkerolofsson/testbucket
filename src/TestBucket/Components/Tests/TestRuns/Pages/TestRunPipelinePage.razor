@@ -3,13 +3,125 @@
 @using TestBucket.Components.Automation
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Domain.Automation.Models
+@using TestBucket.Domain.Automation.Services
 @layout TestingLayout
+@inject AppNavigationManager appNavigation
 @inject PipelineController controller
+@inject IPipelineManager manager
+@inject IStringLocalizer<SharedStrings> loc
+@implements IPipelineObserver
+@implements IDisposable
 
-<MudStack Class="pa-2">
-    Status: @_pipeline?.Status
-    
-</MudStack>
+@if(_pipeline is not null)
+{
+    <MudStack Class="pa-2">
+
+        <MudText Typo="Typo.h1">@_pipeline.CiCdSystem #@_pipeline.CiCdPipelineIdentifier</MudText>
+
+        <MudItem>
+            <table style="width: auto">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@loc["ci-cd-system"]</td>
+                        <td>@_pipeline.CiCdSystem</td>
+                    </tr>
+                    <tr>
+                        <td>@loc["id"]</td>
+                        <td><MudLink Href="@_pipeline.WebUrl">#@_pipeline.CiCdPipelineIdentifier</MudLink></td>
+                    </tr>
+                    <tr>
+                        <td>@loc["duration"]</td>
+                        <td>@_pipeline.Duration?.Humanize()</td>
+                    </tr>
+                    <tr>
+                        <td>@loc["status"]</td>
+                        <td>@_pipeline.Status</td>
+                    </tr>
+                    @if (!string.IsNullOrEmpty(_pipeline.StartError))
+                    {
+                        <tr>
+                            <td>@loc["failure"]</td>
+                            <td>@_pipeline.StartError</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </MudItem>
+
+        <MudText Typo="Typo.h2">@loc["ci-cd-jobs"]</MudText>
+
+        <MudStack Row Class="tb-pipeline-job-pills">
+            @if (_pipeline.PipelineJobs is not null)
+            {
+                <MudDataGrid Hover Dense T="PipelineJob" Items="@_pipeline.PipelineJobs" RowClick="(x) => OnRowClicked(x.Item)">
+
+                    <ColGroup>
+                        <col style="width: 10%;" />
+                        <col />
+                        <col />
+                        <col />
+                        <col />
+                        <col />
+                    </ColGroup>
+
+                    <Columns>
+                        <TemplateColumn>
+                            <CellTemplate>
+                                @if (@context.Item.Status == Contracts.Automation.PipelineJobStatus.Running)
+                                {
+                                    <MudProgressCircular Indeterminate Color="Color.Tertiary" Size="Size.Small" />
+                                }
+                                else if (@context.Item.Status == Contracts.Automation.PipelineJobStatus.Failed)
+                                {
+                                    <MudIcon Color="Color.Error" Size="Size.Small" Icon="@Icons.Material.Outlined.ErrorOutline"/>
+                                }
+                                else if (@context.Item.Status == Contracts.Automation.PipelineJobStatus.Success)
+                                {
+                                    <MudIcon Color="Color.Success" Size="Size.Small" Icon="@Icons.Material.Outlined.Check" />
+                                }
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                        <PropertyColumn Property="x => x.Name" Title="@loc["name"]" />
+
+                        <TemplateColumn Title="@loc["duration"]">
+                            <CellTemplate>
+                                @context.Item.Duration?.Humanize()
+                            </CellTemplate>
+                        </TemplateColumn>
+                        <PropertyColumn Property="x => x.Status" Title="@loc["Status"]" />
+
+                        <TemplateColumn Title="@loc["status"]">
+                            <CellTemplate>
+                                <MudStack Row AlignItems="AlignItems.Center">
+                                    <MudText>@context.Item.Status</MudText>
+                                </MudStack>
+
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                        <TemplateColumn Title="@loc["ci-cd-job"]">
+                            <CellTemplate>
+                                <MudLink Href="@context.Item.WebUrl">#@context.Item.CiCdJobIdentifier</MudLink>
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+                </MudDataGrid>
+            }
+        </MudStack>
+
+    </MudStack>
+}
+else
+{
+    <MudProgressLinear Indeterminate Color="Color.Tertiary" />
+}
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";
@@ -21,16 +133,42 @@
 
     private Pipeline? _pipeline = null;
 
+    private void OnRowClicked(PipelineJob job)
+    {
+        if(_pipeline is null) return;
+
+        appNavigation.NavigateTo(_pipeline, job);
+    }
+
     /// <summary>
     /// Load the test case when changed
     /// </summary>
     /// <returns></returns>
     protected override async Task OnParametersSetAsync()
     {
-        
         if (_pipeline is null || _pipeline.Id != PipelineId)
         {
             _pipeline = await controller.GetPipelineByIdAsync(PipelineId);
+        }
+    }
+
+    #region Lifecycle
+    protected override void OnInitialized()
+    {
+        manager.AddObserver(this);
+    }
+    public void Dispose()
+    {
+        manager.RemoveObserver(this);
+    }
+    #endregion Lifecycle
+
+    public async Task OnPipelineUpdatedAsync(Pipeline pipeline)
+    {
+        if(PipelineId == pipeline.Id)
+        {
+            _pipeline = pipeline;
+            await InvokeAsync(StateHasChanged);
         }
     }
 }

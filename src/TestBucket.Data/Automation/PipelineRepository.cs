@@ -39,7 +39,7 @@ internal class PipelineRepository : IPipelineRepository
     public async Task<Pipeline?> GetByIdAsync(long pipelineId)
     {
         var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Pipelines.AsNoTracking().Where(x => x.Id == pipelineId).FirstOrDefaultAsync();
+        return await dbContext.Pipelines.AsNoTracking().Include(x=>x.PipelineJobs).Where(x => x.Id == pipelineId).FirstOrDefaultAsync();
     }
 
     public async Task<IReadOnlyList<Pipeline>> GetPipelinesForTestRunAsync(FilterSpecification<Pipeline>[] filters, long testRunId)

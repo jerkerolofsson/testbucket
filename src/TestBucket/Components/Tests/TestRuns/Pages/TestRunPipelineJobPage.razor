@@ -1,0 +1,98 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestRuns/{RunId:long}/Pipelines/{PipelineId:long}/Jobs/{JobId:long}"
+@using TestBucket.Components.Automation
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Domain.Automation.Models
+@using TestBucket.Domain.Automation.Services
+@layout TestingLayout
+@inject PipelineController controller
+@inject IPipelineManager manager
+@inject IStringLocalizer<SharedStrings> loc
+@implements IPipelineObserver
+@implements IDisposable
+
+@if(_job is not null)
+{
+    <MudStack Class="pa-2">
+        <pre>@_log</pre>
+    </MudStack>
+}
+else
+{
+    <MudProgressLinear Indeterminate Color="Color.Tertiary"/>
+}
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    [Parameter] public long RunId { get; set; }
+    [Parameter] public long PipelineId { get; set; }
+    [Parameter] public long JobId { get; set; }
+
+    private Pipeline? _pipeline = null;
+    private PipelineJob? _job = null;
+    private string? _log;
+
+    /// <summary>
+    /// Load the test case when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+
+        if (_pipeline is null || _pipeline.Id != PipelineId)
+        {
+            _pipeline = await controller.GetPipelineByIdAsync(PipelineId);
+            InitJobFromPipeline();
+            this.StateHasChanged();
+
+            await ReadJobTraceAsync();
+        }
+    }
+
+    #region Lifecycle
+    protected override void OnInitialized()
+    {
+        manager.AddObserver(this);
+    }
+    public void Dispose()
+    {
+        manager.RemoveObserver(this);
+    }
+    #endregion Lifecycle
+
+    private async Task ReadJobTraceAsync()
+    {
+        if(_pipeline is not null && _job is not null)
+        {
+            var log = await controller.ReadJobTraceAsync(_pipeline, _job);
+
+            if (log is not null && _log?.Length != log?.Length)
+            {
+                _log = log;
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+
+    private void InitJobFromPipeline()
+    {
+        _job = null;
+        if (_pipeline?.PipelineJobs is not null)
+        {
+            _job = _pipeline.PipelineJobs.Where(x => x.Id == JobId).FirstOrDefault();
+        }
+    }
+
+    public async Task OnPipelineUpdatedAsync(Pipeline pipeline)
+    {
+        if (PipelineId == pipeline.Id)
+        {
+            _pipeline = pipeline;
+            InitJobFromPipeline();
+            await ReadJobTraceAsync();
+        }
+    }
+}

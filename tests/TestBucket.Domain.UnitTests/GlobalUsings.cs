@@ -7,4 +7,5 @@ global using TestBucket.Domain.Fields.Models;
 global using TestBucket.Domain.Fields.Specifications;
 global using TestBucket.Domain.Shared.Specifications;
 global using TestBucket.Domain.Testing.Models;
-global using TestBucket.Traits.TUnit;
+global using TestBucket.Traits.Xunit;
+global using Xunit;

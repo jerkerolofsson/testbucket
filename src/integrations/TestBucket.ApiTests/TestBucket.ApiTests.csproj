@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\TestBucket.Contracts\TestBucket.Contracts.csproj" />
-    <ProjectReference Include="..\..\TestBucket.Formats\TestBucket.Formats.csproj" />
+    <ProjectReference Include="..\..\Package\Reporting\TestBucket.Formats\TestBucket.Formats.csproj" />
+    <ProjectReference Include="..\..\Package\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

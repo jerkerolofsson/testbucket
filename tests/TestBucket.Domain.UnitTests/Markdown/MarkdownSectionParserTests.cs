@@ -1,44 +1,37 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Markdown;
-using TestBucket.Domain.Requirements.Import;
-using TestBucket.Domain.UnitTests.TestHelpers;
-using TUnit.Assertions.Extensions;
+﻿using TestBucket.Domain.Markdown;
+
+#pragma warning disable xUnit2013 // Do not use equality check to check for collection size.
 
 namespace TestBucket.Domain.UnitTests.Markdown
 {
     [UnitTest]
+    [EnrichedTest]
     public class MarkdownSectionParserTests
     {
-        [Test]
-        public async Task ReadSections_WithSingleLine_OneSection()
+        [Fact]
+        public void ReadSections_WithSingleLine_OneSection()
         {
-            var sections = MarkdownSectionParser.ReadSections("Hello World", default).ToList();
-            await Assert.That(sections.Count).IsEqualTo(1);
+            var sections = MarkdownSectionParser.ReadSections("Hello World", TestContext.Current.CancellationToken).ToList();
+            Assert.Single(sections);
         }
 
 
-        [Test]
-        public async Task ReadSections_WithMultipleLines_OneSection()
+        [Fact]
+        public void ReadSections_WithMultipleLines_OneSection()
         {
-            var sections = MarkdownSectionParser.ReadSections("Hello World\nThis is still the same section", default).ToList();
-            await Assert.That(sections.Count).IsEqualTo(1);
+            var sections = MarkdownSectionParser.ReadSections("Hello World\nThis is still the same section", TestContext.Current.CancellationToken).ToList();
+            Assert.Single(sections);
         }
 
-        [Test]
-        public async Task ReadSections_WithTwoHeaders_TwoSectionsReturned()
+        [Fact]
+        public void ReadSections_WithTwoHeaders_TwoSectionsReturned()
         {
-            var sections = MarkdownSectionParser.ReadSections("# Section 1\n\n#Section 2", default).ToList();
-            await Assert.That(sections.Count).IsEqualTo(2);
+            var sections = MarkdownSectionParser.ReadSections("# Section 1\n\n#Section 2", TestContext.Current.CancellationToken).ToList();
+            Assert.Equal(2, sections.Count);
         }
 
-
-        [Test]
-        public async Task ReadSections_WithHeaderHierarchy_PathSetFromHierarchy()
+        [Fact]
+        public void ReadSections_WithHeaderHierarchy_PathSetFromHierarchy()
         {
             // lang=markdown
             var markdown = """
@@ -64,30 +57,28 @@ namespace TestBucket.Domain.UnitTests.Markdown
 
                 """;
 
-            var sections = MarkdownSectionParser.ReadSections(markdown, default).ToList();
-            await Assert.That(sections.Count).IsEqualTo(7);
+            var sections = MarkdownSectionParser.ReadSections(markdown, TestContext.Current.CancellationToken).ToList();
 
-            await Assert.That(sections[0].Path.Length).IsEqualTo(0);
-            await Assert.That(sections[1].Path.Length).IsEqualTo(1);
-            await Assert.That(sections[2].Path.Length).IsEqualTo(2);
-            await Assert.That(sections[3].Path.Length).IsEqualTo(2);
-            await Assert.That(sections[4].Path.Length).IsEqualTo(1);
-            await Assert.That(sections[5].Path.Length).IsEqualTo(0);
-            await Assert.That(sections[6].Path.Length).IsEqualTo(1);
+            Assert.Equal(7, sections.Count);
 
-            await Assert.That(sections[1].Path[0]).IsEqualTo("Header-1");
-            await Assert.That(sections[2].Path[0]).IsEqualTo("Header-1");
-            await Assert.That(sections[2].Path[1]).IsEqualTo("Header-1.1");
-            await Assert.That(sections[3].Path[0]).IsEqualTo("Header-1");
-            await Assert.That(sections[3].Path[1]).IsEqualTo("Header-1.1");
+            Assert.Equal(0, sections[0].Path.Length);
+            Assert.Equal(1, sections[1].Path.Length);
+            Assert.Equal(2, sections[2].Path.Length);
+            Assert.Equal(2, sections[3].Path.Length);
+            Assert.Equal(1, sections[4].Path.Length);
+            Assert.Equal(0, sections[5].Path.Length);
+            Assert.Equal(1, sections[6].Path.Length);
 
-            await Assert.That(sections[4].Path[0]).IsEqualTo("Header-1");
-            await Assert.That(sections[6].Path[0]).IsEqualTo("Header-2");
+            Assert.Equal("Header-1", string.Join('/', sections[1].Path));
+            Assert.Equal("Header-1/Header-1.1", string.Join('/', sections[2].Path));
+            Assert.Equal("Header-1/Header-1.1", string.Join('/', sections[3].Path));
+            Assert.Equal("Header-1", string.Join('/', sections[4].Path));
+            Assert.Equal("Header-2", string.Join('/', sections[6].Path));
         }
 
 
-        [Test]
-        public async Task ReadSections_WithSimpleHeaderHierarchy_PathPropertySet()
+        [Fact]
+        public void ReadSections_WithSimpleHeaderHierarchy_PathPropertySet()
         {
             // lang=markdown
             var markdown = """
@@ -100,16 +91,19 @@ namespace TestBucket.Domain.UnitTests.Markdown
                 Other text here
                 """;
 
-            var sections = MarkdownSectionParser.ReadSections(markdown, default).ToList();
-            await Assert.That(sections.Count).IsEqualTo(3);
+            var sections = MarkdownSectionParser.ReadSections(markdown, TestContext.Current.CancellationToken).ToList();
+            Assert.Equal(3, sections.Count);
 
-            await Assert.That(sections[0].Path.Length).IsEqualTo(0);
-            await Assert.That(sections[1].Path.Length).IsEqualTo(1);
-            await Assert.That(sections[2].Path.Length).IsEqualTo(1);
+            Assert.Equal(0, sections[0].Path.Length);
+            Assert.Equal(1, sections[1].Path.Length);
+            Assert.Equal(1, sections[2].Path.Length);
+
+            Assert.Equal("1. TITLE", sections[1].Path[0]);
+            Assert.Equal("1. TITLE", sections[2].Path[0]);
         }
 
-        [Test]
-        public async Task ReadSections_WithHeaderHierarchy_HeaderPropertySet()
+        [Fact]
+        public void ReadSections_WithHeaderHierarchy_HeaderPropertySet()
         {
             // lang=markdown
             var markdown = """
@@ -135,16 +129,16 @@ namespace TestBucket.Domain.UnitTests.Markdown
 
                 """;
 
-            var sections = MarkdownSectionParser.ReadSections(markdown, default).ToList();
-            await Assert.That(sections.Count).IsEqualTo(7);
+            var sections = MarkdownSectionParser.ReadSections(markdown, TestContext.Current.CancellationToken).ToList();
+            Assert.Equal(7, sections.Count);
 
-            await Assert.That(sections[0].Heading).IsEqualTo("Header-1");
-            await Assert.That(sections[1].Heading).IsEqualTo("Header-1.1");
-            await Assert.That(sections[2].Heading).IsEqualTo("Header-1.1.1");
-            await Assert.That(sections[3].Heading).IsEqualTo("Header-1.1.2");
-            await Assert.That(sections[4].Heading).IsEqualTo("Header-1.2");
-            await Assert.That(sections[5].Heading).IsEqualTo("Header-2");
-            await Assert.That(sections[6].Heading).IsEqualTo("Header-2.1");
+            Assert.Equal("Header-1", sections[0].Heading);
+            Assert.Equal("Header-1.1", sections[1].Heading);
+            Assert.Equal("Header-1.1.1", sections[2].Heading);
+            Assert.Equal("Header-1.1.2", sections[3].Heading);
+            Assert.Equal("Header-1.2", sections[4].Heading);
+            Assert.Equal("Header-2", sections[5].Heading);
+            Assert.Equal("Header-2.1", sections[6].Heading);
         }
     }
 }

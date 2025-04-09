@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Contracts.Testing.Models;
-using TestBucket.Domain.Markdown;
+﻿using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Testing.Compiler;
 
 namespace TestBucket.Domain.UnitTests.Compiler
@@ -12,8 +6,8 @@ namespace TestBucket.Domain.UnitTests.Compiler
     [UnitTest]
     public class VariableTests
     {
-        [Test]
-        public async Task ReplaceVariables_WithSingleVariableInTemplate()
+        [Fact]
+        public void ReplaceVariables_WithSingleVariableInTemplate()
         {
             var variables = new Dictionary<string, string>
             {
@@ -23,11 +17,11 @@ namespace TestBucket.Domain.UnitTests.Compiler
             var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0 };
             var result = TestCompiler.ReplaceVariables(variables, "{{KEY1}}", context);
 
-            await Assert.That(result).IsEqualTo("value1");
+            Assert.Equal("value1", result);
         }
 
-        [Test]
-        public async Task ReplaceVariables_TwoVariablesInTemplate()
+        [Fact]
+        public void ReplaceVariables_TwoVariablesInTemplate_PlaceholdersReplacedWithValues()
         {
             var variables = new Dictionary<string, string>
             {
@@ -38,11 +32,11 @@ namespace TestBucket.Domain.UnitTests.Compiler
             var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0 };
             var result = TestCompiler.ReplaceVariables(variables, "{{KEY1}} {{KEY2}}", context);
 
-            await Assert.That(result).IsEqualTo("value1 value2");
+            Assert.Equal("value1 value2", result);
         }
 
-        [Test]
-        public async Task ReplaceVariables_WithLeadingSpace()
+        [Fact]
+        public void ReplaceVariables_WithLeadingSpace_SpacesPreserved()
         {
             var variables = new Dictionary<string, string>
             {
@@ -52,11 +46,11 @@ namespace TestBucket.Domain.UnitTests.Compiler
             var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0 };
             var result = TestCompiler.ReplaceVariables(variables, " {{KEY1}} {{KEY2}}", context);
 
-            await Assert.That(result).IsEqualTo(" value1 value2");
+            Assert.Equal(" value1 value2", result);
         }
 
-        [Test]
-        public async Task ReplaceVariables_WithTrailingSpace()
+        [Fact]
+        public void ReplaceVariables_WithTrailingSpace_SpacesPreserved()
         {
             var variables = new Dictionary<string, string>
             {
@@ -66,12 +60,12 @@ namespace TestBucket.Domain.UnitTests.Compiler
             var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0 };
             var result = TestCompiler.ReplaceVariables(variables, "{{KEY1}} {{KEY2}} ", context);
 
-            await Assert.That(result).IsEqualTo("value1 value2 ");
+            Assert.Equal("value1 value2 ", result);
         }
 
 
-        [Test]
-        public async Task ReplaceVariables_WithUnknownVariable_ErrorCreated()
+        [Fact]
+        public void ReplaceVariables_WithUnknownVariable_ErrorCreated()
         {
             var variables = new Dictionary<string, string>
             {
@@ -80,8 +74,8 @@ namespace TestBucket.Domain.UnitTests.Compiler
             var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0 };
             var result = TestCompiler.ReplaceVariables(variables, "{{KEY1}} {{KEY2}} ", context);
 
-            await Assert.That(result).IsEqualTo("value1 {{KEY2}} ");
-            await Assert.That(context.CompilerErrors.Count).IsEqualTo(1);
+            Assert.Equal("value1 {{KEY2}} ", result);
+            Assert.Single(context.CompilerErrors);
         }
     }
 }

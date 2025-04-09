@@ -1,58 +1,59 @@
 ﻿
 namespace TestBucket.Domain.UnitTests.Fields.Specifications
 {
+    [EnrichedTest]
     [UnitTest]
     public class FilterByProjectSpecificationTests
     {
-        [Test]
-        public async Task IsMatch_WithFieldDefinitionsMatch_TrueReturned()
+        [Fact]
+        public void IsMatch_WithFieldDefinitionsMatch_TrueReturned()
         {
             var specification = new FilterByProject<FieldDefinition>(1);
             var result = specification.IsMatch(new FieldDefinition { Name = "a", TestProjectId = 1 });
 
-            await Assert.That(result).IsTrue();
+            Assert.True(result);
         }
-        [Test]
-        public async Task IsMatch_FieldDefinitionNoMatch_FalseReturned()
+        [Fact]
+        public void IsMatch_FieldDefinitionNoMatch_FalseReturned()
         {
             var specification = new FilterByProject<FieldDefinition>(1);
             var result = specification.IsMatch(new FieldDefinition { Name = "a", TestProjectId = 2 });
 
-            await Assert.That(result).IsFalse();
+            Assert.False(result);
         }
 
-        [Test]
-        public async Task IsMatch_WithTestSuiteMatch_TrueReturned()
+        [Fact]
+        public void IsMatch_WithTestSuiteMatch_TrueReturned()
         {
             var specification = new FilterByProject<TestSuite>(1);
             var result = specification.IsMatch(new TestSuite { Name = "a", TestProjectId = 1 });
 
-            await Assert.That(result).IsTrue();
+            Assert.True(result);
         }
-        [Test]
-        public async Task IsMatch_TestSuiteNoMatch_FalseReturned()
+        [Fact]
+        public void IsMatch_TestSuiteNoMatch_FalseReturned()
         {
             var specification = new FilterByProject<TestSuite>(1);
             var result = specification.IsMatch(new TestSuite { Name = "a", TestProjectId = 2 });
 
-            await Assert.That(result).IsFalse();
+            Assert.False(result);
         }
 
-        [Test]
-        public async Task IsMatch_WithTestCaseMatch_TrueReturned()
+        [Fact]
+        public void IsMatch_WithTestCaseMatch_TrueReturned()
         {
             var specification = new FilterByProject<TestCase>(1);
             var result = specification.IsMatch(new TestCase { Name = "a", TestProjectId = 1 });
 
-            await Assert.That(result).IsTrue();
+            Assert.True(result);
         }
-        [Test]
-        public async Task IsMatch_TestCaseNoMatch_FalseReturned()
+        [Fact]
+        public void IsMatch_TestCaseNoMatch_FalseReturned()
         {
             var specification = new FilterByProject<TestCase>(1);
             var result = specification.IsMatch(new TestCase { Name = "a", TestProjectId = 2 });
 
-            await Assert.That(result).IsFalse();
+            Assert.False(result);
         }
     }
 }

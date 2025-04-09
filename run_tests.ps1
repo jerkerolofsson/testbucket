@@ -1,9 +1,23 @@
-function Upload-Xunit-Result-File {
+function Upload-Result-File {
 	
 	param(
 		$project
 	)
 	$xmlPath="tests/${project}/TestResults/results.xml"
+	$trxPath="tests/${project}/TestResults/results.trx"
+
+	$path = ""
+	$contentType = ""
+	if ([System.IO.File]::Exists($xmlPath)) 
+	{
+		$path = $xmlPath
+		$contentType = "application/json+xunit"
+	}
+	if ([System.IO.File]::Exists($trxPath)) 
+	{
+		$path = $trxPath
+		$contentType = "application/trx"
+	}
 
 	Write-Host "Uploading to ${env:TB_PUBLIC_ENDPOINT}/api/results"
 
@@ -12,7 +26,7 @@ function Upload-Xunit-Result-File {
 	$headers = @{
 	    "Authorization"  = "Bearer ${env:TB_TOKEN}"
 	}
-	Invoke-RestMethod -uri ${env:TB_PUBLIC_ENDPOINT}/api/results -Method PUT -Body $data -ContentType 'application/json+xunit' -Headers ${headers}
+	Invoke-RestMethod -uri ${env:TB_PUBLIC_ENDPOINT}/api/results -Method PUT -Body $data -ContentType $$contentType -Headers ${headers}
 
 }
 
@@ -22,7 +36,7 @@ function Upload-Xunit-Result-File {
 # --report-nunit --report-nunit-filename TestBucket.Formats.UnitTests.nunit.xml 
 # --report-xunit-trx --report-xunit-trx-filename TestBucket.Formats.UnitTests.xunit.trx
 
-$projects = "TestBucket.Formats.UnitTests","TestBucket.Domain.UnitTests"
+$projects = @("TestBucket.Formats.UnitTests", "TestBucket.Domain.UnitTests")
 
 foreach ($project in $projects)
 {
@@ -34,11 +48,8 @@ if ( $env:TB_TOKEN -ne $null)
 {
 	foreach ($project in $projects)
 	{
-		Upload-Xunit-Result-File $project
+		Upload-Result-File $project
 	}
-
-	#Upload-Xunit-Result-File tests/TestBucket.Domain.UnitTests/TestResults/results.xml
-	#Upload-Xunit-Result-File tests/TestBucket.Formats.UnitTests/TestResults/results.xml
 }
 else
 {

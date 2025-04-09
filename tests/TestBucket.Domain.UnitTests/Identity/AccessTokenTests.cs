@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +8,15 @@ using System.Threading.Tasks;
 using TestBucket.Domain.ApiKeys.Validation;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Settings.Fakes;
-using TUnit.Assertions.AssertConditions.Throws;
+
 
 namespace TestBucket.Domain.UnitTests.NewFolder
 {
     [UnitTest]
+    [EnrichedTest]
     public class AccessTokenTests
     {
-        [Test]
+        [Fact]
         public async Task GenerateCiCdAccessTokenAsync_CreatesValidToken()
         {
             var settingsProvider = new FakeSettingsProvider();
@@ -25,7 +27,7 @@ namespace TestBucket.Domain.UnitTests.NewFolder
             var _ = AccessTokenValidator.ValidateToken(settings, token);
         }
 
-        [Test]
+        [Fact]
         public async Task GenerateCiCdAccessTokenAsync_HasProjectId()
         {
             var settingsProvider = new FakeSettingsProvider();
@@ -37,16 +39,16 @@ namespace TestBucket.Domain.UnitTests.NewFolder
             new PrincipalValidator(principal).ThrowIfNoProjectId();
         }
 
-        [Test]
-        public async Task ValidateToken_WithInvalidToken_ThrowsException()
+        [Fact]
+        public async Task ValidateToken_WithInvalidToken_ThrowsSecurityTokenMalformedException()
         {
             var settingsProvider = new FakeSettingsProvider();
             var settings = await settingsProvider.LoadGlobalSettingsAsync();
-            await Assert.That(() =>
+
+            Assert.Throws<SecurityTokenMalformedException>(() =>
             {
                 AccessTokenValidator.ValidateToken(settings, "123");
-            }).ThrowsException();
-            
+            });
         }
     }
 }

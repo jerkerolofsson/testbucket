@@ -17,8 +17,8 @@
   </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Package\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" IsAspireProjectResource="false"/>
         <ProjectReference Include="..\runner\TestBucket.Runner\TestBucket.Runner.csproj" />
-        <ProjectReference Include="..\TestBucket.Contracts\TestBucket.Contracts.csproj" IsAspireProjectResource="false" />
     </ItemGroup>
 
     <ItemGroup>

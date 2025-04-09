@@ -7,9 +7,10 @@ using TestBucket.Domain.UnitTests.TestHelpers;
 namespace TestBucket.Domain.UnitTests.Requirements.Import
 {
     [UnitTest]
+    [EnrichedTest]
     public class RequirementImporterTests
     {
-        [Test]
+        [Fact]
         public async Task ImportFileAsync_EmptyTextDocument_NameIsFromFileName()
         {
             var doc = FileResourceCreator.CreateText("hello.txt", "Hello World");
@@ -17,48 +18,46 @@ namespace TestBucket.Domain.UnitTests.Requirements.Import
             var importer = new RequirementImporter(NullLogger<RequirementImporter>.Instance);
 
             var requirementSpecification = await importer.ImportFileAsync(IdentityHelper.ValidPrincipal, null, null, doc);
-            await Assert.That(requirementSpecification).IsNotNull();
 
-            await Assert.That(requirementSpecification!.Name).IsEqualTo("hello.txt");
+            Assert.NotNull(requirementSpecification);
+            Assert.Equal("hello.txt", requirementSpecification!.Name);
         }
 
-        [Test]
+        [Fact]
         public async Task ExtractRequirementsAsync_WithSections_NamesExtractedFromMarkdownHeadings()
         {
             (RequirementImporter importer, Domain.Requirements.Models.RequirementSpecification? requirementSpecification) = await ImportTestDataAsync("sections.md");
 
-            var requirements = await importer.ExtractRequirementsAsync(requirementSpecification!, default);
-            await Assert.That(requirements.Count).IsEqualTo(2);
+            var requirements = await importer.ExtractRequirementsAsync(requirementSpecification!, TestContext.Current.CancellationToken);
 
-            await Assert.That(requirements[0].Name).IsEqualTo("1.1 Requirement");
-            await Assert.That(requirements[1].Name).IsEqualTo("1.2 Requirement");
+            Assert.Equal(2, requirements.Count);
+            Assert.Equal("1.1 Requirement", requirements[0].Name);
+            Assert.Equal("1.2 Requirement", requirements[1].Name);
         }
 
-
-        [Test]
+        [Fact]
         public async Task ExtractRequirementsAsync_WithSections_PathExtractedFromHeadings()
         {
             (RequirementImporter importer, Domain.Requirements.Models.RequirementSpecification? requirementSpecification) = await ImportTestDataAsync("sections.md");
 
-            var requirements = await importer.ExtractRequirementsAsync(requirementSpecification!, default);
-            await Assert.That(requirements.Count).IsEqualTo(2);
+            var requirements = await importer.ExtractRequirementsAsync(requirementSpecification!, TestContext.Current.CancellationToken);
 
-            await Assert.That(requirements[0].Path).IsEqualTo("1. TITLE");
-            await Assert.That(requirements[1].Path).IsEqualTo("1. TITLE");
+            Assert.Equal(2, requirements.Count);
+            Assert.Equal("1. TITLE", requirements[0].Path);
+            Assert.Equal("1. TITLE", requirements[1].Path);
         }
 
-        [Test]
+        [Fact]
         public async Task ExtractRequirementsAsync_WithRequirementIdInBrackes_ExtractedAsExternalId()
         {
             (RequirementImporter importer, Domain.Requirements.Models.RequirementSpecification? requirementSpecification) = await ImportTestDataAsync("sections.md");
 
-            var requirements = await importer.ExtractRequirementsAsync(requirementSpecification!, default);
-            await Assert.That(requirements.Count).IsEqualTo(2);
+            var requirements = await importer.ExtractRequirementsAsync(requirementSpecification!, TestContext.Current.CancellationToken);
 
-            await Assert.That(requirements[0].ExternalId).IsEqualTo("REQ-1.1");
-            await Assert.That(requirements[1].ExternalId).IsEqualTo("REQ-1.2");
+            Assert.Equal(2, requirements.Count);
+            Assert.Equal("REQ-1.1", requirements[0].ExternalId);
+            Assert.Equal("REQ-1.2", requirements[1].ExternalId);
         }
-
 
         /// <summary>
         /// Helper 
@@ -71,7 +70,9 @@ namespace TestBucket.Domain.UnitTests.Requirements.Import
             var importer = new RequirementImporter(NullLogger<RequirementImporter>.Instance);
 
             var requirementSpecification = await importer.ImportFileAsync(IdentityHelper.ValidPrincipal, null, null, doc);
-            await Assert.That(requirementSpecification).IsNotNull();
+
+            Assert.NotNull(requirementSpecification);
+
             return (importer, requirementSpecification);
         }
     }

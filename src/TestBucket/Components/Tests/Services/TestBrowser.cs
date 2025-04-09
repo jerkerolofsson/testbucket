@@ -124,6 +124,13 @@ internal class TestBrowser : TenantBaseService
         }
     }
 
+    /// <summary>
+    /// Returns a flat list of test cases and folders
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
     public async Task<PagedResult<TestSuiteItem>> SearchItemsAsync(SearchTestQuery query, int offset, int count = 20)
     {
         if(query.TestSuiteId == null)
@@ -145,6 +152,7 @@ internal class TestBrowser : TenantBaseService
         query.Offset = testCaseOffset;
         query.Count = testCount;
         var tests = await _testSuiteService.SearchTestCasesAsync(query);
+
         items.AddRange(tests.Items.Select(x => new TestSuiteItem() { TestCase = x }));
 
         return new PagedResult<TestSuiteItem>()
@@ -155,13 +163,13 @@ internal class TestBrowser : TenantBaseService
     }
 
 
-    public async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery query, int offset, int count = 20)
-    {
-        query.Offset = offset;
-        query.Count = count;
+    //public async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery query, int offset, int count = 20)
+    //{
+    //    query.Offset = offset;
+    //    query.Count = count;
 
-        return await _testSuiteService.SearchTestCasesAsync(query);
-    }
+    //    return await _testSuiteService.SearchTestCasesAsync(query);
+    //}
 
     public async Task<List<TreeNode<BrowserItem>>> BrowseAsync(TestBrowserRequest request)
     {
@@ -244,7 +252,7 @@ internal class TestBrowser : TenantBaseService
 
         if(searchText is not null)
         {
-            return await SearchAsync(teamId, projectId, searchText);
+            return await SearchAsync(request);
         }
 
         return await BrowseRootAsync(request);
@@ -296,7 +304,7 @@ internal class TestBrowser : TenantBaseService
                 Children = null,
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = FOLDER_PIPELINES, TestRun = testRun },
-                Icon = Icons.Material.Filled.FolderOpen,
+                Icon = Icons.Material.Outlined.FolderOpen,
             });
         }
         if (request.ShowTestRunTests)
@@ -307,7 +315,7 @@ internal class TestBrowser : TenantBaseService
                 Children = [],
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = FOLDER_RUN_TESTS, TestRun = testRun },
-                Icon = Icons.Material.Filled.FolderOpen,
+                Icon = Icons.Material.Outlined.FolderOpen,
             });
         }
 
@@ -476,27 +484,106 @@ internal class TestBrowser : TenantBaseService
         });
     }
 
-
-    private async Task<List<TreeNode<BrowserItem>>> SearchAsync(long? teamId, long? projectId, string searchText)
+    /// <summary>
+    /// Search for test cases
+    /// </summary>
+    /// <param name="teamId"></param>
+    /// <param name="projectId"></param>
+    /// <param name="searchText"></param>
+    /// <returns></returns>
+    private async Task<List<TreeNode<BrowserItem>>> SearchAsync(TestBrowserRequest request)
     {
-        var rootItems = new List<TreeNode<BrowserItem>>();
-
-        var recentRunsResult = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery() 
+        var searchTestResult = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery() 
         { 
             CompareFolder = false,
-            ProjectId = projectId, 
-            Count = 50, 
-            TeamId = teamId, 
+            ProjectId = request.ProjectId, 
+            Count = 20, 
+            TeamId = request.TeamId, 
             Offset = 0,
-            Text = searchText
+            Text = request.Text
         });
-        foreach (var testCase in recentRunsResult.Items)
-        {
-            var testCaseNode = CreateTreeNodeFromTestCase(testCase);
 
-            rootItems.Add(testCaseNode);
+        var rootItems = await BrowseRootAsync(request);
+        rootItems[0].Expanded = true;
+
+        foreach (var testCase in searchTestResult.Items)
+        {
+            await AddToHierarchyAsync(testCase, rootItems);
         }
         return rootItems;
+    }
+
+    private async Task AddToHierarchyAsync(TestCase testCase, List<TreeNode<BrowserItem>> rootItems)
+    {
+        if(testCase.PathIds is null)
+        {
+            // We can't show dangling tests..
+            return;
+        }
+
+        // The root items should already contain the test suites, so we should be able to find it here
+        var testSuiteNode = FindTreeNode(rootItems, x => x.TestSuite?.Id == testCase.TestSuiteId);
+        if(testSuiteNode is null)
+        {
+            return;
+        }
+
+        TreeNode<BrowserItem> parent = testSuiteNode;
+        testSuiteNode.Expanded = true;
+
+        // Resolve the parent hierarchy, with test suites and folders
+        foreach (var folderId in testCase.PathIds)
+        {
+            var folderNode = FindTreeNode(rootItems, x => x.Folder?.Id == folderId);
+            if (folderNode is null)
+            {
+                var childRequest = new TestBrowserRequest() { ProjectId = testCase.TestProjectId, TeamId = testCase.TeamId, Parent = parent.Value, TestSuiteId = testCase.TestSuiteId };
+                childRequest.Parent = parent.Value;
+
+                var items = await BrowseAsync(childRequest);
+                parent.Children = items;
+                folderNode = FindTreeNode(rootItems, x => x.Folder?.Id == folderId);
+            }
+            if (folderNode is null)
+            {
+                return;
+            }
+            folderNode.Expanded = true;
+            parent = folderNode;
+        }
+
+        if (parent is not null)
+        {
+            var testCaseNode = CreateTreeNodeFromTestCase(testCase);
+            if(parent.Children is null)
+            {
+                parent.Children = [testCaseNode];
+            }
+            else
+            {
+                parent.Children = [.. parent.Children, testCaseNode];
+            }
+        }
+    }
+
+    public static TreeNode<BrowserItem>? FindTreeNode(IEnumerable<TreeNode<BrowserItem>> treeItems, Predicate<BrowserItem> predicate)
+    {
+        foreach (var node in treeItems)
+        {
+            if (node.Value is not null && predicate(node.Value))
+            {
+                return node;
+            }
+            else if (node.Children is not null)
+            {
+                var match = FindTreeNode(node.Children, predicate);
+                if (match is not null)
+                {
+                    return match;
+                }
+            }
+        }
+        return null;
     }
 
     private async Task<List<TreeNode<BrowserItem>>> BrowseRootAsync(TestBrowserRequest request)
@@ -521,7 +608,7 @@ internal class TestBrowser : TenantBaseService
                 Children = suiteItems,
                 Expanded = true,
                 Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_SUITES },
-                Icon = Icons.Material.Filled.FolderOpen,
+                Icon = Icons.Material.Outlined.FolderOpen,
             });
         }
         if(request.ShowTestRuns)
@@ -540,7 +627,7 @@ internal class TestBrowser : TenantBaseService
                 Expanded = false,
                 Expandable = true,
                 Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_RUNS },
-                Icon = Icons.Material.Filled.FolderOpen,
+                Icon = Icons.Material.Outlined.FolderOpen,
             });
         }
         return items;
@@ -605,7 +692,6 @@ internal class TestBrowser : TenantBaseService
     {
         if(_appNavigationManager.State.TestTreeView is not null)
         {
-
             await _appNavigationManager.State.TestTreeView.GoToTestCaseAsync(selectedTestCase);
         }
     }

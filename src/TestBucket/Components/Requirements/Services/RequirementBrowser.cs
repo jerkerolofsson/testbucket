@@ -58,7 +58,7 @@ internal class RequirementBrowser : TenantBaseService
             Text = "Specifications",
             Children = specificationNodes,
             Expanded = true,
-            Icon = Icons.Material.Filled.FolderOpen,
+            Icon = Icons.Material.Outlined.FolderOpen,
         };
 
         var rootItems = new List<TreeNode<BrowserItem>>
@@ -180,7 +180,7 @@ internal class RequirementBrowser : TenantBaseService
         {
             Value = new BrowserItem { RequirementFolder = x, Color = x.Color },
             Text = x.Name,
-            Icon = x.Icon ?? Icons.Material.Filled.Folder,
+            Icon = x.Icon ?? Icons.Material.Outlined.Folder,
             Expandable = true,
             Children = null,
         };
@@ -223,7 +223,7 @@ internal class RequirementBrowser : TenantBaseService
                 Children = specificationNodes,
                 Expanded = true,
                 Value = new BrowserItem() { VirtualFolderName = "Specifications" },
-                Icon = Icons.Material.Filled.FolderOpen,
+                Icon = Icons.Material.Outlined.FolderOpen,
             }
         };
     }

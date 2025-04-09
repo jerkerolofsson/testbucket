@@ -131,28 +131,9 @@ public partial class TestTreeView
 
     private TreeNode<BrowserItem>? FindTreeNode(Predicate<BrowserItem> predicate)
     {
-        return FindTreeNode(_rootItems, predicate);
+        return TestBrowser.FindTreeNode(_rootItems, predicate);
     }
 
-    private TreeNode<BrowserItem>? FindTreeNode(IEnumerable<TreeNode<BrowserItem>> treeItems, Predicate<BrowserItem> predicate)
-    {
-        foreach (var node in treeItems)
-        {
-            if (node.Value is not null && predicate(node.Value))
-            {
-                return node;
-            }
-            else if (node.Children is not null)
-            {
-                var match = FindTreeNode(node.Children, predicate);
-                if (match is not null)
-                {
-                    return match;
-                }
-            }
-        }
-        return null;
-    }
 
     private async Task OnDropTestSuiteFolderAsync(TestSuiteFolder folder, TreeNode<BrowserItem> targetNode)
     {
@@ -683,7 +664,7 @@ public partial class TestTreeView
         }
     }
 
-    internal async Task GoToTestCaseAsync(TestCase testCase)
+    internal async Task GoToTestCaseAsync(TestCase testCase, bool invokeStateHasChanged = true)
     {
         // Find the test suite node
         var testSuiteNode = FindTreeNode(x => x.TestSuite?.Id == testCase.TestSuiteId);
@@ -733,7 +714,10 @@ public partial class TestTreeView
         {
             _selectedTreeItem = testCaseTreeNode?.Value;
         }
-        await InvokeAsync(StateHasChanged);
+        if (invokeStateHasChanged)
+        {
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     #endregion

@@ -28,16 +28,10 @@ jobs:
     - name: Build
       run: dotnet build --no-restore src/TestBucket.sln
     - name: Test Domain
-      run: dotnet test --no-build --verbosity normal tests/TestBucket.Domain.UnitTests.csproj
+      run: dotnet test --no-build --verbosity normal tests/TestBucket.Domain.UnitTests/TestBucket.Domain.UnitTests.csproj
     - name: Test Formats
-      run: dotnet test --no-build --verbosity normal tests/TestBucket.Formats.UnitTests.csproj
+      run: dotnet test --no-build --verbosity normal tests/TestBucket.Formats.UnitTests/TestBucket.Formats.UnitTests.csproj
 
-  unittests:
-
-    runs-on: self-hosted
-
-    #if: ${{ env.TEST_SUITE == 'UnitTests' }}
-    steps:
-     - name: Upload
-       shell: bash
-       run: echo "Hello world"
+    - name: Upload
+      shell: pwsh
+      run: ./run_tests.ps1

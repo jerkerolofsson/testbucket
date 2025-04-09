@@ -3,8 +3,8 @@
 
 @if (Run is not null)
 {
- 
-    <MudMenuItem Icon="@Icons.Material.Filled.FolderDelete" IconColor="Color.Error" OnClick="DeleteAsync" Label="Delete run" />
+
+    <MudMenuItem Icon="@Icons.Material.Outlined.FolderDelete" IconColor="Color.Error" OnClick="DeleteAsync" Label="Delete run" />
 }
 @code {
     [Parameter] public TestRun? Run { get; set; }

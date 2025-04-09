@@ -42,6 +42,24 @@
                 <MudSpacer />
                 <MudTextField InputType="InputType.Password" Value="Integration.AccessToken" T="string" ValueChanged="AccessTokenChanged" />
             </Field>
+
+            <Field Row>
+                <FieldHeader>@loc["enabled"]</FieldHeader>
+                <MudSpacer />
+                <MudSwitchM3 Color="Color.Primary" T="bool" Value="Integration.Enabled" ValueChanged="EnabledChanged" />
+            </Field>
+
+            <Field Row>
+                <FieldHeader>@loc["milestones"]</FieldHeader>
+                <MudSpacer />
+                <MudSwitchM3 Color="Color.Primary" T="bool" Value="Integration.EnableMilestones" ValueChanged="EnableMilestonesChanged" />
+            </Field>
+
+            <Field Row>
+                <FieldHeader>@loc["releases"]</FieldHeader>
+                <MudSpacer />
+                <MudSwitchM3 Color="Color.Primary" T="bool" Value="Integration.EnableReleases" ValueChanged="EnableReleasesChanged" />
+            </Field>
         }
     </MudPaper>
 }
@@ -76,7 +94,30 @@
             await OnChangedAsync();
         }
     }
-
+    private async Task EnabledChanged(bool value)
+    {
+        if (Integration is not null)
+        {
+            Integration.Enabled = value;
+            await OnChangedAsync();
+        }
+    }
+    private async Task EnableReleasesChanged(bool value)
+    {
+        if (Integration is not null)
+        {
+            Integration.EnableReleases = value;
+            await OnChangedAsync();
+        }
+    }
+    private async Task EnableMilestonesChanged(bool value)
+    {
+        if (Integration is not null)
+        {
+            Integration.EnableMilestones = value;
+            await OnChangedAsync();
+        }
+    }
     private async Task OnChangedAsync()
     {
         await IntegrationChanged.InvokeAsync(Integration);
@@ -90,7 +131,8 @@
 
         await IntegrationChanged.InvokeAsync(new ExternalSystem
             {
-                Name = this.Name
+                Name = this.Name,
+                Enabled = false,
             });
     }
 }

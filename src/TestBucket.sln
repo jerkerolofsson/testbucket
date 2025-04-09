@@ -69,6 +69,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Reporting", "Reporting", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{FE85F1D8-3AEC-48E5-8FFA-E2BC1389EDE2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Github", "integrations\TestBucket.Github\TestBucket.Github.csproj", "{8905E893-85F4-4141-B96F-9FB345CF9244}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +153,10 @@ Global
 		{D4D56CEB-7513-FBB2-9438-E3684892776F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4D56CEB-7513-FBB2-9438-E3684892776F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4D56CEB-7513-FBB2-9438-E3684892776F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8905E893-85F4-4141-B96F-9FB345CF9244}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8905E893-85F4-4141-B96F-9FB345CF9244}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8905E893-85F4-4141-B96F-9FB345CF9244}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8905E893-85F4-4141-B96F-9FB345CF9244}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -183,6 +189,7 @@ Global
 		{D4D56CEB-7513-FBB2-9438-E3684892776F} = {005C567C-D149-4B5D-AB90-E955EDF2A4D0}
 		{C46B4D66-0F48-4D2A-A197-455D4A4A4DD8} = {5D9FF94E-3EE4-40B9-9C70-E68A2C65E6F4}
 		{FE85F1D8-3AEC-48E5-8FFA-E2BC1389EDE2} = {5D9FF94E-3EE4-40B9-9C70-E68A2C65E6F4}
+		{8905E893-85F4-4141-B96F-9FB345CF9244} = {F6F1BD5A-FFAC-40D0-9497-D30F9FE19B47}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37FBEEC7-21BB-422E-866E-8B5C94540F5B}

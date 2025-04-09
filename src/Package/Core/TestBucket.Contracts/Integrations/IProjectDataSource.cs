@@ -19,7 +19,18 @@ public interface IProjectDataSource
     /// </summary>
     TraitType[] SupportedTraits { get; }
 
+
+    /// <summary>
+    /// Name matching the ExternalSystem record
+    /// </summary>
     string SystemName { get; }
 
+    /// <summary>
+    /// Gets field values of the specified type
+    /// </summary>
+    /// <param name="system"></param>
+    /// <param name="trait"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     Task<string[]> GetFieldOptionsAsync(ExternalSystemDto system, TraitType trait, CancellationToken cancellationToken);
 }

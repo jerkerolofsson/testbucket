@@ -3,6 +3,7 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.DependencyInjection;
 
 using MudBlazor.Services;
 
@@ -225,8 +226,8 @@ public class Program
         builder.Services.AddDomainServices();
 
         // Integrations
-        builder.Services.AddSingleton<IProjectDataSource, GitlabProjectDataSource>();
-        builder.Services.AddSingleton<IExternalPipelineRunner, GitlabPipelineRunner>();
+        builder.Services.AddGitHubIntegration();
+        builder.Services.AddGitLabIntegration();
         builder.Services.AddDotHttpApiTestExtension();
 
         builder.Services.AddHotKeys2();

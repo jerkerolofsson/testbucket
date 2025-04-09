@@ -18,6 +18,9 @@ public class GitlabProjectDataSource : IProjectDataSource
 
     private readonly IMemoryCache _memoryCache;
 
+    /// <summary>
+    /// Name matching the ExternalSystem record
+    /// </summary>
     public string SystemName => "GitLab";
 
     public GitlabProjectDataSource(IMemoryCache memoryCache)

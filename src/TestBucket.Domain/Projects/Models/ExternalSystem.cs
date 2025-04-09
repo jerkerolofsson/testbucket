@@ -37,4 +37,14 @@ public class ExternalSystem : ProjectEntity
     /// True if enabled
     /// </summary>
     public bool Enabled { get; set; }
+
+    /// <summary>
+    /// Enable reading releases from this system
+    /// </summary>
+    public bool EnableReleases { get; set; }
+
+    /// <summary>
+    /// Enable reading milestones from this system
+    /// </summary>
+    public bool EnableMilestones { get; set; }
 }

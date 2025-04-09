@@ -49,6 +49,9 @@ internal class ProjectManager : IProjectManager
         var integrations = (await GetProjectIntegrationsAsync(principal, testProjectId)).ToArray();
         var dtos = integrations.Select(x => new ExternalSystemDto
         {
+            Enabled = x.Enabled,
+            EnableMilestones = x.EnableMilestones,
+            EnableReleases = x.EnableReleases,
             Name = x.Name,
             AccessToken = x.AccessToken,
             BaseUrl = x.BaseUrl,
@@ -61,11 +64,20 @@ internal class ProjectManager : IProjectManager
         {
             if (dataSource.SupportedTraits.Contains(traitType))
             {
-                var dto = dtos.Where(x => x.Name == dataSource.SystemName).FirstOrDefault();
+                var dto = dtos.Where(x => x.Name == dataSource.SystemName && x.Enabled).FirstOrDefault();
                 if (dto is not null)
                 {
                     try
                     {
+                        if (!dto.EnableReleases && traitType == TraitType.Release)
+                        {
+                            continue;
+                        }
+                        if (!dto.EnableMilestones && traitType == TraitType.Milestone)
+                        {
+                            continue;
+                        }
+
                         var options = await dataSource.GetFieldOptionsAsync(dto, traitType, cancellationToken);
                         if (options.Length > 0)
                         {

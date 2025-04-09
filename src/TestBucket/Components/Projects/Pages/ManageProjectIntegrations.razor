@@ -11,6 +11,8 @@
     <ExternalIntegrationEditor Name="GitLab" Integration="@_gitlab" IntegrationChanged="OnGitlabChanged" Icon="@TbIcons.Brands.Gitlab"/>
     <ExternalIntegrationEditor Name="GitHub" Integration="@_github" IntegrationChanged="OnGithubChanged" Icon="@Icons.Custom.Brands.GitHub" />
     <ExternalIntegrationEditor Name="Azure DevOps" Integration="@_azure" IntegrationChanged="OnAzureChanged" Icon="@Icons.Custom.Brands.MicrosoftAzure" />
+
+    <ExternalIntegrationEditor Name="Trello" Integration="@_trello" IntegrationChanged="OnTrelloChanged" Icon="@Icons.Custom.Brands.Awesome" />
 </MudStack>
 
 
@@ -21,6 +23,7 @@
     private ExternalSystem? _github = null;
     private ExternalSystem? _gitlab = null;
     private ExternalSystem? _azure = null;
+    private ExternalSystem? _trello = null;
 
     private async Task OnAzureChanged(ExternalSystem integration)
     {
@@ -48,6 +51,14 @@
         }
     }
 
+    private async Task OnTrelloChanged(ExternalSystem integration)
+    {
+        if (ProjectSlug is not null)
+        {
+            _trello = integration;
+            await projectController.SaveProjectIntegrationsAsync(ProjectSlug, integration);
+        }
+    }
     protected override async Task OnParametersSetAsync()
     {
         if (ProjectSlug is not null)
@@ -56,6 +67,7 @@
             _gitlab = integrations.Where(x => x.Name.Equals("GitLab", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
             _github = integrations.Where(x => x.Name.Equals("GitHub", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
             _azure = integrations.Where(x => x.Name.Equals("Azure DevOp", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
+            _trello = integrations.Where(x => x.Name.Equals("Trello", StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
         }
     }
 }

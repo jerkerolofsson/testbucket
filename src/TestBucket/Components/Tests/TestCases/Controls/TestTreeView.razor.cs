@@ -488,7 +488,7 @@ public partial class TestTreeView
             if (node is not null)
             {
                 node.Text = suiteFolder.Name;
-                node.Icon = suiteFolder.Icon;
+                node.Icon = testBrowser.GetIcon(suiteFolder);
                 if (node.Value is not null)
                 {
                     node.Value.Color = suiteFolder.Color;
@@ -596,7 +596,7 @@ public partial class TestTreeView
             if (node is not null)
             {
                 node.Text = suite.Name;
-                node.Icon = suite.Icon;
+                node.Icon = testBrowser.GetIcon(suite);
                 if (node.Value is not null)
                 {
                     node.Value.Color = suite.Color;

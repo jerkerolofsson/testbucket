@@ -6,18 +6,22 @@
 @inject RequirementEditorController editor
 @inject AppNavigationManager appNav
 
-<MudStack Spacing="0" Class="pa-2" Style="width: 100%;">
-    <MudStack Row="true" Class="pr-2 pl-2" Spacing="0" AlignItems="AlignItems.Center">
-        <MudTextField 
-            Placeholder="Search Requirements"
-            Clearable
-            Variant="Variant.Outlined"
-            Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
+<MudStack Spacing="0" Style="width: 100%;">
+    <MudStack Row="true" class="tb-treeview-toolbar" Spacing="0">
 
-        <MudSpacer />
-        <MudIconButton Class="rounded-0"  Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementSpecificationAsync" />
-        <MudIconButton Class="rounded-0" Icon="@Icons.Material.Filled.ImportExport" Href="@(appNav.GetImportSpecificationsUrl())" />
+        <MudStack Row="true" Class="pr-2 pl-2" Style="width: 100%" Spacing="0" AlignItems="AlignItems.Center">
+            <MudTextField 
+                Placeholder="Search Requirements"
+                Clearable
+                Variant="Variant.Outlined"
+                Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
 
+            <MudSpacer />
+
+            <MudIconButton Class="rounded-0" Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementSpecificationAsync" />
+            <MudIconButton Class="rounded-0" Icon="@Icons.Material.Filled.ImportExport" Href="@(appNav.GetImportSpecificationsUrl())" />
+
+        </MudStack>
     </MudStack>
 
     @if (_isSearching)

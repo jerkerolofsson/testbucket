@@ -288,7 +288,7 @@ internal class TestBrowser : TenantBaseService
         {
             Value = new BrowserItem() { TestSuite = testSuite, Color = testSuite.Color },
             Text = testSuite.Name,
-            Icon = testSuite.Icon ?? Icons.Material.Outlined.Article,
+            Icon = GetIcon(testSuite),
             Children = null,
         };
     }
@@ -304,7 +304,7 @@ internal class TestBrowser : TenantBaseService
                 Children = null,
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = FOLDER_PIPELINES, TestRun = testRun },
-                Icon = Icons.Material.Outlined.FolderOpen,
+                Icon = Icons.Material.Outlined.Folder,
             });
         }
         if (request.ShowTestRunTests)
@@ -315,7 +315,7 @@ internal class TestBrowser : TenantBaseService
                 Children = [],
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = FOLDER_RUN_TESTS, TestRun = testRun },
-                Icon = Icons.Material.Outlined.FolderOpen,
+                Icon = Icons.Material.Outlined.Folder,
             });
         }
 
@@ -331,6 +331,15 @@ internal class TestBrowser : TenantBaseService
 
         return treeNode;
     }
+    public string GetIcon(TestSuite suite)
+    {
+        if (!string.IsNullOrEmpty(suite.Icon))
+        {
+            return suite.Icon;
+        }
+
+        return Icons.Material.Outlined.Article;
+    }
 
     public string GetIcon(TestSuiteFolder folder)
     {
@@ -339,7 +348,7 @@ internal class TestBrowser : TenantBaseService
             return folder.Icon;
         }
 
-        return Icons.Material.Filled.Folder;
+        return Icons.Material.Outlined.Folder;
     }
     public string GetIcon(TestCase x)
     {

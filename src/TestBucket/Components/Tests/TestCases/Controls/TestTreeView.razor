@@ -14,48 +14,50 @@
 @implements ITestRunObserver
 @implements IDisposable
 
-<MudStack Spacing="0" Class="pa-2" Style="width: 100%;">
-    <MudStack Row="true" Style="border-bottom: solid 1px var(--mud-palette-darken)" Spacing="0">
+<MudStack Spacing="0" Style="width: 100%;">
+    <MudStack Row="true" class="tb-treeview-toolbar" Spacing="0">
 
-        <MudTextField Placeholder="Search Tests"
-        Clearable
-        Variant="Variant.Outlined"
-        Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
+        <MudStack Row="true" Class="pr-2 pl-2" Style="width: 100%" Spacing="0" AlignItems="AlignItems.Center">
+            <MudTextField 
+                Placeholder="@loc["search-tests"]"
+                Clearable
+                Variant="Variant.Outlined"
+                Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
 
-        <MudSpacer />
+            <MudSpacer />
 
-        @if (appNavigationManager.State.SelectedTestCase is not null)
-        {
-            <MudIconButton Class="rounded-0" Size="Size.Small" OnClick="SyncWithActiveDocumentAsync" Icon="@Icons.Material.Filled.CompareArrows" />
-        }
-
-        <MudMenu Class="rounded-0" Size="Size.Small" Icon="@Icons.Material.Filled.MoreVert">
-
-            @if (_selectedTreeItem?.Folder is not null)
+            @if (appNavigationManager.State.SelectedTestCase is not null)
             {
-                <FolderMenuItems Folder="@_selectedTreeItem.Folder" Project="@Project" Team="@Team"/>
-                <MudDivider />
+                <MudIconButton Class="rounded-0" OnClick="SyncWithActiveDocumentAsync" Icon="@Icons.Material.Filled.CompareArrows" />
             }
-            else if (_selectedTreeItem?.TestCase is not null)
-            {
-                <TestCaseMenuItems TestCase="@_selectedTreeItem.TestCase" Project="@Project" Team="@Team" />
-                <MudDivider />
-            }
-            else if (_selectedTreeItem?.TestSuite is not null)
-            {
-                <TestSuiteMenuItems Suite="_selectedTreeItem.TestSuite" Project="@Project" Team="@Team" />
-                <MudDivider />
-            }
-            else if (_selectedTreeItem?.TestRun is not null)
-            {
-                <TestRunMenuItems Run="_selectedTreeItem.TestRun" Project="@Project" Team="@Team" />
-                <MudDivider />
-            }
-            <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="AddTestSuiteAsync" Label="Add test suite" />
-            <MudDivider />
-            <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import results" />
-        </MudMenu>
 
+            <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert">
+
+                @if (_selectedTreeItem?.Folder is not null)
+                {
+                    <FolderMenuItems Folder="@_selectedTreeItem.Folder" Project="@Project" Team="@Team"/>
+                    <MudDivider />
+                }
+                else if (_selectedTreeItem?.TestCase is not null)
+                {
+                    <TestCaseMenuItems TestCase="@_selectedTreeItem.TestCase" Project="@Project" Team="@Team" />
+                    <MudDivider />
+                }
+                else if (_selectedTreeItem?.TestSuite is not null)
+                {
+                    <TestSuiteMenuItems Suite="_selectedTreeItem.TestSuite" Project="@Project" Team="@Team" />
+                    <MudDivider />
+                }
+                else if (_selectedTreeItem?.TestRun is not null)
+                {
+                    <TestRunMenuItems Run="_selectedTreeItem.TestRun" Project="@Project" Team="@Team" />
+                    <MudDivider />
+                }
+                <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="AddTestSuiteAsync" Label="Add test suite" />
+                <MudDivider />
+                <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import results" />
+            </MudMenu>
+        </MudStack>
     </MudStack>
 
     <TreeView 

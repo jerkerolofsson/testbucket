@@ -11,18 +11,18 @@
 @inject AuthenticationStateProvider authStateProvider
 
 <DropZone T="TestEntity" OnDrop="OnDrop">
-    <MudDataGrid ServerData="LoadGridData" 
-    Style="width: 100%"
-    Dense="true"
-    Hover="true"
-    Bordered="true"
-    RowsPerPage="25"
-    SelectOnRowClick="true"
-    MultiSelection="false"
-    T="TestCaseRun"
-    RowClick="(e) => OnClicked(e.Item)"
-    @ref="_dataGrid"
-    SortMode="SortMode.None">
+    <MudDataGrid ServerData="LoadGridData"
+                 Class="tb-test-case-run-grid"
+                 Dense="true"
+                 Hover="true"
+                 Bordered="true"
+                 RowsPerPage="25"
+                 SelectOnRowClick="true"
+                 MultiSelection="false"
+                 T="TestCaseRun"
+                 RowClick="(e) => OnClicked(e.Item)"
+                 @ref="_dataGrid"
+                 SortMode="SortMode.None">
 
         <ToolBarContent>
             <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">

@@ -52,8 +52,8 @@
                         <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" />
                         <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged"/>
 
-                        <TbNavLink Href="@requirementsUrl">Oracle</TbNavLink>
-                        <TbNavLink Href="@testsUrl">Testing</TbNavLink>
+                        <TbNavLink Href="@requirementsUrl"> <MudIcon Icon="@Icons.Material.Outlined.TempleBuddhist" Size="Size.Small"/> Oracle</TbNavLink>
+                        <TbNavLink Href="@testsUrl"> <MudIcon Icon="@TbIcons.Filled.PaperPlane" Size="Size.Small" /> Testing</TbNavLink>
                         <TbNavLink Href="@reportingUrl">Reporting</TbNavLink>
                         <TbNavLink Href="@projectSettingsUrl">Project</TbNavLink>
 

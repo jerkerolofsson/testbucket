@@ -188,6 +188,10 @@ p.mud-typography-subtitle1 {
      white-space: nowrap;
  }
 
+ a.mud-link.mud-link-underline-hover[role='button'] {
+     color: var(--mud-palette-text-primary) !important;
+ }
+
  .tb-nav-link {
      height: 100%;
      transition: all linear 150ms;
@@ -196,6 +200,18 @@ p.mud-typography-subtitle1 {
      border-bottom: solid 2px transparent;
      border-top-left-radius: 5px;
      border-top-right-radius: 5px;
+
+     display: flex;
+     align-items: center;
+     gap: 8px;
+ }
+
+ .tb-test-case-grid,
+ .tb-test-case-run-grid {
+     width: 100%;
+     height: 100%;
+     display: grid;
+     grid-template-rows: auto 1fr auto;
  }
 
  article.center {
@@ -381,6 +397,19 @@ p.mud-typography-subtitle1 {
     fill: currentColor;
  }
 
+ .tb-treeview-toolbar,
+.mud-toolbar {
+    --mud-internal-toolbar-height: 44px;
+    height: var(--mud-internal-toolbar-height);
+    border-bottom: solid 1px var(--mud-palette-dark);
+}
+
+ @media (min-width: 600px) {
+    .mud-toolbar {
+        --mud-internal-toolbar-height: 44px;
+    }
+}
+
  .mud-dialog .mud-dialog-title,
  .mud-dialog-title h6.mud-typography.mud-typography-h6 {
      font-weight: bold;
@@ -395,11 +424,11 @@ p.mud-typography-subtitle1 {
 
 .tb-splitter-bar {
     display: flex;
-    background: rgba(255,255,255,0.2);
+    background: transparent;    
 }
 
 .tb-splitter-bar-fill {
-    background: var(--bar-color);
+    background: var(--mud-palette-dark, rgba(255,255,255,0.2));
 }
 
 .splitter > .tb-splitter-content-start,
@@ -409,13 +438,13 @@ p.mud-typography-subtitle1 {
 
 .splitter.vertical  > .tb-splitter-bar> .tb-splitter-bar-fill {
     width: 100%;
-    height: 2px;
+    height: 1px;
     margin-top: auto;
     margin-bottom: auto;
 }
 
 .splitter.horizontal  > .tb-splitter-bar> .tb-splitter-bar-fill {
-    width: 2px;
+    width: 1px;
     height: 100%;
     margin-left: auto;
     margin-right: auto;

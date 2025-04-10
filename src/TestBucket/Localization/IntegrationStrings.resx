@@ -123,6 +123,21 @@
   <data name="add-integration" xml:space="preserve">
     <value>Add Integration</value>
   </data>
+  <data name="create-issues" xml:space="preserve">
+    <value>Create Issues</value>
+  </data>
+  <data name="create-pipelines" xml:space="preserve">
+    <value>Create Automation Pipelines</value>
+  </data>
+  <data name="get-issues" xml:space="preserve">
+    <value>Get Issues</value>
+  </data>
+  <data name="get-milestones" xml:space="preserve">
+    <value>Read milestones</value>
+  </data>
+  <data name="get-releases" xml:space="preserve">
+    <value>Read Releases</value>
+  </data>
   <data name="integration-base-url" xml:space="preserve">
     <value>Base URL</value>
   </data>

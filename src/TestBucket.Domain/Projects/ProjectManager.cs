@@ -14,6 +14,7 @@ using TestBucket.Traits.Core;
 using TestBucket.Contracts.Projects;
 using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Projects.Mapping;
 
 namespace TestBucket.Domain.Projects;
 internal class ProjectManager : IProjectManager
@@ -47,18 +48,7 @@ internal class ProjectManager : IProjectManager
     public async Task<string[]?> GetFieldOptionsAsync(ClaimsPrincipal principal, long testProjectId, TraitType traitType, CancellationToken cancellationToken)
     {
         var integrations = (await GetProjectIntegrationsAsync(principal, testProjectId)).ToArray();
-        var dtos = integrations.Select(x => new ExternalSystemDto
-        {
-            Enabled = x.Enabled,
-            EnableMilestones = x.EnableMilestones,
-            EnableReleases = x.EnableReleases,
-            Name = x.Name,
-            AccessToken = x.AccessToken,
-            BaseUrl = x.BaseUrl,
-            ExternalProjectId = x.ExternalProjectId,
-            ReadOnly = x.ReadOnly
-
-        }).ToArray();
+        var dtos = integrations.Select(x => x.ToDto()).ToArray();
 
         foreach (var dataSource in _projectDataSources)
         {
@@ -69,11 +59,13 @@ internal class ProjectManager : IProjectManager
                 {
                     try
                     {
-                        if (!dto.EnableReleases && traitType == TraitType.Release)
+                        // Verify that the capability is enabled for the data source
+                        if (traitType == TraitType.Release && 
+                            (dto.EnabledCapabilities&ExternalSystemCapability.GetReleases) != ExternalSystemCapability.GetReleases)
                         {
                             continue;
                         }
-                        if (!dto.EnableMilestones && traitType == TraitType.Milestone)
+                        if (traitType == TraitType.Milestone && (dto.EnabledCapabilities & ExternalSystemCapability.GetMilestones) != ExternalSystemCapability.GetMilestones)
                         {
                             continue;
                         }

@@ -226,8 +226,10 @@ public class Program
         builder.Services.AddDomainServices();
 
         // Integrations
-        builder.Services.AddGitHubIntegration();
-        builder.Services.AddGitLabIntegration();
+        builder.Services.AddGitHubExtension();
+        builder.Services.AddTrelloExtension();
+        builder.Services.AddGitlabExtension();
+        builder.Services.AddAzureExtension();
         builder.Services.AddDotHttpApiTestExtension();
 
         builder.Services.AddHotKeys2();

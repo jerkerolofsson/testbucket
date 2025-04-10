@@ -1,6 +1,8 @@
 ﻿@using TestBucket.Contracts.Integrations
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<IntegrationStrings> integrationLoc
 @inject ProjectController controller
+@inject AppNavigationManager appNavigationManager
 
 @if (TestSuite is not null)
 {
@@ -9,25 +11,38 @@
 
     <MudText Typo="Typo.h2">@loc["automation"]</MudText>
 
-    <Field Row>
-        <FieldHeader>@loc["ci-cd"]</FieldHeader>
-        <MudSpacer />
-        <PipelineSystemPicker Project="@_project" ExternalPipelineRunner="@_runner" ExternalPipelineRunnerChanged="OnExternalPipelineRunnerChanged" />
-    </Field>
-
-    @if (_runner is not null)
+    @if(_runners.Count == 0)
+    {
+        @if (Project is not null)
+        { 
+            string url = appNavigationManager.GetUrl(Project) + "/Integrations";
+            <MudLink Href="@url">@integrationLoc["no-integration"]</MudLink>
+        }
+   }
+    else
     {
         <Field Row>
-            <FieldHeader>@loc["ci-cd-ref"]</FieldHeader>
+            <FieldHeader>@loc["ci-cd"]</FieldHeader>
             <MudSpacer />
-            <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdRefChanged" Value="@TestSuite.DefaultCiCdRef"></MudTextField>
+            <PipelineSystemPicker Project="@_project" ExternalPipelineRunner="@_runner" ExternalPipelineRunnerChanged="OnExternalPipelineRunnerChanged" />
         </Field>
+
+        @if (_runner is not null)
+        {
+            <Field Row>
+                <FieldHeader>@loc["ci-cd-ref"]</FieldHeader>
+                <MudSpacer />
+                <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdRefChanged" Value="@TestSuite.DefaultCiCdRef"></MudTextField>
+            </Field>
+        }
     }
 }
 
 @code {
+    [CascadingParameter] TestProject? Project { get; set; }
     [Parameter] public TestSuite? TestSuite { get; set; }
     [Parameter] public EventCallback<TestSuite> TestSuiteChanged { get; set; }
+    private IReadOnlyList<IExternalPipelineRunner> _runners = [];
     private IExternalPipelineRunner? _runner;
     private TestProject? _project;
 
@@ -51,8 +66,8 @@
                 _project = await controller.GetProjectByIdAsync(TestSuite.TestProjectId.Value);
             }
 
-            var runners = await controller.GetPipelineRunnersAsync(TestSuite.TestProjectId.Value);
-            _runner = runners.Where(x => x.SystemName == TestSuite.CiCdSystem).FirstOrDefault();
+            _runners = await controller.GetPipelineRunnersAsync(TestSuite.TestProjectId.Value);
+            _runner = _runners.Where(x => x.SystemName == TestSuite.CiCdSystem).FirstOrDefault();
         }
     }
 

@@ -32,12 +32,12 @@ public record class ExternalSystemDto
     public bool Enabled { get; set; }
 
     /// <summary>
-    /// Enable reading releases from this system
+    /// Enabled capabilities. This can be configured by the user
     /// </summary>
-    public bool EnableReleases { get; set; }
+    public ExternalSystemCapability EnabledCapabilities { get; set; }
 
     /// <summary>
-    /// Enable reading milestones from this system
+    /// Supported capabilities. This is defined in the extension
     /// </summary>
-    public bool EnableMilestones { get; set; }
+    public ExternalSystemCapability SupportedCapabilities { get; set; }
 }

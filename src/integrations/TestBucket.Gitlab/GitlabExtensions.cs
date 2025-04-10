@@ -10,8 +10,9 @@ using TestBucket.Gitlab;
 namespace Microsoft.Extensions.DependencyInjection;
 public static class GitlabExtensions
 {
-    public static IServiceCollection AddGitLabIntegration(this IServiceCollection services)
+    public static IServiceCollection AddGitlabExtension (this IServiceCollection services)
     {
+        services.AddSingleton<IExtension, GitlabExtension>();
         services.AddSingleton<IProjectDataSource, GitlabProjectDataSource>();
         services.AddSingleton<IExternalPipelineRunner, GitlabPipelineRunner>();
 

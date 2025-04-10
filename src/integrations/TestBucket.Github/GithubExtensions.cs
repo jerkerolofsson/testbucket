@@ -10,8 +10,9 @@ using TestBucket.Github;
 namespace Microsoft.Extensions.DependencyInjection;
 public static class GithubExtensions
 {
-    public static IServiceCollection AddGitHubIntegration(this IServiceCollection services)
+    public static IServiceCollection AddGitHubExtension(this IServiceCollection services)
     {
+        services.AddSingleton<IExtension, GithubExtension>();
         services.AddSingleton<IProjectDataSource, GithubProjectDataSource>();
         return services;
     }

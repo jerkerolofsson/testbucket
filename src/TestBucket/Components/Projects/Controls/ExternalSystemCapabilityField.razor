@@ -1,0 +1,39 @@
+﻿@using TestBucket.Contracts.Projects
+
+@if (Title is not null)
+{
+    bool enabled = (EnabledCapabilities & Capability) == Capability;
+    bool supported = (SupportedCapabilities & Capability) == Capability;
+
+    if(supported)
+    {
+        <Field Row>
+            <FieldHeader>@Title</FieldHeader>
+            <MudSpacer />
+            <MudSwitchM3 Color="Color.Primary" T="bool" Value="@enabled" ValueChanged="async (e) => await SetFlagAsync(e)" />
+        </Field>
+    }
+}
+
+@code {
+
+    [Parameter] public string? Title { get; set; }
+
+    [Parameter] public ExternalSystemCapability SupportedCapabilities { get; set; }
+    [Parameter] public ExternalSystemCapability EnabledCapabilities { get; set; }
+    [Parameter] public ExternalSystemCapability Capability { get; set; }
+    [Parameter] public EventCallback<ExternalSystemCapability> OnEnabled { get; set; }
+    [Parameter] public EventCallback<ExternalSystemCapability> OnDisabled { get; set; }
+
+    private async Task SetFlagAsync(bool enabled)
+    {
+        if(enabled) 
+        {
+            await OnEnabled.InvokeAsync(Capability);
+        }
+        else
+        {
+            await OnDisabled.InvokeAsync(Capability);
+        }
+    }
+}

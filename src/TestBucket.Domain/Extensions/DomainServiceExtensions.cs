@@ -6,6 +6,7 @@ using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Automation.Services;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Environments;
+using TestBucket.Domain.ExtensionManagement;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Permissions;
@@ -41,6 +42,8 @@ public static class DomainServiceExtensions
         services.AddScoped<IUserPermissionsManager, UserPermissionsManager>();
         services.AddScoped<IClaimsTransformation, PermissionClaimsTransformation>();
         services.AddScoped<ITenantManager, TenantManager>();
+
+        services.AddScoped<IExtensionManager, ExtensionManager>();
 
         services.AddScoped<IMarkdownDetector,TemplateDetector>();
         services.AddScoped<IMarkdownDetector,HybridDetector>();

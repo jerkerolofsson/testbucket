@@ -1,6 +1,8 @@
 ﻿@using TestBucket.Components.Teams
 @using TestBucket.Components.Teams.Controls
 @using TestBucket.Components.Uploads.Controls
+@using TestBucket.Contracts.Integrations
+@using TestBucket.Contracts.Projects
 @using TestBucket.Domain.Files.Models
 @using TestBucket.Domain.Teams.Models
 @inject ProjectController projectService
@@ -14,12 +16,17 @@
             {
                 <MudIcon Size="Size.Large" Icon="@Icon" />
             }
-            <MudText Typo="Typo.h1">@Name</MudText>
+            <MudText Typo="Typo.h1">@(Extension?.FriendlyName ?? Name)</MudText>
         </MudStack>
+
+        @if(Extension is not null)
+        {
+            <MudText Class="mb-3">@Extension?.Description</MudText>
+        }
 
         @if(Integration is null)
         {
-            <MudText>@loc["no-integration"]</MudText>
+            <MudText Style="font-weight: bold">@loc["no-integration"]</MudText>
 
             <MudStack Row Class="mt-5">
                 <MudButton Variant="Variant.Outlined" OnClick="AddAsync">@loc["add-integration"]</MudButton>
@@ -35,12 +42,21 @@
             <Field Row>
                 <FieldHeader>@loc["project-id"]</FieldHeader>
                 <MudSpacer />
-                <MudTextField Value="Integration.ExternalProjectId" T="string" ValueChanged="ExternalProjectIdChanged" />
+                <MudTextField 
+                    Value="Integration.ExternalProjectId" 
+                    T="string" 
+                    ValueChanged="ExternalProjectIdChanged" 
+                    HelperText="@Extension?.ProjectIdHelperText" />
             </Field>
             <Field Row>
                 <FieldHeader>@loc["access-token"]</FieldHeader>
                 <MudSpacer />
-                <MudTextField InputType="InputType.Password" Value="Integration.AccessToken" T="string" ValueChanged="AccessTokenChanged" />
+                <MudTextField 
+                    InputType="InputType.Password" 
+                    Value="Integration.AccessToken" 
+                    T="string" 
+                    ValueChanged="AccessTokenChanged"
+                    HelperText="@Extension?.AccessTokenHelperText" />
             </Field>
 
             <Field Row>
@@ -49,17 +65,23 @@
                 <MudSwitchM3 Color="Color.Primary" T="bool" Value="Integration.Enabled" ValueChanged="EnabledChanged" />
             </Field>
 
-            <Field Row>
-                <FieldHeader>@loc["milestones"]</FieldHeader>
-                <MudSpacer />
-                <MudSwitchM3 Color="Color.Primary" T="bool" Value="Integration.EnableMilestones" ValueChanged="EnableMilestonesChanged" />
-            </Field>
+            @if(Extension is not null)
+            {
+                ExternalSystemCapability[] capabilities = [ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases];
+                string[] labels = ["create-pipeline", "create-issues", "get-issues", "get-milestones", "get-releases"];
 
-            <Field Row>
-                <FieldHeader>@loc["releases"]</FieldHeader>
-                <MudSpacer />
-                <MudSwitchM3 Color="Color.Primary" T="bool" Value="Integration.EnableReleases" ValueChanged="EnableReleasesChanged" />
-            </Field>
+                @for(int i=0; i<Math.Min(capabilities.Length, labels.Length); i++)
+                {
+                    <ExternalSystemCapabilityField SupportedCapabilities="@Extension.SupportedCapabilities"
+                                                   EnabledCapabilities="@Integration.EnabledCapabilities"
+                                                   Title="@loc[labels[i]]"
+                                                   OnEnabled="OnEnabledAsync"
+                                                   OnDisabled="OnDisabledAsync"
+                                                   Capability="@capabilities[i]" />
+                }
+
+                <MudText Class="mt-3" Style="opacity: 0.4">@Extension.FriendlyName @Extension.Version</MudText>
+            }
         }
     </MudPaper>
 }
@@ -67,9 +89,10 @@
 @code {
     [Parameter] public EventCallback<ExternalSystem> IntegrationChanged { get; set; }
     [Parameter] public ExternalSystem? Integration { get; set; }
+    [Parameter] public IExtension? Extension { get; set; }
     [Parameter] public string? Icon { get; set; }
     [Parameter] public string? Name { get; set; }
-    
+
     private async Task ExternalProjectIdChanged(string externalProjectId)
     {
         if (Integration is not null)
@@ -102,22 +125,32 @@
             await OnChangedAsync();
         }
     }
-    private async Task EnableReleasesChanged(bool value)
+    private async Task OnDisabledAsync(ExternalSystemCapability capability)
     {
         if (Integration is not null)
         {
-            Integration.EnableReleases = value;
+            if (Extension is not null)
+            {
+                Integration.SupportedCapabilities = Extension.SupportedCapabilities;
+            }
+            Integration.EnabledCapabilities &= ~capability;
             await OnChangedAsync();
         }
     }
-    private async Task EnableMilestonesChanged(bool value)
+
+    private async Task OnEnabledAsync(ExternalSystemCapability capability)
     {
         if (Integration is not null)
         {
-            Integration.EnableMilestones = value;
+            if(Extension is not null)
+            {
+                Integration.SupportedCapabilities = Extension.SupportedCapabilities;
+            }
+            Integration.EnabledCapabilities |= capability;
             await OnChangedAsync();
         }
     }
+
     private async Task OnChangedAsync()
     {
         await IntegrationChanged.InvokeAsync(Integration);
@@ -129,10 +162,13 @@
             return;
         }
 
+
         await IntegrationChanged.InvokeAsync(new ExternalSystem
             {
                 Name = this.Name,
+                BaseUrl = Extension?.DefaultBaseUrl,
                 Enabled = false,
+                SupportedCapabilities = Extension?.SupportedCapabilities ?? ExternalSystemCapability.None
             });
     }
 }

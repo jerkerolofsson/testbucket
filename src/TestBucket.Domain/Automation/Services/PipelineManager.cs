@@ -16,6 +16,7 @@ using TestBucket.Domain.Automation.Mapping;
 using TestBucket.Domain.Automation.Models;
 using TestBucket.Domain.Automation.Specifications.Pipelines;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Projects.Mapping;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing;
 
@@ -67,7 +68,8 @@ internal class PipelineManager : IPipelineManager
         var result = await _memoryCache.GetOrCreateAsync(key, async (e) =>
         {
             e.AbsoluteExpiration = DateTimeOffset.UtcNow.AddHours(1);
-            return await _projectRepository.GetProjectIntegrationsAsync(tenantId, testProjectId);
+            var integrations = await _projectRepository.GetProjectIntegrationsAsync(tenantId, testProjectId);
+            return integrations;
         });
 
         return result!;
@@ -79,7 +81,7 @@ internal class PipelineManager : IPipelineManager
         var result = new List<IExternalPipelineRunner>();
         foreach (var integration in _pipelineRunners)
         {
-            var config = configs.Where(x => x.Name == integration.SystemName).FirstOrDefault();
+            var config = configs.Where(x => x.Name == integration.SystemName && x.Enabled).FirstOrDefault();
             if (config is not null)
             {
                 result.Add(integration);
@@ -91,15 +93,7 @@ internal class PipelineManager : IPipelineManager
     public async Task<ExternalSystemDto[]> GetIntegrationConfigsAsync(ClaimsPrincipal principal, long testProjectId)
     {
         var integrations = (await GetProjectIntegrationsAsync(principal, testProjectId)).ToArray();
-        var configs = integrations.Select(x => new ExternalSystemDto
-        {
-            Name = x.Name,
-            AccessToken = x.AccessToken,
-            BaseUrl = x.BaseUrl,
-            ExternalProjectId = x.ExternalProjectId,
-            ReadOnly = x.ReadOnly
-
-        }).ToArray();
+        var configs = integrations.Select(x => x.ToDto()).ToArray();
         return configs;
     }
 

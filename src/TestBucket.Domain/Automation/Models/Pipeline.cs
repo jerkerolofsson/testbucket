@@ -5,6 +5,7 @@ using TestBucket.Domain.Testing.Models;
 namespace TestBucket.Domain.Automation.Models;
 public class Pipeline : ProjectEntity
 {
+
     public long Id { get; set; }
 
     /// <summary>

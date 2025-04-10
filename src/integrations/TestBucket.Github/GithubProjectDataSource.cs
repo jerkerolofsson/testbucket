@@ -11,7 +11,7 @@ public class GithubProjectDataSource : IProjectDataSource
 {
     public TraitType[] SupportedTraits => [TraitType.Milestone];
 
-    public string SystemName => "GitHub";
+    public string SystemName => ExtensionConstants.SystemName;
 
     public async Task<string[]> GetFieldOptionsAsync(ExternalSystemDto system, TraitType trait, CancellationToken cancellationToken)
     {

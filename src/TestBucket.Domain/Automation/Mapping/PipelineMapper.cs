@@ -19,6 +19,11 @@ internal static class PipelineMapper
             dest.Status = src.Status;
             changed = true;
         }
+        if (dest.HasArtifacts != src.HasArtifacts)
+        {
+            dest.HasArtifacts = src.HasArtifacts;
+            changed = true;
+        }
         if (dest.FinishedAt != src.FinishedAt)
         {
             dest.FinishedAt = src.FinishedAt;
@@ -117,6 +122,7 @@ internal static class PipelineMapper
                         CiCdJobIdentifier = srcJob.CiCdJobIdentifier, 
                         Created =  DateTimeOffset.UtcNow,
                         Modified = DateTimeOffset.UtcNow,
+                        HasArtifacts = srcJob.HasArtifacts,
                     };
                     dest.PipelineJobs.Add(destJob);
                 }

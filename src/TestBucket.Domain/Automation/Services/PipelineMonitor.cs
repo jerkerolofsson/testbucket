@@ -5,6 +5,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using OpenTelemetry.Trace;
+
+using TestBucket.Contracts.Automation;
 using TestBucket.Domain.Automation.Models;
 
 namespace TestBucket.Domain.Automation.Services;
@@ -19,6 +22,11 @@ internal class PipelineMonitor
         _pipelineManager = pipelineManager;
         _principal = principal;
         _pipeline = pipeline;
+    }
+
+    private static bool IsCompleted(Pipeline pipeline)
+    {
+        return pipeline.Status is PipelineStatus.Failed or PipelineStatus.Completed or PipelineStatus.Success or PipelineStatus.Error;
     }
 
     internal void Start()
@@ -40,9 +48,10 @@ internal class PipelineMonitor
                     if (pipeline is not null)
                     {
                         lastSuccess = DateTimeOffset.UtcNow;
-                        if (pipeline.IsCompleted)
+                        if (IsCompleted(pipeline))
                         {
                             // Pipeline has completed
+                            await _pipelineManager.OnPipelineCompletedAsync(_principal, pipeline);
                             return;
                         }
                     }

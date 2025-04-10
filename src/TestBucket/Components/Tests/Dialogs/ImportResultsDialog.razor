@@ -77,27 +77,11 @@
 
     private void DetectFormat(FileResource file)
     {
-        var text = Encoding.UTF8.GetString(file.Data, 0, 1000);
-        if (text.Contains("<testsuites"))
+        var format = TestResultDetector.Detect(file.Data);
+        if(format != TestResultFormat.UnknownFormat)
         {
-            _options.Format = TestResultFormat.JUnitXml;
+            _options.Format = format;
         }
-        else if (text.Contains("<test-results"))
-        {
-            _options.Format = TestResultFormat.NUnitXml;
-        }
-        else if (text.Contains("<TestRun"))
-        {
-            _options.Format = TestResultFormat.MicrosoftTrx;
-        }
-        else if (text.Contains("<assemblies "))
-        {
-            _options.Format = TestResultFormat.xUnitXml;
-        }
-        else if (text.Contains("{\"results\""))
-        {
-            _options.Format = TestResultFormat.CommonTestReportFormat;
-        }        
     }
 
     private void Submit()

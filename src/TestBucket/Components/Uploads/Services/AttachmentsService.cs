@@ -13,9 +13,20 @@ internal class AttachmentsService : TenantBaseService
     }
 
     /// <summary>
+    /// Returns attachments to a test run
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<FileResource>> GetTestRunAttachmentsAsync(long id)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _fileRepository.GetTestRunAttachmentsAsync(tenantId, id);
+    }
+
+    /// <summary>
     /// Returns attachments to a requirement
     /// </summary>
-    /// <param name="testCaseId"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     public async Task<IReadOnlyList<FileResource>> GetRequirementAttachmentsAsync(long id)
     {
@@ -23,11 +34,10 @@ internal class AttachmentsService : TenantBaseService
         return await _fileRepository.GetRequirementAttachmentsAsync(tenantId, id);
     }
 
-    
     /// <summary>
     /// Returns attachments to a requirement
     /// </summary>
-    /// <param name="testCaseId"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     public async Task<IReadOnlyList<FileResource>> GetRequirementSpecificationAttachmentsAsync(long id)
     {
@@ -38,7 +48,7 @@ internal class AttachmentsService : TenantBaseService
     /// <summary>
     /// Returns attachments to a test case
     /// </summary>
-    /// <param name="testCaseId"></param>
+    /// <param name="id"></param>
     /// <returns></returns>
     public async Task<IReadOnlyList<FileResource>> GetTestCaseRunAttachmentsAsync(long testCaseRunId)
     {

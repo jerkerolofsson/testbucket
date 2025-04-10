@@ -9,6 +9,7 @@
     padding: 12px;
     background: var(--mud-palette-black);
     border: solid 1px var(--mud-palette-dark);
+    border-radius: 5px;
     color: var(--mud-palette-tertiary);
 }
 

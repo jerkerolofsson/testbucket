@@ -20,9 +20,35 @@ See [GitLab documentation](gitlab.md)
 If the test suite contains manual tests these will be scheduled. 
 
 A new pipeline will be started for automation. 
-The CI/CD configuration file should run the test cases and upload the results.
+The CI/CD configuration file should run the test cases.
+
+If the pipeline saves the test results as a job artifact, Test Bucket will download and import the results once the pipeline completes.
+
+The artifacts will be scanned and matched against a "glob-pattern". The pattern can be configured for the integration in project settings.
+
+Example: Any TRX file in any directory
+```
+**/*.trx
+```
+
+Example: Match both XML and TRX files in any directory
+```
+**/*.trx;**/*.xml
+```
+
+Example: Only XML files in the specific directory
+```
+./TestResults/*.xml
+```
+
+Example: Only XML files in the specific directory or any sub directory
+```
+./TestResults/**/*.xml
+```
 
 ## Upload files
+
+Alternatively, instead of saving the test results as artifacts the pipeline job can upload the results.
 
 When tests are started from within Test Bucket a short lived access token is created and added as a variable (TB_TOKEN) to the pipeline.
 This access token contains information about the run and project and when the results are uploaded they will be added to the correct test run.

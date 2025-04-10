@@ -1,7 +1,5 @@
 ﻿using System.Diagnostics;
 
-using MediatR;
-
 using TestBucket.Components.Automation;
 using TestBucket.Components.Shared.Icons;
 using TestBucket.Components.Shared.Tree;
@@ -10,7 +8,6 @@ using TestBucket.Components.Tests.Models;
 using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Components.Tests.TestSuites.Services;
 using TestBucket.Domain.Automation.Models;
-using TestBucket.Domain.Automation.Services;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams.Models;

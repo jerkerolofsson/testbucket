@@ -8,6 +8,7 @@ using TestBucket.Domain.Commands;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.ExtensionManagement;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Files;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Progress;
@@ -25,6 +26,7 @@ using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Compiler;
 using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Services.Classification;
+using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Settings;
 using TestBucket.Domain.TestResources;
 
@@ -33,17 +35,20 @@ public static class DomainServiceExtensions
 {
     public static IServiceCollection AddDomainServices(this IServiceCollection services)
     {
-        services.AddMediatR(o =>
-        {
-            o.RegisterServicesFromAssembly(typeof(DomainServiceExtensions).Assembly);
-        });
+        //services.AddMediatR(o =>
+        //{
+        //    o.RegisterServicesFromAssembly(typeof(DomainServiceExtensions).Assembly);
+        //});
+
+        services.AddMediator();
 
         services.AddSingleton<IApiKeyAuthenticator,ApiKeyAuthenticator>();
         services.AddScoped<IUserPermissionsManager, UserPermissionsManager>();
         services.AddScoped<IClaimsTransformation, PermissionClaimsTransformation>();
         services.AddScoped<ITenantManager, TenantManager>();
-
         services.AddScoped<IExtensionManager, ExtensionManager>();
+
+        services.AddScoped<IFileResourceManager, FileResourceManager>();
 
         services.AddScoped<IMarkdownDetector,TemplateDetector>();
         services.AddScoped<IMarkdownDetector,HybridDetector>();

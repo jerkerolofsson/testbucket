@@ -27,8 +27,5 @@
             <_Parameter1>TestBucket.Formats.UnitTests</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Dtos\" />
-  </ItemGroup>
 
 </Project>

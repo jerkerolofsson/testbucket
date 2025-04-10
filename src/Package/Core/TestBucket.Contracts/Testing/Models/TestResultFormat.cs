@@ -32,5 +32,13 @@ public enum TestResultFormat
     /// </summary>
     CommonTestReportFormat = 4,
 
+    /// <summary>
+    /// Zip file, we will need to recurse
+    /// </summary>
+    ZipArchive = 5,
+
+    /// <summary>
+    /// Format is unknown or could not be detected
+    /// </summary>
     UnknownFormat = -1,
 }

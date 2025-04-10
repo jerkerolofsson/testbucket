@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
+
+using Mediator;
 
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
@@ -28,6 +24,7 @@ internal class PipelineManager : IPipelineManager
     private readonly IProjectRepository _projectRepository;
     private readonly List<IExternalPipelineRunner> _pipelineRunners;
     private readonly IMemoryCache _memoryCache;
+    private readonly IMediator _mediator;
 
     private readonly List<IPipelineObserver> _observers = [];
 
@@ -36,13 +33,15 @@ internal class PipelineManager : IPipelineManager
         IPipelineRepository repository,
         IProjectRepository projectRepository,
         IEnumerable<IExternalPipelineRunner> runners,
-        IMemoryCache memoryCache)
+        IMemoryCache memoryCache,
+        IMediator mediator)
     {
         _pipelineRunners = runners.ToList();
         _logger = logger;
         _repository = repository;
         _projectRepository = projectRepository;
         _memoryCache = memoryCache;
+        _mediator = mediator;
     }
 
 
@@ -97,7 +96,7 @@ internal class PipelineManager : IPipelineManager
         return configs;
     }
 
-    internal async Task<PipelineDto?> RefreshStatusAsync(ClaimsPrincipal principal, long pipelineId, CancellationToken cancellationToken)
+    internal async Task<Pipeline?> RefreshStatusAsync(ClaimsPrincipal principal, long pipelineId, CancellationToken cancellationToken)
     {
         Pipeline? pipeline = await _repository.GetByIdAsync(pipelineId);
         if (pipeline is not null)
@@ -116,7 +115,7 @@ internal class PipelineManager : IPipelineManager
                 }
             }
 
-            return dto;
+            return pipeline;
         }
         return null;
     }
@@ -204,16 +203,9 @@ internal class PipelineManager : IPipelineManager
         return _pipelineRunners.Where(x => x.SystemName == systemName).FirstOrDefault();
     }
 
-    /// <summary>
-    /// Returns the latest pipeline status by calling the external runner and collecting pipeline and job status
-    /// </summary>
-    /// <param name="principal"></param>
-    /// <param name="pipeline"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    private async Task<PipelineDto?> GetPipelineStatusAsync(ClaimsPrincipal principal, Pipeline pipeline, CancellationToken cancellationToken)
+    private async Task<ConfiguredExternalService<IExternalPipelineRunner>?> ConfigurePipelineRunnerAsync(ClaimsPrincipal principal, Pipeline pipeline)
     {
-        if(pipeline.CiCdPipelineIdentifier is null || pipeline.TestProjectId is null)
+        if (pipeline.CiCdPipelineIdentifier is null || pipeline.TestProjectId is null)
         {
             return null;
         }
@@ -226,9 +218,26 @@ internal class PipelineManager : IPipelineManager
         }
 
         var runner = GetRunner(pipeline.CiCdSystem);
-        if (runner is not null)
+        if(runner is null)
         {
-            return await runner.GetPipelineAsync(config, pipeline.CiCdPipelineIdentifier, cancellationToken);
+            return null;
+        }
+        return new ConfiguredExternalService<IExternalPipelineRunner>(config, runner);
+    }
+
+    /// <summary>
+    /// Returns the latest pipeline status by calling the external runner and collecting pipeline and job status
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="pipeline"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    private async Task<PipelineDto?> GetPipelineStatusAsync(ClaimsPrincipal principal, Pipeline pipeline, CancellationToken cancellationToken)
+    {
+        var configuredRunner = await ConfigurePipelineRunnerAsync(principal, pipeline);
+        if (configuredRunner is not null && pipeline.CiCdPipelineIdentifier is not null)
+        {
+            return await configuredRunner.Service.GetPipelineAsync(configuredRunner.Config, pipeline.CiCdPipelineIdentifier, cancellationToken);
         }
         return null;
     }
@@ -250,5 +259,27 @@ internal class PipelineManager : IPipelineManager
             principal.ThrowIfEntityTenantIsDifferent(pipeline.TenantId);
         }
         return pipeline;
+    }
+
+    internal async Task OnPipelineCompletedAsync(ClaimsPrincipal principal, Pipeline pipeline)
+    {
+        _logger.LogInformation("Pipeline completed: {CiCdSystem} #{CiCdPipelineIdentifier}", pipeline.CiCdSystem, pipeline.CiCdPipelineIdentifier);
+
+        var configuredRunner = await ConfigurePipelineRunnerAsync(principal, pipeline);
+        if (configuredRunner is not null && 
+            (configuredRunner.Config.SupportedCapabilities&ExternalSystemCapability.ReadPipelineArtifacts) == ExternalSystemCapability.ReadPipelineArtifacts &&
+            configuredRunner.Config.TestResultsArtifactsPattern is not null &&
+            pipeline.PipelineJobs is not null)
+        {
+            foreach (var job in pipeline.PipelineJobs)
+            {
+                if (job.HasArtifacts && job.CiCdJobIdentifier is not null)
+                {
+                    // Add as attachments to the test case
+                    var bytes = await configuredRunner.Service.GetArtifactsZipAsByteArrayAsync(configuredRunner.Config, job.CiCdJobIdentifier, CancellationToken.None);
+                    await _mediator.Publish(new IntegrationEvents.JobArtifactDownloaded(principal, pipeline, job, configuredRunner.Config.TestResultsArtifactsPattern, bytes));
+                }
+            }
+        }
     }
 }

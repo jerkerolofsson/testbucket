@@ -67,6 +67,19 @@ public class PipelineJobDto
     /// Reason for failure
     /// </summary>
     public string? FailureReason { get; set; }
-    public string Name { get; set; }
-    public string CiCdJobIdentifier { get; set; }
+
+    /// <summary>
+    /// Name of the job
+    /// </summary>
+    public string? Name { get; set; }
+
+    /// <summary>
+    /// External ID of the job
+    /// </summary>
+    public required string CiCdJobIdentifier { get; set; }
+    
+    /// <summary>
+    /// Flag that indicates that the job has artifacts
+    /// </summary>
+    public bool HasArtifacts { get; set; }
 }

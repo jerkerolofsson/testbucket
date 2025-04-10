@@ -21,7 +21,8 @@ namespace TestBucket.Domain.Projects.Mapping
                 AccessToken = x.AccessToken,
                 BaseUrl = x.BaseUrl,
                 ExternalProjectId = x.ExternalProjectId,
-                ReadOnly = x.ReadOnly
+                ReadOnly = x.ReadOnly,
+                TestResultsArtifactsPattern = x.TestResultsArtifactsPattern,
             };
         }
     }

@@ -77,6 +77,14 @@ public interface IFileRepository
     Task<IReadOnlyList<FileResource>> GetTestSuiteFolderAttachmentsAsync(string tenantId, long testSuiteFolderId);
 
     /// <summary>
+    /// Returns attachments to test run
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="testRunId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<FileResource>> GetTestRunAttachmentsAsync(string tenantId, long testRunId);
+
+    /// <summary>
     /// Returns attachments to requirement
     /// </summary>
     /// <param name="tenantId"></param>

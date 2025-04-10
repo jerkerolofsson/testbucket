@@ -68,7 +68,7 @@ public partial class AttachmentGrid
         }
         else if (TestRunId is not null)
         {
-            //_attachments = (await attachmentsService.GetTestRunAttachmentsAsync(TestRunId.Value)).ToList();
+            _attachments = (await attachmentsService.GetTestRunAttachmentsAsync(TestRunId.Value)).ToList();
         }
     }
 }

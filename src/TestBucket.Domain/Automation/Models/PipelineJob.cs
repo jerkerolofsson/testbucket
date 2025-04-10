@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Automation;
+﻿using TestBucket.Contracts.Automation;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Automation.Models;
@@ -92,4 +85,5 @@ public class PipelineJob : ProjectEntity
 
     public long? TestRunId { get; set; }
     public TestRun? TestRun { get; set; }
+    public bool HasArtifacts { get; internal set; }
 }

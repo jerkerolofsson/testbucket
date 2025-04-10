@@ -256,6 +256,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<DateTimeOffset>("FinishedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("HasArtifacts")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTimeOffset>("Modified")
                         .HasColumnType("timestamp with time zone");
 
@@ -831,6 +834,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<long?>("TestProjectId")
                         .HasColumnType("bigint");
+
+                    b.Property<string>("TestResultsArtifactsPattern")
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

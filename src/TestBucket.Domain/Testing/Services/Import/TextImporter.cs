@@ -14,7 +14,7 @@ using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Formats;
 using TestBucket.Formats.Dtos;
 
-namespace TestBucket.Domain.Testing;
+namespace TestBucket.Domain.Testing.Services.Import;
 
 internal class TextImporter : ITextTestResultsImporter
 {
@@ -59,6 +59,11 @@ internal class TextImporter : ITextTestResultsImporter
     /// <exception cref="ArgumentException"></exception>
     public async Task ImportTextAsync(ClaimsPrincipal principal, long teamId, long projectId, TestResultFormat format, string text, ImportHandlingOptions options)
     {
+        if(format == TestResultFormat.UnknownFormat)
+        {
+            format = TestResultDetector.Detect(Encoding.UTF8.GetBytes(text));
+        }
+
         var serializer = TestResultSerializerFactory.Create(format);
         var run = serializer.Deserialize(text);
         await ImportRunAsync(principal, teamId, projectId, run, options);

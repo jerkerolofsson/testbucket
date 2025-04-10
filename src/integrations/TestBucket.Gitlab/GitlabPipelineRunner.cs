@@ -13,7 +13,6 @@ using TestBucket.Contracts.Automation;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Projects;
 using TestBucket.Contracts.Testing.Models;
-using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Gitlab
 {
@@ -26,8 +25,40 @@ namespace TestBucket.Gitlab
             _httpClient = httpClient;
         }
 
-        public string SystemName => "GitLab";
+        public string SystemName => ExtensionConstants.SystemName;
 
+        /// <summary>
+        /// Downloads artifacts from the job as a zip
+        /// </summary>
+        /// <param name="system"></param>
+        /// <param name="jobId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public async Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string jobId, CancellationToken cancellationToken)
+        {
+            if (system is not null &&
+               system.ExternalProjectId is not null &&
+               system.BaseUrl is not null &&
+               system.AccessToken is not null &&
+               long.TryParse(system.ExternalProjectId, out long projectId) &&
+               long.TryParse(jobId, out long id))
+            {
+                var client = new GitLabClient(system.BaseUrl, system.AccessToken);
+                var jobsClient = client.GetJobs(projectId);
+                return await Task.Run(() => jobsClient.GetJobArtifacts(id));
+            }
+            throw new ArgumentException("GetArtifactsAsync requires a valid project id and job id");
+        }
+
+        /// <summary>
+        /// Reads the log file from a job
+        /// </summary>
+        /// <param name="system"></param>
+        /// <param name="jobId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         public async Task<string> ReadTraceAsync(ExternalSystemDto system, string jobId, CancellationToken cancellationToken)
         {
             if (system is not null &&
@@ -45,6 +76,13 @@ namespace TestBucket.Gitlab
             throw new ArgumentException("ReadTraceAsync requires a valid project id and job id");
         }
 
+        /// <summary>
+        /// Reads the latest status for a pipeline, including jobs, and returns it
+        /// </summary>
+        /// <param name="system"></param>
+        /// <param name="pipelineId"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<PipelineDto?> GetPipelineAsync(ExternalSystemDto system, string pipelineId, CancellationToken cancellationToken)
         {
             if (system is not null &&
@@ -107,6 +145,13 @@ namespace TestBucket.Gitlab
 
             foreach(var job in jobs)
             {
+                bool hasArtifacts = job.Artifacts?.Size > 0;
+
+                if(job.Status == JobStatus.Success)
+                {
+
+                }
+
                 var dto = new PipelineJobDto
                 {
                     CiCdJobIdentifier = job.Id.ToString(),
@@ -120,7 +165,10 @@ namespace TestBucket.Gitlab
                     StartedAt = job.StartedAt.ToUniversalTime(),
                     TagList = job.TagList,
                     WebUrl = job.WebUrl,
+                    HasArtifacts = hasArtifacts
                 };
+
+                
 
                 if (job.Duration is not null)
                 {
@@ -154,6 +202,14 @@ namespace TestBucket.Gitlab
             return dtos;
         }
 
+        /// <summary>
+        /// Creates a pipeline and, if successful, sets the pipeline identifier (this is unique to the external system used) as
+        /// the context.CiCdPipelineIdentifier property
+        /// </summary>
+        /// <param name="system"></param>
+        /// <param name="context"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task CreateAsync(ExternalSystemDto system, TestExecutionContext context, CancellationToken cancellationToken)
         {
             if (system is not null &&

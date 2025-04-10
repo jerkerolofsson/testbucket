@@ -40,4 +40,9 @@ public record class ExternalSystemDto
     /// Supported capabilities. This is defined in the extension
     /// </summary>
     public ExternalSystemCapability SupportedCapabilities { get; set; }
+
+    /// <summary>
+    /// File pattern for artifacts. Separated by ;
+    /// </summary>
+    public string? TestResultsArtifactsPattern { get; set; }
 }

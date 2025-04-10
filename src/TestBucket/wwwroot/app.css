@@ -21,8 +21,9 @@ html, body {
     --clr-skipped: rgb(150,150,150);
     --clr-skipped-alt: rgb(50,50,50);
 
-    --mud-typography-h1-size: 22pt;
-    --mud-typography-h1-weight: 800;
+    --mud-typography-h1-size: 20pt;
+    --mud-typography-h1-weight: 600;
+    --mud-typography-h1-lineheight: 1.8;
 
     --mud-typography-body1-size: 10pt;
     --mud-typography-subtitle1-size: 10pt;
@@ -238,6 +239,14 @@ p.mud-typography-subtitle1 {
 
  .tb-nav-link:hover {
      background: rgba(255,255,255,0.05);
+ }
+
+ .tb-nav-link svg {
+     opacity: 0.7;
+ }
+ .tb-nav-link:hover svg,
+ .tb-nav-link.active svg {
+     opacity: 1;
  }
 
  .tb-nav-link.active {

@@ -1,6 +1,4 @@
-﻿using MediatR;
-
-using TestBucket.Components.Shared;
+﻿using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Automation.Models;

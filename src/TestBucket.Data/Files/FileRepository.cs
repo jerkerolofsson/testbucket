@@ -48,6 +48,12 @@ public class FileRepository : IFileRepository
         var resources = dbContext.Files.Where(x => x.RequirementId == id && x.TenantId == tenantId).AsQueryable();
         return await GetFilesWithoutDataAsync(resources);
     }
+    public async Task<IReadOnlyList<FileResource>> GetTestRunAttachmentsAsync(string tenantId, long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var resources = dbContext.Files.Where(x => x.TestRunId == id && x.TenantId == tenantId).AsQueryable();
+        return await GetFilesWithoutDataAsync(resources);
+    }
 
     public async Task<IReadOnlyList<FileResource>> GetRequirementSpecificationAttachmentsAsync(string tenantId, long id)
     {

@@ -18,7 +18,8 @@ namespace TestBucket.Gitlab
             ExternalSystemCapability.GetPipelines | 
             ExternalSystemCapability.GetReleases |
             ExternalSystemCapability.GetIssues |
-            ExternalSystemCapability.GetMilestones;
+            ExternalSystemCapability.GetMilestones | 
+            ExternalSystemCapability.ReadPipelineArtifacts;
 
         public string FriendlyName => ExtensionConstants.FriendlyName;
 

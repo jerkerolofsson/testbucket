@@ -1,4 +1,6 @@
-﻿using TestBucket.Domain.Files.Models;
+﻿using TestBucket.Components.Tests.TestSuites.Dialogs;
+using TestBucket.Components.Uploads.Dialogs;
+using TestBucket.Domain.Files.Models;
 
 namespace TestBucket.Components.Uploads.Controls;
 
@@ -21,10 +23,21 @@ public partial class AttachmentGrid
 
     private List<FileResource> _attachments = [];
 
-    private bool _isGrid = true;
+    private bool _isGrid = false;
 
     public Color GridColor => _isGrid ? Color.Tertiary : Color.Default;
     public Color ListColor => !_isGrid ? Color.Tertiary : Color.Default;
+
+    private async Task OnAttachmentClickedAsync(FileResource resource)
+    {
+        var parameters = new DialogParameters<ViewFileResourceDialog>()
+        {
+            { x => x.Resource, resource },
+        };
+
+        var dialog = await dialogService.ShowAsync<ViewFileResourceDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+    }
 
     private async Task OnFileUploadedAsync(FileResource _)
     {

@@ -20,9 +20,14 @@
 
 @code {
     [Parameter] public FileResource? Resource { get; set; }
+    [Parameter] public EventCallback<FileResource> ResourceClicked { get; set; }
 
-    private void FileClicked(MouseEventArgs e)
+    private async Task FileClicked(MouseEventArgs e)
     {
-        
+        if(Resource is null)
+        {
+            return;
+        }
+        await ResourceClicked.InvokeAsync(Resource);
     }
 }

@@ -202,7 +202,7 @@ public class Program
         builder.Services.AddScoped<TestResourceController>();
         builder.Services.AddScoped<TestAccountController>();
         builder.Services.AddScoped<PipelineController>();
-
+        builder.Services.AddSingleton<ResourceViewFactory>();
         builder.Services.AddScoped<RequirementBrowser>();
         builder.Services.AddScoped<RequirementEditorController>();
         builder.Services.AddScoped<TestExecutionController>();

@@ -1,0 +1,104 @@
+﻿@using TestBucket.Components.Uploads.Services
+@inject AttachmentsService controller
+
+@if (_resource is not null)
+{
+    <MudStack>
+
+        <MudStack Row>
+            <MudToggleGroup @bind-Value="@_bytesPerRow" T="int" Outlined="true" Delimiters="true" Size="Size.Small" Color="Color.Tertiary">
+                <MudToggleItem Value="8" Text="8" />
+                <MudToggleItem Value="16" Text="16" />
+                <MudToggleItem Value="32" Text="32" />
+            </MudToggleGroup>
+        </MudStack>
+
+        <MudTable T="Row" Items="@Rows" RowClass="cursor-pointer" Style="font-family: monospace" Dense>
+            <HeaderContent>
+                <MudTh>Address</MudTh>
+                <MudTh>Hex</MudTh>
+                <MudTh>ASCII</MudTh>
+            </HeaderContent>
+            <ColGroup>
+                <col style="width: 20%;" />
+                <col style="width: 50%;" />
+                <col style="width: 30%;" />
+            </ColGroup>
+            <RowTemplate>
+                <MudTd DataLabel="Address">@context.Offset.ToString("X8")</MudTd>
+                <MudTd DataLabel="Hex" Style="white-space: break-spaces; overflow: hidden; overflow-wrap: break-word">
+                    <div style="display: flex; gap: 4px;">
+                        @{int col = 0;}
+                        @foreach(var b in context.Bytes.Span)
+                        {
+                            <span>@b.ToString("X2")</span>
+                            col++;
+                            if((col%8) == 0 && col != 0)
+                            {
+                                <span style=""></span>
+                            }
+                        }
+                    </div>
+                </MudTd>
+                <MudTd DataLabel="ASCII">@Encoding.ASCII.GetString(context.Bytes.Span)</MudTd>
+            </RowTemplate>
+        </MudTable>
+        <MudPagination @bind-Selected="_selectedPage" Count="@NumPages" />
+    </MudStack>
+}
+else
+{
+    <MudProgressLinear Indeterminate Color="Color.Tertiary"/>
+}
+
+
+@code {
+    [Parameter] public FileResource? Resource { get; set; }
+    private FileResource? _resource;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_resource?.Id != Resource?.Id && Resource is not null)
+        {
+            _resource = await controller.GetResourceByIdAsync(Resource.Id);
+            _selectedPage = 1;
+        }
+    }
+
+    private int _bytesPerRow = 16;
+    private int RowCount => (int)Math.Ceiling((_resource?.Data?.Length ?? 0) / (double)_bytesPerRow);
+
+    private int _selectedPage = 1;
+    private int _pageSize = 20;
+    private int NumPages => (int)Math.Ceiling(RowCount / (double)_pageSize);
+
+    private IEnumerable<Row> Rows
+    {
+        get
+        {
+            if (_resource is null)
+            {
+                yield break;
+            }
+            var bytesPerPage = (_bytesPerRow * _pageSize);
+            int offset = (_selectedPage-1) * _bytesPerRow * _pageSize;
+            int remaining = Math.Min(_resource.Data.Length - offset, bytesPerPage);
+
+            while(remaining > 0)
+            {
+                int chunkSize = Math.Min(remaining, _bytesPerRow);
+
+                yield return new Row() { Offset = offset, Bytes = new Memory<byte>(_resource.Data, offset, chunkSize) };
+
+                remaining -= chunkSize;
+                offset += chunkSize;
+            }
+        }
+    }
+
+    private class Row
+    {
+        public required int Offset { get; set; }
+        public required Memory<byte> Bytes { get; set; }
+    }
+}

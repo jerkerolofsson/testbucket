@@ -1,6 +1,7 @@
 ﻿@using Humanizer
 @using TestBucket.Components.Uploads.Services
 @inject AttachmentsService attachmentsService
+@inject IDialogService dialogService
 
 <MudStack Class="@Class" Style="@Style">
 
@@ -16,17 +17,18 @@
                 <MudStack Class="pa-2" Spacing="3" Row Wrap="Wrap.Wrap" Style="overflow: auto; max-height: 200px; width: 100%">
                     @foreach (var attachment in _attachments)
                     {
-                        <ResourceThumbnail Resource="@attachment" />
+                        <ResourceThumbnail ResourceClicked="OnAttachmentClickedAsync" Resource="@attachment" />
                     }
                 </MudStack>
             }
             else
             {
                 <MudDataGrid Items="_attachments"
-                Style="overflow: auto; max-height: 200px; width: 100%"
-                Dense="true"
-                Hover="true"
-                T="FileResource"
+                             Style="overflow: auto; max-height: 200px; width: 100%"
+                             Dense
+                             Hover
+                             RowClick="(e) => OnAttachmentClickedAsync(e.Item)"
+                             T="FileResource"
                 SortMode="SortMode.Single">
                     <Columns>
                         <PropertyColumn Property="x => x.Name" Title="Name" />

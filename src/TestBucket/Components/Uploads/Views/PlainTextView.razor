@@ -1,0 +1,91 @@
+﻿@using TestBucket.Components.Uploads.Services
+@inject AttachmentsService controller
+
+@if (_pages.Count > 0)
+{
+    <MudStack>
+
+        <MudStack Row>
+            <MudToggleGroup ValueChanged="x => OnEncodingChanged(x)" Value="@_encoding" T="Encoding" Outlined="true" Delimiters="true" Size="Size.Small" Color="Color.Tertiary">
+                <MudToggleItem Value="@Encoding.ASCII" Text="ASCII" />
+                <MudToggleItem Value="@Encoding.UTF8" Text="UTF-8" />
+                @* <MudToggleItem Value="@Encoding.Unicode" Text="Unicode" /> *@
+                @* <MudToggleItem Value="@Encoding.BigEndianUnicode" Text="Unicode (BE)" /> *@
+                @* <MudToggleItem Value="@Encoding.UTF32" Text="UTF-32" /> *@
+            </MudToggleGroup>
+        </MudStack>
+
+        @{
+            int pageNumber = _selectedPage - 1;
+            if(pageNumber  < _pages.Count)
+            {
+                <pre>@_pages[pageNumber].Text</pre>
+            }
+        }
+
+        <MudPagination @bind-Selected="_selectedPage" Count="@_pages.Count"/>
+    </MudStack>
+}
+else
+{
+    <MudProgressLinear Indeterminate Color="Color.Tertiary"/>
+}
+
+
+@code {
+    [Parameter] public FileResource? Resource { get; set; }
+    private FileResource? _resource;
+    private int _selectedPage =1;
+    private Encoding _encoding = Encoding.UTF8;
+
+    private void OnEncodingChanged(Encoding encoding)
+    {
+        _encoding = encoding;
+        CreatePages();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_resource?.Id != Resource?.Id && Resource is not null)
+        {
+            _resource = await controller.GetResourceByIdAsync(Resource.Id);
+            CreatePages();
+        }
+    }
+
+    private int _linesPerPage = 30;
+    private int PageCount => (int)Math.Ceiling((_resource?.Data?.Length ?? 0) / (double)_linesPerPage);
+
+    private List<Page> _pages = [];
+
+    private void CreatePages()
+    {
+        _pages.Clear();
+        if (_resource is null)
+        {
+            return;
+        }
+        int remaining = _resource.Data.Length;
+        var lines = _encoding.GetString(_resource.Data).Split('\n');
+        int lineCount = 0;
+        StringBuilder pageBuilder = new();
+        foreach(var line in lines)
+        {
+            pageBuilder.AppendLine(line);
+            lineCount++;
+            if (lineCount >= _linesPerPage)
+            {
+                lineCount = 0;
+                _pages.Add(new Page(pageBuilder.ToString()));
+                pageBuilder.Clear();
+            }
+        }
+
+        if(lineCount > 0)
+        {
+             _pages.Add(new Page(pageBuilder.ToString()));
+        }
+    }
+
+    private record class Page(string Text);
+}

@@ -13,6 +13,17 @@ internal class AttachmentsService : TenantBaseService
     }
 
     /// <summary>
+    /// Gets the resource with data
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public async Task<FileResource?> GetResourceByIdAsync(long id)
+    {
+        var tenantId = await GetTenantIdAsync();
+        return await _fileRepository.GetResourceByIdAsync(tenantId, id);
+    }
+
+    /// <summary>
     /// Returns attachments to a test run
     /// </summary>
     /// <param name="id"></param>

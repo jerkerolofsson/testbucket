@@ -1,0 +1,94 @@
+﻿@using TestBucket.Components.Uploads.Services
+@using TestBucket.Components.Uploads.Views
+@using TestBucket.Contracts.Integrations
+@using TestBucket.Domain.Teams.Models
+@attribute [Authorize(Roles = "ADMIN")]
+@inject ResourceViewFactory resourceViewFactory
+@inject IStringLocalizer<SharedStrings> loc
+
+<style>
+    .selected {
+        background-color: #1E88E5 !important;
+    }
+
+        .selected > td {
+            color: white !important;
+        }
+
+            .selected > td .mud-input {
+                color: white !important;
+            }
+</style>
+
+<MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <TitleContent>@Resource?.Name</TitleContent>
+    <DialogContent>
+
+        <div style="display: grid; grid-template-columns: 200px 1fr;">
+            <div>
+                <MudTable Items="_viewTypes" RowClass="cursor-pointer" RowClassFunc="@SelectedRowClassFunc">
+                    <RowTemplate>
+                        <MudTd DataLabel="Link" @onclick="() => ShowView(context)">
+                            @* <MudLink OnClick="() => ShowView(context)">@context.Name</MudLink> *@
+                            @context.Name
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </div>
+            @if (_viewType is not null)
+            {
+                <DynamicComponent Type="@_viewType.ComponentType" Parameters="_parameters" />
+            }
+        </div>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Close" Color="Color.Primary">@loc["ok"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public FileResource? Resource { get; set; }
+
+    private List<ViewType> _viewTypes = [];
+    private ViewType? _viewType;
+    private readonly Dictionary<string, object> _parameters = new();
+
+    private void ShowView(ViewType viewType)
+    {
+        _viewType = viewType;
+    }
+
+    protected override void OnInitialized()
+    {
+        if(Resource is not null)
+        {
+            _parameters["Resource"] = Resource;
+            _viewTypes = resourceViewFactory.GetViewTypesForPreview(Resource).ToList();
+            _viewType = _viewTypes.FirstOrDefault();
+        }
+
+        base.OnInitialized();
+    }
+
+    private string SelectedRowClassFunc(ViewType element, int rowNumber)
+    {
+        if (_viewTypes[rowNumber] == _viewType)
+        {
+            return "selected";
+        }
+        else
+        {
+            return string.Empty;
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+}

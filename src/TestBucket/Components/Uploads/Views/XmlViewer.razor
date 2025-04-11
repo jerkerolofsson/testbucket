@@ -1,0 +1,33 @@
+﻿@using System.Text.Json
+@using TestBucket.Components.Uploads.Services
+@inject AttachmentsService controller
+@inject IJSRuntime js
+
+@if (_resource is not null)
+{
+    <CodeBlock Language="xml">@_text</CodeBlock>
+}
+else
+{
+    <MudProgressLinear Indeterminate Color="Color.Tertiary"/>
+}
+
+
+@code {
+    [Parameter] public FileResource? Resource { get; set; }
+    private FileResource? _resource;
+    private string _text = "";
+    private string _elementId = "code-block-" + Guid.NewGuid().ToString();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_resource?.Id != Resource?.Id && Resource is not null)
+        {
+            _resource = await controller.GetResourceByIdAsync(Resource.Id);
+            if(_resource is not null)
+            {
+                _text = Encoding.UTF8.GetString(_resource.Data);
+            }
+        }
+    }
+}

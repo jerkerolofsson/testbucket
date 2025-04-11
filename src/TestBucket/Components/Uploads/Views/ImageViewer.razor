@@ -1,0 +1,12 @@
+﻿@using TestBucket.Components.Uploads.Services
+@inject AttachmentsService controller
+
+@if (Resource is not null)
+{
+    string src = $"/api/resources/{Resource.Id}";
+    <MudImage Src="@src" Style="max-width: 70vw; max-height: 70vh" />
+}
+
+@code {
+    [Parameter] public FileResource? Resource { get; set; }
+}

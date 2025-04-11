@@ -1,0 +1,22 @@
+﻿@inject IJSRuntime js
+
+@if (ChildContent is not null)
+{
+    <pre id="@_elementId" style="overflow: auto; max-height: @MaxHeight"><code class="@Language">@ChildContent</code></pre>
+}
+
+@code {
+    [Parameter] public string MaxHeight { get; set; } = "50vh";
+    [Parameter] public string Language { get; set; } = "json";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private string _elementId = "code-block-" + Guid.NewGuid().ToString();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        string cssSelector = $"#{_elementId}";
+        string[] languages = [Language];
+        await js.InvokeVoidAsync($"renderHljsForLanguages", cssSelector, languages);
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}

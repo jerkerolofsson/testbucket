@@ -136,6 +136,11 @@ tb-field .mud-link.mud-link-underline-hover:hover {
     opacity: 1;
 }
 
+.mud-toggle-item {
+    padding: 2px 5px;
+    font-size: 8pt;
+}
+
 p.mud-typography-subtitle1 {
     color: #888;
 }

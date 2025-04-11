@@ -5,6 +5,7 @@
 @inject TestExecutionController testExecutionController
 @inject IStringLocalizer<SharedStrings> loc
 @inject ThemingService themingService
+@inject FieldController fieldController
 
 <MudStack Spacing="0" Style="width: 100%" Class="pa-2">
 
@@ -15,12 +16,16 @@
 
         @if (_results is not null)
         {
-            <TestResultSummaryBar Summary="@_results" />
+            <TestResultSummaryBar Summary="@_results"/>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                <ResultChart Results="@_results" />
-                <ResultChart Results="@_results" />
-                <ResultChart Results="@_results" />
+                <ResultChart Results="@_results" Title="Total" />
+
+                @foreach(var kvp in _groupedByField)
+                {
+                    string title = kvp.Key.Name;
+                    <StackedResultChart Results="@kvp.Value" Title="@title" />
+                }
             </div>
         }
         else
@@ -41,7 +46,9 @@
 @code {
 
     [Parameter] public TestRun? TestRun { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
 
+    private Dictionary<FieldDefinition, Dictionary<string, TestExecutionResultSummary>> _groupedByField = [];
     private TestExecutionResultSummary? _results;
     private string? _queryKey;
 
@@ -59,6 +66,17 @@
             {
                 _queryKey = queryKey;
                 _results = await testBrowser.GetTestExecutionResultSummaryAsync(query);
+
+                if (Project is not null)
+                {
+                    var fields = await fieldController.GetDefinitionsAsync(Project.Id, FieldTarget.TestCaseRun);
+                    _groupedByField.Clear();
+                    foreach (var field in fields.Where(x => x.Type == FieldType.SingleSelection))
+                    {
+                        var results = await testBrowser.GetTestExecutionResultSummaryByFieldAsync(query, field);
+                        _groupedByField[field] = results;
+                    }
+                }
             }
         }
     }

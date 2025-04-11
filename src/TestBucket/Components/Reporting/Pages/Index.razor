@@ -82,7 +82,6 @@
 
                 _results = await testBrowser.GetTestExecutionResultSummaryAsync(Query);
 
-
                 if (Project is not null)
                 {
                     var fields = await fieldController.GetDefinitionsAsync(Project.Id, FieldTarget.TestCaseRun);

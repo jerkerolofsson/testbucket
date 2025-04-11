@@ -7,17 +7,25 @@
 @inject ThemingService themingService
 
 <MudPaper Elevation="2">
-    @if (_layout is not null && Results is not null)
-    {
-        <PlotlyChart style="height: 10vh; min-height: 350px" @ref="_chart" @bind-Config="_config" @bind-Layout="_layout" @bind-Data="_data" />
-    }
-    else
-    {
-        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="350px" />
-    }
+    <MudStack Spacing="0" Class="pa-1">
+        <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h6">@Title</MudText>
+            <MudSpacer />
+        </MudStack>
+        @if (_layout is not null && Results is not null)
+        {
+            <PlotlyChart style="height: 10vh; min-height: 350px" @ref="_chart" @bind-Config="_config" @bind-Layout="_layout" @bind-Data="_data" />
+        }
+        else
+        {
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="350px" />
+        }
+    </MudStack>
 </MudPaper>
 
 @code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public TestExecutionResultSummary? Results { get; set; }
 
     private PlotlyChart? _chart;
     private Config? _config = new Config()
@@ -31,7 +39,6 @@
     {
         new Bar
         {
-            Name = "Results",
             X = new List<object> { "passed", "failed", "blocked", "skipped" },
             Y = new List<object> { 0,0,0,0,0 },
             Marker = new Plotly.Blazor.Traces.BarLib.Marker
@@ -41,16 +48,13 @@
         }        
     };
 
-    [Parameter] public TestExecutionResultSummary? Results { get; set; }
-
     protected override async Task OnParametersSetAsync()
     {
         _layout ??= new Layout()
             {
-                Title = new Plotly.Blazor.LayoutLib.Title { Text = "Summary" },
                 BarCornerRadius = 5,
-                PaperBgColor = themingService.IsDarkMode ? "rgba(45,45,54,1)" : "#fff",
-                PlotBgColor = themingService.IsDarkMode ? "rgba(45,45,54,1)" : "#fff",
+                PaperBgColor = "transparent",
+                PlotBgColor = "transparent",
                 Font = new Font
                 {
                     Color = themingService.IsDarkMode ? "#eee" : "#111",

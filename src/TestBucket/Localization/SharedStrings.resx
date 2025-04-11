@@ -308,4 +308,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="delete" xml:space="preserve">
     <value>Delete</value>
   </data>
+  <data name="groupby-category" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="groupby-result" xml:space="preserve">
+    <value>Result</value>
+  </data>
 </root>

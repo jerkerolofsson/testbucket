@@ -306,4 +306,10 @@
   <data name="delete" xml:space="preserve">
     <value>Ta bort</value>
   </data>
+  <data name="groupby-category" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="groupby-result" xml:space="preserve">
+    <value>Result</value>
+  </data>
 </root>

@@ -1,0 +1,58 @@
+﻿@using TestBucket.Components.Users.Services
+@inject UserController controller
+
+<img class="@ClassImg" style="@Style" src="@ProfileImage" onerror="@OnErrorJs" @onclick="OnUserClickedAsync" />
+<div class="@ClassDiv" style="@Style" @onclick="OnUserClickedAsync">@UserInitials</div>
+
+
+@code {
+    [Parameter] public string Class { get; set; } = "";
+    [Parameter] public string? Style { get; set; }
+    [Parameter] public string? UserName { get; set; }
+    [Parameter] public EventCallback<string> ImageClicked { get; set; }
+
+    private string OnErrorJs => $"tbProfileImageFailedToLoad('{_id}')";
+    private string _id = "tb-profile-" + Guid.NewGuid().ToString();
+    private string ClassImg => $"{Class} tb-profile-image {_id}";
+    private string ClassDiv => $"{Class} tb-profile-image tb-background-{BackgroundHash} {_id}";
+
+    private int BackgroundHash
+    {
+        get
+        {
+            if(_userName is not null)
+            {
+                var hash = Math.Abs(_userName.GetHashCode()) % 10;
+                return hash;
+            }
+            return 0;    
+        }
+    }
+
+    private string UserInitials
+    {
+        get
+        {
+            if(string.IsNullOrEmpty(_userName))
+            {
+                return "-";
+            }
+            return _userName[0].ToString().ToUpperInvariant();
+        }
+    }
+    private string _userName = "nouser";
+    private string ProfileImage => $"/api/users/profile/{_userName}/image";
+
+    private async Task OnUserClickedAsync()
+    {
+        await ImageClicked.InvokeAsync(_userName);
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(UserName is not null)
+        {
+            _userName = UserName;
+        }
+    }
+}

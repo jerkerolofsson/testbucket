@@ -13,6 +13,16 @@ internal class AttachmentsService : TenantBaseService
     }
 
     /// <summary>
+    /// Deletes the resource
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public async Task DeleteResourceByIdAsync(long id)
+    {
+        var tenantId = await GetTenantIdAsync();
+        await _fileRepository.DeleteResourceByIdAsync(tenantId, id);
+    }
+    /// <summary>
     /// Gets the resource with data
     /// </summary>
     /// <param name="id"></param>

@@ -1,4 +1,5 @@
-﻿
+﻿@using TestBucket.Components.Shared.Profile
+
 @inherits LayoutComponentBase
 @inject HotKeys HotKeys
 @inject NavigationManager navigationManager
@@ -67,6 +68,7 @@
                         </MudMenu>
 
                         <DarkModeToggle IsDarkMode="@_isDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
+                        <SelfProfileImage/>
                         <MudMenu Icon="@Icons.Material.Filled.MoreVert">
 
                             <!-- Pages -->

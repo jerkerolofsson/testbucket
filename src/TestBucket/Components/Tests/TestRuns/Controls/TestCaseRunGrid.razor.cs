@@ -2,6 +2,7 @@
 
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Testing.Aggregates;
+using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Components.Tests.TestRuns.Controls;
 
@@ -150,6 +151,17 @@ public partial class TestCaseRunGrid
         {
             _results = await testBrowser.GetTestExecutionResultSummaryAsync(_query);
         }
+    }
+
+    private async Task SetTestCaseRunResultAsync(TestCaseRun testCaseRun, TestResult result)
+    {
+        await testExecutionController.SetTestCaseRunResultAsync(testCaseRun, result);
+    }
+
+    private async Task AssignRunToUserAsync(TestCaseRun testCaseRun, string user)
+    {
+        testCaseRun.AssignedToUserName = user;
+        await testCaseEditor.SaveTestCaseRunAsync(testCaseRun);
     }
 
     private void OnSearch(string text)

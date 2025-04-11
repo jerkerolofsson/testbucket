@@ -1,15 +1,58 @@
 ﻿@using TestBucket.Contracts.Testing.Models
 @inject IStringLocalizer<SharedStrings> loc
 
-<MudStack Row AlignItems="AlignItems.Center" Spacing="2">
-    <div class="result-color-highlight @(Result.ToString().ToLower())" />
-    @GetLocalizedResult(Result)
-</MudStack>
+<div @onclick="ToggleOpen" class="@MainClass">
+    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+        <div class="result-color-highlight @(Result.ToString().ToLower())" />
+        @GetLocalizedResult(Result)
+    </MudStack>
+</div>
+
+<MudPopover Open="@_open" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" >
+    <div class="d-flex flex-column pa-2">
+        @foreach (var result in _results)
+        {
+            TestResult resultToSet = result;
+            <div @onclick="async () => await SetResultAsync(resultToSet)" class=" tb-background-hover cursor-pointer">
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="2" Style="width: 150px; height: 32px">
+                    <div class="result-color-highlight @(resultToSet.ToString().ToLower())" />
+                    @GetLocalizedResult(resultToSet)
+                </MudStack>
+            </div>
+        }
+    </div>
+</MudPopover>
 
 @code {
+    [Parameter] public bool ReadOnly { get; set; } = false;
     [Parameter] public TestResult Result { get; set; } = TestResult.NoRun;
+    [Parameter] public EventCallback<TestResult> ResultChanged { get; set; }
+
+    private string MainClass => ReadOnly ? "" : "cursor-pointer tb-background-hover";
+
+    private TestResult[] _results = [TestResult.Passed, TestResult.Failed, TestResult.Blocked, TestResult.Skipped, TestResult.NoRun, TestResult.Inconclusive];
+
+    private bool _open = false;
 
     private string CssClass => "result-pill result-" + Result.ToString().ToLower();
+    
+    private async Task SetResultAsync(TestResult result)
+    {
+        _open = false;
+        await ResultChanged.InvokeAsync(result);
+    }
+    public void ToggleOpen()
+    {
+        if(ReadOnly)
+        {
+            return;
+        }
+
+        if (_open)
+            _open = false;
+        else
+            _open = true;
+    }
 
     public string GetLocalizedResult(TestResult res)
     {

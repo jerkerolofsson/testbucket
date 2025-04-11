@@ -39,7 +39,6 @@ public class FieldValue : Entity
     /// </summary>
     public string? StringValue { get; set; }
 
-
     /// <summary>
     /// The field has multiple strings
     /// </summary>

@@ -50,4 +50,10 @@ public enum FieldType
     /// Multiple strings, but can only be selected from a pre-defined set
     /// </summary>
     MultiSelection = 7,
+
+    /// <summary>
+    /// An image URI where the user can upload an image which is converted to a data uri
+    /// </summary>
+    ImageUri = 8,
+
 }

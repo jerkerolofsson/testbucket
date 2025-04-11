@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 using TestBucket.Domain.Identity;
-using TestBucket.Domain.Settings.Models;
-using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Domain.Settings.Appearance
 {
@@ -20,7 +12,6 @@ namespace TestBucket.Domain.Settings.Appearance
             _userPreferencesManager = manager;
 
             Metadata.Name = "Dark Mode";
-            //Metadata.Description = "";
             Metadata.Category.Name = "Appearance";
             Metadata.Category.Icon = SettingIcon.Appearance;
             Metadata.Section.Name = "Theme";

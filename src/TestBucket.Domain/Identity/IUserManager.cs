@@ -54,4 +54,13 @@ public interface IUserManager
     Task<PagedResult<ApplicationUser>> BrowseAsync(ClaimsPrincipal principal, int offset, int count);
     Task<ApplicationUser?> FindAsync(ClaimsPrincipal principal);
     Task<ApplicationUser?> GetUserByNormalizedUserNameAsync(ClaimsPrincipal principal, string normalizedUserName);
+
+    /// <summary>
+    /// Updates a user. principal must be the same user, or an admin
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="user"></param>
+    /// <returns></returns>
+    Task UpdateUserAsync(ClaimsPrincipal principal, ApplicationUser user);
+    Task<ApplicationUser> GetSelfAsync(ClaimsPrincipal principal);
 }

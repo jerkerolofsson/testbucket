@@ -25,4 +25,5 @@ public interface IUserService
     Task<PagedResult<ApplicationUser>> SearchAsync(string tenantId, SearchQuery query, Predicate<ApplicationUser> predicate, CancellationToken cancellationToken = default);
     Task<ApplicationUser?> FindByEmailAsync(ClaimsPrincipal principal, string email);
     Task<ApplicationUser?> FindByNormalizedEmailAsync(ClaimsPrincipal principal, string normalizedEmail);
+    Task<PagedResult<string>> SearchUserNamesAsync(string tenantId, SearchQuery query, CancellationToken cancellationToken = default);
 }

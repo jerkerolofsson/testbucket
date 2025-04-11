@@ -80,6 +80,15 @@ internal class SuperAdminUserService : ISuperAdminUserService
     }
 
 
+    public async Task UpdateUserAsync(string tenantId, ApplicationUser user)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var dbContextFactory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
+        using var dbContext = await dbContextFactory.CreateDbContextAsync();
+
+        var userStore = new ApplicationUserStore(dbContext, tenantId);
+        await userStore.UpdateAsync(user);
+    }
 
     public async Task<IdentityResult> RegisterAndConfirmUserAsync(string tenantId, string email, string password)
     {

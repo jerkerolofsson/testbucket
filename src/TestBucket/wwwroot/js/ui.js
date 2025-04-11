@@ -1,5 +1,11 @@
 ﻿const _splitterInstances = [];
 
+window.tbProfileImageFailedToLoad = function(identifier) {
+    const div = document.querySelector(`div.${identifier}`);
+    const img = document.querySelector(`img.${identifier}`);
+    div.classList.add("image-load-error");
+    img.classList.add("image-load-error");
+}
 
 function splitterInitialize(elementId, options) {
     options ??= {};

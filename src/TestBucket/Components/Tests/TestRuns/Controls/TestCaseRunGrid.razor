@@ -58,10 +58,10 @@
         </ToolBarContent>
 
         <ColGroup>
-            <col style="width: 40%;" />
-            <col style="width: 20%;" />
-            <col style="width: 20%;" />
-            <col style="width: 20%;" />
+            <col style="width: 2fr;" />
+            <col style="width: 300px;" />
+            <col style="width: 200px;" />
+            <col style="width: 200px;" />
         </ColGroup>
 
         <Columns>
@@ -79,11 +79,15 @@
                 </CellTemplate>
             </TemplateColumn>
 
-            <PropertyColumn Property="x => x.AssignedToUserName" Title="@loc["assigned-to"]" />
+            <TemplateColumn Title="@loc["assigned-to"]">
+                <CellTemplate>
+                    <UserPicker SelectedUserName="@context.Item.AssignedToUserName" SelectedUserNameChanged="async (user) => await AssignRunToUserAsync(context.Item, user)"/>
+                </CellTemplate>
+            </TemplateColumn>
 
             <TemplateColumn Title="@loc["test-result"]">
                 <CellTemplate>
-                    <ResultPill Result="@context.Item.Result" />
+                    <ResultPill Result="@context.Item.Result" ReadOnly="false" ResultChanged="async (result) => await SetTestCaseRunResultAsync(context.Item, result)" />
                 </CellTemplate>
             </TemplateColumn>
 

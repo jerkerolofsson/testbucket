@@ -1,4 +1,7 @@
-﻿@if(Field?.FieldDefinition is not null) 
+﻿@using TestBucket.Components.Uploads.Services
+@inject AttachmentsService controller
+
+@if(Field?.FieldDefinition is not null) 
 {
     var type = Field.FieldDefinition.Type;
     if (!AllowMultiSelection)
@@ -15,22 +18,36 @@
 
     @if (type == FieldType.String)
     {
-        <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" />
+        <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable/>
+    }
+    else if(type == FieldType.ImageUri)
+    {
+        @if(Field.StringValue is null)
+        {
+            <UploadFile Accept="*.jpg;*.png" MaxFileSize="100000" FileUploaded="OnImageUploaded"/>
+        }
+        else
+        {
+            <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+                <MudImage Src="@Field.StringValue" Width="48" Height="48"/>
+                <MudIconButton Size="Size.Small" OnClick="ClearAsync" Icon="@Icons.Material.Filled.Clear"/>
+            </MudStack>
+        }
     }
     else if (type == FieldType.SingleSelection)
     {
-        <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable="true">
+        <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable>
             @if (Field.FieldDefinition.Options is not null)
             {
                 @foreach (var item in Field.FieldDefinition.Options)
                 {
                     <MudSelectItem Value="@item">
                         <MudStack Row AlignItems="AlignItems.Center">
-                        @if (Field.FieldDefinition.OptionIcons is not null && Field.FieldDefinition.OptionIcons.TryGetValue(item, out var optionIcon) && !string.IsNullOrEmpty(optionIcon))
-                        {
+                            @if (Field.FieldDefinition.OptionIcons is not null && Field.FieldDefinition.OptionIcons.TryGetValue(item, out var optionIcon) && !string.IsNullOrEmpty(optionIcon))
+                            {
                                 <MudIcon Size="Size.Small" Icon="@optionIcon" />
-                        }
-                        <MudText>@item</MudText>
+                            }
+                            <MudText>@item</MudText>
                         </MudStack>
                     </MudSelectItem>
                 }
@@ -166,6 +183,36 @@
             Field.StringValuesList = null;
             Field.BooleanValue = value;
             await FieldChanged.InvokeAsync(Field);
+        }
+    }
+    private async Task ClearAsync()
+    {
+        if (Field is not null)
+        {
+            Field.StringValue = null;
+            Field.StringValuesList = null;
+            Field.BooleanValue = null;
+            Field.LongValue = null;
+
+            await FieldChanged.InvokeAsync(Field);
+        }
+    }
+
+    private async Task OnImageUploaded(FileResource file)
+    {
+        if (Field is not null)
+        {
+            //Field.StringValue = $"/api/resources/{file.Id}";
+
+            // Generate a data uri
+            string uri = $"data:{file.ContentType};base64,{Convert.ToBase64String(file.Data)}";
+            Field.StringValue = uri;
+
+            await FieldChanged.InvokeAsync(Field);
+
+            // Delete it, we no longer need it
+            await controller.DeleteResourceByIdAsync(file.Id);
+
         }
     }
 }

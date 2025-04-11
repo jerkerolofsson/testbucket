@@ -302,4 +302,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="manufacturer" xml:space="preserve">
     <value>Manufacturer</value>
   </data>
+  <data name="result-inconclusive" xml:space="preserve">
+    <value>Inconclusive</value>
+  </data>
 </root>

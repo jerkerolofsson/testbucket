@@ -1,44 +1,36 @@
-﻿@using TestBucket.Data.Identity;
-    using TestBucket.Domain.Identity.Models
-@inject IUserService userService
+﻿@using TestBucket.Components.Shared.Profile
+@using TestBucket.Components.Users.Services
+@using TestBucket.Data.Identity;
+@using TestBucket.Domain.Identity.Models
+@inject IStringLocalizer<SharedStrings> loc
+@inject UserController userController
 
-<MudDataGrid ServerData="LoadGridData"
-Dense="true"
-Hover="true"
-T="ApplicationUser"
-SortMode="SortMode.None">
-    <Columns>
-        <PropertyColumn Property="x => x.TenantId" />
-        <PropertyColumn Property="x => x.UserName" />
-        <PropertyColumn Property="x => x.Email" />
-        <PropertyColumn Property="x => x.PhoneNumber" />
-    </Columns>
-
-    <PagerContent>
-        <MudDataGridPager T="ApplicationUser" />
-    </PagerContent>
-</MudDataGrid>
+<MudAutocomplete Clearable="@Clearable"
+T="string"
+Value="@SelectedUserName"
+ValueChanged="OnValueChangedAsync"
+SearchFunc="@Search"
+Variant="Variant.Outlined">
+    <ItemTemplate>
+        <MudStack Row Spacing="1">
+            <UserProfileImage UserName="@context" />
+            <MudText>@context</MudText>
+        </MudStack>
+    </ItemTemplate>
+</MudAutocomplete>
 
 @code {
+    [Parameter] public bool Clearable { get; set; } = false;
+    [Parameter] public string? SelectedUserName { get; set; }
+    [Parameter] public EventCallback<string> SelectedUserNameChanged { get; set; }
 
-    [Parameter] public string? TenantId { get; set; }
-
-    private async Task<GridData<ApplicationUser>> LoadGridData(GridState<ApplicationUser> state)
+    private async Task<IEnumerable<string>> Search(string text, CancellationToken token)
     {
-        var query = new Contracts.SearchQuery
-            {
-                Offset = state.Page * state.PageSize,
-                Count = state.PageSize
-            };
+        return await userController.SearchUserNamesAsync(text);
+    }
 
-        var result = await userService.SearchAsync(TenantId??"", query);
-
-        GridData<ApplicationUser> data = new()
-            {
-                Items = result.Items,
-                TotalItems = (int)result.TotalCount
-            };
-
-        return data;
+    private async Task OnValueChangedAsync(string username)
+    {
+        await SelectedUserNameChanged.InvokeAsync(username);
     }
 }

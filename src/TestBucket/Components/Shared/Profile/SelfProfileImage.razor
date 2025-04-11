@@ -1,0 +1,19 @@
+﻿@inject AuthenticationStateProvider authStateProvider
+@inject AppNavigationManager appNavigationManager
+@inject NavigationManager navigationManager
+
+<UserProfileImage Class="cursor-pointer" UserName="@_userName" ImageClicked="OnImageClicked"/>
+
+@code {
+    private string _userName = "not-init";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await authStateProvider.GetAuthenticationStateAsync();
+        _userName = state.User.Identity?.Name ?? "not-init";
+    }
+    private void OnImageClicked()
+    {
+        navigationManager.NavigateTo(appNavigationManager.GetProfileSettingsUrl());
+    }
+}

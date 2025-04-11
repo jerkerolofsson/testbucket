@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize(Roles = "ADMIN")]
 @page "/{TenantId}/Settings/Users"
+@using TestBucket.Components.Shared.Profile
 @using TestBucket.Components.Users.Services
 @using TestBucket.Domain.Settings
 @layout SettingsLayout
@@ -28,8 +29,15 @@
         </ToolBarContent>
 
         <Columns>
-            <PropertyColumn Property="x => x.UserName" Title="UserName" />
-            <PropertyColumn Property="x => x.Email" Title="Email" />
+            <TemplateColumn Title="@loc["username"]">
+                <CellTemplate>
+                    <MudStack Row Spacing="1">
+                        <UserProfileImage UserName="@context.Item.UserName"/>
+                        <MudText>@context.Item.UserName</MudText>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Email" Title="@loc["email"]" />
             <PropertyColumn Property="x => x.AccessFailedCount" Title="AccessFailedCount" />
         </Columns>
 

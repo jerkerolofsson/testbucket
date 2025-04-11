@@ -300,4 +300,7 @@
   <data name="manufacturer" xml:space="preserve">
     <value>Tillverkare</value>
   </data>
+  <data name="result-inconclusive" xml:space="preserve">
+    <value />
+  </data>
 </root>

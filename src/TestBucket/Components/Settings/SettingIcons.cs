@@ -14,6 +14,9 @@ public static class SettingIcons
             case SettingIcon.Appearance:
                 return Icons.Material.Outlined.Palette;
 
+            case SettingIcon.Profile:
+                return Icons.Material.Outlined.VerifiedUser;
+
             case SettingIcon.Server:
                 return Icons.Material.Outlined.Computer;
 

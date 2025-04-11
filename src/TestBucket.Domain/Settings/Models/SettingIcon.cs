@@ -14,5 +14,7 @@ public enum SettingIcon
     Accessibility,
     Server,
 
-    Testing
+    Testing,
+
+    Profile,
 }

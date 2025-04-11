@@ -60,10 +60,13 @@ public static class DomainServiceExtensions
         services.AddScoped<ITestRunManager, TestRunManager>();
         services.AddScoped<IRequirementImporter, RequirementImporter>();
         services.AddScoped<IRequirementManager, RequirementManager>();
-        services.AddScoped<IUserManager, UserManager>();
+        
         services.AddScoped<IFieldDefinitionManager, FieldDefinitionManager>();
         services.AddScoped<IFieldManager, FieldManager>();
-        
+
+        services.AddScoped<IUserManager, UserManager>();
+        services.AddScoped<IProfilePictureManager, ProfilePictureManager>();
+
         services.AddScoped<IProjectManager, ProjectManager>();
         services.AddScoped<IPipelineProjectManager, PipelineProjectManager>();
         services.AddScoped<IProjectTokenGenerator, ProjectTokenGenerator>();
@@ -91,6 +94,7 @@ public static class DomainServiceExtensions
         services.AddScoped<ISettingsManager, SettingsManager>();
         services.AddScoped<ISetting, DefaultTenantSetting>();
         services.AddScoped<ISetting, DarkModeSetting>();
+        services.AddScoped<ISetting, ProfileImageSetting>();
         services.AddScoped<ISetting, ThemeSetting>();
         services.AddScoped<ISetting, IncreasedContrastSetting>();
         services.AddScoped<ISetting, AiProviderSetting>();

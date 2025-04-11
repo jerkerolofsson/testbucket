@@ -91,6 +91,25 @@ internal class UserService : IUserService
             Items = users.ToArray()
         };
     }
+
+    public async Task<PagedResult<string>> SearchUserNamesAsync(string tenantId, SearchQuery query, CancellationToken cancellationToken = default)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var users = dbContext.Users.AsNoTracking().Where(x => x.TenantId == tenantId && x.UserName != null).Select(x=>x.UserName!);
+        long totalCount = await users.LongCountAsync();
+
+        // Apply filter
+        if (query.Text is not null)
+        {
+            users = users.Where(x => x != null && x.ToLower().Contains(query.Text.ToLower()));
+        }
+        var items = users.OrderBy(x => x).Skip(query.Offset).Take(query.Count);
+        return new PagedResult<string>
+        {
+            TotalCount = totalCount,
+            Items = users.ToArray()
+        };
+    }
     public async Task<PagedResult<ApplicationUser>> SearchAsync(string tenantId, SearchQuery query, CancellationToken cancellationToken = default)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();

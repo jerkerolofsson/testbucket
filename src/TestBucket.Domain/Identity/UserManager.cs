@@ -1,11 +1,9 @@
 ﻿using System.Security.Claims;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
 
 using TestBucket.Contracts.Identity;
 using TestBucket.Domain.Identity.Models;
-using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Domain.Identity;
 internal class UserManager : IUserManager
@@ -14,11 +12,22 @@ internal class UserManager : IUserManager
     private readonly IUserService _userService;
     private readonly ISettingsProvider _settingsProvider;
 
+    private ApplicationUser? _self;
+
     public UserManager(ISuperAdminUserService superAdminUserService, IUserService userService, ISettingsProvider settingsProvider)
     {
         _superAdminUserService = superAdminUserService;
         _userService = userService;
         _settingsProvider = settingsProvider;
+    }
+
+    public async Task<ApplicationUser> GetSelfAsync(ClaimsPrincipal principal)
+    {
+        if (_self is null)
+        {
+            _self = await FindAsync(principal);
+        }
+        return _self ?? throw new ArgumentException("Cannot find self - is principal a valid user?");
     }
 
     public async Task<IdentityResult> AddUserAsync(ClaimsPrincipal principal, string email, string password)
@@ -28,6 +37,28 @@ internal class UserManager : IUserManager
 
         var tenantId = principal.GetTenantIdOrThrow();
         return await _superAdminUserService.RegisterAndConfirmUserAsync(tenantId, email, password);
+    }
+
+    public async Task UpdateUserAsync(ClaimsPrincipal principal, ApplicationUser user)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+
+        // Reset cached self in case we are updating the profile image or similar..
+        _self = null;
+
+        // Access guard for protected API
+        if (user.TenantId != tenantId)
+        {
+            throw new UnauthorizedAccessException("Users cannot update user of another tenant");
+        }
+
+        if (principal.Identity?.Name != user.UserName)
+        {
+            // Users can update themselves, but if they are not admin they cannot update other users
+            principal.ThrowIfNotAdmin();
+        }
+
+        await _superAdminUserService.UpdateUserAsync(tenantId, user);
     }
 
     public async Task<PagedResult<ApplicationUser>> BrowseAsync(ClaimsPrincipal principal, int offset, int count)
@@ -67,7 +98,6 @@ internal class UserManager : IUserManager
         await _userService.AddApiKeyAsync(apiKey);
     }
 
-
     public async Task DeleteApiKeyAsync(ClaimsPrincipal principal, ApplicationUserApiKey apiKey)
     {
         var user = await FindAsync(principal) ?? throw new InvalidOperationException("User not found"); ;
@@ -75,7 +105,6 @@ internal class UserManager : IUserManager
         var tenantId = principal.GetTenantIdOrThrow();
         await _userService.DeleteApiKeyAsync(user.Id, tenantId, apiKey.Id);
     }
-
 
     public async Task<ApplicationUser?> GetUserByNormalizedUserNameAsync(ClaimsPrincipal principal, string normalizedUserName)
     {

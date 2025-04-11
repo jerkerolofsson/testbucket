@@ -305,4 +305,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="result-inconclusive" xml:space="preserve">
     <value>Inconclusive</value>
   </data>
+  <data name="delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
 </root>

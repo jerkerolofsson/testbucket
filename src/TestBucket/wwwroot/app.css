@@ -106,6 +106,11 @@ html, body {
     background: var(--mud-palette-primary-hover);
 }
 
+.tb-field {
+   background: linear-gradient(0deg, var(--tb-palette-field-background) 0%, var(--mud-palette-background-gray) 90%);
+   border: solid 1px var(--tb-palette-field-border);
+}
+
 .tb-field a {
     color: var(--mud-palette-text-primary) !important;
     font-size: 8pt;
@@ -367,6 +372,7 @@ p.mud-typography-subtitle1 {
      padding: 0px 2px;
      margin-left: 12px;
      overflow: hidden;
+     font-size: 9pt;
  }
 
  .treeview > .node  {
@@ -374,7 +380,7 @@ p.mud-typography-subtitle1 {
  }
 
     .treeview .node .body {
-        min-height: 40px;
+        min-height: 32px;
 
         display: grid;
         grid-template-columns: auto auto 1fr;
@@ -391,9 +397,9 @@ p.mud-typography-subtitle1 {
 }
 
  .treeview .node .toggle {
-     width: 32px;
-     height: 32px;
-      display: grid;
+     width: 24px;
+     height: 24px;
+     display: grid;
      align-items: center;
      justify-content: center;
  }
@@ -405,8 +411,8 @@ p.mud-typography-subtitle1 {
 
  .treeview .node .icon {
     margin-right: 4px;
-    width: 32px;     
-    height: 32px;
+    width: 24px;     
+    height: 24px;
 
     display: grid;
     align-items: center;

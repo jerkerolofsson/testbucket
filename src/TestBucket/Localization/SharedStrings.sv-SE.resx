@@ -303,4 +303,7 @@
   <data name="result-inconclusive" xml:space="preserve">
     <value />
   </data>
+  <data name="delete" xml:space="preserve">
+    <value>Ta bort</value>
+  </data>
 </root>

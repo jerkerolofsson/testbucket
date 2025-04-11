@@ -11,7 +11,7 @@
         <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6">@Title</MudText>
             <MudSpacer/>
-            <MudToggleGroup T="GroupBy" ValueChanged="OnGroupByChanged" Color="Color.Tertiary">
+            <MudToggleGroup T="GroupBy" ValueChanged="OnGroupByChanged" Color="Color.Surface">
                 <MudToggleItem Value="GroupBy.Category">@loc["groupby-category"]</MudToggleItem>
                 <MudToggleItem Value="GroupBy.Result">@loc["groupby-result"]</MudToggleItem>
             </MudToggleGroup>

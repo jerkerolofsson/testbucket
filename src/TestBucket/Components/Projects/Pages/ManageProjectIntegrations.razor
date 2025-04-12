@@ -4,25 +4,89 @@
 @layout SettingsLayout
 @attribute [Authorize(Roles = "ADMIN")]
 @inject ProjectController projectController
+@inject AppNavigationManager appNav
 @inject IDialogService dialogService
 @inject IExtensionManager extensionManager
+@inject IStringLocalizer<ProjectStrings> projectLoc
+@inject IStringLocalizer<SharedStrings> loc
 
 <TenantRedirect/>
 
 <MudStack Class="container-settings-page">
 
-    @foreach(var extension in _extensions)
-    {
-        _configurations.TryGetValue(extension.SystemName, out var externalSystem);
-        <ExternalIntegrationEditor 
-            Extension="@extension"
-            Name="@extension.FriendlyName" 
-            Integration="@externalSystem" 
-            IntegrationChanged="OnConfigurationChanged" 
-            Icon="@extension.Icon" />
-    }
-</MudStack>
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
+     <MudDataGrid Items="_integrations"
+                 Dense
+                 Hover
+                 T="ExternalSystem"
+                 RowClick="x => OnRowClicked(x.Item)"
+                 SortMode="SortMode.None">
+
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+                <MudText Typo="Typo.h1">@projectLoc["integrations"]</MudText>
+                <MudSpacer />
+
+                <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Write" Entity="PermissionEntityType.Project">
+                    <Authorized>
+                        <MudMenu Icon="@Icons.Material.Filled.Add">
+                            @foreach(var extension in _extensions)
+                            {
+                                var pinnedExtension = extension;
+                                <MudMenuItem OnClick="async () => await AddIntegrationAsync(pinnedExtension)">@extension.FriendlyName</MudMenuItem>
+                            }
+                        </MudMenu>
+                    </Authorized>
+                </PermissionView>
+            </MudStack>
+        </ToolBarContent>
+
+        <Columns>
+             <TemplateColumn>
+                <CellTemplate>
+                    @if (context.Item.Enabled)
+                    {
+                        <MudText Color="Color.Success">●</MudText>
+                    }
+                    else
+                    {
+                        <MudText Color="Color.Error">●</MudText>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.Name" />
+            <PropertyColumn Property="x => x.Provider" />
+            <PropertyColumn Property="x => x.BaseUrl" />
+            <PropertyColumn Property="x => x.ExternalProjectId" />
+            <TemplateColumn>
+                <CellTemplate>
+                    <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Delete" Entity="PermissionEntityType.Project">
+                        <Authorized>
+                            <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteIntegrationAsync(context.Item)"/>
+                        </Authorized>
+                    </PermissionView>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+
+    @* @foreach(var extension in _extensions) *@
+    @* { *@
+    @*     if(_configurations.TryGetValue(extension.SystemName, out var externalSystems)) *@
+    @*     { *@
+    @*         foreach(var externalSystem in externalSystems) *@
+    @*         { *@
+    @*             <ExternalIntegrationEditor Extension="@extension" *@
+    @*             Name="@extension.FriendlyName"  *@
+    @*             Integration="@externalSystem"  *@
+    @*             IntegrationChanged="OnConfigurationChanged"  *@
+    @*             Icon="@extension.Icon" /> *@
+
+    @*         } *@
+    @*     } *@
+    @* } *@
+</MudStack>
 
 @code {
     [Parameter] public string? TenantId { get; set; }
@@ -31,19 +95,63 @@
     private string? _projectSlug;
 
     private IReadOnlyList<IExtension> _extensions = [];
-    private Dictionary<string, ExternalSystem> _configurations = [];
+    private Dictionary<string, List<ExternalSystem>> _configurations = [];
+    private IReadOnlyList<ExternalSystem> _integrations = [];
+
+    private TestProject? _project;
+
+    private List<BreadcrumbItem> _nav = [];
+
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["projects"], appNav.GetManageProjectsUrl()));
+        if(_project is not null)
+        {
+            _nav.Add(new BreadcrumbItem(_project.Name, appNav.GetUrl(_project)));
+            _nav.Add(new BreadcrumbItem(projectLoc["integrations"], appNav.GetUrl(_project) + "/Integrations"));
+        }
     }
 
     private async Task OnConfigurationChanged(ExternalSystem integration)
     {
         if (ProjectSlug is not null)
         {
-            await projectController.SaveProjectIntegrationsAsync(ProjectSlug, integration);
+            await projectController.SaveProjectIntegrationAsync(ProjectSlug, integration);
         }
+    }
+
+    private async Task OnRowClicked(ExternalSystem system)
+    {
+        var extension = _extensions.Where(x => x.SystemName == system.Provider).FirstOrDefault();
+        if(extension is not null)
+        {
+            await projectController.EditProjectIntegrationAsync(_project, system, extension);
+            await ReloadAsync();
+        }
+    }
+
+    private async Task DeleteIntegrationAsync(ExternalSystem system)
+    {
+        await projectController.DeleteProjectIntegrationAsync(system);
+        await ReloadAsync();
+    }
+
+    private async Task AddIntegrationAsync(IExtension extension)
+    {
+        if(_project is null)
+        {
+            return;
+        }
+        await projectController.AddProjectIntegrationAsync(_project, extension);
+        await ReloadAsync();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -52,13 +160,31 @@
         {
             _projectSlug = ProjectSlug;
 
-            IReadOnlyList<ExternalSystem> integrations = await projectController.GetProjectIntegrationsAsync(ProjectSlug);
-            foreach(var config in integrations)
-            {
-                _configurations[config.Name] = config;
-            }
-
-            _extensions = extensionManager.GetExtensions().OrderBy(x=>x.FriendlyName).ToList();
+            _project = await projectController.GetProjectBySlugAsync(_projectSlug);
+            SetupBreadcrumbs();
+            await ReloadAsync();
         }
+    }
+
+    private async Task ReloadAsync()
+    {
+        if(ProjectSlug is null)
+        {
+            return;
+        }
+        _integrations = await projectController.GetProjectIntegrationsAsync(ProjectSlug);
+
+        foreach(var config in _integrations)
+        {
+            config.Provider ??= config.Name;
+
+            if(!_configurations.ContainsKey(config.Provider))
+            {
+                _configurations[config.Provider] = [];
+            }
+            _configurations[config.Provider].Add(config);
+        }
+
+        _extensions = extensionManager.GetExtensions().OrderBy(x=>x.FriendlyName).ToList();
     }
 }

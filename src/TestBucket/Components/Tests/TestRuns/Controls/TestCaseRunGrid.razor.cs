@@ -78,10 +78,10 @@ public partial class TestCaseRunGrid
 
     protected override void OnParametersSet()
     {
-
         if (_selectedItem != SelectedTestCaseRun || SelectedTestCaseRun is null || _run != Run)
         {
             _run = Run;
+            _query = SearchTestCaseRunQuery.FromUrl(navigationManager.Uri);
             _query.TestRunId = _run?.Id;
 
             _selectedItem = SelectedTestCaseRun;

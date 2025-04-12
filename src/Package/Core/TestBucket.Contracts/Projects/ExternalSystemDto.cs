@@ -7,9 +7,19 @@ public record class ExternalSystemDto
     public required string Name { get; set; }
 
     /// <summary>
+    /// ID of the configurtion
+    /// </summary>
+    public required long Id { get; set; }
+
+    /// <summary>
     /// Base URL in the external system for API access
     /// </summary>
     public string? BaseUrl { get; set; }
+
+    /// <summary>
+    /// Unique identifier for the provider. This identifies the extension implementing it. 
+    /// </summary>
+    public string? Provider { get; set; }
 
     /// <summary>
     /// ID for the project in the external system

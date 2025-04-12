@@ -1,5 +1,7 @@
-﻿using OneOf;
+﻿using MudBlazor;
+using OneOf;
 
+using TestBucket.Components.Projects.Dialogs;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Automation.Services;
@@ -7,6 +9,7 @@ using TestBucket.Domain.Errors;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.States;
+using TestBucket.Domain.Teams.Models;
 
 namespace TestBucket.Components.Projects;
 
@@ -19,6 +22,7 @@ internal class ProjectController : TenantBaseService
     private readonly IProjectManager _projectManager;
     private readonly IPipelineProjectManager _pipelineProjectManager;
     private readonly IPipelineManager _pipelineManager;
+    private readonly IDialogService _dialogService;
 
     public ProjectController(
         IProjectRepository projectRepository,
@@ -28,7 +32,8 @@ internal class ProjectController : TenantBaseService
         IStateService stateService,
         IProjectManager projectManager,
         IPipelineProjectManager pipelineProjectManager,
-        IPipelineManager pipelineManager) : base(authenticationStateProvider)
+        IPipelineManager pipelineManager,
+        IDialogService dialogService) : base(authenticationStateProvider)
     {
         _projectRepository = projectRepository;
         _userPreferencesService = userPreferencesService;
@@ -37,6 +42,58 @@ internal class ProjectController : TenantBaseService
         _projectManager = projectManager;
         _pipelineProjectManager = pipelineProjectManager;
         _pipelineManager = pipelineManager;
+        _dialogService = dialogService;
+    }
+
+    public async Task EditProjectIntegrationAsync(TestProject project, ExternalSystem system, IExtension extension)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        var parameters = new DialogParameters<EditIntegrationDialog>
+        {
+            { x => x.ExternalSystem, system },
+            { x => x.Extension, extension }
+        };
+        var dialog = await _dialogService.ShowAsync<EditIntegrationDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is ExternalSystem integration)
+        {
+            integration.TestProjectId = project.Id;
+            await _projectManager.SaveProjectIntegrationAsync(principal, project.Slug, integration);
+        }
+    }
+    public async Task AddProjectIntegrationAsync(TestProject project, IExtension extension)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        var system = new ExternalSystem 
+        { 
+            Name  = extension.FriendlyName,
+            Provider = extension.SystemName,
+            SupportedCapabilities = extension.SupportedCapabilities,
+        };
+
+        var parameters = new DialogParameters<EditIntegrationDialog>
+        {
+            { x => x.ExternalSystem, system },
+            { x => x.Extension, extension }
+        };
+        var dialog = await _dialogService.ShowAsync<EditIntegrationDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if(result?.Data is ExternalSystem integration)
+        {
+            integration.TestProjectId = project.Id;
+            await _projectManager.SaveProjectIntegrationAsync(principal, project.Slug, integration);
+        }
+    }
+    public async Task AddProjectAsync(Team team)
+    {
+        var parameters = new DialogParameters<AddProjectDialog>
+        {
+            { x=>x.Team, team }
+        };
+        var dialog = await _dialogService.ShowAsync<AddProjectDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
     }
 
     public async Task SetActiveProjectAsync(TestProject? project)
@@ -91,12 +148,23 @@ internal class ProjectController : TenantBaseService
         return null;
     }
 
-    public async Task SaveProjectIntegrationsAsync(string slug, ExternalSystem system)
+    public async Task DeleteProjectIntegrationAsync(ExternalSystem system)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        await _projectManager.SaveProjectIntegrationsAsync(principal, slug, system);
+        await _projectManager.DeleteProjectIntegrationAsync(principal, system.Id);
     }
 
+    public async Task SaveProjectIntegrationAsync(string slug, ExternalSystem system)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _projectManager.SaveProjectIntegrationAsync(principal, slug, system);
+    }
+
+    public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(long projectId)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _projectManager.GetProjectIntegrationsAsync(principal, projectId);
+    }
     public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(string slug)
     {
         var principal = await GetUserClaimsPrincipalAsync();

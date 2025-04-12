@@ -11,12 +11,16 @@
 
 <Splitter Style="height: 100%" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
-        <TestTreeView 
-        @ref="_testTreeView"
-        Project="@_project" Team="@_team"
-        OnPipelineClicked="OnPipelineClicked"
+        <TestTreeView @ref="_testTreeView"
+                      Project="@_project" 
+                      Team="@_team"
+                      OnPipelineClicked="OnPipelineClicked"
                       OnTestRunTestsFolderClicked="OnTestRunTestsFolderClicked"
-        OnFolderClicked="OnFolderClicked" OnTestSuiteClicked="OnTestSuiteClicked" OnTestCaseClicked="OnTestCaseClicked" OnTestRunClicked="OnTestRunClicked" />
+                      OnTestCaseRunQueryClicked="OnTestCaseRunQueryClicked"
+                      OnFolderClicked="OnFolderClicked" 
+                      OnTestSuiteClicked="OnTestSuiteClicked" 
+                      OnTestCaseClicked="OnTestCaseClicked" 
+                      OnTestRunClicked="OnTestRunClicked" />
     </StartContent>
 
     <EndContent>
@@ -64,14 +68,19 @@
     private void OnTestSuiteClicked(TestSuite suite)
     {
         appNavigationManager.NavigateTo(suite);
-
     }
 
     private void OnPipelineClicked(Pipeline pipeline)
     {
         appNavigationManager.NavigateTo(pipeline);
     }
-
+    
+    private void OnTestCaseRunQueryClicked(SearchTestCaseRunQuery query)
+    {
+        var url = appNavigationManager.GetUrl(query);
+        navigationManager.NavigateTo(url);
+    }
+    
     private void OnTestRunTestsFolderClicked(TestRun run)
     {
         var url = appNavigationManager.GetUrl(run) + "/Tests";

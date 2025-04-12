@@ -103,6 +103,10 @@ namespace TestBucket.Domain.Identity.Permissions
             var tenantId = principal.GetTenantIdOrThrow();
             
             var user = await _userService.FindAsync(principal, tenantId);
+            if(user is null)
+            {
+                return [];
+            }
             return await _repository.GetProjectUserPermissionsAsync(tenantId, user.Id, projectId);
         }
 

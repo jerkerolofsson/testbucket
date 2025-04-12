@@ -170,7 +170,7 @@ internal class ProjectRepository : IProjectRepository
         system.TestProjectId = project.Id;
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        await dbContext.ExternalSystems.AsNoTracking().Where(x => x.TenantId == tenantId && x.TestProjectId == project.Id && x.Name == system.Name).ExecuteDeleteAsync();
+        //await dbContext.ExternalSystems.AsNoTracking().Where(x => x.TenantId == tenantId && x.TestProjectId == project.Id && x.Name == system.Name).ExecuteDeleteAsync();
         await dbContext.ExternalSystems.AddAsync(system);
         await dbContext.SaveChangesAsync();
     }
@@ -189,11 +189,27 @@ internal class ProjectRepository : IProjectRepository
         }
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.ExternalSystems.Where(x => x.TenantId == tenantId && x.TestProjectId == project.Id).ToListAsync();
+        return await dbContext.ExternalSystems
+            .Where(x => x.TenantId == tenantId && x.TestProjectId == project.Id)
+            .OrderBy(x=> x.Name).ToListAsync();
     }
 
-    public async Task UpdateProjectIntegrationsAsync(string tenantId, string slug, ExternalSystem system)
+    public async Task UpdateProjectIntegrationAsync(string tenantId, string slug, ExternalSystem system)
     {
-        await AddProjectIntegrationsAsync(tenantId, slug, system);
+        var project = await GetBySlugAsync(tenantId, slug);
+        if (project is null)
+        {
+            throw new InvalidOperationException("Project not found: " + slug);
+        }
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        dbContext.ExternalSystems.Update(system);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteProjectIntegrationAsync(string tenantId, long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.ExternalSystems.Where(x=>x.TenantId == tenantId && x.Id == id).ExecuteDeleteAsync();
     }
 }

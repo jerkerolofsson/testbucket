@@ -161,6 +161,12 @@ public class AppNavigationManager
         return $"/{tenantId}/Requirements/Specifications/{spec.Id}";
     }
 
+    public string GetUrl(SearchTestCaseRunQuery query)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Testing/TestRuns/{query.TestRunId}/Tests?{query.ToQueryString()}";
+    }
+
     public string GetUrl(TestRun testrun)
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);

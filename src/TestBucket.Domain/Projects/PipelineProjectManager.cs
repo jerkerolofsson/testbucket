@@ -68,7 +68,7 @@ internal class PipelineProjectManager : IPipelineProjectManager
         await AssignVariablesAsync(principal, context);
 
         ExternalSystemDto[] configs = await _pipelineManager.GetIntegrationConfigsAsync(principal, context.ProjectId);
-        var config = configs.Where(x => x.Name == context.CiCdSystem).FirstOrDefault();
+        var config = configs.Where(x => x.Id == context.CiCdExternalSystemId).FirstOrDefault();
         if (config is null)
         {
             throw new InvalidOperationException($"There is no external system configuration registered with the system ID: {context.CiCdSystem}");
@@ -91,6 +91,7 @@ internal class PipelineProjectManager : IPipelineProjectManager
                 {
                     Status = PipelineStatus.Created,
                     CiCdPipelineIdentifier = context.CiCdPipelineIdentifier,
+                    CiCdProjectId = config.ExternalProjectId,
                     CiCdSystem = runner.SystemName,
                     TestRunId = context.TestRunId,
                     TestProjectId = context.ProjectId,
@@ -105,6 +106,7 @@ internal class PipelineProjectManager : IPipelineProjectManager
             var pipeline = new Pipeline
             {
                 Status = PipelineStatus.Error,
+                CiCdProjectId = config.ExternalProjectId,
                 CiCdSystem = runner.SystemName,
                 StartError = ex.Message,
                 TestRunId = context.TestRunId,

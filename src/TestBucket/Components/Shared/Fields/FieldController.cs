@@ -1,4 +1,6 @@
 ﻿
+
+
 using TestBucket.Components.Tests.Controls;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields;
@@ -146,5 +148,31 @@ internal class FieldController : TenantBaseService
         RemoveOptionsIfNotSelection(fieldDefinition);
         await _definitionManager.UpdateAsync(principal, fieldDefinition);
     }
+
+    internal async Task UpdateTestCaseFieldsAsync(long[] testCaseIds, long? projectId, FieldValue[] fieldValues)
+    {
+        var fieldDefinitions = await SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = projectId, Target = FieldTarget.TestCase });
+        foreach (var testCaseId in testCaseIds)
+        {
+            var testCaseFields = (await GetTestCaseFieldsAsync(testCaseId, fieldDefinitions)).ToList();
+
+            foreach (var field in fieldValues)
+            {
+                // Remove old tag
+                testCaseFields.RemoveAll(x => x.FieldDefinitionId == field.FieldDefinitionId);
+
+                // Add new tag
+                var newField = new TestCaseField
+                {
+                    TestCaseId = testCaseId,
+                    FieldDefinitionId = field.FieldDefinitionId,
+                };
+                field.CopyTo(newField);
+                testCaseFields.Add(newField);
+            }
+            await SaveTestCaseFieldsAsync(testCaseFields);
+        }
+    }
+
     #endregion Field Definitions
 }

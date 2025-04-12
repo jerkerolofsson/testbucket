@@ -3,7 +3,7 @@ function Upload-Result-File {
 	param(
 		$project
 	)
-	$xmlPath="tests/${project}/TestResults/results.xml"
+	$xmlPath="tests/${project}/TestResults/xunit.xml"
 	$trxPath="tests/${project}/TestResults/results.trx"
 
 	$path = ""
@@ -41,14 +41,14 @@ $projects = @("TestBucket.Formats.UnitTests", "TestBucket.Domain.UnitTests")
 foreach ($project in $projects)
 {
 	$csproj="tests/${project}/${project}.csproj"
-	dotnet test $csproj  -- --report-xunit --report-xunit-filename=results.xml
+	dotnet test $csproj  -- --report-xunit --report-xunit-filename=xunit.xml
 }
 
 if ( $env:TB_TOKEN -ne $null) 
 {
 	foreach ($project in $projects)
 	{
-		Upload-Result-File $project
+		#Upload-Result-File $project
 	}
 }
 else

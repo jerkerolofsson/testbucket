@@ -36,4 +36,5 @@ public class PipelineDto
     /// Jobs in the pipeline
     /// </summary>
     public List<PipelineJobDto> Jobs { get; set; } = [];
+    public string CiCdProjectId { get; set; }
 }

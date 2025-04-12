@@ -7,6 +7,7 @@ using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Models;
 using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Components.Tests.TestSuites.Services;
+using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Automation.Models;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Shared.Specifications;
@@ -35,9 +36,14 @@ internal class TestBrowser : TenantBaseService
     public const string FOLDER_PIPELINES = "Pipelines";
 
     /// <summary>
-    /// Virtual folder for pipelines
+    /// Virtual folder for test case runs
     /// </summary>
     public const string FOLDER_RUN_TESTS = "TestRunTests";
+
+    /// <summary>
+    /// Virtual folder for test case runs queries
+    /// </summary>
+    public const string QUERY_RUN_TESTS = "QueryRunTests";
 
     /// <summary>
     /// Virtual folder for test suties
@@ -233,7 +239,7 @@ internal class TestBrowser : TenantBaseService
 
                 return items;
             }
-            else if (parent.VirtualFolderName == FOLDER_RUN_TESTS)
+            else if (parent.VirtualFolderName == FOLDER_RUN_TESTS || parent.VirtualFolderName == QUERY_RUN_TESTS)
             {
                 var items = new List<TreeNode<BrowserItem>>();
                 return items;
@@ -290,8 +296,10 @@ internal class TestBrowser : TenantBaseService
         };
     }
 
-    public TreeNode<BrowserItem> CreateTestRunTreeNode(TestBrowserRequest request, TestRun testRun)
+    public async Task<TreeNode<BrowserItem>> CreateTestRunTreeNode(TestBrowserRequest request, TestRun testRun)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+
         var items = new List<TreeNode<BrowserItem>>();
         if (request.ShowTestRunPipelines)
         {
@@ -301,7 +309,7 @@ internal class TestBrowser : TenantBaseService
                 Children = null,
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = FOLDER_PIPELINES, TestRun = testRun },
-                Icon = Icons.Material.Outlined.Folder,
+                Icon = Icons.Material.Outlined.RocketLaunch,
             });
         }
         if (request.ShowTestRunTests)
@@ -314,6 +322,50 @@ internal class TestBrowser : TenantBaseService
                 Value = new BrowserItem() { VirtualFolderName = FOLDER_RUN_TESTS, TestRun = testRun },
                 Icon = Icons.Material.Outlined.Folder,
             });
+
+            // Search folders
+
+            var assignedToMe = new SearchTestCaseRunQuery { TestRunId = testRun.Id, AssignedToUser = principal.Identity?.Name };
+            var backlog = new SearchTestCaseRunQuery { TestRunId = testRun.Id, AssignedToUser = principal.Identity?.Name, Completed = false };
+            var unassigned = new SearchTestCaseRunQuery { TestRunId = testRun.Id, Unassigned = true };
+            var failed = new SearchTestCaseRunQuery { TestRunId = testRun.Id, Result = TestResult.Failed };
+
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = "Assigned to me",
+                Children = [],
+                Expanded = false,
+                Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = assignedToMe },
+                Icon = Icons.Material.Outlined.AccountCircle,
+            });
+
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = "My Backlog",
+                Children = [],
+                Expanded = false,
+                Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = backlog },
+                Icon = Icons.Material.Outlined.ListAlt,
+            });
+
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = "Unassigned",
+                Children = [],
+                Expanded = false,
+                Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = unassigned },
+                Icon = Icons.Material.Outlined.AccountCircle,
+            });
+
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = "Failures",
+                Children = [],
+                Expanded = false,
+                Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = failed },
+                Icon = Icons.Material.Outlined.WarningAmber,
+            });
+
         }
 
         var treeNode = new TreeNode<BrowserItem>
@@ -623,7 +675,7 @@ internal class TestBrowser : TenantBaseService
             var recentRunsResult = await _testRunManager.SearchTestRunsAsync(principal, query);
             foreach (var testRun in recentRunsResult.Items)
             {
-                recentRuns.Add(CreateTestRunTreeNode(request, testRun));
+                recentRuns.Add(await CreateTestRunTreeNode(request, testRun));
             }
 
             items.Add(new TreeNode<BrowserItem>

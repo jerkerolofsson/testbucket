@@ -6,27 +6,13 @@
 @inject ResourceViewFactory resourceViewFactory
 @inject IStringLocalizer<SharedStrings> loc
 
-<style>
-    .selected {
-        background-color: #1E88E5 !important;
-    }
-
-        .selected > td {
-            color: white !important;
-        }
-
-            .selected > td .mud-input {
-                color: white !important;
-            }
-</style>
-
 <MudDialog DefaultFocus="DefaultFocus.FirstChild">
     <TitleContent>@Resource?.Name</TitleContent>
     <DialogContent>
 
         <div style="display: grid; grid-template-columns: 200px 1fr;">
             <div>
-                <MudTable Items="_viewTypes" RowClass="cursor-pointer" RowClassFunc="@SelectedRowClassFunc">
+                <MudTable Items="_viewTypes" RowClass="cursor-pointer" RowClassFunc="@SelectedRowClassFunc" Dense>
                     <RowTemplate>
                         <MudTd DataLabel="Link" @onclick="() => ShowView(context)">
                             @* <MudLink OnClick="() => ShowView(context)">@context.Name</MudLink> *@
@@ -79,7 +65,7 @@
     {
         if (_viewTypes[rowNumber] == _viewType)
         {
-            return "selected";
+            return "tb-navmenu-selected";
         }
         else
         {

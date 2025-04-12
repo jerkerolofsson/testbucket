@@ -48,4 +48,9 @@ public class TestSuite : TestEntity
     /// Which integration to use
     /// </summary>
     public string? CiCdSystem { get; set; }
+
+    /// <summary>
+    /// Which integration to use
+    /// </summary>
+    public long? ExternalSystemId { get; set; }
 }

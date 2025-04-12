@@ -1,7 +1,7 @@
 ﻿@page "/{tenantId}/Settings/ManageProjects"
 @using System.Diagnostics.CodeAnalysis
 @layout SettingsLayout
-@inject ProjectController projectService
+@inject ProjectController controller
 @inject IDialogService dialogService
 @inject AppNavigationManager appNav
 @inject IStringLocalizer<SharedStrings> loc
@@ -70,18 +70,13 @@
 
     private async Task AddProjectAsync()
     {
-        var parameters = new DialogParameters<AddProjectDialog>
-        {
-            { x=>x.Team, Team }
-        };
-        var dialog = await dialogService.ShowAsync<AddProjectDialog>(null, parameters);
-        var result = await dialog.Result;
+        await controller.AddProjectAsync(Team);
         _dataGrid?.ReloadServerData();
     }
 
     private async Task<GridData<TestProject>> LoadGridData(GridState<TestProject> state)
     {
-        var result = await projectService.SearchAsync(new Contracts.SearchQuery
+        var result = await controller.SearchAsync(new Contracts.SearchQuery
             {
                 Offset = state.Page * state.PageSize,
                 Count = state.PageSize

@@ -6,8 +6,10 @@ namespace TestBucket.Domain.Projects;
 public interface IProjectManager
 {
     Task AddAsync(ClaimsPrincipal principal, TestProject project);
+    Task DeleteProjectIntegrationAsync(ClaimsPrincipal principal, long id);
     Task<string[]?> GetFieldOptionsAsync(ClaimsPrincipal principal, long testProjectId, TraitType traitType, CancellationToken cancellationToken);
+    Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(ClaimsPrincipal principal, long projectId);
     Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(ClaimsPrincipal principal, string slug);
     Task<TestProject?> GetTestProjectByIdAsync(ClaimsPrincipal principal, long projectId);
-    Task SaveProjectIntegrationsAsync(ClaimsPrincipal principal, string slug, ExternalSystem system);
+    Task SaveProjectIntegrationAsync(ClaimsPrincipal principal, string slug, ExternalSystem system);
 }

@@ -101,6 +101,9 @@
         }
         _ciCdSystem = TestSuite?.CiCdSystem;
         _ciCdRef = TestSuite?.DefaultCiCdRef;
+        _run.ExternalSystemId = TestSuite?.ExternalSystemId;
+        _run.CiCdSystem = _ciCdSystem;
+        _run.CiCdRef = _ciCdRef;
         _loading = false;
     }
 

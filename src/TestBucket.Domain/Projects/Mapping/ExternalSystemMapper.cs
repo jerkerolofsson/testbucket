@@ -14,10 +14,12 @@ namespace TestBucket.Domain.Projects.Mapping
         {
             return new ExternalSystemDto
             {
+                Id = x.Id,
                 Enabled = x.Enabled,
                 EnabledCapabilities = x.EnabledCapabilities,
                 SupportedCapabilities = x.SupportedCapabilities,
                 Name = x.Name,
+                Provider = x.Provider,
                 AccessToken = x.AccessToken,
                 BaseUrl = x.BaseUrl,
                 ExternalProjectId = x.ExternalProjectId,

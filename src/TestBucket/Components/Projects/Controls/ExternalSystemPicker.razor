@@ -1,0 +1,39 @@
+﻿@using TestBucket.Contracts.Integrations
+@inject ProjectController controller
+
+<MudSelect Variant="Variant.Outlined" T="ExternalSystem" Value="@Integration" ValueChanged="OnValueChanged" Clearable>
+    @foreach(var integration in _systems)
+    {
+        <MudSelectItem Value="@integration">@integration.Name</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter] public TestProject? Project { get; set; }
+    [Parameter] public ExternalSystem? Integration { get; set; }
+    [Parameter] public EventCallback<ExternalSystem> IntegrationChanged { get; set; }
+
+    private TestProject? _project;
+    private IReadOnlyList<ExternalSystem> _systems = [];
+
+    private async Task OnValueChanged(ExternalSystem system)
+    {
+        await IntegrationChanged.InvokeAsync(system);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(_project?.Id != Project?.Id)
+        {
+            _project = Project;
+            if (_project is null)
+            {
+                _systems = [];
+            }
+            else
+            {
+                _systems = await controller.GetProjectIntegrationsAsync(_project.Id);
+            }
+        }
+    }
+}

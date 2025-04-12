@@ -113,6 +113,7 @@ namespace TestBucket.Gitlab
 
                 return new PipelineDto
                 {
+                    CiCdProjectId = system.ExternalProjectId,
                     WebUrl = pipeline.WebUrl,
                     Error = pipeline.YamlError,
                     Duration = duration,

@@ -80,7 +80,7 @@ internal class PipelineManager : IPipelineManager
         var result = new List<IExternalPipelineRunner>();
         foreach (var integration in _pipelineRunners)
         {
-            var config = configs.Where(x => x.Name == integration.SystemName && x.Enabled).FirstOrDefault();
+            var config = configs.Where(x => x.Provider == integration.SystemName && x.Enabled).FirstOrDefault();
             if (config is not null)
             {
                 result.Add(integration);
@@ -148,7 +148,7 @@ internal class PipelineManager : IPipelineManager
         }
 
         ExternalSystemDto[] configs = await GetIntegrationConfigsAsync(principal, pipeline.TestProjectId.Value);
-        var config = configs.Where(x => x.Name == pipeline.CiCdSystem).FirstOrDefault();
+        var config = configs.Where(x => x.Provider == pipeline.CiCdSystem && x.ExternalProjectId == pipeline.CiCdProjectId).FirstOrDefault();
         if (config is null)
         {
             return null;
@@ -211,7 +211,7 @@ internal class PipelineManager : IPipelineManager
         }
 
         ExternalSystemDto[] configs = await GetIntegrationConfigsAsync(principal, pipeline.TestProjectId.Value);
-        var config = configs.Where(x => x.Name == pipeline.CiCdSystem).FirstOrDefault();
+        var config = configs.Where(x => x.Provider == pipeline.CiCdSystem && x.ExternalProjectId == pipeline.CiCdProjectId).FirstOrDefault();
         if (config is null)
         {
             return null;

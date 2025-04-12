@@ -12,7 +12,7 @@ on:
 jobs:
   build:
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     env:
       DOTNET_INSTALL_DIR: "./.dotnet"
@@ -27,11 +27,11 @@ jobs:
       run: dotnet restore src/TestBucket.sln
     - name: Build
       run: dotnet build --no-restore src/TestBucket.sln
-    - name: Test Domain
-      run: dotnet test --no-build --verbosity normal tests/TestBucket.Domain.UnitTests/TestBucket.Domain.UnitTests.csproj
-    - name: Test Formats
-      run: dotnet test --no-build --verbosity normal tests/TestBucket.Formats.UnitTests/TestBucket.Formats.UnitTests.csproj
-
-    - name: Upload
+   
+    - name: Test
       shell: pwsh
       run: ./run_tests.ps1
+      with:
+        name: tests
+        path: **/xunit.xml
+        retention-days: 5

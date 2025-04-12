@@ -19,6 +19,11 @@ public class Pipeline : ProjectEntity
     public string? CiCdSystem { get; set; }
 
     /// <summary>
+    /// External project ID
+    /// </summary>
+    public string? CiCdProjectId { get; set; }
+
+    /// <summary>
     /// Error message when failed to start the pipeline
     /// </summary>
     public string? StartError { get; set; }

@@ -47,6 +47,12 @@ public class TestRun : TestEntity
     /// </summary>
     public string? CiCdSystem { get; set; }
 
+    /// <summary>
+    /// Automation only:
+    /// CI/CD integration config
+    /// </summary>
+    public long? ExternalSystemId { get; set; }
+
     public long? TestEnvironmentId { get; set; }
     public TestEnvironment? TestEnvironment { get; set; }
 

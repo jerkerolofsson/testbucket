@@ -1,0 +1,95 @@
+﻿@inject FieldController controller
+@inject IStringLocalizer<SharedStrings> loc
+
+<MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <TitleContent>@loc["batch-tag"]</TitleContent>
+    <DialogContent>
+
+        <div style="display: grid; grid-template-columns: 200px 1fr; min-width: 700px; gap: 5px">
+            <div>
+                <MudTable Items="_fields" RowClass="cursor-pointer" RowClassFunc="@SelectedRowClassFunc" Dense>
+                    <RowTemplate>
+                        <MudTd DataLabel="Link" @onclick="() => ShowView(context)">
+                            @context.FieldDefinition?.Name
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </div>
+
+            <div style="">
+                @if (_field?.FieldDefinition is not null)
+                {
+                    <MudStack Style="max-width: 400px">
+                        <MudText Typo="Typo.h1">@_field.FieldDefinition.Name</MudText>
+                        <FieldValueEditor @bind-Field="_field" />
+
+                        @if (!string.IsNullOrEmpty(_field.FieldDefinition.Description))
+                        {
+                            <MudText>@_field.FieldDefinition.Description</MudText>
+                        }
+                    </MudStack>
+                }
+                else
+                {
+                    <MudText>@loc["batch-tag-description"]</MudText>
+                }
+
+            </div>
+
+        </div>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="() => MudDialog.Close(_field)" Color="Color.Primary">@loc["ok"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public long? ProjectId { get; set; }
+    [Parameter] public FieldTarget Target { get; set; } = FieldTarget.TestCase;
+
+    private List<FieldValue> _fields = [];
+    private FieldValue? _field;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new SearchFieldQuery
+            {
+                Count = 0,
+                Offset = 100,
+                Target = Target,
+                ProjectId = ProjectId,
+            };
+        _fields.Clear();
+        var fieldDefinitions = await controller.SearchDefinitionsAsync(query);
+        foreach (var fieldDefinition in fieldDefinitions)
+        {
+            if (fieldDefinition.IsVisible && !fieldDefinition.ReadOnly)
+            {
+                _fields.Add(new FieldValue { FieldDefinition = fieldDefinition, FieldDefinitionId = fieldDefinition.Id });
+            }
+        }
+    }
+
+    private void ShowView(FieldValue viewType)
+    {
+        _field = viewType;
+    }
+
+    private string SelectedRowClassFunc(FieldValue element, int rowNumber)
+    {
+        if (_fields[rowNumber] == _field)
+        {
+            return "tb-navmenu-selected";
+        }
+        else
+        {
+            return string.Empty;
+        }
+    }
+}

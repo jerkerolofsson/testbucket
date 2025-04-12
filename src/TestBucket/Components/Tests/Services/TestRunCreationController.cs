@@ -79,6 +79,10 @@ internal class TestRunCreationController : TenantBaseService
         {
             throw new ArgumentException("CI/CD system not set");
         }
+        if (testRun.ExternalSystemId is null)
+        {
+            throw new ArgumentException("CI/CD integration config not set");
+        }
         if (testRun.CiCdRef is null)
         {
             throw new ArgumentException("CI/CD ref not set");
@@ -102,6 +106,7 @@ internal class TestRunCreationController : TenantBaseService
             ProjectId = testRun.TestProjectId.Value,
             CiCdRef = testRun.CiCdRef,
             CiCdSystem = testRun.CiCdSystem,
+            CiCdExternalSystemId = testRun.ExternalSystemId,
             TeamId = testRun.TeamId.Value,
             TestEnvironmentId = testRun.TestEnvironmentId,
             Variables = variables

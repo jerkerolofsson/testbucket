@@ -55,4 +55,5 @@ public class TestExecutionContext
     public string? CiCdPipelineIdentifier { get; set; }
     public string? CiCdSystem { get; set; }
     public string? TenantId { get; set; }
+    public long? CiCdExternalSystemId { get; set; }
 }

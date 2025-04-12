@@ -49,6 +49,7 @@ public partial class TestCaseGrid
     protected override async Task OnParametersSetAsync()
     {
         bool changed = false;
+
         if(_testSuiteId != TestSuiteId)
         {
             _testSuiteId = TestSuiteId;

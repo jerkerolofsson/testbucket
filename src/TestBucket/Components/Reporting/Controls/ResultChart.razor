@@ -1,4 +1,6 @@
 ﻿@using Plotly.Blazor.LayoutLib
+@using System.Diagnostics
+@using TestBucket.Components.Reporting.Helpers
 @using TestBucket.Domain.Testing.Aggregates
 @inject TestBrowser testBrowser
 @inject TestCaseEditorController testCaseEditorController
@@ -11,6 +13,13 @@
         <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6">@Title</MudText>
             <MudSpacer />
+
+            <MudToggleGroup T="ChartType" Value="@_chartType" ValueChanged="OnChartTypeChanged" Color="Color.Surface">
+                <MudToggleItem Value="ChartType.Donut"><MudIcon Icon="@Icons.Material.Rounded.DonutLarge" Size="Size.Small" /></MudToggleItem>
+                <MudToggleItem Value="ChartType.Pie"><MudIcon Icon="@Icons.Material.Rounded.PieChart" Size="Size.Small" /></MudToggleItem>
+                <MudToggleItem Value="ChartType.Bar"><MudIcon Icon="@Icons.Material.Rounded.BarChart" Size="Size.Small" /></MudToggleItem>
+            </MudToggleGroup>
+
         </MudStack>
         @if (_layout is not null && Results is not null)
         {
@@ -26,6 +35,9 @@
 @code {
     [Parameter] public string Title { get; set; } = "";
     [Parameter] public TestExecutionResultSummary? Results { get; set; }
+    [Parameter] public ChartType ChartType { get; set; } = ChartType.Donut;
+
+    private ChartType _chartType = ChartType.Donut;
 
     private PlotlyChart? _chart;
     private Config? _config = new Config()
@@ -35,54 +47,74 @@
     private Layout? _layout;
 
     // Using of the interface IList is important for the event callback!
-    private IList<ITrace> _data = new List<ITrace>
+    private IList<ITrace> _data = new List<ITrace>();
+
+    private async Task OnChartTypeChanged(ChartType chartType)
     {
-        new Bar
-        {
-            X = new List<object> { "passed", "failed", "blocked", "skipped" },
-            Y = new List<object> { 0,0,0,0,0 },
-            Marker = new Plotly.Blazor.Traces.BarLib.Marker
-            {
-                ColorArray = ["rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)"]
-            }
-        }        
-    };
+        _chartType = chartType;
+        await BuildChartData();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
-        _layout ??= new Layout()
-            {
-                BarCornerRadius = 5,
-                PaperBgColor = "transparent",
-                PlotBgColor = "transparent",
-                Font = new Font
-                {
-                    Color = themingService.IsDarkMode ? "#eee" : "#111",
-                }
-            };
+        _chartType = ChartType;
+
+        _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
+        _layout.Colorway = new string[] { "rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)" };
+
 
         if (Results is not null)
         {
-            if(_data.Count > 0 && _data[0] is Bar bar)
-            {
-                bar.Y = [Results.Passed, Results.Failed, Results.Blocked, Results.Skipped, Results.NoRun];
-            }
-            // var bar = new Bar
-            // {
-            //     Name = "Results",
-            //     X = ["passed", "failed", "blocked", "skipped"],
-            //     Y = [Results.Passed, Results.Failed, Results.Blocked, Results.Skipped, Results.NoRun],
-            //     Marker = new Plotly.Blazor.Traces.BarLib.Marker
-            //     {
-            //         ColorArray = ["rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)"]
-            //     }
-            // };
+            await BuildChartData();
+        }
+    }
 
-            // _data[0] = bar;
-            if (_chart is not null)
+    private async Task BuildChartData()
+    {
+        Debug.Assert(_layout != null);
+        if(_layout is null || Results is null)
+        {
+            return;
+        }
+
+        _data.Clear();
+        _layout.Annotations = [];
+        if (_chartType == ChartType.Bar)
+        {
+            _data.Add(PlotlyChartBuilder.CreateResultBar(Results, "Total"));
+        }
+        else if (_chartType == ChartType.Pie || _chartType == ChartType.Donut)
+        {
+            var pie = PlotlyChartBuilder.CreateResultPie(Results, "Total");
+            if(_chartType == ChartType.Donut)
             {
+                pie.Hole = 0.8M;
+                if (Results.Total > 0)
+                {
+                    var passrate = (int)Math.Round(Results.Passed * 100.0 / Results.Total);
+
+                    _layout.Annotations = [
+                        new Annotation{
+                            ShowArrow = false,
+                            X = 0.5,
+                            Y = 0.5,
+                            Font = new Plotly.Blazor.LayoutLib.AnnotationLib.Font { Size = 20 },
+                            Text = $"{passrate}%"
+                        }];
+                }
+            }
+
+            _data.Add(pie);
+        }
+
+        if (_chart is not null)
+        {
+            try
+            {
+                await _chart.Update(_data, _layout);
                 await _chart.React();
             }
+            catch { }
         }
     }
 }

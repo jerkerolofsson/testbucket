@@ -13,7 +13,7 @@ namespace TestBucket.Github
     {
         public string SystemName => ExtensionConstants.SystemName;
 
-        public ExternalSystemCapability SupportedCapabilities => ExternalSystemCapability.GetMilestones;
+        public ExternalSystemCapability SupportedCapabilities => ExternalSystemCapability.GetMilestones | ExternalSystemCapability.CreatePipeline;
 
         public string FriendlyName => ExtensionConstants.FriendlyName;
 

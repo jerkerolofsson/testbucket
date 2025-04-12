@@ -1,0 +1,82 @@
+﻿using Microsoft.Extensions.Localization;
+
+using TestBucket.Components.Shared;
+using TestBucket.Components.Shared.Fields;
+using TestBucket.Components.Tests.Dialogs;
+using TestBucket.Components.Tests.Services;
+using TestBucket.Domain.Commands;
+using TestBucket.Domain.Keyboard;
+using TestBucket.Domain.Progress;
+using TestBucket.Localization;
+
+namespace TestBucket.Components.Tests.TestSuites.Commands;
+
+internal class BatchTagCommand : ICommand
+{
+    private readonly IStringLocalizer<SharedStrings> _loc;
+    private readonly AppNavigationManager _appNavigationManager;
+    private readonly TestBrowser _browser;
+    private readonly IDialogService _dialogService;
+    private readonly IProgressManager _progressManager;
+    private readonly FieldController _fieldController;
+
+    public BatchTagCommand(
+        IStringLocalizer<SharedStrings> loc,
+        AppNavigationManager appNavigationManager,
+        TestBrowser browser,
+        TestRunCreationController testRunCreationController,
+        IDialogService dialogService,
+        IProgressManager progressManager,
+        FieldController fieldController)
+    {
+        _loc = loc;
+        _appNavigationManager = appNavigationManager;
+        _browser = browser;
+        _dialogService = dialogService;
+        _progressManager = progressManager;
+        _fieldController = fieldController;
+    }
+
+    public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;
+    public string Id => "batch-tag";
+    public string Name => _loc["batch-tag"];
+    public string Description => "Applies tags to all descendant tests";
+    public KeyboardBinding? DefaultKeyboardBinding => null;
+    public string? Icon => Icons.Material.Filled.Tag;
+    public string[] ContextMenuTypes => ["TestSuiteFolder", "TestSuite"];
+
+    public async ValueTask ExecuteAsync()
+    {
+        var suite = _appNavigationManager.State.SelectedTestSuite;
+        var folder = _appNavigationManager.State.SelectedTestSuiteFolder;
+        if (folder is null && suite is null)
+        {
+            return;
+        }
+        var projectId = folder?.TestProjectId ?? suite?.TestProjectId;
+        if (projectId is null)
+        {
+            return;
+        }
+
+        var parameters = new DialogParameters<BatchTagFieldDialog>() { { x => x.ProjectId, projectId }, { x => x.Target, FieldTarget.TestCase } };
+        var dialog = await _dialogService.ShowAsync<BatchTagFieldDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if(result?.Data is FieldValue field)
+        {
+            await using var progress = _progressManager.CreateProgressTask("Updating tests..");
+
+            long[] testCaseIds = [];
+            if (folder is not null)
+            {
+                testCaseIds = await _browser.GetTestSuiteSuiteFolderTestsAsync(folder, includeAllDescendants: true);
+            }
+            else if (suite is not null)
+            {
+                testCaseIds = await _browser.GetTestSuiteSuiteTestsAsync(suite);
+            }
+
+            await _fieldController.UpdateTestCaseFieldsAsync(testCaseIds, projectId, new FieldValue[] { field });
+        }
+    }
+}

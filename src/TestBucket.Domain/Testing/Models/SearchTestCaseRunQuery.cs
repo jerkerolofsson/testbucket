@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 
 namespace TestBucket.Domain.Testing.Models;
 public class SearchTestCaseRunQuery : SearchQuery
@@ -15,6 +16,95 @@ public class SearchTestCaseRunQuery : SearchQuery
     public TestResult? Result { get; set; }
     public string? State { get; set; }
 
+    public static SearchTestCaseRunQuery FromUrl(string? url)
+    {
+        var q = new SearchTestCaseRunQuery();
+        if(url is null)
+        {
+            return q;
+        }
+
+        var p = url.IndexOf('?');
+        var query = url;
+        if (p > 0 && url.Length > p+2)
+        {
+            query = url[(p + 1)..];
+        }
+
+        var pairs = query.Split('&');
+        foreach(var pair in pairs)
+        {
+            var equalSignPos = pair.IndexOf('=');
+            if(equalSignPos > 0 && pair.Length > equalSignPos+1)
+            {
+                var key = pair.Substring(0, equalSignPos);
+                var value = WebUtility.UrlDecode(pair.Substring(equalSignPos+1));
+                switch(key)
+                {
+                    case "AssignedToUser":
+                        q.AssignedToUser = value;
+                        break;
+                    case "State":
+                        q.State = value;
+                        break;
+                    case "Unassigned":
+                        if (bool.TryParse(value, out var unassigned))
+                        {
+                            q.Unassigned = unassigned;
+                        }
+                        break;
+                    case "Completed":
+                        if (bool.TryParse(value, out var completed))
+                        {
+                            q.Completed = completed;
+                        }
+                        break;
+                    case "Result":
+                        if (Enum.TryParse<TestResult>(value, out var result))
+                        {
+                            q.Result = result;
+                        }
+                        break;
+                }
+            }
+        }
+
+        return q;
+    }
+
+    public string ToQueryString()
+    {
+        List<string> items = [];
+        if (AssignedToUser is not null)
+        {
+            items.Add($"AssignedToUser={WebUtility.UrlEncode(AssignedToUser)}");
+        }
+        if (Unassigned is not null)
+        {
+            items.Add($"Unassigned={Unassigned}");
+        }
+        if (Result is not null)
+        {
+            items.Add($"Result={Result}");
+        }
+        if (State is not null)
+        {
+            items.Add($"State={WebUtility.UrlEncode(State)}");
+        }
+        if (TeamId is not null)
+        {
+            items.Add($"TeamId={TeamId}");
+        }
+        if (Completed is not null)
+        {
+            items.Add($"Completed={Completed}");
+        }
+        if (TestSuiteId is not null)
+        {
+            items.Add($"TestSuiteId={TestSuiteId}");
+        }
+        return string.Join('&', items);
+    }
     public string AsCacheKey()
     {
         var sb = new StringBuilder();

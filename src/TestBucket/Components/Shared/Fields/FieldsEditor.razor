@@ -46,7 +46,7 @@
     private long? _testRunId;
     private long? _testProjectId;
 
-    protected override async Task OnParametersSetAsync()
+    private async Task LoadAsync()
     {
         if (TestCase is not null && (_testCaseId != TestCase.Id || _testProjectId != TestCase.TestProjectId))
         {
@@ -69,6 +69,17 @@
             var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = TestRun.TestProjectId, Target = FieldTarget.TestRun });
             _testRunFields = (await fieldController.GetTestRunFieldsAsync(TestRun.Id, definitions)).OrderBy(x => x.FieldDefinition!.Name).ToList();
         }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadAsync();
+
     }
     private async Task OnTestRunFieldChangedAsync()
     {

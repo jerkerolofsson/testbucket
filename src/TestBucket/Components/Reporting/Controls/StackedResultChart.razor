@@ -1,4 +1,5 @@
 ﻿@using Plotly.Blazor.LayoutLib
+@using TestBucket.Components.Reporting.Helpers
 @using TestBucket.Domain.Testing.Aggregates
 @inject TestBrowser testBrowser
 @inject TestCaseEditorController testCaseEditorController
@@ -11,7 +12,7 @@
         <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6">@Title</MudText>
             <MudSpacer/>
-            <MudToggleGroup T="GroupBy" ValueChanged="OnGroupByChanged" Color="Color.Surface">
+            <MudToggleGroup T="GroupBy" Value="@_grouping" ValueChanged="OnGroupByChanged" Color="Color.Surface">
                 <MudToggleItem Value="GroupBy.Category">@loc["groupby-category"]</MudToggleItem>
                 <MudToggleItem Value="GroupBy.Result">@loc["groupby-result"]</MudToggleItem>
             </MudToggleGroup>
@@ -62,39 +63,22 @@
     {
         if (_grouping == GroupBy.Category)
         {
-            _layout = new Layout()
-                {
-                    Colorway = new string[] { "rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)" },
-                    BarCornerRadius = 5,
-                    PaperBgColor = "transparent",
-                    PlotBgColor = "transparent",
-                    Font = new Font
-                    {
-                        Color = themingService.IsDarkMode ? "#eee" : "#111",
-                    },
-                    BarMode = BarModeEnum.Stack
-                };
+            _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
+            _layout.Colorway = new string[] { "rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)" };
+            _layout.BarMode = BarModeEnum.Stack;
             BuildResultsGroupedByCategory();
         }
         else
         {
-            _layout = new Layout()
-                {
-                    BarCornerRadius = 5,
-                    PaperBgColor = "transparent",
-                    PlotBgColor = "transparent",
-                    Font = new Font
-                    {
-                        Color = themingService.IsDarkMode ? "#eee" : "#111",
-                    },
-                    BarMode = BarModeEnum.Stack
-                };
+            _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
+            _layout.BarMode = BarModeEnum.Stack;
+
             BuildResultsGroupedByResult();
         }
 
         if (_chart is not null)
         {
-            await _chart.Update(null, _layout);
+            await _chart.Update(_data, _layout);
             await _chart.React();
         }
     }
@@ -102,15 +86,12 @@
     protected override async Task OnParametersSetAsync()
     {
         _grouping = Grouping;
-        
 
         if (Results is not null)
         {
             await BuildChartData();
         }
     }
-
-    private static string[] _results = ["passed", "failed", "blocked", "skipped"];
 
     private void BuildResultsGroupedByCategory()
     {
@@ -120,32 +101,10 @@
         }
         _data.Clear();
         var categories = Results.Keys.ToArray();
-        foreach (var result in _results)
+        foreach (var result in PlotlyChartBuilder.ResultLabels)
         {
-            var bar = new Bar
-                {
-                    Name = result,
-                    X = new List<object>(categories),
-                    Y = new List<object>(),
-                  
-                };
-            _data.Add(bar);
-
-            foreach(var categoryResult in Results.Values)
-            {
-                var sum = result switch
-                {
-                    "passed" => categoryResult.Passed,
-                    "failed" => categoryResult.Failed,
-                    "blocked" => categoryResult.Blocked,
-                    "skipped" => categoryResult.Skipped,
-                    "norun" => categoryResult.NoRun,
-                    _ => 0
-                };
-                bar.Y.Add(sum);
-            }
+            PlotlyChartBuilder.BuildPassrateCategoryBarData(_data, categories, result, Results.Values);
         }
-       
     }
 
     private void BuildResultsGroupedByResult()
@@ -157,21 +116,9 @@
         _data.Clear();
         foreach(var kvp in Results)
         {
-            var bar = new Bar
-                {
-                        
-                    Name = kvp.Key,
-                    X = new List<object>(_results),
-                    Y = new List<object>(),
-                    // Marker = new Plotly.Blazor.Traces.BarLib.Marker
-                    // {
-                    //     ColorArray = ["rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)"]
-                    // }
-                };
-                _data.Add(bar);
-
             var result = kvp.Value;
-            bar.Y = [result.Passed, result.Failed, result.Blocked, result.Skipped, result.NoRun];
-        }        
+            string name = kvp.Key;
+            _data.Add(PlotlyChartBuilder.CreateResultBar(result, name));
+        }
     }
 }

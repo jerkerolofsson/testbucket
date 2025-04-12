@@ -33,6 +33,9 @@ internal class TestCaseRunFieldHelper
                         TestRunId = testRun.Id
                     };
                     field.CopyTo(newField);
+
+                    // Replace it
+                    fields.RemoveAll(x => x.FieldDefinitionId == newField.FieldDefinitionId);
                     fields.Add(newField);
                 }
             }
@@ -55,6 +58,9 @@ internal class TestCaseRunFieldHelper
                         TestRunId = testRun.Id
                     };
                     field.CopyTo(newField);
+
+                    // Replace it
+                    fields.RemoveAll(x => x.FieldDefinitionId == newField.FieldDefinitionId);
                     fields.Add(newField);
                 }
             }

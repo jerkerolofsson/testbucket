@@ -11,92 +11,100 @@
 @if (Name is not null)
 {
     <MudPaper Class="mb-3 pa-3">
-        <MudStack Row AlignItems="AlignItems.Center" Class="tb-integration-title mb-5">
-            @if (Icon is not null)
-            {
-                <MudIcon Size="Size.Large" Icon="@Icon" />
-            }
-            <MudText Typo="Typo.h1">@(Extension?.FriendlyName ?? Name)</MudText>
-        </MudStack>
-
-        @if(Extension is not null)
-        {
-            <MudText Class="mb-3">@Extension?.Description</MudText>
-        }
-
-        @if(Integration is null)
-        {
-            <MudText Style="font-weight: bold">@loc["no-integration"]</MudText>
-
-            <MudStack Row Class="mt-5">
-                <MudButton Variant="Variant.Outlined" OnClick="AddAsync">@loc["add-integration"]</MudButton>
+        <MudStack>
+            <MudStack Row AlignItems="AlignItems.Center" Class="tb-integration-title mb-5">
+                @if (Icon is not null)
+                {
+                    <MudIcon Size="Size.Large" Icon="@Icon" />
+                }
+                <MudText Typo="Typo.h1">@(Extension?.FriendlyName ?? Name)</MudText>
             </MudStack>
-        }
-        else
-        {
-            <Field Row>
-                <FieldHeader>@loc["integration-base-url"]</FieldHeader>
-                <MudSpacer/>
-                <MudTextField Value="Integration.BaseUrl" T="string" ValueChanged="BaseUrlChanged" />
-            </Field>
-            <Field Row>
-                <FieldHeader>@loc["project-id"]</FieldHeader>
-                <MudSpacer />
-                <MudTextField 
-                Value="Integration.ExternalProjectId" 
-                T="string" 
-                ValueChanged="ExternalProjectIdChanged" 
-                HelperText="@Extension?.ProjectIdHelperText" />
-            </Field>
-            <Field Row>
-                <FieldHeader>@loc["access-token"]</FieldHeader>
-                <MudSpacer />
-                <MudTextField 
-                    InputType="InputType.Password" 
-                    Value="Integration.AccessToken" 
-                    T="string" 
-                    ValueChanged="AccessTokenChanged"
-                    HelperText="@Extension?.AccessTokenHelperText" />
-            </Field>
-
-            <Field Row>
-                <FieldHeader>@loc["enabled"]</FieldHeader>
-                <MudSpacer />
-                <MudSwitchM3 Color="Color.Primary" T="bool" Value="Integration.Enabled" ValueChanged="EnabledChanged" />
-            </Field>
 
             @if(Extension is not null)
             {
-                if((Extension.SupportedCapabilities&ExternalSystemCapability.ReadPipelineArtifacts) == ExternalSystemCapability.ReadPipelineArtifacts)
-                {
-
-                    <Field Row>
-                        <FieldHeader>@loc["test-result-artifact-pattern"]</FieldHeader>
-                        <MudSpacer />
-                        <MudTextField InputType="InputType.Text"
-                                      Value="Integration.TestResultsArtifactsPattern"
-                                      T="string"
-                                      ValueChanged="TestResultsArtifactsPatternChanged"
-                                      HelperText="@loc["test-result-artifact-pattern-helper-text"]" />
-                    </Field>
-                }
-
-                ExternalSystemCapability[] capabilities = [ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases];
-                string[] labels = ["create-pipeline", "create-issues", "get-issues", "get-milestones", "get-releases"];
-
-                @for(int i=0; i<Math.Min(capabilities.Length, labels.Length); i++)
-                {
-                    <ExternalSystemCapabilityField SupportedCapabilities="@Extension.SupportedCapabilities"
-                                                   EnabledCapabilities="@Integration.EnabledCapabilities"
-                                                   Title="@loc[labels[i]]"
-                                                   OnEnabled="OnEnabledAsync"
-                                                   OnDisabled="OnDisabledAsync"
-                                                   Capability="@capabilities[i]" />
-                }
-
-                <MudText Class="mt-3" Style="opacity: 0.4">@Extension.FriendlyName @Extension.Version</MudText>
+                <MudText Class="mb-3">@Extension?.Description</MudText>
             }
-        }
+
+            @if(Integration is null)
+            {
+                <MudText Style="font-weight: bold">@loc["no-integration"]</MudText>
+
+                <MudStack Row Class="mt-5">
+                    <MudButton Variant="Variant.Outlined" OnClick="AddAsync">@loc["add-integration"]</MudButton>
+                </MudStack>
+            }
+            else
+            {
+                 <Field Row>
+                    <FieldHeader>@loc["name"]</FieldHeader>
+                    <MudSpacer/>
+                    <MudTextField Value="Integration.Name" T="string" ValueChanged="NameChanged" />
+                </Field>
+
+                <Field Row>
+                    <FieldHeader>@loc["integration-base-url"]</FieldHeader>
+                    <MudSpacer/>
+                    <MudTextField Value="Integration.BaseUrl" T="string" ValueChanged="BaseUrlChanged" />
+                </Field>
+                <Field Row>
+                    <FieldHeader>@loc["project-id"]</FieldHeader>
+                    <MudSpacer />
+                    <MudTextField 
+                    Value="Integration.ExternalProjectId" 
+                    T="string" 
+                    ValueChanged="ExternalProjectIdChanged" 
+                    HelperText="@Extension?.ProjectIdHelperText" />
+                </Field>
+                <Field Row>
+                    <FieldHeader>@loc["access-token"]</FieldHeader>
+                    <MudSpacer />
+                    @* InputType="InputType.Password"  *@
+                            <MudTextField 
+                        Value="Integration.AccessToken" 
+                        T="string" 
+                        ValueChanged="AccessTokenChanged"
+                        HelperText="@Extension?.AccessTokenHelperText" />
+                </Field>
+
+                <Field Row>
+                    <FieldHeader>@loc["enabled"]</FieldHeader>
+                    <MudSpacer />
+                    <MudSwitchM3 Color="Color.Primary" T="bool" Value="Integration.Enabled" ValueChanged="EnabledChanged" />
+                </Field>
+
+                @if(Extension is not null)
+                {
+                    if((Extension.SupportedCapabilities&ExternalSystemCapability.ReadPipelineArtifacts) == ExternalSystemCapability.ReadPipelineArtifacts)
+                    {
+
+                        <Field Row>
+                            <FieldHeader>@loc["test-result-artifact-pattern"]</FieldHeader>
+                            <MudSpacer />
+                            <MudTextField InputType="InputType.Text"
+                                          Value="Integration.TestResultsArtifactsPattern"
+                                          T="string"
+                                          ValueChanged="TestResultsArtifactsPatternChanged"
+                                          HelperText="@loc["test-result-artifact-pattern-helper-text"]" />
+                        </Field>
+                    }
+
+                    ExternalSystemCapability[] capabilities = [ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases];
+                    string[] labels = ["create-pipeline", "create-issues", "get-issues", "get-milestones", "get-releases"];
+
+                    @for(int i=0; i<Math.Min(capabilities.Length, labels.Length); i++)
+                    {
+                        <ExternalSystemCapabilityField SupportedCapabilities="@Extension.SupportedCapabilities"
+                                                       EnabledCapabilities="@Integration.EnabledCapabilities"
+                                                       Title="@loc[labels[i]]"
+                                                       OnEnabled="OnEnabledAsync"
+                                                       OnDisabled="OnDisabledAsync"
+                                                       Capability="@capabilities[i]" />
+                    }
+
+                    <MudText Class="mt-3" Style="opacity: 0.4">@Extension.FriendlyName @Extension.Version</MudText>
+                }
+            }
+        </MudStack>
     </MudPaper>
 }
 
@@ -112,6 +120,14 @@
         if (Integration is not null)
         {
             Integration.ExternalProjectId = externalProjectId;
+            await OnChangedAsync();
+        }
+    }
+        private async Task NameChanged(string name)
+    {
+        if (Integration is not null)
+        {
+            Integration.Name = name;
             await OnChangedAsync();
         }
     }

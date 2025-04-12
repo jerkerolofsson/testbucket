@@ -217,6 +217,7 @@ public class Program
         builder.Services.AddScoped<HotKeysService>();
         builder.Services.AddScoped<ICommand, RunTestSuiteCommand>();
         builder.Services.AddScoped<ICommand, AddTestSuiteToRunCommand>();
+        builder.Services.AddScoped<ICommand, BatchTagCommand>();
         builder.Services.AddScoped<ICommand, NewTestCommand>();
         builder.Services.AddScoped<ICommand, NewFolderCommand>();
         builder.Services.AddScoped<ICommand, SyncWithActiveDocumentCommand>();

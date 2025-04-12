@@ -16,6 +16,11 @@ public class ExternalSystem : ProjectEntity
     public required string Name { get; set; }
 
     /// <summary>
+    /// Unique identifier for the provider. This identifies the extension (SystemName) implementing it. 
+    /// </summary>
+    public string? Provider { get; set; }
+
+    /// <summary>
     /// Base URL in the external system for API access
     /// </summary>
     public string? BaseUrl { get; set; }

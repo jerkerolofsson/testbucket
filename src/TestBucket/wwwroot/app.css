@@ -392,6 +392,7 @@ p.mud-typography-subtitle1 {
         align-items: center;
     }
 
+.tb-navmenu-selected,
 .treeview .node.selected > .body {
     color: var(--mud-palette-tertiary);
     background: var(--mud-palette-tertiary-hover);
@@ -697,6 +698,9 @@ table tbody tr td {
 }
 
 .tb-profile-image {
+    aspect-ratio: 1;
+    min-width: 32px;
+    max-width: 32px;
     width: 32px;
     height: 32px;
     border-radius: 100%;

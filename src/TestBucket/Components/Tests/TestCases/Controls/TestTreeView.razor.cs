@@ -26,6 +26,11 @@ public partial class TestTreeView
     [Parameter] public EventCallback<TestRun> OnTestRunTestsFolderClicked { get; set; }
 
     /// <summary>
+    /// A search query for TestCaseRun was clicked
+    /// </summary>
+    [Parameter] public EventCallback<SearchTestCaseRunQuery> OnTestCaseRunQueryClicked { get; set; }
+
+    /// <summary>
     /// Invoked when a pipeline is clicked
     /// </summary>
     [Parameter] public EventCallback<Pipeline> OnPipelineClicked { get; set; }
@@ -312,6 +317,10 @@ public partial class TestTreeView
             {
                 await OnTestRunTestsFolderClicked.InvokeAsync(item.TestRun);
             }
+            else if (item.TestRun is not null && item.VirtualFolderName == TestBrowser.QUERY_RUN_TESTS)
+            {
+                await OnTestCaseRunQueryClicked.InvokeAsync(item.TestCaseRunQuery);
+            }
         }
     }
 
@@ -532,12 +541,12 @@ public partial class TestTreeView
     }
     public async Task OnRunCreatedAsync(TestRun testRun)
     {
-        await InvokeAsync(() =>
+        await InvokeAsync(async () =>
         {
             var testrunsNode = FindTreeNode(x => x.VirtualFolderName == TestBrowser.ROOT_TEST_RUNS);
             if (testrunsNode is not null)
             {
-                var childNode = testBrowser.CreateTestRunTreeNode(CreateRequest(), testRun);
+                var childNode = await testBrowser.CreateTestRunTreeNode(CreateRequest(), testRun);
                 testrunsNode.Expanded = true;
                 if (testrunsNode.Children is null)
                 {

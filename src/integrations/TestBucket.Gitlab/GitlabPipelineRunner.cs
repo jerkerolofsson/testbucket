@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-
-using NGitLab;
+﻿using NGitLab;
 using NGitLab.Models;
 
 using TestBucket.Contracts.Automation;
@@ -35,7 +27,7 @@ namespace TestBucket.Gitlab
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string jobId, CancellationToken cancellationToken)
+        public async Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string pipelineId, string jobId, CancellationToken cancellationToken)
         {
             if (system is not null &&
                system.ExternalProjectId is not null &&

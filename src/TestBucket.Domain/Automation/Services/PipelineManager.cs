@@ -273,10 +273,13 @@ internal class PipelineManager : IPipelineManager
         {
             foreach (var job in pipeline.PipelineJobs)
             {
-                if (job.HasArtifacts && job.CiCdJobIdentifier is not null)
+                if (job.HasArtifacts && job.CiCdJobIdentifier is not null && pipeline.CiCdPipelineIdentifier is not null)
                 {
                     // Add as attachments to the test case
-                    var bytes = await configuredRunner.Service.GetArtifactsZipAsByteArrayAsync(configuredRunner.Config, job.CiCdJobIdentifier, CancellationToken.None);
+                    var bytes = await configuredRunner.Service.GetArtifactsZipAsByteArrayAsync(configuredRunner.Config, 
+                        pipeline.CiCdPipelineIdentifier,
+                        job.CiCdJobIdentifier, 
+                        CancellationToken.None);
                     await _mediator.Publish(new IntegrationEvents.JobArtifactDownloaded(principal, pipeline, job, configuredRunner.Config.TestResultsArtifactsPattern, bytes));
                 }
             }

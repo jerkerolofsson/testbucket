@@ -22,7 +22,7 @@ namespace TestBucket.Contracts.Integrations
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task CreateAsync(ExternalSystemDto system, TestExecutionContext context, CancellationToken cancellationToken);
-        Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string jobId, CancellationToken cancellationToken);
+        Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string pipelineId, string jobId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Reads the latest status for a pipeline, including jobs, and returns it

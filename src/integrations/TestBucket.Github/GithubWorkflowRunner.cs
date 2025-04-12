@@ -98,10 +98,30 @@ internal class GithubWorkflowRunner : IExternalPipelineRunner
         }
     }
 
-    public Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string jobId, CancellationToken cancellationToken)
+    public async Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string workflowRunId, string jobIdString, CancellationToken cancellationToken)
     {
-        //await client.Actions.Artifacts.DownloadArtifact
-        throw new NotImplementedException();
+        if (!long.TryParse(jobIdString, out var jobId))
+        {
+            throw new ArgumentException("Expected jobIdString to be a int64");
+        }
+        if (!long.TryParse(workflowRunId, out var runId))
+        {
+            throw new ArgumentException("Expected workflowRunId to be a int64");
+        }
+        var ownerProject = GithubOwnerProject.Parse(system.ExternalProjectId);
+
+        var tokenAuth = new Credentials(system.AccessToken);
+        var client = new GitHubClient(new ProductHeaderValue("TestBucket"));
+        client.Credentials = tokenAuth;
+
+        PipelineDto pipeline = new();
+
+        var artifacts  = await client.Actions.Artifacts.ListWorkflowArtifacts(ownerProject.Owner, ownerProject.Project, runId);
+
+
+
+        //await client.Actions.Artifacts.DownloadArtifact()
+        return [];
     }
 
     public async Task<PipelineDto?> GetPipelineAsync(ExternalSystemDto system, string workflowRunId, CancellationToken cancellationToken)
@@ -122,17 +142,29 @@ internal class GithubWorkflowRunner : IExternalPipelineRunner
 
         var run = await client.Actions.Workflows.Runs.Get(ownerProject.Owner, ownerProject.Project, runId);
         if (run.Status.TryParse(out var status))
-        { 
-            if (status.Equals(WorkflowJobStatus.InProgress)) pipeline.Status = PipelineStatus.Running;
-            else if (status.Equals(WorkflowJobStatus.Completed)) pipeline.Status = PipelineStatus.Completed;
-            else if (status.Equals(WorkflowJobStatus.Queued)) pipeline.Status = PipelineStatus.Queued;
-            else if (status.Equals(WorkflowJobStatus.Waiting)) pipeline.Status = PipelineStatus.Waiting;
-            else if (status.Equals(WorkflowJobStatus.Pending)) pipeline.Status = PipelineStatus.Pending;
+        {
+            switch (status)
+            {
+                case WorkflowRunStatus.Completed:
+                    pipeline.Status = PipelineStatus.Completed;
+                    break;
+                case WorkflowRunStatus.InProgress:
+                    pipeline.Status = PipelineStatus.Running;
+                    break;
+                case WorkflowRunStatus.Queued:
+                    pipeline.Status = PipelineStatus.Queued;
+                    break;
+                case WorkflowRunStatus.Waiting:
+                    pipeline.Status = PipelineStatus.Waiting;
+                    break;
+                case WorkflowRunStatus.Pending:
+                    pipeline.Status = PipelineStatus.Pending;
+                    break;
+            }
         }
 
         pipeline.WebUrl = run.Url;
         pipeline.Duration = run.UpdatedAt - run.CreatedAt;
-        
 
         var jobResponse = await client.Actions.Workflows.Jobs.List(ownerProject.Owner, ownerProject.Project, runId);
         foreach(var job in jobResponse.Jobs)
@@ -144,20 +176,40 @@ internal class GithubWorkflowRunner : IExternalPipelineRunner
                 FinishedAt = job.CompletedAt,
                 StartedAt = job.StartedAt,
                 WebUrl = job.Url,
+                Name = job.Name
             };
-           
+            pipeline.Jobs.Add(jobDto);
+
             if (jobDto.FinishedAt is not null && jobDto.StartedAt is not null)
             {
                 jobDto.Duration = jobDto.FinishedAt - jobDto.StartedAt;
             }
+            else if(jobDto.StartedAt is not null)
+            {
+                jobDto.Duration = DateTimeOffset.UtcNow - jobDto.StartedAt.Value;
+            }
 
             if (job.Status.TryParse(out var jobStatus))
             {
-                if (status.Equals(WorkflowJobStatus.InProgress)) jobDto.Status = PipelineJobStatus.Running;
-                else if (status.Equals(WorkflowJobStatus.Completed)) jobDto.Status = PipelineJobStatus.Completed;
-                else if (status.Equals(WorkflowJobStatus.Queued)) jobDto.Status = PipelineJobStatus.Queued;
-                else if (status.Equals(WorkflowJobStatus.Waiting)) jobDto.Status = PipelineJobStatus.Waiting;
-                else if (status.Equals(WorkflowJobStatus.Pending)) jobDto.Status = PipelineJobStatus.Pending;
+                switch (status)
+                {
+                    case WorkflowRunStatus.Completed:
+                        jobDto.Status = PipelineJobStatus.Completed;
+                        jobDto.HasArtifacts = true;
+                        break;
+                    case WorkflowRunStatus.InProgress:
+                        jobDto.Status = PipelineJobStatus.Running;
+                        break;
+                    case WorkflowRunStatus.Queued:
+                        jobDto.Status = PipelineJobStatus.Queued;
+                        break;
+                    case WorkflowRunStatus.Waiting:
+                        jobDto.Status = PipelineJobStatus.Waiting;
+                        break;
+                    case WorkflowRunStatus.Pending:
+                        jobDto.Status = PipelineJobStatus.Pending;
+                        break;
+                }
             }
         }
 

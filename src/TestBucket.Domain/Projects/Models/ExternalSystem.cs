@@ -59,4 +59,6 @@ public class ExternalSystem : ProjectEntity
     /// File pattern for artifacts. Separated by ;
     /// </summary>
     public string? TestResultsArtifactsPattern { get; set; }
+
+    public override string ToString() => Name;
 }

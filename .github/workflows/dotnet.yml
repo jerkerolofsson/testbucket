@@ -33,5 +33,5 @@ jobs:
       run: ./run_tests.ps1
       with:
         name: tests
-        path: **/xunit.xml
+        path: "**/xunit.xml"
         retention-days: 5

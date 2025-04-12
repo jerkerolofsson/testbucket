@@ -25,13 +25,18 @@ jobs:
         dotnet-version: 9.0.102
     - name: Restore dependencies
       run: dotnet restore src/TestBucket.sln
+      
     - name: Build
       run: dotnet build --no-restore src/TestBucket.sln
    
     - name: Test
       shell: pwsh
       run: ./run_tests.ps1
+
+    - name: Upload test artifacts
+      uses: actions/upload-artifact@v3
       with:
         name: tests
         path: "**/xunit.xml"
         retention-days: 5
+        if-no-files-found: error

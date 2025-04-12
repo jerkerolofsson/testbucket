@@ -22,5 +22,7 @@ public enum PipelineJobStatus
     Skipped,
     WaitingForResource,
     Scheduled,
-    Manual
+    Manual,
+    Queued,
+    Waiting
 }

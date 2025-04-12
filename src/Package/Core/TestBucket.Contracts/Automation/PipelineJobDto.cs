@@ -6,22 +6,27 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TestBucket.Contracts.Automation;
+
+/// <summary>
+/// Gitlab: Pipeline Job
+/// Github WorkflowRun Job
+/// </summary>
 public class PipelineJobDto
 {
     /// <summary>
     /// Time when created
     /// </summary>
-    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset? CreatedAt { get; set; }
 
     /// <summary>
     /// Time when started
     /// </summary>
-    public DateTimeOffset StartedAt { get; set; }
+    public DateTimeOffset? StartedAt { get; set; }
 
     /// <summary>
     /// Time when completed
     /// </summary>
-    public DateTimeOffset FinishedAt { get; set; }
+    public DateTimeOffset? FinishedAt { get; set; }
 
     /// <summary>
     /// Pipeline stage

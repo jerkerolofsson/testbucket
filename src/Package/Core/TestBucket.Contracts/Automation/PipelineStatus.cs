@@ -13,6 +13,8 @@ public enum PipelineStatus
     Running = 3,
     Canceled = 4,
     Canceling,
+
+    Waiting,
     Pending,
     Completed,
     Preparing,
@@ -22,5 +24,6 @@ public enum PipelineStatus
     Skipped,
     WaitingForResource,
     Scheduled,
+    Queued,
     Manual
 }

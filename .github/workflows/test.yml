@@ -4,8 +4,8 @@
 name: TestBucket
 
 on:
-   workflow_dispatch::
-    branches: [ "main" ]
+   workflow_dispatch:
+     branches: [ "main" ]
 
 jobs:
   build:

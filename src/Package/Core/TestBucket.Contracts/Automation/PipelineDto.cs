@@ -5,6 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TestBucket.Contracts.Automation;
+
+/// <summary>
+/// Gitlab: Pipeline
+/// Github Actions: Workflow Run
+/// </summary>
 public class PipelineDto
 {
     /// <summary>
@@ -36,5 +41,9 @@ public class PipelineDto
     /// Jobs in the pipeline
     /// </summary>
     public List<PipelineJobDto> Jobs { get; set; } = [];
-    public string CiCdProjectId { get; set; }
+
+    /// <summary>
+    /// External ID in remote system
+    /// </summary>
+    public string? CiCdProjectId { get; set; }
 }

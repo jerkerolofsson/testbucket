@@ -1,10 +1,172 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Logging;
+
+using Octokit;
+
+using TestBucket.Contracts.Automation;
+using TestBucket.Contracts.Integrations;
+using TestBucket.Contracts.Projects;
+using TestBucket.Contracts.Testing.Models;
+using TestBucket.Github.Models;
+
 namespace TestBucket.Github;
-internal class GithubWorkflowRunner
+internal class GithubWorkflowRunner : IExternalPipelineRunner
 {
+    public string SystemName => ExtensionConstants.SystemName;
+
+    private readonly ILogger<GithubWorkflowRunner> _logger;
+
+    public GithubWorkflowRunner(ILogger<GithubWorkflowRunner> logger)
+    {
+        _logger = logger;
+    }
+
+    public async Task CreateAsync(ExternalSystemDto system, TestExecutionContext context, CancellationToken cancellationToken)
+    {
+        var ownerProject = GithubOwnerProject.Parse(system.ExternalProjectId);
+        string workflowFilename = context.CiCdWorkflow ?? "test.yml";
+
+        var tokenAuth = new Credentials(system.AccessToken);
+        var client = new GitHubClient(new ProductHeaderValue("TestBucket"));
+        client.Credentials = tokenAuth;
+
+        // We need to get the ID of the workflow run.
+        // However, it is not returned from the create dispatch response.
+        // There are workarounds that required adding things to the workflow, which we don't want to do.
+        // Let's hope that Github adds the ID in a response in the future and use this method which
+        // works "most of the time" -- classic -- if you're reading this perhaps it doesn't work now.
+        // We poll for the latest workflow to change after creating a dispatch.
+        var latest = await GetLatestWorkflowRunAsync(client, ownerProject);
+
+        var createWorkflowDispatch = new CreateWorkflowDispatch(context.CiCdRef);
+        createWorkflowDispatch.Inputs = new Dictionary<string, object>();
+
+        await client.Actions.Workflows.CreateDispatch(ownerProject.Owner, ownerProject.Project, workflowFilename, createWorkflowDispatch);
+
+        var startTimestamp = Stopwatch.GetTimestamp();
+        while(!cancellationToken.IsCancellationRequested)
+        {
+            if(Stopwatch.GetElapsedTime(startTimestamp) > TimeSpan.FromSeconds(20))
+            {
+                throw new TimeoutException("Failed to find workflow run ID after creating dispatch. Verify that the 'on: workflow_dispatch' is triggering the workflow for the selected ref.");
+            }
+
+            var newLatest = await GetLatestWorkflowRunAsync(client, ownerProject, run =>
+            {
+                return run.Path?.Contains(workflowFilename) == true;
+            });
+            if (newLatest is not null)
+            {
+                if (latest is null)
+                {
+                    context.CiCdPipelineIdentifier = newLatest.Id.ToString();
+                    _logger.LogInformation($"Created workflow run with id: {newLatest.Id}");
+                    return;
+                }
+                else if (latest?.Id != newLatest.Id)
+                {
+                    context.CiCdPipelineIdentifier = newLatest.Id.ToString();
+                    _logger.LogInformation($"Created workflow run with id: {newLatest.Id}");
+                    return;
+                }
+            }
+            await Task.Delay(1000, cancellationToken);
+        }
+    }
+
+    private async Task<WorkflowRun?> GetLatestWorkflowRunAsync(GitHubClient client, GithubOwnerProject ownerProject, Predicate<WorkflowRun>? predicate = null)
+    {
+        var now = DateTime.UtcNow;
+        var runsToday = await client.Actions.Workflows.Runs.List(ownerProject.Owner, ownerProject.Project, new WorkflowRunsRequest
+        {
+            ExcludePullRequests = true,
+            Created = $">={now.ToString("yyyy-MM-dd")}"
+        });
+        if (predicate is not null)
+        {
+            return runsToday.WorkflowRuns.Where(x=>predicate(x)).OrderByDescending(x => x.CreatedAt).FirstOrDefault();
+        }
+        else
+        {
+            return runsToday.WorkflowRuns.OrderByDescending(x => x.CreatedAt).FirstOrDefault();
+        }
+    }
+
+    public Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string jobId, CancellationToken cancellationToken)
+    {
+        //await client.Actions.Artifacts.DownloadArtifact
+        throw new NotImplementedException();
+    }
+
+    public async Task<PipelineDto?> GetPipelineAsync(ExternalSystemDto system, string workflowRunId, CancellationToken cancellationToken)
+    {
+        if(!long.TryParse(workflowRunId, out var runId))
+        {
+            throw new ArgumentException("Expected workflowRunId to be a int64");
+        }
+
+        var ownerProject = GithubOwnerProject.Parse(system.ExternalProjectId);
+
+        var tokenAuth = new Credentials(system.AccessToken);
+        var client = new GitHubClient(new ProductHeaderValue("TestBucket"));
+        client.Credentials = tokenAuth;
+
+        PipelineDto pipeline = new();
+
+
+        var run = await client.Actions.Workflows.Runs.Get(ownerProject.Owner, ownerProject.Project, runId);
+        if (run.Status.TryParse(out var status))
+        { 
+            if (status.Equals(WorkflowJobStatus.InProgress)) pipeline.Status = PipelineStatus.Running;
+            else if (status.Equals(WorkflowJobStatus.Completed)) pipeline.Status = PipelineStatus.Completed;
+            else if (status.Equals(WorkflowJobStatus.Queued)) pipeline.Status = PipelineStatus.Queued;
+            else if (status.Equals(WorkflowJobStatus.Waiting)) pipeline.Status = PipelineStatus.Waiting;
+            else if (status.Equals(WorkflowJobStatus.Pending)) pipeline.Status = PipelineStatus.Pending;
+        }
+
+        pipeline.WebUrl = run.Url;
+        pipeline.Duration = run.UpdatedAt - run.CreatedAt;
+        
+
+        var jobResponse = await client.Actions.Workflows.Jobs.List(ownerProject.Owner, ownerProject.Project, runId);
+        foreach(var job in jobResponse.Jobs)
+        {
+            var jobDto = new PipelineJobDto()
+            {
+                CiCdJobIdentifier = job.Id.ToString(),
+                CreatedAt = job.CreatedAt,
+                FinishedAt = job.CompletedAt,
+                StartedAt = job.StartedAt,
+                WebUrl = job.Url,
+            };
+           
+            if (jobDto.FinishedAt is not null && jobDto.StartedAt is not null)
+            {
+                jobDto.Duration = jobDto.FinishedAt - jobDto.StartedAt;
+            }
+
+            if (job.Status.TryParse(out var jobStatus))
+            {
+                if (status.Equals(WorkflowJobStatus.InProgress)) jobDto.Status = PipelineJobStatus.Running;
+                else if (status.Equals(WorkflowJobStatus.Completed)) jobDto.Status = PipelineJobStatus.Completed;
+                else if (status.Equals(WorkflowJobStatus.Queued)) jobDto.Status = PipelineJobStatus.Queued;
+                else if (status.Equals(WorkflowJobStatus.Waiting)) jobDto.Status = PipelineJobStatus.Waiting;
+                else if (status.Equals(WorkflowJobStatus.Pending)) jobDto.Status = PipelineJobStatus.Pending;
+            }
+        }
+
+        return pipeline;
+    }
+
+    public Task<string> ReadTraceAsync(ExternalSystemDto system, string jobId, CancellationToken cancellationToken)
+    {
+        var trace = "";
+        return Task.FromResult(trace);
+    }
 }

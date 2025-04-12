@@ -3,6 +3,7 @@ using Octokit;
 
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Projects;
+using TestBucket.Github.Models;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Github;
@@ -15,13 +16,7 @@ public class GithubProjectDataSource : IProjectDataSource
 
     public async Task<string[]> GetFieldOptionsAsync(ExternalSystemDto system, TraitType trait, CancellationToken cancellationToken)
     {
-        ArgumentNullException.ThrowIfNull(system.ExternalProjectId);
-
-        var orgAndProject = system.ExternalProjectId.Split('/');
-        if(orgAndProject.Length != 2)
-        {
-            throw new ArgumentException("Expected project ID to be in the format organization/project");
-        }
+        var ownerProject = GithubOwnerProject.Parse(system.ExternalProjectId);
 
         var tokenAuth = new Credentials(system.AccessToken);
         var client = new GitHubClient(new ProductHeaderValue("TestBucket"));
@@ -30,7 +25,7 @@ public class GithubProjectDataSource : IProjectDataSource
         switch(trait)
         {
             case TraitType.Milestone:
-                var milestones = await client.Issue.Milestone.GetAllForRepository(orgAndProject[0], orgAndProject[1]);
+                var milestones = await client.Issue.Milestone.GetAllForRepository(ownerProject.Owner, ownerProject.Project);
                 return milestones.Select(x => x.Title).ToArray();
         }
 

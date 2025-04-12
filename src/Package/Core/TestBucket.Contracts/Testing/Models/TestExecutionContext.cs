@@ -50,6 +50,11 @@ public class TestExecutionContext
     public string? CiCdRef { get; set; }
 
     /// <summary>
+    /// Workflow (Github actions)
+    /// </summary>
+    public string? CiCdWorkflow { get; set; } = "test.yml";
+
+    /// <summary>
     /// This is the ID returned from the external CI/CD system when running
     /// </summary>
     public string? CiCdPipelineIdentifier { get; set; }

@@ -320,4 +320,16 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="search-tests" xml:space="preserve">
     <value>Search Tests</value>
   </data>
+  <data name="created" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="start-date" xml:space="preserve">
+    <value>Start Date</value>
+  </data>
+  <data name="end-date" xml:space="preserve">
+    <value>End Date</value>
+  </data>
+  <data name="link-issue" xml:space="preserve">
+    <value>Link Issue</value>
+  </data>
 </root>

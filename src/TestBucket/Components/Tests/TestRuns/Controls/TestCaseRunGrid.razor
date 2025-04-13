@@ -3,6 +3,7 @@
 @inject ITestCaseManager testCaseManager
 @inject ITestRunManager testRunManager
 @inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
 @inject TestCaseEditorController testCaseEditor
 @inject TestRunCreationController testRunCreationService
 @inject TestExecutionController testExecutionController
@@ -14,9 +15,9 @@
 <DropZone T="TestEntity" OnDrop="OnDrop">
     <MudDataGrid ServerData="LoadGridData"
                  Class="tb-test-case-run-grid"
-                 Dense="true"
-                 Hover="true"
-                 Bordered="true"
+                 RowClassFunc="RowClassFunc"
+                 Dense
+                 Bordered
                  RowsPerPage="25"
                  SelectOnRowClick="true"
                  MultiSelection="false"
@@ -69,14 +70,7 @@
 
             <TemplateColumn Title="@loc["name"]" CellStyle="max-width: 100%; overflow: hidden">
                 <CellTemplate>
-                    @if(_selectedItem is not null && _selectedItem.Equals(context.Item))
-                    {
-                        <span style="color: var(--mud-palette-tertiary)">@context.Item.Name</span>
-                    }
-                    else
-                    {
-                        @context.Item.Name
-                    }
+                    @context.Item.Name
                 </CellTemplate>
             </TemplateColumn>
 

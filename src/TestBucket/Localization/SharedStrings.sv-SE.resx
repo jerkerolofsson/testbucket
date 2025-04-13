@@ -313,9 +313,21 @@
     <value>Result</value>
   </data>
   <data name="filter-tests" xml:space="preserve">
-    <value />
+    <value>Filtrera testfall</value>
   </data>
   <data name="search-tests" xml:space="preserve">
+    <value>Sök testfall</value>
+  </data>
+  <data name="created" xml:space="preserve">
+    <value>Skapad</value>
+  </data>
+  <data name="start-date" xml:space="preserve">
+    <value>Start Datum</value>
+  </data>
+  <data name="end-date" xml:space="preserve">
+    <value>Slut datum</value>
+  </data>
+  <data name="link-issue" xml:space="preserve">
     <value />
   </data>
 </root>

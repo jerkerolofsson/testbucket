@@ -392,10 +392,37 @@ p.mud-typography-subtitle1 {
         align-items: center;
     }
 
+.tb-datarow-selected,
 .tb-navmenu-selected,
+.mud-table-root .mud-table-body .tb-datarow-selected .mud-table-cell,
 .treeview .node.selected > .body {
     color: var(--mud-palette-tertiary);
     background: var(--mud-palette-tertiary-hover);
+    animation: ItemHoverAnimation 300ms linear forwards;
+}
+
+.tb-datarow:hover,
+.tb-datarow-selected:hover { 
+    /* Glass style */
+    background: rgba(255, 255, 255, 0.2);
+
+    background: linear-gradient(270deg, #ffffff4f, #ffffff00);
+    background-size: 400% 400%;
+    background-position: 20% 50%;
+ 
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+
+@keyframes ItemHoverAnimation {
+    20%{background-position:20% 50%}
+    40%{background-position:80% 50%}
+   100%{background-position:50% 50%}
+
 }
 
 .treeview .node > .body:hover {

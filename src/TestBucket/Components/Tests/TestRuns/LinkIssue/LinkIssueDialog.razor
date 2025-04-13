@@ -1,0 +1,122 @@
+﻿@using Mediator
+@using TestBucket.Contracts.Issues.Models
+@using TestBucket.Domain.ExtensionManagement
+@using TestBucket.Domain.Issues.Search
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject IStringLocalizer<SharedStrings> loc
+@inject IExtensionManager extensionManager
+@inject IMediator mediator
+
+<MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="max-width: 800px">
+    <TitleContent>@loc["link-issue"]</TitleContent>
+    <DialogContent>
+        <MudStack Spacing="1">
+
+
+            <MudDataGrid
+            Items="_issues"
+            Class="tb-test-case-run-grid"
+            RowClassFunc="RowClassFunc"
+            Dense="true"
+            Hover="true"
+            Bordered="true"
+            T="IssueDto"
+            RowClick="(e) => OnClicked(e.Item)"
+            SortMode="SortMode.Single">
+
+                <ToolBarContent>
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+                        <MudTextField Value="@_text" 
+                        T="string" 
+                        ValueChanged="OnSearch"
+                        Style="min-width: 15vw"
+                        Clearable="true"
+                        Variant="Variant.Outlined"
+                        IconSize="Size.Small"
+                        Adornment="Adornment.Start"
+                        Placeholder="@loc["search-issues"]"
+                        AdornmentIcon="@Icons.Material.Filled.Search" />
+                    </MudStack>
+                </ToolBarContent>
+
+                <ColGroup>
+                    <col style="width: 100px;" />
+                    <col style="width: 2fr;" />
+                    <col style="width: 100px;" />
+                </ColGroup>
+
+                <Columns>
+
+                    <TemplateColumn Title="@loc["id"]">
+                        <CellTemplate>
+                            <MudStack AlignItems="AlignItems.Center" Row Spacing=1>
+                                <MudIcon Icon="@extensionManager.GetIcon(context.Item.ExternalSystemName??"")"/>
+                                <MudText>@context.Item.ExternalId</MudText>
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                    <TemplateColumn Title="@loc["title"]">
+                        <CellTemplate>
+                            @context.Item.Title
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                    <TemplateColumn Title="@loc["state"]">
+                        <CellTemplate>
+                            @context.Item.State
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                </Columns>
+
+            </MudDataGrid>
+
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        @* @if (_issue is not null) *@
+        @* { *@
+        @*     <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton> *@
+        @* } *@
+        <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    private IssueDto? _issue;
+    private IReadOnlyList<IssueDto> _issues = [];
+    private string _text = "";
+
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public long TestProjectId { get; set; }
+
+    private void Close() => MudDialog.Close();
+
+    private void OnClicked(IssueDto issue)
+    {
+        _issue = issue;
+        MudDialog.Close(issue);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await OnSearch();
+    }
+
+    private string RowClassFunc(IssueDto issue, int _)
+    {
+        if (issue.ExternalId == _issue?.ExternalId && issue.ExternalSystemName == _issue?.ExternalSystemName)
+        {
+            return "tb-datarow tb-datarow-selected cursor-pointer";
+        }
+        return "tb-datarow cursor-pointer";
+    }
+
+    private async Task OnSearch()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var response = await mediator.Send(new SearchIssueRequest(authState.User, TestProjectId, _text, 0, 10));
+        _issues = response.Issues;
+    }
+}

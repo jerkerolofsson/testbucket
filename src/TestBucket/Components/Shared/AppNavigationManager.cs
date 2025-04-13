@@ -26,6 +26,11 @@ public class AppNavigationManager
         public TestCase? SelectedTestCase { get; set; }
 
         /// <summary>
+        /// Selected test case run
+        /// </summary>
+        public TestCaseRun? SelectedTestCaseRun { get; set; }
+
+        /// <summary>
         /// Selected test suite
         /// </summary>
         public TestSuite? SelectedTestSuite { get; set; }

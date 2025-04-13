@@ -11,8 +11,8 @@
 
 <MudDataGrid ServerData="LoadGridData"
              Class="tb-test-case-grid"
-             Dense="true"
-             Hover="true"
+             Dense
+             RowClassFunc="RowClassFunc"
              T="TestSuiteItem"
              RowClick="(e) => OnItemClicked(e.Item)"
              @ref="_dataGrid"

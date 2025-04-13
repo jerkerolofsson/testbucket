@@ -41,7 +41,10 @@ public static class DomainServiceExtensions
         //    o.RegisterServicesFromAssembly(typeof(DomainServiceExtensions).Assembly);
         //});
 
-        services.AddMediator();
+        services.AddMediator(options =>
+        {
+            options.ServiceLifetime = ServiceLifetime.Scoped;
+        });
 
         services.AddSingleton<IApiKeyAuthenticator,ApiKeyAuthenticator>();
         services.AddScoped<IUserPermissionsManager, UserPermissionsManager>();

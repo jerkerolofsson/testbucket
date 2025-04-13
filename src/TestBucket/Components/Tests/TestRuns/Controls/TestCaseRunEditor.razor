@@ -4,7 +4,7 @@
 
 @if(TestCaseRun is not null)
 {
-    <TestResultQuickPicker Result="@TestCaseRun.Result" ResultChanged="OnResultChanged"/>
+    <TestResultQuickPicker TestCaseRun="@TestCaseRun" ResultChanged="OnResultChanged"/>
 
     <Field>
         <FieldHeader>@loc["message"]</FieldHeader>

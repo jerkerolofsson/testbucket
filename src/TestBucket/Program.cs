@@ -26,6 +26,7 @@ using TestBucket.Components.TestResources.Services;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Components.Tests.TestCases.Commands;
 using TestBucket.Components.Tests.TestCases.Services;
+using TestBucket.Components.Tests.TestRuns.LinkIssue;
 using TestBucket.Components.Tests.TestSuites.Commands;
 using TestBucket.Components.Tests.TestSuites.Services;
 using TestBucket.Components.Uploads.Services;
@@ -220,6 +221,7 @@ public class Program
         builder.Services.AddScoped<ICommand, BatchTagCommand>();
         builder.Services.AddScoped<ICommand, NewTestCommand>();
         builder.Services.AddScoped<ICommand, NewFolderCommand>();
+        builder.Services.AddScoped<ICommand, LinkIssueCommand>();
         builder.Services.AddScoped<ICommand, SyncWithActiveDocumentCommand>();
 
         builder.Services.AddScoped(typeof(DragAndDropService<>));

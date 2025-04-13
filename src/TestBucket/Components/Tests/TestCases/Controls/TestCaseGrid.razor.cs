@@ -123,7 +123,14 @@ public partial class TestCaseGrid
         testCaseManager.RemoveObserver(this);
     }
     #endregion
-
+    private string RowClassFunc(TestSuiteItem item, int _)
+    {
+        //if (testCaseRun.Id == appNa?.Id)
+        //{
+        //    return "tb-datarow tb-datarow-selected cursor-pointer";
+        //}
+        return "tb-datarow cursor-pointer";
+    }
     private async Task OnItemClicked(TestSuiteItem item)
     {
         if (item.TestCase is not null)

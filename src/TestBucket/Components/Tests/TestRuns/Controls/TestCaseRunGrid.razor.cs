@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+using TestBucket.Components.Shared;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
@@ -141,10 +142,19 @@ public partial class TestCaseRunGrid
 
     private async Task OnClicked(TestCaseRun testCaseRun)
     {
+        appNavigationManager.State.SelectedTestCaseRun = testCaseRun;
         _selectedItem = testCaseRun;
         await SelectedTestCaseRunChanged.InvokeAsync(testCaseRun);
     }
 
+    private string RowClassFunc(TestCaseRun testCaseRun, int _)
+    {
+        if (testCaseRun.Id == _selectedItem?.Id)
+        {
+            return "tb-datarow tb-datarow-selected cursor-pointer";
+        }
+        return "tb-datarow cursor-pointer";
+    }
     private async Task ReloadResultsAsync()
     {
         if (Run is not null)

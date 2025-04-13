@@ -9,22 +9,22 @@
         <MudDialog DefaultFocus="DefaultFocus.FirstChild">
             <DialogContent>
 
-                <Field>
-                    <FieldHeader>Created</FieldHeader>
-                    <MudDateRangePicker 
-                    DateRange="@_dateRange" Margin="Margin.Dense" DateRangeChanged="OnDateRangeChanged" Clearable
-                    PlaceholderStart="Start Date" PlaceholderEnd="End Date" Label="Created" />
-                </Field>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+                    <Field>
+                        <FieldHeader>@loc["created"]</FieldHeader>
+                        <MudDateRangePicker 
+                        DateRange="@_dateRange" Margin="Margin.Dense" DateRangeChanged="OnDateRangeChanged" Clearable
+                        PlaceholderStart="@loc["start-date"]" PlaceholderEnd="@loc["end-date"]" />
+                    </Field>
 
-                <MudStack Spacing="1">
                     <FieldsEditor Fields="@_fields" AllowMultiSelection="false" AutoSaveChanges="false" FieldChanged="OnFieldChanged"/>
-                </MudStack>
+                </div>
 
             </DialogContent>
 
             <DialogActions>
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
-                <MudButton OnClick="Close">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+                <MudButton OnClick="Close">@loc["cancel"]</MudButton>
             </DialogActions>
         </MudDialog>
     </EditForm>

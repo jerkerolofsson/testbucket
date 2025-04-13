@@ -17,6 +17,12 @@ namespace TestBucket.Domain.ExtensionManagement
             return _extensions.FirstOrDefault(e => e.SystemName.Equals(systemName, StringComparison.OrdinalIgnoreCase));
         }   
 
+        public string? GetIcon(string systemName)
+        {
+            var ext = FindExtension(systemName);
+            return ext?.Icon;
+        }
+
         public ExtensionManager(IEnumerable<IExtension> extensions)
         {
             _extensions = extensions.ToList();

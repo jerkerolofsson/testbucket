@@ -1,5 +1,4 @@
-﻿@attribute [Authorize(Roles = "ADMIN")]
-@inject TestCaseEditorController testCaseEditorService
+﻿@inject TestCaseEditorController testCaseEditorService
 @inject ProjectController projectController
 @inject TestEnvironmentController testEnvironmentController
 @inject FieldController fieldController
@@ -68,8 +67,7 @@
     private string? _ciCdSystem;
     private string? _ciCdRef;
 
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; } = default!;
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
 
     private TestProject? _project;
     private TestEnvironment? _testEnvironment;

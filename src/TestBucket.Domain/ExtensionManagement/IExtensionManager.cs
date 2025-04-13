@@ -6,4 +6,5 @@ public interface IExtensionManager
 {
     IExtension? FindExtension(string systemName);
     IReadOnlyList<IExtension> GetExtensions();
+    string? GetIcon(string systemName);
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestBucket.Domain.Isses;
-internal interface IIssueRepository
+namespace TestBucket.Domain.Issues;
+public interface IIssueRepository
 {
 }

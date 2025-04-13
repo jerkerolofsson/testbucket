@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TestBucket.Contracts.Projects;
+using TestBucket.Contracts.Integrations;
 
 namespace TestBucket.Domain.Projects.Mapping
 {
@@ -21,6 +21,7 @@ namespace TestBucket.Domain.Projects.Mapping
                 Name = x.Name,
                 Provider = x.Provider,
                 AccessToken = x.AccessToken,
+                ApiKey = x.ApiKey,
                 BaseUrl = x.BaseUrl,
                 ExternalProjectId = x.ExternalProjectId,
                 ReadOnly = x.ReadOnly,

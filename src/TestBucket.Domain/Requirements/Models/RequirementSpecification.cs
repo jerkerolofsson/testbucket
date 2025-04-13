@@ -11,12 +11,23 @@ namespace TestBucket.Domain.Requirements.Models
 {
     [Table("spec")]
     [Index(nameof(TenantId), nameof(Created))]
+    [Index(nameof(ExternalId))]
     public class RequirementSpecification : ProjectEntity
     {
         /// <summary>
         /// Database ID
         /// </summary>
         public long Id { get; set; }
+
+        /// <summary>
+        /// External ID
+        /// </summary>
+        public string? ExternalId { get; set; }
+
+        /// <summary>
+        /// External Provider
+        /// </summary>
+        public string? ExternalProvider { get; set; }
 
         /// <summary>
         /// Optional: Original file

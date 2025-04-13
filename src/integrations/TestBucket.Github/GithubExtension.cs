@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Projects;
 
 namespace TestBucket.Github
 {
@@ -29,5 +28,7 @@ namespace TestBucket.Github
         public string DefaultBaseUrl => "https://www.github.com";
         public string ProjectIdHelperText => "Format: organization/project";
         public string AccessTokenHelperText => "Github Personal Access Token with valid scopes for the enabled capabilities";
+
+        public ExtensionFields RequiredFields => ExtensionFields.AccessToken | ExtensionFields.BaseUrl | ExtensionFields.ProjectId;
     }
 }

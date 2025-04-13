@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestBucket.Contracts.Projects
+namespace TestBucket.Contracts.Integrations
 {
     [Flags]
     public enum ExternalSystemCapability
@@ -52,5 +52,11 @@ namespace TestBucket.Contracts.Projects
         /// Implemented by IProjectDataSource using TraitType.Milestone
         /// </summary>
         GetMilestones = 0x40,
+
+        /// <summary>
+        /// Extension can read requirements
+        /// Implemented by IExternalRequirementProvider
+        /// </summary>
+        GetRequirements = 0x80,
     }
 }

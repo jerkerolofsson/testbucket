@@ -14,6 +14,7 @@ public static class TrelloExtensions
     public static IServiceCollection AddTrelloExtension(this IServiceCollection services)
     {
         services.AddSingleton<IExtension, TrelloExtension>();
+        services.AddSingleton<IExternalRequirementProvider, TrelloRequirementProvider>();
         return services;
     }
 }

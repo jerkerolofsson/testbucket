@@ -3,7 +3,6 @@ using NGitLab.Models;
 
 using TestBucket.Contracts.Automation;
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Projects;
 using TestBucket.Contracts.Testing.Models;
 
 namespace TestBucket.Gitlab
@@ -27,7 +26,7 @@ namespace TestBucket.Gitlab
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public async Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string pipelineId, string jobId, CancellationToken cancellationToken)
+        public async Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string pipelineId, string jobId, string testResultsArtifactsPattern, CancellationToken cancellationToken)
         {
             if (system is not null &&
                system.ExternalProjectId is not null &&

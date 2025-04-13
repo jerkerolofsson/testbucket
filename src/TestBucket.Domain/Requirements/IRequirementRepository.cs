@@ -34,6 +34,13 @@ namespace TestBucket.Domain.Requirements
         Task AddRequirementSpecificationAsync(RequirementSpecification spec);
 
         /// <summary>
+        /// Returns a requirement specification from an ID
+        /// </summary>
+        /// <param name="requirementSpecificationId"></param>
+        /// <returns></returns>
+        Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(long requirementSpecificationId);
+
+        /// <summary>
         /// Deletes a requirement specification, all folders and all requirements
         /// </summary>
         /// <param name="specification"></param>

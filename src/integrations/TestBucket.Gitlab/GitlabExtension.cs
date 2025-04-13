@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Projects;
 
 namespace TestBucket.Gitlab
 {
@@ -33,5 +32,7 @@ namespace TestBucket.Gitlab
         public string DefaultBaseUrl => "https://gitlab.com/";
         public string ProjectIdHelperText => "Gitlab project ID (integer value)";
         public string AccessTokenHelperText => "Gitlab Access Token";
+
+        public ExtensionFields RequiredFields => ExtensionFields.AccessToken | ExtensionFields.BaseUrl | ExtensionFields.ProjectId;
     }
 }

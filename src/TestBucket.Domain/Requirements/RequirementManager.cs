@@ -23,6 +23,7 @@ namespace TestBucket.Domain.Requirements
         {
             _repository = repository;
         }
+
         public async Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(ClaimsPrincipal principal, long id)
         {
             FilterSpecification<RequirementSpecification>[] filters = [
@@ -117,24 +118,17 @@ namespace TestBucket.Domain.Requirements
             await _repository.AddRequirementAsync(requirement);
         }
 
-        public async Task<RequirementSpecificationFolder[]> SearchRequirementFoldersAsync(ClaimsPrincipal principal, SearchRequirementQuery query)
+        public async Task<RequirementSpecificationFolder[]> SearchRequirementFoldersAsync(ClaimsPrincipal principal, SearchRequirementFolderQuery query)
         {
             var tenantId = principal.GetTenantIdOrThrow();
 
-            List<FilterSpecification<RequirementSpecificationFolder>> filters = [ new FilterByTenant<RequirementSpecificationFolder>(tenantId) ];
-            if(query.CompareFolder)
-            {
-                filters.Add(new FilterRequirementFoldersByParentId(query.FolderId));
-            }
-            if (query.RequirementSpecificationId is not null)
-            {
-                filters.Add(new FilterRequirementFoldersBySpecification(query.RequirementSpecificationId));
-            }
+            var filters = RequirementSpecificationBuilder.From(query);
+            filters = [.. filters, new FilterByTenant<RequirementSpecificationFolder>(tenantId)];
 
             return await _repository.SearchRequirementFoldersAsync(filters.ToArray());
         }
 
-        private async Task GenerateFoldersFromPathAsync(Requirement requirement)
+        public async Task GenerateFoldersFromPathAsync(Requirement requirement)
         {
             if (requirement.Path is not null)
             {
@@ -151,10 +145,12 @@ namespace TestBucket.Domain.Requirements
                     var folder = (await _repository.SearchRequirementFoldersAsync(filters)).FirstOrDefault();
                     if (folder is null)
                     {
+                        // Folder does not exist, create one
                         folder = new RequirementSpecificationFolder
                         {
                             Name = folderName,
                             TestProjectId = requirement.TestProjectId,
+                            TeamId = requirement.TeamId,
                             TenantId = requirement.TenantId,
                             RequirementSpecificationId = requirement.RequirementSpecificationId,
                             ParentId = parentId
@@ -180,14 +176,15 @@ namespace TestBucket.Domain.Requirements
         /// <param name="principal"></param>
         /// <param name="requirement"></param>
         /// <returns></returns>
-        public Task UpdateRequirementAsync(ClaimsPrincipal principal, Requirement requirement)
+        public async Task UpdateRequirementAsync(ClaimsPrincipal principal, Requirement requirement)
         {
-            principal.ThrowIfNotAdmin();
             principal.ThrowIfEntityTenantIsDifferent(requirement);
+
+            await GenerateFoldersFromPathAsync(requirement);
 
             requirement.ModifiedBy = principal.Identity?.Name;
             requirement.Modified = DateTimeOffset.UtcNow;
-            return _repository.UpdateRequirementAsync(requirement);
+            await _repository.UpdateRequirementAsync(requirement);
         }
 
         /// <summary>
@@ -229,6 +226,11 @@ namespace TestBucket.Domain.Requirements
             return await _repository.SearchRequirementsAsync(filters, query.Offset, query.Count);
         }
 
+        public async Task<PagedResult<Requirement>> SearchRequirementsAsync(FilterSpecification<Requirement>[] specifications, int offset, int count)
+        {
+            return await _repository.SearchRequirementsAsync(specifications, offset, count);
+        }
+
         /// <summary>
         /// Searches for requirement specifications
         /// </summary>
@@ -241,6 +243,10 @@ namespace TestBucket.Domain.Requirements
             filters = [.. filters, new FilterByTenant<RequirementSpecification>(principal.GetTenantIdOrThrow())];
 
             return await _repository.SearchRequirementSpecificationsAsync(filters, query.Offset, query.Count);
+        }
+        public async Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(FilterSpecification<RequirementSpecification>[] filters, int offset, int count)
+        {
+            return await _repository.SearchRequirementSpecificationsAsync(filters, offset, count);
         }
 
         /// <summary>

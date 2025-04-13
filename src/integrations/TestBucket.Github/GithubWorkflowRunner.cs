@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,6 @@ using Octokit;
 
 using TestBucket.Contracts.Automation;
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Projects;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Github.Models;
 
@@ -98,7 +98,7 @@ internal class GithubWorkflowRunner : IExternalPipelineRunner
         }
     }
 
-    public async Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string workflowRunId, string jobIdString, CancellationToken cancellationToken)
+    public async Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string workflowRunId, string jobIdString, string testResultsArtifactsPattern, CancellationToken cancellationToken)
     {
         if (!long.TryParse(jobIdString, out var jobId))
         {
@@ -118,10 +118,28 @@ internal class GithubWorkflowRunner : IExternalPipelineRunner
 
         var artifacts  = await client.Actions.Artifacts.ListWorkflowArtifacts(ownerProject.Owner, ownerProject.Project, runId);
 
-
-
-        //await client.Actions.Artifacts.DownloadArtifact()
-        return [];
+        // the API expects a zip file, so we download each artifact and compress them
+        if(artifacts.TotalCount == 0)
+        {
+            return [];
+        }
+        using var memoryStream = new MemoryStream();
+        using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create))
+        {
+            foreach (var artifact in artifacts.Artifacts)
+            {
+                using var sourceStream = await client.Actions.Artifacts.DownloadArtifact(ownerProject.Owner, ownerProject.Project, artifact.Id, "zip");
+                using var artifactZip = new ZipArchive(sourceStream, ZipArchiveMode.Read);
+                foreach (var srcEntry in artifactZip.Entries)
+                {
+                    using var entrySource = srcEntry.Open();
+                    var newEntry = zipArchive.CreateEntry(srcEntry.FullName);
+                    using var entryDest = newEntry.Open();
+                    await entrySource.CopyToAsync(entryDest, cancellationToken);
+                }
+            }
+        }
+        return memoryStream.ToArray();
     }
 
     public async Task<PipelineDto?> GetPipelineAsync(ExternalSystemDto system, string workflowRunId, CancellationToken cancellationToken)

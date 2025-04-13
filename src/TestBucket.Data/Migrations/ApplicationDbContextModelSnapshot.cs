@@ -798,6 +798,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("AccessToken")
                         .HasColumnType("text");
 
+                    b.Property<string>("ApiKey")
+                        .HasColumnType("text");
+
                     b.Property<string>("BaseUrl")
                         .HasColumnType("text");
 
@@ -925,6 +928,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("ExternalId")
                         .HasColumnType("text");
 
+                    b.Property<string>("ExternalProvider")
+                        .HasColumnType("text");
+
                     b.Property<DateTimeOffset>("Modified")
                         .HasColumnType("timestamp with time zone");
 
@@ -951,6 +957,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("Slug")
                         .HasColumnType("text");
 
+                    b.Property<string>("State")
+                        .HasColumnType("text");
+
                     b.Property<long?>("TeamId")
                         .HasColumnType("bigint");
 
@@ -963,6 +972,8 @@ namespace TestBucket.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Created");
+
+                    b.HasIndex("ExternalId");
 
                     b.HasIndex("Name");
 
@@ -999,6 +1010,12 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExternalProvider")
+                        .HasColumnType("text");
+
                     b.Property<long?>("FileResourceId")
                         .HasColumnType("bigint");
 
@@ -1025,6 +1042,8 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ExternalId");
 
                     b.HasIndex("TeamId");
 

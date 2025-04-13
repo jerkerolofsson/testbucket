@@ -16,7 +16,9 @@
                     PlaceholderStart="Start Date" PlaceholderEnd="End Date" Label="Created" />
                 </Field>
 
-                <FieldsEditor Fields="@_fields" AllowMultiSelection="false" AutoSaveChanges="false" FieldChanged="OnFieldChanged"/>
+                <MudStack Spacing="1">
+                    <FieldsEditor Fields="@_fields" AllowMultiSelection="false" AutoSaveChanges="false" FieldChanged="OnFieldChanged"/>
+                </MudStack>
 
             </DialogContent>
 
@@ -49,11 +51,25 @@
             // such as ReadOnly or WriteOnly
             foreach(var fieldDefinition in _fieldDefinitions.Where(x=>!x.ReadOnly && !x.WriteOnly))
             {
-                _fields.Add(new FieldValue
+                var fieldValue = new FieldValue
                 {
                     FieldDefinitionId = fieldDefinition.Id,
                     FieldDefinition = fieldDefinition
-                });
+                };
+
+                if(Query is not null)
+                {
+                    var currentField = Query.Fields.Where(x=>x.FilterDefinitionId == fieldDefinition.Id).FirstOrDefault();
+                    if(currentField is not null)
+                    {
+                        fieldValue.StringValue = currentField.StringValue;
+                        fieldValue.BooleanValue = currentField.BooleanValue;
+                        fieldValue.LongValue = currentField.LongValue;
+                        fieldValue.DoubleValue = currentField.DoubleValue;
+                    }
+                }
+
+                _fields.Add(fieldValue);
             }
         }
     }

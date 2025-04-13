@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Projects;
 
 namespace TestBucket.Azure
 {
@@ -27,5 +26,7 @@ namespace TestBucket.Azure
         public string ProjectIdHelperText => "tbd";
 
         public string AccessTokenHelperText => "tbd";
+
+        public ExtensionFields RequiredFields => ExtensionFields.BaseUrl | ExtensionFields.AccessToken;
     }
 }

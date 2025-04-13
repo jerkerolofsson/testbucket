@@ -1,0 +1,76 @@
+﻿@inherits LayoutComponentBase
+@layout AppLayout
+@using Humanizer
+@using TestBucket.Components.Layout
+@using TestBucket.Components.Shared.Splitter
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Domain.Requirements.Models
+@using TestBucket.Domain.Teams.Models
+@inject TestBrowser browser
+@inject TestCaseEditorController testCaseEditor
+@inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+
+<TenantRedirect />
+
+<Splitter Style="height: 100%" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+
+        <div class="pa-5" style="width: 100%">
+
+            @if(_testSuite is not null)
+            {
+                <MudText Typo="Typo.h1">@_testSuite.Name</MudText>
+            }
+
+            <MudNavMenu>
+
+                <MudNavLink Icon="@Icons.Material.Filled.Abc" Href="@appNavigationManager.GetTestSuiteVariablesUrl()">@loc["variables"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.AttachFile" Href="@appNavigationManager.GetTestSuiteAttachmentsUrl()">@loc["attachments"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.Settings" Href="@appNavigationManager.GetTestSuiteSettingsUrl()">@loc["settings"]</MudNavLink>
+
+                <AuthorizeView Roles="ADMIN">
+
+                </AuthorizeView>
+
+                <AuthorizeView Roles="SUPERADMIN">
+                </AuthorizeView>
+            </MudNavMenu>
+        </div>
+
+    </StartContent>
+
+    <EndContent>
+        <CascadingValue Value="@_testSuite">
+            <MudStack Style="width: 100%; overflow: auto; ">
+                @Body
+            </MudStack>>
+        </CascadingValue>
+    </EndContent>
+</Splitter>
+
+@code {
+    [CascadingParameter] TestProject? Project { get; set; }
+    [CascadingParameter] Team? Team { get; set; }
+
+    private TestSuite? _testSuite;
+
+    private Team? _team;
+    private TestProject? _project;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_project != Project || _team != Team)
+        {
+            _project = Project;
+            _team = Team;
+        }
+        _testSuite = appNavigationManager.State.SelectedTestSuite;
+        var testSuiteId = appNavigationManager.GetEntityIdFromCurrentUri();
+        if (testSuiteId != _testSuite?.Id && testSuiteId is not null)
+        {
+            _testSuite = await browser.GetTestSuiteByIdAsync(testSuiteId.Value);
+        }
+    }
+}

@@ -6,6 +6,7 @@ namespace TestBucket.Domain.Requirements.Models;
 [Table("requirements")]
 [Index(nameof(Created))]
 [Index(nameof(Name))]
+[Index(nameof(ExternalId))]
 public class Requirement : ProjectEntity
 {
     /// <summary>
@@ -17,6 +18,11 @@ public class Requirement : ProjectEntity
     /// External id
     /// </summary>
     public string? ExternalId { get; set; }
+
+    /// <summary>
+    /// External Provider
+    /// </summary>
+    public string? ExternalProvider { get; set; }
 
     /// <summary>
     /// Name of the requirement
@@ -43,6 +49,10 @@ public class Requirement : ProjectEntity
     /// </summary>
     public long[]? PathIds { get; set; }
 
+    /// <summary>
+    /// Requirement state
+    /// </summary>
+    public string? State { get; set; }
 
     /// <summary>
     /// ID of test suite

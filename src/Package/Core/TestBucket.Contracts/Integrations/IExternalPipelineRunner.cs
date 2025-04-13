@@ -5,13 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Automation;
-using TestBucket.Contracts.Projects;
 
 namespace TestBucket.Contracts.Integrations
 {
+    /// <summary>
+    /// Implemented by an extension
+    /// </summary>
     public interface IExternalPipelineRunner
     {
         string SystemName { get; }
+
+        /// <summary>
+        /// Downloads all artifacts matching the pattern as a zip file
+        /// The returned zip may contain additional files.
+        /// </summary>
+        /// <param name="system"></param>
+        /// <param name="pipelineId"></param>
+        /// <param name="jobId"></param>
+        /// <param name="testResultsArtifactsPattern"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string pipelineId, string jobId, string testResultsArtifactsPattern, CancellationToken cancellationToken);
 
         /// <summary>
         /// Creates a pipeline and, if successful, sets the pipeline identifier (this is unique to the external system used) as
@@ -22,7 +36,6 @@ namespace TestBucket.Contracts.Integrations
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task CreateAsync(ExternalSystemDto system, TestExecutionContext context, CancellationToken cancellationToken);
-        Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string pipelineId, string jobId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Reads the latest status for a pipeline, including jobs, and returns it

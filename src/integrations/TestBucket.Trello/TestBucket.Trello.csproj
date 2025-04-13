@@ -6,6 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="TrelloDotNet" Version="2.0.5" />
+  </ItemGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\..\Package\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" />
         <ProjectReference Include="..\..\Package\Traits\TestBucket.Traits.Core\TestBucket.Traits.Core.csproj" />

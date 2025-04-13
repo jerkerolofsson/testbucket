@@ -35,17 +35,20 @@
             }
             else
             {
-                 <Field Row>
+                <Field Row>
                     <FieldHeader>@loc["name"]</FieldHeader>
                     <MudSpacer/>
                     <MudTextField Value="Integration.Name" T="string" ValueChanged="NameChanged" />
                 </Field>
 
-                <Field Row>
-                    <FieldHeader>@loc["integration-base-url"]</FieldHeader>
-                    <MudSpacer/>
-                    <MudTextField Value="Integration.BaseUrl" T="string" ValueChanged="BaseUrlChanged" />
-                </Field>
+                @if((Extension.RequiredFields&ExtensionFields.BaseUrl) == ExtensionFields.BaseUrl)
+                {
+                    <Field Row>
+                        <FieldHeader>@loc["integration-base-url"]</FieldHeader>
+                        <MudSpacer/>
+                        <MudTextField Value="Integration.BaseUrl" T="string" ValueChanged="BaseUrlChanged" />
+                    </Field>
+                }
                 <Field Row>
                     <FieldHeader>@loc["project-id"]</FieldHeader>
                     <MudSpacer />
@@ -55,16 +58,33 @@
                     ValueChanged="ExternalProjectIdChanged" 
                     HelperText="@Extension?.ProjectIdHelperText" />
                 </Field>
-                <Field Row>
-                    <FieldHeader>@loc["access-token"]</FieldHeader>
-                    <MudSpacer />
-                    @* InputType="InputType.Password"  *@
-                            <MudTextField 
+
+                @if((Extension.RequiredFields&ExtensionFields.AccessToken) == ExtensionFields.AccessToken)
+                {
+                    <Field Row>
+                        <FieldHeader>@loc["access-token"]</FieldHeader>
+                        <MudSpacer />
+                        @* InputType="InputType.Password"  *@
+                        <MudTextField 
                         Value="Integration.AccessToken" 
                         T="string" 
                         ValueChanged="AccessTokenChanged"
                         HelperText="@Extension?.AccessTokenHelperText" />
-                </Field>
+                    </Field>
+                }
+
+                @if((Extension.RequiredFields&ExtensionFields.ApiKey) == ExtensionFields.ApiKey)
+                {
+                    <Field Row>
+                        <FieldHeader>@loc["api-key"]</FieldHeader>
+                        <MudSpacer />
+                        @* InputType="InputType.Password"  *@
+                        <MudTextField 
+                        Value="Integration.ApiKey" 
+                        T="string" 
+                        ValueChanged="ApiKeyChanged"/>
+                    </Field>
+                }
 
                 <Field Row>
                     <FieldHeader>@loc["enabled"]</FieldHeader>
@@ -81,24 +101,24 @@
                             <FieldHeader>@loc["test-result-artifact-pattern"]</FieldHeader>
                             <MudSpacer />
                             <MudTextField InputType="InputType.Text"
-                                          Value="Integration.TestResultsArtifactsPattern"
-                                          T="string"
-                                          ValueChanged="TestResultsArtifactsPatternChanged"
-                                          HelperText="@loc["test-result-artifact-pattern-helper-text"]" />
+                            Value="Integration.TestResultsArtifactsPattern"
+                            T="string"
+                            ValueChanged="TestResultsArtifactsPatternChanged"
+                            HelperText="@loc["test-result-artifact-pattern-helper-text"]" />
                         </Field>
                     }
 
-                    ExternalSystemCapability[] capabilities = [ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases];
+                    ExternalSystemCapability[] capabilities = [ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases, ExternalSystemCapability.GetRequirements];
                     string[] labels = ["create-pipeline", "create-issues", "get-issues", "get-milestones", "get-releases"];
 
                     @for(int i=0; i<Math.Min(capabilities.Length, labels.Length); i++)
                     {
                         <ExternalSystemCapabilityField SupportedCapabilities="@Extension.SupportedCapabilities"
-                                                       EnabledCapabilities="@Integration.EnabledCapabilities"
-                                                       Title="@loc[labels[i]]"
-                                                       OnEnabled="OnEnabledAsync"
-                                                       OnDisabled="OnDisabledAsync"
-                                                       Capability="@capabilities[i]" />
+                        EnabledCapabilities="@Integration.EnabledCapabilities"
+                        Title="@loc[labels[i]]"
+                        OnEnabled="OnEnabledAsync"
+                        OnDisabled="OnDisabledAsync"
+                        Capability="@capabilities[i]" />
                     }
 
                     <MudText Class="mt-3" Style="opacity: 0.4">@Extension.FriendlyName @Extension.Version</MudText>
@@ -115,11 +135,23 @@
     [Parameter] public string? Icon { get; set; }
     [Parameter] public string? Name { get; set; }
 
+    protected override void OnInitialized()
+    {
+        if (Extension is not null && Integration is not null)
+        {
+            Integration.SupportedCapabilities = Extension.SupportedCapabilities;
+        }
+    }
+
     private async Task ExternalProjectIdChanged(string externalProjectId)
     {
         if (Integration is not null)
         {
             Integration.ExternalProjectId = externalProjectId;
+            if (Extension is not null)
+            {
+                Integration.SupportedCapabilities = Extension.SupportedCapabilities;
+            }
             await OnChangedAsync();
         }
     }
@@ -136,6 +168,14 @@
         if (Integration is not null)
         {
             Integration.BaseUrl = baseUrl;
+            await OnChangedAsync();
+        }
+    }
+    private async Task ApiKeyChanged(string apiKey)
+    {
+        if (Integration is not null)
+        {
+            Integration.ApiKey = apiKey;
             await OnChangedAsync();
         }
     }
@@ -167,10 +207,6 @@
     {
         if (Integration is not null)
         {
-            if (Extension is not null)
-            {
-                Integration.SupportedCapabilities = Extension.SupportedCapabilities;
-            }
             Integration.EnabledCapabilities &= ~capability;
             await OnChangedAsync();
         }
@@ -180,10 +216,6 @@
     {
         if (Integration is not null)
         {
-            if(Extension is not null)
-            {
-                Integration.SupportedCapabilities = Extension.SupportedCapabilities;
-            }
             Integration.EnabledCapabilities |= capability;
             await OnChangedAsync();
         }
@@ -199,7 +231,6 @@
         {
             return;
         }
-
 
         await IntegrationChanged.InvokeAsync(new ExternalSystem
             {

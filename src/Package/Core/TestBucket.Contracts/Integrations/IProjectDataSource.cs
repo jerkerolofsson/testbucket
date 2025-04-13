@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TestBucket.Contracts.Projects;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Contracts.Integrations;

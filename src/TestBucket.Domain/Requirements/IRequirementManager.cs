@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Requirements;
@@ -32,6 +33,14 @@ public interface IRequirementManager
     Task<PagedResult<Requirement>> SearchRequirementsAsync(ClaimsPrincipal principal, SearchRequirementQuery query);
 
     /// <summary>
+    /// Searches for requirements
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    Task<PagedResult<Requirement>> SearchRequirementsAsync(FilterSpecification<Requirement>[] specifications, int offset, int count);
+
+    /// <summary>
     /// Deletes the specified requirement
     /// </summary>
     /// <param name="principal"></param>
@@ -50,7 +59,7 @@ public interface IRequirementManager
     /// <param name="principal"></param>
     /// <param name="query"></param>
     /// <returns></returns>
-    Task<RequirementSpecificationFolder[]> SearchRequirementFoldersAsync(ClaimsPrincipal principal, SearchRequirementQuery query);
+    Task<RequirementSpecificationFolder[]> SearchRequirementFoldersAsync(ClaimsPrincipal principal, SearchRequirementFolderQuery query);
 
     #endregion
 
@@ -76,6 +85,15 @@ public interface IRequirementManager
     Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(ClaimsPrincipal principal, SearchQuery query);
 
     /// <summary>
+    /// Searches for requirement specifications
+    /// </summary>
+    /// <param name="filters"></param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
+    Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(FilterSpecification<RequirementSpecification>[] filters, int offset, int count);
+
+    /// <summary>
     /// Updates a requirement specification
     /// </summary>
     /// <param name="principal">User making changes</param>
@@ -93,5 +111,6 @@ public interface IRequirementManager
     Task AddRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
     Task DeleteRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
     Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification);
+    Task GenerateFoldersFromPathAsync(Requirement requirement);
     #endregion
 }

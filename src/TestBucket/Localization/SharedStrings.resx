@@ -314,4 +314,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="groupby-result" xml:space="preserve">
     <value>Result</value>
   </data>
+  <data name="filter-tests" xml:space="preserve">
+    <value>Filter Tests</value>
+  </data>
+  <data name="search-tests" xml:space="preserve">
+    <value>Search Tests</value>
+  </data>
 </root>

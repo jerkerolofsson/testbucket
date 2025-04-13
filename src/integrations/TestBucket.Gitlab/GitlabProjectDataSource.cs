@@ -4,7 +4,6 @@ using NGitLab;
 using NGitLab.Models;
 
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Projects;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Gitlab;

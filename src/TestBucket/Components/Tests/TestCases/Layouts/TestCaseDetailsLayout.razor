@@ -68,7 +68,7 @@
             _team = Team;
         }
         _testCase = appNavigationManager.State.SelectedTestCase;
-        var testCaseId = appNavigationManager.GetTestCaseIdFromCurrentUri();
+        var testCaseId = appNavigationManager.GetEntityIdFromCurrentUri();
         if (testCaseId != _testCase?.Id && testCaseId is not null)
         {
             _testCase = await browser.GetTestCaseByIdAsync(testCaseId.Value);

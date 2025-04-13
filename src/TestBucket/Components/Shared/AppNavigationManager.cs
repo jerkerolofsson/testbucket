@@ -50,12 +50,17 @@ public class AppNavigationManager
         _navigationManager = navigationManager;
     }
 
-    public long? GetTestCaseIdFromCurrentUri()
+    /// <summary>
+    /// This depends on the route convention in the format:
+    /// /{tenantId}/Testing/EntityType/{entityId}/{SubPage}
+    /// </summary>
+    /// <returns></returns>
+    public long? GetEntityIdFromCurrentUri()
     {
-        return ResolveTestCaseIdFromUrl(_navigationManager.Uri);
+        return ResolveEntityIdFromUrl(_navigationManager.Uri);
     }
 
-    public static long? ResolveTestCaseIdFromPath(string? path)
+    public static long? ResolveEntityIdFromPath(string? path)
     {
         if (path is null)
         {
@@ -73,12 +78,11 @@ public class AppNavigationManager
         }
         return null;
     }
-
-    public static long? ResolveTestCaseIdFromUrl(string url)
+    public static long? ResolveEntityIdFromUrl(string url)
     {
         if (Uri.TryCreate(url, UriKind.Absolute, out var uri))
         {
-            return ResolveTestCaseIdFromPath(uri.PathAndQuery);
+            return ResolveEntityIdFromPath(uri.PathAndQuery);
         }
         return null;
     }
@@ -120,23 +124,47 @@ public class AppNavigationManager
         return $"/{tenantId}/Requirements/Import";
     }
 
+    public string GetTestSuiteVariablesUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var testSuiteId = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestSuites/{testSuiteId}/Variables";
+    }
     public string GetTestCaseVariablesUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
-        var testCaseId = ResolveTestCaseIdFromUrl(_navigationManager.Uri);
-        return $"{tenantId}/Testing/TestCases/{testCaseId}/variables";
+        var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestCases/{testCaseId}/Variables";
+    }
+    public string GetTestSuiteFieldsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestSuites/{testCaseId}/Fields";
     }
     public string GetTestCaseFieldsUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
-        var testCaseId = ResolveTestCaseIdFromUrl(_navigationManager.Uri);
-        return $"{tenantId}/Testing/TestCases/{testCaseId}/fields";
+        var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestCases/{testCaseId}/Fields";
+    }
+    public string GetTestSuiteSettingsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestSuites/{testCaseId}/Settings";
+    }
+    public string GetTestSuiteAttachmentsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestSuites/{testCaseId}/Attachments";
     }
     public string GetTestCaseAttachmentsUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
-        var testCaseId = ResolveTestCaseIdFromUrl(_navigationManager.Uri);
-        return $"{tenantId}/Testing/TestCases/{testCaseId}/attachments";
+        var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestCases/{testCaseId}/Attachments";
     }
 
     /// <summary>
@@ -146,7 +174,7 @@ public class AppNavigationManager
     public string GetTestCaseRequimentsUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
-        var testCaseId = ResolveTestCaseIdFromUrl(_navigationManager.Uri);
+        var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
         return $"{tenantId}/Testing/TestCases/{testCaseId}/requirements";
     }
 

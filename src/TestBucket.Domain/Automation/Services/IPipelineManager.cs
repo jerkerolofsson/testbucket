@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Projects;
 using TestBucket.Domain.Automation.Models;
 
 namespace TestBucket.Domain.Automation.Services;

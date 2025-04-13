@@ -27,6 +27,17 @@ public class TestCaseFilterSpecificationBuilder
     {
         var specifications = ProjectEntityFilterSpecificationBuilder.From<TestCase>(query);
 
+        if(query.Fields is not null)
+        {
+            foreach(var fieldFilter in query.Fields)
+            {
+                if(!string.IsNullOrEmpty(fieldFilter.StringValue))
+                {
+                    specifications.Add(new FilterTestCasesByStringField(fieldFilter.FilterDefinitionId, fieldFilter.StringValue));
+                }
+            }
+        }
+
         if (query.TestSuiteId is not null)
         {
             specifications.Add(new FilterTestCasesByTestSuite(query.TestSuiteId.Value));

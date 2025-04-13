@@ -4,7 +4,6 @@ using Microsoft.Extensions.Caching.Memory;
 
 using TestBucket.Contracts.Automation;
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Projects;
 using TestBucket.Domain.Automation.Models;
 using TestBucket.Domain.Automation.Services;
 using TestBucket.Domain.Testing.Compiler;

@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TestBucket.Contracts.Projects;
-
 namespace TestBucket.Contracts.Integrations
 {
     public interface IExtension
@@ -44,6 +42,11 @@ namespace TestBucket.Contracts.Integrations
         /// Supported capabilities of the system
         /// </summary>
         public ExternalSystemCapability SupportedCapabilities { get; }
+
+        /// <summary>
+        /// Required fields from extension
+        /// </summary>
+        public ExtensionFields RequiredFields { get; }
 
         /// <summary>
         /// The default URL to integrate with

@@ -11,7 +11,6 @@ using TestBucket.Domain.Tenants.Models;
 using TestBucket.Contracts.Integrations;
 using Microsoft.Extensions.Caching.Memory;
 using TestBucket.Traits.Core;
-using TestBucket.Contracts.Projects;
 using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Projects.Mapping;
@@ -81,6 +80,12 @@ internal class ProjectManager : IProjectManager
             }
         }
         return null;
+    }
+
+    public async Task<PagedResult<TestProject>> BrowseTestProjectsAsync(ClaimsPrincipal principal, int offset, int count)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        return await _projectRepository.SearchAsync(tenantId, new SearchQuery() { Offset = offset, Count = count });
     }
 
 

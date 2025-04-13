@@ -115,6 +115,7 @@ internal static class PipelineMapper
                 var destJob = dest.PipelineJobs.Where(x=>x.CiCdJobIdentifier == srcJob.CiCdJobIdentifier).FirstOrDefault();
                 if(destJob is null)
                 {
+                    changed = true;
                     destJob = new PipelineJob 
                     { 
                         Id = 0, 

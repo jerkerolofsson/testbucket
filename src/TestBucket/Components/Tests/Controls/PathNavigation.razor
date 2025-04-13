@@ -9,6 +9,7 @@
 </MudStack>
 
 @code {
+    [Parameter] public TestSuite? TestSuite { get; set; }
     [Parameter] public TestCase? Test { get; set; }
     [Parameter] public long? FolderId { get; set; }
     [Parameter] public IEnumerable<BreadcrumbItem>? TailItems { get; set; }
@@ -27,12 +28,19 @@
     protected override async Task OnParametersSetAsync()
     {
         List<BreadcrumbItem> nav = new();
-        if (Test?.PathIds is not null)
+
+        // First the test suite
+        if(TestSuite is not null)
         {
-            var tenantId = TenantResolver.ResolveTenantIdFromUrl(navigationManager.Uri);
+             var testSuiteUrl = appNavigationManager.GetUrl(TestSuite);
+            nav.Add(new BreadcrumbItem(TestSuite.Name, testSuiteUrl));
+            _navUpUrl = testSuiteUrl;
+        }
+        else if (Test?.PathIds is not null)
+        {
             var testSuiteId = Test.TestSuiteId;
 
-            var testSuite = await testBrowser.GetTestSuiteByIdAsync(Test.TestSuiteId);
+            var testSuite = TestSuite ?? await testBrowser.GetTestSuiteByIdAsync(Test.TestSuiteId);
             if(testSuite is not null)
             {
                 var testSuiteUrl = appNavigationManager.GetUrl(testSuite);
@@ -57,7 +65,6 @@
             var folder = await testBrowser.GetTestSuiteFolderByIdAsync(FolderId.Value);
             if(folder?.PathIds is not null && folder.Path is not null)
             {
-                var tenantId = TenantResolver.ResolveTenantIdFromUrl(navigationManager.Uri);
                 var testSuiteId = folder.TestSuiteId;
 
                 var testSuite = await testBrowser.GetTestSuiteByIdAsync(folder.TestSuiteId);

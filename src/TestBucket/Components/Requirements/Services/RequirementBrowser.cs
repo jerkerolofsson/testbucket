@@ -130,7 +130,15 @@ internal class RequirementBrowser : TenantBaseService
             }
             if (parent.RequirementFolder is not null)
             {
-                var query = new SearchRequirementQuery
+                var folderQuery = new SearchRequirementFolderQuery
+                {
+                    RequirementSpecificationId = parent.RequirementFolder.RequirementSpecificationId,
+                    FolderId = parent.RequirementFolder.Id,
+                    CompareFolder = true,
+                    Offset = 0,
+                    Count = 1_000
+                };
+                var requirementQuery = new SearchRequirementQuery
                 {
                     RequirementSpecificationId = parent.RequirementFolder.RequirementSpecificationId,
                     FolderId = parent.RequirementFolder.Id,
@@ -140,11 +148,11 @@ internal class RequirementBrowser : TenantBaseService
                 };
 
                 // Add folders
-                var folders = await _requirementManager.SearchRequirementFoldersAsync(principal, query);
+                var folders = await _requirementManager.SearchRequirementFoldersAsync(principal, folderQuery);
                 items.AddRange(folders.Select(x => CreateTreeNodeFromFolder(x)));
 
                 // Add requirements
-                PagedResult<Requirement> result = await _requirementManager.SearchRequirementsAsync(principal, query);
+                PagedResult<Requirement> result = await _requirementManager.SearchRequirementsAsync(principal, requirementQuery);
                 items.AddRange(result.Items.Select(x => CreateRequirementNode(x)));
 
                 return items;
@@ -159,9 +167,17 @@ internal class RequirementBrowser : TenantBaseService
                     Offset = 0,
                     Count = 1_000
                 };
+                var folderQuery = new SearchRequirementFolderQuery
+                {
+                    FolderId = null,
+                    CompareFolder = true,
+                    RequirementSpecificationId = parent.RequirementSpecification.Id,
+                    Offset = 0,
+                    Count = 1_000
+                };
 
                 // Add folders
-                var folders = await _requirementManager.SearchRequirementFoldersAsync(principal, query);
+                var folders = await _requirementManager.SearchRequirementFoldersAsync(principal, folderQuery);
                 items.AddRange(folders.Select(x => CreateTreeNodeFromFolder(x)));
 
                 // Add requirements

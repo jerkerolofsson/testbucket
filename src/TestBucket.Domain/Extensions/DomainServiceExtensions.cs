@@ -15,6 +15,7 @@ using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Import;
+using TestBucket.Domain.Requirements.RequirementExtensions;
 using TestBucket.Domain.Search;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Appearance;
@@ -58,9 +59,12 @@ public static class DomainServiceExtensions
         services.AddScoped<ITestCaseManager, TestCaseManager>();
         services.AddScoped<ITestSuiteManager, TestSuiteManager>();
         services.AddScoped<ITestRunManager, TestRunManager>();
+
         services.AddScoped<IRequirementImporter, RequirementImporter>();
         services.AddScoped<IRequirementManager, RequirementManager>();
-        
+        services.AddScoped<IRequirementExtensionManager, RequirementExtensionManager>();
+        services.AddHostedService<BackgroundExternalRequirementSynchronizer>();
+
         services.AddScoped<IFieldDefinitionManager, FieldDefinitionManager>();
         services.AddScoped<IFieldManager, FieldManager>();
 

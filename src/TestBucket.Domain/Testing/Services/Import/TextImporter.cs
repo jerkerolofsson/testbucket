@@ -378,7 +378,7 @@ internal class TextImporter : ITextTestResultsImporter
         {
             FilterSpecification<TestCase>[] filters = [
                 new FilterByTenant<TestCase>(tenantId),
-                new FilterTestCasesByTestSuite(suite.Id),
+                //new FilterTestCasesByTestSuite(suite.Id),
                 new FilterByProject<TestCase>(projectId),
                 new FilterTestCasesByExternalId(test.ExternalId)
             ];

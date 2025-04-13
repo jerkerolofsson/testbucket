@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 
 using TestBucket.Contracts.Automation;
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Projects;
 using TestBucket.Domain.Automation.Mapping;
 using TestBucket.Domain.Automation.Models;
 using TestBucket.Domain.Automation.Specifications.Pipelines;
@@ -278,9 +277,13 @@ internal class PipelineManager : IPipelineManager
                     // Add as attachments to the test case
                     var bytes = await configuredRunner.Service.GetArtifactsZipAsByteArrayAsync(configuredRunner.Config, 
                         pipeline.CiCdPipelineIdentifier,
-                        job.CiCdJobIdentifier, 
+                        job.CiCdJobIdentifier,
+                         configuredRunner.Config.TestResultsArtifactsPattern,
                         CancellationToken.None);
-                    await _mediator.Publish(new IntegrationEvents.JobArtifactDownloaded(principal, pipeline, job, configuredRunner.Config.TestResultsArtifactsPattern, bytes));
+                    if (bytes.Length > 0)
+                    {
+                        await _mediator.Publish(new IntegrationEvents.JobArtifactDownloaded(principal, pipeline, job, configuredRunner.Config.TestResultsArtifactsPattern, bytes));
+                    }
                 }
             }
         }

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Projects;
 
 namespace TestBucket.Trello
 {
@@ -13,7 +12,7 @@ namespace TestBucket.Trello
     {
         public string SystemName => ExtensionConstants.SystemName;
 
-        public ExternalSystemCapability SupportedCapabilities => ExternalSystemCapability.GetMilestones;
+        public ExternalSystemCapability SupportedCapabilities => ExternalSystemCapability.GetRequirements;
 
         public string FriendlyName => ExtensionConstants.FriendlyName;
 
@@ -27,5 +26,7 @@ namespace TestBucket.Trello
 
         public string ProjectIdHelperText => "to be defined";
         public string AccessTokenHelperText => "to be defined";
+
+        public ExtensionFields RequiredFields => ExtensionFields.AccessToken | ExtensionFields.BaseUrl | ExtensionFields.ApiKey;
     }
 }

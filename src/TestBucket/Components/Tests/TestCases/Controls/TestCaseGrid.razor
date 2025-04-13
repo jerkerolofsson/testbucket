@@ -27,11 +27,17 @@
                           Variant="Variant.Outlined"
                           IconSize="Size.Small"
                           Adornment="Adornment.Start"
-                          Placeholder="Search Tests"
+                          Placeholder="@loc["search-tests"]"
                           AdornmentIcon="@Icons.Material.Filled.Search" />
 
             <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="async () => await ShowFilterAsync()"></MudIconButton>
+            <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="ShowFilterAsync"></MudIconButton>
+
+            @if(_hasCustomFilter)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Clear" OnClick="ResetFilter"></MudIconButton>
+            }
+
             @if (TestSuiteId is not null || Folder is not null)
             {
                 <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="CreateNewTestCaseAsync"></MudIconButton>

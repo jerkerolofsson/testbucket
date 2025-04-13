@@ -1,5 +1,5 @@
 ﻿@attribute [Authorize()]
-@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/variables"
+@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/Variables"
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Domain.Requirements.Models
 @layout TestCaseDetailsLayout
@@ -17,8 +17,9 @@
         </MudToolBar>
 
         <CascadingValue Value="@Test">
-            <article class="center">
+            <article>
                 <MudStack>
+                    <MudText Typo="Typo.h1">@loc["variables"]</MudText>
                     <TestCaseVariables TestChanged="SaveAsync"/>
                 </MudStack>
             </article>

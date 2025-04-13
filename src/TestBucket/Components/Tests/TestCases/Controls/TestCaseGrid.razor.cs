@@ -19,7 +19,6 @@ public partial class TestCaseGrid
     private SearchTestQuery _query = new();
 
     private MudDataGrid<TestSuiteItem?> _dataGrid = default!;
-    private IReadOnlyList<FieldDefinition> _definitions = [];
 
     private List<FieldDefinition> _columns = [];
 
@@ -45,11 +44,14 @@ public partial class TestCaseGrid
     private long? _folderId = null;
     private long? _testProjectId = null;
     private TestSuite? _testSuite;
+    private bool _hasCustomFilter = false;
 
     protected override async Task OnParametersSetAsync()
     {
         bool changed = false;
 
+        _query.CompareFolder = true;
+        _query.TestSuiteId = TestSuiteId;
         if(_testSuiteId != TestSuiteId)
         {
             _testSuiteId = TestSuiteId;
@@ -143,6 +145,14 @@ public partial class TestCaseGrid
         await OnTestCaseClicked.InvokeAsync(testCase);
     }
 
+    private void ResetFilter()
+    {
+        _hasCustomFilter = false;
+        _query.CompareFolder = true;
+        _query.Text = null;
+        _dataGrid?.ReloadServerData();
+    }
+
     private async Task ShowFilterAsync()
     {
         var parameters = new DialogParameters<EditTestCaseFilterDialog>
@@ -150,11 +160,13 @@ public partial class TestCaseGrid
             { x => x.Query, _query },
             { x => x.Project, Project },
         };
-        var dialog = await dialogService.ShowAsync<EditTestCaseFilterDialog>("Filter Tests", parameters);
+        var dialog = await dialogService.ShowAsync<EditTestCaseFilterDialog>(loc["filter-tests"], parameters);
         var result = await dialog.Result;
         if (result?.Data is SearchTestQuery query)
         {
+            _hasCustomFilter = true;
             _query = query;
+            _query.CompareFolder = false;
             _dataGrid?.ReloadServerData();
         }
     }
@@ -178,7 +190,19 @@ public partial class TestCaseGrid
 
     private void OnSearch(string text)
     {
-        _query.Text = text;
+        if(string.IsNullOrEmpty(text))
+        {
+            _query.CompareFolder = true;
+            _query.Text = null;
+            _hasCustomFilter = false;
+        }
+        else
+        {
+            _query.CompareFolder = false; // When searching for text, disable the compare folder so we search all 
+            _query.Text = text;
+            _hasCustomFilter = true;
+
+        }
         _dataGrid?.ReloadServerData();
     }
 
@@ -186,19 +210,20 @@ public partial class TestCaseGrid
     {
         var query = new SearchTestQuery
         {
-            CompareFolder = CompareFolder,
-            TestSuiteId = TestSuiteId,
+            CompareFolder = _query.CompareFolder,
+            TestSuiteId = _query.TestSuiteId,
             FolderId = _folder?.Id,
             CreatedFrom = _query.CreatedFrom,
             CreatedUntil = _query.CreatedUntil,
             Category = _query.Category,
             Priority = _query.Priority,
             ProjectId = Project?.Id,
+            Fields = _query.Fields,
 
             Text = string.IsNullOrWhiteSpace(_query.Text) ? null : _query.Text,
         };
 
-        var result = await testBrowser.SearchItemsAsync(query, state.Page * state.PageSize, state.PageSize);
+        var result = await testBrowser.SearchItemsAsync(query, state.Page * state.PageSize, state.PageSize, !_hasCustomFilter);
 
         GridData<TestSuiteItem> data = new()
         {

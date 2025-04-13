@@ -2,7 +2,6 @@
 using Octokit;
 
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Projects;
 using TestBucket.Github.Models;
 using TestBucket.Traits.Core;
 

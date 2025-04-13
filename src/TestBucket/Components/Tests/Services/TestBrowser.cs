@@ -134,7 +134,7 @@ internal class TestBrowser : TenantBaseService
     /// <param name="offset"></param>
     /// <param name="count"></param>
     /// <returns></returns>
-    public async Task<PagedResult<TestSuiteItem>> SearchItemsAsync(SearchTestQuery query, int offset, int count = 20)
+    public async Task<PagedResult<TestSuiteItem>> SearchItemsAsync(SearchTestQuery query, int offset, int count = 20, bool includeFolders = true)
     {
         if(query.TestSuiteId == null)
         {
@@ -144,23 +144,28 @@ internal class TestBrowser : TenantBaseService
         List<TestSuiteItem> items = new();
 
         // Get all folders
-        var folders = await _testSuiteService.GetTestSuiteFoldersAsync(query.ProjectId, query.TestSuiteId.Value, query.FolderId);
-        items.AddRange(folders.Select(x=>new TestSuiteItem() { Folder = x }).Skip(offset).Take(count));
-        int visibleFolderCount = items.Count;
+        int folderCount = 0;
+        if (includeFolders)
+        {
+            var folders = await _testSuiteService.GetTestSuiteFoldersAsync(query.ProjectId, query.TestSuiteId.Value, query.FolderId);
+            items.AddRange(folders.Select(x => new TestSuiteItem() { Folder = x }).Skip(offset).Take(count));
+            int visibleFolderCount = items.Count;
 
-        // Get tests
-        int testCount = Math.Max(0,count - items.Count);
-        int testCaseOffset = Math.Max(0, offset - folders.Length);
+            // Get tests
+            int testCount = Math.Max(0, count - items.Count);
+            int testCaseOffset = Math.Max(0, offset - folders.Length);
 
-        query.Offset = testCaseOffset;
-        query.Count = testCount;
+            query.Offset = testCaseOffset;
+            query.Count = testCount;
+            folderCount = folders.Length;
+        }
         var tests = await _testSuiteService.SearchTestCasesAsync(query);
 
         items.AddRange(tests.Items.Select(x => new TestSuiteItem() { TestCase = x }));
 
         return new PagedResult<TestSuiteItem>()
         {
-            TotalCount = folders.Length + tests.TotalCount,
+            TotalCount = folderCount + tests.TotalCount,
             Items = items.ToArray(),
         };
     }
@@ -426,9 +431,13 @@ internal class TestBrowser : TenantBaseService
             Children = null,
         };
 
-        if(pipeline.CiCdSystem?.ToLower() == "gitlab")
+        if (pipeline.CiCdSystem?.ToLower() == "gitlab")
         {
             treeNode.Icon = TbIcons.Brands.Gitlab;
+        }
+        if (pipeline.CiCdSystem?.ToLower() == "github")
+        {
+            treeNode.Icon = Icons.Custom.Brands.GitHub;
         }
 
         return treeNode;

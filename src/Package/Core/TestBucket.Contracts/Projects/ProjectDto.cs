@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Integrations;
+
 namespace TestBucket.Contracts.Projects;
 public record class ProjectDto
 {

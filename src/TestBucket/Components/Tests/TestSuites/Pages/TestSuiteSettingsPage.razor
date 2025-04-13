@@ -1,0 +1,42 @@
+﻿@attribute [Authorize()]
+@using TestBucket.Components.Tests.TestSuites.Layouts;
+@page "/{TenantId}/Testing/TestSuites/{SuiteId:long}/Settings"
+@layout TestSuitesLayout
+@inject TestBrowser testBrowser
+@inject TestSuiteService controller
+@inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+
+@if (TestSuite is not null)
+{
+    <MudStack Style="width:100%">
+        <MudToolBar Class="tb-toolbar">
+            <PathNavigation TestSuite="@TestSuite" TailItems="_nav"/>
+        </MudToolBar>
+
+        <MudStack>
+            <TestSuiteEditor TestSuite="@TestSuite" TestSuiteChanged="OnTestSuiteChanged" />
+        </MudStack>
+    </MudStack>
+}
+
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [Parameter] public long SuiteId { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public TestSuite? TestSuite { get; set; }
+
+    private List<BreadcrumbItem> _nav = new();
+    protected override void OnInitialized()
+    {
+        _nav = [new BreadcrumbItem(loc["settings"], navigationManager.Uri)];
+    }
+
+    private async Task OnTestSuiteChanged(TestSuite testSuite)
+    {
+        await controller.SaveTestSuiteAsync(testSuite);
+    }
+}

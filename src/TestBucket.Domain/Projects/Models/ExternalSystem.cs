@@ -1,4 +1,4 @@
-﻿using TestBucket.Contracts.Projects;
+﻿using TestBucket.Contracts.Integrations;
 
 namespace TestBucket.Domain.Projects.Models;
 
@@ -34,6 +34,11 @@ public class ExternalSystem : ProjectEntity
     /// Access token for the external system
     /// </summary>
     public string? AccessToken { get; set; }
+
+    /// <summary>
+    /// API Key for the external system
+    /// </summary>
+    public string? ApiKey { get; set; }
 
     /// <summary>
     /// API provides only read-only access

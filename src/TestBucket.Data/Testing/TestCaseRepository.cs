@@ -546,7 +546,7 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<TestCaseRun?> GetTestCaseRunByIdAsync(string tenantId, long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestCaseRuns.AsNoTracking()
+        return await dbContext.TestCaseRuns.AsNoTracking().Include(x=>x.LinkedIssues).AsNoTracking()
             .Include(x=>x.TestCase)
             .Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
     }
@@ -555,6 +555,8 @@ internal class TestCaseRepository : ITestCaseRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var tests = dbContext.TestCaseRuns
+            .AsNoTracking()
+            .Include(x => x.LinkedIssues)
             .Include(x => x.TestCase)
             .Include(x => x.TestCaseRunFields)
             .AsQueryable();

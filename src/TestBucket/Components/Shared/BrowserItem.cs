@@ -23,5 +23,5 @@ public record class BrowserItem
     public TestRun? TestRun { get; set; }
 
     public Pipeline? Pipeline { get; set; }
-    public SearchTestCaseRunQuery TestCaseRunQuery { get; internal set; }
+    public SearchTestCaseRunQuery? TestCaseRunQuery { get; internal set; }
 }

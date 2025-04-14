@@ -140,7 +140,7 @@ internal class BackgroundExternalRequirementSynchronizer : BackgroundService
                     Name = requirement.Name,
                     Description = requirement.Description,
                     State = requirement.State,
-
+                    ReadOnly = requirement.ReadOnly,
                     Path = requirement.Path ?? "",
                     RequirementSpecificationId = specification.Id,
 
@@ -156,6 +156,7 @@ internal class BackgroundExternalRequirementSynchronizer : BackgroundService
                 dbo.Description = requirement.Description;
                 dbo.State = requirement.State;
                 dbo.PathIds = null;
+                dbo.ReadOnly = requirement.ReadOnly;
                 dbo.Name = requirement.Name;
                 dbo.Path = requirement.Path ?? "";
                 await requirementManager.UpdateRequirementAsync(principal, dbo);
@@ -187,6 +188,7 @@ internal class BackgroundExternalRequirementSynchronizer : BackgroundService
                 TestProjectId = project.Id,
                 TenantId = project.TenantId,
                 TeamId = project.TeamId,
+                ReadOnly = spec.ReadOnly,
             };
             await requirementManager.AddRequirementSpecificationAsync(principal, dbo);
             return dbo;

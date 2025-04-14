@@ -44,6 +44,11 @@ namespace TestBucket.Domain.Requirements.Models
         /// </summary>
         public string? Description { get; set; }
 
+        /// <summary>
+        /// Read-only requirements are managed outside
+        /// </summary>
+        public bool ReadOnly { get; set; }
+
         // Customization
 
         /// <summary>

@@ -10,6 +10,7 @@ using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.TestResources.Models;
 using TestBucket.Domain.TestAccounts.Models;
 using TestBucket.Domain.Automation.Models;
+using TestBucket.Domain.Issues.Models;
 
 namespace TestBucket.Data;
 
@@ -68,6 +69,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     /// CI/CD jobs within pipelines
     /// </summary>
     internal DbSet<PipelineJob> PipelineJobs { get; set; }
+
+    /// <summary>
+    /// Issues
+    /// </summary>
+    internal DbSet<LinkedIssue> LinkedIssues { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

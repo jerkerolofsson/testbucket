@@ -1,4 +1,5 @@
 ﻿@page "/{tenantId}/Settings/Projects/{projectSlug}/Integrations"
+@using System.Diagnostics
 @using TestBucket.Contracts.Integrations
 @using TestBucket.Domain.ExtensionManagement
 @layout SettingsLayout
@@ -43,7 +44,7 @@
         </ToolBarContent>
 
         <Columns>
-             <TemplateColumn>
+            <TemplateColumn>
                 <CellTemplate>
                     @if (context.Item.Enabled)
                     {
@@ -130,6 +131,12 @@
 
     private async Task OnRowClicked(ExternalSystem system)
     {
+        Debug.Assert(_project is not null);
+        if(_project is null)
+        {
+            return;
+        }
+
         var extension = _extensions.Where(x => x.SystemName == system.Provider).FirstOrDefault();
         if(extension is not null)
         {

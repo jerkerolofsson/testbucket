@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Contracts.Testing.Models
+@using TestBucket.Formats.Dtos
 @inject IStringLocalizer<SharedStrings> loc
 @inject TestExecutionController controller
 
@@ -9,22 +10,34 @@
     <Field>
         <FieldHeader>@loc["message"]</FieldHeader>
         <MarkdownEditor ShowToolbar="false"
-            Value="@TestCaseRun.Message" ValueChanged="OnMessageChanged" />
+        Value="@TestCaseRun.Message" ValueChanged="OnMessageChanged" />
 
     </Field>
 
+    <LinkedIssuesTable Issues="@TestCaseRun.LinkedIssues"/>
+
     <TestResultPicker 
-        ResultChanged="OnResultChanged"
-        TestCaseRun="@TestCaseRun" TestProjectId="@TestCaseRun.TestProjectId"></TestResultPicker>
+    ResultChanged="OnResultChanged"
+    TestCaseRun="@TestCaseRun" TestProjectId="@TestCaseRun.TestProjectId"></TestResultPicker>
 
     <Field>
         <FieldHeader>@loc["attachments"]</FieldHeader>
-        <AttachmentGrid TestCaseRunId="@TestCaseRun.Id" Style="width: 100%" AllowUpload />
-        <CaptureScreenShotButton TestCaseRunId="@TestCaseRun.Id" />
+        <AttachmentGrid TestCaseRunId="@TestCaseRun.Id" Style="width: 100%" AllowUpload @ref="_attachmentGrid"/>
+        <CaptureScreenShotButton TestCaseRunId="@TestCaseRun.Id" ScreenshotCaptured="OnScreenshotCaptured"/>
     </Field>
 }
 
 @code {
+    private AttachmentGrid? _attachmentGrid;
+
+    private async Task OnScreenshotCaptured(AttachmentDto _)
+    {
+        if(_attachmentGrid is not null)
+        {
+            await _attachmentGrid.ReloadAttachmentsAsync();
+        }
+    }
+
     [Parameter] public TestCaseRun? TestCaseRun { get; set; }
     private async Task OnResultChanged(TestResult result)
     {

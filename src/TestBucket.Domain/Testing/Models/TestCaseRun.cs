@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Domain.Issues.Models;
+
+namespace TestBucket.Domain.Testing.Models;
 
 /// <summary>
 /// Result of one executed test case
@@ -79,6 +81,7 @@ public class TestCaseRun : TestEntity
     public virtual IEnumerable<TestCaseRunField>? TestCaseRunFields { get; set; }
     public TestRun? TestRun { get; set; }
     public TestCase? TestCase { get; set; }
+    public virtual List<LinkedIssue>? LinkedIssues { get; set; }
 
     public override int GetHashCode()
     {

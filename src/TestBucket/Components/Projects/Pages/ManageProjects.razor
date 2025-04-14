@@ -1,5 +1,6 @@
 ﻿@page "/{tenantId}/Settings/ManageProjects"
 @using System.Diagnostics.CodeAnalysis
+@using System.Diagnostics
 @layout SettingsLayout
 @inject ProjectController controller
 @inject IDialogService dialogService
@@ -11,12 +12,12 @@
     <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudDataGrid ServerData="LoadGridData"
-                 Dense="true"
-                 Hover="true"
-                 T="TestProject"
-                 @ref="_dataGrid"
-                 RowClick="x => OnRowClicked(x.Item)"
-                 SortMode="SortMode.None">
+    Dense="true"
+    Hover="true"
+    T="TestProject"
+    @ref="_dataGrid"
+    RowClick="x => OnRowClicked(x.Item)"
+    SortMode="SortMode.None">
 
         <ToolBarContent>
             <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
@@ -70,6 +71,12 @@
 
     private async Task AddProjectAsync()
     {
+        Debug.Assert(Team is not null);
+        if(Team is null)
+        {
+            return;
+        }
+
         await controller.AddProjectAsync(Team);
         _dataGrid?.ReloadServerData();
     }

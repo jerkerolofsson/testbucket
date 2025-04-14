@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Contracts.Testing.Models;
@@ -14,9 +15,11 @@ using TestBucket.Domain.Keyboard;
 namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414051143_ExternalDisplayId")]
+    partial class ExternalDisplayId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1019,9 +1022,6 @@ namespace TestBucket.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<long?>("ParentRequirementId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Path")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1029,17 +1029,11 @@ namespace TestBucket.Data.Migrations
                     b.PrimitiveCollection<long[]>("PathIds")
                         .HasColumnType("bigint[]");
 
-                    b.Property<bool>("ReadOnly")
-                        .HasColumnType("boolean");
-
                     b.Property<long?>("RequirementSpecificationFolderId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("RequirementSpecificationId")
                         .HasColumnType("bigint");
-
-                    b.Property<string>("RequirementType")
-                        .HasColumnType("text");
 
                     b.Property<string>("Slug")
                         .HasColumnType("text");
@@ -1118,9 +1112,6 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("ReadOnly")
-                        .HasColumnType("boolean");
 
                     b.Property<long?>("TeamId")
                         .HasColumnType("bigint");

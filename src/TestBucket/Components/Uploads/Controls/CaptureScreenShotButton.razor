@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Uploads.Services
+@using TestBucket.Formats.Dtos
 @using TestBucket.Formats.Shared
 @inject UploadService uploadService
 @inject IJSRuntime js
@@ -15,12 +16,15 @@
     [Parameter] public long? RequirementId { get; set; }
     [Parameter] public long? RequirementSpecificationId { get; set; }
 
+    [Parameter] public EventCallback<AttachmentDto> ScreenshotCaptured { get; set; }
+
     private async Task CaptureScreenShot()
     {
         var dataUrl = await js.InvokeAsync<string>("captureDesktopScreenshot");
         if(dataUrl is not null)
         {
             var attachment = DataUriParser.ParseDataUri(dataUrl);
+            attachment.Name = "Screenshot";
 
             ResourceCategory category = ResourceCategory.TestResults;
 
@@ -29,6 +33,8 @@
                 TestSuiteId, TestSuiteFolderId,
                 TestProjectId,
                 RequirementId, RequirementSpecificationId);
+
+            await ScreenshotCaptured.InvokeAsync(attachment);
         }
     }
 }

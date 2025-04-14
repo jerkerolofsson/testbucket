@@ -4,14 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Testing.Models;
+
 namespace TestBucket.Domain.Issues.Models;
 
-public class Issue : ProjectEntity
+public class LinkedIssue : ProjectEntity
 {
     /// <summary>
     /// DB ID
     /// </summary>
-    public long? Id { get; set; }
+    public long Id { get; set; }
 
     /// <summary>
     /// Id in external system
@@ -62,4 +64,10 @@ public class Issue : ProjectEntity
     /// Type of issue
     /// </summary>
     public string? IssueType { get; set; }
+
+    // Navigation
+
+    public long? TestCaseRunId { get; set; }
+    public TestCaseRun? TestCaseRun { get; set; }
+    public string? ExternalDisplayId { get; set; }
 }

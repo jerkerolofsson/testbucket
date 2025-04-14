@@ -55,6 +55,21 @@ public class Requirement : ProjectEntity
     public string? State { get; set; }
 
     /// <summary>
+    /// Optional parent requirement if this is a downstream requirement
+    /// </summary>
+    public long? ParentRequirementId { get; set; }
+
+    /// <summary>
+    /// Read-only requirements are managed outside
+    /// </summary>
+    public bool ReadOnly { get; set; }
+
+    /// <summary>
+    /// Type of requirement
+    /// </summary>
+    public string? RequirementType { get; set; }
+
+    /// <summary>
     /// ID of test suite
     /// </summary>
     public long RequirementSpecificationId { get; set; }

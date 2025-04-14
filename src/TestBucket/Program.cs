@@ -15,6 +15,7 @@ using TestBucket.Components.Automation;
 using TestBucket.Components.Environments.Services;
 using TestBucket.Components.Layout.Controls;
 using TestBucket.Components.Projects;
+using TestBucket.Components.Requirements.Commands;
 using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Settings.ApiKeys;
 using TestBucket.Components.Settings.Roles;
@@ -223,6 +224,13 @@ public class Program
         builder.Services.AddScoped<ICommand, NewFolderCommand>();
         builder.Services.AddScoped<ICommand, LinkIssueCommand>();
         builder.Services.AddScoped<ICommand, SyncWithActiveDocumentCommand>();
+
+        // requirement
+        builder.Services.AddScoped<ICommand, CreateTestCaseFromRequirementCommand>();
+        builder.Services.AddScoped<ICommand, DeleteRequirementCommand>();
+        builder.Services.AddScoped<ICommand, CreateRequirementCommand>();
+        builder.Services.AddScoped<ICommand, CreateChildRequirementCommand>();
+        
 
         builder.Services.AddScoped(typeof(DragAndDropService<>));
         builder.Services.AddDataServices();

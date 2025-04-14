@@ -12,6 +12,10 @@ internal interface IRequirementObserver
     Task OnSpecificationCreatedAsync(RequirementSpecification spec);
     Task OnSpecificationDeletedAsync(RequirementSpecification spec);
     Task OnSpecificationSavedAsync(RequirementSpecification spec);
+
+    Task OnRequirementCreatedAsync(Requirement requirement);
+    Task OnRequirementDeletedAsync(Requirement requirement);
+    Task OnRequirementSavedAsync(Requirement requirement);
 }
 internal class RequirementEditorController : TenantBaseService
 {
@@ -150,6 +154,10 @@ internal class RequirementEditorController : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         await _manager.DeleteRequirementAsync(principal, requirement);
 
+        foreach (var observer in _requirementObservers)
+        {
+            await observer.OnRequirementDeletedAsync(requirement);
+        }
     }
 
     public async Task DeleteRequirementSpecificationAsync(RequirementSpecification specification)
@@ -197,15 +205,42 @@ internal class RequirementEditorController : TenantBaseService
         }
     }
 
+    public async Task MoveRequirementToSpecificationAsync(Requirement requirement, RequirementSpecification specification)
+    {
+        requirement.Path = "";
+        requirement.PathIds = null;
+        requirement.RequirementSpecificationId = specification.Id;
+        requirement.RequirementSpecificationFolderId = null;
+        await SaveRequirementAsync(requirement);
+    }
+
+    public async Task MoveRequirementToFolderAsync(Requirement requirement, RequirementSpecificationFolder folder)
+    {
+        requirement.Path = "";
+        requirement.PathIds = null;
+        requirement.RequirementSpecificationId = folder.RequirementSpecificationId;
+        requirement.RequirementSpecificationFolderId = folder.Id;
+        await SaveRequirementAsync(requirement);
+    }
+
+    public async Task AddRequirementAsync(Requirement requirement)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.AddRequirementAsync(principal, requirement);
+
+        foreach (var observer in _requirementObservers)
+        {
+            await observer.OnRequirementCreatedAsync(requirement);
+        }
+    }
     public async Task SaveRequirementAsync(Requirement requirement)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         await _manager.UpdateRequirementAsync(principal, requirement);
-
-        //foreach (var observer in _requirementObservers)
-        //{
-        //    await observer.OnReq(specification);
-        //}
+        foreach (var observer in _requirementObservers)
+        {
+            await observer.OnRequirementSavedAsync(requirement);
+        }
     }
 
     public async Task<PagedResult<RequirementSpecification>> GetRequirementSpecificationsAsync(long? teamId, long? projectId, int offset = 0, int count = 100)

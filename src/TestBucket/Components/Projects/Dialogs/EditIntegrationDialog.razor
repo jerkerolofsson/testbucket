@@ -25,7 +25,7 @@
 @code {
     [Parameter] public ExternalSystem? ExternalSystem { get; set; }
 
-    [Parameter] public IExtension Extension { get; set; }
+    [Parameter] public IExtension? Extension { get; set; }
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;

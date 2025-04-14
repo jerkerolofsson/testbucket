@@ -45,6 +45,7 @@
   <ItemGroup>
     <Folder Include="Components\Administration\" />
     <Folder Include="Components\Environments\Layouts\" />
+    <Folder Include="Components\Issues\" />
     <Folder Include="Components\Tests\TestRuns\Services\" />
     <Folder Include="Services\" />
   </ItemGroup>

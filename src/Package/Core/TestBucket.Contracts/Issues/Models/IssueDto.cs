@@ -23,6 +23,11 @@ public class IssueDto
     public string? ExternalId { get; set; }
 
     /// <summary>
+    /// How the ExternalId should be shown to the user
+    /// </summary>
+    public string? ExternalDisplayId { get; set; }
+
+    /// <summary>
     /// Textual identifier for the external system, e.g. jira, github
     /// </summary>
     public string? ExternalSystemName { get; set; }

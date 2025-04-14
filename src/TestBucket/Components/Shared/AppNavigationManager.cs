@@ -21,6 +21,21 @@ public class AppNavigationManager
     internal class NavigationState
     {
         /// <summary>
+        /// Selected requirement specification
+        /// </summary>
+        public RequirementSpecification? SelectedRequirementSpecification { get; set; }
+
+        /// <summary>
+        /// Selected requirement specification folder
+        /// </summary>
+        public RequirementSpecificationFolder? SelectedRequirementSpecificationFolder { get; set; }
+
+        /// <summary>
+        /// Selected requirement
+        /// </summary>
+        public Requirement? SelectedRequirement { get; set; }
+
+        /// <summary>
         /// Selected test case
         /// </summary>
         public TestCase? SelectedTestCase { get; set; }

@@ -1,0 +1,43 @@
+﻿@using TestBucket.Domain.Requirements.Models
+@inject IStringLocalizer<SharedStrings> loc
+
+<EditForm Model="@_requirement" OnValidSubmit="OnValidSubmit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <DialogContent>
+
+            <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_requirement.Name"></MudTextField>
+
+        </DialogContent>
+
+        <DialogActions>
+            @if (_requirement.Name.Length > 0)
+            {
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            }
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private Requirement _requirement = new() { Name = "" };
+
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+        if (_requirement is null)
+        {
+            return;
+        }
+        MudDialog.Close(_requirement);
+    }
+}
+

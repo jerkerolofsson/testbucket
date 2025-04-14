@@ -49,7 +49,7 @@ public partial class AttachmentGrid
         await ReloadAttachmentsAsync();
     }
 
-    private async Task ReloadAttachmentsAsync()
+    public async Task ReloadAttachmentsAsync()
     { 
         if (TestCaseId is not null)
         {

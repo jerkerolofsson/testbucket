@@ -11,10 +11,10 @@
 
         <MudStack Row="true" Class="pr-2 pl-2" Style="width: 100%" Spacing="0" AlignItems="AlignItems.Center">
             <MudTextField 
-                Placeholder="Search Requirements"
-                Clearable
-                Variant="Variant.Outlined"
-                Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
+            Placeholder="Search Requirements"
+            Clearable
+            Variant="Variant.Outlined"
+            Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
 
             <MudSpacer />
 
@@ -31,16 +31,16 @@
     else
     {
         <TreeView 
-            Class="pa-2"
-            ItemEdited="OnRenamed"
-            ItemEditCanceled="OnItemEditCanceled"
-            EditItem="@_editItem"
-            T="BrowserItem"
-            SelectedValue="@_selectedTreeItem"
-            SelectedValueChanged="OnSelectedValueChangedAsync"
-            Color="Color.Tertiary"
-            ServerData="@LoadServerData"
-            Items="@_rootItems">
+        Class="pa-2"
+        ItemEdited="OnRenamed"
+        ItemEditCanceled="OnItemEditCanceled"
+        EditItem="@_editItem"
+        T="BrowserItem"
+        SelectedValue="@_selectedTreeItem"
+        SelectedValueChanged="OnSelectedValueChangedAsync"
+        Color="Color.Tertiary"
+        ServerData="@LoadServerData"
+        Items="@_rootItems">
 
             <ItemTemplate>
 
@@ -79,8 +79,8 @@
                             else if (context.Value?.Requirement is not null)
                             {
                                 <RequirementMenuItems 
-                                    Project="@Project" Team="@Team"
-                                    Requirement="context.Value.Requirement"/>
+                                Project="@Project" Team="@Team"
+                                Requirement="context.Value.Requirement"/>
                             }
 
                             <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => AddRequirementSpecificationAsync()">Add Specification</MudMenuItem>
@@ -165,14 +165,21 @@
         {
             if (item.Requirement is not null)
             {
+                appNav.State.SelectedRequirement = item.Requirement;
+                appNav.State.SelectedRequirementSpecificationFolder = null;
                 await OnRequirementClicked.InvokeAsync(item.Requirement);
             }
             else if (item.RequirementSpecification is not null)
             {
+                appNav.State.SelectedRequirement = null;
+                appNav.State.SelectedRequirementSpecificationFolder = null;
+                appNav.State.SelectedRequirementSpecification = item.RequirementSpecification;
                 await OnSpecificationClicked.InvokeAsync(item.RequirementSpecification);
             }
             else if (item.RequirementFolder is not null)
             {
+                appNav.State.SelectedRequirement = null;
+                appNav.State.SelectedRequirementSpecificationFolder = item.RequirementFolder;
                 await OnFolderClicked.InvokeAsync(item.RequirementFolder);
             }
         }
@@ -216,6 +223,18 @@
 
         _rootItems = rootItems;
         this.StateHasChanged();
+    }
+
+    public Task OnRequirementCreatedAsync(Requirement requirement)
+    {
+        return Task.CompletedTask;
+    }
+    public Task OnRequirementDeletedAsync(Requirement requirement) 
+    { 
+        return Task.CompletedTask;}
+    public Task OnRequirementSavedAsync(Requirement requirement) 
+    { 
+        return Task.CompletedTask;
     }
 
     public async Task OnSpecificationCreatedAsync(RequirementSpecification spec)
@@ -262,18 +281,26 @@
         await editor.AddRequirementSpecificationAsync(spec);
     }
 
-    private Task OnDrop(Requirement? requirement, TreeNode<BrowserItem>? targetNode)
+    private async Task OnDrop(Requirement? requirement, TreeNode<BrowserItem>? targetNode)
     {
         if (requirement is null || targetNode is null)
         {
-            return Task.CompletedTask;
+            return;
         }
         var target = targetNode.Value;
         if (target is null)
         {
-            return Task.CompletedTask;
+            return;
         }
-        return Task.CompletedTask;
+
+        if(targetNode.Value?.RequirementSpecification is not null)
+        {
+            await editor.MoveRequirementToSpecificationAsync(requirement, targetNode.Value.RequirementSpecification);
+        }
+        else if(targetNode.Value?.RequirementFolder is not null)
+        {
+            await editor.MoveRequirementToFolderAsync(requirement, targetNode.Value.RequirementFolder);
+        }
     }
 
     private TestProject? _project;

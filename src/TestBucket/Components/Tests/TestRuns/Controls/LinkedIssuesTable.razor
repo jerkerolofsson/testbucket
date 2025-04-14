@@ -1,0 +1,97 @@
+﻿@using TestBucket.Domain.Commands
+@using TestBucket.Domain.ExtensionManagement
+@using TestBucket.Domain.Issues.Models
+@inject IStringLocalizer<SharedStrings> loc
+@inject IExtensionManager extensionManager
+@inject NavigationManager navigationManager 
+@inject ICommandManager commandManager
+
+<MudDataGrid Items="Issues"
+    Class="tb-test-case-run-grid"
+    RowClick="x => RowClicked(x.Item)"
+    RowClassFunc="RowClassFunc"
+    Dense="true"
+    Hover="true"
+    Bordered="true"
+    T="LinkedIssue"
+    SortMode="SortMode.Single">
+
+        <ToolBarContent>
+            @if(!ReadOnly)
+            {
+                <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+                    <MudText>@loc["issues"]</MudText>
+                    <MudSpacer/>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="Add"/>
+                </MudStack>
+            }
+        </ToolBarContent>
+        <ColGroup>
+            <col style="width: 100px;" />
+            <col style="width: 2fr;" />
+            <col style="width: 100px;" />
+            @if(!ReadOnly)
+            {
+                <col style="width: 70px;" />
+            }
+        </ColGroup>
+
+        <Columns>
+
+            <TemplateColumn Title="@loc["id"]">
+                <CellTemplate>
+                    <MudTooltip Text="@context.Item.Url">
+                        <MudStack AlignItems="AlignItems.Center" Row Spacing=1>
+                            <MudIcon Icon="@extensionManager.GetIcon(context.Item.ExternalSystemName??"")"/>
+                            <MudText>@context.Item.ExternalId</MudText>
+                        </MudStack>
+                    </MudTooltip>
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn Title="@loc["title"]">
+                <CellTemplate>
+                    @context.Item.Title
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn Title="@loc["state"]">
+                <CellTemplate>
+                    @context.Item.State
+                </CellTemplate>
+            </TemplateColumn>
+
+            @if(!ReadOnly)
+            {
+                <TemplateColumn Title="">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error"/>
+                    </CellTemplate>
+                </TemplateColumn>
+            }
+        </Columns>
+
+    </MudDataGrid>
+
+@code {
+    [Parameter] public bool ReadOnly {get;set;}
+    [Parameter] public IReadOnlyList<LinkedIssue>? Issues { get; set; }
+
+    private string RowClassFunc(LinkedIssue issue, int _)
+    {
+        return "tb-datarow cursor-pointer";
+    }
+
+    private async Task Add()
+    {
+        await commandManager.ExecuteCommandAsync("link-issue");
+    }
+
+    private void RowClicked(LinkedIssue issue)
+    {
+        if(!string.IsNullOrWhiteSpace(issue.Url))
+        {
+            navigationManager.NavigateTo(issue.Url);
+        }
+    }
+}

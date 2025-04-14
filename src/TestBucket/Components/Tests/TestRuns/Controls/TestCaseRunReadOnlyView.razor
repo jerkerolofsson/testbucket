@@ -8,6 +8,11 @@
         <ResultPill Result="@TestCaseRun.Result" />
     </Field>
 
+    @if(TestCaseRun.LinkedIssues is not null && TestCaseRun.LinkedIssues.Count > 0)
+    {
+        <LinkedIssuesTable ReadOnly Issues="@TestCaseRun.LinkedIssues"/>
+    }
+
     if (!string.IsNullOrEmpty(TestCaseRun.Message))
     {
         <MarkdownEditor ShowToolbar="false" Preview Value="@TestCaseRun.Message" />
@@ -28,7 +33,6 @@
             <MudText><pre>@TestCaseRun.SystemOut</pre></MudText>
         </Field>
     }
-
 
     <Field>
         <FieldHeader>@loc["attachments"]</FieldHeader>

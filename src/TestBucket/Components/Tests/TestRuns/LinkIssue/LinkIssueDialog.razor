@@ -11,18 +11,16 @@
     <TitleContent>@loc["link-issue"]</TitleContent>
     <DialogContent>
         <MudStack Spacing="1">
-
-
             <MudDataGrid
-            Items="_issues"
-            Class="tb-test-case-run-grid"
-            RowClassFunc="RowClassFunc"
-            Dense="true"
-            Hover="true"
-            Bordered="true"
-            T="IssueDto"
-            RowClick="(e) => OnClicked(e.Item)"
-            SortMode="SortMode.Single">
+                Items="_issues"
+                Class="tb-test-case-run-grid"
+                RowClassFunc="RowClassFunc"
+                Dense="true"
+                Hover="true"
+                Bordered="true"
+                T="IssueDto"
+                RowClick="(e) => OnClicked(e.Item)"
+                SortMode="SortMode.Single">
 
                 <ToolBarContent>
                     <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">

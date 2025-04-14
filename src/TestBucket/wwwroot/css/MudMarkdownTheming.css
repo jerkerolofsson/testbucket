@@ -178,6 +178,9 @@
 .editor-preview table th {
     border: 1px solid var(--mud-palette-table-lines);
     padding: 5px;
+    overflow-wrap: anywhere;
+    white-space: break-spaces;
+    word-break: break-all;
 }
 
  .cm-header.cm-header-1,

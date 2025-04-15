@@ -11,16 +11,14 @@
 {
     <div class="container-fill-2-rows">
         <MudToolBar Class="tb-toolbar">
+            <MudButton Class="@EditButtonClassname"    OnClick="async () => await _editor.SetPreviewAsync(false)">@loc["edit"]</MudButton>
+            <MudButton Class="@(PreviewButtonClassname)" OnClick="async () => SaveChangesAsync()">@loc["preview"]</MudButton>
 
             @if (!_preview && _editor is not null)
             {
                 <MudTextField Variant="Variant.Outlined" Label="Name" AdornmentColor="Color.Tertiary" Value="@Test.Name" ValueChanged="OnNameChanged" T="string" AutoFocus="true" />
 
                 <MudDivider DividerType="DividerType.Middle" Vertical />
-
-                <MudTooltip Text="@loc["save"]">
-                    <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="SaveChangesAsync" Class="rounded-0" />
-                </MudTooltip>
 
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 

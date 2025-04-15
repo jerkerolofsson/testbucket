@@ -17,7 +17,7 @@
                 {
                     <MudToolBar Class="@ToolbarClassname">
 
-                        <MudButton Class="@EditButtonClassname"    OnClick="async () => await SetPreviewAsync(false)">Edit</MudButton>
+                        <MudButton Class="@(EditButtonClassname)"    OnClick="async () => await SetPreviewAsync(false)">Edit</MudButton>
                         <MudButton Class="@(PreviewButtonClassname)" OnClick="async () => await SetPreviewAsync(true)">Preview</MudButton>
 
                         @if (!Preview)
@@ -41,7 +41,6 @@
                             <MudDivider Vertical="true" FlexItem="true" />
                         }
                         <MudSpacer/>
-                        <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.RemoveRedEye" OnClick="TogglePreviewAsync" Class="@ToolbarButtonClass"></MudIconButton>
                         <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Fullscreen" OnClick="ToggleFullScreenAsync" Class="@ToolbarButtonClass"></MudIconButton>
                     </MudToolBar>
                 }

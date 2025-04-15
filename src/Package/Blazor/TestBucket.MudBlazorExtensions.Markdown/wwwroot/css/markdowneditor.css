@@ -394,11 +394,10 @@ code.tip {
 
 .mud-markdown-preview blockquote,
 .EasyMDEContainer .editor-preview blockquote {
-    font-style: italic;
     font-size: 10pt;
     padding: 8px;
-    border-radius: 4px;
-    background: var(--mud-palette-secondary);
+
+    border-left: solid 4px var(--mud-palette-secondary);
     color: var(--mud-palette-secondary-text);
     margin-bottom: 1rem;
     margin-left: 2rem;
@@ -436,7 +435,7 @@ code.tip {
 .mud-markdown-preview a[href],
 .EasyMDEContainer .editor-preview  a[href] {
     text-decoration: underline;
-    color: var(--mud-palette-secondary);
+    color: var(--mud-palette-info);
 }
 
 .mud-markdown-preview p,
@@ -496,16 +495,23 @@ code.tip {
      margin-top: 0.75rem;
      margin-bottom: 1.25rem;
 
+    padding-bottom: .3em;
+    border-bottom: 1px solid var(--mud-palette-background-gray);
+
  }
 
 .cm-header.cm-header-2,
 h2 {
-     font-size: var(--mud-typography-h2-size);
-     font-weight: var(--mud-typography-h2-weight);
-     line-height: var(--mud-typography-h2-lineheight);
-     letter-spacing: var(--mud-typography-h2-letterspacing);
-     text-transform: var(--mud-typography-h2-text-transform);
-     margin-bottom: 0.75rem;
+    margin-top: 1rem;
+    font-size: var(--mud-typography-h2-size);
+    font-weight: var(--mud-typography-h2-weight);
+    line-height: var(--mud-typography-h2-lineheight);
+    letter-spacing: var(--mud-typography-h2-letterspacing);
+    text-transform: var(--mud-typography-h2-text-transform);
+    margin-bottom: 0.75rem;
+
+    padding-bottom: .3em;
+    border-bottom: 1px solid var(--mud-palette-background-gray);
  }
 
 
@@ -602,6 +608,15 @@ mud-markdown-toolbar-toggle-button {
     border-bottom: solid 2px var(--mud-palette-surface);
 }
 
+
+.mud-markdown-editor-root code.mermaid > svg {
+    fill: var(--mud-palette-text-primary) !important;
+}
+
+.mud-markdown-editor-root code.mermaid tspan,
+.mud-markdown-editor-root code.mermaid .titleText {
+    fill: var(--mud-palette-text-primary) !important;
+}
 
 .mud-markdown-editor-root code.mermaid .node ellipse,
 .mud-markdown-editor-root code.mermaid .node circle,

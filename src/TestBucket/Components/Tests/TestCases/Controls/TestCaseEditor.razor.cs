@@ -1,7 +1,25 @@
 
+using MudBlazor.Utilities;
+
 namespace TestBucket.Components.Tests.TestCases.Controls;
 public partial class TestCaseEditor
 {
+    protected string EditButtonClassname =>
+    new CssBuilder("mud-markdown-toolbar-toggle-button")
+        .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
+        .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview != true)
+        .Build();
+
+    protected string PreviewButtonClassname =>
+        new CssBuilder("mud-markdown-toolbar-toggle-button")
+            .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
+            .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview == true)
+            .AddClass(" mr-5", true)
+            .Build();
+
+    [Parameter] public Color Color { get; set; } = Color.Surface;
+    [Parameter] public Color ColorAlt { get; set; } = Color.Tertiary;
+
     [CascadingParameter] public TestProject? Project { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
     [CascadingParameter] public Tenant? Tenant { get; set; }

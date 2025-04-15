@@ -307,7 +307,6 @@ code.tip {
     color: var(--mud-palette-text-primary); 
     height: auto;
     border-radius: var(--mud-default-borderradius);
-    overflow: hidden;
 }
 
 .mud-markdown-editor-root .mud-markdown-toolbar {

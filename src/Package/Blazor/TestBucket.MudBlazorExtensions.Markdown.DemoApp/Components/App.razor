@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <link rel="stylesheet" href="@Assets["TestBucket.MudBlazorExtensions.Markdown.DemoApp.styles.css"]" />
+    <link rel="stylesheet" href="@Assets["css/atom-one-dark.min.css"]" />
+    <link href="_content/TestBucket.MudBlazorExtensions.Markdown/css/markdowneditor.css" rel="stylesheet" />
+    <link href="_content/TestBucket.MudBlazorExtensions.Markdown/css/easymde.min.css" rel="stylesheet" />
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <ImportMap />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <HeadOutlet />
+</head>
+
+<body>
+    <Routes />
+    <script src="_framework/blazor.web.js"></script>
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="_content/TestBucket.MudBlazorExtensions.Markdown/js/easymde.min.js"></script>
+    <script src="_content/TestBucket.MudBlazorExtensions.Markdown/js/markdownEditor.js"></script>
+    <script src="_content/TestBucket.MudBlazorExtensions.Markdown/js/highlight.min.js"></script>
+    <script src="_content/TestBucket.MudBlazorExtensions.Markdown/js/mermaid.min.js"></script>
+    <script> 
+        mermaid.initialize({ startOnLoad: false });
+    </script>
+
+</body>
+
+</html>

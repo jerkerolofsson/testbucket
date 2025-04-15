@@ -8,10 +8,13 @@
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>@Extension?.FriendlyName</TitleContent>
         <DialogContent>
-            <ExternalIntegrationEditor Extension="@Extension"
-                    Name="@Extension.FriendlyName" 
-                    @bind-Integration="@ExternalSystem" 
-                    Icon="@Extension.Icon" />
+            @if(Extension is not null)
+            {
+                <ExternalIntegrationEditor Extension="@Extension"
+                        Name="@Extension.FriendlyName" 
+                        @bind-Integration="@ExternalSystem" 
+                        Icon="@Extension.Icon" />
+            }
         </DialogContent>
 
         <DialogActions>

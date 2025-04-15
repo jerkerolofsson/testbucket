@@ -1,0 +1,25 @@
+﻿@page "/binding"
+@rendermode InteractiveServer
+
+<PageTitle>Bindings</PageTitle>
+
+<MudPaper Class="pa-5 mt-5">
+    <h6>MarkdownEditor ValueUpdateMode=ValueUpdateMode.OnChange</h6>
+    <MarkdownEditor @bind-Value="_text" @bind-Preview="_preview1" ValueUpdateMode="ValueUpdateMode.OnChange"/>
+</MudPaper>
+
+<MudPaper Class="pa-5 mt-5">
+    <h6>MarkdownEditor ValueUpdateMode=ValueUpdateMode.OnBlur</h6>
+    <MarkdownEditor @bind-Value="_text" @bind-Preview="_preview2" ValueUpdateMode="ValueUpdateMode.OnBlur"/>
+</MudPaper>
+
+<MudPaper Class="pa-5 mt-5">
+    <h6>MudTextField</h6>
+    <MudBlazor.MudTextField T="string" @bind-Text="@_text" Lines=10 Variant="Variant.Outlined"/>
+</MudPaper>
+
+@code {
+    private string _text = "Sample using @bind-Value";
+    private bool _preview1 = false;
+    private bool _preview2 = false;
+}

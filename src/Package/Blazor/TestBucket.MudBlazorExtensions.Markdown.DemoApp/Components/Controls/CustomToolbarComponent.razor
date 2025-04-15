@@ -1,0 +1,47 @@
+﻿@using MudBlazor
+
+<MudToolBar>
+    <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center">
+
+        <MudToggleGroup T="PreviewState" Value="@_currentState" ValueChanged="OnPreviewStateChanged" Color="Color.Tertiary">
+            <MudToggleItem Value="PreviewState.Preview">Preview</MudToggleItem>
+            <MudToggleItem Value="PreviewState.Edit">Edit</MudToggleItem>
+        </MudToggleGroup>
+
+        <MudSpacer/>
+
+        <MudButton OnClick="SetFullscreen" Variant="Variant.Outlined" Color="Color.Tertiary">Set fullscreen</MudButton>
+        <MudButton OnClick="ExitFullscreen" Variant="Variant.Outlined" Color="Color.Tertiary">Exit fullscreen</MudButton>
+    </MudStack>
+</MudToolBar>
+
+@code {
+    [CascadingParameter] IMarkdownEditor? MarkdownEditor { get; set; }
+    [CascadingParameter] MarkdownEditorState? State { get; set; }
+
+    private PreviewState _currentState => State?.Preview == true ? PreviewState.Preview : PreviewState.Edit;
+
+    private enum PreviewState
+    {
+        Preview,
+        Edit
+    };
+
+    private Task SetFullscreen() => MarkdownEditor?.SetFullScreenAsync(true) ?? Task.CompletedTask;
+    private Task ExitFullscreen() => MarkdownEditor?.SetFullScreenAsync(false) ?? Task.CompletedTask;
+
+    private async Task OnPreviewStateChanged(PreviewState state)
+    {
+        if(MarkdownEditor is not null)
+        {
+            if(state == PreviewState.Preview)
+            {
+                await MarkdownEditor.SetPreviewAsync(true); 
+            }
+            else
+            {
+                await MarkdownEditor.SetPreviewAsync(false); 
+            }
+        }
+    }
+}

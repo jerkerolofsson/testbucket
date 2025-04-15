@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageIconUrl />
+    <Authors>Jerker Olofsson</Authors>
+    <Description>Another Markdown editor for Blazor. This is a fork of https://github.com/erossini/BlazorMarkdownEditor by Enrico Rossini with MudBlazor styling</Description>
+    <RepositoryUrl>https://github.com/erossini/BlazorMarkdownEditor</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>blazor, blazor-webassembly, blazor-server</PackageTags>
+    <PackageProjectUrl>https://github.com/jerkerolofsson/testbucket/tree/main/doc/markdowneditor.md</PackageProjectUrl>
+    <Copyright>Jerker Olofsson</Copyright>
+    <Title>Markdown Editor for Blazor</Title>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <PackageReference Include="MudBlazor" Version="8.3.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.3" />
+    <PackageReference Include="PSC.Blazor.Components.Common" Version="6.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\css\easymde.min.css">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

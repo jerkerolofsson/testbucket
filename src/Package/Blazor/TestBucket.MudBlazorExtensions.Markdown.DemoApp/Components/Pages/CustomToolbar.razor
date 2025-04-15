@@ -1,0 +1,15 @@
+﻿@page "/custom-toolbar"
+@rendermode InteractiveServer
+
+<PageTitle>Custom Toolbar</PageTitle>
+
+<MarkdownEditor @bind-Value="_text" @bind-Preview="_preview"  Color="Color.Tertiary">
+    <ToolBarContent>
+        <TestBucket.MudBlazorExtensions.Markdown.DemoApp.Components.Controls.CustomToolbarComponent/>
+    </ToolBarContent>
+</MarkdownEditor>
+
+@code {
+    private string _text = "# Hello World";
+    private bool _preview = false;
+}

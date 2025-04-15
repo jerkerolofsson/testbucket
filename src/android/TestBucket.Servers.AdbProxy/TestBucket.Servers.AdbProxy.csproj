@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Package\Blazor\TestBucket.MudBlazorExtensions.Markdown\TestBucket.MudBlazorExtensions.Markdown.csproj" />
     <ProjectReference Include="..\TestBucket.AdbProxy\TestBucket.AdbProxy.csproj" />
   </ItemGroup>
 

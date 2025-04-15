@@ -1,0 +1,59 @@
+﻿@implements IDisposable
+@implements IMarkdownEditor
+@inject IJSRuntime JSRuntime
+
+<CascadingValue Value="@this" IsFixed="true">
+
+    <div class="@RootClassname" id="@(RootElementId)">
+
+        @if (ShowToolbar)
+        {
+            <CascadingValue Value="State">
+                @if(ToolBarContent is not null)
+                {
+                    @ToolBarContent
+                }
+                else
+                {
+                    <MudToolBar Class="@ToolbarClassname">
+
+                        <MudButton Class="@EditButtonClassname"    OnClick="async () => await SetPreviewAsync(false)">Edit</MudButton>
+                        <MudButton Class="@(PreviewButtonClassname)" OnClick="async () => await SetPreviewAsync(true)">Preview</MudButton>
+
+                        @if (!Preview)
+                        {
+                            <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.FormatBold" OnClick="ToggleBoldAsync" Class="@ToolbarButtonClass"></MudIconButton>
+                            <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.FormatItalic" OnClick="ToggleItalicAsync" Class="@ToolbarButtonClass"></MudIconButton>
+
+                            <MudDivider Vertical="true" FlexItem="true" />
+
+                            <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.FormatListNumbered" OnClick="ToggleOrderedListAsync" Class="@ToolbarButtonClass"></MudIconButton>
+                            <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.FormatListBulleted" OnClick="ToggleUnorderedListAsync" Class="@ToolbarButtonClass"></MudIconButton>
+
+                            <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Code" OnClick="ToggleCodeBlockAsync" Class="@ToolbarButtonClass"></MudIconButton>
+
+                            <MudDivider Vertical="true" FlexItem="true" />
+
+                            <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Grid3x3" OnClick="DrawTableAsync" Class="@ToolbarButtonClass"></MudIconButton>
+                            <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.AddLink" OnClick="DrawLinkAsync" Class="@ToolbarButtonClass"></MudIconButton>
+                            <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Image" OnClick="DrawImageAsync" Class="@ToolbarButtonClass"></MudIconButton>
+
+                            <MudDivider Vertical="true" FlexItem="true" />
+                        }
+                        <MudSpacer/>
+                        <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.RemoveRedEye" OnClick="TogglePreviewAsync" Class="@ToolbarButtonClass"></MudIconButton>
+                        <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Fullscreen" OnClick="ToggleFullScreenAsync" Class="@ToolbarButtonClass"></MudIconButton>
+                    </MudToolBar>
+                }
+            </CascadingValue>
+        }
+
+        <div class="mud-markdown-preview" id="@PreviewElementId"></div>
+        <textarea @ref="@ElementRef" id="@ElementId" class="@TextAreaClass resizable">
+            @if (Toolbar != null)
+            {
+                @Toolbar
+            }
+        </textarea>
+    </div>
+</CascadingValue>

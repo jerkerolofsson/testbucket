@@ -1,0 +1,48 @@
+﻿@page "/styling"
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<MarkdownEditor @bind-Value="_text" @bind-Preview="_preview" Color="@_color" Variant="@_variant" ColorAlt="@_colorAlternative"/>
+
+<MudStack Row Spacing="5" Class="mt-5">
+   
+    <MudStack>
+        <MudText>Color</MudText>
+        <MudRadioGroup T="Color" @bind-Value="_color">
+            <MudRadio Value="Color.Surface">Surface</MudRadio>
+            <MudRadio Value="Color.Primary">Primary</MudRadio>
+            <MudRadio Value="Color.Secondary">Secondary</MudRadio>
+            <MudRadio Value="Color.Tertiary">Tertiary</MudRadio>
+        </MudRadioGroup>
+    </MudStack>
+    
+    <MudStack>
+        <MudText>Color (alternative)</MudText>
+        <MudRadioGroup T="Color" @bind-Value="_colorAlternative">
+            <MudRadio Value="Color.Surface">Surface</MudRadio>
+            <MudRadio Value="Color.Primary">Primary</MudRadio>
+            <MudRadio Value="Color.Secondary">Secondary</MudRadio>
+            <MudRadio Value="Color.Tertiary">Tertiary</MudRadio>
+        </MudRadioGroup>
+    </MudStack>
+
+
+    <MudStack>
+        <MudText>Variant</MudText>
+        <MudRadioGroup T="Variant" @bind-Value="_variant">
+            <MudRadio Value="Variant.Outlined">Outlined</MudRadio>
+            <MudRadio Value="Variant.Text">Text</MudRadio>
+            <MudRadio Value="Variant.Filled">Filled</MudRadio>
+        </MudRadioGroup>
+    </MudStack>
+</MudStack>
+
+@code {
+    private string _text = "# Hello World";
+    private bool _preview = false;
+
+    private Color _colorAlternative = Color.Secondary;
+    private Color _color = Color.Surface;
+    private Variant _variant = Variant.Outlined;
+}

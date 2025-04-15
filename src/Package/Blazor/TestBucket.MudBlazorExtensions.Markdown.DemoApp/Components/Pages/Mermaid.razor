@@ -1,0 +1,11 @@
+﻿@page "/mermaid"
+@rendermode InteractiveServer
+
+<PageTitle>Mermaid</PageTitle>
+
+<MarkdownEditor @bind-Value="_text" @bind-Preview="_preview" Color="Color.Secondary"/>
+
+@code {
+    private string _text = "```mermaid\ngraph TB\na-->b\n```";
+    private bool _preview = true;
+}

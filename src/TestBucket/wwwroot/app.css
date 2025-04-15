@@ -517,67 +517,6 @@ p.mud-typography-subtitle1 {
     width: var(--bar-size, 5px);
 }
 
-.mud-markdown-editor-root,
-.EasyMDEContainer,
-.EasyMDEContainer .CodeMirror {
-    height: 100%;
-    width: 100%;
-}
-
-.mud-markdown-editor-root textarea {
-    background: var(--mud-palette-background);
-    color: var(--mud-palette-background);
-}
-
-.hljs-punctuation {
-    color: white;
-}
-
-    .mud-markdown-preview pre:has(code),
-    .EasyMDEContainer pre:has(code),
-    .CodeMirror pre:has(code) {
-        position: relative;
-    }
-
-    .mud-markdown-preview  code .tb-code-overlay > *,
-    .EasyMDEContainer code .tb-code-overlay > * {
-        background: rgba(0,0,0,0.25);
-        color: #ddd;
-        cursor: pointer;
-        border-radius: 4px;
-        width: 32px;
-        height: 32px;
-        display: grid;
-        place-items: center;
-    }
-
-    .mud-markdown-preview .tb-code-overlay,
-    .EasyMDEContainer code .tb-code-overlay {
-        position: absolute;
-        right:4px;
-        top:4px;
-        padding: 4px;
-        display: flex;
-        gap: 4px;
-    }
-
-    .mud-markdown-preview code .tb-code-overlay > *:hover,
-    .EasyMDEContainer code .tb-code-overlay > *:hover {
-        background: var(--mud-palette-primary-hover);
-    }
-
-
-
-.EasyMDEContainer  {
-    display: grid;
-    grid-template-rows: 1fr auto;
-}
-
-.EasyMDEContainer .editor-preview {
-    height: 100%;
-}
-
-
 
 .settings-radio-lg .mud-radio > span {
     display:none;

@@ -1,0 +1,11 @@
+﻿global using Microsoft.AspNetCore.Components;
+global using Microsoft.JSInterop;
+global using TestBucket.MudBlazorExtensions.Markdown.Enums;
+global using TestBucket.MudBlazorExtensions.Markdown.EventsArgs;
+global using TestBucket.MudBlazorExtensions.Markdown.Models;
+global using System;
+global using System.Collections.Generic;
+global using System.IO;
+global using System.Net.Http;
+global using System.Net.Http.Headers;
+global using System.Threading.Tasks;

@@ -1,0 +1,11 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<MarkdownEditor @bind-Value="_text" @bind-Preview="_preview" Color="Color.Primary"/>
+
+@code {
+    private string _text = "# Hello World";
+    private bool _preview = false;
+}

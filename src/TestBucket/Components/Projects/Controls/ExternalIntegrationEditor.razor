@@ -41,7 +41,7 @@
                     <MudTextField Value="Integration.Name" T="string" ValueChanged="NameChanged" />
                 </Field>
 
-                @if((Extension.RequiredFields&ExtensionFields.BaseUrl) == ExtensionFields.BaseUrl)
+                @if(Extension is not null && (Extension.RequiredFields&ExtensionFields.BaseUrl) == ExtensionFields.BaseUrl)
                 {
                     <Field Row>
                         <FieldHeader>@loc["integration-base-url"]</FieldHeader>
@@ -59,7 +59,7 @@
                     HelperText="@Extension?.ProjectIdHelperText" />
                 </Field>
 
-                @if((Extension.RequiredFields&ExtensionFields.AccessToken) == ExtensionFields.AccessToken)
+                @if(Extension is not null && (Extension.RequiredFields&ExtensionFields.AccessToken) == ExtensionFields.AccessToken)
                 {
                     <Field Row>
                         <FieldHeader>@loc["access-token"]</FieldHeader>
@@ -73,7 +73,7 @@
                     </Field>
                 }
 
-                @if((Extension.RequiredFields&ExtensionFields.ApiKey) == ExtensionFields.ApiKey)
+                @if (Extension is not null && (Extension.RequiredFields & ExtensionFields.ApiKey) == ExtensionFields.ApiKey)
                 {
                     <Field Row>
                         <FieldHeader>@loc["api-key"]</FieldHeader>

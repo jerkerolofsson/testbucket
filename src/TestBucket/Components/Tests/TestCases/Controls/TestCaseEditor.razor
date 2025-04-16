@@ -12,13 +12,11 @@
     <div class="container-fill-2-rows">
         <MudToolBar Class="tb-toolbar">
             <MudButton Class="@EditButtonClassname"    OnClick="async () => await _editor.SetPreviewAsync(false)">@loc["edit"]</MudButton>
-            <MudButton Class="@(PreviewButtonClassname)" OnClick="async () => SaveChangesAsync()">@loc["preview"]</MudButton>
+            <MudButton Class="@(PreviewButtonClassname)" OnClick="async () => await SaveChangesAsync()">@loc["preview"]</MudButton>
 
             @if (!_preview && _editor is not null)
             {
                 <MudTextField Variant="Variant.Outlined" Label="Name" AdornmentColor="Color.Tertiary" Value="@Test.Name" ValueChanged="OnNameChanged" T="string" AutoFocus="true" />
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
 
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 
@@ -43,18 +41,7 @@
             }
             else
             {
-                @* <MudText Typo="Typo.h3" Style="color: #fff" Class="mr-3">@Test.Name</MudText> *@
                 <PathNavigation Test="@Test"/>
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
-
-                <AuthorizeView Roles="ADMIN">
-                    <Authorized>
-                        <MudTooltip Text="@loc["edit"]">
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => BeginEdit()" Class="rounded-0" />
-                        </MudTooltip>
-                    </Authorized>
-                </AuthorizeView>
             }
 
             <MudSpacer/>

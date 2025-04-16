@@ -330,4 +330,19 @@
   <data name="link-issue" xml:space="preserve">
     <value />
   </data>
+  <data name="file-name" xml:space="preserve">
+    <value />
+  </data>
+  <data name="file-size" xml:space="preserve">
+    <value />
+  </data>
+  <data name="file-type" xml:space="preserve">
+    <value />
+  </data>
+  <data name="no-permission-title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="no-permission-message" xml:space="preserve">
+    <value />
+  </data>
 </root>

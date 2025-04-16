@@ -1,22 +1,22 @@
-﻿@using TestBucket.Components.Shared.Splitter
+﻿@using MudBlazor.Utilities
+@using TestBucket.Components.Shared.Splitter
 @using TestBucket.Domain.Requirements
 @inject RequirementEditorController editor
 @inject RequirementBrowser browser
+@inject IStringLocalizer<SharedStrings> loc
 
 @if(Requirement is not null)
 {
     <div class="container-fill-2-rows">
         <MudToolBar Class="tb-toolbar">
-
+            @if (_editor is not null)
+            {
+                <MudButton Class="@EditButtonClassname" OnClick="async () => await _editor.SetPreviewAsync(false)">@loc["edit"]</MudButton>
+                <MudButton Class="@(PreviewButtonClassname)" OnClick="async () => await SaveChangesAsync()">@loc["preview"]</MudButton>
+            }
             @if (!_preview && _editor is not null)
             {
                 <MudTextField Variant="Variant.Outlined" Label="Name" AdornmentColor="Color.Tertiary" Value="@Requirement.Name" ValueChanged="OnNameChanged" T="string" AutoFocus="true" />
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
-
-                <MudTooltip Text="Save Changes">
-                    <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="SaveChangesAsync" Class="rounded-0" />
-                </MudTooltip>
 
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 
@@ -44,10 +44,6 @@
                 <MudText Typo="Typo.h3" Class="mr-3">@Requirement.Name</MudText>
 
                 <MudDivider DividerType="DividerType.Middle" Vertical />
-
-                <MudTooltip Text="Edit">
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => BeginEdit()" Class="rounded-0" />
-                </MudTooltip>
 
                 <MudSpacer/>
 
@@ -100,6 +96,22 @@
     [Parameter] public Requirement? Requirement { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
     [CascadingParameter] public TestProject? Project {get;set;}
+
+    [Parameter] public Color Color { get; set; } = Color.Surface;
+    [Parameter] public Color ColorAlt { get; set; } = Color.Tertiary;
+
+    protected string EditButtonClassname =>
+    new CssBuilder("mud-markdown-toolbar-toggle-button")
+    .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
+    .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview != true)
+    .Build();
+
+    protected string PreviewButtonClassname =>
+        new CssBuilder("mud-markdown-toolbar-toggle-button")
+            .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
+            .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview == true)
+            .AddClass(" mr-5", true)
+            .Build();
 
     private MarkdownEditor? _editor;
     private bool _preview = true;

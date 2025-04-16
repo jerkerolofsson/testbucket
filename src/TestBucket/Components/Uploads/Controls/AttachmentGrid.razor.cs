@@ -28,6 +28,12 @@ public partial class AttachmentGrid
     public Color GridColor => _isGrid ? Color.Tertiary : Color.Default;
     public Color ListColor => !_isGrid ? Color.Tertiary : Color.Default;
 
+    private async Task DeleteAttachmentAsync(FileResource resource)
+    {
+        await attachmentsService.DeleteResourceByIdAsync(resource.Id);
+        _attachments.RemoveAll(x => x.Id == resource?.Id);
+    }
+
     private async Task OnAttachmentClickedAsync(FileResource resource)
     {
         var parameters = new DialogParameters<ViewFileResourceDialog>()

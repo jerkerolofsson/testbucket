@@ -3,6 +3,7 @@
 using TestBucket.Components.Shared;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;
 
@@ -26,7 +27,7 @@ internal class RunTestSuiteCommand : ICommand
         _browser = browser;
         _testRunCreationController = testRunCreationController;
     }
-
+    public PermissionLevel? RequiredLevel => PermissionLevel.Execute;
     public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;
     public string Id => "run-test-suite";
     public string Name => _loc["run"];

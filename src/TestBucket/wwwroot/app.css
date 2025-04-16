@@ -751,3 +751,21 @@ div.tb-profile-image.tb-background-9 {
     background: -webkit-linear-gradient(to right, #6be585, #dd3e54);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #6be585, #dd3e54); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
+
+.permission-level-abbr {
+    gap: 4px;
+}
+.permission-level-abbr > * {
+    color: indianred;
+    border-radius: 2px;
+    border: solid 1px indianred;
+    opacity: 0.5;
+    padding: 3px;
+}
+.permission-level-abbr > *.yes {
+    opacity: 1;
+    border-color: yellowgreen;
+    font-weight: bold;
+    background: yellowgreen;
+    color: black;
+}

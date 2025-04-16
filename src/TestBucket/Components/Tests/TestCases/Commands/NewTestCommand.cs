@@ -2,6 +2,7 @@
 using TestBucket.Components.Tests.Controls;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 
 namespace TestBucket.Components.Tests.TestCases.Commands;
@@ -16,7 +17,7 @@ internal class NewTestCommand : ICommand
         _appNavigationManager = appNavigationManager;
         _controller = controller;
     }
-
+    public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedProject is not null;
     public string Id => "new-test";
     public string Name => "New Test";

@@ -4,6 +4,7 @@ using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Shared.Icons;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;
 
@@ -23,6 +24,8 @@ internal class DeleteRequirementCommand : ICommand
     public string? Icon => Icons.Material.Filled.Delete;
 
     public string[] ContextMenuTypes => ["Requirement"];
+
+    public PermissionLevel? RequiredLevel => PermissionLevel.Delete;
 
     private readonly IStringLocalizer<RequirementStrings> _loc;
     private readonly AppNavigationManager _appNav;

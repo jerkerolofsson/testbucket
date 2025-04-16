@@ -1,19 +1,21 @@
-﻿@inject RequirementEditorController editor
+﻿@using MudBlazor.Utilities
+@inject RequirementEditorController editor
+@inject IStringLocalizer<SharedStrings> loc
 
 @if(Specification is not null)
 {
     <div class="container-fill-2-rows">
         <MudToolBar Class="tb-toolbar">
 
+            @if(_editor is not null)
+            {
+                <MudButton Class="@EditButtonClassname" OnClick="async () => await _editor.SetPreviewAsync(false)">@loc["edit"]</MudButton>
+                <MudButton Class="@(PreviewButtonClassname)" OnClick="async () => await SaveChangesAsync()">@loc["preview"]</MudButton>
+            }
+
             @if (!_preview && _editor is not null)
             {
                 <MudTextField Variant="Variant.Outlined" Label="Name" AdornmentColor="Color.Tertiary" Value="@Specification.Name" ValueChanged="OnNameChanged" T="string" AutoFocus="true" />
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
-
-                <MudTooltip Text="Save Changes">
-                    <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="SaveChangesAsync" Class="rounded-0" />
-                </MudTooltip>
 
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 
@@ -39,12 +41,6 @@
             else
             {
                 <MudText Typo="Typo.h3"  Class="mr-3">@Specification.Name</MudText>
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
-
-                <MudTooltip Text="Edit">
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => BeginEdit()" Class="rounded-0" />
-                </MudTooltip>
             }
         </MudToolBar>
 
@@ -67,6 +63,21 @@
     private MarkdownEditor? _editor;
     private bool _preview = true;
 
+    [Parameter] public Color Color { get; set; } = Color.Surface;
+    [Parameter] public Color ColorAlt { get; set; } = Color.Tertiary;
+
+    protected string EditButtonClassname =>
+    new CssBuilder("mud-markdown-toolbar-toggle-button")
+    .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
+    .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview != true)
+    .Build();
+
+    protected string PreviewButtonClassname =>
+        new CssBuilder("mud-markdown-toolbar-toggle-button")
+            .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
+            .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview == true)
+            .AddClass(" mr-5", true)
+            .Build();
     private void BeginEdit()
     {
         _preview = false;

@@ -1,10 +1,14 @@
-﻿using TestBucket.Components.Tests.Dialogs;
+﻿using Microsoft.Extensions.Localization;
+
+using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Domain.Files.Models;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Teams.Models;
+using TestBucket.Localization;
 
 namespace TestBucket.Components.Requirements.Services;
 internal interface IRequirementObserver
@@ -20,6 +24,8 @@ internal interface IRequirementObserver
 internal class RequirementEditorController : TenantBaseService
 {
     private readonly List<IRequirementObserver> _requirementObservers = new();
+    private readonly IStringLocalizer<SharedStrings> _loc;
+    private readonly IStringLocalizer<RequirementStrings> _reqLoc;
     private readonly IRequirementImporter _importer;
     private readonly IRequirementManager _manager;
 
@@ -28,10 +34,14 @@ internal class RequirementEditorController : TenantBaseService
 
     public RequirementEditorController(
         AuthenticationStateProvider authenticationStateProvider,
+        IStringLocalizer<SharedStrings> loc,
+        IStringLocalizer<RequirementStrings> reqLoc,
         IRequirementImporter importer,
         IRequirementManager manager,
         IDialogService dialogService) : base(authenticationStateProvider)
     {
+        _loc = loc;
+        _reqLoc = reqLoc;
         _importer = importer;
         _manager = manager;
         _dialogService = dialogService;
@@ -55,7 +65,7 @@ internal class RequirementEditorController : TenantBaseService
 
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
         {
-            YesText = "YES", NoText = "NO",
+            YesText = _loc["yes"], NoText = _loc["no"],
             Title = "Extract requirements from specification",
             MarkupMessage = new MarkupString("Extracting requirements from the specification will overwrite any existing requirements in this specification. Do you really want to continue?")
         });
@@ -139,11 +149,23 @@ internal class RequirementEditorController : TenantBaseService
 
     public async Task DeleteRequirementAsync(Requirement requirement)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        if(!PermissionClaims.HasPermission(principal, PermissionEntityType.Requirement, PermissionLevel.Delete))
+        {
+            await _dialogService.ShowMessageBox(new MessageBoxOptions
+            {
+                YesText = _loc["ok"],
+                Title = _loc["no-permission-title"],
+                MarkupMessage = new MarkupString(_loc["no-permission-message"])
+            });
+            return;
+        }
+
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
         {
-            YesText = "YES", NoText = "NO",
-            Title = "Delete requirement?",
-            MarkupMessage = new MarkupString("Do you really want to delete this requirement?")
+            YesText = _loc["yes"], NoText = _loc["no"],
+            Title = _reqLoc["confirm-delete-requirement-title"],
+            MarkupMessage = new MarkupString(_reqLoc["confirm-delete-requirement-message"])
         });
 
         if (result == false)
@@ -151,7 +173,6 @@ internal class RequirementEditorController : TenantBaseService
             return;
         }
 
-        var principal = await GetUserClaimsPrincipalAsync();
         await _manager.DeleteRequirementAsync(principal, requirement);
 
         foreach (var observer in _requirementObservers)

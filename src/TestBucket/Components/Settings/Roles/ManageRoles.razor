@@ -34,8 +34,17 @@
                             }
                             @if(permission is not null)
                             {
-                                <div class="tb-permission-level" @onclick="async () => await ToggleLevelAsync(permission)">
-                                    @roleLocalizer.GetLocalizedPermissionLevel(permission.Level)
+                                <div class="tb-permission-level cursor-pointer" @onclick="async () => await ToggleLevelAsync(entityType, permission)">
+
+                                    <div class="d-flex permission-level-abbr">
+                                        <div class="@((permission.Level & PermissionLevel.Read) == PermissionLevel.Read ? "yes": "no")">R</div>
+                                        <div class="@((permission.Level & PermissionLevel.Execute) == PermissionLevel.Execute ? "yes": "no")">E</div>
+                                        <div class="@((permission.Level & PermissionLevel.Write) == PermissionLevel.Write ? "yes": "no")">W</div>
+                                        <div class="@((permission.Level & PermissionLevel.Approve) == PermissionLevel.Approve ? "yes": "no")">A</div>
+                                        <div class="@((permission.Level & PermissionLevel.Delete) == PermissionLevel.Delete ? "yes": "no")">D</div>
+                                    </div>
+
+                                    <div style="@GetStyle(permission.Level)">@roleLocalizer.GetLocalizedPermissionLevel(permission.Level)</div>
                                 </div>
                             }
                         </td>
@@ -50,33 +59,70 @@
 @code {
     [Parameter] public string? TenantId { get; set; }
 
-    private PermissionEntityType[] _entities = [PermissionEntityType.Project, PermissionEntityType.User, PermissionEntityType.TestAccount, PermissionEntityType.TestResource, PermissionEntityType.TestCase, PermissionEntityType.Requirement, PermissionEntityType.TestRun];
+    private PermissionEntityType[] _entities = [PermissionEntityType.Project, PermissionEntityType.User, 
+        PermissionEntityType.TestAccount, 
+        PermissionEntityType.TestResource, 
+        PermissionEntityType.TestCase, 
+        PermissionEntityType.Requirement, 
+        PermissionEntityType.TestSuite,
+        PermissionEntityType.TestRun];
     private List<RolePermission> _permissions = [];
     private string[] _roles = [Roles.READ_ONLY, Roles.REGULAR_USER, Roles.ADMIN, Roles.SUPERADMIN];
 
 
-    protected async Task ToggleLevelAsync(RolePermission permission)
+    public string GetStyle(PermissionLevel level)
     {
+        if((level&PermissionLevel.Delete) == PermissionLevel.Delete)
+        {
+            return "color: var(--mud-palette-error)";
+        }
+        if((level&PermissionLevel.Read) == PermissionLevel.Read)
+        {
+            return "color: var(--mud-palette-success)";
+        }
+
+        return "color: var(--mud-palette-text-primary)";
+    }
+
+    protected async Task ToggleLevelAsync(PermissionEntityType entityType, RolePermission permission)
+    {
+        Dictionary<PermissionLevel, PermissionLevel> map = [];
+        map[PermissionLevel.None] = PermissionLevel.Read;
+        map[PermissionLevel.Read] = PermissionLevel.ReadExecute;
+        map[PermissionLevel.Execute] = PermissionLevel.ReadWrite;
+        map[PermissionLevel.Write] = PermissionLevel.ReadWriteApprove;
+        map[PermissionLevel.Approve] = PermissionLevel.All;
+        map[PermissionLevel.Delete] = PermissionLevel.None;
+
         if(permission.Level == PermissionLevel.None)
         {
-            permission.Level = PermissionLevel.Read;
+            permission.Level = map[permission.Level];
         }
         else if ((permission.Level & PermissionLevel.Delete) == PermissionLevel.Delete)
         {
-            permission.Level = PermissionLevel.None;
+            permission.Level = map[PermissionLevel.Delete];
+        }
+        else if ((permission.Level & PermissionLevel.Approve) == PermissionLevel.Approve)
+        {
+            permission.Level = map[PermissionLevel.Approve];
         }
         else if ((permission.Level & PermissionLevel.Write) == PermissionLevel.Write)
         {
-            permission.Level = PermissionLevel.Write | PermissionLevel.Read | PermissionLevel.Delete;
+            permission.Level = map[PermissionLevel.Write];
+        }
+        else if ((permission.Level & PermissionLevel.Execute) == PermissionLevel.Execute)
+        {
+            permission.Level = map[PermissionLevel.Execute];
         }
         else if ((permission.Level & PermissionLevel.Read) == PermissionLevel.Read)
         {
-            permission.Level = PermissionLevel.Write | PermissionLevel.Read;
+            permission.Level = map[PermissionLevel.Read];
         }
         else
         {
             permission.Level = PermissionLevel.None;
         }
+
         await rolesController.UpdateAsync(permission);
     }
 

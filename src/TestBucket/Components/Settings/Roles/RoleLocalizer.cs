@@ -44,16 +44,28 @@ namespace TestBucket.Domain.Identity.Permissions
             {
                 textLabelId = "permission-delete";
             }
+            else if ((level & PermissionLevel.Approve) == PermissionLevel.Approve)
+            {
+                textLabelId = "permission-approve";
+            }
             else if ((level & PermissionLevel.Write) == PermissionLevel.Write)
             {
                 textLabelId = "permission-write";
+            }
+            else if ((level & PermissionLevel.Execute) == PermissionLevel.Execute)
+            {
+                textLabelId = "permission-execute";
             }
             else if ((level & PermissionLevel.Read) == PermissionLevel.Read)
             {
                 textLabelId = "permission-read";
             }
+            else
+            {
 
-            return _loc[textLabelId];
+            }
+
+                return _loc[textLabelId];
         }
     }
 }

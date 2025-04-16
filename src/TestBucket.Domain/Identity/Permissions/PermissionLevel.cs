@@ -26,8 +26,22 @@ namespace TestBucket.Domain.Identity.Permissions
         /// </summary>
         Delete = 4,
 
-        ReadWrite = Write | Read,
+        /// <summary>
+        /// Execute tests
+        /// </summary>
+        Execute = 8,
 
-        All = Delete | Write | Read
+        /// <summary>
+        /// Approval
+        /// </summary>
+        Approve = 16,
+
+        ReadExecute = Read | Execute,
+
+        ReadWrite = Write | Read | Execute,
+
+        ReadWriteApprove = Write | Read | Execute | Approve,
+
+        All = Delete | Write | Read | Execute | Approve
     }
 }

@@ -1,5 +1,6 @@
 ﻿using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 
 namespace TestBucket.Components.Tests.TestSuites.Commands;
@@ -14,7 +15,7 @@ internal class NewFolderCommand : ICommand
         _appNavigationManager = appNavigationManager;
         _browser = browser;
     }
-
+    public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;
     public string Id => "new-folder";
     public string Name => "New Folder";

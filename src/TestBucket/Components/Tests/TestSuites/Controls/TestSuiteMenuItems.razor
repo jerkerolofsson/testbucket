@@ -8,7 +8,7 @@
 
 @if (Suite is not null)
 {
-    <CommandMenuItems TypeName="TestSuite"/>
+    <CommandMenuItems TypeName="TestSuite" EntityType="PermissionEntityType.TestSuite" />
 
     <MudDivider />
     <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="EditTestSuiteAsync" Label="Edit" />

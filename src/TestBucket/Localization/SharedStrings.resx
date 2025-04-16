@@ -332,4 +332,19 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="link-issue" xml:space="preserve">
     <value>Link Issue</value>
   </data>
+  <data name="file-name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="file-size" xml:space="preserve">
+    <value>Length</value>
+  </data>
+  <data name="file-type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="no-permission-title" xml:space="preserve">
+    <value>No permission!</value>
+  </data>
+  <data name="no-permission-message" xml:space="preserve">
+    <value>You don't have permission to perform this action. Contact the administrator if you require permission for this.</value>
+  </data>
 </root>

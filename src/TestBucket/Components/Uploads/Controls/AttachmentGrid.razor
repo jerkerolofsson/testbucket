@@ -2,6 +2,7 @@
 @using TestBucket.Components.Uploads.Services
 @inject AttachmentsService attachmentsService
 @inject IDialogService dialogService
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Class="@Class" Style="@Style">
 
@@ -27,13 +28,14 @@
                              Style="overflow: auto; max-height: 200px; width: 100%"
                              Dense
                              Hover
+                             RowClass="tb-datarow cursor-pointer"
                              RowClick="(e) => OnAttachmentClickedAsync(e.Item)"
                              T="FileResource"
                 SortMode="SortMode.Single">
                     <Columns>
-                        <PropertyColumn Property="x => x.Name" Title="Name" />
-                        <PropertyColumn Property="x => x.ContentType" Title="Type" />
-                        <TemplateColumn Title="Created">
+                        <PropertyColumn Property="x => x.Name" Title="@loc["file-name"]" />
+                        <PropertyColumn Property="x => x.ContentType" Title="@loc["file-type"]" />
+                        <TemplateColumn Title="@loc["created"]">
                             <CellTemplate>
                                 @if (context.Item.Created is not null)
                                 { 
@@ -42,9 +44,15 @@
                             </CellTemplate>
                         </TemplateColumn>
 
-                        <TemplateColumn Title="Length">
+                        <TemplateColumn Title="@loc["file-size"]">
                             <CellTemplate>
                                 @context.Item.Length.Bytes().Humanize()
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                        <TemplateColumn>
+                            <CellTemplate>
+                                <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async()=>await DeleteAttachmentAsync(context.Item)"/>
                             </CellTemplate>
                         </TemplateColumn>
                     </Columns>

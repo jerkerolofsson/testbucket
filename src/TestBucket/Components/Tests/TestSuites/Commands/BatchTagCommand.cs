@@ -5,6 +5,7 @@ using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Domain.Progress;
 using TestBucket.Localization;
@@ -36,7 +37,7 @@ internal class BatchTagCommand : ICommand
         _progressManager = progressManager;
         _fieldController = fieldController;
     }
-
+    public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;
     public string Id => "batch-tag";
     public string Name => _loc["batch-tag"];

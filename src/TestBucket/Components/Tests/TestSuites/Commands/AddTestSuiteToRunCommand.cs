@@ -4,6 +4,7 @@ using TestBucket.Components.Shared;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Components.Tests.TestRuns.Dialogs;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Localization;
@@ -39,6 +40,8 @@ internal class AddTestSuiteToRunCommand : ICommand
     public string? Icon => Icons.Material.Filled.PlaylistAdd;
     public string[] ContextMenuTypes => ["TestSuite"];
     public KeyboardBinding? DefaultKeyboardBinding => null;
+
+    public PermissionLevel? RequiredLevel => PermissionLevel.Execute;
 
     public async ValueTask ExecuteAsync()
     {

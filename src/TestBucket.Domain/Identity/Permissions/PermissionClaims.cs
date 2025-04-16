@@ -46,6 +46,12 @@ namespace TestBucket.Domain.Identity.Permissions
             return false;
         }
 
+        //public static bool HasPermission(IEnumerable<Claim> claims, PermissionEntityType entityType, PermissionLevel requiredLevel)
+        //{
+        //    var userLevel = GetPermissionLevelFromClaims(claims, entityType);
+        //    return (userLevel & requiredLevel) == requiredLevel;
+        //}
+
         /// <summary>
         /// Searches the claims for a permission claim type based on the specified entity and returns it
         /// </summary>

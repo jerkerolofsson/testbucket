@@ -8,6 +8,7 @@ using TestBucket.Components.Shared.Icons;
 using TestBucket.Components.Tests.TestCases.Controls;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Localization;
@@ -23,7 +24,7 @@ internal class CreateTestCaseFromRequirementCommand : ICommand
     public string Description => _loc["create-test-from-requirement-description"];
 
     public bool Enabled => _appNav.State.SelectedRequirement is not null && _appNav.State.SelectedProject is not null;
-
+    public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public KeyboardBinding? DefaultKeyboardBinding => null;
 
     public string? Icon => TbIcons.Filled.PaperPlane;

@@ -1,6 +1,7 @@
 ﻿using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Contracts.Issues.Models;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Keyboard;
@@ -24,7 +25,7 @@ public class LinkIssueCommand : ICommand
         _appNavigationManager = appNavigationManager;
         _dialogService = dialogService;
     }
-
+    public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedProject is not null;
     public string Id => "link-issue";
     public string Name => "Link Issue";

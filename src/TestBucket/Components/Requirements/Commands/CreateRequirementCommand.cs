@@ -9,6 +9,7 @@ using TestBucket.Components.Shared.Icons;
 using TestBucket.Components.Tests.TestCases.Controls;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Localization;
@@ -28,7 +29,7 @@ internal class CreateRequirementCommand : ICommand
     public KeyboardBinding? DefaultKeyboardBinding => null;
 
     public string? Icon => TbIcons.Filled.PaperPlane;
-
+    public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public string[] ContextMenuTypes => ["RequirementSpecification", "RequirementFolder"];
 
     private readonly IStringLocalizer<RequirementStrings> _loc;

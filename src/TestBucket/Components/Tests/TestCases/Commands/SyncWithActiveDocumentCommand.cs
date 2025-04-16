@@ -2,6 +2,7 @@
 using TestBucket.Components.Tests.Controls;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 
 namespace TestBucket.Components.Tests.TestCases.Commands;
@@ -17,6 +18,7 @@ internal class SyncWithActiveDocumentCommand : ICommand
         _browser = browser;
     }
 
+    public PermissionLevel? RequiredLevel => PermissionLevel.Read;
     public bool Enabled => _appNavigationManager.State.SelectedTestCase is not null;
     public string Id => "sync-with-active-doc";
     public string Name => "Sync with active document";

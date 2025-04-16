@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 
 namespace TestBucket.Domain.Commands
@@ -40,6 +41,11 @@ namespace TestBucket.Domain.Commands
         /// This will be shown in the context menu for the applicable types
         /// </summary>
         public string[] ContextMenuTypes { get; }
+
+        /// <summary>
+        /// Required permission level for the command
+        /// </summary>
+        public PermissionLevel? RequiredLevel { get; }
 
         /// <summary>
         /// Executes the command

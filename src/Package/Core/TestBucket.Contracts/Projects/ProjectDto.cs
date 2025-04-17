@@ -9,7 +9,14 @@ using TestBucket.Contracts.Integrations;
 namespace TestBucket.Contracts.Projects;
 public record class ProjectDto
 {
-    public required string Name { get; init;  }
-    public required string Slug { get; init; }
-    public required ExternalSystemDto[] ExternalSystems { get; init; }
+    public required string Name { get; set;  }
+    public required string Slug { get; set; }
+    public required ExternalSystemDto[] ExternalSystems { get; set; }
+    public required string ShortName { get; set; }
+    public TestState[]? TestStates { get; set; }
+
+    /// <summary>
+    /// ID of team
+    /// </summary>
+    public long? TeamId { get; set; }
 }

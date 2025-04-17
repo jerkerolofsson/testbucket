@@ -222,8 +222,11 @@ public class Program
         builder.Services.AddScoped<ICommand, BatchTagCommand>();
         builder.Services.AddScoped<ICommand, NewTestCommand>();
         builder.Services.AddScoped<ICommand, NewFolderCommand>();
-        builder.Services.AddScoped<ICommand, LinkIssueCommand>();
         builder.Services.AddScoped<ICommand, SyncWithActiveDocumentCommand>();
+
+        builder.Services.AddScoped<ICommand, LinkIssueCommand>();
+        builder.Services.AddScoped<ICommand, DeleteLinkedIssueCommand>();
+        builder.Services.AddScoped<ICommand, RefreshLinkedIssueCommand>();
 
         // requirement
         builder.Services.AddScoped<ICommand, CreateTestCaseFromRequirementCommand>();

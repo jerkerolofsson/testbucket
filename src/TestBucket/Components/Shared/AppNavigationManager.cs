@@ -3,6 +3,7 @@
 using TestBucket.Components.Tests.TestCases.Controls;
 using TestBucket.Domain.Automation.Models;
 using TestBucket.Domain.Environments.Models;
+using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.TestAccounts.Models;
@@ -20,6 +21,11 @@ public class AppNavigationManager
 
     internal class NavigationState
     {
+        /// <summary>
+        /// Linked issue currently in focus
+        /// </summary>
+        public LinkedIssue? SelectedLinkedIssue { get; set; }
+
         /// <summary>
         /// Selected requirement specification
         /// </summary>

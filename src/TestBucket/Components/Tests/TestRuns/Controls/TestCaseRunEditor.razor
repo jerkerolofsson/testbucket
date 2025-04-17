@@ -1,19 +1,23 @@
 ﻿@using TestBucket.Contracts.Testing.Models
+@using TestBucket.Domain.Issues
+@using TestBucket.Domain.Issues.Models
 @using TestBucket.Formats.Dtos
 @inject IStringLocalizer<SharedStrings> loc
 @inject TestExecutionController controller
+@inject IIssueManager issueManager
+@implements ILinkedIssueObserver
+@implements IDisposable
 
 @if(TestCaseRun is not null)
 {
     <TestResultQuickPicker TestCaseRun="@TestCaseRun" ResultChanged="OnResultChanged"/>
 
-    <Field>
-        <FieldHeader>@loc["message"]</FieldHeader>
-        <MarkdownEditor ShowToolbar="false"
-        Value="@TestCaseRun.Message" ValueChanged="OnMessageChanged" />
+    <MudText>@loc["test-log"]</MudText>
+    <MarkdownEditor ShowToolbar="false"
+        MaxHeight="120" MinHeight="120"
+    Value="@TestCaseRun.Message" ValueChanged="OnMessageChanged" />
 
-    </Field>
-
+    <MudText>@loc["issues"]</MudText>
     <LinkedIssuesTable Issues="@TestCaseRun.LinkedIssues"/>
 
     <TestResultPicker 
@@ -30,6 +34,31 @@
 @code {
     private AttachmentGrid? _attachmentGrid;
 
+    [Parameter] public TestCaseRun? TestCaseRun { get; set; }
+    [Parameter] public EventCallback<TestCaseRun> TestCaseRunChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        issueManager.AddObserver(this);
+        base.OnInitialized();
+    }
+
+    public async Task OnLinkedIssueAddedAsync(LinkedIssue issue)
+    {
+        if (TestCaseRun is null) return;
+        await TestCaseRunChanged.InvokeAsync(TestCaseRun);
+    }
+    public async Task OnLinkedIssueDeletedAsync(LinkedIssue issue)
+    {
+        if (TestCaseRun is null) return;
+        await TestCaseRunChanged.InvokeAsync(TestCaseRun);
+    }
+
+    public void Dispose()
+    {
+        issueManager.RemoveObserver(this);        
+    }
+
     private async Task OnScreenshotCaptured(AttachmentDto _)
     {
         if(_attachmentGrid is not null)
@@ -38,7 +67,6 @@
         }
     }
 
-    [Parameter] public TestCaseRun? TestCaseRun { get; set; }
     private async Task OnResultChanged(TestResult result)
     {
         if(TestCaseRun is null)
@@ -46,6 +74,7 @@
             return;
         }
         await controller.SetTestCaseRunResultAsync(TestCaseRun, result);
+        await TestCaseRunChanged.InvokeAsync(TestCaseRun);
     }
 
     private async Task OnMessageChanged(string message)
@@ -55,5 +84,6 @@
             return;
         }
         await controller.SetTestCaseRunMessageAsync(TestCaseRun, message);
+        await TestCaseRunChanged.InvokeAsync(TestCaseRun);
     }
 }

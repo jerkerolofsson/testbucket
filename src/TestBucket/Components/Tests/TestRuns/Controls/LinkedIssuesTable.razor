@@ -5,8 +5,10 @@
 @inject IExtensionManager extensionManager
 @inject NavigationManager navigationManager 
 @inject ICommandManager commandManager
+@inject AppNavigationManager appNavigationManager
 
-<MudDataGrid Items="Issues"
+<MudStack Spacing="0">
+    <MudDataGrid Items="Issues"
     Class="tb-test-case-run-grid"
     RowClick="x => RowClicked(x.Item)"
     RowClassFunc="RowClassFunc"
@@ -15,25 +17,11 @@
     Bordered="true"
     T="LinkedIssue"
     SortMode="SortMode.Single">
-
-        <ToolBarContent>
-            @if(!ReadOnly)
-            {
-                <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
-                    <MudText>@loc["issues"]</MudText>
-                    <MudSpacer/>
-                    <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="Add"/>
-                </MudStack>
-            }
-        </ToolBarContent>
         <ColGroup>
             <col style="width: 100px;" />
             <col style="width: 2fr;" />
             <col style="width: 100px;" />
-            @if(!ReadOnly)
-            {
-                <col style="width: 70px;" />
-            }
+            <col style="width: 100px;" />
         </ColGroup>
 
         <Columns>
@@ -43,7 +31,7 @@
                     <MudTooltip Text="@context.Item.Url">
                         <MudStack AlignItems="AlignItems.Center" Row Spacing=1>
                             <MudIcon Icon="@extensionManager.GetIcon(context.Item.ExternalSystemName??"")"/>
-                            <MudText>@context.Item.ExternalId</MudText>
+                            <MudText>@context.Item.ExternalDisplayId</MudText>
                         </MudStack>
                     </MudTooltip>
                 </CellTemplate>
@@ -61,28 +49,53 @@
                 </CellTemplate>
             </TemplateColumn>
 
-            @if(!ReadOnly)
-            {
-                <TemplateColumn Title="">
-                    <CellTemplate>
-                        <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error"/>
-                    </CellTemplate>
-                </TemplateColumn>
-            }
+            <TemplateColumn Title="">
+                <CellTemplate>
+                    <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Refresh"OnClick="async() => await RefreshIssueAsync(context.Item)"/>
+                    @if(!ReadOnly)
+                    {
+                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async() => await DeleteIssueAsync(context.Item)"/>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
         </Columns>
 
     </MudDataGrid>
+
+      @if(!ReadOnly)
+    {
+        <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+            <MudSpacer/>
+            <MudLink OnClick="AddAsync">@loc["add"]</MudLink>
+        </MudStack>
+    }
+</MudStack>
 
 @code {
     [Parameter] public bool ReadOnly {get;set;}
     [Parameter] public IReadOnlyList<LinkedIssue>? Issues { get; set; }
 
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
     private string RowClassFunc(LinkedIssue issue, int _)
     {
         return "tb-datarow cursor-pointer";
     }
-
-    private async Task Add()
+    
+    private async Task RefreshIssueAsync(LinkedIssue issue)
+    {
+        appNavigationManager.State.SelectedLinkedIssue = issue;
+        await commandManager.ExecuteCommandAsync("refresh-linked-issue");
+    }
+    private async Task DeleteIssueAsync(LinkedIssue issue)
+    {
+        appNavigationManager.State.SelectedLinkedIssue = issue;
+        await commandManager.ExecuteCommandAsync("delete-linked-issue");
+    }
+    private async Task AddAsync()
     {
         await commandManager.ExecuteCommandAsync("link-issue");
     }

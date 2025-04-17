@@ -26,7 +26,7 @@ html, body {
     --mud-typography-h1-lineheight: 1.8;
 
     --mud-typography-body1-size: 10pt;
-    --mud-typography-subtitle1-size: 10pt;
+    --mud-typography-subtitle1-size: 8pt;
     --mud-typography-default-size: 10pt;
     --mud-typography-h2-size: 20pt;
     --mud-typography-h3-size: 18pt;
@@ -147,6 +147,7 @@ p.mud-typography-subtitle1 {
 
 .mud-input>input.mud-input-root-outlined, div.mud-input-slot.mud-input-root-outlined {
     padding: 8px 4px;
+    padding-bottom: 12px;
 }
 
 .mud-input-control > .mud-input-control-input-container > .mud-input-label-inputcontrol  {
@@ -399,6 +400,14 @@ p.mud-typography-subtitle1 {
     color: var(--mud-palette-tertiary);
     background: var(--mud-palette-tertiary-hover);
     animation: ItemHoverAnimation 300ms linear forwards;
+}
+
+.mud-table-root .mud-table-body .mud-table-cell {
+    overflow: hidden;
+}
+
+.mud-table-cell {
+    font-size: 8pt;
 }
 
 .tb-datarow:hover,

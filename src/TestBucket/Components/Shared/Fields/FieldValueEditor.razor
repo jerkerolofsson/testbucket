@@ -42,10 +42,10 @@
                 @foreach (var item in Field.FieldDefinition.Options)
                 {
                     <MudSelectItem Value="@item">
-                        <MudStack Row AlignItems="AlignItems.Center">
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                             @if (Field.FieldDefinition.OptionIcons is not null && Field.FieldDefinition.OptionIcons.TryGetValue(item, out var optionIcon) && !string.IsNullOrEmpty(optionIcon))
                             {
-                                <MudIcon Size="Size.Small" Icon="@optionIcon" />
+                                <MudIcon Style="width: 12px; height: 12px" Icon="@optionIcon" Title="@item"/>
                             }
                             <MudText>@item</MudText>
                         </MudStack>

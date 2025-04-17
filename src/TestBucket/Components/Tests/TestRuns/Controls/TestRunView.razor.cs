@@ -1,4 +1,5 @@
 ﻿using TestBucket.Contracts.Testing.Models;
+using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Components.Tests.TestRuns.Controls;
 
@@ -42,6 +43,19 @@ public partial class TestRunView
         }
     }
 
+    private Task OnTestCaseRunChanged(TestCaseRun run)
+    {
+        if (_selectedTestCaseRun?.Id == run?.Id)
+        {
+            _selectedTestCaseRun = run;
+            if (testCaseRunGrid is not null)
+            {
+                testCaseRunGrid.ReloadServerData();
+            }
+        }
+        return Task.CompletedTask;
+    }
+
     private async Task OnTestCaseRunStateChanged(string? state)
     {
         if (_selectedTestCaseRun?.TestCase is not null)
@@ -60,17 +74,12 @@ public partial class TestRunView
         }
     }
 
-    //private Task OnTestCaseRunClicked(TestCaseRun testCaseRun)
-    //{
-    //    _selectedTestCaseRun = testCaseRun;
-    //    return Task.CompletedTask;
-    //}
 
     private void OnTestCompleted(object? sender, TestCaseRun testCaseRun)
     {
         if (_selectedTestCaseRun == testCaseRun && testCaseRunGrid is not null)
         {
-            InvokeAsync(() => testCaseRunGrid.SelectNextTestCaseRun());
+            var _  = InvokeAsync(() => testCaseRunGrid.SelectNextTestCaseRun());
         }
     }
     protected override void OnInitialized()

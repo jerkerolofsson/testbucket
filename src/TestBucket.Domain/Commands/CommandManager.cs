@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -71,6 +72,10 @@ namespace TestBucket.Domain.Commands
             if (command is not null)
             {
                 await command.ExecuteAsync();
+            }
+            else
+            {
+                Debug.Assert(command is not null, $"Command not registered: {commandId}");
             }
         }
 

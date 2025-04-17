@@ -35,7 +35,7 @@ namespace TestBucket.Domain.Testing
         /// <summary>
         /// Adds an observer
         /// </summary>
-        /// <param name="listener"></param>
+        /// <param name="observer"></param>
         public void AddObserver(ITestCaseObserver observer) => _testCaseObservers.Add(observer);
 
         /// <summary>
@@ -43,7 +43,6 @@ namespace TestBucket.Domain.Testing
         /// </summary>
         /// <param name="observer"></param>
         public void RemoveObserver(ITestCaseObserver observer) => _testCaseObservers.Remove(observer);
-
 
         private async Task CreateTestCaseFoldersAsync(ClaimsPrincipal principal, TestCase testCase)
         {

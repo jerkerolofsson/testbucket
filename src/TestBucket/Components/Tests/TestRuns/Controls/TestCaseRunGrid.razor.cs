@@ -185,6 +185,11 @@ public partial class TestCaseRunGrid
         await Task.Yield();
     }
 
+    public void ReloadServerData()
+    {
+        _dataGrid?.ReloadServerData();
+    }
+
     public async Task SelectNextTestCaseRun()
     {
         if (_items.Length > 0)
@@ -228,7 +233,17 @@ public partial class TestCaseRunGrid
         var searchTestCaseRunsResult = await testBrowser.SearchTestCaseRunsAsync(_query);
         _items = searchTestCaseRunsResult.Items;
 
-        await SelectFirstItemIfNoSelectionOrCurrentSelectionIsNotFoundAsync();
+        // If we reloaded and there was a selected item. Update it.
+        if(_selectedItem is not null)
+        {
+            _selectedItem = _items.FirstOrDefault(x => x.Id == _selectedItem.Id);
+            await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
+        }
+
+        if (_selectedItem is null)
+        {
+            await SelectFirstItemIfNoSelectionOrCurrentSelectionIsNotFoundAsync();
+        }
 
         GridData<TestCaseRun> data = new()
         {

@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Export.Models;
+
 namespace TestBucket.Domain.Export.Zip;
 public class ZipImporter : IDataImporterSource
 {

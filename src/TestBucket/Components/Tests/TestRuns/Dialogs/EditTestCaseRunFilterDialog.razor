@@ -1,4 +1,5 @@
-﻿@attribute [Authorize(Roles = "ADMIN")]
+﻿@using TestBucket.Contracts.Fields
+@attribute [Authorize(Roles = "ADMIN")]
 @inject TestCaseEditorController testCaseEditorService
 @inject FieldController fieldController
 @if (Query is not null)

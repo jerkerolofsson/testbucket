@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;

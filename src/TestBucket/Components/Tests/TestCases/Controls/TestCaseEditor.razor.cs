@@ -1,6 +1,8 @@
 
 using MudBlazor.Utilities;
 
+using TestBucket.Contracts.Fields;
+
 namespace TestBucket.Components.Tests.TestCases.Controls;
 public partial class TestCaseEditor
 {

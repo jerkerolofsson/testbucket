@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Fields;
+
 namespace TestBucket.Domain.Fields.Models;
 public class FieldLocation
 {

@@ -1,7 +1,7 @@
 ﻿
 using System.Security.Claims;
 
-using TestBucket.Domain.Fields.Models;
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 

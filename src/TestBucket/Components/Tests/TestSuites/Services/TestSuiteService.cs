@@ -1,4 +1,5 @@
 ﻿using TestBucket.Components.Tests.TestSuites.Dialogs;
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Specifications.TestCases;

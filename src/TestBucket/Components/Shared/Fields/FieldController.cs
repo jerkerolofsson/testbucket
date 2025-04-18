@@ -2,6 +2,7 @@
 
 
 using TestBucket.Components.Tests.Controls;
+using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Specifications;

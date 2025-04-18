@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Export.Models;
+
 namespace TestBucket.Domain.Export.Zip;
 public class ZipExporter : IDataExporterSink
 {
@@ -20,16 +22,12 @@ public class ZipExporter : IDataExporterSink
         _zip.Dispose();
     }
 
-    public IEnumerable<ExportEntity> ReadAsync()
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task WriteEntityAsync(string source, string entityType, string entityId, Stream sourceStream, CancellationToken cancellationToken)
     {
         string path = $"{source}/{entityType}/{entityId}";
         var entry = _zip.CreateEntry(path);
         using var destinationStream = entry.Open();
         await sourceStream.CopyToAsync(destinationStream, cancellationToken);
+        await sourceStream.FlushAsync(cancellationToken);
     }
 }

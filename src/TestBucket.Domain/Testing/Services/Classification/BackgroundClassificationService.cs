@@ -9,8 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.AI;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Identity;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCases;
@@ -32,11 +34,7 @@ namespace TestBucket.Domain.Testing.Services.Classification
 
         private ClaimsPrincipal Impersonate(TestCase testCase)
         {
-            return new ClaimsPrincipal([new ClaimsIdentity([
-                new Claim(ClaimTypes.Name, "system"),
-                new Claim(ClaimTypes.Email, "admin@admin.com"),
-                new Claim("tenant", testCase.TenantId ?? throw new Exception("No tenant"))
-                ])]);
+            return Impersonation.Impersonate(testCase.TenantId);
         }
 
         private async Task AssignGeneratedFieldsAsync(IServiceScope scope, TestCase testCase)

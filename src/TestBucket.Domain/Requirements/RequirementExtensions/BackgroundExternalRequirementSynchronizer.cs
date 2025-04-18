@@ -13,6 +13,7 @@ using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Requirements.Specifications;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using TestBucket.Domain.Identity;
 
 namespace TestBucket.Domain.Requirements.RequirementExtensions;
 internal class BackgroundExternalRequirementSynchronizer : BackgroundService
@@ -26,11 +27,7 @@ internal class BackgroundExternalRequirementSynchronizer : BackgroundService
     }
     private ClaimsPrincipal Impersonate(string? tenantId)
     {
-        return new ClaimsPrincipal([new ClaimsIdentity([
-                new Claim(ClaimTypes.Name, "system"),
-                new Claim(ClaimTypes.Email, "admin@admin.com"),
-                new Claim("tenant", tenantId ?? throw new Exception("No tenant"))
-                ])]);
+        return Impersonation.Impersonate(tenantId);
     }
     private ClaimsPrincipal Impersonate(TestProject project) => Impersonate(project.TenantId);
 

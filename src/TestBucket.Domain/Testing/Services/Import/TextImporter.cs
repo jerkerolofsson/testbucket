@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using System.Text;
 
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;

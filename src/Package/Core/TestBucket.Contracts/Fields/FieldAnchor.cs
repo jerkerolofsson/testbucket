@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestBucket.Domain.Fields.Models;
+namespace TestBucket.Contracts.Fields;
 public enum FieldAnchor
 {
     /// <summary>

@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Domain.Fields.Helpers;
+﻿using TestBucket.Contracts.Fields;
+
+namespace TestBucket.Domain.Fields.Helpers;
 public class FieldDefinitionTemplates
 {
     public static IReadOnlyList<FieldDefinition> Templates = [Browser,TestCategory, Priority, QChar, FailureType, Commit];

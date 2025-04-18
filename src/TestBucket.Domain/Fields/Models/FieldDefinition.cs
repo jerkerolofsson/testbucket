@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Fields;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Fields.Models;

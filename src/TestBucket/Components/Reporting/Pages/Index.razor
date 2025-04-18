@@ -1,8 +1,9 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Reporting"
 @using System.Text.Json
-@using TestBucket.Components.Reporting.Layouts
 @using TestBucket.Components.Reporting.Controls
+@using TestBucket.Components.Reporting.Layouts
+@using TestBucket.Contracts.Fields
 @using TestBucket.Domain.Testing.Aggregates
 @layout ReportingLayout
 @inject TestBrowser testBrowser

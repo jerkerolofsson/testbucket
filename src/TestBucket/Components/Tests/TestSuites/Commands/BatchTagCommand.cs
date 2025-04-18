@@ -4,6 +4,7 @@ using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Services;
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;

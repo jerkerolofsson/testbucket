@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestBucket.Domain.Export;
+namespace TestBucket.Domain.Export.Models;
 public abstract class ExportEntity
 {
     /// <summary>

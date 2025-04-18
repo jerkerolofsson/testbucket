@@ -1,6 +1,8 @@
 ﻿
 using System.Text;
 
+using TestBucket.Contracts.Fields;
+
 namespace TestBucket.Domain.Fields.Models;
 public class SearchFieldQuery : SearchQuery
 {

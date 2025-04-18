@@ -33,7 +33,8 @@ internal class ProjectRepository : IProjectRepository
     public async Task<TestProject?> GetProjectByIdAsync(string tenantId, long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Projects.Where(x => x.Id == id && x.TenantId == tenantId).SingleOrDefaultAsync();
+        return await dbContext.Projects.Where(x => x.Id == id && x.TenantId == tenantId)
+            .Include(x=>x.ExternalSystems).SingleOrDefaultAsync();
     }
 
     public async Task UpdateProjectAsync(TestProject testProject)

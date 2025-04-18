@@ -6,6 +6,8 @@ using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Automation.Services;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Environments;
+using TestBucket.Domain.Export;
+using TestBucket.Domain.Export.Services;
 using TestBucket.Domain.ExtensionManagement;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
@@ -63,6 +65,13 @@ public static class DomainServiceExtensions
         services.AddScoped<ITestCaseManager, TestCaseManager>();
         services.AddScoped<ITestSuiteManager, TestSuiteManager>();
         services.AddScoped<ITestRunManager, TestRunManager>();
+
+        // Backup / Export
+        services.AddScoped<IBackupManager, BackupManager>();
+        services.AddScoped<Exporter>();
+        services.AddHostedService<PeriodicBackupService>();
+
+        // Requirements
 
         services.AddScoped<IRequirementImporter, RequirementImporter>();
         services.AddScoped<IRequirementManager, RequirementManager>();

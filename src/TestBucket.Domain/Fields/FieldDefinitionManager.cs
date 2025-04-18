@@ -4,7 +4,7 @@ using System.Security.Claims;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
 
-using TestBucket.Domain.Fields.Models;
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields.Specifications;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;

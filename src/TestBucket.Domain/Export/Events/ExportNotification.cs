@@ -8,5 +8,5 @@ using Mediator;
 
 using TestBucket.Domain.Progress;
 
-namespace TestBucket.Domain.Export;
-public record class ExportNotification(string TenantId, IDataExporterSink Sink, IProgressObserver Progress) : INotification;
+namespace TestBucket.Domain.Export.Events;
+public record class ExportNotification(string TenantId, IDataExporterSink Sink, ProgressTask progressTask) : INotification;

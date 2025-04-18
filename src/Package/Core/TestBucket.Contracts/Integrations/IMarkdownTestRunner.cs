@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,12 +29,18 @@ public interface IMarkdownTestRunner
     /// ```javascript
     /// ```
     /// </summary>
-    string Language { get; }
+    Task<bool> SupportsLanguageAsync(ClaimsPrincipal principal, string language);
+
+    /// <summary>
+    /// Returns supported languages
+    /// </summary>
+    /// <returns></returns>
+    Task<string[]> GetSupportedLanguagesAsync(ClaimsPrincipal principal);
 
     /// <summary>
     /// Runs the code
     /// </summary>
     /// <param name="code"></param>
     /// <returns></returns>
-    Task<TestRunnerResult> RunAsync(TestExecutionContext context, string code, CancellationToken cancellationToken);
+    Task<TestRunnerResult> RunAsync(ClaimsPrincipal principal, TestExecutionContext context, string language, string code, CancellationToken cancellationToken);
 }

@@ -1,21 +1,16 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.IdentityModel.Tokens;
 using TestBucket.Domain.ApiKeys.Validation;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Settings.Fakes;
 
 
-namespace TestBucket.Domain.UnitTests.NewFolder
+namespace TestBucket.Domain.UnitTests.Identity
 {
     [UnitTest]
     [EnrichedTest]
     public class AccessTokenTests
     {
+        [Component("Identity")]
         [Fact]
         public async Task GenerateCiCdAccessTokenAsync_CreatesValidToken()
         {
@@ -27,6 +22,7 @@ namespace TestBucket.Domain.UnitTests.NewFolder
             var _ = AccessTokenValidator.ValidateToken(settings, token);
         }
 
+        [Component("Identity")]
         [Fact]
         public async Task GenerateCiCdAccessTokenAsync_HasProjectId()
         {
@@ -39,6 +35,7 @@ namespace TestBucket.Domain.UnitTests.NewFolder
             new PrincipalValidator(principal).ThrowIfNoProjectId();
         }
 
+        [Component("Identity")]
         [Fact]
         public async Task ValidateToken_WithInvalidToken_ThrowsSecurityTokenMalformedException()
         {

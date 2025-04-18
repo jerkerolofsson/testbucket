@@ -27,11 +27,18 @@ public interface IUserManager
     Task DeleteApiKeyAsync(ClaimsPrincipal principal, ApplicationUserApiKey apiKey);
 
     /// <summary>
-    /// Adds an API key
+    /// Adds a personal API key where the permissions are an exact impersonation of the principal
     /// </summary>
     /// <param name="principal"></param>
     /// <returns></returns>
-    Task AddApiKeyAsync(ClaimsPrincipal principal, ApplicationUserApiKey apiKey);
+    Task AddPersonalApiKeyAsync(ClaimsPrincipal principal, ApplicationUserApiKey apiKey);
+
+    /// <summary>
+    /// Adds an API key with a specific scope
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <returns></returns>
+    Task AddApiKeyAsync(string scope, ClaimsPrincipal principal, ApplicationUserApiKey apiKey);
     #endregion
 
     /// <summary>

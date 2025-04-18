@@ -1,6 +1,5 @@
-﻿
-using TestBucket.Domain.Automation;
-using TestBucket.Domain.Automation.Models;
+﻿using TestBucket.Domain.Automation.Pipelines;
+using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Data.Automation;

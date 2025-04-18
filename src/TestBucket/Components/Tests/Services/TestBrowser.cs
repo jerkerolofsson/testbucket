@@ -8,7 +8,7 @@ using TestBucket.Components.Tests.Models;
 using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Components.Tests.TestSuites.Services;
 using TestBucket.Contracts.Testing.Models;
-using TestBucket.Domain.Automation.Models;
+using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams.Models;

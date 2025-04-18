@@ -1,4 +1,4 @@
-﻿using TestBucket.Domain.Automation.Models;
+﻿using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Components.Shared;
@@ -21,7 +21,6 @@ public record class BrowserItem
     public TestSuite? TestSuite { get; set; }
     public TestSuiteFolder? Folder { get; set; }
     public TestRun? TestRun { get; set; }
-
     public Pipeline? Pipeline { get; set; }
     public SearchTestCaseRunQuery? TestCaseRunQuery { get; internal set; }
 }

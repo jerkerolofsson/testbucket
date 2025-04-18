@@ -2,8 +2,8 @@
 @page "/{TenantId}/Testing/TestRuns/{RunId:long}/Pipelines/{PipelineId:long}/Jobs/{JobId:long}"
 @using TestBucket.Components.Automation
 @using TestBucket.Components.Tests.Layouts
-@using TestBucket.Domain.Automation.Models
-@using TestBucket.Domain.Automation.Services
+@using TestBucket.Domain.Automation.Pipelines
+@using TestBucket.Domain.Automation.Pipelines.Models
 @layout TestingLayout
 @inject PipelineController controller
 @inject IPipelineManager manager

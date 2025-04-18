@@ -14,6 +14,16 @@ namespace TestBucket.Contracts.Testing.Models;
 public class TestRunnerResult
 {
     /// <summary>
+    /// Was the execution completed
+    /// </summary>
+    public bool Completed { get; set; } = true;
+
+    /// <summary>
+    /// Error message should be set if Completed is false
+    /// </summary>
+    public string? ErrorMessage { get; set; }
+
+    /// <summary>
     /// Serialized test result (e.g. a JUnitXml)
     /// </summary>
     public required string Result { get; set; }

@@ -14,6 +14,21 @@ namespace TestBucket.Contracts.Runners.Models
     public class RunRequest
     {
         /// <summary>
+        /// ID for the job
+        /// </summary>
+        public required string Guid { get; set; }
+
+        /// <summary>
+        /// Langauge/shell (hybrid tests)
+        /// </summary>
+        public string? Language { get; set; }
+
+        /// <summary>
+        /// Script to run (hybrid tests)
+        /// </summary>
+        public string? Script { get; set; }
+
+        /// <summary>
         /// Environment variables
         /// </summary>
         public Dictionary<string, string> EnvironmentVariables { get; set; } = [];

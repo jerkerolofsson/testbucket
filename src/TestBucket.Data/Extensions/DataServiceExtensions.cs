@@ -4,6 +4,7 @@ using TestBucket.Data.Files;
 using TestBucket.Data.Identity;
 using TestBucket.Data.Issues;
 using TestBucket.Data.Requirements;
+using TestBucket.Data.Runners;
 using TestBucket.Data.Settings;
 using TestBucket.Data.Teams;
 using TestBucket.Data.Tenants;
@@ -11,7 +12,8 @@ using TestBucket.Data.TestAccounts;
 using TestBucket.Data.TestEnvironments;
 using TestBucket.Data.Testing;
 using TestBucket.Data.TestResources;
-using TestBucket.Domain.Automation;
+using TestBucket.Domain.Automation.Pipelines;
+using TestBucket.Domain.Automation.Runners;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
@@ -45,6 +47,9 @@ public static class DataServiceExtensions
         services.AddScoped<ITestResourceRepository, TestResourceRepository>();
         services.AddScoped<ITestAccountRepository, TestAccountRepository>();
         services.AddScoped<IIssueRepository, IssueRepository>();
+        services.AddScoped<IRunnerRepository, RunnerRepository>();
+        services.AddScoped<IJobRepository, JobRepository>();
+        
 
         return services;
     }

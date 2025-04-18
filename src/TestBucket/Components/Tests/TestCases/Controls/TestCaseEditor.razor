@@ -11,9 +11,11 @@
 {
     <div class="container-fill-2-rows">
         <MudToolBar Class="tb-toolbar">
-            <MudButton Class="@EditButtonClassname"    OnClick="async () => await _editor.SetPreviewAsync(false)">@loc["edit"]</MudButton>
-            <MudButton Class="@(PreviewButtonClassname)" OnClick="async () => await SaveChangesAsync()">@loc["preview"]</MudButton>
-
+            @if (_editor is not null)
+            {
+                <MudButton Class="@EditButtonClassname" OnClick="async () => await _editor.SetPreviewAsync(false)">@loc["edit"]</MudButton>
+                <MudButton Class="@(PreviewButtonClassname)" OnClick="async () => await SaveChangesAsync()">@loc["preview"]</MudButton>
+            }
             @if (!_preview && _editor is not null)
             {
                 <MudTextField Variant="Variant.Outlined" Label="Name" AdornmentColor="Color.Tertiary" Value="@Test.Name" ValueChanged="OnNameChanged" T="string" AutoFocus="true" />
@@ -95,7 +97,7 @@
                                     @bind-Preview="_preview"
                                     Value="@Text"
                                     @ref=_editor
-                                    RunCodeLanguages="http python"
+                                    RunCodeLanguages="http pwsh"
                                     RunCode="OnRunCodeClickedAsync"
                                     ValueChanged="OnDescriptionChanged"
                                     SpellChecker="false">

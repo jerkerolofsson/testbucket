@@ -158,7 +158,7 @@ namespace TestBucket.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("TestBucket.Domain.Automation.Models.Pipeline", b =>
+            modelBuilder.Entity("TestBucket.Domain.Automation.Pipelines.Models.Pipeline", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -224,7 +224,7 @@ namespace TestBucket.Data.Migrations
                     b.ToTable("Pipelines");
                 });
 
-            modelBuilder.Entity("TestBucket.Domain.Automation.Models.PipelineJob", b =>
+            modelBuilder.Entity("TestBucket.Domain.Automation.Pipelines.Models.PipelineJob", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -317,6 +317,134 @@ namespace TestBucket.Data.Migrations
                     b.HasIndex("TestRunId");
 
                     b.ToTable("PipelineJobs");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Automation.Runners.Models.Job", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<TimeSpan?>("Duration")
+                        .HasColumnType("interval");
+
+                    b.Property<Dictionary<string, string>>("EnvironmentVariables")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Guid")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Priority")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Script")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TestRunId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Guid");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.HasIndex("TestRunId");
+
+                    b.HasIndex("Status", "Priority");
+
+                    b.ToTable("Jobs");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Automation.Runners.Models.Runner", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string[]>("Languages")
+                        .HasColumnType("jsonb");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PublicBaseUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string[]>("Tags")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.ToTable("Runners");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Environments.Models.TestEnvironment", b =>
@@ -2181,7 +2309,7 @@ namespace TestBucket.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TestBucket.Domain.Automation.Models.Pipeline", b =>
+            modelBuilder.Entity("TestBucket.Domain.Automation.Pipelines.Models.Pipeline", b =>
                 {
                     b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
                         .WithMany()
@@ -2208,9 +2336,9 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("TestRun");
                 });
 
-            modelBuilder.Entity("TestBucket.Domain.Automation.Models.PipelineJob", b =>
+            modelBuilder.Entity("TestBucket.Domain.Automation.Pipelines.Models.PipelineJob", b =>
                 {
-                    b.HasOne("TestBucket.Domain.Automation.Models.Pipeline", "Pipeline")
+                    b.HasOne("TestBucket.Domain.Automation.Pipelines.Models.Pipeline", "Pipeline")
                         .WithMany("PipelineJobs")
                         .HasForeignKey("PipelineId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2241,6 +2369,54 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("TestProject");
 
                     b.Navigation("TestRun");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Automation.Runners.Models.Job", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestRun", "TestRun")
+                        .WithMany()
+                        .HasForeignKey("TestRunId");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
+
+                    b.Navigation("TestRun");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Automation.Runners.Models.Runner", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Environments.Models.TestEnvironment", b =>
@@ -2824,7 +3000,7 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("TestSuite");
                 });
 
-            modelBuilder.Entity("TestBucket.Domain.Automation.Models.Pipeline", b =>
+            modelBuilder.Entity("TestBucket.Domain.Automation.Pipelines.Models.Pipeline", b =>
                 {
                     b.Navigation("PipelineJobs");
                 });

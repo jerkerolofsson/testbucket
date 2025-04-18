@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 
 using TestBucket.Components.Tests.TestCases.Controls;
-using TestBucket.Domain.Automation.Models;
+using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;

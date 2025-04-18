@@ -4,7 +4,7 @@ using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Components.Tests.TestRuns.Dialogs;
 using TestBucket.Contracts.Identity;
 using TestBucket.Contracts.Testing.Models;
-using TestBucket.Domain.Automation.Services;
+using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Projects;
@@ -236,7 +236,7 @@ internal class TestRunCreationController : TenantBaseService
 
         var principal = await GetUserClaimsPrincipalAsync();
 
-        if(_markdownAutomationRunner.SupportsLanguage(language))
+        if(await _markdownAutomationRunner.SupportsLanguageAsync(principal, language))
         {
             var run = await CreateTestRunAsync(test.Name, test.TestProjectId.Value, []);
 

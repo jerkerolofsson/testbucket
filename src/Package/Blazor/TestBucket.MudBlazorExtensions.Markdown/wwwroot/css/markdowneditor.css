@@ -484,6 +484,7 @@ code.tip {
     word-break: break-all;
 }
 
+.cm-s-easymde .cm-header.cm-header-1,
  .cm-header.cm-header-1,
  h1 {
      font-size: var(--mud-typography-h1-size);
@@ -499,6 +500,7 @@ code.tip {
 
  }
 
+.cm-s-easymde .cm-header.cm-header-2,
 .cm-header.cm-header-2,
 h2 {
     margin-top: 1rem;
@@ -513,7 +515,7 @@ h2 {
     border-bottom: 1px solid var(--mud-palette-background-gray);
  }
 
-
+.cm-s-easymde .cm-header.cm-header-3,
 .cm-header.cm-header-3,
 h3 {
      font-size: var(--mud-typography-h3-size);
@@ -524,6 +526,7 @@ h3 {
      margin-bottom: 0.75rem;
  }
 
+.cm-s-easymde .cm-header.cm-header-4,
 .cm-header.cm-header-4,
 h4 {
      font-size: var(--mud-typography-h4-size);
@@ -534,7 +537,7 @@ h4 {
      margin-bottom: 0.75rem;
  }
 
-
+.cm-s-easymde .cm-header.cm-header-5,
 .cm-header.cm-header-5,
 h5 {
      font-size: var(--mud-typography-h5-size);
@@ -545,6 +548,7 @@ h5 {
      margin-bottom: 0.5rem;
  }
 
+.cm-s-easymde .cm-header.cm-header-6,
 .cm-header.cm-header-6,
 h6 {
      font-size: var(--mud-typography-h6-size);

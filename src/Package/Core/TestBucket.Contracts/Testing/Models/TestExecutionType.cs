@@ -15,12 +15,19 @@ namespace TestBucket.Contracts.Testing.Models
 
         /// <summary>
         /// Automation script is contained within the body of the test case
+        /// The user has to run the automated part manually.
         /// </summary>
         Hybrid = 1,
 
         /// <summary>
         /// Automated with an external script
         /// </summary>
-        Automated = 2
+        Automated = 2,
+
+        /// <summary>
+        /// Automation script is contained within the body of the test case
+        /// When running the tests a job will be queued to be executed on a runner
+        /// </summary>
+        HybridAutomated = 3,
     }
 }

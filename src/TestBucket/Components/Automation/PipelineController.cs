@@ -1,7 +1,5 @@
-﻿
-
-using TestBucket.Domain.Automation.Models;
-using TestBucket.Domain.Automation.Services;
+﻿using TestBucket.Domain.Automation.Pipelines;
+using TestBucket.Domain.Automation.Pipelines.Models;
 
 namespace TestBucket.Components.Automation;
 

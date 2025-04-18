@@ -16,6 +16,7 @@ using System.Text;
 using System.Data.Common;
 using System.Reflection.PortableExecutable;
 using System.Globalization;
+using System.Security.Claims;
 
 namespace TestBucket.ApiTests;
 
@@ -23,7 +24,16 @@ public class DotHttpMarkdownTestRunner : IMarkdownTestRunner
 {
     public string Language => "http";
 
-    public async Task<TestRunnerResult> RunAsync(TestExecutionContext context, string code, CancellationToken cancellationToken)
+    public Task<string[]> GetSupportedLanguagesAsync(ClaimsPrincipal principal)
+    {
+        return Task.FromResult<string[]>([Language]);
+    }
+    public Task<bool> SupportsLanguageAsync(ClaimsPrincipal principal, string language)
+    {
+        return Task.FromResult(language == "http");
+    }
+
+    public async Task<TestRunnerResult> RunAsync(ClaimsPrincipal principal, TestExecutionContext context, string language, string code, CancellationToken cancellationToken)
     {
         var logger = new DotHttpLogger();
         var runnerOptions = new TestPlanRunnerOptionsBuilder()

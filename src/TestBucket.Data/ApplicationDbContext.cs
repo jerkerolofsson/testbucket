@@ -9,8 +9,9 @@ using TestBucket.Domain.Settings.Models;
 using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.TestResources.Models;
 using TestBucket.Domain.TestAccounts.Models;
-using TestBucket.Domain.Automation.Models;
 using TestBucket.Domain.Issues.Models;
+using TestBucket.Domain.Automation.Runners.Models;
+using TestBucket.Domain.Automation.Pipelines.Models;
 
 namespace TestBucket.Data;
 
@@ -60,10 +61,19 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<TestAccount> TestAccounts { get; set; }
 
     /// <summary>
+    /// TB Runners
+    /// </summary>
+    internal DbSet<Runner> Runners { get; set; }
+
+    /// <summary>
+    /// TB Runner Jobs
+    /// </summary>
+    internal DbSet<Job> Jobs { get; set; }
+
+    /// <summary>
     /// CI/CD pipelines
     /// </summary>
     internal DbSet<Pipeline> Pipelines { get; set; }
-
 
     /// <summary>
     /// CI/CD jobs within pipelines

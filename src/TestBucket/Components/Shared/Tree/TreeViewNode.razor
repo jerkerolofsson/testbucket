@@ -57,6 +57,7 @@
             {
                 <TreeViewNode 
                     Item="@child" 
+                    T="T"
                     SelectedValue="@SelectedValue" 
                     EditItem="@EditItem" 
                     ItemEditCanceled="async() => await ItemEditCanceled.InvokeAsync()"

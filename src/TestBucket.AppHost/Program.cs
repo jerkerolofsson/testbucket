@@ -4,6 +4,7 @@ using System.Security.Claims;
 using Aspire.Hosting;
 
 using TestBucket.Contracts.Identity;
+using TestBucket.Domain.Identity;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -13,18 +14,12 @@ string tenant = "jerkerolofsson";
 string symmetricKey = "01234567890123456789012345678901234567890123456789";
 string issuer = "testbucket";
 string audience = "testbucket";
-var claims = new[]
-      {
-            new Claim(ClaimTypes.Name, email),
-            new Claim("tenant", tenant),
-        };
-
-var identity = new ClaimsIdentity(claims);
-var principal = new ClaimsPrincipal(identity);
+var principal = Impersonation.Impersonate(tenant);
 
 // For development, we inject a symmetric key and generate an API key to use so services can communicate
 var apiKeyGenerator = new ApiKeyGenerator(symmetricKey, issuer, audience);
 string accessToken = apiKeyGenerator.GenerateAccessToken(principal, DateTime.UtcNow.AddDays(100));
+string runnerAccessToken = apiKeyGenerator.GenerateAccessToken("runner", principal, DateTime.UtcNow.AddDays(100));
 
 var postgres = builder.AddPostgres("testbucket-postgres")
     //.WithPgAdmin()
@@ -47,13 +42,7 @@ var testBucket = builder.AddProject<Projects.TestBucket>("testbucket")
     .WithEnvironment("TB_ADMIN_ACCESS_TOKEN", accessToken)
     .WithEnvironment("TB_OLLAMA_BASE_URL", "http://localhost:11434")
     .WithEnvironment("TB_PUBLIC_ENDPOINT", publicEndpoint)
-
-    // Disable HTTPS redirect so we can test without proper certificates
-    .WithEnvironment("TB_HTTPS_REDIRECT", "disabled")
-
-    //.WithEnvironment("TB_OLLAMA_BASE_URL", "http://172.18.70.121:17050")
-    //.WithEnvironment("TB_OLLAMA_BASE_URL", "http://172.18.30.118:17335")
-    //.WithEnvironment("TB_OLLAMA_BASE_URL", "http://172.18.70.121:17050")
+    .WithEnvironment("TB_HTTPS_REDIRECT", "disabled") // Disable HTTPS redirect so we can test without proper certificates
     .WaitFor(db);
 
 builder.AddProject<Projects.TestBucket_Servers_AdbProxy>("testbucket-adbproxy")
@@ -66,7 +55,7 @@ builder.AddProject<Projects.TestBucket_Servers_AdbProxy>("testbucket-adbproxy")
 
 builder.AddProject<Projects.TestBucket_Runner>("testbucket-runner")
     .WithReference(testBucket)
-    .WithEnvironment("TB_ACCESS_TOKEN", accessToken)
+    .WithEnvironment("TB_ACCESS_TOKEN", runnerAccessToken)
     .WithReference(testBucket)
     .WaitFor(testBucket);
 

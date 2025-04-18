@@ -58,7 +58,7 @@ internal class UserApiKeysController : TenantBaseService
     /// </summary>
     /// <param name="apiKey"></param>
     /// <returns></returns>
-    public async Task<ApplicationUserApiKey> AddApiKeyAsync(string name, DateTimeOffset expiry)
+    public async Task<ApplicationUserApiKey> AddApiKeyAsync(string name, string scope, DateTimeOffset expiry)
     {
         var principal = await GetUserClaimsPrincipalAsync();
 
@@ -70,10 +70,18 @@ internal class UserApiKeysController : TenantBaseService
             TenantId = principal.GetTenantIdOrThrow(),
             Expiry = expiry.ToUniversalTime(),
             Name = name,
-            Key = "123456"
+            Key = ""
         };
 
-        await _userManager.AddApiKeyAsync(principal, apiKey);
+        switch(scope)
+        {
+            case "personal":
+                await _userManager.AddPersonalApiKeyAsync(principal, apiKey);
+                break;
+            default:
+                await _userManager.AddApiKeyAsync(scope, principal, apiKey);
+                break;
+        }
         return apiKey;
     }
 

@@ -12,13 +12,20 @@ namespace TestBucket.Domain.Identity
     /// </summary>
     public class Impersonation
     {
-        public static ClaimsPrincipal Impersonate(string? tenantId)
+        public static ClaimsPrincipal Impersonate(string? tenantId, long? projectId = null)
         {
-            return new ClaimsPrincipal([new ClaimsIdentity([
+            var claims = new List<Claim>()
+            {
                 new Claim(ClaimTypes.Name, "system"),
                 new Claim(ClaimTypes.Email, "admin@admin.com"),
                 new Claim("tenant", tenantId ?? throw new Exception("No tenant"))
-                ])]);
+            };
+            if(projectId is not null)
+            {
+                claims.Add(new Claim("project", projectId.Value.ToString()));
+            }
+
+            return new ClaimsPrincipal([new ClaimsIdentity(claims)]);
         }
     }
 }

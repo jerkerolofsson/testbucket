@@ -17,11 +17,12 @@
   </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Package\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" IsAspireProjectResource="false"/>
-        <ProjectReference Include="..\runner\TestBucket.Runner\TestBucket.Runner.csproj" />
+        <ProjectReference Include="..\Package\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" IsAspireProjectResource="false" />
+        <ProjectReference Include="..\TestBucket.Domain\TestBucket.Domain.csproj"  IsAspireProjectResource="false" />
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\runner\TestBucket.Runner\TestBucket.Runner.csproj" />
         <ProjectReference Include="..\android\TestBucket.Servers.AdbProxy\TestBucket.Servers.AdbProxy.csproj" />
         <ProjectReference Include="..\TestBucket\TestBucket.csproj" />
     </ItemGroup>

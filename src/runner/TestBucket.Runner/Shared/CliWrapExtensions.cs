@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Runner.Runners;
+
 namespace TestBucket.Runner.Shared
 {
     public static class CliWrapExtensions

@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 
+using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Settings;
 using TestBucket.Domain.ApiKeys;
-using TestBucket.Domain.Automation.Services;
+using TestBucket.Domain.Automation.Hybrid;
+using TestBucket.Domain.Automation.Pipelines;
+using TestBucket.Domain.Automation.Runners.Jobs;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Export;
@@ -55,10 +58,15 @@ public static class DomainServiceExtensions
         services.AddScoped<ITenantManager, TenantManager>();
         services.AddScoped<IExtensionManager, ExtensionManager>();
 
+        // Runner/Hybrid
+        services.AddScoped<IMarkdownTestRunner, HybridRunner>();
+        services.AddScoped<IMarkdownDetector, HybridDetector>();
+        services.AddSingleton<GetJobLock>();
+        services.AddSingleton<JobAddedEventSignal>();
+
         services.AddScoped<IFileResourceManager, FileResourceManager>();
 
         services.AddScoped<IMarkdownDetector,TemplateDetector>();
-        services.AddScoped<IMarkdownDetector,HybridDetector>();
         services.AddScoped<ITestCompiler, TestCompiler>();
         services.AddScoped<IStateService, StateService>();
         services.AddScoped<ITextTestResultsImporter, TextImporter>();

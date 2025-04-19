@@ -25,6 +25,15 @@ public class ProjectApiControllerBase : ControllerBase
         var bodyStream = new StreamReader(Request.Body, encoding);
         return await bodyStream.ReadToEndAsync();
     }
-    
 
+    protected async Task<byte[]> ReadRequestBodyAsByteArrayAsync()
+    {
+        if (Request.Body.CanSeek)
+        {
+            Request.Body.Seek(0, SeekOrigin.Begin);
+        }
+        using var memoryStream = new MemoryStream();
+        await Request.Body.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
+    }
 }

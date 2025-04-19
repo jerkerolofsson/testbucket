@@ -11,5 +11,5 @@ internal interface IProjectTokenGenerator
     /// <param name="tenantId"></param>
     /// <param name="projectId"></param>
     /// <returns></returns>
-    Task<string> GenerateCiCdAccessTokenAsync(string tenantId, long projectId, long testRunId, long? testSuiteId);
+    Task<string> GenerateCiCdAccessTokenAsync(string tenantId, long projectId, long? testRunId, long? testSuiteId);
 }

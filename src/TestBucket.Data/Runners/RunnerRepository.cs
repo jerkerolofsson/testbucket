@@ -1,4 +1,5 @@
 ﻿
+
 using TestBucket.Domain.Automation.Runners;
 using TestBucket.Domain.Automation.Runners.Models;
 
@@ -20,7 +21,14 @@ namespace TestBucket.Data.Runners
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<Runner>> GetAllAsync(string tenantId)
+        public async Task DeleteAsync(Runner runner)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            dbContext.Runners.Remove(runner);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IReadOnlyList<Runner>> GetAllAsync(string tenantId)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             return await dbContext.Runners.AsNoTracking().Where(x => x.TenantId == tenantId).ToListAsync();

@@ -14,11 +14,17 @@ namespace TestBucket.Runner.Shared
     {
         public static CliWrap.Command Enrich(this CliWrap.Command cmd, Script script)
         {
+            Dictionary<string, string?> envVars = [];
+            foreach(var kvp in script.EnvironmentVariables)
+            {
+                envVars[kvp.Key] = kvp.Value;
+            }
+
             return cmd.WithEnvironmentVariables((env) =>
             {
                 if (script.EnvironmentVariables is not null)
                 {
-                    env.Set(script.EnvironmentVariables);
+                    env.Set(envVars);
                 }
             });
         }

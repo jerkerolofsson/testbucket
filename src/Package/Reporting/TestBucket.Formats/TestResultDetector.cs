@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 using TestBucket.Formats.Ctrf;
@@ -16,6 +17,15 @@ namespace TestBucket.Formats
         private const string CtrfMagic = "\"reportFormat\": \"CTRF\"";
         private const string CtrfAltMagic = "\"results\":";
         private const string TrxMagic = "http://microsoft.com/schemas/VisualStudio/TeamTest/2010";
+
+        public static async Task<TestResultFormat> DetectFromFileAsync(string filename)
+        {
+            var file = new FileInfo(filename);
+            byte[] bytes = new byte[Math.Min(1024,file.Length)];
+            using var fileStream = file.OpenRead();
+            await fileStream.ReadExactlyAsync(bytes);
+            return Detect(bytes);
+        }
 
         public static TestResultFormat Detect(byte[] bytes)
         {

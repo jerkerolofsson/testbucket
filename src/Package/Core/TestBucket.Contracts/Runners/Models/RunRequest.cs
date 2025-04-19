@@ -19,6 +19,11 @@ namespace TestBucket.Contracts.Runners.Models
         public required string Guid { get; set; }
 
         /// <summary>
+        /// Run
+        /// </summary>
+        public long? TestRunId { get; set; }
+
+        /// <summary>
         /// Langauge/shell (hybrid tests)
         /// </summary>
         public string? Language { get; set; }

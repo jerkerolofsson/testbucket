@@ -208,6 +208,7 @@ public class Program
         builder.Services.AddScoped<RequirementBrowser>();
         builder.Services.AddScoped<RequirementEditorController>();
         builder.Services.AddScoped<TestExecutionController>();
+        builder.Services.AddScoped<RunnersController>();
 
         builder.Services.AddScoped<UserPreferencesService>();
         builder.Services.AddScoped<TestBrowser>();

@@ -10,7 +10,7 @@ public class TestExecutionContext
     /// <summary>
     /// Identifier for the test run
     /// </summary>
-    public required long TestRunId { get; set; }
+    public required long? TestRunId { get; set; }
 
     /// <summary>
     /// Identifier for the project

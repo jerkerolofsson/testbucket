@@ -230,6 +230,43 @@ internal class TestRunCreationController : TenantBaseService
 
     }
 
+    internal async Task EvalMarkdownCodeAsync(TestCase test, string language, string code)
+    {
+        ArgumentNullException.ThrowIfNull(test.TestProjectId);
+
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        if (await _markdownAutomationRunner.SupportsLanguageAsync(principal, language))
+        {
+            if (test?.TeamId is not null)
+            {
+                var context = new TestExecutionContext
+                {
+                    ProjectId = test.TestProjectId.Value,
+                    TeamId = test.TeamId.Value,
+                    TestRunId = null,
+                    TestCaseId = test.Id,
+                    TestEnvironmentId = null // todo: default envi
+                };
+
+                var result = await _markdownAutomationRunner.EvalAsync(principal, context, language, code);
+                if (result is not null)
+                {
+
+                }
+            }
+        }
+        //else
+        //{
+        //    // Create an empty test and let the user run it
+        //    var run = await CreateTestRunAsync(test.Name, test.TestProjectId.Value, [test.Id]);
+        //    if (run is not null)
+        //    {
+        //        _appNavigationManager.NavigateTo(run);
+        //    }
+        //}
+    }
+
     internal async Task RunMarkdownCodeAsync(TestCase test, string language, string code)
     {
         ArgumentNullException.ThrowIfNull(test.TestProjectId);
@@ -253,19 +290,24 @@ internal class TestRunCreationController : TenantBaseService
                     TestCaseId = test.Id,
                     TestEnvironmentId = run.TestEnvironmentId
                 };
-                await _markdownAutomationRunner.RunAsync(principal, context, language, code);
+
+                var result = await _markdownAutomationRunner.RunAsync(principal, context, language, code);
+                if (result is not null)
+                {
+
+                }
                 _appNavigationManager.NavigateTo(run);
             }
         }
-        else
-        {
-            // Create an empty test and let the user run it
-            var run = await CreateTestRunAsync(test.Name, test.TestProjectId.Value, [test.Id]);
-            if (run is not null)
-            {
-                _appNavigationManager.NavigateTo(run);
-            }
-        }
+        //else
+        //{
+        //    // Create an empty test and let the user run it
+        //    var run = await CreateTestRunAsync(test.Name, test.TestProjectId.Value, [test.Id]);
+        //    if (run is not null)
+        //    {
+        //        _appNavigationManager.NavigateTo(run);
+        //    }
+        //}
     }
 
 }

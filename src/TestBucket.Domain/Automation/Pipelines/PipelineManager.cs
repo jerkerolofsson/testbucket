@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using TestBucket.Contracts.Automation;
 using TestBucket.Contracts.Integrations;
+using TestBucket.Domain.Automation.Artifact.Events;
 using TestBucket.Domain.Automation.Mapping;
 using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Automation.Pipelines.Specifications;
@@ -280,9 +281,11 @@ internal class PipelineManager : IPipelineManager
                         job.CiCdJobIdentifier,
                          configuredRunner.Config.TestResultsArtifactsPattern,
                         CancellationToken.None);
-                    if (bytes.Length > 0)
+                    if (bytes.Length > 0 && pipeline.TestRunId is not null && pipeline.TenantId is not null)
                     {
-                        await _mediator.Publish(new IntegrationEvents.JobArtifactDownloaded(principal, pipeline, job, configuredRunner.Config.TestResultsArtifactsPattern, bytes));
+                        // Sends event that will scan the artifact zip for test results and add them to the run as attachments
+                        // 
+                        await _mediator.Publish(new JobArtifactDownloaded(principal, pipeline.TenantId, pipeline.TestRunId.Value, configuredRunner.Config.TestResultsArtifactsPattern, bytes));
                     }
                 }
             }

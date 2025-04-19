@@ -34,8 +34,14 @@ namespace TestBucket.Domain.Automation.Runners.Jobs
             var principal = request.Principal;
             principal.ThrowIfEntityTenantIsDifferent(job);
 
+            job.StdOut = request.Response.StdOut;
+            job.StdErr = request.Response.StdErr;
             job.Status = request.Response.Status;
             job.ErrorMessage = request.Response.ErrorMessage;
+            job.Result = request.Response.Result;
+            job.Format = request.Response.Format;
+            //job.TestResultFormat = request.Response.TestResultFormat;
+            //job.ResultContent = request.Response.ResultContent;
 
             await _jobRepository.UpdateAsync(job);
 

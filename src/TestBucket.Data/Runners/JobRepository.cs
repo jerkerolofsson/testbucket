@@ -46,7 +46,15 @@ namespace TestBucket.Data.Runners
             }
 
 
-            return await jobs.OrderByDescending(x=>x.Priority).FirstOrDefaultAsync();
+            var job = await jobs.OrderByDescending(x=>x.Priority).FirstOrDefaultAsync();
+
+            // temp debug
+            if (job is null)
+            {
+                var alljobs = await dbContext.Jobs.AsNoTracking().Where(x => x.TenantId == tenantId).ToListAsync();
+            }
+
+            return job;
         }
 
         public async Task UpdateAsync(Job job)

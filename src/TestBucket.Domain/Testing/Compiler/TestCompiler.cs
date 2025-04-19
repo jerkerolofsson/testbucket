@@ -39,7 +39,10 @@ internal class TestCompiler : ITestCompiler
     /// <returns></returns>
     public async Task ResolveVariablesAsync(ClaimsPrincipal principal, TestExecutionContext context)
     {
-        context.Variables["TB_RUN_ID"] = context.TestRunId.ToString();
+        if (context.TestRunId is not null)
+        {
+            context.Variables["TB_RUN_ID"] = context.TestRunId.Value.ToString();
+        }
         context.Variables["TB_PROJECT_ID"] = context.ProjectId.ToString();
 
         if (context.TestEnvironmentId is not null)
@@ -95,6 +98,20 @@ internal class TestCompiler : ITestCompiler
                     context.Variables[envVar.Key] = envVar.Value;
                 }
             }
+        }
+
+
+        if (context.TestCaseId is not null)
+        {
+            var tenantId = principal.GetTenantIdOrThrow();
+            var testCase = await _testCaseRepository.GetTestCaseByIdAsync(tenantId, context.TestCaseId.Value);
+            //if (testCase?.Env is not null)
+            //{
+            //    foreach (var envVar in testCase.Variables)
+            //    {
+            //        context.Variables[envVar.Key] = envVar.Value;
+            //    }
+            //}
         }
     }
 

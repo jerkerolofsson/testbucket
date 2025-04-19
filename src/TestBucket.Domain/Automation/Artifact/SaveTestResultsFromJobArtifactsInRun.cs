@@ -8,19 +8,20 @@ using System.Threading.Tasks;
 using Mediator;
 
 using Microsoft.Extensions.DependencyInjection;
-using TestBucket.Domain.Automation.IntegrationEvents;
+
+using TestBucket.Domain.Automation.Artifact.Events;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Formats;
 
-namespace TestBucket.Domain.Automation.Attachments
+namespace TestBucket.Domain.Automation.Artifact
 {
     /// <summary>
     /// Scans a job zip artifact created in a CI/CD pipeline, and searches for artifacts that matches a defined
     /// pattern for this integration. If matches are found it uploads them as attachments to the test run.
     /// </summary>
-    internal sealed class SaveTestResultsFromJobArtifactsInRun : INotificationHandler<JobArtifactDownloaded>
+    public sealed class SaveTestResultsFromJobArtifactsInRun : INotificationHandler<JobArtifactDownloaded>
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -35,15 +36,10 @@ namespace TestBucket.Domain.Automation.Attachments
             {
                 return;
             }
-            if (notification.Pipeline?.TenantId is null)
+            if (notification.TenantId is null)
             {
                 return;
             }
-            if (notification.Pipeline?.TestRunId is null)
-            {
-                return;
-            }
-
 
             using var scope = _serviceProvider.CreateScope();
             var files = scope.ServiceProvider.GetRequiredService<IFileResourceManager>();
@@ -65,10 +61,10 @@ namespace TestBucket.Domain.Automation.Attachments
 
                 await files.AddResourceAsync(principal, new Files.Models.FileResource
                 {
-                    TenantId = notification.Pipeline.TenantId,
+                    TenantId = notification.TenantId,
                     Data = bytes,
                     Length = bytes.Length,
-                    TestRunId = notification.Pipeline.TestRunId,
+                    TestRunId = notification.TestRunId,
                     Name = entry.Name,
                     ContentType = TestResultSerializerFactory.GetContentTypeFromFormat(format) ?? "application/octet-stream"
                 });

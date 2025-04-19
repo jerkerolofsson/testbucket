@@ -59,6 +59,8 @@
                 <MudNavLink Icon="@Icons.Material.Outlined.PeopleAlt" Href="@UsersUrl">@settingsLoc["manage-users"]</MudNavLink>
                 <MudNavLink Icon="@Icons.Material.Outlined.SecurityUpdate" Href="@RolesUrl">@settingsLoc["manage-roles"]</MudNavLink>
 
+                <MudNavLink Icon="@Icons.Material.Outlined.RunCircle" Href="@RunnersUrl">@settingsLoc["manage-runners"]</MudNavLink>
+
                 <AuthorizeView Roles="SUPERADMIN">
                     <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" Href="@TenantsUrl">Manage Tenants</MudNavLink>
                 </AuthorizeView>
@@ -124,4 +126,5 @@
     private string TeamsUrl => $"{TenantId}/Settings/Teams";
     private string UsersUrl => $"{TenantId}/Settings/Users";
     private string RolesUrl => $"{TenantId}/Settings/Roles";
+    private string RunnersUrl => $"{TenantId}/Settings/ManageRunners";
 }

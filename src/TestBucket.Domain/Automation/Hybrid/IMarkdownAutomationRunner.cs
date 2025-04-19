@@ -33,7 +33,7 @@ public interface IMarkdownAutomationRunner
     /// <param name="code"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">A runner was not found, or the test run has been deleted</exception>
-    Task RunAsync(ClaimsPrincipal principal, TestExecutionContext context, string language, string code);
+    Task<TestRunnerResult?> RunAsync(ClaimsPrincipal principal, TestExecutionContext context, string language, string code);
 
     /// <summary>
     /// Returns true if there is a runner supporting the language

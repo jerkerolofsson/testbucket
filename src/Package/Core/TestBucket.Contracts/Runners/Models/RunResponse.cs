@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Automation;
+using TestBucket.Formats;
 
 namespace TestBucket.Contracts.Runners.Models
 {
@@ -27,5 +28,24 @@ namespace TestBucket.Contracts.Runners.Models
         /// </summary>
         public string? ErrorMessage { get; set; }
 
+        /// <summary>
+        /// Standard out, from runner
+        /// </summary>
+        public string? StdOut { get; set; }
+
+        /// <summary>
+        /// Standard error, from runner
+        /// </summary>
+        public string? StdErr { get; set; }
+
+        /// <summary>
+        /// Serialized test result (e.g. a JUnitXml)
+        /// </summary>
+        public string? Result { get; set; }
+
+        /// <summary>
+        /// Test result format (of Result)
+        /// </summary>
+        public TestResultFormat? Format { get; set; }
     }
 }

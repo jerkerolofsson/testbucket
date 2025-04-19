@@ -27,6 +27,6 @@ namespace TestBucket.Contracts.Fields
         public bool WriteOnly { get; set; }
         public bool ReadOnly { get; set; }
         public TraitType TraitType { get; set; }
-        public string ProjectSlug { get; set; }
+        public string? ProjectSlug { get; set; }
     }
 }

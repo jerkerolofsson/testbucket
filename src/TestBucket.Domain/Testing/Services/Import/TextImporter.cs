@@ -70,7 +70,7 @@ internal class TextImporter : ITextTestResultsImporter
         await ImportRunAsync(principal, teamId, projectId, run, options);
     }
 
-    private async Task ImportRunAsync(ClaimsPrincipal principal, long teamId, long projectId, TestRunDto run, ImportHandlingOptions options)
+    public async Task ImportRunAsync(ClaimsPrincipal principal, long teamId, long projectId, TestRunDto run, ImportHandlingOptions options)
     {
         var tenantId = principal.GetTenantIdOrThrow();
 

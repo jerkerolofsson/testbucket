@@ -23,6 +23,7 @@ global using TestBucket.Domain.Testing.Models;
 global using TestBucket.Domain.Testing;
 global using TestBucket.Components.Tenants;
 global using TestBucket.Domain.Fields.Models;
+global using TestBucket.Domain.Identity.Permissions;
 
 global using TestBucket.Components.Shared;
 

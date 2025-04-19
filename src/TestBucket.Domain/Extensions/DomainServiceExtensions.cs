@@ -6,6 +6,7 @@ using TestBucket.Domain.AI.Settings;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Automation.Pipelines;
+using TestBucket.Domain.Automation.Runners;
 using TestBucket.Domain.Automation.Runners.Jobs;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Environments;
@@ -63,6 +64,9 @@ public static class DomainServiceExtensions
         services.AddScoped<IMarkdownDetector, HybridDetector>();
         services.AddSingleton<GetJobLock>();
         services.AddSingleton<JobAddedEventSignal>();
+        services.AddScoped<IRunnerManager, RunnerManager>();
+        services.AddScoped<IJobManager, JobManager>();
+        
 
         services.AddScoped<IFileResourceManager, FileResourceManager>();
 

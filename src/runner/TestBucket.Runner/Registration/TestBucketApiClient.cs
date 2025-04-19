@@ -20,6 +20,10 @@ namespace TestBucket.Runner.Registration
 
             using var response = await Client.SendAsync(request);
             response.EnsureSuccessStatusCode();
+            if(response.StatusCode == HttpStatusCode.NoContent)
+            {
+                return null;
+            }
             return await response.Content.ReadFromJsonAsync<RunRequest>();
         }
 
@@ -55,7 +59,7 @@ namespace TestBucket.Runner.Registration
         {
             var bytes = await File.ReadAllBytesAsync(file.FullName);
 
-            var url = $"https+http://testbucket/api/runner/{runnerId}/jobs/{runResponse.Guid}/artifacts&filename={WebUtility.UrlEncode(relativePath)}";
+            var url = $"https+http://testbucket/api/runner/{runnerId}/jobs/{runResponse.Guid}/artifacts";
             var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Content = new ByteArrayContent(bytes);
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);

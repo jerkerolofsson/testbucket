@@ -521,7 +521,15 @@ internal class TestCaseRepository : ITestCaseRepository
         //    dbContext.TestRunFields.Remove(field);
         //}
 
-        await foreach (var run in dbContext.TestCaseRuns.Where(x => x.TestRunId == id).AsAsyncEnumerable())
+        await foreach (var job in dbContext.Jobs.Where(x => x.TestRunId == id).AsAsyncEnumerable())
+        {
+            dbContext.Jobs.Remove(job);
+        }
+
+        await foreach (var run in dbContext.TestCaseRuns
+            .Include(x=>x.TestCaseRunFields)
+            .Include(x=>x.LinkedIssues)
+            .Where(x => x.TestRunId == id).AsAsyncEnumerable())
         {
             dbContext.TestCaseRuns.Remove(run);
         }
@@ -531,10 +539,17 @@ internal class TestCaseRepository : ITestCaseRepository
             dbContext.TestRuns.Remove(run);
         }
 
+        await foreach (var pipelineJob in dbContext.PipelineJobs.Where(x => x.TestRunId == id).AsAsyncEnumerable())
+        {
+            dbContext.PipelineJobs.Remove(pipelineJob);
+        }
+
         await foreach (var pipeline in dbContext.Pipelines.Where(x => x.TestRunId == id).AsAsyncEnumerable())
         {
             dbContext.Pipelines.Remove(pipeline);
         }
+
+
 
         await dbContext.SaveChangesAsync();
     }

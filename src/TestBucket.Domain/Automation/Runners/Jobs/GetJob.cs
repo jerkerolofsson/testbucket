@@ -68,12 +68,13 @@ namespace TestBucket.Domain.Automation.Runners.Jobs
                     await _jobRepository.UpdateAsync(job);
 
                     return new GetJobResponse(new RunRequest
-                        {
-                            Guid = job.Guid,
-                            Script = job.Script,
-                            Language = job.Language,
-                            EnvironmentVariables = job.EnvironmentVariables
-                        });
+                    {
+                        TestRunId = job.TestRunId,
+                        Guid = job.Guid,
+                        Script = job.Script,
+                        Language = job.Language,
+                        EnvironmentVariables = job.EnvironmentVariables
+                    });
                 }
 
                 return new GetJobResponse(null);

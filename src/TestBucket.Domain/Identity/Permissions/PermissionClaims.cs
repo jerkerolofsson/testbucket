@@ -23,6 +23,7 @@ namespace TestBucket.Domain.Identity.Permissions
         public const string User = "tbp-u";
         public const string Project = "tbp-p";
         public const string Tenant = "tbp-tenant";
+        public const string Runner = "rbp-ru";
 
         public static void ThrowIfNoPermission(this ClaimsPrincipal principal, PermissionEntityType entityType, PermissionLevel requiredLevel)
         {
@@ -99,6 +100,7 @@ namespace TestBucket.Domain.Identity.Permissions
                 PermissionEntityType.Tenant => Tenant,
                 PermissionEntityType.User => User,
                 PermissionEntityType.Project => Project,
+                PermissionEntityType.Runner => Runner,
                 _ => null
             };
         }

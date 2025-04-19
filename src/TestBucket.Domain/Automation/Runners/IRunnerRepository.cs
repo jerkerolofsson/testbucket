@@ -11,8 +11,9 @@ namespace TestBucket.Domain.Automation.Runners
     public interface IRunnerRepository
     {
         Task AddAsync(Runner runner);
-        Task<List<Runner>> GetAllAsync(string tenantId);
+        Task<IReadOnlyList<Runner>> GetAllAsync(string tenantId);
         Task<Runner?> GetByIdAsync(string id);
         Task UpdateAsync(Runner runner);
+        Task DeleteAsync(Runner runner);
     }
 }

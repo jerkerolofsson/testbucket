@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Runner.Runners.Cmd;
+using TestBucket.Runner.Runners.Http;
 using TestBucket.Runner.Runners.Powershell;
 
 namespace TestBucket.Runner.Runners
@@ -18,6 +19,7 @@ namespace TestBucket.Runner.Runners
                 "cmd" => new CmdRunner(),
                 "pwsh" => new PowershellRunner(),
                 "powershell" => new PowershellRunner(),
+                "http" => new DotHttpRunner(),
                 _ => throw new ArgumentException($"Invalid runner: {name}")
             };
         }

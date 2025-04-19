@@ -33,6 +33,7 @@ namespace TestBucket.Domain.Automation.Hybrid
         public async Task<TestRunnerResult> RunAsync(ClaimsPrincipal principal, TestExecutionContext context, string language, string code, CancellationToken cancellationToken)
         {
             Job job = CreateJob(context, language, code);
+            job.TenantId = principal.GetTenantIdOrThrow();
             await _jobRepository.AddAsync(job);
 
             // Notify long-polling runners
@@ -58,7 +59,16 @@ namespace TestBucket.Domain.Automation.Hybrid
                     case PipelineJobStatus.Completed:
                     case PipelineJobStatus.Skipped:
                         // The job is completed, and attachments should have been uploaded
-                        return new TestRunnerResult { Completed = true, Format = Formats.TestResultFormat.UnknownFormat, Result = "" };
+                        return new TestRunnerResult 
+                        { 
+                            StdOut = updatedJob.StdOut??"",
+                            StdErr = updatedJob.StdErr ?? "",
+                            Completed = true, 
+                            Format = updatedJob.Format ?? Formats.TestResultFormat.UnknownFormat,  
+                            Result = updatedJob.Result ?? "", 
+                        };
+                    case PipelineJobStatus.Error:
+                        return new TestRunnerResult { Completed = true, Format = Formats.TestResultFormat.UnknownFormat, Result = "", ErrorMessage = updatedJob.ErrorMessage};
                 }
 
                 if (cancellationToken.IsCancellationRequested)
@@ -79,6 +89,7 @@ namespace TestBucket.Domain.Automation.Hybrid
                 Language = language,
                 Script = code,
                 Priority = 1,
+                Status = PipelineJobStatus.Queued,
                 EnvironmentVariables = context.Variables
             };
         }

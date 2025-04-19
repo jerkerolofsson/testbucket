@@ -9,6 +9,7 @@ using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Domain.Automation.Hybrid;
 
@@ -72,7 +73,7 @@ internal class MarkdownAutomationRunner : IMarkdownAutomationRunner
     /// <param name="code"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException">A runner was not found, or the test run has been deleted</exception>
-    public async Task RunAsync(ClaimsPrincipal principal, TestExecutionContext context, string language, string code)
+    public async Task<TestRunnerResult?> RunAsync(ClaimsPrincipal principal, TestExecutionContext context, string language, string code)
     {
         IMarkdownTestRunner runner = await GetTestRunnerForLanguageOrThrowAsync(principal, language);
 
@@ -82,6 +83,7 @@ internal class MarkdownAutomationRunner : IMarkdownAutomationRunner
 
         await task.ReportStatusAsync("Importing result..", 90);
         await ImportResultAsync(principal, context, result);
+        return result;
     }
 
     private async Task<IMarkdownTestRunner> GetTestRunnerForLanguageOrThrowAsync(ClaimsPrincipal principal, string language)
@@ -122,15 +124,55 @@ internal class MarkdownAutomationRunner : IMarkdownAutomationRunner
     /// <returns></returns>
     private async Task ImportResultAsync(ClaimsPrincipal principal, TestExecutionContext context, TestRunnerResult result)
     {
-        if(string.IsNullOrEmpty(result.Result))
-        {
-            throw new InvalidOperationException("A result was returned from the runner but the Result data is missing");
-        }
         var runId = context.TestRunId;
-        await _importer.ImportTextAsync(principal, context.TeamId, context.ProjectId, result.Format, result.Result, new Formats.ImportHandlingOptions
+
+        if (result.Format != Formats.TestResultFormat.UnknownFormat)
         {
-            TestCaseId = context.TestCaseId,
-            TestRunId = runId
-        });
+            if (string.IsNullOrEmpty(result.Result))
+            {
+                throw new InvalidOperationException("A result was returned from the runner but the Result data is missing");
+            }
+
+            await _importer.ImportTextAsync(principal, context.TeamId, context.ProjectId, result.Format, result.Result, new Formats.ImportHandlingOptions
+            {
+                TestCaseId = context.TestCaseId,
+                TestRunId = runId
+            });
+        }
+        /*
+        else if(context.TestCaseId is not null)
+        {
+            // No result file, create a dummy case
+            var run = new TestRunDto
+            {
+                Name = "hybrid",
+                SystemOut = result.StdOut,
+                SystemErr = result.StdErr,
+                Suites = 
+                [
+                    new TestSuiteRunDto
+                    {
+                        Tests = 
+                        [
+                            new TestCaseRunDto
+                            {
+                                ExternalId = Guid.NewGuid().ToString(), 
+                                Name = "runner",
+                                Message = result.StdOut,
+                                SystemOut = result.StdOut,
+                                SystemErr = result.StdErr,
+                                Result = TestResult.Inconclusive
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            await _importer.ImportRunAsync(principal, context.TeamId, context.ProjectId, run, new Formats.ImportHandlingOptions
+            {
+                TestCaseId = context.TestCaseId,
+                TestRunId = runId,
+            });
+        }*/
     }
 }

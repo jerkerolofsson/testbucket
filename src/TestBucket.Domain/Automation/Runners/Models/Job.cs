@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using TestBucket.Contracts.Automation;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Formats;
 
 namespace TestBucket.Domain.Automation.Runners.Models
 {
@@ -58,6 +59,26 @@ namespace TestBucket.Domain.Automation.Runners.Models
         /// Error message
         /// </summary>
         public string? ErrorMessage { get; set; }
+
+        /// <summary>
+        /// Standard out
+        /// </summary>
+        public string? StdOut { get; set; }
+
+        /// <summary>
+        /// Standard err
+        /// </summary>
+        public string? StdErr { get; set; }
+
+        /// <summary>
+        /// Serialized test result (e.g. a JUnitXml)
+        /// </summary>
+        public string? Result { get; set; }
+
+        /// <summary>
+        /// Test result format (of Result)
+        /// </summary>
+        public TestResultFormat? Format { get; set; }
 
         // Navigation
         public long? TestRunId { get; set; }

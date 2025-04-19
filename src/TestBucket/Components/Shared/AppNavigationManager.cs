@@ -143,6 +143,11 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Settings/Resources";
     }
+    public string GetRunnersSettingsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/ManageRunners";
+    }
 
     public string GetImportSpecificationsUrl()
     {

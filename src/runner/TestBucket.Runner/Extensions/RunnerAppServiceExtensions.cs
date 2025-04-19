@@ -12,7 +12,10 @@ public static class RunnerAppServiceExtensions
         services.AddSingleton<SettingsManager>();
         services.AddHostedService<GetJobPoller>();
         services.AddHostedService<RegisterRunner>();
-        services.AddHttpClient<TestBucketApiClient>();
+        services.AddHttpClient<TestBucketApiClient>((configureClient =>
+        {
+            configureClient.Timeout = TimeSpan.FromSeconds(120);
+        }));
         return services;
     }
 }

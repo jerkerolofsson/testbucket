@@ -32,4 +32,14 @@ public class TestRunnerResult
     /// Test result format (of Result)
     /// </summary>
     public required TestResultFormat Format { get; set; }
+
+    /// <summary>
+    /// Standard out
+    /// </summary>
+    public string? StdOut { get; set; }
+
+    /// <summary>
+    /// Standard err
+    /// </summary>
+    public string? StdErr { get; set; }
 }

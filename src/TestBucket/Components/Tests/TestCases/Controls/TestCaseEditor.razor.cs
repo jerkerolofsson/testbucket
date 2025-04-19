@@ -77,7 +77,7 @@ public partial class TestCaseEditor
         }
         try
         {
-            await testRunCreation.RunMarkdownCodeAsync(Test, request.Language, request.Code);
+            await testRunCreation.EvalMarkdownCodeAsync(Test, request.Language, request.Code);
         }
         catch(Exception ex)
         {
@@ -100,6 +100,9 @@ public partial class TestCaseEditor
     private async Task SaveChangesAsync()
     {
         _preview = true;
+
+        await CompilePreviewAsync();
+
         await TestChanged.InvokeAsync(Test);
     }
 

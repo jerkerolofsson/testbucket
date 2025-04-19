@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 using Mediator;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using TestBucket.Domain.Automation.IntegrationEvents;
 using TestBucket.Domain.Files.IntegrationEvents;
+using TestBucket.Domain.Testing;
 using TestBucket.Formats;
 
-namespace TestBucket.Domain.Testing.Services.Import
+namespace TestBucket.Domain.Automation.Artifact
 {
     internal sealed class ImportTestRunFileResourcesWhenAdded : INotificationHandler<FileResourceAddedNotification>
     {

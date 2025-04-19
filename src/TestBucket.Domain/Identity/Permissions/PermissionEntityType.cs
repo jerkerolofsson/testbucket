@@ -29,5 +29,7 @@ namespace TestBucket.Domain.Identity.Permissions
         TestAccount,
 
         TestResource,
+
+        Runner
     }
 }

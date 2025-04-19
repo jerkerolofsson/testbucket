@@ -13,7 +13,7 @@ internal class ProjectTokenGenerator : IProjectTokenGenerator
         _settingsProvider = settingsProvider;
     }
 
-    public async Task<string> GenerateCiCdAccessTokenAsync(string tenantId, long projectId, long testRunId, long? testSuiteId)
+    public async Task<string> GenerateCiCdAccessTokenAsync(string tenantId, long projectId, long? testRunId, long? testSuiteId)
     {
         var settings = await _settingsProvider.LoadGlobalSettingsAsync();
         if (string.IsNullOrEmpty(settings.SymmetricJwtKey))
@@ -38,7 +38,6 @@ internal class ProjectTokenGenerator : IProjectTokenGenerator
             new Claim("tenant", tenantId),
             new Claim(nameClaimType, username),
             new Claim("project", projectId.ToString()),
-            new Claim("run", testRunId.ToString()),
             new Claim("userid", projectId.ToString()),
             new Claim("email", username),
             new Claim(PermissionClaims.TestCase, PermissionLevel.Write.ToString()),
@@ -47,7 +46,12 @@ internal class ProjectTokenGenerator : IProjectTokenGenerator
             new Claim(PermissionClaims.TestCaseRun, PermissionLevel.Write.ToString()),
             ];
 
-        if(testSuiteId is not null)
+        if(testRunId is not null)
+        {
+            claims.Add(new Claim("run", testRunId.Value.ToString()));
+        }
+
+        if (testSuiteId is not null)
         {
             claims.Add(new Claim("testsuite", testSuiteId.Value.ToString()));
         }

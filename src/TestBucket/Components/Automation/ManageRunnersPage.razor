@@ -1,0 +1,65 @@
+﻿@attribute [Authorize(Roles = "ADMIN")]
+@layout SettingsLayout
+@inject RunnersController controller
+@page "/{tenantId}/settings/ManageRunners"
+@using TestBucket.Components.Shared.Permissions
+@using TestBucket.Domain.Automation.Runners.Models
+@using TestBucket.Domain.Identity.Permissions
+@inject IStringLocalizer<SharedStrings> loc
+@inject AppNavigationManager appNav
+
+<MudStack Class="container-settings-page">
+
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
+    <MudDataGrid Items="_runners"
+                 Dense="true"
+                 Hover="true"
+                 T="Runner"
+                 SortMode="SortMode.Single">
+
+        <Columns>
+
+            <PropertyColumn Property="x => x.Id" Title="@loc["id"]" />
+            <PropertyColumn Property="x => x.Name" Title="@loc["name"]" />
+            <TemplateColumn>
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async() => await RemoveRunnerAsync(context.Item)"/>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+
+    </MudDataGrid>
+
+</MudStack>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+    private List<BreadcrumbItem> _nav = [];
+
+    private IReadOnlyList<Runner> _runners = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _runners = (await controller.GetRunnersAsync()).ToList();
+    }
+
+    private async Task RemoveRunnerAsync(Runner runner)
+    {
+        await controller.RemoveRunnerAsync(runner);
+        await LoadAsync();
+    }
+
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["runners"], appNav.GetTestResourcesSettingsUrl()));
+    }
+}

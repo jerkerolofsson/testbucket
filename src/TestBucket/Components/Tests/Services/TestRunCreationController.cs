@@ -1,4 +1,11 @@
 ﻿
+using System.Collections.Generic;
+using System.Threading;
+
+using Mediator;
+
+using NGitLab.Models;
+
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Components.Tests.TestRuns.Dialogs;
@@ -8,8 +15,10 @@ using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Shared;
 using TestBucket.Domain.Tenants;
 using TestBucket.Domain.Testing.Compiler;
+using TestBucket.Domain.TestResources.Allocation;
 
 namespace TestBucket.Components.Tests.Services;
 
@@ -23,6 +32,8 @@ internal class TestRunCreationController : TenantBaseService
     private readonly ITestEnvironmentManager _testEnvironmentManager;
     private readonly IPipelineProjectManager _pipelineProjectManager;
     private readonly ITenantManager _tenantManager;
+    private readonly IMediator _mediator;
+    private readonly ITestCompiler _compiler;
 
     public TestRunCreationController(
         AuthenticationStateProvider authenticationStateProvider,
@@ -33,7 +44,9 @@ internal class TestRunCreationController : TenantBaseService
         ITestEnvironmentManager testEnvironmentManager,
         AppNavigationManager appNavigationManager,
         IPipelineProjectManager pipelineProjectManager,
-        ITenantManager tenantManager) : base(authenticationStateProvider)
+        ITenantManager tenantManager,
+        IMediator mediator,
+        ITestCompiler compiler) : base(authenticationStateProvider)
     {
         _testCaseEditor = testCaseEditor;
         _dialogService = dialogService;
@@ -43,6 +56,8 @@ internal class TestRunCreationController : TenantBaseService
         _appNavigationManager = appNavigationManager;
         _pipelineProjectManager = pipelineProjectManager;
         _tenantManager = tenantManager;
+        _mediator = mediator;
+        _compiler = compiler;
     }
 
     public async Task<TestRun?> CreateTestRunAsync(TestSuite testSuite, long[]testCaseIds, bool startAutomation)
@@ -100,6 +115,7 @@ internal class TestRunCreationController : TenantBaseService
 
         TestExecutionContext context = new TestExecutionContext
         {
+            Guid = Guid.NewGuid().ToString(),
             TestSuiteId = testSuiteId,
             TenantId = testRun.TenantId,
             TestRunId = testRun.Id,
@@ -230,7 +246,7 @@ internal class TestRunCreationController : TenantBaseService
 
     }
 
-    internal async Task EvalMarkdownCodeAsync(TestCase test, string language, string code)
+    internal async Task EvalMarkdownCodeAsync(TestCase test, string language, string code, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(test.TestProjectId);
 
@@ -242,32 +258,44 @@ internal class TestRunCreationController : TenantBaseService
             {
                 var context = new TestExecutionContext
                 {
+                    Guid = Guid.NewGuid().ToString(),
                     ProjectId = test.TestProjectId.Value,
                     TeamId = test.TeamId.Value,
                     TestRunId = null,
                     TestCaseId = test.Id,
-                    TestEnvironmentId = null // todo: default envi
+
+                    // todo: default envi
+                    TestEnvironmentId = null, 
+                    
+                    // todo: debug: testing only
+                    Dependencies = [new TestCaseDependency() { ResourceType = "android" }]
                 };
 
-                var result = await _markdownAutomationRunner.EvalAsync(principal, context, language, code);
-                if (result is not null)
+                try
                 {
+                    await _compiler.ResolveVariablesAsync(principal, context, cancellationToken);
+                    var compiledCode = await _compiler.CompileAsync(principal, context, code);
+                    var testResult = await _markdownAutomationRunner.EvalAsync(principal, context, language, compiledCode);
 
+                    if (testResult is not null)
+                    {
+                        var parameters = new DialogParameters<TestRunnerResultDialog>()
+                    {
+                        { x => x.TestRunnerResult, testResult }
+                    };
+                        var dialog = await _dialogService.ShowAsync<TestRunnerResultDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+                        await dialog.Result;
+                    }
+                }
+                finally
+                {
+                    await _mediator.Send(new ReleaseResourcesRequest(context.Guid, principal.GetTenantIdOrThrow()));
                 }
             }
         }
-        //else
-        //{
-        //    // Create an empty test and let the user run it
-        //    var run = await CreateTestRunAsync(test.Name, test.TestProjectId.Value, [test.Id]);
-        //    if (run is not null)
-        //    {
-        //        _appNavigationManager.NavigateTo(run);
-        //    }
-        //}
     }
 
-    internal async Task RunMarkdownCodeAsync(TestCase test, string language, string code)
+    internal async Task RunMarkdownCodeAsync(TestCase test, string language, string code, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(test.TestProjectId);
 
@@ -284,6 +312,7 @@ internal class TestRunCreationController : TenantBaseService
 
                 var context = new TestExecutionContext
                 {
+                    Guid = Guid.NewGuid().ToString(),
                     ProjectId = run.TestProjectId.Value,
                     TeamId = run.TeamId.Value,
                     TestRunId = run.Id,
@@ -291,10 +320,19 @@ internal class TestRunCreationController : TenantBaseService
                     TestEnvironmentId = run.TestEnvironmentId
                 };
 
-                var result = await _markdownAutomationRunner.RunAsync(principal, context, language, code);
-                if (result is not null)
+                try
                 {
+                    await _compiler.ResolveVariablesAsync(principal, context, cancellationToken);
+                    var compiledCode = await _compiler.CompileAsync(principal, context, code);
+                    var result = await _markdownAutomationRunner.RunAsync(principal, context, language, compiledCode);
+                    if (result is not null)
+                    {
 
+                    }
+                }
+                finally
+                {
+                    await _mediator.Send(new ReleaseResourcesRequest(context.Guid, principal.GetTenantIdOrThrow()));
                 }
                 _appNavigationManager.NavigateTo(run);
             }

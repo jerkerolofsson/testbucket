@@ -64,6 +64,7 @@ internal class PipelineProjectManager : IPipelineProjectManager
 
     public async Task CreatePipelineAsync(ClaimsPrincipal principal, TestExecutionContext context)
     {
+        // Assign variables and lock resources for the execution
         await AssignVariablesAsync(principal, context);
 
         ExternalSystemDto[] configs = await _pipelineManager.GetIntegrationConfigsAsync(principal, context.ProjectId);
@@ -117,13 +118,13 @@ internal class PipelineProjectManager : IPipelineProjectManager
         }
     }
 
-    private async Task AssignVariablesAsync(ClaimsPrincipal principal, TestExecutionContext context)
+    private async Task AssignVariablesAsync(ClaimsPrincipal principal, TestExecutionContext context, CancellationToken cancellationToken = default)
     {
         // Create a copy of the variables. These variables are provided by the user and has higher prio than what is assigned
         var testSuiteVariables = context.Variables.ToDictionary();
 
         // Add variables from environment
-        await _compiler.ResolveVariablesAsync(principal, context);
+        await _compiler.ResolveVariablesAsync(principal, context, cancellationToken);
 
         // Overwrite any variables..
         foreach (var variable in testSuiteVariables)

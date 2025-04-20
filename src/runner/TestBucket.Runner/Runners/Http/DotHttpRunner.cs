@@ -92,121 +92,18 @@ public class DotHttpRunner : IScriptRunner
                 failedChecks.AddRange(result.FailedChecks);
             }
 
-            var messageBuilder = new StringBuilder();
+            // Add metrics
 
-            messageBuilder.AppendLine($"# Stage {stage.PlannedStage?.Attributes.Name}");
-            messageBuilder.AppendLine($"{stage.PassCount} passed, {stage.FailCount} failed");
-            messageBuilder.AppendLine();
-
-            if (stage.Results.Count > 0)
+            // Add traits
+            var response = status.PreviousResponse;
+            if(response is not null)
             {
-                foreach (var result in stage.Results.Take(1))
-                {
-                    var request = result.Request;
-                    if (request is null)
-                    {
-                        continue;
-                    }
-                    messageBuilder.AppendLine($"# {request.RequestName}");
-                    messageBuilder.AppendLine($"| Attribute | Value     |");
-                    messageBuilder.AppendLine($"| --------- | --------- |");
-                    messageBuilder.AppendLine($"| Method    | {request.Method?.ToString(status)} |");
-                    messageBuilder.AppendLine($"| URL       | {request.Url?.ToString(status)} |");
-                    if (status.PreviousResponse is not null)
-                    {
-                        var response = status.PreviousResponse;
-                        var statusCode = (int)response.StatusCode;
-                        messageBuilder.AppendLine($"| Status Code   | {statusCode} |");
-                        messageBuilder.AppendLine($"| Reason Phrase | {response.ReasonPhrase} |");
-                    }
-
-                    int requests = stage.Results.Count;
-                    var duration = stage.Results.Sum(x => x.HttpRequestDuration.Value);
-                    var sentBytes = stage.Results.Sum(x => x.HttpBytesSent.Value);
-                    var receivedBytes = stage.Results.Sum(x => x.HttpBytesReceived.Value);
-                    var rps = stage.Results.Count / duration;
-                    messageBuilder.AppendLine($"| Requests   | {requests} |");
-                    messageBuilder.AppendLine($"| Duration   | {TimeSpan.FromSeconds(duration)} |");
-                    messageBuilder.AppendLine($"| Requests/s | {rps.ToString(CultureInfo.InvariantCulture)} |");
-                    messageBuilder.AppendLine($"| Received bytes   | {receivedBytes} |");
-                    messageBuilder.AppendLine($"| Sent bytes   | {sentBytes} |");
-
-                    //messageBuilder.AppendLine($"| Bytes Sent | {result.HttpBytesSent.Value} |");
-                    //messageBuilder.AppendLine($"| Bytes Received | {result.HttpBytesReceived.Value} |");
-                    //messageBuilder.AppendLine($"| Duration  | {result.HttpRequestDuration.Value}{result.HttpRequestDuration.Unit} |");
-                    //messageBuilder.AppendLine($"| Sending   | {result.HttpRequestSending.Value}{result.HttpRequestSending.Unit} |");
-                    //messageBuilder.AppendLine($"| Receiving | {result.HttpRequestReceiving.Value}{result.HttpRequestReceiving.Unit} |");
-
-                    messageBuilder.AppendLine("## Request");
-                    messageBuilder.AppendLine("```http");
-                    messageBuilder.AppendLine($"{request.Method?.ToString(status)} {request.Url?.ToString(status)} {request.Version?.ToString(status)} ");
-                    foreach (var header in request.Headers)
-                    {
-                        messageBuilder.AppendLine($"{header?.ToString(status)}");
-                    }
-                    messageBuilder.AppendLine("```");
-
-                    if (status.PreviousResponse is not null)
-                    {
-                        var response = status.PreviousResponse;
-                        var statusCode = (int)response.StatusCode;
-                        messageBuilder.AppendLine("## Response");
-                        messageBuilder.AppendLine("```http");
-                        messageBuilder.AppendLine($"{statusCode} {response.ReasonPhrase}");
-                        foreach (var header in response.Headers)
-                        {
-                            if (header.Values is not null)
-                            {
-                                foreach (var value in header.Values)
-                                {
-                                    messageBuilder.AppendLine($"{header.Name}: {value}");
-                                }
-                            }
-                        }
-                        messageBuilder.AppendLine();
-
-                        if (response.ContentBytes is not null)
-                        {
-                            if (response.ContentBytes.Length < 10 * 1024)
-                            {
-                                if (response.Content.Headers.ContentType?.MediaType?.StartsWith("text") == true ||
-                                    response.Content.Headers.ContentType?.MediaType?.StartsWith("application/json") == true ||
-                                    response.Content.Headers.ContentType?.MediaType?.StartsWith("application/xml") == true)
-                                {
-                                    messageBuilder.AppendLine(Encoding.UTF8.GetString(response.ContentBytes));
-                                }
-                                else
-                                {
-                                    messageBuilder.AppendLine($"...{response.ContentBytes.Length} bytes payload...");
-                                }
-                            }
-                            else
-                            {
-                                messageBuilder.AppendLine($"...{response.ContentBytes.Length} bytes payload...");
-                            }
-                        }
-                        messageBuilder.AppendLine("```");
-
-                    }
-                }
-
+                var statusCode = (int)response.StatusCode;
+                test.Traits.Add(new TestTrait("status-code", statusCode.ToString()) { ExportType = TraitExportType.Instance });
             }
 
-            if (failedChecks.Count > 0)
-            {
-                test.Result = TestResult.Failed;
-                messageBuilder.AppendLine();
-                messageBuilder.AppendLine("## Failed Checks:");
-
-                messageBuilder.AppendLine($"| URL | Expected  | Actual | Error     |");
-                messageBuilder.AppendLine($"| --- | --------- | --------- | --------- |");
-                foreach (var check in failedChecks)
-                {
-                    messageBuilder.AppendLine($"| {check.Request.Url} | {check.Check?.ExpectedValue} | {check.ActualValue} | {check.Error} |");
-                    messageBuilder.AppendLine(check.Error);
-                }
-            }
-            test.Message = messageBuilder.ToString();
+            // Create message with a description of the testing
+            CreateMessage(status, stage, test, failedChecks);
 
             suite.Tests.Add(test);
         }
@@ -214,5 +111,126 @@ public class DotHttpRunner : IScriptRunner
         run.Suites.Add(suite);
 
         return run;
+    }
+
+    private static void CreateMessage(TestStatus status, StageResult stage, TestCaseRunDto test, List<VerificationCheckResult> failedChecks)
+    {
+        var messageBuilder = new StringBuilder();
+
+        messageBuilder.AppendLine($"# Stage {stage.PlannedStage?.Attributes.Name}");
+        messageBuilder.AppendLine($"{stage.PassCount} passed, {stage.FailCount} failed");
+        messageBuilder.AppendLine();
+
+        if (stage.Results.Count > 0)
+        {
+            foreach (var result in stage.Results.Take(1))
+            {
+                var request = result.Request;
+                if (request is null)
+                {
+                    continue;
+                }
+                messageBuilder.AppendLine($"# {request.RequestName}");
+                messageBuilder.AppendLine($"| Attribute | Value     |");
+                messageBuilder.AppendLine($"| --------- | --------- |");
+                messageBuilder.AppendLine($"| Method    | {request.Method?.ToString(status)} |");
+                messageBuilder.AppendLine($"| URL       | {request.Url?.ToString(status)} |");
+                if (status.PreviousResponse is not null)
+                {
+                    var response = status.PreviousResponse;
+                    var statusCode = (int)response.StatusCode;
+                    messageBuilder.AppendLine($"| Status Code   | {statusCode} |");
+                    messageBuilder.AppendLine($"| Reason Phrase | {response.ReasonPhrase} |");
+                }
+
+                int requests = stage.Results.Count;
+                var duration = stage.Results.Sum(x => x.HttpRequestDuration.Value);
+                var sentBytes = stage.Results.Sum(x => x.HttpBytesSent.Value);
+                var receivedBytes = stage.Results.Sum(x => x.HttpBytesReceived.Value);
+                var rps = stage.Results.Count / duration;
+                messageBuilder.AppendLine($"| Requests   | {requests} |");
+                messageBuilder.AppendLine($"| Duration   | {TimeSpan.FromSeconds(duration)} |");
+                messageBuilder.AppendLine($"| Requests/s | {rps.ToString(CultureInfo.InvariantCulture)} |");
+                messageBuilder.AppendLine($"| Received bytes   | {receivedBytes} |");
+                messageBuilder.AppendLine($"| Sent bytes   | {sentBytes} |");
+
+                // Add metrics to result
+
+                //messageBuilder.AppendLine($"| Bytes Sent | {result.HttpBytesSent.Value} |");
+                //messageBuilder.AppendLine($"| Bytes Received | {result.HttpBytesReceived.Value} |");
+                //messageBuilder.AppendLine($"| Duration  | {result.HttpRequestDuration.Value}{result.HttpRequestDuration.Unit} |");
+                //messageBuilder.AppendLine($"| Sending   | {result.HttpRequestSending.Value}{result.HttpRequestSending.Unit} |");
+                //messageBuilder.AppendLine($"| Receiving | {result.HttpRequestReceiving.Value}{result.HttpRequestReceiving.Unit} |");
+
+                messageBuilder.AppendLine("## Request");
+                messageBuilder.AppendLine("```http");
+                messageBuilder.AppendLine($"{request.Method?.ToString(status)} {request.Url?.ToString(status)} {request.Version?.ToString(status)} ");
+                foreach (var header in request.Headers)
+                {
+                    messageBuilder.AppendLine($"{header?.ToString(status)}");
+                }
+                messageBuilder.AppendLine("```");
+
+                if (status.PreviousResponse is not null)
+                {
+                    var response = status.PreviousResponse;
+                    var statusCode = (int)response.StatusCode;
+                    messageBuilder.AppendLine("## Response");
+                    messageBuilder.AppendLine("```http");
+                    messageBuilder.AppendLine($"{statusCode} {response.ReasonPhrase}");
+                    foreach (var header in response.Headers)
+                    {
+                        if (header.Values is not null)
+                        {
+                            foreach (var value in header.Values)
+                            {
+                                messageBuilder.AppendLine($"{header.Name}: {value}");
+                            }
+                        }
+                    }
+                    messageBuilder.AppendLine();
+
+                    if (response.ContentBytes is not null)
+                    {
+                        if (response.ContentBytes.Length < 10 * 1024)
+                        {
+                            if (response.Content.Headers.ContentType?.MediaType?.StartsWith("text") == true ||
+                                response.Content.Headers.ContentType?.MediaType?.StartsWith("application/json") == true ||
+                                response.Content.Headers.ContentType?.MediaType?.StartsWith("application/xml") == true)
+                            {
+                                messageBuilder.AppendLine(Encoding.UTF8.GetString(response.ContentBytes));
+                            }
+                            else
+                            {
+                                messageBuilder.AppendLine($"...{response.ContentBytes.Length} bytes payload...");
+                            }
+                        }
+                        else
+                        {
+                            messageBuilder.AppendLine($"...{response.ContentBytes.Length} bytes payload...");
+                        }
+                    }
+                    messageBuilder.AppendLine("```");
+
+                }
+            }
+
+        }
+
+        if (failedChecks.Count > 0)
+        {
+            test.Result = TestResult.Failed;
+            messageBuilder.AppendLine();
+            messageBuilder.AppendLine("## Failed Checks:");
+
+            messageBuilder.AppendLine($"| URL | Expected  | Actual | Error     |");
+            messageBuilder.AppendLine($"| --- | --------- | --------- | --------- |");
+            foreach (var check in failedChecks)
+            {
+                messageBuilder.AppendLine($"| {check.Request.Url} | {check.Check?.ExpectedValue} | {check.ActualValue} | {check.Error} |");
+                messageBuilder.AppendLine(check.Error);
+            }
+        }
+        test.Message = messageBuilder.ToString();
     }
 }

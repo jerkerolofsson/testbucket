@@ -1,4 +1,6 @@
-﻿using MudBlazor;
+﻿using Mediator;
+
+using MudBlazor;
 
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Tests.Dialogs;
@@ -11,6 +13,7 @@ using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Compiler;
+using TestBucket.Domain.TestResources.Allocation;
 
 namespace TestBucket.Components.Tests.TestCases.Services;
 
@@ -23,7 +26,7 @@ internal class TestCaseEditorController : TenantBaseService
     private readonly IRequirementManager _requirementManager;
     private readonly ITestCompiler _testCompiler;
     private readonly ITestEnvironmentManager _testEnvironmentManager;
-
+    private readonly IMediator _mediator;
     public TestCaseEditorController(
         ITestCaseManager testCaseManager,
         ITestRunManager testRunManager,
@@ -32,7 +35,8 @@ internal class TestCaseEditorController : TenantBaseService
         IStateService stateService,
         IRequirementManager requirementManager,
         ITestCompiler testComplier,
-        ITestEnvironmentManager testEnvironmentManager) : base(authenticationStateProvider)
+        ITestEnvironmentManager testEnvironmentManager,
+        IMediator mediator) : base(authenticationStateProvider)
     {
         _testCaseManager = testCaseManager;
         _testRunManager = testRunManager;
@@ -41,6 +45,7 @@ internal class TestCaseEditorController : TenantBaseService
         _requirementManager = requirementManager;
         _testCompiler = testComplier;
         _testEnvironmentManager = testEnvironmentManager;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -64,6 +69,7 @@ internal class TestCaseEditorController : TenantBaseService
 
             var context = new TestExecutionContext()
             {
+                Guid = Guid.NewGuid().ToString(),
                 TestCaseId = testCase.Id,
                 ProjectId = run.TestProjectId.Value,
                 TestRunId = run.Id,
@@ -85,33 +91,37 @@ internal class TestCaseEditorController : TenantBaseService
     /// <param name="context"></param>
     /// <param name="text"></param>
     /// <returns></returns>
-    private async Task<string?> CompilePreviewAsync(TestCase testCase, TestExecutionContext context, string? text)
+    private async Task<string?> CompilePreviewAsync(TestCase testCase, TestExecutionContext context, string? text, CancellationToken cancellationToken = default)
     {
         if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null)
         {
             var principal = await GetUserClaimsPrincipalAsync();
 
-            await _testCompiler.ResolveVariablesAsync(principal, context);
+            await _testCompiler.ResolveVariablesAsync(principal, context, cancellationToken);
             return await _testCompiler.CompileAsync(principal, context, text);
         }
         return text;
     }
-    public async Task<string?> CompilePreviewAsync(TestCase testCase, string? text, List<CompilerError> errors)
+    public async Task<string?> CompilePreviewAsync(TestCase testCase, string? text, List<CompilerError> errors, CancellationToken cancellationToken = default)
     {
-        if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null)
+        if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null && testCase.TenantId is not null)
         {
             var principal = await GetUserClaimsPrincipalAsync();
             var defaultEnvironment = await _testEnvironmentManager.GetDefaultTestEnvironmentAsync(principal, testCase.TestProjectId.Value);
 
             var context = new TestExecutionContext()
             {
+                Guid = new Guid().ToString(),
                 TestCaseId = testCase.Id,
                 ProjectId = testCase.TestProjectId.Value,
                 TestRunId = 0,
                 TeamId = testCase.TeamId.Value,
                 TestEnvironmentId = defaultEnvironment?.Id
             };
-            var result = await CompilePreviewAsync(testCase, context, text);
+            var result = await CompilePreviewAsync(testCase, context, text, cancellationToken);
+
+            await _mediator.Send(new ReleaseResourcesRequest(context.Guid, testCase.TenantId));
+
             errors.Clear();
             errors.AddRange(context.CompilerErrors);
             return result;
@@ -139,9 +149,7 @@ internal class TestCaseEditorController : TenantBaseService
         };
         var dialog = await _dialogService.ShowAsync<CreateAITestsDialog>("Generate test cases", parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
-
     }
-
 
     public async Task<TestCase?> CreateNewTestCaseAsync(TestProject project, TestSuiteFolder? folder, long? testSuiteId, string name = "")
     {

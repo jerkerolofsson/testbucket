@@ -9,6 +9,7 @@ using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCases;
+using TestBucket.Domain.TestResources.Allocation;
 
 namespace TestBucket.Domain.Testing.Compiler;
 
@@ -19,11 +20,16 @@ internal class TestCompiler : ITestCompiler
 {
     private readonly ITestCaseRepository _testCaseRepository;
     private readonly ITestEnvironmentManager _testEnvironmentManager;
+    private readonly TestResourceDependencyAllocator _resourceAllocator;
 
-    public TestCompiler(ITestCaseRepository testCaseRepository, ITestEnvironmentManager testEnvironmentManager)
+    public TestCompiler(
+        ITestCaseRepository testCaseRepository,
+        ITestEnvironmentManager testEnvironmentManager,
+        TestResourceDependencyAllocator resourceAllocator)
     {
         _testCaseRepository = testCaseRepository;
         _testEnvironmentManager = testEnvironmentManager;
+        _resourceAllocator = resourceAllocator;
     }
 
     /// <summary>
@@ -37,8 +43,18 @@ internal class TestCompiler : ITestCompiler
     /// <param name="principal"></param>
     /// <param name="context"></param>
     /// <returns></returns>
-    public async Task ResolveVariablesAsync(ClaimsPrincipal principal, TestExecutionContext context)
+    public async Task ResolveVariablesAsync(
+        ClaimsPrincipal principal, 
+        TestExecutionContext context, 
+        CancellationToken cancellationToken)
     {
+        // This will allocate resource and lock them.
+        // To unlock resources, use context.Guid as the lock owner.
+        // @see ReleaseResourcesRequest
+        var resourceBag = await _resourceAllocator.CollectDependenciesAsync(principal, context, cancellationToken);
+        resourceBag.ResolveVariables(context.Variables);
+
+
         if (context.TestRunId is not null)
         {
             context.Variables["TB_RUN_ID"] = context.TestRunId.Value.ToString();
@@ -174,14 +190,18 @@ internal class TestCompiler : ITestCompiler
                 }
                 else
                 {
-                    // The variable could not be found
-                    context.CompilerErrors.Add(new Contracts.Testing.Models.CompilerError
+                    // If this is a "special variable", ignore it as these are runtime errors and not static related to compilation
+                    if (!variable.StartsWith("resources__") && !variable.StartsWith("accounts__"))
                     {
-                        Code = 1,
-                        Line = lineNumber,
-                        Column = match.Index + 1,
-                        Message = $"The variable {variablePatternMatch} was not found"
-                    });
+                        // The variable could not be found
+                        context.CompilerErrors.Add(new Contracts.Testing.Models.CompilerError
+                        {
+                            Code = 1,
+                            Line = lineNumber,
+                            Column = match.Index + 1,
+                            Message = $"The variable {variablePatternMatch} was not found"
+                        });
+                    }
 
                     pos = match.Index + match.Length;
                 }

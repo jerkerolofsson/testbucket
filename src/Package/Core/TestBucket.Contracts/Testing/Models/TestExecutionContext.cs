@@ -8,6 +8,13 @@ namespace TestBucket.Contracts.Testing.Models;
 public class TestExecutionContext
 {
     /// <summary>
+    /// A unique instance identifier.
+    /// Resources are allocated to this guid, and are unlocked with this guid. 
+    /// It is used to track jobs and pipelines
+    /// </summary>
+    public required string Guid { get; set; }
+
+    /// <summary>
     /// Identifier for the test run
     /// </summary>
     public required long? TestRunId { get; set; }
@@ -42,6 +49,9 @@ public class TestExecutionContext
     /// </summary>
     public long? TestEnvironmentId { get; set; }
 
+    /// <summary>
+    /// Compilation errors
+    /// </summary>
     public List<CompilerError> CompilerErrors { get; } = [];
 
     /// <summary>
@@ -58,7 +68,29 @@ public class TestExecutionContext
     /// This is the ID returned from the external CI/CD system when running
     /// </summary>
     public string? CiCdPipelineIdentifier { get; set; }
+
+    /// <summary>
+    /// The CI/CD system name (e.g. gitlab)
+    /// </summary>
     public string? CiCdSystem { get; set; }
+
+    /// <summary>
+    /// Tenant ID
+    /// </summary>
     public string? TenantId { get; set; }
+
+    /// <summary>
+    /// ID for configuration of external system
+    /// </summary>
     public long? CiCdExternalSystemId { get; set; }
+
+    /// <summary>
+    /// Dependencies that are required
+    /// </summary>
+    public List<TestCaseDependency>? Dependencies { get; set; }
+
+    /// <summary>
+    /// Time when resources will be unlocked if not manually unlocked
+    /// </summary>
+    public DateTimeOffset ResourceExpiry { get; set; } = DateTimeOffset.MaxValue;
 }

@@ -5,6 +5,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.TestResources.Allocation;
+
 namespace TestBucket.Domain.Testing.Compiler;
 
 /// <summary>
@@ -20,5 +22,12 @@ public interface ITestCompiler
     /// <param name="source"></param>
     /// <returns></returns>
     Task<string> CompileAsync(ClaimsPrincipal principal, TestExecutionContext context, string source);
-    Task ResolveVariablesAsync(ClaimsPrincipal principal, TestExecutionContext context);
+
+    /// <summary>
+    /// Resolves variables from the test context, including TestEnvironment, TestCase parameters, and resources
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    Task ResolveVariablesAsync(ClaimsPrincipal principal, TestExecutionContext context, CancellationToken cancellationToken);
 }

@@ -175,7 +175,14 @@ namespace TestBucket.AdbProxy.Proxy
                         await OnCnxnReceivedAsync(message, cancellationToken);
                         break;
                     case AdbProtocolConstants.A_OPEN:
-                        await OnOpenReceivedAsync(message, cancellationToken);
+                        try
+                        {
+                            await OnOpenReceivedAsync(message, cancellationToken);
+                        }
+                        catch
+                        {
+                            await OnOpenReceivedAsync(message, cancellationToken);
+                        }
                         break;
                     case AdbProtocolConstants.A_SYNC:
                         break;

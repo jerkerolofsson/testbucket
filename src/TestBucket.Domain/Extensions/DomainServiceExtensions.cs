@@ -37,6 +37,7 @@ using TestBucket.Domain.Testing.Services.Classification;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Settings;
 using TestBucket.Domain.TestResources;
+using TestBucket.Domain.TestResources.Allocation;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class DomainServiceExtensions
@@ -66,7 +67,7 @@ public static class DomainServiceExtensions
         services.AddSingleton<JobAddedEventSignal>();
         services.AddScoped<IRunnerManager, RunnerManager>();
         services.AddScoped<IJobManager, JobManager>();
-        
+        services.AddScoped<TestResourceDependencyAllocator>();
 
         services.AddScoped<IFileResourceManager, FileResourceManager>();
 

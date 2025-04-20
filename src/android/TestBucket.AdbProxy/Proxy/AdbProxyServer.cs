@@ -49,7 +49,7 @@ namespace TestBucket.AdbProxy.Proxy
                 }
             }
 
-            Device.Url = $"{hostname??"localhost"}:{Port}";
+            Device.Url = DeviceUrl = $"{hostname??"localhost"}:{Port}";
         }
 
         /// <summary>
@@ -71,6 +71,8 @@ namespace TestBucket.AdbProxy.Proxy
         /// Device Mame
         /// </summary>
         public string DeviceName { get; }
+
+        public string DeviceUrl { get; }
 
         /// <summary>
         /// Starts the server, waiting for clients to connect (adb connect)

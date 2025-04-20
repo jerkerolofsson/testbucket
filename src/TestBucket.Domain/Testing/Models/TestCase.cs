@@ -1,6 +1,4 @@
-﻿using TestBucket.Contracts.Testing.Models;
-
-namespace TestBucket.Domain.Testing.Models;
+﻿namespace TestBucket.Domain.Testing.Models;
 
 [Table("testcases")]
 [Index(nameof(Created))]
@@ -105,6 +103,12 @@ public class TestCase : TestEntity
     /// </summary>
     [Column(TypeName = "jsonb")]
     public Dictionary<string, string>? TestParameters { get; set; }
+
+    /// <summary>
+    /// List of dependencies required to run this test case
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public List<TestCaseDependency>? Dependencies { get; set; }
 
     // Navigation
     public TestSuiteFolder? TestSuiteFolder { get; set; }

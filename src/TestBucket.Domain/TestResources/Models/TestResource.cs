@@ -54,7 +54,6 @@ public class TestResource : Entity
     /// <summary>
     /// Types of resource (for example "phone"). A resource should have atleast one, but could have multiple types defined
     /// </summary>
-    [Column(TypeName = "jsonb")]
     public required string[] Types { get; set; }
 
     /// <summary>

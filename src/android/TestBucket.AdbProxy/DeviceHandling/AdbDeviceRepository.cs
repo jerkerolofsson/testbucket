@@ -47,6 +47,12 @@ public class AdbDeviceRepository : IAdbDeviceRepository
         foreach (var device in devices)
         {
             deviceDict[device.DeviceId] = device;
+
+            if(_servers.TryGetValue(device.DeviceId, out var proxyServer))
+            {
+                device.Url = proxyServer.DeviceUrl;
+                device.Port = proxyServer.Port;
+            }
         }
 
         // Stop servers where the device has been removed

@@ -15,6 +15,14 @@ internal class TestResourceController : TenantBaseService
         _manager = manager;
     }
 
+    public async Task UnlockAsync(TestResource resource)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        resource.Locked = false;
+        resource.LockExpires = null;
+        resource.LockOwner = null;
+        await _manager.UpdateAsync(principal, resource);
+    }
     public async Task<PagedResult<TestResource>> GetResourcesAsync(int offset, int count)
     {
         var principal = await GetUserClaimsPrincipalAsync();

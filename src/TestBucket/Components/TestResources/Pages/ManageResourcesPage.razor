@@ -36,7 +36,28 @@
                     }
                 </CellTemplate>
             </TemplateColumn>
+            <TemplateColumn>
+                <CellTemplate>
+                    @if (context.Item.Locked)
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Lock" Color="Color.Warning" OnClick="async () => await UnlockAsync(context.Item)"/>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
             <PropertyColumn Property="x => x.ResourceId" Title="@loc["id"]"/>
+
+            <TemplateColumn Title="@loc["types"]">
+                <CellTemplate>
+                    @if (context.Item.Types is not null)
+                    {
+                        foreach (var type in context.Item.Types)
+                        {
+                            <MudText Color="Color.Secondary">@type</MudText>
+                        }
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
             <PropertyColumn Property="x => x.Name" Title="@loc["name"]" />
             <PropertyColumn Property="x => x.Manufacturer" Title="@loc["manufacturer"]" />
             <PropertyColumn Property="x => x.Model" Title="@loc["model"]" />
@@ -79,6 +100,11 @@
     private void OnRowClicked(TestResource resource)
     {
         appNav.NavigateTo(resource);
+    }
+
+    private async Task UnlockAsync(TestResource resource)
+    {
+        await controller.UnlockAsync(resource);
     }
 
     private void SetupBreadcrumbs()

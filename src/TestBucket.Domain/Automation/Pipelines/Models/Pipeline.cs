@@ -7,6 +7,11 @@ public class Pipeline : ProjectEntity
     public long Id { get; set; }
 
     /// <summary>
+    /// GUID identifier for the pipeline
+    /// </summary>
+    public string? Guid { get; set; }
+
+    /// <summary>
     /// ID in remote system
     /// </summary>
     public string? CiCdPipelineIdentifier { get; set; }

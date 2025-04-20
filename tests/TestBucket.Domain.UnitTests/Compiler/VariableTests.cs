@@ -14,7 +14,7 @@ namespace TestBucket.Domain.UnitTests.Compiler
                 ["KEY1"] = "value1",
                 ["KEY2"] = "value2",
             };
-            var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0 };
+            var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0, Guid = "1" };
             var result = TestCompiler.ReplaceVariables(variables, "{{KEY1}}", context);
 
             Assert.Equal("value1", result);
@@ -29,7 +29,7 @@ namespace TestBucket.Domain.UnitTests.Compiler
                 ["KEY2"] = "value2",
             };
 
-            var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0 };
+            var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0, Guid = "1" };
             var result = TestCompiler.ReplaceVariables(variables, "{{KEY1}} {{KEY2}}", context);
 
             Assert.Equal("value1 value2", result);
@@ -43,7 +43,7 @@ namespace TestBucket.Domain.UnitTests.Compiler
                 ["KEY1"] = "value1",
                 ["KEY2"] = "value2",
             };
-            var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0 };
+            var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0, Guid = "1" };
             var result = TestCompiler.ReplaceVariables(variables, " {{KEY1}} {{KEY2}}", context);
 
             Assert.Equal(" value1 value2", result);
@@ -57,7 +57,7 @@ namespace TestBucket.Domain.UnitTests.Compiler
                 ["KEY1"] = "value1",
                 ["KEY2"] = "value2",
             };
-            var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0 };
+            var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0, Guid = "1" };
             var result = TestCompiler.ReplaceVariables(variables, "{{KEY1}} {{KEY2}} ", context);
 
             Assert.Equal("value1 value2 ", result);
@@ -71,7 +71,7 @@ namespace TestBucket.Domain.UnitTests.Compiler
             {
                 ["KEY1"] = "value1",
             };
-            var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0 };
+            var context = new TestExecutionContext { ProjectId = 0, TeamId = 0, TestRunId = 0, Guid = "1" };
             var result = TestCompiler.ReplaceVariables(variables, "{{KEY1}} {{KEY2}} ", context);
 
             Assert.Equal("value1 {{KEY2}} ", result);

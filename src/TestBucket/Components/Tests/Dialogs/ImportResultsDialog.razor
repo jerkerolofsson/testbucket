@@ -1,9 +1,9 @@
 ﻿@using TestBucket.Components.Uploads.Services
 @using TestBucket.Formats
 
-@attribute [Authorize(Roles = "ADMIN")]
 @inject TestCaseEditorController testCaseEditorService
 @inject AttachmentsService attachmentsService
+@inject IStringLocalizer<SharedStrings> loc
 
 <EditForm Model="@_options" OnValidSubmit="Submit">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
@@ -53,9 +53,9 @@
         <DialogActions>
             @if (_options.File is not null)
             {
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
             }
-            <MudButton OnClick="Close">Cancel</MudButton>
+            <MudButton OnClick="Close">@loc["cancek"]</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>

@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.TestResources;
+﻿using TestBucket.Contracts.TestResources;
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.TestAccounts.Models;
 using TestBucket.Domain.TestResources.Models;
 using TestBucket.Domain.TestResources.Specifications;
 
@@ -22,6 +14,8 @@ internal class TestResourceManager : ITestResourceManager
         _repository = repository;
     }
 
+
+    /// <inheritdoc/>
     public async Task UpdateAsync(ClaimsPrincipal principal, TestResource resource)
     {
         principal.ThrowIfEntityTenantIsDifferent(resource.TenantId);
@@ -79,7 +73,7 @@ internal class TestResourceManager : ITestResourceManager
             }
 
             // Process all new or updated resources
-            foreach(var resource in resources.Where(x => !existingResources.Items.Any(e => e.ResourceId == x.ResourceId)))
+            foreach(var resource in resources)
             {
                 var existingResource = existingResources.Items.Where(x => x.ResourceId == resource.ResourceId).FirstOrDefault();
 
@@ -95,17 +89,16 @@ internal class TestResourceManager : ITestResourceManager
                         ResourceId = resource.ResourceId,
                         Owner = resource.Owner,
                         TenantId = tenantId,
-                        Types = resource.Types,
+                        Types = resource.Types.ToArray(),
                         Variables = resource.Variables,
                     };
                     await AddAsync(principal, testResource);
                 }
                 else
                 {
-                    existingResource.Enabled = false;
-
+                    existingResource.Enabled = true;
                     existingResource.Model = resource.Model;
-                    existingResource.Types = resource.Types;
+                    existingResource.Types = resource.Types.ToArray();
                     existingResource.Manufacturer = resource.Manufacturer;
                     existingResource.Variables = resource.Variables;
                     await UpdateAsync(principal, existingResource);
@@ -113,4 +106,5 @@ internal class TestResourceManager : ITestResourceManager
             }
         }
     }
+
 }

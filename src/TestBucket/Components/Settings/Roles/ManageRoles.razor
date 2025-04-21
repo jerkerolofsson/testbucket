@@ -4,10 +4,13 @@
 @page "/{tenantId}/settings/roles"
 @using TestBucket.Components.Shared.Permissions
 @using TestBucket.Domain.Identity.Permissions
+@inject AppNavigationManager appNav
 @inject IStringLocalizer<SharedStrings> loc
 @inject RoleLocalizer roleLocalizer
 
 <MudStack Class="container-settings-page">
+
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
         <MudIcon Icon="@Icons.Material.Filled.SecurityUpdate" Size="Size.Large" Color="Color.Secondary" />
@@ -77,6 +80,19 @@
     private List<RolePermission> _permissions = [];
     private string[] _roles = [Roles.READ_ONLY, Roles.REGULAR_USER, Roles.ADMIN, Roles.SUPERADMIN];
 
+    private List<BreadcrumbItem> _nav = [];
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["roles"], appNav.GetManageRolesUrl()));
+    }
 
     public string GetStyle(PermissionLevel level)
     {

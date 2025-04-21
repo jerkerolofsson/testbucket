@@ -3,10 +3,13 @@
 @page "/{tenantId}/Settings/Tenants"
 @inject TenantController tenantService
 @inject IDialogService dialogService
+@inject AppNavigationManager appNav
 @inject NavigationManager navigationManager
 @inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Class="container-settings-page">
+
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudDataGrid ServerData="LoadGridData"
         Dense="true"
@@ -43,6 +46,19 @@
 
     private MudDataGrid<Tenant>? _dataGrid;
 
+    private List<BreadcrumbItem> _nav = [];
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["tenants"], appNav.GetManageTenantsUrl()));
+    }
     private void OnRowClicked(Tenant tenant)
     {
         navigationManager.NavigateTo($"/{TenantId}/tenants/manage/{tenant.Id}");

@@ -271,6 +271,7 @@ internal class TestRunCreationController : TenantBaseService
                     // todo: default envi
                     TestEnvironmentId = null, 
                     
+                    // Defines the resources and accounts that will be locked by the compiler (ResolveVariablesAsync)
                     Dependencies = testSuite.Dependencies
                 };
 
@@ -292,6 +293,7 @@ internal class TestRunCreationController : TenantBaseService
                 }
                 finally
                 {
+                    // ResolveVariables will lock resource and generate environment variables
                     await _mediator.Send(new ReleaseResourcesRequest(context.Guid, principal.GetTenantIdOrThrow()));
                     await _mediator.Send(new ReleaseAccountsRequest(context.Guid, principal.GetTenantIdOrThrow()));
                 }

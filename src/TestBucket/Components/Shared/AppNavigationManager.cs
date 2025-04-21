@@ -128,15 +128,30 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Settings/ManageProjects";
     }
-    public string GetTestAccountsSettingsUrl()
+    public string GetManageUsersUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
-        return $"/{tenantId}/Settings/Accounts";
+        return $"/{tenantId}/Settings/Users";
+    }
+    public string GetManageRolesUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/Roles";
     }
     public string GetTestEnvironmentSettingsUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Settings/ManageEnvironments";
+    }
+    public string GetTestAccountsSettingsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/Accounts";
+    }
+    public string GetManageTenantsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/Tenants";
     }
     public string GetTestResourcesSettingsUrl()
     {

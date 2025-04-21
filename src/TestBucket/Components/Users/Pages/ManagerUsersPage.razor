@@ -7,8 +7,11 @@
 @inject UserController userController
 @inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<SharedStrings> loc
+@inject AppNavigationManager appNav
 
 <MudStack Class="container-settings-page">
+
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudDataGrid ServerData="LoadGridData"
                  Style="width: 100%"
@@ -51,6 +54,20 @@
     [Parameter] public string? TenantId { get; set; }
 
     private MudDataGrid<ApplicationUser>? _dataGrid;
+
+    private List<BreadcrumbItem> _nav = [];
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["users"], appNav.GetManageUsersUrl()));
+    }
 
     private async Task AddUserAsync()
     {

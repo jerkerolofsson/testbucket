@@ -17,6 +17,11 @@ public class TestCaseDependency
     public string? ResourceType { get; set; }
 
     /// <summary>
+    /// The test case requires an account of this specified type
+    /// </summary>
+    public string? AccountType { get; set; }
+
+    /// <summary>
     /// Attribute requirements
     /// </summary>
     public List<AttributeRequirement>? AttributeRequirements { get; set; }

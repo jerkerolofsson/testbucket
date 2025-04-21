@@ -23,11 +23,13 @@ public interface ITestCompiler
     /// <returns></returns>
     Task<string> CompileAsync(ClaimsPrincipal principal, TestExecutionContext context, string source);
 
+   
     /// <summary>
-    /// Resolves variables from the test context, including TestEnvironment, TestCase parameters, and resources
+    /// Resolves variables 
     /// </summary>
     /// <param name="principal"></param>
     /// <param name="context"></param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     Task ResolveVariablesAsync(ClaimsPrincipal principal, TestExecutionContext context, CancellationToken cancellationToken);
 }

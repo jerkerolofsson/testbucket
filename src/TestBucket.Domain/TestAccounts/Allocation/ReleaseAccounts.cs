@@ -1,31 +1,31 @@
 ﻿using Mediator;
 
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.TestResources.Models;
-
+using TestBucket.Domain.TestAccounts;
+using TestBucket.Domain.TestAccounts.Models;
 using TestBucket.Domain.TestResources.Specifications;
 
-namespace TestBucket.Domain.TestResources.Allocation;
-public record class ReleaseResourcesRequest(string LockOwner, string TenantId) : IRequest;
+namespace TestBucket.Domain.TestAccounts.Allocation;
+public record class ReleaseAccountsRequest(string LockOwner, string TenantId) : IRequest;
 
 /// <summary>
-/// Releases resources that are locked by a specific owner
+/// Releases accounts that are locked by a specific owner
 /// </summary>
-public class ReleaseResourcesHandler : IRequestHandler<ReleaseResourcesRequest>
+public class ReleaseAccountsHandler : IRequestHandler<ReleaseAccountsRequest>
 {
-    private readonly ITestResourceRepository _resourceRepository;
+    private readonly ITestAccountRepository _resourceRepository;
 
-    public ReleaseResourcesHandler(ITestResourceRepository resourceRepository)
+    public ReleaseAccountsHandler(ITestAccountRepository resourceRepository)
     {
         _resourceRepository = resourceRepository;
     }
 
-    public async ValueTask<Unit> Handle(ReleaseResourcesRequest request, CancellationToken cancellationToken)
+    public async ValueTask<Unit> Handle(ReleaseAccountsRequest request, CancellationToken cancellationToken)
     {
-        FilterSpecification<TestResource>[] filters = [
-            new FilterByTenant<TestResource>(request.TenantId),
-            new FindLockedResource(),
-            new FindResourceByLockOwner(request.LockOwner)
+        FilterSpecification<TestAccount>[] filters = [
+            new FilterByTenant<TestAccount>(request.TenantId),
+            new FindLockedAccount(),
+            new FindAccountByLockOwner(request.LockOwner)
        ];
 
         int offset = 0;

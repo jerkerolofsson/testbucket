@@ -18,11 +18,28 @@
                 <MudIcon Icon="@Icons.Material.Filled.Devices" Size="Size.Large" Color="Color.Info" />
                 <MudText Typo="Typo.h2">@loc["required-resources"]</MudText>
                 <MudSpacer/>
-                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Devices" OnClick="AddResourceAsync"/>
+                <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" OnClick="AddAccountAsync" />
             </MudStack>
         </ToolBarContent>
         <Columns>
-            <PropertyColumn Property="x => x.ResourceType" Title="@loc["resource-type"]"/>
+
+            <TemplateColumn Title="@loc["resource-type"]">
+                <EditTemplate>
+                    <MudStack Row>
+                        @if (context.Item.ResourceType is not null)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Devices" Size="Size.Small" Color="Color.Info"/>
+                            <MudText>@context.Item.ResourceType</MudText>
+                        }
+                        else if (context.Item.AccountType is not null)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Size="Size.Small" Color="Color.Info"/>
+                            <MudText>@context.Item.AccountType</MudText>
+                        }
+                    </MudStack>
+                </EditTemplate>
+            </TemplateColumn>
 
             <TemplateColumn Title="@loc["variable-prefix"]">
                 <EditTemplate>
@@ -32,6 +49,13 @@
                         int index = Dependencies.Where(x => x.ResourceType == type).ToList().IndexOf(context.Item);
 
                         <MudText>resources__@(type)__@(index)</MudText>
+                    }
+                    else if (context.Item.AccountType is not null && Dependencies is not null)
+                    {
+                        var type = context.Item.AccountType;
+                        int index = Dependencies.Where(x => x.AccountType == type).ToList().IndexOf(context.Item);
+
+                        <MudText>accounts__@(type)__@(index)</MudText>
                     }
                 </EditTemplate>
             </TemplateColumn>
@@ -91,7 +115,18 @@
         await DependenciesChanged.InvokeAsync(Dependencies);
     }
 
-    private async Task AddAsync()
+    private async Task AddAccountAsync()
+    {
+        var dialog = await dialogService.ShowAsync<AddAccountDependencyDialog>();
+        var result = await dialog.Result;
+        if (result?.Data is TestCaseDependency dependency)
+        {
+            Dependencies ??= new();
+            Dependencies.Add(dependency);
+            await OnChangedAsync();
+        }
+    }
+    private async Task AddResourceAsync()
     {
         var dialog = await dialogService.ShowAsync<AddResourceDependencyDialog>();
         var result = await dialog.Result;

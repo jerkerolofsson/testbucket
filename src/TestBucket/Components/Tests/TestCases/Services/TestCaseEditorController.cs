@@ -10,8 +10,10 @@ using TestBucket.Domain.Environments;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Shared;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Teams.Models;
+using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.Testing.Compiler;
 using TestBucket.Domain.TestResources.Allocation;
 
@@ -121,6 +123,7 @@ internal class TestCaseEditorController : TenantBaseService
             var result = await CompilePreviewAsync(testCase, context, text, cancellationToken);
 
             await _mediator.Send(new ReleaseResourcesRequest(context.Guid, testCase.TenantId));
+            await _mediator.Send(new ReleaseAccountsRequest(context.Guid, testCase.TenantId));
 
             errors.Clear();
             errors.AddRange(context.CompilerErrors);

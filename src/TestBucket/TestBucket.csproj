@@ -56,4 +56,8 @@
     <Folder Include="Services\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="Components\Tests\Dialogs\AddAccountDependencyDialog.razor" />
+  </ItemGroup>
+
 </Project>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Tenants.Models;
+using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.TestResources.Allocation;
@@ -21,15 +22,18 @@ internal class TestCompiler : ITestCompiler
     private readonly ITestCaseRepository _testCaseRepository;
     private readonly ITestEnvironmentManager _testEnvironmentManager;
     private readonly TestResourceDependencyAllocator _resourceAllocator;
+    private readonly TestAccountDependencyAllocator _accountAllocator;
 
     public TestCompiler(
         ITestCaseRepository testCaseRepository,
         ITestEnvironmentManager testEnvironmentManager,
+        TestAccountDependencyAllocator accountAllocator,
         TestResourceDependencyAllocator resourceAllocator)
     {
         _testCaseRepository = testCaseRepository;
         _testEnvironmentManager = testEnvironmentManager;
         _resourceAllocator = resourceAllocator;
+        _accountAllocator = accountAllocator;
     }
 
     /// <summary>
@@ -54,6 +58,8 @@ internal class TestCompiler : ITestCompiler
         var resourceBag = await _resourceAllocator.CollectDependenciesAsync(principal, context, cancellationToken);
         resourceBag.ResolveVariables(context.Variables);
 
+        var accountBag = await _accountAllocator.CollectDependenciesAsync(principal, context, cancellationToken);
+        accountBag.ResolveVariables(context.Variables);
 
         if (context.TestRunId is not null)
         {
@@ -156,6 +162,43 @@ internal class TestCompiler : ITestCompiler
 
     private static readonly Regex s_regexVariable = new Regex("{{([^}]+)}}");
 
+    /// <summary>
+    /// Scans the code for variables
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
+    public static HashSet<string> FindVariables(string text)
+    {
+        var lines = text.Split('\n');
+        HashSet<string> variables = [];
+        int lineNumber = 0;
+        foreach (var line in lines)
+        {
+            var outputLine = line;
+
+            lineNumber++;
+            int pos = 0;
+            while (true)
+            {
+                var match = s_regexVariable.Match(outputLine, pos);
+                if (!match.Success)
+                {
+                    break;
+                }
+
+                var start = outputLine[0..match.Index];
+                var variablePatternMatch = outputLine[match.Index..(match.Length + match.Index)];
+                var end = outputLine[(match.Index + match.Length)..];
+
+                var variable = variablePatternMatch.TrimStart('{').TrimEnd('}');
+                if (!variables.Contains(variable))
+                    variables.Add(variable);
+            }
+        }
+
+        return variables;
+    }
+
     public static string ReplaceVariables(Dictionary<string,string> variables, string compiledWithTemplate, TestExecutionContext context)
     {
         var lines = compiledWithTemplate.Split('\n');
@@ -215,14 +258,8 @@ internal class TestCompiler : ITestCompiler
             outputLines.Add(outputLine);
         }
 
-        //foreach (var variable in variables)
-        //{
-        //    var pattern = "{{" + variable.Key + "}}";
-        //    compiledWithTemplate = compiledWithTemplate.Replace(pattern, variable.Value);   
-        //}
         return string.Join("\n", outputLines);
     }
-
     private async Task<TestCase?> FindTestCaseByNameAsync(ClaimsPrincipal principal, string name)
     {
         FilterSpecification<TestCase>[] filters = [new FilterByTenant<TestCase>(principal.GetTenantIdOrThrow()), new FilterTestCasesByName(name)];

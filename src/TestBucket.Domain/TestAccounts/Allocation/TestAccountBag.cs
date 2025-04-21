@@ -1,0 +1,46 @@
+﻿using TestBucket.Domain.TestAccounts.Models;
+
+namespace TestBucket.Domain.TestAccounts.Allocation;
+
+/// <summary>
+/// This contains resources resources which are unlocked when the test completes
+/// </summary>
+public class TestAccountBag
+{
+    private readonly List<TestAccount> _resources = [];
+    private readonly ClaimsPrincipal _principal;
+    private readonly ITestAccountManager _manager;
+
+    public TestAccountBag(ClaimsPrincipal principal, ITestAccountManager manager)
+    {
+        _principal = principal;
+        _manager = manager;
+    }
+
+    public async ValueTask AddAsync(TestAccount resource, DateTimeOffset lockExpires, string lockOwner)
+    {
+        _resources.Add(resource);
+        resource.Locked = true;
+        resource.LockOwner = lockOwner;
+        resource.LockExpires = lockExpires;
+        await _manager.UpdateAsync(_principal, resource);
+    }
+
+    internal void ResolveVariables(Dictionary<string, string> variables)
+    {
+        foreach(var resource in _resources)
+        {
+            var type = resource.Type;
+            var resourcesByType = _resources.Where(x => x.Type == type).ToList();
+            var index = resourcesByType.IndexOf(resource);
+
+            var key = $"accounts__{type}__{index}";
+
+            foreach(var attribute in resource.Variables)
+            {
+                var fullName = key + "__" + attribute.Key;
+                variables[fullName] = attribute.Value;  
+            }
+        }
+    }
+}

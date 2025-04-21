@@ -17,6 +17,7 @@ using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.Tenants;
+using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.Testing.Compiler;
 using TestBucket.Domain.TestResources.Allocation;
 
@@ -248,13 +249,16 @@ internal class TestRunCreationController : TenantBaseService
 
     internal async Task EvalMarkdownCodeAsync(TestCase test, string language, string code, CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(test.TenantId);
         ArgumentNullException.ThrowIfNull(test.TestProjectId);
 
         var principal = await GetUserClaimsPrincipalAsync();
 
         if (await _markdownAutomationRunner.SupportsLanguageAsync(principal, language))
         {
-            if (test?.TeamId is not null)
+            var testSuite = await _testCaseRepository.GetTestSuiteByIdAsync(test.TenantId, test.TestSuiteId);
+
+            if (test?.TeamId is not null && testSuite is not null)
             {
                 var context = new TestExecutionContext
                 {
@@ -267,8 +271,7 @@ internal class TestRunCreationController : TenantBaseService
                     // todo: default envi
                     TestEnvironmentId = null, 
                     
-                    // todo: debug: testing only
-                    Dependencies = [new TestCaseDependency() { ResourceType = "android" }]
+                    Dependencies = testSuite.Dependencies
                 };
 
                 try
@@ -290,6 +293,7 @@ internal class TestRunCreationController : TenantBaseService
                 finally
                 {
                     await _mediator.Send(new ReleaseResourcesRequest(context.Guid, principal.GetTenantIdOrThrow()));
+                    await _mediator.Send(new ReleaseAccountsRequest(context.Guid, principal.GetTenantIdOrThrow()));
                 }
             }
         }
@@ -333,6 +337,7 @@ internal class TestRunCreationController : TenantBaseService
                 finally
                 {
                     await _mediator.Send(new ReleaseResourcesRequest(context.Guid, principal.GetTenantIdOrThrow()));
+                    await _mediator.Send(new ReleaseAccountsRequest(context.Guid, principal.GetTenantIdOrThrow()));
                 }
                 _appNavigationManager.NavigateTo(run);
             }

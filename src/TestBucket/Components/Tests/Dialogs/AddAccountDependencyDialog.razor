@@ -3,12 +3,12 @@
 
 <EditForm Model="@_type" OnValidSubmit="OnValidSubmit">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
-        <TitleContent>@loc["add-resource"]</TitleContent>
+        <TitleContent>@loc["add-account"]</TitleContent>
         <DialogContent>
             <MudStack Spacing="0">
                 <Field Row>
-                    <FieldHeader>@loc["resource-type"]</FieldHeader>
-                    <MudTextField Class="ml-5" Variant="Variant.Outlined" T="string" @bind-Value="@_type"></MudTextField>
+                    <FieldHeader>@loc["account-type"]</FieldHeader>
+                    <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_type"></MudTextField>
                 </Field>
             </MudStack>
         </DialogContent>
@@ -37,7 +37,7 @@
 
     private void OnValidSubmit()
     {
-        var dependency = new TestCaseDependency { ResourceType = _type };
+        var dependency = new TestCaseDependency { AccountType = _type };
         MudDialog.Close(dependency);
     }
 }

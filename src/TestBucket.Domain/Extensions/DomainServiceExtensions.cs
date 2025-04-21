@@ -30,6 +30,7 @@ using TestBucket.Domain.Settings.Server;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Tenants;
 using TestBucket.Domain.TestAccounts;
+using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Compiler;
 using TestBucket.Domain.Testing.Markdown;
@@ -68,6 +69,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IRunnerManager, RunnerManager>();
         services.AddScoped<IJobManager, JobManager>();
         services.AddScoped<TestResourceDependencyAllocator>();
+        services.AddScoped<TestAccountDependencyAllocator>();
 
         services.AddScoped<IFileResourceManager, FileResourceManager>();
 

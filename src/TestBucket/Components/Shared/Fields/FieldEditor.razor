@@ -20,8 +20,9 @@
                 else
                 {
                     <MudStack Row Style="width: 100%">
-                        <MudText Class="tb-write-only-field">****</MudText>
-                        <MudSpacer/>
+                        <MudSpacer />
+
+                        <MudText>••••</MudText>
                         <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="EditField">Change</MudButton>
                     </MudStack>
                 }
@@ -57,7 +58,8 @@
                 Field?.FieldDefinition?.Type == FieldType.SingleSelection || 
                 Field?.FieldDefinition?.Type == FieldType.Integer ||
                 Field?.FieldDefinition?.Type == FieldType.ImageUri ||
-                Field?.FieldDefinition?.Type == FieldType.Double;
+                Field?.FieldDefinition?.Type == FieldType.Double ||
+                Field?.FieldDefinition?.WriteOnly == true;
 
     private bool _editingWriteOnlyField = false;
 

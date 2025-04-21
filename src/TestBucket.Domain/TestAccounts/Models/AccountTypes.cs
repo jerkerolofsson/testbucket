@@ -17,5 +17,10 @@ public class AccountTypes
     /// </summary>
     public const string Email = "email";
 
-    public readonly static string[] All = [Wifi, Email];
+    /// <summary>
+    /// Generic username / password
+    /// </summary>
+    public const string Server = "server";
+
+    public readonly static string[] All = [Email, Server, Wifi];
 }

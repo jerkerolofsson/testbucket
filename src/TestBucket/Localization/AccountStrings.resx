@@ -117,10 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="account" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="account-details" xml:space="preserve">
+    <value>Account Details</value>
+  </data>
   <data name="account-name" xml:space="preserve">
     <value>Account Name</value>
   </data>
-  <data name="account-subtype" xml:space="preserve">
+  <data name="account-sub-type" xml:space="preserve">
     <value>Sub Type</value>
   </data>
   <data name="account-type" xml:space="preserve">
@@ -129,7 +135,19 @@
   <data name="add-account" xml:space="preserve">
     <value>Add Account</value>
   </data>
+  <data name="custom-variables" xml:space="preserve">
+    <value>Custom Variables</value>
+  </data>
+  <data name="email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="password" xml:space="preserve">
+    <value>Password</value>
+  </data>
   <data name="test-accounts-description" xml:space="preserve">
     <value>Test accounts contain credentials or account settings and can be provisioned to test cases to avoid duplicate usage of the same account when running concurrent tests.</value>
+  </data>
+  <data name="username" xml:space="preserve">
+    <value>Username</value>
   </data>
 </root>

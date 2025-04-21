@@ -21,7 +21,9 @@ internal class TestAccountManager : ITestAccountManager
 
     public async Task UpdateAsync(ClaimsPrincipal principal, TestAccount account)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestAccount, PermissionLevel.Write);
         principal.ThrowIfEntityTenantIsDifferent(account.TenantId);
+
         account.TenantId = principal.GetTenantIdOrThrow();
         account.CreatedBy = principal.Identity?.Name ?? throw new Exception("Missing user identity");
         account.ModifiedBy = account.CreatedBy;
@@ -32,6 +34,8 @@ internal class TestAccountManager : ITestAccountManager
 
     public async Task AddAsync(ClaimsPrincipal principal, TestAccount account)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestAccount, PermissionLevel.Write);
+
         account.TenantId = principal.GetTenantIdOrThrow();
         account.CreatedBy = principal.Identity?.Name ?? throw new Exception("Missing user identity");
         account.ModifiedBy = account.CreatedBy;
@@ -42,12 +46,16 @@ internal class TestAccountManager : ITestAccountManager
 
     public async Task<PagedResult<TestAccount>> BrowseAsync(ClaimsPrincipal principal, int offset, int count)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestAccount, PermissionLevel.Read);
+
         FilterSpecification<TestAccount>[] filters = [new FilterByTenant<TestAccount>(principal.GetTenantIdOrThrow())];
         return await _repository.SearchAsync(filters, offset, count);
     }
 
     public async Task DeleteAsync(ClaimsPrincipal principal, TestAccount account)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestAccount, PermissionLevel.Delete);
+
         principal.ThrowIfEntityTenantIsDifferent(account.TenantId);
         await _repository.DeleteAsync(account.Id);
     }
@@ -55,6 +63,7 @@ internal class TestAccountManager : ITestAccountManager
     public async Task<TestAccount?> GetAccountByIdAsync(ClaimsPrincipal principal, long id)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestAccount, PermissionLevel.Read);
         return await _repository.GetAccountByIdAsync(tenantId, id);
     }
 }

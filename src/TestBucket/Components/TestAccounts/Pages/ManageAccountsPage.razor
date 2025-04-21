@@ -11,16 +11,16 @@
     <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudDataGrid ServerData="LoadGridData"
-                 Dense="true"
-                 Hover="true"
+                 Dense Hover RowClass="tb-datarow cursor-pointer"
                  @ref="_dataGrid"
                  RowClick="(row) => OnRowClicked(row.Item)"
                  T="TestAccount"
                  SortMode="SortMode.None">
 
         <ToolBarContent>
-            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
-                <MudText Typo="Typo.h1">@loc["test-accounts"]</MudText>
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Size="Size.Large" Color="Color.Info" />
+                <MudText Typo="Typo.h2">@loc["test-accounts"]</MudText>
                 <MudSpacer />
                 <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
                     <Authorized>
@@ -30,6 +30,8 @@
             </MudStack>
         </ToolBarContent>
         <ColGroup>
+            <col style="width: 10%;" />
+            <col style="width: 10%;" />
             <col />
             <col />
             <col />
@@ -37,6 +39,45 @@
             <col style="width: 10%;" />
         </ColGroup>
         <Columns>
+            <TemplateColumn Title="@loc["enabled"]">
+                <CellTemplate>
+                    @if (context.Item.Enabled)
+                    {
+                        <MudText Color="Color.Success">●</MudText>
+                    }
+                    else
+                    {
+                        <MudText Color="Color.Error">●</MudText>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@loc["locked"]">
+                <CellTemplate>
+                    @if (context.Item.Locked)
+                    {
+                        <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
+                            <Authorized>
+                                <MudIconButton Icon="@Icons.Material.Filled.Lock" Color="Color.Warning" OnClick="async () => await UnlockAsync(context.Item)"/>
+                            </Authorized>
+                            <NotAuthorized>
+                                <MudIcon Icon="@Icons.Material.Filled.Lock" Color="Color.Warning"/>
+                            </NotAuthorized>
+                        </PermissionView>
+                    }
+                    else
+                    {
+                        <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
+                            <Authorized>
+                                <MudIconButton Icon="@Icons.Material.Filled.Lock" OnClick="async () => await LockAsync(context.Item)"/>
+                            </Authorized>
+                            <NotAuthorized>
+                                <MudIcon Icon="@Icons.Material.Filled.Lock"/>
+                            </NotAuthorized>
+                        </PermissionView>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
             <PropertyColumn Property="x => x.Name" Title="@loc["name"]" />
             <PropertyColumn Property="x => x.Type" Title="@accountLoc["account-type"]" />
             <PropertyColumn Property="x => x.SubType" Title="@accountLoc["account-subtype"]" />
@@ -98,6 +139,17 @@
         _dataGrid?.ReloadServerData();
     }
 
+    private async Task UnlockAsync(TestAccount account)
+    {
+        await controller.UnlockAsync(account);
+        _dataGrid?.ReloadServerData();
+    }
+    
+    private async Task LockAsync(TestAccount account)
+    {
+        await controller.LockAsync(account);
+        _dataGrid?.ReloadServerData();
+    }
 
     private void OnRowClicked(TestAccount account)
     {

@@ -26,6 +26,8 @@ namespace TestBucket.Domain.Fields
 
         public async Task AddAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
+
             var cacheKey = GetCacheKey(principal);
             _memoryCache.Remove(cacheKey);
 
@@ -41,6 +43,8 @@ namespace TestBucket.Domain.Fields
 
         public async Task UpdateAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
+
             var cacheKey = GetCacheKey(principal);
             _memoryCache.Remove(cacheKey);
 
@@ -57,6 +61,7 @@ namespace TestBucket.Domain.Fields
         /// <returns></returns>
         public async Task<IReadOnlyList<FieldDefinition>> GetDefinitionsAsync(ClaimsPrincipal principal, long? testProjectId, FieldTarget target)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
             var query = new SearchFieldQuery
             {
                 Target = target,
@@ -68,6 +73,9 @@ namespace TestBucket.Domain.Fields
         }
         public async Task DeleteAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition)
         {
+            // Note: This should be Write and not Delete. It is considered a write operation on the project
+            principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
+
             var cacheKey = GetCacheKey(principal);
             _memoryCache.Remove(cacheKey);
 
@@ -76,6 +84,8 @@ namespace TestBucket.Domain.Fields
         }
         public async Task<IReadOnlyList<FieldDefinition>> SearchAsync(ClaimsPrincipal principal, SearchFieldQuery query)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
+
             var cacheKey = GetCacheKey(principal);
             var fieldDefinitions = (await _memoryCache.GetOrCreateAsync(cacheKey, async (e) =>
             {
@@ -104,6 +114,8 @@ namespace TestBucket.Domain.Fields
 
         public async Task UpsertTestCaseFieldsAsync(ClaimsPrincipal principal, TestCaseField field)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
+
             field.TenantId = principal.GetTenantIdOrThrow();
             await _fieldRepository.UpsertTestCaseFieldsAsync(field);
         }

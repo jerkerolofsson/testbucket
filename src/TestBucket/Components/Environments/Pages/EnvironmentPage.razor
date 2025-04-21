@@ -27,7 +27,10 @@
         </Field>
 
         <EnvironmentVariableEditor Variables="@_environmentVariables" VariablesChanged="OnEnvironmentVariablesChangedAsync">
-            <ToolbarTitle>@loc["variables"]</ToolbarTitle>
+            <ToolbarTitle>
+                <MudIcon Icon="@Icons.Material.Filled.Abc" Size="Size.Large" Color="Color.Tertiary" />
+                <MudText Typo="Typo.h2">@loc["variables"]</MudText>
+            </ToolbarTitle>
         </EnvironmentVariableEditor>
 
         <DependencyEditor Dependencies="@_dependencies" DependenciesChanged="OnDependenciesChangedAsync"/>

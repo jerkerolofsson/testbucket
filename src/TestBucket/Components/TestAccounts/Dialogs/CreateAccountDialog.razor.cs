@@ -103,6 +103,7 @@ public partial class CreateAccountDialog
             _account.Variables[variable.Key] = variable.Value;  
         }
 
+        _account.Enabled = true;
         MudDialog.Close(_account);
     }
 }

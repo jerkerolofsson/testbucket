@@ -9,7 +9,10 @@
 
 <MudStack Class="container-settings-page">
 
-    <MudText Class="mb-3" Typo="Typo.h1">@loc["roles"]</MudText>
+    <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+        <MudIcon Icon="@Icons.Material.Filled.SecurityUpdate" Size="Size.Large" Color="Color.Secondary" />
+        <MudText Typo="Typo.h2">@loc["roles"]</MudText>
+    </MudStack>
 
     <table>
         <thead>
@@ -59,7 +62,10 @@
 @code {
     [Parameter] public string? TenantId { get; set; }
 
-    private PermissionEntityType[] _entities = [PermissionEntityType.Project, PermissionEntityType.User, 
+    private PermissionEntityType[] _entities = [
+        PermissionEntityType.Team, 
+        PermissionEntityType.Project,
+        PermissionEntityType.User,
         PermissionEntityType.TestAccount, 
         PermissionEntityType.TestResource, 
         PermissionEntityType.TestCase, 

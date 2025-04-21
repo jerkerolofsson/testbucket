@@ -348,4 +348,13 @@
   <data name="required-resources" xml:space="preserve">
     <value />
   </data>
+  <data name="runner" xml:space="preserve">
+    <value />
+  </data>
+  <data name="runners" xml:space="preserve">
+    <value />
+  </data>
+  <data name="teams" xml:space="preserve">
+    <value />
+  </data>
 </root>

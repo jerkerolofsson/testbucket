@@ -13,6 +13,12 @@
 
     @if (_resource is not null)
     {
+        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+            <MudIcon Icon="@Icons.Material.Filled.Devices" Size="Size.Large" Color="Color.Info" />
+            <MudText Typo="Typo.h2">@_resource.Name</MudText>
+        </MudStack>
+
+
         <Field Row>
             <FieldHeader>@loc["icon"]</FieldHeader>
             

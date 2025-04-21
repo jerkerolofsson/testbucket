@@ -11,6 +11,7 @@ namespace TestBucket.Domain.Identity.Permissions
         Tenant,
         User,
         Project,
+        Team,
 
         RequirementSpecification,
         Requirement,

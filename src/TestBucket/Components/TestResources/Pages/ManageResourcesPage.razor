@@ -10,21 +10,32 @@
     <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudDataGrid ServerData="LoadGridData"
-                 Dense="true"
-                 Hover="true"
+                 Dense Hover RowClass="tb-datarow cursor-pointer"
                  RowClick="(row) => OnRowClicked(row.Item)"
                  T="TestResource"
                  SortMode="SortMode.None">
 
         <ToolBarContent>
-            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
-                <MudText Typo="Typo.h1">@loc["test-resources"]</MudText>
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                <MudIcon Icon="@Icons.Material.Filled.Devices" Size="Size.Large" Color="Color.Info" />
+                <MudText Typo="Typo.h2">@loc["test-resources"]</MudText>
                 <MudSpacer />
             </MudStack>
         </ToolBarContent>
 
+        <ColGroup>
+            <col style="width: 10%;" />
+            <col style="width: 10%;" />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col />
+            <col style="width: 10%;" />
+        </ColGroup>
+
         <Columns>
-            <TemplateColumn>
+            <TemplateColumn Title="@loc["enabled"]">
                 <CellTemplate>
                     @if (context.Item.Enabled)
                     {
@@ -36,11 +47,18 @@
                     }
                 </CellTemplate>
             </TemplateColumn>
-            <TemplateColumn>
+            <TemplateColumn Title="@loc["locked"]">
                 <CellTemplate>
                     @if (context.Item.Locked)
                     {
-                        <MudIconButton Icon="@Icons.Material.Filled.Lock" Color="Color.Warning" OnClick="async () => await UnlockAsync(context.Item)"/>
+                        <PermissionView Entity="PermissionEntityType.TestResource" Level="PermissionLevel.Write">
+                            <Authorized>
+                                <MudIconButton Icon="@Icons.Material.Filled.Lock" Color="Color.Warning" OnClick="async () => await UnlockAsync(context.Item)" />
+                            </Authorized>
+                            <NotAuthorized>
+                                <MudIcon Icon="@Icons.Material.Filled.Lock" Color="Color.Warning" />
+                            </NotAuthorized>
+                        </PermissionView>
                     }
                 </CellTemplate>
             </TemplateColumn>

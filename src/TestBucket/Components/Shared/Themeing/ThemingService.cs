@@ -121,14 +121,74 @@ internal class ThemingService : TenantBaseService, IDisposable
         {
             switch(_themeName)
             {
+                case "Muted Blue":
+                    return _mutedBlue;
                 case "Yellow":
                     return _yellowTheme;
                 case "Hotpink":
                     return _hotPinkTheme;
+                case "Pastelle":
+                    return _pastelle;
             }
         }
         return _theme;
     }
+
+    private readonly MudTheme _mutedBlue = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Dark = MudColor.Parse("#0d1321"),
+            Surface = MudColor.Parse("#f0ebd8"),
+
+            Primary = MudColor.Parse("#748cab"),
+            Secondary = MudColor.Parse("#3e5c76"),
+            Tertiary = MudColor.Parse("#3e5c76"),
+        },
+        PaletteDark = new PaletteDark()
+        {
+            Dark = MudColor.Parse("#0d1321"),
+            Background = new MudColor(20, 21, 31, 255),
+            Surface = MudColor.Parse("#1d2d44"),
+
+            Primary = MudColor.Parse("#748cab"),
+            Secondary = MudColor.Parse("#748cab"),
+            Tertiary = MudColor.Parse("#f0ebd8"),
+        },
+        LayoutProperties = new LayoutProperties()
+        {
+            DrawerWidthLeft = "260px",
+            DrawerWidthRight = "300px"
+        },
+    };
+
+    private readonly MudTheme _pastelle = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Dark = MudColor.Parse("#d0d0d0"),
+            Surface = new MudColor(245, 245, 245, 255),
+
+            Primary = MudColor.Parse("#fec3a6"),
+            Secondary = MudColor.Parse("#cdeac0"),
+            Tertiary = MudColor.Parse("#efe9ae"),
+        },
+        PaletteDark = new PaletteDark()
+        {
+            Dark = MudColor.Parse("#202020"),
+            Background = new MudColor(20, 21, 31, 255),
+            Surface = new MudColor(30, 31, 41, 255),
+
+            Primary = MudColor.Parse("#fec3a6"),
+            Secondary = MudColor.Parse("#cdeac0"),
+            Tertiary = MudColor.Parse("#efe9ae"),
+        },
+        LayoutProperties = new LayoutProperties()
+        {
+            DrawerWidthLeft = "260px",
+            DrawerWidthRight = "300px"
+        },
+    };
 
     private readonly MudTheme _hotPinkTheme = new MudTheme()
     {
@@ -138,8 +198,8 @@ internal class ThemingService : TenantBaseService, IDisposable
             Surface = new MudColor(245, 245, 245, 255),
 
             Primary = new MudColor(255, 105, 180, 255),
-            Secondary = new MudColor(255, 105, 180, 255),
-            Tertiary = new MudColor(255, 105, 180, 255),
+            Secondary = MudColor.Parse("#f72585"),
+            Tertiary = MudColor.Parse("#b5179e"),
         },
         PaletteDark = new PaletteDark()
         {
@@ -148,8 +208,8 @@ internal class ThemingService : TenantBaseService, IDisposable
             Surface = new MudColor(30, 31, 41, 255),
 
             Primary = new MudColor(255, 105, 180, 255),
-            Secondary = new MudColor(255, 105, 180, 255),
-            Tertiary = new MudColor(255, 105, 180, 255),
+            Secondary = MudColor.Parse("#f72585"),
+            Tertiary = MudColor.Parse("#b5179e"),
         },
         LayoutProperties = new LayoutProperties()
         {
@@ -164,9 +224,9 @@ internal class ThemingService : TenantBaseService, IDisposable
             Dark = MudColor.Parse("#d0d0d0"),
             Surface = new MudColor(245, 245, 245, 255),
             
-            Primary = new MudColor(205, 190, 0, 255),
-            Secondary = new MudColor(205, 180, 0, 255),
-            Tertiary = new MudColor(205, 180, 0, 255),
+            Primary = MudColor.Parse("#ffb703"), //MudColor(205, 190, 0, 255),
+            Secondary = MudColor.Parse("#fb8500"),
+            Tertiary = MudColor.Parse("#219ebc"),
         },
         PaletteDark = new PaletteDark()
         {
@@ -174,9 +234,9 @@ internal class ThemingService : TenantBaseService, IDisposable
             Background = new MudColor(20, 21, 31, 255),
             Surface = new MudColor(30, 31, 41, 255),
 
-            Primary = new MudColor(255, 210, 0, 255),
-            Secondary = new MudColor(255, 200, 0, 255),
-            Tertiary = new MudColor(255, 190, 0, 255),
+            Primary = MudColor.Parse("#ffb703"),
+            Secondary = MudColor.Parse("#fb8500"),
+            Tertiary = MudColor.Parse("#219ebc"),
         },
         LayoutProperties = new LayoutProperties()
         {

@@ -9,6 +9,37 @@
 
     <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
+    @if(_account is not null)
+    {
+        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+            <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Size="Size.Large" Color="Color.Info"/>
+            <MudText Typo="Typo.h2">@_account.Name</MudText>
+        </MudStack>
+
+        <Field Row>
+            <FieldHeader>@loc["enabled"]</FieldHeader>
+            <MudSpacer />
+            <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
+                <Authorized>
+                    <MudSwitchM3 T="bool" Color="Color.Tertiary" ValueChanged="OnEnabledChangedAsync" Value="@_account.Enabled"/>
+                </Authorized>
+                <NotAuthorized>
+                    <MudSwitchM3 Color="Color.Tertiary" Disabled Value="@_account.Enabled" />
+                </NotAuthorized>
+            </PermissionView>
+        </Field>
+        <MudTable Items="@_account.Variables" Dense RowClass="tb-datarow">
+            <HeaderContent>
+                <MudTh>@loc["name"]</MudTh>
+                <MudTh>@loc["value"]</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@loc["name"]">@context.Key</MudTd>
+                <MudTd DataLabel="@loc["value"]">@context.Value</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+
 </MudStack>
 
 @code {
@@ -23,6 +54,16 @@
     protected override void OnInitialized()
     {
         SetupBreadcrumbs();
+    }
+
+    private async Task OnEnabledChangedAsync(bool value)
+    {
+        if(_account is null)
+        {
+            return;
+        }
+        _account.Enabled = value;
+        await controller.UpdateAsync(_account);
     }
 
     protected override async Task OnParametersSetAsync()

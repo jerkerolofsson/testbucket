@@ -24,7 +24,7 @@ namespace TestBucket.Domain.Settings.Appearance
             Metadata.Category.Name = "Appearance";
             Metadata.Category.Icon = SettingIcon.Appearance;
             Metadata.Section.Name = "Theme";
-            Metadata.Options = ["Default", "Yellow", "Hotpink"];
+            Metadata.Options = ["Default", "Yellow", "Hotpink", "Pastelle", "Muted Blue"];
             Metadata.Type = FieldType.SingleSelection;
         }
 

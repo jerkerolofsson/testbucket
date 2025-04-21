@@ -2,12 +2,11 @@
 @using TestBucket.Components.Teams.Dialogs
 @using TestBucket.Domain.Teams.Models
 @layout SettingsLayout
-@attribute [Authorize(Roles = "ADMIN")]
 @inject TeamController teamService
 @inject IDialogService dialogService
-<MudStack Class="container-settings-page">
+@inject IStringLocalizer<SharedStrings> loc
 
-    <MudText Class="mb-3" Typo="Typo.h1">Teams</MudText>
+<MudStack Class="container-settings-page">
 
     <MudDataGrid ServerData="LoadGridData"
                  Dense="true"
@@ -17,9 +16,16 @@
                  SortMode="SortMode.None">
 
         <ToolBarContent>
-            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pa-3">
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                <MudIcon Icon="@Icons.Material.Filled.Devices" Size="Size.Large" Color="Color.Secondary" />
+                <MudText Typo="Typo.h2">@loc["teams"]</MudText>
                 <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTeamAsync"></MudIconButton>
+
+                <PermissionView Entity="PermissionEntityType.Team" Level="PermissionLevel.Write">
+                    <Authorized>
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTeamAsync"></MudIconButton>
+                    </Authorized>
+                </PermissionView>
             </MudStack>
         </ToolBarContent>
 

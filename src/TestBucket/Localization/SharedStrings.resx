@@ -350,4 +350,13 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="required-resources" xml:space="preserve">
     <value>Required Resources</value>
   </data>
+  <data name="runner" xml:space="preserve">
+    <value>Runner</value>
+  </data>
+  <data name="runners" xml:space="preserve">
+    <value>Runners</value>
+  </data>
+  <data name="teams" xml:space="preserve">
+    <value>Teams</value>
+  </data>
 </root>

@@ -55,6 +55,7 @@ public class TenantManager : ITenantManager
         var builder = new EntityPermissionBuilder();
         builder.Add(PermissionEntityType.Project, PermissionLevel.All);
         builder.Add(PermissionEntityType.User, PermissionLevel.All);
+        builder.Add(PermissionEntityType.Team, PermissionLevel.All);
         builder.Add(PermissionEntityType.Tenant, PermissionLevel.All);
         builder.Add(PermissionEntityType.TestSuite, PermissionLevel.All);
         builder.Add(PermissionEntityType.TestCase, PermissionLevel.All);

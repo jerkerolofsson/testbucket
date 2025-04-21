@@ -9,8 +9,6 @@
 
 <MudStack Class="container-settings-page">
 
-    <MudText Class="mb-3" Typo="Typo.h1">@loc["api-keys"]</MudText>
-
     <MudDataGrid Items="_keys"
                  Dense="true"
                  Hover="true"
@@ -18,10 +16,11 @@
                  SortMode="SortMode.None">
 
         <ToolBarContent>
-            <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                <MudIcon Icon="@Icons.Material.Filled.Security" Size="Size.Large" />
+                <MudText Typo="Typo.h2">@loc["api-keys"]</MudText>
                 <MudSpacer />
                 <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddApiKeyAsync"></MudIconButton>
-
             </MudStack>
         </ToolBarContent>
 

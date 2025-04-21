@@ -127,10 +127,13 @@
     <value>Manage Projects</value>
   </data>
   <data name="manage-resources" xml:space="preserve">
-    <value>Manage Resources</value>
+    <value>Resources &amp; Devices</value>
   </data>
   <data name="manage-roles" xml:space="preserve">
     <value>Manage Roles</value>
+  </data>
+  <data name="manage-runners" xml:space="preserve">
+    <value>Manage Runners</value>
   </data>
   <data name="manage-teams" xml:space="preserve">
     <value>Manage Teams</value>

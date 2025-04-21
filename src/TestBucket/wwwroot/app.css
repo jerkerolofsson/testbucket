@@ -124,6 +124,10 @@ html, body {
     }
 }
 
+.mud-navmenu.mud-navmenu-default .mud-nav-link.active:not(.mud-nav-link-disabled) {
+    box-shadow: -2px 0 0 var(--mud-palette-primary);
+}
+
 tb-field .mud-link.mud-link-underline-hover:hover {
     text-decoration: none;
 }
@@ -778,3 +782,4 @@ div.tb-profile-image.tb-background-9 {
     background: yellowgreen;
     color: black;
 }
+

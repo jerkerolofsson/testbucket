@@ -14,8 +14,9 @@
     CommittedItemChanges="OnChangedAsync"
     EditMode="DataGridEditMode.Cell">
         <ToolBarContent>
-            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pa-3">
-                <MudText Typo="Typo.h1">@loc["required-resources"]</MudText>
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                <MudIcon Icon="@Icons.Material.Filled.Devices" Size="Size.Large" Color="Color.Info" />
+                <MudText Typo="Typo.h2">@loc["required-resources"]</MudText>
                 <MudSpacer/>
                 <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"/>
             </MudStack>

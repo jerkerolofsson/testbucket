@@ -7,17 +7,22 @@
 @inject IStringLocalizer<FieldStrings> fieldLoc
 
 <MudDataGrid    Items="_fields"
-                Dense="true"
-                Hover="true"
+                Dense
+                Hover RowClass="tb-datarow pointer-cursor"
                 T="FieldDefinition"
                 RowClick="async e => await EditFieldAsync(e.Item)"
                 SortMode="SortMode.None">
 
     <ToolBarContent>
-        <MudStack Row="true" AlignItems="AlignItems.Center">
+        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+            <MudIcon Icon="@Icons.Material.Filled.Tag" Size="Size.Large" Color="Color.Tertiary" />
+            <MudText Typo="Typo.h2">@loc["fields"]</MudText>
             <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddFieldAsync"></MudIconButton>
-
+                <PermissionView Entity="PermissionEntityType.Project" Level="PermissionLevel.Write">
+                    <Authorized>
+                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddFieldAsync"></MudIconButton>
+                    </Authorized>
+                </PermissionView>
         </MudStack>
     </ToolBarContent>
 
@@ -72,7 +77,11 @@
 
         <TemplateColumn>
             <CellTemplate>
-                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Clear" OnClick="async () => await DeleteAsync(context.Item)"/>
+                <PermissionView Entity="PermissionEntityType.Project" Level="PermissionLevel.Write">
+                    <Authorized>
+                        <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Clear" OnClick="async () => await DeleteAsync(context.Item)" />
+                    </Authorized>
+                </PermissionView>
             </CellTemplate>
         </TemplateColumn>
     </Columns>

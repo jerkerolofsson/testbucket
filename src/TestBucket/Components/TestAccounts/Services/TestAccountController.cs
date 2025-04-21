@@ -32,7 +32,27 @@ internal class TestAccountController : TenantBaseService
         return await _manager.GetAccountByIdAsync(principal, id);
     }
 
-
+    public async Task LockAsync(TestAccount account)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        account.LockOwner = principal.Identity?.Name ?? "user";
+        account.LockExpires = null;
+        account.Locked = true;
+        await _manager.UpdateAsync(principal, account);
+    }
+    public async Task UpdateAsync(TestAccount account)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.UpdateAsync(principal, account);
+    }
+    public async Task UnlockAsync(TestAccount account)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        account.LockOwner = null;
+        account.LockExpires = null;
+        account.Locked = false;
+        await _manager.UpdateAsync(principal, account);
+    }
     public async Task DeleteAsync(TestAccount account)
     {
         var result = await _dialogService.ShowMessageBox(

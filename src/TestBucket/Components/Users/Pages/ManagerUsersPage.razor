@@ -10,8 +10,6 @@
 
 <MudStack Class="container-settings-page">
 
-    <MudText Class="mb-3" Typo="Typo.h1">@loc["users"]</MudText>
-
     <MudDataGrid ServerData="LoadGridData"
                  Style="width: 100%"
                  Dense="true"
@@ -22,8 +20,10 @@
                  SortMode="SortMode.None">
 
         <ToolBarContent>
-            <MudStack Row="true" AlignItems="AlignItems.Center">
-                <MudSpacer/>
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Size="Size.Large" Color="Color.Secondary" />
+                <MudText Typo="Typo.h2">@loc["users"]</MudText>
+                <MudSpacer />
                 <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddUserAsync"></MudIconButton>
             </MudStack>
         </ToolBarContent>

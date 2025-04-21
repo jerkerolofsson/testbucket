@@ -9,21 +9,37 @@
         <TitleContent>@accountLoc["add-account"]</TitleContent>
         <DialogContent>
             <MudStack Spacing="0" Style="min-width: 50vw">
-                <MudStepperExtended Color="Color.Primary" IconActionButtons HeaderTextView="HeaderTextView.All" ActiveStepChanged="OnActiveStepChanged" ShowStepResultIndicator="false">
+                <MudStepperExtended 
+                    Color="Color.Primary" 
+                    Vertical
+                    IconActionButtons 
+                    Variant="Variant.Filled"
+                    HeaderTextView="HeaderTextView.All" 
+                    ActiveStepChanged="OnActiveStepChanged" 
+                    ShowStepResultIndicator="false">
                     <ChildContent>
                         <MudStepExtended Title="@accountLoc["account"]" Icon="@Icons.Material.Filled.AccountCircle">
 
                             <MudStack>
-                                <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_account.Name" Placeholder="@accountLoc["account-name"]"></MudTextField>
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body1">@loc["name"]</MudText>
+                                    <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_account.Name" Placeholder="@accountLoc["account-name"]"></MudTextField>
+                                </MudStack>
 
-                                <MudAutocomplete T="string" ValueChanged="AccountTypeChanged" Value="@_account.Type" CoerceText="false" CoerceValue="false" SearchFunc="SearchType" Placeholder="@accountLoc["account-type"]"/>
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body1">@accountLoc["account-type"]</MudText>
+                                    <MudAutocomplete T="string" Variant="Variant.Outlined" ValueChanged="AccountTypeChanged" Value="@_account.Type" CoerceText="false" CoerceValue="false" SearchFunc="SearchType" Placeholder="@accountLoc["account-type"]" />
+                                </MudStack>
 
-                                <MudAutocomplete @bind-Value="@_account.SubType" CoerceText="false" CoerceValue="false" SearchFunc="SearchSubType" Placeholder="@accountLoc["account-sub-type"]"/>
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body1">@accountLoc["account-sub-type"]</MudText>
+                                    <MudAutocomplete @bind-Value="@_account.SubType" Variant="Variant.Outlined" CoerceText="false" CoerceValue="false" SearchFunc="SearchSubType" Placeholder="@accountLoc["account-sub-type"]" />
+                                </MudStack>
                             </MudStack>
 
                         </MudStepExtended>
-                        <MudStepExtended Title="@accountLoc["account-details"]" StatusChanged="FinalStatusChanged" Icon="@Icons.Material.Filled.Abc">
-
+                        <MudStepExtended Title="@accountLoc["account-details"]" Icon="@Icons.Material.Filled.Abc">
+                            <MudStack>
                             @if(_fieldDefinitions.Length > 0)
                             {
                                 @foreach(var field in _fields.Values)
@@ -32,6 +48,10 @@
                                     <FieldEditor @bind-Field="fieldValue"/>
                                 }
                             }
+                            </MudStack>
+                        </MudStepExtended>
+
+                        <MudStepExtended Title="@loc["custom-variables"]" StatusChanged="FinalStatusChanged" Icon="@Icons.Material.Filled.Abc">
                             <EnvironmentVariableEditor @bind-Variables="@_customVariables" Editing="true">
                                 <ToolbarTitle>@loc["variables"]</ToolbarTitle>
                             </EnvironmentVariableEditor>

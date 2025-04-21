@@ -42,6 +42,7 @@ internal class ProjectTokenGenerator : IProjectTokenGenerator
         builder.Add(PermissionEntityType.TestResource, PermissionLevel.Read);
         builder.Add(PermissionEntityType.Project, PermissionLevel.Read);
         builder.Add(PermissionEntityType.User, PermissionLevel.Read);
+        builder.Add(PermissionEntityType.Team, PermissionLevel.Read);
         builder.Add(PermissionEntityType.Tenant, PermissionLevel.None);
         builder.Add(PermissionEntityType.Requirement, PermissionLevel.Read);
         builder.Add(PermissionEntityType.RequirementSpecification, PermissionLevel.Read);

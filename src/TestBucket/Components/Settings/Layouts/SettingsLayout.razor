@@ -10,6 +10,7 @@
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<SettingStrings> settingsLoc
+@inject IStringLocalizer<ProjectStrings> projectLoc
 
 <TenantRedirect />
 
@@ -33,36 +34,33 @@
                     string url = $"/{TenantId}/Settings/Categories/{category.Name}";
                     <MudNavLink Icon="@SettingIcons.GetIcon(category.Icon)" Href="@url">@category.Name</MudNavLink>
                 }
-
+                <MudNavLink Icon="@Icons.Material.Filled.Security" Href="@ApiKeysUrl">@loc["api-keys"]</MudNavLink>
 
                 @if(Project is not null)
                 {
                     string projectUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}";
-
-                    <AuthorizeView Roles="ADMIN">
-                        <MudItem Class="mt-5"/>
-
-                        <MudNavLink Icon="@Icons.Material.Outlined.Article" Href="@projectUrl">@Project.Name</MudNavLink>
-
-                    </AuthorizeView>
+                    string projectIntegrationsUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}/Integrations";
+                    <MudNavLink Icon="@Icons.Material.Outlined.Article" IconColor="Color.Tertiary" Href="@projectUrl">@Project.Name</MudNavLink>
+                    <MudNavLink Icon="@Icons.Material.Outlined.SettingsSystemDaydream" IconColor="Color.Tertiary" Href="@projectIntegrationsUrl">@projectLoc["integrations"]</MudNavLink>
                 }
 
-                <MudNavLink Icon="@Icons.Material.Filled.Security" Href="@ApiKeysUrl">@loc["api-keys"]</MudNavLink>
                 <MudItem Class="mt-5"/>
 
                 <MudNavLink Icon="@TbIcons.Filled.Leaf" Href="@EnvironmentsUrl">@settingsLoc["manage-environments"]</MudNavLink>
-                <MudNavLink Icon="@Icons.Material.Filled.AccountCircle" Href="@AccountsUrl">@settingsLoc["manage-accounts"]</MudNavLink>
-                <MudNavLink Icon="@Icons.Material.Outlined.Devices" Href="@ResourcesUrl">@settingsLoc["manage-resources"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.AccountCircle" IconColor="Color.Info" Href="@AccountsUrl">@settingsLoc["manage-accounts"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Outlined.Devices" IconColor="Color.Info" Href="@ResourcesUrl">@settingsLoc["manage-resources"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Outlined.RunCircle" IconColor="Color.Info" Href="@RunnersUrl">@settingsLoc["manage-runners"]</MudNavLink>
 
-                <MudNavLink Icon="@Icons.Material.Outlined.Groups" Href="@TeamsUrl">@settingsLoc["manage-teams"]</MudNavLink>
-                <MudNavLink Icon="@Icons.Material.Filled.ViewTimeline" Href="@ProjectsUrl">@settingsLoc["manage-projects"]</MudNavLink>
-                <MudNavLink Icon="@Icons.Material.Outlined.PeopleAlt" Href="@UsersUrl">@settingsLoc["manage-users"]</MudNavLink>
-                <MudNavLink Icon="@Icons.Material.Outlined.SecurityUpdate" Href="@RolesUrl">@settingsLoc["manage-roles"]</MudNavLink>
+                <MudItem Class="mt-5"/>
 
-                <MudNavLink Icon="@Icons.Material.Outlined.RunCircle" Href="@RunnersUrl">@settingsLoc["manage-runners"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Outlined.Groups" IconColor="Color.Secondary" Href="@TeamsUrl">@settingsLoc["manage-teams"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Filled.ViewTimeline" IconColor="Color.Secondary" Href="@ProjectsUrl">@settingsLoc["manage-projects"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Outlined.PeopleAlt" IconColor="Color.Secondary" Href="@UsersUrl">@settingsLoc["manage-users"]</MudNavLink>
+                <MudNavLink Icon="@Icons.Material.Outlined.SecurityUpdate" IconColor="Color.Secondary" Href="@RolesUrl">@settingsLoc["manage-roles"]</MudNavLink>
+
 
                 <AuthorizeView Roles="SUPERADMIN">
-                    <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" Href="@TenantsUrl">Manage Tenants</MudNavLink>
+                    <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" IconColor="Color.Secondary" Href="@TenantsUrl">Manage Tenants</MudNavLink>
                 </AuthorizeView>
             </MudNavMenu>
         </div>

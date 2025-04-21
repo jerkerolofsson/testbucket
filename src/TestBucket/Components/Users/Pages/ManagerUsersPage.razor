@@ -15,8 +15,9 @@
 
     <MudDataGrid ServerData="LoadGridData"
                  Style="width: 100%"
-                 Dense="true"
-                 Hover="true"
+                 Dense
+                 Hover
+                 RowStyle="pointer-cursor tb-datarow"
                  T="ApplicationUser"
                  @ref="_dataGrid"
                  RowClick="(e) => OnRowClicked(e.Item)"
@@ -34,7 +35,7 @@
         <Columns>
             <TemplateColumn Title="@loc["username"]">
                 <CellTemplate>
-                    <MudStack Row Spacing="1">
+                    <MudStack Row AlignItems="AlignItems.Center">
                         <UserProfileImage UserName="@context.Item.UserName"/>
                         <MudText>@context.Item.UserName</MudText>
                     </MudStack>

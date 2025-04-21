@@ -50,6 +50,31 @@ public class TestProject
     public bool GrantAccessToAllTeamUsers { get; set; }
 
     /// <summary>
+    /// Number of test suites
+    /// </summary>
+    public int NumberOfTestSuites { get; set; }
+
+    /// <summary>
+    /// Total number of test cases
+    /// </summary>
+    public int NumberOfTestCases { get; set; }
+
+    /// <summary>
+    /// Total number of test cases
+    /// </summary>
+    public int NumberOfIssues { get; set; }
+
+    /// <summary>
+    /// Total number of open issues
+    /// </summary>
+    public int NumberOfOpenIssues { get; set; }
+
+    /// <summary>
+    /// Number of test runs
+    /// </summary>
+    public int NumberOfRuns { get; set; }
+
+    /// <summary>
     /// Applicable states for test execution that a user can select
     /// </summary>
     [Column(TypeName = "jsonb")]

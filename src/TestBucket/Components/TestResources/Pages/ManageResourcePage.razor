@@ -13,28 +13,26 @@
 
     @if (_resource is not null)
     {
-        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-            <MudIcon Icon="@Icons.Material.Filled.Devices" Size="Size.Large" Color="Color.Info" />
-            <MudText Typo="Typo.h2">@_resource.Name</MudText>
-        </MudStack>
-
-
-        <Field Row>
-            <FieldHeader>@loc["icon"]</FieldHeader>
-            
-            @if (_resource.Icon is null)
-            {
+        @if (_resource.Icon is null)
+        {
+            <Field>
+                <MudText Typo="Typo.h2">@_resource.Name</MudText>
                 <UploadFile Accept="*.jpg;*.png" MaxFileSize="100000" FileUploaded="OnImageUploaded" />
-            }
-            else
-            {
+            </Field>
+        }
+        else
+        {
+            <Field Row>
+                <MudText Typo="Typo.h2">@_resource.Name</MudText>
+
                 <MudSpacer />
                 <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
                     <MudImage Src="@_resource.Icon" Width="128" Height="128" />
                     <MudIconButton Size="Size.Small" OnClick="ClearImageAsync" Icon="@Icons.Material.Filled.Clear" />
                 </MudStack>
-            }
-        </Field>
+            </Field>
+        }
+
 
         <MudTable Items="@_resource.Variables" Dense RowClass="tb-datarow">
             <HeaderContent>

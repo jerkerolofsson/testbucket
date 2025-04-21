@@ -411,7 +411,7 @@ p.mud-typography-subtitle1 {
 }
 
 .mud-table-cell {
-    font-size: 8pt;
+    font-size: 10pt;
 }
 
 .tb-datarow:hover,
@@ -685,6 +685,26 @@ table tbody tr td {
     border-radius: 100%;
 }
 
+.tb-toolbar  img.tb-profile-image.tb-avatar-generic,
+.tb-toolbar  div.tb-profile-image.tb-avatar-generic {
+    border-bottom: solid 2px transparent;
+    margin-right: 1rem;
+}
+
+img.tb-profile-image.tb-avatar-generic,
+div.tb-profile-image.tb-avatar-generic {
+    border-radius: 10px;
+    font-size: 12pt;
+}
+
+img.tb-profile-image.tb-avatar-generic:hover {
+    background: rgba(128,128,128,0.1);
+}
+
+.tb-avatar-generic {
+    border: solid 1px rgba(128,128,128,0.1);
+}
+
 div.tb-profile-image {
     display: none;
     font-size: 16pt;
@@ -700,70 +720,25 @@ img.tb-profile-image.image-load-error {
 div.tb-profile-image {
     display: none;
 }
+div.tb-profile-image.force-visible,
 div.tb-profile-image.image-load-error {
     display: grid;
 }
 
-div.tb-profile-image.tb-background-2 {
-    background: #0F2027;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #2C5364, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    color: #ddd;
-}
-div.tb-profile-image.tb-background-1 {
-     background: #c6ffdd; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #c6ffdd, #fbd786, #f7797d); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #c6ffdd, #fbd786, #f7797d); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  color: #77393d;
-}
-div.tb-profile-image.tb-background-0 {
-    background: #12c2e9;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #f64f59, #c471ed, #12c2e9);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-}
-div.tb-profile-image.tb-background-3 {
-    background: #c31432;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to right, #240b36, #c31432);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to right, #240b36, #c31432); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-}
-div.tb-profile-image.tb-background-4 {
-    background: #7F7FD5;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to right, #91EAE4, #86A8E7, #7F7FD5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-}
-
-div.tb-profile-image.tb-background-5 {
-    background: #1f4037; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #99f2c8, #1f4037); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #99f2c8, #1f4037); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-
-div.tb-profile-image.tb-background-6 {
-    background: #f12711; /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #f5af19, #f12711); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #f5af19, #f12711); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-
-div.tb-profile-image.tb-background-7 {
-    background: #009FFF;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #ec2F4B, #009FFF);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #ec2F4B, #009FFF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-
-div.tb-profile-image.tb-background-8 {
-    background: #8360c3;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #2ebf91, #8360c3);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #2ebf91, #8360c3); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-
+div.tb-profile-image.tb-background-0,
+div.tb-profile-image.tb-background-1,
+div.tb-profile-image.tb-background-2,
+div.tb-profile-image.tb-background-3,
+div.tb-profile-image.tb-background-4,
+div.tb-profile-image.tb-background-5,
+div.tb-profile-image.tb-background-6,
+div.tb-profile-image.tb-background-7,
+div.tb-profile-image.tb-background-8,
 div.tb-profile-image.tb-background-9 {
-    background: #dd3e54;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #6be585, #dd3e54);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #6be585, #dd3e54); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: var(--mud-palette-primary);
+
 }
+
 
 .permission-level-abbr {
     gap: 4px;
@@ -783,3 +758,39 @@ div.tb-profile-image.tb-background-9 {
     color: black;
 }
 
+.tb-card-picker-grid {
+    margin: 2rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    width: 60vw;
+    gap: 4px;
+}
+
+.tb-card-picker-grid .tb-project-card .name {
+    font-size: 150%;
+}
+.tb-card-picker-grid .tb-project-card .counters {
+    gap: 12px;
+    color: var(--mud-palette-primary);
+}
+
+.tb-card-picker-grid > div {
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+.tb-card-picker-grid > div:hover {
+    /* Glass style */
+    background: rgba(255, 255, 255, 0.2);
+
+    background: linear-gradient(270deg, #ffffff4f, #ffffff00);
+    background-size: 400% 400%;
+    background-position: 20% 50%;
+ 
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    animation: ItemHoverAnimation 300ms linear forwards;
+}

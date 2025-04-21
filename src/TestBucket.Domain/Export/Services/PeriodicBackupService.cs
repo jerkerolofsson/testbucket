@@ -29,6 +29,7 @@ namespace TestBucket.Domain.Export.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
             while(!stoppingToken.IsCancellationRequested)
             {
                 using var scope = _serviceProvider.CreateScope();

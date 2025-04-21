@@ -23,7 +23,10 @@ internal class ProjectRepository : IProjectRepository
     public async Task<TestProject?> GetBySlugAsync(string tenantId, string slug)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Projects.Where(x => x.Slug == slug && x.TenantId == tenantId).SingleOrDefaultAsync();
+        return await dbContext.Projects
+            .Include(x => x.Team)
+            .Include(x => x.ExternalSystems)
+            .Where(x => x.Slug == slug && x.TenantId == tenantId).SingleOrDefaultAsync();
     }
     /// <summary>
     /// Returns a project by id
@@ -34,7 +37,9 @@ internal class ProjectRepository : IProjectRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.Projects.Where(x => x.Id == id && x.TenantId == tenantId)
-            .Include(x=>x.ExternalSystems).SingleOrDefaultAsync();
+            .Include(x => x.Team)
+            .Include(x=>x.ExternalSystems)
+            .SingleOrDefaultAsync();
     }
 
     public async Task UpdateProjectAsync(TestProject testProject)
@@ -49,7 +54,10 @@ internal class ProjectRepository : IProjectRepository
     public async Task<PagedResult<TestProject>> SearchAsync(string tenantId, SearchQuery query)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var projects = dbContext.Projects.Where(x => x.TenantId == tenantId);
+        var projects = dbContext.Projects
+            .Include(x => x.Team)
+            .Include(x => x.ExternalSystems)
+            .Where(x => x.TenantId == tenantId);
 
         // Apply filter
         if (query.TeamId is not null)

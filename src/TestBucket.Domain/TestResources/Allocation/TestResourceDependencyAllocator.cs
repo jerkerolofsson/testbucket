@@ -81,6 +81,7 @@ public class TestResourceDependencyAllocator
     private async Task<TestResource?> AllocateResourceAsync(ClaimsPrincipal principal, string resourceType)
     {
         FilterSpecification<TestResource>[] filters = [
+            new FindEnabledResource(),
             new FindUnlockedResource(),
             new FindResourceByType(resourceType),
             new FilterByTenant<TestResource>(principal.GetTenantIdOrThrow())

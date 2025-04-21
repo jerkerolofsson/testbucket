@@ -1,0 +1,60 @@
+﻿@using TestBucket.Components.Shared.Profile
+@inject ProjectController projectService
+@inject IDialogService dialogService
+@inject IStringLocalizer<SharedStrings> loc
+
+<GenericAvatar Class="cursor-pointer" Text="@SelectedProject?.ShortName" ImageUri="@SelectedProject?.IconUrl" ImageClicked="OnImageClicked">
+</GenericAvatar>
+
+
+<MudDialog @bind-Visible="_open" Options="@DefaultBehaviors.DialogOptions">
+    <TitleContent>@loc["projects"]</TitleContent>
+    <DialogContent>
+        <div class="tb-card-picker-grid">
+        @foreach(var project in _projects)
+        {
+            <div @onclick="async () => await OnSelectedProjectChanged(project)" class="cursor-pointer tb-project-card">
+                <MudStack AlignItems="AlignItems.Center" Row Class="pa-5">
+                    <GenericAvatar Text="@project?.ShortName" ImageUri="@project?.IconUrl" />
+                    <div>
+                        <div class="name">@project.Name</div>
+                        <div class="d-flex counters">
+                            <div>@(project.NumberOfTestSuites) @loc["test-suites"]</div>
+                            <div>|</div>
+                            <div>@(project.NumberOfTestCases) @loc["test-cases"]</div>
+                        </div>
+                    </div>
+                </MudStack>
+            </div>
+        }
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    private TestProject[] _projects = [];
+
+    [Parameter] public Team? Team { get; set; }
+    [Parameter] public TestProject? SelectedProject { get; set; }
+    [Parameter] public EventCallback<TestProject?> SelectedProjectChanged { get; set; }
+
+    private bool _open = false;
+
+    private void OnImageClicked()
+    {
+        _open = !_open;
+    }
+
+
+    private async Task OnSelectedProjectChanged(TestProject testProject)
+    {
+        _open = false;
+        await SelectedProjectChanged.InvokeAsync(testProject);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var result = await projectService.SearchAsync(new SearchQuery() { Offset = 0, Count = 1000 });
+        _projects = result.Items;
+    }
+}

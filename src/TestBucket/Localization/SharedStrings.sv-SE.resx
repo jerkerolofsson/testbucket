@@ -357,4 +357,10 @@
   <data name="teams" xml:space="preserve">
     <value />
   </data>
+  <data name="test-suites" xml:space="preserve">
+    <value />
+  </data>
+  <data name="test-cases" xml:space="preserve">
+    <value />
+  </data>
 </root>

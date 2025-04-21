@@ -105,6 +105,7 @@ internal class ProjectController : TenantBaseService
         var preferences = await _userPreferencesService.LoadUserPreferencesAsync(principal);
         if(preferences is not null)
         {
+            preferences.ActiveTeamId = project?.TeamId;
             preferences.ActiveProjectId = project?.Id;
             await _userPreferencesService.SaveUserPreferencesAsync(principal, preferences);    
         }

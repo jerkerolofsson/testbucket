@@ -5,10 +5,13 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using Mediator;
+
 using TestBucket.Domain.AI;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Tenants.Models;
+using TestBucket.Domain.Testing.Events;
 using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Models;
 
@@ -21,15 +24,17 @@ namespace TestBucket.Domain.Testing
         private readonly ITestCaseRepository _testCaseRepo;
         private readonly IProjectRepository _projectRepo;
         private readonly ITestSuiteManager _testSuiteManager;
+        private readonly IMediator _mediator;
 
         public TestCaseManager(
             IEnumerable<IMarkdownDetector> markdownDetectors,
-            ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo)
+            ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo, IMediator mediator)
         {
             _markdownDetectors = markdownDetectors.ToList();
             _testCaseRepo = testCaseRepo;
             _testSuiteManager = testSuiteManager;
             _projectRepo = projectRepo;
+            _mediator = mediator;
         }
 
         /// <summary>
@@ -97,6 +102,7 @@ namespace TestBucket.Domain.Testing
             {
                 await observer.OnTestCreatedAsync(testCase);
             }
+            await _mediator.Publish(new TestCaseCreatedEvent(testCase));
         }
 
         /// <summary>
@@ -115,6 +121,7 @@ namespace TestBucket.Domain.Testing
             {
                 await observer.OnTestDeletedAsync(testCase);
             }
+            await _mediator.Publish(new TestCaseDeletedEvent(testCase));
         }
 
         public async Task SaveTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)

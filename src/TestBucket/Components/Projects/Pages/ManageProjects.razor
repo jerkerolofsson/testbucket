@@ -1,6 +1,7 @@
 ﻿@page "/{tenantId}/Settings/ManageProjects"
 @using System.Diagnostics.CodeAnalysis
 @using System.Diagnostics
+@using TestBucket.Components.Shared.Profile
 @layout SettingsLayout
 @inject ProjectController controller
 @inject IDialogService dialogService
@@ -12,12 +13,13 @@
     <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudDataGrid ServerData="LoadGridData"
-    Dense="true"
-    Hover="true"
+    Dense
+    Hover
+    RowStyle="pointer-cursor tb-datarow"
     T="TestProject"
     @ref="_dataGrid"
     RowClick="x => OnRowClicked(x.Item)"
-    SortMode="SortMode.None">
+    SortMode="SortMode.Single">
 
         <ToolBarContent>
             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
@@ -34,9 +36,18 @@
         </ToolBarContent>
 
         <Columns>
-            <PropertyColumn Property="x => x.ShortName" />
-            <PropertyColumn Property="x => x.Name" />
-            <PropertyColumn Property="x => x.Slug" />
+
+            <TemplateColumn Title="@loc["name"]" SortBy="x => x.Name" Sortable="true">
+                <CellTemplate>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <GenericAvatar Text="@context.Item.ShortName" ImageUri="@context.Item.IconUrl"/>
+                        <MudText>@context.Item.Name</MudText>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+
+            <PropertyColumn Property="x => x.NumberOfTestSuites" />
+            <PropertyColumn Property="x => x.NumberOfTestCases" />
         </Columns>
 
         <PagerContent>

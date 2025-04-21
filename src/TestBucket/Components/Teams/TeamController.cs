@@ -27,6 +27,7 @@ internal class TeamController : TenantBaseService
         if(preferences is not null)
         {
             preferences.ActiveTeamId = team?.Id;
+            preferences.ActiveProjectId = null;
             await _userPreferencesService.SaveUserPreferencesAsync(preferences);    
         }
     }

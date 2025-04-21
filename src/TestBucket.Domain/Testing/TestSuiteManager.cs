@@ -1,6 +1,6 @@
-﻿using System;
-using System.Security.Claims;
+﻿using Mediator;
 
+using TestBucket.Domain.Testing.Events;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Testing
@@ -10,10 +10,12 @@ namespace TestBucket.Domain.Testing
         private readonly ITestCaseRepository _testCaseRepository;
         private readonly List<ITestSuiteObserver> _testSuiteObservers = new();
         private readonly List<ITestSuiteFolderObserver> _testSuiteFolderObservers = new();
+        private readonly IMediator _mediator;
 
-        public TestSuiteManager(ITestCaseRepository testCaseRepository)
+        public TestSuiteManager(ITestCaseRepository testCaseRepository, IMediator mediator)
         {
             _testCaseRepository = testCaseRepository;
+            _mediator = mediator;
         }
 
         #region Observers
@@ -80,6 +82,8 @@ namespace TestBucket.Domain.Testing
             {
                 await observer.OnTestSuiteCreatedAsync(suite);
             }
+            await _mediator.Publish(new TestSuiteCreatedEvent(suite));
+
             return suite;
         }
 
@@ -121,6 +125,7 @@ namespace TestBucket.Domain.Testing
             {
                 await observer.OnTestSuiteDeletedAsync(suite);
             }
+            await _mediator.Publish(new TestSuiteDeletedEvent(suite));
         }
 
         /// <summary>

@@ -20,7 +20,24 @@ namespace TestBucket.Domain.Identity
                 new Claim(ClaimTypes.Email, "admin@admin.com"),
                 new Claim("tenant", tenantId ?? throw new Exception("No tenant"))
             };
-            if(projectId is not null)
+
+            // Permissions
+            var builder = new EntityPermissionBuilder();
+            builder.Add(PermissionEntityType.TestSuite, PermissionLevel.All);
+            builder.Add(PermissionEntityType.TestCase, PermissionLevel.All);
+            builder.Add(PermissionEntityType.TestCaseRun, PermissionLevel.All);
+            builder.Add(PermissionEntityType.TestRun, PermissionLevel.All);
+            builder.Add(PermissionEntityType.TestAccount, PermissionLevel.All);
+            builder.Add(PermissionEntityType.TestResource, PermissionLevel.All);
+            builder.Add(PermissionEntityType.Project, PermissionLevel.All);
+            builder.Add(PermissionEntityType.User, PermissionLevel.All);
+            builder.Add(PermissionEntityType.Team, PermissionLevel.All);
+            builder.Add(PermissionEntityType.Tenant, PermissionLevel.All);
+            builder.Add(PermissionEntityType.Requirement, PermissionLevel.All);
+            builder.Add(PermissionEntityType.RequirementSpecification, PermissionLevel.All);
+            
+            claims.Add(new Claim(PermissionClaims.Permissions, PermissionClaimSerializer.Serialize(builder.Build())));
+            if (projectId is not null)
             {
                 claims.Add(new Claim("project", projectId.Value.ToString()));
             }

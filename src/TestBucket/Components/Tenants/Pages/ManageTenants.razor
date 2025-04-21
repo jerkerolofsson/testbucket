@@ -12,8 +12,9 @@
     <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudDataGrid ServerData="LoadGridData"
-        Dense="true"
-        Hover="true"
+        Dense
+        Hover
+                 RowStyle="pointer-cursor tb-datarow"
         T="Tenant"
         RowClick="(e) => OnRowClicked(e.Item)"
         @ref="_dataGrid"

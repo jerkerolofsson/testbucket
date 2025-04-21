@@ -192,7 +192,10 @@ internal class TestCompiler : ITestCompiler
 
                 var variable = variablePatternMatch.TrimStart('{').TrimEnd('}');
                 if (!variables.Contains(variable))
+                {
                     variables.Add(variable);
+                }
+                pos = match.Index + match.Length;
             }
         }
 

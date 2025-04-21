@@ -11,6 +11,7 @@ namespace TestBucket.Domain.TestResources;
 public interface ITestResourceRepository
 {
     Task AddAsync(TestResource resource);
+    Task<TestResource?> GetByIdAsync(string tenantId, long id);
     Task DeleteAsync(long id);
     Task<PagedResult<TestResource>> SearchAsync(FilterSpecification<TestResource>[] filters, int offset, int count);
     Task UpdateAsync(TestResource resource);

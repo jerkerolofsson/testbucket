@@ -223,12 +223,11 @@ public class DotHttpRunner : IScriptRunner
             messageBuilder.AppendLine();
             messageBuilder.AppendLine("## Failed Checks:");
 
-            messageBuilder.AppendLine($"| URL | Expected  | Actual | Error     |");
+            messageBuilder.AppendLine($"| URL | Expected  | Actual    | Error     |");
             messageBuilder.AppendLine($"| --- | --------- | --------- | --------- |");
             foreach (var check in failedChecks)
             {
                 messageBuilder.AppendLine($"| {check.Request.Url} | {check.Check?.ExpectedValue} | {check.ActualValue} | {check.Error} |");
-                messageBuilder.AppendLine(check.Error);
             }
         }
         test.Message = messageBuilder.ToString();

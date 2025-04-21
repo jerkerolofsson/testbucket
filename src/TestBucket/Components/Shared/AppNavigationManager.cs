@@ -185,6 +185,12 @@ public class AppNavigationManager
         var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
         return $"{tenantId}/Testing/TestSuites/{testCaseId}/Settings";
     }
+    public string GetTestSuiteRequriedResourcesUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestSuites/{testCaseId}/RequiredResources";
+    }
     public string GetTestSuiteAttachmentsUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);

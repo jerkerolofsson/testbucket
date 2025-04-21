@@ -92,6 +92,8 @@ internal class TestResourceManager : ITestResourceManager
                         Types = resource.Types.ToArray(),
                         Variables = resource.Variables,
                     };
+                    testResource.Variables["model"] = resource.Model ?? "";
+                    testResource.Variables["manufacturer"] = resource.Manufacturer ?? "";
                     await AddAsync(principal, testResource);
                 }
                 else
@@ -101,10 +103,18 @@ internal class TestResourceManager : ITestResourceManager
                     existingResource.Types = resource.Types.ToArray();
                     existingResource.Manufacturer = resource.Manufacturer;
                     existingResource.Variables = resource.Variables;
+
+                    existingResource.Variables["model"] = resource.Model ?? "";
+                    existingResource.Variables["manufacturer"] = resource.Manufacturer ?? "";
                     await UpdateAsync(principal, existingResource);
                 }
             }
         }
     }
 
+    public async Task<TestResource?> GetByIdAsync(ClaimsPrincipal principal, long id)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        return await _repository.GetByIdAsync(tenantId, id);
+    }
 }

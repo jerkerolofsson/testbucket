@@ -40,6 +40,12 @@ public class TestSuite : TestEntity
     public Dictionary<string, string>? Variables { get; set; }
 
     /// <summary>
+    /// Dependencies / resource requirements
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public List<TestCaseDependency>? Dependencies { get; set; }
+
+    /// <summary>
     /// Default branch/tag/commit when running CI/CD
     /// </summary>
     public string? DefaultCiCdRef { get; set; }

@@ -1,0 +1,43 @@
+﻿@inject TeamController teamService
+@inject IStringLocalizer<SharedStrings> loc
+
+<EditForm Model="@_type" OnValidSubmit="OnValidSubmit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>@loc["add-resource"]</TitleContent>
+        <DialogContent>
+            <MudStack Spacing="0">
+                <Field Row>
+                    <FieldHeader>@loc["resource-type"]</FieldHeader>
+                    <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_type"></MudTextField>
+                </Field>
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            @if(!string.IsNullOrEmpty(_type))
+            {
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            }
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    private string _type = "";
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+        var dependency = new TestCaseDependency { ResourceType = _type };
+        MudDialog.Close(dependency);
+    }
+}

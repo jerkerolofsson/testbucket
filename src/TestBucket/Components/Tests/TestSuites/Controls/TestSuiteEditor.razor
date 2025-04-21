@@ -7,10 +7,7 @@
 
 @if (TestSuite is not null)
 {
-    <MudText Typo="Typo.h2">@loc["attachments"]</MudText>
-    <AttachmentGrid TestSuiteId="@TestSuite.Id" AllowUpload/>
-
-    <MudText Typo="Typo.h2">@loc["automation"]</MudText>
+    <MudText Typo="Typo.h1">@loc["automation"]</MudText>
 
     @if(_integrations.Count == 0)
     {

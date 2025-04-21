@@ -24,11 +24,11 @@ public partial class TestRunView
         base.OnParametersSet();
     }
 
-    private async Task OnSelectedTestCaseRunChanged(TestCaseRun testCaseRun)
+    private async Task OnSelectedTestCaseRunChanged(TestCaseRun? testCaseRun)
     {
         // Change the tab if changing test case, but keep the default if just opening
         // the view for the first time
-        if (_selectedTestCaseRun is not null && _selectedTestCaseRun?.Id != testCaseRun.Id)
+        if (_selectedTestCaseRun is not null && _selectedTestCaseRun?.Id != testCaseRun?.Id)
         {
             _activePanelIndex = 1;
         }

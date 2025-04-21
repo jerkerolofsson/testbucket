@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize(Roles = "ADMIN")]
 @inject TeamController teamService
+@inject IStringLocalizer<SharedStrings> loc
 
 <EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
@@ -23,8 +24,8 @@
         </DialogContent>
 
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
-            <MudButton OnClick="Close">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>

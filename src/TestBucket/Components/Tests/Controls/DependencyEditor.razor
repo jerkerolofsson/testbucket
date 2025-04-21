@@ -1,0 +1,109 @@
+﻿@using TestBucket.Components.Environments.Controls
+@using TestBucket.Components.Environments.ViewModels
+@inject IStringLocalizer<SharedStrings> loc
+@inject IDialogService dialogService
+
+@if (Dependencies is not null)
+{
+    <MudDataGrid 
+    Dense 
+    RowClass="tb-datarow" 
+    Items="Dependencies" 
+    T="TestCaseDependency" 
+    ReadOnly=false 
+    CommittedItemChanges="OnChangedAsync"
+    EditMode="DataGridEditMode.Cell">
+        <ToolBarContent>
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pa-3">
+                <MudText Typo="Typo.h1">@loc["required-resources"]</MudText>
+                <MudSpacer/>
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"/>
+            </MudStack>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn Property="x => x.ResourceType" Title="@loc["resource-type"]"/>
+
+            <TemplateColumn Title="@loc["variable-prefix"]">
+                <EditTemplate>
+                    @if(context.Item.ResourceType is not null && Dependencies is not null)
+                    {
+                        var type = context.Item.ResourceType;
+                        int index = Dependencies.Where(x => x.ResourceType == type).ToList().IndexOf(context.Item);
+
+                        <MudText>resources__@(type)__@(index)</MudText>
+                    }
+                </EditTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn Title="@loc["attributes"]">
+                <EditTemplate>
+                    @if (context.Item.AttributeRequirements is not null)
+                    {
+                        @foreach(var attribute in context.Item.AttributeRequirements)
+                        {
+                            string operatorName = GetOperatorName(attribute.Operator);
+                            <MudText>@(attribute.Name) @(operatorName) @(attribute.Value)</MudText>
+                        }
+
+                    }
+                </EditTemplate>
+            </TemplateColumn>
+
+
+            <TemplateColumn>
+                <EditTemplate>
+                    <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Clear" OnClick="async() => await RemoveAsync(context.Item)"/>
+                </EditTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+    <MudText>@loc["required-resources-description"]</MudText>
+}
+
+@code {
+
+    [Parameter] public List<TestCaseDependency>? Dependencies { get; set; }
+    [Parameter] public EventCallback<List<TestCaseDependency>> DependenciesChanged { get; set; }
+
+    public string GetOperatorName(AttributeOperator op)
+    {
+        return op switch
+        {
+            AttributeOperator.Equals => "==",
+            AttributeOperator.GreatedThan => ">",
+            AttributeOperator.GreaterOrEqualThan => ">=",
+            AttributeOperator.LessThan => "<",
+            AttributeOperator.LessOrEqualThan => "<=",
+            _=> "unknown-operator"
+        };
+    }
+
+    private async Task RemoveAsync(TestCaseDependency dependency)
+    {
+        Dependencies ??= new();
+        Dependencies.Remove(dependency);
+        await OnChangedAsync();
+    }
+
+    private async Task OnChangedAsync()
+    {
+        await DependenciesChanged.InvokeAsync(Dependencies);
+    }
+
+    private async Task AddAsync()
+    {
+        var dialog = await dialogService.ShowAsync<AddResourceDependencyDialog>();
+        var result = await dialog.Result;
+        if(result?.Data is TestCaseDependency dependency)
+        {
+            Dependencies ??= new();
+            Dependencies.Add(dependency);
+            await OnChangedAsync();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        Dependencies ??= new();
+    }
+}

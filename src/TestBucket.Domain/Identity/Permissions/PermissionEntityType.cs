@@ -9,21 +9,16 @@ namespace TestBucket.Domain.Identity.Permissions
     public enum PermissionEntityType
     {
         Tenant,
-
         User,
-
         Project,
 
         RequirementSpecification,
-
         Requirement,
 
         TestSuite,
-
         TestCase,
 
         TestRun,
-
         TestCaseRun,
 
         TestAccount,

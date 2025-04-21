@@ -30,6 +30,11 @@ internal class TestResourceRepository : ITestResourceRepository
         var dbContext = await _dbContextFactory.CreateDbContextAsync();
         await dbContext.TestResources.Where(x => x.Id == id).ExecuteDeleteAsync();
     }
+    public async Task<TestResource?> GetByIdAsync(string tenantId, long id)
+    {
+        var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestResources.AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
+    }
 
     public async Task<PagedResult<TestResource>> SearchAsync(FilterSpecification<TestResource>[] filters, int offset, int count)
     {

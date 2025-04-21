@@ -77,6 +77,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blazor", "Blazor", "{685C80
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.MudBlazorExtensions.Markdown.DemoApp", "Package\Blazor\TestBucket.MudBlazorExtensions.Markdown.DemoApp\TestBucket.MudBlazorExtensions.Markdown.DemoApp.csproj", "{CEC95C8E-FCCE-41B6-8A02-3B082798780A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4246D52A-491C-475A-BC3F-3133FC1B661E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -207,6 +209,7 @@ Global
 		{F90B8E42-65F1-EDE0-28CF-01B84A490291} = {685C80D1-64F7-4419-B9F0-588F6C5DB3F3}
 		{685C80D1-64F7-4419-B9F0-588F6C5DB3F3} = {5D9FF94E-3EE4-40B9-9C70-E68A2C65E6F4}
 		{CEC95C8E-FCCE-41B6-8A02-3B082798780A} = {685C80D1-64F7-4419-B9F0-588F6C5DB3F3}
+		{4246D52A-491C-475A-BC3F-3133FC1B661E} = {E214D4E5-F9C0-49F6-82C9-01CCF355A97E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37FBEEC7-21BB-422E-866E-8B5C94540F5B}

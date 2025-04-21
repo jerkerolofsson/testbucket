@@ -1,6 +1,6 @@
 ﻿@attribute [Authorize()]
 @using TestBucket.Components.Tests.TestSuites.Layouts;
-@page "/{TenantId}/Testing/TestSuites/{SuiteId:long}/Variables"
+@page "/{TenantId}/Testing/TestSuites/{SuiteId:long}/RequiredResources"
 @layout TestSuitesLayout
 @inject TestBrowser testBrowser
 @inject TestSuiteService controller
@@ -16,7 +16,7 @@
         </MudToolBar>
 
         <MudStack>
-            <TestSuiteVariables TestSuite="@TestSuite" TestSuiteChanged="OnTestSuiteChanged" />
+            <DependencyEditor Dependencies="@TestSuite.Dependencies" DependenciesChanged="OnDependenciesChanged" />
         </MudStack>
     </MudStack>
 }
@@ -32,11 +32,15 @@
     private List<BreadcrumbItem> _nav = new();
     protected override void OnInitialized()
     {
-        _nav = [new BreadcrumbItem(loc["variables"], navigationManager.Uri)];
+        _nav = [new BreadcrumbItem(loc["required-resources"], navigationManager.Uri)];
     }
-    
-    private async Task OnTestSuiteChanged(TestSuite testSuite)
+
+    private async Task OnDependenciesChanged(List<TestCaseDependency> dependencies)
     {
-        await controller.SaveTestSuiteAsync(testSuite);
+        if (TestSuite is not null)
+        {
+            TestSuite.Dependencies = dependencies;
+            await controller.SaveTestSuiteAsync(TestSuite);
+        }
     }
 }

@@ -67,6 +67,11 @@ public class TestResource : Entity
     public string? Model { get; set; }
 
     /// <summary>
+    /// Icon (data uri)
+    /// </summary>
+    public string? Icon { get; set; }
+
+    /// <summary>
     /// Variables
     /// </summary>
     [Column(TypeName = "jsonb")] 

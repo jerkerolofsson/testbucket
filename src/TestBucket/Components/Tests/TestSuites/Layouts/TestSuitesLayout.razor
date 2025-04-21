@@ -30,6 +30,8 @@
                 <MudNavLink Icon="@Icons.Material.Filled.AttachFile" Href="@appNavigationManager.GetTestSuiteAttachmentsUrl()">@loc["attachments"]</MudNavLink>
                 <MudNavLink Icon="@Icons.Material.Filled.Settings" Href="@appNavigationManager.GetTestSuiteSettingsUrl()">@loc["settings"]</MudNavLink>
 
+                <MudNavLink Icon="@Icons.Material.Outlined.Devices" Href="@appNavigationManager.GetTestSuiteRequriedResourcesUrl()">@loc["required-resources"]</MudNavLink>
+
                 <AuthorizeView Roles="ADMIN">
 
                 </AuthorizeView>
@@ -43,9 +45,9 @@
 
     <EndContent>
         <CascadingValue Value="@_testSuite">
-            <MudStack Style="width: 100%; overflow: auto; ">
+            <MudStack Style="width: 100%; overflow: auto; pa-5">
                 @Body
-            </MudStack>>
+            </MudStack>
         </CascadingValue>
     </EndContent>
 </Splitter>

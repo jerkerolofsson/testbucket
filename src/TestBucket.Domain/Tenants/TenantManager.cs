@@ -52,14 +52,24 @@ public class TenantManager : ITenantManager
 
         var expires = DateTimeOffset.UtcNow.AddDays(365 * 5);
 
+        var builder = new EntityPermissionBuilder();
+        builder.Add(PermissionEntityType.Project, PermissionLevel.All);
+        builder.Add(PermissionEntityType.User, PermissionLevel.All);
+        builder.Add(PermissionEntityType.Tenant, PermissionLevel.All);
+        builder.Add(PermissionEntityType.TestSuite, PermissionLevel.All);
+        builder.Add(PermissionEntityType.TestCase, PermissionLevel.All);
+        builder.Add(PermissionEntityType.TestRun, PermissionLevel.All);
+        builder.Add(PermissionEntityType.TestCaseRun, PermissionLevel.All);
+        builder.Add(PermissionEntityType.TestAccount, PermissionLevel.All);
+        builder.Add(PermissionEntityType.TestResource, PermissionLevel.All);
+        builder.Add(PermissionEntityType.Requirement, PermissionLevel.All);
+        builder.Add(PermissionEntityType.RequirementSpecification, PermissionLevel.All);
+
         Claim[] claims = [
             new Claim("tenant", tenantId),
             new Claim("userid", tenantId),
             new Claim("email", $"tenant:{tenantId}"),
-            new Claim(PermissionClaims.TestCase, PermissionLevel.Write.ToString()),
-            new Claim(PermissionClaims.TestSuite, PermissionLevel.Write.ToString()),
-            new Claim(PermissionClaims.TestRun, PermissionLevel.Write.ToString()),
-            new Claim(PermissionClaims.TestCaseRun, PermissionLevel.Write.ToString()),
+            new Claim(PermissionClaims.Permissions, PermissionClaimSerializer.Serialize(builder.Build())),
             ];
         var identity = new ClaimsIdentity(claims);
         var principal = new ClaimsPrincipal(identity);

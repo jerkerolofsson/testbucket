@@ -15,4 +15,9 @@ public class TestCaseDependency
     /// The test case requires a resource of this specified type
     /// </summary>
     public string? ResourceType { get; set; }
+
+    /// <summary>
+    /// Attribute requirements
+    /// </summary>
+    public List<AttributeRequirement>? AttributeRequirements { get; set; }
 }

@@ -7,6 +7,14 @@ namespace TestBucket.Domain.TestResources;
 public interface ITestResourceManager
 {
     /// <summary>
+    /// Returns a test resource by ID
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <returns></returns>
+    Task<TestResource?> GetByIdAsync(ClaimsPrincipal principal, long id);
+
+
+    /// <summary>
     /// Adds a test resource
     /// </summary>
     /// <param name="principal"></param>

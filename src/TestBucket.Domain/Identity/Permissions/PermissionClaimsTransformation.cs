@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authentication;
 
+using TestBucket.Domain.Identity.Permissions.Models;
+
 namespace TestBucket.Domain.Identity.Permissions
 {
     public class PermissionClaimsTransformation : IClaimsTransformation
@@ -22,27 +24,27 @@ namespace TestBucket.Domain.Identity.Permissions
         {
             ClaimsIdentity claimsIdentity = new ClaimsIdentity();
 
-            var permissions = await _userPermissionsManager.GetTenantRolePermissionsAsync(principal);
+            var rolePermissions = await _userPermissionsManager.GetTenantRolePermissionsAsync(principal);
+            var roles = rolePermissions.Select(x => x.Role).Distinct().ToArray();
 
             // Go through the roles in descending order, so we take the permissions from the "higher role" if a user belongs to 
             // multiple roles
-            foreach (string role in new string[] { Roles.SUPERADMIN, Roles.ADMIN, Roles.REGULAR_USER, Roles.READ_ONLY })
+            var builder = new EntityPermissionBuilder();
+            foreach (string role in roles)
             {
-                foreach (var permission in permissions.Where(x => x.Role == role))
+                foreach (var permission in rolePermissions.Where(x => x.Role == role))
                 {
                     if (principal.IsInRole(permission.Role))
                     {
-                        var claimType = PermissionClaims.GetClaimTypeFromEntity(permission.Entity);
-                        if (claimType is not null)
-                        {
-                            if (!principal.HasClaim(claim => claim.Type == claimType))
-                            {
-                                claimsIdentity.AddClaim(new Claim(claimType, ((int)permission.Level).ToString()));
-                            }
-                        }
+                        builder.Add(permission);
                     }
                 }
             }
+
+            var userPermissions = builder.Build();
+            var serialziedPermissions = PermissionClaimSerializer.Serialize(userPermissions);
+            claimsIdentity.AddClaim(new Claim(PermissionClaims.Permissions, serialziedPermissions));
+
             principal.AddIdentity(claimsIdentity);
 
             return principal;

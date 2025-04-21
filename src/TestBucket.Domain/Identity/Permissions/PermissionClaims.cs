@@ -1,30 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Testing.Models;
-
+﻿
 namespace TestBucket.Domain.Identity.Permissions
 {
     public static class PermissionClaims
     {
-        public const string RequirementSpecification = "tbp-rs";
-        public const string Requirement = "tbp-r";
-
-        public const string TestSuite = "tbp-ts";
-        public const string TestCase = "tbp-tc";
-
-        public const string TestRun = "tbp-tr";
-        public const string TestCaseRun = "tbp-tcr";
-
-        public const string User = "tbp-u";
-        public const string Project = "tbp-p";
-        public const string Tenant = "tbp-tenant";
-        public const string Runner = "rbp-ru";
-
+        public const string Permissions = "permissions";
         public static void ThrowIfNoPermission(this ClaimsPrincipal principal, PermissionEntityType entityType, PermissionLevel requiredLevel)
         {
             if (!HasPermission(principal, entityType, requiredLevel))
@@ -47,12 +26,6 @@ namespace TestBucket.Domain.Identity.Permissions
             return false;
         }
 
-        //public static bool HasPermission(IEnumerable<Claim> claims, PermissionEntityType entityType, PermissionLevel requiredLevel)
-        //{
-        //    var userLevel = GetPermissionLevelFromClaims(claims, entityType);
-        //    return (userLevel & requiredLevel) == requiredLevel;
-        //}
-
         /// <summary>
         /// Searches the claims for a permission claim type based on the specified entity and returns it
         /// </summary>
@@ -61,48 +34,27 @@ namespace TestBucket.Domain.Identity.Permissions
         /// <returns></returns>
         public static PermissionLevel GetPermissionLevelFromClaims(IEnumerable<Claim> claims, PermissionEntityType entityType)
         {
-            var claimType = GetClaimTypeFromEntity(entityType);
-            if(claimType is not null)
+            PermissionLevel mergedLevel = PermissionLevel.None;
+
+            foreach(var level in GetPermissionLevelsFromClaims(claims, entityType))
             {
-                var claim = claims.Where(x => x.Type == claimType).FirstOrDefault();
-                if(claim?.Value is not null && int.TryParse(claim.Value, out var levelAsInteger))
-                {
-                    return (PermissionLevel)levelAsInteger;
-                }
+                mergedLevel |= level;
             }
 
-            return PermissionLevel.None;
+            return mergedLevel;
         }
 
         public static IEnumerable<PermissionLevel> GetPermissionLevelsFromClaims(IEnumerable<Claim> claims, PermissionEntityType entityType)
         {
-            var claimType = GetClaimTypeFromEntity(entityType);
-            if (claimType is not null)
+            foreach(var permissionClaim in claims.Where(x => x.Type == PermissionClaims.Permissions))
             {
-                var claim = claims.Where(x => x.Type == claimType).FirstOrDefault();
-                if (claim?.Value is not null && int.TryParse(claim.Value, out var levelAsInteger))
+                var userPermissions = PermissionClaimSerializer.Deserialize(permissionClaim.Value);
+                var entityPermission = userPermissions.Permisssions.Where(x => x.EntityType == entityType).FirstOrDefault();
+                if(entityPermission is not null)
                 {
-                    yield return (PermissionLevel)levelAsInteger;
+                    yield return entityPermission.Level;
                 }
             }
-        }
-
-        public static string? GetClaimTypeFromEntity(PermissionEntityType entityType)
-        {
-            return entityType switch
-            {
-                PermissionEntityType.RequirementSpecification => RequirementSpecification,
-                PermissionEntityType.Requirement => Requirement,
-                PermissionEntityType.TestCase => TestCase,
-                PermissionEntityType.TestSuite => TestSuite,
-                PermissionEntityType.TestRun => TestRun,
-                PermissionEntityType.TestCaseRun => TestCaseRun,
-                PermissionEntityType.Tenant => Tenant,
-                PermissionEntityType.User => User,
-                PermissionEntityType.Project => Project,
-                PermissionEntityType.Runner => Runner,
-                _ => null
-            };
         }
     }
 }

@@ -1,0 +1,95 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/Resources/{ResourceId:long}"
+@using TestBucket.Components.Uploads.Services
+@layout SettingsLayout
+@inject AppNavigationManager appNav
+@inject IStringLocalizer<SharedStrings> loc
+@inject TestResourceController controller
+@inject AttachmentsService attachments
+
+<MudStack Class="container-settings-page">
+
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
+    @if (_resource is not null)
+    {
+        <Field Row>
+            <FieldHeader>@loc["icon"]</FieldHeader>
+            
+            @if (_resource.Icon is null)
+            {
+                <UploadFile Accept="*.jpg;*.png" MaxFileSize="100000" FileUploaded="OnImageUploaded" />
+            }
+            else
+            {
+                <MudSpacer />
+                <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+                    <MudImage Src="@_resource.Icon" Width="128" Height="128" />
+                    <MudIconButton Size="Size.Small" OnClick="ClearImageAsync" Icon="@Icons.Material.Filled.Clear" />
+                </MudStack>
+            }
+        </Field>
+
+        <MudTable Items="@_resource.Variables" Dense RowClass="tb-datarow">
+            <HeaderContent>
+                <MudTh>@loc["name"]</MudTh>
+                <MudTh>@loc["value"]</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@loc["name"]">@context.Key</MudTd>
+                <MudTd DataLabel="@loc["value"]">@context.Value</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [Parameter] public long ResourceId { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private List<BreadcrumbItem> _nav = [];
+    private TestResource? _resource;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _resource = await controller.GetResourceByIdAsync(ResourceId);
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["test-resources"], appNav.GetTestResourcesSettingsUrl()));
+        if(_resource is not null)
+        {
+            _nav.Add(new BreadcrumbItem(_resource.Name, appNav.GetTestResourcesSettingsUrl() + $"/{ResourceId}"));
+        }
+    }
+
+    private async Task ClearImageAsync()
+    {
+       if (_resource is not null)
+        {
+            _resource.Icon = null;
+            await controller.UpdateAsync(_resource);
+        } 
+    }
+
+    private async Task OnImageUploaded(FileResource file)
+    {
+        if (_resource is not null)
+        {
+            // Generate a data uri
+            string uri = $"data:{file.ContentType};base64,{Convert.ToBase64String(file.Data)}";
+            _resource.Icon = uri;
+            await controller.UpdateAsync(_resource);
+        }
+
+        // Delete it, we no longer need it
+        await attachments.DeleteResourceByIdAsync(file.Id);
+    }
+}

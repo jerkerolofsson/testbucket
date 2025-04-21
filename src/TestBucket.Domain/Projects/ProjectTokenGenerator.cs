@@ -32,6 +32,20 @@ internal class ProjectTokenGenerator : IProjectTokenGenerator
         var expires = DateTimeOffset.UtcNow.AddDays(3);
 
         // Note: The name claim type must match the authenticator, e.g. ApiKeyAuthenticator
+
+        var builder = new EntityPermissionBuilder();
+        builder.Add(PermissionEntityType.TestSuite, PermissionLevel.ReadWrite);
+        builder.Add(PermissionEntityType.TestCase, PermissionLevel.ReadWrite);
+        builder.Add(PermissionEntityType.TestCaseRun, PermissionLevel.ReadWrite);
+        builder.Add(PermissionEntityType.TestRun, PermissionLevel.ReadWrite);
+        builder.Add(PermissionEntityType.TestAccount, PermissionLevel.Read);
+        builder.Add(PermissionEntityType.TestResource, PermissionLevel.Read);
+        builder.Add(PermissionEntityType.Project, PermissionLevel.Read);
+        builder.Add(PermissionEntityType.User, PermissionLevel.Read);
+        builder.Add(PermissionEntityType.Tenant, PermissionLevel.None);
+        builder.Add(PermissionEntityType.Requirement, PermissionLevel.Read);
+        builder.Add(PermissionEntityType.RequirementSpecification, PermissionLevel.Read);
+
         var nameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
         var username = $"urn:tb-project-id:{projectId.ToString()}";
         List<Claim> claims = [
@@ -40,10 +54,7 @@ internal class ProjectTokenGenerator : IProjectTokenGenerator
             new Claim("project", projectId.ToString()),
             new Claim("userid", projectId.ToString()),
             new Claim("email", username),
-            new Claim(PermissionClaims.TestCase, PermissionLevel.Write.ToString()),
-            new Claim(PermissionClaims.TestSuite, PermissionLevel.Write.ToString()),
-            new Claim(PermissionClaims.TestRun, PermissionLevel.Write.ToString()),
-            new Claim(PermissionClaims.TestCaseRun, PermissionLevel.Write.ToString()),
+            new Claim(PermissionClaims.Permissions, PermissionClaimSerializer.Serialize(builder.Build()))
             ];
 
         if(testRunId is not null)

@@ -26,7 +26,11 @@
             <MudTextField Variant="Variant.Outlined" T="string" Value="@_selectedEnvironment.Description" ValueChanged="OnDescriptionChangedAsync"></MudTextField>
         </Field>
 
-        <EnvironmentVariableEditor Variables="@_environmentVariables" VariablesChanged="OnEnvironmentVariablesChangedAsync" />
+        <EnvironmentVariableEditor Variables="@_environmentVariables" VariablesChanged="OnEnvironmentVariablesChangedAsync">
+            <ToolbarTitle>@loc["variables"]</ToolbarTitle>
+        </EnvironmentVariableEditor>
+
+        <DependencyEditor Dependencies="@_dependencies" DependenciesChanged="OnDependenciesChangedAsync"/>
     }
 
 </MudStack>
@@ -38,6 +42,7 @@
     [CascadingParameter] public Team? Team { get; set; }
 
     private TestEnvironment? _selectedEnvironment = null;
+    private List<TestCaseDependency> _dependencies = [];
     private List<EnvironmentVariable> _environmentVariables = [];
     private List<BreadcrumbItem> _nav = [];
 
@@ -67,14 +72,31 @@
             await controller.UpdateTestEnvironmentAsync(_selectedEnvironment);
         }
     }
-
+    private async Task OnDependenciesChangedAsync(List<TestCaseDependency> dependencies)
+    {
+        if (_selectedEnvironment is not null)
+        {
+            _dependencies = dependencies;
+            _selectedEnvironment.Dependencies = _dependencies;
+            await controller.UpdateTestEnvironmentAsync(_selectedEnvironment);
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
         _selectedEnvironment = await controller.GetTestEnvironmentByIdAsync(TestEnvironmentId);
         if(_selectedEnvironment is not null)
         {
+            _selectedEnvironment.Dependencies ??= [];
+
             _environmentVariables = _selectedEnvironment.Variables.ToEnvironmentVariables();
+            _dependencies = _selectedEnvironment.Dependencies;
+
+        }
+        else
+        {
+            _environmentVariables = [];
+            _dependencies = [];
         }
         SetupBreadcrumbs();
     }

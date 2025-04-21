@@ -29,6 +29,12 @@ namespace TestBucket.Domain.Environments.Models
         public Dictionary<string, string> Variables { get; set; } = [];
 
         /// <summary>
+        /// Required resources etc
+        /// </summary>
+        [Column(TypeName="jsonb")]
+        public List<TestCaseDependency>? Dependencies { get; set; }
+
+        /// <summary>
         /// Flag to indicate that the environment is the default environment
         /// </summary>
         public bool Default { get; set; }

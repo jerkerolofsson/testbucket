@@ -14,7 +14,7 @@
 
 <DropZone T="TestEntity" OnDrop="OnDrop">
     <MudDataGrid ServerData="LoadGridData"
-                 Class="tb-test-case-run-grid"
+                 Class="tb-test-case-run-grid tb-data-grid-verydense"
                  RowClassFunc="RowClassFunc"
                  Dense
                  Bordered
@@ -82,7 +82,9 @@
 
             <TemplateColumn Title="@loc["assigned-to"]">
                 <CellTemplate>
-                    <UserPicker SelectedUserName="@context.Item.AssignedToUserName" SelectedUserNameChanged="async (user) => await AssignRunToUserAsync(context.Item, user)"/>
+                    <UserPicker 
+                        Clearable
+                        SelectedUserName="@context.Item.AssignedToUserName" SelectedUserNameChanged="async (user) => await AssignRunToUserAsync(context.Item, user)"/>
                 </CellTemplate>
             </TemplateColumn>
 
@@ -90,7 +92,7 @@
                 <CellTemplate>
                     @if(context.Item.Result != Contracts.Testing.Models.TestResult.NoRun)
                     {
-                        <MudLink OnClick="RunTestAgain">@loc["run-test-again"]</MudLink>
+                        <MudLink OnClick="RunTestAgain" Style="font-size: 8pt">@loc["run-test-again"]</MudLink>
                     }
                 </CellTemplate>
             </TemplateColumn>

@@ -22,15 +22,16 @@ public class PlotlyChartBuilder
 
         foreach (var categoryResult in source)
         {
-            var sum = result switch
-            {
-                "passed" => categoryResult.Passed,
-                "failed" => categoryResult.Failed,
-                "blocked" => categoryResult.Blocked,
-                "skipped" => categoryResult.Skipped,
-                "norun" => categoryResult.NoRun,
-                _ => 0
-            };
+            var sum = SelectValue(categoryResult, result);
+            //var sum = result switch
+            //{
+            //    "passed" => categoryResult.Passed,
+            //    "failed" => categoryResult.Failed,
+            //    "blocked" => categoryResult.Blocked,
+            //    "skipped" => categoryResult.Skipped,
+            //    "norun" => categoryResult.NoRun,
+            //    _ => 0
+            //};
             bar.Y.Add(sum);
         }
     }
@@ -38,6 +39,29 @@ public class PlotlyChartBuilder
     public static readonly string[] ResultLabels = ["passed", "failed", "blocked", "skipped", "norun"];
 
     public static readonly string[] ResultColors = ["rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)"];
+
+    public static string GetResultColor(string label)
+    {
+        var index = Array.IndexOf(ResultLabels, label);
+        if(index < ResultColors.Length && index >= 0)
+        {
+            return ResultColors[index];
+        }
+        return "#222";
+    }
+
+    public static int SelectValue(TestExecutionResultSummary categoryResult, string label)
+    {
+        return label switch
+        {
+            "passed" => categoryResult.Passed,
+            "failed" => categoryResult.Failed,
+            "blocked" => categoryResult.Blocked,
+            "skipped" => categoryResult.Skipped,
+            "norun" => categoryResult.NoRun,
+            _ => 0
+        };
+    }
 
     public static Pie CreateResultPie(TestExecutionResultSummary result, string name)
     {

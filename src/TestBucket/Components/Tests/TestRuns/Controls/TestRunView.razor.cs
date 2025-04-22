@@ -43,10 +43,7 @@ public partial class TestRunView
             _activePanelIndex = 1;
         }
 
-        if (_selectedTestCaseRun?.Id != testCaseRun?.Id)
-        {
-            _selectedTestCaseRun = testCaseRun;
-        }
+        _selectedTestCaseRun = testCaseRun;
 
         if (_selectedTestCaseRun?.TestCase is not null)
         {
@@ -58,17 +55,17 @@ public partial class TestRunView
         }
     }
 
-    private Task OnTestCaseRunChanged(TestCaseRun run)
+    private async Task OnTestCaseRunChanged(TestCaseRun run)
     {
         if (_selectedTestCaseRun?.Id == run?.Id)
         {
+            await testCaseEditorController.ReleaseResourcesAsync();
             _selectedTestCaseRun = run;
             if (testCaseRunGrid is not null)
             {
                 testCaseRunGrid.ReloadServerData();
             }
         }
-        return Task.CompletedTask;
     }
 
     private async Task OnTestCaseRunStateChanged(string? state)
@@ -105,9 +102,9 @@ public partial class TestRunView
         testExecutionController.TestCompleted += OnTestCompleted;
     }
 
-    public ValueTask DisposeAsync()
+    public async ValueTask DisposeAsync()
     {
         testExecutionController.TestCompleted -= OnTestCompleted;
-        return ValueTask.CompletedTask;
+        await testCaseEditorController.ReleaseResourcesAsync();
     }
 }

@@ -1,4 +1,6 @@
-﻿using TestBucket.Contracts.Testing.Models;
+﻿using System;
+
+using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
@@ -723,13 +725,56 @@ internal class TestCaseRepository : ITestCaseRepository
             result.Total = allResults.Where(x=>x.FieldValue == fieldValue).Sum(x => x.Count);
             result.Completed = allResults.Where(x => x.FieldValue == fieldValue && x.Result != TestResult.NoRun).Sum(x => x.Count);
             result.Passed = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Passed).Sum(x => x.Count);
-            result.Failed = allResults.Where(x => x.FieldValue == fieldValue && x.FieldValue == fieldValue && x.Result == TestResult.Failed).Sum(x => x.Count);
-            result.Blocked = allResults.Where(x => x.Result == TestResult.Blocked).Sum(x => x.Count);
+            result.Failed = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Failed).Sum(x => x.Count);
+            result.Blocked = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Blocked).Sum(x => x.Count);
             result.Skipped = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Skipped).Sum(x => x.Count);
             result.Error = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Error).Sum(x => x.Count);
             result.Assert = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Assert).Sum(x => x.Count);
             result.Hang = allResults.Where(x => x.FieldValue == fieldValue && x.Result == TestResult.Hang).Sum(x => x.Count);
             table[name] = result;
+        }
+
+        return table;
+    }
+
+    public async Task<Dictionary<DateOnly, TestExecutionResultSummary>> GetTestExecutionResultSummaryByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
+    {
+        var table = new Dictionary<DateOnly, TestExecutionResultSummary>();
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCaseRuns
+            .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            tests = tests.Where(filter.Expression);
+        }
+
+        tests = tests.Where(x=>x.Modified > new DateTimeOffset(1980,1,1,0,0,0,TimeSpan.Zero));
+
+        var allResults = await tests.GroupBy(x => new { x.Result, x.Modified.Year, x.Modified.Month, x.Modified.Day }).
+            Select(g => new { Count = g.Count(), g.Key.Result, g.Key.Year, g.Key.Month, g.Key.Day }).ToListAsync();
+
+        foreach (var fieldValue in allResults.Select(x => new { x.Year, x.Month, x.Day }).Distinct())
+        {
+            if (fieldValue is not null)
+            {
+                var result = new TestExecutionResultSummary();
+                result.Total = allResults.Where(x =>     x.Year == fieldValue.Year && x.Month == fieldValue.Month && x.Day == fieldValue.Day).Sum(x => x.Count);
+                result.Completed = allResults.Where(x => x.Year == fieldValue.Year && x.Month == fieldValue.Month && x.Day == fieldValue.Day && x.Result != TestResult.NoRun).Sum(x => x.Count);
+                result.Passed = allResults.Where(x =>    x.Year == fieldValue.Year && x.Month == fieldValue.Month && x.Day == fieldValue.Day && x.Result == TestResult.Passed).Sum(x => x.Count);
+                result.Failed = allResults.Where(x =>    x.Year == fieldValue.Year && x.Month == fieldValue.Month && x.Day == fieldValue.Day && x.Result == TestResult.Failed).Sum(x => x.Count);
+                result.Blocked = allResults.Where(x =>   x.Year == fieldValue.Year && x.Month == fieldValue.Month && x.Day == fieldValue.Day && x.Result == TestResult.Blocked).Sum(x => x.Count);
+                result.Skipped = allResults.Where(x =>   x.Year == fieldValue.Year && x.Month == fieldValue.Month && x.Day == fieldValue.Day && x.Result == TestResult.Skipped).Sum(x => x.Count);
+                result.Error = allResults.Where(x =>     x.Year == fieldValue.Year && x.Month == fieldValue.Month && x.Day == fieldValue.Day && x.Result == TestResult.Error).Sum(x => x.Count);
+                result.Assert = allResults.Where(x =>    x.Year == fieldValue.Year && x.Month == fieldValue.Month && x.Day == fieldValue.Day && x.Result == TestResult.Assert).Sum(x => x.Count);
+                result.Hang = allResults.Where(x =>      x.Year == fieldValue.Year && x.Month == fieldValue.Month && x.Day == fieldValue.Day && x.Result == TestResult.Hang).Sum(x => x.Count);
+
+                var date = new DateOnly(fieldValue.Year, fieldValue.Month, fieldValue.Day);
+                table[date] = result;
+            }
         }
 
         return table;

@@ -1,9 +1,9 @@
 ﻿@using System.Diagnostics
 @implements IAsyncDisposable
 
-<MudStack Row AlignItems="AlignItems.Center">
+<MudStack Row AlignItems="AlignItems.Center" Spacing="1">
     <MudIcon Icon="@Icons.Material.Outlined.Timer" Size="Size.Small" Style="margin: 0"/>
-    <div>@(TimeSpan.FromMilliseconds(_millis).Humanize())</div>
+    <div style="font-size: 8pt">@(TimeSpan.FromMilliseconds(_millis).Humanize())</div>
 </MudStack>
 
 @code {
@@ -25,7 +25,7 @@
         var before = _millis;
         if (TestCaseRun?.Id != _testCaseRun?.Id || TestCaseRun?.Result != _result)
         {
-            _millis = TestCaseRun?.Duration ?? 0;
+            _startDuration = _millis = TestCaseRun?.Duration ?? 0;
             _result = TestCaseRun?.Result;
             _testCaseRun = TestCaseRun;
             await StopTimerAsync();

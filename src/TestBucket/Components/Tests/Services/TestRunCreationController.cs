@@ -1,24 +1,16 @@
-﻿
-using System.Collections.Generic;
-using System.Threading;
-
-using Mediator;
-
-using NGitLab.Models;
+﻿using Mediator;
 
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Components.Tests.TestRuns.Dialogs;
-using TestBucket.Contracts.Identity;
-using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Environments;
-using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.Tenants;
 using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.Testing.Compiler;
+using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.TestResources.Allocation;
 
 namespace TestBucket.Components.Tests.Services;
@@ -257,6 +249,7 @@ internal class TestRunCreationController : TenantBaseService
         if (await _markdownAutomationRunner.SupportsLanguageAsync(principal, language))
         {
             var testSuite = await _testCaseRepository.GetTestSuiteByIdAsync(test.TenantId, test.TestSuiteId);
+            var defaultEnvironment = await _testEnvironmentManager.GetDefaultTestEnvironmentAsync(principal, test.TestProjectId.Value);
 
             if (test?.TeamId is not null && testSuite is not null)
             {
@@ -268,8 +261,7 @@ internal class TestRunCreationController : TenantBaseService
                     TestRunId = null,
                     TestCaseId = test.Id,
 
-                    // todo: default envi
-                    TestEnvironmentId = null, 
+                    TestEnvironmentId = defaultEnvironment?.Id, 
                     
                     // Defines the resources and accounts that will be locked by the compiler (ResolveVariablesAsync)
                     Dependencies = testSuite.Dependencies

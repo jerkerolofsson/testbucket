@@ -20,7 +20,7 @@
             @* <TestResultSummaryBar Summary="@_results"/> *@
 
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                <ResultChart Results="@_results" Title="Total" />
+                <ResultChart Results="@_results" Title="@loc["test-results"]" />
 
                 @foreach(var kvp in _groupedByField)
                 {

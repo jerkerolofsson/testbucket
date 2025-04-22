@@ -19,10 +19,16 @@
             <MudStack Class="pa-2" Style="width: 100%">
                 @if (_selectedTestCaseRun is not null)
                 {
+                    var readOnly = _selectedTestCaseRun.Result != TestResult.NoRun;
+
                     <CascadingValue Value="@_selectedTestCaseRun">
                         <MudStack Class="pa-2" Style="width: 100%">
 
-                            <TestCaseRunDuration/>
+                            <MudStack Row Style="width: 100%">
+                                <ResultPill Result="@_selectedTestCaseRun.Result" ReadOnly="@readOnly" ResultChanged="OnTestCaseRunResultChanged"/>
+                                <MudSpacer/>
+                                <TestCaseRunDuration />
+                            </MudStack>
 
                             <MarkdownEditor ShowToolbar="false"
                                             MaxHeight="100%"
@@ -33,7 +39,7 @@
                                             SpellChecker="false">
                             </MarkdownEditor>
 
-                            @if(_selectedTestCaseRun.Result == TestResult.NoRun)
+                            @if (!readOnly)
                             {
                                 <TestCaseRunEditor TestCaseRun="@_selectedTestCaseRun" TestCaseRunChanged="OnTestCaseRunChanged" />
                                 <TestRunStatePicker State="@_selectedTestCaseRun.State" StateChanged="OnTestCaseRunStateChanged" />

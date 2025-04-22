@@ -1,0 +1,117 @@
+﻿@using Plotly.Blazor.LayoutLib
+@using System.Diagnostics
+@using TestBucket.Components.Reporting.Helpers
+@using TestBucket.Domain.Testing.Aggregates
+@inject TestBrowser testBrowser
+@inject TestCaseEditorController testCaseEditorController
+@inject TestExecutionController testExecutionController
+@inject IStringLocalizer<SharedStrings> loc
+@inject ThemingService themingService
+@typeparam T where T : notnull
+
+<MudPaper Elevation="2" Class="tb-tile">
+    <MudStack Spacing="0" Class="pa-1">
+        <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h6">@Title</MudText>
+            <MudSpacer />
+
+            @* <MudToggleGroup T="ChartType" Value="@_chartType" ValueChanged="OnChartTypeChanged" Color="Color.Surface"> *@
+            @*     <MudToggleItem Value="ChartType.Donut"><MudIcon Icon="@Icons.Material.Rounded.DonutLarge" Size="Size.Small" /></MudToggleItem> *@
+            @*     <MudToggleItem Value="ChartType.Pie"><MudIcon Icon="@Icons.Material.Rounded.PieChart" Size="Size.Small" /></MudToggleItem> *@
+            @*     <MudToggleItem Value="ChartType.Bar"><MudIcon Icon="@Icons.Material.Rounded.BarChart" Size="Size.Small" /></MudToggleItem> *@
+            @* </MudToggleGroup> *@
+
+        </MudStack>
+        @if (_layout is not null && Results is not null)
+        {
+            <PlotlyChart style="height: 10vh; min-height: 350px" @ref="_chart" @bind-Config="_config" @bind-Layout="_layout" @bind-Data="_data" />
+        }
+        else
+        {
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="350px" />
+        }
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public Dictionary<T, TestExecutionResultSummary>? Results { get; set; }
+    [Parameter] public ChartType ChartType { get; set; } = ChartType.Line;
+
+    private ChartType _chartType = ChartType.Line;
+
+    private PlotlyChart? _chart;
+    private Config? _config = new Config()
+    {
+        Responsive = true
+    };
+    private Layout? _layout;
+
+    // Using of the interface IList is important for the event callback!
+    private IList<ITrace> _data = new List<ITrace>();
+
+    private async Task OnChartTypeChanged(ChartType chartType)
+    {
+        _chartType = chartType;
+        await BuildChartData();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _chartType = ChartType;
+
+        _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
+        _layout.AutoSize = true;
+        _layout.Colorway = PlotlyChartBuilder.ResultColors;
+        _layout.ShowLegend = false;
+        _layout.Margin = new Plotly.Blazor.LayoutLib.Margin
+        {
+            L = 0,
+            T = 0,
+            R = 0,
+            B = 0
+        };
+
+        if (Results is not null)
+        {
+            await BuildChartData();
+        }
+    }
+
+    private async Task BuildChartData()
+    {
+        Debug.Assert(_layout != null);
+        if(_layout is null || Results is null)
+        {
+            return;
+        }
+
+        _data.Clear();
+        _layout.Annotations = [];
+        if (_chartType == ChartType.Line)
+        {
+            List<string> labels = Results.Keys.Select(x => x!.ToString()!).ToList();
+
+            foreach(var result in PlotlyChartBuilder.ResultLabels)
+            {
+                _data.Add(new Scatter()
+                    {
+                        Name = result,
+                        X = new List<object>(labels),
+                        Y = new List<object>(Results.Values.Select(x => PlotlyChartBuilder.SelectValue(x, result).ToString())),
+                        FillColor = PlotlyChartBuilder.GetResultColor(result)
+                    });
+            }
+        }
+
+        if (_chart is not null)
+        {
+            try
+            {
+                await _chart.Update(_data, _layout);
+                await _chart.React();
+            }
+            catch { }
+        }
+    }
+}

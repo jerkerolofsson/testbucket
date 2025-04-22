@@ -2,12 +2,6 @@
 
 @if(TestCaseRun is not null)
 {
-    <Field Row>
-        <FieldHeader>@loc["test-result"]</FieldHeader>
-        <MudSpacer />
-        <ResultPill Result="@TestCaseRun.Result" />
-    </Field>
-
     @if(TestCaseRun.LinkedIssues is not null && TestCaseRun.LinkedIssues.Count > 0)
     {
         <LinkedIssuesTable ReadOnly Issues="@TestCaseRun.LinkedIssues"/>

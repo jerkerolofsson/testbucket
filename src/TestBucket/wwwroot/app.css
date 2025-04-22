@@ -410,6 +410,10 @@ p.mud-typography-subtitle1 {
     font-size: 10pt;
 }
 
+.tb-data-grid-verydense .mud-table-cell {
+    font-size: 8pt;
+}
+
 .tb-background-hover {
     border: 1px solid transparent;
 }
@@ -687,6 +691,20 @@ table tbody tr td {
     border-radius: 100%;
 }
 
+.tb-profile-image.lg {
+    min-width: 64px;
+    max-width: 64px;
+    width: 64px;
+    height: 64px;
+}
+.tb-profile-image.sm {
+    font-size: 8pt;
+    min-width: 16px;
+    max-width: 16px;
+    width: 16px;
+    height: 16px;
+}
+
 .tb-toolbar  img.tb-profile-image.tb-avatar-generic,
 .tb-toolbar  div.tb-profile-image.tb-avatar-generic {
     border-bottom: solid 2px transparent;
@@ -704,7 +722,7 @@ img.tb-profile-image.tb-avatar-generic:hover {
 }
 
 .result-pill {
-    font-size: 7pt;
+    font-size: 8pt;
     padding: 4px;
     border-radius: 4px;
     min-width: 80px;

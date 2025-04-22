@@ -527,9 +527,15 @@ internal class TestBrowser : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
 
-        var test = await _testRunManager.GetTestExecutionResultSummaryByFieldAsync(principal, query, 11);
+        //var test = await _testRunManager.GetTestExecutionResultSummaryByFieldAsync(principal, query, 11);
 
         return await _testRunManager.GetTestExecutionResultSummaryAsync(principal, query);
+    }
+    public async Task<Dictionary<DateOnly, TestExecutionResultSummary>> GetTestExecutionResultSummaryByDayAsync(SearchTestCaseRunQuery query)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        return await _testRunManager.GetTestExecutionResultSummaryByDayAsync(principal, query);
     }
 
     /// <summary>

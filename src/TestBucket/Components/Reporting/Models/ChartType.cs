@@ -4,5 +4,6 @@ public enum ChartType
 {
     Bar,
     Donut,
-    Pie
+    Pie,
+    Line
 }

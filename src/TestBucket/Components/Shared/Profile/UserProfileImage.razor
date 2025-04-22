@@ -1,9 +1,10 @@
 ﻿@using TestBucket.Components.Users.Services
 @inject UserController controller
 
+<MudTooltip Text="@UserName">
 <img class="@ClassImg" style="@Style" src="@ProfileImage" onerror="@OnErrorJs" @onclick="OnUserClickedAsync" />
 <div class="@ClassDiv" style="@Style" @onclick="OnUserClickedAsync">@UserInitials</div>
-
+</MudTooltip>
 
 @code {
     [Parameter] public string Class { get; set; } = "";

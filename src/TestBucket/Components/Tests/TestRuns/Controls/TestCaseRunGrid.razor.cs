@@ -79,7 +79,9 @@ public partial class TestCaseRunGrid
 
     protected override void OnParametersSet()
     {
-        if (_selectedItem?.Id != SelectedTestCaseRun?.Id || SelectedTestCaseRun is null || _run != Run)
+        if (_selectedItem?.Id != SelectedTestCaseRun?.Id ||
+            _selectedItem?.Result != SelectedTestCaseRun?.Result ||
+            SelectedTestCaseRun is null || _run != Run)
         {
             _run = Run;
             _query = SearchTestCaseRunQuery.FromUrl(navigationManager.Uri);
@@ -309,6 +311,7 @@ public partial class TestCaseRunGrid
             return;
         }
         await testExecutionController.SetTestCaseRunResultAsync(_selectedItem, TestResult.NoRun);
+        //await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
     }
 
 }

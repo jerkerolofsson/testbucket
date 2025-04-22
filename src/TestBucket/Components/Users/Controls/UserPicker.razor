@@ -4,25 +4,110 @@
 @using TestBucket.Domain.Identity.Models
 @inject IStringLocalizer<SharedStrings> loc
 @inject UserController userController
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-<MudAutocomplete Clearable="@Clearable"
-T="string"
-Value="@SelectedUserName"
-ValueChanged="OnValueChangedAsync"
-SearchFunc="@Search"
-Variant="Variant.Outlined">
-    <ItemTemplate>
-        <MudStack Row Spacing="1">
-            <UserProfileImage UserName="@context" />
-            <MudText>@context</MudText>
+<div @onclick="ToggleOpen" class="cursor-pointer tb-user-picker">
+    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+        @if (!string.IsNullOrEmpty(_model.Name))
+        {
+            <MudStack Spacing="1" Row>
+                <UserProfileImage Class="sm" UserName="@_model.Name"/>
+                <span>@_model.Name</span>
+            </MudStack>
+        }
+        else
+        {
+            <MudText Style="opacity: 0.5">@loc["unassigned"]</MudText>
+        }
+    </MudStack>
+</div>
+
+<MudOverlay @bind-Visible="_open" AutoClose="true" DarkBackground />
+
+<MudPopover Open="@_open" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" >
+    <EditForm Model="_model" OnValidSubmit="OnValidSubmit">
+        <MudStack Class="pa-5">
+            @if(_recent.Count > 0)
+            {
+                <MudText Typo="Typo.h6">@loc["recent"]</MudText>
+                <MudStack Row Class="pa-3">
+                    @foreach(var recent in _recent)
+                    {
+                        <UserProfileImage 
+                            Class="cursor-pointer"
+                            UserName="@recent" ImageClicked="async () => await OnValueChangedAsync(recent)" />
+                    }
+                </MudStack>
+            }
+
+            <MudText Typo="Typo.h6" Class="mt-5">@loc["user"]</MudText>
+            <MudAutocomplete Clearable="@Clearable" 
+            T="string"
+            Value="@_model.Name"
+            ValueChanged="OnValueChangedAsync"
+            SearchFunc="@Search"
+            Context="userName"
+            Variant="Variant.Outlined">
+                <ItemTemplate>
+                    <MudStack Row Spacing="1">
+                        <UserProfileImage UserName="@userName" />
+                        <MudText>@userName</MudText>
+                    </MudStack>
+                </ItemTemplate>
+            </MudAutocomplete>
         </MudStack>
-    </ItemTemplate>
-</MudAutocomplete>
+    </EditForm>
+</MudPopover>
 
 @code {
+    [Parameter] public bool ReadOnly { get; set; } = false;
     [Parameter] public bool Clearable { get; set; } = false;
     [Parameter] public string? SelectedUserName { get; set; }
     [Parameter] public EventCallback<string> SelectedUserNameChanged { get; set; }
+    private bool _open = false;
+    private List<string> _recent = [];
+
+    private record class InputModel(string Name);
+    private InputModel _model = new("");
+    private bool _loadedRecents = false;
+
+    protected override void OnParametersSet()
+    {
+        _model = new InputModel(SelectedUserName ?? string.Empty);
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!_loadedRecents)
+        {
+            //await localStorage.SetItemAsync("name", "John Smith");
+            try
+            {
+                _recent = (await localStorage.GetItemAsync<List<string>>("UserPickerRecent")) ?? [];
+                _loadedRecents = true;
+            }
+            catch { }
+        }
+    }
+
+    private void OnValidSubmit()
+    {
+        _open = false;
+    }
+
+    public void ToggleOpen()
+    {
+        if (ReadOnly)
+        {
+            return;
+        }
+
+        if (_open)
+            _open = false;
+        else
+            _open = true;
+    }
 
     private async Task<IEnumerable<string>> Search(string text, CancellationToken token)
     {
@@ -31,6 +116,20 @@ Variant="Variant.Outlined">
 
     private async Task OnValueChangedAsync(string username)
     {
+        try
+        {
+            _recent.RemoveAll(x => x == username);
+            _recent.Insert(0, username);
+            if(_recent.Count > 5)
+            {
+                _recent.RemoveAt(4);
+            }
+
+            await localStorage.SetItemAsync("UserPickerRecent", _recent);
+        }
+        catch { }
+
+        _open = false;
         await SelectedUserNameChanged.InvokeAsync(username);
     }
 }

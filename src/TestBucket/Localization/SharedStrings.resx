@@ -365,4 +365,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="test-cases" xml:space="preserve">
     <value>Test Cases</value>
   </data>
+  <data name="recent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="user" xml:space="preserve">
+    <value>User</value>
+  </data>
 </root>

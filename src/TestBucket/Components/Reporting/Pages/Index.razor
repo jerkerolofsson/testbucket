@@ -8,6 +8,7 @@
 @layout ReportingLayout
 @inject TestBrowser testBrowser
 @inject FieldController fieldController
+@inject IStringLocalizer<SharedStrings> loc
 
 @if(_results is not null)
 {
@@ -17,12 +18,22 @@
 
         <TestResultSummaryBar Style="width: 100%" Summary="@_results" />
 
-        <MudStack Row Spacing="3">
-            <MudText Typo="Typo.h5">@_results.Total tests</MudText>
-            <MudText Typo="Typo.h5">@_results.Passed passed</MudText>
-            <MudText Typo="Typo.h5">@_results.Failed failed</MudText>
-            <MudText Typo="Typo.h5">@_results.Skipped skipped</MudText>
-        </MudStack>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+            <ResultChart Results="@_results" Title="@loc["test-results"]" />
+
+            <ResultLineChart T=DateOnly Results="@_resultsByDate" Title="@loc["test-results"]" />
+
+            <div>
+
+                <MudStack Row Spacing="3">
+                    <MudText Typo="Typo.h5">@_results.Total tests</MudText>
+                    <MudText Typo="Typo.h5">@_results.Passed passed</MudText>
+                    <MudText Typo="Typo.h5">@_results.Failed failed</MudText>
+                    <MudText Typo="Typo.h5">@_results.Skipped skipped</MudText>
+                </MudStack>
+            </div>
+        </div>
+
 
         @foreach(var field in _groupedByField.Keys)
         {
@@ -68,6 +79,7 @@
     [CascadingParameter] public SearchTestCaseRunQuery? Query { get; set; }
 
     private TestExecutionResultSummary? _results;
+    private Dictionary<DateOnly, TestExecutionResultSummary> _resultsByDate = [];
     private Dictionary<FieldDefinition, Dictionary<string, TestExecutionResultSummary>> _groupedByField = [];
 
     private string _queryKey = "";
@@ -82,6 +94,7 @@
                 _queryKey = queryKey;
 
                 _results = await testBrowser.GetTestExecutionResultSummaryAsync(Query);
+                _resultsByDate = await testBrowser.GetTestExecutionResultSummaryByDayAsync(Query);
 
                 if (Project is not null)
                 {

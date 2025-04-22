@@ -216,6 +216,15 @@ internal class TestRunManager : ITestRunManager
         filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
         return await _testCaseRepo.GetTestExecutionResultSummaryAsync(filters);
     }
+
+    /// <inheritdoc/>
+    public async Task<Dictionary<DateOnly, TestExecutionResultSummary>> GetTestExecutionResultSummaryByDayAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
+        filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
+        return await _testCaseRepo.GetTestExecutionResultSummaryByDayAsync(filters);
+    }
     /// <inheritdoc/>
     public async Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId)
     {

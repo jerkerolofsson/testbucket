@@ -1,12 +1,12 @@
 ﻿
 @if(ImageUri is null)
 {
-    <div class="@(ClassDiv) force-visible" style="@Style" @onclick="OnUserClickedAsync">@Text</div>
+    <div class="@(ClassDiv) force-visible" style="@Style" @onclick="OnUserClickedAsync">@_text</div>
 } 
 else
 {
     <img class="@ClassImg" style="@Style" src="@ImageUri" onerror="@OnErrorJs" @onclick="OnUserClickedAsync" />
-    <div class="@ClassDiv" style="@Style" @onclick="OnUserClickedAsync">@Text</div>
+    <div class="@ClassDiv" style="@Style" @onclick="OnUserClickedAsync">@_text</div>
 }
 
 
@@ -21,6 +21,20 @@ else
     private string _id = "tb-profile-" + Guid.NewGuid().ToString();
     private string ClassImg => $"{Class} tb-avatar-generic tb-profile-image {_id}";
     private string ClassDiv => $"{Class} tb-avatar-generic tb-profile-image tb-background-{BackgroundHash} {_id}";
+
+    private string _text = "";
+
+    protected override void OnParametersSet()
+    {
+        if(Text is not null)
+        {
+            _text = Text;
+            if(_text.Length > 2)
+            {
+                _text = _text[0..2];
+            }
+        }
+    }
 
     private int BackgroundHash
     {

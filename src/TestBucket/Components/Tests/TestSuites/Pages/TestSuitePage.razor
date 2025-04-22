@@ -16,7 +16,10 @@
              <article class="center">
                 <MudStack>
                     <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Spacing="0">
-                        <MudText Typo="Typo.h1">@_testSuite?.Name</MudText>
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@TbIcons.BoldDuoTone.Box" Size="Size.Large" />
+                            <MudText Typo="Typo.h2">@_testSuite?.Name</MudText>
+                        </MudStack>
                         <MudSpacer/>
                         <MudTooltip Text="@loc["attachments"]">
                             <MudIconButton Icon="@Icons.Material.Filled.AttachFile"  Href="@appNavigationManager.GetTestSuiteAttachmentsUrl()"/>

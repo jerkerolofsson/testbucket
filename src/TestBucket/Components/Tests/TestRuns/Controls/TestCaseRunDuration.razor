@@ -1,0 +1,79 @@
+﻿@using System.Diagnostics
+@implements IAsyncDisposable
+
+<MudStack Row AlignItems="AlignItems.Center">
+    <MudIcon Icon="@Icons.Material.Outlined.Timer" Size="Size.Small" Style="margin: 0"/>
+    <div>@(TimeSpan.FromMilliseconds(_millis).Humanize())</div>
+</MudStack>
+
+@code {
+    [CascadingParameter] public TestCaseRun? TestCaseRun { get; set; }
+
+    private int _millis;
+    private TestCaseRun? _testCaseRun;
+
+    /// <summary>
+    /// Timer to count the runtime, if executing
+    /// </summary>
+    private Timer? _timer = null;
+    private int _startDuration = 0;
+    private long _startRunTimestamp;
+    private TestResult? _result;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var before = _millis;
+        if (TestCaseRun?.Id != _testCaseRun?.Id || TestCaseRun?.Result != _result)
+        {
+            _millis = TestCaseRun?.Duration ?? 0;
+            _result = TestCaseRun?.Result;
+            _testCaseRun = TestCaseRun;
+            await StopTimerAsync();
+            StartTimer();
+        }
+
+        if(_millis != before)
+        {
+            this.StateHasChanged();
+        }
+    }
+
+    private void StartTimer()
+    {
+        if (_testCaseRun is null)
+        {
+            return;
+        }
+        if (_testCaseRun.Result == TestResult.NoRun)
+        {
+            _startRunTimestamp = Stopwatch.GetTimestamp();
+            _timer = new Timer(this.OnTimer, null, 1000, 1000);
+        }
+    }
+
+    private void OnTimer(object? state)
+    {
+        if (_testCaseRun is not null)
+        {
+            int millis = (int)Stopwatch.GetElapsedTime(_startRunTimestamp).TotalMilliseconds;
+            _millis = _startDuration + millis;
+            _testCaseRun.Duration = _millis;
+            InvokeAsync(this.StateHasChanged);
+        }
+    }
+
+    private ValueTask StopTimerAsync()
+    {
+        if (_timer is not null)
+        {
+            _timer?.Dispose();
+            _timer = null;
+        }
+        return ValueTask.CompletedTask;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await StopTimerAsync();
+    }
+}

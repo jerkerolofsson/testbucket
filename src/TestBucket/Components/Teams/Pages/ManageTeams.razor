@@ -1,19 +1,23 @@
 ﻿@page "/{tenantId}/Settings/Teams"
+@using TestBucket.Components.Shared.Profile
 @using TestBucket.Components.Teams.Dialogs
 @using TestBucket.Domain.Teams.Models
 @layout SettingsLayout
 @inject TeamController teamService
 @inject IDialogService dialogService
 @inject IStringLocalizer<SharedStrings> loc
+@inject AppNavigationManager appNav
 
 <MudStack Class="container-settings-page">
 
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
     <MudDataGrid ServerData="LoadGridData"
-                 Dense="true"
-                 Hover="true"
-                 T="Team"
-                 @ref="_dataGrid"
-                 SortMode="SortMode.None">
+    Dense="true"
+    Hover="true"
+    T="Team"
+    @ref="_dataGrid"
+    SortMode="SortMode.None">
 
         <ToolBarContent>
             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
@@ -30,9 +34,15 @@
         </ToolBarContent>
 
         <Columns>
-            <PropertyColumn Property="x => x.ShortName" />
-            <PropertyColumn Property="x => x.Name" />
-            <PropertyColumn Property="x => x.Slug" />
+
+            <TemplateColumn Title="@loc["name"]" SortBy="x => x.Name" Sortable="true">
+                <CellTemplate>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <GenericAvatar Text="@context.Item.ShortName" ImageUri="@context.Item.IconUrl"/>
+                        <MudText>@context.Item.Name</MudText>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
         </Columns>
 
         <PagerContent>
@@ -44,7 +54,7 @@
 @code {
     [Parameter] public string? TenantId { get; set; }
 
-
+    private readonly List<BreadcrumbItem> _nav = [];
     private MudDataGrid<Team>? _dataGrid;
 
     private async Task AddTeamAsync()
@@ -52,6 +62,18 @@
         var dialog = await dialogService.ShowAsync<AddTeamDialog>();
         var result = await dialog.Result;
         _dataGrid?.ReloadServerData();
+    }
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["teams"], appNav.GetManageTeamsUrl()));
     }
 
     private async Task<GridData<Team>> LoadGridData(GridState<Team> state)

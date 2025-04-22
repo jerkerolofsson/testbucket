@@ -1,4 +1,4 @@
-﻿@implements IDisposable
+﻿@implements IAsyncDisposable
 @inject TestBrowser testBrowser
 @inject TestCaseEditorController testCaseEditorController
 @inject TestExecutionController testExecutionController
@@ -19,29 +19,33 @@
             <MudStack Class="pa-2" Style="width: 100%">
                 @if (_selectedTestCaseRun is not null)
                 {
-                    <MudStack Class="pa-2" Style="width: 100%">
+                    <CascadingValue Value="@_selectedTestCaseRun">
+                        <MudStack Class="pa-2" Style="width: 100%">
 
-                        <MarkdownEditor ShowToolbar="false"
-                                        MaxHeight="100%"
-                                        MinHeight="100%"
-                                        AllowResize="false"
-                                        Preview="true"
-                                        Value="@_markdown"
-                                        SpellChecker="false">
-                        </MarkdownEditor>
+                            <TestCaseRunDuration/>
 
-                        @if(_selectedTestCaseRun.Result == TestResult.NoRun)
-                        {
-                            <TestCaseRunEditor TestCaseRun="@_selectedTestCaseRun" TestCaseRunChanged="OnTestCaseRunChanged" />
-                            <TestRunStatePicker State="@_selectedTestCaseRun.State" StateChanged="OnTestCaseRunStateChanged" />
+                            <MarkdownEditor ShowToolbar="false"
+                                            MaxHeight="100%"
+                                            MinHeight="100%"
+                                            AllowResize="false"
+                                            Preview="true"
+                                            Value="@_markdown"
+                                            SpellChecker="false">
+                            </MarkdownEditor>
+
+                            @if(_selectedTestCaseRun.Result == TestResult.NoRun)
+                            {
+                                <TestCaseRunEditor TestCaseRun="@_selectedTestCaseRun" TestCaseRunChanged="OnTestCaseRunChanged" />
+                                <TestRunStatePicker State="@_selectedTestCaseRun.State" StateChanged="OnTestCaseRunStateChanged" />
                             
-                            <FieldsEditor TestCaseRun="@_selectedTestCaseRun" />
-                        }
-                        else
-                        {
-                            <TestCaseRunReadOnlyView TestCaseRun="@_selectedTestCaseRun" />
-                        }
-                    </MudStack>
+                                <FieldsEditor TestCaseRun="@_selectedTestCaseRun" />
+                            }
+                            else
+                            {
+                                <TestCaseRunReadOnlyView TestCaseRun="@_selectedTestCaseRun" />
+                            }
+                        </MudStack>
+                    </CascadingValue>
                 }
             </MudStack>
         </EndContent>

@@ -35,7 +35,9 @@ public class PlotlyChartBuilder
         }
     }
 
-    public static readonly string[] ResultLabels = ["passed", "failed", "blocked", "skipped"];
+    public static readonly string[] ResultLabels = ["passed", "failed", "blocked", "skipped", "norun"];
+
+    public static readonly string[] ResultColors = ["rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)"];
 
     public static Pie CreateResultPie(TestExecutionResultSummary result, string name)
     {
@@ -43,8 +45,14 @@ public class PlotlyChartBuilder
         {
             AutoMargin = true,
             Name = name,
+            Sort = false,
+            TextInfo = Plotly.Blazor.Traces.PieLib.TextInfoFlag.None,
             Labels = new List<object>(ResultLabels),
             Values = [result.Passed, result.Failed, result.Blocked, result.Skipped, result.NoRun],
+            Marker = new Plotly.Blazor.Traces.PieLib.Marker
+            {
+                Colors = ResultColors
+            }
         };
         return bar;
     }

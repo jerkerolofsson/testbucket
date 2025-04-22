@@ -154,7 +154,7 @@
     <value>Message</value>
   </data>
   <data name="test-result" xml:space="preserve">
-    <value>Test Result</value>
+    <value>Result</value>
   </data>
   <data name="result-passed" xml:space="preserve">
     <value>Passed</value>

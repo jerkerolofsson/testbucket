@@ -325,7 +325,7 @@ internal class TestBrowser : TenantBaseService
                 Children = [],
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = FOLDER_RUN_TESTS, TestRun = testRun },
-                Icon = Icons.Material.Outlined.Folder,
+                Icon = TbIcons.BoldOutline.Folder,
             });
 
             // Search folders
@@ -377,7 +377,7 @@ internal class TestBrowser : TenantBaseService
         {
             Value = new BrowserItem() { TestRun = testRun },
             Text = testRun.Name,
-            Icon = Icons.Material.Filled.PlaylistPlay,
+            Icon = TbIcons.BoldDuoTone.Box,
             Expandable = true,
             Children = items.ToArray(),
         };
@@ -392,7 +392,7 @@ internal class TestBrowser : TenantBaseService
             return suite.Icon;
         }
 
-        return Icons.Material.Outlined.Article;
+        return TbIcons.BoldDuoTone.Box;
     }
 
     public string GetIcon(TestSuiteFolder folder)
@@ -402,7 +402,7 @@ internal class TestBrowser : TenantBaseService
             return folder.Icon;
         }
 
-        return Icons.Material.Outlined.Folder;
+        return TbIcons.BoldOutline.Folder;//Icons.Material.Outlined.Folder;
     }
     public string GetIcon(TestCase x)
     {
@@ -412,13 +412,13 @@ internal class TestBrowser : TenantBaseService
         }
         if (x.ExecutionType == Contracts.Testing.Models.TestExecutionType.Automated)
         {
-            return Icons.Material.Filled.BrightnessAuto;
+            return TbIcons.BoldDuoTone.CodeSquare;
         }
         if (x.ExecutionType == Contracts.Testing.Models.TestExecutionType.Hybrid)
         {
             return Icons.Material.Filled.Api;
         }
-        return TbIcons.Filled.PaperPlane;
+        return TbIcons.BoldDuoTone.File;
     }
     public TreeNode<BrowserItem> CreateTreeNodeFromPipeline(Pipeline pipeline)
     {
@@ -675,7 +675,7 @@ internal class TestBrowser : TenantBaseService
                 Children = suiteItems,
                 Expanded = true,
                 Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_SUITES },
-                Icon = Icons.Material.Outlined.FolderOpen,
+                Icon = TbIcons.BoldDuoTone.Database,
             });
         }
         if(request.ShowTestRuns)
@@ -694,7 +694,7 @@ internal class TestBrowser : TenantBaseService
                 Expanded = false,
                 Expandable = true,
                 Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_RUNS },
-                Icon = Icons.Material.Outlined.FolderOpen,
+                Icon = TbIcons.BoldDuoTone.Database,
             });
         }
         return items;

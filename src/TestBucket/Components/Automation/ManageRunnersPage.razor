@@ -44,13 +44,14 @@
 
 @code {
     [Parameter] public string? TenantId { get; set; }
-    private List<BreadcrumbItem> _nav = [];
+    private readonly List<BreadcrumbItem> _nav = [];
 
     private IReadOnlyList<Runner> _runners = [];
 
     protected override async Task OnInitializedAsync()
     {
         await LoadAsync();
+        SetupBreadcrumbs();
     }
 
     private async Task LoadAsync()
@@ -69,6 +70,6 @@
     {
         _nav.Clear();
         _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
-        _nav.Add(new BreadcrumbItem(loc["runners"], appNav.GetTestResourcesSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["runners"], appNav.GetRunnersSettingsUrl()));
     }
 }

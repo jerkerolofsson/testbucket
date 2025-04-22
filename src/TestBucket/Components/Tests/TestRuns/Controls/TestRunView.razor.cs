@@ -1,4 +1,6 @@
-﻿using TestBucket.Contracts.Testing.Models;
+﻿using System.Diagnostics;
+
+using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Components.Tests.TestRuns.Controls;
@@ -18,6 +20,14 @@ public partial class TestRunView
         _activePanelIndex = index;
     }
 
+    private void OnSelectedTestCaseRunChanged()
+    {
+        if(_selectedTestCaseRun  is null)
+        {
+            
+        }
+    }
+
     protected override void OnParametersSet()
     {
         _selectedTestCaseRun = null;
@@ -32,7 +42,12 @@ public partial class TestRunView
         {
             _activePanelIndex = 1;
         }
-        _selectedTestCaseRun = testCaseRun;
+
+        if (_selectedTestCaseRun?.Id != testCaseRun?.Id)
+        {
+            _selectedTestCaseRun = testCaseRun;
+        }
+
         if (_selectedTestCaseRun?.TestCase is not null)
         {
             TestCase testCase = _selectedTestCaseRun.TestCase!;
@@ -79,7 +94,10 @@ public partial class TestRunView
     {
         if (_selectedTestCaseRun == testCaseRun && testCaseRunGrid is not null)
         {
-            var _  = InvokeAsync(() => testCaseRunGrid.SelectNextTestCaseRun());
+            var _ = InvokeAsync(async () => 
+            {
+                await testCaseRunGrid.SelectNextTestCaseRun();
+            });
         }
     }
     protected override void OnInitialized()
@@ -87,8 +105,9 @@ public partial class TestRunView
         testExecutionController.TestCompleted += OnTestCompleted;
     }
 
-    public void Dispose()
+    public ValueTask DisposeAsync()
     {
         testExecutionController.TestCompleted -= OnTestCompleted;
+        return ValueTask.CompletedTask;
     }
 }

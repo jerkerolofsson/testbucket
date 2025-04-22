@@ -14,9 +14,12 @@
 
             <article class="center">
                 <MudStack>
-                    <MudText Typo="Typo.h1">@_testSuiteFolder?.Name</MudText>
-                    <TestCaseGrid Project="@Project" TestSuiteId="@SuiteId" FolderId="@FolderId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" OnTestSuiteFolderClicked="OnFolderClicked" />
+                    <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                        <MudIcon Icon="@TbIcons.BoldOutline.Folder" Size="Size.Large" />
+                        <MudText Typo="Typo.h2">@_testSuiteFolder?.Name</MudText>
+                    </MudStack>
 
+                    <TestCaseGrid Project="@Project" TestSuiteId="@SuiteId" FolderId="@FolderId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" OnTestSuiteFolderClicked="OnFolderClicked" />
                 </MudStack>
             </article>
         </StartContent>
@@ -36,8 +39,8 @@
     [Parameter] public long SuiteId { get; set; }
     [Parameter] public long FolderId { get; set; }
 
+    private TestSuite? _testSuite = null;
     private TestSuiteFolder? _testSuiteFolder = null;
-
 
     /// <summary>
     /// Load the test suite when changed
@@ -49,6 +52,14 @@
         {
             _testSuiteFolder = await testBrowser.GetTestSuiteFolderByIdAsync(FolderId);
             appNavigationManager.State.SelectedTestSuiteFolder = _testSuiteFolder;
+        }
+        if (_testSuiteFolder is not null)
+        {
+            if (_testSuite is null || _testSuite.Id != _testSuiteFolder.Id)
+            {
+                _testSuite = await testBrowser.GetTestSuiteByIdAsync(_testSuiteFolder.TestSuiteId);
+                appNavigationManager.State.SelectedTestSuite = _testSuite;
+            }
         }
     }
 

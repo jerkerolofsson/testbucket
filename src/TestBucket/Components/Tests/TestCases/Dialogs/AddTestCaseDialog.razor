@@ -6,31 +6,16 @@
 <EditForm Model="@_testCase" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <DialogContent>
-            <MudStack Spacing="1" Style="min-width: 50vw">
-                @if (_testCase is not null)
-                {
-                    <Field Row>
-                        <FieldHeader>Name</FieldHeader>
-                        <MudSpacer />
-                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" Value="@_name" ValueChanged="OnNameChanged"></MudTextField>
-                    </Field>
-                }
-
-                <Field Row>
-                    <FieldHeader>Path</FieldHeader>
-                    <MudSpacer />
-                    <MudStack Row AlignItems="AlignItems.Center">
-                        <MudText>@FolderPath</MudText>
-                        <MudIconButton Icon="@Icons.Material.Outlined.FolderOpen" Color="Color.Warning" OnClick="ChangeFolderAsync"/>
-                    </MudStack>
-                </Field>
-
-                @if (_errorMessage is not null)
-                {
-                    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
-                }
-
+            <MudStack Spacing="1" Style="min-width: 30vw" Row AlignItems="AlignItems.Center">
+                <MudLink OnClick="ChangeFolderAsync">@(FolderPath)/</MudLink>
+                <MudTextField AutoFocus T="string" Value="@_name" ValueChanged="OnNameChanged"></MudTextField>
             </MudStack>
+
+            @if (_errorMessage is not null)
+            {
+                <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+            }
+
         </DialogContent>
 
         <DialogActions>

@@ -8,6 +8,8 @@
     </MudStack>
 </div>
 
+<MudOverlay @bind-Visible="_open" AutoClose="true" DarkBackground />
+
 <MudPopover Open="@_open" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" >
     <div class="d-flex flex-column pa-2">
         @foreach (var result in _results)
@@ -28,7 +30,7 @@
     [Parameter] public TestResult Result { get; set; } = TestResult.NoRun;
     [Parameter] public EventCallback<TestResult> ResultChanged { get; set; }
 
-    private string MainClass => ReadOnly ? "" : "cursor-pointer tb-background-hover";
+    private string MainClass => ReadOnly ? "" : "cursor-pointer result-pill";
 
     private TestResult[] _results = [TestResult.Passed, TestResult.Failed, TestResult.Blocked, TestResult.Skipped, TestResult.NoRun, TestResult.Inconclusive];
 

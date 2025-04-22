@@ -8,7 +8,7 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject ThemingService themingService
 
-<MudPaper Elevation="2">
+<MudPaper Elevation="2" Class="tb-tile">
     <MudStack Spacing="0" Class="pa-1">
         <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6">@Title</MudText>
@@ -60,8 +60,16 @@
         _chartType = ChartType;
 
         _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
-        _layout.Colorway = new string[] { "rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)" };
-
+        _layout.AutoSize = true;
+        _layout.Colorway = PlotlyChartBuilder.ResultColors;
+        _layout.ShowLegend = false;
+        _layout.Margin = new Plotly.Blazor.LayoutLib.Margin
+        {
+            L = 0,
+            T = 0,
+            R = 0,
+            B = 0
+        };
 
         if (Results is not null)
         {
@@ -98,7 +106,7 @@
                             ShowArrow = false,
                             X = 0.5,
                             Y = 0.5,
-                            Font = new Plotly.Blazor.LayoutLib.AnnotationLib.Font { Size = 20 },
+                            Font = new Plotly.Blazor.LayoutLib.AnnotationLib.Font { Size = 32 },
                             Text = $"{passrate}%"
                         }];
                 }

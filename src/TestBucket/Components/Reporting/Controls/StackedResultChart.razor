@@ -7,7 +7,7 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject ThemingService themingService
 
-<MudPaper Elevation="2">
+<MudPaper Elevation="2" Class="tb-tile">
     <MudStack Spacing="0" Class="pa-1">
         <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6">@Title</MudText>
@@ -64,14 +64,19 @@
         if (_grouping == GroupBy.Category)
         {
             _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
-            _layout.Colorway = new string[] { "rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)" };
+            _layout.Colorway = new string[] 
+            { 
+                "rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)" 
+            };
             _layout.BarMode = BarModeEnum.Stack;
+            _layout.ShowLegend = false;
             BuildResultsGroupedByCategory();
         }
         else
         {
             _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
             _layout.BarMode = BarModeEnum.Stack;
+            _layout.ShowLegend = true;
 
             BuildResultsGroupedByResult();
         }

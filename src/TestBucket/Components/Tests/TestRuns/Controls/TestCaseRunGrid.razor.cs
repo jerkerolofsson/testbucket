@@ -79,14 +79,17 @@ public partial class TestCaseRunGrid
 
     protected override void OnParametersSet()
     {
-        if (_selectedItem != SelectedTestCaseRun || SelectedTestCaseRun is null || _run != Run)
+        if (_selectedItem?.Id != SelectedTestCaseRun?.Id || SelectedTestCaseRun is null || _run != Run)
         {
             _run = Run;
             _query = SearchTestCaseRunQuery.FromUrl(navigationManager.Uri);
             _query.TestRunId = _run?.Id;
 
             _selectedItem = SelectedTestCaseRun;
-            _dataGrid?.ReloadServerData();
+            if (!_items.Contains(_selectedItem))
+            {
+                _dataGrid?.ReloadServerData();
+            }
         }
     }
 
@@ -143,8 +146,11 @@ public partial class TestCaseRunGrid
     private async Task OnClicked(TestCaseRun testCaseRun)
     {
         appNavigationManager.State.SelectedTestCaseRun = testCaseRun;
-        _selectedItem = testCaseRun;
-        await SelectedTestCaseRunChanged.InvokeAsync(testCaseRun);
+        if (_selectedItem?.Id != testCaseRun.Id)
+        {
+            _selectedItem = testCaseRun;
+            await SelectedTestCaseRunChanged.InvokeAsync(testCaseRun);
+        }
     }
 
     private string RowClassFunc(TestCaseRun testCaseRun, int _)
@@ -196,17 +202,23 @@ public partial class TestCaseRunGrid
         {
             if (_selectedItem is null)
             {
-                _selectedItem = _items[0];
-                await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
-                return;
+                if (_selectedItem?.Id != _items[0].Id)
+                {
+                    _selectedItem = _items[0];
+                    await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
+                    return;
+                }
             }
 
             var index = Array.IndexOf(_items, _selectedItem);
             index++;
             if (index < _items.Length)
             {
-                _selectedItem = _items[index];
-                await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
+                if (_selectedItem?.Id != _items[index].Id)
+                {
+                    _selectedItem = _items[index];
+                    await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
+                }
             }
             else
             {

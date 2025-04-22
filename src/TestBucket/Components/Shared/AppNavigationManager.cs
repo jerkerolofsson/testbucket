@@ -148,6 +148,11 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Settings/Accounts";
     }
+    public string GetManageTeamsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/Teams";
+    }
     public string GetManageTenantsUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
@@ -348,6 +353,11 @@ public class AppNavigationManager
 
     public void NavigateTo(TestSuiteFolder folder, bool forceLoad = false)
     {
+        if(this.State.SelectedTestSuite?.Id != folder.TestSuiteId)
+        {
+
+        }
+
         this.State.SelectedTestSuiteFolder = folder;
         this.State.SelectedTestCase = null;
         var url = GetUrl(folder);

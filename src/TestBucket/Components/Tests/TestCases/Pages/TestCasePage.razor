@@ -17,6 +17,8 @@
     [Parameter] public long TestCaseId { get; set; }
 
     private TestCase? _testCase = null;
+    private TestSuite? _testSuite = null;
+    private TestSuiteFolder? _testSuiteFolder = null;
 
     /// <summary>
     /// Load the test case when changed
@@ -28,6 +30,25 @@
         {
             _testCase = await testBrowser.GetTestCaseByIdAsync(TestCaseId);
             appNavigationManager.State.SelectedTestCase = _testCase;
+        }
+        if (_testCase is not null)
+        {
+            if (_testSuiteFolder is null || _testSuiteFolder.Id != _testCase.TestSuiteFolderId)
+            {
+                if (_testCase.TestSuiteFolderId is not null)
+                {
+                    _testSuiteFolder = await testBrowser.GetTestSuiteFolderByIdAsync(_testCase.TestSuiteFolderId.Value);
+                    appNavigationManager.State.SelectedTestSuiteFolder = _testSuiteFolder;
+                }
+            }
+            if (_testSuiteFolder is not null)
+            {
+                if (_testSuite is null || _testSuite.Id != _testSuiteFolder.Id)
+                {
+                    _testSuite = await testBrowser.GetTestSuiteByIdAsync(_testSuiteFolder.TestSuiteId);
+                    appNavigationManager.State.SelectedTestSuite = _testSuite;
+                }
+            }
         }
     }
 

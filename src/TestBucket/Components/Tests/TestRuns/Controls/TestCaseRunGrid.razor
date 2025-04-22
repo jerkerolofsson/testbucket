@@ -60,13 +60,19 @@
         </ToolBarContent>
 
         <ColGroup>
+            <col style="width: 100px;" />
             <col style="width: 2fr;" />
             <col style="width: 220px;" />
-            <col style="width: 100px;" />
             <col style="width: 100px;" />
         </ColGroup>
 
         <Columns>
+
+            <TemplateColumn Title="@loc["test-result"]">
+                <CellTemplate>
+                    <ResultPill Result="@context.Item.Result" ReadOnly="false" ResultChanged="async (result) => await SetTestCaseRunResultAsync(context.Item, result)" />
+                </CellTemplate>
+            </TemplateColumn>
 
             <TemplateColumn Title="@loc["name"]" CellStyle="max-width: 100%; overflow: hidden">
                 <CellTemplate>
@@ -79,13 +85,6 @@
                     <UserPicker SelectedUserName="@context.Item.AssignedToUserName" SelectedUserNameChanged="async (user) => await AssignRunToUserAsync(context.Item, user)"/>
                 </CellTemplate>
             </TemplateColumn>
-
-            <TemplateColumn Title="@loc["test-result"]">
-                <CellTemplate>
-                    <ResultPill Result="@context.Item.Result" ReadOnly="false" ResultChanged="async (result) => await SetTestCaseRunResultAsync(context.Item, result)" />
-                </CellTemplate>
-            </TemplateColumn>
-
 
             <TemplateColumn Title="">
                 <CellTemplate>

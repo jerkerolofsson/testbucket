@@ -1,6 +1,6 @@
 ﻿@using TestBucket.Components.Teams.Controls
 @attribute [Authorize(Roles = "ADMIN")]
-@inject ProjectController projectService
+@inject ProjectController controller
 @inject IStringLocalizer<SharedStrings> loc
 
 <EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
@@ -59,8 +59,8 @@
     private async Task OnValueChanged(string name)
     {
         _name = name;
-        _slug = projectService.GenerateSlug(name);
-        _shortName = await projectService.GenerateShortNameAsync(_slug);
+        _slug = controller.GenerateSlug(name);
+        _shortName = await controller.GenerateShortNameAsync(_slug);
 
     }
 
@@ -71,13 +71,18 @@
 
     private async Task OnValidSubmitAsync()
     {
-        if(string.IsNullOrWhiteSpace(_name))
+        if(_team is null)
+        {
+            _errorMessage = "Select team";
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(_name))
         {
             _errorMessage = "Invalid name";
             return;
         }
 
-        var result = await projectService.CreateAsync(_team?.Id, _name);
+        var result = await controller.CreateAsync(_team.Id, _name);
         if(result.IsT0)
         {
             MudDialog.Close(result.AsT0);

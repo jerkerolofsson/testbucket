@@ -3,8 +3,8 @@
 
 @if(Requirement is not null)
 {
-    <MudMenuItem Icon="@Icons.Material.Filled.Link" OnClick="() => LinkRequirementToTestCaseAsync()" Label="Test Links" />
-    <CommandMenuItems TypeName="Requirement" EntityType="PermissionEntityType.Requirement" />
+    <MudMenuItem Icon="@Icons.Material.Filled.Link" OnClick="() => LinkRequirementToTestCaseAsync()" Label="Link to test" />
+    <CommandMenuItems TypeName="Requirement"/>
     <MudDivider />
 }
 @code {

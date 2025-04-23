@@ -2,6 +2,7 @@
 
 @if (RequirementSpecification is not null)
 {
+    <CommandMenuItems TypeName="RequirementSpecification" />
 
     <MudDivider />
     <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="() => ExtractRequirementsFromSpecificationAsync()" Label="Extract Requirements" />

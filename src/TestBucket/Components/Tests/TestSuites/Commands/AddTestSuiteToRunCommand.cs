@@ -41,6 +41,7 @@ internal class AddTestSuiteToRunCommand : ICommand
     public string[] ContextMenuTypes => ["TestSuite"];
     public KeyboardBinding? DefaultKeyboardBinding => null;
 
+    public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.Execute;
 
     public async ValueTask ExecuteAsync()

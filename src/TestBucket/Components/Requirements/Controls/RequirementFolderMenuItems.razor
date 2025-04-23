@@ -1,0 +1,13 @@
+﻿@inject RequirementEditorController editor
+
+@if (RequirementFolder is not null)
+{
+    <CommandMenuItems TypeName="RequirementFolder"/>
+}
+@code {
+    [Parameter] public RequirementSpecificationFolder? RequirementFolder { get; set; }
+
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+
+}

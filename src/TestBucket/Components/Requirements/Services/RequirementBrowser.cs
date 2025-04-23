@@ -1,23 +1,39 @@
 ﻿using System.Collections.Generic;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.Localization;
 
+using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Shared.Tree;
+using TestBucket.Components.Tests.TestSuites.Dialogs;
+using TestBucket.Domain;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Localization;
 namespace TestBucket.Components.Requirements.Services;
 
 internal class RequirementBrowser : TenantBaseService
 {
+    /// <summary>
+    /// Virtual folder for all specifications
+    /// </summary>
+    public const string FOLDER_SPECIFICATIONS = "Specifications";
+
     private readonly RequirementEditorController _requirementEditorService;
     private readonly IRequirementManager _requirementManager;
+    private readonly IStringLocalizer<RequirementStrings> _loc;
+    private readonly IDialogService _dialogService;
 
     public RequirementBrowser(AuthenticationStateProvider authenticationStateProvider,
         RequirementEditorController requirementEditorService,
-        IRequirementManager requirementManager) : base(authenticationStateProvider)
+        IRequirementManager requirementManager,
+        IStringLocalizer<RequirementStrings> loc,
+        IDialogService dialogService) : base(authenticationStateProvider)
     {
         _requirementEditorService = requirementEditorService;
         _requirementManager = requirementManager;
+        _loc = loc;
+        _dialogService = dialogService;
     }
 
     public async Task<RequirementTestLink[]> GetLinksForTestAsync(TestCase test)
@@ -53,13 +69,7 @@ internal class RequirementBrowser : TenantBaseService
         var specs = await _requirementEditorService.GetRequirementSpecificationsAsync(teamId, projectId);
         var specificationNodes = specs.Items.Select(x => CreateSpecificationNode(x)).ToList();
 
-        var specificationNode = new TreeNode<BrowserItem>
-        {
-            Text = "Specifications",
-            Children = specificationNodes,
-            Expanded = true,
-            Icon = Icons.Material.Outlined.FolderOpen,
-        };
+        TreeNode<BrowserItem> specificationNode = CreateSpecificationRootNode(specificationNodes);
 
         var rootItems = new List<TreeNode<BrowserItem>>
         {
@@ -76,11 +86,11 @@ internal class RequirementBrowser : TenantBaseService
             Text = searchText
         });
 
-        foreach(var requirement in result.Items)
+        foreach (var requirement in result.Items)
         {
             // Find specification node
             var specNode = rootItems[0].Children!.Where(x => x.Value?.RequirementSpecification?.Id == requirement.RequirementSpecificationId).FirstOrDefault();
-            if(specNode is not null)
+            if (specNode is not null)
             {
                 var requirementNode = CreateRequirementNode(requirement);
                 if (specNode.Children is null)
@@ -96,9 +106,9 @@ internal class RequirementBrowser : TenantBaseService
         }
 
         // Remove empty specificati0ons
-        foreach(var item in specificationNodes.ToList())
+        foreach (var item in specificationNodes.ToList())
         {
-            if(item.Children is null || item.Children.Count == 0)
+            if (item.Children is null || item.Children.Count == 0)
             {
                 specificationNodes.Remove(item);
             }
@@ -108,6 +118,21 @@ internal class RequirementBrowser : TenantBaseService
 
 
         return rootItems;
+    }
+
+    private TreeNode<BrowserItem> CreateSpecificationRootNode(List<TreeNode<BrowserItem>> specificationNodes)
+    {
+        return new TreeNode<BrowserItem>
+        {
+            Text = _loc["requirement-specifications"],
+            Children = specificationNodes,
+            Expanded = true,
+            Icon = TbIcons.BoldDuoTone.Database,
+            Value = new BrowserItem
+            {
+                VirtualFolderName = FOLDER_SPECIFICATIONS
+            }
+        };
     }
 
     /// <summary>
@@ -196,7 +221,7 @@ internal class RequirementBrowser : TenantBaseService
         {
             Value = new BrowserItem { RequirementFolder = x, Color = x.Color },
             Text = x.Name,
-            Icon = x.Icon ?? Icons.Material.Outlined.Folder,
+            Icon = RequirementIcons.GetIcon(x),
             Expandable = true,
             Children = null,
         };
@@ -208,7 +233,7 @@ internal class RequirementBrowser : TenantBaseService
         {
             Value = new BrowserItem { Requirement = requirement },
             Text = requirement.Name,
-            Icon = Icons.Material.Filled.FactCheck,
+            Icon = RequirementIcons.GetIcon(requirement),
             Children = null,
             Expandable = false
         };
@@ -221,26 +246,30 @@ internal class RequirementBrowser : TenantBaseService
             Expanded = false,
             Value = new BrowserItem { RequirementSpecification = specification, Color = specification.Color },
             Text = specification.Name,
-            Icon = specification.Icon ?? Icons.Material.Outlined.Article,
+            Icon = RequirementIcons.GetIcon(specification),
             Children = null,
         };
     }
+
 
     private async Task<List<TreeNode<BrowserItem>>> BrowseRootAsync(long? teamId, long? projectId)
     {
         var specs = await _requirementEditorService.GetRequirementSpecificationsAsync(teamId, projectId);
         var specificationNodes = specs.Items.Select(x =>CreateSpecificationNode(x)).ToList();
 
-        return new List<TreeNode<BrowserItem>>
+        TreeNode<BrowserItem> specificationNode = CreateSpecificationRootNode(specificationNodes);
+        return [specificationNode];
+    }
+
+    internal async Task AddFolderAsync(long projectId, long specificationId, long? parentFolderId)
+    {
+        var parameters = new DialogParameters<AddRequirementSpecificationFolderDialog>
         {
-            new TreeNode<BrowserItem>
-            {
-                Text = "Specifications",
-                Children = specificationNodes,
-                Expanded = true,
-                Value = new BrowserItem() { VirtualFolderName = "Specifications" },
-                Icon = Icons.Material.Outlined.FolderOpen,
-            }
+            { x => x.ProjectId, projectId },
+            { x => x.SpecificationId, specificationId },
+            { x => x.ParentFolderId, parentFolderId },
         };
+        var dialog = await _dialogService.ShowAsync<AddRequirementSpecificationFolderDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
     }
 }

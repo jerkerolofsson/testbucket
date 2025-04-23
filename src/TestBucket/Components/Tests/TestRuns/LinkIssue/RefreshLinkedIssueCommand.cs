@@ -25,6 +25,8 @@ public class RefreshLinkedIssueCommand : ICommand
         _appNavigationManager = appNavigationManager;
         _dialogService = dialogService;
     }
+
+    public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCaseRun;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedProject is not null;
     public string Id => "refresh-linked-issue";

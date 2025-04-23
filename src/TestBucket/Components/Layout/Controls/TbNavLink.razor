@@ -1,16 +1,26 @@
 ﻿@inject NavigationManager navigationManager
 @implements IDisposable
 
-<nav class="@CssClass" @onclick="OnClick">@ChildContent</nav>
+<nav class="@CssClass" @onclick="OnClicked">@ChildContent</nav>
 
 @code {
     [Parameter] public string? Href { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter] public bool? Selected { get; set; }
 
     public string CssClass
     {
         get
         {
+            if(Selected is not null)
+            {
+                if(Selected == true)
+                {
+                    return "tb-nav-link active";
+                }
+                return "tb-nav-link";
+            }
             if(currentUrl is not null && Href is not null)
             {
                 if (currentUrl.Trim('/').StartsWith(Href.Trim('/')))
@@ -24,12 +34,13 @@
 
     private string? currentUrl;
 
-    private void OnClick()
+    private async Task OnClicked()
     {
         if (Href is not null)
         {
             navigationManager.NavigateTo(Href);
         }
+        await OnClick.InvokeAsync();
     }
 
     protected override void OnInitialized()

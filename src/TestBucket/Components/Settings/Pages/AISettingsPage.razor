@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize(Roles="SUPERADMIN")]
 @page "/{TenantId}/Settings/Categories/AI"
+@using TestBucket.Domain
 @using TestBucket.Domain.Settings
 @layout SettingsLayout
 @inject ISettingsManager settingsManager

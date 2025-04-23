@@ -41,4 +41,49 @@
     protected override void OnParametersSet()
     {
     }
+
+    public static TreeNode<BrowserItem>? RemoveTreeNode(TreeNode<BrowserItem>? parentNode, IEnumerable<TreeNode<BrowserItem>> treeItems, Predicate<BrowserItem> predicate)
+    {
+        foreach (var node in treeItems)
+        {
+            if (node.Value is not null && predicate(node.Value))
+            {
+                if (parentNode?.Children is not null)
+                {
+                    parentNode.Children = parentNode.Children.Where(x => x.Value != null && !predicate(x.Value)).ToList();
+                }
+
+                return node;
+            }
+            else if (node.Children is not null)
+            {
+                var match = RemoveTreeNode(node, node.Children, predicate);
+                if (match is not null)
+                {
+                    return match;
+                }
+            }
+        }
+        return null;
+    }
+   
+    public static TreeNode<BrowserItem>? FindTreeNode(IEnumerable<TreeNode<BrowserItem>> treeItems, Predicate<BrowserItem> predicate)
+    {
+        foreach (var node in treeItems)
+        {
+            if (node.Value is not null && predicate(node.Value))
+            {
+                return node;
+            }
+            else if (node.Children is not null)
+            {
+                var match = FindTreeNode(node.Children, predicate);
+                if (match is not null)
+                {
+                    return match;
+                }
+            }
+        }
+        return null;
+    }
 }

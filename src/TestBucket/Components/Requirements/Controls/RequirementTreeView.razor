@@ -1,9 +1,11 @@
 ﻿@using TestBucket.Components.Shared.Tree
+@using TestBucket.Domain.Requirements
 
 @implements IRequirementObserver
 @implements IDisposable
 @inject RequirementBrowser browser
 @inject RequirementEditorController editor
+@inject IRequirementManager manager
 @inject AppNavigationManager appNav
 
 <MudStack Spacing="0" Style="width: 100%;">
@@ -52,17 +54,23 @@
                     }
                 }
 
-                <DropZone T="Requirement" OnDrop="(test) => OnDrop(test, context)">
+                <DropZone T="RequirementEntity" OnDrop="(test) => OnDrop(test, context)">
                     <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true">
                         <ActivatorContent>
                             @if (context.Value?.Requirement is not null)
                             {
-                                <Draggable T="Requirement" Data="@context.Value.Requirement">
+                                <Draggable T="RequirementEntity" Data="@context.Value.Requirement">
                                     @context.Text
                                     @if (!string.IsNullOrEmpty(context.Value.Requirement.ExternalId))
                                     {
                                         <MudText Style="white-space: nowrap; word-wrap: nowrap;">@context.Value.Requirement.ExternalId</MudText>
                                     }
+                                </Draggable>
+                            }
+                            else if (context.Value?.RequirementFolder is not null)
+                            {
+                                <Draggable T="RequirementEntity" Data="@context.Value.RequirementFolder">
+                                    @context.Text
                                 </Draggable>
                             }
                             else
@@ -81,6 +89,9 @@
                                 <RequirementMenuItems 
                                 Project="@Project" Team="@Team"
                                 Requirement="context.Value.Requirement"/>
+                            }
+                            else if (context.Value?.RequirementFolder is not null)
+                            {
                             }
 
                             <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => AddRequirementSpecificationAsync()">Add Specification</MudMenuItem>
@@ -163,6 +174,11 @@
         _selectedTreeItem = item;
         if (item is not null)
         {
+            // Reset as hotkeys may not work properly if both entity categories are selected
+            appNav.State.SelectedTestSuite = null;
+            appNav.State.SelectedTestCase = null;
+            appNav.State.SelectedTestSuiteFolder = null;
+
             if (item.Requirement is not null)
             {
                 appNav.State.SelectedRequirement = item.Requirement;
@@ -185,15 +201,19 @@
         }
     }
 
+    #region Lifecycle
+
     protected override void OnInitialized()
     {
-        editor.AddObserver(this);
+        manager.AddObserver(this);
     }
 
     public void Dispose()
     {
-        editor.RemoveObserver(this);
+        manager.RemoveObserver(this);
     }
+
+    #endregion Lifecycle
 
     private void SetRootItems(List<TreeNode<BrowserItem>> rootItems)
     {
@@ -225,36 +245,180 @@
         this.StateHasChanged();
     }
 
-    public Task OnRequirementCreatedAsync(Requirement requirement)
+    public async Task OnFolderCreatedAsync(RequirementSpecificationFolder folder)
     {
-        return Task.CompletedTask;
+        if (folder.ParentId is null)
+        {
+            // The test case is in the root of a test suite
+            var node = FindTreeNode(x => x.RequirementSpecification?.Id == folder.RequirementSpecificationId);
+            if (node?.Children is not null)
+            {
+                var childNode = browser.CreateTreeNodeFromFolder(folder);
+                if (node.Children is null)
+                {
+                    node.Children = [childNode];
+                }
+                else
+                {
+                    node.Children = [.. node.Children, childNode];
+                }
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        else if (folder.ParentId is not null)
+        {
+            // Added within a folder
+            var parentFolder = FindTreeNode(x => x.Folder?.Id == folder.ParentId);
+            if (parentFolder?.Children is not null)
+            {
+                var childNode = browser.CreateTreeNodeFromFolder(folder);
+                if (parentFolder.Children is null)
+                {
+                    parentFolder.Children = [childNode];
+                }
+                else
+                {
+                    parentFolder.Children = [.. parentFolder.Children, childNode];
+                }
+                await InvokeAsync(StateHasChanged);
+            }
+        }
     }
-    public Task OnRequirementDeletedAsync(Requirement requirement) 
-    { 
-        return Task.CompletedTask;}
-    public Task OnRequirementSavedAsync(Requirement requirement) 
-    { 
-        return Task.CompletedTask;
+
+    public async Task OnRequirementCreatedAsync(Requirement requirement)
+    {
+        if (requirement.RequirementSpecificationFolderId is null)
+        {
+            // The test case is in the root of a test suite
+            var node = FindTreeNode(x => x.RequirementSpecification?.Id == requirement.RequirementSpecificationId);
+            if (node?.Children is not null)
+            {
+                var childNode = browser.CreateRequirementNode(requirement);
+                if (node.Children is null)
+                {
+                    node.Children = [childNode];
+                }
+                else
+                {
+                    node.Children = [.. node.Children, childNode];
+                }
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        else if (requirement.RequirementSpecificationFolderId is not null)
+        {
+            // Added within a folder
+            var folder = FindTreeNode(x => x.Folder?.Id == requirement.RequirementSpecificationFolderId);
+            if (folder?.Children is not null)
+            {
+                var childNode = browser.CreateRequirementNode(requirement);
+                if (folder.Children is null)
+                {
+                    folder.Children = [childNode];
+                }
+                else
+                {
+                    folder.Children = [.. folder.Children, childNode];
+                }
+                await InvokeAsync(StateHasChanged);
+            }
+        }
     }
+    public async Task OnRequirementSavedAsync(Requirement requirement)
+    {
+        await InvokeAsync(() =>
+        {
+            var node = FindTreeNode(x => x.Requirement?.Id == requirement?.Id);
+            if (node?.Value is not null)
+            {
+                node.Text = requirement.Name;
+                node.Value.Requirement = requirement;
+                this.StateHasChanged();
+            }
+        });
+    }
+    public async Task OnFolderSavedAsync(RequirementSpecificationFolder folder)
+    {
+        await InvokeAsync(() =>
+        {
+            var node = FindTreeNode(x => x.RequirementFolder?.Id == folder?.Id);
+            if (node?.Value is not null)
+            {
+                node.Text = folder.Name;
+                node.Value.RequirementFolder = folder;
+                this.StateHasChanged();
+            }
+        });
+    }
+    /// <summary>
+    /// Invoked when a folder has been deleted
+    /// </summary>
+    /// <param name="folder"></param>
+    /// <returns></returns>
+    public async Task OnFolderDeletedAsync(RequirementSpecificationFolder folder)
+    {
+        await InvokeAsync(() =>
+        {
+            RemoveTreeNode(x => x.RequirementFolder == folder);
+            this.StateHasChanged();
+        });
+    }
+    /// <summary>
+    /// Invoked when a requirement has been deleted
+    /// </summary>
+    /// <param name="requirement"></param>
+    /// <returns></returns>
+    public async Task OnRequirementDeletedAsync(Requirement requirement)
+    {
+        await InvokeAsync(() =>
+        {
+            RemoveTreeNode(x => x.Requirement == requirement);
+            this.StateHasChanged();
+        });
+    }
+    private TreeNode<BrowserItem>? RemoveTreeNode(Predicate<BrowserItem> predicate)
+    {
+        return TreeView<BrowserItem>.RemoveTreeNode(null, _rootItems, predicate);
+    }
+
+    private TreeNode<BrowserItem>? FindTreeNode(Predicate<BrowserItem> predicate)
+    {
+        return TreeView<BrowserItem>.FindTreeNode(_rootItems, predicate);
+    }
+
 
     public async Task OnSpecificationCreatedAsync(RequirementSpecification spec)
     {
-        SetRootItems(await browser.BrowseAsync(_team?.Id, _project?.Id, null));
-        // foreach (var specFolder in _rootItems.Where(x=>x.Text == "Specifications"))
-        // {
-        //     if(specFolder.Children is not null)
-        //     {
-        //         specFolder.Children = [.. specFolder.Children, browser.CreateSpecificationNode(spec)];
-        //     }
-        // }
+        var node = FindTreeNode(x => x.VirtualFolderName == RequirementBrowser.FOLDER_SPECIFICATIONS);
+        if (node?.Children is not null)
+        {
+            var childNode = browser.CreateSpecificationNode(spec);
+            if (node.Children is null)
+            {
+                node.Children = [childNode];
+            }
+            else
+            {
+                node.Children = [.. node.Children, childNode];
+            }
+            await InvokeAsync(StateHasChanged);
+        }
     }
     public async Task OnSpecificationDeletedAsync(RequirementSpecification spec)
     {
-        SetRootItems(await browser.BrowseAsync(_team?.Id, _project?.Id, null));
+        RemoveTreeNode(x => x.RequirementSpecification?.Id == spec.Id);
+        await InvokeAsync(StateHasChanged);
     }
     public async Task OnSpecificationSavedAsync(RequirementSpecification spec)
     {
-        SetRootItems(await browser.BrowseAsync(_team?.Id, _project?.Id, null));
+        var node = FindTreeNode(x => x.RequirementSpecification?.Id == spec.Id);
+        if(node?.Value is not null)
+        {
+            node.Value.RequirementSpecification = spec;
+            node.Text = spec.Name;
+            node.Icon = RequirementIcons.GetIcon(spec);
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
 
@@ -281,9 +445,9 @@
         await editor.AddRequirementSpecificationAsync(spec);
     }
 
-    private async Task OnDrop(Requirement? requirement, TreeNode<BrowserItem>? targetNode)
+    private async Task OnDrop(RequirementEntity? requirementEntity, TreeNode<BrowserItem>? targetNode)
     {
-        if (requirement is null || targetNode is null)
+        if (requirementEntity is null || targetNode is null)
         {
             return;
         }
@@ -293,13 +457,42 @@
             return;
         }
 
-        if(targetNode.Value?.RequirementSpecification is not null)
+        if (requirementEntity is Requirement requirement)
         {
-            await editor.MoveRequirementToSpecificationAsync(requirement, targetNode.Value.RequirementSpecification);
+            if (targetNode.Value?.RequirementSpecification is not null)
+            {
+                await editor.MoveRequirementToSpecificationAsync(requirement, targetNode.Value.RequirementSpecification);
+            }
+            else if (targetNode.Value?.RequirementFolder is not null)
+            {
+                await editor.MoveRequirementToFolderAsync(requirement, targetNode.Value.RequirementFolder);
+            }
+
+            // Remove the tree-node from the tree and add it to the new location
+            RemoveTreeNode(x => x.Requirement?.Id == requirement.Id);
+            if (targetNode.Children is not null)
+            {
+                targetNode.Children = [.. targetNode.Children, browser.CreateRequirementNode(requirement)];
+            }
         }
-        else if(targetNode.Value?.RequirementFolder is not null)
+
+        if (requirementEntity is RequirementSpecificationFolder folder)
         {
-            await editor.MoveRequirementToFolderAsync(requirement, targetNode.Value.RequirementFolder);
+            if (targetNode.Value?.RequirementSpecification is not null)
+            {
+                await editor.MoveFolderToSpecificationAsync(folder, targetNode.Value.RequirementSpecification);
+            }
+            else if (targetNode.Value?.RequirementFolder is not null)
+            {
+                await editor.MoveFolderToFolderAsync(folder, targetNode.Value.RequirementFolder);
+            }
+
+            // Remove the tree-node from the tree and add it to the new location
+            RemoveTreeNode(x => x.Folder?.Id == folder.Id);
+            if (targetNode.Children is not null)
+            {
+                targetNode.Children = [.. targetNode.Children, browser.CreateTreeNodeFromFolder(folder)];
+            }
         }
     }
 

@@ -5,6 +5,7 @@ using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Contracts.Fields;
+using TestBucket.Domain;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
@@ -38,13 +39,14 @@ internal class BatchTagCommand : ICommand
         _progressManager = progressManager;
         _fieldController = fieldController;
     }
+    public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;
     public string Id => "batch-tag";
     public string Name => _loc["batch-tag"];
     public string Description => "Applies tags to all descendant tests";
     public KeyboardBinding? DefaultKeyboardBinding => null;
-    public string? Icon => Icons.Material.Filled.Tag;
+    public string? Icon => TbIcons.BoldDuoTone.Field;
     public string[] ContextMenuTypes => ["TestSuiteFolder", "TestSuite"];
 
     public async ValueTask ExecuteAsync()

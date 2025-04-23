@@ -12,7 +12,7 @@ namespace TestBucket.Domain.Requirements.Models
     [Table("spec")]
     [Index(nameof(TenantId), nameof(Created))]
     [Index(nameof(ExternalId))]
-    public class RequirementSpecification : ProjectEntity
+    public class RequirementSpecification : RequirementEntity
     {
         /// <summary>
         /// Database ID

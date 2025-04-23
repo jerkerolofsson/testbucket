@@ -5,7 +5,8 @@ using TestBucket.Traits.Core;
 namespace TestBucket.Domain.Projects;
 public interface IProjectManager
 {
-    Task AddAsync(ClaimsPrincipal principal, TestProject project);
+    Task<OneOf<TestProject, AlreadyExistsError>> AddAsync(ClaimsPrincipal principal, TestProject project);
+    Task UpdateProjectAsync(ClaimsPrincipal principal, TestProject project);
     Task<PagedResult<TestProject>> BrowseTestProjectsAsync(ClaimsPrincipal principal, int offset, int count);
     Task<string[]?> GetFieldOptionsAsync(ClaimsPrincipal principal, long testProjectId, TraitType traitType, CancellationToken cancellationToken);
     Task<TestProject?> GetTestProjectByIdAsync(ClaimsPrincipal principal, long projectId);

@@ -7,7 +7,7 @@ namespace TestBucket.Domain.Requirements.Models;
 [Index(nameof(Created))]
 [Index(nameof(Name))]
 [Index(nameof(ExternalId))]
-public class Requirement : ProjectEntity
+public class Requirement : RequirementEntity
 {
     /// <summary>
     /// Database ID

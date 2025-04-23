@@ -2,7 +2,7 @@
 
 [Table("spec__folders")]
 [Index(nameof(TenantId), nameof(Created))]
-public class RequirementSpecificationFolder : ProjectEntity
+public class RequirementSpecificationFolder : RequirementEntity
 {
     /// <summary>
     /// Database ID

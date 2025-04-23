@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Testing/TestSuites/{SuiteId:long}"
+@using TestBucket.Domain
 @layout TestingLayout
 @inject TestBrowser testBrowser
 @inject TestSuiteService controller

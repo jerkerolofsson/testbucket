@@ -1,0 +1,74 @@
+﻿@using TestBucket.Components.Tests.Services
+@inject RequirementEditorController controller
+@inject IStringLocalizer<SharedStrings> loc
+
+<EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+
+        <TitleContent>@loc["new-folder"]</TitleContent>
+
+        <DialogContent>
+            <MudStack Spacing="0">
+                @if (_name is not null)
+                {
+                    <MudTextField 
+                        AutoFocus="true"
+                        Variant="Variant.Outlined"
+                        T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+
+                }
+                @if (_errorMessage is not null)
+                {
+                    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+                }
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    private string _name = "";
+
+    private string? _errorMessage;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public long ProjectId { get; set; }
+    [Parameter] public long SpecificationId { get; set; }
+    [Parameter] public long? ParentFolderId { get; set; }
+
+    private void OnValueChanged(string name)
+    {
+        _name = name;
+
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_name))
+        {
+            _errorMessage = "Invalid name";
+            return;
+        }
+        if (_name.Contains('/'))
+        {
+            _errorMessage = "Invalid name, folders cannot have / in the name";
+            return;
+        }
+
+        var folder = await controller.AddRequirementSpecificationFolderAsync(ProjectId, SpecificationId, ParentFolderId, _name);
+        MudDialog.Close(folder);
+    }
+}

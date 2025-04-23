@@ -10,7 +10,7 @@
         bool enabled = true;
         if (claimsPrincipal is null || 
             !command.Enabled || 
-            (EntityType is not null && command.RequiredLevel is not null && !PermissionClaims.HasPermission(claimsPrincipal, EntityType.Value, command.RequiredLevel.Value)))
+            (command.PermissionEntityType is not null && command.RequiredLevel is not null && !PermissionClaims.HasPermission(claimsPrincipal, command.PermissionEntityType.Value, command.RequiredLevel.Value)))
         {
             enabled = false;
         }
@@ -43,8 +43,10 @@
 }
 
 @code {
+    /// <summary>
+    /// This is used to find/filter commands
+    /// </summary>
     [Parameter] public string? TypeName { get; set; }
-    [Parameter] public PermissionEntityType? EntityType {get;set;}
 
     private KeyboardBindings? _bindings;
     private ClaimsPrincipal? claimsPrincipal;

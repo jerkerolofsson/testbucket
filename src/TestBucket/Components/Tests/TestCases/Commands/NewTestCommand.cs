@@ -17,6 +17,8 @@ internal class NewTestCommand : ICommand
         _appNavigationManager = appNavigationManager;
         _controller = controller;
     }
+
+    public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedProject is not null;
     public string Id => "new-test";

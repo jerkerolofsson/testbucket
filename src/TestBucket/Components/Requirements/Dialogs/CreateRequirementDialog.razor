@@ -3,9 +3,12 @@
 
 <EditForm Model="@_requirement" OnValidSubmit="OnValidSubmit">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>
+            @loc["create-requirement"]
+        </TitleContent>
         <DialogContent>
 
-            <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_requirement.Name"></MudTextField>
+            <MudTextField Variant="Variant.Outlined" T="string" HelperText="@loc["title"]" @bind-Value="@_requirement.Name"></MudTextField>
 
         </DialogContent>
 

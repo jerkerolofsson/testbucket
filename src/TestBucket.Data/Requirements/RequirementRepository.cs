@@ -1,6 +1,4 @@
-﻿using OpenTelemetry.Trace;
-
-using TestBucket.Domain.Requirements;
+﻿using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
@@ -15,6 +13,37 @@ namespace TestBucket.Data.Requirements
         {
             _dbContextFactory = dbContextFactory;
         }
+
+        #region Folders
+        public async Task DeleteRequirementFolderAsync(RequirementSpecificationFolder folder)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            RemoveFolder(folder, dbContext);
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        private static void RemoveFolder(RequirementSpecificationFolder folder, ApplicationDbContext dbContext)
+        {
+            foreach (var requirement in dbContext.Requirements.Where(x => x.RequirementSpecificationFolderId == folder.Id))
+            {
+                foreach (var link in dbContext.RequirementTestLinks.Where(x => x.RequirementId == requirement.Id))
+                {
+                    dbContext.RequirementTestLinks.Remove(link);
+                }
+
+                dbContext.Requirements.Remove(requirement);
+            }
+
+            // Delete child folders
+            foreach (var childFolder in dbContext.RequirementSpecificationFolders.Where(x => x.ParentId == folder.Id))
+            {
+                RemoveFolder(childFolder, dbContext);
+            }
+
+            dbContext.RequirementSpecificationFolders.Remove(folder);
+        }
+        #endregion
 
         public async Task<PagedResult<Requirement>> SearchRequirementsAsync(IEnumerable<FilterSpecification<Requirement>> filters, int offset, int count)
         {
@@ -56,8 +85,6 @@ namespace TestBucket.Data.Requirements
         }
         public async Task AddRequirementSpecificationAsync(RequirementSpecification specification)
         {
-            specification.Created = DateTimeOffset.UtcNow;
-
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             await dbContext.RequirementSpecifications.AddAsync(specification);
             await dbContext.SaveChangesAsync();
@@ -142,7 +169,18 @@ namespace TestBucket.Data.Requirements
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
-            await CalculatePathAsync(dbContext, requirement);
+            var existingRequirement = await dbContext.Requirements.AsNoTracking().Where(x => x.Id == requirement.Id).FirstOrDefaultAsync();
+            if (existingRequirement is null)
+            {
+                throw new InvalidOperationException("Requirement does not exist!");
+            }
+
+            var hasSpecChanged = requirement.RequirementSpecificationId != existingRequirement.RequirementSpecificationId;
+            var hasPathChanged = requirement.RequirementSpecificationFolderId != existingRequirement.RequirementSpecificationFolderId;
+            if (hasPathChanged || hasSpecChanged)
+            {
+                await CalculatePathAsync(dbContext, requirement);
+            }
 
             dbContext.Requirements.Update(requirement);
             await dbContext.SaveChangesAsync();
@@ -213,6 +251,16 @@ namespace TestBucket.Data.Requirements
         public async Task AddRequirementFolderAsync(RequirementSpecificationFolder folder)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+            if (folder.TestProjectId is null)
+            {
+                folder.TestProjectId = await dbContext.RequirementSpecifications.Where(x => x.Id == folder.RequirementSpecificationId).Select(x => x.TestProjectId).FirstOrDefaultAsync();
+            }
+            if (folder.TeamId is null)
+            {
+                folder.TeamId = await dbContext.RequirementSpecifications.Where(x => x.Id == folder.RequirementSpecificationId).Select(x => x.TeamId).FirstOrDefaultAsync();
+            }
+
             await dbContext.RequirementSpecificationFolders.AddAsync(folder);
             await dbContext.SaveChangesAsync();
         }
@@ -227,9 +275,9 @@ namespace TestBucket.Data.Requirements
                 throw new InvalidOperationException("Folder does not exist!");
             }
 
-
-            var hasPathChanged = existingFolder.Name != folder.Name || existingFolder.ParentId != folder.ParentId || existingFolder.RequirementSpecificationId != folder.RequirementSpecificationId;
-            if (hasPathChanged)
+            var hasSpecChanged = existingFolder.RequirementSpecificationId != folder.RequirementSpecificationId;
+            var hasPathChanged = existingFolder.Name != folder.Name || existingFolder.ParentId != folder.ParentId;
+            if (hasPathChanged || hasSpecChanged)
             {
                 await CalculatePathAsync(dbContext, folder);
             }
@@ -237,7 +285,7 @@ namespace TestBucket.Data.Requirements
             dbContext.RequirementSpecificationFolders.Update(folder);
             await dbContext.SaveChangesAsync();
 
-            if (hasPathChanged)
+            if (hasPathChanged || hasSpecChanged)
             {
                 await UpdateChildRequirementFolderPathsAsync(dbContext, folder.Id, folder.RequirementSpecificationId);
                 await dbContext.SaveChangesAsync();
@@ -277,8 +325,16 @@ namespace TestBucket.Data.Requirements
             }
         }
 
-        private async Task CalculatePathAsync(ApplicationDbContext dbContext, Requirement requirement)
+        /// <summary>
+        /// Calculates the path and returns true if it has changed from before
+        /// </summary>
+        /// <param name="dbContext"></param>
+        /// <param name="requirement"></param>
+        /// <returns></returns>
+        private async Task<bool> CalculatePathAsync(ApplicationDbContext dbContext, Requirement requirement)
         {
+            var pathBefore = requirement.Path;
+
             List<string> pathComponents = new();
             List<long> pathIds = new();
             await CalculatePathAsync(dbContext, requirement.RequirementSpecificationFolderId, pathComponents, pathIds);
@@ -286,10 +342,14 @@ namespace TestBucket.Data.Requirements
             pathIds.Reverse();
             requirement.Path = string.Join('/', pathComponents);
             requirement.PathIds = pathIds.ToArray();
+
+            return pathBefore != requirement.Path;
         }
 
-        private async Task CalculatePathAsync(ApplicationDbContext dbContext, RequirementSpecificationFolder folder)
+        private async Task<bool> CalculatePathAsync(ApplicationDbContext dbContext, RequirementSpecificationFolder folder)
         {
+            var pathBefore = folder.Path;
+
             List<string> pathComponents = new();
             List<long> pathIds = new();
             await CalculatePathAsync(dbContext, folder.ParentId, pathComponents, pathIds);
@@ -297,6 +357,8 @@ namespace TestBucket.Data.Requirements
             pathIds.Reverse();
             folder.Path = string.Join('/', pathComponents);
             folder.PathIds = pathIds.ToArray();
+
+            return pathBefore != folder.Path;
         }
 
 

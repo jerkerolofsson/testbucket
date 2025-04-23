@@ -80,18 +80,24 @@ public class TestResourceDependencyAllocator
 
     private async Task<TestResource?> AllocateResourceAsync(ClaimsPrincipal principal, string resourceType)
     {
-        FilterSpecification<TestResource>[] filters = [
-            new FindEnabledResource(),
-            new FindUnlockedResource(),
-            new FindResourceByType(resourceType),
-            new FilterByTenant<TestResource>(principal.GetTenantIdOrThrow())
-        ];
+        FilterSpecification<TestResource>[] filters = GetAllocationFilters(principal, resourceType);
 
         var page = await _resourceRepository.SearchAsync(filters, 0, 1);
-        if(page.Items.Length > 0)
+        if (page.Items.Length > 0)
         {
             return page.Items[0];
         }
         return null;
+    }
+
+    internal static FilterSpecification<TestResource>[] GetAllocationFilters(ClaimsPrincipal principal, string resourceType)
+    {
+        return [
+            new FindEnabledResource(),
+            new FindUnlockedResource(),
+            new FindHealthyResource(),
+            new FindResourceByType(resourceType),
+            new FilterByTenant<TestResource>(principal.GetTenantIdOrThrow())
+        ];
     }
 }

@@ -14,6 +14,8 @@ using TestBucket.Traits.Core;
 using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Projects.Mapping;
+using Mediator;
+using TestBucket.Domain.Projects.Events;
 
 namespace TestBucket.Domain.Projects;
 internal class ProjectManager : IProjectManager
@@ -21,27 +23,49 @@ internal class ProjectManager : IProjectManager
     private readonly IProjectRepository _projectRepository;
     private readonly IMemoryCache _memoryCache;
     private readonly List<IProjectDataSource> _projectDataSources;
+    private readonly IMediator _mediator;
 
     public ProjectManager(IProjectRepository projectRepository,
         IMemoryCache memoryCache,
-        IEnumerable<IProjectDataSource> projectDataSources)
+        IEnumerable<IProjectDataSource> projectDataSources,
+        IMediator mediator)
     {
         _projectDataSources = projectDataSources.ToList();
         _projectRepository = projectRepository;
         _memoryCache = memoryCache;
+        _mediator = mediator;
     }
 
-    public Task AddAsync(ClaimsPrincipal principal, TestProject project)
+    public async Task UpdateProjectAsync(ClaimsPrincipal principal, TestProject project)
     {
-        principal.ThrowIfNotAdmin();
+        project.TenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
+
+        //project.Modified = DateTimeOffset.UtcNow;
+        //project.ModifiedBy = principal.Identity?.Name ?? throw new Exception("No identity in current principal");
+
+        await _projectRepository.UpdateProjectAsync(project);
+        await _mediator.Publish(new ProjectUpdated(project));
+    }
+
+    public async Task<OneOf<TestProject, AlreadyExistsError>> AddAsync(ClaimsPrincipal principal, TestProject project)
+    {
+        project.TenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
+
+        var result = await _projectRepository.AddAsync(project);
+
+        if(result.IsT0)
+        {
+            await _mediator.Publish(new ProjectCreated(project));
+        }
+
+        return result;
 
         //project.Created = DateTimeOffset.UtcNow;
         //project.Modified = DateTimeOffset.UtcNow;
         //project.CreatedBy = principal.Identity?.Name ?? throw new Exception("No identity in current principal");
         //project.ModifiedBy = principal.Identity?.Name ?? throw new Exception("No identity in current principal");
-        project.TenantId = principal.GetTenantIdOrThrow();
-
-        throw new Exception("TODO");
     }
 
     public async Task<string[]?> GetFieldOptionsAsync(ClaimsPrincipal principal, long testProjectId, TraitType traitType, CancellationToken cancellationToken)
@@ -84,6 +108,7 @@ internal class ProjectManager : IProjectManager
 
     public async Task<PagedResult<TestProject>> BrowseTestProjectsAsync(ClaimsPrincipal principal, int offset, int count)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         return await _projectRepository.SearchAsync(tenantId, new SearchQuery() { Offset = offset, Count = count });
     }
@@ -91,6 +116,7 @@ internal class ProjectManager : IProjectManager
 
     public async Task<TestProject?> GetTestProjectByIdAsync(ClaimsPrincipal principal, long projectId)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         return await _projectRepository.GetProjectByIdAsync(tenantId, projectId);
     }
@@ -105,17 +131,20 @@ internal class ProjectManager : IProjectManager
     /// <returns></returns>
     public async Task DeleteProjectIntegrationAsync(ClaimsPrincipal principal, long id)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
         var tenantId = principal.GetTenantIdOrThrow();
         await _projectRepository.DeleteProjectIntegrationAsync(tenantId, id);
     }
 
     public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(ClaimsPrincipal principal, string slug)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         return await _projectRepository.GetProjectIntegrationsAsync(tenantId, slug);
     }
     public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(ClaimsPrincipal principal, long testProjectId)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
 
         var key = "integration:" + testProjectId + ":" + tenantId;
@@ -139,6 +168,7 @@ internal class ProjectManager : IProjectManager
     /// <exception cref="ArgumentException"></exception>
     public async Task SaveProjectIntegrationAsync(ClaimsPrincipal principal, string slug, ExternalSystem system)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
         principal.ThrowIfNotAdmin();
         var tenantId = principal.GetTenantIdOrThrow();
         system.TenantId = tenantId;
@@ -167,5 +197,6 @@ internal class ProjectManager : IProjectManager
             await _projectRepository.UpdateProjectIntegrationAsync(tenantId, slug, system);
         }
     }
+
     #endregion Project Integrations
 }

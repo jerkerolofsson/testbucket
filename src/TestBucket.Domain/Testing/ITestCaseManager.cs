@@ -28,6 +28,14 @@ public interface ITestCaseManager
     Task DeleteTestCaseAsync(ClaimsPrincipal principal, TestCase testCase);
 
     /// <summary>
+    /// Duplicates a test case
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testCase"></param>
+    /// <returns></returns>
+    Task<TestCase> DuplicateTestCaseAsync(ClaimsPrincipal principal, TestCase testCase);
+
+    /// <summary>
     /// Removes an observer
     /// </summary>
     /// <param name="observer"></param>

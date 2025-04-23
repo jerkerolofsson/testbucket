@@ -1,13 +1,13 @@
 ﻿using System.Diagnostics;
 
 using TestBucket.Components.Automation;
-using TestBucket.Components.Shared.Icons;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Models;
 using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Components.Tests.TestSuites.Services;
 using TestBucket.Contracts.Testing.Models;
+using TestBucket.Domain;
 using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Shared.Specifications;
@@ -595,7 +595,7 @@ internal class TestBrowser : TenantBaseService
         }
 
         // The root items should already contain the test suites, so we should be able to find it here
-        var testSuiteNode = FindTreeNode(rootItems, x => x.TestSuite?.Id == testCase.TestSuiteId);
+        var testSuiteNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.TestSuite?.Id == testCase.TestSuiteId);
         if(testSuiteNode is null)
         {
             return;
@@ -607,7 +607,7 @@ internal class TestBrowser : TenantBaseService
         // Resolve the parent hierarchy, with test suites and folders
         foreach (var folderId in testCase.PathIds)
         {
-            var folderNode = FindTreeNode(rootItems, x => x.Folder?.Id == folderId);
+            var folderNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.Folder?.Id == folderId);
             if (folderNode is null)
             {
                 var childRequest = new TestBrowserRequest() { ProjectId = testCase.TestProjectId, TeamId = testCase.TeamId, Parent = parent.Value, TestSuiteId = testCase.TestSuiteId };
@@ -615,7 +615,7 @@ internal class TestBrowser : TenantBaseService
 
                 var items = await BrowseAsync(childRequest);
                 parent.Children = items;
-                folderNode = FindTreeNode(rootItems, x => x.Folder?.Id == folderId);
+                folderNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.Folder?.Id == folderId);
             }
             if (folderNode is null)
             {
@@ -639,25 +639,6 @@ internal class TestBrowser : TenantBaseService
         }
     }
 
-    public static TreeNode<BrowserItem>? FindTreeNode(IEnumerable<TreeNode<BrowserItem>> treeItems, Predicate<BrowserItem> predicate)
-    {
-        foreach (var node in treeItems)
-        {
-            if (node.Value is not null && predicate(node.Value))
-            {
-                return node;
-            }
-            else if (node.Children is not null)
-            {
-                var match = FindTreeNode(node.Children, predicate);
-                if (match is not null)
-                {
-                    return match;
-                }
-            }
-        }
-        return null;
-    }
 
     private async Task<List<TreeNode<BrowserItem>>> BrowseRootAsync(TestBrowserRequest request)
     {

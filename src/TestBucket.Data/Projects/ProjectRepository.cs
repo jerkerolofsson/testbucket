@@ -84,23 +84,14 @@ internal class ProjectRepository : IProjectRepository
     /// </summary>
     /// <param name="name">Name of project</param>
     /// <returns></returns>
-    public async Task<OneOf<TestProject, AlreadyExistsError>> CreateAsync(long? teamId, string tenantId, string name)
+    public async Task<OneOf<TestProject, AlreadyExistsError>> AddAsync(TestProject project)
     {
-        var project = new TestProject()
-        {
-            TeamId = teamId,
-            Name = name,
-            Slug = GenerateSlug(name),
-            TenantId = tenantId,
-            ShortName = "",
-        };
-
-        if (await SlugExistsAsync(tenantId, project.Slug))
+        ArgumentNullException.ThrowIfNull(project.TenantId);
+        
+        if (await SlugExistsAsync(project.TenantId, project.Slug))
         {
             return new AlreadyExistsError();
         }
-
-        project.ShortName = await GenerateShortNameAsync(project.Slug, tenantId);
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         await dbContext.Projects.AddAsync(project);

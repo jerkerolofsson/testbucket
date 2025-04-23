@@ -304,28 +304,17 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         await _testRunManager.SaveTestCaseRunAsync(principal, testCaseRun);
     }
 
+    /// <summary>
+    /// Duplicates a test case
+    /// </summary>
+    /// <param name="testCase"></param>
+    /// <returns></returns>
     internal async ValueTask DuplicateTestAsync(TestCase testCase)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        var copy = new TestCase
-        {
-            Name = testCase.Name + " copy",
-            Description = testCase.Description,
 
-            TestSuiteId = testCase.TestSuiteId,
-            TestProjectId = testCase.TestProjectId,
-            TestSuiteFolderId = testCase.TestSuiteFolderId,
-            TeamId = testCase.TeamId,
-
-            TestParameters = testCase.TestParameters,
-            ExecutionType = testCase.ExecutionType,
-            ScriptType = testCase.ScriptType,
-            RunnerLanguage = testCase.RunnerLanguage,
-        };
-
-        // todo: copy fields
-
-        await _testCaseManager.AddTestCaseAsync(principal, copy);
+        await _testCaseManager.DuplicateTestCaseAsync(principal, testCase);
+       
     }
 
     internal async ValueTask EditTestCaseAutomationLinkAsync(TestCase testCase)

@@ -7,10 +7,16 @@ namespace TestBucket.Domain.Fields.Models;
 public class SearchFieldQuery : SearchQuery
 {
     public FieldTarget? Target { get; set; }
+    public string? Name { get; set; }
 
     public string AsCacheKey()
     {
         var sb = new StringBuilder();
+        if (Name is not null)
+        {
+            sb.Append("name=");
+            sb.Append(Name);
+        }
         if (TeamId is not null)
         {
             sb.Append("t=");

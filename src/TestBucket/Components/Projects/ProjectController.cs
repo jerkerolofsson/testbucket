@@ -9,6 +9,7 @@ using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Shared;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Teams.Models;
 
@@ -186,13 +187,11 @@ internal class ProjectController : TenantBaseService
 
     public async Task SaveProjectAsync(TestProject project)
     {
-        var tenantId = await GetTenantIdAsync();
-        if(tenantId != project.TenantId)
-        {
-            throw new InvalidOperationException("Tenant ID mismatch");
-        }
+        var principal = await GetUserClaimsPrincipalAsync();
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
+        principal.ThrowIfEntityTenantIsDifferent(project.TenantId);
 
-        await _projectRepository.UpdateProjectAsync(project);
+        await _projectManager.UpdateProjectAsync(principal, project);
     }
 
     /// <summary>
@@ -223,9 +222,13 @@ internal class ProjectController : TenantBaseService
         var tenantId = await GetTenantIdAsync();
         return await _projectRepository.SearchAsync(tenantId, query);
     }
-    public async Task<OneOf<TestProject, AlreadyExistsError>> CreateAsync(long? teamId, string name)
+    public async Task<OneOf<TestProject, AlreadyExistsError>> CreateAsync(long teamId, string name)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _projectRepository.CreateAsync(teamId, tenantId, name);   
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        var slug = GenerateSlug(name);
+        var shortName = await GenerateShortNameAsync(slug);
+        var project= new TestProject { Name = name, Slug = slug, ShortName = shortName, TeamId = teamId };
+        return await _projectManager.AddAsync(principal, project);
     }
 }

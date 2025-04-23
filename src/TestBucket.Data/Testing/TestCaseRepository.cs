@@ -269,8 +269,7 @@ internal class TestCaseRepository : ITestCaseRepository
             return existingFolder;
         }
 
-        var testSuite = await dbContext.TestSuites.Where(x => x.Id == testSuiteId).FirstOrDefaultAsync();
-        long? teamId = testSuite?.TeamId;
+        var teamId = await dbContext.TestSuites.Where(x => x.Id == testSuiteId).Select(x=>x.TeamId).FirstOrDefaultAsync();
 
         var folder = new TestSuiteFolder
         {

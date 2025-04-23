@@ -86,6 +86,7 @@ internal class TestResourceManager : ITestResourceManager
                         Name = resource.Name,
                         Manufacturer = resource.Manufacturer,
                         Model = resource.Model,
+                        Health = resource.Health,
                         ResourceId = resource.ResourceId,
                         Owner = resource.Owner,
                         TenantId = tenantId,

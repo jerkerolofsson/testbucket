@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 
+using TestBucket.Domain;
+
 namespace TestBucket.Components.Shared.Icons;
 
 public partial class IconGridPicker
@@ -69,6 +71,8 @@ public partial class IconGridPicker
 
         CustomUncategorized.AddRange(GetMudIconsByTypeCategory(typeof(TbIcons.Filled), IconType.Uncategorized));
         CustomUncategorized.AddRange(GetMudIconsByTypeCategory(typeof(TbIcons.Git), IconType.Uncategorized));
+        CustomUncategorized.AddRange(GetMudIconsByTypeCategory(typeof(TbIcons.BoldOutline), IconType.Uncategorized));
+        CustomUncategorized.AddRange(GetMudIconsByTypeCategory(typeof(TbIcons.BoldDuoTone), IconType.Uncategorized));
         CustomUncategorized.AddRange(GetMudIconsByTypeCategory(typeof(MudBlazor.Icons.Custom.Uncategorized), IconType.Uncategorized));
         CustomAll.AddRange(CustomUncategorized);
     }

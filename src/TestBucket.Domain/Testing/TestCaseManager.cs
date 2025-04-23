@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 using Mediator;
 
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.AI;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Fields.Handlers;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Tenants.Models;
+using TestBucket.Domain.Testing.Duplication;
 using TestBucket.Domain.Testing.Events;
 using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Models;
@@ -81,6 +84,7 @@ namespace TestBucket.Domain.Testing
         /// <returns></returns>
         public async Task AddTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
             testCase.TenantId = principal.GetTenantIdOrThrow();
             testCase.Modified = testCase.Created = DateTimeOffset.UtcNow;
             testCase.CreatedBy = testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
@@ -128,6 +132,7 @@ namespace TestBucket.Domain.Testing
         {
             var tenantId = principal.GetTenantIdOrThrow();
             principal.ThrowIfEntityTenantIsDifferent(testCase);
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
 
             await DetectThingsWithMarkdownDetectorsAsync(principal, testCase);
 
@@ -161,6 +166,11 @@ namespace TestBucket.Domain.Testing
                 var project = await _projectRepo.GetProjectByIdAsync(tenantId, testCase.TestProjectId.Value);
                 testCase.TeamId = project?.TeamId;
             }
+        }
+
+        public async Task<TestCase> DuplicateTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
+        {
+            return await _mediator.Send(new DuplicateTestCaseRequest(principal, testCase));
         }
     }
 }

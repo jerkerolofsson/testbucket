@@ -542,6 +542,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<bool>("Inherit")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsDefinedBySystem")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -1619,6 +1622,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<bool>("Enabled")
                         .HasColumnType("boolean");
+
+                    b.Property<int>("Health")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Icon")
                         .HasColumnType("text");

@@ -125,7 +125,7 @@ internal class BackgroundExternalRequirementSynchronizer : BackgroundService
                     new FilterRequirementByExternalId(requirement.Provider, requirement.ExternalId)
                 ];
 
-            var searchResult = await requirementManager.SearchRequirementsAsync(specifications, 0, 1);
+            var searchResult = await requirementManager.SearchRequirementsAsync(principal, specifications, 0, 1);
             if (searchResult.Items.Length == 0)
             {
                 // Add new specification
@@ -172,7 +172,7 @@ internal class BackgroundExternalRequirementSynchronizer : BackgroundService
                 new FilterRequirementSpecificationByExternalId(spec.Provider, spec.ExternalId)
             ];
 
-        var searchResult = await requirementManager.SearchRequirementSpecificationsAsync(specifications, 0, 1);
+        var searchResult = await requirementManager.SearchRequirementSpecificationsAsync(principal, specifications, 0, 1);
         if (searchResult.Items.Length == 0)
         {
             // Add new specification

@@ -38,7 +38,7 @@ public interface IRequirementManager
     /// <param name="principal"></param>
     /// <param name="query"></param>
     /// <returns></returns>
-    Task<PagedResult<Requirement>> SearchRequirementsAsync(FilterSpecification<Requirement>[] specifications, int offset, int count);
+    Task<PagedResult<Requirement>> SearchRequirementsAsync(ClaimsPrincipal principal, FilterSpecification<Requirement>[] specifications, int offset, int count);
 
     /// <summary>
     /// Deletes the specified requirement
@@ -52,6 +52,9 @@ public interface IRequirementManager
     #endregion Requirements
 
     #region Folders
+    Task AddFolderAsync(ClaimsPrincipal principal, RequirementSpecificationFolder folder);
+    Task UpdateFolderAsync(ClaimsPrincipal principal, RequirementSpecificationFolder folder);
+    Task DeleteFolderAsync(ClaimsPrincipal principal, RequirementSpecificationFolder folder);
 
     /// <summary>
     /// Searches for requirements
@@ -63,6 +66,21 @@ public interface IRequirementManager
 
     #endregion
 
+    #region Observer
+
+    /// <summary>
+    /// Adds an observer
+    /// </summary>
+    /// <param name="listener"></param>
+    public void AddObserver(IRequirementObserver observer);
+
+    /// <summary>
+    /// Removes an observer
+    /// </summary>
+    /// <param name="observer"></param>
+    public void RemoveObserver(IRequirementObserver observer);
+
+    #endregion Observer
 
     #region Requirement Specifications
 
@@ -91,7 +109,7 @@ public interface IRequirementManager
     /// <param name="offset"></param>
     /// <param name="count"></param>
     /// <returns></returns>
-    Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(FilterSpecification<RequirementSpecification>[] filters, int offset, int count);
+    Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(ClaimsPrincipal principal, FilterSpecification<RequirementSpecification>[] filters, int offset, int count);
 
     /// <summary>
     /// Updates a requirement specification

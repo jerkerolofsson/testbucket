@@ -6,7 +6,6 @@
 <GenericAvatar Class="cursor-pointer" Text="@SelectedProject?.ShortName" ImageUri="@SelectedProject?.IconUrl" ImageClicked="OnImageClicked">
 </GenericAvatar>
 
-
 <MudDialog @bind-Visible="_open" Options="@DefaultBehaviors.DialogOptions">
     <TitleContent>@loc["projects"]</TitleContent>
     <DialogContent>
@@ -15,12 +14,12 @@
         {
             <div @onclick="async () => await OnSelectedProjectChanged(project)" class="cursor-pointer tb-project-card">
                 <MudStack AlignItems="AlignItems.Center" Row Class="pa-5">
-                    <GenericAvatar Text="@project?.ShortName" ImageUri="@project?.IconUrl" />
+                    <GenericAvatar Text="@project.ShortName" ImageUri="@project.IconUrl" />
                     <div>
                         <div class="name">@project.Name</div>
                         <div class="d-flex counters">
-                            <div>@(project.NumberOfTestSuites) @loc["test-suites"]</div>
-                            <div>|</div>
+                                <div>@(project.NumberOfTestSuites) @loc["test-suites"]</div>
+                                <div>|</div>
                             <div>@(project.NumberOfTestCases) @loc["test-cases"]</div>
                         </div>
                     </div>

@@ -123,7 +123,16 @@
   <data name="confirm-delete-requirement-title" xml:space="preserve">
     <value>Delete requirement?</value>
   </data>
+  <data name="create-child-requirement" xml:space="preserve">
+    <value>Create Child Requirement</value>
+  </data>
+  <data name="create-requirement" xml:space="preserve">
+    <value>New Requirement</value>
+  </data>
   <data name="create-test-from-requirement" xml:space="preserve">
     <value>Create test from requirement</value>
+  </data>
+  <data name="delete-requirement" xml:space="preserve">
+    <value>Delete Requirement</value>
   </data>
 </root>

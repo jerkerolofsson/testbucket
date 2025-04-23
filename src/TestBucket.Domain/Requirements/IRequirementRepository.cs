@@ -112,9 +112,33 @@ namespace TestBucket.Domain.Requirements
         Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(string tenantId, long requirementSpecificationId);
 
         #region Folders
+        /// <summary>
+        /// Searches for folders
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <returns></returns>
         Task<RequirementSpecificationFolder[]> SearchRequirementFoldersAsync(FilterSpecification<RequirementSpecificationFolder>[] filters);
+
+        /// <summary>
+        /// Adds a folder
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <returns></returns>
         Task AddRequirementFolderAsync(RequirementSpecificationFolder folder);
+
+        /// <summary>
+        /// Updates the folder
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <returns></returns>
         Task UpdateRequirementFolderAsync(RequirementSpecificationFolder folder);
+
+        /// <summary>
+        /// Deletes the folder
+        /// </summary>
+        /// <param name="folder"></param>
+        /// <returns></returns>
+        Task DeleteRequirementFolderAsync(RequirementSpecificationFolder folder);
         #endregion Folders
     }
 }

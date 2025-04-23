@@ -123,19 +123,79 @@
   <data name="add-new-field" xml:space="preserve">
     <value>Add new field</value>
   </data>
+  <data name="appearance" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="description-helpertext" xml:space="preserve">
+    <value>A helpful description that may be shown to the user</value>
+  </data>
   <data name="field-options" xml:space="preserve">
     <value>Options</value>
+  </data>
+  <data name="field-readonly" xml:space="preserve">
+    <value>Read-Only</value>
   </data>
   <data name="field-target" xml:space="preserve">
     <value>Target</value>
   </data>
+  <data name="field-target-helpertext" xml:space="preserve">
+    <value>Defines the types of entities that can be have this field</value>
+  </data>
   <data name="field-type" xml:space="preserve">
     <value>Type</value>
+  </data>
+  <data name="inherit" xml:space="preserve">
+    <value>Inherit</value>
+  </data>
+  <data name="inherit-helpertext" xml:space="preserve">
+    <value>If enabled, entities will inherit the value from a parent entity. For example a test case could inherit the value from a folder which inherits the value from a test suite, or an executed test case will inherit the value from the test case.</value>
   </data>
   <data name="inherited" xml:space="preserve">
     <value>Inherited</value>
   </data>
+  <data name="input-type" xml:space="preserve">
+    <value>Input Type</value>
+  </data>
+  <data name="input-type-helpertext" xml:space="preserve">
+    <value>The type of input UI control that will be shown to the user to enter a value for the field</value>
+  </data>
+  <data name="name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="name-helpertext" xml:space="preserve">
+    <value>Unique name for the custom field</value>
+  </data>
+  <data name="options" xml:space="preserve">
+    <value>Input Options</value>
+  </data>
+  <data name="options-helpertext" xml:space="preserve">
+    <value>Options that the user can choose from for this field</value>
+  </data>
+  <data name="show-description" xml:space="preserve">
+    <value>Show Description</value>
+  </data>
+  <data name="trait" xml:space="preserve">
+    <value>Field Trait Mapping</value>
+  </data>
+  <data name="trait-helpertext" xml:space="preserve">
+    <value>Well-defined trait that this field maps to. The trait is used to map import/export fields between various formats and can be used for reporting and analytics</value>
+  </data>
+  <data name="trait-match-known-type" xml:space="preserve">
+    <value>This trait matches a well known type</value>
+  </data>
+  <data name="use-classifier" xml:space="preserve">
+    <value>AI Classification</value>
+  </data>
+  <data name="use-classifier-helpertext" xml:space="preserve">
+    <value>Uses AI to update this field, if it is empty after changes has been made.</value>
+  </data>
   <data name="use-predefined-field" xml:space="preserve">
     <value>Use a predefined field</value>
+  </data>
+  <data name="visible" xml:space="preserve">
+    <value>Visible</value>
   </data>
 </root>

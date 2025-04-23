@@ -18,6 +18,7 @@ internal class SyncWithActiveDocumentCommand : ICommand
         _browser = browser;
     }
 
+    public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;
     public PermissionLevel? RequiredLevel => PermissionLevel.Read;
     public bool Enabled => _appNavigationManager.State.SelectedTestCase is not null;
     public string Id => "sync-with-active-doc";

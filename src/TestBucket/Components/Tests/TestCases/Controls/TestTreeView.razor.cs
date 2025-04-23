@@ -102,41 +102,6 @@ public partial class TestTreeView
         _searchText = text;
         _rootItems = await testBrowser.BrowseAsync(CreateRequest());
     }
-    private TreeNode<BrowserItem>? RemoveTreeNode(Predicate<BrowserItem> predicate)
-    {
-        return RemoveTreeNode(null, _rootItems, predicate);
-    }
-
-    private TreeNode<BrowserItem>? RemoveTreeNode(TreeNode<BrowserItem>? parentNode, IEnumerable<TreeNode<BrowserItem>> treeItems, Predicate<BrowserItem> predicate)
-    {
-        foreach (var node in treeItems)
-        {
-            if (node.Value is not null && predicate(node.Value))
-            {
-                if (parentNode?.Children is not null)
-                {
-                    parentNode.Children = parentNode.Children.Where(x => x.Value != null && !predicate(x.Value)).ToList();
-                }
-
-                return node;
-            }
-            else if (node.Children is not null)
-            {
-                var match = RemoveTreeNode(node, node.Children, predicate);
-                if (match is not null)
-                {
-                    return match;
-                }
-            }
-        }
-        return null;
-    }
-
-    private TreeNode<BrowserItem>? FindTreeNode(Predicate<BrowserItem> predicate)
-    {
-        return TestBrowser.FindTreeNode(_rootItems, predicate);
-    }
-
 
     private async Task OnDropTestSuiteFolderAsync(TestSuiteFolder folder, TreeNode<BrowserItem> targetNode)
     {
@@ -156,7 +121,7 @@ public partial class TestTreeView
             }
 
             // Find the source
-            TreeNode<BrowserItem>? sourceNode = FindTreeNode(x => x.Folder?.Id == folder.Id);
+            //TreeNode<BrowserItem>? sourceNode = FindTreeNode(x => x.Folder?.Id == folder.Id);
             folder.ParentId = targetFolder.Id;
             folder.TestSuiteId = targetFolder.TestSuiteId;
 
@@ -178,7 +143,7 @@ public partial class TestTreeView
         else if (target?.TestSuite is not null && targetNode is not null)
         {
             // Find the source
-            TreeNode<BrowserItem>? sourceNode = FindTreeNode(x => x.Folder?.Id == folder.Id);
+            //TreeNode<BrowserItem>? sourceNode = FindTreeNode(x => x.Folder?.Id == folder.Id);
             folder.ParentId = null;
             folder.TestSuiteId = target.TestSuite.Id;
 
@@ -228,14 +193,14 @@ public partial class TestTreeView
             var fromFolderId = testCase.TestSuiteFolderId;
 
             // Find the source
-            TreeNode<BrowserItem>? sourceNode = FindTreeNode(x => x.Folder?.Id == fromFolderId);
+            //TreeNode<BrowserItem>? sourceNode = FindTreeNode(x => x.Folder?.Id == fromFolderId);
 
             testCase.TestSuiteFolderId = target.Folder.Id;
             testCase.TestSuiteId = target.Folder.TestSuiteId;
 
             await testCaseEditor.SaveTestCaseAsync(testCase);
 
-            // Remove the test from the tree
+            // Remove the tree-node from the tree and add it to the new location
             RemoveTreeNode(x => x.TestCase?.Id == testCase.Id);
             if (targetNode.Children is null)
             {
@@ -253,7 +218,7 @@ public partial class TestTreeView
             var fromFolderId = testCase.TestSuiteFolderId;
 
             // Find the source
-            TreeNode<BrowserItem>? sourceNode = FindTreeNode(x => x.Folder?.Id == fromFolderId);
+            //TreeNode<BrowserItem>? sourceNode = FindTreeNode(x => x.Folder?.Id == fromFolderId);
 
             testCase.TestSuiteFolderId = null;
             testCase.TestSuiteId = target.TestSuite.Id;
@@ -595,6 +560,17 @@ public partial class TestTreeView
             this.StateHasChanged();
         });
     }
+    private TreeNode<BrowserItem>? RemoveTreeNode(Predicate<BrowserItem> predicate)
+    {
+        return TreeView<BrowserItem>.RemoveTreeNode(null, _rootItems, predicate);
+    }
+
+    private TreeNode<BrowserItem>? FindTreeNode(Predicate<BrowserItem> predicate)
+    {
+        return TreeView<BrowserItem>.FindTreeNode(_rootItems, predicate);
+    }
+
+
     public async Task OnTestSuiteSavedAsync(TestSuite suite)
     {
         await InvokeAsync(() =>

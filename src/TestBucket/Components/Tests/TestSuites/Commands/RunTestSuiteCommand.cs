@@ -27,6 +27,8 @@ internal class RunTestSuiteCommand : ICommand
         _browser = browser;
         _testRunCreationController = testRunCreationController;
     }
+
+    public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.Execute;
     public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;
     public string Id => "run-test-suite";

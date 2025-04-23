@@ -8,10 +8,8 @@
 
 @if (Suite is not null)
 {
-    <CommandMenuItems TypeName="TestSuite" EntityType="PermissionEntityType.TestSuite" />
+    <CommandMenuItems TypeName="TestSuite"/>
 
-    <MudDivider />
-    <MudMenuItem Icon="@Icons.Material.Filled.Edit" OnClick="EditTestSuiteAsync" Label="Edit" />
     <MudDivider />
     <MudMenuItem Icon="@Icons.Material.Outlined.FolderDelete" IconColor="Color.Error" OnClick="DeleteAsync" Label="Delete suite" />
 }
@@ -56,14 +54,5 @@
             return;
         }
         await testBrowser.AddTestSuiteFolderAsync(projectId.Value, Suite.Id, null);
-    }
-
-    private async Task EditTestSuiteAsync()
-    {
-        if (Suite is null)
-        {
-            return;
-        }
-        await Task.Yield();
     }
 }

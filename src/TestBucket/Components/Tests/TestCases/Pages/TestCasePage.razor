@@ -26,9 +26,15 @@
     /// <returns></returns>
     protected override async Task OnParametersSetAsync()
     {
+        // Reset as hotkeys may not work properly if both entity categories are selected
+        appNavigationManager.State.SelectedTestSuite = null;
+        appNavigationManager.State.SelectedTestCase = null;
+        appNavigationManager.State.SelectedTestSuiteFolder = null;
+
         if (_testCase is null || _testCase.Id != TestCaseId)
         {
             _testCase = await testBrowser.GetTestCaseByIdAsync(TestCaseId);
+
             appNavigationManager.State.SelectedTestCase = _testCase;
         }
         if (_testCase is not null)

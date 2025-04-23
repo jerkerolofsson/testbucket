@@ -10,7 +10,7 @@ public interface IProjectRepository
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
-    Task<OneOf<TestProject, AlreadyExistsError>> CreateAsync(long? teamId, string tenantId, string name);
+    Task<OneOf<TestProject, AlreadyExistsError>> AddAsync(TestProject project);
 
     /// <summary>
     /// Generates a short name

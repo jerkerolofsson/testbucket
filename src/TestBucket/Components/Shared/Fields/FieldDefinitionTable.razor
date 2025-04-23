@@ -1,34 +1,42 @@
 ﻿@using TestBucket.Components.Shared.Fields.Dialogs
 @using TestBucket.Contracts.Fields
+@using TestBucket.Domain
 @using TestBucket.Domain.Fields.Models
 @inject FieldController fieldController
 @inject IDialogService dialogService
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<FieldStrings> fieldLoc
 
+
 <MudDataGrid    Items="_fields"
-                Dense
-                Hover RowClass="tb-datarow pointer-cursor"
-                T="FieldDefinition"
-                RowClick="async e => await EditFieldAsync(e.Item)"
-                SortMode="SortMode.None">
+Dense
+Hover RowClass="tb-datarow pointer-cursor"
+T="FieldDefinition"
+RowClick="async e => await EditFieldAsync(e.Item)"
+SortMode="SortMode.Single">
 
     <ToolBarContent>
         <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-            <MudIcon Icon="@Icons.Material.Filled.Tag" Size="Size.Large" Color="Color.Tertiary" />
+            <MudIcon Icon="@TbIcons.BoldDuoTone.Field" Size="Size.Large" Color="Color.Tertiary" />
             <MudText Typo="Typo.h2">@loc["fields"]</MudText>
             <MudSpacer />
-                <PermissionView Entity="PermissionEntityType.Project" Level="PermissionLevel.Write">
-                    <Authorized>
-                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddFieldAsync"></MudIconButton>
-                    </Authorized>
-                </PermissionView>
+
+            <MudStack Spacing="1" Row>
+                <TbNavLink Selected="@(FilterTarget == FilterAll)" OnClick="() => SetFilterTarget(FilterAll)">@loc["all"]</TbNavLink>
+                <TbNavLink Selected="@(FilterTarget == FilterRequirements)" OnClick="() => SetFilterTarget(FilterRequirements)">@loc["requirements"]</TbNavLink>
+                <TbNavLink Selected="@(FilterTarget == FilterTest)" OnClick="() => SetFilterTarget(FilterTest)">@loc["testing"]</TbNavLink>
+            </MudStack>
+
+            <PermissionView Entity="PermissionEntityType.Project" Level="PermissionLevel.Write">
+                <Authorized>
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddFieldAsync"></MudIconButton>
+                </Authorized>
+            </PermissionView>
         </MudStack>
     </ToolBarContent>
 
     <ColGroup>
-        <col style="width: 15%;" />
-        <col style="width: 15%;"/>
+        <col style="width: 30%;" />
         <col style="width: 5%;" />
         <col style="width: 20%;"/>
         <col style="width: 40%;" />
@@ -36,17 +44,23 @@
     </ColGroup>
 
     <Columns>
-        <TemplateColumn Title="@loc["name"]">
+        <TemplateColumn Title="@loc["name"]" Sortable="true" SortBy="x => x.Name">
             <CellTemplate>
                 <MudStack Row AlignItems="AlignItems.Center">
+                    @if (context.Item.Icon is not null)
+                    {
+                        <MudIcon Icon="@context.Item.Icon" />
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@TbIcons.BoldDuoTone.Field" />
+                    }
                     @context.Item.Name
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
-        
-        <PropertyColumn Property="x => x.Type" Title="@fieldLoc["field-type"]" />
 
-        <TemplateColumn Title="@fieldLoc["inherited"]">
+        <TemplateColumn Title="@fieldLoc["inherited"]" Sortable="true" SortBy="x => x.Inherit">
             <CellTemplate>
                 @if(context.Item.Inherit)
                 {
@@ -58,7 +72,7 @@
                 }
             </CellTemplate>
         </TemplateColumn>
-      
+
 
         <TemplateColumn Title="@fieldLoc["field-target"]">
             <CellTemplate>
@@ -77,11 +91,14 @@
 
         <TemplateColumn>
             <CellTemplate>
-                <PermissionView Entity="PermissionEntityType.Project" Level="PermissionLevel.Write">
-                    <Authorized>
-                        <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Clear" OnClick="async () => await DeleteAsync(context.Item)" />
-                    </Authorized>
-                </PermissionView>
+                @if(!context.Item.IsDefinedBySystem)
+                {
+                    <PermissionView Entity="PermissionEntityType.Project" Level="PermissionLevel.Write">
+                        <Authorized>
+                            <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Clear" OnClick="async () => await DeleteAsync(context.Item)" />
+                        </Authorized>
+                    </PermissionView>
+                }
             </CellTemplate>
         </TemplateColumn>
     </Columns>
@@ -95,6 +112,13 @@
     [Parameter] public long? ProjectId { get; set; }
 
     private IReadOnlyList<FieldDefinition> _fields = [];
+    private IReadOnlyList<FieldDefinition> _allFields = [];
+
+    private FieldTarget FilterRequirements = FieldTarget.Requirement | FieldTarget.RequirementSpecificationFolder | FieldTarget.RequirementSpecification;
+    private FieldTarget FilterTest = FieldTarget.TestSuite | FieldTarget.TestSuiteFolder | FieldTarget.TestCase | FieldTarget.TestRun | FieldTarget.TestCaseRun;
+    private FieldTarget FilterAll => FilterTest | FilterRequirements;
+
+    private FieldTarget FilterTarget { get; set; }
 
     private async Task EditFieldAsync(FieldDefinition fieldDefinition)
     {
@@ -133,6 +157,11 @@
         await ReloadFieldsAsync();
     }
 
+    protected override void OnInitialized()
+    {
+        FilterTarget = FilterAll;
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         await ReloadFieldsAsync();
@@ -141,6 +170,21 @@
     private async Task ReloadFieldsAsync()
     {
         FieldTarget? target = null;
-        _fields = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery() { ProjectId = ProjectId, Target = target });
+        _allFields = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery() { ProjectId = ProjectId, Target = target });
+        _fields = _allFields.ToList();
+    }
+
+    private void SetFilterTarget(FieldTarget target)
+    {
+        FilterTarget = target;
+        var fields = new List<FieldDefinition>();
+        foreach(var field in _allFields)
+        {
+            if ((field.Target&target) > 0)
+            {
+                fields.Add(field);
+            }
+        }
+        _fields = fields;
     }
 }

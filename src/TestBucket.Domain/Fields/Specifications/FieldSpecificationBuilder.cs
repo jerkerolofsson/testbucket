@@ -26,7 +26,10 @@ namespace TestBucket.Domain.Fields.Specifications
             {
                 specifications.Add(new FilterFieldDefinitionByTarget(query.Target.Value));
             }
-
+            if (query.Name is not null)
+            {
+                specifications.Add(new FilterFieldDefinitionByName(query.Name));
+            }
             return specifications;
         }
     }

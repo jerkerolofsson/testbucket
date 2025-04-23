@@ -191,5 +191,10 @@ public enum TraitType
     /// </summary>
     Computer = 42,
 
+    /// <summary>
+    /// Product feature
+    /// </summary>
+    Feature = 43,
+
 
 }

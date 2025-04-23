@@ -108,6 +108,11 @@ public class FieldDefinition : ProjectEntity
     /// </summary>
     public bool UseClassifier { get; set; }
 
+    /// <summary>
+    /// Fields defined by the system cannot be deleted by a user
+    /// </summary>
+    public bool IsDefinedBySystem { get; set; }
+
     public override string ToString()
     {
         return $"{Name} IsVisible={IsVisible} IsDeleted={IsDeleted}";

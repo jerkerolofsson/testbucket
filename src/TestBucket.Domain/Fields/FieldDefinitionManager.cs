@@ -82,6 +82,7 @@ namespace TestBucket.Domain.Fields
             fieldDefinition.TenantId = principal.GetTenantIdOrThrow();
             await _fieldRepository.DeleteAsync(fieldDefinition);
         }
+
         public async Task<IReadOnlyList<FieldDefinition>> SearchAsync(ClaimsPrincipal principal, SearchFieldQuery query)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);

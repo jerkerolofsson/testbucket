@@ -5,9 +5,9 @@ using Microsoft.Extensions.Localization;
 using TestBucket.Components.Requirements.Controls;
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Requirements.Services;
-using TestBucket.Components.Shared.Icons;
 using TestBucket.Components.Tests.TestCases.Controls;
 using TestBucket.Components.Tests.TestCases.Services;
+using TestBucket.Domain;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
@@ -31,6 +31,7 @@ internal class CreateChildRequirementCommand : ICommand
     public string? Icon => TbIcons.Filled.PaperPlane;
 
     public string[] ContextMenuTypes => ["Requirement"];
+    public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.Requirement;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     private readonly IStringLocalizer<RequirementStrings> _loc;
     private readonly AppNavigationManager _appNav;

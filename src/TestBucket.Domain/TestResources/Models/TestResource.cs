@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+
 namespace TestBucket.Domain.TestResources.Models;
 public class TestResource : Entity
 {
@@ -76,4 +78,9 @@ public class TestResource : Entity
     /// </summary>
     [Column(TypeName = "jsonb")] 
     public Dictionary<string, string> Variables { get; set; } = [];
+
+    /// <summary>
+    /// Device health
+    /// </summary>
+    public HealthStatus Health { get; set; }
 }

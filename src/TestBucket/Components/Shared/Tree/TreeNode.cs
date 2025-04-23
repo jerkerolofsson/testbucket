@@ -70,6 +70,15 @@ public class TreeNode<T> : IEquatable<TreeNode<T>> where T : class
         return false;
     }
 
+    public override string ToString()
+    {
+        if(Value is not null)
+        {
+            return Value.ToString() ?? "Value: (null)";
+        }
+        return "TreeNode";
+    }
+
     public override int GetHashCode()
     {
         if (Value == null)

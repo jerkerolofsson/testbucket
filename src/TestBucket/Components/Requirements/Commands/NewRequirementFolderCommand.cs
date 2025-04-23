@@ -22,7 +22,7 @@ internal class NewRequirementFolderCommand : ICommand
         _loc = loc;
     }
 
-    public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
+    public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.RequirementSpecification;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedRequirementSpecification is not null;
     public string Id => "new-folder";
@@ -31,7 +31,7 @@ internal class NewRequirementFolderCommand : ICommand
 
     public KeyboardBinding? DefaultKeyboardBinding => new KeyboardBinding() { CommandId = Id, Key = "F7", ModifierKeys = ModifierKey.None };
     public string? Icon => Icons.Material.Filled.CreateNewFolder;
-    public string[] ContextMenuTypes => ["RequirementSpecification", "RequirementSpecificationFolder"];
+    public string[] ContextMenuTypes => ["RequirementSpecification", "RequirementFolder"];
 
     public async ValueTask ExecuteAsync()
     {

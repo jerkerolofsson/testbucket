@@ -151,7 +151,24 @@ internal class RequirementEditorController : TenantBaseService
         await _manager.DeleteRequirementAsync(principal, requirement);
 
     }
+    public async Task DeleteRequirementFolderAsync(RequirementSpecificationFolder folder)
+    {
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = "YES",
+            NoText = "NO",
+            Title = "Delete folder and all requirements?",
+            MarkupMessage = new MarkupString("Do you really want to delete this folder and all requirements?")
+        });
 
+        if (result == false)
+        {
+            return;
+        }
+
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.DeleteFolderAsync(principal, folder);
+    }
     public async Task DeleteRequirementSpecificationAsync(RequirementSpecification specification)
     {
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions

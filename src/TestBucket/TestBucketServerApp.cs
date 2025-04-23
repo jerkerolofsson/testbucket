@@ -216,6 +216,7 @@ public static class TestBucketServerApp
         // requirement
         builder.Services.AddScoped<ICommand, CreateTestCaseFromRequirementCommand>();
         builder.Services.AddScoped<ICommand, DeleteRequirementCommand>();
+        builder.Services.AddScoped<ICommand, DeleteRequirementFolderCommand>();
         builder.Services.AddScoped<ICommand, CreateRequirementCommand>();
         builder.Services.AddScoped<ICommand, NewRequirementFolderCommand>();
         builder.Services.AddScoped<ICommand, CreateChildRequirementCommand>();

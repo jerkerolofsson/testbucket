@@ -290,7 +290,7 @@
         else if (folder.ParentId is not null)
         {
             // Added within a folder
-            var parentFolder = FindTreeNode(x => x.Folder?.Id == folder.ParentId);
+            var parentFolder = FindTreeNode(x => x.RequirementFolder?.Id == folder.ParentId);
             if (parentFolder?.Children is not null)
             {
                 var childNode = browser.CreateTreeNodeFromFolder(folder);

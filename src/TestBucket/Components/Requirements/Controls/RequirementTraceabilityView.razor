@@ -1,0 +1,120 @@
+﻿@using TestBucket.Domain.Traceability.Models
+@inject RequirementEditorController controller
+
+<div class="tb-trace-view">
+    <div class="left">
+        @if (_loading)
+        {
+            <MudSkeleton Width="100%" Height="50px" SkeletonType="SkeletonType.Rectangle" />
+        }
+        else if (_node is not null && _node.Upstream.Count > 0)
+        {
+            @foreach (var upstream in _node.Upstream)
+            {
+                @foreach (var innerUpstream in upstream.Upstream)
+                {
+                    <TraceabilityNodeLink Node="@innerUpstream" />
+                }
+            }
+        }
+    </div>
+
+    <div class="left">
+        @if (_loading)
+        {
+            <MudSkeleton Width="100%" Height="50px" SkeletonType="SkeletonType.Rectangle" />
+        }
+        else if (_node is not null && _node.Upstream.Count > 0)
+        {
+            @foreach (var upstream in _node.Upstream)
+            {
+                <TraceabilityNodeLink Node="@upstream" />
+            }
+        }
+    </div>
+
+    <div class="center">
+        @if (_loading)
+        {
+            <MudSkeleton Width="100%" Height="50px" SkeletonType="SkeletonType.Rectangle"/>
+        }
+        else if(_node is not null)
+        {
+            <TraceabilityNodeLink Node="@_node" />
+        }
+    </div>
+
+    <div class="right">
+        @if (_loading)
+        {
+            <MudSkeleton Width="100%" Height="50px" SkeletonType="SkeletonType.Rectangle" />
+        }
+        else if(_node is not null && _node.Downstream.Count > 0)
+        {
+            @foreach(var downstream in _node.Downstream)
+            {
+                <div class="tb-trace-dep downstream">
+                    <TraceabilityNodeLink Node="@downstream"/>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="right">
+        @if (_loading)
+        {
+            <MudSkeleton Width="100%" Height="50px" SkeletonType="SkeletonType.Rectangle" />
+        }
+        else if (_node is not null && _node.Downstream.Count > 0)
+        {
+            @foreach (var downstream in _node.Downstream)
+            {
+                @foreach (var innerDownstream in downstream.Downstream)
+                {
+                    <div class="tb-trace-dep downstream">
+                        <TraceabilityNodeLink Node="@innerDownstream" />
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>
+
+
+
+@code {
+    [Parameter] public Requirement? Requirement { get; set; }
+
+    private Requirement? _requirement;
+    private TraceabilityNode? _node;
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_requirement?.Id != Requirement?.Id)
+        {
+            _requirement = Requirement;
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        this.StateHasChanged();
+
+        if(_requirement is not null)
+        {
+            await Task.Delay(150); // For testing
+            _node = await controller.DiscoverTraceabilityAsync(_requirement, 2);
+        }
+
+
+        _loading = false;
+    }
+}

@@ -372,4 +372,7 @@
   <data name="batch-tag" xml:space="preserve">
     <value />
   </data>
+  <data name="traceability" xml:space="preserve">
+    <value />
+  </data>
 </root>

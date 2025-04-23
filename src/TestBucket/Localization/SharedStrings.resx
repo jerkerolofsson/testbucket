@@ -374,4 +374,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="batch-tag" xml:space="preserve">
     <value>Batch Tag</value>
   </data>
+  <data name="traceability" xml:space="preserve">
+    <value>Traceability</value>
+  </data>
 </root>

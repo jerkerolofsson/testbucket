@@ -418,6 +418,7 @@ p.mud-typography-subtitle1 {
     border: 1px solid transparent;
 }
 
+.tb-trace-view > * > :hover,
 .tb-background-hover:hover,
 .tb-datarow:hover,
 .tb-datarow-selected:hover { 
@@ -849,4 +850,30 @@ div.tb-profile-image.tb-background-9 {
 .tb-tile .mud-toggle-group {
     opacity: 0;
     transition: opacity linear 150ms;
+}
+
+.tb-trace-view {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    align-items: center;
+}
+
+.tb-trace-view > * {
+    display: flex; 
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    
+}
+
+.tb-trace-view > .center > * {
+    border: solid 1px var(--mud-palette-tertiary);
+}
+
+.tb-trace-view > * > * {
+    background: var(--mud-palette-surface);
+    padding: 4px;
+    border-radius: 4px;
+    border: solid 1px transparent;
 }

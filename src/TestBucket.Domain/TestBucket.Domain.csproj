@@ -48,6 +48,7 @@
 
     <ItemGroup>
       <Folder Include="Automation\Pipelines\IntegrationEvents\" />
+      <Folder Include="Requirements\Relationships\" />
       <Folder Include="Testing\TestCases\" />
       <Folder Include="TestResources\Services\" />
     </ItemGroup>

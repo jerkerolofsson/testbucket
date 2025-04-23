@@ -68,6 +68,10 @@
                     ValueChanged="OnDescriptionChanged"
                     SpellChecker="false">
                     </MarkdownEditor>
+
+                    <MudText Typo="Typo.h2">@loc["traceability"]</MudText>
+                    <RequirementTraceabilityView Requirement="@Requirement"/>
+
                 </MudStack>
             </StartContent>
             <EndContent>

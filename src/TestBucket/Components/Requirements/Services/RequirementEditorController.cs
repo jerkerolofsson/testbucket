@@ -1,10 +1,14 @@
-﻿using Microsoft.Extensions.Localization;
+﻿using Mediator;
+
+using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Traceability;
+using TestBucket.Domain.Traceability.Models;
 using TestBucket.Localization;
 
 namespace TestBucket.Components.Requirements.Services;
@@ -17,7 +21,7 @@ internal class RequirementEditorController : TenantBaseService
     private readonly IRequirementManager _manager;
 
     private readonly IDialogService _dialogService;
-
+    private readonly IMediator _mediator;
 
     public RequirementEditorController(
         AuthenticationStateProvider authenticationStateProvider,
@@ -25,18 +29,29 @@ internal class RequirementEditorController : TenantBaseService
         IStringLocalizer<RequirementStrings> reqLoc,
         IRequirementImporter importer,
         IRequirementManager manager,
-        IDialogService dialogService) : base(authenticationStateProvider)
+        IDialogService dialogService,
+        IMediator mediator) : base(authenticationStateProvider)
     {
         _loc = loc;
         _reqLoc = reqLoc;
         _importer = importer;
         _manager = manager;
         _dialogService = dialogService;
+        _mediator = mediator;
+    }
+
+    public async Task<TraceabilityNode> DiscoverTraceabilityAsync(Requirement requirement, int depth)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+
+        return await _mediator.Send(new DiscoverRequirementRelationshipsRequest(principal, requirement, depth));
     }
 
     public async Task ExtractRequirementsFromSpecificationAsync(RequirementSpecification specification, CancellationToken cancellationToken = default)
     {
         var principal = await GetUserClaimsPrincipalAsync();
+        principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
 
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
         {
@@ -273,7 +288,6 @@ internal class RequirementEditorController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         await _manager.UpdateRequirementAsync(principal, requirement);
-      
     }
 
     public async Task<PagedResult<RequirementSpecification>> GetRequirementSpecificationsAsync(long? teamId, long? projectId, int offset = 0, int count = 100)

@@ -10,7 +10,7 @@
         </TitleContent>
         <DialogContent>
 
-            <MudStack>
+            <MudStack Spacing="5">
 
                 <MudStack Spacing="0">
                     <FieldHeader>@reqLoc["title"]</FieldHeader>
@@ -19,7 +19,7 @@
 
                 <MudStack Spacing="0">
                     <FieldHeader>@reqLoc["type"]</FieldHeader>
-                    <MudSelect T="string" @bind-Value="@_requirement.RequirementType">
+                    <MudSelect T="string" @bind-Value="@_requirement.RequirementType" Variant="Variant.Outlined">
                         @foreach (var type in RequirementTypes.AllTypes)
                         {
                             <MudSelectItem Value="@type">

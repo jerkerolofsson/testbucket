@@ -37,6 +37,9 @@ internal class EnsureSystemFieldsExistsWhenProjectIsCreated :
                 Name = definition.Name, Offset = 0, Count= 1 });
             if(result.Count == 0)
             {
+                definition.Id = 0;
+                definition.TenantId = project.TenantId;
+                definition.TeamId = project.TeamId;
                 definition.TestProjectId = project.Id;
                 await _fieldDefinitionManager.AddAsync(principal, definition);
             }

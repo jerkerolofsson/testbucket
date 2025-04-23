@@ -1,15 +1,40 @@
-﻿@using TestBucket.Domain.Requirements.Models
+﻿@using TestBucket.Contracts.Requirements
+@using TestBucket.Domain.Requirements.Models
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<RequirementStrings> reqLoc
 
 <EditForm Model="@_requirement" OnValidSubmit="OnValidSubmit">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>
-            @loc["create-requirement"]
+            @reqLoc["new-requirement"]
         </TitleContent>
         <DialogContent>
 
-            <MudTextField Variant="Variant.Outlined" T="string" HelperText="@loc["title"]" @bind-Value="@_requirement.Name"></MudTextField>
+            <MudStack>
 
+                <MudStack Spacing="0">
+                    <FieldHeader>@reqLoc["title"]</FieldHeader>
+                    <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_requirement.Name"></MudTextField>
+                </MudStack>
+
+                <MudStack Spacing="0">
+                    <FieldHeader>@reqLoc["type"]</FieldHeader>
+                    <MudSelect T="string" @bind-Value="@_requirement.RequirementType">
+                        @foreach (var type in RequirementTypes.AllTypes)
+                        {
+                            <MudSelectItem Value="@type">
+                                @reqLoc[type.ToLower()]
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudStack>
+
+                <MudStack Spacing="0">
+                    <FieldHeader>@reqLoc["description"]</FieldHeader>
+                    <MarkdownEditor @bind-Value="@_requirement.Description" @bind-Preview="@_preview" />
+                </MudStack>
+
+            </MudStack>
         </DialogContent>
 
         <DialogActions>
@@ -26,7 +51,8 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
-    private Requirement _requirement = new() { Name = "" };
+    private Requirement _requirement = new() { Name = "", RequirementType = RequirementTypes.General };
+    private bool _preview = false;
 
 
     private void Close()

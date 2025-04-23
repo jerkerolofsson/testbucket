@@ -183,6 +183,13 @@ internal class RequirementEditorController : TenantBaseService
         await _manager.UpdateRequirementSpecificationAsync(principal, specification);
     }
 
+    public async Task SaveRequirementSpecificationFolderAsync(RequirementSpecificationFolder folder)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.UpdateFolderAsync(principal, folder);
+    }
+
+
     public async Task<RequirementSpecificationFolder> AddRequirementSpecificationFolderAsync(long projectId, long specificationId, long? parent, string name)
     {
         var principal = await GetUserClaimsPrincipalAsync();

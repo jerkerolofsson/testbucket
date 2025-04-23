@@ -7,7 +7,6 @@
 @code {
     [Parameter] public RequirementSpecificationFolder? RequirementFolder { get; set; }
 
-    [CascadingParameter] public Team? Team { get; set; }
-    [CascadingParameter] public TestProject? Project { get; set; }
-
+    [Parameter] public Team? Team { get; set; }
+    [Parameter] public TestProject? Project { get; set; }
 }

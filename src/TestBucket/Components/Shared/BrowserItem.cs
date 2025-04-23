@@ -23,4 +23,38 @@ public record class BrowserItem
     public TestRun? TestRun { get; set; }
     public Pipeline? Pipeline { get; set; }
     public SearchTestCaseRunQuery? TestCaseRunQuery { get; internal set; }
+
+    public override string ToString()
+    {
+        var sb = new StringBuilder();
+
+        if (TestSuite is not null)
+        {
+            sb.AppendLine($"TestSuite: {TestSuite.Id} ({TestSuite.Name})");
+        }
+        if (Folder is not null)
+        {
+            sb.AppendLine($"TestSuiteFolder: {Folder.Id} ({Folder.Name})");
+        }
+        if (TestCase is not null)
+        {
+            sb.AppendLine($"TestCase: {TestCase.Id} ({TestCase.Name})");
+        }
+
+        if (Requirement is not null)
+        {
+            sb.AppendLine($"Requirement: {Requirement.Id} ({Requirement.Name})");
+        }
+        if (RequirementFolder is not null)
+        {
+            sb.AppendLine($"RequirementFolder: {RequirementFolder.Id} ({RequirementFolder.Name})");
+        }
+        if (RequirementSpecification is not null)
+        {
+            sb.AppendLine($"RequirementSpecification: {RequirementSpecification.Id} ({RequirementSpecification.Name})");
+        }
+
+        return sb.ToString();
+
+    }
 }

@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain;
+﻿using TestBucket.Contracts.Requirements;
+using TestBucket.Domain;
 using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Components.Requirements;
@@ -8,12 +9,22 @@ public class RequirementIcons
 
     public static string GetIcon(Requirement requirement)
     {
+        if (requirement.RequirementType is not null)
+        {
+            switch (requirement.RequirementType)
+            {
+                case RequirementTypes.Epic:
+                    return TbIcons.BoldDuoTone.Epic;
+                case RequirementTypes.Story:
+                    return TbIcons.BoldDuoTone.Book;
+            }
+        }
         return TbIcons.BoldDuoTone.Medal;
     }
 
     public static string GetIcon(RequirementSpecification specification)
     {
-        return specification.Icon ?? Icons.Material.Outlined.Article;
+        return specification.Icon ?? TbIcons.BoldDuoTone.Box;
     }
 
     public static string GetIcon(RequirementSpecificationFolder x)

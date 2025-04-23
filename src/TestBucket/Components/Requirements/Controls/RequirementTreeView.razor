@@ -7,6 +7,7 @@
 @inject RequirementEditorController editor
 @inject IRequirementManager manager
 @inject AppNavigationManager appNav
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Spacing="0" Style="width: 100%;">
     <MudStack Row="true" class="tb-treeview-toolbar" Spacing="0">
@@ -79,19 +80,22 @@
                             }
                         </ActivatorContent>
                         <ChildContent>
-                            @if (context.Value?.RequirementSpecification is not null)
+                            @if (context.Value?.Requirement is not null)
                             {
-                                <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">Rename</MudMenuItem>
-                                <RequirementSpecificationMenuItems RequirementSpecification="@context.Value.RequirementSpecification"/>
-                            }
-                            else if (context.Value?.Requirement is not null)
-                            {
-                                <RequirementMenuItems 
-                                Project="@Project" Team="@Team"
-                                Requirement="context.Value.Requirement"/>
+                                <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
+                                <RequirementMenuItems Project="@Project" Team="@Team"
+                                Requirement="context.Value.Requirement" />
                             }
                             else if (context.Value?.RequirementFolder is not null)
                             {
+                                <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
+                                <RequirementFolderMenuItems Project="@Project" Team="@Team"
+                                RequirementFolder="context.Value.RequirementFolder" />
+                            }
+                            else if (context.Value?.RequirementSpecification is not null)
+                            {
+                                <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
+                                <RequirementSpecificationMenuItems RequirementSpecification="@context.Value.RequirementSpecification"/>
                             }
 
                             <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => AddRequirementSpecificationAsync()">Add Specification</MudMenuItem>
@@ -159,7 +163,19 @@
     {
         if(_editItem is not null)
         {
-            if(_editItem.Value?.RequirementSpecification is not null)
+            if(_editItem.Value?.Requirement is not null)
+            {
+                _editItem.Text = text;
+                _editItem.Value.Requirement.Name = text;
+                await editor.SaveRequirementAsync(_editItem.Value.Requirement);
+            }
+            if (_editItem.Value?.RequirementFolder is not null)
+            {
+                _editItem.Text = text;
+                _editItem.Value.RequirementFolder.Name = text;
+                await editor.SaveRequirementSpecificationFolderAsync(_editItem.Value.RequirementFolder);
+            }
+            if (_editItem.Value?.RequirementSpecification is not null)
             {
                 _editItem.Text = text;
                 _editItem.Value.RequirementSpecification.Name = text;
@@ -196,6 +212,12 @@
             {
                 appNav.State.SelectedRequirement = null;
                 appNav.State.SelectedRequirementSpecificationFolder = item.RequirementFolder;
+
+                if(item.RequirementFolder.RequirementSpecificationId != appNav.State.SelectedRequirementSpecification?.Id)
+                {
+                    appNav.State.SelectedRequirementSpecification = await browser.GetRequirementSpecificationByIdAsync(item.RequirementFolder.RequirementSpecificationId);
+
+                }
                 await OnFolderClicked.InvokeAsync(item.RequirementFolder);
             }
         }
@@ -308,7 +330,7 @@
         else if (requirement.RequirementSpecificationFolderId is not null)
         {
             // Added within a folder
-            var folder = FindTreeNode(x => x.Folder?.Id == requirement.RequirementSpecificationFolderId);
+            var folder = FindTreeNode(x => x.RequirementFolder?.Id == requirement.RequirementSpecificationFolderId);
             if (folder?.Children is not null)
             {
                 var childNode = browser.CreateRequirementNode(requirement);

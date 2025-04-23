@@ -14,6 +14,36 @@ code.tip {
 	white-space: break-spaces;
 }
 
+.mud-markdown-preview pre:has(code):has(.me-quot), 
+.EasyMDEContainer .editor-preview pre:has(code):has(.me-quot)  {
+    background: transparent;
+    border: none;
+}
+
+.me-quot {
+	position: relative;
+	background: var(--mud-palette-primary);
+	border-radius: 10px;
+    padding: 1rem;
+    color: white;
+    font-family: var(--mud-typography-default-family);
+}
+
+.me-quot:after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: 50%;
+	width: 0;
+	height: 0;
+	border: 20px solid transparent;
+	border-top-color: var(--mud-palette-primary);
+	border-bottom: 0;
+	border-left: 0;
+	margin-left: -10px;
+	margin-bottom: -20px;
+}
+
 .me-alert {
 	display: block;
 	position: relative;

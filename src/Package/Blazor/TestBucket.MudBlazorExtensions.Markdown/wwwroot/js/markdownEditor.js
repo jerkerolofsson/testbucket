@@ -135,6 +135,9 @@ function initialize(dotNetObjectRef, element, elementId, previewElementId, optio
 
                         return code;
                     }
+                    else if (lang === "quot") {
+                        return '<div class="me-quot">' + code + '</div>';
+                    }
                     else if (lang === "att") {
                         return '<div class="me-alert callout attention"><p class="title">' +
                             '<span class="me-icon icon-attention"></span> Attention</p><p>' +

@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Tests" time="6.605871">
+	<testcase name="testCase1" classname="Tests.Registration" time="6.605871" />
+</testsuite>

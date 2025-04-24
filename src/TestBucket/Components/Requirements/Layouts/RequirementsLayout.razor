@@ -7,12 +7,14 @@
 @layout AppLayout
 @inherits LayoutComponentBase
 @inject AppNavigationManager appNav
+@inject AppNavigationManager appNavigationManager
 
 <TenantRedirect />
 
 <Splitter Class="container-fill" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
         <RequirementTreeView 
+            @ref="_treeView"
             Project="@Project"
             Team="@Team"
             OnSpecificationClicked="OnSpecificationClicked" OnRequirementClicked="OnRequirementClicked" />
@@ -30,7 +32,7 @@
 
     private Team? _team;
     private TestProject? _project;
-
+    private RequirementTreeView? _treeView;
 
     private void OnSpecificationClicked(RequirementSpecification specification)
     {
@@ -39,6 +41,12 @@
     private void OnRequirementClicked(Requirement requirement)
     {
         appNav.NavigateTo(requirement);
+    }
+
+       protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        appNavigationManager.State.RequirementTreeView = _treeView;
+        return base.OnAfterRenderAsync(firstRender);
     }
 
     protected override void OnParametersSet()

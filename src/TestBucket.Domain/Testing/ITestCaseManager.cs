@@ -36,6 +36,14 @@ public interface ITestCaseManager
     Task<TestCase> DuplicateTestCaseAsync(ClaimsPrincipal principal, TestCase testCase);
 
     /// <summary>
+    /// Returns a list of all items, starting with the root item until the test case including all folders in between
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testCase"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<TestEntity>> ExpandUntilRootAsync(ClaimsPrincipal principal, TestCase testCase);
+
+    /// <summary>
     /// Removes an observer
     /// </summary>
     /// <param name="observer"></param>

@@ -35,6 +35,10 @@ T="SearchResult" Placeholder="/" Value="_searchState" ValueChanged="SearchStateC
         {
             appNavigationManager.NavigateTo(state.TestCase);
         }
+        if (state?.Requirement is not null)
+        {
+            appNavigationManager.NavigateTo(state.Requirement);
+        }
     }
 
     /// <summary>

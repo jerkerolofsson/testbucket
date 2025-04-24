@@ -21,6 +21,12 @@
 
             <MudSpacer />
 
+
+            @if (appNav.State.SelectedRequirement is not null)
+            {
+                <MudIconButton Class="rounded-0" OnClick="SyncWithActiveDocumentAsync" Icon="@Icons.Material.Filled.CompareArrows" />
+            }
+
             <MudIconButton Class="rounded-0" Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementSpecificationAsync" />
             <MudIconButton Class="rounded-0" Icon="@Icons.Material.Filled.ImportExport" Href="@(appNav.GetImportSpecificationsUrl())" />
 
@@ -56,7 +62,7 @@
                 }
 
                 <DropZone T="RequirementEntity" OnDrop="(test) => OnDrop(test, context)">
-                    <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true">
+                    <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true" OpenChanged="() => OnMenuOpened(context)">
                         <ActivatorContent>
                             @if (context.Value?.Requirement is not null)
                             {
@@ -510,7 +516,7 @@
             }
 
             // Remove the tree-node from the tree and add it to the new location
-            RemoveTreeNode(x => x.Folder?.Id == folder.Id);
+            RemoveTreeNode(x => x.RequirementFolder?.Id == folder.Id);
             if (targetNode.Children is not null)
             {
                 targetNode.Children = [.. targetNode.Children, browser.CreateTreeNodeFromFolder(folder)];
@@ -551,6 +557,97 @@
             {
                 _rootItems = await browser.BrowseAsync(_team?.Id, _project?.Id, null);
             }
+        }
+    }
+
+    /// <summary>
+    /// If the user is right-clicking to open the menu we need to make sure we update the state so 
+    /// the correct items can be shown
+    /// </summary>
+    /// <param name="treeNode"></param>
+    /// <returns></returns>
+    private async Task OnMenuOpened(TreeNode<BrowserItem> treeNode)
+    {
+        if(treeNode.Value?.Requirement is not null)
+        {
+            appNav.State.SelectedRequirement = treeNode.Value.Requirement;
+            appNav.State.SelectedRequirementSpecificationFolder = null;
+            appNav.State.SelectedRequirementSpecification = null;
+            if (treeNode.Value.Requirement.ParentRequirementId is not null)
+            {
+                appNav.State.SelectedRequirementSpecificationFolder = await browser.GetRequirementFolderByIdAsync(treeNode.Value.Requirement.ParentRequirementId.Value);
+            }
+            appNav.State.SelectedRequirementSpecification = await browser.GetRequirementSpecificationByIdAsync(treeNode.Value.Requirement.RequirementSpecificationId);
+        }
+        if (treeNode.Value?.RequirementFolder is not null)
+        {
+            appNav.State.SelectedRequirement = null;
+            appNav.State.SelectedRequirementSpecificationFolder = treeNode.Value.RequirementFolder;
+            appNav.State.SelectedRequirementSpecification = await browser.GetRequirementSpecificationByIdAsync(treeNode.Value.RequirementFolder.RequirementSpecificationId);
+        }
+        if (treeNode.Value?.RequirementSpecification is not null)
+        {
+            appNav.State.SelectedRequirement = null;
+            appNav.State.SelectedRequirementSpecificationFolder = null;
+            appNav.State.SelectedRequirementSpecification = treeNode.Value.RequirementSpecification;
+        }
+    }
+
+    internal async Task SyncWithActiveDocumentAsync()
+    {
+        if (appNav.State.SelectedRequirement is not null)
+        {
+            await GoToRequirementAsync(appNav.State.SelectedRequirement);
+        }
+    }
+
+    internal async Task GoToRequirementAsync(Requirement requirement, bool invokeStateHasChanged = true)
+    {
+        // Find the test suite node
+        var specificationNode = FindTreeNode(x => x.RequirementSpecification?.Id == requirement.RequirementSpecificationId);
+        if (specificationNode is null)
+        {
+            return;
+        }
+        specificationNode.Expanded = true;
+
+        // Next traverse all folders
+        if (requirement.PathIds is not null)
+        {
+            TreeNode<BrowserItem> parent = specificationNode;
+            foreach (var folderId in requirement.PathIds)
+            {
+                var folderNode = FindTreeNode(x => x.RequirementFolder?.Id == folderId);
+                if (folderNode is null)
+                {
+                    var items = await browser.BrowseAsync(Team?.Id, Project?.Id, parent.Value);
+                    parent.Children = items;
+                    folderNode = FindTreeNode(x => x.RequirementFolder?.Id == folderId);
+                }
+                if (folderNode is null)
+                {
+                    return;
+                }
+                folderNode.Expanded = true;
+                parent = folderNode;
+
+                // Browse items in the folder, this will include tests, if any..
+                if (folderNode.Children is null)
+                {
+                    var items = await browser.BrowseAsync(Team?.Id, Project?.Id, parent.Value);
+                    folderNode.Children = items;
+                }
+            }
+        }
+
+        var requirementTreeNode = FindTreeNode(x => x.Requirement?.Id == requirement.Id);
+        if (requirementTreeNode is not null)
+        {
+            _selectedTreeItem = requirementTreeNode?.Value;
+        }
+        if (invokeStateHasChanged)
+        {
+            await InvokeAsync(StateHasChanged);
         }
     }
 }

@@ -289,7 +289,11 @@ internal class RequirementEditorController : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         await _manager.UpdateRequirementAsync(principal, requirement);
     }
-
+    public async Task<IReadOnlyList<Requirement>> GetDownstreamRequirementsAsync(Requirement requirement)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.GetDownstreamRequirementsAsync(principal, requirement);
+    }
     public async Task<PagedResult<RequirementSpecification>> GetRequirementSpecificationsAsync(long? teamId, long? projectId, int offset = 0, int count = 100)
     {
         var principal = await GetUserClaimsPrincipalAsync();

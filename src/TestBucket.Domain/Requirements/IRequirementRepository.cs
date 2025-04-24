@@ -38,7 +38,7 @@ namespace TestBucket.Domain.Requirements
         /// </summary>
         /// <param name="requirementSpecificationId"></param>
         /// <returns></returns>
-        Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(long requirementSpecificationId);
+        Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(string tenantId, long requirementSpecificationId);
 
         /// <summary>
         /// Deletes a requirement specification, all folders and all requirements
@@ -118,6 +118,14 @@ namespace TestBucket.Domain.Requirements
         /// <param name="filters"></param>
         /// <returns></returns>
         Task<RequirementSpecificationFolder[]> SearchRequirementFoldersAsync(FilterSpecification<RequirementSpecificationFolder>[] filters);
+
+        /// <summary>
+        /// Returns a folder by ID
+        /// </summary>
+        /// <param name="tenantId"></param>
+        /// <param name="folderId"></param>
+        /// <returns></returns>
+        Task<RequirementSpecificationFolder?> GetRequirementFolderByIdAsync(string tenantId, long folderId);
 
         /// <summary>
         /// Adds a folder

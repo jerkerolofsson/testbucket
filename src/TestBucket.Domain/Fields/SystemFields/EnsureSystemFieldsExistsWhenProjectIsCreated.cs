@@ -9,7 +9,7 @@ internal class EnsureSystemFieldsExistsWhenProjectIsCreated :
     INotificationHandler<ProjectCreated>,
     INotificationHandler<ProjectUpdated>
 {
-    private IFieldDefinitionManager _fieldDefinitionManager;
+    private readonly IFieldDefinitionManager _fieldDefinitionManager;
 
     public EnsureSystemFieldsExistsWhenProjectIsCreated(IFieldDefinitionManager fieldDefinitionManager)
     {

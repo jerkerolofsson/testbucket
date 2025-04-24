@@ -1,33 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	  <TargetFramework>net9.0</TargetFramework>
-	  <ImplicitUsings>enable</ImplicitUsings>
-	  <Nullable>enable</Nullable>
-	  <IsPackable>false</IsPackable>
-	  <OutputType>Exe</OutputType>
-	  <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
-	  <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<OutputType>Exe</OutputType>
+		<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+		<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.3.0-preview.1.25161.3" />
-	<PackageReference Include="xunit.v3" Version="2.0.0" />
-	<PackageReference Include="xunit.runner.visualstudio" Version="3.0.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.3.0-preview.1.25161.3" />
+		<PackageReference Include="xunit.v3" Version="2.0.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.0.2" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\TestBucket.Domain\TestBucket.Domain.csproj" />
-    <ProjectReference Include="..\..\src\Package\Traits\TestBucket.Traits.XUnit\TestBucket.Traits.Xunit.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\TestBucket.Domain\TestBucket.Domain.csproj" />
+		<ProjectReference Include="..\..\src\Package\Traits\TestBucket.Traits.XUnit\TestBucket.Traits.Xunit.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="Requirements\Import\TestData\sections.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Requirements\Import\TestData\srs.md">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="Requirements\Import\TestData\sections.md">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Requirements\Import\TestData\srs.md">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

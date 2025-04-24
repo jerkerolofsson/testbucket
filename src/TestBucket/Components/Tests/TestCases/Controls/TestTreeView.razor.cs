@@ -4,6 +4,8 @@ using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Teams.Models;
 
+using static MudBlazor.CategoryTypes;
+
 namespace TestBucket.Components.Tests.TestCases.Controls;
 
 public partial class TestTreeView
@@ -705,4 +707,25 @@ public partial class TestTreeView
 
     #endregion
 
+    private void OnMenuOpened(TreeNode<BrowserItem> treeNode)
+    {
+        if (treeNode.Value?.TestCase is not null)
+        {
+            appNavigationManager.State.SelectedTestCase = treeNode.Value.TestCase;
+            appNavigationManager.State.SelectedTestSuiteFolder = null;
+            appNavigationManager.State.SelectedTestSuite = null;
+        }
+        if (treeNode.Value?.Folder is not null)
+        {
+            appNavigationManager.State.SelectedTestCase = null;
+            appNavigationManager.State.SelectedTestSuiteFolder = treeNode.Value.Folder;
+            appNavigationManager.State.SelectedTestSuite = null;
+        }
+        if (treeNode.Value?.TestSuite is not null)
+        {
+            appNavigationManager.State.SelectedTestCase = null;
+            appNavigationManager.State.SelectedTestSuiteFolder = null;
+            appNavigationManager.State.SelectedTestSuite = treeNode.Value.TestSuite;
+        }
+    }
 }

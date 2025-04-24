@@ -26,6 +26,7 @@
     <EmbeddedResource Include="Ctrf\TestData\ctrf-attachment.json" />
     <EmbeddedResource Include="Ctrf\TestData\TestBucket.Formats.UnitTests.crtf.json" />
     <EmbeddedResource Include="JUnit\TestData\created-by-xunit-v3-image-attachment.xml" />
+    <EmbeddedResource Include="JUnit\TestData\junit-no-testsuites.xml" />
     <EmbeddedResource Include="JUnit\TestData\junit-testid-trait.xml" />
     <EmbeddedResource Include="JUnit\TestData\created-by-xunit-v3-attachment-with-mime.xml" />
     <EmbeddedResource Include="JUnit\TestData\created-by-xunit-v3-attachment.xml" />

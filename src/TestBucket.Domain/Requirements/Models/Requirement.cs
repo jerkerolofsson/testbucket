@@ -55,6 +55,12 @@ public class Requirement : RequirementEntity
     public string? State { get; set; }
 
     /// <summary>
+    /// Optional root requirement if this is a downstream requirement
+    /// This is useful to quickly identify all child requirements without traversing, for example to understand the coverage of a feature
+    /// </summary>
+    public long? RootRequirementId { get; set; }
+
+    /// <summary>
     /// Optional parent requirement if this is a downstream requirement
     /// </summary>
     public long? ParentRequirementId { get; set; }
@@ -83,4 +89,5 @@ public class Requirement : RequirementEntity
     public RequirementSpecification? RequirementSpecification { get; set; }
     public RequirementSpecificationFolder? RequirementSpecificationFolder { get; set; }
     public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }
+    public virtual List<RequirementTestLink>? TestLinks { get; set; }
 }

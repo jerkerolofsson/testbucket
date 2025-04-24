@@ -12,107 +12,119 @@
                 <MudTabPanel Text="@fieldLoc["description"]">
                     <MudStack>
 
-                        <MudStack Spacing="0">
-                            <FieldHeader>@fieldLoc["name"]</FieldHeader>
-                            <MudTextField 
-                            HelperText="@fieldLoc["name-helpertext"]"
-                            Value="@FieldDefinition.Name" ValueChanged="OnNameChanged" T="string" Variant="Variant.Outlined" />
-                        </MudStack>
+                        <Field>
+                            <MudStack Spacing="0">
+                                <FieldHeader>@fieldLoc["name"]</FieldHeader>
+                                <MudTextField 
+                                HelperText="@fieldLoc["name-helpertext"]"
+                                Value="@FieldDefinition.Name" ValueChanged="OnNameChanged" T="string" Variant="Variant.Outlined" />
+                            </MudStack>
+                        </Field>
+                        <Field>
+                            <MudStack Spacing="0">
+                                <FieldHeader>@fieldLoc["description"]</FieldHeader>
+                                <MudTextField Lines="10"
+                                MaxLines="10"
+                                HelperText="@fieldLoc["description-helpertext"]"
+                                Value="@FieldDefinition.Description" ValueChanged="OnDescriptionChanged" T="string" Variant="Variant.Outlined" />
+                            </MudStack>
+                        </Field>
 
-                        <MudStack Spacing="0">
-                            <FieldHeader>@fieldLoc["description"]</FieldHeader>
-                            <MudTextField Lines="10"
-                            MaxLines="10"
-                            HelperText="@fieldLoc["description-helpertext"]"
-                            Value="@FieldDefinition.Description" ValueChanged="OnDescriptionChanged" T="string" Variant="Variant.Outlined" />
-                        </MudStack>
+                        <Field>
+                            <MudStack Spacing="0">
 
-                        <MudStack Spacing="0">
-
-                            <FieldHeader>@fieldLoc["field-target"]</FieldHeader>
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr)">
-                                <MudCheckBox Color="Color.Tertiary" T="bool"
-                                             Value="@((FieldDefinition.Target&FieldTarget.TestSuite) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestSuite, x)">Test Suite</MudCheckBox>
-
-
-                                <MudCheckBox Color="Color.Tertiary" T="bool"
-                                             Value="@((FieldDefinition.Target&FieldTarget.TestSuiteFolder) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestSuiteFolder, x)">Test Suite Folder</MudCheckBox>
-
-                                <MudCheckBox Color="Color.Tertiary" T="bool"
-                                             Value="@((FieldDefinition.Target&FieldTarget.TestCase) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCase, x)">Test Cases</MudCheckBox>
-
-                                <MudCheckBox Color="Color.Tertiary" T="bool"
-                                             Value="@((FieldDefinition.Target&FieldTarget.Project) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Project, x)">Projects</MudCheckBox>
-
-                                <MudCheckBox Color="Color.Tertiary" T="bool"
-                                             Value="@((FieldDefinition.Target&FieldTarget.TestRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestRun, x)">Test Runs</MudCheckBox>
-
-                                <MudCheckBox Color="Color.Tertiary" T="bool"
-                                             Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Runs</MudCheckBox>
+                                <FieldHeader>@fieldLoc["field-target"]</FieldHeader>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr)">
+                                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                                 Value="@((FieldDefinition.Target&FieldTarget.TestSuite) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestSuite, x)">Test Suite</MudCheckBox>
 
 
-                                <MudCheckBox Color="Color.Tertiary" T="bool"
-                                             Value="@((FieldDefinition.Target&FieldTarget.RequirementSpecification) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Requirement, x)">Requirement Specification</MudCheckBox>
+                                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                                 Value="@((FieldDefinition.Target&FieldTarget.TestSuiteFolder) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestSuiteFolder, x)">Test Suite Folder</MudCheckBox>
 
-                                <MudCheckBox Color="Color.Tertiary" T="bool"
-                                             Value="@((FieldDefinition.Target&FieldTarget.RequirementSpecificationFolder) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.RequirementSpecificationFolder, x)">Requirement Folder</MudCheckBox>
+                                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                                 Value="@((FieldDefinition.Target&FieldTarget.TestCase) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCase, x)">Test Cases</MudCheckBox>
 
-                                <MudCheckBox Color="Color.Tertiary" T="bool"
-                                             Value="@((FieldDefinition.Target&FieldTarget.Requirement) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Requirement, x)">Requirement</MudCheckBox>
+                                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                                 Value="@((FieldDefinition.Target&FieldTarget.Project) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Project, x)">Projects</MudCheckBox>
 
-                            </div>
-                            <MudText Typo="Typo.subtitle2">@fieldLoc["field-target-helpertext"]</MudText>
-                        </MudStack>
+                                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                                 Value="@((FieldDefinition.Target&FieldTarget.TestRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestRun, x)">Test Runs</MudCheckBox>
+
+                                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                                 Value="@((FieldDefinition.Target&FieldTarget.TestCaseRun) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.TestCaseRun, x)">Test Case Runs</MudCheckBox>
+
+
+                                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                                 Value="@((FieldDefinition.Target&FieldTarget.RequirementSpecification) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Requirement, x)">Requirement Specification</MudCheckBox>
+
+                                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                                 Value="@((FieldDefinition.Target&FieldTarget.RequirementSpecificationFolder) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.RequirementSpecificationFolder, x)">Requirement Folder</MudCheckBox>
+
+                                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                                 Value="@((FieldDefinition.Target&FieldTarget.Requirement) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Requirement, x)">Requirement</MudCheckBox>
+
+                                </div>
+                                <MudText Typo="Typo.subtitle2">@fieldLoc["field-target-helpertext"]</MudText>
+                            </MudStack>
+                        </Field>
                     </MudStack>
                 </MudTabPanel>
 
                 <MudTabPanel Text="@fieldLoc["appearance"]">
                     <MudStack>
 
-                        <MudStack Spacing="0">
-                            <FieldHeader>@fieldLoc["input-type"]</FieldHeader>
-                            <MudSelect HelperText="@fieldLoc["input-type-helpertext"]"
-                                       Value="@FieldDefinition.Type" ValueChanged="OnTypeChanged" T="FieldType" Variant="Variant.Outlined">
-                                <MudSelectItem Value="@FieldType.String">String</MudSelectItem>
-                                <MudSelectItem Value="@FieldType.Boolean">Boolean</MudSelectItem>
-                                <MudSelectItem Value="@FieldType.SingleSelection">Single Selection</MudSelectItem>
-                                <MudSelectItem Value="@FieldType.MultiSelection">Multi Selection</MudSelectItem>
-                                <MudSelectItem Value="@FieldType.StringArray">Chip Field</MudSelectItem>
-                            </MudSelect>
-                        </MudStack>
+                        <Field>
+                            <MudStack Spacing="0">
+                                <FieldHeader>@fieldLoc["input-type"]</FieldHeader>
+                                <MudSelect HelperText="@fieldLoc["input-type-helpertext"]"
+                                           Value="@FieldDefinition.Type" ValueChanged="OnTypeChanged" T="FieldType" Variant="Variant.Outlined">
+                                    <MudSelectItem Value="@FieldType.String">String</MudSelectItem>
+                                    <MudSelectItem Value="@FieldType.Boolean">Boolean</MudSelectItem>
+                                    <MudSelectItem Value="@FieldType.SingleSelection">Single Selection</MudSelectItem>
+                                    <MudSelectItem Value="@FieldType.MultiSelection">Multi Selection</MudSelectItem>
+                                    <MudSelectItem Value="@FieldType.StringArray">Chip Field</MudSelectItem>
+                                </MudSelect>
+                            </MudStack>
+                        </Field>
                         
-                        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
-                            <FieldHeader>@fieldLoc["field-readonly"]</FieldHeader>
-                            <MudSpacer />
-                            <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.ReadOnly" ValueChanged="OnReadOnlyChanged"/>
-                          </MudStack>
-
-                        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
-                            <FieldHeader>@fieldLoc["visible"]</FieldHeader>
-                            <MudSpacer />
-                            <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.IsVisible" ValueChanged="OnIsVisibleChanged"/>
-                        </MudStack>
-
-                        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
-                            <FieldHeader>@fieldLoc["show-description"]</FieldHeader>
-                            <MudSpacer />
-                            <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.ShowDescription" ValueChanged="OnShowDescriptionChanged"/>
-                        </MudStack>
-
+                        <Field>
+                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                                <FieldHeader>@fieldLoc["field-readonly"]</FieldHeader>
+                                <MudSpacer />
+                                <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.ReadOnly" ValueChanged="OnReadOnlyChanged"/>
+                              </MudStack>
+                        </Field>
+                        <Field>
+                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                                <FieldHeader>@fieldLoc["visible"]</FieldHeader>
+                                <MudSpacer />
+                                <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.IsVisible" ValueChanged="OnIsVisibleChanged"/>
+                            </MudStack>
+                        </Field>
+                        <Field>
+                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                                <FieldHeader>@fieldLoc["show-description"]</FieldHeader>
+                                <MudSpacer />
+                                <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.ShowDescription" ValueChanged="OnShowDescriptionChanged"/>
+                            </MudStack>
+                        </Field>
 
                         @if (FieldDefinition.Type == FieldType.SingleSelection || FieldDefinition.Type == FieldType.MultiSelection)
                         {
-                            <MudStack Spacing="0">
-                                <FieldHeader>@fieldLoc["options"]</FieldHeader>
-                                <MudTextField 
-                                    Lines="10"
-                                    HelperText="@fieldLoc["options-helpertext"]" 
-                                    Class="mt-3" 
-                                    Value="@_options" 
-                                    ValueChanged="OnOptionsChanged" 
-                                    T="string" 
-                                    Variant="Variant.Outlined" />
-                            </MudStack>
+                            <Field>
+                                <MudStack Spacing="0">
+                                    <FieldHeader>@fieldLoc["options"]</FieldHeader>
+                                    <MudTextField 
+                                        Lines="10"
+                                        HelperText="@fieldLoc["options-helpertext"]" 
+                                        Class="mt-3" 
+                                        Value="@_options" 
+                                        ValueChanged="OnOptionsChanged" 
+                                        T="string" 
+                                        Variant="Variant.Outlined" />
+                                </MudStack>
+                            </Field>
                         }
 
                     </MudStack>
@@ -121,36 +133,40 @@
                 <MudTabPanel Text="@fieldLoc["icons"]">
                     <MudStack>
 
-                        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
-                            <FieldHeader>@fieldLoc["field-icon"]</FieldHeader>
-                            <MudSpacer />
-                            <IconPicker @bind-Icon="@FieldDefinition.Icon" />
-                        </MudStack>
+                        <Field>
+                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                                <FieldHeader>@fieldLoc["field-icon"]</FieldHeader>
+                                <MudSpacer />
+                                <IconPicker @bind-Icon="@FieldDefinition.Icon" />
+                            </MudStack>
+                        </Field>
 
 
-                        <FieldHeader>@fieldLoc["icons"]</FieldHeader>
-                        @if ((FieldDefinition.Type == FieldType.SingleSelection || FieldDefinition.Type == FieldType.MultiSelection) && FieldDefinition.OptionIcons is not null)
-                        {
+                        <Field>
                             <FieldHeader>@fieldLoc["icons"]</FieldHeader>
+                            @if ((FieldDefinition.Type == FieldType.SingleSelection || FieldDefinition.Type == FieldType.MultiSelection) && FieldDefinition.OptionIcons is not null)
+                            {
+                                <FieldHeader>@fieldLoc["icons"]</FieldHeader>
 
-                            <table style="width: 300px">
-                                <thead>
-                                    <tr>
-                                        <th>@fieldLoc["option"]</th>
-                                        <th>@fieldLoc["icon"]</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var option in FieldDefinition.OptionIcons)
-                                    {
+                                <table style="width: 300px">
+                                    <thead>
                                         <tr>
-                                            <td>@option.Key</td>
-                                            <td><IconPicker Icon="@option.Value" IconChanged="(icon) => FieldDefinition.OptionIcons[option.Key] = icon" /></td>
+                                            <th>@fieldLoc["option"]</th>
+                                            <th>@fieldLoc["icon"]</th>
                                         </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        }
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var option in FieldDefinition.OptionIcons)
+                                        {
+                                            <tr>
+                                                <td>@option.Key</td>
+                                                <td><IconPicker Icon="@option.Value" IconChanged="(icon) => FieldDefinition.OptionIcons[option.Key] = icon" /></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </Field>
 
                     </MudStack>
                 </MudTabPanel>
@@ -158,44 +174,49 @@
                 <MudTabPanel Text="@fieldLoc["advanced"]">
                     <MudStack>
 
-                        <MudStack Spacing="0">
-                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
-                                <FieldHeader>@fieldLoc["use-classifier"]</FieldHeader>
-                                <MudSpacer/>
-                                <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.UseClassifier" ValueChanged="OnUseClassifierChanged"/>
-                            </MudStack>
-                            <MudText Typo="Typo.subtitle2">@fieldLoc["use-classifier-helpertext"]</MudText>
-                        </MudStack>
-
-                        <MudStack Spacing="0">
-                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
-                                <FieldHeader>@fieldLoc["inherit"]</FieldHeader>
-                                <MudSpacer />
-                                <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.Inherit" ValueChanged="OnInheritChanged" />
-                            </MudStack>
-                            <MudText Typo="Typo.subtitle2">@fieldLoc["inherit-helpertext"]</MudText>
-                        </MudStack>
-
-                        <MudStack Spacing="0">
-                            <FieldHeader>@fieldLoc["trait"]</FieldHeader>
-                            <MudSpacer />
-                            <MudTextField 
-                            HelperText="@fieldLoc["trait-helpertext"]"
-                            Value="@FieldDefinition.Trait" ValueChanged="OnTraitChanged" T="string" Variant="Variant.Outlined" />
-
-                            @if (FieldDefinition.TraitType != TraitType.Custom)
-                            {
-                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-                                    <MudIcon Size="Size.Small" Color="Color.Success" Icon="@Icons.Material.Filled.Check" />
-                                    <MudText Color="Color.Success" Typo="Typo.subtitle1">@fieldLoc["trait-match-known-type"]</MudText>
+                        <Field>
+                            <MudStack Spacing="0">
+                                <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                                    <FieldHeader>@fieldLoc["use-classifier"]</FieldHeader>
+                                    <MudSpacer/>
+                                    <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.UseClassifier" ValueChanged="OnUseClassifierChanged"/>
                                 </MudStack>
-                            }
-                        </MudStack>
+                                <MudText Typo="Typo.subtitle2">@fieldLoc["use-classifier-helpertext"]</MudText>
+                            </MudStack>
+                        </Field>
+
+                        <Field>
+                            <MudStack Spacing="0">
+                                <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                                    <FieldHeader>@fieldLoc["inherit"]</FieldHeader>
+                                    <MudSpacer />
+                                    <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.Inherit" ValueChanged="OnInheritChanged" />
+                                </MudStack>
+                                <MudText Typo="Typo.subtitle2">@fieldLoc["inherit-helpertext"]</MudText>
+                            </MudStack>
+                        </Field>
+
+                        <Field>
+                            <MudStack Spacing="0">
+                                <FieldHeader>@fieldLoc["trait"]</FieldHeader>
+                                <MudSpacer />
+                                <MudTextField 
+                                HelperText="@fieldLoc["trait-helpertext"]"
+                                Value="@FieldDefinition.Trait" ValueChanged="OnTraitChanged" T="string" Variant="Variant.Outlined" />
+
+                                @if (FieldDefinition.TraitType != TraitType.Custom)
+                                {
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                        <MudIcon Size="Size.Small" Color="Color.Success" Icon="@Icons.Material.Filled.Check" />
+                                        <MudText Color="Color.Success" Typo="Typo.subtitle1">@fieldLoc["trait-match-known-type"]</MudText>
+                                    </MudStack>
+                                }
+                            </MudStack>
+                        </Field>
                     </MudStack>
 
                 </MudTabPanel>
             </MudTabs>
-
         </MudStack>
 
         <MudStack>

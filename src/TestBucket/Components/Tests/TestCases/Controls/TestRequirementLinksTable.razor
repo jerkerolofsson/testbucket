@@ -1,7 +1,9 @@
-﻿@inject RequirementBrowser browser
+﻿@using TestBucket.Components.Requirements
+@inject RequirementBrowser browser
 @inject TestCaseEditorController editor
+@inject IStringLocalizer<SharedStrings> loc
 
-<DropZone T="Requirement" OnDrop="OnDrop">
+<DropZone T="RequirementEntity" OnDrop="OnDrop">
     <MudDataGrid Items="_links"
     Dense="true"
     Hover="true"
@@ -10,9 +12,11 @@
 
         <ToolBarContent>
             <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
-                <MudText>Requirement Coverage</MudText>
+                <MudText>@loc["requirement-coverage"]</MudText>
                 <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementLinkAsync"></MudIconButton>
+                <MudTooltip Text="@loc["link-requirement-to-test"]">
+                    <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementLinkAsync"></MudIconButton>
+                </MudTooltip>
             </MudStack>
         </ToolBarContent>
 
@@ -22,7 +26,10 @@
                     @{
                         string url = $"{context.Item.Requirement!.TenantId}/Requirements/Requirements/{context.Item.RequirementId}";
                     }
-                    <MudLink Href="@url">@context.Item.Requirement!.Name</MudLink>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@RequirementIcons.GetIcon(context.Item.Requirement)"/>
+                        <MudLink Href="@url">@context.Item.Requirement!.Name</MudLink>
+                    </MudStack>
                 </CellTemplate>
             </TemplateColumn>
 
@@ -44,13 +51,20 @@
     private RequirementTestLink[] _links = [];
 
 
-    private async Task OnDrop(Requirement? requirement)
+    private async Task OnDrop(RequirementEntity? requirementEntity)
     {
-        if(TestCase is null || requirement is null)
+        if(TestCase is null)
         {
             return;
         }
-        await editor.LinkTestCaseToRequirementAsync(TestCase, requirement);
+        if(requirementEntity is Requirement requirement)
+        {
+            await editor.LinkTestCaseToRequirementAsync(TestCase, requirement);
+        }
+        else if(requirementEntity is RequirementSpecificationFolder folder)
+        {
+            // ..
+        }
         await LoadDataAsync();
     }
 

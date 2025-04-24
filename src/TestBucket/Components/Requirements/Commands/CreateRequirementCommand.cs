@@ -1,15 +1,9 @@
-﻿
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.Extensions.Localization;
+﻿using Microsoft.Extensions.Localization;
 
-using TestBucket.Components.Requirements.Controls;
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Requirements.Services;
-using TestBucket.Components.Tests.TestCases.Controls;
-using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Domain;
 using TestBucket.Domain.Commands;
-using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Localization;
@@ -25,7 +19,7 @@ internal class CreateRequirementCommand : ICommand
     public string Description => _loc["create-requirement-description"];
 
     public bool Enabled => 
-        (_appNav.State.SelectedRequirementSpecification is not null || _appNav.State.SelectedRequirementSpecificationFolder is not null) && 
+        _appNav.State.SelectedRequirementSpecification is not null && 
         _appNav.State.SelectedProject is not null;
 
     public KeyboardBinding? DefaultKeyboardBinding => null;
@@ -39,24 +33,33 @@ internal class CreateRequirementCommand : ICommand
     private readonly IStringLocalizer<RequirementStrings> _loc;
     private readonly AppNavigationManager _appNav;
     private readonly RequirementEditorController _requirementEditor;
+    private readonly RequirementBrowser _browser;
     private readonly IDialogService _dialogService;
 
     public CreateRequirementCommand(
         IStringLocalizer<RequirementStrings> loc,
         AppNavigationManager appNav,
         RequirementEditorController requirementEditor,
-        IDialogService dialogService)
+        IDialogService dialogService,
+        RequirementBrowser browser)
     {
         _loc = loc;
         _appNav = appNav;
         _requirementEditor = requirementEditor;
         _dialogService = dialogService;
+        _browser = browser;
     }
 
     public async ValueTask ExecuteAsync()
     {
-        if (_appNav.State.SelectedProject is null || 
-            _appNav.State.SelectedRequirementSpecification is null)
+        if (!Enabled)
+        {
+            return;
+        }
+
+        var specificationId = _appNav.State.SelectedRequirementSpecification?.Id;
+        var folderId = _appNav.State.SelectedRequirementSpecificationFolder?.Id;
+        if(specificationId is null)
         {
             return;
         }
@@ -70,8 +73,8 @@ internal class CreateRequirementCommand : ICommand
         {
             requirement.TestProjectId = _appNav.State.SelectedProject?.Id;
             requirement.TeamId = _appNav.State.SelectedProject?.TeamId;
-            requirement.RequirementSpecificationId = _appNav.State.SelectedRequirementSpecification.Id;
-            requirement.RequirementSpecificationFolderId = _appNav.State.SelectedRequirementSpecificationFolder?.Id;
+            requirement.RequirementSpecificationId = specificationId.Value;
+            requirement.RequirementSpecificationFolderId = folderId;
 
             await _requirementEditor.AddRequirementAsync(requirement);
         }

@@ -128,6 +128,36 @@ namespace TestBucket.Domain.Testing
             await _mediator.Publish(new TestCaseDeletedEvent(testCase));
         }
 
+        /// <summary>
+        /// Returns a list of all items, starting with the root item until the test case including all folders in between
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="testCase"></param>
+        /// <returns></returns>
+        public async Task<IReadOnlyList<TestEntity>> ExpandUntilRootAsync(ClaimsPrincipal principal, TestCase testCase)
+        {
+            var tenantId = principal.GetTenantIdOrThrow();
+
+            var result = new List<TestEntity>();
+            result.Add(testCase);
+
+            var folderId = testCase.TestSuiteFolderId;
+            while (folderId is not null)
+            {
+                var folder = await _testCaseRepo.GetTestSuiteFolderByIdAsync(tenantId, folderId.Value);
+                if(folder is not null)
+                {
+                    result.Add(folder);
+                }
+                folderId = folder?.ParentId;
+            }
+
+            var testSuite = await _testCaseRepo.GetTestSuiteByIdAsync(tenantId, testCase.TestSuiteId);
+
+            result.Reverse();
+            return result;
+        }
+
         public async Task SaveTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
         {
             var tenantId = principal.GetTenantIdOrThrow();

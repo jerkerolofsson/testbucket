@@ -5,6 +5,7 @@
 using Aspire.Hosting;
 using System.Security.Claims;
 using TestBucket.Contracts.Identity;
+using TestBucket.Domain.Identity;
 using TestBucket.Domain.Settings.Models;
 
 [assembly: Retry(3)]
@@ -30,14 +31,7 @@ namespace TestBucket.AspireTests.TestProject
                 Issuer = "testbucket",
                 Audience = "testbucket"
             };
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.Name, testCredentials.Email),
-                new Claim("tenant", testCredentials.Tenant),
-            };
-
-            var identity = new ClaimsIdentity(claims);
-            var principal = new ClaimsPrincipal(identity);
+            var principal = Impersonation.Impersonate(testCredentials.Tenant);
 
             // For development, we inject a symmetric key and generate an API key to use so services can communicate
             var apiKeyGenerator = new ApiKeyGenerator(testCredentials.SymmetricKey, testCredentials.Issuer, testCredentials.Audience);

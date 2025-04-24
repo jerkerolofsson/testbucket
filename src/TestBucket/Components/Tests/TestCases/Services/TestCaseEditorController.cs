@@ -99,11 +99,11 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
                 TestRunId = run.Id,
                 TeamId = testCase.TeamId.Value,
                 TestEnvironmentId = run.TestEnvironmentId,
-                Dependencies = testSuite?.Dependencies ?? []
+                Dependencies = [] // Don't lock resources/accounts when it is only a preview
             };
 
             errors.Clear();
-            var result = await CompilePreviewAsync(testCase, context, text, releaseResourcesImmediately: true);
+            var result = await CompilePreviewAsync(testCase, context, text, releaseResourcesImmediately: false);
             errors.AddRange(context.CompilerErrors);
             return result;
         }
@@ -160,14 +160,10 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
                 ProjectId = testCase.TestProjectId.Value,
                 TestRunId = 0,
                 TeamId = testCase.TeamId.Value,
-                TestEnvironmentId = defaultEnvironment?.Id
+                TestEnvironmentId = defaultEnvironment?.Id,
+                Dependencies = [] // Don't allocate resources/accounts when it is only a preview
             };
-            var result = await CompilePreviewAsync(testCase, context, text, releaseResourcesImmediately: true, cancellationToken);
-
-            if (releaseResourcesImmediately)
-            {
-                await ReleaseResourcesAsync(context.Guid, testCase.TenantId);
-            }
+            var result = await CompilePreviewAsync(testCase, context, text, releaseResourcesImmediately, cancellationToken);
 
             errors.Clear();
             errors.AddRange(context.CompilerErrors);

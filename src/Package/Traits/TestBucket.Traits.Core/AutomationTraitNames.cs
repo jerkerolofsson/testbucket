@@ -1,7 +1,7 @@
 ﻿namespace TestBucket.Traits.Core;
 
 /// <summary>
-/// Traits that relate to the test
+/// Traits that relate to the test code structure
 /// </summary>
 public class AutomationTraitNames
 {

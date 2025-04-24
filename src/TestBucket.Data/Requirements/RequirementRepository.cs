@@ -15,6 +15,14 @@ namespace TestBucket.Data.Requirements
         }
 
         #region Folders
+
+        public async Task<RequirementSpecificationFolder?> GetRequirementFolderByIdAsync(string tenantId, long folderId)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            return await dbContext.RequirementSpecificationFolders
+                .Where(x => x.TenantId == tenantId && x.Id == folderId).FirstOrDefaultAsync();
+        }
+
         public async Task DeleteRequirementFolderAsync(RequirementSpecificationFolder folder)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -48,7 +56,7 @@ namespace TestBucket.Data.Requirements
         public async Task<PagedResult<Requirement>> SearchRequirementsAsync(IEnumerable<FilterSpecification<Requirement>> filters, int offset, int count)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-            var requirements = dbContext.Requirements.AsQueryable();
+            var requirements = dbContext.Requirements.Include(x=>x.TestLinks).AsQueryable();
 
             foreach (var filter in filters)
             {
@@ -91,10 +99,11 @@ namespace TestBucket.Data.Requirements
         }
 
 
-        public async Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(long requirementSpecificationId)
+        public async Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(string tenantId, long requirementSpecificationId)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-            return await dbContext.RequirementSpecifications.Where(x=>x.Id == requirementSpecificationId).FirstOrDefaultAsync();
+            return await dbContext.RequirementSpecifications
+                .Where(x => x.TenantId == tenantId && x.Id == requirementSpecificationId).FirstOrDefaultAsync();
         }
 
         public async Task DeleteRequirementSpecificationAsync(RequirementSpecification specification)
@@ -161,6 +170,11 @@ namespace TestBucket.Data.Requirements
 
             await CalculatePathAsync(dbContext, requirement);
 
+            if (requirement.ParentRequirementId is not null)
+            {
+                requirement.RootRequirementId = await FindUpstreamRootAsync(requirement.ParentRequirementId);
+            }
+
             await dbContext.Requirements.AddAsync(requirement);
             await dbContext.SaveChangesAsync();
         }
@@ -182,8 +196,30 @@ namespace TestBucket.Data.Requirements
                 await CalculatePathAsync(dbContext, requirement);
             }
 
+            if(requirement.ParentRequirementId is not null)
+            {
+                requirement.RootRequirementId = await FindUpstreamRootAsync(requirement.ParentRequirementId);
+            }
+
             dbContext.Requirements.Update(requirement);
             await dbContext.SaveChangesAsync();
+        }
+
+        private async Task<long?> FindUpstreamRootAsync(long? parentRequirementId)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            long? returnValue = parentRequirementId;
+            while (parentRequirementId is not null)
+            {
+                var result = await dbContext.Requirements.Where(x => x.Id == parentRequirementId.Value).Select(x => new { x.Id, x.ParentRequirementId }).FirstOrDefaultAsync();
+                if(result is null)
+                {
+                    break;
+                }
+                returnValue = result.Id;
+                parentRequirementId = result.ParentRequirementId;
+            }
+            return returnValue;
         }
 
         public async Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(string tenantId, long requirementSpecificationId)

@@ -79,6 +79,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.MudBlazorExtensi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{4246D52A-491C-475A-BC3F-3133FC1B661E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Traits.Core.UnitTests", "Package\Traits\TestBucket.Traits.Core.UnitTests\TestBucket.Traits.Core.UnitTests.csproj", "{80B97166-0619-4A8A-A21C-E91BC2A4AEC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -173,6 +175,10 @@ Global
 		{CEC95C8E-FCCE-41B6-8A02-3B082798780A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEC95C8E-FCCE-41B6-8A02-3B082798780A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEC95C8E-FCCE-41B6-8A02-3B082798780A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80B97166-0619-4A8A-A21C-E91BC2A4AEC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80B97166-0619-4A8A-A21C-E91BC2A4AEC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80B97166-0619-4A8A-A21C-E91BC2A4AEC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80B97166-0619-4A8A-A21C-E91BC2A4AEC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -210,6 +216,7 @@ Global
 		{685C80D1-64F7-4419-B9F0-588F6C5DB3F3} = {5D9FF94E-3EE4-40B9-9C70-E68A2C65E6F4}
 		{CEC95C8E-FCCE-41B6-8A02-3B082798780A} = {685C80D1-64F7-4419-B9F0-588F6C5DB3F3}
 		{4246D52A-491C-475A-BC3F-3133FC1B661E} = {E214D4E5-F9C0-49F6-82C9-01CCF355A97E}
+		{80B97166-0619-4A8A-A21C-E91BC2A4AEC7} = {23D65EC5-905A-406F-94B0-808DA0E67E2A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37FBEEC7-21BB-422E-866E-8B5C94540F5B}

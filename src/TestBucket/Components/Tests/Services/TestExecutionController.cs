@@ -11,7 +11,6 @@ namespace TestBucket.Components.Tests.Services;
 
 internal class TestExecutionController : TenantBaseService
 {
-    private readonly ITestCaseRepository _testCaseRepository;
     private readonly IDialogService _dialogService;
     private readonly TestCaseEditorController _editorController;
     private readonly IUserPreferencesManager _userPreferencesManager;
@@ -25,12 +24,10 @@ internal class TestExecutionController : TenantBaseService
         AuthenticationStateProvider authenticationStateProvider,
         TestCaseEditorController testCaseEditor,
         IDialogService dialogService,
-        ITestCaseRepository testCaseRepository,
         TestCaseEditorController editorController,
         IUserPreferencesManager userPreferencesManager) : base(authenticationStateProvider)
     {
         _dialogService = dialogService;
-        _testCaseRepository = testCaseRepository;
         _editorController = editorController;
         _userPreferencesManager = userPreferencesManager;
     }

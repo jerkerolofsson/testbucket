@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 
-namespace TestBucket.Domain.Requirements.Specifications
+namespace TestBucket.Domain.Requirements.Specifications;
+
+public class FilterRequirementByParentId : FilterSpecification<Requirement>
 {
-    public class FilterRequirementByParentId : FilterSpecification<Requirement>
+    private readonly long _id;
+
+    public FilterRequirementByParentId(long parentId)
     {
-        private readonly long _id;
+        _id = parentId;
+    }
 
-        public FilterRequirementByParentId(long id)
-        {
-            _id = id;
-        }
-
-        protected override Expression<Func<Requirement, bool>> GetExpression()
-        {
-            return x => x.ParentRequirementId == _id;
-        }
+    protected override Expression<Func<Requirement, bool>> GetExpression()
+    {
+        return x => x.ParentRequirementId == _id;
     }
 }

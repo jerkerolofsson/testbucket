@@ -13,7 +13,7 @@ public class TraceabilityNode
     public Requirement? Requirement { get; init; }
     public TestCase? TestCase { get; init; }
 
-    public string Name => Requirement.Name ?? TestCase.Name ?? "";
+    public string Name => Requirement?.Name ?? TestCase?.Name ?? "";
 
     /// <summary>
     /// Upstream dependencies

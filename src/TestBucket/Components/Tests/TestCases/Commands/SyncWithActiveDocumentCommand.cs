@@ -36,6 +36,5 @@ internal class SyncWithActiveDocumentCommand : ICommand
         }
 
         await _browser.SyncWithActiveDocumentAsync(_appNavigationManager.State.SelectedTestCase);
-        //var testCase = await _controller.CreateNewTestCaseAsync(_appNavigationManager.State.SelectedProject, _appNavigationManager.State.SelectedTestSuiteFolder, _appNavigationManager.State.SelectedTestSuite?.Id);
     }
 }

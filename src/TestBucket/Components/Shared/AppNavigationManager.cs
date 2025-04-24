@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
+using TestBucket.Components.Requirements.Controls;
 using TestBucket.Components.Tests.TestCases.Controls;
 using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Environments.Models;
@@ -67,6 +68,7 @@ public class AppNavigationManager
         public TestProject? SelectedProject { get; set; }
 
         public TestTreeView? TestTreeView { get; set; }
+        public RequirementTreeView? RequirementTreeView { get; set; }
     }
 
     internal NavigationState State { get; } = new();

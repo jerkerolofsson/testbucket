@@ -11,7 +11,7 @@ namespace TestBucket.Contracts.Requirements;
 /// </summary>
 public class RequirementTypes
 {
-    public static string[] AllTypes => [General, Story, Initiative, Epic, Standard, Regulatory];
+    public static string[] AllTypes => [General, Story, Initiative, Epic, Task, SubTask, Standard, Regulatory];
 
     /// <summary>
     /// General requirement
@@ -33,4 +33,9 @@ public class RequirementTypes
     public const string Epic = "Epic";
     public const string Story = "Story";
     public const string Initiative = "Initiative";
+
+    // Tasks
+
+    public const string Task = "Task";
+    public const string SubTask = "Sub Task";
 }

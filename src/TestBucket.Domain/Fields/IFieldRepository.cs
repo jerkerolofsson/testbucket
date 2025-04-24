@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Domain.Fields.Models;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 
@@ -87,8 +88,15 @@ public interface IFieldRepository
     Task UpsertTestRunFieldsAsync(TestRunField field);
 
     #endregion Test Case Runs
+
     #region Test Case Run
 
+    /// <summary>
+    /// Returns all test case run fields for the specified test case run
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="testCaseRunId"></param>
+    /// <returns></returns>
     Task<IReadOnlyList<TestCaseRunField>> GetTestCaseRunFieldsAsync(string tenantId, long testCaseRunId);
 
     /// <summary>
@@ -106,5 +114,32 @@ public interface IFieldRepository
     Task UpsertTestCaseRunFieldsAsync(TestCaseRunField field);
 
     #endregion Test Case Runs
+
+
+    #region Requirement
+
+    /// <summary>
+    /// Returns all requirement fields for the specified requirement
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="requirementId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<RequirementField>> GetRequirementFieldsAsync(string tenantId, long requirementId);
+
+    /// <summary>
+    /// Saves all test case fields
+    /// </summary>
+    /// <param name="fields"></param>
+    /// <returns></returns>
+    Task SaveRequirementFieldsAsync(IEnumerable<RequirementField> fields);
+
+    /// <summary>
+    /// Adds a new field for the test case if it doesn't exist or replaces the value
+    /// </summary>
+    /// <param name="field"></param>
+    /// <returns></returns>
+    Task UpsertRequirementFieldsAsync(RequirementField field);
+
+    #endregion Requirement
 
 }

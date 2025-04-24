@@ -49,7 +49,21 @@ namespace TestBucket.Formats.JUnit
             var doc = XDocument.Load(stream);
 
             var testSuitesNode = doc.Element("testsuites");
-            if (testSuitesNode is not null)
+            if(testSuitesNode is null)
+            {
+                var testSuiteNode = doc.Element("testsuite");
+                if (testSuiteNode is not null)
+                {
+                    testRun.ExternalId = testSuiteNode.Attribute("id")?.Value;
+                    testRun.Name = testSuiteNode.Attribute("name")?.Value;
+                    ReadProperties(null, testRun, testSuiteNode);
+                    testRun.Assembly ??= testRun.Name;
+                    testRun.Module ??= testRun.Name;
+
+                    ParseTestSuiteNode(options, testRun, testSuiteNode);
+                }
+            }
+            else
             {
                 testRun.ExternalId = testSuitesNode.Attribute("id")?.Value;
                 testRun.Name = testSuitesNode.Attribute("name")?.Value;
@@ -59,32 +73,37 @@ namespace TestBucket.Formats.JUnit
 
                 foreach (var testSuiteNode in testSuitesNode.Elements("testsuite"))
                 {
-                    var testSuite = new TestSuiteRunDto();
-                    testRun.Suites.Add(testSuite);
-
-                    ReadProperties(null, testSuite, testSuiteNode);
-                    testSuite.Name = testSuiteNode.Attribute("name")?.Value;
-                    if (options.ProcessXunitCollectionName)
-                    {
-                        HandleXunitNameFormat(testSuite);
-                    }
-                    testSuite.ExternalId ??= testSuiteNode.Attribute("id")?.Value;
-
-                    testSuite.Assembly ??= testSuite.Name;
-                    testSuite.Module ??= testSuite.Name;
-                    testSuite.SystemOut = testSuiteNode.Element("system-out")?.Value;
-                    testSuite.SystemErr = testSuiteNode.Element("system-err")?.Value;
-
-                    // Copy some fields to the parent
-                    testRun.Name ??= testSuite.Name;
-
-                    var folders = new Stack<string>();
-                    ReadTestsFromSuite(testRun, testSuiteNode, testSuite, testSuite.Name??"", folders, options);
+                    ParseTestSuiteNode(options, testRun, testSuiteNode);
                 }
             }
 
 
             return testRun;
+        }
+
+        private void ParseTestSuiteNode(JUnitSerializerOptions options, TestRunDto testRun, XElement testSuiteNode)
+        {
+            var testSuite = new TestSuiteRunDto();
+            testRun.Suites.Add(testSuite);
+
+            ReadProperties(null, testSuite, testSuiteNode);
+            testSuite.Name = testSuiteNode.Attribute("name")?.Value;
+            if (options.ProcessXunitCollectionName)
+            {
+                HandleXunitNameFormat(testSuite);
+            }
+            testSuite.ExternalId ??= testSuiteNode.Attribute("id")?.Value;
+
+            testSuite.Assembly ??= testSuite.Name;
+            testSuite.Module ??= testSuite.Name;
+            testSuite.SystemOut = testSuiteNode.Element("system-out")?.Value;
+            testSuite.SystemErr = testSuiteNode.Element("system-err")?.Value;
+
+            // Copy some fields to the parent
+            testRun.Name ??= testSuite.Name;
+
+            var folders = new Stack<string>();
+            ReadTestsFromSuite(testRun, testSuiteNode, testSuite, testSuite.Name ?? "", folders, options);
         }
 
         private void HandleXunitNameFormat(TestSuiteRunDto testSuite)

@@ -24,6 +24,7 @@ internal class TestBrowser : TenantBaseService
     private readonly ITextTestResultsImporter _textImporter;
     private readonly IFileRepository _fileRepository;
     private readonly ITestRunManager _testRunManager;
+    private readonly ITestCaseManager _testCaseManager;
     private readonly AppNavigationManager _appNavigationManager;
     private readonly PipelineController _pipelineController;
 
@@ -63,7 +64,8 @@ internal class TestBrowser : TenantBaseService
         ITestCaseRepository testCaseRepository,
         ITestRunManager testRunManager,
         AppNavigationManager appNavigationManager,
-        PipelineController pipelineManager) : base(authenticationStateProvider)
+        PipelineController pipelineManager,
+        ITestCaseManager testCaseManager) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
@@ -74,6 +76,7 @@ internal class TestBrowser : TenantBaseService
         _testRunManager = testRunManager;
         _appNavigationManager = appNavigationManager;
         _pipelineController = pipelineManager;
+        _testCaseManager = testCaseManager;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -741,6 +744,11 @@ internal class TestBrowser : TenantBaseService
         return await _testCaseRepository.SearchTestCaseIdsAsync(specifications);
     }
 
+    public async Task<IReadOnlyList<TestEntity>> ExpandUntilRootAsync(TestCase testCase)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testCaseManager.ExpandUntilRootAsync(principal, testCase);    
+    }
 
     internal async Task SyncWithActiveDocumentAsync(TestCase selectedTestCase)
     {

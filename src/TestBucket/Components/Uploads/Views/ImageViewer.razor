@@ -4,7 +4,14 @@
 @if (Resource is not null)
 {
     string src = $"/api/resources/{Resource.Id}";
-    <MudImage Src="@src" Style="max-width: 70vw; max-height: 70vh" />
+    if (Resource.ContentType.Contains("svg"))
+    {
+        <MudImage Src="@src" Style="width: 256px; height: 256px; color: orange" />
+    }
+    else
+    {
+        <MudImage Src="@src" Style="max-width: 70vw; max-height: 70vh" />
+    }
 }
 
 @code {

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Fields;
@@ -17,9 +18,65 @@ internal class FieldManager : IFieldManager
         _repository = repository;
     }
 
+    #region Requirement
+
+    /// <summary>
+    /// Returns requirement fields, with default values for current field definitions
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="id"></param>
+    /// <param name="fieldDefinitions"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<RequirementField>> GetRequirementFieldsAsync(ClaimsPrincipal principal, long id, IEnumerable<FieldDefinition> fieldDefinitions)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+
+        var fields = (await _repository.GetRequirementFieldsAsync(tenantId, id)).ToList();
+
+        // Add missing fields
+        foreach (var fieldDefinition in fieldDefinitions)
+        {
+            var field = fields.Where(x => x.FieldDefinitionId == fieldDefinition.Id).FirstOrDefault();
+            if (field is null)
+            {
+                fields.Add(new RequirementField
+                {
+                    FieldDefinition = fieldDefinition,
+                    RequirementId = id,
+                    FieldDefinitionId = fieldDefinition.Id
+                });
+            }
+        }
+
+        return fields;
+    }
+
+    /// <summary>
+    /// Saves requirement fields
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="fields"></param>
+    /// <returns></returns>
+    public async Task SaveRequirementFieldsAsync(ClaimsPrincipal principal, IEnumerable<RequirementField> fields)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
+
+        foreach (var field in fields)
+        {
+            field.TenantId = tenantId;
+        }
+        await _repository.SaveRequirementFieldsAsync(fields);
+    }
+    #endregion Requirement
+
     public async Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(ClaimsPrincipal principal, long testRunId, IEnumerable<FieldDefinition> fieldDefinitions)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
+
         var fields = (await _repository.GetTestRunFieldsAsync(tenantId, testRunId)).ToList();
 
         // Add missing fields
@@ -43,6 +100,9 @@ internal class FieldManager : IFieldManager
     public async Task<IReadOnlyList<TestCaseRunField>> GetTestCaseRunFieldsAsync(ClaimsPrincipal principal, long testRunId, long testCaseRunId, IEnumerable<FieldDefinition> fieldDefinitions)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
+
         var fields = (await _repository.GetTestCaseRunFieldsAsync(tenantId, testCaseRunId)).ToList();
 
         // Add missing fields
@@ -74,6 +134,7 @@ internal class FieldManager : IFieldManager
     public async Task<IReadOnlyList<TestCaseField>> GetTestCaseFieldsAsync(ClaimsPrincipal principal, long id, IEnumerable<FieldDefinition> fieldDefinitions)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
 
         var fields = (await _repository.GetTestCaseFieldsAsync(tenantId, id)).ToList();
 
@@ -98,6 +159,9 @@ internal class FieldManager : IFieldManager
     public async Task SaveTestCaseFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseField> fields)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
+
+
         foreach (var field in fields)
         {
             field.TenantId = tenantId;
@@ -108,6 +172,8 @@ internal class FieldManager : IFieldManager
     public async Task SaveTestCaseRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseRunField> fields)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
+
         foreach (var field in fields)
         {
             field.TenantId = tenantId;
@@ -118,6 +184,7 @@ internal class FieldManager : IFieldManager
     public async Task SaveTestRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestRunField> fields)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
         foreach (var field in fields)
         {
             field.TenantId = tenantId;

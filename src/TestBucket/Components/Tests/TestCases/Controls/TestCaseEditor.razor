@@ -118,11 +118,14 @@
             </StartContent>
             <EndContent>
 
-                <MudStack Class="pa-2">
+                <MudStack Class="pa-2" Style="width: calc(100% - 8px)">
 
                     <Field>
-                        <FieldHeader>Created</FieldHeader>
-                        @Test.Created.Humanize()
+                        <FieldHeader>@loc["created"]</FieldHeader>
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Test.CreatedBy"/>
+                            <div>@Test.Created.Humanize()</div>
+                        </MudStack>
                     </Field>
 
                     <FieldsEditor TestCase="@Test" />

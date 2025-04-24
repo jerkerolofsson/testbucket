@@ -1,4 +1,5 @@
-﻿@using TestBucket.Components.Shared.Fields.Dialogs
+﻿@using System.Diagnostics
+@using TestBucket.Components.Shared.Fields.Dialogs
 @using TestBucket.Contracts.Fields
 @using TestBucket.Domain
 @using TestBucket.Domain.Fields.Models
@@ -7,10 +8,14 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<FieldStrings> fieldLoc
 
+    
+@_loadTime
 
-<MudDataGrid    Items="_fields"
+<MudDataGrid    
+Items="_fields"
 Dense
-Hover RowClass="tb-datarow pointer-cursor"
+Hover 
+RowClass="tb-datarow pointer-cursor"
 T="FieldDefinition"
 RowClick="async e => await EditFieldAsync(e.Item)"
 SortMode="SortMode.Single">
@@ -73,7 +78,6 @@ SortMode="SortMode.Single">
             </CellTemplate>
         </TemplateColumn>
 
-
         <TemplateColumn Title="@fieldLoc["field-target"]">
             <CellTemplate>
                 @string.Join(", ", context.Item.Target)
@@ -108,8 +112,10 @@ SortMode="SortMode.Single">
     </PagerContent>
 </MudDataGrid>
 
+
 @code {
     [Parameter] public long? ProjectId { get; set; }
+    private long? _projectId;
 
     private IReadOnlyList<FieldDefinition> _fields = [];
     private IReadOnlyList<FieldDefinition> _allFields = [];
@@ -137,6 +143,7 @@ SortMode="SortMode.Single">
         await ReloadFieldsAsync();
     }
 
+
     private async Task AddFieldAsync()
     {
         FieldDefinition definition = new()
@@ -157,22 +164,39 @@ SortMode="SortMode.Single">
         await ReloadFieldsAsync();
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         FilterTarget = FilterAll;
+        await LoadAsync();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        await ReloadFieldsAsync();
+        await LoadAsync();
+    }
+
+
+    private async Task LoadAsync()
+    {
+        if (_projectId != ProjectId)
+        {
+            _projectId = ProjectId;
+            await ReloadFieldsAsync();
+        }
     }
 
     private async Task ReloadFieldsAsync()
     {
-        FieldTarget? target = null;
-        _allFields = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery() { ProjectId = ProjectId, Target = target });
-        _fields = _allFields.ToList();
+        if (ProjectId is not null)
+        {
+            var start = Stopwatch.GetTimestamp();
+            FieldTarget? target = null;
+            _allFields = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery() { ProjectId = ProjectId, Target = target });
+            _fields = _allFields.ToList();
+            _loadTime = Stopwatch.GetElapsedTime(start);
+        }
     }
+    private TimeSpan _loadTime = TimeSpan.Zero;
 
     private void SetFilterTarget(FieldTarget target)
     {

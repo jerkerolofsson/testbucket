@@ -14,12 +14,19 @@
 {
     <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestCaseRunFieldChangedAsync" />
 }
+@foreach (var field in _requirementFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
+{
+    <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnRequirementFieldChangedAsync" />
+}
+
+
+
 @foreach (var field in Fields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
 {
     <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="async(f) => await FieldChanged.InvokeAsync(f)" />
 }
-
 @code {
+    [Parameter] public Requirement? Requirement { get; set; }
     [Parameter] public TestCase? TestCase { get; set; }
     [Parameter] public TestRun? TestRun { get; set; }
     [Parameter] public TestCaseRun? TestCaseRun { get; set; }
@@ -36,19 +43,29 @@
     public IReadOnlyList<TestCaseField> TestCaseFields => _testCaseFields;
     public IReadOnlyList<TestCaseRunField> TestCaseRunFields => _testCaseRunFields;
     public IReadOnlyList<TestRunField> TestRunFields => _testRunFields;
+    public IReadOnlyList<RequirementField> RequirementFields => _requirementFields;
 
 
     private List<TestCaseField> _testCaseFields = [];
     private List<TestCaseRunField> _testCaseRunFields = [];
     private List<TestRunField> _testRunFields = [];
+    private List<RequirementField> _requirementFields = [];
 
     private long? _testCaseId;
     private long? _testCaseRunId;
     private long? _testRunId;
+    private long? _requirementId;
     private long? _testProjectId;
 
     private async Task LoadAsync()
     {
+        if (Requirement is not null && (_requirementId != Requirement.Id || _testProjectId != Requirement.TestProjectId))
+        {
+            _requirementId = Requirement.Id;
+            _testProjectId = Requirement.TestProjectId;
+            var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = Requirement.TestProjectId, Target = FieldTarget.Requirement });
+            _requirementFields = (await fieldController.GetRequirementFieldsAsync(Requirement.Id, definitions)).OrderBy(x => x.FieldDefinition!.Name).ToList();
+        }
         if (TestCase is not null && (_testCaseId != TestCase.Id || _testProjectId != TestCase.TestProjectId))
         {
             _testCaseId = TestCase.Id;
@@ -95,6 +112,13 @@
         if(_testCaseRunFields.Count > 0 && AutoSaveChanges)
         {
            await fieldController.SaveTestCaseRunFieldsAsync(_testCaseRunFields);
+        }
+    }
+    private async Task OnRequirementFieldChangedAsync()
+    {
+        if (_requirementFields.Count > 0 && AutoSaveChanges)
+        {
+            await fieldController.SaveRequirementFieldsAsync(_requirementFields);
         }
     }
 

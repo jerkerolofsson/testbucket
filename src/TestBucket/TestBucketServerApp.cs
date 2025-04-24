@@ -35,6 +35,7 @@ using Toolbelt.Blazor.Extensions.DependencyInjection;
 using TestBucket.Components;
 using TestBucket.Domain.Commands;
 using TestBucket.Components.Tests.Requiremnts.Commands;
+using TestBucket.Components.Tests.Requirements.Commands;
 
 namespace TestBucket;
 
@@ -214,6 +215,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, RefreshLinkedIssueCommand>();
 
         // requirement
+        builder.Services.AddScoped<ICommand, SyncWithActiveRequirementCommand>();
         builder.Services.AddScoped<ICommand, CreateTestCaseFromRequirementCommand>();
         builder.Services.AddScoped<ICommand, DeleteRequirementCommand>();
         builder.Services.AddScoped<ICommand, DeleteRequirementFolderCommand>();

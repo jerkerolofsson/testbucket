@@ -3,6 +3,7 @@
 @using TestBucket.Components.Requirements.Layouts
 @layout RequirementsLayout
 @inject RequirementBrowser browser
+@inject AppNavigationManager appNavigationManager
 
 <RequirementEditor Requirement="@_requirement"/>
 
@@ -21,6 +22,8 @@
         if (_requirement is null || _requirement.Id != Id)
         {
             _requirement = await browser.GetRequirementByIdAsync(Id);
+            appNavigationManager.State.SelectedRequirement = _requirement;
+
         }
     }
 }

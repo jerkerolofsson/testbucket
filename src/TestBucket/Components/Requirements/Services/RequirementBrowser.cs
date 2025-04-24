@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Requirements.Dialogs;
+using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Domain;
@@ -23,17 +24,20 @@ internal class RequirementBrowser : TenantBaseService
     private readonly IRequirementManager _requirementManager;
     private readonly IStringLocalizer<RequirementStrings> _loc;
     private readonly IDialogService _dialogService;
+    private readonly AppNavigationManager _appNavigationManager;
 
     public RequirementBrowser(AuthenticationStateProvider authenticationStateProvider,
         RequirementEditorController requirementEditorService,
         IRequirementManager requirementManager,
         IStringLocalizer<RequirementStrings> loc,
-        IDialogService dialogService) : base(authenticationStateProvider)
+        IDialogService dialogService,
+        AppNavigationManager appNavigationManager) : base(authenticationStateProvider)
     {
         _requirementEditorService = requirementEditorService;
         _requirementManager = requirementManager;
         _loc = loc;
         _dialogService = dialogService;
+        _appNavigationManager = appNavigationManager;
     }
 
     public async Task<RequirementTestLink[]> GetLinksForTestAsync(TestCase test)
@@ -51,6 +55,11 @@ internal class RequirementBrowser : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         await _requirementManager.DeleteRequirementLinkAsync(principal, link);
+    }
+    public async Task<RequirementSpecificationFolder?> GetRequirementFolderByIdAsync(long id)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _requirementManager.GetRequirementFolderByIdAsync(principal, id);
     }
 
     public async Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(long id)
@@ -271,5 +280,13 @@ internal class RequirementBrowser : TenantBaseService
         };
         var dialog = await _dialogService.ShowAsync<AddRequirementSpecificationFolderDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
+    }
+
+    internal async Task SyncWithActiveDocumentAsync(Requirement requirement)
+    {
+        if (_appNavigationManager.State.RequirementTreeView is not null)
+        {
+            await _appNavigationManager.State.RequirementTreeView.GoToRequirementAsync(requirement);
+        }
     }
 }

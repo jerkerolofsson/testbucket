@@ -56,6 +56,8 @@ public interface IRequirementManager
     Task UpdateFolderAsync(ClaimsPrincipal principal, RequirementSpecificationFolder folder);
     Task DeleteFolderAsync(ClaimsPrincipal principal, RequirementSpecificationFolder folder);
 
+    Task<RequirementSpecificationFolder?> GetRequirementFolderByIdAsync(ClaimsPrincipal principal, long id);
+
     /// <summary>
     /// Searches for requirements
     /// </summary>
@@ -130,5 +132,6 @@ public interface IRequirementManager
     Task DeleteRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
     Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification);
     Task GenerateFoldersFromPathAsync(Requirement requirement);
+    Task<IReadOnlyList<Requirement>> GetDownstreamRequirementsAsync(ClaimsPrincipal principal, Requirement requirement);
     #endregion
 }

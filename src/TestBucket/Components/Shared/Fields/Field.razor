@@ -1,7 +1,8 @@
-﻿@using TestBucket.Components.Shared.Themeing
+﻿@using MudBlazor.Utilities
+@using TestBucket.Components.Shared.Themeing
 @inject ThemingService theming
 
-<MudPaper Class="pa-3 tb-field" Style="@CssStyle">
+<MudPaper Class="@CssClass" Style="@CssStyle">
     <MudStack Spacing="@Spacing" Row="@Row">
         @ChildContent
     </MudStack>
@@ -11,6 +12,13 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public bool Row { get; set; }
     [Parameter] public int Spacing { get; set; } = 0;
+    [Parameter] public bool Dense { get; set; } = false;
+
+    public string CssClass => new CssBuilder("tb-field")
+        .AddClass("pa-3", !Dense)
+        .AddClass("row", Row)
+        .AddClass("column", !Row)
+        .Build();
 
     public string CssStyle => "";
 }

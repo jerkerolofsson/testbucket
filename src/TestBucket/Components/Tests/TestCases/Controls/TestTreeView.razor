@@ -84,7 +84,7 @@
 
             <DropZone T="TestEntity" OnDrop="(test) => OnDrop(test, context)">
 
-                <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true">
+                <MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true" OpenChanged="() => OnMenuOpened(context)">
                     <ActivatorContent>
                         @if (context.Value?.TestCase is not null)
                         {

@@ -510,7 +510,7 @@
             }
 
             // Remove the tree-node from the tree and add it to the new location
-            RemoveTreeNode(x => x.Folder?.Id == folder.Id);
+            RemoveTreeNode(x => x.RequirementFolder?.Id == folder.Id);
             if (targetNode.Children is not null)
             {
                 targetNode.Children = [.. targetNode.Children, browser.CreateTreeNodeFromFolder(folder)];

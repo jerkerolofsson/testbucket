@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Contracts.Testing.Models;
@@ -14,9 +15,11 @@ using TestBucket.Domain.Keyboard;
 namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250424021045_RequirementFields")]
+    partial class RequirementFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1204,9 +1207,6 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<string>("RequirementType")
                         .HasColumnType("text");
-
-                    b.Property<long?>("RootRequirementId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Slug")
                         .HasColumnType("text");
@@ -2813,7 +2813,7 @@ namespace TestBucket.Data.Migrations
             modelBuilder.Entity("TestBucket.Domain.Requirements.Models.RequirementTestLink", b =>
                 {
                     b.HasOne("TestBucket.Domain.Requirements.Models.Requirement", "Requirement")
-                        .WithMany("TestLinks")
+                        .WithMany()
                         .HasForeignKey("RequirementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -3151,8 +3151,6 @@ namespace TestBucket.Data.Migrations
             modelBuilder.Entity("TestBucket.Domain.Requirements.Models.Requirement", b =>
                 {
                     b.Navigation("TestCaseFields");
-
-                    b.Navigation("TestLinks");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Requirements.Models.RequirementSpecificationFolder", b =>

@@ -1,0 +1,88 @@
+﻿@inject RequirementEditorController controller
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<RequirementStrings> reqLoc
+@inject AppNavigationManager appNavigationManager
+
+@if(_loading)
+{
+    <MudSkeleton Width="100%" Height="100px" SkeletonType="SkeletonType.Text"/>
+}
+else if(_downstream.Count > 0)
+{
+    <MudTable Items="@_downstream" Dense RowClass="tb-datarow cursor-pointer" T="Requirement" OnRowClick="GoToRequirement">
+        <HeaderContent>
+            <MudTh>@loc["requirement"]</MudTh>
+            <MudTh>@loc["number-of-tests"]</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="@loc["requirement"]">
+
+                <MudTooltip>
+                    <ChildContent>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@RequirementIcons.GetIcon(context)" />
+                        @context.Name
+                    </MudStack>
+                </ChildContent>
+                    <TooltipContent>
+                        <pre>@context.Description</pre>
+                    </TooltipContent>
+                </MudTooltip>
+
+            </MudTd>
+            <MudTd DataLabel="@loc["number-of-tests"]">
+                <MudTooltip Text="@reqLoc["linked-test-count--tooltip"]">
+                    @if (context.TestLinks?.Count > 0)
+                    {
+                        <MudChip Color="Color.Success" T="string">@context.TestLinks.Count</MudChip>
+                    }
+                    else
+                    {
+                        <MudChip Color="Color.Dark" T="string">0</MudChip>
+                    }
+                </MudTooltip>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+@code {
+    [Parameter] public Requirement? Requirement { get; set; }
+    private Requirement? _requirement;
+    private IReadOnlyList<Requirement> _downstream = [];
+    private bool _loading = false;
+
+    private void GoToRequirement(TableRowClickEventArgs<Requirement> e)
+    {
+        if (e.Item is not null)
+        {
+            appNavigationManager.NavigateTo(e.Item);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        this.StateHasChanged();
+
+        if  (_requirement?.Id != Requirement?.Id)
+        {
+            _requirement = Requirement;
+            if(_requirement is not null)
+            {
+                _downstream = await controller.GetDownstreamRequirementsAsync(_requirement);
+            }
+        }
+
+        _loading = false;
+    }
+}

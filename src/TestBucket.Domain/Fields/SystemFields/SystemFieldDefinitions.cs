@@ -27,6 +27,7 @@ public static class SystemFieldDefinitions
                     FieldTarget.TestCaseRun |
                     FieldTarget.RequirementSpecificationFolder |
                     FieldTarget.RequirementSpecification |
+                    FieldTarget.Requirement |
                     FieldTarget.TestSuite |
                     FieldTarget.TestSuiteFolder
     };
@@ -52,7 +53,8 @@ public static class SystemFieldDefinitions
                     FieldTarget.RequirementSpecification |
                     FieldTarget.TestSuite |
                     FieldTarget.Issue |
-                    FieldTarget.TestSuiteFolder
+                    FieldTarget.TestSuiteFolder |
+                    FieldTarget.Requirement
     };
 
     private static readonly FieldDefinition _commit = new()

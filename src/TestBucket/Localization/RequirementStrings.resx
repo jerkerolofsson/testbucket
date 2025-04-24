@@ -124,16 +124,25 @@
     <value>Delete requirement?</value>
   </data>
   <data name="create-child-requirement" xml:space="preserve">
-    <value>Create Child Requirement</value>
+    <value>Create child requirement</value>
   </data>
   <data name="create-requirement" xml:space="preserve">
-    <value>New Requirement</value>
+    <value>New requirement</value>
   </data>
   <data name="create-test-from-requirement" xml:space="preserve">
     <value>Create test from requirement</value>
   </data>
   <data name="delete-requirement" xml:space="preserve">
-    <value>Delete Requirement</value>
+    <value>Delete requirement</value>
+  </data>
+  <data name="downstream-requirements" xml:space="preserve">
+    <value>Downstream requirements</value>
+  </data>
+  <data name="linked-test-count--tooltip" xml:space="preserve">
+    <value>Number of linked tests</value>
+  </data>
+  <data name="test-coverage" xml:space="preserve">
+    <value>Test coverage</value>
   </data>
   <data name="title" xml:space="preserve">
     <value>Title</value>

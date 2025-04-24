@@ -1,4 +1,6 @@
-﻿using TestBucket.Domain.Requirements.Models;
+﻿using System.Collections.Generic;
+
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.Specifications;
 using TestBucket.Domain.Requirements.Specifications.Folders;
 using TestBucket.Domain.Requirements.Specifications.Links;
@@ -34,6 +36,85 @@ namespace TestBucket.Domain.Requirements
         #endregion Observer
 
         #region Requirement
+
+        private async Task<IReadOnlyList<Requirement>> GetChildRequirementsAsync(ClaimsPrincipal principal, long rootId, bool recurse)
+        {
+            var result = new List<Requirement>();
+
+            // If this is a root requirement, we can quickly find all downstream requirements as they all refer to us as the root
+            var specifications = new List<FilterSpecification<Requirement>>()
+            {
+                new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow()),
+                new FilterRequirementByParentId(rootId)
+            };
+            int offset = 0;
+            int pageSize = 250;
+            while (true)
+            {
+                var searchResult = await _repository.SearchRequirementsAsync(specifications, 0, pageSize);
+                result.AddRange(searchResult.Items);
+                if (recurse)
+                {
+                    foreach(var child in searchResult.Items)
+                    {
+                        await GetChildRequirementsAsync(principal, child.Id, recurse: true);
+                    }
+                }
+
+                if (searchResult.Items.Length != pageSize)
+                {
+                    break;
+                }
+                offset += pageSize;
+            }
+
+            return result;
+        }
+        private async Task<IReadOnlyList<Requirement>> GetRequirementsByRootAsync(ClaimsPrincipal principal, long rootId)
+        {
+            var result = new List<Requirement>();
+
+            // If this is a root requirement, we can quickly find all downstream requirements as they all refer to us as the root
+            var specifications = new List<FilterSpecification<Requirement>>()
+            {
+                new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow()),
+                new FilterRequirementByRootId(rootId)
+            };
+            int offset = 0;
+            int pageSize = 250;
+            while (true)
+            {
+                var searchResult = await _repository.SearchRequirementsAsync(specifications, 0, pageSize);
+                result.AddRange(searchResult.Items);
+
+                if (searchResult.Items.Length != pageSize)
+                {
+                    break;
+                }
+                offset += pageSize;
+            }
+
+            return result;
+        }
+
+        public async Task<IReadOnlyList<Requirement>> GetDownstreamRequirementsAsync(ClaimsPrincipal principal, Requirement requirement)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+            principal.ThrowIfEntityTenantIsDifferent(requirement);
+
+            var result = new List<Requirement>();
+            result.AddRange(await GetRequirementsByRootAsync(principal, requirement.Id));
+
+            if(result.Count == 0)
+            {
+                // There are no requirements that point to 'requirement' as root, so this may be an intermediate requirement.
+                // Search for all descendants
+                result.AddRange(await GetChildRequirementsAsync(principal, requirement.Id, true));
+            }
+
+            return result;
+        }
+
         public async Task DeleteRequirementAsync(ClaimsPrincipal principal, Requirement requirement)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Delete);

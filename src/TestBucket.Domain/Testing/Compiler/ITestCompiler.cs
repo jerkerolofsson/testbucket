@@ -25,7 +25,7 @@ public interface ITestCompiler
 
    
     /// <summary>
-    /// Resolves variables 
+    /// Resolves variables, including locking accounts and resources
     /// </summary>
     /// <param name="principal"></param>
     /// <param name="context"></param>

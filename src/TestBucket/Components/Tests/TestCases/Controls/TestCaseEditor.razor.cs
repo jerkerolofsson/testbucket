@@ -137,7 +137,7 @@ public partial class TestCaseEditor
     {
         if (Test is not null)
         {
-            _previewText = await testCaseEditorController.CompilePreviewAsync(Test, _descriptionText, _errors);
+            _previewText = await testCaseEditorController.CompilePreviewAsync(Test, _descriptionText, _errors, releaseResourcesImmediately: false);
         }
     }
 

@@ -48,7 +48,7 @@ namespace TestBucket.Data.Requirements
         public async Task<PagedResult<Requirement>> SearchRequirementsAsync(IEnumerable<FilterSpecification<Requirement>> filters, int offset, int count)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-            var requirements = dbContext.Requirements.AsQueryable();
+            var requirements = dbContext.Requirements.Include(x=>x.TestLinks).AsQueryable();
 
             foreach (var filter in filters)
             {
@@ -161,6 +161,11 @@ namespace TestBucket.Data.Requirements
 
             await CalculatePathAsync(dbContext, requirement);
 
+            if (requirement.ParentRequirementId is not null)
+            {
+                requirement.RootRequirementId = await FindUpstreamRootAsync(requirement.ParentRequirementId);
+            }
+
             await dbContext.Requirements.AddAsync(requirement);
             await dbContext.SaveChangesAsync();
         }
@@ -182,8 +187,30 @@ namespace TestBucket.Data.Requirements
                 await CalculatePathAsync(dbContext, requirement);
             }
 
+            if(requirement.ParentRequirementId is not null)
+            {
+                requirement.RootRequirementId = await FindUpstreamRootAsync(requirement.ParentRequirementId);
+            }
+
             dbContext.Requirements.Update(requirement);
             await dbContext.SaveChangesAsync();
+        }
+
+        private async Task<long?> FindUpstreamRootAsync(long? parentRequirementId)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            long? returnValue = parentRequirementId;
+            while (parentRequirementId is not null)
+            {
+                var result = await dbContext.Requirements.Where(x => x.Id == parentRequirementId.Value).Select(x => new { x.Id, x.ParentRequirementId }).FirstOrDefaultAsync();
+                if(result is null)
+                {
+                    break;
+                }
+                returnValue = result.Id;
+                parentRequirementId = result.ParentRequirementId;
+            }
+            return returnValue;
         }
 
         public async Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(string tenantId, long requirementSpecificationId)

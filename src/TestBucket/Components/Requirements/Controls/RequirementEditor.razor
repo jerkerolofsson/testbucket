@@ -1,9 +1,11 @@
 ﻿@using MudBlazor.Utilities
+@using TestBucket.Components.Requirements.Commands
 @using TestBucket.Components.Shared.Splitter
 @using TestBucket.Domain.Requirements
 @inject RequirementEditorController editor
 @inject RequirementBrowser browser
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<RequirementStrings> reqLoc
 
 @if(Requirement is not null)
 {
@@ -47,7 +49,7 @@
 
                 <MudSpacer/>
 
-                <MudTooltip Text="Linked test cases">
+                <MudTooltip Text="@reqLoc["linked-test-count--tooltip"]">
                     @(_links.Length) tests
                 </MudTooltip>
             }
@@ -68,17 +70,21 @@
                     ValueChanged="OnDescriptionChanged"
                     SpellChecker="false">
                     </MarkdownEditor>
+
+                    <MudText Typo="Typo.h2">@reqLoc["downstream-requirements"]</MudText>
+                    <DownstreamRequirementsCoverageTable Requirement="@Requirement"/>
+
                 </MudStack>
             </StartContent>
             <EndContent>
 
-                <MudStack>
+                <MudStack Class="pa-2">
 
                     <FieldsEditor Requirement="@Requirement" />
 
                     <Field>
                         <FieldHeader>@loc["attachments"]</FieldHeader>
-                        <AttachmentGrid RequirementId="@Requirement.Id" Style="width: 100%" />
+                        <AttachmentGrid RequirementId="@Requirement.Id" Style="width: 100%" AllowUpload />
                     </Field>
 
 

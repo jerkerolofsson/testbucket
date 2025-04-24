@@ -130,5 +130,6 @@ public interface IRequirementManager
     Task DeleteRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
     Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification);
     Task GenerateFoldersFromPathAsync(Requirement requirement);
+    Task<IReadOnlyList<Requirement>> GetDownstreamRequirementsAsync(ClaimsPrincipal principal, Requirement requirement);
     #endregion
 }

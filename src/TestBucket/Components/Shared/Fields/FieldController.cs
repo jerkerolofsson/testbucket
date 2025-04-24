@@ -1,15 +1,8 @@
-﻿
-
-
-using TestBucket.Components.Tests.Controls;
-using TestBucket.Contracts.Fields;
-using TestBucket.Contracts.Integrations;
+﻿using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
-using TestBucket.Domain.Fields.Specifications;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared;
-using TestBucket.Domain.Testing.Models;
 namespace TestBucket.Components.Shared.Fields;
 
 internal class FieldController : TenantBaseService
@@ -34,24 +27,56 @@ internal class FieldController : TenantBaseService
     }
 
     #region Test Case
+    /// <summary>
+    /// Saves the test case fields
+    /// </summary>
+    /// <param name="fields"></param>
+    /// <returns></returns>
     public async Task SaveTestCaseFieldsAsync(IEnumerable<TestCaseField> fields)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         await _manager.SaveTestCaseFieldsAsync(principal, fields);
 
     }
+
+    /// <summary>
+    /// Returns fields for a specific test case
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="fieldDefinitions"></param>
+    /// <returns></returns>
     public async Task<IReadOnlyList<TestCaseField>> GetTestCaseFieldsAsync(long id, IEnumerable<FieldDefinition> fieldDefinitions)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _manager.GetTestCaseFieldsAsync(principal, id, fieldDefinitions);
     }
+    #endregion Test Case
+
+    #region Requirements
+    /// <summary>
+    /// Returns fields for a specific requirement
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="fieldDefinitions"></param>
+    /// <returns></returns>
     public async Task<IReadOnlyList<RequirementField>> GetRequirementFieldsAsync(long id, IEnumerable<FieldDefinition> fieldDefinitions)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _manager.GetRequirementFieldsAsync(principal, id, fieldDefinitions);
     }
 
-    #endregion Test Case
+    /// <summary>
+    /// Saves requirement fields
+    /// </summary>
+    /// <param name="fields"></param>
+    /// <returns></returns>
+    public async Task SaveRequirementFieldsAsync(IEnumerable<RequirementField> fields)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.SaveRequirementFieldsAsync(principal, fields);
+
+    }
+    #endregion Requirements
 
     #region Test Run
     public async Task SaveTestRunFieldsAsync(IEnumerable<TestRunField> fields)
@@ -71,12 +96,16 @@ internal class FieldController : TenantBaseService
     public async Task SaveTestCaseRunFieldsAsync(IEnumerable<TestCaseRunField> fields)
     {
         var principal = await GetUserClaimsPrincipalAsync();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
+
         await _manager.SaveTestCaseRunFieldsAsync(principal, fields);
     }
 
     public async Task<IReadOnlyList<TestCaseRunField>> GetTestCaseRunFieldsAsync(long testRunId, long testCaseRunId, IEnumerable<FieldDefinition> fieldDefinitions)
     {
         var principal = await GetUserClaimsPrincipalAsync();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
         return await _manager.GetTestCaseRunFieldsAsync(principal, testRunId, testCaseRunId, fieldDefinitions);
     }
 

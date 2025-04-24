@@ -14,11 +14,17 @@
 {
     <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestCaseRunFieldChangedAsync" />
 }
+@foreach (var field in _requirementFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
+{
+    <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnRequirementFieldChangedAsync" />
+}
+
+
+
 @foreach (var field in Fields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
 {
     <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="async(f) => await FieldChanged.InvokeAsync(f)" />
 }
-
 @code {
     [Parameter] public Requirement? Requirement { get; set; }
     [Parameter] public TestCase? TestCase { get; set; }
@@ -53,7 +59,7 @@
 
     private async Task LoadAsync()
     {
-        if (Requirement is not null && (_testCaseId != Requirement.Id || _testProjectId != Requirement.TestProjectId))
+        if (Requirement is not null && (_requirementId != Requirement.Id || _testProjectId != Requirement.TestProjectId))
         {
             _requirementId = Requirement.Id;
             _testProjectId = Requirement.TestProjectId;
@@ -106,6 +112,13 @@
         if(_testCaseRunFields.Count > 0 && AutoSaveChanges)
         {
            await fieldController.SaveTestCaseRunFieldsAsync(_testCaseRunFields);
+        }
+    }
+    private async Task OnRequirementFieldChangedAsync()
+    {
+        if (_requirementFields.Count > 0 && AutoSaveChanges)
+        {
+            await fieldController.SaveRequirementFieldsAsync(_requirementFields);
         }
     }
 

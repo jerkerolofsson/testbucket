@@ -29,6 +29,7 @@ public class TraitTypeConverter
         [TraitType.Commit] = TargetTraitNames.Commit,
         [TraitType.Release] = TargetTraitNames.Release,
         [TraitType.Milestone] = TargetTraitNames.Milestone,
+        [TraitType.Feature] = TargetTraitNames.Feature,
 
         [TraitType.Assembly] = AutomationTraitNames.Assembly,
         [TraitType.Module] = AutomationTraitNames.Module,

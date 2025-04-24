@@ -412,7 +412,10 @@ internal class TestCaseRepository : ITestCaseRepository
         {
             foreach (var childFolder in dbContext.TestSuiteFolders.Where(x => x.ParentId == folderId))
             {
-                await DeleteFolderByIdAsync(childFolder.Id, dbContext, recurse:true);
+                if (childFolder.Id != folderId)
+                {
+                    await DeleteFolderByIdAsync(childFolder.Id, dbContext, recurse: true);
+                }
             }
         }
 

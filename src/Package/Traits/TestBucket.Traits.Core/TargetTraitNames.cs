@@ -10,6 +10,11 @@ public class TargetTraitNames
     /// </summary>
     public const string Component = nameof(Component);
 
+    /// <summary>
+    /// Product feature
+    /// </summary>
+    public const string Feature = nameof(Feature);
+
     // Runtime, not suitable for Attributes
 
     /// <summary>

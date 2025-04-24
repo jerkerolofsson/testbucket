@@ -5,12 +5,13 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests
 {
+    [Feature("Import Test Results")]
+    [Component("TestResultDetector")]
     [UnitTest]
     [EnrichedTest]
     public class TestResultDetectorTests
     {
         [Fact]
-        [Component("TestBucket.Formats")]
         public void Detect_WithTrx_ResultIsTrx()
         {
             var text = """
@@ -22,9 +23,7 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(TestResultFormat.MicrosoftTrx, format);
         }
 
-
         [Fact]
-        [Component("TestBucket.Formats")]
         public void Detect_WithReportFormatCtrf_ResultIsCtrf()
         {
             var text = "{\"reportFormat\": \"CTRF\"}";
@@ -33,7 +32,6 @@ namespace TestBucket.Formats.UnitTests
         }
 
         [Fact]
-        [Component("TestBucket.Formats")]
         public void Detect_WithJUnitXml_ResultIsJUnit()
         {
             var text = """
@@ -47,7 +45,6 @@ namespace TestBucket.Formats.UnitTests
         }
 
         [Fact]
-        [Component("TestBucket.Formats")]
         public void Detect_WithXUnitXml_ResultIsXUnit()
         {
             var text = """

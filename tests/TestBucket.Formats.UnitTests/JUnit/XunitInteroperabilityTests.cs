@@ -6,7 +6,8 @@ using TestBucket.Traits.Xunit;
 namespace TestBucket.Formats.UnitTests.JUnit
 {
     [UnitTest]
-    [Trait("Format", "JUnit")]
+    [Component("JUnit")]
+    [Feature("Import Test Results")]
     [EnrichedTest]
     public class XunitInteroperabilityTests
     {

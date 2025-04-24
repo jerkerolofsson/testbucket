@@ -10,7 +10,8 @@ using TestBucket.Traits.Xunit;
 namespace TestBucket.Formats.UnitTests.Ctrf
 {
     [UnitTest]
-    [Trait("Format", "CTRF")]
+    [Component("CTRF")]
+    [Feature("Import Test Results")]
     [EnrichedTest]
     public class CtrfXunitSerializerTests
     {

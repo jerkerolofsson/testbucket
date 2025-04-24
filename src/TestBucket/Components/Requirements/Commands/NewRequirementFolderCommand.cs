@@ -25,7 +25,7 @@ internal class NewRequirementFolderCommand : ICommand
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.RequirementSpecification;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedRequirementSpecification is not null;
-    public string Id => "new-folder";
+    public string Id => "new-requirement-folder";
     public string Name => _loc["new-folder"];
     public string Description => _loc["new-folder-description"];
 

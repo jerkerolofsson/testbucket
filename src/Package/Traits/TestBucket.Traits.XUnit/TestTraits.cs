@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TestBucket.Traits.Xunit;
 
-using TestBucket.Traits.Core;
-
-namespace TestBucket.Traits.Xunit;
 
 /// <summary>
-/// Defines an attribute that will add create a Description trait
+/// Defines an attribute that will add create a Tag trait
 /// </summary>
 [AttributeUsage(AttributeTargets.Method|AttributeTargets.Class, AllowMultiple = true)]
 public class TagAttribute : CustomTraitAttribute
@@ -38,8 +31,8 @@ public class TestDescriptionAttribute : TraitAttachmentPropertyAttribute
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
 public class TestIdAttribute : TraitAttachmentPropertyAttribute
 {
-    public TestIdAttribute(string componentUnderTestName) :
-        base(TestTraitNames.TestId, componentUnderTestName)
+    public TestIdAttribute(string testId) :
+        base(TestTraitNames.TestId, testId)
     {
     }
 }

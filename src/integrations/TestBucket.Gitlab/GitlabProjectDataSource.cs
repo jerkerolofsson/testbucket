@@ -42,7 +42,7 @@ public class GitlabProjectDataSource : IProjectDataSource
             system.AccessToken is not null &&
             long.TryParse(system.ExternalProjectId, out long projectId))
         {
-            var key = system.BaseUrl + system.AccessToken + trait.ToString();
+            var key = system.BaseUrl + system.AccessToken + system.ExternalProjectId + trait.ToString();
 
             var result = await _memoryCache.GetOrCreateAsync(key, async (e) =>
             {

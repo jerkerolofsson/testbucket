@@ -4,6 +4,7 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests
 {
+    [Feature("Import Test Results")]
     [UnitTest]
     [EnrichedTest]
     public class TestResultBuilderTests
@@ -13,7 +14,6 @@ namespace TestBucket.Formats.UnitTests
         [InlineData(TestResultFormat.JUnitXml)]
         [InlineData(TestResultFormat.xUnitXml)]
         [InlineData(TestResultFormat.CommonTestReportFormat)]
-        [Component("TestBucket.Formats")]
         public void BuildtextWithTwoTests_ThenDeserializeIt_StructureMatches(TestResultFormat format)
         {
             var text = new TestResultFileBuilder()
@@ -40,7 +40,6 @@ namespace TestBucket.Formats.UnitTests
         [InlineData(TestResultFormat.MicrosoftTrx)]
         [InlineData(TestResultFormat.JUnitXml)]
         [InlineData(TestResultFormat.CommonTestReportFormat)]
-        [Component("TestBucket.Formats")]
         public void BuildtextWithCustomTrait_ThenDeserializeIt_TraitMatches(TestResultFormat format)
         {
             var text = new TestResultFileBuilder()
@@ -72,7 +71,6 @@ namespace TestBucket.Formats.UnitTests
         [InlineData(TestResultFormat.JUnitXml, TraitType.TestPriority)]
         [InlineData(TestResultFormat.CommonTestReportFormat, TraitType.TestCategory)]
         [InlineData(TestResultFormat.CommonTestReportFormat, TraitType.TestPriority)]
-        [Component("TestBucket.Formats")]
         public void BuildtextWithKnownTrait_ThenDeserializeIt_TraitMatches(TestResultFormat format, TraitType traitType)
         {
             var text = new TestResultFileBuilder()
@@ -102,7 +100,6 @@ namespace TestBucket.Formats.UnitTests
         [InlineData(TestResultFormat.xUnitXml)]
         [InlineData(TestResultFormat.JUnitXml)]
         [InlineData(TestResultFormat.CommonTestReportFormat)]
-        [Component("TestBucket.Formats")]
         public void BuildtextWithAttachment_ThenDeserializeIt_AttachmentIdentical(TestResultFormat format)
         {
             byte[] attachmentBytes = [1, 2, 3];
@@ -136,7 +133,6 @@ namespace TestBucket.Formats.UnitTests
         [InlineData(TestResultFormat.xUnitXml)]
         [InlineData(TestResultFormat.JUnitXml)]
         [InlineData(TestResultFormat.CommonTestReportFormat)]
-        [Component("TestBucket.Formats")]
         public void BuildtextWithStartAndEndTimes_ThenDeserializeIt_DatesMatch(TestResultFormat format)
         {
             var startDate = new DateTimeOffset(2025, 4, 1, 1, 2, 3, TimeSpan.Zero);

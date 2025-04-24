@@ -1,4 +1,6 @@
-﻿using TestBucket.Contracts.Fields;
+﻿using System.Diagnostics;
+
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements.Models;
@@ -122,7 +124,11 @@ internal class FieldController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
 
+        var a = Stopwatch.GetTimestamp();
+
         var fieldDefinitions = await _definitionManager.SearchAsync(principal, query);
+
+        var e1 = Stopwatch.GetElapsedTime(a);
 
         // Assign options from external data source
         foreach (var fieldDefinition in fieldDefinitions)
@@ -136,6 +142,8 @@ internal class FieldController : TenantBaseService
                 }
             }
         }
+
+        var e2 = Stopwatch.GetElapsedTime(a);
 
         return fieldDefinitions;
     }

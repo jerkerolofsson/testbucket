@@ -71,21 +71,24 @@
                 </MudStack>
             </StartContent>
             <EndContent>
-                <MudTabs Style="width: 100%">
-                    <MudTabPanel Text="Coverage">
 
-                        <RequirementTestLinksTable Team="@Team" Project="@Project" Requirement="@Requirement"/>
+                <MudStack>
 
-                    </MudTabPanel>
-                    <MudTabPanel Text="Attachments">
-                        <MudStack Class="pa-2" Style="width: 100%">
-                            <Field>
-                                <FieldHeader>Attachments</FieldHeader>
-                                <AttachmentGrid RequirementId="@Requirement.Id" Style="width: 100%"/>
-                            </Field>
-                        </MudStack>
-                    </MudTabPanel>
-                </MudTabs>
+                    <FieldsEditor Requirement="@Requirement" />
+
+                    <Field>
+                        <FieldHeader>@loc["attachments"]</FieldHeader>
+                        <AttachmentGrid RequirementId="@Requirement.Id" Style="width: 100%" />
+                    </Field>
+
+
+                    <Field>
+                        <FieldHeader>@loc["requirement-coverage"]</FieldHeader>
+                        <RequirementTestLinksTable Team="@Team" Project="@Project" Requirement="@Requirement" />
+                    </Field>
+
+                </MudStack>
+
             </EndContent>
         </Splitter>
 

@@ -372,4 +372,10 @@
   <data name="batch-tag" xml:space="preserve">
     <value />
   </data>
+  <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
+    <value />
+  </data>
+  <data name="link-requirement-to-test" xml:space="preserve">
+    <value />
+  </data>
 </root>

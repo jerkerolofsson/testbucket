@@ -374,4 +374,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="batch-tag" xml:space="preserve">
     <value>Batch Tag</value>
   </data>
+  <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
+    <value>Drop requirements here to create a link between tests and the requirement</value>
+  </data>
+  <data name="link-requirement-to-test" xml:space="preserve">
+    <value>Add requirement</value>
+  </data>
 </root>

@@ -1,6 +1,7 @@
 ﻿using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Data.Fields;
@@ -221,5 +222,62 @@ internal class FieldRepository : IFieldRepository
     }
 
     #endregion Test Case Run
+
+    #region Requirement
+
+    public async Task UpsertRequirementFieldsAsync(RequirementField field)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var existingField = await dbContext.RequirementFields
+            .Where(x => x.FieldDefinitionId == field.FieldDefinitionId && x.RequirementId == field.RequirementId && x.TenantId == field.TenantId).FirstOrDefaultAsync();
+        if (existingField is not null)
+        {
+            field.CopyTo(existingField);
+            dbContext.RequirementFields.Update(existingField);
+        }
+        else
+        {
+            var tmp = field.FieldDefinition;
+            field.FieldDefinition = null;
+            await dbContext.RequirementFields.AddAsync(field);
+            field.FieldDefinition = tmp;
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task SaveRequirementFieldsAsync(IEnumerable<RequirementField> fields)
+    {
+        if (fields.Count() == 0)
+        {
+            return;
+        }
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await dbContext.RequirementFields.AsNoTracking().Where(x => x.RequirementId == fields.First().RequirementId).ExecuteDeleteAsync();
+
+        foreach (var field in fields)
+        {
+            var tmp = field.FieldDefinition;
+            field.FieldDefinition = null;
+            await dbContext.RequirementFields.AddAsync(field);
+            field.FieldDefinition = tmp;
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<IReadOnlyList<RequirementField>> GetRequirementFieldsAsync(string tenantId, long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var fields = dbContext.RequirementFields.AsNoTracking()
+            .Include(x => x.FieldDefinition)
+            .Where(x => x.TenantId == tenantId && x.RequirementId == id && x.FieldDefinition!.IsDeleted == false);
+        return await fields.ToListAsync();
+    }
+    #endregion Requirement
+
 
 }

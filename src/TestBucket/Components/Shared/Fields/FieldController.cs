@@ -7,6 +7,7 @@ using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Specifications;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.Testing.Models;
 namespace TestBucket.Components.Shared.Fields;
@@ -43,6 +44,11 @@ internal class FieldController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _manager.GetTestCaseFieldsAsync(principal, id, fieldDefinitions);
+    }
+    public async Task<IReadOnlyList<RequirementField>> GetRequirementFieldsAsync(long id, IEnumerable<FieldDefinition> fieldDefinitions)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.GetRequirementFieldsAsync(principal, id, fieldDefinitions);
     }
 
     #endregion Test Case

@@ -25,6 +25,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<ApplicationUserApiKey> ApiKeys { get; set; }
 
     internal DbSet<FieldDefinition> FieldDefinitions { get; set; }
+    internal DbSet<RequirementField> RequirementFields { get; set; }
     internal DbSet<TestCaseField> TestCaseFields { get; set; }
     internal DbSet<TestRunField> TestRunFields { get; set; }
     internal DbSet<TestCaseRunField> TestCaseRunFields { get; set; }

@@ -18,6 +18,15 @@ code.tip {
 .EasyMDEContainer .editor-preview pre:has(code):has(.me-quot)  {
     background: transparent;
     border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+
+.mud-markdown-preview pre:has(code):has(.me-quot) code, 
+.EasyMDEContainer .editor-preview pre:has(code):has(.me-quot) code {
+    width: fit-content;
 }
 
 .me-quot {

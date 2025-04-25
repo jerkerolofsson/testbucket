@@ -3,17 +3,19 @@
 namespace TestBucket.IntegrationTests.Features.Duplication;
 
 [Feature("Duplication 1.0")]
+[FunctionalTest]
 [EnrichedTest]
 [IntegrationTest]
 public class DuplicateTestCaseTests(TestBucketApp App)
 {
     [Fact]
+    [TestDescription("Verifies that a duplicated test has the same description as the test that was duplicated")]
     public async Task DuplicateTestCase_BothHaveTheSameDescription()
     {
         // Arrange
-        var team = await App.Client.Teams.AddAsync("Duplicate Team 1");
-        var project = await App.Client.Projects.AddAsync(team, "Project 1");
-        var suite = await App.Client.TestRepository.AddSuiteAsync(team, project, "Suite 1");
+        var team = await App.Client.Teams.AddAsync(Guid.NewGuid().ToString());
+        var project = await App.Client.Projects.AddAsync(team, Guid.NewGuid().ToString());
+        var suite = await App.Client.TestRepository.AddSuiteAsync(team, project, Guid.NewGuid().ToString());
 
         var test1 = await App.Client.TestRepository.AddTestAsync(CreateTestCase(team, project, suite));
         Assert.NotNull(test1.Slug);
@@ -32,6 +34,6 @@ public class DuplicateTestCaseTests(TestBucketApp App)
 
     private TestCaseDto CreateTestCase(string team, string project, string suite)
     {
-        return new TestCaseDto { TestCaseName = "name1", Description = "description1", TenantId = App.Tenant, TeamSlug = team, ProjectSlug = project, TestSuiteSlug = suite };
+        return new TestCaseDto { TestCaseName = "Test To Duplicate " + Guid.NewGuid().ToString(), Description = "Text to duplicate", TenantId = App.Tenant, TeamSlug = team, ProjectSlug = project, TestSuiteSlug = suite };
     }
 }

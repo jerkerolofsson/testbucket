@@ -1,6 +1,7 @@
 ﻿
 using TestBucket.Contracts.Projects;
 using TestBucket.Sdk.Client.Exceptions;
+using TestBucket.Sdk.Client.Extensions;
 
 namespace TestBucket.Sdk.Client;
 
@@ -29,7 +30,7 @@ public class ProjectClient(HttpClient Client)
     public async Task<ProjectDto> AddAsync(ProjectDto project)
     {
         var response = await Client.PutAsJsonAsync("/api/projects", project);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessStatusCodeAsync();
         return await response.Content.ReadFromJsonAsync<ProjectDto>() ?? throw new EmptyResponseException();
     }
 
@@ -54,7 +55,7 @@ public class ProjectClient(HttpClient Client)
     public async Task DeleteAsync(string slug)
     {
         var response = await Client.DeleteAsync($"/api/projects/{slug}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessStatusCodeAsync();
     }
 
 }

@@ -1,6 +1,7 @@
 ﻿
 using TestBucket.Formats.Dtos;
 using TestBucket.Sdk.Client.Exceptions;
+using TestBucket.Sdk.Client.Extensions;
 
 namespace TestBucket.Sdk.Client;
 
@@ -33,7 +34,7 @@ public class TestRepositoryClient(HttpClient Client)
     public async Task<TestCaseDto> AddTestAsync(TestCaseDto testCase)
     {
         var response = await Client.PutAsJsonAsync("/api/testcases", testCase);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessStatusCodeAsync();
         TestCaseDto result = await response.Content.ReadFromJsonAsync<TestCaseDto>() ?? throw new EmptyResponseException();
         return result;
     }
@@ -46,7 +47,17 @@ public class TestRepositoryClient(HttpClient Client)
     public async Task DeleteTestAsync(string slug)
     {
         var response = await Client.DeleteAsync($"/api/testcases/{slug}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessStatusCodeAsync();
+    }
+
+    /// <summary>
+    /// Gets a test case by slug
+    /// </summary>
+    /// <param name="slug"></param>
+    /// <returns></returns>
+    public async Task<TestSuiteDto> GetTestAsync(string slug)
+    {
+        return await Client.GetFromJsonAsync<TestSuiteDto>($"/api/testcases/{slug}") ?? throw new EmptyResponseException();
     }
 
     /// <summary>
@@ -58,7 +69,8 @@ public class TestRepositoryClient(HttpClient Client)
     public async Task<TestCaseDto> DuplicateTestAsync(string slug)
     {
         var response = await Client.PostAsync($"/api/testcases/{slug}/duplicate", new StringContent(""));
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessStatusCodeAsync();
+
         TestCaseDto result = await response.Content.ReadFromJsonAsync<TestCaseDto>() ?? throw new EmptyResponseException();
         return result;
     }
@@ -89,9 +101,20 @@ public class TestRepositoryClient(HttpClient Client)
     public async Task<TestSuiteDto> AddSuiteAsync(TestSuiteDto testSuite)
     {
         var response = await Client.PutAsJsonAsync("/api/testsuites", testSuite);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessStatusCodeAsync();
+
         TestSuiteDto result = await response.Content.ReadFromJsonAsync<TestSuiteDto>() ?? throw new EmptyResponseException();
         return result;
+    }
+
+    /// <summary>
+    /// Gets a test suite by slug
+    /// </summary>
+    /// <param name="slug"></param>
+    /// <returns></returns>
+    public async Task<TestSuiteDto> GetSuiteAsync(string slug)
+    {
+        return await Client.GetFromJsonAsync<TestSuiteDto>($"/api/testsuites/{slug}") ?? throw new EmptyResponseException();
     }
 
     /// <summary>
@@ -102,7 +125,7 @@ public class TestRepositoryClient(HttpClient Client)
     public async Task DeleteSuiteAsync(string slug)
     {
         var response = await Client.DeleteAsync($"/api/testsuites/{slug}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessStatusCodeAsync();
     }
 
     #endregion Test Suites

@@ -7,6 +7,7 @@ using TestBucket.Contracts.Teams;
 
 namespace TestBucket.IntegrationTests.Teams
 {
+    [FunctionalTest]
     [EnrichedTest]
     [IntegrationTest]
     public class AdminTeamTests(TestBucketApp App)
@@ -15,7 +16,7 @@ namespace TestBucket.IntegrationTests.Teams
         [TestDescription("Verifies that a team can be deleted")]
         public async Task Delete_BySlug_Successful()
         {
-            var slug = await App.Client.Teams.AddAsync("Admin Team Number 4");
+            var slug = await App.Client.Teams.AddAsync(Guid.NewGuid().ToString());
             Assert.NotEmpty(slug);
 
             var team = await App.Client.Teams.GetAsync(slug);
@@ -49,7 +50,7 @@ namespace TestBucket.IntegrationTests.Teams
         [TestDescription("Verifies that a newly created team has a slug assigned")]
         public async Task CreateTeam_SlugAssigned()
         {
-            var slug = await App.Client.Teams.AddAsync("Admin Team Number 1");
+            var slug = await App.Client.Teams.AddAsync(Guid.NewGuid().ToString());
             Assert.NotEmpty(slug);
 
             await App.Client.Teams.DeleteAsync(slug);
@@ -59,7 +60,7 @@ namespace TestBucket.IntegrationTests.Teams
         [TestDescription("Verifies that a newly created team has a short name assigned")]
         public async Task CreateTeam_ShortNameAssigned()
         {
-            var team = new TeamDto { Name = "Admin Team Number 2", ShortName = "", Slug = "" };
+            var team = new TeamDto { Name = Guid.NewGuid().ToString(), ShortName = "", Slug = "" };
 
             var createdTeam = await App.Client.Teams.AddAsync(team);
             Assert.NotEmpty(createdTeam.ShortName);

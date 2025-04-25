@@ -1,6 +1,7 @@
 ﻿
 using TestBucket.Contracts.Teams;
 using TestBucket.Sdk.Client.Exceptions;
+using TestBucket.Sdk.Client.Extensions;
 
 namespace TestBucket.Sdk.Client;
 
@@ -14,6 +15,8 @@ public class TeamClient(HttpClient Client)
     /// <exception cref="EmptyResponseException"></exception>
     public async Task<string> AddAsync(string name)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
         var team = new TeamDto { Name = name, ShortName = "", Slug = "" };
         var createdTeam = await AddAsync(team);
         return createdTeam.Slug;
@@ -29,7 +32,7 @@ public class TeamClient(HttpClient Client)
     public async Task<TeamDto> AddAsync(TeamDto team)
     {
         var response = await Client.PutAsJsonAsync("/api/teams", team);
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessStatusCodeAsync();
         return await response.Content.ReadFromJsonAsync<TeamDto>() ?? throw new EmptyResponseException();
     }
 
@@ -42,6 +45,8 @@ public class TeamClient(HttpClient Client)
     /// <exception cref="EmptyResponseException"></exception>
     public async Task<TeamDto> GetAsync(string slug)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(slug);
+
         return await Client.GetFromJsonAsync<TeamDto>($"/api/teams/{slug}") ?? throw new EmptyResponseException();
     }
 
@@ -53,8 +58,10 @@ public class TeamClient(HttpClient Client)
     /// <exception cref="EmptyResponseException"></exception>
     public async Task DeleteAsync(string slug)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(slug);
+
         var response = await Client.DeleteAsync($"/api/teams/{slug}");
-        response.EnsureSuccessStatusCode();
+        await response.EnsureSuccessStatusCodeAsync();
     }
 
 }

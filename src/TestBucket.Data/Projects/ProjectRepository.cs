@@ -28,7 +28,7 @@ internal class ProjectRepository : IProjectRepository
         return await dbContext.Projects
             .Include(x => x.Team)
             .Include(x => x.ExternalSystems)
-            .Where(x => x.Slug == slug && x.TenantId == tenantId).SingleOrDefaultAsync();
+            .Where(x => x.Slug == slug && x.TenantId == tenantId).FirstOrDefaultAsync();
     }
     /// <summary>
     /// Returns a project by id
@@ -89,6 +89,8 @@ internal class ProjectRepository : IProjectRepository
     public async Task<OneOf<TestProject, AlreadyExistsError>> AddAsync(TestProject project)
     {
         ArgumentNullException.ThrowIfNull(project.TenantId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(project.Name);
+
         if (await NameExistsAsync(project.TenantId, project.Name))
         {
             return new AlreadyExistsError();

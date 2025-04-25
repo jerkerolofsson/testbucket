@@ -26,6 +26,24 @@ public class TestCaseApiController : ProjectApiControllerBase
         _testSuiteManager = testSuiteManager;
     }
 
+    [Authorize("ApiKeyOrBearer")]
+    [EndpointDescription("Gets an existing test case")]
+    [HttpGet("/api/testcases/{slug}")]
+    public async Task<IActionResult> GetAsync(string slug)
+    {
+        if (!User.HasPermission(PermissionEntityType.TestCase, PermissionLevel.Read))
+        {
+            return Unauthorized();
+        }
+        var testCase = await _testCaseManager.GetTestCaseBySlugAsync(User, slug);
+        if(testCase is null)
+        {
+            return NotFound();
+        }
+        return Ok(testCase.ToDto());
+    }
+
+    [Authorize("ApiKeyOrBearer")]
     [EndpointDescription("Deletes the test case")]
     [HttpDelete("/api/testcases/{slug}")]
     public async Task<IActionResult> DeleteAsync(string slug)
@@ -43,6 +61,7 @@ public class TestCaseApiController : ProjectApiControllerBase
         return Ok();
     }
 
+    [Authorize("ApiKeyOrBearer")]
     [EndpointDescription("Creates a copy of the test case")]
     [HttpPost("/api/testcases/{slug}/duplicate")]
     [ProducesDefaultResponseType(typeof(TestCaseDto))]
@@ -55,7 +74,7 @@ public class TestCaseApiController : ProjectApiControllerBase
         var testCase = await _testCaseManager.GetTestCaseBySlugAsync(User, slug);
         if (testCase is null)
         {
-            return NotFound();
+            return NotFound($"Test case with slug '{slug}' was not found");
         }
         var dbo = await _testCaseManager.DuplicateTestCaseAsync(User, testCase);
         var response = dbo.ToDto();

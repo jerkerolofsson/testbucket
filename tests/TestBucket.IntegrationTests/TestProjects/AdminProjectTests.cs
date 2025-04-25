@@ -7,6 +7,7 @@ using TestBucket.Contracts.Teams;
 
 namespace TestBucket.IntegrationTests.TestProjects
 {
+    [FunctionalTest]
     [EnrichedTest]
     [IntegrationTest]
     public class AdminProjectTests(TestBucketApp App)

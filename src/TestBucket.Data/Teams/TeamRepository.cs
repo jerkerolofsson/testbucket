@@ -25,7 +25,7 @@ internal class TeamRepository : ITeamRepository
     public async Task<Team?> GetBySlugAsync(string tenantId, string slug)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Teams.Where(x => x.Slug == slug && x.TenantId == tenantId).SingleOrDefaultAsync();
+        return await dbContext.Teams.Where(x => x.Slug == slug && x.TenantId == tenantId).FirstOrDefaultAsync();
     }
     /// <summary>
     /// Returns a team by id
@@ -36,7 +36,7 @@ internal class TeamRepository : ITeamRepository
     public async Task<Team?> GetTeamByIdAsync(string tenantId, long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Teams.Where(x => x.Id == id && x.TenantId == tenantId).SingleOrDefaultAsync();
+        return await dbContext.Teams.Where(x => x.Id == id && x.TenantId == tenantId).FirstOrDefaultAsync();
     }
 
     public async Task UpdateTeamAsync(Team team)
@@ -77,6 +77,7 @@ internal class TeamRepository : ITeamRepository
     public async Task<OneOf<Team, AlreadyExistsError>> AddAsync(Team team)
     {
         ArgumentNullException.ThrowIfNull(team.TenantId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(team.Name);
 
         team.Slug = await GenerateSlugAsync(team.TenantId, team.Name);
         team.ShortName = await GenerateShortNameAsync(team.Slug, team.TenantId);

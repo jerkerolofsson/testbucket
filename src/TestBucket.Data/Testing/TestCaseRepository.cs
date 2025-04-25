@@ -2,6 +2,7 @@
 
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
 
@@ -452,7 +453,9 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<TestSuite> AddTestSuiteAsync(TestSuite testSuite)
     {
         ArgumentNullException.ThrowIfNull(testSuite.TenantId);
-
+        ArgumentNullException.ThrowIfNull(testSuite.TeamId);
+        ArgumentNullException.ThrowIfNull(testSuite.TestProjectId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(testSuite.Name);
         // Generate a slug
         if (string.IsNullOrEmpty(testSuite.Slug))
         {
@@ -460,9 +463,19 @@ internal class TestCaseRepository : ITestCaseRepository
         }
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        await dbContext.TestSuites.AddAsync(testSuite);
-        await dbContext.SaveChangesAsync();
-        return testSuite;
+        try
+        {
+            await dbContext.TestSuites.AddAsync(testSuite);
+            await dbContext.SaveChangesAsync();
+            return testSuite;
+        }
+        catch(Exception ex)
+        {
+            var teamExists = await dbContext.Teams.Where(x => x.TenantId == testSuite.TenantId && x.Id == testSuite.TeamId).AnyAsync();
+            var projectExists = await dbContext.Projects.Where(x => x.TenantId == testSuite.TenantId && x.Id == testSuite.TestProjectId).AnyAsync();
+
+            throw new Exception($"An errror occured when adding test suite: slug='{testSuite.Slug}', team='{testSuite.TeamId}' ({teamExists}), project='{testSuite.TestProjectId}' ({projectExists})", ex);
+        }
     }
 
     #endregion Test Suites

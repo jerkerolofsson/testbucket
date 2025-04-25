@@ -111,7 +111,7 @@ public static class TestBucketServerApp
 
         builder.Services.AddHealthChecks().AddCheck("self", () =>
         {
-            if(MigrationService.ReadyFlag)
+            if(MigrationReadyWaiter.IsReady)
             {
                 return HealthCheckResult.Healthy();
             }

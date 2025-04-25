@@ -19,8 +19,6 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
     private static readonly ActivitySource s_activitySource = new(ActivitySourceName);
     private static readonly SemaphoreSlim s_lock = new(1);
 
-    public static bool ReadyFlag = false;
-
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         using var activity = s_activitySource.StartActivity("Migrating database", ActivityKind.Client);
@@ -49,7 +47,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
             finally
             {
 
-                MigrationService.ReadyFlag = true;
+                MigrationReadyWaiter.SetReady();
                 s_lock.Release();
             }
         }

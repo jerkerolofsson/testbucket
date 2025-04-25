@@ -46,18 +46,42 @@ public class TestSuitesApiController : ProjectApiControllerBase
 
         var dbo = testSuite.ToDbo();
 
+        // Resolve team/project from slug
         var team = await _teamManager.GetTeamBySlugAsync(User, testSuite.TeamSlug);
         var project = await _projectManager.GetTestProjectBySlugAsync(User, testSuite.ProjectSlug);
         dbo.TestProjectId = project?.Id;
-        dbo.TeamId = project?.Id;
+        dbo.TeamId = team?.Id;
 
-        await _testSuiteManager.AddTestSuiteAsync(User, dbo);
-        var response = dbo.ToDto();
-        response.TeamSlug = team?.Slug;
-        response.ProjectSlug = project?.Slug;
-        return Ok(response);
+        try
+        {
+            await _testSuiteManager.AddTestSuiteAsync(User, dbo);
+            var response = dbo.ToDto();
+            response.TeamSlug = team?.Slug;
+            response.ProjectSlug = project?.Slug;
+            return Ok(response);
+        }
+        catch(Exception ex)
+        {
+            throw new Exception($"Error adding suite '{dbo.Slug}' with team={testSuite.TeamSlug}, project={testSuite.ProjectSlug}", ex);
+        }
     }
 
+    [Authorize("ApiKeyOrBearer")]
+    [EndpointDescription("Gets an existing test suite")]
+    [HttpGet("/api/testsuites/{slug}")]
+    public async Task<IActionResult> GetAsync(string slug)
+    {
+        if (!User.HasPermission(PermissionEntityType.TestCase, PermissionLevel.Read))
+        {
+            return Unauthorized();
+        }
+        var suite = await _testSuiteManager.GetTestSuiteBySlugAsync(User, slug);
+        if (suite is null)
+        {
+            return NotFound();
+        }
+        return Ok(suite.ToDto());
+    }
 
     [Authorize("ApiKeyOrBearer")]
     [HttpDelete("/api/testsuites/{slug}")]

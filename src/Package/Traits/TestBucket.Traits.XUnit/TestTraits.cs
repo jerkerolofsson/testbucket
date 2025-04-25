@@ -1,10 +1,49 @@
 ﻿namespace TestBucket.Traits.Xunit;
 
+/// <summary>
+/// ReliaSecuritybility
+/// Defines an attribute that will add create a trait related with ISO/IEC 25010 quality characteristic
+/// </summary>
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
+public class SecurityTestAttribute : TraitAttachmentPropertyAttribute
+{
+    public SecurityTestAttribute() : base(TestTraitNames.QualityCharacteristic, "Security") { }
+}
+
+/// <summary>
+/// Reliability
+/// Defines an attribute that will add create a trait related with ISO/IEC 25010 quality characteristic
+/// </summary>
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
+public class ReliabilityTestAttribute : TraitAttachmentPropertyAttribute
+{
+    public ReliabilityTestAttribute() : base(TestTraitNames.QualityCharacteristic, "Reliability") { }
+}
+
+/// <summary>
+/// Performance Efficiency
+/// Defines an attribute that will add create a trait related with ISO/IEC 25010 quality characteristic
+/// </summary>
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
+public class PerformanceTestAttribute : TraitAttachmentPropertyAttribute
+{
+    public PerformanceTestAttribute() : base(TestTraitNames.QualityCharacteristic, "Performance Efficiency") { }
+}
+
+/// <summary>
+/// Functional Suitability
+/// Defines an attribute that will add create a trait related with ISO/IEC 25010 quality characteristic
+/// </summary>
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
+public class FunctionalTestAttribute : TraitAttachmentPropertyAttribute
+{
+    public FunctionalTestAttribute() : base(TestTraitNames.QualityCharacteristic, "Functional Suitability"){}
+}
 
 /// <summary>
 /// Defines an attribute that will add create a Tag trait
 /// </summary>
-[AttributeUsage(AttributeTargets.Method|AttributeTargets.Class, AllowMultiple = true)]
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
 public class TagAttribute : CustomTraitAttribute
 {
     public TagAttribute(string tagName) :

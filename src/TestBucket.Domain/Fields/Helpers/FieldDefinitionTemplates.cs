@@ -71,7 +71,7 @@ public class FieldDefinitionTemplates
         Target = FieldTarget.TestCaseRun | FieldTarget.TestCase,
         Inherit = true,
         Type = FieldType.SingleSelection,
-        Options = ["Functional Suitability", "Reliability", "Usability", "Performance efficiency", "Compatibility", "Security", "Maintainability", "Portability"],
+        Options = ["Functional Suitability", "Reliability", "Usability", "Performance Efficiency", "Compatibility", "Security", "Maintainability", "Portability"],
         Description = "ISO/IEC 25010 quality characteristic related to the type of checks performed in the test"
     };
 

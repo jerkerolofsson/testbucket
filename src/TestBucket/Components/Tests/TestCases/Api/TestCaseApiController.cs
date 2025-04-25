@@ -24,6 +24,24 @@ public class TestCaseApiController : ProjectApiControllerBase
         _projectManager = projectManager;
     }
 
+    [HttpPost("/api/testcases/{testCaseId:long}/duplicate")]
+    [ProducesDefaultResponseType(typeof(TestCaseDto))]
+    public async Task<IActionResult> DuplicateAsync(long testCaseId)
+    {
+        if (!User.HasPermission(PermissionEntityType.TestCase, PermissionLevel.Write))
+        {
+            return Unauthorized();
+        }
+        var testCase = await _testCaseManager.GetTestCaseByIdAsync(User, testCaseId);
+        if (testCase is null)
+        {
+            return NotFound();
+        }
+        var dbo = await _testCaseManager.DuplicateTestCaseAsync(User, testCase);
+        var response = dbo.ToDto();
+        return Ok(response);
+    }
+
     [Authorize("ApiKeyOrBearer")]
     [HttpPut("/api/testcases")]
     [HttpPost("/api/testcases")]

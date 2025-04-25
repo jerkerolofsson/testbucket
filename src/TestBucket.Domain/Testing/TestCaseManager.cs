@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Mediator;
 
-using Mediator;
-
-using TestBucket.Contracts.Fields;
-using TestBucket.Domain.AI;
-using TestBucket.Domain.Fields;
-using TestBucket.Domain.Fields.Handlers;
 using TestBucket.Domain.Projects;
-using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.Testing.Duplication;
 using TestBucket.Domain.Testing.Events;
 using TestBucket.Domain.Testing.Markdown;
@@ -117,6 +105,7 @@ namespace TestBucket.Domain.Testing
         /// <returns></returns>
         public async Task DeleteTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Delete);
             principal.ThrowIfEntityTenantIsDifferent(testCase);
             await _testCaseRepo.DeleteTestCaseByIdAsync(testCase.Id);
 
@@ -201,6 +190,13 @@ namespace TestBucket.Domain.Testing
         public async Task<TestCase> DuplicateTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
         {
             return await _mediator.Send(new DuplicateTestCaseRequest(principal, testCase));
+        }
+
+        public async Task<TestCase?> GetTestCaseByIdAsync(ClaimsPrincipal principal, long testCaseId)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Delete);
+            var tenantId = principal.GetTenantIdOrThrow();
+            return await _testCaseRepo.GetTestCaseByIdAsync(tenantId, testCaseId);
         }
     }
 }

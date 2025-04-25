@@ -1,9 +1,11 @@
 ﻿
+using System.Diagnostics;
 using System.Xml.Linq;
 
 using OneOf;
 
 using TestBucket.Domain.Errors;
+using TestBucket.Domain.Projects;
 
 namespace TestBucket.Data.Testing;
 internal class ProjectRepository : IProjectRepository
@@ -87,7 +89,16 @@ internal class ProjectRepository : IProjectRepository
     public async Task<OneOf<TestProject, AlreadyExistsError>> AddAsync(TestProject project)
     {
         ArgumentNullException.ThrowIfNull(project.TenantId);
-        
+
+        if (string.IsNullOrEmpty(project.Slug))
+        {
+            project.Slug = GenerateSlug(project.Name);
+        }
+        if (string.IsNullOrEmpty(project.ShortName))
+        {
+            project.ShortName = await GenerateShortNameAsync(project.Slug, project.Name);
+        }
+
         if (await SlugExistsAsync(project.TenantId, project.Slug))
         {
             return new AlreadyExistsError();
@@ -97,7 +108,9 @@ internal class ProjectRepository : IProjectRepository
         await dbContext.Projects.AddAsync(project);
         await dbContext.SaveChangesAsync();
 
-        return project;
+        var createdProject = await GetProjectByIdAsync(project.TenantId, project.Id);
+        Debug.Assert(createdProject is not null);
+        return createdProject;
     }
 
     public string GenerateSlug(string name)
@@ -211,5 +224,69 @@ internal class ProjectRepository : IProjectRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         await dbContext.ExternalSystems.Where(x=>x.TenantId == tenantId && x.Id == id).ExecuteDeleteAsync();
+    }
+
+    public async Task DeleteProjectAsync(TestProject project)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        foreach(var fieldDefinition in dbContext.FieldDefinitions.Where(x=>x.TestProjectId == project.Id))
+        {
+            foreach (var fieldValue in dbContext.TestRunFields.Where(x => x.FieldDefinitionId == fieldDefinition.Id))
+            {
+                dbContext.TestRunFields.Remove(fieldValue);
+            }
+            foreach (var fieldValue in dbContext.TestCaseRunFields.Where(x => x.FieldDefinitionId == fieldDefinition.Id))
+            {
+                dbContext.TestCaseRunFields.Remove(fieldValue);
+            }
+            foreach (var fieldValue in dbContext.RequirementFields.Where(x => x.FieldDefinitionId == fieldDefinition.Id))
+            {
+                dbContext.RequirementFields.Remove(fieldValue);
+            }
+            foreach (var fieldValue in dbContext.TestCaseFields.Where(x => x.FieldDefinitionId == fieldDefinition.Id))
+            {
+                dbContext.TestCaseFields.Remove(fieldValue);
+            }
+
+            dbContext.FieldDefinitions.Remove(fieldDefinition);
+        }
+
+        foreach (var item in dbContext.TestCaseRuns.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.TestCaseRuns.Remove(item);
+        }
+        foreach (var item in dbContext.TestRuns.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.TestRuns.Remove(item);
+        }
+        foreach (var testCase in dbContext.TestCases.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.TestCases.Remove(testCase);
+        }
+        foreach (var item in dbContext.TestSuiteFolders.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.TestSuiteFolders.Remove(item);
+        }
+        foreach (var item in dbContext.TestSuites.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.TestSuites.Remove(item);
+        }
+
+        foreach (var item in dbContext.Requirements.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Requirements.Remove(item);
+        }
+        foreach (var item in dbContext.RequirementSpecificationFolders.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.RequirementSpecificationFolders.Remove(item);
+        }
+        foreach (var item in dbContext.RequirementSpecifications.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.RequirementSpecifications.Remove(item);
+        }
+
+        dbContext.Projects.Remove(project);
+        await dbContext.SaveChangesAsync();
     }
 }

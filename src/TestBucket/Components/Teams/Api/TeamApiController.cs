@@ -9,7 +9,7 @@ using TestBucket.Domain.Projects;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Teams.Mapping;
 
-namespace TestBucket.Components.Tests.TestCases.Api;
+namespace TestBucket.Components.Teams.Api;
 
 [ApiController]
 public class TeamApiController : ProjectApiControllerBase
@@ -75,7 +75,7 @@ public class TeamApiController : ProjectApiControllerBase
     [ProducesDefaultResponseType(typeof(TestCaseDto))]
     public async Task<IActionResult> GetAsync([FromRoute] string slug)
     {
-        if (!User.HasPermission(PermissionEntityType.Team, PermissionLevel.Delete))
+        if (!User.HasPermission(PermissionEntityType.Team, PermissionLevel.Read))
         {
             return Unauthorized();
         }

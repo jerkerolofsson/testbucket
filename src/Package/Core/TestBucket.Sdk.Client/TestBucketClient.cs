@@ -12,6 +12,10 @@ public class TestBucketClient(HttpClient Client)
     /// </summary>
     public TeamClient Teams => new TeamClient(Client);
 
+    /// <summary>
+    /// Client to work with projects
+    /// </summary>
+    public ProjectClient Projects => new ProjectClient(Client);
 
     /// <summary>
     /// Client to work with test repository (test suites, test cases)

@@ -5,6 +5,20 @@ using TestBucket.Traits.Core;
 namespace TestBucket.Domain.Projects;
 public interface IProjectManager
 {
+    /// <summary>
+    /// Deletes a project
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="project"></param>
+    /// <returns></returns>
+    Task DeleteAsync(ClaimsPrincipal user, TestProject project);
+
+    /// <summary>
+    /// Adds a project
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="project"></param>
+    /// <returns></returns>
     Task<OneOf<TestProject, AlreadyExistsError>> AddAsync(ClaimsPrincipal principal, TestProject project);
     Task UpdateProjectAsync(ClaimsPrincipal principal, TestProject project);
     Task<PagedResult<TestProject>> BrowseTestProjectsAsync(ClaimsPrincipal principal, int offset, int count);

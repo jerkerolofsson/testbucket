@@ -205,5 +205,12 @@ internal class ProjectManager : IProjectManager
         return await _projectRepository.GetBySlugAsync(tenantId, slug);
     }
 
+    public async Task DeleteAsync(ClaimsPrincipal principal, TestProject project)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Delete);
+        principal.ThrowIfEntityTenantIsDifferent(project.TenantId);
+        await _projectRepository.DeleteProjectAsync(project);
+    }
+
     #endregion Project Integrations
 }

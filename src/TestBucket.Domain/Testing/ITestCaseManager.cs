@@ -42,6 +42,7 @@ public interface ITestCaseManager
     /// <param name="testCase"></param>
     /// <returns></returns>
     Task<IReadOnlyList<TestEntity>> ExpandUntilRootAsync(ClaimsPrincipal principal, TestCase testCase);
+    Task<TestCase?> GetTestCaseByIdAsync(ClaimsPrincipal user, long testCaseId);
 
     /// <summary>
     /// Removes an observer

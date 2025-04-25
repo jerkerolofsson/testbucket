@@ -116,6 +116,7 @@ public interface IProjectRepository
     /// <param name="id"></param>
     /// <returns></returns>
     Task DeleteProjectIntegrationAsync(string tenantId, long id);
+    Task DeleteProjectAsync(TestProject project);
 
     #endregion Integrations / External Systems
 }

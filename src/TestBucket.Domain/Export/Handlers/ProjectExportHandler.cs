@@ -42,7 +42,6 @@ public class ProjectExportHandler : INotificationHandler<ExportNotification>
                 if(fullProject is null) continue;
 
                 var dto = fullProject.ToDto();
-                dto.Team = fullProject.Team?.Slug;
 
                 await notification.Sink.WriteJsonEntityAsync("projects", "project", project.Id.ToString(), dto, cancellationToken);
 

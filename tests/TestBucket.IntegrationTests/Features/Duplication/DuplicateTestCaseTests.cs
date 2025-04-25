@@ -8,17 +8,21 @@ namespace TestBucket.IntegrationTests.Features.Duplication;
 public class DuplicateTestCaseTests(TestBucketApp App)
 {
     [Fact]
-    public async Task DuplicateTestCaseAsync()
+    public async Task DuplicateTestCase_BothHaveTheSameDescription()
     {
         // Arrange
         var team = await App.Client.Teams.AddAsync("Duplicate Team 1");
-        var project = await App.Client.Projects.AddAsync("Project 1", team);
-        var test1 = await App.Client.TestRepository.AddTestAsync(CreateTestCase(team, project));
+        var project = await App.Client.Projects.AddAsync(team, "Project 1");
+        var suite = await App.Client.TestRepository.AddSuiteAsync(team, project, "Suite 1");
+
+        var test1 = await App.Client.TestRepository.AddTestAsync(CreateTestCase(team, project, suite));
+        Assert.NotNull(test1.Slug);
 
         // Act
-        var test2 = await App.Client.TestRepository.DuplicateTestAsync(test1.Id);
+        var test2 = await App.Client.TestRepository.DuplicateTestAsync(test1.Slug);
 
         // Assert
+        Assert.Equal(test1.Description, test2.Description);
 
         // Cleanup
 
@@ -26,8 +30,8 @@ public class DuplicateTestCaseTests(TestBucketApp App)
         await App.Client.Teams.DeleteAsync(team);
     }
 
-    private TestCaseDto CreateTestCase(string team, string project)
+    private TestCaseDto CreateTestCase(string team, string project, string suite)
     {
-        return new TestCaseDto { Name = "name1", Description = "description1", TenantId = App.Tenant, Team = team, Project = project };
+        return new TestCaseDto { TestCaseName = "name1", Description = "description1", TenantId = App.Tenant, TeamSlug = team, ProjectSlug = project, TestSuiteSlug = suite };
     }
 }

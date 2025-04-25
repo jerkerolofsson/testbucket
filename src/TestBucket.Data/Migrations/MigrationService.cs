@@ -19,6 +19,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
     private static readonly ActivitySource s_activitySource = new(ActivitySourceName);
     private static readonly SemaphoreSlim s_lock = new(1);
 
+    public static bool ReadyFlag = false;
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
@@ -39,12 +40,16 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
             {
                 s_lock.Release();
             }
+
+            await s_lock.WaitAsync();
             try
             {
                 await SeedDataAsync(cancellationToken);
             }
             finally
             {
+
+                MigrationService.ReadyFlag = true;
                 s_lock.Release();
             }
         }
@@ -76,11 +81,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         var strategy = dbContext.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
-            // Run migration in a transaction to avoid partial migration if it fails.
-            //await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
-
             await dbContext.Database.MigrateAsync(cancellationToken);
-            //await transaction.CommitAsync(cancellationToken);
         });
     }
 

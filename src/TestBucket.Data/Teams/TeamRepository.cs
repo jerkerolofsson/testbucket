@@ -78,13 +78,13 @@ internal class TeamRepository : ITeamRepository
     {
         ArgumentNullException.ThrowIfNull(team.TenantId);
 
-        team.Slug = GenerateSlug(team.Name);
-        if (await SlugExistsAsync(team.TenantId, team.Slug))
+        team.Slug = await GenerateSlugAsync(team.TenantId, team.Name);
+        team.ShortName = await GenerateShortNameAsync(team.Slug, team.TenantId);
+
+        if (await NameExistsAsync(team.TenantId, team.Name))
         {
             return new AlreadyExistsError();
         }
-
-        team.ShortName = await GenerateShortNameAsync(team.Slug, team.TenantId);
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         await dbContext.Teams.AddAsync(team);
@@ -100,18 +100,17 @@ internal class TeamRepository : ITeamRepository
     /// <returns></returns>
     public async Task<OneOf<Team, AlreadyExistsError>> CreateAsync(string tenantId, string name)
     {
-        var team = new Team()
-        {
-            Name = name,
-            Slug = GenerateSlug(name),
-            TenantId = tenantId,
-            ShortName = ""
-        };
-
-        if (await SlugExistsAsync(tenantId, team.Slug))
+        if (await NameExistsAsync(tenantId, name))
         {
             return new AlreadyExistsError();
         }
+        var team = new Team()
+        {
+            Name = name,
+            Slug = await GenerateSlugAsync(tenantId, name),
+            TenantId = tenantId,
+            ShortName = ""
+        };
 
         team.ShortName = await GenerateShortNameAsync(team.Slug, tenantId);
 
@@ -122,6 +121,18 @@ internal class TeamRepository : ITeamRepository
         return team;
     }
 
+    public async Task<string> GenerateSlugAsync(string tenantId, string name)
+    {
+        var slugHelper = new Slugify.SlugHelper();
+        var slug = slugHelper.GenerateSlug(name);
+        int counter = 1;
+        while (await SlugExistsAsync(tenantId, slug))
+        {
+            slug = slugHelper.GenerateSlug(slug + counter);
+            counter++;
+        }
+        return slug;
+    }
     public string GenerateSlug(string name)
     {
         return new Slugify.SlugHelper().GenerateSlug(name);
@@ -179,7 +190,15 @@ internal class TeamRepository : ITeamRepository
     public async Task<bool> NameExistsAsync(string tenantId, string name)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Teams.AsNoTracking().Where(x => x.Name == name && x.TenantId == tenantId).AnyAsync();
+        var exists = await dbContext.Teams.AsNoTracking()
+            .Where(x => x.Name == name && x.TenantId == tenantId).AnyAsync();
+
+        if(exists)
+        {
+            var teams = await dbContext.Teams.AsNoTracking().ToListAsync();
+        }
+
+        return exists;
     }
 
     public async Task DeleteAsync(Team team)

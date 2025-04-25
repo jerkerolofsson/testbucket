@@ -70,9 +70,22 @@ namespace TestBucket.Domain.Testing
         /// <returns></returns>
         public async Task<TestSuite> AddTestSuiteAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string name, string? ciCdSystem, string? ciCdRef)
         {
-            var tenantId = principal.GetTenantIdOrThrow();
+            var suite = new TestSuite { Name = name, TestProjectId = projectId, TeamId = teamId, DefaultCiCdRef = ciCdRef, CiCdSystem = ciCdSystem };
+            return await AddTestSuiteAsync(principal, suite);
+        }
 
-            var suite = new TestSuite { Name = name, TestProjectId = projectId, TeamId = teamId, TenantId = tenantId, DefaultCiCdRef = ciCdRef, CiCdSystem = ciCdSystem };
+        /// <summary>
+        /// Adds a test suite
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="suite"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task<TestSuite> AddTestSuiteAsync(ClaimsPrincipal principal, TestSuite suite)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Write);
+
+            suite.TenantId = principal.GetTenantIdOrThrow();
             suite.Modified = suite.Created = DateTimeOffset.UtcNow;
             suite.CreatedBy = suite.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 
@@ -142,6 +155,18 @@ namespace TestBucket.Domain.Testing
         }
 
         /// <summary>
+        /// Returns a test suite by slug
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        public async Task<TestSuite?> GetTestSuiteBySlugAsync(ClaimsPrincipal principal, string slug)
+        {
+            var tenantId = principal.GetTenantIdOrThrow();
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Read);
+            return await _testCaseRepository.GetTestSuiteBySlugAsync(tenantId, slug);
+        }
+        /// <summary>
         /// Returns a test suite by name or null if not found
         /// </summary>
         /// <param name="principal"></param>
@@ -152,7 +177,7 @@ namespace TestBucket.Domain.Testing
         public async Task<TestSuite?> GetTestSuiteByNameAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string suiteName) 
         {
             var tenantId = principal.GetTenantIdOrThrow();
-            // todo: convert to specifications
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Read);
             return await _testCaseRepository.GetTestSuiteByNameAsync(tenantId, teamId, projectId, suiteName);
         }
         #endregion Test Suites

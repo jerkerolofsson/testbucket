@@ -12,6 +12,7 @@ using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.States;
+using TestBucket.Domain.Teams;
 using TestBucket.Domain.Teams.Models;
 
 namespace TestBucket.Components.Projects;
@@ -163,6 +164,13 @@ internal class ProjectController : TenantBaseService
             return project;
         }
         return null;
+    }
+
+    public async Task DeleteAsync(TestProject project)
+    {
+        // todo: messagebox 
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _projectManager.DeleteAsync(principal, project);
     }
 
     public async Task DeleteProjectIntegrationAsync(ExternalSystem system)

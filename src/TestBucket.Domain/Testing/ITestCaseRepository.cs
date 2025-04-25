@@ -7,6 +7,21 @@ using TestBucket.Domain.Testing.Models;
 public interface ITestCaseRepository
 {
     #region Test Case
+
+    /// <summary>
+    /// Returns a test case by slug
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="slug"></param>
+    /// <returns></returns>
+    Task<TestCase?> GetTestCaseBySlugAsync(string tenantId, string slug);
+
+    /// <summary>
+    /// Returns a test case by ID
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="testCaseId"></param>
+    /// <returns></returns>
     Task<TestCase?> GetTestCaseByIdAsync(string tenantId, long testCaseId);
 
     /// <summary>
@@ -140,8 +155,21 @@ public interface ITestCaseRepository
     #endregion Test Suite Folders
 
     #region Test Suites
+    /// <summary>
+    /// Returns a test suite by ID
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
     Task<TestSuite?> GetTestSuiteByIdAsync(string tenantId, long id);
 
+    /// <summary>
+    /// Returns a test suite by slug
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="slug"></param>
+    /// <returns></returns>
+    Task<TestSuite?> GetTestSuiteBySlugAsync(string tenantId, string slug);
     /// <summary>
     /// Adds a test suite
     /// </summary>
@@ -260,5 +288,6 @@ public interface ITestCaseRepository
     Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
     Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters, long fieldDefinitionId);
     Task<Dictionary<DateOnly, TestExecutionResultSummary>> GetTestExecutionResultSummaryByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
+    
     #endregion
 }

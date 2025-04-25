@@ -15,11 +15,12 @@ public static class TestCaseMapping
         {
             Id = item.Id,
             Created = item.Created,
-            Name = item.Name,
+            Name = item.TestCaseName,
             TenantId = item.TenantId,
             Description = item.Description,
             Slug = item.Slug,
-            ExternalId = item.ExternalId,
+            ExternalId = item.Traits?.ExternalId,
+            ExecutionType = item.ExecutionType
         };
         return dto;
     }
@@ -30,12 +31,16 @@ public static class TestCaseMapping
         {
             Id = item.Id,
             Created = item.Created,
-            Name = item.Name,
+            TestCaseName = item.Name,
             TenantId = item.TenantId ?? throw new InvalidOperationException("Missing tenant Id"),
             Description = item.Description,
             Slug = item.Slug,
-            ExternalId = item.ExternalId,
+            Traits = new Formats.Dtos.TestTraitCollection(),
+            ExecutionType = item.ExecutionType,
         };
+
+        dto.Traits.ExternalId = item.ExternalId;
+
         return dto;
     }
 }

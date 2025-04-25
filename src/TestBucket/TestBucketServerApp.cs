@@ -36,6 +36,7 @@ using TestBucket.Components;
 using TestBucket.Domain.Commands;
 using TestBucket.Components.Tests.Requiremnts.Commands;
 using TestBucket.Components.Tests.Requirements.Commands;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace TestBucket;
 
@@ -107,6 +108,16 @@ public static class TestBucketServerApp
             }
         });
         builder.Services.AddDbContextFactory<ApplicationDbContext>();
+
+        builder.Services.AddHealthChecks().AddCheck("self", () =>
+        {
+            if(MigrationService.ReadyFlag)
+            {
+                return HealthCheckResult.Healthy();
+            }
+            return HealthCheckResult.Unhealthy();
+            
+        }, ["live", "ready"]);
 
         var localhostOrigin = "localhost";
         builder.Services.AddCors(options =>

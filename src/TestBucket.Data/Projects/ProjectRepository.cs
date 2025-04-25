@@ -89,21 +89,14 @@ internal class ProjectRepository : IProjectRepository
     public async Task<OneOf<TestProject, AlreadyExistsError>> AddAsync(TestProject project)
     {
         ArgumentNullException.ThrowIfNull(project.TenantId);
-
-        if (string.IsNullOrEmpty(project.Slug))
-        {
-            project.Slug = GenerateSlug(project.Name);
-        }
-        if (string.IsNullOrEmpty(project.ShortName))
-        {
-            project.ShortName = await GenerateShortNameAsync(project.Slug, project.Name);
-        }
-
-        if (await SlugExistsAsync(project.TenantId, project.Slug))
+        if (await NameExistsAsync(project.TenantId, project.Name))
         {
             return new AlreadyExistsError();
         }
 
+        project.Slug = await GenerateSlugAsync(project.TenantId, project.Name);
+        project.ShortName = await GenerateShortNameAsync(project.Slug, project.Name);
+       
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         await dbContext.Projects.AddAsync(project);
         await dbContext.SaveChangesAsync();
@@ -116,6 +109,19 @@ internal class ProjectRepository : IProjectRepository
     public string GenerateSlug(string name)
     {
         return new Slugify.SlugHelper().GenerateSlug(name);
+    }
+
+    public async Task<string> GenerateSlugAsync(string tenantId, string name)
+    {
+        var slugHelper = new Slugify.SlugHelper();
+        var slug = slugHelper.GenerateSlug(name);
+        int counter = 1;
+        while(await SlugExistsAsync(tenantId, slug))
+        {
+            slug = slugHelper.GenerateSlug(slug + counter);
+            counter++;
+        }
+        return slug;
     }
 
     public async Task<string> GenerateShortNameAsync(string slug, string tenantId)

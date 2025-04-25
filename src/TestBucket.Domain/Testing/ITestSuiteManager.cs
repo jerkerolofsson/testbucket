@@ -22,10 +22,12 @@ public interface ITestSuiteManager
     /// <param name="folderId"></param>
     /// <returns></returns>
     Task DeleteTestSuiteFolderByIdAsync(ClaimsPrincipal principal, long folderId);
+    Task<TestSuite> AddTestSuiteAsync(ClaimsPrincipal principal, TestSuite testSuite);
     Task<TestSuite> AddTestSuiteAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string name, string? ciCdSystem = null, string? ciCdRef = null);
     Task<TestSuite?> GetTestSuiteByIdAsync(ClaimsPrincipal principal, long id);
     Task UpdateTestSuiteAsync(ClaimsPrincipal principal, TestSuite suite);
     Task DeleteTestSuiteByIdAsync(ClaimsPrincipal principal, long testSuiteId);
+    Task<TestSuite?> GetTestSuiteBySlugAsync(ClaimsPrincipal principal, string slug);
     Task<TestSuite?> GetTestSuiteByNameAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string suiteName);
     Task<PagedResult<TestSuite>> SearchTestSuitesAsync(ClaimsPrincipal principal, SearchQuery query);
     Task<TestSuiteFolder[]> GetTestSuiteFoldersAsync(ClaimsPrincipal principal, long? projectId, long testSuiteId, long? parentFolderId);

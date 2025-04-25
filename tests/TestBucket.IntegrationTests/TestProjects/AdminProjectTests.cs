@@ -18,7 +18,7 @@ namespace TestBucket.IntegrationTests.TestProjects
             var team = await App.Client.Teams.AddAsync("team " + Guid.NewGuid().ToString());
             try
             {
-                var slug = await App.Client.Projects.AddAsync("My project " + Guid.NewGuid().ToString(), team);
+                var slug = await App.Client.Projects.AddAsync(team, "My project " + Guid.NewGuid().ToString());
 
                 var project = await App.Client.Projects.GetAsync(slug);
                 Assert.NotNull(project.ShortName);
@@ -40,7 +40,7 @@ namespace TestBucket.IntegrationTests.TestProjects
             var team = await App.Client.Teams.AddAsync("team " + Guid.NewGuid().ToString());
             try
             {
-                var slug = await App.Client.Projects.AddAsync("My project " + Guid.NewGuid().ToString(), team);
+                var slug = await App.Client.Projects.AddAsync(team, "My project " + Guid.NewGuid().ToString());
 
                 var project = await App.Client.Projects.GetAsync(slug);
                 Assert.NotNull(project.Team);

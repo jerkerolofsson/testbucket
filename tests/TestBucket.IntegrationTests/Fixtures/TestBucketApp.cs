@@ -7,7 +7,6 @@ using TestBucket.Contracts;
 using TestBucket.Contracts.Identity;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Settings.Models;
-using TestBucket.IntegrationTests.Fixtures;
 using TestBucket.Sdk.Client;
 using Xunit.Sdk;
 
@@ -84,6 +83,7 @@ namespace TestBucket.IntegrationTests.Fixtures
             Environment.SetEnvironmentVariable(TestBucketEnvironmentVariables.TB_JWT_AUD, _configuration.Audience);
             Environment.SetEnvironmentVariable(TestBucketEnvironmentVariables.TB_ADMIN_USER, _configuration.Email);
             Environment.SetEnvironmentVariable(TestBucketEnvironmentVariables.TB_ADMIN_PASSWORD, _configuration.Password);
+            Environment.SetEnvironmentVariable("TB_IS_INTEGRATION_TEST", "yes");
 
             //// Arrange
             var builder = await DistributedApplicationTestingBuilder
@@ -91,7 +91,13 @@ namespace TestBucket.IntegrationTests.Fixtures
 
             builder.Services.ConfigureHttpClientDefaults(clientBuilder =>
             {
-                clientBuilder.AddStandardResilienceHandler();
+                clientBuilder.AddStandardResilienceHandler(configure =>
+                {
+                    configure.TotalRequestTimeout = new Microsoft.Extensions.Http.Resilience.HttpTimeoutStrategyOptions
+                    {
+                        Timeout = TimeSpan.FromSeconds(60)
+                    };
+                });
             });
 
             // To output logs to the xUnit.net ITestOutputHelper, 
@@ -100,7 +106,7 @@ namespace TestBucket.IntegrationTests.Fixtures
             var app = await builder.BuildAsync(TestContext.Current.CancellationToken);
             await app.StartAsync(TestContext.Current.CancellationToken);
 
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(120));
             await app.ResourceNotifications.WaitForResourceHealthyAsync(
                 "testbucket",
                 cts.Token);

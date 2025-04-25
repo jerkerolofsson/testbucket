@@ -198,5 +198,12 @@ namespace TestBucket.Domain.Testing
             var tenantId = principal.GetTenantIdOrThrow();
             return await _testCaseRepo.GetTestCaseByIdAsync(tenantId, testCaseId);
         }
+
+        public async Task<TestCase?> GetTestCaseBySlugAsync(ClaimsPrincipal principal, string slug)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Delete);
+            var tenantId = principal.GetTenantIdOrThrow();
+            return await _testCaseRepo.GetTestCaseBySlugAsync(tenantId, slug);
+        }
     }
 }

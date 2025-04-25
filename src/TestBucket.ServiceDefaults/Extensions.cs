@@ -19,7 +19,7 @@ public static class Extensions
     {
         builder.ConfigureOpenTelemetry();
 
-        builder.AddDefaultHealthChecks();
+        //builder.AddDefaultHealthChecks();
 
         builder.Services.AddServiceDiscovery();
 

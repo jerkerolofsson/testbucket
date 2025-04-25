@@ -6,7 +6,7 @@ using TestBucket.Domain.ApiKeys.Validation;
 using TestBucket.Domain.Projects;
 using TestBucket.Formats;
 
-namespace TestBucket.Components.Tests.TestCases.Api;
+namespace TestBucket.Components.Tests.TestRuns.Api;
 
 [ApiController]
 public class ResultsApiController : ProjectApiControllerBase

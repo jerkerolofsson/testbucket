@@ -59,6 +59,13 @@ internal class TestCaseRepository : ITestCaseRepository
     }
 
     /// <inheritdoc/>
+    public async Task<TestCase?> GetTestCaseBySlugAsync(string tenantId, string slug)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestCases.AsNoTracking().Where(x => x.TenantId == tenantId && x.Slug == slug).FirstOrDefaultAsync();
+    }
+
+    /// <inheritdoc/>
     public async Task<TestCase?> GetTestCaseByExternalIdAsync(string tenantId, string? externalId)
     {
         if (externalId is null)
@@ -96,6 +103,11 @@ internal class TestCaseRepository : ITestCaseRepository
     {
         ArgumentNullException.ThrowIfNull(testCase.TestProjectId);
         ArgumentNullException.ThrowIfNull(testCase.TeamId);
+
+        if (string.IsNullOrEmpty(testCase.Slug) && testCase.TenantId is not null)
+        {
+            testCase.Slug = await GenerateTestCaseSlugAsync(testCase.TenantId, testCase.Name);
+        }
 
         testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -141,6 +153,10 @@ internal class TestCaseRepository : ITestCaseRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
+        if (string.IsNullOrEmpty(testCase.Slug) && testCase.TenantId is not null)
+        {
+            testCase.Slug = await GenerateTestCaseSlugAsync(testCase.TenantId, testCase.Name);
+        }
         await CalculatePathAsync(dbContext, testCase);
 
         dbContext.TestCases.Update(testCase);
@@ -306,6 +322,12 @@ internal class TestCaseRepository : ITestCaseRepository
     #region Test Suites
 
     /// <inheritdoc/>
+    public async Task<TestSuite?> GetTestSuiteBySlugAsync(string tenantId, string slug)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestSuites.AsNoTracking().Where(x => x.TenantId == tenantId && x.Slug == slug).FirstOrDefaultAsync();
+    }
+    /// <inheritdoc/>
     public async Task<TestSuite?> GetTestSuiteByIdAsync(string tenantId, long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -350,12 +372,18 @@ internal class TestCaseRepository : ITestCaseRepository
             x.TestProjectId == projectId &&
             x.Name == suiteName).FirstOrDefaultAsync();
     }
-    public async Task UpdateTestSuiteAsync(TestSuite suite)
+    public async Task UpdateTestSuiteAsync(TestSuite testSuite)
     {
+        // Generate a slug
+        if (string.IsNullOrEmpty(testSuite.Slug) && testSuite.TenantId is not null)
+        {
+            testSuite.Slug = await GenerateTestSuiteSlugAsync(testSuite.TenantId, testSuite.Name);
+        }
+
         //testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
-        dbContext.TestSuites.Update(suite);
+        dbContext.TestSuites.Update(testSuite);
         await dbContext.SaveChangesAsync();
     }
 
@@ -384,10 +412,53 @@ internal class TestCaseRepository : ITestCaseRepository
         await dbContext.SaveChangesAsync();
         await dbContext.TestSuites.Where(x => x.Id == testSuiteId).ExecuteDeleteAsync();
     }
+    private async Task<bool> TestCaseSlugExistsAsync(string tenantId, string slug)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestCases.AsNoTracking().Where(x => x.Slug == slug && x.TenantId == tenantId).AnyAsync();
+    }
+    private async Task<bool> TestSuiteSlugExistsAsync(string tenantId, string slug)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestSuites.AsNoTracking().Where(x => x.Slug == slug && x.TenantId == tenantId).AnyAsync();
+    }
+
+    private async Task<string> GenerateTestCaseSlugAsync(string tenantId, string name)
+    {
+        var slugHelper = new Slugify.SlugHelper();
+        var slug = slugHelper.GenerateSlug(name);
+        int counter = 1;
+        while (await TestCaseSlugExistsAsync(tenantId, slug))
+        {
+            slug = slugHelper.GenerateSlug(slug + counter);
+            counter++;
+        }
+        return slug;
+    }
+    private async Task<string> GenerateTestSuiteSlugAsync(string tenantId, string name)
+    {
+        var slugHelper = new Slugify.SlugHelper();
+        var slug = slugHelper.GenerateSlug(name);
+        int counter = 1;
+        while (await TestSuiteSlugExistsAsync(tenantId, slug))
+        {
+            slug = slugHelper.GenerateSlug(slug + counter);
+            counter++;
+        }
+        return slug;
+    }
+
 
     public async Task<TestSuite> AddTestSuiteAsync(TestSuite testSuite)
     {
-       
+        ArgumentNullException.ThrowIfNull(testSuite.TenantId);
+
+        // Generate a slug
+        if (string.IsNullOrEmpty(testSuite.Slug))
+        {
+            testSuite.Slug = await GenerateTestSuiteSlugAsync(testSuite.TenantId, testSuite.Name);
+        }
+
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         await dbContext.TestSuites.AddAsync(testSuite);
         await dbContext.SaveChangesAsync();

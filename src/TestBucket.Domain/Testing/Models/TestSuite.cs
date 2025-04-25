@@ -4,6 +4,7 @@ namespace TestBucket.Domain.Testing.Models;
 
 [Table("testsuites")]
 [Index(nameof(TenantId), nameof(Created))]
+[Index(nameof(TenantId), nameof(Slug))]
 public class TestSuite : TestEntity
 {
     /// <summary>
@@ -15,6 +16,11 @@ public class TestSuite : TestEntity
     /// Name of the test case
     /// </summary>
     public required string Name { get; set; }
+
+    /// <summary>
+    /// Slug for the test suite
+    /// </summary>
+    public string? Slug { get; set; }
 
     /// <summary>
     /// Test suite description

@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Contracts.Testing.Models;
+﻿using TestBucket.Formats.Dtos;
+
+namespace TestBucket.Contracts.Testing.Models;
 
 public class TestCaseDto
 {
@@ -8,6 +10,11 @@ public class TestCaseDto
     public long Id { get; set; }
 
     /// <summary>
+    /// Traits for the test suite
+    /// </summary>
+    public TestTraitCollection? Traits { get; set; }
+
+    /// <summary>
     /// Timestamp when the test case was created
     /// </summary>
     public DateTimeOffset Created { get; set; }
@@ -15,7 +22,7 @@ public class TestCaseDto
     /// <summary>
     /// Name of the test case
     /// </summary>
-    public required string Name { get; set; }
+    public required string TestCaseName { get; set; }
 
     /// <summary>
     /// ID of tenant
@@ -33,18 +40,22 @@ public class TestCaseDto
     public string? Slug { get; set; }
 
     /// <summary>
-    /// Identifier in an external system
-    /// </summary>
-    public string? ExternalId { get; set; }
-
-    /// <summary>
     /// Slug for the team
     /// </summary>
-    public string? Team { get; set; }
+    public string? TeamSlug { get; set; }
 
     /// <summary>
     /// Slug for the project
     /// </summary>
-    public string? Project { get; set; }
+    public string? ProjectSlug { get; set; }
 
+    /// <summary>
+    /// Slug for the test suite
+    /// </summary>
+    public string? TestSuiteSlug { get; set; }
+
+    /// <summary>
+    /// Type of test case
+    /// </summary>
+    public TestExecutionType ExecutionType { get; set; }
 }

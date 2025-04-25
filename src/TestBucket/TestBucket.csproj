@@ -53,6 +53,7 @@
     <Folder Include="Components\Environments\Layouts\" />
     <Folder Include="Components\Settings\Backup\" />
     <Folder Include="Components\Tests\TestRuns\Services\" />
+    <Folder Include="Components\Tests\TestSuites\Mapping\" />
     <Folder Include="Services\" />
   </ItemGroup>
 

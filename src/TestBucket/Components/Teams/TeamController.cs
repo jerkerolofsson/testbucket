@@ -10,15 +10,25 @@ namespace TestBucket.Components.Teams;
 internal class TeamController : TenantBaseService
 {
     private readonly ITeamRepository _teamRepository;
+    private readonly ITeamManager _teamManager;
     private readonly UserPreferencesService _userPreferencesService;
 
     public TeamController(
         ITeamRepository teamRepository,
         UserPreferencesService userPreferencesService,
-        AuthenticationStateProvider authenticationStateProvider) : base(authenticationStateProvider)
+        AuthenticationStateProvider authenticationStateProvider,
+        ITeamManager teamManager) : base(authenticationStateProvider)
     {
         _teamRepository = teamRepository;
         _userPreferencesService = userPreferencesService;
+        _teamManager = teamManager;
+    }
+
+    public async Task DeleteAsync(Team team)
+    {
+        // todo: messagebox 
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _teamManager.DeleteAsync(principal, team);
     }
 
     public async Task SetActiveTeamAsync(Team? team)

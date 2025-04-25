@@ -3,7 +3,7 @@
 @using TestBucket.Components.Teams.Dialogs
 @using TestBucket.Domain.Teams.Models
 @layout SettingsLayout
-@inject TeamController teamService
+@inject TeamController controller
 @inject IDialogService dialogService
 @inject IStringLocalizer<SharedStrings> loc
 @inject AppNavigationManager appNav
@@ -34,13 +34,22 @@
         </ToolBarContent>
 
         <Columns>
-
             <TemplateColumn Title="@loc["name"]" SortBy="x => x.Name" Sortable="true">
                 <CellTemplate>
                     <MudStack Row AlignItems="AlignItems.Center">
                         <GenericAvatar Text="@context.Item.ShortName" ImageUri="@context.Item.IconUrl"/>
                         <MudText>@context.Item.Name</MudText>
                     </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn >
+                <CellTemplate>
+                    <PermissionView Entity="PermissionEntityType.Team" Level="PermissionLevel.Delete">
+                        <Authorized>
+                            <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Clear" OnClick="async() => await DeleteAsync(context.Item)"></MudIconButton>
+                        </Authorized>
+                    </PermissionView>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
@@ -64,6 +73,11 @@
         _dataGrid?.ReloadServerData();
     }
 
+    private async Task DeleteAsync(Team team)
+    {
+        await controller.DeleteAsync(team);
+    }
+
     protected override void OnInitialized()
     {
         SetupBreadcrumbs();
@@ -78,7 +92,7 @@
 
     private async Task<GridData<Team>> LoadGridData(GridState<Team> state)
     {
-        var result = await teamService.SearchAsync(new Contracts.SearchQuery
+        var result = await controller.SearchAsync(new Contracts.SearchQuery
             {
                 Offset = state.Page * state.PageSize,
                 Count = state.PageSize

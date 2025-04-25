@@ -42,7 +42,22 @@ public interface ITestCaseManager
     /// <param name="testCase"></param>
     /// <returns></returns>
     Task<IReadOnlyList<TestEntity>> ExpandUntilRootAsync(ClaimsPrincipal principal, TestCase testCase);
+
+    /// <summary>
+    /// Returns a test case by ID
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="testCaseId"></param>
+    /// <returns></returns>
     Task<TestCase?> GetTestCaseByIdAsync(ClaimsPrincipal user, long testCaseId);
+
+    /// <summary>
+    /// Returns a test case by slug
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="slug"></param>
+    /// <returns></returns>
+    Task<TestCase?> GetTestCaseBySlugAsync(ClaimsPrincipal user, string slug);
 
     /// <summary>
     /// Removes an observer

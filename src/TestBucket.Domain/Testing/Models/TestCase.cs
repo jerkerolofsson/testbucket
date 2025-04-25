@@ -3,6 +3,7 @@
 [Table("testcases")]
 [Index(nameof(Created))]
 [Index(nameof(Name))]
+[Index(nameof(TenantId), nameof(Slug))]
 public class TestCase : TestEntity
 {
     /// <summary>

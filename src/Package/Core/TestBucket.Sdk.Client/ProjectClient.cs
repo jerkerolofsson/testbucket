@@ -12,7 +12,7 @@ public class ProjectClient(HttpClient Client)
     /// <param name="name"></param>
     /// <returns>Slug</returns>
     /// <exception cref="EmptyResponseException"></exception>
-    public async Task<string> AddAsync(string name, string team)
+    public async Task<string> AddAsync(string team, string name)
     {
         var project = new ProjectDto { Name = name, ShortName = "", Slug = "", ExternalSystems = [], Team = team };
         var createdTeam = await AddAsync(project);

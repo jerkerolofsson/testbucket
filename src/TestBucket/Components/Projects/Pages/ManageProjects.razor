@@ -48,6 +48,16 @@
 
             <PropertyColumn Property="x => x.NumberOfTestSuites" />
             <PropertyColumn Property="x => x.NumberOfTestCases" />
+
+            <TemplateColumn>
+                <CellTemplate>
+                    <PermissionView Entity="PermissionEntityType.Team" Level="PermissionLevel.Delete">
+                        <Authorized>
+                            <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Clear" OnClick="async() => await DeleteAsync(context.Item)"></MudIconButton>
+                        </Authorized>
+                    </PermissionView>
+                </CellTemplate>
+            </TemplateColumn>
         </Columns>
 
         <PagerContent>
@@ -69,6 +79,10 @@
         SetupBreadcrumbs();
     }
 
+    private async Task DeleteAsync(TestProject project)
+    {
+        await controller.DeleteAsync(project);
+    }
     private void SetupBreadcrumbs()
     {
         _nav.Clear();

@@ -1,31 +1,43 @@
 ﻿@using TestBucket.Contracts.Testing.Models
+@using TestBucket.Contracts.Testing.States
 @using TestBucket.Domain.States
-@inject ProjectController projectService
+@inject ProjectController controller
+@inject IStringLocalizer<StateStrings> loc
 
 <Field Row>
-    <FieldHeader>State</FieldHeader>
+    <FieldHeader>@loc["state"]</FieldHeader>
     <MudSpacer/>
-    <MudSelect Variant="Variant.Outlined" T="string" Value="@State" ValueChanged="OnStateChanged">
+    <MudSelect Variant="Variant.Outlined" T="TestState" Value="@State" ValueChanged="OnStateChanged">
         @foreach(var state in _states)
         {
-            <MudSelectItem Value="@state.Name">@state.Name</MudSelectItem>
+            <MudSelectItem Value="@state">
+                @if(state.MappedState == MappedTestState.Other)
+                {
+                    @state.Name
+                }
+                else
+                {
+                    var name = state.MappedState.ToString().ToLower();
+                    @loc[name]
+                }
+            </MudSelectItem>
         }
     </MudSelect>
 </Field>
 
 @code {
-    [Parameter] public long? TestProjectId { get; set; }
-    [Parameter] public string? State { get; set; }
-    [Parameter] public EventCallback<string?> StateChanged { get; set; }
+    [Parameter] public long TestProjectId { get; set; }
+    [Parameter] public TestState? State { get; set; }
+    [Parameter] public EventCallback<TestState?> StateChanged { get; set; }
 
-    private TestState[] _states = [];
+    private IReadOnlyList<TestState> _states = [];
 
     protected override async Task OnInitializedAsync()
     {
-        _states = await projectService.GetStatesAsync(TestProjectId);
+        _states = await controller.GetTestCaseRunStatesAsync(TestProjectId);
     }
 
-    private async Task OnStateChanged(string? state)
+    private async Task OnStateChanged(TestState? state)
     {
         await StateChanged.InvokeAsync(state);
     }

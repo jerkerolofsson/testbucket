@@ -11,24 +11,19 @@
         {
             @foreach (var upstream in _node.Upstream)
             {
-                @foreach (var innerUpstream in upstream.Upstream)
-                {
-                    <TraceabilityNodeLink Node="@innerUpstream" />
-                }
-            }
-        }
-    </div>
-
-    <div class="left">
-        @if (_loading)
-        {
-            <MudSkeleton Width="100%" Height="50px" SkeletonType="SkeletonType.Rectangle" />
-        }
-        else if (_node is not null && _node.Upstream.Count > 0)
-        {
-            @foreach (var upstream in _node.Upstream)
-            {
-                <TraceabilityNodeLink Node="@upstream" />
+                <div class="tb-trace-deps upstream">
+                    <div>
+                        @foreach (var innerUpstream in upstream.Upstream)
+                        {
+                            <div>
+                                <TraceabilityNodeLink Node="@innerUpstream" />
+                            </div>
+                        }
+                    </div>
+                    <div class="tb-trace-deps upstream">
+                        <TraceabilityNodeLink Node="@upstream" />
+                    </div>
+                </div>
             }
         }
     </div>
@@ -53,28 +48,19 @@
         {
             @foreach(var downstream in _node.Downstream)
             {
-                <div class="tb-trace-dep downstream">
-                    <TraceabilityNodeLink Node="@downstream"/>
-                </div>
-            }
-        }
-    </div>
-
-    <div class="right">
-        @if (_loading)
-        {
-            <MudSkeleton Width="100%" Height="50px" SkeletonType="SkeletonType.Rectangle" />
-        }
-        else if (_node is not null && _node.Downstream.Count > 0)
-        {
-            @foreach (var downstream in _node.Downstream)
-            {
-                @foreach (var innerDownstream in downstream.Downstream)
-                {
-                    <div class="tb-trace-dep downstream">
-                        <TraceabilityNodeLink Node="@innerDownstream" />
+                <div class="tb-trace-deps downstream">
+                    <div>
+                        <TraceabilityNodeLink Node="@downstream"/>
                     </div>
-                }
+                    <div class="tb-trace-deps downstream">
+                        @foreach (var innerUpstream in downstream.Downstream)
+                        {
+                            <div class="tb-trace-dep upstream">
+                                <TraceabilityNodeLink Node="@innerUpstream" />
+                            </div>
+                        }
+                    </div>
+                </div>
             }
         }
     </div>

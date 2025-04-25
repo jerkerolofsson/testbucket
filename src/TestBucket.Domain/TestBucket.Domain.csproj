@@ -7,6 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Requirements\Relationships\**" />
+      <EmbeddedResource Remove="Requirements\Relationships\**" />
+      <None Remove="Requirements\Relationships\**" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="DotNet.Glob" Version="3.1.3" />
         <PackageReference Include="Mediator.Abstractions" Version="2.1.7" />
         <PackageReference Include="Mediator.SourceGenerator" Version="2.1.7">
@@ -48,7 +54,6 @@
 
     <ItemGroup>
       <Folder Include="Automation\Pipelines\IntegrationEvents\" />
-      <Folder Include="Requirements\Relationships\" />
       <Folder Include="Testing\TestCases\" />
       <Folder Include="TestResources\Services\" />
     </ItemGroup>

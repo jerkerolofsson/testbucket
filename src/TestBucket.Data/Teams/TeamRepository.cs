@@ -1,8 +1,11 @@
 ﻿
+using System.Xml.Linq;
+
 using OneOf;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Teams.Models;
+using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Data.Teams;
 internal class TeamRepository : ITeamRepository
@@ -65,6 +68,31 @@ internal class TeamRepository : ITeamRepository
         };
     }
 
+
+    /// <summary>
+    /// Creates a new team
+    /// </summary>
+    /// <param name="name">Name of project</param>
+    /// <returns></returns>
+    public async Task<OneOf<Team, AlreadyExistsError>> AddAsync(Team team)
+    {
+        ArgumentNullException.ThrowIfNull(team.TenantId);
+
+        team.Slug = GenerateSlug(team.Name);
+        if (await SlugExistsAsync(team.TenantId, team.Slug))
+        {
+            return new AlreadyExistsError();
+        }
+
+        team.ShortName = await GenerateShortNameAsync(team.Slug, team.TenantId);
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.Teams.AddAsync(team);
+        await dbContext.SaveChangesAsync();
+
+        return team;
+    }
+
     /// <summary>
     /// Creates a new team
     /// </summary>
@@ -77,7 +105,7 @@ internal class TeamRepository : ITeamRepository
             Name = name,
             Slug = GenerateSlug(name),
             TenantId = tenantId,
-            ShortName = "",
+            ShortName = ""
         };
 
         if (await SlugExistsAsync(tenantId, team.Slug))
@@ -140,7 +168,7 @@ internal class TeamRepository : ITeamRepository
     public async Task<bool> SlugExistsAsync(string tenantId, string slug)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Projects.AsNoTracking().Where(x => x.Slug == slug && x.TenantId == tenantId).AnyAsync();
+        return await dbContext.Teams.AsNoTracking().Where(x => x.Slug == slug && x.TenantId == tenantId).AnyAsync();
     }
 
     /// <summary>
@@ -151,6 +179,13 @@ internal class TeamRepository : ITeamRepository
     public async Task<bool> NameExistsAsync(string tenantId, string name)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.Projects.AsNoTracking().Where(x => x.Name == name && x.TenantId == tenantId).AnyAsync();
+        return await dbContext.Teams.AsNoTracking().Where(x => x.Name == name && x.TenantId == tenantId).AnyAsync();
+    }
+
+    public async Task DeleteAsync(Team team)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        dbContext.Teams.Remove(team);
+        await dbContext.SaveChangesAsync();
     }
 }

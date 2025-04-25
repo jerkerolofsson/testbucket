@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Issues.Models;
+﻿using TestBucket.Contracts.Testing.States;
+using TestBucket.Domain.Issues.Models;
 
 namespace TestBucket.Domain.Testing.Models;
 
@@ -39,6 +40,11 @@ public class TestCaseRun : TestEntity
     /// Test state
     /// </summary>
     public string? State { get; set; }
+
+    /// <summary>
+    /// Mapped state
+    /// </summary>
+    public MappedTestState? MappedState { get; set; }
 
     /// <summary>
     /// Message/Error

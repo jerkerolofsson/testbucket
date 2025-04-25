@@ -12,7 +12,6 @@
 {
     <MudMenuItem Icon="@Icons.Material.Filled.PlayArrow" OnClick="RunAsync">Run</MudMenuItem>
     <MudDivider />
-    <MudMenuItem Icon="@Icons.Material.Filled.ContentCopy" OnClick="DuplicateTestAsync">@loc["duplicate"]</MudMenuItem>
     <MudMenuItem Icon="@Icons.Material.Filled.Code" OnClick="EditTestCaseAutomationLinkAsync">Link to automated test</MudMenuItem>
 
     <CommandMenuItems TypeName="TestCase" />
@@ -36,15 +35,6 @@
         {
             appNavigationManager.NavigateTo(run);
         }
-    }
-
-    private async Task DuplicateTestAsync()
-    {
-        if (TestCase is null)
-        {
-            return;
-        }
-        await testCaseEditor.DuplicateTestAsync(TestCase);
     }
 
     private async Task EditTestCaseAutomationLinkAsync()

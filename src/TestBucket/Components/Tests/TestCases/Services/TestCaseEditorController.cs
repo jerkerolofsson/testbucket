@@ -7,7 +7,7 @@ using NGitLab.Models;
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.TestCases.Dialogs;
-using TestBucket.Contracts.Testing.Models;
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;

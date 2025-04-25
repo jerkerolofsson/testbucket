@@ -4,7 +4,8 @@ using OneOf;
 
 using TestBucket.Components.Projects.Dialogs;
 using TestBucket.Contracts.Integrations;
-using TestBucket.Contracts.Testing.Models;
+using TestBucket.Contracts.Requirements.States;
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Identity;
@@ -122,14 +123,27 @@ internal class ProjectController : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         return await _pipelineManager.GetExternalPipelineRunnersAsync(principal, testProjectId);
     }
-    public async Task<TestState[]> GetStatesAsync(long? projectId)
+
+    /// <summary>
+    /// Returns possible states for test case runs
+    /// </summary>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<TestState>> GetTestCaseRunStatesAsync(long projectId)
     {
-        if(projectId is null)
-        {
-            return _stateService.GetDefaultStates();
-        }
         var principal = await GetUserClaimsPrincipalAsync();
-        return await _stateService.GetProjectStatesAsync(principal, projectId.Value);
+        return await _stateService.GetTestCaseRunStatesAsync(principal, projectId);
+    }
+
+    /// <summary>
+    /// Returns possible states for test case runs
+    /// </summary>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<RequirementState>> GetRequirementStatesAsync(long projectId)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _stateService.GetRequirementStatesAsync(principal, projectId);
     }
 
     public async Task<TestProject?> GetActiveProjectAsync()

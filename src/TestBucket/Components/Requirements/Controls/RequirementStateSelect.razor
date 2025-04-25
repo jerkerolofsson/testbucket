@@ -1,0 +1,45 @@
+﻿@using TestBucket.Contracts.Requirements.States
+@using TestBucket.Contracts.Testing.Models
+@using TestBucket.Contracts.Testing.States
+@using TestBucket.Domain.States
+@inject ProjectController controller
+@inject IStringLocalizer<StateStrings> loc
+
+<Field Row>
+    <FieldHeader>@loc["state"]</FieldHeader>
+    <MudSpacer />
+    <MudSelect Variant="Variant.Outlined" T="RequirementState" Value="@State" ValueChanged="OnStateChanged">
+        @foreach (var state in _states)
+        {
+            <MudSelectItem Value="@state">
+                @if (state.MappedState == MappedRequirementState.Other)
+                {
+                    @state.Name
+                }
+                else
+                {
+                    var name = state.MappedState.ToString().ToLower();
+                    @loc[name]
+                }
+            </MudSelectItem>
+        }
+    </MudSelect>
+</Field>
+
+@code {
+    [Parameter] public long TestProjectId { get; set; }
+    [Parameter] public RequirementState? State { get; set; }
+    [Parameter] public EventCallback<RequirementState?> StateChanged { get; set; }
+
+    private IReadOnlyList<RequirementState> _states = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _states = await controller.GetRequirementStatesAsync(TestProjectId);
+    }
+
+    private async Task OnStateChanged(RequirementState? state)
+    {
+        await StateChanged.InvokeAsync(state);
+    }
+}

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 
 using TestBucket.Contracts.Testing.Models;
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Components.Tests.TestRuns.Controls;
@@ -13,6 +14,18 @@ public partial class TestRunView
     private TestCaseRun? _selectedTestCaseRun = null;
     private TestCaseRunGrid? testCaseRunGrid;
     private string _markdown = "";
+
+    private TestState? State 
+    {
+        get
+        {
+            if(_selectedTestCaseRun?.State is not null)
+            {
+                return new TestState() { MappedState = _selectedTestCaseRun.MappedState ?? MappedTestState.NotStarted, Name = _selectedTestCaseRun.State };
+            }
+            return null;
+        }
+    }
 
     private int _activePanelIndex = 0;
     private void OnActivePanelIndexChanged(int index)
@@ -68,11 +81,12 @@ public partial class TestRunView
         }
     }
 
-    private async Task OnTestCaseRunStateChanged(string? state)
+    private async Task OnTestCaseRunStateChanged(TestState? state)
     {
         if (_selectedTestCaseRun?.TestCase is not null)
         {
-            _selectedTestCaseRun.State = state;
+            _selectedTestCaseRun.State = state?.Name;
+            _selectedTestCaseRun.MappedState = state?.MappedState;
 
             await testCaseEditorController.SaveTestCaseRunAsync(_selectedTestCaseRun);
         }

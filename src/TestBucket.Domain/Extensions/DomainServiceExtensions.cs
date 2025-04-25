@@ -28,6 +28,8 @@ using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Appearance;
 using TestBucket.Domain.Settings.Server;
 using TestBucket.Domain.States;
+using TestBucket.Domain.States.Caching;
+using TestBucket.Domain.Teams;
 using TestBucket.Domain.Tenants;
 using TestBucket.Domain.TestAccounts;
 using TestBucket.Domain.TestAccounts.Allocation;
@@ -73,9 +75,12 @@ public static class DomainServiceExtensions
 
         services.AddScoped<IFileResourceManager, FileResourceManager>();
 
+        services.AddScoped<IStateService, StateService>();
+        services.AddSingleton<ProjectStateCache>();
+
         services.AddScoped<IMarkdownDetector,TemplateDetector>();
         services.AddScoped<ITestCompiler, TestCompiler>();
-        services.AddScoped<IStateService, StateService>();
+
         services.AddScoped<ITextTestResultsImporter, TextImporter>();
         services.AddScoped<ITestCaseManager, TestCaseManager>();
         services.AddScoped<ITestSuiteManager, TestSuiteManager>();
@@ -101,6 +106,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IUserManager, UserManager>();
         services.AddScoped<IProfilePictureManager, ProfilePictureManager>();
 
+        services.AddScoped<ITeamManager, TeamManager>();
         services.AddScoped<IProjectManager, ProjectManager>();
         services.AddScoped<IPipelineProjectManager, PipelineProjectManager>();
         services.AddScoped<IProjectTokenGenerator, ProjectTokenGenerator>();

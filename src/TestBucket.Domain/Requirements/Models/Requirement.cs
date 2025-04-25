@@ -1,4 +1,6 @@
-﻿using TestBucket.Contracts.Testing.Models;
+﻿using TestBucket.Contracts.Requirements.States;
+using TestBucket.Contracts.Requirements.Types;
+using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Requirements.Models;
@@ -55,6 +57,11 @@ public class Requirement : RequirementEntity
     public string? State { get; set; }
 
     /// <summary>
+    /// Known state of the requiremnt
+    /// </summary>
+    public MappedRequirementState? MappedState { get; set; }
+
+    /// <summary>
     /// Optional root requirement if this is a downstream requirement
     /// This is useful to quickly identify all child requirements without traversing, for example to understand the coverage of a feature
     /// </summary>
@@ -74,6 +81,11 @@ public class Requirement : RequirementEntity
     /// Type of requirement
     /// </summary>
     public string? RequirementType { get; set; }
+
+    /// <summary>
+    /// Known type of the requiremnt
+    /// </summary>
+    public MappedRequirementType? MappedType { get; set; }
 
     /// <summary>
     /// ID of test suite

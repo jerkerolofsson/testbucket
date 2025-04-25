@@ -5,7 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.Testing.Models;
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Data;
 using TestBucket.Domain.Keyboard;
 
@@ -1105,6 +1108,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("IconUrl")
                         .HasColumnType("text");
 
+                    b.Property<IssueStates[]>("IssueStates")
+                        .HasColumnType("jsonb");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -1123,6 +1129,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<int>("NumberOfTestSuites")
                         .HasColumnType("integer");
+
+                    b.Property<RequirementState[]>("RequirementStates")
+                        .HasColumnType("jsonb");
 
                     b.Property<string>("ShortName")
                         .IsRequired()
@@ -1172,6 +1181,12 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<string>("ExternalProvider")
                         .HasColumnType("text");
+
+                    b.Property<int?>("MappedState")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("MappedType")
+                        .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("Modified")
                         .HasColumnType("timestamp with time zone");
@@ -1930,6 +1945,9 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<int>("Duration")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("MappedState")
                         .HasColumnType("integer");
 
                     b.Property<string>("Message")

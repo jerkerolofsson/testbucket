@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.Requirements.States;
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Identity.Models;
 using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Tenants.Models;
@@ -75,10 +78,22 @@ public class TestProject
     public int NumberOfRuns { get; set; }
 
     /// <summary>
-    /// Applicable states for test execution that a user can select
+    /// Applicable states for tests that a user can select
     /// </summary>
     [Column(TypeName = "jsonb")]
     public TestState[]? TestStates { get; set; }
+
+    /// <summary>
+    /// Applicable states for requirements that a user can select
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public RequirementState[]? RequirementStates { get; set; }
+
+    /// <summary>
+    /// Applicable states for issues that a user can select
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public IssueStates[]? IssueStates { get; set; }
 
     // Navigation
 

@@ -5,12 +5,15 @@ using TestBucket.Domain.Teams.Models;
 namespace TestBucket.Domain.Teams;
 public interface ITeamRepository
 {
+    Task<OneOf<Team, AlreadyExistsError>> AddAsync(Team team);
+
     /// <summary>
     /// Creates a new team
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
     Task<OneOf<Team, AlreadyExistsError>> CreateAsync(string tenantId, string name);
+    Task DeleteAsync(Team team);
 
     /// <summary>
     /// Generates a short name

@@ -1,19 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using TestBucket.Controllers.Api;
 using TestBucket.Domain.ApiKeys.Validation;
 using TestBucket.Domain.Projects;
 using TestBucket.Formats;
 
-namespace TestBucket.Controllers.Api;
+namespace TestBucket.Components.Tests.TestCases.Api;
 
 [ApiController]
-public class ResultsController : ProjectApiControllerBase
+public class ResultsApiController : ProjectApiControllerBase
 {
     private readonly ITextTestResultsImporter _textTestResultsImporter;
     private readonly IProjectManager _projectManager;
 
-    public ResultsController(ITextTestResultsImporter textTestResultsImporter, IProjectManager projectManager)
+    public ResultsApiController(ITextTestResultsImporter textTestResultsImporter, IProjectManager projectManager)
     {
         _textTestResultsImporter = textTestResultsImporter;
         _projectManager = projectManager;

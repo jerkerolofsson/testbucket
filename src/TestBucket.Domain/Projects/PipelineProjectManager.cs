@@ -58,7 +58,7 @@ internal class PipelineProjectManager : IPipelineProjectManager
         var endpoint = settings.PublicEndpointUrl;
         if (endpoint is not null)
         {
-            context.Variables["TB_PUBLIC_ENDPOINT"] = endpoint;
+            context.Variables[TestBucketEnvironmentVariables.TB_PUBLIC_ENDPOINT] = endpoint;
         }
     }
 

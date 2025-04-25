@@ -1,11 +1,11 @@
 ﻿using TestBucket.Components.Tests.Dialogs;
-using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Components.Tests.TestRuns.Dialogs;
+using TestBucket.Contracts.Testing.States;
 
 namespace TestBucket.Components.Tests.Services;
 

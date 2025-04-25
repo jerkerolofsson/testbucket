@@ -26,4 +26,25 @@ public class TestCaseDto
     /// Test case description
     /// </summary>
     public string? Description { get; set; }
+
+    /// <summary>
+    /// Slug for the test case
+    /// </summary>
+    public string? Slug { get; set; }
+
+    /// <summary>
+    /// Identifier in an external system
+    /// </summary>
+    public string? ExternalId { get; set; }
+
+    /// <summary>
+    /// Slug for the team
+    /// </summary>
+    public string? Team { get; set; }
+
+    /// <summary>
+    /// Slug for the project
+    /// </summary>
+    public string? Project { get; set; }
+
 }

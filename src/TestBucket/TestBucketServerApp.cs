@@ -123,13 +123,14 @@ public static class TestBucketServerApp
 
         var seedConfiguration = new SeedConfiguration
         {
-            Tenant = Environment.GetEnvironmentVariable("TB_DEFAULT_TENANT"),
-            Email = Environment.GetEnvironmentVariable("TB_ADMIN_USER"),
-            SymmetricKey = Environment.GetEnvironmentVariable("TB_JWT_SYMMETRIC_KEY"),
-            Issuer = Environment.GetEnvironmentVariable("TB_JWT_ISS"),
-            Audience = Environment.GetEnvironmentVariable("TB_JWT_AUD"),
-            AccessToken = Environment.GetEnvironmentVariable("TB_ADMIN_ACCESS_TOKEN"),
-            PublicEndpointUrl = Environment.GetEnvironmentVariable("TB_PUBLIC_ENDPOINT"),
+            Tenant = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_DEFAULT_TENANT),
+            Email = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_ADMIN_USER),
+            SymmetricKey = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_JWT_SYMMETRIC_KEY),
+            Issuer = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_JWT_ISS),
+            Audience = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_JWT_AUD),
+            AccessToken = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_ADMIN_ACCESS_TOKEN),
+            PublicEndpointUrl = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_PUBLIC_ENDPOINT),
+            Password = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_ADMIN_PASSWORD),
         };
         builder.Services.AddSingleton(seedConfiguration);
 
@@ -203,12 +204,21 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<UserController>();
 
         builder.Services.AddScoped<HotKeysService>();
+
+        // Test suite
+
         builder.Services.AddScoped<ICommand, RunTestSuiteCommand>();
         builder.Services.AddScoped<ICommand, AddTestSuiteToRunCommand>();
+
+
+        // Test tree view
         builder.Services.AddScoped<ICommand, BatchTagCommand>();
-        builder.Services.AddScoped<ICommand, NewTestCommand>();
         builder.Services.AddScoped<ICommand, NewFolderCommand>();
         builder.Services.AddScoped<ICommand, SyncWithActiveDocumentCommand>();
+
+        // Test case
+        builder.Services.AddScoped<ICommand, DuplicateTestCommand>();
+        builder.Services.AddScoped<ICommand, NewTestCommand>();
 
         builder.Services.AddScoped<ICommand, LinkIssueCommand>();
         builder.Services.AddScoped<ICommand, DeleteLinkedIssueCommand>();

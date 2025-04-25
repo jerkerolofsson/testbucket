@@ -169,7 +169,6 @@ internal class ProjectManager : IProjectManager
     public async Task SaveProjectIntegrationAsync(ClaimsPrincipal principal, string slug, ExternalSystem system)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
-        principal.ThrowIfNotAdmin();
         var tenantId = principal.GetTenantIdOrThrow();
         system.TenantId = tenantId;
 
@@ -196,6 +195,14 @@ internal class ProjectManager : IProjectManager
         {
             await _projectRepository.UpdateProjectIntegrationAsync(tenantId, slug, system);
         }
+    }
+
+    public async Task<TestProject?> GetTestProjectBySlugAsync(ClaimsPrincipal principal, string slug)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
+        var tenantId = principal.GetTenantIdOrThrow();
+
+        return await _projectRepository.GetBySlugAsync(tenantId, slug);
     }
 
     #endregion Project Integrations

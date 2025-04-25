@@ -707,19 +707,24 @@ public partial class TestTreeView
 
     #endregion
 
-    private void OnMenuOpened(TreeNode<BrowserItem> treeNode)
+    private async Task OnMenuOpened(TreeNode<BrowserItem> treeNode)
     {
         if (treeNode.Value?.TestCase is not null)
         {
+            
             appNavigationManager.State.SelectedTestCase = treeNode.Value.TestCase;
             appNavigationManager.State.SelectedTestSuiteFolder = null;
-            appNavigationManager.State.SelectedTestSuite = null;
+            if (treeNode.Value.TestCase.TestSuiteFolderId is not null)
+            {
+                appNavigationManager.State.SelectedTestSuiteFolder = await testBrowser.GetTestSuiteFolderByIdAsync(treeNode.Value.TestCase.TestSuiteFolderId.Value);
+            }
+            appNavigationManager.State.SelectedTestSuite = await testBrowser.GetTestSuiteByIdAsync(treeNode.Value.TestCase.TestSuiteId);
         }
         if (treeNode.Value?.Folder is not null)
         {
             appNavigationManager.State.SelectedTestCase = null;
             appNavigationManager.State.SelectedTestSuiteFolder = treeNode.Value.Folder;
-            appNavigationManager.State.SelectedTestSuite = null;
+            appNavigationManager.State.SelectedTestSuite = await testBrowser.GetTestSuiteByIdAsync(treeNode.Value.Folder.TestSuiteId);
         }
         if (treeNode.Value?.TestSuite is not null)
         {

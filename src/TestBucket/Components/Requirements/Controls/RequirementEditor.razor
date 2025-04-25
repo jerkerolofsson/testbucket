@@ -1,6 +1,7 @@
 ﻿@using MudBlazor.Utilities
 @using TestBucket.Components.Requirements.Commands
 @using TestBucket.Components.Shared.Splitter
+@using TestBucket.Contracts.Requirements.States
 @using TestBucket.Domain.Requirements
 @inject RequirementEditorController editor
 @inject RequirementBrowser browser
@@ -83,6 +84,8 @@
 
                 <MudStack Class="pa-2">
 
+                    <RequirementStateSelect State="@State" StateChanged="OnStateChanged" />
+
                     <FieldsEditor Requirement="@Requirement" />
 
                     <Field>
@@ -128,6 +131,18 @@
     private MarkdownEditor? _editor;
     private bool _preview = true;
 
+    private RequirementState? State
+    {
+        get
+        {
+            if (Requirement?.State is not null)
+            {
+                return new RequirementState() { MappedState = Requirement.MappedState ?? MappedRequirementState.Draft, Name = RequirementStates.Draft };
+            }
+            return null;
+        }
+    }
+
     private RequirementTestLink[] _links = [];
 
     private void BeginEdit()
@@ -140,6 +155,17 @@
         if (Requirement is not null)
         {
             _links = await browser.GetLinksForRequirementAsync(Requirement);
+        }
+    }
+
+    private async Task OnStateChanged(RequirementState? state)
+    {
+        if (Requirement is not null)
+        {
+            Requirement.State = state?.Name;
+            Requirement.MappedState = state?.MappedState;
+
+            await SaveChangesAsync();
         }
     }
 

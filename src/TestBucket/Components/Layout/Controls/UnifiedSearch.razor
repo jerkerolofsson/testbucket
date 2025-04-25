@@ -15,9 +15,10 @@
 @implements IAsyncDisposable
 
 <MudAutocomplete 
-@ref="_element"
-AdornmentIcon="@Icons.Material.Filled.Search" Clearable
-T="SearchResult" Placeholder="/" Value="_searchState" ValueChanged="SearchStateChanged" SearchFunc="@Search" Variant="Variant.Outlined" />
+    Class="tb-unified-search"
+    @ref="_element"
+    AdornmentIcon="@Icons.Material.Filled.Search" Clearable
+    T="SearchResult" Placeholder="/" Value="_searchState" ValueChanged="SearchStateChanged" SearchFunc="@Search" Variant="Variant.Outlined" />
 
 @code {
     private SearchResult? _searchState;

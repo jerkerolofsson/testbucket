@@ -10,6 +10,7 @@ public interface IProjectManager
     Task<PagedResult<TestProject>> BrowseTestProjectsAsync(ClaimsPrincipal principal, int offset, int count);
     Task<string[]?> GetFieldOptionsAsync(ClaimsPrincipal principal, long testProjectId, TraitType traitType, CancellationToken cancellationToken);
     Task<TestProject?> GetTestProjectByIdAsync(ClaimsPrincipal principal, long projectId);
+    Task<TestProject?> GetTestProjectBySlugAsync(ClaimsPrincipal principal, string slug);
 
     #region Integrations
     Task DeleteProjectIntegrationAsync(ClaimsPrincipal principal, long id);

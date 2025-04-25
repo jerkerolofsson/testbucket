@@ -1,69 +1,65 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Mediator;
 
+using TestBucket.Contracts.Requirements.States;
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.States.Caching;
 
 namespace TestBucket.Domain.States;
+
+/// <summary>
+/// Manages the available states 
+/// </summary>
 public class StateService : IStateService
 {
-    private readonly IProjectRepository _projectRepository;
+    private readonly IMediator _mediator;
+    private readonly ProjectStateCache _cache;
 
-    public StateService(IProjectRepository projectRepository)
+    public StateService(IMediator mediator, ProjectStateCache cache)
     {
-        _projectRepository = projectRepository;
+        _mediator = mediator;
+        _cache = cache;
     }
 
-    /// <summary>
-    /// Returns default states if no states has been configured for the project
-    /// </summary>
-    /// <returns></returns>
-    public TestState[] GetDefaultStates()
-    {
-        return [
-                new() { Name = "Not Started", IsInitial = true },
-                new() { Name = "Assigned" },
-                new() { Name = "Ongoing" },
-                new() { Name = "Completed", IsFinal = true },
-            ];
-    }
 
     public async Task<TestState> GetProjectInitialStateAsync(ClaimsPrincipal principal, long projectId)
     {
-        var states = await GetProjectStatesAsync(principal, projectId);
+        var states = await GetTestCaseRunStatesAsync(principal, projectId);
+        states ??= DefaultStates.GetDefaultTestCaseRunStates();
         var state = states.Where(x => x.IsInitial).FirstOrDefault();
-        if (state is null)
-        {
-            states = GetDefaultStates();
-            state = states.Where(x => x.IsInitial).First();
-        }
-        return state ?? new TestState() { Name = "Not Started", IsFinal = false, IsInitial = true };
+        return state ?? new TestState() { Name = TestStates.NotStarted, MappedState = MappedTestState.NotStarted, IsFinal = false, IsInitial = true };
     }
 
     public async Task<TestState> GetProjectFinalStateAsync(ClaimsPrincipal principal, long projectId)
     {
-        var states = await GetProjectStatesAsync(principal, projectId);
+        var states = await GetTestCaseRunStatesAsync(principal, projectId);
+        states ??= DefaultStates.GetDefaultTestCaseRunStates();
         var state = states.Where(x => x.IsFinal).FirstOrDefault();
-        if (state is null)
+        return state ?? new TestState() { Name = TestStates.Completed, MappedState = MappedTestState.Completed, IsFinal = true, IsInitial = false };
+    }
+
+    public async Task<IReadOnlyList<TestState>> GetTestCaseRunStatesAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
+
+        if(!_cache.TryGetValue(projectId, out ProjectStateCacheEntry? entry))
         {
-            states = GetDefaultStates();
-            state = states.Where(x => x.IsFinal).First();
+            entry = await _mediator.Send(new RefreshProjectStateCacheRequest(principal, projectId));
         }
-        return state ?? new TestState() { Name = "Completed", IsFinal = true, IsInitial = false }; ;
+        return entry?.TestStates ?? DefaultStates.GetDefaultTestCaseRunStates();
     }
 
 
-    public async Task<TestState[]> GetProjectStatesAsync(ClaimsPrincipal principal, long projectId)
+    public async Task<IReadOnlyList<RequirementState>> GetRequirementStatesAsync(ClaimsPrincipal principal, long projectId)
     {
         var tenantId = principal.GetTenantIdOrThrow();
-        var project = await _projectRepository.GetProjectByIdAsync(tenantId, projectId);
-        if(project?.TestStates is not null && project.TestStates.Length > 0)
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
+
+        if (!_cache.TryGetValue(projectId, out ProjectStateCacheEntry? entry))
         {
-            return project.TestStates;
+            entry = await _mediator.Send(new RefreshProjectStateCacheRequest(principal, projectId));
         }
-        return GetDefaultStates();
+        return entry?.RequirementStates ?? DefaultStates.GetDefaultRequirementStates();
     }
 }

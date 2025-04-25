@@ -6,13 +6,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using TestBucket.Contracts.Runners.Models;
+using TestBucket.Controllers.Api;
 using TestBucket.Domain.Automation.Artifact.Events;
 using TestBucket.Domain.Automation.Runners;
 using TestBucket.Domain.Automation.Runners.Jobs;
 using TestBucket.Domain.Automation.Runners.Registration;
 using TestBucket.Domain.Shared;
 
-namespace TestBucket.Controllers.Api;
+namespace TestBucket.Components.Automation.Api;
 
 [ApiController]
 public class RunnerApiController : ProjectApiControllerBase
@@ -39,7 +40,7 @@ public class RunnerApiController : ProjectApiControllerBase
     [HttpPost("/api/runner/connect")]
     public async Task ConnectRunnerAsync([FromBody] ConnectRequest request)
     {
-        await _mediator.Publish(new RunnerConnectedEvent(this.User, request));
+        await _mediator.Publish(new RunnerConnectedEvent(User, request));
     }
 
 
@@ -47,7 +48,7 @@ public class RunnerApiController : ProjectApiControllerBase
     [HttpPost("/api/runner/{runnerId}/jobs/{jobGuid}")]
     public async Task UpdateJobStatusAsync(string runnerId, [FromBody] RunResponse runResponse)
     {
-        await _mediator.Send(new UpdateRunnerJobStatusRequest(this.User, runResponse));
+        await _mediator.Send(new UpdateRunnerJobStatusRequest(User, runResponse));
     }
 
 
@@ -81,13 +82,13 @@ public class RunnerApiController : ProjectApiControllerBase
     [HttpGet("/api/runner/{runnerId}/jobs")]
     public async Task<IActionResult> GetJobsAsync(string runnerId, CancellationToken cancellationToken)
     {
-        var response = await _mediator.Send(new GetJobRequest(this.User, runnerId));
+        var response = await _mediator.Send(new GetJobRequest(User, runnerId));
         if(response.Request is null)
         {
             // Perform "long poll"
             await _waiter.WaitAsync(TimeSpan.FromSeconds(10));
             _waiter.Reset();
-            response = await _mediator.Send(new GetJobRequest(this.User, runnerId));
+            response = await _mediator.Send(new GetJobRequest(User, runnerId));
             if(response?.Request is not null)
             {
                 return Ok(response.Request);

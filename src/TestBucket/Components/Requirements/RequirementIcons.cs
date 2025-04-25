@@ -1,4 +1,4 @@
-﻿using TestBucket.Contracts.Requirements;
+﻿using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain;
 using TestBucket.Domain.Requirements.Models;
 

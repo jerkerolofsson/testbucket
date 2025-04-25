@@ -17,7 +17,6 @@ public static class ProjectMapper
             Slug = project.Slug,
             ShortName = project.ShortName,
             TestStates = project.TestStates?.ToArray(),
-            TeamId = project.TeamId,
             ExternalSystems = []
         };
 

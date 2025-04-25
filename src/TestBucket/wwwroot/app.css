@@ -102,6 +102,9 @@ html, body {
     box-shadow: -2px 0 0 var(--mud-palette-primary);
 }
 
+.mud-autocomplete:has(.tb-unified-search) {
+    max-width: 250px;
+}
 
 .tb-draggable .drag-handle {
     cursor: grab;
@@ -418,7 +421,7 @@ tb-field .mud-link.mud-link-underline-hover:hover {
     border: 1px solid transparent;
 }
 
-.tb-trace-view > * > :hover,
+.tb-trace-view .tb-traceability-node-link-wrapper:hover,
 .tb-background-hover:hover,
 .tb-datarow:hover,
 .tb-datarow-selected:hover { 
@@ -854,9 +857,12 @@ div.tb-profile-image.tb-background-9 {
 
 .tb-trace-view {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: 2fr 1fr 2fr;
     gap: 16px;
     align-items: center;
+    width: 100%;
+    padding: 4px;
+    border: solid 1px var(--tb-palette-field-border);
 }
 
 .tb-trace-view > * {
@@ -864,16 +870,32 @@ div.tb-profile-image.tb-background-9 {
     flex-direction: column;
     gap: 4px;
     cursor: pointer;
-    
+    overflow: hidden;
+}
+
+.tb-trace-view .tb-trace-deps {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}
+
+.tb-trace-view .tb-trace-deps .tb-trace-deps {
+    display: flex;
+    flex-direction: column;
 }
 
 .tb-trace-view > .center > * {
     border: solid 1px var(--mud-palette-tertiary);
 }
 
-.tb-trace-view > * > * {
+.tb-trace-view .tb-traceability-node-link-wrapper {
     background: var(--mud-palette-surface);
     padding: 4px;
     border-radius: 4px;
     border: solid 1px transparent;
+    height: 100%;
+    display: flex;
+    align-items: center;
+
+
 }

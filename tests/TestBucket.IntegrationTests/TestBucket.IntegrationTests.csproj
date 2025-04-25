@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<OutputType>Exe</OutputType>
+		<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+		<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MartinCostello.Logging.XUnit.v3" Version="0.5.1" />
+		<PackageReference Include="Aspire.Hosting.Testing" Version="9.1.0" />
+		<PackageReference Include="xunit.v3" Version="2.0.0" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="coverlet.collector" Version="6.0.2" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Package\Core\TestBucket.Sdk.Client\TestBucket.Sdk.Client.csproj" />
+		<ProjectReference Include="..\..\src\Package\Traits\TestBucket.Traits.XUnit\TestBucket.Traits.Xunit.csproj" />
+		<ProjectReference Include="..\..\src\TestBucket.AppHost\TestBucket.AppHost.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Xunit" />
+	</ItemGroup>
+
+</Project>

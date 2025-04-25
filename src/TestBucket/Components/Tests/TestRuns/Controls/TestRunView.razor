@@ -42,7 +42,7 @@
                             @if (!readOnly)
                             {
                                 <TestCaseRunEditor TestCaseRun="@_selectedTestCaseRun" TestCaseRunChanged="OnTestCaseRunChanged" />
-                                <TestRunStatePicker State="@_selectedTestCaseRun.State" StateChanged="OnTestCaseRunStateChanged" />
+                                <TestRunStatePicker State="@State" StateChanged="OnTestCaseRunStateChanged" />
                             
                                 <FieldsEditor TestCaseRun="@_selectedTestCaseRun" />
                             }

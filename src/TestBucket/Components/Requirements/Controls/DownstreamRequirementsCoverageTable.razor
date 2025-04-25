@@ -13,6 +13,7 @@ else if(_downstream.Count > 0)
         <HeaderContent>
             <MudTh>@loc["requirement"]</MudTh>
             <MudTh>@loc["number-of-tests"]</MudTh>
+            <MudTh>@loc["state"]</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="@loc["requirement"]">
@@ -41,6 +42,10 @@ else if(_downstream.Count > 0)
                         <MudChip Color="Color.Dark" T="string">0</MudChip>
                     }
                 </MudTooltip>
+            </MudTd>
+
+            <MudTd DataLabel="@loc["state"]">
+                @context.State
             </MudTd>
         </RowTemplate>
     </MudTable>

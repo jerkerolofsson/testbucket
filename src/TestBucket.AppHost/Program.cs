@@ -3,17 +3,18 @@ using System.Security.Claims;
 
 using Aspire.Hosting;
 
+using TestBucket.Contracts;
 using TestBucket.Contracts.Identity;
 using TestBucket.Domain.Identity;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
 // Setup users and keys for seeding
-string email = "admin@admin.com";
-string tenant = "jerkerolofsson";
-string symmetricKey = "01234567890123456789012345678901234567890123456789";
-string issuer = "testbucket";
-string audience = "testbucket";
+string email = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_ADMIN_USER) ?? "admin@admin.com";
+string tenant = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_DEFAULT_TENANT) ?? "jerkerolofsson";
+string symmetricKey = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_JWT_SYMMETRIC_KEY) ?? "01234567890123456789012345678901234567890123456789";
+string issuer = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_JWT_ISS) ?? "testbucket";
+string audience = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_JWT_AUD) ?? "testbucket";
 var principal = Impersonation.Impersonate(tenant);
 
 // For development, we inject a symmetric key and generate an API key to use so services can communicate
@@ -34,14 +35,14 @@ var publicEndpoint = $"http://{addresses.Where(x=>x.AddressFamily == System.Net.
 
 var testBucket = builder.AddProject<Projects.TestBucket>("testbucket")
     .WithReference(db)
-    .WithEnvironment("TB_DEFAULT_TENANT", tenant)
-    .WithEnvironment("TB_ADMIN_USER", email)
-    .WithEnvironment("TB_JWT_SYMMETRIC_KEY", symmetricKey)
-    .WithEnvironment("TB_JWT_ISS", issuer)
-    .WithEnvironment("TB_JWT_AUD", audience)
-    .WithEnvironment("TB_ADMIN_ACCESS_TOKEN", accessToken)
+    .WithEnvironment(TestBucketEnvironmentVariables.TB_DEFAULT_TENANT, tenant)
+    .WithEnvironment(TestBucketEnvironmentVariables.TB_ADMIN_USER, email)
+    .WithEnvironment(TestBucketEnvironmentVariables.TB_JWT_SYMMETRIC_KEY, symmetricKey)
+    .WithEnvironment(TestBucketEnvironmentVariables.TB_JWT_ISS, issuer)
+    .WithEnvironment(TestBucketEnvironmentVariables.TB_JWT_AUD, audience)
+    .WithEnvironment(TestBucketEnvironmentVariables.TB_ADMIN_ACCESS_TOKEN, accessToken)
     .WithEnvironment("TB_OLLAMA_BASE_URL", "http://localhost:11434")
-    .WithEnvironment("TB_PUBLIC_ENDPOINT", publicEndpoint)
+    .WithEnvironment(TestBucketEnvironmentVariables.TB_PUBLIC_ENDPOINT, publicEndpoint)
     .WithEnvironment("TB_HTTPS_REDIRECT", "disabled") // Disable HTTPS redirect so we can test without proper certificates
     .WaitFor(db);
 

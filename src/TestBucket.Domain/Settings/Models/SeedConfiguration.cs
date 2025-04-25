@@ -39,7 +39,7 @@ namespace TestBucket.Domain.Settings.Models
         public string? Issuer { get; set; }
 
         /// <summary>
-        /// Default admin access toekn
+        /// Remove?
         /// </summary>
         public string? AccessToken { get; set; }
 

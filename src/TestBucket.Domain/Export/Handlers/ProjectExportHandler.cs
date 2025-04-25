@@ -14,6 +14,7 @@ using TestBucket.Domain.Fields.Mapping;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Teams;
 
 namespace TestBucket.Domain.Export.Handlers;
 public class ProjectExportHandler : INotificationHandler<ExportNotification>
@@ -38,8 +39,12 @@ public class ProjectExportHandler : INotificationHandler<ExportNotification>
             {
                 // Get project that includes external systems
                 var fullProject = await _projectRepository.GetProjectByIdAsync(notification.TenantId, project.Id);
-                if(fullProject is null) continue; 
-                await notification.Sink.WriteJsonEntityAsync("projects", "project", project.Id.ToString(), fullProject.ToDto(), cancellationToken);
+                if(fullProject is null) continue;
+
+                var dto = fullProject.ToDto();
+                dto.Team = fullProject.Team?.Slug;
+
+                await notification.Sink.WriteJsonEntityAsync("projects", "project", project.Id.ToString(), dto, cancellationToken);
 
                 var fields = await _fieldRepository.SearchAsync([
                     new FilterByTenant<FieldDefinition>(notification.TenantId),

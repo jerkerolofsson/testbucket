@@ -33,36 +33,24 @@ public class DuplicateTestCaseHandler : IRequestHandler<DuplicateTestCaseRequest
         principal.ThrowIfEntityTenantIsDifferent(testCase);
         principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
 
-        var copy = new TestCase
-        {
-            Name = testCase.Name + " copy",
-            Description = testCase.Description,
-
-            TestSuiteId = testCase.TestSuiteId,
-            TestProjectId = testCase.TestProjectId,
-            TestSuiteFolderId = testCase.TestSuiteFolderId,
-            TeamId = testCase.TeamId,
-
-            TestParameters = testCase.TestParameters,
-            ExecutionType = testCase.ExecutionType,
-            ScriptType = testCase.ScriptType,
-            RunnerLanguage = testCase.RunnerLanguage,
-        };
-
+        var copy = testCase.Duplicate();
         await _testCaseManager.AddTestCaseAsync(principal, copy);
-
-        // Copy test case fields
-        List<TestCaseField> testCaseFields = new();
-        var fields = await _mediator.Send(new GetFieldsRequest(principal, FieldTarget.TestCase, testCase.TestProjectId.Value, testCase.Id));
-        foreach (var field in fields.Fields)
-        {
-            var testCaseField = new TestCaseField { FieldDefinitionId = field.FieldDefinitionId, TestCaseId = copy.Id };
-            field.CopyTo(testCaseField);
-            testCaseFields.Add(testCaseField);
-        }
-
-        await _mediator.Send(new UpdateTestCaseFieldsRequest(principal, testCaseFields));
+        await CopyFieldsAsync(principal, testCase, copy);
 
         return testCase;
+
+        async Task CopyFieldsAsync(ClaimsPrincipal principal, TestCase testCase, TestCase copy)
+        {
+            List<TestCaseField> testCaseFields = new();
+            var fields = await _mediator.Send(new GetFieldsRequest(principal, FieldTarget.TestCase, testCase.TestProjectId!.Value, testCase.Id));
+            foreach (var field in fields.Fields)
+            {
+                var testCaseField = new TestCaseField { FieldDefinitionId = field.FieldDefinitionId, TestCaseId = copy.Id };
+                field.CopyTo(testCaseField);
+                testCaseFields.Add(testCaseField);
+            }
+
+            await _mediator.Send(new UpdateTestCaseFieldsRequest(principal, testCaseFields));
+        }
     }
 }

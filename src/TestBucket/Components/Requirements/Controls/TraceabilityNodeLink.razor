@@ -11,7 +11,7 @@
         }
         @if (Node?.TestCase is not null)
         {
-            string icon = "";//RequirementIcons.GetIcon(Node.Requirement);
+            string icon = TestIcons.GetIcon(Node.TestCase);
             <MudIcon Icon="@icon" />
             <MudText>@Node.TestCase.Name</MudText>
         }

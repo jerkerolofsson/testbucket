@@ -1282,6 +1282,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<long>("FieldDefinitionId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool?>("Inherited")
+                        .HasColumnType("boolean");
+
                     b.Property<long?>("LongValue")
                         .HasColumnType("bigint");
 
@@ -1884,6 +1887,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<long>("FieldDefinitionId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool?>("Inherited")
+                        .HasColumnType("boolean");
+
                     b.Property<long?>("LongValue")
                         .HasColumnType("bigint");
 
@@ -2035,6 +2041,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<long>("FieldDefinitionId")
                         .HasColumnType("bigint");
 
+                    b.Property<bool?>("Inherited")
+                        .HasColumnType("boolean");
+
                     b.Property<long?>("LongValue")
                         .HasColumnType("bigint");
 
@@ -2164,6 +2173,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<long>("FieldDefinitionId")
                         .HasColumnType("bigint");
+
+                    b.Property<bool?>("Inherited")
+                        .HasColumnType("boolean");
 
                     b.Property<long?>("LongValue")
                         .HasColumnType("bigint");

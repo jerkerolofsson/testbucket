@@ -17,11 +17,19 @@ public partial class KanbanBoard<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// </summary>
     [Parameter] public Func<T, string>? GetColumnFunc { get; set; }
 
-    [Parameter] public Func<ValueTask, T, string>? SetColumnFunc { get; set; }
+    [Parameter] public Func<T, string, ValueTask>? SetColumnFunc { get; set; }
 
     private IEnumerable<string> GetColumns()
     {
         return _columns;
+    }
+
+    private async Task OnDroppedOnColumn(T item, string column)
+    {
+        if (SetColumnFunc is not null)
+        {
+            await SetColumnFunc(item, column);
+        }
     }
 
     protected override void OnInitialized()

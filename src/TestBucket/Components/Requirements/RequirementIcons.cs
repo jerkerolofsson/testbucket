@@ -13,6 +13,10 @@ public class RequirementIcons
         {
             switch (requirement.RequirementType)
             {
+                case RequirementTypes.Task:
+                    return TbIcons.BoldDuoTone.CheckList;
+                case RequirementTypes.Initiative:
+                    return TbIcons.BoldDuoTone.Initiative;
                 case RequirementTypes.Epic:
                     return TbIcons.BoldDuoTone.Epic;
                 case RequirementTypes.Story:

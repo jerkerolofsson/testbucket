@@ -18,6 +18,10 @@ internal class DuplicateTestCommand : ICommand
     private readonly TestCaseEditorController _controller;
     private readonly IStringLocalizer<SharedStrings> _loc;
 
+    public int SortOrder => 30;
+
+    public string? Folder => null;
+
     public DuplicateTestCommand(AppNavigationManager appNavigationManager, TestCaseEditorController browser, IStringLocalizer<SharedStrings> loc)
     {
         _appNavigationManager = appNavigationManager;

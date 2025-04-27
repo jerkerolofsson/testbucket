@@ -1,9 +1,12 @@
-﻿using TestBucket.Components.Shared;
+﻿using Microsoft.Extensions.Localization;
+
+using TestBucket.Components.Shared;
 using TestBucket.Components.Tests.Controls;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
+using TestBucket.Localization;
 
 namespace TestBucket.Components.Tests.TestCases.Commands;
 
@@ -11,19 +14,24 @@ internal class NewTestCommand : ICommand
 {
     private readonly AppNavigationManager _appNavigationManager;
     private readonly TestCaseEditorController _controller;
+    private readonly IStringLocalizer<SharedStrings> _loc;
+    public int SortOrder => 10;
 
-    public NewTestCommand(AppNavigationManager appNavigationManager, TestCaseEditorController controller)
+    public string? Folder => null;
+
+    public NewTestCommand(AppNavigationManager appNavigationManager, TestCaseEditorController controller, IStringLocalizer<SharedStrings> loc)
     {
         _appNavigationManager = appNavigationManager;
         _controller = controller;
+        _loc = loc;
     }
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedProject is not null;
     public string Id => "new-test";
-    public string Name => "New Test";
-    public string Description => "Create a new test case";
+    public string Name => _loc[Id];
+    public string Description => _loc["new-test-description"];
     public KeyboardBinding? DefaultKeyboardBinding => new KeyboardBinding() { CommandId = "new-test", Key = "KeyA", ModifierKeys = ModifierKey.Ctrl | ModifierKey.Shift };
     public string? Icon => Icons.Material.Filled.Add;
     public string[] ContextMenuTypes => ["TestSuite", "TestSuiteFolder", "menu-new"];

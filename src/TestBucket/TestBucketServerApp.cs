@@ -230,6 +230,7 @@ public static class TestBucketServerApp
         // Test case
         builder.Services.AddScoped<ICommand, DuplicateTestCommand>();
         builder.Services.AddScoped<ICommand, NewTestCommand>();
+        builder.Services.AddScoped<ICommand, NewSharedStepsCommand>();
 
         builder.Services.AddScoped<ICommand, LinkIssueCommand>();
         builder.Services.AddScoped<ICommand, DeleteLinkedIssueCommand>();
@@ -240,9 +241,12 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, CreateTestCaseFromRequirementCommand>();
         builder.Services.AddScoped<ICommand, DeleteRequirementCommand>();
         builder.Services.AddScoped<ICommand, DeleteRequirementFolderCommand>();
-        builder.Services.AddScoped<ICommand, CreateRequirementCommand>();
         builder.Services.AddScoped<ICommand, NewRequirementFolderCommand>();
+
+        builder.Services.AddScoped<ICommand, CreateRequirementCommand>();
         builder.Services.AddScoped<ICommand, CreateChildRequirementCommand>();
+        builder.Services.AddScoped<ICommand, CreateChildFeatureCommand>();
+        builder.Services.AddScoped<ICommand, CreateTaskCommand>();
 
 
         builder.Services.AddScoped(typeof(DragAndDropService<>));

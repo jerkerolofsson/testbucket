@@ -13,9 +13,9 @@ namespace TestBucket.Domain.Testing.Markdown
     {
        public Task ProcessAsync(ClaimsPrincipal principal, TestCase testCase)
         {
-            if (testCase.Description is not null)
+            if (testCase.Description is not null && testCase.IsTemplate == false)
             {
-                testCase.IsTemplate = testCase.Description.Contains("@Body");                
+                testCase.IsTemplate = testCase.Description.Contains("@Body", StringComparison.InvariantCultureIgnoreCase);
             }
             return Task.CompletedTask;
         }

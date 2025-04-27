@@ -842,8 +842,13 @@ div.tb-profile-image.tb-background-9 {
 /* Chart container, metrics, */
 .tb-tile {
     padding: 24px;
-    outline: solid 2px var(    --tb-palette-field-border);
+    outline: solid 2px var(--tb-palette-field-border);
     background: transparent;
+}
+
+.tb-tile .tb-tile-numeric-value {
+    font-size: 36pt;
+    flex: 1;
 }
 
 .tb-tile:hover .mud-toggle-group  {
@@ -884,7 +889,7 @@ div.tb-profile-image.tb-background-9 {
     flex-direction: column;
 }
 
-.tb-trace-view > .center > * {
+.tb-trace-view > .center > .tb-traceability-node-link-wrapper {
     border: solid 1px var(--mud-palette-tertiary);
 }
 

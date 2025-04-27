@@ -45,6 +45,12 @@ public interface IFieldManager
     Task SaveTestCaseRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseRunField> fields);
     #endregion Test Case Run
 
+    Task UpsertTestCaseRunFieldAsync(ClaimsPrincipal principal, TestCaseRunField field);
+    Task UpsertTestCaseFieldAsync(ClaimsPrincipal principal, TestCaseField field);
+    Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field);
+    Task UpsertRequirementFieldAsync(ClaimsPrincipal principal, RequirementField field);
+
+
     #region Test Run
     Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(ClaimsPrincipal principal, long testRunId, IEnumerable<FieldDefinition> fieldDefinitions);
     Task SaveTestRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestRunField> fields);

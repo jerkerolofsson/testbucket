@@ -2,7 +2,7 @@
 
 using TestBucket.Domain.Testing.Models;
 
-namespace TestBucket.Domain.Testing;
+namespace TestBucket.Domain.Testing.TestCases;
 public interface ITestCaseManager
 {
     /// <summary>

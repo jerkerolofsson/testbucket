@@ -22,6 +22,10 @@ internal class NewRequirementFolderCommand : ICommand
         _loc = loc;
     }
 
+    public int SortOrder => 10;
+
+    public string? Folder => null;
+
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.RequirementSpecification;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedRequirementSpecification is not null;

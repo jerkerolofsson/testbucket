@@ -7,6 +7,8 @@ using TestBucket.Controllers.Api;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Testing.Mapping;
+using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Testing.TestSuites;
 
 namespace TestBucket.Components.Tests.TestCases.Api;
 

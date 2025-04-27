@@ -29,6 +29,4 @@ public interface IFieldDefinitionManager
     Task<IReadOnlyList<FieldDefinition>> GetDefinitionsAsync(ClaimsPrincipal principal, long? testProjectId, FieldTarget target);
     Task<IReadOnlyList<FieldDefinition>> SearchAsync(ClaimsPrincipal principal, SearchFieldQuery query);
     Task UpdateAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition);
-    Task UpsertTestCaseFieldAsync(ClaimsPrincipal principal, TestCaseField field);
-    Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field);
 }

@@ -12,6 +12,10 @@ internal class SyncWithActiveDocumentCommand : ICommand
     private readonly AppNavigationManager _appNavigationManager;
     private readonly TestBrowser _browser;
 
+    public int SortOrder => 5;
+
+    public string? Folder => null;
+
     public SyncWithActiveDocumentCommand(AppNavigationManager appNavigationManager, TestBrowser browser)
     {
         _appNavigationManager = appNavigationManager;

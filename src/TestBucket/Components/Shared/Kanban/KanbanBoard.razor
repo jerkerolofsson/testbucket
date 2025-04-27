@@ -7,7 +7,7 @@
     <div class="tb-kanban-board">
         @foreach (var column in GetColumns())
         {
-            <DropZone T="T">
+            <DropZone T="T" OnDrop="async (item) => await OnDroppedOnColumn(item, column)">
                 <div class="list">
 
                     <div class="title">@column</div>

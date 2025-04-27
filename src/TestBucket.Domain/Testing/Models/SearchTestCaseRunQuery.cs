@@ -5,6 +5,7 @@ namespace TestBucket.Domain.Testing.Models;
 public class SearchTestCaseRunQuery : SearchQuery
 {
     public long? TestRunId { get; set; }
+    public long? TestCaseId { get; set; }
     public long? TestSuiteId { get; set; }
 
     /// <summary>

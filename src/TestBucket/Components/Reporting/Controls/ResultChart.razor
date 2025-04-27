@@ -11,7 +11,7 @@
 <MudPaper Elevation="2" Class="tb-tile">
     <MudStack Spacing="0" Class="pa-1">
         <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
-            <MudText Typo="Typo.h6">@Title</MudText>
+            <MudText Typo="Typo.h6" Class="tb-tile-title">@Title</MudText>
             <MudSpacer />
 
             <MudToggleGroup T="ChartType" Value="@_chartType" ValueChanged="OnChartTypeChanged" Color="Color.Surface">

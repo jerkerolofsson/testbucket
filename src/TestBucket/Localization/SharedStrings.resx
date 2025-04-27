@@ -389,4 +389,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="requirement" xml:space="preserve">
     <value>Requirement</value>
   </data>
+  <data name="new-folder" xml:space="preserve">
+    <value>Add folder</value>
+  </data>
 </root>

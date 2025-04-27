@@ -3,7 +3,7 @@
 using TestBucket.Domain.Testing.Events;
 using TestBucket.Domain.Testing.Models;
 
-namespace TestBucket.Domain.Testing
+namespace TestBucket.Domain.Testing.TestSuites
 {
     class TestSuiteManager : ITestSuiteManager
     {

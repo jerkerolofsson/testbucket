@@ -32,7 +32,6 @@
     [Parameter] public TestCaseRun? TestCaseRun { get; set; }
     [Parameter] public bool AutoSaveChanges { get; set; } = true;
     [Parameter] public bool AllowMultiSelection { get; set; } = true;
-
     [Parameter] public bool ReadOnly { get; set; }
 
     /// <summary>
@@ -100,34 +99,43 @@
         await LoadAsync();
 
     }
-    private async Task OnTestRunFieldChangedAsync()
+    private async Task OnTestRunFieldChangedAsync(FieldValue? value)
     {
-        if (_testRunFields.Count > 0 && AutoSaveChanges)
+        if (value is TestRunField field && AutoSaveChanges)
         {
-            await fieldController.SaveTestRunFieldsAsync(_testRunFields);
-        }
-    }
+            // Cancel inherited as it was manually changed
+            field.Inherited = false;
 
-    private async Task OnTestCaseRunFieldChangedAsync()
-    {
-        if(_testCaseRunFields.Count > 0 && AutoSaveChanges)
-        {
-           await fieldController.SaveTestCaseRunFieldsAsync(_testCaseRunFields);
+            await fieldController.UpsertTestRunFieldAsync(field);
         }
     }
-    private async Task OnRequirementFieldChangedAsync()
+    private async Task OnTestCaseRunFieldChangedAsync(FieldValue? value)
     {
-        if (_requirementFields.Count > 0 && AutoSaveChanges)
+        if (value is TestCaseRunField field && AutoSaveChanges)
         {
-            await fieldController.SaveRequirementFieldsAsync(_requirementFields);
-        }
-    }
+            // Cancel inherited as it was manually changed
+            field.Inherited = false;
 
-    private async Task OnTestCaseFieldChangedAsync()
+            await fieldController.UpsertTestCaseRunFieldAsync(field);
+        }
+    }
+    private async Task OnRequirementFieldChangedAsync(FieldValue? value)
     {
-        if (_testCaseFields.Count > 0 && AutoSaveChanges)
+        if (value is RequirementField field && AutoSaveChanges)
         {
-            await fieldController.SaveTestCaseFieldsAsync(_testCaseFields);
+            // Cancel inherited as it was manually changed
+            field.Inherited = false;
+
+            await fieldController.UpsertRequirementFieldAsync(field);
+        }
+    }
+    private async Task OnTestCaseFieldChangedAsync(FieldValue? value)
+    {
+        if (value is TestCaseField field && AutoSaveChanges)
+        {
+            // Cancel inherited as it was manually changed
+            field.Inherited = false;
+            await fieldController.UpsertTestCaseFieldAsync(field);
         }
     }
 }

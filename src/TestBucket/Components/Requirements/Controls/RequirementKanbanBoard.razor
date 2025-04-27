@@ -1,0 +1,70 @@
+﻿@using TestBucket.Components.Shared.Kanban
+@using TestBucket.Contracts.Requirements.States
+@using TestBucket.Domain.States
+@inject ProjectController controller
+@inject AppNavigationManager appNavigationManager
+
+<KanbanBoard T="Requirement" GetColumnFunc="GetState" Items="@_requirements" SetColumnFunc="SetStateAsync" Columns="@_columns">
+    <ItemRenderer>
+        <MudStack Row AlignItems="AlignItems.Center" @onclick="()=>OnClicked(context)">
+            <MudIcon Icon="@RequirementIcons.GetIcon(context)" />
+            @context.Name
+        </MudStack>
+    </ItemRenderer>
+</KanbanBoard>
+
+@code {
+
+    [Parameter] public long? ProjectId { get; set; }
+    [Parameter] public IReadOnlyList<Requirement>? Requirements { get; set; }
+
+    private List<string> _columns = [];
+    private string _defaultColumn = RequirementStates.Draft;
+
+    private List<Requirement> _requirements = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadColumnsAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadColumnsAsync();
+    }
+
+    private async Task LoadColumnsAsync()
+    {
+        if (ProjectId is not null)
+        {
+            var states = await controller.GetRequirementStatesAsync(ProjectId.Value);
+            _columns = states.Select(x => x.Name ?? RequirementStates.Draft).ToList();
+            _defaultColumn = _columns.FirstOrDefault() ?? RequirementStates.Draft;
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        _requirements.Clear();
+        if (Requirements is not null)
+        {
+            _requirements.AddRange(Requirements);
+        }
+    }
+
+    private string GetState(Requirement requirement)
+    {
+        return requirement.State ?? _defaultColumn;
+    }
+    private ValueTask SetStateAsync(Requirement requirement, string state)
+    {
+        requirement.State = state;
+        return ValueTask.CompletedTask;
+    }
+
+
+    private void OnClicked(Requirement requirement)
+    {
+        appNavigationManager.NavigateTo(requirement);
+    }
+}

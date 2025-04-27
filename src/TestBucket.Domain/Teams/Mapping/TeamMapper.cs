@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Projects;
 using TestBucket.Contracts.Teams;
+using TestBucket.Domain.Projects.Mapping;
 using TestBucket.Domain.Teams.Models;
 
 namespace TestBucket.Domain.Teams.Mapping;
-public static class TeamMapping
+public static class TeamMapper
 {
     public static Team ToDbo(this TeamDto item)
     {

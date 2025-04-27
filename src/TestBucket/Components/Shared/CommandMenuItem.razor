@@ -1,0 +1,53 @@
+﻿@using TestBucket.Domain.Commands
+@using TestBucket.Domain.Keyboard
+@if(Item is not null)
+{
+    var command = Item;
+    bool enabled = true;
+    if (Principal is null || !command.Enabled || (command.PermissionEntityType is not null && command.RequiredLevel is not null && !PermissionClaims.HasPermission(Principal, command.PermissionEntityType.Value, command.RequiredLevel.Value)))
+    {
+        enabled = false;
+    }
+
+    var binding = GetBinding(command.Id);
+    @if (enabled)
+    {
+        <MudMenuItem Icon="@command.Icon" OnClick="async () => await command.ExecuteAsync()">
+            <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center">
+                @command.Name
+
+                @if (binding is not null)
+                {
+                    <MudSpacer />
+                    <KeyboardShortcutLabel Modifiers="@binding.ModifierKeys" KeyCode="@binding.Key" />
+                }
+            </MudStack>
+
+        </MudMenuItem>
+    }
+    else
+    {
+        <MudMenuItem Icon="@command.Icon" Style="opacity: 0.5">
+            <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center">
+                <MudText Style="opacity: 0.5">@command.Name</MudText>
+            </MudStack>
+        </MudMenuItem>
+    }
+}
+
+@code {
+    [Parameter] public ICommand? Item { get; set; }
+    [Parameter] public KeyboardBindings? Bindings { get; set; }
+    [Parameter] public ClaimsPrincipal? Principal { get; set; }
+
+
+    private KeyboardBinding? GetBinding(string commandId)
+    {
+        if (Bindings?.Commands is null)
+        {
+            return null;
+        }
+        Bindings.Commands.TryGetValue(commandId, out var binding);
+        return binding;
+    }
+}

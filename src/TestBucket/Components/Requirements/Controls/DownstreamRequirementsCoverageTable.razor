@@ -3,13 +3,13 @@
 @inject IStringLocalizer<RequirementStrings> reqLoc
 @inject AppNavigationManager appNavigationManager
 
-@if(_loading)
+@if(_loading || _requirement is null)
 {
     <MudSkeleton Width="100%" Height="100px" SkeletonType="SkeletonType.Text"/>
 }
 else if(_downstream.Count > 0)
 {
-    <MudTable Items="@_downstream" Dense RowClass="tb-datarow cursor-pointer" T="Requirement" OnRowClick="GoToRequirement">
+    <MudTable Items="@_downstream" Dense RowClass="tb-datarow cursor-pointer" T="RequirementCoverageViewModel" OnRowClick="GoToRequirement">
         <HeaderContent>
             <MudTh>@loc["requirement"]</MudTh>
             <MudTh>@loc["number-of-tests"]</MudTh>
@@ -20,22 +20,22 @@ else if(_downstream.Count > 0)
 
                 <MudTooltip>
                     <ChildContent>
-                    <MudStack Row AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@RequirementIcons.GetIcon(context)" />
-                        @context.Name
-                    </MudStack>
-                </ChildContent>
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@RequirementIcons.GetIcon(context.Requirement)" />
+                            @context.Requirement.Name
+                        </MudStack>
+                    </ChildContent>
                     <TooltipContent>
-                        <pre>@context.Description</pre>
+                        <pre>@context.Requirement.Description</pre>
                     </TooltipContent>
                 </MudTooltip>
 
             </MudTd>
             <MudTd DataLabel="@loc["number-of-tests"]">
                 <MudTooltip Text="@reqLoc["linked-test-count--tooltip"]">
-                    @if (context.TestLinks?.Count > 0)
+                    @if (context.TotalTestCount > 0)
                     {
-                        <MudChip Color="Color.Success" T="string">@context.TestLinks.Count</MudChip>
+                        <MudChip Color="Color.Success" T="string">@context.TotalTestCount</MudChip>
                     }
                     else
                     {
@@ -45,23 +45,45 @@ else if(_downstream.Count > 0)
             </MudTd>
 
             <MudTd DataLabel="@loc["state"]">
-                @context.State
+                @context.Requirement.State
             </MudTd>
         </RowTemplate>
     </MudTable>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+        <MudPaper Elevation="2" Class="tb-tile">
+            <MudStack>
+                <MudText Typo="Typo.h6" Class="tb-tile-title">@loc["test-coverage"]</MudText>
+                <MudText Class="tb-tile-numeric-value">@CoveragePercent</MudText>
+            </MudStack>
+        </MudPaper>
+        <MudPaper Elevation="2" Class="tb-tile">
+            <MudStack>
+                <MudText Typo="Typo.h6" Class="tb-tile-title">@loc["number-of-tests"]</MudText>
+                <MudText Class="tb-tile-numeric-value">@_testCount</MudText>
+            </MudStack>
+        </MudPaper>
+
+    </div>
 }
 
 @code {
     [Parameter] public Requirement? Requirement { get; set; }
     private Requirement? _requirement;
-    private IReadOnlyList<Requirement> _downstream = [];
+    private IReadOnlyList<RequirementCoverageViewModel> _downstream = [];
     private bool _loading = false;
 
-    private void GoToRequirement(TableRowClickEventArgs<Requirement> e)
+    private class RequirementCoverageViewModel(Requirement requirement)
+    {
+        public Requirement Requirement => requirement;
+        public int TotalTestCount { get; set; }
+    }
+
+    private void GoToRequirement(TableRowClickEventArgs<RequirementCoverageViewModel> e)
     {
         if (e.Item is not null)
         {
-            appNavigationManager.NavigateTo(e.Item);
+            appNavigationManager.NavigateTo(e.Item.Requirement);
         }
     }
 
@@ -74,6 +96,56 @@ else if(_downstream.Count > 0)
         await LoadAsync();
     }
 
+    private int _requirementCount = 0;
+    private int _coveredRequirementCount = 0;
+    private int _testCount = 0;
+
+    private string CoveragePercent
+    {
+
+        get
+        {
+            if(_requirementCount > 0)
+            {
+                double percent = (100.0 * _coveredRequirementCount) / _requirementCount;
+                return Math.Round(percent) + "%";
+            }
+            return "0%";
+        }
+    }
+
+    private int GetTestCountIncludingDescendants(RequirementCoverageViewModel requirement)
+    {
+        if(requirement.Requirement.TestLinks is not null)
+        {
+            int count = requirement.Requirement.TestLinks.Count;
+            foreach(var downstreamRequirement in _downstream.Where(x=>x.Requirement.ParentRequirementId == requirement.Requirement.Id))
+            {
+                count += GetTestCountIncludingDescendants(downstreamRequirement);
+            }
+            return count;
+        }
+        return 0;
+    }
+
+    private void CalculateCoverage()
+    {
+        _requirementCount = _downstream.Count;
+        _coveredRequirementCount = 0;
+
+        foreach(var requirement in _downstream)
+        {
+            // We recurse here to include any test coverage by child requirements
+            requirement.TotalTestCount = GetTestCountIncludingDescendants(requirement);
+            if (requirement.TotalTestCount > 0)
+            {
+                _coveredRequirementCount++;
+            }
+        }
+
+        _testCount = _downstream.Where(x => x.Requirement.TestLinks?.Count > 0).Select(x => x.Requirement.TestLinks!.Count).Sum();
+    }
+
     private async Task LoadAsync()
     {
         _loading = true;
@@ -84,7 +156,9 @@ else if(_downstream.Count > 0)
             _requirement = Requirement;
             if(_requirement is not null)
             {
-                _downstream = await controller.GetDownstreamRequirementsAsync(_requirement);
+                var downstream = await controller.GetDownstreamRequirementsAsync(_requirement);
+                _downstream = downstream.Select(x => new RequirementCoverageViewModel(x)).ToList();
+                CalculateCoverage();
             }
         }
 

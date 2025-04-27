@@ -19,6 +19,10 @@ internal class SyncWithActiveRequirementCommand : ICommand
         _browser = browser;
     }
 
+    public int SortOrder => 10;
+
+    public string? Folder => null;
+
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.Requirement;
     public PermissionLevel? RequiredLevel => PermissionLevel.Read;
     public bool Enabled => _appNavigationManager.State.SelectedRequirement is not null;

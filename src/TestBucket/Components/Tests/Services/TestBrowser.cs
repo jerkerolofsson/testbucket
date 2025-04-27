@@ -15,6 +15,8 @@ using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.ImportExport;
 using TestBucket.Domain.Testing.Specifications.TestCases;
+using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Testing.TestRuns;
 
 namespace TestBucket.Components.Tests.Services;
 internal class TestBrowser : TenantBaseService
@@ -331,6 +333,17 @@ internal class TestBrowser : TenantBaseService
                 Icon = TbIcons.BoldOutline.Folder,
             });
 
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = "Fields",
+                Children = [],
+                Expanded = false,
+                Expandable = false,
+                Value = new BrowserItem() { Href = _appNavigationManager.GetTestRunFieldsUrl(testRun.Id), TestRun = testRun },
+                Icon = TbIcons.BoldDuoTone.Field,
+            });
+
+
             // Search folders
 
             var assignedToMe = new SearchTestCaseRunQuery { TestRunId = testRun.Id, AssignedToUser = principal.Identity?.Name };
@@ -409,19 +422,7 @@ internal class TestBrowser : TenantBaseService
     }
     public string GetIcon(TestCase x)
     {
-        if (x.IsTemplate)
-        {
-            return Icons.Material.Filled.DocumentScanner;
-        }
-        if (x.ExecutionType == Contracts.Testing.Models.TestExecutionType.Automated)
-        {
-            return TbIcons.BoldDuoTone.CodeSquare;
-        }
-        if (x.ExecutionType == Contracts.Testing.Models.TestExecutionType.Hybrid)
-        {
-            return Icons.Material.Filled.Api;
-        }
-        return TbIcons.BoldDuoTone.File;
+        return TestIcons.GetIcon(x);
     }
     public TreeNode<BrowserItem> CreateTreeNodeFromPipeline(Pipeline pipeline)
     {

@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Commands.Models;
 using TestBucket.Domain.Keyboard;
 
 namespace TestBucket.Domain.Commands
@@ -27,6 +28,14 @@ namespace TestBucket.Domain.Commands
         /// <param name="typeName"></param>
         /// <returns></returns>
         IReadOnlyList<ICommand> GetCommandByContextMenuType(string typeName);
+
+        /// <summary>
+        /// Returns a list of commands applicable for a context menu for an entity type defined by typeName
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <param name="folder"></param>
+        /// <returns></returns>
+        IReadOnlyList<CommandContextMenuItem> GetCommandMenuItems(string typeName);
 
         /// <summary>
         /// Executes a command that doesn't require any arguments

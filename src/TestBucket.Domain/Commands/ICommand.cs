@@ -46,6 +46,16 @@ namespace TestBucket.Domain.Commands
         public string[] ContextMenuTypes { get; }
 
         /// <summary>
+        /// An integer used to determine the sort order when presenting the item in the UI
+        /// </summary>
+        public int SortOrder { get; }
+
+        /// <summary>
+        /// A folder for the menu item
+        /// </summary>
+        public string? Folder { get; }
+
+        /// <summary>
         /// The entity type that requires the required permission level
         /// This is only used for UI validation, the actual check is done in domain on the manager or request handler
         /// </summary>

@@ -39,6 +39,10 @@ public static class TestCaseRunsFilterSpecificationBuilder
             specifications.Add(new FilterTestCaseRunsByAssignment(query.AssignedToUser));
         }
 
+        if (query.TestCaseId is not null)
+        {
+            specifications.Add(new FilterTestCaseRunsByTestCase(query.TestCaseId.Value));
+        }
         if (query.TestSuiteId is not null)
         {
             specifications.Add(new FilterTestCaseRunsByTestSuite(query.TestSuiteId.Value));

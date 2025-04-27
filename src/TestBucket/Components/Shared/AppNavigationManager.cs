@@ -195,6 +195,21 @@ public class AppNavigationManager
         var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
         return $"{tenantId}/Testing/TestSuites/{testCaseId}/Fields";
     }
+    public string GetTestRunUrl(long testRunId)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestRuns/{testRunId}";
+    }
+    public string GetTestRunTestsUrl(long testRunId)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestRuns/{testRunId}/Tests";
+    }
+    public string GetTestRunFieldsUrl(long testRunId)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestRuns/{testRunId}/Fields";
+    }
     public string GetTestCaseFieldsUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
@@ -316,6 +331,10 @@ public class AppNavigationManager
         return $"/{tenantId}/Settings/Accounts/{account.Id}";
     }
 
+    public void NavigateTo(string url, bool forceLoad = false)
+    {
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
     public void NavigateTo(ApplicationUser user, bool forceLoad = false)
     {
         var url = GetUrl(user);

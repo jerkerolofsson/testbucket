@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using TestBucket.Domain.Testing.Models;
 
-namespace TestBucket.Domain.Testing;
+namespace TestBucket.Domain.Testing.TestCases;
 public interface ITestCaseObserver
 {
     Task OnTestCreatedAsync(TestCase testCase);

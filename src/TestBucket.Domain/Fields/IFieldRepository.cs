@@ -59,7 +59,7 @@ public interface IFieldRepository
     /// </summary>
     /// <param name="field"></param>
     /// <returns></returns>
-    Task UpsertTestCaseFieldsAsync(TestCaseField field);
+    Task UpsertTestCaseFieldAsync(TestCaseField field);
 
     #endregion
 
@@ -85,7 +85,7 @@ public interface IFieldRepository
     /// </summary>
     /// <param name="field"></param>
     /// <returns></returns>
-    Task UpsertTestRunFieldsAsync(TestRunField field);
+    Task UpsertTestRunFieldAsync(TestRunField field);
 
     #endregion Test Case Runs
 

@@ -16,6 +16,11 @@ public class TestRun : TestEntity
     public long Id { get; set; }
 
     /// <summary>
+    /// Slug
+    /// </summary>
+    public string? Slug { get; set; }
+
+    /// <summary>
     /// Name of the test case
     /// </summary>
     public required string Name { get; set; }
@@ -55,6 +60,5 @@ public class TestRun : TestEntity
 
     public long? TestEnvironmentId { get; set; }
     public TestEnvironment? TestEnvironment { get; set; }
-
     public virtual IEnumerable<TestRunField>? TestRunFields { get; set; }
 }

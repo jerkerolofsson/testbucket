@@ -222,6 +222,16 @@ namespace TestBucket.Formats.Dtos
         }
 
         /// <summary>
+        /// Team attribute
+        /// </summary>
+        [JsonIgnore]
+        public string? Team
+        {
+            get => GetAttribute(TraitType.Team);
+            set => SetAttribute(TraitType.Team, value);
+        }
+
+        /// <summary>
         /// Computer name
         /// </summary>
         [JsonIgnore]

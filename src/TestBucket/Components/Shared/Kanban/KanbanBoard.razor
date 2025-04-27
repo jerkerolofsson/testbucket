@@ -1,0 +1,30 @@
+﻿@namespace TestBucket.Components.Shared.Kanban
+@typeparam T
+
+<h3>KanbanBoard</h3>
+
+<CascadingValue Value="@this">
+    <div class="tb-kanban-board">
+        @foreach (var column in GetColumns())
+        {
+            <DropZone T="T">
+                <div class="list">
+
+                    <div class="title">@column</div>
+
+                    @foreach (var item in GetItemsInColumn(column))
+                    {
+                        <Draggable T="T" Data="@item">
+                            <div class="card">
+                                @if(ItemRenderer is not null)
+                                {
+                                    @ItemRenderer(item)
+                                }
+                            </div>
+                        </Draggable>
+                    }
+                </div>
+            </DropZone>
+        }
+    </div>
+</CascadingValue>

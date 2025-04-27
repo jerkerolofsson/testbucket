@@ -1,5 +1,7 @@
 ﻿@using MudBlazor.Utilities
+@using TestBucket.Components.Shared.Kanban
 @inject RequirementEditorController editor
+@inject RequirementBrowser browser
 @inject IStringLocalizer<SharedStrings> loc
 
 @if(Specification is not null)
@@ -7,18 +9,10 @@
     <div class="container-fill-2-rows">
         <MudToolBar Class="tb-toolbar">
 
-            @if(_editor is not null)
+            <TestBucket.Components.Shared.Tab.TbTabHeader Labels="@TabLabels" SelectedLabel="@_selectedTab" SelectedLabelChanged="OnSelectedTabChanged"/>
+
+            @if (_selectedTab == "edit" && _editor is not null)
             {
-                <MudButton Class="@EditButtonClassname" OnClick="async () => await _editor.SetPreviewAsync(false)">@loc["edit"]</MudButton>
-                <MudButton Class="@(PreviewButtonClassname)" OnClick="async () => await SaveChangesAsync()">@loc["preview"]</MudButton>
-            }
-
-            @if (!_preview && _editor is not null)
-            {
-                <MudTextField Variant="Variant.Outlined" Label="Name" AdornmentColor="Color.Tertiary" Value="@Specification.Name" ValueChanged="OnNameChanged" T="string" AutoFocus="true" />
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
-
                 <MudIconButton Icon="@Icons.Material.Filled.FormatBold" OnClick="async () => await _editor.ToggleBoldAsync()" Class="rounded-0" />
                 <MudIconButton Icon="@Icons.Material.Filled.FormatItalic" OnClick="async () => await _editor.ToggleItalicAsync()"  Class="rounded-0"/>
 
@@ -38,23 +32,62 @@
 
                 <MudIconButton Icon="@Icons.Material.Filled.Fullscreen" OnClick="async () => await _editor.ToggleFullScreenAsync()" />
             }
-            else
-            {
-                <MudText Typo="Typo.h3"  Class="mr-3">@Specification.Name</MudText>
-            }
         </MudToolBar>
 
-        <MarkdownEditor 
-            @ref="_editor"
-            @bind-Preview="_preview"
-            ShowToolbar="false"
-            MaxHeight="100%"
-            Color="Color.Primary"
-            AllowResize="true"
-            Value="@Specification.Description"
-            ValueChanged="OnDescriptionChanged"
-            SpellChecker="false">
-            </MarkdownEditor>
+        <Splitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
+            <StartContent>
+                <MudStack Class="pa-2" Style="width: 100%; height: 100%">
+                    @if (_selectedTab != "edit")
+                    {
+                        <MudText Typo="Typo.h1">@Specification.Name</MudText>
+                    }
+
+                    @if(_selectedTab == "kanban")
+                    {
+                        <KanbanBoard T="Requirement" GetColumnFunc="GetState" Items="@_requirements">
+                            <ItemRenderer>
+                                <MudStack Row AlignItems="AlignItems.Center">
+                                    <MudIcon Icon="@RequirementIcons.GetIcon(context)" />
+                                    @context.Name
+                                </MudStack>
+                            </ItemRenderer>
+                        </KanbanBoard>
+                    }
+
+                    @if (_selectedTab == "edit" || _selectedTab == "preview")
+                    {
+                        <MarkdownEditor @ref="_editor"
+                        @bind-Preview="_preview"
+                        ShowToolbar="false"
+                        MaxHeight="100%"
+                        Color="Color.Primary"
+                        AllowResize="true"
+                        Value="@Specification.Description"
+                        ValueChanged="OnDescriptionChanged"
+                        SpellChecker="false">
+                        </MarkdownEditor>
+                    }
+                </MudStack>
+            </StartContent>
+            <EndContent>
+                <MudStack Class="pa-2" Style="width: 100%">
+                    @if (_selectedTab == "edit")
+                    {
+                        <Field>
+                            <MudTextField Variant="Variant.Outlined"
+                            Label="@loc["title"]"
+                            HelperText="@loc["title"]"
+                            AdornmentColor="Color.Tertiary"
+                            Value="@Specification.Name"
+                            ValueChanged="OnNameChanged"
+                            T="string"
+                            AutoFocus="true" />
+                        </Field>
+                    }
+                </MudStack>
+            </EndContent>
+        </Splitter>
+
     </div>
 }
 
@@ -62,25 +95,64 @@
     [Parameter] public RequirementSpecification? Specification { get;set; }
     private MarkdownEditor? _editor;
     private bool _preview = true;
+    private Requirement[] _requirements = [];
+    private RequirementSpecification? _specification;
 
-    [Parameter] public Color Color { get; set; } = Color.Surface;
-    [Parameter] public Color ColorAlt { get; set; } = Color.Tertiary;
+    private string[] TabLabels => ["edit", "preview", "kanban"];
+    private string _selectedTab = "preview";
 
-    protected string EditButtonClassname =>
-    new CssBuilder("mud-markdown-toolbar-toggle-button")
-    .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
-    .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview != true)
-    .Build();
-
-    protected string PreviewButtonClassname =>
-        new CssBuilder("mud-markdown-toolbar-toggle-button")
-            .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
-            .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview == true)
-            .AddClass(" mr-5", true)
-            .Build();
-    private void BeginEdit()
+    private string GetState(Requirement requirement)
     {
-        _preview = false;
+        return requirement.State??"";
+    }
+    private ValueTask SetStateAsync(Requirement requirement, string state)
+    {
+        requirement.State = state;
+        return ValueTask.CompletedTask;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        if(_specification?.Id != Specification?.Id)
+        {
+            _specification = Specification;
+
+            if(_specification is not null)
+            {
+                var result = await browser.SearchRequirementsInSpecificationAsync(_specification.Id, 0, 100);
+                _requirements = result.Items;
+            }
+        }
+    }
+
+    private async Task OnSelectedTabChanged(string label)
+    {
+        if (_selectedTab == label)
+        {
+            return;
+        }
+
+        if (label == "edit" && _editor is not null)
+        {
+            // Clicked on edit
+            await _editor.SetPreviewAsync(wantedState: false);
+        }
+        if (_selectedTab == "edit")
+        {
+            // Was edit
+            await SaveChangesAsync();
+        }
+        _preview = label == "preview";
+        _selectedTab = label;
     }
 
     private async Task SaveChangesAsync()
@@ -91,7 +163,6 @@
             await editor.SaveRequirementSpecificationAsync(Specification);
         }
     }
-
 
     private void OnNameChanged(string name)
     {

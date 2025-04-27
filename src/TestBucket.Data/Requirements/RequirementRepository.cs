@@ -259,7 +259,7 @@ namespace TestBucket.Data.Requirements
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             var requirements = dbContext.RequirementTestLinks
                 .Include(x => x.Requirement)
-                .Include(x => x.TestCase)
+                .Include(x => x.TestCase).ThenInclude(y => y.TestCaseFields)
                 .AsQueryable();
 
             foreach (var filter in filters)

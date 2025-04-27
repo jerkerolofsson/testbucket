@@ -1,0 +1,27 @@
+﻿@using MudBlazor.Utilities
+<MudStack Row Spacing="1">
+    @foreach(var label in Labels)
+    {
+        <MudButton Class="@GetLabelClassName(label)" OnClick="async () => await OnLabelClickedAsync(label)">@label</MudButton>
+    }
+</MudStack>
+
+@code {
+    [Parameter] public string[] Labels { get; set; } = [];
+    [Parameter] public string? SelectedLabel { get; set; }
+    [Parameter] public EventCallback<string> SelectedLabelChanged { get; set; }
+
+    [Parameter] public Color Color { get; set; } = Color.Surface;
+    [Parameter] public Color ColorAlt { get; set; } = Color.Tertiary;
+
+    private string GetLabelClassName(string label) =>
+        new CssBuilder("mud-markdown-toolbar-toggle-button")
+        .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
+        .AddClass($"mud-markdown-toolbar-toggle-button-selected", label == SelectedLabel)
+        .Build();
+
+    private async Task OnLabelClickedAsync(string label)
+    {
+        await SelectedLabelChanged.InvokeAsync(label);
+    }
+}

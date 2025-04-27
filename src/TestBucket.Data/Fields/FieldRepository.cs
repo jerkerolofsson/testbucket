@@ -55,7 +55,7 @@ internal class FieldRepository : IFieldRepository
 
     #region Test Case
 
-    public async Task UpsertTestCaseFieldsAsync(TestCaseField field)
+    public async Task UpsertTestCaseFieldAsync(TestCaseField field)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -111,7 +111,7 @@ internal class FieldRepository : IFieldRepository
 
     #region Test Run
 
-    public async Task UpsertTestRunFieldsAsync(TestRunField field)
+    public async Task UpsertTestRunFieldAsync(TestRunField field)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 

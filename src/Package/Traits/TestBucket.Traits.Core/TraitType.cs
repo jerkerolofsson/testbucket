@@ -196,5 +196,10 @@ public enum TraitType
     /// </summary>
     Feature = 43,
 
+    /// <summary>
+    /// Team or milestone
+    /// </summary>
+    Team = 44
+
 
 }

@@ -71,6 +71,24 @@ namespace TestBucket.Domain.Fields
             };
             return await SearchAsync(principal, query);
         }
+
+
+        /// <summary>
+        /// Returns all field definitions for the specified project
+        /// </summary>
+        /// <param name="testProjectId"></param>
+        /// <returns></returns>
+        public async Task<IReadOnlyList<FieldDefinition>> GetDefinitionsAsync(ClaimsPrincipal principal, long? testProjectId)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
+            var query = new SearchFieldQuery
+            {
+                ProjectId = testProjectId,
+                Offset = 0,
+                Count = 200
+            };
+            return await SearchAsync(principal, query);
+        }
         public async Task DeleteAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition)
         {
             // Note: This should be Write and not Delete. It is considered a write operation on the project
@@ -113,12 +131,19 @@ namespace TestBucket.Domain.Fields
             return definitions;
         }
 
-        public async Task UpsertTestCaseFieldsAsync(ClaimsPrincipal principal, TestCaseField field)
+        public async Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
+            principal.ThrowIfNoPermission(PermissionEntityType.TestRun, PermissionLevel.Write);
 
             field.TenantId = principal.GetTenantIdOrThrow();
-            await _fieldRepository.UpsertTestCaseFieldsAsync(field);
+            await _fieldRepository.UpsertTestRunFieldAsync(field);
+        }
+        public async Task UpsertTestCaseFieldAsync(ClaimsPrincipal principal, TestCaseField field)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
+
+            field.TenantId = principal.GetTenantIdOrThrow();
+            await _fieldRepository.UpsertTestCaseFieldAsync(field);
         }
     }
 }

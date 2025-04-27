@@ -13,4 +13,5 @@ public interface ITeamManager
     Task<OneOf<Team, AlreadyExistsError>> AddAsync(ClaimsPrincipal user, Team team);
     Task DeleteAsync(ClaimsPrincipal user, Team team);
     Task<Team?> GetTeamBySlugAsync(ClaimsPrincipal principal, string slug);
+    Task<Team?> GetTeamByIdAsync(ClaimsPrincipal principal, long id);
 }

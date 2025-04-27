@@ -12,17 +12,9 @@
 {
     <div class="container-fill-2-rows">
         <MudToolBar Class="tb-toolbar">
-            @if (_editor is not null)
+            <TestBucket.Components.Shared.Tab.TbTabHeader Labels="@TabLabels" SelectedLabel="@_selectedTab" SelectedLabelChanged="OnSelectedTabChanged"/>
+            @if (_selectedTab == "edit" && _editor is not null)
             {
-                <MudButton Class="@EditButtonClassname" OnClick="async () => await _editor.SetPreviewAsync(false)">@loc["edit"]</MudButton>
-                <MudButton Class="@(PreviewButtonClassname)" OnClick="async () => await SaveChangesAsync()">@loc["preview"]</MudButton>
-            }
-            @if (!_preview && _editor is not null)
-            {
-                <MudTextField Variant="Variant.Outlined" Label="Name" AdornmentColor="Color.Tertiary" Value="@Requirement.Name" ValueChanged="OnNameChanged" T="string" AutoFocus="true" />
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
-
                 <MudIconButton Icon="@Icons.Material.Filled.FormatBold" OnClick="async () => await _editor.ToggleBoldAsync()" Class="rounded-0" />
                 <MudIconButton Icon="@Icons.Material.Filled.FormatItalic" OnClick="async () => await _editor.ToggleItalicAsync()"  Class="rounded-0"/>
 
@@ -44,10 +36,6 @@
             }
             else
             {
-                <MudText Typo="Typo.h3" Class="mr-3">@Requirement.Name</MudText>
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
-
                 <MudSpacer/>
 
                 <MudTooltip Text="@reqLoc["linked-test-count--tooltip"]">
@@ -59,45 +47,80 @@
         <Splitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
             <StartContent>
                 <MudStack Class="pa-2" Style="width: 100%; height: 100%">
-                    <MarkdownEditor 
-                    @ref="_editor"
-                    @bind-Preview="_preview"
-                    ShowToolbar="false"
-                    MaxHeight="100%"
-                    MinHeight="100%"
-                    Color="Color.Primary"
-                    AllowResize="true"
-                    Value="@Requirement.Description"
-                    ValueChanged="OnDescriptionChanged"
-                    SpellChecker="false">
-                    </MarkdownEditor>
 
-                    <MudText Typo="Typo.h2">@loc["traceability"]</MudText>
-                    <RequirementTraceabilityView Requirement="@Requirement"/>
+                    @if (_selectedTab != "edit")
+                    {
+                        <MudText Typo="Typo.h1">@Requirement.Name</MudText>
+                    }
 
-                    <MudText Typo="Typo.h2">@reqLoc["downstream-requirements"]</MudText>
-                    <DownstreamRequirementsCoverageTable Requirement="@Requirement"/>
+                    @if (_selectedTab == "edit" || _selectedTab == "preview")
+                    {
+                        <MarkdownEditor 
+                        @ref="_editor"
+                        @bind-Preview="_preview"
+                        ShowToolbar="false"
+                        MaxHeight="100%"
+                        MinHeight="100%"
+                        Color="Color.Primary"
+                        AllowResize="true"
+                        Value="@Requirement.Description"
+                        ValueChanged="OnDescriptionChanged"
+                        SpellChecker="false">
+                        </MarkdownEditor>
+                    }
+
+                    @if(_selectedTab == "trace")
+                    {
+                        <MudText Typo="Typo.h2">@loc["traceability"]</MudText>
+                        <RequirementTraceabilityView Requirement="@Requirement"/>
+
+                        <MudText Typo="Typo.h2">@reqLoc["downstream-requirements"]</MudText>
+                        <DownstreamRequirementsCoverageTable Requirement="@Requirement"/>
+                    }
 
                 </MudStack>
             </StartContent>
             <EndContent>
+                <MudStack Class="pa-2" Style="width: 100%">
+                    @if (_selectedTab == "edit")
+                    {
+                        <Field>
+                            <MudTextField Variant="Variant.Outlined"
+                                          Label="@loc["title"]"
+                                HelperText="@loc["title"]"
+                                AdornmentColor="Color.Tertiary" 
+                                Value="@Requirement.Name" 
+                                ValueChanged="OnNameChanged" 
+                                T="string" 
+                                AutoFocus="true" />
+                        </Field>
 
-                <MudStack Class="pa-2">
+                        <RequirementStateSelect State="@State" StateChanged="OnStateChanged" />
 
-                    <RequirementStateSelect State="@State" StateChanged="OnStateChanged" />
+                        <FieldsEditor Requirement="@Requirement" />
 
-                    <FieldsEditor Requirement="@Requirement" />
-
-                    <Field>
-                        <FieldHeader>@loc["attachments"]</FieldHeader>
-                        <AttachmentGrid RequirementId="@Requirement.Id" Style="width: 100%" AllowUpload />
-                    </Field>
-
-
-                    <Field>
-                        <FieldHeader>@loc["requirement-coverage"]</FieldHeader>
+                        <Field>
+                            <FieldHeader>@loc["attachments"]</FieldHeader>
+                            <AttachmentGrid RequirementId="@Requirement.Id" Style="width: 100%" AllowUpload />
+                        </Field>
+                    }
+                    else if (_selectedTab == "trace")
+                    {
                         <RequirementTestLinksTable Team="@Team" Project="@Project" Requirement="@Requirement" />
-                    </Field>
+                    }
+                    else if(_selectedTab == "preview")
+                    {
+
+                        <Field>
+                            <FieldHeader>@loc["created"]</FieldHeader>
+                            <MudStack Row AlignItems="AlignItems.Center">
+                                <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Requirement.CreatedBy" />
+                                <div>@Requirement.Created.Humanize()</div>
+                            </MudStack>
+                        </Field>
+
+                        <FieldsEditor Requirement="@Requirement" ReadOnly AutoSaveChanges="false"/>
+                    }
 
                 </MudStack>
 
@@ -111,22 +134,31 @@
     [Parameter] public Requirement? Requirement { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
     [CascadingParameter] public TestProject? Project {get;set;}
+    private RequirementTestLink[] _links = [];
 
-    [Parameter] public Color Color { get; set; } = Color.Surface;
-    [Parameter] public Color ColorAlt { get; set; } = Color.Tertiary;
+    private string[] TabLabels => ["edit", "preview", "trace"];
+    private string _selectedTab = "preview";
 
-    protected string EditButtonClassname =>
-    new CssBuilder("mud-markdown-toolbar-toggle-button")
-    .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
-    .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview != true)
-    .Build();
+    private async Task OnSelectedTabChanged(string label)
+    {
+        if(_selectedTab == label)
+        {
+            return;
+        }
 
-    protected string PreviewButtonClassname =>
-        new CssBuilder("mud-markdown-toolbar-toggle-button")
-            .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
-            .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview == true)
-            .AddClass(" mr-5", true)
-            .Build();
+        if(label == "edit" && _editor is not null) 
+        {
+            // Clicked on edit
+            await _editor.SetPreviewAsync(wantedState:false);
+        }
+        if (_selectedTab == "edit")
+        {
+            // Was edit
+            await SaveChangesAsync();
+        }
+        _preview = label == "preview";
+        _selectedTab = label;
+    }
 
     private MarkdownEditor? _editor;
     private bool _preview = true;
@@ -141,13 +173,6 @@
             }
             return null;
         }
-    }
-
-    private RequirementTestLink[] _links = [];
-
-    private void BeginEdit()
-    {
-        _preview = false;
     }
 
     protected override async Task OnParametersSetAsync()

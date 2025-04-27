@@ -24,6 +24,11 @@ internal class TeamManager : ITeamManager
         await _repo.DeleteAsync(team);
     }
 
+    public async Task<Team?> GetTeamByIdAsync(ClaimsPrincipal principal, long id)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        return await _repo.GetTeamByIdAsync(tenantId, id);
+    }
     public async Task<Team?> GetTeamBySlugAsync(ClaimsPrincipal principal, string slug)
     {
         var tenantId = principal.GetTenantIdOrThrow();

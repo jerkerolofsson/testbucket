@@ -18,7 +18,18 @@ public class TestBucketClient(HttpClient Client)
     public ProjectClient Projects => new ProjectClient(Client);
 
     /// <summary>
+    /// Client to work with custom fields
+    /// </summary>
+    public FieldsClient Fields => new FieldsClient(Client);
+
+    /// <summary>
     /// Client to work with test repository (test suites, test cases)
     /// </summary>
     public TestRepositoryClient TestRepository => new TestRepositoryClient(Client);
+
+
+    /// <summary>
+    /// Client to work with test repository (test suites, test cases)
+    /// </summary>
+    public TestRunClient TestRuns => new TestRunClient(Client);
 }

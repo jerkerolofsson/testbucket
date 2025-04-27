@@ -1,23 +1,29 @@
-﻿@inject RequirementBrowser browser
+﻿@using TestBucket.Contracts.Fields
+@inject RequirementBrowser browser
 @inject RequirementEditorController editor
+@inject FieldController fieldController
 @inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
 
-<MudDataGrid Items="_links"
-Dense="true"
-Hover="true"
-T="RequirementTestLink"
-SortMode="SortMode.Single">
+<MudDataGrid Items="_links" Dense Hover T="RequirementTestLink" SortMode="SortMode.Single">
 
     <ToolBarContent>
         <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
-            <MudText>Test Coverage</MudText>
+            <MudText>@loc["test-coverage"]</MudText>
             <MudSpacer />
             <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTestLinkAsync"></MudIconButton>
         </MudStack>
     </ToolBarContent>
+
+    <ColGroup>
+        <col style="width: 60%;" />
+        <col style="width: 30%;"/>
+        <col style="width: 10%;" />
+    </ColGroup>
+
     <Columns>
 
-        <TemplateColumn Title="">
+        <TemplateColumn Title="@loc["title"]" Sortable="true" SortBy="x => x.TestCase!.Name">
             <CellTemplate>
                 @if(context.Item.TestCase is not null)
                 {
@@ -25,7 +31,20 @@ SortMode="SortMode.Single">
                 }
             </CellTemplate>
         </TemplateColumn>
-        <PropertyColumn Property="x => x.TestCase!.Name" Title=""/>
+
+        <TemplateColumn Title="@loc["test-category"]" Sortable="true" SortBy="x => x.TestCase!.Name">
+            <CellTemplate>
+                @if (context.Item.TestCase?.TestCaseFields is not null && _category is not null)
+                {
+                    var field = context.Item.TestCase.TestCaseFields.Where(x => x.FieldDefinitionId == _category.Id).FirstOrDefault();
+                    if(field is not null)
+                    {
+                        @field.GetValueAsString()
+                    }
+                }
+            </CellTemplate>
+        </TemplateColumn>
+
         <TemplateColumn CellStyle="width: 1%">
             <CellTemplate>
                 <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteLinkAsync(context.Item)"/>
@@ -41,6 +60,8 @@ SortMode="SortMode.Single">
     [Parameter] public Team? Team { get; set; }
 
     private RequirementTestLink[] _links = [];
+    private IReadOnlyList<FieldDefinition> _fieldDefinitions = [];
+    private FieldDefinition? _category;
 
     private async Task AddTestLinkAsync()
     {
@@ -62,6 +83,12 @@ SortMode="SortMode.Single">
         if (Requirement is not null)
         {
             _links = await browser.GetLinksForRequirementAsync(Requirement);
+
+            if(Requirement.TestProjectId is not null)
+            {
+                _fieldDefinitions = await fieldController.GetDefinitionsAsync(Requirement.TestProjectId.Value, FieldTarget.TestCase);
+                _category = _fieldDefinitions.Where(x => x.TraitType == TraitType.TestCategory).FirstOrDefault();
+            }
         }
 
     }

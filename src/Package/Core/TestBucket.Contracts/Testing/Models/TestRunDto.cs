@@ -4,6 +4,16 @@ namespace TestBucket.Formats.Dtos
 {
     public class TestRunDto : TestTraitCollection
     {
+        /// <summary>
+        /// Slug to identify the test run
+        /// </summary>
+        public string? Slug { get; set; }
+
+        /// <summary>
+        /// Attachments for the test run
+        /// </summary>
+        public AttachmentCollectionDto Attachments { get; set; } = new();
+
         public int Count(TestResult result)
         {
             if (Suites is not null)
@@ -12,11 +22,6 @@ namespace TestBucket.Formats.Dtos
             }
             return 0;
         }
-
-        /// <summary>
-        /// Attachments for the test run
-        /// </summary>
-        public AttachmentCollectionDto Attachments { get; set; } = new();
 
         #region Count by test result
         [JsonIgnore]

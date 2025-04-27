@@ -73,6 +73,14 @@ internal class RequirementBrowser : TenantBaseService
         return await _requirementManager.GetRequirementByIdAsync(principal, id);
     }
 
+
+    public async Task<PagedResult<Requirement>> SearchRequirementsInSpecificationAsync(long? specificationId, int offset, int count)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var query = new SearchRequirementQuery { RequirementSpecificationId = specificationId, Offset = offset, Count = count, CompareFolder = false };
+        return await _requirementManager.SearchRequirementsAsync(principal, query);
+    }
+
     public async Task<List<TreeNode<BrowserItem>>> SearchAsync(long? teamId, long? projectId, string searchText)
     {
         var specs = await _requirementEditorService.GetRequirementSpecificationsAsync(teamId, projectId);

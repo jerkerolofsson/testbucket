@@ -17,6 +17,11 @@ public class TestCaseRun : TestEntity
     public long Id { get; set; }
 
     /// <summary>
+    /// Slug
+    /// </summary>
+    public string? Slug { get; set; }
+
+    /// <summary>
     /// Name of the test case
     /// </summary>
     public required string Name { get; set; }

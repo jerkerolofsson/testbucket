@@ -113,18 +113,6 @@ internal class ProjectRepository : IProjectRepository
         return new Slugify.SlugHelper().GenerateSlug(name);
     }
 
-    public async Task<string> GenerateSlugAsync(string tenantId, string name)
-    {
-        var slugHelper = new Slugify.SlugHelper();
-        var slug = slugHelper.GenerateSlug(name);
-        int counter = 1;
-        while(await SlugExistsAsync(tenantId, slug))
-        {
-            slug = slugHelper.GenerateSlug(slug + counter);
-            counter++;
-        }
-        return slug;
-    }
 
     public async Task<string> GenerateShortNameAsync(string slug, string tenantId)
     {
@@ -168,6 +156,25 @@ internal class ProjectRepository : IProjectRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.Projects.AsNoTracking().Where(x => x.Slug == slug && x.TenantId == tenantId).AnyAsync();
+    }
+
+    /// <summary>
+    /// Generates a unique slug
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public async Task<string> GenerateSlugAsync(string tenantId, string name)
+    {
+        var slugHelper = new Slugify.SlugHelper();
+        var slug = slugHelper.GenerateSlug(name);
+        int counter = 1;
+        while (await SlugExistsAsync(tenantId, slug))
+        {
+            slug = slugHelper.GenerateSlug(slug + counter);
+            counter++;
+        }
+        return slug;
     }
 
     /// <summary>

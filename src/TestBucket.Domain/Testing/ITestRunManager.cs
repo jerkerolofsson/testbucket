@@ -25,6 +25,9 @@ public interface ITestRunManager
 
     #region Test Runs
 
+    Task<TestRun?> GetTestRunByIdAsync(ClaimsPrincipal principal, long id);
+    Task<TestRun?> GetTestRunBySlugAsync(ClaimsPrincipal user, string slug);
+
     /// <summary>
     /// Adds a TestRun (a collection of test cases for execution)
     /// </summary>
@@ -94,8 +97,7 @@ public interface ITestRunManager
     Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
     Task<Dictionary<DateOnly, TestExecutionResultSummary>> GetTestExecutionResultSummaryByDayAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
     Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId);
-    Task<TestRun?> GetTestRunByIdAsync(ClaimsPrincipal principal, long id);
-
+    Task<TestCaseRun?> GetTestCaseRunByIdAsync(ClaimsPrincipal principal, long id);
 
     #endregion Test Case Runs
 }

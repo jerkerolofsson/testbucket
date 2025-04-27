@@ -39,9 +39,21 @@ internal class TestRunManager : ITestRunManager
 
 
     /// <inheritdoc/>
+    public async Task<TestCaseRun?> GetTestCaseRunByIdAsync(ClaimsPrincipal principal, long id)
+    {
+        return await _testCaseRepo.GetTestCaseRunByIdAsync(principal.GetTenantIdOrThrow(), id);
+    }
+
+    /// <inheritdoc/>
     public async Task<TestRun?> GetTestRunByIdAsync(ClaimsPrincipal principal, long id)
     {
         return await _testCaseRepo.GetTestRunByIdAsync(principal.GetTenantIdOrThrow(), id);
+    }
+
+    /// <inheritdoc/>
+    public async Task<TestRun?> GetTestRunBySlugAsync(ClaimsPrincipal principal, string slug)
+    {
+        return await _testCaseRepo.GetTestRunBySlugAsync(principal.GetTenantIdOrThrow(), slug);
     }
 
     /// <inheritdoc/>

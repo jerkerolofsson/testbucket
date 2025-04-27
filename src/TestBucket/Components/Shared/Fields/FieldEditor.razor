@@ -1,7 +1,9 @@
-﻿@if (Field?.FieldDefinition is not null)
+﻿@inject IStringLocalizer<SharedStrings> loc
+
+@if (Field?.FieldDefinition is not null)
 {
-    <Field>
-        <MudStack Spacing="0" Row="@Row">
+    <MudStack Spacing="0">
+        <Field Row="@Row">
             <MudTooltip Text="@Field.FieldDefinition.Description">
                 <FieldHeader Icon="@Field.FieldDefinition.Icon">@Field.FieldDefinition.Name</FieldHeader>
             </MudTooltip>
@@ -15,7 +17,10 @@
             {
                 @if(_editingWriteOnlyField)
                 {
-                    <FieldValueEditor Field="@Field" FieldChanged="async (f) => await OnWriteOnlyFieldChangedAsync(f)" />
+                    @if(!ReadOnly)
+                    {
+                        <FieldValueEditor Field="@Field" FieldChanged="async (f) => await OnWriteOnlyFieldChangedAsync(f)" />
+                    }
                 }
                 else
                 {
@@ -23,11 +28,15 @@
                         <MudSpacer />
 
                         <MudText>••••</MudText>
-                        <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="EditField">Change</MudButton>
-                    </MudStack>
+
+                        @if(!ReadOnly)
+                        {
+                            <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="EditField">@loc["change"]</MudButton>
+                        }
+                        </MudStack>
                 }
             }
-            else if (Field.FieldDefinition.ReadOnly)
+            else if (Field.FieldDefinition.ReadOnly || ReadOnly)
             {
                 <FieldReadOnlyValue Field="@Field" />
             }
@@ -38,20 +47,21 @@
                     Field="@Field" 
                     FieldChanged="async (f) => await FieldChanged.InvokeAsync(f)" />
             }
-        </MudStack>
+
+        </Field>
 
         @if (Field.FieldDefinition.ShowDescription)
         {
             <FieldDescription>@Field.FieldDefinition.Description</FieldDescription>
         }
-
-    </Field>
+    </MudStack>
 }
 
 @code {
     [Parameter] public FieldValue? Field { get; set; }
     [Parameter] public EventCallback<FieldValue?> FieldChanged { get; set; }
     [Parameter] public bool AllowMultiSelection { get; set; } = true;
+    [Parameter] public bool ReadOnly { get; set; }
 
     private bool Row => Field?.FieldDefinition?.Type == FieldType.Boolean ||
                 Field?.FieldDefinition?.Type == FieldType.String || 

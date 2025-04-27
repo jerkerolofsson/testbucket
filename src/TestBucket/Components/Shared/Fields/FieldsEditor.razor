@@ -4,26 +4,26 @@
 
 @foreach (var field in _testCaseFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
 {
-    <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestCaseFieldChangedAsync" />
+    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestCaseFieldChangedAsync" />
 }
 @foreach (var field in _testRunFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
 {
-    <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestRunFieldChangedAsync" />
+    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestRunFieldChangedAsync" />
 }
 @foreach (var field in _testCaseRunFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
 {
-    <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestCaseRunFieldChangedAsync" />
+    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestCaseRunFieldChangedAsync" />
 }
 @foreach (var field in _requirementFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
 {
-    <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnRequirementFieldChangedAsync" />
+    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnRequirementFieldChangedAsync" />
 }
 
 
 
 @foreach (var field in Fields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
 {
-    <FieldEditor AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="async(f) => await FieldChanged.InvokeAsync(f)" />
+    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="async(f) => await FieldChanged.InvokeAsync(f)" />
 }
 @code {
     [Parameter] public Requirement? Requirement { get; set; }
@@ -33,6 +33,7 @@
     [Parameter] public bool AutoSaveChanges { get; set; } = true;
     [Parameter] public bool AllowMultiSelection { get; set; } = true;
 
+    [Parameter] public bool ReadOnly { get; set; }
 
     /// <summary>
     /// Manuall defined fields

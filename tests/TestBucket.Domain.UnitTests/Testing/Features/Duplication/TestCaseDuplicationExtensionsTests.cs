@@ -20,7 +20,7 @@ namespace TestBucket.Domain.UnitTests.Testing.Features.Duplication
 
             var cloned = test.Duplicate();
 
-            Assert.Equal(test.Description + " copy", cloned.Description);
+            Assert.Equal(test.Name + " copy", cloned.Name);
         }
 
         [Fact]

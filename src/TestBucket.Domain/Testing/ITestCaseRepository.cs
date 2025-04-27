@@ -288,6 +288,7 @@ public interface ITestCaseRepository
     Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
     Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters, long fieldDefinitionId);
     Task<Dictionary<DateOnly, TestExecutionResultSummary>> GetTestExecutionResultSummaryByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
-    
+    Task<TestRun?> GetTestRunBySlugAsync(string tenantId, string slug);
+
     #endregion
 }

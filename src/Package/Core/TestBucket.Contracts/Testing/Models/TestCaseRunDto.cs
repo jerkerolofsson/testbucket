@@ -158,5 +158,10 @@ namespace TestBucket.Formats.Dtos
         /// Numerical results
         /// </summary>
         public List<NumericalResultDto> NumericalResults { get; set; } = [];
+
+        /// <summary>
+        /// Slug to identify the test case
+        /// </summary>
+        public string? TestCaseSlug { get; set; }
     }
 }

@@ -103,8 +103,11 @@ namespace TestBucket.IntegrationTests.Fixtures
             // To output logs to the xUnit.net ITestOutputHelper, 
             builder.Services.AddLogging((builder) => builder.AddXUnit(Sink));
 
-            var app = await builder.BuildAsync(TestContext.Current.CancellationToken);
-            await app.StartAsync(TestContext.Current.CancellationToken);
+            using var ctsBuild = new CancellationTokenSource(TimeSpan.FromSeconds(120));
+            var app = await builder.BuildAsync(ctsBuild.Token);
+
+            using var ctsStart = new CancellationTokenSource(TimeSpan.FromSeconds(120));
+            await app.StartAsync(ctsStart.Token);
 
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(120));
             await app.ResourceNotifications.WaitForResourceHealthyAsync(

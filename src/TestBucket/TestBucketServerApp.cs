@@ -37,6 +37,7 @@ using TestBucket.Domain.Commands;
 using TestBucket.Components.Tests.Requiremnts.Commands;
 using TestBucket.Components.Tests.Requirements.Commands;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using TestBucket.Components.Settings.Links;
 
 namespace TestBucket;
 
@@ -59,6 +60,8 @@ public static class TestBucketServerApp
 
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddMemoryCache();
+
+        builder.Services.AddSettingLinks();
 
         builder.Services.AddSingleton<RoleLocalizer>();
         builder.Services.AddLocalization(options =>

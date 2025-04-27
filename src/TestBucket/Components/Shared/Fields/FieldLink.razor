@@ -1,17 +1,31 @@
 ﻿
 <Field>
     <MudLink Href="@Href" Style="width:100%" Class="field-link">
-        <MudStack Row AlignItems="AlignItems.Start" Style="width: 100%">
-            <FieldHeader>@HeaderText</FieldHeader>
-            <MudSpacer />
-            <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.ChevronRight" />
-        </MudStack>
 
+        @if(!string.IsNullOrEmpty(Icon))
+        {
+            <MudStack Row AlignItems="AlignItems.Start" Style="width: 100%">
+                <MudIcon Size="Size.Large" Icon="@Icon"></MudIcon>
+                <FieldHeader>@HeaderText</FieldHeader>
+                <MudSpacer />
+                <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.ChevronRight" />
+            </MudStack>
+
+        }
+        else
+        {
+            <MudStack Row AlignItems="AlignItems.Start" Style="width: 100%">
+                <FieldHeader>@HeaderText</FieldHeader>
+                <MudSpacer />
+                <MudIcon Size="Size.Large" Icon="@Icons.Material.Filled.ChevronRight" />
+            </MudStack>
+        }
         <FieldDescription>@Description</FieldDescription>
 
     </MudLink>
 </Field>
 @code {
+    [Parameter] public string? Icon { get; set; }
     [Parameter] public string? Href { get; set; }
     [Parameter] public string? HeaderText { get; set; }
     [Parameter] public string? Description { get; set; }

@@ -12,6 +12,8 @@ public partial class SearchPage
     private ISetting[] _settings = [];
     private SettingsSection[] _sections = [];
 
+    private List<SettingsLink> _links = [];
+
     private readonly Dictionary<long, FieldValue> _fieldMap = [];
     private readonly Dictionary<long, ISetting> _settingsMap = [];
 
@@ -46,11 +48,19 @@ public partial class SearchPage
         }
     }
 
+    private string TransformUrl(string relativeUrl)
+    {
+        return relativeUrl.Replace("{tenantId}", TenantId).Replace("{projectId}", (Project?.Slug ?? "select-project"));
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         var context = await CreateSettingContextAsync();
 
         _settings = settingsManager.Search(context,SearchPhrase);
+
+        _links = settingsManager.SearchLinks(context, SearchPhrase);
+
         _sections = _settings.Select(x => x.Metadata.Section).Distinct().ToArray();
 
         long id = 1;

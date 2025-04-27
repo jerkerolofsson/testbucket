@@ -4,9 +4,15 @@
 @layout SettingsLayout
 @inject ISettingsManager settingsManager
 @inject AuthenticationStateProvider authenticationStateProvider
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Class="container-settings-page">
-    
+
+    @foreach(var link in _links)
+    {
+        <FieldLink Icon="@link.Icon" Href="@TransformUrl(link.RelativeUrl)" HeaderText="@loc[link.Title]" Description="@loc[link.Description]" />
+    }
+
     @foreach(var section in _sections)
     {
         <MudText Class="mb-2" Typo="Typo.h2">@(section.Name)</MudText>

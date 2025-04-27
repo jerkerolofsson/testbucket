@@ -14,15 +14,17 @@ namespace TestBucket.Domain.Settings
 
         public SettingsCategory[] Categories { get; set; }
 
-        private ISetting[] Settings { get; set; }
+        private readonly ISetting[] _settings;
+        private readonly List<SettingsLink> _links = new List<SettingsLink>();
 
-        public SettingsManager(IEnumerable<ISetting> settings)
+        public SettingsManager(IEnumerable<ISetting> settings, IEnumerable<SettingsLink> links)
         {
-            Settings = settings.ToArray();
+            _links = links.ToList();
+            _settings = settings.ToArray();
             Categories = settings.Select(x => x.Metadata.Category).Distinct().ToArray();
         }
 
-        public ISetting[] Search( SettingContext context, string text)
+        public ISetting[] Search(SettingContext context, string text)
         {
             if(string.IsNullOrWhiteSpace(text))
             {
@@ -44,7 +46,7 @@ namespace TestBucket.Domain.Settings
         {
             List<ISetting> filtered = new List<ISetting>();
 
-            foreach(var setting in Settings)
+            foreach(var setting in _settings)
             {
                 switch(setting.Metadata.AccessLevel)
                 {
@@ -67,6 +69,18 @@ namespace TestBucket.Domain.Settings
             }
 
             return filtered.ToArray();
+        }
+
+        public List<SettingsLink> SearchLinks(SettingContext context, string searchPhrase)
+        {
+            if(searchPhrase is null)
+            {
+                return _links.ToList();
+            }
+            return _links.Where(x =>
+                x.Title.Contains(searchPhrase, StringComparison.InvariantCultureIgnoreCase) ||
+                x.Description?.Contains(searchPhrase, StringComparison.InvariantCultureIgnoreCase) == true ||
+                x.Keywords?.Contains(searchPhrase, StringComparison.InvariantCultureIgnoreCase) == true).ToList();
         }
     }
 }

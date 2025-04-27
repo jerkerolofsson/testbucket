@@ -26,7 +26,10 @@ public class UpdateTestCaseFieldsHandler : IRequestHandler<UpdateTestCaseFieldsR
 
     public async ValueTask<Unit> Handle(UpdateTestCaseFieldsRequest request, CancellationToken cancellationToken)
     {
-        await _fieldManager.SaveTestCaseFieldsAsync(request.Principal, request.Fields);
+        foreach(var field in request.Fields)
+        {
+            await _fieldManager.UpsertTestCaseFieldAsync(request.Principal, field);
+        }
         return Unit.Value;
     }
 }

@@ -1,10 +1,7 @@
-﻿using TestBucket.Components.Shared;
-using TestBucket.Components.Shared.Tree;
+﻿using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Automation.Pipelines.Models;
-using TestBucket.Domain.Teams.Models;
 
-using static MudBlazor.CategoryTypes;
 
 namespace TestBucket.Components.Tests.TestCases.Controls;
 
@@ -260,6 +257,11 @@ public partial class TestTreeView
         _selectedTreeItem = item;
         if (item is not null)
         {
+            if (item.Href is not null)
+            {
+                appNavigationManager.NavigateTo(item.Href);
+                return;
+            }
             if (item.Folder is not null)
             {
                 await OnFolderClicked.InvokeAsync(item.Folder);

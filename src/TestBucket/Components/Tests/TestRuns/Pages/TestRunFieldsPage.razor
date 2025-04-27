@@ -1,0 +1,56 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestRuns/{RunId:long}/Fields"
+@using TestBucket.Components.Automation
+@using TestBucket.Components.Tests.Layouts
+@layout TestingLayout
+@inject TestBrowser testBrowser
+@inject AppNavigationManager appNav
+@inject IStringLocalizer<SharedStrings> loc
+
+@if(_testRun is not null)
+{
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
+    <MudStack>
+        <div class="tb-minmax-grid tb-fields-grid">
+            <FieldsEditor Testrun="@_testRun" />
+        </div>
+    </MudStack>
+}
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+    [Parameter] public long RunId { get; set; }
+
+    private TestRun? _testRun = null;
+    private readonly List<BreadcrumbItem> _nav = [];
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        if(_testRun is not null)
+        {
+            _nav.Add(new BreadcrumbItem(_testRun.Name, appNav.GetTestRunUrl(_testRun.Id)));
+            _nav.Add(new BreadcrumbItem(loc["fields"], appNav.GetTestRunFieldsUrl(_testRun.Id)));
+        }
+    }
+
+    /// <summary>
+    /// Load the test case when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_testRun is null || _testRun.Id != RunId)
+        {
+            _testRun = await testBrowser.GetTestRunByIdAsync(RunId);
+            SetupBreadcrumbs();
+        }
+    }
+}

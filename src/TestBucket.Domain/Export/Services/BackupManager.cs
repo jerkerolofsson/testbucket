@@ -33,7 +33,7 @@ namespace TestBucket.Domain.Export.Services
             _logger.LogInformation("Creating backup for tenant: {TenantId}..", tenantId);
 
             var date = DateTime.Now;
-            var defaultFilename = $"{date.ToString("o")}".Replace(':', '_').Replace('.', '_').Replace('+', '_') + ".zip";
+            string defaultFilename = GenerateBackupFilenameFromDate(date);
             if (options.DestinationType == ExportDestinationType.Disk)
             {
                 AssignDefaultDiskOptions(options, date, defaultFilename);
@@ -46,6 +46,11 @@ namespace TestBucket.Domain.Export.Services
             }
         }
 
+        private static string GenerateBackupFilenameFromDate(DateTime date)
+        {
+            return $"{date.ToString("o")}".Replace(':', '_').Replace('.', '_').Replace('+', '_') + ".zip";
+        }
+
         private async Task CreateDiskBackupAsync(string tenantId, ExportOptions options)
         {
             ArgumentNullException.ThrowIfNull(options.Destination);
@@ -54,6 +59,12 @@ namespace TestBucket.Domain.Export.Services
             await _exporter.ExportFullAsync(options.ExportFormat, tenantId, destinationStream, progress);
         }
 
+        /// <summary>
+        /// Adds options needed when saving a backup file to disk
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="date"></param>
+        /// <param name="defaultFilename"></param>
         private static void AssignDefaultDiskOptions(ExportOptions options, DateTime date, string defaultFilename)
         {
             if (options.Destination is null)

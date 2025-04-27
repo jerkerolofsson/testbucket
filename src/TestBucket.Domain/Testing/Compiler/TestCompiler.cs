@@ -153,7 +153,7 @@ internal class TestCompiler : ITestCompiler
     public async Task<string> CompileAsync(ClaimsPrincipal principal, TestExecutionContext context, string source)
     {
         context.CompilerErrors.Clear();
-        var compiledWithTemplate = await GetTemplateMarkupAsync(principal, context, source);
+        var compiledWithTemplate = await CompileMarkupAsync(principal, context, source, FindTestCaseByNameAsync);
 
         var descriptionWithReplacedVariables = ReplaceVariables(context.Variables, compiledWithTemplate, context);
 
@@ -275,12 +275,19 @@ internal class TestCompiler : ITestCompiler
         return null;
     }
 
-    private async Task<string> GetTemplateMarkupAsync(ClaimsPrincipal principal, TestExecutionContext context, string source)
+    public static async Task<string> CompileMarkupAsync(
+        ClaimsPrincipal principal, 
+        TestExecutionContext context, 
+        string source, 
+        Func<ClaimsPrincipal, string, Task<TestCase?>> FindTestCaseFunc)
     {
+        // Directives
         string template = "@template";
+        string include = "@include";
 
         string? templateText = null;
         var body = new StringBuilder();
+        bool isFirstLine = true;
         foreach (var line in source.Split('\n'))
         {
             var processedLine = line;
@@ -288,20 +295,41 @@ internal class TestCompiler : ITestCompiler
             {
                 if(processedLine.StartsWith(template))
                 {
+                    // The line starts with a @template directive
                     var templateName = processedLine.Substring(template.Length).Trim();
-                    var test = await FindTestCaseByNameAsync(principal, templateName);
+                    var test = await FindTestCaseFunc(principal, templateName);
                     if(test?.Description is not null)
                     {
-                        templateText = await GetTemplateMarkupAsync(principal, context, test.Description);
+                        templateText = await CompileMarkupAsync(principal, context, test.Description, FindTestCaseFunc);
+                        continue;
+                    }
+                }
+
+                if (processedLine.StartsWith(include))
+                {
+                    // The line starts with a @template directive
+                    var templateName = processedLine.Substring(include.Length).Trim();
+                    var test = await FindTestCaseFunc(principal, templateName);
+                    if (test?.Description is not null)
+                    {
+                        var includedText = await CompileMarkupAsync(principal, context, test.Description, FindTestCaseFunc);
+                        foreach (var includedLine in includedText.Split('\n'))
+                        {
+                            body.Append(includedLine.TrimEnd('\r'));
+                            body.Append('\n');
+                        }
                         continue;
                     }
                 }
             }
 
-            body.Append(processedLine);
-            body.Append('\n');
+            if(!isFirstLine)
+            {
+                body.Append('\n');
+            }
+            isFirstLine = false;
+            body.Append(processedLine.TrimEnd('\r'));
         }
-
 
         var bodyText = body.ToString();
         if(templateText is not null)

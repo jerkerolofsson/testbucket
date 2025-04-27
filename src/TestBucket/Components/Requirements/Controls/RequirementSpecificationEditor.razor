@@ -42,16 +42,10 @@
                         <MudText Typo="Typo.h1">@Specification.Name</MudText>
                     }
 
-                    @if(_selectedTab == "kanban")
+                    @if(_selectedTab == "kanban" && _specification is not null)
                     {
-                        <KanbanBoard T="Requirement" GetColumnFunc="GetState" Items="@_requirements">
-                            <ItemRenderer>
-                                <MudStack Row AlignItems="AlignItems.Center">
-                                    <MudIcon Icon="@RequirementIcons.GetIcon(context)" />
-                                    @context.Name
-                                </MudStack>
-                            </ItemRenderer>
-                        </KanbanBoard>
+                        <RequirementKanbanBoard Requirements="@_requirements" ProjectId="@_specification.TestProjectId"/>
+                     
                     }
 
                     @if (_selectedTab == "edit" || _selectedTab == "preview")
@@ -100,16 +94,6 @@
 
     private string[] TabLabels => ["edit", "preview", "kanban"];
     private string _selectedTab = "preview";
-
-    private string GetState(Requirement requirement)
-    {
-        return requirement.State??"";
-    }
-    private ValueTask SetStateAsync(Requirement requirement, string state)
-    {
-        requirement.State = state;
-        return ValueTask.CompletedTask;
-    }
 
     protected override async Task OnInitializedAsync()
     {

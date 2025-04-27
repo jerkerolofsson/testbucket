@@ -10,6 +10,7 @@ public record class BrowserItem
 {
     public string? Color { get; set; }
     public string? Icon { get; set; }
+    public string? Href { get; set; }
 
     public string? VirtualFolderName { get; set; }
 

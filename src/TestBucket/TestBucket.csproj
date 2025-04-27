@@ -51,7 +51,7 @@
   <ItemGroup>
     <Folder Include="Components\Administration\" />
     <Folder Include="Components\Environments\Layouts\" />
-    <Folder Include="Components\Settings\Backup\" />
+    <Folder Include="Components\Shared\Commands\" />
     <Folder Include="Components\Tests\TestRuns\Services\" />
     <Folder Include="Components\Tests\TestSuites\Mapping\" />
     <Folder Include="Services\" />

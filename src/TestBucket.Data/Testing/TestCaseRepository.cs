@@ -728,7 +728,7 @@ internal class TestCaseRepository : ITestCaseRepository
             .AsNoTracking()
             .Include(x => x.LinkedIssues)
             .Include(x => x.TestCase)
-            .Include(x => x.TestCaseRunFields)
+            .Include(x => x.TestCaseRunFields!).ThenInclude(y => y.FieldDefinition)
             .AsQueryable();
 
         foreach(var filter in filters)

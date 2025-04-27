@@ -15,7 +15,15 @@ public class FieldValue : Entity
 {
     public static FieldValue Empty => new FieldValue { FieldDefinitionId = 0 };
 
+    /// <summary>
+    /// Database ID
+    /// </summary>
     public long Id { get; set; }
+
+    /// <summary>
+    /// Set to true if the field was inherited
+    /// </summary>
+    public bool? Inherited { get; set; }
 
     // Values (based on FieldDefinition.Type)
 
@@ -88,15 +96,47 @@ public class FieldValue : Entity
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="copy"></param>
-    public void CopyTo<T>(T copy) where T : FieldValue
+    public bool CopyTo<T>(T copy) where T : FieldValue
     {
-        copy.FieldDefinitionId = FieldDefinitionId;
-        copy.BooleanValue = BooleanValue;
-        copy.StringValue = StringValue;
-        copy.DoubleValue = DoubleValue;
-        copy.LongValue = LongValue;
-        copy.StringValuesList = StringValuesList;
-        copy.TenantId = TenantId;
+        bool changed = false;
+
+        if (copy.FieldDefinitionId != FieldDefinitionId)
+        {
+            changed = true;
+            copy.FieldDefinitionId = FieldDefinitionId;
+        }
+        if (copy.BooleanValue != BooleanValue)
+        {
+            changed = true;
+            copy.BooleanValue = BooleanValue;
+        }
+        if (copy.StringValue != StringValue)
+        {
+            changed = true;
+            copy.StringValue = StringValue;
+        }
+        if (copy.DoubleValue != DoubleValue)
+        {
+            changed = true;
+            copy.DoubleValue = DoubleValue;
+        }
+        if (copy.LongValue != LongValue)
+        {
+            changed = true;
+            copy.LongValue = LongValue;
+        }
+        if (copy.StringValuesList != StringValuesList)
+        {
+            changed = true;
+            copy.StringValuesList = StringValuesList;
+        }
+        if (copy.TenantId != TenantId)
+        {
+            changed = true;
+            copy.TenantId = TenantId;
+        }
+
+        return changed;
     }
 
     public string GetValueAsString()

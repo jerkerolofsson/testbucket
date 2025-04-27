@@ -23,6 +23,10 @@ internal class CreateTestCaseFromRequirementCommand : ICommand
 
     public string Description => _loc["create-test-from-requirement-description"];
 
+    public int SortOrder => 60;
+
+    public string? Folder => _loc["add"];
+
     public bool Enabled => _appNav.State.SelectedRequirement is not null && _appNav.State.SelectedProject is not null;
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;

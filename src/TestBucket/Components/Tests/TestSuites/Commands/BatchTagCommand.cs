@@ -23,6 +23,9 @@ internal class BatchTagCommand : ICommand
     private readonly IProgressManager _progressManager;
     private readonly FieldController _fieldController;
 
+    public int SortOrder => 60;
+    public string? Folder => null;
+
     public BatchTagCommand(
         IStringLocalizer<SharedStrings> loc,
         AppNavigationManager appNavigationManager,

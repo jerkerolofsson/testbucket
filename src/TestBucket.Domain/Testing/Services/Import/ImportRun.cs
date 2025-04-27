@@ -13,6 +13,9 @@ using TestBucket.Domain.States;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCases;
+using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Formats;
 using TestBucket.Formats.Dtos;
 
@@ -240,7 +243,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                 var values = run.Traits.Where(x=>x.Type == fieldDefinition.TraitType).Select(x => x.Value).ToArray();
                 if (FieldValueConverter.TryAssignValue(fieldDefinition, field, values))
                 {
-                    await _fieldDefinitionManager.UpsertTestRunFieldAsync(principal, field);
+                    await _fieldManager.UpsertTestRunFieldAsync(principal, field);
                 }
             }
         }
@@ -313,7 +316,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
             var values = traits.Where(x=>x.Type == fieldDefinition.TraitType).Select(x => x.Value).ToArray();
             if (FieldValueConverter.TryAssignValue(fieldDefinition, field, values))
             {
-                await _fieldDefinitionManager.UpsertTestCaseFieldAsync(principal, field);
+                await _fieldManager.UpsertTestCaseFieldAsync(principal, field);
             }
         }
     }

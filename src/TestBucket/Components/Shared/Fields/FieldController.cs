@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Projects;
@@ -37,8 +36,15 @@ internal class FieldController : TenantBaseService
     public async Task SaveTestCaseFieldsAsync(IEnumerable<TestCaseField> fields)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        await _manager.SaveTestCaseFieldsAsync(principal, fields);
-
+        foreach(var field in fields)
+        {
+            await _manager.UpsertTestCaseFieldAsync(principal, field);
+        }
+    }
+    public async Task UpsertTestCaseFieldAsync(TestCaseField field)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.UpsertTestCaseFieldAsync(principal, field);
     }
 
     /// <summary>
@@ -75,8 +81,16 @@ internal class FieldController : TenantBaseService
     public async Task SaveRequirementFieldsAsync(IEnumerable<RequirementField> fields)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        await _manager.SaveRequirementFieldsAsync(principal, fields);
+        foreach (var field in fields)
+        {
+            await _manager.UpsertRequirementFieldAsync(principal, field);
+        }
+    }
 
+    public async Task UpsertRequirementFieldAsync(RequirementField field)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.UpsertRequirementFieldAsync(principal, field);
     }
     #endregion Requirements
 
@@ -84,7 +98,16 @@ internal class FieldController : TenantBaseService
     public async Task SaveTestRunFieldsAsync(IEnumerable<TestRunField> fields)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        await _manager.SaveTestRunFieldsAsync(principal, fields);
+        foreach (var field in fields)
+        {
+            await _manager.UpsertTestRunFieldAsync(principal, field);
+        }
+    }
+
+    public async Task UpsertTestRunFieldAsync(TestRunField field)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.UpsertTestRunFieldAsync(principal, field);
     }
     public async Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(long testRunId, IEnumerable<FieldDefinition> fieldDefinitions)
     {
@@ -95,12 +118,20 @@ internal class FieldController : TenantBaseService
     #endregion Test Run
 
     #region Test Case Run
+    public async Task UpsertTestCaseRunFieldAsync(TestCaseRunField field)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.UpsertTestCaseRunFieldAsync(principal, field);
+    }
     public async Task SaveTestCaseRunFieldsAsync(IEnumerable<TestCaseRunField> fields)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
 
-        await _manager.SaveTestCaseRunFieldsAsync(principal, fields);
+        foreach (var field in fields)
+        {
+            await _manager.UpsertTestCaseRunFieldAsync(principal, field);
+        }
     }
 
     public async Task<IReadOnlyList<TestCaseRunField>> GetTestCaseRunFieldsAsync(long testRunId, long testCaseRunId, IEnumerable<FieldDefinition> fieldDefinitions)

@@ -5,8 +5,9 @@ using TestBucket.Domain.Testing.Duplication;
 using TestBucket.Domain.Testing.Events;
 using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestSuites;
 
-namespace TestBucket.Domain.Testing
+namespace TestBucket.Domain.Testing.TestCases
 {
     public class TestCaseManager : ITestCaseManager
     {

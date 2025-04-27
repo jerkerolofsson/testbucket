@@ -5,6 +5,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using Mediator;
+
+using TestBucket.Domain.Fields.Events;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
 
@@ -12,10 +15,12 @@ namespace TestBucket.Domain.Fields;
 internal class FieldManager : IFieldManager
 {
     private readonly IFieldRepository _repository;
+    private readonly IMediator _mediator;
 
-    public FieldManager(IFieldRepository repository)
+    public FieldManager(IFieldRepository repository, IMediator mediator)
     {
         _repository = repository;
+        _mediator = mediator;
     }
 
     #region Requirement
@@ -190,5 +195,42 @@ internal class FieldManager : IFieldManager
             field.TenantId = tenantId;
         }
         await _repository.SaveTestRunFieldsAsync(fields);
+    }
+
+    public async Task UpsertRequirementFieldAsync(ClaimsPrincipal principal, RequirementField field)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestRun, PermissionLevel.Write);
+
+        field.TenantId = principal.GetTenantIdOrThrow();
+        await _repository.UpsertRequirementFieldAsync(field);
+
+        await _mediator.Publish(new RequirementFieldChangedNotification(principal, field));
+    }
+    public async Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestRun, PermissionLevel.Write);
+
+        field.TenantId = principal.GetTenantIdOrThrow();
+        await _repository.UpsertTestRunFieldAsync(field);
+
+        await _mediator.Publish(new TestRunFieldChangedNotification(principal, field));
+    }
+    public async Task UpsertTestCaseFieldAsync(ClaimsPrincipal principal, TestCaseField field)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
+
+        field.TenantId = principal.GetTenantIdOrThrow();
+        await _repository.UpsertTestCaseFieldAsync(field);
+
+        await _mediator.Publish(new TestCaseFieldChangedNotification(principal, field));
+    }
+    public async Task UpsertTestCaseRunFieldAsync(ClaimsPrincipal principal, TestCaseRunField field)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
+
+        field.TenantId = principal.GetTenantIdOrThrow();
+        await _repository.UpsertTestCaseRunFieldAsync(field);
+
+        await _mediator.Publish(new TestCaseRunFieldChangedNotification(principal, field));
     }
 }

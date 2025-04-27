@@ -131,19 +131,5 @@ namespace TestBucket.Domain.Fields
             return definitions;
         }
 
-        public async Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field)
-        {
-            principal.ThrowIfNoPermission(PermissionEntityType.TestRun, PermissionLevel.Write);
-
-            field.TenantId = principal.GetTenantIdOrThrow();
-            await _fieldRepository.UpsertTestRunFieldAsync(field);
-        }
-        public async Task UpsertTestCaseFieldAsync(ClaimsPrincipal principal, TestCaseField field)
-        {
-            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
-
-            field.TenantId = principal.GetTenantIdOrThrow();
-            await _fieldRepository.UpsertTestCaseFieldAsync(field);
-        }
     }
 }

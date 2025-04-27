@@ -25,6 +25,10 @@ internal class DeleteRequirementFolderCommand : ICommand
 
     public string[] ContextMenuTypes => ["RequirementFolder"];
 
+    public int SortOrder => 90;
+
+    public string? Folder => null;
+
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.Requirement;
     public PermissionLevel? RequiredLevel => PermissionLevel.Delete;
 

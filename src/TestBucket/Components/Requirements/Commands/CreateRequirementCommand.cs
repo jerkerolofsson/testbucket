@@ -18,6 +18,10 @@ internal class CreateRequirementCommand : ICommand
 
     public string Description => _loc["create-requirement-description"];
 
+    public int SortOrder => 50;
+
+    public string? Folder => _loc["add"];
+
     public bool Enabled => 
         _appNav.State.SelectedRequirementSpecification is not null && 
         _appNav.State.SelectedProject is not null;

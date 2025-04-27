@@ -19,6 +19,10 @@ internal class AddTestSuiteToRunCommand : ICommand
     private readonly TestRunCreationController _testRunCreationController;
     private readonly IDialogService _dialogService;
 
+    public int SortOrder => 30;
+
+    public string? Folder => null;
+
     public AddTestSuiteToRunCommand(
         IStringLocalizer<SharedStrings> loc,
         AppNavigationManager appNavigationManager,

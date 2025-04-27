@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Commands.Models;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Keyboard;
 
@@ -82,7 +83,49 @@ namespace TestBucket.Domain.Commands
         /// <inheritdoc/>
         public IReadOnlyList<ICommand> GetCommandByContextMenuType(string typeName)
         {
-            return _commands.Values.Where(x => x.ContextMenuTypes.Contains(typeName)).ToList();
+            return _commands.Values.Where(x => x.ContextMenuTypes.Contains(typeName)).OrderBy(x=>x.SortOrder).ToList();
         }
+
+        /// <inheritdoc/>
+        public IReadOnlyList<CommandContextMenuItem> GetCommandMenuItems(string typeName)
+        {
+            Dictionary<string, CommandContextMenuItem> folderItems = [];
+            var result = new List<CommandContextMenuItem>();
+
+            foreach(var command in GetCommandByContextMenuType(typeName))
+            {
+                if (command.Folder is null)
+                {
+                    result.Add(new CommandContextMenuItem { Command = command });
+                }
+                else
+                {
+                    if(folderItems.TryGetValue(command.Folder, out var folder))
+                    {
+                        folder.FolderCommands.Add(command);
+                    }
+                    else
+                    {
+                        var folderItem = new CommandContextMenuItem();
+                        folderItems[command.Folder] = folderItem;
+                        result.Add(folderItem);
+                        folderItem.Folder = command.Folder;
+                        folderItem.FolderCommands.Add(command);
+                    }
+                }
+            }
+
+            // Sort all folders
+            foreach(var folderItem in folderItems.Values)
+            {
+                folderItem.FolderCommands.Sort((a,b) =>
+                {
+                    return a.SortOrder - b.SortOrder;
+                });
+            }
+
+            return result;
+        }
+
     }
 }

@@ -1,24 +1,21 @@
 ﻿using Mediator;
 
-using MudBlazor;
-
-using NGitLab.Models;
+using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Requirements.Dialogs;
-using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Environments;
-using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Shared;
 using TestBucket.Domain.States;
-using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.Testing.Compiler;
-using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Domain.TestResources.Allocation;
+using TestBucket.Localization;
 
 namespace TestBucket.Components.Tests.TestCases.Services;
 
@@ -33,7 +30,7 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
     private readonly ITestCompiler _testCompiler;
     private readonly ITestEnvironmentManager _testEnvironmentManager;
     private readonly IMediator _mediator;
-
+    private readonly IStringLocalizer<SharedStrings> _loc;
     /// <summary>
     /// Create a guid that is used to lock resources for manual execution with the scoped session of a user
     /// </summary>
@@ -50,7 +47,8 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         ITestCompiler testComplier,
         ITestEnvironmentManager testEnvironmentManager,
         IMediator mediator,
-        ITestSuiteManager testSuiteManager) : base(authenticationStateProvider)
+        ITestSuiteManager testSuiteManager,
+        IStringLocalizer<SharedStrings> loc) : base(authenticationStateProvider)
     {
         _testCaseManager = testCaseManager;
         _testRunManager = testRunManager;
@@ -61,6 +59,7 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         _testEnvironmentManager = testEnvironmentManager;
         _mediator = mediator;
         _testSuiteManager = testSuiteManager;
+        _loc = loc;
     }
 
     /// <summary>
@@ -208,6 +207,24 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         var result = await dialog.Result;
     }
 
+    public async ValueTask<TestCase?> CreateNewSharedStepsAsync(TestProject project, TestSuiteFolder? folder, long? testSuiteId, string name = "")
+    {
+        var parameters = new DialogParameters<AddTestCaseDialog>
+        {
+            { x => x.Name, name },
+            { x => x.IsTemplate, true },
+            { x => x.Project, project },
+            { x => x.Folder, folder },
+            { x => x.TestSuiteId, testSuiteId ?? folder?.TestSuiteId }
+        };
+        var dialog = await _dialogService.ShowAsync<AddTestCaseDialog>(_loc["new-shared-steps"], parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is TestCase testCase)
+        {
+            return testCase;
+        }
+        return null;
+    }
     public async ValueTask<TestCase?> CreateNewTestCaseAsync(TestProject project, TestSuiteFolder? folder, long? testSuiteId, string name = "")
     {
         var parameters = new DialogParameters<AddTestCaseDialog>
@@ -215,9 +232,9 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
             { x => x.Name, name },
             { x => x.Project, project },
             { x => x.Folder, folder },
-            { x => x.TestSuiteId, testSuiteId ?? folder?.TestSuiteId}
+            { x => x.TestSuiteId, testSuiteId ?? folder?.TestSuiteId }
         };
-        var dialog = await _dialogService.ShowAsync<AddTestCaseDialog>("Add test case", parameters, DefaultBehaviors.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<AddTestCaseDialog>(_loc["new-test"], parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if (result?.Data is TestCase testCase)
         {

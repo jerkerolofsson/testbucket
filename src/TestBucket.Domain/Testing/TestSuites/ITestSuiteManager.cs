@@ -2,7 +2,7 @@
 
 using TestBucket.Domain.Testing.Models;
 
-namespace TestBucket.Domain.Testing;
+namespace TestBucket.Domain.Testing.TestSuites;
 public interface ITestSuiteManager
 {
     void AddObserver(ITestSuiteObserver observer);

@@ -7,8 +7,8 @@ using Microsoft.Extensions.AI;
 
 using TestBucket.Domain.AI.Models;
 using TestBucket.Domain.Progress;
-using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestCases;
 
 namespace TestBucket.Domain.AI;
 internal class TestCaseGenerator : ITestCaseGenerator

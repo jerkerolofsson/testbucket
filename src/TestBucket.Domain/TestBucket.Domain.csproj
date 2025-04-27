@@ -54,7 +54,6 @@
 
     <ItemGroup>
       <Folder Include="Automation\Pipelines\IntegrationEvents\" />
-      <Folder Include="Testing\TestCases\" />
       <Folder Include="TestResources\Services\" />
     </ItemGroup>
 

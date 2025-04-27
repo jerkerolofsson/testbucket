@@ -39,6 +39,9 @@ using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Services.Classification;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Settings;
+using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Domain.TestResources;
 using TestBucket.Domain.TestResources.Allocation;
 

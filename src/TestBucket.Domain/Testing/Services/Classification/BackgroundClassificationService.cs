@@ -67,13 +67,15 @@ namespace TestBucket.Domain.Testing.Services.Classification
                         if (FieldValueConverter.TryAssignValue(field.FieldDefinition, field, result))
                         {
                             changed = true;
+
+                            await fieldManager.UpsertTestCaseFieldAsync(principal, field);
                         }
                     }
                 }
             }
             if (changed)
             {
-                await fieldManager.SaveTestCaseFieldsAsync(principal, fields);
+                //await fieldManager.SaveTestCaseFieldsAsync(principal, fields);
             }
         }
 

@@ -10,6 +10,7 @@ using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields.Handlers;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestCases;
 
 namespace TestBucket.Domain.Testing.Duplication;
 public record class DuplicateTestCaseRequest(ClaimsPrincipal Principal, TestCase TestCase) : IRequest<TestCase>;

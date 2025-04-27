@@ -64,6 +64,7 @@ internal class FieldRepository : IFieldRepository
         if (existingField is not null)
         {
             field.CopyTo(existingField);
+            existingField.Inherited = field.Inherited;
             dbContext.TestCaseFields.Update(existingField);
         }
         else
@@ -120,6 +121,7 @@ internal class FieldRepository : IFieldRepository
         if (existingField is not null)
         {
             field.CopyTo(existingField);
+            existingField.Inherited = field.Inherited;
             dbContext.TestRunFields.Update(existingField);
         }
         else
@@ -168,7 +170,7 @@ internal class FieldRepository : IFieldRepository
 
     #region Test Case Run
 
-    public async Task UpsertTestCaseRunFieldsAsync(TestCaseRunField field)
+    public async Task UpsertTestCaseRunFieldAsync(TestCaseRunField field)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -177,6 +179,7 @@ internal class FieldRepository : IFieldRepository
         if (existingField is not null)
         {
             field.CopyTo(existingField);
+            existingField.Inherited = field.Inherited;
             dbContext.TestCaseRunFields.Update(existingField);
         }
         else
@@ -225,7 +228,7 @@ internal class FieldRepository : IFieldRepository
 
     #region Requirement
 
-    public async Task UpsertRequirementFieldsAsync(RequirementField field)
+    public async Task UpsertRequirementFieldAsync(RequirementField field)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -234,6 +237,7 @@ internal class FieldRepository : IFieldRepository
         if (existingField is not null)
         {
             field.CopyTo(existingField);
+            existingField.Inherited = field.Inherited;
             dbContext.RequirementFields.Update(existingField);
         }
         else

@@ -52,9 +52,18 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
+    [Parameter] public string? RequirementType { get; set; }
+
     private Requirement _requirement = new() { Name = "", RequirementType = RequirementTypes.General };
     private bool _preview = false;
 
+    protected override void OnInitialized()
+    {
+        if(RequirementType is not null)
+        {
+            _requirement.RequirementType = RequirementType;
+        }
+    }
 
     private void Close()
     {

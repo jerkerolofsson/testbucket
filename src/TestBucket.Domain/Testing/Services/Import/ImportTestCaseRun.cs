@@ -13,6 +13,8 @@ using TestBucket.Domain.States;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCases;
+using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Formats;
 using TestBucket.Formats.Dtos;
 
@@ -23,26 +25,23 @@ public record class ImportTestCaseRunRequest(ClaimsPrincipal Principal, TestRun 
 public class ImportTestCaseRunHandler : IRequestHandler<ImportTestCaseRunRequest, TestCaseRun>
 {
     private readonly IStateService _stateService;
-    private readonly ITestCaseRepository _testCaseRepository;
-    private readonly IFileRepository _fileRepository;
+    private readonly IFieldDefinitionManager _fieldDefinitionManager;
+    private readonly ITestRunManager _testRunManager;
     private readonly ITestCaseManager _testCaseManager;
+    private readonly IFieldManager _fieldManager;
 
     public ImportTestCaseRunHandler(
         IStateService stateService,
-        ITestCaseRepository testCaseRepository,
         IFieldDefinitionManager fieldDefinitionManager,
-        IFileRepository fileRepository,
-        ITestSuiteManager testSuiteManager,
         ITestRunManager testRunManager,
         ITestCaseManager testCaseManager,
-        IFieldManager fieldManager,
-        IProjectManager projectManager,
-        ITeamManager teamManager)
+        IFieldManager fieldManager)
     {
         _stateService = stateService;
-        _testCaseRepository = testCaseRepository;
-        _fileRepository = fileRepository;
+        _fieldDefinitionManager = fieldDefinitionManager;
         _testCaseManager = testCaseManager;
+        _fieldManager = fieldManager;
+        _testRunManager = testRunManager;
     }
 
     public async ValueTask<TestCaseRun> Handle(ImportTestCaseRunRequest request, CancellationToken cancellationToken)
@@ -51,6 +50,7 @@ public class ImportTestCaseRunHandler : IRequestHandler<ImportTestCaseRunRequest
         var tenantId = principal.GetTenantIdOrThrow();
         ArgumentNullException.ThrowIfNull(request.TestCaseRun.TestCaseSlug);
         var testRun = request.Run;
+        var testCaseRunDto = request.TestCaseRun;
         var testCase = await _testCaseManager.GetTestCaseBySlugAsync(principal, request.TestCaseRun.TestCaseSlug);
         if (testCase is null)
         {
@@ -62,7 +62,7 @@ public class ImportTestCaseRunHandler : IRequestHandler<ImportTestCaseRunRequest
         }
 
 
-        var testName = testCase.Name ?? "-";
+        var testName = testCaseRunDto.Name ?? testCase.Name ?? "-";
         var completedState = await _stateService.GetProjectFinalStateAsync(principal, testRun.TestProjectId.Value);
         var testCaseRun = new TestCaseRun()
         {
@@ -75,9 +75,25 @@ public class ImportTestCaseRunHandler : IRequestHandler<ImportTestCaseRunRequest
             State = completedState.Name
         };
 
-        await _testCaseRepository.AddTestCaseRunAsync(testCaseRun);
+        await _testRunManager.AddTestCaseRunAsync(principal, testCaseRun);
 
-        // todo: Set fields from DTO
+        // Set fields from DTO (overriding any inherited values)
+        var fieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, testRun.TestProjectId.Value, FieldTarget.TestCaseRun);
+        var fields = await _fieldManager.GetTestCaseRunFieldsAsync(principal, testRun.Id, testCaseRun.Id, fieldDefinitions);
+
+        foreach(var field in fields)
+        {
+            var fieldDefinition = field.FieldDefinition;
+            if(fieldDefinition is null)
+            {
+                continue;
+            }
+            var values = testCaseRunDto.Traits.Where(x => x.Type == fieldDefinition.TraitType).Select(x => x.Value).ToArray();
+            if (FieldValueConverter.TryAssignValue(fieldDefinition, field, values))
+            {
+                await _fieldManager.UpsertTestCaseRunFieldAsync(principal, field);
+            }
+        }
 
         return testCaseRun;
     }

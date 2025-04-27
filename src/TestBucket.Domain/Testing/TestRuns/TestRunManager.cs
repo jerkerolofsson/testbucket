@@ -1,5 +1,7 @@
 ﻿using System.Security.Claims;
 
+using Mediator;
+
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Shared.Specifications;
@@ -7,9 +9,10 @@ using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.Testing.Specifications.TestRuns;
+using TestBucket.Domain.Testing.TestRuns.Events;
 
 
-namespace TestBucket.Domain.Testing;
+namespace TestBucket.Domain.Testing.TestRuns;
 internal class TestRunManager : ITestRunManager
 {
     private readonly List<ITestRunObserver> _testRunObservers = new();
@@ -17,12 +20,14 @@ internal class TestRunManager : ITestRunManager
     private readonly ITestCaseRepository _testCaseRepo;
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
     private readonly IFieldManager _fieldManager;
+    private readonly IMediator _mediator;
 
-    public TestRunManager(ITestCaseRepository testCaseRepo, IFieldDefinitionManager fieldDefinitionManager, IFieldManager fieldManager)
+    public TestRunManager(ITestCaseRepository testCaseRepo, IFieldDefinitionManager fieldDefinitionManager, IFieldManager fieldManager, IMediator mediator)
     {
         _testCaseRepo = testCaseRepo;
         _fieldDefinitionManager = fieldDefinitionManager;
         _fieldManager = fieldManager;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -105,41 +110,14 @@ internal class TestRunManager : ITestRunManager
 
         await _testCaseRepo.AddTestCaseRunAsync(testCaseRun);
 
-        await CreateInheritedTestCaseRunFieldsAsync(principal, testCaseRun);
+        await _mediator.Publish(new TestCaseRunSavedNotification(principal, testCaseRun));
+
+        //await CreateInheritedTestCaseRunFieldsAsync(principal, testCaseRun);
 
         // Notify observers
         foreach (var observer in _testRunObservers)
         {
             await observer.OnTestCaseRunCreatedAsync(testCaseRun);
-        }
-    }
-
-    /// <summary>
-    /// Adds fields with values inherited from TestRun and TestCase
-    /// </summary>
-    /// <param name="principal"></param>
-    /// <param name="testCaseRun"></param>
-    /// <returns></returns>
-    private async Task CreateInheritedTestCaseRunFieldsAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
-    {
-        // Add inherited fields from test run to the test case run
-        var runFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, testCaseRun.TestProjectId, FieldTarget.TestRun);
-        var testCaseDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, testCaseRun.TestCaseId, FieldTarget.TestRun);
-
-        var testRunFields = await _fieldManager.GetTestRunFieldsAsync(principal, testCaseRun.TestRunId, runFieldDefinitions);
-        var testCaseFields = await _fieldManager.GetTestCaseFieldsAsync(principal, testCaseRun.TestCaseId, runFieldDefinitions);
-        List<TestCaseRunField> testCaseRunFields = new();
-        foreach (var field in testCaseFields)
-        {
-            AppendField(testCaseRun, testCaseRunFields, field);
-        }
-        foreach (var field in testRunFields)
-        {
-            AppendField(testCaseRun, testCaseRunFields, field);
-        }
-        if (testCaseRunFields.Count > 0)
-        {
-            await _fieldManager.SaveTestCaseRunFieldsAsync(principal, testCaseRunFields);
         }
     }
 
@@ -204,7 +182,9 @@ internal class TestRunManager : ITestRunManager
 
         await _testCaseRepo.UpdateTestCaseRunAsync(testCaseRun);
 
-        foreach(var observer in _testRunObservers)
+        await _mediator.Publish(new TestCaseRunSavedNotification(principal, testCaseRun));
+
+        foreach (var observer in _testRunObservers)
         {
             await observer.OnTestCaseRunUpdatedAsync(testCaseRun);
         }

@@ -28,6 +28,9 @@ internal class RunTestSuiteCommand : ICommand
         _testRunCreationController = testRunCreationController;
     }
 
+    public int SortOrder => 30;
+    public string? Folder => null;
+
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.Execute;
     public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;

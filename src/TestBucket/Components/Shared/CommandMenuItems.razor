@@ -5,39 +5,20 @@
 
 @if (TypeName is not null)
 {
-    @foreach (var command in commandManager.GetCommandByContextMenuType(TypeName))
+    @foreach (var commandItem in commandManager.GetCommandMenuItems(TypeName))
     {
-        bool enabled = true;
-        if (claimsPrincipal is null || 
-            !command.Enabled || 
-            (command.PermissionEntityType is not null && command.RequiredLevel is not null && !PermissionClaims.HasPermission(claimsPrincipal, command.PermissionEntityType.Value, command.RequiredLevel.Value)))
+        if (commandItem.Folder is not null)
         {
-            enabled = false;
-        }
-
-        var binding = GetBinding(command.Id);
-        @if(enabled)
-        {
-            <MudMenuItem Icon="@command.Icon" OnClick="async () => await command.ExecuteAsync()">
-                <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center">
-                    @command.Name
-
-                    @if(binding is not null)
-                    {
-                        <MudSpacer/>
-                        <KeyboardShortcutLabel Modifiers="@binding.ModifierKeys" KeyCode="@binding.Key"/>
-                    }
-                </MudStack>
-
-            </MudMenuItem>
+            <MudMenu Label="@commandItem.Folder">
+                @foreach (var childCommand in commandItem.FolderCommands)
+                {
+                    <CommandMenuItem Item="@childCommand" Bindings="@_bindings" Principal="@claimsPrincipal" />
+                }
+            </MudMenu>
         }
         else
         {
-            <MudMenuItem Icon="@command.Icon" Style="opacity: 0.5">
-                <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center">
-                    <MudText Style="opacity: 0.5">@command.Name</MudText>
-                </MudStack>
-            </MudMenuItem>
+            <CommandMenuItem Item="@commandItem.Command" Bindings="@_bindings" Principal="@claimsPrincipal"/>
         }
     }
 }
@@ -56,15 +37,5 @@
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         claimsPrincipal = authState.User;
         _bindings = await commandManager.GetKeyboardBindingsAsync(claimsPrincipal);
-    }
-
-    private KeyboardBinding? GetBinding(string commandId)
-    {
-        if(_bindings?.Commands is null)
-        {
-            return null;
-        }
-        _bindings.Commands.TryGetValue(commandId, out var binding);
-        return binding;
     }
 }

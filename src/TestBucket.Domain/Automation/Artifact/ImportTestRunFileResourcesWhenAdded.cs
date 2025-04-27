@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using TestBucket.Domain.Files.IntegrationEvents;
 using TestBucket.Domain.Testing;
+using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Formats;
 
 namespace TestBucket.Domain.Automation.Artifact

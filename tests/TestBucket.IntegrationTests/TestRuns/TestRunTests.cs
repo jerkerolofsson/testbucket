@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TestBucket.Contracts.Fields;
+using TestBucket.Contracts.Testing.Models;
+using TestBucket.Formats.Dtos;
+using TestBucket.Traits.Core;
+
+namespace TestBucket.IntegrationTests.Features.FieldInheritance
+{
+    [FunctionalTest]
+    [EnrichedTest]
+    [IntegrationTest]
+    public class TestrunTests(TestBucketApp App)
+    {
+        [Fact]
+        [TestDescription("Verifies that fields are inherited from a test run when adding a test run case")]
+        public async Task AddTestRunCaseToTestRun_WithField_FieldIsAdded()
+        {
+            // Arrange
+            var team = await App.Client.Teams.AddAsync("Team " + Guid.NewGuid().ToString());
+            var project = await App.Client.Projects.AddAsync(team, "My project " + Guid.NewGuid().ToString());
+            try
+            {
+                // Add a test run with a milestone field (this is added by default)
+                var milestoneValue = "1.0";
+                var inputRun = new TestRunDto { Team = team, Project = project, Name = "My run " + Guid.NewGuid().ToString() };
+                inputRun.Traits.Add(new TestTrait { Name = "Milestone", ExportType = TraitExportType.Instance, Type = TraitType.Milestone, Value = milestoneValue });
+
+                var run = await App.Client.TestRuns.AddRunAsync(inputRun);
+                Assert.NotNull(run);
+
+                // Verify that the run has the milestone trait
+                var milestoneTrait = run.Traits.Find(x => x.Type == TraitType.Milestone);
+                Assert.NotNull(milestoneTrait);
+                Assert.Equal(milestoneValue, milestoneTrait.Value);
+
+            }
+            finally
+            {
+                // Cleanup
+                await App.Client.Projects.DeleteAsync(project);
+                await App.Client.Teams.DeleteAsync(team);
+            }
+        }
+    }
+}

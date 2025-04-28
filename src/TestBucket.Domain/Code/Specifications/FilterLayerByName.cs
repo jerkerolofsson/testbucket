@@ -4,7 +4,7 @@ using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Domain.Code.Specifications;
-internal class FilterLayerByName : FilterSpecification<Component>
+internal class FilterLayerByName : FilterSpecification<ArchitecturalLayer>
 {
     private readonly string _name;
 
@@ -13,7 +13,7 @@ internal class FilterLayerByName : FilterSpecification<Component>
         _name = name;
     }
 
-    protected override Expression<Func<Component, bool>> GetExpression()
+    protected override Expression<Func<ArchitecturalLayer, bool>> GetExpression()
     {
         return x => x.Name == _name;
     }

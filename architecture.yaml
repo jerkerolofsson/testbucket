@@ -80,6 +80,15 @@ components:
   Poller:
     paths: ["src/runner/TestBucket.Runner/Poller/**/*"]
 
+
+  Code UI:
+    paths:
+    - src/TestBucket/Components/Code/**/*
+
+  Settings UI:
+    paths:
+    - src/TestBucket/Components/Settings/**/*
+
   Fields:
     paths:
       - src/TestBucket.Domain/Fields/**/*
@@ -91,6 +100,14 @@ components:
   Requirement Repository:
     paths:
     - src/TestBucket.Data/Requirements/*
+
+  Settings Repository:
+    paths:
+    - src/TestBucket.Data/Settings/**/*
+
+  Identity Repository:
+    paths:
+    - src/TestBucket.Data/Identity/**/*
 
   Code Repository:
     paths:
@@ -161,6 +178,13 @@ components:
     - src/TestBucket/Components/Shared/Fields/Api/FieldApiController.cs
 
 features:
+
+  Settings 1.0:
+    paths:
+    - src/TestBucket/Components/Settings/**/*
+    - src/TestBucket.Domain/Settings/**/*
+    - src/TestBucket.Data/Settings/**/*
+    - src/TestBucket.Data/Identity/UserPreferenceRepository.cs
 
   Import Test Results:
     paths:

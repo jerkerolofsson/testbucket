@@ -20,21 +20,57 @@ internal class ArchitectureManager : IArchitectureManager
         _repository = repository;
     }
 
+    #region Systems
+    /// <summary>
+    /// Adds a system
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="system"></param>
+    /// <returns></returns>
     public async Task AddSystemAsync(ClaimsPrincipal principal, ProductSystem system)
     {
         system.TenantId = principal.GetTenantIdOrThrow();
         await _repository.AddSystemAsync(system);
     }
 
+    /// <summary>
+    /// Returns all architectural systems for a project
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
     public async Task<IReadOnlyList<ProductSystem>> GetSystemsAsync(ClaimsPrincipal principal, long projectId)
     {
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<ProductSystem>[] filters = [new FilterByProject<ProductSystem>(projectId), new FilterByTenant<ProductSystem>(tenantId)];
-        
-        PagedResult<ProductSystem> result = await _repository.SearchSystemsAsync(filters, 0, 200);
+
+        PagedResult<ProductSystem> result = await _repository.SearchSystemsAsync(filters, 0, 10_000);
         return result.Items.ToList();
     }
 
+    /// <summary>
+    /// Returns all architectural components for a project
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<Component>> GetComponentsAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Component>[] filters = [new FilterByProject<Component>(projectId), new FilterByTenant<Component>(tenantId)];
+
+        PagedResult<Component> result = await _repository.SearchComponentsAsync(filters, 0, 10_000);
+        return result.Items.ToList();
+    }
+
+
+    /// <summary>
+    /// Returns a system by name
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public async Task<ProductSystem?> GetSystemByNameAsync(ClaimsPrincipal principal, long projectId, string name)
     {
         var tenantId = principal.GetTenantIdOrThrow();
@@ -49,6 +85,177 @@ internal class ArchitectureManager : IArchitectureManager
         }
         return null;
     }
+    #endregion Systems
+
+    #region Layers
+
+    /// <summary>
+    /// Adds a layer
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="component"></param>
+    /// <returns></returns>
+    public async Task AddLayerAsync(ClaimsPrincipal principal, ArchitecturalLayer component)
+    {
+        component.TenantId = principal.GetTenantIdOrThrow();
+        await _repository.AddLayerAsync(component);
+    }
+
+    /// <summary>
+    /// Returns all architectural layers for a project
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<ArchitecturalLayer>> GetLayersAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<ArchitecturalLayer>[] filters = [new FilterByProject<ArchitecturalLayer>(projectId), new FilterByTenant<ArchitecturalLayer>(tenantId)];
+
+        PagedResult<ArchitecturalLayer> result = await _repository.SearchLayersAsync(filters, 0, 200);
+        return result.Items.ToList();
+    }
+
+    /// <summary>
+    /// Returns a architectural layer by name
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public async Task<ArchitecturalLayer?> GetLayerByNameAsync(ClaimsPrincipal principal, long projectId, string name)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<ArchitecturalLayer>[] filters = [
+            new FilterLayerByName(name),
+            new FilterByProject<ArchitecturalLayer>(projectId), new FilterByTenant<ArchitecturalLayer>(tenantId)];
+
+        PagedResult<ArchitecturalLayer> result = await _repository.SearchLayersAsync(filters, 0, 1);
+        if (result.Items.Length > 0)
+        {
+            return result.Items[0];
+        }
+        return null;
+    }
+    #endregion Layers
+
+    #region Components
+    /// <summary>
+    /// Adds a component
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="component"></param>
+    /// <returns></returns>
+    public async Task AddComponentAsync(ClaimsPrincipal principal, Component component)
+    {
+        component.TenantId = principal.GetTenantIdOrThrow();
+        await _repository.AddComponentAsync(component);
+    }
+
+    /// <summary>
+    /// Returns all architectural component for a project
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<Component>> GetComponentAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Component>[] filters = [new FilterByProject<Component>(projectId), new FilterByTenant<Component>(tenantId)];
+
+        PagedResult<Component> result = await _repository.SearchComponentsAsync(filters, 0, 200);
+        return result.Items.ToList();
+    }
+
+    /// <summary>
+    /// Returns a system by name
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public async Task<Component?> GetComponentByNameAsync(ClaimsPrincipal principal, long projectId, string name)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Component>[] filters = [
+            new FilterComponentByName(name),
+            new FilterByProject<Component>(projectId), new FilterByTenant<Component>(tenantId)];
+
+        PagedResult<Component> result = await _repository.SearchComponentsAsync(filters, 0, 1);
+        if (result.Items.Length > 0)
+        {
+            return result.Items[0];
+        }
+        return null;
+    }
+    #endregion Components
+
+    #region Features
+
+
+    /// <summary>
+    /// Returns all defined features for a project
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<Feature>> GetFeaturesAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Feature>[] filters = [new FilterByProject<Feature>(projectId), new FilterByTenant<Feature>(tenantId)];
+
+        PagedResult<Feature> result = await _repository.SearchFeaturesAsync(filters, 0, 10_000);
+        return result.Items.ToList();
+    }
+    /// <summary>
+    /// Adds a feature
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="feature"></param>
+    /// <returns></returns>
+    public async Task AddFeatureAsync(ClaimsPrincipal principal, Feature feature)
+    {
+        feature.TenantId = principal.GetTenantIdOrThrow();
+        await _repository.AddFeatureAsync(feature);
+    }
+
+    /// <summary>
+    /// Returns all architectural feature for a project
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<Feature>> GetFeatureAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Feature>[] filters = [new FilterByProject<Feature>(projectId), new FilterByTenant<Feature>(tenantId)];
+
+        PagedResult<Feature> result = await _repository.SearchFeaturesAsync(filters, 0, 200);
+        return result.Items.ToList();
+    }
+
+    /// <summary>
+    /// Returns a feature by name
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public async Task<Feature?> GetFeatureByNameAsync(ClaimsPrincipal principal, long projectId, string name)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Feature>[] filters = [
+            new FilterFeatureByName(name),
+            new FilterByProject<Feature>(projectId), new FilterByTenant<Feature>(tenantId)];
+
+        PagedResult<Feature> result = await _repository.SearchFeaturesAsync(filters, 0, 1);
+        if (result.Items.Length > 0)
+        {
+            return result.Items[0];
+        }
+        return null;
+    }
+    #endregion Components
 
     public async Task<ProjectArchitectureModel> GetProductArchitectureAsync(ClaimsPrincipal principal, TestProject project)
     {
@@ -58,39 +265,171 @@ internal class ArchitectureManager : IArchitectureManager
         {
             model.Systems[system.Name] = new Yaml.Models.ArchitecturalComponent { Display = system.Display, Paths = system.GlobPatterns };
         }
+
+        foreach (var feature in await GetFeaturesAsync(principal, project.Id))
+        {
+            model.Features[feature.Name] = new Yaml.Models.ArchitecturalComponent { Display = feature.Display, Paths = feature.GlobPatterns };
+        }
+        foreach (var layer in await GetLayersAsync(principal, project.Id))
+        {
+            model.Layers[layer.Name] = new Yaml.Models.ArchitecturalComponent { Display = layer.Display, Paths = layer.GlobPatterns };
+        }
+        foreach (var component in await GetComponentsAsync(principal, project.Id))
+        {
+            model.Components[component.Name] = new Yaml.Models.ArchitecturalComponent { Display = component.Display, Paths = component.GlobPatterns };
+        }
         return model;
     }
+
+    /// <summary>
+    /// Imports a model of the project architecture, adding systems, components, features
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="project"></param>
+    /// <param name="model"></param>
+    /// <returns></returns>
 
     public async Task ImportProductArchitectureAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
     {
         if (model.Systems is not null)
         {
-            foreach (var system in model.Systems)
+            await ImportSystemsAsync(principal, project, model);
+        }
+        if (model.Components is not null)
+        {
+            await ImportComponentsAsync(principal, project, model);
+        }
+        if (model.Features is not null)
+        {
+            await ImportFeaturesAsync(principal, project, model);
+        }
+        if (model.Layers is not null)
+        {
+            await ImportLayersAsync(principal, project, model);
+        }
+    }
+
+    private async Task ImportFeaturesAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
+    {
+        foreach (var feature in model.Features)
+        {
+            var existingFeature = await GetFeatureByNameAsync(principal, project.Id, feature.Key);
+            if (existingFeature is null)
             {
-                var existingSystem = await GetSystemByNameAsync(principal, project.Id, system.Key);
-                if(existingSystem is null)
+                existingFeature = new Feature
                 {
-                    existingSystem = new ProductSystem
-                    {
-                        TenantId = principal.GetTenantIdOrThrow(),
-                        Name = system.Key,
-                        GlobPatterns = system.Value.Paths ?? [],
-                        TestProjectId = project.Id,
-                        TeamId = project.TeamId,
-                        Display = system.Value.Display,
-                        Created = DateTimeOffset.UtcNow,
-                        Modified = DateTimeOffset.UtcNow,
-                        CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
-                        ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
-                    };
-                    await _repository.AddSystemAsync(existingSystem);
-                }
-                else
+                    TenantId = principal.GetTenantIdOrThrow(),
+                    Name = feature.Key,
+                    GlobPatterns = feature.Value.Paths ?? [],
+                    TestProjectId = project.Id,
+                    TeamId = project.TeamId,
+                    Display = feature.Value.Display,
+                    Created = DateTimeOffset.UtcNow,
+                    Modified = DateTimeOffset.UtcNow,
+                    CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
+                    ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
+                };
+                await _repository.AddFeatureAsync(existingFeature);
+            }
+            else
+            {
+                existingFeature.GlobPatterns = feature.Value.Paths ?? existingFeature.GlobPatterns;
+                existingFeature.Display = feature.Value.Display ?? existingFeature.Display;
+                await _repository.UpdateFeatureAsync(existingFeature);
+            }
+        }
+    }
+
+
+    private async Task ImportLayersAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
+    {
+        foreach (var layer in model.Layers)
+        {
+            var existingFeature = await GetLayerByNameAsync(principal, project.Id, layer.Key);
+            if (existingFeature is null)
+            {
+                existingFeature = new ArchitecturalLayer
                 {
-                    existingSystem.GlobPatterns = system.Value.Paths ?? existingSystem.GlobPatterns;
-                    existingSystem.Display = system.Value.Display ?? existingSystem.Display;
-                    await _repository.UpdateSystemAsync(existingSystem);
-                }
+                    TenantId = principal.GetTenantIdOrThrow(),
+                    Name = layer.Key,
+                    GlobPatterns = layer.Value.Paths ?? [],
+                    TestProjectId = project.Id,
+                    TeamId = project.TeamId,
+                    Display = layer.Value.Display,
+                    Created = DateTimeOffset.UtcNow,
+                    Modified = DateTimeOffset.UtcNow,
+                    CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
+                    ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
+                };
+                await _repository.AddLayerAsync(existingFeature);
+            }
+            else
+            {
+                existingFeature.GlobPatterns = layer.Value.Paths ?? existingFeature.GlobPatterns;
+                existingFeature.Display = layer.Value.Display ?? existingFeature.Display;
+                await _repository.UpdateLayerAsync(existingFeature);
+            }
+        }
+    }
+
+    private async Task ImportComponentsAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
+    {
+        foreach (var component in model.Components)
+        {
+            var existingComponent = await GetComponentByNameAsync(principal, project.Id, component.Key);
+            if (existingComponent is null)
+            {
+                existingComponent = new Component
+                {
+                    TenantId = principal.GetTenantIdOrThrow(),
+                    Name = component.Key,
+                    GlobPatterns = component.Value.Paths ?? [],
+                    TestProjectId = project.Id,
+                    TeamId = project.TeamId,
+                    Display = component.Value.Display,
+                    Created = DateTimeOffset.UtcNow,
+                    Modified = DateTimeOffset.UtcNow,
+                    CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
+                    ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
+                };
+                await _repository.AddComponentAsync(existingComponent);
+            }
+            else
+            {
+                existingComponent.GlobPatterns = component.Value.Paths ?? existingComponent.GlobPatterns;
+                existingComponent.Display = component.Value.Display ?? existingComponent.Display;
+                await _repository.UpdateComponentAsync(existingComponent);
+            }
+        }
+    }
+
+    private async Task ImportSystemsAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
+    {
+        foreach (var system in model.Systems)
+        {
+            var existingSystem = await GetSystemByNameAsync(principal, project.Id, system.Key);
+            if (existingSystem is null)
+            {
+                existingSystem = new ProductSystem
+                {
+                    TenantId = principal.GetTenantIdOrThrow(),
+                    Name = system.Key,
+                    GlobPatterns = system.Value.Paths ?? [],
+                    TestProjectId = project.Id,
+                    TeamId = project.TeamId,
+                    Display = system.Value.Display,
+                    Created = DateTimeOffset.UtcNow,
+                    Modified = DateTimeOffset.UtcNow,
+                    CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
+                    ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
+                };
+                await _repository.AddSystemAsync(existingSystem);
+            }
+            else
+            {
+                existingSystem.GlobPatterns = system.Value.Paths ?? existingSystem.GlobPatterns;
+                existingSystem.Display = system.Value.Display ?? existingSystem.Display;
+                await _repository.UpdateSystemAsync(existingSystem);
             }
         }
     }

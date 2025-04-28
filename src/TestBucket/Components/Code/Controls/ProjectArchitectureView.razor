@@ -12,7 +12,7 @@
 
         foreach(var system in _browser.GetSystems())
         {
-            <div class="system">
+            <div class="system" style="@GetStyle(system)">
                 <div class="title">@system.Name</div>
                 <div class="children">
                     @foreach(var tier in  _browser.GetLayerDisplayTiersWithin(system))
@@ -20,7 +20,7 @@
                         <div class="tier" data-tier="@tier">
                             @foreach(var layer in _browser.GetLayersWithin(system, tier))
                             {
-                                <div class="layer">
+                                <div class="layer" style="@GetStyle(layer)">
                                     <div class="title">@layer.Name</div>
                                     <div class="children">
                                         @foreach(var component in _browser.GetComponentsWithin(layer))
@@ -31,7 +31,7 @@
                                                 cssClass += " feature-component";
                                             }
 
-                                            <div class="@cssClass">
+                                            <div class="@cssClass" style="@GetStyle(component)">
                                                 <div class="title">@component.Name</div>
                                             </div>
                                         }
@@ -52,6 +52,23 @@
 
     private ArchitecturalComponentBrowser? _browser;
     private NamedArchitecturalComponent? _feature;
+
+    private string GetStyle(NamedArchitecturalComponent component)
+    {
+        var sb = new StringBuilder();
+        if(component.Display is not null)
+        {
+            if(component.Display.BackColor is not null)
+            {
+                sb.Append($"background-color: {component.Display.BackColor};");
+            }
+            if(component.Display.ForeColor is not null)
+            {
+                sb.Append($"color: {component.Display.ForeColor};");
+            }
+        }
+        return sb.ToString();
+    }
 
     protected override void OnInitialized()
     {

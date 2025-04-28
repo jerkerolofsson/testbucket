@@ -1,0 +1,154 @@
+systems:
+  android:
+    paths: 
+    - "android/**/*"
+    display:
+      back_color: "#303040"
+
+  modem:
+    paths: ["modem/**/*"]
+    display:
+      back_color: "#303040"
+
+layers:
+
+  Cellular Stacks:
+    display:
+      sort: 0
+    paths: ["modem/stacks/**/*"]
+  GNSS:
+    display:
+      sort: 0
+    paths: ["modem/gnss/**/*"]
+
+  System Apps:
+    display:
+      back_color: "#00bcd4"
+      sort: 0
+    paths: ["android/apps/**/*"]
+
+  Java API Framework:
+    display:
+      back_color: "#8bc34a"
+      sort: 1
+    paths: ["android/frameworks/**/*"]
+
+  Native Libraries:
+    display:
+      back_color: "#a87bd9"
+      sort: 2
+    paths: ["android/lib/**/*"]
+
+  Android Runtime:
+    display:
+      back_color: "#fdbe00"
+      sort: 2
+    paths: ["android/runtime/**/*"]
+
+  Hardware Abstraction Layer (HAL):
+    display:
+      back_color: "#00c9cc"
+      sort: 3
+    paths: ["android/vendor/hal/**/*"]
+
+  Linux Kernel:
+    display:
+      back_color: "#ff5607"
+      sort: 4
+    paths: ["android/kernel/**/*"]
+
+components:
+
+  LTE 4G:
+    display:
+      back_color: "purple"
+    paths: ["modem/stacks/lte/**/*"]
+  NR 5G:
+    display:
+      back_color: "violet"
+    paths: ["modem/stacks/nr/**/*"]
+  WCDMA:
+    display:
+      back_color: "coral"
+    paths: ["modem/stacks/wcmda/**/*"]
+  GSM:
+    display:
+      back_color: "green"
+    paths: ["modem/stacks/gsm/**/*"]
+
+  GPS:
+    paths: ["modem/gnss/gps/**/*"]
+  Galileo:
+    paths: ["modem/gnss/gal/**/*"]
+  BeiDou:
+    paths: ["modem/gnss/bd/**/*"]
+
+
+  Dialer:
+    paths: ["android/apps/dialer/**/*"]
+  Email:
+    paths: ["android/apps/email/**/*"]
+  Calendar:
+    paths: ["android/apps/calendar/**/*"]
+  Camera:
+    paths: ["android/apps/camera/**/*"]
+
+
+  Audio Drivers:
+    paths: ["android/kernel/audio/**/*"]
+  Binder IPC:
+    paths: ["android/kernel/binder/**/*"]
+  Display Drivers:
+    paths: ["android/kernel/display/**/*"]
+  Bluetooth Drivers:
+    paths: ["android/kernel/bluetooth/**/*"]
+  USB:
+    paths: ["android/kernel/usb/**/*"]
+  Camera Drivers:
+    paths: ["android/kernel/camera/**/*"]
+  Wi-Fi Drivers:
+    paths: ["android/kernel/wifi/**/*"]
+
+
+  ART:
+    paths: ["android/runtime/art/**/*"]
+  Core Libraries:
+    paths: ["android/runtime/core-lib/**/*"]
+  Audio HAL:
+    paths: ["android/vendor/hal/audio/**/*"]
+  Bluetooth HAL:
+    paths: ["android/vendor/hal/bluetooth/**/*"]
+  Camera HAL:
+    paths: ["android/vendor/hal/camera/**/*"]
+  Sensors HAL:
+    paths: ["android/vendor/hal/sensors/**/*"]
+
+  Webkit:
+    paths: ["android/lib/webkit/**/*"]
+  OpenMAX AL:
+    paths: ["android/lib/openmax-al/**/*"]
+  OpenGL ES:
+    paths: ["android/lib/opengl-es/**/*"]
+  Media Framework:
+    paths: ["android/lib/mediafw/**/*"]
+  Libc:
+    paths: ["android/lib/libc/**/*"]
+
+  Content Providers:
+    paths: ["android/frameworks/content/**/*"]
+  View system:
+    paths: ["android/frameworks/view/**/*"]
+  Activity:
+    paths: ["android/frameworks/am/**/*"]
+  Location:
+    paths: ["android/frameworks/location/**/*"]
+  Package:
+    paths: ["android/frameworks/pm/**/*"]
+  Notification:
+    paths: ["android/frameworks/notification/**/*"]
+  Window:
+    paths: ["android/frameworks/window/**/*"]
+  Telephony:
+    paths: ["android/frameworks/telephony/**/*"]
+
+

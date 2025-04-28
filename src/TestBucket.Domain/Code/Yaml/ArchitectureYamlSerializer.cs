@@ -10,7 +10,7 @@ using TestBucket.Domain.Code.Yaml.Models;
 using YamlDotNet.Core;
 
 namespace TestBucket.Domain.Code.Yaml;
-public class ArchitectureYamlParser
+public class ArchitectureYamlSerializer
 {
     public List<ArchitectureYamlValidationError> Validate(string yaml)
     {
@@ -38,6 +38,11 @@ public class ArchitectureYamlParser
         return errors;
     }
 
+    public string Serialize(ProjectArchitectureModel model)
+    {
+        var serializer = new SerializerBuilder().WithNamingConvention(UnderscoredNamingConvention.Instance).Build();
+        return serializer.Serialize(model);
+    }
     public ProjectArchitectureModel Parse(string yaml)
     {
         if(Validate(yaml).Count() > 0)

@@ -1,0 +1,33 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Code/Architecture"
+@layout CodeLayout
+@inject ArchitectureController controller
+@inject IStringLocalizer<CodeStrings> loc
+
+<MudStack>
+    <MudText Typo="Typo.h1">@loc["architecture"]</MudText>
+    <TestBucket.Components.Code.Controls.ProjectArchitectureView Model="@_model"/>
+</MudStack>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+
+    private ProjectArchitectureModel? _model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(Project is not null)
+        {
+            _model = await controller.GetProductArchitectureAsync(Project);
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Project is not null)
+        {
+            _model = await controller.GetProductArchitectureAsync(Project);
+        }
+    }
+}

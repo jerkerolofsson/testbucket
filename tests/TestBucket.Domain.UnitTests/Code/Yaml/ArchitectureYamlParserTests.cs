@@ -16,7 +16,7 @@ namespace TestBucket.Domain.UnitTests.Code.Yaml
         public void ValidateYaml_WithEmptyDocument_GivesError()
         {
             string yaml = "";
-            var errors = new ArchitectureYamlParser().Validate(yaml);
+            var errors = new ArchitectureYamlSerializer().Validate(yaml);
             Assert.NotEmpty(errors);
         }
 
@@ -28,7 +28,7 @@ namespace TestBucket.Domain.UnitTests.Code.Yaml
                   Rocket:
                     paths: src/**/*
                 """;
-            var errors = new ArchitectureYamlParser().Validate(yaml);
+            var errors = new ArchitectureYamlSerializer().Validate(yaml);
             Assert.Empty(errors);
         }
 
@@ -40,7 +40,7 @@ namespace TestBucket.Domain.UnitTests.Code.Yaml
                   Feature1:
                     paths: src/**/*
                 """;
-            var errors = new ArchitectureYamlParser().Validate(yaml);
+            var errors = new ArchitectureYamlSerializer().Validate(yaml);
             Assert.NotEmpty(errors);
         }
     }

@@ -336,6 +336,11 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Code/ArchitectureYamlTool";
     }
+    public string GetCodeArchitectureUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Code/Architecture";
+    }
 
     public void NavigateTo(string url, bool forceLoad = false)
     {

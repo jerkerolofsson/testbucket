@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Code.Yaml.Models;
+
 namespace TestBucket.Domain.Code.Models;
 
 /// <summary>
@@ -27,6 +29,16 @@ public class Component : ProjectEntity
     [Column(TypeName = "jsonb")]
     public required List<string> GlobPatterns { get; set; }
 
+    /// <summary>
+    /// Display options for visualization only
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public DisplayOptions? Display { get; set; }
+
+    /// <summary>
+    /// Responsible for development
+    /// </summary>
+    public string? DevResponsible { get; set; }
 
     /// <summary>
     /// User
@@ -37,5 +49,4 @@ public class Component : ProjectEntity
     /// User
     /// </summary>
     public string? TestLead { get; set; }
-
 }

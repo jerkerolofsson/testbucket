@@ -110,6 +110,8 @@ public static class DomainServiceExtensions
         services.AddScoped<IUserManager, UserManager>();
         services.AddScoped<IProfilePictureManager, ProfilePictureManager>();
 
+        // Code
+        services.AddScoped<IArchitectureManager, ArchitectureManager>();
         services.AddScoped<ICommitManager, CommitManager>();
         services.AddHostedService<CodeRepoCommmitBackgroundIndexer>();
 

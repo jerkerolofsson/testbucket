@@ -123,6 +123,21 @@ p.mud-typography-subtitle1 {
     color: #888;
 }
 
+input {
+    border: solid 1px var(--mud-palette-dark-darken);
+    border-radius: 4px;
+    background-color: var(--mud-palette-dark) !important;
+    color: white;
+    padding: 6px 8px;
+    border: solid 2px transparent;
+    outline: solid 2px transparent;
+}
+
+input:focus-visible {
+    border: solid 2px transparent;
+    outline: solid 2px var(--mud-palette-primary);
+}
+
 .mud-input>input.mud-input-root-outlined, div.mud-input-slot.mud-input-root-outlined {
     padding: 8px 4px;
     padding-bottom: 12px;

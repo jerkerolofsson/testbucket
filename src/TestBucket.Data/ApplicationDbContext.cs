@@ -36,6 +36,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<CommitFile> CommitFiless { get; set; }
     internal DbSet<Feature> Features { get; set; }
     internal DbSet<ArchitecturalLayer> ArchitecturalLayers { get; set; }
+    internal DbSet<ProductSystem> ProductSystems { get; set; }
 
     internal DbSet<FileResource> Files { get; set; }
     internal DbSet<Team> Teams { get; set; }

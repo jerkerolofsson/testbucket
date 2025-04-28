@@ -34,6 +34,7 @@ public static class DataServiceExtensions
     public static IServiceCollection AddDataServices(this IServiceCollection services)
     {
         services.AddScoped<ICommitRepository, CommitRepository>();
+        services.AddScoped<IArchitectureRepository, ArchitectureRepository>();
 
         services.AddScoped<IPipelineRepository, PipelineRepository>();
         services.AddScoped<IRequirementRepository, RequirementRepository>();

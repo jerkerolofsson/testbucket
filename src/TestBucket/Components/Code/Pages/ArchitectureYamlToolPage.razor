@@ -1,34 +1,36 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Code/ArchitectureYamlTool"
-@using TestBucket.Components.Code.Layouts
-@using TestBucket.Domain.Code.Yaml
-@using TestBucket.Domain.Code.Yaml.Models
 @layout CodeLayout
-@inject AuthenticationStateProvider authenticationStateProvider
+@inject ArchitectureController controller
 @inject IStringLocalizer<CodeStrings> loc
 
-<MudStack Style="width: 100%" Class="pa-3">
+<Splitter Class="container-fill pa-2" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+        <div class="tb-architecture-yaml-left">
+            <MudText Typo="Typo.h1">@loc["architecture-yaml"]</MudText>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
-        <MudStack Style="width: 100%">
+            <MudTextField @bind-Value="@_yaml"
+                Style="font-family: monospace; overflow: auto"
+                T="string" Variant="Variant.Outlined" Lines="20" AutoGrow/>
 
-    <MudTextField @bind-Value="@_yaml"
-        Style="font-family: monospace"
-        T="string" Variant="Variant.Outlined" Lines="20" HelperText="@loc["architecture-yaml"]"/>
-    <MudStack Row Style="width:100%" Spacing="1">
-        <MudSpacer />
-        <MudButton OnClick="Validate" Color="Color.Primary" Variant="Variant.Outlined">@loc["validate"]</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled">@loc["apply"]</MudButton>
-    </MudStack>
-        </MudStack>
+            <MudStack Row Style="width:100%;" Spacing="1" Class="pa-2">
+                <MudSpacer />
+                <MudButton OnClick="Validate" Color="Color.Primary" Variant="Variant.Outlined">@loc["validate"]</MudButton>
+                <MudButton OnClick="Apply" Color="Color.Primary" Variant="Variant.Filled">@loc["apply"]</MudButton>
+            </MudStack>
+        </div>
+    </StartContent>
+    <EndContent>
 
-        <MudStack Style="width: 100%">
+        <div class="tb-architecture-yaml-right">
             @if(_errors.Count == 0)
             {
+                <MudText Typo="Typo.h1">@loc["preview"]</MudText>
                 <TestBucket.Components.Code.Controls.ProjectArchitectureView Model="@_model"/>
             }
             else
             {
+                <MudText Typo="Typo.h1">@loc["yaml-errors"]</MudText>
                 <div style="display: grid; grid-template-columns: auto auto 1fr; gap: 4px">
                     @foreach(var error in _errors)
                     {
@@ -38,24 +40,43 @@
                     }
                 </div>
             }
-        </MudStack>
-
-    </div>
-
-
-</MudStack>
+        </div>
+    </EndContent>
+</Splitter>
 
 @code {
     [Parameter] public string? TenantId { get; set; }
+    [CascadingParameter] TestProject? Project{get;set;}
 
     private string _yaml = "";
     private ProjectArchitectureModel? _model;
     private List<ArchitectureYamlValidationError> _errors = [];
 
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(Project is not null)
+        {
+            _model = await controller.GetProductArchitectureAsync(Project);
+
+            var parser = new ArchitectureYamlSerializer();
+            _yaml = parser.Serialize(_model) ;
+        }
+    }
+
+    private async Task Apply()
+    {
+        Validate();
+        if (Project is not null && _model is not null)
+        {
+            await controller.ImportProductArchitectureAsync(Project, _model);
+        }
+    }
+
     private void Validate()
     {
         _model = null;
-        var parser = new ArchitectureYamlParser();
+        var parser = new ArchitectureYamlSerializer();
         _errors = parser.Validate(_yaml);
         if(_errors.Count == 0)
         {

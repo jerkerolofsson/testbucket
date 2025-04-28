@@ -38,6 +38,7 @@ using TestBucket.Components.Tests.Requiremnts.Commands;
 using TestBucket.Components.Tests.Requirements.Commands;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using TestBucket.Components.Settings.Links;
+using TestBucket.Components.Code.Controllers;
 
 namespace TestBucket;
 
@@ -188,6 +189,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<SignInManager<ApplicationUser>, ApplicationSignInManager>();
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+        builder.Services.AddScoped<ArchitectureController>();
         builder.Services.AddScoped<UserApiKeysController>();
         builder.Services.AddScoped<UserRegistrationController>();
         builder.Services.AddScoped<ThemingService>();

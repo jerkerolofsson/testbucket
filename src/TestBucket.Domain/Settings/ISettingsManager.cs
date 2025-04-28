@@ -14,4 +14,5 @@ public interface ISettingsManager
     ISetting[] Search(SettingContext context, string text);
 
     ISetting[] GetSettings(SettingContext context);
+    List<SettingsLink> SearchLinks(SettingContext context, string searchPhrase);
 }

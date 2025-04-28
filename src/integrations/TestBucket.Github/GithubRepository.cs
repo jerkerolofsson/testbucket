@@ -13,7 +13,7 @@ using TestBucket.Github.Mapping;
 using TestBucket.Github.Models;
 
 namespace TestBucket.Github;
-public class GithubRepository : GithubIntegrationBaseClient, ICodeRepository
+public class GithubRepository : GithubIntegrationBaseClient, IExternalCodeRepository
 {
     public string SystemName => ExtensionConstants.SystemName;
 
@@ -24,7 +24,7 @@ public class GithubRepository : GithubIntegrationBaseClient, ICodeRepository
         _logger = logger;
     }
 
-    public async Task<RepositoryDto> GetRepository(ExternalSystemDto system, CancellationToken cancellationToken)
+    public async Task<RepositoryDto> GetRepositoryAsync(ExternalSystemDto system, CancellationToken cancellationToken)
     {
         var ownerProject = GithubOwnerProject.Parse(system.ExternalProjectId);
         GitHubClient client = CreateClient(system);
@@ -50,6 +50,8 @@ public class GithubRepository : GithubIntegrationBaseClient, ICodeRepository
 
     public async Task<CommitDto> GetCommitAsync(ExternalSystemDto system, string reference, CancellationToken cancellationToken)
     {
+        ArgumentNullException.ThrowIfNull(reference);
+
         var ownerProject = GithubOwnerProject.Parse(system.ExternalProjectId);
         GitHubClient client = CreateClient(system);
         GitHubCommit commit = await client.Repository.Commit.Get(ownerProject.Owner, ownerProject.Project, reference);

@@ -1,0 +1,69 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Code/ArchitectureYamlTool"
+@using TestBucket.Components.Code.Layouts
+@using TestBucket.Domain.Code.Yaml
+@using TestBucket.Domain.Code.Yaml.Models
+@layout CodeLayout
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject IStringLocalizer<CodeStrings> loc
+
+<MudStack Style="width: 100%" Class="pa-3">
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+        <MudStack Style="width: 100%">
+
+    <MudTextField @bind-Value="@_yaml"
+        Style="font-family: monospace"
+        T="string" Variant="Variant.Outlined" Lines="20" HelperText="@loc["architecture-yaml"]"/>
+    <MudStack Row Style="width:100%" Spacing="1">
+        <MudSpacer />
+        <MudButton OnClick="Validate" Color="Color.Primary" Variant="Variant.Outlined">@loc["validate"]</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled">@loc["apply"]</MudButton>
+    </MudStack>
+        </MudStack>
+
+        <MudStack Style="width: 100%">
+            @if(_errors.Count == 0)
+            {
+                <TestBucket.Components.Code.Controls.ProjectArchitectureView Model="@_model"/>
+            }
+            else
+            {
+                <div style="display: grid; grid-template-columns: auto auto 1fr; gap: 4px">
+                    @foreach(var error in _errors)
+                    {
+                        <MudText Color="Color.Error">@error.Line</MudText>
+                        <MudText Color="Color.Error">@error.Column</MudText>
+                        <MudText Color="Color.Error">@error.Message</MudText>
+                    }
+                </div>
+            }
+        </MudStack>
+
+    </div>
+
+
+</MudStack>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+
+    private string _yaml = "";
+    private ProjectArchitectureModel? _model;
+    private List<ArchitectureYamlValidationError> _errors = [];
+
+    private void Validate()
+    {
+        _model = null;
+        var parser = new ArchitectureYamlParser();
+        _errors = parser.Validate(_yaml);
+        if(_errors.Count == 0)
+        {
+            try
+            {
+                _model = parser.Parse(_yaml);
+            } 
+            catch {}
+        }
+    }
+}

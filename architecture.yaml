@@ -1,0 +1,189 @@
+systems:
+  ADB Resource Server:
+    display:
+      sort: 2
+    paths: ["src/android/**/*"]
+
+  Test Bucket Runner:
+    display:
+      sort: 1
+    paths: ["src/runner/**/*"]
+
+  Test Bucket Server:
+    display:
+      sort: 0
+    paths: 
+    - "src/TestBucket/**/*"
+    - "src/TestBucket.Domain/**/*"
+    - "src/TestBucket.Data/**/*"
+    - "src/integrations/**/*"
+    - "src/TestBucket/**/Api/*"
+
+  Test Bucket .NET SDK:
+    display:
+      sort: 3
+    paths:
+    - src\Package\Core\TestBucket.Sdk.Client\
+
+layers:
+
+  runner:
+    display:
+      sort: 1
+    paths:
+    - "src/runner/**/*"
+
+  data:
+    display:
+      sort: 2
+    paths:
+    - src/TestBucket.Data/**/*
+
+  integrations:
+    display:
+      sort: 2
+    paths:
+    - src/integrations/**/*
+
+  domain:
+    display:
+      sort: 1
+    paths:
+    - src/TestBucket.Domain/**/*
+    - src/Package/Traits/**/*
+    - src/Package/Reporting/**/*
+
+  API:
+    paths:
+    - src/TestBucket/Controllers/Api/*.*
+    - src/TestBucket/**/Api/*
+    display:
+      sort: 0
+
+  Blazor UI:
+    display:
+      sort: 0
+    paths:
+    - "!src/TestBucket/Components/**/*ApiController.cs"
+    - src/TestBucket/Localization/**/*
+    - src/TestBucket/Components/**/*
+    - src/Package/Blazor/**/*
+
+components:
+
+  Power Shell:
+    paths: ["src/runner/TestBucket.Runner/Runners/Powershell/**/*"]
+  dothttp:
+    paths: ["src/runner/TestBucket.Runner/Runners/Http/**/*"]
+  Registration:
+    paths: ["src/runner/TestBucket.Runner/Registration/**/*"]
+  Poller:
+    paths: ["src/runner/TestBucket.Runner/Poller/**/*"]
+
+  Fields:
+    paths:
+      - src/TestBucket.Domain/Fields/**/*
+
+  Migrations:
+    paths:
+    - src/TestBucket.Data/Migrations/**/*
+
+  Requirement Repository:
+    paths:
+    - src/TestBucket.Data/Requirements/*
+
+  Code Repository:
+    paths:
+    - src/TestBucket.Data/Code/**/*
+
+  Test Repository:
+    paths:
+    - src/TestBucket.Data/Testing/**/*
+
+  Editor:
+   paths:
+    - "src/Package/Blazor/TestBucket.MudBlazorExtensions.Markdown/**/*"
+
+  Traits:
+    paths:
+    - src/Package/Traits/**/*.*
+
+  Test Result Formats:
+    paths:
+    - src/Package/Reporting/TestBucket.Formats/**/*
+
+  Trello:
+    paths:
+    - src/integrations/TestBucket.Trello/**/*
+
+  Github:
+    paths:
+    - src/integrations/TestBucket.Github/**/*
+
+  Gitlab:
+    paths:
+    - src/integrations/TestBucket.Gitlab/**/*
+
+  Translations:
+    paths:
+    - src/TestBucket/Localization/**/*
+
+  Automation:
+    paths:
+    - src/TestBucket.Domain/Automation/**/*
+
+  Requirements:
+    paths:
+    - src/TestBucket.Domain/Requirements/**/*
+
+  Test Accounts:
+    paths:
+    - src/TestBucket.Domain/TestAccounts/**/*
+
+  Testing:
+    paths:
+    - src/TestBucket.Domain/Tests/**/*
+
+  Code:
+    paths:
+    - src/TestBucket.Domain/Code/**/*
+
+  Projects:
+    paths:
+    - src/TestBucket.Domain/Projects/**/*
+
+  Projects API:
+    paths:
+    - src/TestBucket/Components/Projects/Api/ProjectApiController.cs
+
+  Fields API:
+    paths:
+    - src/TestBucket/Components/Shared/Fields/Api/FieldApiController.cs
+
+features:
+
+  Import Test Results:
+    paths:
+    - src/Package/Reporting/TestBucket.Formats/**/*
+    - src/Package/Traits/**/*.*
+
+  Field Inheritance:
+    paths:
+      - src/TestBucket.Domain/Fields/Inheritance/**/*
+
+  Architecture 1.0:
+    paths:
+      - src/TestBucket.Domain/Code/**/*
+      - src/TestBucket.Data/Code/**/*
+      - src/TestBucket/Code/**/*
+      - src/integrations/TestBucket.Github/**/*
+      - src/integrations/TestBucket.Gitlab/**/*
+
+  Hybrid Tests:
+    paths:
+    - "src/Package/Blazor/TestBucket.MudBlazorExtensions.Markdown/**/*"
+    - "src/TestBucket.Domain/Tests/Services/TestExecutionController.cs"
+    - "src/runner/TestBucket.Runner/Runners/Powershell/**/*"
+    - "src/runner/TestBucket.Runner/Runners/Http/**/*"
+    - "src/runner/TestBucket.Runner/Registration/**/*"
+    - "src/runner/TestBucket.Runner/Poller/**/*"

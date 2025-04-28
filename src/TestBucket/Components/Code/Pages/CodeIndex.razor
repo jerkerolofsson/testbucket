@@ -1,0 +1,13 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Code"
+@using TestBucket.Components.Code.Layouts
+@layout CodeLayout
+@inject AuthenticationStateProvider authenticationStateProvider
+
+<MudStack Class="container-settings-page">
+
+</MudStack>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+}

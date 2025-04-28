@@ -1,4 +1,5 @@
 ﻿using TestBucket.Data.Automation;
+using TestBucket.Data.Code;
 using TestBucket.Data.Fields;
 using TestBucket.Data.Files;
 using TestBucket.Data.Identity;
@@ -14,6 +15,8 @@ using TestBucket.Data.Testing;
 using TestBucket.Data.TestResources;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Automation.Runners;
+using TestBucket.Domain.Code;
+using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
@@ -30,6 +33,8 @@ public static class DataServiceExtensions
 {
     public static IServiceCollection AddDataServices(this IServiceCollection services)
     {
+        services.AddScoped<ICommitRepository, CommitRepository>();
+
         services.AddScoped<IPipelineRepository, PipelineRepository>();
         services.AddScoped<IRequirementRepository, RequirementRepository>();
         services.AddScoped<ITenantRepository, TenantRepository>();

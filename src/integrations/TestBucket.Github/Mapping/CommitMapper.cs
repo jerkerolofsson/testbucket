@@ -13,14 +13,18 @@ internal static class CommitMapper
 {
     internal static CommitDto ToDto(this GitHubCommit commit)
     {
-        return new CommitDto
+        var dto = new CommitDto
         {
             Url = commit.Url,
             Message = commit.Commit?.Message,
             Label = commit.Label,
-            Ref = commit.Ref,
+            Ref = commit.Ref ?? commit.Sha,
             Sha = commit.Sha,
-            Files = new List<CommitFileDto>(commit.Files.Select(f => new CommitFileDto
+        };
+
+        if(commit.Files is not null)
+        {
+            dto.Files = new List<CommitFileDto>(commit.Files.Select(f => new CommitFileDto
             {
                 Status = f.Status,
                 PreviousFileName = f.PreviousFileName,
@@ -33,7 +37,9 @@ internal static class CommitMapper
                 Additions = f.Additions,
                 Deletions = f.Deletions,
                 Changes = f.Changes
-            }))
-        };
+            }));
+        }
+
+        return dto;
     }
 }

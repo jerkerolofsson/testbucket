@@ -1,0 +1,36 @@
+﻿@inherits LayoutComponentBase
+@layout AppLayout
+@using Humanizer
+@using TestBucket.Components.Layout
+@using TestBucket.Components.Shared.Splitter
+@using TestBucket.Domain
+@using TestBucket.Domain.Settings
+@using TestBucket.Domain.Settings.Models
+@inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<CodeStrings> loc
+
+<TenantRedirect />
+
+<Splitter Style="height: 100%" Bordered="false" Dimension="15" EnableMargin="false" Color="Color.Default">
+    <StartContent>
+
+        <div class="pa-5" style="width: 100%">
+
+            <MudNavMenu>
+                <MudNavLink Icon="@TbIcons.BoldDuoTone.CodeSquare" Href="@(appNavigationManager.GetCodeArchitectureYamlToolUrl())">@loc["architecture-yaml-tool"]</MudNavLink>
+            </MudNavMenu>
+        </div>
+
+    </StartContent>
+
+    <EndContent>
+        <MudStack Style="width: 100%; overflow: auto; ">
+            @Body
+        </MudStack>
+    </EndContent>
+</Splitter>
+
+@code {
+    [CascadingParameter] public TestProject? Project { get; set; }
+}

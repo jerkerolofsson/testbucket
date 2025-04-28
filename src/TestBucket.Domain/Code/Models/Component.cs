@@ -4,8 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestBucket.Domain.Architecture.Models;
-public class Feature : ProjectEntity
+namespace TestBucket.Domain.Code.Models;
+
+/// <summary>
+/// Represents a product component, for example a code module
+/// </summary>
+public class Component : ProjectEntity
 {
     /// <summary>
     /// Database ID
@@ -23,6 +27,7 @@ public class Feature : ProjectEntity
     [Column(TypeName = "jsonb")]
     public required List<string> GlobPatterns { get; set; }
 
+
     /// <summary>
     /// User
     /// </summary>
@@ -32,4 +37,5 @@ public class Feature : ProjectEntity
     /// User
     /// </summary>
     public string? TestLead { get; set; }
+
 }

@@ -38,14 +38,14 @@ internal class BackgroundExternalRequirementSynchronizer : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             using var scope = _serviceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetRequiredService<ITenantRepository>();
+            var tenantRepository = scope.ServiceProvider.GetRequiredService<ITenantRepository>();
             var requirementExtensionManager = scope.ServiceProvider.GetRequiredService<IRequirementExtensionManager>();
             var requirementManager = scope.ServiceProvider.GetRequiredService<IRequirementManager>();
             var projectManager = scope.ServiceProvider.GetRequiredService<IProjectManager>();
 
             try
             {
-                var tenants = await tenantManager.SearchAsync(new SearchQuery() { Offset = 0, Count = 100 });
+                var tenants = await tenantRepository.SearchAsync(new SearchQuery() { Offset = 0, Count = 100 });
                 foreach (var tenant in tenants.Items)
                 {
                     await ProcessTenantAsync(requirementExtensionManager, requirementManager, projectManager, tenant, stoppingToken);

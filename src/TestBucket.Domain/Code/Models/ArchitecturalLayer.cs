@@ -4,8 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestBucket.Domain.Architecture.Models;
-public class Component : ProjectEntity
+namespace TestBucket.Domain.Code.Models;
+
+/// <summary>
+/// Represents an architectural layer of the software
+/// </summary>
+public class ArchitecturalLayer : ProjectEntity
 {
     /// <summary>
     /// Database ID
@@ -23,6 +27,10 @@ public class Component : ProjectEntity
     [Column(TypeName = "jsonb")]
     public required List<string> GlobPatterns { get; set; }
 
+    /// <summary>
+    /// Responsible for development
+    /// </summary>
+    public string? DevResponsible { get; set; }
 
     /// <summary>
     /// User
@@ -33,5 +41,4 @@ public class Component : ProjectEntity
     /// User
     /// </summary>
     public string? TestLead { get; set; }
-
 }

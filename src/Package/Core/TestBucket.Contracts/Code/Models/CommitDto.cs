@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using static TestBucket.Contracts.Code.Models.CommitFileDto;
-
+﻿
 namespace TestBucket.Contracts.Code.Models;
 public class CommitDto
 {
@@ -22,13 +15,17 @@ public class CommitDto
     /// <summary>
     /// The reference identifier.
     /// </summary>
-    public string? Ref { get; set; }
+    public required string Ref { get; set; }
 
     /// <summary>
     /// The sha value of the reference.
     /// </summary>
-    public string? Sha { get; set; }
+    public required string Sha { get; set; }
 
+    /// <summary>
+    /// Commmit message
+    /// </summary>
     public string? Message { get; set; }
-    public IReadOnlyList<CommitFileDto> Files { get; set; } = [];
+
+    public IReadOnlyList<CommitFileDto>? Files { get; set; }
 }

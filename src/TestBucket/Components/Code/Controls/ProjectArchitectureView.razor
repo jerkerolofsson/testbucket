@@ -1,0 +1,70 @@
+﻿@using TestBucket.Domain.Code.Yaml
+@using TestBucket.Domain.Code.Yaml.Models
+
+<div class="tb-architecture-view">
+
+    @if(_browser is not null)
+    {
+        @foreach(var feature in _browser.GetFeatures())
+        {
+            <MudButton OnClick="() => _feature = feature">@feature.Name</MudButton>
+        }
+
+        foreach(var system in _browser.GetSystems())
+        {
+            <div class="system">
+                <div class="title">@system.Name</div>
+                <div class="children">
+                    @foreach(var tier in  _browser.GetLayerDisplayTiersWithin(system))
+                    {
+                        <div class="tier" data-tier="@tier">
+                            @foreach(var layer in _browser.GetLayersWithin(system, tier))
+                            {
+                                <div class="layer">
+                                    <div class="title">@layer.Name</div>
+                                    <div class="children">
+                                        @foreach(var component in _browser.GetComponentsWithin(layer))
+                                        {
+                                            string cssClass = "component";
+                                            if(_browser.IsFeatureComponent(_feature, component))
+                                            {
+                                                cssClass += " feature-component";
+                                            }
+
+                                            <div class="@cssClass">
+                                                <div class="title">@component.Name</div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code 
+{
+    [Parameter] public ProjectArchitectureModel? Model { get; set; }
+
+    private ArchitecturalComponentBrowser? _browser;
+    private NamedArchitecturalComponent? _feature;
+
+    protected override void OnInitialized()
+    {
+        if (Model is not null)
+        {
+            _browser = new ArchitecturalComponentBrowser(Model);
+        }
+    }
+    protected override void OnParametersSet()
+    {
+        if (Model is not null)
+        {
+            _browser = new ArchitecturalComponentBrowser(Model);
+        }
+    }
+}

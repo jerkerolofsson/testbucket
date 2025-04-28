@@ -58,5 +58,12 @@ namespace TestBucket.Contracts.Integrations
         /// Implemented by IExternalRequirementProvider
         /// </summary>
         GetRequirements = 0x80,
+
+
+        /// <summary>
+        /// Extension can read code repo
+        /// Implemented by IExternalCodeRepository
+        /// </summary>
+        ReadCodeRepository = 0x100,
     }
 }

@@ -4,8 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestBucket.Domain.Architecture.Models;
-public class Layer : ProjectEntity
+namespace TestBucket.Domain.Code.Models;
+
+/// <summary>
+/// Represents a product feature. A product feature could cover multiple components or multiple layers
+/// </summary>
+public class Feature : ProjectEntity
 {
     /// <summary>
     /// Database ID
@@ -22,11 +26,6 @@ public class Layer : ProjectEntity
     /// </summary>
     [Column(TypeName = "jsonb")]
     public required List<string> GlobPatterns { get; set; }
-
-    /// <summary>
-    /// Responsible for development
-    /// </summary>
-    public string? DevResponsible { get; set; }
 
     /// <summary>
     /// User

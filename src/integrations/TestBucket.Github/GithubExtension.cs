@@ -15,6 +15,7 @@ namespace TestBucket.Github
         public ExternalSystemCapability SupportedCapabilities => 
             ExternalSystemCapability.GetMilestones | 
             ExternalSystemCapability.CreatePipeline | 
+            ExternalSystemCapability.ReadCodeRepository |
             ExternalSystemCapability.ReadPipelineArtifacts;
 
         public string FriendlyName => ExtensionConstants.FriendlyName;

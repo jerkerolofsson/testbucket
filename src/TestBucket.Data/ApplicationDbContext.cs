@@ -12,6 +12,7 @@ using TestBucket.Domain.TestAccounts.Models;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Automation.Runners.Models;
 using TestBucket.Domain.Automation.Pipelines.Models;
+using TestBucket.Domain.Code.Models;
 
 namespace TestBucket.Data;
 
@@ -29,6 +30,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<TestCaseField> TestCaseFields { get; set; }
     internal DbSet<TestRunField> TestRunFields { get; set; }
     internal DbSet<TestCaseRunField> TestCaseRunFields { get; set; }
+
+    internal DbSet<Repository> Repositories { get; set; }
+    internal DbSet<Commit> Commits { get; set; }
+    internal DbSet<CommitFile> CommitFiless { get; set; }
+    internal DbSet<Feature> Features { get; set; }
+    internal DbSet<ArchitecturalLayer> ArchitecturalLayers { get; set; }
 
     internal DbSet<FileResource> Files { get; set; }
     internal DbSet<Team> Teams { get; set; }

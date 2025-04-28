@@ -22,6 +22,7 @@
 <CommandBindings/>
 
 @{
+    string codeUrl = $"{tenantId}/Code";
     string tenantAdminUrl = $"{tenantId}/tenants";
     string teamAdminUrl = $"{tenantId}/Settings/Teams";
     string projectAdminUrl = $"{tenantId}/Settings/ManageProjects";
@@ -55,6 +56,7 @@
                         <ProjectBadgePicker Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" />
                         @* <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" /> *@
 
+                        <TbNavLink Href="@codeUrl"><MudIcon Icon="@Icons.Material.Filled.Code"/></TbNavLink>
                         <TbNavLink Href="@requirementsUrl">Oracle</TbNavLink>
                         <TbNavLink Href="@testsUrl">Testing</TbNavLink>
                         <TbNavLink Href="@reportingUrl">Reporting</TbNavLink>

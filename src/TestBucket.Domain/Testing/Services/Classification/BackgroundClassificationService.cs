@@ -111,7 +111,7 @@ namespace TestBucket.Domain.Testing.Services.Classification
 
                 if (result.TotalCount == 0)
                 {
-                    await Task.Delay(5000, stoppingToken);
+                    await Task.Delay(180000, stoppingToken);
                 }
                 else
                 {

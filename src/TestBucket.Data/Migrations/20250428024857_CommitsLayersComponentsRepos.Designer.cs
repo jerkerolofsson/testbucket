@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Contracts.Issues.States;
@@ -17,9 +18,11 @@ using TestBucket.Domain.Keyboard;
 namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250428024857_CommitsLayersComponentsRepos")]
+    partial class CommitsLayersComponentsRepos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -784,9 +787,6 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("ExternalId")
                         .HasColumnType("text");
 
-                    b.Property<long>("ExternalSystemId")
-                        .HasColumnType("bigint");
-
                     b.Property<DateTimeOffset?>("LastIndexTimestamp")
                         .HasColumnType("timestamp with time zone");
 
@@ -810,8 +810,6 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ExternalSystemId");
 
                     b.HasIndex("TeamId");
 
@@ -3060,12 +3058,6 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Code.Models.Repository", b =>
                 {
-                    b.HasOne("TestBucket.Domain.Projects.Models.ExternalSystem", "ExternalSystem")
-                        .WithMany()
-                        .HasForeignKey("ExternalSystemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
                         .WithMany()
                         .HasForeignKey("TeamId");
@@ -3077,8 +3069,6 @@ namespace TestBucket.Data.Migrations
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
                         .HasForeignKey("TestProjectId");
-
-                    b.Navigation("ExternalSystem");
 
                     b.Navigation("Team");
 

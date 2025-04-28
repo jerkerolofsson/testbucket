@@ -15,6 +15,7 @@ public static class GithubExtensions
         services.AddSingleton<IExtension, GithubExtension>();
         services.AddSingleton<IProjectDataSource, GithubProjectDataSource>();
         services.AddSingleton<IExternalPipelineRunner, GithubWorkflowRunner>();
+        services.AddSingleton<IExternalCodeRepository, GithubRepository>();
         return services;
     }
 }

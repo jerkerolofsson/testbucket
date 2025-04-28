@@ -8,6 +8,7 @@ using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Automation.Runners;
 using TestBucket.Domain.Automation.Runners.Jobs;
+using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Export;
@@ -108,6 +109,9 @@ public static class DomainServiceExtensions
 
         services.AddScoped<IUserManager, UserManager>();
         services.AddScoped<IProfilePictureManager, ProfilePictureManager>();
+
+        services.AddScoped<ICommitManager, CommitManager>();
+        services.AddHostedService<CodeRepoCommmitBackgroundIndexer>();
 
         services.AddScoped<ITeamManager, TeamManager>();
         services.AddScoped<IProjectManager, ProjectManager>();

@@ -108,8 +108,8 @@
                         </Field>
                     }
 
-                    ExternalSystemCapability[] capabilities = [ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases, ExternalSystemCapability.GetRequirements];
-                    string[] labels = ["create-pipeline", "create-issues", "get-issues", "get-milestones", "get-releases"];
+                    ExternalSystemCapability[] capabilities = [ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases, ExternalSystemCapability.GetRequirements, ExternalSystemCapability.ReadCodeRepository];
+                    string[] labels = ["create-pipeline", "create-issues", "get-issues", "get-milestones", "get-releases", "get-requirements", "read-repository"];
 
                     @for(int i=0; i<Math.Min(capabilities.Length, labels.Length); i++)
                     {

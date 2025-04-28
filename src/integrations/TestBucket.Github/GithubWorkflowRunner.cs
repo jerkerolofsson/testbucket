@@ -16,7 +16,7 @@ using TestBucket.Contracts.Testing.Models;
 using TestBucket.Github.Models;
 
 namespace TestBucket.Github;
-internal class GithubWorkflowRunner : IExternalPipelineRunner
+internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipelineRunner
 {
     public string SystemName => ExtensionConstants.SystemName;
 
@@ -32,9 +32,7 @@ internal class GithubWorkflowRunner : IExternalPipelineRunner
         var ownerProject = GithubOwnerProject.Parse(system.ExternalProjectId);
         string workflowFilename = context.CiCdWorkflow ?? "test.yml";
 
-        var tokenAuth = new Credentials(system.AccessToken);
-        var client = new GitHubClient(new ProductHeaderValue("TestBucket"));
-        client.Credentials = tokenAuth;
+        var client = CreateClient(system);
 
         // We need to get the ID of the workflow run.
         // However, it is not returned from the create dispatch response.

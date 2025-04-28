@@ -9,7 +9,7 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.Github;
 
-public class GithubProjectDataSource : IProjectDataSource
+public class GithubProjectDataSource : GithubIntegrationBaseClient, IProjectDataSource
 {
     public TraitType[] SupportedTraits => [TraitType.Milestone];
 
@@ -30,9 +30,7 @@ public class GithubProjectDataSource : IProjectDataSource
             e.AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(30);
 
             var ownerProject = GithubOwnerProject.Parse(system.ExternalProjectId);
-            var tokenAuth = new Credentials(system.AccessToken);
-            var client = new GitHubClient(new ProductHeaderValue("TestBucket"));
-            client.Credentials = tokenAuth;
+            var client = CreateClient(system);
 
             switch (trait)
             {

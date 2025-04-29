@@ -60,6 +60,12 @@
     private async ValueTask SetStateAsync(Requirement requirement, string state)
     {
         requirement.State = state;
+
+        if(requirement.TestProjectId is not null)
+        {
+            var states = await controller.GetRequirementStatesAsync(requirement.TestProjectId.Value);
+            requirement.MappedState = states.Where(x => x.Name == state).Select(x => x.MappedState).FirstOrDefault();
+        }
         await requirementEditor.SaveRequirementAsync(requirement);
     }
 

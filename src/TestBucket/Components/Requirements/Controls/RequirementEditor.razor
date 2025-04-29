@@ -2,9 +2,12 @@
 @using TestBucket.Components.Requirements.Commands
 @using TestBucket.Components.Shared.Splitter
 @using TestBucket.Contracts.Requirements.States
+@using TestBucket.Contracts.Requirements.Types
 @using TestBucket.Domain.Requirements
 @inject RequirementEditorController editor
 @inject RequirementBrowser browser
+@inject ProjectController controller
+@inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<RequirementStrings> reqLoc
 
@@ -86,13 +89,13 @@
                     {
                         <Field>
                             <MudTextField Variant="Variant.Outlined"
-                                          Label="@loc["title"]"
-                                HelperText="@loc["title"]"
-                                AdornmentColor="Color.Tertiary" 
-                                Value="@Requirement.Name" 
-                                ValueChanged="OnNameChanged" 
-                                T="string" 
-                                AutoFocus="true" />
+                            Label="@loc["title"]"
+                            HelperText="@loc["title"]"
+                            AdornmentColor="Color.Tertiary" 
+                            Value="@Requirement.Name" 
+                            ValueChanged="OnNameChanged" 
+                            T="string" 
+                            AutoFocus="true" />
                         </Field>
 
                         <RequirementStateSelect State="@State" StateChanged="OnStateChanged" />
@@ -103,6 +106,18 @@
                             <FieldHeader>@loc["attachments"]</FieldHeader>
                             <AttachmentGrid RequirementId="@Requirement.Id" Style="width: 100%" AllowUpload />
                         </Field>
+
+                        <MudStack Spacing="0">
+                            <FieldHeader>@reqLoc["type"]</FieldHeader>
+                            <MudSelect T="string" Value="@Requirement.RequirementType" ValueChanged="OnTypeChanged" Variant="Variant.Outlined">
+                                @foreach (var type in RequirementTypes.AllTypes)
+                                {
+                                    <MudSelectItem Value="@type">
+                                        @reqLoc[type.ToLower()]
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudStack>
                     }
                     else if (_selectedTab == "trace")
                     {
@@ -110,7 +125,6 @@
                     }
                     else if(_selectedTab == "preview")
                     {
-
                         <Field>
                             <FieldHeader>@loc["created"]</FieldHeader>
                             <MudStack Row AlignItems="AlignItems.Center">
@@ -118,6 +132,27 @@
                                 <div>@Requirement.Created.Humanize()</div>
                             </MudStack>
                         </Field>
+
+                        <Field Row>
+                            <FieldHeader>@loc["state"]</FieldHeader>
+                            <MudSpacer/>
+                            <div>@Requirement.State</div>
+                        </Field>
+
+                        <Field Row>
+                            <FieldHeader>@reqLoc["type"]</FieldHeader>
+                            <MudSpacer/>
+                            <div>@Requirement.RequirementType</div>
+                        </Field>
+
+                        @if (_parent is not null)
+                        {
+                            <Field Row>
+                                <FieldHeader>@reqLoc["parent"]</FieldHeader>
+                                <MudSpacer />
+                                <MudLink Href="@appNavigationManager.GetUrl(_parent)">@_parent.Name</MudLink>
+                            </Field>
+                        }
 
                         <FieldsEditor Requirement="@Requirement" ReadOnly AutoSaveChanges="false"/>
                     }
@@ -134,6 +169,7 @@
     [Parameter] public Requirement? Requirement { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
     [CascadingParameter] public TestProject? Project {get;set;}
+    private Requirement? _parent;
     private RequirementTestLink[] _links = [];
 
     private string[] TabLabels => ["edit", "preview", "trace"];
@@ -175,10 +211,21 @@
         }
     }
 
+    protected override void OnInitialized()
+    {
+        _parent = null;
+        base.OnInitialized();
+    }
+
     protected override async Task OnParametersSetAsync()
     {
+        _parent = null;
         if (Requirement is not null)
         {
+            if (Requirement.ParentRequirementId is not null)
+            {
+                _parent = await browser.GetRequirementByIdAsync(Requirement.ParentRequirementId.Value);
+            }
             _links = await browser.GetLinksForRequirementAsync(Requirement);
         }
     }
@@ -189,6 +236,17 @@
         {
             Requirement.State = state?.Name;
             Requirement.MappedState = state?.MappedState;
+
+            await SaveChangesAsync();
+        }
+    }
+    private async Task OnTypeChanged(string type)
+    {
+        if (Requirement?.TestProjectId is not null)
+        {
+            Requirement.RequirementType = type;
+            //var types = await controller.GetRequirementTypesAsync(Requirement.TestProjectId.Value);
+            //Requirement.MappedType = types.Where(x => x.Name == type).Select(x => x.MappedState).FirstOrDefault();
 
             await SaveChangesAsync();
         }

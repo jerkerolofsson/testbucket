@@ -337,7 +337,9 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<PagedResult<TestSuite>> SearchTestSuitesAsync(string tenantId, SearchQuery query)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var suites = dbContext.TestSuites.Where(x => x.TenantId == tenantId);
+        var suites = dbContext.TestSuites
+            .Include(x => x.TestProject)
+            .Where(x => x.TenantId == tenantId);
 
         // Apply filter
         if (query.TeamId is not null)
@@ -355,6 +357,17 @@ internal class TestCaseRepository : ITestCaseRepository
 
         long totalCount = await suites.LongCountAsync();
         var items = suites.OrderBy(x => x.Name).Skip(query.Offset).Take(query.Count);
+
+        // Some old suite didnt have team:
+        //foreach(var item in items)
+        //{
+        //    if(item.TeamId is null)
+        //    {
+        //        item.TeamId = item.TestProject?.TeamId;
+        //        dbContext.TestSuites.Update(item);
+        //        await dbContext.SaveChangesAsync();
+        //    }
+        //}
 
         return new PagedResult<TestSuite>
         {

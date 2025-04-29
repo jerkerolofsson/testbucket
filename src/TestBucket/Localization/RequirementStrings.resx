@@ -147,4 +147,13 @@
   <data name="title" xml:space="preserve">
     <value>Title</value>
   </data>
+  <data name="state" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="parent" xml:space="preserve">
+    <value>Parent</value>
+  </data>
 </root>

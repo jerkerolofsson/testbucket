@@ -107,8 +107,26 @@
                             <AttachmentGrid RequirementId="@Requirement.Id" Style="width: 100%" AllowUpload />
                         </Field>
 
-                        <MudStack Spacing="0">
+
+                        <Field Row>
+                            <FieldHeader>@reqLoc["parent"]</FieldHeader>
+                            <MudSpacer />
+                            <MudStack Row>                                
+                                @if(_parent is not null)
+                                {
+                                    <MudLink Href="@appNavigationManager.GetUrl(_parent)">@_parent.Name</MudLink>
+                                    <MudIconButton OnClick="RemoveParentLinkAsync" Icon="@Icons.Material.Filled.Clear"/>
+                                }
+                                else
+                                {
+                                    <MudIconButton OnClick="SelectParentLinkAsync" Icon="@Icons.Material.Filled.FolderOpen"/>
+                                }
+                            </MudStack>
+                        </Field>
+
+                        <Field Row>
                             <FieldHeader>@reqLoc["type"]</FieldHeader>
+                            <MudSpacer/>
                             <MudSelect T="string" Value="@Requirement.RequirementType" ValueChanged="OnTypeChanged" Variant="Variant.Outlined">
                                 @foreach (var type in RequirementTypes.AllTypes)
                                 {
@@ -117,7 +135,7 @@
                                     </MudSelectItem>
                                 }
                             </MudSelect>
-                        </MudStack>
+                        </Field>
                     }
                     else if (_selectedTab == "trace")
                     {
@@ -217,11 +235,14 @@
         base.OnInitialized();
     }
 
+    private Requirement? _requirement;
+
     protected override async Task OnParametersSetAsync()
     {
-        _parent = null;
-        if (Requirement is not null)
+        if (Requirement is not null && _requirement?.Id != Requirement.Id)
         {
+            _parent = null;
+            _requirement = Requirement;
             if (Requirement.ParentRequirementId is not null)
             {
                 _parent = await browser.GetRequirementByIdAsync(Requirement.ParentRequirementId.Value);
@@ -261,6 +282,26 @@
         }
     }
 
+    private async Task SelectParentLinkAsync()
+    {
+        if (Requirement is not null)
+        {
+            await editor.SelectParentRequirementAsync(Requirement, Project, Team);
+            if(Requirement.ParentRequirementId is not null)
+            {
+                _parent = await browser.GetRequirementByIdAsync(Requirement.ParentRequirementId.Value);
+            }
+        }
+    }
+    private async Task RemoveParentLinkAsync()
+    {
+        if (Requirement is not null)
+        {
+            _parent = null;
+            Requirement.ParentRequirementId = null;
+            await editor.SaveRequirementAsync(Requirement);
+        }
+    }
 
     private void OnNameChanged(string name)
     {

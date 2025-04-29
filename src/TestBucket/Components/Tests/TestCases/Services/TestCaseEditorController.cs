@@ -272,8 +272,7 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
             { x => x.Project, project },
             { x => x.Team, team },
         };
-
-        var dialog = await _dialogService.ShowAsync<PickRequirementDialog>("Select requirement", parameters, DefaultBehaviors.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<PickRequirementDialog>(_loc["select-requirement"], parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if (result?.Data is Requirement requirement)
         {

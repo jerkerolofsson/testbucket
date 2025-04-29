@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Domain.Requirements.Models
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudDialog DefaultFocus="DefaultFocus.FirstChild">
     <DialogContent>
@@ -9,9 +10,9 @@
     <DialogActions>
         @if (_requirement is not null)
         {
-            <MudButton OnClick="OnValidSubmit" Color="Color.Primary">OK</MudButton>
+            <MudButton OnClick="OnValidSubmit" Color="Color.Primary">@loc["ok"]</MudButton>
         }
-        <MudButton OnClick="Close">Cancel</MudButton>
+        <MudButton OnClick="Close">@loc["cancel"]</MudButton>
     </DialogActions>
 </MudDialog>
 

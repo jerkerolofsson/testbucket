@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.Localization;
 
+using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements;
@@ -284,6 +285,25 @@ internal class RequirementEditorController : TenantBaseService
         await _manager.AddRequirementAsync(principal, requirement);
 
     }
+
+    public async Task SelectParentRequirementAsync(Requirement requirement, TestProject? project, Team? team)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        var parameters = new DialogParameters<PickRequirementDialog>()
+        {
+            { x => x.Project, project },
+            { x => x.Team, team },
+        };
+        var dialog = await _dialogService.ShowAsync<PickRequirementDialog>(_loc["select-requirement"], parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if(result is not null && result.Data is Requirement parent)
+        {
+            requirement.ParentRequirementId = parent.Id;
+            await _manager.UpdateRequirementAsync(principal, requirement);
+        }
+    }
+
     public async Task SaveRequirementAsync(Requirement requirement)
     {
         var principal = await GetUserClaimsPrincipalAsync();

@@ -25,6 +25,8 @@ html, body {
     --mud-typography-h1-weight: 600;
     --mud-typography-h1-lineheight: 1.8;
 
+/*    --mud-typography-button-text-transform: none;*/
+
     --mud-typography-body1-size: 10pt;
     --mud-typography-subtitle1-size: 10pt;
     --mud-typography-default-size: 10pt;
@@ -96,6 +98,10 @@ html, body {
 }
 .tb-draggable:not(:has(.drag-handle)):hover {
     color: var(--mud-palette-secondary);
+}
+
+.mud-tab {
+    text-transform: none;
 }
 
 .mud-navmenu.mud-navmenu-default .mud-nav-link.active:not(.mud-nav-link-disabled) {

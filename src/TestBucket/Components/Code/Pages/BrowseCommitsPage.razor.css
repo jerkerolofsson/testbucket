@@ -16,3 +16,23 @@
     height: 100%;
 }
 
+
+.changed-files {
+    display: grid; 
+    grid-template-columns: auto auto auto auto; 
+    gap: 4px;
+}
+
+.changed-files .changes {
+    padding: 2px;
+    color: dodgerblue;
+}
+.changed-files .deletions {
+    padding: 2px;
+    color: red;
+}
+
+.changed-files .additions {
+    padding: 2px;
+    color: yellowgreen;
+}

@@ -46,19 +46,24 @@ public class Commit : ProjectEntity
     public Repository? Repository { get; set; }
 
     /// <summary>
+    /// Impacted system names
+    /// </summary>
+    public List<string>? SystemNames { get; set; }
+
+    /// <summary>
     /// Impacted features
     /// </summary>
-    public virtual List<Feature>? Features { get; set; }
+    public List<string>? FeatureNames { get; set; }
 
     /// <summary>
     /// Impacted components
     /// </summary>
-    public virtual List<Component>? Components { get; set; }
+    public List<string>? ComponentNames { get; set; }
 
     /// <summary>
     /// Impacted layers
     /// </summary>
-    public virtual List<ArchitecturalLayer>? Layers { get; set; }
+    public List<string>? LayerNames { get; set; }
 
     /// <summary>
     /// Files

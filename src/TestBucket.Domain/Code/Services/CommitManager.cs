@@ -64,14 +64,22 @@ public class CommitManager : ICommitManager
 
                 // Scan for impacted feature/component/layer
                 var impact = await _mediator.Send(new ResolveCommitImpactRequest(commit, model));
-
-                foreach(var name in impact.Components)
+                foreach (var name in impact.Systems)
+                {
+                    var component = await _architectureManager.GetSystemByNameAsync(principal, projectId, name);
+                    if (component is not null)
+                    {
+                        commit.SystemNames ??= new();
+                        commit.SystemNames.Add(component.Name);
+                    }
+                }
+                foreach (var name in impact.Components)
                 {
                     var component = await _architectureManager.GetComponentByNameAsync(principal, projectId, name);
                     if (component is not null)
                     {
-                        commit.Components ??= new();
-                        commit.Components.Add(component);
+                        commit.ComponentNames ??= new();
+                        commit.ComponentNames.Add(component.Name);
                     }
                 }
                 foreach (var name in impact.Features)
@@ -79,8 +87,8 @@ public class CommitManager : ICommitManager
                     var feature = await _architectureManager.GetFeatureByNameAsync(principal, projectId, name);
                     if (feature is not null)
                     {
-                        commit.Features ??= new();
-                        commit.Features.Add(feature);
+                        commit.FeatureNames ??= new();
+                        commit.FeatureNames.Add(feature.Name);
                     }
                 }
                 foreach (var name in impact.Layers)
@@ -88,8 +96,8 @@ public class CommitManager : ICommitManager
                     var layer = await _architectureManager.GetLayerByNameAsync(principal, projectId, name);
                     if (layer is not null)
                     {
-                        commit.Layers ??= new();
-                        commit.Layers.Add(layer);
+                        commit.LayerNames ??= new();
+                        commit.LayerNames.Add(layer.Name);
                     }
                 }
 

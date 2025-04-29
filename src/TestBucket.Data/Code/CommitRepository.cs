@@ -22,14 +22,9 @@ public class CommitRepository : ICommitRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         foreach(var commit in dbContext.Commits
-            .Include(x => x.Components)
-            .Include(x => x.Layers)
-            .Include(x => x.Features)
+            .Include(x => x.CommitFiles)
             .Where(x => x.Sha == sha))
         {
-            commit.Components?.Clear();
-            commit.Layers?.Clear();
-            commit.Features?.Clear();
             dbContext.Commits.Remove(commit);
         }
         await dbContext.SaveChangesAsync();
@@ -40,14 +35,9 @@ public class CommitRepository : ICommitRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         foreach (var commit in dbContext.Commits
-            .Include(x => x.Components)
-            .Include(x => x.Layers)
-            .Include(x => x.Features)
+            .Include(x=>x.CommitFiles)
             .Where(x => x.Id == id))
         {
-            commit.Components?.Clear();
-            commit.Layers?.Clear();
-            commit.Features?.Clear();
             dbContext.Commits.Remove(commit);
         }
         await dbContext.SaveChangesAsync();
@@ -64,6 +54,7 @@ public class CommitRepository : ICommitRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         await dbContext.Commits.AddAsync(value);
         await dbContext.SaveChangesAsync();
+
     }
 
     public async Task AddRepositoryAsync(Repository repo)
@@ -96,9 +87,6 @@ public class CommitRepository : ICommitRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var commits = dbContext.Commits
-            .Include(x => x.Components)
-            .Include(x => x.Layers)
-            .Include(x => x.Features)
             .Include(x => x.CommitFiles)
             .AsNoTracking();
         foreach (var filter in filters)

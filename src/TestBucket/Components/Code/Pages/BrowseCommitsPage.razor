@@ -57,7 +57,7 @@
     </StartContent>
     <EndContent>
 
-        <MudStack>
+        <MudStack Class="pa-5">
             @if (_model is not null && _selectedItems.Count > 0)
             {
                 <MudStack Spacing="0">
@@ -71,10 +71,15 @@
                     {
                         if(commit.CommitFiles is not null)
                         {
-                            foreach(var file in commit.CommitFiles)
+                            <div class="changed-files">
+                            @foreach(var file in commit.CommitFiles)
                             {
-                                <MudText>@file.Path</MudText>
+                                <div>@file.Path</div>
+                                <div class='changes'>+/i @file.Changes</div>
+                                <div class='additions'>+ @file.Additions</div>
+                                <div class='deletions'>- @file.Deletions</div>
                             }
+                            </div>
                         }
                     }
                 </MudStack>
@@ -94,17 +99,25 @@
     private ProjectArchitectureModel? _model;
     private HashSet<Commit> _selectedItems = [];
 
-    private void OnSelectedItemsChanged(HashSet<Commit> selectedItems)
+    private async Task OnSelectedItemsChanged(HashSet<Commit> selectedItems)
     {
+        if(Project is null)
+        {
+            return;            
+        }
         _selectedItems = selectedItems;
         _impact.Clear();
         foreach (var commit in _selectedItems)
         { 
-            if (commit?.Components is not null)
+            if (commit?.ComponentNames is not null)
             {
-                foreach (var component in commit.Components)
+                foreach (var componentName in commit.ComponentNames)
                 {
-                    _impact.Add(new NamedArchitecturalComponent(component.Name, new ArchitecturalComponent { Paths = component.GlobPatterns }));
+                    var component = await architectureController.GetComponentByNameAsync(Project, componentName);
+                    if (component is not null)
+                    {
+                        _impact.Add(new NamedArchitecturalComponent(componentName, new ArchitecturalComponent { Paths = component.GlobPatterns }));
+                    }
                 }
             }
         }
@@ -123,19 +136,6 @@
         if (Project is not null)
         {
             _model = await architectureController.GetProductArchitectureAsync(Project);
-        }
-    }
-
-    private void OnRowClicked(DataGridRowClickEventArgs<Commit> e)
-    {
-        _impact.Clear();
-        var commit = e.Item;
-        if(commit?.Components is not null)
-        {
-            foreach(var component in commit.Components)
-            {
-                _impact.Add(new NamedArchitecturalComponent(component.Name, new ArchitecturalComponent { Paths = component.GlobPatterns }));
-            }
         }
     }
 

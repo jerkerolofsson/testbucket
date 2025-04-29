@@ -1,4 +1,5 @@
 ﻿
+using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Code.Yaml;
 
@@ -16,6 +17,11 @@ internal class ArchitectureController : TenantBaseService
         _manager = manager;
     }
 
+    public async Task<Component?> GetComponentByNameAsync(TestProject project, string name)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.GetComponentByNameAsync(principal, project.Id, name);
+    }
     public async Task<ProjectArchitectureModel> GetProductArchitectureAsync(TestProject project)
     {
         var principal = await GetUserClaimsPrincipalAsync();

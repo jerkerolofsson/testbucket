@@ -194,20 +194,6 @@ internal class ArchitectureManager : IArchitectureManager
 
 
     /// <summary>
-    /// Returns all defined features for a project
-    /// </summary>
-    /// <param name="principal"></param>
-    /// <param name="projectId"></param>
-    /// <returns></returns>
-    public async Task<IReadOnlyList<Feature>> GetFeaturesAsync(ClaimsPrincipal principal, long projectId)
-    {
-        var tenantId = principal.GetTenantIdOrThrow();
-        FilterSpecification<Feature>[] filters = [new FilterByProject<Feature>(projectId), new FilterByTenant<Feature>(tenantId)];
-
-        PagedResult<Feature> result = await _repository.SearchFeaturesAsync(filters, 0, 10_000);
-        return result.Items.ToList();
-    }
-    /// <summary>
     /// Adds a feature
     /// </summary>
     /// <param name="principal"></param>
@@ -220,12 +206,12 @@ internal class ArchitectureManager : IArchitectureManager
     }
 
     /// <summary>
-    /// Returns all architectural feature for a project
+    /// Returns all defined feature for a project
     /// </summary>
     /// <param name="principal"></param>
     /// <param name="projectId"></param>
     /// <returns></returns>
-    public async Task<IReadOnlyList<Feature>> GetFeatureAsync(ClaimsPrincipal principal, long projectId)
+    public async Task<IReadOnlyList<Feature>> GetFeaturesAsync(ClaimsPrincipal principal, long projectId)
     {
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Feature>[] filters = [new FilterByProject<Feature>(projectId), new FilterByTenant<Feature>(tenantId)];
@@ -255,7 +241,7 @@ internal class ArchitectureManager : IArchitectureManager
         }
         return null;
     }
-    #endregion Components
+    #endregion Features
 
     public async Task<ProjectArchitectureModel> GetProductArchitectureAsync(ClaimsPrincipal principal, TestProject project)
     {
@@ -333,11 +319,20 @@ internal class ArchitectureManager : IArchitectureManager
             }
             else
             {
+                existingFeature.Modified = DateTimeOffset.UtcNow;
+                existingFeature.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
                 existingFeature.GlobPatterns = feature.Value.Paths ?? existingFeature.GlobPatterns;
                 existingFeature.Display = feature.Value.Display ?? existingFeature.Display;
                 await _repository.UpdateFeatureAsync(existingFeature);
             }
         }
+    }
+
+    private async Task UpdateFeatureAsync(ClaimsPrincipal principal, Feature feature)
+    {
+        feature.Modified = DateTimeOffset.UtcNow;
+        feature.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
+        await _repository.UpdateFeatureAsync(feature);
     }
 
 
@@ -431,6 +426,38 @@ internal class ArchitectureManager : IArchitectureManager
                 existingSystem.Display = system.Value.Display ?? existingSystem.Display;
                 await _repository.UpdateSystemAsync(existingSystem);
             }
+        }
+    }
+
+    /// <summary>
+    /// Updates the glob paths for a feature with all paths from the provided commits
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="feature"></param>
+    /// <param name="commits"></param>
+    /// <returns></returns>
+    public async Task AddCommitsToFeatureAsync(ClaimsPrincipal principal, Feature feature, IEnumerable<Commit> commits)
+    {
+        feature.GlobPatterns ??= [];
+        bool changed = false;
+        foreach(var commit in commits)
+        {
+            if(commit.CommitFiles is null)
+            {
+                continue;
+            }
+            foreach(var changedFile in commit.CommitFiles)
+            {
+                if (!GLobMatcher.IsMatch(changedFile.Path, feature.GlobPatterns))
+                {
+                    feature.GlobPatterns.Add(changedFile.Path);
+                    changed = true;
+                }
+            }
+        }
+        if (changed)
+        {
+            await UpdateFeatureAsync(principal, feature);
         }
     }
 }

@@ -15,4 +15,5 @@ public interface ICommitManager
     Task UpdateRepositoryAsync(ClaimsPrincipal principal, Repository repo);
 
     Task<PagedResult<Commit>> BrowseCommitsAsync(ClaimsPrincipal principal, long projectId, int offset, int count);
+    Task UpdateCommitAsync(ClaimsPrincipal principal, Commit commit);
 }

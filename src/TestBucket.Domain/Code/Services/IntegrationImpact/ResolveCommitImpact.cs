@@ -78,21 +78,6 @@ public class ResolveCommitImpactHandler : IRequestHandler<ResolveCommitImpactReq
 
     private bool IsMatch(string filePath, IEnumerable<string> globPatterns)
     {
-        foreach(var pattern in globPatterns)
-        {
-            if(pattern.StartsWith('!'))
-            {
-                if(Glob.Parse(pattern.Substring(1)).IsMatch(filePath))
-                {
-                    return false;
-                }
-            }
-            
-            if (Glob.Parse(pattern).IsMatch(filePath))
-            {
-                return true;
-            }
-        }
-        return false;
+        return GLobMatcher.IsMatch(filePath, globPatterns);
     }
 }

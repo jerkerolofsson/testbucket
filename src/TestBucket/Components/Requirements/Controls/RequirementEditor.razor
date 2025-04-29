@@ -47,7 +47,7 @@
             }
         </MudToolBar>
 
-        <Splitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
+        <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false" Color="Color.Tertiary">
             <StartContent>
                 <MudStack Class="pa-2" Style="width: 100%; height: 100%">
 
@@ -111,7 +111,7 @@
                         <Field Row>
                             <FieldHeader>@reqLoc["parent"]</FieldHeader>
                             <MudSpacer />
-                            <MudStack Row>                                
+                            <MudStack Row AlignItems="AlignItems.Center">                                
                                 @if(_parent is not null)
                                 {
                                     <MudLink Href="@appNavigationManager.GetUrl(_parent)">@_parent.Name</MudLink>

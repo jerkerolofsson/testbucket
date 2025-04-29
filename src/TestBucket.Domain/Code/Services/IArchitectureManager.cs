@@ -11,6 +11,7 @@ namespace TestBucket.Domain.Code.Services;
 public interface IArchitectureManager
 {
     Task<Component?> GetComponentByNameAsync(ClaimsPrincipal principal, long projectId, string name);
+    Task<IReadOnlyList<Feature>> GetFeaturesAsync(ClaimsPrincipal principal, long projectId);
     Task<Feature?> GetFeatureByNameAsync(ClaimsPrincipal principal, long projectId, string name);
     Task<ArchitecturalLayer?> GetLayerByNameAsync(ClaimsPrincipal principal, long projectId, string name);
 
@@ -31,4 +32,5 @@ public interface IArchitectureManager
     /// <param name="model"></param>
     /// <returns></returns>
     Task ImportProductArchitectureAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model);
+    Task AddCommitsToFeatureAsync(ClaimsPrincipal principal, Feature feature, IEnumerable<Commit> commits);
 }

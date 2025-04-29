@@ -11,10 +11,39 @@ namespace TestBucket.Components.Code.Controllers;
 internal class ArchitectureController : TenantBaseService
 {
     private readonly IArchitectureManager _manager;
+    private readonly ICommitManager _commitManager;
 
-    public ArchitectureController(AuthenticationStateProvider authenticationStateProvider, IArchitectureManager manager) : base(authenticationStateProvider)
+    public ArchitectureController(AuthenticationStateProvider authenticationStateProvider, IArchitectureManager manager, ICommitManager commitManager) : base(authenticationStateProvider)
     {
         _manager = manager;
+        _commitManager = commitManager;
+    }
+
+    public async Task AddCommitsToFeatureAsync(long projectId, string featureName, IEnumerable<Commit> commits)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var feature = await _manager.GetFeatureByNameAsync(principal,projectId,featureName);
+        if (feature is not null)
+        {
+            await _manager.AddCommitsToFeatureAsync(principal, feature, commits);
+
+            // Update the commits with the added feature
+            foreach (var commit in commits)
+            {
+                commit.FeatureNames ??= [];
+                if(!commit.FeatureNames.Contains(featureName))
+                {
+                    commit.FeatureNames.Add(featureName);
+                    await _commitManager.UpdateCommitAsync(principal, commit);
+                }
+            }
+        }
+    }
+
+    public async Task<IReadOnlyList<Feature>> GetFeaturesAsync(long projectId)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.GetFeaturesAsync(principal, projectId);
     }
 
     public async Task<Component?> GetComponentByNameAsync(TestProject project, string name)

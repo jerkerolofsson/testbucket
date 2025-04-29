@@ -129,4 +129,11 @@ public class CommitManager : ICommitManager
         repo.ModifiedBy = principal.Identity?.Name;
         await _repo.UpdateRepositoryAsync(repo);
     }
+
+    public async Task UpdateCommitAsync(ClaimsPrincipal principal, Commit commit)
+    {
+        commit.Modified = DateTimeOffset.UtcNow;
+        commit.ModifiedBy = principal.Identity?.Name;
+        await _repo.UpdateCommitAsync(commit);
+    }
 }

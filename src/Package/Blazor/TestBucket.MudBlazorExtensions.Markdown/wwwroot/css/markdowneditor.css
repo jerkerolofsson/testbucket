@@ -660,6 +660,8 @@ mud-markdown-toolbar-toggle-button {
     fill: var(--mud-palette-text-primary) !important;
 }
 
+.mud-markdown-editor-root code.mermaid .node path,
+.mud-markdown-editor-root code.mermaid .label-container path,
 .mud-markdown-editor-root code.mermaid .node ellipse,
 .mud-markdown-editor-root code.mermaid .node circle,
 .mud-markdown-editor-root code.mermaid .node polygon,
@@ -668,6 +670,20 @@ mud-markdown-toolbar-toggle-button {
     stroke: var(--mud-palette-primary) !important;
     color: var(--mud-palette-text-primary) !important;
 }
+
+.mud-markdown-editor-root code.mermaid .label,
+.mud-markdown-editor-root code.mermaid p {
+    font-family: var(--mud-typography-default-family);
+    font-size: 8pt;
+}
+
+.mud-markdown-editor-root code.mermaid #test_req path,
+.mud-markdown-editor-root code.mermaid #test_entity path {
+    fill: var(--mud-palette-primary-darken) !important;
+    stroke: var(--mud-palette-primary) !important;
+    color: var(--mud-palette-text-primary) !important;
+}
+
 
 .mud-markdown-editor-root code.mermaid p {
     color: var(--mud-palette-text-primary) !important;

@@ -26,7 +26,18 @@
     <script src="_content/TestBucket.MudBlazorExtensions.Markdown/js/highlight.min.js"></script>
     <script src="_content/TestBucket.MudBlazorExtensions.Markdown/js/mermaid.min.js"></script>
     <script> 
-        mermaid.initialize({ startOnLoad: false });
+        mermaid.initialize({ 
+            startOnLoad: false,
+            'theme':'base',
+            'themeVariables': {
+                'primaryColor':'#FF0000',
+                'primaryTextColor':'#00FF00',
+                'primaryBorderColor':'#6A7FAB',
+                'lineColor':'#6A7FABCC',
+                'textColor':'#6A7FABCC',
+                'fontSize':'16px'
+            }
+        });
     </script>
 
 </body>

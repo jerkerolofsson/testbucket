@@ -1,0 +1,47 @@
+﻿@using TestBucket.Contracts.Requirements.States
+@using TestBucket.Contracts.Testing.Models
+@using TestBucket.Contracts.Testing.States
+@using TestBucket.Domain.States
+@inject ArchitectureController controller
+@inject IStringLocalizer<CodeStrings> loc
+
+<MudSelect Variant="Variant.Outlined" T="string" Value="@SelectedFeature" ValueChanged="OnStateChanged">
+    @foreach (var state in _features)
+    {
+        <MudSelectItem Value="@state">
+            @state
+        </MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter] public long TestProjectId { get; set; }
+    [Parameter] public string? SelectedFeature { get; set; }
+    [Parameter] public EventCallback<string?> SelectedFeatureChanged { get; set; }
+
+    private IReadOnlyList<string> _features = [];
+    private long _projectId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadAsync();
+    }
+    private async Task LoadAsync()
+    {
+        if (_projectId != TestProjectId)
+        {
+            _projectId = TestProjectId;
+            var features = await controller.GetFeaturesAsync(_projectId);
+            _features = features.Select(x => x.Name).ToList();
+        }
+    }
+
+    private async Task OnStateChanged(string? state)
+    {
+        await SelectedFeatureChanged.InvokeAsync(state);
+    }
+}

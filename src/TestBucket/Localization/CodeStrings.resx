@@ -117,7 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="architecture" xml:space="preserve">
+    <value>Architecture</value>
+  </data>
   <data name="architecture-yaml-tool" xml:space="preserve">
     <value>YAML Tool</value>
+  </data>
+  <data name="assign-changed-files-to-feature" xml:space="preserve">
+    <value>Assign changed files to feature</value>
+  </data>
+  <data name="changed-files" xml:space="preserve">
+    <value>Changed Files</value>
+  </data>
+  <data name="commits" xml:space="preserve">
+    <value>Commits</value>
+  </data>
+  <data name="components" xml:space="preserve">
+    <value>Components</value>
+  </data>
+  <data name="features" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="impact" xml:space="preserve">
+    <value>Impact</value>
+  </data>
+  <data name="layers" xml:space="preserve">
+    <value>Layers</value>
+  </data>
+  <data name="systems" xml:space="preserve">
+    <value>Systems</value>
   </data>
 </root>

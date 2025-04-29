@@ -87,13 +87,20 @@ public class ArchitecturalComponentBrowser(ProjectArchitectureModel Model)
         });
     }
 
-    public bool IsFeatureComponent(ArchitecturalComponent? feature, ArchitecturalComponent component)
+    public bool IsSelectedComponent(IReadOnlyList<ArchitecturalComponent>? selectedItems, ArchitecturalComponent component)
     {
-        if (feature is null)
+        if (selectedItems is null)
         {
             return false;
         }
-        return ArePathsOverlapping(component.Paths, feature.Paths);
+        foreach (var feature in selectedItems)
+        {
+            if (ArePathsOverlapping(component.Paths, feature.Paths))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     private bool ArePathsOverlapping(List<string>? pathGlob1, List<string>? pathGlob2)

@@ -5,11 +5,6 @@
 
     @if(_browser is not null)
     {
-        @foreach(var feature in _browser.GetFeatures())
-        {
-            <MudButton OnClick="() => _feature = feature">@feature.Name</MudButton>
-        }
-
         foreach(var system in _browser.GetSystems())
         {
             <div class="system" style="@GetStyle(system)">
@@ -26,7 +21,7 @@
                                         @foreach(var component in _browser.GetComponentsWithin(layer))
                                         {
                                             string cssClass = "component";
-                                            if(_browser.IsFeatureComponent(_feature, component))
+                                            if (_browser.IsSelectedComponent(SelectedItems, component))
                                             {
                                                 cssClass += " feature-component";
                                             }
@@ -49,9 +44,9 @@
 @code 
 {
     [Parameter] public ProjectArchitectureModel? Model { get; set; }
+    [Parameter] public IReadOnlyList<NamedArchitecturalComponent>? SelectedItems { get; set; }
 
     private ArchitecturalComponentBrowser? _browser;
-    private NamedArchitecturalComponent? _feature;
 
     private string GetStyle(NamedArchitecturalComponent component)
     {

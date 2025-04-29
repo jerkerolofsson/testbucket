@@ -3,89 +3,147 @@
 @using TestBucket.Domain
 @using TestBucket.Domain.Code.Models
 @layout CodeLayout
-@inject CommitController controller
+@inject CommitController commitController
+@inject ArchitectureController architectureController
 @inject IStringLocalizer<CodeStrings> loc
 
+<Splitter Class="container-fill pa-2" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+        <div class="tb-architecture-yaml-left">
+            <MudDataGrid ServerData="LoadGridData" SelectedItems="@_selectedItems" SelectedItemsChanged="OnSelectedItemsChanged"
+                         SelectOnRowClick MultiSelection="true"
+                         RowStyle="tb-datarow cursor-pointer" Hover T="Commit" SortMode="SortMode.None">
 
-<MudStack Class="container-settings-page">
+                <ToolBarContent>
+                    <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                        <MudIcon Icon="@TbIcons.Git.Commit" Size="Size.Large" />
+                        <MudText Typo="Typo.h2">@loc["commits"]</MudText>
+                        <MudSpacer />
+                    </MudStack>
+                </ToolBarContent>
 
-    @* <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs> *@
+                <ColGroup>
+                    <col style="width: 10%"/>
+                    <col style="width: 60%" />
+                    <col style="width: 30%;" />
+                </ColGroup>
 
-    <MudDataGrid ServerData="LoadGridData"
-    Dense="true"
-    Hover="true"
-    T="Commit"
-    SortMode="SortMode.None">
+                <Columns>
 
-        <ToolBarContent>
-            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-                <MudIcon Icon="@TbIcons.Git.Commit" Size="Size.Large" />
-                <MudText Typo="Typo.h2">@loc["commits"]</MudText>
-                <MudSpacer />
-            </MudStack>
-        </ToolBarContent>
+                    <SelectColumn T="Commit"/>
+                    <PropertyColumn Property="x => x.Message"/>
 
-        <Columns>
+                    <TemplateColumn Title="@loc["message"]"> 
+                        <CellTemplate> 
+                            @context.Item.Message 
+                        </CellTemplate> 
+                    </TemplateColumn> 
 
-            <TemplateColumn Title="@loc["sha"]" SortBy="x => x.Sha" Sortable="true">
-                <CellTemplate>
-                    @if(context.Item.Sha is not null)
+                    <TemplateColumn Title="@loc["commited"]"> 
+                        <CellTemplate> 
+                            @if (context.Item.Commited is not null) 
+                            { 
+                                <MudText>@context.Item.Commited.Humanize()</MudText> 
+                            } 
+                        </CellTemplate> 
+                    </TemplateColumn> 
+                </Columns>
+
+                <PagerContent>
+                    <MudDataGridPager T="Commit" />
+                </PagerContent>
+            </MudDataGrid>
+        </div>
+    </StartContent>
+    <EndContent>
+
+        <MudStack>
+            @if (_model is not null && _selectedItems.Count > 0)
+            {
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.h1">@loc["impact"]</MudText>
+                    <TestBucket.Components.Code.Controls.ProjectArchitectureView SelectedItems="@_impact" Model="@_model" />
+                </MudStack>
+
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.h2">@loc["changed-files"]</MudText>
+                    @foreach(var commit in _selectedItems)
                     {
-                        <MudTooltip Text="@context.Item.Sha">
-                            @if(context.Item.Sha.Length > 8)
+                        if(commit.CommitFiles is not null)
+                        {
+                            foreach(var file in commit.CommitFiles)
                             {
-                                @context.Item.Sha.Substring(0,8)
+                                <MudText>@file.Path</MudText>
                             }
-                            else{
-                                @context.Item.Sha
-                            }
-                        </MudTooltip>
-
-                    }
-                </CellTemplate>
-            </TemplateColumn>
-
-            <TemplateColumn Title="@loc["message"]" SortBy="x => x.Message" Sortable="true">
-                <CellTemplate>
-                    @context.Item.Message
-                </CellTemplate>
-            </TemplateColumn>
-
-            <TemplateColumn Title="@loc["layers"]">
-                <CellTemplate>
-                    @if (context.Item.Layers is not null)
-                    {
-                        foreach (var layer in context.Item.Layers)
-                        {
-                            <MudText>@layer.Name</MudText>
                         }
                     }
-                </CellTemplate>
-            </TemplateColumn>
-            <TemplateColumn Title="@loc["components"]">
-                <CellTemplate>
-                    @if(context.Item.Components is not null)
-                    {
-                        foreach (var component in context.Item.Components)
-                        {
-                            <MudText>@component.Name</MudText>
-                        }
-                    }
-                </CellTemplate>
-            </TemplateColumn>
+                </MudStack>
 
-        </Columns>
-        
-        <PagerContent>
-            <MudDataGridPager T="Commit" />
-        </PagerContent>
-    </MudDataGrid>
-</MudStack>
+            }
+
+        </MudStack>
+    </EndContent>
+</Splitter>
+
+
 
 @code {
     [Parameter] public string? TenantId { get; set; }
     [CascadingParameter] public TestProject? Project { get; set; }
+    private List<NamedArchitecturalComponent> _impact = [];
+    private ProjectArchitectureModel? _model;
+    private HashSet<Commit> _selectedItems = [];
 
+    private void OnSelectedItemsChanged(HashSet<Commit> selectedItems)
+    {
+        _selectedItems = selectedItems;
+        _impact.Clear();
+        foreach (var commit in _selectedItems)
+        { 
+            if (commit?.Components is not null)
+            {
+                foreach (var component in commit.Components)
+                {
+                    _impact.Add(new NamedArchitecturalComponent(component.Name, new ArchitecturalComponent { Paths = component.GlobPatterns }));
+                }
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(Project is not null)
+        {
+            _model = await architectureController.GetProductArchitectureAsync(Project);
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Project is not null)
+        {
+            _model = await architectureController.GetProductArchitectureAsync(Project);
+        }
+    }
+
+    private void OnRowClicked(DataGridRowClickEventArgs<Commit> e)
+    {
+        _impact.Clear();
+        var commit = e.Item;
+        if(commit?.Components is not null)
+        {
+            foreach(var component in commit.Components)
+            {
+                _impact.Add(new NamedArchitecturalComponent(component.Name, new ArchitecturalComponent { Paths = component.GlobPatterns }));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Loads commit data
+    /// </summary>
+    /// <param name="state"></param>
+    /// <returns></returns>
     private async Task<GridData<Commit>> LoadGridData(GridState<Commit> state)
     {
         if(Project is null)
@@ -93,7 +151,7 @@
             return new GridData<Commit> { TotalItems = 0 };
         }
 
-        var result = await controller.BrowseCommitsAsync(Project.Id, state.Page*state.PageSize, state.PageSize);
+        var result = await commitController.BrowseCommitsAsync(Project.Id, state.Page*state.PageSize, state.PageSize);
 
         GridData<Commit> data = new()
             {

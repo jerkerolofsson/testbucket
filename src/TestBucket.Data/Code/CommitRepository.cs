@@ -20,13 +20,37 @@ public class CommitRepository : ICommitRepository
     public async Task DeleteCommitByShaAsync(string sha)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        await dbContext.Commits.Where(x => x.Sha == sha).ExecuteDeleteAsync();
+
+        foreach(var commit in dbContext.Commits
+            .Include(x => x.Components)
+            .Include(x => x.Layers)
+            .Include(x => x.Features)
+            .Where(x => x.Sha == sha))
+        {
+            commit.Components?.Clear();
+            commit.Layers?.Clear();
+            commit.Features?.Clear();
+            dbContext.Commits.Remove(commit);
+        }
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteCommitAsync(long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        await dbContext.Commits.Where(x => x.Id == id).ExecuteDeleteAsync();
+
+        foreach (var commit in dbContext.Commits
+            .Include(x => x.Components)
+            .Include(x => x.Layers)
+            .Include(x => x.Features)
+            .Where(x => x.Id == id))
+        {
+            commit.Components?.Clear();
+            commit.Layers?.Clear();
+            commit.Features?.Clear();
+            dbContext.Commits.Remove(commit);
+        }
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task UpdateCommitAsync(Commit value)
@@ -75,13 +99,14 @@ public class CommitRepository : ICommitRepository
             .Include(x => x.Components)
             .Include(x => x.Layers)
             .Include(x => x.Features)
+            .Include(x => x.CommitFiles)
             .AsNoTracking();
         foreach (var filter in filters)
         {
             commits = commits.Where(filter.Expression);
         }
         long totalCount = await commits.LongCountAsync();
-        var items = commits.OrderBy(x => x.Created).Skip(offset).Take(count);
+        var items = commits.OrderByDescending(x => x.Commited).ThenByDescending(x=>x.Created).Skip(offset).Take(count);
 
         return new PagedResult<Commit>
         {

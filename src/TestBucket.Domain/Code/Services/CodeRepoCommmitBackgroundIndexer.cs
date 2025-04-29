@@ -92,6 +92,7 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
 
         // Temp
         repo.LastIndexTimestamp = null;
+        //repo.LastIndexTimestamp = new DateTimeOffset(2025, 4, 28, 21, 09, 0, 0, TimeSpan.Zero);
 
         var commits = await integration.GetCommitsAsync(externalSystem.ToDto(), null, repo.LastIndexTimestamp, until, cancellationToken);
         foreach(var commit in commits)

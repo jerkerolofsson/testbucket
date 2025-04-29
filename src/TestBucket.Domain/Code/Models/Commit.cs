@@ -20,7 +20,14 @@ public class Commit : ProjectEntity
     /// </summary>
     public string? Message { get; set; }
 
+    /// <summary>
+    /// Time of commit
+    /// </summary>
     public DateTimeOffset? Commited { get; set; }
+
+    /// <summary>
+    /// Who authored the commit (email)
+    /// </summary>
     public string? CommitedBy { get; set; }
 
     /// <summary>
@@ -58,4 +65,14 @@ public class Commit : ProjectEntity
     /// </summary>
     public virtual List<CommitFile>? CommitFiles { get; set; }
 
+    public override int GetHashCode() => Sha.GetHashCode();
+
+    public override bool Equals(object? obj)
+    {
+        if(obj is Commit other)
+        {
+            return Sha.Equals(other.Sha);
+        }
+        return false;
+    }
 }

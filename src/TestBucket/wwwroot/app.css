@@ -421,7 +421,7 @@ tb-field .mud-link.mud-link-underline-hover:hover {
 }
 
 .mud-table-root .mud-table-body .mud-table-cell {
-    overflow: hidden;
+/*    overflow: hidden;*/
 }
 
 .mud-table-cell {

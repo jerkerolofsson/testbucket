@@ -17,6 +17,9 @@ internal static class CommitMapper
         {
             Url = commit.Url,
             Message = commit.Commit?.Message,
+            CommiterEmail = commit.Commit?.Committer?.Email,
+            CommitDate = commit.Commit?.Committer?.Date,
+
             Label = commit.Label,
             Ref = commit.Ref ?? commit.Sha,
             Sha = commit.Sha,

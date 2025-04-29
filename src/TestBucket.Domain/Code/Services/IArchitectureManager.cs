@@ -4,11 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Yaml;
 
 namespace TestBucket.Domain.Code.Services;
 public interface IArchitectureManager
 {
+    Task<Component?> GetComponentByNameAsync(ClaimsPrincipal principal, long projectId, string name);
+    Task<Feature?> GetFeatureByNameAsync(ClaimsPrincipal principal, long projectId, string name);
+    Task<ArchitecturalLayer?> GetLayerByNameAsync(ClaimsPrincipal principal, long projectId, string name);
+
     /// <summary>
     /// Returns a model of the project architecture
     /// </summary>
@@ -16,6 +21,7 @@ public interface IArchitectureManager
     /// <param name="project"></param>
     /// <returns></returns>
     Task<ProjectArchitectureModel> GetProductArchitectureAsync(ClaimsPrincipal principal, TestProject project);
+    Task<ProductSystem?> GetSystemByNameAsync(ClaimsPrincipal principal, long projectId, string name);
 
     /// <summary>
     /// Imports a model of the project architecture, adding systems, components, features

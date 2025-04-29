@@ -123,7 +123,7 @@ p.mud-typography-subtitle1 {
     color: #888;
 }
 
-input {
+input:not(.mud-input-slot) {
     border: solid 1px var(--mud-palette-dark-darken);
     border-radius: 4px;
     background-color: var(--mud-palette-dark) !important;

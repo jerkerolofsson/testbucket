@@ -17,10 +17,28 @@ public class CommitRepository : ICommitRepository
         _dbContextFactory = dbContextFactory;
     }
 
+    public async Task DeleteCommitByShaAsync(string sha)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.Commits.Where(x => x.Sha == sha).ExecuteDeleteAsync();
+    }
+
+    public async Task DeleteCommitAsync(long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.Commits.Where(x => x.Id == id).ExecuteDeleteAsync();
+    }
+
+    public async Task UpdateCommitAsync(Commit value)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        dbContext.Commits.Update(value);
+        await dbContext.SaveChangesAsync();
+    }
     public async Task AddCommitAsync(Commit value)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        await  dbContext.Commits.AddAsync(value);
+        await dbContext.Commits.AddAsync(value);
         await dbContext.SaveChangesAsync();
     }
 
@@ -53,7 +71,11 @@ public class CommitRepository : ICommitRepository
     public async Task<PagedResult<Commit>> SearchCommitsAsync(FilterSpecification<Commit>[] filters, int offset, int count)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var commits = dbContext.Commits.AsNoTracking();
+        var commits = dbContext.Commits
+            .Include(x => x.Components)
+            .Include(x => x.Layers)
+            .Include(x => x.Features)
+            .AsNoTracking();
         foreach (var filter in filters)
         {
             commits = commits.Where(filter.Expression);

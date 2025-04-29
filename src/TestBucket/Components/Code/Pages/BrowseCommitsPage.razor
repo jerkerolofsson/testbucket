@@ -1,0 +1,106 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Code/Commits"
+@using TestBucket.Domain
+@using TestBucket.Domain.Code.Models
+@layout CodeLayout
+@inject CommitController controller
+@inject IStringLocalizer<CodeStrings> loc
+
+
+<MudStack Class="container-settings-page">
+
+    @* <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs> *@
+
+    <MudDataGrid ServerData="LoadGridData"
+    Dense="true"
+    Hover="true"
+    T="Commit"
+    SortMode="SortMode.None">
+
+        <ToolBarContent>
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                <MudIcon Icon="@TbIcons.Git.Commit" Size="Size.Large" />
+                <MudText Typo="Typo.h2">@loc["commits"]</MudText>
+                <MudSpacer />
+            </MudStack>
+        </ToolBarContent>
+
+        <Columns>
+
+            <TemplateColumn Title="@loc["sha"]" SortBy="x => x.Sha" Sortable="true">
+                <CellTemplate>
+                    @if(context.Item.Sha is not null)
+                    {
+                        <MudTooltip Text="@context.Item.Sha">
+                            @if(context.Item.Sha.Length > 8)
+                            {
+                                @context.Item.Sha.Substring(0,8)
+                            }
+                            else{
+                                @context.Item.Sha
+                            }
+                        </MudTooltip>
+
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn Title="@loc["message"]" SortBy="x => x.Message" Sortable="true">
+                <CellTemplate>
+                    @context.Item.Message
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn Title="@loc["layers"]">
+                <CellTemplate>
+                    @if (context.Item.Layers is not null)
+                    {
+                        foreach (var layer in context.Item.Layers)
+                        {
+                            <MudText>@layer.Name</MudText>
+                        }
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="@loc["components"]">
+                <CellTemplate>
+                    @if(context.Item.Components is not null)
+                    {
+                        foreach (var component in context.Item.Components)
+                        {
+                            <MudText>@component.Name</MudText>
+                        }
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+        </Columns>
+        
+        <PagerContent>
+            <MudDataGridPager T="Commit" />
+        </PagerContent>
+    </MudDataGrid>
+</MudStack>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+
+    private async Task<GridData<Commit>> LoadGridData(GridState<Commit> state)
+    {
+        if(Project is null)
+        {
+            return new GridData<Commit> { TotalItems = 0 };
+        }
+
+        var result = await controller.BrowseCommitsAsync(Project.Id, state.Page*state.PageSize, state.PageSize);
+
+        GridData<Commit> data = new()
+            {
+                Items = result.Items,
+                TotalItems = (int)result.TotalCount
+            };
+
+        return data;
+    }
+}

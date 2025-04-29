@@ -29,8 +29,10 @@ internal static class CommitMapper
         {
             Reference = commit.Ref,
             RepositoryId = repository.Id,
-            Repository = repository,
             Sha = commit.Sha,
+            Message = commit.Message,
+            Commited = commit.CommitDate,
+            CommitedBy = commit.CommiterEmail,
         };
         if(commit.Files is not null)
         {

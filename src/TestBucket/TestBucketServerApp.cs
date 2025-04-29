@@ -190,6 +190,8 @@ public static class TestBucketServerApp
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
         builder.Services.AddScoped<ArchitectureController>();
+        builder.Services.AddScoped<CommitController>();
+
         builder.Services.AddScoped<UserApiKeysController>();
         builder.Services.AddScoped<UserRegistrationController>();
         builder.Services.AddScoped<ThemingService>();

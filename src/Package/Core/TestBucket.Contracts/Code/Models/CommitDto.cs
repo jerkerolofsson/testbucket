@@ -1,4 +1,5 @@
 ﻿
+
 namespace TestBucket.Contracts.Code.Models;
 public class CommitDto
 {
@@ -28,4 +29,6 @@ public class CommitDto
     public string? Message { get; set; }
 
     public IReadOnlyList<CommitFileDto>? Files { get; set; }
+    public string? CommiterEmail { get; set; }
+    public DateTimeOffset? CommitDate { get; set; }
 }

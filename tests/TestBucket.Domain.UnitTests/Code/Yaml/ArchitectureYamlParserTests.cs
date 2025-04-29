@@ -26,7 +26,7 @@ namespace TestBucket.Domain.UnitTests.Code.Yaml
             string yaml = """
                 systems:
                   Rocket:
-                    paths: src/**/*
+                    paths: ["src/**/*"]
                 """;
             var errors = new ArchitectureYamlSerializer().Validate(yaml);
             Assert.Empty(errors);
@@ -38,7 +38,7 @@ namespace TestBucket.Domain.UnitTests.Code.Yaml
             string yaml = """
                 features:
                   Feature1:
-                    paths: src/**/*
+                    paths: ["src/**/*"]
                 """;
             var errors = new ArchitectureYamlSerializer().Validate(yaml);
             Assert.NotEmpty(errors);

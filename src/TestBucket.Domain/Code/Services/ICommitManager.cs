@@ -13,4 +13,6 @@ public interface ICommitManager
     Task AddRepositoryAsync(ClaimsPrincipal principal, Repository repo);
     Task<Repository?> GetRepoByExternalSystemAsync(ClaimsPrincipal principal, long id);
     Task UpdateRepositoryAsync(ClaimsPrincipal principal, Repository repo);
+
+    Task<PagedResult<Commit>> BrowseCommitsAsync(ClaimsPrincipal principal, long projectId, int offset, int count);
 }

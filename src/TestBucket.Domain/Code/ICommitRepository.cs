@@ -38,5 +38,8 @@ public interface ICommitRepository
     /// <returns></returns>
     Task<PagedResult<Commit>> SearchCommitsAsync(FilterSpecification<Commit>[] filters, int offset, int count);
     Task AddCommitAsync(Commit value);
+    Task DeleteCommitByShaAsync(string sha);
+    Task DeleteCommitAsync(long id);
+    Task UpdateCommitAsync(Commit commit);
     #endregion Commit
 }

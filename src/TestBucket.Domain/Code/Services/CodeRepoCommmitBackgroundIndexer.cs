@@ -8,6 +8,8 @@ using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
+using TestBucket.Domain.Projects.Models;
+using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Tenants;
 
 namespace TestBucket.Domain.Code.Services;
@@ -27,9 +29,6 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await Task.Delay(TimeSpan.FromSeconds(1));
-
-        // Todo: Wait until ready......
-        return;
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -79,17 +78,20 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
                     var repo = await GetOrCreateRepositoryAsync(principal, scope, project, externalSystem, integration, cancellationToken);
                     if(repo is not null)
                     {
-                        await IndexRepositoryAsync(principal, scope, integration, repo, externalSystem, cancellationToken);
+                        await IndexRepositoryAsync(principal, scope, project, integration, repo, externalSystem, cancellationToken);
                     }
                 }
             }
         }
     }
 
-    private static async Task IndexRepositoryAsync(ClaimsPrincipal principal, IServiceScope scope, IExternalCodeRepository integration, Repository repo, ExternalSystem externalSystem, CancellationToken cancellationToken)
+    private static async Task IndexRepositoryAsync(ClaimsPrincipal principal, IServiceScope scope, TestProject project, IExternalCodeRepository integration, Repository repo, ExternalSystem externalSystem, CancellationToken cancellationToken)
     {
         DateTimeOffset until = DateTimeOffset.UtcNow;
         var manager = scope.ServiceProvider.GetRequiredService<ICommitManager>();
+
+        // Temp
+        repo.LastIndexTimestamp = null;
 
         var commits = await integration.GetCommitsAsync(externalSystem.ToDto(), null, repo.LastIndexTimestamp, until, cancellationToken);
         foreach(var commit in commits)
@@ -99,11 +101,18 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
             if (commit.Files is null)
             {
                 var commitWithFiles = await integration.GetCommitAsync(externalSystem.ToDto(), commit.Ref, cancellationToken);
-                await manager.AddCommitAsync(principal, commitWithFiles.ToDbo(repo));
+                var commitDbo = commitWithFiles.ToDbo(repo);
+                commitDbo.TestProjectId = project.Id;
+                commitDbo.TeamId = project.TeamId;
+
+                await manager.AddCommitAsync(principal, commitDbo);
             }
             else
             {
-                await manager.AddCommitAsync(principal, commit.ToDbo(repo));
+                var commitDbo = commit.ToDbo(repo);
+                commitDbo.TestProjectId = project.Id;
+                commitDbo.TeamId = project.TeamId;
+                await manager.AddCommitAsync(principal, commitDbo);
             }
         }
 

@@ -294,21 +294,39 @@ namespace TestBucket.Domain.Requirements
             return await _repository.GetRequirementLinksForSpecificationAsync(tenantId, specification.Id);
         }
 
-        public async Task AddRequirementLinkAsync(ClaimsPrincipal principal, Requirement requirement, TestCase testCase)
+        public async Task AddRequirementLinkAsync(ClaimsPrincipal principal, Requirement requirement, long testCaseId)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
 
             var tenantId = principal.GetTenantIdOrThrow();
-            var requirementLink = new RequirementTestLink 
-            { 
-                RequirementId = requirement.Id, 
+
+            // Delete any existing requirement so we don't add duplicates in case
+            // we are batch updating
+            if(requirement.TestLinks is not null)
+            {
+                var linkAlreadyExists = requirement.TestLinks.Where(x => x.TestCaseId == testCaseId).Any();
+                if(linkAlreadyExists)
+                {
+                    return;
+                }
+            }
+
+            var requirementLink = new RequirementTestLink
+            {
+                RequirementId = requirement.Id,
                 RequirementSpecificationId = requirement.RequirementSpecificationId,
                 RequirementExternalId = requirement.ExternalId,
-                TestCaseId = testCase.Id, 
-                TenantId = tenantId 
+                TestCaseId = testCaseId,
+                TenantId = tenantId
             };
             await _repository.AddRequirementLinkAsync(requirementLink);
+        }
+        public async Task AddRequirementLinkAsync(ClaimsPrincipal principal, Requirement requirement, TestCase testCase)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
+            await AddRequirementLinkAsync(principal, requirement, testCase.Id);
         }
 
         public async Task AddRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink requirementLink)

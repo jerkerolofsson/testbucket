@@ -281,6 +281,12 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         }
     }
 
+    public async ValueTask LinkTestCaseToRequirementAsync(long testCaseId, Requirement requirement)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _requirementManager.AddRequirementLinkAsync(principal, requirement, testCaseId);
+    }
+
     public async ValueTask LinkTestCaseToRequirementAsync(TestCase testCase, Requirement requirement)
     {
         var principal = await GetUserClaimsPrincipalAsync();

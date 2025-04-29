@@ -330,7 +330,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>End Date</value>
   </data>
   <data name="link-issue" xml:space="preserve">
-    <value>Link Issue</value>
+    <value>Link issue</value>
   </data>
   <data name="file-name" xml:space="preserve">
     <value>Name</value>
@@ -381,7 +381,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Drop requirements here to create a link between tests and the requirement</value>
   </data>
   <data name="link-requirement-to-test" xml:space="preserve">
-    <value>Add requirement</value>
+    <value>Link requirement to test</value>
   </data>
   <data name="number-of-tests" xml:space="preserve">
     <value>Tests</value>
@@ -391,5 +391,11 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="new-folder" xml:space="preserve">
     <value>Add folder</value>
+  </data>
+  <data name="batch-tag-description" xml:space="preserve">
+    <value>Link a requirement, or change a field for all descendants.</value>
+  </data>
+  <data name="test-coverage" xml:space="preserve">
+    <value>Test Coverage</value>
   </data>
 </root>

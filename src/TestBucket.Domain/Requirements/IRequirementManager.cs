@@ -127,6 +127,7 @@ public interface IRequirementManager
     #region Requirement Links
     Task<RequirementTestLink[]> GetLinksForRequirementAsync(ClaimsPrincipal principal, Requirement requirement);
     Task<RequirementTestLink[]> GetLinksForTestAsync(ClaimsPrincipal principal, TestCase test);
+    Task AddRequirementLinkAsync(ClaimsPrincipal principal, Requirement requirement, long testCaseId);
     Task AddRequirementLinkAsync(ClaimsPrincipal principal, Requirement requirement, TestCase testCase);
     Task AddRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
     Task DeleteRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);

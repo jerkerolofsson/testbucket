@@ -67,11 +67,11 @@
                             @if (context.Value?.Requirement is not null)
                             {
                                 <Draggable T="RequirementEntity" Data="@context.Value.Requirement">
-                                    @context.Text
-                                    @if (!string.IsNullOrEmpty(context.Value.Requirement.ExternalId))
-                                    {
-                                        <MudText Style="white-space: nowrap; word-wrap: nowrap;">@context.Value.Requirement.ExternalId</MudText>
-                                    }
+
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                        @context.Text
+                                        <RequirementStateDot State="context.Value.Requirement.MappedState"/>
+                                    </MudStack>
                                 </Draggable>
                             }
                             else if (context.Value?.RequirementFolder is not null)

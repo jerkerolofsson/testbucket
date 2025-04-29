@@ -48,6 +48,11 @@ public partial class KanbanBoard<[DynamicallyAccessedMembers(DynamicallyAccessed
         }
     }
 
+    protected override void OnParametersSet()
+    {
+        OnInitialized();
+    }
+
     private IEnumerable<T> GetItemsInColumn(string column)
     {
         if (GetColumnFunc is not null)

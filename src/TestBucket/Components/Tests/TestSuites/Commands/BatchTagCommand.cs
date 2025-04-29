@@ -1,15 +1,19 @@
 ﻿using Microsoft.Extensions.Localization;
 
+using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Services;
+using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Domain.Progress;
+using TestBucket.Domain.Requirements;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Localization;
 
 namespace TestBucket.Components.Tests.TestSuites.Commands;
@@ -22,6 +26,7 @@ internal class BatchTagCommand : ICommand
     private readonly IDialogService _dialogService;
     private readonly IProgressManager _progressManager;
     private readonly FieldController _fieldController;
+    private readonly TestCaseEditorController _testEditor;
 
     public int SortOrder => 60;
     public string? Folder => null;
@@ -33,7 +38,8 @@ internal class BatchTagCommand : ICommand
         TestRunCreationController testRunCreationController,
         IDialogService dialogService,
         IProgressManager progressManager,
-        FieldController fieldController)
+        FieldController fieldController,
+        TestCaseEditorController testEditor)
     {
         _loc = loc;
         _appNavigationManager = appNavigationManager;
@@ -41,6 +47,7 @@ internal class BatchTagCommand : ICommand
         _dialogService = dialogService;
         _progressManager = progressManager;
         _fieldController = fieldController;
+        _testEditor = testEditor;
     }
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
@@ -84,6 +91,25 @@ internal class BatchTagCommand : ICommand
             }
 
             await _fieldController.UpdateTestCaseFieldsAsync(testCaseIds, projectId, new FieldValue[] { field });
+        }
+        else if (result?.Data is Requirement requirement)
+        {
+            await using var progress = _progressManager.CreateProgressTask("Updating tests..");
+
+            long[] testCaseIds = [];
+            if (folder is not null)
+            {
+                testCaseIds = await _browser.GetTestSuiteSuiteFolderTestsAsync(folder, includeAllDescendants: true);
+            }
+            else if (suite is not null)
+            {
+                testCaseIds = await _browser.GetTestSuiteSuiteTestsAsync(suite);
+            }
+
+            foreach (var testCaseId in testCaseIds)
+            {
+                await _testEditor.LinkTestCaseToRequirementAsync(testCaseId, requirement);
+            }
         }
     }
 }

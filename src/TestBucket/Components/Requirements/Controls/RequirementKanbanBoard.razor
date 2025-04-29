@@ -2,6 +2,7 @@
 @using TestBucket.Contracts.Requirements.States
 @using TestBucket.Domain.States
 @inject ProjectController controller
+@inject RequirementEditorController requirementEditor
 @inject AppNavigationManager appNavigationManager
 
 <KanbanBoard T="Requirement" GetColumnFunc="GetState" Items="@_requirements" SetColumnFunc="SetStateAsync" Columns="@_columns">
@@ -56,10 +57,10 @@
     {
         return requirement.State ?? _defaultColumn;
     }
-    private ValueTask SetStateAsync(Requirement requirement, string state)
+    private async ValueTask SetStateAsync(Requirement requirement, string state)
     {
         requirement.State = state;
-        return ValueTask.CompletedTask;
+        await requirementEditor.SaveRequirementAsync(requirement);
     }
 
 

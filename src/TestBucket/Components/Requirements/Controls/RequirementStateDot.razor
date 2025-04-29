@@ -1,0 +1,22 @@
+﻿@using TestBucket.Contracts.Requirements.States
+<div class="requirement-dot"> 
+    @if (State == MappedRequirementState.Completed || State == MappedRequirementState.Delivered)
+    {
+        <MudText Color="Color.Success">●</MudText>
+    }
+    else if (State == MappedRequirementState.InProgress)
+    {
+        <MudText Color="Color.Info">●</MudText>
+    }
+    else if (State == MappedRequirementState.Accepted || State == MappedRequirementState.Assigned)
+    {
+        <MudText Color="Color.Info">●</MudText>
+    }
+    else
+    {
+        <MudText Color="Color.Error">●</MudText>
+    }
+</div> 
+@code {
+    [Parameter] public MappedRequirementState? State { get; set; }
+}

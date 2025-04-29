@@ -106,15 +106,11 @@
 
     private async Task LoadAsync()
     {
-        if(_specification?.Id != Specification?.Id)
+        if(_specification?.Id != Specification?.Id && Specification is not null)
         {
             _specification = Specification;
-
-            if(_specification is not null)
-            {
-                var result = await browser.SearchRequirementsInSpecificationAsync(_specification.Id, 0, 100);
-                _requirements = result.Items;
-            }
+            var result = await browser.SearchRequirementsInSpecificationAsync(_specification.Id, 0, 100);
+            _requirements = result.Items;
         }
     }
 

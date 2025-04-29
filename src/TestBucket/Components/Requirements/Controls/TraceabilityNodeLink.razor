@@ -8,6 +8,7 @@
             string icon = RequirementIcons.GetIcon(Node.Requirement);
             <MudIcon Icon="@icon"/>
             <MudText>@Node.Requirement.Name</MudText>
+            <RequirementStateDot State="Node.Requirement.MappedState" />
         }
         @if (Node?.TestCase is not null)
         {

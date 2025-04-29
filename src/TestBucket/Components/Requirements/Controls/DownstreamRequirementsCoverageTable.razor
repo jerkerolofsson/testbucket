@@ -45,7 +45,10 @@ else if(_downstream.Count > 0)
             </MudTd>
 
             <MudTd DataLabel="@loc["state"]">
-                @context.Requirement.State
+                <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                    <RequirementStateDot State="context.Requirement.MappedState" />
+                    @context.Requirement.State
+                </MudStack>
             </MudTd>
         </RowTemplate>
     </MudTable>

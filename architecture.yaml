@@ -80,6 +80,12 @@ components:
   Poller:
     paths: ["src/runner/TestBucket.Runner/Poller/**/*"]
 
+  User Interface:
+    paths:
+    - src/TestBucket/Components/**/Dialogs/**/*
+    - src/TestBucket/Components/**/Controls/**/*
+    - src/TestBucket/Components/**/Layouts/**/*
+    - src/TestBucket/Components/**/Pages/**/*
 
   Code UI:
     paths:

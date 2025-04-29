@@ -1,43 +1,65 @@
-﻿@using TestBucket.Contracts.Fields
+﻿@using TestBucket.Components.Requirements.Controls
+@using TestBucket.Contracts.Fields
 @inject FieldController controller
+@inject TeamController teamController
+@inject ProjectController projectController
 @inject IStringLocalizer<SharedStrings> loc
 
 <MudDialog DefaultFocus="DefaultFocus.FirstChild">
     <TitleContent>@loc["batch-tag"]</TitleContent>
     <DialogContent>
 
-        <div style="display: grid; grid-template-columns: 200px 1fr; min-width: 700px; gap: 5px">
-            <div>
-                <MudTable Items="_fields" RowClass="cursor-pointer" RowClassFunc="@SelectedRowClassFunc" Dense>
-                    <RowTemplate>
-                        <MudTd DataLabel="Link" @onclick="() => ShowView(context)">
-                            @context.FieldDefinition?.Name
-                        </MudTd>
-                    </RowTemplate>
-                </MudTable>
+        @if(_loading)
+        {
+            <div style="display: grid; grid-template-columns: 200px 1fr; min-width: 700px; gap: 5px">
+                <div>
+                    <MudSkeleton SkeletonType="SkeletonType.Text" Height="400"/>
+                </div>
+                <div>
+                </div>
             </div>
+        }
+        else
+        {
+            <div style="display: grid; grid-template-columns: 200px 1fr; min-width: 700px; gap: 5px">
+                <div>
 
-            <div style="">
-                @if (_field?.FieldDefinition is not null)
-                {
-                    <MudStack Style="max-width: 400px">
-                        <MudText Typo="Typo.h1">@_field.FieldDefinition.Name</MudText>
-                        <FieldValueEditor @bind-Field="_field" />
+                    <MudNavMenu>
 
-                        @if (!string.IsNullOrEmpty(_field.FieldDefinition.Description))
+                        <MudNavLink OnClick="ShowRequirement">@loc["link-requirement-to-test"]</MudNavLink>
+
+                        @foreach(var field in _fields)
                         {
-                            <MudText>@_field.FieldDefinition.Description</MudText>
+                            <MudNavLink OnClick="() => ShowView(field)">@field.FieldDefinition?.Name</MudNavLink>
                         }
-                    </MudStack>
-                }
-                else
-                {
-                    <MudText>@loc["batch-tag-description"]</MudText>
-                }
+                    </MudNavMenu>
+                </div>
 
+                <div style="">
+                    @if(_showRequirement)
+                    {
+                        <RequirementTreeView Project="@_project" Team="@_team" OnRequirementClicked="SetRequirement" />
+                    }
+                    else @if (_field?.FieldDefinition is not null)
+                    {
+                        <MudStack Style="max-width: 400px">
+                            <MudText Typo="Typo.h1">@_field.FieldDefinition.Name</MudText>
+                            <FieldValueEditor @bind-Field="_field" />
+
+                            @if (!string.IsNullOrEmpty(_field.FieldDefinition.Description))
+                            {
+                                <MudText>@_field.FieldDefinition.Description</MudText>
+                            }
+                        </MudStack>
+                    }
+                    else
+                    {
+                        <MudText>@loc["batch-tag-description"]</MudText>
+                    }
+
+                </div>
             </div>
-
-        </div>
+        }
     </DialogContent>
 
     <DialogActions>
@@ -50,14 +72,36 @@
 @code {
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
+    private bool _loading = true;
 
     [Parameter] public long? ProjectId { get; set; }
     [Parameter] public FieldTarget Target { get; set; } = FieldTarget.TestCase;
 
+    private TestProject? _project;
+    private Team? _team;
+
     private List<FieldValue> _fields = [];
     private FieldValue? _field;
+    private Requirement? _requirement;
+    private bool _showRequirement = false;
 
     protected override async Task OnInitializedAsync()
+    {
+        await LoadFieldDefinitionsAsync();
+
+        if (ProjectId is not null)
+        {
+            _project = await projectController.GetProjectByIdAsync(ProjectId.Value);
+            if (_project?.TeamId is not null)
+            {
+                _team = await teamController.GetTeamByIdAsync(_project.TeamId.Value);
+            }
+        }
+
+        _loading = false;
+    }
+
+    private async Task LoadFieldDefinitionsAsync()
     {
         var query = new SearchFieldQuery
             {
@@ -77,9 +121,22 @@
         }
     }
 
+    private void SetRequirement(Requirement requirement)
+    {
+        MudDialog.Close(requirement);
+    }
+
     private void ShowView(FieldValue viewType)
     {
         _field = viewType;
+        _requirement = null;
+        _showRequirement = false;
+    }
+    private void ShowRequirement()
+    {
+        _showRequirement = true;
+        _field = null;
+        _requirement = null;
     }
 
     private string SelectedRowClassFunc(FieldValue element, int rowNumber)

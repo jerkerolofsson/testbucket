@@ -1,8 +1,6 @@
 ﻿@namespace TestBucket.Components.Shared.Kanban
 @typeparam T
 
-<h3>KanbanBoard</h3>
-
 <CascadingValue Value="@this">
     <div class="tb-kanban-board">
         @foreach (var column in GetColumns())

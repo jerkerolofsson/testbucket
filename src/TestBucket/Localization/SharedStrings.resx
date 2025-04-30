@@ -398,4 +398,25 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="test-coverage" xml:space="preserve">
     <value>Test Coverage</value>
   </data>
+  <data name="icon" xml:space="preserve">
+    <value>Icon</value>
+  </data>
+  <data name="icons" xml:space="preserve">
+    <value>Icons</value>
+  </data>
+  <data name="option" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="data-source" xml:space="preserve">
+    <value>Data Source</value>
+  </data>
+  <data name="options" xml:space="preserve">
+    <value>options</value>
+  </data>
+  <data name="advanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
 </root>

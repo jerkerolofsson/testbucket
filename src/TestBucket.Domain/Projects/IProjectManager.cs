@@ -22,7 +22,6 @@ public interface IProjectManager
     Task<OneOf<TestProject, AlreadyExistsError>> AddAsync(ClaimsPrincipal principal, TestProject project);
     Task UpdateProjectAsync(ClaimsPrincipal principal, TestProject project);
     Task<PagedResult<TestProject>> BrowseTestProjectsAsync(ClaimsPrincipal principal, int offset, int count);
-    Task<string[]?> GetFieldOptionsAsync(ClaimsPrincipal principal, long testProjectId, TraitType traitType, CancellationToken cancellationToken);
     Task<TestProject?> GetTestProjectByIdAsync(ClaimsPrincipal principal, long projectId);
     Task<TestProject?> GetTestProjectBySlugAsync(ClaimsPrincipal principal, string slug);
 

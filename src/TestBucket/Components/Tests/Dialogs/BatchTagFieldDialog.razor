@@ -82,7 +82,6 @@
 
     private List<FieldValue> _fields = [];
     private FieldValue? _field;
-    private Requirement? _requirement;
     private bool _showRequirement = false;
 
     protected override async Task OnInitializedAsync()
@@ -129,14 +128,12 @@
     private void ShowView(FieldValue viewType)
     {
         _field = viewType;
-        _requirement = null;
         _showRequirement = false;
     }
     private void ShowRequirement()
     {
         _showRequirement = true;
         _field = null;
-        _requirement = null;
     }
 
     private string SelectedRowClassFunc(FieldValue element, int rowNumber)

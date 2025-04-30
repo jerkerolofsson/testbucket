@@ -9,7 +9,7 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.Github;
 
-public class GithubProjectDataSource : GithubIntegrationBaseClient, IProjectDataSource
+public class GithubProjectDataSource : GithubIntegrationBaseClient, IExternalProjectDataSource
 {
     public TraitType[] SupportedTraits => [TraitType.Milestone];
 

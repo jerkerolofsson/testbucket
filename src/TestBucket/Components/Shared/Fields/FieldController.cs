@@ -146,6 +146,18 @@ internal class FieldController : TenantBaseService
 
     #region Field Definitions
 
+    public async Task<IReadOnlyList<string>> SearchOptionsAsync(FieldDefinition field, string text, int count, CancellationToken cancellationToken)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _definitionManager.SearchOptionsAsync(principal, field, text, count, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<string>> GetOptionsAsync(FieldDefinition field)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _definitionManager.GetOptionsAsync(principal, field);
+    }
+
     /// <summary>
     /// Searches for field definitions
     /// </summary>
@@ -162,17 +174,17 @@ internal class FieldController : TenantBaseService
         var e1 = Stopwatch.GetElapsedTime(a);
 
         // Assign options from external data source
-        foreach (var fieldDefinition in fieldDefinitions)
-        {
-            if (fieldDefinition.TestProjectId is not null)
-            {
-                string[]? options = await _projectManager.GetFieldOptionsAsync(principal, fieldDefinition.TestProjectId.Value, fieldDefinition.TraitType, default);
-                if (options is not null)
-                {
-                    fieldDefinition.Options = options.ToList();
-                }
-            }
-        }
+        //foreach (var fieldDefinition in fieldDefinitions)
+        //{
+        //    if (fieldDefinition.TestProjectId is not null)
+        //    {
+        //        string[]? options = await _projectManager.GetFieldOptionsAsync(principal, fieldDefinition.TestProjectId.Value, fieldDefinition.TraitType, default);
+        //        if (options is not null)
+        //        {
+        //            fieldDefinition.Options = options.ToList();
+        //        }
+        //    }
+        //}
 
         var e2 = Stopwatch.GetElapsedTime(a);
 

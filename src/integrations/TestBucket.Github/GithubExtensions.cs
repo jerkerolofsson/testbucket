@@ -13,7 +13,7 @@ public static class GithubExtensions
     public static IServiceCollection AddGitHubExtension(this IServiceCollection services)
     {
         services.AddSingleton<IExtension, GithubExtension>();
-        services.AddSingleton<IProjectDataSource, GithubProjectDataSource>();
+        services.AddSingleton<IExternalProjectDataSource, GithubProjectDataSource>();
         services.AddSingleton<IExternalPipelineRunner, GithubWorkflowRunner>();
         services.AddSingleton<IExternalCodeRepository, GithubRepository>();
         return services;

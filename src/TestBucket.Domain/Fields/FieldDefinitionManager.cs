@@ -5,9 +5,12 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
 
 using TestBucket.Contracts.Fields;
+using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields.Specifications;
+using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Fields
 {
@@ -15,13 +18,19 @@ namespace TestBucket.Domain.Fields
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IFieldRepository _fieldRepository;
+        private readonly IProjectManager _projectManager;
+        private readonly IReadOnlyList<IFieldCompletionsProvider> _completionProviders;
 
         public FieldDefinitionManager(
             IMemoryCache memoryCache,
-            IFieldRepository fieldRepository)
+            IEnumerable<IFieldCompletionsProvider> completionProviders,
+            IFieldRepository fieldRepository,
+            IProjectManager projectManager)
         {
+            _completionProviders = completionProviders.ToList();
             _memoryCache = memoryCache;
             _fieldRepository = fieldRepository;
+            _projectManager = projectManager;
         }
 
         public async Task AddAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition)
@@ -131,5 +140,75 @@ namespace TestBucket.Domain.Fields
             return definitions;
         }
 
+        public async Task<IReadOnlyList<string>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDefinition field, string text, int count, CancellationToken cancellationToken)
+        {
+            var tenantId = principal.GetTenantIdOrThrow();
+            if (field.TestProjectId is null)
+            {
+                return [];
+            }
+
+            List<string> result = [];
+            int remaining = count;
+            foreach (var provider in _completionProviders)
+            {
+                var options = await provider.SearchOptionsAsync(principal, field.DataSourceType, field.TestProjectId.Value, text ,remaining, cancellationToken);
+                remaining -= options.Count;
+                result.AddRange(options);
+                if(remaining <= 0)
+                {
+                    break;
+                }
+            }
+            return result;
+        }
+
+        public async Task<IReadOnlyList<string>> GetOptionsAsync(ClaimsPrincipal principal, FieldDefinition field)
+        {
+            var tenantId = principal.GetTenantIdOrThrow();
+
+            if(field.DataSourceType == FieldDataSourceType.List)
+            {
+                if (field.Options is not null)
+                {
+                    return field.Options.ToList();
+                }
+            }
+            else 
+            {
+                return await LoadFieldOptionsAsync(principal, field);
+
+                string cacheKey = $"field-options:{tenantId}:{field.Id}:{field.DataSourceType}";
+                var result = await _memoryCache.GetOrCreateAsync(cacheKey, async (e) =>
+                {
+                    e.AbsoluteExpiration = DateTimeOffset.UtcNow.AddHours(1);
+                    return await LoadFieldOptionsAsync(principal, field);
+                });
+
+                return result ?? [];
+            }
+
+
+            return [];
+        }
+
+        private async Task<IReadOnlyList<string>> LoadFieldOptionsAsync(
+            ClaimsPrincipal principal,
+            FieldDefinition field,
+            CancellationToken cancellationToken = default)
+        {
+            if(field.TestProjectId is null)
+            {
+                return [];
+            }
+
+            List<string> result = [];
+            foreach(var provider in _completionProviders)
+            {
+                var options = await provider.GetOptionsAsync(principal, field.DataSourceType, field.TestProjectId.Value, cancellationToken);
+                result.AddRange(options);
+            }
+            return result;
+        }
     }
 }

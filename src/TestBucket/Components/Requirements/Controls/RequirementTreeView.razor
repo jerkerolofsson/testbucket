@@ -8,19 +8,19 @@
 @inject IRequirementManager manager
 @inject AppNavigationManager appNav
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<RequirementStrings> reqLoc
 
 <MudStack Spacing="0" Style="width: 100%;">
     <MudStack Row="true" class="tb-treeview-toolbar" Spacing="0">
 
         <MudStack Row="true" Class="pr-2 pl-2" Style="width: 100%" Spacing="0" AlignItems="AlignItems.Center">
             <MudTextField 
-            Placeholder="Search Requirements"
+            Placeholder="@reqLoc["search-requirements"]"
             Clearable
             Variant="Variant.Outlined"
             Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
 
             <MudSpacer />
-
 
             @if (appNav.State.SelectedRequirement is not null)
             {

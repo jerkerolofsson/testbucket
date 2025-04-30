@@ -8,7 +8,7 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.Gitlab;
 
-public class GitlabProjectDataSource : IProjectDataSource
+public class GitlabProjectDataSource : IExternalProjectDataSource
 {
     /// <summary>
     /// The fields that this class can provide

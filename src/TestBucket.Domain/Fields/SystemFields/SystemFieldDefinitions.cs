@@ -23,6 +23,7 @@ public static class SystemFieldDefinitions
         Inherit = true,
         UseClassifier = true,
         Options = [],
+        DataSourceType = FieldDataSourceType.Features,
         Target = FieldTarget.TestCase |
                     FieldTarget.TestCaseRun |
                     FieldTarget.RequirementSpecificationFolder |
@@ -46,6 +47,7 @@ public static class SystemFieldDefinitions
         ShowDescription = false,
         UseClassifier = false,
         Options = [],
+        DataSourceType = FieldDataSourceType.Milestones,
         Target = FieldTarget.TestCase |
                     FieldTarget.TestRun |
                     FieldTarget.TestCaseRun |
@@ -64,6 +66,7 @@ public static class SystemFieldDefinitions
         TraitType = TraitType.Commit,
         Description = "Git commit",
         Icon = TbIcons.Git.Commit,
+        DataSourceType = FieldDataSourceType.Commit,
         IsVisible = true,
         Type = FieldType.String,
         IsDefinedBySystem = true,

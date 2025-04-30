@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Code.Models;
+﻿using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Specifications;
 using TestBucket.Domain.Code.Yaml;
 using TestBucket.Domain.Shared.Specifications;
@@ -167,6 +161,26 @@ internal class ArchitectureManager : IArchitectureManager
         return result.Items.ToList();
     }
 
+
+    /// <summary>
+    /// Searches for features
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<Component>> SearchComponentsAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Component>[] filters = [
+            new SearchComponentWithText(text ?? ""),
+            new FilterByProject<Component>(projectId),
+            new FilterByTenant<Component>(tenantId)
+        ];
+
+        PagedResult<Component> result = await _repository.SearchComponentsAsync(filters, offset, count);
+        return result.Items.ToList();
+    }
+
     /// <summary>
     /// Returns a system by name
     /// </summary>
@@ -203,6 +217,25 @@ internal class ArchitectureManager : IArchitectureManager
     {
         feature.TenantId = principal.GetTenantIdOrThrow();
         await _repository.AddFeatureAsync(feature);
+    }
+
+    /// <summary>
+    /// Searches for features
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<Feature>> SearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Feature>[] filters = [
+            new SearchFeatureWithText(text),
+            new FilterByProject<Feature>(projectId), 
+            new FilterByTenant<Feature>(tenantId)
+        ];
+
+        PagedResult<Feature> result = await _repository.SearchFeaturesAsync(filters, offset, count);
+        return result.Items.ToList();
     }
 
     /// <summary>

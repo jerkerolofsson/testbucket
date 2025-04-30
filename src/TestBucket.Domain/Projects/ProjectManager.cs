@@ -1,36 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Identity.Models;
+﻿using Mediator;
 
-using TestBucket.Domain.Identity;
-using TestBucket.Domain.Tenants.Models;
-using TestBucket.Contracts.Integrations;
 using Microsoft.Extensions.Caching.Memory;
-using TestBucket.Traits.Core;
-using TestBucket.Domain.Projects.Models;
-using TestBucket.Domain.Identity.Permissions;
-using TestBucket.Domain.Projects.Mapping;
-using Mediator;
+
+using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Projects.Events;
+using TestBucket.Domain.Projects.Mapping;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Projects;
 internal class ProjectManager : IProjectManager
 {
     private readonly IProjectRepository _projectRepository;
     private readonly IMemoryCache _memoryCache;
-    private readonly List<IProjectDataSource> _projectDataSources;
     private readonly IMediator _mediator;
 
     public ProjectManager(IProjectRepository projectRepository,
         IMemoryCache memoryCache,
-        IEnumerable<IProjectDataSource> projectDataSources,
         IMediator mediator)
     {
-        _projectDataSources = projectDataSources.ToList();
         _projectRepository = projectRepository;
         _memoryCache = memoryCache;
         _mediator = mediator;
@@ -68,43 +55,6 @@ internal class ProjectManager : IProjectManager
         //project.ModifiedBy = principal.Identity?.Name ?? throw new Exception("No identity in current principal");
     }
 
-    public async Task<string[]?> GetFieldOptionsAsync(ClaimsPrincipal principal, long testProjectId, TraitType traitType, CancellationToken cancellationToken)
-    {
-        var integrations = (await GetProjectIntegrationsAsync(principal, testProjectId)).ToArray();
-        var dtos = integrations.Select(x => x.ToDto()).ToArray();
-
-        foreach (var dataSource in _projectDataSources)
-        {
-            if (dataSource.SupportedTraits.Contains(traitType))
-            {
-                var dto = dtos.Where(x => x.Name == dataSource.SystemName && x.Enabled).FirstOrDefault();
-                if (dto is not null)
-                {
-                    try
-                    {
-                        // Verify that the capability is enabled for the data source
-                        if (traitType == TraitType.Release && 
-                            (dto.EnabledCapabilities&ExternalSystemCapability.GetReleases) != ExternalSystemCapability.GetReleases)
-                        {
-                            continue;
-                        }
-                        if (traitType == TraitType.Milestone && (dto.EnabledCapabilities & ExternalSystemCapability.GetMilestones) != ExternalSystemCapability.GetMilestones)
-                        {
-                            continue;
-                        }
-
-                        var options = await dataSource.GetFieldOptionsAsync(dto, traitType, cancellationToken);
-                        if (options.Length > 0)
-                        {
-                            return options;
-                        }
-                    }
-                    catch { }
-                }
-            }
-        }
-        return null;
-    }
 
     public async Task<PagedResult<TestProject>> BrowseTestProjectsAsync(ClaimsPrincipal principal, int offset, int count)
     {
@@ -112,8 +62,6 @@ internal class ProjectManager : IProjectManager
         var tenantId = principal.GetTenantIdOrThrow();
         return await _projectRepository.SearchAsync(tenantId, new SearchQuery() { Offset = offset, Count = count });
     }
-
-
     public async Task<TestProject?> GetTestProjectByIdAsync(ClaimsPrincipal principal, long projectId)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);

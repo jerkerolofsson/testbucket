@@ -13,7 +13,7 @@ public static class GitlabExtensions
     public static IServiceCollection AddGitlabExtension (this IServiceCollection services)
     {
         services.AddSingleton<IExtension, GitlabExtension>();
-        services.AddSingleton<IProjectDataSource, GitlabProjectDataSource>();
+        services.AddSingleton<IExternalProjectDataSource, GitlabProjectDataSource>();
         services.AddSingleton<IExternalPipelineRunner, GitlabPipelineRunner>();
         services.AddSingleton<IExternalIssueProvider, GitlabIssueProvider>();
         

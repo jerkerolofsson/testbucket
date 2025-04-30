@@ -8,6 +8,7 @@ using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Automation.Runners;
 using TestBucket.Domain.Automation.Runners.Jobs;
+using TestBucket.Domain.Code.DataSources;
 using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Environments;
@@ -66,6 +67,11 @@ public static class DomainServiceExtensions
         services.AddScoped<IClaimsTransformation, PermissionClaimsTransformation>();
         services.AddScoped<ITenantManager, TenantManager>();
         services.AddScoped<IExtensionManager, ExtensionManager>();
+
+        // Data sources
+        services.AddScoped<IFieldCompletionsProvider, ExtensionFieldCompletionsAggregator>();
+        services.AddScoped<IFieldCompletionsProvider, ComponentDataSource>();
+        services.AddScoped<IFieldCompletionsProvider, FeatureDataSource>();
 
         // Runner/Hybrid
         services.AddScoped<IMarkdownTestRunner, HybridRunner>();

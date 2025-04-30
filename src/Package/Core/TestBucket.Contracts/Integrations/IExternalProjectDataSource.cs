@@ -11,7 +11,7 @@ namespace TestBucket.Contracts.Integrations;
 /// <summary>
 /// A data source for external project information, such as getting information from GitHub, GitLab..
 /// </summary>
-public interface IProjectDataSource
+public interface IExternalProjectDataSource
 {
     /// <summary>
     /// Returns the traits that are supported by the data source

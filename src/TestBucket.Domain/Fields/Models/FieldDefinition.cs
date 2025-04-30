@@ -78,7 +78,19 @@ public class FieldDefinition : ProjectEntity
     public string? Icon { get; set; }
 
     /// <summary>
-    /// Icons for each option
+    /// The type of data source
+    /// </summary>
+    public FieldDataSourceType DataSourceType { get; set; }
+
+    /// <summary>
+    /// Data source URI (for example if external)
+    /// This can also be used to limit the fields if there are multiple sources, such as by specifying the
+    /// base url to an external service
+    /// </summary>
+    public string? DataSourceUri { get; set; }
+
+    /// <summary>
+    /// Icons for each option (only for user defined options)
     /// </summary>
     [Column(TypeName = "jsonb")]
     public Dictionary<string, string>? OptionIcons { get; set; }

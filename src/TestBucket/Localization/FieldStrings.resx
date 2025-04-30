@@ -126,11 +126,50 @@
   <data name="appearance" xml:space="preserve">
     <value>Appearance</value>
   </data>
+  <data name="data-source" xml:space="preserve">
+    <value>Data Source</value>
+  </data>
+  <data name="data-source-type-components" xml:space="preserve">
+    <value>Components</value>
+  </data>
+  <data name="data-source-type-external" xml:space="preserve">
+    <value>Fetch data from external service</value>
+  </data>
+  <data name="data-source-type-features" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="data-source-type-issues" xml:space="preserve">
+    <value>Issues</value>
+  </data>
+  <data name="data-source-type-layers" xml:space="preserve">
+    <value>Layers</value>
+  </data>
+  <data name="data-source-type-list" xml:space="preserve">
+    <value>User defined list</value>
+  </data>
+  <data name="data-source-type-milestones" xml:space="preserve">
+    <value>Milestones</value>
+  </data>
+  <data name="data-source-type-releases" xml:space="preserve">
+    <value>Releases</value>
+  </data>
+  <data name="data-source-type-requirements" xml:space="preserve">
+    <value>Requirements</value>
+  </data>
+  <data name="data-source-type-systems" xml:space="preserve">
+    <value>Systems</value>
+  </data>
+  <data name="data-source-type-testcases" xml:space="preserve">
+    <value>Test Cases</value>
+  </data>
   <data name="description" xml:space="preserve">
     <value>Description</value>
   </data>
   <data name="description-helpertext" xml:space="preserve">
     <value>A helpful description that may be shown to the user</value>
+  </data>
+  <data name="field-data-source-not-available" xml:space="preserve">
+    <value>Data source is not available for this type of input</value>
   </data>
   <data name="field-options" xml:space="preserve">
     <value>Options</value>

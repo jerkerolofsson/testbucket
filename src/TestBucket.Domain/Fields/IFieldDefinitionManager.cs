@@ -8,7 +8,29 @@ using TestBucket.Domain.Testing.Models;
 namespace TestBucket.Domain.Fields;
 public interface IFieldDefinitionManager
 {
+    /// <summary>
+    /// Returns a list of options for the field. 
+    /// This may come from an external data source, or defined on the field itself
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="field"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<string>> GetOptionsAsync(ClaimsPrincipal principal, FieldDefinition field);
+
+    /// <summary>
+    /// Adds a field 
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="field"></param>
+    /// <returns></returns>
     Task AddAsync(ClaimsPrincipal principal, FieldDefinition field);
+
+    /// <summary>
+    /// Deletes a field
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="fieldDefinition"></param>
+    /// <returns></returns>
     Task DeleteAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition);
     
     /// <summary>
@@ -27,6 +49,21 @@ public interface IFieldDefinitionManager
     /// <param name="target">The target entity</param>
     /// <returns></returns>
     Task<IReadOnlyList<FieldDefinition>> GetDefinitionsAsync(ClaimsPrincipal principal, long? testProjectId, FieldTarget target);
+    
+    /// <summary>
+    /// Searches for fields
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
     Task<IReadOnlyList<FieldDefinition>> SearchAsync(ClaimsPrincipal principal, SearchFieldQuery query);
+
+    /// <summary>
+    /// Updates a field
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="fieldDefinition"></param>
+    /// <returns></returns>
     Task UpdateAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition);
+    Task<IReadOnlyList<string>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDefinition field, string text, int count, CancellationToken cancellationToken);
 }

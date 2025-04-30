@@ -31,7 +31,7 @@ public class TeamClient(HttpClient Client)
     /// <exception cref="EmptyResponseException"></exception>
     public async Task<TeamDto> AddAsync(TeamDto team)
     {
-        var response = await Client.PutAsJsonAsync("/api/teams", team);
+        using var response = await Client.PutAsJsonAsync("/api/teams", team);
         await response.EnsureSuccessStatusCodeAsync();
         return await response.Content.ReadFromJsonAsync<TeamDto>() ?? throw new EmptyResponseException();
     }
@@ -60,7 +60,7 @@ public class TeamClient(HttpClient Client)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(slug);
 
-        var response = await Client.DeleteAsync($"/api/teams/{slug}");
+        using var response = await Client.DeleteAsync($"/api/teams/{slug}");
         await response.EnsureSuccessStatusCodeAsync();
     }
 

@@ -1,0 +1,134 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Code/Features"
+@using TestBucket.Components.Code.Controls
+@using TestBucket.Domain
+@using TestBucket.Domain.Code.Models
+@layout CodeLayout
+@inject ArchitectureController architectureController
+@inject IStringLocalizer<CodeStrings> loc
+
+<Splitter Class="container-fill pa-2" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+        <div class="tb-architecture-yaml-left">
+            @if (_project is not null)
+            {
+                <MudDataGrid 
+                @ref="_grid"
+                ServerData="LoadGridData" 
+                SelectedItem="@_selectedFeature" SelectedItemChanged="OnSelectedFeatureChanged"
+                SelectOnRowClick
+                RowClassFunc="RowClassFunc" Hover T="Feature" SortMode="SortMode.None">
+
+                    <ToolBarContent>
+                        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                            <MudIcon Icon="@TbIcons.BoldDuoTone.Epic" Size="Size.Large" />
+                            <MudText Typo="Typo.h2">@loc["features"]</MudText>
+                            <MudSpacer />
+                        </MudStack>
+                    </ToolBarContent>
+
+                    <ColGroup>
+                        <col style="width: 10%" />
+                        <col style="width: 60%" />
+                        <col style="width: 30%;" />
+                    </ColGroup>
+
+                    <Columns>
+                        <TemplateColumn Title="@loc["name"]">
+                            <CellTemplate>
+                                @context.Item.Name
+                            </CellTemplate>
+                        </TemplateColumn>
+
+                        <TemplateColumn Title="@loc["description"]">
+                            <CellTemplate>
+
+                            </CellTemplate>
+                        </TemplateColumn>
+                    </Columns>
+
+                    <PagerContent>
+                        <MudDataGridPager T="Feature" />
+                    </PagerContent>
+                </MudDataGrid>
+            }
+        </div>
+    </StartContent>
+    <EndContent>
+        @if (_model is not null && _selectedFeature is not null)
+        {
+            <MudStack Spacing="0">
+                @_selectedFeature.Name
+            </MudStack>
+        }
+    </EndContent>
+</Splitter>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    private ProjectArchitectureModel? _model;
+    private TestProject? _project;
+    private IReadOnlyList<Feature> _features = [];
+    private Feature? _selectedFeature = null;
+    private MudDataGrid<Feature>? _grid;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        if(_project?.Id != Project?.Id && Project is not null)
+        {
+            _project = Project;
+            _model = await architectureController.GetProductArchitectureAsync(Project);
+            _features = await architectureController.GetFeaturesAsync(Project.Id);
+            _grid?.ReloadServerData();
+        }
+    }
+
+    private void OnSelectedFeatureChanged(Feature feature)
+    {
+        _selectedFeature = feature;
+    }
+
+    /// <summary>
+    /// Loads commit data
+    /// </summary>
+    /// <param name="state"></param>
+    /// <returns></returns>
+    private Task<GridData<Feature>> LoadGridData(GridState<Feature> state)
+    {
+        if (Project is null)
+        {
+            return Task.FromResult(new GridData<Feature> { TotalItems = 0 });
+        }
+
+        var page = _features.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+
+        GridData<Feature> data = new()
+        {
+            Items = page,
+            TotalItems = (int) _features.Count
+        };
+
+        return Task.FromResult(data);
+    }
+
+    private string RowClassFunc(Feature item, int _)
+    {
+        if (item?.Id == _selectedFeature?.Id)
+        {
+           return "tb-datarow tb-datarow-selected cursor-pointer";
+        }
+        return "tb-datarow cursor-pointer";
+    }
+
+}

@@ -15,6 +15,7 @@ using TestBucket.Domain.Tenants.Models;
 namespace TestBucket.Domain.Projects.Models;
 
 [Table("projects")]
+[Index(nameof(TenantId), nameof(Slug))]
 public class TestProject
 {
     /// <summary>

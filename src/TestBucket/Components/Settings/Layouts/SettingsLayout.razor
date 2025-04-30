@@ -47,7 +47,7 @@
 
                 <MudItem Class="mt-5"/>
 
-                <MudNavLink Icon="@TbIcons.Filled.Leaf" Href="@EnvironmentsUrl">@settingsLoc["manage-environments"]</MudNavLink>
+                <MudNavLink Icon="@TbIcons.BoldDuoTone.Leaf" IconColor="Color.Info" Href="@EnvironmentsUrl">@settingsLoc["manage-environments"]</MudNavLink>
                 <MudNavLink Icon="@Icons.Material.Filled.AccountCircle" IconColor="Color.Info" Href="@AccountsUrl">@settingsLoc["manage-accounts"]</MudNavLink>
                 <MudNavLink Icon="@Icons.Material.Outlined.Devices" IconColor="Color.Info" Href="@ResourcesUrl">@settingsLoc["manage-resources"]</MudNavLink>
                 <MudNavLink Icon="@Icons.Material.Outlined.RunCircle" IconColor="Color.Info" Href="@RunnersUrl">@settingsLoc["manage-runners"]</MudNavLink>
@@ -59,7 +59,8 @@
                 <MudNavLink Icon="@Icons.Material.Outlined.PeopleAlt" IconColor="Color.Secondary" Href="@UsersUrl">@settingsLoc["manage-users"]</MudNavLink>
                 <MudNavLink Icon="@Icons.Material.Outlined.SecurityUpdate" IconColor="Color.Secondary" Href="@RolesUrl">@settingsLoc["manage-roles"]</MudNavLink>
 
-
+                <MudNavLink Icon="@TbIcons.BoldDuoTone.CloudDownload" IconColor="Color.Secondary" Href="@BackupUrl">@settingsLoc["backup"]</MudNavLink>
+                
                 <AuthorizeView Roles="SUPERADMIN">
                     <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" IconColor="Color.Secondary" Href="@TenantsUrl">Manage Tenants</MudNavLink>
                 </AuthorizeView>
@@ -125,5 +126,6 @@
     private string TeamsUrl => $"{TenantId}/Settings/Teams";
     private string UsersUrl => $"{TenantId}/Settings/Users";
     private string RolesUrl => $"{TenantId}/Settings/Roles";
+    private string BackupUrl => $"{TenantId}/Settings/Backup";
     private string RunnersUrl => $"{TenantId}/Settings/ManageRunners";
 }

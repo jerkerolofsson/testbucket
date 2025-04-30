@@ -8,6 +8,12 @@ namespace TestBucket.Sdk.Client;
 public class TestBucketClient(HttpClient Client)
 {
     /// <summary>
+    /// Client to work with product architecture (systems,features,components,layers)
+    /// </summary>
+    public ArchitectureClient Architecture => new ArchitectureClient(Client);
+
+
+    /// <summary>
     /// Client to work with teams
     /// </summary>
     public TeamClient Teams => new TeamClient(Client);

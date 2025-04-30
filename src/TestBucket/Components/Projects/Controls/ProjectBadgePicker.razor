@@ -13,13 +13,20 @@
         @foreach(var project in _projects)
         {
             <div @onclick="async () => await OnSelectedProjectChanged(project)" class="cursor-pointer tb-project-card">
-                <MudStack AlignItems="AlignItems.Center" Row Class="pa-5">
-                    <GenericAvatar Text="@project.ShortName" ImageUri="@project.IconUrl" />
-                    <div>
+                <MudStack Class="pa-2" Style="height: 100%">
+                    
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <GenericAvatar Text="@project.ShortName" ImageUri="@project.IconUrl" />
                         <div class="name">@project.Name</div>
+                    </MudStack>
+
+                    <MudDivider/>
+                    <MudSpacer/>
+                    
+                    <div>
                         <div class="d-flex counters">
-                                <div>@(project.NumberOfTestSuites) @loc["test-suites"]</div>
-                                <div>|</div>
+                            <div>@(project.NumberOfTestSuites) @loc["test-suites"]</div>
+                            <div>|</div>
                             <div>@(project.NumberOfTestCases) @loc["test-cases"]</div>
                         </div>
                     </div>

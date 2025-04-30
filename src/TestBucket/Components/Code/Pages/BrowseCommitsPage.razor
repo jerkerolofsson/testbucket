@@ -15,7 +15,7 @@
             {
                 <MudDataGrid ServerData="LoadGridData" SelectedItems="@_selectedItems" SelectedItemsChanged="OnSelectedItemsChanged"
                              SelectOnRowClick MultiSelection="true"
-                             RowStyle="tb-datarow cursor-pointer" Hover T="Commit" SortMode="SortMode.None">
+                             RowClassFunc="RowClassFunc" Hover T="Commit" SortMode="SortMode.None">
 
                     <ToolBarContent>
                         <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
@@ -41,6 +41,15 @@
                                 <CopyToClipboard Text="@context.Item.Sha" IconSize="Size.Small">
                                     <div class="sha">@context.Item.Sha </div>
                                 </CopyToClipboard>
+                                @if(context.Item.FeatureNames is not null)
+                                {
+                                    <MudChipSet>
+                                        @foreach(var feature in context.Item.FeatureNames)
+                                        {
+                                            <MudChip T="string">@feature</MudChip>
+                                        }
+                                    </MudChipSet>
+                                }
                             </CellTemplate>
                         </TemplateColumn>
 
@@ -182,5 +191,14 @@
             };
 
         return data;
+    }
+    
+    private string RowClassFunc(Commit item, int _)
+    {
+        if (item is not null && _selectedItems.Contains(item))
+        {
+           return "tb-datarow tb-datarow-selected cursor-pointer";
+        }
+        return "tb-datarow cursor-pointer";
     }
 }

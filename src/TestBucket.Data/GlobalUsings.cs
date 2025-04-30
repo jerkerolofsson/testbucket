@@ -16,5 +16,4 @@ global using TestBucket.Domain.Tenants;
 global using TestBucket.Domain.Tenants.Models;
 global using TestBucket.Domain.Identity;
 global using TestBucket.Domain.Identity.Models;
-
-
+global using TestBucket.Contracts.Code.Models;

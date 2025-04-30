@@ -40,4 +40,11 @@ public class RequirementSpecificationDto
     /// Icon (SVG)
     /// </summary>
     public string? Icon { get; set; }
+    public string? Color { get; set; }
+
+    /// <summary>
+    /// Project slug
+    /// </summary>
+    public string? ProjectSlug { get; set; }
+    public string? Slug { get; set; }
 }

@@ -422,4 +422,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="copied-to-clipboard-notification" xml:space="preserve">
     <value>Copied to clipbard</value>
   </data>
+  <data name="backup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
 </root>

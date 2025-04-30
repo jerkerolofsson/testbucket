@@ -24,7 +24,7 @@ global using TestBucket.Domain.Testing;
 global using TestBucket.Components.Tenants;
 global using TestBucket.Domain.Fields.Models;
 global using TestBucket.Domain.Identity.Permissions;
-
+global using TestBucket.Contracts.Code.Models;
 global using TestBucket.Components.Shared;
 
 global using TestBucket.Domain.Teams.Models;

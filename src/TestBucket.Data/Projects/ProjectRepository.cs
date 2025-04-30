@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using OneOf;
 
 using TestBucket.Domain.Errors;
+using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Projects;
 
 namespace TestBucket.Data.Testing;
@@ -245,7 +246,32 @@ internal class ProjectRepository : IProjectRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
-        foreach(var fieldDefinition in dbContext.FieldDefinitions.Where(x=>x.TestProjectId == project.Id))
+        // Code
+
+        foreach (var commit in dbContext.Commits.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Commits.Remove(commit);
+        }
+        foreach (var item in dbContext.ArchitecturalLayers.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.ArchitecturalLayers.Remove(item);
+        }
+        foreach (var item in dbContext.ProductSystems.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.ProductSystems.Remove(item);
+        }
+        foreach (var item in dbContext.Components.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Components.Remove(item);
+        }
+        foreach (var item in dbContext.Features.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Features.Remove(item);
+        }
+
+        // Fields
+
+        foreach (var fieldDefinition in dbContext.FieldDefinitions.Where(x=>x.TestProjectId == project.Id))
         {
             foreach (var fieldValue in dbContext.TestRunFields.Where(x => x.FieldDefinitionId == fieldDefinition.Id))
             {
@@ -266,6 +292,14 @@ internal class ProjectRepository : IProjectRepository
 
             dbContext.FieldDefinitions.Remove(fieldDefinition);
         }
+
+        // Issues
+        foreach (var item in dbContext.LinkedIssues.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.LinkedIssues.Remove(item);
+        }
+
+        // Test
 
         foreach (var item in dbContext.TestCaseRuns.Where(x => x.TestProjectId == project.Id))
         {
@@ -288,7 +322,9 @@ internal class ProjectRepository : IProjectRepository
             dbContext.TestSuites.Remove(item);
         }
 
-        foreach (var item in dbContext.Requirements.Where(x => x.TestProjectId == project.Id))
+        // Requirement
+
+        foreach (var item in dbContext.Requirements.Include(x => x.TestLinks).Include(x => x.RequirementFields).Where(x => x.TestProjectId == project.Id))
         {
             dbContext.Requirements.Remove(item);
         }
@@ -299,6 +335,25 @@ internal class ProjectRepository : IProjectRepository
         foreach (var item in dbContext.RequirementSpecifications.Where(x => x.TestProjectId == project.Id))
         {
             dbContext.RequirementSpecifications.Remove(item);
+        }
+
+        // Automation
+
+        foreach (var item in dbContext.PipelineJobs.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.PipelineJobs.Remove(item);
+        }
+        foreach (var item in dbContext.Runners.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Runners.Remove(item);
+        }
+        foreach (var item in dbContext.Pipelines.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Pipelines.Remove(item);
+        }
+        foreach (var item in dbContext.Jobs.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Jobs.Remove(item);
         }
 
         dbContext.Projects.Remove(project);

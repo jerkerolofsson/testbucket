@@ -9,6 +9,7 @@ namespace TestBucket.Domain.Requirements.Models;
 [Index(nameof(Created))]
 [Index(nameof(Name))]
 [Index(nameof(ExternalId))]
+[Index(nameof(TenantId), nameof(Slug))]
 public class Requirement : RequirementEntity
 {
     /// <summary>

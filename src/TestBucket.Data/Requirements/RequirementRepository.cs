@@ -1,7 +1,6 @@
 ﻿using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Data.Requirements
 {
@@ -94,6 +93,11 @@ namespace TestBucket.Data.Requirements
         public async Task AddRequirementSpecificationAsync(RequirementSpecification specification)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+            if (string.IsNullOrEmpty(specification.Slug) && specification.TenantId is not null)
+            {
+                specification.Slug = await GenerateSpecificationSlugAsync(specification.TenantId, specification.Name);
+            }
             await dbContext.RequirementSpecifications.AddAsync(specification);
             await dbContext.SaveChangesAsync();
         }
@@ -161,6 +165,11 @@ namespace TestBucket.Data.Requirements
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
+            if (string.IsNullOrEmpty(specification.Slug) && specification.TenantId is not null)
+            {
+                specification.Slug = await GenerateSpecificationSlugAsync(specification.TenantId, specification.Name);
+            }
+
             dbContext.RequirementSpecifications.Update(specification);
             await dbContext.SaveChangesAsync();
         }
@@ -169,6 +178,11 @@ namespace TestBucket.Data.Requirements
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
             await CalculatePathAsync(dbContext, requirement);
+
+            if (string.IsNullOrEmpty(requirement.Slug) && requirement.TenantId is not null)
+            {
+                requirement.Slug = await GenerateRequirementSlugAsync(requirement.TenantId, requirement.Name);
+            }
 
             if (requirement.ParentRequirementId is not null)
             {
@@ -199,6 +213,11 @@ namespace TestBucket.Data.Requirements
             if(requirement.ParentRequirementId is not null)
             {
                 requirement.RootRequirementId = await FindUpstreamRootAsync(requirement.ParentRequirementId);
+            }
+
+            if (string.IsNullOrEmpty(requirement.Slug) && requirement.TenantId is not null)
+            {
+                requirement.Slug = await GenerateRequirementSlugAsync(requirement.TenantId, requirement.Name);
             }
 
             dbContext.Requirements.Update(requirement);
@@ -405,5 +424,42 @@ namespace TestBucket.Data.Requirements
 
 
         #endregion Path
+
+        #region Slugs
+        private async Task<string> GenerateRequirementSlugAsync(string tenantId, string name)
+        {
+            var slugHelper = new Slugify.SlugHelper();
+            var slug = slugHelper.GenerateSlug(name);
+            int counter = 1;
+            while (await RequirementSlugExistsAsync(tenantId, slug))
+            {
+                slug = slugHelper.GenerateSlug(slug + counter);
+                counter++;
+            }
+            return slug;
+        }
+        private async Task<bool> RequirementSlugExistsAsync(string tenantId, string slug)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            return await dbContext.Requirements.AsNoTracking().Where(x => x.Slug == slug && x.TenantId == tenantId).AnyAsync();
+        }
+        private async Task<string> GenerateSpecificationSlugAsync(string tenantId, string name)
+        {
+            var slugHelper = new Slugify.SlugHelper();
+            var slug = slugHelper.GenerateSlug(name);
+            int counter = 1;
+            while (await SpecificationSlugExistsAsync(tenantId, slug))
+            {
+                slug = slugHelper.GenerateSlug(slug + counter);
+                counter++;
+            }
+            return slug;
+        }
+        private async Task<bool> SpecificationSlugExistsAsync(string tenantId, string slug)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            return await dbContext.RequirementSpecifications.AsNoTracking().Where(x => x.Slug == slug && x.TenantId == tenantId).AnyAsync();
+        }
+        #endregion
     }
 }

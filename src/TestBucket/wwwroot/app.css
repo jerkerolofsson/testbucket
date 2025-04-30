@@ -835,7 +835,7 @@ div.tb-profile-image.tb-background-9 {
     font-size: 150%;
 }
 .tb-card-picker-grid .tb-project-card .counters {
-    gap: 12px;
+    gap: 4px;
     color: var(--mud-palette-primary);
 }
 

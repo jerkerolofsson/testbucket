@@ -56,7 +56,7 @@ namespace TestBucket.Domain.Export.Services
             ArgumentNullException.ThrowIfNull(options.Destination);
             await using var progress = _progressManager.CreateProgressTask("Creating backup..");
             using var destinationStream = File.Create(options.Destination);
-            await _exporter.ExportFullAsync(options.ExportFormat, tenantId, destinationStream, progress);
+            await _exporter.ExportFullAsync(options, tenantId, destinationStream, progress);
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace TestBucket.Domain.Code.Yaml.Models;
+﻿namespace TestBucket.Contracts.Code.Models;
 
 public class DisplayOptions
 {

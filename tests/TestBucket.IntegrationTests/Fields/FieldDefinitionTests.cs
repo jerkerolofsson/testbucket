@@ -65,7 +65,6 @@ namespace TestBucket.IntegrationTests.Fields
                 Assert.True((milestone.Target & FieldTarget.RequirementSpecification) == FieldTarget.RequirementSpecification);
 
                 await App.Client.Projects.DeleteAsync(slug);
-
             }
             finally
             {

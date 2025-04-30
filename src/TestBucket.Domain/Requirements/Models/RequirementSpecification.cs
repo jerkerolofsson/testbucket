@@ -11,6 +11,7 @@ namespace TestBucket.Domain.Requirements.Models
 {
     [Table("spec")]
     [Index(nameof(TenantId), nameof(Created))]
+    [Index(nameof(TenantId), nameof(Slug))]
     [Index(nameof(ExternalId))]
     public class RequirementSpecification : RequirementEntity
     {
@@ -35,14 +36,19 @@ namespace TestBucket.Domain.Requirements.Models
         public long? FileResourceId { get; set; }
 
         /// <summary>
-        /// Name of the test case
+        /// Name of the specification
         /// </summary>
         public required string Name { get; set; }
 
         /// <summary>
-        /// Test case description
+        /// Description
         /// </summary>
         public string? Description { get; set; }
+        
+        /// <summary>
+        /// Slug
+        /// </summary>
+        public string? Slug { get; set; }
 
         /// <summary>
         /// Read-only requirements are managed outside

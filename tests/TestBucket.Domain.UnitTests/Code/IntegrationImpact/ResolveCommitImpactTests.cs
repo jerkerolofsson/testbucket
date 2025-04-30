@@ -7,6 +7,7 @@ using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Services.IntegrationImpact;
 using TestBucket.Domain.Code.Yaml;
 using TestBucket.Domain.Code.Yaml.Models;
+using TestBucket.Contracts.Code.Models;
 
 namespace TestBucket.Domain.UnitTests.Code.IntegrationImpact
 {

@@ -282,20 +282,20 @@ internal class ArchitectureManager : IArchitectureManager
 
         foreach (var system in await GetSystemsAsync(principal, project.Id))
         {
-            model.Systems[system.Name] = new Yaml.Models.ArchitecturalComponent { Display = system.Display, Paths = system.GlobPatterns };
+            model.Systems[system.Name] = new ArchitecturalComponent { Display = system.Display, Paths = system.GlobPatterns };
         }
 
         foreach (var feature in await GetFeaturesAsync(principal, project.Id))
         {
-            model.Features[feature.Name] = new Yaml.Models.ArchitecturalComponent { Display = feature.Display, Paths = feature.GlobPatterns };
+            model.Features[feature.Name] = new ArchitecturalComponent { Display = feature.Display, Paths = feature.GlobPatterns };
         }
         foreach (var layer in await GetLayersAsync(principal, project.Id))
         {
-            model.Layers[layer.Name] = new Yaml.Models.ArchitecturalComponent { Display = layer.Display, Paths = layer.GlobPatterns };
+            model.Layers[layer.Name] = new ArchitecturalComponent { Display = layer.Display, Paths = layer.GlobPatterns };
         }
         foreach (var component in await GetComponentsAsync(principal, project.Id))
         {
-            model.Components[component.Name] = new Yaml.Models.ArchitecturalComponent { Display = component.Display, Paths = component.GlobPatterns };
+            model.Components[component.Name] = new ArchitecturalComponent { Display = component.Display, Paths = component.GlobPatterns };
         }
         return model;
     }

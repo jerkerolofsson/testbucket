@@ -2,6 +2,7 @@
 @page "/{TenantId}/Settings/ManageEnvironments"
 @using TestBucket.Components.Environments.Controls
 @using TestBucket.Components.Environments.Services
+@using TestBucket.Domain
 @using TestBucket.Domain.Environments.Models
 @layout SettingsLayout
 @inject TestEnvironmentController controller
@@ -22,7 +23,8 @@
 
         <ToolBarContent>
             <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%" Class="pa-3">
-                <MudText Typo="Typo.h1">@loc["test-environments"]</MudText>
+                <MudIcon Icon="@TbIcons.BoldDuoTone.Leaf" Size="Size.Large" Color="Color.Info" />
+                <MudText Typo="Typo.h2">@loc["test-environments"]</MudText>
                 <MudSpacer />
                 <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTestEnvironmentAsync"></MudIconButton>
             </MudStack>

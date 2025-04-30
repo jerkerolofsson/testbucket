@@ -341,6 +341,11 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Code/Commits";
     }
+    public string GetFeaturesUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Code/Features";
+    }
     public string GetCodeArchitectureUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);

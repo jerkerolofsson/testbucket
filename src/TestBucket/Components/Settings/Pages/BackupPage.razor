@@ -1,0 +1,24 @@
+﻿@attribute [Authorize]
+@page "/{TenantId}/Settings/Backup"
+@using TestBucket.Domain
+@using TestBucket.Domain.Export
+@using TestBucket.Domain.Export.Models
+@layout SettingsLayout
+@inject IBackupManager backupManager
+@inject IStringLocalizer<SharedStrings> loc
+@inject AuthenticationStateProvider authenticationStateProvider 
+
+<MudStack Class="container-settings-page">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="DoBackup">@loc["create-backup"]</MudButton>
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = null!;
+
+    private async Task DoBackup()
+    {
+        var principal = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var options = new ExportOptions();
+        await backupManager.CreateBackupAsync(principal.User, options);
+    }
+}

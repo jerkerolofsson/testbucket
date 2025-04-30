@@ -76,7 +76,7 @@ public class GitlabProjectDataSource : IExternalProjectDataSource
 
             return result ?? [];
         }
-        else
+        else if(system.ExternalProjectId is not null)
         {
             _logger.LogWarning("Invalid Gitlab project ID: {ExternalProjectId}. Expected an int64", system.ExternalProjectId);
         }

@@ -11,10 +11,10 @@ public class TestCaseTests(TestBucketApp App)
     public async Task CreateTestCase_HasSlug()
     {
         // Arrange
-        var team = await App.Client.Teams.AddAsync("New Suite 1");
-        var project = await App.Client.Projects.AddAsync(team, "Project 1");
-        var suite = await App.Client.TestRepository.AddSuiteAsync(team, project, "Suite 1");
-        var test = await App.Client.TestRepository.AddTestAsync(team, project, suite, "Test 1");
+        var team = await App.Client.Teams.AddAsync(Guid.NewGuid().ToString());
+        var project = await App.Client.Projects.AddAsync(team, Guid.NewGuid().ToString());
+        var suite = await App.Client.TestRepository.AddSuiteAsync(team, project, Guid.NewGuid().ToString());
+        var test = await App.Client.TestRepository.AddTestAsync(team, project, suite, Guid.NewGuid().ToString());
 
         try
         {

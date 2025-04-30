@@ -20,25 +20,22 @@ public class Exporter
         _mediator = mediator;
     }
 
-    public async Task ExportFullAsync(ExportFormat format, string tenantId, Stream destinationStream, ProgressTask progressTask)
+    public async Task ExportFullAsync(ExportOptions options, string tenantId, Stream destinationStream, ProgressTask progressTask)
     {
         IDataExporterSink? sink = null;
-        switch (format)
+        switch (options.ExportFormat)
         {
             case ExportFormat.Zip:
                 sink = new Zip.ZipExporter(destinationStream);
                 break;
             default:
-                throw new NotImplementedException($"Format not implemented: {format}");
+                throw new NotImplementedException($"Format not implemented: {options.ExportFormat}");
         }
-        await _mediator.Publish(new ExportNotification(tenantId, sink, progressTask));
+
+        await sink.WriteEntityAsync("exporter", "tenant", tenantId, new MemoryStream(), CancellationToken.None);
+
+        await _mediator.Publish(new ExportNotification(tenantId, options, sink, progressTask));
 
         sink.Dispose();
-    }
-
-    public async Task ExportFullZipAsync(string tenantId, Stream destinationStream, ProgressTask progressTask)
-    {
-        var sink = new Zip.ZipExporter(destinationStream);
-        await _mediator.Publish(new ExportNotification(tenantId, sink, progressTask));
     }
 }

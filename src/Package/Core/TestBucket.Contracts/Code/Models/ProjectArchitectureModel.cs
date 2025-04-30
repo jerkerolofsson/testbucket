@@ -4,10 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TestBucket.Domain.Code.Models;
-using TestBucket.Domain.Code.Yaml.Models;
-
-namespace TestBucket.Domain.Code.Yaml;
+namespace TestBucket.Contracts.Code.Models;
 public class ProjectArchitectureModel
 {
     public Dictionary<string, ArchitecturalComponent> Systems { get; set; } = [];

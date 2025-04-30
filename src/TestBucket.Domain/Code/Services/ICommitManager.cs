@@ -16,4 +16,6 @@ public interface ICommitManager
 
     Task<PagedResult<Commit>> BrowseCommitsAsync(ClaimsPrincipal principal, long projectId, int offset, int count);
     Task UpdateCommitAsync(ClaimsPrincipal principal, Commit commit);
+    Task<PagedResult<Commit>> SearchCommitsAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count);
+    Task<Commit?> GetCommitByShaAsync(ClaimsPrincipal principal, string sha);
 }

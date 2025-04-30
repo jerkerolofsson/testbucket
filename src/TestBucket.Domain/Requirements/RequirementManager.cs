@@ -136,7 +136,7 @@ namespace TestBucket.Domain.Requirements
         public async Task UpdateRequirementAsync(ClaimsPrincipal principal, Requirement requirement)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
-            principal.ThrowIfEntityTenantIsDifferent(requirement);
+            string tenantId = principal.ThrowIfEntityTenantIsDifferent(requirement);
 
             await GenerateFoldersFromPathAsync(requirement);
 

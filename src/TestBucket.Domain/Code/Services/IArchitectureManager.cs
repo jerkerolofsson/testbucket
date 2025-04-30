@@ -27,12 +27,16 @@ public interface IArchitectureManager
     /// <returns></returns>
     Task ImportProductArchitectureAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model);
 
+    #region Systems
+    Task<ProductSystem?> GetSystemByNameAsync(ClaimsPrincipal principal, long projectId, string name);
+    #endregion Systems
 
     #region Features
 
     Task<IReadOnlyList<Feature>> SearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count);
     Task<IReadOnlyList<Feature>> GetFeaturesAsync(ClaimsPrincipal principal, long projectId);
     Task<Feature?> GetFeatureByNameAsync(ClaimsPrincipal principal, long projectId, string name);
+    Task UpdateFeatureAsync(ClaimsPrincipal principal, Feature feature);
 
     #endregion Features
 
@@ -47,8 +51,4 @@ public interface IArchitectureManager
     Task<IReadOnlyList<Component>> GetComponentsAsync(ClaimsPrincipal principal, long projectId);
     Task<Component?> GetComponentByNameAsync(ClaimsPrincipal principal, long projectId, string name);
     #endregion Components
-
-    Task<ProductSystem?> GetSystemByNameAsync(ClaimsPrincipal principal, long projectId, string name);
-
-    Task AddCommitsToFeatureAsync(ClaimsPrincipal principal, Feature feature, IEnumerable<Commit> commits);
 }

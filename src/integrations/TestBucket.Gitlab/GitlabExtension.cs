@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Integrations;
+﻿using TestBucket.Contracts.Integrations;
 
 namespace TestBucket.Gitlab
 {
@@ -12,13 +6,18 @@ namespace TestBucket.Gitlab
     {
         public string SystemName => ExtensionConstants.SystemName;
 
+        /// <summary>
+        /// Defines the capabilities implemented by the extension.
+        /// This will show the option to enable the capability in the UI settings for the extension
+        /// </summary>
         public ExternalSystemCapability SupportedCapabilities => 
             ExternalSystemCapability.CreatePipeline | 
             ExternalSystemCapability.GetPipelines | 
             ExternalSystemCapability.GetReleases |
             ExternalSystemCapability.GetIssues |
             ExternalSystemCapability.GetMilestones | 
-            ExternalSystemCapability.ReadPipelineArtifacts;
+            ExternalSystemCapability.ReadPipelineArtifacts |
+            ExternalSystemCapability.ReadCodeRepository;
 
         public string FriendlyName => ExtensionConstants.FriendlyName;
 

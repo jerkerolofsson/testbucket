@@ -22,6 +22,16 @@ function splitterDestroy(elementId) {
     }
 }
 
+window.tbClipboard = {
+    copyText: (text) => {
+        navigator.clipboard.writeText(text).then(function () {
+        })
+        .catch(function (error) {
+            alert(error);
+        });
+    }
+};
+
 class Splitter {
 
     constructor(options) {

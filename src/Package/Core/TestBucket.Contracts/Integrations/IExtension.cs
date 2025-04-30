@@ -39,7 +39,8 @@ namespace TestBucket.Contracts.Integrations
         public string? Icon { get; }
 
         /// <summary>
-        /// Supported capabilities of the system
+        /// Defines the capabilities implemented by the extension.
+        /// This will show the option to enable the capability in the UI settings for the extension
         /// </summary>
         public ExternalSystemCapability SupportedCapabilities { get; }
 

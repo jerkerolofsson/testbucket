@@ -176,7 +176,7 @@ namespace TestBucket.Domain.Fields
             }
             else 
             {
-                return await LoadFieldOptionsAsync(principal, field);
+                //return await LoadFieldOptionsAsync(principal, field);
 
                 string cacheKey = $"field-options:{tenantId}:{field.Id}:{field.DataSourceType}";
                 var result = await _memoryCache.GetOrCreateAsync(cacheKey, async (e) =>

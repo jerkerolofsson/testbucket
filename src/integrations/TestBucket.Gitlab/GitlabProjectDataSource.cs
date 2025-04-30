@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 using NGitLab;
 using NGitLab.Models;
@@ -16,15 +17,17 @@ public class GitlabProjectDataSource : IExternalProjectDataSource
     public TraitType[] SupportedTraits => [TraitType.Milestone, TraitType.Release];
 
     private readonly IMemoryCache _memoryCache;
+    private readonly ILogger<GitlabProjectDataSource> _logger;
 
     /// <summary>
     /// Name matching the ExternalSystem record
     /// </summary>
     public string SystemName => "GitLab";
 
-    public GitlabProjectDataSource(IMemoryCache memoryCache)
+    public GitlabProjectDataSource(IMemoryCache memoryCache, ILogger<GitlabProjectDataSource> logger)
     {
         _memoryCache = memoryCache;
+        _logger = logger;
     }
 
     /// <summary>
@@ -72,6 +75,10 @@ public class GitlabProjectDataSource : IExternalProjectDataSource
             });
 
             return result ?? [];
+        }
+        else
+        {
+            _logger.LogWarning("Invalid Gitlab project ID: {ExternalProjectId}. Expected an int64", system.ExternalProjectId);
         }
 
         return [];

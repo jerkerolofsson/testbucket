@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Mediator;
+﻿using Mediator;
 
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Services.IntegrationImpact;
+using TestBucket.Domain.Code.Specifications;
 using TestBucket.Domain.Projects;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Domain.Code.Services;
@@ -18,16 +12,39 @@ public class CommitManager : ICommitManager
     private readonly ICommitRepository _repo;
     private readonly IMediator _mediator;
     private readonly IArchitectureManager _architectureManager;
-    private readonly IArchitectureRepository _architectureRepository;
     private readonly IProjectManager _projectManager;
 
-    public CommitManager(ICommitRepository repo, IMediator mediator, IArchitectureManager architectureManager, IProjectManager projectManager, IArchitectureRepository architectureRepository)
+    public CommitManager(
+        ICommitRepository repo, 
+        IMediator mediator, 
+        IArchitectureManager architectureManager, 
+        IProjectManager projectManager)
     {
         _repo = repo;
         _mediator = mediator;
         _architectureManager = architectureManager;
         _projectManager = projectManager;
-        _architectureRepository = architectureRepository;
+    }
+
+    /// <summary>
+    /// Searches for commits and returns the result
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <param name="text"></param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
+    public async Task<PagedResult<Commit>> SearchCommitsAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    {
+        FilterSpecification<Commit>[] filters = [
+            new FilterByTenant<Commit>(principal.GetTenantIdOrThrow()),
+            new FilterByProject<Commit>(projectId),
+            new SearchCommitWithText(text)
+            ];
+
+        var result = await _repo.SearchCommitsAsync(filters, offset, count);
+        return result;
     }
 
     public Task<PagedResult<Commit>> BrowseCommitsAsync(ClaimsPrincipal principal, long projectId, int offset, int count)
@@ -39,6 +56,12 @@ public class CommitManager : ICommitManager
 
         return _repo.SearchCommitsAsync(filters, offset, count);
     }
+
+    public async Task<Commit?> GetCommitByShaAsync(ClaimsPrincipal principal, string sha)
+    {
+        return await _repo.GetCommitByShaAsync(principal.GetTenantIdOrThrow(), sha);
+    }
+
 
     public async Task AddCommitAsync(ClaimsPrincipal principal, Commit commit)
     {

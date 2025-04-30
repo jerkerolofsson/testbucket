@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Integrations;
+using TestBucket.Github;
 using TestBucket.Gitlab;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -16,7 +17,7 @@ public static class GitlabExtensions
         services.AddSingleton<IExternalProjectDataSource, GitlabProjectDataSource>();
         services.AddSingleton<IExternalPipelineRunner, GitlabPipelineRunner>();
         services.AddSingleton<IExternalIssueProvider, GitlabIssueProvider>();
-        
+        services.AddSingleton<IExternalCodeRepository, GitlabRepository>();
 
         return services;
     }

@@ -81,7 +81,6 @@ internal class FieldManager : IFieldManager
         var tenantId = principal.GetTenantIdOrThrow();
         principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
 
-
         var fields = (await _repository.GetTestRunFieldsAsync(tenantId, testRunId)).ToList();
 
         // Add missing fields

@@ -361,7 +361,7 @@ internal class ArchitectureManager : IArchitectureManager
         }
     }
 
-    private async Task UpdateFeatureAsync(ClaimsPrincipal principal, Feature feature)
+    public async Task UpdateFeatureAsync(ClaimsPrincipal principal, Feature feature)
     {
         feature.Modified = DateTimeOffset.UtcNow;
         feature.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
@@ -462,35 +462,4 @@ internal class ArchitectureManager : IArchitectureManager
         }
     }
 
-    /// <summary>
-    /// Updates the glob paths for a feature with all paths from the provided commits
-    /// </summary>
-    /// <param name="principal"></param>
-    /// <param name="feature"></param>
-    /// <param name="commits"></param>
-    /// <returns></returns>
-    public async Task AddCommitsToFeatureAsync(ClaimsPrincipal principal, Feature feature, IEnumerable<Commit> commits)
-    {
-        feature.GlobPatterns ??= [];
-        bool changed = false;
-        foreach(var commit in commits)
-        {
-            if(commit.CommitFiles is null)
-            {
-                continue;
-            }
-            foreach(var changedFile in commit.CommitFiles)
-            {
-                if (!GLobMatcher.IsMatch(changedFile.Path, feature.GlobPatterns))
-                {
-                    feature.GlobPatterns.Add(changedFile.Path);
-                    changed = true;
-                }
-            }
-        }
-        if (changed)
-        {
-            await UpdateFeatureAsync(principal, feature);
-        }
-    }
 }

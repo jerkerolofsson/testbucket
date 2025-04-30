@@ -1,6 +1,9 @@
 ﻿
+using Mediator;
+
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Services;
+using TestBucket.Domain.Code.Services.CommitFeatureMapping;
 using TestBucket.Domain.Code.Yaml;
 
 namespace TestBucket.Components.Code.Controllers;
@@ -12,30 +15,24 @@ internal class ArchitectureController : TenantBaseService
 {
     private readonly IArchitectureManager _manager;
     private readonly ICommitManager _commitManager;
+    private readonly IMediator _mediator;
 
-    public ArchitectureController(AuthenticationStateProvider authenticationStateProvider, IArchitectureManager manager, ICommitManager commitManager) : base(authenticationStateProvider)
+    public ArchitectureController(AuthenticationStateProvider authenticationStateProvider, IArchitectureManager manager, ICommitManager commitManager, IMediator mediator) : base(authenticationStateProvider)
     {
         _manager = manager;
         _commitManager = commitManager;
+        _mediator = mediator;
     }
-
+    
     public async Task AddCommitsToFeatureAsync(long projectId, string featureName, IEnumerable<Commit> commits)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         var feature = await _manager.GetFeatureByNameAsync(principal,projectId,featureName);
         if (feature is not null)
         {
-            await _manager.AddCommitsToFeatureAsync(principal, feature, commits);
-
-            // Update the commits with the added feature
             foreach (var commit in commits)
             {
-                commit.FeatureNames ??= [];
-                if(!commit.FeatureNames.Contains(featureName))
-                {
-                    commit.FeatureNames.Add(featureName);
-                    await _commitManager.UpdateCommitAsync(principal, commit);
-                }
+                await _mediator.Send(new MapCommitFilesToFeatureRequest(principal, commit, feature));
             }
         }
     }

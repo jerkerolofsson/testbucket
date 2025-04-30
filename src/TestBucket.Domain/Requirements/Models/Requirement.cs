@@ -100,6 +100,6 @@ public class Requirement : RequirementEntity
     // Navigation
     public RequirementSpecification? RequirementSpecification { get; set; }
     public RequirementSpecificationFolder? RequirementSpecificationFolder { get; set; }
-    public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }
+    public virtual IEnumerable<RequirementField>? RequirementFields { get; set; }
     public virtual List<RequirementTestLink>? TestLinks { get; set; }
 }

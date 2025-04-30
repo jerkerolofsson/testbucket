@@ -1,5 +1,5 @@
 ﻿@using TestBucket.Contracts.Requirements.States
-<div class="requirement-dot"> 
+<div class="requirement-dot" style="@Style">
     @if (State == MappedRequirementState.Completed || State == MappedRequirementState.Delivered)
     {
         <MudText Color="Color.Success">●</MudText>
@@ -19,4 +19,5 @@
 </div> 
 @code {
     [Parameter] public MappedRequirementState? State { get; set; }
+    [Parameter] public string Style { get; set; } = "";
 }

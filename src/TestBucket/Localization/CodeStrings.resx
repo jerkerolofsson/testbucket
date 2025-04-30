@@ -118,10 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="architecture" xml:space="preserve">
-    <value>Architecture</value>
+    <value>Product Architecture</value>
+  </data>
+  <data name="architecture-yaml" xml:space="preserve">
+    <value>Product Architecture YAML Definition</value>
   </data>
   <data name="architecture-yaml-tool" xml:space="preserve">
-    <value>YAML Tool</value>
+    <value>Product Architecture Definition</value>
   </data>
   <data name="assign-changed-files-to-feature" xml:space="preserve">
     <value>Assign changed files to feature</value>

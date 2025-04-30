@@ -11,7 +11,7 @@
 <Splitter Class="container-fill pa-2" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
         <div class="tb-architecture-yaml-left">
-            @if(Project is not null)
+            @if (Project is not null)
             {
                 <MudDataGrid ServerData="LoadGridData" SelectedItems="@_selectedItems" SelectedItemsChanged="OnSelectedItemsChanged"
                              SelectOnRowClick MultiSelection="true"
@@ -26,30 +26,32 @@
                     </ToolBarContent>
 
                     <ColGroup>
-                        <col style="width: 10%"/>
+                        <col style="width: 10%" />
                         <col style="width: 60%" />
                         <col style="width: 30%;" />
                     </ColGroup>
 
                     <Columns>
 
-                        <SelectColumn T="Commit"/>
-                        <PropertyColumn Property="x => x.Message"/>
+                        <SelectColumn T="Commit" />
 
-                        <TemplateColumn Title="@loc["message"]"> 
-                            <CellTemplate> 
-                                @context.Item.Message 
-                            </CellTemplate> 
-                        </TemplateColumn> 
+                        <TemplateColumn Title="@loc["message"]">
+                            <CellTemplate>
+                                <div class="message">@context.Item.Message </div>
+                                <CopyToClipboard Text="@context.Item.Sha" IconSize="Size.Small">
+                                    <div class="sha">@context.Item.Sha </div>
+                                </CopyToClipboard>
+                            </CellTemplate>
+                        </TemplateColumn>
 
-                        <TemplateColumn Title="@loc["commited"]"> 
-                            <CellTemplate> 
-                                @if (context.Item.Commited is not null) 
-                                { 
-                                    <MudText>@context.Item.Commited.Humanize()</MudText> 
-                                } 
-                            </CellTemplate> 
-                        </TemplateColumn> 
+                        <TemplateColumn Title="@loc["commited"]">
+                            <CellTemplate>
+                                @if (context.Item.Commited is not null)
+                                {
+                                    <MudText>@context.Item.Commited.Humanize()</MudText>
+                                }
+                            </CellTemplate>
+                        </TemplateColumn>
                     </Columns>
 
                     <PagerContent>
@@ -60,47 +62,44 @@
         </div>
     </StartContent>
     <EndContent>
-
-        <MudStack>
-            @if (_model is not null && _selectedItems.Count > 0)
-            {
-                <MudTabs Style="width: 100%">
-                    <MudTabPanel Text="@loc["impact"]">
-                        <TestBucket.Components.Code.Controls.ProjectArchitectureView SelectedItems="@_impact" Model="@_model" />
-                    </MudTabPanel>
-                    <MudTabPanel Text="@loc["changed-files"]">
-                        <MudStack Spacing="0">
-                            <div class="changed-files">
-                                @foreach (var commit in _selectedItems)
+        @if (_model is not null && _selectedItems.Count > 0)
+        {
+            <MudTabs Style="width: 100%">
+                <MudTabPanel Text="@loc["impact"]">
+                    <TestBucket.Components.Code.Controls.ProjectArchitectureView SelectedItems="@_impact" Model="@_model" />
+                </MudTabPanel>
+                <MudTabPanel Text="@loc["changed-files"]">
+                    <MudStack Spacing="0">
+                        <div class="changed-files">
+                            @foreach (var commit in _selectedItems)
+                            {
+                                if (commit.CommitFiles is not null)
                                 {
-                                    if (commit.CommitFiles is not null)
+                                    @foreach (var file in commit.CommitFiles)
                                     {
-                                        @foreach (var file in commit.CommitFiles)
-                                        {
-                                            <div>@file.Path</div>
-                                            <div class='changes'>+/i @file.Changes</div>
-                                            <div class='additions'>+ @file.Additions</div>
-                                            <div class='deletions'>- @file.Deletions</div>
-                                        }
+                                        <div>@file.Path</div>
+                                        <div class='changes'>+/i @file.Changes</div>
+                                        <div class='additions'>+ @file.Additions</div>
+                                        <div class='deletions'>- @file.Deletions</div>
                                     }
                                 }
+                            }
 
-                                @if (Project is not null)
-                                {
-                                    <MudStack>
-                                        <MudText>@loc["assign-changed-files-to-feature"]</MudText>
-                                        <MudStack Style="width: 100%" Class="pa-2" Row>
-                                            <FeatureSelect TestProjectId="@Project.Id" @bind-SelectedFeature="_selectedFeature" />
-                                            <MudButton Variant="Variant.Filled" OnClick="AssignChangedFilesToFeature">@loc["update"]</MudButton>
-                                        </MudStack>
+                            @if (Project is not null)
+                            {
+                                <MudStack Class="mt-5">
+                                    <MudText Typo="Typo.h6">@loc["assign-changed-files-to-feature"]</MudText>
+                                    <MudStack Style="width: 100%" Class="pa-2" Row>
+                                        <FeatureSelect TestProjectId="@Project.Id" @bind-SelectedFeature="_selectedFeature" />
+                                        <MudButton Variant="Variant.Filled" OnClick="AssignChangedFilesToFeature">@loc["update"]</MudButton>
                                     </MudStack>
-                                }
-                            </div>
-                        </MudStack>
-                    </MudTabPanel>
-                </MudTabs>
-            }
-        </MudStack>
+                                </MudStack>
+                            }
+                        </div>
+                    </MudStack>
+                </MudTabPanel>
+            </MudTabs>
+        }
     </EndContent>
 </Splitter>
 
@@ -124,14 +123,14 @@
 
     private async Task OnSelectedItemsChanged(HashSet<Commit> selectedItems)
     {
-        if(Project is null)
+        if (Project is null)
         {
-            return;            
+            return;
         }
         _selectedItems = selectedItems;
         _impact.Clear();
         foreach (var commit in _selectedItems)
-        { 
+        {
             if (commit?.ComponentNames is not null)
             {
                 foreach (var componentName in commit.ComponentNames)
@@ -148,7 +147,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if(Project is not null)
+        if (Project is not null)
         {
             _model = await architectureController.GetProductArchitectureAsync(Project);
         }
@@ -169,12 +168,12 @@
     /// <returns></returns>
     private async Task<GridData<Commit>> LoadGridData(GridState<Commit> state)
     {
-        if(Project is null)
+        if (Project is null)
         {
             return new GridData<Commit> { TotalItems = 0 };
         }
 
-        var result = await commitController.BrowseCommitsAsync(Project.Id, state.Page*state.PageSize, state.PageSize);
+        var result = await commitController.BrowseCommitsAsync(Project.Id, state.Page * state.PageSize, state.PageSize);
 
         GridData<Commit> data = new()
             {

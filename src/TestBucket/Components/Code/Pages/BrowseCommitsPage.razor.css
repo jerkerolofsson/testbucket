@@ -2,6 +2,15 @@
     margin-top: 16px;
 }
 
+.message {
+    font-weight: bold;
+}
+
+.sha {
+    font-family: monospace;
+    color: dodgerblue;
+}
+
 .changed-files {
     display: grid; 
     grid-template-columns: auto auto auto auto; 

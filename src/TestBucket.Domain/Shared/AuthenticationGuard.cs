@@ -56,13 +56,14 @@ namespace TestBucket.Domain.Shared
             return tenantId;
         }
 
-        public static void ThrowIfEntityTenantIsDifferent(this ClaimsPrincipal principal, Entity entity)
+        public static string ThrowIfEntityTenantIsDifferent(this ClaimsPrincipal principal, Entity entity)
         {
             var tenantId = AuthenticationGuard.GetTenantIdOrThrow(principal);
             if (tenantId != entity.TenantId)
             {
                 throw new InvalidOperationException($"Failed to modify entity. The entity belongs to tenant {entity.TenantId} and user belongs to {tenantId}");
             }
+            return tenantId;
         }
         public static void ThrowIfEntityTenantIsDifferent(this ClaimsPrincipal principal, string? entityTenantId)
         {

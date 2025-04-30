@@ -114,7 +114,9 @@
                             <MudStack Row AlignItems="AlignItems.Center">                                
                                 @if(_parent is not null)
                                 {
-                                    <MudLink Href="@appNavigationManager.GetUrl(_parent)">@_parent.Name</MudLink>
+                                    <div>
+                                        <MudLink Href="@appNavigationManager.GetUrl(_parent)">@_parent.Name</MudLink>
+                                    </div>
                                     <MudIconButton OnClick="RemoveParentLinkAsync" Icon="@Icons.Material.Filled.Clear"/>
                                 }
                                 else

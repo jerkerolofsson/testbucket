@@ -68,9 +68,10 @@
                             {
                                 <Draggable T="RequirementEntity" Data="@context.Value.Requirement">
 
-                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%">
                                         @context.Text
-                                        <RequirementStateDot State="context.Value.Requirement.MappedState"/>
+                                        <MudSpacer/>
+                                        <RequirementStateDot Style="padding-right: 4px" State="context.Value.Requirement.MappedState"/>
                                     </MudStack>
                                 </Draggable>
                             }

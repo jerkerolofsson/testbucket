@@ -241,6 +241,12 @@ namespace TestBucket.Data.Requirements
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task<Requirement?> GetRequirementByIdAsync(string tenantId, long id)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            return await dbContext.Requirements.AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
+        }
+
         public async Task DeleteRequirementAsync(Requirement requirement)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();

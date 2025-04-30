@@ -72,6 +72,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IFieldCompletionsProvider, ExtensionFieldCompletionsAggregator>();
         services.AddScoped<IFieldCompletionsProvider, ComponentDataSource>();
         services.AddScoped<IFieldCompletionsProvider, FeatureDataSource>();
+        services.AddScoped<IFieldCompletionsProvider, CommitDataSource>();
 
         // Runner/Hybrid
         services.AddScoped<IMarkdownTestRunner, HybridRunner>();

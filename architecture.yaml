@@ -2,218 +2,245 @@ systems:
   ADB Resource Server:
     display:
       sort: 2
-    paths: ["src/android/**/*"]
-
+      back_color: "#168aad"
+      fore_color: 
+    paths:
+    - src/android/**/*
   Test Bucket Runner:
     display:
       sort: 1
-    paths: ["src/runner/**/*"]
-
+      back_color: "#ea526f"
+      fore_color: 
+    paths:
+    - src/runner/**/*
   Test Bucket Server:
     display:
       sort: 0
-    paths: 
-    - "src/TestBucket/**/*"
-    - "src/TestBucket.Domain/**/*"
-    - "src/TestBucket.Data/**/*"
-    - "src/integrations/**/*"
-    - "src/TestBucket/**/Api/*"
-
+      back_color: "#5e548e"
+      fore_color: 
+    paths:
+    - src/TestBucket/**/*
+    - src/TestBucket.Domain/**/*
+    - src/TestBucket.Data/**/*
+    - src/integrations/**/*
+    - src/TestBucket/**/Api/*
   Test Bucket .NET SDK:
     display:
       sort: 3
+      back_color: "#52b69a"
+      fore_color: 
     paths:
     - src\Package\Core\TestBucket.Sdk.Client\
-
-layers:
-
-  runner:
-    display:
-      sort: 1
-    paths:
-    - "src/runner/**/*"
-
-  data:
-    display:
-      sort: 2
-    paths:
-    - src/TestBucket.Data/**/*
-
-  integrations:
-    display:
-      sort: 2
-    paths:
-    - src/integrations/**/*
-
-  domain:
-    display:
-      sort: 1
-    paths:
-    - src/TestBucket.Domain/**/*
-    - src/Package/Traits/**/*
-    - src/Package/Reporting/**/*
-
-  API:
-    paths:
-    - src/TestBucket/Controllers/Api/*.*
-    - src/TestBucket/**/Api/*
-    display:
-      sort: 0
-
-  Blazor UI:
-    display:
-      sort: 0
-    paths:
-    - "!src/TestBucket/Components/**/*ApiController.cs"
-    - src/TestBucket/Localization/**/*
-    - src/TestBucket/Components/**/*
-    - src/Package/Blazor/**/*
-
 components:
-
   Power Shell:
-    paths: ["src/runner/TestBucket.Runner/Runners/Powershell/**/*"]
+    display: 
+    paths:
+    - src/runner/TestBucket.Runner/Runners/Powershell/**/*
   dothttp:
-    paths: ["src/runner/TestBucket.Runner/Runners/Http/**/*"]
+    display: 
+    paths:
+    - src/runner/TestBucket.Runner/Runners/Http/**/*
   Registration:
-    paths: ["src/runner/TestBucket.Runner/Registration/**/*"]
+    display: 
+    paths:
+    - src/runner/TestBucket.Runner/Registration/**/*
   Poller:
-    paths: ["src/runner/TestBucket.Runner/Poller/**/*"]
-
+    display: 
+    paths:
+    - src/runner/TestBucket.Runner/Poller/**/*
+  Code UI:
+    display: 
+    paths:
+    - src/TestBucket/Components/Code/**/*
+  Settings UI:
+    display: 
+    paths:
+    - src/TestBucket/Components/Settings/**/*
+  Fields:
+    display: 
+    paths:
+    - src/TestBucket.Domain/Fields/**/*
+  Migrations:
+    display: 
+    paths:
+    - src/TestBucket.Data/Migrations/**/*
+  Requirement Repository:
+    display: 
+    paths:
+    - src/TestBucket.Data/Requirements/*
+  Settings Repository:
+    display: 
+    paths:
+    - src/TestBucket.Data/Settings/**/*
+  Identity Repository:
+    display: 
+    paths:
+    - src/TestBucket.Data/Identity/**/*
+  Code Repository:
+    display: 
+    paths:
+    - src/TestBucket.Data/Code/**/*
+  Test Repository:
+    display: 
+    paths:
+    - src/TestBucket.Data/Testing/**/*
+  Editor:
+    display: 
+    paths:
+    - src/Package/Blazor/TestBucket.MudBlazorExtensions.Markdown/**/*
+  Traits:
+    display: 
+    paths:
+    - src/Package/Traits/**/*.*
+  Test Result Formats:
+    display: 
+    paths:
+    - src/Package/Reporting/TestBucket.Formats/**/*
+  Trello:
+    display: 
+    paths:
+    - src/integrations/TestBucket.Trello/**/*
+  Github:
+    display: 
+    paths:
+    - src/integrations/TestBucket.Github/**/*
+  Gitlab:
+    display: 
+    paths:
+    - src/integrations/TestBucket.Gitlab/**/*
+  Translations:
+    display: 
+    paths:
+    - src/TestBucket/Localization/**/*
+  Automation:
+    display: 
+    paths:
+    - src/TestBucket.Domain/Automation/**/*
+  Requirements:
+    display: 
+    paths:
+    - src/TestBucket.Domain/Requirements/**/*
+  Test Accounts:
+    display: 
+    paths:
+    - src/TestBucket.Domain/TestAccounts/**/*
+  Testing:
+    display: 
+    paths:
+    - src/TestBucket.Domain/Tests/**/*
+  Code:
+    display: 
+    paths:
+    - src/TestBucket.Domain/Code/**/*
+  Projects:
+    display: 
+    paths:
+    - src/TestBucket.Domain/Projects/**/*
+  Projects API:
+    display: 
+    paths:
+    - src/TestBucket/Components/Projects/Api/ProjectApiController.cs
+  Fields API:
+    display: 
+    paths:
+    - src/TestBucket/Components/Shared/Fields/Api/FieldApiController.cs
   User Interface:
+    display: 
     paths:
     - src/TestBucket/Components/**/Dialogs/**/*
     - src/TestBucket/Components/**/Controls/**/*
     - src/TestBucket/Components/**/Layouts/**/*
     - src/TestBucket/Components/**/Pages/**/*
-
-  Code UI:
+layers:
+  runner:
+    display:
+      sort: 1
+      back_color: 
+      fore_color: 
     paths:
-    - src/TestBucket/Components/Code/**/*
-
-  Settings UI:
+    - src/runner/**/*
+  data:
+    display:
+      sort: 2
+      back_color: 
+      fore_color: 
     paths:
-    - src/TestBucket/Components/Settings/**/*
-
-  Fields:
+    - src/TestBucket.Data/**/*
+  integrations:
+    display:
+      sort: 2
+      back_color: 
+      fore_color: 
     paths:
-      - src/TestBucket.Domain/Fields/**/*
-
-  Migrations:
+    - src/integrations/**/*
+  domain:
+    display:
+      sort: 1
+      back_color: 
+      fore_color: 
     paths:
-    - src/TestBucket.Data/Migrations/**/*
-
-  Requirement Repository:
+    - src/TestBucket.Domain/**/*
+    - src/Package/Traits/**/*
+    - src/Package/Reporting/**/*
+  API:
+    display:
+      sort: 0
+      back_color: 
+      fore_color: 
     paths:
-    - src/TestBucket.Data/Requirements/*
-
-  Settings Repository:
+    - src/TestBucket/Controllers/Api/*.*
+    - src/TestBucket/**/Api/*
+  Blazor UI:
+    display:
+      sort: 0
+      back_color: 
+      fore_color: 
     paths:
-    - src/TestBucket.Data/Settings/**/*
-
-  Identity Repository:
-    paths:
-    - src/TestBucket.Data/Identity/**/*
-
-  Code Repository:
-    paths:
-    - src/TestBucket.Data/Code/**/*
-
-  Test Repository:
-    paths:
-    - src/TestBucket.Data/Testing/**/*
-
-  Editor:
-   paths:
-    - "src/Package/Blazor/TestBucket.MudBlazorExtensions.Markdown/**/*"
-
-  Traits:
-    paths:
-    - src/Package/Traits/**/*.*
-
-  Test Result Formats:
-    paths:
-    - src/Package/Reporting/TestBucket.Formats/**/*
-
-  Trello:
-    paths:
-    - src/integrations/TestBucket.Trello/**/*
-
-  Github:
-    paths:
-    - src/integrations/TestBucket.Github/**/*
-
-  Gitlab:
-    paths:
-    - src/integrations/TestBucket.Gitlab/**/*
-
-  Translations:
-    paths:
+    - '!src/TestBucket/Components/**/*ApiController.cs'
     - src/TestBucket/Localization/**/*
-
-  Automation:
-    paths:
-    - src/TestBucket.Domain/Automation/**/*
-
-  Requirements:
-    paths:
-    - src/TestBucket.Domain/Requirements/**/*
-
-  Test Accounts:
-    paths:
-    - src/TestBucket.Domain/TestAccounts/**/*
-
-  Testing:
-    paths:
-    - src/TestBucket.Domain/Tests/**/*
-
-  Code:
-    paths:
-    - src/TestBucket.Domain/Code/**/*
-
-  Projects:
-    paths:
-    - src/TestBucket.Domain/Projects/**/*
-
-  Projects API:
-    paths:
-    - src/TestBucket/Components/Projects/Api/ProjectApiController.cs
-
-  Fields API:
-    paths:
-    - src/TestBucket/Components/Shared/Fields/Api/FieldApiController.cs
-
+    - src/TestBucket/Components/**/*
+    - src/Package/Blazor/**/*
 features:
-
   Settings 1.0:
+    display: 
     paths:
     - src/TestBucket/Components/Settings/**/*
     - src/TestBucket.Domain/Settings/**/*
     - src/TestBucket.Data/Settings/**/*
     - src/TestBucket.Data/Identity/UserPreferenceRepository.cs
-
   Import Test Results:
+    display: 
     paths:
     - src/Package/Reporting/TestBucket.Formats/**/*
     - src/Package/Traits/**/*.*
-
   Field Inheritance:
+    display: 
     paths:
-      - src/TestBucket.Domain/Fields/Inheritance/**/*
-
+    - src/TestBucket.Domain/Fields/Inheritance/**/*
   Architecture 1.0:
+    display: 
     paths:
-      - src/TestBucket.Domain/Code/**/*
-      - src/TestBucket.Data/Code/**/*
-      - src/TestBucket/Code/**/*
-      - src/integrations/TestBucket.Github/**/*
-      - src/integrations/TestBucket.Gitlab/**/*
-
+    - src/TestBucket.Domain/Code/**/*
+    - src/TestBucket.Data/Code/**/*
+    - src/TestBucket/Code/**/*
+    - src/integrations/TestBucket.Github/**/*
+    - src/integrations/TestBucket.Gitlab/**/*
+    - src/TestBucket/Components/Code/**/*
+    - src/Package/Core/TestBucket.Contracts/Code/**/*
   Hybrid Tests:
+    display: 
     paths:
-    - "src/Package/Blazor/TestBucket.MudBlazorExtensions.Markdown/**/*"
-    - "src/TestBucket.Domain/Tests/Services/TestExecutionController.cs"
-    - "src/runner/TestBucket.Runner/Runners/Powershell/**/*"
-    - "src/runner/TestBucket.Runner/Runners/Http/**/*"
-    - "src/runner/TestBucket.Runner/Registration/**/*"
-    - "src/runner/TestBucket.Runner/Poller/**/*"
+    - src/Package/Blazor/TestBucket.MudBlazorExtensions.Markdown/**/*
+    - src/TestBucket.Domain/Tests/Services/TestExecutionController.cs
+    - src/runner/TestBucket.Runner/Runners/Powershell/**/*
+    - src/runner/TestBucket.Runner/Runners/Http/**/*
+    - src/runner/TestBucket.Runner/Registration/**/*
+    - src/runner/TestBucket.Runner/Poller/**/*
+  Requirements 1.0:
+    display: 
+    paths:
+    - src/TestBucket/Localization/RequirementStrings.resx
+    - src/TestBucket/Components/Requirements/**/*
+  Requirements 2.0:
+    display: 
+    paths: []

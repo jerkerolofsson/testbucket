@@ -36,7 +36,7 @@ if (!isTest)
 }
 else
 {
-    postgres.WithPgAdmin(pgAdmin => pgAdmin.WithHostPort(5050));
+    //postgres.WithPgAdmin(pgAdmin => pgAdmin.WithHostPort(5050));
 }
     var db = postgres.AddDatabase("testbucketdb");
 

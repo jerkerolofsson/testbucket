@@ -1,6 +1,7 @@
 ﻿using Mediator;
 
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Projects.Events;
@@ -13,14 +14,17 @@ internal class ProjectManager : IProjectManager
     private readonly IProjectRepository _projectRepository;
     private readonly IMemoryCache _memoryCache;
     private readonly IMediator _mediator;
+    private readonly ILogger<ProjectManager> _logger;
 
     public ProjectManager(IProjectRepository projectRepository,
         IMemoryCache memoryCache,
-        IMediator mediator)
+        IMediator mediator,
+        ILogger<ProjectManager> logger)
     {
         _projectRepository = projectRepository;
         _memoryCache = memoryCache;
         _mediator = mediator;
+        _logger = logger;
     }
 
     public async Task UpdateProjectAsync(ClaimsPrincipal principal, TestProject project)
@@ -44,6 +48,7 @@ internal class ProjectManager : IProjectManager
 
         if(result.IsT0)
         {
+            _logger.LogInformation("Created: {ProjectName}, slug={slug}", project.Name, project.Slug);
             await _mediator.Publish(new ProjectCreated(project));
         }
 

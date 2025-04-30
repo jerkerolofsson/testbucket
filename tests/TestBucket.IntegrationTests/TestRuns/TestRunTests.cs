@@ -24,6 +24,8 @@ namespace TestBucket.IntegrationTests.Features.FieldInheritance
             var project = await App.Client.Projects.AddAsync(team, "My project " + Guid.NewGuid().ToString());
             try
             {
+                var fieldDefinitions = await App.Client.Fields.GetProjectFieldDefinitionsAsync(project);
+
                 // Add a test run with a milestone field (this is added by default)
                 var milestoneValue = "1.0";
                 var inputRun = new TestRunDto { Team = team, Project = project, Name = "My run " + Guid.NewGuid().ToString() };

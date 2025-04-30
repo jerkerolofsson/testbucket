@@ -11,10 +11,12 @@ namespace TestBucket.Data.Teams;
 internal class TeamRepository : ITeamRepository
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+    private readonly IProjectRepository _projectRepository;
 
-    public TeamRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory)
+    public TeamRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory, IProjectRepository projectRepository)
     {
         _dbContextFactory = dbContextFactory;
+        _projectRepository = projectRepository;
     }
 
     /// <summary>
@@ -205,6 +207,12 @@ internal class TeamRepository : ITeamRepository
     public async Task DeleteAsync(Team team)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        foreach(var project in dbContext.Projects.AsNoTracking().Where(x=>x.TeamId == team.Id))
+        {
+            await _projectRepository.DeleteProjectAsync(project);
+        }
+
         dbContext.Teams.Remove(team);
         await dbContext.SaveChangesAsync();
     }

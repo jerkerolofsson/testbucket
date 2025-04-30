@@ -9,6 +9,7 @@ using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields.Specifications;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Traits.Core;
 
@@ -37,29 +38,21 @@ namespace TestBucket.Domain.Fields
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
 
-            var cacheKey = GetCacheKey(principal);
-            _memoryCache.Remove(cacheKey);
-
             fieldDefinition.TenantId = principal.GetTenantIdOrThrow();
 
             await _fieldRepository.AddAsync(fieldDefinition);
-        }
 
-        private static string GetCacheKey(ClaimsPrincipal principal)
-        {
-            return "fielddefinitions:" + principal.GetTenantIdOrThrow();
+            ClearTenantCache(principal.GetTenantIdOrThrow());
         }
 
         public async Task UpdateAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
-
-            var cacheKey = GetCacheKey(principal);
-            _memoryCache.Remove(cacheKey);
-
             fieldDefinition.TenantId = principal.GetTenantIdOrThrow();
 
             await _fieldRepository.UpdateAsync(fieldDefinition);
+
+            ClearTenantCache(principal.GetTenantIdOrThrow());
         }
 
         /// <summary>
@@ -103,26 +96,34 @@ namespace TestBucket.Domain.Fields
             // Note: This should be Write and not Delete. It is considered a write operation on the project
             principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Write);
 
-            var cacheKey = GetCacheKey(principal);
-            _memoryCache.Remove(cacheKey);
-
             fieldDefinition.TenantId = principal.GetTenantIdOrThrow();
             await _fieldRepository.DeleteAsync(fieldDefinition);
+
+            ClearTenantCache(principal.GetTenantIdOrThrow());
         }
 
         public async Task<IReadOnlyList<FieldDefinition>> SearchAsync(ClaimsPrincipal principal, SearchFieldQuery query)
         {
+            var tenantId = principal.GetTenantIdOrThrow();
             principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
 
-            var cacheKey = GetCacheKey(principal);
+            var cacheKey = GetCacheKey(tenantId);
             var fieldDefinitions = (await _memoryCache.GetOrCreateAsync(cacheKey, async (e) =>
             {
-                var tenantId = principal.GetTenantIdOrThrow();
                 var definitions = await GetAllFilterDefinitionsForTenantAsync(tenantId);
                 e.AbsoluteExpiration = DateTimeOffset.UtcNow.AddMinutes(15);
 
                 return definitions;
             }) ?? []).AsQueryable();
+
+            //if(fieldDefinitions.Count() == 0)
+            //{
+            //    ClearTenantCache(tenantId);
+            //    fieldDefinitions = (await GetAllFilterDefinitionsForTenantAsync(tenantId)).AsQueryable();
+
+            //    ClearTenantCache(tenantId);
+            //    fieldDefinitions = (await GetAllFilterDefinitionsForTenantAsync(tenantId)).AsQueryable();
+            //}
 
             // We cached all field definitions, so filter them now
             var filters = FieldSpecificationBuilder.From(query);
@@ -210,5 +211,21 @@ namespace TestBucket.Domain.Fields
             }
             return result;
         }
+
+        public void ClearTenantCache(string tenantId)
+        {
+            var cacheKey = GetCacheKey(tenantId);
+            _memoryCache.Remove(cacheKey);
+        }
+        private static string GetCacheKey(ClaimsPrincipal principal)
+        {
+            return GetCacheKey(principal.GetTenantIdOrThrow());
+        }
+
+        private static string GetCacheKey(string tenantId)
+        {
+            return "fielddefinitions:" + tenantId;
+        }
+
     }
 }

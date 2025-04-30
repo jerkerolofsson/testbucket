@@ -16,11 +16,13 @@ public class ProjectApiController : ProjectApiControllerBase
 {
     private readonly IProjectManager _manager;
     private readonly ITeamManager _teamManager;
+    private readonly ILogger<ProjectApiController> _logger;
 
-    public ProjectApiController(IProjectManager manager, ITeamManager teamManager)
+    public ProjectApiController(IProjectManager manager, ITeamManager teamManager, ILogger<ProjectApiController> logger)
     {
         _manager = manager;
         _teamManager = teamManager;
+        _logger = logger;
     }
 
     [Authorize("ApiKeyOrBearer")]
@@ -50,10 +52,12 @@ public class ProjectApiController : ProjectApiControllerBase
         var dbo = project.ToDbo();
         dbo.TeamId = team.Id;
 
+        _logger.LogInformation("Creating project: {ProjectName}", dbo.Name);
+
         var creationResult = await _manager.AddAsync(User, dbo);
         return creationResult.Match<IActionResult>(
             success => Ok(success.ToDto()),
-            alreadyExists => BadRequest()
+            alreadyExists => BadRequest("Project already exists!")
             );
     }
 
@@ -76,6 +80,7 @@ public class ProjectApiController : ProjectApiControllerBase
             return NotFound();
         }
 
+        _logger.LogInformation("Deleting project: {ProjectName}", project.Name);
         await _manager.DeleteAsync(User, project);
 
         return Ok();

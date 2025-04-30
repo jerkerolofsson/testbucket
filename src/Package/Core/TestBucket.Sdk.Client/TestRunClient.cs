@@ -36,7 +36,7 @@ public class TestRunClient(HttpClient Client)
 
     public async Task<TestCaseRunDto> AddTestCaseRunAsync(string? run, TestCaseRunDto testCaseRun)
     {
-        var response = await Client.PutAsJsonAsync($"/api/runs/{run}/slug", testCaseRun);
+        var response = await Client.PutAsJsonAsync($"/api/runs/{run}/tests", testCaseRun);
         await response.EnsureSuccessStatusCodeAsync();
 
         TestCaseRunDto result = await response.Content.ReadFromJsonAsync<TestCaseRunDto>() ?? throw new EmptyResponseException();

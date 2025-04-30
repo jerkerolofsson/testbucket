@@ -2,6 +2,7 @@
 using Aspire.Hosting.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using System.Security.Claims;
 using TestBucket.Contracts;
 using TestBucket.Contracts.Identity;
@@ -91,13 +92,13 @@ namespace TestBucket.IntegrationTests.Fixtures
 
             builder.Services.ConfigureHttpClientDefaults(clientBuilder =>
             {
-                clientBuilder.AddStandardResilienceHandler(configure =>
-                {
-                    configure.TotalRequestTimeout = new Microsoft.Extensions.Http.Resilience.HttpTimeoutStrategyOptions
-                    {
-                        Timeout = TimeSpan.FromSeconds(60)
-                    };
-                });
+                //clientBuilder.AddStandardResilienceHandler(configure =>
+                //{
+                //    configure.TotalRequestTimeout = new Microsoft.Extensions.Http.Resilience.HttpTimeoutStrategyOptions
+                //    {
+                //        Timeout = TimeSpan.FromSeconds(60)
+                //    };
+                //});
             });
 
             // To output logs to the xUnit.net ITestOutputHelper, 
@@ -105,14 +106,28 @@ namespace TestBucket.IntegrationTests.Fixtures
 
             using var ctsBuild = new CancellationTokenSource(TimeSpan.FromSeconds(120));
             var app = await builder.BuildAsync(ctsBuild.Token);
+            var logger = app.Services.GetRequiredService<ILogger<TestBucketApp>>();
 
             using var ctsStart = new CancellationTokenSource(TimeSpan.FromSeconds(120));
+            logger.LogInformation("Starting..");
             await app.StartAsync(ctsStart.Token);
 
-            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(120));
-            await app.ResourceNotifications.WaitForResourceHealthyAsync(
-                "testbucket",
-                cts.Token);
+            var start = Stopwatch.GetTimestamp();
+            try
+            {
+                logger.LogInformation("Waiting for healthy..");
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(240));
+                await app.ResourceNotifications.WaitForResourceHealthyAsync(
+                    "testbucket",
+                    cts.Token);
+            }
+            catch (Exception ex)
+            {
+                var elapsed = Stopwatch.GetElapsedTime(start);
+                logger.LogError(ex, "Failed to start after {elapsedSeconds}", elapsed.TotalSeconds);
+
+                throw;
+            }
             _app = app;
         }
     }

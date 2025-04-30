@@ -66,4 +66,5 @@ public interface IFieldDefinitionManager
     /// <returns></returns>
     Task UpdateAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition);
     Task<IReadOnlyList<string>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDefinition field, string text, int count, CancellationToken cancellationToken);
+    void ClearTenantCache(string tenantId);
 }

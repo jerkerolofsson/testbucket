@@ -132,6 +132,9 @@
   <data name="data-source" xml:space="preserve">
     <value>Data Source</value>
   </data>
+  <data name="data-source-type-commits" xml:space="preserve">
+    <value>Commits</value>
+  </data>
   <data name="data-source-type-components" xml:space="preserve">
     <value>Components</value>
   </data>

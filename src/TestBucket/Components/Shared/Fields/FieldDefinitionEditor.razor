@@ -55,7 +55,7 @@
 
 
                                     <MudCheckBox Color="Color.Tertiary" T="bool"
-                                    Value="@((FieldDefinition.Target&FieldTarget.RequirementSpecification) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Requirement, x)">Requirement Specification</MudCheckBox>
+                                    Value="@((FieldDefinition.Target&FieldTarget.RequirementSpecification) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.RequirementSpecification, x)">Requirement Specification</MudCheckBox>
 
                                     <MudCheckBox Color="Color.Tertiary" T="bool"
                                     Value="@((FieldDefinition.Target&FieldTarget.RequirementSpecificationFolder) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.RequirementSpecificationFolder, x)">Requirement Folder</MudCheckBox>
@@ -134,6 +134,7 @@
                                 Value="@FieldDefinition.Type" ValueChanged="OnTypeChanged" T="FieldType" Variant="Variant.Outlined">
                                     <MudSelectItem Value="@FieldType.String">String</MudSelectItem>
                                     <MudSelectItem Value="@FieldType.Boolean">Boolean</MudSelectItem>
+                                    <MudSelectItem Value="@FieldType.DateTimeOffset">Date</MudSelectItem>
                                     <MudSelectItem Value="@FieldType.SingleSelection">Single Selection</MudSelectItem>
                                     <MudSelectItem Value="@FieldType.MultiSelection">Multi Selection</MudSelectItem>
                                     <MudSelectItem Value="@FieldType.StringArray">Chip Field</MudSelectItem>

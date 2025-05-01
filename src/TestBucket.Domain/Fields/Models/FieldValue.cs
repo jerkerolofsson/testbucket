@@ -48,6 +48,21 @@ public class FieldValue : Entity
     public string? StringValue { get; set; }
 
     /// <summary>
+    /// Date
+    /// </summary>
+    public DateOnly? DateValue { get; set; }
+
+    /// <summary>
+    /// TimeSpan
+    /// </summary>
+    public TimeSpan? TimeSpanValue { get; set; }
+
+    /// <summary>
+    /// DateTimeOffset
+    /// </summary>
+    public DateTimeOffset? DateTimeOffsetValue { get; set; }
+
+    /// <summary>
     /// The field has multiple strings
     /// </summary>
     [Column(TypeName = "jsonb")]
@@ -72,6 +87,9 @@ public class FieldValue : Entity
             DoubleValue = this.DoubleValue,
             BooleanValue = this.BooleanValue,
             StringValue = this.StringValue,
+            DateTimeOffsetValue = this.DateTimeOffsetValue,
+            DateValue = this.DateValue,
+            TimeSpanValue = this.TimeSpanValue,
         };
     }
 
@@ -86,6 +104,9 @@ public class FieldValue : Entity
         return BooleanValue is not null ||
             hasStringValue ||
             hasArrayValue ||
+            DateValue is not null ||
+            TimeSpanValue is not null ||
+            DateTimeOffsetValue is not null ||
             LongValue is not null ||
             DoubleValue is not null;
     }
@@ -130,6 +151,23 @@ public class FieldValue : Entity
             changed = true;
             copy.StringValuesList = StringValuesList;
         }
+
+        if (copy.TimeSpanValue != TimeSpanValue)
+        {
+            changed = true;
+            copy.TimeSpanValue = TimeSpanValue;
+        }
+        if (copy.DateValue != DateValue)
+        {
+            changed = true;
+            copy.DateValue = DateValue;
+        }
+        if (copy.DateTimeOffsetValue != DateTimeOffsetValue)
+        {
+            changed = true;
+            copy.DateTimeOffsetValue = DateTimeOffsetValue;
+        }
+
         if (copy.TenantId != TenantId)
         {
             changed = true;
@@ -151,6 +189,15 @@ public class FieldValue : Entity
             case FieldType.SingleSelection:
             case FieldType.MultiSelection:
                 return StringValue ?? "";
+
+            case FieldType.TimeSpan:
+                return TimeSpanValue?.ToString() ?? "";
+
+            case FieldType.DateTimeOffset:
+                return DateTimeOffsetValue?.ToString() ?? "";
+
+            case FieldType.DateOnly:
+                return DateValue?.ToString() ?? "";
 
             case FieldType.Integer:
                 return LongValue?.ToString() ?? "";

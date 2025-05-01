@@ -56,4 +56,13 @@ public enum FieldType
     /// </summary>
     ImageUri = 8,
 
+    /// <summary>
+    /// Only date
+    /// </summary>
+    DateOnly = 9,
+
+    /// <summary>
+    /// TimeSpan
+    /// </summary>
+    TimeSpan = 10
 }

@@ -35,6 +35,29 @@ public static class FieldValueConverter
                 }
                 break;
 
+            case FieldType.TimeSpan:
+                if (TimeSpan.TryParse(values[0], out var timespan))
+                {
+                    fieldValue.TimeSpanValue = timespan;
+                    return true;
+                }
+                break;
+
+            case FieldType.DateTimeOffset:
+                if (DateTimeOffset.TryParse(values[0], out var dateTimeOffset))
+                {
+                    fieldValue.DateTimeOffsetValue = dateTimeOffset;
+                    return true;
+                }
+                break;
+
+            case FieldType.DateOnly:
+                if (DateOnly.TryParse(values[0], out var date))
+                {
+                    fieldValue.DateValue = date;
+                    return true;
+                }
+                break;
             case FieldType.Double:
                 if (double.TryParse(values[0], CultureInfo.InvariantCulture, out double doubleValue))
                 {

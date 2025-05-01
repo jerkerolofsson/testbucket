@@ -22,12 +22,24 @@
         @* <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable/> *@
 
         <MudAutocomplete Clearable
-            T="string"
-            Value="@Field.StringValue"
-            ValueChanged="OnStringValueChanged"
-            SearchFunc="@Search"
-            Context="userName"
-            Variant="Variant.Outlined"/>
+        T="string"
+        Value="@Field.StringValue"
+        ValueChanged="OnStringValueChanged"
+        SearchFunc="@Search"
+        Context="userName"
+        Variant="Variant.Outlined"/>
+    }
+    else if (type == FieldType.DateOnly || type == FieldType.DateTimeOffset)
+    {
+        <div>
+        <MudDatePicker
+            ShowWeekNumbers
+            Color="Color.Primary"
+            Variant="Variant.Outlined"
+            Clearable
+            DateChanged="OnDateChanged"
+            Date="_date" />
+        </div>
     }
     else if(type == FieldType.ImageUri)
     {
@@ -83,13 +95,28 @@
     }
     else if (type == FieldType.MultiSelection && Field.StringValuesList is not null)
     {
-        <MudStack Row Wrap="Wrap.Wrap">
+        <MudSelect SelectedValues="@Field.StringValuesList" T="string" MultiSelection SelectedValuesChanged="OnMultiSelectionChanged" Variant="Variant.Outlined" Clearable>
             @foreach (var item in _options)
             {
-                var isChecked = Field.StringValuesList.Contains(item);
-                <MudCheckBox Value="@isChecked" T="bool" ValueChanged="async () => await ToggleStringArrayValueAsync(item)">@item</MudCheckBox>
+                <MudSelectItem Value="@item">
+                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                        @if (Field.FieldDefinition.OptionIcons is not null && Field.FieldDefinition.OptionIcons.TryGetValue(item, out var optionIcon) && !string.IsNullOrEmpty(optionIcon))
+                        {
+                            <MudIcon Style="width: 12px; height: 12px" Icon="@optionIcon" Title="@item" />
+                        }
+                        <MudText>@item</MudText>
+                    </MudStack>
+                </MudSelectItem>
             }
-        </MudStack>
+        </MudSelect>
+
+        @* <MudStack Row Wrap="Wrap.Wrap"> *@
+        @*     @foreach (var item in _options) *@
+        @*     { *@
+        @*         var isChecked = Field.StringValuesList.Contains(item); *@
+        @*         <MudCheckBox Value="@isChecked" T="bool" ValueChanged="async () => await ToggleStringArrayValueAsync(item)">@item</MudCheckBox> *@
+        @*     } *@
+        @* </MudStack> *@
     }
 }
 
@@ -100,6 +127,34 @@
 
     private string _addStringArrayValue = "";
     private IReadOnlyList<string> _options = [];
+    private FieldValue? _field;
+
+    private DateTime? _date;
+
+    private async Task OnDateChanged(DateTime? date)
+    {
+        _date = date;
+
+        if (Field?.FieldDefinition is null)
+        {
+            return;
+        }
+
+        if(date is null)
+        {
+            Field.DateValue = null;
+            Field.DateTimeOffsetValue = null;
+        }
+        else if(Field.FieldDefinition.Type == FieldType.DateTimeOffset)
+        {
+            Field.DateTimeOffsetValue = new DateTimeOffset(date.Value.Year, date.Value.Month, date.Value.Day, 0, 0, 0, TimeSpan.Zero);
+        }
+        else if (Field.FieldDefinition.Type == FieldType.DateOnly)
+        {
+            Field.DateValue = DateOnly.FromDateTime(date.Value);
+        }
+        await FieldChanged.InvokeAsync(Field);
+    }
 
     private async Task RemoveStringArrayValueAsync(string? value)
     {
@@ -156,19 +211,47 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        _options = [];
-        if(Field?.FieldDefinition is null)
+        if(Field is null)
         {
             return;
         }
-        if (Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection)
+        if (Field.Id != _field?.Id)
         {
-            Field.StringValuesList ??= [];
+            _field = Field;
+            _options = [];
+            _date = null;
+            if (Field?.FieldDefinition is null)
+            {
+                return;
+            }
+
+            if (Field.DateTimeOffsetValue is not null)
+            {
+                _date = Field.DateTimeOffsetValue.Value.Date.ToLocalTime();
+            }
+            if (Field.DateValue is not null)
+            {
+                _date = Field.DateValue.Value.ToDateTime(TimeOnly.MinValue);
+            }
+
+            if (Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection)
+            {
+                Field.StringValuesList ??= [];
+            }
+            if ((Field.FieldDefinition.Type is FieldType.SingleSelection or FieldType.MultiSelection or FieldType.StringArray) ||
+                Field.FieldDefinition.DataSourceType != Contracts.Fields.FieldDataSourceType.List)
+            {
+                _options = await fieldController.GetOptionsAsync(Field.FieldDefinition);
+            }
         }
-        if ((Field.FieldDefinition.Type is FieldType.SingleSelection or FieldType.MultiSelection or FieldType.StringArray) ||
-            Field.FieldDefinition.DataSourceType != Contracts.Fields.FieldDataSourceType.List)
+    }
+
+    private async Task OnMultiSelectionChanged(IEnumerable<string> values)
+    {
+        if (Field is not null)
         {
-            _options = await fieldController.GetOptionsAsync(Field.FieldDefinition);
+            Field.StringValuesList = values.ToList();
+            await FieldChanged.InvokeAsync(Field);
         }
     }
 
@@ -218,7 +301,6 @@
         }
         return await fieldController.SearchOptionsAsync(Field.FieldDefinition, text??"", 10, token);
     }
-
 
     private async Task OnImageUploaded(FileResource file)
     {

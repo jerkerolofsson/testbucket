@@ -33,4 +33,7 @@ public record class FieldFilter
     /// The field has multiple strings
     /// </summary>
     public List<string>? StringValuesList { get; set; }
+    public DateTimeOffset? DateTimeOffsetValue { get; set; }
+    public DateOnly? DateValue { get; set; }
+    public TimeSpan? TimeSpanValue { get; set; }
 }

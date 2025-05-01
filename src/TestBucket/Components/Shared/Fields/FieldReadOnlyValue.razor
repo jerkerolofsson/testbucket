@@ -13,6 +13,18 @@
     {
         @Field.DoubleValue
     }
+    else if (Field.FieldDefinition.Type == FieldType.DateOnly)
+    {
+        @Field.DateValue?.Humanize()
+    }
+    else if (Field.FieldDefinition.Type == FieldType.TimeSpan)
+    {
+        @Field.TimeSpanValue?.Humanize()
+    }
+    else if (Field.FieldDefinition.Type == FieldType.DateTimeOffset)
+    {
+        @Field.DateTimeOffsetValue?.ToLocalTime().Humanize()
+    }
     else if ((Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection) && Field.StringValuesList is not null)
     {
         <MudChipSet T="string">

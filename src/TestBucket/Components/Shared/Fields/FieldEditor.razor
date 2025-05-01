@@ -65,7 +65,10 @@
 
     private bool Row => Field?.FieldDefinition?.Type == FieldType.Boolean ||
                 Field?.FieldDefinition?.Type == FieldType.String || 
+                Field?.FieldDefinition?.Type == FieldType.DateOnly || 
+                Field?.FieldDefinition?.Type == FieldType.DateTimeOffset ||
                 Field?.FieldDefinition?.Type == FieldType.SingleSelection || 
+                Field?.FieldDefinition?.Type == FieldType.MultiSelection || 
                 Field?.FieldDefinition?.Type == FieldType.Integer ||
                 Field?.FieldDefinition?.Type == FieldType.ImageUri ||
                 Field?.FieldDefinition?.Type == FieldType.Double ||

@@ -41,6 +41,14 @@ public interface IRequirementManager
     Task<PagedResult<Requirement>> SearchRequirementsAsync(ClaimsPrincipal principal, FilterSpecification<Requirement>[] specifications, int offset, int count);
 
     /// <summary>
+    /// Gets all descendant requirements to a folder
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="folderId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<Requirement>> GetRequirementsByAncestorFolderIdAsync(ClaimsPrincipal principal, long folderId, int offset, int count);
+
+    /// <summary>
     /// Deletes the specified requirement
     /// </summary>
     /// <param name="principal"></param>
@@ -137,5 +145,6 @@ public interface IRequirementManager
     Task AddRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
     Task DeleteRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
     Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification);
+
     #endregion Requirement Links
 }

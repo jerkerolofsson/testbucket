@@ -262,6 +262,11 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Requirements/Specifications/{spec.Id}";
     }
+    public string GetUrl(RequirementSpecificationFolder folder)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Requirements/Folders/{folder.Id}";
+    }
 
     public string GetUrl(SearchTestCaseRunQuery query)
     {
@@ -379,6 +384,11 @@ public class AppNavigationManager
     public void NavigateTo(Requirement requirement, bool forceLoad = false)
     {
         var url = GetUrl(requirement);
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
+    public void NavigateTo(RequirementSpecificationFolder folder, bool forceLoad = false)
+    {
+        var url = GetUrl(folder);
         _navigationManager.NavigateTo(url, forceLoad);
     }
     public void NavigateTo(RequirementSpecification spec, bool forceLoad = false)

@@ -7,6 +7,9 @@ using TestBucket.Domain.Requirements.Specifications.Links;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using UglyToad.PdfPig.Filters;
+
 namespace TestBucket.Domain.Requirements
 {
     public class RequirementManager : IRequirementManager
@@ -149,6 +152,21 @@ namespace TestBucket.Domain.Requirements
             }
         }
 
+
+        public async Task<IReadOnlyList<Requirement>> GetRequirementsByAncestorFolderIdAsync(ClaimsPrincipal principal, long folderId, int offset, int count)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+
+            FilterSpecification<Requirement>[] filters = [
+                new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow()),
+                new FilterRequirementByAncestorFolder(folderId)
+                ];
+
+            var result = await _repository.SearchRequirementsAsync(filters, offset, count);
+            return result.Items;
+        }
+
+
         /// <summary>
         /// Searches for requirements
         /// </summary>
@@ -159,7 +177,7 @@ namespace TestBucket.Domain.Requirements
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
 
-            var filters = Specifications.RequirementSpecificationBuilder.From(query);
+            var filters = RequirementSpecificationBuilder.From(query);
             filters = [.. filters, new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow())];
 
             return await _repository.SearchRequirementsAsync(filters, query.Offset, query.Count);

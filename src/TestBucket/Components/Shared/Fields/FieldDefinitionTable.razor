@@ -8,17 +8,14 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<FieldStrings> fieldLoc
 
-    
-@_loadTime
-
 <MudDataGrid    
-Items="_fields"
-Dense
-Hover 
-RowClass="tb-datarow pointer-cursor"
-T="FieldDefinition"
-RowClick="async e => await EditFieldAsync(e.Item)"
-SortMode="SortMode.Single">
+    Items="_fields"
+    Dense
+    Hover 
+    RowClass="tb-datarow pointer-cursor"
+    T="FieldDefinition"
+    RowClick="async e => await EditFieldAsync(e.Item)"
+    SortMode="SortMode.Single">
 
     <ToolBarContent>
         <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">

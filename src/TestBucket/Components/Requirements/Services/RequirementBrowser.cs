@@ -61,6 +61,11 @@ internal class RequirementBrowser : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         return await _requirementManager.GetRequirementFolderByIdAsync(principal, id);
     }
+    public async Task<IReadOnlyList<Requirement>> GetRequirementsByAncestorFolderIdAsync(long folderId, int offset, int count)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _requirementManager.GetRequirementsByAncestorFolderIdAsync(principal, folderId, offset, count);
+    }
 
     public async Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(long id)
     {

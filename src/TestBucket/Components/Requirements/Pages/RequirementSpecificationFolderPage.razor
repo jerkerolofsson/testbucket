@@ -1,0 +1,36 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Requirements/Folders/{Id:long}"
+@using TestBucket.Components.Requirements.Layouts
+@layout RequirementsLayout
+@inject RequirementBrowser browser
+
+@if(_folder is not null)
+{
+    <MudStack Class="pa-2" Style="width: 100%">
+        <RequirementKanbanBoard Requirements="@_requirements" ProjectId="@_folder.TestProjectId" />
+    </MudStack>
+}
+
+@code {
+    [Parameter] public long Id { get; set; }
+    [Parameter] public string TenantId { get; set; } = "";
+
+    private RequirementSpecificationFolder? _folder = null;
+    private IReadOnlyList<Requirement> _requirements = [];
+
+
+    /// <summary>
+    /// Load the test case when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_folder is null || _folder.Id != Id)
+        {
+            _folder = await browser.GetRequirementFolderByIdAsync(Id);
+
+            int maxCount = 100;
+            _requirements = await browser.GetRequirementsByAncestorFolderIdAsync(Id, 0, maxCount);
+        }
+    }
+}

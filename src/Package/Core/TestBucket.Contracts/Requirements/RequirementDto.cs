@@ -11,17 +11,16 @@ using TestBucket.Formats.Dtos;
 namespace TestBucket.Contracts.Requirements;
 public class RequirementDto : RequirementEntityDto
 {
+    /// <summary>
+    /// Slug for the specification
+    /// </summary>
+    public string? SpecificationSlug { get; set; }
+
     public string? State { get; set; }
     public string? Path { get; set; }
-    public string? Slug { get; set; }
     public MappedRequirementState? MappedState { get; set; }
     public string? RequirementType { get; set; }
     public MappedRequirementType? MappedType { get; set; }
-
-    /// <summary>
-    /// Slug for the project
-    /// </summary>
-    public string? ProjectSlug { get; set; }
 
     /// <summary>
     /// Slug for the parent directory

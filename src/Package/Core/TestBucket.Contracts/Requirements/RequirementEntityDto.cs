@@ -11,6 +11,13 @@ namespace TestBucket.Contracts.Requirements;
 /// </summary>
 public class RequirementEntityDto
 {
+    public string? Slug { get; set; }
+
+    /// <summary>
+    /// Slug for the project
+    /// </summary>
+    public string? ProjectSlug { get; set; }
+
     /// <summary>
     /// Is the specification read-only?
     /// </summary>

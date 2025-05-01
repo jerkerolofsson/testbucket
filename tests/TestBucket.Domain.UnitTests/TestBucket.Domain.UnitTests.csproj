@@ -22,6 +22,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="Requirements\Import\TestData\backup.tbz">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 		<None Update="Requirements\Import\TestData\sections.md">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

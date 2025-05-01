@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using TestBucket.Contracts;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Requirements;
+using TestBucket.Contracts.Requirements.States;
+using TestBucket.Contracts.Requirements.Types;
 
 using TrelloDotNet.Model.Options.GetCardOptions;
 
@@ -39,11 +41,35 @@ internal class TrelloRequirementProvider : IExternalRequirementProvider
                 ReadOnly = true,
                 Description = card.Description,
                 State = card.List?.Name,
-                Path = card.List?.Name
+                MappedState = MapState(card.List?.Name),
+                Path = card.List?.Name,
+                MappedType = MappedRequirementType.General,
+                RequirementType = RequirementTypes.General
             });
         }
 
         return new PagedResult<RequirementEntityDto>() { Items = reqirements.ToArray(), TotalCount = reqirements.Count };
+    }
+
+    private MappedRequirementState? MapState(string? name)
+    {
+        if(name is not null)
+        {
+            switch (name)
+            {
+                case "Backlog":
+                    return MappedRequirementState.Draft;
+                case "To Do":
+                    return MappedRequirementState.Accepted;
+                case "Doing":
+                    return MappedRequirementState.InProgress;
+                case "Done":
+                case "Completed":
+                    return MappedRequirementState.Completed;
+            }
+        }
+
+        return MappedRequirementState.Draft;
     }
 
     public async Task<PagedResult<RequirementSpecificationDto>> BrowseSpecificationsAsync(ExternalSystemDto config, int offset, int count, CancellationToken cancellationToken)

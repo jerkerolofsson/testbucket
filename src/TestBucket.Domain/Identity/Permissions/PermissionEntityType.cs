@@ -26,6 +26,11 @@ namespace TestBucket.Domain.Identity.Permissions
 
         TestResource,
 
-        Runner
+        Runner,
+
+        /// <summary>
+        /// Features/components/systems/layers
+        /// </summary>
+        Code
     }
 }

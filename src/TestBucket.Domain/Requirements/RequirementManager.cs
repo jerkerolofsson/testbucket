@@ -178,6 +178,7 @@ namespace TestBucket.Domain.Requirements
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
             return await _repository.SearchRequirementsAsync(specifications, offset, count);
         }
+
         /// <summary>
         /// Gets a requirement by id
         /// </summary>
@@ -188,7 +189,25 @@ namespace TestBucket.Domain.Requirements
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
 
-            FilterSpecification<Requirement>[] filters = [new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow()),new FilterRequirementById(id)];
+            FilterSpecification<Requirement>[] filters = [new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow()), new FilterRequirementById(id)];
+
+            var result = await _repository.SearchRequirementsAsync(filters, 0, 1);
+            return result.Items.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Gets a requirement by slug
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="slug"></param>
+        /// <returns></returns>
+        public async Task<Requirement?> GetRequirementBySlugAsync(ClaimsPrincipal principal, string slug)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+
+            FilterSpecification<Requirement>[] filters = [
+                new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow()),
+                new FilterRequirementBySlug(slug)];
 
             var result = await _repository.SearchRequirementsAsync(filters, 0, 1);
             return result.Items.FirstOrDefault();
@@ -497,6 +516,19 @@ namespace TestBucket.Domain.Requirements
         {
             principal.ThrowIfNoPermission(PermissionEntityType.RequirementSpecification, PermissionLevel.Read);
             return await _repository.SearchRequirementSpecificationsAsync(filters, offset, count);
+        }
+
+        public async Task<RequirementSpecification?> GetRequirementSpecificationBySlugAsync(ClaimsPrincipal principal, string slug)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.RequirementSpecification, PermissionLevel.Read);
+
+            FilterSpecification<RequirementSpecification>[] filters = [
+                new FilterByTenant<RequirementSpecification>(principal.GetTenantIdOrThrow()),
+                new FilterRequirementSpecificationBySlug(slug)
+                ];
+
+            var result = await _repository.SearchRequirementSpecificationsAsync(filters, 0, 1);
+            return result.Items.FirstOrDefault();
         }
 
         public async Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(ClaimsPrincipal principal, long id)

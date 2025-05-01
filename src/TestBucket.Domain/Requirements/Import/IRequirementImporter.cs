@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 
+using TestBucket.Contracts.Requirements;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements.Models;
 
@@ -16,7 +17,7 @@ public interface IRequirementImporter
     /// <param name="testProjectId"></param>
     /// <param name="fileResource"></param>
     /// <returns></returns>
-    Task<RequirementSpecification?> ImportFileAsync(ClaimsPrincipal principal, long? teamId, long? testProjectId, FileResource fileResource);
+    Task<List<RequirementEntityDto>> ImportFileAsync(ClaimsPrincipal principal, FileResource fileResource);
 
     /// <summary>
     /// Parses the requirement specification and extracts individual requirements

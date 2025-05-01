@@ -29,7 +29,7 @@ internal class FieldRepository : IFieldRepository
     public async Task<IReadOnlyList<FieldDefinition>> SearchAsync(IReadOnlyList<FilterSpecification<FieldDefinition>> specifications)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var fields = dbContext.FieldDefinitions.AsNoTracking(); //.Where(x =>x.IsDeleted == false);
+        var fields = dbContext.FieldDefinitions.AsNoTracking().Where(x =>x.IsDeleted == false);
 
         foreach(var spec in specifications)
         {

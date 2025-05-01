@@ -10,11 +10,11 @@ using TestBucket.Formats;
 
 namespace TestBucket.Domain.Testing.Services.Import
 {
-    public class ZipImporter
+    public class TestZipImporter
     {
         private readonly ITextTestResultsImporter _textTestResultsImporter;
 
-        public ZipImporter(ITextTestResultsImporter textTestResultsImporter)
+        public TestZipImporter(ITextTestResultsImporter textTestResultsImporter)
         {
             _textTestResultsImporter = textTestResultsImporter;
         }

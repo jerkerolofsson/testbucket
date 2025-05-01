@@ -1,10 +1,13 @@
-﻿using System.Security.Claims;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 using Microsoft.Extensions.Logging;
 
+using TestBucket.Contracts.Requirements;
+using TestBucket.Domain.Export.Handlers.Requirements;
+using TestBucket.Domain.Export.Zip;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements.Import.Strategies;
+using TestBucket.Domain.Requirements.Mapping;
 using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Domain.Requirements.Import
@@ -18,24 +21,26 @@ namespace TestBucket.Domain.Requirements.Import
             _logger = logger;
         }
 
-        public async Task<RequirementSpecification?> ImportFileAsync(ClaimsPrincipal principal, long? teamId, long? testProjectId, FileResource fileResource)
+        public async Task<List<RequirementEntityDto>> ImportFileAsync(ClaimsPrincipal principal,  FileResource fileResource)
         {
             try
             {
                 var extension = Path.GetExtension(fileResource.Name);
                 if (extension == ".pdf")
                 {
-                    var spec = await ImportPdfAsync(principal, teamId, testProjectId, fileResource);
-                    spec.FileResourceId = fileResource.Id;
-                    return spec;
+                    var spec = await ImportPdfAsync(principal,fileResource);
+                    return [spec];
                 }
-                if (extension == ".md" || extension == ".txt")
+                else if(extension == ".tbz")
                 {
-                    var spec = await ImportTextAsync(principal, teamId, testProjectId, fileResource, fileResource.Name ?? "spec");
-                    spec.FileResourceId = fileResource.Id;
-                    return spec;
+                    return await ImportBackupFileAsync(principal, fileResource);
                 }
-                return null;
+                else if (extension == ".md" || extension == ".txt")
+                {
+                    var spec = await ImportTextAsync(principal,  fileResource, fileResource.Name ?? "spec");
+                    return [spec];
+                }
+                return [];
             }
             catch(Exception ex)
             {
@@ -44,15 +49,38 @@ namespace TestBucket.Domain.Requirements.Import
             }
         }
 
-        private async Task<RequirementSpecification> ImportTextAsync(ClaimsPrincipal principal, long? teamId, long? testProjectId, FileResource fileResource, string name)
+        private async Task<List<RequirementEntityDto>> ImportBackupFileAsync(ClaimsPrincipal principal, FileResource fileResource)
+        {
+            var items = new List<RequirementEntityDto>();
+
+            using var stream = new MemoryStream(fileResource.Data);
+            var source = new ZipImporter(stream);
+
+            foreach(var exportedEntity in source.ReadAll())
+            {
+                RequirementEntityDto? entity = await RequirementSerialization.DeserializeAsync(exportedEntity);
+                if(entity is not null)
+                {
+                    if (entity is RequirementSpecificationDto specificationDto)
+                    {
+                        items.Add(specificationDto);
+                    }
+                    if (entity is RequirementDto requirementDto)
+                    {
+                        items.Add(requirementDto);
+                    }
+                }
+            }
+            return items;
+        }
+
+
+        private async Task<RequirementSpecificationDto> ImportTextAsync(ClaimsPrincipal principal, FileResource fileResource, string name)
         {
             var tenantId = principal.GetTenantIdOrThrow();
-            var spec = new RequirementSpecification
+            var spec = new RequirementSpecificationDto
             {
                 Name = name,
-                TenantId = tenantId,
-                TeamId = teamId,
-                TestProjectId = testProjectId,
                 Description = ""
             };
 
@@ -68,16 +96,13 @@ namespace TestBucket.Domain.Requirements.Import
         }
 
 
-        private async Task<RequirementSpecification> ImportPdfAsync(ClaimsPrincipal principal, long? teamId, long? testProjectId, FileResource fileResource)
+        private async Task<RequirementSpecificationDto> ImportPdfAsync(ClaimsPrincipal principal, FileResource fileResource)
         {
             var tenantId = principal.GetTenantIdOrThrow();
-            var spec = new RequirementSpecification
+            var spec = new RequirementSpecificationDto
             {
                 Name = fileResource.Name ?? "",
-                TenantId = tenantId,
-                TestProjectId = testProjectId,
                 Description = "",
-                TeamId = teamId,
             };
 
             await new PdfImporter().ImportAsync(spec, fileResource);

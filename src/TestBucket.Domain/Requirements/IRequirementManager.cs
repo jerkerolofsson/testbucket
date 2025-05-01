@@ -48,6 +48,10 @@ public interface IRequirementManager
     /// <returns></returns>
     Task DeleteRequirementAsync(ClaimsPrincipal principal, Requirement requirement);
     Task<Requirement?> GetRequirementByIdAsync(ClaimsPrincipal principal, long id);
+    Task<Requirement?> GetRequirementBySlugAsync(ClaimsPrincipal principal, string slug);
+
+    Task GenerateFoldersFromPathAsync(Requirement requirement);
+    Task<IReadOnlyList<Requirement>> GetDownstreamRequirementsAsync(ClaimsPrincipal principal, Requirement requirement);
 
     #endregion Requirements
 
@@ -120,6 +124,7 @@ public interface IRequirementManager
     /// <param name="specification"></param>
     /// <returns></returns>
     Task UpdateRequirementSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification);
+    Task<RequirementSpecification?> GetRequirementSpecificationBySlugAsync(ClaimsPrincipal principal, string slug);
     Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(ClaimsPrincipal principal, long id);
 
     #endregion Requirement Specifications
@@ -132,7 +137,5 @@ public interface IRequirementManager
     Task AddRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
     Task DeleteRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink link);
     Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification);
-    Task GenerateFoldersFromPathAsync(Requirement requirement);
-    Task<IReadOnlyList<Requirement>> GetDownstreamRequirementsAsync(ClaimsPrincipal principal, Requirement requirement);
-    #endregion
+    #endregion Requirement Links
 }

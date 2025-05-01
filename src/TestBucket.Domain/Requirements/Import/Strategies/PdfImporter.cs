@@ -13,6 +13,7 @@ using UglyToad.PdfPig.DocumentLayoutAnalysis.PageSegmenter;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.ReadingOrderDetector;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
 using UglyToad.PdfPig;
+using TestBucket.Contracts.Requirements;
 
 namespace TestBucket.Domain.Requirements.Import.Strategies
 {
@@ -27,7 +28,7 @@ namespace TestBucket.Domain.Requirements.Import.Strategies
         private static readonly Regex s_h2 = new Regex(@"^\d*\.\d*$");
         private static readonly Regex s_h1 = new Regex(@"^\d*$");
 
-        public Task ImportAsync(RequirementSpecification spec, FileResource fileResource)
+        public Task ImportAsync(RequirementSpecificationDto spec, FileResource fileResource)
         {
             string name = fileResource.Name ?? "pdf";
             var text = new StringBuilder();

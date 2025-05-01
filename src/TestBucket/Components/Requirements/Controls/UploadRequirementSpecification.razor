@@ -44,7 +44,7 @@
 
         await using var progressTask = progressManager.CreateProgressTask("Importing " + fileResource.Name + "..");
 
-        var spec = await editor.ImportAsync(Project.TeamId, Project.Id, fileResource);
+        var items = await editor.ImportAsync(Project, fileResource);
         _loading = false;
     }
 }

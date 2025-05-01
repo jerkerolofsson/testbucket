@@ -76,6 +76,7 @@ internal class RequirementExportHandler : INotificationHandler<ExportNotificatio
             foreach (var item in response.Items)
             {
                 var dto = item.ToDto();
+                dto.SpecificationSlug = specification.Slug;
                 dto.ProjectSlug = specification.TestProject?.Slug;
                 if(item.ParentRequirementId is not null)
                 {

@@ -5,7 +5,8 @@
 @using TestBucket.Domain.Code.Models
 @layout CodeLayout
 @inject ArchitectureController architectureController
-@inject IStringLocalizer<CodeStrings> loc
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<CodeStrings> codeLoc
 
 <Splitter Class="container-fill pa-2" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
@@ -22,15 +23,15 @@
                     <ToolBarContent>
                         <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
                             <MudIcon Icon="@TbIcons.BoldDuoTone.Epic" Size="Size.Large" />
-                            <MudText Typo="Typo.h2">@loc["features"]</MudText>
+                            <MudText Typo="Typo.h2">@codeLoc["features"]</MudText>
                             <MudSpacer />
                         </MudStack>
                     </ToolBarContent>
 
                     <ColGroup>
-                        <col style="width: 10%" />
-                        <col style="width: 60%" />
-                        <col style="width: 30%;" />
+                        <col style="width: 33%" />
+                        <col style="width: 33%;" />
+                        <col style="width: 33%;" />
                     </ColGroup>
 
                     <Columns>
@@ -40,9 +41,15 @@
                             </CellTemplate>
                         </TemplateColumn>
 
-                        <TemplateColumn Title="@loc["description"]">
+                        <TemplateColumn Title="@codeLoc["dev-lead"]">
                             <CellTemplate>
+                                @context.Item.DevLead
+                            </CellTemplate>
+                        </TemplateColumn>
 
+                        <TemplateColumn Title="@codeLoc["test-lead"]">
+                            <CellTemplate>
+                                @context.Item.TestLead
                             </CellTemplate>
                         </TemplateColumn>
                     </Columns>
@@ -57,8 +64,16 @@
     <EndContent>
         @if (_model is not null && _selectedFeature is not null)
         {
-            <MudStack Spacing="0">
-                @_selectedFeature.Name
+            <MudStack Spacing="0" Style="width: 100%">
+                <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
+                    <Authorized>
+                        <AritecturalComponentEditor Component="@_selectedFeature" ComponentChanged="OnFeatureChanged"/>
+                    </Authorized>
+                    <NotAuthorized>
+                        <MudText Typo="Typo.h1">@_selectedFeature.Name</MudText>
+                        <MudText>@_selectedFeature.Description</MudText>
+                    </NotAuthorized>
+                </PermissionView>
             </MudStack>
         }
     </EndContent>
@@ -72,6 +87,14 @@
     private IReadOnlyList<Feature> _features = [];
     private Feature? _selectedFeature = null;
     private MudDataGrid<Feature>? _grid;
+
+    private async Task OnFeatureChanged(AritecturalComponentProjectEntity entity)
+    {
+        if (entity is not null && entity is Feature feature)
+        {
+            await architectureController.SaveFeatureAsync(feature);
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {

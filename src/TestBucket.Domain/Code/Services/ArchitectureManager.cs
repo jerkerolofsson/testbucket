@@ -1,6 +1,5 @@
 ﻿using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Specifications;
-using TestBucket.Domain.Code.Yaml;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Domain.Code.Services;
@@ -298,22 +297,27 @@ internal class ArchitectureManager : IArchitectureManager
 
         foreach (var system in await GetSystemsAsync(principal, project.Id))
         {
-            model.Systems[system.Name] = new ArchitecturalComponent { Display = system.Display, Paths = system.GlobPatterns };
+            model.Systems[system.Name] = CreateComponent(system);
         }
 
         foreach (var feature in await GetFeaturesAsync(principal, project.Id))
         {
-            model.Features[feature.Name] = new ArchitecturalComponent { Display = feature.Display, Paths = feature.GlobPatterns };
+            model.Features[feature.Name] = CreateComponent(feature);
         }
         foreach (var layer in await GetLayersAsync(principal, project.Id))
         {
-            model.Layers[layer.Name] = new ArchitecturalComponent { Display = layer.Display, Paths = layer.GlobPatterns };
+            model.Layers[layer.Name] = CreateComponent(layer);
         }
         foreach (var component in await GetComponentsAsync(principal, project.Id))
         {
-            model.Components[component.Name] = new ArchitecturalComponent { Display = component.Display, Paths = component.GlobPatterns };
+            model.Components[component.Name] = CreateComponent(component);
         }
         return model;
+    }
+
+    private static ArchitecturalComponent CreateComponent(AritecturalComponentProjectEntity system)
+    {
+        return new ArchitecturalComponent { Display = system.Display, Paths = system.GlobPatterns, TestLead = system.TestLead, DevLead = system.DevLead, Description = system.Description };
     }
 
     /// <summary>
@@ -363,6 +367,10 @@ internal class ArchitectureManager : IArchitectureManager
                     Display = feature.Value.Display,
                     Created = DateTimeOffset.UtcNow,
                     Modified = DateTimeOffset.UtcNow,
+                    Description = feature.Value.Description,
+                    TestLead = feature.Value.TestLead,
+                    DevLead = feature.Value.DevLead,
+
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
@@ -370,10 +378,8 @@ internal class ArchitectureManager : IArchitectureManager
             }
             else
             {
-                existingFeature.Modified = DateTimeOffset.UtcNow;
-                existingFeature.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
-                existingFeature.GlobPatterns = feature.Value.Paths ?? existingFeature.GlobPatterns;
-                existingFeature.Display = feature.Value.Display ?? existingFeature.Display;
+                UpdateComponent(principal, feature, existingFeature);
+
                 await _repository.UpdateFeatureAsync(existingFeature);
             }
         }
@@ -406,6 +412,10 @@ internal class ArchitectureManager : IArchitectureManager
                     Display = layer.Value.Display,
                     Created = DateTimeOffset.UtcNow,
                     Modified = DateTimeOffset.UtcNow,
+                    Description = layer.Value.Description,
+                    TestLead = layer.Value.TestLead,
+                    DevLead = layer.Value.DevLead,
+
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
@@ -413,8 +423,7 @@ internal class ArchitectureManager : IArchitectureManager
             }
             else
             {
-                existingFeature.GlobPatterns = layer.Value.Paths ?? existingFeature.GlobPatterns;
-                existingFeature.Display = layer.Value.Display ?? existingFeature.Display;
+                UpdateComponent(principal, layer, existingFeature);
                 await _repository.UpdateLayerAsync(existingFeature);
             }
         }
@@ -438,6 +447,10 @@ internal class ArchitectureManager : IArchitectureManager
                     Display = component.Value.Display,
                     Created = DateTimeOffset.UtcNow,
                     Modified = DateTimeOffset.UtcNow,
+                    Description = component.Value.Description,
+                    TestLead = component.Value.TestLead,
+                    DevLead = component.Value.DevLead,
+
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
@@ -445,8 +458,7 @@ internal class ArchitectureManager : IArchitectureManager
             }
             else
             {
-                existingComponent.GlobPatterns = component.Value.Paths ?? existingComponent.GlobPatterns;
-                existingComponent.Display = component.Value.Display ?? existingComponent.Display;
+                UpdateComponent(principal, component, existingComponent);
                 await _repository.UpdateComponentAsync(existingComponent);
             }
         }
@@ -470,6 +482,9 @@ internal class ArchitectureManager : IArchitectureManager
                     Display = system.Value.Display,
                     Created = DateTimeOffset.UtcNow,
                     Modified = DateTimeOffset.UtcNow,
+                    Description = system.Value.Description,
+                    TestLead = system.Value.TestLead,
+                    DevLead = system.Value.DevLead,
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
@@ -477,10 +492,24 @@ internal class ArchitectureManager : IArchitectureManager
             }
             else
             {
-                existingSystem.GlobPatterns = system.Value.Paths ?? existingSystem.GlobPatterns;
-                existingSystem.Display = system.Value.Display ?? existingSystem.Display;
+                UpdateComponent(principal, system, existingSystem);
+
                 await _repository.UpdateSystemAsync(existingSystem);
             }
         }
+    }
+
+    private static void UpdateComponent(
+        ClaimsPrincipal principal,
+        KeyValuePair<string, ArchitecturalComponent> system, AritecturalComponentProjectEntity existingSystem)
+    {
+        existingSystem.Modified = DateTimeOffset.UtcNow;
+        existingSystem.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
+
+        existingSystem.GlobPatterns = system.Value.Paths ?? existingSystem.GlobPatterns;
+        existingSystem.Display = system.Value.Display ?? existingSystem.Display;
+        existingSystem.DevLead = system.Value.DevLead ?? existingSystem.DevLead;
+        existingSystem.TestLead = system.Value.DevLead ?? existingSystem.TestLead;
+        existingSystem.Description = system.Value.Description ?? existingSystem.Description;
     }
 }

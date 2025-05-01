@@ -23,6 +23,12 @@ internal class ArchitectureController : TenantBaseService
         _commitManager = commitManager;
         _mediator = mediator;
     }
+
+    public async Task SaveFeatureAsync(Feature feature)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.UpdateFeatureAsync(principal, feature);
+    }
     
     public async Task AddCommitsToFeatureAsync(long projectId, string featureName, IEnumerable<Commit> commits)
     {

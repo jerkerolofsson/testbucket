@@ -35,7 +35,8 @@ namespace TestBucket.Domain.Identity
             builder.Add(PermissionEntityType.Tenant, PermissionLevel.All);
             builder.Add(PermissionEntityType.Requirement, PermissionLevel.All);
             builder.Add(PermissionEntityType.RequirementSpecification, PermissionLevel.All);
-            
+            builder.Add(PermissionEntityType.Architecture, PermissionLevel.All);
+
             claims.Add(new Claim(PermissionClaims.Permissions, PermissionClaimSerializer.Serialize(builder.Build())));
             if (projectId is not null)
             {

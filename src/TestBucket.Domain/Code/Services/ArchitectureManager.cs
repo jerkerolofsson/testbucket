@@ -23,6 +23,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task AddSystemAsync(ClaimsPrincipal principal, ProductSystem system)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         system.TenantId = principal.GetTenantIdOrThrow();
         await _repository.AddSystemAsync(system);
     }
@@ -35,6 +36,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task<IReadOnlyList<ProductSystem>> GetSystemsAsync(ClaimsPrincipal principal, long projectId)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<ProductSystem>[] filters = [new FilterByProject<ProductSystem>(projectId), new FilterByTenant<ProductSystem>(tenantId)];
 
@@ -50,6 +52,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task<IReadOnlyList<Component>> GetComponentsAsync(ClaimsPrincipal principal, long projectId)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Component>[] filters = [new FilterByProject<Component>(projectId), new FilterByTenant<Component>(tenantId)];
 
@@ -67,6 +70,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task<ProductSystem?> GetSystemByNameAsync(ClaimsPrincipal principal, long projectId, string name)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<ProductSystem>[] filters = [
             new FilterSystemByName(name),
@@ -91,6 +95,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task AddLayerAsync(ClaimsPrincipal principal, ArchitecturalLayer component)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         component.TenantId = principal.GetTenantIdOrThrow();
         await _repository.AddLayerAsync(component);
     }
@@ -103,6 +108,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task<IReadOnlyList<ArchitecturalLayer>> GetLayersAsync(ClaimsPrincipal principal, long projectId)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<ArchitecturalLayer>[] filters = [new FilterByProject<ArchitecturalLayer>(projectId), new FilterByTenant<ArchitecturalLayer>(tenantId)];
 
@@ -119,6 +125,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task<ArchitecturalLayer?> GetLayerByNameAsync(ClaimsPrincipal principal, long projectId, string name)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<ArchitecturalLayer>[] filters = [
             new FilterLayerByName(name),
@@ -142,6 +149,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task AddComponentAsync(ClaimsPrincipal principal, Component component)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         component.TenantId = principal.GetTenantIdOrThrow();
         await _repository.AddComponentAsync(component);
     }
@@ -154,6 +162,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task<IReadOnlyList<Component>> GetComponentAsync(ClaimsPrincipal principal, long projectId)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Component>[] filters = [new FilterByProject<Component>(projectId), new FilterByTenant<Component>(tenantId)];
 
@@ -170,6 +179,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task<IReadOnlyList<Component>> SearchComponentsAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Component>[] filters = [
             new SearchComponentWithText(text ?? ""),
@@ -190,6 +200,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task<Component?> GetComponentByNameAsync(ClaimsPrincipal principal, long projectId, string name)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Component>[] filters = [
             new FilterComponentByName(name),
@@ -215,6 +226,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task AddFeatureAsync(ClaimsPrincipal principal, Feature feature)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         feature.TenantId = principal.GetTenantIdOrThrow();
         await _repository.AddFeatureAsync(feature);
     }
@@ -227,6 +239,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task<IReadOnlyList<Feature>> SearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Feature>[] filters = [
             new SearchFeatureWithText(text),
@@ -246,6 +259,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task<IReadOnlyList<Feature>> GetFeaturesAsync(ClaimsPrincipal principal, long projectId)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Feature>[] filters = [new FilterByProject<Feature>(projectId), new FilterByTenant<Feature>(tenantId)];
 
@@ -262,6 +276,7 @@ internal class ArchitectureManager : IArchitectureManager
     /// <returns></returns>
     public async Task<Feature?> GetFeatureByNameAsync(ClaimsPrincipal principal, long projectId, string name)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Feature>[] filters = [
             new FilterFeatureByName(name),
@@ -278,6 +293,7 @@ internal class ArchitectureManager : IArchitectureManager
 
     public async Task<ProjectArchitectureModel> GetProductArchitectureAsync(ClaimsPrincipal principal, TestProject project)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var model = new ProjectArchitectureModel();
 
         foreach (var system in await GetSystemsAsync(principal, project.Id))
@@ -310,6 +326,7 @@ internal class ArchitectureManager : IArchitectureManager
 
     public async Task ImportProductArchitectureAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         if (model.Systems is not null)
         {
             await ImportSystemsAsync(principal, project, model);
@@ -330,6 +347,7 @@ internal class ArchitectureManager : IArchitectureManager
 
     private async Task ImportFeaturesAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         foreach (var feature in model.Features)
         {
             var existingFeature = await GetFeatureByNameAsync(principal, project.Id, feature.Key);
@@ -363,6 +381,7 @@ internal class ArchitectureManager : IArchitectureManager
 
     public async Task UpdateFeatureAsync(ClaimsPrincipal principal, Feature feature)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         feature.Modified = DateTimeOffset.UtcNow;
         feature.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
         await _repository.UpdateFeatureAsync(feature);
@@ -371,6 +390,7 @@ internal class ArchitectureManager : IArchitectureManager
 
     private async Task ImportLayersAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         foreach (var layer in model.Layers)
         {
             var existingFeature = await GetLayerByNameAsync(principal, project.Id, layer.Key);
@@ -402,6 +422,7 @@ internal class ArchitectureManager : IArchitectureManager
 
     private async Task ImportComponentsAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         foreach (var component in model.Components)
         {
             var existingComponent = await GetComponentByNameAsync(principal, project.Id, component.Key);
@@ -433,6 +454,7 @@ internal class ArchitectureManager : IArchitectureManager
 
     private async Task ImportSystemsAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         foreach (var system in model.Systems)
         {
             var existingSystem = await GetSystemByNameAsync(principal, project.Id, system.Key);
@@ -461,5 +483,4 @@ internal class ArchitectureManager : IArchitectureManager
             }
         }
     }
-
 }

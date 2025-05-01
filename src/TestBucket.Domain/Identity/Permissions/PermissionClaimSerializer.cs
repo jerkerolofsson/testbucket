@@ -38,6 +38,8 @@ namespace TestBucket.Domain.Identity.Permissions
             PermissionEntityType.Runner,
 
             PermissionEntityType.Team,
+
+            PermissionEntityType.Architecture,
             ];
 
         internal static UserPermissions Deserialize(string hex)

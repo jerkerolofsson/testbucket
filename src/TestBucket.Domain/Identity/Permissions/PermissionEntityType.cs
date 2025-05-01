@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace TestBucket.Domain.Identity.Permissions
 {
+    /// <summary>
+    /// Types or groups of entities that can be protected with permission access levels
+    /// If adding an entity, make sure to update PermissionClaimSerializer
+    /// </summary>
     public enum PermissionEntityType
     {
         Tenant,
@@ -22,15 +26,24 @@ namespace TestBucket.Domain.Identity.Permissions
         TestRun,
         TestCaseRun,
 
+        /// <summary>
+        /// Accounts & credentials for testing
+        /// </summary>
         TestAccount,
 
+        /// <summary>
+        /// Test resources / shared devices
+        /// </summary>
         TestResource,
 
+        /// <summary>
+        /// Test runners
+        /// </summary>
         Runner,
 
         /// <summary>
-        /// Features/components/systems/layers
+        /// Features/components/systems/layers and commits
         /// </summary>
-        Code
+        Architecture
     }
 }

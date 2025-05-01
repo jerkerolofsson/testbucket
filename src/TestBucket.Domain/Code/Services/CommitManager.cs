@@ -37,6 +37,7 @@ public class CommitManager : ICommitManager
     /// <returns></returns>
     public async Task<PagedResult<Commit>> SearchCommitsAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         FilterSpecification<Commit>[] filters = [
             new FilterByTenant<Commit>(principal.GetTenantIdOrThrow()),
             new FilterByProject<Commit>(projectId),
@@ -49,6 +50,7 @@ public class CommitManager : ICommitManager
 
     public Task<PagedResult<Commit>> BrowseCommitsAsync(ClaimsPrincipal principal, long projectId, int offset, int count)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         FilterSpecification<Commit>[] filters = [
             new FilterByTenant<Commit>(principal.GetTenantIdOrThrow()),
             new FilterByProject<Commit>(projectId)
@@ -59,12 +61,14 @@ public class CommitManager : ICommitManager
 
     public async Task<Commit?> GetCommitByShaAsync(ClaimsPrincipal principal, string sha)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         return await _repo.GetCommitByShaAsync(principal.GetTenantIdOrThrow(), sha);
     }
 
 
     public async Task AddCommitAsync(ClaimsPrincipal principal, Commit commit)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         ArgumentNullException.ThrowIfNull(commit.TeamId);
         ArgumentNullException.ThrowIfNull(commit.TestProjectId);
         var projectId = commit.TestProjectId.Value;
@@ -131,6 +135,7 @@ public class CommitManager : ICommitManager
 
     public async Task AddRepositoryAsync(ClaimsPrincipal principal, Repository repo)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         ArgumentNullException.ThrowIfNull(repo.TeamId);
         ArgumentNullException.ThrowIfNull(repo.TestProjectId);
         repo.TenantId = principal.GetTenantIdOrThrow();
@@ -143,11 +148,13 @@ public class CommitManager : ICommitManager
 
     public async Task<Repository?> GetRepoByExternalSystemAsync(ClaimsPrincipal principal, long id)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         return await _repo.GetRepoByExternalSystemAsync(id);
     }
 
     public async Task UpdateRepositoryAsync(ClaimsPrincipal principal, Repository repo)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         repo.Modified = DateTimeOffset.UtcNow;
         repo.ModifiedBy = principal.Identity?.Name;
         await _repo.UpdateRepositoryAsync(repo);
@@ -155,6 +162,7 @@ public class CommitManager : ICommitManager
 
     public async Task UpdateCommitAsync(ClaimsPrincipal principal, Commit commit)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         commit.Modified = DateTimeOffset.UtcNow;
         commit.ModifiedBy = principal.Identity?.Name;
         await _repo.UpdateCommitAsync(commit);

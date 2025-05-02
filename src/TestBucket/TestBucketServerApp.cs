@@ -254,6 +254,9 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, CreateChildRequirementCommand>();
         builder.Services.AddScoped<ICommand, CreateChildFeatureCommand>();
         builder.Services.AddScoped<ICommand, CreateTaskCommand>();
+        builder.Services.AddScoped<ICommand, CreateSpecificationCommand>();
+        builder.Services.AddScoped<ICommand, ImportRequirementsCommand>();
+        
 
 
         builder.Services.AddScoped(typeof(DragAndDropService<>));

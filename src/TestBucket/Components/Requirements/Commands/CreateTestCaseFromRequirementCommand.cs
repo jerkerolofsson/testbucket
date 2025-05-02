@@ -19,13 +19,13 @@ internal class CreateTestCaseFromRequirementCommand : ICommand
 {
     public string Id => "create-test-from-requirement";
 
-    public string Name => _loc["create-test-from-requirement"];
+    public string Name => _reqLoc["create-test-from-requirement"];
 
-    public string Description => _loc["create-test-from-requirement-description"];
+    public string Description => _reqLoc["create-test-from-requirement-description"];
 
     public int SortOrder => 60;
 
-    public string? Folder => _loc["add"];
+    public string? Folder => _reqLoc["add"];
 
     public bool Enabled => _appNav.State.SelectedRequirement is not null && _appNav.State.SelectedProject is not null;
 
@@ -37,7 +37,7 @@ internal class CreateTestCaseFromRequirementCommand : ICommand
 
     public string[] ContextMenuTypes => ["Requirement"];
 
-    private readonly IStringLocalizer<RequirementStrings> _loc;
+    private readonly IStringLocalizer<RequirementStrings> _reqLoc;
     private readonly AppNavigationManager _appNav;
     private readonly RequirementEditorController _requirementEditor;
     private readonly TestCaseEditorController _testCaseEditor;
@@ -48,7 +48,7 @@ internal class CreateTestCaseFromRequirementCommand : ICommand
         RequirementEditorController requirementEditor, 
         TestCaseEditorController testCaseEditor)
     {
-        _loc = loc;
+        _reqLoc = loc;
         _appNav = appNav;
         _requirementEditor = requirementEditor;
         _testCaseEditor = testCaseEditor;

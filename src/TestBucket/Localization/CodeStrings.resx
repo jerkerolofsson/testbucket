@@ -138,6 +138,9 @@
   <data name="components" xml:space="preserve">
     <value>Components</value>
   </data>
+  <data name="dev-lead" xml:space="preserve">
+    <value>Dev. Lead</value>
+  </data>
   <data name="features" xml:space="preserve">
     <value>Features</value>
   </data>
@@ -149,5 +152,8 @@
   </data>
   <data name="systems" xml:space="preserve">
     <value>Systems</value>
+  </data>
+  <data name="test-lead" xml:space="preserve">
+    <value>Test Lead</value>
   </data>
 </root>

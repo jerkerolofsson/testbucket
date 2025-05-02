@@ -1,11 +1,16 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Code/Architecture"
-@layout CodeLayout
+@layout RequirementsLayout
 @inject ArchitectureController controller
+@inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<CodeStrings> loc
 
-<MudStack>
-    <MudText Typo="Typo.h1">@loc["architecture"]</MudText>
+<MudStack Class="pa-2">
+    <MudStack Class="pa-2" Row Style="width: 100%" AlignItems="AlignItems.Center">
+        <MudText Typo="Typo.h1">@loc["architecture"]</MudText>
+        <MudSpacer/>
+        <MudIconButton Href="@appNavigationManager.GetCodeArchitectureYamlToolUrl()" Icon="@Icons.Material.Filled.Edit"/>
+    </MudStack>
     <TestBucket.Components.Code.Controls.ProjectArchitectureView Model="@_model"/>
 </MudStack>
 

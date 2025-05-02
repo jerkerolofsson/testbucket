@@ -23,6 +23,7 @@ internal class RequirementBrowser : TenantBaseService
     private readonly RequirementEditorController _requirementEditorService;
     private readonly IRequirementManager _requirementManager;
     private readonly IStringLocalizer<RequirementStrings> _loc;
+    private readonly IStringLocalizer<CodeStrings> _codeLoc;
     private readonly IDialogService _dialogService;
     private readonly AppNavigationManager _appNavigationManager;
 
@@ -31,13 +32,15 @@ internal class RequirementBrowser : TenantBaseService
         IRequirementManager requirementManager,
         IStringLocalizer<RequirementStrings> loc,
         IDialogService dialogService,
-        AppNavigationManager appNavigationManager) : base(authenticationStateProvider)
+        AppNavigationManager appNavigationManager,
+        IStringLocalizer<CodeStrings> codeLoc) : base(authenticationStateProvider)
     {
         _requirementEditorService = requirementEditorService;
         _requirementManager = requirementManager;
         _loc = loc;
         _dialogService = dialogService;
         _appNavigationManager = appNavigationManager;
+        _codeLoc = codeLoc;
     }
 
     public async Task<RequirementTestLink[]> GetLinksForTestAsync(TestCase test)
@@ -280,7 +283,48 @@ internal class RequirementBrowser : TenantBaseService
         var specificationNodes = specs.Items.Select(x =>CreateSpecificationNode(x)).ToList();
 
         TreeNode<BrowserItem> specificationNode = CreateSpecificationRootNode(specificationNodes);
-        return [specificationNode];
+        TreeNode<BrowserItem> architecture = new TreeNode<BrowserItem>
+        {
+            Expandable = true,
+            Expanded = true,
+            Icon = TbIcons.BoldDuoTone.CodeSquare,
+            Text = _loc["subject"],
+            Children = new List<TreeNode<BrowserItem>>
+            {
+                new TreeNode<BrowserItem>
+                {
+                    Text = _codeLoc["product-architecture"],
+                    Expandable = false,
+                    Icon = TbIcons.BoldDuoTone.CodeSquare,
+                    Value = new BrowserItem
+                    {
+                        Href = _appNavigationManager.GetCodeArchitectureUrl()
+                    }
+                },
+                new TreeNode<BrowserItem>
+                {
+                    Text = _codeLoc["features"],
+                    Expandable = false,
+                    Icon = TbIcons.BoldDuoTone.Epic,
+                    Value = new BrowserItem
+                    {
+                        Href = _appNavigationManager.GetFeaturesUrl()
+                    }
+                },
+                new TreeNode<BrowserItem>
+                {
+                    Text = _codeLoc["commits"],
+                    Expandable = false,
+                    Icon = TbIcons.Git.Commit,
+                    Value = new BrowserItem
+                    {
+                        Href = _appNavigationManager.GetCodeCommitsUrl()
+                    }
+                }
+
+            }
+        };
+        return [specificationNode, architecture];
     }
 
     internal async Task AddFolderAsync(long projectId, long specificationId, long? parentFolderId)

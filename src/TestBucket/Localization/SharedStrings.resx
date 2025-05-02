@@ -425,4 +425,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="backup" xml:space="preserve">
     <value>Backup</value>
   </data>
+  <data name="rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="add" xml:space="preserve">
+    <value>Add</value>
+  </data>
 </root>

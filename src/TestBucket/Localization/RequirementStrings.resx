@@ -156,4 +156,10 @@
   <data name="parent" xml:space="preserve">
     <value>Parent</value>
   </data>
+  <data name="requirement-specifications" xml:space="preserve">
+    <value>Specifications</value>
+  </data>
+  <data name="add" xml:space="preserve">
+    <value>Add</value>
+  </data>
 </root>

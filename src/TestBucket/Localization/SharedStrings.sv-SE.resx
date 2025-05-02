@@ -423,4 +423,10 @@
   <data name="backup" xml:space="preserve">
     <value />
   </data>
+  <data name="rename" xml:space="preserve">
+    <value />
+  </data>
+  <data name="add" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -27,9 +27,26 @@
                 <MudIconButton Class="rounded-0" OnClick="SyncWithActiveDocumentAsync" Icon="@Icons.Material.Filled.CompareArrows" />
             }
 
-            <MudIconButton Class="rounded-0" Icon="@Icons.Material.Filled.Add" OnClick="AddRequirementSpecificationAsync" />
-            <MudIconButton Class="rounded-0" Icon="@Icons.Material.Filled.ImportExport" Href="@(appNav.GetImportSpecificationsUrl())" />
 
+            <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert">
+                @if (appNav.State.SelectedRequirement is not null)
+                {
+                    <RequirementMenuItems Project="@Project" Team="@Team"
+                                          Requirement="appNav.State.SelectedRequirement" />
+                }
+                else if (appNav.State.SelectedRequirementSpecificationFolder is not null)
+                {
+                    <RequirementFolderMenuItems Project="@Project" Team="@Team"
+                                                RequirementFolder="appNav.State.SelectedRequirementSpecificationFolder" />
+                }
+                else if (appNav.State.SelectedRequirementSpecification is not null)
+                {
+                    <RequirementSpecificationMenuItems RequirementSpecification="@appNav.State.SelectedRequirementSpecification" />
+                }
+
+                <MudDivider />
+                <CommandMenuItems TypeName="menu-requirements" />
+            </MudMenu>
         </MudStack>
     </MudStack>
 
@@ -105,8 +122,8 @@
                                 <RequirementSpecificationMenuItems RequirementSpecification="@context.Value.RequirementSpecification"/>
                             }
 
-                            <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => AddRequirementSpecificationAsync()">Add Specification</MudMenuItem>
-                            <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" Href="@(appNav.GetImportSpecificationsUrl())">Import Specification</MudMenuItem>
+                            <MudDivider/>
+                            <CommandMenuItems TypeName="menu-requirements" />
 
                         </ChildContent>
                     </MudMenu>
@@ -202,7 +219,12 @@
             appNav.State.SelectedTestCase = null;
             appNav.State.SelectedTestSuiteFolder = null;
 
-            if (item.Requirement is not null)
+            if (item.Href is not null)
+            {
+                appNav.NavigateTo(item.Href);
+                return;
+            }
+            else if (item.Requirement is not null)
             {
                 appNav.State.SelectedRequirement = item.Requirement;
                 appNav.State.SelectedRequirementSpecificationFolder = null;
@@ -457,6 +479,10 @@
         {
             return [];
         }
+        if(browserItem?.Href is not null)
+        {
+            return [];
+        }
 
         return await browser.BrowseAsync(Team?.Id, Project?.Id, browserItem);
     }
@@ -472,6 +498,7 @@
         };
 
         await editor.AddRequirementSpecificationAsync(spec);
+        appNav.NavigateTo(spec);
     }
 
     private async Task OnDrop(RequirementEntity? requirementEntity, TreeNode<BrowserItem>? targetNode)

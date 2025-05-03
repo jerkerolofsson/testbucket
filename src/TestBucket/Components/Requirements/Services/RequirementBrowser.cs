@@ -283,12 +283,21 @@ internal class RequirementBrowser : TenantBaseService
         var specificationNodes = specs.Items.Select(x =>CreateSpecificationNode(x)).ToList();
 
         TreeNode<BrowserItem> specificationNode = CreateSpecificationRootNode(specificationNodes);
+
+        TreeNode<BrowserItem> milestonesNode = new TreeNode<BrowserItem>
+        {
+            Expandable = true,
+            Expanded = false,
+            Icon = TbIcons.BoldDuoTone.Flag,
+            Text = _loc["milestones"],
+        };
+
         TreeNode<BrowserItem> architecture = new TreeNode<BrowserItem>
         {
             Expandable = true,
             Expanded = true,
             Icon = TbIcons.BoldDuoTone.CodeSquare,
-            Text = _loc["subject"],
+            Text = _codeLoc["subject"],
             Children = new List<TreeNode<BrowserItem>>
             {
                 new TreeNode<BrowserItem>
@@ -324,7 +333,7 @@ internal class RequirementBrowser : TenantBaseService
 
             }
         };
-        return [specificationNode, architecture];
+        return [specificationNode, milestonesNode, architecture];
     }
 
     internal async Task AddFolderAsync(long projectId, long specificationId, long? parentFolderId)

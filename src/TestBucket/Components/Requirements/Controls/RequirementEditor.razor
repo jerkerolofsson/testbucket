@@ -100,6 +100,11 @@
 
                         <RequirementStateSelect State="@State" StateChanged="OnStateChanged" />
 
+                        <Field Row>
+                            <FieldHeader>@loc["assigned-to"]</FieldHeader>
+                            <MudSpacer />
+                            <UserPicker SelectedUserName="@Requirement.AssignedTo" SelectedUserNameChanged="OnAssignedToChanged" />
+                        </Field>
                         <FieldsEditor Requirement="@Requirement" />
 
                         <Field>
@@ -250,6 +255,15 @@
                 _parent = await browser.GetRequirementByIdAsync(Requirement.ParentRequirementId.Value);
             }
             _links = await browser.GetLinksForRequirementAsync(Requirement);
+        }
+    }
+
+    private async Task OnAssignedToChanged(string? user)
+    {
+         if (Requirement is not null)
+        {
+            Requirement.AssignedTo = user;
+            await SaveChangesAsync();
         }
     }
 

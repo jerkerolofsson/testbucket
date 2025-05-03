@@ -55,7 +55,9 @@ namespace TestBucket.Data.Requirements
         public async Task<PagedResult<Requirement>> SearchRequirementsAsync(IEnumerable<FilterSpecification<Requirement>> filters, int offset, int count)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-            var requirements = dbContext.Requirements.Include(x=>x.TestLinks).AsQueryable();
+            var requirements = dbContext.Requirements
+                .Include(x=>x.RequirementFields!).ThenInclude(x=>x.FieldDefinition)
+                .Include(x=>x.TestLinks).AsQueryable();
 
             foreach (var filter in filters)
             {

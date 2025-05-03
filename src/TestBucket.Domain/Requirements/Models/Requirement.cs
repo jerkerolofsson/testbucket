@@ -84,6 +84,11 @@ public class Requirement : RequirementEntity
     public string? RequirementType { get; set; }
 
     /// <summary>
+    /// Assigned to user
+    /// </summary>
+    public string? AssignedTo { get; set; }
+
+    /// <summary>
     /// Known type of the requiremnt
     /// </summary>
     public MappedRequirementType? MappedType { get; set; }

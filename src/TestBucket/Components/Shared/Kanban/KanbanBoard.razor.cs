@@ -17,6 +17,8 @@ public partial class KanbanBoard<[DynamicallyAccessedMembers(DynamicallyAccessed
     /// </summary>
     [Parameter] public Func<T, string>? GetColumnFunc { get; set; }
 
+    [Parameter] public Func<T, int>? ColorHashFunc { get; set; }
+
     [Parameter] public Func<T, string, ValueTask>? SetColumnFunc { get; set; }
 
     private IEnumerable<string> GetColumns()

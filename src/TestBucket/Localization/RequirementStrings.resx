@@ -162,4 +162,7 @@
   <data name="add" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="delete-folder" xml:space="preserve">
+    <value>Delete folder</value>
+  </data>
 </root>

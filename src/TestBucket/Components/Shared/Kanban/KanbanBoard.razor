@@ -12,8 +12,15 @@
 
                     @foreach (var item in GetItemsInColumn(column))
                     {
+                        int hashCode = 0;
+                        if(ColorHashFunc is not null)
+                        {
+                            hashCode = ColorHashFunc(item);
+                            hashCode = Math.Abs(hashCode) % 10;
+                        }
+
                         <Draggable T="T" Data="@item">
-                            <div class="card">
+                            <div class="card" data-hash="@hashCode">
                                 @if(ItemRenderer is not null)
                                 {
                                     @ItemRenderer(item)

@@ -1,0 +1,171 @@
+﻿@using TestBucket.Components.Requirements.Extensions
+@using TestBucket.Components.Shared.Kanban
+@using TestBucket.Contracts.Requirements.States
+@using TestBucket.Domain.States
+@using TestBucket.Domain
+@using TestBucket.Formats.Dtos
+@inject ProjectController controller
+@inject RequirementEditorController requirementEditor
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<RequirementStrings> reqLoc
+
+<MudStack Spacing="1">
+
+    <MudStack Row>
+        <MudToggleGroup T="KanbanGroupBy" Value="@_groupBy" ValueChanged="GroupByChanged" SelectionMode="SelectionMode.SingleSelection">
+            <MudToggleItem Value="@KanbanGroupBy.State" Text="@reqLoc["state"]"/>
+            <MudToggleItem Value="@KanbanGroupBy.Feature" Text="@reqLoc["feature"]" />
+            <MudToggleItem Value="@KanbanGroupBy.Milestone" Text="@reqLoc["milestone"]"/>
+            <MudToggleItem Value="@KanbanGroupBy.Assignee" Text="@reqLoc["assigned-to"]"/>
+        </MudToggleGroup>
+    </MudStack>
+
+    <KanbanBoard T="Requirement" ColorHashFunc="GetColorHash" GetColumnFunc="GetState" Items="@_requirements" SetColumnFunc="SetStateAsync" Columns="@_columns">
+        <ItemRenderer>
+            <MudStack @onclick="()=>OnClicked(context)">
+
+                <MudStack Row AlignItems="AlignItems.Center">
+                    <MudIcon Icon="@RequirementIcons.GetIcon(context)" />
+                    @context.Name
+                </MudStack>
+                <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.FlexEnd">
+                    @if (context.GetMilestone() is not null)
+                    {
+                        <MudStack Row AlignItems="AlignItems.Center" Spacing="0">
+                            <MudIcon Icon="@TbIcons.BoldDuoTone.Flag" T="string"/>@context.GetMilestone()
+                        </MudStack>
+                    }
+                    @if (context.AssignedTo is not null)
+                    {
+                        <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@context.AssignedTo" />
+                    }
+                </MudStack>
+            </MudStack>
+        </ItemRenderer>
+    </KanbanBoard>
+
+</MudStack>
+
+@code {
+
+    [Parameter] public long? ProjectId { get; set; }
+    [Parameter] public IReadOnlyList<Requirement>? Requirements { get; set; }
+
+    private KanbanGroupBy _groupBy = KanbanGroupBy.State;
+    private List<string> _columns = [];
+    private string _defaultColumn = RequirementStates.Draft;
+
+    private List<Requirement> _requirements = [];
+
+    private async Task GroupByChanged(KanbanGroupBy groupBy)
+    {
+        _groupBy = groupBy;
+        await LoadColumnsAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadColumnsAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadColumnsAsync();
+    }
+
+    private async Task LoadColumnsAsync()
+    {
+        _requirements.Clear();
+        if (Requirements is not null)
+        {
+            _requirements.AddRange(Requirements);
+        }
+        if (ProjectId is not null)
+        {
+            switch (_groupBy)
+            {
+                case KanbanGroupBy.Assignee:
+                    _columns = ["unassigned", .. _requirements.Select(x => x.AssignedTo).Where(x => x != null).Select(x => x!).Distinct().OrderBy(x => x)];
+                    break;
+                case KanbanGroupBy.Milestone:
+                    _columns = ["unassigned", .. _requirements.Select(x => x.GetMilestone()).Where(x => x != null).Select(x => x!).Distinct().OrderBy(x=>x)];
+                    break;
+                case KanbanGroupBy.Feature:
+                    _columns = ["unassigned", .. _requirements.Select(x => x.GetFeature()).Where(x => x != null).Select(x => x!).Distinct().OrderBy(x => x)];
+                    break;
+                case KanbanGroupBy.State:
+                    var states = await controller.GetRequirementStatesAsync(ProjectId.Value);
+                    _columns = states.Select(x => x.Name ?? RequirementStates.Draft).ToList();
+                    _defaultColumn = _columns.FirstOrDefault() ?? RequirementStates.Draft;
+                    break;
+            }
+        }
+    }
+
+    private int GetColorHash(Requirement requirement)
+    {
+        if(requirement.RootRequirementId is not null)
+        {
+            return (int)(requirement.RootRequirementId.Value) % 1000;
+        }
+        if(requirement.ParentRequirementId is not null)
+        {
+            return (int)(requirement.ParentRequirementId.Value) % 1000;
+        }
+        return (int)(requirement.Id) % 1000;
+    }
+
+    private string GetState(Requirement requirement)
+    {
+        switch(_groupBy)
+        {
+            case KanbanGroupBy.Milestone:
+                return requirement.GetMilestone() ?? "unassigned";
+            
+                case KanbanGroupBy.Feature:
+                return requirement.GetFeature() ?? "unassigned";
+
+            case KanbanGroupBy.Assignee:
+                return requirement.AssignedTo ?? "unassigned";
+
+            default:
+            case KanbanGroupBy.State:
+                return requirement.State ?? _defaultColumn;
+        }
+    }
+    private async ValueTask SetStateAsync(Requirement requirement, string state)
+    {
+        switch (_groupBy)
+        {
+            case KanbanGroupBy.Assignee:
+                requirement.AssignedTo = state == "unassigned" ? null : state;
+                await requirementEditor.SaveRequirementAsync(requirement);
+                break;
+                
+            case KanbanGroupBy.Milestone:
+                await requirementEditor.SetFieldAsync(requirement, TraitType.Milestone, state == "unassigned" ? null : state);
+                break;
+
+            case KanbanGroupBy.Feature:
+                await requirementEditor.SetFieldAsync(requirement, TraitType.Feature, state == "unassigned" ? null : state);
+                break;
+
+            case KanbanGroupBy.State:
+                requirement.State = state;
+
+                if(requirement.TestProjectId is not null)
+                {
+                    var states = await controller.GetRequirementStatesAsync(requirement.TestProjectId.Value);
+                    requirement.MappedState = states.Where(x => x.Name == state).Select(x => x.MappedState).FirstOrDefault();
+                }
+                await requirementEditor.SaveRequirementAsync(requirement);
+                break;
+        }
+    }
+
+
+    private void OnClicked(Requirement requirement)
+    {
+        appNavigationManager.NavigateTo(requirement);
+    }
+}

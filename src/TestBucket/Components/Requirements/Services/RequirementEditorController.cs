@@ -13,6 +13,9 @@ using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Traceability;
 using TestBucket.Domain.Traceability.Models;
 using TestBucket.Localization;
+using TestBucket.Traits.Core;
+using Plotly.Blazor.Traces.IndicatorLib;
+using TestBucket.Domain.Requirements.Fields;
 
 namespace TestBucket.Components.Requirements.Services;
 
@@ -41,6 +44,14 @@ internal class RequirementEditorController : TenantBaseService
         _manager = manager;
         _dialogService = dialogService;
         _mediator = mediator;
+    }
+
+    public async Task SetFieldAsync(Requirement requirement, TraitType type, string? value)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
+
+        await _mediator.Send(new SetRequirementFieldRequest(principal, requirement, type, value));
     }
 
     public async Task<TraceabilityNode> DiscoverTraceabilityAsync(Requirement requirement, int depth)

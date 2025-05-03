@@ -39,6 +39,17 @@ namespace TestBucket.Formats.Dtos
             set => SetAttribute(TraitType.InstanceId, value);
         }
 
+
+        /// <summary>
+        /// Milestone
+        /// </summary>
+        [JsonIgnore]
+        public string? Milestone
+        {
+            get => GetAttribute(TraitType.Milestone);
+            set => SetAttribute(TraitType.Milestone, value);
+        }
+
         /// <summary>
         /// Name attribute (test case name, test suite name, test run name etc)
         /// </summary>

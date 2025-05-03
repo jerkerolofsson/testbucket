@@ -48,6 +48,11 @@ public class AppNavigationManager
         public TestCase? SelectedTestCase { get; set; }
 
         /// <summary>
+        /// Selected test run
+        /// </summary>
+        public TestRun? SelectedTestRun { get; set; }
+
+        /// <summary>
         /// Selected test case run
         /// </summary>
         public TestCaseRun? SelectedTestCaseRun { get; set; }
@@ -399,6 +404,7 @@ public class AppNavigationManager
 
     public void NavigateTo(TestRun testRun, bool forceLoad = false)
     {
+        this.State.SelectedTestRun = testRun;
         var url = GetUrl(testRun);
         _navigationManager.NavigateTo(url, forceLoad);
     }
@@ -412,6 +418,7 @@ public class AppNavigationManager
 
         this.State.SelectedTestSuiteFolder = folder;
         this.State.SelectedTestCase = null;
+        this.State.SelectedTestRun = null;
         var url = GetUrl(folder);
         _navigationManager.NavigateTo(url, forceLoad);
     }
@@ -431,12 +438,14 @@ public class AppNavigationManager
         this.State.SelectedTestSuite = suite;
         this.State.SelectedTestSuiteFolder = null;
         this.State.SelectedTestCase = null;
+        this.State.SelectedTestRun = null;
         var url = GetUrl(suite);
         _navigationManager.NavigateTo(url, forceLoad);
     }
     public void NavigateTo(TestCase testCase, bool forceLoad = false)
     {
         this.State.SelectedTestCase = testCase;
+        this.State.SelectedTestRun = null;
         var url = GetUrl(testCase);
         _navigationManager.NavigateTo(url, forceLoad);
     }

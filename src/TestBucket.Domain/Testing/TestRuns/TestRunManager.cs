@@ -235,4 +235,9 @@ internal class TestRunManager : ITestRunManager
 
         return await _testCaseRepo.SearchTestCaseRunsAsync(filters, query.Offset, query.Count);
     }
+
+    public async Task<TestRun> DuplicateTestRunAsync(ClaimsPrincipal principal, TestRun run)
+    {
+        return await _mediator.Send(new Duplication.DuplicateTestRunRequest(principal, run));
+    }
 }

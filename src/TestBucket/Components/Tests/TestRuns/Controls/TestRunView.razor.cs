@@ -10,7 +10,6 @@ public partial class TestRunView
 {
     [Parameter] public TestRun? TestRun { get; set; }
 
-    //private TestCase? _selectedTestCase = null;
     private TestCaseRun? _selectedTestCaseRun = null;
     private TestCaseRunGrid? testCaseRunGrid;
     private string _markdown = "";

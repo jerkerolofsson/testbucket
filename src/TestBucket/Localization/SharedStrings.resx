@@ -408,7 +408,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Option</value>
   </data>
   <data name="data-source" xml:space="preserve">
-    <value>Data Source</value>
+    <value>Data source</value>
   </data>
   <data name="options" xml:space="preserve">
     <value>options</value>
@@ -430,5 +430,26 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="add" xml:space="preserve">
     <value>Add</value>
+  </data>
+  <data name="create-test-run" xml:space="preserve">
+    <value>Create run</value>
+  </data>
+  <data name="edit-test-run" xml:space="preserve">
+    <value>Edit run</value>
+  </data>
+  <data name="pick-test-run" xml:space="preserve">
+    <value>Pick run</value>
+  </data>
+  <data name="duplicate-test-run" xml:space="preserve">
+    <value>Duplicate run</value>
+  </data>
+  <data name="delete-test-run" xml:space="preserve">
+    <value>Delete run</value>
+  </data>
+  <data name="new-test" xml:space="preserve">
+    <value>New test</value>
+  </data>
+  <data name="new-shared-steps" xml:space="preserve">
+    <value>New shared steps</value>
   </data>
 </root>

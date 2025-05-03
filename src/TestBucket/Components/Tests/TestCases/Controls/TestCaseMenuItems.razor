@@ -1,4 +1,5 @@
-﻿@inject TestBrowser testBrowser
+﻿@using TestBucket.Components.Tests.TestRuns.Controllers
+@inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject ITestCaseManager testCaseManager
 @inject ITestRunManager testRunManager
@@ -15,8 +16,6 @@
     <MudMenuItem Icon="@Icons.Material.Filled.Code" OnClick="EditTestCaseAutomationLinkAsync">Link to automated test</MudMenuItem>
 
     <CommandMenuItems TypeName="TestCase" />
-    <MudDivider />
-    <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="DeleteTestCaseAsync" Label="@loc["delete"]" />
 }
 @code {
     [Parameter] public TestCase? TestCase { get; set; }

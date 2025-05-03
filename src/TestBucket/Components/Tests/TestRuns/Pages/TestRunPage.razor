@@ -3,6 +3,7 @@
 @using TestBucket.Components.Tests.Layouts
 @layout TestingLayout
 @inject TestBrowser testBrowser
+@inject AppNavigationManager appNavigationManager
 
 @if(_testRun is not null)
 {
@@ -31,6 +32,7 @@ else
         if (_testRun is null || _testRun.Id != RunId)
         {
             _testRun = await testBrowser.GetTestRunByIdAsync(RunId);
+            appNavigationManager.State.SelectedTestRun = _testRun;
         }
     }
 }

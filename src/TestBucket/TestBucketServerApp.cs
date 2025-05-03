@@ -39,6 +39,8 @@ using TestBucket.Components.Tests.Requirements.Commands;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using TestBucket.Components.Settings.Links;
 using TestBucket.Components.Code.Controllers;
+using TestBucket.Components.Tests.TestRuns.Commands;
+using TestBucket.Components.Tests.TestRuns.Controllers;
 
 namespace TestBucket;
 
@@ -238,6 +240,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, DuplicateTestCommand>();
         builder.Services.AddScoped<ICommand, NewTestCommand>();
         builder.Services.AddScoped<ICommand, NewSharedStepsCommand>();
+        builder.Services.AddScoped<ICommand, DeleteTestCommand>();
 
         builder.Services.AddScoped<ICommand, LinkIssueCommand>();
         builder.Services.AddScoped<ICommand, DeleteLinkedIssueCommand>();
@@ -256,7 +259,10 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, CreateTaskCommand>();
         builder.Services.AddScoped<ICommand, CreateSpecificationCommand>();
         builder.Services.AddScoped<ICommand, ImportRequirementsCommand>();
-        
+
+        builder.Services.AddScoped<ICommand, DeleteRunCommand>();
+        builder.Services.AddScoped<ICommand, DuplicateRunCommand>();
+
 
 
         builder.Services.AddScoped(typeof(DragAndDropService<>));

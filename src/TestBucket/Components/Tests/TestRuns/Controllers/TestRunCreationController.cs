@@ -11,15 +11,21 @@ using TestBucket.Domain.Tenants;
 using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.Testing.Compiler;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Domain.TestResources.Allocation;
 
-namespace TestBucket.Components.Tests.Services;
+namespace TestBucket.Components.Tests.TestRuns.Controllers;
 
 internal class TestRunCreationController : TenantBaseService
 {
     private readonly AppNavigationManager _appNavigationManager;
     private readonly TestCaseEditorController _testCaseEditor;
-    private readonly ITestCaseRepository _testCaseRepository;
+    private readonly ITestCaseManager _testCaseManager;
+    private readonly ITestSuiteManager _testSuiteManager;
+    private readonly ITestRunManager _testRunManager;
+
     private readonly IDialogService _dialogService;
     private readonly IMarkdownAutomationRunner _markdownAutomationRunner;
     private readonly ITestEnvironmentManager _testEnvironmentManager;
@@ -32,18 +38,19 @@ internal class TestRunCreationController : TenantBaseService
         AuthenticationStateProvider authenticationStateProvider,
         TestCaseEditorController testCaseEditor,
         IDialogService dialogService,
-        ITestCaseRepository testCaseRepository,
         IMarkdownAutomationRunner markdownAutomationRunner,
         ITestEnvironmentManager testEnvironmentManager,
         AppNavigationManager appNavigationManager,
         IPipelineProjectManager pipelineProjectManager,
         ITenantManager tenantManager,
         IMediator mediator,
-        ITestCompiler compiler) : base(authenticationStateProvider)
+        ITestCompiler compiler,
+        ITestCaseManager testCaseManager,
+        ITestSuiteManager testSuiteManager,
+        ITestRunManager testRunManager) : base(authenticationStateProvider)
     {
         _testCaseEditor = testCaseEditor;
         _dialogService = dialogService;
-        _testCaseRepository = testCaseRepository;
         _markdownAutomationRunner = markdownAutomationRunner;
         _testEnvironmentManager = testEnvironmentManager;
         _appNavigationManager = appNavigationManager;
@@ -51,6 +58,9 @@ internal class TestRunCreationController : TenantBaseService
         _tenantManager = tenantManager;
         _mediator = mediator;
         _compiler = compiler;
+        _testCaseManager = testCaseManager;
+        _testSuiteManager = testSuiteManager;
+        _testRunManager = testRunManager;
     }
 
     public async Task<TestRun?> CreateTestRunAsync(TestSuite testSuite, long[]testCaseIds, bool startAutomation)
@@ -198,8 +208,8 @@ internal class TestRunCreationController : TenantBaseService
     /// <exception cref="ArgumentException"></exception>
     public async Task AddTestCaseToRunAsync(TestRun run, long testCaseId)
     {
-        var tenantId = await GetTenantIdAsync();
-        TestCase? testCase = await _testCaseRepository.GetTestCaseByIdAsync(tenantId, testCaseId);
+        var principal = await GetUserClaimsPrincipalAsync();
+        TestCase? testCase = await _testCaseManager.GetTestCaseByIdAsync(principal, testCaseId);
         if (testCase is null)
         {
             throw new ArgumentException("Test case with the specified ID was not found!");
@@ -216,7 +226,7 @@ internal class TestRunCreationController : TenantBaseService
     /// <exception cref="ArgumentException"></exception>
     internal async Task AddTestCaseToRunAsync(TestRun run, TestCase testCase)
     {
-        var tenantId = await GetTenantIdAsync();
+        var principal = await GetUserClaimsPrincipalAsync();
 
         if (run.TestProjectId is null)
         {
@@ -229,14 +239,10 @@ internal class TestRunCreationController : TenantBaseService
             TestCaseId = testCase.Id,
             TestRunId = run.Id,
             TestProjectId = run.TestProjectId.Value,
-            TenantId = tenantId,
             State = "Not Started",
         };
 
-        await _testCaseEditor.AddTestCaseRunAsync(testCaseRun);
-
-        // Todo: Assign?
-
+        await _testRunManager.AddTestCaseRunAsync(principal, testCaseRun);
     }
 
     internal async Task EvalMarkdownCodeAsync(TestCase test, string language, string code, CancellationToken cancellationToken = default)
@@ -248,7 +254,7 @@ internal class TestRunCreationController : TenantBaseService
 
         if (await _markdownAutomationRunner.SupportsLanguageAsync(principal, language))
         {
-            var testSuite = await _testCaseRepository.GetTestSuiteByIdAsync(test.TenantId, test.TestSuiteId);
+            var testSuite = await _testSuiteManager.GetTestSuiteByIdAsync(principal, test.TestSuiteId);
             var defaultEnvironment = await _testEnvironmentManager.GetDefaultTestEnvironmentAsync(principal, test.TestProjectId.Value);
 
             if (test?.TeamId is not null && testSuite is not null)
@@ -347,4 +353,11 @@ internal class TestRunCreationController : TenantBaseService
         //}
     }
 
+    internal async Task DuplicateTestRunAsync(TestRun run)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _testRunManager.DuplicateTestRunAsync(principal, run);
+
+        
+    }
 }

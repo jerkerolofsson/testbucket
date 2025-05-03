@@ -99,5 +99,13 @@ public interface ITestRunManager
     Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId);
     Task<TestCaseRun?> GetTestCaseRunByIdAsync(ClaimsPrincipal principal, long id);
 
+    /// <summary>
+    /// Duplicates the run including fields and tests
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="run"></param>
+    /// <returns></returns>
+    Task<TestRun> DuplicateTestRunAsync(ClaimsPrincipal principal, TestRun run);
+
     #endregion Test Case Runs
 }

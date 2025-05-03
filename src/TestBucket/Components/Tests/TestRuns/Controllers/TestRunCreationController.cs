@@ -353,11 +353,9 @@ internal class TestRunCreationController : TenantBaseService
         //}
     }
 
-    internal async Task DuplicateTestRunAsync(TestRun run)
+    internal async Task<TestRun> DuplicateTestRunAsync(TestRun run)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        await _testRunManager.DuplicateTestRunAsync(principal, run);
-
-        
+        return await _testRunManager.DuplicateTestRunAsync(principal, run);
     }
 }

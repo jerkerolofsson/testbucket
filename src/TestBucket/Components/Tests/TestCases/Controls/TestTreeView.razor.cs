@@ -525,7 +525,6 @@ public partial class TestTreeView
                 {
                     testrunsNode.Children = [.. testrunsNode.Children, childNode];
                 }
-                return;
             }
             this.StateHasChanged();
         });

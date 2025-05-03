@@ -293,7 +293,7 @@ internal class RequirementBrowser : TenantBaseService
             {
                 new TreeNode<BrowserItem>
                 {
-                    Text = _codeLoc["product-architecture"],
+                    Text = _codeLoc["architecture"],
                     Expandable = false,
                     Icon = TbIcons.BoldDuoTone.CodeSquare,
                     Value = new BrowserItem

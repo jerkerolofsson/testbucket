@@ -41,6 +41,7 @@ internal class DuplicateRunCommand : ICommand
             return;
         }
 
-        await _controller.DuplicateTestRunAsync(_appNavigationManager.State.SelectedTestRun);
+        var run = await _controller.DuplicateTestRunAsync(_appNavigationManager.State.SelectedTestRun);
+        _appNavigationManager.NavigateTo(run);
     }
 }

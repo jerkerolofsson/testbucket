@@ -14,7 +14,6 @@ using TestBucket.Domain.Traceability;
 using TestBucket.Domain.Traceability.Models;
 using TestBucket.Localization;
 using TestBucket.Traits.Core;
-using Plotly.Blazor.Traces.IndicatorLib;
 using TestBucket.Domain.Requirements.Fields;
 
 namespace TestBucket.Components.Requirements.Services;
@@ -44,6 +43,19 @@ internal class RequirementEditorController : TenantBaseService
         _manager = manager;
         _dialogService = dialogService;
         _mediator = mediator;
+    }
+
+    public async Task OpenEditDialogAsync(Requirement requirement)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        var parameters = new DialogParameters<EditRequirementDialog>()
+        {
+            { x => x.Requirement, requirement }
+        };
+
+        var dialog = await _dialogService.ShowAsync<EditRequirementDialog>(requirement.Name, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
     }
 
     public async Task SetFieldAsync(Requirement requirement, TraitType type, string? value)
@@ -218,7 +230,7 @@ internal class RequirementEditorController : TenantBaseService
             { x => x.Team, team },
         };
 
-        var dialog = await _dialogService.ShowAsync<PickTestCaseDialog>("Select test", parameters, DefaultBehaviors.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<PickTestCaseDialog>(_loc["select-test"], parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if (result?.Data is TestCase testCase)
         {

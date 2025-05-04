@@ -1,0 +1,18 @@
+﻿.tb-user-picker {
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: var(--mud-default-borderradius);
+}
+
+.tb-user-picker.mud-input-outlined {
+    border-color: var(--mud-palette-lines-inputs);
+    border-width: 1px;
+    border-style: solid;
+    transition: border-width,border-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms
+}
+
+.tb-user-picker.mud-input-outlined:hover {
+    border-color: var(--mud-palette-action-default);
+}

@@ -165,4 +165,28 @@
   <data name="delete-folder" xml:space="preserve">
     <value>Delete folder</value>
   </data>
+  <data name="type-epic" xml:space="preserve">
+    <value>Epic</value>
+  </data>
+  <data name="type-general" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="type-story" xml:space="preserve">
+    <value>Story</value>
+  </data>
+  <data name="type-initiative" xml:space="preserve">
+    <value>Initiative</value>
+  </data>
+  <data name="type-task" xml:space="preserve">
+    <value>Task</value>
+  </data>
+  <data name="standard" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="type-business" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="type-regulatory" xml:space="preserve">
+    <value>Regulatory</value>
+  </data>
 </root>

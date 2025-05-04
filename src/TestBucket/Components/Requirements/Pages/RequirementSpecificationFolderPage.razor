@@ -7,7 +7,7 @@
 @if(_folder is not null)
 {
     <MudStack Class="pa-2" Style="width: 100%">
-        <RequirementKanbanBoard Requirements="@_requirements" ProjectId="@_folder.TestProjectId" />
+        <RequirementKanbanBoard Title="@_folder.Name" Requirements="@_requirements" ProjectId="@_folder.TestProjectId" />
     </MudStack>
 }
 

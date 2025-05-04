@@ -2,8 +2,8 @@
 @using TestBucket.Components.Shared.Themeing
 @inject ThemingService theming
 
-<MudPaper Class="@CssClass" Style="@CssStyle">
-    <MudStack Spacing="@Spacing" Row="@Row">
+<MudPaper Class="@CssClass">
+    <MudStack Spacing="@Spacing" Row="@Row" Style="@Style">
         @ChildContent
     </MudStack>
 </MudPaper>
@@ -20,5 +20,5 @@
         .AddClass("column", !Row)
         .Build();
 
-    public string CssStyle => "";
+    [Parameter] public string Style { get; set; } = "";
 }

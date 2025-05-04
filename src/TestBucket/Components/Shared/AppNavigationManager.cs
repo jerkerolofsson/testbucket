@@ -72,6 +72,11 @@ public class AppNavigationManager
         /// </summary>
         public TestProject? SelectedProject { get; set; }
 
+        /// <summary>
+        /// Selected team
+        /// </summary>
+        public Team? SelectedTeam { get; set; }
+
         public TestTreeView? TestTreeView { get; set; }
         public RequirementTreeView? RequirementTreeView { get; set; }
     }

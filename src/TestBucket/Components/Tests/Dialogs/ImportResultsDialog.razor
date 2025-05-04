@@ -55,7 +55,7 @@
             {
                 <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
             }
-            <MudButton OnClick="Close">@loc["cancek"]</MudButton>
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
@@ -64,8 +64,7 @@
 @code {
     private ImportOptions _options = new();
 
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; } = default!;
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
 
     private Task OnFileUploaded(FileResource file)
     {

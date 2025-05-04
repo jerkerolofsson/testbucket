@@ -10,6 +10,7 @@
 @inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<RequirementStrings> reqLoc
+@inject IStringLocalizer<StateStrings> stateLoc
 
 @if(Requirement is not null)
 {
@@ -56,7 +57,7 @@
                         <MudText Typo="Typo.h1">@Requirement.Name</MudText>
                     }
 
-                    @if (_selectedTab == "edit" || _selectedTab == "preview")
+                    @if (_selectedTab == "edit" || _selectedTab == "view")
                     {
                         <MarkdownEditor 
                         @ref="_editor"
@@ -137,8 +138,9 @@
                             <MudSelect T="string" Value="@Requirement.RequirementType" ValueChanged="OnTypeChanged" Variant="Variant.Outlined">
                                 @foreach (var type in RequirementTypes.AllTypes)
                                 {
+                                    var label = "type-" + type.ToLower();
                                     <MudSelectItem Value="@type">
-                                        @reqLoc[type.ToLower()]
+                                        @reqLoc[label]
                                     </MudSelectItem>
                                 }
                             </MudSelect>
@@ -148,7 +150,7 @@
                     {
                         <RequirementTestLinksTable Team="@Team" Project="@Project" Requirement="@Requirement" />
                     }
-                    else if(_selectedTab == "preview")
+                    else if(_selectedTab == "view")
                     {
                         <Field>
                             <FieldHeader>@loc["created"]</FieldHeader>
@@ -159,7 +161,7 @@
                         </Field>
 
                         <Field Row>
-                            <FieldHeader>@loc["state"]</FieldHeader>
+                            <FieldHeader>@stateLoc["state"]</FieldHeader>
                             <MudSpacer/>
                             <div>@Requirement.State</div>
                         </Field>
@@ -167,7 +169,11 @@
                         <Field Row>
                             <FieldHeader>@reqLoc["type"]</FieldHeader>
                             <MudSpacer/>
-                            <div>@Requirement.RequirementType</div>
+                            @if(Requirement.RequirementType is not null)
+                            {
+                                var label = "type-" + Requirement.RequirementType.ToLower();
+                                <div>@reqLoc[label]</div>
+                            }
                         </Field>
 
                         @if (_parent is not null)
@@ -197,8 +203,8 @@
     private Requirement? _parent;
     private RequirementTestLink[] _links = [];
 
-    private string[] TabLabels => ["edit", "preview", "trace"];
-    private string _selectedTab = "preview";
+    private string[] TabLabels => ["view", "trace", "edit"];
+    private string _selectedTab = "view";
 
     private async Task OnSelectedTabChanged(string label)
     {

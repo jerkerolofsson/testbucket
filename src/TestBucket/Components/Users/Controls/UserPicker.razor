@@ -1,4 +1,5 @@
-﻿@using TestBucket.Components.Shared.Profile
+﻿@using MudBlazor.Utilities
+@using TestBucket.Components.Shared.Profile
 @using TestBucket.Components.Users.Services
 @using TestBucket.Data.Identity;
 @using TestBucket.Domain.Identity.Models
@@ -6,7 +7,7 @@
 @inject UserController userController
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-<div @onclick="ToggleOpen" class="cursor-pointer tb-user-picker">
+<div @onclick="ToggleOpen" class="@CssClass">
     <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
         @if (!string.IsNullOrEmpty(_model.Name))
         {
@@ -20,49 +21,52 @@
             <MudText Style="opacity: 0.5">@loc["unassigned"]</MudText>
         }
     </MudStack>
-</div>
 
+
+    <MudPopover Open="@_open" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter">
+        <EditForm Model="_model" OnValidSubmit="OnValidSubmit">
+            <MudStack Class="pa-5">
+                @if (_recent.Count > 0)
+                {
+                    <MudText Typo="Typo.h6">@loc["recent"]</MudText>
+                    <MudStack Row Class="pa-3">
+                        @foreach (var recent in _recent)
+                        {
+                            <UserProfileImage Class="cursor-pointer"
+                                              UserName="@recent" ImageClicked="async () => await OnValueChangedAsync(recent)" />
+                        }
+                    </MudStack>
+                }
+
+                <MudText Typo="Typo.h6" Class="mt-5">@loc["user"]</MudText>
+                <MudAutocomplete Clearable="@Clearable"
+                                 T="string"
+                                 Value="@_model.Name"
+                                 ValueChanged="OnValueChangedAsync"
+                                 SearchFunc="@Search"
+                                 Context="userName"
+                                 Variant="Variant.Outlined">
+                    <ItemTemplate>
+                        <MudStack Row Spacing="1">
+                            <UserProfileImage UserName="@userName" />
+                            <MudText>@userName</MudText>
+                        </MudStack>
+                    </ItemTemplate>
+                </MudAutocomplete>
+            </MudStack>
+        </EditForm>
+    </MudPopover>
+</div>
 <MudOverlay @bind-Visible="_open" AutoClose="true" DarkBackground />
 
-<MudPopover Open="@_open" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" >
-    <EditForm Model="_model" OnValidSubmit="OnValidSubmit">
-        <MudStack Class="pa-5">
-            @if(_recent.Count > 0)
-            {
-                <MudText Typo="Typo.h6">@loc["recent"]</MudText>
-                <MudStack Row Class="pa-3">
-                    @foreach(var recent in _recent)
-                    {
-                        <UserProfileImage 
-                            Class="cursor-pointer"
-                            UserName="@recent" ImageClicked="async () => await OnValueChangedAsync(recent)" />
-                    }
-                </MudStack>
-            }
-
-            <MudText Typo="Typo.h6" Class="mt-5">@loc["user"]</MudText>
-            <MudAutocomplete Clearable="@Clearable" 
-            T="string"
-            Value="@_model.Name"
-            ValueChanged="OnValueChangedAsync"
-            SearchFunc="@Search"
-            Context="userName"
-            Variant="Variant.Outlined">
-                <ItemTemplate>
-                    <MudStack Row Spacing="1">
-                        <UserProfileImage UserName="@userName" />
-                        <MudText>@userName</MudText>
-                    </MudStack>
-                </ItemTemplate>
-            </MudAutocomplete>
-        </MudStack>
-    </EditForm>
-</MudPopover>
 
 @code {
     [Parameter] public bool ReadOnly { get; set; } = false;
     [Parameter] public bool Clearable { get; set; } = false;
     [Parameter] public string? SelectedUserName { get; set; }
+
+    [Parameter] public Variant Variant {get;set;} = Variant.Text;
+
     [Parameter] public EventCallback<string> SelectedUserNameChanged { get; set; }
     private bool _open = false;
     private List<string> _recent = [];
@@ -70,6 +74,13 @@
     private record class InputModel(string Name);
     private InputModel _model = new("");
     private bool _loadedRecents = false;
+
+
+    public string CssClass => new CssBuilder("tb-user-picker")
+        .AddClass("cursor-pointer")
+        .AddClass("mud-input-outlined", Variant == Variant.Outlined)
+        .AddClass("mud-input-filled", Variant == Variant.Filled)
+        .Build();
 
     protected override void OnParametersSet()
     {

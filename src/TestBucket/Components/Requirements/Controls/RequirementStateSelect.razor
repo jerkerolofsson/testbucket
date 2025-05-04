@@ -5,26 +5,22 @@
 @inject ProjectController controller
 @inject IStringLocalizer<StateStrings> loc
 
-<Field Row>
-    <FieldHeader>@loc["state"]</FieldHeader>
-    <MudSpacer />
-    <MudSelect Variant="Variant.Outlined" T="RequirementState" Value="@State" ValueChanged="OnStateChanged">
-        @foreach (var state in _states)
-        {
-            <MudSelectItem Value="@state">
-                @if (state.MappedState == MappedRequirementState.Other)
-                {
-                    @state.Name
-                }
-                else
-                {
-                    var name = state.MappedState.ToString().ToLower();
-                    @loc[name]
-                }
-            </MudSelectItem>
-        }
-    </MudSelect>
-</Field>
+<MudSelect Variant="Variant.Outlined" T="RequirementState" Value="@State" ValueChanged="OnStateChanged">
+    @foreach (var state in _states)
+    {
+        <MudSelectItem Value="@state">
+            @if (state.MappedState == MappedRequirementState.Other)
+            {
+                @state.Name
+            }
+            else
+            {
+                var name = state.MappedState.ToString().ToLower();
+                @loc[name]
+            }
+        </MudSelectItem>
+    }
+</MudSelect>
 
 @code {
     [Parameter] public long TestProjectId { get; set; }

@@ -1,6 +1,7 @@
 ﻿using OneOf;
 
 using TestBucket.Components.Account;
+using TestBucket.Components.Shared;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Teams.Models;
@@ -12,16 +13,21 @@ internal class TeamController : TenantBaseService
     private readonly ITeamRepository _teamRepository;
     private readonly ITeamManager _teamManager;
     private readonly UserPreferencesService _userPreferencesService;
+    private readonly AppNavigationManager _appNavigationManager;
 
     public TeamController(
         ITeamRepository teamRepository,
         UserPreferencesService userPreferencesService,
         AuthenticationStateProvider authenticationStateProvider,
-        ITeamManager teamManager) : base(authenticationStateProvider)
+        ITeamManager teamManager,
+        AppNavigationManager appNavigationManager) : base(authenticationStateProvider)
     {
+        _appNavigationManager = appNavigationManager;
+
         _teamRepository = teamRepository;
         _userPreferencesService = userPreferencesService;
         _teamManager = teamManager;
+        _appNavigationManager = appNavigationManager;
     }
 
     public async Task DeleteAsync(Team team)
@@ -33,6 +39,8 @@ internal class TeamController : TenantBaseService
 
     public async Task SetActiveTeamAsync(Team? team)
     {
+        _appNavigationManager.State.SelectedTeam = team;
+
         var preferences = await _userPreferencesService.GetUserPreferencesAsync();
         if(preferences is not null)
         {

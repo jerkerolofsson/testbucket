@@ -20,11 +20,14 @@
     margin-bottom: 8px;
 }
 
+
+.tb-kanban-board > ::deep * {
+    flex: 1;
+}
 .tb-kanban-board .list {
     padding: 1rem;
     background: var(--mud-palette-surface);
     border-radius: var(--border-radius);
-
     display: flex;
     flex-direction: column;
     gap: var(--gap);

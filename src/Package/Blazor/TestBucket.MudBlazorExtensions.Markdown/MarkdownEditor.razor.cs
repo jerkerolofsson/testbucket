@@ -254,6 +254,8 @@ namespace TestBucket.MudBlazorExtensions.Markdown
         #endregion Event Callback
         #region Parameters
 
+        [Parameter] public string Style { get; set; } = "";
+
         /// <summary>
         /// Adds a button to run code embedded in the markdown
         /// </summary>

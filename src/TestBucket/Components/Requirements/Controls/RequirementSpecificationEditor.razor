@@ -37,14 +37,14 @@
         <Splitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Tertiary">
             <StartContent>
                 <MudStack Class="pa-2" Style="width: 100%; height: 100%">
-                    @if (_selectedTab != "edit")
+                    @if (_selectedTab == "preview")
                     {
                         <MudText Typo="Typo.h1">@Specification.Name</MudText>
                     }
 
                     @if(_selectedTab == "kanban" && _specification is not null)
                     {
-                        <RequirementKanbanBoard Requirements="@_requirements" ProjectId="@_specification.TestProjectId"/>
+                        <RequirementKanbanBoard Title="@Specification.Name" Requirements="@_requirements" ProjectId="@_specification.TestProjectId" />
                     }
 
                     @if (_selectedTab == "edit" || _selectedTab == "preview")

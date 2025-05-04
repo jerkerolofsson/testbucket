@@ -4,6 +4,7 @@ using TestBucket.Data.Fields;
 using TestBucket.Data.Files;
 using TestBucket.Data.Identity;
 using TestBucket.Data.Issues;
+using TestBucket.Data.Milestones;
 using TestBucket.Data.Requirements;
 using TestBucket.Data.Runners;
 using TestBucket.Data.Settings;
@@ -22,6 +23,7 @@ using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Issues;
+using TestBucket.Domain.Milestones;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Teams;
@@ -35,6 +37,7 @@ public static class DataServiceExtensions
     {
         services.AddScoped<ICommitRepository, CommitRepository>();
         services.AddScoped<IArchitectureRepository, ArchitectureRepository>();
+        services.AddScoped<IMilestoneRepository, MilestoneRepository>();
 
         services.AddScoped<IPipelineRepository, PipelineRepository>();
         services.AddScoped<IRequirementRepository, RequirementRepository>();

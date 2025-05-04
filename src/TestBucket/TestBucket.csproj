@@ -18,6 +18,7 @@
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.1.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.0.0" />
+    <PackageReference Include="Heron.MudCalendar" Version="3.0.0" />
     <PackageReference Include="Humanizer.Core" Version="2.14.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />
@@ -51,6 +52,7 @@
   <ItemGroup>
     <Folder Include="Components\Administration\" />
     <Folder Include="Components\Environments\Layouts\" />
+    <Folder Include="Components\Milestones\Controls\" />
     <Folder Include="Components\Shared\Commands\" />
     <Folder Include="Components\Tests\TestRuns\Services\" />
     <Folder Include="Components\Tests\TestSuites\Mapping\" />

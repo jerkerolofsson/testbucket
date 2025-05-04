@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TestBucket.Domain.Issues.Models;
-public class Milestone
+public class Milestone : ProjectEntity
 {
     /// <summary>
     /// DB ID

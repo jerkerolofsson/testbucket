@@ -31,6 +31,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<TestRunField> TestRunFields { get; set; }
     internal DbSet<TestCaseRunField> TestCaseRunFields { get; set; }
 
+    internal DbSet<Milestone> Milestones { get; set; }
+
     internal DbSet<Repository> Repositories { get; set; }
     internal DbSet<Commit> Commits { get; set; }
     internal DbSet<CommitFile> CommitFiless { get; set; }

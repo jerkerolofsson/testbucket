@@ -456,4 +456,7 @@
   <data name="permission-execute" xml:space="preserve">
     <value />
   </data>
+  <data name="milestones" xml:space="preserve">
+    <value />
+  </data>
 </root>

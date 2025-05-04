@@ -1,4 +1,7 @@
-﻿using TestBucket.Contracts;
+﻿using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+
+using TestBucket.Contracts;
 using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Domain.Tenants;
@@ -15,4 +18,28 @@ public interface ITenantRepository
     Task<Tenant?> GetTenantByIdAsync(string tenantId);
     Task<PagedResult<Tenant>> SearchAsync(SearchQuery query);
     Task UpdateTenantAsync(Tenant tenant);
+
+    /// <summary>
+    /// Enumerates all items by fetching page-by-page
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async IAsyncEnumerable<Tenant> EnumerateAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var pageSize = 20;
+        var offset = 0;
+        while(!cancellationToken.IsCancellationRequested)
+        {
+            var result = await SearchAsync(new SearchQuery() { Offset = offset, Count = pageSize });
+            foreach(var item in result.Items)
+            {
+                yield return item;
+            }
+            if(result.Items.Length != pageSize)
+            {
+                break;
+            }
+            offset += result.Items.Length;
+        }
+    }
 }

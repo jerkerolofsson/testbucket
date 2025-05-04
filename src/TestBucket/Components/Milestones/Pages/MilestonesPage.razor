@@ -1,0 +1,117 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Milestones"
+@using Heron.MudCalendar
+@using TestBucket.Components.Requirements.Layouts
+@using TestBucket.Components.Milestones.Controllers
+@using TestBucket.Domain
+@using TestBucket.Domain.Issues.Models
+@layout RequirementsLayout
+@inject MilestonesController controller
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+
+
+<MudTabs Style="width: 100%">
+    <MudTabPanel Text="@loc["calendar"]">
+        <MudCalendar T="CalendarItem" Style="width: 100%" Items="_calendarItems" ToolbarPadding="4" Outlined>
+        </MudCalendar>
+    </MudTabPanel>
+    <MudTabPanel Text="@loc["manage"]">
+        <MudDataGrid Items="_milestones"
+                        Dense Hover RowClass="tb-datarow cursor-pointer"
+                        RowClick="async (row) => await OnRowClicked(row.Item)"
+                        T="Milestone"
+                        SortMode="SortMode.None">
+
+            <ToolBarContent>
+                <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                    <MudIcon Icon="@TbIcons.BoldDuoTone.Flag" Size="Size.Large" />
+                    <MudText Typo="Typo.h2">@loc["milestones"]</MudText>
+                    <MudSpacer />
+                    <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
+                        <Authorized>
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"></MudIconButton>
+                        </Authorized>
+                    </PermissionView>
+                </MudStack>
+            </ToolBarContent>
+
+            <Columns>
+                <PropertyColumn Property="x => x.Title" Title="@loc["name"]" />
+                <TemplateColumn Title="@loc["start-date"]">
+                    <CellTemplate>
+                        @if(context.Item.StartDate is not null)
+                        {
+                            @context.Item.StartDate.Value.LocalDateTime.ToLongDateString()
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+                <TemplateColumn Title="@loc["end-date"]">
+                    <CellTemplate>
+                        @if (context.Item.EndDate is not null)
+                        {
+                            @context.Item.EndDate.Value.LocalDateTime.ToLongDateString()
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+    </MudTabPanel>
+</MudTabs>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+    private TestProject? _project;
+    private CalendarItem[] _calendarItems = [];
+
+    private IReadOnlyList<Milestone> _milestones = [];
+
+    private async Task AddAsync()
+    {
+        await controller.AddMilestoneAsync();
+        await LoadAsync();
+    }
+    private async Task LoadAsync()
+    {
+        if(_project is not null)
+        {
+            _milestones = await controller.GetMilestonesAsync(_project);
+            var items = new List<CalendarItem>();
+            foreach(var milestone in _milestones)
+            {
+                if (milestone.StartDate is not null && 
+                    milestone.EndDate is not null &&
+                    milestone.Title is not null)
+                {
+                    items.Add(new CalendarItem() 
+                    { 
+                        Text = milestone.Title, 
+                        Start = milestone.EndDate.Value.LocalDateTime,
+                        End = milestone.EndDate.Value.LocalDateTime,
+                    });
+                }
+            }
+            _calendarItems = items.ToArray();
+        }
+    }
+
+    private async Task OnRowClicked(Milestone milestone)
+    {
+        await controller.EditMilestoneAsync(milestone);
+        await LoadAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Project is not null)
+        {
+            if(_project?.Id != Project.Id)
+            {
+                _project = Project;
+                await LoadAsync();
+            }
+        }
+    }
+}

@@ -458,4 +458,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="permission-execute" xml:space="preserve">
     <value>Execute</value>
   </data>
+  <data name="milestones" xml:space="preserve">
+    <value>Milestones</value>
+  </data>
 </root>

@@ -366,6 +366,11 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Code/Architecture";
     }
+    public string GetMilestonesUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Milestones";
+    }
 
     public void NavigateTo(string url, bool forceLoad = false)
     {

@@ -20,6 +20,8 @@ using TestBucket.Domain.Files;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Issues;
+using TestBucket.Domain.Milestones;
+using TestBucket.Domain.Milestones.Services;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
@@ -113,6 +115,8 @@ public static class DomainServiceExtensions
         services.AddScoped<IFieldManager, FieldManager>();
 
         services.AddScoped<IIssueManager, IssueManager>();
+        services.AddScoped<IMilestoneManager, MilestoneManager>();
+        services.AddHostedService<MilestoneIndexer>();
 
         services.AddScoped<IUserManager, UserManager>();
         services.AddScoped<IProfilePictureManager, ProfilePictureManager>();

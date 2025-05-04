@@ -1,0 +1,87 @@
+﻿@using TestBucket.Domain.Issues.Models
+@inject IStringLocalizer<SharedStrings> loc
+
+<EditForm Model="@Milestone" OnValidSubmit="Submit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
+        <DialogContent>
+            @if (Milestone is not null)
+            {
+                <Field>
+                    <MudTextField Variant="Variant.Outlined"
+                    Label="@loc["title"]"
+                    AdornmentColor="Color.Tertiary"
+                    @bind-Value="@Milestone.Title"
+                    T="string"
+                    AutoFocus="true" />
+                </Field>
+
+                <Field Row>
+                    <FieldHeader>@loc["start-date"]</FieldHeader>
+                    <MudSpacer />
+                    <MudDatePicker @bind-Date="@_startDate" />
+                </Field>
+
+                <Field Row>
+                    <FieldHeader>@loc["end-date"]</FieldHeader>
+                    <MudSpacer />
+                    <MudDatePicker @bind-Date="@_endDate" />
+                </Field>
+
+            }
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    [Parameter] public Milestone? Milestone { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private DateTime? _startDate = DateTime.Now;
+    private DateTime? _endDate = DateTime.Now;
+
+    protected override void OnInitialized()
+    {
+        if (Milestone is not null)
+        {
+            _startDate = Milestone.StartDate?.DateTime.ToLocalTime() ?? DateTime.Now;
+            _endDate = Milestone.EndDate?.DateTime.ToLocalTime() ?? DateTime.Now;
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+
+    private void Submit()
+    {
+        if (Milestone is null)
+        {
+            return;
+        }
+        if(_startDate is not null)
+        {
+            Milestone.StartDate = new DateTimeOffset(_startDate.Value.ToUniversalTime());
+        }
+        else
+        {
+            Milestone.StartDate = null;
+        }
+        if(_endDate is not null)
+        {
+            Milestone.EndDate = new DateTimeOffset(_endDate.Value.ToUniversalTime());
+        }
+        else
+        {
+            Milestone.EndDate = null;
+        }
+        MudDialog.Close(Milestone);
+    }
+}

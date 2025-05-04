@@ -1,5 +1,7 @@
 ﻿
 
+using System.Runtime.CompilerServices;
+
 using TestBucket.Contracts;
 
 namespace TestBucket.Domain.Projects;
@@ -71,6 +73,31 @@ public interface IProjectRepository
     /// <param name="project"></param>
     /// <returns></returns>
     Task UpdateProjectAsync(TestProject project);
+
+
+    /// <summary>
+    /// Enumerates all items by fetching page-by-page
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async IAsyncEnumerable<TestProject> EnumerateAsync(string tenantId, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var pageSize = 20;
+        var offset = 0;
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            var result = await SearchAsync(tenantId, new SearchQuery() { Offset = offset, Count = pageSize });
+            foreach (var item in result.Items)
+            {
+                yield return item;
+            }
+            if (result.Items.Length != pageSize)
+            {
+                break;
+            }
+            offset += result.Items.Length;
+        }
+    }
 
     #region Integrations / External Systems
 

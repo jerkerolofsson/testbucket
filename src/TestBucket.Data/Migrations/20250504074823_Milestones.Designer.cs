@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Contracts.Code.Models;
@@ -18,9 +19,11 @@ using TestBucket.Domain.Keyboard;
 namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250504074823_Milestones")]
+    partial class Milestones
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1487,12 +1490,6 @@ namespace TestBucket.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("text");
-
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
@@ -1508,37 +1505,16 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("ExternalSystemName")
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset>("Modified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("text");
-
                     b.Property<DateTimeOffset?>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("State")
                         .HasColumnType("integer");
 
-                    b.Property<long?>("TeamId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("TenantId")
-                        .HasColumnType("text");
-
-                    b.Property<long?>("TestProjectId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("Title")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("TeamId");
-
-                    b.HasIndex("TenantId");
-
-                    b.HasIndex("TestProjectId");
 
                     b.ToTable("Milestones");
                 });
@@ -3431,27 +3407,6 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("Tenant");
 
                     b.Navigation("TestCaseRun");
-
-                    b.Navigation("TestProject");
-                });
-
-            modelBuilder.Entity("TestBucket.Domain.Issues.Models.Milestone", b =>
-                {
-                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
-                        .WithMany()
-                        .HasForeignKey("TeamId");
-
-                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId");
-
-                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
-                        .WithMany()
-                        .HasForeignKey("TestProjectId");
-
-                    b.Navigation("Team");
-
-                    b.Navigation("Tenant");
 
                     b.Navigation("TestProject");
                 });

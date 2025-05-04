@@ -104,6 +104,10 @@ html, body {
     text-transform: none;
 }
 
+.mud-picker-container [role="toolbar"] .mud-button-label {
+    font-size: 10pt;
+}
+
 .mud-navmenu.mud-navmenu-default .mud-nav-link.active:not(.mud-nav-link-disabled) {
     box-shadow: -2px 0 0 var(--mud-palette-primary);
 }

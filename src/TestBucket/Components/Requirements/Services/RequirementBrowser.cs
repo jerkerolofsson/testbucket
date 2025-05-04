@@ -286,10 +286,14 @@ internal class RequirementBrowser : TenantBaseService
 
         TreeNode<BrowserItem> milestonesNode = new TreeNode<BrowserItem>
         {
-            Expandable = true,
+            Expandable = false,
             Expanded = false,
             Icon = TbIcons.BoldDuoTone.Flag,
             Text = _loc["milestones"],
+            Value = new BrowserItem
+            {
+                Href = _appNavigationManager.GetMilestonesUrl()
+            }
         };
 
         TreeNode<BrowserItem> architecture = new TreeNode<BrowserItem>

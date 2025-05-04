@@ -45,8 +45,7 @@ internal class BackgroundExternalRequirementSynchronizer : BackgroundService
 
             try
             {
-                var tenants = await tenantRepository.SearchAsync(new SearchQuery() { Offset = 0, Count = 100 });
-                foreach (var tenant in tenants.Items)
+                await foreach (var tenant in tenantRepository.EnumerateAsync(stoppingToken))
                 {
                     await ProcessTenantAsync(requirementExtensionManager, requirementManager, projectManager, tenant, stoppingToken);
                 }

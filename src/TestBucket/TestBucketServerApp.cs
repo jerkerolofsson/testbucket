@@ -41,6 +41,7 @@ using TestBucket.Components.Settings.Links;
 using TestBucket.Components.Code.Controllers;
 using TestBucket.Components.Tests.TestRuns.Commands;
 using TestBucket.Components.Tests.TestRuns.Controllers;
+using TestBucket.Components.Milestones.Controllers;
 
 namespace TestBucket;
 
@@ -230,6 +231,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, RunTestSuiteCommand>();
         builder.Services.AddScoped<ICommand, AddTestSuiteToRunCommand>();
 
+        builder.Services.AddScoped<MilestonesController>();
 
         // Test tree view
         builder.Services.AddScoped<ICommand, BatchTagCommand>();

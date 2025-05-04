@@ -189,4 +189,7 @@
   <data name="type-regulatory" xml:space="preserve">
     <value>Regulatory</value>
   </data>
+  <data name="milestones" xml:space="preserve">
+    <value>Milestones</value>
+  </data>
 </root>

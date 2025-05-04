@@ -1,4 +1,6 @@
-﻿@inject IStringLocalizer<SharedStrings> loc
+﻿@using TestBucket.Domain.Fields.Helpers
+@inject IStringLocalizer<SharedStrings> loc
+@inject AuthenticationStateProvider authenticationStateProvider
 
 @if (Field?.FieldDefinition is not null)
 {
@@ -17,7 +19,7 @@
             {
                 @if(_editingWriteOnlyField)
                 {
-                    @if(!ReadOnly)
+                    @if(!_readOnly)
                     {
                         <FieldValueEditor Field="@Field" FieldChanged="async (f) => await OnWriteOnlyFieldChangedAsync(f)" />
                     }
@@ -29,23 +31,23 @@
 
                         <MudText>••••</MudText>
 
-                        @if(!ReadOnly)
+                        @if(!_readOnly)
                         {
                             <MudButton Color="Color.Error" Variant="Variant.Outlined" OnClick="EditField">@loc["change"]</MudButton>
                         }
-                        </MudStack>
+                    </MudStack>
                 }
             }
-            else if (Field.FieldDefinition.ReadOnly || ReadOnly)
+            else if (Field.FieldDefinition.ReadOnly || _readOnly)
             {
                 <FieldReadOnlyValue Field="@Field" />
             }
             else
             {
                 <FieldValueEditor 
-                    AllowMultiSelection="@AllowMultiSelection" 
-                    Field="@Field" 
-                    FieldChanged="async (f) => await FieldChanged.InvokeAsync(f)" />
+                AllowMultiSelection="@AllowMultiSelection" 
+                Field="@Field" 
+                FieldChanged="async (f) => await FieldChanged.InvokeAsync(f)" />
             }
 
         </Field>
@@ -62,6 +64,8 @@
     [Parameter] public EventCallback<FieldValue?> FieldChanged { get; set; }
     [Parameter] public bool AllowMultiSelection { get; set; } = true;
     [Parameter] public bool ReadOnly { get; set; }
+
+    private bool _readOnly = false;
 
     private bool Row => Field?.FieldDefinition?.Type == FieldType.Boolean ||
                 Field?.FieldDefinition?.Type == FieldType.String || 
@@ -95,8 +99,21 @@
         await FieldChanged.InvokeAsync(field);
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
+        _readOnly = ReadOnly;
+        if(Field?.FieldDefinition is not null)
+        {
+            var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+            var principal = state.User;
+
+            bool hasAccess = principal.HasPermission(Field.FieldDefinition);
+            if(!hasAccess)
+            {
+                _readOnly = true;
+            }
+        }
+
         if (Field?.FieldDefinition is not null)
         {
             Field.StringValuesList ??= [];

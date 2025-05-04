@@ -40,6 +40,11 @@ internal class FieldRepository : IFieldRepository
     }
 
 
+    public async Task<FieldDefinition?> GetDefinitionByIdAsync(long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.FieldDefinitions.AsNoTracking().Where(x => x.Id == id).FirstOrDefaultAsync();
+    }
 
     public async Task UpdateAsync(FieldDefinition fieldDefinition)
     {

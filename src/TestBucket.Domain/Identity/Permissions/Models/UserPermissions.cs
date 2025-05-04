@@ -9,7 +9,7 @@ namespace TestBucket.Domain.Identity.Permissions.Models
     /// <summary>
     /// This is an in memory representation of permissions after deserialized from a claim
     /// </summary>
-    internal class UserPermissions
+    public class UserPermissions
     {
         private readonly List<EntityPermission> _permissions = [];
 

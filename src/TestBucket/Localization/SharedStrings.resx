@@ -231,10 +231,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Read-Only</value>
   </data>
   <data name="permission-write" xml:space="preserve">
-    <value>Create/Edit</value>
+    <value>Write</value>
   </data>
   <data name="permission-delete" xml:space="preserve">
-    <value>Full Permission</value>
+    <value>Delete</value>
   </data>
   <data name="role-read-only" xml:space="preserve">
     <value>Read Only</value>
@@ -451,5 +451,11 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="new-shared-steps" xml:space="preserve">
     <value>New shared steps</value>
+  </data>
+  <data name="permission-approve" xml:space="preserve">
+    <value>Approve</value>
+  </data>
+  <data name="permission-execute" xml:space="preserve">
+    <value>Execute</value>
   </data>
 </root>

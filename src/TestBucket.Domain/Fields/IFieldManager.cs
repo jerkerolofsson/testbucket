@@ -24,7 +24,7 @@ public interface IFieldManager
     /// <param name="principal"></param>
     /// <param name="fields"></param>
     /// <returns></returns>
-    Task SaveRequirementFieldsAsync(ClaimsPrincipal principal, IEnumerable<RequirementField> fields);
+    //Task SaveRequirementFieldsAsync(ClaimsPrincipal principal, IEnumerable<RequirementField> fields);
 
     #endregion Requirements
 
@@ -37,12 +37,12 @@ public interface IFieldManager
     /// <param name="fieldDefinitions"></param>
     /// <returns></returns>
     Task<IReadOnlyList<TestCaseField>> GetTestCaseFieldsAsync(ClaimsPrincipal principal, long id, IEnumerable<FieldDefinition> fieldDefinitions);
-    Task SaveTestCaseFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseField> fields);
+    //Task SaveTestCaseFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseField> fields);
     #endregion Test Case
 
     #region Test Case Run
     Task<IReadOnlyList<TestCaseRunField>> GetTestCaseRunFieldsAsync(ClaimsPrincipal principal, long testRunId, long testCaseRunId, IEnumerable<FieldDefinition> fieldDefinitions);
-    Task SaveTestCaseRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseRunField> fields);
+    //Task SaveTestCaseRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseRunField> fields);
     #endregion Test Case Run
 
     Task UpsertTestCaseRunFieldAsync(ClaimsPrincipal principal, TestCaseRunField field);
@@ -53,6 +53,6 @@ public interface IFieldManager
 
     #region Test Run
     Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(ClaimsPrincipal principal, long testRunId, IEnumerable<FieldDefinition> fieldDefinitions);
-    Task SaveTestRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestRunField> fields);
+    //Task SaveTestRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestRunField> fields);
     #endregion Test Run
 }

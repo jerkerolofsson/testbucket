@@ -186,6 +186,9 @@
   <data name="field-readonly" xml:space="preserve">
     <value>Read-Only</value>
   </data>
+  <data name="field-required-permission" xml:space="preserve">
+    <value>Required permission to edit</value>
+  </data>
   <data name="field-target" xml:space="preserve">
     <value>Target</value>
   </data>

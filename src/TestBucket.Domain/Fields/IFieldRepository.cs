@@ -41,6 +41,12 @@ public interface IFieldRepository
     /// <returns></returns>
     Task<IReadOnlyList<FieldDefinition>> SearchAsync(IReadOnlyList<FilterSpecification<FieldDefinition>> specifications);
 
+    /// <summary>
+    /// Returns a field definition by id
+    /// </summary>
+    /// <returns></returns>
+    Task<FieldDefinition?> GetDefinitionByIdAsync(long id);
+
     #endregion Field Definitions
 
     #region Test Case

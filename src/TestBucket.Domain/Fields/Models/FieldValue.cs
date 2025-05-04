@@ -202,6 +202,9 @@ public class FieldValue : Entity
             case FieldType.Integer:
                 return LongValue?.ToString() ?? "";
 
+            case FieldType.Boolean:
+                return BooleanValue?.ToString() ?? "False";
+
             default:
                 throw new NotImplementedException();
         }

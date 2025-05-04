@@ -125,6 +125,11 @@ public class FieldDefinition : ProjectEntity
     /// </summary>
     public bool IsDefinedBySystem { get; set; }
 
+    /// <summary>
+    /// Required permission
+    /// </summary>
+    public PermissionLevel RequiredPermission { get; set; } = PermissionLevel.Write;
+
     public override string ToString()
     {
         return $"{Name} IsVisible={IsVisible} IsDeleted={IsDeleted}";

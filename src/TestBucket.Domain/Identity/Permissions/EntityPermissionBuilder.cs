@@ -11,9 +11,19 @@ namespace TestBucket.Domain.Identity.Permissions
     /// <summary>
     /// Helper that will merge permission levels from multiple roles
     /// </summary>
-    internal class EntityPermissionBuilder
+    public class EntityPermissionBuilder
     {
         private readonly UserPermissions _userPermissions = new();
+
+        /// <summary>
+        /// Tenant
+        /// </summary>
+        public string? TenantId { get; set; }
+
+        /// <summary>
+        /// project
+        /// </summary>
+        public long? ProjectId { get; set; }
 
         public UserPermissions Build() => _userPermissions;
 

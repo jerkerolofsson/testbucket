@@ -450,4 +450,10 @@
   <data name="new-shared-steps" xml:space="preserve">
     <value />
   </data>
+  <data name="permission-approve" xml:space="preserve">
+    <value />
+  </data>
+  <data name="permission-execute" xml:space="preserve">
+    <value />
+  </data>
 </root>

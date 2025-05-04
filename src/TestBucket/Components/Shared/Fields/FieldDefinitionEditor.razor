@@ -2,6 +2,7 @@
 @using TestBucket.Contracts.Fields
 @using TestBucket.Domain.Fields.Models
 @using TestBucket.Traits.Core
+@inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<FieldStrings> fieldLoc
 
 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem">
@@ -215,10 +216,28 @@
                             <MudStack Spacing="0">
                                 <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
                                     <FieldHeader>@fieldLoc["use-classifier"]</FieldHeader>
-                                    <MudSpacer/>
-                                    <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.UseClassifier" ValueChanged="OnUseClassifierChanged"/>
+                                    <MudSpacer />
+                                    <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.UseClassifier" ValueChanged="OnUseClassifierChanged" />
                                 </MudStack>
-                                <MudText Typo="Typo.subtitle2">@fieldLoc["use-classifier-helpertext"]</MudText>
+                                <MudText Typo="Typo.subtitle1">@fieldLoc["use-classifier-helpertext"]</MudText>
+                            </MudStack>
+                        </Field>
+
+                        <Field>
+                            <MudStack Spacing="0">
+                                <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                                    <FieldHeader>@loc["permission"]</FieldHeader>
+                                    <MudSpacer/>
+
+                                    <MudRadioGroup @bind-Value="@FieldDefinition.RequiredPermission">
+                                        <MudRadio Value="@PermissionLevel.Read" Color="Color.Primary">@loc["permission-read"]</MudRadio>
+                                        <MudRadio Value="@PermissionLevel.Execute" Color="Color.Primary">@loc["permission-execute"]</MudRadio>
+                                        <MudRadio Value="@PermissionLevel.Write" Color="Color.Primary">@loc["permission-write"]</MudRadio>
+                                        <MudRadio Value="@PermissionLevel.Approve" Color="Color.Primary">@loc["permission-approve"]</MudRadio>
+                                        <MudRadio Value="@PermissionLevel.Delete" Color="Color.Primary">@loc["permission-delete"]</MudRadio>
+                                    </MudRadioGroup>
+
+                                </MudStack>
                             </MudStack>
                         </Field>
 
@@ -229,7 +248,7 @@
                                     <MudSpacer />
                                     <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.Inherit" ValueChanged="OnInheritChanged" />
                                 </MudStack>
-                                <MudText Typo="Typo.subtitle2">@fieldLoc["inherit-helpertext"]</MudText>
+                                <MudText Typo="Typo.subtitle1">@fieldLoc["inherit-helpertext"]</MudText>
                             </MudStack>
                         </Field>
 

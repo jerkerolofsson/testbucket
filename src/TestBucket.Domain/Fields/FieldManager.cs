@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Mediator;
 
 using TestBucket.Domain.Fields.Events;
+using TestBucket.Domain.Fields.Helpers;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
 
@@ -57,23 +58,6 @@ internal class FieldManager : IFieldManager
         return fields;
     }
 
-    /// <summary>
-    /// Saves requirement fields
-    /// </summary>
-    /// <param name="principal"></param>
-    /// <param name="fields"></param>
-    /// <returns></returns>
-    public async Task SaveRequirementFieldsAsync(ClaimsPrincipal principal, IEnumerable<RequirementField> fields)
-    {
-        var tenantId = principal.GetTenantIdOrThrow();
-        principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
-
-        foreach (var field in fields)
-        {
-            field.TenantId = tenantId;
-        }
-        await _repository.SaveRequirementFieldsAsync(fields);
-    }
     #endregion Requirement
 
     public async Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(ClaimsPrincipal principal, long testRunId, IEnumerable<FieldDefinition> fieldDefinitions)
@@ -160,45 +144,11 @@ internal class FieldManager : IFieldManager
         return fields;
     }
 
-    public async Task SaveTestCaseFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseField> fields)
-    {
-        var tenantId = principal.GetTenantIdOrThrow();
-        principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
-
-
-        foreach (var field in fields)
-        {
-            field.TenantId = tenantId;
-        }
-        await _repository.SaveTestCaseFieldsAsync(fields);
-    }
-
-    public async Task SaveTestCaseRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseRunField> fields)
-    {
-        var tenantId = principal.GetTenantIdOrThrow();
-        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
-
-        foreach (var field in fields)
-        {
-            field.TenantId = tenantId;
-        }
-        await _repository.SaveTestCaseRunFieldsAsync(fields);
-    }
-
-    public async Task SaveTestRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestRunField> fields)
-    {
-        var tenantId = principal.GetTenantIdOrThrow();
-        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
-        foreach (var field in fields)
-        {
-            field.TenantId = tenantId;
-        }
-        await _repository.SaveTestRunFieldsAsync(fields);
-    }
 
     public async Task UpsertRequirementFieldAsync(ClaimsPrincipal principal, RequirementField field)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.TestRun, PermissionLevel.Write);
+        var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
+        principal.ThrowIfNoPermission(fieldDefinition);
 
         field.TenantId = principal.GetTenantIdOrThrow();
         await _repository.UpsertRequirementFieldAsync(field);
@@ -207,7 +157,8 @@ internal class FieldManager : IFieldManager
     }
     public async Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.TestRun, PermissionLevel.Write);
+        var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
+        principal.ThrowIfNoPermission(fieldDefinition);
 
         field.TenantId = principal.GetTenantIdOrThrow();
         await _repository.UpsertTestRunFieldAsync(field);
@@ -216,7 +167,8 @@ internal class FieldManager : IFieldManager
     }
     public async Task UpsertTestCaseFieldAsync(ClaimsPrincipal principal, TestCaseField field)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
+        var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
+        principal.ThrowIfNoPermission(fieldDefinition);
 
         field.TenantId = principal.GetTenantIdOrThrow();
         await _repository.UpsertTestCaseFieldAsync(field);
@@ -225,7 +177,8 @@ internal class FieldManager : IFieldManager
     }
     public async Task UpsertTestCaseRunFieldAsync(ClaimsPrincipal principal, TestCaseRunField field)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
+        var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
+        principal.ThrowIfNoPermission(fieldDefinition);
 
         field.TenantId = principal.GetTenantIdOrThrow();
         await _repository.UpsertTestCaseRunFieldAsync(field);

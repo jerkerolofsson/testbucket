@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace TestBucket.Domain.Identity.Permissions.Models
 {
-    internal record class EntityPermission(PermissionEntityType EntityType, PermissionLevel Level);
+    public record class EntityPermission(PermissionEntityType EntityType, PermissionLevel Level);
 }

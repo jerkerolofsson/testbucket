@@ -361,7 +361,11 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
 
         TestCaseRunFieldHelper.BuildInheritedFields(testRun, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRun, fields);
 
-        await _fieldManager.SaveTestCaseRunFieldsAsync(principal, fields);
+        foreach (var field in fields)
+        {
+            await _fieldManager.UpsertTestCaseRunFieldAsync(principal, field);
+        }
+        //await _fieldManager.SaveTestCaseRunFieldsAsync(principal, fields);
 
         await AddAttachmentsAsync(testCaseRun, test.Attachments);
 

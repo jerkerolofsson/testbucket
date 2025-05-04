@@ -5,6 +5,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Tenants.Models;
+
 namespace TestBucket.Domain.Identity
 {
     /// <summary>
@@ -42,6 +44,32 @@ namespace TestBucket.Domain.Identity
             {
                 claims.Add(new Claim("project", projectId.Value.ToString()));
             }
+
+            return new ClaimsPrincipal([new ClaimsIdentity(claims)]);
+        }
+
+        public static ClaimsPrincipal Impersonate(Action<EntityPermissionBuilder> configure)
+        {
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, "system"),
+                new Claim(ClaimTypes.Email, "admin@admin.com"),
+            };
+
+            // Permissions
+            var builder = new EntityPermissionBuilder();
+            configure(builder);
+            if(builder.TenantId is not null)
+            {
+                claims.Add(new Claim("tenant", builder.TenantId));
+            }
+            if (builder.ProjectId is not null)
+            {
+                claims.Add(new Claim("project", builder.ProjectId.Value.ToString()));
+            }
+
+            claims.Add(new Claim(PermissionClaims.Permissions, PermissionClaimSerializer.Serialize(builder.Build())));
+          
 
             return new ClaimsPrincipal([new ClaimsIdentity(claims)]);
         }

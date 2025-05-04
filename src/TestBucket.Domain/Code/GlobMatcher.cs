@@ -13,6 +13,11 @@ internal class GLobMatcher
     {
         foreach (var pattern in globPatterns)
         {
+            if(string.IsNullOrEmpty(pattern))
+            {
+                continue;
+            }
+
             if (pattern.StartsWith('!'))
             {
                 if (Glob.Parse(pattern.Substring(1)).IsMatch(filePath))

@@ -144,6 +144,10 @@
   <data name="features" xml:space="preserve">
     <value>Features</value>
   </data>
+  <data name="glob-patterns" xml:space="preserve">
+    <value>Glob patterns</value>
+    <comment>File path pattern</comment>
+  </data>
   <data name="impact" xml:space="preserve">
     <value>Impact</value>
   </data>

@@ -461,4 +461,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="milestones" xml:space="preserve">
     <value>Milestones</value>
   </data>
+  <data name="calendar" xml:space="preserve">
+    <value>Calendar</value>
+  </data>
+  <data name="manage" xml:space="preserve">
+    <value>Manage</value>
+  </data>
 </root>

@@ -1,8 +1,11 @@
 ﻿
+using Microsoft.Extensions.Localization;
+
 using TestBucket.Components.Milestones.Dialogs;
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Milestones;
+using TestBucket.Localization;
 
 namespace TestBucket.Components.Milestones.Controllers;
 
@@ -11,12 +14,14 @@ internal class MilestonesController : TenantBaseService
     private readonly AppNavigationManager _appNavigationManager;
     private readonly IMilestoneManager _milestoneManager;
     private readonly IDialogService _dialogService;
+    private readonly IStringLocalizer<SharedStrings> _loc;
 
-    public MilestonesController(AuthenticationStateProvider authenticationStateProvider, AppNavigationManager appNavigationManager, IMilestoneManager milestoneManager, IDialogService dialogService) : base(authenticationStateProvider)
+    public MilestonesController(AuthenticationStateProvider authenticationStateProvider, AppNavigationManager appNavigationManager, IMilestoneManager milestoneManager, IDialogService dialogService, IStringLocalizer<SharedStrings> loc) : base(authenticationStateProvider)
     {
         _appNavigationManager = appNavigationManager;
         _milestoneManager = milestoneManager;
         _dialogService = dialogService;
+        _loc = loc;
     }
 
     public async Task AddMilestoneAsync()
@@ -33,6 +38,22 @@ internal class MilestonesController : TenantBaseService
         }
     }
 
+    public async Task DeleteMilestoneAsync(Milestone milestone)
+    {
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc["yes"],
+            NoText = _loc["no"],
+            Title = _loc["confirm-delete-title"],
+            MarkupMessage = new MarkupString(_loc["confirm-delete-message"])
+        });
+        if (result == true)
+        {
+            var principal = await GetUserClaimsPrincipalAsync();
+            await _milestoneManager.DeleteAsync(principal, milestone);
+        }
+        
+    }
 
     public async Task EditMilestoneAsync(Milestone milestone)
     {

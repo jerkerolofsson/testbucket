@@ -1,0 +1,93 @@
+﻿@using TestBucket.Components.Code.Controls
+@using TestBucket.Domain.Issues.Models
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<CodeStrings> codeLoc
+
+<EditForm Model="@Feature" OnValidSubmit="Submit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
+        <TitleContent>@Feature?.Name</TitleContent>
+        <DialogContent>
+            <MudStack>
+                <AritecturalComponentEditor @bind-Component="@Feature"/>
+
+
+                @if(Feature is not null)
+                {
+                    <MudDataGrid Items="_patterns" T="GlobPatternInputModel" EditMode="DataGridEditMode.Cell" ReadOnly="false" Dense> 
+                        <ToolBarContent>
+                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                                <MudText Typo="Typo.h2">@codeLoc["glob-patterns"]</MudText>
+                                <MudSpacer />
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(() =>_patterns.Add(new GlobPatternInputModel{ Pattern = "/src/**/*.*"}))"></MudIconButton>
+                            </MudStack>
+                        </ToolBarContent>
+                        <Columns>
+                            <PropertyColumn Property="x => x.Pattern"/>
+                            <TemplateColumn>
+                                <EditTemplate Context="deleteCtx">
+                                    <MudIconButton 
+                                        Color="Color.Error"
+                                        Size="Size.Small"
+                                        Icon="@Icons.Material.Filled.Clear" OnClick="@(() =>_patterns.Remove(deleteCtx.Item))"></MudIconButton>
+                                </EditTemplate>
+                            </TemplateColumn>
+                        </Columns>
+                    </MudDataGrid>
+                }
+            </MudStack>
+
+        </DialogContent>
+
+        <DialogActions>
+            @if (Feature is not null)
+            {
+                if (!string.IsNullOrWhiteSpace(Feature.Name))
+                {
+                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+                }
+            }
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    [Parameter] public AritecturalComponentProjectEntity? Feature { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private List<GlobPatternInputModel> _patterns = new();
+
+    private class GlobPatternInputModel
+    {
+        [Required]
+        public string? Pattern { get; set; }
+    }
+
+    protected override void OnInitialized()
+    {
+        if(Feature is null)
+        {
+            return;
+        }
+        _patterns = Feature.GlobPatterns.Select(x => new GlobPatternInputModel { Pattern = x }).ToList();
+    }
+
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+
+    private void Submit()
+    {
+        if (Feature is null)
+        {
+            return;
+        }
+
+        Feature.GlobPatterns = _patterns.Select(x => x.Pattern!).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+        MudDialog.Close(Feature);
+    }
+}

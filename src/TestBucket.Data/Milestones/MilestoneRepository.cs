@@ -46,7 +46,7 @@ internal class MilestoneRepository : IMilestoneRepository
         {
             milestones = milestones.Where(filter.Expression);
         }
-        return await milestones.ToListAsync();
+        return await milestones.OrderBy(x=>x.EndDate).ToListAsync();
     }
 
     public async Task UpdateMilestoneAsync(Milestone milestone)

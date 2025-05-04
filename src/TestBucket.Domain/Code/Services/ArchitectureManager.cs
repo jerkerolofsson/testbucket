@@ -14,6 +14,20 @@ internal class ArchitectureManager : IArchitectureManager
     }
 
     #region Systems
+    public async Task UpdateSystemAsync(ClaimsPrincipal principal, ProductSystem system)
+    {
+        principal.ThrowIfEntityTenantIsDifferent(system);
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+        await _repository.UpdateSystemAsync(system);
+    }
+
+    public async Task DeleteSystemAsync(ClaimsPrincipal principal, ProductSystem system)
+    {
+        principal.ThrowIfEntityTenantIsDifferent(system);
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Delete);
+        await _repository.DeleteSystemAsync(system.Id);
+    }
+
     /// <summary>
     /// Adds a system
     /// </summary>
@@ -86,6 +100,20 @@ internal class ArchitectureManager : IArchitectureManager
 
     #region Layers
 
+    public async Task UpdateLayerAsync(ClaimsPrincipal principal, ArchitecturalLayer layer)
+    {
+        principal.ThrowIfEntityTenantIsDifferent(layer);
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+        await _repository.UpdateLayerAsync(layer);
+    }
+
+    public async Task DeleteLayerAsync(ClaimsPrincipal principal, ArchitecturalLayer layer)
+    {
+        principal.ThrowIfEntityTenantIsDifferent(layer);
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Delete);
+        await _repository.DeleteLayerAsync(layer.Id);
+    }
+
     /// <summary>
     /// Adds a layer
     /// </summary>
@@ -140,6 +168,14 @@ internal class ArchitectureManager : IArchitectureManager
     #endregion Layers
 
     #region Components
+
+    public async Task DeleteComponentAsync(ClaimsPrincipal principal, Component component)
+    {
+        principal.ThrowIfEntityTenantIsDifferent(component);
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Delete);
+        await _repository.DeleteComponentAsync(component.Id);
+
+    }
     /// <summary>
     /// Adds a component
     /// </summary>
@@ -151,6 +187,12 @@ internal class ArchitectureManager : IArchitectureManager
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         component.TenantId = principal.GetTenantIdOrThrow();
         await _repository.AddComponentAsync(component);
+    }
+    public async Task UpdateComponentAsync(ClaimsPrincipal principal, Component component)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+        component.TenantId = principal.GetTenantIdOrThrow();
+        await _repository.UpdateComponentAsync(component);
     }
 
     /// <summary>
@@ -387,12 +429,19 @@ internal class ArchitectureManager : IArchitectureManager
 
     public async Task UpdateFeatureAsync(ClaimsPrincipal principal, Feature feature)
     {
+        principal.ThrowIfEntityTenantIsDifferent(feature);
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         feature.Modified = DateTimeOffset.UtcNow;
         feature.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
         await _repository.UpdateFeatureAsync(feature);
     }
 
+    public async Task DeleteFeatureAsync(ClaimsPrincipal principal, Feature feature)
+    {
+        principal.ThrowIfEntityTenantIsDifferent(feature);
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Delete);
+        await _repository.DeleteFeatureAsync(feature.Id);
+    }
 
     private async Task ImportLayersAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
     {

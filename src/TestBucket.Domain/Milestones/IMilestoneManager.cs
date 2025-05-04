@@ -10,4 +10,5 @@ public interface IMilestoneManager
     Task<IReadOnlyList<Milestone>> GetMilestonesAsync(ClaimsPrincipal principal, long projectId);
     Task UpdateMilestoneAsync(ClaimsPrincipal principal, Milestone milestone);
     Task<IReadOnlyList<Milestone>> SearchMilestonesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count);
+    Task DeleteAsync(ClaimsPrincipal principal, Milestone milestone);
 }

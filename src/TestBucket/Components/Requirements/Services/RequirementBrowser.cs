@@ -300,7 +300,7 @@ internal class RequirementBrowser : TenantBaseService
         {
             Expandable = true,
             Expanded = true,
-            Icon = TbIcons.BoldDuoTone.CodeSquare,
+            Icon = TbIcons.BoldDuoTone.Architecture,
             Text = _codeLoc["subject"],
             Children = new List<TreeNode<BrowserItem>>
             {
@@ -308,7 +308,7 @@ internal class RequirementBrowser : TenantBaseService
                 {
                     Text = _codeLoc["architecture"],
                     Expandable = false,
-                    Icon = TbIcons.BoldDuoTone.CodeSquare,
+                    Icon = TbIcons.BoldDuoTone.Architecture,
                     Value = new BrowserItem
                     {
                         Href = _appNavigationManager.GetCodeArchitectureUrl()
@@ -322,6 +322,36 @@ internal class RequirementBrowser : TenantBaseService
                     Value = new BrowserItem
                     {
                         Href = _appNavigationManager.GetFeaturesUrl()
+                    }
+                },
+                new TreeNode<BrowserItem>
+                {
+                    Text = _codeLoc["components"],
+                    Expandable = false,
+                    Icon = TbIcons.BoldDuoTone.Components,
+                    Value = new BrowserItem
+                    {
+                        Href = _appNavigationManager.GetComponentsUrl()
+                    }
+                },
+                new TreeNode<BrowserItem>
+                {
+                    Text = _codeLoc["layers"],
+                    Expandable = false,
+                    Icon = TbIcons.BoldDuoTone.Layers,
+                    Value = new BrowserItem
+                    {
+                        Href = _appNavigationManager.GetLayersUrl()
+                    }
+                },
+                new TreeNode<BrowserItem>
+                {
+                    Text = _codeLoc["systems"],
+                    Expandable = false,
+                    Icon = TbIcons.BoldDuoTone.Systems,
+                    Value = new BrowserItem
+                    {
+                        Href = _appNavigationManager.GetSystemsUrl()
                     }
                 },
                 new TreeNode<BrowserItem>

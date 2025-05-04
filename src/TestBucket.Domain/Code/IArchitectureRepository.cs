@@ -37,5 +37,9 @@ public interface IArchitectureRepository
     Task AddFeatureAsync(Feature feature);
     Task<PagedResult<Feature>> SearchFeaturesAsync(FilterSpecification<Feature>[] filters, int offset, int count);
     Task UpdateFeatureAsync(Feature feature);
+    Task DeleteFeatureAsync(long id);
+    Task DeleteComponentAsync(long id);
+    Task DeleteLayerAsync(long id);
+    Task DeleteSystemAsync(long id);
     #endregion Features
 }

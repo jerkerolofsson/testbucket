@@ -361,6 +361,21 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Code/Features";
     }
+    public string GetSystemsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Code/Systems";
+    }
+    public string GetLayersUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Code/Layers";
+    }
+    public string GetComponentsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Code/Components";
+    }
     public string GetCodeArchitectureUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);

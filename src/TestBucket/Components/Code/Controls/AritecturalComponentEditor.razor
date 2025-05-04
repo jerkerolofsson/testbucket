@@ -4,17 +4,17 @@
 @if (Component is not null)
 {
     <MudStack Style="width: 100%" Class="pa-2">
-        <BasicMarkdownEditor Text="@Component.Description" TextChanged="OnDescriptionChanged"/>
-
-        <Field Row>
+        
+        <Field>
             <FieldHeader>@loc["name"]</FieldHeader>
-            <MudSpacer/>
             <MudTextField Variant="Variant.Outlined"
                           data-testid="architecture-component-name"
                           AdornmentColor="Color.Tertiary"
                           Value="@Component.Name" ValueChanged="OnNameChanged"
                           T="string" AutoFocus="true" />
         </Field>
+
+        <BasicMarkdownEditor Text="@Component.Description" TextChanged="OnDescriptionChanged"/>
 
         <Field Row>
             <FieldHeader>@codeLoc["dev-lead"]</FieldHeader>
@@ -44,6 +44,7 @@
         Component.TestLead = name;
         await ComponentChanged.InvokeAsync(Component);
     }
+
     private async Task OnDevLeadChanged(string name)
     {
         if (Component is null)

@@ -69,4 +69,12 @@ internal class MilestoneManager : IMilestoneManager
         var result = await _repository.GetMilestonesAsync(filters);
         return result.Skip(offset).Take(count).ToList();
     }
+
+    public async Task DeleteAsync(ClaimsPrincipal principal, Milestone milestone)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Delete);
+        principal.ThrowIfEntityTenantIsDifferent(milestone);
+
+        await _repository.DeleteMilestoneByIdAsync(milestone.Id);
+    }
 }

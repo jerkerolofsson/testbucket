@@ -1,5 +1,5 @@
 ﻿@attribute [Authorize()]
-@page "/{TenantId}/Code/Features"
+@page "/{TenantId}/Code/Systems"
 @using TestBucket.Components.Code.Controls
 @using TestBucket.Domain
 @using TestBucket.Domain.Code.Models
@@ -16,12 +16,12 @@
                  ServerData="LoadGridData"
         Dense Hover RowClass="tb-datarow cursor-pointer"
         RowClick="async (row) => await OnRowClicked(row.Item)"
-        T="Feature" SortMode="SortMode.None">
+        T="ProductSystem" SortMode="SortMode.None">
 
         <ToolBarContent>
             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-                <MudIcon Icon="@TbIcons.BoldDuoTone.Epic" Size="Size.Large" />
-                <MudText Typo="Typo.h2">@codeLoc["features"]</MudText>
+                <MudIcon Icon="@TbIcons.BoldDuoTone.Systems" Size="Size.Large" />
+                <MudText Typo="Typo.h2">@codeLoc["systems"]</MudText>
                 <MudSpacer />
                 <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
                     <Authorized>
@@ -70,7 +70,7 @@
         </Columns>
 
         <PagerContent>
-            <MudDataGridPager T="Feature" />
+            <MudDataGridPager T="ProductSystem" />
         </PagerContent>
     </MudDataGrid>
 }
@@ -80,21 +80,21 @@
     [Parameter] public string? TenantId { get; set; }
     [CascadingParameter] public TestProject? Project { get; set; }
     private TestProject? _project;
-    private IReadOnlyList<Feature> _features = [];
-    private MudDataGrid<Feature>? _grid;
+    private IReadOnlyList<ProductSystem> _components = [];
+    private MudDataGrid<ProductSystem>? _grid;
 
     private async Task AddAsync()
     {
-        await architectureController.AddFeatureAsync();
+        await architectureController.AddSystemAsync();
         await LoadAsync();
     }
 
-    private async Task OnRowClicked(Feature feature)
+    private async Task OnRowClicked(ProductSystem system)
     {
         var state = await authenticationStateProvider.GetAuthenticationStateAsync();
         if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Write))
         {
-            await architectureController.EditFeatureAsync(feature);
+            await architectureController.EditSystemAsync(system);
             await LoadAsync();
         }
     }
@@ -114,14 +114,14 @@
         if(_project?.Id != Project?.Id && Project is not null)
         {
             _project = Project;
-            _features = await architectureController.GetFeaturesAsync(Project.Id);
+            _components = await architectureController.GetSystemsAsync(Project.Id);
             _grid?.ReloadServerData();
         }
     }
 
-    protected async Task DeleteAsync(Feature feature)
+    protected async Task DeleteAsync(ProductSystem item)
     {
-        await architectureController.DeleteFeatureAsync(feature);
+        await architectureController.DeleteSystemAsync(item);
     }
 
     /// <summary>
@@ -129,19 +129,19 @@
     /// </summary>
     /// <param name="state"></param>
     /// <returns></returns>
-    private Task<GridData<Feature>> LoadGridData(GridState<Feature> state)
+    private Task<GridData<ProductSystem>> LoadGridData(GridState<ProductSystem> state)
     {
         if (Project is null)
         {
-            return Task.FromResult(new GridData<Feature> { TotalItems = 0 });
+            return Task.FromResult(new GridData<ProductSystem> { TotalItems = 0 });
         }
 
-        var page = _features.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        var page = _components.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
 
-        GridData<Feature> data = new()
+        GridData<ProductSystem> data = new()
         {
             Items = page,
-            TotalItems = (int) _features.Count
+            TotalItems = (int) _components.Count
         };
 
         return Task.FromResult(data);

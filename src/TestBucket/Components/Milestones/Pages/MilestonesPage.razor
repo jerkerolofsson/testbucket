@@ -8,15 +8,13 @@
 @layout RequirementsLayout
 @inject MilestonesController controller
 @inject AppNavigationManager appNavigationManager
+@inject AuthenticationStateProvider authenticationStateProvider 
 @inject IStringLocalizer<SharedStrings> loc
 
 
 <MudTabs Style="width: 100%">
-    <MudTabPanel Text="@loc["calendar"]">
-        <MudCalendar T="CalendarItem" Style="width: 100%" Items="_calendarItems" ToolbarPadding="4" Outlined>
-        </MudCalendar>
-    </MudTabPanel>
-    <MudTabPanel Text="@loc["manage"]">
+
+     <MudTabPanel Text="@loc["manage"]">
         <MudDataGrid Items="_milestones"
                         Dense Hover RowClass="tb-datarow cursor-pointer"
                         RowClick="async (row) => await OnRowClicked(row.Item)"
@@ -36,8 +34,18 @@
                 </MudStack>
             </ToolBarContent>
 
+            <ColGroup>
+                <col style="width: 30%" />
+                <col style="width: 20%;" />
+                <col style="width: 20%;" />
+                <col style="width: 20%;" />
+                <col style="width: 10%;" />
+            </ColGroup>
+
+
             <Columns>
                 <PropertyColumn Property="x => x.Title" Title="@loc["name"]" />
+                <PropertyColumn Property="x => x.State" Title="@loc["state"]" />
                 <TemplateColumn Title="@loc["start-date"]">
                     <CellTemplate>
                         @if(context.Item.StartDate is not null)
@@ -54,8 +62,23 @@
                         }
                     </CellTemplate>
                 </TemplateColumn>
+
+                <TemplateColumn>
+                    <CellTemplate>
+                        <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Delete">
+                            <Authorized>
+                                <MudIconButton OnClick="async() => await DeleteAsync(context.Item)" Color="Color.Error" Icon="@Icons.Material.Filled.Clear"/>
+                            </Authorized>
+                        </PermissionView>
+                    </CellTemplate>
+                </TemplateColumn>
             </Columns>
         </MudDataGrid>
+    </MudTabPanel>
+
+    <MudTabPanel Text="@loc["calendar"]">
+        <MudCalendar Style="width: 100%" Items="_calendarItems" ToolbarPadding="4" Outlined>
+        </MudCalendar>
     </MudTabPanel>
 </MudTabs>
 
@@ -102,8 +125,22 @@
 
     private async Task OnRowClicked(Milestone milestone)
     {
-        await controller.EditMilestoneAsync(milestone);
-        await LoadAsync();
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+        if(state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Write))
+        {
+            await controller.EditMilestoneAsync(milestone);
+            await LoadAsync();
+        }
+    }
+
+    private async Task DeleteAsync(Milestone milestone)
+    {
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+        if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Delete))
+        {
+            await controller.DeleteMilestoneAsync(milestone);
+            await LoadAsync();
+        }
     }
 
     protected override async Task OnParametersSetAsync()

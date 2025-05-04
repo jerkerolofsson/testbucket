@@ -20,6 +20,11 @@ public class ArchitectureRepository : IArchitectureRepository
     }
 
     #region Systems
+    public async Task DeleteSystemAsync(long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.ProductSystems.AsNoTracking().Where(x => x.Id == id).ExecuteDeleteAsync();
+    }
     public async Task AddSystemAsync(ProductSystem system)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -53,6 +58,12 @@ public class ArchitectureRepository : IArchitectureRepository
     #endregion Systems
 
     #region Layers
+
+    public async Task DeleteLayerAsync(long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.ArchitecturalLayers.AsNoTracking().Where(x => x.Id == id).ExecuteDeleteAsync();
+    }
     public async Task AddLayerAsync(ArchitecturalLayer layer)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -87,6 +98,12 @@ public class ArchitectureRepository : IArchitectureRepository
 
 
     #region Components
+    public async Task DeleteComponentAsync(long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.Components.AsNoTracking().Where(x => x.Id == id).ExecuteDeleteAsync();
+    }
+
     public async Task AddComponentAsync(Component component)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -131,6 +148,11 @@ public class ArchitectureRepository : IArchitectureRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         dbContext.Features.Update(feature);
         await dbContext.SaveChangesAsync();
+    }
+    public async Task DeleteFeatureAsync(long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.Features.AsNoTracking().Where(x=>x.Id == id).ExecuteDeleteAsync();
     }
 
     public async Task<PagedResult<Feature>> SearchFeaturesAsync(FilterSpecification<Feature>[] filters, int offset, int count)

@@ -459,4 +459,10 @@
   <data name="milestones" xml:space="preserve">
     <value />
   </data>
+  <data name="calendar" xml:space="preserve">
+    <value />
+  </data>
+  <data name="manage" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -3,16 +3,24 @@
 
 <EditForm Model="@Milestone" OnValidSubmit="Submit">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
+        <TitleContent>@Milestone?.Title</TitleContent>
         <DialogContent>
             @if (Milestone is not null)
             {
                 <Field>
                     <MudTextField Variant="Variant.Outlined"
                     Label="@loc["title"]"
+                    Immediate
                     AdornmentColor="Color.Tertiary"
                     @bind-Value="@Milestone.Title"
                     T="string"
                     AutoFocus="true" />
+                </Field>
+
+                <Field Row>
+                    <FieldHeader>@loc["open"]</FieldHeader>
+                    <MudSpacer />
+                    <MudSwitchM3 @bind-Value="@_open" Color="Color.Primary"/>
                 </Field>
 
                 <Field Row>
@@ -31,7 +39,13 @@
         </DialogContent>
 
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            @if (Milestone is not null)
+            {
+                if(!string.IsNullOrWhiteSpace(Milestone.Title))
+                {
+                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+                }
+            }
             <MudButton OnClick="Close">@loc["cancel"]</MudButton>
         </DialogActions>
     </MudDialog>
@@ -44,6 +58,7 @@
 
     private DateTime? _startDate = DateTime.Now;
     private DateTime? _endDate = DateTime.Now;
+    private bool _open = true;
 
     protected override void OnInitialized()
     {
@@ -51,6 +66,7 @@
         {
             _startDate = Milestone.StartDate?.DateTime.ToLocalTime() ?? DateTime.Now;
             _endDate = Milestone.EndDate?.DateTime.ToLocalTime() ?? DateTime.Now;
+            _open = Milestone.State == MilestoneState.Open;
         }
     }
 
@@ -82,6 +98,16 @@
         {
             Milestone.EndDate = null;
         }
+
+        if(_open)
+        {
+            Milestone.State  = MilestoneState.Open;
+        }
+        else
+        {
+            Milestone.State  = MilestoneState.Closed;
+        }
+
         MudDialog.Close(Milestone);
     }
 }

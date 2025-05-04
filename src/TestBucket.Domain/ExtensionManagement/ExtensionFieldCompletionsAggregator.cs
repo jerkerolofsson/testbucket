@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Milestones;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
 using TestBucket.Traits.Core;
@@ -66,8 +67,8 @@ internal class ExtensionFieldCompletionsAggregator : IFieldCompletionsProvider
     {
         switch(type)
         {
-            case FieldDataSourceType.Milestones:
-                return await GetFieldOptionsAsync(principal, projectId, TraitType.Milestone, cancellationToken);
+            //case FieldDataSourceType.Milestones:
+            //    return await GetFieldOptionsAsync(principal, projectId, TraitType.Milestone, cancellationToken);
             case FieldDataSourceType.Releases:
                 return await GetFieldOptionsAsync(principal, projectId, TraitType.Release, cancellationToken);
         }

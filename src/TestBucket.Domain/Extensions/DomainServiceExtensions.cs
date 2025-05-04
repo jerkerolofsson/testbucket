@@ -21,6 +21,7 @@ using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Milestones;
+using TestBucket.Domain.Milestones.DataSources;
 using TestBucket.Domain.Milestones.Services;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
@@ -75,6 +76,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IFieldCompletionsProvider, ComponentDataSource>();
         services.AddScoped<IFieldCompletionsProvider, FeatureDataSource>();
         services.AddScoped<IFieldCompletionsProvider, CommitDataSource>();
+        services.AddScoped<IFieldCompletionsProvider, MilestoneDataSource>();
 
         // Runner/Hybrid
         services.AddScoped<IMarkdownTestRunner, HybridRunner>();

@@ -85,11 +85,14 @@
                     milestone.EndDate is not null &&
                     milestone.Title is not null)
                 {
+                    var start = milestone.EndDate.Value.LocalDateTime;
+                    start = new DateTime(start.Year, start.Month, start.Day, 0, 0, 0);
+                    var end = new DateTime(start.Year, start.Month, start.Day, 23, 59, 59);
                     items.Add(new CalendarItem() 
                     { 
                         Text = milestone.Title, 
-                        Start = milestone.EndDate.Value.LocalDateTime,
-                        End = milestone.EndDate.Value.LocalDateTime,
+                        Start = start,
+                        End = end,
                     });
                 }
             }

@@ -56,4 +56,17 @@ internal class MilestoneManager : IMilestoneManager
         var result = await _repository.GetMilestonesAsync(filters);
         return result.FirstOrDefault();
     }
+
+    public async Task<IReadOnlyList<Milestone>> SearchMilestonesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+        var filters = new List<FilterSpecification<Milestone>>
+        {
+            new FilterByTenant<Milestone>(principal.GetTenantIdOrThrow()),
+            new FilterByProject<Milestone>(projectId),
+            new SearchMilestones(text)
+        };
+        var result = await _repository.GetMilestonesAsync(filters);
+        return result.Skip(offset).Take(count).ToList();
+    }
 }

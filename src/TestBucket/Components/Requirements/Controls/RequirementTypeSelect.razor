@@ -1,0 +1,43 @@
+﻿@using TestBucket.Contracts.Requirements.States
+@using TestBucket.Contracts.Requirements.Types
+@using TestBucket.Contracts.Testing.Models
+@using TestBucket.Contracts.Testing.States
+@using TestBucket.Domain.States
+@inject ProjectController controller
+@inject IStringLocalizer<RequirementStrings> loc
+
+<MudSelect Variant="Variant.Outlined" T="RequirementType" Value="@Type" ValueChanged="OnTypeChanged">
+    @foreach (var state in _types)
+    {
+        <MudSelectItem Value="@state">
+            @if (state.MappedType == MappedRequirementType.Other)
+            {
+                @state.Name
+            }
+            else
+            {
+                var name = state.MappedType.ToString().ToLower();
+                var label = "type-" + name;
+                @loc[label]
+            }
+        </MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+    [Parameter] public long TestProjectId { get; set; }
+    [Parameter] public RequirementType? Type { get; set; }
+    [Parameter] public EventCallback<RequirementType?> TypeChanged { get; set; }
+
+    private IReadOnlyList<RequirementType> _types = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _types = await controller.GetRequirementTypesAsync(TestProjectId);
+    }
+
+    private async Task OnTypeChanged(RequirementType? state)
+    {
+        await TypeChanged.InvokeAsync(state);
+    }
+}

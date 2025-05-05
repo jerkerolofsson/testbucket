@@ -7,8 +7,9 @@ using TestBucket.Domain.Requirements.Specifications.Links;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using UglyToad.PdfPig.Filters;
+using TestBucket.Domain.Requirements.Specifications.Requirements;
+using TestBucket.Domain.Requirements.Events;
+using Mediator;
 
 namespace TestBucket.Domain.Requirements
 {
@@ -16,10 +17,11 @@ namespace TestBucket.Domain.Requirements
     {
         private readonly IRequirementRepository _repository;
         private readonly List<IRequirementObserver> _requirementObservers = new();
-
-        public RequirementManager(IRequirementRepository repository)
+        private readonly IMediator _mediator;
+        public RequirementManager(IRequirementRepository repository, IMediator mediator)
         {
             _repository = repository;
+            _mediator = mediator;
         }
 
         #region Observer
@@ -128,6 +130,8 @@ namespace TestBucket.Domain.Requirements
             {
                 await observer.OnRequirementDeletedAsync(requirement);
             }
+
+            await _mediator.Publish(new RequirementDeletedEvent(principal,requirement));
         }
 
         /// <summary>
@@ -150,6 +154,8 @@ namespace TestBucket.Domain.Requirements
             {
                 await observer.OnRequirementSavedAsync(requirement);
             }
+
+            await _mediator.Publish(new RequirementUpdatedEvent(principal, requirement));
         }
 
 
@@ -250,6 +256,8 @@ namespace TestBucket.Domain.Requirements
             {
                 await observer.OnRequirementCreatedAsync(requirement);
             }
+
+            await _mediator.Publish(new RequirementCreatedEvent(principal, requirement));
         }
 
 

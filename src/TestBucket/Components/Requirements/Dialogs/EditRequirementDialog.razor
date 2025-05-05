@@ -37,6 +37,11 @@
                             <MudDivider DividerType="DividerType.Middle" Vertical />
 
                             <MudIconButton Icon="@Icons.Material.Filled.Fullscreen" Class="rounded-0" OnClick="async () => await _editor.ToggleFullScreenAsync()" />
+
+                            <MudDivider DividerType="DividerType.Middle" Vertical />
+                            <MudSpacer/>
+                            <MudIconButton Icon="@Icons.Material.Filled.CompareArrows" Href="@appNavigationManager.GetUrl(Requirement)" />
+
                         }
                     </MudToolBar>
 

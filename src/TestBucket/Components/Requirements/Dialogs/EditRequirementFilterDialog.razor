@@ -1,6 +1,8 @@
 ﻿@using TestBucket.Contracts.Fields
+@using TestBucket.Contracts.Requirements.States
+@using TestBucket.Contracts.Requirements.Types
 @attribute [Authorize]
-@inject TestCaseEditorController testCaseEditorService
+@inject RequirementEditorController editor
 @inject FieldController fieldController
 @inject IStringLocalizer<SharedStrings> loc
 
@@ -16,6 +18,17 @@
                         <MudDateRangePicker 
                         DateRange="@_dateRange" Margin="Margin.Dense" DateRangeChanged="OnDateRangeChanged" Clearable
                         PlaceholderStart="@loc["start-date"]" PlaceholderEnd="@loc["end-date"]" />
+                    </Field>
+
+                    <Field>
+                        <FieldHeader>@loc["type"]</FieldHeader>
+                        <RequirementTypeSelect @bind-Type="_requirementType"/>
+                    </Field>
+
+
+                    <Field>
+                        <FieldHeader>@loc["state"]</FieldHeader>
+                        <RequirementStateSelect @bind-State="_requirementState" />
                     </Field>
 
                     <FieldsEditor Fields="@_fields" AllowMultiSelection="false" AutoSaveChanges="false" FieldChanged="OnFieldChanged"/>
@@ -36,7 +49,10 @@
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter] public TestProject? Project{ get; set; }
-    [Parameter] public SearchTestQuery? Query { get; set; }
+    [Parameter] public SearchRequirementQuery? Query { get; set; }
+
+    private RequirementType? _requirementType;
+    private RequirementState? _requirementState;
 
     private IReadOnlyList<FieldDefinition> _fieldDefinitions = [];
     private List<FieldValue> _fields = [];
@@ -46,7 +62,7 @@
     {
         if(Project is not null)
         {
-            _fieldDefinitions = await fieldController.GetDefinitionsAsync(Project.Id, FieldTarget.TestCase);
+            _fieldDefinitions = await fieldController.GetDefinitionsAsync(Project.Id, FieldTarget.Requirement);
 
             // We filter some fields here, not all types of fields are suitable for the filter, 
             // such as ReadOnly or WriteOnly
@@ -87,7 +103,8 @@
                 var filter = field.ToFieldFilter();
                 Query.AddFieldFilter(filter);
             }
-            else{
+            else
+            {
                 Query.RemoveFieldFilter(x => x.FilterDefinitionId == field.FieldDefinitionId);
             }
         }
@@ -120,6 +137,19 @@
     {
         if(Query is not null)
         {
+            _requirementType = null;
+            if(Query.RequirementType is not null)
+            {
+                _requirementType = new RequirementType { Name = Query.RequirementType };
+                _requirementType.MappedType = RequirementTypeConverter.GetMappedRequirementTypeFromString(_requirementType.Name);
+            }
+
+            _requirementState = null;
+            if (Query.RequirementState is not null)
+            {
+                _requirementState = new RequirementState { Name = Query.RequirementState, MappedState = MappedRequirementState.Other };
+            }
+
             if(Query.CreatedFrom is not null)
             {
                 _dateRange.Start = Query.CreatedFrom.Value.LocalDateTime;
@@ -138,6 +168,12 @@
 
     private void  OnValidSubmit()
     {
+        if(Query is not null)
+        {
+            Query.RequirementType = _requirementType?.Name;
+            Query.RequirementState = _requirementState?.Name;
+        }
+
         MudDialog.Close(Query);
     }
 }

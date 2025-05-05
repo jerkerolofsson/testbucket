@@ -37,4 +37,7 @@ public class RequirementTypes
     // Tasks
 
     public const string Task = nameof(MappedRequirementType.Task);
+
+
+    public const string Other = nameof(MappedRequirementType.Other);
 }

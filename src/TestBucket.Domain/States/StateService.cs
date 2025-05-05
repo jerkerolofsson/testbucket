@@ -1,8 +1,8 @@
 ﻿using Mediator;
 
 using TestBucket.Contracts.Requirements.States;
+using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Contracts.Testing.States;
-using TestBucket.Domain.Projects;
 using TestBucket.Domain.States.Caching;
 
 namespace TestBucket.Domain.States;
@@ -61,5 +61,19 @@ public class StateService : IStateService
             entry = await _mediator.Send(new RefreshProjectStateCacheRequest(principal, projectId));
         }
         return entry?.RequirementStates ?? DefaultStates.GetDefaultRequirementStates();
+    }
+
+    public Task<IReadOnlyList<RequirementType>> GetRequirementTypesAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
+
+        var list = new List<RequirementType>();
+        foreach(var name in RequirementTypes.AllTypes)
+        {
+            var mapped = RequirementTypeConverter.GetMappedRequirementTypeFromString(name);
+            list.Add(new RequirementType { MappedType = mapped, Name = name });
+        }
+        return Task.FromResult<IReadOnlyList<RequirementType>>(list);
     }
 }

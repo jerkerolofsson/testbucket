@@ -16,4 +16,14 @@ public class SearchRequirementQuery : SearchQuery
     /// Specification
     /// </summary>
     public long? RequirementSpecificationId { get; set; }
+
+    /// <summary>
+    /// Type of requirement
+    /// </summary>
+    public string? RequirementType { get; set; }
+
+    /// <summary>
+    /// State of requirement
+    /// </summary>
+    public string? RequirementState { get; set; }
 }

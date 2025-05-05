@@ -14,6 +14,7 @@ using TestBucket.Domain.Requirements.Specifications;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using TestBucket.Domain.Identity;
+using TestBucket.Domain.Requirements.Specifications.Requirements;
 
 namespace TestBucket.Domain.Requirements.RequirementExtensions;
 internal class BackgroundExternalRequirementSynchronizer : BackgroundService

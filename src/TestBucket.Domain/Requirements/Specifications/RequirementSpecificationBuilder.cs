@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.Specifications.Folders;
+using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Specifications.TestCases;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Requirements.Specifications
 {
@@ -47,9 +51,28 @@ namespace TestBucket.Domain.Requirements.Specifications
         {
             var specifications = new List<FilterSpecification<Requirement>>();
 
+            if (query.Fields is not null)
+            {
+                foreach (var fieldFilter in query.Fields)
+                {
+                    if (!string.IsNullOrEmpty(fieldFilter.StringValue))
+                    {
+                        specifications.Add(new FilterRequirementByStringField(fieldFilter.FilterDefinitionId, fieldFilter.StringValue));
+                    }
+                }
+            }
+
             if (!string.IsNullOrWhiteSpace(query.Text))
             {
                 specifications.Add(new FilterRequirementByText(query.Text));
+            }
+            if (!string.IsNullOrWhiteSpace(query.RequirementType))
+            {
+                specifications.Add(new FilterRequirementByType(query.RequirementType));
+            }
+            if (!string.IsNullOrWhiteSpace(query.RequirementState))
+            {
+                specifications.Add(new FilterRequirementByState(query.RequirementState));
             }
             if (query.RequirementSpecificationId is not null)
             {

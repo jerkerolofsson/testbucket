@@ -64,28 +64,28 @@
             _requirementId = Requirement.Id;
             _testProjectId = Requirement.TestProjectId;
             var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = Requirement.TestProjectId, Target = FieldTarget.Requirement });
-            _requirementFields = (await fieldController.GetRequirementFieldsAsync(Requirement.Id, definitions)).OrderBy(x => x.FieldDefinition!.Name).ToList();
+            _requirementFields = Requirement.RequirementFields?.ToList() ?? (await fieldController.GetRequirementFieldsAsync(Requirement.Id, definitions)).OrderBy(x => x.FieldDefinition!.Name).ToList();
         }
         if (TestCase is not null && (_testCaseId != TestCase.Id || _testProjectId != TestCase.TestProjectId))
         {
             _testCaseId = TestCase.Id;
             _testProjectId = TestCase.TestProjectId;
             var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = TestCase.TestProjectId, Target = FieldTarget.TestCase });
-            _testCaseFields = (await fieldController.GetTestCaseFieldsAsync(TestCase.Id, definitions)).OrderBy(x => x.FieldDefinition!.Name).ToList();
+            _testCaseFields = TestCase.TestCaseFields?.ToList() ?? (await fieldController.GetTestCaseFieldsAsync(TestCase.Id, definitions)).OrderBy(x => x.FieldDefinition!.Name).ToList();
         }
         if (TestCaseRun is not null && (_testCaseRunId != TestCaseRun.Id || _testProjectId != TestCaseRun.TestProjectId))
         {
             _testCaseRunId = TestCaseRun.Id;
             _testProjectId = TestCaseRun.TestProjectId;
             var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = TestCaseRun.TestProjectId, Target = FieldTarget.TestCaseRun });
-            _testCaseRunFields = (await fieldController.GetTestCaseRunFieldsAsync(TestCaseRun.TestRunId, TestCaseRun.Id, definitions)).OrderBy(x=>x.FieldDefinition!.Name).ToList();
+            _testCaseRunFields = TestCaseRun.TestCaseRunFields?.ToList() ?? (await fieldController.GetTestCaseRunFieldsAsync(TestCaseRun.TestRunId, TestCaseRun.Id, definitions)).OrderBy(x => x.FieldDefinition!.Name).ToList();
         }
         else if (TestRun is not null && (_testRunId != TestRun.Id || _testProjectId != TestRun.TestProjectId))
         {
             _testRunId = TestRun.Id;
             _testProjectId = TestRun.TestProjectId;
             var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = TestRun.TestProjectId, Target = FieldTarget.TestRun });
-            _testRunFields = (await fieldController.GetTestRunFieldsAsync(TestRun.Id, definitions)).OrderBy(x => x.FieldDefinition!.Name).ToList();
+            _testRunFields = TestRun.TestRunFields?.ToList() ?? (await fieldController.GetTestRunFieldsAsync(TestRun.Id, definitions)).OrderBy(x => x.FieldDefinition!.Name).ToList();
         }
     }
 

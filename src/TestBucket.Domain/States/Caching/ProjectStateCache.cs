@@ -24,7 +24,7 @@ public class ProjectStateCache
         {
             IssueStates = project.IssueStates ?? [],
             RequirementStates = project.RequirementStates ?? DefaultStates.GetDefaultRequirementStates(),
-            TestStates = project.TestStates ?? DefaultStates.GetDefaultTestCaseRunStates()
+            TestStates = project.TestStates ?? DefaultStates.GetDefaultTestCaseRunStates(),
         };
 
         _cache[project.Id] = entry;

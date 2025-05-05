@@ -14,7 +14,10 @@
                           T="string" AutoFocus="true" />
         </Field>
 
-        <BasicMarkdownEditor Text="@Component.Description" TextChanged="OnDescriptionChanged"/>
+        <Field>
+            <FieldHeader>@loc["description"]</FieldHeader>
+            <BasicMarkdownEditor Text="@Component.Description" TextChanged="OnDescriptionChanged" Preview="false"/>
+        </Field>
 
         <Field Row>
             <FieldHeader>@codeLoc["dev-lead"]</FieldHeader>

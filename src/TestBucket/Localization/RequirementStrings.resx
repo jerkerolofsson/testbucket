@@ -192,4 +192,7 @@
   <data name="milestones" xml:space="preserve">
     <value>Milestones</value>
   </data>
+  <data name="filter-requirements" xml:space="preserve">
+    <value>Filter</value>
+  </data>
 </root>

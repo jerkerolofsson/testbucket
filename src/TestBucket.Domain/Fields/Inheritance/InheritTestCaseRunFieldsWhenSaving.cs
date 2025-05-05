@@ -42,7 +42,13 @@ public class InheritTestCaseRunFieldsWhenSaving : INotificationHandler<TestCaseR
         // Add any missing fields or inherited fields
         foreach(var field in testCaseRunFields)
         {
-            if(!field.HasValue() || field.Inherited == true)
+            field.FieldDefinition ??= testCaseRunDefinitions.Where(x => x.Id == field.FieldDefinitionId).FirstOrDefault();
+            if (field.FieldDefinition is null || field.FieldDefinition.Inherit == false)
+            {
+                continue;
+            }
+
+            if (!field.HasValue() || field.Inherited == true)
             {
                 await UpdateFieldAsync(principal, field, testCaseFields, testRunFields);
             }

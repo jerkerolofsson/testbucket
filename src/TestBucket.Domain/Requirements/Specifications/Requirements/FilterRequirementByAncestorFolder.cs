@@ -3,7 +3,7 @@
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 
-namespace TestBucket.Domain.Requirements.Specifications;
+namespace TestBucket.Domain.Requirements.Specifications.Requirements;
 
 /// <summary>
 /// Filters requirements that are descendants of the specified folder

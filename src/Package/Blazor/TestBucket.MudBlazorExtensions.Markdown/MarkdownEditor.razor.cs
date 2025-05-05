@@ -40,6 +40,7 @@ namespace TestBucket.MudBlazorExtensions.Markdown
             .AddClass("mud-input-outlined", Variant == Variant.Outlined)
             .AddClass("mud-input-filled", Variant == Variant.Filled)
             .AddClass("mud-input-text", Variant == Variant.Text)
+            .AddClass("mud-markdown-editor-root-preview", Preview == true)
             .Build();
 
         protected string EditButtonClassname =>

@@ -10,6 +10,7 @@ using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.Specifications;
 using TestBucket.Domain.Requirements.Specifications.Links;
+using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Traceability.Models;
 

@@ -12,6 +12,7 @@ using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Mapping;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.Specifications;
+using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Domain.Export.Handlers;

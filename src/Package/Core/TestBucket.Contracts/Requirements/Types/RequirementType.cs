@@ -19,4 +19,17 @@ public class RequirementType
     /// </summary>
     public MappedRequirementType MappedType { get; set; }
 
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is RequirementType state)
+        {
+            return state.MappedType == MappedType ||
+                (state.MappedType == MappedRequirementType.Other && state.Name == Name);
+        }
+        return false;
+    }
+
+    public override int GetHashCode() => MappedType.GetHashCode();
+
 }

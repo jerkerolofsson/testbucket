@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 
-namespace TestBucket.Domain.Requirements.Specifications
+namespace TestBucket.Domain.Requirements.Specifications.Requirements
 {
-    public class FilterRequirementByParentFolder : FilterSpecification<Requirement>
+    public class FilterRequirementByType : FilterSpecification<Requirement>
     {
-        private readonly long? _id;
+        private readonly string? _type;
 
-        public FilterRequirementByParentFolder(long? id)
+        public FilterRequirementByType(string? type)
         {
-            _id = id;
+            _type = type;
         }
 
         protected override Expression<Func<Requirement, bool>> GetExpression()
         {
-            return x => x.RequirementSpecificationFolderId == _id;
+            return x => x.RequirementType == _type;
         }
     }
 }

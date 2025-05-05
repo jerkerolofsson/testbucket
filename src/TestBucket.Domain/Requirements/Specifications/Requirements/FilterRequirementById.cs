@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 
-namespace TestBucket.Domain.Requirements.Specifications
+namespace TestBucket.Domain.Requirements.Specifications.Requirements
 {
     public class FilterRequirementById : FilterSpecification<Requirement>
     {

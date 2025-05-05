@@ -1,10 +1,9 @@
 ﻿using System.Linq.Expressions;
 
 using TestBucket.Domain.Requirements.Models;
-
 using TestBucket.Domain.Shared.Specifications;
 
-namespace TestBucket.Domain.Requirements.Specifications;
+namespace TestBucket.Domain.Requirements.Specifications.Requirements;
  public class FilterRequirementByRootId : FilterSpecification<Requirement>
 {
     private readonly long _id;

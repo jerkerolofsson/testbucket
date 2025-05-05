@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 
-namespace TestBucket.Domain.Requirements.Specifications
+namespace TestBucket.Domain.Requirements.Specifications.Requirements
 {
     public class FilterRequirementByText : FilterSpecification<Requirement>
     {
@@ -21,7 +21,7 @@ namespace TestBucket.Domain.Requirements.Specifications
 
         protected override Expression<Func<Requirement, bool>> GetExpression()
         {
-            return x => x.Name.ToLower().Contains(_text) || (x.Description != null && x.Description.ToLower().Contains(_text));
+            return x => x.Name.ToLower().Contains(_text) || x.Description != null && x.Description.ToLower().Contains(_text);
         }
     }
 }

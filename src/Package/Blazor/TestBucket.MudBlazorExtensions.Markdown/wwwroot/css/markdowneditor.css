@@ -345,7 +345,7 @@ code.tip {
 .mud-markdown-editor-root {
     color: var(--mud-palette-text-primary); 
     height: auto;
-    border-radius: var(--mud-default-borderradius);
+    transition: border-width,border-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
 .mud-markdown-editor-root .mud-markdown-toolbar {
@@ -353,20 +353,33 @@ code.tip {
     padding: 8px;
 }
 
-/*
-@media (min-width: 600px) {
-    .mud-markdown-editor-root .mud-toolbar {
-        --mud-internal-toolbar-height: auto;
-    }
-}*/
 
 .mud-markdown-editor-root.mud-input-outlined {
-    border: solid 1px var(--mud-palette-dark);
+    border-radius: var(--mud-default-borderradius);
+    border-color: var(--mud-palette-lines-inputs);
+    border-width: 1px;
+    border-style: solid;
+}
+.mud-markdown-editor-root.mud-input-outlined > * {
+    border-radius: var(--mud-default-borderradius);
+    padding: 1px;
+}
+
+.mud-markdown-editor-root.mud-input-outlined.mud-markdown-editor-root-preview,
+.mud-markdown-editor-root.mud-input-outlined.mud-markdown-editor-root-preview:hover,
+.mud-markdown-editor-root.mud-input-outlined.mud-markdown-editor-root-preview:focus-within {
+    border-color: transparent;
+}
+
+.mud-markdown-editor-root.mud-input-outlined:hover {
+    border-color: var(--mud-palette-action-default);
 }
 
 .mud-markdown-editor-root.mud-input-filled:focus-within,
 .mud-markdown-editor-root.mud-input-outlined:focus-within {
-    outline: solid 2px var(--clr-markdown-accent);
+    border-color: var(--clr-markdown-accent, var(--mud-palette-primary));
+    border-color: transparent;
+    border: solid 2px var(--mud-palette-primary);
 }
 .mud-markdown-editor-root.mud-input-text:focus-within {
     border-bottom: solid 2px var(--clr-markdown-accent);

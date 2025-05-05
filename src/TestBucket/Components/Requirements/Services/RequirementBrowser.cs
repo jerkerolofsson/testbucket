@@ -3,9 +3,12 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Localization;
 
+using MudBlazor;
+
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Tree;
+using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Domain;
 using TestBucket.Domain.Requirements;
@@ -41,6 +44,24 @@ internal class RequirementBrowser : TenantBaseService
         _dialogService = dialogService;
         _appNavigationManager = appNavigationManager;
         _codeLoc = codeLoc;
+    }
+
+    public async Task<SearchRequirementQuery?> ShowFilterAsync(SearchRequirementQuery? query)
+    {
+        query ??= new();
+
+        var parameters = new DialogParameters<EditRequirementFilterDialog>
+        {
+            { x => x.Query, query },
+            { x => x.Project, _appNavigationManager.State.SelectedProject },
+        };
+        var dialog = await _dialogService.ShowAsync<EditRequirementFilterDialog>(_loc["filter-requirements"], parameters);
+        var result = await dialog.Result;
+        if (result?.Data is SearchRequirementQuery updatedQuery)
+        {
+            return updatedQuery;
+        }
+        return null;
     }
 
     public async Task<RequirementTestLink[]> GetLinksForTestAsync(TestCase test)

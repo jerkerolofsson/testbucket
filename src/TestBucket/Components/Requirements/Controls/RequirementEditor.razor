@@ -37,6 +37,10 @@
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 
                 <MudIconButton Icon="@Icons.Material.Filled.Fullscreen" OnClick="async () => await _editor.ToggleFullScreenAsync()" />
+
+                <MudDivider DividerType="DividerType.Middle" Vertical />
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.CompareArrows" Href="@appNavigationManager.GetUrl(Requirement)" />
             }
             else
             {
@@ -99,7 +103,11 @@
                             AutoFocus="true" />
                         </Field>
 
-                        <RequirementStateSelect State="@State" StateChanged="OnStateChanged" />
+                        <Field Row>
+                            <FieldHeader>@loc["state"]</FieldHeader>
+                            <MudSpacer />
+                            <RequirementStateSelect State="@State" StateChanged="OnStateChanged" />
+                        </Field>
 
                         <Field Row>
                             <FieldHeader>@loc["assigned-to"]</FieldHeader>
@@ -135,15 +143,7 @@
                         <Field Row>
                             <FieldHeader>@reqLoc["type"]</FieldHeader>
                             <MudSpacer/>
-                            <MudSelect T="string" Value="@Requirement.RequirementType" ValueChanged="OnTypeChanged" Variant="Variant.Outlined">
-                                @foreach (var type in RequirementTypes.AllTypes)
-                                {
-                                    var label = "type-" + type.ToLower();
-                                    <MudSelectItem Value="@type">
-                                        @reqLoc[label]
-                                    </MudSelectItem>
-                                }
-                            </MudSelect>
+                            <RequirementTypeSelect Type="@Type" TypeChanged="OnTypeChanged" />
                         </Field>
                     }
                     else if (_selectedTab == "trace")
@@ -241,6 +241,18 @@
             return null;
         }
     }
+    
+    private RequirementType? Type
+    {
+        get
+        {
+            if (Requirement?.RequirementType is not null)
+            {
+                return new RequirementType() { MappedType = Requirement.MappedType ?? MappedRequirementType.General, Name = RequirementTypes.General };
+            }
+            return null;
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -266,13 +278,22 @@
 
     private async Task OnAssignedToChanged(string? user)
     {
-         if (Requirement is not null)
+        if (Requirement is not null)
         {
             Requirement.AssignedTo = user;
             await SaveChangesAsync();
         }
     }
+    private async Task OnTypeChanged(RequirementType? type)
+    {
+        if (Requirement is not null)
+        {
+            Requirement.RequirementType = type?.Name;
+            Requirement.MappedType = type?.MappedType;
 
+            await SaveChangesAsync();
+        }
+    }
     private async Task OnStateChanged(RequirementState? state)
     {
         if (Requirement is not null)

@@ -1,10 +1,9 @@
 ﻿using System.Linq.Expressions;
 
 using TestBucket.Domain.Requirements.Models;
-
 using TestBucket.Domain.Shared.Specifications;
 
-namespace TestBucket.Domain.Requirements.Specifications;
+namespace TestBucket.Domain.Requirements.Specifications.Requirements;
  public class FilterRequirementByExternalId : FilterSpecification<Requirement>
 {
     private readonly string _externalProvider;

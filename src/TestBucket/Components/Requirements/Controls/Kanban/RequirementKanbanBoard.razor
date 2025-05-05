@@ -1,11 +1,13 @@
 ﻿@using TestBucket.Components.Requirements.Extensions
 @using TestBucket.Components.Shared.Kanban
 @using TestBucket.Contracts.Requirements.States
+@using TestBucket.Domain.Requirements.Specifications
 @using TestBucket.Domain.States
 @using TestBucket.Domain
 @using TestBucket.Formats.Dtos
 @inject ProjectController controller
 @inject RequirementEditorController requirementEditor
+@inject RequirementBrowser browser
 @inject AppNavigationManager appNavigationManager
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject IStringLocalizer<RequirementStrings> reqLoc
@@ -17,6 +19,8 @@
         <MudText Typo="Typo.h1">@Title</MudText>
 
         <MudSpacer/>
+
+        <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="ShowFilterAsync"></MudIconButton>
 
         <MudToggleGroup T="KanbanGroupBy" Value="@_groupBy" ValueChanged="GroupByChanged" SelectionMode="SelectionMode.SingleSelection">
             <MudToggleItem Value="@KanbanGroupBy.State" Text="@reqLoc["state"]"/>
@@ -68,6 +72,14 @@
         await requirementEditor.OpenEditDialogAsync(requirement);
     }
 
+    private SearchRequirementQuery? _query;
+
+    private async Task ShowFilterAsync()
+    {
+        _query = await browser.ShowFilterAsync(_query);
+        await LoadColumnsAsync();
+    }
+
     private async Task GroupByChanged(KanbanGroupBy groupBy)
     {
         _groupBy = groupBy;
@@ -89,7 +101,18 @@
         _requirements.Clear();
         if (Requirements is not null)
         {
-            _requirements.AddRange(Requirements);
+            var source = Requirements.AsQueryable();
+            if(_query is not null)
+            {
+                _query.CompareFolder = false;
+                var filters = RequirementSpecificationBuilder.From(_query);
+                foreach(var filter in filters)
+                {
+                    source = source.Where(filter.Expression);
+                }
+            }
+
+            _requirements.AddRange(source);
         }
         if (ProjectId is not null)
         {

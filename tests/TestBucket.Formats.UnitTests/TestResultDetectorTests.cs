@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using TestBucket.Formats.Builders;
+using TestBucket.Formats.UnitTests.Utilities;
 using TestBucket.Traits.Core;
 using TestBucket.Traits.Xunit;
 
@@ -12,6 +13,13 @@ namespace TestBucket.Formats.UnitTests
     public class TestResultDetectorTests
     {
         [Fact]
+        public async Task DetectFromFileAsync_WithZip_ResultIsZipArchive()
+        {
+            var format = await TestResultDetector.DetectFromFileAsync("./Zip/TestData/junit-no-testsuites.zip");
+            Assert.Equal(TestResultFormat.ZipArchive, format);
+        }
+
+        [Fact]
         public void Detect_WithTrx_ResultIsTrx()
         {
             var text = """
@@ -21,6 +29,50 @@ namespace TestBucket.Formats.UnitTests
                 """;
             var format = TestResultDetector.Detect(Encoding.UTF8.GetBytes(text));
             Assert.Equal(TestResultFormat.MicrosoftTrx, format);
+        }
+
+
+        [Fact]
+        public void Detect_WithCtrfJsoncheck_ResultIsCtrf()
+        {
+            var json = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.Ctrf.TestData.ctrf-summary.json");
+            var sb = new StringBuilder();
+            for(int i=0; i<2000; i++)
+            {
+                sb.Append("            ");
+            }
+
+            var format = TestResultDetector.Detect(Encoding.UTF8.GetBytes(sb.ToString() + json));
+            Assert.Equal(TestResultFormat.CommonTestReportFormat, format);
+        }
+
+        [Fact]
+        public void Detect_WithCtrfMagic_ResultIsCtrf()
+        {
+            var text = """
+                {
+                "reportFormat": "CTRF"
+                }
+                """;
+            var format = TestResultDetector.Detect(Encoding.UTF8.GetBytes(text));
+            Assert.Equal(TestResultFormat.CommonTestReportFormat, format);
+        }
+
+
+        [Fact]
+        public void Detect_WithCtrfMagicAlt_ResultIsCtrf()
+        {
+            var text = """
+                {
+                "results": {
+                  "environment": {
+                    "osPlatform": "Windows",
+                    "osRelease": "Microsoft Windows 10.0.19045"
+                  }
+                }
+                """;
+            var format = TestResultDetector.Detect(Encoding.UTF8.GetBytes(text));
+            Assert.Equal(TestResultFormat.CommonTestReportFormat, format);
         }
 
         [Fact]

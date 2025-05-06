@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace TestBucket.Domain.Settings.Fakes
     /// <summary>
     /// Test double
     /// </summary>
+    [ExcludeFromCodeCoverage]
     internal class FakeSettingsProvider : ISettingsProvider
     {
         private GlobalSettings _globalSettings = new()

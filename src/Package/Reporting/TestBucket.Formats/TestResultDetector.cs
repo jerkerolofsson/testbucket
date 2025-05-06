@@ -29,7 +29,7 @@ namespace TestBucket.Formats
 
         public static TestResultFormat Detect(byte[] bytes)
         {
-            if (bytes.Length > 2 && bytes[0] == 0x0B && bytes[1] == 0x4B) // PK
+            if (bytes.Length > 2 && bytes[0] == 0x50 && bytes[1] == 0x4B) // PK
             {
                 return TestResultFormat.ZipArchive;
             }
@@ -61,7 +61,8 @@ namespace TestBucket.Formats
                 {
                     return TestResultFormat.CommonTestReportFormat;
                 }
-                if(text.Contains('{'))
+                text = Encoding.UTF8.GetString(bytes);
+                if (text.Contains('{'))
                 {
                     try
                     {

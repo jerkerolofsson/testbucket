@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
 	<OutputType>Exe</OutputType>
+	  <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+	  <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
   </PropertyGroup>
 
   <ItemGroup>
@@ -60,6 +62,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Package\Reporting\TestBucket.Formats\TestBucket.Formats.csproj" />
     <ProjectReference Include="..\..\src\Package\Traits\TestBucket.Traits.XUnit\TestBucket.Traits.Xunit.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Zip\TestData\junit-no-testsuites.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

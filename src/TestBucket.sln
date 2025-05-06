@@ -83,6 +83,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.IntegrationTests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Sdk.Client", "Package\Core\TestBucket.Sdk.Client\TestBucket.Sdk.Client.csproj", "{5B37DFCD-1E7F-4A8A-B2E0-F4EC5572022B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Domain.IntegrationTests", "..\tests\TestBucket.Domain.IntegrationTests\TestBucket.Domain.IntegrationTests.csproj", "{DB0AEE50-3BB6-46E2-B1EC-5FAB30A7749A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -185,6 +187,10 @@ Global
 		{5B37DFCD-1E7F-4A8A-B2E0-F4EC5572022B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B37DFCD-1E7F-4A8A-B2E0-F4EC5572022B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B37DFCD-1E7F-4A8A-B2E0-F4EC5572022B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB0AEE50-3BB6-46E2-B1EC-5FAB30A7749A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB0AEE50-3BB6-46E2-B1EC-5FAB30A7749A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB0AEE50-3BB6-46E2-B1EC-5FAB30A7749A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB0AEE50-3BB6-46E2-B1EC-5FAB30A7749A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -224,6 +230,7 @@ Global
 		{80B97166-0619-4A8A-A21C-E91BC2A4AEC7} = {23D65EC5-905A-406F-94B0-808DA0E67E2A}
 		{34783E21-4AD5-4EB5-BF06-901DB452AF78} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{5B37DFCD-1E7F-4A8A-B2E0-F4EC5572022B} = {FE85F1D8-3AEC-48E5-8FFA-E2BC1389EDE2}
+		{DB0AEE50-3BB6-46E2-B1EC-5FAB30A7749A} = {C173DE7F-3373-4306-A1AE-1BD799D2F4BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37FBEEC7-21BB-422E-866E-8B5C94540F5B}

@@ -271,7 +271,7 @@ internal class ProjectRepository : IProjectRepository
 
         // Fields
 
-        foreach (var fieldDefinition in dbContext.FieldDefinitions.Where(x=>x.TestProjectId == project.Id))
+        foreach (var fieldDefinition in dbContext.FieldDefinitions.Where(x=>x.TestProjectId == project.Id).ToList())
         {
             foreach (var fieldValue in dbContext.TestRunFields.Where(x => x.FieldDefinitionId == fieldDefinition.Id))
             {

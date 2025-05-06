@@ -54,6 +54,14 @@ namespace TestBucket.IntegrationTests.Fixtures
         /// </summary>
         public TestBucketClient Client => new TestBucketClient(CreateAdministratorHttpClient());
 
+        public HttpClient CreateClient(ClaimsPrincipal principal)
+        {
+            var client = _app?.CreateHttpClient("testbucket") ?? throw new InvalidOperationException("Not ready - not initialized");
+            var accessToken = GenerateAccessToken(principal);
+            client.DefaultRequestHeaders.Add("ApiKey", accessToken);
+            return client;
+        }
+
         /// <summary>
         /// Creates an authenticated http client
         /// </summary>

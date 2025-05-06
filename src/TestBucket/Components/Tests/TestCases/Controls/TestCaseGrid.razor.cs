@@ -14,6 +14,9 @@ public partial class TestCaseGrid
     [Parameter] public EventCallback<TestCase> OnTestCaseClicked { get; set; }
     [Parameter] public EventCallback<TestSuiteFolder> OnTestSuiteFolderClicked { get; set; }
 
+    [Parameter] public SearchTestQuery? Query { get; set; }
+    [Parameter] public EventCallback<SearchTestQuery> QueryChanged { get; set; }
+
     private TestSuiteFolder? _folder;
 
     private SearchTestQuery _query = new();
@@ -21,6 +24,7 @@ public partial class TestCaseGrid
     private MudDataGrid<TestSuiteItem?> _dataGrid = default!;
 
     private List<FieldDefinition> _columns = [];
+    private long? _projectId;
 
     public Task OnTestCreatedAsync(TestCase testCase)
     {
@@ -42,27 +46,18 @@ public partial class TestCaseGrid
 
     private long? _testSuiteId = null;
     private long? _folderId = null;
-    private long? _testProjectId = null;
-    private TestSuite? _testSuite;
     private bool _hasCustomFilter = false;
 
     protected override async Task OnParametersSetAsync()
     {
         bool changed = false;
 
-        _query.CompareFolder = true;
+        _query.CompareFolder = CompareFolder;
         _query.TestSuiteId = TestSuiteId;
         if(_testSuiteId != TestSuiteId)
         {
             _testSuiteId = TestSuiteId;
-            _testSuite = null;
             changed = true;
-            if (_testSuiteId is not null)
-            {
-                _testSuite = await testSuiteServer.GetTestSuiteByIdAsync(_testSuiteId.Value);
-                _testProjectId = _testSuite?.TestProjectId;
-            }
-
         }
         if (_folderId != FolderId)
         {
@@ -72,7 +67,6 @@ public partial class TestCaseGrid
             if (_folderId is not null)
             {
                 _folder = await testSuiteServer.GetTestSuiteFolderByIdAsync(_folderId.Value);
-                _testProjectId = _folder?.TestProjectId;
             }
         }
         else if(Folder is not null)
@@ -81,8 +75,13 @@ public partial class TestCaseGrid
             {
                 changed = true;
                 _folder = Folder;
-                _testProjectId = _folder.TestProjectId;
             }
+        }
+
+        if(Project is not null && _projectId != Project.Id)
+        {
+            changed = true;
+            _projectId = Project.Id;
         }
 
         if (changed)
@@ -91,33 +90,11 @@ public partial class TestCaseGrid
         }
 
         _columns = [];
-        //if(testProjectId is not null)
-        //{
-        //    _definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = testProjectId, Target = FieldTarget.TestCase, Count = 100 });
-
-        //    var category = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestCategory);
-        //    if (category is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestCategory))
-        //    {
-        //        _columns.Add(category);
-        //    }
-        //    var activity = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestActivity);
-        //    if (activity is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestActivity))
-        //    {
-        //        _columns.Add(activity);
-        //    }
-        //    var prio = _definitions.FirstOrDefault(x => x.TraitType == Traits.Core.TraitType.TestPriority);
-        //    if (prio is not null && !_columns.Any(x => x.TraitType == Traits.Core.TraitType.TestPriority))
-        //    {
-        //        _columns.Add(prio);
-        //    }
-        //}
     }
     protected override void OnInitialized()
     {
         testCaseManager.AddObserver(this);
     }
-
-
     public void Dispose()
     {
         testCaseManager.RemoveObserver(this);
@@ -152,11 +129,10 @@ public partial class TestCaseGrid
         await OnTestCaseClicked.InvokeAsync(testCase);
     }
 
-    private void ResetFilter()
+    private async Task ResetFilter()
     {
         _hasCustomFilter = false;
-        _query.CompareFolder = true;
-        _query.Text = null;
+        await QueryChanged.InvokeAsync(null);
         _dataGrid?.ReloadServerData();
     }
 
@@ -174,6 +150,7 @@ public partial class TestCaseGrid
             _hasCustomFilter = true;
             _query = query;
             _query.CompareFolder = false;
+            await QueryChanged.InvokeAsync(_query);
             _dataGrid?.ReloadServerData();
         }
     }
@@ -222,8 +199,6 @@ public partial class TestCaseGrid
             FolderId = _folder?.Id,
             CreatedFrom = _query.CreatedFrom,
             CreatedUntil = _query.CreatedUntil,
-            Category = _query.Category,
-            Priority = _query.Priority,
             ProjectId = Project?.Id,
             Fields = _query.Fields,
 

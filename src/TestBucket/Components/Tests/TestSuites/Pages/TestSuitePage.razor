@@ -1,11 +1,16 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Testing/TestSuites/{SuiteId:long}"
+@using TestBucket.Components.Tests.Metrics.TestCases
+@using TestBucket.Components.Tests.TestRuns.Controllers
 @using TestBucket.Domain
+@using TestBucket.Domain.Commands
 @layout TestingLayout
 @inject TestBrowser testBrowser
 @inject TestSuiteService controller
 @inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<SharedStrings> loc
+@inject TestRunCreationController testRunCreationController
+@inject FieldController fieldController 
 
 <div class="container-fill-2-rows">
     <MudToolBar Class="tb-toolbar">
@@ -31,19 +36,36 @@
                         <MudTooltip Text="@loc["settings"]">
                             <MudIconButton Icon="@Icons.Material.Filled.Settings" Href="@appNavigationManager.GetTestSuiteSettingsUrl()"/>
                         </MudTooltip>
-                        <MudButton Color="Color.Primary" Variant="Variant.Filled">@loc["run"]</MudButton>
+                        <MudButton OnClick="RunSuiteAsync" Color="Color.Primary" Variant="Variant.Filled">@loc["run"]</MudButton>
                     </MudStack>
                     @if(_testSuite is not null)
                     {
-                        <TestCaseGrid  Project="@Project" TestSuiteId="@SuiteId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" OnTestSuiteFolderClicked="OnFolderClicked"/>
+                        <TestCaseGrid Query="_query" QueryChanged="OnQueryChanged"
+                        Project="@Project" TestSuiteId="@SuiteId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" OnTestSuiteFolderClicked="OnFolderClicked"/>
 
                         <BasicMarkdownEditor ToolbarTitle="@loc["readme"]" Text="@_testSuite.Description" TextChanged="OnDescriptionChanged"/>
+
+                        @* @if(_fieldCategory is not null) *@
+                        @* { *@
+                        @*     <TestsByField Field="@_fieldCategory" Title="CAT" Query="_querySuite" /> *@
+                        @* } *@
+
+                        @* @if (_fieldFeature is not null) *@
+                        @* { *@
+                        @*     <TestsByField Field="@_fieldFeature" Title="FEA" Query="_querySuite" /> *@
+                        @* } *@
+
+
+                        @* @if (_fieldFeature is not null && _fieldCategory is not null) *@
+                        @* { *@
+                        @*     <TestMatrix Field1="@_fieldFeature" Field2="@_fieldCategory" Title="matrix" Query="_querySuite" /> *@
+                        @* } *@
                     }
                 </MudStack>
             </article>
         </StartContent>
         <EndContent>
-            
+
         </EndContent>
     </Splitter>
 </div>
@@ -56,6 +78,21 @@
     [Parameter] public long SuiteId { get; set; }
 
     private TestSuite? _testSuite = null;
+    private SearchTestQuery _query = new();
+    private SearchTestQuery _querySuite = new();
+    private IReadOnlyList<FieldDefinition> _testCaseFields = [];
+    private FieldDefinition? _fieldCategory;
+    private FieldDefinition? _fieldFeature;
+
+    private async Task RunSuiteAsync()
+    {
+        if(_testSuite is null)
+        {
+            return;
+        }
+        await testRunCreationController.CreateTestRunAsync(_testSuite);
+    }
+
 
     /// <summary>
     /// Load the test suite when changed
@@ -66,8 +103,39 @@
         if (_testSuite is null || _testSuite.Id != SuiteId)
         {
             _testSuite = await testBrowser.GetTestSuiteByIdAsync(SuiteId);
+            if (_testSuite?.TestProjectId is not null)
+            {
+                _testCaseFields = await fieldController.GetDefinitionsAsync(_testSuite.TestProjectId.Value, Contracts.Fields.FieldTarget.TestCase);
+                _fieldCategory = _testCaseFields.Where(x => x.TraitType == TraitType.TestCategory).FirstOrDefault();
+                _fieldFeature = _testCaseFields.Where(x => x.TraitType == TraitType.Feature).FirstOrDefault();
+            }
             appNavigationManager.State.SelectedTestSuite = _testSuite;
+            OnQueryChanged(null);
         }
+    }
+
+    private void OnQueryChanged(SearchTestQuery? query)
+    {
+        if(query is null)
+        {
+            _query = new();
+            _query.ProjectId = _testSuite?.TestProjectId;
+            _query.CompareFolder = true;
+            _query.TestSuiteId = _testSuite?.Id;
+        }
+        else
+        {
+            _query = query;
+        }
+
+        _querySuite = new()
+        {
+            CreatedFrom = _query.CreatedFrom,
+            CreatedUntil = _query.CreatedUntil,
+            CompareFolder = false,
+            TestSuiteId = _testSuite?.Id,
+            Fields = _query.Fields.ToList()
+        };
     }
 
     private async Task OnDescriptionChanged(string description)

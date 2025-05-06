@@ -289,6 +289,8 @@ public interface ITestCaseRepository
     Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters, long fieldDefinitionId);
     Task<Dictionary<DateOnly, TestExecutionResultSummary>> GetTestExecutionResultSummaryByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
     Task<TestRun?> GetTestRunBySlugAsync(string tenantId, string slug);
+    Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId);
+    Task<Dictionary<string, Dictionary<string, long>>> GetTestCaseCoverageMatrixByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId1, long fieldDefinitionId2);
 
     #endregion
 }

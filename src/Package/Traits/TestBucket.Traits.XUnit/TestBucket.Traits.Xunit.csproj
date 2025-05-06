@@ -17,7 +17,14 @@
         <Version>1.0.0</Version>
         <WebPage>https://github.com/jerkerolofsson/testbucket/blob/main/doc/traits.md</WebPage>
     </PropertyGroup>
-    
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>TestBucket.Traits.Core.UnitTests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+
     <ItemGroup>
         <PackageReference Include="xunit.analyzers" Version="1.21.0">
           <PrivateAssets>all</PrivateAssets>

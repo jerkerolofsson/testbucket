@@ -58,6 +58,8 @@ public interface ITestCaseManager
     /// <param name="slug"></param>
     /// <returns></returns>
     Task<TestCase?> GetTestCaseBySlugAsync(ClaimsPrincipal user, string slug);
+    Task<Dictionary<string, Dictionary<string, long>>> GetTestCaseCoverageMatrixByFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId1, long fieldDefinitionId2);
+    Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId);
 
     /// <summary>
     /// Removes an observer
@@ -72,4 +74,5 @@ public interface ITestCaseManager
     /// <param name="testCase"></param>
     /// <returns></returns>
     Task SaveTestCaseAsync(ClaimsPrincipal principal, TestCase testCase);
+    IAsyncEnumerable<long> SearchTestCaseIdsAsync(ClaimsPrincipal principal, SearchTestQuery query, CancellationToken cancellationToken = default);
 }

@@ -41,7 +41,7 @@ namespace TestBucket.Domain.Shared
             var claims = principal.Claims.Where(x => x.Type == "tenant" && !string.IsNullOrEmpty(x.Value)).ToList();
             if (claims.Count == 0)
             {
-                throw new InvalidOperationException("User is not authenticated / no tenant was found");
+                throw new UnauthorizedAccessException("User is not authenticated / no tenant was found");
             }
             return claims.First().Value;
         }
@@ -51,7 +51,7 @@ namespace TestBucket.Domain.Shared
             var tenantId = AuthenticationGuard.GetTenantIdOrThrow(principal);
             if(tenantId != entity.TenantId)
             {
-                throw new InvalidOperationException($"Failed to modify entity. The entity belongs to tenant {entity.TenantId} and user belongs to {tenantId}");
+                throw new UnauthorizedAccessException($"Failed to modify entity. The entity belongs to tenant {entity.TenantId} and user belongs to {tenantId}");
             }
             return tenantId;
         }

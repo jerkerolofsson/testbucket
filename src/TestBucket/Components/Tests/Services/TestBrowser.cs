@@ -141,16 +141,18 @@ internal class TestBrowser : TenantBaseService
     /// <returns></returns>
     public async Task<PagedResult<TestSuiteItem>> SearchItemsAsync(SearchTestQuery query, int offset, int count = 20, bool includeFolders = true)
     {
-        if(query.TestSuiteId == null)
+        if(query.TestSuiteId is null && query.ProjectId is null)
         {
             return new PagedResult<TestSuiteItem>() { Items = [], TotalCount = 0 };
         }
 
         List<TestSuiteItem> items = new();
+        query.Offset = offset;
+        query.Count = count;
 
         // Get all folders
         int folderCount = 0;
-        if (includeFolders)
+        if (includeFolders && query.TestSuiteId is not null)
         {
             var folders = await _testSuiteService.GetTestSuiteFoldersAsync(query.ProjectId, query.TestSuiteId.Value, query.FolderId);
             items.AddRange(folders.Select(x => new TestSuiteItem() { Folder = x }).Skip(offset).Take(count));
@@ -206,6 +208,7 @@ internal class TestBrowser : TenantBaseService
                 {
                     var tests = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
                     {
+                        CompareFolder = true,
                         Count = 1_000,
                         Offset = 0,
                         FolderId = parent.Folder.Id,
@@ -224,6 +227,7 @@ internal class TestBrowser : TenantBaseService
 
                 var tests = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
                 {
+                    CompareFolder = true,
                     Count = 1_000,
                     Offset = 0,
                     FolderId = null,
@@ -510,10 +514,28 @@ internal class TestBrowser : TenantBaseService
     }
 
     /// <summary>
+    /// Returns a test distribution by field value
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="fieldDefinition"></param>
+    /// <returns></returns>
+    public async Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(SearchTestQuery query, FieldDefinition fieldDefinition)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testCaseManager.GetTestCaseDistributionByFieldAsync(principal, query, fieldDefinition.Id);
+    }
+
+    public async Task<Dictionary<string, Dictionary<string, long>>> GetTestCaseCoverageMatrixByFieldAsync(SearchTestQuery query, FieldDefinition fieldDefinition1, FieldDefinition fieldDefinition2)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testCaseManager.GetTestCaseCoverageMatrixByFieldAsync(principal, query, fieldDefinition1.Id, fieldDefinition2.Id); 
+    }
+
+    /// <summary>
     /// Returns a summary report of results (passed, failed..) filtered by the query
     /// </summary>
-    /// <param name="testRunId"></param>
-    /// <param name="searchText"></param>
+    /// <param name="query"></param>
+    /// <param name="fieldDefinition"></param>
     /// <returns></returns>
     public async Task<Dictionary<string,TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(SearchTestCaseRunQuery query, FieldDefinition fieldDefinition)
     {
@@ -666,6 +688,15 @@ internal class TestBrowser : TenantBaseService
                 Children = suiteItems,
                 Expanded = true,
                 Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_SUITES },
+                Icon = TbIcons.BoldDuoTone.Database,
+            });
+
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = "Test Cases",
+                Expanded = false,
+                Expandable = false,
+                Value = new BrowserItem() { Href = _appNavigationManager.GetTestCasesUrl() },
                 Icon = TbIcons.BoldDuoTone.Database,
             });
         }

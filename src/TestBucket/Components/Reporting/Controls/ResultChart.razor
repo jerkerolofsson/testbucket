@@ -21,7 +21,7 @@
             </MudToggleGroup>
 
         </MudStack>
-        @if (_layout is not null && Results is not null)
+        @if (_layout is not null && Results is not null && _config is not null)
         {
             <PlotlyChart style="height: 10vh; min-height: 350px" @ref="_chart" @bind-Config="_config" @bind-Layout="_layout" @bind-Data="_data" />
         }

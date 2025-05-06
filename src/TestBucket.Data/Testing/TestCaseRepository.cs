@@ -915,6 +915,7 @@ internal class TestCaseRepository : ITestCaseRepository
         return table;
     }
 
+
     public async Task<Dictionary<DateOnly, TestExecutionResultSummary>> GetTestExecutionResultSummaryByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
     {
         var table = new Dictionary<DateOnly, TestExecutionResultSummary>();
@@ -987,5 +988,61 @@ internal class TestCaseRepository : ITestCaseRepository
         return result;
     }
 
+    public async Task<Dictionary<string, Dictionary<string, long>>> GetTestCaseCoverageMatrixByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId1, long fieldDefinitionId2)
+    {
+        var table = new Dictionary<string, Dictionary<string, long>>();
 
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCases
+            .Include(x => x.TestCaseFields)
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            tests = tests.Where(filter.Expression);
+        }
+
+        var allResults = await tests.GroupBy(x => new { f1 = x.TestCaseFields!.First(x => x.FieldDefinitionId == fieldDefinitionId1).StringValue, f2 = x.TestCaseFields!.First(x => x.FieldDefinitionId == fieldDefinitionId2).StringValue }).
+            Select(g => new { Count = g.Count(), f1 = g.Key.f1, f2 = g.Key.f2 }).ToListAsync();
+
+        foreach (var row in allResults)
+        {
+
+            var f1 = row.f1 ?? "(null)";
+            var f2 = row.f2 ?? "(null)";
+            if (!table.ContainsKey(f1))
+            {
+                table[f1] = new Dictionary<string, long>();
+            }
+            table[f1][f2] = row.Count;
+        }
+
+        return table;
+    }
+    public async Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId)
+    {
+        var table = new Dictionary<string, long>();
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCases
+            .Include(x => x.TestCaseFields)
+            .Where(x => x.TestCaseFields!.Any(f => f.FieldDefinitionId == fieldDefinitionId))
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            tests = tests.Where(filter.Expression);
+        }
+
+        var allResults = await tests.GroupBy(x => new { x.TestCaseFields!.First(x => x.FieldDefinitionId == fieldDefinitionId).StringValue }).
+            Select(g => new { Count = g.Count(), FieldValue = g.Key.StringValue }).ToListAsync();
+
+        foreach (var row in allResults)
+        {
+            var name = row.FieldValue ?? "(null)";
+            table[name] = row.Count;
+        }
+
+        return table;
+    }
 }

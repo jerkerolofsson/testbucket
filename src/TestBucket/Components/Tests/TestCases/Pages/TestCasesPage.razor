@@ -1,0 +1,70 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestCases"
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Components.Tests.Metrics.TestCases
+@using TestBucket.Domain.Requirements.Models
+@layout TestingLayout
+@inject TestBrowser testBrowser
+@inject AppNavigationManager appNavigationManager
+@inject FieldController fieldController
+@inject IStringLocalizer<SharedStrings> loc
+
+<article class="center">
+    <MudStack>
+        <TestCaseGrid 
+            Query="_query" QueryChanged="OnQueryChanged" Project="@Project" CompareFolder="false" OnTestCaseClicked="OnTestCaseClicked"/>
+
+        @if (_fieldFeature is not null && _fieldCategory is not null)
+        {
+            <TestMatrix Fields="_testCaseFields" @bind-Field1="@_fieldCategory" @bind-Field2="@_fieldFeature" Title="@loc["coverage-matrix"]" Query="_query" />
+        }
+    </MudStack>
+</article>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private SearchTestQuery _query = new();
+    private IReadOnlyList<FieldDefinition> _testCaseFields = [];
+    private FieldDefinition? _fieldCategory;
+    private FieldDefinition? _fieldFeature;
+
+
+    /// <summary>
+    /// Load the test suite when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Project is null)
+        {
+            return;
+        }
+        _testCaseFields = await fieldController.GetDefinitionsAsync(Project.Id, Contracts.Fields.FieldTarget.TestCase);
+        _fieldCategory = _testCaseFields.Where(x => x.TraitType == TraitType.TestCategory).FirstOrDefault();
+        _fieldFeature = _testCaseFields.Where(x => x.TraitType == TraitType.Feature).FirstOrDefault();
+        OnQueryChanged(null);
+    }
+
+    private void OnQueryChanged(SearchTestQuery? query)
+    {
+        if (query is null)
+        {
+            _query = new();
+            _query.ProjectId = Project?.Id;
+            _query.CompareFolder = false;
+        }
+        else
+        {
+            _query = query;
+        }
+
+    }
+
+    private void OnTestCaseClicked(TestCase testCase)
+    {
+        appNavigationManager.NavigateTo(testCase);
+    }
+}

@@ -1,4 +1,6 @@
 ﻿
+using System.Security.Claims;
+
 using TestBucket.Formats.Dtos;
 using TestBucket.Sdk.Client.Exceptions;
 using TestBucket.Sdk.Client.Extensions;
@@ -61,7 +63,22 @@ public class TestRepositoryClient(HttpClient Client)
     }
 
     /// <summary>
-    /// Clonese a test case
+    /// Clones a test case using a client (could use a different user)
+    /// </summary>
+    /// <param name="slug"></param>
+    /// <returns></returns>
+    /// <exception cref="EmptyResponseException"></exception>
+    public async Task<TestCaseDto> DuplicateTestAsync(HttpClient client, string slug)
+    {
+        var response = await client.PostAsync($"/api/testcases/{slug}/duplicate", new StringContent(""));
+        await response.EnsureSuccessStatusCodeAsync();
+
+        TestCaseDto result = await response.Content.ReadFromJsonAsync<TestCaseDto>() ?? throw new EmptyResponseException();
+        return result;
+    }
+
+    /// <summary>
+    /// Clones a test case
     /// </summary>
     /// <param name="slug"></param>
     /// <returns></returns>

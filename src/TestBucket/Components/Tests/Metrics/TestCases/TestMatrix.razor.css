@@ -1,0 +1,27 @@
+﻿.tb-test-matrix {
+    display: grid;
+    gap: 1px;
+    max-width: 100%;
+    overflow: auto;
+}
+
+.tb-test-matrix .value {
+    display: grid;
+    place-items: center;
+    text-align: center;
+    background: rgb(0, 255, 144, 0.2);
+}
+
+.tb-test-matrix .value.empty {
+    background: transparent;
+}
+
+.tb-test-matrix .header {
+    font-weight: bold;
+}
+
+.tb-test-matrix .header.col {
+   display: grid;
+   place-items: center;
+   text-align: center;
+}

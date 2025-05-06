@@ -2,6 +2,7 @@
 
 using TestBucket.Components.Shared;
 using TestBucket.Components.Tests.Services;
+using TestBucket.Components.Tests.TestCases.Models;
 using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Identity.Permissions;
@@ -55,6 +56,7 @@ internal class RunTestSuiteCommand : ICommand
             return;
         }
         long[] testCaseIds = await _browser.GetTestSuiteSuiteTestsAsync(suite, excludeAutomated: true);
+
         var run = await _testRunCreationController.CreateTestRunAsync(suite, testCaseIds, startAutomation: true);
         if (run is not null)
         {

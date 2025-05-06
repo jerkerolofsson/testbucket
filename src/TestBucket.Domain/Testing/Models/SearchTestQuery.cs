@@ -7,22 +7,17 @@ public class SearchTestQuery : SearchQuery
     public long? FolderId { get; set; }
 
     /// <summary>
+    /// If true, excludes automated tests
+    /// </summary>
+    public bool? ExcludeAutomated { get; set; }
+
+    /// <summary>
     /// Compare the folder. If false, FolderId is ignored
     /// </summary>
-    public bool CompareFolder { get; set; } = true;
+    public bool? CompareFolder { get; set; }
 
     /// <summary>
     /// If comparing folder, returns all descendants, not only the direct children
     /// </summary>
     public bool Recurse { get; set; } = false;
-
-    /// <summary>
-    /// Test category field
-    /// </summary>
-    public string? Category { get; set; }
-
-    /// <summary>
-    /// Test priority field
-    /// </summary>
-    public string? Priority { get; set; }
 }

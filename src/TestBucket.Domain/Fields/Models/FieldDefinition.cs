@@ -134,4 +134,14 @@ public class FieldDefinition : ProjectEntity
     {
         return $"{Name} IsVisible={IsVisible} IsDeleted={IsDeleted}";
     }
+
+    public override int GetHashCode() => Id.GetHashCode();
+    public override bool Equals(object? obj)
+    {
+        if(obj is FieldDefinition other)
+        {
+            return Id.Equals(other.Id);
+        }
+        return false;
+    }
 }

@@ -60,8 +60,7 @@ namespace TestBucket.Domain.Search
         {
             var query = new SearchTestQuery { Text = text, Offset = 0, Count = 5, ProjectId = testProject?.Id, CompareFolder = false };
 
-            IReadOnlyList<FieldDefinition> fields = [];
-            var filters = TestCaseFilterSpecificationBuilder.From(query, fields);
+            var filters = TestCaseFilterSpecificationBuilder.From(query);
 
             filters = [new FilterByTenant<TestCase>(tenantId), .. filters];
             var tests = await _testCaseRepo.SearchTestCasesAsync(query.Offset, query.Count, filters);

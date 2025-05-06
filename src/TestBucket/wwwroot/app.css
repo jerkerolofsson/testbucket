@@ -702,13 +702,7 @@ table tbody tr td {
 
 .tb-field-template {
     padding: 1rem;
-    border: solid 1px var(--mud-palette-info-hover);
     cursor: pointer;
-    max-width: 10vw;
-}
-
-.tb-field-template:hover {
-    background: var(--mud-palette-info-hover);
 }
 
 .tb-profile-image {

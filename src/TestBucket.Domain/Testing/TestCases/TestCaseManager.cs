@@ -1,10 +1,17 @@
-﻿using Mediator;
+﻿using System.Runtime.CompilerServices;
 
+using Mediator;
+
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Duplication;
 using TestBucket.Domain.Testing.Events;
 using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
+using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestSuites;
 
 namespace TestBucket.Domain.Testing.TestCases
@@ -17,16 +24,18 @@ namespace TestBucket.Domain.Testing.TestCases
         private readonly IProjectRepository _projectRepo;
         private readonly ITestSuiteManager _testSuiteManager;
         private readonly IMediator _mediator;
+        private readonly IFieldDefinitionManager _fieldDefinitionManager;
 
         public TestCaseManager(
             IEnumerable<IMarkdownDetector> markdownDetectors,
-            ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo, IMediator mediator)
+            ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager)
         {
             _markdownDetectors = markdownDetectors.ToList();
             _testCaseRepo = testCaseRepo;
             _testSuiteManager = testSuiteManager;
             _projectRepo = projectRepo;
             _mediator = mediator;
+            _fieldDefinitionManager = fieldDefinitionManager;
         }
 
         /// <summary>
@@ -61,6 +70,26 @@ namespace TestBucket.Domain.Testing.TestCases
                 }
                 testCase.TestSuiteFolderId = parentId;
                 testCase.Path = "";
+            }
+        }
+
+
+        /// <summary>
+        /// Enumerates all items by fetching page-by-page
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async IAsyncEnumerable<long> SearchTestCaseIdsAsync(ClaimsPrincipal principal, SearchTestQuery query, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
+
+            //var fieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, query.ProjectId, Contracts.Fields.FieldTarget.TestCase);
+            FilterSpecification<TestCase>[] filters = [new FilterByTenant<TestCase>(principal.GetTenantIdOrThrow()), ..TestCaseFilterSpecificationBuilder.From(query)];
+
+            foreach(var id in await _testCaseRepo.SearchTestCaseIdsAsync(filters))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                yield return id;
             }
         }
 
@@ -205,6 +234,23 @@ namespace TestBucket.Domain.Testing.TestCases
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Delete);
             var tenantId = principal.GetTenantIdOrThrow();
             return await _testCaseRepo.GetTestCaseBySlugAsync(tenantId, slug);
+        }
+
+        public async Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId)
+        {
+            var tenantId = principal.GetTenantIdOrThrow();
+            List<FilterSpecification<TestCase>> filters = TestCaseFilterSpecificationBuilder.From(query);
+            filters.Add(new FilterByTenant<TestCase>(tenantId));
+            return await _testCaseRepo.GetTestCaseDistributionByFieldAsync(filters, fieldDefinitionId);
+        }
+
+
+        public async Task<Dictionary<string, Dictionary<string,long>>> GetTestCaseCoverageMatrixByFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId1, long fieldDefinitionId2)
+        {
+            var tenantId = principal.GetTenantIdOrThrow();
+            List<FilterSpecification<TestCase>> filters = TestCaseFilterSpecificationBuilder.From(query);
+            filters.Add(new FilterByTenant<TestCase>(tenantId));
+            return await _testCaseRepo.GetTestCaseCoverageMatrixByFieldAsync(filters, fieldDefinitionId1, fieldDefinitionId2);
         }
     }
 }

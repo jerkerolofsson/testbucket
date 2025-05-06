@@ -467,4 +467,19 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="manage" xml:space="preserve">
     <value>Manage</value>
   </data>
+  <data name="launch-automation" xml:space="preserve">
+    <value>Launch Automation</value>
+  </data>
+  <data name="test-automation" xml:space="preserve">
+    <value>Test Automation</value>
+  </data>
+  <data name="coverage-matrix" xml:space="preserve">
+    <value>Coverage Matrix</value>
+  </data>
+  <data name="column" xml:space="preserve">
+    <value>Column</value>
+  </data>
+  <data name="row" xml:space="preserve">
+    <value>Row</value>
+  </data>
 </root>

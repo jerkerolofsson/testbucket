@@ -1,0 +1,89 @@
+﻿@using Plotly.Blazor.LayoutLib
+@using TestBucket.Components.Reporting.Helpers
+@inject TestBrowser testBrowser
+@inject IStringLocalizer<SharedStrings> loc
+@inject ThemingService themingService
+
+@if(Query is not null)
+{
+    <MudPaper Elevation="2" Class="tb-tile">
+        <MudStack Spacing="0" Class="pa-1">
+            <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.h6">@Title</MudText>
+                <MudSpacer />
+            </MudStack>
+            @if (_layout is not null && _config is not null && _data is not null && _data.Count > 0)
+            {
+                <PlotlyChart style="height: 10vh; min-height: 350px" @ref="_chart" @bind-Config="_config" @bind-Layout="_layout" @bind-Data="_data" />
+            }
+            else
+            {
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="350px" />
+            }
+        </MudStack>
+    </MudPaper>
+}
+
+@code {
+    [Parameter] public SearchTestQuery? Query { get; set; }
+    [Parameter] public FieldDefinition? Field { get; set; }
+    [Parameter] public string? Title { get; set; }
+
+    private PlotlyChart? _chart;
+    private Config? _config = new Config()
+    {
+        Responsive = true
+    };
+    private Layout? _layout;
+
+    // Using of the interface IList is important for the event callback!
+    private IList<ITrace> _data = new List<ITrace>
+    {
+
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Query is not null && Field is not null)
+        {
+            var data = await testBrowser.GetTestCaseDistributionByFieldAsync(Query, Field);
+            await BuildChartData(data);
+        }
+    }
+
+    private async Task BuildChartData(Dictionary<string, long> data)
+    {
+        _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
+        _layout.Colorway = new string[]
+        {
+            "rgba(11, 186, 131, 1)", "rgba(246, 78, 98, 1)", "rgb(250,220,80)", "rgb(150,150,150)", "rgb(50,50,50)"
+        };
+        _layout.BarMode = BarModeEnum.Group;
+        _layout.ShowLegend = false;
+
+        _data.Clear();
+        var categories = data.Keys.ToArray();
+        var bar = new Bar
+        {
+            Name = Title,
+            X = new List<object>(data.Keys),
+            Y = new List<object>(),
+        };
+        foreach(var value in data.Values)
+        {
+            bar.Y.Add(value);
+        }
+        _data.Add(bar);
+
+        if (_chart is not null)
+        {
+            try
+            {
+                await _chart.Update(_data, _layout);
+                await _chart.React();
+            }
+            catch
+            { }
+        }
+    }
+}

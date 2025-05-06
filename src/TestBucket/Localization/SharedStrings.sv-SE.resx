@@ -465,4 +465,19 @@
   <data name="manage" xml:space="preserve">
     <value />
   </data>
+  <data name="launch-automation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="test-automation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="coverage-matrix" xml:space="preserve">
+    <value />
+  </data>
+  <data name="column" xml:space="preserve">
+    <value />
+  </data>
+  <data name="row" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -4,5 +4,5 @@ $projects = @("tests/TestBucket.Formats.UnitTests/TestBucket.Formats.UnitTests.c
 foreach ($csproj in $projects)
 {
 	echo "Testing ${csproj}.."
-	dotnet test $csproj  -- --report-xunit --report-xunit-filename=xunit.xml
+	dotnet test $csproj -- --report-xunit --report-xunit-filename xunit.xml --coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
 }

@@ -7,7 +7,7 @@
 @inject IStringLocalizer<FieldStrings> fieldLoc
 
 <EditForm Model="@_fieldDefinition" OnValidSubmit="async () => await OnValidSubmitAsync()">
-    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 70vw">
         <TitleContent>@fieldLoc["add-new-field"]</TitleContent>
         <DialogContent>
 
@@ -15,7 +15,7 @@
             {
                 <MudText Typo="Typo.h2" Class="mt-5 mb-2">@fieldLoc["use-predefined-field"]</MudText>
 
-                <MudGrid Class="pa-3">
+                <div class="tb-card-picker-grid">
                     @foreach(var template in FieldDefinitionTemplates.Templates)
                     {
                         FieldDefinition fieldDefinition = template;
@@ -25,7 +25,7 @@
                             <MudText Typo="Typo.subtitle1">@template.Description</MudText>
                         </div>
                     }
-                </MudGrid>
+                </div>
                 <MudLink OnClick="UseCustomTemplate">@fieldLoc["add-custom-field"]</MudLink>
             }
             else

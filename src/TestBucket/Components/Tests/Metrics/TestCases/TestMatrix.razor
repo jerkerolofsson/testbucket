@@ -1,0 +1,114 @@
+﻿@using Plotly.Blazor.LayoutLib
+@using TestBucket.Components.Reporting.Helpers
+@inject TestBrowser testBrowser
+@inject IStringLocalizer<SharedStrings> loc
+@inject ThemingService themingService
+
+@if (Query is not null)
+{
+    <MudPaper Elevation="2" Class="tb-tile">
+        <MudStack Spacing="0" Class="pa-1">
+            <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.h6">@Title</MudText>
+                <MudSpacer />
+                @if(Fields is not null)
+                {
+                    <MudSelect Value="@Field1" ValueChanged="OnField1Changed" T="FieldDefinition" HelperText="@loc["column"]">
+                        @foreach(var field in Fields)
+                        {
+                            <MudSelectItem Value="@field">@field.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudSelect Value="@Field2" ValueChanged="OnField2Changed" T="FieldDefinition" HelperText="@loc["row"]">
+                        @foreach (var field in Fields)
+                        {
+                            <MudSelectItem Value="@field">@field.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                }
+            </MudStack>
+
+            @if(_data.Count > 0)
+            {
+                <div class="tb-test-matrix" style="grid-template-columns: repeat(@(_columns.Count+1), 1fr)">
+                    <div></div>
+                    @foreach(var col in _columns)
+                    {
+                        <div class="col header">@col</div>
+                    }
+
+                    @foreach (var row in _rows)
+                    {
+                        <div class="row header">@row</div>
+                        @foreach (var col in _columns)
+                        {
+                            @if(_data[col].ContainsKey(row))
+                            {
+                                <div class="value">@_data[col][row]</div>
+                            }
+                            else
+                            {
+                                <div class="value empty"/>
+                            }
+                        }
+                    }
+                </div>
+            }
+        </MudStack>
+    </MudPaper>
+}
+
+@code {
+    [Parameter] public IReadOnlyList<FieldDefinition> Fields { get; set; } = [];
+    [Parameter] public SearchTestQuery? Query { get; set; }
+    [Parameter] public FieldDefinition? Field1 { get; set; }
+    [Parameter] public FieldDefinition? Field2 { get; set; }
+
+    [Parameter] public EventCallback<FieldDefinition> Field1Changed { get; set; }
+    [Parameter] public EventCallback<FieldDefinition> Field2Changed { get; set; }
+
+    [Parameter] public string? Title { get; set; }
+
+    private Dictionary<string, Dictionary<string, long>> _data = [];
+    private List<string> _columns = [];
+    private List<string> _rows = [];
+
+    private async Task OnField1Changed(FieldDefinition? field1)
+    {
+        if(field1 is not null)
+        {
+            await Field1Changed.InvokeAsync(field1);
+        }
+    }
+    private async Task OnField2Changed(FieldDefinition? field2)
+    {
+        if (field2 is not null)
+        {
+            await Field2Changed.InvokeAsync(field2);
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Query is not null && Field1 is not null && Field2 is not null)
+        {
+            _data = await testBrowser.GetTestCaseCoverageMatrixByFieldAsync(Query, Field1, Field2);
+            _columns.Clear();
+            _columns.AddRange(_data.Keys.OrderBy(x=>x));
+            _rows.Clear();
+            foreach (var col in _data.Keys)
+            {
+                foreach (var row in _data[col].Keys)
+                {
+                    if(!_rows.Contains(row))
+                    {
+                        _rows.Add(row);
+                    }
+                }
+            }
+            _rows.Sort();
+        }
+    }
+
+}

@@ -1,4 +1,5 @@
-﻿@inject TestCaseEditorController testCaseEditorService
+﻿@using TestBucket.Domain
+@inject TestCaseEditorController testCaseEditorService
 @inject ProjectController projectController
 @inject TestEnvironmentController testEnvironmentController
 @inject FieldController fieldController
@@ -15,25 +16,34 @@
                 }
                 @if (_run is not null)
                 {
-                    <Field Row>
+                    <Field>
                         <FieldHeader>@loc["name"]</FieldHeader>
-                        <MudSpacer/>
                         <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_run.Name"></MudTextField>
                     </Field>
 
                     <Field Row>
-                        <FieldHeader>@loc["test-environment"]</FieldHeader>
+                        <FieldHeader Icon="@TbIcons.BoldDuoTone.Leaf">@loc["test-environment"]</FieldHeader>
                         <MudSpacer />
                         <EnvironmentDropDown Project="@_project" SelectedEnvironment="@_testEnvironment" SelectedEnvironmentChanged="OnTestEnvironmentChanged" />
                     </Field>
 
                     @if (_ciCdSystem is not null)
                     {
+                        <MudText Class="mt-3" Typo="Typo.h6">@loc["test-automation"]</MudText>
                         <Field Row>
-                            <FieldHeader>@loc["ci-cd-ref"]</FieldHeader>
+                            <FieldHeader Icon="@TbIcons.BoldDuoTone.CodeSquare">@loc["launch-automation"]</FieldHeader>
                             <MudSpacer />
-                            <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_ciCdRef"></MudTextField>
+                            <MudSwitchM3 @bind-Value="@_startAutomation" Color="Color.Primary"/>
                         </Field>
+
+                        @if (_startAutomation)
+                        {
+                            <Field Row>
+                                <FieldHeader Icon="@TbIcons.Git.GitBranch">@loc["ci-cd-ref"]</FieldHeader>
+                                <MudSpacer />
+                                <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_ciCdRef"></MudTextField>
+                            </Field>    
+                        }
 
                     }
                 }
@@ -45,6 +55,7 @@
 
                 @if(_run is not null)
                 {
+                    <MudText Class="mt-3" Typo="Typo.h6">@loc["fields"]</MudText>
                     <FieldsEditor AutoSaveChanges="false" @ref="_fieldsEditor" TestRun="@_run" />
                 }
 
@@ -78,6 +89,8 @@
 
     private TestRun _run = new() { Name = "", TenantId = "", Created = DateTimeOffset.UtcNow };
 
+    private bool _startAutomation = true;
+
     private long? _teamId;
     private bool _loading = true;
 
@@ -102,6 +115,7 @@
         _run.ExternalSystemId = TestSuite?.ExternalSystemId;
         _run.CiCdSystem = _ciCdSystem;
         _run.CiCdRef = _ciCdRef;
+        _startAutomation = !string.IsNullOrEmpty(_ciCdSystem);
         _loading = false;
     }
 
@@ -132,6 +146,13 @@
         _run.CiCdRef = _ciCdRef;
         _run.CiCdSystem = _ciCdSystem;
         _run.TestEnvironmentId = _testEnvironment?.Id;
+
+        if (!_startAutomation)
+        {
+            _run.CiCdRef = null;
+            _run.CiCdSystem = null;
+        }
+
         await testCaseEditorService.AddTestRunAsync(_run);
 
         // Save fields for the run

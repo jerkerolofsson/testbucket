@@ -1,5 +1,6 @@
 ﻿@using TestBucket.Contracts.Integrations
 @using TestBucket.Contracts.Projects
+@using TestBucket.Domain
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IntegrationStrings> integrationLoc
 @inject ProjectController controller
@@ -28,7 +29,7 @@
         @if (_integration is not null)
         {
             <Field Row>
-                <FieldHeader>@loc["ci-cd-ref"]</FieldHeader>
+                <FieldHeader Icon="@TbIcons.Git.GitBranch">@loc["ci-cd-ref"]</FieldHeader>
                 <MudSpacer />
                 <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdRefChanged" Value="@TestSuite.DefaultCiCdRef"></MudTextField>
             </Field>

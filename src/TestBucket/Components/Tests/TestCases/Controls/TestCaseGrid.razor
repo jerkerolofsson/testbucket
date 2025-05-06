@@ -85,30 +85,6 @@
                 }
             </CellTemplate>
         </TemplateColumn>
-
-        @* <PropertyColumn Property="x => x.Path" Title="Path" /> *@
-
-        @* @foreach (var column in _columns) *@
-        @* { *@
-        @*     <TemplateColumn Title="@column.Name"> *@
-        @*         <CellTemplate> *@
-        @*             @if (context.Item.TestCaseFields is not null) *@
-        @*             { *@
-        @*                 foreach (var field in context.Item.TestCaseFields.Where(x => x.FieldDefinitionId == column.Id)) *@
-        @*                 { *@
-        @*                     if (field.StringValue is not null) *@
-        @*                     { *@
-        @*                         <MudText>@field.StringValue?.ToString()</MudText> *@
-        @*                     } *@
-        @*                     if (field.StringValuesList is not null) *@
-        @*                     { *@
-        @*                         <MudText>@string.Join(", ", field.StringValuesList)</MudText> *@
-        @*                     } *@
-        @*                 } *@
-        @*             } *@
-        @*         </CellTemplate> *@
-        @*     </TemplateColumn> *@
-        @* } *@
     </Columns>
 
     <PagerContent>

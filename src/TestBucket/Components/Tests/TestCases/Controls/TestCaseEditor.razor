@@ -129,8 +129,7 @@
                         </MudStack>
                     </Field>
 
-                    <FieldsEditor TestCase="@Test" />
-                    <MudLink Href="@appNavigationManager.GetTestCaseFieldsUrl()">@loc["more"]</MudLink>
+                    <FieldsEditor TestCase="@Test" ReadOnly="@(_preview)"/>
 
                 </MudStack>
             </EndContent>

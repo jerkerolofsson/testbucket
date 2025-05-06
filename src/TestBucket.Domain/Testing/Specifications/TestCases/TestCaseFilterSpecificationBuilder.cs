@@ -23,7 +23,7 @@ public class TestCaseFilterSpecificationBuilder
         return [];
     }
 
-    public static List<FilterSpecification<TestCase>> From(SearchTestQuery query, IReadOnlyList<FieldDefinition> definitions)
+    public static List<FilterSpecification<TestCase>> From(SearchTestQuery query)
     {
         var specifications = ProjectEntityFilterSpecificationBuilder.From<TestCase>(query);
 
@@ -38,6 +38,11 @@ public class TestCaseFilterSpecificationBuilder
             }
         }
 
+        if(query.ExcludeAutomated == true)
+        {
+            specifications.Add(new FilterTestCasesExcludeAutomated());
+        }
+
         if (query.TestSuiteId is not null)
         {
             specifications.Add(new FilterTestCasesByTestSuite(query.TestSuiteId.Value));
@@ -46,19 +51,11 @@ public class TestCaseFilterSpecificationBuilder
         {
             specifications.Add(new FilterTestCasesByText(query.Text));
         }
-        if (query.CompareFolder)
+        if (query.CompareFolder == true)
         {
             specifications.Add(new FilterTestCasesByTestSuiteFolder(query.FolderId, query.Recurse));
         }
-        if(query.Category is not null)
-        {
-            specifications.AddRange(GetTraitFilter(definitions, TraitType.TestCategory, query.Category));
-        }
-        if (query.Priority is not null)
-        {
-            specifications.AddRange(GetTraitFilter(definitions, TraitType.TestPriority, query.Priority));
-        }
-
+       
         return specifications;
     }
 }

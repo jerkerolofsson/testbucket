@@ -145,7 +145,7 @@ internal class TestSuiteService : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         var fields = await _fieldDefinitionManager.GetDefinitionsAsync(principal, searchTestQuery.ProjectId, FieldTarget.TestCase);
 
-        var filters = TestCaseFilterSpecificationBuilder.From(searchTestQuery, fields);
+        var filters = TestCaseFilterSpecificationBuilder.From(searchTestQuery);
 
         filters = [new FilterByTenant<TestCase>(tenantId), .. filters];
         return await _testCaseRepo.SearchTestCasesAsync(searchTestQuery.Offset, searchTestQuery.Count, filters);

@@ -1,6 +1,7 @@
 ﻿using Mediator;
 
 using TestBucket.Components.Tests.Dialogs;
+using TestBucket.Components.Tests.TestCases.Models;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Components.Tests.TestRuns.Dialogs;
 using TestBucket.Domain.Automation.Hybrid;
@@ -63,19 +64,48 @@ internal class TestRunCreationController : TenantBaseService
         _testRunManager = testRunManager;
     }
 
-    public async Task<TestRun?> CreateTestRunAsync(TestSuite testSuite, long[]testCaseIds, bool startAutomation)
+    public async Task<TestRun?> CreateTestRunAsync(TestSuite testSuite, SearchTestQuery query)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+
         var testRun = await CreateTestRunAsync(testSuite);
         if (testRun is not null)
         {
+            var testCaseList = new TestCaseList { Query = query };
+
             // Add all manual test cases
-            foreach (var testCaseId in testCaseIds)
+            await foreach (var testCaseId in _testCaseManager.SearchTestCaseIdsAsync(principal, testCaseList.Query))
             {
                 await AddTestCaseToRunAsync(testRun, testCaseId);
             }
 
             // Start automation pipeline
-            if(startAutomation && !string.IsNullOrEmpty(testSuite.CiCdSystem))
+            if (!string.IsNullOrEmpty(testRun.CiCdSystem))
+            {
+                await StartAutomationAsync(testRun, testSuite.Variables, testSuite?.Id);
+            }
+        }
+        return testRun;
+    }
+
+    public async Task<TestRun?> CreateTestRunAsync(TestSuite testSuite, long[]testCaseIds, bool startAutomation)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        var testRun = await CreateTestRunAsync(testSuite);
+        if (testRun is not null)
+        {
+            // By default, include all tests
+            var testCaseList = new TestCaseList { Query = new SearchTestQuery { TestSuiteId = testSuite.Id, ProjectId = testSuite.TestProjectId } };
+
+            // Add all manual test cases
+            await foreach(var testCaseId in _testCaseManager.SearchTestCaseIdsAsync(principal, testCaseList.Query))
+            {
+                await AddTestCaseToRunAsync(testRun, testCaseId);
+            }
+
+            // Start automation pipeline
+            if(startAutomation && !string.IsNullOrEmpty(testRun.CiCdSystem))
             {
                 await StartAutomationAsync(testRun, testSuite.Variables, testSuite?.Id);
             }
@@ -186,7 +216,7 @@ internal class TestRunCreationController : TenantBaseService
 
         var parameters = new DialogParameters<CreateTestRunDialog>()
         {
-            { x => x.Name, testSuite.Name },
+            { x => x.Name, DateTime.Now.ToString("yyyy-MM-dd") + " - " + testSuite.Name },
             { x => x.TestSuite, testSuite },
             { x => x.TestProjectId, testSuite.TestProjectId }
         };

@@ -292,5 +292,13 @@ public interface ITestCaseRepository
     Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId);
     Task<Dictionary<string, Dictionary<string, long>>> GetTestCaseCoverageMatrixByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId1, long fieldDefinitionId2);
 
+    /// <summary>
+    /// Returns results for each provided run
+    /// </summary>
+    /// <param name="testRunsIds"></param>
+    /// <param name="filters"></param>
+    /// <returns></returns>
+    Task<Dictionary<long, TestExecutionResultSummary>> GetTestExecutionResultSummaryForRunsAsync(IReadOnlyList<long> testRunsIds, IEnumerable<FilterSpecification<TestCaseRun>> filters);
+
     #endregion
 }

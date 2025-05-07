@@ -10,6 +10,8 @@ using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Requirements.Events;
 using Mediator;
+using TestBucket.Domain.Traceability.Models;
+using TestBucket.Domain.Traceability;
 
 namespace TestBucket.Domain.Requirements
 {
@@ -369,8 +371,6 @@ namespace TestBucket.Domain.Requirements
         }
         public async Task AddRequirementLinkAsync(ClaimsPrincipal principal, Requirement requirement, TestCase testCase)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
-            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
             await AddRequirementLinkAsync(principal, requirement, testCase.Id);
         }
 
@@ -378,7 +378,7 @@ namespace TestBucket.Domain.Requirements
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
-            principal.ThrowIfEntityTenantIsDifferent(requirementLink);
+            requirementLink.TenantId = principal.GetTenantIdOrThrow();
             await _repository.AddRequirementLinkAsync(requirementLink);
         }
 
@@ -590,5 +590,12 @@ namespace TestBucket.Domain.Requirements
             }
         }
         #endregion Requirement Specifications
+
+        public async Task<TraceabilityNode> DiscoverTraceabilityAsync(ClaimsPrincipal principal, Requirement requirement, int depth)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+
+            return await _mediator.Send(new DiscoverRequirementRelationshipsRequest(principal, requirement, depth));
+        }
     }
 }

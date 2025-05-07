@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Formats.Ctrf;
+﻿using TestBucket.Formats.Ctrf;
 using TestBucket.Formats.JUnit;
 using TestBucket.Formats.MicrosoftTrx;
 using TestBucket.Formats.XUnit;
 
 namespace TestBucket.Formats
 {
+    /// <summary>
+    /// Class to deserialize test artifact files
+    /// </summary>
     public static class TestResultSerializerFactory
     {
         public static ITestResultSerializer CreateFromContentType(string contentType)
@@ -22,10 +19,10 @@ namespace TestBucket.Formats
 
         private static readonly Dictionary<string, TestResultFormat> _mediaTypes = new() 
         {
-            {"application/xml", TestResultFormat.JUnitXml },
+            //{"application/xml", TestResultFormat.JUnitXml },
             {"application/x-junit" , TestResultFormat.JUnitXml},
             {"application/junit" , TestResultFormat.JUnitXml},
-            {"text/xml" , TestResultFormat.JUnitXml},
+            //{"text/xml" , TestResultFormat.JUnitXml},
             {"text/xml+junit" , TestResultFormat.JUnitXml},
             {"application/xml+junit" , TestResultFormat.JUnitXml},
             {"application/x-xunit" , TestResultFormat.xUnitXml},

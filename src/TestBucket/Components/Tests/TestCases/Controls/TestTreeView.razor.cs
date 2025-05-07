@@ -290,6 +290,10 @@ public partial class TestTreeView
             {
                 await OnTestCaseRunQueryClicked.InvokeAsync(item.TestCaseRunQuery);
             }
+            else if (item.VirtualFolderName == TestBrowser.ROOT_TEST_RUNS)
+            {
+                //await OnTestCaseRunQueryClicked.InvokeAsync(item.TestCaseRunQuery);
+            }
         }
     }
 

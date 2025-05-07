@@ -480,4 +480,25 @@
   <data name="row" xml:space="preserve">
     <value />
   </data>
+  <data name="external-id" xml:space="preserve">
+    <value />
+  </data>
+  <data name="slug" xml:space="preserve">
+    <value />
+  </data>
+  <data name="test-runs" xml:space="preserve">
+    <value />
+  </data>
+  <data name="my-backlog" xml:space="preserve">
+    <value />
+  </data>
+  <data name="failures" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pipelines" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tests" xml:space="preserve">
+    <value />
+  </data>
 </root>

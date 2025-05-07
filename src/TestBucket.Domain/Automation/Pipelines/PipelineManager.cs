@@ -285,7 +285,7 @@ internal class PipelineManager : IPipelineManager
                     {
                         // Sends event that will scan the artifact zip for test results and add them to the run as attachments
                         // 
-                        await _mediator.Publish(new JobArtifactDownloaded(principal, pipeline.TenantId, pipeline.TestRunId.Value, configuredRunner.Config.TestResultsArtifactsPattern, bytes));
+                        await _mediator.Publish(new JobArtifactDownloaded(principal, pipeline.TestRunId.Value, configuredRunner.Config.TestResultsArtifactsPattern, bytes));
                     }
                 }
             }

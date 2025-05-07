@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TestBucket.Formats;
 
-namespace TestBucket.Formats;
+/// <summary>
+/// Defines different types of test artifact file formats
+/// </summary>
 public enum TestResultFormat
 {
     /// <summary>
@@ -33,9 +31,15 @@ public enum TestResultFormat
     CommonTestReportFormat = 4,
 
     /// <summary>
-    /// Zip file, we will need to recurse
+    /// Zip file, we will need to recurse into it and scan entries
     /// </summary>
     ZipArchive = 5,
+
+
+    /// <summary>
+    /// Cobertura code coverage
+    /// </summary>
+    CoberturaXml = 100,
 
     /// <summary>
     /// Format is unknown or could not be detected

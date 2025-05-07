@@ -100,7 +100,7 @@ namespace TestBucket.Domain.Testing.TestCases
         /// <param name="principal"></param>
         /// <param name="testCase"></param>
         /// <returns></returns>
-        public async Task AddTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
+        public async Task<TestCase> AddTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
             testCase.TenantId = principal.GetTenantIdOrThrow();
@@ -125,6 +125,7 @@ namespace TestBucket.Domain.Testing.TestCases
                 await observer.OnTestCreatedAsync(testCase);
             }
             await _mediator.Publish(new TestCaseCreatedEvent(testCase));
+            return testCase;
         }
 
         /// <summary>
@@ -238,6 +239,7 @@ namespace TestBucket.Domain.Testing.TestCases
 
         public async Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
             var tenantId = principal.GetTenantIdOrThrow();
             List<FilterSpecification<TestCase>> filters = TestCaseFilterSpecificationBuilder.From(query);
             filters.Add(new FilterByTenant<TestCase>(tenantId));
@@ -247,10 +249,23 @@ namespace TestBucket.Domain.Testing.TestCases
 
         public async Task<Dictionary<string, Dictionary<string,long>>> GetTestCaseCoverageMatrixByFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId1, long fieldDefinitionId2)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
             var tenantId = principal.GetTenantIdOrThrow();
+
             List<FilterSpecification<TestCase>> filters = TestCaseFilterSpecificationBuilder.From(query);
             filters.Add(new FilterByTenant<TestCase>(tenantId));
             return await _testCaseRepo.GetTestCaseCoverageMatrixByFieldAsync(filters, fieldDefinitionId1, fieldDefinitionId2);
+        }
+
+        /// <inheritdoc/>
+        public async Task<Dictionary<long, TestExecutionResultSummary>> GetTestExecutionResultSummaryForRunsAsync(ClaimsPrincipal principal, IReadOnlyList<long> testRunsIds, SearchTestCaseRunQuery query)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+            var tenantId = principal.GetTenantIdOrThrow();
+            List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
+            filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
+
+            return await _testCaseRepo.GetTestExecutionResultSummaryForRunsAsync(testRunsIds, filters);
         }
     }
 }

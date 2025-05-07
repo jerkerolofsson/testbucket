@@ -61,7 +61,7 @@ namespace TestBucket.Domain.Shared
             var tenantId = AuthenticationGuard.GetTenantIdOrThrow(principal);
             if (tenantId != entity.TenantId)
             {
-                throw new InvalidOperationException($"Failed to modify entity. The entity belongs to tenant {entity.TenantId} and user belongs to {tenantId}");
+                throw new UnauthorizedAccessException($"Failed to modify entity. The entity belongs to tenant '{entity.TenantId}' and user belongs to '{tenantId}'");
             }
             return tenantId;
         }

@@ -6,7 +6,8 @@
 @using TestBucket.Domain.Files.Models
 @using TestBucket.Domain.Teams.Models
 @inject ProjectController projectService
-@inject IStringLocalizer<IntegrationStrings> loc
+@inject IStringLocalizer<IntegrationStrings> intLoc
+@inject IStringLocalizer<SharedStrings> loc
 
 @if (Name is not null)
 {
@@ -27,7 +28,7 @@
 
             @if(Integration is null)
             {
-                <MudText Style="font-weight: bold">@loc["no-integration"]</MudText>
+                <MudText Style="font-weight: bold">@intLoc["no-integration"]</MudText>
 
                 <MudStack Row Class="mt-5">
                     <MudButton Variant="Variant.Outlined" OnClick="AddAsync">@loc["add-integration"]</MudButton>
@@ -44,13 +45,13 @@
                 @if(Extension is not null && (Extension.RequiredFields&ExtensionFields.BaseUrl) == ExtensionFields.BaseUrl)
                 {
                     <Field Row>
-                        <FieldHeader>@loc["integration-base-url"]</FieldHeader>
+                        <FieldHeader>@intLoc["integration-base-url"]</FieldHeader>
                         <MudSpacer/>
                         <MudTextField Value="Integration.BaseUrl" T="string" ValueChanged="BaseUrlChanged" />
                     </Field>
                 }
                 <Field Row>
-                    <FieldHeader>@loc["project-id"]</FieldHeader>
+                    <FieldHeader>@intLoc["project-id"]</FieldHeader>
                     <MudSpacer />
                     <MudTextField 
                     Value="Integration.ExternalProjectId" 
@@ -62,7 +63,7 @@
                 @if(Extension is not null && (Extension.RequiredFields&ExtensionFields.AccessToken) == ExtensionFields.AccessToken)
                 {
                     <Field Row>
-                        <FieldHeader>@loc["access-token"]</FieldHeader>
+                        <FieldHeader>@intLoc["access-token"]</FieldHeader>
                         <MudSpacer />
                         @* InputType="InputType.Password"  *@
                         <MudTextField 
@@ -76,7 +77,7 @@
                 @if (Extension is not null && (Extension.RequiredFields & ExtensionFields.ApiKey) == ExtensionFields.ApiKey)
                 {
                     <Field Row>
-                        <FieldHeader>@loc["api-key"]</FieldHeader>
+                        <FieldHeader>@intLoc["api-key"]</FieldHeader>
                         <MudSpacer />
                         @* InputType="InputType.Password"  *@
                         <MudTextField 
@@ -97,14 +98,13 @@
                     if((Extension.SupportedCapabilities&ExternalSystemCapability.ReadPipelineArtifacts) == ExternalSystemCapability.ReadPipelineArtifacts)
                     {
 
-                        <Field Row>
-                            <FieldHeader>@loc["test-result-artifact-pattern"]</FieldHeader>
-                            <MudSpacer />
+                        <Field>
+                            <FieldHeader>@intLoc["test-result-artifact-pattern"]</FieldHeader>
                             <MudTextField InputType="InputType.Text"
                             Value="Integration.TestResultsArtifactsPattern"
                             T="string"
                             ValueChanged="TestResultsArtifactsPatternChanged"
-                            HelperText="@loc["test-result-artifact-pattern-helper-text"]" />
+                            HelperText="@intLoc["test-result-artifact-pattern-helper-text"]" />
                         </Field>
                     }
 
@@ -115,7 +115,7 @@
                     {
                         <ExternalSystemCapabilityField SupportedCapabilities="@Extension.SupportedCapabilities"
                         EnabledCapabilities="@Integration.EnabledCapabilities"
-                        Title="@loc[labels[i]]"
+                                                       Title="@intLoc[labels[i]]"
                         OnEnabled="OnEnabledAsync"
                         OnDisabled="OnDisabledAsync"
                         Capability="@capabilities[i]" />

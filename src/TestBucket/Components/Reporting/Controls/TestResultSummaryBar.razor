@@ -2,36 +2,33 @@
 @using TestBucket.Domain.Testing.Aggregates
 @if (Summary is not null)
 {
-    <MudStack Row>
-
-        <div class="tb-result-summary-bar" style="@Style">
-            @if (Summary.Passed > 0)
-            {
-                <div class="tb-fill-passed" style="@PassedStyle">@Summary.Passed</div>
-            }
-            @if (Summary.Failed > 0)
-            {
-                <div class="tb-fill-failed" style="@FailedStyle">@Summary.Failed</div>
-            }
-            @if (Summary.Blocked > 0)
-            {
-                <div class="tb-fill-blocked" style="@BlockedStyle">@Summary.Blocked</div>
-            }
-            @if (Summary.Skipped > 0)
-            {
-                <div class="tb-fill-skipped" style="@SkippedStyle">@Summary.Skipped</div>
-            }
-            @if (Summary.NoRun > 0)
-            {
-                <div class="tb-fill-norun" style="@NoRunStyle">@Summary.NoRun</div>
-            }
-        </div>
-    </MudStack>
+    <div class="tb-result-summary-bar" style="@Style">
+        @if (Summary.Passed > 0)
+        {
+            <div class="tb-fill-passed" style="@PassedStyle">@Summary.Passed</div>
+        }
+        @if (Summary.Failed > 0)
+        {
+            <div class="tb-fill-failed" style="@FailedStyle">@Summary.Failed</div>
+        }
+        @if (Summary.Blocked > 0)
+        {
+            <div class="tb-fill-blocked" style="@BlockedStyle">@Summary.Blocked</div>
+        }
+        @if (Summary.Skipped > 0)
+        {
+            <div class="tb-fill-skipped" style="@SkippedStyle">@Summary.Skipped</div>
+        }
+        @if (Summary.NoRun > 0)
+        {
+            <div class="tb-fill-norun" style="@NoRunStyle">@Summary.NoRun</div>
+        }
+    </div>
 }
 
 @code {
     [Parameter] public TestExecutionResultSummary? Summary { get; set; }
-    [Parameter] public string Style { get; set; } = "width: 200px";
+    [Parameter] public string Style { get; set; } = "width: 100%";
 
 
     private string PassedStyle => $"width: {GetWidthString(Summary?.Passed)}";

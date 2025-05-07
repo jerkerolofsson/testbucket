@@ -12,16 +12,24 @@
 @if (_project is not null)
 {
     <MudDataGrid 
-        @ref="_grid"
-                 ServerData="LoadGridData"
-        Dense Hover RowClass="tb-datarow cursor-pointer"
-        RowClick="async (row) => await OnRowClicked(row.Item)"
-        T="Feature" SortMode="SortMode.None">
+    @ref="_grid"
+    ServerData="LoadGridData"
+    Dense Hover RowClass="tb-datarow cursor-pointer"
+    RowClick="async (row) => await OnRowClicked(row.Item)"
+    T="Feature" SortMode="SortMode.None">
 
         <ToolBarContent>
             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-                <MudIcon Icon="@TbIcons.BoldDuoTone.Epic" Size="Size.Large" />
-                <MudText Typo="Typo.h2">@codeLoc["features"]</MudText>
+                <MudTextField Value="@_searchText" T="string" ValueChanged="OnSearch"
+                Style="min-width: 15vw"
+                Class="mt-2"
+                Clearable="true"
+                Variant="Variant.Text"
+                IconSize="Size.Small"
+                Adornment="Adornment.Start"
+                Placeholder="@loc["search"]"
+                AdornmentIcon="@Icons.Material.Filled.Search" />
+
                 <MudSpacer />
                 <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
                     <Authorized>
@@ -74,7 +82,7 @@
         </PagerContent>
     </MudDataGrid>
 }
-   
+
 
 @code {
     [Parameter] public string? TenantId { get; set; }
@@ -82,6 +90,13 @@
     private TestProject? _project;
     private IReadOnlyList<Feature> _features = [];
     private MudDataGrid<Feature>? _grid;
+    private string _searchText = "";
+
+    protected void OnSearch(string text)
+    {
+        _searchText = text;
+        _grid?.ReloadServerData();
+    }
 
     private async Task AddAsync()
     {
@@ -136,7 +151,16 @@
             return Task.FromResult(new GridData<Feature> { TotalItems = 0 });
         }
 
-        var page = _features.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        Feature[] page;
+        if(string.IsNullOrEmpty(_searchText))
+        {
+            page = _features.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        }
+        else
+        {
+            page = _features.Where(x=>x.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase)).Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        }
+
 
         GridData<Feature> data = new()
         {

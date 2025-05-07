@@ -102,6 +102,23 @@ html, body {
 
 .mud-tab {
     text-transform: none;
+    line-height: 1.1;
+    min-height: 38px;
+    border-radius: 5px;
+    margin-top: 4px;
+}
+.mud-tabs-tabbar .mud-tabs-tabbar-inner  {
+    min-height: 46px;
+}
+
+.mud-tab.mud-tab-active {
+    color: var(--mud-palette-tertiary);
+    background-color: var(--mud-palette-tertiary-hover);
+}
+
+.mud-tab-slider.mud-tab-slider-horizontal  {
+    background: var(--mud-palette-tertiary);
+    height: 0px;
 }
 
 .mud-picker-container [role="toolbar"] .mud-button-label {
@@ -821,14 +838,23 @@ div.tb-profile-image.tb-background-9 {
     grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
 }
 
+.tb-card-grid,
 .tb-card-picker-grid {
     margin: 2rem 0;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-    width: 60vw;
     gap: 4px;
 }
 
+.tb-card-picker-grid {
+    width: 60vw;
+}
+
+.tb-card-grid {
+    width: 100%;
+}
+
+.tb-card-grid .tb-card .title,
 .tb-card-picker-grid .tb-project-card .name {
     font-size: 150%;
 }
@@ -837,10 +863,13 @@ div.tb-profile-image.tb-background-9 {
     color: var(--mud-palette-primary);
 }
 
+.tb-card-grid > div,
 .tb-card-picker-grid > div {
     padding: 1rem;
     border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
+.tb-card-grid > div:hover,
 .tb-card-picker-grid > div:hover {
     /* Glass style */
     background: rgba(255, 255, 255, 0.2);

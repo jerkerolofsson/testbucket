@@ -2,11 +2,7 @@
 
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Aggregates;
-using TestBucket.Domain.Testing.Models;
-
-using UglyToad.PdfPig.Filters;
 
 namespace TestBucket.Data.Testing;
 internal class TestCaseRepository : ITestCaseRepository
@@ -642,7 +638,9 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<PagedResult<TestRun>> SearchTestRunsAsync(IReadOnlyList<FilterSpecification<TestRun>> filters, int offset, int count)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var runs = dbContext.TestRuns.AsQueryable();
+        var runs = dbContext.TestRuns
+            .Include(x=>x.TestRunFields!).ThenInclude(u=>u.FieldDefinition)
+            .AsQueryable();
 
         foreach(var filter in filters)
         {
@@ -680,16 +678,6 @@ internal class TestCaseRepository : ITestCaseRepository
     {
         //testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-
-        //await foreach (var field in dbContext.TestCaseRunFields.Where(x => x.TestRunId == id && x.TenantId == tenantId).AsAsyncEnumerable())
-        //{
-        //    dbContext.TestCaseRunFields.Remove(field);
-        //}
-
-        //await foreach (var field in dbContext.TestRunFields.Where(x => x.TestRunId == id && x.TenantId == tenantId).AsAsyncEnumerable())
-        //{
-        //    dbContext.TestRunFields.Remove(field);
-        //}
 
         await foreach (var job in dbContext.Jobs.Where(x => x.TestRunId == id).AsAsyncEnumerable())
         {
@@ -915,6 +903,47 @@ internal class TestCaseRepository : ITestCaseRepository
         return table;
     }
 
+
+    public async Task<Dictionary<long, TestExecutionResultSummary>> GetTestExecutionResultSummaryForRunsAsync(
+        IReadOnlyList<long> testRunsIds,
+        IEnumerable<FilterSpecification<TestCaseRun>> filters)
+    {
+        var table = new Dictionary<long, TestExecutionResultSummary>();
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCaseRuns
+            .Where(x=> testRunsIds.Contains(x.TestRunId))
+            .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            tests = tests.Where(filter.Expression);
+        }
+
+        var allResults = await tests.GroupBy(x => new { x.Result, x.TestRunId }).
+            Select(g => new { Count = g.Count(), g.Key.Result, g.Key.TestRunId }).ToListAsync();
+
+        foreach (var fieldValue in allResults.Select(x => x.TestRunId).Distinct())
+        {
+            var name = fieldValue;
+
+            var result = new TestExecutionResultSummary();
+            result.Total = allResults.Where(x => x.TestRunId == fieldValue).Sum(x => x.Count);
+            result.Completed = allResults.Where(x => x.TestRunId == fieldValue && x.Result != TestResult.NoRun).Sum(x => x.Count);
+            result.Passed = allResults.Where(x => x.TestRunId == fieldValue && x.Result == TestResult.Passed).Sum(x => x.Count);
+            result.Failed = allResults.Where(x => x.TestRunId == fieldValue && x.Result == TestResult.Failed).Sum(x => x.Count);
+            result.Blocked = allResults.Where(x => x.TestRunId == fieldValue && x.Result == TestResult.Blocked).Sum(x => x.Count);
+            result.Skipped = allResults.Where(x => x.TestRunId == fieldValue && x.Result == TestResult.Skipped).Sum(x => x.Count);
+            result.Error = allResults.Where(x => x.TestRunId == fieldValue && x.Result == TestResult.Error).Sum(x => x.Count);
+            result.Assert = allResults.Where(x => x.TestRunId == fieldValue && x.Result == TestResult.Assert).Sum(x => x.Count);
+            result.Hang = allResults.Where(x => x.TestRunId == fieldValue && x.Result == TestResult.Hang).Sum(x => x.Count);
+            table[name] = result;
+        }
+
+        return table;
+    }
 
     public async Task<Dictionary<DateOnly, TestExecutionResultSummary>> GetTestExecutionResultSummaryByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
     {

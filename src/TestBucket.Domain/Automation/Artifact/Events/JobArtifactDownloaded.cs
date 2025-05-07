@@ -1,9 +1,4 @@
-﻿using System.Security.Claims;
-
-using Mediator;
-
-using TestBucket.Domain.Automation.Pipelines.Models;
-using TestBucket.Domain.Tenants.Models;
+﻿using Mediator;
 
 namespace TestBucket.Domain.Automation.Artifact.Events
 {
@@ -15,7 +10,6 @@ namespace TestBucket.Domain.Automation.Artifact.Events
     /// <param name="ZipBytes"></param>
     public sealed record JobArtifactDownloaded(
         ClaimsPrincipal Principal, 
-        string TenantId,
         long TestRunId,
         string TestResultsArtifactsPattern,
         byte[] ZipBytes) : INotification;

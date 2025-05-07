@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 
+using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Testing.TestCases;
@@ -17,7 +18,7 @@ public interface ITestCaseManager
     /// <param name="principal"></param>
     /// <param name="testCase"></param>
     /// <returns></returns>
-    Task AddTestCaseAsync(ClaimsPrincipal principal, TestCase testCase);
+    Task<TestCase> AddTestCaseAsync(ClaimsPrincipal principal, TestCase testCase);
 
     /// <summary>
     /// Deletes a test case
@@ -62,6 +63,15 @@ public interface ITestCaseManager
     Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId);
 
     /// <summary>
+    /// Returns test result summary for the provided runs
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testRunsIds"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    Task<Dictionary<long, TestExecutionResultSummary>> GetTestExecutionResultSummaryForRunsAsync(ClaimsPrincipal principal, IReadOnlyList<long> testRunsIds, SearchTestCaseRunQuery query);
+
+    /// <summary>
     /// Removes an observer
     /// </summary>
     /// <param name="observer"></param>
@@ -74,5 +84,13 @@ public interface ITestCaseManager
     /// <param name="testCase"></param>
     /// <returns></returns>
     Task SaveTestCaseAsync(ClaimsPrincipal principal, TestCase testCase);
+
+    /// <summary>
+    /// Searches REturns all test case ids
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     IAsyncEnumerable<long> SearchTestCaseIdsAsync(ClaimsPrincipal principal, SearchTestQuery query, CancellationToken cancellationToken = default);
 }

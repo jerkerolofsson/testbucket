@@ -1,18 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Identity;
-using TestBucket.Domain.Identity.Permissions;
-using TestBucket.Domain.IntegrationTests.Fixtures;
-using TestBucket.Domain.Requirements;
-using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Testing.TestSuites;
-using TestBucket.Traits.Xunit;
-using Xunit;
+﻿
 
 namespace TestBucket.Domain.IntegrationTests.Requirements
 {
@@ -21,7 +7,7 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
     public class RequirementManagerPermissionTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         [Fact]
-        [FunctionalTest]
+        [SecurityTest]
         public async Task AddRequirementSpecification_WithPermission_IsSuccess()
         {
             using var scope = Fixture.Services.CreateScope();
@@ -33,7 +19,7 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
         }
 
         [Fact]
-        [FunctionalTest]
+        [SecurityTest]
         public async Task DeleteRequirementSpecification_WithPermission_IsSuccess()
         {
             using var scope = Fixture.Services.CreateScope();
@@ -46,7 +32,7 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
         }
 
         [Fact]
-        [FunctionalTest]
+        [SecurityTest]
         public async Task AddRequirementSpecification_WithOnlyReadPermission_Unauthorized()
         {
             using var scope = Fixture.Services.CreateScope();
@@ -65,7 +51,7 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
         }
 
         [Fact]
-        [FunctionalTest]
+        [SecurityTest]
         public async Task DeleteRequirementSpecification_WithOnlyReadPermission_Unauthorized()
         {
             using var scope = Fixture.Services.CreateScope();

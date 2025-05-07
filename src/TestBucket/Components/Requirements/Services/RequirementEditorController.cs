@@ -71,7 +71,7 @@ internal class RequirementEditorController : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
 
-        return await _mediator.Send(new DiscoverRequirementRelationshipsRequest(principal, requirement, depth));
+        return await _manager.DiscoverTraceabilityAsync(principal, requirement, depth);
     }
 
     public async Task ExtractRequirementsFromSpecificationAsync(RequirementSpecification specification, CancellationToken cancellationToken = default)

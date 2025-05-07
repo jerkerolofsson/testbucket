@@ -96,6 +96,16 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
         }
     }
 
+    /// <summary>
+    /// Compress all artifacts created into a single zipfile and return it
+    /// </summary>
+    /// <param name="system"></param>
+    /// <param name="workflowRunId"></param>
+    /// <param name="jobIdString"></param>
+    /// <param name="testResultsArtifactsPattern"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public async Task<byte[]> GetArtifactsZipAsByteArrayAsync(ExternalSystemDto system, string workflowRunId, string jobIdString, string testResultsArtifactsPattern, CancellationToken cancellationToken)
     {
         if (!long.TryParse(jobIdString, out var jobId))

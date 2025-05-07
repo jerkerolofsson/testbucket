@@ -7,8 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Automation\Pipelines\IntegrationEvents\**" />
       <Compile Remove="Requirements\Relationships\**" />
+      <EmbeddedResource Remove="Automation\Pipelines\IntegrationEvents\**" />
       <EmbeddedResource Remove="Requirements\Relationships\**" />
+      <None Remove="Automation\Pipelines\IntegrationEvents\**" />
       <None Remove="Requirements\Relationships\**" />
     </ItemGroup>
 
@@ -54,7 +57,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Automation\Pipelines\IntegrationEvents\" />
       <Folder Include="Requirements\Specifications\Specification\" />
       <Folder Include="TestResources\Services\" />
     </ItemGroup>

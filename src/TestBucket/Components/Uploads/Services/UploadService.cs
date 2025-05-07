@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Components.Forms;
 using TestBucket.Components.Tenants;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
+using TestBucket.Domain.Shared;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Formats;
 using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Components.Uploads.Services;
@@ -12,10 +14,12 @@ namespace TestBucket.Components.Uploads.Services;
 internal class UploadService : TenantBaseService
 {
     private readonly IFileRepository _repo;
+    private readonly IFileResourceManager _fileResourceManager;
 
-    public UploadService(AuthenticationStateProvider authenticationStateProvider, IFileRepository repo) : base(authenticationStateProvider)
+    public UploadService(AuthenticationStateProvider authenticationStateProvider, IFileRepository repo, IFileResourceManager fileResourceManager) : base(authenticationStateProvider)
     {
         _repo = repo;
+        _fileResourceManager = fileResourceManager;
     }
 
     public async Task<FileResource> UploadAsync(ResourceCategory category, IBrowserFile file, long maxFileSize = 512_000, CancellationToken cancellationToken = default)
@@ -28,18 +32,28 @@ internal class UploadService : TenantBaseService
         long? requirementId, long? requirementSpecificationId,
         long maxFileSize = 512_000, CancellationToken cancellationToken = default)
     {
-        var tenantId = await GetTenantIdAsync();
+        var principal = await GetUserClaimsPrincipalAsync();
 
         using var stream = file.OpenReadStream(maxFileSize, cancellationToken);
         var data = new byte[stream.Length];
         await stream.ReadExactlyAsync(data, 0, data.Length, cancellationToken);
 
+        var contentType = file.ContentType;
+        if (file.ContentType == "text/xml" || file.ContentType == "application/json")
+        {
+            var format = TestResultDetector.Detect(data);
+            if(format != TestResultFormat.UnknownFormat)
+            {
+                contentType = TestResultSerializerFactory.GetContentTypeFromFormat(format);
+            }
+        }
+
         var resource = new FileResource
         {
             Name = file.Name,
-            ContentType = file.ContentType,
+            ContentType = contentType ?? file.ContentType,
             Data = data,
-            TenantId = tenantId,
+            TenantId = principal.GetTenantIdOrThrow(),
             Length = data.Length,
             Created = DateTime.UtcNow,
 
@@ -54,7 +68,9 @@ internal class UploadService : TenantBaseService
             TestSuiteFolderId = testSuiteFolderId
         };
 
-        await _repo.AddResourceAsync(resource);
+        await _fileResourceManager.AddResourceAsync(principal, resource);
+
+        //await _repo.AddResourceAsync(resource);
 
         return resource;
     }

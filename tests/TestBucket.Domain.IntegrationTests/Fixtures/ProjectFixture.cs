@@ -4,10 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.Fields;
+using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Teams.Models;
+using TestBucket.Traits.Core;
 using Xunit;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
@@ -18,6 +22,7 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         private Team _team = new Team { Name = "", Slug="", ShortName = "" };
         private TestProject _project = new TestProject { Name = "", Slug = "", ShortName = "" };
 
+        public TestProject Project => _project;
         public long ProjectId => _project.Id;
         public long TeamId => _team.Id;
 
@@ -28,6 +33,13 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         public ProjectFixture(TestBucketApp app)
         {
             _app = app;
+        }
+
+        public async Task<FieldDefinition> GetMilestoneFieldAsync()
+        {
+            var fieldDefinitionManager = Services.GetRequiredService<IFieldDefinitionManager>();
+            var fieldDefinitions = await fieldDefinitionManager.GetDefinitionsAsync(App.SiteAdministrator, this.ProjectId);
+            return fieldDefinitions.Where(x => x.TraitType == TraitType.Milestone).First();
         }
 
         public async ValueTask DisposeAsync()

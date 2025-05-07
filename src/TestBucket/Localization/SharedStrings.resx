@@ -482,4 +482,25 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="row" xml:space="preserve">
     <value>Row</value>
   </data>
+  <data name="external-id" xml:space="preserve">
+    <value>External ID</value>
+  </data>
+  <data name="slug" xml:space="preserve">
+    <value>SLUG</value>
+  </data>
+  <data name="test-runs" xml:space="preserve">
+    <value>Test Runs</value>
+  </data>
+  <data name="my-backlog" xml:space="preserve">
+    <value>My Backlog</value>
+  </data>
+  <data name="failures" xml:space="preserve">
+    <value>Failures</value>
+  </data>
+  <data name="pipelines" xml:space="preserve">
+    <value>Pipelines</value>
+  </data>
+  <data name="tests" xml:space="preserve">
+    <value>Tests</value>
+  </data>
 </root>

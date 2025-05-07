@@ -68,11 +68,35 @@
             </Field>
 
             <Field Row Spacing="3">
-                <FieldHeader>@loc["slug"]</FieldHeader>
-                <MudText>@Project.Slug</MudText>
 
-                <FieldHeader>@loc["id"]</FieldHeader>
-                <MudText>@Project.Id</MudText>
+                <div style="flex: 1">
+                <MudTooltip Text="@loc["short-name"]">
+                    <CopyToClipboard Text="@Project.ShortName" IconSize="Size.Small">
+                        <MudText Typo="Typo.subtitle1">@Project.ShortName</MudText>
+                    </CopyToClipboard>
+                </MudTooltip>
+                </div>
+
+                <MudDivider Vertical />
+
+                <div style="flex: 1">
+                <MudTooltip Text="@loc["slug"]">
+                    <CopyToClipboard Text="@Project.Slug" IconSize="Size.Small">
+                        <MudText Typo="Typo.subtitle1">@Project.Slug</MudText>
+                    </CopyToClipboard>
+                </MudTooltip>
+                </div>
+
+                <MudDivider Vertical/>
+
+                <div style="flex: 1">
+                <MudTooltip Text="@loc["id"]">
+                    <CopyToClipboard Text="@Project.Id.ToString()" IconSize="Size.Small">
+                        <MudText Typo="Typo.subtitle1">@Project.Id</MudText>
+                    </CopyToClipboard>
+                </MudTooltip>
+                </div>
+
             </Field>
         </MudStack>
 

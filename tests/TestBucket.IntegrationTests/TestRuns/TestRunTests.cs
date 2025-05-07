@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Contracts.Fields;
-using TestBucket.Contracts.Testing.Models;
+﻿using TestBucket.Contracts.Testing.Models;
 using TestBucket.Formats.Dtos;
 using TestBucket.Traits.Core;
 
-namespace TestBucket.IntegrationTests.Features.FieldInheritance
+namespace TestBucket.IntegrationTests.TestRuns
 {
     [FunctionalTest]
     [EnrichedTest]
     [IntegrationTest]
-    public class TestrunTests(TestBucketApp App)
+    public class TestRunTests(TestBucketApp App)
     {
         [Fact]
         [TestDescription("Verifies that a slug is generated when adding a new run")]

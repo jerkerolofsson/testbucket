@@ -9,12 +9,14 @@
 
 @if(_testRun is not null)
 {
-    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
-
     <MudStack>
-        <div class="tb-minmax-grid tb-fields-grid">
-            <FieldsEditor Testrun="@_testRun" />
-        </div>
+        <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
+        <MudStack>
+            <div class="tb-minmax-grid tb-fields-grid">
+                <FieldsEditor TestRun="@_testRun" />
+            </div>
+        </MudStack>
     </MudStack>
 }
 

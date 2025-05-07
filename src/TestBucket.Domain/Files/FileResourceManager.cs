@@ -31,6 +31,5 @@ namespace TestBucket.Domain.Files
 
             await _mediator.Publish(new FileResourceAddedNotification(principal, resource));
         }
-
     }
 }

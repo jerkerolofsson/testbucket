@@ -44,22 +44,6 @@
                         Project="@Project" TestSuiteId="@SuiteId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" OnTestSuiteFolderClicked="OnFolderClicked"/>
 
                         <BasicMarkdownEditor ToolbarTitle="@loc["readme"]" Text="@_testSuite.Description" TextChanged="OnDescriptionChanged"/>
-
-                        @* @if(_fieldCategory is not null) *@
-                        @* { *@
-                        @*     <TestsByField Field="@_fieldCategory" Title="CAT" Query="_querySuite" /> *@
-                        @* } *@
-
-                        @* @if (_fieldFeature is not null) *@
-                        @* { *@
-                        @*     <TestsByField Field="@_fieldFeature" Title="FEA" Query="_querySuite" /> *@
-                        @* } *@
-
-
-                        @* @if (_fieldFeature is not null && _fieldCategory is not null) *@
-                        @* { *@
-                        @*     <TestMatrix Field1="@_fieldFeature" Field2="@_fieldCategory" Title="matrix" Query="_querySuite" /> *@
-                        @* } *@
                     }
                 </MudStack>
             </article>

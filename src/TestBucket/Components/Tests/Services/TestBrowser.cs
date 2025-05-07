@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 
+using Microsoft.Extensions.Localization;
+
 using TestBucket.Components.Automation;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Dialogs;
@@ -17,6 +19,7 @@ using TestBucket.Domain.Testing.ImportExport;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Localization;
 
 namespace TestBucket.Components.Tests.Services;
 internal class TestBrowser : TenantBaseService
@@ -29,6 +32,7 @@ internal class TestBrowser : TenantBaseService
     private readonly ITestCaseManager _testCaseManager;
     private readonly AppNavigationManager _appNavigationManager;
     private readonly PipelineController _pipelineController;
+    private readonly IStringLocalizer<SharedStrings> _loc;
 
     // todo: migrate to domain manager!
     private readonly ITestCaseRepository _testCaseRepository;
@@ -67,7 +71,8 @@ internal class TestBrowser : TenantBaseService
         ITestRunManager testRunManager,
         AppNavigationManager appNavigationManager,
         PipelineController pipelineManager,
-        ITestCaseManager testCaseManager) : base(authenticationStateProvider)
+        ITestCaseManager testCaseManager,
+        IStringLocalizer<SharedStrings> loc) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
@@ -79,6 +84,7 @@ internal class TestBrowser : TenantBaseService
         _appNavigationManager = appNavigationManager;
         _pipelineController = pipelineManager;
         _testCaseManager = testCaseManager;
+        _loc = loc;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -319,7 +325,7 @@ internal class TestBrowser : TenantBaseService
         {
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = "Pipelines",
+                Text = _loc["pipelines"],
                 Children = null,
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = FOLDER_PIPELINES, TestRun = testRun },
@@ -330,7 +336,7 @@ internal class TestBrowser : TenantBaseService
         {
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = "Tests",
+                Text = _loc["tests"],
                 Children = [],
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = FOLDER_RUN_TESTS, TestRun = testRun },
@@ -339,7 +345,7 @@ internal class TestBrowser : TenantBaseService
 
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = "Fields",
+                Text = _loc["fields"],
                 Children = [],
                 Expanded = false,
                 Expandable = false,
@@ -357,7 +363,7 @@ internal class TestBrowser : TenantBaseService
 
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = "Assigned to me",
+                Text = _loc["assigned-to-me"],
                 Children = [],
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = assignedToMe },
@@ -366,7 +372,7 @@ internal class TestBrowser : TenantBaseService
 
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = "My Backlog",
+                Text = _loc["my-backlog"],
                 Children = [],
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = backlog },
@@ -375,7 +381,7 @@ internal class TestBrowser : TenantBaseService
 
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = "Unassigned",
+                Text = _loc["unassigned"],
                 Children = [],
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = unassigned },
@@ -384,7 +390,7 @@ internal class TestBrowser : TenantBaseService
 
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = "Failures",
+                Text = _loc["failures"],
                 Children = [],
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = failed },
@@ -674,9 +680,6 @@ internal class TestBrowser : TenantBaseService
         var suites = await _testSuiteService.GetTestSuitesAsync(teamId, projectId);
         var suiteItems = suites.Items.Select(x => CreateTestSuiteTreeNode(x)).ToList();
 
-        // For test runs, as there can be a huge amount, sort them by year
-        List<TreeNode<BrowserItem>> recentRuns = [];
-
         var principal = await GetUserClaimsPrincipalAsync();
 
         var items = new List<TreeNode<BrowserItem>>();
@@ -684,7 +687,7 @@ internal class TestBrowser : TenantBaseService
         {
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = "Test Suites",
+                Text = _loc["test-suites"],
                 Children = suiteItems,
                 Expanded = true,
                 Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_SUITES },
@@ -693,7 +696,7 @@ internal class TestBrowser : TenantBaseService
 
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = "Test Cases",
+                Text = _loc["test-cases"],
                 Expanded = false,
                 Expandable = false,
                 Value = new BrowserItem() { Href = _appNavigationManager.GetTestCasesUrl() },
@@ -702,26 +705,45 @@ internal class TestBrowser : TenantBaseService
         }
         if(request.ShowTestRuns)
         {
-            var query = new SearchTestRunQuery() { ProjectId = projectId, Count = 50, TeamId = teamId, Offset = 0 };
-            var recentRunsResult = await _testRunManager.SearchTestRunsAsync(principal, query);
-            foreach (var testRun in recentRunsResult.Items)
-            {
-                recentRuns.Add(await CreateTestRunTreeNode(request, testRun));
-            }
-
+            List<TreeNode<BrowserItem>> recentRuns = await CreateRecentTestRunsTreeNodeItemsAsync(request, teamId, projectId);
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = "Test Runs",
+                Text = _loc["test-runs"],
                 Children = recentRuns,
                 Expanded = false,
                 Expandable = true,
-                Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_RUNS },
+                Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_RUNS, Href = _appNavigationManager.GetTestRunsUrl() },
                 Icon = TbIcons.BoldDuoTone.Database,
             });
         }
         return items;
     }
 
+    public async Task<Dictionary<long, TestExecutionResultSummary>> GetTestExecutionResultSummaryForRunsAsync(IReadOnlyList<long> testRunsIds, SearchTestCaseRunQuery query)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testCaseManager.GetTestExecutionResultSummaryForRunsAsync(principal, testRunsIds, query);
+    }
+
+    public async Task<PagedResult<TestRun>> GetRecentTestRunsAsync(long? projectId, long? teamId)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var query = new SearchTestRunQuery() { ProjectId = projectId, Count = 50, TeamId = teamId, Offset = 0 };
+        var recentRunsResult = await _testRunManager.SearchTestRunsAsync(principal, query);
+        return recentRunsResult;
+    }
+
+    private async Task<List<TreeNode<BrowserItem>>> CreateRecentTestRunsTreeNodeItemsAsync(TestBrowserRequest request, long? teamId, long? projectId)
+    {
+        var recentRunsResult = await GetRecentTestRunsAsync(projectId, teamId);
+        List<TreeNode<BrowserItem>> recentRuns = [];
+        foreach (var testRun in recentRunsResult.Items)
+        {
+            recentRuns.Add(await CreateTestRunTreeNode(request, testRun));
+        }
+
+        return recentRuns;
+    }
 
     internal async Task<TestSuite?> AddTestSuiteAsync(Team? team, TestProject? project)
     {

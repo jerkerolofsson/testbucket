@@ -3,6 +3,7 @@
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Traceability.Models;
 
 namespace TestBucket.Domain.Requirements;
 public interface IRequirementManager
@@ -147,4 +148,6 @@ public interface IRequirementManager
     Task<List<RequirementTestLink>> GetRequirementLinksForSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification);
 
     #endregion Requirement Links
+
+    Task<TraceabilityNode> DiscoverTraceabilityAsync(ClaimsPrincipal principal, Requirement requirement, int depth);
 }

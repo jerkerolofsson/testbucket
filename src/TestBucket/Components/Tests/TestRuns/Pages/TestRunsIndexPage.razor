@@ -1,0 +1,60 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestRuns"
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Components.Tests.TestRuns.Extensions
+@using TestBucket.Domain.Testing.Aggregates
+@layout TestingLayout
+@inject TestBrowser testBrowser
+@inject AppNavigationManager appNavigationManager
+
+<MudStack Style="width: 100%" Class="pa-2">
+    @foreach(var group in _groupings)
+    {
+        <MudText Typo="Typo.h1">@group</MudText>
+        <div class="tb-card-grid">
+            @foreach(var run in _runs.Where(x=>GetGroupByValue(x) == group))
+            {
+                <MudPaper Class="tb-card">
+                    <div class="title">@run.Name</div>
+                    @if(_results.TryGetValue(run.Id, out var results))
+                    {
+                        <TestResultSummaryBar Summary="@results" Style="width: 100%"/>
+                    }
+
+                </MudPaper>
+            }
+        </div>
+    }
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private long _projectId;
+    private IReadOnlyList<TestRun> _runs = [];
+    private Dictionary<long, TestExecutionResultSummary> _results = [];
+    private string[] _groupings = [];
+
+    private string GetGroupByValue(TestRun run)
+    {
+        return run.GetMilestone() ?? "";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Project is not null && _projectId != Project.Id)
+        {
+            _projectId = Project.Id;
+
+            PagedResult<TestRun> result = await testBrowser.GetRecentTestRunsAsync(Project.Id, Project.TeamId);
+            _runs = result.Items;
+
+            var ids = _runs.Select(x => x.Id).Distinct().ToList();
+            _results = await testBrowser.GetTestExecutionResultSummaryForRunsAsync(ids, new SearchTestCaseRunQuery());
+
+            _groupings = _runs.Select(x => GetGroupByValue(x)).Distinct().OrderBy(x=>x).ToArray();
+        }
+    }
+}

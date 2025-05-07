@@ -217,6 +217,11 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"{tenantId}/Testing/TestRuns/{testRunId}";
     }
+    public string GetTestRunsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestRuns";
+    }
     public string GetTestRunTestsUrl(long testRunId)
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);

@@ -3,6 +3,8 @@
     gap: 1px;
     max-width: 100%;
     overflow: auto;
+
+    margin-top: 2rem;
 }
 
 .tb-test-matrix .value {

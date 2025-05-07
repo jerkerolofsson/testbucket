@@ -186,6 +186,21 @@
                         }
 
                         <FieldsEditor Requirement="@Requirement" ReadOnly AutoSaveChanges="false"/>
+
+                        <MudTooltip Text="@loc["slug"]">
+                            <CopyToClipboard Text="@Requirement.Slug" IconSize="Size.Small">
+                                <MudText Typo="Typo.subtitle1">@Requirement.Slug</MudText>
+                            </CopyToClipboard>
+                        </MudTooltip>
+
+                        @if (!string.IsNullOrEmpty(Requirement.ExternalId))
+                        {
+                            <MudTooltip Text="@loc["external-id"]">
+                                <CopyToClipboard Text="@Requirement.ExternalId" IconSize="Size.Small">
+                                    <MudText Typo="Typo.subtitle1">@Requirement.ExternalId</MudText>
+                                </CopyToClipboard>
+                            </MudTooltip>
+                        }
                     }
 
                 </MudStack>

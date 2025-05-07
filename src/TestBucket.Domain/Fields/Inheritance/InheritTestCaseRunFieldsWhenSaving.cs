@@ -32,7 +32,7 @@ public class InheritTestCaseRunFieldsWhenSaving : INotificationHandler<TestCaseR
         var testCaseRun = notification.TestCaseRun;
 
         var runFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, testCaseRun.TestProjectId, FieldTarget.TestRun);
-        var testCaseDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, testCaseRun.TestProjectId, FieldTarget.TestRun);
+        var testCaseDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, testCaseRun.TestProjectId, FieldTarget.TestCase);
         var testCaseRunDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, testCaseRun.TestProjectId, FieldTarget.TestCaseRun);
 
         var testRunFields = await _fieldManager.GetTestRunFieldsAsync(principal, testCaseRun.TestRunId, runFieldDefinitions);

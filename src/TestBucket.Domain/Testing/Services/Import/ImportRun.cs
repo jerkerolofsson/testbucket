@@ -354,17 +354,18 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
             State = completedState.Name
         };
 
-        await _testCaseRepository.AddTestCaseRunAsync(testCaseRun);
+        await _testRunManager.AddTestCaseRunAsync(principal, testCaseRun);
 
         // Add traits from the test case (could be manually assigned)
-        List<TestCaseRunField> fields = new();
 
-        TestCaseRunFieldHelper.BuildInheritedFields(testRun, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRun, fields);
+        //List<TestCaseRunField> fields = new();
 
-        foreach (var field in fields)
-        {
-            await _fieldManager.UpsertTestCaseRunFieldAsync(principal, field);
-        }
+        //TestCaseRunFieldHelper.BuildInheritedFields(testRun, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRun, fields);
+
+        //foreach (var field in fields)
+        //{
+        //    await _fieldManager.UpsertTestCaseRunFieldAsync(principal, field);
+        //}
         //await _fieldManager.SaveTestCaseRunFieldsAsync(principal, fields);
 
         await AddAttachmentsAsync(testCaseRun, test.Attachments);

@@ -12,6 +12,7 @@ public class FieldDefinitionTemplates
         Target = FieldTarget.TestCaseRun | FieldTarget.TestRun,
         Inherit = true,
         IsVisible = true,
+        TraitType = Traits.Core.TraitType.Browser,
         Type = FieldType.SingleSelection,
         Options = ["Chrome", "Edge", "Safari"],
         Description = "Web browser used for testing"
@@ -23,6 +24,7 @@ public class FieldDefinitionTemplates
         Trait = "TestCategory",
         Target = FieldTarget.TestCaseRun | FieldTarget.TestCase,
         Inherit = true,
+        TraitType = Traits.Core.TraitType.TestCategory,
         Type = FieldType.SingleSelection,
         IsVisible = true,
         Options = ["API", "Unit", "Integration", "EndToEnd"],
@@ -45,6 +47,7 @@ public class FieldDefinitionTemplates
         Name = "Priority",
         Trait = "Priority",
         Target = FieldTarget.TestCase | FieldTarget.TestCaseRun,
+        TraitType = Traits.Core.TraitType.TestPriority,
         Inherit = true,
         IsVisible = true,
         Type = FieldType.SingleSelection,
@@ -56,6 +59,7 @@ public class FieldDefinitionTemplates
     {
         Name = "Commit",
         Trait = "Commit",
+        TraitType = Traits.Core.TraitType.Commit,
         IsVisible = false,
         Target = FieldTarget.TestRun | FieldTarget.TestCaseRun,
         Inherit = true,
@@ -67,6 +71,7 @@ public class FieldDefinitionTemplates
     {
         Name = "Q-Char",
         Trait = "QualityCharacteristic",
+        TraitType = Traits.Core.TraitType.QualityCharacteristic,
         IsVisible = true,
         Target = FieldTarget.TestCaseRun | FieldTarget.TestCase,
         Inherit = true,

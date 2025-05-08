@@ -31,6 +31,10 @@
                     <MudIconButton Icon="@TbIcons.BoldDuoTone.Trace" Href="@appNavigationManager.GetRequirementTraceUrl()" Class="rounded-0" />
                 </MudTooltip>
 
+                <MudTooltip Text="@loc["coverage"]">
+                    <MudIconButton Icon="@TbIcons.BoldDuoTone.Coverage" Href="@appNavigationManager.GetRequirementCoverageUrl()" Class="rounded-0" />
+                </MudTooltip>
+
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 
             </MudStack>
@@ -42,9 +46,6 @@
     {
         <CascadingValue Value="@_requirement">
             <MudStack Style="width: 100%; overflow: auto; ">
-
-                CascadingValue: IS @_requirement.Name
-
                 @Body
             </MudStack>
         </CascadingValue>

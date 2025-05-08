@@ -27,7 +27,7 @@ internal class ImportRequirementsCommand : ICommand
     public string? Folder => null;
 
     public KeyboardBinding? DefaultKeyboardBinding => null;
-    public string? Icon => Icons.Material.Outlined.ImportExport;
+    public string? Icon => TbIcons.BoldDuoTone.Import;
     public string[] ContextMenuTypes => ["menu-requirements", "menu-import"];
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.RequirementSpecification;
     public PermissionLevel? RequiredLevel => PermissionLevel.Read;

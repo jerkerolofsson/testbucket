@@ -280,6 +280,12 @@ public class AppNavigationManager
         var id = ResolveEntityIdFromUrl(_navigationManager.Uri);
         return $"{tenantId}/Requirements/Requirements/{id}/Trace";
     }
+    public string GetRequirementCoverageUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var id = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Requirements/Requirements/{id}/Coverage";
+    }
 
     public string GetUrl(Requirement requirement)
     {

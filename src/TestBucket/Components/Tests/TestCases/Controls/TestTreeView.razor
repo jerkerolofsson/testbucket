@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Tests.TestRuns.Controllers
+@using TestBucket.Domain
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject ITestCaseManager testCaseManager
@@ -56,7 +57,7 @@
                 }
                 <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="AddTestSuiteAsync" Label="Add test suite" />
                 <MudDivider />
-                <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import results" />
+                <MudMenuItem Icon="@TbIcons.BoldDuoTone.Import" OnClick="ImportAsync" Label="@loc["import-results"]" />
             </MudMenu>
         </MudStack>
     </MudStack>
@@ -161,7 +162,7 @@
 
                         <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="AddTestSuiteAsync" Label="Add test suite" />
                         <MudDivider />
-                        <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="ImportAsync" Label="Import results" />
+                        <MudMenuItem Icon="@TbIcons.BoldDuoTone.Import" OnClick="ImportAsync" Label="@loc["import-results"]" />
 
                     </ChildContent>
                 </MudMenu>

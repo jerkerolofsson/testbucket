@@ -5,55 +5,57 @@
 @inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<SharedStrings> loc
 
-<MudDataGrid Items="_links" Dense Hover T="RequirementTestLink" SortMode="SortMode.Single">
+<DropZone T="TestEntity" OnDrop="OnDrop">
 
-    <ToolBarContent>
-        <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
-            <MudText>@loc["test-coverage"]</MudText>
-            <MudSpacer />
-            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTestLinkAsync"></MudIconButton>
-        </MudStack>
-    </ToolBarContent>
+    <MudDataGrid Items="_links" Dense Hover T="RequirementTestLink" SortMode="SortMode.Single">
 
-    <ColGroup>
-        <col style="width: 60%;" />
-        <col style="width: 30%;"/>
-        <col style="width: 10%;" />
-    </ColGroup>
+        <ToolBarContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+                <MudText>@loc["test-coverage"]</MudText>
+                <MudSpacer />
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTestLinkAsync"></MudIconButton>
+            </MudStack>
+        </ToolBarContent>
 
-    <Columns>
+        <ColGroup>
+            <col style="width: 60%;" />
+            <col style="width: 30%;"/>
+            <col style="width: 10%;" />
+        </ColGroup>
 
-        <TemplateColumn Title="@loc["title"]" Sortable="true" SortBy="x => x.TestCase!.Name">
-            <CellTemplate>
-                @if(context.Item.TestCase is not null)
-                {
-                    <MudLink Href="@appNavigationManager.GetUrl(context.Item.TestCase)">@context.Item.TestCase!.Name</MudLink>
-                }
-            </CellTemplate>
-        </TemplateColumn>
+        <Columns>
 
-        <TemplateColumn Title="@loc["test-category"]" Sortable="true" SortBy="x => x.TestCase!.Name">
-            <CellTemplate>
-                @if (context.Item.TestCase?.TestCaseFields is not null && _category is not null)
-                {
-                    var field = context.Item.TestCase.TestCaseFields.Where(x => x.FieldDefinitionId == _category.Id).FirstOrDefault();
-                    if(field is not null)
+            <TemplateColumn Title="@loc["title"]" Sortable="true" SortBy="x => x.TestCase!.Name">
+                <CellTemplate>
+                    @if(context.Item.TestCase is not null)
                     {
-                        @field.GetValueAsString()
+                        <MudLink Href="@appNavigationManager.GetUrl(context.Item.TestCase)">@context.Item.TestCase!.Name</MudLink>
                     }
-                }
-            </CellTemplate>
-        </TemplateColumn>
+                </CellTemplate>
+            </TemplateColumn>
 
-        <TemplateColumn CellStyle="width: 1%">
-            <CellTemplate>
-                <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteLinkAsync(context.Item)"/>
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
+            <TemplateColumn Title="@loc["test-category"]" Sortable="true" SortBy="x => x.TestCase!.Name">
+                <CellTemplate>
+                    @if (context.Item.TestCase?.TestCaseFields is not null && _category is not null)
+                    {
+                        var field = context.Item.TestCase.TestCaseFields.Where(x => x.FieldDefinitionId == _category.Id).FirstOrDefault();
+                        if(field is not null)
+                        {
+                            @field.GetValueAsString()
+                        }
+                    }
+                </CellTemplate>
+            </TemplateColumn>
 
-</MudDataGrid>
+            <TemplateColumn CellStyle="width: 1%">
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteLinkAsync(context.Item)"/>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
 
+    </MudDataGrid>
+</DropZone>
 @code {
     [Parameter] public Requirement? Requirement { get; set; }
     [Parameter] public TestProject? Project { get; set; }
@@ -62,6 +64,24 @@
     private RequirementTestLink[] _links = [];
     private IReadOnlyList<FieldDefinition> _fieldDefinitions = [];
     private FieldDefinition? _category;
+
+
+    private async Task OnDrop(TestEntity? testEntity)
+    {
+        if (Requirement is null)
+        {
+            return;
+        }
+        if (testEntity is TestCase testCase)
+        {
+            await editor.LinkRequirementToTestCaseAsync(Requirement, testCase);
+        }
+        else if (testEntity is TestSuite suite)
+        {
+            // ..
+        }
+        await LoadDataAsync();
+    }
 
     private async Task AddTestLinkAsync()
     {

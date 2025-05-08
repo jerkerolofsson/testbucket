@@ -1,11 +1,12 @@
-﻿@inject RequirementEditorController editor
+﻿@using TestBucket.Domain
+@inject RequirementEditorController editor
 
 @if (RequirementSpecification is not null)
 {
     <CommandMenuItems TypeName="RequirementSpecification" />
 
     <MudDivider />
-    <MudMenuItem Icon="@Icons.Material.Filled.ImportExport" OnClick="() => ExtractRequirementsFromSpecificationAsync()" Label="Extract Requirements" />
+    <MudMenuItem Icon="@TbIcons.BoldDuoTone.Import" OnClick="() => ExtractRequirementsFromSpecificationAsync()" Label="Extract Requirements" />
 
     <MudDivider />
     <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="() => DeleteRequirementSpecificationAsync()" Label="Delete" />

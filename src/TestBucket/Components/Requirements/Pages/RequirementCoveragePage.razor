@@ -3,19 +3,20 @@
 @layout RequirementLayout
 @inject RequirementBrowser browser
 @inject AppNavigationManager appNavigationManager
-@page "/{TenantId}/Requirements/Requirements/{RequirementId:long}/Trace"
+@page "/{TenantId}/Requirements/Requirements/{RequirementId:long}/Coverage"
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<RequirementStrings> reqLoc
 @inject IStringLocalizer<StateStrings> stateLoc
 
-<MudStack Class="pa-2">
+<Splitter Class="container-fill pa-2" Bordered="false" Dimension="70" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+        <RequirementTestLinksTable Team="@Team" Project="@Project" Requirement="@Requirement" />
+    </StartContent>
+    <EndContent>
+        <TestTreeView Project="@Project" />
+    </EndContent>
+</Splitter>
 
-    <MudText Typo="Typo.h2">@loc["traceability"]</MudText>
-    <RequirementTraceabilityView Requirement="@Requirement" />
-
-    <MudText Typo="Typo.h2">@reqLoc["downstream-requirements"]</MudText>
-    <DownstreamRequirementsCoverageTable Requirement="@Requirement" />
-</MudStack>
 @code {
     [CascadingParameter] public Team? Team { get; set; }
     [CascadingParameter] public TestProject? Project { get; set; }

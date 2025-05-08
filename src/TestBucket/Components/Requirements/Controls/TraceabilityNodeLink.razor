@@ -29,7 +29,8 @@
             await OnClicked.InvokeAsync(Node);
             if (Node.Requirement is not null)
             {
-                appNavigationManager.NavigateTo(Node.Requirement);
+                var url = appNavigationManager.GetUrl(Node.Requirement);
+                appNavigationManager.NavigateTo(url + "/Trace");
             }
             else if (Node.TestCase is not null)
             {

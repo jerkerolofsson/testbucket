@@ -8,8 +8,6 @@
 <RequirementEditor Requirement="@Requirement" />
 
 @code {
-    private Requirement? _requirement = null;
-    
     [CascadingParameter] public Requirement? Requirement { get; set; }
     [Parameter] public long RequirementId { get; set; }
     [Parameter] public string? TenantId { get; set; }

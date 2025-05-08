@@ -9,7 +9,7 @@
 @inject ISnackbar snackbar
 @inject IStringLocalizer<SharedStrings> loc
 
-@if (Test is not null)
+@if(Test is not null)
 {
     <div class="container-fill-2-rows">
         <MudToolBar Class="tb-toolbar">
@@ -25,7 +25,7 @@
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 
                 <MudIconButton Icon="@Icons.Material.Filled.FormatBold" OnClick="async () => await _editor.ToggleBoldAsync()" Class="rounded-0" />
-                <MudIconButton Icon="@Icons.Material.Filled.FormatItalic" OnClick="async () => await _editor.ToggleItalicAsync()" Class="rounded-0" />
+                <MudIconButton Icon="@Icons.Material.Filled.FormatItalic" OnClick="async () => await _editor.ToggleItalicAsync()"  Class="rounded-0"/>
 
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 
@@ -43,6 +43,42 @@
 
                 <MudIconButton Icon="@Icons.Material.Filled.Fullscreen" OnClick="async () => await _editor.ToggleFullScreenAsync()" />
             }
+            else
+            {
+                <PathNavigation Test="@Test"/>
+            }
+
+            <MudSpacer/>
+
+            <MudText>@Test.Slug</MudText>
+
+            <MudDivider DividerType="DividerType.Middle" Vertical />
+
+            <MudTooltip Text="Run">
+                <MudIconButton OnClick="RunTestAsync" Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Class="rounded-0" />
+            </MudTooltip>
+
+            <MudDivider DividerType="DividerType.Middle" Vertical />
+
+            <MudTooltip Text="@loc["variables"]">
+                <MudIconButton Icon="@Icons.Material.Filled.Abc" Href="@appNavigationManager.GetTestCaseVariablesUrl()" Class="rounded-0" />
+            </MudTooltip>
+
+            <MudTooltip Text="@loc["requirements"]">
+                <MudIconButton Icon="@TbIcons.BoldDuoTone.Medal" Href="@appNavigationManager.GetTestCaseRequimentsUrl()" Class="rounded-0" />
+            </MudTooltip>
+
+            <MudTooltip Text="@loc["attachments"]">
+                <MudIconButton Icon="@Icons.Material.Filled.AttachFile" Href="@appNavigationManager.GetTestCaseAttachmentsUrl()" Class="rounded-0" />
+            </MudTooltip>
+
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                <MudMenuItem Icon="@TbIcons.BoldDuoTone.Medal" Href="@appNavigationManager.GetTestCaseRequimentsUrl()">@loc["requirements"]</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Abc" Href="@appNavigationManager.GetTestCaseVariablesUrl()">@loc["variables"]</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.AttachFile" Href="@appNavigationManager.GetTestCaseAttachmentsUrl()">@loc["attachments"]</MudMenuItem>
+                <MudMenuItem Icon="@TbIcons.BoldDuoTone.Field" Href="@appNavigationManager.GetTestCaseFieldsUrl()">@loc["fields"]</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="async x => await DeleteTestCaseAsync()">@loc["delete"]</MudMenuItem>
+            </MudMenu>
 
         </MudToolBar>
 
@@ -50,12 +86,12 @@
             <StartContent>
                 <MudStack Class="pa-2" Style="width: 100%; height: 100%">
 
-                    @if (_errors.Count > 0)
+                    @if(_errors.Count > 0)
                     {
-                        foreach (var error in _errors)
+                        foreach(var error in _errors)
                         {
                             <MudStack Row>
-                                <MudIcon Color="Color.Warning" Icon="@Icons.Material.Outlined.Warning" />
+                                <MudIcon Color="Color.Warning" Icon="@Icons.Material.Outlined.Warning"/>
                                 <MudText>Line @error.Line</MudText>
                                 <MudText>Column @error.Column</MudText>
                                 <MudText>@error.Message</MudText>
@@ -88,12 +124,12 @@
                     <Field>
                         <FieldHeader>@loc["created"]</FieldHeader>
                         <MudStack Row AlignItems="AlignItems.Center">
-                            <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Test.CreatedBy" />
+                            <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Test.CreatedBy"/>
                             <div>@Test.Created.Humanize()</div>
                         </MudStack>
                     </Field>
 
-                    <FieldsEditor TestCase="@Test" ReadOnly="@(_preview)" />
+                    <FieldsEditor TestCase="@Test" ReadOnly="@(_preview)"/>
 
                 </MudStack>
             </EndContent>

@@ -1,0 +1,29 @@
+﻿@attribute [Authorize()]
+@using TestBucket.Components.Requirements.Layouts
+@layout RequirementLayout
+@inject RequirementBrowser browser
+@inject AppNavigationManager appNavigationManager
+@page "/{TenantId}/Requirements/Requirements/{RequirementId:long}/Trace"
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<RequirementStrings> reqLoc
+@inject IStringLocalizer<StateStrings> stateLoc
+
+
+<MudText Typo="Typo.h2">@loc["traceability"]</MudText>
+<RequirementTraceabilityView Requirement="@Requirement" />
+
+<MudText Typo="Typo.h2">@reqLoc["downstream-requirements"]</MudText>
+<DownstreamRequirementsCoverageTable Requirement="@Requirement" />
+
+<RequirementTestLinksTable Team="@Team" Project="@Project" Requirement="@Requirement" />
+
+@code {
+    private Requirement? _requirement = null;
+    
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Requirement? Requirement { get; set; }
+    [Parameter] public long RequirementId { get; set; }
+    [Parameter] public string? TenantId { get; set; }
+
+}

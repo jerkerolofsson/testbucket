@@ -1,0 +1,87 @@
+﻿@inherits LayoutComponentBase
+@layout RequirementsLayout
+@using Humanizer
+@using TestBucket.Components.Layout
+@using TestBucket.Components.Shared.Splitter
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Components.Tests.TestRuns.Controllers
+@using TestBucket.Domain
+@using TestBucket.Domain.Requirements.Models
+@using TestBucket.Domain.Teams.Models
+@inject RequirementBrowser browser
+@inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+
+<TenantRedirect />
+
+<div class="container-fill-2-rows">
+
+    <div>
+        @if (_loading)
+        {
+            <MudProgressLinear Indeterminate Color="Color.Tertiary" />
+        }
+        <div class="tb-toolbar">
+            <MudStack Row Style="width: 100%; margin-right: 16px" Spacing="1">
+                <PathNavigation Requirement="@_requirement" />
+                <MudSpacer />
+
+                <MudTooltip Text="@loc["traceability"]">
+                    <MudIconButton Icon="@TbIcons.BoldDuoTone.Trace" Href="@appNavigationManager.GetRequirementTraceUrl()" Class="rounded-0" />
+                </MudTooltip>
+
+                <MudDivider DividerType="DividerType.Middle" Vertical />
+
+            </MudStack>
+        </div>
+
+    </div>
+
+    @if(_requirement is not null)
+    {
+        <CascadingValue Value="@_requirement">
+            <MudStack Style="width: 100%; overflow: auto; ">
+
+                CascadingValue: IS @_requirement.Name
+
+                @Body
+            </MudStack>
+        </CascadingValue>
+    }
+</div>
+
+@code {
+    [CascadingParameter] TestProject? Project { get; set; }
+    [CascadingParameter] Team? Team { get; set; }
+
+    private bool _loading = false;
+    private Requirement? _requirement;
+
+    /// <summary>
+    /// Load the test case when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        if(_loading)
+        {
+            return;
+        }
+
+        var requirementId = appNavigationManager.GetEntityIdFromCurrentUri();
+        if (requirementId is null)
+        {
+            return;
+        }
+        if (_requirement is null || _requirement.Id != requirementId)
+        {
+            _loading = true;
+            this.StateHasChanged();
+
+            _requirement = await browser.GetRequirementByIdAsync(requirementId.Value);
+            appNavigationManager.State.SelectedRequirement = _requirement;
+            _loading = false;
+        }
+    }
+}

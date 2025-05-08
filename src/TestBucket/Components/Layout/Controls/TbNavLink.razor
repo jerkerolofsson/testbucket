@@ -1,9 +1,16 @@
 ﻿@inject NavigationManager navigationManager
 @implements IDisposable
 
-<nav class="@CssClass" @onclick="OnClicked">@ChildContent</nav>
+<nav class="@CssClass" @onclick="OnClicked">
+    @if(Icon is not null)
+    {
+        <MudIcon Icon="@Icon"/>
+    }
+    @ChildContent
+</nav>
 
 @code {
+    [Parameter] public string? Icon { get; set; }
     [Parameter] public string? Href { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public EventCallback OnClick { get; set; }

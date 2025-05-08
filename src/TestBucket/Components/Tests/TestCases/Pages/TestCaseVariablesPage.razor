@@ -12,10 +12,6 @@
 @if (Test is not null)
 {
     <MudStack>
-        <MudToolBar Class="tb-toolbar">
-            <PathNavigation Test="@Test" TailItems="_nav"/>
-        </MudToolBar>
-
         <CascadingValue Value="@Test">
             <article>
                 <MudStack>

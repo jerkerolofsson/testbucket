@@ -100,6 +100,18 @@ html, body {
     color: var(--mud-palette-secondary);
 }
 
+.mud-breadcrumbs .mud-breadcrumb-item {
+    border-radius: var(--mud-default-borderradius)
+}
+.mud-breadcrumbs .mud-breadcrumb-separator  {
+    padding: 0 4px;
+}
+
+.mud-breadcrumbs .mud-breadcrumb-item:hover {
+    background: var(--mud-palette-tertiary-hover);
+/*    border-bottom: solid 2px var(--mud-palette-tertiary);*/
+}
+
 .mud-tab {
     text-transform: none;
     line-height: 1.1;
@@ -273,7 +285,8 @@ input:focus-visible {
  }
 
  .tb-nav-link:hover {
-     background: rgba(255,255,255,0.05);
+/*     background: rgba(255,255,255,0.05);*/
+    background: var(--mud-palette-tertiary-hover);
  }
 
  .tb-nav-link svg {
@@ -310,7 +323,7 @@ input:focus-visible {
      overflow: hidden;
  }
 
- .container-fill-2-rows {
+  .container-fill-2-rows {
      display: grid;
      grid-template-rows: auto 1fr;
      

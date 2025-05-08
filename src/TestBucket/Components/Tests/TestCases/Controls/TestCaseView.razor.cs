@@ -4,7 +4,7 @@ using MudBlazor.Utilities;
 using TestBucket.Contracts.Fields;
 
 namespace TestBucket.Components.Tests.TestCases.Controls;
-public partial class TestCaseEditor
+public partial class TestCaseView
 {
     protected string EditButtonClassname =>
     new CssBuilder("mud-markdown-toolbar-toggle-button")
@@ -84,7 +84,18 @@ public partial class TestCaseEditor
             snackbar.Add(ex.Message, Severity.Error, (options) => { });
         }
     }
- 
+    private async Task RunTestAsync()
+    {
+        if (Test is null || Test.TestProjectId is null)
+        {
+            return;
+        }
+        var run = await testRunCreation.CreateTestRunAsync(Test.Name, Test.TestProjectId.Value, [Test.Id]);
+        if (run is not null)
+        {
+            appNavigationManager.NavigateTo(run);
+        }
+    }
 
     private async Task SaveChangesAsync()
     {
@@ -93,6 +104,15 @@ public partial class TestCaseEditor
         await CompilePreviewAsync();
 
         await TestChanged.InvokeAsync(Test);
+    }
+
+    private async Task DeleteTestCaseAsync()
+    {
+        if (Test is null)
+        {
+            return;
+        }
+        await testCaseEditorController.DeleteTestCaseAsync(Test);
     }
 
 

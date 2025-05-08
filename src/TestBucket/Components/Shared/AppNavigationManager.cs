@@ -271,7 +271,14 @@ public class AppNavigationManager
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
-        return $"{tenantId}/Testing/TestCases/{testCaseId}/requirements";
+        return $"{tenantId}/Testing/TestCases/{testCaseId}/Requirements";
+    }
+
+    public string GetRequirementTraceUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var id = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Requirements/Requirements/{id}/Trace";
     }
 
     public string GetUrl(Requirement requirement)

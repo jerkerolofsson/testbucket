@@ -77,15 +77,6 @@
                         </MarkdownEditor>
                     }
 
-                    @if(_selectedTab == "trace")
-                    {
-                        <MudText Typo="Typo.h2">@loc["traceability"]</MudText>
-                        <RequirementTraceabilityView Requirement="@Requirement"/>
-
-                        <MudText Typo="Typo.h2">@reqLoc["downstream-requirements"]</MudText>
-                        <DownstreamRequirementsCoverageTable Requirement="@Requirement"/>
-                    }
-
                 </MudStack>
             </StartContent>
             <EndContent>
@@ -145,10 +136,6 @@
                             <MudSpacer/>
                             <RequirementTypeSelect Type="@Type" TypeChanged="OnTypeChanged" />
                         </Field>
-                    }
-                    else if (_selectedTab == "trace")
-                    {
-                        <RequirementTestLinksTable Team="@Team" Project="@Project" Requirement="@Requirement" />
                     }
                     else if(_selectedTab == "view")
                     {
@@ -218,7 +205,7 @@
     private Requirement? _parent;
     private RequirementTestLink[] _links = [];
 
-    private string[] TabLabels => ["view", "trace", "edit"];
+    private string[] TabLabels => ["view", "edit"];
     private string _selectedTab = "view";
 
     private async Task OnSelectedTabChanged(string label)

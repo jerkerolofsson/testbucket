@@ -1,68 +1,114 @@
 ﻿@inherits LayoutComponentBase
-@layout AppLayout
+@layout TestingLayout
 @using Humanizer
 @using TestBucket.Components.Layout
 @using TestBucket.Components.Shared.Splitter
 @using TestBucket.Components.Tests.Layouts
+@using TestBucket.Components.Tests.TestRuns.Controllers
 @using TestBucket.Domain
 @using TestBucket.Domain.Requirements.Models
 @using TestBucket.Domain.Teams.Models
 @inject TestBrowser browser
 @inject TestCaseEditorController testCaseEditor
+@inject TestRunCreationController testRunCreation
 @inject NavigationManager navigationManager
 @inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<SharedStrings> loc
 
 <TenantRedirect />
 
-<Splitter Style="height: 100%" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
-    <StartContent>
+<div class="container-fill-2-rows">
 
-        <div class="pa-5" style="width: 100%">
+    <div>
+        @if (_loading)
+        {
+            <MudProgressLinear Indeterminate Color="Color.Tertiary" />
+        }
 
-            @if(_testCase is not null)
-            {
-                <MudText Typo="Typo.h1">@_testCase.Name</MudText>
-            }
+        <div class="tb-toolbar">
+            <MudStack Row Style="width: 100%; margin-right: 16px" Spacing="1">
+                <PathNavigation Test="@_testCase" TestSuite="@_testSuite" />
+                <MudSpacer/>
+                <MudTooltip Text="@loc["variables"]">
+                    <MudIconButton Icon="@Icons.Material.Filled.Abc" Href="@appNavigationManager.GetTestCaseVariablesUrl()" Class="rounded-0" />
+                </MudTooltip>
 
-            <MudNavMenu>
+                <MudTooltip Text="@loc["fields"]">
+                    <MudIconButton Icon="@TbIcons.BoldDuoTone.Field" Href="@appNavigationManager.GetTestCaseFieldsUrl()" Class="rounded-0" />
+                </MudTooltip>
 
-                <MudNavLink Icon="@Icons.Material.Filled.Abc" Href="@appNavigationManager.GetTestCaseVariablesUrl()">@loc["variables"]</MudNavLink>
-                <MudNavLink Icon="@TbIcons.BoldDuoTone.Field" Href="@appNavigationManager.GetTestCaseFieldsUrl()">@loc["fields"]</MudNavLink>
-                <MudNavLink Icon="@Icons.Material.Filled.AttachFile" Href="@appNavigationManager.GetTestCaseAttachmentsUrl()">@loc["attachments"]</MudNavLink>
-                <MudNavLink Icon="@TbIcons.BoldDuoTone.Medal" Href="@appNavigationManager.GetTestCaseRequimentsUrl()">@loc["requirements"]</MudNavLink>
+                <MudTooltip Text="@loc["requirements"]">
+                    <MudIconButton Icon="@TbIcons.BoldDuoTone.Medal" Href="@appNavigationManager.GetTestCaseRequimentsUrl()" Class="rounded-0" />
+                </MudTooltip>
 
-                <AuthorizeView Roles="ADMIN">
+                <MudTooltip Text="@loc["attachments"]">
+                    <MudIconButton Icon="@Icons.Material.Filled.AttachFile" Href="@appNavigationManager.GetTestCaseAttachmentsUrl()" Class="rounded-0" />
+                </MudTooltip>
 
-                </AuthorizeView>
 
-                <AuthorizeView Roles="SUPERADMIN">
-                </AuthorizeView>
-            </MudNavMenu>
+                <MudDivider DividerType="DividerType.Middle" Vertical />
+
+                <MudTooltip Text="@loc["run-test"]">
+                    <MudIconButton OnClick="RunTestAsync" Icon="@Icons.Material.Filled.PlayArrow" Color="Color.Success" Class="rounded-0" />
+                </MudTooltip>
+
+                <MudDivider DividerType="DividerType.Middle" Vertical />
+
+                <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                    <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="async x => await DeleteTestCaseAsync()">@loc["delete"]</MudMenuItem>
+                </MudMenu>
+
+            </MudStack>
         </div>
-
-    </StartContent>
-
-    <EndContent>
+    </div>
+    <CascadingValue Value="@_testSuite">
         <CascadingValue Value="@_testCase">
             <MudStack Style="width: 100%; overflow: auto; ">
                 @Body
-            </MudStack>>
+            </MudStack>
         </CascadingValue>
-    </EndContent>
-</Splitter>
+    </CascadingValue>
+</div>
 
 @code {
     [CascadingParameter] TestProject? Project { get; set; }
     [CascadingParameter] Team? Team { get; set; }
 
     private TestCase? _testCase;
+    private TestSuite? _testSuite;
 
     private Team? _team;
     private TestProject? _project;
 
+    private bool _loading = false;
+
+    private async Task DeleteTestCaseAsync()
+    {
+        if (_testCase is null)
+        {
+            return;
+        }
+        await testCaseEditor.DeleteTestCaseAsync(_testCase);
+    }
+
+    private async Task RunTestAsync()
+    {
+        if (_testCase is null || _testCase.TestProjectId is null)
+        {
+            return;
+        }
+        var run = await testRunCreation.CreateTestRunAsync(_testCase.Name, _testCase.TestProjectId.Value, [_testCase.Id]);
+        if (run is not null)
+        {
+            appNavigationManager.NavigateTo(run);
+        }
+    }
+
     protected override async Task OnParametersSetAsync()
     {
+        _loading = true;
+        this.StateHasChanged();
+
         if (_project != Project || _team != Team)
         {
             _project = Project;
@@ -74,5 +120,14 @@
         {
             _testCase = await browser.GetTestCaseByIdAsync(testCaseId.Value);
         }
+        appNavigationManager.State.SelectedTestCase = _testCase;
+
+        if (_testCase is not null && _testSuite?.Id != _testCase.Id)
+        {
+            _testSuite = await browser.GetTestSuiteByIdAsync(_testCase.Id);
+        }
+        appNavigationManager.State.SelectedTestSuite = _testSuite;
+
+        _loading = false;
     }
 }

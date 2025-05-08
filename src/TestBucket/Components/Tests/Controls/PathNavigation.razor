@@ -11,6 +11,7 @@
 @code {
     [Parameter] public TestSuite? TestSuite { get; set; }
     [Parameter] public TestCase? Test { get; set; }
+    [Parameter] public Requirement Requirement { get; set; }
     [Parameter] public long? FolderId { get; set; }
     [Parameter] public IEnumerable<BreadcrumbItem>? TailItems { get; set; }
 
@@ -25,22 +26,35 @@
         }
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
     protected override async Task OnParametersSetAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
     {
         List<BreadcrumbItem> nav = new();
 
+        var test = Test;
+        var testSuite = TestSuite;
+
         // First the test suite
-        if(TestSuite is not null)
+        if(TestSuite is not null && test is null)
         {
              var testSuiteUrl = appNavigationManager.GetUrl(TestSuite);
             nav.Add(new BreadcrumbItem(TestSuite.Name, testSuiteUrl));
             _navUpUrl = testSuiteUrl;
         }
-        else if (Test?.PathIds is not null)
+        else if (test?.PathIds is not null && test.Path is not null)
         {
-            var testSuiteId = Test.TestSuiteId;
+            var testSuiteId = test.TestSuiteId;
 
-            var testSuite = TestSuite ?? await testBrowser.GetTestSuiteByIdAsync(Test.TestSuiteId);
+            testSuite ??= await testBrowser.GetTestSuiteByIdAsync(testSuiteId);
             if(testSuite is not null)
             {
                 var testSuiteUrl = appNavigationManager.GetUrl(testSuite);
@@ -48,17 +62,17 @@
                 _navUpUrl = testSuiteUrl;
             }
 
-            var pathItems = Test.Path.Split('/');
-            var len = Math.Min(pathItems.Length, Test.PathIds.Length);
-            for (int i = 0; i < Test.PathIds.Length; i++)
+            var pathItems = test.Path.Split('/');
+            var len = Math.Min(pathItems.Length, test.PathIds.Length);
+            for (int i = 0; i < test.PathIds.Length; i++)
             {
-                var url = appNavigationManager.GetFolderUrl(testSuiteId, Test.PathIds[i]);
+                var url = appNavigationManager.GetFolderUrl(testSuiteId, test.PathIds[i]);
                 nav.Add(new BreadcrumbItem(pathItems[i], url));
 
                 // Parent dir is the last one
                 _navUpUrl = url;
             }
-            nav.Add(new BreadcrumbItem(Test.Name, appNavigationManager.GetUrl(Test)));
+            nav.Add(new BreadcrumbItem(test.Name, appNavigationManager.GetUrl(test)));
         }
         else if (FolderId is not null)
         {
@@ -67,7 +81,7 @@
             {
                 var testSuiteId = folder.TestSuiteId;
 
-                var testSuite = await testBrowser.GetTestSuiteByIdAsync(folder.TestSuiteId);
+                testSuite ??= await testBrowser.GetTestSuiteByIdAsync(folder.TestSuiteId);
                 if (testSuite is not null)
                 {
                     var testSuiteUrl = appNavigationManager.GetUrl(testSuite);

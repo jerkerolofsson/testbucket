@@ -54,7 +54,10 @@ public static class TestBucketServerApp
 
         // Add services to the container.
         builder.Services.AddRazorComponents()
-            .AddInteractiveServerComponents()
+            .AddInteractiveServerComponents(configure =>
+            {
+                
+            })
             .AddHubOptions(hubOptions =>
             {
                 // We set this to quite large to handle capture screenshots etc

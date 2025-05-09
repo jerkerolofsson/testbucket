@@ -1,6 +1,10 @@
 ﻿@using TestBucket.Domain.Traceability.Models
 @inject RequirementEditorController controller
 
+
+<TestBucket.Components.Features.Traceability.Graph.TraceGraph Node="_node"/>
+
+
 <div class="tb-trace-view">
     <div class="left">
         @if (_loading)

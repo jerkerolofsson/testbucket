@@ -1,0 +1,149 @@
+﻿@using TestBucket.Components.Shared.Profile
+@using TestBucket.Domain.Comments.Models
+@inject AuthenticationStateProvider authenticationStateProvider 
+@inject IStringLocalizer<SharedStrings> loc
+
+<div>
+    <div class="comment-thread">
+        @if(Comments is not null)
+        {
+            @foreach (var (index, comment) in Comments.Index())
+            {
+                @if (comment.Markdown is not null)
+                {
+                    <div class="comment-container">
+                        <div>
+                            <UserProfileImage UserName="@comment.CreatedBy"/>
+                        </div>
+                        <div>
+                            @if (index > 0)
+                            {
+                                <div class="timeline-divider"/>
+                            }
+                            <div class="comment-container-title">
+                                <div class="user">@(comment.CreatedBy)</div>
+                                <div class="when">@(comment.Created.Humanize())</div>
+
+                                @if (comment.CreatedBy == _currentUserName ||
+                                _authState?.User?.HasPermission(EntityType, PermissionLevel.Delete) == true)
+                                {
+                                    <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                                        <MudMenuItem OnClick="async () => await DeleteCommentAsync(comment)">@loc["delete"]</MudMenuItem>
+                                    </MudMenu>
+                                }
+
+                            </div>
+                            <div class="comment-container-text">
+                                <MarkdownEditor Preview="true"
+                                ShowToolbar="false"
+                                MaxHeight="100%"
+                                MinHeight="100%"
+                                Value="@comment.Markdown"
+                                SpellChecker="false">
+                                </MarkdownEditor>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (comment.LoggedAction is not null) // special action
+                {
+                    <div class="comment-container">
+                        <div>
+                        </div>
+                        <div>
+                            @if (index > 0)
+                            {
+                                <div class="timeline-divider" />
+                            }
+                            <div class="comment-action">
+                                @string.Format(loc["logged-action-" + comment.LoggedAction], comment.CreatedBy, comment.LoggedActionArgument)
+                                @comment.Created.Humanize()
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        }
+    </div>
+
+    @if (_authState?.User?.HasPermission(EntityType, PermissionLevel.Write) == true)
+    {
+
+        <div class="comment-thread">
+            @if (Comments is not null)
+            {
+                <div class="comment-container" data-testid="add-comment-container">
+                    <div>
+                        <UserProfileImage UserName="@_authState?.User?.Identity?.Name" />
+                    </div>
+                    <div>
+                        <div class="timeline-divider" />
+                        <div class="comment-container-title">
+                            <div class="user">@loc["add-comment"]</div>
+                        </div>
+                        <div class="comment-container-text">
+                            <BasicMarkdownEditor CanSave="false" Preview="false" @bind-Text="_comment"/>
+                            <MudStack Row Style="width: 100%">
+
+                                @foreach(var emoji in _emojis)
+                                {
+                                    var textToInsert = emoji;
+                                    <div class="insert-emoji" @onclick="() => InsertEmoji(textToInsert)">@emoji</div>
+                                }
+
+                                <MudSpacer/>
+                                <MudButton data-testid="add-comment-button" Color="Color.Primary" Variant="Variant.Filled" OnClick="AddCommentAsync">@loc["add"]</MudButton>
+                            </MudStack>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+@code {
+    [Parameter] public List<Comment>? Comments { get; set; } = [];
+    [Parameter] public EventCallback<Comment> CommentAdded { get; set; }
+    [Parameter] public EventCallback<Comment> CommentDeleted { get; set; }
+    [Parameter] public PermissionEntityType EntityType { get; set; } = PermissionEntityType.Requirement;
+
+    private string _currentUserName = "";
+    private string _comment = "";
+    private AuthenticationState? _authState;
+    private string[] _emojis = ["👍", "👎", "⭐️", "❤️", "💀", "✅️", "🚩"];
+
+    protected override async Task OnInitializedAsync()
+    {
+        _authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        _currentUserName = _authState.User.Identity?.Name ?? "n/a";
+    }
+
+    private async Task DeleteCommentAsync(Comment comment)
+    {
+        await CommentDeleted.InvokeAsync(comment);
+    }
+
+    private void InsertEmoji(string text)
+    {
+        _comment += text;
+    }
+
+    private async Task AddCommentAsync()
+    {
+        _authState ??= await authenticationStateProvider.GetAuthenticationStateAsync();
+        var comment = new Comment
+        {
+                CreatedBy = _authState.User.Identity?.Name ?? "",
+            Created = DateTimeOffset.UtcNow,
+                Markdown = _comment
+        };
+
+        _comment = "";
+
+        await CommentAdded.InvokeAsync(comment);
+    }
+}

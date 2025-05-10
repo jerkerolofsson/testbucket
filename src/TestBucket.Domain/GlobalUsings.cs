@@ -17,3 +17,4 @@ global using TestBucket.Domain.Identity.Permissions;
 global using TestBucket.Domain.Settings;
 global using TestBucket.Domain.Settings.Models;
 global using TestBucket.Contracts.Code.Models;
+global using TestBucket.Domain.Comments.Models;

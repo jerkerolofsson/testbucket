@@ -197,9 +197,22 @@ public enum TraitType
     Feature = 43,
 
     /// <summary>
-    /// Team or milestone
+    /// Team
     /// </summary>
-    Team = 44
+    Team = 44,
 
+    /// <summary>
+    /// A covered requirement
+    /// </summary>
+    CoveredRequirement = 45,
 
+    /// <summary>
+    /// A covered issue/bug/ticket
+    /// </summary>
+    CoveredIssue = 46,
+
+    /// <summary>
+    /// The test/requirement is approved
+    /// </summary>
+    Approved = 48,
 }

@@ -37,25 +37,9 @@ html, body {
     --mud-typography-h6-size: 12pt;
 }
 
-/*.result-pill {
-    padding: 4px;
-    border-radius: 4px;
-    display: grid;
-    place-items: center;
-    font-size: 9pt;
-    border: solid 1px transparent;
-}*/
-
 .treeview .template {
     font-style: italic;
 }
-/*
-.treeview .automated::after {
-    content: ' (automated)';
-}
-.treeview .hybrid::after {
-    content: ' (hybrid)';
-}*/
 
 .tb-passrate-text {
     font-weight: bold;
@@ -101,7 +85,7 @@ html, body {
 }
 
 .mud-breadcrumbs .mud-breadcrumb-item {
-    border-radius: var(--mud-default-borderradius)
+    border-radius: var(--mud-default-borderradius);
 }
 .mud-breadcrumbs .mud-breadcrumb-separator  {
     padding: 0 4px;
@@ -964,3 +948,36 @@ div.tb-profile-image.tb-background-9 {
     align-items: center;
 }
 
+.resource-group .node-border {
+    opacity: 0.5;
+}
+.resource-group:hover .node-border {
+    opacity: 1;
+}
+
+.resource-scale .node-background {
+    fill: var(--mud-palette-tertiary-darken);
+    cursor: pointer;
+}
+.resource-scale .node-background.requirement {
+    fill: var(--mud-palette-primary-darken);
+}
+.resource-scale .node-background.testcase {
+    fill: var(--mud-palette-secondary-darken);
+}
+
+.resource-group:hover .node-background.testcase {
+    fill: var(--mud-palette-secondary);
+}
+
+.resource-group:hover .node-background.requirement {
+    fill: var(--mud-palette-primary);
+}
+
+.resource-group .node-icon {
+    pointer-events: none;
+}
+
+/*.resource-group-hover  .node-background.requirement {
+    fill: red;
+}*/

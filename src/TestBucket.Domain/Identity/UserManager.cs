@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Data;
+using System.Security.Claims;
 
 using Microsoft.AspNetCore.Identity;
 
@@ -152,4 +153,44 @@ internal class UserManager : IUserManager
         var user = await FindAsync(principal) ?? throw new InvalidOperationException("User not found"); ;
         return await _userService.GetApiKeysAsync(user.Id, tenantId);
     }
+
+    public async Task AssignRoleAsync(ClaimsPrincipal principal, string normalizedEmail, string role)
+    {
+        principal.ThrowIfNotAdmin();
+        await _superAdminUserService.AssignRoleAsync(principal.GetTenantIdOrThrow(), normalizedEmail, role);
+    }
+    public async Task UnassignRoleAsync(ClaimsPrincipal principal, string normalizedEmail, string role)
+    {
+        principal.ThrowIfNotAdmin();
+        await _superAdminUserService.UnassignRoleAsync(principal.GetTenantIdOrThrow(), normalizedEmail, role);
+    }
+
+    public async Task AddRoleAsync(ClaimsPrincipal principal, string role)
+    {
+        principal.ThrowIfNotAdmin();
+        await _superAdminUserService.AddRoleAsync(principal.GetTenantIdOrThrow(), role);
+    }
+    public async Task RemoveRoleAsync(ClaimsPrincipal principal, string role)
+    {
+        principal.ThrowIfNotAdmin();
+        await _superAdminUserService.RemoveRoleAsync(principal.GetTenantIdOrThrow(), role);
+    }
+
+    public async Task<IReadOnlyList<string>> GetRoleNamesAsync(ClaimsPrincipal principal)
+    {
+        principal.ThrowIfNotAdmin();
+        return await _superAdminUserService.GetRoleNamesAsync(principal.GetTenantIdOrThrow());
+    }
+
+    public async Task<IReadOnlyList<string>> GetUserRoleNamesAsync(ClaimsPrincipal principal,string normalizedUserName)
+    {
+        principal.ThrowIfNotAdmin();
+        var user = await GetUserByNormalizedUserNameAsync(principal, normalizedUserName);
+        if(user is null)
+        {
+            return [];
+        }
+        return await _superAdminUserService.GetUserRoleNamesAsync(user);
+    }
+
 }

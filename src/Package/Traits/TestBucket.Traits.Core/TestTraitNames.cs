@@ -76,4 +76,19 @@ public class TestTraitNames
     /// </summary>
     public const string QualityCharacteristic = nameof(QualityCharacteristic);
 
+    /// <summary>
+    /// Covered requirement
+    /// </summary>
+    public const string CoveredRequirement = nameof(CoveredRequirement);
+
+    /// <summary>
+    /// Covered issue/bug/ticket
+    /// </summary>
+    public const string CoveredIssue = nameof(CoveredIssue);
+
+    /// <summary>
+    /// Approved entity
+    /// </summary>
+    public const string Approved = nameof(Approved);
+
 }

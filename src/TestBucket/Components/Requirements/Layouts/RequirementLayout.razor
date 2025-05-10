@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @layout RequirementsLayout
 @using Humanizer
+@inject RequirementEditorController editor
 @using TestBucket.Components.Layout
 @using TestBucket.Components.Shared.Splitter
 @using TestBucket.Components.Tests.Layouts
@@ -26,6 +27,11 @@
             <MudStack Row Style="width: 100%; margin-right: 16px" Spacing="1">
                 <PathNavigation Requirement="@_requirement" />
                 <MudSpacer />
+
+
+                <MudTooltip Text="@loc["edit"]">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="Edit" Class="rounded-0" />
+                </MudTooltip>
 
                 <MudTooltip Text="@loc["traceability"]">
                     <MudIconButton Icon="@TbIcons.BoldDuoTone.Trace" Href="@appNavigationManager.GetRequirementTraceUrl()" Class="rounded-0" />
@@ -58,6 +64,17 @@
 
     private bool _loading = false;
     private Requirement? _requirement;
+
+    private async Task Edit()
+    {
+        if (_requirement is not null)
+        {
+            await editor.OpenEditDialogAsync(_requirement);
+            
+            _requirement = await browser.GetRequirementByIdAsync(_requirement.Id);
+            appNavigationManager.State.SelectedRequirement = _requirement;
+        }
+    }
 
     /// <summary>
     /// Load the test case when changed

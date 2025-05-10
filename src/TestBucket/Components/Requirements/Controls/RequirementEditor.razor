@@ -1,8 +1,11 @@
 ﻿@using MudBlazor.Utilities
+@using TestBucket.Components.Comments
+@using TestBucket.Components.Comments.Controls
 @using TestBucket.Components.Requirements.Commands
 @using TestBucket.Components.Shared.Splitter
 @using TestBucket.Contracts.Requirements.States
 @using TestBucket.Contracts.Requirements.Types
+@using TestBucket.Domain.Comments.Models
 @using TestBucket.Domain.Requirements
 @inject RequirementEditorController editor
 @inject RequirementBrowser browser
@@ -11,6 +14,7 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<RequirementStrings> reqLoc
 @inject IStringLocalizer<StateStrings> stateLoc
+@inject CommentsController comments
 
 @if(Requirement is not null)
 {
@@ -75,6 +79,8 @@
                         ValueChanged="OnDescriptionChanged"
                         SpellChecker="false">
                         </MarkdownEditor>
+
+                        <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted"/>
                     }
 
                 </MudStack>
@@ -204,6 +210,8 @@
     [CascadingParameter] public TestProject? Project {get;set;}
     private Requirement? _parent;
     private RequirementTestLink[] _links = [];
+    private List<Comment> _comments = [];
+    private Requirement? _requirement;
 
     private string[] TabLabels => ["view", "edit"];
     private string _selectedTab = "view";
@@ -243,7 +251,7 @@
             return null;
         }
     }
-    
+
     private RequirementType? Type
     {
         get
@@ -262,14 +270,13 @@
         base.OnInitialized();
     }
 
-    private Requirement? _requirement;
-
     protected override async Task OnParametersSetAsync()
     {
         if (Requirement is not null && _requirement?.Id != Requirement.Id)
         {
             _parent = null;
             _requirement = Requirement;
+            _comments = _requirement.Comments?.ToList() ?? []; 
             if (Requirement.ParentRequirementId is not null)
             {
                 _parent = await browser.GetRequirementByIdAsync(Requirement.ParentRequirementId.Value);
@@ -364,5 +371,25 @@
             return;
         }
         Requirement.Description = description;
+    }
+
+    private async Task OnCommentAdded(Comment comment)
+    {
+        if (_requirement is not null)
+        {
+            comment.TeamId = _requirement.TeamId;
+            comment.TestProjectId = _requirement.TestProjectId;
+            comment.RequirementId = _requirement.Id;
+            _comments.Add(comment);
+            await comments.AddCommentAsync(comment);
+        }
+    }
+    private async Task OnCommentDeleted(Comment comment)
+    {
+        if (Requirement is not null)
+        {
+            _comments.Remove(comment);
+            await comments.DeleteCommentAsync(comment);
+        }
     }
 }

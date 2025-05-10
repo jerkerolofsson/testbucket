@@ -115,4 +115,6 @@ public class TestCase : TestEntity
     public TestSuiteFolder? TestSuiteFolder { get; set; }
     public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }
     public virtual IEnumerable<TestStep>? TestSteps { get; set; }
+
+    public virtual List<Comment>? Comments { get; set; }
 }

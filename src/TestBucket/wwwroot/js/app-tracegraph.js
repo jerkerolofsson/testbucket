@@ -174,7 +174,7 @@ class ResourceGraph {
 
     switchTo(resourceName) {
         this.selectedNode = this.nodes.find(node => node.id === resourceName);
-        this.updateNodeHighlights(null);
+        //this.updateNodeHighlights(null);
     }
 
     resourceEqual(r1, r2) {
@@ -319,35 +319,33 @@ class ResourceGraph {
             .append("g")
             .attr("class", "resource-scale")
             .on('click', this.selectNode)
-            .on('contextmenu', this.nodeContextMenu)
-            .on('mouseover', this.hoverNode)
-            .on('mouseout', this.unHoverNode);
+            .on('contextmenu', this.nodeContextMenu);
 
             // Outline
         newNodesContainer
             .append("circle")
             .attr("r", 35)
-            .attr("class", "resource-node")
+            .attr("class", "node-border")
             .attr("stroke", "white")
-            .attr("stroke-width", "4");
+            .attr("stroke-width", "2");
 
         newNodesContainer
             .append("circle")
-            .attr("r", 33)
-            .attr("fill", n => {
-                console.log("fill", n);
-                return (n.type == "Requirement" ? "var(--mud-palette-primary-darken)" : "var(--mud-palette-secondary-darken)")
-            })
-            .attr("class", "resource-node-border");
+            .attr("r", 32)
+            .attr("class", n => {
+                return (n.type == "Requirement" ? "node-background requirement" : "node-background testcase")
+            });
 
         // Icon
         newNodesContainer
             .append("g")
             .attr("transform", "scale(2.1) translate(-10,-10)")
             .append("svg")
+            .attr("class", "node-icon")
             .attr("color", n => n.icon.color)
             .attr("width", "20").attr("height", "20")
             .html(n => n.icon.svg);
+;
 
             //.attr("d", n => n.icon.path)
             //.append("title")
@@ -356,7 +354,7 @@ class ResourceGraph {
         console.log("newResources", newResources);
         var resourceNameGroup = newNodesContainer
             .append("g")
-            .attr("transform", "translate(0,71)")
+            .attr("transform", "translate(0,51)")
             .attr("class", "resource-name");
         resourceNameGroup
             .append("text")
@@ -486,7 +484,7 @@ class ResourceGraph {
             this.openContextMenu = false;
 
             // Unselect the node when the context menu is closed to reset mouseover state.
-            this.updateNodeHighlights(null);
+            //this.updateNodeHighlights(null);
         }
     };
 
@@ -523,24 +521,24 @@ class ResourceGraph {
                 .style("transform", `scale(${scale})`)
                 .on("end", s => {
                     match.select(".resource-scale").style("transform", null);
-                    self.updateNodeHighlights(null);
+                    //self.updateNodeHighlights(null);
                 });
         }
     }
 
-    hoverNode = (event) => {
-        var mouseoverNode = event.target.__data__;
+    //hoverNode = (event) => {
+    //    var mouseoverNode = event.target.__data__;
 
-        this.updateNodeHighlights(mouseoverNode);
-    }
+    //    this.updateNodeHighlights(mouseoverNode);
+    //}
 
-    unHoverNode = (event) => {
-        // Don't unhover the selected node when the context menu is open.
-        // This is done to keep the node selected until the context menu is closed.
-        if (!this.openContextMenu) {
-            this.updateNodeHighlights(null);
-        }
-    };
+    //unHoverNode = (event) => {
+    //    // Don't unhover the selected node when the context menu is open.
+    //    // This is done to keep the node selected until the context menu is closed.
+    //    if (!this.openContextMenu) {
+    //        this.updateNodeHighlights(null);
+    //    }
+    //};
 
     nodeEquals(resource1, resource2) {
         if (!resource1 || !resource2) {
@@ -549,34 +547,34 @@ class ResourceGraph {
         return resource1.id === resource2.id;
     }
 
-    updateNodeHighlights = (mouseoverNode) => {
-        var mouseoverNeighbors = mouseoverNode ? this.getNeighbors(mouseoverNode) : [];
-        var selectNeighbors = this.selectedNode ? this.getNeighbors(this.selectedNode) : [];
-        var neighbors = [...mouseoverNeighbors, ...selectNeighbors];
+    //updateNodeHighlights = (mouseoverNode) => {
+    //    var mouseoverNeighbors = mouseoverNode ? this.getNeighbors(mouseoverNode) : [];
+    //    var selectNeighbors = this.selectedNode ? this.getNeighbors(this.selectedNode) : [];
+    //    var neighbors = [...mouseoverNeighbors, ...selectNeighbors];
 
-        // we modify the styles to highlight selected nodes
-        this.nodeElements.attr('class', (node) => {
-            var classNames = ['resource-group'];
-            if (this.nodeEquals(node, mouseoverNode)) {
-                classNames.push('resource-group-hover');
-            }
-            if (this.nodeEquals(node, this.selectedNode)) {
-                classNames.push('resource-group-selected');
-            }
-            if (neighbors.indexOf(node.id) > -1) {
-                classNames.push('resource-group-highlight');
-            }
-            return classNames.join(' ');
-        });
-        this.linkElements.attr('class', (link) => {
-            var nodes = [];
-            if (mouseoverNode) {
-                nodes.push(mouseoverNode);
-            }
-            if (this.selectedNode) {
-                nodes.push(this.selectedNode);
-            }
-            return this.getLinkClass(nodes, this.selectedNode, link);
-        });
-    };
+    //    // we modify the styles to highlight selected nodes
+    //    this.nodeElements.attr('class', (node) => {
+    //        var classNames = ['resource-group'];
+    //        if (this.nodeEquals(node, mouseoverNode)) {
+    //            classNames.push('resource-group-hover');
+    //        }
+    //        if (this.nodeEquals(node, this.selectedNode)) {
+    //            classNames.push('resource-group-selected');
+    //        }
+    //        if (neighbors.indexOf(node.id) > -1) {
+    //            classNames.push('resource-group-highlight');
+    //        }
+    //        return classNames.join(' ');
+    //    });
+    //    this.linkElements.attr('class', (link) => {
+    //        var nodes = [];
+    //        if (mouseoverNode) {
+    //            nodes.push(mouseoverNode);
+    //        }
+    //        if (this.selectedNode) {
+    //            nodes.push(this.selectedNode);
+    //        }
+    //        return this.getLinkClass(nodes, this.selectedNode, link);
+    //    });
+    //};
 };

@@ -96,6 +96,7 @@ internal class EnsureSystemFieldsExistsWhenProjectIsCreated :
             IsDefinedBySystem = definition.IsDefinedBySystem,
             Target = definition.Target,
             ShowDescription = definition.ShowDescription,
+            RequiredPermission = definition.RequiredPermission
         };
         await _fieldRepo.AddAsync(newField);
     }

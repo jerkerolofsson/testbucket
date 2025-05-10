@@ -4,9 +4,12 @@
 
     @if (!_preview && _editor is not null)
     {
-        <MudTooltip Text="@loc["save"]">
-            <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="SaveChangesAsync" Class="rounded-0" />
-        </MudTooltip>
+        @if(CanSave)
+        {
+            <MudTooltip Text="@loc["save"]">
+                <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="SaveChangesAsync" Class="rounded-0" />
+            </MudTooltip>
+        }
 
         <MudDivider DividerType="DividerType.Middle" Vertical />
 
@@ -47,6 +50,7 @@ EnableRunCode="false"
 EnableCopyCodeToClipboard="true"
 Color="Color.Primary"
 AllowResize="false"
+ValueUpdateMode="ValueUpdateMode.OnChange"
 @bind-Preview="_preview"
 Value="@_text"
 @ref=_editor
@@ -56,6 +60,7 @@ SpellChecker="false">
 @code {
 
     [Parameter] public string? ToolbarTitle { get; set; }
+    [Parameter] public bool CanSave { get; set; }
 
     [Parameter] public bool? Preview { get; set; }
 
@@ -78,13 +83,18 @@ SpellChecker="false">
         }
     }
 
-    private void OnTextChanged(string description)
+    private async Task OnTextChanged(string description)
     {
         if (_preview)
         {
             return;
         }
         _text = description;
+
+        if(!CanSave)
+        {
+            await TextChanged.InvokeAsync(_text);
+        }
     }
 
     protected override void OnParametersSet()

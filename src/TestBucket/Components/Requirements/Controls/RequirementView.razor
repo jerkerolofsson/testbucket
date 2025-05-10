@@ -1,0 +1,180 @@
+﻿@using MudBlazor.Utilities
+@using TestBucket.Components.Comments
+@using TestBucket.Components.Comments.Controls
+@using TestBucket.Components.Requirements.Commands
+@using TestBucket.Components.Shared.Splitter
+@using TestBucket.Contracts.Requirements.States
+@using TestBucket.Contracts.Requirements.Types
+@using TestBucket.Domain.Comments.Models
+@using TestBucket.Domain.Requirements
+@inject RequirementEditorController editor
+@inject RequirementBrowser browser
+@inject ProjectController controller
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<RequirementStrings> reqLoc
+@inject IStringLocalizer<StateStrings> stateLoc
+@inject CommentsController comments
+
+@if(Requirement is not null)
+{
+    <div class="container-fill-2-rows">
+        <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false" Color="Color.Tertiary">
+            <StartContent>
+                <MudStack Class="pa-2" Style="width: 100%; height: 100%">
+
+                    <MudText Typo="Typo.h1">@Requirement.Name</MudText>
+
+                    <MarkdownEditor 
+                    @ref="_editor"
+                    Preview="true"
+                    ShowToolbar="false"
+                    MaxHeight="100%"
+                    MinHeight="100%"
+                    Color="Color.Primary"
+                    AllowResize="true"
+                    Value="@Requirement.Description"
+                    SpellChecker="false">
+                    </MarkdownEditor>
+
+                    <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
+
+                </MudStack>
+            </StartContent>
+            <EndContent>
+                <MudStack Class="pa-2" Style="width: 100%">
+
+                    <Field>
+                        <FieldHeader>@loc["created"]</FieldHeader>
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Requirement.CreatedBy" />
+                            <div>@Requirement.Created.Humanize()</div>
+                        </MudStack>
+                    </Field>
+
+                    <Field Row>
+                        <FieldHeader>@stateLoc["state"]</FieldHeader>
+                        <MudSpacer/>
+                        <div>@Requirement.State</div>
+                    </Field>
+
+                    <Field Row>
+                        <FieldHeader>@reqLoc["type"]</FieldHeader>
+                        <MudSpacer/>
+                        @if(Requirement.RequirementType is not null)
+                        {
+                            var label = "type-" + Requirement.RequirementType.ToLower();
+                            <div>@reqLoc[label]</div>
+                        }
+                    </Field>
+
+                    @if (_parent is not null)
+                    {
+                        <Field Row>
+                            <FieldHeader>@reqLoc["parent"]</FieldHeader>
+                            <MudSpacer />
+                            <MudLink Href="@appNavigationManager.GetUrl(_parent)">@_parent.Name</MudLink>
+                        </Field>
+                    }
+
+                    <FieldsEditor Requirement="@Requirement" ReadOnly AutoSaveChanges="false"/>
+
+                    <MudTooltip Text="@loc["slug"]">
+                        <CopyToClipboard Text="@Requirement.Slug" IconSize="Size.Small">
+                            <MudText Typo="Typo.subtitle1">@Requirement.Slug</MudText>
+                        </CopyToClipboard>
+                    </MudTooltip>
+
+                    @if (!string.IsNullOrEmpty(Requirement.ExternalId))
+                    {
+                        <MudTooltip Text="@loc["external-id"]">
+                            <CopyToClipboard Text="@Requirement.ExternalId" IconSize="Size.Small">
+                                <MudText Typo="Typo.subtitle1">@Requirement.ExternalId</MudText>
+                            </CopyToClipboard>
+                        </MudTooltip>
+                    }
+
+                </MudStack>
+
+            </EndContent>
+        </Splitter>
+
+    </div>
+}
+
+@code {
+    [Parameter] public Requirement? Requirement { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public TestProject? Project {get;set;}
+    private Requirement? _parent;
+    private RequirementTestLink[] _links = [];
+    private Requirement? _requirement;
+    private List<Comment> _comments = [];
+
+    private MarkdownEditor? _editor;
+
+    private RequirementState? State
+    {
+        get
+        {
+            if (Requirement?.State is not null)
+            {
+                return new RequirementState() { MappedState = Requirement.MappedState ?? MappedRequirementState.Draft, Name = RequirementStates.Draft };
+            }
+            return null;
+        }
+    }
+
+    private RequirementType? Type
+    {
+        get
+        {
+            if (Requirement?.RequirementType is not null)
+            {
+                return new RequirementType() { MappedType = Requirement.MappedType ?? MappedRequirementType.General, Name = RequirementTypes.General };
+            }
+            return null;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        _parent = null;
+        base.OnInitialized();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Requirement is not null && _requirement?.Id != Requirement.Id)
+        {
+            _parent = null;
+            _requirement = Requirement;
+            _comments = _requirement.Comments?.ToList() ?? [];
+            if (Requirement.ParentRequirementId is not null)
+            {
+                _parent = await browser.GetRequirementByIdAsync(Requirement.ParentRequirementId.Value);
+            }
+            _links = await browser.GetLinksForRequirementAsync(Requirement);
+        }
+    }
+
+    private async Task OnCommentAdded(Comment comment)
+    {
+        if (_requirement is not null)
+        {
+            comment.TeamId = _requirement.TeamId;
+            comment.TestProjectId = _requirement.TestProjectId;
+            comment.RequirementId = _requirement.Id;
+            _comments.Add(comment);
+            await comments.AddCommentAsync(comment);
+        }
+    }
+    private async Task OnCommentDeleted(Comment comment)
+    {
+        if (Requirement is not null)
+        {
+            _comments.Remove(comment);
+            await comments.DeleteCommentAsync(comment);
+        }
+    }
+}

@@ -37,6 +37,8 @@ public class TraitTypeConverter
         [TraitType.Method] = AutomationTraitNames.MethodName,
 
         [TraitType.QualityCharacteristic] = TestTraitNames.QualityCharacteristic,
+        [TraitType.CoveredRequirement] = TestTraitNames.CoveredRequirement,
+        [TraitType.CoveredIssue] = TestTraitNames.CoveredIssue,
 
         [TraitType.TestCategory] = TestTraitNames.TestCategory,
         [TraitType.TestPriority] = TestTraitNames.TestPriority,
@@ -45,6 +47,7 @@ public class TraitTypeConverter
         [TraitType.TestDescription] = TestTraitNames.TestDescription,
         [TraitType.TestId] = TestTraitNames.TestId,
         [TraitType.Browser] = TestTraitNames.Browser,
+        [TraitType.Approved] = TestTraitNames.Approved,
 
         [TraitType.Tag] = TestTraitNames.Tag,
     }.ToFrozenDictionary();

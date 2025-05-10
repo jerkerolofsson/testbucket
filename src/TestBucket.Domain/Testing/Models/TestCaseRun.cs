@@ -94,6 +94,7 @@ public class TestCaseRun : TestEntity
     public TestCase? TestCase { get; set; }
     public virtual List<LinkedIssue>? LinkedIssues { get; set; }
 
+    public virtual List<Comment>? Comments { get; set; }
     public override int GetHashCode()
     {
         return Id.GetHashCode();
@@ -106,4 +107,6 @@ public class TestCaseRun : TestEntity
         }
         return base.Equals(obj);
     }
+
+
 }

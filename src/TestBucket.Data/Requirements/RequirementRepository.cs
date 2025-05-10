@@ -38,7 +38,10 @@ namespace TestBucket.Data.Requirements
                 {
                     dbContext.RequirementTestLinks.Remove(link);
                 }
-
+                foreach (var comment in dbContext.Comments.Where(x => x.RequirementId == requirement.Id))
+                {
+                    dbContext.Comments.Remove(comment);
+                }
                 dbContext.Requirements.Remove(requirement);
             }
 
@@ -57,6 +60,7 @@ namespace TestBucket.Data.Requirements
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             var requirements = dbContext.Requirements
                 .Include(x=>x.RequirementFields!).ThenInclude(x=>x.FieldDefinition)
+                .Include(x => x.Comments)
                 .Include(x=>x.TestLinks).AsQueryable();
 
             foreach (var filter in filters)
@@ -109,6 +113,7 @@ namespace TestBucket.Data.Requirements
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             return await dbContext.RequirementSpecifications
+                .Include(x => x.Comments)
                 .Where(x => x.TenantId == tenantId && x.Id == requirementSpecificationId).FirstOrDefaultAsync();
         }
 
@@ -123,6 +128,10 @@ namespace TestBucket.Data.Requirements
                 {
                     dbContext.RequirementTestLinks.Remove(link);
                 }
+                foreach (var comment in dbContext.Comments.Where(x => x.RequirementId == requirement.Id))
+                {
+                    dbContext.Comments.Remove(comment);
+                }
 
                 dbContext.Requirements.Remove(requirement);
             }
@@ -131,6 +140,12 @@ namespace TestBucket.Data.Requirements
             foreach (var folder in dbContext.RequirementSpecificationFolders.Where(x => x.RequirementSpecificationId == specification.Id))
             {
                 dbContext.RequirementSpecificationFolders.Remove(folder);
+            }
+
+            // Delete comments
+            foreach (var comment in dbContext.Comments.Where(x => x.RequirementSpecificationId == specification.Id))
+            {
+                dbContext.Comments.Remove(comment);
             }
 
             // Delete the spec!
@@ -150,7 +165,10 @@ namespace TestBucket.Data.Requirements
                 {
                     dbContext.RequirementTestLinks.Remove(link);
                 }
-
+                foreach (var comment in dbContext.Comments.Where(x => x.RequirementId == requirement.Id))
+                {
+                    dbContext.Comments.Remove(comment);
+                }
                 dbContext.Requirements.Remove(requirement);
             }
 
@@ -159,7 +177,10 @@ namespace TestBucket.Data.Requirements
             {
                 dbContext.RequirementSpecificationFolders.Remove(folder);
             }
-
+            foreach (var comment in dbContext.Comments.Where(x => x.RequirementSpecificationId == specification.Id))
+            {
+                dbContext.Comments.Remove(comment);
+            }
             await dbContext.SaveChangesAsync();
         }
 
@@ -265,7 +286,10 @@ namespace TestBucket.Data.Requirements
         public async Task<Requirement?> GetRequirementByIdAsync(string tenantId, long id)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-            return await dbContext.Requirements.AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
+            return await dbContext.Requirements
+                .Include(x=>x.RequirementFields)
+                .Include(x=>x.Comments)
+                .AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task DeleteRequirementAsync(Requirement requirement)
@@ -276,7 +300,10 @@ namespace TestBucket.Data.Requirements
             {
                 dbContext.RequirementTestLinks.Remove(link);
             }
-
+            foreach (var comment in dbContext.Comments.Where(x => x.RequirementId == requirement.Id))
+            {
+                dbContext.Comments.Remove(comment);
+            }
             dbContext.Requirements.Remove(requirement);
             await dbContext.SaveChangesAsync();
         }

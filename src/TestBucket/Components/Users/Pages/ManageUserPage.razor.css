@@ -1,0 +1,10 @@
+﻿.role-table {
+    display: grid; 
+    grid-template-columns: auto 1fr; 
+    gap: 4px;
+}
+
+.role-table > div {
+    display: flex;
+    align-items: center;
+}

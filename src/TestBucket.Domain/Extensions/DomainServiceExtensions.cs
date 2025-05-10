@@ -11,6 +11,7 @@ using TestBucket.Domain.Automation.Runners.Jobs;
 using TestBucket.Domain.Code.DataSources;
 using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Comments;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Export;
 using TestBucket.Domain.Export.Services;
@@ -133,6 +134,8 @@ public static class DomainServiceExtensions
         services.AddScoped<IPipelineProjectManager, PipelineProjectManager>();
         services.AddScoped<IProjectTokenGenerator, ProjectTokenGenerator>();
         services.AddScoped<IPipelineManager, PipelineManager>();
+
+        services.AddScoped<ICommentsManager, CommentsManager>();
 
         services.AddScoped<ITestResourceManager, TestResourceManager>();
         services.AddScoped<ITestAccountManager, TestAccountManager>();

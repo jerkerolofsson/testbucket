@@ -52,7 +52,9 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<TestCase?> GetTestCaseByIdAsync(string tenantId, long testCaseId)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestCases.AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == testCaseId).FirstOrDefaultAsync();
+        return await dbContext.TestCases
+            .Include(x => x.Comments)
+            .AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == testCaseId).FirstOrDefaultAsync();
     }
 
     /// <inheritdoc/>
@@ -133,6 +135,7 @@ internal class TestCaseRepository : ITestCaseRepository
         // Delete all test case runs
         await DeleteTestCaseRunsByTestCaseIdAsync(testCaseId, dbContext);
 
+        await dbContext.Comments.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
         await dbContext.TestCaseFields.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
         await dbContext.TestCases.Where(x => x.Id == testCaseId).ExecuteDeleteAsync();
     }
@@ -141,6 +144,7 @@ internal class TestCaseRepository : ITestCaseRepository
     {
         foreach (var testCaseRun in dbContext.TestCaseRuns.Where(x => x.TestCaseId == testCaseId))
         {
+            await dbContext.Comments.Where(x => x.TestCaseRunId == testCaseRun.Id).ExecuteDeleteAsync();
             await dbContext.TestCaseRunFields.Where(x => x.TestCaseRunId == testCaseRun.Id).ExecuteDeleteAsync();
         }
         await dbContext.TestCaseRuns.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
@@ -328,7 +332,9 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<TestSuite?> GetTestSuiteByIdAsync(string tenantId, long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestSuites.AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
+        return await dbContext.TestSuites
+            .Include(x => x.Comments)
+            .AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
     }
     public async Task<PagedResult<TestSuite>> SearchTestSuitesAsync(string tenantId, SearchQuery query)
     {
@@ -412,6 +418,12 @@ internal class TestCaseRepository : ITestCaseRepository
         foreach (var folder in dbContext.TestSuiteFolders.Where(x => x.TestSuiteId == testSuiteId && x.ParentId == null))
         {
             await DeleteFolderByIdAsync(folder.Id, dbContext, recurse: true);
+        }
+
+        // Delete comments
+        foreach (var comment in dbContext.Comments.Where(x => x.TestSuiteId == testSuiteId))
+        {
+            dbContext.Comments.Remove(comment);
         }
 
         // Delete any dangling folders
@@ -584,6 +596,7 @@ internal class TestCaseRepository : ITestCaseRepository
             .Include(x => x.TestRunFields)
             .Include(x => x.Team)
             .Include(x => x.TestProject)
+            .Include(x => x.Comments)
             .Where(x => x.TenantId == tenantId && x.Slug == slug).FirstOrDefaultAsync();
     }
 
@@ -595,6 +608,7 @@ internal class TestCaseRepository : ITestCaseRepository
             .Include(x => x.TestRunFields)
             .Include(x => x.Team)
             .Include(x => x.TestProject)
+            .Include(x => x.Comments)
             .Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
     }
 
@@ -687,6 +701,7 @@ internal class TestCaseRepository : ITestCaseRepository
         await foreach (var run in dbContext.TestCaseRuns
             .Include(x=>x.TestCaseRunFields)
             .Include(x=>x.LinkedIssues)
+            .Include(x => x.Comments)
             .Where(x => x.TestRunId == id).AsAsyncEnumerable())
         {
             dbContext.TestCaseRuns.Remove(run);
@@ -719,6 +734,7 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.TestCaseRuns.AsNoTracking().Include(x=>x.LinkedIssues).AsNoTracking()
             .Include(x=>x.TestCase)
+            .Include(x => x.Comments)
             .Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
     }
 

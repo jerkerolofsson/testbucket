@@ -45,31 +45,6 @@ internal class SuperAdminUserService : ISuperAdminUserService
         return await tenantUserStore.BrowseAsync(offset, count);
     }
 
-
-    public async Task AssignRoleAsync(string tenantId, string email, string roleName)
-    {
-        var userManager = _serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        var userStore = _serviceProvider.GetRequiredService<IUserStore<ApplicationUser>>();
-        var storeContext = userStore.GetType().GetProperty("Context")!.GetValue(userStore) as DbContext;
-        var tenantUserStore = new ApplicationUserStore(storeContext!, tenantId);
-
-        var normalizedEmail = userManager.NormalizeEmail(email);
-        var user = await tenantUserStore.FindByEmailAsync(normalizedEmail, CancellationToken.None);
-
-        if (user is null)
-        {
-            _logger.LogError("Failed to assign role '{roleName}' to '{email}' as user was not found for tenant '{tenantId}'", roleName, email, tenantId);
-        }
-        else
-        {
-            var roles = await userManager.GetRolesAsync(user);
-            if (!roles.Contains(roleName))
-            {
-                _logger.LogInformation("Adding role '{roleName}' to '{email}' for tenant '{tenantId}'", roleName, email, tenantId);
-                await userManager.AddToRoleAsync(user, roleName);
-            }
-        }
-    }
     private IUserEmailStore<ApplicationUser> GetEmailStore(UserManager<ApplicationUser> userManager, IUserStore<ApplicationUser> userStore)
     {
         if (!userManager.SupportsUserEmail)
@@ -139,5 +114,100 @@ internal class SuperAdminUserService : ISuperAdminUserService
             return IdentityResult.Failed([new IdentityError() { Description = "Account could not be confirmed" }]);
         }
         return IdentityResult.Success;
+    }
+
+    public async Task AssignRoleAsync(string tenantId, string email, string roleName)
+    {
+        var userManager = _serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var userStore = _serviceProvider.GetRequiredService<IUserStore<ApplicationUser>>();
+        var storeContext = userStore.GetType().GetProperty("Context")!.GetValue(userStore) as DbContext;
+        var tenantUserStore = new ApplicationUserStore(storeContext!, tenantId);
+
+        var normalizedEmail = userManager.NormalizeEmail(email);
+        var user = await tenantUserStore.FindByEmailAsync(normalizedEmail, CancellationToken.None);
+
+        if (user is null)
+        {
+            _logger.LogError("Failed to assign role '{roleName}' to '{email}' as user was not found for tenant '{tenantId}'", roleName, email, tenantId);
+        }
+        else
+        {
+            var roles = await userManager.GetRolesAsync(user);
+            if (!roles.Contains(roleName))
+            {
+                _logger.LogInformation("Adding role '{roleName}' to '{email}' for tenant '{tenantId}'", roleName, email, tenantId);
+                await userManager.AddToRoleAsync(user, roleName);
+            }
+        }
+    }
+    public async Task UnassignRoleAsync(string tenantId, string email, string roleName)
+    {
+        var userManager = _serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        var userStore = _serviceProvider.GetRequiredService<IUserStore<ApplicationUser>>();
+        var storeContext = userStore.GetType().GetProperty("Context")!.GetValue(userStore) as DbContext;
+        var tenantUserStore = new ApplicationUserStore(storeContext!, tenantId);
+
+        var normalizedEmail = userManager.NormalizeEmail(email);
+        var user = await tenantUserStore.FindByEmailAsync(normalizedEmail, CancellationToken.None);
+
+        if (user is null)
+        {
+            _logger.LogError("Failed to assign role '{roleName}' to '{email}' as user was not found for tenant '{tenantId}'", roleName, email, tenantId);
+        }
+        else
+        {
+            var roles = await userManager.GetRolesAsync(user);
+            if (roles.Contains(roleName))
+            {
+                _logger.LogInformation("Removing role '{roleName}' from '{email}' for tenant '{tenantId}'", roleName, email, tenantId);
+                await userManager.RemoveFromRoleAsync(user, roleName);
+            }
+        }
+    }
+
+    public async Task AddRoleAsync(string tenantId, string roleName)
+    {
+        var roleManager = _serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+        var exists = await roleManager.RoleExistsAsync(roleName);
+        if (!exists)
+        {
+            var role = new IdentityRole
+            {
+                Name = roleName,
+                NormalizedName = roleName
+            };
+            var result = await roleManager.CreateAsync(role);
+            if (!result.Succeeded)
+            {
+                throw new Exception(result.Errors.FirstOrDefault()?.Description ?? "Unknown error");
+            }
+        }
+    }
+
+    public async Task RemoveRoleAsync(string tenantId, string roleName)
+    {
+        var roleManager = _serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        var role = await roleManager.FindByNameAsync(roleName);
+        if (role is not null)
+        {
+            var result = await roleManager.DeleteAsync(role);
+            if (!result.Succeeded)
+            {
+                throw new Exception(result.Errors.FirstOrDefault()?.Description ?? "Unknown error");
+            }
+        }
+    }
+
+    public async Task<IReadOnlyList<string>> GetUserRoleNamesAsync(ApplicationUser user)
+    {
+        var userManager = _serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        return (await userManager.GetRolesAsync(user)).AsReadOnly();
+    }
+
+    public async Task<IReadOnlyList<string>> GetRoleNamesAsync(string tenantId)
+    {
+        var roleManager = _serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        return await roleManager.Roles.Where(x => x.Name != null).Select(x => x.Name!).ToListAsync();
     }
 }

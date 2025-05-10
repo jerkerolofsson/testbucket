@@ -1,6 +1,7 @@
 ﻿using Microsoft.JSInterop;
 
 using TestBucket.Components.Requirements;
+using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Traceability.Models;
 
@@ -12,6 +13,8 @@ public partial class TraceGraph
     private IJSObjectReference? _jsModule;
     private DotNetObjectReference<ResourcesInterop>? _resourcesInteropReference;
 
+    [Inject] RequirementEditorController? _requirementEditor { get; set; }
+
     [Inject] IJSRuntime JS { get; set; } = default!;
 
     [Parameter] public TraceabilityNode? Node { get; set; }
@@ -19,9 +22,15 @@ public partial class TraceGraph
     private class ResourcesInterop(TraceGraph Graph)
     {
         [JSInvokable]
-        public Task SelectResource(string id)
+        public async Task SelectResource(string id)
         {
-            return Task.CompletedTask;
+            if(Graph._idMap.TryGetValue(id, out var node))
+            {
+                if(node.Requirement is not null && Graph._requirementEditor is not null)
+                {
+                    await Graph._requirementEditor.OpenEditDialogAsync(node.Requirement);
+                }
+            }
         }
 
         [JSInvokable]
@@ -61,7 +70,7 @@ public partial class TraceGraph
         }
 
         List<NodeDto> nodes = [];
-
+        _idMap.Clear();
         if (Node is not null)
         {
             FlattenAsDto(nodes, Node, null);
@@ -69,9 +78,12 @@ public partial class TraceGraph
         }
     }
 
+    private readonly Dictionary<string, TraceabilityNode> _idMap = [];
+
     private void FlattenAsDto(List<NodeDto> dest, TraceabilityNode node, TraceabilityNode? parent)
     {
         var dto = NodeDto.Create(node, parent);
+        _idMap[dto.Id] = node;
         if (!dest.Contains(dto))
         {
             dest.Add(dto);

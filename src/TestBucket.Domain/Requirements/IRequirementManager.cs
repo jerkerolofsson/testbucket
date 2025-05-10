@@ -149,5 +149,22 @@ public interface IRequirementManager
 
     #endregion Requirement Links
 
+    /// <summary>
+    /// Discoveres a trace graph, with the origin of a requirement
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="requirement"></param>
+    /// <param name="depth"></param>
+    /// <returns></returns>
     Task<TraceabilityNode> DiscoverTraceabilityAsync(ClaimsPrincipal principal, Requirement requirement, int depth);
+
+    /// <summary>
+    /// Approves a requirement
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="requirement"></param>
+    /// <exception cref="UnauthorizedAccessException">No permission</exception>
+    /// <exception cref="InvalidDataException">No approval field was found</exception>
+    /// <returns></returns>
+    Task ApproveRequirementAsync(ClaimsPrincipal principal, Requirement requirement);
 }

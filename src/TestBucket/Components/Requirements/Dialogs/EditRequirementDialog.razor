@@ -51,17 +51,17 @@
 
                                 <Field>
                                     <MudTextField Variant="Variant.Outlined"
-                                                  Label="@loc["title"]"
-                                                  AdornmentColor="Color.Tertiary"
-                                                  Value="@Requirement.Name"
-                                                  ValueChanged="OnNameChanged"
-                                                  T="string"
-                                                  AutoFocus="true" />
+                                    Label="@loc["title"]"
+                                    AdornmentColor="Color.Tertiary"
+                                    Value="@Requirement.Name"
+                                    ValueChanged="OnNameChanged"
+                                    T="string"
+                                    AutoFocus="true" />
                                 </Field>
 
 
                                 <MarkdownEditor @ref="_editor"
-                                    Style="flex: 1"
+                                Style="flex: 1"
                                 Preview="false"
                                 ShowToolbar="false"
                                 MaxHeight="100%"
@@ -98,7 +98,7 @@
                         </StartContent>
                         <EndContent>
                             <MudStack Class="pa-2" Style="width: 100%">
-                              
+
                                 <FieldsEditor Requirement="@Requirement" />
 
                                 <Field>
@@ -221,6 +221,9 @@
     {
         if (Requirement is not null)
         {
+            // Fields are already saved, don't overwrite the values
+            Requirement.RequirementFields = null;
+
             await editor.SaveRequirementAsync(Requirement);
         }
         MudDialog.Close();

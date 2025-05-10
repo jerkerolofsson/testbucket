@@ -247,26 +247,29 @@ internal class ProjectRepository : IProjectRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         // Code
-
+        foreach (var milestone in dbContext.Milestones.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Milestones.Remove(milestone);
+        }
         foreach (var commit in dbContext.Commits.Where(x => x.TestProjectId == project.Id))
         {
             dbContext.Commits.Remove(commit);
         }
-        foreach (var item in dbContext.ArchitecturalLayers.Where(x => x.TestProjectId == project.Id))
+        foreach (var layer in dbContext.ArchitecturalLayers.Where(x => x.TestProjectId == project.Id))
         {
-            dbContext.ArchitecturalLayers.Remove(item);
+            dbContext.ArchitecturalLayers.Remove(layer);
         }
-        foreach (var item in dbContext.ProductSystems.Where(x => x.TestProjectId == project.Id))
+        foreach (var system in dbContext.ProductSystems.Where(x => x.TestProjectId == project.Id))
         {
-            dbContext.ProductSystems.Remove(item);
+            dbContext.ProductSystems.Remove(system);
         }
-        foreach (var item in dbContext.Components.Where(x => x.TestProjectId == project.Id))
+        foreach (var component in dbContext.Components.Where(x => x.TestProjectId == project.Id))
         {
-            dbContext.Components.Remove(item);
+            dbContext.Components.Remove(component);
         }
-        foreach (var item in dbContext.Features.Where(x => x.TestProjectId == project.Id))
+        foreach (var feature in dbContext.Features.Where(x => x.TestProjectId == project.Id))
         {
-            dbContext.Features.Remove(item);
+            dbContext.Features.Remove(feature);
         }
 
         // Fields
@@ -291,6 +294,12 @@ internal class ProjectRepository : IProjectRepository
             }
 
             dbContext.FieldDefinitions.Remove(fieldDefinition);
+        }
+
+        // Comments
+        foreach (var item in dbContext.Comments.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Comments.Remove(item);
         }
 
         // Issues

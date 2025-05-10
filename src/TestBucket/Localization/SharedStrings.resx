@@ -503,4 +503,13 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="tests" xml:space="preserve">
     <value>Tests</value>
   </data>
+  <data name="add-comment" xml:space="preserve">
+    <value>Add comment</value>
+  </data>
+  <data name="logged-action-approved" xml:space="preserve">
+    <value>Approved by {0}</value>
+  </data>
+  <data name="logged-action-statechange" xml:space="preserve">
+    <value>{0} changed state to {1}</value>
+  </data>
 </root>

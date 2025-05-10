@@ -76,4 +76,26 @@ public class TestIdAttribute : TraitAttachmentPropertyAttribute
     }
 }
 
+/// <summary>
+/// Defines an attribute that will link a requirement
+/// </summary>
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public class CoveredRequirementAttribute : TraitAttachmentPropertyAttribute
+{
+    public CoveredRequirementAttribute(string description) :
+        base(TestTraitNames.CoveredRequirement, description)
+    {
+    }
+}
 
+/// <summary>
+/// Defines an attribute that will link an issue
+/// </summary>
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public class CoveredIssueAttribute : TraitAttachmentPropertyAttribute
+{
+    public CoveredIssueAttribute(string description) :
+        base(TestTraitNames.CoveredIssue, description)
+    {
+    }
+}

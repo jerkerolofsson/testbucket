@@ -13,6 +13,11 @@ internal class RolesController : TenantBaseService
         _userPermissionsManager = userPermissionsManager;
     }
 
+    /// <summary>
+    /// Adds a permission for a role
+    /// </summary>
+    /// <param name="permission"></param>
+    /// <returns></returns>
     public async Task AddAsync(RolePermission permission)
     {
         ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();
@@ -26,6 +31,12 @@ internal class RolesController : TenantBaseService
 
         await _userPermissionsManager.AddTenantRolePermissionAsync(principal, permission);
     }
+
+    /// <summary>
+    /// Updates a permission for a role
+    /// </summary>
+    /// <param name="permission"></param>
+    /// <returns></returns>
     public async Task UpdateAsync(RolePermission permission)
     {
         ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();
@@ -40,6 +51,10 @@ internal class RolesController : TenantBaseService
         await _userPermissionsManager.UpdateTenantRolePermissionAsync(principal, permission);
     }
 
+    /// <summary>
+    /// Returns all permissions
+    /// </summary>
+    /// <returns></returns>
     public async Task<RolePermission[]> GetTenantRolePermissionsAsync()
     {
         ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();

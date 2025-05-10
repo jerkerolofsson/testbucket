@@ -5,7 +5,7 @@
 @inject AppNavigationManager appNavigationManager
 @page "/{TenantId}/Requirements/Requirements/{RequirementId:long}"
 
-<RequirementEditor Requirement="@Requirement" />
+<RequirementView Requirement="@Requirement" />
 
 @code {
     [CascadingParameter] public Requirement? Requirement { get; set; }

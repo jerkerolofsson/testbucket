@@ -1,4 +1,6 @@
-﻿using MudBlazor;
+﻿using System.Data;
+
+using MudBlazor;
 using OllamaSharp.Models.Chat;
 
 using TestBucket.Components.Account.Pages.Manage;
@@ -6,6 +8,7 @@ using TestBucket.Components.Projects.Dialogs;
 using TestBucket.Components.Users.Dialogs;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Shared;
+using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Components.Users.Services;
 
@@ -46,6 +49,50 @@ internal class UserController : TenantBaseService
         ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();
         return await _userManager.AddUserAsync(principal, email, password);
     }
+    public async Task AssignRoleAsync(ApplicationUser user, string role)
+    {
+        if (user.NormalizedEmail is null)
+        {
+            throw new ArgumentNullException(nameof(user.NormalizedEmail));
+        }
+
+        ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();
+        await _userManager.AssignRoleAsync(principal, user.NormalizedEmail, role);
+    }
+    public async Task UnassignRoleAsync(ApplicationUser user, string role)
+    {
+        if (user.NormalizedEmail is null)
+        {
+            throw new ArgumentNullException(nameof(user.NormalizedEmail));
+        }
+
+        ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();
+        await _userManager.UnassignRoleAsync(principal, user.NormalizedEmail, role);
+    }
+
+    /// <summary>
+    /// Adds a role
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="role"></param>
+    /// <returns></returns>
+    public async Task AddRoleAsync(ClaimsPrincipal principal, string role)
+    {
+        principal.ThrowIfNotAdmin();
+        await _userManager.AddRoleAsync(principal, role);
+
+    }
+    public async Task<IReadOnlyList<string>> GetRoleNamesAsync()
+    {
+        ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();
+        return await _userManager.GetRoleNamesAsync(principal);
+    }
+    public async Task<IReadOnlyList<string>> GetUserRoleNamesAsync(string normalizedUserName)
+    {
+        ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();
+        return await _userManager.GetUserRoleNamesAsync(principal, normalizedUserName);
+    }
+
 
     public async Task<ApplicationUser?> GetUserByNormalizedUserNameAsync(string normalizedUserName)
     {

@@ -65,4 +65,8 @@ public class TestSuite : TestEntity
     /// Which integration to use
     /// </summary>
     public long? ExternalSystemId { get; set; }
+
+    // Navigation
+
+    public virtual List<Comment>? Comments { get; set; }
 }

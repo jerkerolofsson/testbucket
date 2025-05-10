@@ -108,4 +108,5 @@ public class Requirement : RequirementEntity
     public RequirementSpecificationFolder? RequirementSpecificationFolder { get; set; }
     public virtual IEnumerable<RequirementField>? RequirementFields { get; set; }
     public virtual List<RequirementTestLink>? TestLinks { get; set; }
+    public virtual List<Comment>? Comments { get; set; }
 }

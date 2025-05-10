@@ -8,6 +8,10 @@ using TestBucket.Contracts.Fields;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Fields.SystemFields;
+
+/// <summary>
+/// Defines the default fields that are created for a project
+/// </summary>
 public static class SystemFieldDefinitions
 {
     private static readonly FieldDefinition _feature = new()
@@ -24,6 +28,7 @@ public static class SystemFieldDefinitions
         UseClassifier = true,
         Options = [],
         DataSourceType = FieldDataSourceType.Features,
+        RequiredPermission = PermissionLevel.Write,
         Target = FieldTarget.TestCase |
                     FieldTarget.TestCaseRun |
                     FieldTarget.RequirementSpecificationFolder |
@@ -48,6 +53,7 @@ public static class SystemFieldDefinitions
         UseClassifier = false,
         Options = [],
         DataSourceType = FieldDataSourceType.Milestones,
+        RequiredPermission = PermissionLevel.Write,
         Target = FieldTarget.TestCase |
                     FieldTarget.TestRun |
                     FieldTarget.TestCaseRun |
@@ -74,14 +80,32 @@ public static class SystemFieldDefinitions
         ShowDescription = false,
         UseClassifier = false,
         Options = [],
-        Target = FieldTarget.TestRun | FieldTarget.TestCaseRun
+        Target = FieldTarget.TestRun | FieldTarget.TestCaseRun,
+        RequiredPermission = PermissionLevel.Write
     };
 
+    private static readonly FieldDefinition _requirementApproval = new()
+    {
+        Name = "Approved",
+        Trait = "approved",
+        TraitType = TraitType.Approved,
+        Description = "Approved",
+        Icon = TbIcons.BoldDuoTone.VerifiedCheck,
+        IsVisible = true,
+        Type = FieldType.Boolean,
+        IsDefinedBySystem = true,
+        Inherit = false,
+        ShowDescription = false,
+        UseClassifier = false,
+        Options = [],
+        Target = FieldTarget.Requirement,
+        RequiredPermission = PermissionLevel.Approve
+    };
     public static FieldDefinition[] Fixed
     {
         get
         {
-            return [_feature, _milestone, _commit];
+            return [_requirementApproval, _feature, _milestone, _commit];
         }
     }
 }

@@ -238,28 +238,6 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
     {
         var superAdminUserService = scope.ServiceProvider.GetRequiredService<ISuperAdminUserService>();
         await superAdminUserService.AssignRoleAsync(tenantId, email, roleName);
-
-        //var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-        //var userStore = scope.ServiceProvider.GetRequiredService<IUserStore<ApplicationUser>>();
-        //var storeContext = userStore.GetType().GetProperty("Context")!.GetValue(userStore) as DbContext;
-        //var tenantUserStore = new ApplicationUserStore(storeContext!, tenantId);
-
-        //var normalizedEmail = userManager.NormalizeEmail(email);
-        //var user = await tenantUserStore.FindByEmailAsync(normalizedEmail, CancellationToken.None);
-
-        //if (user is null)
-        //{
-        //    logger.LogError("Failed to assign role '{roleName}' to '{email}' as user was not found for tenant '{tenantId}'", roleName, email, tenantId);
-        //}
-        //else
-        //{
-        //    var roles = await userManager.GetRolesAsync(user);
-        //    if (!roles.Contains(roleName))
-        //    {
-        //        logger.LogInformation("Adding role '{roleName}' to '{email}' for tenant '{tenantId}'", roleName, email, tenantId);
-        //        await userManager.AddToRoleAsync(user, roleName);
-        //    }
-        //}
     }
 
     private async Task CreateDefaultRolesAsync(ApplicationDbContext dbContext, IServiceScope scope)

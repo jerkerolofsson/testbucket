@@ -11,9 +11,29 @@
 
     @if(_user is not null)
     {
-        <MudText Class="mb-3" Typo="Typo.h1">@_user.UserName</MudText>
+        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+            <MudText Class="mb-3" Typo="Typo.h1">@_user.UserName</MudText>
+            <MudSpacer/>
+            <MudButton Color="Color.Error" Variant="Variant.Filled">@loc["delete"]</MudButton>
+        </MudStack>
 
-        
+        <MudText Class="mb-3" Typo="Typo.h1">@loc["roles"]</MudText>
+        <div class="role-table">
+            @foreach (var role in _roleNames)
+            {
+                <div>
+                    @if (_userRoleNames.Contains(role))
+                    {
+                        <MudIconButton Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Large" OnClick="async() => await RemoveRoleFromUserAsync(role)"/>
+                    }
+                    else
+                    {
+                        <MudIconButton Style="opacity: 0.5" Icon="@Icons.Material.Filled.Check"Size="Size.Large" OnClick="async() => await AddRoleToUserAsync(role)"/>
+                    }
+                </div>
+                <div>@role</div>
+            }
+        </div>
     }
 
 </MudStack>
@@ -23,12 +43,35 @@
     [Parameter] public string? NormalizedUserName { get; set; }
 
     private ApplicationUser? _user;
+    private IReadOnlyList<string> _roleNames = [];
+    private IReadOnlyList<string> _userRoleNames = [];
+
+    private async Task RemoveRoleFromUserAsync(string roleName)
+    {
+        if (_user is null || NormalizedUserName is null)
+        {
+            return;
+        }
+        await userController.UnassignRoleAsync(_user, roleName);
+        _userRoleNames = await userController.GetUserRoleNamesAsync(NormalizedUserName);
+    }
+    private async Task AddRoleToUserAsync(string roleName)
+    {
+        if (_user is null || NormalizedUserName is null)
+        {
+            return;
+        }
+        await userController.AssignRoleAsync(_user, roleName);
+        _userRoleNames = await userController.GetUserRoleNamesAsync(NormalizedUserName);
+    }
 
     protected override async Task OnParametersSetAsync()
     {
         if (NormalizedUserName is not null && _user?.NormalizedUserName != NormalizedUserName)
         {
             _user = await userController.GetUserByNormalizedUserNameAsync(NormalizedUserName);
+            _roleNames = await userController.GetRoleNamesAsync();
+            _userRoleNames = await userController.GetUserRoleNamesAsync(NormalizedUserName);
         }
     }
 }

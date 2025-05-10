@@ -24,7 +24,7 @@ namespace TestBucket.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.HasPostgresExtension(modelBuilder, "hstore");
@@ -916,6 +916,85 @@ namespace TestBucket.Data.Migrations
                     b.HasIndex("Url");
 
                     b.ToTable("Repositories");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Comments.Models.Comment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LoggedAction")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LoggedActionArgument")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Markdown")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("RequirementId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("RequirementSpecificationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestCaseId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TestCaseRunId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TestRunId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TestSuiteId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RequirementId");
+
+                    b.HasIndex("RequirementSpecificationId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestCaseId");
+
+                    b.HasIndex("TestCaseRunId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.HasIndex("TestRunId");
+
+                    b.HasIndex("TestSuiteId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Environments.Models.TestEnvironment", b =>
@@ -3302,6 +3381,63 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("TestProject");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Comments.Models.Comment", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Requirements.Models.Requirement", "Requirement")
+                        .WithMany("Comments")
+                        .HasForeignKey("RequirementId");
+
+                    b.HasOne("TestBucket.Domain.Requirements.Models.RequirementSpecification", "RequirementSpecification")
+                        .WithMany("Comments")
+                        .HasForeignKey("RequirementSpecificationId");
+
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestCase", "TestCase")
+                        .WithMany("Comments")
+                        .HasForeignKey("TestCaseId");
+
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestCaseRun", "TestCaseRun")
+                        .WithMany("Comments")
+                        .HasForeignKey("TestCaseRunId");
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestRun", "TestRun")
+                        .WithMany("Comments")
+                        .HasForeignKey("TestRunId");
+
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestSuite", "TestSuite")
+                        .WithMany("Comments")
+                        .HasForeignKey("TestSuiteId");
+
+                    b.Navigation("Requirement");
+
+                    b.Navigation("RequirementSpecification");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestCase");
+
+                    b.Navigation("TestCaseRun");
+
+                    b.Navigation("TestProject");
+
+                    b.Navigation("TestRun");
+
+                    b.Navigation("TestSuite");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Environments.Models.TestEnvironment", b =>
                 {
                     b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
@@ -3949,9 +4085,16 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Requirements.Models.Requirement", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("RequirementFields");
 
                     b.Navigation("TestLinks");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Requirements.Models.RequirementSpecification", b =>
+                {
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Requirements.Models.RequirementSpecificationFolder", b =>
@@ -3973,6 +4116,8 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestCase", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("TestCaseFields");
 
                     b.Navigation("TestSteps");
@@ -3980,6 +4125,8 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestCaseRun", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("LinkedIssues");
 
                     b.Navigation("TestCaseRunFields");
@@ -3987,7 +4134,14 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRun", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("TestRunFields");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestSuite", b =>
+                {
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestSuiteFolder", b =>

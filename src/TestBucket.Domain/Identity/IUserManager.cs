@@ -70,4 +70,11 @@ public interface IUserManager
     /// <returns></returns>
     Task UpdateUserAsync(ClaimsPrincipal principal, ApplicationUser user);
     Task<ApplicationUser> GetSelfAsync(ClaimsPrincipal principal);
+
+
+    Task AssignRoleAsync(ClaimsPrincipal principal, string normalizedEmail, string role);
+    Task UnassignRoleAsync(ClaimsPrincipal principal, string normalizedEmail, string role);
+    Task<IReadOnlyList<string>> GetRoleNamesAsync(ClaimsPrincipal principal);
+    Task AddRoleAsync(ClaimsPrincipal principal, string name);
+    Task<IReadOnlyList<string>> GetUserRoleNamesAsync(ClaimsPrincipal principal, string normalizedUserName);
 }

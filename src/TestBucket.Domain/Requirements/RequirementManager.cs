@@ -12,6 +12,7 @@ using TestBucket.Domain.Requirements.Events;
 using Mediator;
 using TestBucket.Domain.Traceability.Models;
 using TestBucket.Domain.Traceability;
+using TestBucket.Domain.Fields.Handlers;
 
 namespace TestBucket.Domain.Requirements
 {
@@ -20,6 +21,7 @@ namespace TestBucket.Domain.Requirements
         private readonly IRequirementRepository _repository;
         private readonly List<IRequirementObserver> _requirementObservers = new();
         private readonly IMediator _mediator;
+
         public RequirementManager(IRequirementRepository repository, IMediator mediator)
         {
             _repository = repository;
@@ -596,6 +598,11 @@ namespace TestBucket.Domain.Requirements
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
 
             return await _mediator.Send(new DiscoverRequirementRelationshipsRequest(principal, requirement, depth));
+        }
+
+        public async Task ApproveRequirementAsync(ClaimsPrincipal principal, Requirement requirement)
+        {
+            await _mediator.Send(new ApproveRequirementRequest(principal, requirement, true));
         }
     }
 }

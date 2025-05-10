@@ -68,5 +68,7 @@ namespace TestBucket.Domain.Requirements.Models
         public string? Color { get; set; }
 
         // Navigation
+
+        public virtual List<Comment>? Comments { get; set; }
     }
 }

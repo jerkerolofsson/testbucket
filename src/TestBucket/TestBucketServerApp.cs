@@ -42,6 +42,7 @@ using TestBucket.Components.Code.Controllers;
 using TestBucket.Components.Tests.TestRuns.Commands;
 using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Components.Milestones.Controllers;
+using TestBucket.Components.Comments;
 
 namespace TestBucket;
 
@@ -198,6 +199,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ArchitectureController>();
         builder.Services.AddScoped<CommitController>();
 
+        builder.Services.AddScoped<CommentsController>();
         builder.Services.AddScoped<UserApiKeysController>();
         builder.Services.AddScoped<UserRegistrationController>();
         builder.Services.AddScoped<ThemingService>();

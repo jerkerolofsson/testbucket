@@ -6,8 +6,14 @@
 
 @if(_folder is not null)
 {
-    <MudStack Class="pa-2" Style="width: 100%">
-        <RequirementKanbanBoard Title="@_folder.Name" Requirements="@_requirements" ProjectId="@_folder.TestProjectId" />
+    <MudStack>
+        <MudStack Row Style="width: 100%; margin-right: 16px" Spacing="1">
+            <PathNavigation RequirementFolder="@_folder" />
+            <MudSpacer />
+        </MudStack>
+        <MudStack Class="pa-2" Style="width: 100%">
+            <RequirementKanbanBoard Title="@_folder.Name" Requirements="@_requirements" ProjectId="@_folder.TestProjectId" />
+        </MudStack>
     </MudStack>
 }
 

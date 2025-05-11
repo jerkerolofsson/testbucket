@@ -299,8 +299,12 @@ public class AppNavigationManager
     }
     public string GetUrl(RequirementSpecificationFolder folder)
     {
+        return GetRequirementFolderUrl(folder.Id);
+    }
+    public string GetRequirementFolderUrl(long id)
+    {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
-        return $"/{tenantId}/Requirements/Folders/{folder.Id}";
+        return $"/{tenantId}/Requirements/Folders/{id}";
     }
 
     public string GetUrl(SearchTestCaseRunQuery query)

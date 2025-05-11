@@ -1,18 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Code.Models;
-using TestBucket.Domain.Fields;
+﻿using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Teams.Models;
 using TestBucket.Traits.Core;
-using Xunit;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
@@ -27,6 +19,11 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         public long TeamId => _team.Id;
 
         public IServiceProvider Services => _app.Services;
+
+        /// <summary>
+        /// Test framework for requirements
+        /// </summary>
+        public RequirementsTestFramework Requirements => new RequirementsTestFramework(this);
 
         public TestBucketApp App => _app;
 

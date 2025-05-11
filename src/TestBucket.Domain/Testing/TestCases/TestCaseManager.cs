@@ -4,6 +4,7 @@ using Mediator;
 
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Duplication;
@@ -13,6 +14,8 @@ using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestSuites;
+using TestBucket.Domain.Traceability.Models;
+using TestBucket.Domain.Traceability;
 
 namespace TestBucket.Domain.Testing.TestCases
 {
@@ -267,5 +270,14 @@ namespace TestBucket.Domain.Testing.TestCases
 
             return await _testCaseRepo.GetTestExecutionResultSummaryForRunsAsync(testRunsIds, filters);
         }
+
+        public async Task<TraceabilityNode> DiscoverTraceabilityAsync(ClaimsPrincipal principal, TestCase testCase, int depth)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+
+            return await _mediator.Send(new DiscoverTestCaseRelationshipsRequest(principal, testCase, depth));
+        }
+
     }
 }

@@ -4,7 +4,14 @@
 @layout RequirementsLayout
 @inject RequirementBrowser browser
 
+<MudStack>
+<MudStack Row Style="width: 100%; margin-right: 16px" Spacing="1">
+    <PathNavigation RequirementSpecification="@_spec" />
+    <MudSpacer />
+</MudStack>
+
 <RequirementSpecificationEditor Specification="@_spec" />
+</MudStack>
 
 @code {
     [Parameter] public long Id { get; set; }

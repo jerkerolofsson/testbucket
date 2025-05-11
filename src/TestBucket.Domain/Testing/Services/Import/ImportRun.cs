@@ -8,6 +8,7 @@ using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Teams;
@@ -18,6 +19,7 @@ using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Formats;
 using TestBucket.Formats.Dtos;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Testing.Services.Import;
 
@@ -35,6 +37,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
     private readonly IFieldManager _fieldManager;
     private readonly IProjectManager _projectManager;
     private readonly ITeamManager _teamManager;
+    private readonly IRequirementManager _requirementManager;
 
     public ImportRunHandler(
         IStateService stateService,
@@ -46,7 +49,8 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         ITestCaseManager testCaseManager,
         IFieldManager fieldManager,
         IProjectManager projectManager,
-        ITeamManager teamManager)
+        ITeamManager teamManager,
+        IRequirementManager requirementManager)
     {
         _stateService = stateService;
         _testCaseRepository = testCaseRepository;
@@ -58,6 +62,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         _fieldManager = fieldManager;
         _projectManager = projectManager;
         _teamManager = teamManager;
+        _requirementManager = requirementManager;
     }
     public async ValueTask<TestRun> Handle(ImportRunRequest request, CancellationToken cancellationToken)
     {
@@ -157,11 +162,31 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                         }
 
                         TestCaseRun testCaseRun = await AddTestCaseRunAsync(principal, testRun, test, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRunFieldDefinitions);
+
+                        await LinkWithRequirementsAsync(principal, testCase, test.Traits);
                     }
                 }
             }
         }
         return testRun;
+    }
+
+    private async Task LinkWithRequirementsAsync(ClaimsPrincipal principal, TestCase testCase, List<TestTrait> traits)
+    {
+        foreach(var coveredRequirementTrait in traits.Where(x => x.Type == TraitType.CoveredRequirement))
+        {
+            var requirement = await _requirementManager.GetRequirementBySlugAsync(principal, coveredRequirementTrait.Value);
+            if(requirement is null)
+            {
+                requirement = await _requirementManager.GetRequirementByExternalIdAsync(principal, coveredRequirementTrait.Value);
+            }
+
+            if(requirement is not null)
+            {
+                // We found a matching requirement, add a link
+                await _requirementManager.AddRequirementLinkAsync(principal, requirement, testCase.Id);
+            }
+        }
     }
 
     private static void AssignRunPropertiesFromSuites(TestRunDto run)

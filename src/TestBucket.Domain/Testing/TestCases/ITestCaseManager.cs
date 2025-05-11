@@ -2,6 +2,7 @@
 
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Traceability.Models;
 
 namespace TestBucket.Domain.Testing.TestCases;
 public interface ITestCaseManager
@@ -27,6 +28,7 @@ public interface ITestCaseManager
     /// <param name="testCase"></param>
     /// <returns></returns>
     Task DeleteTestCaseAsync(ClaimsPrincipal principal, TestCase testCase);
+    Task<TraceabilityNode> DiscoverTraceabilityAsync(ClaimsPrincipal principal, TestCase testCase, int depth);
 
     /// <summary>
     /// Duplicates a test case

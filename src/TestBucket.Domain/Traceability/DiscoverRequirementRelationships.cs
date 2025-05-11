@@ -12,12 +12,16 @@ using TestBucket.Domain.Requirements.Specifications;
 using TestBucket.Domain.Requirements.Specifications.Links;
 using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Traceability.Models;
 
 namespace TestBucket.Domain.Traceability;
 public record class DiscoverRequirementRelationshipsRequest(ClaimsPrincipal Principal, Requirement Requirement, int Depth) : IRequest<TraceabilityNode>;
+public record class DiscoverTestCaseRelationshipsRequest(ClaimsPrincipal Principal, TestCase TestCase, int Depth) : IRequest<TraceabilityNode>;
 
-public class DiscoverRequirementRelationshipsHandler : IRequestHandler<DiscoverRequirementRelationshipsRequest, TraceabilityNode>
+public class DiscoverRequirementRelationshipsHandler : 
+    IRequestHandler<DiscoverRequirementRelationshipsRequest, TraceabilityNode>,
+    IRequestHandler<DiscoverTestCaseRelationshipsRequest, TraceabilityNode>
 {
     private readonly IRequirementRepository _requirementRepository;
     private readonly ITestCaseRepository _testCaseRepository;
@@ -28,6 +32,20 @@ public class DiscoverRequirementRelationshipsHandler : IRequestHandler<DiscoverR
         _testCaseRepository = testCaseRepository;
     }
 
+    public async ValueTask<TraceabilityNode> Handle(DiscoverTestCaseRelationshipsRequest request, CancellationToken cancellationToken)
+    {
+        request.Principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+        var tenantId = request.Principal.GetTenantIdOrThrow();
+
+        var root = new TraceabilityNode { TestCase = request.TestCase };
+
+        TraceabilityNode node = root;
+        int depth = request.Depth;
+
+        await ProcessBranchAsync(tenantId, node, depth, upstream: true, downstream: true);
+
+        return root;
+    }
     public async ValueTask<TraceabilityNode> Handle(DiscoverRequirementRelationshipsRequest request, CancellationToken cancellationToken)
     {
         request.Principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
@@ -45,6 +63,25 @@ public class DiscoverRequirementRelationshipsHandler : IRequestHandler<DiscoverR
 
     private async Task ProcessBranchAsync(string tenantId, TraceabilityNode node, int depth, bool upstream, bool downstream)
     {
+        if(node.TestCase is not null && upstream)
+        {
+            // Find requirement links
+            FilterSpecification<RequirementTestLink>[] linkFilters = [
+                new FilterByTenant<RequirementTestLink>(tenantId), 
+                new FilterRequirementTestLinkByTest(node.TestCase.Id)];
+            var testLinks = await _requirementRepository.SearchRequirementLinksAsync(linkFilters);
+            foreach (var testLink in testLinks)
+            {
+                //var testCase = await _testCaseRepository.GetTestCaseByIdAsync(tenantId, testLink.TestCase);
+                var upstreamNode = new TraceabilityNode { Requirement = testLink.Requirement };
+                node.Upstream.Add(upstreamNode);
+                if (depth > 0)
+                {
+                    await ProcessBranchAsync(tenantId, upstreamNode, depth - 1, upstream: true, downstream: false);
+                }
+            }
+        }
+
         if (node.Requirement is not null)
         {
             if (upstream && node.Requirement.ParentRequirementId is not null)

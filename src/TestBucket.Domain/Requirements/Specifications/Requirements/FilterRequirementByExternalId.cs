@@ -6,10 +6,10 @@ using TestBucket.Domain.Shared.Specifications;
 namespace TestBucket.Domain.Requirements.Specifications.Requirements;
  public class FilterRequirementByExternalId : FilterSpecification<Requirement>
 {
-    private readonly string _externalProvider;
+    private readonly string? _externalProvider;
     private readonly string _externalId;
 
-    public FilterRequirementByExternalId(string externalProvider, string externalId)
+    public FilterRequirementByExternalId(string? externalProvider, string externalId)
     {
         _externalProvider = externalProvider;
         _externalId = externalId;
@@ -17,6 +17,10 @@ namespace TestBucket.Domain.Requirements.Specifications.Requirements;
 
     protected override Expression<Func<Requirement, bool>> GetExpression()
     {
+        if (_externalProvider is null)
+        {
+            return x => x.ExternalId == _externalId;
+        }
         return x => x.ExternalProvider == _externalProvider && x.ExternalId == _externalId;
     }
 }

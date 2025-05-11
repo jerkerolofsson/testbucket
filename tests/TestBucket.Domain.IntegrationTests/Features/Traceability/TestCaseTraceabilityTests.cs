@@ -22,12 +22,12 @@ namespace TestBucket.Domain.IntegrationTests.Features.Traceability
     [EnrichedTest]
     [FunctionalTest]
     [Feature("Traceability")]
-    public class RequirementTraceabilityTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
+    public class TestCaseTraceabilityTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         [Fact]
         [CoveredRequirement("requirement-traceability")]
         [TestDescription("""
-            Verifies that when collecting a trace for a *requirement* with a "test case linked to a requirement" the **test case**
+            Verifies that when collecting a trace for a *testcase* with a "test case linked to a requirement" the **requirement**
             is returned.
 
             # Steps
@@ -37,10 +37,10 @@ namespace TestBucket.Domain.IntegrationTests.Features.Traceability
             4. Create a test suite
             5. Create a test case
             6. Link the test case to the requirement
-            7. Discover traceability for the requirement
-            8. Assert that the test case is included in the traceability node
+            7. Discover traceability for the test-case
+            8. Assert that the requirement is included in the traceability node
             """)]
-        public async Task GetRequirementTrace_WithTestLink_LinkIncluded()
+        public async Task GetTestCaseTrace_WithRequirementLink_LinkIncluded()
         {
             using var scope = Fixture.Services.CreateScope();
             var manager = scope.ServiceProvider.GetRequiredService<IRequirementManager>();
@@ -53,7 +53,6 @@ namespace TestBucket.Domain.IntegrationTests.Features.Traceability
             var requirement = new Requirement { Name = Guid.NewGuid().ToString() };
             await Fixture.Requirements.AddRequirementToNewSpecificationAsync(requirement);
             await Fixture.Requirements.SetMilestoneAsync(requirement, milestoneValue);
-           
 
             // Add a test case
             var testSuite = await testSuiteManager.AddTestSuiteAsync(principal, new TestSuite { Name = Guid.NewGuid().ToString(), TestProjectId = Fixture.ProjectId, TeamId = Fixture.TeamId });
@@ -61,12 +60,12 @@ namespace TestBucket.Domain.IntegrationTests.Features.Traceability
 
             // Link test and requirement
             await manager.AddRequirementLinkAsync(principal, requirement, testCase);
-            TraceabilityNode traceabilityNode = await manager.DiscoverTraceabilityAsync(principal, requirement, 1);
+            TraceabilityNode traceabilityNode = await testCaseManager.DiscoverTraceabilityAsync(principal, testCase, 1);
 
             // Assert
-            Assert.Single(traceabilityNode.Downstream);
-            Assert.NotNull(traceabilityNode.Downstream[0].TestCase?.Id);
-            Assert.Equal(testCase.Id, traceabilityNode.Downstream[0].TestCase!.Id);
+            Assert.Single(traceabilityNode.Upstream);
+            Assert.NotNull(traceabilityNode.Upstream[0].Requirement?.Id);
+            Assert.Equal(requirement.Id, traceabilityNode.Upstream[0].Requirement!.Id);
         }
     }
 }

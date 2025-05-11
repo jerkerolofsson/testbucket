@@ -56,7 +56,29 @@ public interface IRequirementManager
     /// <param name="requirement"></param>
     /// <returns></returns>
     Task DeleteRequirementAsync(ClaimsPrincipal principal, Requirement requirement);
+
+    /// <summary>
+    /// Finds a requirement from an id
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
     Task<Requirement?> GetRequirementByIdAsync(ClaimsPrincipal principal, long id);
+
+    /// <summary>
+    /// Finds a requirement from "External id:
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<Requirement?> GetRequirementByExternalIdAsync(ClaimsPrincipal principal, string id);
+
+    /// <summary>
+    /// Finds a requirement from a slug
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="slug"></param>
+    /// <returns></returns>
     Task<Requirement?> GetRequirementBySlugAsync(ClaimsPrincipal principal, string slug);
 
     Task GenerateFoldersFromPathAsync(Requirement requirement);

@@ -1,33 +1,226 @@
-<?xml version="1.0" encoding="utf-8"?><assemblies schema-version="3" id="d063590f-5d48-4fca-ba4a-d1e69f743337" computer="DESKTOP-E71H2EF" user="Jerker" start-rtf="2025-05-07T02:50:58.3112675+00:00" finish-rtf="2025-05-07T10:50:59.4148895+08:00" timestamp="05/07/2025 10:50:59"><assembly environment="64-bit (x64) .NET 9.0.4 [collection-per-class, parallel (16 threads)]" id="4e9fd59c-8b33-445d-bc49-ee6edb3328b3" name="D:\local\code\testbucket\tests\TestBucket.Domain.IntegrationTests\bin\Debug\net9.0\TestBucket.Domain.IntegrationTests.dll" run-date="2025-05-07" run-time="10:50:42" start-rtf="2025-05-07T10:50:42.9750336+08:00" test-framework="xUnit.net v3 2.0.2+ccd27e9792" target-framework=".NETCoreApp,Version=v9.0" errors="0" failed="2" finish-rtf="2025-05-07T10:50:59.4148895+08:00" not-run="0" passed="9" skipped="0" time="16.019" time-rtf="00:00:16.0187559" total="11"><collection name="Test collection for TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests (id: f7657758773fbced62304d25fa68b1643e5ffa955d2bb47cc407beca99a64b4c)" id="8fbab74b-9286-46cd-83e9-7550b14ea27c" failed="0" not-run="0" passed="4" skipped="0" time="0.154" time-rtf="00:00:00.1538314" total="4"><test id="5533e39a-f45b-495c-b0d5-2611dd34fcab" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests.DeleteRequirementSpecification_WithOnlyReadPermission_Unauthorized" result="Pass" time="0.0938374" time-rtf="00:00:00.0938374" start-rtf="2025-05-07T02:50:58.3112675+00:00" finish-rtf="2025-05-07T02:50:58.4164669+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests" method="DeleteRequirementSpecification_WithOnlyReadPermission_Unauthorized"><traits><trait name="TestCategory" value="Integration" /></traits><attachments><attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment><attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment><attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment><attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests]]></attachment><attachment name="MethodName"><![CDATA[DeleteRequirementSpecification_WithOnlyReadPermission_Unauthorized]]></attachment><attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment></attachments></test><test id="04ba60fa-2c66-4b0d-8885-e00fd6db2102" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests.DeleteRequirementSpecification_WithPermission_IsSuccess" result="Pass" time="0.0502249" time-rtf="00:00:00.0502249" start-rtf="2025-05-07T02:50:58.4870229+00:00" finish-rtf="2025-05-07T02:50:58.5374544+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests" method="DeleteRequirementSpecification_WithPermission_IsSuccess"><traits><trait name="TestCategory" value="Integration" /></traits><attachments><attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment><attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment><attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment><attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests]]></attachment><attachment name="MethodName"><![CDATA[DeleteRequirementSpecification_WithPermission_IsSuccess]]></attachment><attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment></attachments></test><test id="e5423615-d7ea-4b44-a3a8-bf9a8c3030b6" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests.AddRequirementSpecification_WithPermission_IsSuccess" result="Pass" time="0.0080556" time-rtf="00:00:00.0080556" start-rtf="2025-05-07T02:50:58.5377273+00:00" finish-rtf="2025-05-07T02:50:58.5458400+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests" method="AddRequirementSpecification_WithPermission_IsSuccess"><traits><trait name="TestCategory" value="Integration" /></traits><attachments><attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment><attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment><attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment><attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests]]></attachment><attachment name="MethodName"><![CDATA[AddRequirementSpecification_WithPermission_IsSuccess]]></attachment><attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment></attachments></test><test id="797d8436-3f7e-4019-9a39-53a3a4dc37f0" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests.AddRequirementSpecification_WithOnlyReadPermission_Unauthorized" result="Pass" time="0.0017135" time-rtf="00:00:00.0017135" start-rtf="2025-05-07T02:50:58.5461406+00:00" finish-rtf="2025-05-07T02:50:58.5598238+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests" method="AddRequirementSpecification_WithOnlyReadPermission_Unauthorized"><traits><trait name="TestCategory" value="Integration" /></traits><attachments><attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment><attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment><attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment><attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests]]></attachment><attachment name="MethodName"><![CDATA[AddRequirementSpecification_WithOnlyReadPermission_Unauthorized]]></attachment><attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment></attachments></test></collection><collection name="Test collection for TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests (id: a6b00288c63ae8b2232320b515785fc3796c5f9c7dce7805094015aa995d1ae0)" id="f3c41a61-206a-4327-9440-6ea408e25b06" failed="0" not-run="0" passed="3" skipped="0" time="0.224" time-rtf="00:00:00.2242912" total="3"><test id="34abe6f7-b875-45ba-abd1-e6932cc888fb" name="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests.AddTestSuite_WithPermission_IsSuccess" result="Pass" time="0.2175739" time-rtf="00:00:00.2175739" start-rtf="2025-05-07T02:50:58.3112898+00:00" finish-rtf="2025-05-07T02:50:58.5358866+00:00" type="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests" method="AddTestSuite_WithPermission_IsSuccess"><traits><trait name="TestCategory" value="Integration" /></traits><attachments><attachment name="QualityCharacteristic"><![CDATA[Functional Suitability]]></attachment><attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment><attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment><attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests]]></attachment><attachment name="MethodName"><![CDATA[AddTestSuite_WithPermission_IsSuccess]]></attachment><attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment></attachments></test><test id="4eb2a3db-d127-4918-a458-fa9acd1de05d" name="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests.AddTestSuite_WithOnlyReadPermission_UnauthorizedAccessExceptionThrown" result="Pass" time="0.004685" time-rtf="00:00:00.0046850" start-rtf="2025-05-07T02:50:58.5364957+00:00" finish-rtf="2025-05-07T02:50:58.5412366+00:00" type="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests" method="AddTestSuite_WithOnlyReadPermission_UnauthorizedAccessExceptionThrown"><traits><trait name="TestCategory" value="Integration" /></traits><attachments><attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment><attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment><attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment><attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests]]></attachment><attachment name="MethodName"><![CDATA[AddTestSuite_WithOnlyReadPermission_UnauthorizedAccessExceptionThrown]]></attachment><attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment></attachments></test><test id="157a6a8a-a485-43de-9159-d18bf2b8b402" name="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests.AddTestSuite_WithoutPermission_UnauthorizedAccessExceptionThrown" result="Pass" time="0.0020323" time-rtf="00:00:00.0020323" start-rtf="2025-05-07T02:50:58.5416549+00:00" finish-rtf="2025-05-07T02:50:58.5437428+00:00" type="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests" method="AddTestSuite_WithoutPermission_UnauthorizedAccessExceptionThrown"><traits><trait name="TestCategory" value="Integration" /></traits><attachments><attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment><attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment><attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment><attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests]]></attachment><attachment name="MethodName"><![CDATA[AddTestSuite_WithoutPermission_UnauthorizedAccessExceptionThrown]]></attachment><attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment></attachments></test></collection><collection name="Test collection for TestBucket.Domain.IntegrationTests.Features.FieldInheritance.RequirementFieldInheritanceTests (id: 8ef04ddc209de3dcd9cf50983c920c10e8aee1d581fe8d40c9a5c76368cb0edf)" id="609d4f22-dd6c-4dc3-a41a-d1f53c54764a" failed="1" not-run="0" passed="0" skipped="0" time="0.457" time-rtf="00:00:00.4570899" total="1"><test id="ceed148d-486a-4be4-826b-32a7edb8f35a" name="TestBucket.Domain.IntegrationTests.Features.FieldInheritance.RequirementFieldInheritanceTests.AddRequirement_WithParentRequirement_FieldsInherited" result="Fail" time="0.4570899" time-rtf="00:00:00.4570899" start-rtf="2025-05-07T02:50:58.3112930+00:00" finish-rtf="2025-05-07T02:50:58.7879338+00:00" type="TestBucket.Domain.IntegrationTests.Features.FieldInheritance.RequirementFieldInheritanceTests" method="AddRequirement_WithParentRequirement_FieldsInherited"><traits><trait name="Feature" value="Field Inheritance" /><trait name="TestCategory" value="Integration" /></traits><failure exception-type="Microsoft.EntityFrameworkCore.DbUpdateException"><message><![CDATA[Microsoft.EntityFrameworkCore.DbUpdateException : An error occurred while saving the entity changes. See the inner exception for details.
+<?xml version="1.0" encoding="utf-8"?>
+<assemblies schema-version="3" id="d063590f-5d48-4fca-ba4a-d1e69f743337" computer="DESKTOP-E71H2EF" user="Jerker" start-rtf="2025-05-07T02:50:58.3112675+00:00" finish-rtf="2025-05-07T10:50:59.4148895+08:00" timestamp="05/07/2025 10:50:59">
+	<assembly environment="64-bit (x64) .NET 9.0.4 [collection-per-class, parallel (16 threads)]" id="4e9fd59c-8b33-445d-bc49-ee6edb3328b3" name="D:\local\code\testbucket\tests\TestBucket.Domain.IntegrationTests\bin\Debug\net9.0\TestBucket.Domain.IntegrationTests.dll" run-date="2025-05-07" run-time="10:50:42" start-rtf="2025-05-07T10:50:42.9750336+08:00" test-framework="xUnit.net v3 2.0.2+ccd27e9792" target-framework=".NETCoreApp,Version=v9.0" errors="0" failed="2" finish-rtf="2025-05-07T10:50:59.4148895+08:00" not-run="0" passed="9" skipped="0" time="16.019" time-rtf="00:00:16.0187559" total="11">
+
+		<collection name="Test collection for TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests (id: f7657758773fbced62304d25fa68b1643e5ffa955d2bb47cc407beca99a64b4c)" id="8fbab74b-9286-46cd-83e9-7550b14ea27c" failed="0" not-run="0" passed="4" skipped="0" time="0.154" time-rtf="00:00:00.1538314" total="4">
+			<test id="5533e39a-f45b-495c-b0d5-2611dd34fcab" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests.DeleteRequirementSpecification_WithOnlyReadPermission_Unauthorized" result="Pass" time="0.0938374" time-rtf="00:00:00.0938374" start-rtf="2025-05-07T02:50:58.3112675+00:00" finish-rtf="2025-05-07T02:50:58.4164669+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests" method="DeleteRequirementSpecification_WithOnlyReadPermission_Unauthorized">
+
+				<traits>
+					<trait name="TestCategory" value="Integration" />
+				</traits>
+
+				<attachments>
+					<attachment name="CoveredRequirement">REQ001</attachment>
+					<attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment>
+					<attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment>
+					<attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment>
+					<attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests]]></attachment>
+					<attachment name="MethodName"><![CDATA[DeleteRequirementSpecification_WithOnlyReadPermission_Unauthorized]]></attachment>
+					<attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment>
+				</attachments>
+			</test>
+
+			<test id="04ba60fa-2c66-4b0d-8885-e00fd6db2102" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests.DeleteRequirementSpecification_WithPermission_IsSuccess" result="Pass" time="0.0502249" time-rtf="00:00:00.0502249" start-rtf="2025-05-07T02:50:58.4870229+00:00" finish-rtf="2025-05-07T02:50:58.5374544+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests" method="DeleteRequirementSpecification_WithPermission_IsSuccess">
+				<traits>
+					<trait name="TestCategory" value="Integration" />
+				</traits>
+				<attachments>
+					<attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment>
+					<attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment>
+					<attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment>
+					<attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests]]></attachment>
+					<attachment name="MethodName"><![CDATA[DeleteRequirementSpecification_WithPermission_IsSuccess]]></attachment>
+					<attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment>
+				</attachments>
+			</test>
+
+			<test id="e5423615-d7ea-4b44-a3a8-bf9a8c3030b6" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests.AddRequirementSpecification_WithPermission_IsSuccess" result="Pass" time="0.0080556" time-rtf="00:00:00.0080556" start-rtf="2025-05-07T02:50:58.5377273+00:00" finish-rtf="2025-05-07T02:50:58.5458400+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests" method="AddRequirementSpecification_WithPermission_IsSuccess">
+				<traits>
+					<trait name="TestCategory" value="Integration" />
+				</traits>
+				<attachments>
+					<attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment>
+					<attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment>
+					<attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment>
+					<attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests]]></attachment>
+					<attachment name="MethodName"><![CDATA[AddRequirementSpecification_WithPermission_IsSuccess]]></attachment>
+					<attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment>
+				</attachments>
+			</test>
+
+			<test id="797d8436-3f7e-4019-9a39-53a3a4dc37f0" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests.AddRequirementSpecification_WithOnlyReadPermission_Unauthorized" result="Pass" time="0.0017135" time-rtf="00:00:00.0017135" start-rtf="2025-05-07T02:50:58.5461406+00:00" finish-rtf="2025-05-07T02:50:58.5598238+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests" method="AddRequirementSpecification_WithOnlyReadPermission_Unauthorized">
+				<traits>
+					<trait name="TestCategory" value="Integration" />
+				</traits>
+				<attachments>
+					<attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment>
+					<attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment>
+					<attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment>
+					<attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerPermissionTests]]></attachment>
+					<attachment name="MethodName"><![CDATA[AddRequirementSpecification_WithOnlyReadPermission_Unauthorized]]></attachment>
+					<attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment>
+				</attachments>
+			</test>
+		</collection>
+		<collection name="Test collection for TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests (id: a6b00288c63ae8b2232320b515785fc3796c5f9c7dce7805094015aa995d1ae0)" id="f3c41a61-206a-4327-9440-6ea408e25b06" failed="0" not-run="0" passed="3" skipped="0" time="0.224" time-rtf="00:00:00.2242912" total="3">
+
+			<test id="34abe6f7-b875-45ba-abd1-e6932cc888fb" name="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests.AddTestSuite_WithPermission_IsSuccess" result="Pass" time="0.2175739" time-rtf="00:00:00.2175739" start-rtf="2025-05-07T02:50:58.3112898+00:00" finish-rtf="2025-05-07T02:50:58.5358866+00:00" type="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests" method="AddTestSuite_WithPermission_IsSuccess">
+				<traits>
+					<trait name="TestCategory" value="Integration" />
+				</traits>
+				<attachments>
+					<attachment name="QualityCharacteristic"><![CDATA[Functional Suitability]]></attachment>
+					<attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment>
+					<attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment>
+					<attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests]]></attachment>
+					<attachment name="MethodName"><![CDATA[AddTestSuite_WithPermission_IsSuccess]]></attachment>
+					<attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment>
+				</attachments>
+			</test>
+
+			<test id="4eb2a3db-d127-4918-a458-fa9acd1de05d" name="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests.AddTestSuite_WithOnlyReadPermission_UnauthorizedAccessExceptionThrown" result="Pass" time="0.004685" time-rtf="00:00:00.0046850" start-rtf="2025-05-07T02:50:58.5364957+00:00" finish-rtf="2025-05-07T02:50:58.5412366+00:00" type="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests" method="AddTestSuite_WithOnlyReadPermission_UnauthorizedAccessExceptionThrown">
+				<traits>
+					<trait name="TestCategory" value="Integration" />
+				</traits>
+				<attachments>
+					<attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment>
+					<attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment>
+					<attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment>
+					<attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests]]></attachment>
+					<attachment name="MethodName"><![CDATA[AddTestSuite_WithOnlyReadPermission_UnauthorizedAccessExceptionThrown]]></attachment>
+					<attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment>
+				</attachments>
+			</test>
+
+			<test id="157a6a8a-a485-43de-9159-d18bf2b8b402" name="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests.AddTestSuite_WithoutPermission_UnauthorizedAccessExceptionThrown" result="Pass" time="0.0020323" time-rtf="00:00:00.0020323" start-rtf="2025-05-07T02:50:58.5416549+00:00" finish-rtf="2025-05-07T02:50:58.5437428+00:00" type="TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests" method="AddTestSuite_WithoutPermission_UnauthorizedAccessExceptionThrown">
+				<traits>
+					<trait name="TestCategory" value="Integration" />
+				</traits>
+				<attachments>
+					<attachment name="QualityCharacteristic"><![CDATA[Security]]></attachment>
+					<attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment>
+					<attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment>
+					<attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Tests.TestSuiteManagerTests]]></attachment>
+					<attachment name="MethodName"><![CDATA[AddTestSuite_WithoutPermission_UnauthorizedAccessExceptionThrown]]></attachment>
+					<attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment>
+				</attachments>
+			</test>
+		</collection>
+		<collection name="Test collection for TestBucket.Domain.IntegrationTests.Features.FieldInheritance.RequirementFieldInheritanceTests (id: 8ef04ddc209de3dcd9cf50983c920c10e8aee1d581fe8d40c9a5c76368cb0edf)" id="609d4f22-dd6c-4dc3-a41a-d1f53c54764a" failed="1" not-run="0" passed="0" skipped="0" time="0.457" time-rtf="00:00:00.4570899" total="1">
+
+			<test id="ceed148d-486a-4be4-826b-32a7edb8f35a" name="TestBucket.Domain.IntegrationTests.Features.FieldInheritance.RequirementFieldInheritanceTests.AddRequirement_WithParentRequirement_FieldsInherited" result="Fail" time="0.4570899" time-rtf="00:00:00.4570899" start-rtf="2025-05-07T02:50:58.3112930+00:00" finish-rtf="2025-05-07T02:50:58.7879338+00:00" type="TestBucket.Domain.IntegrationTests.Features.FieldInheritance.RequirementFieldInheritanceTests" method="AddRequirement_WithParentRequirement_FieldsInherited">
+				<traits>
+					<trait name="Feature" value="Field Inheritance" />
+					<trait name="TestCategory" value="Integration" />
+				</traits>
+				<failure exception-type="Microsoft.EntityFrameworkCore.DbUpdateException">
+					<message>
+						<![CDATA[Microsoft.EntityFrameworkCore.DbUpdateException : An error occurred while saving the entity changes. See the inner exception for details.
 ---- Npgsql.PostgresException : 23505: duplicate key value violates unique constraint \"PK_requirements\"
 
-DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.]]></message><stack-trace><![CDATA[   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
-   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
-   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
-   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-   at TestBucket.Data.Requirements.RequirementRepository.AddRequirementAsync(Requirement requirement) in D:\local\code\testbucket\src\TestBucket.Data\Requirements\RequirementRepository.cs:line 195
-   at TestBucket.Domain.Requirements.RequirementManager.AddRequirementAsync(ClaimsPrincipal principal, Requirement requirement) in D:\local\code\testbucket\src\TestBucket.Domain\Requirements\RequirementManager.cs:line 255
-   at TestBucket.Domain.IntegrationTests.Features.FieldInheritance.RequirementFieldInheritanceTests.AddRequirement_WithParentRequirement_FieldsInherited() in D:\local\code\testbucket\tests\TestBucket.Domain.IntegrationTests\Features\FieldInheritance\RequirementFieldInheritanceTests.cs:line 48
+DETAIL: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.]]>
+					</message>
+					<stack-trace>
+						<![CDATA[   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+at TestBucket.Data.Requirements.RequirementRepository.AddRequirementAsync(Requirement requirement) in D:\local\code\testbucket\src\TestBucket.Data\Requirements\RequirementRepository.cs:line 195
+at TestBucket.Domain.Requirements.RequirementManager.AddRequirementAsync(ClaimsPrincipal principal, Requirement requirement) in D:\local\code\testbucket\src\TestBucket.Domain\Requirements\RequirementManager.cs:line 255
+at TestBucket.Domain.IntegrationTests.Features.FieldInheritance.RequirementFieldInheritanceTests.AddRequirement_WithParentRequirement_FieldsInherited() in D:\local\code\testbucket\tests\TestBucket.Domain.IntegrationTests\Features\FieldInheritance\RequirementFieldInheritanceTests.cs:line 48
 --- End of stack trace from previous location ---
 ----- Inner Stack Trace -----
-   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
-   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
-   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
-   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
-   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
-   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
-   at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
-   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
-   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
-   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)]]></stack-trace></failure><attachments><attachment name="TestDescription"><![CDATA[Verifies that a requirement field is inherited from the parent requirement
-when a child requirement is created.]]></attachment><attachment name="QualityCharacteristic"><![CDATA[Functional Suitability]]></attachment><attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment><attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment><attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Features.FieldInheritance.RequirementFieldInheritanceTests]]></attachment><attachment name="MethodName"><![CDATA[AddRequirement_WithParentRequirement_FieldsInherited]]></attachment><attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment></attachments></test></collection><collection name="Test collection for TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests (id: 6f13c2df0990c89ba202fc63cb961b001cc480c65a8800526b489cbc4a3d1915)" id="db95eb1a-ac2e-4d41-a5fb-a27ff7332e3c" failed="0" not-run="0" passed="2" skipped="0" time="0.462" time-rtf="00:00:00.4618688" total="2"><test id="ad2e2d18-cf6d-4e02-889a-96abe11eadd4" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests.AddRequirement_ToSpecificationRoot" result="Pass" time="0.3445197" time-rtf="00:00:00.3445197" start-rtf="2025-05-07T02:50:58.3112753+00:00" finish-rtf="2025-05-07T02:50:58.6626102+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests" method="AddRequirement_ToSpecificationRoot"><traits><trait name="TestCategory" value="Integration" /></traits><attachments><attachment name="QualityCharacteristic"><![CDATA[Functional Suitability]]></attachment><attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment><attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment><attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests]]></attachment><attachment name="MethodName"><![CDATA[AddRequirement_ToSpecificationRoot]]></attachment><attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment></attachments></test><test id="5d44d3ef-3d12-47e1-9b10-3e99fd59cdcb" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests.SearchRequirementsInSpecification_WithTwoSpecs_CorrectResult" result="Pass" time="0.1173491" time-rtf="00:00:00.1173491" start-rtf="2025-05-07T02:50:58.6628669+00:00" finish-rtf="2025-05-07T02:50:58.7802684+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests" method="SearchRequirementsInSpecification_WithTwoSpecs_CorrectResult"><traits><trait name="TestCategory" value="Integration" /></traits><attachments><attachment name="QualityCharacteristic"><![CDATA[Functional Suitability]]></attachment><attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment><attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment><attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests]]></attachment><attachment name="MethodName"><![CDATA[SearchRequirementsInSpecification_WithTwoSpecs_CorrectResult]]></attachment><attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment></attachments></test></collection><collection name="Test collection for TestBucket.Domain.IntegrationTests.Features.Traceability.RequirementTraceabilityTests (id: 6369fff7219ef4dbe8c3fe9c481d1cc2b1143c8bb46715283fb87b37b55cc7e6)" id="dacdd6f1-6c3a-4de3-b60c-6e840bbee9c3" failed="1" not-run="0" passed="0" skipped="0" time="0.614" time-rtf="00:00:00.6141996" total="1"><test id="5f00fb30-6bb2-4d13-b1a1-ef8c105ff954" name="TestBucket.Domain.IntegrationTests.Features.Traceability.RequirementTraceabilityTests.GetRequirementTrace_WithTestLink_LinkIncluded" result="Fail" time="0.6141996" time-rtf="00:00:00.6141996" start-rtf="2025-05-07T02:50:58.3112833+00:00" finish-rtf="2025-05-07T02:50:58.9330873+00:00" type="TestBucket.Domain.IntegrationTests.Features.Traceability.RequirementTraceabilityTests" method="GetRequirementTrace_WithTestLink_LinkIncluded"><traits><trait name="Feature" value="Traceability" /><trait name="TestCategory" value="Integration" /></traits><failure exception-type="System.InvalidOperationException"><message><![CDATA[System.InvalidOperationException : Failed to modify entity. The entity belongs to tenant  and user belongs to jerkerolofsson]]></message><stack-trace><![CDATA[   at TestBucket.Domain.Shared.AuthenticationGuard.ThrowIfEntityTenantIsDifferent(ClaimsPrincipal principal, Entity entity) in D:\local\code\testbucket\src\TestBucket.Domain\Shared\AuthenticationGuard.cs:line 64
-   at TestBucket.Domain.Requirements.RequirementManager.AddRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink requirementLink) in D:\local\code\testbucket\src\TestBucket.Domain\Requirements\RequirementManager.cs:line 383
-   at TestBucket.Domain.IntegrationTests.Features.Traceability.RequirementTraceabilityTests.GetRequirementTrace_WithTestLink_LinkIncluded() in D:\local\code\testbucket\tests\TestBucket.Domain.IntegrationTests\Features\Traceability\RequirementTraceabilityTests.cs:line 55
---- End of stack trace from previous location ---]]></stack-trace></failure><attachments><attachment name="TestDescription"><![CDATA[Verifies that when collecting a trace for requirement with a test case linked to a requirement the test case
-is returned]]></attachment><attachment name="QualityCharacteristic"><![CDATA[Functional Suitability]]></attachment><attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment><attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment><attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Features.Traceability.RequirementTraceabilityTests]]></attachment><attachment name="MethodName"><![CDATA[GetRequirementTrace_WithTestLink_LinkIncluded]]></attachment><attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment></attachments></test></collection></assembly></assemblies>
+at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)]]>
+					</stack-trace>
+				</failure>
+				<attachments>
+					<attachment name="TestDescription">
+						<![CDATA[Verifies that a requirement field is inherited from the parent requirement
+when a child requirement is created.]]>
+					</attachment>
+					<attachment name="QualityCharacteristic"><![CDATA[Functional Suitability]]></attachment>
+					<attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment>
+					<attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment>
+					<attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Features.FieldInheritance.RequirementFieldInheritanceTests]]></attachment>
+					<attachment name="MethodName"><![CDATA[AddRequirement_WithParentRequirement_FieldsInherited]]></attachment>
+					<attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment>
+				</attachments>
+			</test>
+		</collection>
+		<collection name="Test collection for TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests (id: 6f13c2df0990c89ba202fc63cb961b001cc480c65a8800526b489cbc4a3d1915)" id="db95eb1a-ac2e-4d41-a5fb-a27ff7332e3c" failed="0" not-run="0" passed="2" skipped="0" time="0.462" time-rtf="00:00:00.4618688" total="2">
+
+			<test id="ad2e2d18-cf6d-4e02-889a-96abe11eadd4" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests.AddRequirement_ToSpecificationRoot" result="Pass" time="0.3445197" time-rtf="00:00:00.3445197" start-rtf="2025-05-07T02:50:58.3112753+00:00" finish-rtf="2025-05-07T02:50:58.6626102+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests" method="AddRequirement_ToSpecificationRoot">
+				<traits>
+					<trait name="TestCategory" value="Integration" />
+				</traits>
+				<attachments>
+					<attachment name="QualityCharacteristic"><![CDATA[Functional Suitability]]></attachment>
+					<attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment>
+					<attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment>
+					<attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests]]></attachment>
+					<attachment name="MethodName"><![CDATA[AddRequirement_ToSpecificationRoot]]></attachment>
+					<attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment>
+				</attachments>
+			</test>
+
+			<test id="5d44d3ef-3d12-47e1-9b10-3e99fd59cdcb" name="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests.SearchRequirementsInSpecification_WithTwoSpecs_CorrectResult" result="Pass" time="0.1173491" time-rtf="00:00:00.1173491" start-rtf="2025-05-07T02:50:58.6628669+00:00" finish-rtf="2025-05-07T02:50:58.7802684+00:00" type="TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests" method="SearchRequirementsInSpecification_WithTwoSpecs_CorrectResult">
+				<traits>
+					<trait name="TestCategory" value="Integration" />
+				</traits>
+				<attachments>
+					<attachment name="QualityCharacteristic"><![CDATA[Functional Suitability]]></attachment>
+					<attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment>
+					<attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment>
+					<attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Requirements.RequirementManagerTests]]></attachment>
+					<attachment name="MethodName"><![CDATA[SearchRequirementsInSpecification_WithTwoSpecs_CorrectResult]]></attachment>
+					<attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment>
+				</attachments>
+			</test>
+		</collection>
+		<collection name="Test collection for TestBucket.Domain.IntegrationTests.Features.Traceability.RequirementTraceabilityTests (id: 6369fff7219ef4dbe8c3fe9c481d1cc2b1143c8bb46715283fb87b37b55cc7e6)" id="dacdd6f1-6c3a-4de3-b60c-6e840bbee9c3" failed="1" not-run="0" passed="0" skipped="0" time="0.614" time-rtf="00:00:00.6141996" total="1">
+
+			<test id="5f00fb30-6bb2-4d13-b1a1-ef8c105ff954" name="TestBucket.Domain.IntegrationTests.Features.Traceability.RequirementTraceabilityTests.GetRequirementTrace_WithTestLink_LinkIncluded" result="Fail" time="0.6141996" time-rtf="00:00:00.6141996" start-rtf="2025-05-07T02:50:58.3112833+00:00" finish-rtf="2025-05-07T02:50:58.9330873+00:00" type="TestBucket.Domain.IntegrationTests.Features.Traceability.RequirementTraceabilityTests" method="GetRequirementTrace_WithTestLink_LinkIncluded">
+				<traits>
+					<trait name="Feature" value="Traceability" />
+					<trait name="TestCategory" value="Integration" />
+				</traits>
+				<failure exception-type="System.InvalidOperationException">
+					<message><![CDATA[System.InvalidOperationException : Failed to modify entity. The entity belongs to tenant  and user belongs to jerkerolofsson]]></message>
+					<stack-trace>
+						<![CDATA[   at TestBucket.Domain.Shared.AuthenticationGuard.ThrowIfEntityTenantIsDifferent(ClaimsPrincipal principal, Entity entity) in D:\local\code\testbucket\src\TestBucket.Domain\Shared\AuthenticationGuard.cs:line 64
+at TestBucket.Domain.Requirements.RequirementManager.AddRequirementLinkAsync(ClaimsPrincipal principal, RequirementTestLink requirementLink) in D:\local\code\testbucket\src\TestBucket.Domain\Requirements\RequirementManager.cs:line 383
+at TestBucket.Domain.IntegrationTests.Features.Traceability.RequirementTraceabilityTests.GetRequirementTrace_WithTestLink_LinkIncluded() in D:\local\code\testbucket\tests\TestBucket.Domain.IntegrationTests\Features\Traceability\RequirementTraceabilityTests.cs:line 55
+--- End of stack trace from previous location ---]]>
+					</stack-trace>
+				</failure>
+				<attachments>
+					<attachment name="TestDescription">
+						<![CDATA[Verifies that when collecting a trace for requirement with a test case linked to a requirement the test case
+is returned]]>
+					</attachment>
+					<attachment name="QualityCharacteristic"><![CDATA[Functional Suitability]]></attachment>
+					<attachment name="OperatingSystemPlatform"><![CDATA[Windows]]></attachment>
+					<attachment name="MachineName"><![CDATA[DESKTOP-E71H2EF]]></attachment>
+					<attachment name="ClassName"><![CDATA[TestBucket.Domain.IntegrationTests.Features.Traceability.RequirementTraceabilityTests]]></attachment>
+					<attachment name="MethodName"><![CDATA[GetRequirementTrace_WithTestLink_LinkIncluded]]></attachment>
+					<attachment name="Assembly"><![CDATA[TestBucket.Domain.IntegrationTests]]></attachment>
+				</attachments>
+			</test>
+		</collection>
+	</assembly>
+</assemblies>

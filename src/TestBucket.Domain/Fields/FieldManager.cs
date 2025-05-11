@@ -148,6 +148,7 @@ internal class FieldManager : IFieldManager
     public async Task UpsertRequirementFieldAsync(ClaimsPrincipal principal, RequirementField field)
     {
         var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
+        ArgumentNullException.ThrowIfNull(fieldDefinition);
         principal.ThrowIfNoPermission(fieldDefinition);
 
         field.TenantId = principal.GetTenantIdOrThrow();

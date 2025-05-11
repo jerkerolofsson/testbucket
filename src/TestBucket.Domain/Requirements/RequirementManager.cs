@@ -223,6 +223,23 @@ namespace TestBucket.Domain.Requirements
             return result.Items.FirstOrDefault();
         }
 
+
+        /// <summary>
+        /// Gets a requirement by externalid
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Requirement?> GetRequirementByExternalIdAsync(ClaimsPrincipal principal, string id)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+
+            FilterSpecification<Requirement>[] filters = [new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow()), new FilterRequirementByExternalId(null, id)];
+
+            var result = await _repository.SearchRequirementsAsync(filters, 0, 1);
+            return result.Items.FirstOrDefault();
+        }
+
         /// <summary>
         /// Gets a requirement by slug
         /// </summary>

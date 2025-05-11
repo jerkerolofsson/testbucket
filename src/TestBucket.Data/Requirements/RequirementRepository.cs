@@ -350,7 +350,7 @@ namespace TestBucket.Data.Requirements
             {
                 folder.TeamId = await dbContext.RequirementSpecifications.Where(x => x.Id == folder.RequirementSpecificationId).Select(x => x.TeamId).FirstOrDefaultAsync();
             }
-
+            await CalculatePathAsync(dbContext, folder);
             await dbContext.RequirementSpecificationFolders.AddAsync(folder);
             await dbContext.SaveChangesAsync();
         }

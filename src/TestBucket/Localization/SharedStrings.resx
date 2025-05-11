@@ -372,7 +372,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>User</value>
   </data>
   <data name="batch-tag" xml:space="preserve">
-    <value>Batch Tag</value>
+    <value>Batch update..</value>
   </data>
   <data name="traceability" xml:space="preserve">
     <value>Traceability</value>
@@ -392,9 +392,6 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="new-folder" xml:space="preserve">
     <value>Add folder</value>
   </data>
-  <data name="batch-tag-description" xml:space="preserve">
-    <value>Link a requirement, or change a field for all descendants.</value>
-  </data>
   <data name="test-coverage" xml:space="preserve">
     <value>Test Coverage</value>
   </data>
@@ -411,7 +408,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Data source</value>
   </data>
   <data name="options" xml:space="preserve">
-    <value>options</value>
+    <value>Options</value>
   </data>
   <data name="advanced" xml:space="preserve">
     <value>Advanced</value>
@@ -511,5 +508,35 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="logged-action-statechange" xml:space="preserve">
     <value>{0} changed state to {1}</value>
+  </data>
+  <data name="delete-test" xml:space="preserve">
+    <value>Delete test</value>
+  </data>
+  <data name="delete-run" xml:space="preserve">
+    <value>Delete run</value>
+  </data>
+  <data name="duplicate-test" xml:space="preserve">
+    <value>Duplicate test</value>
+  </data>
+  <data name="delete-test-suite" xml:space="preserve">
+    <value>Delete test suite</value>
+  </data>
+  <data name="new-test-suite" xml:space="preserve">
+    <value>New test suite</value>
+  </data>
+  <data name="batch-tag-description" xml:space="preserve">
+    <value>Link a requirement, or change a field for all descendants.</value>
+  </data>
+  <data name="import-test-results" xml:space="preserve">
+    <value>Import test results..</value>
+  </data>
+  <data name="run-folder" xml:space="preserve">
+    <value>Run folder</value>
+  </data>
+  <data name="edit-folder" xml:space="preserve">
+    <value>Edit folder</value>
+  </data>
+  <data name="delete-folder" xml:space="preserve">
+    <value>Delete folder</value>
   </data>
 </root>

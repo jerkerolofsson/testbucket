@@ -48,6 +48,7 @@
                 }
                 else if (comment.LoggedAction is not null) // special action
                 {
+            
                     <div class="comment-container">
                         <div>
                         </div>
@@ -73,7 +74,13 @@
         <div class="comment-thread">
             @if (Comments is not null)
             {
-                <div class="comment-container" data-testid="add-comment-container">
+                string cssClass = "comment-container";
+                if (Comments.Count == 0)
+                {
+                    cssClass += " no-comments";
+                }
+
+                <div class="@cssClass" data-testid="add-comment-container">
                     <div>
                         <UserProfileImage UserName="@_authState?.User?.Identity?.Name" />
                     </div>

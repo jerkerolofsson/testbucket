@@ -11,14 +11,14 @@ using TestBucket.Localization;
 
 namespace TestBucket.Components.Tests.TestSuites.Commands;
 
-internal class RunTestSuiteCommand : ICommand
+internal class RunTestSuiteFolderCommand : ICommand
 {
     private readonly IStringLocalizer<SharedStrings> _loc;
     private readonly AppNavigationManager _appNavigationManager;
     private readonly TestBrowser _browser;
     private readonly TestRunCreationController _testRunCreationController;
 
-    public RunTestSuiteCommand(
+    public RunTestSuiteFolderCommand(
         IStringLocalizer<SharedStrings> loc,
         AppNavigationManager appNavigationManager,
         TestBrowser browser,
@@ -35,29 +35,29 @@ internal class RunTestSuiteCommand : ICommand
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.Execute;
-    public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;
-    public string Id => "run-test-suite";
-    public string Name => _loc["run"];
-    public string Description => "Runs a test suite";
+    public bool Enabled => _appNavigationManager.State.SelectedTestSuiteFolder is not null;
+    public string Id => "run-folder";
+    public string Name => _loc["run-folder"];
+    public string Description => _loc["run-folder-description"];
     public KeyboardBinding? DefaultKeyboardBinding => new KeyboardBinding() { CommandId = Id, Key = "KeyR", ModifierKeys = ModifierKey.Ctrl };
     public string? Icon => Icons.Material.Filled.PlayArrow;
-    public string[] ContextMenuTypes => ["TestSuite"];
+    public string[] ContextMenuTypes => ["TestSuiteFolder"];
 
     public async ValueTask ExecuteAsync()
     {
-        var suite = _appNavigationManager.State.SelectedTestSuite;
-        if (suite is null)
+        var folder = _appNavigationManager.State.SelectedTestSuiteFolder;
+        if (folder is null)
         {
             return;
         }
-        var projectId = suite.TestProjectId;
+        var projectId = folder.TestProjectId;
         if (projectId is null)
         {
             return;
         }
-        long[] testCaseIds = await _browser.GetTestSuiteSuiteTestsAsync(suite, excludeAutomated: true);
+        long[] testCaseIds = await _browser.GetTestSuiteSuiteFolderTestsAsync(folder, true);
 
-        var run = await _testRunCreationController.CreateTestRunAsync(suite, testCaseIds, startAutomation: true);
+        var run = await _testRunCreationController.CreateTestRunAsync(folder.Name, projectId.Value, testCaseIds);
         if (run is not null)
         {
             _appNavigationManager.NavigateTo(run);

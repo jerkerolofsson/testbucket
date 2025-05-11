@@ -32,10 +32,9 @@ namespace TestBucket.Domain.Commands
         /// <summary>
         /// Returns a list of commands applicable for a context menu for an entity type defined by typeName
         /// </summary>
-        /// <param name="typeName"></param>
-        /// <param name="folder"></param>
+        /// <param name="typeNames"></param>
         /// <returns></returns>
-        IReadOnlyList<CommandContextMenuItem> GetCommandMenuItems(string typeName);
+        IReadOnlyList<CommandContextMenuItem> GetCommandMenuItems(string typeNames);
 
         /// <summary>
         /// Executes a command that doesn't require any arguments

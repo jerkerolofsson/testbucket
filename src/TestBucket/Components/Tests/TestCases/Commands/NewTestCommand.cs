@@ -17,7 +17,7 @@ internal class NewTestCommand : ICommand
     private readonly IStringLocalizer<SharedStrings> _loc;
     public int SortOrder => 10;
 
-    public string? Folder => null;
+    public string? Folder => _loc["add"];
 
     public NewTestCommand(AppNavigationManager appNavigationManager, TestCaseEditorController controller, IStringLocalizer<SharedStrings> loc)
     {

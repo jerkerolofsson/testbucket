@@ -13,6 +13,7 @@ using TestBucket.Domain;
 using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Teams;
 using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.ImportExport;
@@ -29,6 +30,7 @@ internal class TestBrowser : TenantBaseService
     private readonly ITextTestResultsImporter _textImporter;
     private readonly IFileRepository _fileRepository;
     private readonly ITestRunManager _testRunManager;
+    private readonly ITeamManager _teamManager;
     private readonly ITestCaseManager _testCaseManager;
     private readonly AppNavigationManager _appNavigationManager;
     private readonly PipelineController _pipelineController;
@@ -72,7 +74,8 @@ internal class TestBrowser : TenantBaseService
         AppNavigationManager appNavigationManager,
         PipelineController pipelineManager,
         ITestCaseManager testCaseManager,
-        IStringLocalizer<SharedStrings> loc) : base(authenticationStateProvider)
+        IStringLocalizer<SharedStrings> loc,
+        ITeamManager teamManager) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
@@ -85,6 +88,7 @@ internal class TestBrowser : TenantBaseService
         _pipelineController = pipelineManager;
         _testCaseManager = testCaseManager;
         _loc = loc;
+        _teamManager = teamManager;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -117,10 +121,20 @@ internal class TestBrowser : TenantBaseService
     /// <param name="team"></param>
     /// <param name="project"></param>
     /// <returns></returns>
-    public async Task ImportAsync(Team team, TestProject project)
+    public async Task ImportAsync(Team? team, TestProject project)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         var tenantId = await GetTenantIdAsync();
+
+        if(project.TeamId is null)
+        {
+            return;
+        }
+        team ??= await _teamManager.GetTeamByIdAsync(principal, project.TeamId.Value);
+        if (team is null)
+        {
+            return;
+        }
 
         // Show dialog
         var dialog = await _dialogService.ShowAsync<ImportResultsDialog>(null, DefaultBehaviors.DialogOptions);

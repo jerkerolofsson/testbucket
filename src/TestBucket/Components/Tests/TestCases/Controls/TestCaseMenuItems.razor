@@ -11,11 +11,9 @@
 
 @if (TestCase is not null)
 {
-    <MudMenuItem Icon="@Icons.Material.Filled.PlayArrow" OnClick="RunAsync">Run</MudMenuItem>
-    <MudDivider />
     <MudMenuItem Icon="@Icons.Material.Filled.Code" OnClick="EditTestCaseAutomationLinkAsync">Link to automated test</MudMenuItem>
 
-    <CommandMenuItems TypeName="TestCase" />
+    <CommandMenuItems TypeNames="TestCase" />
 }
 @code {
     [Parameter] public TestCase? TestCase { get; set; }

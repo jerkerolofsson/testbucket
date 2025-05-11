@@ -55,7 +55,11 @@ namespace TestBucket.Domain.Requirements.Specifications
             {
                 foreach (var fieldFilter in query.Fields)
                 {
-                    if (!string.IsNullOrEmpty(fieldFilter.StringValue))
+                    if (fieldFilter.BooleanValue is not null)
+                    {
+                        specifications.Add(new FilterRequirementByBooleanField(fieldFilter.FilterDefinitionId, fieldFilter.BooleanValue.Value));
+                    }
+                    else if (!string.IsNullOrEmpty(fieldFilter.StringValue))
                     {
                         specifications.Add(new FilterRequirementByStringField(fieldFilter.FilterDefinitionId, fieldFilter.StringValue));
                     }

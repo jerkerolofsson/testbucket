@@ -9,51 +9,10 @@
 
 @if (Suite is not null)
 {
-    <CommandMenuItems TypeName="TestSuite"/>
-
-    <MudDivider />
-    <MudMenuItem Icon="@Icons.Material.Outlined.FolderDelete" IconColor="Color.Error" OnClick="DeleteAsync" Label="Delete suite" />
+    <CommandMenuItems TypeNames="TestSuite"/>
 }
 @code {
     [Parameter] public TestSuite? Suite { get; set; }
     [Parameter] public TestProject? Project { get; set; }
     [Parameter] public Team? Team { get; set; }
-
-    // private async Task RunAsync()
-    // {
-    //     if (Suite?.TestProjectId is null)
-    //     {
-    //         return;
-    //     }
-    //     long[] testCaseIds = await testBrowser.GetTestSuiteSuiteTestsAsync(Suite, excludeAutomated: true);
-    //     var run = await testRunCreation.CreateTestRunAsync(Suite, testCaseIds, true);
-    //     if (run is not null)
-    //     {
-    //         appNavigationManager.NavigateTo(run);
-    //     }
-    // }
-
-    private async Task DeleteAsync()
-    {
-        if (Suite is null)
-        {
-            return;
-        }
-        await testSuiteController.DeleteTestSuiteByIdAsync(Suite.Id);
-    }
-
-    private async Task AddTestSuiteFolderAsync()
-    {
-        if (Suite is null)
-        {
-            return;
-        }
-        var projectId = Project?.Id ?? Suite.TestProjectId;
-
-        if (projectId is null )
-        {
-            return;
-        }
-        await testBrowser.AddTestSuiteFolderAsync(projectId.Value, Suite.Id, null);
-    }
 }

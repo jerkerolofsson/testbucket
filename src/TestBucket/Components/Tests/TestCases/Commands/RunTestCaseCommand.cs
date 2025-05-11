@@ -9,16 +9,16 @@ using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;
 
-namespace TestBucket.Components.Tests.TestSuites.Commands;
+namespace TestBucket.Components.Tests.TestCases.Commands;
 
-internal class RunTestSuiteCommand : ICommand
+internal class RunTestCaseCommand : ICommand
 {
     private readonly IStringLocalizer<SharedStrings> _loc;
     private readonly AppNavigationManager _appNavigationManager;
     private readonly TestBrowser _browser;
     private readonly TestRunCreationController _testRunCreationController;
 
-    public RunTestSuiteCommand(
+    public RunTestCaseCommand(
         IStringLocalizer<SharedStrings> loc,
         AppNavigationManager appNavigationManager,
         TestBrowser browser,
@@ -33,31 +33,29 @@ internal class RunTestSuiteCommand : ICommand
     public int SortOrder => 10;
     public string? Folder => null;
 
-    public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
+    public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;
     public PermissionLevel? RequiredLevel => PermissionLevel.Execute;
-    public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;
-    public string Id => "run-test-suite";
+    public bool Enabled => _appNavigationManager.State.SelectedTestCase is not null;
+    public string Id => "run-test-case";
     public string Name => _loc["run"];
-    public string Description => "Runs a test suite";
+    public string Description => _loc["run-test-case-description"];
     public KeyboardBinding? DefaultKeyboardBinding => new KeyboardBinding() { CommandId = Id, Key = "KeyR", ModifierKeys = ModifierKey.Ctrl };
     public string? Icon => Icons.Material.Filled.PlayArrow;
-    public string[] ContextMenuTypes => ["TestSuite"];
+    public string[] ContextMenuTypes => ["TestCase"];
 
     public async ValueTask ExecuteAsync()
     {
-        var suite = _appNavigationManager.State.SelectedTestSuite;
-        if (suite is null)
+        var testCase = _appNavigationManager.State.SelectedTestCase;
+        if (testCase is null)
         {
             return;
         }
-        var projectId = suite.TestProjectId;
+        var projectId = testCase.TestProjectId;
         if (projectId is null)
         {
             return;
         }
-        long[] testCaseIds = await _browser.GetTestSuiteSuiteTestsAsync(suite, excludeAutomated: true);
-
-        var run = await _testRunCreationController.CreateTestRunAsync(suite, testCaseIds, startAutomation: true);
+        var run = await _testRunCreationController.CreateTestRunAsync(testCase.Name, projectId.Value, [testCase.Id]);
         if (run is not null)
         {
             _appNavigationManager.NavigateTo(run);

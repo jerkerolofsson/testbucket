@@ -17,32 +17,28 @@
             {
                 <div class="container-fill-2-rows">
                     <MudToolBar Class="tb-toolbar">
-                        @if(_editor is not null)
-                        {
-                            <MudIconButton Icon="@Icons.Material.Filled.FormatBold" OnClick="async () => await _editor.ToggleBoldAsync()" Class="rounded-0" />
-                            <MudIconButton Icon="@Icons.Material.Filled.FormatItalic" OnClick="async () => await _editor.ToggleItalicAsync()" Class="rounded-0" />
+                        <MudIconButton Icon="@Icons.Material.Filled.FormatBold" OnClick="async () => await _editor!.ToggleBoldAsync()" Class="rounded-0" />
+                        <MudIconButton Icon="@Icons.Material.Filled.FormatItalic" OnClick="async () => await _editor!.ToggleItalicAsync()" Class="rounded-0" />
 
-                            <MudDivider DividerType="DividerType.Middle" Vertical />
+                        <MudDivider DividerType="DividerType.Middle" Vertical />
 
-                            <MudIconButton Icon="@Icons.Material.Filled.FormatListNumbered" OnClick="async () => await _editor.ToggleOrderedListAsync()" Class="rounded-0"></MudIconButton>
-                            <MudIconButton Icon="@Icons.Material.Filled.FormatListBulleted" OnClick="async () => await _editor.ToggleUnorderedListAsync()" Class="rounded-0"></MudIconButton>
-                            <MudIconButton Icon="@Icons.Material.Filled.Code" OnClick="async () => await _editor.ToggleCodeBlockAsync()" Class="rounded-0"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.FormatListNumbered" OnClick="async () => await _editor!.ToggleOrderedListAsync()" Class="rounded-0"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.FormatListBulleted" OnClick="async () => await _editor!.ToggleUnorderedListAsync()" Class="rounded-0"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.Code" OnClick="async () => await _editor!.ToggleCodeBlockAsync()" Class="rounded-0"></MudIconButton>
 
-                            <MudDivider DividerType="DividerType.Middle" Vertical />
+                        <MudDivider DividerType="DividerType.Middle" Vertical />
 
-                            <MudIconButton Icon="@Icons.Material.Filled.Grid3x3" OnClick="async () => await _editor.DrawTableAsync()" Class="rounded-0"></MudIconButton>
-                            <MudIconButton Icon="@Icons.Material.Filled.AddLink" OnClick="async () => await _editor.DrawLinkAsync()" Class="rounded-0"></MudIconButton>
-                            <MudIconButton Icon="@Icons.Material.Filled.Image" OnClick="async () => await _editor.DrawImageAsync()" Class="rounded-0"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.Grid3x3" OnClick="async () => await _editor!.DrawTableAsync()" Class="rounded-0"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.AddLink" OnClick="async () => await _editor!.DrawLinkAsync()" Class="rounded-0"></MudIconButton>
+                        <MudIconButton Icon="@Icons.Material.Filled.Image" OnClick="async () => await _editor!.DrawImageAsync()" Class="rounded-0"></MudIconButton>
 
-                            <MudDivider DividerType="DividerType.Middle" Vertical />
+                        <MudDivider DividerType="DividerType.Middle" Vertical />
 
-                            <MudIconButton Icon="@Icons.Material.Filled.Fullscreen" Class="rounded-0" OnClick="async () => await _editor.ToggleFullScreenAsync()" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Fullscreen" Class="rounded-0" OnClick="async () => await _editor!.ToggleFullScreenAsync()" />
 
-                            <MudDivider DividerType="DividerType.Middle" Vertical />
-                            <MudSpacer/>
-                            <MudIconButton Icon="@Icons.Material.Filled.CompareArrows" Href="@appNavigationManager.GetUrl(Requirement)" />
-
-                        }
+                        <MudDivider DividerType="DividerType.Middle" Vertical />
+                        <MudSpacer/>
+                        <MudIconButton Icon="@Icons.Material.Filled.CompareArrows" Href="@appNavigationManager.GetUrl(Requirement)" />
                     </MudToolBar>
 
                     <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false" Color="Color.Tertiary">

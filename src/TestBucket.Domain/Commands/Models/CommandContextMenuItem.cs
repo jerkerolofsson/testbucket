@@ -18,4 +18,6 @@ public class CommandContextMenuItem
     /// If a folder, contains the commands
     /// </summary>
     public List<ICommand> FolderCommands { get; set; } = [];
+
+    public int SortOrder { get; set; }
 }

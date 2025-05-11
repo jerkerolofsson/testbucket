@@ -87,30 +87,42 @@ namespace TestBucket.Domain.Commands
         }
 
         /// <inheritdoc/>
-        public IReadOnlyList<CommandContextMenuItem> GetCommandMenuItems(string typeName)
+        public IReadOnlyList<CommandContextMenuItem> GetCommandMenuItems(string typeNames)
         {
             Dictionary<string, CommandContextMenuItem> folderItems = [];
             var result = new List<CommandContextMenuItem>();
 
-            foreach(var command in GetCommandByContextMenuType(typeName))
+            HashSet<Type> processedTypes = [];
+
+            foreach (var typeName in typeNames.Split())
             {
-                if (command.Folder is null)
+                foreach (var command in GetCommandByContextMenuType(typeName))
                 {
-                    result.Add(new CommandContextMenuItem { Command = command });
-                }
-                else
-                {
-                    if(folderItems.TryGetValue(command.Folder, out var folder))
+                    if(processedTypes.Contains(command.GetType()))
                     {
-                        folder.FolderCommands.Add(command);
+                        continue;
+                    }
+                    processedTypes.Add(command.GetType());
+
+                    if (command.Folder is null)
+                    {
+                        result.Add(new CommandContextMenuItem { Command = command, SortOrder = command.SortOrder });
                     }
                     else
                     {
-                        var folderItem = new CommandContextMenuItem();
-                        folderItems[command.Folder] = folderItem;
-                        result.Add(folderItem);
-                        folderItem.Folder = command.Folder;
-                        folderItem.FolderCommands.Add(command);
+                        if (folderItems.TryGetValue(command.Folder, out var folder))
+                        {
+                            folder.FolderCommands.Add(command);
+                        }
+                        else
+                        {
+                            var folderItem = new CommandContextMenuItem();
+                            folderItems[command.Folder] = folderItem;
+                            result.Add(folderItem);
+                            folderItem.Folder = command.Folder;
+                            folderItem.FolderCommands.Add(command);
+                            folderItem.SortOrder = Math.Min(folderItem.SortOrder, command.SortOrder);
+                        }
                     }
                 }
             }
@@ -123,6 +135,11 @@ namespace TestBucket.Domain.Commands
                     return a.SortOrder - b.SortOrder;
                 });
             }
+
+            result.Sort((a, b) =>
+            {
+                return a.SortOrder - b.SortOrder;
+            });
 
             return result;
         }

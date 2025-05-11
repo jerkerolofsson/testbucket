@@ -3,9 +3,9 @@
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject ICommandManager commandManager
 
-@if (TypeName is not null)
+@if (TypeNames is not null)
 {
-    @foreach (var commandItem in commandManager.GetCommandMenuItems(TypeName))
+    foreach (var commandItem in commandManager.GetCommandMenuItems(TypeNames))
     {
         if (commandItem.Folder is not null)
         {
@@ -27,7 +27,7 @@
     /// <summary>
     /// This is used to find/filter commands
     /// </summary>
-    [Parameter] public string? TypeName { get; set; }
+    [Parameter] public string? TypeNames { get; set; }
 
     private KeyboardBindings? _bindings;
     private ClaimsPrincipal? claimsPrincipal;

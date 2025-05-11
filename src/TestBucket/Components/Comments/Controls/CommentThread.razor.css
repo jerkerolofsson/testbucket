@@ -62,3 +62,7 @@
     height: 8px;
     bottom: 0;
 }
+
+.no-comments .timeline-divider {
+    display: none;
+}

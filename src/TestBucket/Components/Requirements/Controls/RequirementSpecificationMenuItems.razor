@@ -3,7 +3,7 @@
 
 @if (RequirementSpecification is not null)
 {
-    <CommandMenuItems TypeName="RequirementSpecification" />
+    <CommandMenuItems TypeNames="RequirementSpecification" />
 
     <MudDivider />
     <MudMenuItem Icon="@TbIcons.BoldDuoTone.Import" OnClick="() => ExtractRequirementsFromSpecificationAsync()" Label="Extract Requirements" />

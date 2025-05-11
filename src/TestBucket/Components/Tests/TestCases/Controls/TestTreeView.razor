@@ -34,30 +34,7 @@
             }
 
             <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert">
-
-                @if (_selectedTreeItem?.Folder is not null)
-                {
-                    <FolderMenuItems Folder="@_selectedTreeItem.Folder" Project="@Project" Team="@Team"/>
-                    <MudDivider />
-                }
-                else if (_selectedTreeItem?.TestCase is not null)
-                {
-                    <TestCaseMenuItems TestCase="@_selectedTreeItem.TestCase" Project="@Project" Team="@Team" />
-                    <MudDivider />
-                }
-                else if (_selectedTreeItem?.TestSuite is not null)
-                {
-                    <TestSuiteMenuItems Suite="_selectedTreeItem.TestSuite" Project="@Project" Team="@Team" />
-                    <MudDivider />
-                }
-                else if (_selectedTreeItem?.TestRun is not null)
-                {
-                    <TestRunMenuItems Run="_selectedTreeItem.TestRun" Project="@Project" Team="@Team" />
-                    <MudDivider />
-                }
-                <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="AddTestSuiteAsync" Label="Add test suite" />
-                <MudDivider />
-                <MudMenuItem Icon="@TbIcons.BoldDuoTone.Import" OnClick="ImportAsync" Label="@loc["import-results"]" />
+                <CommandMenuItems TypeNames="TestSuite TestSuiteFolder TestRun TestCase menu-test" />
             </MudMenu>
         </MudStack>
     </MudStack>
@@ -137,33 +114,25 @@
 
                         @if (context.Value?.TestCase is not null)
                         {
-                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">Rename</MudMenuItem>
-                            <TestCaseMenuItems TestCase="@context.Value.TestCase" Project="@Project" Team="@Team" />
+                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
                             <MudDivider />
                         }
                         else if (context.Value?.TestRun is not null)
                         {
-                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">Rename</MudMenuItem>
-                            <TestRunMenuItems Run="@context.Value.TestRun" Project="@Project" Team="@Team" />
+                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
                             <MudDivider />
                         }
                         else if (context.Value?.Folder is not null)
                         {
-                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">Rename</MudMenuItem>
-                            <FolderMenuItems Folder="@context.Value.Folder" Project="@Project" Team="@Team" />
-                        <MudDivider />
+                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
+                            <MudDivider />
                         }
                         else if (context.Value?.TestSuite is not null)
                         {
-                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">Rename</MudMenuItem>
-                            <TestSuiteMenuItems Suite="@context.Value.TestSuite" Project="@Project" Team="@Team" />
+                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
                             <MudDivider />
                         }
-
-                        <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="AddTestSuiteAsync" Label="Add test suite" />
-                        <MudDivider />
-                        <MudMenuItem Icon="@TbIcons.BoldDuoTone.Import" OnClick="ImportAsync" Label="@loc["import-results"]" />
-
+                        <CommandMenuItems TypeNames="TestSuite TestSuiteFolder TestRun TestCase menu-test" />
                     </ChildContent>
                 </MudMenu>
             </DropZone>

@@ -16,7 +16,7 @@ internal class NewSharedStepsCommand : ICommand
     private readonly TestCaseEditorController _controller;
     private readonly IStringLocalizer<SharedStrings> _loc;
     public int SortOrder => 15;
-    public string? Folder => null;
+    public string? Folder => _loc["add"];
 
     public NewSharedStepsCommand(AppNavigationManager appNavigationManager, TestCaseEditorController controller, IStringLocalizer<SharedStrings> loc)
     {

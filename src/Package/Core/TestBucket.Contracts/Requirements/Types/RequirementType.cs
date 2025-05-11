@@ -19,6 +19,7 @@ public class RequirementType
     /// </summary>
     public MappedRequirementType MappedType { get; set; }
 
+    public override string ToString() => Name??"";
 
     public override bool Equals(object? obj)
     {

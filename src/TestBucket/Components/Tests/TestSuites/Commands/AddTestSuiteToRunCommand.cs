@@ -20,7 +20,7 @@ internal class AddTestSuiteToRunCommand : ICommand
     private readonly TestRunCreationController _testRunCreationController;
     private readonly IDialogService _dialogService;
 
-    public int SortOrder => 30;
+    public int SortOrder => 20;
 
     public string? Folder => null;
 

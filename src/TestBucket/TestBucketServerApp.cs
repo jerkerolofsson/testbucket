@@ -234,7 +234,14 @@ public static class TestBucketServerApp
         // Test suite
 
         builder.Services.AddScoped<ICommand, RunTestSuiteCommand>();
+        builder.Services.AddScoped<ICommand, NewTestSuiteCommand>();
+        builder.Services.AddScoped<ICommand, DeleteTestSuiteCommand>();
+
         builder.Services.AddScoped<ICommand, AddTestSuiteToRunCommand>();
+        builder.Services.AddScoped<ICommand, DeleteTestSuiteFolderCommand>();
+        builder.Services.AddScoped<ICommand, EditTestSuiteFolderCommand>();
+        builder.Services.AddScoped<ICommand, RunTestSuiteFolderCommand>();
+        
 
         builder.Services.AddScoped<MilestonesController>();
 
@@ -248,6 +255,11 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, NewTestCommand>();
         builder.Services.AddScoped<ICommand, NewSharedStepsCommand>();
         builder.Services.AddScoped<ICommand, DeleteTestCommand>();
+        builder.Services.AddScoped<ICommand, RunTestCaseCommand>();
+
+        // Test Case Run
+
+        builder.Services.AddScoped<ICommand, ImportTestResultsCommand>();
 
         builder.Services.AddScoped<ICommand, LinkIssueCommand>();
         builder.Services.AddScoped<ICommand, DeleteLinkedIssueCommand>();

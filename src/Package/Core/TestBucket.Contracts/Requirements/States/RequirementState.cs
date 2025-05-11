@@ -15,6 +15,8 @@ public class RequirementState
     /// </summary>
     public MappedRequirementState MappedState { get; set; }
 
+    public override string ToString() => Name??"";
+
     public override bool Equals(object? obj)
     {
         if (obj is RequirementState state)

@@ -21,8 +21,7 @@ internal class NewFolderCommand : ICommand
     }
 
     public int SortOrder => 10;
-    public string? Folder => null;
-
+    public string? Folder => _loc["add"];
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;

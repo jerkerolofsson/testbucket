@@ -2,6 +2,7 @@
 
 namespace TestBucket.CodeCoverage.Tests.Parsing
 {
+    [Feature("Code Coverage")]
     [UnitTest]
     [EnrichedTest]
     [FunctionalTest]

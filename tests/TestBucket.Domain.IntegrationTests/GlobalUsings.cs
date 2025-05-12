@@ -13,3 +13,6 @@ global using TestBucket.Domain.Testing.Models;
 global using TestBucket.Domain.Testing.TestSuites;
 global using TestBucket.Traits.Xunit;
 global using Xunit;
+
+global using TestBucket.Contracts.Testing.Models;
+global using TestBucket.Domain.Shared;

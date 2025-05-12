@@ -6,26 +6,19 @@
 @inject ResourceViewFactory resourceViewFactory
 @inject IStringLocalizer<SharedStrings> loc
 
-<MudDialog DefaultFocus="DefaultFocus.FirstChild">
+<MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 70vw; min-height: 70vh">
     <TitleContent>@Resource?.Name</TitleContent>
     <DialogContent>
 
-        <div style="display: grid; grid-template-columns: 200px 1fr;">
-            <div>
-                <MudTable Items="_viewTypes" RowClass="cursor-pointer" RowClassFunc="@SelectedRowClassFunc" Dense>
-                    <RowTemplate>
-                        <MudTd DataLabel="Link" @onclick="() => ShowView(context)">
-                            @* <MudLink OnClick="() => ShowView(context)">@context.Name</MudLink> *@
-                            @context.Name
-                        </MudTd>
-                    </RowTemplate>
-                </MudTable>
-            </div>
-            @if (_viewType is not null)
+        <MudTabs Style="width: 100%">
+            @foreach(var viewType in _viewTypes)
             {
-                <DynamicComponent Type="@_viewType.ComponentType" Parameters="_parameters" />
+                <MudTabPanel Text="@viewType.Name">
+                    <DynamicComponent Type="@viewType.ComponentType" Parameters="_parameters" />
+                </MudTabPanel>
             }
-        </div>
+
+        </MudTabs>
     </DialogContent>
 
     <DialogActions>
@@ -41,13 +34,8 @@
     [Parameter] public FileResource? Resource { get; set; }
 
     private List<ViewType> _viewTypes = [];
-    private ViewType? _viewType;
     private readonly Dictionary<string, object> _parameters = new();
 
-    private void ShowView(ViewType viewType)
-    {
-        _viewType = viewType;
-    }
 
     protected override void OnInitialized()
     {
@@ -55,22 +43,9 @@
         {
             _parameters["Resource"] = Resource;
             _viewTypes = resourceViewFactory.GetViewTypesForPreview(Resource).ToList();
-            _viewType = _viewTypes.FirstOrDefault();
         }
 
         base.OnInitialized();
-    }
-
-    private string SelectedRowClassFunc(ViewType element, int rowNumber)
-    {
-        if (_viewTypes[rowNumber] == _viewType)
-        {
-            return "tb-navmenu-selected";
-        }
-        else
-        {
-            return string.Empty;
-        }
     }
 
     private void Close()

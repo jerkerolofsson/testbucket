@@ -17,7 +17,14 @@ public class ResourceViewFactory
             {
                 yield return new ViewType("JSON", typeof(JsonViewer));
             }
-            if (resource.ContentType.StartsWith("application/xml") || resource.ContentType.StartsWith("text/xml"))
+            if (resource.ContentType.StartsWith("application/x-cobertura"))
+            {
+                yield return new ViewType("Code Coverage", typeof(CodeCoverageResourceView));
+            }
+            if (resource.ContentType.StartsWith("application/xml") ||
+                resource.ContentType.StartsWith("application/x-xunit") ||
+                resource.ContentType.StartsWith("application/x-junit") ||
+                resource.ContentType.StartsWith("text/xml"))
             {
                 yield return new ViewType("XML", typeof(XmlViewer));
             }
@@ -32,3 +39,4 @@ public class ResourceViewFactory
         yield return new ViewType("Hex", typeof(HexView));
     }
 }
+

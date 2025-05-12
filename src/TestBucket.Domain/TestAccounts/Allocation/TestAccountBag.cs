@@ -11,6 +11,11 @@ public class TestAccountBag
     private readonly ClaimsPrincipal _principal;
     private readonly ITestAccountManager _manager;
 
+    /// <summary>
+    /// Gets locked accounts
+    /// </summary>
+    public IReadOnlyList<TestAccount> Accounts => _resources;
+
     public TestAccountBag(ClaimsPrincipal principal, ITestAccountManager manager)
     {
         _principal = principal;
@@ -26,7 +31,7 @@ public class TestAccountBag
         await _manager.UpdateAsync(_principal, resource);
     }
 
-    internal void ResolveVariables(Dictionary<string, string> variables)
+    public void ResolveVariables(Dictionary<string, string> variables)
     {
         foreach(var resource in _resources)
         {

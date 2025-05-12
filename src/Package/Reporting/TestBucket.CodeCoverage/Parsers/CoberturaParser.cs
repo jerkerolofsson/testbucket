@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -10,6 +11,37 @@ using TestBucket.CodeCoverage.Models;
 namespace TestBucket.CodeCoverage.Parsers;
 public class CoberturaParser : ParserBase
 {
+    private static readonly Regex CleanupRegex = new Regex(".<.*>\\w_?_?\\w*\\d*", RegexOptions.Compiled);
+    private static readonly Regex GenericClassRegex = new Regex("(?<ClassName>.+)(?<GenericTypes><.+>)$", RegexOptions.Compiled);
+    private static readonly Regex LambdaMethodNameRegex = new Regex("<.+>.+__", RegexOptions.Compiled);
+    private static readonly Regex CompilerGeneratedMethodNameRegex = new Regex(@"(?<ClassName>.+)(/|\.)<(?<CompilerGeneratedName>.+)>.+__.+MoveNext\(\)$", RegexOptions.Compiled);
+    private static readonly Regex LocalFunctionMethodNameRegex = new Regex(@"^.*(?<ParentMethodName><.+>).*__(?<NestedMethodName>[^\|]+)\|.*$", RegexOptions.Compiled);
+
+    private static string ExtractMethodName(string methodName, string className)
+    {
+        if (methodName.Contains("|") || className.Contains("|"))
+        {
+            Match match = LocalFunctionMethodNameRegex.Match(className + methodName);
+
+            if (match.Success)
+            {
+                methodName = match.Groups["NestedMethodName"].Value + "()";
+            }
+        }
+        else if (methodName.EndsWith("MoveNext()"))
+        {
+            Match match = CompilerGeneratedMethodNameRegex.Match(className + methodName);
+
+            if (match.Success)
+            {
+                methodName = match.Groups["CompilerGeneratedName"].Value + "()";
+            }
+        }
+
+        return methodName;
+    }
+
+
     public override async Task<CodeCoverageReport> ParseStreamAsync(CodeCoverageReport report, Stream stream, CancellationToken cancellationToken)
     {
         XDocument doc = await XDocument.LoadAsync(stream, LoadOptions.None, cancellationToken);
@@ -57,7 +89,20 @@ public class CoberturaParser : ParserBase
         var filename = classNode.Attribute("filename");
         if (name is not null)
         {
-            var codeCoverageClass = package.GetOrCreateClass(name.Value, filename?.Value ?? "");
+            string displayName = name.Value;
+            if (displayName.Contains('<'))
+            {
+                if (displayName.Contains("__"))
+                {
+                    displayName = CleanupRegex.Replace(displayName, string.Empty);
+                }
+                var match = GenericClassRegex.Match(displayName);
+                if (match.Success)
+                {
+                    displayName = match.Groups["ClassName"].Value;
+                }
+            }
+            var codeCoverageClass = package.GetOrCreateClass(displayName, filename?.Value ?? "");
 
             foreach (var methodsNode in classNode.Elements("methods"))
             {
@@ -82,7 +127,21 @@ public class CoberturaParser : ParserBase
         var signature = methodNode.Attribute("signature");
         if (name is not null && signature is not null)
         {
-            var method = codeCoverageClass.GetOrCreateMethod(name.Value, signature.Value);
+            string fullName = name.Value + signature.Value;
+            fullName = ExtractMethodName(fullName, methodNode.Parent!.Parent!.Attribute("name")!.Value);
+            if (fullName.Contains("__") && LambdaMethodNameRegex.IsMatch(fullName))
+            {
+                return;
+            }
+
+            // Remove the signature
+            if(fullName.Contains('('))
+            {
+                var p = fullName.IndexOf('(');
+                fullName = fullName.Substring(0, p);
+            }
+
+            var method = codeCoverageClass.GetOrCreateMethod(fullName, signature.Value);
             foreach (var linesNode in methodNode.Elements("lines"))
             {
                 foreach (var lineNode in linesNode.Elements("line"))

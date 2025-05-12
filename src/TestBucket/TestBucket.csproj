@@ -45,6 +45,7 @@
     <ProjectReference Include="..\integrations\TestBucket.Gitlab\TestBucket.Gitlab.csproj" />
     <ProjectReference Include="..\integrations\TestBucket.Trello\TestBucket.Trello.csproj" />
     <ProjectReference Include="..\Package\Blazor\TestBucket.MudBlazorExtensions.Markdown\TestBucket.MudBlazorExtensions.Markdown.csproj" />
+    <ProjectReference Include="..\Package\Reporting\TestBucket.CodeCoverage\TestBucket.CodeCoverage.csproj" />
     <ProjectReference Include="..\TestBucket.Data\TestBucket.Data.csproj" />
     <ProjectReference Include="..\TestBucket.ServiceDefaults\TestBucket.ServiceDefaults.csproj" />
   </ItemGroup>

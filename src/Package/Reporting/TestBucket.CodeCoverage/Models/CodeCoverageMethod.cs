@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TestBucket.CodeCoverage.Models;
-public record class CodeCoverageMethod
+public record class CodeCoverageMethod : CodeEntity
 {
     private readonly List<CodeCoverageLine> _lines = [];
 
@@ -23,6 +23,9 @@ public record class CodeCoverageMethod
     /// Lines for this method
     /// </summary>
     public IReadOnlyList<CodeCoverageLine> Lines => _lines;
+
+    public override Lazy<int> CoveredLineCount => new Lazy<int>(() => _lines.Select(x => x.CoveredLineCount.Value).Sum());
+    public override Lazy<int> LineCount => new Lazy<int>(() => _lines.Select(x => x.LineCount.Value).Sum());
 
     public CodeCoverageMethod()
     {
@@ -57,4 +60,9 @@ public record class CodeCoverageMethod
     {
         return Lines.FirstOrDefault(x => predicate(x));
     }
+
+    public override string GetName() => Name;
+
+    public override IReadOnlyList<CodeEntity> GetChildren() => _lines;
+
 }

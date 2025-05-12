@@ -1,5 +1,7 @@
-﻿namespace TestBucket.CodeCoverage.Models;
-public record class CodeCoverageLine
+﻿using System.Xml.Linq;
+
+namespace TestBucket.CodeCoverage.Models;
+public record class CodeCoverageLine : CodeEntity
 {
     private readonly List<CodeCoverageCondition> _conditions = [];
 
@@ -22,6 +24,9 @@ public record class CodeCoverageLine
     /// Gets all conditions
     /// </summary>
     public IReadOnlyList<CodeCoverageCondition> Conditions => _conditions;
+
+    public override Lazy<int> CoveredLineCount => new Lazy<int>(() => Hits > 0 ? 1 : 0);
+    public override Lazy<int> LineCount => new Lazy<int>(() =>  1);
 
     public CodeCoverageLine()
     {
@@ -56,4 +61,10 @@ public record class CodeCoverageLine
     {
         return Conditions.FirstOrDefault(x => predicate(x));
     }
+
+
+    public override string GetName() => $"Line {LineNumber}";
+
+    public override IReadOnlyList<CodeEntity> GetChildren() => _conditions;
+
 }

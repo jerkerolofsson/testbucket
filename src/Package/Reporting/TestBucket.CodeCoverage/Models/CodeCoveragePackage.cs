@@ -1,5 +1,5 @@
 ﻿namespace TestBucket.CodeCoverage.Models;
-public record class CodeCoveragePackage
+public record class CodeCoveragePackage : CodeEntity
 {
     private readonly List<CodeCoverageClass> _classes = [];
 
@@ -12,6 +12,8 @@ public record class CodeCoveragePackage
     /// Classes
     /// </summary>
     public IReadOnlyList<CodeCoverageClass> Classes => _classes;
+    public override Lazy<int> CoveredLineCount => new Lazy<int>(() => _classes.Select(x => x.CoveredLineCount.Value).Sum());
+    public override Lazy<int> LineCount => new Lazy<int>(() => _classes.Select(x => x.LineCount.Value).Sum());
 
     public CodeCoveragePackage()
     {
@@ -42,4 +44,9 @@ public record class CodeCoveragePackage
     {
         return Classes.FirstOrDefault(x => predicate(x));
     }
+
+    public override string GetName() => Name;
+
+    public override IReadOnlyList<CodeEntity> GetChildren() => [.._classes];
+
 }

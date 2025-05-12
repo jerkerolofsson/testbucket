@@ -56,12 +56,12 @@
             @foreach(TreeNode<T> child in Item.Children)
             {
                 <TreeViewNode 
-                    Item="@child" 
-                    T="T"
-                    SelectedValue="@SelectedValue" 
-                    EditItem="@EditItem" 
-                    ItemEditCanceled="async() => await ItemEditCanceled.InvokeAsync()"
-                    ItemEdited="async (text) => await ItemEdited.InvokeAsync(text)" />
+                Item="@child" 
+                T="T"
+                SelectedValue="@SelectedValue" 
+                EditItem="@EditItem" 
+                ItemEditCanceled="async() => await ItemEditCanceled.InvokeAsync()"
+                ItemEdited="async (text) => await ItemEdited.InvokeAsync(text)" />
             }
         }
 
@@ -122,17 +122,19 @@
 
     private async Task Expand()
     {
-        if(Item is null || TreeView?.ServerData is null)
+        if (Item is null)
         {
             return;
         }
-
-        if(Item.Children is null)
-        {
-            Item.Children = await TreeView.ServerData(Item.Value);
-        }
-
         Item.Expanded = true;
+
+        if (TreeView?.ServerData is not null)
+        {
+            if(Item.Children is null)
+            {
+                Item.Children = await TreeView.ServerData(Item.Value);
+            }
+        }
     }
 
     private async Task OnClicked()

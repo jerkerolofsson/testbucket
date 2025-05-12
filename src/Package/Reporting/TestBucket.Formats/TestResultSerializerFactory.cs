@@ -1,23 +1,24 @@
-﻿using TestBucket.Formats.Ctrf;
+﻿
+using TestBucket.Formats.Ctrf;
 using TestBucket.Formats.JUnit;
 using TestBucket.Formats.MicrosoftTrx;
 using TestBucket.Formats.XUnit;
 
-namespace TestBucket.Formats
+using TestBucket.Formats;
+
+/// <summary>
+/// Class to deserialize test artifact files
+/// </summary>
+public static class TestResultSerializerFactory
 {
-    /// <summary>
-    /// Class to deserialize test artifact files
-    /// </summary>
-    public static class TestResultSerializerFactory
+    public static ITestResultSerializer CreateFromContentType(string contentType)
     {
-        public static ITestResultSerializer CreateFromContentType(string contentType)
-        {
-            TestResultFormat format = GetFormatFromContentType(contentType);
+        TestResultFormat format = GetFormatFromContentType(contentType);
 
-            return Create(format);
-        }
+        return Create(format);
+    }
 
-        private static readonly Dictionary<string, TestResultFormat> _mediaTypes = new() 
+    private static readonly Dictionary<string, TestResultFormat> _mediaTypes = new()
         {
             //{"application/xml", TestResultFormat.JUnitXml },
             {"application/x-junit" , TestResultFormat.JUnitXml},
@@ -45,53 +46,52 @@ namespace TestBucket.Formats
         };
 
 
-        /// <summary>
-        /// Returns media-type from test result format 
-        /// </summary>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public static string? GetContentTypeFromFormat(TestResultFormat format)
+    /// <summary>
+    /// Returns media-type from test result format 
+    /// </summary>
+    /// <param name="format"></param>
+    /// <returns></returns>
+    public static string? GetContentTypeFromFormat(TestResultFormat format)
+    {
+        var matches = _mediaTypes.Where(kvp => kvp.Value == format).ToList();
+        if (matches is not null && matches.Count > 0)
         {
-            var matches = _mediaTypes.Where(kvp => kvp.Value == format).ToList();
-            if (matches is not null && matches.Count > 0)
-            {
-                return matches[0].Key;
-            }
-
-            return null;
+            return matches[0].Key;
         }
 
-        /// <summary>
-        /// Returns test result format from media-type / content-type
-        /// </summary>
-        /// <param name="contentType"></param>
-        /// <returns></returns>
-        public static TestResultFormat GetFormatFromContentType(string? contentType)
+        return null;
+    }
+
+    /// <summary>
+    /// Returns test result format from media-type / content-type
+    /// </summary>
+    /// <param name="contentType"></param>
+    /// <returns></returns>
+    public static TestResultFormat GetFormatFromContentType(string? contentType)
+    {
+        if (contentType is null)
         {
-            if(contentType is null)
-            {
-                return TestResultFormat.UnknownFormat;
-            }
-            var header = new System.Net.Mime.ContentType(contentType);
-
-            if(_mediaTypes.TryGetValue(contentType, out var format))
-            {
-                return format;
-            }
-
             return TestResultFormat.UnknownFormat;
         }
+        var header = new System.Net.Mime.ContentType(contentType);
 
-        public static ITestResultSerializer Create(TestResultFormat format)
+        if (_mediaTypes.TryGetValue(contentType, out var format))
         {
-            return format switch
-            {
-                TestResultFormat.MicrosoftTrx => new TrxSerializer(),
-                TestResultFormat.JUnitXml => new JUnitSerializer(),
-                TestResultFormat.xUnitXml => new XUnitSerializer(),
-                TestResultFormat.CommonTestReportFormat => new CtrfXunitSerializer(),
-                _ => throw new NotImplementedException($"Unknown format: {format}")
-            };
+            return format;
         }
+
+        return TestResultFormat.UnknownFormat;
+    }
+
+    public static ITestResultSerializer Create(TestResultFormat format)
+    {
+        return format switch
+        {
+            TestResultFormat.MicrosoftTrx => new TrxSerializer(),
+            TestResultFormat.JUnitXml => new JUnitSerializer(),
+            TestResultFormat.xUnitXml => new XUnitSerializer(),
+            TestResultFormat.CommonTestReportFormat => new CtrfXunitSerializer(),
+            _ => throw new NotImplementedException($"Unknown format: {format}")
+        };
     }
 }

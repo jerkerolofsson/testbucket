@@ -770,9 +770,13 @@ internal class TestCaseRepository : ITestCaseRepository
         {
             var testRun = await GetTestRunByIdAsync(testCaseRun.TenantId, testCaseRun.TestRunId);
             var testCase = await GetTestCaseByIdAsync(testCaseRun.TenantId, testCaseRun.TestCaseId);
-            if(testRun is null || testCase is null)
+            if (testRun is null)
             {
-                throw new ArgumentException("Invalid test run/case");
+                throw new ArgumentException("Test run not found for this tenant, id=" + testCaseRun.TestRunId);
+            }
+            if (testCase is null)
+            {
+                throw new ArgumentException("Test case not found for this tenant, id=" + testCaseRun.TestCaseId);
             }
             testCaseRun.Slug = await GenerateTestCaseRunSlugAsync(testCaseRun.TenantId, testRun.Slug + "_" + testCase.Slug);
         }

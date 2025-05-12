@@ -1,0 +1,36 @@
+﻿@using System.Text.Json
+@using TestBucket.CodeCoverage
+@using TestBucket.Components.Uploads.Services
+@inject AttachmentsService controller
+@inject IJSRuntime js
+
+@if (_resource is not null)
+{
+    <TestBucket.Components.Code.Controls.CodeCoverageReportViewer Report="@_report"/>
+}
+else
+{
+    <MudProgressLinear Indeterminate Color="Color.Tertiary" />
+}
+
+
+@code {
+    [Parameter] public FileResource? Resource { get; set; }
+    private FileResource? _resource;
+    private readonly CodeCoverageReport _report = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_resource?.Id != Resource?.Id && Resource is not null)
+        {
+            _resource = await controller.GetResourceByIdAsync(Resource.Id);
+            if (_resource is not null)
+            {
+                var format = CoverageFormatDetector.Detect(_resource.Data);
+                var parser = CodeCoverageParserFactory.Create(format);
+                using var stream = new MemoryStream(_resource.Data);
+                await parser.ParseStreamAsync(_report, stream, CancellationToken.None);
+            }
+        }
+    }
+}

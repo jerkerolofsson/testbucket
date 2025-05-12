@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 
 using TestBucket.Domain.Automation.Artifact.Events;
 using TestBucket.Domain.Files;
+using TestBucket.Domain.Resources;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Formats;
@@ -76,8 +77,7 @@ namespace TestBucket.Domain.Automation.Artifact
                 await entryStream.ReadExactlyAsync(bytes, cancellationToken);
 
                 // Detect the file format and add this as an attachment
-                var format = TestResultDetector.Detect(bytes);
-                var contentType = TestResultSerializerFactory.GetContentTypeFromFormat(format) ?? "application/octet-stream";
+                var contentType = MediaTypeDetector.DetectType("application/octet-stream", bytes);
 
                 await files.AddResourceAsync(principal, new Files.Models.FileResource
                 {

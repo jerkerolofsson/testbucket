@@ -1,9 +1,12 @@
 ﻿
 using Microsoft.AspNetCore.Components.Forms;
 
+using TestBucket.CodeCoverage;
+using TestBucket.CodeCoverage.Models;
 using TestBucket.Components.Tenants;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
+using TestBucket.Domain.Resources;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Formats;
@@ -38,15 +41,7 @@ internal class UploadService : TenantBaseService
         var data = new byte[stream.Length];
         await stream.ReadExactlyAsync(data, 0, data.Length, cancellationToken);
 
-        var contentType = file.ContentType;
-        if (file.ContentType == "text/xml" || file.ContentType == "application/json")
-        {
-            var format = TestResultDetector.Detect(data);
-            if(format != TestResultFormat.UnknownFormat)
-            {
-                contentType = TestResultSerializerFactory.GetContentTypeFromFormat(format);
-            }
-        }
+        var contentType = MediaTypeDetector.DetectType(file.ContentType, data);
 
         var resource = new FileResource
         {

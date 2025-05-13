@@ -44,6 +44,7 @@ using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Components.Milestones.Controllers;
 using TestBucket.Components.Comments;
 using TestBucket.Components.Issues.Controllers;
+using TestBucket.Components.Issues.Commands;
 
 namespace TestBucket;
 
@@ -280,6 +281,9 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, CreateTaskCommand>();
         builder.Services.AddScoped<ICommand, CreateSpecificationCommand>();
         builder.Services.AddScoped<ICommand, ImportRequirementsCommand>();
+
+        // Issues
+        builder.Services.AddScoped<ICommand, CreateIssueCommand>();
 
         builder.Services.AddScoped<ICommand, DeleteRunCommand>();
         builder.Services.AddScoped<ICommand, DuplicateRunCommand>();

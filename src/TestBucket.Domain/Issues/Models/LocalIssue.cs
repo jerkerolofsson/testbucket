@@ -1,7 +1,7 @@
-﻿using TestBucket.Domain.Testing.Models;
+﻿namespace TestBucket.Domain.Issues.Models;
 
-namespace TestBucket.Domain.Issues.Models;
-
+[Index(nameof(State),nameof(Created))]
+[Index(nameof(ExternalSystemId), nameof(Created))]
 public class LocalIssue : ProjectEntity
 {
     /// <summary>
@@ -52,11 +52,6 @@ public class LocalIssue : ProjectEntity
     public string? Url { get; set; }
 
     /// <summary>
-    /// Milestone
-    /// </summary>
-    public string? MilestoneName { get; set; }
-
-    /// <summary>
     /// Type of issue
     /// </summary>
     public string? IssueType { get; set; }
@@ -65,5 +60,9 @@ public class LocalIssue : ProjectEntity
     /// ID to display in UI
     /// </summary>
     public string? ExternalDisplayId { get; set; }
+
+    // Navigation
+
+    public virtual IEnumerable<IssueField>? IssueFields { get; set; }
 
 }

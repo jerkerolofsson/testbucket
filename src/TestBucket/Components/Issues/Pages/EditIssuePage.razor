@@ -1,0 +1,32 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Issues/{IssueId:long}/Edit"
+@using TestBucket.Components.Issues.Layouts
+@layout IssuesLayout
+@inject IStringLocalizer<SharedStrings> loc
+@inject IssueController controller
+@inject AppNavigationManager appNavigationManager
+@inject NavigationManager navigationManager
+
+@if(Project is not null && _issue is not null)
+{
+    <div class="container-fill-2-rows-alt pa-2">
+        <IssueEditor TestProjectId="@Project.Id" @bind-Issue="@_issue"/>
+    </div>
+}
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [Parameter] public long IssueId { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private LocalIssue? _issue = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(_issue is null || _issue.Id != IssueId)
+        {
+            _issue = await controller.GetIssueByIdAsync(IssueId);
+        }
+    }
+}

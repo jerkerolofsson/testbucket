@@ -385,10 +385,15 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Code/Commits";
     }
-    public string GetCreateIssueUrl()
+    public string GetViewIssueUrl(LocalIssue issue)
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
-        return $"/{tenantId}/Issues/Create";
+        return $"/{tenantId}/Issues/{issue.Id}";
+    }
+    public string GetEditIssueUrl(LocalIssue issue)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Issues/{issue.Id}/Edit";
     }
     public string GetIssuesUrl()
     {
@@ -430,6 +435,13 @@ public class AppNavigationManager
     {
         _navigationManager.NavigateTo(url, forceLoad);
     }
+
+    public void NavigateTo(LocalIssue issue, bool forceLoad = false)
+    {
+        var url = GetViewIssueUrl(issue);
+        _navigationManager.NavigateTo(url, forceLoad);
+    }
+
     public void NavigateTo(ApplicationUser user, bool forceLoad = false)
     {
         var url = GetUrl(user);

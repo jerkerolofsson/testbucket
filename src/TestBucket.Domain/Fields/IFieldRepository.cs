@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Domain.Fields.Models;
+using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
@@ -121,7 +122,6 @@ public interface IFieldRepository
 
     #endregion Test Case Runs
 
-
     #region Requirement
 
     /// <summary>
@@ -140,7 +140,7 @@ public interface IFieldRepository
     Task SaveRequirementFieldsAsync(IEnumerable<RequirementField> fields);
 
     /// <summary>
-    /// Adds a new field for the test case if it doesn't exist or replaces the value
+    /// Adds a new field for the requirement if it doesn't exist or replaces the value
     /// </summary>
     /// <param name="field"></param>
     /// <returns></returns>
@@ -148,4 +148,29 @@ public interface IFieldRepository
 
     #endregion Requirement
 
+    #region Issue
+
+    /// <summary>
+    /// Returns all requirement fields for the specified requirement
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="requirementId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<IssueField>> GetIssueFieldsAsync(string tenantId, long issueId);
+
+    /// <summary>
+    /// Saves all issue fields
+    /// </summary>
+    /// <param name="fields"></param>
+    /// <returns></returns>
+    Task SaveIssueFieldsAsync(IEnumerable<IssueField> fields);
+
+    /// <summary>
+    /// Adds a new field for the issue if it doesn't exist or replaces the value
+    /// </summary>
+    /// <param name="field"></param>
+    /// <returns></returns>
+    Task UpsertIssueFieldAsync(IssueField field);
+
+    #endregion Issues
 }

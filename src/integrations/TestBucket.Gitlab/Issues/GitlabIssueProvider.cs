@@ -35,7 +35,7 @@ public class GitlabIssueProvider : IExternalIssueProvider
         return null;
     }
 
-    public async Task<IReadOnlyList<IssueDto>> SearchAsync(ExternalSystemDto config, string text, int offset, int count, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<IssueDto>> SearchAsync(ExternalSystemDto config, string? text, int offset, int count, CancellationToken cancellationToken)
     {
         var query = new IssueQuery
         {

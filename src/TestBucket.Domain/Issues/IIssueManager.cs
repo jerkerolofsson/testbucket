@@ -50,6 +50,7 @@ public interface IIssueManager
     Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(SearchIssueRequest request, int offset, int count);
     Task<LocalIssue?> FindLocalIssueFromExternalAsync(ClaimsPrincipal principal, long testProjectId, long? externalSystemId, string? externalId);
     Task UpdateLocalIssueAsync(ClaimsPrincipal principal, LocalIssue existingIssue);
+    Task<LocalIssue?> GetIssueByIdAsync(ClaimsPrincipal principal, long id);
 
     #endregion
 }

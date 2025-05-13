@@ -1,7 +1,5 @@
 ﻿using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.Requirements.Types;
-using TestBucket.Contracts.Testing.Models;
-using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Requirements.Models;
 

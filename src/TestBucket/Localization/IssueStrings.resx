@@ -123,4 +123,7 @@
   <data name="delete-linked-issue" xml:space="preserve">
     <value>Remove linked issue</value>
   </data>
+  <data name="new-issue" xml:space="preserve">
+    <value>New issue</value>
+  </data>
 </root>

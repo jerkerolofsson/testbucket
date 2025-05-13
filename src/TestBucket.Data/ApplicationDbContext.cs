@@ -30,6 +30,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     internal DbSet<FieldDefinition> FieldDefinitions { get; set; }
     internal DbSet<RequirementField> RequirementFields { get; set; }
+    internal DbSet<IssueField> IssueFields { get; set; }
     internal DbSet<TestCaseField> TestCaseFields { get; set; }
     internal DbSet<TestRunField> TestRunFields { get; set; }
     internal DbSet<TestCaseRunField> TestCaseRunFields { get; set; }

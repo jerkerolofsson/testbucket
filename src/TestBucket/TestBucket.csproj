@@ -47,7 +47,6 @@
     <Folder Include="Components\Administration\" />
     <Folder Include="Components\Environments\Layouts\" />
     <Folder Include="Components\Issues\ApiControllers\" />
-    <Folder Include="Components\Issues\Dialogs\" />
     <Folder Include="Components\Milestones\Controls\" />
     <Folder Include="Components\Shared\Commands\" />
     <Folder Include="Components\Tests\TestRuns\Services\" />

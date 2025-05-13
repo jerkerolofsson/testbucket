@@ -1,10 +1,150 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Issues"
 @using TestBucket.Components.Issues.Layouts
+@using TestBucket.Domain
+@using TestBucket.Domain.Commands
+@using TestBucket.Domain.ExtensionManagement
 @layout IssuesLayout
+@inject AppNavigationManager appNavigationManager
+@inject IssueController controller
+@inject IExtensionManager extensionManager
+@inject ICommandManager commandManager
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<IssueStrings> issueLoc
+
+<MudStack Class="container-settings-page">
+    @if (Project is not null)
+    {
+        <MudDataGrid @ref="_grid"
+        ServerData="LoadGridData"
+        Dense Hover RowClass="tb-datarow cursor-pointer"
+        RowClick="(row) => OnRowClicked(row.Item)"
+        T="LocalIssue" SortMode="SortMode.None">
+
+            <ToolBarContent>
+                <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                    <MudTextField Value="@_searchText" T="string" ValueChanged="OnSearch"
+                    Style="min-width: 15vw"
+                    Class="mt-2"
+                    Clearable="true"
+                    Variant="Variant.Text"
+                    IconSize="Size.Small"
+                    Adornment="Adornment.Start"
+                    Placeholder="@loc["search"]"
+                    AdornmentIcon="@Icons.Material.Filled.Search" />
+
+                    <MudSpacer />
+                    <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
+                        <Authorized>
+                            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddIssue"></MudIconButton>
+                        </Authorized>
+                    </PermissionView>
+                </MudStack>
+            </ToolBarContent>
+
+            <ColGroup>
+                <col style="width: 100px;" />
+                <col style="width: 2fr;" />
+                <col style="width: 100px;" />
+                <col style="width: 100px;" />
+            </ColGroup>
+
+            <Columns>
+                <TemplateColumn Title="@loc["id"]">
+                    <CellTemplate>
+                        <MudTooltip Text="@context.Item.Url">
+                            <MudStack AlignItems="AlignItems.Center" Row Spacing=1>
+                                @if (context.Item.ExternalSystemName is not null)
+                                {
+                                    <MudIcon Icon="@extensionManager.GetIcon(context.Item.ExternalSystemName??"")" />
+                                }
+                                else
+                                {
+                                    <MudIcon Icon="@TbIcons.Brands.TestBucket" />
+                                }
+                                <MudText>@context.Item.ExternalDisplayId</MudText>
+                            </MudStack>
+                        </MudTooltip>
+                    </CellTemplate>
+                </TemplateColumn>
+
+
+                <TemplateColumn Title="@loc["title"]">
+                    <CellTemplate>
+                        @context.Item.Title
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <TemplateColumn Title="@loc["state"]">
+                    <CellTemplate>
+                        @context.Item.State
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <TemplateColumn>
+                    <CellTemplate>
+                        <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Delete">
+                            <Authorized>
+                                <MudIconButton OnClick="async() => await DeleteAsync(context.Item)" Color="Color.Error" Icon="@Icons.Material.Filled.Clear" />
+                            </Authorized>
+                        </PermissionView>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+
+            <PagerContent>
+                <MudDataGridPager T="LocalIssue" />
+            </PagerContent>
+        </MudDataGrid>
+    }
+</MudStack>
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";
     [CascadingParameter] public TestProject? Project { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
+
+    private MudDataGrid<LocalIssue>? _grid;
+    private string _searchText = "";
+
+    protected void OnSearch(string text)
+    {
+        _searchText = text;
+        _grid?.ReloadServerData();
+    }
+    private void OnRowClicked(LocalIssue issue)
+    {
+        appNavigationManager.NavigateTo(issue);
+    }
+
+    private async Task AddIssue()
+    {
+        await commandManager.ExecuteCommandAsync("create-issue");
+    }
+
+    /// <summary>
+    /// Loads issues
+    /// </summary>
+    /// <param name="state"></param>
+    /// <returns></returns>
+    private async Task<GridData<LocalIssue>> LoadGridData(GridState<LocalIssue> state)
+    {
+        if (Project is null)
+        {
+            return new GridData<LocalIssue> { TotalItems = 0 };
+        }
+
+        PagedResult<LocalIssue> result = await controller.SearchAsync(Project.Id, _searchText, state.Page*state.PageSize, state.PageSize);
+
+        return new GridData<LocalIssue>()
+        {
+            Items = result.Items,
+            TotalItems = (int) result.TotalCount
+        };
+    }
+
+    private async Task DeleteAsync(LocalIssue issue)
+    {
+        
+    }
 }

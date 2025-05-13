@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Requirements.Models;
+﻿using TestBucket.Domain.Issues.Models;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Fields;
@@ -18,14 +19,7 @@ public interface IFieldManager
     /// <returns></returns>
     Task<IReadOnlyList<RequirementField>> GetRequirementFieldsAsync(ClaimsPrincipal principal, long id, IEnumerable<FieldDefinition> fieldDefinitions);
 
-    /// <summary>
-    /// Saves requirement fields
-    /// </summary>
-    /// <param name="principal"></param>
-    /// <param name="fields"></param>
-    /// <returns></returns>
-    //Task SaveRequirementFieldsAsync(ClaimsPrincipal principal, IEnumerable<RequirementField> fields);
-
+    Task UpsertRequirementFieldAsync(ClaimsPrincipal principal, RequirementField field);
     #endregion Requirements
 
     #region Test Case
@@ -37,22 +31,28 @@ public interface IFieldManager
     /// <param name="fieldDefinitions"></param>
     /// <returns></returns>
     Task<IReadOnlyList<TestCaseField>> GetTestCaseFieldsAsync(ClaimsPrincipal principal, long id, IEnumerable<FieldDefinition> fieldDefinitions);
-    //Task SaveTestCaseFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseField> fields);
+
+    Task UpsertTestCaseFieldAsync(ClaimsPrincipal principal, TestCaseField field);
+
+
     #endregion Test Case
 
     #region Test Case Run
     Task<IReadOnlyList<TestCaseRunField>> GetTestCaseRunFieldsAsync(ClaimsPrincipal principal, long testRunId, long testCaseRunId, IEnumerable<FieldDefinition> fieldDefinitions);
-    //Task SaveTestCaseRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestCaseRunField> fields);
+    Task UpsertTestCaseRunFieldAsync(ClaimsPrincipal principal, TestCaseRunField field);
     #endregion Test Case Run
 
-    Task UpsertTestCaseRunFieldAsync(ClaimsPrincipal principal, TestCaseRunField field);
-    Task UpsertTestCaseFieldAsync(ClaimsPrincipal principal, TestCaseField field);
-    Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field);
-    Task UpsertRequirementFieldAsync(ClaimsPrincipal principal, RequirementField field);
 
+
+    #region Issues
+    Task UpsertIssueFieldAsync(ClaimsPrincipal principal, IssueField field);
+    Task<IReadOnlyList<IssueField>> GetIssueFieldsAsync(ClaimsPrincipal principal, long id, IEnumerable<FieldDefinition> fieldDefinitions);
+
+    #endregion
 
     #region Test Run
     Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(ClaimsPrincipal principal, long testRunId, IEnumerable<FieldDefinition> fieldDefinitions);
-    //Task SaveTestRunFieldsAsync(ClaimsPrincipal principal, IEnumerable<TestRunField> fields);
+    Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field);
+
     #endregion Test Run
 }

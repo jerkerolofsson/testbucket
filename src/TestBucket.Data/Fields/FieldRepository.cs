@@ -1,6 +1,7 @@
 ﻿using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
+using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 
@@ -291,4 +292,60 @@ internal class FieldRepository : IFieldRepository
     #endregion Requirement
 
 
+    #region Issues
+
+    public async Task UpsertIssueFieldAsync(IssueField field)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var existingField = await dbContext.IssueFields
+            .Where(x => x.FieldDefinitionId == field.FieldDefinitionId && x.LocalIssueId == field.LocalIssueId && x.TenantId == field.TenantId).FirstOrDefaultAsync();
+        if (existingField is not null)
+        {
+            field.CopyTo(existingField);
+            existingField.Inherited = field.Inherited;
+            dbContext.IssueFields.Update(existingField);
+        }
+        else
+        {
+            var tmp = field.FieldDefinition;
+            field.FieldDefinition = null;
+            await dbContext.IssueFields.AddAsync(field);
+            field.FieldDefinition = tmp;
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task SaveIssueFieldsAsync(IEnumerable<IssueField> fields)
+    {
+        if (fields.Count() == 0)
+        {
+            return;
+        }
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await dbContext.IssueFields.AsNoTracking().Where(x => x.LocalIssueId == fields.First().LocalIssueId).ExecuteDeleteAsync();
+
+        foreach (var field in fields)
+        {
+            var tmp = field.FieldDefinition;
+            field.FieldDefinition = null;
+            await dbContext.IssueFields.AddAsync(field);
+            field.FieldDefinition = tmp;
+        }
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<IReadOnlyList<IssueField>> GetIssueFieldsAsync(string tenantId, long localIssueId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var fields = dbContext.IssueFields.AsNoTracking()
+            .Include(x => x.FieldDefinition)
+            .Where(x => x.TenantId == tenantId && x.LocalIssueId == localIssueId && x.FieldDefinition!.IsDeleted == false);
+        return await fields.ToListAsync();
+    }
+    #endregion Issues
 }

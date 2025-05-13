@@ -1,0 +1,60 @@
+﻿@using TestBucket.Contracts.Requirements
+@using TestBucket.Contracts.Requirements.Types
+@using TestBucket.Domain.Requirements.Models
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<IssueStrings> issueLoc
+
+<EditForm Model="@_issue" OnValidSubmit="OnValidSubmit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>
+            @issueLoc["new-issue"]
+        </TitleContent>
+        <DialogContent>
+
+            <MudStack Spacing="5">
+
+                <MudStack Spacing="0">
+                    <FieldHeader>@loc["title"]</FieldHeader>
+                    <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_issue.Title"></MudTextField>
+                </MudStack>
+
+                <MudStack Spacing="0">
+                    <FieldHeader>@loc["description"]</FieldHeader>
+                    <MarkdownEditor @bind-Value="@_issue.Description" @bind-Preview="@_preview" />
+                </MudStack>
+
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            @if (_issue.Title?.Length > 0)
+            {
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            }
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private LocalIssue _issue = new() { Title = "" };
+    private bool _preview = false;
+
+    protected override void OnInitialized()
+    {
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+        MudDialog.Close(_issue);
+    }
+}
+

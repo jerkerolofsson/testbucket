@@ -13,6 +13,22 @@ internal class IssueController : TenantBaseService
         _manager = manager;
     }
 
+    public async Task<PagedResult<LocalIssue>> SearchAsync(long projectId, string text, int offset, int count)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.SearchLocalIssuesAsync(new Domain.Issues.Search.SearchIssueRequest(principal, projectId, text), offset, count);
+    }
+
+    public async Task<LocalIssue?> GetIssueByIdAsync(long id)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.GetIssueByIdAsync(principal, id);
+    }
+    public async Task AddIssueAsync(LocalIssue issue)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.AddLocalIssueAsync(principal, issue);
+    }
     public async Task AddIssueAsync(LinkedIssue issue)
     {
         var principal = await GetUserClaimsPrincipalAsync();

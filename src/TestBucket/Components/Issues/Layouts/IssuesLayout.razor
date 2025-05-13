@@ -12,7 +12,7 @@
     <StartContent>
 
         <MudStack Class="pa-2" Style="width: 100%;">
-            <MudNavLink Href="@CreateIssueUrl">@issueLoc["create-issue"]</MudNavLink>
+            Saved queries..
         </MudStack>
 
     </StartContent>
@@ -25,7 +25,5 @@
 @code {
     [CascadingParameter] TestProject? Project { get; set; }
     [CascadingParameter] Team? Team { get; set; }
-
-    private string CreateIssueUrl => appNavigationManager.GetCreateIssueUrl();
 
 }

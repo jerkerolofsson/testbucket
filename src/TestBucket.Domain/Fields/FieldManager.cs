@@ -9,6 +9,7 @@ using Mediator;
 
 using TestBucket.Domain.Fields.Events;
 using TestBucket.Domain.Fields.Helpers;
+using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
 
@@ -24,8 +25,66 @@ internal class FieldManager : IFieldManager
         _mediator = mediator;
     }
 
-    #region Requirement
 
+    #region Issues
+
+    /// <summary>
+    /// Returns requirement fields, with default values for current field definitions
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="id"></param>
+    /// <param name="fieldDefinitions"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<IssueField>> GetIssueFieldsAsync(ClaimsPrincipal principal, long id, IEnumerable<FieldDefinition> fieldDefinitions)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+
+        var fields = (await _repository.GetIssueFieldsAsync(tenantId, id)).ToList();
+
+        // Add missing fields
+        foreach (var fieldDefinition in fieldDefinitions)
+        {
+            var field = fields.Where(x => x.FieldDefinitionId == fieldDefinition.Id).FirstOrDefault();
+            if (field is null)
+            {
+                fields.Add(new IssueField
+                {
+                    FieldDefinition = fieldDefinition,
+                    LocalIssueId = id,
+                    FieldDefinitionId = fieldDefinition.Id
+                });
+            }
+        }
+
+        return fields;
+    }
+    public async Task UpsertIssueFieldAsync(ClaimsPrincipal principal, IssueField field)
+    {
+        var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
+        ArgumentNullException.ThrowIfNull(fieldDefinition);
+        principal.ThrowIfNoPermission(fieldDefinition);
+
+        field.TenantId = principal.GetTenantIdOrThrow();
+        await _repository.UpsertIssueFieldAsync(field);
+
+        //await _mediator.Publish(new RequirementFieldChangedNotification(principal, field));
+    }
+    #endregion Issue
+
+
+    #region Requirement
+    public async Task UpsertRequirementFieldAsync(ClaimsPrincipal principal, RequirementField field)
+    {
+        var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
+        ArgumentNullException.ThrowIfNull(fieldDefinition);
+        principal.ThrowIfNoPermission(fieldDefinition);
+
+        field.TenantId = principal.GetTenantIdOrThrow();
+        await _repository.UpsertRequirementFieldAsync(field);
+
+        await _mediator.Publish(new RequirementFieldChangedNotification(principal, field));
+    }
     /// <summary>
     /// Returns requirement fields, with default values for current field definitions
     /// </summary>
@@ -60,6 +119,7 @@ internal class FieldManager : IFieldManager
 
     #endregion Requirement
 
+    #region Test Run
     public async Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(ClaimsPrincipal principal, long testRunId, IEnumerable<FieldDefinition> fieldDefinitions)
     {
         var tenantId = principal.GetTenantIdOrThrow();
@@ -84,6 +144,7 @@ internal class FieldManager : IFieldManager
 
         return fields;
     }
+    #endregion
 
     public async Task<IReadOnlyList<TestCaseRunField>> GetTestCaseRunFieldsAsync(ClaimsPrincipal principal, long testRunId, long testCaseRunId, IEnumerable<FieldDefinition> fieldDefinitions)
     {
@@ -145,17 +206,7 @@ internal class FieldManager : IFieldManager
     }
 
 
-    public async Task UpsertRequirementFieldAsync(ClaimsPrincipal principal, RequirementField field)
-    {
-        var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
-        ArgumentNullException.ThrowIfNull(fieldDefinition);
-        principal.ThrowIfNoPermission(fieldDefinition);
 
-        field.TenantId = principal.GetTenantIdOrThrow();
-        await _repository.UpsertRequirementFieldAsync(field);
-
-        await _mediator.Publish(new RequirementFieldChangedNotification(principal, field));
-    }
     public async Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field)
     {
         var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);

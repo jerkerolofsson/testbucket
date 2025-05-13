@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Contracts.Fields
+@using TestBucket.Domain.Issues.Models
 @using TestBucket.Domain.Requirements.Models
 @inject FieldController fieldController
 
@@ -18,7 +19,10 @@
 {
     <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnRequirementFieldChangedAsync" />
 }
-
+@foreach (var field in _issueFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
+{
+    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnIssueFieldChangedAsync" />
+}
 
 
 @foreach (var field in Fields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
@@ -30,6 +34,8 @@
     [Parameter] public TestCase? TestCase { get; set; }
     [Parameter] public TestRun? TestRun { get; set; }
     [Parameter] public TestCaseRun? TestCaseRun { get; set; }
+    [Parameter] public LocalIssue? Issue { get; set; }
+
     [Parameter] public bool AutoSaveChanges { get; set; } = true;
     [Parameter] public bool AllowMultiSelection { get; set; } = true;
     [Parameter] public bool ReadOnly { get; set; }
@@ -44,17 +50,20 @@
     public IReadOnlyList<TestCaseRunField> TestCaseRunFields => _testCaseRunFields;
     public IReadOnlyList<TestRunField> TestRunFields => _testRunFields;
     public IReadOnlyList<RequirementField> RequirementFields => _requirementFields;
+    public IReadOnlyList<IssueField> IssueFields => _issueFields;
 
 
     private List<TestCaseField> _testCaseFields = [];
     private List<TestCaseRunField> _testCaseRunFields = [];
     private List<TestRunField> _testRunFields = [];
     private List<RequirementField> _requirementFields = [];
+    private List<IssueField> _issueFields = [];
 
     private long? _testCaseId;
     private long? _testCaseRunId;
     private long? _testRunId;
     private long? _requirementId;
+    private long? _issueId;
     private long? _testProjectId;
 
     private async Task LoadAsync()
@@ -74,6 +83,23 @@
                 return a.FieldDefinition!.Name.CompareTo(b.FieldDefinition!.Name);
             });
         }
+
+        if (Issue is not null && (_issueId != Issue.Id || _testProjectId != Issue.TestProjectId))
+        {
+            _issueId = Issue.Id;
+            _testProjectId = Issue.TestProjectId;
+            var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = Issue.TestProjectId, Target = FieldTarget.Issue });
+            _issueFields = Issue.IssueFields?.ToList() ?? [];
+            if (_issueFields.Count != definitions.Count)
+            {
+                _issueFields = (await fieldController.GetIssueFieldsAsync(Issue.Id, definitions)).ToList();
+            }
+            _issueFields.Sort((a, b) =>
+            {
+                return a.FieldDefinition!.Name.CompareTo(b.FieldDefinition!.Name);
+            });
+        }
+
         if (TestCase is not null && (_testCaseId != TestCase.Id || _testProjectId != TestCase.TestProjectId))
         {
             _testCaseId = TestCase.Id;
@@ -155,13 +181,21 @@
             await fieldController.UpsertTestCaseRunFieldAsync(field);
         }
     }
+    private async Task OnIssueFieldChangedAsync(FieldValue? value)
+    {
+        if (value is IssueField field && AutoSaveChanges)
+        {
+            // Cancel inherited as it was manually changed
+            field.Inherited = false;
+            await fieldController.UpsertIssueFieldAsync(field);
+        }
+    }
     private async Task OnRequirementFieldChangedAsync(FieldValue? value)
     {
         if (value is RequirementField field && AutoSaveChanges)
         {
             // Cancel inherited as it was manually changed
             field.Inherited = false;
-
             await fieldController.UpsertRequirementFieldAsync(field);
         }
     }

@@ -9,6 +9,7 @@ using TestBucket.Domain.Issues.Mapping;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Search;
 using TestBucket.Domain.Issues.Specifications;
+using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing;
 
@@ -41,7 +42,7 @@ public class IssueManager : IIssueManager
     #region Local Issues
     public async Task AddLocalIssueAsync(ClaimsPrincipal principal, LocalIssue issue)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.ReadWrite);
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
         issue.CreatedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         issue.ModifiedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         issue.TenantId = principal.GetTenantIdOrThrow();
@@ -52,6 +53,7 @@ public class IssueManager : IIssueManager
     public async Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(SearchIssueRequest request, int offset, int count)
     {
         var principal = request.Principal;
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
         List<FilterSpecification<LocalIssue>> filters = [
             new FilterByProject<LocalIssue>(request.ProjectId),
             new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow())
@@ -73,7 +75,7 @@ public class IssueManager : IIssueManager
     }
     public async Task<LocalIssue?> FindLocalIssueFromExternalAsync(ClaimsPrincipal principal, long testProjectId, long? externalSystemId, string? externalId)
     {
-
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
         List<FilterSpecification<LocalIssue>> filters = [
             new FilterByProject<LocalIssue>(testProjectId),
             new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow())
@@ -93,9 +95,24 @@ public class IssueManager : IIssueManager
 
     public async Task UpdateLocalIssueAsync(ClaimsPrincipal principal, LocalIssue existingIssue)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
         principal.ThrowIfEntityTenantIsDifferent(existingIssue);
         await _repository.UpdateLocalIssueAsync(existingIssue);
     }
+
+    public async Task<LocalIssue?> GetIssueByIdAsync(ClaimsPrincipal principal, long id)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
+
+        List<FilterSpecification<LocalIssue>> filters = [
+            new FindLocalIssueById(id),
+            new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow())
+        ];
+        var result = await _repository.SearchAsync(filters, 0, 1);
+        return result.Items.FirstOrDefault();
+    }
+
+
     #endregion Local Issues
 
     #region Linked Issues

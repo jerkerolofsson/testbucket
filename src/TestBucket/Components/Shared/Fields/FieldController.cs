@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared;
@@ -60,6 +61,26 @@ internal class FieldController : TenantBaseService
     }
     #endregion Test Case
 
+    #region Issues
+    /// <summary>
+    /// Returns fields for a specific requirement
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="fieldDefinitions"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<IssueField>> GetIssueFieldsAsync(long id, IEnumerable<FieldDefinition> fieldDefinitions)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.GetIssueFieldsAsync(principal, id, fieldDefinitions);
+    }
+
+    public async Task UpsertIssueFieldAsync(IssueField field)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.UpsertIssueFieldAsync(principal, field);
+    }
+    #endregion Issues
+
     #region Requirements
     /// <summary>
     /// Returns fields for a specific requirement
@@ -71,20 +92,6 @@ internal class FieldController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _manager.GetRequirementFieldsAsync(principal, id, fieldDefinitions);
-    }
-
-    /// <summary>
-    /// Saves requirement fields
-    /// </summary>
-    /// <param name="fields"></param>
-    /// <returns></returns>
-    public async Task SaveRequirementFieldsAsync(IEnumerable<RequirementField> fields)
-    {
-        var principal = await GetUserClaimsPrincipalAsync();
-        foreach (var field in fields)
-        {
-            await _manager.UpsertRequirementFieldAsync(principal, field);
-        }
     }
 
     public async Task UpsertRequirementFieldAsync(RequirementField field)

@@ -18,6 +18,12 @@
         </DialogContent>
 
         <DialogActions>
+            @if (Extension is not null)
+            {
+                <MudText Style="opacity: 0.4">@Extension.FriendlyName @Extension.Version</MudText>
+            }
+            <MudSpacer/>
+
             <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
             <MudButton OnClick="Close">@loc["cancel"]</MudButton>
         </DialogActions>

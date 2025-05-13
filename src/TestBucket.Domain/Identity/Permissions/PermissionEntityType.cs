@@ -44,6 +44,8 @@ namespace TestBucket.Domain.Identity.Permissions
         /// <summary>
         /// Features/components/systems/layers and commits
         /// </summary>
-        Architecture
+        Architecture,
+
+        Issue
     }
 }

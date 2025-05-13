@@ -120,6 +120,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IIssueManager, IssueManager>();
         services.AddScoped<IMilestoneManager, MilestoneManager>();
         services.AddHostedService<MilestoneIndexer>();
+        services.AddHostedService<IssueProviderBackgroundIndexer>();
 
         services.AddScoped<IUserManager, UserManager>();
         services.AddScoped<IProfilePictureManager, ProfilePictureManager>();

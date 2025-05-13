@@ -1,0 +1,24 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Issues/Create"
+@using TestBucket.Components.Issues.Layouts
+@layout IssuesLayout
+@inject IStringLocalizer<SharedStrings> loc
+
+@if(Project is not null)
+{
+    <div class="container-fill-2-rows-alt">
+        <IssueEditor TestProjectId="@Project.Id" Issue="@_issue"/>
+
+        <MudStack Row Justify="Justify.FlexEnd">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary">@loc["create"]</MudButton>
+        </MudStack>
+    </div>
+}
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private LocalIssue _issue = new();
+}

@@ -1,0 +1,31 @@
+﻿@inherits LayoutComponentBase
+@layout AppLayout
+@using Humanizer
+@inject TestCaseEditorController testCaseEditor
+@inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<IssueStrings> issueLoc
+<TenantRedirect />
+
+<Splitter Style="height: 100%" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+
+        <MudStack Class="pa-2" Style="width: 100%;">
+            <MudNavLink Href="@CreateIssueUrl">@issueLoc["create-issue"]</MudNavLink>
+        </MudStack>
+
+    </StartContent>
+
+    <EndContent>
+        @Body
+    </EndContent>
+</Splitter>
+
+@code {
+    [CascadingParameter] TestProject? Project { get; set; }
+    [CascadingParameter] Team? Team { get; set; }
+
+    private string CreateIssueUrl => appNavigationManager.GetCreateIssueUrl();
+
+}

@@ -1,0 +1,10 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Issues"
+@using TestBucket.Components.Issues.Layouts
+@layout IssuesLayout
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+}

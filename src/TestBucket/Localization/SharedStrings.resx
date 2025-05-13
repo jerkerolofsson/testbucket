@@ -539,4 +539,16 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="delete-folder" xml:space="preserve">
     <value>Delete folder</value>
   </data>
+  <data name="enabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value>Testing</value>
+  </data>
+  <data name="reporting" xml:space="preserve">
+    <value>Reporting</value>
+  </data>
+  <data name="issues" xml:space="preserve">
+    <value>Issues</value>
+  </data>
 </root>

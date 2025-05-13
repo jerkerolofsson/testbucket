@@ -94,7 +94,7 @@ public class TestProject
     /// Applicable states for issues that a user can select
     /// </summary>
     [Column(TypeName = "jsonb")]
-    public IssueStates[]? IssueStates { get; set; }
+    public IssueState[]? IssueStates { get; set; }
 
     // Navigation
 

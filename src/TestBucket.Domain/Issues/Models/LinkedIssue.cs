@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Issues.Models;
 
@@ -21,7 +15,9 @@ public class LinkedIssue : ProjectEntity
     public string? ExternalId { get; set; }
 
     /// <summary>
-    /// Textual identifier for the external system, e.g. jira, github
+    /// Textual identifier for the external system, e.g. jira, github, gitlab
+    /// 
+    /// If null, assume the issue is local only
     /// </summary>
     public string? ExternalSystemName { get; set; }
 
@@ -65,9 +61,16 @@ public class LinkedIssue : ProjectEntity
     /// </summary>
     public string? IssueType { get; set; }
 
+    /// <summary>
+    /// ID to display in UI
+    /// </summary>
+    public string? ExternalDisplayId { get; set; }
+
     // Navigation
+
+    public long? LocalIssueId { get; set; }
+    public LocalIssue? LocalIssue { get; set; }
 
     public long? TestCaseRunId { get; set; }
     public TestCaseRun? TestCaseRun { get; set; }
-    public string? ExternalDisplayId { get; set; }
 }

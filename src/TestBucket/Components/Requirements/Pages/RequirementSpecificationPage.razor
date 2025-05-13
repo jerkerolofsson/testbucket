@@ -4,13 +4,13 @@
 @layout RequirementsLayout
 @inject RequirementBrowser browser
 
-<MudStack>
-<MudStack Row Style="width: 100%; margin-right: 16px" Spacing="1">
-    <PathNavigation RequirementSpecification="@_spec" />
-    <MudSpacer />
-</MudStack>
+<MudStack Style="width: 100%">
+    <MudStack Row Style="width: 100%; margin-right: 16px" Spacing="1">
+        <PathNavigation RequirementSpecification="@_spec" />
+        <MudSpacer />
+    </MudStack>
 
-<RequirementSpecificationEditor Specification="@_spec" />
+    <RequirementSpecificationEditor Specification="@_spec" />
 </MudStack>
 
 @code {

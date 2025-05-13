@@ -96,9 +96,15 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<PipelineJob> PipelineJobs { get; set; }
 
     /// <summary>
-    /// Issues
+    /// Linkes between Issues and Tests
     /// </summary>
     internal DbSet<LinkedIssue> LinkedIssues { get; set; }
+
+    /// <summary>
+    /// Local issues stored in the DB.
+    /// These may be copies of external issues
+    /// </summary>
+    internal DbSet<LocalIssue> LocalIssues { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

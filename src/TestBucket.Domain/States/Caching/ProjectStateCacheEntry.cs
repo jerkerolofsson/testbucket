@@ -14,6 +14,6 @@ public class ProjectStateCacheEntry
 {
     public required IReadOnlyList<TestState> TestStates { get; set; }
     public required IReadOnlyList<RequirementState> RequirementStates { get; set; }
-    public required IReadOnlyList<IssueStates> IssueStates { get; set; }
+    public required IReadOnlyList<IssueState> IssueStates { get; set; }
 
 }

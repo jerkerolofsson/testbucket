@@ -8,13 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Components\Issues\**" />
-    <Content Remove="Components\Issues\**" />
-    <EmbeddedResource Remove="Components\Issues\**" />
-    <None Remove="Components\Issues\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.1.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.0.0" />
@@ -53,6 +46,8 @@
   <ItemGroup>
     <Folder Include="Components\Administration\" />
     <Folder Include="Components\Environments\Layouts\" />
+    <Folder Include="Components\Issues\ApiControllers\" />
+    <Folder Include="Components\Issues\Dialogs\" />
     <Folder Include="Components\Milestones\Controls\" />
     <Folder Include="Components\Shared\Commands\" />
     <Folder Include="Components\Tests\TestRuns\Services\" />

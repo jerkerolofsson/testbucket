@@ -11,7 +11,9 @@ using NGitLab.Models;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Issues.Models;
 
-namespace TestBucket.Gitlab;
+using static System.Net.Mime.MediaTypeNames;
+
+namespace TestBucket.Gitlab.Issues;
 public class GitlabIssueProvider : IExternalIssueProvider
 {
     public string SystemName => ExtensionConstants.SystemName;
@@ -64,7 +66,7 @@ public class GitlabIssueProvider : IExternalIssueProvider
         return issues;
     }
 
-    private static IssueDto MapToDto(ExternalSystemDto config, long id, NGitLab.Models.Issue gitlabIssue)
+    private static IssueDto MapToDto(ExternalSystemDto config, long id, Issue gitlabIssue)
     {
         return new IssueDto()
         {
@@ -85,4 +87,27 @@ public class GitlabIssueProvider : IExternalIssueProvider
         };
     }
 
+    public async Task<IReadOnlyList<IssueDto>> GetIssuesAsync(ExternalSystemDto config, DateTimeOffset? from, DateTimeOffset until, CancellationToken cancellationToken)
+    {
+        var query = new IssueQuery
+        {
+            CreatedAfter = from?.UtcDateTime,
+            CreatedBefore = until.UtcDateTime
+        };
+
+        var issues = new List<IssueDto>();
+        if (long.TryParse(config.ExternalProjectId, out var projectId))
+        {
+            var client = new GitLabClient(config.BaseUrl, config.AccessToken);
+            var gitlabIssues = client.Issues.GetAsync(projectId, query);
+            if (gitlabIssues is not null)
+            {
+                await foreach (var gitlabIssue in gitlabIssues)
+                {
+                    issues.Add(MapToDto(config, gitlabIssue.Id, gitlabIssue));
+                }
+            }
+        }
+        return issues;
+    }
 }

@@ -4,37 +4,41 @@
 @inject IStringLocalizer<CodeStrings> codeLoc
 
 <EditForm Model="@Feature" OnValidSubmit="Submit">
-    <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 70vw;">
         <TitleContent>@Feature?.Name</TitleContent>
         <DialogContent>
-            <MudStack>
-                <AritecturalComponentEditor @bind-Component="@Feature"/>
+            <MudTabs Style="width: 100%;">
+                <MudTabPanel Text="@loc["general"]">
+                    <AritecturalComponentEditor @bind-Component="@Feature" />
+                </MudTabPanel>
 
-
-                @if(Feature is not null)
-                {
-                    <MudDataGrid Items="_patterns" T="GlobPatternInputModel" EditMode="DataGridEditMode.Cell" ReadOnly="false" Dense> 
-                        <ToolBarContent>
-                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-                                <MudText Typo="Typo.h2">@codeLoc["glob-patterns"]</MudText>
-                                <MudSpacer />
-                                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(() =>_patterns.Add(new GlobPatternInputModel{ Pattern = "src/**/*.*"}))"></MudIconButton>
-                            </MudStack>
-                        </ToolBarContent>
-                        <Columns>
-                            <PropertyColumn Property="x => x.Pattern"/>
-                            <TemplateColumn>
-                                <EditTemplate Context="deleteCtx">
-                                    <MudIconButton 
-                                        Color="Color.Error"
-                                        Size="Size.Small"
-                                        Icon="@Icons.Material.Filled.Clear" OnClick="@(() =>_patterns.Remove(deleteCtx.Item))"></MudIconButton>
-                                </EditTemplate>
-                            </TemplateColumn>
-                        </Columns>
-                    </MudDataGrid>
-                }
-            </MudStack>
+                <MudTabPanel Text="@codeLoc["glob-patterns"]">
+                    <MudStack>
+                        @if (Feature is not null)
+                        {
+                            <MudDataGrid Items="_patterns" T="GlobPatternInputModel" EditMode="DataGridEditMode.Cell" ReadOnly="false" Dense>
+                                <ToolBarContent>
+                                    <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                                        <MudText Typo="Typo.h2">@codeLoc["glob-patterns"]</MudText>
+                                        <MudSpacer />
+                                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="@(() =>_patterns.Add(new GlobPatternInputModel{ Pattern = "src/**/*.*"}))"></MudIconButton>
+                                    </MudStack>
+                                </ToolBarContent>
+                                <Columns>
+                                    <PropertyColumn Property="x => x.Pattern" />
+                                    <TemplateColumn>
+                                        <EditTemplate Context="deleteCtx">
+                                            <MudIconButton Color="Color.Error"
+                                                           Size="Size.Small"
+                                                           Icon="@Icons.Material.Filled.Clear" OnClick="@(() =>_patterns.Remove(deleteCtx.Item))"></MudIconButton>
+                                        </EditTemplate>
+                                    </TemplateColumn>
+                                </Columns>
+                            </MudDataGrid>
+                        }
+                    </MudStack>
+                </MudTabPanel>
+            </MudTabs>
 
         </DialogContent>
 

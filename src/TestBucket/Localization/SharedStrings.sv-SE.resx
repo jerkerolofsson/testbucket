@@ -537,4 +537,16 @@
   <data name="delete-folder" xml:space="preserve">
     <value>Ta bort folder</value>
   </data>
+  <data name="enabled" xml:space="preserve">
+    <value />
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value />
+  </data>
+  <data name="reporting" xml:space="preserve">
+    <value />
+  </data>
+  <data name="issues" xml:space="preserve">
+    <value />
+  </data>
 </root>

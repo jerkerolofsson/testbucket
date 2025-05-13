@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.Testing.States;
 
@@ -25,7 +26,7 @@ internal class DefaultStates
     }
 
     /// <summary>
-    /// Returns default reqirement states
+    /// Returns default requirement states
     /// </summary>
     /// <returns></returns>
     internal static RequirementState[] GetDefaultRequirementStates()
@@ -38,6 +39,24 @@ internal class DefaultStates
                 new() { Name = RequirementStates.Delivered, MappedState = MappedRequirementState.Delivered },
                 new() { Name = RequirementStates.Completed, MappedState = MappedRequirementState.Completed },
                 new() { Name = RequirementStates.Canceled, MappedState = MappedRequirementState.Canceled },
+            ];
+    }
+
+
+    /// <summary>
+    /// Returns default issue states
+    /// </summary>
+    /// <returns></returns>
+    internal static IssueState[] GetDefaultIssueStates()
+    {
+        return [
+                new() { Name = IssueStates.Open, MappedState = MappedIssueState.Open },
+                new() { Name = IssueStates.Accepted, MappedState = MappedIssueState.Accepted },
+                new() { Name = IssueStates.Assigned, MappedState = MappedIssueState.Assigned },
+                new() { Name = IssueStates.Triaged, MappedState = MappedIssueState.Triaged },
+                new() { Name = IssueStates.InProgress, MappedState = MappedIssueState.InProgress },
+                new() { Name = IssueStates.Reviewed, MappedState = MappedIssueState.Reviewed },
+                new() { Name = IssueStates.Closed, MappedState = MappedIssueState.Closed },
             ];
     }
 

@@ -1,5 +1,6 @@
 ﻿using Mediator;
 
+using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Contracts.Testing.States;
@@ -49,7 +50,17 @@ public class StateService : IStateService
         }
         return entry?.TestStates ?? DefaultStates.GetDefaultTestCaseRunStates();
     }
+    public async Task<IReadOnlyList<IssueState>> GetIssueStatesAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
 
+        if (!_cache.TryGetValue(projectId, out ProjectStateCacheEntry? entry))
+        {
+            entry = await _mediator.Send(new RefreshProjectStateCacheRequest(principal, projectId));
+        }
+        return entry?.IssueStates ?? DefaultStates.GetDefaultIssueStates();
+    }
 
     public async Task<IReadOnlyList<RequirementState>> GetRequirementStatesAsync(ClaimsPrincipal principal, long projectId)
     {

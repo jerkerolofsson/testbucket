@@ -154,11 +154,11 @@
         Feature[] page;
         if(string.IsNullOrEmpty(_searchText))
         {
-            page = _features.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+            page = _features.OrderBy(x=>x.Name).Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
         }
         else
         {
-            page = _features.Where(x=>x.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase)).Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+            page = _features.OrderBy(x => x.Name).Where(x => x.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase)).Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
         }
 
 

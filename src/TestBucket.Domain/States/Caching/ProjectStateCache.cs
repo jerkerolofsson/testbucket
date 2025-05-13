@@ -22,7 +22,7 @@ public class ProjectStateCache
     {
         var entry = new ProjectStateCacheEntry
         {
-            IssueStates = project.IssueStates ?? [],
+            IssueStates = project.IssueStates ?? DefaultStates.GetDefaultIssueStates(),
             RequirementStates = project.RequirementStates ?? DefaultStates.GetDefaultRequirementStates(),
             TestStates = project.TestStates ?? DefaultStates.GetDefaultTestCaseRunStates(),
         };

@@ -18,17 +18,19 @@ public interface IExternalIssueProvider
     /// <summary>
     /// Searches for issues
     /// </summary>
+    /// <param name="system"></param>
     /// <param name="text"></param>
     /// <param name="offset"></param>
     /// <param name="count"></param>
     /// <returns></returns>
-    Task<IReadOnlyList<IssueDto>> SearchAsync(ExternalSystemDto config, string text, int offset, int count, CancellationToken cancellationToken);
+    Task<IReadOnlyList<IssueDto>> SearchAsync(ExternalSystemDto system, string? text, int offset, int count, CancellationToken cancellationToken);
 
     /// <summary>
     /// Returns information about an issue
     /// </summary>
-    /// <param name="config"></param>
+    /// <param name="system"></param>
     /// <param name="externalIssueId"></param>
     /// <returns></returns>
-    Task<IssueDto?> GetIssueAsync(ExternalSystemDto config, string externalIssueId, CancellationToken cancellationToken);
+    Task<IssueDto?> GetIssueAsync(ExternalSystemDto system, string externalIssueId, CancellationToken cancellationToken);
+    Task<IReadOnlyList<IssueDto>> GetIssuesAsync(ExternalSystemDto system, DateTimeOffset? from, DateTimeOffset until, CancellationToken cancellationToken);
 }

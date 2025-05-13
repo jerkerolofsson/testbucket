@@ -73,22 +73,6 @@
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
-
-    @* @foreach(var extension in _extensions) *@
-    @* { *@
-    @*     if(_configurations.TryGetValue(extension.SystemName, out var externalSystems)) *@
-    @*     { *@
-    @*         foreach(var externalSystem in externalSystems) *@
-    @*         { *@
-    @*             <ExternalIntegrationEditor Extension="@extension" *@
-    @*             Name="@extension.FriendlyName"  *@
-    @*             Integration="@externalSystem"  *@
-    @*             IntegrationChanged="OnConfigurationChanged"  *@
-    @*             Icon="@extension.Icon" /> *@
-
-    @*         } *@
-    @*     } *@
-    @* } *@
 </MudStack>
 
 @code {

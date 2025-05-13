@@ -1,0 +1,43 @@
+﻿@if (Issue is not null)
+{
+    <MudSplitter>
+        <StartContent>
+            <MudStack Style="width: 100%">
+                <MudTextField Variant="Variant.Outlined"
+                              T="string" Text="@Issue.Title"
+                              TextChanged="OnTitleChanged" />
+
+                <BasicMarkdownEditor Preview="false"
+                                     Text="@Issue.Description"
+                                     TextChanged="OnDescriptionChanged" />
+            </MudStack>
+        </StartContent>
+        <EndContent>
+
+            Fields
+
+        </EndContent>
+    </MudSplitter>
+}
+
+@code {
+    [Parameter] public LocalIssue? Issue { get; set; }
+    [Parameter] public EventCallback<LocalIssue> IssueChanged { get; set; }
+    [Parameter] public long? TestProjectId { get; set; }
+
+    private async Task OnDescriptionChanged(string description)
+    {
+        if (Issue is null) return;
+
+        Issue.Description = description;
+        await IssueChanged.InvokeAsync(Issue);
+    }
+    private async Task OnTitleChanged(string title)
+    {
+        if (Issue is null) return;
+
+        Issue.Title = title;
+        await IssueChanged.InvokeAsync(Issue);
+    }
+
+}

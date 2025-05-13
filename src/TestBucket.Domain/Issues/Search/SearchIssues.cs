@@ -10,51 +10,49 @@ using Mediator;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Issues.Models;
 using TestBucket.Domain.ExtensionManagement;
+using TestBucket.Domain.Issues.Mapping;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
 
 namespace TestBucket.Domain.Issues.Search;
 
-public record class SearchIssueRequest(ClaimsPrincipal Principal, long ProjectId, string Text, int Offset, int Count) : IRequest<SearchIssueResponse>;
+public record class SearchIssueRequest(ClaimsPrincipal Principal, long ProjectId, string? Text) : IRequest<SearchIssueResponse>
+{
+    public string? ExternalSystemName { get; set; }
+    public long? ExternalSystemId { get; set; }
+}
+
 public record class SearchIssueResponse(IReadOnlyList<IssueDto> Issues);
 
 public class SearchIssuesHandler : IRequestHandler<SearchIssueRequest, SearchIssueResponse>
 {
     private readonly IProjectManager _projectManager;
-    //private readonly IIssueRepository _issueRepository;
+    private readonly IIssueManager _issueManager;
     private readonly IReadOnlyList<IExternalIssueProvider> _issueExtensions;
 
     public SearchIssuesHandler(
-        IProjectManager projectManager, 
-        IEnumerable<IExternalIssueProvider> issueExtensions)
+        IProjectManager projectManager,
+        IEnumerable<IExternalIssueProvider> issueExtensions,
+        IIssueManager issuemanager,
+        IIssueManager issueManager)
     {
         _projectManager = projectManager;
         _issueExtensions = issueExtensions.ToList();
-        //_issueRepository = issueRepository;
+        _issueManager = issueManager;
     }
 
     public async ValueTask<SearchIssueResponse> Handle(SearchIssueRequest request, CancellationToken cancellationToken)
     {
         List<IssueDto> issues = [];
+        int offset = 0;
+        int count = 10;
 
-        var integrations = await _projectManager.GetProjectIntegrationsAsync(request.Principal, request.ProjectId);
-        var issueIntegrations = integrations.Where(x => (x.SupportedCapabilities & ExternalSystemCapability.GetIssues) == ExternalSystemCapability.GetIssues);
-        foreach(var config in issueIntegrations)
+        // Search locally
+        var result = await _issueManager.SearchLocalIssuesAsync(request, offset, count);
+        foreach(var linkedIssue in result.Items)
         {
-            if(config.Provider is null)
-            {
-                continue;
-            }
-
-            foreach(var extension in _issueExtensions.Where(x=>x.SystemName ==  config.Provider))
-            {
-                var extensionIssues = await extension.SearchAsync(config.ToDto(), request.Text, request.Offset, request.Count, cancellationToken);
-                foreach(var extensionIssue in extensionIssues)
-                {
-                    issues.Add(extensionIssue);
-                }
-            }
+            issues.Add(linkedIssue.ToDto());
         }
         return new SearchIssueResponse(issues);
     }

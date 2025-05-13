@@ -12,6 +12,7 @@
 @inject ThemingService themingService
 @inject AppNavigationManager appNavigationManager
 @inject IUnifiedSearchManager unifiedSearchManager
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudThemeProvider @ref="@_mudThemeProvider" IsDarkMode="@_isDarkMode" Theme="@themingService.Theme"/>
 <TbThemeProvider UserPreferencesChanged="OnUserPreferencesChanged"/>
@@ -34,6 +35,7 @@
     string authUrl = $"/{tenantId}/Auth";
     string requirementsUrl = $"/{tenantId}/Requirements";
     string reportingUrl = $"/{tenantId}/Reporting";
+    string issuesUrl = $"/{tenantId}/Issues";
     string testsUrl = $"/{tenantId}/Testing";
     string settingsUrl = $"/{tenantId}/Settings";
     string manageUrl = $"/{tenantId}/Account/Manage";
@@ -55,15 +57,14 @@
                         <ProjectBadgePicker Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" />
                         @* <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" /> *@
 
-                        <TbNavLink Href="@requirementsUrl">Oracle</TbNavLink>
-                        <TbNavLink Href="@testsUrl">Testing</TbNavLink>
-                        <TbNavLink Href="@reportingUrl">Reporting</TbNavLink>
-                        <TbNavLink Href="@projectSettingsUrl">Project</TbNavLink>
+                        <TbNavLink Href="@requirementsUrl">@loc["requirements"]</TbNavLink>
+                        <TbNavLink Href="@testsUrl">@loc["testing"]</TbNavLink>
+                        <TbNavLink Href="@issuesUrl">@loc["issues"]</TbNavLink>
+                        <TbNavLink Href="@reportingUrl">@loc["reporting"]</TbNavLink>
 
                         <MudSpacer/>
 
                         <UnifiedSearch/>
-
 
                         <MudMenu Icon="@Icons.Material.Filled.Add">
                             <CommandMenuItems TypeNames="menu-new"/>
@@ -71,13 +72,12 @@
 
                         <DarkModeToggle IsDarkMode="@_isDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
                         <SelfProfileImage/>
+                        
+                        <MudIconButton Icon="@Icons.Material.Filled.Settings" Href="@settingsUrl"></MudIconButton>
+
                         <MudMenu Icon="@Icons.Material.Filled.MoreVert">
 
-                            <!-- Pages -->
-                            <MudMenuItem Icon="@Icons.Material.Filled.ViewList" Label="Testing" Href="@testsUrl"></MudMenuItem>
 
-                            <!-- Admin -->
-                            <MudMenuItem Icon="@Icons.Material.Filled.Settings" Label="Settings" Href="@settingsUrl"></MudMenuItem>
 
                             <!-- Profile / Logout -->
                             <AuthorizeView>

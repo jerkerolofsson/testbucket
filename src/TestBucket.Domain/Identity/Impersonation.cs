@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+
+using Microsoft.EntityFrameworkCore;
 
 using TestBucket.Domain.Tenants.Models;
 
@@ -38,6 +41,7 @@ namespace TestBucket.Domain.Identity
             builder.Add(PermissionEntityType.Requirement, PermissionLevel.All);
             builder.Add(PermissionEntityType.RequirementSpecification, PermissionLevel.All);
             builder.Add(PermissionEntityType.Architecture, PermissionLevel.All);
+            builder.Add(PermissionEntityType.Issue, PermissionLevel.All);
 
             claims.Add(new Claim(PermissionClaims.Permissions, PermissionClaimSerializer.Serialize(builder.Build())));
             if (projectId is not null)

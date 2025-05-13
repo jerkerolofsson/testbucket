@@ -64,6 +64,9 @@
                                     <MudCheckBox Color="Color.Tertiary" T="bool"
                                     Value="@((FieldDefinition.Target&FieldTarget.Requirement) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Requirement, x)">Requirement</MudCheckBox>
 
+                                    <MudCheckBox Color="Color.Tertiary" T="bool"
+                                    Value="@((FieldDefinition.Target&FieldTarget.Issue) != 0)" ValueChanged="x => OnTargetChanged(FieldTarget.Issue, x)">Issue</MudCheckBox>
+
                                 </div>
                                 <FieldDescription>@fieldLoc["field-target-helpertext"]</FieldDescription>
                             </MudStack>

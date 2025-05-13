@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Github;
 using TestBucket.Gitlab;
+using TestBucket.Gitlab.Issues;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class GitlabExtensions

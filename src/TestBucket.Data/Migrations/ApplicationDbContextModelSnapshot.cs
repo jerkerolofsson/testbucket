@@ -1515,6 +1515,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("IssueType")
                         .HasColumnType("text");
 
+                    b.Property<long?>("LocalIssueId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("MilestoneName")
                         .HasColumnType("text");
 
@@ -1547,6 +1550,8 @@ namespace TestBucket.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("LocalIssueId");
+
                     b.HasIndex("TeamId");
 
                     b.HasIndex("TenantId");
@@ -1556,6 +1561,79 @@ namespace TestBucket.Data.Migrations
                     b.HasIndex("TestProjectId");
 
                     b.ToTable("LinkedIssues");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Issues.Models.LocalIssue", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Author")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExternalDisplayId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("ExternalSystemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ExternalSystemName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("IssueType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MilestoneName")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("State")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.ToTable("LocalIssues");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Issues.Models.Milestone", b =>
@@ -1713,7 +1791,7 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("IconUrl")
                         .HasColumnType("text");
 
-                    b.Property<IssueStates[]>("IssueStates")
+                    b.Property<IssueState[]>("IssueStates")
                         .HasColumnType("jsonb");
 
                     b.Property<string>("Name")
@@ -3546,6 +3624,10 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Issues.Models.LinkedIssue", b =>
                 {
+                    b.HasOne("TestBucket.Domain.Issues.Models.LocalIssue", "LocalIssue")
+                        .WithMany()
+                        .HasForeignKey("LocalIssueId");
+
                     b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
                         .WithMany()
                         .HasForeignKey("TeamId");
@@ -3562,11 +3644,34 @@ namespace TestBucket.Data.Migrations
                         .WithMany()
                         .HasForeignKey("TestProjectId");
 
+                    b.Navigation("LocalIssue");
+
                     b.Navigation("Team");
 
                     b.Navigation("Tenant");
 
                     b.Navigation("TestCaseRun");
+
+                    b.Navigation("TestProject");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Issues.Models.LocalIssue", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
 
                     b.Navigation("TestProject");
                 });

@@ -81,7 +81,7 @@ html, body {
     border-color: var(--clr-norun-alt);
 }
 .tb-draggable:not(:has(.drag-handle)):hover {
-    color: var(--mud-palette-secondary);
+    cursor: move;
 }
 
 .mud-icon-button {
@@ -999,3 +999,11 @@ div.tb-profile-image.tb-background-9 {
 /*.resource-group-hover  .node-background.requirement {
     fill: red;
 }*/
+
+.mud-markdown-editor-root.mud-input-outlined.mud-markdown-editor-root-preview:has(.tb-issue-description) {
+    border: solid 1px var(--mud-palette-lines-inputs);
+}
+
+.mud-markdown-editor-root.mud-input-outlined.mud-markdown-editor-root-preview:has(.tb-issue-description) .mud-markdown-preview {
+    padding: 16px;
+}

@@ -390,11 +390,6 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Issues/{issue.Id}";
     }
-    public string GetEditIssueUrl(LocalIssue issue)
-    {
-        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
-        return $"/{tenantId}/Issues/{issue.Id}/Edit";
-    }
     public string GetIssuesUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);

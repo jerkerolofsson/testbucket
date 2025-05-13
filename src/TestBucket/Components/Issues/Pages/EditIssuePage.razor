@@ -1,6 +1,9 @@
 ﻿@attribute [Authorize()]
-@page "/{TenantId}/Issues/{IssueId:long}/Edit"
+@page "/{TenantId}/Issues/{IssueId:long}"
+@using TestBucket.Components.Comments
+@using TestBucket.Components.Comments.Controls
 @using TestBucket.Components.Issues.Layouts
+@using TestBucket.Domain.Comments.Models
 @layout IssuesLayout
 @inject IStringLocalizer<SharedStrings> loc
 @inject IssueController controller
@@ -9,8 +12,9 @@
 
 @if(Project is not null && _issue is not null)
 {
-    <div class="container-fill-2-rows-alt pa-2">
+    <div class="container-fill">
         <IssueEditor TestProjectId="@Project.Id" @bind-Issue="@_issue"/>
+        
     </div>
 }
 
@@ -29,4 +33,5 @@
             _issue = await controller.GetIssueByIdAsync(IssueId);
         }
     }
+
 }

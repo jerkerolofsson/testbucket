@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
 
@@ -29,6 +30,7 @@ public class Comment : ProjectEntity
 
     // Navigation
 
+    public long? LocalIssueId { get; set; }
     public long? RequirementId { get; set; }
     public long? RequirementSpecificationId { get; set; }
     public long? TestCaseId { get; set; }
@@ -36,6 +38,7 @@ public class Comment : ProjectEntity
     public long? TestCaseRunId { get; set; }
     public long? TestSuiteId { get; set; }
 
+    public LocalIssue? LocalIssue { get; set; }
     public Requirement? Requirement { get; set; }
     public TestCase? TestCase { get; set; }
     public TestCaseRun? TestCaseRun { get; set; }

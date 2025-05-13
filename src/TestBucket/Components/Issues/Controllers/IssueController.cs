@@ -24,6 +24,11 @@ internal class IssueController : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         return await _manager.GetIssueByIdAsync(principal, id);
     }
+    public async Task UpdateIssueAsync(LocalIssue issue)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.UpdateLocalIssueAsync(principal, issue);
+    }
     public async Task AddIssueAsync(LocalIssue issue)
     {
         var principal = await GetUserClaimsPrincipalAsync();

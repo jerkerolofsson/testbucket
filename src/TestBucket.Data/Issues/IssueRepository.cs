@@ -25,7 +25,7 @@ internal class IssueRepository : IIssueRepository
     public async Task<PagedResult<LocalIssue>> SearchAsync(List<FilterSpecification<LocalIssue>> filters, int offset, int count)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var issues = dbContext.LocalIssues.AsNoTracking().AsQueryable();
+        var issues = dbContext.LocalIssues.AsNoTracking().Include(x=>x.Comments).AsQueryable();
 
         foreach (var filter in filters)
         {

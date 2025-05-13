@@ -1,38 +1,95 @@
-﻿@using TestBucket.Components.Comments.Controls
+﻿@using TestBucket.Components.Comments
+@using TestBucket.Components.Comments.Controls
+@using TestBucket.Contracts.Issues.States
+@using TestBucket.Domain.Comments.Models
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
+@inject IssueController controller
+@inject CommentsController comments
+@using TestBucket.Components.Shared.Fields
 
 @if (Issue is not null)
 {
-    <MudSplitter>
+    <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false">
         <StartContent>
             <MudStack Style="width: 100%" Class="pa-2">
 
                 <MudStack Spacing="0">
-                    <FieldHeader>@loc["title"]</FieldHeader>
-                    <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Issue.Title"></MudTextField>
+                    @if(_preview)
+                    {
+                        <MudText Typo="Typo.h1">@Issue.Title</MudText>
+                    }
+                    else{
+                        <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Issue.Title"></MudTextField>
+                    }
                 </MudStack>
 
                 <MudStack Spacing="0">
                     <FieldHeader>@loc["description"]</FieldHeader>
-                    <MarkdownEditor @bind-Value="@Issue.Description" @bind-Preview="@_preview" />
+                    <MarkdownEditor @bind-Value="@Issue.Description" @bind-Preview="@_preview" TextAreaClass="tb-issue-description"/>
                 </MudStack>
+
+                <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
             </MudStack>
         </StartContent>
         <EndContent>
             <MudStack Style="width: 100%" Class="pa-2">
+                <Field>
+                    <FieldHeader>@loc["state"]</FieldHeader>
+                    <IssueStateSelect State="_state" StateChanged="OnStateChanged"/>
+                </Field>
                 <FieldsEditor Issue="@Issue"/>
             </MudStack>
         </EndContent>
-    </MudSplitter>
+    </Splitter>
 }
 
 @code {
     [Parameter] public LocalIssue? Issue { get; set; }
     [Parameter] public EventCallback<LocalIssue> IssueChanged { get; set; }
     [Parameter] public long? TestProjectId { get; set; }
+    private List<Comment> _comments = [];
 
-    private bool _preview = false;
+    private bool _preview = true;
+
+    private IssueState _state = new IssueState { MappedState = MappedIssueState.Open, Name = "Open" };
+
+    protected override void OnParametersSet()
+    {
+        _comments = Issue?.Comments ?? [];
+        if(Issue is not null)
+        {
+            _state = new IssueState { MappedState = Issue.MappedState ?? MappedIssueState.Open, Name = Issue.State ?? "Open" };
+        }
+    }
+
+    private async Task OnStateChanged(IssueState state)
+    {
+        _state = state;
+        if(Issue is not null)
+        {
+            Issue.MappedState = state.MappedState;
+            Issue.State = state.Name;
+            await controller.UpdateIssueAsync(Issue);
+        }
+    }
+
+    private async Task OnCommentAdded(Comment comment)
+    {
+        if (Issue is not null)
+        {
+            comment.TeamId = Issue.TeamId;
+            comment.TestProjectId = Issue.TestProjectId;
+            comment.LocalIssueId = Issue.Id;
+            _comments.Add(comment);
+            await comments.AddCommentAsync(comment);
+        }
+    }
+    private async Task OnCommentDeleted(Comment comment)
+    {
+        _comments.Remove(comment);
+        await comments.DeleteCommentAsync(comment);
+    }
 
     private async Task OnDescriptionChanged(string description)
     {

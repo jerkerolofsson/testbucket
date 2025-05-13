@@ -25,7 +25,7 @@
                                 <div class="when">@(comment.Created.Humanize())</div>
 
                                 @if (comment.CreatedBy == _currentUserName ||
-                                _authState?.User?.HasPermission(EntityType, PermissionLevel.Delete) == true)
+                               _authState?.User?.HasPermission(EntityType, PermissionLevel.Delete) == true)
                                 {
                                     <MudMenu Icon="@Icons.Material.Filled.MoreVert">
                                         <MudMenuItem OnClick="async () => await DeleteCommentAsync(comment)">@loc["delete"]</MudMenuItem>
@@ -48,7 +48,7 @@
                 }
                 else if (comment.LoggedAction is not null) // special action
                 {
-            
+
                     <div class="comment-container">
                         <div>
                         </div>
@@ -90,7 +90,7 @@
                             <div class="user">@loc["add-comment"]</div>
                         </div>
                         <div class="comment-container-text">
-                            <BasicMarkdownEditor CanSave="false" Preview="false" @bind-Text="_comment"/>
+                            <MarkdownEditor @bind-Preview="_preview" @bind-Value="_comment" />
                             <MudStack Row Style="width: 100%" Class="mt-2">
 
                                 @foreach(var emoji in _emojis)
@@ -118,6 +118,7 @@
     [Parameter] public EventCallback<Comment> CommentDeleted { get; set; }
     [Parameter] public PermissionEntityType EntityType { get; set; } = PermissionEntityType.Requirement;
 
+    private bool _preview = false;
     private string _currentUserName = "";
     private string _comment = "";
     private AuthenticationState? _authState;

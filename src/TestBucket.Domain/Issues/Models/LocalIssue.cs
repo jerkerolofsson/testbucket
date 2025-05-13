@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Domain.Issues.Models;
+﻿using TestBucket.Contracts.Issues.States;
+
+namespace TestBucket.Domain.Issues.Models;
 
 [Index(nameof(State),nameof(Created))]
 [Index(nameof(ExternalSystemId), nameof(Created))]
@@ -36,6 +38,8 @@ public class LocalIssue : ProjectEntity
     /// </summary>
     public string? Description { get; set; }
 
+    public MappedIssueState? MappedState { get; set; }
+
     /// <summary>
     /// State
     /// </summary>
@@ -65,4 +69,5 @@ public class LocalIssue : ProjectEntity
 
     public virtual IEnumerable<IssueField>? IssueFields { get; set; }
 
+    public virtual List<Comment>? Comments { get; set; }
 }

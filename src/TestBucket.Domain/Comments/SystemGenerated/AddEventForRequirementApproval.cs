@@ -35,6 +35,8 @@ internal class AddEventForRequirementApproval : INotificationHandler<Requirement
                     TenantId = field.TenantId,
                     TestProjectId = field.FieldDefinition.TestProjectId,
                     LoggedAction = "approved",
+                    LoggedActionIcon = TbIcons.BoldDuoTone.VerifiedCheck,
+                    LoggedActionColor = "yellowgreen"
                 };
                 await _comments.AddCommentAsync(notification.Principal, comment);
             }

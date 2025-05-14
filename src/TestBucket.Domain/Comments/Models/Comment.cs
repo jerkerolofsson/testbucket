@@ -19,6 +19,16 @@ public class Comment : ProjectEntity
     public string? Markdown { get; set; }
 
     /// <summary>
+    /// Icon displayed for action
+    /// </summary>
+    public string? LoggedActionIcon { get; set; }
+
+    /// <summary>
+    /// Accent color for logged action
+    /// </summary>
+    public string? LoggedActionColor { get; set; }
+
+    /// <summary>
     /// A special action which is logged, for example "approved"
     /// </summary>
     public string? LoggedAction { get; set; }

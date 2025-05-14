@@ -5,6 +5,7 @@ using Mediator;
 
 using TestBucket.Contracts.Issues.Models;
 using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Issues.Events;
 using TestBucket.Domain.Issues.Mapping;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Search;
@@ -44,6 +45,7 @@ public class IssueManager : IIssueManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
         issue.CreatedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
+        issue.Author ??= issue.CreatedBy;
         issue.ModifiedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         issue.TenantId = principal.GetTenantIdOrThrow();
         await _repository.AddLocalIssueAsync(issue);
@@ -70,7 +72,14 @@ public class IssueManager : IIssueManager
         {
             filters.Add(new FindLocalIssueByExternalSystemId(request.ExternalSystemId.Value));
         }
-
+        if (request.Type != null)
+        {
+            filters.Add(new FindLocalIssueByType(request.Type));
+        }
+        if (request.State != null)
+        {
+            filters.Add(new FindLocalIssueByState(request.State));
+        }
         return await _repository.SearchAsync(filters, offset, count);
     }
     public async Task<LocalIssue?> FindLocalIssueFromExternalAsync(ClaimsPrincipal principal, long testProjectId, long? externalSystemId, string? externalId)
@@ -93,11 +102,27 @@ public class IssueManager : IIssueManager
         return result.Items.FirstOrDefault();
     }
 
-    public async Task UpdateLocalIssueAsync(ClaimsPrincipal principal, LocalIssue existingIssue)
+    public async Task UpdateLocalIssueAsync(ClaimsPrincipal principal, LocalIssue updatedIssue)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
-        principal.ThrowIfEntityTenantIsDifferent(existingIssue);
-        await _repository.UpdateLocalIssueAsync(existingIssue);
+        principal.ThrowIfEntityTenantIsDifferent(updatedIssue);
+
+        // Get the existing issue to detect differences
+        var existingIssue = await GetIssueByIdAsync(principal, updatedIssue.Id);
+
+        // Save it
+        await _repository.UpdateLocalIssueAsync(updatedIssue);
+
+        if (existingIssue is not null && existingIssue.State != updatedIssue.State)
+        {
+            // State has changed, raise event 
+            await _mediator.Publish(new IssueStateChangedNotification(principal, updatedIssue, existingIssue.State));
+        }
+        if (existingIssue is not null && existingIssue.AssignedTo != updatedIssue.AssignedTo)
+        {
+            // State has changed, raise event 
+            await _mediator.Publish(new IssueAssignmentChanged(principal, updatedIssue, existingIssue.AssignedTo));
+        }
     }
 
     public async Task<LocalIssue?> GetIssueByIdAsync(ClaimsPrincipal principal, long id)

@@ -17,8 +17,11 @@ using TestBucket.Domain.Projects.Mapping;
 
 namespace TestBucket.Domain.Issues.Search;
 
-public record class SearchIssueRequest(ClaimsPrincipal Principal, long ProjectId, string? Text) : IRequest<SearchIssueResponse>
+public record class SearchIssueRequest(ClaimsPrincipal Principal, long ProjectId) : IRequest<SearchIssueResponse>
 {
+    public string? State { get; set; }
+    public string? Type { get; set; }
+    public string? Text { get; set; }
     public string? ExternalSystemName { get; set; }
     public long? ExternalSystemId { get; set; }
 }

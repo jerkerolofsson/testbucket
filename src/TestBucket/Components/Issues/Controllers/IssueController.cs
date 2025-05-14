@@ -1,5 +1,6 @@
 ﻿using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Models;
+using TestBucket.Domain.Issues.Search;
 
 namespace TestBucket.Components.Issues.Controllers;
 
@@ -16,7 +17,7 @@ internal class IssueController : TenantBaseService
     public async Task<PagedResult<LocalIssue>> SearchAsync(long projectId, string text, int offset, int count)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        return await _manager.SearchLocalIssuesAsync(new Domain.Issues.Search.SearchIssueRequest(principal, projectId, text), offset, count);
+        return await _manager.SearchLocalIssuesAsync(SearchIssueRequestParser.Parse(principal, projectId, text), offset, count);
     }
 
     public async Task<LocalIssue?> GetIssueByIdAsync(long id)

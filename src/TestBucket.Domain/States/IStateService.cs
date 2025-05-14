@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 
 using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.Issues.Types;
 using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Contracts.Testing.States;
@@ -52,5 +53,20 @@ public interface IStateService
     /// <param name="projectId"></param>
     /// <returns></returns>
     Task<TestState> GetProjectInitialStateAsync(ClaimsPrincipal principal, long projectId);
+
+    /// <summary>
+    /// Returns requirement types for the project
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
     Task<IReadOnlyList<RequirementType>> GetRequirementTypesAsync(ClaimsPrincipal principal, long projectId);
+
+    /// <summary>
+    /// Returns issue types for the project
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<IssueType>> GetIssueTypesAsync(ClaimsPrincipal principal, long projectId);
 }

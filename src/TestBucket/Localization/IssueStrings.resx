@@ -126,4 +126,22 @@
   <data name="new-issue" xml:space="preserve">
     <value>New issue</value>
   </data>
+  <data name="type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="type-enhancement" xml:space="preserve">
+    <value>Enhancement</value>
+  </data>
+  <data name="type-incident" xml:space="preserve">
+    <value>Incident</value>
+  </data>
+  <data name="type-issue" xml:space="preserve">
+    <value>Issue</value>
+  </data>
+  <data name="type-other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="type-question" xml:space="preserve">
+    <value>Question</value>
+  </data>
 </root>

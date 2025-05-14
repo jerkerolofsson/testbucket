@@ -1,7 +1,11 @@
 
+using System.Threading.Tasks;
+
 using MudBlazor.Utilities;
 
 using TestBucket.Contracts.Fields;
+using TestBucket.Data.Migrations;
+using TestBucket.Domain.Comments.Models;
 
 namespace TestBucket.Components.Tests.TestCases.Controls;
 public partial class TestCaseEditor
@@ -36,6 +40,7 @@ public partial class TestCaseEditor
     private string? _descriptionText;
     private string? _previewText;
     private readonly List<CompilerError> _errors = new List<CompilerError>();
+    private List<Comment> _comments = [];
 
     public string? Text
     {
@@ -86,15 +91,7 @@ public partial class TestCaseEditor
     }
  
 
-    private async Task SaveChangesAsync()
-    {
-        _preview = true;
-
-        await CompilePreviewAsync();
-
-        await TestChanged.InvokeAsync(Test);
-    }
-
+    private long? _testId = null;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -106,10 +103,41 @@ public partial class TestCaseEditor
 
         if (Test is not null)
         {
-            if (Test.Description != _descriptionText)
+            if(_testId != Test.Id)
             {
-                this.StateHasChanged();
+                _comments = Test.Comments ?? [];
+
+                _testId = Test.Id;
+
+                _descriptionText = Test.Description;
+                await CompilePreviewAsync();
             }
+        }
+    }
+
+    private async Task OnCommentAdded(Comment comment)
+    {
+        if (Test is not null)
+        {
+            comment.TeamId = Test.TeamId;
+            comment.TestProjectId = Test.TestProjectId;
+            comment.TestCaseId = Test.Id;
+            _comments.Add(comment);
+            await comments.AddCommentAsync(comment);
+        }
+    }
+    private async Task OnCommentDeleted(Comment comment)
+    {
+        _comments.Remove(comment);
+        await comments.DeleteCommentAsync(comment);
+    }
+
+    private async Task OnPreviewChanged(bool preview)
+    {
+        _preview = preview;
+        if (Text is not null && _editor is not null)
+        {
+            await _editor.SetValueAsync(Text);
         }
     }
 
@@ -118,25 +146,6 @@ public partial class TestCaseEditor
         if (Test is not null)
         {
             _previewText = await testCaseEditorController.CompilePreviewAsync(Test, _descriptionText, _errors, releaseResourcesImmediately: false);
-        }
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (Test is not null && _editor is not null) 
-        {
-            Test.Description ??= "";
-            if (_descriptionText != Test.Description || _previewText is null)
-            {
-                _descriptionText = Test.Description;
-                await CompilePreviewAsync();
-
-                if (_editor is not null)
-                {
-                    await _editor.SetValueAsync(Text!);
-                    this.StateHasChanged();
-                }
-            }
         }
     }
 

@@ -23,18 +23,22 @@
             <StartContent>
                 <MudStack Class="pa-2" Style="width: 100%; height: 100%">
 
-                    <MudText Typo="Typo.h1">@Requirement.Name</MudText>
+                    <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.h1" Color="Color.Primary">@Requirement.ExternalId</MudText>
+                        <MudText Typo="Typo.h1">@Requirement.Name</MudText>
+                    </MudStack>
 
                     <MarkdownEditor 
-                    @ref="_editor"
-                    Preview="true"
-                    ShowToolbar="false"
-                    MaxHeight="100%"
-                    MinHeight="100%"
-                    Color="Color.Primary"
-                    AllowResize="true"
-                    Value="@Requirement.Description"
-                    SpellChecker="false">
+                                    @ref="_editor"
+                                    Preview="true"
+                                    ShowToolbar="false"
+                                    MaxHeight="100%"
+                                    MinHeight="100%"
+                                    Color="Color.Primary"
+                                    AllowResize="true"
+                                    Value="@Requirement.Description"
+                                    TextAreaClass="tb-requirement-description"
+                                    SpellChecker="false">
                     </MarkdownEditor>
 
                     <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />

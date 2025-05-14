@@ -5,6 +5,7 @@ using OneOf;
 using TestBucket.Components.Projects.Dialogs;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.Issues.Types;
 using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Contracts.Testing.States;
@@ -169,6 +170,17 @@ internal class ProjectController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _stateService.GetRequirementTypesAsync(principal, projectId);
+    }
+
+    /// <summary>
+    /// Returns possible types of issues
+    /// </summary>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<IssueType>> GetIssueTypesAsync(long projectId)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _stateService.GetIssueTypesAsync(principal, projectId);
     }
 
     public async Task<TestProject?> GetActiveProjectAsync()

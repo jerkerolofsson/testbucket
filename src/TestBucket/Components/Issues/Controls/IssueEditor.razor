@@ -1,6 +1,7 @@
 ﻿@using TestBucket.Components.Comments
 @using TestBucket.Components.Comments.Controls
 @using TestBucket.Contracts.Issues.States
+@using TestBucket.Contracts.Issues.Types
 @using TestBucket.Domain.Comments.Models
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
@@ -12,19 +13,25 @@
 {
     <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false">
         <StartContent>
-            <MudStack Style="width: 100%" Class="pa-2">
+            <MudStack Style="width: 100%" Class="pa-2" Spacing="0">
 
-                <MudStack Spacing="0">
+                <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
                     @if(_preview)
                     {
+                        <MudText Typo="Typo.h1" Color="Color.Primary">@Issue.ExternalDisplayId</MudText>
                         <MudText Typo="Typo.h1">@Issue.Title</MudText>
                     }
-                    else{
+                    else
+                    {
                         <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Issue.Title"></MudTextField>
                     }
                 </MudStack>
 
-                <MudStack Spacing="0">
+                <MudStack Spacing="0" Row AlignItems="AlignItems.Center">
+                    <MudChip T="string" Style="@StateColorStyle">@Issue.State</MudChip>
+                </MudStack>
+
+                <MudStack Spacing="0" Class="mt-2 mb-2">
                     <FieldHeader>@loc["description"]</FieldHeader>
                     <MarkdownEditor @bind-Value="@Issue.Description" @bind-Preview="@_preview" TextAreaClass="tb-issue-description"/>
                 </MudStack>
@@ -35,10 +42,19 @@
         <EndContent>
             <MudStack Style="width: 100%" Class="pa-2">
                 <Field>
+                    <FieldHeader>@loc["assigned-to"]</FieldHeader>
+                    <UserPicker SelectedUserName="@Issue.AssignedTo" SelectedUserNameChanged="OnAssignedToChanged"/>
+                </Field>
+                <Field>
                     <FieldHeader>@loc["state"]</FieldHeader>
                     <IssueStateSelect State="_state" StateChanged="OnStateChanged"/>
                 </Field>
                 <FieldsEditor Issue="@Issue"/>
+
+                <Field>
+                    <FieldHeader>@loc["type"]</FieldHeader>
+                    <IssueTypeSelect Type="_type" TypeChanged="OnTypeChanged" />
+                </Field>
             </MudStack>
         </EndContent>
     </Splitter>
@@ -50,27 +66,54 @@
     [Parameter] public long? TestProjectId { get; set; }
     private List<Comment> _comments = [];
 
+    private string StateColorStyle => $"color: {IssueStateColors.GetDefaultTextColor(Issue?.MappedState)}; background: {IssueStateColors.GetDefaultBackgroundColor(Issue?.MappedState)}";
+
     private bool _preview = true;
 
-    private IssueState _state = new IssueState { MappedState = MappedIssueState.Open, Name = "Open" };
+    private IssueState _state = new IssueState { MappedState = MappedIssueState.Open };
+    private IssueType _type = new IssueType { MappedType = MappedIssueType.Issue };
 
     protected override void OnParametersSet()
     {
         _comments = Issue?.Comments ?? [];
         if(Issue is not null)
         {
-            _state = new IssueState { MappedState = Issue.MappedState ?? MappedIssueState.Open, Name = Issue.State ?? "Open" };
+            _state = new IssueState { MappedState = Issue.MappedState ?? MappedIssueState.Open, Name = Issue.State };
+            _type = new IssueType { MappedType = Issue.MappedType ?? MappedIssueType.Issue, Name = Issue.IssueType };
         }
     }
-
+    private async Task OnAssignedToChanged(string name)
+    {
+        if (Issue is not null && Issue.AssignedTo != name)
+        {
+            Issue.AssignedTo = name;
+            await controller.UpdateIssueAsync(Issue);
+        }
+    }
+    private async Task OnTypeChanged(IssueType type)
+    {
+        if (_type.Name != type.Name || _type.MappedType != _type.MappedType)
+        {
+            _type = type;
+            if (Issue is not null)
+            {
+                Issue.MappedType = type.MappedType;
+                Issue.IssueType = type.Name;
+                await controller.UpdateIssueAsync(Issue);
+            }
+        }
+    }
     private async Task OnStateChanged(IssueState state)
     {
-        _state = state;
-        if(Issue is not null)
+        if (_state.Name != state.Name || _state.MappedState != state.MappedState)
         {
-            Issue.MappedState = state.MappedState;
-            Issue.State = state.Name;
-            await controller.UpdateIssueAsync(Issue);
+            _state = state;
+            if (Issue is not null)
+            {
+                Issue.MappedState = state.MappedState;
+                Issue.State = state.Name;
+                await controller.UpdateIssueAsync(Issue);
+            }
         }
     }
 

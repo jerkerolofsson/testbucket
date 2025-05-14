@@ -11,6 +11,12 @@ public class IssueState
     /// </summary>
     public MappedIssueState MappedState { get; set; }
 
+    /// <summary>
+    /// Color associated with the state
+    /// </summary>
+    public string? Color { get; set; }
+
+    public override string ToString() => Name??"";
     public override bool Equals(object? obj)
     {
         if (obj is IssueState state)

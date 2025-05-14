@@ -504,7 +504,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Add comment</value>
   </data>
   <data name="logged-action-approved" xml:space="preserve">
-    <value>Approved by {0}</value>
+    <value>{0} approved this</value>
   </data>
   <data name="logged-action-statechange" xml:space="preserve">
     <value>{0} changed state to {1}</value>
@@ -550,5 +550,14 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="issues" xml:space="preserve">
     <value>Issues</value>
+  </data>
+  <data name="logged-action-commit" xml:space="preserve">
+    <value>{0} submitted a commit {1}</value>
+  </data>
+  <data name="state" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="logged-action-assignedto" xml:space="preserve">
+    <value>{0} assigned this to {1}</value>
   </data>
 </root>

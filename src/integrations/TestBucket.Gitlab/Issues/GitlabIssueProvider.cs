@@ -10,6 +10,7 @@ using NGitLab.Models;
 
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Issues.Models;
+using TestBucket.Contracts.Issues.States;
 
 using static System.Net.Mime.MediaTypeNames;
 
@@ -78,6 +79,12 @@ public class GitlabIssueProvider : IExternalIssueProvider
             ExternalId = gitlabIssue.IssueId.ToString(),
             ExternalSystemId = config.Id,
             State = gitlabIssue.State,
+            MappedState = gitlabIssue.State.ToLower() switch
+            {
+                "open" => MappedIssueState.Open,
+                "closed" => MappedIssueState.Closed,
+                _ => MappedIssueState.Other
+            },
             Author = gitlabIssue.Author?.Name,
             Created = gitlabIssue.CreatedAt,
             Modified = gitlabIssue.UpdatedAt,

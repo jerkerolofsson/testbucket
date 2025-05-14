@@ -40,6 +40,7 @@ internal static class IssueMapper
 
         dest.Title = src.Title;
         dest.State = src.State;
+        dest.MappedState = src.MappedState;
         dest.Description = src.Description;
     }
     public static void CopyTo(LinkedIssue src, IssueDto dest)

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Issues.States;
+
 namespace TestBucket.Contracts.Issues.Models;
 public class IssueDto
 {
@@ -51,6 +53,11 @@ public class IssueDto
     /// State
     /// </summary>
     public string? State { get; set; }
+
+    /// <summary>
+    /// Mapped / known state of the issue
+    /// </summary>
+    public MappedIssueState MappedState { get; set; }
 
     /// <summary>
     /// Author/Creator

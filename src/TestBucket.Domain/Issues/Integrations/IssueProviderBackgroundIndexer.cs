@@ -91,7 +91,7 @@ public class IssueProviderBackgroundIndexer : BackgroundService
         var manager = scope.ServiceProvider.GetRequiredService<IIssueManager>();
 
         // We search for any issue since the last one from the same system
-        var latest = await manager.SearchLocalIssuesAsync(new SearchIssueRequest(principal, project.Id, null)
+        var latest = await manager.SearchLocalIssuesAsync(new SearchIssueRequest(principal, project.Id)
         {
             ExternalSystemId = externalSystem.Id,
         }, 0, 1);
@@ -116,6 +116,11 @@ public class IssueProviderBackgroundIndexer : BackgroundService
             }
             else
             {
+                if(existingIssue.Modified >= issue.Modified)
+                {
+                    // Skip if the local issue is newer
+                    continue;
+                }
                 IssueMapper.CopyTo(issue, existingIssue);
                 await manager.UpdateLocalIssueAsync(principal, existingIssue);
             }

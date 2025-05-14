@@ -1,6 +1,7 @@
 ﻿using System;
 
 using TestBucket.Contracts.Testing.Models;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
 
@@ -8,13 +9,39 @@ namespace TestBucket.Data.Testing;
 internal class TestCaseRepository : ITestCaseRepository
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
-
-    public TestCaseRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory)
+    private readonly ISequenceGenerator _sequenceGenerator;
+    public TestCaseRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory, ISequenceGenerator sequenceGenerator)
     {
         _dbContextFactory = dbContextFactory;
+        _sequenceGenerator = sequenceGenerator;
     }
 
     #region Test Cases
+
+
+    private async ValueTask AssignExternalIdAsync(ApplicationDbContext dbContext, TestCase testCase)
+    {
+        // Sequence number only used for internal issues
+        if (testCase.ExternalDisplayId is null && testCase.TestProjectId is not null && testCase.TenantId is not null)
+        {
+            var project = await dbContext.Projects.AsNoTracking().Where(x => x.Id == testCase.TestProjectId).FirstAsync();
+            testCase.SequenceNumber = await _sequenceGenerator.GenerateSequenceNumberAsync(testCase.TenantId, testCase.TestProjectId.Value, "testcase", GetMaxSequenceNumber, default);
+            testCase.ExternalDisplayId = project.ShortName + "-TC-" + testCase.SequenceNumber;
+
+            testCase.ExternalId ??= testCase.ExternalDisplayId;
+        }
+    }
+
+    private async ValueTask<int> GetMaxSequenceNumber(string tenantId, long projectId, CancellationToken cancellationToken)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var lastestSequenceNumber = await dbContext.TestCases.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.TestProjectId == projectId && x.SequenceNumber != null)
+            .OrderByDescending(x => x.SequenceNumber).Select(x => x.SequenceNumber).Take(1).FirstOrDefaultAsync();
+
+        return lastestSequenceNumber ?? 0;
+    }
 
     /// <inheritdoc/>
 
@@ -111,6 +138,7 @@ internal class TestCaseRepository : ITestCaseRepository
         testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var tenantId = testCase.TenantId ?? throw new ArgumentException("TenantId missing");
+        await AssignExternalIdAsync(dbContext, testCase);
 
         await LookupProjectIdFromSuiteId(testCase, dbContext);
         await CalculatePathAsync(dbContext, testCase);
@@ -159,6 +187,7 @@ internal class TestCaseRepository : ITestCaseRepository
             testCase.Slug = await GenerateTestCaseSlugAsync(testCase.TenantId, testCase.Name);
         }
         await CalculatePathAsync(dbContext, testCase);
+        await AssignExternalIdAsync(dbContext, testCase);
 
         dbContext.TestCases.Update(testCase);
         await dbContext.SaveChangesAsync();

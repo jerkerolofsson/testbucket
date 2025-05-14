@@ -232,7 +232,7 @@
     <value>Editera/Skapa</value>
   </data>
   <data name="permission-delete" xml:space="preserve">
-    <value>Fulla rättigheter</value>
+    <value>Ta bort</value>
   </data>
   <data name="role-read-only" xml:space="preserve">
     <value>Read Only</value>
@@ -328,7 +328,7 @@
     <value>Slut datum</value>
   </data>
   <data name="link-issue" xml:space="preserve">
-    <value />
+    <value>Länka en issue</value>
   </data>
   <data name="file-name" xml:space="preserve">
     <value>Namn</value>
@@ -355,10 +355,10 @@
     <value />
   </data>
   <data name="teams" xml:space="preserve">
-    <value />
+    <value>Team</value>
   </data>
   <data name="test-suites" xml:space="preserve">
-    <value />
+    <value>Testsviter</value>
   </data>
   <data name="test-cases" xml:space="preserve">
     <value />
@@ -373,22 +373,22 @@
     <value />
   </data>
   <data name="traceability" xml:space="preserve">
-    <value />
+    <value>Spårbarhet</value>
   </data>
   <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
     <value />
   </data>
   <data name="link-requirement-to-test" xml:space="preserve">
-    <value />
+    <value>Länka krav till test</value>
   </data>
   <data name="number-of-tests" xml:space="preserve">
-    <value />
+    <value>Tester</value>
   </data>
   <data name="requirement" xml:space="preserve">
-    <value />
+    <value>Krav</value>
   </data>
   <data name="new-folder" xml:space="preserve">
-    <value />
+    <value>Lägg till en folder</value>
   </data>
   <data name="test-coverage" xml:space="preserve">
     <value />
@@ -400,19 +400,19 @@
     <value>Ikoner</value>
   </data>
   <data name="option" xml:space="preserve">
-    <value />
+    <value>Alternativ</value>
   </data>
   <data name="data-source" xml:space="preserve">
     <value />
   </data>
   <data name="options" xml:space="preserve">
-    <value />
+    <value>Alternativ</value>
   </data>
   <data name="advanced" xml:space="preserve">
     <value />
   </data>
   <data name="preview" xml:space="preserve">
-    <value />
+    <value>Förhandsgranskning</value>
   </data>
   <data name="copied-to-clipboard-notification" xml:space="preserve">
     <value />
@@ -421,7 +421,7 @@
     <value />
   </data>
   <data name="rename" xml:space="preserve">
-    <value />
+    <value>Döp om</value>
   </data>
   <data name="add" xml:space="preserve">
     <value />
@@ -433,7 +433,7 @@
     <value />
   </data>
   <data name="pick-test-run" xml:space="preserve">
-    <value />
+    <value>Välj</value>
   </data>
   <data name="duplicate-test-run" xml:space="preserve">
     <value />
@@ -442,28 +442,28 @@
     <value />
   </data>
   <data name="new-test" xml:space="preserve">
-    <value />
+    <value>Nytt testfall</value>
   </data>
   <data name="new-shared-steps" xml:space="preserve">
     <value />
   </data>
   <data name="permission-approve" xml:space="preserve">
-    <value />
+    <value>Godkänn</value>
   </data>
   <data name="permission-execute" xml:space="preserve">
-    <value />
+    <value>Exekvera</value>
   </data>
   <data name="milestones" xml:space="preserve">
-    <value />
+    <value>Milstolpar</value>
   </data>
   <data name="calendar" xml:space="preserve">
     <value />
   </data>
   <data name="manage" xml:space="preserve">
-    <value />
+    <value>Hantera</value>
   </data>
   <data name="launch-automation" xml:space="preserve">
-    <value />
+    <value>Start automatisering</value>
   </data>
   <data name="test-automation" xml:space="preserve">
     <value />
@@ -487,13 +487,13 @@
     <value />
   </data>
   <data name="my-backlog" xml:space="preserve">
-    <value />
+    <value>Min backlog</value>
   </data>
   <data name="failures" xml:space="preserve">
     <value />
   </data>
   <data name="pipelines" xml:space="preserve">
-    <value />
+    <value>Pipelines</value>
   </data>
   <data name="tests" xml:space="preserve">
     <value>Testfall</value>
@@ -502,7 +502,7 @@
     <value />
   </data>
   <data name="logged-action-approved" xml:space="preserve">
-    <value>Godkand av {0}</value>
+    <value>{0} godkände</value>
   </data>
   <data name="logged-action-statechange" xml:space="preserve">
     <value>{0} ändrade status till {1}</value>
@@ -520,7 +520,7 @@
     <value>Ta bort testsvit</value>
   </data>
   <data name="new-test-suite" xml:space="preserve">
-    <value />
+    <value>Ny testsvit</value>
   </data>
   <data name="batch-tag-description" xml:space="preserve">
     <value />
@@ -529,7 +529,7 @@
     <value>Importera testresultat..</value>
   </data>
   <data name="run-folder" xml:space="preserve">
-    <value />
+    <value>Kör folder</value>
   </data>
   <data name="edit-folder" xml:space="preserve">
     <value>Editera folder</value>
@@ -541,12 +541,21 @@
     <value />
   </data>
   <data name="testing" xml:space="preserve">
-    <value />
+    <value>Testning</value>
   </data>
   <data name="reporting" xml:space="preserve">
-    <value />
+    <value>Rapportering</value>
   </data>
   <data name="issues" xml:space="preserve">
+    <value>Issues</value>
+  </data>
+  <data name="logged-action-commit" xml:space="preserve">
+    <value>{0} levererade en commit {1}</value>
+  </data>
+  <data name="state" xml:space="preserve">
     <value />
+  </data>
+  <data name="logged-action-assignedto" xml:space="preserve">
+    <value>{0} tilldelade denna till {1}</value>
   </data>
 </root>

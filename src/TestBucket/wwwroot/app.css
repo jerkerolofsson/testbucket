@@ -1000,10 +1000,18 @@ div.tb-profile-image.tb-background-9 {
     fill: red;
 }*/
 
+.mud-markdown-editor-root.mud-input-outlined.mud-markdown-editor-root-preview:has(.tb-test-description),
+.mud-markdown-editor-root.mud-input-outlined.mud-markdown-editor-root-preview:has(.tb-requirement-description),
 .mud-markdown-editor-root.mud-input-outlined.mud-markdown-editor-root-preview:has(.tb-issue-description) {
     border: solid 1px var(--mud-palette-lines-inputs);
 }
 
+.mud-markdown-editor-root.mud-input-outlined.mud-markdown-editor-root-preview:has(.tb-test-description) .mud-markdown-preview,
+.mud-markdown-editor-root.mud-input-outlined.mud-markdown-editor-root-preview:has(.tb-requirement-description) .mud-markdown-preview,
 .mud-markdown-editor-root.mud-input-outlined.mud-markdown-editor-root-preview:has(.tb-issue-description) .mud-markdown-preview {
     padding: 16px;
+}
+
+.tb-edit-requirement-dialog .EasyMDEContainer {
+    height: 100%;
 }

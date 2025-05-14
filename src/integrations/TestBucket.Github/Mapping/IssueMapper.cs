@@ -31,10 +31,12 @@ internal static class IssueMapper
         if (issue.State == Octokit.ItemState.Open)
         {
             dto.State = IssueStates.Open;
+            dto.MappedState = MappedIssueState.Open;
         }
         if (issue.State == Octokit.ItemState.Closed)
         {
             dto.State = IssueStates.Closed;
+            dto.MappedState = MappedIssueState.Closed;
         }
 
         return dto;

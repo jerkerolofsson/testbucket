@@ -68,7 +68,7 @@ internal class FieldManager : IFieldManager
         field.TenantId = principal.GetTenantIdOrThrow();
         await _repository.UpsertIssueFieldAsync(field);
 
-        //await _mediator.Publish(new RequirementFieldChangedNotification(principal, field));
+        await _mediator.Publish(new IssueFieldChangedNotification(principal, field));
     }
     #endregion Issue
 

@@ -1,6 +1,7 @@
 ﻿using Mediator;
 
 using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.Issues.Types;
 using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Contracts.Testing.States;
@@ -74,6 +75,19 @@ public class StateService : IStateService
         return entry?.RequirementStates ?? DefaultStates.GetDefaultRequirementStates();
     }
 
+    public Task<IReadOnlyList<IssueType>> GetIssueTypesAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
+
+        var list = new List<IssueType>();
+        foreach (var name in IssueTypes.AllTypes)
+        {
+            var mapped = IssueTypeConverter.GetMappedIssueTypeFromString(name);
+            list.Add(new IssueType { MappedType = mapped, Name = name, Color = IssueTypeColors.GetDefault(mapped) });
+        }
+        return Task.FromResult<IReadOnlyList<IssueType>>(list);
+    }
     public Task<IReadOnlyList<RequirementType>> GetRequirementTypesAsync(ClaimsPrincipal principal, long projectId)
     {
         var tenantId = principal.GetTenantIdOrThrow();

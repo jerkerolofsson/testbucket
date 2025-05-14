@@ -439,7 +439,7 @@ namespace TestBucket.MudBlazorExtensions.Markdown
         /// Should be a string containing a valid CSS value like "500px". Defaults to undefined.
         /// </summary>
         [Parameter]
-        public string MaxHeight { get; set; } = "300px";
+        public string? MaxHeight { get; set; }
 
         /// <summary>
         /// Gets or sets the max chunk size when uploading the file.
@@ -461,7 +461,7 @@ namespace TestBucket.MudBlazorExtensions.Markdown
         /// Should be a string containing a valid CSS value like "500px". Defaults to "300px".
         /// </summary>
         [Parameter]
-        public string MinHeight { get; set; } = "300px";
+        public string? MinHeight { get; set; }
 
         /// <summary>
         /// If set, displays a custom placeholder message.
@@ -1117,6 +1117,8 @@ namespace TestBucket.MudBlazorExtensions.Markdown
                     initialValue = "";
                 }
 
+                string? minHeight = MinHeight;
+                string? maxHeight = MaxHeight;
 
                 await JSModule.Initialize(dotNetObjectRef, ElementRef, ElementId, PreviewElementId, new
                 {
@@ -1147,8 +1149,8 @@ namespace TestBucket.MudBlazorExtensions.Markdown
                     LineNumbers,
                     LineWrapping,
                     MarkdownUrl,
-                    MinHeight,
-                    MaxHeight,
+                    minHeight,
+                    maxHeight,
                     Placeholder,
                     TabSize,
                     Theme,

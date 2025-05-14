@@ -1,4 +1,5 @@
 ﻿using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.Issues.Types;
 
 namespace TestBucket.Domain.Issues.Models;
 
@@ -56,6 +57,11 @@ public class LocalIssue : ProjectEntity
     public string? Author { get; set; }
 
     /// <summary>
+    /// Currently assigned to
+    /// </summary>
+    public string? AssignedTo { get; set; }
+
+    /// <summary>
     /// External URL
     /// </summary>
     public string? Url { get; set; }
@@ -64,6 +70,11 @@ public class LocalIssue : ProjectEntity
     /// Type of issue
     /// </summary>
     public string? IssueType { get; set; }
+
+    /// <summary>
+    /// Mapped/known type
+    /// </summary>
+    public MappedIssueType? MappedType { get; set; }
 
     /// <summary>
     /// ID to display in UI

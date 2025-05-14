@@ -10,54 +10,11 @@
 <TestCaseEditor Test="@TestCase" TestChanged="OnTestModified" />
 
 @code {
+    [Parameter] public long TestCaseId { get; set; }
     [Parameter] public string TenantId { get; set; } = "";
     [CascadingParameter] public TestProject? Project { get; set; }
     [CascadingParameter] public TestCase? TestCase { get; set; }
     [CascadingParameter] public TestSuite? TestSuite { get; set; }
-
-    [Parameter] public long TestCaseId { get; set; }
-
-    // private TestCase? _testCase = null;
-    // private TestSuite? _testSuite = null;
-    // private TestSuiteFolder? _testSuiteFolder = null;
-
-    /// <summary>
-    /// Load the test case when changed
-    /// </summary>
-    /// <returns></returns>
-    // protected override async Task OnParametersSetAsync()
-    // {
-    //     Reset as hotkeys may not work properly if both entity categories are selected
-    //     appNavigationManager.State.SelectedTestSuite = null;
-    //     appNavigationManager.State.SelectedTestCase = null;
-    //     appNavigationManager.State.SelectedTestSuiteFolder = null;
-
-    //     if (_testCase is null || _testCase.Id != TestCaseId)
-    //     {
-    //         _testCase = await testBrowser.GetTestCaseByIdAsync(TestCaseId);
-
-    //         appNavigationManager.State.SelectedTestCase = _testCase;
-    //     }
-    //     if (_testCase is not null)
-    //     {
-    //         if (_testSuiteFolder is null || _testSuiteFolder.Id != _testCase.TestSuiteFolderId)
-    //         {
-    //             if (_testCase.TestSuiteFolderId is not null)
-    //             {
-    //                 _testSuiteFolder = await testBrowser.GetTestSuiteFolderByIdAsync(_testCase.TestSuiteFolderId.Value);
-    //                 appNavigationManager.State.SelectedTestSuiteFolder = _testSuiteFolder;
-    //             }
-    //         }
-    //         if (_testSuiteFolder is not null)
-    //         {
-    //             if (_testSuite is null || _testSuite.Id != _testSuiteFolder.Id)
-    //             {
-    //                 _testSuite = await testBrowser.GetTestSuiteByIdAsync(_testSuiteFolder.TestSuiteId);
-    //                 appNavigationManager.State.SelectedTestSuite = _testSuite;
-    //             }
-    //         }
-    //     }
-    // }
 
     private async Task OnTestModified(TestCase test)
     {

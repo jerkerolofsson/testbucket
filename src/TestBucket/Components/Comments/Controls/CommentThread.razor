@@ -5,9 +5,9 @@
 
 <div>
     <div class="comment-thread">
-        @if(Comments is not null)
+        @if (_comments is not null)
         {
-            @foreach (var (index, comment) in Comments.Index())
+            @foreach (var (index, comment) in _comments.Index())
             {
                 @if (comment.Markdown is not null)
                 {
@@ -25,7 +25,7 @@
                                 <div class="when">@(comment.Created.Humanize())</div>
 
                                 @if (comment.CreatedBy == _currentUserName ||
-                               _authState?.User?.HasPermission(EntityType, PermissionLevel.Delete) == true)
+                                 _authState?.User?.HasPermission(EntityType, PermissionLevel.Delete) == true)
                                 {
                                     <MudMenu Icon="@Icons.Material.Filled.MoreVert">
                                         <MudMenuItem OnClick="async () => await DeleteCommentAsync(comment)">@loc["delete"]</MudMenuItem>
@@ -36,8 +36,8 @@
                             <div class="comment-container-text">
                                 <MarkdownEditor Preview="true"
                                 ShowToolbar="false"
-                                MaxHeight="100%"
-                                MinHeight="100%"
+                                MaxHeight="180px"
+                                MinHeight="180px"
                                 Value="@comment.Markdown"
                                 SpellChecker="false">
                                 </MarkdownEditor>
@@ -58,8 +58,23 @@
                                 <div class="timeline-divider" />
                             }
                             <div class="comment-action">
-                                @string.Format(loc["logged-action-" + comment.LoggedAction], comment.CreatedBy, comment.LoggedActionArgument)
-                                @comment.Created.Humanize()
+
+                                @{
+                                    string message = string.Format(loc["logged-action-" + comment.LoggedAction], comment.CreatedBy, comment.LoggedActionArgument);
+                                }
+
+                                @if(comment.LoggedActionIcon is not null)
+                                {
+                                    string color = comment.LoggedActionColor ?? "rgb(128,128,128)";
+                                    <MudIcon Style="width: 24px; height: 24px" Icon="@comment.LoggedActionIcon"/>
+                                }
+                                else
+                                {
+                                    <div/>
+                                }
+
+                                <div class="message">@message</div>
+                                <div class="when">@comment.Created.Humanize()</div>
                             </div>
                         </div>
                     </div>
@@ -72,10 +87,10 @@
     {
 
         <div class="comment-thread">
-            @if (Comments is not null)
+            @if (_comments is not null)
             {
                 string cssClass = "comment-container";
-                if (Comments.Count == 0)
+                if (_comments.Count == 0)
                 {
                     cssClass += " no-comments";
                 }
@@ -90,7 +105,9 @@
                             <div class="user">@loc["add-comment"]</div>
                         </div>
                         <div class="comment-container-text">
-                            <MarkdownEditor @bind-Preview="_preview" @bind-Value="_comment" />
+                            <MarkdownEditor MaxHeight="122px"
+                                            MinHeight="122px"
+                                            @bind-Preview="_preview" @bind-Value="_comment" />
                             <MudStack Row Style="width: 100%" Class="mt-2">
 
                                 @foreach(var emoji in _emojis)
@@ -118,6 +135,8 @@
     [Parameter] public EventCallback<Comment> CommentDeleted { get; set; }
     [Parameter] public PermissionEntityType EntityType { get; set; } = PermissionEntityType.Requirement;
 
+    private IReadOnlyList<Comment> _comments = [];
+
     private bool _preview = false;
     private string _currentUserName = "";
     private string _comment = "";
@@ -128,6 +147,14 @@
     {
         _authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         _currentUserName = _authState.User.Identity?.Name ?? "n/a";
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(Comments is not null)
+        {
+            _comments = Comments.OrderBy(x => x.Created).ToList();
+        }
     }
 
     private async Task DeleteCommentAsync(Comment comment)
@@ -145,9 +172,9 @@
         _authState ??= await authenticationStateProvider.GetAuthenticationStateAsync();
         var comment = new Comment
         {
-                CreatedBy = _authState.User.Identity?.Name ?? "",
+            CreatedBy = _authState.User.Identity?.Name ?? "",
             Created = DateTimeOffset.UtcNow,
-                Markdown = _comment
+            Markdown = _comment
         };
 
         _comment = "";

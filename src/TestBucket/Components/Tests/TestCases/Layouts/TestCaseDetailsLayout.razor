@@ -106,28 +106,34 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        _loading = true;
-        this.StateHasChanged();
+        await LoadAsync();
+    }
 
+    private async Task LoadAsync()
+    {
         if (_project != Project || _team != Team)
         {
             _project = Project;
             _team = Team;
         }
-        _testCase = appNavigationManager.State.SelectedTestCase;
         var testCaseId = appNavigationManager.GetEntityIdFromCurrentUri();
-        if (testCaseId != _testCase?.Id && testCaseId is not null)
+        if(testCaseId is null)
+        {
+            _testCase = null;
+            return;
+        }
+
+        if(testCaseId != _testCase?.Id)
         {
             _testCase = await browser.GetTestCaseByIdAsync(testCaseId.Value);
+            appNavigationManager.State.SelectedTestCase = _testCase;
         }
-        appNavigationManager.State.SelectedTestCase = _testCase;
 
-        if (_testCase is not null && _testSuite?.Id != _testCase.Id)
+        _testSuite = appNavigationManager.State.SelectedTestSuite;
+        if (_testCase is not null && _testSuite?.Id != _testCase.TestSuiteId)
         {
-            _testSuite = await browser.GetTestSuiteByIdAsync(_testCase.Id);
+            _testSuite = await browser.GetTestSuiteByIdAsync(_testCase.TestSuiteId);
+            appNavigationManager.State.SelectedTestSuite = _testSuite;
         }
-        appNavigationManager.State.SelectedTestSuite = _testSuite;
-
-        _loading = false;
     }
 }

@@ -81,13 +81,9 @@
                     </CellTemplate>
                 </TemplateColumn>
 
-                <TemplateColumn>
+                <TemplateColumn Title="@loc["type"]">
                     <CellTemplate>
-                        <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Delete">
-                            <Authorized>
-                                <MudIconButton OnClick="async() => await DeleteAsync(context.Item)" Color="Color.Error" Icon="@Icons.Material.Filled.Clear" />
-                            </Authorized>
-                        </PermissionView>
+                        @context.Item.IssueType
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
@@ -105,7 +101,7 @@
     [CascadingParameter] public Team? Team { get; set; }
 
     private MudDataGrid<LocalIssue>? _grid;
-    private string _searchText = "";
+    private string _searchText = "state:open";
 
     protected void OnSearch(string text)
     {
@@ -143,8 +139,4 @@
         };
     }
 
-    private async Task DeleteAsync(LocalIssue issue)
-    {
-        
-    }
 }

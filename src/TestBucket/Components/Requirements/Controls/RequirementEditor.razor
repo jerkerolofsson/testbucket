@@ -62,7 +62,11 @@
 
                     @if (_selectedTab != "edit")
                     {
-                        <MudText Typo="Typo.h1">@Requirement.Name</MudText>
+                        <MudStack Spacing="1" Row AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.h1">@Requirement.Name</MudText>
+                            <MudText Typo="Typo.h1" Color="Color.Primary">@Requirement.ExternalId</MudText>
+                        </MudStack>
+
                     }
 
                     @if (_selectedTab == "edit" || _selectedTab == "view")

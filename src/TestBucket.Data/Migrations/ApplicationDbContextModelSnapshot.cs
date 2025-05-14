@@ -1008,6 +1008,12 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("LoggedActionArgument")
                         .HasColumnType("text");
 
+                    b.Property<string>("LoggedActionColor")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LoggedActionIcon")
+                        .HasColumnType("text");
+
                     b.Property<string>("Markdown")
                         .HasColumnType("text");
 
@@ -1710,6 +1716,9 @@ namespace TestBucket.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("AssignedTo")
+                        .HasColumnType("text");
+
                     b.Property<string>("Author")
                         .HasColumnType("text");
 
@@ -1738,6 +1747,9 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<int?>("MappedState")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("MappedType")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("Modified")
@@ -2572,6 +2584,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<int>("ExecutionType")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ExternalDisplayId")
+                        .HasColumnType("text");
 
                     b.Property<string>("ExternalId")
                         .HasColumnType("text");

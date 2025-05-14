@@ -22,6 +22,11 @@ public class TestCase : TestEntity
     public string? ExternalId { get; set; }
 
     /// <summary>
+    /// External display id
+    /// </summary>
+    public string? ExternalDisplayId { get; set; }
+
+    /// <summary>
     /// Name of the test case
     /// </summary>
     public required string Name { get; set; }

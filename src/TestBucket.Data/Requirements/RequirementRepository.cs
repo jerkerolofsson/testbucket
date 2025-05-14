@@ -1,4 +1,7 @@
-﻿using TestBucket.Domain.Requirements;
+﻿using Microsoft.EntityFrameworkCore;
+
+using TestBucket.Domain.Issues.Models;
+using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 
@@ -7,10 +10,12 @@ namespace TestBucket.Data.Requirements
     internal class RequirementRepository : IRequirementRepository
     {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+        private readonly ISequenceGenerator _sequenceGenerator;
 
-        public RequirementRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory)
+        public RequirementRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory, ISequenceGenerator sequenceGenerator)
         {
             _dbContextFactory = dbContextFactory;
+            _sequenceGenerator = sequenceGenerator;
         }
 
         #region Folders
@@ -108,6 +113,28 @@ namespace TestBucket.Data.Requirements
             await dbContext.SaveChangesAsync();
         }
 
+        private async ValueTask AssignExternalIdAsync(ApplicationDbContext dbContext, Requirement requirement)
+        {
+
+            // Sequence number only used for internal issues
+            if (requirement.ExternalId is null && requirement.TestProjectId is not null && requirement.TenantId is not null)
+            {
+                var project = await dbContext.Projects.AsNoTracking().Where(x => x.Id == requirement.TestProjectId).FirstAsync();
+                requirement.SequenceNumber = await _sequenceGenerator.GenerateSequenceNumberAsync(requirement.TenantId, requirement.TestProjectId.Value, "requirement", GetMaxSequenceNumber, default);
+                requirement.ExternalId = project.ShortName + "-REQ-" + requirement.SequenceNumber;
+            }
+        }
+
+        private async ValueTask<int> GetMaxSequenceNumber(string tenantId, long projectId, CancellationToken cancellationToken)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+            var lastestSequenceNumber = await dbContext.Requirements.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && x.TestProjectId == projectId && x.SequenceNumber != null)
+                .OrderByDescending(x => x.SequenceNumber).Select(x => x.SequenceNumber).Take(1).FirstOrDefaultAsync();
+
+            return lastestSequenceNumber ?? 0;
+        }
 
         public async Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(string tenantId, long requirementSpecificationId)
         {
@@ -201,6 +228,7 @@ namespace TestBucket.Data.Requirements
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
             await CalculatePathAsync(dbContext, requirement);
+            await AssignExternalIdAsync(dbContext, requirement);
 
             if (string.IsNullOrEmpty(requirement.Slug) && requirement.TenantId is not null)
             {
@@ -225,6 +253,8 @@ namespace TestBucket.Data.Requirements
             {
                 throw new InvalidOperationException("Requirement does not exist!");
             }
+
+            await AssignExternalIdAsync(dbContext, requirement);
 
             var hasSpecChanged = requirement.RequirementSpecificationId != existingRequirement.RequirementSpecificationId;
             var hasPathChanged = requirement.RequirementSpecificationFolderId != existingRequirement.RequirementSpecificationFolderId;

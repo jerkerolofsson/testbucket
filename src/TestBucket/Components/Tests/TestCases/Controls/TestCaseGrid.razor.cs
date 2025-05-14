@@ -17,14 +17,17 @@ public partial class TestCaseGrid
     [Parameter] public SearchTestQuery? Query { get; set; }
     [Parameter] public EventCallback<SearchTestQuery> QueryChanged { get; set; }
 
+    [Parameter] public EventCallback<long> TotalNumberOfTestsChanged { get; set; }
+
     private TestSuiteFolder? _folder;
 
     private SearchTestQuery _query = new();
 
     private MudDataGrid<TestSuiteItem?> _dataGrid = default!;
 
-    private List<FieldDefinition> _columns = [];
     private long? _projectId;
+
+    private bool _hasQueryChanged = false;
 
     public Task OnTestCreatedAsync(TestCase testCase)
     {
@@ -50,8 +53,10 @@ public partial class TestCaseGrid
 
     protected override async Task OnParametersSetAsync()
     {
-        bool changed = false;
+        bool changed = _hasQueryChanged;
+        _hasQueryChanged = false;
 
+        _query.Fields = Query?.Fields ?? [];
         _query.CompareFolder = CompareFolder;
         _query.TestSuiteId = TestSuiteId;
         if(_testSuiteId != TestSuiteId)
@@ -88,8 +93,6 @@ public partial class TestCaseGrid
         {
             _dataGrid?.ReloadServerData();
         }
-
-        _columns = [];
     }
     protected override void OnInitialized()
     {
@@ -131,9 +134,9 @@ public partial class TestCaseGrid
 
     private async Task ResetFilter()
     {
+        _hasQueryChanged = true;
         _hasCustomFilter = false;
         await QueryChanged.InvokeAsync(null);
-        _dataGrid?.ReloadServerData();
     }
 
     private async Task ShowFilterAsync()
@@ -212,6 +215,8 @@ public partial class TestCaseGrid
             Items = result.Items,
             TotalItems = (int)result.TotalCount
         };
+
+        await TotalNumberOfTestsChanged.InvokeAsync(result.TotalCount);
 
         return data;
     }

@@ -9,12 +9,12 @@ public class SearchIssueRequestParser
 {
     private static readonly HashSet<string> _keywords = ["is", "state", "origin"];
 
-    public static SearchIssueRequest Parse(ClaimsPrincipal principal, long projectId, string text)
+    public static SearchIssueRequest Parse(ClaimsPrincipal principal, long projectId, string text, IReadOnlyList<FieldDefinition> fields)
     {
         var request = new SearchIssueRequest(principal, projectId);
 
         Dictionary<string, string> result = [];
-        request.Text = SearchStringParser.Parse(text, result, _keywords);
+        request.Text = SearchStringParser.Parse(text, result, request.Fields, _keywords, fields);
         foreach(var pair in result)
         {
             switch(pair.Key)

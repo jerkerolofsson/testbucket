@@ -80,6 +80,16 @@ public class IssueManager : IIssueManager
         {
             filters.Add(new FindLocalIssueByState(request.State));
         }
+        if(request.Fields.Count > 0)
+        {
+            foreach(var field in request.Fields)
+            {
+                if(!string.IsNullOrEmpty(field.StringValue))
+                {
+                    filters.Add(new FilterLocalIssueByStringField(field.FilterDefinitionId, field.StringValue));
+                }
+            }
+        }
         return await _repository.SearchAsync(filters, offset, count);
     }
     public async Task<LocalIssue?> FindLocalIssueFromExternalAsync(ClaimsPrincipal principal, long testProjectId, long? externalSystemId, string? externalId)

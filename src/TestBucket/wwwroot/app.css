@@ -534,14 +534,14 @@ tb-field .mud-link.mud-link-underline-hover:hover {
  }
 
  .tb-treeview-toolbar,
-.mud-toolbar {
+.tb-toolbar.mud-toolbar {
     --mud-internal-toolbar-height: 44px;
     height: var(--mud-internal-toolbar-height);
     border-bottom: solid 1px var(--mud-palette-dark);
 }
 
  @media (min-width: 600px) {
-    .mud-toolbar {
+    .tb-toolbar.mud-toolbar {
         --mud-internal-toolbar-height: 44px;
     }
 }
@@ -1014,4 +1014,13 @@ div.tb-profile-image.tb-background-9 {
 
 .tb-edit-requirement-dialog .EasyMDEContainer {
     height: 100%;
+}
+
+.default-search {
+    min-width: max(15vw, 50px);
+    background: rgba(0,0,0,0.1);
+}
+
+.default-search:hover {
+    background: rgba(0,0,0,0.2);
 }

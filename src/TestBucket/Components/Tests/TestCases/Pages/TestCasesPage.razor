@@ -11,8 +11,15 @@
 
 <article class="center">
     <MudStack>
+        <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h1" Color="Color.Primary">@_totalNumberOfTestsChanged</MudText>
+            <MudText Typo="Typo.h1">@loc["test-cases"]</MudText>
+        </MudStack>
+
         <TestCaseGrid 
-            Query="_query" QueryChanged="OnQueryChanged" Project="@Project" CompareFolder="false" OnTestCaseClicked="OnTestCaseClicked"/>
+            Query="_query"
+                      TotalNumberOfTestsChanged="OnTotalNumberOfTestsChanged"
+            QueryChanged="OnQueryChanged" Project="@Project" CompareFolder="false" OnTestCaseClicked="OnTestCaseClicked"/>
 
         @if (_fieldFeature is not null && _fieldCategory is not null)
         {
@@ -61,6 +68,12 @@
             _query = query;
         }
 
+    }
+
+    private long? _totalNumberOfTestsChanged = null;
+    private void OnTotalNumberOfTestsChanged(long count)
+    {
+        _totalNumberOfTestsChanged = count;
     }
 
     private void OnTestCaseClicked(TestCase testCase)

@@ -14,7 +14,7 @@ namespace TestBucket.Domain.Shared;
 /// </summary>
 internal class SearchStringParser
 {
-    public static string? Parse(string text, Dictionary<string,string> result, HashSet<string> keywords)
+    public static string? Parse(string text, Dictionary<string,string> result, List<FieldFilter> fieldFilters, HashSet<string> keywords, IReadOnlyList<FieldDefinition> fields)
     {
         List<string> words = new();
         foreach(var item in text.Split(' '))
@@ -23,14 +23,23 @@ internal class SearchStringParser
             {
                 var p = item.IndexOf(':');
                 var keyword = item.Substring(0, p);
+                var value = item.Substring(p + 1);
                 if (keywords.Contains(keyword))
                 {
-                    var value = item.Substring(p + 1);
                     result[keyword] = value;
                 }
                 else
                 {
-                    words.Add(item);
+                    // Check if there is a matching field
+                    var field = fields.Where(x => x.Name.ToLower() == keyword).FirstOrDefault();
+                    if (field is null)
+                    {
+                        words.Add(item);
+                    }
+                    else
+                    {
+                        fieldFilters.Add(new FieldFilter { FilterDefinitionId = field.Id, StringValue = value });
+                    }
                 }
             }
             else

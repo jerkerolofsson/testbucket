@@ -66,7 +66,7 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<long[]> SearchTestCaseIdsAsync(IEnumerable<FilterSpecification<TestCase>> filters)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var tests = dbContext.TestCases.Include(x => x.TestCaseFields).AsQueryable();
+        var tests = dbContext.TestCases.AsNoTracking().Include(x => x.TestCaseFields).AsQueryable();
         foreach (var spec in filters)
         {
             tests = tests.Where(spec.Expression);

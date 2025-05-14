@@ -114,8 +114,9 @@
     private async Task OnSearch(string text)
     {
         _text = text;
+
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        var request = SearchIssueRequestParser.Parse(authState.User, TestProjectId, text);
+        var request = SearchIssueRequestParser.Parse(authState.User, TestProjectId, text, []);
         var response = await mediator.Send(request);
         _issues = response.Issues;
     }

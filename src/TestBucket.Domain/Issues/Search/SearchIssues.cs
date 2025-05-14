@@ -19,6 +19,7 @@ namespace TestBucket.Domain.Issues.Search;
 
 public record class SearchIssueRequest(ClaimsPrincipal Principal, long ProjectId) : IRequest<SearchIssueResponse>
 {
+    public List<FieldFilter> Fields { get; set; } = [];
     public string? State { get; set; }
     public string? Type { get; set; }
     public string? Text { get; set; }

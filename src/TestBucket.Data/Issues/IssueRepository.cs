@@ -77,7 +77,19 @@ internal class IssueRepository : IIssueRepository
     public async Task DeleteLocalIssueAsync(long localIssueId)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        await dbContext.LocalIssues.Where(x => x.Id == localIssueId).ExecuteDeleteAsync();
+
+        foreach (var issue in dbContext.LinkedIssues.Where(x => x.LocalIssueId == localIssueId))
+        {
+            dbContext.Remove(issue);
+        }
+        foreach (var issue in dbContext.LocalIssues
+            .Include(x=>x.Comments)
+            .Include(x=>x.IssueFields)
+            .Where(x => x.Id == localIssueId))
+        {
+            dbContext.Remove(issue);
+        }
+        await dbContext.SaveChangesAsync();
     }
 
     #endregion Local Issues

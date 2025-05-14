@@ -3,7 +3,11 @@ using System.Security.Claims;
 
 using Mediator;
 
+using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Issues.Models;
+using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.Issues.Types;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Issues.Events;
 using TestBucket.Domain.Issues.Mapping;
@@ -19,13 +23,15 @@ namespace TestBucket.Domain.Issues;
 public class IssueManager : IIssueManager
 {
     private readonly IIssueRepository _repository;
+    private readonly IFieldDefinitionManager _fieldDefinitionManager;
     private readonly IMediator _mediator;
     private readonly List<ILinkedIssueObserver> _observers = new();
 
-    public IssueManager(IIssueRepository repository, IMediator mediator)
+    public IssueManager(IIssueRepository repository, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager)
     {
         _repository = repository;
         _mediator = mediator;
+        _fieldDefinitionManager = fieldDefinitionManager;
     }
 
     /// <summary>
@@ -44,6 +50,18 @@ public class IssueManager : IIssueManager
     public async Task AddLocalIssueAsync(ClaimsPrincipal principal, LocalIssue issue)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
+
+        if (issue.State == null)
+        {
+            issue.State = IssueStates.Open;
+            issue.MappedState = MappedIssueState.Open;
+        }
+        if (issue.IssueType == null)
+        {
+            issue.IssueType = IssueTypes.Issue;
+            issue.MappedType = MappedIssueType.Issue;
+        }
+
         issue.CreatedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         issue.Author ??= issue.CreatedBy;
         issue.ModifiedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
@@ -51,6 +69,11 @@ public class IssueManager : IIssueManager
         await _repository.AddLocalIssueAsync(issue);
     }
 
+    public async Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    {
+        var definitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.Issue);
+        return await SearchLocalIssuesAsync(SearchIssueRequestParser.Parse(principal, projectId, text, definitions), offset, count);
+    }
 
     public async Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(SearchIssueRequest request, int offset, int count)
     {
@@ -146,7 +169,12 @@ public class IssueManager : IIssueManager
         var result = await _repository.SearchAsync(filters, 0, 1);
         return result.Items.FirstOrDefault();
     }
+    public async Task DeleteLocalIssueAsync(ClaimsPrincipal principal, LocalIssue issue)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Delete);
 
+        await _repository.DeleteLocalIssueAsync(issue.Id);
+    }
 
     #endregion Local Issues
 

@@ -1,14 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using TestBucket.Components.Shared;
+using TestBucket.Components.Shared.Fields;
+using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Testing.Aggregates;
-using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Components.Tests.TestRuns.Controls;
 
 public partial class TestCaseRunGrid
 {
+    [Inject] FieldController FieldController { get; set; } = default!;
+
     [Parameter] public TestRun? Run { get; set; }
     [Parameter] public TestCaseRun? SelectedTestCaseRun { get; set; }
     [Parameter] public EventCallback<TestCaseRun> SelectedTestCaseRunChanged { get; set; }
@@ -77,14 +81,24 @@ public partial class TestCaseRunGrid
 
     private TestRun? _run;
 
-    protected override void OnParametersSet()
+    private IReadOnlyList<FieldDefinition> _fieldDefinitions = [];
+    private string _searchText = "";
+
+    protected override async Task OnParametersSetAsync()
     {
         if (_selectedItem?.Id != SelectedTestCaseRun?.Id ||
             _selectedItem?.Result != SelectedTestCaseRun?.Result ||
             SelectedTestCaseRun is null || _run != Run)
         {
             _run = Run;
-            _query = SearchTestCaseRunQuery.FromUrl(navigationManager.Uri);
+            if (_fieldDefinitions.Count == 0 && _run?.TestProjectId is not null)
+            {
+                _fieldDefinitions = await FieldController.GetDefinitionsAsync(_run.TestProjectId.Value, FieldTarget.TestCaseRun);
+            }
+
+            _query = SearchTestCaseRunQuery.FromUrl(_fieldDefinitions, navigationManager.Uri);
+            _query.TestRunId = null;
+            _searchText = _query.ToSearchText();
             _query.TestRunId = _run?.Id;
 
             _selectedItem = SelectedTestCaseRun;
@@ -184,8 +198,14 @@ public partial class TestCaseRunGrid
 
     private void OnSearch(string text)
     {
-        _query.Text = text;
-        _dataGrid?.ReloadServerData();
+        _searchText = text;
+        if (_run is not null)
+        {
+            _query = SearchTestCaseRunQueryParser.Parse(text, _fieldDefinitions);
+            _query.TestRunId = _run.Id;
+            //_query.Text = text;
+            _dataGrid?.ReloadServerData();
+        }
     }
 
     private async Task ShowFilterAsync()

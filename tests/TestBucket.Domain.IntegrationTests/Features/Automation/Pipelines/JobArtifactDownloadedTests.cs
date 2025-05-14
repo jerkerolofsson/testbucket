@@ -2,6 +2,7 @@
 using Mediator;
 using TestBucket.Domain.Automation.Artifact.Events;
 using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.IntegrationTests.Features.Automation.Artifacts
 {

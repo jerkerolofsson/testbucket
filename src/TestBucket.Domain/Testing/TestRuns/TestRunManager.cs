@@ -10,6 +10,7 @@ using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.Testing.Specifications.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Events;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 
 namespace TestBucket.Domain.Testing.TestRuns;

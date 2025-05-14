@@ -45,8 +45,18 @@ public interface IIssueManager
     Task<PagedResult<LinkedIssue>> SearchLinkedIssuesAsync(SearchIssueRequest request, int offset, int count);
 
     #region Local issues
+
+    /// <summary>
+    /// Removes a local issue
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="issue"></param>
+    /// <returns></returns>
+    Task DeleteLocalIssueAsync(ClaimsPrincipal principal, LocalIssue issue);
+
     Task AddLocalIssueAsync(ClaimsPrincipal principal, LocalIssue issue);
 
+    Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count);
     Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(SearchIssueRequest request, int offset, int count);
     Task<LocalIssue?> FindLocalIssueFromExternalAsync(ClaimsPrincipal principal, long testProjectId, long? externalSystemId, string? externalId);
     Task UpdateLocalIssueAsync(ClaimsPrincipal principal, LocalIssue existingIssue);

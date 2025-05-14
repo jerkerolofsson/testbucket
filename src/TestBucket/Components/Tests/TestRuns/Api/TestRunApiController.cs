@@ -11,6 +11,7 @@ using TestBucket.Domain.Testing.Duplication;
 using TestBucket.Domain.Testing.Services.Export;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Formats;
 using TestBucket.Formats.Dtos;
 

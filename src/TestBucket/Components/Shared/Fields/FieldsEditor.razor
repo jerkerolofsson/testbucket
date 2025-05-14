@@ -89,11 +89,7 @@
             _issueId = Issue.Id;
             _testProjectId = Issue.TestProjectId;
             var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = Issue.TestProjectId, Target = FieldTarget.Issue });
-            _issueFields = Issue.IssueFields?.ToList() ?? [];
-            if (_issueFields.Count != definitions.Count)
-            {
-                _issueFields = (await fieldController.GetIssueFieldsAsync(Issue.Id, definitions)).ToList();
-            }
+            _issueFields = (await fieldController.GetIssueFieldsAsync(Issue.Id, definitions)).ToList();
             _issueFields.Sort((a, b) =>
             {
                 return a.FieldDefinition!.Name.CompareTo(b.FieldDefinition!.Name);

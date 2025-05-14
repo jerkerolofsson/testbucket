@@ -30,10 +30,10 @@
         <ToolBarContent>
             <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
 
-                <MudTextField Value="_query.Text" T="string" ValueChanged="OnSearch"
+                <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
                 Style="min-width: 15vw"
                 Clearable="true"
-                Placeholder="Search Tests"
+                Placeholder="@loc["search-tests"]"
                 Variant="Variant.Outlined"
                 IconSize="Size.Small"
                 Adornment="Adornment.Start"
@@ -43,20 +43,9 @@
 
                 @if(_results is not null)
                 {
-                    <TestResultSummaryBar Style="width: 100px" Summary="@_results"/>
-
-                    if(_results.Failed > 0)
-                    {
-                        <MudLink OnClick="FilterFailed">@loc["result-failed"]</MudLink>
-                    }
-                    if (_results.NoRun > 0)
-                    {
-                        <MudLink OnClick="FilterIncomplete">@loc["result-norun"]</MudLink>
-                    }
-                    <MudLink OnClick="FilterUnassigned">@loc["unassigned"]</MudLink>
-                    <MudLink OnClick="FilterAssignedToMe">@loc["assigned-to-me"]</MudLink>
+                
                 }
-                <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="ShowFilterAsync"></MudIconButton>
+                @* <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="ShowFilterAsync"></MudIconButton> *@
             </MudStack>
         </ToolBarContent>
 

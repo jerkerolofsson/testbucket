@@ -16,6 +16,7 @@ using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Domain.Traceability.Models;
 using TestBucket.Domain.Traceability;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Testing.TestCases
 {

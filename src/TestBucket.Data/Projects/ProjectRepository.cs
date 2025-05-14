@@ -292,6 +292,10 @@ internal class ProjectRepository : IProjectRepository
             {
                 dbContext.TestCaseFields.Remove(fieldValue);
             }
+            foreach (var fieldValue in dbContext.IssueFields.Where(x => x.FieldDefinitionId == fieldDefinition.Id))
+            {
+                dbContext.IssueFields.Remove(fieldValue);
+            }
 
             dbContext.FieldDefinitions.Remove(fieldDefinition);
         }
@@ -306,6 +310,10 @@ internal class ProjectRepository : IProjectRepository
         foreach (var item in dbContext.LinkedIssues.Where(x => x.TestProjectId == project.Id))
         {
             dbContext.LinkedIssues.Remove(item);
+        }
+        foreach (var item in dbContext.LocalIssues.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.LocalIssues.Remove(item);
         }
 
         // Test

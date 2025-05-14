@@ -1,7 +1,8 @@
 ﻿using System.Net;
 using System.Text;
+using System.Web;
 
-namespace TestBucket.Domain.Testing.Models;
+namespace TestBucket.Domain.Testing.TestRuns.Search;
 public class SearchTestCaseRunQuery : SearchQuery
 {
     public long? TestRunId { get; set; }
@@ -17,7 +18,7 @@ public class SearchTestCaseRunQuery : SearchQuery
     public TestResult? Result { get; set; }
     public string? State { get; set; }
 
-    public static SearchTestCaseRunQuery FromUrl(string? url)
+    public static SearchTestCaseRunQuery FromUrl(IReadOnlyList<FieldDefinition> fields, string? url)
     {
         var q = new SearchTestCaseRunQuery();
         if(url is null)
@@ -31,7 +32,17 @@ public class SearchTestCaseRunQuery : SearchQuery
         {
             query = url[(p + 1)..];
         }
+        var items = HttpUtility.ParseQueryString(query);
 
+        foreach (var key in items.AllKeys)
+        {
+            if (key == "q")
+            {
+                return SearchTestCaseRunQueryParser.Parse(items[key]??"", fields);
+            }
+        }
+        return q;
+        /*
         var pairs = query.Split('&');
         foreach(var pair in pairs)
         {
@@ -69,42 +80,70 @@ public class SearchTestCaseRunQuery : SearchQuery
                 }
             }
         }
-
         return q;
+        */
     }
 
-    public string ToQueryString()
+    public string ToSearchText()
     {
         List<string> items = [];
         if (AssignedToUser is not null)
         {
-            items.Add($"AssignedToUser={WebUtility.UrlEncode(AssignedToUser)}");
+            items.Add($"assigned-to:{AssignedToUser}");
         }
         if (Unassigned is not null)
         {
-            items.Add($"Unassigned={Unassigned}");
+            if (Unassigned == true)
+            {
+                items.Add("unassigned:yes");
+            }
+            else
+            {
+                items.Add("unassigned:no");
+            }
         }
         if (Result is not null)
         {
-            items.Add($"Result={Result}");
+            items.Add($"result:{Result.ToString()!.ToLower()}");
         }
         if (State is not null)
         {
-            items.Add($"State={WebUtility.UrlEncode(State)}");
+            items.Add($"state={State}");
         }
         if (TeamId is not null)
         {
-            items.Add($"TeamId={TeamId}");
+            items.Add($"team-id:{TeamId}");
+        }
+        if (ProjectId is not null)
+        {
+            items.Add($"project-id:{ProjectId}");
+        }
+        if (TestRunId is not null)
+        {
+            items.Add($"testrun-id:{TestRunId}");
         }
         if (Completed is not null)
         {
-            items.Add($"Completed={Completed}");
+            if (Completed == true)
+            {
+                items.Add("completed:yes");
+            }
+            else
+            {
+                items.Add("completed:no");
+            }
         }
         if (TestSuiteId is not null)
         {
-            items.Add($"TestSuiteId={TestSuiteId}");
+            items.Add($"testsuite-id:{TestSuiteId}");
         }
-        return string.Join('&', items);
+        return string.Join(' ', items) + " " + Text;
+    }
+
+
+    public string ToQueryString()
+    {
+        return "q=" + WebUtility.UrlEncode(ToSearchText());
     }
     public string AsCacheKey()
     {

@@ -2,6 +2,7 @@
 
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Domain.Traceability.Models;
 
 namespace TestBucket.Domain.Testing.TestCases;

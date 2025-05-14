@@ -13,6 +13,7 @@ using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Progress;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Testing.Duplication;
 

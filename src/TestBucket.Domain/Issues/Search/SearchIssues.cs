@@ -25,6 +25,7 @@ public record class SearchIssueRequest(ClaimsPrincipal Principal, long ProjectId
     public string? Text { get; set; }
     public string? ExternalSystemName { get; set; }
     public long? ExternalSystemId { get; set; }
+    public string? AssignedToUser { get; set; }
 }
 
 public record class SearchIssueResponse(IReadOnlyList<IssueDto> Issues);

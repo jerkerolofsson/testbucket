@@ -20,6 +20,7 @@ using TestBucket.Domain.Testing.ImportExport;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Localization;
 
 namespace TestBucket.Components.Tests.Services;

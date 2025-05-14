@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using TestBucket.Domain.Identity;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.UnitTests.Testing.Models
 {
@@ -18,7 +21,7 @@ namespace TestBucket.Domain.UnitTests.Testing.Models
             var queryString = query.ToQueryString();
 
             // Act
-            var query2 = SearchTestCaseRunQuery.FromUrl(queryString);
+            var query2 = SearchTestCaseRunQuery.FromUrl([], queryString);
 
             Assert.Equal(query.Unassigned, query2.Unassigned);
         }
@@ -30,7 +33,7 @@ namespace TestBucket.Domain.UnitTests.Testing.Models
             var queryString = query.ToQueryString();
 
             // Act
-            var query2 = SearchTestCaseRunQuery.FromUrl(queryString);
+            var query2 = SearchTestCaseRunQuery.FromUrl([], queryString);
 
             Assert.Equal(query.Unassigned, query2.Unassigned);
         }
@@ -43,12 +46,36 @@ namespace TestBucket.Domain.UnitTests.Testing.Models
             var queryString = query.ToQueryString();
 
             // Act
-            var query2 = SearchTestCaseRunQuery.FromUrl(queryString);
+            var query2 = SearchTestCaseRunQuery.FromUrl([], queryString);
 
             Assert.Equal(query.Result, query2.Result);
             Assert.Equal(query.State, query2.State);
         }
 
+        [Fact]
+        public void ConvertQuery_WithTeamId()
+        {
+            // Arrange
+            SearchTestCaseRunQuery query = new SearchTestCaseRunQuery { TeamId = 3123 };
+            var queryString = query.ToQueryString();
+
+            // Act
+            var query2 = SearchTestCaseRunQuery.FromUrl([], queryString);
+
+            Assert.Equal(query.TeamId, query2.TeamId);
+        }
+        [Fact]
+        public void ConvertQuery_WithRunId()
+        {
+            // Arrange
+            SearchTestCaseRunQuery query = new SearchTestCaseRunQuery { TestRunId = 123 };
+            var queryString = query.ToQueryString();
+
+            // Act
+            var query2 = SearchTestCaseRunQuery.FromUrl([], queryString);
+
+            Assert.Equal(query.TestRunId, query2.TestRunId);
+        }
         [Fact]
         public void ConvertQuery_WithResult()
         {
@@ -57,7 +84,7 @@ namespace TestBucket.Domain.UnitTests.Testing.Models
             var queryString = query.ToQueryString();
 
             // Act
-            var query2 = SearchTestCaseRunQuery.FromUrl(queryString);
+            var query2 = SearchTestCaseRunQuery.FromUrl([], queryString);
 
             Assert.Equal(query.Result, query2.Result);
         }

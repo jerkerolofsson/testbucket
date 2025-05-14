@@ -4,6 +4,7 @@ using TestBucket.Domain.Automation.Artifact.Events;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Helpers;
 using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Features.ImportTestResults

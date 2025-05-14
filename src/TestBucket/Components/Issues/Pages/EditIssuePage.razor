@@ -13,8 +13,8 @@
 @if(Project is not null && _issue is not null)
 {
     <div class="container-fill">
-        <IssueEditor TestProjectId="@Project.Id" @bind-Issue="@_issue"/>
-        
+        <IssueEditor TestProjectId="@Project.Id" @bind-Issue="@_issue" Delete="DeleteIssue"/>
+
     </div>
 }
 
@@ -32,6 +32,11 @@
         {
             _issue = await controller.GetIssueByIdAsync(IssueId);
         }
+    }
+
+    private async Task DeleteIssue(LocalIssue issue)
+    {
+        await controller.DeleteLocalIssueAsync(issue);
     }
 
 }

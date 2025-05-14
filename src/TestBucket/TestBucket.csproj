@@ -49,6 +49,7 @@
     <Folder Include="Components\Issues\ApiControllers\" />
     <Folder Include="Components\Milestones\Controls\" />
     <Folder Include="Components\Shared\Commands\" />
+    <Folder Include="Components\Tests\TestRuns\Search\" />
     <Folder Include="Components\Tests\TestRuns\Services\" />
     <Folder Include="Components\Tests\TestSuites\Mapping\" />
     <Folder Include="Services\" />

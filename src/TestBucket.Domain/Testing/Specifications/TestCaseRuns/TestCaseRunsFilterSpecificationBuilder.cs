@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCases;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 

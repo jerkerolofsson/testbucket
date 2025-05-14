@@ -15,6 +15,11 @@
 <MudStack Class="container-settings-page">
     @if (Project is not null)
     {
+        <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h1" Color="Color.Primary">@_totalCount</MudText>
+            <MudText Typo="Typo.h1">@issueLoc["issues"]</MudText>
+        </MudStack>
+
         <MudDataGrid @ref="_grid"
         ServerData="LoadGridData"
         Dense Hover RowClass="tb-datarow cursor-pointer"
@@ -99,8 +104,17 @@
     [CascadingParameter] public TestProject? Project { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
 
+    [SupplyParameterFromQuery(Name = "q")] public string? Query { get; set; }
+
     private MudDataGrid<LocalIssue>? _grid;
-    private string _searchText = "state:open";
+    private string? _searchText;
+
+    private long? _totalCount;
+
+    protected override void OnParametersSet()
+    {
+        OnSearch(Query ?? "state:open is:issue");
+    }
 
     protected void OnSearch(string text)
     {
@@ -129,7 +143,13 @@
             return new GridData<LocalIssue> { TotalItems = 0 };
         }
 
-        PagedResult<LocalIssue> result = await controller.SearchAsync(Project.Id, _searchText, state.Page*state.PageSize, state.PageSize);
+        PagedResult<LocalIssue> result = await controller.SearchAsync(Project.Id, _searchText ?? "", state.Page*state.PageSize, state.PageSize);
+
+        if (_totalCount != result.TotalCount)
+        {
+            _totalCount = result.TotalCount;
+            await this.InvokeAsync(StateHasChanged);
+        }
 
         return new GridData<LocalIssue>()
         {

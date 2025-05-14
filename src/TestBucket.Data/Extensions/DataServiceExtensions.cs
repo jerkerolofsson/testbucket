@@ -8,6 +8,7 @@ using TestBucket.Data.Issues;
 using TestBucket.Data.Milestones;
 using TestBucket.Data.Requirements;
 using TestBucket.Data.Runners;
+using TestBucket.Data.Sequence;
 using TestBucket.Data.Settings;
 using TestBucket.Data.Teams;
 using TestBucket.Data.Tenants;
@@ -37,6 +38,8 @@ public static class DataServiceExtensions
 {
     public static IServiceCollection AddDataServices(this IServiceCollection services)
     {
+        services.AddScoped<ISequenceGenerator, SequenceGenerator>();
+
         services.AddScoped<ICommitRepository, CommitRepository>();
         services.AddScoped<IArchitectureRepository, ArchitectureRepository>();
         services.AddScoped<IMilestoneRepository, MilestoneRepository>();

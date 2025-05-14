@@ -12,6 +12,11 @@ public class TestCase : TestEntity
     public long Id { get; set; }
 
     /// <summary>
+    /// 1 for first item. This is unique only per project
+    /// </summary>
+    public int? SequenceNumber { get; set; }
+
+    /// <summary>
     /// External id
     /// </summary>
     public string? ExternalId { get; set; }

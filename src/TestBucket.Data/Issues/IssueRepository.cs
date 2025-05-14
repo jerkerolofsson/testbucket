@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Data.Migrations;
+﻿using TestBucket.Data.Sequence;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Data.Issues;
 internal class IssueRepository : IIssueRepository
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
-
-    public IssueRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory)
+    private readonly ISequenceGenerator _sequenceGenerator;
+    public IssueRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory, ISequenceGenerator sequenceGenerator)
     {
         _dbContextFactory = dbContextFactory;
+        _sequenceGenerator = sequenceGenerator;
     }
 
     #region Local Issues
@@ -41,9 +35,33 @@ internal class IssueRepository : IIssueRepository
             Items = await page.ToArrayAsync()
         };
     }
-    public async Task AddLocalIssueAsync(LocalIssue localIssue)
+
+    private async ValueTask<int> GetMaxSequenceNumber(string tenantId, long projectId, CancellationToken cancellationToken)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var lastestSequenceNumber = await dbContext.LocalIssues.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.TestProjectId == projectId && x.SequenceNumber != null)
+            .OrderByDescending(x => x.SequenceNumber).Select(x=>x.SequenceNumber).Take(1).FirstOrDefaultAsync();
+
+        return lastestSequenceNumber ?? 0;
+    }
+
+    public async Task AddLocalIssueAsync(LocalIssue localIssue)
+    {
+        ArgumentNullException.ThrowIfNull(localIssue.TenantId);
+        ArgumentNullException.ThrowIfNull(localIssue.TestProjectId);
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // Sequence number only used for internal issues
+        if (localIssue.ExternalId is null)
+        {
+            var project = await dbContext.Projects.AsNoTracking().Where(x => x.Id == localIssue.TestProjectId).FirstAsync();
+            localIssue.SequenceNumber = await _sequenceGenerator.GenerateSequenceNumberAsync(localIssue.TenantId, localIssue.TestProjectId.Value, "issue", GetMaxSequenceNumber, default);
+            localIssue.ExternalDisplayId = project.ShortName + '-' + localIssue.SequenceNumber;
+        }
+
         await dbContext.LocalIssues.AddAsync(localIssue);
         await dbContext.SaveChangesAsync();
     }
@@ -54,8 +72,6 @@ internal class IssueRepository : IIssueRepository
         dbContext.LocalIssues.Update(localIssue);
         await dbContext.SaveChangesAsync();
     }
-
-
     public async Task DeleteLocalIssueAsync(long localIssueId)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();

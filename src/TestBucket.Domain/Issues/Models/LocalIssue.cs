@@ -12,6 +12,11 @@ public class LocalIssue : ProjectEntity
     public long Id { get; set; }
 
     /// <summary>
+    /// 1 for first item. This is unique only per project
+    /// </summary>
+    public int? SequenceNumber { get; set; }
+
+    /// <summary>
     /// Id in external system
     /// </summary>
     public string? ExternalId { get; set; }

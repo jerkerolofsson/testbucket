@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Testing.TestRuns;
 public interface ITestRunManager

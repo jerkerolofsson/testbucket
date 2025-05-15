@@ -4,6 +4,7 @@ using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields.Events;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Fields.Inheritance;
 public class UpdateTestCaseRunsWhenTestCaseFieldIsChanged : INotificationHandler<TestCaseFieldChangedNotification>

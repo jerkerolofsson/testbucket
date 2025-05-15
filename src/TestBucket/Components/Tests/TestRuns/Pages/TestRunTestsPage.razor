@@ -2,10 +2,12 @@
 @page "/{TenantId}/Testing/TestRuns/{RunId:long}/Tests"
 @using TestBucket.Components.Automation
 @using TestBucket.Components.Tests.Layouts
+@using TestBucket.Contracts.Fields
+@using TestBucket.Domain.Testing.TestRuns.Search
 @layout TestingLayout
 @inject TestBrowser testBrowser
 @inject NavigationManager navigationManager
-
+@inject FieldController fieldController
 <TestRunView TestRun="@_testRun" Query="@_query"/>
 
 @code {
@@ -16,6 +18,8 @@
 
     private TestRun? _testRun = null;
     private SearchTestCaseRunQuery _query = new SearchTestCaseRunQuery();
+    private IReadOnlyList<FieldDefinition> _fields = [];
+    private long _testProjectId;
 
     /// <summary>
     /// Load the test case when changed
@@ -23,11 +27,22 @@
     /// <returns></returns>
     protected override async Task OnParametersSetAsync()
     {
-        _query = SearchTestCaseRunQuery.FromUrl(navigationManager.Uri);
-
         if (_testRun is null || _testRun.Id != RunId)
         {
             _testRun = await testBrowser.GetTestRunByIdAsync(RunId);
+
+            if (_testRun?.TestProjectId is not null)
+            {
+            }
         }
+        if (Project?.Id is not null)
+        {
+            if (_fields.Count == 0 || Project.Id != _testProjectId)
+            {
+                _testProjectId = Project.Id;
+                _fields = await fieldController.GetDefinitionsAsync(_testProjectId, FieldTarget.TestCaseRun);
+            }
+        }
+        _query = SearchTestCaseRunQuery.FromUrl(_fields, navigationManager.Uri);
     }
 }

@@ -1,10 +1,6 @@
-﻿using System.Diagnostics;
-
-using Microsoft.AspNetCore.Components;
-
-using TestBucket.Contracts.Testing.Models;
-using TestBucket.Contracts.Testing.States;
-using TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Contracts.Testing.States;
+using TestBucket.Domain.Comments.Models;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Components.Tests.TestRuns.Controls;
 
@@ -16,7 +12,7 @@ public partial class TestRunView
     private TestCaseRun? _selectedTestCaseRun = null;
     private TestCaseRunGrid? testCaseRunGrid;
     private string _markdown = "";
-
+    private List<Comment> _comments = [];
     private TestState? State 
     {
         get
@@ -35,12 +31,21 @@ public partial class TestRunView
         _activePanelIndex = index;
     }
 
-    private void OnSelectedTestCaseRunChanged()
+    private async Task OnCommentAdded(Comment comment)
     {
-        if(_selectedTestCaseRun  is null)
+        if (_selectedTestCaseRun is not null)
         {
-            
+            comment.TeamId = _selectedTestCaseRun.TeamId;
+            comment.TestProjectId = _selectedTestCaseRun.TestProjectId;
+            comment.TestCaseRunId = _selectedTestCaseRun.Id;
+            _comments.Add(comment);
+            await comments.AddCommentAsync(comment);
         }
+    }
+    private async Task OnCommentDeleted(Comment comment)
+    {
+        _comments.Remove(comment);
+        await comments.DeleteCommentAsync(comment);
     }
 
     protected override void OnParametersSet()
@@ -61,6 +66,7 @@ public partial class TestRunView
         }
 
         _selectedTestCaseRun = testCaseRun;
+        _comments = testCaseRun?.Comments ?? [];
 
         if (_selectedTestCaseRun?.TestCase is not null)
         {

@@ -1,6 +1,7 @@
 ﻿@using Plotly.Blazor.LayoutLib
 @using TestBucket.Contracts.Fields
 @using TestBucket.Domain.Testing.Aggregates
+@using TestBucket.Domain.Testing.TestRuns.Search
 @inject TestBrowser testBrowser
 @inject TestCaseEditorController testCaseEditorController
 @inject TestExecutionController testExecutionController
@@ -12,14 +13,27 @@
 
     @if (TestRun is not null)
     {
-        <MudText Typo="Typo.h1">@TestRun.Name</MudText>
+        <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h1" Color="Color.Primary">@_accentText</MudText>
+            <MudText Typo="Typo.h1">@TestRun.Name</MudText>
+        </MudStack>
 
+        <MudStack Row Justify="Justify.Center" Style="width:100%">
+            <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
+            Class="default-search"
+            Clearable="true"
+            Placeholder="@loc["search-results"]"
+            Variant="Variant.Outlined"
+            IconSize="Size.Small"
+            Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" />
+        </MudStack>
 
         @if (_results is not null)
         {
             @* <TestResultSummaryBar Summary="@_results"/> *@
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+            <div class="tb-run-main-charts">
                 <ResultChart Results="@_results" Title="@loc["test-results"]" />
 
                 @foreach(var kvp in _groupedByField)
@@ -52,33 +66,66 @@
     private Dictionary<FieldDefinition, Dictionary<string, TestExecutionResultSummary>> _groupedByField = [];
     private TestExecutionResultSummary? _results;
     private string? _queryKey;
+    private string _accentText = "";
+    private string _searchText = "";
+
+    private IReadOnlyList<FieldDefinition> _fields = [];
+    private long _testProjectId;
+
+    private async Task OnSearch(string text)
+    {
+        if(TestRun is null)
+        {
+            return;
+        }
+
+        var query = SearchTestCaseRunQueryParser.Parse(text, _fields);
+        
+        // Remove test run id from search string shown to user
+        query.TestRunId = null;
+        _searchText = query.ToSearchText();
+        query.TestRunId = TestRun.Id;
+
+        // Create a key so we only reload data if the query actually changed
+        var queryKey = query.AsCacheKey();
+        if (queryKey != _queryKey)
+        {
+            _queryKey = queryKey;
+            _results = await testBrowser.GetTestExecutionResultSummaryAsync(query);
+
+            _accentText = "";
+            if (_results.Total > 0)
+            {
+                var passrate = Math.Round(_results.Passed * 100.0 / _results.Total);
+                _accentText = $"{passrate.ToString()}%";
+            }
+
+            if (Project is not null)
+            {
+                var fields = await fieldController.GetDefinitionsAsync(Project.Id, FieldTarget.TestCaseRun);
+                _groupedByField.Clear();
+                foreach (var field in fields.Where(x => x.Type == FieldType.SingleSelection))
+                {
+                    var results = await testBrowser.GetTestExecutionResultSummaryByFieldAsync(query, field);
+                    _groupedByField[field] = results;
+                }
+            }
+        }
+    }
 
     protected override async Task OnParametersSetAsync()
     {
+        if (Project?.Id is not null)
+        {
+            if (_fields.Count == 0 || Project.Id != _testProjectId)
+            {
+                _testProjectId = Project.Id;
+                _fields = await fieldController.GetDefinitionsAsync(_testProjectId, FieldTarget.TestCaseRun);
+            }
+        }
         if (TestRun is not null)
         {
-            var query = new SearchTestCaseRunQuery()
-            {
-                TestRunId = TestRun.Id
-            };
-
-            var queryKey = query.AsCacheKey();
-            if (queryKey != _queryKey)
-            {
-                _queryKey = queryKey;
-                _results = await testBrowser.GetTestExecutionResultSummaryAsync(query);
-
-                if (Project is not null)
-                {
-                    var fields = await fieldController.GetDefinitionsAsync(Project.Id, FieldTarget.TestCaseRun);
-                    _groupedByField.Clear();
-                    foreach (var field in fields.Where(x => x.Type == FieldType.SingleSelection))
-                    {
-                        var results = await testBrowser.GetTestExecutionResultSummaryByFieldAsync(query, field);
-                        _groupedByField[field] = results;
-                    }
-                }
-            }
+            await OnSearch("");
         }
     }
 }

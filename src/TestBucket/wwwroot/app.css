@@ -1024,3 +1024,16 @@ div.tb-profile-image.tb-background-9 {
 .default-search:hover {
     background: rgba(0,0,0,0.2);
 }
+
+.tb-run-main-charts {
+    margin-top: 8px;
+    display: grid; 
+    grid-template-columns: repeat(6, 1fr); 
+    gap: 8px;
+}
+
+.tb-chart-skeleton,
+.tb-chart {
+    height: 5vh; 
+    min-height: 300px !important;
+}

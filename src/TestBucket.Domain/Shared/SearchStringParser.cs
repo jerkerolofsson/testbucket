@@ -38,7 +38,7 @@ internal class SearchStringParser
                     }
                     else
                     {
-                        fieldFilters.Add(new FieldFilter { FilterDefinitionId = field.Id, StringValue = value });
+                        fieldFilters.Add(new FieldFilter { FilterDefinitionId = field.Id, Name=keyword, StringValue = value });
                     }
                 }
             }

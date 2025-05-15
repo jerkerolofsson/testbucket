@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
 using TestBucket.Components.Shared;
+using TestBucket.Components.Shared.Fields;
+using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Testing.Aggregates;
-using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Components.Tests.TestRuns.Controls;
 
@@ -38,6 +40,11 @@ public partial class TestCaseRunGrid
     /// Defines the filter
     /// </summary>
     private SearchTestCaseRunQuery _query = new SearchTestCaseRunQuery();
+    private TestRun? _run;
+
+    private IReadOnlyList<FieldDefinition> _fieldDefinitions = [];
+    private string _searchText = "";
+    private long _totalCount = 0;
 
     public Task OnRunCreatedAsync(TestRun testRun)
     {
@@ -76,18 +83,18 @@ public partial class TestCaseRunGrid
         testRunManager.AddObserver(this);
     }
 
-    private TestRun? _run;
-
     protected override void OnParametersSet()
     {
+        _query = Query ?? new();
+        _query.TestRunId = null;
+        _searchText = _query.ToSearchText();
+        _query.TestRunId = _run?.Id;
+
         if (_selectedItem?.Id != SelectedTestCaseRun?.Id ||
             _selectedItem?.Result != SelectedTestCaseRun?.Result ||
             SelectedTestCaseRun is null || _run != Run)
         {
             _run = Run;
-            _query = Query ?? new();
-            //_query = SearchTestCaseRunQuery.FromUrl(navigationManager.Uri);
-            _query.TestRunId = _run?.Id;
 
             _selectedItem = SelectedTestCaseRun;
             if (!_items.Contains(_selectedItem))
@@ -184,18 +191,21 @@ public partial class TestCaseRunGrid
         await testCaseEditor.SaveTestCaseRunAsync(testCaseRun);
     }
 
-    private string _searchText = "";
-    private void OnSearch(string text)
+    private async Task OnSearch(string text)
     {
         _searchText = text;
-        _query = SearchTestCaseRunQueryParser
-        _dataGrid?.ReloadServerData();
+        if (_run?.TestProjectId is not null)
+        {
+            if(_fieldDefinitions.Count == 0)
+            {
+                _fieldDefinitions = await fieldController.GetDefinitionsAsync(_run.TestProjectId.Value, FieldTarget.TestCaseRun);
+            }
+            _query = SearchTestCaseRunQueryParser.Parse(text, _fieldDefinitions);
+            _query.TestRunId = _run.Id;
+            _dataGrid?.ReloadServerData();
+        }
     }
 
-    private async Task ShowFilterAsync()
-    {
-        await Task.Yield();
-    }
 
     public void ReloadServerData()
     {
@@ -263,6 +273,11 @@ public partial class TestCaseRunGrid
             await SelectFirstItemIfNoSelectionOrCurrentSelectionIsNotFoundAsync();
         }
 
+        if (_totalCount != searchTestCaseRunsResult.TotalCount)
+        {
+            _totalCount = searchTestCaseRunsResult.TotalCount;
+            await InvokeAsync(StateHasChanged);
+        }
         GridData<TestCaseRun> data = new()
         {
             Items = _items,
@@ -282,30 +297,6 @@ public partial class TestCaseRunGrid
                 await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
             }
         }
-    }
-
-    private void FilterFailed()
-    {
-        _query = new SearchTestCaseRunQuery() { Result = TestResult.Failed, TestRunId = Run?.Id };
-        _dataGrid?.ReloadServerData();
-    }
-    private void FilterIncomplete()
-    {
-        _query = new SearchTestCaseRunQuery() { Completed = false, TestRunId = Run?.Id };
-        _dataGrid?.ReloadServerData();
-    }
-
-    private async Task FilterAssignedToMe()
-    {
-        var authState = await authStateProvider.GetAuthenticationStateAsync();
-        _query = new SearchTestCaseRunQuery() { AssignedToUser = authState.User?.Identity?.Name, TestRunId = Run?.Id };
-        _dataGrid?.ReloadServerData();
-    }
-
-    private void FilterUnassigned()
-    {
-        _query = new SearchTestCaseRunQuery() { Unassigned = true, TestRunId = Run?.Id };
-        _dataGrid?.ReloadServerData();
     }
 
     private async Task RunTestAgain()

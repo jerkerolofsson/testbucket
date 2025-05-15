@@ -10,6 +10,7 @@ using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.Testing.Specifications.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Events;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 
 namespace TestBucket.Domain.Testing.TestRuns;
@@ -179,7 +180,7 @@ internal class TestRunManager : ITestRunManager
 
         testCaseRun.Modified =  DateTimeOffset.UtcNow;
         testCaseRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
-
+        testCaseRun.TestCaseRunFields = await _fieldManager.GetTestCaseRunFieldsAsync(principal, testCaseRun.TestRunId, testCaseRun.Id, []);
         await _testCaseRepo.UpdateTestCaseRunAsync(testCaseRun);
 
         await _mediator.Publish(new TestCaseRunSavedNotification(principal, testCaseRun));

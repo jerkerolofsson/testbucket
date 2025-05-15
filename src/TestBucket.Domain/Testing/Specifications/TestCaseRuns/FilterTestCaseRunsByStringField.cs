@@ -5,7 +5,7 @@ using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Testing.Specifications.TestCases;
 
-public class FilterTestCaseRunsByStringField : FilterSpecification<TestCase>
+public class FilterTestCaseRunsByStringField : FilterSpecification<TestCaseRun>
 {
     private readonly long _fieldDefinitionId;
     private readonly string? _categeory;
@@ -16,8 +16,8 @@ public class FilterTestCaseRunsByStringField : FilterSpecification<TestCase>
         _categeory = categeory;
     }
 
-    protected override Expression<Func<TestCase, bool>> GetExpression()
+    protected override Expression<Func<TestCaseRun, bool>> GetExpression()
     {
-        return x => x.TestCaseFields!.Where(f => f.FieldDefinitionId == _fieldDefinitionId && f.StringValue == _categeory).Any();
+        return x => x.TestCaseRunFields!.Where(f => f.FieldDefinitionId == _fieldDefinitionId && f.StringValue == _categeory).Any();
     }
 }

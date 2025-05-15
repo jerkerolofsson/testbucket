@@ -1,5 +1,6 @@
 ﻿using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Components.Shared;
 

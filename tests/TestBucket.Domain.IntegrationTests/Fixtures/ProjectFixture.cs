@@ -40,6 +40,11 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         /// </summary>
         public RequirementsTestFramework Requirements => new RequirementsTestFramework(this);
 
+        /// <summary>
+        /// Test framework for issues
+        /// </summary>
+        public IssuesTestFramework Issues => new IssuesTestFramework(this);
+
         public TestBucketApp App => _app;
 
         public ProjectFixture(TestBucketApp app)

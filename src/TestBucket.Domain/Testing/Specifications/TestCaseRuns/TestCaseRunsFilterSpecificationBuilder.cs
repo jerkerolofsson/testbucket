@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCases;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 
@@ -62,6 +63,21 @@ public static class TestCaseRunsFilterSpecificationBuilder
         if (query.TestRunId is not null)
         {
             specifications.Add(new FilterTestCaseRunsByRun(query.TestRunId.Value));
+        }
+
+        if(query.Fields is not null)
+        {
+            foreach (var field in query.Fields)
+            {
+                if (field.StringValue is not null)
+                {
+                    specifications.Add(new FilterTestCaseRunsByStringField(field.FilterDefinitionId, field.StringValue));
+                }
+                if (field.BooleanValue is not null)
+                {
+                    specifications.Add(new FilterTestCaseRunsByBooleanField(field.FilterDefinitionId, field.BooleanValue.Value));
+                }
+            }
         }
 
         return specifications;

@@ -55,6 +55,14 @@
                     <FieldHeader>@loc["type"]</FieldHeader>
                     <IssueTypeSelect Type="_type" TypeChanged="OnTypeChanged" />
                 </Field>
+
+                <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Delete">
+                    <Authorized>
+                        <MudStack Row Justify="Justify.FlexEnd">
+                            <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="DeleteAsync">@loc["delete"]</MudButton>
+                        </MudStack>
+                    </Authorized>
+                </PermissionView>
             </MudStack>
         </EndContent>
     </Splitter>
@@ -63,6 +71,7 @@
 @code {
     [Parameter] public LocalIssue? Issue { get; set; }
     [Parameter] public EventCallback<LocalIssue> IssueChanged { get; set; }
+    [Parameter] public EventCallback<LocalIssue> Delete { get; set; }
     [Parameter] public long? TestProjectId { get; set; }
     private List<Comment> _comments = [];
 
@@ -147,6 +156,12 @@
 
         Issue.Title = title;
         await IssueChanged.InvokeAsync(Issue);
+    }
+
+    private async Task DeleteAsync()
+    {
+        if (Issue is null) return;
+        await Delete.InvokeAsync(Issue);
     }
 
 }

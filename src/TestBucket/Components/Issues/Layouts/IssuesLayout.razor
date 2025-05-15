@@ -8,11 +8,14 @@
 @inject IStringLocalizer<IssueStrings> issueLoc
 <TenantRedirect />
 
-<Splitter Style="height: 100%" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
+<Splitter Style="height: 100%" Bordered="false" Dimension="15" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
 
         <MudStack Class="pa-2" Style="width: 100%;">
-            Saved queries..
+            <MudNavLink Href="@Open">@issueLoc["open"]</MudNavLink>
+            <MudNavLink Href="@OpenHighPrio">@issueLoc["high-prio"]</MudNavLink>
+            <MudNavLink Href="@OpenIncidents">@issueLoc["open-incidents"]</MudNavLink>
+            <MudNavLink Href="@Closed">@issueLoc["state-closed"]</MudNavLink>
         </MudStack>
 
     </StartContent>
@@ -25,5 +28,10 @@
 @code {
     [CascadingParameter] TestProject? Project { get; set; }
     [CascadingParameter] Team? Team { get; set; }
+
+    private string OpenHighPrio => appNavigationManager.GetIssuesUrl() + "?q=is:open%20priority:High";
+    private string Open => appNavigationManager.GetIssuesUrl() + "?q=state:open";
+    private string OpenIncidents => appNavigationManager.GetIssuesUrl() + "?q=is:incident%20state:open";
+    private string Closed => appNavigationManager.GetIssuesUrl() + "?q=state:closed";
 
 }

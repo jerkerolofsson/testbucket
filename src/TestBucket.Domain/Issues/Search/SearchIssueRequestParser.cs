@@ -19,6 +19,9 @@ public class SearchIssueRequestParser
         {
             switch(pair.Key)
             {
+                case "assigned-to":
+                    request.AssignedToUser = pair.Value;
+                    break;
                 case "is":
                     request.Type = pair.Value;
                     break;

@@ -773,6 +773,7 @@ internal class TestCaseRepository : ITestCaseRepository
         var tests = dbContext.TestCaseRuns
             .AsNoTracking()
             .Include(x => x.LinkedIssues)
+            .Include(x => x.Comments)
             .Include(x => x.TestCase)
             .Include(x => x.TestCaseRunFields!).ThenInclude(y => y.FieldDefinition)
             .AsQueryable();

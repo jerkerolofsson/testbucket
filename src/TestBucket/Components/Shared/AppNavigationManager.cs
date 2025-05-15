@@ -8,7 +8,7 @@ using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.TestAccounts.Models;
-using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Domain.TestResources.Models;
 
 namespace TestBucket.Components.Shared;

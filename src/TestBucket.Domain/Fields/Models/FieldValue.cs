@@ -81,6 +81,7 @@ public class FieldValue : Entity
     {
         return new FieldFilter
         {
+            Name = FieldDefinition?.Name ?? "error:FieldDefinitionNotSet",
             FilterDefinitionId = FieldDefinitionId,
             StringValuesList = this.StringValuesList,
             LongValue = this.LongValue,
@@ -198,6 +199,9 @@ public class FieldValue : Entity
 
             case FieldType.DateOnly:
                 return DateValue?.ToString() ?? "";
+
+            case FieldType.Double:
+                return DoubleValue?.ToString() ?? "";
 
             case FieldType.Integer:
                 return LongValue?.ToString() ?? "";

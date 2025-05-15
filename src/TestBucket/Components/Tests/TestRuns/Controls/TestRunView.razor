@@ -1,8 +1,11 @@
-﻿@implements IAsyncDisposable
+﻿@using TestBucket.Components.Comments
+@using TestBucket.Components.Comments.Controls
+@implements IAsyncDisposable
 @inject TestBrowser testBrowser
 @inject TestCaseEditorController testCaseEditorController
 @inject TestExecutionController testExecutionController
 @inject IStringLocalizer<SharedStrings> loc
+@inject CommentsController comments
 
 <MudStack Spacing="0" Style="width: 100%">
 
@@ -50,7 +53,12 @@
                             else
                             {
                                 <TestCaseRunReadOnlyView TestCaseRun="@_selectedTestCaseRun" />
+
+                                <FieldsEditor TestCaseRun="@_selectedTestCaseRun" ReadOnly/>
                             }
+
+                            <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
+
                         </MudStack>
                     </CascadingValue>
                 }

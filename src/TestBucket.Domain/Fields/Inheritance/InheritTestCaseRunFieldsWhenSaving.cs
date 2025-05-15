@@ -48,6 +48,7 @@ public class InheritTestCaseRunFieldsWhenSaving : INotificationHandler<TestCaseR
                 continue;
             }
 
+            // Assign field if it doesn't have a value, or if it has a value and it was inherited
             if (!field.HasValue() || field.Inherited == true)
             {
                 await UpdateFieldAsync(principal, field, testCaseFields, testRunFields);

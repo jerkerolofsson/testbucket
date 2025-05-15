@@ -8,100 +8,100 @@
 @inject TestCaseEditorController testCaseEditor
 @inject TestRunCreationController testRunCreationService
 @inject TestExecutionController testExecutionController
+@inject FieldController fieldController
 @implements IDisposable
 @implements ITestRunObserver
 @inject IStringLocalizer<SharedStrings> loc
 @inject AuthenticationStateProvider authStateProvider
 
-<DropZone T="TestEntity" OnDrop="OnDrop">
-    <MudDataGrid ServerData="LoadGridData"
-                 Class="tb-test-case-run-grid tb-data-grid-verydense"
-                 RowClassFunc="RowClassFunc"
-                 Dense
-                 Bordered
-                 RowsPerPage="25"
-                 SelectOnRowClick="true"
-                 MultiSelection="false"
-                 T="TestCaseRun"
-                 RowClick="(e) => OnClicked(e.Item)"
-                 @ref="_dataGrid"
-                 SortMode="SortMode.None">
+<MudStack>
+    <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+        @if (_run is not null)
+        {
+            <MudText Typo="Typo.h1" Color="Color.Primary">@_totalCount</MudText>
+            <MudText Typo="Typo.h1">@_run.Name</MudText>
+        }
+    </MudStack>
 
-        <ToolBarContent>
-            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+    <DropZone T="TestEntity" OnDrop="OnDrop">
+        <MudDataGrid ServerData="LoadGridData"
+                     Class="tb-test-case-run-grid tb-data-grid-verydense"
+                     RowClassFunc="RowClassFunc"
+                     Dense
+                     Bordered
+                     RowsPerPage="25"
+                     SelectOnRowClick="true"
+                     MultiSelection="false"
+                     T="TestCaseRun"
+                     RowClick="(e) => OnClicked(e.Item)"
+                     @ref="_dataGrid"
+                     SortMode="SortMode.None">
 
-                <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
-                Style="min-width: 15vw"
-                Clearable="true"
-                Placeholder="@loc["search-tests"]"
-                Variant="Variant.Outlined"
-                IconSize="Size.Small"
-                Adornment="Adornment.Start"
-                AdornmentIcon="@Icons.Material.Filled.Search" />
+            <ToolBarContent>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
 
-                <MudSpacer />
+                    <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
+                    Class="default-search"
+                    Clearable="true"
+                    Placeholder="@loc["search-tests"]"
+                    Variant="Variant.Outlined"
+                    IconSize="Size.Small"
+                    Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Search" />
 
-                @if(_results is not null)
-                {
-                    <TestResultSummaryBar Style="width: 100px" Summary="@_results"/>
+                    <MudSpacer />
 
-                    if(_results.Failed > 0)
+                    @if(_results is not null)
                     {
-                        <MudLink OnClick="FilterFailed">@loc["result-failed"]</MudLink>
+                
                     }
-                    if (_results.NoRun > 0)
-                    {
-                        <MudLink OnClick="FilterIncomplete">@loc["result-norun"]</MudLink>
-                    }
-                    <MudLink OnClick="FilterUnassigned">@loc["unassigned"]</MudLink>
-                    <MudLink OnClick="FilterAssignedToMe">@loc["assigned-to-me"]</MudLink>
-                }
-                <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="ShowFilterAsync"></MudIconButton>
-            </MudStack>
-        </ToolBarContent>
+                    @* <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="ShowFilterAsync"></MudIconButton> *@
+                </MudStack>
+            </ToolBarContent>
 
-        <ColGroup>
-            <col style="width: 100px;" />
-            <col style="width: 2fr;" />
-            <col style="width: 220px;" />
-            <col style="width: 100px;" />
-        </ColGroup>
+            <ColGroup>
+                <col style="width: 100px;" />
+                <col style="width: 2fr;" />
+                <col style="width: 220px;" />
+                <col style="width: 100px;" />
+            </ColGroup>
 
-        <Columns>
+            <Columns>
 
-            <TemplateColumn Title="@loc["test-result"]">
-                <CellTemplate>
-                    <ResultPill Result="@context.Item.Result" ReadOnly="false" ResultChanged="async (result) => await SetTestCaseRunResultAsync(context.Item, result)" />
-                </CellTemplate>
-            </TemplateColumn>
+                <TemplateColumn Title="@loc["test-result"]">
+                    <CellTemplate>
+                        <ResultPill Result="@context.Item.Result" ReadOnly="false" ResultChanged="async (result) => await SetTestCaseRunResultAsync(context.Item, result)" />
+                    </CellTemplate>
+                </TemplateColumn>
 
-            <TemplateColumn Title="@loc["name"]" CellStyle="max-width: 100%; overflow: hidden">
-                <CellTemplate>
-                    @context.Item.Name
-                </CellTemplate>
-            </TemplateColumn>
+                <TemplateColumn Title="@loc["name"]" CellStyle="max-width: 100%; overflow: hidden">
+                    <CellTemplate>
+                        @context.Item.Name
+                    </CellTemplate>
+                </TemplateColumn>
 
-            <TemplateColumn Title="@loc["assigned-to"]">
-                <CellTemplate>
-                    <UserPicker 
-                        Clearable
-                        SelectedUserName="@context.Item.AssignedToUserName" SelectedUserNameChanged="async (user) => await AssignRunToUserAsync(context.Item, user)"/>
-                </CellTemplate>
-            </TemplateColumn>
+                <TemplateColumn Title="@loc["assigned-to"]">
+                    <CellTemplate>
+                        <UserPicker 
+                            Clearable
+                            SelectedUserName="@context.Item.AssignedToUserName" SelectedUserNameChanged="async (user) => await AssignRunToUserAsync(context.Item, user)"/>
+                    </CellTemplate>
+                </TemplateColumn>
 
-            <TemplateColumn Title="">
-                <CellTemplate>
-                    @if(context.Item.Result != Contracts.Testing.Models.TestResult.NoRun)
-                    {
-                        <MudLink OnClick="RunTestAgain" Style="font-size: 8pt">@loc["run-test-again"]</MudLink>
-                    }
-                </CellTemplate>
-            </TemplateColumn>
+                <TemplateColumn Title="">
+                    <CellTemplate>
+                        @if(context.Item.Result != Contracts.Testing.Models.TestResult.NoRun)
+                        {
+                            <MudLink OnClick="RunTestAgain" Style="font-size: 8pt">@loc["run-test-again"]</MudLink>
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
 
-        </Columns>
+            </Columns>
 
-        <PagerContent>
-            <MudDataGridPager T="TestCaseRun" />
-        </PagerContent>
-    </MudDataGrid>
-</DropZone>
+            <PagerContent>
+                <MudDataGridPager T="TestCaseRun" />
+            </PagerContent>
+        </MudDataGrid>
+    </DropZone>
+</MudStack>

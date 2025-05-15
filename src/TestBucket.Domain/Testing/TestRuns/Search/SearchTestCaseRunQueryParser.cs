@@ -1,0 +1,84 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using TestBucket.Domain.Issues.Search;
+
+namespace TestBucket.Domain.Testing.TestRuns.Search;
+public class SearchTestCaseRunQueryParser
+{
+    private static readonly HashSet<string> _keywords = 
+        [
+        "assigned-to", 
+        "team-id", 
+        "testsuite-id", 
+        "project-id", 
+        "testrun-id", 
+        "state", 
+        "completed", 
+        "result", 
+        "unassigned"
+        ];
+
+    public static SearchTestCaseRunQuery Parse(string text, IReadOnlyList<FieldDefinition> fields)
+    {
+        var request = new SearchTestCaseRunQuery();
+
+        Dictionary<string, string> result = [];
+        request.Text = SearchStringParser.Parse(text, result, request.Fields, _keywords, fields);
+        foreach (var pair in result)
+        {
+            switch (pair.Key)
+            {
+                case "assigned-to":
+                    request.AssignedToUser = pair.Value;
+                    break;
+                case "team-id":
+                    if (long.TryParse(pair.Value, out var teamId))
+                    {
+                        request.TeamId = teamId;
+                    }
+                    break;
+                case "testsuite-id":
+                    if (long.TryParse(pair.Value, out var testSuiteId))
+                    {
+                        request.TestSuiteId = testSuiteId;
+                    }
+                    break;
+                case "testrun-id":
+                    if (long.TryParse(pair.Value, out var testRunId))
+                    {
+                        request.TestRunId = testRunId;
+                    }
+                    break;
+                case "completed":
+                    request.Completed = pair.Value == "yes" ? true : false;
+                    break;
+                case "unassigned":
+                    request.Unassigned = pair.Value == "yes" ? true : false;
+                    break;
+                case "result":
+                    request.Result = pair.Value switch 
+                    {
+                        "passed" => TestResult.Passed,
+                        "failed" => TestResult.Failed,
+                        "blocked" => TestResult.Blocked,
+                        "inconclusive" => TestResult.Inconclusive,
+                        "crashed" => TestResult.Crashed,
+                        "hang" => TestResult.Hang,
+                        "assert" => TestResult.Assert,
+                        "error" => TestResult.Error,
+                        _ => TestResult.Other
+                    };
+                    break;
+                case "state":
+                    request.State = pair.Value;
+                    break;
+            }
+        }
+
+        return request;
+    }
+}

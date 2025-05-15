@@ -1,6 +1,7 @@
 ﻿using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Automation.Pipelines.Models;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 
 namespace TestBucket.Components.Tests.TestCases.Controls;

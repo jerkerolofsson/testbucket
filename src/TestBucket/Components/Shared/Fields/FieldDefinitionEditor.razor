@@ -1,4 +1,5 @@
 ﻿@using System.Diagnostics
+@using MudBlazor.Utilities
 @using TestBucket.Contracts.Fields
 @using TestBucket.Domain.Fields.Models
 @using TestBucket.Traits.Core
@@ -123,7 +124,7 @@
                         }
                         else
                         {
-                            
+
                         }
                     </MudStack>
                 </MudTabPanel>
@@ -148,13 +149,6 @@
 
                         <Field>
                             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
-                                <FieldHeader>@fieldLoc["field-readonly"]</FieldHeader>
-                                <MudSpacer />
-                                <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.ReadOnly" ValueChanged="OnReadOnlyChanged"/>
-                            </MudStack>
-                        </Field>
-                        <Field>
-                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
                                 <FieldHeader>@fieldLoc["visible"]</FieldHeader>
                                 <MudSpacer />
                                 <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.IsVisible" ValueChanged="OnIsVisibleChanged"/>
@@ -168,12 +162,6 @@
                             </MudStack>
                         </Field>
 
-                    </MudStack>
-                </MudTabPanel>
-
-                <MudTabPanel Text="@fieldLoc["icons"]">
-                    <MudStack>
-
                         <Field>
                             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
                                 <FieldHeader>@fieldLoc["field-icon"]</FieldHeader>
@@ -184,24 +172,44 @@
 
 
                         <Field>
-                            <FieldHeader>@fieldLoc["icons"]</FieldHeader>
-                            @if ((FieldDefinition.Type == FieldType.SingleSelection || FieldDefinition.Type == FieldType.MultiSelection) && FieldDefinition.OptionIcons is not null)
+                            @if ((FieldDefinition.Type == FieldType.SingleSelection || FieldDefinition.Type == FieldType.MultiSelection) &&  FieldDefinition.Options is not null)
                             {
-                                <FieldHeader>@fieldLoc["icons"]</FieldHeader>
+                                FieldDefinition.OptionColors ??= [];
+                                FieldDefinition.OptionIcons ??= [];
 
-                                <table style="width: 300px">
+                                <FieldHeader>@fieldLoc["options"]</FieldHeader>
+
+                                <table style="width: 100%; background: transparent">
                                     <thead>
                                         <tr>
                                             <th>@fieldLoc["option"]</th>
-                                            <th>@fieldLoc["icon"]</th>
+                                            <th>@loc["icon"]</th>
+                                            <th>@loc["color"]</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var option in FieldDefinition.OptionIcons)
+                                        @foreach (var option in FieldDefinition.Options)
                                         {
+                                            FieldDefinition.OptionColors.TryGetValue(option, out var color);
+                                            FieldDefinition.OptionIcons.TryGetValue(option, out var icon);
+                                            MudColor iconColor = color ?? "rgb(89, 74, 226)";
+                                            string cellStyle = $"background: {color}";
+
                                             <tr>
-                                                <td>@option.Key</td>
-                                                <td><IconPicker Icon="@option.Value" IconChanged="(icon) => FieldDefinition.OptionIcons[option.Key] = icon" /></td>
+                                                <td style="font-weight: bold">@option</td>
+                                                <td>
+                                                    <IconPicker Icon="@icon" IconChanged="(icon) => FieldDefinition.OptionIcons[option] = icon" />
+                                                </td>
+                                                <td>
+                                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                                    @if(iconColor is not null)
+                                                    {
+                                                        <div class="color-palette-cell" style="@cellStyle"></div>
+                                                    }
+
+                                                    <MudColorPicker Clearable Value="@iconColor" ValueChanged="(clr) => FieldDefinition.OptionColors[option] = clr.ToString(MudBlazor.Utilities.MudColorOutputFormats.Hex)" ColorPickerView="ColorPickerView.GridCompact" />
+                                                    </MudStack>
+                                                </td>
                                             </tr>
                                         }
                                     </tbody>
@@ -214,6 +222,14 @@
 
                 <MudTabPanel Text="@fieldLoc["advanced"]">
                     <MudStack>
+
+                        <Field>
+                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                                <FieldHeader>@fieldLoc["field-readonly"]</FieldHeader>
+                                <MudSpacer />
+                                <MudSwitchM3 Color="Color.Tertiary" T="bool" Value="@FieldDefinition.ReadOnly" ValueChanged="OnReadOnlyChanged" />
+                            </MudStack>
+                        </Field>
 
                         <Field>
                             <MudStack Spacing="0">

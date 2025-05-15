@@ -32,7 +32,7 @@
     else if (type == FieldType.DateOnly || type == FieldType.DateTimeOffset)
     {
         <div>
-        <MudDatePicker
+            <MudDatePicker
             ShowWeekNumbers
             Color="Color.Primary"
             Variant="Variant.Outlined"
@@ -60,13 +60,23 @@
         <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable>
             @foreach (var item in _options)
             {
+                string? color = null;
+                string iconStyle = "width:12px; height: 12px";
+                string textStyle = "";
+                if (Field.FieldDefinition.OptionColors is not null)
+                {
+                    if (Field.FieldDefinition.OptionColors.TryGetValue(item, out color))
+                    {
+                        textStyle += $" color: {color}";
+                    }
+                }
                 <MudSelectItem Value="@item">
                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                         @if (Field.FieldDefinition.OptionIcons is not null && Field.FieldDefinition.OptionIcons.TryGetValue(item, out var optionIcon) && !string.IsNullOrEmpty(optionIcon))
                         {
-                            <MudIcon Style="width: 12px; height: 12px" Icon="@optionIcon" Title="@item"/>
+                            <MudIcon Style="@iconStyle" Icon="@optionIcon" Title="@item" />
                         }
-                        <MudText>@item</MudText>
+                        <MudText Style="@textStyle">@item</MudText>
                     </MudStack>
                 </MudSelectItem>
             }
@@ -81,7 +91,16 @@
         <MudChipSet T="string" AllClosable="true">
             @foreach (var value in Field.StringValuesList)
             {
-                <MudChip T="string" Value="@value" Color="Color.Tertiary" OnClose="async x => await RemoveStringArrayValueAsync(x.Value)">@value</MudChip>
+                string style = "";
+                if (Field.FieldDefinition.OptionColors is not null)
+                {
+                    if (Field.FieldDefinition.OptionColors.TryGetValue(value, out var color))
+                    {
+                        style += $" background: {color}";
+                    }
+                }
+
+                <MudChip T="string" Style="@style" Value="@value" OnClose="async x => await RemoveStringArrayValueAsync(x.Value)">@value</MudChip>
             }
         </MudChipSet>
 
@@ -98,25 +117,28 @@
         <MudSelect SelectedValues="@Field.StringValuesList" T="string" MultiSelection SelectedValuesChanged="OnMultiSelectionChanged" Variant="Variant.Outlined" Clearable>
             @foreach (var item in _options)
             {
+                string? color = null;
+                string iconStyle = "width:12px; height: 12px";
+                string chipStyle = "";
+                if(Field.FieldDefinition.OptionColors is not null)
+                {
+                    if(Field.FieldDefinition.OptionColors.TryGetValue(item, out color))
+                    {
+                        chipStyle += $" background: {color}";
+                    }
+                }
+
                 <MudSelectItem Value="@item">
                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                         @if (Field.FieldDefinition.OptionIcons is not null && Field.FieldDefinition.OptionIcons.TryGetValue(item, out var optionIcon) && !string.IsNullOrEmpty(optionIcon))
                         {
-                            <MudIcon Style="width: 12px; height: 12px" Icon="@optionIcon" Title="@item" />
+                            <MudIcon Style="@iconStyle" Icon="@optionIcon" Title="@item" />
                         }
-                        <MudText>@item</MudText>
+                        <MudChip Text="@item" T="string" Style="@chipStyle"/>
                     </MudStack>
                 </MudSelectItem>
             }
         </MudSelect>
-
-        @* <MudStack Row Wrap="Wrap.Wrap"> *@
-        @*     @foreach (var item in _options) *@
-        @*     { *@
-        @*         var isChecked = Field.StringValuesList.Contains(item); *@
-        @*         <MudCheckBox Value="@isChecked" T="bool" ValueChanged="async () => await ToggleStringArrayValueAsync(item)">@item</MudCheckBox> *@
-        @*     } *@
-        @* </MudStack> *@
     }
 }
 

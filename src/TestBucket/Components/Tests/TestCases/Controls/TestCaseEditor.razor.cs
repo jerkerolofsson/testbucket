@@ -145,7 +145,15 @@ public partial class TestCaseEditor
     {
         if (Test is not null)
         {
-            _previewText = await testCaseEditorController.CompilePreviewAsync(Test, _descriptionText, _errors, releaseResourcesImmediately: false);
+            var previewText = await testCaseEditorController.CompilePreviewAsync(Test, _descriptionText, _errors, releaseResourcesImmediately: false);
+            if(_previewText != previewText && previewText is not null)
+            {
+                _previewText = previewText;
+                if(_preview && _editor is not null)
+                {
+                    await _editor.SetValueAsync(_previewText);
+                }
+            }
         }
     }
 

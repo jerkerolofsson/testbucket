@@ -30,7 +30,16 @@
         <MudChipSet T="string">
             @foreach (var value in Field.StringValuesList)
             {
-                <MudChip T="string" Color="Color.Tertiary">@value</MudChip>
+                    string style = "";
+                    if (Field.FieldDefinition.OptionColors is not null)
+                    {
+                        if (Field.FieldDefinition.OptionColors.TryGetValue(value, out var color))
+                        {
+                            style += $" background: {color}";
+                        }
+                    }
+
+                <MudChip T="string" Style="@style">@value</MudChip>
             }
         </MudChipSet>
     }

@@ -96,6 +96,12 @@ public class FieldDefinition : ProjectEntity
     public Dictionary<string, string>? OptionIcons { get; set; }
 
     /// <summary>
+    /// Colors for each option (only for user defined options)
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public Dictionary<string, string>? OptionColors { get; set; }
+
+    /// <summary>
     /// Flag for soft deleted fields
     /// </summary>
     public bool IsDeleted { get; set; }

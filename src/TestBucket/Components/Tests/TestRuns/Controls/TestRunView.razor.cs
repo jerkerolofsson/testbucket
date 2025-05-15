@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 
+using Microsoft.AspNetCore.Components;
+
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Testing.Models;
@@ -9,6 +11,7 @@ namespace TestBucket.Components.Tests.TestRuns.Controls;
 public partial class TestRunView
 {
     [Parameter] public TestRun? TestRun { get; set; }
+    [Parameter] public SearchTestCaseRunQuery? Query { get; set; }
 
     private TestCaseRun? _selectedTestCaseRun = null;
     private TestCaseRunGrid? testCaseRunGrid;
@@ -42,6 +45,8 @@ public partial class TestRunView
 
     protected override void OnParametersSet()
     {
+        Query ??= new();
+        Query.TestRunId = TestRun?.Id;
         _selectedTestCaseRun = null;
         base.OnParametersSet();
     }

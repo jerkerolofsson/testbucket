@@ -9,6 +9,7 @@ namespace TestBucket.Components.Tests.TestRuns.Controls;
 
 public partial class TestCaseRunGrid
 {
+    [Parameter] public SearchTestCaseRunQuery? Query { get; set; }
     [Parameter] public TestRun? Run { get; set; }
     [Parameter] public TestCaseRun? SelectedTestCaseRun { get; set; }
     [Parameter] public EventCallback<TestCaseRun> SelectedTestCaseRunChanged { get; set; }
@@ -84,7 +85,8 @@ public partial class TestCaseRunGrid
             SelectedTestCaseRun is null || _run != Run)
         {
             _run = Run;
-            _query = SearchTestCaseRunQuery.FromUrl(navigationManager.Uri);
+            _query = Query ?? new();
+            //_query = SearchTestCaseRunQuery.FromUrl(navigationManager.Uri);
             _query.TestRunId = _run?.Id;
 
             _selectedItem = SelectedTestCaseRun;
@@ -182,9 +184,11 @@ public partial class TestCaseRunGrid
         await testCaseEditor.SaveTestCaseRunAsync(testCaseRun);
     }
 
+    private string _searchText = "";
     private void OnSearch(string text)
     {
-        _query.Text = text;
+        _searchText = text;
+        _query = SearchTestCaseRunQueryParser
         _dataGrid?.ReloadServerData();
     }
 

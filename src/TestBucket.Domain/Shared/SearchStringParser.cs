@@ -31,7 +31,7 @@ internal class SearchStringParser
                 else
                 {
                     // Check if there is a matching field
-                    var field = fields.Where(x => x.Name.ToLower() == keyword).FirstOrDefault();
+                    var field = fields.Where(x => x.Name.ToLower() == keyword.ToLower()).FirstOrDefault();
                     if (field is null)
                     {
                         words.Add(item);

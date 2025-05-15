@@ -71,7 +71,7 @@ namespace TestBucket.Domain.UnitTests.Issues
         public void Parse_WithField_AddedAsField()
         {
             string text = "milestone:1.0";
-            List<FieldDefinition> fieldDefinitions = [new FieldDefinition() { Name = "Milstone", Id = 123}];
+            List<FieldDefinition> fieldDefinitions = [new FieldDefinition() { Name = "Milestone", Id = 123}];
 
             var request = SearchIssueRequestParser.Parse(Impersonation.Impersonate("1234"), 1, text, fieldDefinitions);
             Assert.Single(request.Fields);

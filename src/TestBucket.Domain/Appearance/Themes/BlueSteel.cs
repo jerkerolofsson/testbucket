@@ -17,6 +17,9 @@ internal class BlueSteel : DefaultTheme
         DarkScheme.Base.Secondary = "#1976D2";
         DarkScheme.Base.Tertiary = "#0097A7";
 
+        DarkScheme.Input.SearchBackground = "#27373F";
+        DarkScheme.Input.SearchBackgroundHover = "#17272F";
+
         DarkScheme.Field.Background = "#37474F";
         DarkScheme.Field.BorderColor = DarkScheme.Field.Background.ColorLighten(0.2).ToString();
 

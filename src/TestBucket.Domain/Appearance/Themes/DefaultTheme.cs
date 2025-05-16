@@ -23,6 +23,7 @@ internal class DefaultTheme : TestBucketTheme
         DarkScheme.Base.Tertiary = "#444791";
 
         DarkScheme.Input.SearchBackground = "#111116";
+        DarkScheme.Input.SearchBackgroundHover = "#000";
 
         DarkScheme.Field.Background = DarkScheme.Base.Surface;
         DarkScheme.Field.BorderColor = DarkScheme.Base.Surface.ColorLighten(0.2);
@@ -34,6 +35,7 @@ internal class DefaultTheme : TestBucketTheme
         LightScheme.Base.Secondary = "#383966";
         LightScheme.Base.Tertiary = "#0c3b5e";
         LightScheme.Input.SearchBackground = "#fff";
+        LightScheme.Input.SearchBackgroundHover = "#fff";
 
         LightScheme.Input.Background = "#fff";
         LightScheme.Field.Background = "#fff";

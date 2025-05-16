@@ -29,6 +29,7 @@ public class Input
     public ThemeColor? Background { get; set; }
 
     public ThemeColor? SearchBackground { get; set; }
+    public ThemeColor? SearchBackgroundHover { get; set; }
 }
 
 public class FieldTheme
@@ -109,6 +110,10 @@ public class TestBucketTheme : TestBucketBaseTheme
         if (scheme.Input.SearchBackground is not null)
         {
             css.AppendLine($"--tb-palette-input-search-background: {scheme.Input.SearchBackground};");
+        }
+        if (scheme.Input.SearchBackgroundHover is not null)
+        {
+            css.AppendLine($"--tb-palette-input-search-background-hover: {scheme.Input.SearchBackgroundHover};");
         }
 
         if (scheme.Base.TextPrimary is not null)

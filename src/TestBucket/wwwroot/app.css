@@ -1029,12 +1029,16 @@ div.tb-profile-image.tb-background-9 {
 }
 
 .default-search {
-    min-width: max(15vw, 50px);
-    background: var(--tb-palette-input-search-background);
+    width: max(15vw, 50px);
 }
 
-.default-search:hover {
-    background: rgba(0,0,0,0.2);
+.default-search .mud-input-outlined {
+    background: var(--tb-palette-input-search-background);
+    border-radius: var(--mud-default-borderradius);
+}
+
+.default-search:hover  .mud-input-outlined {
+    background: var(--tb-palette-input-search-background-hover, rgba(0,0,0,0.2));
 }
 
 .tb-run-main-charts {

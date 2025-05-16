@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Issues.States;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Shared.Specifications;
 
@@ -14,6 +15,7 @@ public interface IIssueRepository
     Task AddLocalIssueAsync(LocalIssue localIssue);
     Task DeleteLinkedIssueAsync(long linkedIssueId);
     Task DeleteLocalIssueAsync(long localIssueId);
+    Task<Dictionary<MappedIssueState, int>> GetIssueCountPerStateAsync(IEnumerable<FilterSpecification<LocalIssue>> filters);
     Task<IReadOnlyList<LinkedIssue>> GetLinkedIssuesAsync(long testCaseRun);
     Task<PagedResult<LinkedIssue>> SearchAsync(List<FilterSpecification<LinkedIssue>> filters, int count, int offset);
     Task<PagedResult<LocalIssue>> SearchAsync(List<FilterSpecification<LocalIssue>> filters, int offset, int count);

@@ -61,26 +61,11 @@
         <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable>
             @foreach (var item in _options)
             {
-                string? color = null;
                 string iconStyle = "width:12px; height: 12px";
-                if (Field.FieldDefinition.OptionColors is not null)
-                {
-                    Field.FieldDefinition.OptionColors.TryGetValue(item, out color);
-                }
+               
                 <MudSelectItem Value="@item">
                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-                        @if (Field.FieldDefinition.OptionIcons is not null && Field.FieldDefinition.OptionIcons.TryGetValue(item, out var optionIcon) && !string.IsNullOrEmpty(optionIcon))
-                        {
-                            <MudIcon Style="@iconStyle" Icon="@optionIcon" Title="@item" />
-                        }
-                        @if(color is not null)
-                        {
-                            <Chip Color="@color" Text="@item"/>
-                        }
-                        else
-                        {
-                            <MudText>@item</MudText>
-                        }
+                       @item
                     </MudStack>
                 </MudSelectItem>
             }

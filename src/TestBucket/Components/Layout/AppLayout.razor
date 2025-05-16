@@ -82,12 +82,13 @@
                             <!-- Profile / Logout -->
                             <AuthorizeView>
                                 <MudDivider />
-                                <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="Account" Href="@manageUrl"></MudMenuItem>
+                                <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="@loc["account"]" Href="@manageUrl"></MudMenuItem>
+                                <MudMenuItem Label="@loc["about"]" Href="/about"></MudMenuItem>
                                 <MudMenuItem>
                                     <form action="Account/Logout" method="post">
                                         <AntiforgeryToken />
-                                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                                        <button type="submit">Logout</button>
+                                        <input type="hidden" name="ReturnUrl" value="/" />
+                                        <button type="submit">@loc["logout"]</button>
                                     </form>
                                 </MudMenuItem>
                             </AuthorizeView>

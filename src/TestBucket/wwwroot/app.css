@@ -90,6 +90,10 @@ html, body {
     cursor: move;
 }
 
+.mud-badge-top.right {
+    margin-left: 8px;
+}
+
 .mud-chip-content {
     overflow: hidden;
     padding-right: 2px;
@@ -917,8 +921,9 @@ div.tb-profile-image.tb-background-9 {
 /* Chart container, metrics, */
 .tb-tile {
     padding: 24px;
-    outline: solid 2px var(--tb-palette-field-border);
-    background: transparent;
+/*    outline: solid 2px var(--tb-palette-field-border);*/
+
+    background: var(--mud-palette-surface);
 }
 
 .tb-tile .tb-tile-numeric-value {

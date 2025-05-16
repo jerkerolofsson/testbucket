@@ -5,6 +5,7 @@
 @using TestBucket.Domain.Commands
 @using TestBucket.Domain.ExtensionManagement
 @using TestBucket.Domain.Issues.Models
+@using TestBucket.Domain.Issues.Search
 @layout IssuesLayout
 @inject AppNavigationManager appNavigationManager
 @inject IssueController controller
@@ -22,26 +23,26 @@
         </MudStack>
 
         <MudDataGrid @ref="_grid"
-                     ServerData="LoadGridData"
-                     Dense Hover RowClass="tb-datarow cursor-pointer"
-                     RowClick="(row) => OnRowClicked(row.Item)"
-                     T="LocalIssue" SortMode="SortMode.None">
+        ServerData="LoadGridData"
+        Dense Hover RowClass="tb-datarow cursor-pointer"
+        RowClick="(row) => OnRowClicked(row.Item)"
+        T="LocalIssue" SortMode="SortMode.None">
 
             <ToolBarContent>
                 <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
                     <MudTextField Value="@_searchText" T="string" ValueChanged="OnSearch"
-                                  Class="mt-2 default-search"
-                                  Clearable="true"
-                                  Variant="Variant.Outlined"
-                                  IconSize="Size.Small"
-                                  Adornment="Adornment.Start"
-                                  Placeholder="@loc["search"]"
-                                  AdornmentIcon="@Icons.Material.Filled.Search" />
+                    Class="mt-2 default-search"
+                    Clearable="true"
+                    Variant="Variant.Outlined"
+                    IconSize="Size.Small"
+                    Adornment="Adornment.Start"
+                    Placeholder="@loc["search"]"
+                    AdornmentIcon="@Icons.Material.Filled.Search" />
 
                     <MudSpacer />
                     <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
                         <Authorized>
-                            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddIssue"></MudIconButton>
+                            <MudButton OnClick="AddIssue" Variant="Variant.Filled" Color="Color.Success">@issueLoc["new-issue"]</MudButton>
                         </Authorized>
                     </PermissionView>
                 </MudStack>
@@ -96,11 +97,11 @@
                 <TemplateColumn Title="@loc["label"]">
                     <CellTemplate>
                         <MudStack Row>
-                        @foreach (var label in context.Item.GetLabels())
-                        {
-                            var color = context.Item.GetLabelColor(label);
-                            <Chip Text="@label" Color="@color"></Chip>
-                        }
+                            @foreach (var label in context.Item.GetLabels())
+                            {
+                                var color = context.Item.GetLabelColor(label);
+                                <Chip Text="@label" Color="@color"></Chip>
+                            }
                         </MudStack>
                     </CellTemplate>
                 </TemplateColumn>
@@ -144,6 +145,7 @@
     {
         await commandManager.ExecuteCommandAsync("create-issue");
     }
+
 
     /// <summary>
     /// Loads issues

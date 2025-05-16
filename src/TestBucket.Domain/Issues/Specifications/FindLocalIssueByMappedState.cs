@@ -5,25 +5,26 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Issues.States;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Domain.Issues.Specifications;
 
 /// <summary>
-/// Finds issues with a specific state label
+/// Finds issues with a specific state
 /// </summary>
-internal class FindLocalIssueByState : FilterSpecification<LocalIssue>
+internal class FindLocalIssueByMappedState : FilterSpecification<LocalIssue>
 {
-    private readonly string _id;
+    private readonly MappedIssueState _state;
 
-    public FindLocalIssueByState(string id)
+    public FindLocalIssueByMappedState(MappedIssueState state)
     {
-        _id = id.ToLower();
+        _state = state;
     }
 
     protected override Expression<Func<LocalIssue, bool>> GetExpression()
     {
-        return x => x.State != null && x.State.ToLower() == _id;
+        return x => x.MappedState == _state;
     }
 }

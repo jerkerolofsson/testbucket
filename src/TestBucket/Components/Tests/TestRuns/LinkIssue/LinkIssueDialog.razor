@@ -116,7 +116,8 @@
         _text = text;
 
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        var request = SearchIssueRequestParser.Parse(authState.User, TestProjectId, text, []);
+        var query = SearchIssueRequestParser.Parse(TestProjectId, text, []);
+        var request = new SearchIssueRequest(authState.User, query);
         var response = await mediator.Send(request);
         _issues = response.Issues;
     }

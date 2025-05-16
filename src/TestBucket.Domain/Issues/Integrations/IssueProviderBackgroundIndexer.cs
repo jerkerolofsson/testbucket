@@ -91,8 +91,9 @@ public class IssueProviderBackgroundIndexer : BackgroundService
         var manager = scope.ServiceProvider.GetRequiredService<IIssueManager>();
 
         // We search for any issue since the last one from the same system
-        var latest = await manager.SearchLocalIssuesAsync(new SearchIssueRequest(principal, project.Id)
+        var latest = await manager.SearchLocalIssuesAsync(principal, new SearchIssueQuery()
         {
+            ProjectId = project.Id,
             ExternalSystemId = externalSystem.Id,
         }, 0, 1);
         if(latest.Items.Length > 0)

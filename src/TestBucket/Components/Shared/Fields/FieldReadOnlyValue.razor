@@ -1,48 +1,56 @@
 ﻿@if(Field?.FieldDefinition is not null) 
 {
     <MudText Class="tb-read-only-field">
-    @if (Field.FieldDefinition.Type is (FieldType.String or FieldType.SingleSelection) )
-    {
-        @Field.StringValue
-    }
-    else if (Field.FieldDefinition.Type == FieldType.Boolean)
-    {
-        <MudSwitchM3 Color="Color.Primary" ReadOnly Value="@Field.BooleanValue" />
-    }
-    else if (Field.FieldDefinition.Type == FieldType.Double)
-    {
-        @Field.DoubleValue
-    }
-    else if (Field.FieldDefinition.Type == FieldType.DateOnly)
-    {
-        @Field.DateValue?.Humanize()
-    }
-    else if (Field.FieldDefinition.Type == FieldType.TimeSpan)
-    {
-        @Field.TimeSpanValue?.Humanize()
-    }
-    else if (Field.FieldDefinition.Type == FieldType.DateTimeOffset)
-    {
-        @Field.DateTimeOffsetValue?.ToLocalTime().Humanize()
-    }
-    else if ((Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection) && Field.StringValuesList is not null)
-    {
-        <MudChipSet T="string">
-            @foreach (var value in Field.StringValuesList)
+        @if (Field.FieldDefinition.Type is (FieldType.String or FieldType.SingleSelection) )
+        {
+            string? color = "";
+            if (Field.FieldDefinition.OptionColors is not null && Field.StringValue is not null && 
+            Field.FieldDefinition.OptionColors.TryGetValue(Field.StringValue, out color))
             {
-                    string style = "";
+                <Chip Color="@color" Text="@Field.StringValue" />
+            }
+            else
+            {
+                <div>@Field.StringValue</div>
+            }
+        }
+        else if (Field.FieldDefinition.Type == FieldType.Boolean)
+        {
+            <MudSwitchM3 Color="Color.Primary" ReadOnly Value="@Field.BooleanValue" />
+        }
+        else if (Field.FieldDefinition.Type == FieldType.Double)
+        {
+            @Field.DoubleValue
+        }
+        else if (Field.FieldDefinition.Type == FieldType.DateOnly)
+        {
+            @Field.DateValue?.Humanize()
+        }
+        else if (Field.FieldDefinition.Type == FieldType.TimeSpan)
+        {
+            @Field.TimeSpanValue?.Humanize()
+        }
+        else if (Field.FieldDefinition.Type == FieldType.DateTimeOffset)
+        {
+            @Field.DateTimeOffsetValue?.ToLocalTime().Humanize()
+        }
+        else if ((Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection) && Field.StringValuesList is not null)
+        {
+            <MudStack Row Spacing="1">
+                @foreach (var value in Field.StringValuesList)
+                {
+                    string color = "#CCC";
                     if (Field.FieldDefinition.OptionColors is not null)
                     {
-                        if (Field.FieldDefinition.OptionColors.TryGetValue(value, out var color))
+                        if(Field.FieldDefinition.OptionColors.TryGetValue(value, out var optionColor))
                         {
-                            style += $" background: {color}";
+                            color = optionColor;
                         }
                     }
-
-                <MudChip T="string" Style="@style">@value</MudChip>
-            }
-        </MudChipSet>
-    }
+                    <Chip Color="@color" Text="@value"/>
+                }
+            </MudStack>
+        }
     </MudText>
 }
 @code {

@@ -9,18 +9,25 @@ using Mediator;
 
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Issues.Models;
+using TestBucket.Contracts.Issues.States;
 using TestBucket.Domain.ExtensionManagement;
 using TestBucket.Domain.Issues.Mapping;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
 
+using static TestBucket.Domain.Issues.Search.SearchIssueRequest;
+
 namespace TestBucket.Domain.Issues.Search;
 
-public record class SearchIssueRequest(ClaimsPrincipal Principal, long ProjectId) : IRequest<SearchIssueResponse>
+public record class SearchIssueRequest(ClaimsPrincipal Principal, SearchIssueQuery Query) : IRequest<SearchIssueResponse>;
+
+public record class SearchIssueQuery()
 {
     public List<FieldFilter> Fields { get; set; } = [];
+    public long? ProjectId { get; set; }
     public string? State { get; set; }
+    public MappedIssueState? MappedState { get; set; }
     public string? Type { get; set; }
     public string? Text { get; set; }
     public string? ExternalSystemName { get; set; }
@@ -54,7 +61,7 @@ public class SearchIssuesHandler : IRequestHandler<SearchIssueRequest, SearchIss
         int count = 10;
 
         // Search locally
-        var result = await _issueManager.SearchLocalIssuesAsync(request, offset, count);
+        var result = await _issueManager.SearchLocalIssuesAsync(request.Principal, request.Query, offset, count);
         foreach(var linkedIssue in result.Items)
         {
             issues.Add(linkedIssue.ToDto());

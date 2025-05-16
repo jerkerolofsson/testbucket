@@ -27,12 +27,21 @@ public class Base
 public class Input
 {
     public ThemeColor? Background { get; set; }
+
+    public ThemeColor? SearchBackground { get; set; }
 }
 
 public class FieldTheme
 {
     public ThemeColor? Background { get; set; }
     public ThemeColor? BorderColor { get; set; }
+}
+
+public class Typography
+{
+    public string Size { get; set; } = "10pt";
+    public string LineHeight { get; set; } = "1.167";
+    public string Weight { get; set; } = "normal";
 }
 
 public class ColorScheme
@@ -42,49 +51,47 @@ public class ColorScheme
     public Input Input { get; set; } = new();
 }
 
+public class TypographySet
+{
+    public Typography Default { get; set; } = new Typography() { Size = "10pt" };
+    public Typography H1 { get; set; } = new Typography() { Size = "20pt", Weight = "600", LineHeight = "1.8" };
+    public Typography H2 { get; set; } = new Typography() { Size = "18pt", Weight = "600", LineHeight = "1.167" };
+    public Typography H3 { get; set; } = new Typography() { Size = "16pt", Weight = "600", LineHeight = "1.167" };
+    public Typography H4 { get; set; } = new Typography() { Size = "14pt", Weight = "600", LineHeight = "1.167" };
+    public Typography H5 { get; set; } = new Typography() { Size = "12pt", Weight = "600", LineHeight = "1.167" };
+    public Typography H6 { get; set; } = new Typography() { Size = "10pt", Weight = "600", LineHeight = "1.167" };
+    public Typography Body1 { get; set; } = new Typography() { Size = "10pt" };
+    public Typography Body2 { get; set; } = new Typography() { Size = "10pt" };
+    public Typography Button { get; set; } = new Typography() { Size = "10pt" };
+    public Typography Caption { get; set; } = new Typography() { Size = "10pt" };
+    public Typography Subtitle1 { get; set; } = new Typography() { Size = "10pt" };
+    public Typography Subtitle2 { get; set; } = new Typography() { Size = "10pt" };
+}
+
 public class TestBucketTheme : TestBucketBaseTheme
 {
-        public ColorScheme DarkScheme { get; set; } = new ColorScheme
-        {
-            Base = new Base
-            {
-                Background = "#212126",
-                Surface = "#323237",
-                TextPrimary = "#f5f5ff",
-            },
-            Input = new Input 
-            { 
-                Background = "#202025",
-            },
-            Field = new FieldTheme
-            {
-                Background = "#3A3A3D",
-                BorderColor = ThemeColor.Parse("#3a3a3d").ColorLighten(0.2),
-            }
-        };
-        public ColorScheme LightScheme { get; set; } = new ColorScheme
-        {
-            Base = new Base
-            {
-                Background = "#eee",
-                Surface = "#fff",
-                TextPrimary = "#111",
-            },
-            Input = new Input
-            {
-                Background = "#fff",
-            },
-            Field = new FieldTheme
-            {
-                Background = "#fff",
-                BorderColor = "#eee",
-            }
-        };
+    public TypographySet TypographySet { get; set; } = new();
+    public ColorScheme DarkScheme { get; set; } = new ColorScheme();
+    public ColorScheme LightScheme { get; set; } = new ColorScheme();
 
-    private string GenerateStyle(ColorScheme scheme)
+    internal string GenerateStyle(ColorScheme scheme)
     {
         var css = new StringBuilder();
         css.AppendLine("body {");
+
+        WriteTypo(css, TypographySet.Default, "default");
+        WriteTypo(css, TypographySet.Body1, "body1");
+        WriteTypo(css, TypographySet.Body2, "body2");
+        WriteTypo(css, TypographySet.Caption, "caption");
+        WriteTypo(css, TypographySet.Subtitle1, "subtitle1");
+        WriteTypo(css, TypographySet.Subtitle2, "subtitle2");
+
+        WriteTypo(css, TypographySet.H1, "h1");
+        WriteTypo(css, TypographySet.H2, "h2");
+        WriteTypo(css, TypographySet.H3, "h3");
+        WriteTypo(css, TypographySet.H4, "h4");
+        WriteTypo(css, TypographySet.H5, "h5");
+        WriteTypo(css, TypographySet.H6, "h6");
 
         if (scheme.Field.Background is not null)
         {
@@ -99,7 +106,12 @@ public class TestBucketTheme : TestBucketBaseTheme
         {
             css.AppendLine($"--tb-palette-input-background: {scheme.Input.Background};");
         }
-        if(scheme.Base.TextPrimary is not null)
+        if (scheme.Input.SearchBackground is not null)
+        {
+            css.AppendLine($"--tb-palette-input-search-background: {scheme.Input.SearchBackground};");
+        }
+
+        if (scheme.Base.TextPrimary is not null)
         {
             css.AppendLine($"--mud-palette-text-primary: {scheme.Base.TextPrimary};");
         }
@@ -139,6 +151,12 @@ public class TestBucketTheme : TestBucketBaseTheme
         return css.ToString();
     }
 
+    private static void WriteTypo(StringBuilder css, Typography typo, string name)
+    {
+        css.AppendLine($"--mud-typography-{name}-size: {typo.Size};");
+        css.AppendLine($"--mud-typography-{name}-weight: {typo.Weight};");
+    }
+
     /// <summary>
     /// CSS Stylesheet
     /// </summary>
@@ -161,7 +179,7 @@ public class TestBucketTheme : TestBucketBaseTheme
     {
         get
         {
-            return new TestBucketTheme();
+            return new DefaultTheme();
         }
     }
 }

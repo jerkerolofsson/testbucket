@@ -451,7 +451,7 @@ tb-field .mud-link.mud-link-underline-hover:hover {
      padding: 0px 2px;
      margin-left: 12px;
      overflow: hidden;
-     font-size: 9pt;
+     font-size: var(--mud-typography-default-size);
  }
 
  .treeview > .node  {
@@ -677,7 +677,7 @@ tb-field .mud-link.mud-link-underline-hover:hover {
 }
 
 .tb-field-header {
-    font-size: 10pt; 
+    font-size: var(--mud-typography-caption-size); 
     margin: 0; 
     text-decoration: none;
     margin-right: 5px;
@@ -1030,7 +1030,7 @@ div.tb-profile-image.tb-background-9 {
 
 .default-search {
     min-width: max(15vw, 50px);
-    background: rgba(0,0,0,0.1);
+    background: var(--tb-palette-input-search-background);
 }
 
 .default-search:hover {

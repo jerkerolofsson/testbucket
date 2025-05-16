@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Domain.Appearance.Models;
+using TestBucket.Domain.Appearance.Themes;
+using TestBucket.Domain.Appearance.Themes.Overlays;
 using TestBucket.Domain.Identity;
 
 namespace TestBucket.Domain.Appearance;
@@ -17,10 +19,10 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         _userPreferencesService = userPreferencesService;
     }
 
-    public async Task<TestBucketBaseTheme> GetThemeByNameAsync(string name)
+    public async Task<TestBucketBaseTheme> GetThemeByNameAsync(string? name)
     {
-        // Temporarily simulate a DB delay
-        await Task.Delay(50);
+        name ??= "default";
+        await Task.Delay(0);
 
         switch (name)
         {
@@ -36,6 +38,7 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         var userPreferences = await _userPreferencesService.LoadUserPreferencesAsync(user);
         string themeName = userPreferences.Theme ?? "default";
         bool highContrast = userPreferences.IncreasedContrast;
+        bool highFontSize = userPreferences.IncreasedFontSize;
         bool isDarkMode = userPreferences.DarkMode;
 
         var css = new StringBuilder();
@@ -59,6 +62,10 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         {
             AppendHighContrast(css, isDarkMode);
         }
+        if (userPreferences.IncreasedFontSize)
+        {
+            AppendIncreasedFontSize(css, isDarkMode);
+        }
 
         return css.ToString();
     }
@@ -80,20 +87,28 @@ public class TestBucketThemeManager : ITestBucketThemeManager
     private void AppendHighContrast(StringBuilder stylesheet, bool isDarkMode)
     {
         // High contrast mode overrides some settings
+        var theme = new HighContrast();
         if (isDarkMode)
         {
-            stylesheet.AppendLine($" --mud-palette-surface: #111;");
-            stylesheet.AppendLine($" --mud-palette-background: #000;");
-            stylesheet.AppendLine($" --mud-palette-black: #000;");
-
-            stylesheet.AppendLine($" --mud-palette-primary: hotpink;");
+            stylesheet.AppendLine(theme.GenerateStyle(theme.DarkScheme));
         }
         else
         {
-            stylesheet.AppendLine($" --mud-palette-surface: #fff;");
-            stylesheet.AppendLine($" --mud-palette-background: #eee;");
+            stylesheet.AppendLine(theme.GenerateStyle(theme.LightScheme));
+        }
+    }
 
-            stylesheet.AppendLine($" --mud-palette-primary: hotpink;");
+    private void AppendIncreasedFontSize(StringBuilder stylesheet, bool isDarkMode)
+    {
+        // High contrast mode overrides some settings
+        var theme = new LargeTextOverlay();
+        if (isDarkMode)
+        {
+            stylesheet.AppendLine(theme.GenerateStyle(theme.DarkScheme));
+        }
+        else
+        {
+            stylesheet.AppendLine(theme.GenerateStyle(theme.LightScheme));
         }
     }
 }

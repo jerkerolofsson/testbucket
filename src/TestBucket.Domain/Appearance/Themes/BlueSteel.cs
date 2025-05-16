@@ -4,27 +4,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TestBucket.Domain.Appearance.Models;
-
 namespace TestBucket.Domain.Appearance.Themes;
-internal class BlueSteel : TestBucketTheme
+internal class BlueSteel : DefaultTheme
 {
     public BlueSteel()
     {
-        DarkScheme.Base.TextPrimary = "#cfd8dc";
-        DarkScheme.Base.Background = "rgb(15, 36, 46)";
-        DarkScheme.Base.Surface = "rgb(25, 46, 56)";
+        DarkScheme.Base.TextPrimary = "#E1F5FE";
+        DarkScheme.Base.Background = "#263238";
+        DarkScheme.Base.Surface = "#37474F";
         DarkScheme.Base.Dark = "#0d1321";
-        DarkScheme.Base.Primary = "#448cdb";
-        DarkScheme.Base.Secondary = "#748cab";
-        DarkScheme.Base.Tertiary = "#748cab";
+        DarkScheme.Base.Primary = "#0288D1";
+        DarkScheme.Base.Secondary = "#1976D2";
+        DarkScheme.Base.Tertiary = "#0097A7";
 
-        DarkScheme.Field.Background = "rgb(25, 46, 56)";
-        DarkScheme.Field.BorderColor = "rgb(45, 86, 96)";
+        DarkScheme.Field.Background = "#37474F";
+        DarkScheme.Field.BorderColor = DarkScheme.Field.Background.ColorLighten(0.2).ToString();
 
-        LightScheme.Base.Primary = "#448cdb";
-        LightScheme.Base.Secondary = "#748cab";
-        LightScheme.Base.Tertiary = "#748cab";
+        LightScheme.Base.TextPrimary = "#101017";
+        LightScheme.Base.Primary = "#0D47A1";
+        LightScheme.Base.Secondary = "#01579B";
+        LightScheme.Base.Tertiary = "#006064";
 
     }
 }

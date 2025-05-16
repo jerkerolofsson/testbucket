@@ -50,9 +50,14 @@ public class UserPreferences
     public string? Theme { get; set; }
 
     /// <summary>
-    /// Increased contrast
+    /// Increased contrast. This applies an overlay to the current theme, changing colors to colors with high contrast
     /// </summary>
     public bool IncreasedContrast { get; set; }
+
+    /// <summary>
+    /// Increased font size. This applies an overlay to the current theme, increasing the font size
+    /// </summary>
+    public bool IncreasedFontSize { get; set; }
 
     #endregion User Interface
 

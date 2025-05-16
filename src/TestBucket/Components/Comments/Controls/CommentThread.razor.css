@@ -35,7 +35,7 @@
 .comment-container-title {
     flex: 1;
     padding: 8px;
-    background: var(--mud-palette-dark-darken);
+    background: var(--mud-palette-surface);
     border-top-left-radius: var(--mud-default-borderradius);
     border-top-right-radius: var(--mud-default-borderradius);
     border-top: solid 1px var(--mud-palette-lines-inputs);

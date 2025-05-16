@@ -20,8 +20,9 @@ internal class IssueRepository : IIssueRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var issues = dbContext.LocalIssues.AsNoTracking()
-            .Include(x => x.IssueFields)
-            .Include(x=>x.Comments).AsQueryable();
+            .Include(x=>x.Comments)
+            .Include(x => x.IssueFields!).ThenInclude(y=>y.FieldDefinition)
+            .AsQueryable();
 
         foreach (var filter in filters)
         {

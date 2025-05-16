@@ -560,4 +560,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="logged-action-assignedto" xml:space="preserve">
     <value>{0} assigned this to {1}</value>
   </data>
+  <data name="type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="label" xml:space="preserve">
+    <value>Label</value>
+  </data>
 </root>

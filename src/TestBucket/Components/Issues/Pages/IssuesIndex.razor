@@ -4,6 +4,7 @@
 @using TestBucket.Domain
 @using TestBucket.Domain.Commands
 @using TestBucket.Domain.ExtensionManagement
+@using TestBucket.Domain.Issues.Models
 @layout IssuesLayout
 @inject AppNavigationManager appNavigationManager
 @inject IssueController controller
@@ -12,7 +13,7 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
 
-<MudStack Class="container-settings-page">
+<MudStack Style="width: 100%" Class="pa-2">
     @if (Project is not null)
     {
         <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
@@ -21,21 +22,21 @@
         </MudStack>
 
         <MudDataGrid @ref="_grid"
-        ServerData="LoadGridData"
-        Dense Hover RowClass="tb-datarow cursor-pointer"
-        RowClick="(row) => OnRowClicked(row.Item)"
-        T="LocalIssue" SortMode="SortMode.None">
+                     ServerData="LoadGridData"
+                     Dense Hover RowClass="tb-datarow cursor-pointer"
+                     RowClick="(row) => OnRowClicked(row.Item)"
+                     T="LocalIssue" SortMode="SortMode.None">
 
             <ToolBarContent>
                 <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
                     <MudTextField Value="@_searchText" T="string" ValueChanged="OnSearch"
-                    Class="mt-2 default-search"
-                    Clearable="true"
-                    Variant="Variant.Outlined"
-                    IconSize="Size.Small"
-                    Adornment="Adornment.Start"
-                    Placeholder="@loc["search"]"
-                    AdornmentIcon="@Icons.Material.Filled.Search" />
+                                  Class="mt-2 default-search"
+                                  Clearable="true"
+                                  Variant="Variant.Outlined"
+                                  IconSize="Size.Small"
+                                  Adornment="Adornment.Start"
+                                  Placeholder="@loc["search"]"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" />
 
                     <MudSpacer />
                     <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
@@ -51,6 +52,7 @@
                 <col style="width: 2fr;" />
                 <col style="width: 100px;" />
                 <col style="width: 100px;" />
+                <col style="width: 200px;" />
             </ColGroup>
 
             <Columns>
@@ -88,6 +90,18 @@
                 <TemplateColumn Title="@loc["type"]">
                     <CellTemplate>
                         @context.Item.IssueType
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <TemplateColumn Title="@loc["label"]">
+                    <CellTemplate>
+                        <MudStack Row>
+                        @foreach (var label in context.Item.GetLabels())
+                        {
+                            var color = context.Item.GetLabelColor(label);
+                            <Chip Text="@label" Color="@color"></Chip>
+                        }
+                        </MudStack>
                     </CellTemplate>
                 </TemplateColumn>
             </Columns>
@@ -143,7 +157,7 @@
             return new GridData<LocalIssue> { TotalItems = 0 };
         }
 
-        PagedResult<LocalIssue> result = await controller.SearchAsync(Project.Id, _searchText ?? "", state.Page*state.PageSize, state.PageSize);
+        PagedResult<LocalIssue> result = await controller.SearchAsync(Project.Id, _searchText ?? "", state.Page * state.PageSize, state.PageSize);
 
         if (_totalCount != result.TotalCount)
         {
@@ -152,10 +166,10 @@
         }
 
         return new GridData<LocalIssue>()
-        {
-            Items = result.Items,
-            TotalItems = (int) result.TotalCount
-        };
+            {
+                Items = result.Items,
+                TotalItems = (int)result.TotalCount
+            };
     }
 
 }

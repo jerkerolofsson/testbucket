@@ -1,20 +1,30 @@
-﻿@inject ThemingService themingService
+﻿@using TestBucket.Domain.Appearance
+@inject ThemingService themingService
 @inject AuthenticationStateProvider authenticationStateProvider
+@inject NavigationManager navigationManager
 @inject IUserPreferencesManager userPreferencesManager
+@inject ITestBucketThemeManager testBucketThemeManager
 @implements IDisposable
-
-@((MarkupString)GenerateStylesMarkup())
 
 @code {
 
     [Parameter] public EventCallback<UserPreferences> UserPreferencesChanged { get; set; }
 
-    private UserPreferences? _userPreferences;
+    /// <summary>
+    /// We keep track of the settings and trigger a refresh if they changed to reload the style sheet
+    /// </summary>
+
+    private bool? _increasedContrast;
+    private bool? _darkMode;
+    private string? _theme;
 
     protected override async Task OnInitializedAsync()
     {
         var authenticationState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        _userPreferences = await userPreferencesManager.LoadUserPreferencesAsync(authenticationState.User);
+        var userPreferences = await userPreferencesManager.LoadUserPreferencesAsync(authenticationState.User);
+        _theme = userPreferences.Theme;
+        _darkMode = userPreferences.DarkMode;
+        _increasedContrast = userPreferences.IncreasedContrast;
         userPreferencesManager.UserPreferencesChanged += OnUserPreferencesChanged;
     }
     public void Dispose()
@@ -24,71 +34,62 @@
 
     private void OnUserPreferencesChanged(object? sender, UserPreferences preferences)
     {
-        var changed = false;
-        if(_userPreferences is null)
-        {
-            changed = true;
-        }
-        else
-        {
-            changed = _userPreferences.DarkMode != preferences.DarkMode || 
-                _userPreferences.IncreasedContrast != preferences.IncreasedContrast ||
-                _userPreferences.Theme != preferences.Theme;
-        }
-
+        var changed = _darkMode != preferences.DarkMode || 
+                _increasedContrast != preferences.IncreasedContrast ||
+                _theme != preferences.Theme;
         if (changed)
-        { 
-            _userPreferences = preferences;
-            InvokeAsync(() =>
-            {
-                this.StateHasChanged();
-            });
-            UserPreferencesChanged.InvokeAsync();
-        }
-    }
-
-    private MarkupString GenerateStylesMarkup()
-    {
-        var isDarkMode = _userPreferences?.DarkMode == true ? true : false;
-        var highContrast = _userPreferences?.IncreasedContrast == true ? true : false;
-
-        var stylesheet = new StringBuilder();
-
-        var fieldPalette = isDarkMode ? themingService.FieldPaletteDark : themingService.FieldPaletteLight;
-
-        stylesheet.AppendLine("<style class='tb-theme-provider'>");
-        stylesheet.AppendLine("body {");
-        stylesheet.AppendLine($" --tb-palette-field-background: {fieldPalette.Background};");
-        stylesheet.AppendLine($" --tb-palette-field-border: {fieldPalette.Border};");
-
-        if (highContrast)
         {
-            if(isDarkMode)
-            {
-                stylesheet.AppendLine($" --mud-palette-surface: #111;");
-                stylesheet.AppendLine($" --mud-palette-background: #000;");
-                stylesheet.AppendLine($" --mud-palette-black: #000;");
+            _darkMode = preferences.DarkMode;
+            _increasedContrast = preferences.IncreasedContrast;
+            _theme = preferences.Theme;
 
-                stylesheet.AppendLine($" --mud-palette-primary: hotpink;");
-            }
-            else
-            {
-                stylesheet.AppendLine($" --mud-palette-surface: #eee;");
-                stylesheet.AppendLine($" --mud-palette-background: #fff;");
-
-                stylesheet.AppendLine($" --mud-palette-primary: hotpink;");
-            }
+            navigationManager.Refresh(true);
         }
-
-        stylesheet.AppendLine("}");
-
-        // stylesheet.AppendLine(".tb-field {");
-        // stylesheet.AppendLine($" background: var(--tb-palette-field-background);");
-        // stylesheet.AppendLine($" border: solid 1px var(--tb-palette-field-border);");
-        // stylesheet.AppendLine("}");
-
-        stylesheet.AppendLine("</style>");
-
-        return new MarkupString(stylesheet.ToString());
     }
+
+    // private MarkupString GenerateStylesMarkup()
+    // {
+    //     var isDarkMode = _userPreferences?.DarkMode == true ? true : false;
+    //     var highContrast = _userPreferences?.IncreasedContrast == true ? true : false;
+
+    //     var stylesheet = new StringBuilder();
+
+    //     var fieldPalette = isDarkMode ? themingService.FieldPaletteDark : themingService.FieldPaletteLight;
+
+    //     stylesheet.AppendLine("<style>");
+    //     stylesheet.AppendLine("body {");
+    //     stylesheet.AppendLine($" --tb-palette-field-background: {fieldPalette.Background};");
+    //     stylesheet.AppendLine($" --tb-palette-field-border: {fieldPalette.Border};");
+
+    //     High contrast mode overrides some settings
+    //     if (highContrast)
+    //     {
+    //         if(isDarkMode)
+    //         {
+    //             stylesheet.AppendLine($" --mud-palette-surface: #111;");
+    //             stylesheet.AppendLine($" --mud-palette-background: #000;");
+    //             stylesheet.AppendLine($" --mud-palette-black: #000;");
+
+    //             stylesheet.AppendLine($" --mud-palette-primary: hotpink;");
+    //         }
+    //         else
+    //         {
+    //             stylesheet.AppendLine($" --mud-palette-surface: #fff;");
+    //             stylesheet.AppendLine($" --mud-palette-background: #eee;");
+
+    //             stylesheet.AppendLine($" --mud-palette-primary: hotpink;");
+    //         }
+    //     }
+
+    //     stylesheet.AppendLine("}");
+
+    //     stylesheet.AppendLine(".tb-field {");
+    //     stylesheet.AppendLine($" background: var(--tb-palette-field-background);");
+    //     stylesheet.AppendLine($" border: solid 1px var(--tb-palette-field-border);");
+    //     stylesheet.AppendLine("}");
+
+    //     stylesheet.AppendLine("</style>");
+
+    //     return new MarkupString(stylesheet.ToString());
+    // }
 }

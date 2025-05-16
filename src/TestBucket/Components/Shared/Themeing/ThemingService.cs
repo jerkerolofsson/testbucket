@@ -2,12 +2,14 @@
 using MudBlazor.Utilities;
 
 using TestBucket.Components.Account;
+using TestBucket.Domain.Appearance;
 using TestBucket.Domain.Identity;
 
 namespace TestBucket.Components.Shared.Themeing;
 
 internal class ThemingService : TenantBaseService, IDisposable
 {
+    private readonly ITestBucketThemeManager _testBucketThemeManager;
     private readonly IUserPreferencesManager _userPreferencesService;
     private bool? _isDarkMode = null;
     private bool? _highContrast = null;
@@ -16,24 +18,20 @@ internal class ThemingService : TenantBaseService, IDisposable
     /// <summary>
     /// MudTheme
     /// </summary>
-    public MudTheme Theme => GetTheme();
+    //public MudTheme Theme => GetTheme();
 
     public bool IsDarkMode => _isDarkMode is null ? false : _isDarkMode.Value;
     public bool HighContrast => _highContrast is null ? false : _highContrast.Value;
 
-    /// <summary>
-    /// Palette for the Field control
-    /// </summary>
-    public AppPalette FieldPaletteDark => _fieldPaletteDark;
-    public AppPalette FieldPaletteLight => _fieldPaletteLight;
-
     public ThemingService(
-        AuthenticationStateProvider authenticationStateProvider, 
-        IUserPreferencesManager userPreferencesService) : 
+        AuthenticationStateProvider authenticationStateProvider,
+        IUserPreferencesManager userPreferencesService,
+        ITestBucketThemeManager testBucketThemeManager) :
         base(authenticationStateProvider)
     {
         _userPreferencesService = userPreferencesService;
         _userPreferencesService.UserPreferencesChanged += OnUserPreferencesChanged;
+        _testBucketThemeManager = testBucketThemeManager;
     }
 
     private void OnUserPreferencesChanged(object? sender, UserPreferences preferences)
@@ -115,6 +113,10 @@ internal class ThemingService : TenantBaseService, IDisposable
         Border = new MudColor(240, 240, 240, 255),
     };
 
+    /// <summary>
+    /// Converts the current theme to a MudBlazor theme
+    /// </summary>
+    /// <returns></returns>
     private MudTheme GetTheme()
     {
         if(_themeName is not null)

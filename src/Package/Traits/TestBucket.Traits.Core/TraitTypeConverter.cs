@@ -48,6 +48,7 @@ public class TraitTypeConverter
         [TraitType.TestId] = TestTraitNames.TestId,
         [TraitType.Browser] = TestTraitNames.Browser,
         [TraitType.Approved] = TestTraitNames.Approved,
+        [TraitType.Label] = TestTraitNames.Label,
 
         [TraitType.Tag] = TestTraitNames.Tag,
     }.ToFrozenDictionary();

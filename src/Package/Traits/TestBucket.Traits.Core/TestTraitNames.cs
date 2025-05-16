@@ -91,4 +91,8 @@ public class TestTraitNames
     /// </summary>
     public const string Approved = nameof(Approved);
 
+    /// <summary>
+    /// Label
+    /// </summary>
+    public const string Label = nameof(Label);
 }

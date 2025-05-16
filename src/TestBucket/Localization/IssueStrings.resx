@@ -117,14 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="closed" xml:space="preserve">
+    <value>Closed</value>
+  </data>
   <data name="create-issue" xml:space="preserve">
     <value>Create issue</value>
   </data>
   <data name="delete-linked-issue" xml:space="preserve">
     <value>Remove linked issue</value>
   </data>
+  <data name="high-prio" xml:space="preserve">
+    <value>High Priority</value>
+  </data>
   <data name="new-issue" xml:space="preserve">
     <value>New issue</value>
+  </data>
+  <data name="open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="open-incidents" xml:space="preserve">
+    <value>Open Incidents</value>
   </data>
   <data name="type" xml:space="preserve">
     <value>Type</value>

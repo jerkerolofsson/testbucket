@@ -215,4 +215,9 @@ public enum TraitType
     /// The test/requirement is approved
     /// </summary>
     Approved = 48,
+
+    /// <summary>
+    /// A label
+    /// </summary>
+    Label = 49
 }

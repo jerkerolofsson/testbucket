@@ -1,0 +1,31 @@
+﻿@using MudBlazor.Utilities
+@if(!CanClose)
+{
+    <MudChip T="string" Value="@Text" Class="tb-chip" Style="@Style" Size="@Size" />
+
+}
+else
+{
+    <MudChip T="string" Value="@Text" Class="tb-chip" Style="@Style" Size="@Size" OnClose="async () => await OnClose.InvokeAsync(this)"/>
+}
+
+@code {
+    [Parameter] public Size Size { get; set; } = Size.Small;
+    [Parameter] public string Text { get; set; } = "";
+    [Parameter] public string Color { get; set; } = "#CCC";
+    [Parameter] public EventCallback<Chip> OnClose { get; set; }
+    [Parameter] public bool CanClose { get; set; }
+
+    private string _textColor = "";
+    private string _borderColor = "";
+    private string _backgroundColor = "";
+
+    private string Style => $"background: {_backgroundColor}; border-color: {_borderColor}; color: {_textColor}";
+
+    protected override void OnParametersSet()
+    {
+        MudColor color = Color;
+        _textColor = _borderColor = Color;
+        _backgroundColor = color.ColorDarken(0.5).ToString(MudColorOutputFormats.Hex);
+    }
+}

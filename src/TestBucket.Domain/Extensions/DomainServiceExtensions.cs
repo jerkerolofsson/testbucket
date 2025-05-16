@@ -4,6 +4,7 @@ using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Settings;
 using TestBucket.Domain.ApiKeys;
+using TestBucket.Domain.Appearance;
 using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Automation.Runners;
@@ -65,6 +66,7 @@ public static class DomainServiceExtensions
         {
             options.ServiceLifetime = ServiceLifetime.Scoped;
         });
+
 
         services.AddSingleton<IApiKeyAuthenticator,ApiKeyAuthenticator>();
         services.AddScoped<IUserPermissionsManager, UserPermissionsManager>();
@@ -174,6 +176,8 @@ public static class DomainServiceExtensions
         // Test settings
         services.AddScoped<ISetting, ShowFailureMessageDialogWhenFailingTestCaseRunSetting>();
         services.AddScoped<ISetting, AdvanceToNextNotCompletedTestWhenSettingResultSetting>();
+
+        services.AddScoped<ITestBucketThemeManager, TestBucketThemeManager>();
 
         return services;
     }

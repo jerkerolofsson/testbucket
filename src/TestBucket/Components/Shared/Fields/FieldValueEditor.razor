@@ -1,6 +1,7 @@
 ﻿@using TestBucket.Components.Uploads.Services
 @inject AttachmentsService attachmentController
 @inject FieldController fieldController
+@inject IStringLocalizer<SharedStrings> loc
 
 @if(Field?.FieldDefinition is not null) 
 {
@@ -62,13 +63,9 @@
             {
                 string? color = null;
                 string iconStyle = "width:12px; height: 12px";
-                string textStyle = "";
                 if (Field.FieldDefinition.OptionColors is not null)
                 {
-                    if (Field.FieldDefinition.OptionColors.TryGetValue(item, out color))
-                    {
-                        textStyle += $" color: {color}";
-                    }
+                    Field.FieldDefinition.OptionColors.TryGetValue(item, out color);
                 }
                 <MudSelectItem Value="@item">
                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
@@ -76,7 +73,14 @@
                         {
                             <MudIcon Style="@iconStyle" Icon="@optionIcon" Title="@item" />
                         }
-                        <MudText Style="@textStyle">@item</MudText>
+                        @if(color is not null)
+                        {
+                            <Chip Color="@color" Text="@item"/>
+                        }
+                        else
+                        {
+                            <MudText>@item</MudText>
+                        }
                     </MudStack>
                 </MudSelectItem>
             }
@@ -91,24 +95,16 @@
         <MudChipSet T="string" AllClosable="true">
             @foreach (var value in Field.StringValuesList)
             {
-                string style = "";
-                if (Field.FieldDefinition.OptionColors is not null)
-                {
-                    if (Field.FieldDefinition.OptionColors.TryGetValue(value, out var color))
-                    {
-                        style += $" background: {color}";
-                    }
-                }
-
-                <MudChip T="string" Style="@style" Value="@value" OnClose="async x => await RemoveStringArrayValueAsync(x.Value)">@value</MudChip>
+                <Chip Text="@value" CanClose OnClose="async x => await RemoveStringArrayValueAsync(x.Text)" />
             }
         </MudChipSet>
 
         @* Add value to array *@
-        <EditForm Model="_addStringArrayValue" OnValidSubmit="async x => await AddStringArrayValueAsync(_addStringArrayValue)">
+        <EditForm Model="_addStringArrayValue" OnValidSubmit="async x => await AddStringArrayValueAsync()">
             <MudStack Row="true" AlignItems="AlignItems.Center">
-                <MudTextField @bind-Value="_addStringArrayValue" />
-                <MudButton ButtonType="ButtonType.Submit">Add</MudButton>
+                
+                <MudTextField @bind-Value="_addStringArrayValue" Variant="Variant.Outlined"/>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled">@loc["add"]</MudButton>
             </MudStack>
         </EditForm>
     }
@@ -119,13 +115,9 @@
             {
                 string? color = null;
                 string iconStyle = "width:12px; height: 12px";
-                string chipStyle = "";
                 if(Field.FieldDefinition.OptionColors is not null)
                 {
-                    if(Field.FieldDefinition.OptionColors.TryGetValue(item, out color))
-                    {
-                        chipStyle += $" background: {color}";
-                    }
+                    Field.FieldDefinition.OptionColors.TryGetValue(item, out color);
                 }
 
                 <MudSelectItem Value="@item">
@@ -134,7 +126,7 @@
                         {
                             <MudIcon Style="@iconStyle" Icon="@optionIcon" Title="@item" />
                         }
-                        <MudChip Text="@item" T="string" Style="@chipStyle"/>
+                        <Chip Text="@item" Color="@color" />
                     </MudStack>
                 </MudSelectItem>
             }
@@ -214,16 +206,19 @@
         await FieldChanged.InvokeAsync(Field);
     }
 
-    private async Task AddStringArrayValueAsync(string value)
+    private async Task AddStringArrayValueAsync()
     {
+        var value = _addStringArrayValue;
         if (Field is null || string.IsNullOrEmpty(value))
         {
             return;
         }
         Field.StringValue = null;
         Field.StringValuesList ??= [];
-        Field.StringValuesList.Add(value);
-        //Field.StringValues = [.. Field.StringValues, value];
+        if(!Field.StringValuesList.Contains(value))
+        {
+            Field.StringValuesList.Add(value);
+        }
 
         _addStringArrayValue = "";
         this.StateHasChanged();

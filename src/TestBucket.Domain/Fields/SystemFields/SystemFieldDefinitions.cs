@@ -14,6 +14,31 @@ namespace TestBucket.Domain.Fields.SystemFields;
 /// </summary>
 public static class SystemFieldDefinitions
 {
+    private static readonly FieldDefinition _label = new()
+    {
+        Name = "Label",
+        Trait = "label",
+        TraitType = TraitType.Label,
+        IsVisible = true,
+        Type = FieldType.MultiSelection,
+        IsDefinedBySystem = true,
+        Inherit = false,
+        UseClassifier = false,
+        OptionColors = new Dictionary<string, string>
+        {
+            ["Good First Issue"] = "#587934",
+            ["Won't Fix"]= "#707070",
+            ["Enhancement"] = "#2155ce",
+            ["Help Wanted"]= "#1e4c63",
+            ["Invalid"] = "#8d2e4f",
+            ["Bug"] = "#d03a20",
+            ["Duplicate"] = "#7e52f5",
+        },
+        Options = ["Enhancement", "Bug", "Won't Fix", "Duplicate", "Help Wanted", "Invalid", "Question", "Good First Issue"],
+        RequiredPermission = PermissionLevel.Write,
+        Target = FieldTarget.Issue
+    };
+
     private static readonly FieldDefinition _feature = new()
     {
         Name = "Feature",
@@ -35,7 +60,8 @@ public static class SystemFieldDefinitions
                     FieldTarget.RequirementSpecification |
                     FieldTarget.Requirement |
                     FieldTarget.TestSuite |
-                    FieldTarget.TestSuiteFolder
+                    FieldTarget.TestSuiteFolder |
+                    FieldTarget.Issue
     };
 
     private static readonly FieldDefinition _milestone = new()
@@ -80,7 +106,7 @@ public static class SystemFieldDefinitions
         ShowDescription = false,
         UseClassifier = false,
         Options = [],
-        Target = FieldTarget.TestRun | FieldTarget.TestCaseRun,
+        Target = FieldTarget.TestRun | FieldTarget.TestCaseRun | FieldTarget.Issue,
         RequiredPermission = PermissionLevel.Write
     };
 
@@ -105,7 +131,7 @@ public static class SystemFieldDefinitions
     {
         get
         {
-            return [_requirementApproval, _feature, _milestone, _commit];
+            return [_requirementApproval, _feature, _milestone, _commit, _label];
         }
     }
 }

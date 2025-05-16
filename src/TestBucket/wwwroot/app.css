@@ -1,3 +1,6 @@
+:root {
+}
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     width: 100dvw;
@@ -35,6 +38,9 @@ html, body {
     --mud-typography-h4-size: 16pt;
     --mud-typography-h5-size: 14pt;
     --mud-typography-h6-size: 12pt;
+}
+
+.mud-input-control-input-container .mud-input-outlined {
 }
 
 .treeview .template {
@@ -86,6 +92,7 @@ html, body {
 
 .mud-chip-content {
     overflow: hidden;
+    padding-right: 2px;
 }
 
 .color-palette-cell {
@@ -107,8 +114,7 @@ html, body {
 }
 
 .mud-breadcrumbs .mud-breadcrumb-item:hover {
-    background: var(--mud-palette-tertiary-hover);
-/*    border-bottom: solid 2px var(--mud-palette-tertiary);*/
+    background: var(--mud-palette-primary-hover);
 }
 
 .mud-tab {
@@ -123,12 +129,12 @@ html, body {
 }
 
 .mud-tab.mud-tab-active {
-    color: var(--mud-palette-tertiary);
-    background-color: var(--mud-palette-tertiary-hover);
+    color: var(--mud-palette-primary);
+    background-color: var(--mud-palette-primary-hover);
 }
 
 .mud-tab-slider.mud-tab-slider-horizontal  {
-    background: var(--mud-palette-tertiary);
+    background: var(--mud-palette-primary);
     height: 0px;
 }
 
@@ -184,6 +190,17 @@ input:focus-visible {
 .mud-input-control > .mud-input-control-input-container > .mud-input-label-inputcontrol  {
     transform: translate(4px, 10px) scale(1);
     font-size: 8pt;
+}
+
+.tb-splitter-content-start:has(.tb-navmenu) {
+    background: var(--mud-palette-surface);
+}
+
+.tb-navmenu {
+    width: 100%;
+}
+
+.tb-navmenu.side {
 }
 
 .dropdown-container .mud-icon-button {
@@ -285,7 +302,7 @@ input:focus-visible {
 
  .tb-nav-link:hover {
 /*     background: rgba(255,255,255,0.05);*/
-    background: var(--mud-palette-tertiary-hover);
+    background: var(--mud-palette-primary-hover);
  }
 
  .tb-nav-link svg {
@@ -297,7 +314,7 @@ input:focus-visible {
  }
 
  .tb-nav-link.active {
-     border-color: var(--mud-palette-tertiary);
+     border-color: var(--mud-palette-primary);
  }
 
  .tb-login-container {
@@ -418,22 +435,8 @@ tb-field .mud-link.mud-link-underline-hover:hover {
  table.tb-environment-variables {
  }
 
-  .tb-toolbar.main.light {
-      
+  .tb-toolbar.main {
      background: var(--mud-palette-surface);
-     border-bottom: solid 1px #ccc;
-
-     color: black;
-     --mud-palette-text-primary: black;
-     --mud-palette-action-default: black;
- }
-
- .tb-toolbar.main.dark {
-      
-     background: var(--mud-palette-surface);
-     color: white;
-     --mud-palette-text-primary: white;
-     --mud-palette-action-default: white;
  }
 
  input.form-control {
@@ -467,8 +470,8 @@ tb-field .mud-link.mud-link-underline-hover:hover {
 .tb-navmenu-selected,
 .mud-table-root .mud-table-body .tb-datarow-selected .mud-table-cell,
 .treeview .node.selected > .body {
-    color: var(--mud-palette-tertiary);
-    background: var(--mud-palette-tertiary-hover);
+    color: var(--mud-palette-primary);
+    background: var(--mud-palette-primary-hover);
     animation: ItemHoverAnimation 300ms linear forwards;
 }
 
@@ -543,11 +546,10 @@ tb-field .mud-link.mud-link-underline-hover:hover {
     fill: currentColor;
  }
 
- .tb-treeview-toolbar,
+.tb-treeview-toolbar,
 .tb-toolbar.mud-toolbar {
     --mud-internal-toolbar-height: 44px;
     height: var(--mud-internal-toolbar-height);
-    border-bottom: solid 1px var(--mud-palette-dark);
 }
 
  @media (min-width: 600px) {
@@ -630,8 +632,8 @@ tb-field .mud-link.mud-link-underline-hover:hover {
 }
 
 .settings-radio-lg:has(.mud-radio .mud-checked) {
-    border-color: var(--mud-palette-tertiary);
-    color: var(--mud-palette-tertiary);
+    border-color: var(--mud-palette-primary);
+    color: var(--mud-palette-primary);
 }
 
 .tb-result-summary-bar {
@@ -963,7 +965,7 @@ div.tb-profile-image.tb-background-9 {
 }
 
 .tb-trace-view > .center > .tb-traceability-node-link-wrapper {
-    border: solid 1px var(--mud-palette-tertiary);
+    border: solid 1px var(--mud-palette-primary);
 }
 
 .tb-trace-view .tb-traceability-node-link-wrapper {

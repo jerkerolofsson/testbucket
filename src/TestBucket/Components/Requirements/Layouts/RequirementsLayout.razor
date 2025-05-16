@@ -13,13 +13,15 @@
 
 <Splitter Class="container-fill" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
-        <RequirementTreeView 
-            @ref="_treeView"
-            Project="@Project"
-            Team="@Team"
-            OnSpecificationClicked="OnSpecificationClicked"
-                             OnFolderClicked="OnFolderClicked"
-            OnRequirementClicked="OnRequirementClicked" />
+        <div class="tb-navmenu side">
+            <RequirementTreeView 
+                @ref="_treeView"
+                Project="@Project"
+                Team="@Team"
+                OnSpecificationClicked="OnSpecificationClicked"
+                OnFolderClicked="OnFolderClicked"
+                OnRequirementClicked="OnRequirementClicked" />
+        </div>
     </StartContent>
 
     <EndContent>

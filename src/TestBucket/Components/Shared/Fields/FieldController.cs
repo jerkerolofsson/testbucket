@@ -1,29 +1,33 @@
 ﻿using System.Diagnostics;
+
+using Microsoft.Extensions.Localization;
+
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared;
+using TestBucket.Localization;
 namespace TestBucket.Components.Shared.Fields;
 
 internal class FieldController : TenantBaseService
 {
-    private readonly IProjectManager _projectManager;
-    private readonly IFieldRepository _repository;
+    private readonly IStringLocalizer<SharedStrings> _loc;
+    private readonly IDialogService _dialogService;
     private readonly IFieldDefinitionManager _definitionManager;
     private readonly IFieldManager _manager;
 
     public FieldController(
         AuthenticationStateProvider authenticationStateProvider,
-        IProjectManager projectManager,
-        IFieldRepository repository,
+        IStringLocalizer<SharedStrings> loc,
+        IDialogService dialogService,
         IFieldManager manager,
         IFieldDefinitionManager definitionManager) :
         base(authenticationStateProvider)
     {
-        _projectManager = projectManager;
-        _repository = repository;
+        _loc = loc;
+        _dialogService = dialogService;
         _manager = manager;
         _definitionManager = definitionManager;
     }
@@ -232,8 +236,18 @@ internal class FieldController : TenantBaseService
 
     public async Task DeleteAsync(FieldDefinition fieldDefinition)
     {
-        var principal = await GetUserClaimsPrincipalAsync();
-        await _definitionManager.DeleteAsync(principal, fieldDefinition);
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc["yes"],
+            NoText = _loc["no"],
+            Title = _loc["confirm-delete-title"],
+            MarkupMessage = new MarkupString(_loc["confirm-delete-message"])
+        });
+        if (result == true)
+        {
+            var principal = await GetUserClaimsPrincipalAsync();
+            await _definitionManager.DeleteAsync(principal, fieldDefinition);
+        }
     }
 
     public async Task UpdateAsync(FieldDefinition fieldDefinition)

@@ -558,4 +558,10 @@
   <data name="logged-action-assignedto" xml:space="preserve">
     <value>{0} tilldelade denna till {1}</value>
   </data>
+  <data name="type" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label" xml:space="preserve">
+    <value />
+  </data>
 </root>

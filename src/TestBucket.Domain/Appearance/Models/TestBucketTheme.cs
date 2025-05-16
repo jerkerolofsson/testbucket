@@ -127,8 +127,8 @@ public class TestBucketTheme : TestBucketBaseTheme
         if (scheme.Base.Surface is not null)
         {
             css.AppendLine($"--mud-palette-surface: {scheme.Base.Surface};");
-            css.AppendLine($"--mud-palette-surface-darken: {scheme.Base.Surface.ColorDarken(0.2)};");
-            css.AppendLine($"--mud-palette-surface-lighten: {scheme.Base.Surface.ColorLighten(0.2)};");
+            css.AppendLine($"--mud-palette-surface-darken: {scheme.Base.Surface.ColorDarken(0.1)};");
+            css.AppendLine($"--mud-palette-surface-lighten: {scheme.Base.Surface.ColorLighten(0.1)};");
         }
         if (scheme.Base.Background is not null)
         {
@@ -137,14 +137,14 @@ public class TestBucketTheme : TestBucketBaseTheme
         if (scheme.Base.Primary is not null)
         {
             css.AppendLine($"--mud-palette-primary: {scheme.Base.Primary};");
-            css.AppendLine($"--mud-palette-primary-darken: {scheme.Base.Primary.ColorDarken(0.2)};");
-            css.AppendLine($"--mud-palette-primary-lighten: {scheme.Base.Primary.ColorLighten(0.2)};");
+            css.AppendLine($"--mud-palette-primary-darken: {scheme.Base.Primary.ColorDarken(0.1)};");
+            css.AppendLine($"--mud-palette-primary-lighten: {scheme.Base.Primary.ColorLighten(0.1)};");
         }
         if (scheme.Base.Secondary is not null)
         {
             css.AppendLine($"--mud-palette-secondary: {scheme.Base.Secondary};");
-            css.AppendLine($"--mud-palette-secondary-darken: {scheme.Base.Secondary.ColorDarken(0.2)};");
-            css.AppendLine($"--mud-palette-secondary-lighten: {scheme.Base.Secondary.ColorLighten(0.2)};");
+            css.AppendLine($"--mud-palette-secondary-darken: {scheme.Base.Secondary.ColorDarken(0.1)};");
+            css.AppendLine($"--mud-palette-secondary-lighten: {scheme.Base.Secondary.ColorLighten(0.1)};");
         }
         if (scheme.Base.Tertiary is not null)
         {

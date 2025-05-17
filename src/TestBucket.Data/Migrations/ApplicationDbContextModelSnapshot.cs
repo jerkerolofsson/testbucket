@@ -1155,6 +1155,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<int?>("Dock")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Icon")
                         .HasColumnType("text");
 
@@ -1443,6 +1446,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<bool>("DarkMode")
                         .HasColumnType("boolean");
+
+                    b.Property<int?>("ExplorerDock")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IncreasedContrast")
                         .HasColumnType("boolean");

@@ -566,4 +566,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="label" xml:space="preserve">
     <value>Label</value>
   </data>
+  <data name="code" xml:space="preserve">
+    <value>Code</value>
+  </data>
 </root>

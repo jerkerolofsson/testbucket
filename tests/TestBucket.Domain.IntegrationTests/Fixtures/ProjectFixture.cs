@@ -46,6 +46,11 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         public RequirementsTestFramework Requirements => new RequirementsTestFramework(this);
 
         /// <summary>
+        /// Framework for testing settings
+        /// </summary>
+        public SettingsTestFramework Settings => new SettingsTestFramework(this);
+
+        /// <summary>
         /// Test framework for issues
         /// </summary>
         public IssuesTestFramework Issues => new IssuesTestFramework(this);

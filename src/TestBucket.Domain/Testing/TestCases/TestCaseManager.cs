@@ -12,11 +12,11 @@ using TestBucket.Domain.Testing.Events;
 using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
-using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Domain.Traceability.Models;
 using TestBucket.Domain.Traceability;
 using TestBucket.Domain.Testing.TestRuns.Search;
+using TestBucket.Domain.Testing.TestCases.Search;
 
 namespace TestBucket.Domain.Testing.TestCases
 {

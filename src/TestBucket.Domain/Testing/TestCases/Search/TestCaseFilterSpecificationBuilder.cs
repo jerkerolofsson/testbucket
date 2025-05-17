@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Traits.Core;
 
-namespace TestBucket.Domain.Testing.Specifications.TestCases;
+namespace TestBucket.Domain.Testing.TestCases.Search;
 
 public class TestCaseFilterSpecificationBuilder
 {
@@ -46,6 +47,10 @@ public class TestCaseFilterSpecificationBuilder
         if (query.TestSuiteId is not null)
         {
             specifications.Add(new FilterTestCasesByTestSuite(query.TestSuiteId.Value));
+        }
+        if (query.TestExecutionType is not null)
+        {
+            specifications.Add(new FilterTestCasesByExecutionType(query.TestExecutionType.Value));
         }
         if (query.Text is not null)
         {

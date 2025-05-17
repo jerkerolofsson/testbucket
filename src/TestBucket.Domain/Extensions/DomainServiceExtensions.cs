@@ -162,6 +162,7 @@ public static class DomainServiceExtensions
         services.AddScoped<ISettingsManager, SettingsManager>();
         services.AddScoped<ISetting, DefaultTenantSetting>();
         services.AddScoped<ISetting, DarkModeSetting>();
+        services.AddScoped<ISetting, ExplorerDockSetting>();
         services.AddScoped<ISetting, ProfileImageSetting>();
         services.AddScoped<ISetting, ThemeSetting>();
         services.AddScoped<ISetting, IncreasedContrastSetting>();

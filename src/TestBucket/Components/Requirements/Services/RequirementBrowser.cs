@@ -5,9 +5,13 @@ using Microsoft.Extensions.Localization;
 
 using MudBlazor;
 
+using Octokit.Internal;
+
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Shared;
+using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Tree;
+using TestBucket.Components.Tests.Services;
 using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Domain;
@@ -29,6 +33,7 @@ internal class RequirementBrowser : TenantBaseService
     private readonly IStringLocalizer<CodeStrings> _codeLoc;
     private readonly IDialogService _dialogService;
     private readonly AppNavigationManager _appNavigationManager;
+    private readonly FieldController _fieldController;
 
     public RequirementBrowser(AuthenticationStateProvider authenticationStateProvider,
         RequirementEditorController requirementEditorService,
@@ -36,7 +41,8 @@ internal class RequirementBrowser : TenantBaseService
         IStringLocalizer<RequirementStrings> loc,
         IDialogService dialogService,
         AppNavigationManager appNavigationManager,
-        IStringLocalizer<CodeStrings> codeLoc) : base(authenticationStateProvider)
+        IStringLocalizer<CodeStrings> codeLoc,
+        FieldController fieldController) : base(authenticationStateProvider)
     {
         _requirementEditorService = requirementEditorService;
         _requirementManager = requirementManager;
@@ -44,6 +50,7 @@ internal class RequirementBrowser : TenantBaseService
         _dialogService = dialogService;
         _appNavigationManager = appNavigationManager;
         _codeLoc = codeLoc;
+        _fieldController = fieldController;
     }
 
     public async Task<SearchRequirementQuery?> ShowFilterAsync(SearchRequirementQuery? query)
@@ -112,6 +119,13 @@ internal class RequirementBrowser : TenantBaseService
 
     public async Task<List<TreeNode<BrowserItem>>> SearchAsync(long? teamId, long? projectId, string searchText)
     {
+        if(projectId is null)
+        {
+            return [];
+        }
+
+        var fields = await _fieldController.GetDefinitionsAsync(projectId.Value, Contracts.Fields.FieldTarget.Requirement);
+
         var specs = await _requirementEditorService.GetRequirementSpecificationsAsync(teamId, projectId);
         var specificationNodes = specs.Items.Select(x => CreateSpecificationNode(x)).ToList();
 
@@ -125,6 +139,7 @@ internal class RequirementBrowser : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         var result = await _requirementManager.SearchRequirementsAsync(principal, new SearchRequirementQuery
         {
+            CompareFolder = false,
             Count = 100,
             Offset = 0,
             ProjectId = projectId,
@@ -134,24 +149,10 @@ internal class RequirementBrowser : TenantBaseService
 
         foreach (var requirement in result.Items)
         {
-            // Find specification node
-            var specNode = rootItems[0].Children!.Where(x => x.Value?.RequirementSpecification?.Id == requirement.RequirementSpecificationId).FirstOrDefault();
-            if (specNode is not null)
-            {
-                var requirementNode = CreateRequirementNode(requirement);
-                if (specNode.Children is null)
-                {
-                    specNode.Children = [requirementNode];
-                }
-                else
-                {
-                    specNode.Children = [.. specNode.Children, requirementNode];
-                }
-                specNode.Expanded = true;
-            }
+            await AddToHierarchyAsync(requirement, rootItems);
         }
 
-        // Remove empty specificati0ons
+        //Remove empty specificati0ons
         foreach (var item in specificationNodes.ToList())
         {
             if (item.Children is null || item.Children.Count == 0)
@@ -160,8 +161,6 @@ internal class RequirementBrowser : TenantBaseService
             }
         }
         specificationNode.Children = specificationNodes;
-
-
 
         return rootItems;
     }
@@ -305,90 +304,129 @@ internal class RequirementBrowser : TenantBaseService
 
         TreeNode<BrowserItem> specificationNode = CreateSpecificationRootNode(specificationNodes);
 
-        TreeNode<BrowserItem> milestonesNode = new TreeNode<BrowserItem>
-        {
-            Expandable = false,
-            Expanded = false,
-            Icon = TbIcons.BoldDuoTone.Flag,
-            Text = _loc["milestones"],
-            Value = new BrowserItem
-            {
-                Href = _appNavigationManager.GetMilestonesUrl()
-            }
-        };
+        //TreeNode<BrowserItem> architecture = new TreeNode<BrowserItem>
+        //{
+        //    Expandable = true,
+        //    Expanded = true,
+        //    Icon = TbIcons.BoldDuoTone.Architecture,
+        //    Text = _codeLoc["subject"],
+        //    Children = new List<TreeNode<BrowserItem>>
+        //    {
+        //        new TreeNode<BrowserItem>
+        //        {
+        //            Text = _codeLoc["architecture"],
+        //            Expandable = false,
+        //            Icon = TbIcons.BoldDuoTone.Architecture,
+        //            Value = new BrowserItem
+        //            {
+        //                Href = _appNavigationManager.GetCodeArchitectureUrl()
+        //            }
+        //        },
+        //        new TreeNode<BrowserItem>
+        //        {
+        //            Text = _codeLoc["features"],
+        //            Expandable = false,
+        //            Icon = TbIcons.BoldDuoTone.Epic,
+        //            Value = new BrowserItem
+        //            {
+        //                Href = _appNavigationManager.GetFeaturesUrl()
+        //            }
+        //        },
+        //        new TreeNode<BrowserItem>
+        //        {
+        //            Text = _codeLoc["components"],
+        //            Expandable = false,
+        //            Icon = TbIcons.BoldDuoTone.Components,
+        //            Value = new BrowserItem
+        //            {
+        //                Href = _appNavigationManager.GetComponentsUrl()
+        //            }
+        //        },
+        //        new TreeNode<BrowserItem>
+        //        {
+        //            Text = _codeLoc["layers"],
+        //            Expandable = false,
+        //            Icon = TbIcons.BoldDuoTone.Layers,
+        //            Value = new BrowserItem
+        //            {
+        //                Href = _appNavigationManager.GetLayersUrl()
+        //            }
+        //        },
+        //        new TreeNode<BrowserItem>
+        //        {
+        //            Text = _codeLoc["systems"],
+        //            Expandable = false,
+        //            Icon = TbIcons.BoldDuoTone.Systems,
+        //            Value = new BrowserItem
+        //            {
+        //                Href = _appNavigationManager.GetSystemsUrl()
+        //            }
+        //        },
+        //        new TreeNode<BrowserItem>
+        //        {
+        //            Text = _codeLoc["commits"],
+        //            Expandable = false,
+        //            Icon = TbIcons.Git.Commit,
+        //            Value = new BrowserItem
+        //            {
+        //                Href = _appNavigationManager.GetCodeCommitsUrl()
+        //            }
+        //        }
 
-        TreeNode<BrowserItem> architecture = new TreeNode<BrowserItem>
-        {
-            Expandable = true,
-            Expanded = true,
-            Icon = TbIcons.BoldDuoTone.Architecture,
-            Text = _codeLoc["subject"],
-            Children = new List<TreeNode<BrowserItem>>
-            {
-                new TreeNode<BrowserItem>
-                {
-                    Text = _codeLoc["architecture"],
-                    Expandable = false,
-                    Icon = TbIcons.BoldDuoTone.Architecture,
-                    Value = new BrowserItem
-                    {
-                        Href = _appNavigationManager.GetCodeArchitectureUrl()
-                    }
-                },
-                new TreeNode<BrowserItem>
-                {
-                    Text = _codeLoc["features"],
-                    Expandable = false,
-                    Icon = TbIcons.BoldDuoTone.Epic,
-                    Value = new BrowserItem
-                    {
-                        Href = _appNavigationManager.GetFeaturesUrl()
-                    }
-                },
-                new TreeNode<BrowserItem>
-                {
-                    Text = _codeLoc["components"],
-                    Expandable = false,
-                    Icon = TbIcons.BoldDuoTone.Components,
-                    Value = new BrowserItem
-                    {
-                        Href = _appNavigationManager.GetComponentsUrl()
-                    }
-                },
-                new TreeNode<BrowserItem>
-                {
-                    Text = _codeLoc["layers"],
-                    Expandable = false,
-                    Icon = TbIcons.BoldDuoTone.Layers,
-                    Value = new BrowserItem
-                    {
-                        Href = _appNavigationManager.GetLayersUrl()
-                    }
-                },
-                new TreeNode<BrowserItem>
-                {
-                    Text = _codeLoc["systems"],
-                    Expandable = false,
-                    Icon = TbIcons.BoldDuoTone.Systems,
-                    Value = new BrowserItem
-                    {
-                        Href = _appNavigationManager.GetSystemsUrl()
-                    }
-                },
-                new TreeNode<BrowserItem>
-                {
-                    Text = _codeLoc["commits"],
-                    Expandable = false,
-                    Icon = TbIcons.Git.Commit,
-                    Value = new BrowserItem
-                    {
-                        Href = _appNavigationManager.GetCodeCommitsUrl()
-                    }
-                }
+        //    }
+        //};
+        return [specificationNode];
+    }
 
+
+    private async Task AddToHierarchyAsync(Requirement requirement, List<TreeNode<BrowserItem>> rootItems)
+    {
+        if (requirement.PathIds is null)
+        {
+            // We can't show dangling tests..
+            return;
+        }
+
+        // The root items should already contain the test suites, so we should be able to find it here
+        var specificationNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.RequirementSpecification?.Id == requirement.RequirementSpecificationId);
+        if (specificationNode is null)
+        {
+            return;
+        }
+
+        TreeNode<BrowserItem> parent = specificationNode;
+        specificationNode.Expanded = true;
+
+        // Resolve the parent hierarchy, with test suites and folders
+        foreach (var folderId in requirement.PathIds)
+        {
+            var folderNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.Folder?.Id == folderId);
+            if (folderNode is null)
+            {
+                var items = await BrowseAsync(requirement.TeamId, requirement.TestProjectId, parent.Value);
+                parent.Children = items;
+                folderNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.RequirementFolder?.Id == folderId);
             }
-        };
-        return [specificationNode, milestonesNode, architecture];
+            if (folderNode is null)
+            {
+                return;
+            }
+            folderNode.Expanded = true;
+            parent = folderNode;
+        }
+
+        if (parent is not null)
+        {
+            var testCaseNode = CreateRequirementNode(requirement);
+            if (parent.Children is null)
+            {
+                parent.Children = [testCaseNode];
+            }
+            else
+            {
+                parent.Children = [.. parent.Children, testCaseNode];
+            }
+        }
     }
 
     internal async Task AddFolderAsync(long projectId, long specificationId, long? parentFolderId)

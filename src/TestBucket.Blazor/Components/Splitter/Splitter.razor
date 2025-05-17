@@ -1,0 +1,34 @@
+﻿@namespace TestBucket.Blazor.Components.Splitter
+@using Microsoft.JSInterop
+@using MudBlazor
+@using MudBlazor.Extensions
+@inherits MudComponentBase
+@inject IJSRuntime js
+
+<CascadingValue Value="@Dock">
+    <div @ref="@ElementRef" class="@Classname" style="@Style" id="@ElementId">
+        <div class="@StartContentClassname" style="@EffectiveStartStyle">
+            @if(Dock is Contracts.Appearance.Models.Dock.Right or Contracts.Appearance.Models.Dock.Bottom)
+            {
+                @EndContent
+            }
+            else
+            {
+                @StartContent
+            }
+        </div>
+        <div class="tb-splitter-bar">
+            <div class="tb-splitter-bar-fill" style="@BarStyle" />
+        </div>
+        <div class="@EndContentClassname" style="@EffectiveEndStyle">
+            @if (Dock is Contracts.Appearance.Models.Dock.Right or Contracts.Appearance.Models.Dock.Bottom)
+            {
+                @StartContent
+            }
+            else
+            {
+                @EndContent
+            }
+        </div>
+    </div>
+</CascadingValue>

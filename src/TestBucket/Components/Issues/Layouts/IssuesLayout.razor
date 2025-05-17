@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @layout AppLayout
 @using Humanizer
+@using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Contracts.Issues.States
 @using TestBucket.Contracts.Issues.Types
 @using TestBucket.Domain.Issues.Search
@@ -9,30 +10,42 @@
 @inject IssueController controller
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
+@inject UserPreferencesService preferencesController
+
 <TenantRedirect />
 
-<Splitter Style="height: 100%" Bordered="false" Dimension="15" EnableMargin="false" Color="Color.Tertiary">
+<Splitter Style="height: 100%" Bordered="false" Dock="@_dock" Dimension="20" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
 
         <MudStack Class="pa-2 tb-navmenu side" Style="width: 100%;">
-            <MudNavLink Href="@Open">
-                <MudBadge Content="@OpenCount" Color="Color.Primary" Overlap>
-                    <MudText>@issueLoc["open"]</MudText>
-                </MudBadge>
-            </MudNavLink>
-            <MudNavLink Href="@OpenIncidents">
-                <MudBadge Content="@OpenIncidentsCount" Color="Color.Primary" Overlap>
-                    @issueLoc["open-incidents"]
-                </MudBadge>
-            </MudNavLink>
-            <MudNavLink Href="@Closed">
-                <MudBadge Content="@ClosedCount" Color="Color.Primary" Overlap>
-                    <MudText>@issueLoc["closed"]</MudText>
-                </MudBadge>
-            </MudNavLink>
-            <MudNavLink Href="@OpenHighPrio">
-                @issueLoc["high-prio"]
-            </MudNavLink>
+
+            <MudText Typo="Typo.h1">@loc["issues"]</MudText>
+
+            <MudNavMenu>
+                <MudNavLink Href="@Open">
+                    <MudBadge Content="@OpenCount" Color="Color.Primary" Overlap>
+                        <MudText>@issueLoc["open"]</MudText>
+                    </MudBadge>
+                </MudNavLink>
+                <MudNavLink Href="@OpenIncidents">
+                    <MudBadge Content="@OpenIncidentsCount" Color="Color.Primary" Overlap>
+                        @issueLoc["open-incidents"]
+                    </MudBadge>
+                </MudNavLink>
+                <MudNavLink Href="@Closed">
+                    <MudBadge Content="@ClosedCount" Color="Color.Primary" Overlap>
+                        <MudText>@issueLoc["closed"]</MudText>
+                    </MudBadge>
+                </MudNavLink>
+                <MudNavLink Href="@OpenHighPrio">
+                    @issueLoc["high-prio"]
+                </MudNavLink>
+
+                <MudNavLink Href="@appNavigationManager.GetMilestonesUrl()">
+                    @loc["milestones"]
+                </MudNavLink>
+            </MudNavMenu>
+            
         </MudStack>
 
     </StartContent>
@@ -56,6 +69,13 @@
     private string OpenIncidentsCount => GetIncidentBadgePerState(MappedIssueState.Open);
     private string OpenCount => GetBadgePerState(MappedIssueState.Open);
     private string ClosedCount => GetBadgePerState(MappedIssueState.Closed);
+    private Dock _dock = Dock.Left;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userPreferences = await preferencesController.GetUserPreferencesAsync();
+        _dock = userPreferences?.ExplorerDock ?? Dock.Left;
+    }
 
     private string GetBadgePerState(MappedIssueState state)
     {

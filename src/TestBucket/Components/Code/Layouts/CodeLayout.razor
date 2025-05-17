@@ -1,32 +1,26 @@
 ﻿@inherits LayoutComponentBase
 @layout AppLayout
 @using Humanizer
+@using TestBucket.Components.Code.Controls
 @using TestBucket.Components.Layout
-@using TestBucket.Components.Shared.Splitter
+@using TestBucket.Blazor.Components.Splitter
+@using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Domain
 @using TestBucket.Domain.Settings
 @using TestBucket.Domain.Settings.Models
 @inject NavigationManager navigationManager
 @inject AppNavigationManager appNavigationManager
-@inject IStringLocalizer<CodeStrings> loc
+@inject IStringLocalizer<SharedStrings> loc
+@inject UserPreferencesService preferencesController
 
 <TenantRedirect />
 
-<Splitter Style="height: 100%" Bordered="false" Dimension="15" EnableMargin="false" Color="Color.Default">
+<Splitter Style="height: 100%" Bordered="false" Dock="_dock" Dimension="20" EnableMargin="false" Color="Color.Default">
     <StartContent>
-
-        <div class="pa-5" style="width: 100%">
-
-            <MudNavMenu>
-                <MudNavLink Icon="@TbIcons.BoldDuoTone.CodeSquare" Href="@(appNavigationManager.GetCodeArchitectureUrl())">@loc["architecture"]</MudNavLink>
-                <MudNavLink Icon="@TbIcons.BoldDuoTone.CodeSquare" Href="@(appNavigationManager.GetCodeArchitectureYamlToolUrl())">@loc["architecture-yaml-tool"]</MudNavLink>
-
-                <MudNavLink Icon="@TbIcons.BoldDuoTone.Epic" Href="@(appNavigationManager.GetFeaturesUrl())">@loc["features"]</MudNavLink>
-                <MudNavLink Icon="@TbIcons.Git.Commit" Href="@(appNavigationManager.GetCodeCommitsUrl())">@loc["commits"]</MudNavLink>
-
-            </MudNavMenu>
-        </div>
-
+        <MudStack Class="pa-2 tb-navmenu side" Style="width: 100%;">
+            <MudText Typo="Typo.h1">@loc["code"]</MudText>
+            <CodeNavMenu />
+        </MudStack>
     </StartContent>
 
     <EndContent>
@@ -38,4 +32,11 @@
 
 @code {
     [CascadingParameter] public TestProject? Project { get; set; }
+    private Dock _dock = Dock.Left;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userPreferences = await preferencesController.GetUserPreferencesAsync();
+        _dock = userPreferences?.ExplorerDock ?? Dock.Left;
+    }
 }

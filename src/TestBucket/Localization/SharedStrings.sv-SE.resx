@@ -301,7 +301,7 @@
     <value>Tillverkare</value>
   </data>
   <data name="result-inconclusive" xml:space="preserve">
-    <value />
+    <value>Odefinierat</value>
   </data>
   <data name="delete" xml:space="preserve">
     <value>Ta bort</value>
@@ -364,7 +364,7 @@
     <value />
   </data>
   <data name="recent" xml:space="preserve">
-    <value />
+    <value>Nya</value>
   </data>
   <data name="user" xml:space="preserve">
     <value>Användare</value>
@@ -409,7 +409,7 @@
     <value>Alternativ</value>
   </data>
   <data name="advanced" xml:space="preserve">
-    <value />
+    <value>Avancerat</value>
   </data>
   <data name="preview" xml:space="preserve">
     <value>Förhandsgranskning</value>
@@ -418,7 +418,7 @@
     <value />
   </data>
   <data name="backup" xml:space="preserve">
-    <value />
+    <value>Backup</value>
   </data>
   <data name="rename" xml:space="preserve">
     <value>Döp om</value>
@@ -457,7 +457,7 @@
     <value>Milstolpar</value>
   </data>
   <data name="calendar" xml:space="preserve">
-    <value />
+    <value>Kalender</value>
   </data>
   <data name="manage" xml:space="preserve">
     <value>Hantera</value>
@@ -553,15 +553,18 @@
     <value>{0} levererade en commit {1}</value>
   </data>
   <data name="state" xml:space="preserve">
-    <value />
+    <value>State</value>
   </data>
   <data name="logged-action-assignedto" xml:space="preserve">
     <value>{0} tilldelade denna till {1}</value>
   </data>
   <data name="type" xml:space="preserve">
-    <value />
+    <value>Typ</value>
   </data>
   <data name="label" xml:space="preserve">
     <value />
+  </data>
+  <data name="code" xml:space="preserve">
+    <value>Kod</value>
   </data>
 </root>

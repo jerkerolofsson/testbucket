@@ -1,6 +1,7 @@
 ﻿
 using TestBucket.Components.Tests.Models;
 using TestBucket.Components.Tests.TestCases.Dialogs;
+using TestBucket.Domain.Testing.TestCases.Search;
 
 namespace TestBucket.Components.Tests.TestCases.Controls;
 
@@ -50,6 +51,7 @@ public partial class TestCaseGrid
     private long? _testSuiteId = null;
     private long? _folderId = null;
     private bool _hasCustomFilter = false;
+    private IReadOnlyList<FieldDefinition> _fields = [];
 
     protected override async Task OnParametersSetAsync()
     {
@@ -87,6 +89,8 @@ public partial class TestCaseGrid
         {
             changed = true;
             _projectId = Project.Id;
+
+            _fields = await fieldController.GetDefinitionsAsync(_projectId.Value, Contracts.Fields.FieldTarget.TestCase);
         }
 
         if (changed)
@@ -152,9 +156,7 @@ public partial class TestCaseGrid
         {
             _hasCustomFilter = true;
             _query = query;
-            _query.CompareFolder = false;
-            await QueryChanged.InvokeAsync(_query);
-            _dataGrid?.ReloadServerData();
+            await OnSearch(_query.ToSearchText());
         }
     }
 
@@ -175,21 +177,25 @@ public partial class TestCaseGrid
         }
     }
 
-    private void OnSearch(string text)
+    private string _searchPhrase = "";
+
+    private async Task OnSearch(string text)
     {
-        if(string.IsNullOrEmpty(text))
+        _query = SearchTestCaseQueryParser.Parse(text, _fields);
+        _searchPhrase = _query.ToSearchText();
+        _query.FolderId = Query?.FolderId;
+        _query.CompareFolder = Query?.CompareFolder;
+
+        if (string.IsNullOrEmpty(text))
         {
-            _query.CompareFolder = true;
-            _query.Text = null;
             _hasCustomFilter = false;
         }
         else
         {
-            _query.CompareFolder = false; // When searching for text, disable the compare folder so we search all 
-            _query.Text = text;
             _hasCustomFilter = true;
 
         }
+        await QueryChanged.InvokeAsync(_query);
         _dataGrid?.ReloadServerData();
     }
 
@@ -204,6 +210,7 @@ public partial class TestCaseGrid
             CreatedUntil = _query.CreatedUntil,
             ProjectId = Project?.Id,
             Fields = _query.Fields,
+            TestExecutionType = _query.TestExecutionType,
 
             Text = string.IsNullOrWhiteSpace(_query.Text) ? null : _query.Text,
         };

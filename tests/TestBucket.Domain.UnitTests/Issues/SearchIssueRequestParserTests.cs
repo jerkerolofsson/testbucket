@@ -11,6 +11,7 @@ namespace TestBucket.Domain.UnitTests.Issues
     [FunctionalTest]
     [EnrichedTest]
     [UnitTest]
+    [Feature("Search")]
     public class SearchIssueRequestParserTests
     {
         [Theory]

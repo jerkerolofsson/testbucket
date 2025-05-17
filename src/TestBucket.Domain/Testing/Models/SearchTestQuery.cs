@@ -1,4 +1,7 @@
 ﻿
+
+using OneOf.Types;
+
 namespace TestBucket.Domain.Testing.Models;
 public class SearchTestQuery : SearchQuery
 {
@@ -20,4 +23,9 @@ public class SearchTestQuery : SearchQuery
     /// If comparing folder, returns all descendants, not only the direct children
     /// </summary>
     public bool Recurse { get; set; } = false;
+
+    /// <summary>
+    /// Filter on test execution type
+    /// </summary>
+    public TestExecutionType? TestExecutionType { get; set; }
 }

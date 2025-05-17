@@ -33,6 +33,7 @@
     }
     string homeUrl = $"/{tenantId}";
     string authUrl = $"/{tenantId}/Auth";
+    string codeUrl = $"/{tenantId}/Code";
     string requirementsUrl = $"/{tenantId}/Requirements";
     string reportingUrl = $"/{tenantId}/Reporting";
     string issuesUrl = $"/{tenantId}/Issues";
@@ -57,6 +58,7 @@
                         <ProjectBadgePicker Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" />
                         @* <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" /> *@
 
+                        <TbNavLink Href="@codeUrl">@loc["code"]</TbNavLink>
                         <TbNavLink Href="@requirementsUrl">@loc["requirements"]</TbNavLink>
                         <TbNavLink Href="@testsUrl">@loc["testing"]</TbNavLink>
                         <TbNavLink Href="@issuesUrl">@loc["issues"]</TbNavLink>
@@ -134,9 +136,13 @@
 
         currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
         navigationManager.LocationChanged += OnLocationChanged;
+
+        var isDarkMode = await themingService.IsDarkModeAsync();
+        if (isDarkMode != _isDarkMode)
+        {
+            _isDarkMode = isDarkMode;
+        }
     }
-
-
 
     private void OnUserPreferencesChanged(UserPreferences preferences)
     {

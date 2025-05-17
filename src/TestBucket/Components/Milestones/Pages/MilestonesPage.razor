@@ -1,11 +1,11 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Milestones"
 @using Heron.MudCalendar
-@using TestBucket.Components.Requirements.Layouts
+@using TestBucket.Components.Issues.Layouts
 @using TestBucket.Components.Milestones.Controllers
 @using TestBucket.Domain
 @using TestBucket.Domain.Issues.Models
-@layout RequirementsLayout
+@layout IssuesLayout
 @inject MilestonesController controller
 @inject AppNavigationManager appNavigationManager
 @inject AuthenticationStateProvider authenticationStateProvider 

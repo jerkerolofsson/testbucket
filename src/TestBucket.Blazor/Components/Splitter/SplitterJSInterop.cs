@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace TestBucket.Components.Shared.Splitter;
+namespace TestBucket.Blazor.Components.Splitter;
 
 public class SplitterJSInterop
 {
@@ -17,5 +17,9 @@ public class SplitterJSInterop
     public async ValueTask Initialize(string elementId, object options)
     {
         await jsRuntime.InvokeVoidAsync("splitterInitialize", elementId, options);
+    }
+    public async ValueTask Destroy(string elementId)
+    {
+        await jsRuntime.InvokeVoidAsync("splitterDestroy", elementId);
     }
 }

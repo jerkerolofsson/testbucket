@@ -39,6 +39,7 @@
     <ProjectReference Include="..\integrations\TestBucket.Trello\TestBucket.Trello.csproj" />
     <ProjectReference Include="..\Package\Blazor\TestBucket.MudBlazorExtensions.Markdown\TestBucket.MudBlazorExtensions.Markdown.csproj" />
     <ProjectReference Include="..\Package\Reporting\TestBucket.CodeCoverage\TestBucket.CodeCoverage.csproj" />
+    <ProjectReference Include="..\TestBucket.Blazor\TestBucket.Blazor.csproj" />
     <ProjectReference Include="..\TestBucket.Data\TestBucket.Data.csproj" />
     <ProjectReference Include="..\TestBucket.ServiceDefaults\TestBucket.ServiceDefaults.csproj" />
   </ItemGroup>
@@ -49,6 +50,7 @@
     <Folder Include="Components\Issues\ApiControllers\" />
     <Folder Include="Components\Milestones\Controls\" />
     <Folder Include="Components\Shared\Commands\" />
+    <Folder Include="Components\Shared\Splitter\" />
     <Folder Include="Components\Tests\TestRuns\Search\" />
     <Folder Include="Components\Tests\TestRuns\Services\" />
     <Folder Include="Components\Tests\TestSuites\Mapping\" />

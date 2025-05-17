@@ -1,30 +1,51 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.Primitives;
-
+﻿using System.Text;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using MudBlazor.Extensions;
 using MudBlazor.Utilities;
+using TestBucket.Contracts.Appearance.Models;
 
-namespace TestBucket.Components.Shared.Splitter
+namespace TestBucket.Blazor.Components.Splitter
 {
     /// <summary>
     /// Split two panels with a bar.
     /// </summary>
     public partial class Splitter : MudComponentBase
     {
-
         private readonly Guid _guid = Guid.NewGuid();
 
         protected string ElementId => "tb-element-" + _guid.ToString();
 
         protected ElementReference? ElementRef;
 
+        private bool IsVertical
+        {
+            get
+            {
+                if (Dock is not null)
+                {
+                    return Dock is Contracts.Appearance.Models.Dock.Top or Contracts.Appearance.Models.Dock.Bottom;
+                }
+                return Vertical;
+            }
+        }
+        private bool IsHorizontal
+        {
+            get
+            {
+                if (Dock is not null)
+                {
+                    return Dock is Contracts.Appearance.Models.Dock.Left or Contracts.Appearance.Models.Dock.Right;
+                }
+                return !Vertical;
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
         protected string? Classname => new CssBuilder("splitter")
-            .AddClass("horizontal", !Vertical)
-            .AddClass("vertical", Vertical)
+            .AddClass("horizontal", IsHorizontal)
+            .AddClass("vertical", IsVertical)
             .AddClass($"tb-splitter-{ElementId}")
             .AddClass(Class)
             .Build();
@@ -46,7 +67,7 @@ namespace TestBucket.Components.Shared.Splitter
                 StringBuilder css = new StringBuilder();
 
                 css.Append($"--bar-color: {EffectiveColor};");
-                if(BarSize is not null)
+                if (BarSize is not null)
                 {
                     css.Append($"--bar-size: {BarSize}");
                 }
@@ -74,6 +95,12 @@ namespace TestBucket.Components.Shared.Splitter
         /// 
         /// </summary>
         [Parameter] public bool Vertical { get; set; } = false;
+
+        /// <summary>
+        /// If Dock is set to Right or Bottom, the Start and End components are switched
+        /// If dock is set, the Vertical property is ignored
+        /// </summary>
+        [Parameter] public Dock? Dock { get; set; }
 
         /// <summary>
         /// The width of splitter. For example: "400px"
@@ -153,20 +180,43 @@ namespace TestBucket.Components.Shared.Splitter
         [Parameter]
         public double Dimension { get; set; } = 50;
 
+        /// <summary>
+        /// Returns the dimension which depends on the dock
+        /// </summary>
+        /// <returns></returns>
+        private double GetDimension()
+        {
+            if(Dock is Contracts.Appearance.Models.Dock.Bottom or Contracts.Appearance.Models.Dock.Right)
+            {
+                return 100 - Dimension;
+            }
+            return Dimension;
+        }
+
         string? EffectiveStartStyle { get { return !string.IsNullOrWhiteSpace(StartContentStyle) ? StartContentStyle : ContentStyle; } }
         string? EffectiveEndStyle { get { return !string.IsNullOrWhiteSpace(EndContentStyle) ? EndContentStyle : ContentStyle; } }
-        string? EffectiveColor { get { return $"var(--mud-palette-{(Color == Color.Default ? "action-default" : Color.ToDescriptionString())}"; } }
+        string? EffectiveColor { get { return $"var(--mud-palette-{(Color == Color.Default ? "action-default" : Color.ToDescriptionString())})"; } }
+
+        private Dock? _prevDock = null;
+        private bool _isJsInit = false;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if(firstRender)
+            if (!_isJsInit || _prevDock != Dock)
             {
-                string direction = Vertical ? "vertical" : "horizontal";
-
                 var interop = new SplitterJSInterop(js);
+                if (_isJsInit)
+                {
+                    await interop.Destroy(ElementId);
+                }
+
+                _isJsInit = true;
+                _prevDock = Dock;
+                string direction = IsVertical ? "vertical" : "horizontal";
+
                 await interop.Initialize(ElementId, new
                 {
-                    dimension = Dimension + "%",
+                    dimension = GetDimension() + "%",
                     direction,
                 });
             }

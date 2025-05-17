@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Uploads.Services
+@using TestBucket.Contracts.Appearance.Models
 @inject AttachmentsService attachmentController
 @inject FieldController fieldController
 @inject IStringLocalizer<SharedStrings> loc
@@ -18,7 +19,11 @@
         }
     }
 
-    @if (type == FieldType.String)
+    @if(Field.FieldDefinition.DataSourceType == Contracts.Fields.FieldDataSourceType.Dock)
+    {
+        <DockToggle Dock="_dock" DockChanged="OnDockChanged"/>
+    }
+    else if (type == FieldType.String)
     {
         @* <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable/> *@
 
@@ -61,8 +66,6 @@
         <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable>
             @foreach (var item in _options)
             {
-                string iconStyle = "width:12px; height: 12px";
-               
                 <MudSelectItem Value="@item">
                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                        @item
@@ -211,12 +214,15 @@
         await FieldChanged.InvokeAsync(Field);
     }
 
+    private Dock _dock = Dock.Left;
+
     protected override async Task OnParametersSetAsync()
     {
         if(Field is null)
         {
             return;
         }
+
         if (Field.Id != _field?.Id)
         {
             _field = Field;
@@ -236,14 +242,21 @@
                 _date = Field.DateValue.Value.ToDateTime(TimeOnly.MinValue);
             }
 
+            if(Field.LongValue is not null)
+            {
+                _dock = (Dock)Field.LongValue.Value;
+            }
+
             if (Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection)
             {
                 Field.StringValuesList ??= [];
             }
-            if ((Field.FieldDefinition.Type is FieldType.SingleSelection or FieldType.MultiSelection or FieldType.StringArray) ||
-                Field.FieldDefinition.DataSourceType != Contracts.Fields.FieldDataSourceType.List)
+            if ((Field.FieldDefinition.Type is FieldType.SingleSelection or FieldType.MultiSelection or FieldType.StringArray))
             {
-                _options = await fieldController.GetOptionsAsync(Field.FieldDefinition);
+                if(Field.FieldDefinition.DataSourceType != Contracts.Fields.FieldDataSourceType.Dock)
+                {
+                    _options = await fieldController.GetOptionsAsync(Field.FieldDefinition);
+                }
             }
         }
     }
@@ -271,7 +284,15 @@
     {
         return base.OnAfterRenderAsync(firstRender);
     }
-
+    private async Task OnDockChanged(Dock value)
+    {
+        if (Field is not null)
+        {
+            _dock = value;
+            Field.LongValue = (long)value;
+            await FieldChanged.InvokeAsync(Field);
+        }
+    }
     private async Task OnBooleanValueChanged(bool? value)
     {
         if (Field is not null)

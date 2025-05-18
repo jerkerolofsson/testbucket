@@ -1,0 +1,187 @@
+﻿@using Plotly.Blazor.LayoutLib
+@using System.Diagnostics
+@using TestBucket.Components.Reporting.Helpers
+@using TestBucket.Domain.Insights.Model
+@using TestBucket.Domain.Testing.Aggregates
+@inject TestBrowser testBrowser
+@inject TestCaseEditorController testCaseEditorController
+@inject TestExecutionController testExecutionController
+@inject IStringLocalizer<SharedStrings> loc
+@inject ThemingService themingService
+@typeparam T where T : notnull
+@typeparam U
+
+<MudPaper Elevation="2" Class="tb-tile">
+    <MudStack Spacing="0" Class="pa-1">
+        <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h6">@Title</MudText>
+            <MudSpacer />
+
+            <MudToggleGroup T="ChartType" Value="@_chartType" ValueChanged="OnChartTypeChanged" Color="Color.Surface"> 
+                <MudToggleItem Value="ChartType.Donut"><MudIcon Icon="@Icons.Material.Rounded.DonutLarge" Size="Size.Small" /></MudToggleItem>
+                <MudToggleItem Value="ChartType.Pie"><MudIcon Icon="@Icons.Material.Rounded.PieChart" Size="Size.Small" /></MudToggleItem>
+                <MudToggleItem Value="ChartType.Bar"><MudIcon Icon="@Icons.Material.Rounded.BarChart" Size="Size.Small" /></MudToggleItem>
+                <MudToggleItem Value="ChartType.Line"><MudIcon Icon="@Icons.Material.Rounded.StackedLineChart" Size="Size.Small" /></MudToggleItem>
+            </MudToggleGroup>
+
+        </MudStack>
+        @if (_layout is not null && Results is not null && _config is not null)
+        {
+            <PlotlyChart class="tb-chart result-chart" @ref="_chart" @bind-Config="_config" @bind-Layout="_layout" @bind-Data="_data" />
+        }
+        else
+        {
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Class="tb-chart-skeleton"/>
+        }
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public InsightsData<T, U>? Results { get; set; }
+    [Parameter] public ChartType ChartType { get; set; } = ChartType.Line;
+    [Parameter] public bool ShowLegend { get; set; } = false;
+
+
+    private ChartType _chartType = ChartType.Line;
+
+    private PlotlyChart? _chart;
+    private Config? _config = new Config()
+    {
+        Responsive = true
+    };
+    private Layout? _layout;
+
+    // Using of the interface IList is important for the event callback!
+    private IList<ITrace> _data = new List<ITrace>();
+
+    private async Task OnChartTypeChanged(ChartType chartType)
+    {
+        _chartType = chartType;
+        await BuildChartData();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _chartType = ChartType;
+
+        _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
+        _layout.AutoSize = true;
+        //_layout.Colorway = PlotlyChartBuilder.ResultColors;
+        _layout.ShowLegend = ShowLegend;
+        _layout.Legend = [
+            new Legend
+            {
+                Orientation = Plotly.Blazor.LayoutLib.LegendLib.OrientationEnum.H,
+                YAnchor = Plotly.Blazor.LayoutLib.LegendLib.YAnchorEnum.Bottom,
+                XAnchor = Plotly.Blazor.LayoutLib.LegendLib.XAnchorEnum.Center
+            }
+        ];
+
+        _layout.XAxis = [
+            new XAxis {
+                ShowTickLabels = true
+            }
+        ];
+
+        _layout.Margin = new Plotly.Blazor.LayoutLib.Margin
+        {
+            L = 0,
+            T = 0,
+            R = 0,
+            B = 0
+        };
+
+        if (Results is not null)
+        {
+            await BuildChartData();
+        }
+    }
+
+    private async Task BuildChartData()
+    {
+        Debug.Assert(_layout != null);
+        if(_layout is null || Results is null)
+        {
+            return;
+        }
+
+        _data.Clear();
+        _layout.Annotations = [];
+        if (_chartType == ChartType.Line)
+        {
+            foreach (var series in Results.Series)
+            {
+                var scatter = new Scatter()
+                {
+                    Name = series.Name.ToString(),
+                    X = new List<object>(),
+                    Y = new List<object>()
+                };
+                _data.Add(scatter);
+
+                foreach (var point in series.Data)
+                {
+                    scatter.X.Add(point.Label.ToString());
+                    scatter.Y.Add(point.Value);
+                }
+            }
+        }
+        else if (_chartType == ChartType.Bar)
+        {
+            foreach (var series in Results.Series)
+            {
+                var scatter = new Bar()
+                {
+                    Name = series.Name.ToString(),
+                    X = new List<object>(),
+                    Y = new List<object>()
+                };
+                _data.Add(scatter);
+
+                foreach (var point in series.Data)
+                {
+                    scatter.X.Add(point.Label.ToString());
+                    scatter.Y.Add(point.Value);
+                }
+            }
+        }
+        else if (_chartType is ChartType.Pie or ChartType.Donut)
+        {
+            foreach (var series in Results.Series)
+            {
+
+                var pie = new Pie()
+                {
+                    AutoMargin = true,
+                    Sort = false,
+                    TextInfo = Plotly.Blazor.Traces.PieLib.TextInfoFlag.None,
+                    Name = series.Name.ToString(),
+                    Labels = [],
+                    Values = []
+                };
+                if (_chartType == ChartType.Donut)
+                { 
+                    pie.Hole = 0.8M; 
+                }
+                _data.Add(pie);
+
+                foreach (var point in series.Data)
+                {
+                    pie.Labels.Add(point.Label.ToString());
+                    pie.Values.Add(point.Value);
+                }
+            }
+        }
+
+        if (_chart is not null)
+        {
+            try
+            {
+                await _chart.Update(_data, _layout);
+                await _chart.React();
+            }
+            catch { }
+        }
+    }
+}

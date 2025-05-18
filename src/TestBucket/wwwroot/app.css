@@ -385,6 +385,7 @@ input:focus-visible {
 .tb-field {
    background: linear-gradient(0deg, var(--tb-palette-field-background) 0%, var(--tb-palette-field-background) 90%);
    border: solid 1px var(--tb-palette-field-border);
+   overflow: hidden;
 }
 
 .tb-field a {

@@ -58,6 +58,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Insights\Utilities\" />
       <Folder Include="Requirements\NewFolder\" />
       <Folder Include="Requirements\Specifications\Specification\" />
       <Folder Include="TestResources\Services\" />

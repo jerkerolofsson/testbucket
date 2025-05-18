@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 
 using TestBucket.Contracts.Issues.States;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Search;
 
@@ -71,7 +72,7 @@ public interface IIssueManager
     Task<LocalIssue?> FindLocalIssueFromExternalAsync(ClaimsPrincipal principal, long testProjectId, long? externalSystemId, string? externalId);
     Task UpdateLocalIssueAsync(ClaimsPrincipal principal, LocalIssue existingIssue);
     Task<LocalIssue?> GetIssueByIdAsync(ClaimsPrincipal principal, long id);
-    Task<Dictionary<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request);
+    Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request);
 
     #endregion
 }

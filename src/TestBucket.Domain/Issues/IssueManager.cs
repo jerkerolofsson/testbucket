@@ -9,6 +9,7 @@ using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Issues.Types;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues.Events;
 using TestBucket.Domain.Issues.Mapping;
 using TestBucket.Domain.Issues.Models;
@@ -56,7 +57,7 @@ public class IssueManager : IIssueManager
     /// <param name="principal"></param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public async Task<Dictionary<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request)
+    public async Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
         List<FilterSpecification<LocalIssue>> filters = [

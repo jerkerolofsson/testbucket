@@ -3,6 +3,7 @@
 using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Data.Sequence;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Shared.Specifications;
@@ -26,9 +27,11 @@ internal class IssueRepository : IIssueRepository
     /// </summary>
     /// <param name="filters"></param>
     /// <returns></returns>
-    public async Task<Dictionary<MappedIssueState, int>> GetIssueCountPerStateAsync(IEnumerable<FilterSpecification<LocalIssue>> filters)
+    public async Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(IEnumerable<FilterSpecification<LocalIssue>> filters)
     {
-        var table = new Dictionary<MappedIssueState, int>();
+        var data = new InsightsData<MappedIssueState, int>() { Name = "issue-count" };
+        var series = new InsightsSeries<MappedIssueState, int>() { Name = "count-by-state" };
+        data.Add(series);
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var localIsses = dbContext.LocalIssues.AsQueryable();
@@ -46,11 +49,11 @@ internal class IssueRepository : IIssueRepository
             if (item.MappedState is not null)
             {
                 var name = item.MappedState.Value;
-                table[name] = item.Count;
+                series.Add(name, item.Count);
             }
         }
 
-        return table;
+        return data;
     }
     /// <summary>
     /// Returns number of issues per field
@@ -58,9 +61,11 @@ internal class IssueRepository : IIssueRepository
     /// <param name="filters"></param>
     /// <param name="fieldDefinitionId"></param>
     /// <returns></returns>
-    public async Task<Dictionary<string, int>> GetIssueCountPerFieldAsync(IEnumerable<FilterSpecification<LocalIssue>> filters, long fieldDefinitionId)
+    public async Task<InsightsData<string,int>> GetIssueCountPerFieldAsync(IEnumerable<FilterSpecification<LocalIssue>> filters, long fieldDefinitionId)
     {
-        var table = new Dictionary<string, int>();
+        var data = new InsightsData<string, int>() { Name = "issue-count" };
+        var series = new InsightsSeries<string, int>() { Name = "count-by-field" };
+        data.Add(series);
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var localIsses = dbContext.LocalIssues
@@ -79,10 +84,10 @@ internal class IssueRepository : IIssueRepository
         foreach (var item in issues)
         {
             var name = item.FieldValue ?? "(null)";
-            table[name] = item.Count;
+            series.Add(name, item.Count);
         }
 
-        return table;
+        return data;
     }
 
     public async Task<PagedResult<LocalIssue>> SearchAsync(List<FilterSpecification<LocalIssue>> filters, int offset, int count)

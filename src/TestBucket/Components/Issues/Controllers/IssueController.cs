@@ -3,6 +3,7 @@
 using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Issues.States;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Search;
@@ -31,7 +32,7 @@ internal class IssueController : TenantBaseService
         _manager = manager;
     }
 
-    public async Task<Dictionary<MappedIssueState, int>> GetIssueCountPerStateAsync(SearchIssueQuery request)
+    public async Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(SearchIssueQuery request)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _manager.GetIssueCountPerStateAsync(principal, request);

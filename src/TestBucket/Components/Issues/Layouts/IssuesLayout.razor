@@ -4,6 +4,7 @@
 @using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Contracts.Issues.States
 @using TestBucket.Contracts.Issues.Types
+@using TestBucket.Domain.Insights.Model
 @using TestBucket.Domain.Issues.Search
 @inject NavigationManager navigationManager
 @inject AppNavigationManager appNavigationManager
@@ -51,7 +52,14 @@
     </StartContent>
 
     <EndContent>
-        @Body
+        <MudStack>
+            @Body
+
+            <div class="tb-run-main-charts pa-2">
+                <InsightsChart ChartType="ChartType.Bar" T="MappedIssueState" U="int" Results="_countPerState"/>
+                <InsightsChart ChartType="ChartType.Line" T="MappedIssueState" U="int" Results="_countPerState" />
+            </div>
+        </MudStack>
     </EndContent>
 </Splitter>
 
@@ -63,8 +71,8 @@
     private string Open => appNavigationManager.GetIssuesUrl() + "?q=state:open";
     private string OpenIncidents => appNavigationManager.GetIssuesUrl() + "?q=is:incident%20state:open";
     private string Closed => appNavigationManager.GetIssuesUrl() + "?q=state:closed";
-    private Dictionary<MappedIssueState, int> _countPerState = [];
-    private Dictionary<MappedIssueState, int> _incidentsPerState = [];
+    private InsightsData<MappedIssueState, int> _countPerState = new();
+    private InsightsData<MappedIssueState, int> _incidentsPerState = new();
 
     private string OpenIncidentsCount => GetIncidentBadgePerState(MappedIssueState.Open);
     private string OpenCount => GetBadgePerState(MappedIssueState.Open);

@@ -44,7 +44,15 @@ public class LocalIssue : ProjectEntity
     /// </summary>
     public string? Description { get; set; }
 
+    /// <summary>
+    /// Known state
+    /// </summary>
     public MappedIssueState? MappedState { get; set; }
+
+    /// <summary>
+    /// Timestamp when the test case was closed/cancelled
+    /// </summary>
+    public DateTimeOffset? Closed { get; set; }
 
     /// <summary>
     /// State

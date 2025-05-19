@@ -9,7 +9,7 @@ public class SearchIssueRequestParser
 {
     private static readonly HashSet<string> _keywords = ["is", "state", "origin"];
 
-    public static SearchIssueQuery Parse(long projectId, string text, IReadOnlyList<FieldDefinition> fields)
+    public static SearchIssueQuery Parse(long? projectId, string text, IReadOnlyList<FieldDefinition> fields)
     {
         var request = new SearchIssueQuery
         {

@@ -37,6 +37,23 @@ namespace TestBucket.Domain.IntegrationTests.Issues
 
         [Fact]
         [TestDescription("""
+            Verifies that when adding a new issue the closed timestamp is not set
+
+            # Steps
+            1. Add an issue
+            2. Closed timestamp is null
+            """)]
+        public async Task AddIssue_ClosedTimestampIsNull()
+        {
+            var issue = await Fixture.Issues.AddIssueAsync();
+
+            var createdIssue = await Fixture.Issues.GetIssueByIdAsync(issue.Id);
+            Assert.NotNull(createdIssue);
+            Assert.Null(createdIssue.Closed);
+        }
+
+        [Fact]
+        [TestDescription("""
             Verifies that seaching for an issue with "text based" search, we can filter by state
 
             # Steps

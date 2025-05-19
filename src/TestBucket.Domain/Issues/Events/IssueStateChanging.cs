@@ -11,10 +11,10 @@ using TestBucket.Domain.Issues.Models;
 namespace TestBucket.Domain.Issues.Events;
 
 /// <summary>
-/// Event raised when the state of an issue has changed. Issue is saved.
+/// Event raised when the state of an issue is changing, before it is saved
 /// </summary>
 /// <param name="Principal"></param>
 /// <param name="Issue"></param>
 /// <param name="OldState"></param>
-public record class IssueStateChangedNotification(ClaimsPrincipal Principal, LocalIssue Issue, string? OldState) : INotification;
+public record class IssueStateChangingNotification(ClaimsPrincipal Principal, LocalIssue Issue, string? OldState) : INotification;
 

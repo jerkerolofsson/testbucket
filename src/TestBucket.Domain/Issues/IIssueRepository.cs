@@ -25,4 +25,6 @@ public interface IIssueRepository
     Task<PagedResult<LocalIssue>> SearchAsync(List<FilterSpecification<LocalIssue>> filters, int offset, int count);
     Task UpdateLinkedIssueAsync(LinkedIssue linkedIssue);
     Task UpdateLocalIssueAsync(LocalIssue localIssue);
+    Task<InsightsData<DateOnly, int>> GetClosedIssuesPerDay(IEnumerable<FilterSpecification<LocalIssue>> filters);
+    Task<InsightsData<DateOnly, int>> GetCreatedIssuesPerDay(IEnumerable<FilterSpecification<LocalIssue>> filters);
 }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.Intrinsics.X86;
+﻿using System.ComponentModel;
+using System.Runtime.Intrinsics.X86;
 using System.Security.Claims;
 
 using Mediator;
@@ -51,23 +52,6 @@ public class IssueManager : IIssueManager
 
     #region Local Issues
 
-    /// <summary>
-    /// Returns number of issues per state, matching the filter
-    /// </summary>
-    /// <param name="principal"></param>
-    /// <param name="request"></param>
-    /// <returns></returns>
-    public async Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request)
-    {
-        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
-        List<FilterSpecification<LocalIssue>> filters = [
-            new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow())
-        ];
-
-        filters.AddRange(SearchIssueRequestBuilder.Build(request));
-        return await _repository.GetIssueCountPerStateAsync(filters);
-    }
-
     public async Task AddLocalIssueAsync(ClaimsPrincipal principal, LocalIssue issue)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
@@ -83,6 +67,8 @@ public class IssueManager : IIssueManager
             issue.MappedType = MappedIssueType.Issue;
         }
 
+        issue.Created = DateTimeOffset.UtcNow;
+        issue.Modified = DateTimeOffset.UtcNow;
         issue.CreatedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         issue.Author ??= issue.CreatedBy;
         issue.ModifiedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
@@ -131,8 +117,22 @@ public class IssueManager : IIssueManager
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
         principal.ThrowIfEntityTenantIsDifferent(updatedIssue);
 
+        if (updatedIssue.Created == default)
+        {
+            updatedIssue.Created = DateTimeOffset.UtcNow;
+        }
+        updatedIssue.CreatedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
+        updatedIssue.Modified = DateTimeOffset.UtcNow;
+        updatedIssue.ModifiedBy = principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
+
         // Get the existing issue to detect differences
         var existingIssue = await GetIssueByIdAsync(principal, updatedIssue.Id);
+
+        if (existingIssue is not null && existingIssue.State != updatedIssue.State)
+        {
+            // State has changed, raise event 
+            await _mediator.Publish(new IssueStateChangingNotification(principal, updatedIssue, existingIssue.State));
+        }
 
         // Save it
         await _repository.UpdateLocalIssueAsync(updatedIssue);
@@ -247,4 +247,47 @@ public class IssueManager : IIssueManager
     }
 
     #endregion Linked Issues
+
+    #region Insights
+
+    /// <summary>
+    /// Returns number of issues per state, matching the filter
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    public async Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
+        List<FilterSpecification<LocalIssue>> filters = [
+            new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow())
+        ];
+
+        filters.AddRange(SearchIssueRequestBuilder.Build(request));
+        return await _repository.GetIssueCountPerStateAsync(filters);
+    }
+
+    public async Task<InsightsData<DateOnly, int>> GetCreatedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
+        List<FilterSpecification<LocalIssue>> filters = [
+            new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow())
+        ];
+
+        filters.AddRange(SearchIssueRequestBuilder.Build(request));
+        return await _repository.GetCreatedIssuesPerDay(filters);
+    }
+
+    public async Task<InsightsData<DateOnly, int>> GetClosedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
+        List<FilterSpecification<LocalIssue>> filters = [
+            new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow())
+        ];
+
+        filters.AddRange(SearchIssueRequestBuilder.Build(request));
+        return await _repository.GetClosedIssuesPerDay(filters);
+    }
+
+    #endregion Insights
 }

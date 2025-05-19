@@ -1,50 +1,56 @@
 ﻿using Blazored.LocalStorage;
+
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+
 using MudBlazor.Services;
+
 using MudExtensions.Services;
+
+using TestBucket.Components;
 using TestBucket.Components.Account;
 using TestBucket.Components.Automation;
+using TestBucket.Components.Code.Controllers;
+using TestBucket.Components.Comments;
 using TestBucket.Components.Environments.Services;
+using TestBucket.Components.Issues.Commands;
+using TestBucket.Components.Issues.Controllers;
 using TestBucket.Components.Layout.Controls;
+using TestBucket.Components.Milestones.Controllers;
 using TestBucket.Components.Projects;
+using TestBucket.Components.Reporting.Controllers;
 using TestBucket.Components.Requirements.Commands;
 using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Settings.ApiKeys;
+using TestBucket.Components.Settings.Links;
 using TestBucket.Components.Settings.Roles;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Themeing;
 using TestBucket.Components.Teams;
 using TestBucket.Components.TestAccounts.Services;
 using TestBucket.Components.TestResources.Services;
+using TestBucket.Components.Tests.Requirements.Commands;
+using TestBucket.Components.Tests.Requiremnts.Commands;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Components.Tests.TestCases.Commands;
 using TestBucket.Components.Tests.TestCases.Services;
+using TestBucket.Components.Tests.TestRuns.Commands;
+using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Components.Tests.TestRuns.LinkIssue;
 using TestBucket.Components.Tests.TestSuites.Commands;
 using TestBucket.Components.Tests.TestSuites.Services;
 using TestBucket.Components.Uploads.Services;
-using TestBucket.Components.Users.Services;
 using TestBucket.Components.Users;
+using TestBucket.Components.Users.Services;
 using TestBucket.Data.Migrations;
 using TestBucket.Domain.ApiKeys;
+using TestBucket.Domain.Commands;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Identity;
+
 using Toolbelt.Blazor.Extensions.DependencyInjection;
-using TestBucket.Components;
-using TestBucket.Domain.Commands;
-using TestBucket.Components.Tests.Requiremnts.Commands;
-using TestBucket.Components.Tests.Requirements.Commands;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using TestBucket.Components.Settings.Links;
-using TestBucket.Components.Code.Controllers;
-using TestBucket.Components.Tests.TestRuns.Commands;
-using TestBucket.Components.Tests.TestRuns.Controllers;
-using TestBucket.Components.Milestones.Controllers;
-using TestBucket.Components.Comments;
-using TestBucket.Components.Issues.Controllers;
-using TestBucket.Components.Issues.Commands;
 
 namespace TestBucket;
 
@@ -224,6 +230,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<TestExecutionController>();
         builder.Services.AddScoped<RunnersController>();
         builder.Services.AddScoped<IssueController>();
+        builder.Services.AddScoped<InsightsController>();
 
         builder.Services.AddScoped<UserPreferencesService>();
         builder.Services.AddScoped<TestBrowser>();

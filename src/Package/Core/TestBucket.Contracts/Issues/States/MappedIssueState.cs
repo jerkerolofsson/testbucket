@@ -16,10 +16,16 @@ public enum MappedIssueState
     Reviewed = 7,
     Completed = 8,
     Delivered = 9,
+
+    /// <summary>
+    /// Issues is closed, should be solved in this state
+    /// </summary>
     Closed = 10,
+
+    /// <summary>
+    /// Issue is cancelled. It is closed but there is no solution
+    /// </summary>
     Canceled = 11,
-
-
 
     /// <summary>
     /// Other, used defined with no mapping to internal state

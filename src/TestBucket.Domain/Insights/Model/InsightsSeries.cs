@@ -8,8 +8,24 @@ public class InsightsSeries<T, U> where T : notnull
 
     public required string Name { get; set; }
 
+    /// <summary>
+    /// Defines how to sort the data points 
+    /// </summary>
     public InsightsSort SortBy { get; set; } = InsightsSort.LabelAscending;
 
+    /// <summary>
+    /// Returns all values
+    /// </summary>
+    public IEnumerable<U> Values => Data.Select(x => x.Value);
+
+    /// <summary>
+    /// Returns all labels
+    /// </summary>
+    public IEnumerable<T> Labels => Data.Select(x => x.Label);
+
+    /// <summary>
+    /// All data points, sorted
+    /// </summary>
     public IEnumerable<InsightsDataPoint<T, U>> Data
     {
         get

@@ -41,6 +41,16 @@
         </StartContent>
         <EndContent>
             <MudStack Style="width: 100%" Class="pa-2">
+
+                <Field>
+                    <FieldHeader>@loc["created"]</FieldHeader>
+                    <div>
+                        <div>@Issue.Created</div>
+                        <div>@Issue.Modified</div>
+                        <div>@Issue.Closed</div>
+                    </div>
+                </Field>
+
                 <Field>
                     <FieldHeader>@loc["assigned-to"]</FieldHeader>
                     <UserPicker SelectedUserName="@Issue.AssignedTo" SelectedUserNameChanged="OnAssignedToChanged"/>

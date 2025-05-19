@@ -55,6 +55,72 @@ internal class IssueRepository : IIssueRepository
 
         return data;
     }
+
+    /// <summary>
+    /// Returns number of created issues per date
+    /// </summary>
+    /// <param name="filters"></param>
+    /// <returns></returns>
+    public async Task<InsightsData<DateOnly, int>> GetCreatedIssuesPerDay(IEnumerable<FilterSpecification<LocalIssue>> filters)
+    {
+        var data = new InsightsData<DateOnly, int>() { Name = "created-issues" };
+        var series = new InsightsSeries<DateOnly, int>() { Name = "created-issues-by-day" };
+        data.Add(series);
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var localIsses = dbContext.LocalIssues.AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            localIsses = localIsses.Where(filter.Expression);
+        }
+
+        var issues = await localIsses.GroupBy(x => new { x.Created.Year, x.Created.Month, x.Created.Day }).
+            Select(g => new { Date = g.Key, Count = g.Count() }).ToListAsync();
+
+        foreach (var item in issues)
+        {
+            var date = new DateOnly(item.Date.Year, item.Date.Month, item.Date.Day);
+            series.Add(date, item.Count);
+        }
+
+        return data;
+    }
+
+
+    /// <summary>
+    /// Returns number of created issues per date
+    /// </summary>
+    /// <param name="filters"></param>
+    /// <returns></returns>
+    public async Task<InsightsData<DateOnly, int>> GetClosedIssuesPerDay(IEnumerable<FilterSpecification<LocalIssue>> filters)
+    {
+        var data = new InsightsData<DateOnly, int>() { Name = "closed-issues" };
+        var series = new InsightsSeries<DateOnly, int>() { Name = "closed-issues-by-day" };
+        data.Add(series);
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var localIssues = dbContext.LocalIssues.AsQueryable();
+        localIssues = localIssues.Where(x => x.Closed != null);
+
+        foreach (var filter in filters)
+        {
+            localIssues = localIssues.Where(filter.Expression);
+        }
+
+        var issues = await localIssues.GroupBy(x => new { x.Closed!.Value.Year, x.Closed!.Value.Month, x.Closed!.Value.Day }).
+            Select(g => new { Date = g.Key, Count = g.Count() }).ToListAsync();
+            
+        foreach (var item in issues)
+        {
+            var date = new DateOnly(item.Date.Year, item.Date.Month, item.Date.Day);
+            series.Add(date, item.Count);
+        }
+
+        return data;
+    }
+
+
     /// <summary>
     /// Returns number of issues per field
     /// </summary>

@@ -21,7 +21,9 @@ using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Insights;
 using TestBucket.Domain.Issues;
+using TestBucket.Domain.Issues.Insights;
 using TestBucket.Domain.Milestones;
 using TestBucket.Domain.Milestones.DataSources;
 using TestBucket.Domain.Milestones.Services;
@@ -80,6 +82,13 @@ public static class DomainServiceExtensions
         services.AddScoped<IFieldCompletionsProvider, FeatureDataSource>();
         services.AddScoped<IFieldCompletionsProvider, CommitDataSource>();
         services.AddScoped<IFieldCompletionsProvider, MilestoneDataSource>();
+
+        // Insight data sources
+        services.AddScoped<IInsightsDataSource, IssuesByStateDataSource>();
+        services.AddScoped<IInsightsDataSource, IssuesInflowOutflow>();
+        
+        services.AddScoped<IInsightsDataManager, InsightsDataManager>();
+        
 
         // Runner/Hybrid
         services.AddScoped<IMarkdownTestRunner, HybridRunner>();

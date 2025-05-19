@@ -23,6 +23,9 @@
             <MudText Typo="Typo.h1">@loc["issues"]</MudText>
 
             <MudNavMenu>
+                <MudNavLink Href="@DashboardUrl">
+                        <MudText>@loc["dashboard"]</MudText>
+                </MudNavLink>
                 <MudNavLink Href="@Open">
                     <MudBadge Content="@OpenCount" Color="Color.Primary" Overlap>
                         <MudText>@issueLoc["open"]</MudText>
@@ -52,14 +55,7 @@
     </StartContent>
 
     <EndContent>
-        <MudStack>
-            @Body
-
-            <div class="tb-run-main-charts pa-2">
-                <InsightsChart ChartType="ChartType.Bar" T="MappedIssueState" U="int" Results="_countPerState"/>
-                <InsightsChart ChartType="ChartType.Line" T="MappedIssueState" U="int" Results="_countPerState" />
-            </div>
-        </MudStack>
+        @Body
     </EndContent>
 </Splitter>
 
@@ -71,6 +67,7 @@
     private string Open => appNavigationManager.GetIssuesUrl() + "?q=state:open";
     private string OpenIncidents => appNavigationManager.GetIssuesUrl() + "?q=is:incident%20state:open";
     private string Closed => appNavigationManager.GetIssuesUrl() + "?q=state:closed";
+    private string DashboardUrl => appNavigationManager.GetIssueDashboardUrl();
     private InsightsData<MappedIssueState, int> _countPerState = new();
     private InsightsData<MappedIssueState, int> _incidentsPerState = new();
 
@@ -107,8 +104,8 @@
     {
         if (firstRender)
         {
-            _countPerState = await controller.GetIssueCountPerStateAsync(new SearchIssueQuery());
-            _incidentsPerState = await controller.GetIssueCountPerStateAsync(new SearchIssueQuery() { Type = IssueTypes.Incident });
+            _countPerState = await controller.GetIssueCountPerStateAsync(new SearchIssueQuery() { ProjectId = Project?.Id });
+            _incidentsPerState = await controller.GetIssueCountPerStateAsync(new SearchIssueQuery() { ProjectId = Project?.Id, Type = IssueTypes.Incident });
             var _ = InvokeAsync(StateHasChanged);
         }
     }

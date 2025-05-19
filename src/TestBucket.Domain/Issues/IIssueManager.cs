@@ -72,7 +72,12 @@ public interface IIssueManager
     Task<LocalIssue?> FindLocalIssueFromExternalAsync(ClaimsPrincipal principal, long testProjectId, long? externalSystemId, string? externalId);
     Task UpdateLocalIssueAsync(ClaimsPrincipal principal, LocalIssue existingIssue);
     Task<LocalIssue?> GetIssueByIdAsync(ClaimsPrincipal principal, long id);
-    Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request);
 
+    #endregion
+
+    #region Insights
+    Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request);
+    Task<InsightsData<DateOnly, int>> GetCreatedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request);
+    Task<InsightsData<DateOnly, int>> GetClosedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request);
     #endregion
 }

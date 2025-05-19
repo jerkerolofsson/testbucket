@@ -385,7 +385,7 @@ input:focus-visible {
 .tb-field {
    background: linear-gradient(0deg, var(--tb-palette-field-background) 0%, var(--tb-palette-field-background) 90%);
    border: solid 1px var(--tb-palette-field-border);
-   overflow: hidden;
+   overflow-x: hidden;
 }
 
 .tb-field a {
@@ -1051,6 +1051,13 @@ div.tb-profile-image.tb-background-9 {
     margin-top: 8px;
     display: grid; 
     grid-template-columns: repeat(6, 1fr); 
+    gap: 8px;
+}
+.tb-issues-charts {
+    width: 100%;
+    margin-top: 8px;
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
     gap: 8px;
 }
 

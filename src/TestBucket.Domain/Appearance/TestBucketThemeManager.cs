@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.Caching.Memory;
+
 using TestBucket.Domain.Appearance.Models;
 using TestBucket.Domain.Appearance.Themes;
 using TestBucket.Domain.Appearance.Themes.Overlays;
@@ -13,10 +15,12 @@ namespace TestBucket.Domain.Appearance;
 public class TestBucketThemeManager : ITestBucketThemeManager
 {
     private readonly IUserPreferencesManager _userPreferencesService;
+    private readonly IMemoryCache _memoryCache;
 
-    public TestBucketThemeManager(IUserPreferencesManager userPreferencesService)
+    public TestBucketThemeManager(IUserPreferencesManager userPreferencesService, IMemoryCache memoryCache)
     {
         _userPreferencesService = userPreferencesService;
+        _memoryCache = memoryCache;
     }
 
     public async Task<TestBucketBaseTheme> GetThemeByNameAsync(string? name)
@@ -24,13 +28,24 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         name ??= "default";
         await Task.Delay(0);
 
-        switch (name)
+        var key = "theme:" + name;
+        return _memoryCache.GetOrCreate<TestBucketBaseTheme>(key, (e) =>
         {
-            case "Blue Steel":
-                return TestBucketTheme.BlueSteel;
-        }
+            switch (name)
+            {
+                case "Blue Steel":
+                    return TestBucketTheme.BlueSteel;
+            }
 
-        return TestBucketTheme.Default;
+            return TestBucketTheme.Default;
+        }) ?? TestBucketTheme.Default;
+    }
+
+    public async Task<TestBucketBaseTheme> GetCurrentThemeAsync(ClaimsPrincipal user)
+    {
+        var userPreferences = await _userPreferencesService.LoadUserPreferencesAsync(user);
+        string themeName = userPreferences.Theme ?? "default";
+        return await GetThemeByNameAsync(themeName);
     }
 
     public async Task<string> GetThemedStylesheetAsync(ClaimsPrincipal user)

@@ -922,8 +922,7 @@ div.tb-profile-image.tb-background-9 {
 /* Chart container, metrics, */
 .tb-tile {
     padding: 24px;
-/*    outline: solid 2px var(--tb-palette-field-border);*/
-
+    border: solid 1px var(--mud-palette-lines-inputs);
     background: var(--mud-palette-surface);
 }
 
@@ -1069,4 +1068,24 @@ div.tb-profile-image.tb-background-9 {
 
 .dock-toggle.mud-icon-button {
     transition: transform ease-in-out 300ms;
+}
+
+.tb-insights-chart {
+    padding: 16px;
+}
+
+.tb-insights-chart .legend {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    font-size: var(--mud-typography-subtitle2-size);
+}
+
+.tb-insights-chart .legend .item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }

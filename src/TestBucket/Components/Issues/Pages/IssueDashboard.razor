@@ -4,12 +4,14 @@
 @using TestBucket.Components.Reporting.Controllers
 @using TestBucket.Contracts.Issues.States
 @using TestBucket.Domain
+@using TestBucket.Domain.Appearance
 @using TestBucket.Domain.Commands
 @using TestBucket.Domain.ExtensionManagement
 @using TestBucket.Domain.Insights.Model
 @using TestBucket.Domain.Issues.Insights
 @using TestBucket.Domain.Issues.Models
 @using TestBucket.Domain.Issues.Search
+@using TestBucket.Domain.Testing.TestRuns.Insights
 @layout IssuesLayout
 @inject AppNavigationManager appNavigationManager
 @inject InsightsController controller
@@ -20,8 +22,9 @@
 
 <MudStack Style="width: 100%">
     <div class="tb-issues-charts pa-2">
-        <InsightsChart ChartType="ChartType.Bar" T="string" U="double" Results="_countPerState" />
-        <InsightsChart ChartType="ChartType.Line" T="string" U="double" Results="_inflowOutflow" />
+        <InsightsChart ChartType="ChartType.Bar" Spec="_countByResultsSpec" />
+        <InsightsChart ChartType="ChartType.Bar"  Spec="_countPerStateSpec" />
+        <InsightsChart ChartType="ChartType.Line" Spec="_inflowOutflowSpec" />
     </div>
 </MudStack>
 
@@ -31,33 +34,63 @@
     [CascadingParameter] public Team? Team { get; set; }
     private long _projectId;
 
-    private InsightsData<string, double>? _countPerState = new();    
-    private InsightsData<string, double>? _inflowOutflow = new();
+    private InsightsVisualizationSpecification? _countByResultsSpec;
+    private InsightsVisualizationSpecification? _inflowOutflowSpec;
+    private InsightsVisualizationSpecification? _countPerStateSpec;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnParametersSet()
     {
-        if (firstRender)
-        {
-            await LoadAsync();
-        }
+        Load();
     }
 
-    private async Task LoadAsync()
+    private void Load()
     {
         if(Project is not null)
         {
             if (Project.Id != _projectId)
             {
-                _projectId = Project.Id;
-                _countPerState = await controller.GetDataAsync(Project.Id, new InsightsDataQuery { DataSource = IssueDataSourceNames.IssuesByState });
-                _inflowOutflow = await controller.GetDataAsync(Project.Id, new InsightsDataQuery { DataSource = IssueDataSourceNames.IssuesInflowOutflow });
+                _countByResultsSpec = new InsightsVisualizationSpecification
+                {
+                    DataQueries = [new InsightsDataQuery 
+                    { 
+                        DataSource = TestRunDataSourceNames.CountByResult,
+                        Colors = DefaultPalettes.TestResultColors
+                    }],
+                    ShowLegend = true,
+                };
+
+                _inflowOutflowSpec = new InsightsVisualizationSpecification
+                {
+                    DataQueries = [new InsightsDataQuery
+                    {
+                        DataSource = IssueDataSourceNames.IssuesInflowOutflow,
+                    }],
+                    Palette = DefaultPalettes.Default,
+                    ColorMode = ChartColorMode.BySeries,
+                    ShowLegend = true
+                };
+                _countPerStateSpec = new InsightsVisualizationSpecification
+                {
+                    DataQueries = [new InsightsDataQuery
+                    {
+                        DataSource = IssueDataSourceNames.IssuesByState,
+                        Colors = new Dictionary<string, string> {
+                            ["Open"]="green",
+                            ["Closed"]="firebrick"
+                        }
+
+                    }],
+                    Palette = DefaultPalettes.Corporate,
+                    ShowLegend = true
+                };
+
+                // _projectId = Project.Id;
+                // _results = await controller.GetDataAsync(Project.Id, _countByResultsSpec.DataQueries[0]);
+                // _inflowOutflow = await controller.GetDataAsync(Project.Id, _inflowOutflowSpec.DataQueries[0]);
+                // _countPerState = await controller.GetDataAsync(Project.Id, _countPerStateSpec.DataQueries[0]);
+
                 var _ = InvokeAsync(StateHasChanged);
             }
         }
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await LoadAsync();
     }
 }

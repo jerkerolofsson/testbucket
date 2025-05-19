@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Requirements.Models;
+﻿using TestBucket.Domain.Insights.Model;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
@@ -299,6 +300,8 @@ public interface ITestCaseRepository
     /// <param name="filters"></param>
     /// <returns></returns>
     Task<Dictionary<long, TestExecutionResultSummary>> GetTestExecutionResultSummaryForRunsAsync(IReadOnlyList<long> testRunsIds, IEnumerable<FilterSpecification<TestCaseRun>> filters);
+    Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
+    Task<InsightsData<TestResult, int>> GetInsightsTestResultsAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
 
     #endregion
 }

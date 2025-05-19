@@ -28,5 +28,6 @@ internal class BlueSteel : DefaultTheme
         LightScheme.Base.Secondary = "#01579B";
         LightScheme.Base.Tertiary = "#006064";
 
+        ChartPalette = DefaultPalettes.Cyan;
     }
 }

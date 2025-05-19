@@ -1,18 +1,25 @@
-﻿@using Plotly.Blazor.LayoutLib
+﻿@attribute [Authorize()]
+@using Plotly.Blazor.LayoutLib
 @using System.Diagnostics
+@using TestBucket.Components.Reporting.Controllers
 @using TestBucket.Components.Reporting.Helpers
+@using TestBucket.Contracts.Appearance.Models
+@using TestBucket.Domain.Appearance
+@using TestBucket.Domain.Insights
 @using TestBucket.Domain.Insights.Model
 @using TestBucket.Domain.Testing.Aggregates
 @inject TestBrowser testBrowser
 @inject TestCaseEditorController testCaseEditorController
 @inject TestExecutionController testExecutionController
-@inject IStringLocalizer<SharedStrings> loc
+@inject InsightsController controller
 @inject ThemingService themingService
-@typeparam T where T : notnull
-@typeparam U
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject ITestBucketThemeManager testBucketThemeManager
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<InsightStrings> insightLoc
 
 <MudPaper Elevation="2" Class="tb-tile">
-    <MudStack Spacing="0" Class="pa-1">
+    <MudStack Spacing="0" Class="tb-insights-chart">
         <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6">@Title</MudText>
             <MudSpacer />
@@ -25,9 +32,26 @@
             </MudToggleGroup>
 
         </MudStack>
-        @if (_layout is not null && Results is not null && _config is not null)
+        @if (_layout is not null && _results is not null && _config is not null)
         {
             <PlotlyChart class="tb-chart result-chart" @ref="_chart" @bind-Config="_config" @bind-Layout="_layout" @bind-Data="_data" />
+
+            @if(Spec is not null)
+            {
+                if (Spec.ShowLegend)
+                {
+                    <div class="legend">
+                        @foreach (var legendItem in _legendTitleColorMap)
+                        {
+                            var color = legendItem.Value;
+                            <div class="item">
+                                <ColorCell Color="@color"/>
+                                @insightLoc[legendItem.Key]
+                            </div>
+                        }
+                    </div>
+                }
+            }
         }
         else
         {
@@ -38,10 +62,10 @@
 
 @code {
     [Parameter] public string Title { get; set; } = "";
-    [Parameter] public InsightsData<T, U>? Results { get; set; }
     [Parameter] public ChartType ChartType { get; set; } = ChartType.Line;
     [Parameter] public bool ShowLegend { get; set; } = false;
-
+    [Parameter] public InsightsVisualizationSpecification? Spec { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
 
     private ChartType _chartType = ChartType.Line;
 
@@ -51,9 +75,12 @@
         Responsive = true
     };
     private Layout? _layout;
+    private Dictionary<string, string> _legendTitleColorMap = [];
 
     // Using of the interface IList is important for the event callback!
     private IList<ITrace> _data = new List<ITrace>();
+
+    private InsightsData<string, double>? _results;
 
     private async Task OnChartTypeChanged(ChartType chartType)
     {
@@ -61,62 +88,102 @@
         await BuildChartData();
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _chartType = ChartType;
+        if(_results is null && Spec is not null)
+        {
+            _results = await controller.GetDataAsync(Project?.Id, Spec.DataQueries[0]);
+            _chartType = ChartType;
 
-        _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
-        _layout.AutoSize = true;
-        //_layout.Colorway = PlotlyChartBuilder.ResultColors;
-        _layout.ShowLegend = ShowLegend;
-        _layout.Legend = [
-            new Legend
-            {
-                Orientation = Plotly.Blazor.LayoutLib.LegendLib.OrientationEnum.H,
-                YAnchor = Plotly.Blazor.LayoutLib.LegendLib.YAnchorEnum.Bottom,
-                XAnchor = Plotly.Blazor.LayoutLib.LegendLib.XAnchorEnum.Center
-            }
-        ];
+            _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
+            _layout.AutoSize = true;
+            _layout.ShowLegend = false;
 
-        _layout.XAxis = [
-            new XAxis {
+            _layout.XAxis = [
+                new XAxis {
                 ShowTickLabels = true
             }
-        ];
+            ];
 
-        _layout.Margin = new Plotly.Blazor.LayoutLib.Margin
-        {
-            L = 0,
-            T = 0,
-            R = 0,
-            B = 0
-        };
+            _layout.Margin = new Plotly.Blazor.LayoutLib.Margin
+            {
+                L = 0,
+                T = 0,
+                R = 0,
+                B = 0
+            };
 
-        if (Results is not null)
-        {
-            await BuildChartData();
+            if (_results is not null)
+            {
+                await BuildChartData();
+                await InvokeAsync(this.StateHasChanged);
+            }
         }
+    }
+
+    protected override void OnParametersSet()
+    {
+        _results = null;
+    }
+
+    private async Task<List<string>> GetColorwayAsync()
+    {
+        _legendTitleColorMap.Clear();
+
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var theme = await testBucketThemeManager.GetCurrentThemeAsync(authState.User);
+        List<string> colorway = [];
+        ThemePalette palette = theme.ChartPalette;
+        if (_results is not null)
+        {
+            var colors = new ChartColorizer(palette);
+            _legendTitleColorMap = colors.GetColorway(Spec, _results);
+            colorway = _legendTitleColorMap.Values.ToList();
+        }
+        else
+        {
+            colorway = palette.Colors.Select(c => c.ToString(ColorOutputFormats.HexA)).ToList();
+        }
+        return colorway;
     }
 
     private async Task BuildChartData()
     {
         Debug.Assert(_layout != null);
-        if(_layout is null || Results is null)
+        if (_layout is null || _results is null)
         {
             return;
         }
 
+        var colorway = await GetColorwayAsync();
+
         _data.Clear();
         _layout.Annotations = [];
+        _layout.Colorway = null;
         if (_chartType == ChartType.Line)
         {
-            foreach (var series in Results.Series)
+            int colorWayIndex = 0;
+            foreach (var series in _results.Series)
             {
+                string? color = null;
+                if(colorway.Count > 0)
+                {
+                    color = colorway[colorWayIndex];
+                    colorWayIndex++;
+                    if(colorWayIndex >= colorway.Count)
+                    {
+                        colorWayIndex = 0;
+                    }
+                }
                 var scatter = new Scatter()
                 {
                     Name = series.Name.ToString(),
                     X = new List<object>(),
-                    Y = new List<object>()
+                    Y = new List<object>(),
+                    Marker = new Plotly.Blazor.Traces.ScatterLib.Marker
+                    {
+                        Color = color
+                    },
                 };
                 _data.Add(scatter);
 
@@ -129,7 +196,7 @@
         }
         else if (_chartType == ChartType.Bar)
         {
-            foreach (var series in Results.Series)
+            foreach (var series in _results.Series)
             {
                 var scatter = new Bar()
                 {
@@ -137,6 +204,15 @@
                     X = new List<object>(),
                     Y = new List<object>()
                 };
+
+                if (colorway.Count > 0)
+                {
+                    scatter.Marker = new Plotly.Blazor.Traces.BarLib.Marker
+                    {
+                        ColorArray = [..colorway]
+                    };
+                }
+
                 _data.Add(scatter);
 
                 foreach (var point in series.Data)
@@ -148,7 +224,7 @@
         }
         else if (_chartType is ChartType.Pie or ChartType.Donut)
         {
-            foreach (var series in Results.Series)
+            foreach (var series in _results.Series)
             {
 
                 var pie = new Pie()
@@ -172,6 +248,14 @@
                     pie.Values.Add(point.Value);
                 }
             }
+
+            // For pie and donut charts, use the colorway on the layout to define the colors
+            // These are ordered by the label so should be correct order
+            if (colorway.Count > 0)
+            {
+                _layout.Colorway = colorway.ToArray();
+            }
+
         }
 
         if (_chart is not null)

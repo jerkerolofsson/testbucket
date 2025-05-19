@@ -1,6 +1,7 @@
 ﻿using System;
 
 using TestBucket.Contracts.Testing.Models;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
@@ -953,7 +954,6 @@ internal class TestCaseRepository : ITestCaseRepository
         return table;
     }
 
-
     public async Task<Dictionary<long, TestExecutionResultSummary>> GetTestExecutionResultSummaryForRunsAsync(
         IReadOnlyList<long> testRunsIds,
         IEnumerable<FilterSpecification<TestCaseRun>> filters)
@@ -1065,6 +1065,73 @@ internal class TestCaseRepository : ITestCaseRepository
         result.Hang         = results.Where(x => x.Result == TestResult.Hang    ).Sum(x => x.Count);
 
         return result;
+    }
+
+
+    public async Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
+    {
+        var data = new InsightsData<DateOnly, int>();
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCaseRuns
+            .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            tests = tests.Where(filter.Expression);
+        }
+
+        tests = tests.Where(x => x.Modified > new DateTimeOffset(1980, 1, 1, 0, 0, 0, TimeSpan.Zero));
+
+        var allResults = await tests.GroupBy(x => new { x.Result, x.Modified.Year, x.Modified.Month, x.Modified.Day }).
+            Select(g => new { Count = g.Count(), g.Key.Result, g.Key.Year, g.Key.Month, g.Key.Day }).ToListAsync();
+
+        foreach(var result in new TestResult[] { TestResult.Passed, TestResult.Failed })
+        { 
+            var series = data.Add(result.ToString());
+            foreach (var dayItem in allResults.Where(x=>x.Result == result).Select(x => new { x.Year, x.Month, x.Day, x.Count }))
+            {
+                var date = new DateOnly(dayItem.Year, dayItem.Month, dayItem.Day);
+                series.Add(date, dayItem.Count);
+            }
+        }
+
+        return data;
+    }
+
+    public async Task<InsightsData<TestResult, int>> GetInsightsTestResultsAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
+    {
+        var data = new InsightsData<TestResult, int>();
+        var series = data.Add("results");
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCaseRuns
+            .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            tests = tests.Where(filter.Expression);
+        }
+
+        var results = await tests.GroupBy(x => x.Result).Select(g => new { Count = g.Count(), Result = g.Key }).ToListAsync();
+        foreach(var row in results)
+        {
+            series.Add(row.Result, row.Count);
+        }
+        //series.Add(TestResult.NoRun, results.Where(x => x.Result == TestResult.NoRun).Sum(x => x.Count));
+        //series.Add(TestResult.Passed, results.Where(x => x.Result == TestResult.Passed).Sum(x => x.Count));
+        //series.Add(TestResult.Failed, results.Where(x => x.Result == TestResult.Failed).Sum(x => x.Count));
+        //series.Add(TestResult.Blocked, results.Where(x => x.Result == TestResult.Blocked).Sum(x => x.Count));
+        //series.Add(TestResult.Skipped, results.Where(x => x.Result == TestResult.Skipped).Sum(x => x.Count));
+        //series.Add(TestResult.Error, results.Where(x => x.Result == TestResult.Error).Sum(x => x.Count));
+        //series.Add(TestResult.Assert, results.Where(x => x.Result == TestResult.Assert).Sum(x => x.Count));
+        //series.Add(TestResult.Hang, results.Where(x => x.Result == TestResult.Hang).Sum(x => x.Count));
+
+        return data;
     }
 
     public async Task<Dictionary<string, Dictionary<string, long>>> GetTestCaseCoverageMatrixByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId1, long fieldDefinitionId2)

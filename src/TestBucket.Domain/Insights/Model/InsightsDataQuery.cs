@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Appearance.Models;
+
 namespace TestBucket.Domain.Insights.Model;
 
 /// <summary>
@@ -20,4 +22,9 @@ public class InsightsDataQuery
     /// A query that can be parsed to filter the data
     /// </summary>
     public string Query { get; set; } = "";
+
+    /// <summary>
+    /// Colors for the data series/labels created from this query
+    /// </summary>
+    public Dictionary<string, string>? Colors { get; set; }
 }

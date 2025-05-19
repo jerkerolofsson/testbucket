@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRuns.Search;
@@ -107,6 +108,8 @@ public interface ITestRunManager
     /// <param name="run"></param>
     /// <returns></returns>
     Task<TestRun> DuplicateTestRunAsync(ClaimsPrincipal principal, TestRun run);
+    Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
+    Task<InsightsData<TestResult, int>> GetInsightsTestResultsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
 
     #endregion Test Case Runs
 }

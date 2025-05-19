@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Text;
+using TestBucket.Contracts.Appearance.Models;
 using TestBucket.Domain.Appearance.Themes;
-
-using static TestBucket.Domain.Appearance.Color;
 
 
 namespace TestBucket.Domain.Appearance.Models;
@@ -66,7 +60,7 @@ public class TypographySet
     public Typography Button { get; set; } = new Typography() { Size = "10pt" };
     public Typography Caption { get; set; } = new Typography() { Size = "10pt" };
     public Typography Subtitle1 { get; set; } = new Typography() { Size = "10pt" };
-    public Typography Subtitle2 { get; set; } = new Typography() { Size = "10pt" };
+    public Typography Subtitle2 { get; set; } = new Typography() { Size = "8pt" };
 }
 
 public class TestBucketTheme : TestBucketBaseTheme
@@ -74,7 +68,6 @@ public class TestBucketTheme : TestBucketBaseTheme
     public TypographySet TypographySet { get; set; } = new();
     public ColorScheme DarkScheme { get; set; } = new ColorScheme();
     public ColorScheme LightScheme { get; set; } = new ColorScheme();
-
     internal string GenerateStyle(ColorScheme scheme)
     {
         var css = new StringBuilder();

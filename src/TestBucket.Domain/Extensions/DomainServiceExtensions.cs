@@ -50,6 +50,7 @@ using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Settings;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestRuns.Insights;
 using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Domain.TestResources;
 using TestBucket.Domain.TestResources.Allocation;
@@ -86,7 +87,8 @@ public static class DomainServiceExtensions
         // Insight data sources
         services.AddScoped<IInsightsDataSource, IssuesByStateDataSource>();
         services.AddScoped<IInsightsDataSource, IssuesInflowOutflow>();
-        
+        services.AddScoped<IInsightsDataSource, CountByResultDataSource>();
+
         services.AddScoped<IInsightsDataManager, InsightsDataManager>();
         
 

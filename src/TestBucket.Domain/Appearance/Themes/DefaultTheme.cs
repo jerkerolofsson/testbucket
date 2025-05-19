@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Domain.Appearance.Models;
-
-using static TestBucket.Domain.Appearance.Color;
+using TestBucket.Contracts.Appearance.Models;
 
 namespace TestBucket.Domain.Appearance.Themes;
 internal class DefaultTheme : TestBucketTheme

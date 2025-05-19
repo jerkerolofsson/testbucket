@@ -17,6 +17,10 @@ public record class InsightsDataPoint<T,U>(T Label, U Value)
         {
             return i;
         }
+        else if (Value is long l)
+        {
+            return l;
+        }
         else if (Value is float f)
         {
             return f;

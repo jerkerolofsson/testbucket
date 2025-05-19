@@ -11,6 +11,30 @@ namespace TestBucket.Domain.UnitTests.Insights
     {
         [Fact]
         [TestDescription("""
+            Verifies that missing labels can be added to insights data series.
+            """)]
+        public void AddMissingLabels_ToDateOnlySeries_MissingDatesAreAdded()
+        {
+            // Arrange
+            var data = new InsightsData<string, double>();
+            var series = data.Add("series 1");
+            series.Add("A", 10);
+            series.Add("B", 10);
+            series.Add("D", 10);
+
+            // Act
+            data.AddMissingLabels(["C"]);
+
+            // Assert
+            var expected = "D";
+            Assert.Equal(4, series.Data.Count());
+            Assert.Equal(4, series.Labels.Count());
+            Assert.Equal(4, series.Values.Count());
+            Assert.Contains(expected, series.Labels);
+        }
+
+        [Fact]
+        [TestDescription("""
             Verifies that missing dates are added to insights data series.
             For example if the labels are: "2023-01-01", "2023-01-02", and "2023-01-04" then 2023-01-03 should be added.
             """)]

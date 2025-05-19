@@ -35,6 +35,26 @@ namespace TestBucket.Domain.IntegrationTests.Issues
             Assert.Equal(MappedIssueState.Open, createdIssue.MappedState);
         }
 
+
+        [Fact]
+        [TestDescription("""
+            Verifies that when adding a new issue the created and modified timestamp is set
+
+            # Steps
+            1. Add an issue
+            2. Created timestamp set
+            3. Modified timestamp set
+            """)]
+        public async Task AddIssue_ModifiedSet()
+        {
+            var issue = await Fixture.Issues.AddIssueAsync();
+
+            var createdIssue = await Fixture.Issues.GetIssueByIdAsync(issue.Id);
+            Assert.NotNull(createdIssue);
+            Assert.NotEqual(DateTimeOffset.MinValue, createdIssue.Created);
+            Assert.NotEqual(DateTimeOffset.MinValue, createdIssue.Modified);
+        }
+
         [Fact]
         [TestDescription("""
             Verifies that when adding a new issue the closed timestamp is not set

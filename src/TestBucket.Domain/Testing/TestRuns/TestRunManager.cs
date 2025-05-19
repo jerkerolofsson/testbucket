@@ -4,6 +4,7 @@ using Mediator;
 
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
@@ -218,6 +219,26 @@ internal class TestRunManager : ITestRunManager
         filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
         return await _testCaseRepo.GetTestExecutionResultSummaryByDayAsync(filters);
     }
+
+    /// <inheritdoc/>
+    public async Task<InsightsData<TestResult, int>> GetInsightsTestResultsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
+        filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
+        return await _testCaseRepo.GetInsightsTestResultsAsync(filters);
+    }
+
+    /// <inheritdoc/>
+    public async Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
+        filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
+        return await _testCaseRepo.GetInsightsTestResultsByDayAsync(filters);
+    }
+
+
     /// <inheritdoc/>
     public async Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId)
     {

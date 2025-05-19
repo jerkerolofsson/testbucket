@@ -63,6 +63,7 @@ public class TestAccountDependencyAllocator
                         else
                         {
                             await bag.AddAsync(account, context.ResourceExpiry, context.Guid);
+                            bag.ResolveVariables(account,context.Variables);
                         }
                     }
                 }

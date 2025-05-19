@@ -36,6 +36,11 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         public TestRunFramework Runs => new TestRunFramework(this);
 
         /// <summary>
+        /// Test framework for test resources
+        /// </summary>
+        public TestResourcesFramework Resources => new TestResourcesFramework(this);
+
+        /// <summary>
         /// Test framework for test accounts
         /// </summary>
         public TestAccountsTestFramework Accounts => new TestAccountsTestFramework(this);

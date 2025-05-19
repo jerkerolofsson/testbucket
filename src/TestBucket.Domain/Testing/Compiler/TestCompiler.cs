@@ -56,10 +56,8 @@ internal class TestCompiler : ITestCompiler
         // To unlock resources, use context.Guid as the lock owner.
         // @see ReleaseResourcesRequest
         var resourceBag = await _resourceAllocator.CollectDependenciesAsync(principal, context, cancellationToken);
-        resourceBag.ResolveVariables(context.Variables);
 
         var accountBag = await _accountAllocator.CollectDependenciesAsync(principal, context, cancellationToken);
-        accountBag.ResolveVariables(context.Variables);
 
         if (context.TestRunId is not null)
         {

@@ -18,6 +18,11 @@ public class TestResourceBag
     private readonly ClaimsPrincipal _principal;
     private readonly ITestResourceManager _manager;
 
+    /// <summary>
+    /// Gets allocated resources
+    /// </summary>
+    public IReadOnlyList<TestResource> Resources => _resources;
+
     public TestResourceBag(ClaimsPrincipal principal, ITestResourceManager manager)
     {
         _principal = principal;
@@ -33,9 +38,13 @@ public class TestResourceBag
         await _manager.UpdateAsync(_principal, resource);
     }
 
-    internal void ResolveVariables(Dictionary<string, string> variables)
+    /// <summary>
+    /// Assigns environment variables
+    /// </summary>
+    /// <param name="variables"></param>
+    public void ResolveVariables(TestResource resource, string requestedType, Dictionary<string, string> variables)
     {
-        foreach(var resource in _resources)
+        //foreach(var resource in _resources)
         {
             foreach(var type in resource.Types)
             {

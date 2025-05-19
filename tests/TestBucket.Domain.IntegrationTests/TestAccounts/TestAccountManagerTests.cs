@@ -11,11 +11,14 @@
             """)]
         public async Task AddTestAccount_NotLocked()
         {
-            // Act
+            // Arrange
             var account1 = await Fixture.Accounts.AddTestAccountAsync("owner1", "email");
             try
             {
+                // Act
                 var account = await Fixture.Accounts.GetByIdAsync(account1.Id);
+
+                // Assert
                 Assert.Equal("owner1", account1.Owner);
                 Assert.Equal("email", account1.Type);
                 Assert.False(account1.Locked);
@@ -32,7 +35,7 @@
             """)]
         public async Task DeleteTestAccount_IsDeleted()
         {
-            // Act
+            // Arrange
             var account1 = await Fixture.Accounts.AddTestAccountAsync("owner1", "email");
             try
             {
@@ -43,6 +46,7 @@
                 // Act
                 await Fixture.Accounts.DeleteAccountAsync(account1);
 
+                // Assert
                 var resultAfterDelete = await Fixture.Accounts.BrowseAsync();
                 var account1AfterDelete = resultAfterDelete.Items.Where(x => x.Id == account1.Id).FirstOrDefault();
                 Assert.Null(account1AfterDelete);
@@ -59,10 +63,11 @@
             """)]
         public async Task UpdateTestAccount_IsUpdated()
         {
-            // Act
+            // Arrange
             var account1 = await Fixture.Accounts.AddTestAccountAsync("owner1", "coop");
             try
             {
+                // Act
                 account1.Type = "ica-kort";
                 account1.Owner = "ica";
                 await Fixture.Accounts.UpdateAsync(account1);
@@ -92,14 +97,15 @@
             {
                 var run = await Fixture.Runs.AddAsync();
                 var dependencies = new List<TestCaseDependency>
-            {
-                new TestCaseDependency { AccountType = "github" }
-            };
+                {
+                    new TestCaseDependency { AccountType = "github" }
+                };
 
-                // Arrange
+                // Act
                 var resources = await Fixture.Accounts.AllocateAsync(run, guid, dependencies);
-                Assert.Single(resources.Accounts);
 
+                // Assert
+                Assert.Single(resources.Accounts);
                 Assert.Equal("owner1", resources.Accounts[0].Owner);
                 Assert.Equal("github", resources.Accounts[0].Type);
                 Assert.True(resources.Accounts[0].Locked);
@@ -137,10 +143,11 @@
                     }
                 };
 
-                // Arrange
+                // Act
                 var resources = await Fixture.Accounts.AllocateAsync(run, context);
-                Assert.Single(resources.Accounts);
 
+                // Assert
+                Assert.Single(resources.Accounts);
                 Assert.Equal("owner1", resources.Accounts[0].Owner);
                 Assert.Equal("wifi6", resources.Accounts[0].Type);
                 Assert.True(resources.Accounts[0].Locked);
@@ -155,8 +162,6 @@
 
             }
         }
-
-
 
         [Fact]
         [TestDescription("""
@@ -175,10 +180,11 @@
                     new TestCaseDependency { AccountType = "wifi123" }
                 };
 
-                // Arrange
+                // Act
                 var resources = await Fixture.Accounts.AllocateAsync(run, "12345", dependencies);
-                await Fixture.Accounts.ReleaseAsync("12345");
 
+                // Assert
+                await Fixture.Accounts.ReleaseAsync("12345");
                 Assert.Single(resources.Accounts);
                 var account = await Fixture.Accounts.GetByIdAsync(account1.Id);
                 Assert.NotNull(account);

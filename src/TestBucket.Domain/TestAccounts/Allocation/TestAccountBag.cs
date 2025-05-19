@@ -31,17 +31,17 @@ public class TestAccountBag
         await _manager.UpdateAsync(_principal, resource);
     }
 
-    public void ResolveVariables(Dictionary<string, string> variables)
+    public void ResolveVariables(TestAccount account, Dictionary<string, string> variables)
     {
-        foreach(var resource in _resources)
+        //foreach(var resource in _resources)
         {
-            var type = resource.Type;
+            var type = account.Type;
             var resourcesByType = _resources.Where(x => x.Type == type).ToList();
-            var index = resourcesByType.IndexOf(resource);
+            var index = resourcesByType.IndexOf(account);
 
             var key = $"accounts__{type}__{index}";
 
-            foreach(var attribute in resource.Variables)
+            foreach(var attribute in account.Variables)
             {
                 var fullName = key + "__" + attribute.Key;
                 variables[fullName] = attribute.Value;  

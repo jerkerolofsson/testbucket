@@ -60,6 +60,7 @@ public class TestResourceDependencyAllocator
                         else
                         {
                             await bag.AddAsync(testResource, context.ResourceExpiry, context.Guid);
+                            bag.ResolveVariables(testResource, dependency.ResourceType, context.Variables);
                         }
                     }
                 }

@@ -44,7 +44,6 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         {
             var allocator = Fixture.Services.GetRequiredService<TestAccountDependencyAllocator>();
             var accountBag = await allocator.CollectDependenciesAsync(Impersonation.Impersonate(Fixture.App.Tenant), context);
-            accountBag.ResolveVariables(context.Variables);
             return accountBag;
 
         }

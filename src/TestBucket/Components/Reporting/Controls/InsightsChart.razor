@@ -1,10 +1,12 @@
 ﻿@attribute [Authorize()]
 @using Plotly.Blazor.LayoutLib
 @using System.Diagnostics
+@using System.Diagnostics.CodeAnalysis
 @using TestBucket.Components.Reporting.Controllers
 @using TestBucket.Components.Reporting.Helpers
 @using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Domain.Appearance
+@using TestBucket.Domain.Appearance.Models
 @using TestBucket.Domain.Insights
 @using TestBucket.Domain.Insights.Model
 @using TestBucket.Domain.Testing.Aggregates
@@ -21,7 +23,10 @@
 <MudPaper Elevation="2" Class="tb-tile">
     <MudStack Spacing="0" Class="tb-insights-chart">
         <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
-            <MudText Typo="Typo.h6">@Title</MudText>
+            @if(Spec is not null)
+            {
+                <MudText Typo="Typo.h6">@insightLoc[Spec.Name]</MudText>
+            }
             <MudSpacer />
 
             <MudToggleGroup T="ChartType" Value="@_chartType" ValueChanged="OnChartTypeChanged" Color="Color.Surface"> 
@@ -32,38 +37,42 @@
             </MudToggleGroup>
 
         </MudStack>
-        @if (_layout is not null && _results is not null && _config is not null)
-        {
-            <PlotlyChart class="tb-chart result-chart" @ref="_chart" @bind-Config="_config" @bind-Layout="_layout" @bind-Data="_data" />
 
-            @if(Spec is not null)
+        @if (!_loading && _results is not null)
+        {
+            <PlotlyChart class="tb-chart result-chart" @ref="_chart" @bind-Config="_config" @bind-Layout="@_layout" @bind-Data="@_data"/>
+
+            @if (_layout is not null && _results is not null && _config is not null)
             {
-                if (Spec.ShowLegend)
+                @if (Spec is not null)
                 {
-                    <div class="legend">
-                        @foreach (var legendItem in _legendTitleColorMap)
-                        {
-                            var color = legendItem.Value;
-                            <div class="item">
-                                <ColorCell Color="@color"/>
-                                @insightLoc[legendItem.Key]
-                            </div>
-                        }
-                    </div>
+                    if (Spec.ShowLegend)
+                    {
+                        <div class="legend">
+                            @foreach (var legendItem in _legendTitleColorMap)
+                            {
+                                var color = legendItem.Value;
+                                <div class="item">
+                                    <ColorCell Color="@color" />
+                                    @insightLoc[legendItem.Key]
+                                </div>
+                            }
+                        </div>
+                    }
                 }
             }
         }
         else
         {
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Class="tb-chart-skeleton"/>
+            <MudSkeleton SkeletonType="SkeletonType.Text" Class="tb-chart-skeleton" />
         }
+       
     </MudStack>
 </MudPaper>
 
 @code {
     [Parameter] public string Title { get; set; } = "";
     [Parameter] public ChartType ChartType { get; set; } = ChartType.Line;
-    [Parameter] public bool ShowLegend { get; set; } = false;
     [Parameter] public InsightsVisualizationSpecification? Spec { get; set; }
     [CascadingParameter] public TestProject? Project { get; set; }
 
@@ -72,10 +81,12 @@
     private PlotlyChart? _chart;
     private Config? _config = new Config()
     {
-        Responsive = true
+        Responsive = true,
+
     };
     private Layout? _layout;
     private Dictionary<string, string> _legendTitleColorMap = [];
+    private bool _loading = true;
 
     // Using of the interface IList is important for the event callback!
     private IList<ITrace> _data = new List<ITrace>();
@@ -95,29 +106,15 @@
             _results = await controller.GetDataAsync(Project?.Id, Spec.DataQueries[0]);
             _chartType = ChartType;
 
-            _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
-            _layout.AutoSize = true;
-            _layout.ShowLegend = false;
-
-            _layout.XAxis = [
-                new XAxis {
-                ShowTickLabels = true
-            }
-            ];
-
-            _layout.Margin = new Plotly.Blazor.LayoutLib.Margin
-            {
-                L = 0,
-                T = 0,
-                R = 0,
-                B = 0
-            };
-
             if (_results is not null)
             {
                 await BuildChartData();
                 await InvokeAsync(this.StateHasChanged);
             }
+        }
+        if(_results is not null && _chart is not null)
+        {
+
         }
     }
 
@@ -126,18 +123,16 @@
         _results = null;
     }
 
-    private async Task<List<string>> GetColorwayAsync()
+    private List<string> GetColorway(TestBucketBaseTheme theme)
     {
         _legendTitleColorMap.Clear();
 
-        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        var theme = await testBucketThemeManager.GetCurrentThemeAsync(authState.User);
         List<string> colorway = [];
         ThemePalette palette = theme.ChartPalette;
         if (_results is not null)
         {
             var colors = new ChartColorizer(palette);
-            _legendTitleColorMap = colors.GetColorway(Spec, _results);
+            _legendTitleColorMap = colors.GetColorway(Spec, _results, themingService.IsDarkMode);
             colorway = _legendTitleColorMap.Values.ToList();
         }
         else
@@ -147,15 +142,72 @@
         return colorway;
     }
 
+    [MemberNotNull(nameof(_layout))]
+    private void ConfigureLayout(TestBucketBaseTheme theme)
+    {
+        _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
+        _layout.AutoSize = true;
+        _layout.ShowLegend = false;
+        if (Spec is not null)
+        {
+            _layout.XAxis = [
+                new XAxis {
+                    ShowTickLabels = true,
+                    GridColor = Spec.GetGridLineColor(themingService.IsDarkMode),
+                    TickFont = new Plotly.Blazor.LayoutLib.XAxisLib.TickFont
+                    {
+                        Color = Spec.GetTickLabelColor(themingService.IsDarkMode),
+                        Family = "monospace",
+                        Size = 10,
+                    }
+                }
+            ];
+            _layout.YAxis = [
+                new YAxis {
+                    ShowTickLabels = true,
+                    GridColor = Spec.GetGridLineColor(themingService.IsDarkMode),
+                    TickFont = new Plotly.Blazor.LayoutLib.YAxisLib.TickFont
+                    {
+                        Color = Spec.GetTickLabelColor(themingService.IsDarkMode),
+                        Family = "monospace",
+                        Size = 10,
+                    }
+                }
+            ];
+        }
+
+        _layout.Margin = new Plotly.Blazor.LayoutLib.Margin
+        {
+            L = 20,
+            T = 0,
+            R = 0,
+            B = 20
+        };
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var isDarkMode = await themingService.IsDarkModeAsync();
+        var theme = await testBucketThemeManager.GetCurrentThemeAsync(authState.User);
+
+        ConfigureLayout(theme);
+        _loading = false;
+    }
+
     private async Task BuildChartData()
     {
-        Debug.Assert(_layout != null);
-        if (_layout is null || _results is null)
+        if (_results is null)
         {
             return;
         }
 
-        var colorway = await GetColorwayAsync();
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        var isDarkMode = await themingService.IsDarkModeAsync();
+        var theme = await testBucketThemeManager.GetCurrentThemeAsync(authState.User);
+
+        var colorway = GetColorway(theme);
+        ConfigureLayout(theme);
 
         _data.Clear();
         _layout.Annotations = [];
@@ -263,7 +315,8 @@
             try
             {
                 await _chart.Update(_data, _layout);
-                await _chart.React();
+                //await _chart.React();
+                await _chart.NewPlot();
             }
             catch { }
         }

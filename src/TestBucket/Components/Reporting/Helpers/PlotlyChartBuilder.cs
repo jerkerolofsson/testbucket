@@ -96,7 +96,7 @@ public class PlotlyChartBuilder
     {
         return new Plotly.Blazor.Layout()
         {
-            BarCornerRadius = 5,
+            BarCornerRadius = 6,
             PaperBgColor = "transparent",
             PlotBgColor = "transparent",
             Font = new Font

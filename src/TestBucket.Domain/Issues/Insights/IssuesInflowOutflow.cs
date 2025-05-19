@@ -49,6 +49,7 @@ internal class IssuesInflowOutflow : IInsightsDataSource
         var data = new InsightsData<DateOnly, int>() { Name = "issues-inflow-outflow" };
         data.Add(created.Series[0]);
         data.Add(closed.Series[0]);
+        data.AddMissingDays();
         return data.ConvertToStringLabels();
     }
 }

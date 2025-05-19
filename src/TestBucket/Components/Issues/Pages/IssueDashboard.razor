@@ -49,8 +49,10 @@
         {
             if (Project.Id != _projectId)
             {
+                _projectId = Project.Id;
                 _countByResultsSpec = new InsightsVisualizationSpecification
                 {
+                    Name = "test-results",
                     DataQueries = [new InsightsDataQuery 
                     { 
                         DataSource = TestRunDataSourceNames.CountByResult,
@@ -61,26 +63,39 @@
 
                 _inflowOutflowSpec = new InsightsVisualizationSpecification
                 {
+                    Name = "issue-inflow-outflow",
                     DataQueries = [new InsightsDataQuery
                     {
                         DataSource = IssueDataSourceNames.IssuesInflowOutflow,
                     }],
-                    Palette = DefaultPalettes.Default,
-                    ColorMode = ChartColorMode.BySeries,
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.Default,
+                        ColorMode = ChartColorMode.BySeries,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.Default,
+                        ColorMode = ChartColorMode.BySeries,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
                     ShowLegend = true
                 };
                 _countPerStateSpec = new InsightsVisualizationSpecification
                 {
+                    Name = "issues-by-state",
                     DataQueries = [new InsightsDataQuery
                     {
                         DataSource = IssueDataSourceNames.IssuesByState,
                         Colors = new Dictionary<string, string> {
                             ["Open"]="green",
                             ["Closed"]="firebrick"
-                        }
-
+                        },
                     }],
-                    Palette = DefaultPalettes.Corporate,
+
                     ShowLegend = true
                 };
 
@@ -89,7 +104,7 @@
                 // _inflowOutflow = await controller.GetDataAsync(Project.Id, _inflowOutflowSpec.DataQueries[0]);
                 // _countPerState = await controller.GetDataAsync(Project.Id, _countPerStateSpec.DataQueries[0]);
 
-                var _ = InvokeAsync(StateHasChanged);
+               // var _ = InvokeAsync(StateHasChanged);
             }
         }
     }

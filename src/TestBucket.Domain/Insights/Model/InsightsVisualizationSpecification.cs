@@ -9,6 +9,10 @@ using TestBucket.Contracts.Appearance.Models;
 namespace TestBucket.Domain.Insights.Model;
 public class InsightsVisualizationSpecification
 {
+    /// <summary>
+    /// Label ID. This will be translated with IStringLocalizer<InsightStrings>
+    /// </summary>
+    public required string Name { get; set; }
    
     /// <summary>
     /// Data queries
@@ -20,15 +24,31 @@ public class InsightsVisualizationSpecification
     /// </summary>
     public bool ShowLegend { get; set; }
 
-    /// <summary>
-    /// Palette used when there are no specific colors assigned
-    /// </summary>
-    public ThemePalette? Palette { get; set; }
+    public ChartColors LightModeColors { get; set; } = new() { GridLineColor = "#ddd", TickLabelColor = "#222" };
+    public ChartColors DarkModeColors { get; set; } = new() { GridLineColor = "#444", TickLabelColor = "#ddd" };
 
-    /// <summary>
-    /// Defines how the color is assigned
-    /// </summary>
-    public ChartColorMode ColorMode { get; set; } = ChartColorMode.ByLabel;
+    public string? GetTickLabelColor(bool isDarkMode)
+    {
+        if (isDarkMode) return DarkModeColors.TickLabelColor;
+        return LightModeColors.TickLabelColor;
+    }
+    public string? GetGridLineColor(bool isDarkMode)
+    {
+        if (isDarkMode) return DarkModeColors.GridLineColor;
+        return LightModeColors.GridLineColor;
+    }
+
+    public ChartColorMode GetColorMode(bool isDarkMode)
+    {
+        if (isDarkMode) return DarkModeColors.ColorMode;
+        return LightModeColors.ColorMode;
+    }
+
+    public ThemePalette GetPalette(bool isDarkMode)
+    {
+        if (isDarkMode) return DarkModeColors.Palette;
+        return LightModeColors.Palette;
+    }
 
     /// <summary>
     /// Returns a color to use for a label from any series

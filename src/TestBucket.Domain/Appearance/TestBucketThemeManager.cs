@@ -16,6 +16,7 @@ public class TestBucketThemeManager : ITestBucketThemeManager
 {
     private readonly IUserPreferencesManager _userPreferencesService;
     private readonly IMemoryCache _memoryCache;
+    private TestBucketBaseTheme? _theme;
 
     public TestBucketThemeManager(IUserPreferencesManager userPreferencesService, IMemoryCache memoryCache)
     {
@@ -43,15 +44,20 @@ public class TestBucketThemeManager : ITestBucketThemeManager
 
     public async Task<TestBucketBaseTheme> GetCurrentThemeAsync(ClaimsPrincipal user)
     {
-        var userPreferences = await _userPreferencesService.LoadUserPreferencesAsync(user);
-        string themeName = userPreferences.Theme ?? "default";
-        return await GetThemeByNameAsync(themeName);
+        if (_theme is null)
+        {
+            var userPreferences = await _userPreferencesService.LoadUserPreferencesAsync(user);
+            string themeName = userPreferences.Theme ?? "default";
+            _theme = await GetThemeByNameAsync(themeName);
+        }
+        return _theme;
     }
+
 
     public async Task<string> GetThemedStylesheetAsync(ClaimsPrincipal user)
     {
+        var theme = await GetCurrentThemeAsync(user);
         var userPreferences = await _userPreferencesService.LoadUserPreferencesAsync(user);
-        string themeName = userPreferences.Theme ?? "default";
         bool highContrast = userPreferences.IncreasedContrast;
         bool highFontSize = userPreferences.IncreasedFontSize;
         bool isDarkMode = userPreferences.DarkMode;
@@ -62,7 +68,6 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         AddBaseStyle(css, isDarkMode);
 
         // Add theme style
-        var theme = await GetThemeByNameAsync(themeName);
         if (isDarkMode)
         {
             css.AppendLine(theme.Dark);

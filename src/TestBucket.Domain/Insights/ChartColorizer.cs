@@ -23,9 +23,9 @@ public class ChartColorizer
         _palette = palette;
     }
 
-    public Dictionary<string,string> GetColorway<U>(InsightsVisualizationSpecification? spec, InsightsData<string,U> data)
+    public Dictionary<string,string> GetColorway<U>(InsightsVisualizationSpecification? spec, InsightsData<string,U> data, bool isDarkMode)
     {
-        ChartColorMode mode = spec.ColorMode;
+        ChartColorMode mode = spec.GetColorMode(isDarkMode);
         var colorway = new Dictionary<string, string>();
         if (mode == ChartColorMode.ByLabel)
         {
@@ -33,7 +33,7 @@ public class ChartColorizer
             {
                 foreach (var label in series.Labels)
                 {
-                    var color = GetColor(spec, label);
+                    var color = GetColor(spec, label, isDarkMode);
                     colorway[label] = color;
                 }
             }
@@ -42,38 +42,34 @@ public class ChartColorizer
         {
             foreach (var series in data.Series)
             {
-                var color = GetColor(spec, series.Name);
+                var color = GetColor(spec, series.Name, isDarkMode);
                 colorway[series.Name] = color;
             }
         }
         return colorway;
     }
 
-    private string GetColor(InsightsVisualizationSpecification? spec, string label)
+    private string GetColor(InsightsVisualizationSpecification? spec, string label, bool isDarkMode)
     {
         if (spec is null)
         {
-            return GetNextPaletteColor(null);
+            return GetNextPaletteColor(null, isDarkMode);
         }
         else
         {
             var color = spec.GetColor(label);
             if (color is null)
             {
-                color = GetNextPaletteColor(spec);
+                color = GetNextPaletteColor(spec, isDarkMode);
             }
             return color;
         }
     }
 
-    private string GetNextPaletteColor(InsightsVisualizationSpecification? spec)
+    private string GetNextPaletteColor(InsightsVisualizationSpecification? spec, bool isDarkMode)
     {
         string color;
-        var palette = _palette;
-        if (spec?.Palette is not null && spec?.Palette?.Colors?.Count > 0)
-        {
-            palette = spec.Palette;
-        }
+        var palette = spec?.GetPalette(isDarkMode) ?? _palette;
 
         var index = _paletteIndex % palette.Colors.Count;
         var paletteColor = palette.Colors[index];

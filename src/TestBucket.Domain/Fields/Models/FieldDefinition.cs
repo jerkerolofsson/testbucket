@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Appearance.Models;
 using TestBucket.Contracts.Fields;
 using TestBucket.Traits.Core;
 
@@ -135,6 +136,11 @@ public class FieldDefinition : ProjectEntity
     /// Required permission
     /// </summary>
     public PermissionLevel RequiredPermission { get; set; } = PermissionLevel.Write;
+    
+    /// <summary>
+    /// Where to show the field in the UI
+    /// </summary>
+    public Dock? Dock { get; set; }
 
     public override string ToString()
     {

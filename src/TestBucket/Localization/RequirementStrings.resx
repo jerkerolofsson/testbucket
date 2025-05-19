@@ -198,4 +198,16 @@
   <data name="new-requirement" xml:space="preserve">
     <value>New requirement</value>
   </data>
+  <data name="search-requirements" xml:space="preserve">
+    <value>Search Requirements</value>
+  </data>
+  <data name="search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="create-requirement-specification" xml:space="preserve">
+    <value>Create specification</value>
+  </data>
+  <data name="import-requirements" xml:space="preserve">
+    <value>Import requirements</value>
+  </data>
 </root>

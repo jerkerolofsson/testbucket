@@ -5,7 +5,7 @@ using TestBucket.Domain.Requirements.Specifications;
 using TestBucket.Domain.Search.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Testing.Specifications.TestCases;
+using TestBucket.Domain.Testing.TestCases.Search;
 
 namespace TestBucket.Domain.Search
 {

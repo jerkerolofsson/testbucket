@@ -188,9 +188,11 @@ class Splitter {
         this.container.style.display = "grid";
         if (this.direction == 'horizontal') {
             this.startContent.style.width = "100%";
+            this.container.style["grid-template-rows"] = "unset";
             this.container.style["grid-template-columns"] = `${this.dimensions} var(--bar-size, 5px) auto`;
         } else {
             this.startContent.style.height = "100%";
+            this.container.style["grid-template-columns"] = "unset";
             this.container.style["grid-template-rows"] = `${this.dimensions} var(--bar-size, 5px) auto`;
         }
 

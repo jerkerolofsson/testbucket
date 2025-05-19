@@ -11,7 +11,7 @@ using TestBucket.Domain.Shared.Specifications;
 namespace TestBucket.Domain.Issues.Specifications;
 
 /// <summary>
-/// Finds issues created from a specific extension configuration
+/// Finds issues with a specific state label
 /// </summary>
 internal class FindLocalIssueByState : FilterSpecification<LocalIssue>
 {

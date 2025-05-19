@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Appearance.Models;
 using TestBucket.Domain.Keyboard;
 
 namespace TestBucket.Domain.Identity.Models;
@@ -43,6 +44,11 @@ public class UserPreferences
     /// Use dark mode
     /// </summary>
     public bool DarkMode { get; set; } = true;
+
+    /// <summary>
+    /// Where to dock the explorer window (left or right)
+    /// </summary>
+    public Dock? ExplorerDock { get; set; }
 
     /// <summary>
     /// Custom Theme

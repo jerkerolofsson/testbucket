@@ -1,27 +1,65 @@
 ﻿@inherits LayoutComponentBase
 @layout AppLayout
 @using Humanizer
-@inject TestCaseEditorController testCaseEditor
+@using TestBucket.Contracts.Appearance.Models
+@using TestBucket.Contracts.Issues.States
+@using TestBucket.Contracts.Issues.Types
+@using TestBucket.Domain.Insights.Model
+@using TestBucket.Domain.Issues.Search
 @inject NavigationManager navigationManager
 @inject AppNavigationManager appNavigationManager
+@inject IssueController controller
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
+@inject UserPreferencesService preferencesController
+
 <TenantRedirect />
 
-<Splitter Style="height: 100%" Bordered="false" Dimension="15" EnableMargin="false" Color="Color.Tertiary">
+<Splitter Style="height: 100%" Bordered="false" Dock="@_dock" Dimension="20" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
 
-        <MudStack Class="pa-2" Style="width: 100%;">
-            <MudNavLink Href="@Open">@issueLoc["open"]</MudNavLink>
-            <MudNavLink Href="@OpenHighPrio">@issueLoc["high-prio"]</MudNavLink>
-            <MudNavLink Href="@OpenIncidents">@issueLoc["open-incidents"]</MudNavLink>
-            <MudNavLink Href="@Closed">@issueLoc["closed"]</MudNavLink>
+        <MudStack Class="pa-2 tb-navmenu side" Style="width: 100%;">
+
+            <MudText Typo="Typo.h1">@loc["issues"]</MudText>
+
+            <MudNavMenu>
+                <MudNavLink Href="@Open">
+                    <MudBadge Content="@OpenCount" Color="Color.Primary" Overlap>
+                        <MudText>@issueLoc["open"]</MudText>
+                    </MudBadge>
+                </MudNavLink>
+                <MudNavLink Href="@OpenIncidents">
+                    <MudBadge Content="@OpenIncidentsCount" Color="Color.Primary" Overlap>
+                        @issueLoc["open-incidents"]
+                    </MudBadge>
+                </MudNavLink>
+                <MudNavLink Href="@Closed">
+                    <MudBadge Content="@ClosedCount" Color="Color.Primary" Overlap>
+                        <MudText>@issueLoc["closed"]</MudText>
+                    </MudBadge>
+                </MudNavLink>
+                <MudNavLink Href="@OpenHighPrio">
+                    @issueLoc["high-prio"]
+                </MudNavLink>
+
+                <MudNavLink Href="@appNavigationManager.GetMilestonesUrl()">
+                    @loc["milestones"]
+                </MudNavLink>
+            </MudNavMenu>
+            
         </MudStack>
 
     </StartContent>
 
     <EndContent>
-        @Body
+        <MudStack>
+            @Body
+
+            <div class="tb-run-main-charts pa-2">
+                <InsightsChart ChartType="ChartType.Bar" T="MappedIssueState" U="int" Results="_countPerState"/>
+                <InsightsChart ChartType="ChartType.Line" T="MappedIssueState" U="int" Results="_countPerState" />
+            </div>
+        </MudStack>
     </EndContent>
 </Splitter>
 
@@ -33,5 +71,46 @@
     private string Open => appNavigationManager.GetIssuesUrl() + "?q=state:open";
     private string OpenIncidents => appNavigationManager.GetIssuesUrl() + "?q=is:incident%20state:open";
     private string Closed => appNavigationManager.GetIssuesUrl() + "?q=state:closed";
+    private InsightsData<MappedIssueState, int> _countPerState = new();
+    private InsightsData<MappedIssueState, int> _incidentsPerState = new();
+
+    private string OpenIncidentsCount => GetIncidentBadgePerState(MappedIssueState.Open);
+    private string OpenCount => GetBadgePerState(MappedIssueState.Open);
+    private string ClosedCount => GetBadgePerState(MappedIssueState.Closed);
+    private Dock _dock = Dock.Left;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userPreferences = await preferencesController.GetUserPreferencesAsync();
+        _dock = userPreferences?.ExplorerDock ?? Dock.Left;
+    }
+
+    private string GetBadgePerState(MappedIssueState state)
+    {
+        if(_countPerState.TryGetValue(state, out var count))
+        {
+            return count.ToString();
+        }
+        return "0";
+    }
+
+    private string GetIncidentBadgePerState(MappedIssueState state)
+    {
+        if (_incidentsPerState.TryGetValue(state, out var count))
+        {
+            return count.ToString();
+        }
+        return "0";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _countPerState = await controller.GetIssueCountPerStateAsync(new SearchIssueQuery());
+            _incidentsPerState = await controller.GetIssueCountPerStateAsync(new SearchIssueQuery() { Type = IssueTypes.Incident });
+            var _ = InvokeAsync(StateHasChanged);
+        }
+    }
 
 }

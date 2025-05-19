@@ -1,0 +1,19 @@
+﻿@inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<CodeStrings> loc
+@using TestBucket.Domain
+
+<div class="pa-2 tb-navmenu side" style="width: 100%">
+    <MudNavMenu>
+        <MudNavLink Icon="@TbIcons.BoldDuoTone.CodeSquare" Href="@(appNavigationManager.GetCodeArchitectureUrl())">@loc["architecture"]</MudNavLink>
+        <MudNavLink Icon="@TbIcons.BoldDuoTone.Systems" Href="@(appNavigationManager.GetSystemsUrl())">@loc["systems"]</MudNavLink>
+        <MudNavLink Icon="@TbIcons.BoldDuoTone.Layers" Href="@(appNavigationManager.GetLayersUrl())">@loc["layers"]</MudNavLink>
+        <MudNavLink Icon="@TbIcons.BoldDuoTone.Components" Href="@(appNavigationManager.GetComponentsUrl())">@loc["components"]</MudNavLink>
+        <MudNavLink Icon="@TbIcons.BoldDuoTone.Epic" Href="@(appNavigationManager.GetFeaturesUrl())">@loc["features"]</MudNavLink>
+        <MudNavLink Icon="@TbIcons.Git.Commit" Href="@(appNavigationManager.GetCodeCommitsUrl())">@loc["commits"]</MudNavLink>
+    </MudNavMenu>
+</div>
+
+@code {
+
+}

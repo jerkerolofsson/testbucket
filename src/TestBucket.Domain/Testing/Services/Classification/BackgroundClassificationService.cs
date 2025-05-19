@@ -48,41 +48,43 @@ namespace TestBucket.Domain.Testing.Services.Classification
             var fieldDefinitionManager = scope.ServiceProvider.GetRequiredService<IFieldDefinitionManager>();
             var fieldManager = scope.ServiceProvider.GetRequiredService<IFieldManager>();
 
-
             var definitions = await fieldDefinitionManager.GetDefinitionsAsync(principal, testCase.TestProjectId, FieldTarget.TestCase);
             var fields = await fieldManager.GetTestCaseFieldsAsync(principal, testCase.Id, definitions);
-            bool changed = false;
             foreach (var field in fields)
             {
                 var hasValue = field.HasValue();
-                if (!hasValue && 
-                    field.FieldDefinition?.Options is not null && 
-                    field.FieldDefinition.Options.Count > 0 && 
-                    field.FieldDefinition.UseClassifier)
+                if (!hasValue &&  field.FieldDefinition?.UseClassifier == true)
                 {
-                    var result = await classifier.ClassifyAsync(field.FieldDefinition.Options.ToArray(), testCase.Description);
-                    if (result.Length > 0)
+                    var options = await fieldDefinitionManager.GetOptionsAsync(principal, field.FieldDefinition);
+                    if (options.Count == 1)
                     {
-                        _logger.LogInformation("Classified {test} with {category}", testCase.Name, result[0]);
-                        if (FieldValueConverter.TryAssignValue(field.FieldDefinition, field, result))
-                        {
-                            changed = true;
+                        field.StringValue = options[0];
+                        field.Inherited = false;
+                        await fieldManager.UpsertTestCaseFieldAsync(principal, field);
+                    }
+                    else if (options.Count >= 2)
+                    {
 
-                            await fieldManager.UpsertTestCaseFieldAsync(principal, field);
+                        var result = await classifier.ClassifyAsync(options.ToArray(), testCase.Description);
+                        if (result.Length > 0)
+                        {
+                            _logger.LogInformation("Classified {test} with {category}", testCase.Name, result[0]);
+                            if (FieldValueConverter.TryAssignValue(field.FieldDefinition, field, result))
+                            {
+                                field.Inherited = false;
+                                await fieldManager.UpsertTestCaseFieldAsync(principal, field);
+                            }
                         }
                     }
                 }
             }
-            if (changed)
-            {
-                //await fieldManager.SaveTestCaseFieldsAsync(principal, fields);
-            }
+            
         }
 
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await Task.Delay(TimeSpan.FromSeconds(120), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
 
             using var scope = _serviceProvider.CreateScope();
             var testRepo = scope.ServiceProvider.GetRequiredService<ITestCaseRepository>();

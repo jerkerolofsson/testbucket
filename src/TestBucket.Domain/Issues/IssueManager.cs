@@ -9,6 +9,7 @@ using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Issues.Types;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues.Events;
 using TestBucket.Domain.Issues.Mapping;
 using TestBucket.Domain.Issues.Models;
@@ -17,6 +18,8 @@ using TestBucket.Domain.Issues.Specifications;
 using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing;
+using TestBucket.Domain.Testing.Aggregates;
+using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Issues;
 
@@ -47,6 +50,24 @@ public class IssueManager : IIssueManager
     public void RemoveObserver(ILinkedIssueObserver observer) => _observers.Remove(observer);
 
     #region Local Issues
+
+    /// <summary>
+    /// Returns number of issues per state, matching the filter
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    public async Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
+        List<FilterSpecification<LocalIssue>> filters = [
+            new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow())
+        ];
+
+        filters.AddRange(SearchIssueRequestBuilder.Build(request));
+        return await _repository.GetIssueCountPerStateAsync(filters);
+    }
+
     public async Task AddLocalIssueAsync(ClaimsPrincipal principal, LocalIssue issue)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
@@ -72,47 +93,17 @@ public class IssueManager : IIssueManager
     public async Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
     {
         var definitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.Issue);
-        return await SearchLocalIssuesAsync(SearchIssueRequestParser.Parse(principal, projectId, text, definitions), offset, count);
+        return await SearchLocalIssuesAsync(principal, SearchIssueRequestParser.Parse(projectId, text, definitions), offset, count);
     }
 
-    public async Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(SearchIssueRequest request, int offset, int count)
+    public async Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(ClaimsPrincipal principal, SearchIssueQuery request, int offset, int count)
     {
-        var principal = request.Principal;
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
         List<FilterSpecification<LocalIssue>> filters = [
-            new FilterByProject<LocalIssue>(request.ProjectId),
             new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow())
         ];
-        if (!string.IsNullOrEmpty(request.Text))
-        {
-            filters.Add(new FindLocalIssueByText(request.Text));
-        }
-        if (!string.IsNullOrEmpty(request.ExternalSystemName))
-        {
-            filters.Add(new FindLocalIssueByExternalSystemName(request.ExternalSystemName));
-        }
-        if (request.ExternalSystemId != null)
-        {
-            filters.Add(new FindLocalIssueByExternalSystemId(request.ExternalSystemId.Value));
-        }
-        if (request.Type != null)
-        {
-            filters.Add(new FindLocalIssueByType(request.Type));
-        }
-        if (request.State != null)
-        {
-            filters.Add(new FindLocalIssueByState(request.State));
-        }
-        if(request.Fields.Count > 0)
-        {
-            foreach(var field in request.Fields)
-            {
-                if(!string.IsNullOrEmpty(field.StringValue))
-                {
-                    filters.Add(new FilterLocalIssueByStringField(field.FilterDefinitionId, field.StringValue));
-                }
-            }
-        }
+
+        filters.AddRange(SearchIssueRequestBuilder.Build(request));
         return await _repository.SearchAsync(filters, offset, count);
     }
     public async Task<LocalIssue?> FindLocalIssueFromExternalAsync(ClaimsPrincipal principal, long testProjectId, long? externalSystemId, string? externalId)
@@ -180,13 +171,15 @@ public class IssueManager : IIssueManager
 
     #region Linked Issues
 
-    public async Task<PagedResult<LinkedIssue>> SearchLinkedIssuesAsync(SearchIssueRequest request, int offset, int count)
+    public async Task<PagedResult<LinkedIssue>> SearchLinkedIssuesAsync(ClaimsPrincipal principal, SearchIssueQuery request, int offset, int count)
     {
-        var principal = request.Principal;
         List<FilterSpecification<LinkedIssue>> filters = [
-            new FilterByProject<LinkedIssue>(request.ProjectId),
             new FilterByTenant<LinkedIssue>(principal.GetTenantIdOrThrow())
         ];
+        if(request.ProjectId is not null)
+        {
+            filters.Add(new FilterByProject<LinkedIssue>(request.ProjectId.Value));
+        }
 
         if (request.Text is not null)
         {

@@ -1,4 +1,5 @@
-﻿@using TestBucket.Domain.Appearance
+﻿@using TestBucket.Contracts.Appearance.Models
+@using TestBucket.Domain.Appearance
 @inject ThemingService themingService
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject NavigationManager navigationManager
@@ -18,6 +19,7 @@
     private bool? _increasedFontSize;
     private bool? _darkMode;
     private string? _theme;
+    private Dock? _explorerDock = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -27,6 +29,7 @@
         _darkMode = userPreferences.DarkMode;
         _increasedContrast = userPreferences.IncreasedContrast;
         _increasedFontSize = userPreferences.IncreasedFontSize;
+        _explorerDock = userPreferences.ExplorerDock;
         userPreferencesManager.UserPreferencesChanged += OnUserPreferencesChanged;
     }
     public void Dispose()
@@ -38,10 +41,12 @@
     {
         var changed = _darkMode != preferences.DarkMode || 
         _increasedFontSize != preferences.IncreasedFontSize ||
+                _explorerDock != preferences.ExplorerDock ||
                 _increasedContrast != preferences.IncreasedContrast ||
                 _theme != preferences.Theme;
         if (changed)
         {
+            _explorerDock = preferences.ExplorerDock;
             _increasedFontSize = preferences.IncreasedFontSize;
             _darkMode = preferences.DarkMode;
             _increasedContrast = preferences.IncreasedContrast;
@@ -50,50 +55,4 @@
             navigationManager.Refresh(true);
         }
     }
-
-    // private MarkupString GenerateStylesMarkup()
-    // {
-    //     var isDarkMode = _userPreferences?.DarkMode == true ? true : false;
-    //     var highContrast = _userPreferences?.IncreasedContrast == true ? true : false;
-
-    //     var stylesheet = new StringBuilder();
-
-    //     var fieldPalette = isDarkMode ? themingService.FieldPaletteDark : themingService.FieldPaletteLight;
-
-    //     stylesheet.AppendLine("<style>");
-    //     stylesheet.AppendLine("body {");
-    //     stylesheet.AppendLine($" --tb-palette-field-background: {fieldPalette.Background};");
-    //     stylesheet.AppendLine($" --tb-palette-field-border: {fieldPalette.Border};");
-
-    //     High contrast mode overrides some settings
-    //     if (highContrast)
-    //     {
-    //         if(isDarkMode)
-    //         {
-    //             stylesheet.AppendLine($" --mud-palette-surface: #111;");
-    //             stylesheet.AppendLine($" --mud-palette-background: #000;");
-    //             stylesheet.AppendLine($" --mud-palette-black: #000;");
-
-    //             stylesheet.AppendLine($" --mud-palette-primary: hotpink;");
-    //         }
-    //         else
-    //         {
-    //             stylesheet.AppendLine($" --mud-palette-surface: #fff;");
-    //             stylesheet.AppendLine($" --mud-palette-background: #eee;");
-
-    //             stylesheet.AppendLine($" --mud-palette-primary: hotpink;");
-    //         }
-    //     }
-
-    //     stylesheet.AppendLine("}");
-
-    //     stylesheet.AppendLine(".tb-field {");
-    //     stylesheet.AppendLine($" background: var(--tb-palette-field-background);");
-    //     stylesheet.AppendLine($" border: solid 1px var(--tb-palette-field-border);");
-    //     stylesheet.AppendLine("}");
-
-    //     stylesheet.AppendLine("</style>");
-
-    //     return new MarkupString(stylesheet.ToString());
-    // }
 }

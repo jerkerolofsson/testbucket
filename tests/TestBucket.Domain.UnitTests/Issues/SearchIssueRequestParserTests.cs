@@ -11,6 +11,7 @@ namespace TestBucket.Domain.UnitTests.Issues
     [FunctionalTest]
     [EnrichedTest]
     [UnitTest]
+    [Feature("Search")]
     public class SearchIssueRequestParserTests
     {
         [Theory]
@@ -19,7 +20,7 @@ namespace TestBucket.Domain.UnitTests.Issues
         [InlineData("stateopen")]
         public void Parse_WithNoKeywords_PlainText(string text)
         {
-            var request = SearchIssueRequestParser.Parse(Impersonation.Impersonate("1234"), 1, text, []);
+            var request = SearchIssueRequestParser.Parse(1, text, []);
             Assert.Equal(text, request.Text);
         }
 
@@ -27,7 +28,7 @@ namespace TestBucket.Domain.UnitTests.Issues
         public void Parse_WithIsIncident_TextIsNullTypeIsIssue()
         {
             string text = "is:incident";
-            var request = SearchIssueRequestParser.Parse(Impersonation.Impersonate("1234"), 1, text, []);
+            var request = SearchIssueRequestParser.Parse(1, text, []);
             Assert.Null(request.Text);
             Assert.Equal("incident", request.Type);
         }
@@ -35,7 +36,7 @@ namespace TestBucket.Domain.UnitTests.Issues
         public void Parse_WithIsIssue_TextIsNullTypeIsIssue()
         {
             string text = "is:issue";
-            var request = SearchIssueRequestParser.Parse(Impersonation.Impersonate("1234"), 1, text, []);
+            var request = SearchIssueRequestParser.Parse(1, text, []);
             Assert.Null(request.Text);
             Assert.Equal("issue", request.Type);
         }
@@ -43,7 +44,7 @@ namespace TestBucket.Domain.UnitTests.Issues
         public void Parse_WithOriginGithub_TextIsNullOriginIsGithub()
         {
             string text = "origin:Github";
-            var request = SearchIssueRequestParser.Parse(Impersonation.Impersonate("1234"), 1, text, []);
+            var request = SearchIssueRequestParser.Parse(1, text, []);
             Assert.Null(request.Text);
             Assert.Equal("Github", request.ExternalSystemName);
         }
@@ -52,7 +53,7 @@ namespace TestBucket.Domain.UnitTests.Issues
         public void Parse_WithStateOpen_TextIsNullStateIsOpen()
         {
             string text = "state:open";
-            var request = SearchIssueRequestParser.Parse(Impersonation.Impersonate("1234"), 1, text, []);
+            var request = SearchIssueRequestParser.Parse(1, text, []);
             Assert.Null(request.Text);
             Assert.Equal("open", request.State);
         }
@@ -61,7 +62,7 @@ namespace TestBucket.Domain.UnitTests.Issues
         public void Parse_WithStateOpenAndText_TextIsRemainderStateIsOpen()
         {
             string text = "state:open Hello";
-            var request = SearchIssueRequestParser.Parse(Impersonation.Impersonate("1234"), 1, text, []);
+            var request = SearchIssueRequestParser.Parse(1, text, []);
             Assert.Equal("Hello", request.Text);
             Assert.Equal("open", request.State);
         }
@@ -73,7 +74,7 @@ namespace TestBucket.Domain.UnitTests.Issues
             string text = "milestone:1.0";
             List<FieldDefinition> fieldDefinitions = [new FieldDefinition() { Name = "Milestone", Id = 123}];
 
-            var request = SearchIssueRequestParser.Parse(Impersonation.Impersonate("1234"), 1, text, fieldDefinitions);
+            var request = SearchIssueRequestParser.Parse(1, text, fieldDefinitions);
             Assert.Single(request.Fields);
             Assert.Equal("1.0", request.Fields[0].StringValue);
             Assert.Equal(123, request.Fields[0].FilterDefinitionId);

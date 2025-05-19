@@ -43,17 +43,16 @@ internal class GenericClassifier : IClassifier
         }
 
         var systemPromptBuilder = new StringBuilder();
-        systemPromptBuilder.AppendLine("Instructions:");
         //systemPromptBuilder.AppendLine(string.Join(", ", categories));
-        systemPromptBuilder.AppendLine("Classify the input as one of the following categories:");
+        systemPromptBuilder.AppendLine("Classify the input into exactly one of labels:");
         foreach (var category in categories)
         {
             systemPromptBuilder.AppendLine("- " + category);
         }
-        systemPromptBuilder.AppendLine("Do not select any other category, reply only with one of these: " + string.Join(", ", categories));
+        systemPromptBuilder.AppendLine("Reply only the corresponding label.");
 
         var userPromptBuilder = new StringBuilder();
-        userPromptBuilder.AppendLine("INPUT:");
+        userPromptBuilder.AppendLine("input:");
         userPromptBuilder.AppendLine(userPrompt);
 
         var chatClient = await _chatClientFactory.CreateChatClientAsync(ModelType.Classification);

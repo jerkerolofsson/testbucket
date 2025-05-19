@@ -3,7 +3,7 @@
 
 @if (IsDarkMode)
 {
-    <MudIconButton Icon="@Icons.Material.Filled.DarkMode" OnClick="SetLightMode" />
+    <MudIconButton Icon="@Icons.Material.Filled.LightMode" OnClick="SetLightMode" />
 }
 else
 {
@@ -28,12 +28,12 @@ else
         var authenticationState = await authenticationStateProvider.GetAuthenticationStateAsync();
         if(authenticationState.User is not null)
         {
-            userPreferencesManager.UserPreferencesChanged += OnUserPreferencesChanged;
+            //userPreferencesManager.UserPreferencesChanged += OnUserPreferencesChanged;
         }
     }
     public void Dispose()
     {
-        userPreferencesManager.UserPreferencesChanged -= OnUserPreferencesChanged;
+        //userPreferencesManager.UserPreferencesChanged -= OnUserPreferencesChanged;
     }
 
     private void OnUserPreferencesChanged(object? sender, UserPreferences preferences)

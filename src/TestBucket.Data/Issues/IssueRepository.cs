@@ -1,7 +1,13 @@
-﻿using TestBucket.Data.Sequence;
+﻿using System.Linq;
+
+using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.Testing.Models;
+using TestBucket.Data.Sequence;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing.Aggregates;
 
 namespace TestBucket.Data.Issues;
 internal class IssueRepository : IIssueRepository
@@ -15,6 +21,74 @@ internal class IssueRepository : IIssueRepository
     }
 
     #region Local Issues
+
+    /// <summary>
+    /// Returns number of issues per state
+    /// </summary>
+    /// <param name="filters"></param>
+    /// <returns></returns>
+    public async Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(IEnumerable<FilterSpecification<LocalIssue>> filters)
+    {
+        var data = new InsightsData<MappedIssueState, int>() { Name = "issue-count" };
+        var series = new InsightsSeries<MappedIssueState, int>() { Name = "count-by-state" };
+        data.Add(series);
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var localIsses = dbContext.LocalIssues.AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            localIsses = localIsses.Where(filter.Expression);
+        }
+
+        var issues = await localIsses.GroupBy(x => x.MappedState).
+            Select(g => new { MappedState = g.Key, Count = g.Count() }).ToListAsync();
+
+        foreach (var item in issues)
+        {
+            if (item.MappedState is not null)
+            {
+                var name = item.MappedState.Value;
+                series.Add(name, item.Count);
+            }
+        }
+
+        return data;
+    }
+    /// <summary>
+    /// Returns number of issues per field
+    /// </summary>
+    /// <param name="filters"></param>
+    /// <param name="fieldDefinitionId"></param>
+    /// <returns></returns>
+    public async Task<InsightsData<string,int>> GetIssueCountPerFieldAsync(IEnumerable<FilterSpecification<LocalIssue>> filters, long fieldDefinitionId)
+    {
+        var data = new InsightsData<string, int>() { Name = "issue-count" };
+        var series = new InsightsSeries<string, int>() { Name = "count-by-field" };
+        data.Add(series);
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var localIsses = dbContext.LocalIssues
+            .Include(x => x.IssueFields)
+            .Where(x => x.IssueFields!.Any(f => f.FieldDefinitionId == fieldDefinitionId))
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            localIsses = localIsses.Where(filter.Expression);
+        }
+
+        var issues = await localIsses.GroupBy(x => new { x.IssueFields!.First(x => x.FieldDefinitionId == fieldDefinitionId).StringValue }).
+            Select(g => new { FieldValue = g.Key.StringValue, Count = g.Count() }).ToListAsync();
+
+        foreach (var item in issues)
+        {
+            var name = item.FieldValue ?? "(null)";
+            series.Add(name, item.Count);
+        }
+
+        return data;
+    }
 
     public async Task<PagedResult<LocalIssue>> SearchAsync(List<FilterSpecification<LocalIssue>> filters, int offset, int count)
     {

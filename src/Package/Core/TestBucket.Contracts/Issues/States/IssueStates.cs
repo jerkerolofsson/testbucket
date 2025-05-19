@@ -11,15 +11,20 @@ namespace TestBucket.Contracts.Issues.States;
 /// </summary>
 public class IssueStates
 {
-    public static string[] AllStates => [Open, Triaged, Accepted, InProgress, Reviewed, Completed, Closed, Delivered];
+    public static string[] AllStates => [Open, Triage, Triaged, Accepted, InProgress, Reviewed, Completed, Closed, Delivered];
 
     /// <summary>
-    /// A new isse
+    /// A new issue
     /// </summary>
     public const string Open = nameof(MappedIssueState.Open);
 
     /// <summary>
-    /// A new isse
+    /// An issue which is waiting for triage
+    /// </summary>
+    public const string Triage = nameof(MappedIssueState.Triage);
+
+    /// <summary>
+    /// An issue which has been triaged but is not accepted yet
     /// </summary>
     public const string Triaged = nameof(MappedIssueState.Triaged);
 

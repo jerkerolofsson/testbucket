@@ -66,4 +66,9 @@ public enum FieldDataSourceType
     /// TestCase
     /// </summary>
     TestCase = 11,
+
+
+
+    // Enums
+    Dock = 12,
 }

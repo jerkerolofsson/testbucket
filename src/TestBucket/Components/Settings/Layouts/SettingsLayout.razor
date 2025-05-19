@@ -2,12 +2,13 @@
 @layout AppLayout
 @using Humanizer
 @using TestBucket.Components.Layout
-@using TestBucket.Components.Shared.Splitter
+@using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Domain
 @using TestBucket.Domain.Settings
 @using TestBucket.Domain.Settings.Models
 @inject NavigationManager navigationManager
 @inject ISettingsManager settingsManager
+@inject UserPreferencesService preferencesController
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<SettingStrings> settingsLoc
@@ -15,7 +16,7 @@
 
 <TenantRedirect />
 
-<Splitter Style="height: 100%" Bordered="false" Dimension="15" EnableMargin="false" Color="Color.Default">
+<Splitter Dock="_dock" Style="height: 100%" Bordered="false" Dimension="20" EnableMargin="false" Color="Color.Default">
     <StartContent>
 
         <div class="pa-2 tb-navmenu side">
@@ -23,10 +24,11 @@
             <MudText Typo="Typo.h1">@loc["settings"]</MudText>
 
             <MudTextField Placeholder="@settingsLoc["search-settings"]"
-                Class="mt-3 mb-3"
+                Class="default-search mt-3 mb-3"
                 Clearable
                 Variant="Variant.Outlined"
-                Adornment="Adornment.Start" T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
+                Adornment="Adornment.Start" 
+                T="string" AdornmentIcon="@Icons.Material.Filled.Search" Value="_searchText" ValueChanged="OnSearchTextChangedAsync" />
 
             <MudNavMenu>
 
@@ -78,10 +80,17 @@
 
 @code {
     private string _searchText = "";
+    private Dock _dock = Dock.Left;
 
     private SettingsCategory[] _categories = [];
 
     [CascadingParameter] public TestProject? Project { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userPreferences = await preferencesController.GetUserPreferencesAsync();
+        _dock = userPreferences?.ExplorerDock ?? Dock.Left;
+    }
 
     private async Task<SettingContext> CreateSettingContextAsync()
     {

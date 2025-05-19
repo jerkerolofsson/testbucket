@@ -1,17 +1,18 @@
 ﻿@using Humanizer
 @using TestBucket.Components.Layout
 @using TestBucket.Components.Requirements.Controls
-@using TestBucket.Components.Shared.Splitter
+@using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Domain.Requirements.Models
 @using TestBucket.Domain.Teams.Models
 @layout AppLayout
 @inherits LayoutComponentBase
 @inject AppNavigationManager appNav
 @inject AppNavigationManager appNavigationManager
+@inject UserPreferencesService preferencesController
 
 <TenantRedirect />
 
-<Splitter Class="container-fill" Bordered="false" Dimension="25" EnableMargin="false" Color="Color.Tertiary">
+<Splitter Class="container-fill" Dock="_dock" Bordered="false" Dimension="20" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
         <div class="tb-navmenu side">
             <RequirementTreeView 
@@ -37,7 +38,13 @@
     private Team? _team;
     private TestProject? _project;
     private RequirementTreeView? _treeView;
+    private Dock _dock = Dock.Left;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var userPreferences = await preferencesController.GetUserPreferencesAsync();
+        _dock = userPreferences?.ExplorerDock ?? Dock.Left;
+    }
     private void OnSpecificationClicked(RequirementSpecification specification)
     {
         appNav.NavigateTo(specification);

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Localization;
 
 using TestBucket.Contracts.Fields;
+using TestBucket.Contracts.Issues.States;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Search;
@@ -28,6 +30,13 @@ internal class IssueController : TenantBaseService
         _loc = loc;
         _dialogService = dialogService;
         _manager = manager;
+    }
+
+    public async Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(SearchIssueQuery request)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.GetIssueCountPerStateAsync(principal, request);
+
     }
 
     public async Task<PagedResult<LocalIssue>> SearchAsync(long projectId, string text, int offset, int count)

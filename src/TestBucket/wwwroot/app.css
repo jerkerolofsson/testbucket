@@ -90,6 +90,10 @@ html, body {
     cursor: move;
 }
 
+.mud-badge-top.right {
+    margin-left: 8px;
+}
+
 .mud-chip-content {
     overflow: hidden;
     padding-right: 2px;
@@ -381,6 +385,7 @@ input:focus-visible {
 .tb-field {
    background: linear-gradient(0deg, var(--tb-palette-field-background) 0%, var(--tb-palette-field-background) 90%);
    border: solid 1px var(--tb-palette-field-border);
+   overflow: hidden;
 }
 
 .tb-field a {
@@ -575,7 +580,7 @@ tb-field .mud-link.mud-link-underline-hover:hover {
 }
 
 .tb-splitter-bar-fill {
-    background: var(--mud-palette-dark, rgba(255,255,255,0.2));
+    background: var(--mud-palette-lines-inputs, rgba(255,255,255,0.2));
 }
 
 .splitter > .tb-splitter-content-start,
@@ -583,14 +588,14 @@ tb-field .mud-link.mud-link-underline-hover:hover {
     overflow: auto;
 }
 
-.splitter.vertical  > .tb-splitter-bar> .tb-splitter-bar-fill {
+.splitter.vertical  > .tb-splitter-bar > .tb-splitter-bar-fill {
     width: 100%;
     height: 1px;
     margin-top: auto;
     margin-bottom: auto;
 }
 
-.splitter.horizontal  > .tb-splitter-bar> .tb-splitter-bar-fill {
+.splitter.horizontal  > .tb-splitter-bar > .tb-splitter-bar-fill {
     width: 1px;
     height: 100%;
     margin-left: auto;
@@ -917,8 +922,9 @@ div.tb-profile-image.tb-background-9 {
 /* Chart container, metrics, */
 .tb-tile {
     padding: 24px;
-    outline: solid 2px var(--tb-palette-field-border);
-    background: transparent;
+/*    outline: solid 2px var(--tb-palette-field-border);*/
+
+    background: var(--mud-palette-surface);
 }
 
 .tb-tile .tb-tile-numeric-value {
@@ -1052,4 +1058,8 @@ div.tb-profile-image.tb-background-9 {
 .tb-chart {
     height: 5vh; 
     min-height: 300px !important;
+}
+
+.dock-toggle.mud-icon-button {
+    transition: transform ease-in-out 300ms;
 }

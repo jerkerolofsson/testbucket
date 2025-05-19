@@ -3,6 +3,7 @@
 using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Automation;
+using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Models;
@@ -19,6 +20,7 @@ using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.ImportExport;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Testing.TestCases.Search;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Localization;
@@ -33,6 +35,7 @@ internal class TestBrowser : TenantBaseService
     private readonly ITestRunManager _testRunManager;
     private readonly ITeamManager _teamManager;
     private readonly ITestCaseManager _testCaseManager;
+    private readonly FieldController _fieldController;
     private readonly AppNavigationManager _appNavigationManager;
     private readonly PipelineController _pipelineController;
     private readonly IStringLocalizer<SharedStrings> _loc;
@@ -76,7 +79,8 @@ internal class TestBrowser : TenantBaseService
         PipelineController pipelineManager,
         ITestCaseManager testCaseManager,
         IStringLocalizer<SharedStrings> loc,
-        ITeamManager teamManager) : base(authenticationStateProvider)
+        ITeamManager teamManager,
+        FieldController fieldController) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
@@ -90,6 +94,7 @@ internal class TestBrowser : TenantBaseService
         _testCaseManager = testCaseManager;
         _loc = loc;
         _teamManager = teamManager;
+        _fieldController = fieldController;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -613,15 +618,28 @@ internal class TestBrowser : TenantBaseService
     /// <returns></returns>
     private async Task<List<TreeNode<BrowserItem>>> SearchAsync(TestBrowserRequest request)
     {
-        var searchTestResult = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery() 
-        { 
-            CompareFolder = false,
-            ProjectId = request.ProjectId, 
-            Count = 20, 
-            TeamId = request.TeamId, 
-            Offset = 0,
-            Text = request.Text
-        });
+        if (request.ProjectId is null)
+        {
+            return [];
+        }
+        if (request.Text is null)
+        {
+            return [];
+        }
+        var fields = await _fieldController.GetDefinitionsAsync(request.ProjectId.Value, Contracts.Fields.FieldTarget.TestCase);
+        var searchRequest = SearchTestCaseQueryParser.Parse(request.Text, fields);
+        searchRequest.ProjectId = request.ProjectId.Value;
+
+        var searchTestResult = await _testSuiteService.SearchTestCasesAsync(searchRequest); 
+        //new SearchTestQuery() 
+        //{ 
+        //    CompareFolder = false,
+        //    ProjectId = request.ProjectId, 
+        //    Count = 20, 
+        //    TeamId = request.TeamId, 
+        //    Offset = 0,
+        //    Text = request.Text
+        //});
 
         var rootItems = await BrowseRootAsync(request);
         rootItems[0].Expanded = true;

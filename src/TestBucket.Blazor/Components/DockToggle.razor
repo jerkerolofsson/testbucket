@@ -1,0 +1,76 @@
+﻿@using System.Globalization
+@using TestBucket.Contracts.Appearance.Models
+
+<div>
+    <MudBlazor.MudIconButton Size="MudBlazor.Size.Large" Style="@Style" Class="dock-toggle" Icon="@_icon" OnClick="Toggle" />
+</div>
+
+@code {
+    [Parameter] public Dock Allowed { get; set; } = Dock.Top | Dock.Left | Dock.Right | Dock.Bottom;
+    [Parameter] public Dock Dock { get; set; }
+    [Parameter] public EventCallback<Dock> DockChanged { get; set; }
+
+    private const string _icon = "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path opacity=\"0.2\" d=\"M22 7.81V16.19C22 19.83 19.83 22 16.19 22H9V2H16.19C19.83 2 22 4.17 22 7.81Z\" fill=\"currentColor\"/><path d=\"M9 2V22H7.81C4.17 22 2 19.83 2 16.19V7.81C2 4.17 4.17 2 7.81 2H9Z\" fill=\"currentColor\"/></svg>";
+
+    private string Text => Dock switch
+    {
+        Dock.Left => "Left",
+        Dock.Right => "Right",
+        Dock.Top => "Top",
+        Dock.Bottom => "Bottom",
+        _ => "Invalid"
+    };
+
+    private double Turn => Dock switch
+    {
+        Dock.Left => 0.0,
+        Dock.Right => 0.5,
+        Dock.Top => 0.25,
+        Dock.Bottom => 0.75,
+        _ => 0.0
+    };
+
+    private string Style 
+    {
+        get
+        {
+            var turnString = Turn.ToString(CultureInfo.InvariantCulture);
+            return $"transform: rotate({turnString}turn)";
+        }
+    }
+
+    private async Task Toggle()
+    {
+        // If no turns are allowed, just return
+        if (Allowed == 0)
+        {
+            return;
+        }
+
+        switch(Dock)
+        {
+            case Dock.Left:
+                Dock = Dock.Top;
+                break;
+            case Dock.Top:
+                Dock = Dock.Right;
+                break;
+            case Dock.Right:
+                Dock = Dock.Bottom;
+                break;
+            case Dock.Bottom:
+                Dock = Dock.Left;
+                break;
+        }
+
+        var isAllowed = (Dock & Allowed) != 0;
+        if(!isAllowed)
+        {
+            await Toggle();
+        }
+        else
+        {
+            await DockChanged.InvokeAsync(this.Dock);
+        }
+    }
+}

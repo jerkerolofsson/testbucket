@@ -2,6 +2,7 @@
 using MudBlazor.Utilities;
 
 using TestBucket.Components.Account;
+using TestBucket.Contracts.Appearance.Models;
 using TestBucket.Domain.Appearance;
 using TestBucket.Domain.Identity;
 
@@ -30,7 +31,7 @@ internal class ThemingService : TenantBaseService, IDisposable
         base(authenticationStateProvider)
     {
         _userPreferencesService = userPreferencesService;
-        _userPreferencesService.UserPreferencesChanged += OnUserPreferencesChanged;
+        //_userPreferencesService.UserPreferencesChanged += OnUserPreferencesChanged;
         _testBucketThemeManager = testBucketThemeManager;
     }
 
@@ -98,7 +99,7 @@ internal class ThemingService : TenantBaseService, IDisposable
 
     public void Dispose()
     {
-        _userPreferencesService.UserPreferencesChanged -= OnUserPreferencesChanged;
+        //_userPreferencesService.UserPreferencesChanged -= OnUserPreferencesChanged;
     }
 
     private readonly AppPalette _fieldPaletteDark = new AppPalette

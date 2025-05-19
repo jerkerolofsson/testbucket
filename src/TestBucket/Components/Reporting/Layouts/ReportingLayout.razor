@@ -1,19 +1,28 @@
 ﻿@inherits LayoutComponentBase
 @layout AppLayout
 @using Humanizer
+@using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Domain.Testing.TestRuns.Search
 @inject TestCaseEditorController testCaseEditor
 @inject NavigationManager navigationManager
 @inject AppNavigationManager appNavigationManager
+@inject UserPreferencesService preferencesController
+@inject IStringLocalizer<SharedStrings> loc
+
+
 <TenantRedirect />
 
-<Splitter Style="height: 100%" Bordered="false" Dimension="15" EnableMargin="false" Color="Color.Tertiary">
+<Splitter Style="height: 100%" Bordered="false" Dock="_dock" Dimension="20" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
 
-        <MudStack Class="pa-2" Style="width: 100%;">
-            <MudNavLink OnClick="AllTime">All Time</MudNavLink>
-            <MudNavLink OnClick="Today">Last 24 hours</MudNavLink>
-            <MudNavLink OnClick="LastWeek">Last 7 days</MudNavLink>
+        <MudStack Class="pa-2 tb-navmenu side" Style="width: 100%;">
+            <MudText Typo="Typo.h1">@loc["reporting"]</MudText>
+
+            <MudNavMenu>
+                <MudNavLink OnClick="AllTime">All Time</MudNavLink>
+                <MudNavLink OnClick="Today">Last 24 hours</MudNavLink>
+                <MudNavLink OnClick="LastWeek">Last 7 days</MudNavLink>
+            </MudNavMenu>
         </MudStack>
 
     </StartContent>
@@ -33,7 +42,13 @@
 
     private Team? _team;
     private TestProject? _project;
+    private Dock _dock = Dock.Left;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var userPreferences = await preferencesController.GetUserPreferencesAsync();
+        _dock = userPreferences?.ExplorerDock ?? Dock.Left;
+    }
     private void AllTime()
     {
         _query.CreatedFrom = null;

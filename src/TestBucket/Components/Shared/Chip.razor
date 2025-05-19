@@ -12,7 +12,7 @@ else
 @code {
     [Parameter] public Size Size { get; set; } = Size.Small;
     [Parameter] public string Text { get; set; } = "";
-    [Parameter] public string Color { get; set; } = "#CCC";
+    [Parameter] public string Color { get; set; } = "var(--mud-palette-tertiary)";
     [Parameter] public EventCallback<Chip> OnClose { get; set; }
     [Parameter] public bool CanClose { get; set; }
 
@@ -20,12 +20,12 @@ else
     private string _borderColor = "";
     private string _backgroundColor = "";
 
-    private string Style => $"background: {_backgroundColor}; border-color: {_borderColor}; color: {_textColor}";
+    private string Style => $"background: {_backgroundColor}; border-style: solid; border-width: 1px; border-color: {_borderColor}; color: {_textColor}";
 
     protected override void OnParametersSet()
     {
         MudColor color = Color;
         _textColor = _borderColor = Color;
-        _backgroundColor = color.ColorDarken(0.5).ToString(MudColorOutputFormats.Hex);
+        _backgroundColor = color.ColorDarken(0.4).ToString(MudColorOutputFormats.Hex);
     }
 }

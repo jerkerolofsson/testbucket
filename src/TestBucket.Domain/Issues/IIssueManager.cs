@@ -1,5 +1,7 @@
 ﻿using System.Security.Claims;
 
+using TestBucket.Contracts.Issues.States;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Search;
 
@@ -42,7 +44,16 @@ public interface IIssueManager
     /// <param name="issue"></param>
     /// <returns></returns>
     Task RefreshLinkedIssueAsync(ClaimsPrincipal principal, LinkedIssue issue);
-    Task<PagedResult<LinkedIssue>> SearchLinkedIssuesAsync(SearchIssueRequest request, int offset, int count);
+
+    /// <summary>
+    /// Searches for linked issues
+    /// </summary>
+    /// <param name="Principal"></param>
+    /// <param name="request"></param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
+    Task<PagedResult<LinkedIssue>> SearchLinkedIssuesAsync(ClaimsPrincipal Principal, SearchIssueQuery request, int offset, int count);
 
     #region Local issues
 
@@ -57,10 +68,11 @@ public interface IIssueManager
     Task AddLocalIssueAsync(ClaimsPrincipal principal, LocalIssue issue);
 
     Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count);
-    Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(SearchIssueRequest request, int offset, int count);
+    Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(ClaimsPrincipal principal, SearchIssueQuery request, int offset, int count);
     Task<LocalIssue?> FindLocalIssueFromExternalAsync(ClaimsPrincipal principal, long testProjectId, long? externalSystemId, string? externalId);
     Task UpdateLocalIssueAsync(ClaimsPrincipal principal, LocalIssue existingIssue);
     Task<LocalIssue?> GetIssueByIdAsync(ClaimsPrincipal principal, long id);
+    Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request);
 
     #endregion
 }

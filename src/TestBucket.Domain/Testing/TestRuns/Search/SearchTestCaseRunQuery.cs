@@ -42,46 +42,6 @@ public class SearchTestCaseRunQuery : SearchQuery
             }
         }
         return q;
-        /*
-        var pairs = query.Split('&');
-        foreach(var pair in pairs)
-        {
-            var equalSignPos = pair.IndexOf('=');
-            if(equalSignPos > 0 && pair.Length > equalSignPos+1)
-            {
-                var key = pair.Substring(0, equalSignPos);
-                var value = WebUtility.UrlDecode(pair.Substring(equalSignPos+1));
-                switch(key)
-                {
-                    case "AssignedToUser":
-                        q.AssignedToUser = value;
-                        break;
-                    case "State":
-                        q.State = value;
-                        break;
-                    case "Unassigned":
-                        if (bool.TryParse(value, out var unassigned))
-                        {
-                            q.Unassigned = unassigned;
-                        }
-                        break;
-                    case "Completed":
-                        if (bool.TryParse(value, out var completed))
-                        {
-                            q.Completed = completed;
-                        }
-                        break;
-                    case "Result":
-                        if (Enum.TryParse<TestResult>(value, out var result))
-                        {
-                            q.Result = result;
-                        }
-                        break;
-                }
-            }
-        }
-        return q;
-        */
     }
 
     public string ToSearchText()
@@ -108,7 +68,7 @@ public class SearchTestCaseRunQuery : SearchQuery
         }
         if (State is not null)
         {
-            items.Add($"state={State}");
+            items.Add($"state:{State}");
         }
         if (TeamId is not null)
         {

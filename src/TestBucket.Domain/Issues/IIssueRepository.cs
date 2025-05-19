@@ -4,12 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Issues.States;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Domain.Issues;
 public interface IIssueRepository
 {
+    #region Insights
+    Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(IEnumerable<FilterSpecification<LocalIssue>> filters);
+    #endregion
+
     Task AddLinkedIssueAsync(LinkedIssue linkedIssue);
     Task AddLocalIssueAsync(LocalIssue localIssue);
     Task DeleteLinkedIssueAsync(long linkedIssueId);

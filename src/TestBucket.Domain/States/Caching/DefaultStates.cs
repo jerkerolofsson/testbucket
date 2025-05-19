@@ -51,9 +51,10 @@ internal class DefaultStates
     {
         return [
                 new() { Name = IssueStates.Open, MappedState = MappedIssueState.Open },
+                new() { Name = IssueStates.Triage, MappedState = MappedIssueState.Triage },
+                new() { Name = IssueStates.Triaged, MappedState = MappedIssueState.Triaged },
                 new() { Name = IssueStates.Accepted, MappedState = MappedIssueState.Accepted },
                 new() { Name = IssueStates.Assigned, MappedState = MappedIssueState.Assigned },
-                new() { Name = IssueStates.Triaged, MappedState = MappedIssueState.Triaged },
                 new() { Name = IssueStates.InProgress, MappedState = MappedIssueState.InProgress },
                 new() { Name = IssueStates.Reviewed, MappedState = MappedIssueState.Reviewed },
                 new() { Name = IssueStates.Closed, MappedState = MappedIssueState.Closed },

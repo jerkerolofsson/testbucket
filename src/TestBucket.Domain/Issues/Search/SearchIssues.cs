@@ -22,14 +22,11 @@ namespace TestBucket.Domain.Issues.Search;
 
 public record class SearchIssueRequest(ClaimsPrincipal Principal, SearchIssueQuery Query) : IRequest<SearchIssueResponse>;
 
-public record class SearchIssueQuery()
+public class SearchIssueQuery : SearchQuery
 {
-    public List<FieldFilter> Fields { get; set; } = [];
-    public long? ProjectId { get; set; }
     public string? State { get; set; }
     public MappedIssueState? MappedState { get; set; }
     public string? Type { get; set; }
-    public string? Text { get; set; }
     public string? ExternalSystemName { get; set; }
     public long? ExternalSystemId { get; set; }
     public string? AssignedToUser { get; set; }

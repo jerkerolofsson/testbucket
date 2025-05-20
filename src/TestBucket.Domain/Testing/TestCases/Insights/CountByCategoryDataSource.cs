@@ -36,6 +36,7 @@ internal class CountByCategoryDataSource : IInsightsDataSource
         var data = await _manager.GetInsightsTestCountPerFieldAsync(principal, testQuery, Traits.Core.TraitType.TestCategory);
         var stringLabelData = data.ConvertToStringLabels();
         stringLabelData.Series[0].SortBy = InsightsSort.ValueDescending;
+        stringLabelData.Series[0].Name = "count-per-testcategory";
         return stringLabelData;
     }
 }

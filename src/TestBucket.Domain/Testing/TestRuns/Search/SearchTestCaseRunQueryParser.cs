@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Domain.Issues.Search;
+using TestBucket.Domain.Search;
 
 namespace TestBucket.Domain.Testing.TestRuns.Search;
 public class SearchTestCaseRunQueryParser
@@ -12,34 +13,29 @@ public class SearchTestCaseRunQueryParser
     private static readonly HashSet<string> _keywords = 
         [
         "assigned-to", 
-        "team-id", 
         "testsuite-id", 
-        "project-id", 
         "testrun-id", 
         "state", 
         "completed", 
         "result", 
-        "unassigned"
+        "unassigned",
+        .. BaseQueryParser.Keywords
         ];
 
-    public static SearchTestCaseRunQuery Parse(string text, IReadOnlyList<FieldDefinition> fields)
+    public static SearchTestCaseRunQuery Parse(string text, IReadOnlyList<FieldDefinition> fields, TimeProvider? provider = null)
     {
         var request = new SearchTestCaseRunQuery();
 
         Dictionary<string, string> result = [];
         request.Text = SearchStringParser.Parse(text, result, request.Fields, _keywords, fields);
+        BaseQueryParser.Parse(request, result, provider);
+
         foreach (var pair in result)
         {
             switch (pair.Key)
             {
                 case "assigned-to":
                     request.AssignedToUser = pair.Value;
-                    break;
-                case "team-id":
-                    if (long.TryParse(pair.Value, out var teamId))
-                    {
-                        request.TeamId = teamId;
-                    }
                     break;
                 case "testsuite-id":
                     if (long.TryParse(pair.Value, out var testSuiteId))

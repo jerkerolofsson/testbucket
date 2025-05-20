@@ -1,0 +1,26 @@
+﻿@using TestBucket.Domain.Insights.Model
+@inject IStringLocalizer<InsightStrings> loc
+@if(Results is not null && Results.Series.Count > 0)
+{
+    @foreach(var series in Results.Series)
+    {
+        // Todo: Use table data and series as multiple columns!
+
+        <MudText Typo="Typo.caption">@series.Name</MudText>
+        <MudTable T="InsightsDataPoint<string,double>" Items="@series.Data" Breakpoint="Breakpoint.Sm">
+            <HeaderContent>
+                <MudTh>@loc["label"]</MudTh>
+                <MudTh>@loc["value"]</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nr">@context.Label</MudTd>
+                <MudTd DataLabel="Nr">@context.Value</MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+}
+
+@code {
+    [Parameter] public InsightsData<string, double>? Results { get; set; }
+    
+}

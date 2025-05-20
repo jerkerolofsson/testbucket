@@ -2,6 +2,7 @@
 @page "/{TenantId}/Code/Commits"
 @using TestBucket.Components.Code.Controls
 @using TestBucket.Domain
+@using TestBucket.Domain.Appearance
 @using TestBucket.Domain.Code.Models
 @layout CodeLayout
 
@@ -11,65 +12,63 @@
 
 <Splitter Class="container-fill pa-2" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
-        <div class="tb-architecture-yaml-left">
-            @if (Project is not null)
-            {
-                <MudDataGrid ServerData="LoadGridData" SelectedItems="@_selectedItems" SelectedItemsChanged="OnSelectedItemsChanged"
-                             SelectOnRowClick MultiSelection="true"
-                             RowClassFunc="RowClassFunc" Hover T="Commit" SortMode="SortMode.None">
+        @if (Project is not null)
+        {
+            <MudDataGrid ServerData="LoadGridData" SelectedItems="@_selectedItems" SelectedItemsChanged="OnSelectedItemsChanged"
+                            SelectOnRowClick MultiSelection="true"
+                            RowClassFunc="RowClassFunc" Hover T="Commit" SortMode="SortMode.None">
 
-                    <ToolBarContent>
-                        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-                            <MudIcon Icon="@TbIcons.Git.Commit" Size="Size.Large" />
-                            <MudText Typo="Typo.h2">@loc["commits"]</MudText>
-                            <MudSpacer />
-                        </MudStack>
-                    </ToolBarContent>
+                <ToolBarContent>
+                    <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                        <MudIcon Icon="@TbIcons.Git.Commit" Size="Size.Large" />
+                        <MudText Typo="Typo.h2">@loc["commits"]</MudText>
+                        <MudSpacer />
+                    </MudStack>
+                </ToolBarContent>
 
-                    <ColGroup>
-                        <col style="width: 10%" />
-                        <col style="width: 60%" />
-                        <col style="width: 30%;" />
-                    </ColGroup>
+                <ColGroup>
+                    <col style="width: 10%" />
+                    <col style="width: 60%" />
+                    <col style="width: 30%;" />
+                </ColGroup>
 
-                    <Columns>
+                <Columns>
 
-                        <SelectColumn T="Commit" />
+                    <SelectColumn T="Commit" />
 
-                        <TemplateColumn Title="@loc["message"]">
-                            <CellTemplate>
-                                <div class="message">@context.Item.Message </div>
-                                <CopyToClipboard Text="@context.Item.Sha" IconSize="Size.Small">
-                                    <div class="sha">@context.Item.Sha </div>
-                                </CopyToClipboard>
-                                @if(context.Item.FeatureNames is not null)
-                                {
-                                    <MudChipSet>
-                                        @foreach(var feature in context.Item.FeatureNames)
-                                        {
-                                            <MudChip T="string">@feature</MudChip>
-                                        }
-                                    </MudChipSet>
-                                }
-                            </CellTemplate>
-                        </TemplateColumn>
+                    <TemplateColumn Title="@loc["message"]">
+                        <CellTemplate>
+                            <div class="message">@context.Item.Message </div>
+                            <CopyToClipboard Text="@context.Item.Sha" IconSize="Size.Small">
+                                <div class="sha">@context.Item.Sha </div>
+                            </CopyToClipboard>
+                            @if(context.Item.FeatureNames is not null)
+                            {
+                                <MudStack Row Spacing="1">
+                                    @foreach(var feature in context.Item.FeatureNames)
+                                    {
+                                        <Chip Palette="@DefaultPalettes.Default" ColorFromTextHash Text="@feature"/>
+                                    }
+                                </MudStack>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
 
-                        <TemplateColumn Title="@loc["commited"]">
-                            <CellTemplate>
-                                @if (context.Item.Commited is not null)
-                                {
-                                    <MudText>@context.Item.Commited.Humanize()</MudText>
-                                }
-                            </CellTemplate>
-                        </TemplateColumn>
-                    </Columns>
+                    <TemplateColumn Title="@loc["commited"]">
+                        <CellTemplate>
+                            @if (context.Item.Commited is not null)
+                            {
+                                <MudText>@context.Item.Commited.Humanize()</MudText>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
 
-                    <PagerContent>
-                        <MudDataGridPager T="Commit" />
-                    </PagerContent>
-                </MudDataGrid>
-            }
-        </div>
+                <PagerContent>
+                    <MudDataGridPager T="Commit" />
+                </PagerContent>
+            </MudDataGrid>
+        }
     </StartContent>
     <EndContent>
         @if (_model is not null && _selectedItems.Count > 0)

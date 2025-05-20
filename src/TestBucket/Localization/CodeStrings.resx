@@ -132,6 +132,9 @@
   <data name="changed-files" xml:space="preserve">
     <value>Changed Files</value>
   </data>
+  <data name="commited" xml:space="preserve">
+    <value>Commited</value>
+  </data>
   <data name="commits" xml:space="preserve">
     <value>Commits</value>
   </data>
@@ -153,6 +156,10 @@
   </data>
   <data name="layers" xml:space="preserve">
     <value>Layers</value>
+  </data>
+  <data name="message" xml:space="preserve">
+    <value>Message</value>
+    <comment>Commit message</comment>
   </data>
   <data name="subject" xml:space="preserve">
     <value>Subject</value>

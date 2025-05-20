@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Insights.Model;
+using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
@@ -1067,6 +1069,40 @@ internal class TestCaseRepository : ITestCaseRepository
         return result;
     }
 
+    /// <summary>
+    /// Returns number of testcases grouped per field
+    /// </summary>
+    /// <param name="filters"></param>
+    /// <param name="fieldDefinitionId"></param>
+    /// <returns></returns>
+    public async Task<InsightsData<string, int>> GetInsightsTestCountPerFieldAsync(IEnumerable<FilterSpecification<TestCase>> filters, long fieldDefinitionId)
+    {
+        var data = new InsightsData<string, int>() { Name = "test-count" };
+        var series = new InsightsSeries<string, int>() { Name = "test-by-field" };
+        data.Add(series);
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var localIsses = dbContext.TestCases
+            .Include(x => x.TestCaseFields)
+            .Where(x => x.TestCaseFields!.Any(f => f.FieldDefinitionId == fieldDefinitionId))
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            localIsses = localIsses.Where(filter.Expression);
+        }
+
+        var issues = await localIsses.GroupBy(x => new { x.TestCaseFields!.First(x => x.FieldDefinitionId == fieldDefinitionId).StringValue }).
+            Select(g => new { FieldValue = g.Key.StringValue, Count = g.Count() }).ToListAsync();
+
+        foreach (var item in issues)
+        {
+            var name = item.FieldValue ?? "(null)";
+            series.Add(name, item.Count);
+        }
+
+        return data;
+    }
 
     public async Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
     {

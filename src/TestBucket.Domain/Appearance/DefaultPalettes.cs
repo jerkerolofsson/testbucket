@@ -65,7 +65,7 @@ public static class DefaultPalettes
     };
 
     /// <summary>
-    /// 
+    /// Looks like office colors
     /// </summary>
     public static readonly ThemePalette Corporate = new ThemePalette
     {
@@ -76,6 +76,26 @@ public static class DefaultPalettes
             ThemeColor.Parse("#0f9ed5"),
             ThemeColor.Parse("#a02b93"),
             ThemeColor.Parse("#4ea72e"),
+            ]
+    };
+
+
+    /// <summary>
+    /// Looks like office colors
+    /// </summary>
+    public static readonly ThemePalette ReportingDefault = new ThemePalette
+    {
+        Colors = [
+            ThemeColor.Parse("#EF476F"),
+            ThemeColor.Parse("#FFD166"),
+            ThemeColor.Parse("#06D6A0"),
+            ThemeColor.Parse("#118AB2"),
+            ThemeColor.Parse("#073B4C"),
+            ThemeColor.Parse("#EF476F").ColorDarken(0.2),
+            ThemeColor.Parse("#FFD166").ColorDarken(0.2),
+            ThemeColor.Parse("#06D6A0").ColorDarken(0.2),
+            ThemeColor.Parse("#118AB2").ColorDarken(0.2),
+            ThemeColor.Parse("#073B4C").ColorDarken(0.2),
             ]
     };
 }

@@ -1068,16 +1068,16 @@ namespace TestBucket.MudBlazorExtensions.Markdown
             {
                 State.Preview = Preview;
             }
-            if (_value is null)
-            {
-                _value = Value;
-            }
+            //if (_value is null)
+            //{
+            //    _value = Value;
+            //}
 
             if (Initialized && _value != Value)
             {
                 await SetValueAsync(Value ?? "");
-                _value = Value;
             }
+            _value = Value;
 
             if (Initialized && State.Preview != Preview)
             {

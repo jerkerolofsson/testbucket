@@ -87,7 +87,6 @@ html, body {
     border-color: var(--clr-norun-alt);
 }
 .tb-draggable:not(:has(.drag-handle)):hover {
-    cursor: move;
 }
 
 .mud-badge-top.right {
@@ -1088,4 +1087,19 @@ div.tb-profile-image.tb-background-9 {
     display: flex;
     align-items: center;
     gap: 4px;
+}
+
+.tb-insights-chart .mud-table-root {
+    margin-top: 16px;
+    border: solid 1px var(--mud-palette-lines-inputs);
+}
+
+.tb-insights-chart .mud-table-root .mud-table-body .mud-table-cell,
+.tb-insights-chart .mud-table-root .mud-table-head .mud-table-cell {
+    padding: 4px;
+    font-size: 8pt;
+}
+
+.tb-insights-chart .mud-table-root .mud-table-head th.mud-table-cell {
+    font-weight: bold;
 }

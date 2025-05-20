@@ -1,4 +1,5 @@
 ﻿@using MudBlazor.Utilities
+@using TestBucket.Contracts.Appearance.Models
 @if(!CanClose)
 {
     <MudChip T="string" Value="@Text" Class="tb-chip" Style="@Style" Size="@Size" />
@@ -12,9 +13,11 @@ else
 @code {
     [Parameter] public Size Size { get; set; } = Size.Small;
     [Parameter] public string Text { get; set; } = "";
-    [Parameter] public string Color { get; set; } = "var(--mud-palette-tertiary)";
+    [Parameter] public string Color { get; set; } = "#777";
     [Parameter] public EventCallback<Chip> OnClose { get; set; }
     [Parameter] public bool CanClose { get; set; }
+    [Parameter] public bool ColorFromTextHash { get; set; }
+    [Parameter] public ThemePalette? Palette { get; set; }
 
     private string _textColor = "";
     private string _borderColor = "";
@@ -24,8 +27,17 @@ else
 
     protected override void OnParametersSet()
     {
-        MudColor color = Color;
-        _textColor = _borderColor = Color;
-        _backgroundColor = color.ColorDarken(0.4).ToString(MudColorOutputFormats.Hex);
+        ThemeColor color = Color;
+        if (ColorFromTextHash && Palette is not null && Palette.Colors.Count > 0)
+        {
+            if(Text is not null)
+            {
+                var hash = Math.Abs(Text.GetHashCode()) % Palette.Colors.Count;
+                color = Palette.Colors[hash];
+            }
+        }
+        _textColor = color.ToString(ColorOutputFormats.Hex);
+        _borderColor = color.ColorDarken(0.075).ToString(ColorOutputFormats.Hex);
+        _backgroundColor = color.ColorDarken(0.4).ToString(ColorOutputFormats.Hex);
     }
 }

@@ -120,7 +120,6 @@ internal class IssueRepository : IIssueRepository
         return data;
     }
 
-
     /// <summary>
     /// Returns number of issues per field
     /// </summary>
@@ -155,7 +154,6 @@ internal class IssueRepository : IIssueRepository
 
         return data;
     }
-
     public async Task<PagedResult<LocalIssue>> SearchAsync(List<FilterSpecification<LocalIssue>> filters, int offset, int count)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();

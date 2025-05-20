@@ -21,6 +21,11 @@ public class InsightsVisualizationSpecification
     public bool ShowLegend { get; set; }
 
     /// <summary>
+    /// If true, shows a data table
+    /// </summary>
+    public bool ShowDataTable { get; set; }
+
+    /// <summary>
     /// Palette used when there are no specific colors assigned
     /// </summary>
     public ThemePalette? Palette { get; set; }

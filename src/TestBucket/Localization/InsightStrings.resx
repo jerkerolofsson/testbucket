@@ -123,10 +123,19 @@
   <data name="closed-issues-by-day" xml:space="preserve">
     <value>Closed issues</value>
   </data>
+  <data name="count-per-testcategory" xml:space="preserve">
+    <value>Tests / category</value>
+  </data>
   <data name="created-issues" xml:space="preserve">
     <value>Created issues</value>
   </data>
   <data name="created-issues-by-day" xml:space="preserve">
     <value>Created issues</value>
+  </data>
+  <data name="label" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="value" xml:space="preserve">
+    <value>Value</value>
   </data>
 </root>

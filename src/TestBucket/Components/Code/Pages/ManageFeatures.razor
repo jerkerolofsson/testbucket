@@ -1,87 +1,119 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Code/Features"
 @using TestBucket.Components.Code.Controls
+@using TestBucket.Components.Issues.Controls
+@using TestBucket.Components.Shared.Profile
+@using TestBucket.Contracts.Fields
 @using TestBucket.Domain
 @using TestBucket.Domain.Code.Models
+@using TestBucket.Domain.Testing.TestCases.Search
+@using TestBucket.Domain.Testing.TestRuns.Search
 @layout CodeLayout
 @inject ArchitectureController architectureController
+@inject FieldController fieldController
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<CodeStrings> codeLoc
 @inject AuthenticationStateProvider authenticationStateProvider 
 
-@if (_project is not null)
-{
-    <MudDataGrid 
-    @ref="_grid"
-    ServerData="LoadGridData"
-    Dense Hover RowClass="tb-datarow cursor-pointer"
-    RowClick="async (row) => await OnRowClicked(row.Item)"
-    T="Feature" SortMode="SortMode.None">
+<Splitter Class="container-fill pa-2" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+        @if (_project is not null)
+        {
+            <MudDataGrid 
+            @ref="_grid"
+            ServerData="LoadGridData"
+            Dense Hover RowClass="tb-datarow cursor-pointer"
+            RowClick="async (row) => await OnRowClicked(row.Item)"
+            T="Feature" SortMode="SortMode.None">
 
-        <ToolBarContent>
-            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-                <MudTextField Value="@_searchText" T="string" ValueChanged="OnSearch"
-                Style="min-width: 15vw"
-                Class="mt-2"
-                Clearable="true"
-                Variant="Variant.Text"
-                IconSize="Size.Small"
-                Adornment="Adornment.Start"
-                Placeholder="@loc["search"]"
-                AdornmentIcon="@Icons.Material.Filled.Search" />
+                <ToolBarContent>
+                    <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                        <MudTextField Value="@_searchText" T="string" ValueChanged="OnSearch"
+                                      Class="default-search"
+                                      Clearable="true"
+                                      Variant="Variant.Outlined"
+                                      IconSize="Size.Small"
+                                      Adornment="Adornment.Start"
+                                      Placeholder="@loc["search"]"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" />
 
-                <MudSpacer />
-                <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
-                    <Authorized>
-                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"></MudIconButton>
-                    </Authorized>
-                </PermissionView>
-            </MudStack>
-        </ToolBarContent>
+                        <MudSpacer />
+                        <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
+                            <Authorized>
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"></MudIconButton>
+                            </Authorized>
+                        </PermissionView>
+                    </MudStack>
+                </ToolBarContent>
 
-        <ColGroup>
-            <col style="width: 30%" />
-            <col style="width: 30%;" />
-            <col style="width: 30%;" />
-            <col style="width: 10%;" />
-        </ColGroup>
+                <ColGroup>
+                    <col style="width: 80%" />
+                    <col style="width: 20%;" />
+                </ColGroup>
 
-        <Columns>
-            <TemplateColumn Title="@loc["name"]">
-                <CellTemplate>
-                    @context.Item.Name
-                </CellTemplate>
-            </TemplateColumn>
+                <Columns>
+                    <TemplateColumn Title="@loc["name"]">
+                        <CellTemplate>
+                            <div class="name">@context.Item.Name</div>
+                            <MudStack Row Justify="Justify.FlexEnd" AlignItems="AlignItems.Center">
+                                @if(context.Item.DevLead is not null)
+                                {
+                                    <UserProfileImage UserName="@context.Item.DevLead"/>
+                                }
+                                @if (context.Item.TestLead is not null && context.Item.DevLead != context.Item.TestLead)
+                                {
+                                    <UserProfileImage UserName="@context.Item.TestLead" />
+                                }
+                            </MudStack>
+                        </CellTemplate>
+                    </TemplateColumn>
 
-            <TemplateColumn Title="@codeLoc["dev-lead"]">
-                <CellTemplate>
-                    @context.Item.DevLead
-                </CellTemplate>
-            </TemplateColumn>
+                    <TemplateColumn>
+                        <CellTemplate>
+                            <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
+                                <Authorized>
+                                    <MudIconButton OnClick="async () => await EditAsync(context.Item)" Icon="@Icons.Material.Filled.Edit" />
+                                </Authorized>
+                            </PermissionView>
 
-            <TemplateColumn Title="@codeLoc["test-lead"]">
-                <CellTemplate>
-                    @context.Item.TestLead
-                </CellTemplate>
-            </TemplateColumn>
+                            <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Delete">
+                                <Authorized>
+                                    <MudIconButton OnClick="async() => await DeleteAsync(context.Item)" Color="Color.Error" Icon="@Icons.Material.Filled.Clear" />
+                                </Authorized>
+                            </PermissionView>
 
-            <TemplateColumn>
-                <CellTemplate>
-                    <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Delete">
-                        <Authorized>
-                            <MudIconButton OnClick="async() => await DeleteAsync(context.Item)" Color="Color.Error" Icon="@Icons.Material.Filled.Clear" />
-                        </Authorized>
-                    </PermissionView>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
 
-                </CellTemplate>
-            </TemplateColumn>
-        </Columns>
-
-        <PagerContent>
-            <MudDataGridPager T="Feature" />
-        </PagerContent>
-    </MudDataGrid>
-}
+                <PagerContent>
+                    <MudDataGridPager T="Feature" />
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </StartContent>
+    <EndContent>
+        @if (_selectedFeature is not null)
+        {
+            <MudTabs Style="width: 100%">
+                <MudTabPanel Text="@loc["feature"]">
+                    <MudStack Class="pa-2">
+                        <ArchitecturalComponentView Component="_selectedFeature"/>
+                    </MudStack>
+                </MudTabPanel>
+                <MudTabPanel Text="@loc["issues"]">
+                    <IssueGrid @bind-SearchText="_issueSearchText" />
+                </MudTabPanel>
+                <MudTabPanel Text="@loc["test-cases"]">
+                    <TestCaseGrid @bind-Query="_testCaseQuery" CompareFolder="false" Project="Project"/>
+                </MudTabPanel>
+                <MudTabPanel Text="@loc["test-results"]">
+                    <TestCaseRunGrid @bind-Query="_testCaseRunQuery" />
+                </MudTabPanel>
+            </MudTabs>
+        }
+    </EndContent>
+</Splitter>
 
 
 @code {
@@ -91,6 +123,10 @@
     private IReadOnlyList<Feature> _features = [];
     private MudDataGrid<Feature>? _grid;
     private string _searchText = "";
+    private Feature? _selectedFeature;
+    private SearchTestQuery _testCaseQuery = new();
+    private SearchTestCaseRunQuery _testCaseRunQuery = new();
+    private string _issueSearchText = "";
 
     protected void OnSearch(string text)
     {
@@ -105,6 +141,20 @@
     }
 
     private async Task OnRowClicked(Feature feature)
+    {
+        _selectedFeature = feature;
+        if(_project is not null)
+        {
+            var q = $"feature:\"{_selectedFeature.Name}\"";
+            var testCaseFields = await fieldController.GetDefinitionsAsync(_project.Id, FieldTarget.TestCase);
+            var testCaseRunFields = await fieldController.GetDefinitionsAsync(_project.Id, FieldTarget.TestCaseRun);
+            _testCaseQuery = SearchTestCaseQueryParser.Parse(q, testCaseFields);
+            _testCaseRunQuery = SearchTestCaseRunQueryParser.Parse(q, testCaseRunFields);
+            _issueSearchText = q;
+        }
+    }
+
+    private async Task EditAsync(Feature feature)
     {
         var state = await authenticationStateProvider.GetAuthenticationStateAsync();
         if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Write))

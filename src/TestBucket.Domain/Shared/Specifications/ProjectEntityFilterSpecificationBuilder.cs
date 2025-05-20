@@ -23,9 +23,9 @@ public class ProjectEntityFilterSpecificationBuilder
         {
             specifications.Add(new FilterByProject<T>(query.ProjectId.Value));
         }
-        if (query.CreatedFrom is not null && query.CreatedUntil is not null)
+        if (query.CreatedFrom is not null || query.CreatedUntil is not null)
         {
-            specifications.Add(new FilterByCreated<T>(query.CreatedFrom.Value, query.CreatedUntil.Value));
+            specifications.Add(new FilterByCreated<T>(query.CreatedFrom, query.CreatedUntil));
         }
 
 

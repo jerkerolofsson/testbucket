@@ -10,12 +10,15 @@
       <Compile Remove="Automation\Pipelines\IntegrationEvents\**" />
       <Compile Remove="Requirements\NewFolder\**" />
       <Compile Remove="Requirements\Relationships\**" />
+      <Compile Remove="Requirements\Specifications\Specification\**" />
       <EmbeddedResource Remove="Automation\Pipelines\IntegrationEvents\**" />
       <EmbeddedResource Remove="Requirements\NewFolder\**" />
       <EmbeddedResource Remove="Requirements\Relationships\**" />
+      <EmbeddedResource Remove="Requirements\Specifications\Specification\**" />
       <None Remove="Automation\Pipelines\IntegrationEvents\**" />
       <None Remove="Requirements\NewFolder\**" />
       <None Remove="Requirements\Relationships\**" />
+      <None Remove="Requirements\Specifications\Specification\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -61,7 +64,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Requirements\Specifications\Specification\" />
       <Folder Include="TestResources\Services\" />
     </ItemGroup>
 

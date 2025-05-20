@@ -49,7 +49,7 @@ namespace TestBucket.Domain.Requirements.Specifications
         }
         public static IReadOnlyList<FilterSpecification<Requirement>> From(SearchRequirementQuery query)
         {
-            var specifications = new List<FilterSpecification<Requirement>>();
+            var specifications = ProjectEntityFilterSpecificationBuilder.From<Requirement>(query);
 
             if (query.Fields is not null)
             {
@@ -81,14 +81,6 @@ namespace TestBucket.Domain.Requirements.Specifications
             if (query.RequirementSpecificationId is not null)
             {
                 specifications.Add(new FilterRequirementBySpecification(query.RequirementSpecificationId.Value));
-            }
-            if (query.TeamId is not null)
-            {
-                specifications.Add(new FilterByTeam<Requirement>(query.TeamId.Value));
-            }
-            if (query.ProjectId is not null)
-            {
-                specifications.Add(new FilterByProject<Requirement>(query.ProjectId.Value));
             }
             if (query.CompareFolder)
             {

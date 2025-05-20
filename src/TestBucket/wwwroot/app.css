@@ -47,6 +47,16 @@ html, body {
     font-style: italic;
 }
 
+.treeview .non-draggable,
+.treeview .tb-draggable,
+.treeview .mud-menu {
+    width: 100%;
+}
+
+.treeview span.child-count {
+    opacity: 0.25;
+}
+
 .tb-passrate-text {
     font-weight: bold;
     color: var(--clr-passed);
@@ -452,7 +462,7 @@ tb-field .mud-link.mud-link-underline-hover:hover {
  }
 
  .treeview .node {
-     padding: 0px 2px;
+     padding: 0;
      margin-left: 12px;
      overflow: hidden;
      font-size: var(--mud-typography-default-size);

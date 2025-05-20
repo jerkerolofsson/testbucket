@@ -91,24 +91,53 @@
                                     }
                                 }
 
-                                <div style="@style" class="@cssClass">@context.Text</div>
+                                <div style="@style" class="@cssClass">
+                                    <span><MudHighlighter Text="@context.Text" HighlightedText="@_searchText" /></span>
+                                </div>
                             </Draggable>
                         }
                         else if (context.Value?.Folder is not null)
                         {
                             <Draggable T="TestEntity" Data="@context.Value.Folder">
-                                <div style="@style">@context.Text</div>
+                                <div style="@style">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%">
+                                        <span>@context.Text</span>
+                                        <MudSpacer />
+                                        @if (context.HasChildren)
+                                        {
+                                            <span class="child-count">@context.Children.Count</span>
+                                        }
+                                    </MudStack>
+                                </div>
                             </Draggable>
                         }
                         else if (context.Value?.TestSuite is not null)
                         {
                             <Draggable T="TestEntity" Data="@context.Value.TestSuite">
-                                <div style="@style">@context.Text</div>
+                                <div style="@style">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%">
+                                        <span>@context.Text</span>
+                                        <MudSpacer />
+                                        @if (context.HasChildren)
+                                        {
+                                            <span class="child-count">@context.Children.Count</span>
+                                        }
+                                    </MudStack>
+                                </div>
                             </Draggable>
                         }
                         else
                         {
-                            <div style="@style">@context.Text</div>
+                            <div style="@style" class="non-draggable">
+                                <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%">
+                                    <span>@context.Text</span>
+                                    <MudSpacer/>
+                                    @if(context.HasChildren)
+                                    {
+                                        <span class="child-count">@context.Children.Count</span>
+                                    }
+                                </MudStack>
+                            </div>
                         }
                     </ActivatorContent>
                     <ChildContent>

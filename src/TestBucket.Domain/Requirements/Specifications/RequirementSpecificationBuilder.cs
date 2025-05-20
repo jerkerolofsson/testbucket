@@ -18,7 +18,7 @@ namespace TestBucket.Domain.Requirements.Specifications
     {
         public static IReadOnlyList<FilterSpecification<RequirementSpecificationFolder>> From(SearchRequirementFolderQuery query)
         {
-            var specifications = new List<FilterSpecification<RequirementSpecificationFolder>>();
+            var specifications = ProjectEntityFilterSpecificationBuilder.From<RequirementSpecificationFolder>(query);
 
             if (!string.IsNullOrWhiteSpace(query.Name))
             {
@@ -31,14 +31,6 @@ namespace TestBucket.Domain.Requirements.Specifications
             if (query.RequirementSpecificationId is not null)
             {
                 specifications.Add(new FilterRequirementFoldersBySpecification(query.RequirementSpecificationId.Value));
-            }
-            if (query.TeamId is not null)
-            {
-                specifications.Add(new FilterByTeam<RequirementSpecificationFolder>(query.TeamId.Value));
-            }
-            if (query.ProjectId is not null)
-            {
-                specifications.Add(new FilterByProject<RequirementSpecificationFolder>(query.ProjectId.Value));
             }
             if (query.CompareFolder)
             {
@@ -91,16 +83,7 @@ namespace TestBucket.Domain.Requirements.Specifications
         }
         public static IReadOnlyList<FilterSpecification<RequirementSpecification>> From(SearchQuery query)
         {
-            var specifications = new List<FilterSpecification<RequirementSpecification>>();
-
-            if (query.TeamId is not null)
-            {
-                specifications.Add(new FilterByTeam<RequirementSpecification>(query.TeamId.Value));
-            }
-            if (query.ProjectId is not null)
-            {
-                specifications.Add(new FilterByProject<RequirementSpecification>(query.ProjectId.Value));
-            }
+            var specifications = ProjectEntityFilterSpecificationBuilder.From<RequirementSpecification>(query);
 
             return specifications;
         }

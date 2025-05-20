@@ -26,16 +26,27 @@
             @if(Spec is not null)
             {
                 <MudText Typo="Typo.h6">@insightLoc[Spec.Name]</MudText>
+                <MudSpacer />
+
+                <MudToggleGroup T="ChartType" Value="@_chartType" ValueChanged="OnChartTypeChanged" Color="Color.Surface"> 
+                    @if((Spec.AllowedChartTypes&ChartType.Donut) == ChartType.Donut)
+                    {
+                        <MudToggleItem Value="ChartType.Donut"><MudIcon Icon="@Icons.Material.Rounded.DonutLarge" Size="Size.Small" /></MudToggleItem>
+                    }
+                    @if((Spec.AllowedChartTypes&ChartType.Pie) == ChartType.Pie)
+                    {
+                        <MudToggleItem Value="ChartType.Pie"><MudIcon Icon="@Icons.Material.Rounded.PieChart" Size="Size.Small" /></MudToggleItem>
+                    }
+                    @if((Spec.AllowedChartTypes&ChartType.Bar) == ChartType.Bar)
+                    {
+                        <MudToggleItem Value="ChartType.Bar"><MudIcon Icon="@Icons.Material.Rounded.BarChart" Size="Size.Small" /></MudToggleItem>
+                    }
+                    @if ((Spec.AllowedChartTypes & ChartType.Line) == ChartType.Line)
+                    {
+                        <MudToggleItem Value="ChartType.Line"><MudIcon Icon="@Icons.Material.Rounded.StackedLineChart" Size="Size.Small" /></MudToggleItem>
+                    }
+                </MudToggleGroup>
             }
-            <MudSpacer />
-
-            <MudToggleGroup T="ChartType" Value="@_chartType" ValueChanged="OnChartTypeChanged" Color="Color.Surface"> 
-                <MudToggleItem Value="ChartType.Donut"><MudIcon Icon="@Icons.Material.Rounded.DonutLarge" Size="Size.Small" /></MudToggleItem>
-                <MudToggleItem Value="ChartType.Pie"><MudIcon Icon="@Icons.Material.Rounded.PieChart" Size="Size.Small" /></MudToggleItem>
-                <MudToggleItem Value="ChartType.Bar"><MudIcon Icon="@Icons.Material.Rounded.BarChart" Size="Size.Small" /></MudToggleItem>
-                <MudToggleItem Value="ChartType.Line"><MudIcon Icon="@Icons.Material.Rounded.StackedLineChart" Size="Size.Small" /></MudToggleItem>
-            </MudToggleGroup>
-
         </MudStack>
 
         @if (!_loading && _results is not null)
@@ -59,6 +70,10 @@
                             }
                         </div>
                     }
+                    if(Spec.ShowDataTable)
+                    {
+                        <InsightsDataTable Spec="@Spec" Results="@_results"/>
+                    }
                 }
             }
         }
@@ -72,7 +87,6 @@
 
 @code {
     [Parameter] public string Title { get; set; } = "";
-    [Parameter] public ChartType ChartType { get; set; } = ChartType.Line;
     [Parameter] public InsightsVisualizationSpecification? Spec { get; set; }
     [CascadingParameter] public TestProject? Project { get; set; }
 
@@ -104,17 +118,13 @@
         if(_results is null && Spec is not null)
         {
             _results = await controller.GetDataAsync(Project?.Id, Spec.DataQueries[0]);
-            _chartType = ChartType;
+            _chartType = Spec.ChartType;
 
             if (_results is not null)
             {
                 await BuildChartData();
                 await InvokeAsync(this.StateHasChanged);
             }
-        }
-        if(_results is not null && _chart is not null)
-        {
-
         }
     }
 
@@ -125,6 +135,10 @@
 
     private List<string> GetColorway(TestBucketBaseTheme theme)
     {
+        if (Spec is null)
+        {
+            return [];
+        }
         _legendTitleColorMap.Clear();
 
         List<string> colorway = [];

@@ -154,7 +154,7 @@
     <value>Meddelande</value>
   </data>
   <data name="test-result" xml:space="preserve">
-    <value>Test Resultat</value>
+    <value>Testresultat</value>
   </data>
   <data name="result-passed" xml:space="preserve">
     <value>Passerat</value>
@@ -361,7 +361,7 @@
     <value>Testsviter</value>
   </data>
   <data name="test-cases" xml:space="preserve">
-    <value />
+    <value>Testfall</value>
   </data>
   <data name="recent" xml:space="preserve">
     <value>Nya</value>
@@ -466,7 +466,7 @@
     <value>Start automatisering</value>
   </data>
   <data name="test-automation" xml:space="preserve">
-    <value />
+    <value>Test Automatisering</value>
   </data>
   <data name="coverage-matrix" xml:space="preserve">
     <value />
@@ -481,7 +481,7 @@
     <value />
   </data>
   <data name="slug" xml:space="preserve">
-    <value />
+    <value>SLUG</value>
   </data>
   <data name="test-runs" xml:space="preserve">
     <value />
@@ -566,5 +566,8 @@
   </data>
   <data name="code" xml:space="preserve">
     <value>Kod</value>
+  </data>
+  <data name="test-results" xml:space="preserve">
+    <value>Testresultat</value>
   </data>
 </root>

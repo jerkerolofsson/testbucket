@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Search;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Testing.TestCases.Search;
@@ -12,28 +13,23 @@ public class SearchTestCaseQueryParser
     private static readonly HashSet<string> _keywords = 
         [
         "is", 
-        "team-id", 
         "testsuite-id", 
         "project-id", 
         "testrun-id", 
+        .. BaseQueryParser.Keywords
         ];
 
-    public static SearchTestQuery Parse(string text, IReadOnlyList<FieldDefinition> fields)
+    public static SearchTestQuery Parse(string text, IReadOnlyList<FieldDefinition> fields, TimeProvider? provider = null)
     {
         var request = new SearchTestQuery();
 
         Dictionary<string, string> result = [];
         request.Text = SearchStringParser.Parse(text, result, request.Fields, _keywords, fields);
+        BaseQueryParser.Parse(request, result, provider);
         foreach (var pair in result)
         {
             switch (pair.Key)
             {
-                case "team-id":
-                    if (long.TryParse(pair.Value, out var teamId))
-                    {
-                        request.TeamId = teamId;
-                    }
-                    break;
                 case "testsuite-id":
                     if (long.TryParse(pair.Value, out var testSuiteId))
                     {

@@ -1,17 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-using TestBucket.Components.Shared;
-using TestBucket.Components.Shared.Fields;
-using TestBucket.Contracts.Fields;
-using TestBucket.Contracts.Testing.Models;
-using TestBucket.Domain.Testing.Aggregates;
+﻿using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Components.Tests.TestRuns.Controls;
 
 public partial class TestCaseRunGrid
 {
+    [CascadingParameter] public TestProject Project { get; set; } = null!;
     [Parameter] public SearchTestCaseRunQuery? Query { get; set; }
+    [Parameter] public EventCallback<SearchTestCaseRunQuery> QueryChanged { get; set; }
     [Parameter] public TestRun? Run { get; set; }
     [Parameter] public TestCaseRun? SelectedTestCaseRun { get; set; }
     [Parameter] public EventCallback<TestCaseRun> SelectedTestCaseRunChanged { get; set; }
@@ -30,11 +26,6 @@ public partial class TestCaseRunGrid
     /// Data grid
     /// </summary>
     private MudDataGrid<TestCaseRun?> _dataGrid = default!;
-
-    /// <summary>
-    /// Test results based on the current filter
-    /// </summary>
-    private TestExecutionResultSummary? _results;
 
     /// <summary>
     /// Defines the filter
@@ -60,20 +51,21 @@ public partial class TestCaseRunGrid
         return Task.CompletedTask;
     }
 
-    public async Task OnTestCaseRunCreatedAsync(TestCaseRun testCaseRun)
+    public Task OnTestCaseRunCreatedAsync(TestCaseRun testCaseRun)
     {
         if (testCaseRun.TestRunId == Run?.Id)
         {
-            await ReloadResultsAsync();
         }
+        return Task.CompletedTask;
     }
-    public async Task OnTestCaseRunUpdatedAsync(TestCaseRun testCaseRun)
+    public Task OnTestCaseRunUpdatedAsync(TestCaseRun testCaseRun)
     {
         if (testCaseRun.TestRunId == Run?.Id)
         {
             _dataGrid?.ReloadServerData();
-            await ReloadResultsAsync();
+            
         }
+        return Task.CompletedTask;
     }
 
     #region Lifecycle
@@ -87,8 +79,10 @@ public partial class TestCaseRunGrid
     {
         _query = Query ?? new();
         _query.TestRunId = null;
+        _query.ProjectId = null;
         _searchText = _query.ToSearchText();
         _query.TestRunId = _run?.Id;
+        _query.ProjectId = Project.Id;
 
         if (_selectedItem?.Id != SelectedTestCaseRun?.Id ||
             _selectedItem?.Result != SelectedTestCaseRun?.Result ||
@@ -112,7 +106,7 @@ public partial class TestCaseRunGrid
 
     private async Task OnDrop(TestEntity? testEntity)
     {
-        if (testEntity is null)
+        if (testEntity is null || Run is null)
         {
             return;
         }
@@ -172,13 +166,6 @@ public partial class TestCaseRunGrid
         }
         return "tb-datarow cursor-pointer";
     }
-    private async Task ReloadResultsAsync()
-    {
-        if (Run is not null)
-        {
-            _results = await testBrowser.GetTestExecutionResultSummaryAsync(_query);
-        }
-    }
 
     private async Task SetTestCaseRunResultAsync(TestCaseRun testCaseRun, TestResult result)
     {
@@ -194,16 +181,17 @@ public partial class TestCaseRunGrid
     private async Task OnSearch(string text)
     {
         _searchText = text;
-        if (_run?.TestProjectId is not null)
+        var projectId = _run?.TestProjectId ?? Project.Id;
+
+        if(_fieldDefinitions.Count == 0)
         {
-            if(_fieldDefinitions.Count == 0)
-            {
-                _fieldDefinitions = await fieldController.GetDefinitionsAsync(_run.TestProjectId.Value, FieldTarget.TestCaseRun);
-            }
-            _query = SearchTestCaseRunQueryParser.Parse(text, _fieldDefinitions);
-            _query.TestRunId = _run.Id;
-            _dataGrid?.ReloadServerData();
+            _fieldDefinitions = await fieldController.GetDefinitionsAsync(projectId, FieldTarget.TestCaseRun);
         }
+        _query = SearchTestCaseRunQueryParser.Parse(text, _fieldDefinitions);
+        _query.TestRunId = null;
+        _query.ProjectId = null;
+        await QueryChanged.InvokeAsync(_query);
+        _dataGrid?.ReloadServerData();
     }
 
 
@@ -245,18 +233,18 @@ public partial class TestCaseRunGrid
 
     private async Task<GridData<TestCaseRun>> LoadGridData(GridState<TestCaseRun> state)
     {
-        if (Run is null)
-        {
-            return new()
-            {
-                Items = [],
-                TotalItems = 0
-            };
-        }
+        //if (Run is null)
+        //{
+        //    return new()
+        //    {
+        //        Items = [],
+        //        TotalItems = 0
+        //    };
+        //}
         _query.Offset = state.Page * state.PageSize;
         _query.Count = state.PageSize;
-
-        await ReloadResultsAsync();
+        _query.TestRunId = _run?.Id;
+        _query.ProjectId = Project.Id;
 
         var searchTestCaseRunsResult = await testBrowser.SearchTestCaseRunsAsync(_query);
         _items = searchTestCaseRunsResult.Items;

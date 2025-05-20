@@ -23,7 +23,7 @@ public class ChartColorizer
         _palette = palette;
     }
 
-    public Dictionary<string,string> GetColorway<U>(InsightsVisualizationSpecification? spec, InsightsData<string,U> data, bool isDarkMode)
+    public Dictionary<string,string> GetColorway<U>(InsightsVisualizationSpecification spec, InsightsData<string,U> data, bool isDarkMode)
     {
         ChartColorMode mode = spec.GetColorMode(isDarkMode);
         var colorway = new Dictionary<string, string>();

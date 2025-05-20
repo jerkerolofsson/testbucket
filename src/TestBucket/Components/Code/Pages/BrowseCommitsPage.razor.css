@@ -9,6 +9,7 @@
 .sha {
     font-family: monospace;
     color: dodgerblue;
+    font-size: 8pt;
 }
 
 .changed-files {

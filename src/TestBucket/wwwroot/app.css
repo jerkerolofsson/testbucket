@@ -47,6 +47,16 @@ html, body {
     font-style: italic;
 }
 
+.treeview .non-draggable,
+.treeview .tb-draggable,
+.treeview .mud-menu {
+    width: 100%;
+}
+
+.treeview span.child-count {
+    opacity: 0.25;
+}
+
 .tb-passrate-text {
     font-weight: bold;
     color: var(--clr-passed);
@@ -87,7 +97,6 @@ html, body {
     border-color: var(--clr-norun-alt);
 }
 .tb-draggable:not(:has(.drag-handle)):hover {
-    cursor: move;
 }
 
 .mud-badge-top.right {
@@ -453,7 +462,7 @@ tb-field .mud-link.mud-link-underline-hover:hover {
  }
 
  .treeview .node {
-     padding: 0px 2px;
+     padding: 0;
      margin-left: 12px;
      overflow: hidden;
      font-size: var(--mud-typography-default-size);
@@ -1076,16 +1085,34 @@ div.tb-profile-image.tb-background-9 {
 
 .tb-insights-chart .legend {
     margin-top: 16px;
+    padding: 8px;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 8px;
     font-size: var(--mud-typography-subtitle2-size);
+    border: solid 1px var(--mud-palette-lines-inputs);
+    border-radius: var(--mud-default-borderradius);
 }
 
 .tb-insights-chart .legend .item {
     display: flex;
     align-items: center;
     gap: 4px;
+}
+
+.tb-insights-chart .tb-insights-table {
+    margin-top: 16px;
+    border: solid 1px var(--mud-palette-lines-inputs);
+}
+
+.tb-insights-chart .mud-table-root .mud-table-body .mud-table-cell,
+.tb-insights-chart .mud-table-root .mud-table-head .mud-table-cell {
+    padding: 4px;
+    font-size: 8pt;
+}
+
+.tb-insights-chart .mud-table-root .mud-table-head th.mud-table-cell {
+    font-weight: bold;
 }

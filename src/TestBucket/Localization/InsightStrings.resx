@@ -123,10 +123,34 @@
   <data name="closed-issues-by-day" xml:space="preserve">
     <value>Closed issues</value>
   </data>
+  <data name="count-by-state" xml:space="preserve">
+    <value>Count by state</value>
+  </data>
+  <data name="count-per-testcategory" xml:space="preserve">
+    <value>Tests / category</value>
+  </data>
   <data name="created-issues" xml:space="preserve">
     <value>Created issues</value>
   </data>
   <data name="created-issues-by-day" xml:space="preserve">
     <value>Created issues</value>
+  </data>
+  <data name="issue-inflow-outflow" xml:space="preserve">
+    <value>Issue inflow &amp; outflow</value>
+  </data>
+  <data name="issues-by-state" xml:space="preserve">
+    <value>Issues / state</value>
+  </data>
+  <data name="label" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="results" xml:space="preserve">
+    <value>Results</value>
+  </data>
+  <data name="test-results" xml:space="preserve">
+    <value>Test results</value>
+  </data>
+  <data name="value" xml:space="preserve">
+    <value>Value</value>
   </data>
 </root>

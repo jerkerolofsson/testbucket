@@ -4,12 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Search;
+
 namespace TestBucket.Domain.Issues.Search;
 public class SearchIssueRequestParser
 {
-    private static readonly HashSet<string> _keywords = ["is", "state", "origin"];
+    private static readonly HashSet<string> _keywords = [
+        "is", 
+        "state", 
+        "origin",
+        .. BaseQueryParser.Keywords
+        ];
 
-    public static SearchIssueQuery Parse(long? projectId, string text, IReadOnlyList<FieldDefinition> fields)
+    public static SearchIssueQuery Parse(long? projectId, string text, IReadOnlyList<FieldDefinition> fields, TimeProvider? provider = null)
     {
         var request = new SearchIssueQuery
         {
@@ -18,7 +25,8 @@ public class SearchIssueRequestParser
 
         Dictionary<string, string> result = [];
         request.Text = SearchStringParser.Parse(text, result, request.Fields, _keywords, fields);
-        foreach(var pair in result)
+        BaseQueryParser.Parse(request, result, provider);
+        foreach (var pair in result)
         {
             switch(pair.Key)
             {

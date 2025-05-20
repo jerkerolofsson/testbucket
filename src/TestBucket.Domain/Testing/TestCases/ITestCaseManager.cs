@@ -1,9 +1,11 @@
 ﻿using System.Security.Claims;
 
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Domain.Traceability.Models;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Testing.TestCases;
 public interface ITestCaseManager
@@ -46,6 +48,7 @@ public interface ITestCaseManager
     /// <param name="testCase"></param>
     /// <returns></returns>
     Task<IReadOnlyList<TestEntity>> ExpandUntilRootAsync(ClaimsPrincipal principal, TestCase testCase);
+    Task<InsightsData<string, int>> GetInsightsTestCountPerFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, TraitType traitType);
 
     /// <summary>
     /// Returns a test case by ID

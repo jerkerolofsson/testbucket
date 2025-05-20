@@ -15,6 +15,7 @@ namespace TestBucket.Domain.IntegrationTests.Issues
     [IntegrationTest]
     [FunctionalTest]
     [Feature("Issues")]
+    [Component("Issues")]
     public class IssueStateTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         [Fact]

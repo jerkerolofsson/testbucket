@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Components.Reporting.Models;
 using TestBucket.Contracts.Appearance.Models;
 
 namespace TestBucket.Domain.Insights.Model;
@@ -20,12 +21,34 @@ public class InsightsVisualizationSpecification
     public List<InsightsDataQuery> DataQueries { get; set; } = [];
 
     /// <summary>
+    /// The default type of chart
+    /// </summary>
+    public ChartType ChartType { get; set; } = ChartType.Bar;
+
+    /// <summary>
+    /// The chart types that the user can change between
+    /// </summary>
+    public ChartType AllowedChartTypes { get; set; } = ChartType.Bar|ChartType.Donut|ChartType.Line|ChartType.Pie;
+
+    /// <summary>
+    /// Color scheme for light mode
+    /// </summary>
+    public ChartColors LightModeColors { get; set; } = new() { GridLineColor = "#ddd", TickLabelColor = "#222" };
+
+    /// <summary>
+    /// Color scheme for dark mode
+    /// </summary>
+    public ChartColors DarkModeColors { get; set; } = new() { GridLineColor = "#444", TickLabelColor = "#ddd" };
+
+    /// <summary>
     /// If true, shows the legend
     /// </summary>
     public bool ShowLegend { get; set; }
 
-    public ChartColors LightModeColors { get; set; } = new() { GridLineColor = "#ddd", TickLabelColor = "#222" };
-    public ChartColors DarkModeColors { get; set; } = new() { GridLineColor = "#444", TickLabelColor = "#ddd" };
+    /// <summary>
+    /// If true, shows a data table
+    /// </summary>
+    public bool ShowDataTable { get; set; }
 
     public string? GetTickLabelColor(bool isDarkMode)
     {

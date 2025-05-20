@@ -569,4 +569,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="code" xml:space="preserve">
     <value>Code</value>
   </data>
+  <data name="test-results" xml:space="preserve">
+    <value>Test results</value>
+  </data>
 </root>

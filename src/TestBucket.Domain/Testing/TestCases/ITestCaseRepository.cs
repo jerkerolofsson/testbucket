@@ -302,6 +302,7 @@ public interface ITestCaseRepository
     Task<Dictionary<long, TestExecutionResultSummary>> GetTestExecutionResultSummaryForRunsAsync(IReadOnlyList<long> testRunsIds, IEnumerable<FilterSpecification<TestCaseRun>> filters);
     Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
     Task<InsightsData<TestResult, int>> GetInsightsTestResultsAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
+    Task<InsightsData<string, int>> GetInsightsTestCountPerFieldAsync(IEnumerable<FilterSpecification<TestCase>> filters, long fieldDefinitionId);
 
     #endregion
 }

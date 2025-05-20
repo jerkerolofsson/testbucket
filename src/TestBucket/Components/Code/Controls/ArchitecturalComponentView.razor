@@ -1,0 +1,29 @@
+﻿@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<CodeStrings> codeLoc
+
+@if (Component is not null)
+{
+    <MudStack Style="width: 100%" Class="pa-2">
+
+        <MudText Typo="Typo.h1">@Component.Name</MudText>
+
+        <MarkdownEditor Value="@Component.Description" Preview="true" ShowToolbar=false/>
+
+        <Field Row>
+            <FieldHeader>@codeLoc["dev-lead"]</FieldHeader>
+            <MudSpacer/>
+            <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Component.DevLead"/>
+        </Field>
+
+        <Field Row>
+            <FieldHeader>@codeLoc["test-lead"]</FieldHeader>
+            <MudSpacer/>
+            <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Component.TestLead"/>
+        </Field>
+
+    </MudStack>
+}
+
+@code {
+    [Parameter] public AritecturalComponentProjectEntity? Component { get; set; }
+}

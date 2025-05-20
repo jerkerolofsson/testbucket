@@ -11,6 +11,7 @@
 @using TestBucket.Domain.Issues.Insights
 @using TestBucket.Domain.Issues.Models
 @using TestBucket.Domain.Issues.Search
+@using TestBucket.Domain.Testing.TestCases.Insights
 @using TestBucket.Domain.Testing.TestRuns.Insights
 @layout IssuesLayout
 @inject AppNavigationManager appNavigationManager
@@ -22,9 +23,10 @@
 
 <MudStack Style="width: 100%">
     <div class="tb-issues-charts pa-2">
-        <InsightsChart ChartType="ChartType.Bar" Spec="_countByResultsSpec" />
-        <InsightsChart ChartType="ChartType.Bar"  Spec="_countPerStateSpec" />
-        <InsightsChart ChartType="ChartType.Line" Spec="_inflowOutflowSpec" />
+        <InsightsChart Spec="_testsByCat" />
+        <InsightsChart Spec="_countByResultsSpec" /> 
+        <InsightsChart Spec="_countPerStateSpec" /> 
+        <InsightsChart Spec="_inflowOutflowSpec" /> 
     </div>
 </MudStack>
 
@@ -34,6 +36,7 @@
     [CascadingParameter] public Team? Team { get; set; }
     private long _projectId;
 
+    private InsightsVisualizationSpecification? _testsByCat;
     private InsightsVisualizationSpecification? _countByResultsSpec;
     private InsightsVisualizationSpecification? _inflowOutflowSpec;
     private InsightsVisualizationSpecification? _countPerStateSpec;
@@ -53,36 +56,55 @@
                 _countByResultsSpec = new InsightsVisualizationSpecification
                 {
                     Name = "test-results",
+                    ChartType = ChartType.Bar,
                     DataQueries = [new InsightsDataQuery 
                     { 
                         DataSource = TestRunDataSourceNames.CountByResult,
                         Colors = DefaultPalettes.TestResultColors
                     }],
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.ByLabel,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.ByLabel,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
                     ShowLegend = true,
+                    ShowDataTable = true,
                 };
 
                 _inflowOutflowSpec = new InsightsVisualizationSpecification
                 {
                     Name = "issue-inflow-outflow",
+                    ChartType = ChartType.Line,
+                    AllowedChartTypes = ChartType.Line,
                     DataQueries = [new InsightsDataQuery
                     {
                         DataSource = IssueDataSourceNames.IssuesInflowOutflow,
                     }],
                     DarkModeColors = new ChartColors()
                     {
-                        Palette = DefaultPalettes.Default,
+                        Palette = DefaultPalettes.ReportingDefault,
                         ColorMode = ChartColorMode.BySeries,
                         GridLineColor = "#444",
                         TickLabelColor = "#777"
                     },
                     LightModeColors = new ChartColors()
                     {
-                        Palette = DefaultPalettes.Default,
+                        Palette = DefaultPalettes.ReportingDefault,
                         ColorMode = ChartColorMode.BySeries,
                         GridLineColor = "#ddd",
                         TickLabelColor = "#aaa"
                     },
-                    ShowLegend = true
+                    ShowLegend = true,
+                    ShowDataTable = true,
                 };
                 _countPerStateSpec = new InsightsVisualizationSpecification
                 {
@@ -91,18 +113,53 @@
                     {
                         DataSource = IssueDataSourceNames.IssuesByState,
                         Colors = new Dictionary<string, string> {
-                            ["Open"]="green",
-                            ["Closed"]="firebrick"
-                        },
+                            ["Open"]="#06D6A0",
+                            ["Closed"]="#EF476F",
+                            ["Canceled"]="#a4133c",
+                        }
                     }],
-
-                    ShowLegend = true
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.ByLabel,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.ByLabel,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
+                    ShowLegend = true,
+                    ShowDataTable = true,
                 };
 
-                // _projectId = Project.Id;
-                // _results = await controller.GetDataAsync(Project.Id, _countByResultsSpec.DataQueries[0]);
-                // _inflowOutflow = await controller.GetDataAsync(Project.Id, _inflowOutflowSpec.DataQueries[0]);
-                // _countPerState = await controller.GetDataAsync(Project.Id, _countPerStateSpec.DataQueries[0]);
+                _testsByCat = new InsightsVisualizationSpecification
+                {
+                    Name = "count-per-testcategory",
+                    DataQueries = [new InsightsDataQuery
+                    {
+                        DataSource = TestCaseDataSourceNames.CountByCategory,
+                    }],
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.ByLabel,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.ByLabel,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
+                    ShowLegend = true,
+                    ShowDataTable = true,
+                };
 
                // var _ = InvokeAsync(StateHasChanged);
             }

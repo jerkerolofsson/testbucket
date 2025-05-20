@@ -55,6 +55,13 @@ public partial class TestCaseGrid
 
     protected override async Task OnParametersSetAsync()
     {
+        if (Query is not null)
+        {
+            Query.CompareFolder = false;
+            Query.TestSuiteId = null;
+            Query.FolderId = null;
+            _searchPhrase = Query.ToSearchText();
+        }
         bool changed = _hasQueryChanged;
         _hasQueryChanged = false;
 

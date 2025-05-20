@@ -1,0 +1,42 @@
+﻿@using TestBucket.Domain.Insights.Model
+@using TestBucket.Domain.Insights.Extensions
+@inject IStringLocalizer<InsightStrings> loc
+@if (_table is not null)
+{
+    <MudTable T="IReadOnlyList<string>" Items="@_table.Rows" Breakpoint="Breakpoint.Sm" Class="tb-insights-table">
+        <HeaderContent>
+            @foreach (var header in _table.Headers)
+            {
+                <MudTh>@loc[header]</MudTh>
+            }
+        </HeaderContent>
+        <RowTemplate>
+            @for (int i = 0; i < _table.Headers.Count; i++)
+            {
+                int pinned = i;
+                <MudTd>
+                    @if (context.Count > pinned)
+                    {
+                        <span>@context[pinned]</span>
+                    }
+                </MudTd>
+            }
+        </RowTemplate>
+    </MudTable>
+}
+
+@code {
+    [Parameter] public InsightsVisualizationSpecification? Spec { get; set; }
+    [Parameter] public InsightsData<string, double>? Results { get; set; }
+
+    private InsightsTable? _table;
+
+    protected override void OnParametersSet()
+    {
+        if (Spec is not null && Results is not null)
+        {
+            _table = Spec.ToTable(Results);
+        }
+    }
+
+}

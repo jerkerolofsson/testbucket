@@ -3,6 +3,7 @@
 using Mediator;
 
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
@@ -12,11 +13,12 @@ using TestBucket.Domain.Testing.Events;
 using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
-using TestBucket.Domain.Testing.TestSuites;
-using TestBucket.Domain.Traceability.Models;
-using TestBucket.Domain.Traceability;
-using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Domain.Testing.TestCases.Search;
+using TestBucket.Domain.Testing.TestRuns.Search;
+using TestBucket.Domain.Testing.TestSuites;
+using TestBucket.Domain.Traceability;
+using TestBucket.Domain.Traceability.Models;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Testing.TestCases
 {
@@ -278,6 +280,49 @@ namespace TestBucket.Domain.Testing.TestCases
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
 
             return await _mediator.Send(new DiscoverTestCaseRelationshipsRequest(principal, testCase, depth));
+        }
+
+        /// <summary>
+        /// Returns number of test cases grouped by a user-defined field
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="query"></param>
+        /// <param name="fieldDefinitionId"></param>
+        /// <returns></returns>
+        public async Task<InsightsData<string, int>> GetInsightsTestCountPerFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
+            var tenantId = principal.GetTenantIdOrThrow();
+            List<FilterSpecification<TestCase>> filters = TestCaseFilterSpecificationBuilder.From(query);
+            filters.Add(new FilterByTenant<TestCase>(tenantId));
+
+            return await _testCaseRepo.GetInsightsTestCountPerFieldAsync(filters, fieldDefinitionId);
+        }
+
+
+        /// <summary>
+        /// Returns number of test cases grouped by a user-defined field
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="query"></param>
+        /// <param name="traitType">Field identifier</param>
+        /// <returns></returns>
+        public async Task<InsightsData<string, int>> GetInsightsTestCountPerFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, TraitType traitType)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
+
+            var fields = await _fieldDefinitionManager.GetDefinitionsAsync(principal, query.ProjectId);
+            var field = fields.Where(x => x.TraitType == traitType).FirstOrDefault();
+            if(field is null)
+            {
+                return new();
+            }
+
+            var tenantId = principal.GetTenantIdOrThrow();
+            List<FilterSpecification<TestCase>> filters = TestCaseFilterSpecificationBuilder.From(query);
+            filters.Add(new FilterByTenant<TestCase>(tenantId));
+
+            return await _testCaseRepo.GetInsightsTestCountPerFieldAsync(filters, field.Id);
         }
 
     }

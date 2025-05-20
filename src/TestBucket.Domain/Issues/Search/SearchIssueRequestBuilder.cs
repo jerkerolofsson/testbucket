@@ -1,24 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Issues.Models;
+﻿using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Specifications;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing.Specifications.TestCases;
 
 namespace TestBucket.Domain.Issues.Search;
 internal class SearchIssueRequestBuilder
 {
     public static IReadOnlyList<FilterSpecification<LocalIssue>> Build(SearchIssueQuery request)
     {
-        List<FilterSpecification<LocalIssue>> filters = [];
+        var filters = ProjectEntityFilterSpecificationBuilder.From<LocalIssue>(request);
 
-        if (request.ProjectId is not null)
-        {
-            filters.Add(new FilterByProject<LocalIssue>(request.ProjectId.Value));
-        }
         if (!string.IsNullOrEmpty(request.Text))
         {
             filters.Add(new FindLocalIssueByText(request.Text));

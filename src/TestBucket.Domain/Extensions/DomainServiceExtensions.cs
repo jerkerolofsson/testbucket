@@ -49,6 +49,7 @@ using TestBucket.Domain.Testing.Services.Classification;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Settings;
 using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Testing.TestCases.Insights;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Insights;
 using TestBucket.Domain.Testing.TestSuites;
@@ -88,9 +89,9 @@ public static class DomainServiceExtensions
         services.AddScoped<IInsightsDataSource, IssuesByStateDataSource>();
         services.AddScoped<IInsightsDataSource, IssuesInflowOutflow>();
         services.AddScoped<IInsightsDataSource, CountByResultDataSource>();
+        services.AddScoped<IInsightsDataSource, CountByCategoryDataSource>();
 
         services.AddScoped<IInsightsDataManager, InsightsDataManager>();
-        
 
         // Runner/Hybrid
         services.AddScoped<IMarkdownTestRunner, HybridRunner>();

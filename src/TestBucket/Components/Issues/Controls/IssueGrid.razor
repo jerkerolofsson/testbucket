@@ -1,0 +1,175 @@
+﻿@using TestBucket.Components.Issues.Layouts
+@using TestBucket.Domain
+@using TestBucket.Domain.Commands
+@using TestBucket.Domain.ExtensionManagement
+@using TestBucket.Domain.Issues.Models
+@using TestBucket.Domain.Issues.Search
+@layout IssuesLayout
+@inject AppNavigationManager appNavigationManager
+@inject IssueController controller
+@inject IExtensionManager extensionManager
+@inject ICommandManager commandManager
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<IssueStrings> issueLoc
+
+<MudStack Style="width: 100%" Class="pa-2">
+    @if (Project is not null)
+    {
+        <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h1" Color="Color.Primary">@_totalCount</MudText>
+            <MudText Typo="Typo.h1">@issueLoc["issues"]</MudText>
+        </MudStack>
+
+        <MudDataGrid @ref="_grid"
+        ServerData="LoadGridData"
+        Dense Hover RowClass="tb-datarow cursor-pointer"
+        RowClick="(row) => OnRowClicked(row.Item)"
+        T="LocalIssue" SortMode="SortMode.None">
+
+            <ToolBarContent>
+                <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                    <MudTextField Value="@_searchText" T="string" ValueChanged="OnSearch"
+                    Class="mt-2 default-search"
+                    Clearable="true"
+                    Variant="Variant.Outlined"
+                    IconSize="Size.Small"
+                    Adornment="Adornment.Start"
+                    Placeholder="@loc["search"]"
+                    AdornmentIcon="@Icons.Material.Filled.Search" />
+
+                    <MudSpacer />
+                    <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
+                        <Authorized>
+                            <MudButton OnClick="AddIssue" Variant="Variant.Filled" Color="Color.Success">@issueLoc["new-issue"]</MudButton>
+                        </Authorized>
+                    </PermissionView>
+                </MudStack>
+            </ToolBarContent>
+
+            <ColGroup>
+                <col style="width: 100px;" />
+                <col style="width: 2fr;" />
+                <col style="width: 100px;" />
+                <col style="width: 100px;" />
+                <col style="width: 200px;" />
+            </ColGroup>
+
+            <Columns>
+                <TemplateColumn Title="@loc["id"]">
+                    <CellTemplate>
+                        <MudTooltip Text="@context.Item.Url">
+                            <MudStack AlignItems="AlignItems.Center" Row Spacing=1>
+                                @if (context.Item.ExternalSystemName is not null)
+                                {
+                                    <MudIcon Icon="@extensionManager.GetIcon(context.Item.ExternalSystemName??"")" />
+                                }
+                                else
+                                {
+                                    <MudIcon Icon="@TbIcons.Brands.TestBucket" />
+                                }
+                                <MudText>@context.Item.ExternalDisplayId</MudText>
+                            </MudStack>
+                        </MudTooltip>
+                    </CellTemplate>
+                </TemplateColumn>
+
+
+                <TemplateColumn Title="@loc["title"]">
+                    <CellTemplate>
+                        @context.Item.Title
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <TemplateColumn Title="@loc["state"]">
+                    <CellTemplate>
+                        @context.Item.State
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <TemplateColumn Title="@loc["type"]">
+                    <CellTemplate>
+                        @context.Item.IssueType
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <TemplateColumn Title="@loc["label"]">
+                    <CellTemplate>
+                        <MudStack Row>
+                            @foreach (var label in context.Item.GetLabels())
+                            {
+                                var color = context.Item.GetLabelColor(label);
+                                <Chip Text="@label" Color="@color"></Chip>
+                            }
+                        </MudStack>
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+
+            <PagerContent>
+                <MudDataGridPager T="LocalIssue" />
+            </PagerContent>
+        </MudDataGrid>
+    }
+</MudStack>
+
+@code {
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+    [Parameter] public string? SearchText { get; set; }
+    [Parameter] public EventCallback<string> SearchTextChanged { get; set; }
+
+    private MudDataGrid<LocalIssue>? _grid;
+    private string? _searchText;
+
+    private long? _totalCount;
+
+    protected override void OnParametersSet()
+    {
+        _searchText = SearchText ?? "state:open is:issue";
+        _grid?.ReloadServerData();
+    }
+
+    protected async Task OnSearch(string text)
+    {
+        _searchText = text;
+        await SearchTextChanged.InvokeAsync(_searchText);
+    }
+    private void OnRowClicked(LocalIssue issue)
+    {
+        appNavigationManager.NavigateTo(issue);
+    }
+
+    private async Task AddIssue()
+    {
+        await commandManager.ExecuteCommandAsync("create-issue");
+    }
+
+
+    /// <summary>
+    /// Loads issues
+    /// </summary>
+    /// <param name="state"></param>
+    /// <returns></returns>
+    private async Task<GridData<LocalIssue>> LoadGridData(GridState<LocalIssue> state)
+    {
+        if (Project is null)
+        {
+            return new GridData<LocalIssue> { TotalItems = 0 };
+        }
+
+        PagedResult<LocalIssue> result = await controller.SearchAsync(Project.Id, _searchText ?? "", state.Page * state.PageSize, state.PageSize);
+
+        if (_totalCount != result.TotalCount)
+        {
+            _totalCount = result.TotalCount;
+            await this.InvokeAsync(StateHasChanged);
+        }
+
+        return new GridData<LocalIssue>()
+            {
+                Items = result.Items,
+                TotalItems = (int)result.TotalCount
+            };
+    }
+
+}

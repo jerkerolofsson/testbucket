@@ -17,6 +17,7 @@ using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Domain;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Requirements.Search;
 using TestBucket.Localization;
 namespace TestBucket.Components.Requirements.Services;
 
@@ -137,22 +138,17 @@ internal class RequirementBrowser : TenantBaseService
         };
 
         var principal = await GetUserClaimsPrincipalAsync();
-        var result = await _requirementManager.SearchRequirementsAsync(principal, new SearchRequirementQuery
-        {
-            CompareFolder = false,
-            Count = 100,
-            Offset = 0,
-            ProjectId = projectId,
-            TeamId = teamId,
-            Text = searchText
-        });
-
+        var query = SearchRequirementQueryParser.Parse(searchText, fields);
+        query.Count = 100;
+        query.ProjectId = projectId;
+        query.CompareFolder = false;
+        var result = await _requirementManager.SearchRequirementsAsync(principal,query);
         foreach (var requirement in result.Items)
         {
             await AddToHierarchyAsync(requirement, rootItems);
         }
 
-        //Remove empty specificati0ons
+        // Remove empty specifications
         foreach (var item in specificationNodes.ToList())
         {
             if (item.Children is null || item.Children.Count == 0)
@@ -169,7 +165,7 @@ internal class RequirementBrowser : TenantBaseService
     {
         return new TreeNode<BrowserItem>
         {
-            Text = _loc["requirement-specifications"],
+            Text = _loc["collections"],
             Children = specificationNodes,
             Expanded = true,
             Icon = TbIcons.BoldDuoTone.Database,

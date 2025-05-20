@@ -210,4 +210,10 @@
   <data name="import-requirements" xml:space="preserve">
     <value>Import requirements</value>
   </data>
+  <data name="collections" xml:space="preserve">
+    <value>Collections</value>
+  </data>
+  <data name="type-standard" xml:space="preserve">
+    <value>Standard</value>
+  </data>
 </root>

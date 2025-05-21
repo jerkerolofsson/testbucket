@@ -13,7 +13,7 @@
 @if(Project is not null && _issue is not null)
 {
     <div class="container-fill">
-        <IssueEditor TestProjectId="@Project.Id" @bind-Issue="@_issue" Delete="DeleteIssue"/>
+        <IssueEditor TestProjectId="@Project.Id" IssueChanged="OnIssueChanged" Issue="@_issue" Delete="DeleteIssue"/>
 
     </div>
 }
@@ -25,6 +25,13 @@
     [CascadingParameter] public Team? Team { get; set; }
 
     private LocalIssue? _issue = null;
+
+    private async Task OnIssueChanged(LocalIssue issue)
+    {
+        _issue = issue;
+
+        await controller.UpdateIssueAsync(issue);
+    }
 
     protected override async Task OnParametersSetAsync()
     {

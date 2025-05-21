@@ -271,6 +271,7 @@ input:focus-visible {
 
  .tb-nav-link {
      height: 100%;
+     position: relative;
      transition: all linear 150ms;
      padding: 6px;
      cursor: pointer;
@@ -281,6 +282,8 @@ input:focus-visible {
      display: flex;
      align-items: center;
      gap: 8px;
+     padding-left: 5px;
+     padding-right: 5px;
  }
 
  .tb-test-case-grid,
@@ -314,7 +317,6 @@ input:focus-visible {
  }
 
  .tb-nav-link:hover {
-/*     background: rgba(255,255,255,0.05);*/
     background: var(--mud-palette-primary-hover);
  }
 
@@ -575,6 +577,11 @@ tb-field .mud-link.mud-link-underline-hover:hover {
  .mud-dialog .mud-dialog-title,
  .mud-dialog-title h6.mud-typography.mud-typography-h6 {
      font-size: 14pt;
+ }
+
+ .mud-dialog {
+     border: solid 1px var(--mud-palette-lines-inputs);
+     border-radius: var(--mud-default-borderradius);
  }
 
 .splitter {

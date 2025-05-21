@@ -570,4 +570,13 @@
   <data name="test-results" xml:space="preserve">
     <value>Testresultat</value>
   </data>
+  <data name="all" xml:space="preserve">
+    <value>Alla</value>
+  </data>
+  <data name="issue" xml:space="preserve">
+    <value />
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
 </root>

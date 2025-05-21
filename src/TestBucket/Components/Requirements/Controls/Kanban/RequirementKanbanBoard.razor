@@ -11,6 +11,7 @@
 @inject AppNavigationManager appNavigationManager
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject IStringLocalizer<RequirementStrings> reqLoc
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Spacing="1">
 
@@ -26,7 +27,7 @@
             <MudToggleItem Value="@KanbanGroupBy.State" Text="@reqLoc["state"]"/>
             <MudToggleItem Value="@KanbanGroupBy.Feature" Text="@reqLoc["feature"]" />
             <MudToggleItem Value="@KanbanGroupBy.Milestone" Text="@reqLoc["milestone"]"/>
-            <MudToggleItem Value="@KanbanGroupBy.Assignee" Text="@reqLoc["assigned-to"]"/>
+            <MudToggleItem Value="@KanbanGroupBy.Assignee" Text="@loc["assigned-to"]"/>
         </MudToggleGroup>
     </MudStack>
 

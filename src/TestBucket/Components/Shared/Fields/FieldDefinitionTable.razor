@@ -27,6 +27,7 @@
                 <TbNavLink Selected="@(FilterTarget == FilterAll)" OnClick="() => SetFilterTarget(FilterAll)">@loc["all"]</TbNavLink>
                 <TbNavLink Selected="@(FilterTarget == FilterRequirements)" OnClick="() => SetFilterTarget(FilterRequirements)">@loc["requirements"]</TbNavLink>
                 <TbNavLink Selected="@(FilterTarget == FilterTest)" OnClick="() => SetFilterTarget(FilterTest)">@loc["testing"]</TbNavLink>
+                <TbNavLink Selected="@(FilterTarget == FilterIssue)" OnClick="() => SetFilterTarget(FilterIssue)">@loc["issues"]</TbNavLink>
             </MudStack>
 
             <PermissionView Entity="PermissionEntityType.Project" Level="PermissionLevel.Write">
@@ -119,7 +120,8 @@
 
     private FieldTarget FilterRequirements = FieldTarget.Requirement | FieldTarget.RequirementSpecificationFolder | FieldTarget.RequirementSpecification;
     private FieldTarget FilterTest = FieldTarget.TestSuite | FieldTarget.TestSuiteFolder | FieldTarget.TestCase | FieldTarget.TestRun | FieldTarget.TestCaseRun;
-    private FieldTarget FilterAll => FilterTest | FilterRequirements;
+    private FieldTarget FilterIssue = FieldTarget.Issue;
+    private FieldTarget FilterAll => FilterTest | FilterRequirements | FilterIssue;
 
     private FieldTarget FilterTarget { get; set; }
 

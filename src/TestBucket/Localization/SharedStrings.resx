@@ -572,4 +572,13 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="test-results" xml:space="preserve">
     <value>Test results</value>
   </data>
+  <data name="all" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="issue" xml:space="preserve">
+    <value>Issue</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Title</value>
+  </data>
 </root>

@@ -48,11 +48,11 @@ public static class BaseQueryParser
                 case "until":
                     if (DateTimeOffset.TryParse(pair.Value, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out var dateTimeOffsetUntilCulture))
                     {
-                        query.CreatedFrom = dateTimeOffsetUntilCulture;
+                        query.CreatedUntil = dateTimeOffsetUntilCulture;
                     }
                     if (DateTimeOffset.TryParseExact(pair.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dateTimeOffsetUntilIso))
                     {
-                        query.CreatedFrom = dateTimeOffsetUntilIso;
+                        query.CreatedUntil = dateTimeOffsetUntilIso;
                     }
                     break;
                 case "team-id":

@@ -1,22 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.TestAccounts;
-using TestBucket.Domain.TestAccounts.Models;
+﻿using System.Security.Claims;
+using TestBucket.Contracts.Fields;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Testing.TestCases;
-using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestCases.Search;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
     public class TestRepoFramework(ProjectFixture Fixture)
     {
-        internal async Task<TestCase> AddAsync()
+        public TestBucketApp App => Fixture.App;
+
+        internal async Task<HashSet<long>> SearchTestIdsAsync(string text)
+        {
+            var principal = Impersonation.Impersonate(Fixture.App.Tenant);
+
+            var fieldDefinitions = await GetTestCaseFieldDefinitionsAsync(principal);
+
+            SearchTestQuery query = SearchTestCaseQueryParser.Parse(text, fieldDefinitions, App.TimeProvider);
+
+            HashSet<long> ids = [];
+            var manager = Fixture.Services.GetRequiredService<ITestCaseManager>();
+            await foreach (var testId in manager.SearchTestCaseIdsAsync(principal, query))
+            {
+                ids.Add(testId);
+            }
+            return ids;
+        }
+
+        private async Task<IReadOnlyList<Domain.Fields.Models.FieldDefinition>> GetTestCaseFieldDefinitionsAsync(System.Security.Claims.ClaimsPrincipal principal)
+        {
+            var fieldDefinitionManager = Fixture.Services.GetRequiredService<IFieldDefinitionManager>();
+            var fieldDefinitions = await fieldDefinitionManager.GetDefinitionsAsync(principal, Fixture.ProjectId, FieldTarget.TestCase);
+            return fieldDefinitions;
+        }
+
+        /// <summary>
+        /// Sets milestone on a test case
+        /// </summary>
+        /// <param name="test"></param>
+        /// <param name="milestoneName"></param>
+        /// <returns></returns>
+        internal async Task SetMilestoneAsync(TestCase test, string milestoneName)
+        {
+            var principal = Impersonation.Impersonate(Fixture.App.Tenant);
+            var fieldDefinitions = await GetTestCaseFieldDefinitionsAsync(principal);
+            var milestoneFieldDefinition = fieldDefinitions.Where(x => x.TraitType == TraitType.Milestone).First();
+
+            var fieldManager = Fixture.Services.GetRequiredService<IFieldManager>();
+            var fields = await fieldManager.GetTestCaseFieldsAsync(principal, test.Id, fieldDefinitions);
+            var milestoneField = fields.Where(x => x.FieldDefinitionId == milestoneFieldDefinition.Id).First();
+            milestoneField.StringValue = milestoneName;
+            milestoneField.Inherited = false;
+            await fieldManager.UpsertTestCaseFieldAsync(principal, milestoneField);
+        }
+
+        /// <summary>
+        /// Adds a test case
+        /// </summary>
+        /// <returns></returns>
+        internal async Task<TestCase> AddAsync(TestSuite? suite = null)
         {
             var user = Impersonation.Impersonate(Fixture.App.Tenant);
 
-            var suite = await AddSuiteAsync();
+            suite ??= await AddSuiteAsync();
 
             var test = new TestCase
             {
@@ -33,7 +80,10 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         internal async Task<TestSuite> AddSuiteAsync()
         {
             var user = Impersonation.Impersonate(Fixture.App.Tenant);
-
+            return await AddSuiteAsync(user);
+        }
+        internal async Task<TestSuite> AddSuiteAsync(ClaimsPrincipal user)
+        {
             var suite = new TestSuite
             {
                 Name = Guid.NewGuid().ToString(),
@@ -44,6 +94,24 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
             var manager = Fixture.Services.GetRequiredService<ITestSuiteManager>();
             await manager.AddTestSuiteAsync(user, suite);
             return suite;
+        }
+
+        internal async Task UpdateSuiteAsync(TestSuite suite)
+        {
+            var user = Impersonation.Impersonate(Fixture.App.Tenant);
+            await UpdateSuiteAsync(user, suite);
+        }
+
+        internal async Task UpdateSuiteAsync(ClaimsPrincipal user, TestSuite suite)
+        {
+            var manager = Fixture.Services.GetRequiredService<ITestSuiteManager>();
+            await manager.UpdateTestSuiteAsync(user, suite);
+        }
+
+        internal async Task DeleteSuiteAsync(ClaimsPrincipal user, TestSuite suite)
+        {
+            var manager = Fixture.Services.GetRequiredService<ITestSuiteManager>();
+            await manager.DeleteTestSuiteByIdAsync(user, suite.Id);
         }
     }
 }

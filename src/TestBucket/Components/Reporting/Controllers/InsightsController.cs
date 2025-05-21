@@ -13,6 +13,8 @@ internal class InsightsController : TenantBaseService
         _manager = manager;
     }
 
+    public string[] GetDataSourceNames() => _manager.GetDataSourceNames();
+
     public async Task<InsightsData<string, double>> GetDataAsync(long? projectId, InsightsDataQuery query)
     {
         var principal = await GetUserClaimsPrincipalAsync();

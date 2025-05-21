@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace TestBucket.Domain.Appearance.Themes;
 internal class BlueSteel : DefaultTheme
 {
+    public override string ToString() => "Blue Steel";
+
     public BlueSteel()
     {
         DarkScheme.Base.TextPrimary = "#E1F5FE";

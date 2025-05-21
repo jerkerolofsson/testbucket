@@ -54,16 +54,17 @@ namespace TestBucket.Domain.Identity
 
         public static ClaimsPrincipal Impersonate(Action<EntityPermissionBuilder> configure)
         {
-            var claims = new List<Claim>()
-            {
-                new Claim(ClaimTypes.Name, "system"),
-                new Claim(ClaimTypes.Email, "admin@admin.com"),
-            };
-
             // Permissions
             var builder = new EntityPermissionBuilder();
             configure(builder);
-            if(builder.TenantId is not null)
+
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Name, builder.UserName),
+                new Claim(ClaimTypes.Email, builder.Email),
+            };
+
+            if (builder.TenantId is not null)
             {
                 claims.Add(new Claim("tenant", builder.TenantId));
             }

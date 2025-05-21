@@ -28,4 +28,8 @@ internal class InsightsDataManager : IInsightsDataManager
         throw new InvalidOperationException($"The data source '{query.DataSource}' is not registered.");
     }
 
+    public string[] GetDataSourceNames()
+    {
+        return _dataSources.Keys.ToArray();
+    }
 }

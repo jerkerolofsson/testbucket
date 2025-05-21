@@ -12,8 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.5" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.5" />
       <PackageReference Include="MudBlazor" Version="8.6.0" />
+      <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.0.0" />
   </ItemGroup>
 
     <ItemGroup>

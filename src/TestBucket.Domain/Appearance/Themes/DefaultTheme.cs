@@ -10,6 +10,8 @@ using TestBucket.Contracts.Appearance.Models;
 namespace TestBucket.Domain.Appearance.Themes;
 internal class DefaultTheme : TestBucketTheme
 {
+    public override string ToString() => "Default";
+
     public DefaultTheme()
     {
         DarkScheme.Base.Background = "#111116";
@@ -27,7 +29,7 @@ internal class DefaultTheme : TestBucketTheme
         DarkScheme.Field.Background = DarkScheme.Base.Surface;
         DarkScheme.Field.BorderColor = DarkScheme.Base.Surface.ColorLighten(0.2);
 
-        LightScheme.Base.TextPrimary = "#111";
+        LightScheme.Base.TextPrimary = "#1111";
         LightScheme.Base.Background = "#eee";
         LightScheme.Base.Surface = "#fff";
         LightScheme.Base.Primary = "#4f52b2";

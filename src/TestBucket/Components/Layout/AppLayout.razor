@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Shared.Profile
+@using TestBucket.Components.Shared.Themeing.Models
 
 @inherits LayoutComponentBase
 @inject HotKeys HotKeys
@@ -14,20 +15,13 @@
 @inject IUnifiedSearchManager unifiedSearchManager
 @inject IStringLocalizer<SharedStrings> loc
 
-<MudThemeProvider @ref="@_mudThemeProvider" IsDarkMode="@_isDarkMode" />
-<TbThemeProvider UserPreferencesChanged="OnUserPreferencesChanged"/>
-<MudSnackbarProvider />
-<MudPopoverProvider />
-<MudDialogProvider MaxWidth="MaxWidth.ExtraLarge" />
-<ProgressStatus/>
-<CommandBindings/>
-
-@{
+@if (tenantId is not null && _state is not null)
+{
     string tenantAdminUrl = $"{tenantId}/tenants";
     string teamAdminUrl = $"{tenantId}/Settings/Teams";
     string projectAdminUrl = $"{tenantId}/Settings/ManageProjects";
     string projectSettingsUrl = $"{tenantId}/Settings/Projects/{_project?.Slug}";
-    if(_project is null)
+    if (_project is null)
     {
         projectSettingsUrl = $"{tenantId}/Settings/Projects";
     }
@@ -42,72 +36,86 @@
     string manageUrl = $"/{tenantId}/Account/Manage";
     string registerUrl = $"/{tenantId}/Account/Register";
     string loginUrl = $"/{tenantId}/Account/Login?returnUrl=/{tenantId}";
-}
 
-<CascadingValue Value="@_tenant">
-    <CascadingValue Value="@_project">
-        <CascadingValue Value="@_team">
+    <MudThemeProvider @ref="@_mudThemeProvider" IsDarkMode="@_state.IsDarkMode" />
+    <TbThemeProvider UserPreferencesChanged="OnUserPreferencesChanged" />
+    <MudSnackbarProvider />
+    <MudPopoverProvider />
+    <MudDialogProvider MaxWidth="MaxWidth.ExtraLarge" />
+    <ProgressStatus />
+    <CommandBindings />
 
-            <div style="display: grid; grid-template-rows: auto 1fr;" class="container-fill">
+    <CascadingValue Value="@_tenant">
+        <CascadingValue Value="@_project">
+            <CascadingValue Value="@_team">
+                <CascadingValue Value="@_state">
 
-                <MudToolBar Style="@MenuStyle" Class="@MenuClass">
-                    <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
+                    <div style="display: grid; grid-template-rows: auto 1fr;" class="container-fill">
 
-                        @* <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" /> *@
+                        <MudToolBar Style="@MenuStyle" Class="@MenuClass">
+                            <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
 
-                        <ProjectBadgePicker Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" />
-                        @* <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" /> *@
+                                @* <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" /> *@
 
-                        <TbNavLink Href="@codeUrl">@loc["code"]</TbNavLink>
-                        <TbNavLink Href="@requirementsUrl">@loc["requirements"]</TbNavLink>
-                        <TbNavLink Href="@testsUrl">@loc["testing"]</TbNavLink>
-                        <TbNavLink Href="@issuesUrl">@loc["issues"]</TbNavLink>
-                        <TbNavLink Href="@reportingUrl">@loc["reporting"]</TbNavLink>
+                                <ProjectBadgePicker Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" />
+                                @* <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" /> *@
 
-                        <MudSpacer/>
+                                <TbNavLink Href="@codeUrl">@loc["code"]</TbNavLink>
+                                <TbNavLink Href="@requirementsUrl">@loc["requirements"]</TbNavLink>
+                                <TbNavLink Href="@testsUrl">@loc["testing"]</TbNavLink>
+                                <TbNavLink Href="@issuesUrl">@loc["issues"]</TbNavLink>
+                                <TbNavLink Href="@reportingUrl">@loc["reporting"]</TbNavLink>
 
-                        <UnifiedSearch/>
+                                <MudSpacer/>
 
-                        <MudMenu Icon="@Icons.Material.Filled.Add">
-                            <CommandMenuItems TypeNames="menu-new"/>
-                        </MudMenu>
+                                <UnifiedSearch/>
 
-                        <DarkModeToggle IsDarkMode="@_isDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
-                        <SelfProfileImage/>
+                                <MudMenu Icon="@Icons.Material.Filled.Add">
+                                    <CommandMenuItems TypeNames="menu-new"/>
+                                </MudMenu>
+
+                                <DarkModeToggle IsDarkMode="@_state.IsDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
+                                <SelfProfileImage/>
                         
-                        <MudIconButton Icon="@Icons.Material.Filled.Settings" Href="@settingsUrl"></MudIconButton>
+                                <MudIconButton Icon="@Icons.Material.Filled.Settings" Href="@settingsUrl"></MudIconButton>
 
-                        <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                                <MudMenu Icon="@Icons.Material.Filled.MoreVert">
 
 
 
-                            <!-- Profile / Logout -->
-                            <AuthorizeView>
-                                <MudDivider />
-                                <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="@loc["account"]" Href="@manageUrl"></MudMenuItem>
-                                <MudMenuItem Label="@loc["about"]" Href="/about"></MudMenuItem>
-                                <MudMenuItem>
-                                    <form action="Account/Logout" method="post">
-                                        <AntiforgeryToken />
-                                        <input type="hidden" name="ReturnUrl" value="/" />
-                                        <button type="submit">@loc["logout"]</button>
-                                    </form>
-                                </MudMenuItem>
-                            </AuthorizeView>
-                        </MudMenu>
-                    </MudStack>
-                </MudToolBar>
+                                    <!-- Profile / Logout -->
+                                    <AuthorizeView>
+                                        <MudDivider />
+                                        <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="@loc["account"]" Href="@manageUrl"></MudMenuItem>
+                                        <MudMenuItem Label="@loc["about"]" Href="/about"></MudMenuItem>
+                                        <MudMenuItem>
+                                            <form action="Account/Logout" method="post">
+                                                <AntiforgeryToken />
+                                                <input type="hidden" name="ReturnUrl" value="/" />
+                                                <button type="submit">@loc["logout"]</button>
+                                            </form>
+                                        </MudMenuItem>
+                                    </AuthorizeView>
+                                </MudMenu>
+                            </MudStack>
+                        </MudToolBar>
 
-                <main class="container-fill">
-                    <article class="content container-fill">
-                        @Body
-                    </article>
-                </main>
+                        <main class="container-fill">
+                            <article class="content container-fill">
+                                @Body
+                            </article>
+                        </main>
 
-            </div>
+                    </div>
+                </CascadingValue>
+            </CascadingValue>
         </CascadingValue>
     </CascadingValue>
-</CascadingValue>
+}
+else
+{
+    <MudProgressLinear Indeterminate Color="Color.Tertiary"/>
+}
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
@@ -122,26 +130,23 @@
     private Tenant? _tenant;
     private string? tenantId;
     private string? currentUrl;
-    private bool _isDarkMode = true;
     private MudThemeProvider _mudThemeProvider = default!;
+    private ApplicationState _state = null!;
 
     public string MenuStyle => $"width: 100%; ";
-    public string MenuClass => $"tb-toolbar main " + (_isDarkMode ? "dark" : "light");
+    public string MenuClass => $"tb-toolbar main " + (_state.IsDarkMode ? "dark" : "light");
 
     protected override async Task OnInitializedAsync()
     {
-        var state = await authStateProvider.GetAuthenticationStateAsync();
-        tenantId = state.User.Claims.FirstOrDefault(x => x.Type == "tenant")?.Value;
+        _state = await themingService.GetApplicationStateAsync();
+        tenantId = _state.User.Claims.FirstOrDefault(x => x.Type == "tenant")?.Value;
         _tenant = await tenantController.GetTenantAsync();
 
         currentUrl = navigationManager.ToBaseRelativePath(navigationManager.Uri);
         navigationManager.LocationChanged += OnLocationChanged;
 
-        var isDarkMode = await themingService.IsDarkModeAsync();
-        if (isDarkMode != _isDarkMode)
-        {
-            _isDarkMode = isDarkMode;
-        }
+        _project = await projectService.GetActiveProjectAsync();
+        _team = await teamService.GetActiveTeamAsync();
     }
 
     private void OnUserPreferencesChanged(UserPreferences preferences)
@@ -151,31 +156,23 @@
 
     private async Task OnDarkModeChanged(bool isDarkMode)
     {
-        _isDarkMode = isDarkMode;
+        _state.IsDarkMode = isDarkMode;
+
         await themingService.SetDarkModeAsync(isDarkMode);
+
+        navigationManager.Refresh(true);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            if (_project is null)
-            {
-                _project = await projectService.GetActiveProjectAsync();
-            }
-            if (_team is null)
-            {
-                _team = await teamService.GetActiveTeamAsync();
-            }
-
-
             var isDarkMode = await themingService.IsDarkModeAsync();
-            if(isDarkMode != _isDarkMode)
+            if(isDarkMode != _state.IsDarkMode)
             {
-                _isDarkMode = isDarkMode;
+                _state.IsDarkMode = isDarkMode;
                 StateHasChanged();
             }
-            StateHasChanged();
         }
     }
 

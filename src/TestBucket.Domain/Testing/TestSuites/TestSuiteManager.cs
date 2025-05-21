@@ -7,13 +7,17 @@ namespace TestBucket.Domain.Testing.TestSuites
 {
     class TestSuiteManager : ITestSuiteManager
     {
+        private readonly TimeProvider _timeProvider;
         private readonly ITestCaseRepository _testCaseRepository;
         private readonly List<ITestSuiteObserver> _testSuiteObservers = new();
         private readonly List<ITestSuiteFolderObserver> _testSuiteFolderObservers = new();
         private readonly IMediator _mediator;
 
-        public TestSuiteManager(ITestCaseRepository testCaseRepository, IMediator mediator)
+        public TestSuiteManager(
+            TimeProvider timeProvider,
+            ITestCaseRepository testCaseRepository, IMediator mediator)
         {
+            _timeProvider = timeProvider;
             _testCaseRepository = testCaseRepository;
             _mediator = mediator;
         }
@@ -86,7 +90,7 @@ namespace TestBucket.Domain.Testing.TestSuites
             principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Write);
 
             suite.TenantId = principal.GetTenantIdOrThrow();
-            suite.Modified = suite.Created = DateTimeOffset.UtcNow;
+            suite.Modified = suite.Created = _timeProvider.GetUtcNow();
             suite.CreatedBy = suite.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 
             await _testCaseRepository.AddTestSuiteAsync(suite);
@@ -109,6 +113,10 @@ namespace TestBucket.Domain.Testing.TestSuites
         public async Task UpdateTestSuiteAsync(ClaimsPrincipal principal, TestSuite suite)
         {
             principal.ThrowIfEntityTenantIsDifferent(suite);
+
+            suite.Modified = _timeProvider.GetUtcNow();
+            suite.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
+
             await _testCaseRepository.UpdateTestSuiteAsync(suite);
 
             foreach (var observer in _testSuiteObservers)
@@ -125,6 +133,8 @@ namespace TestBucket.Domain.Testing.TestSuites
         /// <returns></returns>
         public async Task DeleteTestSuiteByIdAsync(ClaimsPrincipal principal, long testSuiteId)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Delete);
+
             var tenantId = principal.GetTenantIdOrThrow();
             var suite = await _testCaseRepository.GetTestSuiteByIdAsync(tenantId, testSuiteId);
             if(suite is null)
@@ -219,7 +229,7 @@ namespace TestBucket.Domain.Testing.TestSuites
         {
             principal.ThrowIfEntityTenantIsDifferent(folder);
 
-            folder.Modified = DateTimeOffset.UtcNow;
+            folder.Modified = _timeProvider.GetUtcNow();
             folder.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 
             await _testCaseRepository.UpdateTestSuiteFolderAsync(folder);

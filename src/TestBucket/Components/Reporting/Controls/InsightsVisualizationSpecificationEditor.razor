@@ -1,0 +1,142 @@
+﻿@using TestBucket.Components.Reporting.Controllers
+@using TestBucket.Components.Shared.Themeing.Models
+@using TestBucket.Contracts.Appearance.Models
+@using TestBucket.Domain.Appearance
+@using TestBucket.Domain.Insights.Model
+@inject InsightsController controller
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<InsightStrings> insightsLoc
+
+<Splitter Style="height: 100%" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+        <MudStack style="width:100%">
+            @if (Specification is null)
+            {
+            }
+            else
+            {
+                <Field>
+                    <FieldHeader>@insightsLoc["default-chart-type"]</FieldHeader>
+                    <MudSelect T="ChartType" Value="Specification.ChartType" ValueChanged="OnChartTypeChangedAsync">
+                        <MudSelectItem Value="@ChartType.Pie">@insightsLoc["chart-type-pie"]</MudSelectItem>
+                        <MudSelectItem Value="@ChartType.Donut">@insightsLoc["chart-type-donut"]</MudSelectItem>
+                        <MudSelectItem Value="@ChartType.Bar">@insightsLoc["chart-type-bar"]</MudSelectItem>
+                        <MudSelectItem Value="@ChartType.Line">@insightsLoc["chart-type-line"]</MudSelectItem>
+                    </MudSelect>
+                </Field>
+
+                <Field Row>
+                    <FieldHeader>@insightsLoc["show-legend"]</FieldHeader>
+                    <MudSpacer/>
+                    <MudSwitchM3 Value="@Specification.ShowLegend" T="bool" ValueChanged="OnShowLegendChangedAsync" Color="Color.Primary"/>
+                </Field>
+
+                <Field Row>
+                    <FieldHeader>@insightsLoc["show-table"]</FieldHeader>
+                    <MudSpacer/>
+                    <MudSwitchM3 Value="@Specification.ShowDataTable" T="bool" ValueChanged="OnShowTableChangedAsync" Color="Color.Primary"/>
+                </Field>
+
+                <MudText Typo="Typo.caption">@insightsLoc["dark-mode"]</MudText>
+                <Field>
+                    <FieldHeader>@insightsLoc["palette"]</FieldHeader>
+                    <PalettePicker Palettes="@Palettes" SelectedPalette="Specification.DarkModeColors.Palette" SelectedPaletteChanged="OnDarkModePaletteChanged"/>
+                </Field>
+                <Field>
+                    <FieldHeader>@insightsLoc["grid-lines"]</FieldHeader>
+                    <ColorCellPicker Color="@Specification.DarkModeColors.GridLineColor" ColorChanged="OnDarkModeGridLineColorChanged"/>
+                </Field>
+
+                <MudText Typo="Typo.caption">@insightsLoc["light-mode"]</MudText>
+                <Field>
+                    <FieldHeader>@insightsLoc["palette"]</FieldHeader>
+                    <PalettePicker Palettes="@Palettes" SelectedPalette="Specification.LightModeColors.Palette" SelectedPaletteChanged="OnLightModePaletteChanged"/>
+                </Field>
+            }
+        </MudStack>
+    </StartContent>
+    <EndContent>
+        @if (Specification is not null)
+        {
+            <div style="display: flex; width: 100%; height: 100%">
+                <InsightsChart State="State" Project="Project" Title="Preview" ReadOnly Spec="Specification"/>
+            </div>
+        }
+    </EndContent>
+</Splitter>
+
+@code {
+    [Parameter] public TestProject Project { get; set; } = default!;
+    [Parameter] public ApplicationState? State { get; set; }
+
+    [Parameter] public InsightsVisualizationSpecification? Specification { get; set; }
+    [Parameter] public EventCallback<InsightsVisualizationSpecification> SpecificationChanged { get; set; }
+    private ThemePalette[] Palettes = [
+    DefaultPalettes.ReportingDefault, 
+        DefaultPalettes.Default, 
+        DefaultPalettes.Vibrant,
+        DefaultPalettes.Corporate, 
+
+        DefaultPalettes.Palette1, 
+
+        DefaultPalettes.Cyan,  
+
+        DefaultPalettes.Monochromatic,
+        DefaultPalettes.Contrasting1,
+        DefaultPalettes.Contrasting2,
+    ];
+
+    private async Task OnDarkModePaletteChanged(ThemePalette palette)
+    {
+        if(Specification is not null)
+        {
+            Specification.DarkModeColors.Palette = palette;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+
+    private async Task OnDarkModeGridLineColorChanged(string color)
+    {
+        if(Specification is not null)
+        {
+            Specification.DarkModeColors.GridLineColor = color;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+
+    private async Task OnLightModePaletteChanged(ThemePalette palette)
+    {
+        if(Specification is not null)
+        {
+            Specification.LightModeColors.Palette = palette;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+
+    private async Task OnShowTableChangedAsync(bool show)
+    {
+         if(Specification is not null)
+        {
+            Specification.ShowDataTable = show;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+
+    private async Task OnShowLegendChangedAsync(bool show)
+    {
+         if(Specification is not null)
+        {
+            Specification.ShowLegend = show;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+
+    private async Task OnChartTypeChangedAsync(ChartType type)
+    {
+        if(Specification is not null)
+        {
+            Specification.ChartType = type;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+}

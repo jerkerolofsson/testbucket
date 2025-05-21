@@ -1,0 +1,32 @@
+@using MudExtensions
+@using MudBlazor;
+@using TestBucket.Contracts.Appearance.Models
+
+@if (Palettes is not null)
+{
+    <MudSelectExtended 
+        Class="tb-palette-picker"
+        Variant="Variant.Outlined" T="ThemePalette" ItemCollection="Palettes" ValuePresenter="ValuePresenter.ItemContent" 
+        SelectedValues="@([SelectedPalette])"
+        SelectedValuesChanged="OnSelectedValuesChanged">
+        <ItemTemplate>
+            <PaletteView Palette="@context.Value"/>
+        </ItemTemplate>
+    </MudSelectExtended>
+}
+@code {
+    [Parameter] public ThemePalette[] Palettes { get; set; } = [];
+    [Parameter] public ThemePalette? SelectedPalette { get; set; }
+    [Parameter] public EventCallback<ThemePalette> SelectedPaletteChanged { get; set; }
+
+    private async Task OnSelectedValuesChanged(IEnumerable<ThemePalette?> values)
+    {
+        var selection = values.FirstOrDefault();
+        SelectedPalette = selection;
+        if (selection is not null)
+        {
+            await SelectedPaletteChanged.InvokeAsync(selection);
+        }
+    }
+
+}

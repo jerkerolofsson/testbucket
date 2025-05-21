@@ -25,6 +25,11 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         private IHost? _host;
         private IServiceProvider? _serviceProvider;
 
+        /// <summary>
+        /// Used to control the time
+        /// </summary>
+        internal FakeTimeProvider TimeProvider { get; } = new FakeTimeProvider(new DateTimeOffset(2025,5,21,0,0,0,0,TimeSpan.Zero));
+
         public string Tenant => _configuration.Tenant ?? throw new InvalidOperationException("Invalid SeedConfiguration in fixture");
         public SeedConfiguration Configuration => _configuration;
 
@@ -135,6 +140,7 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
                 services.AddMemoryCache();
                 services.AddDataServices();
                 services.AddDomainServices();
+                services.AddSingleton<TimeProvider>(TimeProvider);
             });
             _host = builder.Build();
 

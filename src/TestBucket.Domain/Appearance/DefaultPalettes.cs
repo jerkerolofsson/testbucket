@@ -26,6 +26,7 @@ public static class DefaultPalettes
 
     public static readonly ThemePalette Default = new ThemePalette
     {
+        Name = "Default",
         Colors = [
             ThemeColor.Parse("#7f85f5"),
             ThemeColor.Parse("#5b5fc7"),
@@ -39,8 +40,56 @@ public static class DefaultPalettes
         ]
     };
 
+
+    public static readonly ThemePalette Vibrant = new ThemePalette
+    {
+        Name = "Vibrant",
+        Colors = [
+            ThemeColor.Parse("#00bf7d"),
+            ThemeColor.Parse("#00b4c5"),
+            ThemeColor.Parse("#0073e6"),
+            ThemeColor.Parse("#2546f0"),
+            ThemeColor.Parse("#5928ed"),
+        ]
+    };
+
+    public static readonly ThemePalette Monochromatic = new ThemePalette
+    {
+        Name = "Monochromatic",
+        Colors = [
+            ThemeColor.Parse("#b3c7f7"),
+            ThemeColor.Parse("#8babf1"),
+            ThemeColor.Parse("#0073e6"),
+            ThemeColor.Parse("#0461cf"),
+            ThemeColor.Parse("#054fb9"),
+        ]
+    };
+    public static readonly ThemePalette Contrasting1= new ThemePalette
+    {
+        Name = "Contrasting1",
+        Colors = [
+            ThemeColor.Parse("#c44601"),
+            ThemeColor.Parse("#f57600"),
+            ThemeColor.Parse("#8babf1"),
+            ThemeColor.Parse("#0073e6"),
+            ThemeColor.Parse("#054fb9"),
+        ]
+    };
+    public static readonly ThemePalette Contrasting2 = new ThemePalette
+    {
+        Name = "Contrasting2",
+        Colors = [
+            ThemeColor.Parse("#5ba300"),
+            ThemeColor.Parse("#89ce00"),
+            ThemeColor.Parse("#0073e6"),
+            ThemeColor.Parse("#e6308a"),
+            ThemeColor.Parse("#b51963"),
+        ]
+    };
+
     public static readonly ThemePalette Cyan = new ThemePalette
     {
+        Name = "Cyan",
         Colors = [
             ThemeColor.Parse("#07beb8"),
             ThemeColor.Parse("#3dccc7"),
@@ -55,6 +104,7 @@ public static class DefaultPalettes
 
     public static readonly ThemePalette Palette1 = new ThemePalette
     {
+        Name = "Palette1",
         Colors = [
             ThemeColor.Parse("#780000"),
             ThemeColor.Parse("#C1121F"),
@@ -69,6 +119,7 @@ public static class DefaultPalettes
     /// </summary>
     public static readonly ThemePalette Corporate = new ThemePalette
     {
+        Name = "Corporate",
         Colors = [
             ThemeColor.Parse("#156082"),
             ThemeColor.Parse("#e97132"),
@@ -85,6 +136,7 @@ public static class DefaultPalettes
     /// </summary>
     public static readonly ThemePalette ReportingDefault = new ThemePalette
     {
+        Name = "Reporting",
         Colors = [
             ThemeColor.Parse("#EF476F"),
             ThemeColor.Parse("#FFD166"),

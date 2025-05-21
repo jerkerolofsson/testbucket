@@ -138,7 +138,6 @@ internal class TestCaseRepository : ITestCaseRepository
             testCase.Slug = await GenerateTestCaseSlugAsync(testCase.TenantId, testCase.Name);
         }
 
-        testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var tenantId = testCase.TenantId ?? throw new ArgumentException("TenantId missing");
         await AssignExternalIdAsync(dbContext, testCase);

@@ -940,11 +940,13 @@ div.tb-profile-image.tb-background-9 {
     flex: 1;
 }
 
-.tb-tile:hover .mud-toggle-group  {
+/*,.tb-tile:hover .mud-toggle-group */
+.tb-tile:hover [data-testid="edit"] {
     opacity: 1;
 }
 
-.tb-tile .mud-toggle-group {
+.tb-tile .mud-toggle-group, 
+.tb-tile [data-testid="edit"] {
     opacity: 0;
     transition: opacity linear 150ms;
 }
@@ -1073,6 +1075,7 @@ div.tb-profile-image.tb-background-9 {
 .tb-chart {
     height: 5vh; 
     min-height: 300px !important;
+    overflow: hidden;
 }
 
 .dock-toggle.mud-icon-button {
@@ -1080,7 +1083,11 @@ div.tb-profile-image.tb-background-9 {
 }
 
 .tb-insights-chart {
-    padding: 16px;
+    height: 100%;
+}
+
+.tb-insights-chart .tb-chart {
+    flex: 1;
 }
 
 .tb-insights-chart .legend {
@@ -1115,4 +1122,11 @@ div.tb-profile-image.tb-background-9 {
 
 .tb-insights-chart .mud-table-root .mud-table-head th.mud-table-cell {
     font-weight: bold;
+}
+
+.tb-insights-dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    gap: 8px;
 }

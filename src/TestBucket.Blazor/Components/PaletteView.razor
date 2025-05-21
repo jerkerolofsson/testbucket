@@ -1,0 +1,17 @@
+@using MudBlazor
+@using TestBucket.Contracts.Appearance.Models
+
+@if(Palette is not null)
+{
+    <MudStack Row data-testid="@TestId" Spacing="1">
+        @foreach(var color in Palette.Colors)
+        {
+            <ColorCell Color="@color.ToString(ColorOutputFormats.HexA)"/>
+        }
+    </MudStack>
+}
+
+@code {
+    [Parameter] public ThemePalette? Palette{ get; set; }
+    private string TestId => $"palette-{Palette?.Name}";
+}

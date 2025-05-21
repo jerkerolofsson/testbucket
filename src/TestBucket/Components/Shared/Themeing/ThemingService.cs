@@ -2,6 +2,7 @@
 using MudBlazor.Utilities;
 
 using TestBucket.Components.Account;
+using TestBucket.Components.Shared.Themeing.Models;
 using TestBucket.Contracts.Appearance.Models;
 using TestBucket.Domain.Appearance;
 using TestBucket.Domain.Identity;
@@ -40,6 +41,18 @@ internal class ThemingService : TenantBaseService, IDisposable
         _themeName = preferences.Theme;
         _isDarkMode = preferences.DarkMode;
         _highContrast = preferences.IncreasedContrast;
+    }
+
+    public async Task<ApplicationState> GetApplicationStateAsync()
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var userPreferences = await _userPreferencesService.LoadUserPreferencesAsync(principal);
+        var theme = await _testBucketThemeManager.GetCurrentThemeAsync(principal);
+        return new ApplicationState(principal)
+        {
+            IsDarkMode = userPreferences.DarkMode,
+            Theme = theme
+        };
     }
 
     public async Task SetDarkModeAsync(bool darkMode)
@@ -101,169 +114,4 @@ internal class ThemingService : TenantBaseService, IDisposable
     {
         //_userPreferencesService.UserPreferencesChanged -= OnUserPreferencesChanged;
     }
-
-    private readonly AppPalette _fieldPaletteDark = new AppPalette
-    {
-        Background = new MudColor(25, 26, 36, 255),
-        Border = new MudColor(35, 36, 46, 255),
-    };
-
-    private readonly AppPalette _fieldPaletteLight = new AppPalette
-    {
-        Background = new MudColor(255, 255, 255, 255),
-        Border = new MudColor(240, 240, 240, 255),
-    };
-
-    /// <summary>
-    /// Converts the current theme to a MudBlazor theme
-    /// </summary>
-    /// <returns></returns>
-    private MudTheme GetTheme()
-    {
-        if(_themeName is not null)
-        {
-            switch(_themeName)
-            {
-                case "Muted Blue":
-                    return _mutedBlue;
-                case "Yellow":
-                    return _yellowTheme;
-                case "Hotpink":
-                    return _hotPinkTheme;
-                case "Pastelle":
-                    return _pastelle;
-            }
-        }
-        return _theme;
-    }
-
-    private readonly MudTheme _mutedBlue = new MudTheme()
-    {
-        PaletteLight = new PaletteLight()
-        {
-            Dark = MudColor.Parse("#0d1321"),
-            Surface = MudColor.Parse("#f0ebd8"),
-
-            Primary = MudColor.Parse("#748cab"),
-            Secondary = MudColor.Parse("#3e5c76"),
-            Tertiary = MudColor.Parse("#3e5c76"),
-        },
-        PaletteDark = new PaletteDark()
-        {
-            Dark = MudColor.Parse("#0d1321"),
-            Background = new MudColor(20, 21, 31, 255),
-            Surface = MudColor.Parse("#1d2d44"),
-
-            Primary = MudColor.Parse("#748cab"),
-            Secondary = MudColor.Parse("#748cab"),
-            Tertiary = MudColor.Parse("#f0ebd8"),
-        },
-        LayoutProperties = new LayoutProperties()
-        {
-            DrawerWidthLeft = "260px",
-            DrawerWidthRight = "300px"
-        },
-    };
-
-    private readonly MudTheme _pastelle = new MudTheme()
-    {
-        PaletteLight = new PaletteLight()
-        {
-            Dark = MudColor.Parse("#d0d0d0"),
-            Surface = new MudColor(245, 245, 245, 255),
-
-            Primary = MudColor.Parse("#fec3a6"),
-            Secondary = MudColor.Parse("#cdeac0"),
-            Tertiary = MudColor.Parse("#efe9ae"),
-        },
-        PaletteDark = new PaletteDark()
-        {
-            Dark = MudColor.Parse("#202020"),
-            Background = new MudColor(20, 21, 31, 255),
-            Surface = new MudColor(30, 31, 41, 255),
-
-            Primary = MudColor.Parse("#fec3a6"),
-            Secondary = MudColor.Parse("#cdeac0"),
-            Tertiary = MudColor.Parse("#efe9ae"),
-        },
-        LayoutProperties = new LayoutProperties()
-        {
-            DrawerWidthLeft = "260px",
-            DrawerWidthRight = "300px"
-        },
-    };
-
-    private readonly MudTheme _hotPinkTheme = new MudTheme()
-    {
-        PaletteLight = new PaletteLight()
-        {
-            Dark = MudColor.Parse("#d0d0d0"),
-            Surface = new MudColor(245, 245, 245, 255),
-
-            Primary = new MudColor(255, 105, 180, 255),
-            Secondary = MudColor.Parse("#f72585"),
-            Tertiary = MudColor.Parse("#b5179e"),
-        },
-        PaletteDark = new PaletteDark()
-        {
-            Dark = MudColor.Parse("#202020"),
-            Background = new MudColor(20, 21, 31, 255),
-            Surface = new MudColor(30, 31, 41, 255),
-
-            Primary = new MudColor(255, 105, 180, 255),
-            Secondary = MudColor.Parse("#f72585"),
-            Tertiary = MudColor.Parse("#b5179e"),
-        },
-        LayoutProperties = new LayoutProperties()
-        {
-            DrawerWidthLeft = "260px",
-            DrawerWidthRight = "300px"
-        },
-    };
-    private readonly MudTheme _yellowTheme = new MudTheme()
-    {
-        PaletteLight = new PaletteLight()
-        {
-            Dark = MudColor.Parse("#d0d0d0"),
-            Surface = new MudColor(245, 245, 245, 255),
-            
-            Primary = MudColor.Parse("#ffb703"), //MudColor(205, 190, 0, 255),
-            Secondary = MudColor.Parse("#fb8500"),
-            Tertiary = MudColor.Parse("#219ebc"),
-        },
-        PaletteDark = new PaletteDark()
-        {
-            Dark = MudColor.Parse("#202020"),
-            Background = new MudColor(20, 21, 31, 255),
-            Surface = new MudColor(30, 31, 41, 255),
-
-            Primary = MudColor.Parse("#ffb703"),
-            Secondary = MudColor.Parse("#fb8500"),
-            Tertiary = MudColor.Parse("#219ebc"),
-        },
-        LayoutProperties = new LayoutProperties()
-        {
-            DrawerWidthLeft = "260px",
-            DrawerWidthRight = "300px"
-        },
-    };
-    private readonly MudTheme _theme = new MudTheme()
-    {
-        PaletteLight = new PaletteLight()
-        {
-            Dark = MudColor.Parse("#d0d0d0"),
-            Surface = new MudColor(245, 245, 245, 255),
-        },
-        PaletteDark = new PaletteDark()
-        {
-            Dark = MudColor.Parse("#202020"),
-            Background = new MudColor(20,21,31,255),
-            Surface = new MudColor(30, 31, 41, 255),
-        },
-        LayoutProperties = new LayoutProperties()
-        {
-            DrawerWidthLeft = "260px",
-            DrawerWidthRight = "300px"
-        },
-    };
 }

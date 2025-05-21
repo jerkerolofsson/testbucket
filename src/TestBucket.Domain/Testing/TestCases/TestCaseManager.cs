@@ -26,6 +26,7 @@ namespace TestBucket.Domain.Testing.TestCases
     {
         private readonly List<ITestCaseObserver> _testCaseObservers = new();
         private readonly IReadOnlyList<IMarkdownDetector> _markdownDetectors;
+        private readonly TimeProvider _timeProvider;
         private readonly ITestCaseRepository _testCaseRepo;
         private readonly IProjectRepository _projectRepo;
         private readonly ITestSuiteManager _testSuiteManager;
@@ -33,10 +34,12 @@ namespace TestBucket.Domain.Testing.TestCases
         private readonly IFieldDefinitionManager _fieldDefinitionManager;
 
         public TestCaseManager(
+            TimeProvider timeProvider,
             IEnumerable<IMarkdownDetector> markdownDetectors,
             ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager)
         {
             _markdownDetectors = markdownDetectors.ToList();
+            _timeProvider = timeProvider;
             _testCaseRepo = testCaseRepo;
             _testSuiteManager = testSuiteManager;
             _projectRepo = projectRepo;
@@ -110,7 +113,7 @@ namespace TestBucket.Domain.Testing.TestCases
         {
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
             testCase.TenantId = principal.GetTenantIdOrThrow();
-            testCase.Modified = testCase.Created = DateTimeOffset.UtcNow;
+            testCase.Modified = testCase.Created = _timeProvider.GetUtcNow();
             testCase.CreatedBy = testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
             testCase.ClassificationRequired = testCase.Description is not null && testCase.Description.Length > 0;
 
@@ -194,7 +197,7 @@ namespace TestBucket.Domain.Testing.TestCases
 
             await AssignTeamIfNotAssignedAsync(testCase, tenantId);
 
-            testCase.Modified = DateTimeOffset.UtcNow;
+            testCase.Modified = _timeProvider.GetUtcNow();
             testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
             testCase.ClassificationRequired = testCase.Description is not null && testCase.Description.Length > 0;
 

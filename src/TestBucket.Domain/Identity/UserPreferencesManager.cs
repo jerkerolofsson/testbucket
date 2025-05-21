@@ -23,17 +23,19 @@ namespace TestBucket.Domain.Identity
 
         public async Task<UserPreferences> LoadUserPreferencesAsync(ClaimsPrincipal principal)
         {
-            if(_preferences is not null)
-            {
-                return _preferences;
-            }
-
             var tenantId = principal.GetTenantIdOrThrow();
             var username = principal.Identity?.Name ?? throw new ArgumentException("User not authenticated");
+
+            var cachedPreferences = _preferences;
+            if (cachedPreferences is not null && cachedPreferences.UserName == username)
+            {
+                return cachedPreferences;
+            }
+
             var preferences = await _userPreferenceRepository.GetUserPreferencesAsync(tenantId, username);
 
+            // Assign default values
             preferences ??= new UserPreferences { TenantId = tenantId, UserName = username };
-
             preferences.KeyboardBindings ??= new();
             if(preferences.KeyboardBindings.UnifiedSearchBinding is null)
             {
@@ -55,7 +57,7 @@ namespace TestBucket.Domain.Identity
             }
             if (userPreferences.UserName != username)
             {
-                throw new ArgumentException("Cannot save data from another user");
+                throw new ArgumentException($"Cannot save data from another user: username:{username}, preferences: {userPreferences.UserName}");
             }
 
             _preferences = userPreferences;

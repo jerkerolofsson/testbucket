@@ -3,7 +3,9 @@
 @using System.Diagnostics
 @using System.Diagnostics.CodeAnalysis
 @using TestBucket.Components.Reporting.Controllers
+@using TestBucket.Components.Reporting.Dialogs
 @using TestBucket.Components.Reporting.Helpers
+@using TestBucket.Components.Shared.Themeing.Models
 @using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Domain.Appearance
 @using TestBucket.Domain.Appearance.Models
@@ -19,11 +21,12 @@
 @inject ITestBucketThemeManager testBucketThemeManager
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<InsightStrings> insightLoc
+@inject IDialogService dialogService
 
 <MudPaper Elevation="2" Class="tb-tile">
     <MudStack Spacing="0" Class="tb-insights-chart">
         <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
-            @if(Spec is not null)
+            @if(Spec is not null && State is not null)
             {
                 <MudText Typo="Typo.h6">@insightLoc[Spec.Name]</MudText>
                 <MudSpacer />
@@ -46,15 +49,20 @@
                         <MudToggleItem Value="ChartType.Line"><MudIcon Icon="@Icons.Material.Rounded.StackedLineChart" Size="Size.Small" /></MudToggleItem>
                     }
                 </MudToggleGroup>
+
+                @if(!ReadOnly)
+                {
+                    <MudIconButton data-testid="edit" Icon="@Icons.Material.Filled.Brush" OnClick="EditAsync"/>
+                }
             }
         </MudStack>
 
-        @if (!_loading && _results is not null)
+        @if (_results is not null)
         {
-            <PlotlyChart class="tb-chart result-chart" @ref="_chart" @bind-Config="_config" @bind-Layout="@_layout" @bind-Data="@_data"/>
-
+            //  
             @if (_layout is not null && _results is not null && _config is not null)
             {
+                <PlotlyChart class="tb-chart result-chart" @ref="_chart" Config="_config" Layout="@_layout" Data="@_data"/>
                 @if (Spec is not null)
                 {
                     if (Spec.ShowLegend)
@@ -87,8 +95,11 @@
 
 @code {
     [Parameter] public string Title { get; set; } = "";
+    [Parameter] public bool ReadOnly { get; set; }
     [Parameter] public InsightsVisualizationSpecification? Spec { get; set; }
-    [CascadingParameter] public TestProject? Project { get; set; }
+    [Parameter] public EventCallback<InsightsVisualizationSpecification> SpecChanged { get; set; }
+    [Parameter] public TestProject Project { get; set; } = default!;
+    [Parameter] public ApplicationState? State { get; set; }
 
     private ChartType _chartType = ChartType.Line;
 
@@ -100,17 +111,17 @@
     };
     private Layout? _layout;
     private Dictionary<string, string> _legendTitleColorMap = [];
-    private bool _loading = true;
 
     // Using of the interface IList is important for the event callback!
-    private IList<ITrace> _data = new List<ITrace>();
+    private readonly IList<ITrace> _data = new List<ITrace>();
 
     private InsightsData<string, double>? _results;
 
-    private async Task OnChartTypeChanged(ChartType chartType)
+    private Task OnChartTypeChanged(ChartType chartType)
     {
         _chartType = chartType;
-        await BuildChartData();
+        BuildChartData();
+        return Task.CompletedTask;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -122,7 +133,7 @@
 
             if (_results is not null)
             {
-                await BuildChartData();
+                BuildChartData();
                 await InvokeAsync(this.StateHasChanged);
             }
         }
@@ -130,6 +141,11 @@
 
     protected override void OnParametersSet()
     {
+        if (State is not null)
+        {
+            ConfigureLayout(State.Theme);
+        }
+
         _results = null;
     }
 
@@ -159,7 +175,8 @@
     [MemberNotNull(nameof(_layout))]
     private void ConfigureLayout(TestBucketBaseTheme theme)
     {
-        _layout = PlotlyChartBuilder.GetDefaultLayout(themingService.IsDarkMode);
+        var state = State!;
+        _layout ??= PlotlyChartBuilder.GetDefaultLayout(state.IsDarkMode);
         _layout.AutoSize = true;
         _layout.ShowLegend = false;
         if (Spec is not null)
@@ -167,10 +184,10 @@
             _layout.XAxis = [
                 new XAxis {
                     ShowTickLabels = true,
-                    GridColor = Spec.GetGridLineColor(themingService.IsDarkMode),
+                    GridColor = Spec.GetGridLineColor(state.IsDarkMode),
                     TickFont = new Plotly.Blazor.LayoutLib.XAxisLib.TickFont
                     {
-                        Color = Spec.GetTickLabelColor(themingService.IsDarkMode),
+                        Color = Spec.GetTickLabelColor(state.IsDarkMode),
                         Family = "monospace",
                         Size = 10,
                     }
@@ -179,10 +196,10 @@
             _layout.YAxis = [
                 new YAxis {
                     ShowTickLabels = true,
-                    GridColor = Spec.GetGridLineColor(themingService.IsDarkMode),
+                    GridColor = Spec.GetGridLineColor(state.IsDarkMode),
                     TickFont = new Plotly.Blazor.LayoutLib.YAxisLib.TickFont
                     {
-                        Color = Spec.GetTickLabelColor(themingService.IsDarkMode),
+                        Color = Spec.GetTickLabelColor(state.IsDarkMode),
                         Family = "monospace",
                         Size = 10,
                     }
@@ -199,29 +216,24 @@
         };
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        var isDarkMode = await themingService.IsDarkModeAsync();
-        var theme = await testBucketThemeManager.GetCurrentThemeAsync(authState.User);
 
-        ConfigureLayout(theme);
-        _loading = false;
+    protected override void OnInitialized()
+    {
+        if (State is not null)
+        {
+            ConfigureLayout(State.Theme);
+        }
     }
 
-    private async Task BuildChartData()
+    private void BuildChartData()
     {
-        if (_results is null)
+        if (_results is null || State is null)
         {
             return;
         }
 
-        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        var isDarkMode = await themingService.IsDarkModeAsync();
-        var theme = await testBucketThemeManager.GetCurrentThemeAsync(authState.User);
-
-        var colorway = GetColorway(theme);
-        ConfigureLayout(theme);
+        var colorway = GetColorway(State.Theme);
+        ConfigureLayout(State.Theme);
 
         _data.Clear();
         _layout.Annotations = [];
@@ -326,13 +338,41 @@
 
         if (_chart is not null)
         {
+            /*
             try
             {
                 await _chart.Update(_data, _layout);
-                //await _chart.React();
+                await _chart.React();
                 await _chart.NewPlot();
-            }
+                }
             catch { }
+            */
+                        StateHasChanged();
+        }
+        else
+        {
+            StateHasChanged();
+        }
+    }
+
+    private async Task EditAsync()
+    {
+        if(Spec is null)
+        {
+            return;
+        }
+
+        var parameters = new DialogParameters<EditInsightsVisualizationSpecification>
+        {
+            { x => x.Specification, Spec },
+            { x => x.State, State} ,
+            { x => x.Project, Project },
+        };
+        var dialog = await dialogService.ShowAsync<EditInsightsVisualizationSpecification>(null, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if(result?.Data is InsightsVisualizationSpecification spec)
+        {
+            await SpecChanged.InvokeAsync(spec);
         }
     }
 }

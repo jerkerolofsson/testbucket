@@ -15,6 +15,9 @@ namespace TestBucket.Domain.Identity.Permissions
     {
         private readonly UserPermissions _userPermissions = new();
 
+        public string UserName { get; set; } = "system";
+        public string Email { get; set; } = "admin@admin.com";
+
         /// <summary>
         /// Tenant
         /// </summary>
@@ -40,6 +43,7 @@ namespace TestBucket.Domain.Identity.Permissions
             }
             _userPermissions.Permisssions.Add(new EntityPermission(entityType, permission.Level | level));
         }
+
         public void Add(RolePermission rolePermission)
         {
             var permission = _userPermissions.Permisssions.Where(x => x.EntityType == rolePermission.Entity).FirstOrDefault();

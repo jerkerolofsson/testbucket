@@ -12,38 +12,80 @@ namespace TestBucket.Domain.IntegrationTests.Tests
 {
     [IntegrationTest]
     [EnrichedTest]
+    [Component("Testing")]
     public class TestSuiteManagerTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         [Fact]
         [FunctionalTest]
+        [TestDescription("""
+            Verifies that timestamps are updated correctly on test suites
+
+            # Steps
+            1. Set the time to 2025-05-21 07:00:00
+            2. Add a test suite
+            3. Verify that the Created and Modified 
+            """)]
+        public async Task AddTestSuite_CreatedAndMofifiedTimesUpdated()
+        {
+            Fixture.App.TimeProvider.SetTime(new DateTimeOffset(2025, 5, 21, 0, 0, 0, TimeSpan.Zero));
+
+            // Act
+            var suite = await Fixture.Tests.AddSuiteAsync();
+
+            // Assert 
+            Assert.Equal(Fixture.App.TimeProvider.GetUtcNow(), suite.Created);
+            Assert.Equal(Fixture.App.TimeProvider.GetUtcNow(), suite.Modified);
+        }
+
+        [Fact]
+        [FunctionalTest]
+        [TestDescription("""
+            Verifies that timestamps are updated correctly on test suites
+
+            # Steps
+            1. Set the time to 2025-05-21 07:00:00
+            2. Add a test suite
+            3. Set the time to 2025-05-21 08:00:00
+            4. Verify that the Created and Modified 
+            """)]
+        public async Task UppdateTestSuite_CreatedAndMofifiedTimesUpdated()
+        {
+            var created = new DateTimeOffset(2025, 5, 21, 7, 0, 0, TimeSpan.Zero);
+            var updated = new DateTimeOffset(2025, 5, 21, 8, 0, 0, TimeSpan.Zero);
+            Fixture.App.TimeProvider.SetTime(created);
+            var suite = await Fixture.Tests.AddSuiteAsync();
+            suite.Description = "abcdef";
+
+            // Act
+            Fixture.App.TimeProvider.SetTime(updated);
+            await Fixture.Tests.UpdateSuiteAsync(suite);
+
+            // Assert 
+            Assert.Equal(created, suite.Created);
+            Assert.Equal(updated, suite.Modified);
+        }
+
+        [Fact]
+        [FunctionalTest]
         public async Task AddTestSuite_WithPermission_IsSuccess()
         {
-            using var scope = Fixture.Services.CreateScope();   
-            var manager = scope.ServiceProvider.GetRequiredService<ITestSuiteManager>();
             var principal = Fixture.App.SiteAdministrator;
-
-            var testSuite = new TestSuite { Name = Guid.NewGuid().ToString(), TestProjectId = Fixture.ProjectId, TeamId = Fixture.TeamId };
-
-            await manager.AddTestSuiteAsync(principal, testSuite);
+            await Fixture.Tests.AddSuiteAsync(principal);
         }
 
         [Fact]
         [SecurityTest]
         public async Task AddTestSuite_WithOnlyReadPermission_UnauthorizedAccessExceptionThrown()
         {
-            using var scope = Fixture.Services.CreateScope();
-            var manager = scope.ServiceProvider.GetRequiredService<ITestSuiteManager>();
             var principal = Impersonation.Impersonate(builder =>
             {
                 builder.TenantId = Fixture.App.Tenant;
                 builder.Add(PermissionEntityType.TestSuite, PermissionLevel.Read);
             });
 
-            var testSuite = new TestSuite { Name = Guid.NewGuid().ToString() };
-
             await Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
             {
-                await manager.AddTestSuiteAsync(principal, testSuite);
+                await Fixture.Tests.AddSuiteAsync(principal);
             });
         }
 
@@ -51,19 +93,32 @@ namespace TestBucket.Domain.IntegrationTests.Tests
         [SecurityTest]
         public async Task AddTestSuite_WithoutPermission_UnauthorizedAccessExceptionThrown()
         {
-            using var scope = Fixture.Services.CreateScope();
-            var manager = scope.ServiceProvider.GetRequiredService<ITestSuiteManager>();
             var principal = Impersonation.Impersonate(builder =>
             {
                 builder.TenantId = Fixture.App.Tenant;
                 builder.Add(PermissionEntityType.TestSuite, PermissionLevel.None);
             });
 
-            var testSuite = new TestSuite { Name = Guid.NewGuid().ToString() };
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
+            {
+                await Fixture.Tests.AddSuiteAsync(principal);
+            });
+        }
+
+        [Fact]
+        [SecurityTest]
+        public async Task DeleteTestSuite_WithoutPermission_UnauthorizedAccessExceptionThrown()
+        {
+            var principal = Impersonation.Impersonate(builder =>
+            {
+                builder.TenantId = Fixture.App.Tenant;
+                builder.Add(PermissionEntityType.TestSuite, PermissionLevel.ReadWrite);
+            });
+            var suite = await Fixture.Tests.AddSuiteAsync(principal);
 
             await Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
             {
-                await manager.AddTestSuiteAsync(principal, testSuite);
+                await Fixture.Tests.DeleteSuiteAsync(principal, suite);
             });
         }
     }

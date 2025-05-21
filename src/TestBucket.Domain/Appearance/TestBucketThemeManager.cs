@@ -16,7 +16,6 @@ public class TestBucketThemeManager : ITestBucketThemeManager
 {
     private readonly IUserPreferencesManager _userPreferencesService;
     private readonly IMemoryCache _memoryCache;
-    private TestBucketBaseTheme? _theme;
 
     public TestBucketThemeManager(IUserPreferencesManager userPreferencesService, IMemoryCache memoryCache)
     {
@@ -44,13 +43,9 @@ public class TestBucketThemeManager : ITestBucketThemeManager
 
     public async Task<TestBucketBaseTheme> GetCurrentThemeAsync(ClaimsPrincipal user)
     {
-        if (_theme is null)
-        {
-            var userPreferences = await _userPreferencesService.LoadUserPreferencesAsync(user);
-            string themeName = userPreferences.Theme ?? "default";
-            _theme = await GetThemeByNameAsync(themeName);
-        }
-        return _theme;
+        var userPreferences = await _userPreferencesService.LoadUserPreferencesAsync(user);
+        string themeName = userPreferences.Theme ?? "default";
+        return await GetThemeByNameAsync(themeName);
     }
 
 
@@ -63,6 +58,8 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         bool isDarkMode = userPreferences.DarkMode;
 
         var css = new StringBuilder();
+
+        css.AppendLine($"/* {theme.ToString()} */");
 
         // Add default base style
         AddBaseStyle(css, isDarkMode);
@@ -108,6 +105,7 @@ public class TestBucketThemeManager : ITestBucketThemeManager
     {
         // High contrast mode overrides some settings
         var theme = new HighContrast();
+        stylesheet.Append("/* High contrast */");
         if (isDarkMode)
         {
             stylesheet.AppendLine(theme.GenerateStyle(theme.DarkScheme));

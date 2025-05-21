@@ -1,8 +1,29 @@
+@using MudBlazor
+@using MudBlazor.Utilities
 @if(Color is not null)
 {
-    <div class="tb-color" style="background: @Color"/>
+    <div class="@CssClass" style="@CssStyle" data-testid="@TestId" @onclick="OnClickedAsync" />
 }
 
 @code {
+    [Parameter] public Size Size { get; set; } = Size.Small;
     [Parameter] public string? Color { get; set; }
+    [Parameter] public EventCallback<string> OnClick { get; set; }
+
+    public string CssStyle => $"background: {Color}";
+
+    public string CssClass => new CssBuilder("tb-color")
+    .AddClass("small", Size == Size.Small)
+    .AddClass("medium", Size == Size.Medium)
+    .AddClass("large", Size == Size.Large)
+    .Build();
+
+    private string TestId => $"color-{Color}";
+    private async Task OnClickedAsync()
+    {
+        if(Color is not null)
+        {
+            await OnClick.InvokeAsync(Color);
+        }
+    }
 }

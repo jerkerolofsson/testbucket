@@ -1,0 +1,48 @@
+﻿@using TestBucket.Components.Shared.Themeing.Models
+@using TestBucket.Domain.Insights.Model
+
+@inject IStringLocalizer<InsightStrings> insightLoc
+@inject IStringLocalizer<SharedStrings> loc
+
+<EditForm Model="@_spec" OnValidSubmit="OnValidSubmit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 50vw">
+        <TitleContent>
+            @insightLoc["configure-data-visualization"]
+        </TitleContent>
+        <DialogContent>
+            <InsightsVisualizationSpecificationEditor State="State" Project="Project" @bind-Specification="_spec" />
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public InsightsVisualizationSpecification? Specification { get; set; }
+    [Parameter] public TestProject Project { get; set; } = default!;
+    [Parameter] public ApplicationState? State { get; set; }
+
+    private InsightsVisualizationSpecification? _spec;
+
+    protected override void OnInitialized()
+    {
+        _spec = Specification;
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+        MudDialog.Close(_spec);
+    }
+}
+

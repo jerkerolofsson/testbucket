@@ -17,7 +17,13 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
         [Fact]
         public async Task GetThemeStylesheet_WithNoThemeSet()
         {
-            var preferences = await Fixture.UserPreferences.LoadUserPreferencesAsync();
+            var user = Impersonation.Impersonate(builder =>
+            {
+                builder.TenantId = Fixture.App.Tenant;
+                builder.UserName = Guid.NewGuid().ToString();
+                builder.Email = "theme1@admin.com";
+            });
+            var preferences = await Fixture.UserPreferences.LoadUserPreferencesAsync(user);
             var themeManager = Fixture.Services.GetRequiredService<ITestBucketThemeManager>();
 
             // Act
@@ -33,20 +39,29 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
         [Fact]
         public async Task GetThemeStylesheet_WithUnknownThemeInDarkMode_StylesheetIsThemedAsDefault()
         {
-            var preferences = await Fixture.UserPreferences.LoadUserPreferencesAsync();
+            var user = Impersonation.Impersonate(builder =>
+            {
+                builder.TenantId = Fixture.App.Tenant;
+                builder.UserName = "theme2" + Guid.NewGuid().ToString();
+                builder.Email = "theme2@admin.com";
+            });
+
+            var preferences = await Fixture.UserPreferences.LoadUserPreferencesAsync(user);
             preferences.Theme = "asdfasdf";
             preferences.DarkMode = true;
-            await Fixture.UserPreferences.SaveUserPreferencesAsync(preferences);
+            await Fixture.UserPreferences.SaveUserPreferencesAsync(preferences, user);
 
             // Act
             var themeManager = Fixture.Services.GetRequiredService<ITestBucketThemeManager>();
-            var stylesheet = await themeManager.GetThemedStylesheetAsync(Fixture.App.SiteAdministrator);
+            var stylesheet = await themeManager.GetThemedStylesheetAsync(user);
 
             // Assert
             TestBucketTheme? theme = await themeManager.GetThemeByNameAsync("default") as TestBucketTheme;
             Assert.NotNull(theme?.DarkScheme?.Base?.TextPrimary);
+
+            var expectedColor = theme.DarkScheme.Base.TextPrimary.ToString(Contracts.Appearance.Models.ColorOutputFormats.HexA);
             Assert.NotNull(stylesheet);
-            Assert.Contains(theme.DarkScheme.Base.TextPrimary.ToString(), stylesheet);
+            Assert.Contains(expectedColor, stylesheet);
         }
 
         [Theory]
@@ -54,20 +69,26 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
         [InlineData("Default")]
         public async Task GetThemeStylesheet_WithThemeInLightMode_StylesheetIsThemedCorrectly(string themeName)
         {
-            var preferences = await Fixture.UserPreferences.LoadUserPreferencesAsync();
+            var user = Impersonation.Impersonate(builder =>
+            {
+                builder.TenantId = Fixture.App.Tenant;
+                builder.UserName = themeName + Guid.NewGuid().ToString();
+                builder.Email = themeName+"theme3@admin.com";
+            });
+            var preferences = await Fixture.UserPreferences.LoadUserPreferencesAsync(user);
             preferences.Theme = themeName;
             preferences.DarkMode = false;
-            await Fixture.UserPreferences.SaveUserPreferencesAsync(preferences);
+            await Fixture.UserPreferences.SaveUserPreferencesAsync(preferences, user);
 
             // Act
             var themeManager = Fixture.Services.GetRequiredService<ITestBucketThemeManager>();
-            var stylesheet = await themeManager.GetThemedStylesheetAsync(Fixture.App.SiteAdministrator);
+            var stylesheet = await themeManager.GetThemedStylesheetAsync(user);
 
             // Assert
             TestBucketTheme? theme = await themeManager.GetThemeByNameAsync(themeName) as TestBucketTheme;
             Assert.NotNull(theme?.LightScheme?.Base?.TextPrimary);
             Assert.NotNull(stylesheet);
-            Assert.Contains(theme.LightScheme.Base.TextPrimary.ToString(), stylesheet);
+            Assert.Contains(theme.LightScheme.Base.TextPrimary.ToString(Contracts.Appearance.Models.ColorOutputFormats.HexA), stylesheet);
         }
 
         [Theory]
@@ -75,20 +96,26 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
         [InlineData("Default")]
         public async Task GetThemeStylesheet_WithThemeInDarkMode_StylesheetIsThemedCorrectly(string themeName)
         {
-            var preferences = await Fixture.UserPreferences.LoadUserPreferencesAsync();
+            var user = Impersonation.Impersonate(builder =>
+            {
+                builder.TenantId = Fixture.App.Tenant;
+                builder.UserName = themeName + "theme4" + Guid.NewGuid().ToString();
+                builder.Email = themeName + "theme4@admin.com";
+            });
+            var preferences = await Fixture.UserPreferences.LoadUserPreferencesAsync(user);
             preferences.Theme = themeName;
             preferences.DarkMode = true;
-            await Fixture.UserPreferences.SaveUserPreferencesAsync(preferences);
+            await Fixture.UserPreferences.SaveUserPreferencesAsync(preferences, user);
 
             // Act
             var themeManager = Fixture.Services.GetRequiredService<ITestBucketThemeManager>();
-            var stylesheet = await themeManager.GetThemedStylesheetAsync(Fixture.App.SiteAdministrator);
+            var stylesheet = await themeManager.GetThemedStylesheetAsync(user);
 
             // Assert
             TestBucketTheme? theme = await themeManager.GetThemeByNameAsync(themeName) as TestBucketTheme;
             Assert.NotNull(theme?.DarkScheme?.Base?.TextPrimary);
             Assert.NotNull(stylesheet);
-            Assert.Contains(theme.DarkScheme.Base.TextPrimary.ToString(), stylesheet);
+            Assert.Contains(theme.DarkScheme.Base.TextPrimary.ToString(Contracts.Appearance.Models.ColorOutputFormats.HexA), stylesheet);
         }
 
     }

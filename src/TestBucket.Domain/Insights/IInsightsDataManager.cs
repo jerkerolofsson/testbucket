@@ -12,4 +12,10 @@ public interface IInsightsDataManager
     /// <param name="query"></param>
     /// <returns></returns>
     Task<InsightsData<string, double>> GetDataAsync(ClaimsPrincipal principal, long? projectId, InsightsDataQuery query);
+
+    /// <summary>
+    /// Returns all registered data sources
+    /// </summary>
+    /// <returns></returns>
+    string[] GetDataSourceNames();
 }

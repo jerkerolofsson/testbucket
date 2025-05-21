@@ -111,7 +111,7 @@ public class TestBucketTheme : TestBucketBaseTheme
 
         if (scheme.Base.TextPrimary is not null)
         {
-            css.AppendLine($"--mud-palette-text-primary: {scheme.Base.TextPrimary};");
+            css.AppendLine($"--mud-palette-text-primary: {scheme.Base.TextPrimary.ToString(ColorOutputFormats.HexA)};");
         }
         if (scheme.Base.Dark is not null)
         {

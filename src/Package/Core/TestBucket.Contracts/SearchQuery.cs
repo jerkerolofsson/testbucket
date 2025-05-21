@@ -47,6 +47,12 @@ public class SearchQuery
     /// </summary>
     public DateTimeOffset? CreatedUntil { get; set; }
 
+    /// <summary>
+    /// This is just a textual representation of the since, the real value will be set to CreatedFrom when filtering.
+    /// But we keep track of the value entered by the user so we can serialize it
+    /// </summary>
+    public string? Since { get; set; }
+
     public List<FieldFilter> Fields { get; set; } = [];
 
     public void AddFieldFilter(FieldFilter filter)

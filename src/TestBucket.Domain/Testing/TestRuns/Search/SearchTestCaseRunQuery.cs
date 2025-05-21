@@ -2,6 +2,10 @@
 using System.Text;
 using System.Web;
 
+using TestBucket.Domain.Search;
+
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
 namespace TestBucket.Domain.Testing.TestRuns.Search;
 public class SearchTestCaseRunQuery : SearchQuery
 {
@@ -47,6 +51,7 @@ public class SearchTestCaseRunQuery : SearchQuery
     public string ToSearchText()
     {
         List<string> items = [];
+        BaseQueryParser.Serialize(this, items);
         if (AssignedToUser is not null)
         {
             items.Add($"assigned-to:{AssignedToUser}");
@@ -69,14 +74,6 @@ public class SearchTestCaseRunQuery : SearchQuery
         if (State is not null)
         {
             items.Add($"state:{State}");
-        }
-        if (TeamId is not null)
-        {
-            items.Add($"team-id:{TeamId}");
-        }
-        if (ProjectId is not null)
-        {
-            items.Add($"project-id:{ProjectId}");
         }
         if (TestRunId is not null)
         {

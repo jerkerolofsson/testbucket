@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Domain.Search;
+using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Testing.TestCases.Search
 {
@@ -20,14 +21,9 @@ namespace TestBucket.Domain.Testing.TestCases.Search
                 };
                 items.Add($"is:{value}");
             }
-            if (query.TeamId is not null)
-            {
-                items.Add($"team-id:{query.TeamId}");
-            }
-            if (query.ProjectId is not null)
-            {
-                items.Add($"project-id:{query.ProjectId}");
-            }
+
+            BaseQueryParser.Serialize(query, items);
+
             if (query.TestRunId is not null)
             {
                 items.Add($"testrun-id:{query.TestRunId}");

@@ -3,9 +3,13 @@
 @using TestBucket.Components.Code.Controls
 @using TestBucket.Components.Issues.Controls
 @using TestBucket.Components.Shared.Profile
+@using TestBucket.Components.Shared.Themeing.Models
 @using TestBucket.Contracts.Fields
 @using TestBucket.Domain
+@using TestBucket.Domain.Appearance
 @using TestBucket.Domain.Code.Models
+@using TestBucket.Domain.Insights.Model
+@using TestBucket.Domain.Testing.TestCases.Insights
 @using TestBucket.Domain.Testing.TestCases.Search
 @using TestBucket.Domain.Testing.TestRuns.Search
 @layout CodeLayout
@@ -105,7 +109,13 @@
                     <IssueGrid @bind-SearchText="_issueSearchText" />
                 </MudTabPanel>
                 <MudTabPanel Text="@loc["test-cases"]">
-                    <TestCaseGrid @bind-Query="_testCaseQuery" CompareFolder="false" Project="Project"/>
+                    <MudStack Style="width: 100%" Class="pa-2">
+                        <TestCaseGrid Query="_testCaseQuery" QueryChanged="OnTestCaseQueryChanged" CompareFolder="false" Project="Project"/>
+                        @if(_testsByCat is not null)
+                        {
+                            <InsightsChart State="State" Project="Project" ReadOnly="false" @bind-Spec="_testsByCat" />
+                        }
+                    </MudStack>
                 </MudTabPanel>
                 <MudTabPanel Text="@loc["test-results"]">
                     <TestCaseRunGrid @bind-Query="_testCaseRunQuery" />
@@ -119,6 +129,7 @@
 @code {
     [Parameter] public string? TenantId { get; set; }
     [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public ApplicationState? State { get; set; }
     private TestProject? _project;
     private IReadOnlyList<Component> _components = [];
     private MudDataGrid<Component>? _grid;
@@ -127,8 +138,14 @@
     private SearchTestCaseRunQuery _testCaseRunQuery = new();
     private string _issueSearchText = "";
 
-
+    private InsightsVisualizationSpecification? _testsByCat;
     private string _searchText = "";
+
+    private void OnTestCaseQueryChanged(SearchTestQuery query)
+    {
+        _testCaseQuery = query;
+        CreateTestCategoryChart(query.ToSearchText());
+    }
 
     protected void OnSearch(string text)
     {
@@ -153,7 +170,38 @@
             _testCaseQuery = SearchTestCaseQueryParser.Parse(q, testCaseFields);
             _testCaseRunQuery = SearchTestCaseRunQueryParser.Parse(q, testCaseRunFields);
             _issueSearchText = q;
+
+            CreateTestCategoryChart(q);
         }
+    }
+
+    private void CreateTestCategoryChart(string searchText)
+    {
+        _testsByCat = new InsightsVisualizationSpecification
+        {
+            Name = "count-per-testcategory",
+            DataQueries = [new InsightsDataQuery
+            {
+                DataSource = TestCaseDataSourceNames.CountByCategory,
+                Query = searchText
+            }],
+            DarkModeColors = new ChartColors()
+            {
+                Palette = DefaultPalettes.ReportingDefault,
+                ColorMode = ChartColorMode.ByLabel,
+                GridLineColor = "#444",
+                TickLabelColor = "#777"
+            },
+            LightModeColors = new ChartColors()
+            {
+                Palette = DefaultPalettes.ReportingDefault,
+                ColorMode = ChartColorMode.ByLabel,
+                GridLineColor = "#ddd",
+                TickLabelColor = "#aaa"
+            },
+            ShowLegend = true,
+            ShowDataTable = false,
+        };
     }
 
     private async Task EditAsync(Component component)
@@ -182,6 +230,8 @@
         {
             _project = Project;
             _components = await architectureController.GetComponentsAsync(Project.Id);
+
+
             _grid?.ReloadServerData();
         }
     }

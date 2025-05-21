@@ -26,7 +26,7 @@ internal class CountByCategoryDataSource : IInsightsDataSource
         IReadOnlyList<FieldDefinition> fields = [];
         if (projectId is not null)
         {
-            fields = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, Contracts.Fields.FieldTarget.Issue);
+            fields = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, Contracts.Fields.FieldTarget.TestCase);
         }
         SearchTestQuery testQuery = SearchTestCaseQueryParser.Parse(query.Query, fields);
         if (projectId is not null)

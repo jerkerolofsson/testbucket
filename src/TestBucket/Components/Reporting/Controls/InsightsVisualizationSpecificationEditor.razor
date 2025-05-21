@@ -38,9 +38,9 @@
                         {
                             <MudSelectItem Value="@ChartType.Text">@insightsLoc["chart-type-text"]</MudSelectItem>
                         }
-                        @if((Specification.AllowedChartTypes&ChartType.Heatmap) == ChartType.Heatmap)
+                        @if((Specification.AllowedChartTypes&ChartType.ActivityHeatmap) == ChartType.ActivityHeatmap)
                         {
-                            <MudSelectItem Value="@ChartType.Heatmap">@insightsLoc["chart-type-heatmap"]</MudSelectItem>
+                            <MudSelectItem Value="@ChartType.ActivityHeatmap">@insightsLoc["chart-type-heatmap"]</MudSelectItem>
                         }
                     </MudSelect>
                 </Field>

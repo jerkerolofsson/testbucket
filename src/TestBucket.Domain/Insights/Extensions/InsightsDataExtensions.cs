@@ -3,6 +3,7 @@
 namespace TestBucket.Domain.Insights.Extensions;
 public static class InsightsDataExtensions
 {
+
     /// <summary>
     /// Adds missing string labels
     /// </summary>
@@ -72,6 +73,12 @@ public static class InsightsDataExtensions
         return end;
     }
 
+    /// <summary>
+    /// Scans each series for the start and end day and adds any missing days so that each series has the same and 
+    /// correct number of days
+    /// </summary>
+    /// <typeparam name="U"></typeparam>
+    /// <param name="data"></param>
     public static void AddMissingDays<U>(this InsightsData<DateOnly, U> data)
     {
         var start = data.GetStartDay();
@@ -82,10 +89,8 @@ public static class InsightsDataExtensions
         }
 
         var date = start.Value;
-        while(date != end)
+        while(date <= end)
         {
-            date = date.AddDays(1);
-
             foreach(var series in data.Series)
             {
                 if (!series.Labels.Contains(date))
@@ -93,6 +98,7 @@ public static class InsightsDataExtensions
                     series.Add(date, default!);
                 }
             }
+            date = date.AddDays(1);
         }
     }
 }

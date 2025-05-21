@@ -1137,3 +1137,36 @@ div.tb-profile-image.tb-background-9 {
     width: 100%;
     gap: 8px;
 }
+
+.tb-insights-chart-text.value {
+    font-size: 40pt;
+    padding-top: 32px;
+}
+.tb-insights-chart-text.label {
+    font-size: 8pt;
+    padding-bottom: 32px;
+}
+
+.tb-insights-heatmap {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    row-gap: 4px;
+    column-gap: 16px;
+}
+
+.tb-insights-heatmap .values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1px;
+    align-items: center;
+}
+
+.tb-insights-heatmap .item {
+    font-size: 7pt;
+    border-radius: 2px;
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+}

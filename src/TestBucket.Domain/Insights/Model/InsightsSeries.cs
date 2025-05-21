@@ -6,7 +6,15 @@ public class InsightsSeries<T, U> where T : notnull
 {
     private readonly List<InsightsDataPoint<T, U>> _data = [];
 
+    /// <summary>
+    /// Name of the series
+    /// </summary>
     public required string Name { get; set; }
+
+    /// <summary>
+    /// Returns true if there are data points
+    /// </summary>
+    public bool HasData => _data.Count > 0;
 
     /// <summary>
     /// Defines how to sort the data points 

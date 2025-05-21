@@ -3,6 +3,8 @@
 [Flags]
 public enum ChartType
 {
+    None = 0,
+
     /// <summary>
     /// Vertical bars
     /// </summary>
@@ -22,4 +24,14 @@ public enum ChartType
     /// Lines
     /// </summary>
     Line = 8,
+
+    /// <summary>
+    /// A timeline heatmap
+    /// </summary>
+    ActivityHeatmap = 16,
+
+    /// <summary>
+    /// Shows one label/value
+    /// </summary>
+    Text = 32
 }

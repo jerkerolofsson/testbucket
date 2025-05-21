@@ -59,10 +59,23 @@
 
         @if (_results is not null)
         {
-            //  
+            
             @if (_layout is not null && _results is not null && _config is not null)
             {
-                <PlotlyChart class="tb-chart result-chart" @ref="_chart" Config="_config" Layout="@_layout" Data="@_data"/>
+                if(Spec?.ChartType is ChartType.Bar or ChartType.Line or ChartType.Donut or ChartType.Pie)
+                {
+                    <PlotlyChart class="tb-chart result-chart" @ref="_chart" Config="_config" Layout="@_layout" Data="@_data"/>
+                }
+                else if(Spec?.ChartType is ChartType.Text)
+                {
+                    <InsightsChartText Spec="@Spec" Data="_results" ColorMap="_legendTitleColorMap"/>
+                   
+                }
+                else if(Spec?.ChartType is ChartType.ActivityHeatmap)
+                {
+                    <InsightsHeatmap Data="_results" ColorMap="_legendTitleColorMap"/>
+                }
+
                 @if (Spec is not null)
                 {
                     if (Spec.ShowLegend)

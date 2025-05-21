@@ -18,10 +18,30 @@
                 <Field>
                     <FieldHeader>@insightsLoc["default-chart-type"]</FieldHeader>
                     <MudSelect T="ChartType" Value="Specification.ChartType" ValueChanged="OnChartTypeChangedAsync">
-                        <MudSelectItem Value="@ChartType.Pie">@insightsLoc["chart-type-pie"]</MudSelectItem>
-                        <MudSelectItem Value="@ChartType.Donut">@insightsLoc["chart-type-donut"]</MudSelectItem>
-                        <MudSelectItem Value="@ChartType.Bar">@insightsLoc["chart-type-bar"]</MudSelectItem>
-                        <MudSelectItem Value="@ChartType.Line">@insightsLoc["chart-type-line"]</MudSelectItem>
+                        @if((Specification.AllowedChartTypes&ChartType.Pie) == ChartType.Pie)
+                        {
+                            <MudSelectItem Value="@ChartType.Pie">@insightsLoc["chart-type-pie"]</MudSelectItem>
+                        }
+                        @if((Specification.AllowedChartTypes&ChartType.Donut) == ChartType.Donut)
+                        {
+                            <MudSelectItem Value="@ChartType.Donut">@insightsLoc["chart-type-donut"]</MudSelectItem>
+                        }
+                        @if((Specification.AllowedChartTypes&ChartType.Bar) == ChartType.Bar)
+                        {
+                            <MudSelectItem Value="@ChartType.Bar">@insightsLoc["chart-type-bar"]</MudSelectItem>
+                        }
+                        @if((Specification.AllowedChartTypes&ChartType.Line) == ChartType.Line)
+                        {
+                            <MudSelectItem Value="@ChartType.Line">@insightsLoc["chart-type-line"]</MudSelectItem>
+                        }
+                        @if((Specification.AllowedChartTypes&ChartType.Text) == ChartType.Text)
+                        {
+                            <MudSelectItem Value="@ChartType.Text">@insightsLoc["chart-type-text"]</MudSelectItem>
+                        }
+                        @if((Specification.AllowedChartTypes&ChartType.Heatmap) == ChartType.Heatmap)
+                        {
+                            <MudSelectItem Value="@ChartType.Heatmap">@insightsLoc["chart-type-heatmap"]</MudSelectItem>
+                        }
                     </MudSelect>
                 </Field>
 

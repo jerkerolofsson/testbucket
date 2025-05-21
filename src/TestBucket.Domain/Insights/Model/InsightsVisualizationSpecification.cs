@@ -28,7 +28,7 @@ public class InsightsVisualizationSpecification
     /// <summary>
     /// The chart types that the user can change between
     /// </summary>
-    public ChartType AllowedChartTypes { get; set; } = ChartType.Bar|ChartType.Donut|ChartType.Line|ChartType.Pie;
+    public ChartType AllowedChartTypes { get; set; } = ChartType.Bar|ChartType.Donut|ChartType.Line|ChartType.Pie|ChartType.Text;
 
     /// <summary>
     /// Color scheme for light mode

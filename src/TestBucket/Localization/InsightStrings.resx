@@ -117,6 +117,42 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="closed-issues" xml:space="preserve">
+    <value>Closed issues</value>
+  </data>
+  <data name="closed-issues-by-day" xml:space="preserve">
+    <value>Closed issues</value>
+  </data>
+  <data name="count-by-state" xml:space="preserve">
+    <value>Count by state</value>
+  </data>
+  <data name="count-per-testcategory" xml:space="preserve">
+    <value>Tests / category</value>
+  </data>
+  <data name="created-issues" xml:space="preserve">
+    <value>Created issues</value>
+  </data>
+  <data name="created-issues-by-day" xml:space="preserve">
+    <value>Created issues</value>
+  </data>
+  <data name="issue-inflow-outflow" xml:space="preserve">
+    <value>Issue inflow &amp; outflow</value>
+  </data>
+  <data name="issues-by-state" xml:space="preserve">
+    <value>Issues / state</value>
+  </data>
+  <data name="label" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="results" xml:space="preserve">
+    <value>Results</value>
+  </data>
+  <data name="test-results" xml:space="preserve">
+    <value>Test results</value>
+  </data>
+  <data name="value" xml:space="preserve">
+    <value>Value</value>
+  </data>
   <data name="appearance" xml:space="preserve">
     <value>Appearance</value>
   </data>
@@ -132,26 +168,8 @@
   <data name="chart-type-pie" xml:space="preserve">
     <value>Pie</value>
   </data>
-  <data name="closed-issues" xml:space="preserve">
-    <value>Closed issues</value>
-  </data>
-  <data name="closed-issues-by-day" xml:space="preserve">
-    <value>Closed issues</value>
-  </data>
   <data name="configure-data-visualization" xml:space="preserve">
     <value>Configure data visualization</value>
-  </data>
-  <data name="count-by-state" xml:space="preserve">
-    <value>Count by state</value>
-  </data>
-  <data name="count-per-testcategory" xml:space="preserve">
-    <value>Tests / category</value>
-  </data>
-  <data name="created-issues" xml:space="preserve">
-    <value>Created issues</value>
-  </data>
-  <data name="created-issues-by-day" xml:space="preserve">
-    <value>Created issues</value>
   </data>
   <data name="dark-mode" xml:space="preserve">
     <value>Dark mode</value>
@@ -162,23 +180,11 @@
   <data name="grid-lines" xml:space="preserve">
     <value>Grid lines</value>
   </data>
-  <data name="issue-inflow-outflow" xml:space="preserve">
-    <value>Issue inflow &amp; outflow</value>
-  </data>
-  <data name="issues-by-state" xml:space="preserve">
-    <value>Issues / state</value>
-  </data>
-  <data name="label" xml:space="preserve">
-    <value>Label</value>
-  </data>
   <data name="light-mode" xml:space="preserve">
     <value>Light mode</value>
   </data>
   <data name="palette" xml:space="preserve">
     <value>Palette</value>
-  </data>
-  <data name="results" xml:space="preserve">
-    <value>Results</value>
   </data>
   <data name="show-legend" xml:space="preserve">
     <value>Show legend</value>
@@ -186,10 +192,10 @@
   <data name="show-table" xml:space="preserve">
     <value>Show table</value>
   </data>
-  <data name="test-results" xml:space="preserve">
-    <value>Test results</value>
+  <data name="chart-type-text" xml:space="preserve">
+    <value>Text</value>
   </data>
-  <data name="value" xml:space="preserve">
-    <value>Value</value>
+  <data name="chart-type-heatmap" xml:space="preserve">
+    <value>Heatmap</value>
   </data>
 </root>

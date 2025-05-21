@@ -1,0 +1,32 @@
+﻿@using TestBucket.Domain.Insights.Model
+@if(Data is not null && ColorMap is not null)
+{
+    @if (Data.Series.Count > 0 && Data.Series[0].HasData)
+    {
+        var series = Data.Series[0];
+        string? color = null;
+        var point = series.Data.First();
+        if (Spec is not null)
+        {
+            if(Spec.GetColorMode(true) == ChartColorMode.BySeries)
+            {
+                ColorMap.TryGetValue(series.Name, out color);
+            }
+            else
+            {
+                ColorMap.TryGetValue(point.Label, out color);
+            }
+        }
+        color ??= "#2085fb";
+        string cssStyle = $"color: {color}";
+
+        <div data-testid="value" class="tb-insights-chart-text value" style="@cssStyle">@point.Value</div>
+        <div data-testid="label" class="tb-insights-chart-text label">@point.Label</div>
+    }
+}
+
+@code {
+    [Parameter] public InsightsVisualizationSpecification? Spec { get; set; }
+    [Parameter] public Dictionary<string, string> ColorMap { get; set; } = [];
+    [Parameter] public InsightsData<string, double>? Data { get; set; }
+}

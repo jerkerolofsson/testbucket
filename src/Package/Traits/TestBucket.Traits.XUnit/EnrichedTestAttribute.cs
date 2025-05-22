@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Xsl;
+﻿using System.Reflection;
+
+using TestBucket.Traits.Core.XmlDoc;
 
 using Xunit;
 
@@ -25,25 +21,74 @@ namespace TestBucket.Traits.Xunit
             _operatingSystem = new OperatingSystemInformation();
         }
 
+        private void AddAttachmentIfNotExists(string key, string value)
+        {
+            if (TestContext.Current.Attachments?.Any(x => x.Key == key) == true)
+            {
+                return;
+            }
+            TestContext.Current.AddAttachment(key, value);
+        }
+
         public override void After(MethodInfo methodUnderTest, IXunitTest test)
         {
             EnrichWithTraitAttachmentAttributes(test);
             EnrichWithOperatingSystem();
 
-            TestContext.Current.AddAttachment(TestTraitNames.MachineName, Environment.MachineName);
+            // Add environment attachments
+            AddAttachmentIfNotExists(TestTraitNames.MachineName, Environment.MachineName);
 
+            // Add attachments related to the test running (class, method, and assembly)
             var className = test.TestMethod.TestClass.Class.Name;
             var namespaceName = test.TestMethod.TestClass.Class.Namespace;
+            var methodName = test.TestMethod.MethodName;
+            var assembly = test.TestMethod.TestClass.Class.Assembly;
+            var assemblyName = assembly.GetName().Name ?? "";
 
-            TestContext.Current.AddAttachment(AutomationTraitNames.ClassName, $"{namespaceName}.{className}");
-            TestContext.Current.AddAttachment(AutomationTraitNames.MethodName, test.TestMethod.MethodName);
+            AddAttachmentIfNotExists(AutomationTraitNames.ClassName, $"{namespaceName}.{className}");
+            AddAttachmentIfNotExists(AutomationTraitNames.MethodName, methodName);
+            AddAttachmentIfNotExists(AutomationTraitNames.Assembly, assemblyName);
 
-            var assemblyName = test.TestMethod.TestClass.Class.Assembly.GetName().Name ?? "";
-            TestContext.Current.AddAttachment(AutomationTraitNames.Assembly, assemblyName);
+            try
+            {
+                AddTestDescriptionFromXmlDoc(className, namespaceName, methodName, assembly);
+            }
+            catch
+            {
+                // Could be IO errors, don't stop the test
+            }
+        }
+
+        private void AddTestDescriptionFromXmlDoc(string className, string? namespaceName, string methodName, Assembly assembly)
+        {
+            // Lookup XML documentation, if present
+            var assemblyPath = Path.GetDirectoryName(assembly.Location);
+            if (assemblyPath is not null)
+            {
+                var assemblyPathName = Path.GetFileNameWithoutExtension(assembly.Location);
+                var assemblyXmlDocPath = Path.Combine(assemblyPath, assemblyPathName + ".xml");
+                if (File.Exists(assemblyXmlDocPath))
+                {
+                    // Note: There will be issues here if there are multiple methods with different parameters
+                    var fullName = $"{namespaceName}.{className}.{methodName}";
+                    var result = XmlDocSerializer.ParseFile(assemblyXmlDocPath);
+                    var methodXmlDoc = result.Methods.Where(x => x.Name == fullName).FirstOrDefault();
+                    if (methodXmlDoc is not null)
+                    {
+                        var markdown = new XmlDocMarkdownBuilder().AddMethod(result, methodXmlDoc).Build();
+                        AddAttachmentIfNotExists(TestTraitNames.TestDescription, markdown);
+                    }
+                }
+            }
         }
 
         private void EnrichWithOperatingSystem()
         {
+            if (TestContext.Current.Attachments?.Any(x => x.Key == TestTraitNames.OperatingSystemPlatform) == true)
+            {
+                return;
+            }
+
             if (_operatingSystem.IsWindows)
             {
                 TestContext.Current.AddAttachment(TestTraitNames.OperatingSystemPlatform, "Windows");

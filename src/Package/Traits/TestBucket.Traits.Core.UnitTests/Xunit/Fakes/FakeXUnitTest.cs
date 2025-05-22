@@ -11,7 +11,7 @@ using Xunit.v3;
 namespace TestBucket.Traits.Core.UnitTests.Xunit.Fakes;
 
 [ExcludeFromCodeCoverage]
-public class FakeXUnitTest : IXunitTest
+internal class FakeXUnitTest : IXunitTest
 {
     public bool Explicit { get; set; }
 

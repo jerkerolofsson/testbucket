@@ -2,9 +2,15 @@
 
 namespace TestBucket.Traits.Core.UnitTests.Xunit;
 
+/// <summary>
+/// Unit tests for custom trait attributes, verifying correct trait key/value handling and integration with test trait names.
+/// </summary>
 [UnitTest]
 public class CustomTraitAttributeTests
 {
+    /// <summary>
+    /// Verifies that <see cref="CustomTraitAttribute.GetTraits"/> returns a single trait when constructed with one key/value pair.
+    /// </summary>
     [Fact]
     public void GetTraits_SingleItem()
     {
@@ -15,7 +21,9 @@ public class CustomTraitAttributeTests
         Assert.Single(traits);
     }
 
-
+    /// <summary>
+    /// Verifies that <see cref="TestIdAttribute"/> creates a trait with the correct name and value.
+    /// </summary>
     [Fact]
     public void CreateTestIdTrait_WithCustomId_IdIsCorrect()
     {
@@ -25,6 +33,9 @@ public class CustomTraitAttributeTests
         Assert.Equal("something", customTraitAttribute.Value);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="CustomTraitAttribute.GetTraits"/> returns a single trait with the correct key and value.
+    /// </summary>
     [Fact]
     public void GetTraits_FromTag()
     {

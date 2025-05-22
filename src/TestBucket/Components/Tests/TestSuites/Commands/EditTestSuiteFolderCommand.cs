@@ -31,7 +31,7 @@ internal class EditTestSuiteFolderCommand : ICommand
     public string? Icon => Icons.Material.Filled.Edit;
     public string[] ContextMenuTypes => ["TestSuiteFolder"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var folder = _appNavigationManager.State.SelectedTestSuiteFolder;
         if (folder is null)

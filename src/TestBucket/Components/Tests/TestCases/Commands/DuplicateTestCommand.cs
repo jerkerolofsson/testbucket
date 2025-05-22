@@ -39,7 +39,7 @@ internal class DuplicateTestCommand : ICommand
     public string? Icon => Icons.Material.Filled.ContentCopy;
     public string[] ContextMenuTypes => ["TestCase"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if (_appNavigationManager.State.SelectedTestCase is null)
         {

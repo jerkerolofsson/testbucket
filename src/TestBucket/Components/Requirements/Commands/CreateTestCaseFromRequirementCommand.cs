@@ -54,7 +54,7 @@ internal class CreateTestCaseFromRequirementCommand : ICommand
         _testCaseEditor = testCaseEditor;
     }
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if (_appNav.State.SelectedRequirement is null || _appNav.State.SelectedProject is null)
         {

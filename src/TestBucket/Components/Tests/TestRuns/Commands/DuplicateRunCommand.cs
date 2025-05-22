@@ -34,7 +34,7 @@ internal class DuplicateRunCommand : ICommand
     public string? Icon => Icons.Material.Filled.ContentCopy;
     public string[] ContextMenuTypes => ["TestRun"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if (_appNavigationManager.State.SelectedTestRun is null)
         {

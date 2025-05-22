@@ -1,6 +1,8 @@
-﻿@using TestBucket.Contracts.Appearance.Models
+﻿@using System.Net
+@using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Domain.Automation.Pipelines.Models
 @using TestBucket.Domain.Testing.TestRuns.Search
+@using TestBucket.Domain.Testing.TestCases.Search;
 @inherits LayoutComponentBase
 @layout AppLayout
 @inject TestBrowser browser
@@ -20,7 +22,6 @@
                           Team="@_team"
                           OnPipelineClicked="OnPipelineClicked"
                           OnTestRunTestsFolderClicked="OnTestRunTestsFolderClicked"
-                          OnTestCaseRunQueryClicked="OnTestCaseRunQueryClicked"
                           OnFolderClicked="OnFolderClicked" 
                           OnTestSuiteClicked="OnTestSuiteClicked" 
                           OnTestCaseClicked="OnTestCaseClicked" 
@@ -85,12 +86,17 @@
     {
         appNavigationManager.NavigateTo(pipeline);
     }
-    
-    private void OnTestCaseRunQueryClicked(SearchTestCaseRunQuery query)
-    {
-        var url = appNavigationManager.GetUrl(query);
-        navigationManager.NavigateTo(url);
-    }
+
+    // private void OnTestCaseQueryClicked(string query)
+    // {
+    //     var url = appNavigationManager.GetTestCasesUrl() + "?q=" + WebUtility.UrlEncode(query);
+    //     navigationManager.NavigateTo(url);
+    // }
+    // private void OnTestCaseRunQueryClicked(string query)
+    // {
+    //     var url = appNavigationManager.GetUrl(query);
+    //     navigationManager.NavigateTo(url);
+    // }
     
     private void OnTestRunTestsFolderClicked(TestRun run)
     {

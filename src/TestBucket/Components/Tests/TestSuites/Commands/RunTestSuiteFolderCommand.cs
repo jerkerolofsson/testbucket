@@ -35,15 +35,17 @@ internal class RunTestSuiteFolderCommand : ICommand
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.Execute;
-    public bool Enabled => _appNavigationManager.State.SelectedTestSuiteFolder is not null;
+    public bool Enabled => 
+        _appNavigationManager.State.SelectedTestSuiteFolder is not null &&
+        _appNavigationManager.State.SelectedTestCase is null;
     public string Id => "run-folder";
     public string Name => _loc["run-folder"];
     public string Description => _loc["run-folder-description"];
-    public KeyboardBinding? DefaultKeyboardBinding => new KeyboardBinding() { CommandId = Id, Key = "KeyR", ModifierKeys = ModifierKey.Ctrl };
+    public KeyboardBinding? DefaultKeyboardBinding => null;
     public string? Icon => Icons.Material.Filled.PlayArrow;
     public string[] ContextMenuTypes => ["TestSuiteFolder"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var folder = _appNavigationManager.State.SelectedTestSuiteFolder;
         if (folder is null)

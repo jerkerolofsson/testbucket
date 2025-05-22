@@ -53,7 +53,7 @@ internal class CreateSpecificationCommand : ICommand
         _loc = loc;
     }
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var project = _appNav.State.SelectedProject;
         if(project is null)

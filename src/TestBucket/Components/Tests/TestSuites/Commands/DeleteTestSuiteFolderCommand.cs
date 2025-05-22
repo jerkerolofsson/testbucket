@@ -32,7 +32,7 @@ internal class DeleteTestSuiteFolderCommand : ICommand
     public string? Icon => Icons.Material.Filled.Delete;
     public string[] ContextMenuTypes => ["TestSuiteFolder"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var folder = _appNavigationManager.State.SelectedTestSuiteFolder;
         if (folder is null)

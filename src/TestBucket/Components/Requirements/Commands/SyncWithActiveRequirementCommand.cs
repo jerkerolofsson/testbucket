@@ -33,7 +33,7 @@ internal class SyncWithActiveRequirementCommand : ICommand
     public string? Icon => Icons.Material.Filled.CompareArrows;
     public string[] ContextMenuTypes => ["Requirement"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if (_appNavigationManager.State.SelectedRequirement is null)
         {

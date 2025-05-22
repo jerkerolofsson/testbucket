@@ -106,6 +106,7 @@ internal class ProjectController : TenantBaseService
     public async Task SetActiveProjectAsync(TestProject? project)
     {
         _appNavigationManager.State.SelectedProject = project;
+        _appNavigationManager.State.SelectedTeam ??= project?.Team;
 
         var principal = await GetUserClaimsPrincipalAsync();
         var preferences = await _userPreferencesService.LoadUserPreferencesAsync(principal);

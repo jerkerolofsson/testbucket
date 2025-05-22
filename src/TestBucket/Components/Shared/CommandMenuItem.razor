@@ -12,7 +12,7 @@
     var binding = GetBinding(command.Id);
     @if (enabled)
     {
-        <MudMenuItem Icon="@command.Icon" OnClick="async () => await command.ExecuteAsync()">
+        <MudMenuItem Icon="@command.Icon" OnClick="async () => await command.ExecuteAsync(Principal!)">
             <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center">
                 @command.Name
 

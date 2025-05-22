@@ -43,7 +43,7 @@ internal class RunTestCaseCommand : ICommand
     public string? Icon => Icons.Material.Filled.PlayArrow;
     public string[] ContextMenuTypes => ["TestCase"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var testCase = _appNavigationManager.State.SelectedTestCase;
         if (testCase is null)

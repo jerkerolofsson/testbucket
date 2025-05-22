@@ -35,7 +35,7 @@ internal class DeleteRunCommand : ICommand
     public string? Icon => Icons.Material.Filled.Delete;
     public string[] ContextMenuTypes => ["TestRun"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if (_appNavigationManager.State.SelectedTestRun is null)
         {

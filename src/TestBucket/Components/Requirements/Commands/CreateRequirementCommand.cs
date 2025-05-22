@@ -54,7 +54,7 @@ internal class CreateRequirementCommand : ICommand
         _browser = browser;
     }
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if (!Enabled)
         {

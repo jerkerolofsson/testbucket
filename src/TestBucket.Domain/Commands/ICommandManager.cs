@@ -41,7 +41,7 @@ namespace TestBucket.Domain.Commands
         /// </summary>
         /// <param name="commandId"></param>
         /// <returns></returns>
-        Task ExecuteCommandAsync(string commandId);
+        Task ExecuteCommandAsync(ClaimsPrincipal principal, string commandId);
 
         /// <summary>
         /// Gets a keyboard binding for a command

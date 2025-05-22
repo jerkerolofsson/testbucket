@@ -13,6 +13,7 @@ using TestBucket.Components;
 using TestBucket.Components.Account;
 using TestBucket.Components.Automation;
 using TestBucket.Components.Code.Controllers;
+using TestBucket.Components.Commands;
 using TestBucket.Components.Comments;
 using TestBucket.Components.Environments.Services;
 using TestBucket.Components.Issues.Commands;
@@ -238,6 +239,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<UploadService>();
         builder.Services.AddScoped<FieldController>();
         builder.Services.AddScoped<UserController>();
+        builder.Services.AddScoped<CommandController>();
 
         builder.Services.AddScoped<HotKeysService>();
 

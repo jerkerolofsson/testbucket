@@ -49,7 +49,7 @@ internal class AddTestSuiteToRunCommand : ICommand
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.Execute;
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var suite = _appNavigationManager.State.SelectedTestSuite;
         if (suite is null)

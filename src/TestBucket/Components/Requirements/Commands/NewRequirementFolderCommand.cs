@@ -37,7 +37,7 @@ internal class NewRequirementFolderCommand : ICommand
     public string? Icon => Icons.Material.Filled.CreateNewFolder;
     public string[] ContextMenuTypes => ["RequirementSpecification", "RequirementFolder"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var specification = _appNavigationManager.State.SelectedRequirementSpecification;
         if (specification is null)

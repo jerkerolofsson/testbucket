@@ -33,7 +33,7 @@ internal class NewFolderCommand : ICommand
     public string? Icon => Icons.Material.Filled.CreateNewFolder;
     public string[] ContextMenuTypes => ["TestSuite", "TestSuiteFolder"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var suite = _appNavigationManager.State.SelectedTestSuite;
         if (suite is null)

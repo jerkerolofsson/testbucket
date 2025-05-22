@@ -26,11 +26,6 @@ public partial class TestTreeView
     [Parameter] public EventCallback<TestRun> OnTestRunTestsFolderClicked { get; set; }
 
     /// <summary>
-    /// A search query for TestCaseRun was clicked
-    /// </summary>
-    [Parameter] public EventCallback<SearchTestCaseRunQuery> OnTestCaseRunQueryClicked { get; set; }
-
-    /// <summary>
     /// Invoked when a pipeline is clicked
     /// </summary>
     [Parameter] public EventCallback<Pipeline> OnPipelineClicked { get; set; }
@@ -282,18 +277,6 @@ public partial class TestTreeView
             else if (item.Pipeline is not null)
             {
                 await OnPipelineClicked.InvokeAsync(item.Pipeline);
-            }
-            else if (item.TestRun is not null && item.VirtualFolderName == TestBrowser.FOLDER_RUN_TESTS)
-            {
-                await OnTestRunTestsFolderClicked.InvokeAsync(item.TestRun);
-            }
-            else if (item.TestRun is not null && item.VirtualFolderName == TestBrowser.QUERY_RUN_TESTS)
-            {
-                await OnTestCaseRunQueryClicked.InvokeAsync(item.TestCaseRunQuery);
-            }
-            else if (item.VirtualFolderName == TestBrowser.ROOT_TEST_RUNS)
-            {
-                //await OnTestCaseRunQueryClicked.InvokeAsync(item.TestCaseRunQuery);
             }
         }
     }

@@ -45,7 +45,7 @@ internal class ImportRequirementsCommand : ICommand
         _loc = loc;
     }
 
-    public ValueTask ExecuteAsync()
+    public ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var project = _appNav.State.SelectedProject;
         if(project is null)

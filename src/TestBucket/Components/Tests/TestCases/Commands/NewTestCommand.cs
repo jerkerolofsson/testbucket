@@ -36,7 +36,7 @@ internal class NewTestCommand : ICommand
     public string? Icon => Icons.Material.Filled.Add;
     public string[] ContextMenuTypes => ["TestSuite", "TestSuiteFolder", "menu-new"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if (_appNavigationManager.State.SelectedProject is null)
         {

@@ -1,4 +1,5 @@
-﻿@using TestBucket.Components.Issues.Layouts
+﻿@using TestBucket.Components.Commands
+@using TestBucket.Components.Issues.Layouts
 @using TestBucket.Domain
 @using TestBucket.Domain.Commands
 @using TestBucket.Domain.ExtensionManagement
@@ -8,7 +9,7 @@
 @inject AppNavigationManager appNavigationManager
 @inject IssueController controller
 @inject IExtensionManager extensionManager
-@inject ICommandManager commandManager
+@inject CommandController commandController
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
 
@@ -141,7 +142,7 @@
 
     private async Task AddIssue()
     {
-        await commandManager.ExecuteCommandAsync("create-issue");
+        await commandController.ExecuteAsync("create-issue");
     }
 
 

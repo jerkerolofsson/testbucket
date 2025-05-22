@@ -46,7 +46,7 @@ internal class DeleteRequirementFolderCommand : ICommand
         _requirementEditor = requirementEditor;
     }
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if (_appNav.State.SelectedRequirementSpecificationFolder is null)
         {

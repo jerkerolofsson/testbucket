@@ -48,36 +48,27 @@ public partial class TestCaseGrid
 
     #region Lifecycle
 
-    private long? _testSuiteId = null;
     private long? _folderId = null;
     private bool _hasCustomFilter = false;
     private IReadOnlyList<FieldDefinition> _fields = [];
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Query is not null)
+        if(Query is null)
         {
-            Query.CompareFolder = false;
-            Query.TestSuiteId = null;
-            Query.FolderId = null;
-            _searchPhrase = Query.ToSearchText();
+            return;
         }
-        bool changed = _hasQueryChanged;
-        _hasQueryChanged = false;
+        _hasQueryChanged = !_query.Equals(Query);
+        if (_hasQueryChanged)
+        {
+            _query = Query;
+            _searchPhrase = _query.ToSearchText();
+        }
 
-        _query.Fields = Query?.Fields ?? [];
-        _query.CompareFolder = CompareFolder;
-        _query.TestSuiteId = TestSuiteId;
-        if(_testSuiteId != TestSuiteId)
-        {
-            _testSuiteId = TestSuiteId;
-            changed = true;
-        }
         if (_folderId != FolderId)
         {
             _folderId = FolderId;
             _folder = null;
-            changed = true;
             if (_folderId is not null)
             {
                 _folder = await testSuiteServer.GetTestSuiteFolderByIdAsync(_folderId.Value);
@@ -87,20 +78,17 @@ public partial class TestCaseGrid
         {
             if(_folder?.Id != Folder.Id)
             {
-                changed = true;
                 _folder = Folder;
             }
         }
 
         if(Project is not null && _projectId != Project.Id)
         {
-            changed = true;
             _projectId = Project.Id;
-
             _fields = await fieldController.GetDefinitionsAsync(_projectId.Value, Contracts.Fields.FieldTarget.TestCase);
         }
 
-        if (changed)
+        if (_hasQueryChanged)
         {
             _dataGrid?.ReloadServerData();
         }
@@ -208,21 +196,8 @@ public partial class TestCaseGrid
 
     private async Task<GridData<TestSuiteItem>> LoadGridData(GridState<TestSuiteItem> state)
     {
-        var query = new SearchTestQuery
-        {
-            CompareFolder = _query.CompareFolder,
-            TestSuiteId = _query.TestSuiteId,
-            FolderId = _folder?.Id,
-            CreatedFrom = _query.CreatedFrom,
-            CreatedUntil = _query.CreatedUntil,
-            ProjectId = Project?.Id,
-            Fields = _query.Fields,
-            TestExecutionType = _query.TestExecutionType,
-
-            Text = string.IsNullOrWhiteSpace(_query.Text) ? null : _query.Text,
-        };
-
-        var result = await testBrowser.SearchItemsAsync(query, state.Page * state.PageSize, state.PageSize, !_hasCustomFilter);
+        _query.ProjectId = Project?.Id;
+        var result = await testBrowser.SearchItemsAsync(_query, state.Page * state.PageSize, state.PageSize, !_hasCustomFilter);
 
         GridData<TestSuiteItem> data = new()
         {

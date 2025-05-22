@@ -37,7 +37,7 @@ internal class ImportTestResultsCommand : ICommand
     public string? Icon => TbIcons.BoldDuoTone.Import;
     public string[] ContextMenuTypes => ["menu-test"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if (_appNavigationManager.State.SelectedProject is null)
         {

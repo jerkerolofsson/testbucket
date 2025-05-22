@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net;
 
 using Microsoft.Extensions.Localization;
 
@@ -12,7 +13,9 @@ using TestBucket.Components.Tests.TestSuites.Services;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain;
 using TestBucket.Domain.Automation.Pipelines.Models;
+using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Files;
+using TestBucket.Domain.Milestones;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Teams.Models;
@@ -35,6 +38,8 @@ internal class TestBrowser : TenantBaseService
     private readonly ITestRunManager _testRunManager;
     private readonly ITeamManager _teamManager;
     private readonly ITestCaseManager _testCaseManager;
+    private readonly IMilestoneManager _milestoneManager;
+    private readonly IArchitectureManager _architectureManager;
     private readonly FieldController _fieldController;
     private readonly AppNavigationManager _appNavigationManager;
     private readonly PipelineController _pipelineController;
@@ -47,16 +52,6 @@ internal class TestBrowser : TenantBaseService
     /// Virtual folder for pipelines
     /// </summary>
     public const string FOLDER_PIPELINES = "Pipelines";
-
-    /// <summary>
-    /// Virtual folder for test case runs
-    /// </summary>
-    public const string FOLDER_RUN_TESTS = "TestRunTests";
-
-    /// <summary>
-    /// Virtual folder for test case runs queries
-    /// </summary>
-    public const string QUERY_RUN_TESTS = "QueryRunTests";
 
     /// <summary>
     /// Virtual folder for test suties
@@ -80,7 +75,9 @@ internal class TestBrowser : TenantBaseService
         ITestCaseManager testCaseManager,
         IStringLocalizer<SharedStrings> loc,
         ITeamManager teamManager,
-        FieldController fieldController) : base(authenticationStateProvider)
+        FieldController fieldController,
+        IMilestoneManager milestoneManager,
+        IArchitectureManager architectureManager) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
@@ -95,6 +92,8 @@ internal class TestBrowser : TenantBaseService
         _loc = loc;
         _teamManager = teamManager;
         _fieldController = fieldController;
+        _milestoneManager = milestoneManager;
+        _architectureManager = architectureManager;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -279,11 +278,6 @@ internal class TestBrowser : TenantBaseService
 
                 return items;
             }
-            else if (parent.VirtualFolderName == FOLDER_RUN_TESTS || parent.VirtualFolderName == QUERY_RUN_TESTS)
-            {
-                var items = new List<TreeNode<BrowserItem>>();
-                return items;
-            }
             else if (parent.TestRun is not null)
             {
                 // This should not happen as child folders are added when creating a tree node for test run
@@ -359,7 +353,7 @@ internal class TestBrowser : TenantBaseService
                 Text = _loc["tests"],
                 Children = [],
                 Expanded = false,
-                Value = new BrowserItem() { VirtualFolderName = FOLDER_RUN_TESTS, TestRun = testRun },
+                Value = new BrowserItem() { Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}" },
                 Icon = TbIcons.BoldOutline.Folder,
             });
 
@@ -386,7 +380,10 @@ internal class TestBrowser : TenantBaseService
                 Text = _loc["assigned-to-me"],
                 Children = [],
                 Expanded = false,
-                Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = assignedToMe },
+                Value = new BrowserItem() 
+                { 
+                    Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=assigned-to:{WebUtility.UrlEncode(principal.Identity?.Name)}" 
+                },
                 Icon = Icons.Material.Outlined.AccountCircle,
             });
 
@@ -395,7 +392,10 @@ internal class TestBrowser : TenantBaseService
                 Text = _loc["my-backlog"],
                 Children = [],
                 Expanded = false,
-                Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = backlog },
+                Value = new BrowserItem() 
+                {
+                    Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=completed:no%20assigned-to:{WebUtility.UrlEncode(principal.Identity?.Name)}"
+                },
                 Icon = Icons.Material.Outlined.ListAlt,
             });
 
@@ -404,7 +404,10 @@ internal class TestBrowser : TenantBaseService
                 Text = _loc["unassigned"],
                 Children = [],
                 Expanded = false,
-                Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = unassigned },
+                Value = new BrowserItem()
+                {
+                    Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=unassigned:yes"
+                },
                 Icon = Icons.Material.Outlined.AccountCircle,
             });
 
@@ -413,7 +416,10 @@ internal class TestBrowser : TenantBaseService
                 Text = _loc["failures"],
                 Children = [],
                 Expanded = false,
-                Value = new BrowserItem() { VirtualFolderName = QUERY_RUN_TESTS, TestRun = testRun, TestCaseRunQuery = failed },
+                Value = new BrowserItem() 
+                {
+                    Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=result:failed"
+                },
                 Icon = Icons.Material.Outlined.WarningAmber,
             });
 
@@ -709,11 +715,20 @@ internal class TestBrowser : TenantBaseService
     {
         var teamId = request.TeamId;
         var projectId = request.ProjectId;
+        if(projectId is null)
+        {
+            return [];
+        }
+        var principal = await GetUserClaimsPrincipalAsync();
 
+        // Load data
         var suites = await _testSuiteService.GetTestSuitesAsync(teamId, projectId);
+        var milestones = await _milestoneManager.GetMilestonesAsync(principal, projectId.Value);
+        var components = await _architectureManager.GetComponentsAsync(principal, projectId.Value);
+        var features = await _architectureManager.GetFeaturesAsync(principal, projectId.Value);
+
         var suiteItems = suites.Items.Select(x => CreateTestSuiteTreeNode(x)).ToList();
 
-        var principal = await GetUserClaimsPrincipalAsync();
 
         var items = new List<TreeNode<BrowserItem>>();
         if (request.ShowTestSuites)
@@ -727,14 +742,23 @@ internal class TestBrowser : TenantBaseService
                 Icon = TbIcons.BoldDuoTone.Database,
             });
 
-            items.Add(new TreeNode<BrowserItem>
+            var testCases = new TreeNode<BrowserItem>
             {
                 Text = _loc["test-cases"],
                 Expanded = false,
-                Expandable = false,
+                Expandable = true,
                 Value = new BrowserItem() { Href = _appNavigationManager.GetTestCasesUrl() },
                 Icon = TbIcons.BoldDuoTone.Database,
-            });
+            };
+
+            testCases.Children = 
+            [
+                ..TestBrowserSearchFolders.GetTestCategoryFolders(_loc, _appNavigationManager),
+                ..TestBrowserSearchFolders.GetMilestoneFolders(_loc, _appNavigationManager, milestones),
+                ..TestBrowserSearchFolders.GetFeatureFolders(_loc, _appNavigationManager, features),
+                ..TestBrowserSearchFolders.GetComponentFolders(_loc, _appNavigationManager, components),
+            ];
+            items.Add(testCases);
         }
         if(request.ShowTestRuns)
         {

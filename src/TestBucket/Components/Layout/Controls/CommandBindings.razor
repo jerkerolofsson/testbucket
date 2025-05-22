@@ -42,7 +42,11 @@
                             Exclude = Exclude.InputNonText | Exclude.TextArea
                         };
 
-                    _hotKeysContext.Add(modCode, key, command.ExecuteAsync, options);
+                    var executeCommandFunc = async () =>
+                    {
+                        await command.ExecuteAsync(authState.User);
+                    };
+                    _hotKeysContext.Add(modCode, key, executeCommandFunc, options);
                 }
             }
         }

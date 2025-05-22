@@ -71,6 +71,6 @@ namespace TestBucket.Domain.Commands
         /// Executes the command
         /// </summary>
         /// <returns></returns>
-        ValueTask ExecuteAsync();
+        ValueTask ExecuteAsync(ClaimsPrincipal principal);
     }
 }

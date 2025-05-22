@@ -2,6 +2,8 @@
 
 using OneOf.Types;
 
+using TestBucket.Domain.Testing.TestCases.Search;
+
 namespace TestBucket.Domain.Testing.Models;
 public class SearchTestQuery : SearchQuery
 {
@@ -28,4 +30,17 @@ public class SearchTestQuery : SearchQuery
     /// Filter on test execution type
     /// </summary>
     public TestExecutionType? TestExecutionType { get; set; }
+
+    public override int GetHashCode() => this.ToSearchText().GetHashCode();
+
+    public override bool Equals(object? obj)
+    {
+        if(obj is SearchTestQuery other)
+        {
+            var a = this.ToSearchText();
+            var b = other.ToSearchText();
+            return a.Equals(b);
+        }
+        return false;
+    }
 }

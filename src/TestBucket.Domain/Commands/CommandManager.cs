@@ -67,12 +67,20 @@ namespace TestBucket.Domain.Commands
         }
 
         /// <inheritdoc/>
-        public async Task ExecuteCommandAsync(string commandId)
+        public async Task ExecuteCommandAsync(ClaimsPrincipal principal, string commandId)
         {
             var command = GetCommandById(commandId);
             if (command is not null)
             {
-                await command.ExecuteAsync();
+                if (command.PermissionEntityType is not null && command.RequiredLevel is not null)
+                {
+                    if (!principal.HasPermission(command.PermissionEntityType.Value, command.RequiredLevel.Value))
+                    {
+                        return;
+                    }
+                }
+
+                await command.ExecuteAsync(principal);
             }
             else
             {

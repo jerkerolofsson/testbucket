@@ -1,11 +1,12 @@
-﻿@using TestBucket.Domain
+﻿@using TestBucket.Components.Commands
+@using TestBucket.Domain
 @using TestBucket.Domain.Commands
 @using TestBucket.Domain.ExtensionManagement
 @using TestBucket.Domain.Issues.Models
 @inject IStringLocalizer<SharedStrings> loc
 @inject IExtensionManager extensionManager
 @inject NavigationManager navigationManager 
-@inject ICommandManager commandManager
+@inject CommandController commandController
 @inject AppNavigationManager appNavigationManager
 
 <MudStack Spacing="0">
@@ -96,16 +97,16 @@
     private async Task RefreshIssueAsync(LinkedIssue issue)
     {
         appNavigationManager.State.SelectedLinkedIssue = issue;
-        await commandManager.ExecuteCommandAsync("refresh-linked-issue");
+        await commandController.ExecuteAsync("refresh-linked-issue");
     }
     private async Task DeleteIssueAsync(LinkedIssue issue)
     {
         appNavigationManager.State.SelectedLinkedIssue = issue;
-        await commandManager.ExecuteCommandAsync("delete-linked-issue");
+        await commandController.ExecuteAsync("delete-linked-issue");
     }
     private async Task AddAsync()
     {
-        await commandManager.ExecuteCommandAsync("link-issue");
+        await commandController.ExecuteAsync("link-issue");
     }
 
     private void RowClicked(LinkedIssue issue)

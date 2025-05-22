@@ -44,7 +44,7 @@ public class LinkIssueCommand : ICommand
     public string? Icon => Icons.Material.Outlined.AddLink;
     public string[] ContextMenuTypes => ["TestCaseRun"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var testCaseRun = _appNavigationManager.State.SelectedTestCaseRun;
         if (testCaseRun?.TestProjectId is null)

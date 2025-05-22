@@ -32,7 +32,7 @@ internal class DeleteTestSuiteCommand : ICommand
     public string? Icon => Icons.Material.Filled.Delete;
     public string[] ContextMenuTypes => ["TestSuite"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var suite = _appNavigationManager.State.SelectedTestSuite;
         if (suite is null)

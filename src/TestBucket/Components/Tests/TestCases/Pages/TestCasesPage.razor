@@ -3,6 +3,7 @@
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Components.Tests.Metrics.TestCases
 @using TestBucket.Domain.Requirements.Models
+@using TestBucket.Domain.Testing.TestCases.Search
 @layout TestingLayout
 @inject TestBrowser testBrowser
 @inject AppNavigationManager appNavigationManager
@@ -32,6 +33,7 @@
     [Parameter] public string TenantId { get; set; } = "";
     [CascadingParameter] public TestProject? Project { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
+    [SupplyParameterFromQuery(Name = "q")] public string? InitialQuery { get; set; }
 
     private SearchTestQuery _query = new();
     private IReadOnlyList<FieldDefinition> _testCaseFields = [];
@@ -59,9 +61,16 @@
     {
         if (query is null)
         {
-            _query = new();
-            _query.ProjectId = Project?.Id;
-            _query.CompareFolder = false;
+            if (InitialQuery is null)
+            {
+                _query = new();
+                _query.ProjectId = Project?.Id;
+                _query.CompareFolder = false;
+            }
+            else 
+            {
+                _query = SearchTestCaseQueryParser.Parse(InitialQuery, _testCaseFields);
+            }
         }
         else
         {

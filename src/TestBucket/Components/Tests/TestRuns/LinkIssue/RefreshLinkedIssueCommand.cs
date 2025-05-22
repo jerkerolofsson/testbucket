@@ -44,7 +44,7 @@ public class RefreshLinkedIssueCommand : ICommand
     public string? Icon => Icons.Material.Outlined.Refresh;
     public string[] ContextMenuTypes => ["LinkedIssue"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var linkedIssue = _appNavigationManager.State.SelectedLinkedIssue;
         if (linkedIssue is null)

@@ -50,7 +50,7 @@ internal class CreateTaskCommand : ICommand
         _loc = loc;
     }
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if (_appNav.State.SelectedRequirement is null)
         {

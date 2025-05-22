@@ -587,4 +587,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="logged-action-component-removed" xml:space="preserve">
     <value>{0} removed the component</value>
   </data>
+  <data name="run-test-suite" xml:space="preserve">
+    <value>Run test suite</value>
+  </data>
 </root>

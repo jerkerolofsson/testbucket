@@ -60,7 +60,7 @@ internal class BatchTagCommand : ICommand
     public string? Icon => TbIcons.BoldDuoTone.Field;
     public string[] ContextMenuTypes => ["TestSuiteFolder", "TestSuite"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var suite = _appNavigationManager.State.SelectedTestSuite;
         var folder = _appNavigationManager.State.SelectedTestSuiteFolder;

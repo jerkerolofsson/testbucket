@@ -54,7 +54,7 @@ internal class CreateIssueCommand : ICommand
         _loc = loc;
     }
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if(_appNav.State.SelectedProject is null)
         {

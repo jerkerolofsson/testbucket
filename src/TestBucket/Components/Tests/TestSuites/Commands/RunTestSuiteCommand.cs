@@ -35,15 +35,18 @@ internal class RunTestSuiteCommand : ICommand
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.Execute;
-    public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;
+    public bool Enabled => 
+        _appNavigationManager.State.SelectedTestSuite is not null &&
+        _appNavigationManager.State.SelectedTestSuiteFolder is null &&
+        _appNavigationManager.State.SelectedTestCase is null;
     public string Id => "run-test-suite";
-    public string Name => _loc["run"];
+    public string Name => _loc["run-test-suite"];
     public string Description => "Runs a test suite";
-    public KeyboardBinding? DefaultKeyboardBinding => new KeyboardBinding() { CommandId = Id, Key = "KeyR", ModifierKeys = ModifierKey.Ctrl };
+    public KeyboardBinding? DefaultKeyboardBinding => null;
     public string? Icon => Icons.Material.Filled.PlayArrow;
     public string[] ContextMenuTypes => ["TestSuite"];
 
-    public async ValueTask ExecuteAsync()
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var suite = _appNavigationManager.State.SelectedTestSuite;
         if (suite is null)

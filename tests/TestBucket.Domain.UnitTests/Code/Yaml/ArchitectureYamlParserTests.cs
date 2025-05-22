@@ -7,11 +7,17 @@ using TestBucket.Domain.Code.Yaml;
 
 namespace TestBucket.Domain.UnitTests.Code.Yaml
 {
+    /// <summary>
+    /// Tests related to the architecture yaml file
+    /// </summary>
     [Feature("Architecture 1.0")]
     [UnitTest]
     [EnrichedTest]
     public class ArchitectureYamlParserTests
     {
+        /// <summary>
+        /// Verifies that when validating an empty yaml document, it fails correctly
+        /// </summary>
         [Fact]
         public void ValidateYaml_WithEmptyDocument_GivesError()
         {
@@ -20,6 +26,9 @@ namespace TestBucket.Domain.UnitTests.Code.Yaml
             Assert.NotEmpty(errors);
         }
 
+        /// <summary>
+        /// Verifies that there are no errors when validating a valid yaml with a system
+        /// </summary>
         [Fact]
         public void ValidateYaml_WithSystem_NoError()
         {
@@ -32,6 +41,9 @@ namespace TestBucket.Domain.UnitTests.Code.Yaml
             Assert.Empty(errors);
         }
 
+        /// <summary>
+        /// Verifies that there is an error when validating a yaml file without system
+        /// </summary>
         [Fact]
         public void ValidateYaml_WithoutSystem_GivesError()
         {

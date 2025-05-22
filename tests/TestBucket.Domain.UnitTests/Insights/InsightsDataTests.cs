@@ -3,21 +3,19 @@ using TestBucket.Domain.Insights.Extensions;
 
 namespace TestBucket.Domain.UnitTests.Insights
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="InsightsData{TLabel, TValue}"/> and related insights data operations.
+    /// </summary>
     [Component("Insights")]
     [UnitTest]
     [EnrichedTest]
     [FunctionalTest]
     public class InsightsDataTests
     {
+        /// <summary>
+        /// Verifies that when insights data contains two series, a header/column is created for each series.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that when insights data contains two series, a header/column is created for each series
-
-            # Steps
-            1. Create a series with name "series 1"
-            2. Create another series with the name "series 2"
-            3. Convert it to a table: Table contains 3 headers: "", "series 1" and "series 2"
-            """)]
         public void ToTable_WithMultipleSeries_TableContainsAllHeaders()
         {
             // Arrange
@@ -41,10 +39,10 @@ namespace TestBucket.Domain.UnitTests.Insights
             Assert.Equal("series 2", table.Headers[2]);
         }
 
+        /// <summary>
+        /// Verifies that missing labels can be added to insights data series.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that missing labels can be added to insights data series.
-            """)]
         public void AddMissingLabels_ToDateOnlySeries_MissingDatesAreAdded()
         {
             // Arrange
@@ -65,11 +63,11 @@ namespace TestBucket.Domain.UnitTests.Insights
             Assert.Contains(expected, series.Labels);
         }
 
+        /// <summary>
+        /// Verifies that missing dates are added to insights data series.
+        /// For example, if the labels are: "2023-01-01", "2023-01-02", and "2023-01-04" then 2023-01-03 should be added.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that missing dates are added to insights data series.
-            For example if the labels are: "2023-01-01", "2023-01-02", and "2023-01-04" then 2023-01-03 should be added.
-            """)]
         public void AddMissingDates_ToDateOnlySeries_MissingDatesAreAdded()
         {
             // Arrange
@@ -91,15 +89,13 @@ namespace TestBucket.Domain.UnitTests.Insights
             Assert.Equal(2, series.Labels.ToList().IndexOf(expected));
         }
 
+        /// <summary>
+        /// Verifies that missing dates are added to insights data series when there are multiple series.
+        /// Series1: "2023-01-01", "2023-01-02", and "2023-01-03"
+        /// Series2: "2023-01-02", and "2023-01-03"
+        /// Result: Series2 should contain "2023-01-01".
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that missing dates are added to insights data series when there are multiple series.
-            Series1: "2023-01-01", "2023-01-02", and "2023-01-03"
-            Series2: "2023-01-02", and "2023-01-03"
-
-            Result:
-            Series2 should contain "2023-01-01"
-            """)]
         public void AddMissingDates_WithMultipleSeriesAndGapAtStart_MissingDatesAreAdded()
         {
             // Arrange
@@ -124,16 +120,13 @@ namespace TestBucket.Domain.UnitTests.Insights
             Assert.Contains(expected, series2.Labels);
         }
 
-
+        /// <summary>
+        /// Verifies that missing dates are added to insights data series when there are multiple series.
+        /// Series1: "2023-01-01", "2023-01-02", and "2023-01-03"
+        /// Series2: "2023-01-01", and "2023-01-02"
+        /// Result: Series2 should contain "2023-01-03".
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that missing dates are added to insights data series when there are multiple series.
-            Series1: "2023-01-01", "2023-01-02", and "2023-01-03"
-            Series2: "2023-01-01", and "2023-01-02"
-
-            Result:
-            Series2 should contain "2023-01-03"
-            """)]
         public void AddMissingDates_WithMultipleSeriesAndGapAtEnd_MissingDatesAreAdded()
         {
             // Arrange
@@ -158,11 +151,10 @@ namespace TestBucket.Domain.UnitTests.Insights
             Assert.Contains(expected, series2.Labels);
         }
 
+        /// <summary>
+        /// Verifies that the first day is returned from a sorted list.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that the first day is returned from a sorted list
-            For example if the labels are: "2023-01-01", "2023-01-02", and "2023-01-04" then 2023-01-03 should be added.
-            """)]
         public void GetStartDay_WithDateOnlyLabelsSeriesInSortedOrder_LastDayReturned()
         {
             // Arrange
@@ -180,11 +172,10 @@ namespace TestBucket.Domain.UnitTests.Insights
             Assert.Equal(expected, lastDay);
         }
 
+        /// <summary>
+        /// Verifies that the last day is returned from a sorted list.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that the last day is returned from a sorted list
-            For example if the labels are: "2023-01-01", "2023-01-02", and "2023-01-04" then 2023-01-03 should be added.
-            """)]
         public void GetEndDay_WithDateOnlyLabelsSeriesInSortedOrder_LastDayReturned()
         {
             // Arrange
@@ -202,11 +193,10 @@ namespace TestBucket.Domain.UnitTests.Insights
             Assert.Equal(expected, endDay);
         }
 
+        /// <summary>
+        /// Verifies that the last day is returned from an unsorted list.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that the last day is returned from a sorted list
-            For example if the labels are: "2023-01-01", "2023-01-02", and "2023-01-04" then 2023-01-03 should be added.
-            """)]
         public void GetEndDay_WithDateOnlyLabelsSeriesInUnsortedOrder_LastDayReturned()
         {
             // Arrange

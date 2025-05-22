@@ -8,11 +8,18 @@ using TestBucket.Domain.Shared;
 
 namespace TestBucket.Domain.UnitTests.Shared
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="SearchStringParser"/> class.
+    /// Verifies parsing of search strings with keywords, fields, and quoted values.
+    /// </summary>
     [UnitTest]
     [FunctionalTest]
     [Feature("Search")]
     public class SearchStringParserTests
     {
+        /// <summary>
+        /// Verifies that when no keywords are present, the raw text is returned as-is.
+        /// </summary>
         [Fact]
         public void ParseString_WithoutKeywords_RawTextReturned()
         {
@@ -25,6 +32,9 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("hello world", text);
         }
 
+        /// <summary>
+        /// Verifies that when a keyword is present, it is removed from the raw text.
+        /// </summary>
         [Fact]
         public void ParseString_WithKeyword_RawTextDoesNotContainKeyword()
         {
@@ -37,6 +47,9 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("hello", text);
         }
 
+        /// <summary>
+        /// Verifies that a keyword and its value are added to the result dictionary.
+        /// </summary>
         [Fact]
         public void ParseString_WithKeyword_KeywordOutputToResultDictionary()
         {
@@ -51,6 +64,9 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("issue", result["is"]);
         }
 
+        /// <summary>
+        /// Verifies that a keyword value in quotes is correctly parsed and added to the result dictionary.
+        /// </summary>
         [Fact]
         public void ParseString_WithKeywordValueInQuotes_KeywordOutputToResultDictionary()
         {
@@ -64,6 +80,10 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.True(result.ContainsKey("is"));
             Assert.Equal("no problems", result["is"]);
         }
+
+        /// <summary>
+        /// Verifies that a field name and value in quotes are correctly parsed and added to the filters list.
+        /// </summary>
         [Fact]
         public void ParseString_WithFieldNameAndValueInQuotes_FieldInResult()
         {
@@ -78,6 +98,9 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("Working Good!", filters[0].StringValue);
         }
 
+        /// <summary>
+        /// Verifies that a field name in quotes is correctly parsed and added to the filters list.
+        /// </summary>
         [Fact]
         public void ParseString_WithFieldNameInQuotes_FieldInResult()
         {
@@ -92,6 +115,9 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("abc", filters[0].StringValue);
         }
 
+        /// <summary>
+        /// Verifies that a field value in quotes is correctly parsed and added to the filters list.
+        /// </summary>
         [Fact]
         public void ParseString_WithFieldValueInQuotes_FieldInResult()
         {
@@ -106,12 +132,15 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("red color", filters[0].StringValue);
         }
 
+        /// <summary>
+        /// Verifies that a field and its value are correctly parsed and added to the filters list.
+        /// </summary>
         [Fact]
         public void ParseString_WithField_FieldInResult()
         {
             Dictionary<string, string> result = new();
             List<FieldFilter> filters = [];
-            List<FieldDefinition> fieldDefinitions = [new FieldDefinition { Name = "component", Id = 123}];
+            List<FieldDefinition> fieldDefinitions = [new FieldDefinition { Name = "component", Id = 123 }];
             HashSet<string> keywords = ["is", "after", "before"];
             var text = SearchStringParser.Parse("hello component:keyboard", result, filters, keywords, fieldDefinitions);
 

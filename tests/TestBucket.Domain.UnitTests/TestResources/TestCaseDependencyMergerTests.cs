@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Contracts.Testing.Models;
+﻿using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.TestResources;
 
 namespace TestBucket.Domain.UnitTests.TestResources
 {
+    /// <summary>
+    /// Contains unit tests for <see cref="TestCaseDependencyMerger"/> to verify correct merging of <see cref="TestCaseDependency"/> lists and their attribute requirements.
+    /// </summary>
     [EnrichedTest]
     [UnitTest]
     public class TestCaseDependencyMergerTests
     {
-        [Component("TestResources")]
+        /// <summary>
+        /// Verifies that merging two lists, each with a <see cref="TestCaseDependency"/> for the same resource type and different attribute requirements,
+        /// results in a single dependency with all attribute requirements combined.
+        /// </summary>
         [Fact]
         public void MergeTwoLists_WithBothThatHasAttributeRequirements_ResultAttributeContains()
         {
@@ -52,19 +53,22 @@ namespace TestBucket.Domain.UnitTests.TestResources
             Assert.Equal(AttributeOperator.Equals, result[0].AttributeRequirements![1].Operator);
         }
 
-        [Component("TestResources")]
+        /// <summary>
+        /// Verifies that merging a list with attribute requirements and a list without attribute requirements
+        /// results in a dependency with the attribute requirements preserved.
+        /// </summary>
         [Fact]
         public void MergeTwoLists_WithOneThatHasAttributeRequirements_ResultAttributeContains()
         {
             // Input each has one resource, the result should be merged into a single one
             List<TestCaseDependency> a = [
-                    new TestCaseDependency 
-                    { 
-                        ResourceType = "phone", 
-                        AttributeRequirements = 
-                        [ 
-                            new AttributeRequirement() { Name = "model", Operator = AttributeOperator.Equals, Value = "Pixel 8 Pro"} 
-                        ] 
+                    new TestCaseDependency
+                    {
+                        ResourceType = "phone",
+                        AttributeRequirements =
+                        [
+                            new AttributeRequirement() { Name = "model", Operator = AttributeOperator.Equals, Value = "Pixel 8 Pro"}
+                        ]
                     }
                 ];
             List<TestCaseDependency> b = [new TestCaseDependency { ResourceType = "phone" }];
@@ -79,7 +83,9 @@ namespace TestBucket.Domain.UnitTests.TestResources
             Assert.Equal(AttributeOperator.Equals, result[0].AttributeRequirements![0].Operator);
         }
 
-        [Component("TestResources")]
+        /// <summary>
+        /// Verifies that merging two lists with the same number of resources of the same type results in a single dependency.
+        /// </summary>
         [Fact]
         public void MergeTwoLists_WithSameNumberOfResources_ResourceCountCorrect()
         {
@@ -92,7 +98,9 @@ namespace TestBucket.Domain.UnitTests.TestResources
             Assert.Equal("phone", result[0].ResourceType);
         }
 
-        [Component("TestResources")]
+        /// <summary>
+        /// Verifies that merging lists with different numbers of resources of the same type results in the correct total count.
+        /// </summary>
         [Fact]
         public void MergeTwoLists_WithDifferentNumberOfResources_ResourceCountCorrect()
         {

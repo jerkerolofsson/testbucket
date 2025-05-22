@@ -8,6 +8,9 @@ using TestBucket.Domain.Requirements.Search;
 
 namespace TestBucket.Domain.UnitTests.Requirements.Search
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="SearchRequirementQueryParser"/> class, verifying correct parsing of requirement search queries.
+    /// </summary>
     [FunctionalTest]
     [EnrichedTest]
     [UnitTest]
@@ -15,15 +18,15 @@ namespace TestBucket.Domain.UnitTests.Requirements.Search
     [Component("Requirements")]
     public class SearchRequiremensQueryParserTests
     {
-
+        /// <summary>
+        /// Verifies that a query with a "since" keyword and days value sets the <c>CreatedFrom</c> property correctly.
+        /// </summary>
+        /// <remarks>
+        /// Steps:
+        /// 1. Define the query: "since:4d"
+        /// 2. Verify that the <c>CreatedFrom</c> property on the query is set to the current time minus 4 days.
+        /// </remarks>
         [Fact]
-        [TestDescription("""
-            This test verifies that the queries that define a "since" with days query sets the CreatedFrom property
-
-            # Steps:
-            1. Define the query: "since:4d"
-            2. Verify that the CreatedFrom property on the query is set to the current time - 4 days
-            """)]
         public void Parse_WithSince4d_ParsedCorrectly()
         {
             var currentDate = new DateTimeOffset(2025, 5, 20, 12, 0, 0, TimeSpan.Zero);
@@ -40,14 +43,16 @@ namespace TestBucket.Domain.UnitTests.Requirements.Search
             Assert.Equal(expectedDate.Hour, actualDate.Hour);
         }
 
+        /// <summary>
+        /// Verifies that the "is" keyword in a query maps to the <c>RequirementType</c> property.
+        /// </summary>
+        /// <remarks>
+        /// Steps:
+        /// 1. Define the query "is:task"
+        /// 2. Verify that "task" is assigned to the <c>RequirementType</c> property when parsed.
+        /// </remarks>
         [Fact]
-        [TestDescription("""
-            Verifies that the is keyword in a query maps to RequirementType for the query
-
-            # Steps
-            1. Define the query "is:task"
-            2. Verify that "task" is assigned to the RequirementType property when parsed
-            """)]
+        
         public void Parse_WithIsTask_RequirementTypeIsTask()
         {
             string text = "is:task";
@@ -56,14 +61,16 @@ namespace TestBucket.Domain.UnitTests.Requirements.Search
             Assert.Equal("task", request.RequirementType);
         }
 
+        /// <summary>
+        /// Verifies that the "state" keyword in a query maps to the <c>RequirementState</c> property.
+        /// </summary>
+        /// <remarks>
+        /// Steps:
+        /// 1. Define the query "state:Open"
+        /// 2. Verify that "Open" is assigned to the <c>RequirementState</c> property when parsed.
+        /// </remarks>
         [Fact]
-        [TestDescription("""
-            Verifies that the state keyword in a query maps to RequirementState for the query
-
-            # Steps
-            1. Define the query "state:Open"
-            2. Verify that "Open" is assigned to the RequirementState property when parsed
-            """)]
+       
         public void Parse_WithStateOpen_TextIsNullTypeIsIssue()
         {
             string text = "state:Open";

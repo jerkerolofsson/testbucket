@@ -7,15 +7,27 @@ using Xunit;
 
 namespace TestBucket.Traits.Xunit
 {
+    /// <summary>
+    /// Adds metadata to a test, including test description from XML comments if the csproj defines
+    /// &lt;GenerateDocumentationFile&gt;true&lt;/GenerateDocumentationFile&gt;
+    /// </summary>
     public class EnrichedTestAttribute : BeforeAfterTestAttribute
     {
         private readonly OperatingSystemInformation _operatingSystem;
 
+        /// <summary>
+        /// Mock constructor for a specific operating system
+        /// </summary>
+        /// <param name="operatingSystem"></param>
         internal EnrichedTestAttribute(OperatingSystemInformation operatingSystem)
         {
             _operatingSystem = operatingSystem;
         }
 
+        /// <summary>
+        /// Adds metadata to a test, including test description from XML comments if the csproj defines
+        /// &lt;GenerateDocumentationFile&gt;true&lt;/GenerateDocumentationFile&gt;
+        /// </summary>
         public EnrichedTestAttribute()
         {
             _operatingSystem = new OperatingSystemInformation();
@@ -70,9 +82,15 @@ namespace TestBucket.Traits.Xunit
                 if (File.Exists(assemblyXmlDocPath))
                 {
                     // Note: There will be issues here if there are multiple methods with different parameters
-                    var fullName = $"{namespaceName}.{className}.{methodName}";
                     var result = XmlDocSerializer.ParseFile(assemblyXmlDocPath);
+                    var fullName = $"{namespaceName}.{className}.{methodName}";
                     var methodXmlDoc = result.Methods.Where(x => x.Name == fullName).FirstOrDefault();
+                    if (methodXmlDoc is null)
+                    {
+                        // Theory will have arguments, we need to strip them
+                        fullName = $"{namespaceName}.{className}.{StripSignature(methodName)}";
+                        methodXmlDoc = result.Methods.Where(x => StripSignature(x.Name) == fullName).FirstOrDefault();
+                    }
                     if (methodXmlDoc is not null)
                     {
                         var markdown = new XmlDocMarkdownBuilder().AddMethod(result, methodXmlDoc).Build();
@@ -80,6 +98,21 @@ namespace TestBucket.Traits.Xunit
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Removes the parans and arguments
+        /// </summary>
+        /// <param name="methodName"></param>
+        /// <returns></returns>
+        private string StripSignature(string methodName)
+        {
+            var p = methodName.IndexOf('(');
+            if(p > 0)
+            {
+                return methodName[0..p];
+            }
+            return methodName;
         }
 
         private void EnrichWithOperatingSystem()

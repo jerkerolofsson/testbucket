@@ -2,6 +2,7 @@
 
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.AI;
+using TestBucket.Domain.AI.Services.Classifier;
 using TestBucket.Domain.AI.Settings;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Appearance;

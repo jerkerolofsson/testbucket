@@ -10,10 +10,21 @@ using TestBucket.Domain.Testing.Compiler;
 
 namespace TestBucket.Domain.UnitTests.Compiler
 {
+    /// <summary>
+    /// Contains unit tests for <see cref="TestCompiler.CompileMarkupAsync"/> and related markup/template resolution logic.
+    /// </summary>
     [UnitTest]
     [EnrichedTest]
     public class CompileMarkupTests
     {
+        /// <summary>
+        /// Returns a <see cref="TestCase"/> template by name for use in markup compilation tests.
+        /// </summary>
+        /// <param name="principal">The user principal requesting the template.</param>
+        /// <param name="name">The name of the template to retrieve.</param>
+        /// <returns>
+        /// A <see cref="TestCase"/> instance if the template exists; otherwise, <c>null</c>.
+        /// </returns>
         public static Task<TestCase?> GetTemplate(ClaimsPrincipal principal, string name)
         {
             TestCase? test = null;
@@ -47,6 +58,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             return Task.FromResult<TestCase?>(test);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="TestCompiler.CompileMarkupAsync"/> correctly resolves a template using the <c>@template</c> directive.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public async Task CompileMarkupAsync_WithTemplate_TemplateResolved()
@@ -67,6 +81,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Equal(expected, result);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="TestCompiler.CompileMarkupAsync"/> correctly resolves the <c>@include</c> directive.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public async Task CompileMarkupAsync_WithInclude_IncludeDirectiveResolved()
@@ -86,6 +103,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Equal(expected, result);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="TestCompiler.CompileMarkupAsync"/> correctly resolves recursive <c>@include</c> directives.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public async Task CompileMarkupAsync_WithRecursiveInclude_IncludeDirectiveResolved()

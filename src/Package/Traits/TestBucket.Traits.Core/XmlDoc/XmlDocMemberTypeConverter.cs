@@ -13,7 +13,7 @@ public class XmlDocMemberTypeConverter
     /// <summary>
     /// Contains a dictionary that converts between the member prefix and an enum
     /// </summary>
-    private static FrozenDictionary<char, XmlDocMemberType> _map = new Dictionary<char, XmlDocMemberType>()
+    private static readonly FrozenDictionary<char, XmlDocMemberType> _map = new Dictionary<char, XmlDocMemberType>()
     {
         ['M'] = XmlDocMemberType.Method,
         ['T'] = XmlDocMemberType.Type,

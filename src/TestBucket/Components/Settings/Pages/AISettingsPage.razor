@@ -79,27 +79,39 @@
         <MudText Class="mt-5" Typo="Typo.h2">Default Model</MudText>
         <MudStack Row Spacing="5">
             <MudRadioGroup Value="_globalSettings.LlmModel" ValueChanged="OnDefaultModelChanged" T="string">
-                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:3b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 3b</MudRadio>
-                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:1b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 1b</MudRadio>
+                @foreach(var model in LlmModels.GetModels(ModelCapability.Reasoning))
+                {
+                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
+                        <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
+                        <span>@model.Name</span>
+                    </MudRadio>
+                }
             </MudRadioGroup>
         </MudStack>
 
         <MudText Class="mt-2" Typo="Typo.h2">Classification Model</MudText>
         <MudStack Row Spacing="5">
             <MudRadioGroup Value="_globalSettings.LlmClassificationModel" ValueChanged="OnClassificationModelChanged" T="string">
-                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:3b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 3b</MudRadio>
-                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:1b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 1b</MudRadio>
-                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("deepseek-r1:1.5b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Deepseek" /> deepseek-R1 1.5b</MudRadio>
-                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("phi3:3.8b")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.Microsoft" /> phi3 3.8b</MudRadio>
-                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("phi4")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.Microsoft" /> phi4</MudRadio>
+                @foreach(var model in LlmModels.GetModels(ModelCapability.Classification))
+                {
+                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
+                        <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
+                        <span>@model.Name</span>
+                    </MudRadio>
+                }
             </MudRadioGroup>
         </MudStack>
 
         <MudText Class="mt-5" Typo="Typo.h2">Test Generator Model</MudText>
         <MudStack Row Spacing="5">
             <MudRadioGroup Value="_globalSettings.LlmTestGenerationModel" ValueChanged="OnGeneratorModelChanged" T="string">
-                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:3b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 3b</MudRadio>
-                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("llama3.2:1b")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Meta" /> llama3.2 1b</MudRadio>
+                @foreach(var model in LlmModels.GetModels(ModelCapability.Tools))
+                {
+                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
+                        <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
+                        <span>@model.Name</span>
+                    </MudRadio>
+                }
             </MudRadioGroup>
         </MudStack>
         <MudLink Href="@($"/{TenantId}/Settings/Search?q=ai-model")">More Options</MudLink>

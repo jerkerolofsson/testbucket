@@ -1170,3 +1170,15 @@ div.tb-profile-image.tb-background-9 {
     display: grid;
     place-items: center;
 }
+
+.tb-progress-overlay {
+    position: absolute; 
+    right: 50px; 
+    bottom: 50px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
+    z-index: 100; 
+    width: 20vw;
+    overflow: hidden;
+}

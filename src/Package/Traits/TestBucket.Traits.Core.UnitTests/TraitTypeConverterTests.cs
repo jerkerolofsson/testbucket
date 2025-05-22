@@ -6,8 +6,8 @@ namespace TestBucket.Traits.Core.UnitTests;
 /// Contains unit tests for the <see cref="TraitTypeConverter"/> class, verifying correct conversions between <see cref="TraitType"/> values and their string representations.
 /// </summary>
 [UnitTest]
-[Feature("Traits")]
-[Component("TraitTypeConverter")]
+[Feature("Import Test Results")]
+[Component("Traits")]
 [EnrichedTest]
 public class TraitTypeConverterTests
 {

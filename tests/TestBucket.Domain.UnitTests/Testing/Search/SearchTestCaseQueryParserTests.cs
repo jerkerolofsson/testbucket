@@ -9,6 +9,9 @@ using TestBucket.Domain.Testing.TestCases.Search;
 
 namespace TestBucket.Domain.UnitTests.Testing.Search
 {
+    /// <summary>
+    /// Contains unit tests for <see cref="SearchTestCaseQueryParser"/> to verify parsing of test case search queries.
+    /// </summary>
     [FunctionalTest]
     [EnrichedTest]
     [UnitTest]
@@ -16,6 +19,10 @@ namespace TestBucket.Domain.UnitTests.Testing.Search
     [Component("Testing")]
     public class SearchTestCaseQueryParserTests
     {
+        /// <summary>
+        /// Verifies that plain text queries without keywords are parsed as text search.
+        /// </summary>
+        /// <param name="text">The input query string.</param>
         [Theory]
         [InlineData("Hello World")]
         [InlineData("HelloWorld")]
@@ -26,14 +33,10 @@ namespace TestBucket.Domain.UnitTests.Testing.Search
             Assert.Equal(text, request.Text);
         }
 
+        /// <summary>
+        /// Verifies that a query with "since:5h" sets the <c>CreatedFrom</c> property to 5 hours before the current time.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that the queries that define a "since" with hours query sets the CreatedFrom property
-
-            # Steps:
-            1. Define the query: "since:5h"
-            2. Verify that the CreatedFrom property on the query is set to the current time - 5 hours
-            """)]
         public void Parse_WithSince5h_ParsedCorrectly()
         {
             var currentDate = new DateTimeOffset(2025, 5, 20, 12, 0, 0, TimeSpan.Zero);
@@ -50,14 +53,11 @@ namespace TestBucket.Domain.UnitTests.Testing.Search
             Assert.Equal(expectedDate.Hour, actualDate.Hour);
         }
 
+        /// <summary>
+        /// Verifies that a query with "since:4d" sets the <c>CreatedFrom</c> property to 4 days before the current time.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that the queries that define a "since" with days query sets the CreatedFrom property
-
-            # Steps:
-            1. Define the query: "since:4d"
-            2. Verify that the CreatedFrom property on the query is set to the current time - 4 days
-            """)]
+      
         public void Parse_WithSince4d_ParsedCorrectly()
         {
             var currentDate = new DateTimeOffset(2025, 5, 20, 12, 0, 0, TimeSpan.Zero);
@@ -74,14 +74,11 @@ namespace TestBucket.Domain.UnitTests.Testing.Search
             Assert.Equal(expectedDate.Hour, actualDate.Hour);
         }
 
+        /// <summary>
+        /// Verifies that a query with "since:20m" sets the <c>CreatedFrom</c> property to 20 minutes before the current time.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that the queries that define a "since" with days query sets the CreatedFrom property
-
-            # Steps:
-            1. Define the query: "since:20m"
-            2. Verify that the CreatedFrom property on the query is set to the current time - 20 minutes
-            """)]
+       
         public void Parse_WithSince20m_ParsedCorrectly()
         {
             var currentDate = new DateTimeOffset(2025, 5, 20, 12, 0, 0, TimeSpan.Zero);
@@ -98,14 +95,11 @@ namespace TestBucket.Domain.UnitTests.Testing.Search
             Assert.Equal(expectedDate.Hour, actualDate.Hour);
         }
 
+        /// <summary>
+        /// Verifies that a query with "since:120s" sets the <c>CreatedFrom</c> property to 120 seconds before the current time.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that the queries that define a "since" with days query sets the CreatedFrom property
-
-            # Steps:
-            1. Define the query: "since:120s"
-            2. Verify that the CreatedFrom property on the query is set to the current time - 120seconds
-            """)]
+       
         public void Parse_WithSince120s_ParsedCorrectly()
         {
             var currentDate = new DateTimeOffset(2025, 5, 20, 12, 0, 0, TimeSpan.Zero);
@@ -122,15 +116,11 @@ namespace TestBucket.Domain.UnitTests.Testing.Search
             Assert.Equal(expectedDate.Hour, actualDate.Hour);
         }
 
-
+        /// <summary>
+        /// Verifies that a query with "since:2w" sets the <c>CreatedFrom</c> property to 2 weeks before the current time.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that the queries that define a "since" with days query sets the CreatedFrom property
-
-            # Steps:
-            1. Define the query: "since:120s"
-            2. Verify that the CreatedFrom property on the query is set to the current time - 14days
-            """)]
+       
         public void Parse_WithSince2w_ParsedCorrectly()
         {
             var currentDate = new DateTimeOffset(2025, 5, 20, 12, 0, 0, TimeSpan.Zero);
@@ -147,15 +137,15 @@ namespace TestBucket.Domain.UnitTests.Testing.Search
             Assert.Equal(expectedDate.Hour, actualDate.Hour);
         }
 
+        /// <summary>
+        /// Verifies that a query with "from:yyyy-MM-dd" sets the <c>CreatedFrom</c> property to the specified date.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that the queries that define a DateTimeOffset for the From property can be parsed
-            from the query: from:yyyy-MM-dd
-            """)]
+       
         public void Parse_WithFrom_ParsedCorrectly()
         {
-            var date = new DateTimeOffset(2025, 5, 20,0,0,0,TimeSpan.Zero);
-            
+            var date = new DateTimeOffset(2025, 5, 20, 0, 0, 0, TimeSpan.Zero);
+
             var request = SearchTestCaseQueryParser.Parse("from:2025-05-20", []);
             Assert.NotNull(request.CreatedFrom);
             Assert.Equal(2025, request.CreatedFrom.Value.Year);
@@ -163,24 +153,22 @@ namespace TestBucket.Domain.UnitTests.Testing.Search
             Assert.Equal(20, request.CreatedFrom.Value.Day);
         }
 
+        /// <summary>
+        /// Verifies that a query with "team-id:&lt;integer&gt;" sets the <c>TeamId</c> property.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that the query: team-id: <integer> can be parsed correctly
-            """)]
+        
         public void Parse_WithTeamId_ParsedCorrectly()
         {
             var request = SearchTestCaseQueryParser.Parse("team-id:123", []);
             Assert.Equal(123, request.TeamId);
         }
 
+        /// <summary>
+        /// Verifies that the unstructured part of a query is parsed as a text search and structured part is parsed as a filter.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that the unstructured part of a query is parsed as a text search
-
-            # Steps
-            1. Define a query that has a structured part and an unstructed part: "is:manual Hello" (is:manual is structured and Hello is unstructured)
-            2. Verify that the result has the TestExecutionType property set to "TestExecutionType.Manual" and the Text property set to "Hello"
-            """)]
+       
         public void Parse_WithIsManualAndText_TextIsRemainderTypeIsManual()
         {
             string text = "is:manual Hello";
@@ -189,19 +177,14 @@ namespace TestBucket.Domain.UnitTests.Testing.Search
             Assert.Equal(Contracts.Testing.Models.TestExecutionType.Manual, request.TestExecutionType);
         }
 
+        /// <summary>
+        /// Verifies that a query defining a field (e.g., "milestone:1.0") is parsed and mapped to the correct field definition.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that a query that defines a field is parsed correctly
-
-            # Steps
-            1. Define the query "milestone:1.0"
-            2. Verify that the result contains the value "1.0"
-            3. Verify that the result contains the field ID correpsonding to the field definition ID property
-            """)]
         public void Parse_WithField_AddedAsField()
         {
             string text = "milestone:1.0";
-            List<FieldDefinition> fieldDefinitions = [new FieldDefinition() { Name = "Milestone", Id = 123}];
+            List<FieldDefinition> fieldDefinitions = [new FieldDefinition() { Name = "Milestone", Id = 123 }];
 
             var request = SearchTestCaseQueryParser.Parse(text, fieldDefinitions);
             Assert.Single(request.Fields);

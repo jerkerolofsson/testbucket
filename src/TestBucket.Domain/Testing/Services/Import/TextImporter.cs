@@ -2,6 +2,7 @@
 
 using Mediator;
 
+using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Teams;
 using TestBucket.Formats;
@@ -34,7 +35,7 @@ internal class TextImporter : ITextTestResultsImporter
     /// <exception cref="ArgumentException"></exception>
     public async Task ImportTextAsync(ClaimsPrincipal principal, long teamId, long projectId, TestResultFormat format, string text, ImportHandlingOptions options)
     {
-        if(format == TestResultFormat.UnknownFormat)
+        if (format == TestResultFormat.UnknownFormat)
         {
             format = TestResultDetector.Detect(Encoding.UTF8.GetBytes(text));
         }
@@ -42,14 +43,12 @@ internal class TextImporter : ITextTestResultsImporter
         var serializer = TestResultSerializerFactory.Create(format);
         var run = serializer.Deserialize(text);
 
-
         await ImportRunAsync(principal, teamId, projectId, run, options);
     }
 
 
     public async Task ImportRunAsync(ClaimsPrincipal principal, long teamId, long projectId, TestRunDto run, ImportHandlingOptions options)
     {
-
         var team = await _teamManager.GetTeamByIdAsync(principal, teamId);
         var project = await _projectManager.GetTestProjectByIdAsync(principal, projectId);
 

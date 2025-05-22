@@ -1,3 +1,5 @@
+using TestBucket.Domain;
+using TestBucket.Domain.AI.Models;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Models;
 
@@ -18,6 +20,30 @@ public partial class AISettingsPage
     private readonly Dictionary<long, FieldValue> _fieldMap = [];
     private readonly Dictionary<long, ISetting> _settingsMap = [];
 
+    private string? GetModelIcon(LlmModel model)
+    {
+        if(model.Icon is not null)
+        {
+            return model.Icon;
+        }
+        if (model.Vendor == "meta")
+        {
+            return TbIcons.Brands.Meta;
+        }
+        if (model.Vendor == "deepseek")
+        {
+            return TbIcons.Brands.Deepseek;
+        }
+        if (model.Vendor == "microsoft")
+        {
+            return Icons.Custom.Brands.Microsoft;
+        }
+        if (model.Vendor == "alibaba-cloud")
+        {
+            return TbIcons.Brands.AlibabaCloud;
+        }
+        return null;
+    }
     private async Task OnFieldChangedAsync(FieldValue fieldValue)
     {
         if (_settingsMap.TryGetValue(fieldValue.FieldDefinitionId, out var setting))

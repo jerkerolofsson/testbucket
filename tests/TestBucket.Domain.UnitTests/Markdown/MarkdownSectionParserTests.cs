@@ -4,10 +4,16 @@
 
 namespace TestBucket.Domain.UnitTests.Markdown
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="MarkdownSectionParser"/> class, verifying correct parsing of markdown sections and header hierarchies.
+    /// </summary>
     [UnitTest]
     [EnrichedTest]
     public class MarkdownSectionParserTests
     {
+        /// <summary>
+        /// Verifies that a single line of markdown is parsed as one section.
+        /// </summary>
         [Fact]
         public void ReadSections_WithSingleLine_OneSection()
         {
@@ -15,7 +21,9 @@ namespace TestBucket.Domain.UnitTests.Markdown
             Assert.Single(sections);
         }
 
-
+        /// <summary>
+        /// Verifies that multiple lines without headers are parsed as a single section.
+        /// </summary>
         [Fact]
         public void ReadSections_WithMultipleLines_OneSection()
         {
@@ -23,6 +31,9 @@ namespace TestBucket.Domain.UnitTests.Markdown
             Assert.Single(sections);
         }
 
+        /// <summary>
+        /// Verifies that two headers in markdown result in two sections.
+        /// </summary>
         [Fact]
         public void ReadSections_WithTwoHeaders_TwoSectionsReturned()
         {
@@ -30,6 +41,9 @@ namespace TestBucket.Domain.UnitTests.Markdown
             Assert.Equal(2, sections.Count);
         }
 
+        /// <summary>
+        /// Verifies that the path property is set correctly for sections with a header hierarchy.
+        /// </summary>
         [Fact]
         public void ReadSections_WithHeaderHierarchy_PathSetFromHierarchy()
         {
@@ -76,7 +90,9 @@ namespace TestBucket.Domain.UnitTests.Markdown
             Assert.Equal("Header-2", string.Join('/', sections[6].Path));
         }
 
-
+        /// <summary>
+        /// Verifies that the path property is set correctly for a simple header hierarchy.
+        /// </summary>
         [Fact]
         public void ReadSections_WithSimpleHeaderHierarchy_PathPropertySet()
         {
@@ -102,6 +118,9 @@ namespace TestBucket.Domain.UnitTests.Markdown
             Assert.Equal("1. TITLE", sections[2].Path[0]);
         }
 
+        /// <summary>
+        /// Verifies that the heading property is set correctly for each section in a header hierarchy.
+        /// </summary>
         [Fact]
         public void ReadSections_WithHeaderHierarchy_HeaderPropertySet()
         {

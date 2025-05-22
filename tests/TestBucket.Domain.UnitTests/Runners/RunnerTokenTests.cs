@@ -1,23 +1,21 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Contracts.Identity;
+﻿using TestBucket.Contracts.Identity;
 using TestBucket.Domain.ApiKeys.Validation;
 using TestBucket.Domain.Identity;
-using TestBucket.Domain.Projects;
-using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Settings.Fakes;
-using TestBucket.Domain.UnitTests.TestHelpers;
 
 namespace TestBucket.Domain.UnitTests.Runners
 {
+    /// <summary>
+    /// Contains unit tests for validating runner access token generation and claims.
+    /// </summary>
     [UnitTest]
     [EnrichedTest]
     public class RunnerTokenTests
     {
+        /// <summary>
+        /// Verifies that <c>ApiKeyGenerator.GenerateAccessToken"</c> with the "runner" scope
+        /// produces a token containing the correct "scope" and "tenant" claims.
+        /// </summary>
         [Fact]
         public async Task GenerateAccessToken_WithRunnerScope_HasCorrectScope()
         {

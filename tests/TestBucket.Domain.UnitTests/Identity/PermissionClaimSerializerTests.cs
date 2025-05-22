@@ -1,17 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Identity.Permissions;
+﻿using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Identity.Permissions.Models;
 
 namespace TestBucket.Domain.UnitTests.Identity
 {
+    /// <summary>
+    /// Tests for PermissionClaimSerializer
+    /// </summary>
     [EnrichedTest]
     [UnitTest]
     public class PermissionClaimSerializerTests
     {
+        /// <summary>
+        /// Tests that serializing and deserializing a <see cref="UserPermissions"/> instance containing a single <see cref="EntityPermission"/>
+        /// for the specified <paramref name="entity"/> produces the expected string and round-trips the permission level correctly.
+        /// Also verifies that no other entity type is granted a permission level other than <see cref="PermissionLevel.None"/>.
+        /// </summary>
+        /// <param name="entity">The <see cref="PermissionEntityType"/> to test serialization and deserialization for.</param>
+        
         [InlineData(PermissionEntityType.Tenant)]
         [InlineData(PermissionEntityType.User)]
         [InlineData(PermissionEntityType.Project)]

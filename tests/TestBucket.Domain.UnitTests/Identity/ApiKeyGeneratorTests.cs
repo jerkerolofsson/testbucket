@@ -5,11 +5,17 @@ using TestBucket.Domain.Settings.Fakes;
 
 namespace TestBucket.Domain.UnitTests.Identity
 {
+    /// <summary>
+    /// Tests for The ApiKeyGenerator class
+    /// </summary>
     [UnitTest]
     [EnrichedTest]
     public class ApiKeyGeneratorTests
     {
-        [TestDescription("Generates an access token in scope of 'runner', using a ClaimsPrincipal with a tenant claim and verifies that the tenant claim is copied to the access token")]
+        /// <summary>
+        /// Generates an access token in scope of 'runner', using a ClaimsPrincipal with a tenant claim and verifies that the tenant claim is copied to the access token
+        /// </summary>
+        /// <returns></returns>
         [Component("Identity")]
         [Fact]
         public async Task GenerateAccessToken_WithRunnerScopeAndTenantClaim_TokenHasTenantClaim()
@@ -29,7 +35,10 @@ namespace TestBucket.Domain.UnitTests.Identity
             Assert.Equal("1234", tenantId);
         }
 
-        [TestDescription("Generates an access token in scope of 'runner', using a ClaimsPrincipal with a project claim and verifies that the project claim is copied to the access token")]
+        /// <summary>
+        /// Generates an access token in scope of 'runner', using a ClaimsPrincipal with a project claim and verifies that the project claim is copied to the access token
+        /// </summary>
+        /// <returns></returns>
         [Component("Identity")]
         [Fact]
         public async Task GenerateAccessToken_WithRunnerScopeAndProjectClaim_TokenHasProjectId()

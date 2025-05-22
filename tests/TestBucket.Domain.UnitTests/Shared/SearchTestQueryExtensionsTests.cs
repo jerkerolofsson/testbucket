@@ -9,11 +9,17 @@ using TestBucket.Domain.Testing.TestCases.Search;
 
 namespace TestBucket.Domain.UnitTests.Shared
 {
+    /// <summary>
+    /// Contains unit tests for <see cref="SearchTestQueryExtensions.ToSearchText"/> to verify correct conversion of <see cref="SearchTestQuery"/> to search text.
+    /// </summary>
     [UnitTest]
     [FunctionalTest]
     [Feature("Search")]
     public class SearchTestQueryExtensionsTests
     {
+        /// <summary>
+        /// Verifies that SearchTestQuery.ToSearchText returns the plain text when only the <c>Text</c> property is set.
+        /// </summary>
         [Fact]
         public void ToSearchText_WithText()
         {
@@ -27,6 +33,9 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("Hello World", result);
         }
 
+        /// <summary>
+        /// Verifies that SearchTestQuery.ToSearchText returns "is:automated" when <c>TestExecutionType</c> is set to Automated.
+        /// </summary>
         [Fact]
         public void ToSearchText_WithIsAutomated()
         {
@@ -40,6 +49,9 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("is:automated", result);
         }
 
+        /// <summary>
+        /// Verifies that SearchTestQuery.ToSearchText returns "is:manual" when <c>TestExecutionType</c> is set to Manual.
+        /// </summary>
         [Fact]
         public void ToSearchText_WithIsManual()
         {
@@ -53,6 +65,9 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("is:manual", result);
         }
 
+        /// <summary>
+        /// Verifies that SearchTestQuery.ToSearchText returns "is:hybrid" when <c>TestExecutionType</c> is set to Hybrid.
+        /// </summary>
         [Fact]
         public void ToSearchText_WithIsHybrid()
         {
@@ -66,6 +81,9 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("is:hybrid", result);
         }
 
+        /// <summary>
+        /// Verifies that SearchTestQuery.ToSearchText returns "is:hybrid-auto" when <c>TestExecutionType</c> is set to HybridAutomated.
+        /// </summary>
         [Fact]
         public void ToSearchText_WithIsHybridAutomated()
         {
@@ -79,11 +97,14 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("is:hybrid-auto", result);
         }
 
+        /// <summary>
+        /// Verifies that SearchTestQuery.ToSearchText returns the correct field filter when a field is present.
+        /// </summary>
         [Fact]
         public void ToSearchText_WithField()
         {
             var query = new SearchTestQuery();
-            query.Fields = [new FieldFilter { FilterDefinitionId=1, Name = "color", StringValue = "red" }];
+            query.Fields = [new FieldFilter { FilterDefinitionId = 1, Name = "color", StringValue = "red" }];
 
             // Act
             var result = query.ToSearchText();
@@ -92,6 +113,9 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("color:red", result);
         }
 
+        /// <summary>
+        /// Verifies that SearchTestQuery.ToSearchText quotes the field value if it contains a space.
+        /// </summary>
         [Fact]
         public void ToSearchText_WithFieldValueWithSpace()
         {
@@ -105,6 +129,9 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal("color:\"dark red\"", result);
         }
 
+        /// <summary>
+        /// Verifies that SearchTestQuery.ToSearchText quotes the field name if it contains a space.
+        /// </summary>
         [Fact]
         public void ToSearchText_WithFieldNameWithSpace()
         {

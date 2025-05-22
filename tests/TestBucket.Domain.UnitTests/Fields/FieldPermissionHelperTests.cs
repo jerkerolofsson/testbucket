@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Contracts.Fields;
+﻿using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields.Helpers;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Permissions;
 
 namespace TestBucket.Domain.UnitTests.Fields
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="FieldPermissionHelper"/> and related permission logic for custom fields.
+    /// </summary>
     [Feature("Custom Fields")]
     [UnitTest]
+    [Component("Fields")]
     [EnrichedTest]
+    [SecurityTest]
     public class FieldPermissionHelperTests
     {
+        /// <summary>
+        /// Verifies that a user with the required permission level for a requirement field has access.
+        /// </summary>
         [Fact]
         public void HasPermissionToApproveRequirement_WithValidAccess_IsTrue()
         {
@@ -30,6 +33,9 @@ namespace TestBucket.Domain.UnitTests.Fields
             Assert.True(hasAccess, "Expected user to have access");
         }
 
+        /// <summary>
+        /// Verifies that a user with approval permissions for both requirements and test cases has access to a field targeting both.
+        /// </summary>
         [Fact]
         public void HasPermissionToApproveWhenTargetBothRequirementAndTest_WithValidAccess_IsTrue()
         {
@@ -46,6 +52,9 @@ namespace TestBucket.Domain.UnitTests.Fields
             Assert.True(hasAccess, "Expected user to have access");
         }
 
+        /// <summary>
+        /// Verifies that a user with partial approval permissions does not have access to a field targeting both requirements and test cases.
+        /// </summary>
         [Fact]
         public void HasPermissionToApproveWhenTargetBothRequirementAndTest_WithPartialAccess_IsFalse()
         {
@@ -62,7 +71,9 @@ namespace TestBucket.Domain.UnitTests.Fields
             Assert.False(hasAccess, "Expected user to not have access as field targets requirement and test, but user only has approval for requirement");
         }
 
-
+        /// <summary>
+        /// Verifies that a user without the required approval permission does not have access to a requirement field.
+        /// </summary>
         [Fact]
         public void HasPermissionToApproveWhenTargetBothRequirementAndTest_WithNoValidAccess_IsFalse()
         {
@@ -79,7 +90,12 @@ namespace TestBucket.Domain.UnitTests.Fields
             Assert.False(hasAccess, "Expected user to not have access");
         }
 
-
+        /// <summary>
+        /// Verifies that <see cref="FieldPermissionHelper.GetPermissionEntityTypeFromField(FieldTarget)"/> returns the correct <see cref="PermissionEntityType"/>
+        /// for each <see cref="FieldTarget"/> value.
+        /// </summary>
+        /// <param name="target">The field target to test.</param>
+        /// <param name="expected">The expected permission entity type.</param>
         [InlineData(FieldTarget.TestRun, PermissionEntityType.TestRun)]
         [InlineData(FieldTarget.TestCaseRun, PermissionEntityType.TestCaseRun)]
         [InlineData(FieldTarget.TestCase, PermissionEntityType.TestCase)]
@@ -88,7 +104,6 @@ namespace TestBucket.Domain.UnitTests.Fields
         [InlineData(FieldTarget.Requirement, PermissionEntityType.Requirement)]
         [InlineData(FieldTarget.RequirementSpecificationFolder, PermissionEntityType.RequirementSpecification)]
         [InlineData(FieldTarget.RequirementSpecification, PermissionEntityType.RequirementSpecification)]
-        [TestDescription("Verifies that the correct permission level is returned for a field definition based on the target")]
         [Theory]
         public void GetPermissionEntityTypeFromField_CorrectReturnType(FieldTarget target, PermissionEntityType expected)
         {

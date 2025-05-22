@@ -5,9 +5,12 @@ namespace TestBucket.Traits.Core.UnitTests;
 /// <summary>
 /// Unit tests for <see cref="AutomationTraitNames"/> to verify that trait name constants are correct.
 /// </summary>
-[Feature("Traits")]
+[Feature("Import Test Results")]
+[Component("Traits")]
 [UnitTest]
 [EnrichedTest]
+[EnrichedTest]
+
 public class AutomationTraitNamesTests
 {
     /// <summary>

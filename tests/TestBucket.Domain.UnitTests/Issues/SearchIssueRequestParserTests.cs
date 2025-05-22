@@ -3,6 +3,9 @@ using TestBucket.Domain.Testing.TestCases.Search;
 
 namespace TestBucket.Domain.UnitTests.Issues
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="SearchIssueRequestParser"/> class, verifying correct parsing of issue search queries.
+    /// </summary>
     [FunctionalTest]
     [EnrichedTest]
     [UnitTest]
@@ -10,6 +13,10 @@ namespace TestBucket.Domain.UnitTests.Issues
     [Component("Issues")]
     public class SearchIssueRequestParserTests
     {
+        /// <summary>
+        /// Verifies that plain text queries without keywords are parsed as text.
+        /// </summary>
+        /// <param name="text">The input query text.</param>
         [Theory]
         [InlineData("Hello World")]
         [InlineData("HelloWorld")]
@@ -20,14 +27,11 @@ namespace TestBucket.Domain.UnitTests.Issues
             Assert.Equal(text, request.Text);
         }
 
+        /// <summary>
+        /// Verifies that a "since" query with days sets the <c>CreatedFrom</c> property correctly.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that the queries that define a "since" with days query sets the CreatedFrom property
-
-            # Steps:
-            1. Define the query: "since:4d"
-            2. Verify that the CreatedFrom property on the query is set to the current time - 4 days
-            """)]
+       
         public void Parse_WithSince4d_ParsedCorrectly()
         {
             var currentDate = new DateTimeOffset(2025, 5, 20, 12, 0, 0, TimeSpan.Zero);
@@ -44,6 +48,9 @@ namespace TestBucket.Domain.UnitTests.Issues
             Assert.Equal(expectedDate.Hour, actualDate.Hour);
         }
 
+        /// <summary>
+        /// Verifies that the "is:incident" query sets <c>Type</c> to "incident" and <c>Text</c> to null.
+        /// </summary>
         [Fact]
         public void Parse_WithIsIncident_TextIsNullTypeIsIssue()
         {
@@ -53,6 +60,9 @@ namespace TestBucket.Domain.UnitTests.Issues
             Assert.Equal("incident", request.Type);
         }
 
+        /// <summary>
+        /// Verifies that the "is:issue" query sets <c>Type</c> to "issue" and <c>Text</c> to null.
+        /// </summary>
         [Fact]
         public void Parse_WithIsIssue_TextIsNullTypeIsIssue()
         {
@@ -61,6 +71,10 @@ namespace TestBucket.Domain.UnitTests.Issues
             Assert.Null(request.Text);
             Assert.Equal("issue", request.Type);
         }
+
+        /// <summary>
+        /// Verifies that the "origin:Github" query sets <c>ExternalSystemName</c> to "Github" and <c>Text</c> to null.
+        /// </summary>
         [Fact]
         public void Parse_WithOriginGithub_TextIsNullOriginIsGithub()
         {
@@ -70,21 +84,22 @@ namespace TestBucket.Domain.UnitTests.Issues
             Assert.Equal("Github", request.ExternalSystemName);
         }
 
-
+        /// <summary>
+        /// Verifies that the "team-id:&lt;integer&gt;" query sets the <c>TeamId</c> property correctly.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that the query: team-id: <integer> can be parsed correctly
-            """)]
+      
         public void Parse_WithTeamId_ParsedCorrectly()
         {
             var request = SearchIssueRequestParser.Parse(1, "team-id:123", []);
             Assert.Equal(123, request.TeamId);
         }
 
+        /// <summary>
+        /// Verifies that the "state:open" query sets <c>State</c> to "open" and <c>Text</c> to null.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that the query "state:open" can be parsed
-            """)]
+      
         public void Parse_WithStateOpen_TextIsNullStateIsOpen()
         {
             string text = "state:open";
@@ -93,14 +108,11 @@ namespace TestBucket.Domain.UnitTests.Issues
             Assert.Equal("open", request.State);
         }
 
+        /// <summary>
+        /// Verifies that a query with both structured and unstructured parts parses the remainder as text.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that the unstructured part of a query is parsed as a text search
-
-            # Steps
-            1. Define a query that has a structured part and an unstructed part: "state:open Hello" (state:open is structured and Hello is unstructured)
-            2. Verify that the result has the State property set to "open" and the Text property set to "Hello"
-            """)]
+       
         public void Parse_WithStateOpenAndText_TextIsRemainderStateIsOpen()
         {
             string text = "state:open Hello";
@@ -109,19 +121,14 @@ namespace TestBucket.Domain.UnitTests.Issues
             Assert.Equal("open", request.State);
         }
 
+        /// <summary>
+        /// Verifies that a field query (e.g., "milestone:1.0") is parsed and added as a field filter.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            This test verifies that a query that defines a field is parsed correctly
-
-            # Steps
-            1. Define the query "milestone:1.0"
-            2. Verify that the result contains the value "1.0"
-            3. Verify that the result contains the field ID correpsonding to the field definition ID property
-            """)]
         public void Parse_WithField_AddedAsField()
         {
             string text = "milestone:1.0";
-            List<FieldDefinition> fieldDefinitions = [new FieldDefinition() { Name = "Milestone", Id = 123}];
+            List<FieldDefinition> fieldDefinitions = [new FieldDefinition() { Name = "Milestone", Id = 123 }];
 
             var request = SearchIssueRequestParser.Parse(1, text, fieldDefinitions);
             Assert.Single(request.Fields);

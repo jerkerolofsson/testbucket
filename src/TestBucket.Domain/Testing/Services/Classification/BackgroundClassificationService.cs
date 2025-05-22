@@ -10,7 +10,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using TestBucket.Contracts.Fields;
-using TestBucket.Domain.AI;
+using TestBucket.Domain.AI.Models;
+using TestBucket.Domain.AI.Services.Classifier;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Shared.Specifications;
@@ -19,6 +20,9 @@ using TestBucket.Domain.Testing.Specifications.TestCases;
 
 namespace TestBucket.Domain.Testing.Services.Classification
 {
+    /// <summary>
+    /// Classifies empty test case fields
+    /// </summary>
     public class BackgroundClassificationService : BackgroundService
     {
         private readonly ILogger<BackgroundClassificationService> _logger;
@@ -32,9 +36,20 @@ namespace TestBucket.Domain.Testing.Services.Classification
             _serviceProvider = serviceProvider;
         }
 
-        private ClaimsPrincipal Impersonate(TestCase testCase)
+        private ClaimsPrincipal Impersonate(TestCase testCase, string username)
         {
-            return Impersonation.Impersonate(testCase.TenantId);
+            return Impersonation.Impersonate(builder =>
+            {
+                builder.UserName = username;
+                builder.Email = username;
+                builder.TenantId = testCase.TenantId;
+                builder.Add(PermissionEntityType.Project, PermissionLevel.ReadWrite);
+                builder.Add(PermissionEntityType.Team, PermissionLevel.Read);
+                builder.Add(PermissionEntityType.TestCase, PermissionLevel.ReadWrite);
+                builder.Add(PermissionEntityType.Issue, PermissionLevel.ReadWrite);
+                builder.Add(PermissionEntityType.Requirement, PermissionLevel.ReadWrite);
+                builder.Add(PermissionEntityType.Architecture, PermissionLevel.Read);
+            });
         }
 
         private async Task AssignGeneratedFieldsAsync(IServiceScope scope, TestCase testCase)
@@ -43,8 +58,9 @@ namespace TestBucket.Domain.Testing.Services.Classification
             {
                 return;
             }
-            var principal = Impersonate(testCase);
             var classifier = scope.ServiceProvider.GetRequiredService<IClassifier>();
+            var username = await classifier.GetModelNameAsync(ModelType.Classification) ?? "ai-classifier";
+            var principal = Impersonate(testCase, username);
             var fieldDefinitionManager = scope.ServiceProvider.GetRequiredService<IFieldDefinitionManager>();
             var fieldManager = scope.ServiceProvider.GetRequiredService<IFieldManager>();
 
@@ -64,7 +80,6 @@ namespace TestBucket.Domain.Testing.Services.Classification
                     }
                     else if (options.Count >= 2)
                     {
-
                         var result = await classifier.ClassifyAsync(options.ToArray(), testCase.Description);
                         if (result.Length > 0)
                         {
@@ -93,27 +108,29 @@ namespace TestBucket.Domain.Testing.Services.Classification
 
             while(!stoppingToken.IsCancellationRequested)
             {
-                var result = await testRepo.SearchTestCasesAsync(0, 1, filters);
+                var result = await testRepo.SearchTestCasesAsync(0, 5, filters);
                 if(result.Items.Length > 0)
                 {
-                    var testCase = result.Items[0];
-                    try
+                    foreach (var testCase in result.Items)
                     {
-                        testCase.ClassificationRequired = false;
-                        await testRepo.UpdateTestCaseAsync(testCase);
+                        try
+                        {
+                            testCase.ClassificationRequired = false;
+                            await testRepo.UpdateTestCaseAsync(testCase);
 
-                        await AssignGeneratedFieldsAsync(scope, testCase);
-                    }
-                    catch(Exception ex) 
-                    {
-                        _logger.LogError(ex, "Failed to classify test: {test}", testCase.Name);
-                        await Task.Delay(60000, stoppingToken);
+                            await AssignGeneratedFieldsAsync(scope, testCase);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Failed to classify test: {test}", testCase.Name);
+                            await Task.Delay(60000, stoppingToken);
+                        }
                     }
                 }
 
                 if (result.TotalCount == 0)
                 {
-                    await Task.Delay(180000, stoppingToken);
+                    await Task.Delay(30000, stoppingToken);
                 }
                 else
                 {

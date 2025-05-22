@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Identity.Permissions;
+﻿using TestBucket.Domain.Identity.Permissions;
 
 namespace TestBucket.Domain.UnitTests.Identity
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="EntityPermissionBuilder"/> class, verifying correct merging and assignment of permissions.
+    /// </summary>
     [UnitTest]
     [EnrichedTest]
     public class EntityPermissionBuilderTests
     {
+        /// <summary>
+        /// Verifies that when merging permissions from two roles for the same entity, 
+        /// the resulting permissions contain permission levels from both roles.
+        /// </summary>
         [Fact]
-        [TestDescription("Verifies that when merging permissions from two roles, the result contains permission levels from both")]
         public void BuildUserPermission_WithSameEntity_ResultMergedCorrectly()
         {
             // Arrange
@@ -30,8 +31,11 @@ namespace TestBucket.Domain.UnitTests.Identity
             Assert.Equal(PermissionLevel.Write, (permission.Level & PermissionLevel.Write));
         }
 
+        /// <summary>
+        /// Verifies that when merging a permission from a role for a new entity, 
+        /// the permission is correctly set in the result.
+        /// </summary>
         [Fact]
-        [TestDescription("Verifies that when merging a permission from a role it is set in the result")]
         public void BuildUserPermission_WithNewEntity_ResultMergedCorrectly()
         {
             // Arrange

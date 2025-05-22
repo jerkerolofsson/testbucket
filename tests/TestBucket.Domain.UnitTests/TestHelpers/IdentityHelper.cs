@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace TestBucket.Domain.UnitTests.TestHelpers
 {
-    public class IdentityHelper
+    internal class IdentityHelper
     {
         public static ClaimsPrincipal ValidPrincipal => new ClaimsPrincipal([new ClaimsIdentity([new Claim("tenant", "tb")])]);
     }

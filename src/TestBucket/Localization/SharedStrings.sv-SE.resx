@@ -579,4 +579,10 @@
   <data name="title" xml:space="preserve">
     <value>Titel</value>
   </data>
+  <data name="logged-action-component" xml:space="preserve">
+    <value>{0} la till {1}</value>
+  </data>
+  <data name="logged-action-component-removed" xml:space="preserve">
+    <value>{0} tog bort komponenten</value>
+  </data>
 </root>

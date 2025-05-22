@@ -21,6 +21,16 @@ internal class ChatClientFactory : IChatClientFactory
         _logger = logger;
     }
 
+    public async Task<string?> GetModelNameAsync(ModelType modelType)
+    {
+        var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+        if (!string.IsNullOrEmpty(settings.AiProviderUrl))
+        {
+            return GetModelName(modelType, settings);
+
+        }
+        return null;
+    } 
     public async Task<IChatClient?> CreateChatClientAsync(ModelType modelType)
     {
         return await CreateOllamaClientAsync(modelType);
@@ -31,26 +41,12 @@ internal class ChatClientFactory : IChatClientFactory
         var settings = await _settingsProvider.LoadGlobalSettingsAsync();
         if (!string.IsNullOrEmpty(settings.AiProviderUrl))
         {
-            //string model = "deepseek-r1:7b";
             string model = GetModelName(modelType, settings);
             model = GetOllamaModelName(model);
 
-            // deepseek-r1:7b
-            //var ollama = new OllamaApiClient(ollamaBaseUrl, "deepseek-r1:7b");
             try
             {
-                var ollama = new OllamaChatClient(settings.AiProviderUrl, model)
-                    .AsBuilder()
-                    .UseFunctionInvocation()
-                    .Build();
-
-                //await foreach (var response in ollama.PullModelAsync(model))
-                //{
-                //    if (response is not null)
-                //    {
-                //        _logger.LogInformation($"{response.Status}: {response.Completed}/{response.Total} ({response.Percent})");
-                //    }
-                //}
+                var ollama = new OllamaSharp.OllamaApiClient(settings.AiProviderUrl, model);
 
                 return ollama;
             }
@@ -61,14 +57,15 @@ internal class ChatClientFactory : IChatClientFactory
 
     private static string GetOllamaModelName(string model)
     {
-        if (model == "DeepSeek-R1")
-        {
-            model = "deepseek-r1:7b";
-        }
-
-        return model;
+        return LlmModels.GetModelByName(model)?.OllamaName ?? model;
     }
 
+    /// <summary>
+    /// Returns a model from a use case name
+    /// </summary>
+    /// <param name="modelType"></param>
+    /// <param name="settings"></param>
+    /// <returns></returns>
     private static string GetModelName(ModelType modelType, GlobalSettings settings)
     {
         string model = settings.LlmModel ?? "deepseek-r1:30b";

@@ -1,19 +1,19 @@
 ﻿
-using OllamaSharp;
-
-using TestBucket.Domain.Progress;
+using Mediator;
+using TestBucket.Domain.AI.Models;
+using TestBucket.Domain.AI.Ollama;
 
 namespace TestBucket.Domain.AI.Settings
 {
     class AiLlmTestGenerationModelSetting : SettingAdapter
     {
         private readonly ISettingsProvider _settingsProvider;
-        private readonly IProgressManager _progressManager;
+        private readonly IMediator _mediator;
 
-        public AiLlmTestGenerationModelSetting(ISettingsProvider settingsProvider, IProgressManager progressManager)
+        public AiLlmTestGenerationModelSetting(ISettingsProvider settingsProvider, IMediator progressManager)
         {
             _settingsProvider = settingsProvider;
-            _progressManager = progressManager;
+            _mediator = progressManager;
 
             Metadata.Name = "Test Generator Model";
             Metadata.Description = "Model to use for test case generation. This model requires support for tools (DeepSeek-R1 is not supported). If empty the default model will be used.";
@@ -24,6 +24,7 @@ namespace TestBucket.Domain.AI.Settings
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;
             Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;
+            Metadata.Options = LlmModels.GetNames(ModelCapability.Tools);
         }
 
         public override async Task<FieldValue> ReadAsync(SettingContext context)
@@ -44,20 +45,10 @@ namespace TestBucket.Domain.AI.Settings
 
                 if (settings.AiProvider == "ollama" && settings.AiProviderUrl != null && settings.LlmTestGenerationModel is not null)
                 {
-                    // Report progress of downloading the model in background task
-                    var task = Task.Run(async () =>
+                    if (!string.IsNullOrEmpty(settings.LlmClassificationModel) && settings.AiProvider == "ollama" && !string.IsNullOrEmpty(settings.AiProviderUrl))
                     {
-                        await using var progress = _progressManager.CreateProgressTask("Downloading " + settings.LlmTestGenerationModel);
-
-                        var ollama = new OllamaApiClient(settings.AiProviderUrl, settings.LlmTestGenerationModel);
-                        await foreach (var response in ollama.PullModelAsync(settings.LlmTestGenerationModel))
-                        {
-                            if (response is not null)
-                            {
-                                await progress.ReportStatusAsync($"{response.Status}", response.Percent);
-                            }
-                        }
-                    });
+                        await _mediator.Send(new PullModelRequest(settings.LlmClassificationModel));
+                    }
                 }
             }
         }

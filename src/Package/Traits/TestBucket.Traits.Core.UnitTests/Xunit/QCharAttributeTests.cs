@@ -13,6 +13,8 @@ namespace TestBucket.Traits.Core.UnitTests.Xunit;
 /// </summary>
 [UnitTest]
 [EnrichedTest]
+[Component("Traits")]
+[Feature("Import Test Results")]
 public class QCharAttributeTests
 {
     /// <summary>

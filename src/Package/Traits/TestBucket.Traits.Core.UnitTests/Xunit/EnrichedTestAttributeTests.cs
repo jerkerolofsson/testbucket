@@ -7,6 +7,8 @@ namespace TestBucket.Traits.Core.UnitTests.Xunit;
 /// Unit tests for <see cref="EnrichedTestAttribute"/>, verifying that it attaches expected metadata and environment information to test results.
 /// </summary>
 [UnitTest]
+[Component("Traits")]
+[Feature("Import Test Results")]
 [EnrichedTest]
 public class EnrichedTestAttributeTests
 {

@@ -10,15 +10,18 @@ using TestBucket.Domain.Identity.Permissions;
 
 namespace TestBucket.Domain.UnitTests.Comments
 {
+    /// <summary>
+    /// Permission tests
+    /// </summary>
     [UnitTest]
     [SecurityTest]
     [EnrichedTest]
     public class CommentsSecurityTests
     {
+        /// <summary>
+        /// Verifies that an exception is not thrown if trying to add a comment without test-suite write permission
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that an exception is not thrown if trying to add a comment without test-suite write permission
-            """)]
         public void AddComment_WithTestRunWritePermission_Success()
         {
             // Arrange
@@ -33,10 +36,10 @@ namespace TestBucket.Domain.UnitTests.Comments
             CommentsManager.ThrowIfNoPermission(user, comment, PermissionLevel.Write);
         }
 
+        /// <summary>
+        /// Verifies that an exception is not thrown if trying to add a comment without test-run write permission
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that an exception is not thrown if trying to add a comment without test-run write permission
-            """)]
         public void AddComment_WithoutTestRunWritePermission_Success()
         {
             // Arrange
@@ -55,10 +58,10 @@ namespace TestBucket.Domain.UnitTests.Comments
         }
 
 
+        /// <summary>
+        /// Verifies that an exception is not thrown if trying to add a comment without test-suite write permission
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that an exception is not thrown if trying to add a comment without test-suite write permission
-            """)]
         public void AddComment_WithTestSuiteWritePermission_Success()
         {
             // Arrange
@@ -73,10 +76,10 @@ namespace TestBucket.Domain.UnitTests.Comments
             CommentsManager.ThrowIfNoPermission(user, comment, PermissionLevel.Write);
         }
 
+        /// <summary>
+        /// Verifies that an exception is not thrown if trying to add a comment without test-suite write permission
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that an exception is not thrown if trying to add a comment without test-suite write permission
-            """)]
         public void AddComment_WithoutTestSuiteWritePermission_Success()
         {
             // Arrange
@@ -94,10 +97,10 @@ namespace TestBucket.Domain.UnitTests.Comments
             });
         }
 
+        /// <summary>
+        /// Verifies that an exception is not thrown if trying to add a comment without test-case write permission
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that an exception is not thrown if trying to add a comment without test-case write permission
-            """)]
         public void AddComment_WithTestCaseWritePermission_Success()
         {
             // Arrange
@@ -112,10 +115,10 @@ namespace TestBucket.Domain.UnitTests.Comments
             CommentsManager.ThrowIfNoPermission(user, comment, PermissionLevel.Write);
         }
 
+        /// <summary>
+        /// Verifies that an exception is not thrown if trying to add a comment without test-case write permission
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that an exception is not thrown if trying to add a comment without test-case write permission
-            """)]
         public void AddComment_WithoutTestCaseWritePermission_Success()
         {
             // Arrange
@@ -133,10 +136,10 @@ namespace TestBucket.Domain.UnitTests.Comments
             });
         }
 
+        /// <summary>
+        /// Verifies that an exception is not thrown if trying to add a comment without requirement write permission
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that an exception is not thrown if trying to add a comment without requirement write permission
-            """)]
         public void AddComment_WithRequirementWritePermission_Success()
         {
             // Arrange
@@ -151,10 +154,10 @@ namespace TestBucket.Domain.UnitTests.Comments
             CommentsManager.ThrowIfNoPermission(user, comment, PermissionLevel.Write);
         }
 
+        /// <summary>
+        /// Verifies that an exception is not thrown if trying to delete a comment without requirement delete permission
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that an exception is not thrown if trying to delete a comment without requirement delete permission
-            """)]
         public void DeleteComment_WithRequirementDeletePermission_Success()
         {
             // Arrange
@@ -170,10 +173,10 @@ namespace TestBucket.Domain.UnitTests.Comments
             CommentsManager.ThrowIfNoPermission(user, comment, PermissionLevel.Delete);
         }
 
+        /// <summary>
+        /// Verifies that an exception is thrown if trying to add a comment without requirement write permission
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that an exception is thrown if trying to add a comment without requirement write permission
-            """)]
         public void AddComment_WithoutRequirementWritePermission_UnauthorizedAccessExceptionThrown()
         {
             // Arrange
@@ -190,10 +193,10 @@ namespace TestBucket.Domain.UnitTests.Comments
             });
         }
 
+        /// <summary>
+        /// Verifies that an exception is thrown if trying to add a comment without requirement delete permission
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that an exception is thrown if trying to add a comment without requirement delete permission
-            """)]
         public void DeleteComment_WithoutRequirementDeletePermission_UnauthorizedAccessExceptionThrown()
         {
             // Arrange

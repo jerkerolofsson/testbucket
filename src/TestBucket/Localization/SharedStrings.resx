@@ -581,4 +581,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="title" xml:space="preserve">
     <value>Title</value>
   </data>
+  <data name="logged-action-component" xml:space="preserve">
+    <value>{0} changed component to {1}</value>
+  </data>
+  <data name="logged-action-component-removed" xml:space="preserve">
+    <value>{0} removed the component</value>
+  </data>
 </root>

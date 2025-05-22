@@ -7,13 +7,18 @@ using TestBucket.Domain.Testing.Duplication;
 
 namespace TestBucket.Domain.UnitTests.Testing.Features.Duplication
 {
+    /// <summary>
+    /// Contains unit tests for <see cref="TestCaseDuplicationExtensions"/> to verify correct duplication of <see cref="TestCase"/> properties.
+    /// </summary>
     [UnitTest]
     [EnrichedTest]
     [Feature("Duplication 1.0")]
     public class TestCaseDuplicationExtensionsTests
     {
+        /// <summary>
+        /// Verifies that the <c>Name</c> property is copied and suffixed with " copy" when duplicating a test case.
+        /// </summary>
         [Fact]
-        [TestDescription("Verifies that the name is copied when duplicating a test")]
         public void DuplicateTest_CopiesName()
         {
             var test = new TestCase { Name = "name1", Description = "description1" };
@@ -23,8 +28,10 @@ namespace TestBucket.Domain.UnitTests.Testing.Features.Duplication
             Assert.Equal(test.Name + " copy", cloned.Name);
         }
 
+        /// <summary>
+        /// Verifies that the <c>Description</c> property is copied when duplicating a test case.
+        /// </summary>
         [Fact]
-        [TestDescription("Verifies that the description is copied when duplicating a test")]
         public void DuplicateTest_CopiesDescription()
         {
             var test = new TestCase { Name = "name1", Description = "description1" };
@@ -34,8 +41,10 @@ namespace TestBucket.Domain.UnitTests.Testing.Features.Duplication
             Assert.Equal(test.Description, cloned.Description);
         }
 
+        /// <summary>
+        /// Verifies that the <c>RunnerLanguage</c> property is copied when duplicating a test case.
+        /// </summary>
         [Fact]
-        [TestDescription("Verifies that the RunnerLanguage is copied when duplicating a test")]
         public void DuplicateTest_CopiesRunnerLanguage()
         {
             var test = new TestCase { Name = "name1", Description = "description1", RunnerLanguage = "javascript" };
@@ -44,8 +53,11 @@ namespace TestBucket.Domain.UnitTests.Testing.Features.Duplication
 
             Assert.Equal(test.RunnerLanguage, cloned.RunnerLanguage);
         }
+
+        /// <summary>
+        /// Verifies that the <c>ExecutionType</c> property is copied when duplicating a test case.
+        /// </summary>
         [Fact]
-        [TestDescription("Verifies that the ExecutionType is copied when duplicating a test")]
         public void DuplicateTest_CopiesExecutionType()
         {
             var test = new TestCase { Name = "name1", Description = "description1", ExecutionType = Contracts.Testing.Models.TestExecutionType.Hybrid };
@@ -54,6 +66,5 @@ namespace TestBucket.Domain.UnitTests.Testing.Features.Duplication
 
             Assert.Equal(test.ExecutionType, cloned.ExecutionType);
         }
-
     }
 }

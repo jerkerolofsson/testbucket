@@ -3,16 +3,19 @@ using TestBucket.Domain.Insights.Extensions;
 
 namespace TestBucket.Domain.UnitTests.Insights
 {
+    /// <summary>
+    /// Contains unit tests for verifying the sorting behavior of <see cref="InsightsData{TLabel, TValue}"/> and its series.
+    /// </summary>
     [Component("Insights")]
     [UnitTest]
     [EnrichedTest]
     [FunctionalTest]
     public class InsightsDataSortingTests
     {
+        /// <summary>
+        /// Verifies that the labels are returned in the correct order when sorting by label ascending.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that the labels are returned in the correct order when sorting by label ascending
-            """)]
         public void SortLabels_ByLabelAscending()
         {
             // Arrange
@@ -32,10 +35,10 @@ namespace TestBucket.Domain.UnitTests.Insights
             Assert.Equal(3, labels[2].Day);
         }
 
+        /// <summary>
+        /// Verifies that the labels are returned in the correct order when sorting by label descending.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that the labels are returned in the correct order when sorting by label descending
-            """)]
         public void SortLabels_ByLabelDescending()
         {
             // Arrange
@@ -55,10 +58,10 @@ namespace TestBucket.Domain.UnitTests.Insights
             Assert.Equal(3, labels[0].Day);
         }
 
+        /// <summary>
+        /// Verifies that the values are returned in the correct order when sorting by value descending.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that the labels are returned in the correct order when sorting by value descending
-            """)]
         public void SortLabels_ByValueDescending()
         {
             // Arrange
@@ -78,10 +81,10 @@ namespace TestBucket.Domain.UnitTests.Insights
             Assert.Equal(10, values[2]);
         }
 
+        /// <summary>
+        /// Verifies that the values are returned in the correct order when sorting by value ascending.
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that the labels are returned in the correct order when sorting by value ascending
-            """)]
         public void SortLabels_ByValueAscending()
         {
             // Arrange

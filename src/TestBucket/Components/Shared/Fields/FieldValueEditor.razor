@@ -25,15 +25,21 @@
     }
     else if (type == FieldType.String)
     {
-        @* <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable/> *@
-
-        <MudAutocomplete Clearable
-        T="string"
-        Value="@Field.StringValue"
-        ValueChanged="OnStringValueChanged"
-        SearchFunc="@Search"
-        Context="userName"
-        Variant="Variant.Outlined"/>
+        @if(AutoCompleteEnabled)
+        {
+            <MudAutocomplete Clearable
+                T="string"
+                Value="@Field.StringValue"
+                ValueChanged="OnStringValueChanged"
+                SearchFunc="@Search"
+                Context="userName"
+                Variant="Variant.Outlined"/>
+        }
+        else
+        {
+            <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable/>
+        }
+        
     }
     else if (type == FieldType.DateOnly || type == FieldType.DateTimeOffset)
     {
@@ -323,6 +329,25 @@
             return [];
         }
         return await fieldController.SearchOptionsAsync(Field.FieldDefinition, text??"", 10, token);
+    }
+
+    public bool AutoCompleteEnabled
+    {
+        get
+        {
+            if(Field?.FieldDefinition is not null)
+            {
+                if(Field.FieldDefinition.DataSourceType != Contracts.Fields.FieldDataSourceType.List)
+                {
+                    return true;
+                }
+                if(Field.FieldDefinition.Options is null || Field.FieldDefinition.Options.Count == 0)
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
     }
 
     private async Task OnImageUploaded(FileResource file)

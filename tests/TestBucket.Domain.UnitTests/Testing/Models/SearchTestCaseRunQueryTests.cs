@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Identity;
-using TestBucket.Domain.Testing.TestRuns.Search;
+﻿using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.UnitTests.Testing.Models
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="SearchTestCaseRunQuery"/> class, 
+    /// verifying correct query string conversion and parsing behavior.
+    /// </summary>
     [EnrichedTest]
     [UnitTest]
     public class SearchTestCaseRunQueryTests
     {
+        /// <summary>
+        /// Tests that <see cref="SearchTestCaseRunQuery.ToQueryString"/> and <see cref="SearchTestCaseRunQuery.FromUrl"/> 
+        /// correctly handle the <c>Unassigned</c> property set to <c>false</c>.
+        /// </summary>
         [Fact]
         public void ConvertQuery_WithUnassignedFalse()
         {
@@ -25,6 +26,11 @@ namespace TestBucket.Domain.UnitTests.Testing.Models
 
             Assert.Equal(query.Unassigned, query2.Unassigned);
         }
+
+        /// <summary>
+        /// Tests that <see cref="SearchTestCaseRunQuery.ToQueryString"/> and <see cref="SearchTestCaseRunQuery.FromUrl"/> 
+        /// correctly handle the <c>Unassigned</c> property set to <c>true</c>.
+        /// </summary>
         [Fact]
         public void ConvertQuery_WithUnassignedTrue()
         {
@@ -38,6 +44,10 @@ namespace TestBucket.Domain.UnitTests.Testing.Models
             Assert.Equal(query.Unassigned, query2.Unassigned);
         }
 
+        /// <summary>
+        /// Tests that <see cref="SearchTestCaseRunQuery.ToQueryString"/> and <see cref="SearchTestCaseRunQuery.FromUrl"/> 
+        /// correctly handle the <c>Result</c> and <c>State</c> properties.
+        /// </summary>
         [Fact]
         public void ConvertQuery_WithResultAndState()
         {
@@ -52,6 +62,10 @@ namespace TestBucket.Domain.UnitTests.Testing.Models
             Assert.Equal(query.State, query2.State);
         }
 
+        /// <summary>
+        /// Tests that <see cref="SearchTestCaseRunQuery.ToQueryString"/> and <see cref="SearchTestCaseRunQuery.FromUrl"/> 
+        /// correctly handle the <c>TeamId</c> property.
+        /// </summary>
         [Fact]
         public void ConvertQuery_WithTeamId()
         {
@@ -64,6 +78,11 @@ namespace TestBucket.Domain.UnitTests.Testing.Models
 
             Assert.Equal(query.TeamId, query2.TeamId);
         }
+
+        /// <summary>
+        /// Tests that <see cref="SearchTestCaseRunQuery.ToQueryString"/> and <see cref="SearchTestCaseRunQuery.FromUrl"/> 
+        /// correctly handle the <c>TestRunId</c> property.
+        /// </summary>
         [Fact]
         public void ConvertQuery_WithRunId()
         {
@@ -76,6 +95,11 @@ namespace TestBucket.Domain.UnitTests.Testing.Models
 
             Assert.Equal(query.TestRunId, query2.TestRunId);
         }
+
+        /// <summary>
+        /// Tests that <see cref="SearchTestCaseRunQuery.ToQueryString"/> and <see cref="SearchTestCaseRunQuery.FromUrl"/> 
+        /// correctly handle the <c>Result</c> property.
+        /// </summary>
         [Fact]
         public void ConvertQuery_WithResult()
         {

@@ -1,20 +1,21 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.TestResources.Allocation;
 using TestBucket.Domain.TestResources.Models;
 
 namespace TestBucket.Domain.UnitTests.TestResources
 {
+    /// <summary>
+    /// Contains unit tests for <see cref="TestResourceDependencyAllocator"/> allocation filters.
+    /// Tests ensure that only enabled, healthy, unlocked, and tenant-matching resources of the correct type are selected.
+    /// </summary>
     [EnrichedTest]
     [UnitTest]
     public class TestResourceDependencyAllocatorTests
     {
-        [Component("TestResources")]
+        /// <summary>
+        /// Verifies that disabled resources are excluded by the allocation filters and only enabled resources are matched.
+        /// </summary>
         [Fact]
         public void GetAllocationFilters_WithDisabledResources_ReturnsCorrectMatches()
         {
@@ -33,7 +34,9 @@ namespace TestBucket.Domain.UnitTests.TestResources
             Assert.Equal("c", match.Name);
         }
 
-        [Component("TestResources")]
+        /// <summary>
+        /// Verifies that unhealthy resources are excluded by the allocation filters and only healthy resources are matched.
+        /// </summary>
         [Fact]
         public void GetAllocationFilters_WithUnhealthyResources_ReturnsCorrectMatches()
         {
@@ -52,7 +55,9 @@ namespace TestBucket.Domain.UnitTests.TestResources
             Assert.Equal("c", match.Name);
         }
 
-        [Component("TestResources")]
+        /// <summary>
+        /// Verifies that locked resources are excluded by the allocation filters and only unlocked resources are matched.
+        /// </summary>
         [Fact]
         public void GetAllocationFilters_WithLockedResource_ReturnsCorrectMatches()
         {
@@ -71,8 +76,9 @@ namespace TestBucket.Domain.UnitTests.TestResources
             Assert.Equal("b", match.Name);
         }
 
-
-        [Component("TestResources")]
+        /// <summary>
+        /// Verifies that only resources with a matching type are selected by the allocation filters.
+        /// </summary>
         [Fact]
         public void GetAllocationFilters_WithMatchingResourceType_ReturnsCorrectMatches()
         {
@@ -91,7 +97,9 @@ namespace TestBucket.Domain.UnitTests.TestResources
             Assert.Equal("a", match.Name);
         }
 
-        [Component("TestResources")]
+        /// <summary>
+        /// Verifies that resources with a non-matching tenant are excluded by the allocation filters.
+        /// </summary>
         [Fact]
         public void GetAllocationFilters_WithoutMatchingTenant_ReturnsNoMatches()
         {
@@ -109,12 +117,18 @@ namespace TestBucket.Domain.UnitTests.TestResources
             Assert.Null(match);
         }
 
+        /// <summary>
+        /// Applies a sequence of <see cref="FilterSpecification{TestResource}"/> filters to a queryable collection and returns the first matching resource, or <c>null</c> if none match.
+        /// </summary>
+        /// <param name="data">The queryable collection of <see cref="TestResource"/> objects.</param>
+        /// <param name="filters">The allocation filters to apply.</param>
+        /// <returns>The first matching <see cref="TestResource"/>, or <c>null</c> if no match is found.</returns>
         internal TestResource? FirstOrDefault(IQueryable<TestResource> data, IEnumerable<FilterSpecification<TestResource>> filters)
         {
             foreach (var filter in filters)
             {
                 data = data.Where(filter.Expression);
-                if(data.Count() == 0)
+                if (data.Count() == 0)
                 {
 
                 }

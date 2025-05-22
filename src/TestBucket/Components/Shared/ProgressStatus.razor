@@ -6,8 +6,9 @@
 @if(IsVisible)
 {
     <div 
+        class="tb-progress-overlay"
         aria-role="status"
-        style="position: absolute; right: 50px; bottom: 50px; display: flex; flex-direction: column; gap: 8px; z-index: 100; width: 20vw">
+        style="">
         @foreach(var task in _tasks)
         {
             <MudStack Style="background: var(--mud-palette-surface); padding: 1rem; border-radius: 4px;">

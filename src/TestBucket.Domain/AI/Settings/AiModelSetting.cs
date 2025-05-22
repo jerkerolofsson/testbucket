@@ -1,6 +1,7 @@
 ﻿
-using OllamaSharp;
+using Mediator;
 
+using TestBucket.Domain.AI.Ollama;
 using TestBucket.Domain.Progress;
 
 namespace TestBucket.Domain.AI.Settings
@@ -9,8 +10,9 @@ namespace TestBucket.Domain.AI.Settings
     {
         private readonly ISettingsProvider _settingsProvider;
         private readonly IProgressManager _progressManager;
+        private readonly IMediator _mediator;
 
-        public AiModelSetting(ISettingsProvider settingsProvider, IProgressManager progressManager)
+        public AiModelSetting(ISettingsProvider settingsProvider, IProgressManager progressManager, IMediator mediator)
         {
             _settingsProvider = settingsProvider;
             _progressManager = progressManager;
@@ -27,6 +29,7 @@ namespace TestBucket.Domain.AI.Settings
 
             // Azure
             Metadata.Options = ["llama3.1"];
+            _mediator = mediator;
         }
 
         public override async Task<FieldValue> ReadAsync(SettingContext context)
@@ -45,25 +48,12 @@ namespace TestBucket.Domain.AI.Settings
                 settings.LlmModel = value.StringValue ?? "llama3.1";
                 await _settingsProvider.SaveGlobalSettingsAsync(settings);
 
-                if (settings.AiProvider == "ollama" && settings.AiProviderUrl != null)
+                if (settings.AiProvider == "ollama" && settings.AiProviderUrl != null && settings.LlmTestGenerationModel is not null)
                 {
-                    // Todo: IMediator notification when setting changed?
-
-                    // Report progress of downloading the model in background task
-                    var task = Task.Run(async () =>
+                    if (!string.IsNullOrEmpty(settings.LlmClassificationModel) && settings.AiProvider == "ollama" && !string.IsNullOrEmpty(settings.AiProviderUrl))
                     {
-                        await using var progress = _progressManager.CreateProgressTask("Downloading " + settings.LlmModel);
-
-                        var ollama = new OllamaApiClient(settings.AiProviderUrl, settings.LlmModel);
-                        await progress.ReportStatusAsync($"Downloading {settings.LlmModel}", 0);
-                        await foreach (var response in ollama.PullModelAsync(settings.LlmModel))
-                        {
-                            if (response is not null)
-                            {
-                                await progress.ReportStatusAsync($"{response.Status}", response.Percent);
-                            }
-                        }
-                    });
+                        await _mediator.Send(new PullModelRequest(settings.LlmClassificationModel));
+                    }
                 }
             }
         }

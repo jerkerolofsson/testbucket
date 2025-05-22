@@ -12,4 +12,5 @@ namespace TestBucket.Domain.AI;
 public interface IChatClientFactory
 {
     Task<IChatClient?> CreateChatClientAsync(ModelType modelType);
+    Task<string?> GetModelNameAsync(ModelType modelType);
 }

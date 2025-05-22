@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Traits.Xunit;
+﻿using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Traits.Core.UnitTests.Xunit;
 
-[UnitTest]
+/// <summary>
+/// Unit tests for test trait attributes, verifying correct key and value assignment for various test category attributes.
+/// </summary>
+[Feature("Import Test Results")]
+[Component("Traits")]
+[EnrichedTest]
 public class TestTraitAttributeTests
 {
+    /// <summary>
+    /// Verifies that <see cref="TestCategoryAttribute"/> assigns the correct key and value for a custom category.
+    /// </summary>
     [Fact]
     public void CustomCategoryTest()
     {
@@ -19,6 +21,9 @@ public class TestTraitAttributeTests
         Assert.Equal("CustomCategory", attribute.Value);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="ApiTestAttribute"/> assigns the correct key and value for API tests.
+    /// </summary>
     [Fact]
     public void ApiTest()
     {
@@ -26,6 +31,10 @@ public class TestTraitAttributeTests
         Assert.Equal(TestTraitNames.TestCategory, attribute.Key);
         Assert.Equal("API", attribute.Value);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="UnitTestAttribute"/> assigns the correct key and value for unit tests.
+    /// </summary>
     [Fact]
     public void UnitTest()
     {
@@ -33,6 +42,10 @@ public class TestTraitAttributeTests
         Assert.Equal(TestTraitNames.TestCategory, attribute.Key);
         Assert.Equal("Unit", attribute.Value);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="IntegrationTestAttribute"/> assigns the correct key and value for integration tests.
+    /// </summary>
     [Fact]
     public void IntegrationTest()
     {
@@ -41,6 +54,9 @@ public class TestTraitAttributeTests
         Assert.Equal("Integration", attribute.Value);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="EndToEndTestAttribute"/> assigns the correct key and value for end-to-end tests.
+    /// </summary>
     [Fact]
     public void End2EndTest()
     {

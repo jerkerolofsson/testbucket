@@ -6,6 +6,9 @@ namespace TestBucket.Traits.Core.UnitTests.Xunit;
 /// Unit tests for custom trait attributes, verifying correct trait key/value handling and integration with test trait names.
 /// </summary>
 [UnitTest]
+[Component("Traits")]
+[Feature("Import Test Results")]
+[EnrichedTest]
 public class CustomTraitAttributeTests
 {
     /// <summary>

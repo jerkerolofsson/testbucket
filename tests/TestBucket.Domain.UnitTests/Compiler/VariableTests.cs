@@ -3,10 +3,16 @@ using TestBucket.Domain.Testing.Compiler;
 
 namespace TestBucket.Domain.UnitTests.Compiler
 {
+    /// <summary>
+    /// Contains unit tests for variable detection and replacement in <see cref="TestCompiler"/>.
+    /// </summary>
     [UnitTest]
     [EnrichedTest]
     public class VariableTests
     {
+        /// <summary>
+        /// Verifies that <see cref="TestCompiler.FindVariables(string)"/> returns an empty list when the input string is empty.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public void FindVariables_WithEmptyString_EmptyListReturned()
@@ -16,6 +22,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Empty(result);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="TestCompiler.FindVariables(string)"/> returns an empty list when there are no variables in the input.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public void FindVariables_WithNoVariables_EmptyListReturned()
@@ -25,6 +34,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Empty(result);
         }
 
+        /// <summary>
+        /// Verifies that a single variable on the first line is detected by <see cref="TestCompiler.FindVariables(string)"/>.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public void FindVariables_WithVariableOneFirstLine_SingleVariableReturned()
@@ -35,6 +47,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Equal("world", result.First());
         }
 
+        /// <summary>
+        /// Verifies that multiple occurrences of the same variable are only returned once by <see cref="TestCompiler.FindVariables(string)"/>.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public void FindVariables_WithTheSameVariableMultipleTimes_SingleVariableReturned()
@@ -44,6 +59,10 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Single(result);
             Assert.Equal("world", result.First());
         }
+
+        /// <summary>
+        /// Verifies that the same variable on different lines is only returned once by <see cref="TestCompiler.FindVariables(string)"/>.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public void FindVariables_WithTheSameVariableMultipleTimesOnDifferentLines_SingleVariableReturned()
@@ -54,6 +73,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Equal("world", result.First());
         }
 
+        /// <summary>
+        /// Verifies that two different variables are both detected by <see cref="TestCompiler.FindVariables(string)"/>.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public void FindVariables_WithTwoVariables_TwoVariableReturned()
@@ -65,6 +87,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Equal("world2", result.Last());
         }
 
+        /// <summary>
+        /// Verifies that <see cref="TestCompiler.ReplaceVariables"/> replaces a single variable in the template with its value.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public void ReplaceVariables_WithSingleVariableInTemplate()
@@ -80,6 +105,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Equal("value1", result);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="TestCompiler.ReplaceVariables"/> replaces two variables in the template with their values.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public void ReplaceVariables_TwoVariablesInTemplate_PlaceholdersReplacedWithValues()
@@ -96,6 +124,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Equal("value1 value2", result);
         }
 
+        /// <summary>
+        /// Verifies that leading spaces are preserved when replacing variables in the template.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public void ReplaceVariables_WithLeadingSpace_SpacesPreserved()
@@ -111,6 +142,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Equal(" value1 value2", result);
         }
 
+        /// <summary>
+        /// Verifies that trailing spaces are preserved when replacing variables in the template.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public void ReplaceVariables_WithTrailingSpace_SpacesPreserved()
@@ -126,6 +160,9 @@ namespace TestBucket.Domain.UnitTests.Compiler
             Assert.Equal("value1 value2 ", result);
         }
 
+        /// <summary>
+        /// Verifies that when an unknown variable is encountered, it is left as a placeholder and an error is added to the context.
+        /// </summary>
         [Component("Compiler")]
         [Fact]
         public void ReplaceVariables_WithUnknownVariable_ErrorCreated()

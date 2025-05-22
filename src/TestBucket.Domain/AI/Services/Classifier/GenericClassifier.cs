@@ -10,7 +10,7 @@ using TestBucket.Domain.Progress;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Models;
 
-namespace TestBucket.Domain.AI;
+namespace TestBucket.Domain.AI.Services.Classifier;
 
 /// <summary>
 /// Classifies entities (tests, requirements, commits..) from a textual description to a predefined list of categories
@@ -30,6 +30,10 @@ internal class GenericClassifier : IClassifier
     {
         public string? Category { get; set; }
     }
+    public Task<string?> GetModelNameAsync(ModelType modelType)
+    {
+        return _chatClientFactory.GetModelNameAsync(modelType);
+    }
 
     public async Task<string[]> ClassifyAsync(string[] categories, string userPrompt)
     {
@@ -44,12 +48,12 @@ internal class GenericClassifier : IClassifier
 
         var systemPromptBuilder = new StringBuilder();
         //systemPromptBuilder.AppendLine(string.Join(", ", categories));
-        systemPromptBuilder.AppendLine("Classify the input into exactly one of labels:");
+        systemPromptBuilder.AppendLine("Classify the input into exactly one of these labels:");
         foreach (var category in categories)
         {
             systemPromptBuilder.AppendLine("- " + category);
         }
-        systemPromptBuilder.AppendLine("Reply only the corresponding label.");
+        systemPromptBuilder.AppendLine("Reply with only the corresponding label.");
 
         var userPromptBuilder = new StringBuilder();
         userPromptBuilder.AppendLine("input:");

@@ -7,6 +7,7 @@ using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
+using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Shared.Specifications;
@@ -38,6 +39,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
     private readonly IProjectManager _projectManager;
     private readonly ITeamManager _teamManager;
     private readonly IRequirementManager _requirementManager;
+    private readonly IProgressManager _progressManager;
 
     public ImportRunHandler(
         IStateService stateService,
@@ -50,7 +52,8 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         IFieldManager fieldManager,
         IProjectManager projectManager,
         ITeamManager teamManager,
-        IRequirementManager requirementManager)
+        IRequirementManager requirementManager,
+        IProgressManager progressManager)
     {
         _stateService = stateService;
         _testCaseRepository = testCaseRepository;
@@ -63,6 +66,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         _projectManager = projectManager;
         _teamManager = teamManager;
         _requirementManager = requirementManager;
+        _progressManager = progressManager;
     }
     public async ValueTask<TestRun> Handle(ImportRunRequest request, CancellationToken cancellationToken)
     {
@@ -89,12 +93,16 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
 
     public async Task<TestRun> ImportRunAsync(ClaimsPrincipal principal, long teamId, long projectId, TestRunDto run, ImportHandlingOptions options)
     {
+        await using var progress = _progressManager.CreateProgressTask("Import Test Results");
+
+        await progress.ReportStatusAsync("Loading field definitions", 0);
         var tenantId = principal.GetTenantIdOrThrow();
         var testRunFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.TestRun);
         var testCaseFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.TestCase);
         var testCaseRunFieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.TestCaseRun);
 
         // Add test suite run
+        await progress.ReportStatusAsync("Creating run", 0);
         TestRun testRun = await ResolveTestRunAsync(principal, teamId, projectId, run, options, testRunFieldDefinitions);
 
         if (run.Suites is not null)
@@ -130,11 +138,15 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                 }
                 if (suite is null)
                 {
+                    await progress.ReportStatusAsync("Creating test suite", 0);
                     suite = await ResolveTestSuiteAsync(principal, teamId, projectId, options, suiteName);
                 }
 
-                foreach (var test in runSuite.Tests)
+                foreach (var testIndex in runSuite.Tests.Index())
                 {
+                    var test = testIndex.Item;
+                    await progress.ReportStatusAsync($"Importing {test.Name}", (testIndex.Index*100.0/(double)runSuite.Tests.Count));
+
                     // Get the existing case or create a new one
                     if (test.ExternalId is null)
                     {

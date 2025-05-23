@@ -63,7 +63,6 @@
 
     private TestSuite? _testSuite = null;
     private SearchTestQuery _query = new();
-    private SearchTestQuery _querySuite = new();
     private IReadOnlyList<FieldDefinition> _testCaseFields = [];
     private FieldDefinition? _fieldCategory;
     private FieldDefinition? _fieldFeature;
@@ -110,16 +109,9 @@
         else
         {
             _query = query;
+            _query.CompareFolder = true;
+            _query.TestSuiteId = _testSuite?.Id;
         }
-
-        _querySuite = new()
-        {
-            CreatedFrom = _query.CreatedFrom,
-            CreatedUntil = _query.CreatedUntil,
-            CompareFolder = false,
-            TestSuiteId = _testSuite?.Id,
-            Fields = _query.Fields.ToList()
-        };
     }
 
     private async Task OnDescriptionChanged(string description)

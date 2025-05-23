@@ -8,15 +8,20 @@ using TestBucket.Domain.Milestones;
 
 namespace TestBucket.Domain.IntegrationTests.Milestones
 {
+    /// <summary>
+    /// Tests related to the user's permission when adding, deleting or modifying milestones
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [SecurityTest]
     [Feature("Milestones")]
     public class MilestonePermissionTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that a milestone cannot be deleted unless the user has delete permission
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that a milestone cannot be deleted unless the user has delete permission
-            """)]
         public async Task DeleteMilestone_WithoutPermission_UnauthorizedAccessExceptionThrown()
         {
             using var scope = Fixture.Services.CreateScope();
@@ -39,10 +44,11 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
             });
         }
 
+        /// <summary>
+        /// Verifies that a milestone cannot be created unless the user has delete permission
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that a milestone cannot be created unless the user has delete permission
-            """)]
         public async Task AddMilestone_WithoutPermission_UnauthorizedAccessExceptionThrown()
         {
             using var scope = Fixture.Services.CreateScope();
@@ -64,11 +70,12 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
         }
 
 
+        /// <summary>
+        /// Verifies that a milestone cannot be updated by a user with correct permissions if the user
+        /// belongs to another tenant
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that a milestone cannot be updated by a user with correct permissions if the user
-            belongs to another tenant
-            """)]
         public async Task UpdateMilestone_WithWrongTenawnt_UnauthorizedAccessExceptionThrown()
         {
             using var scope = Fixture.Services.CreateScope();

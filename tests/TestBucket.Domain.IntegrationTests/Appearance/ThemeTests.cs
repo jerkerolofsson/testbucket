@@ -9,11 +9,20 @@ using TestBucket.Domain.Appearance.Themes;
 
 namespace TestBucket.Domain.IntegrationTests.Appearance
 {
+    /// <summary>
+    /// Verifies the appearance of themes by inspecting the CSS style sheets that are generated when different themes
+    /// and settings are used. 
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [FunctionalTest]
     [EnrichedTest]
     public class ThemeTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that the default theme colors are included in the CSS stylesheet for a user when no theme is set.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task GetThemeStylesheet_WithNoThemeSet()
         {
@@ -36,6 +45,10 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
             Assert.Contains("--mud-palette-primary", stylesheet);
         }
 
+        /// <summary>
+        /// Verifies that the CSS stylesheet returned for a user contains the correct colors when an unknown theme is set in the user preferences
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task GetThemeStylesheet_WithUnknownThemeInDarkMode_StylesheetIsThemedAsDefault()
         {
@@ -64,6 +77,11 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
             Assert.Contains(expectedColor, stylesheet);
         }
 
+        /// <summary>
+        /// Verifies the colors when light mode is used and a theme is set by the user.
+        /// </summary>
+        /// <param name="themeName"></param>
+        /// <returns></returns>
         [Theory]
         [InlineData("Blue Steel")]
         [InlineData("Default")]

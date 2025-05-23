@@ -32,6 +32,14 @@ namespace TestBucket.Domain.Testing.TestCases.Search
             {
                 items.Add($"testsuite-id:{query.TestSuiteId}");
             }
+            if (query.FolderId is not null)
+            {
+                items.Add($"folder-id:{query.FolderId}");
+            }
+            if (query.CompareFolder is not null)
+            {
+                items.Add($"compare-folder:yes");
+            }
 
             foreach (var field in query.Fields)
             {

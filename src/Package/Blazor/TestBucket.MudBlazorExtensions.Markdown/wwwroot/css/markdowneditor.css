@@ -641,6 +641,7 @@ h6 {
 .mud-markdown-toolbar.mud-surface-markdown-toolbar {
     background: var(--mud-palette-surface);
     color: var(--mud-palette-text-primary);
+    padding-right: 8px;
 }
 
 .mud-markdown-toolbar.mud-toolbar .mud-icon-button {

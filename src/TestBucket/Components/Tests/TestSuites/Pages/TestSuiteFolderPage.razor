@@ -50,21 +50,32 @@
     /// <returns></returns>
     protected override async Task OnParametersSetAsync()
     {
+        bool changed = false;
         if (_testSuiteFolder is null || _testSuiteFolder.Id != FolderId)
         {
             _testSuiteFolder = await testBrowser.GetTestSuiteFolderByIdAsync(FolderId);
             appNavigationManager.State.SelectedTestSuiteFolder = _testSuiteFolder;
-            OnQueryChanged(null);
+            changed = true;
 
         }
         if (_testSuiteFolder is not null)
         {
-            if (_testSuite is null || _testSuite.Id != _testSuiteFolder.Id)
+            if (_testSuite is null || _testSuite.Id != _testSuiteFolder.TestSuiteId)
             {
                 _testSuite = await testBrowser.GetTestSuiteByIdAsync(_testSuiteFolder.TestSuiteId);
                 appNavigationManager.State.SelectedTestSuite = _testSuite;
-                OnQueryChanged(null);
+                changed = true;
             }
+        }
+
+        // if (_query is null || (Query is not null && _query.ToSearchText() != Query.ToSearchText()))
+        // {
+        //     changed = true;
+        // }
+
+        if(changed)
+        {
+            OnQueryChanged(null);
         }
     }
 
@@ -81,6 +92,9 @@
         else
         {
             _query = query;
+            _query.CompareFolder = true;
+            _query.TestSuiteId = _testSuite?.Id;
+            _query.FolderId = _testSuiteFolder?.Id;
         }
     }
 

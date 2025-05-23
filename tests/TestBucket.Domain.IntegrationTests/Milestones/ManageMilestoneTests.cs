@@ -16,14 +16,11 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
     [Feature("Milestones")]
     public class ManageMilestoneTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that field options when the field trait is Milestone contains milestones added by a user
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that field options when the field trait is Milestone contains milestones added by a user
-
-            # Steps
-            1. Add a milestone
-            2. List field options for the milestone field
-            """)]
         public async Task GetFieldOptions_ContainsMilestone()
         {
             using var scope = Fixture.Services.CreateScope();
@@ -47,10 +44,11 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
             Assert.Equal(milestones[0].Title, options[0]);
         }
 
+        /// <summary>
+        /// Verifies that a milestone's description can be updated
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that a milestone's description can be updated
-            """)]
         public async Task UpdateMilestoneDescription_Success()
         {
             using var scope = Fixture.Services.CreateScope();
@@ -71,10 +69,11 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
             Assert.Equal(ms.Description, milestones[0].Description);
         }
 
+        /// <summary>
+        /// Verifies that a milestone can be created and deleted
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that a milestone can be created and deleted
-            """)]
         public async Task CreateDeleteMilestone_Success()
         {
             using var scope = Fixture.Services.CreateScope();
@@ -108,10 +107,11 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
             }
         }
 
+        /// <summary>
+        /// Verifies that a multiple milestones can be added
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that a multiple milestones can be added
-            """)]
         public async Task CreateMultipleMilestones_Success()
         {
             using var scope = Fixture.Services.CreateScope();

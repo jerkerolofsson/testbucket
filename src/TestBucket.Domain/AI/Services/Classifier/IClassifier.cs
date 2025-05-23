@@ -1,4 +1,5 @@
 ﻿using TestBucket.Domain.AI.Models;
+using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.AI.Services.Classifier;
 
@@ -10,10 +11,11 @@ public interface IClassifier
     Task<string?> GetModelNameAsync(ModelType modelType);
 
     /// <summary>
-    /// Identifies a category from a user prompt
+    /// Identifies a category from a test case
     /// </summary>
+    /// <param name="principal"></param>
     /// <param name="categories"></param>
-    /// <param name="userPrompt"></param>
+    /// <param name="testCase"></param>
     /// <returns></returns>
-    Task<string[]> ClassifyAsync(string[] categories, string userPrompt);
+    Task<string[]> ClassifyAsync(ClaimsPrincipal principal, string fieldName, string[] categories, TestCase testCase);
 }

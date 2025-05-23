@@ -80,7 +80,7 @@ namespace TestBucket.Domain.Testing.Services.Classification
                     }
                     else if (options.Count >= 2)
                     {
-                        var result = await classifier.ClassifyAsync(options.ToArray(), testCase.Description);
+                        var result = await classifier.ClassifyAsync(principal, field.FieldDefinition.Name, options.ToArray(), testCase);
                         if (result.Length > 0)
                         {
                             _logger.LogInformation("Classified {test} with {category}", testCase.Name, result[0]);

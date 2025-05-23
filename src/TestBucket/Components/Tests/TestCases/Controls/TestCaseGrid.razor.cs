@@ -3,6 +3,8 @@ using TestBucket.Components.Tests.Models;
 using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Domain.Testing.TestCases.Search;
 
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
 namespace TestBucket.Components.Tests.TestCases.Controls;
 
 public partial class TestCaseGrid
@@ -26,7 +28,6 @@ public partial class TestCaseGrid
 
     private MudDataGrid<TestSuiteItem?> _dataGrid = default!;
 
-    private long? _projectId;
 
     private bool _hasQueryChanged = false;
 
@@ -48,7 +49,9 @@ public partial class TestCaseGrid
 
     #region Lifecycle
 
+    private bool _compareFolder = false;
     private long? _folderId = null;
+    private long? _projectId = null;
     private bool _hasCustomFilter = false;
     private IReadOnlyList<FieldDefinition> _fields = [];
 
@@ -58,12 +61,8 @@ public partial class TestCaseGrid
         {
             return;
         }
-        _hasQueryChanged = !_query.Equals(Query);
-        if (_hasQueryChanged)
-        {
-            _query = Query;
-            _searchPhrase = _query.ToSearchText();
-        }
+       
+        _compareFolder = Query.CompareFolder ?? false;
 
         if (_folderId != FolderId)
         {
@@ -82,14 +81,22 @@ public partial class TestCaseGrid
             }
         }
 
-        if(Project is not null && _projectId != Project.Id)
+        if (Project is not null && _projectId != Project.Id)
         {
             _projectId = Project.Id;
             _fields = await fieldController.GetDefinitionsAsync(_projectId.Value, Contracts.Fields.FieldTarget.TestCase);
         }
 
+        Query.ProjectId = _projectId;
+        Query.FolderId = _folderId;
+        Query.TestSuiteId = TestSuiteId;
+        Query.CompareFolder = _compareFolder;
+
+        _hasQueryChanged = !_query.Equals(Query);
         if (_hasQueryChanged)
         {
+            _query = Query;
+            SetSearchPhraseFromQuery();
             _dataGrid?.ReloadServerData();
         }
     }
@@ -177,9 +184,8 @@ public partial class TestCaseGrid
     private async Task OnSearch(string text)
     {
         _query = SearchTestCaseQueryParser.Parse(text, _fields);
-        _searchPhrase = _query.ToSearchText();
-        _query.FolderId = Query?.FolderId;
-        _query.CompareFolder = Query?.CompareFolder;
+
+        SetSearchPhraseFromQuery();
 
         if (string.IsNullOrEmpty(text))
         {
@@ -192,6 +198,19 @@ public partial class TestCaseGrid
         }
         await QueryChanged.InvokeAsync(_query);
         _dataGrid?.ReloadServerData();
+    }
+
+    private void SetSearchPhraseFromQuery()
+    {
+        _query.TestSuiteId = null;
+        _query.FolderId = null;
+        _query.ProjectId = null;
+        _query.CompareFolder = null;
+        _searchPhrase = _query.ToSearchText();
+        _query.TestSuiteId = TestSuiteId;
+        _query.ProjectId = Project?.Id;
+        _query.FolderId = _folderId;
+        _query.CompareFolder = _compareFolder;
     }
 
     private async Task<GridData<TestSuiteItem>> LoadGridData(GridState<TestSuiteItem> state)

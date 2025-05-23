@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Contracts.Issues.States;
-using TestBucket.Domain.Fields;
-using TestBucket.Domain.Issues.Models;
-using TestBucket.Domain.Milestones;
-using TestBucket.Traits.Core;
+﻿using TestBucket.Contracts.Issues.States;
 
 namespace TestBucket.Domain.IntegrationTests.Issues
 {
@@ -18,14 +8,11 @@ namespace TestBucket.Domain.IntegrationTests.Issues
     [Component("Issues")]
     public class IssueManagerTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that when adding a new issue the default state is Open
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when adding a new issue the default state is Open
-
-            # Steps
-            1. Add an issue
-            2. State is "Open"
-            """)]
         public async Task AddIssue_InitialStateIsOpen()
         {
             var issue = await Fixture.Issues.AddIssueAsync();
@@ -36,16 +23,11 @@ namespace TestBucket.Domain.IntegrationTests.Issues
             Assert.Equal(MappedIssueState.Open, createdIssue.MappedState);
         }
 
-
+        /// <summary>
+        /// Verifies that when adding a new issue the created and modified timestamp is set
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when adding a new issue the created and modified timestamp is set
-
-            # Steps
-            1. Add an issue
-            2. Created timestamp set
-            3. Modified timestamp set
-            """)]
         public async Task AddIssue_ModifiedSet()
         {
             var issue = await Fixture.Issues.AddIssueAsync();
@@ -56,14 +38,11 @@ namespace TestBucket.Domain.IntegrationTests.Issues
             Assert.NotEqual(DateTimeOffset.MinValue, createdIssue.Modified);
         }
 
+        /// <summary>
+        /// Verifies when adding a new **issue** the Closed timestamp is null.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when adding a new issue the closed timestamp is not set
-
-            # Steps
-            1. Add an issue
-            2. Closed timestamp is null
-            """)]
         public async Task AddIssue_ClosedTimestampIsNull()
         {
             var issue = await Fixture.Issues.AddIssueAsync();
@@ -73,15 +52,11 @@ namespace TestBucket.Domain.IntegrationTests.Issues
             Assert.Null(createdIssue.Closed);
         }
 
+        /// <summary>
+        /// Verifies that seaching for an issue with "text based" search, we can filter by state
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that seaching for an issue with "text based" search, we can filter by state
-
-            # Steps
-            1. Add an issue with state Open
-            2. Add another issue with state Accepted
-            3. Search for issues in state Accepted: One issue is returned.
-            """)]
         public async Task SearchForIssues()
         {
             var issue1 = await Fixture.Issues.AddIssueAsync();

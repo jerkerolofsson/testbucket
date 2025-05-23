@@ -30,6 +30,9 @@ public class SearchTestCaseQueryParser
         {
             switch (pair.Key)
             {
+                case "compare-folder":
+                    request.CompareFolder = pair.Value == "yes";
+                    break;
                 case "testsuite-id":
                     if (long.TryParse(pair.Value, out var testSuiteId))
                     {

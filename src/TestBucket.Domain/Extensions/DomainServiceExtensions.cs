@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using FluentValidation;
+
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.AI;
@@ -163,6 +166,9 @@ public static class DomainServiceExtensions
 
         // automation
         services.AddScoped<IMarkdownAutomationRunner, MarkdownAutomationRunner>();
+
+        // validation
+        services.AddValidatorsFromAssemblyContaining<RequirementSpecificationFolderValidator>();
 
         // AI
         services.AddScoped<IChatClientFactory, ChatClientFactory>();

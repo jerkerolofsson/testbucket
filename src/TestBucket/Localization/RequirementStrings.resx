@@ -216,4 +216,16 @@
   <data name="type-standard" xml:space="preserve">
     <value>Standard</value>
   </data>
+  <data name="create-collection" xml:space="preserve">
+    <value>New collection</value>
+  </data>
+  <data name="validation-folder-cannot-contain-slash" xml:space="preserve">
+    <value>Folder names cannot contain slash (/)</value>
+  </data>
+  <data name="validation-folder-empty" xml:space="preserve">
+    <value>Folder names cannot be empty</value>
+  </data>
+  <data name="collection-type" xml:space="preserve">
+    <value>Collection type</value>
+  </data>
 </root>

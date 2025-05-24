@@ -1,0 +1,96 @@
+﻿@using FluentValidation
+@using TestBucket.Components.Tests.Services
+@inject RequirementEditorController controller
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<RequirementStrings> reqLoc
+@inject IValidator<RequirementSpecification> validator
+
+<EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+
+        <TitleContent>@reqLoc["create-collection"]</TitleContent>
+
+        <DialogContent>
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.caption">@loc["name"]</MudText>
+                <MudTextField 
+                    AutoFocus="true"
+                    Variant="Variant.Outlined"
+                    T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+
+                <MudText Typo="Typo.caption" Class="mt-2">@reqLoc["collection-type"]</MudText>
+                <MudStack Row Wrap="Wrap.Wrap">
+                    <MudRadioGroup Value="_type" ValueChanged="OnTypeChanged" T="string">
+                        <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("Product Requirements Specification (PRS)")">Product Requirements Specification (PRS)</MudRadio>
+                        <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("Software Requirements Specification (SRS)")">Software Requirements Specification (PRS)</MudRadio>
+                        <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("Functional Requirements Specification (FRS)")">Functional Requirements Specification (PRS)</MudRadio>
+                        <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("Business Requirements Specification (BRS)")">Business Requirements Specification (PRS)</MudRadio>
+                        <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("Other")">Other</MudRadio>
+                    </MudRadioGroup>
+                </MudStack>
+                @if (_validationResult is not null)
+                {
+                    <FluentValidationResultSummary Result="@_validationResult" StringLocalizer="@reqLoc"/>
+                }
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    private string _name = "";
+    private string _type = "Product Requirements Specification (PRS)";
+
+    private FluentValidation.Results.ValidationResult? _validationResult;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public long ProjectId { get; set; }
+    
+    private void OnTypeChanged(string type)
+    {
+        _type = type;
+        Validate();
+    }
+    private void OnValueChanged(string name)
+    {
+        _name = name;
+        Validate();
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private RequirementSpecification? Validate()
+    {
+        var specification = new RequirementSpecification() { Name = _name, TestProjectId = ProjectId, SpecificationType = _type };
+        _validationResult = validator.Validate(specification);
+
+        if(_validationResult.IsValid)
+        {
+            return specification;
+        }
+        return null;
+    }
+
+    private async Task OnValidSubmitAsync()
+    {
+        var specification = Validate();
+        if(specification is null)
+        {
+            return;
+        }
+
+        await controller.AddRequirementSpecificationAsync(specification);
+        MudDialog.Close(specification);
+    }
+}

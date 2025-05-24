@@ -206,7 +206,37 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         var dialog = await _dialogService.ShowAsync<CreateAITestsDialog>("Generate test cases", parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
     }
+    public async ValueTask<TestCase?> CreateNewTemplateAsync(TestProject project, TestSuiteFolder? folder, long? testSuiteId, string name = "")
+    {
+        var parameters = new DialogParameters<AddTestCaseDialog>
+        {
+            { x => x.Name, name },
+            { x => x.IsTemplate, true },
+            { x => x.Project, project },
+            { x => x.Folder, folder },
+            { x => x.TestSuiteId, testSuiteId ?? folder?.TestSuiteId }
+        };
+        var dialog = await _dialogService.ShowAsync<AddTestCaseDialog>(_loc["new-test-template"], parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is TestCase testCase)
+        {
+            testCase.Description = """
 
+                A test case using this template will contain all the text from the template, and replace the Body below 
+                with it's own text
+
+                @Body
+
+                Text in the template can also be below the body.
+
+                > A test case using this template need to define a template directive in it's own description body.
+
+                """;
+
+            return testCase;
+        }
+        return null;
+    }
     public async ValueTask<TestCase?> CreateNewSharedStepsAsync(TestProject project, TestSuiteFolder? folder, long? testSuiteId, string name = "")
     {
         var parameters = new DialogParameters<AddTestCaseDialog>

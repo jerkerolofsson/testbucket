@@ -18,15 +18,15 @@ internal class CreateSpecificationCommand : ICommand
 {
     public string Id => "create-requirement-specification";
 
-    public string Name => _reqLoc["create-requirement-specification"];
+    public string Name => _reqLoc["create-collection"];
 
-    public string Description => _reqLoc["create-requirement-specification-description"];
+    public string Description => _reqLoc["create-collection-description"];
 
     public bool Enabled => _appNav.State.SelectedProject is not null;
 
     public int SortOrder => 50;
 
-    public string? Folder => null;
+    public string? Folder => _loc["add"];
 
     public KeyboardBinding? DefaultKeyboardBinding => null;
     public string? Icon => TbIcons.BoldDuoTone.Epic;
@@ -61,15 +61,10 @@ internal class CreateSpecificationCommand : ICommand
             return;
         }
 
-        var spec = new RequirementSpecification()
+        var spec = await _requirementEditor.AddRequirementSpecificationAsync(project.Id);
+        if (spec is not null)
         {
-            Name = "New Specification",
-            TenantId = project?.TenantId ?? "",
-            TestProjectId = project?.Id,
-            TeamId = project?.TeamId,
-        };
-
-        await _requirementEditor.AddRequirementSpecificationAsync(spec);
-        _appNav.NavigateTo(spec);
+            _appNav.NavigateTo(spec);
+        }
     }
 }

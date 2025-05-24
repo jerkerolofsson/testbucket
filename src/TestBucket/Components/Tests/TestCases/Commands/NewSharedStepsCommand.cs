@@ -3,6 +3,7 @@
 using TestBucket.Components.Shared;
 using TestBucket.Components.Tests.Controls;
 using TestBucket.Components.Tests.TestCases.Services;
+using TestBucket.Domain;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
@@ -31,7 +32,7 @@ internal class NewSharedStepsCommand : ICommand
     public string Name => _loc[Id];
     public string Description => _loc["new-shared-steps-description"];
     public KeyboardBinding? DefaultKeyboardBinding => null;
-    public string? Icon => Icons.Material.Filled.Add;
+    public string? Icon => TbIcons.BoldDuoTone.TestTemplate;
     public string[] ContextMenuTypes => ["TestSuite", "TestSuiteFolder", "menu-new"];
 
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)

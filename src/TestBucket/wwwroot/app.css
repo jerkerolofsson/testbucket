@@ -341,6 +341,7 @@ input:focus-visible {
      margin-left: 20px;
  }
 
+ .fluent-validation-error,
  .alert-danger,
  .text-danger {
      color: var(--mud-palette-error);

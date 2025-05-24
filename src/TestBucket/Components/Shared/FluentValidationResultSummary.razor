@@ -1,0 +1,25 @@
+@if (Result is not null)
+{
+    if (!Result.IsValid)
+    {
+        foreach (var error in Result.Errors)
+        {
+            <div aria-live="assertive" role="alert" class="fluent-validation-error" test-id="error.ToString()">
+            @if (StringLocalizer is not null)
+            {
+                    <span>@StringLocalizer[error.ToString()]</span>
+            }
+            else
+            {
+                <span>@error.ToString()</span>
+            }
+            </div>
+        }
+    }
+}
+
+
+@code {
+    [Parameter] public FluentValidation.Results.ValidationResult? Result { get; set; }
+    [Parameter] public IStringLocalizer? StringLocalizer { get; set; }
+}

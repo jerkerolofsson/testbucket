@@ -8,7 +8,7 @@ public static class TestIcons
     {
         if (testCase.IsTemplate)
         {
-            return Icons.Material.Filled.DocumentScanner;
+            return TbIcons.BoldDuoTone.TestTemplate;
         }
         if (testCase.ExecutionType == TestExecutionType.Automated)
         {

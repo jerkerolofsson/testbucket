@@ -590,4 +590,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="run-test-suite" xml:space="preserve">
     <value>Run test suite</value>
   </data>
+  <data name="new-test-template" xml:space="preserve">
+    <value>New test template</value>
+  </data>
 </root>

@@ -177,28 +177,7 @@ internal class FieldController : TenantBaseService
     public async Task<IReadOnlyList<FieldDefinition>> SearchDefinitionsAsync(SearchFieldQuery query)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-
-        var a = Stopwatch.GetTimestamp();
-
         var fieldDefinitions = await _definitionManager.SearchAsync(principal, query);
-
-        var e1 = Stopwatch.GetElapsedTime(a);
-
-        // Assign options from external data source
-        //foreach (var fieldDefinition in fieldDefinitions)
-        //{
-        //    if (fieldDefinition.TestProjectId is not null)
-        //    {
-        //        string[]? options = await _projectManager.GetFieldOptionsAsync(principal, fieldDefinition.TestProjectId.Value, fieldDefinition.TraitType, default);
-        //        if (options is not null)
-        //        {
-        //            fieldDefinition.Options = options.ToList();
-        //        }
-        //    }
-        //}
-
-        var e2 = Stopwatch.GetElapsedTime(a);
-
         return fieldDefinitions;
     }
 

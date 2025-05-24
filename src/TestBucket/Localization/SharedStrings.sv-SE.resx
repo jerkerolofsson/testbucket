@@ -588,4 +588,7 @@
   <data name="run-test-suite" xml:space="preserve">
     <value />
   </data>
+  <data name="new-test-template" xml:space="preserve">
+    <value />
+  </data>
 </root>

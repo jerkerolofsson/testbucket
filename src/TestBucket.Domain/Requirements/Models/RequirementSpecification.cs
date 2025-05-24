@@ -67,6 +67,11 @@ namespace TestBucket.Domain.Requirements.Models
         /// </summary>
         public string? Color { get; set; }
 
+        /// <summary>
+        /// Type of data stored in specification..
+        /// </summary>
+        public string? SpecificationType { get; set; }
+
         // Navigation
 
         public virtual List<Comment>? Comments { get; set; }

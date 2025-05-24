@@ -274,6 +274,18 @@ internal class RequirementEditorController : TenantBaseService
         await _manager.DeleteRequirementAsync(principal, requirement);
 
     }
+
+    internal async Task AddFolderAsync(long projectId, long specificationId, long? parentFolderId)
+    {
+        var parameters = new DialogParameters<CreateRequirementSpecificationFolderDialog>
+        {
+            { x => x.ProjectId, projectId },
+            { x => x.SpecificationId, specificationId },
+            { x => x.ParentFolderId, parentFolderId },
+        };
+        var dialog = await _dialogService.ShowAsync<CreateRequirementSpecificationFolderDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+    }
     public async Task DeleteRequirementFolderAsync(RequirementSpecificationFolder folder)
     {
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
@@ -311,6 +323,20 @@ internal class RequirementEditorController : TenantBaseService
         await _manager.DeleteRequirementSpecificationAsync(principal, specification);
     }
 
+    internal async Task<RequirementSpecification?> AddRequirementSpecificationAsync(long projectId)
+    {
+        var parameters = new DialogParameters<CreateRequirementSpecificationDialog>
+        {
+            { x => x.ProjectId, projectId },
+        };
+        var dialog = await _dialogService.ShowAsync<CreateRequirementSpecificationDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if(result.Data is RequirementSpecification spec)
+        {
+            return spec;
+        }
+        return null;
+    }
     public async Task AddRequirementSpecificationAsync(RequirementSpecification specification)
     {
         var principal = await GetUserClaimsPrincipalAsync();

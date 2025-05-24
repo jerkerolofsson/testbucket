@@ -10,12 +10,11 @@ namespace TestBucket.Data.Requirements
     internal class RequirementRepository : IRequirementRepository
     {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
-        private readonly ISequenceGenerator _sequenceGenerator;
+        private readonly SequenceGenerator _sequenceGenerator = new SequenceGenerator();
 
-        public RequirementRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory, ISequenceGenerator sequenceGenerator)
+        public RequirementRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
-            _sequenceGenerator = sequenceGenerator;
         }
 
         #region Folders
@@ -113,6 +112,25 @@ namespace TestBucket.Data.Requirements
             await dbContext.SaveChangesAsync();
         }
 
+        private async Task<string> GetTypeNameAsync(ApplicationDbContext dbContext, Requirement requirement)
+        {
+            var spec = await dbContext.RequirementSpecifications.AsNoTracking().Where(x => x.Id == requirement.RequirementSpecificationId).FirstOrDefaultAsync();
+            if(spec?.SpecificationType is not null)
+            {
+                var type = spec.SpecificationType;
+                foreach(var name in new string[] { "PRS", "SRS", "FRS", "BRS" })
+                {
+                    if (type.Contains(name))
+                    {
+                        return name;
+                    }
+                }
+            }
+
+            return "REQ";
+        }
+      
+
         private async ValueTask AssignExternalIdAsync(ApplicationDbContext dbContext, Requirement requirement)
         {
 
@@ -120,8 +138,11 @@ namespace TestBucket.Data.Requirements
             if (requirement.ExternalId is null && requirement.TestProjectId is not null && requirement.TenantId is not null)
             {
                 var project = await dbContext.Projects.AsNoTracking().Where(x => x.Id == requirement.TestProjectId).FirstAsync();
+
+                var typeName = await GetTypeNameAsync(dbContext, requirement);
+
                 requirement.SequenceNumber = await _sequenceGenerator.GenerateSequenceNumberAsync(requirement.TenantId, requirement.TestProjectId.Value, "requirement", GetMaxSequenceNumber, default);
-                requirement.ExternalId = project.ShortName + "-REQ-" + requirement.SequenceNumber;
+                requirement.ExternalId = project.ShortName + "-" + typeName + "-" + requirement.SequenceNumber;
             }
         }
 

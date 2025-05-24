@@ -1,6 +1,9 @@
-﻿@using TestBucket.Components.Tests.Services
+﻿@using FluentValidation
+@using TestBucket.Components.Tests.Services
 @inject RequirementEditorController controller
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<RequirementStrings> reqLoc
+@inject IValidator<RequirementSpecificationFolder> validator
 
 <EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
@@ -9,17 +12,14 @@
 
         <DialogContent>
             <MudStack Spacing="0">
-                @if (_name is not null)
-                {
-                    <MudTextField 
-                        AutoFocus="true"
-                        Variant="Variant.Outlined"
-                        T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+                <MudTextField 
+                    AutoFocus="true"
+                    Variant="Variant.Outlined"
+                    T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
 
-                }
-                @if (_errorMessage is not null)
+                @if (_validationResult is not null)
                 {
-                    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+                    <FluentValidationResultSummary Result="@_validationResult" StringLocalizer="@reqLoc"/>
                 }
             </MudStack>
         </DialogContent>
@@ -35,7 +35,7 @@
 @code {
     private string _name = "";
 
-    private string? _errorMessage;
+    private FluentValidation.Results.ValidationResult? _validationResult;
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
@@ -47,7 +47,7 @@
     private void OnValueChanged(string name)
     {
         _name = name;
-
+        Validate();
     }
 
     private void Close()
@@ -55,16 +55,18 @@
         MudDialog.Close();
     }
 
+    private bool Validate()
+    {
+        var folder = new RequirementSpecificationFolder() { Name = _name };
+        _validationResult = validator.Validate(folder);
+
+        return _validationResult.IsValid;
+    }
+
     private async Task OnValidSubmitAsync()
     {
-        if (string.IsNullOrWhiteSpace(_name))
+        if(!Validate())
         {
-            _errorMessage = "Invalid name";
-            return;
-        }
-        if (_name.Contains('/'))
-        {
-            _errorMessage = "Invalid name, folders cannot have / in the name";
             return;
         }
 

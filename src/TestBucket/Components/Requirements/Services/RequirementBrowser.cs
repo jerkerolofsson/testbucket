@@ -425,17 +425,6 @@ internal class RequirementBrowser : TenantBaseService
         }
     }
 
-    internal async Task AddFolderAsync(long projectId, long specificationId, long? parentFolderId)
-    {
-        var parameters = new DialogParameters<AddRequirementSpecificationFolderDialog>
-        {
-            { x => x.ProjectId, projectId },
-            { x => x.SpecificationId, specificationId },
-            { x => x.ParentFolderId, parentFolderId },
-        };
-        var dialog = await _dialogService.ShowAsync<AddRequirementSpecificationFolderDialog>(null, parameters, DefaultBehaviors.DialogOptions);
-        var result = await dialog.Result;
-    }
 
     internal async Task SyncWithActiveDocumentAsync(Requirement requirement)
     {

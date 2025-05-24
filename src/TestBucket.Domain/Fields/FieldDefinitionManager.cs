@@ -172,7 +172,7 @@ namespace TestBucket.Domain.Fields
             {
                 if (field.Options is not null)
                 {
-                    return field.Options.ToList();
+                    return field.Options.OrderBy(x=>x).ToList();
                 }
             }
             else 
@@ -183,7 +183,7 @@ namespace TestBucket.Domain.Fields
                 var result = await _memoryCache.GetOrCreateAsync(cacheKey, async (e) =>
                 {
                     e.AbsoluteExpiration = DateTimeOffset.UtcNow.AddHours(1);
-                    return await LoadFieldOptionsAsync(principal, field);
+                    return (await LoadFieldOptionsAsync(principal, field)).OrderBy(x => x).ToList();
                 });
 
                 return result ?? [];

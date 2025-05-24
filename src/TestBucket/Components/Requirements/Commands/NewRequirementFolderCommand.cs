@@ -12,19 +12,19 @@ namespace TestBucket.Components.Tests.Requiremnts.Commands;
 internal class NewRequirementFolderCommand : ICommand
 {
     private readonly AppNavigationManager _appNavigationManager;
-    private readonly RequirementBrowser _browser;
+    private readonly RequirementEditorController _controller;
     private readonly IStringLocalizer<SharedStrings> _loc;
 
-    public NewRequirementFolderCommand(AppNavigationManager appNavigationManager, RequirementBrowser browser, IStringLocalizer<SharedStrings> loc)
+    public NewRequirementFolderCommand(AppNavigationManager appNavigationManager, RequirementEditorController controller, IStringLocalizer<SharedStrings> loc)
     {
         _appNavigationManager = appNavigationManager;
-        _browser = browser;
+        _controller = controller;
         _loc = loc;
     }
 
     public int SortOrder => 10;
 
-    public string? Folder => null;
+    public string? Folder => _loc["add"];
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.RequirementSpecification;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
@@ -49,7 +49,6 @@ internal class NewRequirementFolderCommand : ICommand
         {
             return;
         }
-        await _browser.AddFolderAsync(projectId.Value, specification.Id, _appNavigationManager.State.SelectedRequirementSpecificationFolder?.Id);
-        //await _browser.AddTestSuiteFolderAsync(projectId.Value, suite.Id, _appNavigationManager.State.SelectedTestSuiteFolder?.Id);
+        await _controller.AddFolderAsync(projectId.Value, specification.Id, _appNavigationManager.State.SelectedRequirementSpecificationFolder?.Id);
     }
 }

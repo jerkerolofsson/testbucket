@@ -30,9 +30,14 @@ public class TestExecutionContext
     public required long TeamId { get; set; }
 
     /// <summary>
-    /// Identifier for the team
+    /// Identifier for the test suite
     /// </summary>
     public long? TestSuiteId { get; set; }
+
+    /// <summary>
+    /// Name of the test suite
+    /// </summary>
+    public string? TestSuiteName { get; set; }
 
     /// <summary>
     /// Assigned variables, e.g. from the selected environment
@@ -66,6 +71,8 @@ public class TestExecutionContext
 
     /// <summary>
     /// This is the ID returned from the external CI/CD system when running
+    /// 
+    /// Note: For github the ID is not returned so when starting a new run we are polling for the latest new one
     /// </summary>
     public string? CiCdPipelineIdentifier { get; set; }
 

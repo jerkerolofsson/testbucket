@@ -1,8 +1,22 @@
+ param(
+        [Parameter(Mandatory=$false)][string]$testSuite
+    )
 
+Write-Host "TestSuite: ${testSuite}"
 $projects = @("tests/TestBucket.Domain.IntegrationTests/TestBucket.Domain.IntegrationTests.csproj", "tests/TestBucket.IntegrationTests/TestBucket.IntegrationTests.csproj")
 
 foreach ($csproj in $projects)
 {
+    # Only run selected test suites, if requested
+    if (-not ([string]::IsNullOrEmpty($testSuite)))
+    {
+        if(-not (${csproj}.Contains($testSuite)))
+        {
+            echo "Skipping '${csproj}' as it did not contain $testSuite.."
+            continue;
+        }
+    }
+
 	echo "=================================================="
 	echo "Testing ${csproj}.."
 	$dirName = [System.IO.Path]::GetDirectoryName($csproj)

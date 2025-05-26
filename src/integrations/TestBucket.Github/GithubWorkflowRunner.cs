@@ -34,6 +34,13 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
 
         var client = CreateClient(system);
 
+        // Get the workflow
+        var workflow = await client.Actions.Workflows.Get(ownerProject.Owner, ownerProject.Project, workflowFilename);
+        if(workflow is null)
+        {
+            throw new ArgumentException($"The workflow {workflowFilename} could not be retreived from Github");
+        }
+
         // We need to get the ID of the workflow run.
         // However, it is not returned from the create dispatch response.
         // There are workarounds that required adding things to the workflow, which we don't want to do.
@@ -44,6 +51,15 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
 
         var createWorkflowDispatch = new CreateWorkflowDispatch(context.CiCdRef);
         createWorkflowDispatch.Inputs = new Dictionary<string, object>();
+        if(context.TestSuiteName is not null)
+        {
+            createWorkflowDispatch.Inputs["testSuite"] = context.TestSuiteName;
+        }
+        /*
+        foreach (var item in context.Variables.Take(10))
+        {
+            createWorkflowDispatch.Inputs[item.Key] = item.Value;
+        }*/
 
         await client.Actions.Workflows.CreateDispatch(ownerProject.Owner, ownerProject.Project, workflowFilename, createWorkflowDispatch);
 
@@ -150,9 +166,31 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
         return memoryStream.ToArray();
     }
 
+    public  async Task<IReadOnlyList<PipelineDto>> GetPipelineRunsAsync(ExternalSystemDto system, DateOnly from, DateOnly until, CancellationToken cancellationToken)
+    {
+        var ownerProject = GithubOwnerProject.Parse(system.ExternalProjectId);
+        var tokenAuth = new Credentials(system.AccessToken);
+        var client = new GitHubClient(new ProductHeaderValue("TestBucket"));
+        client.Credentials = tokenAuth;
+
+        // Filter
+        var created = $"{from.ToString("yyyy-MM-dd")}..{until.ToString("yyyy-MM-dd")}";
+        var request = new WorkflowRunsRequest()
+        {
+            Created = created
+        };
+        var response = await client.Actions.Workflows.Runs.List(ownerProject.Owner, ownerProject.Project, request);
+        var result = new List<PipelineDto>();
+        foreach (var run in response.WorkflowRuns)
+        {
+            result.Add(await MapRunToDtoAsync(run.Id, ownerProject, client, run));
+        }
+        return result;
+    }
+
     public async Task<PipelineDto?> GetPipelineAsync(ExternalSystemDto system, string workflowRunId, CancellationToken cancellationToken)
     {
-        if(!long.TryParse(workflowRunId, out var runId))
+        if (!long.TryParse(workflowRunId, out var runId))
         {
             throw new ArgumentException("Expected workflowRunId to be a int64");
         }
@@ -163,10 +201,16 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
         var client = new GitHubClient(new ProductHeaderValue("TestBucket"));
         client.Credentials = tokenAuth;
 
-        PipelineDto pipeline = new();
-
-
         var run = await client.Actions.Workflows.Runs.Get(ownerProject.Owner, ownerProject.Project, runId);
+        return await MapRunToDtoAsync(runId, ownerProject, client, run);
+    }
+
+    private static async Task<PipelineDto> MapRunToDtoAsync(long runId, GithubOwnerProject ownerProject, GitHubClient client, WorkflowRun run)
+    {
+        PipelineDto pipeline = new();
+        pipeline.CiCdPipelineIdentifier = run.Id.ToString();
+        pipeline.CiCdProjectId = ownerProject.ToString();
+
         if (run.Status.TryParse(out var status))
         {
             switch (status)
@@ -193,7 +237,7 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
         pipeline.Duration = run.UpdatedAt - run.CreatedAt;
 
         var jobResponse = await client.Actions.Workflows.Jobs.List(ownerProject.Owner, ownerProject.Project, runId);
-        foreach(var job in jobResponse.Jobs)
+        foreach (var job in jobResponse.Jobs)
         {
             var jobDto = new PipelineJobDto()
             {
@@ -210,7 +254,7 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
             {
                 jobDto.Duration = jobDto.FinishedAt - jobDto.StartedAt;
             }
-            else if(jobDto.StartedAt is not null)
+            else if (jobDto.StartedAt is not null)
             {
                 jobDto.Duration = DateTimeOffset.UtcNow - jobDto.StartedAt.Value;
             }

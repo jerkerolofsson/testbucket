@@ -25,7 +25,11 @@
                     </Field>
 
                     <Field Row>
-                        <FieldHeader>@loc["ci-cd"]</FieldHeader>
+                        <MudIcon Icon="@TbIcons.Filled.Infinite"></MudIcon>
+                        <div>
+                            <FieldHeader>@loc["ci-cd"]</FieldHeader>
+                            <span>@loc["automation-ci-cd-description"]</span>
+                        </div>
                         <MudSpacer />
                         <PipelineSystemPicker Project="@_project" @bind-ExternalPipelineRunner="@_runner"/>
                     </Field>

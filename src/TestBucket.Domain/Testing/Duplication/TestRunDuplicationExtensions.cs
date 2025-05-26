@@ -22,6 +22,7 @@ internal static class TestRunDuplicationExtensions
             TenantId = run.TenantId,
             TestProjectId = run.TestProjectId,
             TeamId = run.TeamId,
+            Open = run.Open,
         };
         return copy;
     }

@@ -3,6 +3,7 @@ using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestCases.Search;
+using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures

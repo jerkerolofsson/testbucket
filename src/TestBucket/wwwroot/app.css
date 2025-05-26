@@ -410,6 +410,13 @@ input:focus-visible {
     background: var(--mud-palette-primary-hover);
 }
 
+.tb-field > .flex-row > .mud-icon-root {
+    margin-right: 8px;
+    align-self: center;
+    width: 2rem;
+    height: 2rem;
+}
+
 tb-field .mud-link.mud-link-underline-hover:hover {
     text-decoration: none;
 }

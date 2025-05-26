@@ -79,7 +79,7 @@ internal class AddTestSuiteToRunCommand : ICommand
 
             if (!string.IsNullOrEmpty(suite.CiCdSystem))
             {
-                await _testRunCreationController.StartAutomationAsync(testRun, suite.Variables, suite.Id);
+                await _testRunCreationController.StartAutomationAsync(testRun, suite.Variables, suite);
             }
 
             _appNavigationManager.NavigateTo(testRun);

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Contracts.Code.Models;
@@ -18,9 +19,11 @@ using TestBucket.Domain.Keyboard;
 namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250526013757_AddedAddPipelinesStartedFromOutsideAndTestRunOpen")]
+    partial class AddedAddPipelinesStartedFromOutsideAndTestRunOpen
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2169,9 +2172,6 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("Slug")
                         .HasColumnType("text");
 
-                    b.Property<string>("SpecificationType")
-                        .HasColumnType("text");
-
                     b.Property<long?>("TeamId")
                         .HasColumnType("bigint");
 
@@ -3115,9 +3115,6 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("CiCdSystem")
-                        .HasColumnType("text");
-
-                    b.Property<string>("CiCdWorkflow")
                         .HasColumnType("text");
 
                     b.Property<string>("Color")

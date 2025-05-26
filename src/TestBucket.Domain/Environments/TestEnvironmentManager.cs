@@ -76,7 +76,7 @@ internal class TestEnvironmentManager : ITestEnvironmentManager
 
     public async Task UpdateTestEnvironmentAsync(ClaimsPrincipal principal, TestEnvironment testEnvironment)
     {
-        principal.ThrowIfEntityTenantIsDifferent(testEnvironment.TenantId);
+        principal.ThrowIfEntityTenantIsDifferent(testEnvironment);
         testEnvironment.Modified = DateTimeOffset.UtcNow;
         testEnvironment.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
         await _repository.UpdateTestEnvironmentAsync(testEnvironment);

@@ -58,6 +58,16 @@ public class TestRun : TestEntity
     /// </summary>
     public long? ExternalSystemId { get; set; }
 
+    /// <summary>
+    /// Flag that indicates that a test run is open or closed
+    /// </summary>
+    public bool Open { get; set; }
+
+    // Navigation
+
+    /// <summary>
+    /// The selected environment for the run
+    /// </summary>
     public long? TestEnvironmentId { get; set; }
     public TestEnvironment? TestEnvironment { get; set; }
     public virtual IEnumerable<TestRunField>? TestRunFields { get; set; }

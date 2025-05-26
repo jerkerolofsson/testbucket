@@ -14,5 +14,6 @@ public interface IPipelineRepository
     Task DeleteAsync(Pipeline pipeline);
     Task<Pipeline?> GetByIdAsync(long pipelineId);
     Task<IReadOnlyList<Pipeline>> GetPipelinesForTestRunAsync(FilterSpecification<Pipeline>[] filters, long testRunId);
+    Task<PagedResult<Pipeline>> SearchAsync(FilterSpecification<Pipeline>[] filters, int offset, int count);
     Task UpdateAsync(Pipeline pipeline);
 }

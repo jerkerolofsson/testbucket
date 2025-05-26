@@ -1,7 +1,7 @@
 # This workflow will build a .NET project
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: TestBucket
+name: TestBucket Build
 
 on:
   push:
@@ -37,6 +37,6 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: "Test Results"
-        path: "**/xunit.xml"
+        path: "**/TestResults/xunit.xml"
         retention-days: 2
         if-no-files-found: error

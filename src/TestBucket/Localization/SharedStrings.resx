@@ -139,10 +139,10 @@
     <value>Variables</value>
   </data>
   <data name="test-environment" xml:space="preserve">
-    <value>Test Environment</value>
+    <value>Test environment</value>
   </data>
   <data name="test-environments" xml:space="preserve">
-    <value>Test Environments</value>
+    <value>Test environments</value>
   </data>
   <data name="attachments" xml:space="preserve">
     <value>Attachments</value>
@@ -219,7 +219,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Value</value>
   </data>
   <data name="requirement-coverage" xml:space="preserve">
-    <value>Requirement Coverage</value>
+    <value>Requirement coverage</value>
   </data>
   <data name="users" xml:space="preserve">
     <value>Users</value>
@@ -264,10 +264,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>CI/CD Ref. (Git)</value>
   </data>
   <data name="test-accounts" xml:space="preserve">
-    <value>Test Accounts</value>
+    <value>Test accounts</value>
   </data>
   <data name="test-resources" xml:space="preserve">
-    <value>Test Resources</value>
+    <value>Test resources</value>
   </data>
   <data name="model" xml:space="preserve">
     <value>Model</value>
@@ -318,13 +318,13 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Filter Tests</value>
   </data>
   <data name="search-tests" xml:space="preserve">
-    <value>Search Tests</value>
+    <value>Search tests</value>
   </data>
   <data name="created" xml:space="preserve">
     <value>Created</value>
   </data>
   <data name="start-date" xml:space="preserve">
-    <value>Start Date</value>
+    <value>Start date</value>
   </data>
   <data name="end-date" xml:space="preserve">
     <value>End Date</value>
@@ -348,7 +348,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>You don't have permission to perform this action. Contact the administrator if you require permission for this.</value>
   </data>
   <data name="required-resources" xml:space="preserve">
-    <value>Required Resources</value>
+    <value>Required resources</value>
   </data>
   <data name="runner" xml:space="preserve">
     <value>Runner</value>
@@ -360,10 +360,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Teams</value>
   </data>
   <data name="test-suites" xml:space="preserve">
-    <value>Test Suites</value>
+    <value>Test suites</value>
   </data>
   <data name="test-cases" xml:space="preserve">
-    <value>Test Cases</value>
+    <value>Test cases</value>
   </data>
   <data name="recent" xml:space="preserve">
     <value>Recent</value>
@@ -393,7 +393,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Add folder</value>
   </data>
   <data name="test-coverage" xml:space="preserve">
-    <value>Test Coverage</value>
+    <value>Test coverage</value>
   </data>
   <data name="icon" xml:space="preserve">
     <value>Icon</value>
@@ -425,7 +425,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="rename" xml:space="preserve">
     <value>Rename</value>
   </data>
-  <data name="add" xml:space="preserve">
+  <data name="r" xml:space="preserve">
     <value>Add</value>
   </data>
   <data name="create-test-run" xml:space="preserve">
@@ -465,10 +465,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Manage</value>
   </data>
   <data name="launch-automation" xml:space="preserve">
-    <value>Launch Automation</value>
+    <value>Launch automation</value>
   </data>
   <data name="test-automation" xml:space="preserve">
-    <value>Test Automation</value>
+    <value>Test automation</value>
   </data>
   <data name="coverage-matrix" xml:space="preserve">
     <value>Coverage Matrix</value>
@@ -486,7 +486,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>SLUG</value>
   </data>
   <data name="test-runs" xml:space="preserve">
-    <value>Test Runs</value>
+    <value>Test runs</value>
   </data>
   <data name="my-backlog" xml:space="preserve">
     <value>My Backlog</value>
@@ -592,5 +592,53 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="new-test-template" xml:space="preserve">
     <value>New test template</value>
+  </data>
+  <data name="e2e-tests" xml:space="preserve">
+    <value>E2E Tests</value>
+  </data>
+  <data name="integration-tests" xml:space="preserve">
+    <value>Integration tests</value>
+  </data>
+  <data name="unit-tests" xml:space="preserve">
+    <value>Unit tests</value>
+  </data>
+  <data name="api-tests" xml:space="preserve">
+    <value>API tests</value>
+  </data>
+  <data name="features" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="components" xml:space="preserve">
+    <value>Components</value>
+  </data>
+  <data name="automation-ci-cd-description" xml:space="preserve">
+    <value>Select the CI/CD system that executes this test suite</value>
+  </data>
+  <data name="automation-default-ci-cd-ref-description" xml:space="preserve">
+    <value>Select the default branch / reference</value>
+  </data>
+  <data name="required-resources-description" xml:space="preserve">
+    <value>Required resources that will be allocated and assigned to the test run when running automation tests.</value>
+  </data>
+  <data name="resource-type" xml:space="preserve">
+    <value>Resource type</value>
+  </data>
+  <data name="add-resource" xml:space="preserve">
+    <value>Add resource</value>
+  </data>
+  <data name="add-account" xml:space="preserve">
+    <value>Add account</value>
+  </data>
+  <data name="automation-ci-cd-add-outside-pipelines" xml:space="preserve">
+    <value>Index CI/CD for results</value>
+  </data>
+  <data name="automation-ci-cd-add-outside-pipelines-description" xml:space="preserve">
+    <value>Scans the CI/CD system for test results for all pipelines, even those not started from within Test Bucket</value>
+  </data>
+  <data name="ci-cd-jobs" xml:space="preserve">
+    <value>CI/CD jobs</value>
+  </data>
+  <data name="ci-cd-job" xml:space="preserve">
+    <value>CI/CD job</value>
   </data>
 </root>

@@ -43,7 +43,12 @@ public class PipelineDto
     public List<PipelineJobDto> Jobs { get; set; } = [];
 
     /// <summary>
-    /// External ID in remote system
+    /// External project ID in remote system
     /// </summary>
     public string? CiCdProjectId { get; set; }
+
+    /// <summary>
+    /// ID in exsternal system
+    /// </summary>
+    public string? CiCdPipelineIdentifier { get; set; }
 }

@@ -93,6 +93,17 @@ namespace TestBucket.Domain.Testing.TestSuites
             suite.Modified = suite.Created = _timeProvider.GetUtcNow();
             suite.CreatedBy = suite.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 
+            if (suite.CiCdWorkflow is null)
+            {
+                // Default
+                suite.CiCdWorkflow = "test.yml";
+            }
+            if (suite.AddPipelinesStartedFromOutside is null)
+            {
+                // Default, pull mode for CI/CD artifacts..
+                suite.AddPipelinesStartedFromOutside = true;
+            }
+
             await _testCaseRepository.AddTestSuiteAsync(suite);
 
             foreach (var observer in _testSuiteObservers)

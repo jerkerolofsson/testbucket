@@ -12,7 +12,7 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         {
             var manager = Fixture.Services.GetRequiredService<ITestAccountManager>();
 
-            var account = new TestAccount { Name = Guid.NewGuid().ToString(), Type = type, Owner = owner };
+            var account = new TestAccount { Name = Guid.NewGuid().ToString(), Type = type, Owner = owner, Enabled = true };
             await manager.AddAsync(Impersonation.Impersonate(Fixture.App.Tenant), account);
             return account;
         }
@@ -20,7 +20,7 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         {
             var manager = Fixture.Services.GetRequiredService<ITestAccountManager>();
 
-            var account = new TestAccount { Name = Guid.NewGuid().ToString(), Type = type, Owner = owner, Variables = variables };
+            var account = new TestAccount { Name = Guid.NewGuid().ToString(), Type = type, Owner = owner, Variables = variables, Enabled = true };
             await manager.AddAsync(Impersonation.Impersonate(Fixture.App.Tenant), account);
             return account;
         }
@@ -51,7 +51,7 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         {
             var allocator = Fixture.Services.GetRequiredService<TestAccountDependencyAllocator>();
 
-            var context = new Contracts.Testing.Models.TestExecutionContext
+            var context = new TestExecutionContext
             {
                 Guid = guid,
                 ProjectId = Fixture.ProjectId,

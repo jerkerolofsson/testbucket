@@ -80,66 +80,70 @@ namespace TestBucket.Gitlab
                 system.ExternalProjectId is not null &&
                 system.BaseUrl is not null &&
                 system.AccessToken is not null &&
-                long.TryParse(system.ExternalProjectId, out long projectId) && 
+                long.TryParse(system.ExternalProjectId, out long projectId) &&
                 long.TryParse(pipelineId, out long id))
             {
                 var client = new GitLabClient(system.BaseUrl, system.AccessToken);
                 var pipelineClient = client.GetPipelines(projectId);
                 var pipeline = await pipelineClient.GetByIdAsync(id, cancellationToken);
 
-                TimeSpan? duration = null;
-                if (pipeline.Duration is not null)
-                {
-                    duration = TimeSpan.FromSeconds(pipeline.Duration.Value);
-                }
-
-                var jobsResponse = pipelineClient.GetJobsAsync(new PipelineJobQuery { PipelineId = id });
-                List<Job> jobs = [];
-                await foreach (var job in jobsResponse)
-                {
-                    jobs.Add(job);
-                }
-
-                //var jobs = pipelineClient.GetJobs(id);
-
-                return new PipelineDto
-                {
-                    CiCdProjectId = system.ExternalProjectId,
-                    WebUrl = pipeline.WebUrl,
-                    Error = pipeline.YamlError,
-                    Duration = duration,
-                    Jobs = MapJobs(jobs),
-                    Status = pipeline.Status switch
-                    {
-                        JobStatus.Running => PipelineStatus.Running,
-                        JobStatus.Canceled => PipelineStatus.Canceled,
-                        JobStatus.Pending => PipelineStatus.Pending,
-                        JobStatus.Canceling => PipelineStatus.Canceling,
-                        JobStatus.Preparing => PipelineStatus.Preparing,
-                        JobStatus.Created => PipelineStatus.Created,
-                        JobStatus.Failed => PipelineStatus.Failed,
-                        JobStatus.NoBuild => PipelineStatus.NoBuild,
-                        JobStatus.Success => PipelineStatus.Success,
-                        JobStatus.Skipped => PipelineStatus.Skipped,
-                        JobStatus.WaitingForResource => PipelineStatus.WaitingForResource,
-                        JobStatus.Scheduled => PipelineStatus.Scheduled,
-                        JobStatus.Manual => PipelineStatus.Manual,
-                        _ => PipelineStatus.Unknown,
-                    }
-                };
+                return await MapPipelineAsync(system, pipelineClient, pipeline);
             }
             return null;
+        }
+
+        private async Task<PipelineDto> MapPipelineAsync(ExternalSystemDto system, IPipelineClient pipelineClient, Pipeline pipeline)
+        {
+            TimeSpan? duration = null;
+            if (pipeline.Duration is not null)
+            {
+                duration = TimeSpan.FromSeconds(pipeline.Duration.Value);
+            }
+
+            var jobsResponse = pipelineClient.GetJobsAsync(new PipelineJobQuery { PipelineId = pipeline.Id });
+            List<Job> jobs = [];
+            await foreach (var job in jobsResponse)
+            {
+                jobs.Add(job);
+            }
+
+            return new PipelineDto
+            {
+                CiCdPipelineIdentifier = pipeline.Id.ToString(),
+                CiCdProjectId = system.ExternalProjectId,
+                WebUrl = pipeline.WebUrl,
+                Error = pipeline.YamlError,
+                Duration = duration,
+                Jobs = MapJobs(jobs),
+                Status = pipeline.Status switch
+                {
+                    JobStatus.Running => PipelineStatus.Running,
+                    JobStatus.Canceled => PipelineStatus.Canceled,
+                    JobStatus.Pending => PipelineStatus.Pending,
+                    JobStatus.Canceling => PipelineStatus.Canceling,
+                    JobStatus.Preparing => PipelineStatus.Preparing,
+                    JobStatus.Created => PipelineStatus.Created,
+                    JobStatus.Failed => PipelineStatus.Failed,
+                    JobStatus.NoBuild => PipelineStatus.NoBuild,
+                    JobStatus.Success => PipelineStatus.Success,
+                    JobStatus.Skipped => PipelineStatus.Skipped,
+                    JobStatus.WaitingForResource => PipelineStatus.WaitingForResource,
+                    JobStatus.Scheduled => PipelineStatus.Scheduled,
+                    JobStatus.Manual => PipelineStatus.Manual,
+                    _ => PipelineStatus.Unknown,
+                }
+            };
         }
 
         private List<PipelineJobDto> MapJobs(IEnumerable<Job> jobs)
         {
             var dtos = new List<PipelineJobDto>();
 
-            foreach(var job in jobs)
+            foreach (var job in jobs)
             {
                 bool hasArtifacts = job.Artifacts?.Size > 0;
 
-                if(job.Status == JobStatus.Success)
+                if (job.Status == JobStatus.Success)
                 {
 
                 }
@@ -159,8 +163,6 @@ namespace TestBucket.Gitlab
                     WebUrl = job.WebUrl,
                     HasArtifacts = hasArtifacts
                 };
-
-                
 
                 if (job.Duration is not null)
                 {
@@ -217,15 +219,44 @@ namespace TestBucket.Gitlab
                 {
                     Ref = context.CiCdRef,
                 };
-                foreach(var kvp in context.Variables)
+                foreach (var kvp in context.Variables)
                 {
                     options.Variables[kvp.Key] = kvp.Value;
                 }
                 var pipeline = await pipelineClient.CreateAsync(options, cancellationToken);
                 context.CiCdPipelineIdentifier = pipeline.Id.ToString();
-
-                
             }
+        }
+
+        public async Task<IReadOnlyList<PipelineDto>> GetPipelineRunsAsync(ExternalSystemDto system, DateOnly from, DateOnly until, CancellationToken cancellationToken)
+        {
+            var result = new List<PipelineDto>();
+
+            if (system is not null &&
+                system.ExternalProjectId is not null &&
+                system.BaseUrl is not null &&
+                system.AccessToken is not null &&
+                long.TryParse(system.ExternalProjectId, out long projectId))
+            {
+                var client = new GitLabClient(system.BaseUrl, system.AccessToken);
+                var pipelineClient = client.GetPipelines(projectId);
+
+                var query = new PipelineQuery
+                {
+                    UpdatedBefore = until.ToDateTime(new TimeOnly(0, 0, 0)),
+                    UpdatedAfter = from.ToDateTime(new TimeOnly(23, 59, 59))
+                };
+                var response = pipelineClient.Search(query);
+                foreach(var item in response)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    var pipeline = await pipelineClient.GetByIdAsync(item.Id, cancellationToken);
+                    result.Add(await MapPipelineAsync(system, pipelineClient, pipeline));
+                }
+            }
+
+            return result;
         }
     }
 }

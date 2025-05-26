@@ -178,7 +178,7 @@
     <value>Mina</value>
   </data>
   <data name="run-test-again" xml:space="preserve">
-    <value>Test en gång till</value>
+    <value>Testa en gång till</value>
   </data>
   <data name="assigned-to" xml:space="preserve">
     <value>Allockerat till</value>
@@ -217,7 +217,7 @@
     <value>Innehåll</value>
   </data>
   <data name="requirement-coverage" xml:space="preserve">
-    <value>Krav täckning</value>
+    <value>Kravtäckning</value>
   </data>
   <data name="users" xml:space="preserve">
     <value>Användare</value>
@@ -340,13 +340,13 @@
     <value>Filtyp</value>
   </data>
   <data name="no-permission-title" xml:space="preserve">
-    <value />
+    <value>Inget tillstång</value>
   </data>
   <data name="no-permission-message" xml:space="preserve">
-    <value />
+    <value>Du saknar tillstånd för att utföra denna operation. Kontakta en administratör</value>
   </data>
   <data name="required-resources" xml:space="preserve">
-    <value />
+    <value>Obligatoriska resurser</value>
   </data>
   <data name="runner" xml:space="preserve">
     <value />
@@ -370,13 +370,13 @@
     <value>Användare</value>
   </data>
   <data name="batch-tag" xml:space="preserve">
-    <value />
+    <value>Updatera flera..</value>
   </data>
   <data name="traceability" xml:space="preserve">
     <value>Spårbarhet</value>
   </data>
   <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
-    <value />
+    <value>Släpp krav här för att länka med ett testfall</value>
   </data>
   <data name="link-requirement-to-test" xml:space="preserve">
     <value>Länka krav till test</value>
@@ -403,7 +403,7 @@
     <value>Alternativ</value>
   </data>
   <data name="data-source" xml:space="preserve">
-    <value />
+    <value>Datakälla</value>
   </data>
   <data name="options" xml:space="preserve">
     <value>Alternativ</value>
@@ -423,8 +423,8 @@
   <data name="rename" xml:space="preserve">
     <value>Döp om</value>
   </data>
-  <data name="add" xml:space="preserve">
-    <value />
+  <data name="r" xml:space="preserve">
+    <value>Lägg till</value>
   </data>
   <data name="create-test-run" xml:space="preserve">
     <value />
@@ -436,16 +436,16 @@
     <value>Välj</value>
   </data>
   <data name="duplicate-test-run" xml:space="preserve">
-    <value />
+    <value>Duplicera körning</value>
   </data>
   <data name="delete-test-run" xml:space="preserve">
-    <value />
+    <value>Ta bort körning</value>
   </data>
   <data name="new-test" xml:space="preserve">
     <value>Nytt testfall</value>
   </data>
   <data name="new-shared-steps" xml:space="preserve">
-    <value />
+    <value>Ny delade teststeg</value>
   </data>
   <data name="permission-approve" xml:space="preserve">
     <value>Godkänn</value>
@@ -466,7 +466,7 @@
     <value>Start automatisering</value>
   </data>
   <data name="test-automation" xml:space="preserve">
-    <value>Test Automatisering</value>
+    <value>Testautomatisering</value>
   </data>
   <data name="coverage-matrix" xml:space="preserve">
     <value />
@@ -499,7 +499,7 @@
     <value>Testfall</value>
   </data>
   <data name="add-comment" xml:space="preserve">
-    <value />
+    <value>Lägg till kommentar</value>
   </data>
   <data name="logged-action-approved" xml:space="preserve">
     <value>{0} godkände</value>
@@ -511,10 +511,10 @@
     <value>Ta bort testfall</value>
   </data>
   <data name="delete-run" xml:space="preserve">
-    <value />
+    <value>Ta bort körning</value>
   </data>
   <data name="duplicate-test" xml:space="preserve">
-    <value />
+    <value>Duplicera testfall</value>
   </data>
   <data name="delete-test-suite" xml:space="preserve">
     <value>Ta bort testsvit</value>
@@ -523,7 +523,7 @@
     <value>Ny testsvit</value>
   </data>
   <data name="batch-tag-description" xml:space="preserve">
-    <value />
+    <value>Länka ett krav eller ändra ett fält för alla ättlingar</value>
   </data>
   <data name="import-test-results" xml:space="preserve">
     <value>Importera testresultat..</value>
@@ -538,7 +538,7 @@
     <value>Ta bort folder</value>
   </data>
   <data name="enabled" xml:space="preserve">
-    <value />
+    <value>Aktiverad</value>
   </data>
   <data name="testing" xml:space="preserve">
     <value>Testning</value>
@@ -562,7 +562,7 @@
     <value>Typ</value>
   </data>
   <data name="label" xml:space="preserve">
-    <value />
+    <value>Etikett</value>
   </data>
   <data name="code" xml:space="preserve">
     <value>Kod</value>
@@ -574,7 +574,7 @@
     <value>Alla</value>
   </data>
   <data name="issue" xml:space="preserve">
-    <value />
+    <value>Bugg</value>
   </data>
   <data name="title" xml:space="preserve">
     <value>Titel</value>
@@ -590,5 +590,53 @@
   </data>
   <data name="new-test-template" xml:space="preserve">
     <value />
+  </data>
+  <data name="e2e-tests" xml:space="preserve">
+    <value />
+  </data>
+  <data name="integration-tests" xml:space="preserve">
+    <value>Integrationstest</value>
+  </data>
+  <data name="unit-tests" xml:space="preserve">
+    <value>Enhetstest</value>
+  </data>
+  <data name="api-tests" xml:space="preserve">
+    <value>API test</value>
+  </data>
+  <data name="features" xml:space="preserve">
+    <value />
+  </data>
+  <data name="components" xml:space="preserve">
+    <value>Komponenter</value>
+  </data>
+  <data name="automation-ci-cd-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="automation-default-ci-cd-ref-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="required-resources-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="resource-type" xml:space="preserve">
+    <value />
+  </data>
+  <data name="add-resource" xml:space="preserve">
+    <value />
+  </data>
+  <data name="add-account" xml:space="preserve">
+    <value />
+  </data>
+  <data name="automation-ci-cd-add-outside-pipelines" xml:space="preserve">
+    <value />
+  </data>
+  <data name="automation-ci-cd-add-outside-pipelines-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ci-cd-jobs" xml:space="preserve">
+    <value>CI/CDjobb</value>
+  </data>
+  <data name="ci-cd-job" xml:space="preserve">
+    <value>CI/CD jobb</value>
   </data>
 </root>

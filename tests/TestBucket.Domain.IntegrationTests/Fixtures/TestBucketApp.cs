@@ -1,4 +1,5 @@
 ﻿using DotNet.Testcontainers.Builders;
+using Mediator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -29,6 +30,18 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         /// Used to control the time
         /// </summary>
         internal FakeTimeProvider TimeProvider { get; } = new FakeTimeProvider(new DateTimeOffset(2025,5,21,0,0,0,0,TimeSpan.Zero));
+
+        internal IMediator Mediator 
+        { 
+            get
+            {
+                if(_serviceProvider is null)
+                {
+                    throw new InvalidOperationException("Services not initialized yet");
+                }
+                return _serviceProvider.GetRequiredService<IMediator>();
+            } 
+        }
 
         public string Tenant => _configuration.Tenant ?? throw new InvalidOperationException("Invalid SeedConfiguration in fixture");
         public SeedConfiguration Configuration => _configuration;

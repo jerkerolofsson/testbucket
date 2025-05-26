@@ -5,10 +5,11 @@
     [FunctionalTest]
     public class TestAccountManagerTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that an account can be added and that it is not initially locked 
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that an account can be added and that it is not initially locked 
-            """)]
         public async Task AddTestAccount_NotLocked()
         {
             // Arrange
@@ -29,10 +30,11 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that when browsing for accounts after deletion it is not included in the result
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when browsing for accounts after deletion it is not included in the result
-            """)]
         public async Task DeleteTestAccount_IsDeleted()
         {
             // Arrange
@@ -56,11 +58,11 @@
             }
         }
 
-
+        /// <summary>
+        /// Verifies that an account can be updated
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that an account can be updated
-            """)]
         public async Task UpdateTestAccount_IsUpdated()
         {
             // Arrange
@@ -84,10 +86,46 @@
             }
         }
 
+
+        /// <summary>
+        /// Verifies that an account which is locked cannot be allocated
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that an account is locked (Locked==true) after allocation
-            """)]
+        public async Task AllocateAccount_WithDisabledAccount_Fails()
+        {
+            // Arrange
+            var account1 = await Fixture.Accounts.AddTestAccountAsync("owner1", "github");
+            account1.Enabled = false;
+            await Fixture.Accounts.UpdateAsync(account1);
+
+            string guid = Guid.NewGuid().ToString();
+            try
+            {
+                var run = await Fixture.Runs.AddAsync();
+                var dependencies = new List<TestCaseDependency>
+                {
+                    new TestCaseDependency { AccountType = "github" }
+                };
+
+                // Act
+                var resources = await Fixture.Accounts.AllocateAsync(run, guid, dependencies);
+
+                // Assert
+                Assert.Empty(resources.Accounts);
+            }
+            finally
+            {
+                await Fixture.Accounts.DeleteAccountAsync(account1);
+
+            }
+        }
+
+        /// <summary>
+        /// Verifies that an account is locked (Locked==true) after allocation
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
         public async Task AllocateAccount_AccountIsLocked()
         {
             // Arrange

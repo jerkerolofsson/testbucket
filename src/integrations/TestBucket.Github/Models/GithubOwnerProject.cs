@@ -17,6 +17,10 @@ internal record class GithubOwnerProject(string Owner, string Project)
         }
 
         return new GithubOwnerProject(orgAndProject[0], orgAndProject[1]);
+    }
 
+    public override string ToString()
+    {
+        return $"{Owner}/{Project}";
     }
 }

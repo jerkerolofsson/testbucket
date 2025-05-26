@@ -123,6 +123,10 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                 if (options.CreateTestSuiteFromAssemblyName && runSuite.Assembly is not null)
                 {
                     suiteName = runSuite.Assembly;
+                    if(suiteName.EndsWith(".dll"))
+                    {
+                        suiteName = suiteName[0..^4];
+                    }
                 }
 
                 if (runSuite.Tests is null || suiteName is null)
@@ -266,6 +270,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                 ExternalId = run.ExternalId,
                 Description = "Imported",
                 SystemOut = run.SystemOut,
+                Open = false,
             };
             await _testRunManager.AddTestRunAsync(principal, testRun);
 

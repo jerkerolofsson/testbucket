@@ -21,7 +21,11 @@
     else
     {
         <Field Row>
-            <FieldHeader>@loc["ci-cd"]</FieldHeader>
+            <MudIcon Icon="@TbIcons.Filled.Infinite"></MudIcon>
+            <div>
+                <FieldHeader>@loc["ci-cd"]</FieldHeader>
+                <span>@loc["automation-ci-cd-description"]</span>
+            </div>
             <MudSpacer />
             <ExternalSystemPicker Project="@_project" Integration="@_integration" IntegrationChanged="OnIntegrationChanged" />
         </Field>
@@ -29,9 +33,31 @@
         @if (_integration is not null)
         {
             <Field Row>
-                <FieldHeader Icon="@TbIcons.Git.GitBranch">@loc["ci-cd-ref"]</FieldHeader>
+                <MudIcon Icon="@TbIcons.Git.GitBranch"></MudIcon>
+                <div>
+                    <FieldHeader>@loc["ci-cd-ref"]</FieldHeader>
+                    <span>@loc["automation-default-ci-cd-ref-description"]</span>
+                </div>
                 <MudSpacer />
-                <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdRefChanged" Value="@TestSuite.DefaultCiCdRef"></MudTextField>
+                <MudTextField Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdRefChanged" Value="@TestSuite.DefaultCiCdRef"></MudTextField>
+            </Field>
+
+            <Field Row>
+                <MudIcon Icon="@TbIcons.Git.GitBranch"></MudIcon>
+                <div>
+                    <FieldHeader>@loc["ci-cd-workflow"]</FieldHeader>
+                    <span>@loc["ci-cd-workflow-description"]</span>
+                </div>
+                <MudSpacer />
+                <MudTextField Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdWorkflowChanged" Value="@TestSuite.CiCdWorkflow"></MudTextField>
+            </Field>
+            <Field Row>
+                <div>
+                    <FieldHeader>@loc["automation-ci-cd-add-outside-pipelines"]</FieldHeader>
+                    <span>@loc["automation-ci-cd-add-outside-pipelines-description"]</span>
+                </div>
+                <MudSpacer />
+                <MudSwitchM3 Color="Color.Primary" T="bool" ValueChanged="OnAddPipelinesStartedFromOutsideChanged" Value="@_addOutsidePipelines"></MudSwitchM3>
             </Field>
         }
     }
@@ -44,6 +70,7 @@
     private IReadOnlyList<ExternalSystem> _integrations = [];
     private ExternalSystem? _integration;
     private TestProject? _project;
+    private bool _addOutsidePipelines;
 
     private async Task OnDefaultCiCdRefChanged(string value)
     {
@@ -55,9 +82,32 @@
         TestSuite.DefaultCiCdRef = value;
         await TestSuiteChanged.InvokeAsync(TestSuite);
     }
+    private async Task OnDefaultCiCdWorkflowChanged(string value)
+    {
+        if (TestSuite is null)
+        {
+            return;
+        }
+
+        TestSuite.CiCdWorkflow = value;
+        await TestSuiteChanged.InvokeAsync(TestSuite);
+    }
+
+    private async Task OnAddPipelinesStartedFromOutsideChanged(bool enabled)
+    {
+        if (TestSuite is null)
+        {
+            return;
+        }
+        _addOutsidePipelines = enabled;
+        TestSuite.AddPipelinesStartedFromOutside = enabled;
+        await TestSuiteChanged.InvokeAsync(TestSuite);
+    }
 
     protected override async Task OnParametersSetAsync()
     {
+        _addOutsidePipelines = TestSuite?.AddPipelinesStartedFromOutside ?? false;
+
         if(TestSuite?.TestProjectId is not null)
         {
             if (_project?.Id != TestSuite.TestProjectId)

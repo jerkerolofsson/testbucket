@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Runtime.CompilerServices;
+using System.Security.Claims;
 
 using TestBucket.Domain.Testing.Models;
 
@@ -29,6 +30,38 @@ public interface ITestSuiteManager
     Task DeleteTestSuiteByIdAsync(ClaimsPrincipal principal, long testSuiteId);
     Task<TestSuite?> GetTestSuiteBySlugAsync(ClaimsPrincipal principal, string slug);
     Task<TestSuite?> GetTestSuiteByNameAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string suiteName);
+
+    /// <summary>
+    /// Searches for test suites
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
     Task<PagedResult<TestSuite>> SearchTestSuitesAsync(ClaimsPrincipal principal, SearchQuery query);
     Task<TestSuiteFolder[]> GetTestSuiteFoldersAsync(ClaimsPrincipal principal, long? projectId, long testSuiteId, long? parentFolderId);
+
+
+    /// <summary>
+    /// Enumerates all items by fetching page-by-page
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async IAsyncEnumerable<TestSuite> EnumerateAsync(ClaimsPrincipal principal, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        var pageSize = 20;
+        var offset = 0;
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            var result = await SearchTestSuitesAsync(principal, new SearchQuery() { Offset = offset, Count = pageSize });
+            foreach (var item in result.Items)
+            {
+                yield return item;
+            }
+            if (result.Items.Length != pageSize)
+            {
+                break;
+            }
+            offset += result.Items.Length;
+        }
+    }
 }

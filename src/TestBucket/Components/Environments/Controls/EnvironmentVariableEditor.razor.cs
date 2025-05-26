@@ -44,7 +44,7 @@ public partial class EnvironmentVariableEditor
     {
         if (variable is not null)
         {
-            _variables = (Variables ?? []).Where(x => x != variable).ToList();
+            _variables = (_variables ?? []).Where(x => x != variable).ToList();
             OnChanged();
         }
     }

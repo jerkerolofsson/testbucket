@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using OpenTelemetry.Trace;
-
-using TestBucket.Contracts.Automation;
+﻿using TestBucket.Contracts.Automation;
 using TestBucket.Domain.Automation.Pipelines.Models;
 
 namespace TestBucket.Domain.Automation.Pipelines;
+
+/// <summary>
+/// Monitors a pipeline, updating the state locally
+/// </summary>
 internal class PipelineMonitor
 {
     private readonly PipelineManager _pipelineManager;
@@ -58,8 +53,9 @@ internal class PipelineMonitor
                 }
                 catch { }
 
-                var elapsedSinceSucces = DateTimeOffset.UtcNow - lastSuccess;
-                if(elapsedSinceSucces > TimeSpan.FromMinutes(10))
+                // Give up if not accessible
+                var elapsedSinceSuccess = DateTimeOffset.UtcNow - lastSuccess;
+                if(elapsedSinceSuccess > TimeSpan.FromMinutes(120))
                 {
                     return;
                 }

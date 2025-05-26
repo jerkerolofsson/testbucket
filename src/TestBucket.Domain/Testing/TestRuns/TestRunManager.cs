@@ -23,13 +23,15 @@ internal class TestRunManager : ITestRunManager
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
     private readonly IFieldManager _fieldManager;
     private readonly IMediator _mediator;
+    private readonly TimeProvider _timeProvider;
 
-    public TestRunManager(ITestCaseRepository testCaseRepo, IFieldDefinitionManager fieldDefinitionManager, IFieldManager fieldManager, IMediator mediator)
+    public TestRunManager(ITestCaseRepository testCaseRepo, IFieldDefinitionManager fieldDefinitionManager, IFieldManager fieldManager, IMediator mediator, TimeProvider timeProvider)
     {
         _testCaseRepo = testCaseRepo;
         _fieldDefinitionManager = fieldDefinitionManager;
         _fieldManager = fieldManager;
         _mediator = mediator;
+        _timeProvider = timeProvider;
     }
 
     /// <summary>
@@ -67,8 +69,7 @@ internal class TestRunManager : ITestRunManager
     public async Task AddTestRunAsync(ClaimsPrincipal principal, TestRun testRun)
     {
         testRun.TenantId = principal.GetTenantIdOrThrow();
-
-        testRun.Modified = testRun.Created = DateTimeOffset.UtcNow;
+        testRun.Modified = testRun.Created = _timeProvider.GetUtcNow();
         testRun.CreatedBy = testRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 
         await _testCaseRepo.AddTestRunAsync(testRun);
@@ -107,7 +108,7 @@ internal class TestRunManager : ITestRunManager
     {
         testCaseRun.TenantId = principal.GetTenantIdOrThrow();
 
-        testCaseRun.Modified = testCaseRun.Created = DateTimeOffset.UtcNow;
+        testCaseRun.Modified = testCaseRun.Created = _timeProvider.GetUtcNow();
         testCaseRun.CreatedBy = testCaseRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 
         await _testCaseRepo.AddTestCaseRunAsync(testCaseRun);
@@ -163,7 +164,7 @@ internal class TestRunManager : ITestRunManager
     {
         principal.ThrowIfEntityTenantIsDifferent(testRun);
 
-        testRun.Modified = DateTimeOffset.UtcNow;
+        testRun.Modified = _timeProvider.GetUtcNow();
         testRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 
         await _testCaseRepo.UpdateTestRunAsync(testRun);
@@ -179,7 +180,7 @@ internal class TestRunManager : ITestRunManager
     {
         principal.GetTenantIdOrThrow(testCaseRun);
 
-        testCaseRun.Modified =  DateTimeOffset.UtcNow;
+        testCaseRun.Modified = _timeProvider.GetUtcNow();
         testCaseRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
         testCaseRun.TestCaseRunFields = await _fieldManager.GetTestCaseRunFieldsAsync(principal, testCaseRun.TestRunId, testCaseRun.Id, []);
         await _testCaseRepo.UpdateTestCaseRunAsync(testCaseRun);

@@ -118,31 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="access-token" xml:space="preserve">
-    <value>Access Token</value>
+    <value>Access token</value>
   </data>
   <data name="add-integration" xml:space="preserve">
-    <value>Add Integration</value>
+    <value>Add integration</value>
   </data>
   <data name="artifacts" xml:space="preserve">
     <value>Artifacts</value>
   </data>
   <data name="create-issues" xml:space="preserve">
-    <value>Create Issues</value>
+    <value>Create issues</value>
   </data>
   <data name="create-pipeline" xml:space="preserve">
-    <value>Create Automation Pipelines</value>
+    <value>Create pipelines</value>
   </data>
   <data name="features" xml:space="preserve">
     <value>Features</value>
   </data>
   <data name="get-issues" xml:space="preserve">
-    <value>Get Issues</value>
+    <value>Read issues</value>
   </data>
   <data name="get-milestones" xml:space="preserve">
     <value>Read milestones</value>
   </data>
   <data name="get-releases" xml:space="preserve">
-    <value>Read Releases</value>
+    <value>Read releases</value>
   </data>
   <data name="integration" xml:space="preserve">
     <value>Integration</value>
@@ -155,6 +155,9 @@
   </data>
   <data name="project-id" xml:space="preserve">
     <value>Project ID</value>
+  </data>
+  <data name="read-artifacts" xml:space="preserve">
+    <value>Read artifacts</value>
   </data>
   <data name="read-pipeline-artifacts-is-not-enabled" xml:space="preserve">
     <value>Read Pipeline Artifacts is not enabled. To access artifacts from the integration enable this first.</value>

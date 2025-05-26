@@ -55,9 +55,8 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
         var principal = Impersonation.Impersonate(tenant.Id);
 
         var projectRepository = scope.ServiceProvider.GetRequiredService<IProjectRepository>();
-        var projects = await projectRepository.SearchAsync(tenant.Id, new SearchQuery() { Offset = 0, Count = 100 });
-        foreach (var project in projects.Items)
-        {
+        await foreach (var project in projectRepository.EnumerateAsync(tenant.Id, cancellationToken))
+        { 
             await ProcessProjectAsync(principal, scope, project, cancellationToken);
         }
     }
@@ -90,39 +89,53 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
         var manager = scope.ServiceProvider.GetRequiredService<ICommitManager>();
 
         // Temp
-        repo.LastIndexTimestamp = null;
+        //repo.LastIndexTimestamp = null;
         //repo.LastIndexTimestamp = new DateTimeOffset(2025, 4, 28, 21, 09, 0, 0, TimeSpan.Zero);
+        var from = repo.LastIndexTimestamp ?? new DateTimeOffset(2025, 1, 1, 0, 0, 0, 0, TimeSpan.Zero);
 
-        var commits = await integration.GetCommitsAsync(externalSystem.ToDto(), null, repo.LastIndexTimestamp, until, cancellationToken);
-        foreach(var commit in commits)
+        while(from < until)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            if (commit.Files is null)
+            var untilPage = from.AddDays(7);
+            if(untilPage > until)
             {
-                var commitWithFiles = await integration.GetCommitAsync(externalSystem.ToDto(), commit.Ref, cancellationToken);
-                var commitDbo = commitWithFiles.ToDbo(repo);
-                commitDbo.TestProjectId = project.Id;
-                commitDbo.TeamId = project.TeamId;
+                untilPage = until;
+            }
 
-                await manager.AddCommitAsync(principal, commitDbo);
-            }
-            else
+            // Index week
+            var commits = await integration.GetCommitsAsync(externalSystem.ToDto(), null, from, untilPage, cancellationToken);
+            foreach (var commit in commits)
             {
-                var commitDbo = commit.ToDbo(repo);
-                commitDbo.TestProjectId = project.Id;
-                commitDbo.TeamId = project.TeamId;
-                await manager.AddCommitAsync(principal, commitDbo);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                if (commit.Files is null)
+                {
+                    var commitWithFiles = await integration.GetCommitAsync(externalSystem.ToDto(), commit.Ref, cancellationToken);
+                    var commitDbo = commitWithFiles.ToDbo(repo);
+                    commitDbo.TestProjectId = project.Id;
+                    commitDbo.TeamId = project.TeamId;
+
+                    await manager.AddCommitAsync(principal, commitDbo);
+                }
+                else
+                {
+                    var commitDbo = commit.ToDbo(repo);
+                    commitDbo.TestProjectId = project.Id;
+                    commitDbo.TeamId = project.TeamId;
+                    await manager.AddCommitAsync(principal, commitDbo);
+                }
             }
+
+            // Update timestamp for indexing
+            repo.LastIndexTimestamp = until;
+            await manager.UpdateRepositoryAsync(principal, repo);
+
+            from = untilPage;
         }
 
-        // Update timestamp for indexing
-        repo.LastIndexTimestamp = until;
-        await manager.UpdateRepositoryAsync(principal, repo);
     }
 
     /// <summary>
-    /// Getsd a repository from the local database or requests one from the integration and creates one in the local DB
+    /// Gets a repository from the local database or requests one from the integration and creates one in the local DB
     /// </summary>
     /// <param name="scope"></param>
     /// <param name="project"></param>

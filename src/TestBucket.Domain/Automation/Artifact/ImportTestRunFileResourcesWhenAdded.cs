@@ -45,7 +45,7 @@ namespace TestBucket.Domain.Automation.Artifact
             var format = TestResultSerializerFactory.GetFormatFromContentType(notification.Resource.ContentType);
             if(format == TestResultFormat.UnknownFormat)
             {
-                _logger.LogDebug("Will not import test run attachment no format was found for media-type: {contentType}", notification.Resource.ContentType);
+                _logger.LogDebug("[CI_CD_AUTO] Will not import test run attachment no format was found for media-type: {contentType}", notification.Resource.ContentType);
                 return;
             }
 
@@ -55,7 +55,7 @@ namespace TestBucket.Domain.Automation.Artifact
                 TestRunId = testRun.Id,
             };
 
-            _logger.LogDebug("Importing {FileName} using serializer: {format}", notification.Resource.Name, format);
+            _logger.LogDebug("[CI_CD_AUTO] Importing {FileName} using serializer: {format}", notification.Resource.Name, format);
             var textImporter = scope.ServiceProvider.GetRequiredService<ITextTestResultsImporter>();
             await textImporter.ImportTextAsync(principal, testRun.TeamId.Value, testRun.TestProjectId.Value, format, text, options);
         }

@@ -15,6 +15,7 @@ using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing;
+using TestBucket.Domain.Testing.TestRuns.Events;
 
 namespace TestBucket.Domain.Automation.Pipelines;
 internal class PipelineManager : IPipelineManager
@@ -59,6 +60,12 @@ internal class PipelineManager : IPipelineManager
     public void RemoveObserver(IPipelineObserver observer) => _observers.Remove(observer);
     #endregion Observers
 
+    /// <summary>
+    /// Gets all project integrations
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testProjectId"></param>
+    /// <returns></returns>
     public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsAsync(ClaimsPrincipal principal, long testProjectId)
     {
         var tenantId = principal.GetTenantIdOrThrow();
@@ -73,6 +80,13 @@ internal class PipelineManager : IPipelineManager
 
         return result!;
     }
+
+    /// <summary>
+    /// Gets all runners
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testProjectId"></param>
+    /// <returns></returns>
     public async Task<IReadOnlyList<IExternalPipelineRunner>> GetExternalPipelineRunnersAsync(ClaimsPrincipal principal, long testProjectId)
     {
         ExternalSystemDto[] configs = await GetIntegrationConfigsAsync(principal, testProjectId);
@@ -89,6 +103,12 @@ internal class PipelineManager : IPipelineManager
         return result;
     }
 
+    /// <summary>
+    /// Gets all configurations as DTOs (this is a DTO mapping of GetIntegrationConfigsAsync)
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testProjectId"></param>
+    /// <returns></returns>
     public async Task<ExternalSystemDto[]> GetIntegrationConfigsAsync(ClaimsPrincipal principal, long testProjectId)
     {
         var integrations = (await GetProjectIntegrationsAsync(principal, testProjectId)).ToArray();
@@ -96,6 +116,13 @@ internal class PipelineManager : IPipelineManager
         return configs;
     }
 
+    /// <summary>
+    /// Refreshes the status of a pipeline
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="pipelineId"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     internal async Task<Pipeline?> RefreshStatusAsync(ClaimsPrincipal principal, long pipelineId, CancellationToken cancellationToken)
     {
         Pipeline? pipeline = await _repository.GetByIdAsync(pipelineId);
@@ -242,6 +269,12 @@ internal class PipelineManager : IPipelineManager
         return null;
     }
 
+    /// <summary>
+    /// Returns all pipelines for the specified test run
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testRunId"></param>
+    /// <returns></returns>
     public async Task<IReadOnlyList<Pipeline>> GetPipelinesForTestRunAsync(ClaimsPrincipal principal, long testRunId)
     {
         var tenantId = principal.GetTenantIdOrThrow();
@@ -250,6 +283,27 @@ internal class PipelineManager : IPipelineManager
 
         return await _repository.GetPipelinesForTestRunAsync(filters, testRunId);
     }
+
+    public async Task<Pipeline?> GetPipelineByExternalAsync(ClaimsPrincipal principal, string ciCdSystemName, string ciCdProjectId, string ciCdPipelineId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+
+        FilterSpecification<Pipeline>[] filters = 
+        [
+            new FilterByTenant<Pipeline>(tenantId), 
+            new FilterPipelinesByExternalComponents(ciCdSystemName, ciCdProjectId, ciCdPipelineId)
+        ];
+
+        var items = await _repository.SearchAsync(filters, 0, 1);
+        return items.Items.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Returns a pipeline by database ID
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
 
     public async Task<Pipeline?> GetPipelineByIdAsync(ClaimsPrincipal principal, long id)
     {
@@ -265,9 +319,24 @@ internal class PipelineManager : IPipelineManager
     {
         _logger.LogInformation("Pipeline completed: {CiCdSystem} #{CiCdPipelineIdentifier}", pipeline.CiCdSystem, pipeline.CiCdPipelineIdentifier);
 
+        await DownloadArtifactsFromPipelineAsync(principal, pipeline);
+
+        if(pipeline.TestRunId is not null)
+        {
+            await CloseRunAsync(principal, pipeline.TestRunId.Value);
+        }
+    }
+
+    private async Task CloseRunAsync(ClaimsPrincipal principal, long testRunId)
+    {
+        await _mediator.Send(new CloseRunRequest(principal, testRunId));
+    }
+
+    private async Task DownloadArtifactsFromPipelineAsync(ClaimsPrincipal principal, Pipeline pipeline)
+    {
         var configuredRunner = await ConfigurePipelineRunnerAsync(principal, pipeline);
-        if (configuredRunner is not null && 
-            (configuredRunner.Config.SupportedCapabilities&ExternalSystemCapability.ReadPipelineArtifacts) == ExternalSystemCapability.ReadPipelineArtifacts &&
+        if (configuredRunner is not null &&
+            (configuredRunner.Config.SupportedCapabilities & ExternalSystemCapability.ReadPipelineArtifacts) == ExternalSystemCapability.ReadPipelineArtifacts &&
             configuredRunner.Config.TestResultsArtifactsPattern is not null &&
             pipeline.PipelineJobs is not null)
         {
@@ -276,16 +345,24 @@ internal class PipelineManager : IPipelineManager
                 if (job.HasArtifacts && job.CiCdJobIdentifier is not null && pipeline.CiCdPipelineIdentifier is not null)
                 {
                     // Add as attachments to the test case
-                    var bytes = await configuredRunner.Service.GetArtifactsZipAsByteArrayAsync(configuredRunner.Config, 
-                        pipeline.CiCdPipelineIdentifier,
-                        job.CiCdJobIdentifier,
-                         configuredRunner.Config.TestResultsArtifactsPattern,
-                        CancellationToken.None);
-                    if (bytes.Length > 0 && pipeline.TestRunId is not null && pipeline.TenantId is not null)
+                    try
                     {
-                        // Sends event that will scan the artifact zip for test results and add them to the run as attachments
-                        // 
-                        await _mediator.Publish(new JobArtifactDownloaded(principal, pipeline.TestRunId.Value, configuredRunner.Config.TestResultsArtifactsPattern, bytes));
+                        var bytes = await configuredRunner.Service.GetArtifactsZipAsByteArrayAsync(configuredRunner.Config,
+                            pipeline.CiCdPipelineIdentifier,
+                            job.CiCdJobIdentifier,
+                             configuredRunner.Config.TestResultsArtifactsPattern,
+                            CancellationToken.None);
+
+                        if (bytes.Length > 0 && pipeline.TestRunId is not null && pipeline.TenantId is not null)
+                        {
+                            // Sends event that will scan the artifact zip for test results and add them to the run as attachments
+                            await _mediator.Publish(new JobArtifactDownloaded(principal, pipeline.TestRunId.Value, configuredRunner.Config.TestResultsArtifactsPattern, bytes));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Artifact has expired
+                        _logger.LogError(ex, "Failed to download and process artifact from CI/CD system");
                     }
                 }
             }

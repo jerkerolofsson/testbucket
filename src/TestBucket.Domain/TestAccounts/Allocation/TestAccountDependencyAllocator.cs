@@ -86,6 +86,7 @@ public class TestAccountDependencyAllocator
     {
         FilterSpecification<TestAccount>[] filters = [
             new FindUnlockedAccount(),
+            new FindEnabledAccount(),
             new FindAccountByType(resourceType),
             new FilterByTenant<TestAccount>(principal.GetTenantIdOrThrow())
         ];

@@ -12,11 +12,13 @@ internal class DeleteTestSuiteCommand : ICommand
     private readonly AppNavigationManager _appNavigationManager;
     private readonly TestSuiteService _browser;
     private readonly IStringLocalizer<SharedStrings> _loc;
-    public DeleteTestSuiteCommand(AppNavigationManager appNavigationManager, TestSuiteService browser, IStringLocalizer<SharedStrings> loc)
+    private readonly IDialogService _dialogService;
+    public DeleteTestSuiteCommand(AppNavigationManager appNavigationManager, TestSuiteService browser, IStringLocalizer<SharedStrings> loc, IDialogService dialogService)
     {
         _appNavigationManager = appNavigationManager;
         _browser = browser;
         _loc = loc;
+        _dialogService = dialogService;
     }
 
     public int SortOrder => 90;
@@ -39,6 +41,16 @@ internal class DeleteTestSuiteCommand : ICommand
         {
             return;
         }
-        await _browser.DeleteTestSuiteByIdAsync(suite.Id);
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc["yes"],
+            NoText = _loc["no"],
+            Title = _loc["confirm-delete-title"],
+            MarkupMessage = new MarkupString(_loc["confirm-delete-message"])
+        });
+        if (result == true)
+        {
+            await _browser.DeleteTestSuiteByIdAsync(suite.Id);
+        }
     }
 }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO.Compression;
 
 using Mediator;
 
@@ -13,9 +8,7 @@ using Microsoft.Extensions.Logging;
 using TestBucket.Domain.Automation.Artifact.Events;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Resources;
-using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Services.Import;
-using TestBucket.Formats;
 
 namespace TestBucket.Domain.Automation.Artifact
 {
@@ -39,12 +32,14 @@ namespace TestBucket.Domain.Automation.Artifact
             if (notification.ZipBytes.Length == 0)
             {
                 // Fast exit for empty zips
+                _logger.LogWarning("[CI_CD_AUTO] zip is zero bytes");
                 return;
             }
 
             if (string.IsNullOrEmpty(notification.TestResultsArtifactsPattern))
             {
                 // If no pattern was defined, we cannot do anything
+                _logger.LogDebug("[CI_CD_AUTO] glob-pattern for test results is not set in JobArtifactDownloaded notification");
                 return;
             }
             try
@@ -78,6 +73,8 @@ namespace TestBucket.Domain.Automation.Artifact
 
                 // Detect the file format and add this as an attachment
                 var contentType = MediaTypeDetector.DetectType("application/octet-stream", bytes);
+
+                _logger.LogDebug("[CI_CD_AUTO] Processing artifact zip-entry: {ArtifactZipEntryName}, length={ArtifactZipEntryLength} bytes, type={ContentType}", entry.Name, entry.Length, contentType);
 
                 await files.AddResourceAsync(principal, new Files.Models.FileResource
                 {

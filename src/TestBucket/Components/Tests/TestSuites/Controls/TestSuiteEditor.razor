@@ -43,6 +43,15 @@
             </Field>
 
             <Field Row>
+                <MudIcon Icon="@TbIcons.Git.GitBranch"></MudIcon>
+                <div>
+                    <FieldHeader>@loc["ci-cd-workflow"]</FieldHeader>
+                    <span>@loc["ci-cd-workflow-description"]</span>
+                </div>
+                <MudSpacer />
+                <MudTextField Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdWorkflowChanged" Value="@TestSuite.CiCdWorkflow"></MudTextField>
+            </Field>
+            <Field Row>
                 <div>
                     <FieldHeader>@loc["automation-ci-cd-add-outside-pipelines"]</FieldHeader>
                     <span>@loc["automation-ci-cd-add-outside-pipelines-description"]</span>
@@ -71,6 +80,16 @@
         }
 
         TestSuite.DefaultCiCdRef = value;
+        await TestSuiteChanged.InvokeAsync(TestSuite);
+    }
+    private async Task OnDefaultCiCdWorkflowChanged(string value)
+    {
+        if (TestSuite is null)
+        {
+            return;
+        }
+
+        TestSuite.CiCdWorkflow = value;
         await TestSuiteChanged.InvokeAsync(TestSuite);
     }
 

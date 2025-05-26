@@ -148,6 +148,8 @@ internal class TestRunCreationController : TenantBaseService
             Guid = Guid.NewGuid().ToString(),
             TestSuiteId = testSuite?.Id,
             TestSuiteName = testSuite?.Name,
+            CiCdWorkflow = testSuite?.CiCdWorkflow,
+
             TenantId = testRun.TenantId,
             TestRunId = testRun.Id,
             ProjectId = testRun.TestProjectId.Value,

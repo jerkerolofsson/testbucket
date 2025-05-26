@@ -5,21 +5,20 @@ name: TestBucket
 
 on:
    workflow_dispatch:
-     branches: [ "main" ]
-    inputs:
-      testSuite:
-        description: 'The test suite to run'
-        required: false
-        default: 'TestBucket.Domain.UnitTests'
-        type: choice
-        options:
-          - 'TestBucket.Domain.UnitTests'
-          - 'TestBucket.Domain.IntegrationTests'
-          - 'TestBucket.Domain.UnitTests'
-          - 'TestBucket.Blazor.Tests'
-          - 'TestBucket.Formats.UnitTests'
-          - 'TestBucket.Traits.Core.UnitTests'
-          - 'TestBucket.CodeCoverage.Tests'
+     inputs:
+       testSuite:
+         description: 'The test suite to run'
+         required: false
+         default: 'TestBucket.Domain.UnitTests'
+         type: choice
+         options:
+         - 'TestBucket.Domain.UnitTests'
+         - 'TestBucket.Domain.IntegrationTests'
+         - 'TestBucket.Blazor.Tests'
+         - 'TestBucket.Formats.UnitTests'
+         - 'TestBucket.Traits.Core.UnitTests'
+         - 'TestBucket.CodeCoverage.Tests'
+         
 jobs:
   build:
 

@@ -17,7 +17,7 @@ internal class DefaultTheme : TestBucketTheme
         DarkScheme.Base.Background = "#111116";
         DarkScheme.Base.Surface = "#19191E";
 
-        DarkScheme.Base.TextPrimary = "#f5f5ff";
+        DarkScheme.Base.TextPrimary = "#f0f6fc";
         DarkScheme.Base.Dark = "#0d1321";
         DarkScheme.Base.Primary = "#7f85f5";
         DarkScheme.Base.Secondary = "#5b5fc7";

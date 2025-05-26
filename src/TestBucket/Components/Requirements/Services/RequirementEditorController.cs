@@ -331,7 +331,7 @@ internal class RequirementEditorController : TenantBaseService
         };
         var dialog = await _dialogService.ShowAsync<CreateRequirementSpecificationDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
-        if(result.Data is RequirementSpecification spec)
+        if(result?.Data is RequirementSpecification spec)
         {
             return spec;
         }

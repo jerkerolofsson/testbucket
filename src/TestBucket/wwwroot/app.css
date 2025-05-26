@@ -473,10 +473,11 @@ tb-field .mud-link.mud-link-underline-hover:hover {
 
  .treeview .node {
      padding: 0;
-     margin-left: 12px;
      overflow: hidden;
      font-size: var(--mud-typography-default-size);
- }
+     margin-left: 12px;
+     position: relative;
+}
 
  .treeview > .node  {
      margin-left: 0px;
@@ -489,6 +490,7 @@ tb-field .mud-link.mud-link-underline-hover:hover {
         grid-template-columns: auto auto 1fr;
         align-items: center;
     }
+
 
 .tb-datarow-selected,
 .tb-navmenu-selected,

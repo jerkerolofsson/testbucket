@@ -26,7 +26,10 @@ internal class DeleteTestSuiteCommand : ICommand
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
-    public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;
+    public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null &&
+        _appNavigationManager.State.SelectedTestRun is null &&
+        _appNavigationManager.State.SelectedTestCase is null &&
+        _appNavigationManager.State.SelectedTestSuiteFolder is null;
     public string Id => "delete-test-suite";
     public string Name => _loc["delete-test-suite"];
     public string Description => _loc["delete-test-suite-description"];

@@ -135,7 +135,7 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
     }
 
     /// <summary>
-    /// Getsd a repository from the local database or requests one from the integration and creates one in the local DB
+    /// Gets a repository from the local database or requests one from the integration and creates one in the local DB
     /// </summary>
     /// <param name="scope"></param>
     /// <param name="project"></param>

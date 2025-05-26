@@ -3,6 +3,7 @@ using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestCases.Search;
+using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
@@ -112,6 +113,13 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         {
             var manager = Fixture.Services.GetRequiredService<ITestSuiteManager>();
             await manager.DeleteTestSuiteByIdAsync(user, suite.Id);
+        }
+
+        internal async Task AddRunAsync(TestRun run)
+        {
+            var principal = Impersonation.Impersonate(Fixture.App.Tenant);
+            var manager = Fixture.Services.GetRequiredService<ITestRunManager>();
+            await manager.AddTestRunAsync(principal,run);
         }
     }
 }

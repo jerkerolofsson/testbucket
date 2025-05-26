@@ -661,6 +661,13 @@ internal class TestCaseRepository : ITestCaseRepository
         testRun.Slug = await GenerateTestCaseSlugAsync(testRun.TenantId, testRun.Name);
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        if (testRun.TestProjectId is not null && testRun.TeamId is null)
+        {
+            var project = await dbContext.Projects.Where(x => x.Id == testRun.TestProjectId).FirstOrDefaultAsync();
+            testRun.TeamId = project?.TeamId;   
+        }
+
         await dbContext.TestRuns.AddAsync(testRun);
         await dbContext.SaveChangesAsync();
     }

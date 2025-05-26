@@ -425,7 +425,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="rename" xml:space="preserve">
     <value>Rename</value>
   </data>
-  <data name="add" xml:space="preserve">
+  <data name="r" xml:space="preserve">
     <value>Add</value>
   </data>
   <data name="create-test-run" xml:space="preserve">
@@ -634,5 +634,8 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="ci-cd-jobs" xml:space="preserve">
     <value>CI/CD jobs</value>
+  </data>
+  <data name="ci-cd-job" xml:space="preserve">
+    <value>CI/CD job</value>
   </data>
 </root>

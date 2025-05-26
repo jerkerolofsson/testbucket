@@ -423,7 +423,7 @@
   <data name="rename" xml:space="preserve">
     <value>Döp om</value>
   </data>
-  <data name="add" xml:space="preserve">
+  <data name="r" xml:space="preserve">
     <value>Lägg till</value>
   </data>
   <data name="create-test-run" xml:space="preserve">
@@ -631,6 +631,9 @@
     <value />
   </data>
   <data name="ci-cd-jobs" xml:space="preserve">
-    <value />
+    <value>CI/CDjobb</value>
+  </data>
+  <data name="ci-cd-job" xml:space="preserve">
+    <value>CI/CD jobb</value>
   </data>
 </root>

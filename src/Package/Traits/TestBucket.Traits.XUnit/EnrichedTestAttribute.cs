@@ -152,17 +152,17 @@ namespace TestBucket.Traits.Xunit
             }
         }
 
-        private static void EnrichWithTraitAttachmentAttributes(IXunitTest test)
+        private void EnrichWithTraitAttachmentAttributes(IXunitTest test)
         {
             var testMethodDescriptionAttributes = test.TestMethod.TestClass.Class.GetCustomAttributes<TraitAttachmentPropertyAttribute>(true);
             var testClassDescriptionAttributes = test.TestMethod.Method.GetCustomAttributes<TraitAttachmentPropertyAttribute>(true).ToList();
             foreach (var attr in testClassDescriptionAttributes)
             {
-                TestContext.Current.AddAttachment(attr.Name, attr.Value);
+                AddAttachmentIfNotExists(attr.Name, attr.Value);
             }
             foreach (var attr in testMethodDescriptionAttributes)
             {
-                TestContext.Current.AddAttachment(attr.Name, attr.Value);
+                AddAttachmentIfNotExists(attr.Name, attr.Value);
             }
         }
     }

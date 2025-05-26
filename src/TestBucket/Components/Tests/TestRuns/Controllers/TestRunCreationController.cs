@@ -95,11 +95,8 @@ internal class TestRunCreationController : TenantBaseService
         var testRun = await CreateTestRunAsync(testSuite);
         if (testRun is not null)
         {
-            // By default, include all tests
-            var testCaseList = new TestCaseList { Query = new SearchTestQuery { TestSuiteId = testSuite.Id, ProjectId = testSuite.TestProjectId } };
-
-            // Add all manual test cases
-            await foreach(var testCaseId in _testCaseManager.SearchTestCaseIdsAsync(principal, testCaseList.Query))
+            // Add test cases
+            foreach(var testCaseId in testCaseIds)
             {
                 await AddTestCaseToRunAsync(testRun, testCaseId);
             }

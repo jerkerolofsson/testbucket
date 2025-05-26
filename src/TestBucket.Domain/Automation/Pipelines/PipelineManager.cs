@@ -15,6 +15,7 @@ using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing;
+using TestBucket.Domain.Testing.TestRuns.Events;
 
 namespace TestBucket.Domain.Automation.Pipelines;
 internal class PipelineManager : IPipelineManager
@@ -318,9 +319,24 @@ internal class PipelineManager : IPipelineManager
     {
         _logger.LogInformation("Pipeline completed: {CiCdSystem} #{CiCdPipelineIdentifier}", pipeline.CiCdSystem, pipeline.CiCdPipelineIdentifier);
 
+        await DownloadArtifactsFromPipelineAsync(principal, pipeline);
+
+        if(pipeline.TestRunId is not null)
+        {
+            await CloseRunAsync(principal, pipeline.TestRunId.Value);
+        }
+    }
+
+    private async Task CloseRunAsync(ClaimsPrincipal principal, long testRunId)
+    {
+        await _mediator.Send(new CloseRunRequest(principal, testRunId));
+    }
+
+    private async Task DownloadArtifactsFromPipelineAsync(ClaimsPrincipal principal, Pipeline pipeline)
+    {
         var configuredRunner = await ConfigurePipelineRunnerAsync(principal, pipeline);
-        if (configuredRunner is not null && 
-            (configuredRunner.Config.SupportedCapabilities&ExternalSystemCapability.ReadPipelineArtifacts) == ExternalSystemCapability.ReadPipelineArtifacts &&
+        if (configuredRunner is not null &&
+            (configuredRunner.Config.SupportedCapabilities & ExternalSystemCapability.ReadPipelineArtifacts) == ExternalSystemCapability.ReadPipelineArtifacts &&
             configuredRunner.Config.TestResultsArtifactsPattern is not null &&
             pipeline.PipelineJobs is not null)
         {

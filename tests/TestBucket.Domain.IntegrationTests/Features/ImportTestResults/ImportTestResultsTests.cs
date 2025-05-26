@@ -36,7 +36,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.ImportTestResults
 
             // Create a run
             var runManager = Fixture.Services.GetRequiredService<ITestRunManager>();
-            var run = new TestRun() { TestProjectId = Fixture.ProjectId, Name = "Run " + Guid.NewGuid().ToString(), TeamId = Fixture.TeamId };
+            var run = new TestRun() { TestProjectId = Fixture.ProjectId, Name = "Run " + Guid.NewGuid().ToString(), TeamId = Fixture.TeamId, Open = false };
             await runManager.AddTestRunAsync(principal, run);
 
             // Import results

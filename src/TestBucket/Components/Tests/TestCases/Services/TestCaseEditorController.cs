@@ -354,6 +354,7 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
     internal async ValueTask AddTestRunAsync(TestRun testRun)
     {
         var principal = await GetUserClaimsPrincipalAsync();
+        testRun.Open = true;
         await _testRunManager.AddTestRunAsync(principal, testRun);
     }
 

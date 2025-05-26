@@ -44,6 +44,10 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
 
         var createWorkflowDispatch = new CreateWorkflowDispatch(context.CiCdRef);
         createWorkflowDispatch.Inputs = new Dictionary<string, object>();
+        foreach(var item in context.Variables.Take(10))
+        {
+            createWorkflowDispatch.Inputs[item.Key] = item.Value;
+        }
 
         await client.Actions.Workflows.CreateDispatch(ownerProject.Owner, ownerProject.Project, workflowFilename, createWorkflowDispatch);
 

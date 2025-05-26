@@ -60,7 +60,8 @@ internal class RunTestSuiteCommand : ICommand
         }
         long[] testCaseIds = await _browser.GetTestSuiteSuiteTestsAsync(suite, excludeAutomated: true);
 
-        var run = await _testRunCreationController.CreateTestRunAsync(suite, testCaseIds, startAutomation: true);
+        bool startAutomation = true;
+        var run = await _testRunCreationController.CreateTestRunAsync(suite, testCaseIds, startAutomation);
         if (run is not null)
         {
             _appNavigationManager.NavigateTo(run);

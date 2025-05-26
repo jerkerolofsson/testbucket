@@ -266,6 +266,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                 ExternalId = run.ExternalId,
                 Description = "Imported",
                 SystemOut = run.SystemOut,
+                Open = false,
             };
             await _testRunManager.AddTestRunAsync(principal, testRun);
 

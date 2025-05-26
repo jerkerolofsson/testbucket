@@ -150,6 +150,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IPipelineProjectManager, PipelineProjectManager>();
         services.AddScoped<IProjectTokenGenerator, ProjectTokenGenerator>();
         services.AddScoped<IPipelineManager, PipelineManager>();
+        services.AddHostedService<UnconnectedPipelineIndexer>();
 
         services.AddScoped<ICommentsManager, CommentsManager>();
 

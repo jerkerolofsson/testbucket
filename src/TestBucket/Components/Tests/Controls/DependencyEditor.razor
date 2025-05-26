@@ -18,8 +18,8 @@
                 <MudIcon Icon="@Icons.Material.Filled.Devices" Size="Size.Large" Color="Color.Info" />
                 <MudText Typo="Typo.h2">@loc["required-resources"]</MudText>
                 <MudSpacer/>
-                <MudIconButton Icon="@Icons.Material.Filled.Devices" OnClick="AddResourceAsync"/>
-                <MudIconButton Icon="@Icons.Material.Filled.AccountCircle" OnClick="AddAccountAsync" />
+                <MudButton StartIcon="@Icons.Material.Filled.Devices" OnClick="AddResourceAsync">@loc["add-resource"]</MudButton>
+                <MudButton StartIcon="@Icons.Material.Filled.AccountCircle" OnClick="AddAccountAsync">@loc["add-account"]</MudButton>
             </MudStack>
         </ToolBarContent>
         <Columns>

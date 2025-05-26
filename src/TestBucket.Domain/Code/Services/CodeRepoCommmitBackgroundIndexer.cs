@@ -55,9 +55,8 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
         var principal = Impersonation.Impersonate(tenant.Id);
 
         var projectRepository = scope.ServiceProvider.GetRequiredService<IProjectRepository>();
-        var projects = await projectRepository.SearchAsync(tenant.Id, new SearchQuery() { Offset = 0, Count = 100 });
-        foreach (var project in projects.Items)
-        {
+        await foreach (var project in projectRepository.EnumerateAsync(tenant.Id, cancellationToken))
+        { 
             await ProcessProjectAsync(principal, scope, project, cancellationToken);
         }
     }

@@ -57,6 +57,11 @@ public class TestSuite : TestEntity
     public string? DefaultCiCdRef { get; set; }
 
     /// <summary>
+    /// If true, pipelines started from an outside source (e.g. regular CI pipeline) will be indexed and runs added
+    /// </summary>
+    public bool? AddPipelinesStartedFromOutside { get; set; }
+
+    /// <summary>
     /// Which integration to use
     /// </summary>
     public string? CiCdSystem { get; set; }

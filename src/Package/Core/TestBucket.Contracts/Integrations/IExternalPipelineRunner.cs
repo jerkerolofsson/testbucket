@@ -55,5 +55,6 @@ namespace TestBucket.Contracts.Integrations
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
         Task<string> ReadTraceAsync(ExternalSystemDto system, string jobId, CancellationToken cancellationToken);
+        Task<IReadOnlyList<PipelineDto>> GetPipelineRunsAsync(ExternalSystemDto system, DateOnly from, DateOnly until, CancellationToken cancellationToken);
     }
 }

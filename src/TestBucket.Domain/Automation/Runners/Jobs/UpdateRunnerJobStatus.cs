@@ -14,6 +14,10 @@ namespace TestBucket.Domain.Automation.Runners.Jobs
     public record class UpdateRunnerJobStatusResponse(bool Success);
     public record class UpdateRunnerJobStatusRequest(ClaimsPrincipal Principal, RunResponse Response) : IRequest<UpdateRunnerJobStatusResponse>;
 
+    /// <summary>
+    /// Updates the job status in the database
+    /// This is invoked through an API, for example by the "Test Bucket Runner"
+    /// </summary>
     public class UpdateRunnerJobStatusHandler : IRequestHandler<UpdateRunnerJobStatusRequest, UpdateRunnerJobStatusResponse>
     {
         private readonly IJobRepository _jobRepository;

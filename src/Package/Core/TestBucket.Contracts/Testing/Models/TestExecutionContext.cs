@@ -66,6 +66,8 @@ public class TestExecutionContext
 
     /// <summary>
     /// This is the ID returned from the external CI/CD system when running
+    /// 
+    /// Note: For github the ID is not returned so when starting a new run we are polling for the latest new one
     /// </summary>
     public string? CiCdPipelineIdentifier { get; set; }
 

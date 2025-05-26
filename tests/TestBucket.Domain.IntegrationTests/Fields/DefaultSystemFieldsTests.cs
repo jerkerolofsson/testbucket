@@ -10,16 +10,20 @@ using TestBucket.Domain.Milestones;
 
 namespace TestBucket.Domain.IntegrationTests.Fields
 {
+    /// <summary>
+    /// Integration tests for verifying the default system fields configuration and behavior.
+    /// </summary>
     [IntegrationTest]
     [FunctionalTest]
     [EnrichedTest]
     public class DefaultSystemFieldsTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that the default "Approved" requirement field is correctly defined,
+        /// has the correct target (Requirement), and requires the correct permission (Approve).
+        /// </summary>
+        /// <returns>A task representing the asynchronous test operation.</returns>
         [Fact]
-        [TestDescription("""
-            Verifies that a the default "Approved" requirement field is correctly defined and has the correct
-            target (Requirement) and required permission (Approve).
-            """)]
         public async Task DefaultApproveRequirementField_CorrectlyDefined()
         {
             using var scope = Fixture.Services.CreateScope();

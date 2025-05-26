@@ -123,6 +123,10 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                 if (options.CreateTestSuiteFromAssemblyName && runSuite.Assembly is not null)
                 {
                     suiteName = runSuite.Assembly;
+                    if(suiteName.EndsWith(".dll"))
+                    {
+                        suiteName = suiteName[0..^4];
+                    }
                 }
 
                 if (runSuite.Tests is null || suiteName is null)

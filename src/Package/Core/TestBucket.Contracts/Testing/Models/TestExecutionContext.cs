@@ -30,9 +30,14 @@ public class TestExecutionContext
     public required long TeamId { get; set; }
 
     /// <summary>
-    /// Identifier for the team
+    /// Identifier for the test suite
     /// </summary>
     public long? TestSuiteId { get; set; }
+
+    /// <summary>
+    /// Name of the test suite
+    /// </summary>
+    public string? TestSuiteName { get; set; }
 
     /// <summary>
     /// Assigned variables, e.g. from the selected environment

@@ -82,7 +82,7 @@ internal class TestRunCreationController : TenantBaseService
             // Start automation pipeline
             if (!string.IsNullOrEmpty(testRun.CiCdSystem))
             {
-                await StartAutomationAsync(testRun, testSuite.Variables, testSuite?.Id);
+                await StartAutomationAsync(testRun, testSuite.Variables, testSuite);
             }
         }
         return testRun;
@@ -104,7 +104,7 @@ internal class TestRunCreationController : TenantBaseService
             // Start automation pipeline
             if(startAutomation && !string.IsNullOrEmpty(testRun.CiCdSystem))
             {
-                await StartAutomationAsync(testRun, testSuite.Variables, testSuite?.Id);
+                await StartAutomationAsync(testRun, testSuite.Variables, testSuite);
             }
         }
         return testRun;
@@ -118,7 +118,7 @@ internal class TestRunCreationController : TenantBaseService
     /// <param name="testSuiteId"></param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
-    public async Task StartAutomationAsync(TestRun testRun, Dictionary<string,string>? variables, long? testSuiteId)
+    public async Task StartAutomationAsync(TestRun testRun, Dictionary<string,string>? variables, TestSuite? testSuite)
     {
         if (testRun.CiCdSystem is null)
         {
@@ -146,7 +146,8 @@ internal class TestRunCreationController : TenantBaseService
         TestExecutionContext context = new TestExecutionContext
         {
             Guid = Guid.NewGuid().ToString(),
-            TestSuiteId = testSuiteId,
+            TestSuiteId = testSuite?.Id,
+            TestSuiteName = testSuite?.Name,
             TenantId = testRun.TenantId,
             TestRunId = testRun.Id,
             ProjectId = testRun.TestProjectId.Value,

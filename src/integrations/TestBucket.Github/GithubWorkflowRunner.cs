@@ -34,6 +34,13 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
 
         var client = CreateClient(system);
 
+        // Get the workflow
+        var workflow = await client.Actions.Workflows.Get(ownerProject.Owner, ownerProject.Project, workflowFilename);
+        if(workflow is null)
+        {
+            throw new ArgumentException($"The workflow {workflowFilename} could not be retreived from Github");
+        }
+
         // We need to get the ID of the workflow run.
         // However, it is not returned from the create dispatch response.
         // There are workarounds that required adding things to the workflow, which we don't want to do.
@@ -44,10 +51,15 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
 
         var createWorkflowDispatch = new CreateWorkflowDispatch(context.CiCdRef);
         createWorkflowDispatch.Inputs = new Dictionary<string, object>();
-        foreach(var item in context.Variables.Take(10))
+        if(context.TestSuiteName is not null)
+        {
+            createWorkflowDispatch.Inputs["testSuite"] = context.TestSuiteName;
+        }
+        /*
+        foreach (var item in context.Variables.Take(10))
         {
             createWorkflowDispatch.Inputs[item.Key] = item.Value;
-        }
+        }*/
 
         await client.Actions.Workflows.CreateDispatch(ownerProject.Owner, ownerProject.Project, workflowFilename, createWorkflowDispatch);
 

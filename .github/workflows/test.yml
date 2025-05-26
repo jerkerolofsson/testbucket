@@ -43,13 +43,13 @@ jobs:
       shell: pwsh
       run: ./run_tests.ps1 --testSuite=${TEST_SUITE}
       env:
-        TEST_SUITE: ${{ inputs.MY_VARIABLE }}        
+        TEST_SUITE: ${{ inputs.testSuite }}        
    
     - name: Integration Tests
       shell: pwsh
       run: ./run_integration_tests.ps1 --testSuite=${TEST_SUITE}
       env:
-        TEST_SUITE: ${{ inputs.MY_VARIABLE }}        
+        TEST_SUITE: ${{ inputs.testSuite }}        
 
     - name: Upload test artifacts
       uses: actions/upload-artifact@v4

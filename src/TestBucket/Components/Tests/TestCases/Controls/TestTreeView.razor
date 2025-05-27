@@ -145,22 +145,18 @@
                         @if (context.Value?.TestCase is not null)
                         {
                             <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
-                            <MudDivider />
                         }
                         else if (context.Value?.TestRun is not null)
                         {
                             <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
-                            <MudDivider />
                         }
                         else if (context.Value?.Folder is not null)
                         {
                             <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
-                            <MudDivider />
                         }
                         else if (context.Value?.TestSuite is not null)
                         {
                             <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
-                            <MudDivider />
                         }
                         <CommandMenuItems TypeNames="TestSuite TestSuiteFolder TestRun TestCase menu-test" />
                     </ChildContent>

@@ -1,5 +1,6 @@
 ﻿@using FluentValidation
 @using TestBucket.Components.Tests.Services
+@using TestBucket.Contracts.Requirements.Types
 @inject RequirementEditorController controller
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<RequirementStrings> reqLoc
@@ -21,11 +22,10 @@
                 <MudText Typo="Typo.caption" Class="mt-2">@reqLoc["collection-type"]</MudText>
                 <MudStack Row Wrap="Wrap.Wrap">
                     <MudRadioGroup Value="_type" ValueChanged="OnTypeChanged" T="string">
-                        <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("Product Requirement Specification (PRS)")">Product Requirement Specification (PRS)</MudRadio>
-                        <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("Software Requirement Specification (SRS)")">Software Requirement Specification (SRS)</MudRadio>
-                        <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("Functional Requirement Specification (FRS)")">Functional Requirement Specification (FRS)</MudRadio>
-                        <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("Business Requirement Specification (BRS)")">Business Requirement Specification (BRS)</MudRadio>
-                        <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("Other")">Other</MudRadio>
+                        @foreach (var type in RequirementSpecificationTypes.AllTypes)
+                        {
+                            <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@type">@reqLoc[type]</MudRadio>
+                        }
                     </MudRadioGroup>
                 </MudStack>
                 @if (_validationResult is not null)

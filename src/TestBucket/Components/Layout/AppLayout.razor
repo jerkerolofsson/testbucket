@@ -1,5 +1,6 @@
 ﻿@using TestBucket.Components.Shared.Profile
 @using TestBucket.Components.Shared.Themeing.Models
+@using TestBucket.Domain
 
 @inherits LayoutComponentBase
 @inject HotKeys HotKeys
@@ -77,11 +78,9 @@
                                 <DarkModeToggle IsDarkMode="@_state.IsDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
                                 <SelfProfileImage/>
                         
-                                <MudIconButton Icon="@Icons.Material.Filled.Settings" Href="@settingsUrl"></MudIconButton>
+                                <MudIconButton Icon="@TbIcons.BoldDuoTone.Settings" Href="@settingsUrl"></MudIconButton>
 
                                 <MudMenu Icon="@Icons.Material.Filled.MoreVert">
-
-
 
                                     <!-- Profile / Logout -->
                                     <AuthorizeView>

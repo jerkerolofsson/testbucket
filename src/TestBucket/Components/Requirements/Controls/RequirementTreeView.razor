@@ -30,23 +30,7 @@
 
 
             <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert">
-                @if (appNav.State.SelectedRequirement is not null)
-                {
-                    <RequirementMenuItems Project="@Project" Team="@Team"
-                                          Requirement="appNav.State.SelectedRequirement" />
-                }
-                else if (appNav.State.SelectedRequirementSpecificationFolder is not null)
-                {
-                    <RequirementFolderMenuItems Project="@Project" Team="@Team"
-                                                RequirementFolder="appNav.State.SelectedRequirementSpecificationFolder" />
-                }
-                else if (appNav.State.SelectedRequirementSpecification is not null)
-                {
-                    <RequirementSpecificationMenuItems RequirementSpecification="@appNav.State.SelectedRequirementSpecification" />
-                }
-
-                <MudDivider />
-                <CommandMenuItems TypeNames="menu-requirements" />
+                <CommandMenuItems TypeNames="menu-requirements Requirement RequirementFolder RequirementSpecification" />
             </MudMenu>
         </MudStack>
     </MudStack>
@@ -108,24 +92,17 @@
                             @if (context.Value?.Requirement is not null)
                             {
                                 <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
-                                <RequirementMenuItems Project="@Project" Team="@Team"
-                                Requirement="context.Value.Requirement" />
                             }
                             else if (context.Value?.RequirementFolder is not null)
                             {
                                 <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
-                                <RequirementFolderMenuItems Project="@Project" Team="@Team"
-                                RequirementFolder="context.Value.RequirementFolder" />
                             }
                             else if (context.Value?.RequirementSpecification is not null)
                             {
                                 <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
-                                <RequirementSpecificationMenuItems RequirementSpecification="@context.Value.RequirementSpecification"/>
                             }
 
-                            <MudDivider/>
-                            <CommandMenuItems TypeNames="menu-requirements" />
-
+                            <CommandMenuItems TypeNames="menu-requirements Requirement RequirementFolder RequirementSpecification" />
                         </ChildContent>
                     </MudMenu>
                 </DropZone>

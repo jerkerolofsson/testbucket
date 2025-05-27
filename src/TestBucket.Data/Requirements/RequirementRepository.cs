@@ -118,9 +118,9 @@ namespace TestBucket.Data.Requirements
             if(spec?.SpecificationType is not null)
             {
                 var type = spec.SpecificationType;
-                foreach(var name in new string[] { "PRS", "SRS", "FRS", "BRS" })
+                foreach(var name in new string[] { "PRS", "SRS", "FRS", "BRS", "DOC" })
                 {
-                    if (type.Contains(name))
+                    if (type.Contains(name, StringComparison.InvariantCultureIgnoreCase))
                     {
                         return name;
                     }

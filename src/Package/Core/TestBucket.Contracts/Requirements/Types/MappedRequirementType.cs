@@ -31,4 +31,8 @@ public enum MappedRequirementType
     /// Other, used defined with no mapping to internal state
     /// </summary>
     Other,
+
+    UserManual,
+    Documentation,
+    DesignDocument,
 }

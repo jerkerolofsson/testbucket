@@ -590,9 +590,6 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="run-test-suite" xml:space="preserve">
     <value>Run test suite</value>
   </data>
-  <data name="new-test-template" xml:space="preserve">
-    <value>New test template</value>
-  </data>
   <data name="e2e-tests" xml:space="preserve">
     <value>E2E Tests</value>
   </data>
@@ -640,5 +637,11 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="ci-cd-job" xml:space="preserve">
     <value>CI/CD job</value>
+  </data>
+  <data name="new-test-template" xml:space="preserve">
+    <value>New test template</value>
+  </data>
+  <data name="add" xml:space="preserve">
+    <value>Add</value>
   </data>
 </root>

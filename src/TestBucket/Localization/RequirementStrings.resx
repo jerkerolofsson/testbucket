@@ -228,4 +228,13 @@
   <data name="collection-type" xml:space="preserve">
     <value>Collection type</value>
   </data>
+  <data name="create-child-task" xml:space="preserve">
+    <value>Create child task</value>
+  </data>
+  <data name="split-requirement-specification" xml:space="preserve">
+    <value>Extract sections and split into many</value>
+  </data>
+  <data name="delete-requirement-specification" xml:space="preserve">
+    <value>Delete collection</value>
+  </data>
 </root>

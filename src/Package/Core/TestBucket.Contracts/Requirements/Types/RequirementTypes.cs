@@ -11,7 +11,22 @@ namespace TestBucket.Contracts.Requirements.Types;
 /// </summary>
 public class RequirementTypes
 {
-    public static string[] AllTypes => [General, Story, Initiative, Epic, Task, Standard, Regulatory];
+    public static string[] AllTypes => [General, Documentation, DesignDocument, UserManual, Story, Initiative, Epic, Task, Standard, Regulatory];
+
+    /// <summary>
+    /// DesignDocument
+    /// </summary>
+    public const string DesignDocument = nameof(MappedRequirementType.DesignDocument);
+
+    /// <summary>
+    /// Documentation
+    /// </summary>
+    public const string Documentation = nameof(MappedRequirementType.Documentation);
+
+    /// <summary>
+    /// User Manual
+    /// </summary>
+    public const string UserManual = nameof(MappedRequirementType.UserManual);
 
     /// <summary>
     /// General requirement

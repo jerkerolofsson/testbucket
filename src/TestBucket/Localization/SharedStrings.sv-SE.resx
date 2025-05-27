@@ -588,9 +588,6 @@
   <data name="run-test-suite" xml:space="preserve">
     <value />
   </data>
-  <data name="new-test-template" xml:space="preserve">
-    <value />
-  </data>
   <data name="e2e-tests" xml:space="preserve">
     <value />
   </data>
@@ -638,5 +635,11 @@
   </data>
   <data name="ci-cd-job" xml:space="preserve">
     <value>CI/CD jobb</value>
+  </data>
+  <data name="new-test-template" xml:space="preserve">
+    <value />
+  </data>
+  <data name="add" xml:space="preserve">
+    <value />
   </data>
 </root>

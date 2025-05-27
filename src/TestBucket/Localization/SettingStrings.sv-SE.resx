@@ -117,14 +117,35 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="manage-accounts" xml:space="preserve">
+    <value>Hantera konton</value>
+  </data>
+  <data name="manage-environments" xml:space="preserve">
+    <value>Hantera miljöer</value>
+  </data>
+  <data name="manage-projects" xml:space="preserve">
+    <value>Hantera projekt</value>
+  </data>
   <data name="manage-resources" xml:space="preserve">
-    <value />
+    <value>Resurser och enheter</value>
   </data>
   <data name="manage-roles" xml:space="preserve">
-    <value />
+    <value>Hantera roller</value>
   </data>
   <data name="manage-runners" xml:space="preserve">
-    <value />
+    <value>Hantera runners</value>
+  </data>
+  <data name="manage-teams" xml:space="preserve">
+    <value>Hantera team</value>
+  </data>
+  <data name="manage-tenants" xml:space="preserve">
+    <value>Hantera tenants</value>
+  </data>
+  <data name="manage-users" xml:space="preserve">
+    <value>Hantera användare</value>
+  </data>
+  <data name="open-ai-settings" xml:space="preserve">
+    <value>Öppna AI inställningar</value>
   </data>
   <data name="search-settings" xml:space="preserve">
     <value>Sök inställningar..</value>

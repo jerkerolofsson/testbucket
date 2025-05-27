@@ -44,7 +44,7 @@
 
                     var executeCommandFunc = async () =>
                     {
-                        await command.ExecuteAsync(authState.User);
+                        await commandManager.ExecuteCommandAsync(authState.User, command);
                     };
                     _hotKeysContext.Add(modCode, key, executeCommandFunc, options);
                 }

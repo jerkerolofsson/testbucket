@@ -8,6 +8,9 @@
 
 <EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>
+            @loc["new-test-suite"]
+        </TitleContent>
         <DialogContent>
             <MudStack Spacing="1">
                 @if (_name is not null)

@@ -23,6 +23,12 @@ public class AppNavigationManager
     internal class NavigationState
     {
         /// <summary>
+        /// Local issue currently in focus
+        /// </summary>
+        public LocalIssue? SelectedIssue { get; set; }
+
+
+        /// <summary>
         /// Linked issue currently in focus
         /// </summary>
         public LinkedIssue? SelectedLinkedIssue { get; set; }
@@ -129,6 +135,11 @@ public class AppNavigationManager
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Settings";
+    }
+    public string GetAISettingsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Settings/Categories/AI";
     }
     public string GetProfileSettingsUrl()
     {

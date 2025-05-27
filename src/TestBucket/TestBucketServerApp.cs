@@ -25,6 +25,7 @@ using TestBucket.Components.Reporting.Controllers;
 using TestBucket.Components.Requirements.Commands;
 using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Settings.ApiKeys;
+using TestBucket.Components.Settings.Commands;
 using TestBucket.Components.Settings.Links;
 using TestBucket.Components.Settings.Roles;
 using TestBucket.Components.Shared.Fields;
@@ -299,8 +300,12 @@ public static class TestBucketServerApp
         // Issues
         builder.Services.AddScoped<ICommand, CreateIssueCommand>();
 
+        // Run
         builder.Services.AddScoped<ICommand, DeleteRunCommand>();
         builder.Services.AddScoped<ICommand, DuplicateRunCommand>();
+
+        // Settings
+        builder.Services.AddScoped<ICommand, OpenAiSettingsCommand>();
 
 
 

@@ -144,6 +144,9 @@
   <data name="manage-users" xml:space="preserve">
     <value>Manage Users</value>
   </data>
+  <data name="open-ai-settings" xml:space="preserve">
+    <value>Open AI settings</value>
+  </data>
   <data name="search-settings" xml:space="preserve">
     <value>Search Settings..</value>
   </data>

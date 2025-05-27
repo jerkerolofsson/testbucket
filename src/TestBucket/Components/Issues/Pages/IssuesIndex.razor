@@ -129,6 +129,7 @@
 
     protected override void OnParametersSet()
     {
+        appNavigationManager.State.SelectedIssue = null;
         OnSearch(Query ?? "state:open is:issue");
     }
 

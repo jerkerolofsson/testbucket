@@ -17,6 +17,8 @@ namespace TestBucket.Domain.Commands
         private readonly Dictionary<string, ICommand> _commands = [];
         private readonly IUserPreferencesManager _userPreferencesManager;
 
+        public event EventHandler<ICommand>? CommandExecuting;
+
         public CommandManager(IEnumerable<ICommand> commands, IUserPreferencesManager userPreferencesManager)
         {
             foreach(var command in commands)
@@ -72,20 +74,28 @@ namespace TestBucket.Domain.Commands
             var command = GetCommandById(commandId);
             if (command is not null)
             {
-                if (command.PermissionEntityType is not null && command.RequiredLevel is not null)
-                {
-                    if (!principal.HasPermission(command.PermissionEntityType.Value, command.RequiredLevel.Value))
-                    {
-                        return;
-                    }
-                }
-
-                await command.ExecuteAsync(principal);
+                await ExecuteCommandAsync(principal, command);
             }
             else
             {
                 Debug.Assert(command is not null, $"Command not registered: {commandId}");
             }
+        }
+
+        /// <inheritdoc/>
+        public async Task ExecuteCommandAsync(ClaimsPrincipal principal, ICommand command)
+        {
+            if (command.PermissionEntityType is not null && command.RequiredLevel is not null)
+            {
+                if (!principal.HasPermission(command.PermissionEntityType.Value, command.RequiredLevel.Value))
+                {
+                    return;
+                }
+            }
+
+            CommandExecuting?.Invoke(this, command);    
+
+            await command.ExecuteAsync(principal);
         }
 
         /// <inheritdoc/>

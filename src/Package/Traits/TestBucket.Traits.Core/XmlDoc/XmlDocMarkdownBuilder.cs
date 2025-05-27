@@ -11,6 +11,22 @@ public class XmlDocMarkdownBuilder
 {
     private readonly StringBuilder _stringBuilder = new();
 
+
+    /// <summary>
+    /// Removes the parans and arguments
+    /// </summary>
+    /// <param name="methodName"></param>
+    /// <returns></returns>
+    private string StripSignature(string methodName)
+    {
+        var p = methodName.IndexOf('(');
+        if (p > 0)
+        {
+            return methodName[0..p];
+        }
+        return methodName;
+    }
+
     public XmlDocMarkdownBuilder AddMethod(XmlDocDocument doc, XmlDocMember member)
     {
         _stringBuilder.AppendLine("# " + member.Name);
@@ -26,11 +42,14 @@ public class XmlDocMarkdownBuilder
         var methodFullName = member.Name;
         var methodName = methodFullName;
         string className = "";
-        var methodNameIndex = methodFullName.LastIndexOf('.');
+
+        var methodNameWithoutArguments = StripSignature(methodFullName);
+
+        var methodNameIndex = methodNameWithoutArguments.LastIndexOf('.');
         if(methodNameIndex > 0)
         {
-            className = methodFullName[0..methodNameIndex];
-            methodName = methodFullName[(methodNameIndex+1)..];
+            className = methodNameWithoutArguments[0..methodNameIndex];
+            methodName = methodNameWithoutArguments[(methodNameIndex+1)..];
         }
 
         _stringBuilder.AppendLine("## Source ");

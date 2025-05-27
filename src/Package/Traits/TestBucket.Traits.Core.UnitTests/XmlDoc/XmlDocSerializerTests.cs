@@ -11,6 +11,7 @@ namespace TestBucket.Traits.Core.UnitTests.XmlDoc;
 [UnitTest]
 [Component("Traits")]
 [Feature("Import Test Results")]
+[FunctionalTest]
 public class XmlDocSerializerTests
 {
     /// <summary>
@@ -120,6 +121,39 @@ public class XmlDocSerializerTests
         Assert.Empty(member.Params);
     }
 
+
+    /// <summary>
+    /// Verifies that ParseXml correctly parses a single property with summary
+    /// </summary>
+    [Fact]
+    public void ParseXml_MethodWithArguments_ParsesMember()
+    {
+        string xml = """
+            <?xml version="1.0"?>
+            <doc>
+                <assembly>
+                    <name>TestBucket.Traits.Core.UnitTests</name>
+                </assembly>
+                <members>
+                    <member name="M:TestBucket.Traits.Core.UnitTests.TraitTypeConverterTests.ConvertFromStringToKnownType_IsValid(System.String,TestBucket.Traits.Core.TraitType)">
+                        <summary>
+                            Verifies that converting from known trait name strings returns the correct <see cref="T:TestBucket.Traits.Core.TraitType"/> value.
+                        </summary>
+                        <param name="traitName">The trait name string to convert.</param>
+                        <param name="expectedType">The expected <see cref="T:TestBucket.Traits.Core.TraitType"/> value.</param>
+                    </member>
+                </members>
+            </doc>
+            """;
+
+        var xmlDoc = XmlDocSerializer.ParseXml(xml);
+
+        Assert.Single(xmlDoc.Members);
+        var member = xmlDoc.Members[0];
+        Assert.Equal("TestBucket.Traits.Core.UnitTests.TraitTypeConverterTests.ConvertFromStringToKnownType_IsValid(System.String,TestBucket.Traits.Core.TraitType)", member.Name);
+        Assert.Equal(XmlDocMemberType.Method, member.Type);
+        Assert.Empty(member.Params);
+    }
 
     /// <summary>
     /// Verifies that ParseXml correctly parses a single property with summary

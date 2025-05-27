@@ -51,10 +51,19 @@
 
     protected override async Task OnInitializedAsync()
     {
+        commandManager.CommandExecuting += OnCommandExecuting;
+
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         _claimsPrincipal = authState.User;
         _bindings = await commandManager.GetKeyboardBindingsAsync(_claimsPrincipal);
+    }
 
+    private void OnCommandExecuting(object? sender, ICommand command)
+    {
+        if(_open)
+        {
+            InvokeAsync(CloseAsync);
+        }
     }
 
     private void OnTextChanged(string text)
@@ -154,6 +163,8 @@
 
     public async ValueTask DisposeAsync()
     {
+        commandManager.CommandExecuting -= OnCommandExecuting;
+
         if (_hotKeysContext != null)
         {
             await _hotKeysContext.DisposeAsync();

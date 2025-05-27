@@ -16,6 +16,11 @@ namespace TestBucket.Domain.Commands
     public interface ICommandManager
     {
         /// <summary>
+        /// Invoked before a command is executed
+        /// </summary>
+        event EventHandler<ICommand>? CommandExecuting;
+
+        /// <summary>
         /// Returns a command by ID
         /// </summary>
         /// <param name="id"></param>
@@ -42,6 +47,13 @@ namespace TestBucket.Domain.Commands
         /// <param name="commandId"></param>
         /// <returns></returns>
         Task ExecuteCommandAsync(ClaimsPrincipal principal, string commandId);
+
+        /// <summary>
+        /// Executes a command that doesn't require any arguments
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
+        Task ExecuteCommandAsync(ClaimsPrincipal principal, ICommand command);
 
         /// <summary>
         /// Gets a keyboard binding for a command

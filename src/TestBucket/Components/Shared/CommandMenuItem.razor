@@ -1,5 +1,7 @@
 ﻿@using TestBucket.Domain.Commands
 @using TestBucket.Domain.Keyboard
+@inject ICommandManager commandManager
+
 @if(Item is not null)
 {
     var command = Item;
@@ -61,7 +63,8 @@
         {
             return;
         }
-        await Item.ExecuteAsync(Principal);
+
+        await commandManager.ExecuteCommandAsync(Principal, Item);
 
         await CommandInvoked.InvokeAsync(Item);
     }

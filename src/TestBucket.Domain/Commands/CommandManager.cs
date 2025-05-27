@@ -94,6 +94,30 @@ namespace TestBucket.Domain.Commands
             return _commands.Values.Where(x => x.ContextMenuTypes.Contains(typeName)).OrderBy(x=>x.SortOrder).ToList();
         }
 
+
+        /// <inheritdoc/>
+        public IReadOnlyList<CommandContextMenuItem> SearchCommandMenuItems(string searchText, int count)
+        {
+            Dictionary<string, CommandContextMenuItem> folderItems = [];
+            var result = new List<CommandContextMenuItem>();
+
+            HashSet<Type> processedTypes = [];
+
+            foreach (var command in _commands.Values
+                .Where(x => x.Enabled && x.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(x=>x.SortOrder).Take(count))
+            {
+                if (processedTypes.Contains(command.GetType()))
+                {
+                    continue;
+                }
+                processedTypes.Add(command.GetType());
+                result.Add(new CommandContextMenuItem { Command = command, SortOrder = command.SortOrder });
+            }
+
+            return result;
+        }
+
         /// <inheritdoc/>
         public IReadOnlyList<CommandContextMenuItem> GetCommandMenuItems(string typeNames)
         {

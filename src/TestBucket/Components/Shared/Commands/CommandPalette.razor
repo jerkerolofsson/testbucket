@@ -1,0 +1,162 @@
+﻿@using TestBucket.Domain
+@using TestBucket.Domain.Commands
+@using TestBucket.Domain.Keyboard
+@using TestBucket.Domain.Commands.Models
+@inject HotKeys HotKeys
+@implements IAsyncDisposable
+@inject ICommandManager commandManager
+@inject AuthenticationStateProvider authenticationStateProvider
+
+<MudOverlay Visible="_open" OnClick="CloseAsync" Class="tb-blur-overlay" />
+
+<div class="tb-command-palette">
+
+    <MudTooltip>
+        <ChildContent>
+            <MudIconButton OnClick="OpenAsync" Icon="@TbIcons.BoldDuoTone.Command"/>
+
+            <MudPopover Open="@_open" Fixed="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter">
+                <MudPaper Class="pa-3">
+                    <MudStack>
+                        <MudTextField Immediate T="string" Variant="Variant.Outlined" AutoFocus Text="@_searchText" TextChanged="OnTextChanged" />
+
+                        @foreach (var item in _commands.Index())
+                        {
+                            var index = item.Index;
+                            var commandItem = item.Item;
+                            bool selected = index == _selectedIndex;
+
+                            <CommandMenuItem CommandInvoked="CloseAsync"
+                                             ShowDescription Selected="@selected" Item="@commandItem.Command" Bindings="@_bindings" Principal="@_claimsPrincipal" />
+                        }
+                    </MudStack>
+                </MudPaper>
+            </MudPopover>
+        </ChildContent>
+        <TooltipContent>
+            <KeyboardShortcutLabel Modifiers="@(ModifierKey.Ctrl | ModifierKey.Shift)" KeyCode="KeyP" />
+        </TooltipContent>
+    </MudTooltip>
+
+</div>
+
+@code {
+    private HotKeysContext? _hotKeysContext;
+    private bool _open = false;
+    private string _searchText = "";
+    private IReadOnlyList<CommandContextMenuItem> _commands = [];
+    private ClaimsPrincipal? _claimsPrincipal;
+    private KeyboardBindings? _bindings;
+    private int _selectedIndex = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        _claimsPrincipal = authState.User;
+        _bindings = await commandManager.GetKeyboardBindingsAsync(_claimsPrincipal);
+
+    }
+
+    private void OnTextChanged(string text)
+    {
+        _selectedIndex = 0;
+        _searchText = text;
+        _commands = commandManager.SearchCommandMenuItems(text, 10);
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _hotKeysContext = this.HotKeys.CreateContext();
+
+            HotKeyOptions optionsDefault = new()
+            {
+                Exclude = Exclude.Default
+            };
+            HotKeyOptions optionsNone = new()
+            {
+                Exclude = Exclude.None
+            };
+            _hotKeysContext.Add(HotKeysService.MapModCode(ModifierKey.Ctrl | ModifierKey.Shift), Code.P, OpenAsync, optionsDefault);
+            _hotKeysContext.Add(HotKeysService.MapModCode(ModifierKey.Meta | ModifierKey.Shift), Code.P, OpenAsync, optionsDefault);
+            _hotKeysContext.Add(Code.Escape, CloseAsync, optionsNone);
+        }
+    }
+
+    private async Task OnEnterAsync()
+    {
+        if (_commands.Count > _selectedIndex && _selectedIndex >= 0)
+        {
+            await CloseAsync();
+
+            var command = _commands[_selectedIndex];
+            if (command.Command is not null && _claimsPrincipal is not null)
+            {
+                await command.Command.ExecuteAsync(_claimsPrincipal);
+            }
+        }
+    }
+
+    private async Task KeyDownAsync()
+    {
+        _selectedIndex++;
+        if (_selectedIndex >= _commands.Count)
+        {
+            _selectedIndex = 0;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task KeyUpAsync()
+    {
+        _selectedIndex--;
+        if (_selectedIndex < 0)
+        {
+            _selectedIndex = _commands.Count - 1;
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OpenAsync()
+    {
+        if (!_open)
+        {
+            _selectedIndex = 0;
+            _open = true;
+            _commands = commandManager.SearchCommandMenuItems("", 10);
+
+            HotKeyOptions optionsNone = new()
+            {
+                Exclude = Exclude.None
+            };
+            _hotKeysContext?.Add(Code.ArrowDown, KeyDownAsync, optionsNone);
+            _hotKeysContext?.Add(Code.ArrowUp, KeyUpAsync, optionsNone);
+            _hotKeysContext?.Add(Code.Enter, OnEnterAsync, optionsNone);
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    private async Task CloseAsync()
+    {
+        if (_open)
+        {
+            _hotKeysContext?.Remove(Code.ArrowDown);
+            _hotKeysContext?.Remove(Code.ArrowUp);
+            _hotKeysContext?.Remove(Code.Enter);
+
+            _searchText = "";
+            _open = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hotKeysContext != null)
+        {
+            await _hotKeysContext.DisposeAsync();
+        }
+    }
+}

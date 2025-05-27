@@ -33,7 +33,8 @@ public class LinkIssueCommand : ICommand
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCaseRun;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
-    public bool Enabled => _appNavigationManager.State.SelectedProject is not null;
+    public bool Enabled => _appNavigationManager.State.SelectedProject is not null &&
+        _appNavigationManager.State.SelectedTestCaseRun is not null;
 
     public int SortOrder => 10;
     public string? Folder => null;

@@ -644,4 +644,13 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="add" xml:space="preserve">
     <value>Add</value>
   </data>
+  <data name="new-test-suite-description" xml:space="preserve">
+    <value>Create a new blank test suite to store test cases</value>
+  </data>
+  <data name="new-test-description" xml:space="preserve">
+    <value>Create a new test case</value>
+  </data>
+  <data name="new-test-template-description" xml:space="preserve">
+    <value>Create a shared template for test cases where the text is shared by all test cases using the template</value>
+  </data>
 </root>

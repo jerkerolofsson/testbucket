@@ -237,4 +237,10 @@
   <data name="delete-requirement-specification" xml:space="preserve">
     <value>Delete collection</value>
   </data>
+  <data name="create-collection-description" xml:space="preserve">
+    <value>Create a collection to store Requirements, Documentation, Tasks or User Stories</value>
+  </data>
+  <data name="import-requirements-description" xml:space="preserve">
+    <value>Upload a document containing requirements</value>
+  </data>
 </root>

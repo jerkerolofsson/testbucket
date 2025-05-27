@@ -47,6 +47,19 @@ public static class TbIcons
 		public const string Grid4 = "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path opacity=\"0.4\" d=\"M22 7.81V16.19C22 19.83 19.83 22 16.19 22H9V2H16.19C19.83 2 22 4.17 22 7.81Z\" fill=\"currentColor\"/><path d=\"M9 2V22H7.81C4.17 22 2 19.83 2 16.19V7.81C2 4.17 4.17 2 7.81 2H9Z\" fill=\"currentColor\"/></svg>";
     }
 
+    public static class Iconcino
+    {
+        /// <summary>
+        /// Shift key
+        /// </summary>
+        public static string Shift = "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n<path d=\"M8 17V12H5.6302C4.71068 12 4.27858 10.8635 4.96584 10.2526L10.6713 5.18109C11.429 4.50752 12.571 4.50752 13.3287 5.18109L19.0342 10.2526C19.7214 10.8635 19.2893 12 18.3698 12H16V17C16 18.1046 15.1046 19 14 19H10C8.89543 19 8 18.1046 8 17Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n</svg>";
+
+        /// <summary>
+        /// Command/Meta
+        /// </summary>
+        public static string Command = "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n<path d=\"M7.5 19V19C6.11929 19 5 17.8807 5 16.5V16.5C5 15.1193 6.11929 14 7.5 14H16.5C17.8807 14 19 15.1193 19 16.5V16.5C19 17.8807 17.8807 19 16.5 19V19C15.1193 19 14 17.8807 14 16.5V7.5C14 6.11929 15.1193 5 16.5 5V5C17.8807 5 19 6.11929 19 7.5V7.5C19 8.88071 17.8807 10 16.5 10H7.5C6.11929 10 5 8.88071 5 7.5V7.5C5 6.11929 6.11929 5 7.5 5V5C8.88071 5 10 6.11929 10 7.5V16.5C10 17.8807 8.88071 19 7.5 19Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>\r\n</svg>";
+    }
+
     public static class BoldOutline
     {
         public const string Folder = "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path opacity=\"0.5\" d=\"M22 14V11.7979C22 9.16554 22 7.84935 21.2305 6.99383C21.1598 6.91514 21.0849 6.84024 21.0062 6.76946C20.1506 6 18.8345 6 16.2021 6H15.8284C14.6747 6 14.0979 6 13.5604 5.84678C13.2651 5.7626 12.9804 5.64471 12.7121 5.49543C12.2237 5.22367 11.8158 4.81578 11 4L10.4497 3.44975C10.1763 3.17633 10.0396 3.03961 9.89594 2.92051C9.27652 2.40704 8.51665 2.09229 7.71557 2.01738C7.52976 2 7.33642 2 6.94975 2C6.06722 2 5.62595 2 5.25839 2.06935C3.64031 2.37464 2.37464 3.64031 2.06935 5.25839C2 5.62595 2 6.06722 2 6.94975V14C2 17.7712 2 19.6569 3.17157 20.8284C4.34315 22 6.22876 22 10 22H14C17.7712 22 19.6569 22 20.8284 20.8284C22 19.6569 22 17.7712 22 14Z\" stroke=\"currentColor\"/></svg>";
@@ -57,6 +70,11 @@ public static class TbIcons
     /// </summary>
     public static class BoldDuoTone
     {
+        /// <summary>
+        /// Command
+        /// </summary>
+        public const string Command = "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n<path d=\"M16 8H8V16H16V8Z\" fill=\"currentColor\"/>\r\n<path opacity=\"0.4\" d=\"M5 22C6.65 22 8 20.65 8 19V16H5C3.35 16 2 17.35 2 19C2 20.65 3.35 22 5 22Z\" fill=\"currentColor\"/>\r\n<path opacity=\"0.4\" d=\"M5 8H8V5C8 3.35 6.65 2 5 2C3.35 2 2 3.35 2 5C2 6.65 3.35 8 5 8Z\" fill=\"currentColor\"/>\r\n<path opacity=\"0.4\" d=\"M16 8H19C20.65 8 22 6.65 22 5C22 3.35 20.65 2 19 2C17.35 2 16 3.35 16 5V8Z\" fill=\"currentColor\"/>\r\n<path opacity=\"0.4\" d=\"M19 22C20.65 22 22 20.65 22 19C22 17.35 20.65 16 19 16H16V19C16 20.65 17.35 22 19 22Z\" fill=\"currentColor\"/>\r\n</svg>";
+
         /// <summary>
         /// Settings
         /// </summary>

@@ -642,4 +642,13 @@
   <data name="add" xml:space="preserve">
     <value />
   </data>
+  <data name="new-test-suite-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="new-test-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="new-test-template-description" xml:space="preserve">
+    <value />
+  </data>
 </root>

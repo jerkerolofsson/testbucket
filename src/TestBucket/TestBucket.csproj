@@ -50,7 +50,6 @@
     <Folder Include="Components\Issues\ApiControllers\" />
     <Folder Include="Components\Milestones\Controls\" />
     <Folder Include="Components\Reporting\Models\" />
-    <Folder Include="Components\Shared\Commands\" />
     <Folder Include="Components\Shared\Splitter\" />
     <Folder Include="Components\Tests\TestRuns\Search\" />
     <Folder Include="Components\Tests\TestRuns\Services\" />

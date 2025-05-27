@@ -1,9 +1,9 @@
-﻿@using TestBucket.Components.Shared.Profile
+﻿@using TestBucket.Components.Shared.Commands
+@using TestBucket.Components.Shared.Profile
 @using TestBucket.Components.Shared.Themeing.Models
 @using TestBucket.Domain
 
 @inherits LayoutComponentBase
-@inject HotKeys HotKeys
 @inject NavigationManager navigationManager
 @inject TenantResolver tenantResolver
 @inject AuthenticationStateProvider authStateProvider
@@ -69,6 +69,7 @@
 
                                 <MudSpacer/>
 
+                                <CommandPalette/>
                                 <UnifiedSearch/>
 
                                 <MudMenu Icon="@Icons.Material.Filled.Add">

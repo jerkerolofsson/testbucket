@@ -29,7 +29,7 @@ internal class CreateIssueCommand : ICommand
 
     public KeyboardBinding? DefaultKeyboardBinding => null;
 
-    public string? Icon => TbIcons.BoldDuoTone.Medal;
+    public string? Icon => TbIcons.BoldDuoTone.Bug;
 
     public string[] ContextMenuTypes => ["menu-new"];
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.Issue;

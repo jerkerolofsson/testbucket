@@ -12,14 +12,26 @@
     var binding = GetBinding(command.Id);
     @if (enabled)
     {
-        <MudMenuItem Icon="@command.Icon" OnClick="async () => await command.ExecuteAsync(Principal!)">
-            <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center">
-                @command.Name
+        string cssClass = "tb-command-menu-item";
+        if (Selected)
+        {
+            cssClass += " selected";
+        }
 
-                @if (binding is not null)
+        <MudMenuItem data-testid="@command.Id" Icon="@command.Icon" OnClick="InvokeCommand" Class="@cssClass">
+            <MudStack Spacing="0">
+                <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center">
+                    @command.Name
+
+                    @if (binding is not null)
+                    {
+                        <MudSpacer />
+                        <KeyboardShortcutLabel Modifiers="@binding.ModifierKeys" KeyCode="@binding.Key" />
+                    }
+                </MudStack>
+                @if(ShowDescription)
                 {
-                    <MudSpacer />
-                    <KeyboardShortcutLabel Modifiers="@binding.ModifierKeys" KeyCode="@binding.Key" />
+                    <div class="description">@command.Description</div>
                 }
             </MudStack>
 
@@ -39,7 +51,20 @@
     [Parameter] public ICommand? Item { get; set; }
     [Parameter] public KeyboardBindings? Bindings { get; set; }
     [Parameter] public ClaimsPrincipal? Principal { get; set; }
+    [Parameter] public bool Selected { get; set; }
+    [Parameter] public bool ShowDescription { get; set; }
+    [Parameter] public EventCallback<ICommand> CommandInvoked { get; set; }
 
+    private async Task InvokeCommand()
+    {
+        if(Item is null || Principal is null)
+        {
+            return;
+        }
+        await Item.ExecuteAsync(Principal);
+
+        await CommandInvoked.InvokeAsync(Item);
+    }
 
     private KeyboardBinding? GetBinding(string commandId)
     {

@@ -36,10 +36,10 @@ public class RefreshLinkedIssueCommand : ICommand
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCaseRun;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
-    public bool Enabled => _appNavigationManager.State.SelectedProject is not null;
+    public bool Enabled => _appNavigationManager.State.SelectedLinkedIssue is not null;
     public string Id => "refresh-linked-issue";
     public string Name => _loc[Id];
-    public string Description => "Updates an issue from external system";
+    public string Description => _loc["refresh-linked-issue-description"];
     public KeyboardBinding? DefaultKeyboardBinding => null;
     public string? Icon => Icons.Material.Outlined.Refresh;
     public string[] ContextMenuTypes => ["LinkedIssue"];

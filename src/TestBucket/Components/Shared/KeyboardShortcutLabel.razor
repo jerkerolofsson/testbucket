@@ -1,18 +1,25 @@
-﻿@using TestBucket.Domain.Keyboard
+﻿@using TestBucket.Domain
+@using TestBucket.Domain.Keyboard
 @if(KeyCode is not null)
 {
-    <MudStack Spacing="1" Row>
+    <MudStack Spacing="1" Row Class="tb-keyboard-shortcut">
         @if ((Modifiers & ModifierKey.Meta) == ModifierKey.Meta)
         {
-            <div class="tb-key tb-mod-key">Meta</div>
+            <div class="tb-key tb-mod-key">
+                <MudIcon Icon="@TbIcons.Iconcino.Command" Style="width: 16px; height: 16px" />
+            </div>
         }
         @if ((Modifiers & ModifierKey.Ctrl) == ModifierKey.Ctrl)
         {
-            <div class="tb-key tb-mod-key">Ctrl</div>
+            <div class="tb-key tb-mod-key">
+                <MudIcon Icon="@TbIcons.Iconcino.Command" Style="width: 16px; height: 16px" />
+            </div>
         }
-        @if ((Modifiers & ModifierKey.Shift) == ModifierKey.Shift)
+        @if ((Modifiers & ModifierKey.Shift) == ModifierKey.Shift) 
         {
-            <div class="tb-key tb-mod-key">Shift</div>
+            <div class="tb-key tb-mod-key">
+                <MudIcon Icon="@TbIcons.Iconcino.Shift" Style="width: 16px; height: 16px"/>
+            </div>
         }
         @if ((Modifiers & ModifierKey.Alt) == ModifierKey.Alt)
         {

@@ -12,13 +12,13 @@
             <MudMenu Label="@commandItem.Folder">
                 @foreach (var childCommand in commandItem.FolderCommands)
                 {
-                    <CommandMenuItem Item="@childCommand" Bindings="@_bindings" Principal="@claimsPrincipal" />
+                    <CommandMenuItem Item="@childCommand" Bindings="@_bindings" Principal="@_claimsPrincipal" />
                 }
             </MudMenu>
         }
         else
         {
-            <CommandMenuItem Item="@commandItem.Command" Bindings="@_bindings" Principal="@claimsPrincipal"/>
+            <CommandMenuItem Item="@commandItem.Command" Bindings="@_bindings" Principal="@_claimsPrincipal"/>
         }
     }
 }
@@ -30,12 +30,12 @@
     [Parameter] public string? TypeNames { get; set; }
 
     private KeyboardBindings? _bindings;
-    private ClaimsPrincipal? claimsPrincipal;
+    private ClaimsPrincipal? _claimsPrincipal;
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
-        claimsPrincipal = authState.User;
-        _bindings = await commandManager.GetKeyboardBindingsAsync(claimsPrincipal);
+        _claimsPrincipal = authState.User;
+        _bindings = await commandManager.GetKeyboardBindingsAsync(_claimsPrincipal);
     }
 }

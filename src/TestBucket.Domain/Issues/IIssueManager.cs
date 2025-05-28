@@ -80,6 +80,17 @@ public interface IIssueManager
     /// <returns></returns>
     Task DeleteLocalIssueAsync(ClaimsPrincipal principal, LocalIssue issue);
 
+    Task OnLocalIssueFieldChangedAsync(ClaimsPrincipal principal, IssueField field);
+
+    /// <summary>
+    /// Finds a local issue by an identifier. Multiple strategies may be attempted to find the issue
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testProjectId"></param>
+    /// <param name="issueIdentifier"></param>
+    /// <returns></returns>
+    Task<LocalIssue?> FindLocalIssueAsync(ClaimsPrincipal principal, long testProjectId, string issueIdentifier);
+
     Task AddLocalIssueAsync(ClaimsPrincipal principal, LocalIssue issue);
 
     Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count);
@@ -94,6 +105,5 @@ public interface IIssueManager
     Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request);
     Task<InsightsData<DateOnly, int>> GetCreatedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request);
     Task<InsightsData<DateOnly, int>> GetClosedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request);
-    Task OnLocalIssueFieldChangedAsync(ClaimsPrincipal principal, IssueField field);
     #endregion
 }

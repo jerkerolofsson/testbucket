@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Mediator;
+
 using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Shared;
@@ -11,15 +13,16 @@ using TestBucket.Contracts.Issues.States;
 using TestBucket.Domain;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Issues;
+using TestBucket.Domain.Issues.Requests;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;
 
 namespace TestBucket.Components.Issues.Commands;
-internal class CloseIssueCommand : ICommand
+internal class CloseIssueCommand : Domain.Commands.ICommand
 {
     private readonly IStringLocalizer _loc;
     private readonly AppNavigationManager _appNav;
-    private readonly IIssueManager _issueManager;
+    private readonly IMediator _mediator;
 
     public int SortOrder => 20;
 
@@ -39,11 +42,11 @@ internal class CloseIssueCommand : ICommand
     public CloseIssueCommand(
         IStringLocalizer<SettingStrings> loc,
         AppNavigationManager appNav,
-        IIssueManager issueManager)
+        IMediator mediator)
     {
         _loc = loc;
         _appNav = appNav;
-        _issueManager = issueManager;
+        _mediator = mediator;
     }
 
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
@@ -54,8 +57,7 @@ internal class CloseIssueCommand : ICommand
         }
 
         var issue = _appNav.State.SelectedIssue;
-        issue.MappedState = Contracts.Issues.States.MappedIssueState.Closed;
-        issue.State = IssueStates.Closed;
-        await _issueManager.UpdateLocalIssueAsync(principal, issue);
+
+        await _mediator.Send(new CloseIssueRequest(principal, issue));
     }
 }

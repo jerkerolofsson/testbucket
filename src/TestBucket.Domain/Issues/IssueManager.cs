@@ -110,6 +110,33 @@ public class IssueManager : IIssueManager
         filters.AddRange(SearchIssueRequestBuilder.Build(request));
         return await _repository.SearchAsync(filters, offset, count);
     }
+
+    public async Task<LocalIssue?> FindLocalIssueAsync(ClaimsPrincipal principal, long testProjectId, string issueIdentifier)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
+        List<FilterSpecification<LocalIssue>> strategy1 = [
+            new FilterByProject<LocalIssue>(testProjectId),
+            new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow()),
+            new FindLocalIssueByExternalDisplayId(issueIdentifier)
+        ];
+
+        List<FilterSpecification<LocalIssue>> strategy2 = [
+            new FilterByProject<LocalIssue>(testProjectId),
+            new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow()),
+            new FindLocalIssueByExternalDisplayId(issueIdentifier.TrimStart('#'))
+        ];
+
+        var result = await _repository.SearchAsync(strategy1, 0, 1);
+        var issue = result.Items.FirstOrDefault();
+
+        if(issue is null)
+        {
+            result = await _repository.SearchAsync(strategy2, 0, 1);
+            issue = result.Items.FirstOrDefault();
+        }
+
+        return issue;
+    }
     public async Task<LocalIssue?> FindLocalIssueFromExternalAsync(ClaimsPrincipal principal, long testProjectId, long? externalSystemId, string? externalId)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);

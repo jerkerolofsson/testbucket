@@ -13,17 +13,17 @@ namespace TestBucket.Domain.Issues.Specifications;
 /// <summary>
 /// Finds issues created from a specific extension configuration
 /// </summary>
-internal class FindLocalIssueByExternalDisplayId : FilterSpecification<LocalIssue>
+internal class FindLocalIssueByExternalId : FilterSpecification<LocalIssue>
 {
     private readonly string _id;
 
-    public FindLocalIssueByExternalDisplayId(string id)
+    public FindLocalIssueByExternalId(string id)
     {
         _id = id;
     }
 
     protected override Expression<Func<LocalIssue, bool>> GetExpression()
     {
-        return x => x.ExternalDisplayId == _id;
+        return x => x.ExternalId == _id;
     }
 }

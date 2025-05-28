@@ -4,6 +4,8 @@ using TestBucket.Domain.Code.Events;
 using TestBucket.Domain.Code.Features.ConventionalCommits.Models;
 using TestBucket.Domain.Code.Features.ConventionalCommits.Parser;
 using TestBucket.Domain.Code.Services;
+using TestBucket.Domain.Issues;
+using TestBucket.Domain.Issues.Requests;
 
 namespace TestBucket.Domain.Code.Features.ConventionalCommits;
 
@@ -14,10 +16,14 @@ namespace TestBucket.Domain.Code.Features.ConventionalCommits;
 internal class ExtractDataFromCommitByConvention : INotificationHandler<CommitAddedEvent>
 {
     private readonly ICommitManager _commitManager;
+    private readonly IIssueManager _issueManager;
+    private readonly IMediator _mediator;
 
-    public ExtractDataFromCommitByConvention(ICommitManager commitManager)
+    public ExtractDataFromCommitByConvention(ICommitManager commitManager, IIssueManager issueManager, IMediator mediator)
     {
         _commitManager = commitManager;
+        _issueManager = issueManager;
+        _mediator = mediator;
     }
 
     public async ValueTask Handle(CommitAddedEvent notification, CancellationToken cancellationToken)
@@ -57,6 +63,12 @@ internal class ExtractDataFromCommitByConvention : INotificationHandler<CommitAd
                         commit.Fixes ??= new();
                         if (!commit.Fixes.Contains(type.Description))
                         {
+                            // Close the issue
+                            if (commit.TestProjectId is not null)
+                            {
+                                await CloseIssueAsync(principal, commit.TestProjectId.Value, type.Description);
+                            }
+
                             commit.Fixes.Add(type.Description);
                             changed = true;
                         }
@@ -68,6 +80,15 @@ internal class ExtractDataFromCommitByConvention : INotificationHandler<CommitAd
             {
                 await _commitManager.UpdateCommitAsync(principal, commit);
             }
+        }
+    }
+
+    private async Task CloseIssueAsync(ClaimsPrincipal principal, long testProjectId, string issueIdentifier)
+    {
+        var issue = await _issueManager.FindLocalIssueAsync(principal, testProjectId, issueIdentifier);
+        if(issue is not null)
+        {
+            await _mediator.Send(new CloseIssueRequest(principal, issue));
         }
     }
 }

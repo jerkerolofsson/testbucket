@@ -308,8 +308,6 @@ public static class TestBucketServerApp
         // Settings
         builder.Services.AddScoped<ICommand, OpenAiSettingsCommand>();
 
-
-
         builder.Services.AddScoped(typeof(DragAndDropService<>));
         builder.Services.AddDataServices();
         builder.Services.AddDomainServices();

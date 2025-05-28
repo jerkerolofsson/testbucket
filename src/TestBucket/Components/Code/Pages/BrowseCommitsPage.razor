@@ -46,12 +46,21 @@
                             <CopyToClipboard Text="@context.Item.Sha" IconSize="Size.Small">
                                 <div class="sha">@context.Item.Sha </div>
                             </CopyToClipboard>
-                            @if(context.Item.FeatureNames is not null)
+                            @if(context.Item.FeatureNames is not null && context.Item.FeatureNames.Count > 0)
                             {
-                                <MudStack Row Spacing="1">
+                                <MudStack Row Spacing="1" Wrap="Wrap.Wrap">
                                     @foreach(var feature in context.Item.FeatureNames)
                                     {
                                         <Chip Palette="@DefaultPalettes.Default" ColorFromTextHash Text="@feature"/>
+                                    }
+                                </MudStack>
+                            }
+                            @if (context.Item.Fixes is not null && context.Item.Fixes.Count > 0)
+                            {
+                                <MudStack Row Spacing="1" Wrap="Wrap.Wrap">
+                                    @foreach (var fix in context.Item.Fixes)
+                                    {
+                                        <Chip Palette="@DefaultPalettes.Default" ColorFromTextHash Text="@fix" />
                                     }
                                 </MudStack>
                             }

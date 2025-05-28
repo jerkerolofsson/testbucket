@@ -36,8 +36,8 @@ else
                 color = Palette.Colors[hash];
             }
         }
-        _textColor = color.ToString(ColorOutputFormats.Hex);
-        _borderColor = color.ColorDarken(0.075).ToString(ColorOutputFormats.Hex);
-        _backgroundColor = color.ColorDarken(0.4).ToString(ColorOutputFormats.Hex);
+        _textColor = color.ColorLighten(0.3).ToString(ColorOutputFormats.Hex);
+        _borderColor = color.ToString(ColorOutputFormats.Hex);
+        _backgroundColor = color.ColorDarken(0.2).ToString(ColorOutputFormats.Hex);
     }
 }

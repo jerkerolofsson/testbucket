@@ -16,6 +16,19 @@ public interface IIssueManager
     /// <returns></returns>
     Task AddLinkedIssueAsync(ClaimsPrincipal principal, LinkedIssue issue);
 
+    #region Observer
+
+    /// <summary>
+    /// Removes an observer
+    /// </summary>
+    /// <param name="observer"></param>
+    void RemoveObserver(ILocalIssueObserver observer);
+
+    /// <summary>
+    /// Adds an observer
+    /// </summary>
+    /// <param name="observer"></param>
+    void AddObserver(ILocalIssueObserver observer);
 
     /// <summary>
     /// Removes an observer
@@ -28,6 +41,8 @@ public interface IIssueManager
     /// </summary>
     /// <param name="observer"></param>
     void AddObserver(ILinkedIssueObserver observer);
+
+    #endregion Observer
 
     /// <summary>
     /// Removes a linked issue
@@ -79,5 +94,6 @@ public interface IIssueManager
     Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request);
     Task<InsightsData<DateOnly, int>> GetCreatedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request);
     Task<InsightsData<DateOnly, int>> GetClosedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request);
+    Task OnLocalIssueFieldChangedAsync(ClaimsPrincipal principal, IssueField field);
     #endregion
 }

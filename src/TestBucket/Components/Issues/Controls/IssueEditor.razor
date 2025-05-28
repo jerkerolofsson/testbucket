@@ -6,10 +6,14 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
 @inject IssueController controller
+@inject IIssueManager manager
 @inject CommentsController comments
+@implements IDisposable
+@implements ILocalIssueObserver
 @using TestBucket.Components.Shared.Fields
+@using TestBucket.Domain.Issues
 
-@if (Issue is not null)
+@if (_issue is not null)
 {
     <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false">
         <StartContent>
@@ -18,22 +22,22 @@
                 <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
                     @if(_preview)
                     {
-                        <MudText Typo="Typo.h1" Color="Color.Primary">@Issue.ExternalDisplayId</MudText>
-                        <MudText Typo="Typo.h1">@Issue.Title</MudText>
+                        <MudText Typo="Typo.h1" Color="Color.Primary">@_issue.ExternalDisplayId</MudText>
+                        <MudText Typo="Typo.h1">@_issue.Title</MudText>
                     }
                     else
                     {
-                        <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Issue.Title"></MudTextField>
+                        <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_issue.Title"></MudTextField>
                     }
                 </MudStack>
 
                 <MudStack Spacing="0" Row AlignItems="AlignItems.Center">
-                    <MudChip T="string" Style="@StateColorStyle">@Issue.State</MudChip>
+                    <MudChip T="string" Style="@StateColorStyle">@_issue.State</MudChip>
                 </MudStack>
 
                 <MudStack Spacing="0" Class="mt-2 mb-2">
                     <FieldHeader>@loc["description"]</FieldHeader>
-                    <MarkdownEditor ValueChanged="OnDescriptionChanged" Value="@Issue.Description" @bind-Preview="@_preview" TextAreaClass="tb-issue-description"/>
+                    <MarkdownEditor ValueChanged="OnDescriptionChanged" Value="@_issue.Description" @bind-Preview="@_preview" TextAreaClass="tb-issue-description"/>
                 </MudStack>
 
                 <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
@@ -45,21 +49,21 @@
                 <Field>
                     <FieldHeader>@loc["created"]</FieldHeader>
                     <div>
-                        <div>@Issue.Created</div>
-                        <div>@Issue.Modified</div>
-                        <div>@Issue.Closed</div>
+                        <div>@_issue.Created</div>
+                        <div>@_issue.Modified</div>
+                        <div>@_issue.Closed</div>
                     </div>
                 </Field>
 
                 <Field>
                     <FieldHeader>@loc["assigned-to"]</FieldHeader>
-                    <UserPicker SelectedUserName="@Issue.AssignedTo" SelectedUserNameChanged="OnAssignedToChanged"/>
+                    <UserPicker SelectedUserName="@_issue.AssignedTo" SelectedUserNameChanged="OnAssignedToChanged"/>
                 </Field>
                 <Field>
                     <FieldHeader>@loc["state"]</FieldHeader>
                     <IssueStateSelect State="_state" StateChanged="OnStateChanged"/>
                 </Field>
-                <FieldsEditor Issue="@Issue"/>
+                <FieldsEditor Issue="@_issue" />
 
                 <Field>
                     <FieldHeader>@loc["type"]</FieldHeader>
@@ -84,6 +88,7 @@
     [Parameter] public EventCallback<LocalIssue> Delete { get; set; }
     [Parameter] public long? TestProjectId { get; set; }
     private List<Comment> _comments = [];
+    private LocalIssue? _issue;
 
     private string StateColorStyle => $"color: {IssueStateColors.GetDefaultTextColor(Issue?.MappedState)}; background: {IssueStateColors.GetDefaultBackgroundColor(Issue?.MappedState)}";
 
@@ -94,11 +99,12 @@
 
     protected override void OnParametersSet()
     {
-        _comments = Issue?.Comments ?? [];
-        if(Issue is not null)
+        _issue = Issue;
+        _comments = _issue?.Comments ?? [];
+        if(_issue is not null)
         {
-            _state = new IssueState { MappedState = Issue.MappedState ?? MappedIssueState.Open, Name = Issue.State };
-            _type = new IssueType { MappedType = Issue.MappedType ?? MappedIssueType.Issue, Name = Issue.IssueType };
+            _state = new IssueState { MappedState = _issue.MappedState ?? MappedIssueState.Open, Name = _issue.State };
+            _type = new IssueType { MappedType = _issue.MappedType ?? MappedIssueType.Issue, Name = _issue.IssueType };
         }
     }
     private async Task OnAssignedToChanged(string name)
@@ -172,6 +178,57 @@
     {
         if (Issue is null) return;
         await Delete.InvokeAsync(Issue);
+    }
+
+    protected override void OnInitialized()
+    {
+        manager.AddObserver(this);
+    }
+
+    public void Dispose()
+    {
+        manager.RemoveObserver(this);
+    }
+
+    public Task OnLocalIssueAddedAsync(LocalIssue issue)
+    {
+        return Task.CompletedTask;
+    }
+    public async Task OnLocalIssueUpdatedAsync(LocalIssue issue)
+    {
+        if (_issue?.Id == issue.Id)
+        {
+            _issue = Issue;
+            _comments = _issue?.Comments ?? [];
+            if (_issue is not null)
+            {
+                _state = new IssueState { MappedState = _issue.MappedState ?? MappedIssueState.Open, Name = _issue.State };
+                _type = new IssueType { MappedType = _issue.MappedType ?? MappedIssueType.Issue, Name = _issue.IssueType };
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    public async Task OnLocalIssueFieldChangedAsync(LocalIssue issue)
+    {
+        if(_issue?.Id == issue.Id)
+        {
+            _issue = Issue;
+            _comments = _issue?.Comments ?? [];
+
+            if (_issue is not null)
+            {
+                _state = new IssueState { MappedState = _issue.MappedState ?? MappedIssueState.Open, Name = _issue.State };
+                _type = new IssueType { MappedType = _issue.MappedType ?? MappedIssueType.Issue, Name = _issue.IssueType };
+            }
+
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+    public Task OnLocalIssueDeletedAsync(LocalIssue issue)
+    {
+
+        return Task.CompletedTask;
     }
 
 }

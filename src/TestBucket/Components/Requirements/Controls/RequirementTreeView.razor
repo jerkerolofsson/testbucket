@@ -353,6 +353,19 @@
             }
         }
     }
+    public async Task OnRequirementFieldChangedAsync(Requirement requirement)
+    {
+        await InvokeAsync(() =>
+        {
+            var node = FindTreeNode(x => x.Requirement?.Id == requirement?.Id);
+            if (node?.Value is not null)
+            {
+                node.Text = requirement.Name;
+                node.Value.Requirement = requirement;
+                this.StateHasChanged();
+            }
+        });
+    }
     public async Task OnRequirementSavedAsync(Requirement requirement)
     {
         await InvokeAsync(() =>

@@ -62,15 +62,18 @@
     private long? _testCaseId;
     private long? _testCaseRunId;
     private long? _testRunId;
-    private long? _requirementId;
-    private long? _issueId;
     private long? _testProjectId;
+    private Requirement? _requirement;
+    private LocalIssue? _issue;
 
     private async Task LoadAsync()
     {
-        if (Requirement is not null && (_requirementId != Requirement.Id || _testProjectId != Requirement.TestProjectId))
+        if (Requirement is not null && 
+            (_requirement?.Id != Requirement.Id || 
+                _requirement?.Modified != Requirement.Modified ||
+                _testProjectId != Requirement.TestProjectId))
         {
-            _requirementId = Requirement.Id;
+            _requirement = Requirement;
             _testProjectId = Requirement.TestProjectId;
             var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = Requirement.TestProjectId, Target = FieldTarget.Requirement });
             _requirementFields = Requirement.RequirementFields?.ToList() ?? [];
@@ -84,9 +87,11 @@
             });
         }
 
-        if (Issue is not null && (_issueId != Issue.Id || _testProjectId != Issue.TestProjectId))
+        if (Issue is not null && (_issue?.Id != Issue.Id || 
+            _issue?.Modified != Issue.Modified ||
+            _testProjectId != Issue.TestProjectId))
         {
-            _issueId = Issue.Id;
+            _issue = Issue;
             _testProjectId = Issue.TestProjectId;
             var definitions = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = Issue.TestProjectId, Target = FieldTarget.Issue });
             _issueFields = (await fieldController.GetIssueFieldsAsync(Issue.Id, definitions)).ToList();

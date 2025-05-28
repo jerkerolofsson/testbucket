@@ -13,19 +13,24 @@ using Mediator;
 using TestBucket.Domain.Traceability.Models;
 using TestBucket.Domain.Traceability;
 using TestBucket.Domain.Fields.Handlers;
+using TestBucket.Domain.Requirements.Import;
 
 namespace TestBucket.Domain.Requirements
 {
     public class RequirementManager : IRequirementManager
     {
         private readonly IRequirementRepository _repository;
+        private readonly IRequirementImporter _importer;
         private readonly List<IRequirementObserver> _requirementObservers = new();
         private readonly IMediator _mediator;
+        private readonly TimeProvider _timeProvider;
 
-        public RequirementManager(IRequirementRepository repository, IMediator mediator)
+        public RequirementManager(IRequirementRepository repository, IMediator mediator, TimeProvider timeProvider, IRequirementImporter importer)
         {
             _repository = repository;
             _mediator = mediator;
+            _timeProvider = timeProvider;
+            _importer = importer;
         }
 
         #region Observer
@@ -139,6 +144,30 @@ namespace TestBucket.Domain.Requirements
         }
 
         /// <summary>
+        /// Called when a requirement field has changed
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="field"></param>
+        /// <returns></returns>
+        public async Task OnRequirementFieldChangedAsync(ClaimsPrincipal principal, RequirementField field)
+        {
+            var requirement = await GetRequirementByIdAsync(principal,field.RequirementId);
+            if(requirement is null)
+            {
+                return;
+            }
+
+            // Trigger update of timestamp
+            requirement.Modified = _timeProvider.GetUtcNow();
+            await _repository.UpdateRequirementAsync(requirement);
+
+            foreach (var observer in _requirementObservers)
+            {
+                await observer.OnRequirementFieldChangedAsync(requirement);
+            }
+        }
+
+        /// <summary>
         /// Updates a requirement
         /// </summary>
         /// <param name="principal"></param>
@@ -152,7 +181,7 @@ namespace TestBucket.Domain.Requirements
             await GenerateFoldersFromPathAsync(requirement);
 
             requirement.ModifiedBy = principal.Identity?.Name;
-            requirement.Modified = DateTimeOffset.UtcNow;
+            requirement.Modified = _timeProvider.GetUtcNow();
             await _repository.UpdateRequirementAsync(requirement);
             foreach (var observer in _requirementObservers)
             {
@@ -264,8 +293,8 @@ namespace TestBucket.Domain.Requirements
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
 
             requirement.TenantId = principal.GetTenantIdOrThrow();
-            requirement.Created = DateTimeOffset.UtcNow;
-            requirement.Modified = DateTimeOffset.UtcNow;
+            requirement.Created = _timeProvider.GetUtcNow();
+            requirement.Modified = _timeProvider.GetUtcNow();
             requirement.CreatedBy = principal.Identity?.Name;
             requirement.ModifiedBy = principal.Identity?.Name;
 
@@ -508,8 +537,8 @@ namespace TestBucket.Domain.Requirements
             principal.ThrowIfNoPermission(PermissionEntityType.RequirementSpecification, PermissionLevel.Write);
             specification.TenantId = principal.GetTenantIdOrThrow();
 
-            specification.Created = DateTimeOffset.UtcNow;
-            specification.Modified = DateTimeOffset.UtcNow;
+            specification.Created = _timeProvider.GetUtcNow();
+            specification.Modified = _timeProvider.GetUtcNow();
             specification.CreatedBy = principal.Identity?.Name;
             specification.ModifiedBy = principal.Identity?.Name;
             await _repository.AddRequirementSpecificationAsync(specification);
@@ -600,7 +629,7 @@ namespace TestBucket.Domain.Requirements
             principal.ThrowIfNoPermission(PermissionEntityType.RequirementSpecification, PermissionLevel.Write);
             principal.ThrowIfEntityTenantIsDifferent(specification);
             specification.ModifiedBy = principal.Identity?.Name;
-            specification.Modified = DateTimeOffset.UtcNow;
+            specification.Modified = _timeProvider.GetUtcNow();
             await _repository.UpdateRequirementSpecificationAsync(specification);
 
             foreach (var observer in _requirementObservers)
@@ -620,6 +649,45 @@ namespace TestBucket.Domain.Requirements
         public async Task ApproveRequirementAsync(ClaimsPrincipal principal, Requirement requirement)
         {
             await _mediator.Send(new ApproveRequirementRequest(principal, requirement, true));
+        }
+
+
+        private async Task RestoreRequirementLinks(ClaimsPrincipal principal, List<RequirementTestLink> oldLinks, Requirement requirement)
+        {
+            if (requirement.ExternalId is not null)
+            {
+                var requirementLinks = oldLinks.Where(x => x.RequirementExternalId == requirement.ExternalId).ToList();
+                foreach (var link in requirementLinks)
+                {
+                    link.RequirementId = requirement.Id;
+                    await AddRequirementLinkAsync(principal, link);
+                }
+            }
+        }
+        public async Task ExtractRequirementsFromSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification, CancellationToken cancellationToken)
+        {
+
+            var requirements = await _importer.ExtractRequirementsAsync(specification, cancellationToken);
+
+            // Get a copy of all existing links for the specification, as we are
+            // deleting requirements, we will re-create these based on the requirement ExternalID property later
+            var oldLinks = await GetRequirementLinksForSpecificationAsync(principal, specification);
+
+            // Delete all old requirements, and folders
+            await DeleteSpecificationRequirementsAndFoldersAsync(principal, specification);
+
+            // Import all new
+            foreach (var requirement in requirements)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                requirement.TestProjectId = specification.TestProjectId;
+                requirement.TeamId = specification.TeamId;
+                requirement.RequirementSpecificationId = specification.Id;
+                await AddRequirementAsync(principal, requirement);
+
+                await RestoreRequirementLinks(principal, oldLinks, requirement);
+            }
         }
     }
 }

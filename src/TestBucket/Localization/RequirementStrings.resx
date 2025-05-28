@@ -243,4 +243,7 @@
   <data name="import-requirements-description" xml:space="preserve">
     <value>Upload a document containing requirements</value>
   </data>
+  <data name="approve-requirement-arg" xml:space="preserve">
+    <value>Approve {0}</value>
+  </data>
 </root>

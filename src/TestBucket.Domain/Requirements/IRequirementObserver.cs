@@ -20,4 +20,5 @@ public interface IRequirementObserver
     Task OnRequirementCreatedAsync(Requirement requirement);
     Task OnRequirementDeletedAsync(Requirement requirement);
     Task OnRequirementSavedAsync(Requirement requirement);
+    Task OnRequirementFieldChangedAsync(Requirement requirement);
 }

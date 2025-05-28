@@ -12,17 +12,17 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
     [FunctionalTest]
     public class ChildRequirementTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
-        [TestDescription("""
-            This test verifies that when adding a child requirement, fields that have "inherited: true" are copied
-            to the child requirement.
-
-            # Steps
-            1. Create a requirement
-            2. Assign a value to an inherited field (such as Milestone)
-            3. Create a child requirement
-            4. Verify that the child requirement has the same field value as the parent
-
-            """)]
+        /// <summary>
+        /// This test verifies that when adding a child requirement, fields that have "inherited: true" are copied
+        /// to the child requirement.
+        /// 
+        /// # Steps
+        /// 1. Create a requirement
+        /// 2. Assign a value to an inherited field (Milestone)
+        /// 3. Create a child requirement
+        /// 4. Verify that the child requirement has the same field value as the parent
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [CoveredRequirement("when-creating-a-child-requirement-fields-should-be-copied-from-the-parent")]
         public async Task AddChildRequirement_FieldsAreCopiedFromParent()

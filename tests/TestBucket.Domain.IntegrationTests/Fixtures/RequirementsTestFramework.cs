@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestBucket.Contracts;
 using TestBucket.Data.Migrations;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Traits.Core;
 
@@ -95,6 +97,37 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
             var requirementManager = Fixture.Services.GetRequiredService<IRequirementManager>();
             await requirementManager.AddFolderAsync(user, folder);
             return folder;
+        }
+
+        /// <summary>
+        /// Returns requirements in a specification
+        /// </summary>
+        /// <param name="specificationId"></param>
+        /// <returns></returns>
+        internal async Task<PagedResult<Requirement>> GetRequirementsAsync(long specificationId)
+        {
+            var user = Impersonation.Impersonate(Fixture.App.Tenant);
+            var requirementManager = Fixture.Services.GetRequiredService<IRequirementManager>();
+            return await requirementManager.SearchRequirementsAsync(user, new SearchRequirementQuery
+            {
+                Count = 1000,
+                Offset = 0,
+                RequirementSpecificationId = specificationId
+            });
+        }
+
+        internal async Task UpdateAsync(RequirementSpecification spec)
+        {
+            var user = Impersonation.Impersonate(Fixture.App.Tenant);
+            var requirementManager = Fixture.Services.GetRequiredService<IRequirementManager>();
+            await requirementManager.UpdateRequirementSpecificationAsync(user, spec);
+        }
+
+        internal async Task ExtractRequirementsFromSpecificationAsync(RequirementSpecification spec)
+        {
+            var user = Impersonation.Impersonate(Fixture.App.Tenant);
+            var requirementManager = Fixture.Services.GetRequiredService<IRequirementManager>();
+            await requirementManager.ExtractRequirementsFromSpecificationAsync(user, spec, default);
         }
 
         internal async Task UpdateAsync(RequirementSpecificationFolder folder)

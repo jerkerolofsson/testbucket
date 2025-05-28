@@ -8,11 +8,13 @@ using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Shared;
 using TestBucket.Contracts.Issues.States;
+using TestBucket.Domain;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Issues;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;
 
-namespace TestBucket.Domain.Issues.Commands;
+namespace TestBucket.Components.Issues.Commands;
 internal class CloseIssueCommand : ICommand
 {
     private readonly IStringLocalizer _loc;
@@ -23,11 +25,11 @@ internal class CloseIssueCommand : ICommand
 
     public string? Folder => null;
 
-    public bool Enabled => true;
+    public bool Enabled => _appNav.State.SelectedIssue is not null;
     public string Id => "close-issue";
     public string Name => _loc["close-issue"];
     public string Description => "";
-    public string? Icon => TbIcons.BoldDuoTone.CloudDownload;
+    public string? Icon => Icons.Material.Filled.Close;
     public string[] ContextMenuTypes => [];
     public KeyboardBinding? DefaultKeyboardBinding => null;
 

@@ -152,7 +152,9 @@ public class XmlDocSerializerTests
         var member = xmlDoc.Members[0];
         Assert.Equal("TestBucket.Traits.Core.UnitTests.TraitTypeConverterTests.ConvertFromStringToKnownType_IsValid(System.String,TestBucket.Traits.Core.TraitType)", member.Name);
         Assert.Equal(XmlDocMemberType.Method, member.Type);
-        Assert.Empty(member.Params);
+        Assert.Equal(2, member.Params.Count);
+        Assert.NotNull(member.Params.FirstOrDefault(x => x.Name == "traitName"));
+        Assert.NotNull(member.Params.FirstOrDefault(x => x.Name == "expectedType"));
     }
 
     /// <summary>

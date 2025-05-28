@@ -30,6 +30,7 @@ public class IssueManager : IIssueManager
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
     private readonly IMediator _mediator;
     private readonly List<ILinkedIssueObserver> _observers = new();
+    private readonly List<ILocalIssueObserver> _localObservers = new();
 
     public IssueManager(IIssueRepository repository, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager)
     {
@@ -37,6 +38,18 @@ public class IssueManager : IIssueManager
         _mediator = mediator;
         _fieldDefinitionManager = fieldDefinitionManager;
     }
+
+    /// <summary>
+    /// Adds an observer
+    /// </summary>
+    /// <param name="observer"></param>
+    public void AddObserver(ILocalIssueObserver observer) => _localObservers.Add(observer);
+
+    /// <summary>
+    /// Removes an observer
+    /// </summary>
+    /// <param name="observer"></param>
+    public void RemoveObserver(ILocalIssueObserver observer) => _localObservers.Remove(observer);
 
     /// <summary>
     /// Adds an observer
@@ -74,6 +87,11 @@ public class IssueManager : IIssueManager
         issue.ModifiedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         issue.TenantId = principal.GetTenantIdOrThrow();
         await _repository.AddLocalIssueAsync(issue);
+        foreach (var observer in _localObservers)
+        {
+            await observer.OnLocalIssueAddedAsync(issue);
+        }
+
     }
 
     public async Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
@@ -147,6 +165,11 @@ public class IssueManager : IIssueManager
             // State has changed, raise event 
             await _mediator.Publish(new IssueAssignmentChanged(principal, updatedIssue, existingIssue.AssignedTo));
         }
+
+        foreach(var observer in _localObservers)
+        {
+            await observer.OnLocalIssueUpdatedAsync(updatedIssue);
+        }
     }
 
     public async Task<LocalIssue?> GetIssueByIdAsync(ClaimsPrincipal principal, long id)
@@ -165,6 +188,25 @@ public class IssueManager : IIssueManager
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Delete);
 
         await _repository.DeleteLocalIssueAsync(issue.Id);
+
+        foreach (var observer in _localObservers)
+        {
+            await observer.OnLocalIssueDeletedAsync(issue);
+        }
+    }
+
+    public async Task OnLocalIssueFieldChangedAsync(ClaimsPrincipal principal, IssueField field)
+    {
+        var issue = await GetIssueByIdAsync(principal,field.LocalIssueId);
+        if(issue is null)
+        {
+            return;
+        }
+
+        foreach (var observer in _localObservers)
+        {
+            await observer.OnLocalIssueFieldChangedAsync(issue);
+        }
     }
 
     #endregion Local Issues

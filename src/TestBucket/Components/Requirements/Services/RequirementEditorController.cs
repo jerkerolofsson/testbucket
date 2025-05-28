@@ -88,42 +88,10 @@ internal class RequirementEditorController : TenantBaseService
 
         if (result == true)
         {
-            var requirements = await _importer.ExtractRequirementsAsync(specification, cancellationToken);
-
-            // Get a copy of all existing links for the specification, as we are
-            // deleting requirements, we will re-create these based on the requirement ExternalID property later
-            var oldLinks = await _manager.GetRequirementLinksForSpecificationAsync(principal, specification);
-
-            // Delete all old requirements, and folders
-            await _manager.DeleteSpecificationRequirementsAndFoldersAsync(principal, specification);
-
-            // Import all new
-            foreach (var requirement in requirements)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                requirement.TestProjectId = specification.TestProjectId;
-                requirement.TeamId = specification.TeamId;
-                requirement.RequirementSpecificationId = specification.Id;
-                await _manager.AddRequirementAsync(principal, requirement);
-
-                await RestoreRequirementLinks(principal, oldLinks, requirement);
-            }
+            await _manager.ExtractRequirementsFromSpecificationAsync(principal, specification, cancellationToken);
         }
     }
 
-    private async Task RestoreRequirementLinks(ClaimsPrincipal principal, List<RequirementTestLink> oldLinks, Requirement requirement)
-    {
-        if (requirement.ExternalId is not null)
-        {
-            var requirementLinks = oldLinks.Where(x => x.RequirementExternalId == requirement.ExternalId).ToList();
-            foreach (var link in requirementLinks)
-            {
-                link.RequirementId = requirement.Id;
-                await _manager.AddRequirementLinkAsync(principal, link);
-            }
-        }
-    }
 
     public async Task<List<RequirementEntity>> ImportAsync(TestProject project, FileResource fileResource)
     {

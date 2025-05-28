@@ -189,4 +189,13 @@ public interface IRequirementManager
     /// <exception cref="InvalidDataException">No approval field was found</exception>
     /// <returns></returns>
     Task ApproveRequirementAsync(ClaimsPrincipal principal, Requirement requirement);
+
+    /// <summary>
+    /// Called when a requirement field has changed
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="field"></param>
+    /// <returns></returns>
+    Task OnRequirementFieldChangedAsync(ClaimsPrincipal principal, RequirementField field);
+    Task ExtractRequirementsFromSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification, CancellationToken cancellationToken);
 }

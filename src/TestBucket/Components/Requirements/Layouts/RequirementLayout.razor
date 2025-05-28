@@ -6,12 +6,16 @@
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Components.Tests.TestRuns.Controllers
 @using TestBucket.Domain
+@using TestBucket.Domain.Requirements
 @using TestBucket.Domain.Requirements.Models
 @using TestBucket.Domain.Teams.Models
 @inject RequirementBrowser browser
 @inject NavigationManager navigationManager
 @inject AppNavigationManager appNavigationManager
+@inject IRequirementManager manager
 @inject IStringLocalizer<SharedStrings> loc
+@implements IRequirementObserver
+@implements IDisposable
 
 <TenantRedirect />
 
@@ -69,7 +73,7 @@
         if (_requirement is not null)
         {
             await editor.OpenEditDialogAsync(_requirement);
-            
+
             _requirement = await browser.GetRequirementByIdAsync(_requirement.Id);
             appNavigationManager.State.SelectedRequirement = _requirement;
         }
@@ -100,5 +104,44 @@
             appNavigationManager.State.SelectedRequirement = _requirement;
             _loading = false;
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        manager.AddObserver(this);
+    }
+
+    public Task OnSpecificationCreatedAsync(RequirementSpecification spec) => Task.CompletedTask;
+    public Task OnSpecificationDeletedAsync(RequirementSpecification spec) => Task.CompletedTask;
+    public Task OnSpecificationSavedAsync(RequirementSpecification spec) => Task.CompletedTask;
+    public Task OnFolderCreatedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
+    public Task OnFolderDeletedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
+    public Task OnFolderSavedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
+    public Task OnRequirementCreatedAsync(Requirement requirement) => Task.CompletedTask;
+    public Task OnRequirementDeletedAsync(Requirement requirement) => Task.CompletedTask;
+
+    public async Task OnRequirementSavedAsync(Requirement requirement)
+    {
+        if (_requirement?.Id == requirement.Id)
+        {
+            _requirement = requirement;
+            appNavigationManager.State.SelectedRequirement = _requirement;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public async Task OnRequirementFieldChangedAsync(Requirement requirement)
+    {
+        if(_requirement?.Id == requirement.Id)
+        {
+            _requirement = requirement;
+            appNavigationManager.State.SelectedRequirement = _requirement;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public void Dispose()
+    {
+        manager.RemoveObserver(this);
     }
 }

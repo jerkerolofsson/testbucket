@@ -15,7 +15,7 @@
 @inject IStringLocalizer<StateStrings> stateLoc
 @inject CommentsController comments
 
-@if(Requirement is not null)
+@if (_requirement is not null)
 {
     <div class="container-fill-2-rows">
         <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false" Color="Color.Tertiary">
@@ -23,19 +23,18 @@
                 <MudStack Class="pa-2" Style="width: 100%; height: 100%">
 
                     <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
-                        <MudText Typo="Typo.h1" Color="Color.Primary">@Requirement.ExternalId</MudText>
-                        <MudText Typo="Typo.h1">@Requirement.Name</MudText>
+                        <MudText Typo="Typo.h1" Color="Color.Primary">@_requirement.ExternalId</MudText>
+                        <MudText Typo="Typo.h1">@_requirement.Name</MudText>
                     </MudStack>
 
-                    <MarkdownEditor 
-                                    @ref="_editor"
+                    <MarkdownEditor @ref="_editor"
                                     Preview="true"
                                     ShowToolbar="false"
                                     MaxHeight="100%"
                                     MinHeight="100%"
                                     Color="Color.Primary"
                                     AllowResize="true"
-                                    Value="@Requirement.Description"
+                                    Value="@_requirement.Description"
                                     TextAreaClass="tb-requirement-description"
                                     SpellChecker="false">
                     </MarkdownEditor>
@@ -50,23 +49,23 @@
                     <Field>
                         <FieldHeader>@loc["created"]</FieldHeader>
                         <MudStack Row AlignItems="AlignItems.Center">
-                            <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Requirement.CreatedBy" />
-                            <div>@Requirement.Created.Humanize()</div>
+                            <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@_requirement.CreatedBy" />
+                            <div>@_requirement.Created.Humanize()</div>
                         </MudStack>
                     </Field>
 
                     <Field Row>
                         <FieldHeader>@stateLoc["state"]</FieldHeader>
-                        <MudSpacer/>
-                        <div>@Requirement.State</div>
+                        <MudSpacer />
+                        <div>@_requirement.State</div>
                     </Field>
 
                     <Field Row>
                         <FieldHeader>@reqLoc["type"]</FieldHeader>
-                        <MudSpacer/>
-                        @if(Requirement.RequirementType is not null)
+                        <MudSpacer />
+                        @if (_requirement.RequirementType is not null)
                         {
-                            var label = "type-" + Requirement.RequirementType.ToLower();
+                            var label = "type-" + _requirement.RequirementType.ToLower();
                             <div>@reqLoc[label]</div>
                         }
                     </Field>
@@ -80,19 +79,19 @@
                         </Field>
                     }
 
-                    <FieldsEditor Requirement="@Requirement" ReadOnly AutoSaveChanges="false"/>
+                    <FieldsEditor Requirement="@_requirement" ReadOnly AutoSaveChanges="false" />
 
                     <MudTooltip Text="@loc["slug"]">
-                        <CopyToClipboard Text="@Requirement.Slug" IconSize="Size.Small">
-                            <MudText Typo="Typo.subtitle1">@Requirement.Slug</MudText>
+                        <CopyToClipboard Text="@_requirement.Slug" IconSize="Size.Small">
+                            <MudText Typo="Typo.subtitle1">@_requirement.Slug</MudText>
                         </CopyToClipboard>
                     </MudTooltip>
 
-                    @if (!string.IsNullOrEmpty(Requirement.ExternalId))
+                    @if (!string.IsNullOrEmpty(_requirement.ExternalId))
                     {
                         <MudTooltip Text="@loc["external-id"]">
-                            <CopyToClipboard Text="@Requirement.ExternalId" IconSize="Size.Small">
-                                <MudText Typo="Typo.subtitle1">@Requirement.ExternalId</MudText>
+                            <CopyToClipboard Text="@_requirement.ExternalId" IconSize="Size.Small">
+                                <MudText Typo="Typo.subtitle1">@_requirement.ExternalId</MudText>
                             </CopyToClipboard>
                         </MudTooltip>
                     }
@@ -108,7 +107,7 @@
 @code {
     [Parameter] public Requirement? Requirement { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
-    [CascadingParameter] public TestProject? Project {get;set;}
+    [CascadingParameter] public TestProject? Project { get; set; }
     private Requirement? _parent;
     private RequirementTestLink[] _links = [];
     private Requirement? _requirement;
@@ -148,16 +147,19 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        if (Requirement is not null && _requirement?.Id != Requirement.Id)
+        //if (Requirement is not null && _requirement?.Id != Requirement.Id)
         {
             _parent = null;
             _requirement = Requirement;
-            _comments = _requirement.Comments?.ToList() ?? [];
-            if (Requirement.ParentRequirementId is not null)
+            if (_requirement is not null)
             {
-                _parent = await browser.GetRequirementByIdAsync(Requirement.ParentRequirementId.Value);
+                _comments = _requirement.Comments?.ToList() ?? [];
+                if (_requirement.ParentRequirementId is not null)
+                {
+                    _parent = await browser.GetRequirementByIdAsync(_requirement.ParentRequirementId.Value);
+                }
+                _links = await browser.GetLinksForRequirementAsync(_requirement);
             }
-            _links = await browser.GetLinksForRequirementAsync(Requirement);
         }
     }
 

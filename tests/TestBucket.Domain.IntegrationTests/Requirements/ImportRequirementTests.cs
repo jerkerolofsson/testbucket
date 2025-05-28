@@ -9,6 +9,7 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
     [IntegrationTest]
     [EnrichedTest]
     [FunctionalTest]
+    [Feature("Import Requirements")]
     public class ImportRequirementTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         private string mConventionalCommitsMarkdownSpec = """

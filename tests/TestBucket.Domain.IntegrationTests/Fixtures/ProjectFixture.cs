@@ -21,6 +21,16 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         public IServiceProvider Services => _app.Services;
 
         /// <summary>
+        /// Product architecture
+        /// </summary>
+        public ArchitectureFramework Architecture => new ArchitectureFramework(this);
+
+        /// <summary>
+        /// Commits
+        /// </summary>
+        public CommitFramework Commits => new CommitFramework(this);
+
+        /// <summary>
         /// Modify user preferences
         /// </summary>
         public UserPreferencesFramework UserPreferences => new UserPreferencesFramework(this);

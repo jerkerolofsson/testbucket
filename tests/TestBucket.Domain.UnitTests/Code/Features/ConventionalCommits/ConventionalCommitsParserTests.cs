@@ -97,6 +97,27 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
 
 
         /// <summary>
+        /// Verifies that scope can contain spaces
+        /// 
+        /// ```
+        /// feat(feature name): ...
+        /// ```
+        /// </summary>
+        [Fact]
+        public void Parse_WithSpaceInScope_ScopeParsedCorrectly()
+        {
+            var message = """
+                feat(feature name): ...
+                """;
+
+            // Act
+            var conventionalMessage = new ConventionalCommitParser().Parse(message);
+
+            Assert.Single(conventionalMessage.Types);
+            Assert.Equal("feature name", conventionalMessage.Types[0].Scope);
+        }
+
+        /// <summary>
         /// Verifies that breaking change is true when there is breaking change in the footer
         /// 
         /// ```
@@ -447,6 +468,40 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
             Assert.Single(conventionalMessage.Types);
             Assert.Equal("xyz", conventionalMessage.Types[0].Type);
             Assert.Equal("Value", conventionalMessage.Types[0].Description);
+        }
+
+        /// <summary>
+        /// Verifies that a footer that has a # separator, followed by a string value is supported
+        /// 
+        /// ```
+        /// fix: prevent racing of requests
+        /// 
+        /// Fixes #123
+        /// ```
+        /// </summary>
+        [Fact]
+        [CoveredRequirement("CC-7")]
+        public void Parse_WithHashSeparator_FootersParsedCorrectly()
+        {
+            var message = """
+                fix: prevent racing of requests
+
+                Fixes #123
+                """;
+
+            // Act
+            var conventionalMessage = new ConventionalCommitParser().Parse(message);
+
+            Assert.Equal("prevent racing of requests", conventionalMessage.Description);
+            Assert.False(conventionalMessage.IsBreakingChange);
+
+            Assert.NotNull(conventionalMessage.LongerDescription);
+            Assert.Single(conventionalMessage.Types);
+            Assert.Equal("fix", conventionalMessage.Types[0].Type);
+
+            Assert.Single(conventionalMessage.Footer);
+            Assert.Equal("Fixes", conventionalMessage.Footer[0].Type);
+            Assert.Equal("#123", conventionalMessage.Footer[0].Description);
         }
     }
 }

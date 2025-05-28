@@ -66,6 +66,16 @@ public class Commit : ProjectEntity
     public List<string>? LayerNames { get; set; }
 
     /// <summary>
+    /// List of references
+    /// </summary>
+    public List<string>? References { get; set; }
+
+    /// <summary>
+    /// List of fixed issue IDs
+    /// </summary>
+    public List<string>? Fixes { get; set; }
+
+    /// <summary>
     /// Files
     /// </summary>
     public virtual List<CommitFile>? CommitFiles { get; set; }

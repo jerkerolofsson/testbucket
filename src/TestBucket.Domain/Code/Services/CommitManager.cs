@@ -1,5 +1,6 @@
 ﻿using Mediator;
 
+using TestBucket.Domain.Code.Events;
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Services.IntegrationImpact;
 using TestBucket.Domain.Code.Specifications;
@@ -11,18 +12,15 @@ public class CommitManager : ICommitManager
 {
     private readonly ICommitRepository _repo;
     private readonly IMediator _mediator;
-    private readonly IArchitectureManager _architectureManager;
     private readonly IProjectManager _projectManager;
 
     public CommitManager(
         ICommitRepository repo, 
         IMediator mediator, 
-        IArchitectureManager architectureManager, 
         IProjectManager projectManager)
     {
         _repo = repo;
         _mediator = mediator;
-        _architectureManager = architectureManager;
         _projectManager = projectManager;
     }
 
@@ -82,55 +80,7 @@ public class CommitManager : ICommitManager
         await _repo.DeleteCommitByShaAsync(commit.Sha);
         await _repo.AddCommitAsync(commit);
 
-        if (commit.CommitFiles is not null && commit.CommitFiles.Count > 0)
-        {
-            var project = commit.TestProject ?? await _projectManager.GetTestProjectByIdAsync(principal, commit.TestProjectId.Value);
-            if (project is not null)
-            {
-                var model = await _architectureManager.GetProductArchitectureAsync(principal, project);
-
-                // Scan for impacted feature/component/layer
-                var impact = await _mediator.Send(new ResolveCommitImpactRequest(commit, model));
-                foreach (var name in impact.Systems)
-                {
-                    var component = await _architectureManager.GetSystemByNameAsync(principal, projectId, name);
-                    if (component is not null)
-                    {
-                        commit.SystemNames ??= new();
-                        commit.SystemNames.Add(component.Name);
-                    }
-                }
-                foreach (var name in impact.Components)
-                {
-                    var component = await _architectureManager.GetComponentByNameAsync(principal, projectId, name);
-                    if (component is not null)
-                    {
-                        commit.ComponentNames ??= new();
-                        commit.ComponentNames.Add(component.Name);
-                    }
-                }
-                foreach (var name in impact.Features)
-                {
-                    var feature = await _architectureManager.GetFeatureByNameAsync(principal, projectId, name);
-                    if (feature is not null)
-                    {
-                        commit.FeatureNames ??= new();
-                        commit.FeatureNames.Add(feature.Name);
-                    }
-                }
-                foreach (var name in impact.Layers)
-                {
-                    var layer = await _architectureManager.GetLayerByNameAsync(principal, projectId, name);
-                    if (layer is not null)
-                    {
-                        commit.LayerNames ??= new();
-                        commit.LayerNames.Add(layer.Name);
-                    }
-                }
-
-                await _repo.UpdateCommitAsync(commit);
-            }
-        }
+        await _mediator.Publish(new CommitAddedEvent(principal, commit));
     }
 
     public async Task AddRepositoryAsync(ClaimsPrincipal principal, Repository repo)

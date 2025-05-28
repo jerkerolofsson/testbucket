@@ -5,8 +5,9 @@ using TestBucket.Domain.Code.Features.ConventionalCommits.Models;
 namespace TestBucket.Domain.Code.Features.ConventionalCommits.Parser;
 internal class ConventionalCommitParser
 {
-    private static readonly Regex _regexBreakpointFooter = new Regex("^BREAKING CHANGE\\: ");
-    private static readonly Regex _regexTypeAndMaybeScope = new Regex("^([a-zA-Z0-9-\\(\\)]+!?)\\: ");
+    private static readonly Regex _regexBreakpointFooter = new Regex(@"^BREAKING CHANGE\: ");
+    private static readonly Regex _regexTypeAndMaybeScope = new Regex(@"^[a-zA-Z-]+(\(.*\))?!?\: ");
+    private static readonly Regex _regexGitTrailerHash = new Regex(@"^[a-zA-Z-]+ #");
 
     private enum ParserState
     {
@@ -87,9 +88,20 @@ internal class ConventionalCommitParser
             }
             else
             {
-                if(message.Footer.Count > 0)
+                var m3 = _regexGitTrailerHash.Match(line);
+                if (m3.Success)
                 {
-                    message.Footer[^1].Description += $"\n{line}";
+                    var p = line.IndexOf('#');
+                    ConventionalCommitType commitTypeAndScope = new() { Type = line[0..p].TrimEnd(), Description = line[(p)..] };
+                    message.Footer.Add(commitTypeAndScope);
+                }
+                else
+                {
+                    // Append to the previous footer, this is a multiline
+                    if (message.Footer.Count > 0)
+                    {
+                        message.Footer[^1].Description += $"\n{line}";
+                    }
                 }
             }
         }
@@ -139,7 +151,9 @@ internal class ConventionalCommitParser
                 if(wasPrevLineNewLine)
                 {
                     // See if it is the start of the footer
-                    if(_regexBreakpointFooter.IsMatch(line) || _regexTypeAndMaybeScope.IsMatch(line))
+                    if(_regexBreakpointFooter.IsMatch(line) || 
+                        _regexTypeAndMaybeScope.IsMatch(line) ||
+                        _regexGitTrailerHash.IsMatch(line))
                     {
                         state = ParserState.Footer;
                     }

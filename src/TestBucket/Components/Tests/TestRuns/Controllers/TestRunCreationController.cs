@@ -220,7 +220,7 @@ internal class TestRunCreationController : TenantBaseService
             { x => x.TestSuite, testSuite },
             { x => x.TestProjectId, testSuite.TestProjectId }
         };
-        var dialog = await _dialogService.ShowAsync<CreateTestRunDialog>(null, parameters);
+        var dialog = await _dialogService.ShowAsync<CreateTestRunDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if (result?.Data is TestRun testRun)
         {

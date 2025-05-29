@@ -1,0 +1,142 @@
+﻿@using TestBucket.Contracts.Testing.States
+@inject TestCaseEditorController testCaseEditorController
+@inject TestExecutionController testExecutionController
+@inject IStringLocalizer<SharedStrings> loc
+@implements IAsyncDisposable
+
+<MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 75vw">
+    <TitleContent>@TestCaseRun?.Name</TitleContent>
+    <DialogContent>
+
+        <MudStack Spacing="0" Style="width: 100%">
+
+            <Splitter Style="height: 100%" Color="Color.Tertiary" Bordered="false" Dimension="60" EnableMargin="false">
+                <StartContent>
+
+                    <MarkdownEditor ShowToolbar="false"
+                                    MaxHeight="100%"
+                                    MinHeight="100%"
+                                    EnableRunCode
+                                    RunCodeLanguages="pwsh http"
+                                    AllowResize="false"
+                                    Preview="true"
+                                    Value="@_markdown"
+                                    SpellChecker="false">
+                    </MarkdownEditor>
+
+                    @if(_errors.Count > 0)
+                    {
+                        @foreach (var error in _errors)
+                        {
+                            @error.Message
+                        }
+                    }
+
+                </StartContent>
+                <EndContent>
+                    <MudStack Class="pa-2" Style="width: 100%">
+                        @if (TestCaseRun is not null)
+                        {
+                            <CascadingValue Value="@TestCaseRun">
+                                <MudStack Class="pa-2" Style="width: 100%">
+
+                                    <MudStack Row Style="width: 100%">
+                                        <ResultPill Result="@TestCaseRun.Result" ResultChanged="OnTestCaseRunResultChanged" />
+                                        <MudSpacer/>
+                                        <TestCaseRunDuration />
+                                    </MudStack>
+
+                                    <TestCaseRunEditor TestCaseRun="@TestCaseRun" ResultChanged="OnTestCaseRunResultChanged" />
+                                    <TestRunStatePicker State="@State" StateChanged="OnTestCaseRunStateChanged" />
+
+                                    <FieldsEditor TestCaseRun="@TestCaseRun" />
+                            
+                                </MudStack>
+                            </CascadingValue>
+                        }
+                    </MudStack>
+                </EndContent>
+            </Splitter>
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" OnClick="Submit">@loc["ok"]</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+    private string _markdown = "";
+
+    private string _resourceLockGuid = Guid.NewGuid().ToString();
+    private List<CompilerError> _errors = [];
+
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public TestCaseRun? TestCaseRun { get; set; }
+
+    private void Submit()
+    {
+        MudDialog.Close(TestCaseRun);
+    }
+
+    private TestState? State
+    {
+        get
+        {
+            if (TestCaseRun?.State is not null)
+            {
+                return new TestState() { MappedState = TestCaseRun.MappedState ?? MappedTestState.NotStarted, Name = TestCaseRun.State };
+            }
+            return null;
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (TestCaseRun?.TenantId is not null && TestCaseRun?.TestCase is not null)
+        {
+            await testCaseEditorController.ReleaseResourcesAsync(TestCaseRun.TenantId, _resourceLockGuid);
+
+
+            TestCase testCase = TestCaseRun.TestCase!;
+            string description = testCase.Description ?? "";
+
+            var options = new CompilationOptions(testCase, description)
+            {
+                ContextGuid = _resourceLockGuid,
+                TestRunId = TestCaseRun.TestRunId,
+                AllocateResources = true,
+                ReleaseResourceDirectly = false
+            };
+
+            _markdown = await testCaseEditorController.CompileAsync(options, _errors) ?? "";
+        }
+    }
+
+    private async Task OnTestCaseRunStateChanged(TestState? state)
+    {
+        if (TestCaseRun?.TestCase is not null)
+        {
+            TestCaseRun.State = state?.Name;
+            TestCaseRun.MappedState = state?.MappedState;
+
+            await testCaseEditorController.SaveTestCaseRunAsync(TestCaseRun);
+        }
+    }
+
+    private async Task OnTestCaseRunResultChanged(TestResult result)
+    {
+        if (TestCaseRun?.TestProjectId is not null)
+        {
+            await testExecutionController.SetTestCaseRunResultAsync(TestCaseRun, result);
+            Submit();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (TestCaseRun?.TenantId is not null)
+        {
+            await testCaseEditorController.ReleaseResourcesAsync(_resourceLockGuid, TestCaseRun.TenantId);
+        }
+    }
+}

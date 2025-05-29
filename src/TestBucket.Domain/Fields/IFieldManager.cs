@@ -1,6 +1,7 @@
 ﻿using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Fields;
 
@@ -53,6 +54,9 @@ public interface IFieldManager
     #region Test Run
     Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(ClaimsPrincipal principal, long testRunId, IEnumerable<FieldDefinition> fieldDefinitions);
     Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field);
+    Task<bool> SetIssueFieldAsync(ClaimsPrincipal principal, long projectId, long issueId, Predicate<IssueField> fieldPredicate, string value);
+    Task<IssueField?> GetIssueFieldAsync(ClaimsPrincipal principal, long projectId, long issueId, Predicate<IssueField> fieldPredicate, string value);
+    Task<bool> SetIssueFieldAsync(ClaimsPrincipal principal, long projectId, long issueId, TraitType traitType, string value);
 
     #endregion Test Run
 }

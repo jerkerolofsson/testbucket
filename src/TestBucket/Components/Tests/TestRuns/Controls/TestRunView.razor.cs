@@ -1,4 +1,5 @@
-﻿using TestBucket.Contracts.Testing.States;
+﻿using TestBucket.Components.Tests.TestCases.Services;
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Comments.Models;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
@@ -74,20 +75,13 @@ public partial class TestRunView
             string description = testCase.Description ?? "";
             long testRunId = _selectedTestCaseRun.TestRunId;
             List<CompilerError> errors = new List<CompilerError>();
-            _markdown = await testCaseEditorController.CompileTestCaseRunPreviewAsync(testCase, testRunId, description, errors) ?? "";
-        }
-    }
 
-    private async Task OnTestCaseRunChanged(TestCaseRun run)
-    {
-        if (_selectedTestCaseRun?.Id == run?.Id)
-        {
-            await testCaseEditorController.ReleaseResourcesAsync();
-            _selectedTestCaseRun = run;
-            if (testCaseRunGrid is not null)
+            var options = new CompilationOptions(testCase, description)
             {
-                testCaseRunGrid.ReloadServerData();
-            }
+                TestRunId = testRunId,
+                AllocateResources = false,
+            };
+            _markdown = await testCaseEditorController.CompileAsync(options, errors) ?? "";
         }
     }
 
@@ -126,9 +120,9 @@ public partial class TestRunView
         testExecutionController.TestCompleted += OnTestCompleted;
     }
 
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
         testExecutionController.TestCompleted -= OnTestCompleted;
-        await testCaseEditorController.ReleaseResourcesAsync();
+        return ValueTask.CompletedTask;
     }
 }

@@ -33,6 +33,9 @@ public class GetFieldsHandler : IRequestHandler<GetFieldsRequest, GetFieldsRespo
             case FieldTarget.TestRun:
                 return new GetFieldsResponse(await _fieldManager.GetTestRunFieldsAsync(request.Principal, request.EntityId, definitions));
 
+            case FieldTarget.Issue:
+                return new GetFieldsResponse(await _fieldManager.GetIssueFieldsAsync(request.Principal, request.EntityId, definitions));
+
             default:
                 throw new NotImplementedException();
         }

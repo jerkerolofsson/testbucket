@@ -15,7 +15,7 @@
 @inject AuthenticationStateProvider authStateProvider
 
 <MudStack>
-    <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+    <MudStack Spacing="3" Row AlignItems="AlignItems.Center" Class="pa-2">
         @if (_run is not null)
         {
             <MudText Typo="Typo.h1" Color="Color.Primary">@_totalCount</MudText>
@@ -87,6 +87,10 @@
                         @if(context.Item.Result != Contracts.Testing.Models.TestResult.NoRun)
                         {
                             <MudLink OnClick="RunTestAgain" Style="font-size: 8pt">@loc["run-test-again"]</MudLink>
+                        }
+                        else
+                        {
+                            <MudLink OnClick="RunTest" Style="font-size: 8pt">@loc["run"]</MudLink>
                         }
                     </CellTemplate>
                 </TemplateColumn>

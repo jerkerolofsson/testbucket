@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 using Mediator;
 
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields.Events;
 using TestBucket.Domain.Fields.Helpers;
 using TestBucket.Domain.Issues.Models;
+using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Fields;
 internal class FieldManager : IFieldManager
@@ -65,11 +68,42 @@ internal class FieldManager : IFieldManager
         ArgumentNullException.ThrowIfNull(fieldDefinition);
         principal.ThrowIfNoPermission(fieldDefinition);
 
+        var oldFields = await _repository.GetIssueFieldsAsync(principal.GetTenantIdOrThrow(), field.LocalIssueId);
+        var oldField = oldFields.FirstOrDefault(x => x.Id == field.Id);
+
         field.TenantId = principal.GetTenantIdOrThrow();
         await _repository.UpsertIssueFieldAsync(field);
 
-        await _mediator.Publish(new IssueFieldChangedNotification(principal, field));
+        await _mediator.Publish(new IssueFieldChangedNotification(principal, field, oldField));
     }
+
+
+    public async Task<IssueField?> GetIssueFieldAsync(ClaimsPrincipal principal, long projectId, long issueId, Predicate<IssueField> fieldPredicate, string value)
+    {
+        GetFieldsResponse response = await _mediator.Send(new GetFieldsRequest(principal, FieldTarget.Issue, projectId, issueId));
+        var field = response.Fields.Cast<IssueField>().Where(x => fieldPredicate(x)).FirstOrDefault();
+        return field;
+    }
+
+    public async Task<bool> SetIssueFieldAsync(ClaimsPrincipal principal, long projectId, long issueId, TraitType traitType, string value)
+    {
+        return await SetIssueFieldAsync(principal, projectId, issueId, (IssueField f) => f.FieldDefinition?.TraitType == traitType, value);
+    }
+
+    public async Task<bool> SetIssueFieldAsync(ClaimsPrincipal principal, long projectId, long issueId, Predicate<IssueField> fieldPredicate, string value)
+    {
+        GetFieldsResponse response = await _mediator.Send(new GetFieldsRequest(principal, FieldTarget.Issue, projectId, issueId));
+        var field = response.Fields.Cast<IssueField>().Where(x => fieldPredicate(x)).FirstOrDefault();
+        if (field is null)
+        {
+            return false;
+        }
+
+        field.StringValue = value;
+        await UpsertIssueFieldAsync(principal, field);
+        return true;
+    }
+
     #endregion Issue
 
 
@@ -206,7 +240,6 @@ internal class FieldManager : IFieldManager
     }
 
 
-
     public async Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field)
     {
         var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
@@ -222,10 +255,13 @@ internal class FieldManager : IFieldManager
         var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
         principal.ThrowIfNoPermission(fieldDefinition);
 
+        var oldFields = await _repository.GetTestCaseFieldsAsync(principal.GetTenantIdOrThrow(), field.TestCaseId);
+        var oldField = oldFields.FirstOrDefault(x => x.Id == field.Id);
+
         field.TenantId = principal.GetTenantIdOrThrow();
         await _repository.UpsertTestCaseFieldAsync(field);
 
-        await _mediator.Publish(new TestCaseFieldChangedNotification(principal, field));
+        await _mediator.Publish(new TestCaseFieldChangedNotification(principal, field, oldField));
     }
     public async Task UpsertTestCaseRunFieldAsync(ClaimsPrincipal principal, TestCaseRunField field)
     {

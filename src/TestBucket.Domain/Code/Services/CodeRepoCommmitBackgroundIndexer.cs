@@ -28,7 +28,7 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
     }
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await Task.Delay(TimeSpan.FromSeconds(120));
+        await Task.Delay(TimeSpan.FromSeconds(10));
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -57,6 +57,7 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
             configure.TenantId = tenant.Id;
             configure.UserName = "commit-bot";
             configure.Email = "admin@admin.com";
+            configure.AddAllPermissions();
         });
 
         var projectRepository = scope.ServiceProvider.GetRequiredService<IProjectRepository>();
@@ -93,10 +94,10 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
         DateTimeOffset until = DateTimeOffset.UtcNow;
         var manager = scope.ServiceProvider.GetRequiredService<ICommitManager>();
 
-        // Temp
-        //repo.LastIndexTimestamp = null;
-        //repo.LastIndexTimestamp = new DateTimeOffset(2025, 4, 28, 21, 09, 0, 0, TimeSpan.Zero);
         var from = repo.LastIndexTimestamp ?? new DateTimeOffset(2025, 1, 1, 0, 0, 0, 0, TimeSpan.Zero);
+
+        // Debug:
+        from = from.AddMinutes(-30);
 
         while(from < until)
         {

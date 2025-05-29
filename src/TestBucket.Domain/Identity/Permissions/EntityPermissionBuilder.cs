@@ -30,7 +30,26 @@ namespace TestBucket.Domain.Identity.Permissions
 
         public UserPermissions Build() => _userPermissions;
 
-        public void Add(PermissionEntityType entityType, PermissionLevel level)
+
+        public EntityPermissionBuilder AddAllPermissions()
+        {
+            Add(PermissionEntityType.TestSuite, PermissionLevel.All);
+            Add(PermissionEntityType.TestCase, PermissionLevel.All);
+            Add(PermissionEntityType.TestCaseRun, PermissionLevel.All);
+            Add(PermissionEntityType.TestRun, PermissionLevel.All);
+            Add(PermissionEntityType.TestAccount, PermissionLevel.All);
+            Add(PermissionEntityType.TestResource, PermissionLevel.All);
+            Add(PermissionEntityType.Project, PermissionLevel.All);
+            Add(PermissionEntityType.User, PermissionLevel.All);
+            Add(PermissionEntityType.Team, PermissionLevel.All);
+            Add(PermissionEntityType.Tenant, PermissionLevel.All);
+            Add(PermissionEntityType.Requirement, PermissionLevel.All);
+            Add(PermissionEntityType.RequirementSpecification, PermissionLevel.All);
+            Add(PermissionEntityType.Architecture, PermissionLevel.All);
+            Add(PermissionEntityType.Issue, PermissionLevel.All);
+            return this;
+        }
+        public EntityPermissionBuilder Add(PermissionEntityType entityType, PermissionLevel level)
         {
             var permission = _userPermissions.Permisssions.Where(x => x.EntityType == entityType).FirstOrDefault();
             if (permission is null)
@@ -42,9 +61,11 @@ namespace TestBucket.Domain.Identity.Permissions
                 _userPermissions.Permisssions.Remove(permission);
             }
             _userPermissions.Permisssions.Add(new EntityPermission(entityType, permission.Level | level));
+
+            return this;
         }
 
-        public void Add(RolePermission rolePermission)
+        public EntityPermissionBuilder Add(RolePermission rolePermission)
         {
             var permission = _userPermissions.Permisssions.Where(x => x.EntityType == rolePermission.Entity).FirstOrDefault();
             if(permission is null)
@@ -56,6 +77,8 @@ namespace TestBucket.Domain.Identity.Permissions
                 _userPermissions.Permisssions.Remove(permission);
             }
             _userPermissions.Permisssions.Add(new EntityPermission(rolePermission.Entity, permission.Level | rolePermission.Level));
+
+            return this;
         }
     }
 }

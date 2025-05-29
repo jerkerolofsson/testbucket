@@ -8,7 +8,11 @@
 @inject TestBrowser testBrowser
 @inject NavigationManager navigationManager
 @inject FieldController fieldController
-<TestRunView TestRun="@_testRun" Query="@_query"/>
+
+@if (_testRun is not null)
+{
+    <TestRunView TestRun="@_testRun" Query="@_query"/>
+}
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";

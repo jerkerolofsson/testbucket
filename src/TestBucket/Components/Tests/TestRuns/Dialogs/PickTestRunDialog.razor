@@ -24,21 +24,17 @@
 
 @code {
     private TestRun? _testRun = null;
+    private long? _teamId;
+    private TestProject? _project;
+    private TestEnvironment? _testEnvironment;
+
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public long? TestProjectId { get; set; }
 
     private void OnTestRunClicked(TestRun testRun)
     {
         _testRun = testRun;
     }
-
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; } = default!;
-
-    private TestProject? _project;
-    private TestEnvironment? _testEnvironment;
-
-    [Parameter] public long? TestProjectId { get; set; }
-
-    private long? _teamId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,7 +53,6 @@
 
     private void Submit()
     {
-        
         MudDialog.Close(_testRun);
     }
 }

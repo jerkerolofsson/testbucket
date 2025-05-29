@@ -1,26 +1,16 @@
-﻿using System.ComponentModel;
-using System.Runtime.Intrinsics.X86;
-using System.Security.Claims;
-
-using Mediator;
+﻿using Mediator;
 
 using TestBucket.Contracts.Fields;
-using TestBucket.Contracts.Issues.Models;
 using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Issues.Types;
 using TestBucket.Domain.Fields;
-using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues.Events;
 using TestBucket.Domain.Issues.Mapping;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Search;
 using TestBucket.Domain.Issues.Specifications;
-using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Testing;
-using TestBucket.Domain.Testing.Aggregates;
-using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Issues;
 
@@ -86,6 +76,8 @@ public class IssueManager : IIssueManager
         issue.Author ??= issue.CreatedBy;
         issue.ModifiedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         issue.TenantId = principal.GetTenantIdOrThrow();
+        issue.ClassificationRequired = true;
+
         await _repository.AddLocalIssueAsync(issue);
         foreach (var observer in _localObservers)
         {
@@ -157,6 +149,13 @@ public class IssueManager : IIssueManager
         return result.Items.FirstOrDefault();
     }
 
+    /// <summary>
+    /// Updates a local issue
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="updatedIssue"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public async Task UpdateLocalIssueAsync(ClaimsPrincipal principal, LocalIssue updatedIssue)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
@@ -169,6 +168,7 @@ public class IssueManager : IIssueManager
         updatedIssue.CreatedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         updatedIssue.Modified = DateTimeOffset.UtcNow;
         updatedIssue.ModifiedBy = principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
+        updatedIssue.ClassificationRequired = true;
 
         // Get the existing issue to detect differences
         var existingIssue = await GetIssueByIdAsync(principal, updatedIssue.Id);
@@ -182,6 +182,7 @@ public class IssueManager : IIssueManager
         // Save it
         await _repository.UpdateLocalIssueAsync(updatedIssue);
 
+        // Events
         if (existingIssue is not null && existingIssue.State != updatedIssue.State)
         {
             // State has changed, raise event 
@@ -193,10 +194,14 @@ public class IssueManager : IIssueManager
             await _mediator.Publish(new IssueAssignmentChanged(principal, updatedIssue, existingIssue.AssignedTo));
         }
 
+        // Listeners
         foreach(var observer in _localObservers)
         {
             await observer.OnLocalIssueUpdatedAsync(updatedIssue);
         }
+
+        // Update linked issues
+
     }
 
     public async Task<LocalIssue?> GetIssueByIdAsync(ClaimsPrincipal principal, long id)
@@ -245,9 +250,13 @@ public class IssueManager : IIssueManager
         List<FilterSpecification<LinkedIssue>> filters = [
             new FilterByTenant<LinkedIssue>(principal.GetTenantIdOrThrow())
         ];
-        if(request.ProjectId is not null)
+        if (request.ProjectId is not null)
         {
             filters.Add(new FilterByProject<LinkedIssue>(request.ProjectId.Value));
+        }
+        if (request.TestCaseRunId is not null)
+        {
+            filters.Add(new FindLinkedIssueByTestCaseRunId(request.TestCaseRunId.Value));
         }
 
         if (request.Text is not null)

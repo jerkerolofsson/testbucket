@@ -4,28 +4,26 @@
 {
     @if(TestCaseRun.LinkedIssues is not null && TestCaseRun.LinkedIssues.Count > 0)
     {
-        <LinkedIssuesTable ReadOnly Issues="@TestCaseRun.LinkedIssues"/>
+        <MudText Typo="Typo.h2">@loc["issues"]</MudText>
+        <LinkedIssuesTable ReadOnly TestCaseRun="@TestCaseRun"/>
     }
 
     if (!string.IsNullOrEmpty(TestCaseRun.Message))
     {
+        <MudText Typo="Typo.h2">@loc["test-log"]</MudText>
         <MarkdownEditor ShowToolbar="false" Preview Value="@TestCaseRun.Message" />
     }
 
     if (!string.IsNullOrEmpty(TestCaseRun.CallStack))
     {
-        <Field>
-            <FieldHeader>@loc["call-stack"]</FieldHeader>
-            <MudText><pre>@TestCaseRun.CallStack</pre></MudText>
-        </Field>
+        <MudText Typo="Typo.h2">@loc["call-stack"]</MudText>
+        <MudText><pre>@TestCaseRun.CallStack</pre></MudText>
     }
 
     if (!string.IsNullOrEmpty(TestCaseRun.SystemOut))
     {
-        <Field>
-            <FieldHeader>@loc["system-out"]</FieldHeader>
-            <MudText><pre>@TestCaseRun.SystemOut</pre></MudText>
-        </Field>
+        <MudText Typo="Typo.h2">@loc["system-out"]</MudText>
+        <MudText><pre>@TestCaseRun.SystemOut</pre></MudText>
     }
 
     <Field>

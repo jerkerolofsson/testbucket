@@ -138,11 +138,17 @@
   <data name="commits" xml:space="preserve">
     <value>Commits</value>
   </data>
+  <data name="component" xml:space="preserve">
+    <value>Component</value>
+  </data>
   <data name="components" xml:space="preserve">
     <value>Components</value>
   </data>
   <data name="dev-lead" xml:space="preserve">
     <value>Dev. Lead</value>
+  </data>
+  <data name="feature" xml:space="preserve">
+    <value>Feature</value>
   </data>
   <data name="features" xml:space="preserve">
     <value>Features</value>
@@ -154,6 +160,9 @@
   <data name="impact" xml:space="preserve">
     <value>Impact</value>
   </data>
+  <data name="layer" xml:space="preserve">
+    <value>Layer</value>
+  </data>
   <data name="layers" xml:space="preserve">
     <value>Layers</value>
   </data>
@@ -163,6 +172,9 @@
   </data>
   <data name="subject" xml:space="preserve">
     <value>Subject</value>
+  </data>
+  <data name="system" xml:space="preserve">
+    <value>System</value>
   </data>
   <data name="systems" xml:space="preserve">
     <value>Systems</value>

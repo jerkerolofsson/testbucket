@@ -8,6 +8,8 @@ using Mediator;
 
 using TestBucket.Domain.Comments;
 using TestBucket.Domain.Fields.Events;
+using TestBucket.Domain.Issues.Models;
+using TestBucket.Domain.Testing.Models;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.AI.Timeline;
@@ -19,49 +21,61 @@ public class AddCommentToTestTimelineWhenFieldChanged : INotificationHandler<Tes
     {
         _comments = comments;
     }
+
+    private async Task OnComponentRemoved(TestCaseFieldChangedNotification notification, TestCaseField field)
+    {
+        string icon = TimelineAiIconHelper.GetTimelineIcon(notification.Principal, TbIcons.BoldDuoTone.UserCircle);
+        var comment = new Comment
+        {
+            TestCaseId = field.TestCaseId,
+            TenantId = field.TenantId,
+            TestProjectId = field.FieldDefinition!.TestProjectId,
+            LoggedAction = "remove-component",
+            LoggedActionArgument = notification.OldField?.StringValue,
+            LoggedActionIcon = icon
+        };
+        await _comments.AddCommentAsync(notification.Principal, comment);
+    }
+
+    private async Task OnComponentAdded(TestCaseFieldChangedNotification notification, TestCaseField field)
+    {
+        string icon = TimelineAiIconHelper.GetTimelineIcon(notification.Principal, TbIcons.BoldDuoTone.UserCircle);
+        var comment = new Comment
+        {
+            TestCaseId = field.TestCaseId,
+            TenantId = field.TenantId,
+            TestProjectId = field.FieldDefinition!.TestProjectId,
+            LoggedAction = "add-component",
+            LoggedActionArgument = field.StringValue,
+            LoggedActionIcon = icon
+        };
+        await _comments.AddCommentAsync(notification.Principal, comment);
+    }
     public async ValueTask Handle(TestCaseFieldChangedNotification notification, CancellationToken cancellationToken)
     {
         if (notification.Field.FieldDefinition is not null)
         {
-            string icon = TbIcons.BoldDuoTone.Components;
-            if (notification.Principal.Identity?.Name is not null)
-            {
-                var model = LlmModels.GetModelByName(notification.Principal.Identity.Name);
-                if (model?.Icon is not null)
-                {
-                    icon = model.Icon;
-                }
-            }
-
+            string icon = TimelineAiIconHelper.GetTimelineIcon(notification.Principal, TbIcons.BoldDuoTone.UserCircle);
 
             if (notification.Field.FieldDefinition.TraitType == TraitType.Component)
             {
                 var field = notification.Field;
                 if (!string.IsNullOrEmpty(field.StringValue))
                 {
-                    var comment = new Comment
+                    // Change milestone
+                    if (notification.OldField?.StringValue is not null)
                     {
-                        TestCaseId = field.TestCaseId,
-                        TenantId = field.TenantId,
-                        TestProjectId = field.FieldDefinition.TestProjectId,
-                        LoggedAction = "component",
-                        LoggedActionArgument = field.StringValue,
-                        LoggedActionIcon = icon
-                    };
-                    await _comments.AddCommentAsync(notification.Principal, comment);
+                        await OnComponentRemoved(notification, field);
+                        await OnComponentAdded(notification, field);
+                    }
+                    else
+                    {
+                        await OnComponentAdded(notification, field);
+                    }
                 }
-                else
+                else if (notification.OldField?.StringValue is not null)
                 {
-                    var comment = new Comment
-                    {
-                        TestCaseId = field.TestCaseId,
-                        TenantId = field.TenantId,
-                        TestProjectId = field.FieldDefinition.TestProjectId,
-                        LoggedAction = "component-removed",
-                        LoggedActionArgument = field.StringValue,
-                        LoggedActionIcon = icon
-                    };
-                    await _comments.AddCommentAsync(notification.Principal, comment);
+                    await OnComponentRemoved(notification, field);
                 }
             }
         }

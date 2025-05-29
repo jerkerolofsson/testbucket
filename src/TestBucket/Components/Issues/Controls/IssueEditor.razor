@@ -73,7 +73,10 @@
                 <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Delete">
                     <Authorized>
                         <MudStack Row Justify="Justify.FlexEnd">
-                            <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="DeleteAsync">@loc["delete"]</MudButton>
+                            <MudButton 
+                                data-testid="delete-issue"
+                                Class="tb-button-delete"
+                                Variant="Variant.Filled" OnClick="DeleteAsync">@loc["delete"]</MudButton>
                         </MudStack>
                     </Authorized>
                 </PermissionView>

@@ -499,6 +499,27 @@ tb-field .mud-link.mud-link-underline-hover:hover {
     transition: border-left-color linear 150ms;
 }
 
+.tb-button-primary,
+.tb-button-new {
+    background: transparent;
+    border: solid 2px var(--mud-palette-primary-darken);
+    text-transform: none;
+}
+
+.tb-button-new:hover {
+    border-color: var(--mud-palette-primary);
+}
+
+.tb-button-delete {
+    background: transparent;
+    border: solid 2px var(--mud-palette-error-darken);
+    text-transform: none;
+}
+
+.tb-button-delete:hover {
+    border-color: var(--mud-palette-error);
+}
+
 .tb-blur-overlay {
      backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);

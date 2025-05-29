@@ -80,4 +80,19 @@ internal class IssueController : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         await _manager.AddLinkedIssueAsync(principal, issue);
     }
+
+    /// <summary>
+    /// Returns all linked issues to a test case run
+    /// </summary>
+    /// <param name="testCaseRun"></param>
+    /// <param name="offset"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
+    public async Task<PagedResult<LinkedIssue>> GetLinkedIssuesAsync(TestCaseRun testCaseRun, int offset, int count)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var query = new SearchIssueQuery { TestCaseRunId = testCaseRun.Id };
+        var result = await _manager.SearchLinkedIssuesAsync(principal, query, offset, count);
+        return result;
+    }
 }

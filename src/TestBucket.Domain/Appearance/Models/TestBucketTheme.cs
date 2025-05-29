@@ -142,8 +142,8 @@ public class TestBucketTheme : TestBucketBaseTheme
         if (scheme.Base.Tertiary is not null)
         {
             css.AppendLine($"--mud-palette-tertiary: {scheme.Base.Tertiary};");
-            css.AppendLine($"--mud-palette-tertiary-darken: {scheme.Base.Tertiary.ColorDarken(0.2)};");
-            css.AppendLine($"--mud-palette-tertiary-lighten: {scheme.Base.Tertiary.ColorLighten(0.2)};");
+            css.AppendLine($"--mud-palette-tertiary-darken: {scheme.Base.Tertiary.ColorDarken(0.1)};");
+            css.AppendLine($"--mud-palette-tertiary-lighten: {scheme.Base.Tertiary.ColorLighten(0.1)};");
         }
         css.AppendLine("}");
         return css.ToString();

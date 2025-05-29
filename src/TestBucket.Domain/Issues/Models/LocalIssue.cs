@@ -35,6 +35,11 @@ public class LocalIssue : ProjectEntity
     public long? ExternalSystemId { get; set; }
 
     /// <summary>
+    /// Is AI classification required?
+    /// </summary>
+    public bool ClassificationRequired { get; set; }
+
+    /// <summary>
     /// Title of issue
     /// </summary>
     public string? Title { get; set; }

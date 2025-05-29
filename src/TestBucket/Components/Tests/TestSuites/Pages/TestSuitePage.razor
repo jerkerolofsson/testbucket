@@ -21,12 +21,13 @@
         <StartContent>
              <article class="center">
                 <MudStack>
-                    <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Spacing="0">
+                    <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Spacing="3">
                         <MudStack Row AlignItems="AlignItems.Center">
                             <MudIcon Icon="@TbIcons.BoldDuoTone.Box" Size="Size.Large" />
                             <MudText Typo="Typo.h2">@_testSuite?.Name</MudText>
                         </MudStack>
                         <MudSpacer/>
+
                         <MudTooltip Text="@loc["attachments"]">
                             <MudIconButton Icon="@Icons.Material.Filled.AttachFile"  Href="@appNavigationManager.GetTestSuiteAttachmentsUrl()"/>
                         </MudTooltip>
@@ -36,7 +37,11 @@
                         <MudTooltip Text="@loc["settings"]">
                             <MudIconButton Icon="@Icons.Material.Filled.Settings" Href="@appNavigationManager.GetTestSuiteSettingsUrl()"/>
                         </MudTooltip>
-                        <MudButton OnClick="RunSuiteAsync" Color="Color.Primary" Variant="Variant.Filled">@loc["run"]</MudButton>
+                        <MudButton
+                            data-testid="run-test-suite"
+                            StartIcon="@Icons.Material.Filled.PlayArrow"
+                            Class="tb-button-primary"
+                            OnClick="RunSuiteAsync" Variant="Variant.Filled">@loc["run"]</MudButton>
                     </MudStack>
                     @if(_testSuite is not null)
                     {

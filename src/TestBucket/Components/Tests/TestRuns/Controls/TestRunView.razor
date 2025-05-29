@@ -9,7 +9,7 @@
 
 <MudStack Spacing="0" Style="width: 100%">
 
-    <Splitter Style="height: 100%" Color="Color.Tertiary" Bordered="false" Dimension="70" EnableMargin="false">
+    <Splitter Style="height: 100%" Color="Color.Tertiary" Bordered="false" Dimension="60" EnableMargin="false">
         <StartContent>
 
             <TestCaseRunGrid 
@@ -23,15 +23,13 @@
             <MudStack Class="pa-2" Style="width: 100%">
                 @if (_selectedTestCaseRun is not null)
                 {
-                    var readOnly = _selectedTestCaseRun.Result != TestResult.NoRun;
-
                     <CascadingValue Value="@_selectedTestCaseRun">
                         <MudStack Class="pa-2" Style="width: 100%">
 
                             <MudStack Row Style="width: 100%">
-                                <ResultPill Result="@_selectedTestCaseRun.Result" ReadOnly="@readOnly" ResultChanged="OnTestCaseRunResultChanged"/>
+                                <ResultPill Result="@_selectedTestCaseRun.Result" ReadOnly/>
                                 <MudSpacer/>
-                                <TestCaseRunDuration />
+                                <TestCaseRunDuration ReadOnly />
                             </MudStack>
 
                             <MarkdownEditor ShowToolbar="false"
@@ -43,20 +41,8 @@
                                             SpellChecker="false">
                             </MarkdownEditor>
 
-                            @if (!readOnly)
-                            {
-                                <TestCaseRunEditor TestCaseRun="@_selectedTestCaseRun" TestCaseRunChanged="OnTestCaseRunChanged" />
-                                <TestRunStatePicker State="@State" StateChanged="OnTestCaseRunStateChanged" />
-                            
-                                <FieldsEditor TestCaseRun="@_selectedTestCaseRun" />
-                            }
-                            else
-                            {
-                                <TestCaseRunReadOnlyView TestCaseRun="@_selectedTestCaseRun" />
-
-                                <FieldsEditor TestCaseRun="@_selectedTestCaseRun" ReadOnly/>
-                            }
-
+                            <TestCaseRunReadOnlyView TestCaseRun="@_selectedTestCaseRun" />
+                            <FieldsEditor TestCaseRun="@_selectedTestCaseRun" ReadOnly/>
                             <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
 
                         </MudStack>
@@ -65,7 +51,6 @@
             </MudStack>
         </EndContent>
     </Splitter>
-
 
 </MudStack>
 @code {

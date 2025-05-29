@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Commands
+@using TestBucket.Components.Issues.Controllers
 @using TestBucket.Domain
 @using TestBucket.Domain.Commands
 @using TestBucket.Domain.ExtensionManagement
@@ -7,106 +8,136 @@
 @inject IExtensionManager extensionManager
 @inject NavigationManager navigationManager 
 @inject CommandController commandController
+@inject IssueController issueController
 @inject AppNavigationManager appNavigationManager
 
-<MudStack Spacing="0">
-    <MudDataGrid Items="Issues"
-    Class="tb-test-case-run-grid"
-    RowClick="x => RowClicked(x.Item)"
-    RowClassFunc="RowClassFunc"
-    Dense="true"
-    Hover="true"
-    Bordered="true"
-    T="LinkedIssue"
-    SortMode="SortMode.Single">
-        <ColGroup>
-            <col style="width: 100px;" />
-            <col style="width: 2fr;" />
-            <col style="width: 100px;" />
-            <col style="width: 100px;" />
-        </ColGroup>
+<MudStack Spacing="1">
 
-        <Columns>
+    @if (_issues.Count > 0)
+    {
+        <MudDataGrid Items="_issues"
+        Class="tb-test-case-run-grid"
+        RowClick="x => RowClicked(x.Item)"
+        RowClassFunc="RowClassFunc"
+        Dense="true"
+        Hover="true"
+        Bordered="true"
+        T="LinkedIssue"
+        SortMode="SortMode.Single">
+            <ColGroup>
+                <col style="width: 100px;" />
+                <col style="width: 2fr;" />
+                <col style="width: 100px;" />
+                <col style="width: 100px;" />
+            </ColGroup>
 
-            <TemplateColumn Title="@loc["id"]">
-                <CellTemplate>
-                    <MudTooltip Text="@context.Item.Url">
-                        <MudStack AlignItems="AlignItems.Center" Row Spacing=1>
-                            @if (context.Item.ExternalSystemName is not null)
-                            {
-                                <MudIcon Icon="@extensionManager.GetIcon(context.Item.ExternalSystemName??"")" />
-                            }
-                            else
-                            {
-                                <MudIcon Icon="@TbIcons.Brands.TestBucket" />
-                            }
-                            <MudText>@context.Item.ExternalDisplayId</MudText>
-                        </MudStack>
-                    </MudTooltip>
-                </CellTemplate>
-            </TemplateColumn>
+            <Columns>
 
-            <TemplateColumn Title="@loc["title"]">
-                <CellTemplate>
-                    @context.Item.Title
-                </CellTemplate>
-            </TemplateColumn>
+                <TemplateColumn Title="@loc["id"]">
+                    <CellTemplate>
+                        <MudTooltip Text="@context.Item.Url">
+                            <MudStack AlignItems="AlignItems.Center" Row Spacing=1>
+                                @if (context.Item.ExternalSystemName is not null)
+                                {
+                                    <MudIcon Icon="@extensionManager.GetIcon(context.Item.ExternalSystemName??"")" />
+                                }
+                                else
+                                {
+                                    <MudIcon Icon="@TbIcons.Brands.TestBucket" />
+                                }
+                                <MudText>@context.Item.ExternalDisplayId</MudText>
+                            </MudStack>
+                        </MudTooltip>
+                    </CellTemplate>
+                </TemplateColumn>
 
-            <TemplateColumn Title="@loc["state"]">
-                <CellTemplate>
-                    @context.Item.State
-                </CellTemplate>
-            </TemplateColumn>
+                <TemplateColumn Title="@loc["title"]">
+                    <CellTemplate>
+                        @context.Item.Title
+                    </CellTemplate>
+                </TemplateColumn>
 
-            <TemplateColumn Title="">
-                <CellTemplate>
-                    <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Refresh"OnClick="async() => await RefreshIssueAsync(context.Item)"/>
-                    @if(!ReadOnly)
-                    {
-                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async() => await DeleteIssueAsync(context.Item)"/>
-                    }
-                </CellTemplate>
-            </TemplateColumn>
-        </Columns>
+                <TemplateColumn Title="@loc["state"]">
+                    <CellTemplate>
+                        @context.Item.State
+                    </CellTemplate>
+                </TemplateColumn>
 
-    </MudDataGrid>
+                <TemplateColumn Title="">
+                    <CellTemplate>
+                        <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Refresh"OnClick="async() => await RefreshIssueAsync(context.Item)"/>
+                        @if(!ReadOnly)
+                        {
+                            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async() => await DeleteIssueAsync(context.Item)"/>
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
 
-      @if(!ReadOnly)
+        </MudDataGrid>
+    }
+    
+    @if(!ReadOnly)
     {
         <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
             <MudSpacer/>
-            <MudLink OnClick="AddAsync">@loc["add"]</MudLink>
+            <MudButton  data-testid="link-issue" 
+                        Class="tb-button-primary" 
+                        StartIcon="@Icons.Material.Outlined.AddLink"
+                        Variant="Variant.Outlined"
+                        OnClick="AddAsync">@loc["add"]</MudButton>
         </MudStack>
     }
 </MudStack>
 
 @code {
     [Parameter] public bool ReadOnly {get;set;}
-    [Parameter] public IReadOnlyList<LinkedIssue>? Issues { get; set; }
+    [Parameter] public TestCaseRun? TestCaseRun { get; set; }
 
-    protected override void OnParametersSet()
+    private TestCaseRun? _testCaseRun;
+
+    private List<LinkedIssue> _issues = [];
+
+    protected override async Task OnParametersSetAsync()
     {
-        base.OnParametersSet();
+        if(_testCaseRun?.Id != TestCaseRun?.Id)
+        {
+            _testCaseRun = TestCaseRun;
+            await RefreshAsync();
+        }
+    }
+
+    private async Task RefreshAsync()
+    {
+        if (TestCaseRun is not null)
+        {
+            var result = await issueController.GetLinkedIssuesAsync(TestCaseRun, 0, 100);
+            _issues = result.Items.ToList();
+        }
+
     }
 
     private string RowClassFunc(LinkedIssue issue, int _)
     {
         return "tb-datarow cursor-pointer";
     }
-    
+
     private async Task RefreshIssueAsync(LinkedIssue issue)
     {
         appNavigationManager.State.SelectedLinkedIssue = issue;
         await commandController.ExecuteAsync("refresh-linked-issue");
+        await RefreshAsync();
     }
     private async Task DeleteIssueAsync(LinkedIssue issue)
     {
         appNavigationManager.State.SelectedLinkedIssue = issue;
         await commandController.ExecuteAsync("delete-linked-issue");
+        await RefreshAsync();
     }
     private async Task AddAsync()
     {
         await commandController.ExecuteAsync("link-issue");
+        await RefreshAsync();
     }
 
     private void RowClicked(LinkedIssue issue)

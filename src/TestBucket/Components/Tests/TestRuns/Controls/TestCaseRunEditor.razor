@@ -12,23 +12,20 @@
 {
     <TestResultQuickPicker TestCaseRun="@TestCaseRun" ResultChanged="OnResultChanged"/>
 
-    <MudText>@loc["test-log"]</MudText>
+    <MudText Typo="Typo.h2">@loc["test-log"]</MudText>
     <MarkdownEditor ShowToolbar="false"
         MaxHeight="120" MinHeight="120"
-    Value="@TestCaseRun.Message" ValueChanged="OnMessageChanged" />
+        Value="@TestCaseRun.Message" ValueChanged="OnMessageChanged" />
 
-    <MudText>@loc["issues"]</MudText>
-    <LinkedIssuesTable Issues="@TestCaseRun.LinkedIssues"/>
+    <MudText Typo="Typo.h2">@loc["issues"]</MudText>
+    <LinkedIssuesTable TestCaseRun="@TestCaseRun" />
 
-    <TestResultPicker 
-    ResultChanged="OnResultChanged"
-    TestCaseRun="@TestCaseRun" TestProjectId="@TestCaseRun.TestProjectId"></TestResultPicker>
-
-    <Field>
-        <FieldHeader>@loc["attachments"]</FieldHeader>
-        <AttachmentGrid TestCaseRunId="@TestCaseRun.Id" Style="width: 100%" AllowUpload @ref="_attachmentGrid"/>
-        <CaptureScreenShotButton TestCaseRunId="@TestCaseRun.Id" ScreenshotCaptured="OnScreenshotCaptured"/>
-    </Field>
+    <MudText Typo="Typo.h2">@loc["attachments"]</MudText>
+    <AttachmentGrid TestCaseRunId="@TestCaseRun.Id" Style="width: 100%" AllowUpload @ref="_attachmentGrid"/>
+    <MudStack Row Style="width: 100%">
+        <MudSpacer/>
+        <CaptureScreenShotButton TestCaseRunId="@TestCaseRun.Id" ScreenshotCaptured="OnScreenshotCaptured" />
+    </MudStack>
 }
 
 @code {
@@ -36,6 +33,7 @@
 
     [Parameter] public TestCaseRun? TestCaseRun { get; set; }
     [Parameter] public EventCallback<TestCaseRun> TestCaseRunChanged { get; set; }
+    [Parameter] public EventCallback<TestResult> ResultChanged { get; set; }
 
     protected override void OnInitialized()
     {
@@ -73,8 +71,7 @@
         {
             return;
         }
-        await controller.SetTestCaseRunResultAsync(TestCaseRun, result);
-        await TestCaseRunChanged.InvokeAsync(TestCaseRun);
+        await ResultChanged.InvokeAsync(result);
     }
 
     private async Task OnMessageChanged(string message)

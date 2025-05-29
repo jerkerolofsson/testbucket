@@ -1,35 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.AI.Models;
-using TestBucket.Domain.AI.Services.Classifier;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 
-namespace TestBucket.Domain.Testing.Services.Classification
+namespace TestBucket.Domain.Features.Classification
 {
     /// <summary>
     /// Classifies empty test case fields
     /// </summary>
-    public class BackgroundClassificationService : BackgroundService
+    public class BackgroundTestClassificationService : BackgroundService
     {
-        private readonly ILogger<BackgroundClassificationService> _logger;
+        private readonly ILogger<BackgroundTestClassificationService> _logger;
         private readonly IServiceProvider _serviceProvider;
 
-        public BackgroundClassificationService(
-            ILogger<BackgroundClassificationService> logger,
+        public BackgroundTestClassificationService(
+            ILogger<BackgroundTestClassificationService> logger,
             IServiceProvider serviceProvider)
         {
             _logger = logger;

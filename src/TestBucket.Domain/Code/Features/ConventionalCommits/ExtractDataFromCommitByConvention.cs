@@ -95,7 +95,7 @@ internal class ExtractDataFromCommitByConvention : INotificationHandler<CommitAd
                 // Close the issue
                 if (commit.TestProjectId is not null)
                 {
-                    await CloseIssueAsync(principal, commit.TestProjectId.Value, type.Description);
+                    await CloseIssueAsync(principal, commit.TestProjectId.Value, type.Description, commit.Sha);
                 }
 
                 commit.Fixes.Add(type.Description);
@@ -157,12 +157,14 @@ internal class ExtractDataFromCommitByConvention : INotificationHandler<CommitAd
     /// <param name="testProjectId">The test project ID.</param>
     /// <param name="issueIdentifier">The issue identifier.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    private async Task CloseIssueAsync(ClaimsPrincipal principal, long testProjectId, string issueIdentifier)
+    private async Task CloseIssueAsync(ClaimsPrincipal principal, long testProjectId, string issueIdentifier, string commitSha)
     {
         var issue = await _issueManager.FindLocalIssueAsync(principal, testProjectId, issueIdentifier);
         if (issue is not null)
         {
-            await _mediator.Send(new CloseIssueRequest(principal, issue));
+            // Link commit
+
+            await _mediator.Send(new CloseIssueRequest(principal, issue, commitSha));
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 using MudBlazor.Utilities;
 
+using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Contracts.Fields;
 using TestBucket.Data.Migrations;
 using TestBucket.Domain.Comments.Models;
@@ -145,7 +146,9 @@ public partial class TestCaseEditor
     {
         if (Test is not null)
         {
-            var previewText = await testCaseEditorController.CompilePreviewAsync(Test, _descriptionText, _errors, releaseResourcesImmediately: false);
+            var options = new CompilationOptions(Test, _descriptionText ?? "");
+
+            var previewText = await testCaseEditorController.CompileAsync(options, _errors);
             if (_previewText != previewText && previewText is not null)
             {
                 _previewText = previewText;

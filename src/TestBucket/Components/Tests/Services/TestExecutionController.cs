@@ -32,6 +32,16 @@ internal class TestExecutionController : TenantBaseService
         _userPreferencesManager = userPreferencesManager;
     }
 
+    public async Task RunTestAsync(TestCaseRun testCaseRun)
+    {
+        var parameters = new DialogParameters<RunTestCaseDialog>()
+        {
+            { x => x.TestCaseRun, testCaseRun }
+        };
+        var dialog = await _dialogService.ShowAsync<RunTestCaseDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+        await dialog.Result;
+    }
+
     public async Task SetTestCaseRunResultAsync(TestCaseRun testCaseRun, TestResult result)
     {
         var principal = await GetUserClaimsPrincipalAsync();
@@ -86,7 +96,7 @@ internal class TestExecutionController : TenantBaseService
         {
             { x => x.TestCaseRun, testCaseRun }
         };
-        var dialog = await _dialogService.ShowAsync<TestCaseRunFailureDialog>(null, parameters, new DialogOptions { CloseOnEscapeKey = true });
+        var dialog = await _dialogService.ShowAsync<TestCaseRunFailureDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         await dialog.Result;
     }
 }

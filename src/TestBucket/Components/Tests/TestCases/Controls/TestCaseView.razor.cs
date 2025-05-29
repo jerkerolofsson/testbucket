@@ -1,6 +1,7 @@
 
 using MudBlazor.Utilities;
 
+using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Contracts.Fields;
 
 namespace TestBucket.Components.Tests.TestCases.Controls;
@@ -137,7 +138,8 @@ public partial class TestCaseView
     {
         if (Test is not null)
         {
-            _previewText = await testCaseEditorController.CompilePreviewAsync(Test, _descriptionText, _errors, releaseResourcesImmediately: false);
+            var options = new CompilationOptions(Test, _descriptionText ?? "");
+            _previewText = await testCaseEditorController.CompileAsync(options, _errors);
         }
     }
 

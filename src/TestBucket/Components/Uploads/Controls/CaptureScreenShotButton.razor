@@ -3,8 +3,12 @@
 @using TestBucket.Formats.Shared
 @inject UploadService uploadService
 @inject IJSRuntime js
+@inject IStringLocalizer<SharedStrings> loc
 
-<MudLink OnClick="CaptureScreenShot">Capture Screenshot on this device</MudLink>
+<MudButton 
+    Class="tb-button-primary"
+    Variant="Variant.Outlined"
+    OnClick="CaptureScreenShot">@loc["capture-screenshot-on-this-device"]</MudButton>
 
 @code {
     [Parameter] public long? TestCaseId { get; set; }

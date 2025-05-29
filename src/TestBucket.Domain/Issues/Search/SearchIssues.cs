@@ -10,13 +10,9 @@ using Mediator;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Issues.Models;
 using TestBucket.Contracts.Issues.States;
-using TestBucket.Domain.ExtensionManagement;
 using TestBucket.Domain.Issues.Mapping;
-using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
-
-using static TestBucket.Domain.Issues.Search.SearchIssueRequest;
 
 namespace TestBucket.Domain.Issues.Search;
 
@@ -24,6 +20,7 @@ public record class SearchIssueRequest(ClaimsPrincipal Principal, SearchIssueQue
 
 public class SearchIssueQuery : SearchQuery
 {
+    public long? TestCaseRunId { get; set; }
     public string? State { get; set; }
     public MappedIssueState? MappedState { get; set; }
     public string? Type { get; set; }
@@ -36,18 +33,10 @@ public record class SearchIssueResponse(IReadOnlyList<IssueDto> Issues);
 
 public class SearchIssuesHandler : IRequestHandler<SearchIssueRequest, SearchIssueResponse>
 {
-    private readonly IProjectManager _projectManager;
     private readonly IIssueManager _issueManager;
-    private readonly IReadOnlyList<IExternalIssueProvider> _issueExtensions;
 
-    public SearchIssuesHandler(
-        IProjectManager projectManager,
-        IEnumerable<IExternalIssueProvider> issueExtensions,
-        IIssueManager issuemanager,
-        IIssueManager issueManager)
+    public SearchIssuesHandler(IIssueManager issueManager)
     {
-        _projectManager = projectManager;
-        _issueExtensions = issueExtensions.ToList();
         _issueManager = issueManager;
     }
 

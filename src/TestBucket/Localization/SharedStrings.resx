@@ -552,7 +552,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Issues</value>
   </data>
   <data name="logged-action-commit" xml:space="preserve">
-    <value>{0} submitted a commit {1}</value>
+    <value>{0} referenced a commit: {1}</value>
   </data>
   <data name="state" xml:space="preserve">
     <value>State</value>
@@ -652,5 +652,32 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="new-test-template-description" xml:space="preserve">
     <value>Create a shared template for test cases where the text is shared by all test cases using the template</value>
+  </data>
+  <data name="logged-action-add-milestone" xml:space="preserve">
+    <value>{0} added a milestone: {1}</value>
+  </data>
+  <data name="logged-action-remove-milestone" xml:space="preserve">
+    <value>{0} removed a milestone: {1}</value>
+  </data>
+  <data name="logged-action-remove-component" xml:space="preserve">
+    <value>{0} removed the component {1}</value>
+  </data>
+  <data name="logged-action-add-component" xml:space="preserve">
+    <value>{0} added a component: {1}</value>
+  </data>
+  <data name="search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="overview" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="test-log" xml:space="preserve">
+    <value>Test log</value>
+  </data>
+  <data name="capture-screenshot-on-this-device" xml:space="preserve">
+    <value>Capture Screenshot on this device</value>
   </data>
 </root>

@@ -30,7 +30,8 @@ internal class AddIssueStateChangeToTimeline : INotificationHandler<IssueStateCh
                 TenantId = notification.Issue.TenantId,
                 TestProjectId = notification.Issue.TestProjectId,
                 LoggedAction = "statechange",
-                LoggedActionArgument = notification.Issue.State
+                LoggedActionArgument = notification.Issue.State,
+                LoggedActionIcon = TbIcons.BoldDuoTone.UserCircle,
             };
             await _comments.AddCommentAsync(notification.Principal, comment);
         }

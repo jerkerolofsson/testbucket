@@ -1,29 +1,116 @@
-﻿@inject IStringLocalizer<SharedStrings> loc
+﻿@using TestBucket.Components.Shared.Profile
+@inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<CodeStrings> codeLoc
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject ArchitectureController architectureController
 
 @if (Component is not null)
 {
     <MudStack Style="width: 100%" Class="pa-2">
 
-        <MudText Typo="Typo.h1">@Component.Name</MudText>
+        <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+            <MudText Typo="Typo.h1">@Component.Name</MudText>
+            <MudSpacer/>
+
+            <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
+                <Authorized>
+                    <MudButton StartIcon="@Icons.Material.Filled.Edit"
+                               Class="tb-button-primary" OnClick="EditAsync" Variant="Variant.Filled">@loc["edit"]</MudButton>
+                </Authorized>
+            </PermissionView>
+
+            <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Delete">
+                <Authorized>
+                    <MudButton StartIcon="@Icons.Material.Filled.Delete"
+                               Class="tb-button-delete" OnClick="DeleteAsync" Variant="Variant.Filled">@loc["delete"]</MudButton>
+                </Authorized>
+            </PermissionView>
+        </MudStack>
 
         <MarkdownEditor Value="@Component.Description" Preview="true" ShowToolbar=false/>
 
-        <Field Row>
-            <FieldHeader>@codeLoc["dev-lead"]</FieldHeader>
-            <MudSpacer/>
-            <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Component.DevLead"/>
-        </Field>
+        @if(!string.IsNullOrEmpty(Component.DevLead))
+        {
+            <MudStack Row>
+                <UserProfileImage UserName="@Component.DevLead" />
+                <MudStack Spacing="0">
+                    <div>@Component.DevLead</div>
+                    <div>@codeLoc["dev-lead"]</div>
+                </MudStack>
+            </MudStack>
+        }
 
-        <Field Row>
-            <FieldHeader>@codeLoc["test-lead"]</FieldHeader>
-            <MudSpacer/>
-            <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Component.TestLead"/>
-        </Field>
+        @if (!string.IsNullOrEmpty(Component.TestLead))
+        {
+            <MudStack Row>
+                <UserProfileImage UserName="@Component.TestLead" />
+                <MudStack Spacing="0">
+                    <div>@Component.TestLead</div>
+                    <div>@codeLoc["test-lead"]</div>
+                </MudStack>
+            </MudStack>
+        }
 
     </MudStack>
 }
 
 @code {
     [Parameter] public AritecturalComponentProjectEntity? Component { get; set; }
+
+
+    private async Task EditAsync()
+    {
+        if (Component is null)
+        {
+            return;
+        }
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+        if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Write))
+        {
+            if (Component is Feature feature)
+            {
+                await architectureController.EditFeatureAsync(feature);
+            }
+            if (Component is Component component)
+            {
+                await architectureController.EditComponentAsync(component);
+            }
+            if (Component is ProductSystem system)
+            {
+                await architectureController.EditSystemAsync(system);
+            }
+            if (Component is ArchitecturalLayer layer)
+            {
+                await architectureController.EditLayerAsync(layer);
+            }
+        }
+    }
+
+    private async Task DeleteAsync()
+    {
+        if (Component is null)
+        {
+            return;
+        }
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+        if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Delete))
+        {
+            if (Component is Feature feature)
+            {
+                await architectureController.DeleteFeatureAsync(feature);
+            }
+            if (Component is Component component)
+            {
+                await architectureController.DeleteComponentAsync(component);
+            }
+            if (Component is ProductSystem system)
+            {
+                await architectureController.DeleteSystemAsync(system);
+            }
+            if (Component is ArchitecturalLayer layer)
+            {
+                await architectureController.DeleteLayerAsync(layer);
+            }
+        }
+    }
 }

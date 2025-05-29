@@ -1,6 +1,7 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Code/Layers"
 @using TestBucket.Components.Code.Controls
+@using TestBucket.Components.Shared.Profile
 @using TestBucket.Domain
 @using TestBucket.Domain.Code.Models
 @layout CodeLayout
@@ -31,43 +32,38 @@
             </MudStack>
         </ToolBarContent>
 
-        <ColGroup>
-            <col style="width: 30%" />
-            <col style="width: 30%;" />
-            <col style="width: 30%;" />
-            <col style="width: 10%;" />
-        </ColGroup>
+       
+                <ColGroup>
+                    <col style="width: 80%" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
+                </ColGroup>
 
-        <Columns>
-            <TemplateColumn Title="@loc["name"]">
-                <CellTemplate>
-                    @context.Item.Name
-                </CellTemplate>
-            </TemplateColumn>
+                <Columns>
+                    <TemplateColumn Title="@loc["name"]">
+                        <CellTemplate>
+                            <div class="name">@context.Item.Name</div>
+                           
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="@codeLoc["dev-lead"]">
+                        <CellTemplate>
+                            @if (context.Item.DevLead is not null)
+                            {
+                                <UserProfileImage UserName="@context.Item.DevLead" />
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="@codeLoc["test-lead"]">
+                        <CellTemplate>
+                            @if (context.Item.TestLead is not null && context.Item.DevLead != context.Item.TestLead)
+                            {
+                                <UserProfileImage UserName="@context.Item.TestLead" />
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
 
-            <TemplateColumn Title="@codeLoc["dev-lead"]">
-                <CellTemplate>
-                    @context.Item.DevLead
-                </CellTemplate>
-            </TemplateColumn>
-
-            <TemplateColumn Title="@codeLoc["test-lead"]">
-                <CellTemplate>
-                    @context.Item.TestLead
-                </CellTemplate>
-            </TemplateColumn>
-
-            <TemplateColumn>
-                <CellTemplate>
-                    <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Delete">
-                        <Authorized>
-                            <MudIconButton OnClick="async() => await DeleteAsync(context.Item)" Color="Color.Error" Icon="@Icons.Material.Filled.Clear" />
-                        </Authorized>
-                    </PermissionView>
-
-                </CellTemplate>
-            </TemplateColumn>
-        </Columns>
+                </Columns>
 
         <PagerContent>
             <MudDataGridPager T="Component" />

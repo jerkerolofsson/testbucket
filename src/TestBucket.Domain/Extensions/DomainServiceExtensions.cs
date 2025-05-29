@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.AI;
-using TestBucket.Domain.AI.Services.Classifier;
 using TestBucket.Domain.AI.Settings;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Appearance;
@@ -21,6 +20,7 @@ using TestBucket.Domain.Environments;
 using TestBucket.Domain.Export;
 using TestBucket.Domain.Export.Services;
 using TestBucket.Domain.ExtensionManagement;
+using TestBucket.Domain.Features.Classification;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Identity;
@@ -49,7 +49,6 @@ using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Compiler;
 using TestBucket.Domain.Testing.Markdown;
-using TestBucket.Domain.Testing.Services.Classification;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Settings;
 using TestBucket.Domain.Testing.TestCases;
@@ -174,8 +173,11 @@ public static class DomainServiceExtensions
         // AI
         services.AddScoped<IChatClientFactory, ChatClientFactory>();
         services.AddScoped<ITestCaseGenerator, TestCaseGenerator>();
+
+        // Feature: Classification
         services.AddScoped<IClassifier, GenericClassifier>();
-        services.AddHostedService<BackgroundClassificationService>();
+        services.AddHostedService<BackgroundIssueClassificationService>();
+        services.AddHostedService<BackgroundTestClassificationService>();
 
         // Settings
         services.AddScoped<IUserPreferencesManager, UserPreferencesManager>();

@@ -6,6 +6,7 @@ using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Environments;
+using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.States;
@@ -31,11 +32,7 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
     private readonly ITestEnvironmentManager _testEnvironmentManager;
     private readonly IMediator _mediator;
     private readonly IStringLocalizer<SharedStrings> _loc;
-    /// <summary>
-    /// Create a guid that is used to lock resources for manual execution with the scoped session of a user
-    /// </summary>
-    private string? _controllerGuid;
-    private string? _tenantId;
+
 
     public TestCaseEditorController(
         ITestCaseManager testCaseManager,
@@ -62,124 +59,72 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         _loc = loc;
     }
 
-    /// <summary>
-    /// Compiles the description for a test in the UI for a test run when running the test
-    /// </summary>
-    /// <param name="testCase"></param>
-    /// <param name="context"></param>
-    /// <param name="text"></param>
-    /// <returns></returns>
-    public async ValueTask<string?> CompileTestCaseRunPreviewAsync(TestCase testCase, long runId, string? text, List<CompilerError> errors)
+    public async ValueTask<string?> CompileAsync(CompilationOptions options, List<CompilerError> errors, CancellationToken cancellationToken = default)
     {
-        if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null && testCase.TenantId is not null)
+        var testCase = options.TestCase;
+        if (testCase.TestProjectId is not null && testCase.TeamId is not null && testCase.TenantId is not null)
         {
             var principal = await GetUserClaimsPrincipalAsync();
 
-            var run = await _testRunManager.GetTestRunByIdAsync(principal, runId);
-            if (run?.TestProjectId is null)
+            TestRun? testRun;
+            TestEnvironment? testEnvironment = null;
+            if(options.TestRunId is not null)
             {
-                return null;
+                testRun = await _testRunManager.GetTestRunByIdAsync(principal, options.TestRunId.Value);
+                if(testRun?.TestEnvironmentId is not null)
+                {
+                    testEnvironment = await _testEnvironmentManager.GetTestEnvironmentByIdAsync(principal, testRun.TestEnvironmentId.Value);
+                }
             }
-
-            _tenantId = testCase.TenantId;
-            _controllerGuid = principal.Identity?.Name ?? throw new InvalidOperationException("User is not authenticated");
-
-            // Release resources from previous run
-            await ReleaseResourcesAsync(_controllerGuid, _tenantId);
-
-            var testSuite = await _testSuiteManager.GetTestSuiteByIdAsync(principal, testCase.TestSuiteId);
+            if (testEnvironment is null)
+            {
+                var defaultEnvironment = await _testEnvironmentManager.GetDefaultTestEnvironmentAsync(principal, testCase.TestProjectId.Value);
+                testEnvironment = defaultEnvironment;
+            }
 
             var context = new TestExecutionContext()
             {
-                Guid = _controllerGuid,
+                Guid = options.ContextGuid,
                 TestCaseId = testCase.Id,
                 TestSuiteId = testCase.TestSuiteId,
-                ProjectId = run.TestProjectId.Value,
-                TestRunId = run.Id,
+                ProjectId = testCase.TestProjectId.Value,
+                TestRunId = options.TestRunId,
                 TeamId = testCase.TeamId.Value,
-                TestEnvironmentId = run.TestEnvironmentId,
-                Dependencies = [] // Don't lock resources/accounts when it is only a preview
+                TestEnvironmentId = testEnvironment?.Id,
+                Dependencies = []
             };
 
-            errors.Clear();
-            var result = await CompilePreviewAsync(testCase, context, text, releaseResourcesImmediately: false);
-            errors.AddRange(context.CompilerErrors);
-            return result;
-        }
-        return text;
-    }
+            if(options.AllocateResources)
+            {
+                if(testCase.Dependencies is not null)
+                {
+                    context.Dependencies = [.. testCase.Dependencies];
+                }
 
-    /// <summary>
-    /// Compiles a preview for a test case with a specific context
-    /// </summary>
-    /// <param name="testCase"></param>
-    /// <param name="context"></param>
-    /// <param name="text"></param>
-    /// <returns></returns>
-    private async ValueTask<string?> CompilePreviewAsync(
-        TestCase testCase, 
-        TestExecutionContext context, 
-        string? text,
-        bool releaseResourcesImmediately = true,
-        CancellationToken cancellationToken = default)
-    {
-        if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null && testCase.TenantId is not null)
-        {
-            var principal = await GetUserClaimsPrincipalAsync();
+                var suite = await _testSuiteManager.GetTestSuiteByIdAsync(principal, testCase.TestSuiteId);
+                if(suite?.Dependencies is not null) 
+                {
+                    context.Dependencies.AddRange(suite.Dependencies);
+                }
+            }
 
             await _testCompiler.ResolveVariablesAsync(principal, context, cancellationToken);
-            var result = await _testCompiler.CompileAsync(principal, context, text);
+            var result = await _testCompiler.CompileAsync(principal, context, options.Text);
 
-            if (releaseResourcesImmediately)
+            errors.Clear();
+            errors.AddRange(context.CompilerErrors);
+
+            if (options.ReleaseResourceDirectly)
             {
                 await ReleaseResourcesAsync(context.Guid, testCase.TenantId);
             }
 
             return result;
         }
-        return text;
-    }
-    public async ValueTask<string?> CompilePreviewAsync(
-        TestCase testCase, 
-        string? text, 
-        List<CompilerError> errors, 
-        bool releaseResourcesImmediately = true,
-        CancellationToken cancellationToken = default)
-    {
-        if (text is not null && testCase.TestProjectId is not null && testCase.TeamId is not null && testCase.TenantId is not null)
-        {
-            var principal = await GetUserClaimsPrincipalAsync();
-            var defaultEnvironment = await _testEnvironmentManager.GetDefaultTestEnvironmentAsync(principal, testCase.TestProjectId.Value);
-
-            var context = new TestExecutionContext()
-            {
-                Guid = new Guid().ToString(),
-                TestCaseId = testCase.Id,
-                TestSuiteId = testCase.TestSuiteId,
-                ProjectId = testCase.TestProjectId.Value,
-                TestRunId = 0,
-                TeamId = testCase.TeamId.Value,
-                TestEnvironmentId = defaultEnvironment?.Id,
-                Dependencies = [] // Don't allocate resources/accounts when it is only a preview
-            };
-            var result = await CompilePreviewAsync(testCase, context, text, releaseResourcesImmediately, cancellationToken);
-
-            errors.Clear();
-            errors.AddRange(context.CompilerErrors);
-            return result;
-        }
-        return text;
+        return options.Text;
     }
 
-    public async ValueTask ReleaseResourcesAsync()
-    {
-        if (_tenantId is not null && _controllerGuid is not null)
-        {
-            await ReleaseResourcesAsync(_controllerGuid, _tenantId);
-        }
-    }
-
-    private async ValueTask ReleaseResourcesAsync(string guid, string tenantId)
+    public async ValueTask ReleaseResourcesAsync(string guid, string tenantId)
     {
         await _mediator.Send(new ReleaseResourcesRequest(guid, tenantId));
         await _mediator.Send(new ReleaseAccountsRequest(guid, tenantId));
@@ -406,9 +351,5 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         return await _stateService.GetProjectInitialStateAsync(principal, testProjectId);
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await ReleaseResourcesAsync();
-
-    }
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }

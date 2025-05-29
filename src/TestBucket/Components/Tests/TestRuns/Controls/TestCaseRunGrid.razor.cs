@@ -81,14 +81,14 @@ public partial class TestCaseRunGrid
         _query.TestRunId = null;
         _query.ProjectId = null;
         _searchText = _query.ToSearchText();
-        _query.TestRunId = _run?.Id;
-        _query.ProjectId = Project.Id;
 
         if (_selectedItem?.Id != SelectedTestCaseRun?.Id ||
             _selectedItem?.Result != SelectedTestCaseRun?.Result ||
-            SelectedTestCaseRun is null || _run != Run)
+            SelectedTestCaseRun is null || _run?.Id != Run?.Id)
         {
             _run = Run;
+            _query.TestRunId = _run?.Id;
+            _query.ProjectId = Project.Id;
 
             _selectedItem = SelectedTestCaseRun;
             if (!_items.Contains(_selectedItem))
@@ -294,7 +294,19 @@ public partial class TestCaseRunGrid
             return;
         }
         await testExecutionController.SetTestCaseRunResultAsync(_selectedItem, TestResult.NoRun);
+
+        await testExecutionController.RunTestAsync(_selectedItem);
         //await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
     }
 
+    private async Task RunTest()
+    {
+        if (_selectedItem is null)
+        {
+            return;
+        }
+        await testExecutionController.RunTestAsync(_selectedItem);
+        //await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
+
+    }
 }

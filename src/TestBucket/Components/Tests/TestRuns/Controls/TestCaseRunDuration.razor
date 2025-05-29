@@ -9,6 +9,8 @@
 @code {
     [CascadingParameter] public TestCaseRun? TestCaseRun { get; set; }
 
+    [Parameter] public bool ReadOnly { get; set; }
+
     private int _millis;
     private TestCaseRun? _testCaseRun;
 
@@ -29,7 +31,11 @@
             _result = TestCaseRun?.Result;
             _testCaseRun = TestCaseRun;
             await StopTimerAsync();
-            StartTimer();
+
+            if (!ReadOnly)
+            {
+                StartTimer();
+            }
         }
 
         if(_millis != before)
@@ -53,7 +59,7 @@
 
     private void OnTimer(object? state)
     {
-        if (_testCaseRun is not null)
+        if (_testCaseRun is not null && !ReadOnly)
         {
             int millis = (int)Stopwatch.GetElapsedTime(_startRunTimestamp).TotalMilliseconds;
             _millis = _startDuration + millis;

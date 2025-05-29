@@ -41,9 +41,11 @@
                     AdornmentIcon="@Icons.Material.Filled.Search" />
 
                     <MudSpacer />
-                    <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
+                    <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Write">
                         <Authorized>
-                            <MudButton OnClick="AddIssue" Variant="Variant.Filled" Color="Color.Success">@issueLoc["new-issue"]</MudButton>
+                            <MudButton 
+                                StartIcon="@Icons.Material.Filled.Add"
+                                Class="tb-button-new" OnClick="AddIssue" Variant="Variant.Filled">@issueLoc["new-issue"]</MudButton>
                         </Authorized>
                     </PermissionView>
                 </MudStack>

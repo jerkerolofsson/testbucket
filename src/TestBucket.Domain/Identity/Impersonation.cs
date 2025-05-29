@@ -28,20 +28,7 @@ namespace TestBucket.Domain.Identity
 
             // Permissions
             var builder = new EntityPermissionBuilder();
-            builder.Add(PermissionEntityType.TestSuite, PermissionLevel.All);
-            builder.Add(PermissionEntityType.TestCase, PermissionLevel.All);
-            builder.Add(PermissionEntityType.TestCaseRun, PermissionLevel.All);
-            builder.Add(PermissionEntityType.TestRun, PermissionLevel.All);
-            builder.Add(PermissionEntityType.TestAccount, PermissionLevel.All);
-            builder.Add(PermissionEntityType.TestResource, PermissionLevel.All);
-            builder.Add(PermissionEntityType.Project, PermissionLevel.All);
-            builder.Add(PermissionEntityType.User, PermissionLevel.All);
-            builder.Add(PermissionEntityType.Team, PermissionLevel.All);
-            builder.Add(PermissionEntityType.Tenant, PermissionLevel.All);
-            builder.Add(PermissionEntityType.Requirement, PermissionLevel.All);
-            builder.Add(PermissionEntityType.RequirementSpecification, PermissionLevel.All);
-            builder.Add(PermissionEntityType.Architecture, PermissionLevel.All);
-            builder.Add(PermissionEntityType.Issue, PermissionLevel.All);
+            builder.AddAllPermissions();
 
             claims.Add(new Claim(PermissionClaims.Permissions, PermissionClaimSerializer.Serialize(builder.Build())));
             if (projectId is not null)
@@ -51,6 +38,7 @@ namespace TestBucket.Domain.Identity
 
             return new ClaimsPrincipal([new ClaimsIdentity(claims)]);
         }
+
 
         public static ClaimsPrincipal Impersonate(Action<EntityPermissionBuilder> configure)
         {

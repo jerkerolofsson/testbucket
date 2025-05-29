@@ -50,44 +50,37 @@
                     </MudStack>
                 </ToolBarContent>
 
+
                 <ColGroup>
                     <col style="width: 80%" />
-                    <col style="width: 20%;" />
+                    <col style="width: 10%;" />
+                    <col style="width: 10%;" />
                 </ColGroup>
 
                 <Columns>
                     <TemplateColumn Title="@loc["name"]">
                         <CellTemplate>
                             <div class="name">@context.Item.Name</div>
-                            <MudStack Row Justify="Justify.FlexEnd" AlignItems="AlignItems.Center">
-                                @if(context.Item.DevLead is not null)
-                                {
-                                    <UserProfileImage UserName="@context.Item.DevLead"/>
-                                }
-                                @if (context.Item.TestLead is not null && context.Item.DevLead != context.Item.TestLead)
-                                {
-                                    <UserProfileImage UserName="@context.Item.TestLead" />
-                                }
-                            </MudStack>
+
                         </CellTemplate>
                     </TemplateColumn>
-
-                    <TemplateColumn>
+                    <TemplateColumn Title="@codeLoc["dev-lead"]">
                         <CellTemplate>
-                            <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
-                                <Authorized>
-                                    <MudIconButton OnClick="async () => await EditAsync(context.Item)" Icon="@Icons.Material.Filled.Edit" />
-                                </Authorized>
-                            </PermissionView>
-
-                            <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Delete">
-                                <Authorized>
-                                    <MudIconButton OnClick="async() => await DeleteAsync(context.Item)" Color="Color.Error" Icon="@Icons.Material.Filled.Clear" />
-                                </Authorized>
-                            </PermissionView>
-
+                            @if (context.Item.DevLead is not null)
+                            {
+                                <UserProfileImage UserName="@context.Item.DevLead" />
+                            }
                         </CellTemplate>
                     </TemplateColumn>
+                    <TemplateColumn Title="@codeLoc["test-lead"]">
+                        <CellTemplate>
+                            @if (context.Item.TestLead is not null && context.Item.DevLead != context.Item.TestLead)
+                            {
+                                <UserProfileImage UserName="@context.Item.TestLead" />
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+
                 </Columns>
 
                 <PagerContent>
@@ -100,7 +93,7 @@
         @if (_selectedComponent is not null)
         {
             <MudTabs Style="width: 100%">
-                <MudTabPanel Text="@loc["feature"]">
+                <MudTabPanel Text="@codeLoc["component"]">
                     <MudStack Class="pa-2">
                         <ArchitecturalComponentView Component="_selectedComponent" />
                     </MudStack>

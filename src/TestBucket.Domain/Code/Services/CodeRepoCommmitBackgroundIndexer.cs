@@ -52,7 +52,12 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
 
     private static async Task ProcessTenantAsync(IServiceScope scope, Tenant tenant, CancellationToken cancellationToken)
     {
-        var principal = Impersonation.Impersonate(tenant.Id);
+        var principal = Impersonation.Impersonate(configure =>
+        {
+            configure.TenantId = tenant.Id;
+            configure.UserName = "commit-bot";
+            configure.Email = "admin@admin.com";
+        });
 
         var projectRepository = scope.ServiceProvider.GetRequiredService<IProjectRepository>();
         await foreach (var project in projectRepository.EnumerateAsync(tenant.Id, cancellationToken))

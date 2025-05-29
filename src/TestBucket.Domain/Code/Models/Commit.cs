@@ -16,9 +16,19 @@ public class Commit : ProjectEntity
     public long Id { get; set; }
 
     /// <summary>
-    /// Commit message
+    /// The full commit message
     /// </summary>
     public string? Message { get; set; }
+
+    /// <summary>
+    /// Short description, extracted from the commit message
+    /// </summary>
+    public string? ShortDescription { get; set; }
+
+    /// <summary>
+    /// Long description, extracted from the commit message
+    /// </summary>
+    public string? LongDescription { get; set; }
 
     /// <summary>
     /// Time of commit

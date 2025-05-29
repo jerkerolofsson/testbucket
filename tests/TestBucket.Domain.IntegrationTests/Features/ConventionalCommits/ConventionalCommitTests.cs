@@ -47,6 +47,31 @@ namespace TestBucket.Domain.IntegrationTests.Features.ConventionalCommits
             Assert.Contains("Feature Name", commit.FeatureNames);
         }
 
+        [Fact]
+        [CoveredRequirement("CC-12")]
+        public async Task AddCommit_WithFeatureTypeInUpperCase_FeatureScopeAddedAsFeatureName()
+        {
+            var repo = new Repository { Url = "http://localhost:1234" };
+            await Fixture.Commits.AddRepoAsync(repo);
+            var commit = new Commit
+            {
+                RepositoryId = repo.Id,
+                Reference = "123",
+                Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654",
+                Message = """
+                FEAT(Feature Name): Some work done on the feature
+                """
+            };
+
+            // Act
+            await Fixture.Commits.AddCommitAsync(commit);
+
+            // Assert
+            Assert.NotNull(commit.FeatureNames);
+            Assert.NotEmpty(commit.FeatureNames);
+            Assert.Contains("Feature Name", commit.FeatureNames);
+        }
+
         /// <summary>
         /// Verifies that a commit with a conventional commit with a Fixes git-trailer registers the fix description
         /// for the commit

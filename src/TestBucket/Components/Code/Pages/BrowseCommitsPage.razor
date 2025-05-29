@@ -42,7 +42,16 @@
 
                     <TemplateColumn Title="@codeLoc["message"]">
                         <CellTemplate>
-                            <div class="message">@context.Item.Message </div>
+                            
+                            @if(!string.IsNullOrEmpty(context.Item.ShortDescription))
+                            {
+                                <div class="message">@context.Item.ShortDescription</div>
+                            }
+                            else
+                            {
+                                <div class="message">@context.Item.Message</div>
+                            }
+
                             <CopyToClipboard Text="@context.Item.Sha" IconSize="Size.Small">
                                 <div class="sha">@context.Item.Sha </div>
                             </CopyToClipboard>

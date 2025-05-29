@@ -157,13 +157,25 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
             var message = """
                 feat: allow provided config object to extend other configs
 
+                Long description line 1
+
+                Long description line 2
+
                 BREAKING CHANGE: `extends` key in config file is now used for extending other config files
                 """;
+
+            var expectedLong = """
+                Long description line 1
+                
+                Long description line 2
+                
+                """.Replace("\r", "");
 
             // Act
             var conventionalMessage = new ConventionalCommitParser().Parse(message);
 
             Assert.True(conventionalMessage.IsBreakingChange);
+            Assert.Equal(expectedLong, conventionalMessage.LongerDescription);
         }
 
 
@@ -480,7 +492,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-7")]
+        [CoveredRequirement("CC-6")]
         public void Parse_WithHashSeparator_FootersParsedCorrectly()
         {
             var message = """

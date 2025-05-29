@@ -5,6 +5,7 @@
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject TenantController tenantController
 
 <PageTitle>Log in</PageTitle>
 
@@ -84,6 +85,13 @@
         {
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+        }
+
+        var tenantExists = await tenantController.ExistsAsync(TenantId);
+        if(!tenantExists)
+        {
+            var defaultTenant = await tenantController.GetDefaultTenantAsync();
+            NavigationManager.NavigateTo($"/{defaultTenant}/Account/Login", true);
         }
     }
 

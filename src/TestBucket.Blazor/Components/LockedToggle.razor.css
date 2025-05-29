@@ -1,0 +1,74 @@
+.tb-locked-toggle {
+    position: relative;
+    font-size: 8pt;
+    min-width: 100px;
+    min-height: 32px;
+    border-radius: 100vw;
+
+    --back-color: yellowgreen;
+    --lock-color: yellowgreen;
+    --circle-color: #729825;
+
+    background: var(--back-color);
+    user-select: none;
+}
+
+.tb-locked-toggle.locked {
+    --back-color: firebrick;
+    --lock-color: red;
+    --circle-color: white;
+}
+
+.tb-locked-toggle ::deep .lock-icon {
+
+    color: var(--lock-color);
+
+    background: var(--circle-color);
+    border-radius: 100vw;
+
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%) translateX(5px);
+    padding: 5px;
+    width: 24px;
+    height: 24px;
+
+    transition: transform linear 150ms;
+}
+
+.tb-locked-toggle.locked ::deep .lock-icon {
+    transform: translateY(-50%) translateX(calc(100px - 24px - 5px));
+}
+
+.tb-locked-toggle .locked-label,
+.tb-locked-toggle .unlocked-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    transition: opacity linear 200ms;
+}
+
+.tb-locked-toggle .locked-label {
+    left: 10px;
+    color: #f6dcdc;
+}
+.tb-locked-toggle .unlocked-label {
+    right: 10px;
+    color: #192208;   
+}
+
+.tb-locked-toggle .locked-label {
+    opacity: 0;
+}
+.tb-locked-toggle .unlocked-label {
+    opacity: 1;
+}
+
+.tb-locked-toggle.locked .locked-label {
+    opacity: 1;
+}
+.tb-locked-toggle.locked .unlocked-label {
+    opacity: 0;
+}

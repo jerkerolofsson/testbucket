@@ -1,6 +1,6 @@
 ﻿@page "/{tenantId}/Settings/Projects/{projectSlug}/Fields"
 @layout SettingsLayout
-@attribute [Authorize(Roles = "ADMIN")]
+@attribute [Authorize()]
 @inject ProjectController projectService
 @inject IDialogService dialogService
 

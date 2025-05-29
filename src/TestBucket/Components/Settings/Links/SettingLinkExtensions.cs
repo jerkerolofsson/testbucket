@@ -14,17 +14,34 @@ public static class SettingLinkExtensions
             Title = "integrations",
             Description = "integrations-description",
             RelativeUrl = "/{tenantId}/Settings/Projects/{projectId}/Integrations",
-            Keywords = "github gitlab trello git",
-            Icon = MudBlazor.Icons.Material.Filled.SettingsSystemDaydream
+            Keywords = "github gitlab trello git extension integration",
+            Icon = TbIcons.Filled.Extensions
         });
 
+        services.AddSingleton(new SettingsLink
+        {
+            Title = "fields",
+            Description = "fields-description",
+            RelativeUrl = "/{tenantId}/Settings/Projects/{projectId}/Fields",
+            Keywords = "custom fields field",
+            Icon = TbIcons.BoldDuoTone.Field
+        });
+
+        services.AddSingleton(new SettingsLink
+        {
+            Title = "test-accounts",
+            Description = "test-accounts-description",
+            RelativeUrl = "/{tenantId}/Settings/Accounts",
+            Keywords = "test accounts",
+            Icon = TbIcons.BoldDuoTone.UserCircle
+        });
         services.AddSingleton(new SettingsLink
         {
             Title = "test-environments",
             Description = "test-environments-description",
             RelativeUrl = "/{tenantId}/Settings/ManageEnvironments",
-            Keywords = "test-environment",
-            Icon = TbIcons.Filled.Leaf
+            Keywords = "test environment",
+            Icon = TbIcons.BoldDuoTone.Leaf
         });
 
         services.AddSingleton(new SettingsLink

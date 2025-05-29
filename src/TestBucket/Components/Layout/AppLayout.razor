@@ -89,7 +89,7 @@
                                         <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="@loc["account"]" Href="@manageUrl"></MudMenuItem>
                                         <MudMenuItem Label="@loc["about"]" Href="/about"></MudMenuItem>
                                         <MudMenuItem>
-                                            <form action="Account/Logout" method="post">
+                                            <form action="/Logout" method="post">
                                                 <AntiforgeryToken />
                                                 <input type="hidden" name="ReturnUrl" value="/" />
                                                 <button type="submit">@loc["logout"]</button>

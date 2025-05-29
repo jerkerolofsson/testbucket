@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Settings/Accounts"
+@using TestBucket.Domain
 @layout SettingsLayout
 @inject AppNavigationManager appNav
 @inject IStringLocalizer<SharedStrings> loc
@@ -19,19 +20,22 @@
 
         <ToolBarContent>
             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-                <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Size="Size.Large" Color="Color.Info" />
+                <MudIcon Icon="@TbIcons.BoldDuoTone.UserCircle" Size="Size.Large" Color="Color.Info" />
                 <MudText Typo="Typo.h2">@loc["test-accounts"]</MudText>
                 <MudSpacer />
                 <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
                     <Authorized>
-                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"></MudIconButton>
+                        <MudButton 
+                            data-testid="add-account"
+                            Class="tb-button-new"
+                            StartIcon="@Icons.Material.Filled.Add" OnClick="AddAsync">@loc["add"]</MudButton>
                     </Authorized>
                 </PermissionView>
             </MudStack>
         </ToolBarContent>
         <ColGroup>
             <col style="width: 10%;" />
-            <col style="width: 10%;" />
+            <col style="width: 120px;" />
             <col />
             <col />
             <col />
@@ -53,11 +57,19 @@
             </TemplateColumn>
             <TemplateColumn Title="@loc["locked"]">
                 <CellTemplate>
+
+                    <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
+                        <Authorized>
+                            <LockedToggle Locked="context.Item.Locked" LockedChanged="async (isLocked) => await OnLockChanged(context.Item, isLocked)" />
+                        </Authorized>
+                    </PermissionView>
+
                     @if (context.Item.Locked)
                     {
                         <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
                             <Authorized>
                                 <MudIconButton Icon="@Icons.Material.Filled.Lock" Color="Color.Warning" OnClick="async () => await UnlockAsync(context.Item)"/>
+
                             </Authorized>
                             <NotAuthorized>
                                 <MudIcon Icon="@Icons.Material.Filled.Lock" Color="Color.Warning"/>
@@ -139,16 +151,28 @@
         _dataGrid?.ReloadServerData();
     }
 
+    private async Task OnLockChanged(TestAccount account, bool isLocked)
+    {
+        if(isLocked)
+        {
+            await LockAsync(account);
+        }
+        else
+        {
+            await UnlockAsync(account);
+        }
+    }
+
     private async Task UnlockAsync(TestAccount account)
     {
         await controller.UnlockAsync(account);
-        _dataGrid?.ReloadServerData();
+        //_dataGrid?.ReloadServerData();
     }
     
     private async Task LockAsync(TestAccount account)
     {
         await controller.LockAsync(account);
-        _dataGrid?.ReloadServerData();
+        //_dataGrid?.ReloadServerData();
     }
 
     private void OnRowClicked(TestAccount account)

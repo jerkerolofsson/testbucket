@@ -39,6 +39,15 @@ internal class TenantController : SuperAdminGuard
         return await _repository.GetTenantByIdAsync(tenantId);
     }
 
+    public Task<string?> GetDefaultTenantAsync()
+    {
+        return Task.FromResult(Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_DEFAULT_TENANT));
+    }
+    public async Task<bool> ExistsAsync(string tenantId)
+    {
+        return await _repository.ExistsAsync(tenantId);
+    }
+
     public async Task<OneOf<Tenant, AlreadyExistsError>> CreateAsync(string name)
     {
         // Check permissions

@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Settings/Accounts/{Id:long}"
+@using TestBucket.Domain
 @layout SettingsLayout
 @inject AppNavigationManager appNav
 @inject IStringLocalizer<SharedStrings> loc
@@ -12,7 +13,7 @@
     @if(_account is not null)
     {
         <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-            <MudIcon Icon="@Icons.Material.Filled.AccountCircle" Size="Size.Large" Color="Color.Info"/>
+            <MudIcon Icon="@TbIcons.BoldDuoTone.UserCircle" Size="Size.Large" Color="Color.Info"/>
             <MudText Typo="Typo.h2">@_account.Name</MudText>
         </MudStack>
 

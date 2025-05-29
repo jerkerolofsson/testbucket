@@ -680,4 +680,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="capture-screenshot-on-this-device" xml:space="preserve">
     <value>Capture Screenshot on this device</value>
   </data>
+  <data name="logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="account" xml:space="preserve">
+    <value>Account</value>
+  </data>
 </root>

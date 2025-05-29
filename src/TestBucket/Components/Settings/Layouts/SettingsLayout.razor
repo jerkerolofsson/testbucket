@@ -43,14 +43,16 @@
                 {
                     string projectUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}";
                     string projectIntegrationsUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}/Integrations";
-                    <MudNavLink Icon="@Icons.Material.Outlined.Article" IconColor="Color.Tertiary" Href="@projectUrl">@Project.Name</MudNavLink>
-                    <MudNavLink Icon="@Icons.Material.Outlined.SettingsSystemDaydream" IconColor="Color.Tertiary" Href="@projectIntegrationsUrl">@projectLoc["integrations"]</MudNavLink>
+                    string projectFieldsUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}/Fields";
+                    <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Article" IconColor="Color.Tertiary" Href="@projectUrl">@Project.Name</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.Filled.Extensions" IconColor="Color.Tertiary" Href="@projectIntegrationsUrl">@projectLoc["integrations"]</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.BoldDuoTone.Field" IconColor="Color.Tertiary" Href="@projectFieldsUrl">@loc["fields"]</MudNavLink>
                 }
 
                 <MudItem Class="mt-5"/>
 
                 <MudNavLink Icon="@TbIcons.BoldDuoTone.Leaf" IconColor="Color.Info" Href="@EnvironmentsUrl">@settingsLoc["manage-environments"]</MudNavLink>
-                <MudNavLink Icon="@Icons.Material.Filled.AccountCircle" IconColor="Color.Info" Href="@AccountsUrl">@settingsLoc["manage-accounts"]</MudNavLink>
+                <MudNavLink Icon="@TbIcons.BoldDuoTone.UserCircle" IconColor="Color.Info" Href="@AccountsUrl">@settingsLoc["manage-accounts"]</MudNavLink>
                 <MudNavLink Icon="@Icons.Material.Outlined.Devices" IconColor="Color.Info" Href="@ResourcesUrl">@settingsLoc["manage-resources"]</MudNavLink>
                 <MudNavLink Icon="@Icons.Material.Outlined.RunCircle" IconColor="Color.Info" Href="@RunnersUrl">@settingsLoc["manage-runners"]</MudNavLink>
 

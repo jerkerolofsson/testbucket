@@ -2,6 +2,7 @@
 @using TestBucket.Components.Teams
 @using TestBucket.Components.Teams.Controls
 @using TestBucket.Components.Uploads.Controls
+@using TestBucket.Domain
 @using TestBucket.Domain.Files.Models
 @using TestBucket.Domain.Teams.Models
 @inject ProjectController projectController
@@ -37,8 +38,8 @@
             </Field>
 
 
-            <FieldLink Href="@projectFieldsUrl" HeaderText="Fields" Description="Manage custom fields and traits"/>
-            <FieldLink Href="@projectIntegrationsUrl" HeaderText="@projectLoc["integrations"]" Description="@projectLoc["integrations-description"]" />
+            <FieldLink Icon="@TbIcons.BoldDuoTone.Field" Href="@projectFieldsUrl" HeaderText="Fields" Description="Manage custom fields and traits"/>
+            <FieldLink Icon="@TbIcons.Filled.Extensions" Href="@projectIntegrationsUrl" HeaderText="@projectLoc["integrations"]" Description="@projectLoc["integrations-description"]" />
 
             <MudText Typo="Typo.h3" Class="pa-3">Appearance</MudText>
             <Field>

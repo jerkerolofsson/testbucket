@@ -1,0 +1,27 @@
+@using System.Globalization
+@using MudBlazor.Utilities
+@using TestBucket.Contracts.Appearance.Models
+
+<div class="@CssClass" @onclick="Toggle" @onclick:stopPropagation="true">
+    <div class="locked-label">@LockedLabel</div>
+    <MudBlazor.MudIcon Size="MudBlazor.Size.Small" Class="lock-icon" Icon="@MudBlazor.Icons.Material.Filled.Lock"/>
+    <div class="unlocked-label">@UnlockedLabel</div>
+</div>
+
+@code {
+    [Parameter] public bool Locked { get; set; }
+    [Parameter] public EventCallback<bool> LockedChanged { get; set; }
+    [Parameter] public string LockedLabel { get; set; } = "Locked";
+    [Parameter] public string UnlockedLabel { get; set; } = "Unlocked";
+
+    private string CssClass => new CssBuilder("tb-locked-toggle")
+        .AddClass("locked", Locked)
+        .Build();
+
+
+    private async Task Toggle()
+    {
+        Locked = !Locked;
+        await LockedChanged.InvokeAsync(this.Locked);
+    }
+}

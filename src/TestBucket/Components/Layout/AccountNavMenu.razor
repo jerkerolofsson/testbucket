@@ -21,11 +21,11 @@
 
 <div class="nav-scrollable" >
 
-    <MudPaper Class="pa-2">
+    <MudPaper Class="pa-5">
         <MudNavMenu>
             <AuthorizeView>
                 <Authorized>
-                    <MudNavLink Href="@manageUrl">Profile</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="@manageUrl">Profile</MudNavLink>
                     <MudNavLink Href="@emailUrl">Email</MudNavLink>
                     <MudNavLink Href="@changePasswordUrl">Change Password</MudNavLink>
                     <MudNavLink Href="@twoFactorAuthenticationUrl">TwoFactorAuthentication</MudNavLink>
@@ -43,7 +43,7 @@
         <Authorized>
             <form action="Account/Logout" method="post">
                 <AntiforgeryToken />
-                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                <input type="hidden" name="ReturnUrl" value="/" />
                 <button class="mt-3" type="submit">Logout</button>
             </form>
         </Authorized>

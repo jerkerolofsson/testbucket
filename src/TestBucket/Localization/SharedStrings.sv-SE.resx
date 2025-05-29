@@ -678,4 +678,10 @@
   <data name="capture-screenshot-on-this-device" xml:space="preserve">
     <value />
   </data>
+  <data name="logout" xml:space="preserve">
+    <value />
+  </data>
+  <data name="account" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -291,10 +291,10 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
     /// <param name="testCase"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"></exception>
-    public async ValueTask SaveTestCaseRunAsync(TestCaseRun testCaseRun)
+    public async ValueTask SaveTestCaseRunAsync(TestCaseRun testCaseRun, bool informObservers = true)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        await _testRunManager.SaveTestCaseRunAsync(principal, testCaseRun);
+        await _testRunManager.SaveTestCaseRunAsync(principal, testCaseRun, informObservers);
     }
 
     /// <summary>

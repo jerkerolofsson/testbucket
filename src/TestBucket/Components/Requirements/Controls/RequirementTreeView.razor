@@ -466,7 +466,7 @@
 
     public async Task<IReadOnlyCollection<TreeNode<BrowserItem>>> LoadServerData(BrowserItem? browserItem)
     {
-        if (Team is null || Project is null)
+        if (Project is null)
         {
             return [];
         }
@@ -572,7 +572,7 @@
             _team = Team;
             _project = Project;
             _selectedTreeItem = null;
-            if (Project is not null && Team is not null)
+            if (Project is not null)
             {
                 _rootItems = await browser.BrowseAsync(_team?.Id, _project?.Id, null);
             }

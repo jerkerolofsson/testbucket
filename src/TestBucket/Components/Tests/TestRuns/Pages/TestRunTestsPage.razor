@@ -7,6 +7,7 @@
 @layout TestingLayout
 @inject TestBrowser testBrowser
 @inject NavigationManager navigationManager
+@inject AppNavigationManager appNav
 @inject FieldController fieldController
 
 @if (_testRun is not null && _query is not null)
@@ -39,10 +40,7 @@
         if (_testRun is null || _testRun.Id != RunId)
         {
             _testRun = await testBrowser.GetTestRunByIdAsync(RunId);
-
-            if (_testRun?.TestProjectId is not null)
-            {
-            }
+            appNav.State.SelectedTestRun = _testRun;
         }
         if (Project?.Id is not null)
         {

@@ -302,6 +302,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, CloseIssueCommand>();
 
         // Run
+        builder.Services.AddScoped<ICommand, AssignAllUnassignedToMe>();
         builder.Services.AddScoped<ICommand, DeleteRunCommand>();
         builder.Services.AddScoped<ICommand, DuplicateRunCommand>();
 

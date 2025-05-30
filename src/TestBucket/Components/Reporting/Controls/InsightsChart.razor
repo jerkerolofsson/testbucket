@@ -62,7 +62,7 @@
             
             @if (_layout is not null && _results is not null && _config is not null)
             {
-                if(Spec?.ChartType is ChartType.Bar or ChartType.Line or ChartType.Donut or ChartType.Pie)
+                if(Spec?.ChartType is ChartType.Bar or ChartType.Line or ChartType.Donut or ChartType.Pie or ChartType.StackedBar)
                 {
                     <PlotlyChart class="tb-chart result-chart" @ref="_chart" Config="_config" Layout="@_layout" Data="@_data"/>
                 }
@@ -108,6 +108,7 @@
 
 @code {
     [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string UserQuery { get; set; } = "";
     [Parameter] public bool ReadOnly { get; set; }
     [Parameter] public InsightsVisualizationSpecification? Spec { get; set; }
     [Parameter] public EventCallback<InsightsVisualizationSpecification> SpecChanged { get; set; }
@@ -139,9 +140,18 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(_results is null && Spec is not null)
+        if(_results is null && Spec is not null && Spec.DataQueries.Count > 0)
         {
-            _results = await controller.GetDataAsync(Project?.Id, Spec.DataQueries[0]);
+            // Combine the query from the specification and the user
+            var realQueryString = string.Join(" ", Spec.DataQueries[0].Query, UserQuery);
+            var query = new InsightsDataQuery
+                {
+                    Colors = Spec.DataQueries[0].Colors,
+                    Query = realQueryString,
+                    DataSource = Spec.DataQueries[0].DataSource,
+                };
+
+            _results = await controller.GetDataAsync(Project?.Id, query);
             _chartType = Spec.ChartType;
 
             if (_results is not null)
@@ -218,6 +228,11 @@
                     }
                 }
             ];
+
+            if(Spec.ChartType == ChartType.StackedBar)
+            {
+                _layout.BarMode = BarModeEnum.Stack;
+            }
         }
 
         _layout.Margin = new Plotly.Blazor.LayoutLib.Margin
@@ -301,6 +316,46 @@
                     scatter.Marker = new Plotly.Blazor.Traces.BarLib.Marker
                     {
                         ColorArray = [..colorway]
+                    };
+                }
+
+                _data.Add(scatter);
+
+                foreach (var point in series.Data)
+                {
+                    scatter.X.Add(point.Label.ToString());
+                    scatter.Y.Add(point.Value);
+                }
+            }
+        }
+        else if (_chartType == ChartType.StackedBar)
+        {
+            int colorWayIndex = 0;
+            foreach (var series in _results.Series)
+            {
+                string? color = null;
+                if(colorway.Count > 0)
+                {
+                    color = colorway[colorWayIndex];
+                    colorWayIndex++;
+                    if(colorWayIndex >= colorway.Count)
+                    {
+                        colorWayIndex = 0;
+                    }
+                }
+                var scatter = new Bar()
+                {
+                    Name = series.Name.ToString(),
+                    X = new List<object>(),
+                    Y = new List<object>()
+                };
+
+                if (colorway.Count > 0)
+                {
+                    scatter.Marker = new Plotly.Blazor.Traces.BarLib.Marker
+                    {
+                        Color = color
+                        //ColorArray = [..colorway]
                     };
                 }
 

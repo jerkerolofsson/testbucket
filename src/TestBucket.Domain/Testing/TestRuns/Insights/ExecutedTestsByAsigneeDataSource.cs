@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Issues.States;
-using TestBucket.Domain.Fields;
+﻿using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights;
-using TestBucket.Domain.Insights.Extensions;
 using TestBucket.Domain.Insights.Model;
-using TestBucket.Domain.Issues.Search;
-using TestBucket.Domain.States;
-using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Testing.TestRuns.Insights;
-internal class CountByResultDataSource : IInsightsDataSource
+internal class ExecutedTestsByAsigneeDataSource : IInsightsDataSource
 {
     private readonly ITestRunManager _manager;
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
@@ -23,9 +12,9 @@ internal class CountByResultDataSource : IInsightsDataSource
     /// <summary>
     /// Gets the identifier of the data source
     /// </summary>
-    public string DataSource => TestRunDataSourceNames.CountByResult;
+    public string DataSource => TestRunDataSourceNames.ExecutedTestsByAsignee;
 
-    public CountByResultDataSource(ITestRunManager manager, IFieldDefinitionManager fieldDefinitionManager)
+    public ExecutedTestsByAsigneeDataSource(ITestRunManager manager, IFieldDefinitionManager fieldDefinitionManager)
     {
         _manager = manager;
         _fieldDefinitionManager = fieldDefinitionManager;
@@ -43,12 +32,9 @@ internal class CountByResultDataSource : IInsightsDataSource
         {
             testRunQuery.ProjectId = projectId;
         }
-        var data = await _manager.GetInsightsTestResultsAsync(principal, testRunQuery);
-
-        string[] results = [TestResult.Passed.ToString(), TestResult.Failed.ToString(), TestResult.Blocked.ToString(), TestResult.Skipped.ToString(), TestResult.NoRun.ToString()];
+        var data = await _manager.GetInsightsTestCaseRunCountByAsigneeAsync(principal, testRunQuery);
 
         var stringLabelData = data.ConvertToStringLabels();
-        stringLabelData.AddMissingLabels(results);
         return stringLabelData;
     }
 }

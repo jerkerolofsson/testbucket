@@ -41,10 +41,13 @@ public static class InsightsDataExtensions
         var start = DateOnly.MaxValue;
         foreach (var series in data.Series)
         {
-            var min = series.Labels.Min();
-            if (min < start)
+            if (series.Labels.Any())
             {
-                start = min;
+                var min = series.Labels.Min();
+                if (min < start)
+                {
+                    start = min;
+                }
             }
         }
         return start;
@@ -64,10 +67,13 @@ public static class InsightsDataExtensions
         var end = DateOnly.MinValue;
         foreach (var series in data.Series)
         {
-            var max = series.Labels.Max();
-            if (max > end)
+            if (series.Labels.Any())
             {
-                end = max;
+                var max = series.Labels.Max();
+                if (max > end)
+                {
+                    end = max;
+                }
             }
         }
         return end;

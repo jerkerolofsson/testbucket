@@ -9,67 +9,57 @@
 @inject ThemingService themingService
 @inject FieldController fieldController
 
-<MudStack Spacing="0" Style="width: 100%" Class="pa-5">
 
-    @if (TestRun is not null)
-    {
-        <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
-            <MudText Typo="Typo.h1" Color="Color.Primary">@_accentText</MudText>
-            <MudText Typo="Typo.h1">@TestRun.Name</MudText>
-            <MudSpacer/>
-        </MudStack>
+@if (TestRun is not null)
+{
+    <MudStack Spacing="0" Style="width: 100%" Class="pa-5">
+        <CascadingValue Value="TestRun">
+            <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.h1" Color="Color.Primary">@_accentText</MudText>
+                <MudText Typo="Typo.h1">@TestRun.Name</MudText>
+                <MudSpacer/>
+            </MudStack>
         
-        <MudStack Spacing="0" Row AlignItems="AlignItems.Center">
-            @if(TestRun.Open)
-            {
-                <MudChip T="string" Style="background: greenyellow; color: black">@loc["state-open"]</MudChip>
-            }
-            else
-            {
-                <MudChip T="string" Style="background: purple; color: white">@loc["state-closed"]</MudChip>
-            }
-        </MudStack>
-
-        <MudStack Row Justify="Justify.Center" Style="width:100%">
-            <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
-            Class="default-search"
-            Clearable="true"
-            Placeholder="@loc["search-results"]"
-            Variant="Variant.Outlined"
-            IconSize="Size.Small"
-            Adornment="Adornment.Start"
-            AdornmentIcon="@Icons.Material.Filled.Search" />
-        </MudStack>
-
-        @if (_results is not null)
-        {
-            @* <TestResultSummaryBar Summary="@_results"/> *@
-
-            <div class="tb-run-main-charts">
-                <ResultChart Results="@_results" Title="@loc["test-results"]" />
-
-                @foreach(var kvp in _groupedByField)
+            <MudStack Spacing="0" Row AlignItems="AlignItems.Center">
+                @if(TestRun.Open)
                 {
-                    string title = kvp.Key.Name;
-                    <StackedResultChart Results="@kvp.Value" Title="@title" />
+                    <MudChip T="string" Style="background: greenyellow; color: black">@loc["state-open"]</MudChip>
                 }
-            </div>
-        }
-        else
-        {
+                else
+                {
+                    <MudChip T="string" Style="background: purple; color: white">@loc["state-closed"]</MudChip>
+                }
+            </MudStack>
 
-        }
+            <MudStack Row Justify="Justify.Center" Style="width:100%" Class="mt-2">
+                <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
+                Class="default-search"
+                Clearable="true"
+                Placeholder="@loc["search-results"]"
+                Variant="Variant.Outlined"
+                IconSize="Size.Small"
+                Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Search" />
+            </MudStack>
 
-        <AttachmentGrid AllowUpload TestRunId="@TestRun.Id" Style="width: 100%"  />
+            @if (_results is not null)
+            {
+                <MudStack Style="width: 100%" Class="pa-2">
+                    <InsightsDashboard DashboardName="testrun" Query="@_queryText"/>
+                </MudStack>
+            }
 
-        @if (TestRun.SystemOut is not null)
-        {
-            <pre>
-                <code>@TestRun.SystemOut</code>
-            </pre>
-        }
-    }
-</MudStack>
+            <AttachmentGrid AllowUpload TestRunId="@TestRun.Id" Style="width: 100%"  />
+
+            @if (TestRun.SystemOut is not null)
+            {
+                <pre>
+                    <code>@TestRun.SystemOut</code>
+                </pre>
+            }
+        </CascadingValue>
+    </MudStack>
+}
 @code {
 
     [Parameter] public TestRun? TestRun { get; set; }
@@ -80,6 +70,7 @@
     private string? _queryKey;
     private string _accentText = "";
     private string _searchText = "";
+    private string _queryText = "";
 
     private IReadOnlyList<FieldDefinition> _fields = [];
     private long _testProjectId;
@@ -97,6 +88,7 @@
         query.TestRunId = null;
         _searchText = query.ToSearchText();
         query.TestRunId = TestRun.Id;
+        _queryText = query.ToSearchText();
 
         // Create a key so we only reload data if the query actually changed
         var queryKey = query.AsCacheKey();

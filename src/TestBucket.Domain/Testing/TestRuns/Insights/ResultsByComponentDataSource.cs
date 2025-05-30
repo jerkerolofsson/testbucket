@@ -15,7 +15,7 @@ using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Testing.TestRuns.Insights;
-internal class CountByResultDataSource : IInsightsDataSource
+internal class ResultsByComponentDataSource : IInsightsDataSource
 {
     private readonly ITestRunManager _manager;
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
@@ -23,9 +23,9 @@ internal class CountByResultDataSource : IInsightsDataSource
     /// <summary>
     /// Gets the identifier of the data source
     /// </summary>
-    public string DataSource => TestRunDataSourceNames.CountByResult;
+    public string DataSource => TestRunDataSourceNames.ResultsByComponent;
 
-    public CountByResultDataSource(ITestRunManager manager, IFieldDefinitionManager fieldDefinitionManager)
+    public ResultsByComponentDataSource(ITestRunManager manager, IFieldDefinitionManager fieldDefinitionManager)
     {
         _manager = manager;
         _fieldDefinitionManager = fieldDefinitionManager;
@@ -43,12 +43,16 @@ internal class CountByResultDataSource : IInsightsDataSource
         {
             testRunQuery.ProjectId = projectId;
         }
-        var data = await _manager.GetInsightsTestResultsAsync(principal, testRunQuery);
 
-        string[] results = [TestResult.Passed.ToString(), TestResult.Failed.ToString(), TestResult.Blocked.ToString(), TestResult.Skipped.ToString(), TestResult.NoRun.ToString()];
+        var field = fields.Where(x => !x.IsDeleted && x.TraitType == Traits.Core.TraitType.Component).FirstOrDefault();
+        if (field is null)
+        {
+            return new InsightsData<string, double>();
+        }
+
+        var data = await _manager.GetInsightsTestResultsByFieldAsync(principal, testRunQuery, field.Id);
 
         var stringLabelData = data.ConvertToStringLabels();
-        stringLabelData.AddMissingLabels(results);
         return stringLabelData;
     }
 }

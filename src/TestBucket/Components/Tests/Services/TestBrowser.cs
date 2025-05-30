@@ -370,11 +370,6 @@ internal class TestBrowser : TenantBaseService
 
             // Search folders
 
-            var assignedToMe = new SearchTestCaseRunQuery { TestRunId = testRun.Id, AssignedToUser = principal.Identity?.Name };
-            var backlog = new SearchTestCaseRunQuery { TestRunId = testRun.Id, AssignedToUser = principal.Identity?.Name, Completed = false };
-            var unassigned = new SearchTestCaseRunQuery { TestRunId = testRun.Id, Unassigned = true };
-            var failed = new SearchTestCaseRunQuery { TestRunId = testRun.Id, Result = TestResult.Failed };
-
             items.Add(new TreeNode<BrowserItem>
             {
                 Text = _loc["assigned-to-me"],
@@ -384,19 +379,7 @@ internal class TestBrowser : TenantBaseService
                 { 
                     Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=assigned-to:{WebUtility.UrlEncode(principal.Identity?.Name)}" 
                 },
-                Icon = Icons.Material.Outlined.AccountCircle,
-            });
-
-            items.Add(new TreeNode<BrowserItem>
-            {
-                Text = _loc["my-backlog"],
-                Children = [],
-                Expanded = false,
-                Value = new BrowserItem() 
-                {
-                    Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=completed:no%20assigned-to:{WebUtility.UrlEncode(principal.Identity?.Name)}"
-                },
-                Icon = Icons.Material.Outlined.ListAlt,
+                Icon = TbIcons.BoldDuoTone.UserCircle,
             });
 
             items.Add(new TreeNode<BrowserItem>
@@ -408,9 +391,44 @@ internal class TestBrowser : TenantBaseService
                 {
                     Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=unassigned:yes"
                 },
-                Icon = Icons.Material.Outlined.AccountCircle,
+                Icon = TbIcons.BoldDuoTone.UserCircle,
             });
 
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = _loc["incomplete"],
+                Children = [],
+                Expanded = false,
+                Value = new BrowserItem()
+                {
+                    Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=completed:no"
+                },
+                Icon = TbIcons.BoldDuoTone.QuestionSquare,
+            });
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = _loc["my-backlog"],
+                Children = [],
+                Expanded = false,
+                Value = new BrowserItem() 
+                {
+                    Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=completed:no%20assigned-to:{WebUtility.UrlEncode(principal.Identity?.Name)}"
+                },
+                Icon = TbIcons.IconSaxDuoTone.Document1,
+            });
+
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = _loc["blocked"],
+                Children = [],
+                Expanded = false,
+                Value = new BrowserItem()
+                {
+                    Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=result:blocked"
+                },
+                IconColor = "yellow",
+                Icon = TbIcons.BoldDuoTone.MenuDots,
+            });
             items.Add(new TreeNode<BrowserItem>
             {
                 Text = _loc["failures"],
@@ -420,7 +438,8 @@ internal class TestBrowser : TenantBaseService
                 {
                     Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=result:failed"
                 },
-                Icon = Icons.Material.Outlined.WarningAmber,
+                IconColor = "red",
+                Icon = TbIcons.BoldDuoTone.MenuDots,
             });
 
         }

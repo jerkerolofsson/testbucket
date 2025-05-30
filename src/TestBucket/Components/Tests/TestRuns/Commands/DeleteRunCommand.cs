@@ -8,6 +8,9 @@ using TestBucket.Localization;
 
 namespace TestBucket.Components.Tests.TestRuns.Commands;
 
+/// <summary>
+/// Command to delete the run
+/// </summary>
 internal class DeleteRunCommand : ICommand
 {
     private readonly AppNavigationManager _appNavigationManager;
@@ -26,11 +29,11 @@ internal class DeleteRunCommand : ICommand
     }
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestRun;
-    public PermissionLevel? RequiredLevel => PermissionLevel.Read;
+    public PermissionLevel? RequiredLevel => PermissionLevel.Delete;
     public bool Enabled => _appNavigationManager.State.SelectedTestRun is not null;
     public string Id => "delete-test-run";
     public string Name => _loc["delete-test-run"];
-    public string Description => "";
+    public string Description => _loc["delete-test-run-description"];
     public KeyboardBinding? DefaultKeyboardBinding => null;
     public string? Icon => Icons.Material.Filled.Delete;
     public string[] ContextMenuTypes => ["TestRun"];
@@ -42,6 +45,5 @@ internal class DeleteRunCommand : ICommand
             return;
         }
         await _controller.DeleteTestRunAsync(_appNavigationManager.State.SelectedTestRun);
-        //await _controller.DuplicateTestAsync(_appNavigationManager.State.SelectedTestCase);
     }
 }

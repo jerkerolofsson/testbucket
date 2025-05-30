@@ -22,7 +22,12 @@
             <div class="icon">
                 @if (!string.IsNullOrEmpty(Item.Icon))
                 {
-                    <svg>
+                    string style = "";
+                    if(!string.IsNullOrEmpty(Item.IconColor))
+                    {
+                        style = $"color: {Item.IconColor}";
+                    }
+                    <svg style="@style">
                         @(new MarkupString(Item.Icon))
                     </svg>
                 }

@@ -303,6 +303,8 @@ public interface ITestCaseRepository
     Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
     Task<InsightsData<TestResult, int>> GetInsightsTestResultsAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
     Task<InsightsData<string, int>> GetInsightsTestCountPerFieldAsync(IEnumerable<FilterSpecification<TestCase>> filters, long fieldDefinitionId);
+    Task<InsightsData<string, int>> GetInsightsTestResultsByFieldAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters, long fieldDefinitionId);
+    Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAsigneeAsync(List<FilterSpecification<TestCaseRun>> filters);
 
     #endregion
 }

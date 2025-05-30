@@ -198,4 +198,7 @@
   <data name="chart-type-heatmap" xml:space="preserve">
     <value>Heatmap</value>
   </data>
+  <data name="test-results-by-component" xml:space="preserve">
+    <value>Test results by component</value>
+  </data>
 </root>

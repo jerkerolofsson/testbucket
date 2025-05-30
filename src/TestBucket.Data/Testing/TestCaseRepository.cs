@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 
 using TestBucket.Contracts.Testing.Models;
+using TestBucket.Data.Migrations;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
+using TestBucket.Domain.Testing.TestRuns.Search;
+
+using UglyToad.PdfPig.Filters;
 
 namespace TestBucket.Data.Testing;
 internal class TestCaseRepository : ITestCaseRepository
@@ -1143,6 +1148,77 @@ internal class TestCaseRepository : ITestCaseRepository
         return data;
     }
 
+    /// <summary>
+    /// Returns one series per field.StringValue
+    /// </summary>
+    /// <param name="filters"></param>
+    /// <param name="fieldDefinitionId"></param>
+    /// <returns></returns>
+    public async Task<InsightsData<string, int>> GetInsightsTestResultsByFieldAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters, long fieldDefinitionId)
+    {
+        var data = new InsightsData<string, int>();
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCaseRuns
+            .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
+            .Where(x => x.TestCaseRunFields!.Any(f => f.FieldDefinitionId == fieldDefinitionId))
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            var count1 = await tests.CountAsync();
+
+            tests = tests.Where(filter.Expression);
+
+            var count2 = await tests.CountAsync();
+        }
+
+        var results = await tests.GroupBy(x => new { x.TestCaseRunFields!.First(x => x.FieldDefinitionId == fieldDefinitionId).StringValue, x.Result })
+            .Select(g => new { Count = g.Count(), Result = g.Key.Result, FieldValue = g.Key.StringValue })
+            .ToListAsync();
+
+        Dictionary<string, InsightsSeries<string, int>> series = [];
+        foreach (var row in results)
+        {
+            var seriesName = row.FieldValue ?? "(null)";
+            if(!series.TryGetValue(seriesName, out var s))
+            {
+                s = new InsightsSeries<string, int>() { Name = seriesName };
+                series[seriesName] = s;
+                data.Add(s);
+            }
+            s.Add(row.Result.ToString(), row.Count);
+        }
+
+        return data;
+    }
+
+
+    public async Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAsigneeAsync(List<FilterSpecification<TestCaseRun>> filters)
+    {
+        var data = new InsightsData<string, int>();
+        var series = data.Add("results");
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCaseRuns
+            .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            tests = tests.Where(filter.Expression);
+        }
+
+        var results = await tests.GroupBy(x => x.AssignedToUserName).Select(g => new { Count = g.Count(), AssignedToUserName = g.Key }).ToListAsync();
+        foreach (var row in results)
+        {
+            series.Add(row.AssignedToUserName ?? "(null)", row.Count);
+        }
+
+        return data;
+    }
     public async Task<InsightsData<TestResult, int>> GetInsightsTestResultsAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
     {
         var data = new InsightsData<TestResult, int>();
@@ -1164,15 +1240,7 @@ internal class TestCaseRepository : ITestCaseRepository
         {
             series.Add(row.Result, row.Count);
         }
-        //series.Add(TestResult.NoRun, results.Where(x => x.Result == TestResult.NoRun).Sum(x => x.Count));
-        //series.Add(TestResult.Passed, results.Where(x => x.Result == TestResult.Passed).Sum(x => x.Count));
-        //series.Add(TestResult.Failed, results.Where(x => x.Result == TestResult.Failed).Sum(x => x.Count));
-        //series.Add(TestResult.Blocked, results.Where(x => x.Result == TestResult.Blocked).Sum(x => x.Count));
-        //series.Add(TestResult.Skipped, results.Where(x => x.Result == TestResult.Skipped).Sum(x => x.Count));
-        //series.Add(TestResult.Error, results.Where(x => x.Result == TestResult.Error).Sum(x => x.Count));
-        //series.Add(TestResult.Assert, results.Where(x => x.Result == TestResult.Assert).Sum(x => x.Count));
-        //series.Add(TestResult.Hang, results.Where(x => x.Result == TestResult.Hang).Sum(x => x.Count));
-
+       
         return data;
     }
 
@@ -1233,4 +1301,5 @@ internal class TestCaseRepository : ITestCaseRepository
 
         return table;
     }
+
 }

@@ -80,7 +80,7 @@ public interface ITestRunManager
     /// <param name="principal"></param>
     /// <param name="testCaseRun"></param>
     /// <returns></returns>
-    Task SaveTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun);
+    Task SaveTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun, bool informObservers = true);
 
     /// <summary>
     /// Searches for test case runs using a filter
@@ -110,6 +110,8 @@ public interface ITestRunManager
     Task<TestRun> DuplicateTestRunAsync(ClaimsPrincipal principal, TestRun run);
     Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
     Task<InsightsData<TestResult, int>> GetInsightsTestResultsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
+    Task<InsightsData<string, int>> GetInsightsTestResultsByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId);
+    Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAsigneeAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
 
     #endregion Test Case Runs
 }

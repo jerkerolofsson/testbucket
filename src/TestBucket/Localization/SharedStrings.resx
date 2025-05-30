@@ -692,4 +692,16 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="state-closed" xml:space="preserve">
     <value>Closed</value>
   </data>
+  <data name="delete-test-run-description" xml:space="preserve">
+    <value>Deletes the test run and all results</value>
+  </data>
+  <data name="assigning-tests" xml:space="preserve">
+    <value>Assigning tests..</value>
+  </data>
+  <data name="assign-all-unassigned-to-me" xml:space="preserve">
+    <value>Assign all unassigned to me..</value>
+  </data>
+  <data name="assign-all-unassigned-to-me-description" xml:space="preserve">
+    <value>Assigns all currently unassigned tests to the current user</value>
+  </data>
 </root>

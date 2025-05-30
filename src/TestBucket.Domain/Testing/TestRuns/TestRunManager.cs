@@ -13,6 +13,8 @@ using TestBucket.Domain.Testing.Specifications.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Events;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
 
 namespace TestBucket.Domain.Testing.TestRuns;
 internal class TestRunManager : ITestRunManager
@@ -176,9 +178,10 @@ internal class TestRunManager : ITestRunManager
     }
 
     /// <inheritdoc/>
-    public async Task SaveTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
+    public async Task SaveTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun, bool informObservers = true)
     {
         principal.GetTenantIdOrThrow(testCaseRun);
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
 
         testCaseRun.Modified = _timeProvider.GetUtcNow();
         testCaseRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
@@ -187,16 +190,22 @@ internal class TestRunManager : ITestRunManager
 
         await _mediator.Publish(new TestCaseRunSavedNotification(principal, testCaseRun));
 
-        foreach (var observer in _testRunObservers)
+        if (informObservers)
         {
-            await observer.OnTestCaseRunUpdatedAsync(testCaseRun);
+            foreach (var observer in _testRunObservers)
+            {
+                await observer.OnTestCaseRunUpdatedAsync(testCaseRun);
+            }
         }
     }
 
     /// <inheritdoc/>
     public async Task<PagedResult<TestRun>> SearchTestRunsAsync(ClaimsPrincipal principal, SearchTestRunQuery query)
     {
-        var tenantId = principal.GetTenantIdOrThrow();
+        var tenantId = principal.GetTenantIdOrThrow(); 
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
+
         List<FilterSpecification<TestRun>> filters = TestRunFilterSpecificationBuilder.From(query);
         filters.Add(new FilterByTenant<TestRun>(tenantId));
 
@@ -207,6 +216,8 @@ internal class TestRunManager : ITestRunManager
     public async Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
         List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
         filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
         return await _testCaseRepo.GetTestExecutionResultSummaryAsync(filters);
@@ -216,6 +227,8 @@ internal class TestRunManager : ITestRunManager
     public async Task<Dictionary<DateOnly, TestExecutionResultSummary>> GetTestExecutionResultSummaryByDayAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
         List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
         filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
         return await _testCaseRepo.GetTestExecutionResultSummaryByDayAsync(filters);
@@ -225,15 +238,38 @@ internal class TestRunManager : ITestRunManager
     public async Task<InsightsData<TestResult, int>> GetInsightsTestResultsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
         List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
         filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
         return await _testCaseRepo.GetInsightsTestResultsAsync(filters);
     }
 
+    public async Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAsigneeAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
+        List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
+        return await _testCaseRepo.GetInsightsTestCaseRunCountByAsigneeAsync(filters);
+    }
+
+    public async Task<InsightsData<string, int>> GetInsightsTestResultsByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
+        List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
+        return await _testCaseRepo.GetInsightsTestResultsByFieldAsync(filters, fieldDefinitionId);
+    }
+
+
     /// <inheritdoc/>
     public async Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
         List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
         filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
         return await _testCaseRepo.GetInsightsTestResultsByDayAsync(filters);
@@ -244,6 +280,8 @@ internal class TestRunManager : ITestRunManager
     public async Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
         List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
         filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
         return await _testCaseRepo.GetTestExecutionResultSummaryByFieldAsync(filters, fieldDefinitionId);

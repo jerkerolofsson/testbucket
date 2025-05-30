@@ -33,5 +33,10 @@ public enum ChartType
     /// <summary>
     /// Shows one label/value
     /// </summary>
-    Text = 32
+    Text = 32,
+
+    /// <summary>
+    /// Stacked bar chart
+    /// </summary>
+    StackedBar = 64
 }

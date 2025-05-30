@@ -19,7 +19,8 @@ public class InsightsDataQuery
     public required string DataSource { get; set; }
 
     /// <summary>
-    /// A query that can be parsed to filter the data
+    /// A query that can be parsed to filter the data.
+    /// The format of this query depends on the data source
     /// </summary>
     public string Query { get; set; } = "";
 

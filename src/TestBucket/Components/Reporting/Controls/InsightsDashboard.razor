@@ -21,22 +21,29 @@
 @inject IStringLocalizer<IssueStrings> issueLoc
 
 <div class="tb-insights-dashboard">
-    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" @bind-Spec="_testsByCat" />
-    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" @bind-Spec="_countByResultsSpec" />
-    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" @bind-Spec="_countPerStateSpec" />
-    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" @bind-Spec="_inflowOutflowSpec" />
+    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_testsByCat" />
+    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countByResultsSpec" />
+    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countResultsByComponentSpec" />
+    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countResultsByAsigneeSpec" />
+    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countPerStateSpec" />
+    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_inflowOutflowSpec" />
 </div>
 
 @code {
     private bool ReadOnly => false;
     [Parameter] public string? DashboardName { get; set; }
+    [Parameter] public string Query { get; set; } = "";
     [CascadingParameter] public TestProject Project { get; set; } = default!;
     [CascadingParameter] public ApplicationState? State { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
     private long _projectId;
+    private string _query = "";
 
     private InsightsVisualizationSpecification? _testsByCat;
     private InsightsVisualizationSpecification? _countByResultsSpec;
+    private InsightsVisualizationSpecification? _countResultsByComponentSpec;
+    private InsightsVisualizationSpecification? _countResultsByAsigneeSpec;
+    
     private InsightsVisualizationSpecification? _inflowOutflowSpec;
     private InsightsVisualizationSpecification? _countPerStateSpec;
 
@@ -49,8 +56,9 @@
     {
         if (Project is not null)
         {
-            if (Project.Id != _projectId)
+            if (Project.Id != _projectId || Query != _query)
             {
+                _query = Query ?? "";
                 _projectId = Project.Id;
                 _countByResultsSpec = new InsightsVisualizationSpecification
                 {
@@ -60,7 +68,8 @@
                     DataQueries = [new InsightsDataQuery
                     {
                         DataSource = TestRunDataSourceNames.CountByResult,
-                        Colors = DefaultPalettes.TestResultColors
+                        Colors = DefaultPalettes.TestResultColors,
+                        Query = ""
                     }],
                     DarkModeColors = new ChartColors()
                     {
@@ -80,6 +89,59 @@
                     ShowDataTable = true,
                 };
 
+                _countResultsByAsigneeSpec = new InsightsVisualizationSpecification
+                {
+                    Name = "test-results",
+                    ChartType = ChartType.Bar,
+                    AllowedChartTypes = ChartType.Bar | ChartType.Donut | ChartType.Pie,
+                    DataQueries = [new InsightsDataQuery
+                    {
+                        DataSource = TestRunDataSourceNames.ExecutedTestsByAsignee
+                    }],
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.ByLabel,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.ByLabel,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
+                    ShowLegend = true,
+                    ShowDataTable = true,
+                };
+
+                _countResultsByComponentSpec = new InsightsVisualizationSpecification
+                {
+                    Name = "test-results-by-component",
+                    ChartType = ChartType.StackedBar,
+                    AllowedChartTypes = ChartType.StackedBar,
+                    DataQueries = [new InsightsDataQuery
+                    {
+                        DataSource = TestRunDataSourceNames.ResultsByComponent,
+                    }],
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.BySeries,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.BySeries,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
+                    ShowLegend = true,
+                    ShowDataTable = true,
+                };
                 _inflowOutflowSpec = new InsightsVisualizationSpecification
                 {
                     Name = "issue-inflow-outflow",
@@ -88,6 +150,7 @@
                     DataQueries = [new InsightsDataQuery
                     {
                         DataSource = IssueDataSourceNames.IssuesInflowOutflow,
+                        Query = ""
                     }],
                     DarkModeColors = new ChartColors()
                     {
@@ -117,7 +180,8 @@
                             ["Open"]="#06D6A0",
                             ["Closed"]="#EF476F",
                             ["Canceled"]="#a4133c",
-                        }
+                        },
+                        Query = ""
                     }],
                     DarkModeColors = new ChartColors()
                     {
@@ -144,6 +208,7 @@
                     DataQueries = [new InsightsDataQuery
                     {
                         DataSource = TestCaseDataSourceNames.CountByCategory,
+                        Query = _query
                     }],
                     DarkModeColors = new ChartColors()
                     {

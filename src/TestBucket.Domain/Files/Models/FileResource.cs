@@ -86,4 +86,30 @@ public class FileResource
     /// For test projects, can contain documents describing the resource
     /// </summary>
     public long? TestProjectId { get; set; }
+
+
+    /// <summary>
+    /// For code component attachments, like screenshots or log files
+    /// </summary>
+    public long? ComponentId { get; set; }
+
+    /// <summary>
+    /// For feature attachments, like screenshots or log files
+    /// </summary>
+    public long? FeatureId { get; set; }
+
+    /// <summary>
+    /// For code layer attachments, like screenshots or log files
+    /// </summary>
+    public long? LayerId { get; set; }
+
+    /// <summary>
+    /// For code system attachments, like screenshots or log files
+    /// </summary>
+    public long? SystemId { get; set; }
+
+    /// <summary>
+    /// For issue attachments, like screenshots or log files
+    /// </summary>
+    public long? LocalIssueId { get; set; }
 }

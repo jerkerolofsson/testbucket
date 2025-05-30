@@ -495,6 +495,19 @@ function drawImage(elementId) {
  * 
  * @param {any} elementId
  */
+function insertText(elementId, text) {
+    const instance = _instances[elementId];
+    if (instance && instance.editor) {
+
+        var cm = instance.editor.codemirror;
+        cm.replaceSelection(text);
+    }
+}
+
+/**
+ * 
+ * @param {any} elementId
+ */
 function drawTable(elementId) {
     const instance = _instances[elementId];
     if (instance && instance.editor) {

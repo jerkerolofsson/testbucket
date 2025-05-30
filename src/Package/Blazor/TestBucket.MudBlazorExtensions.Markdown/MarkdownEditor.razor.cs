@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Components.Forms;
+
 using MudBlazor;
 using MudBlazor.Utilities;
 
@@ -329,6 +331,11 @@ namespace TestBucket.MudBlazorExtensions.Markdown
         public string ImageAccept { get; set; } = "image/png, image/jpeg, image/jpg, image.gif";
 
         /// <summary>
+        /// Handler that should save the image uploaded by the user and return an URL to the image
+        /// </summary>
+        [Parameter] public ImageUploadHandler? UploadHandler { get; set; }
+
+        /// <summary>
         /// CSRF token to include with AJAX call to upload image. For instance used with Django backend.
         /// </summary>
         [Parameter]
@@ -340,73 +347,6 @@ namespace TestBucket.MudBlazorExtensions.Markdown
         /// </summary>
         [Parameter]
         public long ImageMaxSize { get; set; } = 1024 * 1024 * 2;
-
-        /// <summary>
-        /// If set to true, will treat imageUrl from imageUploadFunction and filePath returned from imageUploadEndpoint as
-        /// an absolute rather than relative path, i.e. not prepend window.location.origin to it.
-        /// </summary>
-        [Parameter]
-        public string? ImagePathAbsolute { get; set; }
-
-        /// <summary>
-        /// Texts displayed to the user (mainly on the status bar) for the import image feature, where
-        /// #image_name#, #image_size# and #image_max_size# will replaced by their respective values, that
-        /// can be used for customization or internationalization.
-        /// </summary>
-        [Parameter]
-        public MarkdownImageTexts? ImageTexts { get; set; }
-
-        /// <summary>
-        /// Occurs every time the selected image has changed.
-        /// </summary>
-        [Parameter]
-        public Func<FileChangedEventArgs, Task>? ImageUploadChanged { get; set; }
-
-        /// <summary>
-        /// Occurs when an individual image upload has ended.
-        /// </summary>
-        [Parameter]
-        public Func<FileEndedEventArgs, Task>? ImageUploadEnded { get; set; }
-
-        /// <summary>
-        /// The endpoint where the images data will be sent, via an asynchronous POST request. The server is supposed to
-        /// save this image, and return a json response.
-        /// </summary>
-        [Parameter]
-        public string? ImageUploadEndpoint { get; set; }
-
-        /// <summary>
-        /// Gets or sets the image upload authentication schema (for example Bearer)
-        /// </summary>
-        /// <value>
-        /// The image upload authentication schema by default is empty
-        /// </value>
-        [Parameter]
-        public string? ImageUploadAuthenticationSchema { get; set; }
-
-        /// <summary>
-        /// Gets or sets the image upload authentication token.
-        /// </summary>
-        /// <value>
-        /// The image upload authentication token by default is empty
-        /// </value>
-        [Parameter]
-        public string? ImageUploadAuthenticationToken { get; set; }
-
-        /// <summary>
-        /// Notifies the progress of image being written to the destination stream.
-        /// </summary>
-        [Parameter]
-        public Func<FileProgressedEventArgs, Task>? ImageUploadProgressed { get; set; }
-
-        /// <summary>
-        /// Occurs when an individual image upload has started.
-        /// </summary>
-        [Parameter]
-        public Func<FileStartedEventArgs, Task>? ImageUploadStarted { get; set; }
-
-        [Parameter]
-        public Func<MarkdownEditor, FileEntry, Task<FileEntry>>? CustomImageUpload { get; set; }
 
         /// <summary>
         /// If set to true, enables line numbers in the editor.
@@ -611,117 +551,6 @@ namespace TestBucket.MudBlazorExtensions.Markdown
             _prevValueBeforeUpdate = "";
         }
 
-        /// <summary>
-        /// Uploads the file.
-        /// </summary>
-        /// <param name="fileInfo">The file information.</param>
-        [JSInvokable]
-        public async Task UploadFile(FileEntry fileInfo)
-        {
-            bool success = false;
-            if (JSModule is null)
-            {
-                return;
-            }
-            if (fileInfo is null || string.IsNullOrEmpty(fileInfo.ContentBase64))
-            {
-                await JSModule.NotifyImageUploadError(ElementId, $"Can't upload an empty file");
-                return;
-            }
-            if (fileInfo.Name is null)
-            {
-                await JSModule.NotifyImageUploadError(ElementId, $"Can't upload a file without a Name");
-                return;
-            }
-
-            if (string.IsNullOrEmpty(ImageUploadEndpoint))
-            {
-                await JSModule.NotifyImageUploadError(ElementId, $"The property ImageUploadEndpoint is not specified.");
-                return;
-            }
-
-            if (ImageUploadStarted is not null)
-            {
-                await ImageUploadStarted.Invoke(new(fileInfo));
-            }
-
-            if (CustomImageUpload is not null)
-            {
-                try
-                {
-                    fileInfo = await CustomImageUpload.Invoke(this, fileInfo);
-
-                    success = true;
-                }
-                catch (Exception ex)
-                {
-                    fileInfo.ErrorMessage = ex.Message;
-                }
-
-                if (ImageUploadProgressed is not null)
-                    await ImageUploadProgressed.Invoke(new(fileInfo, 100));
-
-                await UpdateFileEndedAsync(fileInfo, success, fileInfo.ErrorMessage??"");
-
-                return;
-            }
-
-            using (HttpClient httpClient = new HttpClient())
-            {
-                if (!string.IsNullOrWhiteSpace(ImageUploadAuthenticationSchema) && !string.IsNullOrWhiteSpace(ImageUploadAuthenticationToken))
-                    httpClient.DefaultRequestHeaders.Authorization =
-                        new AuthenticationHeaderValue(ImageUploadAuthenticationSchema, ImageUploadAuthenticationToken);
-
-                byte[] file = Convert.FromBase64String(fileInfo.ContentBase64);
-
-                if (ImageUploadProgressed is not null)
-                    await ImageUploadProgressed.Invoke(new(fileInfo, 25.0));
-
-                using var form = new MultipartFormDataContent();
-                using var fileContent = new ByteArrayContent(file);
-                fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-
-                form.Add(fileContent, "file", fileInfo.Name);
-
-                if (ImageUploadProgressed is not null)
-                    await ImageUploadProgressed.Invoke(new(fileInfo, 50.0));
-
-                try
-                {
-                    var response = await httpClient.PostAsync(ImageUploadEndpoint, form);
-                    response.EnsureSuccessStatusCode();
-
-                    if (ImageUploadProgressed is not null)
-                        await ImageUploadProgressed.Invoke(new(fileInfo, 100));
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await response.Content.ReadAsStringAsync();
-                        fileInfo.UploadUrl = result;
-                        success = true;
-                    }
-                    else
-                        fileInfo.ErrorMessage = $"Error uploading the file {fileInfo.Name}";
-                }
-                catch
-                {
-                    fileInfo.ErrorMessage = $"Bad request uploading the file {fileInfo.Name}";
-                }
-
-                await UpdateFileEndedAsync(fileInfo, success, fileInfo.ErrorMessage??"");
-            }
-        }
-        /// <summary>
-        /// Notifies the custom button clicked.
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="value">The value.</param>
-        /// <returns></returns>
-        [JSInvokable]
-        public Task NotifyCustomButtonClicked(string name, object value)
-        {
-            return CustomButtonClicked.InvokeAsync(new MarkdownButtonEventArgs(name, value));
-        }
 
         /// <summary>
         /// Notifies the error message.
@@ -737,26 +566,6 @@ namespace TestBucket.MudBlazorExtensions.Markdown
             return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Notifies the component that file input value has changed.
-        /// </summary>
-        /// <param name = "file">Changed file.</param>
-        /// <returns>A task that represents the asynchronous operation.</returns>
-        [JSInvokable]
-        public async Task NotifyImageUpload(FileEntry file)
-        {
-            if (ImageUploadChanged is not null)
-            {
-                await ImageUploadChanged.Invoke(new(file));
-            }
-
-            if (JSModule is not null && string.IsNullOrEmpty(ImageUploadEndpoint))
-            { 
-                await JSModule.NotifyImageUploadError(ElementId, $"The property ImageUploadEndpoint is not specified.");
-            }
-
-            await InvokeAsync(StateHasChanged);
-        }
 
         #endregion JSInvokable
         #region Public Methods
@@ -772,6 +581,27 @@ namespace TestBucket.MudBlazorExtensions.Markdown
             }
 
             await JSModule.DrawImage(ElementId);
+        }
+
+        /// <summary>
+        /// Inserts an image
+        /// </summary>
+        public async Task UploadImageAsync(IBrowserFile browserFile)
+        {
+            if (UploadHandler is null)
+            {
+                return;
+            }
+
+            // Now we need to save the image, and get an URL in return so we can insert it
+            var url = await UploadHandler.UploadImageAsync(browserFile, ImageMaxSize);
+
+            if (!Initialized || JSModule is null)
+            {
+                return;
+            }
+            var name = browserFile.Name;
+            await JSModule.InsertText(ElementId, $"![{name}]({url})");
         }
 
         /// <summary>
@@ -981,84 +811,7 @@ namespace TestBucket.MudBlazorExtensions.Markdown
 
             return await JSModule.GetValue(ElementId);
         }
-        /// <summary>
-        /// Updates the file ended asynchronous.
-        /// </summary>
-        /// <param name="fileEntry">The file entry.</param>
-        /// <param name="success">if set to <c>true</c> [success].</param>
-        /// <param name="fileInvalidReason">The file invalid reason.</param>
-        public async Task UpdateFileEndedAsync(FileEntry fileEntry, bool success, string fileInvalidReason)
-        {
-            if (ImageUploadEnded is not null)
-            {
-                await ImageUploadEnded.Invoke(new(fileEntry, success, fileInvalidReason));
-            }
-
-            if (JSModule is null)
-            {
-                return;
-            }
-            if (fileEntry.UploadUrl is null)
-            {
-                await JSModule.NotifyImageUploadError(ElementId, "UploadUrl not set");
-            }
-            else
-            {
-                if (success)
-                {
-                    await JSModule.NotifyImageUploadSuccess(ElementId, fileEntry.UploadUrl);
-                }
-                else
-                {
-                    await JSModule.NotifyImageUploadError(ElementId, fileEntry.ErrorMessage ?? "");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Updates the file progress asynchronous.
-        /// </summary>
-        /// <param name="fileEntry">The file entry.</param>
-        /// <param name="progressProgress">The progress progress.</param>
-        /// <returns></returns>
-        public Task UpdateFileProgressAsync(FileEntry fileEntry, long progressProgress)
-        {
-            ProgressProgress += progressProgress;
-
-            var progress = Math.Round((double)ProgressProgress / ProgressTotal, 3);
-
-            if (Math.Abs(progress - Progress) > double.Epsilon)
-            {
-                Progress = progress;
-
-                if (ImageUploadProgressed is not null)
-                {
-                    return ImageUploadProgressed.Invoke(new(fileEntry, Progress));
-                }
-            }
-
-            return Task.CompletedTask;
-        }
-
-        /// <summary>
-        /// Updates the file started asynchronous.
-        /// </summary>
-        /// <param name="fileEntry">The file entry.</param>
-        /// <returns></returns>
-        public Task UpdateFileStartedAsync(FileEntry fileEntry)
-        {
-            // reset all
-            ProgressProgress = 0;
-            ProgressTotal = 100;
-            Progress = 0;
-
-            if (ImageUploadStarted is not null)
-            {
-                return ImageUploadStarted.Invoke(new(fileEntry));
-            }
-
-            return Task.CompletedTask;
-        }
+       
         #endregion
 
         protected override async Task OnParametersSetAsync()
@@ -1165,25 +918,11 @@ namespace TestBucket.MudBlazorExtensions.Markdown
                         Words = WordsStatusText,
                     },
                     ToolbarTips,
-                    UploadImage,
-                    ImageMaxSize,
-                    ImageAccept,
-                    ImageUploadEndpoint,
-                    ImagePathAbsolute,
                     ImageCSRFToken,
                     EnableRunCode,
                     RunCodeLanguages,
                     EnableCopyCodeToClipboard,
                     ValueUpdateMode,
-                    ImageTexts = ImageTexts == null ? null : new
-                    {
-                        SbInit = ImageTexts.Init,
-                        SbOnDragEnter = ImageTexts.OnDragEnter,
-                        SbOnDrop = ImageTexts.OnDrop,
-                        SbProgress = ImageTexts.Progress,
-                        SbOnUploaded = ImageTexts.OnUploaded,
-                        ImageTexts.SizeUnits,
-                    },
                     ErrorMessages,
                     Preview,
                 });

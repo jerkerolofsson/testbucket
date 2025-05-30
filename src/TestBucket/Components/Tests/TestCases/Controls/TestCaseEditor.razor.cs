@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 using MudBlazor.Utilities;
 
+using TestBucket.Components.Shared.Editor;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Contracts.Fields;
 using TestBucket.Data.Migrations;
@@ -42,6 +43,8 @@ public partial class TestCaseEditor
     private string? _previewText;
     private readonly List<CompilerError> _errors = new List<CompilerError>();
     private List<Comment> _comments = [];
+
+    public ImageUploadHandler UploadHandler => new TestCaseImageUploadHandler(uploads, Test?.Id);
 
     public string? Text
     {

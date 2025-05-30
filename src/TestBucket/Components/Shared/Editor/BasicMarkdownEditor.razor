@@ -9,9 +9,8 @@
             <MudTooltip Text="@loc["save"]">
                 <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="SaveChangesAsync" Class="rounded-0" />
             </MudTooltip>
+            <MudDivider DividerType="DividerType.Middle" Vertical />
         }
-
-        <MudDivider DividerType="DividerType.Middle" Vertical />
 
         <MudIconButton Icon="@Icons.Material.Filled.FormatBold" OnClick="async () => await _editor.ToggleBoldAsync()" Class="rounded-0" />
         <MudIconButton Icon="@Icons.Material.Filled.FormatItalic" OnClick="async () => await _editor.ToggleItalicAsync()" Class="rounded-0" />
@@ -26,7 +25,24 @@
 
         <MudIconButton Icon="@Icons.Material.Filled.Grid3x3" OnClick="async () => await _editor.DrawTableAsync()" Class="rounded-0"></MudIconButton>
         <MudIconButton Icon="@Icons.Material.Filled.AddLink" OnClick="async () => await _editor.DrawLinkAsync()" Class="rounded-0"></MudIconButton>
-        <MudIconButton Icon="@Icons.Material.Filled.Image" OnClick="async () => await _editor.DrawImageAsync()" Class="rounded-0"></MudIconButton>
+        @* <MudIconButton Icon="@Icons.Material.Filled.Image" OnClick="async () => await _editor.DrawImageAsync()" Class="rounded-0"></MudIconButton> *@
+
+        @if (UploadHandler is not null)
+        {
+            <MudFileUpload T="IBrowserFile"
+            Accept="@ImageAccept"
+            FilesChanged="async(file) => await _editor.UploadImageAsync(file)"
+            Hidden="@false"
+            InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+            InputStyle="opacity:0"
+            tabindex="-1">
+                <ActivatorContent>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <MudIconButton Icon="@Icons.Material.Filled.Image" Class="rounded-0"></MudIconButton>
+                    </MudStack>
+                </ActivatorContent>
+            </MudFileUpload>
+        }
 
         <MudDivider DividerType="DividerType.Middle" Vertical />
 
@@ -44,18 +60,20 @@
 </MudToolBar>
 
 <MarkdownEditor ShowToolbar="false"
-MaxHeight="100%"
-MinHeight="100%"
-EnableRunCode="false"
-EnableCopyCodeToClipboard="true"
-Color="Color.Primary"
-AllowResize="false"
-ValueUpdateMode="ValueUpdateMode.OnChange"
-@bind-Preview="_preview"
-Value="@_text"
-@ref=_editor
-ValueChanged="OnTextChanged"
-SpellChecker="false">
+    ImageAccept="@ImageAccept"
+    UploadHandler="@UploadHandler"
+    MaxHeight="100%"
+    MinHeight="100%"
+    EnableRunCode="false"
+    EnableCopyCodeToClipboard="true"
+    Color="Color.Primary"
+    AllowResize="false"
+    ValueUpdateMode="ValueUpdateMode.OnChange"
+    @bind-Preview="_preview"
+    Value="@_text"
+    @ref=_editor
+    ValueChanged="OnTextChanged"
+    SpellChecker="false">
 </MarkdownEditor>
 @code {
 
@@ -66,6 +84,20 @@ SpellChecker="false">
 
     [Parameter] public string? Text { get; set; }
     [Parameter] public EventCallback<string?> TextChanged { get; set; }
+
+    
+    /// <summary>
+    /// A comma-separated list of mime-types used to check image type before upload (note: never trust client, always
+    /// check file types at server-side). Defaults to image/png, image/jpeg.
+    /// </summary>
+    [Parameter]
+    public string ImageAccept { get; set; } = "image/png, image/jpeg, image/jpg, image.gif";
+
+    /// <summary>
+    /// Handler that should save the image uploaded by the user and return an URL to the image
+    /// </summary>
+    [Parameter] public ImageUploadHandler? UploadHandler { get; set; }
+
 
     private bool _preview = true;
     private MarkdownEditor? _editor;

@@ -36,7 +36,21 @@
 
                             <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Grid3x3" OnClick="DrawTableAsync" Class="@ToolbarButtonClass"></MudIconButton>
                             <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.AddLink" OnClick="DrawLinkAsync" Class="@ToolbarButtonClass"></MudIconButton>
-                            <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Image" OnClick="DrawImageAsync" Class="@ToolbarButtonClass"></MudIconButton>
+                            @* <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Image" OnClick="DrawImageAsync" Class="@ToolbarButtonClass"></MudIconButton> *@
+                            
+                             <MudFileUpload T="IBrowserFile"
+                                Accept="@ImageAccept"
+                                FilesChanged="UploadImageAsync"
+                                Hidden="@false"
+                                InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                                InputStyle="opacity:0"
+                                tabindex="-1">
+                                <ActivatorContent>
+                                    <MudStack Row AlignItems="AlignItems.Center">
+                                        <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Image" Class="@ToolbarButtonClass"></MudIconButton>
+                                    </MudStack>
+                                </ActivatorContent>
+                            </MudFileUpload>
 
                             <MudDivider Vertical="true" FlexItem="true" />
                         }

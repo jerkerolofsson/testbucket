@@ -1,5 +1,7 @@
-﻿@inject IStringLocalizer<SharedStrings> loc
+﻿@using TestBucket.Components.Uploads.Services
+@inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<CodeStrings> codeLoc
+@inject UploadService uploadService
 
 @if (Component is not null)
 {
@@ -16,7 +18,8 @@
 
         <Field>
             <FieldHeader>@loc["description"]</FieldHeader>
-            <BasicMarkdownEditor Text="@Component.Description" TextChanged="OnDescriptionChanged" Preview="false"/>
+            <BasicMarkdownEditor UploadHandler="@UploadHandler"
+                Text="@Component.Description" TextChanged="OnDescriptionChanged" Preview="false"/>
         </Field>
 
         <Field Row>
@@ -37,6 +40,25 @@
 @code {
     [Parameter] public AritecturalComponentProjectEntity? Component { get; set; }
     [Parameter] public EventCallback<AritecturalComponentProjectEntity> ComponentChanged { get; set; }
+
+    public ImageUploadHandler? UploadHandler
+    {
+        get
+        {
+            // We are using specialized image uploaders as we want to be able to delete
+            // the images if the entity is removed
+            // This also allows us to manage permissions based on the entity type.
+            if(Component is Feature feature)
+            {
+                return new FeatureEntityImageUploadHandler(uploadService, feature.Id);
+            }
+            if (Component is Component component)
+            {
+                return new ComponentEntityImageUploadHandler(uploadService, component.Id);
+            }
+            return null;
+        }
+    }
 
     private async Task OnTestLeadChanged(string name)
     {

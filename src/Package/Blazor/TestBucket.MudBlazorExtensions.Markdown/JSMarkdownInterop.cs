@@ -248,6 +248,17 @@
             await jsRuntime.InvokeVoidAsync("drawImage", elementId);
         }
 
+
+        /// <summary>
+        /// Inserts markdown at the cursor position, replacing any selection
+        /// </summary>
+        /// <param name="elementId">The element identifier.</param>
+        /// <returns></returns>
+        public async ValueTask InsertText(string elementId, string text)
+        {
+            await jsRuntime.InvokeVoidAsync("insertText", elementId, text);
+        }
+
         /// <summary>
         /// Toggles italic
         /// </summary>

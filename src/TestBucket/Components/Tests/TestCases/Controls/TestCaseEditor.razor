@@ -1,6 +1,7 @@
 ﻿@using TestBucket.Components.Comments
 @using TestBucket.Components.Comments.Controls
 @using TestBucket.Components.Tests.TestRuns.Controllers
+@using TestBucket.Components.Uploads.Services
 @using TestBucket.Domain
 @inject FieldController fieldService
 @inject TestCaseEditorController testCaseEditorController
@@ -11,6 +12,7 @@
 @inject ISnackbar snackbar
 @inject IStringLocalizer<SharedStrings> loc
 @inject CommentsController comments
+@inject UploadService uploads
 
 @if (Test is not null)
 {
@@ -46,6 +48,7 @@
 
                     <MarkdownEditor Value="@Text"
                                     @ref=_editor
+                                    UploadHandler="@UploadHandler"
                                     EnableRunCode
                                     EnableCopyCodeToClipboard
                                     RunCodeLanguages="http pwsh"

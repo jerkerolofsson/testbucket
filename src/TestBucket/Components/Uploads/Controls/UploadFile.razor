@@ -94,10 +94,21 @@
 
         this.StateHasChanged();
 
-        var fileResource = await uploadService.UploadAsync(UploadCategory, file, 
-            TestCaseId, TestRunId, TestCaseRunId, TestSuiteId, TestSuiteFolderId, TestProjectId, 
-            RequirementId, RequirementSpecificationId,
-            MaxFileSize);
+        var relatedEntity = new FileResourceRelatedEntity
+            {
+                TestCaseId = TestCaseId,
+                TestRunId = TestRunId,
+                TestCaseRunId = TestCaseRunId,
+
+                TestSuiteId = TestSuiteId,
+                TestSuiteFolderId = TestSuiteFolderId,
+                TestProjectId = TestProjectId,
+
+                RequirementId = RequirementId,
+                RequirementSpecificationId = RequirementSpecificationId,
+            };
+
+        var fileResource = await uploadService.UploadAsync(UploadCategory, file, relatedEntity, MaxFileSize);
         await FileUploaded.InvokeAsync(fileResource);
 
         _loading = false;

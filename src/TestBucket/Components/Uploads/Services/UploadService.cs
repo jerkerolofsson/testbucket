@@ -25,14 +25,34 @@ internal class UploadService : TenantBaseService
         _fileResourceManager = fileResourceManager;
     }
 
-    public async Task<FileResource> UploadAsync(ResourceCategory category, IBrowserFile file, long maxFileSize = 512_000, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Uploads a test case attachment
+    /// </summary>
+    /// <param name="category"></param>
+    /// <param name="file"></param>
+    /// <param name="maxFileSize"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<FileResource> UploadTestCaseAttachmentAsync(IBrowserFile file, long testCaseId, long maxFileSize = 512_000, CancellationToken cancellationToken = default)
     {
-        return await UploadAsync(category, file, null, null, null, null, null, null, null, null, maxFileSize, cancellationToken);
+        return await UploadAsync(ResourceCategory.Attachment, file, new FileResourceRelatedEntity { TestCaseId = testCaseId }, maxFileSize, cancellationToken);
     }
 
-    public async Task<FileResource> UploadAsync(ResourceCategory category, IBrowserFile file, 
-        long? testCaseId, long? testRunId, long? testCaseRunId, long? testSuiteId, long? testSuiteFolderId, long? testProjectId,
-        long? requirementId, long? requirementSpecificationId,
+    /// <summary>
+    /// Uploads a resource without any dependency to an entity
+    /// </summary>
+    /// <param name="category"></param>
+    /// <param name="file"></param>
+    /// <param name="maxFileSize"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    public async Task<FileResource> UploadAsync(ResourceCategory category, IBrowserFile file, long maxFileSize = 512_000, CancellationToken cancellationToken = default)
+    {
+        return await UploadAsync(category, file, null, maxFileSize, cancellationToken);
+    }
+
+    public async Task<FileResource> UploadAsync(ResourceCategory category, IBrowserFile file,
+        FileResourceRelatedEntity? entity,
         long maxFileSize = 512_000, CancellationToken cancellationToken = default)
     {
         var principal = await GetUserClaimsPrincipalAsync();
@@ -52,15 +72,22 @@ internal class UploadService : TenantBaseService
             Length = data.Length,
             Created = DateTime.UtcNow,
 
-            RequirementId = requirementId,
-            RequirementSpecificationId = requirementSpecificationId,
+            RequirementId = entity?.RequirementId,
+            RequirementSpecificationId = entity?.RequirementSpecificationId,
 
-            TestCaseId = testCaseId,
-            TestRunId = testRunId,
-            TestCaseRunId = testCaseRunId,
-            TestProjectId = testProjectId,
-            TestSuiteId = testSuiteId,
-            TestSuiteFolderId = testSuiteFolderId
+            ComponentId = entity?.ComponentId,
+            SystemId = entity?.SystemId,
+            FeatureId = entity?.FeatureId,
+            LayerId = entity?.LayerId,
+
+            TestCaseId = entity?.TestCaseId,
+            TestRunId = entity?.TestRunId,
+            TestCaseRunId = entity?.TestCaseRunId,
+            TestSuiteId = entity?.TestSuiteId,
+            TestSuiteFolderId = entity?.TestSuiteFolderId,
+
+            TestProjectId = entity?.TestProjectId,
+            
         };
 
         await _fileResourceManager.AddResourceAsync(principal, resource);

@@ -9,6 +9,7 @@ public partial class TestRunView
 {
     [Parameter] public TestRun? TestRun { get; set; }
     [Parameter] public SearchTestCaseRunQuery? Query { get; set; }
+    [Parameter] public EventCallback<SearchTestCaseRunQuery> QueryChanged { get; set; }
 
     private TestCaseRun? _selectedTestCaseRun = null;
     private TestCaseRunGrid? testCaseRunGrid;
@@ -24,6 +25,11 @@ public partial class TestRunView
             }
             return null;
         }
+    }
+
+    private async Task OnQueryChanged(SearchTestCaseRunQuery query)
+    {
+        await QueryChanged.InvokeAsync(query);
     }
 
     private int _activePanelIndex = 0;

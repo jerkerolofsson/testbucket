@@ -51,4 +51,9 @@ public class PipelineDto
     /// ID in exsternal system
     /// </summary>
     public string? CiCdPipelineIdentifier { get; set; }
+
+    /// <summary>
+    /// Head commit
+    /// </summary>
+    public string? HeadCommit { get; set; }
 }

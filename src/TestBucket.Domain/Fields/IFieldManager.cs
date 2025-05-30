@@ -57,6 +57,9 @@ public interface IFieldManager
     Task<bool> SetIssueFieldAsync(ClaimsPrincipal principal, long projectId, long issueId, Predicate<IssueField> fieldPredicate, string value);
     Task<IssueField?> GetIssueFieldAsync(ClaimsPrincipal principal, long projectId, long issueId, Predicate<IssueField> fieldPredicate, string value);
     Task<bool> SetIssueFieldAsync(ClaimsPrincipal principal, long projectId, long issueId, TraitType traitType, string value);
+    Task<bool> SetTestRunFieldAsync(ClaimsPrincipal principal, long projectId, long testRunId, TraitType traitType, string value);
+    Task<TestRunField?> GetTestRunFieldAsync(ClaimsPrincipal principal, long projectId, long testRunId, Predicate<TestRunField> fieldPredicate, string value);
+    Task<bool> SetTestRunFieldAsync(ClaimsPrincipal principal, long projectId, long testRunId, Predicate<TestRunField> fieldPredicate, string value);
 
     #endregion Test Run
 }

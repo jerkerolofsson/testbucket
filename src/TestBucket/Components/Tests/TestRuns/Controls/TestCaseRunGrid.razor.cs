@@ -191,7 +191,7 @@ public partial class TestCaseRunGrid
         _query.TestRunId = null;
         _query.ProjectId = null;
         await QueryChanged.InvokeAsync(_query);
-        _dataGrid?.ReloadServerData();
+        //_dataGrid?.ReloadServerData();
     }
 
 

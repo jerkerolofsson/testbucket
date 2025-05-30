@@ -15,6 +15,7 @@ using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing;
+using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Events;
 
 namespace TestBucket.Domain.Automation.Pipelines;
@@ -138,7 +139,7 @@ internal class PipelineManager : IPipelineManager
                 {
                     await _repository.UpdateAsync(pipeline);
 
-                    await OnPipelineUpdatedAsync(pipeline);
+                    await OnPipelineUpdatedAsync(principal, pipeline, dto);
                 }
             }
 
@@ -147,9 +148,16 @@ internal class PipelineManager : IPipelineManager
         return null;
     }
 
-    private async Task OnPipelineUpdatedAsync(Pipeline pipeline)
+    private async Task OnPipelineUpdatedAsync(ClaimsPrincipal principal, Pipeline pipeline, PipelineDto dto)
     {
-        foreach(var observer in _observers)
+        // Update test run fields
+        if(dto.HeadCommit is not null && pipeline.TestRunId is not null)
+        {
+            await _mediator.Send(new SetCommitForRunRequest(principal, pipeline.TestRunId.Value, dto.HeadCommit));
+        }
+
+        // Notify observers
+        foreach (var observer in _observers)
         {
             try
             {

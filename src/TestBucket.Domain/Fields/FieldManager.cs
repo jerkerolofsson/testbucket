@@ -99,9 +99,13 @@ internal class FieldManager : IFieldManager
             return false;
         }
 
-        field.StringValue = value;
-        await UpsertIssueFieldAsync(principal, field);
-        return true;
+        if (field.FieldDefinition is not null)
+        {
+            FieldValueConverter.TryAssignValue(field.FieldDefinition, field, [value]);
+            await UpsertIssueFieldAsync(principal, field);
+            return true;
+        }
+        return false;
     }
 
     #endregion Issue
@@ -154,6 +158,38 @@ internal class FieldManager : IFieldManager
     #endregion Requirement
 
     #region Test Run
+
+
+    public async Task<TestRunField?> GetTestRunFieldAsync(ClaimsPrincipal principal, long projectId, long testRunId, Predicate<TestRunField> fieldPredicate, string value)
+    {
+        GetFieldsResponse response = await _mediator.Send(new GetFieldsRequest(principal, FieldTarget.TestRun, projectId, testRunId));
+        var field = response.Fields.Cast<TestRunField>().Where(x => fieldPredicate(x)).FirstOrDefault();
+        return field;
+    }
+
+    public async Task<bool> SetTestRunFieldAsync(ClaimsPrincipal principal, long projectId, long testRunId, TraitType traitType, string value)
+    {
+        return await SetTestRunFieldAsync(principal, projectId, testRunId, (TestRunField f) => f.FieldDefinition?.TraitType == traitType, value);
+    }
+
+    public async Task<bool> SetTestRunFieldAsync(ClaimsPrincipal principal, long projectId, long testRunId, Predicate<TestRunField> fieldPredicate, string value)
+    {
+        GetFieldsResponse response = await _mediator.Send(new GetFieldsRequest(principal, FieldTarget.TestRun, projectId, testRunId));
+        var field = response.Fields.Cast<TestRunField>().Where(x => fieldPredicate(x)).FirstOrDefault();
+        if (field is null)
+        {
+            return false;
+        }
+
+        if (field.FieldDefinition is not null)
+        {
+            FieldValueConverter.TryAssignValue(field.FieldDefinition, field, [value]);
+            await UpsertTestRunFieldAsync(principal, field);
+            return true;
+        }
+        return false;
+        
+    }
     public async Task<IReadOnlyList<TestRunField>> GetTestRunFieldsAsync(ClaimsPrincipal principal, long testRunId, IEnumerable<FieldDefinition> fieldDefinitions)
     {
         var tenantId = principal.GetTenantIdOrThrow();

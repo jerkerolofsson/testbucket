@@ -9,9 +9,9 @@
 @inject NavigationManager navigationManager
 @inject FieldController fieldController
 
-@if (_testRun is not null)
+@if (_testRun is not null && _query is not null)
 {
-    <TestRunView TestRun="@_testRun" Query="@_query"/>
+    <TestRunView TestRun="@_testRun" Query="@_query" QueryChanged="OnQueryChanged" />
 }
 
 @code {
@@ -24,6 +24,11 @@
     private SearchTestCaseRunQuery _query = new SearchTestCaseRunQuery();
     private IReadOnlyList<FieldDefinition> _fields = [];
     private long _testProjectId;
+
+    private void OnQueryChanged(SearchTestCaseRunQuery query)
+    {
+        _query = query;   
+    }
 
     /// <summary>
     /// Load the test case when changed

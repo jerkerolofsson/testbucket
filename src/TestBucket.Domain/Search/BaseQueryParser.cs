@@ -138,6 +138,8 @@ public static class BaseQueryParser
                 return TimeSpan.FromMinutes(number);
             case 's':
                 return TimeSpan.FromSeconds(number);
+            case 'y':
+                return TimeSpan.FromDays(number * 365);
             default:
                 throw new FormatException("Unexpected unit suffix: " + unit);
         }

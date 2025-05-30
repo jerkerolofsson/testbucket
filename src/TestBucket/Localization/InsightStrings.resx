@@ -201,4 +201,19 @@
   <data name="test-results-by-component" xml:space="preserve">
     <value>Test results by component</value>
   </data>
+  <data name="time-alltime" xml:space="preserve">
+    <value>All time</value>
+  </data>
+  <data name="time-today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="time-one-week" xml:space="preserve">
+    <value>One week</value>
+  </data>
+  <data name="time-one-month" xml:space="preserve">
+    <value>One month</value>
+  </data>
+  <data name="time-one-year" xml:space="preserve">
+    <value>One year</value>
+  </data>
 </root>

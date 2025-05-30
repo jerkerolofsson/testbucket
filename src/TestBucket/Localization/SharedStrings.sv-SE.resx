@@ -702,4 +702,7 @@
   <data name="assign-all-unassigned-to-me-description" xml:space="preserve">
     <value />
   </data>
+  <data name="latest-test-results" xml:space="preserve">
+    <value />
+  </data>
 </root>

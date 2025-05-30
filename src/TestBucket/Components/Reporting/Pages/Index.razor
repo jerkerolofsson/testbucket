@@ -11,67 +11,23 @@
 @inject FieldController fieldController
 @inject IStringLocalizer<SharedStrings> loc
 
-@if(_results is not null)
-{
-    <MudStack Class="pa-2" Style="width: 100%;">
+<MudStack Style="width: 100%" Class="pa-2">
 
-        <MudText Typo="Typo.h3">Total</MudText>
-
-        <TestResultSummaryBar Style="width: 100%" Summary="@_results" />
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-            <ResultChart Results="@_results" Title="@loc["test-results"]" />
-
-            <ResultLineChart T=DateOnly Results="@_resultsByDate" Title="@loc["test-results"]" />
-
-            <div>
-
-                <MudStack Row Spacing="3">
-                    <MudText Typo="Typo.h5">@_results.Total tests</MudText>
-                    <MudText Typo="Typo.h5">@_results.Passed passed</MudText>
-                    <MudText Typo="Typo.h5">@_results.Failed failed</MudText>
-                    <MudText Typo="Typo.h5">@_results.Skipped skipped</MudText>
-                </MudStack>
-            </div>
-        </div>
-
-
-        @foreach(var field in _groupedByField.Keys)
-        {
-            var tables = _groupedByField[field];
-
-            <MudText Typo="Typo.h3">@field.Name</MudText>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Total</th>
-                        <th>Passed</th>
-                        <th>Failed</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(var table in tables)
-                    {
-                        var results = table.Value;
-                        <tr>
-                            <td>@table.Key</td>
-                            <td>@results.Total</td>
-                            <td>@results.Passed</td>
-                            <td>@results.Failed</td>
-                            <td>
-                                <TestResultSummaryBar Style="width: 200px" Summary="@results" />
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-
-        }
+    <MudStack AlignItems="AlignItems.Center">
+        <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
+                      Class="default-search"
+                      Clearable="true"
+                        Placeholder="@loc["filter"]"
+                        Variant="Variant.Outlined"
+                        IconSize="Size.Small"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Search" />
     </MudStack>
-}
+
+    <MudStack Style="width: 100%" Class="pa-2">
+        <InsightsDashboard DashboardName="reporting" Query="@_queryText.Trim()" />
+    </MudStack>
+</MudStack>
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";
@@ -79,35 +35,27 @@
     [CascadingParameter] public Team? Team { get; set; }
     [CascadingParameter] public SearchTestCaseRunQuery? Query { get; set; }
 
-    private TestExecutionResultSummary? _results;
-    private Dictionary<DateOnly, TestExecutionResultSummary> _resultsByDate = [];
-    private Dictionary<FieldDefinition, Dictionary<string, TestExecutionResultSummary>> _groupedByField = [];
+    private string _searchText = "";
+    private string _queryText = "";
 
-    private string _queryKey = "";
+    private void OnSearch(string text)
+    {
+        _searchText = text;
+        _queryText = _searchText;
+        if(Project is not null)
+        {
+            _queryText = _searchText + $" project-id:{Project.Id}";
+        }
+    }
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         if (Query is not null && Project is not null)
         {
-            var queryKey = Query.AsCacheKey();
-            if(queryKey != _queryKey)
-            {
-                _queryKey = queryKey;
-
-                _results = await testBrowser.GetTestExecutionResultSummaryAsync(Query);
-                _resultsByDate = await testBrowser.GetTestExecutionResultSummaryByDayAsync(Query);
-
-                if (Project is not null)
-                {
-                    var fields = await fieldController.GetDefinitionsAsync(Project.Id, FieldTarget.TestCaseRun);
-                    _groupedByField.Clear();
-                    foreach(var field in fields.Where(x=>x.Type == FieldType.SingleSelection))
-                    {
-                        var results = await testBrowser.GetTestExecutionResultSummaryByFieldAsync(Query, field);
-                        _groupedByField[field] = results;
-                    }
-                }
-            }
+            // Always filter on project id, so we hide it
+            Query.ProjectId = null;
+            _searchText = Query.ToSearchText();
+            _queryText = _searchText + $" project-id:{Project.Id}";
         }
     }
 }

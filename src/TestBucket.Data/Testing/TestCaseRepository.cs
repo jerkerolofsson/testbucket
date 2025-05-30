@@ -1195,7 +1195,7 @@ internal class TestCaseRepository : ITestCaseRepository
     }
 
 
-    public async Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAsigneeAsync(List<FilterSpecification<TestCaseRun>> filters)
+    public async Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAssigneeAsync(List<FilterSpecification<TestCaseRun>> filters)
     {
         var data = new InsightsData<string, int>();
         var series = data.Add("results");
@@ -1243,6 +1243,36 @@ internal class TestCaseRepository : ITestCaseRepository
        
         return data;
     }
+
+    public async Task<InsightsData<TestResult, int>> GetInsightsLatestTestResultsAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
+    {
+        var data = new InsightsData<TestResult, int>();
+        var series = data.Add("results");
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCaseRuns
+            .Include(x => x.TestCase)
+            .Include(x => x.TestCaseRunFields)
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            tests = tests.Where(filter.Expression);
+        }
+
+        var latest = await tests.GroupBy(x => x.TestCaseId)
+            .Select(g => g.OrderByDescending(x => x.Modified).First())
+            .ToListAsync();
+
+        var results = latest.GroupBy(x => x.Result).Select(g => new { Count = g.Count(), Result = g.Key }).ToList();
+        foreach (var row in results)
+        {
+            series.Add(row.Result, row.Count);
+        }
+
+        return data;
+    }
+
 
     public async Task<Dictionary<string, Dictionary<string, long>>> GetTestCaseCoverageMatrixByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId1, long fieldDefinitionId2)
     {

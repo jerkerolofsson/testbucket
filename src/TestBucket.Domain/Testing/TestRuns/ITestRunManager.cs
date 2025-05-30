@@ -109,7 +109,22 @@ public interface ITestRunManager
     /// <returns></returns>
     Task<TestRun> DuplicateTestRunAsync(ClaimsPrincipal principal, TestRun run);
     Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
+
+    /// <summary>
+    /// Returns counts per test result
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
     Task<InsightsData<TestResult, int>> GetInsightsTestResultsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
+
+    /// <summary>
+    /// Returns counts per test result, where the result is only the latest run for each test case
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    Task<InsightsData<TestResult, int>> GetInsightsLatestTestResultsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
     Task<InsightsData<string, int>> GetInsightsTestResultsByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId);
     Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAsigneeAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
 

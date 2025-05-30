@@ -23,6 +23,9 @@
 <div class="tb-insights-dashboard">
     <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_testsByCat" />
     <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countByResultsSpec" />
+    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countByLatestResultsSpec" />
+
+
     <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countResultsByComponentSpec" />
     <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countResultsByAsigneeSpec" />
     <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countPerStateSpec" />
@@ -41,6 +44,7 @@
 
     private InsightsVisualizationSpecification? _testsByCat;
     private InsightsVisualizationSpecification? _countByResultsSpec;
+    private InsightsVisualizationSpecification? _countByLatestResultsSpec;
     private InsightsVisualizationSpecification? _countResultsByComponentSpec;
     private InsightsVisualizationSpecification? _countResultsByAsigneeSpec;
     
@@ -68,6 +72,35 @@
                     DataQueries = [new InsightsDataQuery
                     {
                         DataSource = TestRunDataSourceNames.CountByResult,
+                        Colors = DefaultPalettes.TestResultColors,
+                        Query = ""
+                    }],
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.ByLabel,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        ColorMode = ChartColorMode.ByLabel,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
+                    ShowLegend = true,
+                    ShowDataTable = true,
+                };
+
+                _countByLatestResultsSpec = new InsightsVisualizationSpecification
+                {
+                    Name = "latest-test-results",
+                    ChartType = ChartType.Bar,
+                    AllowedChartTypes = ChartType.Bar | ChartType.Donut | ChartType.Line | ChartType.Pie | ChartType.Text,
+                    DataQueries = [new InsightsDataQuery
+                    {
+                        DataSource = TestRunDataSourceNames.CountByLatestResult,
                         Colors = DefaultPalettes.TestResultColors,
                         Query = ""
                     }],

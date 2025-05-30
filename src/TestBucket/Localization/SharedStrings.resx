@@ -704,4 +704,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="assign-all-unassigned-to-me-description" xml:space="preserve">
     <value>Assigns all currently unassigned tests to the current user</value>
   </data>
+  <data name="latest-test-results" xml:space="preserve">
+    <value>Latest test results</value>
+  </data>
 </root>

@@ -245,13 +245,24 @@ internal class TestRunManager : ITestRunManager
         return await _testCaseRepo.GetInsightsTestResultsAsync(filters);
     }
 
+    /// <inheritdoc/>
+    public async Task<InsightsData<TestResult, int>> GetInsightsLatestTestResultsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
+
+        List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
+        filters.Add(new FilterByTenant<TestCaseRun>(tenantId));
+        return await _testCaseRepo.GetInsightsLatestTestResultsAsync(filters);
+    }
+
     public async Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAsigneeAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query)
     {
         var tenantId = principal.GetTenantIdOrThrow();
         principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
 
         List<FilterSpecification<TestCaseRun>> filters = TestCaseRunsFilterSpecificationBuilder.From(query);
-        return await _testCaseRepo.GetInsightsTestCaseRunCountByAsigneeAsync(filters);
+        return await _testCaseRepo.GetInsightsTestCaseRunCountByAssigneeAsync(filters);
     }
 
     public async Task<InsightsData<string, int>> GetInsightsTestResultsByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId)

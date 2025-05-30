@@ -8,6 +8,7 @@
 @inject AppNavigationManager appNavigationManager
 @inject UserPreferencesService preferencesController
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<InsightStrings> insightLoc
 
 
 <TenantRedirect />
@@ -18,11 +19,13 @@
         <MudStack Class="pa-2 tb-navmenu side" Style="width: 100%;">
             <MudText Typo="Typo.h1">@loc["reporting"]</MudText>
 
-            <MudNavMenu>
-                <MudNavLink OnClick="AllTime">All Time</MudNavLink>
-                <MudNavLink OnClick="Today">Last 24 hours</MudNavLink>
-                <MudNavLink OnClick="LastWeek">Last 7 days</MudNavLink>
-            </MudNavMenu>
+            <MudRadioGroup Value="_timeFilter" ValueChanged="OnTimerFilterChanged" T="string">
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("all")">@insightLoc["time-alltime"]</MudRadio>
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("1d")">@insightLoc["time-today"]</MudRadio>
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("1w")">@insightLoc["time-one-week"]</MudRadio>
+                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("1y")">@insightLoc["time-one-year"]</MudRadio>
+            </MudRadioGroup>
+
         </MudStack>
 
     </StartContent>
@@ -43,26 +46,40 @@
     private Team? _team;
     private TestProject? _project;
     private Dock _dock = Dock.Left;
+    private string _timeFilter = "all";
 
     protected override async Task OnInitializedAsync()
     {
         var userPreferences = await preferencesController.GetUserPreferencesAsync();
         _dock = userPreferences?.ExplorerDock ?? Dock.Left;
     }
-    private void AllTime()
+
+    private void OnTimerFilterChanged(string timeFilter)
     {
+        _timeFilter = timeFilter;
         _query.CreatedFrom = null;
         _query.CreatedUntil = null;
-    }
-    private void LastWeek()
-    {
-        _query.CreatedFrom = DateTimeOffset.UtcNow.AddDays(-7);
-        _query.CreatedUntil = DateTimeOffset.UtcNow;
-    }
-    private void Today()
-    {
-        _query.CreatedFrom = DateTimeOffset.UtcNow.AddDays(-1);
-        _query.CreatedUntil = DateTimeOffset.UtcNow;
+        _query.Since = null;
+
+        switch(timeFilter)
+        {
+            case "1w":
+                _query.CreatedFrom = DateTimeOffset.UtcNow.AddDays(-7);
+                _query.Since = "1w";
+                break;
+            case "1d":
+                _query.CreatedFrom = DateTimeOffset.UtcNow.AddDays(-1);
+                _query.Since = "1d";
+                break;
+            case "30d":
+                _query.CreatedFrom = DateTimeOffset.UtcNow.AddDays(-30);
+                _query.Since = "30d";
+                break;
+            case "1y":
+                _query.CreatedFrom = DateTimeOffset.UtcNow.AddDays(-365);
+                _query.Since = "1y";
+                break;
+        }
     }
 
     protected override void OnParametersSet()

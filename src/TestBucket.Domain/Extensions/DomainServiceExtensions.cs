@@ -92,6 +92,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IInsightsDataSource, IssuesByStateDataSource>();
         services.AddScoped<IInsightsDataSource, IssuesInflowOutflow>();
         services.AddScoped<IInsightsDataSource, CountByResultDataSource>();
+        services.AddScoped<IInsightsDataSource, CountByLatestResultDataSource>();
         services.AddScoped<IInsightsDataSource, ExecutedTestsByAsigneeDataSource>();
         services.AddScoped<IInsightsDataSource, ResultsByComponentDataSource>();
         services.AddScoped<IInsightsDataSource, CountByCategoryDataSource>();

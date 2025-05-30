@@ -23,7 +23,7 @@ internal class EditTestSuiteFolderCommand : ICommand
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
-    public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null;
+    public bool Enabled => _appNavigationManager.State.SelectedTestSuiteFolder is not null;
     public string Id => "edit-folder";
     public string Name => _loc["edit-folder"];
     public string Description => _loc["edut-folder-description"];

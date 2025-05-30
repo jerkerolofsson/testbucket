@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Collections.Concurrent;
+using System.Security.Claims;
 
 using Mediator;
 
@@ -28,6 +29,7 @@ internal class PipelineManager : IPipelineManager
     private readonly IMemoryCache _memoryCache;
     private readonly IMediator _mediator;
 
+    private readonly ConcurrentDictionary<long, PipelineMonitor> _monitors = [];
     private readonly List<IPipelineObserver> _observers = [];
 
     public PipelineManager(
@@ -225,8 +227,19 @@ internal class PipelineManager : IPipelineManager
 
         await _repository.AddAsync(pipeline);
 
-        var monitor = new PipelineMonitor(this, principal, pipeline);
-        monitor.Start();
+        await StartMonitorIfNotMonitoringAsync(principal, pipeline);
+    }
+
+    public Task StartMonitorIfNotMonitoringAsync(ClaimsPrincipal principal, Pipeline pipeline)
+    {
+        _monitors.GetOrAdd(pipeline.Id, (id) =>
+        {
+            var monitor = new PipelineMonitor(this, principal, pipeline);
+            monitor.Start();
+            return monitor;
+        });
+
+        return Task.CompletedTask;
     }
 
     private IExternalPipelineRunner? GetRunner(string? systemName)
@@ -333,13 +346,31 @@ internal class PipelineManager : IPipelineManager
         {
             await CloseRunAsync(principal, pipeline.TestRunId.Value);
         }
+
+        _monitors.Remove(pipeline.Id, out var _);
     }
 
+    /// <summary>
+    /// Closes the test run
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testRunId"></param>
+    /// <returns></returns>
     private async Task CloseRunAsync(ClaimsPrincipal principal, long testRunId)
     {
         await _mediator.Send(new CloseRunRequest(principal, testRunId));
     }
 
+    /// <summary>
+    /// Downloads artifacts from the pipeline.
+    /// 
+    /// Only artifacts matching the TestResultsArtifactsPattern in the integration configuration are
+    /// downloaded
+    /// 
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="pipeline"></param>
+    /// <returns></returns>
     private async Task DownloadArtifactsFromPipelineAsync(ClaimsPrincipal principal, Pipeline pipeline)
     {
         var configuredRunner = await ConfigurePipelineRunnerAsync(principal, pipeline);

@@ -210,7 +210,7 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
         PipelineDto pipeline = new();
         pipeline.CiCdPipelineIdentifier = run.Id.ToString();
         pipeline.CiCdProjectId = ownerProject.ToString();
-
+        pipeline.DisplayTitle = run.DisplayTitle;
         pipeline.HeadCommit = run.HeadCommit?.Sha;
 
         if (run.Status.TryParse(out var status))

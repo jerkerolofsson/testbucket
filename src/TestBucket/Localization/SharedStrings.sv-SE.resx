@@ -684,4 +684,10 @@
   <data name="account" xml:space="preserve">
     <value />
   </data>
+  <data name="state-open" xml:space="preserve">
+    <value>Öppen</value>
+  </data>
+  <data name="state-closed" xml:space="preserve">
+    <value>Stängd</value>
+  </data>
 </root>

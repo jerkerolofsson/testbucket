@@ -102,6 +102,16 @@ internal static class PipelineMapper
             dest.Status = src.Status;
             changed = true;
         }
+        if (dest.HeadCommit != src.HeadCommit)
+        {
+            dest.HeadCommit = src.HeadCommit;
+            changed = true;
+        }
+        if (dest.DisplayTitle != src.DisplayTitle)
+        {
+            dest.DisplayTitle = src.DisplayTitle;
+            changed = true;
+        }
         if (!string.IsNullOrEmpty(src.Error) && dest.StartError != src.Error)
         {
             changed = false;

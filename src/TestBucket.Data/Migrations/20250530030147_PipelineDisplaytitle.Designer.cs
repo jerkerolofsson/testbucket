@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Contracts.Code.Models;
@@ -18,9 +19,11 @@ using TestBucket.Domain.Keyboard;
 namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250530030147_PipelineDisplaytitle")]
+    partial class PipelineDisplaytitle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -259,9 +262,6 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("interval");
 
                     b.Property<string>("Guid")
-                        .HasColumnType("text");
-
-                    b.Property<string>("HeadCommit")
                         .HasColumnType("text");
 
                     b.Property<DateTimeOffset>("Modified")

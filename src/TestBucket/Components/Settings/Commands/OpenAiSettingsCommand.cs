@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 
+using TestBucket.Domain;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;
@@ -27,7 +28,7 @@ public class OpenAiSettingsCommand  : ICommand
     public string Id => "open-ai-settings";
     public string Name => _loc["open-ai-settings"];
     public string Description => "";
-    public string? Icon => Icons.Material.Outlined.Rocket;
+    public string? Icon => TbIcons.BoldDuoTone.AI;
     public string[] ContextMenuTypes => [];
     public KeyboardBinding? DefaultKeyboardBinding => null;
 

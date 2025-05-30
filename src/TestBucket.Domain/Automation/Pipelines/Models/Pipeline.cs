@@ -12,6 +12,16 @@ public class Pipeline : ProjectEntity
     public string? Guid { get; set; }
 
     /// <summary>
+    /// Display title
+    /// </summary>
+    public string? DisplayTitle { get; set; }
+
+    /// <summary>
+    /// Head commit for pipeline (SHA)
+    /// </summary>
+    public string? HeadCommit { get; set; }
+
+    /// <summary>
     /// ID in remote system
     /// </summary>
     public string? CiCdPipelineIdentifier { get; set; }

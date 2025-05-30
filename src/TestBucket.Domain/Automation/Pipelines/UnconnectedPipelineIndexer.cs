@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Tenants;
@@ -121,12 +122,16 @@ public class UnconnectedPipelineIndexer : BackgroundService
                     var existingPipeline = await pipelineManager.GetPipelineByExternalAsync(user, config.Name, pipeline.CiCdProjectId, pipeline.CiCdPipelineIdentifier);
                     if(existingPipeline is null)
                     {
+                        var defaultName = $"{config.Name} #{pipeline.CiCdPipelineIdentifier}";
+                        var runName = pipeline.DisplayTitle ?? defaultName;
+
                         // Create new run
-                        var run = new TestRun { Name = $"{config.Name} #{pipeline.CiCdPipelineIdentifier}", TestProjectId = testSuite.TestProjectId };
+                        var run = new TestRun { Name = runName, TestProjectId = testSuite.TestProjectId };
                         await testrunManager.AddTestRunAsync(user, run);
 
-                        var newPipeline = new Models.Pipeline
+                        var newPipeline = new Pipeline
                         {
+                            DisplayTitle = pipeline.DisplayTitle,
                             TestRunId = run.Id,
                             TestProjectId = run.TestProjectId,
                             TeamId = run.TeamId,
@@ -137,6 +142,11 @@ public class UnconnectedPipelineIndexer : BackgroundService
                         };
 
                         await pipelineManager.AddAsync(user, newPipeline);
+                    }
+                    else if(existingPipeline.Status != Contracts.Automation.PipelineStatus.Completed)
+                    {
+                        // Attach it
+                        await pipelineManager.StartMonitorIfNotMonitoringAsync(user, existingPipeline);
                     }
                 }
             }

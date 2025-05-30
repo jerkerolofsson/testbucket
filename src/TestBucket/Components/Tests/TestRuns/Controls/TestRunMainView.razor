@@ -18,6 +18,17 @@
             <MudText Typo="Typo.h1">@TestRun.Name</MudText>
             <MudSpacer/>
         </MudStack>
+        
+        <MudStack Spacing="0" Row AlignItems="AlignItems.Center">
+            @if(TestRun.Open)
+            {
+                <MudChip T="string" Style="background: greenyellow; color: black">@loc["state-open"]</MudChip>
+            }
+            else
+            {
+                <MudChip T="string" Style="background: purple; color: white">@loc["state-closed"]</MudChip>
+            }
+        </MudStack>
 
         <MudStack Row Justify="Justify.Center" Style="width:100%">
             <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"

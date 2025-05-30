@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Settings.Models;
+﻿using TestBucket.Domain;
+using TestBucket.Domain.Settings.Models;
 
 namespace TestBucket.Components.Settings;
 
@@ -12,7 +13,7 @@ public static class SettingIcons
                 return "";
 
             case SettingIcon.Appearance:
-                return Icons.Material.Outlined.Palette;
+                return TbIcons.BoldDuoTone.Palette;
 
             case SettingIcon.Profile:
                 return Icons.Material.Outlined.VerifiedUser;
@@ -21,10 +22,10 @@ public static class SettingIcons
                 return Icons.Material.Outlined.Computer;
 
             case SettingIcon.AI:
-                return Icons.Material.Outlined.Rocket;
+                return TbIcons.BoldDuoTone.AI;
 
             case SettingIcon.Accessibility:
-                return Icons.Material.Outlined.AccessibilityNew;
+                return TbIcons.BoldDuoTone.Accessibility;
         }
 
         return Icons.Material.Outlined.Settings;

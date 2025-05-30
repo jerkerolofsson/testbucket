@@ -343,7 +343,7 @@ internal class TestBrowser : TenantBaseService
                 Children = null,
                 Expanded = false,
                 Value = new BrowserItem() { VirtualFolderName = FOLDER_PIPELINES, TestRun = testRun },
-                Icon = Icons.Material.Outlined.RocketLaunch,
+                Icon = TbIcons.BoldDuoTone.Rocket,
             });
         }
         if (request.ShowTestRunTests)
@@ -465,8 +465,8 @@ internal class TestBrowser : TenantBaseService
         var treeNode = new TreeNode<BrowserItem>
         {
             Value = new BrowserItem { Pipeline = pipeline },
-            Text = "Pipeline " + pipeline.CiCdPipelineIdentifier,
-            Icon = Icons.Material.Filled.RocketLaunch,
+            Text = pipeline.DisplayTitle ?? "#" + pipeline.CiCdPipelineIdentifier,
+            Icon = TbIcons.BoldDuoTone.Rocket,
             Expandable = false,
             Children = null,
         };

@@ -686,4 +686,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="account" xml:space="preserve">
     <value>Account</value>
   </data>
+  <data name="state-open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="state-closed" xml:space="preserve">
+    <value>Closed</value>
+  </data>
 </root>

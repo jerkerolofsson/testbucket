@@ -86,9 +86,12 @@ internal class PipelineProjectManager : IPipelineProjectManager
 
             if (context.CiCdPipelineIdentifier is not null)
             {
+                var defaultName = $"{config.Name} #{context.CiCdPipelineIdentifier}";
+
                 // Add a pipeline
                 var pipeline = new Pipeline
                 {
+                    DisplayTitle = defaultName,
                     Status = PipelineStatus.Created,
                     CiCdPipelineIdentifier = context.CiCdPipelineIdentifier,
                     CiCdProjectId = config.ExternalProjectId,

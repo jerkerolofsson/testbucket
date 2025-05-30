@@ -90,4 +90,5 @@ public interface IPipelineManager
     /// </summary>
     /// <param name="observer"></param>
     void RemoveObserver(IPipelineObserver observer);
+    Task StartMonitorIfNotMonitoringAsync(ClaimsPrincipal user, Pipeline existingPipeline);
 }

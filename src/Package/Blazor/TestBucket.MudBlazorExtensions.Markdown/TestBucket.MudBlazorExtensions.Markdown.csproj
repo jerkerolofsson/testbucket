@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="MudBlazor" Version="8.6.0" />
+      <PackageReference Include="MudBlazor" Version="8.7.0" />
       <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.5" />
     <PackageReference Include="PSC.Blazor.Components.Common" Version="6.0.4" />
   </ItemGroup>

@@ -56,5 +56,9 @@ public class PipelineDto
     /// Head commit
     /// </summary>
     public string? HeadCommit { get; set; }
-    public string DisplayTitle { get; set; }
+
+    /// <summary>
+    /// Pipeline name/title
+    /// </summary>
+    public string? DisplayTitle { get; set; }
 }

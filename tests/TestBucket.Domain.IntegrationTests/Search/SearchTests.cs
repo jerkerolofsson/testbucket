@@ -29,12 +29,12 @@ namespace TestBucket.Domain.IntegrationTests.Search
             var test1 = await Fixture.Tests.AddAsync(suite);
             var test2 = await Fixture.Tests.AddAsync(suite);
             var test3 = await Fixture.Tests.AddAsync(suite);
-            await Fixture.Tests.SetMilestoneAsync(test1, "1.0");
-            await Fixture.Tests.SetMilestoneAsync(test2, "2.0");
-            await Fixture.Tests.SetMilestoneAsync(test3, "3.0");
+            await Fixture.Tests.SetMilestoneAsync(test1, "10.0");
+            await Fixture.Tests.SetMilestoneAsync(test2, "20.0");
+            await Fixture.Tests.SetMilestoneAsync(test3, "30.0");
 
             // Act
-            var ids = await Fixture.Tests.SearchTestIdsAsync("milestone:2.0");
+            var ids = await Fixture.Tests.SearchTestIdsAsync("milestone:20.0");
 
             // Assert 
             Assert.Single(ids);

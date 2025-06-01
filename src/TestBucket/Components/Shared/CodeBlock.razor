@@ -12,6 +12,11 @@
 
     private string _elementId = "code-block-" + Guid.NewGuid().ToString();
 
+    protected override void OnParametersSet()
+    {
+        _elementId = "code-block-" + Guid.NewGuid().ToString();
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         string cssSelector = $"#{_elementId}";

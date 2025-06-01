@@ -59,7 +59,7 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         _loc = loc;
     }
 
-    public async ValueTask<string?> CompileAsync(CompilationOptions options, List<CompilerError> errors, CancellationToken cancellationToken = default)
+    public async ValueTask<TestExecutionContext?> CompileAsync(CompilationOptions options, List<CompilerError> errors, CancellationToken cancellationToken = default)
     {
         var testCase = options.TestCase;
         if (testCase.TestProjectId is not null && testCase.TeamId is not null && testCase.TenantId is not null)
@@ -119,9 +119,10 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
                 await ReleaseResourcesAsync(context.Guid, testCase.TenantId);
             }
 
-            return result;
+            context.CompiledText = result;
+            return context;
         }
-        return options.Text;
+        return null;
     }
 
     public async ValueTask ReleaseResourcesAsync(string guid, string tenantId)

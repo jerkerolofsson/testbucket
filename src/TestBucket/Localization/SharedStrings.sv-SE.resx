@@ -705,4 +705,10 @@
   <data name="latest-test-results" xml:space="preserve">
     <value />
   </data>
+  <data name="std-out" xml:space="preserve">
+    <value />
+  </data>
+  <data name="std-err" xml:space="preserve">
+    <value />
+  </data>
 </root>

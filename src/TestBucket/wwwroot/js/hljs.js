@@ -18,7 +18,6 @@ window.renderHljsForLanguages = async (cssSelector, languages) => {
             if (codeBlock.classList.contains(language)) {
                 try {
                     console.log("hljs.highlightElement", codeBlock);
-
                     hljs.highlightElement(codeBlock);
                 } catch (error) {
                 }

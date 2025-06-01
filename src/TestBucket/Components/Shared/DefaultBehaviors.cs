@@ -7,6 +7,6 @@ public static class DefaultBehaviors
         BackgroundClass = "tb-blur-overlay",
         BackdropClick = true,
         CloseOnEscapeKey = true,
-        CloseButton = true
+        CloseButton = true,
     };
 }

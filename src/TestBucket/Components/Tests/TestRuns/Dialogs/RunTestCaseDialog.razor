@@ -1,7 +1,11 @@
-﻿@using TestBucket.Contracts.Testing.States
+﻿@using TestBucket.Components.Tests.TestRuns.Controllers
+@using TestBucket.Contracts.Testing.States
 @inject TestCaseEditorController testCaseEditorController
+@inject TestBrowser browser
 @inject TestExecutionController testExecutionController
+@inject TestRunCreationController testRunCreation
 @inject IStringLocalizer<SharedStrings> loc
+@inject ISnackbar snackbar
 @implements IAsyncDisposable
 
 <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 75vw">
@@ -17,6 +21,7 @@
                                     MaxHeight="100%"
                                     MinHeight="100%"
                                     EnableRunCode
+                                    RunCode="OnRunCodeClickedAsync"
                                     RunCodeLanguages="pwsh http"
                                     AllowResize="false"
                                     Preview="true"
@@ -66,12 +71,41 @@
 </MudDialog>
 @code {
     private string _markdown = "";
+    private TestExecutionContext? _context;
 
     private string _resourceLockGuid = Guid.NewGuid().ToString();
     private List<CompilerError> _errors = [];
 
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
     [Parameter] public TestCaseRun? TestCaseRun { get; set; }
+
+
+    private async Task OnRunCodeClickedAsync(RunCodeRequest request)
+    {
+        if (TestCaseRun is null || TestCaseRun.TestProjectId is null || request.Code is null || request.Language is null)
+        {
+            return;
+        }
+        try
+        {
+            var test = await browser.GetTestCaseByIdAsync(TestCaseRun.TestCaseId);
+            if (test is not null)
+            {
+                // Todo: Resources already allocated!
+                await testRunCreation.RunCompiledCodeWithResourcesAsync(request.Language, request.Code, _context);
+
+                //await testRunCreation.EvalMarkdownCodeAsync(test, TestCaseRun.TestRunId, request.Language, request.Code);
+            }
+            else
+            {
+                snackbar.Add("Test not found!", Severity.Error, (options) => { });
+            }
+        }
+        catch (Exception ex)
+        {
+            snackbar.Add(ex.Message, Severity.Error, (options) => { });
+        }
+    }
 
     private void Submit()
     {
@@ -96,7 +130,6 @@
         {
             await testCaseEditorController.ReleaseResourcesAsync(TestCaseRun.TenantId, _resourceLockGuid);
 
-
             TestCase testCase = TestCaseRun.TestCase!;
             string description = testCase.Description ?? "";
 
@@ -108,7 +141,8 @@
                 ReleaseResourceDirectly = false
             };
 
-            _markdown = await testCaseEditorController.CompileAsync(options, _errors) ?? "";
+            _context = await testCaseEditorController.CompileAsync(options, _errors);
+            _markdown = _context?.CompiledText ?? description;
         }
     }
 

@@ -1,0 +1,74 @@
+﻿@using TestBucket.Contracts.Automation.Api
+@inject IStringLocalizer<HttpStrings> httpLoc
+
+@if(Result is not null)
+{
+    <MudStack Style="width: 100%; height: 100%" Spacing="0">
+       
+        <Splitter Dimension="30">
+            <StartContent>
+                <MudStack Spacing="1" Class="pa-2 ma-2">
+                    <MudStack Row>
+                        <div class="method">@Result.Request.Method</div>
+                        <div class="url">@Result.Request.Url</div>
+                        <MudSpacer />
+                    </MudStack>
+
+                    <MudTabs Border>
+                        <MudTabPanel Text="@httpLoc["headers"]">
+                            <HttpHeaderView Headers="@Result.Request.Headers"/>
+                        </MudTabPanel>
+                        <MudTabPanel Text="@httpLoc["body"]">
+                            <HttpBodyView Headers="@Result.Request.Headers" Body="@Result.Request.Body"></HttpBodyView>
+                        </MudTabPanel>
+                    </MudTabs>
+                </MudStack>
+            </StartContent>
+            <EndContent>
+                <MudStack Spacing="1" Class="pa-2 ma-2">
+                    <MudStack Row>
+                        <div class="status-code">@Result.Response.StatusCode</div>
+                        <div class="reason-phrase">@Result.Response.ReasonPhrase</div>
+                        @if(Result.HttpRequestDuration > 0)
+                        {
+                            <div class="request-duration">@Result.HttpRequestDuration.Seconds().Humanize()</div>
+                        }
+                        @if (Result.Response.Body is not null)
+                        {
+                            <div class="body-length">@Result.Response.Body.Length.Bytes().Humanize()</div>
+                        }
+                    </MudStack>
+
+                    <MudTabs Border>
+                        @if(Result.Checks.Count > 0)
+                        {
+                            <MudTabPanel Text="@httpLoc["checks"]">
+                                <HttpCheckListView Checks="@Result.Checks"/>
+                        
+                            </MudTabPanel>
+                        }
+                        <MudTabPanel Text="@httpLoc["headers"]">
+                            <HttpHeaderView Headers="@Result.Response.Headers" />
+                        </MudTabPanel>
+                        <MudTabPanel Text="@httpLoc["body"]">
+                            <HttpBodyView Headers="@Result.Response.Headers" Body="@Result.Response.Body"></HttpBodyView>
+                        </MudTabPanel>
+                        <MudTabPanel Text="@httpLoc["metrics"]">
+
+                        </MudTabPanel>
+                    </MudTabs>
+                </MudStack>
+            </EndContent>
+        </Splitter>
+
+    </MudStack>
+}
+
+@code {
+    [Parameter] public HttpMessageTestResult? Result { get; set; }
+
+    protected override void OnParametersSet()
+    {
+
+    }
+}

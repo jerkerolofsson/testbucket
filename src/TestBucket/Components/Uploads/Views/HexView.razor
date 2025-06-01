@@ -60,7 +60,12 @@ else
     {
         if (_resource?.Id != Resource?.Id && Resource is not null)
         {
-            _resource = await controller.GetResourceByIdAsync(Resource.Id);
+            _resource = Resource;
+            var resource = await controller.GetResourceByIdAsync(Resource.Id);
+            if(resource is not null)
+            {
+                _resource = resource;
+            }
             _selectedPage = 1;
         }
     }

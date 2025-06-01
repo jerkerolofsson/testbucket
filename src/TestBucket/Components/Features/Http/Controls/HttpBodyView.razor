@@ -1,0 +1,42 @@
+﻿@using TestBucket.Components.Uploads.Services
+@using TestBucket.Components.Uploads.Views
+@using TestBucket.Contracts.Automation.Api
+@inject ResourceViewFactory resourceViewFactory
+
+@if (_fileResource is not null)
+{
+    <MudTabs Style="width: 100%">
+        @foreach (var viewType in _viewTypes)
+        {
+            <MudTabPanel Text="@viewType.Name">
+                <DynamicComponent Type="@viewType.ComponentType" Parameters="_parameters" />
+            </MudTabPanel>
+        }
+
+    </MudTabs>
+}
+
+@code {
+    [Parameter] public HeadersCollectionDto? Headers { get; set; }
+    [Parameter] public byte[]? Body { get; set; }
+
+    private FileResource? _fileResource = null;
+
+    private readonly Dictionary<string, object> _parameters = new();
+    private List<ViewType> _viewTypes = [];
+
+    protected override void OnParametersSet()
+    {
+        if (Headers is not null && Body is not null)
+        {
+            var contentType = Headers
+                .Where(x=>x.Name.Equals("content-type", StringComparison.InvariantCultureIgnoreCase))
+                .Select(x=>x.Value)
+                .FirstOrDefault() ?? "application/octet-stream";
+
+            _fileResource = new FileResource() { ContentType = contentType, TenantId = "", Data = Body, Length = Body.Length };
+            _parameters["Resource"] = _fileResource;
+            _viewTypes = resourceViewFactory.GetViewTypesForPreview(_fileResource).ToList();
+        }
+    }
+}

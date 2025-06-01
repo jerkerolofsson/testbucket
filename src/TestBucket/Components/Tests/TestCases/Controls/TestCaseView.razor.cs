@@ -78,7 +78,7 @@ public partial class TestCaseView
         }
         try
         {
-            await testRunCreation.EvalMarkdownCodeAsync(Test, request.Language, request.Code);
+            await testRunCreation.EvalMarkdownCodeAsync(Test, null, request.Language, request.Code);
         }
         catch(Exception ex)
         {
@@ -139,7 +139,8 @@ public partial class TestCaseView
         if (Test is not null)
         {
             var options = new CompilationOptions(Test, _descriptionText ?? "");
-            _previewText = await testCaseEditorController.CompileAsync(options, _errors);
+            var context = await testCaseEditorController.CompileAsync(options, _errors);
+            _previewText = context?.CompiledText ?? options.Text;
         }
     }
 

@@ -90,11 +90,11 @@
                     <CellTemplate>
                         @if(context.Item.Result != Contracts.Testing.Models.TestResult.NoRun)
                         {
-                            <MudLink OnClick="RunTestAgain" Style="font-size: 8pt">@loc["run-test-again"]</MudLink>
+                            <MudLink OnClick="async () => await RunTestAgain(context.Item)" Style="font-size: 8pt">@loc["run-test-again"]</MudLink>
                         }
                         else
                         {
-                            <MudLink OnClick="RunTest" Style="font-size: 8pt">@loc["run"]</MudLink>
+                            <MudLink OnClick="async () => await RunTest(context.Item)" Style="font-size: 8pt">@loc["run"]</MudLink>
                         }
                     </CellTemplate>
                 </TemplateColumn>

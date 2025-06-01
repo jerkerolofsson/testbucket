@@ -1,0 +1,39 @@
+﻿@using TestBucket.Contracts.Automation.Api
+
+@if (Checks is not null)
+{
+    <MudDataGrid Items="@Checks" RowClassFunc="HighlightRowFunc" Class="tb-http-api-checks-datagrid">
+        <Columns>
+            <TemplateColumn>
+                <CellTemplate>
+                    @if(context.Item.IsSuccess)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success"/>
+                    }
+                    else
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" />
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Property="x => x.VerifierId"></PropertyColumn>
+            <PropertyColumn Property="x => x.PropertyId"></PropertyColumn>
+            <PropertyColumn Property="x => x.Operation"></PropertyColumn>
+            <PropertyColumn Property="x => x.ExpectedValue"></PropertyColumn>
+            <PropertyColumn Property="x => x.ActualValue"></PropertyColumn>
+        </Columns>
+    </MudDataGrid>
+}
+
+@code {
+    [Parameter] public List<HttpVerificationCheckResult>? Checks { get; set; }
+
+    public string HighlightRowFunc(HttpVerificationCheckResult result, int row)
+    {
+        if(result.IsSuccess)
+        {
+            return "success";
+        }
+        return "error";
+    }
+}

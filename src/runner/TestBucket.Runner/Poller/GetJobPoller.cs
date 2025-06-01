@@ -110,15 +110,18 @@ public class GetJobPoller(
 
     private static async Task AssignResultAndFormat(TestWorkspace workspace, RunResponse response)
     {
-        var testResultsArtifactsPattern = "**/*.trx;**/*.xml;**/*.json;**/*.txt";
+        var testResultsArtifactsPattern = "**/*.trx;**/*.xml;**/*.json;**/*.txt;**/*.result";
         foreach (var file in workspace.GetArtifacts(testResultsArtifactsPattern))
         {
             var format = await TestResultDetector.DetectFromFileAsync(file.FullName);
-            if (format != Formats.TestResultFormat.UnknownFormat)
+            if (format != TestResultFormat.UnknownFormat && response.Result is null)
             {
                 response.Result = File.ReadAllText(file.FullName);
                 response.Format = format;
-                break;
+            }
+            else
+            {
+                response.ArtifactContent[file.Name] = File.ReadAllBytes(file.FullName);
             }
         }
     }

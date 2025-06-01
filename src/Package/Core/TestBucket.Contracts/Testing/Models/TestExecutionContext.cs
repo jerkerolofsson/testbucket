@@ -100,4 +100,5 @@ public class TestExecutionContext
     /// Time when resources will be unlocked if not manually unlocked
     /// </summary>
     public DateTimeOffset ResourceExpiry { get; set; } = DateTimeOffset.MaxValue;
+    public string CompiledText { get; set; }
 }

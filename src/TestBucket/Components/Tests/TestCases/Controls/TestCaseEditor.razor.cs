@@ -1,12 +1,9 @@
 
-using System.Threading.Tasks;
-
 using MudBlazor.Utilities;
 
 using TestBucket.Components.Shared.Editor;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Contracts.Fields;
-using TestBucket.Data.Migrations;
 using TestBucket.Domain.Comments.Models;
 
 namespace TestBucket.Components.Tests.TestCases.Controls;
@@ -86,7 +83,7 @@ public partial class TestCaseEditor
         }
         try
         {
-            await testRunCreation.EvalMarkdownCodeAsync(Test, request.Language, request.Code);
+            await testRunCreation.EvalMarkdownCodeAsync(Test, null, request.Language, request.Code);
         }
         catch(Exception ex)
         {
@@ -151,7 +148,8 @@ public partial class TestCaseEditor
         {
             var options = new CompilationOptions(Test, _descriptionText ?? "");
 
-            var previewText = await testCaseEditorController.CompileAsync(options, _errors);
+            var context = await testCaseEditorController.CompileAsync(options, _errors);
+            var previewText = context?.CompiledText ?? _descriptionText;
             if (_previewText != previewText && previewText is not null)
             {
                 _previewText = previewText;

@@ -44,6 +44,8 @@ namespace TestBucket.Domain.Automation.Runners.Jobs
             job.ErrorMessage = request.Response.ErrorMessage;
             job.Result = request.Response.Result;
             job.Format = request.Response.Format;
+            job.ArtifactContent = request.Response.ArtifactContent;
+
             //job.TestResultFormat = request.Response.TestResultFormat;
             //job.ResultContent = request.Response.ResultContent;
 

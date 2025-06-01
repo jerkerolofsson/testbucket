@@ -35,12 +35,7 @@ namespace TestBucket.Domain.Features.Classification
                 builder.UserName = username;
                 builder.Email = username;
                 builder.TenantId = testCase.TenantId;
-                builder.Add(PermissionEntityType.Project, PermissionLevel.ReadWrite);
-                builder.Add(PermissionEntityType.Team, PermissionLevel.Read);
-                builder.Add(PermissionEntityType.TestCase, PermissionLevel.ReadWrite);
-                builder.Add(PermissionEntityType.Issue, PermissionLevel.ReadWrite);
-                builder.Add(PermissionEntityType.Requirement, PermissionLevel.ReadWrite);
-                builder.Add(PermissionEntityType.Architecture, PermissionLevel.Read);
+                builder.AddAllPermissions();
             });
         }
 

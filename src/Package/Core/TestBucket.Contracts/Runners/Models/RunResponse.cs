@@ -44,6 +44,11 @@ namespace TestBucket.Contracts.Runners.Models
         public string? Result { get; set; }
 
         /// <summary>
+        /// Artifacts, as bytes, for anything not loaded as Result
+        /// </summary>
+        public Dictionary<string, byte[]> ArtifactContent { get; set; } = [];
+
+        /// <summary>
         /// Test result format (of Result)
         /// </summary>
         public TestResultFormat? Format { get; set; }

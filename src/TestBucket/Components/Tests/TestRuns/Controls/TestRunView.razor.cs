@@ -87,7 +87,8 @@ public partial class TestRunView
                 TestRunId = testRunId,
                 AllocateResources = false,
             };
-            _markdown = await testCaseEditorController.CompileAsync(options, errors) ?? "";
+            var context = await testCaseEditorController.CompileAsync(options, errors);
+            _markdown = context?.CompiledText ?? "";
         }
     }
 

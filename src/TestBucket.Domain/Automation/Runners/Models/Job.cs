@@ -80,8 +80,15 @@ namespace TestBucket.Domain.Automation.Runners.Models
         /// </summary>
         public TestResultFormat? Format { get; set; }
 
+        /// <summary>
+        /// Other artifacts added by the runner
+        /// </summary>
+        [Column(TypeName = "json")]
+        public Dictionary<string, byte[]>? ArtifactContent { get; set; }
+
         // Navigation
         public long? TestRunId { get; set; }
         public TestRun? TestRun { get; set; }
+        
     }
 }

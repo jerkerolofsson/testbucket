@@ -1,4 +1,5 @@
 ﻿using TestBucket.Contracts.Fields;
+using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Components.Tests.TestRuns.Controls;
@@ -287,25 +288,25 @@ public partial class TestCaseRunGrid
         }
     }
 
-    private async Task RunTestAgain()
+    private async Task RunTestAgain(TestCaseRun testCaseRun)
     {
         if (_selectedItem is null)
         {
             return;
         }
-        await testExecutionController.SetTestCaseRunResultAsync(_selectedItem, TestResult.NoRun);
+        await testExecutionController.SetTestCaseRunResultAsync(testCaseRun, TestResult.NoRun);
 
-        await testExecutionController.RunTestAsync(_selectedItem);
+        await testExecutionController.RunTestAsync(testCaseRun);
         //await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
     }
 
-    private async Task RunTest()
+    private async Task RunTest(TestCaseRun testCaseRun)
     {
         if (_selectedItem is null)
         {
             return;
         }
-        await testExecutionController.RunTestAsync(_selectedItem);
+        await testExecutionController.RunTestAsync(testCaseRun);
         //await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
 
     }

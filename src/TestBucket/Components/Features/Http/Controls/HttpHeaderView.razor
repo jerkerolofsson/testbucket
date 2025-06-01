@@ -1,0 +1,15 @@
+﻿@using TestBucket.Contracts.Automation.Api
+
+@if(Headers is not null)
+{
+    <MudDataGrid Items="@Headers">
+        <Columns>
+            <PropertyColumn Property="x => x.Name"></PropertyColumn>
+            <PropertyColumn Property="x => x.Value"></PropertyColumn>
+        </Columns>
+    </MudDataGrid>
+}
+
+@code {
+    [Parameter] public HeadersCollectionDto? Headers { get; set; }
+}

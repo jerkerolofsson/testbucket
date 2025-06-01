@@ -1,0 +1,21 @@
+﻿.request-duration,
+.body-length,
+.status-code,
+.reason-phrase,
+.url,
+.method {
+    padding: 8px;
+    border-radius: 2px;
+    background-color: var(--mud-palette-surface-lighten);
+}
+
+.method {
+    background-color: var(--mud-palette-primary);
+    min-width: 80px;
+    text-align: center;
+    font-weight: bold;
+}
+.url {
+    color: var(--mud-palette-primary-lighten);
+    font-family: monospace;
+}

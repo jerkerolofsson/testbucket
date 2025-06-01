@@ -44,6 +44,8 @@ namespace TestBucket.Domain.Automation.Hybrid
 
         private async Task<TestRunnerResult> WaitForJobCompletionAsync(Job job, CancellationToken cancellationToken)
         {
+            int sleepTime = 100;
+            int loopCounter = 0;
             while (true)
             {
                 var updatedJob = await _jobRepository.GetByIdAsync(job.Id);
@@ -66,6 +68,7 @@ namespace TestBucket.Domain.Automation.Hybrid
                             Completed = true, 
                             Format = updatedJob.Format ?? Formats.TestResultFormat.UnknownFormat,  
                             Result = updatedJob.Result ?? "", 
+                            ArtifactContent = updatedJob.ArtifactContent,
                         };
                     case PipelineJobStatus.Error:
                         return new TestRunnerResult { Completed = true, Format = Formats.TestResultFormat.UnknownFormat, Result = "", ErrorMessage = updatedJob.ErrorMessage};
@@ -75,7 +78,22 @@ namespace TestBucket.Domain.Automation.Hybrid
                 {
                     return new TestRunnerResult { Completed = false, ErrorMessage = "Timeout", Format = Formats.TestResultFormat.UnknownFormat, Result = "" };
                 }
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                await Task.Delay(TimeSpan.FromMilliseconds(sleepTime), cancellationToken);
+
+                // Back off
+                loopCounter++;
+                if (loopCounter > 10)
+                {
+                    sleepTime = 500;
+                }
+                if (loopCounter > 20)
+                {
+                    sleepTime = 1000;
+                }
+                if (loopCounter > 30)
+                {
+                    sleepTime = 2000;
+                }
             }
         }
 

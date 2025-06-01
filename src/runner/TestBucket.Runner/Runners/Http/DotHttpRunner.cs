@@ -15,7 +15,7 @@ public class DotHttpRunner : IScriptRunner
 {
     public async Task<ScriptResult> RunAsync(Script script, IScriptRunnerObserver observer, CancellationToken cancellationToken)
     {
-        var logger = new DotHttpLogger(observer);
+        var logger = new DotHttpLogger(observer, workingDirectory: script.WorkingDirectory, saveMessages: true);
         var runnerOptions = new TestPlanRunnerOptionsBuilder()
             .ConfigureClientOptions((optionsBuilder) =>
             {

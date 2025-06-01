@@ -275,7 +275,7 @@ internal class TestRunCreationController : TenantBaseService
         await _testRunManager.AddTestCaseRunAsync(principal, testCaseRun);
     }
 
-    internal async Task EvalMarkdownCodeAsync(TestCase test, string language, string code, CancellationToken cancellationToken = default)
+    internal async Task EvalMarkdownCodeAsync(TestCase test, long? testRunId, string language, string code, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(test.TenantId);
         ArgumentNullException.ThrowIfNull(test.TestProjectId);
@@ -285,7 +285,16 @@ internal class TestRunCreationController : TenantBaseService
         if (await _markdownAutomationRunner.SupportsLanguageAsync(principal, language))
         {
             var testSuite = await _testSuiteManager.GetTestSuiteByIdAsync(principal, test.TestSuiteId);
-            var defaultEnvironment = await _testEnvironmentManager.GetDefaultTestEnvironmentAsync(principal, test.TestProjectId.Value);
+            var testEnvironment = await _testEnvironmentManager.GetDefaultTestEnvironmentAsync(principal, test.TestProjectId.Value);
+
+            if(testRunId is not null)
+            {
+                var testRun = await _testRunManager.GetTestRunByIdAsync(principal, testRunId.Value);
+                if(testRun?.TestEnvironmentId is not null)
+                {
+                    testEnvironment = await _testEnvironmentManager.GetTestEnvironmentByIdAsync(principal, testRun.TestEnvironmentId.Value);
+                }
+            }
 
             if (test?.TeamId is not null && testSuite is not null)
             {
@@ -294,10 +303,11 @@ internal class TestRunCreationController : TenantBaseService
                     Guid = Guid.NewGuid().ToString(),
                     ProjectId = test.TestProjectId.Value,
                     TeamId = test.TeamId.Value,
-                    TestRunId = null,
+                    TestRunId = testRunId,
                     TestCaseId = test.Id,
+                    TenantId = test.TenantId,
 
-                    TestEnvironmentId = defaultEnvironment?.Id, 
+                    TestEnvironmentId = testEnvironment?.Id, 
                     
                     // Defines the resources and accounts that will be locked by the compiler (ResolveVariablesAsync)
                     Dependencies = testSuite.Dependencies
@@ -306,18 +316,7 @@ internal class TestRunCreationController : TenantBaseService
                 try
                 {
                     await _compiler.ResolveVariablesAsync(principal, context, cancellationToken);
-                    var compiledCode = await _compiler.CompileAsync(principal, context, code);
-                    var testResult = await _markdownAutomationRunner.EvalAsync(principal, context, language, compiledCode);
-
-                    if (testResult is not null)
-                    {
-                        var parameters = new DialogParameters<TestRunnerResultDialog>()
-                    {
-                        { x => x.TestRunnerResult, testResult }
-                    };
-                        var dialog = await _dialogService.ShowAsync<TestRunnerResultDialog>(null, parameters, DefaultBehaviors.DialogOptions);
-                        await dialog.Result;
-                    }
+                    await RunCompiledCodeWithResourcesAsync(language, code, context);
                 }
                 finally
                 {
@@ -326,6 +325,30 @@ internal class TestRunCreationController : TenantBaseService
                     await _mediator.Send(new ReleaseAccountsRequest(context.Guid, principal.GetTenantIdOrThrow()));
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Runs the code with a context containing already locked resources and assigned variables
+    /// </summary>
+    /// <param name="language"></param>
+    /// <param name="code"></param>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public async Task RunCompiledCodeWithResourcesAsync(string language, string code, TestExecutionContext context)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var compiledCode = await _compiler.CompileAsync(principal, context, code);
+        var testResult = await _markdownAutomationRunner.EvalAsync(principal, context, language, compiledCode);
+
+        if (testResult is not null)
+        {
+            var parameters = new DialogParameters<TestRunnerResultDialog>()
+            {
+                { x => x.TestRunnerResult, testResult }
+            };
+            var dialog = await _dialogService.ShowAsync<TestRunnerResultDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+            await dialog.Result;
         }
     }
 

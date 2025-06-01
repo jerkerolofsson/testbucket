@@ -448,20 +448,21 @@ tb-field .mud-link.mud-link-underline-hover:hover {
      overflow: auto;
  }
  .tb-toolbar {
-     background: transparent;
+     background: var(--mud-palette-surface);
      color: var(--mud-palette-text-primary);
  }
 
- .tb-toolbar.environment-variable-toolbar {
-     padding-left: 0px;
- }
-
- table.tb-environment-variables {
- }
-
-  .tb-toolbar.main {
+.tb-toolbar.main {
      background: var(--mud-palette-surface);
- }
+     border: none;
+}
+
+.tb-toolbar.environment-variable-toolbar {
+     padding-left: 0px;
+}
+
+table.tb-environment-variables {
+}
 
  input.form-control {
      padding: 4px;
@@ -1257,4 +1258,15 @@ div.tb-profile-image.tb-background-9 {
     z-index: 100; 
     width: 20vw;
     overflow: hidden;
+}
+
+.tb-http-api-checks-datagrid {
+    border: solid 1px var(--mud-palette-lines-inputs);
+}
+
+.tb-http-api-checks-datagrid tr.success {
+    background: rgba(100,255,100, 0.15);
+}
+.tb-http-api-checks-datagrid tr.error {
+    background: rgba(255,100,100, 0.15);
 }

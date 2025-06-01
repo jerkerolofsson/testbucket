@@ -23,7 +23,12 @@ else
     {
         if (_resource?.Id != Resource?.Id && Resource is not null)
         {
-            _resource = await controller.GetResourceByIdAsync(Resource.Id);
+            _resource = Resource;
+            var resource = await controller.GetResourceByIdAsync(Resource.Id);
+            if (resource is not null)
+            {
+                _resource = resource;
+            }
             if(_resource is not null)
             {
                 _text = Encoding.UTF8.GetString(_resource.Data);

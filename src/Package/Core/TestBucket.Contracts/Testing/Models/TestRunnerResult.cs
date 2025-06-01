@@ -42,4 +42,12 @@ public class TestRunnerResult
     /// Standard err
     /// </summary>
     public string? StdErr { get; set; }
+
+    /// <summary>
+    /// Artifacts created by the runner.
+    /// 
+    /// Filename is key
+    /// File content is value
+    /// </summary>
+    public Dictionary<string, byte[]>? ArtifactContent { get; set; }
 }

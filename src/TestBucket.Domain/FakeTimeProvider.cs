@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TestBucket.Domain;
+
+[ExcludeFromCodeCoverage]
 internal class FakeTimeProvider : TimeProvider
 {
     private readonly DateTimeOffset _dateTimeOffset;

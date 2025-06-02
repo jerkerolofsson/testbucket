@@ -77,12 +77,12 @@ internal class TestResourceManager : ITestResourceManager
             {
                 var existingResource = existingResources.Items.Where(x => x.ResourceId == resource.ResourceId).FirstOrDefault();
 
+                var enabled = resource.Health == Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy;
                 if (existingResource is null)
                 {
-                    var enabled = resource.Health == Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy;
                     var testResource = new TestResource
                     {
-                        Enabled = true,
+                        Enabled = enabled,
                         Name = resource.Name,
                         Manufacturer = resource.Manufacturer,
                         Model = resource.Model,
@@ -99,7 +99,7 @@ internal class TestResourceManager : ITestResourceManager
                 }
                 else
                 {
-                    existingResource.Enabled = true;
+                    existingResource.Enabled = enabled;
                     existingResource.Model = resource.Model;
                     existingResource.Types = resource.Types.ToArray();
                     existingResource.Manufacturer = resource.Manufacturer;

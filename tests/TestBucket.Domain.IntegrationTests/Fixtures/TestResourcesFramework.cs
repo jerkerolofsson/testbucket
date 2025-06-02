@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestBucket.Contracts;
+using TestBucket.Contracts.TestResources;
 using TestBucket.Domain.TestAccounts;
 using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.TestAccounts.Models;
@@ -113,6 +114,12 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         {
             var manager = Fixture.Services.GetRequiredService<ITestResourceManager>();
             await manager.UpdateAsync(Impersonation.Impersonate(Fixture.App.Tenant), resource);
+        }
+
+        internal async Task UpdateResourcesFromResourceServerAsync(TestResourceDto[] resources)
+        {
+            var manager = Fixture.Services.GetRequiredService<ITestResourceManager>();
+            await manager.UpdateResourcesFromResourceServerAsync(Impersonation.Impersonate(Fixture.App.Tenant), resources.ToList());
         }
     }
 }

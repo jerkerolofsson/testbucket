@@ -18,7 +18,10 @@
     private async Task DoBackup()
     {
         var principal = await authenticationStateProvider.GetAuthenticationStateAsync();
-        var options = new ExportOptions();
+        var options = new ExportOptions()
+        {
+            IncludeSensitiveDetails = true
+        };
         await backupManager.CreateBackupAsync(principal.User, options);
     }
 }

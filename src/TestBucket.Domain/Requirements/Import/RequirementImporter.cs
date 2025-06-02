@@ -51,6 +51,8 @@ namespace TestBucket.Domain.Requirements.Import
 
         private async Task<List<RequirementEntityDto>> ImportBackupFileAsync(ClaimsPrincipal principal, FileResource fileResource)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
+
             var items = new List<RequirementEntityDto>();
 
             using var stream = new MemoryStream(fileResource.Data);

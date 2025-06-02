@@ -36,7 +36,8 @@ internal class TenantController : SuperAdminGuard
         {
             return null;
         }
-        return await _repository.GetTenantByIdAsync(tenantId);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _tenantManager.GetTenantByIdAsync(principal, tenantId);
     }
 
     public Task<string?> GetDefaultTenantAsync()
@@ -45,38 +46,25 @@ internal class TenantController : SuperAdminGuard
     }
     public async Task<bool> ExistsAsync(string tenantId)
     {
-        return await _repository.ExistsAsync(tenantId);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _tenantManager.ExistsAsync(principal, tenantId);
     }
 
+    /// <summary>
+    /// Creates a new tenant
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
     public async Task<OneOf<Tenant, AlreadyExistsError>> CreateAsync(string name)
     {
-        // Check permissions
         var principal = await GetUserClaimsPrincipalAsync();
-        principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Write);
-
-        if(string.IsNullOrWhiteSpace(name))
-        {
-            return new AlreadyExistsError();
-        }
-        var tenantId = new Slugify.SlugHelper().GenerateSlug(name);
-        if (string.IsNullOrWhiteSpace(tenantId))
-        {
-            return new AlreadyExistsError();
-        }
-
-        await _repository.CreateAsync(name, tenantId);
-
-        // Generate key for the tenant
-        await _tenantManager.UpdateTenantCiCdKeyAsync(tenantId);
-
-        return await _repository.GetTenantByIdAsync(tenantId) ?? throw new Exception("Failed to create tenant");
+        return await _tenantManager.CreateAsync(principal, name);
     }
 
     public async Task<PagedResult<Tenant>> SearchAsync(SearchQuery query)
     {
         // Check permissions
         var principal = await GetUserClaimsPrincipalAsync();
-        principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Read);
-        return await _repository.SearchAsync(query);
+        return await _tenantManager.SearchAsync(principal, query);
     }
 }

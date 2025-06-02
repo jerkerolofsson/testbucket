@@ -28,7 +28,7 @@ public static class ProjectMapper
         return dto;
     }
 
-    public static ProjectDto ToDto(this TestProject project)
+    public static ProjectDto ToDto(this TestProject project, bool includeSensitiveDetails)
     {
         var dto = new ProjectDto
         {
@@ -43,6 +43,15 @@ public static class ProjectMapper
         if (project.ExternalSystems is not null)
         {
             dto.ExternalSystems = project.ExternalSystems.Select(x => x.ToDto()).ToArray();
+
+            if (!includeSensitiveDetails)
+            {
+                foreach (var externalSystem in dto.ExternalSystems)
+                {
+                    externalSystem.AccessToken = null;
+                    externalSystem.ApiKey = null;
+                }
+            }
         }
 
         return dto;

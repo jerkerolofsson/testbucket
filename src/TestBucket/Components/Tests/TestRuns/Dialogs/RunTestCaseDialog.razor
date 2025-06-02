@@ -89,12 +89,10 @@
         try
         {
             var test = await browser.GetTestCaseByIdAsync(TestCaseRun.TestCaseId);
-            if (test is not null)
+            if (test is not null && _context is not null)
             {
-                // Todo: Resources already allocated!
+                // Note: Resources already allocated, so pass in the context we used
                 await testRunCreation.RunCompiledCodeWithResourcesAsync(request.Language, request.Code, _context);
-
-                //await testRunCreation.EvalMarkdownCodeAsync(test, TestCaseRun.TestRunId, request.Language, request.Code);
             }
             else
             {

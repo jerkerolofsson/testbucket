@@ -16,6 +16,11 @@ namespace TestBucket.Domain.Export.Models
         /// <summary>
         /// Write backup to S3
         /// </summary>
-        S3
+        S3,
+
+        /// <summary>
+        /// Write into memory
+        /// </summary>
+        Memory
     }
 }

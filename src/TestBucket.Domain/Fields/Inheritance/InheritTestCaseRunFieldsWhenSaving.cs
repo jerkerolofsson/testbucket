@@ -56,7 +56,7 @@ public class InheritTestCaseRunFieldsWhenSaving : INotificationHandler<TestCaseR
         }
     }
 
-    private async Task UpdateFieldAsync(
+    internal async Task UpdateFieldAsync(
         ClaimsPrincipal principal,
         TestCaseRunField field, 
         IReadOnlyList<TestCaseField> testCaseFields, 

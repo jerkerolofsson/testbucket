@@ -1,14 +1,22 @@
-﻿namespace TestBucket.Domain.IntegrationTests.TestResources
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Org.BouncyCastle.Asn1.Ocsp;
+using System;
+using System.Collections.Generic;
+using TestBucket.Contracts.TestResources;
+using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
+
+namespace TestBucket.Domain.IntegrationTests.TestResources
 {
     [Component("Test Resources")]
     [IntegrationTest]
     [FunctionalTest]
     public class TestResourceManagerTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that an resource can be added and that it is not initially locked 
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that an resource can be added and that it is not initially locked 
-            """)]
         public async Task AddTestResource_NotLocked()
         {
             // Arrange
@@ -30,10 +38,11 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that when browsing for resources after deletion it is not included in the result
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when browsing for resources after deletion it is not included in the result
-            """)]
         public async Task DeleteTestResource_IsDeleted()
         {
             // Arrange
@@ -57,11 +66,11 @@
             }
         }
 
-
+        /// <summary>
+        /// Verifies that an resource can be updated
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that an resource can be updated
-            """)]
         public async Task UpdateTestResource_IsUpdated()
         {
             // Arrange
@@ -86,10 +95,124 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that an resource updated from a DTO provided by a resource server with the Health=Healthy is enabled
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that an resource is locked (Locked==true) after allocation
-            """)]
+        public async Task UpdateTestResourceFromServer_WithHealthy_ResourceIsEnabled()
+        {
+            // Arrange
+            string owner = Guid.NewGuid().ToString();
+            var resource1 = new TestResourceDto { Name = Guid.NewGuid().ToString(), Health = HealthStatus.Healthy, Owner = owner, ResourceId = "res1", Types = ["eye-glasses"] };
+            try
+            {
+                // Act
+                await Fixture.Resources.UpdateResourcesFromResourceServerAsync([resource1]);
+
+                // Assert
+                var result = await Fixture.Resources.BrowseAsync();
+                var afterUpdate = result.Items.Where(x => x.Name == resource1.Name).FirstOrDefault();
+                Assert.NotNull(afterUpdate);
+                Assert.True(afterUpdate.Enabled);
+            }
+            finally
+            {
+            }
+        }
+
+        /// <summary>
+        /// Verifies that an resource updated from a DTO provided by a resource server with the Health=Healthy is disabled
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task UpdateTestResourceFromServer_WithDegraded_ResourceIsDisabled()
+        {
+            // Arrange
+            string owner = Guid.NewGuid().ToString();
+            var resource1 = new TestResourceDto { Name = Guid.NewGuid().ToString(), Health = HealthStatus.Degraded, Owner = owner, ResourceId = "res1", Types = ["eye-glasses"] };
+            try
+            {
+                // Act
+                await Fixture.Resources.UpdateResourcesFromResourceServerAsync([resource1]);
+
+                // Assert
+                var result = await Fixture.Resources.BrowseAsync();
+                var afterUpdate = result.Items.Where(x => x.Name == resource1.Name).FirstOrDefault();
+                Assert.NotNull(afterUpdate);
+                Assert.False(afterUpdate.Enabled);
+            }
+            finally
+            {
+            }
+        }
+
+        /// <summary>
+        /// Verifies that an resource updated from a DTO provided by a resource server first with Health=Healthy and then with Degraded
+        /// is disabled.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task UpdateTestResourceFromServer_WithHealthyAndThenDegraded_ResourceIsDisabled()
+        {
+            // Arrange
+            string owner = Guid.NewGuid().ToString();
+            var resource1 = new TestResourceDto { Name = Guid.NewGuid().ToString(), Health = HealthStatus.Degraded, Owner = owner, ResourceId = "res1", Types = ["eye-glasses"] };
+            try
+            {
+                resource1.Health = HealthStatus.Healthy;
+                await Fixture.Resources.UpdateResourcesFromResourceServerAsync([resource1]);
+
+                // Act
+                resource1.Health = HealthStatus.Degraded;
+                await Fixture.Resources.UpdateResourcesFromResourceServerAsync([resource1]);
+
+                // Assert
+                var result = await Fixture.Resources.BrowseAsync();
+                var afterUpdate = result.Items.Where(x => x.Name == resource1.Name).FirstOrDefault();
+                Assert.NotNull(afterUpdate);
+                Assert.False(afterUpdate.Enabled);
+            }
+            finally
+            {
+            }
+        }
+
+        /// <summary>
+        /// Verifies that an resource updated from a DTO provided by a resource server first with Health=Healthy and then with Degraded
+        /// is disabled.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task UpdateTestResourceFromServer_WithRemovedResource_ResourceIsDisabled()
+        {
+            // Arrange
+            string owner = Guid.NewGuid().ToString();
+            var resource1 = new TestResourceDto { Name = Guid.NewGuid().ToString(), Health = HealthStatus.Healthy, Owner = owner, ResourceId = "res1", Types = ["eye-glasses"] };
+            var resource2 = new TestResourceDto { Name = Guid.NewGuid().ToString(), Health = HealthStatus.Healthy, Owner = owner, ResourceId = "res2", Types = ["eye-glasses"] };
+            try
+            {
+                await Fixture.Resources.UpdateResourcesFromResourceServerAsync([resource1, resource2]);
+
+                // Act
+                await Fixture.Resources.UpdateResourcesFromResourceServerAsync([resource1]);
+
+                // Assert
+                var result = await Fixture.Resources.BrowseAsync();
+                var afterUpdate = result.Items.Where(x => x.Name == resource2.Name).FirstOrDefault();
+                Assert.NotNull(afterUpdate);
+                Assert.False(afterUpdate.Enabled);
+            }
+            finally
+            {
+            }
+        }
+
+        /// <summary>
+        /// Verifies that an resource is locked (Locked==true) after allocation
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
         public async Task AllocateResource_AccountIsLocked()
         {
             // Arrange
@@ -120,13 +243,11 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that a resource cannot be allocated twice 
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that a resource cannot be allocated twice 
-
-            # Steps
-
-            """)]
         public async Task AllocateResource_WhenAllLocked_EmptyCollectionReturned()
         {
             // Arrange
@@ -154,15 +275,16 @@
             }
         }
 
-        [Fact]
-        [TestDescription("""
-            Verifies that a resource cannot be allocated if Enabled is false
+        /// <summary>
+        /// Verifies that a resource cannot be allocated if Enabled is false
 
-            # Steps
-            1. Add a resource
-            2. Set Enabled to false
-            3. Try to allocate the resource: An empty collection is returned
-            """)]
+        /// # Steps
+        /// 1. Add a resource
+        /// 2. Set Enabled to false
+        /// 3. Try to allocate the resource: An empty collection is returned
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
         public async Task AllocateResource_WhenDisabled_EmptyCollectionReturned()
         {
             // Arrange
@@ -191,15 +313,15 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that a resource cannot be allocated if Health is Unhealthy
+        /// # Steps
+        /// 1. Add a resource
+        /// 2. Set Health to Unhealthy
+        /// 3. Try to allocate the resource: An empty collection is returned
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that a resource cannot be allocated if Health is Unhealthy
-
-            # Steps
-            1. Add a resource
-            2. Set Health to Unhealthy
-            3. Try to allocate the resource: An empty collection is returned
-            """)]
         public async Task AllocateResource_WhenUnhealthy_EmptyCollectionReturned()
         {
             // Arrange
@@ -227,15 +349,15 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that a resource cannot be allocated if Health is Degraded
+        /// # Steps
+        /// 1. Add a resource
+        /// 2. Set Health to Degraded
+        /// 3. Try to allocate the resource: An empty collection is returned
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that a resource cannot be allocated if Health is Degraded
-
-            # Steps
-            1. Add a resource
-            2. Set Health to Degraded
-            3. Try to allocate the resource: An empty collection is returned
-            """)]
         public async Task AllocateResource_WhenDegraded_EmptyCollectionReturned()
         {
             // Arrange
@@ -263,10 +385,11 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that an resource that has multiple types can be allocated when specifying one of the types
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that an resource that has multiple types can be allocated when specifying one of the types
-            """)]
         public async Task AllocateResource_WithFirstType_AccountIsLocked()
         {
             // Arrange
@@ -296,10 +419,11 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that when trying to allocate a resource without any supported type, an empty collection is returned
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when trying to allocate a resource without any supported type, an empty collection is returned
-            """)]
         public async Task AllocateResource_WithoutSupportedType_EmptyCollectionReturned()
         {
             // Arrange
@@ -325,11 +449,12 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that when allocating a resource with variables, those variables are added to the TestExecutionContext in the 
+        /// format resources__type__index__key = value
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when allocating a resource with variables, those variables are added to the TestExecutionContext in the 
-            format resources__type__index__key = value
-            """)]
         public async Task AllocateAccountWithVariables_AccountIsLockedAndVariablesAdded()
         {
             // Arrange
@@ -370,19 +495,19 @@
             }
         }
 
-
+        /// <summary>
+        /// Verifies that the environment variable is named after the requested resource type.
+        /// 
+        /// When a resource has multiple types, for example "phone" and "android", and the requested type is "android",
+        /// the environment variable should be named "resources__android__0__ssid" and not "resources__android__0__ssid".
+        ///
+        /// # Steps
+        /// 1. Create a resource with types "phone" and "android"
+        /// 2. Allocate the resource with the requested type "android"
+        /// 3. Verify that the environment variable is named "resources__android__0__ssid" and not "resources__phone__0__ssid".
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that the environment variable is named after the requested resource type.
-            
-            When a resource has multiple types, for example "phone" and "android", and the requested type is "android",
-            the environment variable should be named "resources__android__0__ssid" and not "resources__android__0__ssid".
-
-            # Steps
-            1. Create a resource with types "phone" and "android"
-            2. Allocate the resource with the requested type "android"
-            3. Verify that the environment variable is named "resources__android__0__ssid" and not "resources__phone__0__ssid".
-            """)]
         public async Task AllocateAccountWithVariables_WithPhoneAndroidAndAndroidRequested_VariableNamedAsAndroid()
         {
             // Arrange
@@ -424,18 +549,19 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that the environment variable is named after the requested resource type.
+        /// 
+        /// When a resource has multiple types, for example "phone" and "android", and the requested type is "phone",
+        /// the environment variable should be named "resources__phone__0__ssid" and not "resources__android__0__ssid".
+        /// 
+        /// # Steps
+        /// 1. Add a resource with types "phone" and "android"
+        /// 2. Allocate the resource with the requested type "phone"
+        /// 3. Verify that the environment variable is named "resources__phone__0__ssid" and not "resources__android__0__ssid".
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that the environment variable is named after the requested resource type.
-            
-            When a resource has multiple types, for example "phone" and "android", and the requested type is "phone",
-            the environment variable should be named "resources__phone__0__ssid" and not "resources__android__0__ssid".
-
-            # Steps
-            1. Add a resource with types "phone" and "android"
-            2. Allocate the resource with the requested type "phone"
-            3. Verify that the environment variable is named "resources__phone__0__ssid" and not "resources__android__0__ssid".
-            """)]
         public async Task AllocateAccountWithVariables_WithPhoneAndroidAndPhoneRequested_VariableNamedAsPhone()
         {
             // Arrange
@@ -477,10 +603,11 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that an resource is unlocked (Locked==false) when released
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that an resource is unlocked (Locked==false) when released
-            """)]
         public async Task ReleaseResources_ResourceIsUnlocked()
         {
             // Arrange

@@ -13,8 +13,10 @@ using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Mapping;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams;
+using TestBucket.Domain.Teams.Models;
 
 namespace TestBucket.Domain.Export.Handlers;
 public class ProjectExportHandler : INotificationHandler<ExportNotification>
@@ -30,6 +32,11 @@ public class ProjectExportHandler : INotificationHandler<ExportNotification>
 
     public async ValueTask Handle(ExportNotification notification, CancellationToken cancellationToken)
     {
+        if(!notification.Principal.HasPermission(PermissionEntityType.Project, PermissionLevel.Read))
+        {
+            return;
+        }
+
         int offset = 0;
         int count = 20;
         var response = await _projectRepository.SearchAsync(notification.TenantId, new SearchQuery { Offset = offset, Count = count });
@@ -37,11 +44,16 @@ public class ProjectExportHandler : INotificationHandler<ExportNotification>
         {
             foreach (var project in response.Items)
             {
+                if (!notification.Options.Filter(project))
+                {
+                    continue;
+                }
+
                 // Get project that includes external systems
                 var fullProject = await _projectRepository.GetProjectByIdAsync(notification.TenantId, project.Id);
                 if(fullProject is null) continue;
 
-                var dto = fullProject.ToDto();
+                var dto = fullProject.ToDto(notification.Options.IncludeSensitiveDetails);
 
                 await notification.Sink.WriteJsonEntityAsync("projects", "project", project.Id.ToString(), dto, cancellationToken);
 

@@ -373,6 +373,10 @@ internal class ProjectRepository : IProjectRepository
             dbContext.Jobs.Remove(item);
         }
 
+        foreach (var item in dbContext.ExternalSystems.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.ExternalSystems.Remove(item);
+        }
         dbContext.Projects.Remove(project);
         await dbContext.SaveChangesAsync();
     }

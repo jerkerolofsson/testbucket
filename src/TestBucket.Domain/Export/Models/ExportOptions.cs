@@ -22,5 +22,16 @@ namespace TestBucket.Domain.Export.Models
         /// Path / URI dependent on DestinationType
         /// </summary>
         public string? Destination { get; set; }
+
+        /// <summary>
+        /// Includes sensitive details such as passwords
+        /// </summary>
+        public bool IncludeSensitiveDetails { get; set; }
+
+        /// <summary>
+        /// Custom filter to include specific types.
+        /// By default all types are included
+        /// </summary>
+        public Predicate<object> Filter { get; set; } = (object entity) => true;
     }
 }

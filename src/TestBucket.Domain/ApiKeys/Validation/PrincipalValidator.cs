@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.IdentityModel.Tokens;
-
-namespace TestBucket.Domain.ApiKeys.Validation
+﻿namespace TestBucket.Domain.ApiKeys.Validation
 {
     public class PrincipalValidator(ClaimsPrincipal Principal)
     {

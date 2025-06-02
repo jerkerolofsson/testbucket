@@ -1,33 +1,80 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Identity;
-using TestBucket.Domain.Identity;
-using TestBucket.Domain.Identity.Permissions;
+﻿using TestBucket.Contracts.Identity;
+using TestBucket.Domain.Projects;
+using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Domain.Tenants;
 public class TenantManager : ITenantManager
 {
+    private readonly IProjectRepository _projectRepository;
     private readonly ITenantRepository _tenantRepository;
     private readonly ISettingsProvider _settingsProvider;
 
-    public TenantManager(ITenantRepository tenantRepository, ISettingsProvider settingsProvider)
+    public TenantManager(
+        IProjectRepository projectRepository,
+        ITenantRepository tenantRepository, 
+        ISettingsProvider settingsProvider)
     {
+        _projectRepository = projectRepository;
         _tenantRepository = tenantRepository;
         _settingsProvider = settingsProvider;
     }
 
-    /// <summary>
-    /// Generates a new api key for the tenant
-    /// </summary>
-    /// <param name="tenantId"></param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
-    /// <exception cref="InvalidDataException"></exception>
+    public async Task<OneOf<Tenant, AlreadyExistsError>> CreateAsync(ClaimsPrincipal principal, string name)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Write);
+
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return new AlreadyExistsError();
+        }
+        var tenantId = new Slugify.SlugHelper().GenerateSlug(name);
+        if (string.IsNullOrWhiteSpace(tenantId))
+        {
+            return new AlreadyExistsError();
+        }
+
+        var result = await _tenantRepository.CreateAsync(name, tenantId);
+
+        // Generate key for the tenant
+        await UpdateTenantCiCdKeyAsync(tenantId);
+
+        return await _tenantRepository.GetTenantByIdAsync(tenantId) ?? throw new Exception("Failed to create tenant");
+    }
+
+    /// <inheritdoc/>
+    public async Task<bool> ExistsAsync(ClaimsPrincipal principal, string tenantId)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Read);
+        return await _tenantRepository.ExistsAsync(tenantId);
+    }
+
+    /// <inheritdoc/>
+    public async Task<Tenant?> GetTenantByIdAsync(ClaimsPrincipal principal, string tenantId)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Read);
+        return await _tenantRepository.GetTenantByIdAsync(tenantId);
+    }
+
+    /// <inheritdoc/>
+    public async Task DeleteAsync(ClaimsPrincipal principal, string tenantId, CancellationToken cancellationToken)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Delete);
+
+        await foreach(var project in _projectRepository.EnumerateAsync(tenantId, cancellationToken))
+        {
+            await _projectRepository.DeleteProjectAsync(project);
+        }
+
+        await _tenantRepository.DeleteTenantAsync(tenantId);
+    }
+    /// <inheritdoc/>
+    public async Task<PagedResult<Tenant>> SearchAsync(ClaimsPrincipal principal, SearchQuery query)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Read);
+        return await _tenantRepository.SearchAsync(query);
+    }
+
+  
     public async Task UpdateTenantCiCdKeyAsync(string tenantId)
     {
         var tenant = await _tenantRepository.GetTenantByIdAsync(tenantId);

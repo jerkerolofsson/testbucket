@@ -66,7 +66,10 @@ public class TreeNode<T> : IEquatable<TreeNode<T>> where T : class
         }
     }
 
-    public string IconColor { get; internal set; }
+    /// <summary>
+    /// Color of icon
+    /// </summary>
+    public string? IconColor { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the TreeNode class.

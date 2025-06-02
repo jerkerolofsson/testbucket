@@ -1,8 +1,6 @@
 ﻿using OneOf;
 
 using TestBucket.Domain.Errors;
-using TestBucket.Domain.Tenants;
-using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Data.Tenants;
 internal class TenantRepository : ITenantRepository
@@ -84,6 +82,30 @@ internal class TenantRepository : ITenantRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         dbContext.Tenants.Update(tenant);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task DeleteTenantAsync(string tenantId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // Find the tenant
+        var tenant = await dbContext.Tenants.FirstOrDefaultAsync(t => t.Id == tenantId);
+        if (tenant == null)
+        {
+            return; // Tenant does not exist, nothing to delete
+        }
+
+        // Remove related entities (if needed, adjust as per cascade rules)
+        dbContext.Teams.RemoveRange(dbContext.Teams.Where(t => t.TenantId == tenantId));
+        dbContext.Projects.RemoveRange(dbContext.Projects.Where(p => p.TenantId == tenantId));
+        dbContext.Files.RemoveRange(dbContext.Files.Where(f => f.TenantId == tenantId));
+        dbContext.UserPreferences.RemoveRange(dbContext.UserPreferences.Where(u => u.TenantId == tenantId));
+        dbContext.Users.RemoveRange(dbContext.Users.Where(u => u.TenantId == tenantId));
+
+        // Remove the tenant itself
+        dbContext.Tenants.Remove(tenant);
+
         await dbContext.SaveChangesAsync();
     }
 }

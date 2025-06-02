@@ -56,7 +56,7 @@ public class ProjectApiController : ProjectApiControllerBase
 
         var creationResult = await _manager.AddAsync(User, dbo);
         return creationResult.Match<IActionResult>(
-            success => Ok(success.ToDto()),
+            success => Ok(success.ToDto(false)),
             alreadyExists => BadRequest("Project already exists!")
             );
     }
@@ -106,6 +106,13 @@ public class ProjectApiController : ProjectApiControllerBase
         {
             return NotFound();
         }
-        return Ok(project.ToDto());
+        if (User.HasPermission(PermissionEntityType.Project, PermissionLevel.Delete))
+        {
+            return Ok(project.ToDto(true));
+        }
+        else
+        {
+            return Ok(project.ToDto(false));
+        }
     }
 }

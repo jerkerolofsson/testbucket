@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
+using Microsoft.Extensions.AI;
+
+using TestBucket.Contracts.Projects;
 using TestBucket.Domain.Export.Models;
 
 namespace TestBucket.Domain.Export.Zip;
@@ -36,6 +40,39 @@ public class ZipImporter : IDataImporterSource
         _zip.Dispose();
     }
 
+    public async Task<T?> DeserializeEntityAsync<T>(Predicate<ExportEntity> filter, CancellationToken cancellationToken) where T : class
+    {
+        var entity = Find(filter);
+        return await DeserializeEntityAsync<T>(entity, cancellationToken).ConfigureAwait(false);
+    }
+
+    public async Task<T?> DeserializeEntityAsync<T>(ExportEntity? entity, CancellationToken cancellationToken) where T : class
+    {
+        if (entity == null)
+        {
+            return null;
+        }
+        using var entityStream = entity.Open();
+        return await JsonSerializer.DeserializeAsync<T>(entityStream, new JsonSerializerOptions());
+    }
+
+    /// <summary>
+    /// Finds an exported entity
+    /// </summary>
+    /// <param name="filter"></param>
+    /// <returns></returns>
+    public ExportEntity? Find(Predicate<ExportEntity> filter)
+    {
+        foreach(var entity in ReadAll())
+        {
+            if(filter(entity))
+            {
+                return entity;
+            }
+        }
+        return null;
+    }
+
     public IEnumerable<ExportEntity> ReadAll()
     {
         foreach (var entry in _zip.Entries)
@@ -48,11 +85,11 @@ public class ZipImporter : IDataImporterSource
         }
     }
 
-    public async Task WriteEntityAsync(string source, string entityType, string entityId, Stream sourceStream)
-    {
-        string path = $"{source}/{entityType}/{entityId}";
-        var entry = _zip.CreateEntry(path);
-        using var destinationStream = entry.Open();
-        await sourceStream.CopyToAsync(destinationStream);
-    }
+    //public async Task WriteEntityAsync(string source, string entityType, string entityId, Stream sourceStream)
+    //{
+    //    string path = $"{source}/{entityType}/{entityId}";
+    //    var entry = _zip.CreateEntry(path);
+    //    using var destinationStream = entry.Open();
+    //    await sourceStream.CopyToAsync(destinationStream);
+    //}
 }

@@ -1,14 +1,10 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts;
-using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Domain.Tenants;
 public interface ITenantRepository
 {
     /// <summary>
-    /// Creates a new tenant. Requires SUPERADMIN role
+    /// Creates a new tenant. 
     /// </summary>
     /// <param name="name"></param>
     /// <param name="tenantId"></param>
@@ -42,4 +38,6 @@ public interface ITenantRepository
             offset += result.Items.Length;
         }
     }
+
+    Task DeleteTenantAsync(string tenantId);
 }

@@ -38,7 +38,7 @@ namespace TestBucket.Domain.Export.Services
             {
                 AssignDefaultDiskOptions(options, date, defaultFilename);
 
-                await CreateDiskBackupAsync(tenantId, options);
+                await CreateDiskBackupAsync(principal, tenantId, options);
             }
             else
             {
@@ -51,12 +51,12 @@ namespace TestBucket.Domain.Export.Services
             return $"{date.ToString("o")}".Replace(':', '_').Replace('.', '_').Replace('+', '_') + ".zip";
         }
 
-        private async Task CreateDiskBackupAsync(string tenantId, ExportOptions options)
+        private async Task CreateDiskBackupAsync(ClaimsPrincipal principal, string tenantId, ExportOptions options)
         {
             ArgumentNullException.ThrowIfNull(options.Destination);
             await using var progress = _progressManager.CreateProgressTask("Creating backup..");
             using var destinationStream = File.Create(options.Destination);
-            await _exporter.ExportFullAsync(options, tenantId, destinationStream, progress);
+            await _exporter.ExportFullAsync(principal, options, tenantId, destinationStream, progress);
         }
 
         /// <summary>

@@ -20,7 +20,16 @@ public class Exporter
         _mediator = mediator;
     }
 
-    public async Task ExportFullAsync(ExportOptions options, string tenantId, Stream destinationStream, ProgressTask progressTask)
+    /// <summary>
+    /// Performs a full export
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="tenantId"></param>
+    /// <param name="destinationStream"></param>
+    /// <param name="progressTask"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task ExportFullAsync(ClaimsPrincipal principal, ExportOptions options, string tenantId, Stream destinationStream, ProgressTask progressTask)
     {
         IDataExporterSink? sink = null;
         switch (options.ExportFormat)
@@ -34,7 +43,7 @@ public class Exporter
 
         await sink.WriteEntityAsync("exporter", "tenant", tenantId, new MemoryStream(), CancellationToken.None);
 
-        await _mediator.Publish(new ExportNotification(tenantId, options, sink, progressTask));
+        await _mediator.Publish(new ExportNotification(principal, tenantId, options, sink, progressTask));
 
         sink.Dispose();
     }

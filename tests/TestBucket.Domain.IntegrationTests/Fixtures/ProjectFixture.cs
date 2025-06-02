@@ -1,4 +1,6 @@
-﻿using TestBucket.Domain.Fields;
+﻿using System.Security.Claims;
+using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Models;
@@ -75,6 +77,44 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         public ProjectFixture(TestBucketApp app)
         {
             _app = app;
+        }
+
+        /// <summary>
+        /// Adds an integration
+        /// </summary>
+        /// <param name="system"></param>
+        /// <returns></returns>
+        public async Task AddIntegrationAsync(ExternalSystem system)
+        {
+            var user = Impersonation.Impersonate(App.Tenant);
+            var projectManager = Services.GetRequiredService<IProjectManager>();
+            await projectManager.SaveProjectIntegrationAsync(user, Project.Slug, system);
+        }
+
+        public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsByIdAsync()
+        {
+            var user = Impersonation.Impersonate(App.Tenant);
+            var projectManager = Services.GetRequiredService<IProjectManager>();
+            return await projectManager.GetProjectIntegrationsAsync(user, Project.Id);
+        }
+        public async Task<IReadOnlyList<ExternalSystem>> GetProjectIntegrationsBySlugAsync()
+        {
+            var user = Impersonation.Impersonate(App.Tenant);
+            var projectManager = Services.GetRequiredService<IProjectManager>();
+            return await projectManager.GetProjectIntegrationsAsync(user, Project.Slug);
+        }
+
+
+        /// <summary>
+        /// Deletes an integration
+        /// </summary>
+        /// <param name="system"></param>
+        /// <returns></returns>
+        public async Task DeleteIntegrationAsync(ExternalSystem system)
+        {
+            var user = Impersonation.Impersonate(App.Tenant);
+            var projectManager = Services.GetRequiredService<IProjectManager>();
+            await projectManager.DeleteProjectIntegrationAsync(user, system.Id);
         }
 
         public async Task<FieldDefinition> GetMilestoneFieldAsync()

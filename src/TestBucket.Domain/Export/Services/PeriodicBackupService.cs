@@ -48,7 +48,8 @@ namespace TestBucket.Domain.Export.Services
                         {
                             Destination = null, // auto
                             DestinationType = ExportDestinationType.Disk,
-                            ExportFormat = ExportFormat.Zip
+                            ExportFormat = ExportFormat.Zip,
+                            IncludeSensitiveDetails = true,
                         });
                     }
 

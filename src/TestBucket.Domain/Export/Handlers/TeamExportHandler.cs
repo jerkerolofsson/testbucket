@@ -16,6 +16,7 @@ using TestBucket.Domain.Projects.Mapping;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Teams.Mapping;
+using TestBucket.Domain.Teams.Models;
 
 namespace TestBucket.Domain.Export.Handlers;
 public class TeamExportHandler : INotificationHandler<ExportNotification>
@@ -29,6 +30,11 @@ public class TeamExportHandler : INotificationHandler<ExportNotification>
 
     public async ValueTask Handle(ExportNotification notification, CancellationToken cancellationToken)
     {
+        if (!notification.Principal.HasPermission(PermissionEntityType.Team, PermissionLevel.Read))
+        {
+            return;
+        }
+
         int offset = 0;
         int count = 20;
         var response = await _teamRepository.SearchAsync(notification.TenantId, new SearchQuery { Offset = offset, Count = count });
@@ -36,6 +42,11 @@ public class TeamExportHandler : INotificationHandler<ExportNotification>
         {
             foreach (var team in response.Items)
             {
+                if (!notification.Options.Filter(team))
+                {
+                    continue;
+                }
+
                 await notification.Sink.WriteJsonEntityAsync("teams", "team", team.Id.ToString(), team.ToDto(), cancellationToken);
             }
 

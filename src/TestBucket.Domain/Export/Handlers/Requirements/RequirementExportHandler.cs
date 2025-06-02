@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Mediator;
+
 using TestBucket.Domain.Export.Events;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Projects;
@@ -15,7 +16,7 @@ using TestBucket.Domain.Requirements.Specifications;
 using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Shared.Specifications;
 
-namespace TestBucket.Domain.Export.Handlers;
+namespace TestBucket.Domain.Export.Handlers.Requirements;
 internal class RequirementExportHandler : INotificationHandler<ExportNotification>
 {
     private readonly IRequirementRepository _requirementRepository;
@@ -31,6 +32,11 @@ internal class RequirementExportHandler : INotificationHandler<ExportNotificatio
 
     public async ValueTask Handle(ExportNotification notification, CancellationToken cancellationToken)
     {
+        if (!notification.Principal.HasPermission(PermissionEntityType.Requirement, PermissionLevel.Read))
+        {
+            return;
+        }
+
         string tenantId = notification.TenantId;
         int offset = 0;
         int count = 20;
@@ -43,6 +49,10 @@ internal class RequirementExportHandler : INotificationHandler<ExportNotificatio
         {
             foreach (var item in response.Items)
             {
+                if (!notification.Options.Filter(item))
+                {
+                    continue;
+                }
                 var dto = item.ToDto();
 
                 // Need to add project reference
@@ -54,7 +64,7 @@ internal class RequirementExportHandler : INotificationHandler<ExportNotificatio
 
                 await notification.Sink.WriteJsonEntityAsync("requirements", "requirement-specification", item.Id.ToString(), dto, cancellationToken);
 
-                await WriteRequirementsAsync(tenantId, item, notification.Sink, cancellationToken);
+                await WriteRequirementsAsync(notification, tenantId, item, notification.Sink, cancellationToken);
             }
 
             offset += count;
@@ -62,7 +72,7 @@ internal class RequirementExportHandler : INotificationHandler<ExportNotificatio
         }
     }
 
-    private async Task WriteRequirementsAsync(string tenantId, RequirementSpecification specification, IDataExporterSink sink, CancellationToken cancellationToken)
+    private async Task WriteRequirementsAsync(ExportNotification notification, string tenantId, RequirementSpecification specification, IDataExporterSink sink, CancellationToken cancellationToken)
     {
         int offset = 0;
         int count = 20;
@@ -76,6 +86,10 @@ internal class RequirementExportHandler : INotificationHandler<ExportNotificatio
         {
             foreach (var item in response.Items)
             {
+                if (!notification.Options.Filter(item))
+                {
+                    continue;
+                }
                 var dto = item.ToDto();
                 dto.SpecificationSlug = specification.Slug;
                 dto.ProjectSlug = specification.TestProject?.Slug;

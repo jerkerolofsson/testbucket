@@ -32,7 +32,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.ConventionalCommits
             {
                 RepositoryId = repo.Id,
                 Reference = "123",
-                Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654",
+                Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654" + Guid.NewGuid().ToString(),
                 Message = """
                 feat(Feature Name): Some work done on the feature
                 """
@@ -57,7 +57,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.ConventionalCommits
             {
                 RepositoryId = repo.Id,
                 Reference = "123",
-                Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654",
+                Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654" + Guid.NewGuid().ToString(),
                 Message = """
                 FEAT(Feature Name): Some work done on the feature
                 """
@@ -93,7 +93,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.ConventionalCommits
             {
                 RepositoryId = repo.Id,
                 Reference = "123", 
-                Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654", 
+                Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654" + Guid.NewGuid().ToString(), 
                 Message = """
                 fix: Some fix done
                 
@@ -132,7 +132,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.ConventionalCommits
             {
                 RepositoryId = repo.Id,
                 Reference = "123",
-                Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654",
+                Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654" + Guid.NewGuid().ToString(),
                 Message = """
                 fix: Some fix done
                 

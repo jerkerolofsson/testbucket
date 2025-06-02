@@ -47,7 +47,7 @@ internal class InheritRequirementFieldsWhenSaving :
 
         await InheritFieldFromParentRequirementAsync(principal, requirement, fieldDefinitions, requirementFields);
     }
-    private async Task InheritFieldFromParentRequirementAsync(
+    internal async Task InheritFieldFromParentRequirementAsync(
         ClaimsPrincipal principal, 
         Requirement requirement, 
         IReadOnlyList<FieldDefinition> fieldDefinitions, 

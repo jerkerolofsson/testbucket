@@ -9,7 +9,7 @@ public class RequirementSpecificationFolderValidator : AbstractValidator<Require
     public RequirementSpecificationFolderValidator()
     {
         RuleFor(x => x.Name).NotNull().WithMessage(x => "validation-folder-empty");
-        RuleFor(x => x.Name).NotEmpty().WithMessage(x => "validation-folder-empty");
-        RuleFor(x => x.Name).Must(x => !x.Contains('/')).WithMessage(x => "validation-folder-cannot-contain-slash");
+        RuleFor(x => x.Name).NotNull().NotEmpty().WithMessage(x => "validation-folder-empty");
+        RuleFor(x => x.Name).NotNull().Must(x => !x.Contains('/')).WithMessage(x => "validation-folder-cannot-contain-slash");
     }
 }

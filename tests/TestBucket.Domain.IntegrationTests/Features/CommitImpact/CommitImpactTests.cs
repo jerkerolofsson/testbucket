@@ -32,7 +32,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.CommitImpact
                 Reference = "123",
                 RepositoryId = repo.Id,
                 CommitFiles = [new CommitFile { Path = "/src/Data/Area1/test.cs", Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654" }],
-                Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654" 
+                Sha = "2efcbfc3d0df4157bb3f47338e508dfc771f6654" + Guid.NewGuid().ToString(),
             };
             await Fixture.Commits.AddCommitAsync(commit);
 

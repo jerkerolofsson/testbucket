@@ -1,32 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
+using TestBucket.Contracts.Requirements;
 using TestBucket.Domain.Files.Models;
-using TestBucket.Domain.Requirements.Models;
 
+using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.PageSegmenter;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.ReadingOrderDetector;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.WordExtractor;
-using UglyToad.PdfPig;
-using TestBucket.Contracts.Requirements;
 
 namespace TestBucket.Domain.Requirements.Import.Strategies
 {
-    class PdfImporter : IDocumentImportStrategy
+    public class PdfImporter : IDocumentImportStrategy
     {
 
-        private static readonly Regex s_regexOrderedList = new Regex(@"\d*\.$");
+        private static readonly Regex s_regexOrderedList = new Regex(@"\d*\.*$");
 
         // Numeric headers
-        private static readonly Regex s_h4 = new Regex(@"^\d*\.\d*\.\d*\.\d*$");
-        private static readonly Regex s_h3 = new Regex(@"^\d*\.\d*\.\d*$");
-        private static readonly Regex s_h2 = new Regex(@"^\d*\.\d*$");
-        private static readonly Regex s_h1 = new Regex(@"^\d*$");
+        private static readonly Regex s_h4 = new Regex(@"^\d*\.\d*\.\d*\.\d", RegexOptions.Multiline);
+        private static readonly Regex s_h3 = new Regex(@"^\d*\.\d*\.\d", RegexOptions.Multiline);
+        private static readonly Regex s_h2 = new Regex(@"^\d\.\d", RegexOptions.Multiline);
+        private static readonly Regex s_h1 = new Regex(@"^\d\.", RegexOptions.Multiline);
 
         public Task ImportAsync(RequirementSpecificationDto spec, FileResource fileResource)
         {
@@ -69,10 +64,28 @@ namespace TestBucket.Domain.Requirements.Import.Strategies
 
                         // Special case for ordered lists, e.g. "1.", "2." ... "10."
                         bool isOrderedList = s_regexOrderedList.IsMatch(textInBlock);
-                        bool isH1 = s_h1.IsMatch(textInBlock);
-                        bool isH2 = s_h2.IsMatch(textInBlock);
-                        bool isH3 = s_h3.IsMatch(textInBlock);
-                        bool isH4 = s_h4.IsMatch(textInBlock);
+                        bool isH1 = s_h1.Match(textInBlock).Success;
+                        bool isH2 = s_h2.Match(textInBlock).Success;
+                        bool isH3 = s_h3.Match(textInBlock).Success;
+                        bool isH4 = s_h4.Match(textInBlock).Success;
+
+                        // If not a header, see if we can match by font size
+                        var maxFontSize = block.TextLines.SelectMany(w => w.Words).SelectMany(w => w.Letters).Max(l => l.FontSize);
+                        if(!isH1 && !isH2 && !isH3 && !isH4)
+                        {
+                            if (maxFontSize >= 20)
+                            {
+                                isH1 = true;
+                            }
+                            else if (maxFontSize >= 16)
+                            {
+                                isH2 = true;
+                            }
+                            else if (maxFontSize >= 14)
+                            {
+                                isH3 = true;
+                            }
+                        }
 
                         // Special handling for unordered-lists
                         if (textInBlock == "•")
@@ -101,41 +114,39 @@ namespace TestBucket.Domain.Requirements.Import.Strategies
                             }
                         }
 
-                        if (isOrderedList)
+                        if (isH4)
                         {
+                            text.Append("\n#### ");
                             text.Append(textInBlock);
+                            text.AppendLine();
+                            text.AppendLine();
+                        }
+                        else if (isH3)
+                        {
+                            text.Append("\n### ");
+                            text.Append(textInBlock);
+                            text.AppendLine();
+                            text.AppendLine();
+                        }
+                        else if (isH2)
+                        {
+                            text.Append("\n## ");
+                            text.Append(textInBlock);
+                            text.AppendLine();
+                            text.AppendLine();
+                        }
+
+                        else if (isH1)
+                        {
+                            text.Append("\n# ");
+                            text.Append(textInBlock);
+                            text.AppendLine();
+                            text.AppendLine();
                         }
                         else
                         {
-                            if (isH1)
-                            {
-                                text.Append("\n# ");
-                                text.Append(textInBlock);
-                                text.Append(' ');
-                            }
-                            else if (isH2)
-                            {
-                                text.Append("\n## ");
-                                text.Append(textInBlock);
-                                text.Append(' ');
-                            }
-                            else if (isH3)
-                            {
-                                text.Append("\n### ");
-                                text.Append(textInBlock);
-                                text.Append(' ');
-                            }
-                            else if (isH4)
-                            {
-                                text.Append("\n#### ");
-                                text.Append(textInBlock);
-                                text.Append(' ');
-                            }
-                            else
-                            {
-                                text.Append(textInBlock);
-                                text.AppendLine();
-                            }
+                            text.Append(textInBlock);
+                            text.AppendLine();
                         }
                     }
                 }

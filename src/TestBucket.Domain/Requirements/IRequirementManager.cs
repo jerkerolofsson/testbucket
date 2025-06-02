@@ -1,5 +1,7 @@
 ﻿using System.Security.Claims;
 
+using TestBucket.Contracts.Requirements;
+using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
@@ -198,4 +200,5 @@ public interface IRequirementManager
     /// <returns></returns>
     Task OnRequirementFieldChangedAsync(ClaimsPrincipal principal, RequirementField field);
     Task ExtractRequirementsFromSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification, CancellationToken cancellationToken);
+    Task ImportAsync(ClaimsPrincipal principal, TestProject project, List<RequirementEntityDto> entities);
 }

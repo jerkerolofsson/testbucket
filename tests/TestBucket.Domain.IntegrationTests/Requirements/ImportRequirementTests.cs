@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestBucket.Contracts.Requirements;
+using TestBucket.Domain.Requirements.Import.Strategies;
 
 namespace TestBucket.Domain.IntegrationTests.Requirements
 {
@@ -92,5 +94,6 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
             Assert.NotNull(requirements.Items.FirstOrDefault(x => x.ExternalId == "CC-1"));
             Assert.NotNull(requirements.Items.FirstOrDefault(x => x.ExternalId == "CC-13"));
         }
+
     }
 }

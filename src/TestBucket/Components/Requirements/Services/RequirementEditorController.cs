@@ -93,99 +93,13 @@ internal class RequirementEditorController : TenantBaseService
     }
 
 
-    public async Task<List<RequirementEntity>> ImportAsync(TestProject project, FileResource fileResource)
+    public async Task ImportAsync(TestProject project, FileResource fileResource)
     {
         var principal = await GetUserClaimsPrincipalAsync();
 
         var entities = await _importer.ImportFileAsync(principal, fileResource);
+        await _manager.ImportAsync(principal, project, entities);
 
-        var importedEntities = new List<RequirementEntity>();
-
-        // First import all specifications
-        Dictionary<string, long> specificationMap = [];
-
-        foreach (var entity in entities)
-        {
-            if (entity is RequirementSpecificationDto specificationDto)
-            {
-                var specification = specificationDto.ToDbo();
-
-                // Don't import without a slug, as this is how we map requirements to the correct spec.
-                if (specification.Slug is null)
-                {
-                    continue;
-                }
-
-                specification.TestProjectId = project.Id;
-                specification.TeamId = project.TeamId;
-                specification.TenantId = project.TenantId;
-
-                // Get existing specification if possible
-                var existingSpecification = await _manager.GetRequirementSpecificationBySlugAsync(principal, specification.Slug);
-                if (existingSpecification is not null)
-                {
-                    specificationMap[specification.Slug] = existingSpecification.Id;
-                }
-                else
-                {
-                    await AddRequirementSpecificationAsync(specification);
-                    importedEntities.Add(specification);
-                    specificationMap[specification.Slug] = specification.Id;
-                }
-            }
-        }
-
-        foreach (var entity in entities)
-        {
-            if (entity is RequirementDto requirementDto && specificationMap.Count > 0 && requirementDto.Slug is not null)
-            {
-                long specificationId = specificationMap.First().Value;
-                if (requirementDto.SpecificationSlug is not null && 
-                    specificationMap.TryGetValue(requirementDto.SpecificationSlug, out var specificationIdFromSlug))
-                {
-                    specificationId = specificationIdFromSlug;
-                }
-                var requirement = requirementDto.ToDbo();
-                requirement.RequirementSpecificationId = specificationId;
-                requirement.TestProjectId = project.Id;
-                requirement.TeamId = project.TeamId;
-                requirement.TenantId = project.TenantId;
-
-                if(requirementDto.ParentRequirementSlug is not null)
-                {
-                    // Todo:
-                    // - Need to import in order
-                    // - Circular dependencies? We need to do a 2nd pass for requirements to connect them
-                }
-
-                Requirement? existingRequirement = await _manager.GetRequirementBySlugAsync(principal, requirementDto.Slug);
-                if (existingRequirement is null)
-                {
-                    await AddRequirementAsync(requirement);
-                    importedEntities.Add(requirement);
-                }
-            }
-        }
-
-        // Links between requirements
-        foreach (var entity in entities)
-        {
-            if (entity is RequirementDto requirementDto && requirementDto.Slug is not null)
-            {
-                if(!string.IsNullOrEmpty(requirementDto.ParentRequirementSlug))
-                {
-                    Requirement? existingRequirement = await _manager.GetRequirementBySlugAsync(principal, requirementDto.Slug);
-                    Requirement? parentRequirement = await _manager.GetRequirementBySlugAsync(principal, requirementDto.ParentRequirementSlug);
-                    if(existingRequirement is not null && parentRequirement is not null)
-                    {
-                        existingRequirement.ParentRequirementId = parentRequirement.Id;
-                        await SaveRequirementAsync(existingRequirement);
-                    }
-                }
-            }
-        }
-
-                return importedEntities;
     }
 
     public async Task LinkRequirementToTestCaseAsync(Requirement requirement, TestProject? project, Team? team)

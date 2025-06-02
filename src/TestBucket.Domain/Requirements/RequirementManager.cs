@@ -1,19 +1,21 @@
 ﻿using System.Collections.Generic;
 
+using Mediator;
+
+using TestBucket.Contracts.Requirements;
+using TestBucket.Domain.Fields.Handlers;
+using TestBucket.Domain.Requirements.Events;
+using TestBucket.Domain.Requirements.Import;
+using TestBucket.Domain.Requirements.Mapping;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.Specifications;
 using TestBucket.Domain.Requirements.Specifications.Folders;
 using TestBucket.Domain.Requirements.Specifications.Links;
+using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
-
-using TestBucket.Domain.Requirements.Specifications.Requirements;
-using TestBucket.Domain.Requirements.Events;
-using Mediator;
-using TestBucket.Domain.Traceability.Models;
 using TestBucket.Domain.Traceability;
-using TestBucket.Domain.Fields.Handlers;
-using TestBucket.Domain.Requirements.Import;
+using TestBucket.Domain.Traceability.Models;
 
 namespace TestBucket.Domain.Requirements
 {
@@ -687,6 +689,108 @@ namespace TestBucket.Domain.Requirements
                 await AddRequirementAsync(principal, requirement);
 
                 await RestoreRequirementLinks(principal, oldLinks, requirement);
+            }
+        }
+
+        public async Task ImportAsync(ClaimsPrincipal principal, TestProject project, List<RequirementEntityDto> entities)
+        {
+            var importedEntities = new List<RequirementEntity>();
+
+            // First import all specifications
+            Dictionary<string, long> specificationMap = [];
+
+            foreach (var entity in entities)
+            {
+                if (entity is RequirementSpecificationDto specificationDto)
+                {
+                    var specification = specificationDto.ToDbo();
+
+
+                    specification.TestProjectId = project.Id;
+                    specification.TeamId = project.TeamId;
+                    specification.TenantId = project.TenantId;
+
+                    // Get existing specification if possible
+                    bool add = false;
+                    if (specification.Slug is not null)
+                    {
+                        var existingSpecification = await GetRequirementSpecificationBySlugAsync(principal, specification.Slug);
+                        if (existingSpecification is not null)
+                        {
+                            specificationMap[specification.Slug] = existingSpecification.Id;
+                            add = false;
+                        }
+                        else
+                        {
+                            add = true;
+                        }
+                    }
+                    else
+                    {
+                        add = true;
+                    }
+
+                    if (add)
+                    {
+                        await AddRequirementSpecificationAsync(principal, specification);
+                        if (specification.Slug is null)
+                        {
+                            throw new Exception("Expected slug to be set after specification was added");
+                        }
+                        importedEntities.Add(specification);
+                        specificationMap[specification.Slug] = specification.Id;
+                    }
+                }
+            }
+
+            foreach (var entity in entities)
+            {
+                if (entity is RequirementDto requirementDto && specificationMap.Count > 0 && requirementDto.Slug is not null)
+                {
+                    long specificationId = specificationMap.First().Value;
+                    if (requirementDto.SpecificationSlug is not null &&
+                        specificationMap.TryGetValue(requirementDto.SpecificationSlug, out var specificationIdFromSlug))
+                    {
+                        specificationId = specificationIdFromSlug;
+                    }
+                    var requirement = requirementDto.ToDbo();
+                    requirement.RequirementSpecificationId = specificationId;
+                    requirement.TestProjectId = project.Id;
+                    requirement.TeamId = project.TeamId;
+                    requirement.TenantId = project.TenantId;
+
+                    if (requirementDto.ParentRequirementSlug is not null)
+                    {
+                        // Todo:
+                        // - Need to import in order
+                        // - Circular dependencies? We need to do a 2nd pass for requirements to connect them
+                    }
+
+                    Requirement? existingRequirement = await GetRequirementBySlugAsync(principal, requirementDto.Slug);
+                    if (existingRequirement is null)
+                    {
+                        await AddRequirementAsync(principal, requirement);
+                        importedEntities.Add(requirement);
+                    }
+                }
+            }
+
+            // Links between requirements
+            foreach (var entity in entities)
+            {
+                if (entity is RequirementDto requirementDto && requirementDto.Slug is not null)
+                {
+                    if (!string.IsNullOrEmpty(requirementDto.ParentRequirementSlug))
+                    {
+                        Requirement? existingRequirement = await GetRequirementBySlugAsync(principal, requirementDto.Slug);
+                        Requirement? parentRequirement = await GetRequirementBySlugAsync(principal, requirementDto.ParentRequirementSlug);
+                        if (existingRequirement is not null && parentRequirement is not null)
+                        {
+                            existingRequirement.ParentRequirementId = parentRequirement.Id;
+                            await UpdateRequirementAsync(principal, existingRequirement);
+                        }
+                    }
+                }
             }
         }
     }

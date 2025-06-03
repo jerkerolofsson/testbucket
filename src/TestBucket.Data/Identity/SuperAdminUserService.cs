@@ -1,20 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using TestBucket.Domain.Identity;
-using TestBucket.Domain.Identity.Models;
-using TestBucket.Domain.Identity.Permissions;
-using TestBucket.Domain.Shared;
 using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Data.Identity;
@@ -209,5 +198,12 @@ internal class SuperAdminUserService : ISuperAdminUserService
     {
         var roleManager = _serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         return await roleManager.Roles.Where(x => x.Name != null).Select(x => x.Name!).ToListAsync();
+    }
+
+    public async Task DeleteUserAsync(ApplicationUser user)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+        await userManager.DeleteAsync(user);
     }
 }

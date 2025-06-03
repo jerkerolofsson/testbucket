@@ -1,4 +1,4 @@
-﻿@attribute [Authorize(Roles = "ADMIN")]
+﻿@attribute [Authorize]
 @page "/{TenantId}/Settings/Users/{NormalizedUserName}"
 @using TestBucket.Components.Users.Services
 @using TestBucket.Domain.Settings
@@ -14,7 +14,13 @@
         <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
             <MudText Class="mb-3" Typo="Typo.h1">@_user.UserName</MudText>
             <MudSpacer/>
-            <MudButton Color="Color.Error" Variant="Variant.Filled">@loc["delete"]</MudButton>
+             <PermissionView Entity="PermissionEntityType.User" Level="PermissionLevel.Delete">
+                <Authorized>
+                    <MudButton 
+                        StartIcon="@Icons.Material.Filled.Delete"
+                        Class="tb-button-delete" OnClick="DeleteUserAsync" Variant="Variant.Filled">@loc["delete"]</MudButton>
+                </Authorized>
+            </PermissionView>
         </MudStack>
 
         <MudText Class="mb-3" Typo="Typo.h1">@loc["roles"]</MudText>
@@ -45,6 +51,19 @@
     private ApplicationUser? _user;
     private IReadOnlyList<string> _roleNames = [];
     private IReadOnlyList<string> _userRoleNames = [];
+
+    private async Task DeleteUserAsync()
+    {
+        if (_user is null || NormalizedUserName is null)
+        {
+            return;
+        }
+        var wasUserDeleted = await userController.DeleteUserAsync(_user);
+        if (wasUserDeleted)
+        {
+            appNavigationManager.NavigateTo($"/{TenantId}/Settings/Users");
+        }
+    }
 
     private async Task RemoveRoleFromUserAsync(string roleName)
     {

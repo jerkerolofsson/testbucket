@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+
+using TestBucket.Localization;
 
 namespace TestBucket.Components.Tenants;
 internal abstract class TenantBaseService
@@ -16,6 +19,31 @@ internal abstract class TenantBaseService
     public TenantBaseService(AuthenticationStateProvider authenticationStateProvider)
     {
         _authenticationStateProvider = authenticationStateProvider;
+    }
+
+    /// <summary>
+    /// Shows an error message box if the user has no permission to do the task
+    /// </summary>
+    /// <param name="dialogService"></param>
+    /// <param name="entityType"></param>
+    /// <param name="level"></param>
+    /// <returns>True if the user has permission</returns>
+    protected async Task<bool> ShowErrorIfNoPermissionAsync(
+        IStringLocalizer<SharedStrings> loc,
+        IDialogService dialogService, PermissionEntityType entityType, PermissionLevel level)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        if (!principal.HasPermission(PermissionEntityType.User, PermissionLevel.Delete))
+        {
+            await dialogService.ShowMessageBox(new MessageBoxOptions
+            {
+                CancelText = loc["cancel"],
+                Title = loc["no-permission-title"],
+                MarkupMessage = new MarkupString(loc["no-permission-message"])
+            });
+            return false;
+        }
+        return true;
     }
 
     protected async Task<ClaimsPrincipal> GetUserClaimsPrincipalAsync()

@@ -64,7 +64,7 @@
                         </Authorized>
                     </PermissionView>
 
-                    @if (context.Item.Locked)
+                    @* @if (context.Item.Locked)
                     {
                         <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
                             <Authorized>
@@ -86,13 +86,13 @@
                                 <MudIcon Icon="@Icons.Material.Filled.Lock"/>
                             </NotAuthorized>
                         </PermissionView>
-                    }
+                    } *@
                 </CellTemplate>
             </TemplateColumn>
 
             <PropertyColumn Property="x => x.Name" Title="@loc["name"]" />
             <PropertyColumn Property="x => x.Type" Title="@accountLoc["account-type"]" />
-            <PropertyColumn Property="x => x.SubType" Title="@accountLoc["account-subtype"]" />
+            <PropertyColumn Property="x => x.SubType" Title="@accountLoc["account-sub-type"]" />
             <TemplateColumn Title="@loc["modified"]">
                 <CellTemplate>@context.Item.Modified.Humanize()</CellTemplate>
             </TemplateColumn>

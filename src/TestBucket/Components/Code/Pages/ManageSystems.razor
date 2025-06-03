@@ -26,7 +26,8 @@
                 <MudSpacer />
                 <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
                     <Authorized>
-                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"></MudIconButton>
+                        <MudButton StartIcon="@Icons.Material.Filled.Add"
+                                   Class="tb-button-new" OnClick="AddAsync" Variant="Variant.Filled">@loc["add"]</MudButton>
                     </Authorized>
                 </PermissionView>
             </MudStack>

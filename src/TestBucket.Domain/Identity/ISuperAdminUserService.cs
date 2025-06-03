@@ -18,4 +18,5 @@ public interface ISuperAdminUserService
     Task<IdentityResult> RegisterAndConfirmUserAsync(string tenantId, string email, string password);
     Task UpdateUserAsync(string tenantId, ApplicationUser user);
     Task<IReadOnlyList<string>> GetUserRoleNamesAsync(ApplicationUser user);
+    Task DeleteUserAsync(ApplicationUser user);
 }

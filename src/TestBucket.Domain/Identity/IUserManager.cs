@@ -77,4 +77,5 @@ public interface IUserManager
     Task<IReadOnlyList<string>> GetRoleNamesAsync(ClaimsPrincipal principal);
     Task AddRoleAsync(ClaimsPrincipal principal, string name);
     Task<IReadOnlyList<string>> GetUserRoleNamesAsync(ClaimsPrincipal principal, string normalizedUserName);
+    Task DeleteUserAsync(ClaimsPrincipal principal, ApplicationUser user);
 }

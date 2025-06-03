@@ -1,4 +1,4 @@
-﻿@attribute [Authorize(Roles = "ADMIN")]
+﻿@attribute [Authorize]
 @page "/{TenantId}/Settings/Users"
 @using TestBucket.Components.Shared.Profile
 @using TestBucket.Components.Users.Services
@@ -17,7 +17,7 @@
                  Style="width: 100%"
                  Dense
                  Hover
-                 RowStyle="cursor-pointer tb-datarow"
+                 RowClass="cursor-pointer tb-datarow"
                  T="ApplicationUser"
                  @ref="_dataGrid"
                  RowClick="(e) => OnRowClicked(e.Item)"
@@ -28,7 +28,13 @@
                 <MudIcon Icon="@Icons.Material.Filled.PeopleAlt" Size="Size.Large" Color="Color.Secondary" />
                 <MudText Typo="Typo.h2">@loc["users"]</MudText>
                 <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddUserAsync"></MudIconButton>
+                 <PermissionView Entity="PermissionEntityType.User" Level="PermissionLevel.Write">
+                    <Authorized>
+                        <MudButton 
+                            StartIcon="@Icons.Material.Filled.Add"
+                            Class="tb-button-new" OnClick="AddUserAsync" Variant="Variant.Filled">@loc["add"]</MudButton>
+                    </Authorized>
+                </PermissionView>
             </MudStack>
         </ToolBarContent>
 
@@ -42,7 +48,7 @@
                 </CellTemplate>
             </TemplateColumn>
             <PropertyColumn Property="x => x.Email" Title="@loc["email"]" />
-            <PropertyColumn Property="x => x.AccessFailedCount" Title="AccessFailedCount" />
+            <PropertyColumn Property="x => x.AccessFailedCount" Title="@loc["access-failed-count"]" />
         </Columns>
 
         <PagerContent>

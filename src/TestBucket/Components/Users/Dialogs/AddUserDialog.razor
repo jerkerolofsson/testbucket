@@ -1,11 +1,13 @@
 ﻿@using TestBucket.Components.Account.Shared
 @using TestBucket.Components.Users.Services
 @using TestBucket.Domain.Requirements.Models
-@attribute [Authorize(Roles = "ADMIN")]
+@attribute [Authorize]
 @inject UserController userController
+@inject IStringLocalizer<SharedStrings> loc
 
 <EditForm Model="@_model" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>@loc["add-user"]</TitleContent>
         <DialogContent>
             <MudStack Spacing="1">
 
@@ -30,7 +32,10 @@
                     <ValidationMessage For="() => _model.ConfirmPassword" class="text-danger" />
                 </Field>
 
-                @_errorMessage
+                @if(_identityErrors.Count() > 0)
+                {
+                    <div>@_errorMessage</div>
+                }
 
             </MudStack>
         </DialogContent>

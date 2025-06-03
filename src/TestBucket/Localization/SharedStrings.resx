@@ -713,4 +713,16 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="std-err" xml:space="preserve">
     <value>Standard Error</value>
   </data>
+  <data name="username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="access-failed-count" xml:space="preserve">
+    <value>Access failed count</value>
+  </data>
+  <data name="locked" xml:space="preserve">
+    <value>Locked</value>
+  </data>
 </root>

@@ -56,7 +56,7 @@ internal class UserManager : IUserManager
         if (principal.Identity?.Name != user.UserName)
         {
             // Users can update themselves, but if they are not admin they cannot update other users
-            principal.ThrowIfNotAdmin();
+            principal.ThrowIfNoPermission(PermissionEntityType.User, PermissionLevel.Write);
         }
 
         await _superAdminUserService.UpdateUserAsync(tenantId, user);
@@ -114,7 +114,7 @@ internal class UserManager : IUserManager
             throw new InvalidDataException("No audience has been configured");
         }
 
-        var user = await FindAsync(principal) ?? throw new InvalidOperationException("User not found"); ;
+        var user = await FindAsync(principal) ?? throw new InvalidOperationException("User not found");
         var tenantId = principal.GetTenantIdOrThrow();
 
         // Generate the API key
@@ -130,7 +130,7 @@ internal class UserManager : IUserManager
 
     public async Task DeleteApiKeyAsync(ClaimsPrincipal principal, ApplicationUserApiKey apiKey)
     {
-        var user = await FindAsync(principal) ?? throw new InvalidOperationException("User not found"); ;
+        var user = await FindAsync(principal) ?? throw new InvalidOperationException("User not found");
 
         var tenantId = principal.GetTenantIdOrThrow();
         await _userService.DeleteApiKeyAsync(user.Id, tenantId, apiKey.Id);
@@ -138,11 +138,13 @@ internal class UserManager : IUserManager
 
     public async Task<ApplicationUser?> GetUserByNormalizedUserNameAsync(ClaimsPrincipal principal, string normalizedUserName)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.User, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         return await _userService.FindByNormalizedEmailAsync(principal, normalizedUserName);
     }
     public async Task<ApplicationUser?> FindAsync(ClaimsPrincipal principal)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.User, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         return await _userService.FindAsync(principal, tenantId);
     }
@@ -156,35 +158,35 @@ internal class UserManager : IUserManager
 
     public async Task AssignRoleAsync(ClaimsPrincipal principal, string normalizedEmail, string role)
     {
-        principal.ThrowIfNotAdmin();
+        principal.ThrowIfNoPermission(PermissionEntityType.User, PermissionLevel.Write);
         await _superAdminUserService.AssignRoleAsync(principal.GetTenantIdOrThrow(), normalizedEmail, role);
     }
     public async Task UnassignRoleAsync(ClaimsPrincipal principal, string normalizedEmail, string role)
     {
-        principal.ThrowIfNotAdmin();
+        principal.ThrowIfNoPermission(PermissionEntityType.User, PermissionLevel.Write);
         await _superAdminUserService.UnassignRoleAsync(principal.GetTenantIdOrThrow(), normalizedEmail, role);
     }
 
     public async Task AddRoleAsync(ClaimsPrincipal principal, string role)
     {
-        principal.ThrowIfNotAdmin();
+        principal.ThrowIfNoPermission(PermissionEntityType.User, PermissionLevel.Write);
         await _superAdminUserService.AddRoleAsync(principal.GetTenantIdOrThrow(), role);
     }
     public async Task RemoveRoleAsync(ClaimsPrincipal principal, string role)
     {
-        principal.ThrowIfNotAdmin();
+        principal.ThrowIfNoPermission(PermissionEntityType.User, PermissionLevel.Write);
         await _superAdminUserService.RemoveRoleAsync(principal.GetTenantIdOrThrow(), role);
     }
 
     public async Task<IReadOnlyList<string>> GetRoleNamesAsync(ClaimsPrincipal principal)
     {
-        principal.ThrowIfNotAdmin();
+        principal.ThrowIfNoPermission(PermissionEntityType.User, PermissionLevel.Read);
         return await _superAdminUserService.GetRoleNamesAsync(principal.GetTenantIdOrThrow());
     }
 
     public async Task<IReadOnlyList<string>> GetUserRoleNamesAsync(ClaimsPrincipal principal,string normalizedUserName)
     {
-        principal.ThrowIfNotAdmin();
+        principal.ThrowIfNoPermission(PermissionEntityType.User, PermissionLevel.Read);
         var user = await GetUserByNormalizedUserNameAsync(principal, normalizedUserName);
         if(user is null)
         {
@@ -193,4 +195,8 @@ internal class UserManager : IUserManager
         return await _superAdminUserService.GetUserRoleNamesAsync(user);
     }
 
+    public async Task DeleteUserAsync(ClaimsPrincipal principal, ApplicationUser user)
+    {
+        await _superAdminUserService.DeleteUserAsync(user);
+    }
 }

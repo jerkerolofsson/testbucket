@@ -1,17 +1,36 @@
 ﻿@inject IUserPreferencesManager userPreferencesManager
 @inject AuthenticationStateProvider authenticationStateProvider
+@inject IStringLocalizer<SharedStrings> loc
 
-@if (IsDarkMode)
+@if(UserPreferences?.PreferTextToIcons == true)
 {
-    <MudIconButton Icon="@Icons.Material.Filled.LightMode" OnClick="SetLightMode" />
+    if (IsDarkMode)
+    {
+        <MudButton Color="Color.Primary" OnClick="SetLightMode">@loc["set-light-mode"]</MudButton>
+    }
+    else
+    {
+        <MudButton Color="Color.Primary" OnClick="SetDarkMode">@loc["set-dark-mode"]</MudButton>
+    }
 }
 else
 {
-    <MudIconButton Icon="@Icons.Material.Filled.DarkMode" OnClick="SetDarkMode" />
+    if (IsDarkMode)
+    {
+        <MudTooltip Text="@loc["set-light-mode"]">
+            <MudIconButton Icon="@Icons.Material.Filled.LightMode" OnClick="SetLightMode" />
+        </MudTooltip>
+    }
+    else
+    {
+        <MudTooltip Text="@loc["set-dark-mode"]">
+            <MudIconButton Icon="@Icons.Material.Filled.DarkMode" OnClick="SetDarkMode" />
+        </MudTooltip>
+    }
 }
 @code {
+    [CascadingParameter] UserPreferences? UserPreferences { get; set; }
     [Parameter] public bool IsDarkMode { get; set; }
-
     [Parameter] public EventCallback<bool> IsDarkModeChanged { get; set; }
 
     private async Task SetLightMode()

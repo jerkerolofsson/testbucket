@@ -70,6 +70,7 @@ internal class CreateRequirementCommand : ICommand
 
         var parameters = new DialogParameters<CreateRequirementDialog>
         {
+            { x => x.RequirementType, "general" }
         };
         var dialog = await _dialogService.ShowAsync<CreateRequirementDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;

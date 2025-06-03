@@ -1270,3 +1270,16 @@ div.tb-profile-image.tb-background-9 {
 .tb-http-api-checks-datagrid tr.error {
     background: rgba(255,100,100, 0.15);
 }
+
+.tb-dialog-tall {
+    min-width: 35vw;
+    min-height: 75vh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.tb-dialog-tall .mud-focus-trap-child-container  {
+    display: grid;
+    height: 100%;
+    grid-template-rows: 1fr auto;
+}

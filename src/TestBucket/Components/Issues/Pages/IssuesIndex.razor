@@ -12,6 +12,7 @@
 @inject IssueController controller
 @inject IExtensionManager extensionManager
 @inject CommandController commandManager
+@inject UserPreferencesService userPreferencesService
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
 
@@ -52,7 +53,7 @@
             </ToolBarContent>
 
             <ColGroup>
-                <col style="width: 100px;" />
+                <col style="width: 150px;" />
                 <col style="width: 2fr;" />
                 <col style="width: 100px;" />
                 <col style="width: 100px;" />
@@ -64,13 +65,20 @@
                     <CellTemplate>
                         <MudTooltip Text="@context.Item.Url">
                             <MudStack AlignItems="AlignItems.Center" Row Spacing=1>
-                                @if (context.Item.ExternalSystemName is not null)
+                                @if(_prefTextToIcons)
                                 {
-                                    <MudIcon Icon="@extensionManager.GetIcon(context.Item.ExternalSystemName??"")" />
+                                    <MudText>@(context.Item.ExternalSystemName ?? "TestBucket")</MudText>
                                 }
                                 else
                                 {
-                                    <MudIcon Icon="@TbIcons.Brands.TestBucket" />
+                                    @if (context.Item.ExternalSystemName is not null)
+                                    {
+                                        <MudIcon Icon="@extensionManager.GetIcon(context.Item.ExternalSystemName??"")" />
+                                    }
+                                    else
+                                    {
+                                        <MudIcon Icon="@TbIcons.Brands.TestBucket" />
+                                    }
                                 }
                                 <MudText>@context.Item.ExternalDisplayId</MudText>
                             </MudStack>
@@ -128,7 +136,14 @@
     private string? _searchText;
 
     private long? _totalCount;
+    
+    private bool _prefTextToIcons = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var userPreferences = await userPreferencesService.GetUserPreferencesAsync();
+        _prefTextToIcons = userPreferences?.PreferTextToIcons ?? false;
+    }
     protected override void OnParametersSet()
     {
         appNavigationManager.State.SelectedIssue = null;

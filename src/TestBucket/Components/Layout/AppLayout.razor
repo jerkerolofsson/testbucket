@@ -15,6 +15,7 @@
 @inject AppNavigationManager appNavigationManager
 @inject IUnifiedSearchManager unifiedSearchManager
 @inject IStringLocalizer<SharedStrings> loc
+@inject UserPreferencesService userPreferencesService
 
 @if (tenantId is not null && _state is not null)
 {
@@ -46,67 +47,76 @@
     <ProgressStatus />
     <CommandBindings />
 
-    <CascadingValue Value="@_tenant">
-        <CascadingValue Value="@_project">
-            <CascadingValue Value="@_team">
-                <CascadingValue Value="@_state">
+    <CascadingValue Value="@_userPreferences">
+        <CascadingValue Value="@_tenant">
+            <CascadingValue Value="@_project">
+                <CascadingValue Value="@_team">
+                    <CascadingValue Value="@_state">
 
-                    <div style="display: grid; grid-template-rows: auto 1fr;" class="container-fill">
+                        <div style="display: grid; grid-template-rows: auto 1fr;" class="container-fill">
 
-                        <MudToolBar Style="@MenuStyle" Class="@MenuClass">
-                            <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
+                            <MudToolBar Style="@MenuStyle" Class="@MenuClass">
+                                <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
 
-                                @* <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" /> *@
+                                    @* <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" /> *@
 
-                                <ProjectBadgePicker Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" />
-                                @* <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" /> *@
+                                    <ProjectBadgePicker Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" />
+                                    @* <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" /> *@
 
-                                <TbNavLink Href="@codeUrl">@loc["code"]</TbNavLink>
-                                <TbNavLink Href="@requirementsUrl">@loc["requirements"]</TbNavLink>
-                                <TbNavLink Href="@testsUrl">@loc["testing"]</TbNavLink>
-                                <TbNavLink Href="@issuesUrl">@loc["issues"]</TbNavLink>
-                                <TbNavLink Href="@reportingUrl">@loc["reporting"]</TbNavLink>
+                                    <TbNavLink Href="@codeUrl">@loc["code"]</TbNavLink>
+                                    <TbNavLink Href="@requirementsUrl">@loc["requirements"]</TbNavLink>
+                                    <TbNavLink Href="@testsUrl">@loc["testing"]</TbNavLink>
+                                    <TbNavLink Href="@issuesUrl">@loc["issues"]</TbNavLink>
+                                    <TbNavLink Href="@reportingUrl">@loc["reporting"]</TbNavLink>
 
-                                <MudSpacer/>
+                                    <MudSpacer/>
 
-                                <CommandPalette/>
-                                <UnifiedSearch/>
+                                    <CommandPalette/>
+                                    <UnifiedSearch/>
 
-                                <MudMenu Icon="@Icons.Material.Filled.Add">
-                                    <CommandMenuItems TypeNames="menu-new"/>
-                                </MudMenu>
+                                    <MudMenu Icon="@Icons.Material.Filled.Add">
+                                        <CommandMenuItems TypeNames="menu-new"/>
+                                    </MudMenu>
 
-                                <DarkModeToggle IsDarkMode="@_state.IsDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
-                                <SelfProfileImage/>
-                        
-                                <MudIconButton Icon="@TbIcons.BoldDuoTone.Settings" Href="@settingsUrl"></MudIconButton>
+                                    <DarkModeToggle IsDarkMode="@_state.IsDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
+                                    <SelfProfileImage/>
 
-                                <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+                                    @if(_prefTextToIcons)
+                                    {
+                                        <MudButton Color="Color.Primary" Href="@settingsUrl">@loc["settings"]</MudButton>
+                                    }
+                                    else
+                                    {
+                                        <MudIconButton Icon="@TbIcons.BoldDuoTone.Settings" Href="@settingsUrl"></MudIconButton>
+                                    }
 
-                                    <!-- Profile / Logout -->
-                                    <AuthorizeView>
-                                        <MudDivider />
-                                        <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="@loc["account"]" Href="@manageUrl"></MudMenuItem>
-                                        <MudMenuItem Label="@loc["about"]" Href="/about"></MudMenuItem>
-                                        <MudMenuItem>
-                                            <form action="/Logout" method="post">
-                                                <AntiforgeryToken />
-                                                <input type="hidden" name="ReturnUrl" value="/" />
-                                                <button type="submit">@loc["logout"]</button>
-                                            </form>
-                                        </MudMenuItem>
-                                    </AuthorizeView>
-                                </MudMenu>
-                            </MudStack>
-                        </MudToolBar>
+                                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" Label="@MoreLabel">
 
-                        <main class="container-fill">
-                            <article class="content container-fill">
-                                @Body
-                            </article>
-                        </main>
+                                        <!-- Profile / Logout -->
+                                        <AuthorizeView>
+                                            <MudDivider />
+                                            <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="@loc["account"]" Href="@manageUrl"></MudMenuItem>
+                                            <MudMenuItem Label="@loc["about"]" Href="/about"></MudMenuItem>
+                                            <MudMenuItem>
+                                                <form action="/Logout" method="post">
+                                                    <AntiforgeryToken />
+                                                    <input type="hidden" name="ReturnUrl" value="/" />
+                                                    <button type="submit">@loc["logout"]</button>
+                                                </form>
+                                            </MudMenuItem>
+                                        </AuthorizeView>
+                                    </MudMenu>
+                                </MudStack>
+                            </MudToolBar>
 
-                    </div>
+                            <main class="container-fill">
+                                <article class="content container-fill">
+                                    @Body
+                                </article>
+                            </main>
+
+                        </div>
+                    </CascadingValue>
                 </CascadingValue>
             </CascadingValue>
         </CascadingValue>
@@ -136,6 +146,11 @@ else
     public string MenuStyle => $"width: 100%; ";
     public string MenuClass => $"tb-toolbar main " + (_state.IsDarkMode ? "dark" : "light");
 
+    private bool _prefTextToIcons = false;
+    private UserPreferences? _userPreferences;
+
+    private string MoreLabel => _prefTextToIcons == true ? loc["more"] : "";
+
     protected override async Task OnInitializedAsync()
     {
         _state = await themingService.GetApplicationStateAsync();
@@ -147,6 +162,9 @@ else
 
         _project = await projectService.GetActiveProjectAsync();
         _team = await teamService.GetActiveTeamAsync();
+
+        _userPreferences = await userPreferencesService.GetUserPreferencesAsync();
+        _prefTextToIcons = _userPreferences?.PreferTextToIcons ?? false;
     }
 
     private void OnUserPreferencesChanged(UserPreferences preferences)

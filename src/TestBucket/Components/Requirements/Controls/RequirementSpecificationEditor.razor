@@ -76,6 +76,13 @@
                             T="string"
                             AutoFocus="true" />
                         </Field>
+
+                        <Field>
+                            <FieldHeader>@loc["type"]</FieldHeader>
+                            <RequirementSpecificationTypeSelect Type="@Specification.SpecificationType" TypeChanged="OnTypeChanged"/>
+                        </Field>
+
+
                     }
                 </MudStack>
             </EndContent>
@@ -150,6 +157,15 @@
             return;
         }
         Specification.Name = name;
+    }
+    
+    private void OnTypeChanged(string type)
+    {
+        if(Specification is null)
+        {
+            return;
+        }
+        Specification.SpecificationType = type;
     }
 
     private void OnDescriptionChanged(string description)

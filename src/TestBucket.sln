@@ -93,6 +93,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Blazor", "TestBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Blazor.Tests", "..\tests\TestBucket.Blazor.Tests\TestBucket.Blazor.Tests.csproj", "{EA5AD401-23B5-4179-9513-34DF2ACE54F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Jira", "integrations\TestBucket.Jira\TestBucket.Jira.csproj", "{0DC31716-9BD9-47AB-AAF4-132B6C3BF6B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -215,6 +217,10 @@ Global
 		{EA5AD401-23B5-4179-9513-34DF2ACE54F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA5AD401-23B5-4179-9513-34DF2ACE54F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA5AD401-23B5-4179-9513-34DF2ACE54F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DC31716-9BD9-47AB-AAF4-132B6C3BF6B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DC31716-9BD9-47AB-AAF4-132B6C3BF6B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DC31716-9BD9-47AB-AAF4-132B6C3BF6B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DC31716-9BD9-47AB-AAF4-132B6C3BF6B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -259,6 +265,7 @@ Global
 		{46F08701-D6EE-4E16-9B49-AFA1F3976E6F} = {C46B4D66-0F48-4D2A-A197-455D4A4A4DD8}
 		{FFBD5845-E873-4CAF-B0BF-4047F9334FBA} = {685C80D1-64F7-4419-B9F0-588F6C5DB3F3}
 		{EA5AD401-23B5-4179-9513-34DF2ACE54F9} = {685C80D1-64F7-4419-B9F0-588F6C5DB3F3}
+		{0DC31716-9BD9-47AB-AAF4-132B6C3BF6B3} = {F6F1BD5A-FFAC-40D0-9497-D30F9FE19B47}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37FBEEC7-21BB-422E-866E-8B5C94540F5B}

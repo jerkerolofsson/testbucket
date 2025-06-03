@@ -14,7 +14,7 @@
     <MudDataGrid ServerData="LoadGridData"
         Dense
         Hover
-                 RowStyle="pointer-cursor tb-datarow"
+        RowClass="cursor-pointer tb-datarow"
         T="Tenant"
         RowClick="(e) => OnRowClicked(e.Item)"
         @ref="_dataGrid"

@@ -3,8 +3,15 @@
 @inject IDialogService dialogService
 @inject IStringLocalizer<SharedStrings> loc
 
-<GenericAvatar Class="cursor-pointer" Text="@SelectedProject?.ShortName" ImageUri="@SelectedProject?.IconUrl" ImageClicked="OnImageClicked">
-</GenericAvatar>
+@if (UserPreferences?.PreferTextToIcons == true)
+{
+    <MudButton Color="Color.Primary" OnClick="OnImageClicked">@loc["project"] @SelectedProject?.Name</MudButton>
+}
+else
+{
+    <GenericAvatar Class="cursor-pointer" Text="@SelectedProject?.ShortName" ImageUri="@SelectedProject?.IconUrl" ImageClicked="OnImageClicked">
+    </GenericAvatar>
+}
 
 <MudDialog @bind-Visible="_open" Options="@DefaultBehaviors.DialogOptions">
     <TitleContent>@loc["projects"]</TitleContent>
@@ -40,6 +47,7 @@
 @code {
     private TestProject[] _projects = [];
 
+    [CascadingParameter] UserPreferences? UserPreferences { get; set; }
     [Parameter] public Team? Team { get; set; }
     [Parameter] public TestProject? SelectedProject { get; set; }
     [Parameter] public EventCallback<TestProject?> SelectedProjectChanged { get; set; }

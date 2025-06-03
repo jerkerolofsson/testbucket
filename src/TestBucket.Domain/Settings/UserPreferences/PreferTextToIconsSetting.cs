@@ -11,16 +11,16 @@ using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Domain.Settings.Appearance
 {
-    class IncreasedFontSizeSetting : SettingAdapter
+    class PreferTextToIconsSetting : SettingAdapter
     { 
         private readonly IUserPreferencesManager _userPreferencesManager;
 
-        public IncreasedFontSizeSetting(IUserPreferencesManager manager)
+        public PreferTextToIconsSetting(IUserPreferencesManager manager)
         {
             _userPreferencesManager = manager;
 
-            Metadata.Name = "Increased Font Size";
-            Metadata.Description = "Increases the font size overriding theme settings";
+            Metadata.Name = "prefer-text-to-icons";
+            Metadata.Description = "prefer-text-to-icons-description";
             Metadata.Category.Name = "Accessibility";
             Metadata.Category.Icon = SettingIcon.Accessibility;
             Metadata.Section.Name = "Appearance";
@@ -41,7 +41,7 @@ namespace TestBucket.Domain.Settings.Appearance
 
             var preferences = await _userPreferencesManager.LoadUserPreferencesAsync(principal);
             preferences ??= new Identity.Models.UserPreferences() { TenantId = tenantId, UserName = username };
-            return new FieldValue { BooleanValue = preferences.IncreasedFontSize, FieldDefinitionId = 0 };
+            return new FieldValue { BooleanValue = preferences.PreferTextToIcons, FieldDefinitionId = 0 };
         }
 
         public override async Task WriteAsync(SettingContext context, FieldValue value)
@@ -58,7 +58,7 @@ namespace TestBucket.Domain.Settings.Appearance
             }
 
             var preferences = await _userPreferencesManager.LoadUserPreferencesAsync(principal);
-            preferences.IncreasedFontSize = value.BooleanValue.Value;
+            preferences.PreferTextToIcons = value.BooleanValue.Value;
 
             await _userPreferencesManager.SaveUserPreferencesAsync(principal, preferences);
         }

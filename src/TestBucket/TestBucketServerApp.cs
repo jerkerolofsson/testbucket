@@ -317,6 +317,7 @@ public static class TestBucketServerApp
         builder.Services.AddGitHubExtension();
         builder.Services.AddTrelloExtension();
         builder.Services.AddGitlabExtension();
+        builder.Services.AddJiraExtension();
         builder.Services.AddAzureExtension();
 
         builder.Services.AddHotKeys2();

@@ -11,8 +11,8 @@
 <MudDataGrid    
     Items="_fields"
     Dense
-    Hover 
-    RowClass="tb-datarow pointer-cursor"
+    Hover
+    RowClass="tb-datarow cursor-pointer"
     T="FieldDefinition"
     RowClick="async e => await EditFieldAsync(e.Item)"
     SortMode="SortMode.Single">
@@ -67,11 +67,15 @@
             <CellTemplate>
                 @if(context.Item.Inherit)
                 {
-                    <MudText Color="Color.Success">●</MudText>
+                    <MudTooltip Text="@loc["inherited"]">
+                        <MudText Color="Color.Success">●</MudText>
+                    </MudTooltip>
                 }
                 else
                 {
-                    <MudText Color="Color.Error">●</MudText>
+                    <MudTooltip Text="@loc["not-inherited"]">
+                        <MudText Color="Color.Error">●</MudText>
+                    </MudTooltip>
                 }
             </CellTemplate>
         </TemplateColumn>

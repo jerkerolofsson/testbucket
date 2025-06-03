@@ -723,4 +723,10 @@
   <data name="locked" xml:space="preserve">
     <value />
   </data>
+  <data name="set-light-mode" xml:space="preserve">
+    <value />
+  </data>
+  <data name="set-dark-mode" xml:space="preserve">
+    <value />
+  </data>
 </root>

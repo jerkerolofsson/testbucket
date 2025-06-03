@@ -21,7 +21,7 @@
      <MudDataGrid Items="_integrations"
                  Dense
                  Hover
-                 RowClass="tb-datarow pointer-cursor"
+                 RowClass="tb-datarow cursor-pointer"
                  T="ExternalSystem"
                  RowClick="x => OnRowClicked(x.Item)"
                  SortMode="SortMode.None">
@@ -46,16 +46,30 @@
             </MudStack>
         </ToolBarContent>
 
+        
+        <ColGroup>
+            <col style="width: 10%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 20%" />
+            <col style="width: 10%" />
+        </ColGroup>
+
         <Columns>
             <TemplateColumn>
                 <CellTemplate>
                     @if (context.Item.Enabled)
                     {
-                        <MudText Color="Color.Success">●</MudText>
+                        <MudTooltip Text="@loc["enabled"]">
+                            <MudText Color="Color.Success">●</MudText>
+                        </MudTooltip>
                     }
                     else
                     {
-                        <MudText Color="Color.Error">●</MudText>
+                        <MudTooltip Text="@loc["disabled"]">
+                            <MudText Color="Color.Error">●</MudText>
+                        </MudTooltip>
                     }
                 </CellTemplate>
             </TemplateColumn>

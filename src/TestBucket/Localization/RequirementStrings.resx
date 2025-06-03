@@ -246,4 +246,19 @@
   <data name="approve-requirement-arg" xml:space="preserve">
     <value>Approve {0}</value>
   </data>
+  <data name="create-child-feature" xml:space="preserve">
+    <value>Create child feature</value>
+  </data>
+  <data name="link-requirement-to-test" xml:space="preserve">
+    <value>Link requirement to test</value>
+  </data>
+  <data name="new-task" xml:space="preserve">
+    <value>New task</value>
+  </data>
+  <data name="new-general" xml:space="preserve">
+    <value>New requirement</value>
+  </data>
+  <data name="type-documentation" xml:space="preserve">
+    <value>Documentation</value>
+  </data>
 </root>

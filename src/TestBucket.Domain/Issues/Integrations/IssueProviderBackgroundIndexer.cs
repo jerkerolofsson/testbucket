@@ -50,7 +50,7 @@ public class IssueProviderBackgroundIndexer : BackgroundService
             {
                 _logger.LogError(ex, "Error processing tenant");
             }
-            await Task.Delay(TimeSpan.FromHours(1), stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
         }
     }
 

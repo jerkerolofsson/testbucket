@@ -192,7 +192,8 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, ThemeSetting>();
         services.AddScoped<ISetting, IncreasedContrastSetting>();
         services.AddScoped<ISetting, IncreasedFontSizeSetting>();
-        
+        services.AddScoped<ISetting, PreferTextToIconsSetting>();
+
         services.AddScoped<ISetting, AiProviderSetting>();
         services.AddScoped<ISetting, AiProviderUrlSetting>();
         services.AddScoped<ISetting, AiModelSetting>();

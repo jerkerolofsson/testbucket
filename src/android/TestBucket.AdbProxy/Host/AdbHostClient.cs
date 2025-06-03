@@ -5,6 +5,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
+using CliWrap;
+
 using TestBucket.AdbProxy.Models;
 using TestBucket.AdbProxy.Proxy;
 
@@ -47,6 +49,32 @@ public class AdbHostClient
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     public async Task<AdbDevice[]> ListDevicesAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await ListDevicesInternalAsync(cancellationToken);
+        }
+        catch(SocketException)
+        {
+            // adb daemon is not running
+            await StartAdbDaemonAsync(cancellationToken);
+            return await ListDevicesInternalAsync(cancellationToken);
+        }
+    }
+
+    private async Task StartAdbDaemonAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await Cli.Wrap("adb")
+                .WithArguments("start-server")
+                .WithValidation(CommandResultValidation.None)
+                .ExecuteAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch { }
+    }
+
+    private async Task<AdbDevice[]> ListDevicesInternalAsync(CancellationToken cancellationToken)
     {
         uint localId = 1;
         uint remoteId = 1;

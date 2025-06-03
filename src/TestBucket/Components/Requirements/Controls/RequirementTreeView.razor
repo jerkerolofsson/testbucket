@@ -9,6 +9,7 @@
 @inject AppNavigationManager appNav
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<RequirementStrings> reqLoc
+@inject UserPreferencesService userPreferencesService
 
 <MudStack Spacing="0" Style="width: 100%;">
     <MudStack Row="true" class="tb-treeview-toolbar" Spacing="0">
@@ -27,7 +28,6 @@
             {
                 <MudIconButton Class="rounded-0" OnClick="SyncWithActiveDocumentAsync" Icon="@Icons.Material.Filled.CompareArrows" />
             }
-
 
             <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert">
                 <CommandMenuItems TypeNames="menu-requirements Requirement RequirementFolder RequirementSpecification" />
@@ -73,7 +73,15 @@
                                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%">
                                         <span><MudHighlighter Text="@context.Text" HighlightedText="@_searchText" /></span>
                                         <MudSpacer/>
-                                        <RequirementStateDot Style="padding-right: 4px" State="context.Value.Requirement.MappedState"/>
+
+                                        @if(_prefTextToIcons)
+                                        {
+                                            <MudText Typo="Typo.subtitle2">@context.Value.Requirement.State</MudText>
+                                        }
+                                        else
+                                        {
+                                            <RequirementStateDot Style="padding-right: 4px" State="context.Value.Requirement.MappedState"/>
+                                        }
                                     </MudStack>
                                 </Draggable>
                             }
@@ -113,14 +121,14 @@
 
 
 @code {
-    /// <summary>
-    /// Instance of the tree view UI
-    /// </summary>
-    //private MudTreeView<BrowserItem> _treeView = default!;
+        /// <summary>
+        /// Instance of the tree view UI
+        /// </summary>
+        //private MudTreeView<BrowserItem> _treeView = default!;
 
-    /// <summary>
-    /// Root items in the tree view
-    /// </summary>
+        /// <summary>
+        /// Root items in the tree view
+        /// </summary>
     private List<TreeNode<BrowserItem>> _rootItems = [];
 
     /// <summary>
@@ -150,6 +158,14 @@
     private bool _isSearching = false;
 
     private TreeNode<BrowserItem>? _editItem;
+
+    private bool _prefTextToIcons = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userPreferences = await userPreferencesService.GetUserPreferencesAsync();
+        _prefTextToIcons = userPreferences?.PreferTextToIcons ?? false;
+    }
 
     private void BeginRename(TreeNode<BrowserItem> item)
     {

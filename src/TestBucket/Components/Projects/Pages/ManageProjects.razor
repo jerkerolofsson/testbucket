@@ -13,13 +13,13 @@
     <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudDataGrid ServerData="LoadGridData"
-    Dense
-    Hover
-    RowStyle="pointer-cursor tb-datarow"
-    T="TestProject"
-    @ref="_dataGrid"
-    RowClick="x => OnRowClicked(x.Item)"
-    SortMode="SortMode.Single">
+        Dense
+        Hover
+        RowClass="cursor-pointer tb-datarow"
+        T="TestProject"
+        @ref="_dataGrid"
+        RowClick="x => OnRowClicked(x.Item)"
+        SortMode="SortMode.Single">
 
         <ToolBarContent>
             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">

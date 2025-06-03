@@ -13,19 +13,21 @@
 {
     <MudPaper Class="mb-3 pa-3" Style="width: 100%">
 
+        <MudStack>
+            <MudStack Row AlignItems="AlignItems.Center" Class="tb-integration-title mb-5">
+                @if (Icon is not null)
+                {
+                    <MudIcon Size="Size.Large" Icon="@Icon" />
+                }
+                <MudText Typo="Typo.h1">@(Extension?.FriendlyName ?? Name)</MudText>
+            </MudStack>
+
+            <MudText>@Extension?.Description</MudText>
+        </MudStack>
+
         <MudTabs Style="width: 100%">
             <MudTabPanel Text="@intLoc["integration"]">
-                <MudStack>
-                    <MudStack Row AlignItems="AlignItems.Center" Class="tb-integration-title mb-5">
-                        @if (Icon is not null)
-                        {
-                            <MudIcon Size="Size.Large" Icon="@Icon" />
-                        }
-                        <MudText Typo="Typo.h1">@(Extension?.FriendlyName ?? Name)</MudText>
-                    </MudStack>
-
-                    <MudText Class="mb-3">@Extension?.Description</MudText>
-
+                <MudStack Class="pt-3">
                     @if (Integration is null)
                     {
                         <MudText Style="font-weight: bold">@intLoc["no-integration"]</MudText>
@@ -95,7 +97,7 @@
                 </MudStack>
             </MudTabPanel>
             <MudTabPanel Text="@intLoc["features"]">
-                <MudStack>
+                <MudStack Class="pt-3">
                     @if (Extension is not null)
                     {
                         ExternalSystemCapability[] capabilities = [ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases, ExternalSystemCapability.GetRequirements, ExternalSystemCapability.ReadCodeRepository, ExternalSystemCapability.ReadPipelineArtifacts];
@@ -114,7 +116,7 @@
                 </MudStack>
             </MudTabPanel>
             <MudTabPanel Text="@intLoc["artifacts"]">
-                <MudStack>
+                <MudStack Class="pt-3">
                     @if(Extension is not null)
                     {
                         if((Extension.SupportedCapabilities&ExternalSystemCapability.ReadPipelineArtifacts) == ExternalSystemCapability.ReadPipelineArtifacts)

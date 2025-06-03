@@ -65,6 +65,11 @@ public class UserPreferences
     /// </summary>
     public bool IncreasedFontSize { get; set; }
 
+    /// <summary>
+    /// If true, text is used instead of icons or images
+    /// </summary>
+    public bool PreferTextToIcons { get; set; }
+
     #endregion User Interface
 
     #region Test Execution

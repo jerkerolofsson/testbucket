@@ -5,15 +5,17 @@
 @inject IStringLocalizer<SharedStrings> loc
 
 <EditForm Model="@ExternalSystem" OnValidSubmit="OnValidSubmit">
-    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" Class="tb-dialog-tall">
         <TitleContent>@Extension?.FriendlyName</TitleContent>
         <DialogContent>
             @if(Extension is not null)
             {
-                <ExternalIntegrationEditor Extension="@Extension"
-                        Name="@Extension.FriendlyName" 
-                        @bind-Integration="@ExternalSystem" 
-                        Icon="@Extension.Icon" />
+                <MudStack>
+                    <ExternalIntegrationEditor Extension="@Extension"
+                            Name="@Extension.FriendlyName" 
+                            @bind-Integration="@ExternalSystem" 
+                            Icon="@Extension.Icon" />
+                </MudStack>
             }
         </DialogContent>
 

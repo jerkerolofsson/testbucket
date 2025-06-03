@@ -197,11 +197,17 @@ public class IssueManager : IIssueManager
         // Listeners
         foreach(var observer in _localObservers)
         {
-            await observer.OnLocalIssueUpdatedAsync(updatedIssue);
+            try
+            {
+                await observer.OnLocalIssueUpdatedAsync(updatedIssue);
+            }
+            catch 
+            {
+                // Don't let one observer fail
+            }
         }
 
-        // Update linked issues
-
+        await _mediator.Publish(new IssueChanged(principal, updatedIssue));
     }
 
     public async Task<LocalIssue?> GetIssueByIdAsync(ClaimsPrincipal principal, long id)

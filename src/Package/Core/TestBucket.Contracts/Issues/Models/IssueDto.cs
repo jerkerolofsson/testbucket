@@ -78,4 +78,5 @@ public class IssueDto
     /// Type of issue
     /// </summary>
     public string? IssueType { get; set; }
+    public string[] Labels { get; set; }
 }

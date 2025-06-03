@@ -86,4 +86,9 @@ public class GithubIssues : GithubIntegrationBaseClient, IExternalIssueProvider
 
         return dtos;
     }
+
+    public Task UpdateIssueAsync(ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
 }

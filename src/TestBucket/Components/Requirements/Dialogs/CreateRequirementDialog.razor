@@ -53,7 +53,7 @@
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter] public string? RequirementType { get; set; }
-    public string? TitleLabel => $"new-{(RequirementType??"requirement").ToString().ToLowerInvariant()}";
+    public string TitleLabel => $"new-{(RequirementType??"requirement").ToString().ToLowerInvariant()}";
 
     private Requirement _requirement = new() { Name = "", RequirementType = RequirementTypes.General };
     private bool _preview = false;

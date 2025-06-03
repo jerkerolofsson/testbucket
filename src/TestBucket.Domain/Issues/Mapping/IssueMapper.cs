@@ -73,6 +73,7 @@ internal static class IssueMapper
 
         dest.Title = src.Title;
         dest.State = src.State;
+        dest.MappedState = src.MappedState ?? Contracts.Issues.States.MappedIssueState.Other;
         dest.Description = src.Description;
     }
     public static LocalIssue ToDbo(this IssueDto src)

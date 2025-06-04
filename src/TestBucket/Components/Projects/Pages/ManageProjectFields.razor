@@ -2,13 +2,17 @@
 @layout SettingsLayout
 @attribute [Authorize()]
 @inject ProjectController projectService
-@inject IDialogService dialogService
+@inject IStringLocalizer<ProjectStrings> projectLoc
+@inject IStringLocalizer<SharedStrings> loc
+@inject AppNavigationManager appNav
 
 <TenantRedirect/>
 
 <MudStack Style="width:100%" Class="pa-2">
     @if (_project is not null)
     {
+        <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
         <ProjectFieldsEditor Project="@_project" />
     }
 </MudStack>
@@ -25,6 +29,26 @@
         if (ProjectSlug is not null && _project?.Slug != ProjectSlug)
         {
             _project = await projectService.GetProjectBySlugAsync(ProjectSlug);
+            SetupBreadcrumbs();
+        }
+    }
+    
+    private List<BreadcrumbItem> _nav = [];
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNav.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["projects"], appNav.GetManageProjectsUrl()));
+        if(_project is not null)
+        {
+            _nav.Add(new BreadcrumbItem(_project.Name, appNav.GetUrl(_project)));
+            _nav.Add(new BreadcrumbItem(projectLoc["fields"], appNav.GetUrl(_project) + "/Fields"));
         }
     }
 }

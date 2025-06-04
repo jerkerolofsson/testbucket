@@ -32,7 +32,7 @@ internal class MilestoneIndexer : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await Task.Delay(10_000, stoppingToken);
+        await Task.Delay(90_000, stoppingToken);
 
         while(!stoppingToken.IsCancellationRequested)
         {
@@ -80,6 +80,8 @@ internal class MilestoneIndexer : BackgroundService
     public async Task<IReadOnlyList<Milestone>> GetExternalMilestonesAsync(ClaimsPrincipal principal, long testProjectId, IProjectManager projectManager, 
         IEnumerable<IExternalProjectDataSource> dataSources, CancellationToken cancellationToken)
     {
+        List<Milestone> milestones = new();
+
         var integrations = (await projectManager.GetProjectIntegrationsAsync(principal, testProjectId)).ToArray();
         var dtos = integrations.Select(x => x.ToDto()).ToArray();
         foreach (var dataSource in dataSources)
@@ -100,25 +102,24 @@ internal class MilestoneIndexer : BackgroundService
                         var options = await dataSource.GetFieldOptionsAsync(dto, TraitType.Milestone, cancellationToken);
                         if (options.Length > 0)
                         {
-                            List<Milestone> milestones = new();
                             foreach(var name in options)
                             {
                                 milestones.Add(new Milestone
                                 {
-                                    Title = name,
+                                    Title = name.Title,
+                                    Description = name.Description,
                                     TestProjectId = testProjectId,
                                     ExternalSystemId = dto.Id,
                                     ExternalSystemName = dataSource.SystemName,
                                 });
                             }
-
-                            return milestones;
                         }
                     }
                     catch { }
                 }
             }
         }
-        return [];
+        return milestones;
+
     }
 }

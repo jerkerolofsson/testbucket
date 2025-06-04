@@ -5,91 +5,145 @@
 @using TestBucket.Components.Milestones.Controllers
 @using TestBucket.Domain
 @using TestBucket.Domain.Issues.Models
-@layout IssuesLayout
+@layout SettingsLayout
 @inject MilestonesController controller
 @inject AppNavigationManager appNavigationManager
 @inject AuthenticationStateProvider authenticationStateProvider 
+@inject IStringLocalizer<ProjectStrings> projectLoc
 @inject IStringLocalizer<SharedStrings> loc
 
+<TenantRedirect/>
 
-<MudTabs Style="width: 100%">
+<MudStack Class="container-settings-page">
 
-     <MudTabPanel Text="@loc["manage"]">
-        <MudDataGrid Items="_milestones"
-                        Dense Hover RowClass="tb-datarow cursor-pointer"
-                        RowClick="async (row) => await OnRowClicked(row.Item)"
-                        T="Milestone"
-                        SortMode="SortMode.None">
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
-            <ToolBarContent>
-                <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-                    <MudIcon Icon="@TbIcons.BoldDuoTone.Flag" Size="Size.Large" />
-                    <MudText Typo="Typo.h2">@loc["milestones"]</MudText>
-                    <MudSpacer />
-                    <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
-                        <Authorized>
-                            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"></MudIconButton>
-                        </Authorized>
-                    </PermissionView>
-                </MudStack>
-            </ToolBarContent>
+    <MudTabs Style="width: 100%">
 
-            <ColGroup>
-                <col style="width: 30%" />
-                <col style="width: 20%;" />
-                <col style="width: 20%;" />
-                <col style="width: 20%;" />
-                <col style="width: 10%;" />
-            </ColGroup>
+         <MudTabPanel Text="@loc["manage"]">
+            <MudDataGrid Items="_milestones"
+                         Class="pa-2"
+                         Dense Hover RowClass="tb-datarow cursor-pointer"
+                         RowClick="async (row) => await OnRowClicked(row.Item)"
+                         T="Milestone"
+                         SortMode="SortMode.Single">
 
+                <ToolBarContent>
+                    <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                        <MudIcon Icon="@TbIcons.BoldDuoTone.Flag" Size="Size.Large" Color="Color.Tertiary" />
+                        <MudText Typo="Typo.h2">@loc["milestones"]</MudText>
+                        <MudSpacer />
 
-            <Columns>
-                <PropertyColumn Property="x => x.Title" Title="@loc["name"]" />
-                <PropertyColumn Property="x => x.State" Title="@loc["state"]" />
-                <TemplateColumn Title="@loc["start-date"]">
-                    <CellTemplate>
-                        @if(context.Item.StartDate is not null)
-                        {
-                            @context.Item.StartDate.Value.LocalDateTime.ToLongDateString()
-                        }
-                    </CellTemplate>
-                </TemplateColumn>
-                <TemplateColumn Title="@loc["end-date"]">
-                    <CellTemplate>
-                        @if (context.Item.EndDate is not null)
-                        {
-                            @context.Item.EndDate.Value.LocalDateTime.ToLongDateString()
-                        }
-                    </CellTemplate>
-                </TemplateColumn>
-
-                <TemplateColumn>
-                    <CellTemplate>
-                        <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Delete">
+                        <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Write">
                             <Authorized>
-                                <MudIconButton OnClick="async() => await DeleteAsync(context.Item)" Color="Color.Error" Icon="@Icons.Material.Filled.Clear"/>
+                                <MudButton StartIcon="@Icons.Material.Filled.Add"
+                                           Class="tb-button-new" OnClick="AddAsync" Variant="Variant.Filled">@loc["add"]</MudButton>
                             </Authorized>
                         </PermissionView>
-                    </CellTemplate>
-                </TemplateColumn>
-            </Columns>
-        </MudDataGrid>
-    </MudTabPanel>
+                    </MudStack>
+                </ToolBarContent>
 
-    <MudTabPanel Text="@loc["calendar"]">
-        <MudCalendar Style="width: 100%" Items="_calendarItems" ToolbarPadding="4" Outlined>
-        </MudCalendar>
-    </MudTabPanel>
-</MudTabs>
+                <ColGroup>
+                    <col style="width: 15%;" />
+                    <col style="width: 15%;" />
+                    <col style="width: 25%;" />
+                    <col style="width: 25%;" />
+                    <col style="width: 20%;" />
+                </ColGroup>
+
+
+                <Columns>
+
+                    <TemplateColumn Title="@loc["system"]">
+                        <CellTemplate>
+                            @if (context.Item.ExternalSystemName is not null)
+                            {
+                                <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+                                    <ExternalSystemIcon SystemName="@context.Item.ExternalSystemName" Size="Size.Small" />
+                                    <div>@context.Item.ExternalSystemName</div>
+                                </MudStack>
+                            }
+                            else
+                            {
+                                <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+                                    <ExternalSystemIcon SystemName="Test Bucket" Size="Size.Small" />
+                                    <div>Test Bucket</div>
+                                </MudStack>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                    <PropertyColumn Property="x => x.Title" Title="@loc["name"]" />
+                    <PropertyColumn Property="x => x.State" Title="@loc["state"]" />
+                    <TemplateColumn Title="@loc["start-date"]">
+                        <CellTemplate>
+                            @if(context.Item.StartDate is not null)
+                            {
+                                @context.Item.StartDate.Value.LocalDateTime.ToShortDateString()
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="@loc["end-date"]">
+                        <CellTemplate>
+                            @if (context.Item.EndDate is not null)
+                            {
+                                @context.Item.EndDate.Value.LocalDateTime.ToShortDateString()
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                    <TemplateColumn>
+                        <CellTemplate>
+                            <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Delete">
+                                <Authorized>
+                                    @if (UserPreferences?.PreferTextToIcons == true)
+                                    {
+                                        <MudButton OnClick="async() => await DeleteAsync(context.Item)" Color="Color.Error">
+                                            @loc["delete"]
+                                        </MudButton>
+                                    }
+                                    else
+                                    {
+                                        <MudIconButton OnClick="async () => await DeleteAsync(context.Item)" Color="Color.Error" Icon="@Icons.Material.Filled.Clear"/>
+                                    }
+                                </Authorized>
+                            </PermissionView>
+                        </CellTemplate>
+                    </TemplateColumn>
+                </Columns>
+            </MudDataGrid>
+        </MudTabPanel>
+
+        <MudTabPanel Text="@loc["calendar"]">
+            <MudCalendar Style="width: 100%" Items="_calendarItems" ToolbarPadding="4" Outlined>
+            </MudCalendar>
+        </MudTabPanel>
+    </MudTabs>
+</MudStack>
 
 @code {
     [Parameter] public string? TenantId { get; set; }
     [CascadingParameter] public TestProject? Project { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public UserPreferences? UserPreferences { get; set; }
     private TestProject? _project;
     private CalendarItem[] _calendarItems = [];
 
     private IReadOnlyList<Milestone> _milestones = [];
+
+    private List<BreadcrumbItem> _nav = [];
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNavigationManager.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["milestones"], appNavigationManager.GetMilestonesUrl()));
+    }
 
     private async Task AddAsync()
     {
@@ -126,7 +180,7 @@
     private async Task OnRowClicked(Milestone milestone)
     {
         var state = await authenticationStateProvider.GetAuthenticationStateAsync();
-        if(state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Write))
+        if (state.User.HasPermission(PermissionEntityType.Issue, PermissionLevel.Write))
         {
             await controller.EditMilestoneAsync(milestone);
             await LoadAsync();
@@ -136,7 +190,7 @@
     private async Task DeleteAsync(Milestone milestone)
     {
         var state = await authenticationStateProvider.GetAuthenticationStateAsync();
-        if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Delete))
+        if (state.User.HasPermission(PermissionEntityType.Issue, PermissionLevel.Delete))
         {
             await controller.DeleteMilestoneAsync(milestone);
             await LoadAsync();

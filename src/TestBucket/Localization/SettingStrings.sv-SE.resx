@@ -117,11 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="language-multilang" xml:space="preserve">
+    <value>Språk / Language / Idioma / Langue / 语言 / 言語 / لغة / 언어</value>
+  </data>
   <data name="manage-accounts" xml:space="preserve">
     <value>Hantera konton</value>
   </data>
   <data name="manage-environments" xml:space="preserve">
     <value>Hantera miljöer</value>
+  </data>
+  <data name="manage-labels" xml:space="preserve">
+    <value>Hanter etiketter</value>
+  </data>
+  <data name="manage-milestones" xml:space="preserve">
+    <value>Hantera milstolpar</value>
   </data>
   <data name="manage-projects" xml:space="preserve">
     <value>Hantera projekt</value>
@@ -146,6 +155,9 @@
   </data>
   <data name="open-ai-settings" xml:space="preserve">
     <value>Öppna AI inställningar</value>
+  </data>
+  <data name="profile" xml:space="preserve">
+    <value>Profil</value>
   </data>
   <data name="search-settings" xml:space="preserve">
     <value>Sök inställningar..</value>

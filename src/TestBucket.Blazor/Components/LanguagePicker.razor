@@ -1,0 +1,38 @@
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.JSInterop
+@using MudBlazor
+@using Microsoft.Extensions.Options;
+@using System.Globalization
+@inject IJSRuntime JS
+@inject NavigationManager navigationManager
+@inject IOptions<RequestLocalizationOptions> requestLocalizationOptions
+
+<MudTooltip Text="@Tooltip">
+    <MudMenu StartIcon="@Icons.Material.Outlined.Language" AriaLabel="@Tooltip" Label="@CultureInfo.CurrentUICulture.NativeName">
+        @foreach (var locale in _locales)
+        {
+            <MudMenuItem OnClick="() => SetLocaleAsync(locale.Name)">@locale.NativeName</MudMenuItem>
+        }
+    </MudMenu>
+</MudTooltip>
+
+@code {
+    private IReadOnlyList<CultureInfo> _locales = [];
+
+    private string Tooltip => "Language / Idioma / Langue / 语言 / 言語 / لغة / 언어";
+
+    protected override void OnInitialized()
+    {
+        _locales = requestLocalizationOptions.Value?.SupportedUICultures?.ToList() ?? [];
+        base.OnInitialized();
+    }
+
+    private async Task SetLocaleAsync(string locale)
+    {
+        DateTimeOffset expiration = DateTimeOffset.UtcNow.AddDays(365);
+        await JS.InvokeVoidAsync("eval", $"document.cookie = \"Locale={locale}; expires={expiration:R}; path=/\"");
+
+        // Reload page to use the cookie set
+        navigationManager.NavigateTo(navigationManager.Uri, true);
+    }
+}

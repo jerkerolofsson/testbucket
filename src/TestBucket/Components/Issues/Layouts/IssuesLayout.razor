@@ -4,6 +4,7 @@
 @using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Contracts.Issues.States
 @using TestBucket.Contracts.Issues.Types
+@using TestBucket.Domain
 @using TestBucket.Domain.Insights.Model
 @using TestBucket.Domain.Issues.Search
 @inject NavigationManager navigationManager
@@ -11,6 +12,7 @@
 @inject IssueController controller
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
+@inject IStringLocalizer<SettingStrings> settingLoc
 @inject UserPreferencesService preferencesController
 
 <TenantRedirect />
@@ -45,9 +47,19 @@
                     @issueLoc["high-prio"]
                 </MudNavLink>
 
-                <MudNavLink Href="@appNavigationManager.GetMilestonesUrl()">
-                    @loc["milestones"]
-                </MudNavLink>
+
+                <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Write">
+                    <Authorized>
+                        <MudText Class="mt-5">@loc["settings"]</MudText>
+                        <MudNavLink Href="@appNavigationManager.GetMilestonesUrl()" Icon="@TbIcons.BoldDuoTone.Flag">
+                            @settingLoc["manage-milestones"]
+                        </MudNavLink>
+                        <MudNavLink Href="@appNavigationManager.GetLabelsUrl()" Icon="@TbIcons.IconSaxDuoTone.Label">
+                            @settingLoc["manage-labels"]
+                        </MudNavLink>
+                    </Authorized>
+                </PermissionView>
+               
             </MudNavMenu>
             
         </MudStack>

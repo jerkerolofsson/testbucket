@@ -138,6 +138,9 @@
   <data name="get-issues" xml:space="preserve">
     <value>Read issues</value>
   </data>
+  <data name="get-labels" xml:space="preserve">
+    <value>Read labels</value>
+  </data>
   <data name="get-milestones" xml:space="preserve">
     <value>Read milestones</value>
   </data>

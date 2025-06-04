@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Fields;
+using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Fields;
 
@@ -18,22 +19,22 @@ internal class FeatureDataSource : IFieldCompletionsProvider
         _manager = manager;
     }
 
-    public async Task<IReadOnlyList<string>> GetOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<GenericVisualEntity>> GetOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, CancellationToken cancellationToken)
     {
         if(type == FieldDataSourceType.Features)
         {
-            var features = await _manager.GetFeaturesAsync(principal, projectId);
-            return features.Select(x=>x.Name).ToList();
+            var items = await _manager.GetFeaturesAsync(principal, projectId);
+            return items.Where(x => x.Name != null).Select(x => new GenericVisualEntity { Title = x.Name, Description = x.Description }).ToList();
         }
         return [];
     }
 
-    public async Task<IReadOnlyList<string>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, string text, int count, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<GenericVisualEntity>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, string text, int count, CancellationToken cancellationToken)
     {
         if (type == FieldDataSourceType.Features)
         {
-            var features = await _manager.SearchFeaturesAsync(principal, projectId, text, offset:0, count);
-            return features.Select(x => x.Name).ToList();
+            var items = await _manager.SearchFeaturesAsync(principal, projectId, text, offset:0, count);
+            return items.Where(x => x.Name != null).Select(x => new GenericVisualEntity { Title = x.Name, Description = x.Description }).ToList();
         }
         return [];
     }

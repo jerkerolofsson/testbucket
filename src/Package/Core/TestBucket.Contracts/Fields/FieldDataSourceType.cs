@@ -71,4 +71,9 @@ public enum FieldDataSourceType
 
     // Enums
     Dock = 12,
+
+    /// <summary>
+    /// Labels
+    /// </summary>
+    Labels = 13,
 }

@@ -41,12 +41,19 @@
 
                 @if(Project is not null)
                 {
+                    <MudItem Class="mt-5"/>
+
                     string projectUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}";
                     string projectIntegrationsUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}/Integrations";
                     string projectFieldsUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}/Fields";
+                    string milestonesUrl = $"/{TenantId}/Milestones";
+                    string labelsUrl = $"/{TenantId}/Labels";
                     <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Article" IconColor="Color.Tertiary" Href="@projectUrl">@Project.Name</MudNavLink>
                     <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.Filled.Extensions" IconColor="Color.Tertiary" Href="@projectIntegrationsUrl">@projectLoc["integrations"]</MudNavLink>
                     <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.BoldDuoTone.Field" IconColor="Color.Tertiary" Href="@projectFieldsUrl">@loc["fields"]</MudNavLink>
+                    
+                    <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.BoldDuoTone.Flag" IconColor="Color.Tertiary" Href="@milestonesUrl">@settingsLoc["manage-milestones"]</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.IconSaxDuoTone.Label" IconColor="Color.Tertiary" Href="@labelsUrl">@settingsLoc["manage-labels"]</MudNavLink>
                 }
 
                 <MudItem Class="mt-5"/>
@@ -66,8 +73,14 @@
                 <MudNavLink Icon="@TbIcons.BoldDuoTone.CloudDownload" IconColor="Color.Secondary" Href="@BackupUrl">@settingsLoc["backup"]</MudNavLink>
                 
                 <AuthorizeView Roles="SUPERADMIN">
-                    <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" IconColor="Color.Secondary" Href="@TenantsUrl">Manage Tenants</MudNavLink>
+                    <Authorized>
+                        <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" IconColor="Color.Secondary" Href="@TenantsUrl">settingsLoc["manage-roles"]</MudNavLink>
+                    </Authorized>
                 </AuthorizeView>
+
+                <div class="pa-5">
+                    <LanguagePicker />
+                </div>
             </MudNavMenu>
         </div>
 

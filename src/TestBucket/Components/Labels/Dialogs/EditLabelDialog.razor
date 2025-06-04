@@ -1,0 +1,77 @@
+﻿@using TestBucket.Domain.Labels.Models;
+@inject IStringLocalizer<SharedStrings> loc
+
+<EditForm Model="@Label" OnValidSubmit="Submit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
+        <TitleContent>@Label?.Title</TitleContent>
+        <DialogContent>
+            <MudStack>
+                @if (Label is not null)
+                {
+                    <Field>
+                        <MudTextField Variant="Variant.Outlined"
+                        ReadOnly="@Label.ReadOnly"
+                        Label="@loc["title"]"
+                        Immediate
+                        AdornmentColor="Color.Tertiary"
+                        @bind-Value="@Label.Title"
+                        T="string"
+                        AutoFocus="true" />
+                    </Field>
+
+                     <Field>
+                        <MudTextField Variant="Variant.Outlined"
+                        ReadOnly="@Label.ReadOnly"
+                        Label="@loc["description"]"
+                        Immediate
+                        AdornmentColor="Color.Tertiary"
+                        @bind-Value="@Label.Description"
+                        T="string"
+                        AutoFocus="true" />
+                    </Field>
+
+                    <Field>
+                        <FieldHeader>@loc["color"]</FieldHeader>
+                        <MudSpacer/>
+                         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <ColorCellPicker @bind-Color="Label.Color"/>
+                        </MudStack>
+                    </Field>
+
+                }
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            @if (Label is not null)
+            {
+                if(!string.IsNullOrWhiteSpace(Label.Title))
+                {
+                    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+                }
+            }
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    [Parameter] public Label? Label { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void Submit()
+    {
+        if (Label is null)
+        {
+            return;
+        }
+
+        MudDialog.Close(Label);
+    }
+}

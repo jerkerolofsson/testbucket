@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Fields;
+using TestBucket.Contracts.Integrations;
 
 namespace TestBucket.Domain.Fields;
 public interface IFieldCompletionsProvider
@@ -19,7 +20,7 @@ public interface IFieldCompletionsProvider
     /// <param name="count"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<IReadOnlyList<string>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, string text, int count, CancellationToken cancellationToken);
+    Task<IReadOnlyList<GenericVisualEntity>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, string text, int count, CancellationToken cancellationToken);
 
     /// <summary>
     /// Returns all options (single selection, multi selection)
@@ -29,5 +30,5 @@ public interface IFieldCompletionsProvider
     /// <param name="projectId"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<IReadOnlyList<string>> GetOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, CancellationToken cancellationToken);
+    Task<IReadOnlyList<GenericVisualEntity>> GetOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, CancellationToken cancellationToken);
 }

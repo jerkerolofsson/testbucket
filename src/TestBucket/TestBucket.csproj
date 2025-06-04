@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\Milestones\Controls\**" />
+    <Content Remove="Components\Milestones\Controls\**" />
+    <EmbeddedResource Remove="Components\Milestones\Controls\**" />
+    <None Remove="Components\Milestones\Controls\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.3.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.2.1" />
@@ -49,7 +56,6 @@
     <Folder Include="Components\Administration\" />
     <Folder Include="Components\Environments\Layouts\" />
     <Folder Include="Components\Issues\ApiControllers\" />
-    <Folder Include="Components\Milestones\Controls\" />
     <Folder Include="Components\Reporting\Models\" />
     <Folder Include="Components\Shared\Splitter\" />
     <Folder Include="Components\Tests\TestRuns\Search\" />

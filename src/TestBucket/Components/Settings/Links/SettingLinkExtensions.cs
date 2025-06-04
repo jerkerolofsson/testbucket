@@ -27,6 +27,16 @@ public static class SettingLinkExtensions
             Icon = TbIcons.BoldDuoTone.Field
         });
 
+
+        services.AddSingleton(new SettingsLink
+        {
+            Title = "milestones",
+            Description = "milestones-description",
+            RelativeUrl = "/{tenantId}/Settings/Milestones",
+            Keywords = "milestones",
+            Icon = TbIcons.BoldDuoTone.Flag
+        });
+
         services.AddSingleton(new SettingsLink
         {
             Title = "test-accounts",

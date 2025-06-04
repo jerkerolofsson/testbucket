@@ -149,6 +149,11 @@
 
     private async Task AddFieldAsync()
     {
+        if(ProjectId is null)
+        {
+            return;
+        }
+
         FieldDefinition definition = new()
             {
                 IsVisible = true,
@@ -197,6 +202,15 @@
             _allFields = await fieldController.SearchDefinitionsAsync(new SearchFieldQuery() { ProjectId = ProjectId, Target = target });
             _fields = _allFields.ToList();
             _loadTime = Stopwatch.GetElapsedTime(start);
+
+            foreach(var field in _allFields)
+            {
+                if(field.TestProjectId is null)
+                {
+                    field.TestProjectId = ProjectId.Value;
+                    await fieldController.UpdateAsync(field);   
+                }
+            }
         }
     }
     private TimeSpan _loadTime = TimeSpan.Zero;

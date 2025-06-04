@@ -74,11 +74,13 @@
                                     <CommandPalette/>
                                     <UnifiedSearch/>
 
-                                    <MudMenu Icon="@Icons.Material.Filled.Add">
+                                    <MudTooltip Text="@loc["menu-new-description"]">
+                                    <MudMenu Icon="@Icons.Material.Filled.Add" AriaLabel="@loc["menu-new-description"]">
                                         <CommandMenuItems TypeNames="menu-new"/>
                                     </MudMenu>
+                                    </MudTooltip>
 
-                                    <DarkModeToggle IsDarkMode="@_state.IsDarkMode" IsDarkModeChanged="OnDarkModeChanged"/>
+                                    <DarkModeToggle IsDarkMode="@_state.IsDarkMode" IsDarkModeChanged="OnDarkModeChanged" />
                                     <SelfProfileImage/>
 
                                     @if(_prefTextToIcons)
@@ -87,14 +89,16 @@
                                     }
                                     else
                                     {
-                                        <MudIconButton Icon="@TbIcons.BoldDuoTone.Settings" Href="@settingsUrl"></MudIconButton>
+                                        <MudTooltip Text="@loc["settings"]">
+                                            <MudIconButton aria-Label="@loc["settings"]" Icon="@TbIcons.BoldDuoTone.Settings" Href="@settingsUrl"></MudIconButton>
+                                        </MudTooltip>
                                     }
 
-                                    <MudMenu Icon="@Icons.Material.Filled.MoreVert" Label="@MoreLabel">
+                                    <MudMenu Icon="@Icons.Material.Filled.MoreVert">
 
                                         <!-- Profile / Logout -->
                                         <AuthorizeView>
-                                            <MudDivider />
+                                            <MudMenuItem Icon="@TbIcons.BoldDuoTone.Settings" Label="@loc["settings"]" Href="@settingsUrl"></MudMenuItem>
                                             <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="@loc["account"]" Href="@manageUrl"></MudMenuItem>
                                             <MudMenuItem Label="@loc["about"]" Href="/about"></MudMenuItem>
                                             <MudMenuItem>

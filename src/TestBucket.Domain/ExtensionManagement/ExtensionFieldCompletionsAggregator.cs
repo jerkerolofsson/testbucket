@@ -27,7 +27,7 @@ internal class ExtensionFieldCompletionsAggregator : IFieldCompletionsProvider
 
     }
 
-    public async Task<IReadOnlyList<string>> GetFieldOptionsAsync(ClaimsPrincipal principal, long testProjectId, TraitType traitType, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<GenericVisualEntity>> GetFieldOptionsAsync(ClaimsPrincipal principal, long testProjectId, TraitType traitType, CancellationToken cancellationToken)
     {
         var integrations = (await _projectManager.GetProjectIntegrationsAsync(principal, testProjectId)).ToArray();
         var dtos = integrations.Select(x => x.ToDto()).ToArray();
@@ -63,7 +63,7 @@ internal class ExtensionFieldCompletionsAggregator : IFieldCompletionsProvider
         }
         return [];
     }
-    public async Task<IReadOnlyList<string>> GetOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<GenericVisualEntity>> GetOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, CancellationToken cancellationToken)
     {
         switch(type)
         {
@@ -75,7 +75,7 @@ internal class ExtensionFieldCompletionsAggregator : IFieldCompletionsProvider
         return [];
     }
 
-    public async Task<IReadOnlyList<string>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, string text, int count, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<GenericVisualEntity>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDataSourceType type, long projectId, string text, int count, CancellationToken cancellationToken)
     {
         var options = await GetOptionsAsync(principal, type, projectId, cancellationToken);
         return options.Take(count).ToList();

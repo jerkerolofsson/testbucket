@@ -68,13 +68,13 @@ namespace TestBucket.Domain.Features.Classification
                     var options = await fieldDefinitionManager.GetOptionsAsync(principal, field.FieldDefinition);
                     if (options.Count == 1)
                     {
-                        field.StringValue = options[0];
+                        field.StringValue = options[0].Title;
                         field.Inherited = false;
                         await fieldManager.UpsertIssueFieldAsync(principal, field);
                     }
                     else if (options.Count >= 2)
                     {
-                        var result = await classifier.ClassifyAsync(principal, field.FieldDefinition.Name, options.ToArray(), issue);
+                        var result = await classifier.ClassifyAsync(principal, field.FieldDefinition.Name, options.Select(x=>x.Title!).ToArray(), issue);
                         if (result.Length > 0)
                         {
                             _logger.LogInformation("Classified {issue} with {category}", issue.ExternalDisplayId, result[0]);

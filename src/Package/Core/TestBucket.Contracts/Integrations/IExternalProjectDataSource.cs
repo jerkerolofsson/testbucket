@@ -31,5 +31,5 @@ public interface IExternalProjectDataSource
     /// <param name="trait"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<string[]> GetFieldOptionsAsync(ExternalSystemDto system, TraitType trait, CancellationToken cancellationToken);
+    Task<GenericVisualEntity[]> GetFieldOptionsAsync(ExternalSystemDto system, TraitType trait, CancellationToken cancellationToken);
 }

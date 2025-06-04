@@ -312,7 +312,7 @@ input:focus-visible {
  }
 
  .container-settings-page {
-     padding: 2rem;
+     padding: 8px;
      max-width: 1000px;
  }
 
@@ -398,6 +398,10 @@ input:focus-visible {
    background: linear-gradient(0deg, var(--tb-palette-field-background) 0%, var(--tb-palette-field-background) 90%);
    border: solid 1px var(--tb-palette-field-border);
    overflow-x: hidden;
+}
+
+.tb-field .mud-picker-inline {
+    flex: unset;
 }
 
 .tb-field a {

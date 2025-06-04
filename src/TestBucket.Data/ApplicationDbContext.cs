@@ -14,6 +14,7 @@ using TestBucket.Domain.Automation.Runners.Models;
 using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Comments.Models;
+using TestBucket.Domain.Labels.Models;
 
 namespace TestBucket.Data;
 
@@ -36,6 +37,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<TestCaseRunField> TestCaseRunFields { get; set; }
 
     internal DbSet<Milestone> Milestones { get; set; }
+    internal DbSet<Label> Labels { get; set; }
 
     internal DbSet<Repository> Repositories { get; set; }
     internal DbSet<Commit> Commits { get; set; }

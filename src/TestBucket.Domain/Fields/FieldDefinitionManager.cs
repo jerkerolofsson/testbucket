@@ -1,17 +1,10 @@
-﻿using System.Linq;
-using System.Security.Claims;
-
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Primitives;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields.Specifications;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Tenants.Models;
-using TestBucket.Domain.Testing.Models;
-using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Fields
 {
@@ -141,7 +134,7 @@ namespace TestBucket.Domain.Fields
             return definitions;
         }
 
-        public async Task<IReadOnlyList<string>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDefinition field, string text, int count, CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<GenericVisualEntity>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDefinition field, string text, int count, CancellationToken cancellationToken)
         {
             var tenantId = principal.GetTenantIdOrThrow();
             if (field.TestProjectId is null)
@@ -149,7 +142,7 @@ namespace TestBucket.Domain.Fields
                 return [];
             }
 
-            List<string> result = [];
+            List<GenericVisualEntity> result = [];
             int remaining = count;
             foreach (var provider in _completionProviders)
             {
@@ -164,7 +157,7 @@ namespace TestBucket.Domain.Fields
             return result;
         }
 
-        public async Task<IReadOnlyList<string>> GetOptionsAsync(ClaimsPrincipal principal, FieldDefinition field)
+        public async Task<IReadOnlyList<GenericVisualEntity>> GetOptionsAsync(ClaimsPrincipal principal, FieldDefinition field)
         {
             var tenantId = principal.GetTenantIdOrThrow();
 
@@ -172,7 +165,32 @@ namespace TestBucket.Domain.Fields
             {
                 if (field.Options is not null)
                 {
-                    return field.Options.OrderBy(x=>x).ToList();
+                    var fieldOptionsFromList = field.Options.OrderBy(x=>x).Select(x=>new GenericVisualEntity() { Title = x }).ToList();
+
+                    if(field.OptionColors is not null)
+                    {
+                        foreach(var option in fieldOptionsFromList)
+                        {
+                            if(option.Title is not null && 
+                                field.OptionColors.TryGetValue(option.Title, out var color))
+                            {
+                                option.Color = color;
+                            }
+                        }
+                    }
+                    if (field.OptionIcons is not null)
+                    {
+                        foreach (var option in fieldOptionsFromList)
+                        {
+                            if (option.Title is not null &&
+                                field.OptionIcons.TryGetValue(option.Title, out var icon))
+                            {
+                                option.Icon = icon;
+                            }
+                        }
+                    }
+
+                    return fieldOptionsFromList;
                 }
             }
             else 
@@ -183,17 +201,16 @@ namespace TestBucket.Domain.Fields
                 var result = await _memoryCache.GetOrCreateAsync(cacheKey, async (e) =>
                 {
                     e.AbsoluteExpiration = DateTimeOffset.UtcNow.AddHours(1);
-                    return (await LoadFieldOptionsAsync(principal, field)).OrderBy(x => x).ToList();
+                    return (await LoadFieldOptionsAsync(principal, field)).OrderBy(x => x.Title).ToList();
                 });
 
                 return result ?? [];
             }
 
-
             return [];
         }
 
-        private async Task<IReadOnlyList<string>> LoadFieldOptionsAsync(
+        private async Task<IReadOnlyList<GenericVisualEntity>> LoadFieldOptionsAsync(
             ClaimsPrincipal principal,
             FieldDefinition field,
             CancellationToken cancellationToken = default)
@@ -203,7 +220,7 @@ namespace TestBucket.Domain.Fields
                 return [];
             }
 
-            List<string> result = [];
+            List<GenericVisualEntity> result = [];
             foreach(var provider in _completionProviders)
             {
                 var options = await provider.GetOptionsAsync(principal, field.DataSourceType, field.TestProjectId.Value, cancellationToken);

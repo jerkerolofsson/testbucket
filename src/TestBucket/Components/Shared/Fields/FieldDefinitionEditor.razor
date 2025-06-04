@@ -86,6 +86,7 @@
                                     <MudRadio Value="@FieldDataSourceType.List" Color="Color.Primary">@fieldLoc["data-source-type-list"]</MudRadio>
                                     @* <MudRadio Value="@FieldDataSourceType.External" Color="Color.Primary">@fieldLoc["data-source-type-external"]</MudRadio> *@
                                     <MudRadio Value="@FieldDataSourceType.Milestones">@fieldLoc["data-source-type-milestones"]</MudRadio>
+                                    <MudRadio Value="@FieldDataSourceType.Labels">@fieldLoc["data-source-type-labels"]</MudRadio>
                                     <MudRadio Value="@FieldDataSourceType.Releases">@fieldLoc["data-source-type-releases"]</MudRadio>
                                     <MudRadio Value="@FieldDataSourceType.Features">@fieldLoc["data-source-type-features"]</MudRadio>
 
@@ -201,14 +202,16 @@
                                                     <IconPicker Icon="@icon" IconChanged="(icon) => FieldDefinition.OptionIcons[option] = icon" />
                                                 </td>
                                                 <td>
-                                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                                    <ColorCellPicker Color="@iconColor?.ToString(MudColorOutputFormats.Hex)" ColorChanged="(clr) => FieldDefinition.OptionColors[option] = clr"/>
+
+                                                    @* <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                                                     @if(iconColor is not null)
                                                     {
                                                         <div class="color-palette-cell" style="@cellStyle"></div>
                                                     }
 
                                                     <MudColorPicker Clearable Value="@iconColor" ValueChanged="(clr) => FieldDefinition.OptionColors[option] = clr.ToString(MudBlazor.Utilities.MudColorOutputFormats.Hex)" ColorPickerView="ColorPickerView.GridCompact" />
-                                                    </MudStack>
+                                                    </MudStack> *@
                                                 </td>
                                             </tr>
                                         }

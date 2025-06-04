@@ -1,0 +1,185 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Labels"
+@using Heron.MudCalendar
+@using TestBucket.Components.Issues.Layouts
+@using TestBucket.Components.Labels.Controllers
+@using TestBucket.Components.Milestones.Controllers
+@using TestBucket.Domain
+@using TestBucket.Domain.Labels.Models
+@layout SettingsLayout
+@inject LabelController controller
+@inject AppNavigationManager appNavigationManager
+@inject AuthenticationStateProvider authenticationStateProvider 
+@inject IStringLocalizer<IssueStrings> issueLoc
+@inject IStringLocalizer<FieldStrings> fieldLoc
+@inject IStringLocalizer<SharedStrings> loc
+
+<TenantRedirect/>
+
+<MudStack Class="container-settings-page">
+
+    <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
+
+    <MudDataGrid Items="_labels"
+                    Class="pa-2"
+                    Dense Hover RowClass="tb-datarow cursor-pointer"
+                    RowClick="async (row) => await OnRowClicked(row.Item)"
+                    T="Label"
+                    SortMode="SortMode.Single">
+
+        <ToolBarContent>
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                <MudIcon Icon="@TbIcons.IconSaxDuoTone.Label" Size="Size.Large" Color="Color.Tertiary" />
+                <MudText Typo="Typo.h2">@loc["labels"]</MudText>
+                <MudSpacer />
+
+                <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Write">
+                    <Authorized>
+                        <MudButton StartIcon="@Icons.Material.Filled.Add"
+                                    Class="tb-button-new" OnClick="AddAsync" Variant="Variant.Filled">@loc["add"]</MudButton>
+                    </Authorized>
+                </PermissionView>
+            </MudStack>
+        </ToolBarContent>
+
+        <ColGroup>
+            <col style="width: 20%;" />
+            <col style="width: 20%;" />
+            <col style="width: 40%;" />
+            <col style="width: 20%;" />
+        </ColGroup>
+
+        <Columns>
+
+            <TemplateColumn Title="@loc["system"]">
+                <CellTemplate>
+                    @if (context.Item.ExternalSystemName is not null)
+                    {
+                        <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+                            <ExternalSystemIcon SystemName="@context.Item.ExternalSystemName" Size="Size.Small" />
+                            <div>@context.Item.ExternalSystemName</div>
+                        </MudStack>
+                    }
+                    else
+                    {
+                        <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+                            <ExternalSystemIcon SystemName="Test Bucket" Size="Size.Small" />
+                            <div>Test Bucket</div>
+                        </MudStack>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn Title="@loc["label"]">
+                <CellTemplate>
+                    @if(context.Item.Title is not null)
+                    {
+                        <Chip Text="@fieldLoc[context.Item.Title]" Color="@context.Item.Color"></Chip>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+
+            <TemplateColumn Title="@loc["description"]">
+                <CellTemplate>
+                    @if (context.Item.Description is not null)
+                    {
+                        <div>@context.Item.Description</div>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn>
+                <CellTemplate>
+                    @if (!context.Item.ReadOnly)
+                    {
+                        <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Delete">
+                            <Authorized>
+                                @if (UserPreferences?.PreferTextToIcons == true)
+                                {
+                                    <MudButton OnClick="async() => await DeleteAsync(context.Item)" Color="Color.Error">
+                                        @loc["delete"]
+                                    </MudButton>
+                                }
+                                else
+                                {
+                                    <MudIconButton OnClick="async () => await DeleteAsync(context.Item)" Color="Color.Error" Icon="@Icons.Material.Filled.Clear"/>
+                                }
+                            </Authorized>
+                        </PermissionView>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+</MudStack>
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public UserPreferences? UserPreferences { get; set; }
+    private TestProject? _project;
+
+    private IReadOnlyList<Label> _labels = [];
+
+    private List<BreadcrumbItem> _nav = [];
+
+    protected override void OnInitialized()
+    {
+        SetupBreadcrumbs();
+    }
+
+    private void SetupBreadcrumbs()
+    {
+        _nav.Clear();
+        _nav.Add(new BreadcrumbItem(loc["settings"], appNavigationManager.GetSettingsUrl()));
+        _nav.Add(new BreadcrumbItem(loc["labels"], appNavigationManager.GetLabelsUrl()));
+    }
+
+    private async Task AddAsync()
+    {
+        await controller.AddLabelAsync();
+        await LoadAsync();
+    }
+    private async Task LoadAsync()
+    {
+        if(_project is not null)
+        {
+            _labels = await controller.GetLabelsAsync(_project);
+            var items = new List<CalendarItem>();
+        }
+    }
+
+    private async Task OnRowClicked(Label label)
+    {
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+        if (state.User.HasPermission(PermissionEntityType.Issue, PermissionLevel.Write))
+        {
+            await controller.EditLabelAsync(label);
+            await LoadAsync();
+        }
+    }
+
+    private async Task DeleteAsync(Label label)
+    {
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+        if (state.User.HasPermission(PermissionEntityType.Issue, PermissionLevel.Delete))
+        {
+            await controller.DeleteLabelAsync(label);
+            await LoadAsync();
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Project is not null)
+        {
+            if(_project?.Id != Project.Id)
+            {
+                _project = Project;
+                await LoadAsync();
+            }
+        }
+    }
+}

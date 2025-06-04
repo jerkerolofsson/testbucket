@@ -15,10 +15,7 @@
 
         <MudStack>
             <MudStack Row AlignItems="AlignItems.Center" Class="tb-integration-title mb-5">
-                @if (Icon is not null)
-                {
-                    <MudIcon Size="Size.Large" Icon="@Icon" />
-                }
+                <ExternalSystemIcon SystemName="@Extension?.SystemName" Size="Size.Large"/>
                 <MudText Typo="Typo.h1">@(Extension?.FriendlyName ?? Name)</MudText>
             </MudStack>
 
@@ -100,8 +97,8 @@
                 <MudStack Class="pt-3">
                     @if (Extension is not null)
                     {
-                        ExternalSystemCapability[] capabilities = [ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases, ExternalSystemCapability.GetRequirements, ExternalSystemCapability.ReadCodeRepository, ExternalSystemCapability.ReadPipelineArtifacts];
-                        string[] labels = ["create-pipeline", "create-issues", "get-issues", "get-milestones", "get-releases", "get-requirements", "read-repository", "read-artifacts"];
+                        ExternalSystemCapability[] capabilities = [ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases, ExternalSystemCapability.GetLabels, ExternalSystemCapability.GetRequirements, ExternalSystemCapability.ReadCodeRepository, ExternalSystemCapability.ReadPipelineArtifacts];
+                        string[] labels = ["create-pipeline", "create-issues", "get-issues", "get-milestones", "get-releases", "get-labels", "get-requirements", "read-repository", "read-artifacts"];
 
                         @for (int i = 0; i < Math.Min(capabilities.Length, labels.Length); i++)
                         {

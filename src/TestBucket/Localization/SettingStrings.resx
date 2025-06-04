@@ -117,37 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="language-multilang" xml:space="preserve">
+    <value>Language / Idioma / Langue / 语言 / 言語 / لغة / 언어</value>
+  </data>
   <data name="manage-accounts" xml:space="preserve">
-    <value>Manage Accounts</value>
+    <value>Manage accounts</value>
   </data>
   <data name="manage-environments" xml:space="preserve">
-    <value>Manage Environments</value>
+    <value>Manage environments</value>
+  </data>
+  <data name="manage-labels" xml:space="preserve">
+    <value>Manage labels</value>
+  </data>
+  <data name="manage-milestones" xml:space="preserve">
+    <value>Manage milestones</value>
   </data>
   <data name="manage-projects" xml:space="preserve">
-    <value>Manage Projects</value>
+    <value>Manage projects</value>
   </data>
   <data name="manage-resources" xml:space="preserve">
-    <value>Resources &amp; Devices</value>
+    <value>Resources &amp; devices</value>
   </data>
   <data name="manage-roles" xml:space="preserve">
-    <value>Manage Roles</value>
+    <value>Manage roles</value>
   </data>
   <data name="manage-runners" xml:space="preserve">
-    <value>Manage Runners</value>
+    <value>Manage runners</value>
   </data>
   <data name="manage-teams" xml:space="preserve">
-    <value>Manage Teams</value>
+    <value>Manage teams</value>
   </data>
   <data name="manage-tenants" xml:space="preserve">
-    <value>Manage Tenants</value>
+    <value>Manage tenants</value>
   </data>
   <data name="manage-users" xml:space="preserve">
-    <value>Manage Users</value>
+    <value>Manage users</value>
   </data>
   <data name="open-ai-settings" xml:space="preserve">
     <value>Open AI settings</value>
   </data>
+  <data name="profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
   <data name="search-settings" xml:space="preserve">
-    <value>Search Settings..</value>
+    <value>Search settings..</value>
   </data>
 </root>

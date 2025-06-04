@@ -19,24 +19,18 @@ public static class SystemFieldDefinitions
         Name = "Label",
         Trait = "label",
         TraitType = TraitType.Label,
+        Icon = TbIcons.IconSaxDuoTone.Label,
         IsVisible = true,
-        Type = FieldType.MultiSelection,
+        Type = FieldType.String,
         IsDefinedBySystem = true,
-        Inherit = false,
+        Inherit = true,
+        ShowDescription = false,
         UseClassifier = false,
-        OptionColors = new Dictionary<string, string>
-        {
-            ["Good First Issue"] = "#587934",
-            ["Won't Fix"]= "#707070",
-            ["Enhancement"] = "#2155ce",
-            ["Help Wanted"]= "#1e4c63",
-            ["Invalid"] = "#8d2e4f",
-            ["Bug"] = "#d03a20",
-            ["Duplicate"] = "#7e52f5",
-        },
-        Options = ["Enhancement", "Bug", "Won't Fix", "Duplicate", "Help Wanted", "Invalid", "Question", "Good First Issue"],
+        Options = [],
+        DataSourceType = FieldDataSourceType.Labels,
         RequiredPermission = PermissionLevel.Write,
-        Target = FieldTarget.Issue
+        Target = FieldTarget.Issue |
+                    FieldTarget.Requirement
     };
 
     private static readonly FieldDefinition _feature = new()

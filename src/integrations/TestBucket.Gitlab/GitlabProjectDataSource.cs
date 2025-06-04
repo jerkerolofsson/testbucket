@@ -14,7 +14,7 @@ public class GitlabProjectDataSource : IExternalProjectDataSource
     /// <summary>
     /// The fields that this class can provide
     /// </summary>
-    public TraitType[] SupportedTraits => [TraitType.Milestone, TraitType.Release];
+    public TraitType[] SupportedTraits => [TraitType.Milestone, TraitType.Release, TraitType.Label];
 
     private readonly IMemoryCache _memoryCache;
     private readonly ILogger<GitlabProjectDataSource> _logger;
@@ -37,7 +37,7 @@ public class GitlabProjectDataSource : IExternalProjectDataSource
     /// <param name="trait">The field we should resolve</param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public async Task<string[]> GetFieldOptionsAsync(ExternalSystemDto system, TraitType trait, CancellationToken cancellationToken)
+    public async Task<GenericVisualEntity[]> GetFieldOptionsAsync(ExternalSystemDto system, TraitType trait, CancellationToken cancellationToken)
     {
         if (system is not null &&
             system.ExternalProjectId is not null &&
@@ -60,15 +60,17 @@ public class GitlabProjectDataSource : IExternalProjectDataSource
                             var milestoneClient = client.GetMilestone(projectId);
                             var milestones = milestoneClient.Get(new MilestoneQuery() { });
 
-                            //var milestones = await client.Projects.GetMilestonesAsync(system.ExternalProjectId);
-                            return milestones.Select(x => x.Title).ToArray();
+                            return milestones.Select(x => new GenericVisualEntity() { Title = x.Title, Description = x.Description }).ToArray();
+
+                        case TraitType.Label:
+                            var labels = client.Labels.ForProject(projectId);
+                            return labels.Select(x => new GenericVisualEntity { Title = x.Name, Description = x.Description, Color = x.Color }).ToArray();
 
                         case TraitType.Release:
                             var releasesClient = client.GetReleases(projectId);
                             var releases = releasesClient.GetAsync();
 
-                            //var milestones = await client.Projects.GetMilestonesAsync(system.ExternalProjectId);
-                            return releases.Select(x => x.Name).ToArray();
+                            return releases.Select(x => new GenericVisualEntity { Title = x.Name, Description = x.Description }).ToArray();
                     }
                     return [];
                 });

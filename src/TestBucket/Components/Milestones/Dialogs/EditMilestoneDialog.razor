@@ -5,37 +5,39 @@
     <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
         <TitleContent>@Milestone?.Title</TitleContent>
         <DialogContent>
-            @if (Milestone is not null)
-            {
-                <Field>
-                    <MudTextField Variant="Variant.Outlined"
-                    Label="@loc["title"]"
-                    Immediate
-                    AdornmentColor="Color.Tertiary"
-                    @bind-Value="@Milestone.Title"
-                    T="string"
-                    AutoFocus="true" />
-                </Field>
+            <MudStack>
+                @if (Milestone is not null)
+                {
+                    <Field>
+                        <MudTextField Variant="Variant.Outlined"
+                        Label="@loc["title"]"
+                        Immediate
+                        AdornmentColor="Color.Tertiary"
+                        @bind-Value="@Milestone.Title"
+                        T="string"
+                        AutoFocus="true" />
+                    </Field>
 
-                <Field Row>
-                    <FieldHeader>@loc["open"]</FieldHeader>
-                    <MudSpacer />
-                    <MudSwitchM3 @bind-Value="@_open" Color="Color.Primary"/>
-                </Field>
+                    <Field Row>
+                        <FieldHeader>@loc["open"]</FieldHeader>
+                        <MudSpacer />
+                        <MudSwitchM3 @bind-Value="@_open" Color="Color.Primary"/>
+                    </Field>
 
-                <Field Row>
-                    <FieldHeader>@loc["start-date"]</FieldHeader>
-                    <MudSpacer />
-                    <MudDatePicker @bind-Date="@_startDate" />
-                </Field>
+                    <Field Row>
+                        <FieldHeader>@loc["start-date"]</FieldHeader>
+                        <MudSpacer />
+                        <MudDatePicker Variant="Variant.Outlined" @bind-Date="@_startDate" />
+                    </Field>
 
-                <Field Row>
-                    <FieldHeader>@loc["end-date"]</FieldHeader>
-                    <MudSpacer />
-                    <MudDatePicker @bind-Date="@_endDate" />
-                </Field>
+                    <Field Row>
+                        <FieldHeader>@loc["end-date"]</FieldHeader>
+                        <MudSpacer />
+                        <MudDatePicker Variant="Variant.Outlined" @bind-Date="@_endDate" />
+                    </Field>
 
-            }
+                }
+            </MudStack>
         </DialogContent>
 
         <DialogActions>

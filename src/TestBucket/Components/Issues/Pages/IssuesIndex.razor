@@ -2,17 +2,19 @@
 @page "/{TenantId}/Issues"
 @using TestBucket.Components.Commands
 @using TestBucket.Components.Issues.Layouts
+@using TestBucket.Components.Labels.Controllers
 @using TestBucket.Domain
 @using TestBucket.Domain.Commands
 @using TestBucket.Domain.ExtensionManagement
 @using TestBucket.Domain.Issues.Models
+@using TestBucket.Domain.Labels.Models
 @using TestBucket.Domain.Issues.Search
 @layout IssuesLayout
 @inject AppNavigationManager appNavigationManager
 @inject IssueController controller
+@inject LabelController labelController
 @inject IExtensionManager extensionManager
 @inject CommandController commandManager
-@inject UserPreferencesService userPreferencesService
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
 
@@ -65,7 +67,7 @@
                     <CellTemplate>
                         <MudTooltip Text="@context.Item.Url">
                             <MudStack AlignItems="AlignItems.Center" Row Spacing=1>
-                                @if(_prefTextToIcons)
+                                @if(UserPreferences?.PreferTextToIcons == true)
                                 {
                                     <MudText>@(context.Item.ExternalSystemName ?? "TestBucket")</MudText>
                                 }
@@ -110,7 +112,7 @@
                         <MudStack Row>
                             @foreach (var label in context.Item.GetLabels())
                             {
-                                var color = context.Item.GetLabelColor(label);
+                                var color = GetLabelColor(label);
                                 <Chip Text="@label" Color="@color"></Chip>
                             }
                         </MudStack>
@@ -128,6 +130,7 @@
 @code {
     [Parameter] public string TenantId { get; set; } = "";
     [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public UserPreferences? UserPreferences { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
 
     [SupplyParameterFromQuery(Name = "q")] public string? Query { get; set; }
@@ -136,16 +139,22 @@
     private string? _searchText;
 
     private long? _totalCount;
-    
-    private bool _prefTextToIcons = false;
 
-    protected override async Task OnInitializedAsync()
+    private IReadOnlyList<Label> _labels = [];
+
+    public string GetLabelColor(string name)
     {
-        var userPreferences = await userPreferencesService.GetUserPreferencesAsync();
-        _prefTextToIcons = userPreferences?.PreferTextToIcons ?? false;
+        var label = _labels.Where(x=>x.Title == name).FirstOrDefault();
+        return label?.Color ?? "#777";
     }
-    protected override void OnParametersSet()
+
+    protected override async Task OnParametersSetAsync()
     {
+        if(Project is not null && _labels.Count == 0)
+        {
+            _labels = await labelController.GetLabelsAsync(Project);
+        }
+
         appNavigationManager.State.SelectedIssue = null;
         OnSearch(Query ?? "state:open is:issue");
     }

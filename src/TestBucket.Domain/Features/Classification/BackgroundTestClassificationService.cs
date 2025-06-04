@@ -61,13 +61,13 @@ namespace TestBucket.Domain.Features.Classification
                     var options = await fieldDefinitionManager.GetOptionsAsync(principal, field.FieldDefinition);
                     if (options.Count == 1)
                     {
-                        field.StringValue = options[0];
+                        field.StringValue = options[0].Title;
                         field.Inherited = false;
                         await fieldManager.UpsertTestCaseFieldAsync(principal, field);
                     }
                     else if (options.Count >= 2)
                     {
-                        var result = await classifier.ClassifyAsync(principal, field.FieldDefinition.Name, options.ToArray(), testCase);
+                        var result = await classifier.ClassifyAsync(principal, field.FieldDefinition.Name, options.Select(x => x.Title!).ToArray(), testCase);
                         if (result.Length > 0)
                         {
                             _logger.LogInformation("Classified {test} with {category}", testCase.Name, result[0]);
@@ -86,7 +86,7 @@ namespace TestBucket.Domain.Features.Classification
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(90), stoppingToken);
 
             using var scope = _serviceProvider.CreateScope();
             var testRepo = scope.ServiceProvider.GetRequiredService<ITestCaseRepository>();

@@ -28,6 +28,9 @@ using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Insights;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Insights;
+using TestBucket.Domain.Labels;
+using TestBucket.Domain.Labels.DataSources;
+using TestBucket.Domain.Labels.Services;
 using TestBucket.Domain.Milestones;
 using TestBucket.Domain.Milestones.DataSources;
 using TestBucket.Domain.Milestones.Services;
@@ -87,6 +90,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IFieldCompletionsProvider, FeatureDataSource>();
         services.AddScoped<IFieldCompletionsProvider, CommitDataSource>();
         services.AddScoped<IFieldCompletionsProvider, MilestoneDataSource>();
+        services.AddScoped<IFieldCompletionsProvider, LabelDataSource>();
 
         // Insight data sources
         services.AddScoped<IInsightsDataSource, IssuesByStateDataSource>();
@@ -138,9 +142,11 @@ public static class DomainServiceExtensions
         services.AddScoped<IFieldManager, FieldManager>();
 
         services.AddScoped<IIssueManager, IssueManager>();
+        services.AddHostedService<IssueProviderBackgroundIndexer>();
         services.AddScoped<IMilestoneManager, MilestoneManager>();
         services.AddHostedService<MilestoneIndexer>();
-        services.AddHostedService<IssueProviderBackgroundIndexer>();
+        services.AddScoped<ILabelManager, LabelManager>();
+        services.AddHostedService<LabelIndexer>();
 
         services.AddScoped<IUserManager, UserManager>();
         services.AddScoped<IProfilePictureManager, ProfilePictureManager>();

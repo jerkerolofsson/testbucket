@@ -2,6 +2,7 @@
 using System.Security.Claims;
 
 using TestBucket.Contracts.Fields;
+using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 
@@ -15,7 +16,7 @@ public interface IFieldDefinitionManager
     /// <param name="principal"></param>
     /// <param name="field"></param>
     /// <returns></returns>
-    Task<IReadOnlyList<string>> GetOptionsAsync(ClaimsPrincipal principal, FieldDefinition field);
+    Task<IReadOnlyList<GenericVisualEntity>> GetOptionsAsync(ClaimsPrincipal principal, FieldDefinition field);
 
     /// <summary>
     /// Adds a field 
@@ -65,6 +66,16 @@ public interface IFieldDefinitionManager
     /// <param name="fieldDefinition"></param>
     /// <returns></returns>
     Task UpdateAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition);
-    Task<IReadOnlyList<string>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDefinition field, string text, int count, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Searches for options for a field. This is used to provide autocomplete functionality in the UI.
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="field"></param>
+    /// <param name="text"></param>
+    /// <param name="count"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task<IReadOnlyList<GenericVisualEntity>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDefinition field, string text, int count, CancellationToken cancellationToken);
     void ClearTenantCache(string tenantId);
 }

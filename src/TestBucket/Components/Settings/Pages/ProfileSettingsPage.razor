@@ -1,0 +1,36 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/Categories/Profile"
+@using TestBucket.Domain
+@using TestBucket.Domain.Settings
+@layout SettingsLayout
+@inject ISettingsManager settingsManager
+@inject ISettingsProvider settingsProvider
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject IStringLocalizer<SettingStrings> settingsLoc
+@inject IStringLocalizer<SharedStrings> loc
+
+<MudStack Class="container-settings-page">
+
+    @foreach (var section in _sections)
+    {
+        <MudText Class="mb-2" Typo="Typo.h2">@loc["profile"]</MudText>
+        <MudStack Spacing="1">
+            @foreach (var setting in _settings)
+            {
+                if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
+                {
+                    <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                    </FieldEditor>
+                }
+            }
+
+            <Field Row>
+                <FieldHeader>@settingsLoc["language-multilang"]</FieldHeader>
+                <MudSpacer/>
+                <LanguagePicker />
+            </Field>
+
+        </MudStack>
+    }
+
+</MudStack>

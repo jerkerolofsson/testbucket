@@ -441,6 +441,11 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Milestones";
     }
+    public string GetLabelsUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/{tenantId}/Labels";
+    }
 
     public void NavigateTo(string url, bool forceLoad = false)
     {

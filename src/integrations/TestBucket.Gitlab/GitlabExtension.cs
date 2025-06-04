@@ -15,6 +15,7 @@ namespace TestBucket.Gitlab
             ExternalSystemCapability.GetPipelines | 
             ExternalSystemCapability.GetReleases |
             ExternalSystemCapability.GetIssues |
+            ExternalSystemCapability.GetLabels |
             ExternalSystemCapability.GetMilestones | 
             ExternalSystemCapability.ReadPipelineArtifacts |
             ExternalSystemCapability.ReadCodeRepository;

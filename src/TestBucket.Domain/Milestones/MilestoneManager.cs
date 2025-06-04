@@ -14,7 +14,7 @@ internal class MilestoneManager : IMilestoneManager
 
     public async Task UpdateMilestoneAsync(ClaimsPrincipal principal, Milestone milestone)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
         principal.ThrowIfEntityTenantIsDifferent(milestone);
         milestone.Modified = DateTimeOffset.UtcNow;
         milestone.ModifiedBy = principal.Identity?.Name;
@@ -23,7 +23,7 @@ internal class MilestoneManager : IMilestoneManager
 
     public async Task<IReadOnlyList<Milestone>> GetMilestonesAsync(ClaimsPrincipal principal, long projectId)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
         var filters = new List<FilterSpecification<Milestone>>
         {
             new FilterByTenant<Milestone>(principal.GetTenantIdOrThrow()),
@@ -34,7 +34,7 @@ internal class MilestoneManager : IMilestoneManager
 
     public async Task AddMilestoneAsync(ClaimsPrincipal principal, Milestone milestone)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
 
         milestone.TenantId = principal.GetTenantIdOrThrow();
         milestone.Created = DateTimeOffset.UtcNow;
@@ -46,7 +46,7 @@ internal class MilestoneManager : IMilestoneManager
 
     public async Task<Milestone?> GetMilestoneByNameAsync(ClaimsPrincipal principal, long projectId, string name)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
         var filters = new List<FilterSpecification<Milestone>>
         {
             new FilterByTenant<Milestone>(principal.GetTenantIdOrThrow()),
@@ -59,7 +59,7 @@ internal class MilestoneManager : IMilestoneManager
 
     public async Task<IReadOnlyList<Milestone>> SearchMilestonesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
         var filters = new List<FilterSpecification<Milestone>>
         {
             new FilterByTenant<Milestone>(principal.GetTenantIdOrThrow()),
@@ -72,7 +72,7 @@ internal class MilestoneManager : IMilestoneManager
 
     public async Task DeleteAsync(ClaimsPrincipal principal, Milestone milestone)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Delete);
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Delete);
         principal.ThrowIfEntityTenantIsDifferent(milestone);
 
         await _repository.DeleteMilestoneByIdAsync(milestone.Id);

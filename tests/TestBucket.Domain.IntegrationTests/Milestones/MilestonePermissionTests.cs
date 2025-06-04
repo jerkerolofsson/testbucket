@@ -15,6 +15,7 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
     [IntegrationTest]
     [SecurityTest]
     [Feature("Milestones")]
+    [Component("Milestones")]
     public class MilestonePermissionTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         /// <summary>

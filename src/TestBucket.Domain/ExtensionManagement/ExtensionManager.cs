@@ -19,6 +19,11 @@ namespace TestBucket.Domain.ExtensionManagement
 
         public string? GetIcon(string systemName)
         {
+            if(systemName == "Test Bucket")
+            {
+                return TbIcons.Brands.TestBucket;
+            }
+
             var ext = FindExtension(systemName);
             return ext?.Icon;
         }

@@ -10,7 +10,8 @@
         /// <summary>
         /// The js runtime
         /// </summary>
-        private IJSRuntime jsRuntime;
+        private readonly IJSRuntime jsRuntime;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="JSMarkdownInterop"/> class.
         /// </summary>

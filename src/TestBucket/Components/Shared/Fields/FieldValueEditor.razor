@@ -1,8 +1,10 @@
 ﻿@using TestBucket.Components.Uploads.Services
 @using TestBucket.Contracts.Appearance.Models
+@using TestBucket.Contracts.Integrations
 @inject AttachmentsService attachmentController
 @inject FieldController fieldController
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<FieldStrings> fieldLoc
 
 @if(Field?.FieldDefinition is not null) 
 {
@@ -70,11 +72,11 @@
     else if (type == FieldType.SingleSelection)
     {
         <MudSelect Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable>
-            @foreach (var item in _options)
+            @foreach (var item in _options.Where(x=>x.Title != null))
             {
-                <MudSelectItem Value="@item">
+                <MudSelectItem Value="@item.Title">
                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-                       @item
+                        @fieldLoc[item.Title!]
                     </MudStack>
                 </MudSelectItem>
             }
@@ -107,20 +109,19 @@
         <MudSelect SelectedValues="@Field.StringValuesList" T="string" MultiSelection SelectedValuesChanged="OnMultiSelectionChanged" Variant="Variant.Outlined" Clearable>
             @foreach (var item in _options)
             {
-                string? color = null;
+                string? color = item.Color;
                 string iconStyle = "width:12px; height: 12px";
-                if(Field.FieldDefinition.OptionColors is not null)
-                {
-                    Field.FieldDefinition.OptionColors.TryGetValue(item, out color);
-                }
 
-                <MudSelectItem Value="@item">
+                <MudSelectItem Value="@item.Title">
                     <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-                        @if (Field.FieldDefinition.OptionIcons is not null && Field.FieldDefinition.OptionIcons.TryGetValue(item, out var optionIcon) && !string.IsNullOrEmpty(optionIcon))
+                        @if (!string.IsNullOrEmpty(item.Icon))
                         {
-                            <MudIcon Style="@iconStyle" Icon="@optionIcon" Title="@item" />
+                            <MudIcon Style="@iconStyle" Icon="@item.Icon" Title="@item.Title" />
                         }
-                        <Chip Text="@item" Color="@color" />
+                        @if(item.Title is not null)
+                        {
+                            <Chip Text="@fieldLoc[item.Title]" Color="@color" />
+                        }
                     </MudStack>
                 </MudSelectItem>
             }
@@ -134,7 +135,7 @@
     [Parameter] public bool AllowMultiSelection { get; set; } = true;
 
     private string _addStringArrayValue = "";
-    private IReadOnlyList<string> _options = [];
+    private IReadOnlyList<GenericVisualEntity> _options = [];
     private FieldValue? _field;
 
     private DateTime? _date;
@@ -328,7 +329,8 @@
         {
             return [];
         }
-        return await fieldController.SearchOptionsAsync(Field.FieldDefinition, text??"", 10, token);
+        var result = await fieldController.SearchOptionsAsync(Field.FieldDefinition, text??"", 10, token);
+        return result.Where(x=>x.Title != null).Select(x=>x.Title!);
     }
 
     public bool AutoCompleteEnabled

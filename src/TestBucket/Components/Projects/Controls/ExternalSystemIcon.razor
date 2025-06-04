@@ -1,0 +1,16 @@
+﻿@using TestBucket.Domain.ExtensionManagement
+@inject IExtensionManager extensionManager
+
+@if(SystemName is not null)
+{
+    string? icon = extensionManager.GetIcon(SystemName);
+    if(icon is not null)
+    {
+        <MudIcon Icon="@icon" Size="@Size" />
+    }
+}
+
+@code {
+    [Parameter] public string? SystemName { get; set; }
+    [Parameter] public Size Size { get; set; }
+}

@@ -27,7 +27,7 @@ else
 
     protected override void OnParametersSet()
     {
-        ThemeColor color = Color;
+        ThemeColor color = (Color ?? "#777");
         if (ColorFromTextHash && Palette is not null && Palette.Colors.Count > 0)
         {
             if(Text is not null)
@@ -36,8 +36,20 @@ else
                 color = Palette.Colors[hash];
             }
         }
-        _textColor = color.ColorLighten(0.3).ToString(ColorOutputFormats.Hex);
+
         _borderColor = color.ToString(ColorOutputFormats.Hex);
-        _backgroundColor = color.ColorDarken(0.2).ToString(ColorOutputFormats.Hex);
+        var backColor = color.ColorDarken(0.2);
+        _backgroundColor = backColor.ToString(ColorOutputFormats.Hex);
+
+        if (backColor.L > 0.5)
+        {
+            var amount = backColor.L - 0.1;
+            _textColor = backColor.ColorDarken(amount).ToString(ColorOutputFormats.Hex);
+        }
+        else
+        {
+            var amount = 0.9 - backColor.L;
+            _textColor = backColor.ColorLighten(amount).ToString(ColorOutputFormats.Hex);
+        }
     }
 }

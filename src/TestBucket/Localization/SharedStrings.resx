@@ -315,7 +315,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Result</value>
   </data>
   <data name="filter-tests" xml:space="preserve">
-    <value>Filter Tests</value>
+    <value>Filter tests</value>
   </data>
   <data name="search-tests" xml:space="preserve">
     <value>Search tests</value>
@@ -327,7 +327,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Start date</value>
   </data>
   <data name="end-date" xml:space="preserve">
-    <value>End Date</value>
+    <value>End date</value>
   </data>
   <data name="link-issue" xml:space="preserve">
     <value>Link issue</value>
@@ -417,16 +417,13 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Preview</value>
   </data>
   <data name="copied-to-clipboard-notification" xml:space="preserve">
-    <value>Copied to clipbard</value>
+    <value>Copied to clipboard</value>
   </data>
   <data name="backup" xml:space="preserve">
     <value>Backup</value>
   </data>
   <data name="rename" xml:space="preserve">
     <value>Rename</value>
-  </data>
-  <data name="r" xml:space="preserve">
-    <value>Add</value>
   </data>
   <data name="create-test-run" xml:space="preserve">
     <value>Create run</value>
@@ -591,7 +588,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Run test suite</value>
   </data>
   <data name="e2e-tests" xml:space="preserve">
-    <value>E2E Tests</value>
+    <value>E2E tests</value>
   </data>
   <data name="integration-tests" xml:space="preserve">
     <value>Integration tests</value>
@@ -678,7 +675,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Test log</value>
   </data>
   <data name="capture-screenshot-on-this-device" xml:space="preserve">
-    <value>Capture Screenshot on this device</value>
+    <value>Capture screenshot on this device</value>
   </data>
   <data name="logout" xml:space="preserve">
     <value>Logout</value>
@@ -730,5 +727,20 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="set-dark-mode" xml:space="preserve">
     <value>Set dark mode</value>
+  </data>
+  <data name="open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="labels" xml:space="preserve">
+    <value>Labels</value>
+  </data>
+  <data name="system" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="menu-new-description" xml:space="preserve">
+    <value>Add new items</value>
+  </data>
+  <data name="open-command-palette" xml:space="preserve">
+    <value>Open command palette</value>
   </data>
 </root>

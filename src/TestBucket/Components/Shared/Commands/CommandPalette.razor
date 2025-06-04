@@ -6,6 +6,7 @@
 @implements IAsyncDisposable
 @inject ICommandManager commandManager
 @inject AuthenticationStateProvider authenticationStateProvider
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudOverlay Visible="_open" OnClick="CloseAsync" Class="tb-blur-overlay" />
 
@@ -13,7 +14,7 @@
 
     <MudTooltip>
         <ChildContent>
-            <MudIconButton OnClick="OpenAsync" Icon="@TbIcons.BoldDuoTone.Command"/>
+            <MudIconButton OnClick="OpenAsync" Icon="@TbIcons.BoldDuoTone.Command" aria-label="@loc["open-command-palette"]" />
 
             <MudPopover Open="@_open" Fixed="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopCenter">
                 <MudPaper Class="pa-3">
@@ -34,6 +35,7 @@
             </MudPopover>
         </ChildContent>
         <TooltipContent>
+            <div>@loc["open-command-palette"]</div>
             <KeyboardShortcutLabel Modifiers="@(ModifierKey.Ctrl | ModifierKey.Shift)" KeyCode="KeyP" />
         </TooltipContent>
     </MudTooltip>

@@ -14,6 +14,7 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
     [IntegrationTest]
     [FunctionalTest]
     [Feature("Milestones")]
+    [Component("Milestones")]
     public class ManageMilestoneTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         /// <summary>
@@ -41,7 +42,7 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
             Assert.Single(options);
             var milestones = await manager.GetMilestonesAsync(principal, Fixture.ProjectId);
             Assert.Single(milestones);
-            Assert.Equal(milestones[0].Title, options[0]);
+            Assert.Equal(milestones[0].Title, options[0].Title);
         }
 
         /// <summary>

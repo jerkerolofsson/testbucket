@@ -1,9 +1,13 @@
-﻿using Blazored.LocalStorage;
+﻿using System.Globalization;
+
+using Blazored.LocalStorage;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 
 using MudBlazor.Services;
 
@@ -18,6 +22,7 @@ using TestBucket.Components.Comments;
 using TestBucket.Components.Environments.Services;
 using TestBucket.Components.Issues.Commands;
 using TestBucket.Components.Issues.Controllers;
+using TestBucket.Components.Labels.Controllers;
 using TestBucket.Components.Layout.Controls;
 using TestBucket.Components.Milestones.Controllers;
 using TestBucket.Components.Projects;
@@ -75,6 +80,25 @@ public static class TestBucketServerApp
                 hubOptions.MaximumReceiveMessageSize = 2_000_000;
                 //hubOptions.ClientTimeoutInterval = TimeSpan.FromSeconds(10);
             });
+
+        builder.Services.Configure<RequestLocalizationOptions>(options =>
+        {
+            List<CultureInfo> supportedUICultures = [new CultureInfo("en"), new CultureInfo("sv-SE"), new CultureInfo("zh-Hans")];
+
+            options.DefaultRequestCulture = new RequestCulture("en", "en");
+            options.SupportedUICultures = supportedUICultures;
+            options.RequestCultureProviders.Insert(0, new CustomRequestCultureProvider((HttpContext context) =>
+            {
+                // Check for Locale cookie first
+                if (context.Request.Cookies.TryGetValue("Locale", out string? value))
+                {
+                    return Task.FromResult< ProviderCultureResult?>(new ProviderCultureResult(value));
+                }
+
+                return Task.FromResult<ProviderCultureResult?>(null);
+            }));
+            options.RequestCultureProviders.Insert(1, new AcceptLanguageHeaderRequestCultureProvider());
+        });
 
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddMemoryCache();
@@ -254,9 +278,9 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, DeleteTestSuiteFolderCommand>();
         builder.Services.AddScoped<ICommand, EditTestSuiteFolderCommand>();
         builder.Services.AddScoped<ICommand, RunTestSuiteFolderCommand>();
-        
 
         builder.Services.AddScoped<MilestonesController>();
+        builder.Services.AddScoped<LabelController>();
 
         // Test tree view
         builder.Services.AddScoped<ICommand, BatchTagCommand>();
@@ -350,19 +374,13 @@ public static class TestBucketServerApp
             app.UseHsts();
         }
         app.UseAntiforgery();
+        app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
         if (Environment.GetEnvironmentVariable("TB_HTTPS_REDIRECT") != "disabled")
         {
             app.UseHttpsRedirection();
         }
         app.UseCors(localhostOrigin);
-
-
-        var requestLocalizationOptions = new RequestLocalizationOptions()
-             .AddSupportedCultures(["en-US", "sv-SE"])
-             .AddSupportedUICultures(["en-US", "sv-SE"]);
-        requestLocalizationOptions.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en-US");
-        app.UseRequestLocalization(requestLocalizationOptions);
 
         app.MapStaticAssets();
         app.MapControllers();

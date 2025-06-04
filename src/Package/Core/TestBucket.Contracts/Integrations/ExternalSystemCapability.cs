@@ -65,5 +65,11 @@ namespace TestBucket.Contracts.Integrations
         /// Implemented by IExternalCodeRepository
         /// </summary>
         ReadCodeRepository = 0x100,
+
+        /// <summary>
+        /// Extension can read labels. 
+        /// Implemented by IProjectDataSource using TraitType.Label
+        /// </summary>
+        GetLabels = 0x200,
     }
 }

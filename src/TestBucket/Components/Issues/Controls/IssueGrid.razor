@@ -1,15 +1,18 @@
 ﻿@using TestBucket.Components.Commands
 @using TestBucket.Components.Issues.Layouts
+@using TestBucket.Components.Labels.Controllers
 @using TestBucket.Domain
 @using TestBucket.Domain.Commands
 @using TestBucket.Domain.ExtensionManagement
 @using TestBucket.Domain.Issues.Models
 @using TestBucket.Domain.Issues.Search
+@using TestBucket.Domain.Labels.Models
 @layout IssuesLayout
 @inject AppNavigationManager appNavigationManager
 @inject IssueController controller
-@inject IExtensionManager extensionManager
+@inject LabelController labelController
 @inject CommandController commandController
+@inject IExtensionManager extensionManager
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
 
@@ -96,13 +99,13 @@
                         @context.Item.IssueType
                     </CellTemplate>
                 </TemplateColumn>
-
+                
                 <TemplateColumn Title="@loc["label"]">
                     <CellTemplate>
                         <MudStack Row>
                             @foreach (var label in context.Item.GetLabels())
                             {
-                                var color = context.Item.GetLabelColor(label);
+                                var color = GetLabelColor(label);
                                 <Chip Text="@label" Color="@color"></Chip>
                             }
                         </MudStack>
@@ -128,8 +131,21 @@
 
     private long? _totalCount;
 
-    protected override void OnParametersSet()
+    private IReadOnlyList<Label> _labels = [];
+
+    public string GetLabelColor(string name)
     {
+        var label = _labels.Where(x=>x.Title == name).FirstOrDefault();
+        return label?.Color ?? "#777";
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Project is not null && _labels.Count == 0)
+        {
+            _labels = await labelController.GetLabelsAsync(Project);
+        }
+
         _searchText = SearchText ?? "state:open is:issue";
         _grid?.ReloadServerData();
     }

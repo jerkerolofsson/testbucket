@@ -3,6 +3,7 @@
 using Microsoft.Extensions.Localization;
 
 using TestBucket.Contracts.Fields;
+using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Projects;
@@ -157,13 +158,13 @@ internal class FieldController : TenantBaseService
 
     #region Field Definitions
 
-    public async Task<IReadOnlyList<string>> SearchOptionsAsync(FieldDefinition field, string text, int count, CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<GenericVisualEntity>> SearchOptionsAsync(FieldDefinition field, string text, int count, CancellationToken cancellationToken)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _definitionManager.SearchOptionsAsync(principal, field, text, count, cancellationToken);
     }
 
-    public async Task<IReadOnlyList<string>> GetOptionsAsync(FieldDefinition field)
+    public async Task<IReadOnlyList<GenericVisualEntity>> GetOptionsAsync(FieldDefinition field)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _definitionManager.GetOptionsAsync(principal, field);

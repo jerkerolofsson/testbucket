@@ -28,6 +28,11 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         public ArchitectureFramework Architecture => new ArchitectureFramework(this);
 
         /// <summary>
+        /// Labels
+        /// </summary>
+        public LabelsTestFramework Labels => new LabelsTestFramework(this);
+
+        /// <summary>
         /// Commits
         /// </summary>
         public CommitFramework Commits => new CommitFramework(this);

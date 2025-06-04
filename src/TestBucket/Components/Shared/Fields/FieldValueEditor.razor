@@ -137,6 +137,7 @@
     private string _addStringArrayValue = "";
     private IReadOnlyList<GenericVisualEntity> _options = [];
     private FieldValue? _field;
+    private Dock _dock = Dock.Left;
 
     private DateTime? _date;
 
@@ -220,8 +221,6 @@
 
         await FieldChanged.InvokeAsync(Field);
     }
-
-    private Dock _dock = Dock.Left;
 
     protected override async Task OnParametersSetAsync()
     {

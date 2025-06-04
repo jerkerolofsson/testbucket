@@ -27,7 +27,7 @@ internal class LabelDataSource : IFieldCompletionsProvider
         if (type == FieldDataSourceType.Labels)
         {
             var labels = await _manager.SearchLabelsAsync(principal, projectId, text, offset:0, count);
-            return labels.Where(x => x.Title != null).Select(x => new GenericVisualEntity { Title = x.Title, Description = x.Description, Color = x.Color }).ToList();
+            return labels.Where(x => x.Title != null && x.Title.Contains(text, StringComparison.InvariantCultureIgnoreCase)).Select(x => new GenericVisualEntity { Title = x.Title, Description = x.Description, Color = x.Color }).ToList();
         }
         return [];
     }

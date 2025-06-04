@@ -1,13 +1,15 @@
-﻿@if(Field?.FieldDefinition is not null) 
+﻿@using TestBucket.Contracts.Integrations
+@inject FieldController fieldController
+
+@if(Field?.FieldDefinition is not null) 
 {
     <MudText Class="tb-read-only-field">
         @if (Field.FieldDefinition.Type is (FieldType.String or FieldType.SingleSelection) )
         {
-            string? color = "";
-            if (Field.FieldDefinition.OptionColors is not null && Field.StringValue is not null && 
-            Field.FieldDefinition.OptionColors.TryGetValue(Field.StringValue, out color))
+            var visualEntity = _options.FirstOrDefault(x => x.Title == Field.StringValue);
+            if (visualEntity is not null)
             {
-                <Chip Color="@color" Text="@Field.StringValue" />
+                <Chip Color="@visualEntity.Color" Text="@Field.StringValue" />
             }
             else
             {
@@ -39,14 +41,8 @@
             <MudStack Row Spacing="1">
                 @foreach (var value in Field.StringValuesList)
                 {
-                    string color = "#CCC";
-                    if (Field.FieldDefinition.OptionColors is not null)
-                    {
-                        if(Field.FieldDefinition.OptionColors.TryGetValue(value, out var optionColor))
-                        {
-                            color = optionColor;
-                        }
-                    }
+                    var visualEntity = _options.FirstOrDefault(x => x.Title == value);
+                    string color = visualEntity?.Color ?? "#CCC";
                     <Chip Color="@color" Text="@value"/>
                 }
             </MudStack>
@@ -55,4 +51,40 @@
 }
 @code {
     [Parameter] public FieldValue? Field { get; set; }
+
+    private IReadOnlyList<GenericVisualEntity> _options = [];
+    private FieldValue? _field;
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Field is null)
+        {
+            return;
+        }
+
+        if (Field.Id != _field?.Id)
+        {
+            _field = Field;
+            _options = [];
+            if (Field?.FieldDefinition is null)
+            {
+                return;
+            }
+
+
+            if (Field.FieldDefinition.Type is FieldType.StringArray or FieldType.MultiSelection)
+            {
+                Field.StringValuesList ??= [];
+            }
+            if ((Field.FieldDefinition.Type is FieldType.SingleSelection or FieldType.MultiSelection or FieldType.StringArray))
+            {
+                if (Field.FieldDefinition.DataSourceType != Contracts.Fields.FieldDataSourceType.Dock)
+                {
+                    _options = await fieldController.GetOptionsAsync(Field.FieldDefinition);
+                }
+            }
+        }
+    }
+
 }

@@ -120,6 +120,16 @@ public class UnconnectedPipelineIndexer : BackgroundService
                         continue;
                     }
 
+
+                    var monitorUser = Impersonation.Impersonate(user =>
+                    {
+                        //project.TenantId, project.Id
+                        user.TenantId = testSuite.TenantId;
+                        user.ProjectId = testSuite.TestProjectId;
+                        user.UserName = config.Name;
+                        user.AddAllPermissions();
+                    });
+
                     var existingPipeline = await pipelineManager.GetPipelineByExternalAsync(user, config.Name, pipeline.CiCdProjectId, pipeline.CiCdPipelineIdentifier);
                     if(existingPipeline is null)
                     {
@@ -128,7 +138,7 @@ public class UnconnectedPipelineIndexer : BackgroundService
 
                         // Create new run
                         var run = new TestRun { Name = runName, TestProjectId = testSuite.TestProjectId };
-                        await testrunManager.AddTestRunAsync(user, run);
+                        await testrunManager.AddTestRunAsync(monitorUser, run);
 
                         var newPipeline = new Pipeline
                         {
@@ -142,20 +152,12 @@ public class UnconnectedPipelineIndexer : BackgroundService
                             Duration = pipeline.Duration,
                         };
 
-                        await pipelineManager.AddAsync(user, newPipeline);
+                        await pipelineManager.AddAsync(monitorUser, newPipeline);
                     }
                     else if(existingPipeline.Status != Contracts.Automation.PipelineStatus.Completed)
                     {
                         // Attach it
 
-                        var monitorUser = Impersonation.Impersonate(user =>
-                        {
-                            //project.TenantId, project.Id
-                            user.TenantId = testSuite.TenantId;
-                            user.ProjectId = testSuite.TestProjectId;
-                            user.UserName = config.Name;
-                            user.AddAllPermissions();
-                        });
 
                         await pipelineManager.StartMonitorIfNotMonitoringAsync(monitorUser, existingPipeline);
                     }

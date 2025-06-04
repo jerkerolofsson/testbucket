@@ -243,6 +243,10 @@
   <data name="input-type-helpertext" xml:space="preserve">
     <value>The type of input UI control that will be shown to the user to enter a value for the field</value>
   </data>
+  <data name="invalid" xml:space="preserve">
+    <value>Invalid</value>
+    <comment>Label type</comment>
+  </data>
   <data name="name" xml:space="preserve">
     <value>Name</value>
   </data>

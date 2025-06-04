@@ -27,7 +27,7 @@ internal class MilestoneDataSource : IFieldCompletionsProvider
         if (type == FieldDataSourceType.Milestones)
         {
             var milestones = await _manager.SearchMilestonesAsync(principal, projectId, text, offset:0, count);
-            return milestones.Where(x => x.Title != null).Select(x => new GenericVisualEntity { Title = x.Title, Description = x.Description }).ToList();
+            return milestones.Where(x => x.Title != null && x.Title.Contains(text, StringComparison.InvariantCultureIgnoreCase)).Select(x => new GenericVisualEntity { Title = x.Title, Description = x.Description }).ToList();
         }
         return [];
     }

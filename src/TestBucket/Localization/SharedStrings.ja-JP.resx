@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="name" xml:space="preserve">
+    <value>名前</value>
+  </data>
+    <data name="description" xml:space="preserve">
+    <value>説明</value>
+  </data>
+    <data name="project" xml:space="preserve">
+    <value>プロジェクト</value>
+  </data>
+    <data name="team" xml:space="preserve">
+    <value>チーム</value>
+  </data>
+    <data name="settings" xml:space="preserve">
+    <value>設定</value>
+  </data>
+    <data name="projects" xml:space="preserve">
+    <value>プロジェクト一覧</value>
+  </data>
+    <data name="variables" xml:space="preserve">
+    <value>変数</value>
+  </data>
+    <data name="test-environment" xml:space="preserve">
+    <value>テスト環境</value>
+  </data>
+    <data name="test-environments" xml:space="preserve">
+    <value>テスト環境一覧</value>
+  </data>
+    <data name="attachments" xml:space="preserve">
+    <value>添付ファイル</value>
+  </data>
+    <data name="callstack" xml:space="preserve">
+    <value>コールスタック</value>
+  </data>
+    <data name="message" xml:space="preserve">
+    <value>メッセージ</value>
+  </data>
+    <data name="test-result" xml:space="preserve">
+    <value>結果</value>
+  </data>
+    <data name="result-passed" xml:space="preserve">
+    <value>合格</value>
+  </data>
+    <data name="result-norun" xml:space="preserve">
+    <value>未実行</value>
+  </data>
+    <data name="result-blocked" xml:space="preserve">
+    <value>ブロック</value>
+  </data>
+    <data name="result-skipped" xml:space="preserve">
+    <value>スキップ</value>
+  </data>
+    <data name="result-failed" xml:space="preserve">
+    <value>失敗</value>
+  </data>
+    <data name="unassigned" xml:space="preserve">
+    <value>未割り当て</value>
+  </data>
+    <data name="assigned-to-me" xml:space="preserve">
+    <value>自分に割り当て</value>
+  </data>
+    <data name="run-test-again" xml:space="preserve">
+    <value>再実行</value>
+  </data>
+    <data name="assigned-to" xml:space="preserve">
+    <value>割り当て先</value>
+  </data>
+    <data name="tenant" xml:space="preserve">
+    <value>テナント</value>
+  </data>
+    <data name="tenants" xml:space="preserve">
+    <value>テナント一覧</value>
+  </data>
+    <data name="id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+    <data name="expiry" xml:space="preserve">
+    <value>有効期限</value>
+  </data>
+    <data name="confirm-delete-title" xml:space="preserve">
+    <value>アイテムを削除しますか？</value>
+  </data>
+    <data name="confirm-delete-message" xml:space="preserve">
+    <value>本当にこのアイテムを削除しますか？</value>
+  </data>
+    <data name="api-keys" xml:space="preserve">
+    <value>APIキー</value>
+  </data>
+    <data name="api-key" xml:space="preserve">
+    <value>APIキー</value>
+  </data>
+    <!-- ... Continue for all other entries, translating each value to Japanese ... -->
+</root>

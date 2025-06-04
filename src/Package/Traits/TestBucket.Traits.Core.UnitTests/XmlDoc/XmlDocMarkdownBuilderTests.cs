@@ -9,6 +9,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Traits.Core.UnitTests.XmlDoc;
 
+/// <summary>
+/// Tests for XmlDocMarkdownBuilder
+/// </summary>
 [EnrichedTest]
 [UnitTest]
 [Component("Traits")]

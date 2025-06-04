@@ -26,9 +26,24 @@
                                                 cssClass += " feature-component";
                                             }
 
-                                            <div class="@cssClass" style="@GetStyle(component)">
-                                                <div class="title">@component.Name</div>
-                                            </div>
+                                            @if(!string.IsNullOrWhiteSpace(component.Description))
+                                            {
+                                                <MudTooltip Text="@component.Description">
+                                                    <ChildContent>
+                                                        <div class="@cssClass" style="@GetStyle(component)">
+                                                            <div class="title">@component.Name</div>
+                                                        </div>
+                                                    </ChildContent>
+                                                </MudTooltip>
+                                            }
+                                            else
+                                            {
+
+                                                <div class="@cssClass" style="@GetStyle(component)">
+                                                    <div class="title">@component.Name</div>
+                                                </div>
+                                            }
+
                                         }
                                     </div>
                                 </div>

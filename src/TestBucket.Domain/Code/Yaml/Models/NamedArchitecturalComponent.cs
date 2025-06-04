@@ -12,6 +12,7 @@ public class NamedArchitecturalComponent : ArchitecturalComponent
         Name = name;
         Display = parent.Display;
         Paths = parent.Paths;
+        Description = parent.Description;
     }
 
     public string Name { get; }

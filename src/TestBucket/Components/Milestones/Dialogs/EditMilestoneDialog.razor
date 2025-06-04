@@ -18,6 +18,24 @@
                         AutoFocus="true" />
                     </Field>
 
+                     <Field>
+                        <MudTextField Variant="Variant.Outlined"
+                        Label="@loc["description"]"
+                        Immediate
+                        AdornmentColor="Color.Tertiary"
+                        @bind-Value="@Milestone.Description"
+                        T="string"
+                        AutoFocus="true" />
+                    </Field>
+                    
+                    <Field>
+                        <FieldHeader>@loc["color"]</FieldHeader>
+                        <MudSpacer/>
+                         <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                            <ColorCellPicker @bind-Color="Milestone.Color"/>
+                        </MudStack>
+                    </Field>
+
                     <Field Row>
                         <FieldHeader>@loc["open"]</FieldHeader>
                         <MudSpacer />

@@ -38,6 +38,11 @@ public class Milestone : ProjectEntity
     public string? Description { get; set; }
 
     /// <summary>
+    /// Color for visualizastion of milestone
+    /// </summary>
+    public string? Color { get; set; }
+
+    /// <summary>
     /// State of the milestone
     /// </summary>
     public MilestoneState State { get; set; }

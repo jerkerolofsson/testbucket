@@ -73,8 +73,17 @@
                         </CellTemplate>
                     </TemplateColumn>
 
-                    <PropertyColumn Property="x => x.Title" Title="@loc["name"]" />
+                    <TemplateColumn Title="@loc["name"]">
+                        <CellTemplate>
+                            @if (context.Item.Title is not null)
+                            {
+                                <Chip Text="context.Item.Title" Color="@context.Item.Color"></Chip>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+
                     <PropertyColumn Property="x => x.State" Title="@loc["state"]" />
+
                     <TemplateColumn Title="@loc["start-date"]">
                         <CellTemplate>
                             @if(context.Item.StartDate is not null)

@@ -46,4 +46,9 @@ public class ImportHandlingOptions
     /// If set, test cases will be imported to an existing test suite instead of finding one by name or creating one
     /// </summary>
     public long? TestSuiteId { get; set; }
+
+    /// <summary>
+    /// If non-null, TestCaseRuns are assigned to this user
+    /// </summary>
+    public string? AssignTestsToUserName { get; set; }
 }

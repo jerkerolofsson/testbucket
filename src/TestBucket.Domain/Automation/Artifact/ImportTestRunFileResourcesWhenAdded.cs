@@ -53,6 +53,7 @@ namespace TestBucket.Domain.Automation.Artifact
             var options = new ImportHandlingOptions
             {
                 TestRunId = testRun.Id,
+                AssignTestsToUserName = principal.Identity?.Name
             };
 
             _logger.LogDebug("[CI_CD_AUTO] Importing {FileName} using serializer: {format}", notification.Resource.Name, format);

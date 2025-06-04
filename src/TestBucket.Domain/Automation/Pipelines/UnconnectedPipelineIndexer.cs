@@ -36,6 +36,7 @@ public class UnconnectedPipelineIndexer : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
         while (!stoppingToken.IsCancellationRequested)
         {
             var scope = _scopeFactory.CreateScope();
@@ -146,7 +147,17 @@ public class UnconnectedPipelineIndexer : BackgroundService
                     else if(existingPipeline.Status != Contracts.Automation.PipelineStatus.Completed)
                     {
                         // Attach it
-                        await pipelineManager.StartMonitorIfNotMonitoringAsync(user, existingPipeline);
+
+                        var monitorUser = Impersonation.Impersonate(user =>
+                        {
+                            //project.TenantId, project.Id
+                            user.TenantId = testSuite.TenantId;
+                            user.ProjectId = testSuite.TestProjectId;
+                            user.UserName = config.Name;
+                            user.AddAllPermissions();
+                        });
+
+                        await pipelineManager.StartMonitorIfNotMonitoringAsync(monitorUser, existingPipeline);
                     }
                 }
             }

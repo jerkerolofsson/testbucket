@@ -91,7 +91,12 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
     }
 
 
-    public async Task<TestRun> ImportRunAsync(ClaimsPrincipal principal, long teamId, long projectId, TestRunDto run, ImportHandlingOptions options)
+    public async Task<TestRun> ImportRunAsync(
+        ClaimsPrincipal principal, 
+        long teamId, 
+        long projectId, 
+        TestRunDto run, 
+        ImportHandlingOptions options)
     {
         await using var progress = _progressManager.CreateProgressTask("Import Test Results");
 
@@ -177,7 +182,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                             await UpsertTestCaseTraitsAsync(principal, testCaseFieldDefinitions, testCase, traits);
                         }
 
-                        TestCaseRun testCaseRun = await AddTestCaseRunAsync(principal, testRun, test, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRunFieldDefinitions);
+                        TestCaseRun testCaseRun = await AddTestCaseRunAsync(principal, testRun, test, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRunFieldDefinitions, options);
 
                         await LinkWithRequirementsAsync(principal, testCase, test.Traits);
                     }
@@ -370,7 +375,8 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         TestCase testCase,
         IReadOnlyList<FieldDefinition> testCaseFieldDefinitions,
         IReadOnlyList<FieldDefinition> testRunFieldDefinitions,
-        IReadOnlyList<FieldDefinition> testCaseRunFieldDefinitions)
+        IReadOnlyList<FieldDefinition> testCaseRunFieldDefinitions,
+        ImportHandlingOptions options)
     {
         if (testRun.TestProjectId is null)
         {
@@ -393,7 +399,8 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
             SystemOut = test.SystemOut,
             SystemErr = test.SystemErr,
             Message = test.Message,
-            State = completedState.Name
+            State = completedState.Name,
+            AssignedToUserName = options.AssignTestsToUserName
         };
 
         await _testRunManager.AddTestCaseRunAsync(principal, testCaseRun);

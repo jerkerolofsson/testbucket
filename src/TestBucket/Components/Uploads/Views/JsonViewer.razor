@@ -1,5 +1,6 @@
 ﻿@using System.Text.Json
 @using TestBucket.Components.Uploads.Services
+@using TestBucket.Domain.Testing.ImportExport
 @inject AttachmentsService controller
 @inject IJSRuntime js
 
@@ -31,13 +32,15 @@ else
             }
             if(_resource is not null)
             {
-                _text = JsonPrettify(Encoding.UTF8.GetString(_resource.Data));
+                _text = JsonPrettify();
             }
         }
     }
 
-    public static string JsonPrettify(string json)
+    public string JsonPrettify()
     {
+        var bytes = _resource!.Data;
+        string json = TextConversionUtils.FromBomEncoded(bytes);
         try
         {
             using var jsonDocument = JsonDocument.Parse(json);

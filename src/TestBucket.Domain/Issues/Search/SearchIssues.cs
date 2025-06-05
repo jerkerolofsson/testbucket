@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Mediator;
 
-using Mediator;
-
-using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Issues.Models;
 using TestBucket.Contracts.Issues.States;
 using TestBucket.Domain.Issues.Mapping;
-using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
 
 namespace TestBucket.Domain.Issues.Search;

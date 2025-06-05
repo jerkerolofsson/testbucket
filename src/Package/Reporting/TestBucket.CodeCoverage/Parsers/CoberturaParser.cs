@@ -196,6 +196,21 @@ public class CoberturaParser : ParserBase
 
     private ValueTask ParseLineNodeAsync(XElement lineNode, CodeCoverageClass codeCoverageClass, CodeCoverageReport report)
     {
+        var lineNumberString = lineNode.Attribute("number");
+        if (lineNumberString is not null && int.TryParse(lineNumberString.Value, out var lineNumber))
+        {
+            // Exclude this line if it is already covered by a method
+            foreach(var method in codeCoverageClass.Methods)
+            {
+                if(method.FindLineByNumber(lineNumber) is not null)
+                {
+                    return ValueTask.CompletedTask; // Line is already covered by a method
+                }
+            }
+
+            var line = codeCoverageClass.GetOrCreateLine(lineNumber);
+            ParseLineXElement(lineNode, line);
+        }
         return ValueTask.CompletedTask;
     }
 }

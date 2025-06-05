@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<coverage line-rate="0.22248432553231112" branch-rate="0.1479901190208848" complexity="7165" version="1.9" timestamp="1747013452" lines-covered="3584" lines-valid="16109" branches-covered="659" branches-valid="4453">
+<coverage line-rate="0.22248432553231112" branch-rate="0.1479901190208848" complexity="7165" version="1.9" 
+		  timestamp="1747013452" lines-covered="3584" lines-valid="16109" branches-covered="659" branches-valid="4453">
   <packages>
     <package line-rate="0.21761151590545583" branch-rate="0.16276595744680852" complexity="4971" name="TestBucket.Domain">
       <classes>

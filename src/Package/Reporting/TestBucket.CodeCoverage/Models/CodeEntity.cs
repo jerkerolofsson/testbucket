@@ -8,7 +8,7 @@ public abstract record class CodeEntity
     public abstract Lazy<int> CoveredLineCount { get; }
 
     /// <summary>
-    /// Coverage in % between 0.0 and 100.0
+    /// Line Coverage in % between 0.0 and 100.0
     /// </summary>
     public virtual Lazy<double> CoveragePercent
     {

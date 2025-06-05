@@ -10,7 +10,7 @@ $projects = @("tests/TestBucket.Domain.IntegrationTests/TestBucket.Domain.Integr
 
 foreach ($csproj in $projects)
 {
-    # Only run selected test suites, if requested
+    	# Only run selected test suites, if requested
 	if (-not ([string]::IsNullOrEmpty($testSuite)))
 	{
 		if(-not (${csproj}.Contains($testSuite)))
@@ -37,17 +37,14 @@ foreach ($csproj in $projects)
 		dotnet test $csproj -- --report-xunit --report-xunit-filename $xunitReportFile  --coverage --coverage-output-format cobertura --coverage-output $codeCoverageReportFile 
 	}
 
-	# Write an additional JSON file containing the root path to improve code coverage analysis
+	# Change the coverage file to contain relative paths instead of absolute
 	$fullResultFile = (Get-ChildItem -Recurse $codeCoverageReportFile).FullName
-	$resultsDir = [System.IO.Path]::GetDirectoryName($fullResultFile)
 
-	$payload = @{
-		sourceRoot = $srcRootPath
-  	}
-	$sourceJsonPath = [System.IO.Path]::Combine($resultsDir, $sourceReportFile)
-	echo "Result dir: $resultsDir"
-	echo "Full result file: $fullResultFile"
-	echo "Writing $sourceJsonPath"
-        echo ($payload | ConvertTo-Json ) > $sourceJsonPath
+	$filenameReplace1 = "filename=`"$srcRootPath/"
+	$filenameReplace2 = "filename=`"$srcRootPath`\"
 
+	$content = Get-Content -Path $fullResultFile  -Raw
+	$content = $content.Replace($filenameReplace1 , "filename=`"")
+	$content = $content.Replace($filenameReplace2 , "filename=`"")
+	$content | Set-Content -Path $fullResultFile 
 }

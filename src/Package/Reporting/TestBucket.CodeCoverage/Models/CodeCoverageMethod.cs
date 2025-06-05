@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 namespace TestBucket.CodeCoverage.Models;
 public record class CodeCoverageMethod : CodeEntity
 {
+    /// <summary>
+    /// Lines for the method
+    /// </summary>
     private readonly List<CodeCoverageLine> _lines = [];
 
     /// <summary>

@@ -11,6 +11,8 @@ namespace TestBucket.Domain.UnitTests.TestResources
     /// </summary>
     [EnrichedTest]
     [UnitTest]
+    [FunctionalTest]
+    [Component("Test Resources")]
     public class TestResourceDependencyAllocatorTests
     {
         /// <summary>

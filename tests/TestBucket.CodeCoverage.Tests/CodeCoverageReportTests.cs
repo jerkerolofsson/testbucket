@@ -15,6 +15,18 @@ namespace TestBucket.CodeCoverage.Tests
     public class CodeCoverageReportTests
     {
         [Fact]
+        public void CoveragePercent_WithNoLines_IsZero()
+        {
+            // Arrange
+            var report = new CodeCoverageReport();
+            
+            // Act
+            var coveragePercent = report.CoveragePercent.Value;
+
+            Assert.Equal(0, coveragePercent);
+        }
+
+        [Fact]
         public void FindPackageByName_WithExistingPackage_Success()
         {
             var report = new CodeCoverageReport();

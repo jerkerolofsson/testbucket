@@ -10,6 +10,7 @@ namespace TestBucket.Domain.UnitTests.Testing.ImportExport
     /// </summary>
     [EnrichedTest]
     [UnitTest]
+    [FunctionalTest]
     [Component("Testing")]
     public class TextConversionUtilsTests
     {

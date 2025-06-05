@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.CodeCoverage.Models;
+﻿using TestBucket.CodeCoverage.Models;
+using TestBucket.CodeCoverage.Tests.Utils;
 
 namespace TestBucket.CodeCoverage.Tests
 {
@@ -28,10 +24,37 @@ namespace TestBucket.CodeCoverage.Tests
         }
 
         [Fact]
+        public async Task DetectFromFileAsync_WithCoberturaXml_ReturnsCobertura()
+        {
+            // Arrange
+            string xml = GetValidCoberturaXml();
+            using var tempDir = new TempDir();
+            var path = Path.Combine(tempDir.TempPath, "coverage.xml");
+            File.WriteAllText(path, xml);
+
+            // Act
+            var result = await CoverageFormatDetector.DetectFromFileAsync(path);
+
+            // Assert
+            Assert.Equal(CodeCoverageFormat.Cobertura, result);
+        }
+
+        [Fact]
         public void DetectFormat_WithCoberturaXml_ReturnsCobertura()
         {
             // Arrange
-            var xml = """
+            string xml = GetValidCoberturaXml();
+
+            // Act
+            var result = CoverageFormatDetector.Detect(Encoding.UTF8.GetBytes(xml));
+
+            // Assert
+            Assert.Equal(CodeCoverageFormat.Cobertura, result);
+        }
+
+        private static string GetValidCoberturaXml()
+        {
+            return """
                 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
                 <coverage line-rate="0.9851851851851852" branch-rate="0.9166666666666666" complexity="136" version="1.9" timestamp="1747026661" lines-covered="266" lines-valid="270" branches-covered="66" branches-valid="72">
                   <packages>
@@ -50,12 +73,6 @@ namespace TestBucket.CodeCoverage.Tests
                   </packages>
                 </coverage>
                 """;
-            
-            // Act
-            var result = CoverageFormatDetector.Detect(Encoding.UTF8.GetBytes(xml));
-            
-            // Assert
-            Assert.Equal(CodeCoverageFormat.Cobertura, result);
         }
     }
 }

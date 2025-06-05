@@ -1,4 +1,5 @@
-﻿using TestBucket.CodeCoverage.Parsers;
+﻿using TestBucket.CodeCoverage.Models;
+using TestBucket.CodeCoverage.Parsers;
 
 namespace TestBucket.CodeCoverage.Tests.Parsing
 {
@@ -8,11 +9,12 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
     [FunctionalTest]
     public class CoberturaParsingTests
     {
+        /// <summary>
+        /// Verifies that when loading the same coverage report twice and merging it, the number of 
+        /// packages are not duplicated
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when loading the same coverage report twice and merging it, the number of 
-            packages are not duplicated
-            """)]
         public async Task ParseCobertura_Twice_PackagesCorrect()
         {
             var parser = new CoberturaParser();
@@ -23,16 +25,18 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.NotEmpty(report.Packages);
             Assert.Equal(3, report.Packages.Count);
             Assert.Equal("TestBucket.Domain", report.Packages[0].Name);
+            Assert.Equal("TestBucket.Domain", report.Packages[0].GetName());
             Assert.Equal("TestBucket.Data", report.Packages[1].Name);
             Assert.Equal("TestBucket.Formats", report.Packages[2].Name);
         }
 
+        /// <summary>
+        /// Verifies that when loading the same coverage report twice and merging it, the number of 
+        /// hits are added together
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when loading the same coverage report twice and merging it, the number of 
-            hits are added together
-            """)]
-        public async Task ParseCobertura_Twice_LineHitsAddedd()
+        public async Task ParseCobertura_Twice_LineHitsAdded()
         {
             var parser = new CoberturaParser();
             var report = new CodeCoverageReport();
@@ -53,6 +57,137 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.Equal(2, line5.Hits);
         }
 
+        /// <summary>
+        /// Verifies that the parsed package names are correct
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task ParseCobertura_WithNoMethods_CoveragePercentCorrect()
+        {
+            var parser = new CoberturaParser();
+            CodeCoverageReport report = await parser.ParseFileAsync("./TestData/nomethods.cobertura.xml", TestContext.Current.CancellationToken);
+
+            Assert.Single(report.Packages);
+            var percent = report.Packages[0].CoveragePercent.Value;
+            Assert.Equal(85.7, Math.Round(percent,1));
+        }
+
+        /// <summary>
+        /// Verifies calling GetChildren on a packet returns all methods
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task GetChildrenOnPackage_After_ParseCobertura_WithClasses_ReturnsClasses()
+        {
+            var parser = new CoberturaParser();
+            CodeCoverageReport report = await parser.ParseFileAsync("./TestData/nomethods.cobertura.xml", TestContext.Current.CancellationToken);
+
+            Assert.Single(report.Packages);
+            var classes = report.Packages[0].GetChildren();
+            Assert.NotEmpty(classes);
+            Assert.Single(classes);
+            Assert.Equal("example_cpp", classes.First().GetName());
+        }
+
+        /// <summary>
+        /// Verifies GetChildren on a class returns methods
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task GetChildrenOnClass_After_ParseCobertura_WithClassesAndMethods_ReturnsMethods()
+        {
+            // Arrange
+            var parser = new CoberturaParser();
+            CodeCoverageReport report = await parser.ParseFileAsync("./TestData/coverage.cobertura.xml", TestContext.Current.CancellationToken);
+
+            // Act
+            Assert.NotEmpty(report.Packages);
+            var classes = report.Packages[0].GetChildren();
+
+            // Assert
+            Assert.NotEmpty(classes);
+            var domainServiceExtensions = classes.First(x => x.GetName() == "Microsoft.Extensions.DependencyInjection.DomainServiceExtensions");
+            var methods = domainServiceExtensions.GetChildren();
+            Assert.Single(methods);
+            Assert.Equal("AddDomainServices", methods.First().GetName());
+        }
+
+        /// <summary>
+        /// Verifies GetChildren on a method returns lines
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task GetChildrenOnMethods_After_ParseCobertura_WithClassesAndMethods_ReturnsLines()
+        {
+            // Arrange
+            var parser = new CoberturaParser();
+            CodeCoverageReport report = await parser.ParseFileAsync("./TestData/coverage.cobertura.xml", TestContext.Current.CancellationToken);
+
+            // Act
+            Assert.NotEmpty(report.Packages);
+            var classes = report.Packages[0].GetChildren();
+
+            // Assert
+            Assert.NotEmpty(classes);
+            var domainServiceExtensions = classes.First(x => x.GetName() == "Microsoft.Extensions.DependencyInjection.DomainServiceExtensions");
+            var methods = domainServiceExtensions.GetChildren();
+            Assert.Single(methods);
+            var method = methods.First();
+            var lines = method.GetChildren();
+            Assert.NotEmpty(lines);
+            Assert.True(lines[0] is CodeCoverageLine);
+        }
+
+        /// <summary>
+        /// Verifies that the CoveragePercent is correct for the whole file
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task ParseCobertura_WithMethods_CoveragePercentIsCorrect()
+        {
+            var parser = new CoberturaParser();
+            CodeCoverageReport report = await parser.ParseFileAsync("./TestData/coverage.cobertura.xml", TestContext.Current.CancellationToken);
+
+            Assert.NotEmpty(report.Packages);
+            var percent = report.CoveragePercent.Value;
+            Assert.Equal(22.28, percent);
+        }
+
+        /// <summary>
+        /// Verifies that the number of lines calculated is correct in a file with methods
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task ParseCobertura_WithMethods_LineCountCorrect()
+        {
+            var parser = new CoberturaParser();
+            CodeCoverageReport report = await parser.ParseFileAsync("./TestData/coverage.cobertura.xml", TestContext.Current.CancellationToken);
+
+            Assert.NotEmpty(report.Packages);
+            var domainLineCount = report.LineCount.Value;
+            var percent = report.CoveragePercent.Value;
+            Assert.Equal(16071, domainLineCount);
+        }
+
+        /// <summary>
+        /// Verifies that the number of lines calculated is correct in a file without methods
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task ParseCobertura_WithNoMethods_PackageLineCountCorrect()
+        {
+            var parser = new CoberturaParser();
+            CodeCoverageReport report = await parser.ParseFileAsync("./TestData/nomethods.cobertura.xml", TestContext.Current.CancellationToken);
+
+            Assert.Single(report.Packages);
+            var domainLineCount = report.Packages[0].LineCount.Value;
+            Assert.Equal(7, domainLineCount);
+        }
+
+        /// <summary>
+        /// Verifies that the parsed package names are correct
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task ParseCobertura_PackagesCorrect()
         {
@@ -110,9 +245,13 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             var formatsPackage = report.Packages.Where(x => x.Name == "TestBucket.Formats").First();
             var importDefaultsClass = formatsPackage.FindClassByName("TestBucket.Formats.ImportDefaults");
             Assert.NotNull(importDefaultsClass);
+            Assert.Equal("TestBucket.Formats.ImportDefaults", importDefaultsClass.Name);
+            Assert.Equal("TestBucket.Formats.ImportDefaults", importDefaultsClass.GetName());
 
             var getExternalIdMethod = importDefaultsClass.FindMethodBySignature("GetExternalId", "(TestBucket.Formats.Dtos.TestRunDto, TestBucket.Formats.Dtos.TestSuiteRunDto, TestBucket.Formats.Dtos.TestCaseRunDto)");
             Assert.NotNull(getExternalIdMethod);
+            Assert.Equal("GetExternalId", getExternalIdMethod.Name);
+            Assert.Equal("GetExternalId", getExternalIdMethod.GetName());
         }
 
         [Fact]

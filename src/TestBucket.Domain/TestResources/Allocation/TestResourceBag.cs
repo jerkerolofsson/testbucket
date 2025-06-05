@@ -44,20 +44,17 @@ public class TestResourceBag
     /// <param name="variables"></param>
     public void ResolveVariables(TestResource resource, string requestedType, Dictionary<string, string> variables)
     {
-        //foreach(var resource in _resources)
+        foreach(var type in resource.Types)
         {
-            foreach(var type in resource.Types)
+            var resourcesByType = _resources.Where(x => x.Types.Contains(type)).ToList();
+            var index = resourcesByType.IndexOf(resource);
+
+            var key = $"resources__{type}__{index}";
+
+            foreach(var attribute in resource.Variables)
             {
-                var resourcesByType = _resources.Where(x => x.Types.Contains(type)).ToList();
-                var index = resourcesByType.IndexOf(resource);
-
-                var key = $"resources__{type}__{index}";
-
-                foreach(var attribute in resource.Variables)
-                {
-                    var fullName = key + "__" + attribute.Key;
-                    variables[fullName] = attribute.Value;  
-                }
+                var fullName = key + "__" + attribute.Key;
+                variables[fullName] = attribute.Value;  
             }
         }
     }

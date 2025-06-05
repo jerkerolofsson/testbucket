@@ -83,7 +83,7 @@ namespace TestBucket.Domain.Automation.Artifact
                 await entryStream.ReadExactlyAsync(bytes, cancellationToken);
 
                 // Detect the file format and add this as an attachment
-                var contentType = MediaTypeDetector.DetectType("application/octet-stream", bytes);
+                var contentType = MediaTypeDetector.DetectType(entry.Name, null, bytes); 
 
                 _logger.LogDebug("[CI_CD_AUTO] Processing coverage-report artifact zip-entry: {ArtifactZipEntryName}, length={ArtifactZipEntryLength} bytes, type={ContentType}", entry.Name, entry.Length, contentType);
                 await AddFileResourceAsync(notification, files, principal, entry, bytes, contentType);
@@ -101,7 +101,7 @@ namespace TestBucket.Domain.Automation.Artifact
                 await entryStream.ReadExactlyAsync(bytes, cancellationToken);
 
                 // Detect the file format and add this as an attachment
-                var contentType = MediaTypeDetector.DetectType("application/octet-stream", bytes);
+                var contentType = MediaTypeDetector.DetectType(entry.Name, null, bytes);
 
                 _logger.LogDebug("[CI_CD_AUTO] Processing test-result artifact zip-entry: {ArtifactZipEntryName}, length={ArtifactZipEntryLength} bytes, type={ContentType}", entry.Name, entry.Length, contentType);
                 await AddFileResourceAsync(notification, files, principal, entry, bytes, contentType);

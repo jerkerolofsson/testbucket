@@ -61,7 +61,7 @@ internal class UploadService : TenantBaseService
         var data = new byte[stream.Length];
         await stream.ReadExactlyAsync(data, 0, data.Length, cancellationToken);
 
-        var contentType = MediaTypeDetector.DetectType(file.ContentType, data);
+        var contentType = MediaTypeDetector.DetectType(file.Name, file.ContentType, data);
 
         var resource = new FileResource
         {

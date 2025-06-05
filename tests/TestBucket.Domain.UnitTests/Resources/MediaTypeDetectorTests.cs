@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Resources;
+﻿using TestBucket.Domain.Resources;
 
-namespace TestBucket.Domain.UnitTests.NewFolder
+namespace TestBucket.Domain.UnitTests.Resources
 {
     /// <summary>
     /// Tests detection of various file formats (media-type) from filename or byte data.

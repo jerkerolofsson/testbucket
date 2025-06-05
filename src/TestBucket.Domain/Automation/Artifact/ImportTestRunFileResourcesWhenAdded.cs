@@ -57,8 +57,15 @@ namespace TestBucket.Domain.Automation.Artifact
             };
 
             _logger.LogDebug("[CI_CD_AUTO] Importing {FileName} using serializer: {format}", notification.Resource.Name, format);
-            var textImporter = scope.ServiceProvider.GetRequiredService<ITextTestResultsImporter>();
-            await textImporter.ImportTextAsync(principal, testRun.TeamId.Value, testRun.TestProjectId.Value, format, text, options);
+            try
+            {
+                var textImporter = scope.ServiceProvider.GetRequiredService<ITextTestResultsImporter>();
+                await textImporter.ImportTextAsync(principal, testRun.TeamId.Value, testRun.TestProjectId.Value, format, text, options);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Failed to import results: {FileName}", notification.Resource.Name);
+            }
         }
     }
 }

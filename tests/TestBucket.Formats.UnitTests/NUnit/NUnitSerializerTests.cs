@@ -7,7 +7,8 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.NUnit
 {
-    [Component("NUnitXml")]
+    [FunctionalTest]
+    [Component("Test Result Formats")]
     [Feature("Import Test Results")]
     public class NUnitSerializerTests
     {

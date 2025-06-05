@@ -75,6 +75,7 @@ namespace TestBucket.Formats.XUnit
                     {
                         var collectionName = collectionNode.Attribute("name")?.Value;
                         ReadTraits(testSuite, collectionNode);
+                        testSuite.Name ??= collectionName;
 
                         foreach (var resultNode in collectionNode.Elements("test"))
                         {

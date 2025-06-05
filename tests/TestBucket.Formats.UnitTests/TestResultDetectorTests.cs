@@ -6,8 +6,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests
 {
+    [FunctionalTest]
+    [Component("Test Result Formats")]
     [Feature("Import Test Results")]
-    [Component("TestResultDetector")]
     [UnitTest]
     [EnrichedTest]
     public class TestResultDetectorTests
@@ -108,5 +109,37 @@ namespace TestBucket.Formats.UnitTests
             var format = TestResultDetector.Detect(Encoding.UTF8.GetBytes(text));
             Assert.Equal(TestResultFormat.xUnitXml, format);
         }
+
+        [Fact]
+        public void Detect_WithEmptyInput_ResultIsUnknown()
+        {
+            var format = TestResultDetector.Detect(Array.Empty<byte>());
+            Assert.Equal(TestResultFormat.UnknownFormat, format);
+        }
+
+        [Fact]
+        public void Detect_WithRandomData_ResultIsUnknown()
+        {
+            var randomBytes = Encoding.UTF8.GetBytes("this is not a test result file");
+            var format = TestResultDetector.Detect(randomBytes);
+            Assert.Equal(TestResultFormat.UnknownFormat, format);
+        }
+
+        [Fact]
+        public void Detect_WithMalformedXml_ResultIsUnknown()
+        {
+            var text = "<notclosed";
+            var format = TestResultDetector.Detect(Encoding.UTF8.GetBytes(text));
+            Assert.Equal(TestResultFormat.UnknownFormat, format);
+        }
+
+        [Fact]
+        public void Detect_WithMalformedJson_ResultIsUnknown()
+        {
+            var text = "{ not: valid json";
+            var format = TestResultDetector.Detect(Encoding.UTF8.GetBytes(text));
+            Assert.Equal(TestResultFormat.UnknownFormat, format);
+        }
+
     }
 }

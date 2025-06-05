@@ -8,7 +8,8 @@ using TestBucket.Traits.Xunit;
 namespace TestBucket.Formats.UnitTests.XUnit
 {
     [UnitTest]
-    [Component("XUnit")]
+    [FunctionalTest]
+    [Component("Test Result Formats")]
     [Feature("Import Test Results")]
     [EnrichedTest]
     public class XUnitSerializerTests

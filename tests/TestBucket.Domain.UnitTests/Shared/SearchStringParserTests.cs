@@ -148,5 +148,103 @@ namespace TestBucket.Domain.UnitTests.Shared
             Assert.Equal(123, filters[0].FilterDefinitionId);
             Assert.Equal("keyboard", filters[0].StringValue);
         }
+
+        /// <summary>
+        /// Verifies that parsing an empty string returns null.
+        /// </summary>
+        [Fact]
+        public void ParseString_EmptyInput_ReturnsNull()
+        {
+            Dictionary<string, string> result = new();
+            List<FieldFilter> fields = [];
+            List<FieldDefinition> fieldDefinitions = [];
+            HashSet<string> keywords = ["is", "after", "before"];
+            var text = SearchStringParser.Parse("", result, fields, keywords, fieldDefinitions);
+
+            Assert.Null(text);
+            Assert.Empty(result);
+            Assert.Empty(fields);
+        }
+
+        /// <summary>
+        /// Verifies that a string with only a keyword and value returns null for text.
+        /// </summary>
+        [Fact]
+        public void ParseString_OnlyKeyword_ReturnsNullText()
+        {
+            Dictionary<string, string> result = new();
+            List<FieldFilter> fields = [];
+            List<FieldDefinition> fieldDefinitions = [];
+            HashSet<string> keywords = ["is", "after", "before"];
+            var text = SearchStringParser.Parse("is:open", result, fields, keywords, fieldDefinitions);
+
+            Assert.Null(text);
+            Assert.Single(result);
+            Assert.Equal("open", result["is"]);
+        }
+
+        /// <summary>
+        /// Verifies that unknown fields are left in the text.
+        /// </summary>
+        [Fact]
+        public void ParseString_UnknownField_StaysInText()
+        {
+            Dictionary<string, string> result = new();
+            List<FieldFilter> fields = [];
+            List<FieldDefinition> fieldDefinitions = [];
+            HashSet<string> keywords = ["is", "after", "before"];
+            var text = SearchStringParser.Parse("hello unknownfield:value", result, fields, keywords, fieldDefinitions);
+
+            Assert.Equal("hello unknownfield:value", text);
+            Assert.Empty(result);
+            Assert.Empty(fields);
+        }
+
+        /// <summary>
+        /// Verifies that multiple keywords and fields are parsed correctly.
+        /// </summary>
+        [Fact]
+        public void ParseString_MultipleKeywordsAndFields_AllParsed()
+        {
+            Dictionary<string, string> result = new();
+            List<FieldFilter> filters = [];
+            List<FieldDefinition> fieldDefinitions = [
+                new FieldDefinition { Name = "component", Id = 1 },
+                new FieldDefinition { Name = "priority", Id = 2 }
+            ];
+            HashSet<string> keywords = ["is", "after", "before"];
+            var text = SearchStringParser.Parse("is:open component:ui priority:\"high\"", result, filters, keywords, fieldDefinitions);
+
+            Assert.Null(text);
+            Assert.Single(result);
+            Assert.Equal("open", result["is"]);
+            Assert.Equal(2, filters.Count);
+            Assert.Equal(1, filters[0].FilterDefinitionId);
+            Assert.Equal("ui", filters[0].StringValue);
+            Assert.Equal(2, filters[1].FilterDefinitionId);
+            Assert.Equal("high", filters[1].StringValue);
+        }
+
+        /// <summary>
+        /// Verifies that quoted and unquoted values are handled together.
+        /// </summary>
+        [Fact]
+        public void ParseString_MixedQuotedAndUnquoted_ParsesCorrectly()
+        {
+            Dictionary<string, string> result = new();
+            List<FieldFilter> filters = [];
+            List<FieldDefinition> fieldDefinitions = [
+                new FieldDefinition { Name = "component", Id = 1 }
+            ];
+            HashSet<string> keywords = ["is"];
+            var text = SearchStringParser.Parse("is:\"in progress\" component:keyboard", result, filters, keywords, fieldDefinitions);
+
+            Assert.Null(text);
+            Assert.Single(result);
+            Assert.Equal("in progress", result["is"]);
+            Assert.Single(filters);
+            Assert.Equal(1, filters[0].FilterDefinitionId);
+            Assert.Equal("keyboard", filters[0].StringValue);
+        }
     }
 }

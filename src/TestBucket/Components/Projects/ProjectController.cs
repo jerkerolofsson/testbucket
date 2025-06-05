@@ -78,6 +78,8 @@ internal class ProjectController : TenantBaseService
             Name  = extension.FriendlyName,
             Provider = extension.SystemName,
             SupportedCapabilities = extension.SupportedCapabilities,
+            TestResultsArtifactsPattern = "**/*xunit*.xml;**/*junit*.xml;**/*nunit*.xml;**/*test*.xml;**/*.trx;**/*.ctrf",
+            CoverageReportArtifactsPattern = "**/*coverage*.xml",
         };
 
         var parameters = new DialogParameters<EditIntegrationDialog>

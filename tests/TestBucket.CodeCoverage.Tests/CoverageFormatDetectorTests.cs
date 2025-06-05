@@ -8,6 +8,7 @@ using TestBucket.CodeCoverage.Models;
 namespace TestBucket.CodeCoverage.Tests
 {
     [Feature("Code Coverage")]
+    [Component("Code Coverage")]
     [UnitTest]
     [EnrichedTest]
     [FunctionalTest]

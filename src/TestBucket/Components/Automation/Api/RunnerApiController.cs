@@ -71,7 +71,7 @@ public class RunnerApiController : ProjectApiControllerBase
 
         var pattern = "**/*.trx;**/*.xml;**/*.json;**/*.txt";
         byte[] zipBytes = await ReadRequestBodyAsByteArrayAsync();
-        var request = new JobArtifactDownloaded(principal, job.TestRunId.Value, pattern, zipBytes);
+        var request = new JobArtifactDownloaded(principal, job.TestRunId.Value, pattern, null, zipBytes);
         await _mediator.Publish(request);
         return Ok();
     }

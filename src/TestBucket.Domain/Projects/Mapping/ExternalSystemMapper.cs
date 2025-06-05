@@ -26,6 +26,7 @@ namespace TestBucket.Domain.Projects.Mapping
                 ExternalProjectId = x.ExternalProjectId,
                 ReadOnly = x.ReadOnly,
                 TestResultsArtifactsPattern = x.TestResultsArtifactsPattern,
+                CoverageReportArtifactsPattern = x.CoverageReportArtifactsPattern,
             };
         }
         internal static ExternalSystemDto ToDto(this ExternalSystem x)
@@ -44,6 +45,7 @@ namespace TestBucket.Domain.Projects.Mapping
                 ExternalProjectId = x.ExternalProjectId,
                 ReadOnly = x.ReadOnly,
                 TestResultsArtifactsPattern = x.TestResultsArtifactsPattern,
+                CoverageReportArtifactsPattern = x.CoverageReportArtifactsPattern,
             };
         }
     }

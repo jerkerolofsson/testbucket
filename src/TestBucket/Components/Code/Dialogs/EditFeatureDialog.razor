@@ -16,7 +16,11 @@
                     <MudStack>
                         @if (Feature is not null)
                         {
-                            <MudDataGrid Items="_patterns" T="GlobPatternInputModel" EditMode="DataGridEditMode.Cell" ReadOnly="false" Dense>
+                            <MudDataGrid 
+                                Items="_patterns" 
+                                T="GlobPatternInputModel" 
+                                EditMode="DataGridEditMode.Cell" 
+                                ReadOnly="false" Dense>
                                 <ToolBarContent>
                                     <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
                                         <MudText Typo="Typo.h2">@codeLoc["glob-patterns"]</MudText>
@@ -30,11 +34,14 @@
                                         <EditTemplate Context="deleteCtx">
                                             <MudIconButton Color="Color.Error"
                                                            Size="Size.Small"
-                                                           Icon="@Icons.Material.Filled.Clear" OnClick="@(() =>_patterns.Remove(deleteCtx.Item))"></MudIconButton>
+                                                           Icon="@Icons.Material.Filled.Clear" 
+                                                           OnClick="@(() =>_patterns.Remove(deleteCtx.Item))"></MudIconButton>
                                         </EditTemplate>
                                     </TemplateColumn>
                                 </Columns>
                             </MudDataGrid>
+
+
                         }
                     </MudStack>
                 </MudTabPanel>

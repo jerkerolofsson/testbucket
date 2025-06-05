@@ -247,10 +247,7 @@ internal class ProjectRepository : IProjectRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         // Code
-        foreach (var milestone in dbContext.Milestones.Where(x => x.TestProjectId == project.Id))
-        {
-            dbContext.Milestones.Remove(milestone);
-        }
+       
         foreach (var commit in dbContext.Commits.Where(x => x.TestProjectId == project.Id))
         {
             dbContext.Commits.Remove(commit);
@@ -315,7 +312,14 @@ internal class ProjectRepository : IProjectRepository
         {
             dbContext.LocalIssues.Remove(item);
         }
-
+        foreach (var milestone in dbContext.Milestones.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Milestones.Remove(milestone);
+        }
+        foreach (var label in dbContext.Labels.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Labels.Remove(label);
+        }
         // Test
 
         foreach (var item in dbContext.TestCaseRuns.Where(x => x.TestProjectId == project.Id))

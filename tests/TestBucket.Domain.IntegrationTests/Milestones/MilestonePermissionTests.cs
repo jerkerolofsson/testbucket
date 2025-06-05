@@ -31,8 +31,8 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
 
             var user = Impersonation.Impersonate(builder => {
                 builder.TenantId = Fixture.App.Tenant;
-                builder.Add(PermissionEntityType.Architecture, PermissionLevel.Read);
-                builder.Add(PermissionEntityType.Architecture, PermissionLevel.Write);
+                builder.Add(PermissionEntityType.Issue, PermissionLevel.Read);
+                builder.Add(PermissionEntityType.Issue, PermissionLevel.Write);
             });
 
             var ms = new Milestone() { Title = "1.0", TestProjectId = Fixture.ProjectId };
@@ -58,7 +58,7 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
 
             var user = Impersonation.Impersonate(builder => {
                 builder.TenantId = Fixture.App.Tenant;
-                builder.Add(PermissionEntityType.Architecture, PermissionLevel.Read);
+                builder.Add(PermissionEntityType.Issue, PermissionLevel.Read);
             });
 
             var ms = new Milestone() { Title = "1.0", TestProjectId = Fixture.ProjectId };
@@ -85,13 +85,13 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
 
             var user1 = Impersonation.Impersonate(builder => {
                 builder.TenantId = Fixture.App.Tenant;
-                builder.Add(PermissionEntityType.Architecture, PermissionLevel.Read);
-                builder.Add(PermissionEntityType.Architecture, PermissionLevel.Write);
+                builder.Add(PermissionEntityType.Issue, PermissionLevel.Read);
+                builder.Add(PermissionEntityType.Issue, PermissionLevel.Write);
             });
             var user2 = Impersonation.Impersonate(builder => {
                 builder.TenantId = "other" + Fixture.App.Tenant;
-                builder.Add(PermissionEntityType.Architecture, PermissionLevel.Read);
-                builder.Add(PermissionEntityType.Architecture, PermissionLevel.Write);
+                builder.Add(PermissionEntityType.Issue, PermissionLevel.Read);
+                builder.Add(PermissionEntityType.Issue, PermissionLevel.Write);
             });
 
             var ms = new Milestone() { Title = "1.0", TestProjectId = Fixture.ProjectId };

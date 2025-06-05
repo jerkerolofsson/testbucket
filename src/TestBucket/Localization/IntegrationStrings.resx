@@ -126,6 +126,18 @@
   <data name="artifacts" xml:space="preserve">
     <value>Artifacts</value>
   </data>
+  <data name="artifacts-pattern" xml:space="preserve">
+    <value>Artifact patterns</value>
+  </data>
+  <data name="artifacts-pattern-description" xml:space="preserve">
+    <value>Define a glob pattern to define which artifacts created by pipelines that will be downloaded to test bucket when the pipeline completes.</value>
+  </data>
+  <data name="coverage-report-artifact-pattern" xml:space="preserve">
+    <value>Glob pattern for coverage reports</value>
+  </data>
+  <data name="coverage-report-artifact-pattern-helper-text" xml:space="preserve">
+    <value>Multiple entries can be separated by ;</value>
+  </data>
   <data name="create-issues" xml:space="preserve">
     <value>Create issues</value>
   </data>
@@ -168,8 +180,11 @@
   <data name="read-repository" xml:space="preserve">
     <value>Read Repository and Commits</value>
   </data>
+  <data name="system" xml:space="preserve">
+    <value>System</value>
+  </data>
   <data name="test-result-artifact-pattern" xml:space="preserve">
-    <value>CI/CD Test Result Artifact Pattern</value>
+    <value>Glob pattern for test results</value>
   </data>
   <data name="test-result-artifact-pattern-helper-text" xml:space="preserve">
     <value>Multiple entries can be separated by ;</value>

@@ -63,7 +63,18 @@ namespace TestBucket.Domain.Automation.Artifact
             using var stream = new MemoryStream(notification.ZipBytes);
             using var zip = new ZipArchive(stream, ZipArchiveMode.Read);
 
-            var globPatterns = notification.TestResultsArtifactsPattern.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            if (notification.TestResultsArtifactsPattern is not null)
+            {
+                await ScanForTestResultsInZipAsync(notification, files, principal, zip, cancellationToken);
+            }
+            if (notification.CoverageReportArtifactsPattern is not null)
+            {
+                await ScanForCoverageReportsInZipAsync(notification, files, principal, zip, cancellationToken);
+            }
+        }
+        private async Task ScanForCoverageReportsInZipAsync(JobArtifactDownloaded notification, IFileResourceManager files, ClaimsPrincipal principal, ZipArchive zip, CancellationToken cancellationToken)
+        {
+            var globPatterns = notification.CoverageReportArtifactsPattern!.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
             foreach (var entry in zip.GlobFind(globPatterns))
             {
                 // Read into memory
@@ -74,18 +85,40 @@ namespace TestBucket.Domain.Automation.Artifact
                 // Detect the file format and add this as an attachment
                 var contentType = MediaTypeDetector.DetectType("application/octet-stream", bytes);
 
-                _logger.LogDebug("[CI_CD_AUTO] Processing artifact zip-entry: {ArtifactZipEntryName}, length={ArtifactZipEntryLength} bytes, type={ContentType}", entry.Name, entry.Length, contentType);
-
-                await files.AddResourceAsync(principal, new Files.Models.FileResource
-                {
-                    TenantId = principal.GetTenantIdOrThrow(),
-                    Data = bytes,
-                    Length = bytes.Length,
-                    TestRunId = notification.TestRunId,
-                    Name = entry.Name,
-                    ContentType = contentType
-                });
+                _logger.LogDebug("[CI_CD_AUTO] Processing coverage-report artifact zip-entry: {ArtifactZipEntryName}, length={ArtifactZipEntryLength} bytes, type={ContentType}", entry.Name, entry.Length, contentType);
+                await AddFileResourceAsync(notification, files, principal, entry, bytes, contentType);
             }
+        }
+
+        private async Task ScanForTestResultsInZipAsync(JobArtifactDownloaded notification, IFileResourceManager files, ClaimsPrincipal principal, ZipArchive zip, CancellationToken cancellationToken)
+        {
+            var globPatterns = notification.TestResultsArtifactsPattern!.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            foreach (var entry in zip.GlobFind(globPatterns))
+            {
+                // Read into memory
+                byte[] bytes = new byte[entry.Length];
+                using var entryStream = entry.Open();
+                await entryStream.ReadExactlyAsync(bytes, cancellationToken);
+
+                // Detect the file format and add this as an attachment
+                var contentType = MediaTypeDetector.DetectType("application/octet-stream", bytes);
+
+                _logger.LogDebug("[CI_CD_AUTO] Processing test-result artifact zip-entry: {ArtifactZipEntryName}, length={ArtifactZipEntryLength} bytes, type={ContentType}", entry.Name, entry.Length, contentType);
+                await AddFileResourceAsync(notification, files, principal, entry, bytes, contentType);
+            }
+        }
+
+        private static async Task AddFileResourceAsync(JobArtifactDownloaded notification, IFileResourceManager files, ClaimsPrincipal principal, ZipArchiveEntry entry, byte[] bytes, string contentType)
+        {
+            await files.AddResourceAsync(principal, new Files.Models.FileResource
+            {
+                TenantId = principal.GetTenantIdOrThrow(),
+                Data = bytes,
+                Length = bytes.Length,
+                TestRunId = notification.TestRunId,
+                Name = entry.Name,
+                ContentType = contentType
+            });
         }
     }
 }

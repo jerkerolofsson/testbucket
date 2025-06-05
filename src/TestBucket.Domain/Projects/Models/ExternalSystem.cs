@@ -61,9 +61,14 @@ public class ExternalSystem : ProjectEntity
     public ExternalSystemCapability SupportedCapabilities { get; set; }
 
     /// <summary>
-    /// File pattern for artifacts. Separated by ;
+    /// Glob pattern for test-result artifacts. Separated by ;
     /// </summary>
     public string? TestResultsArtifactsPattern { get; set; }
+
+    /// <summary>
+    /// Glob pattern for test-coverage report artifacts. Separated by ; 
+    /// </summary>
+    public string? CoverageReportArtifactsPattern { get; set; }
 
     public override string ToString() => Name;
 }

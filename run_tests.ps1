@@ -2,7 +2,9 @@
         [Parameter(Mandatory=$false)][string]$testSuite
     )
 
+$srcRootPath = (Get-Location).Path
 Write-Host "TestSuite: ${testSuite}"
+Write-Host "Path: $srcRootPath"
 
 $projects = @("tests/TestBucket.Formats.UnitTests/TestBucket.Formats.UnitTests.csproj", "tests/TestBucket.Blazor.Tests/TestBucket.Blazor.Tests.csproj", "tests/TestBucket.CodeCoverage.Tests/TestBucket.CodeCoverage.Tests.csproj", "tests/TestBucket.Domain.UnitTests/TestBucket.Domain.UnitTests.csproj", "src/Package/Traits/TestBucket.Traits.Core.UnitTests/TestBucket.Traits.Core.UnitTests.csproj")
 
@@ -21,13 +23,31 @@ foreach ($csproj in $projects)
 	echo "=================================================="
 	echo "Testing ${csproj}.."
 	$dirName = [System.IO.Path]::GetDirectoryName($csproj)
+	$suiteName = [System.IO.Path]::GetFileNameWithoutExtension($csproj)
 	$codeCoverageSettingsFile = [System.IO.Path]::Combine($dirName, "codecoverage.xml")
+	$codeCoverageReportFile = "${suiteName}.coverage.cobertura.xml"
+	$sourceReportFile = "${suiteName}.coverage.cobertura.xml.source.json"
+	$xunitReportFile = "${suiteName}.xunit.xml"
 
 	if (Test-Path $codeCoverageSettingsFile -PathType Leaf) {
 		echo "Testing with codecoverage.xml"
-		dotnet test $csproj -- --report-xunit --report-xunit-filename xunit.xml --coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml --coverage-settings codecoverage.xml
+		dotnet test $csproj -- --report-xunit --report-xunit-filename $xunitReportFile  --coverage --coverage-output-format cobertura --coverage-output $codeCoverageReportFile  --coverage-settings codecoverage.xml
 	} else {
 		echo "Testing without codecoverage.xml"
-		dotnet test $csproj -- --report-xunit --report-xunit-filename xunit.xml --coverage --coverage-output-format cobertura --coverage-output coverage.cobertura.xml
+		dotnet test $csproj -- --report-xunit --report-xunit-filename $xunitReportFile  --coverage --coverage-output-format cobertura --coverage-output $codeCoverageReportFile 
 	}
+
+	# Write an additional JSON file containing the root path to improve code coverage analysis
+	$fullResultFile = (Get-ChildItem -Recurse $codeCoverageReportFile).FullName
+	$resultsDir = [System.IO.Path]::GetDirectoryName($fullResultFile)
+
+	$payload = @{
+		sourceRoot = $srcRootPath
+  	}
+	$sourceJsonPath = [System.IO.Path]::Combine($resultsDir, $sourceReportFile)
+	echo "Result dir: $resultsDir"
+	echo "Full result file: $fullResultFile"
+	echo "Writing $sourceJsonPath"
+        echo ($payload | ConvertTo-Json ) > $sourceJsonPath
+
 }

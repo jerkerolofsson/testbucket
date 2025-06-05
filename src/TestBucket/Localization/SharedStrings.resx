@@ -743,4 +743,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="open-command-palette" xml:space="preserve">
     <value>Open command palette</value>
   </data>
+  <data name="general" xml:space="preserve">
+    <value>General</value>
+  </data>
 </root>

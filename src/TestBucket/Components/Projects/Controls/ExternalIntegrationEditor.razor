@@ -25,15 +25,7 @@
         <MudTabs Style="width: 100%">
             <MudTabPanel Text="@intLoc["integration"]">
                 <MudStack Class="pt-3">
-                    @if (Integration is null)
-                    {
-                        <MudText Style="font-weight: bold">@intLoc["no-integration"]</MudText>
-
-                        <MudStack Row Class="mt-5">
-                            <MudButton Variant="Variant.Outlined" OnClick="AddAsync">@loc["add-integration"]</MudButton>
-                        </MudStack>
-                    }
-                    else
+                    @if (Integration is not null)
                     {
                         <Field Row>
                             <FieldHeader>@loc["name"]</FieldHeader>
@@ -116,9 +108,10 @@
                 <MudStack Class="pt-3">
                     @if(Extension is not null)
                     {
+                        <MudText Typo="Typo.h3">@intLoc["artifacts-pattern"]</MudText>
+                        <MudText Typo="Typo.subtitle2">@intLoc["artifacts-pattern-description"]</MudText>
                         if((Extension.SupportedCapabilities&ExternalSystemCapability.ReadPipelineArtifacts) == ExternalSystemCapability.ReadPipelineArtifacts)
                         {
-
                             <Field>
                                 <FieldHeader>@intLoc["test-result-artifact-pattern"]</FieldHeader>
                                 <MudTextField InputType="InputType.Text"
@@ -126,6 +119,15 @@
                                 T="string"
                                 ValueChanged="TestResultsArtifactsPatternChanged"
                                 HelperText="@intLoc["test-result-artifact-pattern-helper-text"]" />
+                            </Field>
+
+                            <Field>
+                                <FieldHeader>@intLoc["coverage-report-artifact-pattern"]</FieldHeader>
+                                <MudTextField InputType="InputType.Text"
+                                Value="Integration.CoverageReportArtifactsPattern"
+                                T="string"
+                                ValueChanged="CoverageReportArtifactsPatternChanged"
+                                HelperText="@intLoc["coverage-report-artifact-pattern-helper-text"]" />
                             </Field>
                         }
                         else
@@ -206,6 +208,14 @@
             await OnChangedAsync();
         }
     }
+    private async Task CoverageReportArtifactsPatternChanged(string pattern)
+    {
+        if (Integration is not null)
+        {
+            Integration.CoverageReportArtifactsPattern = pattern;
+            await OnChangedAsync();
+        }
+    }
     private async Task EnabledChanged(bool value)
     {
         if (Integration is not null)
@@ -236,20 +246,5 @@
     {
         await IntegrationChanged.InvokeAsync(Integration);
     }
-    private async Task AddAsync()
-    {
-        if(this.Name is null) 
-        {
-            return;
-        }
-
-        await IntegrationChanged.InvokeAsync(new ExternalSystem
-            {
-                Name = this.Name,
-                BaseUrl = Extension?.DefaultBaseUrl,
-                Enabled = false,
-                TestResultsArtifactsPattern = "**/*.xml;**/*.trx;**/*.ctrf",
-                SupportedCapabilities = Extension?.SupportedCapabilities ?? ExternalSystemCapability.None
-            });
-    }
+    
 }

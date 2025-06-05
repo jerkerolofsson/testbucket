@@ -395,7 +395,12 @@ internal class PipelineManager : IPipelineManager
                         if (bytes.Length > 0 && pipeline.TestRunId is not null && pipeline.TenantId is not null)
                         {
                             // Sends event that will scan the artifact zip for test results and add them to the run as attachments
-                            await _mediator.Publish(new JobArtifactDownloaded(principal, pipeline.TestRunId.Value, configuredRunner.Config.TestResultsArtifactsPattern, bytes));
+                            var notification = new JobArtifactDownloaded(principal, 
+                                pipeline.TestRunId.Value, 
+                                configuredRunner.Config.TestResultsArtifactsPattern,
+                                configuredRunner.Config.CoverageReportArtifactsPattern,
+                                bytes);
+                            await _mediator.Publish(notification);
                         }
                     }
                     catch (Exception ex)

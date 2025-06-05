@@ -12,6 +12,7 @@ namespace TestBucket.Domain.Automation.Artifact.Events
     public sealed record JobArtifactDownloaded(
         ClaimsPrincipal Principal, 
         long TestRunId,
-        string TestResultsArtifactsPattern,
+        string? TestResultsArtifactsPattern,
+        string? CoverageReportArtifactsPattern,
         byte[] ZipBytes) : INotification;
 }

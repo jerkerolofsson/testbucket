@@ -9,6 +9,7 @@ using TestBucket.CodeCoverage.Parsers;
 namespace TestBucket.CodeCoverage.Tests
 {
     [Feature("Code Coverage")]
+    [Component("Code Coverage")]
     [UnitTest]
     [EnrichedTest]
     [FunctionalTest]

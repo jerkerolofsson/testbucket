@@ -11,6 +11,7 @@
 @inject IExtensionManager extensionManager
 @inject IStringLocalizer<ProjectStrings> projectLoc
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<IntegrationStrings> intLoc
 
 <TenantRedirect/>
 
@@ -73,10 +74,20 @@
                     }
                 </CellTemplate>
             </TemplateColumn>
-            <PropertyColumn Property="x => x.Name" />
-            <PropertyColumn Property="x => x.Provider" />
-            <PropertyColumn Property="x => x.BaseUrl" />
-            <PropertyColumn Property="x => x.ExternalProjectId" />
+            <PropertyColumn Property="x => x.Name" Title="@loc["name"]"/>
+
+            <TemplateColumn Title="@intLoc["system"]">
+                <CellTemplate>
+                    <MudStack Row Spacing="1">
+                        <ExternalSystemIcon SystemName="@context.Item.Provider"/>
+                        <div>@context.Item.Provider</div>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+
+
+            <PropertyColumn Property="x => x.BaseUrl" Title="@intLoc["integration-base-url"]"/>
+            <PropertyColumn Property="x => x.ExternalProjectId" Title="@intLoc["project-id"]"/>
             <TemplateColumn>
                 <CellTemplate>
                     <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Delete" Entity="PermissionEntityType.Project">

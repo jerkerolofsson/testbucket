@@ -1,6 +1,9 @@
 ﻿
+using ICSharpCode.SharpZipLib.GZip;
 using Mediator;
+using OneOf.Types;
 using TestBucket.Domain.Automation.Artifact.Events;
+using TestBucket.Domain.Automation.Runners.Models;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Helpers;
 using TestBucket.Domain.Testing.TestRuns;
@@ -14,16 +17,17 @@ namespace TestBucket.Domain.IntegrationTests.Features.ImportTestResults
     [EnrichedTest]
     public class ImportTestResultsTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that traits are correctly imported as fields
+        /// 
+        /// # Steps
+        /// 1. Create a new run
+        /// 2. Import xUnit test results from a job artifact zip file
+        /// 3. Verify that the results(TestCaseRun) are tagged with the correct test category: "Integration"
+        /// 4. Verify that the test case are tagged with the same category
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that traits are correctly imported as fields
-
-            # Steps
-            1. Create a new run
-            2. Import xUnit test results from a job artifact zip file
-            3. Verify that the results (TestCaseRun) are tagged with the correct test category: "Integration"
-            4. Verify that the test case are tagged with the same category
-            """)]
         public async Task ImportTestResults_FromArtifactZipWithCustomFieldAdded_FieldAddedToTestCaseAndTestCaseRun()
         {
             var mediator = Fixture.Services.GetRequiredService<IMediator>();
@@ -41,7 +45,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.ImportTestResults
 
             // Import results
             byte[] zipBytes = File.ReadAllBytes("TestData/xunit.zip");
-            await mediator.Publish(new JobArtifactDownloaded(principal, run.Id, "**/*.xml", zipBytes), TestContext.Current.CancellationToken);
+            await mediator.Publish(new JobArtifactDownloaded(principal, run.Id, "**/*.xml", null, zipBytes), TestContext.Current.CancellationToken);
 
             // Assert
 

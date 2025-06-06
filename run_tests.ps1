@@ -37,11 +37,9 @@ foreach ($csproj in $projects)
 		dotnet test $csproj -- --report-xunit --report-xunit-filename $xunitReportFile  --coverage --coverage-output-format cobertura --coverage-output $codeCoverageReportFile 
 	}
 
-	# Change the coverage file to contain relative paths instead of absolute
-	$fullResultFile = (Get-ChildItem -Recurse $xunitReportFile).FullName
-
-	$content = Get-Content -Path $fullResultFile -Raw
-	echo $content
+	#$fullResultFile = (Get-ChildItem -Recurse $xunitReportFile).FullName
+	#$content = Get-Content -Path $fullResultFile -Raw
+	#echo $content
 
 	$fullCoverageFile = (Get-ChildItem -Recurse $codeCoverageReportFile).FullName
 

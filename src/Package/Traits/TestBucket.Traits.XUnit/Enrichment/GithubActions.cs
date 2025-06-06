@@ -13,11 +13,11 @@ internal static class GithubActions
         var headRef = Environment.GetEnvironmentVariable("GITHUB_HEAD_REF");
         if (!string.IsNullOrWhiteSpace(commit))
         {
-            testContext.AddAttachment(TargetTraitNames.Commit, commit);
+            testContext.AddAttachmentIfNotExists(TargetTraitNames.Commit, commit);
         }
         if (!string.IsNullOrWhiteSpace(headRef))
         {
-            testContext.AddAttachment(TargetTraitNames.Branch, headRef);
+            testContext.AddAttachmentIfNotExists(TargetTraitNames.Branch, headRef);
         }
     }
 }

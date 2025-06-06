@@ -13,11 +13,11 @@ internal static class GitlabCi
         var headRef = Environment.GetEnvironmentVariable("CI_COMMIT_REF_NAME");
         if (!string.IsNullOrWhiteSpace(commit))
         {
-            testContext.AddAttachment(TargetTraitNames.Commit, commit);
+            testContext.AddAttachmentIfNotExists(TargetTraitNames.Commit, commit);
         }
         if (!string.IsNullOrWhiteSpace(headRef))
         {
-            testContext.AddAttachment(TargetTraitNames.Branch, headRef);
+            testContext.AddAttachmentIfNotExists(TargetTraitNames.Branch, headRef);
         }
     }
 }

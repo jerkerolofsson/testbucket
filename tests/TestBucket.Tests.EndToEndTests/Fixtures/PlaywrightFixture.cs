@@ -96,7 +96,7 @@ namespace TestBucket.Tests.EndToEndTests.Fixtures
             _app = app;
 
             _playwright = await Playwright.CreateAsync();
-            _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = false });
+            _browser = await _playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions { Headless = false });
         }
 
         public async ValueTask DisposeAsync()

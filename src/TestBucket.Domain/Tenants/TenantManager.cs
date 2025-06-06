@@ -44,7 +44,8 @@ public class TenantManager : ITenantManager
     /// <inheritdoc/>
     public async Task<bool> ExistsAsync(ClaimsPrincipal principal, string tenantId)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Read);
+        // Should not have any permissions here as the user is possibly not signed in
+        //principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Read);
         return await _tenantRepository.ExistsAsync(tenantId);
     }
 

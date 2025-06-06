@@ -40,6 +40,20 @@ html, body {
     --mud-typography-h6-size: 12pt;
 }
 
+.tb-codeblock {
+    background: var(--mud-palette-surface-darken);
+    padding: 8px;
+    border-radius: 4px;
+}
+
+.tb-codeblock > div {
+    border-bottom: solid 1px var(--mud-palette-lines-inputs);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
 table {
     border-collapse: collapse;
 }
@@ -256,11 +270,24 @@ input:focus-visible {
  .tb-write-only-field {
  }
 
+ 
+.tb-attachment-grid-icons {
+    overflow: auto; 
+    max-height: 300px; 
+    width: 100%;
+}
+.tb-attachment-grid-table {
+    overflow: auto; 
+    max-height: 300px; 
+    width: 100%;
+}
+
  .file-resource-thumbnail {
      padding: 16px;
      border-radius: 4px;
      overflow: hidden;
-     width: 128px;
+     width: 96px;
+     cursor: pointer;
  }
 
  .file-resource-thumbnail:hover {
@@ -269,8 +296,10 @@ input:focus-visible {
 
  .file-resource-thumbnail .filename {
      font-size: 8pt;
+     overflow: hidden;
      text-overflow: ellipsis;
-     white-space: nowrap;
+     white-space: wrap;
+     word-wrap: anywhere;
  }
 
  a.mud-link.mud-link-underline-hover[role='button'] {

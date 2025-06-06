@@ -1,27 +1,48 @@
-﻿@inject IJSRuntime js
+﻿@using TestBucket.Domain
+@inject IJSRuntime js
 
-@if (ChildContent is not null)
-{
-    <pre id="@_elementId" style="overflow: auto; max-height: @MaxHeight"><code class="@Language">@ChildContent</code></pre>
-}
+<MudStack Class="tb-codeblock" Spacing="0">
+
+    <MudStack Row AlignItems="AlignItems.Center">
+        <LanguageIcon Size="Size.Small" Language=@Language />
+        <div>@Language</div>
+        <MudSpacer />
+        <CopyToClipboard Text="@Code" />
+    </MudStack>
+
+    <pre id="@_elementId" style="overflow: auto; max-height: @MaxHeight">
+        <code class="@Language"></code>
+    </pre>
+</MudStack>
 
 @code {
     [Parameter] public string MaxHeight { get; set; } = "50vh";
     [Parameter] public string Language { get; set; } = "json";
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Code { get; set; }
 
     private string _elementId = "code-block-" + Guid.NewGuid().ToString();
 
+    private string? _code;
+
     protected override void OnParametersSet()
     {
-        _elementId = "code-block-" + Guid.NewGuid().ToString();
+        if (_code != Code)
+        {
+            _code = Code;
+            StateHasChanged();
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (string.IsNullOrEmpty(_code))
+        {
+            return;
+        }
+
         string cssSelector = $"#{_elementId}";
         string[] languages = [Language];
-        await js.InvokeVoidAsync($"renderHljsForLanguages", cssSelector, languages);
+        await js.InvokeVoidAsync($"renderHljsForLanguages", cssSelector, languages, _code);
         await base.OnAfterRenderAsync(firstRender);
     }
 }

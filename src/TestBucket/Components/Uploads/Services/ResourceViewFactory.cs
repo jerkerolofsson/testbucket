@@ -13,7 +13,8 @@ public class ResourceViewFactory
             {
                 yield return new ViewType("Image", typeof(ImageViewer));
             }
-            if (resource.ContentType.StartsWith("application/json"))
+            if (resource.ContentType.StartsWith("application/json") ||
+                resource.ContentType.StartsWith("application/x-ctrf"))
             {
                 yield return new ViewType("JSON", typeof(JsonViewer));
             }
@@ -21,9 +22,18 @@ public class ResourceViewFactory
             {
                 yield return new ViewType("Code Coverage", typeof(CodeCoverageResourceView));
             }
+            if (resource.ContentType.StartsWith("text/x-csharp"))
+            {
+                yield return new ViewType("C#", typeof(CSharpViewer));
+            }
+            if (resource.ContentType.StartsWith("application/javascript"))
+            {
+                yield return new ViewType("Javascript", typeof(JavascriptViewer));
+            }
             if (resource.ContentType.StartsWith("application/xml") ||
                 resource.ContentType.StartsWith("application/x-xunit") ||
                 resource.ContentType.StartsWith("application/x-junit") ||
+                resource.ContentType.StartsWith("application/x-cobertura") ||
                 resource.ContentType.StartsWith("text/xml"))
             {
                 yield return new ViewType("XML", typeof(XmlViewer));

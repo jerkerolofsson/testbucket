@@ -7,7 +7,7 @@
 
 @if (_resource is not null)
 {
-    <CodeBlock Language="xml" Code="@_text"></CodeBlock>
+    <CodeBlock Language="javascript" Code="@_text"></CodeBlock>
 }
 else
 {
@@ -33,22 +33,7 @@ else
             }
             if(_resource is not null)
             {
-                var rawText = TextConversionUtils.FromBomEncoded(_resource.Data);
-
-                // Pretty format XML
-                try
-                {
-                    var doc = XDocument.Parse(rawText, LoadOptions.PreserveWhitespace);
-                    var xml = doc.ToString(SaveOptions.None);
-                    _text = xml;
-                }
-                catch
-                {
-                    // Fallback to raw text if not valid XML
-                    _text = rawText;
-                }
-
-
+                _text = TextConversionUtils.FromBomEncoded(_resource.Data);
             }
         }
     }

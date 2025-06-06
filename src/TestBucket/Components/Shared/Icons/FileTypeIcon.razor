@@ -1,0 +1,40 @@
+﻿@using TestBucket.Domain
+
+@if (ContentType == "text/x-csharp")
+{
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.CSharp" Size="@Size" Style="@Style" />
+}
+else if (ContentType == "text/x-typescript")
+{
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.TypeScript" Size="@Size"  Style="@Style"/>
+}
+else if (ContentType == "application/javascript")
+{
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.JavaScript" Size="@Size" Style="@Style" />
+}
+else if (ContentType == "text/x-powershell")
+{
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.PowerShell" Size="@Size" Style="@Style" />
+}
+else if (ContentType == "text/x-python")
+{
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.Python" Size="@Size" Style="@Style" />
+}
+else if (ContentType == "application/json" || ContentType == "application/x-ctrf")
+{
+    <MudIcon Icon="@TbIcons.FileTypes.Json" Size="@Size" Style="@Style" />
+}
+else if (ContentType == "text/xml" || ContentType == "application/xml" || ContentType == "application/x-xunit" || ContentType == "application/x-cobertura")
+{
+    <MudIcon Icon="@TbIcons.FileTypes.Xml" Size="@Size" Style="@Style"/>
+}
+else
+{
+    <MudIcon Icon="@Icons.Custom.FileFormats.FileDocument" Size="@Size" Style="@Style" />
+}
+
+@code {
+    [Parameter] public string Style { get; set; } = "";
+    [Parameter] public Size Size { get; set; } = Size.Medium;
+    [Parameter] public string? ContentType { get; set; }
+}

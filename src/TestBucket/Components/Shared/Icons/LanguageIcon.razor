@@ -1,0 +1,31 @@
+﻿@using TestBucket.Domain
+
+@if(Language == "csharp")
+{
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.CSharp" Size="@Size"/>
+}
+else if (Language == "javascript")
+{
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.JavaScript" Size="@Size" />
+}
+else if (Language == "python")
+{
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.Python" Size="@Size" />
+}
+else if (Language == "typescript")
+{
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.TypeScript" Size="@Size" />
+}
+else if (Language == "xml")
+{
+    <MudIcon Icon="@TbIcons.FileTypes.Xml" Size="@Size" />
+}
+else if (Language == "json")
+{
+    <MudIcon Icon="@TbIcons.FileTypes.Json" Size="@Size" />
+}
+
+@code {
+    [Parameter] public Size Size { get; set; } = Size.Medium;
+    [Parameter] public string? Language { get; set; }
+}

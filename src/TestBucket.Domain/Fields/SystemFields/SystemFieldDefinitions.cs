@@ -85,6 +85,24 @@ public static class SystemFieldDefinitions
                     FieldTarget.Requirement
     };
 
+    private static readonly FieldDefinition _branch = new()
+    {
+        Name = "Branch",
+        Trait = "branch",
+        TraitType = TraitType.Branch,
+        Description = "Branch",
+        Icon = TbIcons.Git.GitBranch,
+        IsVisible = true,
+        Type = FieldType.String,
+        IsDefinedBySystem = true,
+        Inherit = true,
+        ShowDescription = false,
+        UseClassifier = false,
+        Options = [],
+        Target = FieldTarget.TestRun | FieldTarget.TestCaseRun,
+        RequiredPermission = PermissionLevel.Write
+    };
+
     private static readonly FieldDefinition _commit = new()
     {
         Name = "Commit",
@@ -125,7 +143,7 @@ public static class SystemFieldDefinitions
     {
         get
         {
-            return [_requirementApproval, _feature, _milestone, _commit, _label];
+            return [_requirementApproval, _feature, _milestone, _commit, _branch, _label];
         }
     }
 }

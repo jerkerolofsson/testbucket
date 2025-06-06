@@ -1,17 +1,17 @@
-﻿@if(Resource is not null)
+﻿@if (Resource is not null)
 {
-    <MudStack AlignItems="AlignItems.Center" Class="file-resource-thumbnail pa-1" @onclick="FileClicked">
-        @if(Resource.ContentType is not null && Resource.ContentType.StartsWith("image/"))
+    <MudStack AlignItems="AlignItems.Center" Class="file-resource-thumbnail" @onclick="FileClicked">
+        @if (Resource.ContentType is not null && Resource.ContentType.StartsWith("image/"))
         {
             string src = $"/api/resources/{Resource.Id}";
-            <MudImage Src="@src" Style="max-width: 64px; max-height: 64px"/>
+            <MudImage Src="@src" Style="max-width: 64px; max-height: 64px" />
         }
         else
         {
             // Icon by type
-            <MudIcon Icon="@Icons.Custom.FileFormats.FileDocument" Size="Size.Large" Style="width: 64px; height: 64px" />
+            <FileTypeIcon ContentType="@Resource.ContentType" Size="Size.Large" Style="width: 64px; height: 64px" />
         }
-        <MudSpacer/>
+        <MudSpacer />
         <MudTooltip Text="@Resource.ContentType">
             <MudText Class="filename">@Resource.Name</MudText>
         </MudTooltip>
@@ -24,7 +24,7 @@
 
     private async Task FileClicked(MouseEventArgs e)
     {
-        if(Resource is null)
+        if (Resource is null)
         {
             return;
         }

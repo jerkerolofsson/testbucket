@@ -15,7 +15,7 @@
             </MudToolBar>
             @if (_isGrid)
             {
-                <MudStack Class="pa-2" Spacing="3" Row Wrap="Wrap.Wrap" Style="overflow: auto; max-height: 200px; width: 100%">
+                <MudStack Class="tb-attachment-grid-icons pa-2" Spacing="3" Row Wrap="Wrap.Wrap">
                     @foreach (var attachment in _attachments)
                     {
                         <ResourceThumbnail ResourceClicked="OnAttachmentClickedAsync" Resource="@attachment" />
@@ -25,15 +25,33 @@
             else
             {
                 <MudDataGrid Items="_attachments"
-                             Style="overflow: auto; max-height: 200px; width: 100%"
+                             Class="tb-attachment-grid-table pa-2"
                              Dense
                              Hover
                              RowClass="tb-datarow cursor-pointer"
                              RowClick="(e) => OnAttachmentClickedAsync(e.Item)"
                              T="FileResource"
                 SortMode="SortMode.Single">
+
+                    <ColGroup>
+                        <col style="width: 40%" />
+                        <col style="width: 20%" />
+                        <col style="width: 15%" />
+                        <col style="width: 15%" />
+                        <col style="width: 10%" />
+                    </ColGroup>
+
                     <Columns>
-                        <PropertyColumn Property="x => x.Name" Title="@loc["file-name"]" />
+
+                        <TemplateColumn Title="@loc["file-name"]">
+                            <CellTemplate>
+                                <MudStack Row Spacing="0" AlignItems="AlignItems.Center">
+                                    <FileTypeIcon ContentType="@context.Item.ContentType" Size="Size.Large" Style="width: 32x; height: 32px" />
+                                    <div>@context.Item.Name</div>
+                                </MudStack>
+                            </CellTemplate>
+                        </TemplateColumn>
+
                         <PropertyColumn Property="x => x.ContentType" Title="@loc["file-type"]" />
                         <TemplateColumn Title="@loc["created"]">
                             <CellTemplate>

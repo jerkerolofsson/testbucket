@@ -38,13 +38,18 @@ foreach ($csproj in $projects)
 	}
 
 	# Change the coverage file to contain relative paths instead of absolute
-	$fullResultFile = (Get-ChildItem -Recurse $codeCoverageReportFile).FullName
+	$fullResultFile = (Get-ChildItem -Recurse $xunitReportFile).FullName
+
+	$content = Get-Content -Path $fullCoverageFile -Raw
+	echo $content
+
+	$fullCoverageFile = (Get-ChildItem -Recurse $codeCoverageReportFile).FullName
 
 	$filenameReplace1 = "filename=`"$srcRootPath/"
 	$filenameReplace2 = "filename=`"$srcRootPath`\"
 
-	$content = Get-Content -Path $fullResultFile  -Raw
+	$content = Get-Content -Path $fullCoverageFile -Raw
 	$content = $content.Replace($filenameReplace1 , "filename=`"")
 	$content = $content.Replace($filenameReplace2 , "filename=`"")
-	$content | Set-Content -Path $fullResultFile 
+	$content | Set-Content -Path $fullCoverageFile 
 }

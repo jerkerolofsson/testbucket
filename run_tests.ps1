@@ -40,7 +40,7 @@ foreach ($csproj in $projects)
 	# Change the coverage file to contain relative paths instead of absolute
 	$fullResultFile = (Get-ChildItem -Recurse $xunitReportFile).FullName
 
-	$content = Get-Content -Path $fullCoverageFile -Raw
+	$content = Get-Content -Path $fullResultFile -Raw
 	echo $content
 
 	$fullCoverageFile = (Get-ChildItem -Recurse $codeCoverageReportFile).FullName

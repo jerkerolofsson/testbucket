@@ -59,7 +59,7 @@ public interface IFieldRepository
     /// </summary>
     /// <param name="fields"></param>
     /// <returns></returns>
-    Task SaveTestCaseFieldsAsync(IEnumerable<TestCaseField> fields);
+    //Task SaveTestCaseFieldsAsync(IEnumerable<TestCaseField> fields);
 
     /// <summary>
     /// Adds a new field for the test case if it doesn't exist or replaces the value
@@ -85,7 +85,7 @@ public interface IFieldRepository
     /// </summary>
     /// <param name="fields"></param>
     /// <returns></returns>
-    Task SaveTestRunFieldsAsync(IEnumerable<TestRunField> fields);
+    //Task SaveTestRunFieldsAsync(IEnumerable<TestRunField> fields);
 
     /// <summary>
     /// Adds a new field for the test run if it doesn't exist or replaces the value
@@ -111,7 +111,7 @@ public interface IFieldRepository
     /// </summary>
     /// <param name="fields"></param>
     /// <returns></returns>
-    Task SaveTestCaseRunFieldsAsync(IEnumerable<TestCaseRunField> fields);
+    //Task SaveTestCaseRunFieldsAsync(IEnumerable<TestCaseRunField> fields);
 
     /// <summary>
     /// Adds a new field for the test case if it doesn't exist or replaces the value
@@ -137,7 +137,7 @@ public interface IFieldRepository
     /// </summary>
     /// <param name="fields"></param>
     /// <returns></returns>
-    Task SaveRequirementFieldsAsync(IEnumerable<RequirementField> fields);
+    //Task SaveRequirementFieldsAsync(IEnumerable<RequirementField> fields);
 
     /// <summary>
     /// Adds a new field for the requirement if it doesn't exist or replaces the value
@@ -163,7 +163,7 @@ public interface IFieldRepository
     /// </summary>
     /// <param name="fields"></param>
     /// <returns></returns>
-    Task SaveIssueFieldsAsync(IEnumerable<IssueField> fields);
+    //Task SaveIssueFieldsAsync(IEnumerable<IssueField> fields);
 
     /// <summary>
     /// Adds a new field for the issue if it doesn't exist or replaces the value

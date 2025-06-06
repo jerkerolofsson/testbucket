@@ -15,6 +15,7 @@ using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Comments.Models;
 using TestBucket.Domain.Labels.Models;
+using TestBucket.Domain.Metrics.Models;
 
 namespace TestBucket.Data;
 
@@ -26,8 +27,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     internal DbSet<UserPreferences> UserPreferences { get; set; }
     internal DbSet<ApplicationUserApiKey> ApiKeys { get; set; }
-
     internal DbSet<Comment> Comments { get; set; }
+
+    internal DbSet<Metric> Metrics { get; set; }
 
     internal DbSet<FieldDefinition> FieldDefinitions { get; set; }
     internal DbSet<RequirementField> RequirementFields { get; set; }

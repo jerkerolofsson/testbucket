@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 using Mediator;
 
+using Microsoft.Extensions.Caching.Memory;
+
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields.Events;
 using TestBucket.Domain.Fields.Helpers;
@@ -21,11 +23,15 @@ internal class FieldManager : IFieldManager
 {
     private readonly IFieldRepository _repository;
     private readonly IMediator _mediator;
+    private readonly IMemoryCache _memoryCache;
 
-    public FieldManager(IFieldRepository repository, IMediator mediator)
+    private string GetCacheKey(TestRunField field) => "TestRunField:" + field.TenantId + field.TestRunId;
+
+    public FieldManager(IFieldRepository repository, IMediator mediator, IMemoryCache memoryCache)
     {
         _repository = repository;
         _mediator = mediator;
+        _memoryCache = memoryCache;
     }
 
 
@@ -195,24 +201,31 @@ internal class FieldManager : IFieldManager
         var tenantId = principal.GetTenantIdOrThrow();
         principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
 
-        var fields = (await _repository.GetTestRunFieldsAsync(tenantId, testRunId)).ToList();
-
-        // Add missing fields
-        foreach (var fieldDefinition in fieldDefinitions)
+        string key = "TestRunField:" + tenantId + testRunId;
+        return await _memoryCache.GetOrCreateAsync(key, async entry =>
         {
-            var field = fields.Where(x => x.FieldDefinitionId == fieldDefinition.Id).FirstOrDefault();
-            if (field is null)
-            {
-                fields.Add(new TestRunField
-                {
-                    FieldDefinition = fieldDefinition,
-                    TestRunId = testRunId,
-                    FieldDefinitionId = fieldDefinition.Id
-                });
-            }
-        }
+            entry.SlidingExpiration = TimeSpan.FromSeconds(15);
 
-        return fields;
+            var fields = (await _repository.GetTestRunFieldsAsync(tenantId, testRunId)).ToList();
+
+            // Add missing fields
+            foreach (var fieldDefinition in fieldDefinitions)
+            {
+                var field = fields.Where(x => x.FieldDefinitionId == fieldDefinition.Id).FirstOrDefault();
+                if (field is null)
+                {
+                    fields.Add(new TestRunField
+                    {
+                        FieldDefinition = fieldDefinition,
+                        TestRunId = testRunId,
+                        FieldDefinitionId = fieldDefinition.Id
+                    });
+                }
+            }
+
+            return fields;
+        }) ?? [];
+
     }
     #endregion
 
@@ -271,13 +284,14 @@ internal class FieldManager : IFieldManager
                 });
             }
         }
-
         return fields;
     }
 
-
     public async Task UpsertTestRunFieldAsync(ClaimsPrincipal principal, TestRunField field)
     {
+        _memoryCache.Remove(GetCacheKey(field)); // Clear cache for this field  
+
+
         var fieldDefinition = field.FieldDefinition ?? await _repository.GetDefinitionByIdAsync(field.FieldDefinitionId);
         principal.ThrowIfNoPermission(fieldDefinition);
 

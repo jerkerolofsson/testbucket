@@ -1,4 +1,6 @@
-﻿using TestBucket.Contracts.Integrations;
+﻿using Microsoft.Extensions.Caching.Memory;
+
+using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Issues.Models;
@@ -9,7 +11,6 @@ namespace TestBucket.Data.Fields;
 internal class FieldRepository : IFieldRepository
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
-
     public FieldRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory)
     {
         _dbContextFactory = dbContextFactory;

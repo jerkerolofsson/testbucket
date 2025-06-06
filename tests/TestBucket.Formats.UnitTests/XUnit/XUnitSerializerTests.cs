@@ -108,5 +108,27 @@ namespace TestBucket.Formats.UnitTests.XUnit
             Assert.Equal("image/png", attachment.ContentType);
             Assert.Equal(Convert.FromBase64String(expectedBase64), attachment.Data);
         }
+
+        /// <summary>
+        /// Verifies that parsing the time-rtf overrides the time property
+        /// </summary>
+        [Fact]
+        [TestId("XUNIT-005")]
+        [Component("TestBucket.Formats")]
+        public void Deserialize_WithTimeRtfAndTimeDifferent_TimeRtfHasPrecedence()
+        {
+            var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.XUnit.TestData.xunit-attachment.xml");
+            var serializer = new XUnitSerializer();
+            var run = serializer.Deserialize(xml);
+
+            Assert.Single(run.Suites);
+            var suite = run.Suites.First();
+
+            Assert.Single(suite.Tests);
+            var test = suite.Tests.First();
+
+            var expectedTime = TimeSpan.Parse("00:00:00.0248388");
+            Assert.Equal(expectedTime, test.Duration);
+        }
     }
 }

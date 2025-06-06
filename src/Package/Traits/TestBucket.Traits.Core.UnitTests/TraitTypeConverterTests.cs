@@ -18,6 +18,7 @@ public class TraitTypeConverterTests
     /// <param name="type">The <see cref="TraitType"/> to convert.</param>
     [Theory]
     [InlineData(TargetTraitNames.Feature, TraitType.Feature)]
+    [InlineData(TargetTraitNames.Branch, TraitType.Branch)]
     [InlineData(TargetTraitNames.Commit, TraitType.Commit)]
     [InlineData(TargetTraitNames.Component, TraitType.Component)]
     [InlineData(TargetTraitNames.Release, TraitType.Release)]

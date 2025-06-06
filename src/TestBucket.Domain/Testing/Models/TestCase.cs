@@ -4,6 +4,8 @@
 [Index(nameof(Created))]
 [Index(nameof(Name))]
 [Index(nameof(TenantId), nameof(Slug))]
+[Index(nameof(TenantId), nameof(TestProjectId), nameof(ExternalId))]
+[Index(nameof(TenantId), nameof(TestProjectId), nameof(AutomationAssembly), nameof(ClassName), nameof(Module), nameof(Method))]
 public class TestCase : TestEntity
 {
     /// <summary>

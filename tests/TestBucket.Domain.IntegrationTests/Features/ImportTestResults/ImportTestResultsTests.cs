@@ -1,9 +1,5 @@
-﻿
-using ICSharpCode.SharpZipLib.GZip;
-using Mediator;
-using OneOf.Types;
+﻿using Mediator;
 using TestBucket.Domain.Automation.Artifact.Events;
-using TestBucket.Domain.Automation.Runners.Models;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Helpers;
 using TestBucket.Domain.Testing.TestRuns;

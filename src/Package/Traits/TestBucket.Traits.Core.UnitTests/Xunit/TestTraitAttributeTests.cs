@@ -22,7 +22,7 @@ public class TestTraitAttributeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ApiTestAttribute"/> assigns the correct key and value for API tests.
+    /// Verifies that ApiTestAttribute assigns the correct key and value for API tests.
     /// </summary>
     [Fact]
     public void ApiTest()

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Frozen;
-using System.Collections.Generic;
+﻿using System.Collections.Frozen;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TestBucket.Traits.Core;
 
@@ -27,6 +22,7 @@ public class TraitTypeConverter
         [TraitType.SoftwareVersion] = TargetTraitNames.SoftwareVersion,
         [TraitType.HardwareVersion] = TargetTraitNames.HardwareVersion,
         [TraitType.Commit] = TargetTraitNames.Commit,
+        [TraitType.Branch] = TargetTraitNames.Branch,
         [TraitType.Release] = TargetTraitNames.Release,
         [TraitType.Milestone] = TargetTraitNames.Milestone,
         [TraitType.Feature] = TargetTraitNames.Feature,

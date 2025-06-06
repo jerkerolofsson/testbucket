@@ -1,7 +1,5 @@
 ﻿using System.Text;
-using TestBucket.Formats.Builders;
 using TestBucket.Formats.UnitTests.Utilities;
-using TestBucket.Traits.Core;
 using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests

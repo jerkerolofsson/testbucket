@@ -1,0 +1,79 @@
+﻿@using TestBucket.Domain.Metrics.Models
+@inject IStringLocalizer<SharedStrings> loc
+
+<MudStack Spacing="1">
+
+    @if (_metrics.Count > 0)
+    {
+        <MudDataGrid Items="_metrics"
+                     Class="tb-metrics-grid"
+                     RowClass="tb-datarow cursor-pointer"
+                     Dense="true"
+                     Hover="true"
+                     Bordered="true"
+                     T="Metric"
+                     SortMode="SortMode.Single">
+            <ColGroup>
+                <col style="width: 4fr;" />
+                <col style="width: 2fr;" />
+                <col style="width: 1fr;" />
+            </ColGroup>
+
+            <Columns>
+
+                <TemplateColumn Title="@loc["name"]">
+                    <CellTemplate>
+                        @context.Item.Name
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <TemplateColumn Title="@loc["value"]">
+                    <CellTemplate>
+                        @context.Item.Value
+                    </CellTemplate>
+                </TemplateColumn>
+
+                <TemplateColumn Title="@loc["unit"]">
+                    <CellTemplate>
+                        @context.Item.Unit
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+
+        </MudDataGrid>
+    }
+
+    @if (!ReadOnly)
+    {
+        <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+            <MudSpacer />
+            <MudButton data-testid="add-metric"
+                       Class="tb-button-primary"
+                       StartIcon="@Icons.Material.Outlined.Add"
+                       Variant="Variant.Outlined"
+                       OnClick="AddAsync">@loc["add-metric"]</MudButton>
+        </MudStack>
+    }
+</MudStack>
+
+@code {
+    [Parameter] public bool ReadOnly { get; set; }
+    [Parameter] public TestCaseRun? TestCaseRun { get; set; }
+
+    private TestCaseRun? _testCaseRun;
+
+    private List<Metric> _metrics = [];
+
+    protected override void OnParametersSet()
+    {
+        if (_testCaseRun?.Id != TestCaseRun?.Id)
+        {
+            _testCaseRun = TestCaseRun;
+            _metrics = TestCaseRun?.Metrics?.ToList() ?? [];
+        }
+    }
+    private async Task AddAsync()
+    {
+        
+    }
+}

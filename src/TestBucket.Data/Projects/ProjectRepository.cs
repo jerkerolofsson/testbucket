@@ -321,7 +321,10 @@ internal class ProjectRepository : IProjectRepository
             dbContext.Labels.Remove(label);
         }
         // Test
-
+        foreach (var item in dbContext.Metrics.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.Metrics.Remove(item);
+        }
         foreach (var item in dbContext.TestCaseRuns.Where(x => x.TestProjectId == project.Id))
         {
             dbContext.TestCaseRuns.Remove(item);

@@ -9,6 +9,7 @@ using TestBucket.Domain.Fields.Models;
 namespace TestBucket.Domain.Testing.Models;
 
 [Table("test_case_fields")]
+[Index(nameof(TenantId), nameof(TestCaseId))]
 public class TestCaseField : FieldValue
 {
 

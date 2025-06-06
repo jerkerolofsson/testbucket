@@ -6,6 +6,7 @@ using TestBucket.Data.Files;
 using TestBucket.Data.Identity;
 using TestBucket.Data.Issues;
 using TestBucket.Data.Labels;
+using TestBucket.Data.Metrics;
 using TestBucket.Data.Milestones;
 using TestBucket.Data.Requirements;
 using TestBucket.Data.Runners;
@@ -28,6 +29,7 @@ using TestBucket.Domain.Files;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Labels;
+using TestBucket.Domain.Metrics;
 using TestBucket.Domain.Milestones;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Settings;
@@ -42,6 +44,7 @@ public static class DataServiceExtensions
     {
         services.AddScoped<ISequenceGenerator, SequenceGenerator>();
 
+        services.AddScoped<IMetricsRepository, MetricsRepository>();
         services.AddScoped<ICommitRepository, CommitRepository>();
         services.AddScoped<IArchitectureRepository, ArchitectureRepository>();
         services.AddScoped<IMilestoneRepository, MilestoneRepository>();

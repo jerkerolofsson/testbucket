@@ -85,7 +85,9 @@ namespace TestBucket.Domain.UnitTests.Code.Yaml
             Assert.Equal("Rocket system", parsed.Systems["Rocket"].Description);
             Assert.Equal("Alice", parsed.Systems["Rocket"].DevLead);
             Assert.Equal("Bob", parsed.Systems["Rocket"].TestLead);
-            Assert.Contains("src/rocket/**/*", parsed.Systems["Rocket"].Paths);
+            var paths = parsed.Systems["Rocket"].Paths;
+            Assert.NotNull(paths);
+            Assert.Contains("src/rocket/**/*", paths);
         }
 
         /// <summary>

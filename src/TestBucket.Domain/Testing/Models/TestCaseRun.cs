@@ -1,5 +1,6 @@
 ﻿using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Issues.Models;
+using TestBucket.Domain.Metrics.Models;
 
 namespace TestBucket.Domain.Testing.Models;
 
@@ -93,7 +94,7 @@ public class TestCaseRun : TestEntity
     public TestRun? TestRun { get; set; }
     public TestCase? TestCase { get; set; }
     public virtual List<LinkedIssue>? LinkedIssues { get; set; }
-
+    public virtual List<Metric>? Metrics { get; set; }
     public virtual List<Comment>? Comments { get; set; }
     public override int GetHashCode()
     {

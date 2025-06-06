@@ -9,7 +9,6 @@ namespace TestBucket.Traits.Core.UnitTests;
 [Component("Traits")]
 [UnitTest]
 [EnrichedTest]
-[EnrichedTest]
 
 public class AutomationTraitNamesTests
 {

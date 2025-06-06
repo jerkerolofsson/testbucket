@@ -1,6 +1,8 @@
 ﻿using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Testing.Models;
 
 [Table("requirement_fields")]
+[Index(nameof(TenantId), nameof(RequirementId))]
 public class RequirementField : FieldValue
 {
 

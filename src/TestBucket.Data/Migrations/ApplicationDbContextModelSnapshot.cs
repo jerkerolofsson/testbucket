@@ -224,7 +224,7 @@ namespace TestBucket.Data.Migrations
 
                     b.HasIndex("RequirementId");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("TenantId", "RequirementId");
 
                     b.ToTable("requirement_fields");
                 });
@@ -1671,7 +1671,7 @@ namespace TestBucket.Data.Migrations
 
                     b.HasIndex("LocalIssueId");
 
-                    b.HasIndex("TenantId");
+                    b.HasIndex("TenantId", "LocalIssueId");
 
                     b.ToTable("issue_fields");
                 });
@@ -1977,6 +1977,65 @@ namespace TestBucket.Data.Migrations
                     b.HasIndex("TestProjectId");
 
                     b.ToTable("Labels");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Metrics.Models.Metric", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MeterName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long>("TestCaseRunId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("text");
+
+                    b.Property<double>("Value")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestCaseRunId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.ToTable("Metrics");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Projects.Models.ExternalSystem", b =>
@@ -2788,6 +2847,10 @@ namespace TestBucket.Data.Migrations
 
                     b.HasIndex("TenantId", "Slug");
 
+                    b.HasIndex("TenantId", "TestProjectId", "ExternalId");
+
+                    b.HasIndex("TenantId", "TestProjectId", "AutomationAssembly", "ClassName", "Module", "Method");
+
                     b.ToTable("testcases");
                 });
 
@@ -2851,9 +2914,9 @@ namespace TestBucket.Data.Migrations
 
                     b.HasIndex("FieldDefinitionId");
 
-                    b.HasIndex("TenantId");
-
                     b.HasIndex("TestCaseId");
+
+                    b.HasIndex("TenantId", "TestCaseId");
 
                     b.ToTable("test_case_fields");
                 });
@@ -3012,11 +3075,11 @@ namespace TestBucket.Data.Migrations
 
                     b.HasIndex("FieldDefinitionId");
 
-                    b.HasIndex("TenantId");
-
                     b.HasIndex("TestCaseRunId");
 
                     b.HasIndex("TestRunId");
+
+                    b.HasIndex("TenantId", "TestCaseRunId");
 
                     b.ToTable("test_case_run_fields");
                 });
@@ -4010,6 +4073,35 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("TestProject");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Metrics.Models.Metric", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestCaseRun", "TestCaseRun")
+                        .WithMany("Metrics")
+                        .HasForeignKey("TestCaseRunId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestCaseRun");
+
+                    b.Navigation("TestProject");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Projects.Models.ExternalSystem", b =>
                 {
                     b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
@@ -4528,6 +4620,8 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("LinkedIssues");
+
+                    b.Navigation("Metrics");
 
                     b.Navigation("TestCaseRunFields");
                 });

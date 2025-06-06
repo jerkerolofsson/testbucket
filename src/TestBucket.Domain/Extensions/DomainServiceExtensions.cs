@@ -31,6 +31,7 @@ using TestBucket.Domain.Issues.Insights;
 using TestBucket.Domain.Labels;
 using TestBucket.Domain.Labels.DataSources;
 using TestBucket.Domain.Labels.Services;
+using TestBucket.Domain.Metrics;
 using TestBucket.Domain.Milestones;
 using TestBucket.Domain.Milestones.DataSources;
 using TestBucket.Domain.Milestones.Services;
@@ -207,6 +208,9 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, AiLlmTestGenerationModelSetting>();
         services.AddScoped<ISetting, GithubModelsDeveloperKeySetting>();
         services.AddScoped<ISetting, AzureAiProductionKeySetting>();
+
+        // Metrics
+        services.AddScoped<IMetricsManager, MetricsManager>();
 
         // Test settings
         services.AddScoped<ISetting, ShowFailureMessageDialogWhenFailingTestCaseRunSetting>();

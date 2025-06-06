@@ -219,5 +219,10 @@ public enum TraitType
     /// <summary>
     /// A label
     /// </summary>
-    Label = 49
+    Label = 49,
+
+    /// <summary>
+    /// Branch / head ref
+    /// </summary>
+    Branch = 50,
 }

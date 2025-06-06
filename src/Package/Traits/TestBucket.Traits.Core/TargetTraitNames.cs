@@ -38,6 +38,11 @@ public class TargetTraitNames
     public const string HardwareVersion = nameof(HardwareVersion);
 
     /// <summary>
+    /// Branch / Head Ref.
+    /// </summary>
+    public const string Branch = nameof(Branch);
+
+    /// <summary>
     /// Git commit hash
     /// </summary>
     public const string Commit = nameof(Commit);

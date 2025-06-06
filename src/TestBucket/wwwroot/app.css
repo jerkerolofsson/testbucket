@@ -40,6 +40,14 @@ html, body {
     --mud-typography-h6-size: 12pt;
 }
 
+table {
+    border-collapse: collapse;
+}
+
+.markdown-preview table {
+    border: solid 1px var(--tb-palette-field-border);
+}
+
 .mud-input-control-input-container .mud-input-outlined {
 }
 

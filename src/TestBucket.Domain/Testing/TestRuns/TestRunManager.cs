@@ -87,7 +87,7 @@ internal class TestRunManager : ITestRunManager
     public async Task DeleteTestRunAsync(ClaimsPrincipal principal, TestRun testRun)
     {
         principal.GetTenantIdOrThrow(testRun);
-        await _testCaseRepo.DeleteTestRunByIdAsync(testRun.Id);
+        await _testCaseRepo.DeleteTestRunAsync(testRun);
 
         // Notify observers
         foreach (var observer in _testRunObservers.ToList())
@@ -116,8 +116,6 @@ internal class TestRunManager : ITestRunManager
         await _testCaseRepo.AddTestCaseRunAsync(testCaseRun);
 
         await _mediator.Publish(new TestCaseRunSavedNotification(principal, testCaseRun));
-
-        //await CreateInheritedTestCaseRunFieldsAsync(principal, testCaseRun);
 
         // Notify observers
         foreach (var observer in _testRunObservers)

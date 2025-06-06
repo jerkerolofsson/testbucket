@@ -3,10 +3,14 @@ using System.Text;
 
 using Mediator;
 
+using Microsoft.Extensions.Logging;
+
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
+using TestBucket.Domain.Metrics;
+using TestBucket.Domain.Metrics.Models;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
@@ -21,6 +25,7 @@ using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Formats;
 using TestBucket.Formats.Dtos;
 using TestBucket.Traits.Core;
+using TestBucket.Traits.Core.Metrics;
 
 namespace TestBucket.Domain.Testing.Services.Import;
 
@@ -40,6 +45,8 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
     private readonly ITeamManager _teamManager;
     private readonly IRequirementManager _requirementManager;
     private readonly IProgressManager _progressManager;
+    private readonly IMetricsManager _metricsManager;
+    private readonly ILogger<ImportRunHandler> _logger;
 
     public ImportRunHandler(
         IStateService stateService,
@@ -53,7 +60,9 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         IProjectManager projectManager,
         ITeamManager teamManager,
         IRequirementManager requirementManager,
-        IProgressManager progressManager)
+        IProgressManager progressManager,
+        ILogger<ImportRunHandler> logger,
+        IMetricsManager metricsManager)
     {
         _stateService = stateService;
         _testCaseRepository = testCaseRepository;
@@ -67,6 +76,8 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         _teamManager = teamManager;
         _requirementManager = requirementManager;
         _progressManager = progressManager;
+        _logger = logger;
+        _metricsManager = metricsManager;
     }
     public async ValueTask<TestRun> Handle(ImportRunRequest request, CancellationToken cancellationToken)
     {
@@ -185,11 +196,45 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                         TestCaseRun testCaseRun = await AddTestCaseRunAsync(principal, testRun, test, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRunFieldDefinitions, options);
 
                         await LinkWithRequirementsAsync(principal, testCase, test.Traits);
+                        await AddMetricsAsync(principal, test, testCaseRun);
                     }
                 }
             }
         }
         return testRun;
+    }
+
+    private async Task AddMetricsAsync(ClaimsPrincipal principal, TestCaseRunDto test, TestCaseRun testCaseRun)
+    {
+        if(test.Traits is null)
+        {
+            return;
+        }
+        foreach (var trait in test.Traits.Where(x => x.Name?.StartsWith("metric:") == true))
+        {
+            try
+            {
+                var testMetric = MetricSerializer.Deserialize(trait.Name, trait.Value);
+
+                var metric = new Metric
+                {
+                    MeterName = testMetric.MeterName,
+                    Name = testMetric.Name,
+                    Value = testMetric.Value,
+                    Unit = testMetric.Unit,
+                    Created = testMetric.Created,
+                    TestCaseRunId = testCaseRun.Id,
+                    TestProjectId = testCaseRun.TestProjectId,
+                    TeamId = testCaseRun.TeamId,
+                    TenantId = testCaseRun.TenantId,
+                };
+                await _metricsManager.AddMetric(principal, metric);
+            }
+            catch (FormatException ex)
+            {
+                _logger.LogWarning(ex, "Failed to deserialize metric from trait {TraitName} with value {TraitValue}", trait.Name, trait.Value);
+            }
+        }
     }
 
     private async Task LinkWithRequirementsAsync(ClaimsPrincipal principal, TestCase testCase, List<TestTrait> traits)
@@ -347,6 +392,12 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         }
         var trait = traits[0];
 
+        // Metric
+        if(trait.Name.StartsWith("metric:"))
+        {
+            return;
+        }
+
         var fieldDefinition = testCaseFieldDefinitions.Where(x => x.Trait == trait.Name || x.Name == trait.Name).FirstOrDefault();
         if (fieldDefinition is not null)
         {
@@ -394,7 +445,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
             TestProjectId = testRun.TestProjectId.Value,
             Result = test.Result ?? TestResult.NoRun,
             TestCaseId = testCase.Id,
-            Duration = (int)(test.Duration?.TotalMicroseconds ?? 0),
+            Duration = (int)(test.Duration?.TotalMilliseconds ?? 0),
             CallStack = test.CallStack,
             SystemOut = test.SystemOut,
             SystemErr = test.SystemErr,
@@ -404,19 +455,6 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         };
 
         await _testRunManager.AddTestCaseRunAsync(principal, testCaseRun);
-
-        // Add traits from the test case (could be manually assigned)
-
-        //List<TestCaseRunField> fields = new();
-
-        //TestCaseRunFieldHelper.BuildInheritedFields(testRun, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRun, fields);
-
-        //foreach (var field in fields)
-        //{
-        //    await _fieldManager.UpsertTestCaseRunFieldAsync(principal, field);
-        //}
-        //await _fieldManager.SaveTestCaseRunFieldsAsync(principal, fields);
-
         await AddAttachmentsAsync(testCaseRun, test.Attachments);
 
         return testCaseRun;
@@ -459,7 +497,6 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         {
             FilterSpecification<TestCase>[] filters = [
                 new FilterByTenant<TestCase>(tenantId),
-                //new FilterTestCasesByTestSuite(suite.Id),
                 new FilterByProject<TestCase>(projectId),
                 new FilterTestCasesByExternalId(test.ExternalId)
             ];

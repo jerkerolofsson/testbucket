@@ -746,4 +746,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="general" xml:space="preserve">
     <value>General</value>
   </data>
+  <data name="metrics" xml:space="preserve">
+    <value>Metrics</value>
+  </data>
+  <data name="add-metric" xml:space="preserve">
+    <value>Add metric</value>
+  </data>
 </root>

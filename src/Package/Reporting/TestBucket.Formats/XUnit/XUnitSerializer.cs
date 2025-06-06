@@ -122,6 +122,12 @@ namespace TestBucket.Formats.XUnit
                             {
                                 testCaseRun.Duration = TimeSpan.FromSeconds(time);
                             }
+
+                            string? runTimeString = resultNode.Attribute("time-rtf")?.Value;
+                            if (runTimeString is not null && TimeSpan.TryParse(runTimeString, CultureInfo.InvariantCulture, out var runtime))
+                            {
+                                testCaseRun.Duration = runtime;
+                            }
                         }
                     }
                 }

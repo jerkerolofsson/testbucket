@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Security.Claims;
 
+using Microsoft.Extensions.Caching.Memory;
+
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Data.Migrations;
 using TestBucket.Domain.Insights.Model;
@@ -9,6 +11,7 @@ using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
+using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
 using UglyToad.PdfPig.Filters;
@@ -16,10 +19,14 @@ using UglyToad.PdfPig.Filters;
 namespace TestBucket.Data.Testing;
 internal class TestCaseRepository : ITestCaseRepository
 {
+    private readonly IMemoryCache _memoryCache;
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
     private readonly ISequenceGenerator _sequenceGenerator;
-    public TestCaseRepository(IDbContextFactory<ApplicationDbContext> dbContextFactory, ISequenceGenerator sequenceGenerator)
+    public TestCaseRepository(
+        IMemoryCache memoryCache,
+        IDbContextFactory<ApplicationDbContext> dbContextFactory, ISequenceGenerator sequenceGenerator)
     {
+        _memoryCache = memoryCache;
         _dbContextFactory = dbContextFactory;
         _sequenceGenerator = sequenceGenerator;
     }
@@ -179,6 +186,7 @@ internal class TestCaseRepository : ITestCaseRepository
     {
         foreach (var testCaseRun in dbContext.TestCaseRuns.Where(x => x.TestCaseId == testCaseId))
         {
+            await dbContext.Metrics.Where(x => x.TestCaseRunId == testCaseRun.Id).ExecuteDeleteAsync();
             await dbContext.Comments.Where(x => x.TestCaseRunId == testCaseRun.Id).ExecuteDeleteAsync();
             await dbContext.TestCaseRunFields.Where(x => x.TestCaseRunId == testCaseRun.Id).ExecuteDeleteAsync();
         }
@@ -639,19 +647,29 @@ internal class TestCaseRepository : ITestCaseRepository
     /// <inheritdoc/>
     public async Task<TestRun?> GetTestRunByIdAsync(string tenantId, long id)
     {
-        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestRuns.AsNoTracking()
-            .Include(x => x.TestRunFields)
-            .Include(x => x.Team)
-            .Include(x => x.TestProject)
-            .Include(x => x.Comments)
-            .Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
+        string key = "run:" + tenantId + id;
+
+        return await _memoryCache.GetOrCreateAsync(key, async (e) =>
+        {
+            e.SetSlidingExpiration(TimeSpan.FromMinutes(2));
+
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            return await dbContext.TestRuns.AsNoTracking()
+                .Include(x => x.TestRunFields)
+                .Include(x => x.Team)
+                .Include(x => x.TestProject)
+                .Include(x => x.Comments)
+                .Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
+        });
     }
 
     /// <inheritdoc/>
     public async Task UpdateTestRunAsync(TestRun testRun)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        string key = "run:" + testRun.TenantId + testRun.Id;
+        _memoryCache.Remove(key);
 
         dbContext.TestRuns.Update(testRun);
         await dbContext.SaveChangesAsync();
@@ -716,13 +734,15 @@ internal class TestCaseRepository : ITestCaseRepository
 
     public async Task DeleteTestCaseRunByIdAsync(string tenantId, long id)
     {
-        //testCase.Created = DateTimeOffset.UtcNow;
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-
-        //await foreach (var field in dbContext.TestCaseRunFields.Where(x => x.TestCaseRunId == id && x.TenantId == tenantId).AsAsyncEnumerable())
-        //{
-        //    dbContext.TestCaseRunFields.Remove(field);
-        //}
+        await foreach (var metric in dbContext.Metrics.Where(x => x.Id == id && x.TenantId == tenantId).AsAsyncEnumerable())
+        {
+            dbContext.Metrics.Remove(metric);
+        }
+        await foreach (var linkedIssue in dbContext.LinkedIssues.Where(x => x.Id == id && x.TenantId == tenantId).AsAsyncEnumerable())
+        {
+            dbContext.LinkedIssues.Remove(linkedIssue);
+        }
         await foreach (var run in dbContext.TestCaseRuns.Where(x => x.Id == id && x.TenantId == tenantId).AsAsyncEnumerable())
         {
             dbContext.TestCaseRuns.Remove(run);
@@ -731,9 +751,13 @@ internal class TestCaseRepository : ITestCaseRepository
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task DeleteTestRunByIdAsync(long id)
+    public async Task DeleteTestRunAsync(TestRun testRun)
     {
-        //testCase.Created = DateTimeOffset.UtcNow;
+        var id = testRun.Id;
+
+        string key = "run:" + testRun.TenantId + testRun.Id;
+        _memoryCache.Remove(key);
+
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         await foreach (var job in dbContext.Jobs.Where(x => x.TestRunId == id).AsAsyncEnumerable())
@@ -742,9 +766,10 @@ internal class TestCaseRepository : ITestCaseRepository
         }
 
         await foreach (var run in dbContext.TestCaseRuns
-            .Include(x=>x.TestCaseRunFields)
-            .Include(x=>x.LinkedIssues)
+            .Include(x => x.TestCaseRunFields)
+            .Include(x => x.LinkedIssues)
             .Include(x => x.Comments)
+            .Include(x => x.Metrics)
             .Where(x => x.TestRunId == id).AsAsyncEnumerable())
         {
             dbContext.TestCaseRuns.Remove(run);
@@ -775,9 +800,10 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<TestCaseRun?> GetTestCaseRunByIdAsync(string tenantId, long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestCaseRuns.AsNoTracking().Include(x=>x.LinkedIssues).AsNoTracking()
-            .Include(x=>x.TestCase)
+        return await dbContext.TestCaseRuns.AsNoTracking().Include(x => x.LinkedIssues).AsNoTracking()
+            .Include(x => x.TestCase)
             .Include(x => x.Comments)
+            .Include(x => x.Metrics)
             .Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
     }
 
@@ -789,6 +815,7 @@ internal class TestCaseRepository : ITestCaseRepository
             .Include(x => x.LinkedIssues)
             .Include(x => x.Comments)
             .Include(x => x.TestCase)
+            .Include(x => x.Metrics)
             .Include(x => x.TestCaseRunFields!).ThenInclude(y => y.FieldDefinition)
             .AsQueryable();
 

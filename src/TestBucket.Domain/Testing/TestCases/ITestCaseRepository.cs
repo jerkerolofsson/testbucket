@@ -249,9 +249,8 @@ public interface ITestCaseRepository
     /// <summary>
     /// Deletes a test run
     /// </summary>
-    /// <param name="id"></param>
     /// <returns></returns>
-    Task DeleteTestRunByIdAsync(long id);
+    Task DeleteTestRunAsync(TestRun testRun);
 
     /// <summary>
     /// Updates a test run / saves changes

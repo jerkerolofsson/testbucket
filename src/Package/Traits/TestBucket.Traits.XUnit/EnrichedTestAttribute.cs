@@ -1,9 +1,11 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 
+using TestBucket.Traits.Core.Metrics;
 using TestBucket.Traits.Core.XmlDoc;
+using TestBucket.Traits.Xunit.Enrichment;
 
 using Xunit;
-
 
 namespace TestBucket.Traits.Xunit
 {
@@ -14,6 +16,7 @@ namespace TestBucket.Traits.Xunit
     public class EnrichedTestAttribute : BeforeAfterTestAttribute
     {
         private readonly OperatingSystemInformation _operatingSystem;
+        private long? _startTimestamp;
 
         /// <summary>
         /// Mock constructor for a specific operating system
@@ -33,19 +36,30 @@ namespace TestBucket.Traits.Xunit
             _operatingSystem = new OperatingSystemInformation();
         }
 
-        private void AddAttachmentIfNotExists(string key, string value)
+        internal static void AddAttachmentIfNotExists(string key, string value)
         {
-            if (TestContext.Current.Attachments?.Any(x => x.Key == key) == true)
-            {
-                return;
-            }
-            TestContext.Current.AddAttachment(key, value);
+            TestContext.Current.AddAttachmentIfNotExists(key, value);
+        }
+
+        public override void Before(MethodInfo methodUnderTest, IXunitTest test)
+        {
+            _startTimestamp = Stopwatch.GetTimestamp();
         }
 
         public override void After(MethodInfo methodUnderTest, IXunitTest test)
         {
+            if (_startTimestamp is not null)
+            {
+                var elapsed = Stopwatch.GetElapsedTime(_startTimestamp.Value);
+                var duration = TestResultMetric.Create("xunit", "test-duration", elapsed);
+                TestContext.Current.AddMetric(duration);
+            }
+
             EnrichWithTraitAttachmentAttributes(test);
             EnrichWithOperatingSystem();
+
+            TestContext.Current.AddGithubActionsEnrichment();
+            TestContext.Current.AddGitlabCiEnrichment();
 
             // Add environment attachments
             AddAttachmentIfNotExists(TestTraitNames.MachineName, Environment.MachineName);

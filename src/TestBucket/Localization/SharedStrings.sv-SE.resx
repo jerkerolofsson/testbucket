@@ -744,4 +744,10 @@
   <data name="general" xml:space="preserve">
     <value />
   </data>
+  <data name="metrics" xml:space="preserve">
+    <value />
+  </data>
+  <data name="add-metric" xml:space="preserve">
+    <value />
+  </data>
 </root>

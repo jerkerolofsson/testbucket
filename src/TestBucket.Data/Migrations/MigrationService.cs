@@ -31,8 +31,13 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
             {
                 using var scope = serviceProvider.CreateScope();
                 var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<MigrationService>>();
+                logger.LogInformation("Migration service starting..");
+
                 await EnsureDatabaseAsync(dbContext, cancellationToken);
+                logger.LogInformation("Migrating database..");
                 await RunMigrationAsync(dbContext, cancellationToken);
+                logger.LogInformation("Migrating database..done");
             }
             finally
             {

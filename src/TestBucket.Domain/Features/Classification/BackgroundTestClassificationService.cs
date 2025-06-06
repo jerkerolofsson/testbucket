@@ -86,7 +86,7 @@ namespace TestBucket.Domain.Features.Classification
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await Task.Delay(TimeSpan.FromSeconds(90), stoppingToken);
+            await Task.Delay(TimeSpan.FromSeconds(190), stoppingToken);
 
             using var scope = _serviceProvider.CreateScope();
             var testRepo = scope.ServiceProvider.GetRequiredService<ITestCaseRepository>();

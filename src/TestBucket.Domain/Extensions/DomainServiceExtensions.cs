@@ -143,10 +143,10 @@ public static class DomainServiceExtensions
         services.AddScoped<IFieldManager, FieldManager>();
 
         services.AddScoped<IIssueManager, IssueManager>();
-        services.AddHostedService<IssueProviderBackgroundIndexer>();
         services.AddScoped<IMilestoneManager, MilestoneManager>();
-        services.AddHostedService<MilestoneIndexer>();
         services.AddScoped<ILabelManager, LabelManager>();
+        services.AddHostedService<IssueProviderBackgroundIndexer>();
+        services.AddHostedService<MilestoneIndexer>();
         services.AddHostedService<LabelIndexer>();
 
         services.AddScoped<IUserManager, UserManager>();

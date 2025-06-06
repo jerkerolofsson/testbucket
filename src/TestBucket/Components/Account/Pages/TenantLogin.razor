@@ -27,11 +27,11 @@
             <ValidationSummary class="text-danger" role="alert" />
 
             <MudStack Spacing="0" Class="mt-5">
-                <InputText @bind-Value="Input.Email" id="Input.Email" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <InputText data-testid="email" @bind-Value="Input.Email" id="Input.Email" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <ValidationMessage For="() => Input.Email" class="text-danger" />
             </MudStack>
             <MudStack Spacing="0" Class="mt-3">
-                <InputText type="password" @bind-Value="Input.Password" id="Input.Password" autocomplete="current-password" aria-required="true" placeholder="Password" />
+                <InputText data-testid="password" type="password" @bind-Value="Input.Password" id="Input.Password" autocomplete="current-password" aria-required="true" placeholder="Password" />
                 <ValidationMessage For="() => Input.Password" class="text-danger" />
             </MudStack>
 

@@ -32,9 +32,9 @@ internal class MilestoneIndexer : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await Task.Delay(90_000, stoppingToken);
+        await Task.Delay(TimeSpan.FromSeconds(120));
 
-        while(!stoppingToken.IsCancellationRequested)
+        while (!stoppingToken.IsCancellationRequested)
         {
             var scope = _serviceProvider.CreateScope();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<MilestoneIndexer>>();

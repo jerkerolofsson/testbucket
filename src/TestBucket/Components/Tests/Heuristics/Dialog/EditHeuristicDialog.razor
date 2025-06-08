@@ -1,0 +1,63 @@
+﻿@using TestBucket.Domain.Testing.Heuristics.Models
+@attribute [Authorize()]
+@inject TeamController teamService
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<ErrorStrings> errorLoc
+
+@if(Heuristic is not null)
+{
+    <EditForm Model="@Heuristic" OnValidSubmit="OnValidSubmit">
+        <MudDialog DefaultFocus="DefaultFocus.FirstChild" data-testid="add-heuriustic-dialog">
+            <TitleContent>@loc["add-heuristic"]</TitleContent>
+            <DialogContent>
+                <MudStack>
+                    <MudTextField data-testid="name" Variant="Variant.Outlined" T="string" @bind-Value="@Heuristic.Name"></MudTextField>
+
+                    <MarkdownEditor @bind-Value="@Heuristic.Description" Preview="false" ShowToolbar="true" />
+
+                    @if (_errorMessage is not null)
+                    {
+                        <MudAlert data-testid="error-message" Severity="Severity.Error">@_errorMessage</MudAlert>
+                    }
+                </MudStack>
+            </DialogContent>
+
+            <DialogActions>
+                <MudButton data-testid="ok" ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+                <MudButton data-testid="cancel" OnClick="Close">@loc["cancel"]</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public Heuristic? Heuristic{ get; set; }
+
+
+    private string? _errorMessage;
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+        if (string.IsNullOrWhiteSpace(Heuristic?.Name))
+        {
+            _errorMessage = errorLoc["invalid-name"];
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(Heuristic?.Description))
+        {
+            _errorMessage = errorLoc["invalid-description"];
+            return;
+        }
+
+        MudDialog.Close(Heuristic);
+    }
+}

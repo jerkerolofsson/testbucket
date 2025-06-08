@@ -38,6 +38,7 @@ using TestBucket.Components.Shared.Themeing;
 using TestBucket.Components.Teams;
 using TestBucket.Components.TestAccounts.Services;
 using TestBucket.Components.TestResources.Services;
+using TestBucket.Components.Tests.Heuristics.Controllers;
 using TestBucket.Components.Tests.Requirements.Commands;
 using TestBucket.Components.Tests.Requiremnts.Commands;
 using TestBucket.Components.Tests.Services;
@@ -247,6 +248,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<AttachmentsService>();
         builder.Services.AddScoped<AppNavigationManager>();
         builder.Services.AddScoped<TestEnvironmentController>();
+        builder.Services.AddScoped<HeuristicsController>();
         builder.Services.AddScoped<TestResourceController>();
         builder.Services.AddScoped<TestAccountController>();
         builder.Services.AddScoped<PipelineController>();

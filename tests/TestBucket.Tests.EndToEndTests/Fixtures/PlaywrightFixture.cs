@@ -10,6 +10,7 @@ using TestBucket.Contracts;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Settings.Models;
 using Xunit.Sdk;
+using TestBucket.Traits.Xunit.Enrichment;
 
 namespace TestBucket.Tests.EndToEndTests.Fixtures
 {
@@ -17,12 +18,11 @@ namespace TestBucket.Tests.EndToEndTests.Fixtures
     {
         private DistributedApplication? _app;
         private IPlaywright? _playwright;
-        private IBrowser? _browser;
         public string Tenant => _configuration.Tenant ?? throw new InvalidOperationException("Invalid SeedConfiguration in fixture");
         public SeedConfiguration Configuration => _configuration;
 
         public string HttpsBaseUrl => _app?.GetEndpoint("testbucket", "https")?.ToString() ?? throw new InvalidOperationException("Not initialized yet");
-        public IBrowser Browser => _browser ?? throw new InvalidOperationException("Not initialized yet");
+        public IPlaywright Playwright => _playwright ?? throw new InvalidOperationException("Not initialized yet");
 
         private SeedConfiguration _configuration = new SeedConfiguration
         {
@@ -95,23 +95,74 @@ namespace TestBucket.Tests.EndToEndTests.Fixtures
             }
             _app = app;
 
-            _playwright = await Playwright.CreateAsync();
-            _browser = await _playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions { Headless = false });
+            _playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+            //_browser = await _playwright.Firefox.LaunchAsync(new BrowserTypeLaunchOptions { Headless = false });
+        }
+
+        private BrowserTypeLaunchOptions DefaultBrowserTypeLaunchOptions => new BrowserTypeLaunchOptions { Headless = false };
+
+        public async Task<IBrowser> CreateBrowserAsync(string type, BrowserTypeLaunchOptions? options = null)
+        {
+            return type switch
+            {
+                BrowserType.Chromium => await CreateChromiumAsync(options),
+                BrowserType.Webkit => await CreateWebkitAsync(options),
+                BrowserType.Firefox => await CreateFirefoxAsync(options),
+                _ => throw new NotSupportedException()
+            };
+        }
+
+        public async Task<IBrowser> CreateChromiumAsync(BrowserTypeLaunchOptions? options = null)
+        {
+            if(_playwright is null)
+            {
+                throw new InvalidOperationException("Not initialized yet");
+            }
+
+            options ??= DefaultBrowserTypeLaunchOptions;
+            var browser = await _playwright.Chromium.LaunchAsync(options);
+            TestContext.Current.AddBrowser(BrowserType.Chromium, browser.Version);
+            return browser;
+        }
+
+
+        public async Task<IBrowser> CreateWebkitAsync(BrowserTypeLaunchOptions? options = null)
+        {
+            if (_playwright is null)
+            {
+                throw new InvalidOperationException("Not initialized yet");
+            }
+
+            options ??= DefaultBrowserTypeLaunchOptions;
+            var browser = await _playwright.Webkit.LaunchAsync(options);
+            TestContext.Current.AddBrowser(BrowserType.Webkit, browser.Version);
+            return browser;
+        }
+
+        public async Task<IBrowser> CreateFirefoxAsync(BrowserTypeLaunchOptions? options = null)
+        {
+            if (_playwright is null)
+            {
+                throw new InvalidOperationException("Not initialized yet");
+            }
+
+
+            options ??= DefaultBrowserTypeLaunchOptions;
+            var browser = await _playwright.Firefox.LaunchAsync(options);
+            TestContext.Current.AddBrowser(BrowserType.Firefox, browser.Version);
+            return browser;
         }
 
         public async ValueTask DisposeAsync()
         {
-            if (_app is not null)
-            {
-                await _app.DisposeAsync();
-            }
-            if (_browser is not null)
-            {
-                await _browser.CloseAsync();
-            }
+           
             if (_playwright is not null)
             {
                 _playwright.Dispose();
+            }
+            if (_app is not null)
+            {
+                await _app.DisposeAsync();
             }
         }
     }

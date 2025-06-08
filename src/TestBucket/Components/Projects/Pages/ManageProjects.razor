@@ -2,6 +2,7 @@
 @using System.Diagnostics.CodeAnalysis
 @using System.Diagnostics
 @using TestBucket.Components.Shared.Profile
+@using TestBucket.Components.Teams.Dialogs
 @layout SettingsLayout
 @inject ProjectController controller
 @inject IDialogService dialogService
@@ -29,7 +30,7 @@
 
                 <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Write" Entity="PermissionEntityType.Project">
                     <Authorized>
-                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddProjectAsync"></MudIconButton>
+                        <MudButton Class="tb-button-new" OnClick="AddProjectAsync">@loc["add"]</MudButton>
                     </Authorized>
                 </PermissionView>
             </MudStack>
@@ -97,14 +98,17 @@
 
     private async Task AddProjectAsync()
     {
-        Debug.Assert(Team is not null);
+        var team = Team;
         if(Team is null)
         {
             return;
         }
 
-        await controller.AddProjectAsync(Team);
-        _dataGrid?.ReloadServerData();
+        if (team is not null)
+        {
+            await controller.AddProjectAsync(team);
+            _dataGrid?.ReloadServerData();
+        }
     }
 
     private async Task<GridData<TestProject>> LoadGridData(GridState<TestProject> state)

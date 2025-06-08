@@ -225,4 +225,9 @@ public enum TraitType
     /// Branch / head ref
     /// </summary>
     Branch = 50,
+
+    /// <summary>
+    /// Version of browser
+    /// </summary>
+    BrowserVersion = 51,
 }

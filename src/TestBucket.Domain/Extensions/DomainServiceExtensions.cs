@@ -52,6 +52,7 @@ using TestBucket.Domain.TestAccounts;
 using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Compiler;
+using TestBucket.Domain.Testing.Heuristics;
 using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Settings;
@@ -173,6 +174,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IUnifiedSearchManager, UnifiedSearchManager>();
         services.AddScoped<IProgressManager, ProgressManager>();
         services.AddScoped<ITestEnvironmentManager, TestEnvironmentManager>();
+        services.AddScoped<IHeuristicsManager, HeuristicsManager>();
 
         // automation
         services.AddScoped<IMarkdownAutomationRunner, MarkdownAutomationRunner>();

@@ -43,6 +43,7 @@ public class TraitTypeConverter
         [TraitType.TestDescription] = TestTraitNames.TestDescription,
         [TraitType.TestId] = TestTraitNames.TestId,
         [TraitType.Browser] = TestTraitNames.Browser,
+        [TraitType.BrowserVersion] = TestTraitNames.BrowserVersion,
         [TraitType.Approved] = TestTraitNames.Approved,
         [TraitType.Label] = TestTraitNames.Label,
 

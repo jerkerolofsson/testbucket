@@ -132,7 +132,7 @@
     private async Task AddAsync()
     {
         await architectureController.AddFeatureAsync();
-        await LoadAsync();
+        await ReloadAsync();
     }
 
     private async Task OnRowClicked(Feature feature)
@@ -155,7 +155,7 @@
         if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Write))
         {
             await architectureController.EditFeatureAsync(feature);
-            await LoadAsync();
+            await ReloadAsync();
         }
     }
 
@@ -174,6 +174,13 @@
         if(_project?.Id != Project?.Id && Project is not null)
         {
             _project = Project;
+            await ReloadAsync();
+        }
+    }
+    private async Task ReloadAsync()
+    {
+        if(Project is not null)
+        {
             _features = await architectureController.GetFeaturesAsync(Project.Id);
             _grid?.ReloadServerData();
         }
@@ -182,6 +189,7 @@
     protected async Task DeleteAsync(Feature feature)
     {
         await architectureController.DeleteFeatureAsync(feature);
+        await ReloadAsync();
     }
 
     /// <summary>

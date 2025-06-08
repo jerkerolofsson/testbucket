@@ -1,5 +1,6 @@
 ﻿@inject AuthenticationStateProvider authenticationStateProvider
 @inject NavigationManager navigationManager
+@inject ProjectController projectController
 @inject ISettingsProvider settingsProvider
 @layout EmptyLayout
 @page "/"
@@ -27,6 +28,16 @@
 
         if(!string.IsNullOrEmpty(tenantId))
         {
+            // Check if a project exists, if not, redirect to welcome experience
+            var result = await projectController.SearchAsync(new SearchQuery() { Count = 1 });
+            if (result.TotalCount == 0)
+            {
+                // No projects found, redirect to welcome experience
+                navigationManager.NavigateTo($"/{tenantId}/Welcome", true);
+                return;
+            }
+
+            // Default start page
             navigationManager.NavigateTo($"/{tenantId}/Testing", true);
         }
         else

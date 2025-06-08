@@ -27,7 +27,7 @@
 
                 <PermissionView Entity="PermissionEntityType.Team" Level="PermissionLevel.Write">
                     <Authorized>
-                        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddTeamAsync"></MudIconButton>
+                        <MudButton Class="tb-button-new" OnClick="AddTeamAsync">@loc["add"]</MudButton>
                     </Authorized>
                 </PermissionView>
             </MudStack>
@@ -68,8 +68,7 @@
 
     private async Task AddTeamAsync()
     {
-        var dialog = await dialogService.ShowAsync<AddTeamDialog>();
-        var result = await dialog.Result;
+        await controller.AddTeamAsync();
         _dataGrid?.ReloadServerData();
     }
 

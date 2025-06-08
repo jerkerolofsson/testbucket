@@ -7,4 +7,4 @@ using System.Threading.Tasks;
 using Mediator;
 
 namespace TestBucket.Domain.Projects.Events;
-public record class ProjectCreated(TestProject Project) : INotification;
+public record class ProjectCreated(ClaimsPrincipal Principal, TestProject Project) : INotification;

@@ -47,6 +47,11 @@ public class TestTraitNames
     public const string Browser = nameof(Browser);
 
     /// <summary>
+    /// Version of browser used for testing
+    /// </summary>
+    public const string BrowserVersion = nameof(BrowserVersion);
+
+    /// <summary>
     /// Name of test environment
     /// </summary>
     public const string TestEnvironment = nameof(TestEnvironment);

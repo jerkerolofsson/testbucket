@@ -1,0 +1,218 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/Heuristics"
+@using TestBucket.Components.Code.Controls
+@using TestBucket.Components.Issues.Controls
+@using TestBucket.Components.Shared.Profile
+@using TestBucket.Components.Tests.Heuristics.Controllers
+@using TestBucket.Contracts.Fields
+@using TestBucket.Domain
+@using TestBucket.Domain.Code.Models
+@using TestBucket.Domain.Testing.Heuristics.Models
+@layout SettingsLayout
+@inject IStringLocalizer<SharedStrings> loc
+@inject HeuristicsController controller
+@inject AuthenticationStateProvider authenticationStateProvider
+
+<Splitter Class="container-fill pa-2" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+        @if (_project is not null)
+        {
+            <MudDataGrid @ref="_grid"
+                         ServerData="LoadGridData"
+                         Dense Hover RowClass="tb-datarow cursor-pointer"
+                         RowClick="(row) => OnRowClicked(row.Item)"
+                         T="Heuristic" SortMode="SortMode.None">
+
+                <ToolBarContent>
+                    <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                        <MudTextField Value="@_searchText" T="string" ValueChanged="OnSearch"
+                                      Class="default-search"
+                                      Clearable="true"
+                                      Variant="Variant.Outlined"
+                                      IconSize="Size.Small"
+                                      Adornment="Adornment.Start"
+                                      Placeholder="@loc["search"]"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" />
+
+                        <MudSpacer />
+
+                        <PermissionView Entity="PermissionEntityType.Heuristic" Level="PermissionLevel.Write">
+                            <Authorized>
+                                <MudButton StartIcon="@Icons.Material.Filled.Add"
+                                           Class="tb-button-new" OnClick="AddAsync" Variant="Variant.Filled">@loc["add"]</MudButton>
+                            </Authorized>
+                        </PermissionView>
+                    </MudStack>
+                </ToolBarContent>
+
+                <ColGroup>
+                    <col style="width: 40%" />
+                    <col style="width: 60%;" />
+                </ColGroup>
+
+                <Columns>
+                    <TemplateColumn Title="@loc["name"]">
+                        <CellTemplate>
+                            <div class="name">@context.Item.Name</div>
+                        </CellTemplate>
+                    </TemplateColumn>
+                    <TemplateColumn Title="@loc["description"]">
+                        <CellTemplate>
+                            @if(context.Item.Description.Length > 32)
+                            {
+                                <div class="description">@context.Item.Description.Substring(0,32) ..</div>
+                            }
+                            else
+                            {
+                                <div class="description">@context.Item.Description</div>
+                            }
+                        </CellTemplate>
+                    </TemplateColumn>
+
+                </Columns>
+
+                <PagerContent>
+                    <MudDataGridPager T="Heuristic" />
+                </PagerContent>
+            </MudDataGrid>
+        }
+    </StartContent>
+    <EndContent>
+        @if (_selectedHeuristic is not null)
+        {
+            <MudStack Style="width: 100%" Class="pa-2">
+
+                <MudStack Row AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.h1">@_selectedHeuristic.Name</MudText>
+                    <MudSpacer/>
+                    <PermissionView Entity="PermissionEntityType.Heuristic" Level="PermissionLevel.Delete">
+                        <Authorized>
+                            <MudButton StartIcon="@Icons.Material.Filled.Delete"
+                                       Class="tb-button-delete" OnClick="DeleteAsync" Variant="Variant.Filled">@loc["delete"]</MudButton>
+                        </Authorized>
+                    </PermissionView>
+                </MudStack>
+                <MarkdownEditor Value="@_selectedHeuristic.Description" Preview="true" ShowToolbar=false />
+
+            </MudStack>
+        }
+    </EndContent>
+</Splitter>
+
+
+@code {
+    [Parameter] public string? TenantId { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+
+    private TestProject? _project;
+    private IReadOnlyList<Heuristic> _heurstics = [];
+    private MudDataGrid<Heuristic>? _grid;
+    private string _searchText = "";
+
+    private Heuristic? _selectedHeuristic;
+    private string _issueSearchText = "";
+
+    protected void OnSearch(string text)
+    {
+        _searchText = text;
+        _grid?.ReloadServerData();
+    }
+
+    private async Task DeleteAsync()
+    {
+        if (_selectedHeuristic is not null)
+        {
+            await controller.DeleteAsync(_selectedHeuristic);
+            _selectedHeuristic = null;
+            await ReloadAsync();
+        }
+    }
+    private async Task AddAsync()
+    {
+        if (Project is not null)
+        {
+            await controller.AddAsync(Project);
+            await ReloadAsync();
+        }
+    }
+
+    private void OnRowClicked(Heuristic feature)
+    {
+        _selectedHeuristic = feature;
+    }
+
+    private async Task EditAsync(Heuristic feature)
+    {
+        var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+        if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Write))
+        {
+            await controller.EditAsync(feature);
+            await ReloadAsync();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        if (_project?.Id != Project?.Id && Project is not null)
+        {
+            _project = Project;
+            await ReloadAsync();
+        }
+    }
+    private async Task ReloadAsync()
+    {
+        if (Project is not null)
+        {
+            _heurstics = await controller.GetHeuristicsAsync(Project.Id);
+            _grid?.ReloadServerData();
+        }
+    }
+
+    protected async Task DeleteAsync(Heuristic heuristic)
+    {
+        await controller.DeleteAsync(heuristic);
+        await ReloadAsync();
+    }
+
+    /// <summary>
+    /// Loads commit data
+    /// </summary>
+    /// <param name="state"></param>
+    /// <returns></returns>
+    private Task<GridData<Heuristic>> LoadGridData(GridState<Heuristic> state)
+    {
+        if (Project is null)
+        {
+            return Task.FromResult(new GridData<Heuristic> { TotalItems = 0 });
+        }
+
+        Heuristic[] page;
+        if (string.IsNullOrEmpty(_searchText))
+        {
+            page = _heurstics.OrderBy(x => x.Name).Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        }
+        else
+        {
+            page = _heurstics.OrderBy(x => x.Name).Where(x => x.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase)).Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        }
+
+
+        GridData<Heuristic> data = new()
+        {
+            Items = page,
+            TotalItems = (int)_heurstics.Count
+        };
+
+        return Task.FromResult(data);
+    }
+}

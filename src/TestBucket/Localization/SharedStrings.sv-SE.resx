@@ -750,4 +750,19 @@
   <data name="add-metric" xml:space="preserve">
     <value />
   </data>
+  <data name="welcome-message" xml:space="preserve">
+    <value />
+  </data>
+  <data name="welcome-add-project-title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="welcome-add-project-message" xml:space="preserve">
+    <value />
+  </data>
+  <data name="add-new-project" xml:space="preserve">
+    <value />
+  </data>
+  <data name="add-new-team" xml:space="preserve">
+    <value />
+  </data>
 </root>

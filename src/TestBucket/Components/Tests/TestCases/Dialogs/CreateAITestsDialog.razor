@@ -1,4 +1,5 @@
-﻿@attribute [Authorize(Roles = "ADMIN")]
+﻿@using TestBucket.Domain.Testing.Heuristics.Models
+@attribute [Authorize(Roles = "ADMIN")]
 @inject TestCaseEditorController testCaseEditorService
 @inject ITestCaseGenerator testCaseGenerator
 @inject AuthenticationStateProvider authenticationStateProvider

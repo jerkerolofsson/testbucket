@@ -1,27 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Tests.EndToEndTests.Fixtures;
+﻿using TestBucket.Tests.EndToEndTests.Fixtures;
 
 namespace TestBucket.Tests.EndToEndTests.Pages
 {
-    internal class LoginPage(PlaywrightFixture Fixture)
+    internal class LoginPage(PlaywrightFixture Fixture, IBrowser Browser)
     {
-        internal async Task LoginAsync(string email, string password)
+        private IPage? _page;
+
+        public IPage Page => _page ?? throw new InvalidOperationException("Page is not initialized. Call LoginAsync first.");
+
+        /// <summary>
+        /// Returns true if login was successful
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        internal async Task<bool> LoginAsync(string? email, string? password)
         {
-            var page = await Fixture.Browser.NewPageAsync();
-            await page.GotoAsync(Fixture.HttpsBaseUrl + "/Login");
+            await using var context = await Browser.NewContextAsync(new() { IgnoreHTTPSErrors = true });
+            return await LoginAsync(email, password, context);
 
-            await page.FillAsync("#Input.Email", email);
-            await page.FillAsync("#Input.Password", password);
-
-            await page.ClickAsync("#Input.Login");
-
-            await Task.Delay(30000);
             // #Input.Email
             // #Input.Password
+        }
+
+        internal async Task<bool> LoginAsync(string? email, string? password, IBrowserContext context)
+        {
+            _page = await context.NewPageAsync();
+            await _page.GotoAsync(Fixture.HttpsBaseUrl + "Login");
+
+            if (email is not null)
+            {
+                await _page.GetByTestId("email").FillAsync(email);
+            }
+            if (password is not null)
+            {
+                await _page.GetByTestId("password").FillAsync(password);
+            }
+
+            await _page.GetByTestId("login").ClickAsync();
+
+            await WaitForAnyAsync(_page, "main-toolbar", "login-error");
+
+
+            if (await _page.GetByTestId("main-toolbar").IsVisibleAsync())
+            {
+                // Success
+                return true;
+            }
+
+            return false;
+        }
+
+        public static async Task<IElementHandle?> WaitForAnyAsync(IPage page, params string[] testIds)
+        {
+            var tasks = testIds.Select(testId =>
+                page.GetByTestId(testId).ElementHandleAsync(new() { Timeout = 10000 }) // adjust timeout as needed
+            ).ToArray();
+
+            var completed = await Task.WhenAny(tasks);
+            return await completed;
         }
     }
 }

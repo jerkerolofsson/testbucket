@@ -44,7 +44,6 @@
                     <TemplateColumn Title="@loc["name"]">
                         <CellTemplate>
                             <div class="name">@context.Item.Name</div>
-                           
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="@codeLoc["dev-lead"]">
@@ -83,7 +82,7 @@
     private async Task AddAsync()
     {
         await architectureController.AddLayerAsync();
-        await LoadAsync();
+        await ReloadAsync();
     }
 
     private async Task OnRowClicked(ArchitecturalLayer component)
@@ -92,7 +91,7 @@
         if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Write))
         {
             await architectureController.EditLayerAsync(component);
-            await LoadAsync();
+            await ReloadAsync();
         }
     }
 
@@ -111,6 +110,13 @@
         if(_project?.Id != Project?.Id && Project is not null)
         {
             _project = Project;
+            await ReloadAsync();
+        }
+    }    
+    private async Task ReloadAsync()
+    {
+        if(Project is not null)
+        {
             _components = await architectureController.GetLayersAsync(Project.Id);
             _grid?.ReloadServerData();
         }
@@ -119,6 +125,7 @@
     protected async Task DeleteAsync(ArchitecturalLayer item)
     {
         await architectureController.DeleteLayerAsync(item);
+        await ReloadAsync();
     }
 
     /// <summary>

@@ -4,10 +4,12 @@ using TestBucket.Domain.TestAccounts.Models;
 namespace TestBucket.Domain.TestAccounts;
 internal class TestAccountManager : ITestAccountManager
 {
+    private readonly TimeProvider _timeProvider;
     private readonly ITestAccountRepository _repository;
 
-    public TestAccountManager(ITestAccountRepository repository)
+    public TestAccountManager(TimeProvider timeProvider, ITestAccountRepository repository)
     {
+        _timeProvider = timeProvider;
         _repository = repository;
     }
 
@@ -17,10 +19,8 @@ internal class TestAccountManager : ITestAccountManager
         principal.ThrowIfEntityTenantIsDifferent(account.TenantId);
 
         account.TenantId = principal.GetTenantIdOrThrow();
-        account.CreatedBy = principal.Identity?.Name ?? throw new Exception("Missing user identity");
-        account.ModifiedBy = account.CreatedBy;
-        account.Created = DateTimeOffset.UtcNow;
-        account.Modified = DateTimeOffset.UtcNow;
+        account.ModifiedBy = principal.Identity?.Name ?? throw new Exception("Missing user identity");
+        account.Modified = _timeProvider.GetUtcNow();
         await _repository.UpdateAsync(account);
     }
 
@@ -31,8 +31,8 @@ internal class TestAccountManager : ITestAccountManager
         account.TenantId = principal.GetTenantIdOrThrow();
         account.CreatedBy = principal.Identity?.Name ?? throw new Exception("Missing user identity");
         account.ModifiedBy = account.CreatedBy;
-        account.Created = DateTimeOffset.UtcNow;
-        account.Modified = DateTimeOffset.UtcNow;
+        account.Created = _timeProvider.GetUtcNow();
+        account.Modified = _timeProvider.GetUtcNow();
         await _repository.AddAsync(account);
     }
 

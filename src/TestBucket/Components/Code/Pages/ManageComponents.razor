@@ -150,7 +150,7 @@
     private async Task AddAsync()
     {
         await architectureController.AddComponentAsync();
-        await LoadAsync();
+        await ReloadAsync();
     }
 
     private async Task OnRowClicked(Component component)
@@ -204,7 +204,7 @@
         if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Write))
         {
             await architectureController.EditComponentAsync(component);
-            await LoadAsync();
+            await ReloadAsync();
         }
     }
 
@@ -223,9 +223,15 @@
         if(_project?.Id != Project?.Id && Project is not null)
         {
             _project = Project;
+            await ReloadAsync();
+        }
+    }
+    
+    private async Task ReloadAsync()
+    {
+        if(Project is not null)
+        {
             _components = await architectureController.GetComponentsAsync(Project.Id);
-
-
             _grid?.ReloadServerData();
         }
     }
@@ -233,6 +239,7 @@
     protected async Task DeleteAsync(Component item)
     {
         await architectureController.DeleteComponentAsync(item);
+        await ReloadAsync();
     }
 
     /// <summary>

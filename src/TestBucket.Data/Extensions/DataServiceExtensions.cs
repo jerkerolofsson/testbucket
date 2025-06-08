@@ -35,6 +35,7 @@ using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.TestAccounts;
+using TestBucket.Domain.Testing.Heuristics;
 using TestBucket.Domain.TestResources;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -44,6 +45,7 @@ public static class DataServiceExtensions
     {
         services.AddScoped<ISequenceGenerator, SequenceGenerator>();
 
+        services.AddScoped<IHeuristicsRepository, HeuristicsRepository>();
         services.AddScoped<IMetricsRepository, MetricsRepository>();
         services.AddScoped<ICommitRepository, CommitRepository>();
         services.AddScoped<IArchitectureRepository, ArchitectureRepository>();

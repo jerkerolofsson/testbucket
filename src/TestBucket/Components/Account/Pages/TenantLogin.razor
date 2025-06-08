@@ -20,7 +20,10 @@
         <MudText Typo="Typo.h1" Color="Color.Tertiary">Login to TestBucket</MudText>
         <MudText>Enter your email and password to login.</MudText>
 
-        <StatusMessage Message="@errorMessage" />
+        @if(errorMessage is not null)
+        {
+            <StatusMessage Message="@errorMessage" data-testid="login-error"/>
+        }
         <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login">
 
             <DataAnnotationsValidator />

@@ -46,6 +46,8 @@ namespace TestBucket.Domain.Identity.Permissions
         /// </summary>
         Architecture,
 
-        Issue
+        Issue,
+
+        Heuristic
     }
 }

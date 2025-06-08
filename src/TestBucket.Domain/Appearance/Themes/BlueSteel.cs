@@ -25,7 +25,7 @@ internal class BlueSteel : DefaultTheme
         DarkScheme.Field.Background = "#37474F";
         DarkScheme.Field.BorderColor = DarkScheme.Field.Background.ColorLighten(0.2).ToString();
 
-        LightScheme.Base.TextPrimary = "#101017";
+        LightScheme.Base.TextPrimary = "#444444";
         LightScheme.Base.Primary = "#0D47A1";
         LightScheme.Base.Secondary = "#01579B";
         LightScheme.Base.Tertiary = "#006064";

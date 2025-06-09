@@ -1,31 +1,27 @@
-﻿@attribute [Authorize(Roles = "ADMIN")]
+﻿@attribute [Authorize()]
 @inject TeamController teamService
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<ErrorStrings> errorLoc
 
 <EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
-    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
-        <TitleContent>Add new team</TitleContent>
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" data-testid="add-team-dialog" >
+        <TitleContent>@loc["add-new-team"]</TitleContent>
         <DialogContent>
             <MudStack Spacing="0">
                 @if (_name is not null)
                 {
-                    <MudTextField Variant="Variant.Outlined" T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
-
-                    <MudStack Spacing="1" Row="true">
-                        <MudTooltip Text="Slug"><MudText Style="background: black; font-size: 7pt">@_slug</MudText></MudTooltip>
-                        <MudTooltip Text="Short Name"><MudText Style="background: black; font-size: 7pt">@_shortName</MudText></MudTooltip>
-                    </MudStack>
+                    <MudTextField data-testid="name" Variant="Variant.Outlined" T="string" @bind-Value="@_name"></MudTextField>
                 }
                 @if(_errorMessage is not null)
                 {
-                    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+                    <MudAlert data-testid="error-message" Severity="Severity.Error">@_errorMessage</MudAlert>
                 }
             </MudStack>
         </DialogContent>
 
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
-            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+            <MudButton data-testid="ok" ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            <MudButton data-testid="cancel" OnClick="Close">@loc["cancel"]</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
@@ -41,13 +37,6 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
-    private async Task OnValueChanged(string name)
-    {
-        _name = name;
-        _slug = teamService.GenerateSlug(name);
-        _shortName = await teamService.GenerateShortNameAsync(_slug);
-
-    }
 
     private void Close()
     {
@@ -58,9 +47,12 @@
     {
         if(string.IsNullOrWhiteSpace(_name))
         {
-            _errorMessage = "Invalid name";
+            _errorMessage = errorLoc["invalid-name"];
             return;
         }
+
+        _slug = teamService.GenerateSlug(_name);
+        _shortName = await teamService.GenerateShortNameAsync(_slug);
 
         var result = await teamService.CreateAsync(_name);
         if(result.IsT0)
@@ -71,7 +63,7 @@
         {
             _errorMessage = result.Match(
                 (success) => "",
-                (alreadyExists) => "Already exists"
+                (alreadyExists) => _errorMessage = errorLoc["already-exists"]
             );
         }
     }

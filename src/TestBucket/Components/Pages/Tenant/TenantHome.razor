@@ -1,6 +1,7 @@
 ﻿@page "/{tenantId}"
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navigationManager
+@inject ProjectController projectController
 @layout EmptyLayout
 
 <PageTitle>@TenantId</PageTitle>
@@ -9,9 +10,18 @@
 @code {
     [Parameter] public string TenantId { get; set; } = "";
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        navigationManager.NavigateTo($"/{TenantId}/Testing");
-        return base.OnAfterRenderAsync(firstRender);
+        // Check if a project exists, if not, redirect to welcome experience
+        var result = await projectController.SearchAsync(new SearchQuery() { Count = 1 });
+        if (result.TotalCount == 0)
+        {
+            // No projects found, redirect to welcome experience
+            navigationManager.NavigateTo($"/{TenantId}/Welcome", true);
+            return;
+        }
+
+        // Default start page
+        navigationManager.NavigateTo($"/{TenantId}/Testing", true);
     }
 }

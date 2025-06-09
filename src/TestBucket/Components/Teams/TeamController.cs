@@ -1,10 +1,12 @@
-﻿using OneOf;
+﻿using Microsoft.Extensions.Localization;
+
+using OneOf;
 
 using TestBucket.Components.Account;
-using TestBucket.Components.Shared;
+using TestBucket.Components.Teams.Dialogs;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Teams;
-using TestBucket.Domain.Teams.Models;
+using TestBucket.Localization;
 
 namespace TestBucket.Components.Teams;
 
@@ -12,26 +14,45 @@ internal class TeamController : TenantBaseService
 {
     private readonly ITeamRepository _teamRepository;
     private readonly ITeamManager _teamManager;
+    private readonly IDialogService _dialogService;
     private readonly UserPreferencesService _userPreferencesService;
     private readonly AppNavigationManager _appNavigationManager;
+    private readonly IStringLocalizer<SharedStrings> _loc;
 
     public TeamController(
         ITeamRepository teamRepository,
         UserPreferencesService userPreferencesService,
         AuthenticationStateProvider authenticationStateProvider,
         ITeamManager teamManager,
-        AppNavigationManager appNavigationManager) : base(authenticationStateProvider)
+        AppNavigationManager appNavigationManager,
+        IDialogService dialogService,
+        IStringLocalizer<SharedStrings> loc) : base(authenticationStateProvider)
     {
-        _appNavigationManager = appNavigationManager;
-
         _teamRepository = teamRepository;
         _userPreferencesService = userPreferencesService;
         _teamManager = teamManager;
         _appNavigationManager = appNavigationManager;
+        _dialogService = dialogService;
+        _loc = loc;
     }
 
     public async Task DeleteAsync(Team team)
     {
+        var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Team, PermissionLevel.Delete);
+        if (!hasPermission)
+            return;
+
+        // Show confirmation dialog before deleting
+        var confirmResult = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc["yes"],
+            NoText = _loc["no"],
+            Title = _loc["confirm-delete-title"],
+            MarkupMessage = new MarkupString(_loc["confirm-delete-message"])
+        });
+        if (confirmResult is false)
+            return;
+
         // todo: messagebox 
         var principal = await GetUserClaimsPrincipalAsync();
         await _teamManager.DeleteAsync(principal, team);
@@ -64,17 +85,29 @@ internal class TeamController : TenantBaseService
 
     public async Task<Team?> GetTeamBySlugAsync(string slug)
     {
+        var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Team, PermissionLevel.Read);
+        if (!hasPermission)
+            return null;
+
         var tenantId = await GetTenantIdAsync();
         return await _teamRepository.GetBySlugAsync(tenantId, slug);
     }
     public async Task<Team?> GetTeamByIdAsync(long id)
     {
+        var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Team, PermissionLevel.Read);
+        if (!hasPermission)
+            return null;
+
         var tenantId = await GetTenantIdAsync();
         return await _teamRepository.GetTeamByIdAsync(tenantId, id);
     }
 
     public async Task SaveTeamAsync(Team team)
     {
+        var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Team, PermissionLevel.Write);
+        if (!hasPermission)
+            return;
+
         var tenantId = await GetTenantIdAsync();
         if(tenantId != team.TenantId)
         {
@@ -107,13 +140,37 @@ internal class TeamController : TenantBaseService
         return _teamRepository.GenerateSlug(name);
     }
 
+    public async Task<Team?> AddTeamAsync()
+    {
+        var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Team, PermissionLevel.Write);
+        if (!hasPermission)
+            return null;
+
+        var dialog = await _dialogService.ShowAsync<AddTeamDialog>();
+        var result = await dialog.Result;
+        if(result?.Data is Team team)
+        {
+            await SetActiveTeamAsync(team);
+            return team;
+        }
+        return null;
+    }
+
     public async Task<PagedResult<Team>> SearchAsync(SearchQuery query)
     {
+        var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Team, PermissionLevel.Read);
+        if (!hasPermission)
+            return new PagedResult<Team>() { Items = [], TotalCount = 0 };
+
         var tenantId = await GetTenantIdAsync();
         return await _teamRepository.SearchAsync(tenantId, query);
     }
     public async Task<OneOf<Team, AlreadyExistsError>> CreateAsync(string name)
     {
+        var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Team, PermissionLevel.Write);
+        if (!hasPermission)
+            throw new UnauthorizedAccessException();
+
         var tenantId = await GetTenantIdAsync();
         return await _teamRepository.CreateAsync(tenantId, name);   
     }

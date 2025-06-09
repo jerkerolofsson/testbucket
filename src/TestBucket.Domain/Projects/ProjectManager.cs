@@ -49,7 +49,7 @@ internal class ProjectManager : IProjectManager
         if(result.IsT0)
         {
             _logger.LogInformation("Created: {ProjectName}, slug={slug}", project.Name, project.Slug);
-            await _mediator.Publish(new ProjectCreated(project));
+            await _mediator.Publish(new ProjectCreated(principal, project));
         }
 
         return result;

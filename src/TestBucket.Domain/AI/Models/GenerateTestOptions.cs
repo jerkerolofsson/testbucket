@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.Testing.Heuristics.Models;
 using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.AI.Models;

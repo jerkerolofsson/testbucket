@@ -752,4 +752,19 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="add-metric" xml:space="preserve">
     <value>Add metric</value>
   </data>
+  <data name="welcome-message" xml:space="preserve">
+    <value>Welcome to Test Bucket</value>
+  </data>
+  <data name="welcome-add-project-title" xml:space="preserve">
+    <value>Add a new project</value>
+  </data>
+  <data name="welcome-add-project-message" xml:space="preserve">
+    <value>Add a project before adding tests, issues, requirements or other entities. </value>
+  </data>
+  <data name="add-new-project" xml:space="preserve">
+    <value>Add new project</value>
+  </data>
+  <data name="add-new-team" xml:space="preserve">
+    <value>Add new team</value>
+  </data>
 </root>

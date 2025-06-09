@@ -83,7 +83,7 @@
     private async Task AddAsync()
     {
         await architectureController.AddSystemAsync();
-        await LoadAsync();
+        await ReloadAsync();
     }
 
     private async Task OnRowClicked(ProductSystem system)
@@ -92,7 +92,7 @@
         if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Write))
         {
             await architectureController.EditSystemAsync(system);
-            await LoadAsync();
+            await ReloadAsync();
         }
     }
 
@@ -111,6 +111,13 @@
         if(_project?.Id != Project?.Id && Project is not null)
         {
             _project = Project;
+            await ReloadAsync();
+        }
+    }
+    private async Task ReloadAsync()
+    {
+        if(Project is not null)
+        {
             _components = await architectureController.GetSystemsAsync(Project.Id);
             _grid?.ReloadServerData();
         }
@@ -119,6 +126,7 @@
     protected async Task DeleteAsync(ProductSystem item)
     {
         await architectureController.DeleteSystemAsync(item);
+        await ReloadAsync();
     }
 
     /// <summary>

@@ -509,24 +509,24 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
 
         //TestCase? testCase = await _testCaseRepository.GetTestCaseByExternalIdAsync(tenantId, test.ExternalId);
 
-        var className = test.ClassName;
-        var method = test.Method;
-        var module = test.Module;
-        var assemblyName = test.Assembly;
-        if (className is not null || method is not null || assemblyName is not null || module is not null)
-        {
-            FilterSpecification<TestCase>[] filters = [
-                new FilterByTenant<TestCase>(tenantId),
-                new FilterTestCasesByTestSuite(suite.Id),
-                new FilterByProject<TestCase>(projectId),
-                new FilterTestCasesByAutomationImplementation(className, method, module, assemblyName)
-            ];
-            var testCase = (await _testCaseRepository.SearchTestCasesAsync(0, 1, filters)).Items.FirstOrDefault();
-            if (testCase is not null)
-            {
-                return testCase;
-            }
-        }
+        //var className = test.ClassName;
+        //var method = test.Method;
+        //var module = test.Module;
+        //var assemblyName = test.Assembly;
+        //if (className is not null || method is not null || assemblyName is not null || module is not null)
+        //{
+        //    FilterSpecification<TestCase>[] filters = [
+        //        new FilterByTenant<TestCase>(tenantId),
+        //        new FilterTestCasesByTestSuite(suite.Id),
+        //        new FilterByProject<TestCase>(projectId),
+        //        new FilterTestCasesByAutomationImplementation(className, method, module, assemblyName)
+        //    ];
+        //    var testCase = (await _testCaseRepository.SearchTestCasesAsync(0, 1, filters)).Items.FirstOrDefault();
+        //    if (testCase is not null)
+        //    {
+        //        return testCase;
+        //    }
+        //}
 
         // Do we need to create a new test case?
         var newTestCase = await CreateNewTestCaseAsync(principal, projectId, suite, test, options);

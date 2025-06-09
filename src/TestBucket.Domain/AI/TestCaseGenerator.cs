@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
 
 using Microsoft.Extensions.AI;
 
 using TestBucket.Domain.AI.Models;
 using TestBucket.Domain.Progress;
+using TestBucket.Domain.Testing.Heuristics.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestCases;
 
@@ -31,71 +29,7 @@ internal class TestCaseGenerator : ITestCaseGenerator
 
     public bool Enabled => true;
 
-    public IReadOnlyList<Heuristic> Heuristics => 
-        [
-            new Heuristic ()
-            { 
-                Name = "Goldilocks", 
-                Prompt = """
-                Consider data entry fields and create test cases with data entries that are too big, too small or with entries that are not suitable for the input such as
-                entering a string in a numeric field.
-
-                For numbers, consider:
-                - Consider testing numbers that may cross common integer boundaries, such as 256, 65536, 65537, 2147483648, 2147483649, 4294967296, 4294967297
-                - Negative numbers
-                - Zero
-                - Different internationalization options where the thousands or ten-thousands separated comma (,), a space ( ) or a period (.).
-                
-                For floating point numbers, consider:
-                - Different internationalization where the decimal character could be a comma (,) or a period (.).
-
-                For strings, consider:
-                - Special characters such as /*,.<>|\\()[]{};:`!@#$%^&* for text input fields (including username, email and password fields). These characters could be used in different combinations, and in combination with normal alpha numerical latin characters.
-                - Different length of strings.
-                - Accented characters (àáâãäåçèéêëìíîðñòôõöö, etc.) and emojis.
-                - Non-latin scripts such as simplified chinese, traditional chinese, thai, arabic, cyrillic scripts.
-                - SQL injection patterns.
-                - HTML input
-                """
-            },
-
-            new Heuristic ()
-            {
-                Name = "Time and Date",
-                Prompt = """
-                Consider various input to date and time fields or properties.
-                Consider changing the globalization/internationalization options of the system used to test the product.
-
-                - Date/time entry fields or presentation of date/time and different date formats, time formats (24h or am/pm).
-                - Internationalization 
-                - Daylight saving
-                - Leap year (febuary 29), and invalid date inputs.
-                
-                For multiple dates, consider using different time zones if that can be selected.
-                """
-            },
-
-            new Heuristic ()
-            {
-                Name = "Performance",
-                Prompt = """
-                - That the action completes in a suitable time frame
-                - For actions that take a long time to execute, a loading indicator should be displayed
-                """
-            },
-
-
-            new Heuristic ()
-            {
-                Name = "Resource Utilization",
-                Prompt = """
-                - That the action doesn't use an unreasonable amount of CPU
-                - That the action doesn't use an unreasonable amount of GPU
-                - That the action doesn't use an unreasonable amount of RAM
-                - That the action doesn't use an unreasonable amount of storage space
-                """
-            },
-        ];
+    public IReadOnlyList<Heuristic> Heuristics => [];
 
     public TestCaseGenerator(IChatClientFactory chatClientFactory, IProgressManager progressManager, ITestCaseManager testCaseManager)
     {
@@ -172,11 +106,11 @@ internal class TestCaseGenerator : ITestCaseGenerator
     [Description("Gets the heuristic")]
     string GetHeuristic() 
     {
-        if(_options?.Heuristic?.Prompt is not null)
+        if(_options?.Heuristic?.Description is not null)
         {
-            return _options.Heuristic.Prompt;
+            return _options.Heuristic.Description;
         }
-        return Heuristics.First().Prompt;
+        return "";
     }
 
     private async Task<GeneratedTest?> GenereateTestAsync(IChatClient llm, List<ChatMessage> chatHistory, ProgressTask progress, CancellationToken cancellationToken = default)
@@ -195,39 +129,4 @@ internal class TestCaseGenerator : ITestCaseGenerator
         return null;
     }
 
-    //private static GeneratedTest? ParseTestFromResponse(string text)
-    //{
-    //    try
-    //    {
-    //        if (!string.IsNullOrWhiteSpace(text))
-    //        {
-    //            var jsonMarkdownStartMarker = "```json";
-
-    //            // If the output is text, and not json, extract the json from within
-    //            bool isTextWithJson = text.Contains(jsonMarkdownStartMarker);
-    //            string json = text;
-    //            if(isTextWithJson)
-    //            {
-    //                var p = text.IndexOf(jsonMarkdownStartMarker);
-    //                p = text.IndexOf('{', p);
-    //                if (p > 0)
-    //                {
-    //                    var p2 = text.IndexOf("```", p);
-    //                    var len = p2 - p;
-    //                    json = text.Substring(p, len);
-    //                }
-
-    //            }
-
-    //            var generatedTest = JsonSerializer.Deserialize<GeneratedTest>(json);
-    //            return generatedTest;
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    { 
-    //    // todo, handle exception and show message
-    //    }
-
-    //    return null;
-    //}
 }

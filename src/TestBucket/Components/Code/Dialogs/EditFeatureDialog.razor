@@ -98,7 +98,7 @@
             return;
         }
 
-        Feature.GlobPatterns = _patterns.Select(x => x.Pattern!).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+        Feature.GlobPatterns = _patterns.Select(x => x.Pattern!.Replace('/', '\\')).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
         MudDialog.Close(Feature);
     }
 }

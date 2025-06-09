@@ -1,9 +1,5 @@
-﻿
-using System.Security.Claims;
-
-using Microsoft.Extensions.AI;
-
-using TestBucket.Domain.AI.Models;
+﻿using TestBucket.Domain.AI.Models;
+using TestBucket.Domain.Testing.Heuristics.Models;
 
 namespace TestBucket.Domain.AI;
 public interface ITestCaseGenerator

@@ -32,7 +32,7 @@ public class IssueProviderBackgroundIndexer : BackgroundService
     }
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await Task.Delay(TimeSpan.FromSeconds(120));
+        await Task.Delay(TimeSpan.FromSeconds(120), stoppingToken);
 
         while (!stoppingToken.IsCancellationRequested)
         {

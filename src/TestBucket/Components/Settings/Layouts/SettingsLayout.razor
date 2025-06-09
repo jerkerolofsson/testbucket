@@ -48,12 +48,15 @@
                     string projectFieldsUrl = $"/{TenantId}/Settings/Projects/{Project.Slug}/Fields";
                     string milestonesUrl = $"/{TenantId}/Milestones";
                     string labelsUrl = $"/{TenantId}/Labels";
+                    string heuristicsUrl = $"/{TenantId}/Settings/Heuristics";
+
                     <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Article" IconColor="Color.Tertiary" Href="@projectUrl">@Project.Name</MudNavLink>
                     <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.Filled.Extensions" IconColor="Color.Tertiary" Href="@projectIntegrationsUrl">@projectLoc["integrations"]</MudNavLink>
                     <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.BoldDuoTone.Field" IconColor="Color.Tertiary" Href="@projectFieldsUrl">@loc["fields"]</MudNavLink>
                     
                     <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.BoldDuoTone.Flag" IconColor="Color.Tertiary" Href="@milestonesUrl">@settingsLoc["manage-milestones"]</MudNavLink>
                     <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.IconSaxDuoTone.Label" IconColor="Color.Tertiary" Href="@labelsUrl">@settingsLoc["manage-labels"]</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.BoldDuoTone.Heuristic" IconColor="Color.Tertiary" Href="@heuristicsUrl">@settingsLoc["manage-heuristics"]</MudNavLink>
                 }
 
                 <MudItem Class="mt-5"/>

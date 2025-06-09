@@ -1,0 +1,69 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Welcome"
+@inject IStringLocalizer<SharedStrings> loc
+@inject AppNavigationManager appNav
+@inject TeamController teamController
+@inject ProjectController projectController
+@layout AppLayout
+
+<MudStack Class="pa-5">
+    <MudText Typo="Typo.h1">@loc["welcome-message"]</MudText>
+
+    <MudStack Wrap="Wrap.Wrap" Row Class="pa-5">
+
+        <MudCard Class="welcome-tile">
+            <MudCardHeader>
+                <MudStack Row>
+                    @if (appNav.State.SelectedTeam is not null)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
+                    }
+                    <MudText Typo="Typo.h3">@loc["welcome-add-team-title"]</MudText>
+                </MudStack>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText>@loc["welcome-add-team-message"]</MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton OnClick="AddTeamAsync" Class="tb-button-primary" data-testid="welcome-add-team">@loc["continue"]</MudButton>
+            </MudCardActions>
+        </MudCard>
+
+        <MudCard Class="welcome-tile">
+            <MudCardHeader>
+                <MudStack Row>
+                    @if (appNav.State.SelectedProject is not null)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
+                    }
+                    <MudText Typo="Typo.h3">@loc["welcome-add-project-title"]</MudText>
+                </MudStack>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudText>@loc["welcome-add-project-message"]</MudText>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton OnClick="AddProjectAsync" Class="tb-button-primary" data-testid="welcome-add-project">@loc["continue"]</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudStack>
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+
+    //public string SettingsUrl => $"/{TenantId}/Settings/ManageProjects";
+
+    private async Task AddTeamAsync()
+    {
+        await teamController.AddTeamAsync();
+    }
+    private async Task AddProjectAsync()
+    {
+        if(appNav.State.SelectedTeam is null)
+        {
+            return;
+        }
+        await projectController.AddProjectAsync(appNav.State.SelectedTeam);
+    }
+}

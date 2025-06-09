@@ -1,6 +1,6 @@
 ﻿@page "/{tenantId}/Settings/Projects/{projectSlug}"
 @layout SettingsLayout
-@attribute [Authorize(Roles = "ADMIN")]
+@attribute [Authorize()]
 @inject ProjectController projectController
 @inject AppNavigationManager appNav
 @inject IStringLocalizer<SharedStrings> loc

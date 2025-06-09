@@ -274,6 +274,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCaseRun });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Architecture });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Issue });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Heuristic });
             await dbContext.SaveChangesAsync();
         }
 
@@ -296,6 +297,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCaseRun });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Architecture });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Issue });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Heuristic });
             await dbContext.SaveChangesAsync();
         }
 
@@ -318,6 +320,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.TestCaseRun });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Architecture });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.ReadWrite, Entity = PermissionEntityType.Issue });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.All, Entity = PermissionEntityType.Heuristic });
             await dbContext.SaveChangesAsync();
         }
 
@@ -326,7 +329,9 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         if (!has)
         {
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Tenant });
-            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.None, Entity = PermissionEntityType.Project });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.Runner });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.Team });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.Project });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.User });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestSuite });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestCase });
@@ -336,6 +341,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.TestCaseRun });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.Architecture });
             dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.Issue });
+            dbContext.RolePermissions.Add(new RolePermission { Role = role, TenantId = tenantId, Level = PermissionLevel.Read, Entity = PermissionEntityType.Heuristic });
             await dbContext.SaveChangesAsync();
         }
 

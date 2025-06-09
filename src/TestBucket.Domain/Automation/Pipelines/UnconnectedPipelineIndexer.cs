@@ -36,7 +36,7 @@ public class UnconnectedPipelineIndexer : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+        await Task.Delay(TimeSpan.FromSeconds(130), stoppingToken);
         while (!stoppingToken.IsCancellationRequested)
         {
             var scope = _scopeFactory.CreateScope();

@@ -16,6 +16,7 @@ using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Comments.Models;
 using TestBucket.Domain.Labels.Models;
 using TestBucket.Domain.Metrics.Models;
+using TestBucket.Domain.Testing.Heuristics.Models;
 
 namespace TestBucket.Data;
 
@@ -79,6 +80,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     internal DbSet<TestResource> TestResources { get; set; }
     internal DbSet<TestAccount> TestAccounts { get; set; }
+    internal DbSet<Heuristic> Heuristics { get; set; }
 
     /// <summary>
     /// TB Runners

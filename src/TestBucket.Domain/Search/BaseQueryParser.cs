@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Mediator;
-
-using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Search;
 public static class BaseQueryParser
 {
+    /// <summary>
+    /// Keywords supported by all entities
+    /// </summary>
     public static readonly HashSet<string> Keywords =
         [
         "since",
@@ -20,6 +15,9 @@ public static class BaseQueryParser
         "from",
         "until"
         ];
+
+    private const string DateFormat1 = "yyyy-MM-dd HH:mm:ss";
+    private const string DateFormat2 = "yyyy-MM-dd";
 
     internal static void Serialize(SearchQuery query, List<string> items)
     {
@@ -48,6 +46,30 @@ public static class BaseQueryParser
         }
     }
 
+    internal static bool TryParseDateTimeOffset(string value, string? format, TimeProvider provider, [NotNullWhen(true)] out DateTimeOffset? dto)
+    {
+        var now = provider.GetLocalNow();
+        var offset = now.Offset;
+
+        // Parse the input as DateTime (no offset)
+        if (format is null)
+        {
+            if (DateTime.TryParse(value, out var dt))
+            {
+                dto = new DateTimeOffset(dt, offset);
+                return true;
+            }
+        }
+        else if(DateTime.TryParseExact(value, format, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dtExact))
+        {
+            dto = new DateTimeOffset(dtExact, offset);
+            return true;
+        }
+        dto = null;
+        return false;
+    }
+
+
     internal static void Parse(SearchQuery query, Dictionary<string, string> result, TimeProvider? provider)
     {
         provider ??= TimeProvider.System;
@@ -67,32 +89,33 @@ public static class BaseQueryParser
                     break;
 
                 case "from":
-                    if(DateTimeOffset.TryParse(pair.Value, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out var dateTimeOffsetFromCulture))
+                    if(TryParseDateTimeOffset(pair.Value, null, provider, out var dateTimeOffsetFromCulture))
                     {
                         query.CreatedFrom = dateTimeOffsetFromCulture;
                     }
-                    else if (DateTimeOffset.TryParseExact(pair.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dateTimeOffsetFromIso))
+                    else if(TryParseDateTimeOffset(pair.Value, DateFormat1, provider, out var dateTimeOffsetFromIso))
                     {
                         query.CreatedFrom = dateTimeOffsetFromIso;
                     }
-                    else if (DateTimeOffset.TryParseExact(pair.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dateTimeOffsetFromIso2))
+                    else if (TryParseDateTimeOffset(pair.Value, DateFormat2, provider, out var dateTimeOffsetFromIso2))
                     {
                         query.CreatedFrom = dateTimeOffsetFromIso2;
                     }
                     break;
                 case "until":
-                    if (DateTimeOffset.TryParse(pair.Value, CultureInfo.CurrentCulture, DateTimeStyles.AssumeLocal, out var dateTimeOffsetUntilCulture))
+                    if (TryParseDateTimeOffset(pair.Value, null, provider, out var dateTimeOffsetFromCultureUntil))
                     {
-                        query.CreatedUntil = dateTimeOffsetUntilCulture;
+                        query.CreatedUntil = dateTimeOffsetFromCultureUntil;
                     }
-                    else if (DateTimeOffset.TryParseExact(pair.Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dateTimeOffsetFromIso))
+                    else if (TryParseDateTimeOffset(pair.Value, DateFormat1, provider, out var dateTimeOffsetFromIsoUntil))
                     {
-                        query.CreatedUntil = dateTimeOffsetFromIso;
+                        query.CreatedUntil = dateTimeOffsetFromIsoUntil;
                     }
-                    else if (DateTimeOffset.TryParseExact(pair.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dateTimeOffsetUntilIso))
+                    else if (TryParseDateTimeOffset(pair.Value, DateFormat2, provider, out var dateTimeOffsetFromIso2Until))
                     {
-                        query.CreatedUntil = dateTimeOffsetUntilIso;
+                        query.CreatedUntil = dateTimeOffsetFromIso2Until;
                     }
+
                     break;
                 case "team-id":
                     if (long.TryParse(pair.Value, out var teamId))
@@ -110,7 +133,7 @@ public static class BaseQueryParser
         }
     }
 
-    private static TimeSpan ParseSince(string value)
+    public static TimeSpan ParseSince(string value)
     {
         if(value.Length == 0)
         {

@@ -7,6 +7,9 @@ using TestBucket.Domain.Testing.Heuristics.Models;
 
 namespace TestBucket.Domain.UnitTests.Testing.Heuristics
 {
+    /// <summary>
+    /// Unit tests for <see cref="HeuristicsManager"/> covering add, update, delete, and search operations.
+    /// </summary>
     [EnrichedTest]
     [UnitTest]
     [Component("Testing")]
@@ -19,6 +22,10 @@ namespace TestBucket.Domain.UnitTests.Testing.Heuristics
         private readonly ClaimsPrincipal _principal;
         private readonly DateTimeOffset _now = new(2025, 6, 9, 12, 0, 0, TimeSpan.Zero);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HeuristicsManagerTests"/> class.
+        /// Sets up test dependencies and impersonates a user principal.
+        /// </summary>
         public HeuristicsManagerTests()
         {
             _timeProvider.GetUtcNow().Returns(_now);
@@ -35,6 +42,9 @@ namespace TestBucket.Domain.UnitTests.Testing.Heuristics
             });
         }
 
+        /// <summary>
+        /// Verifies that <see cref="HeuristicsManager.AddAsync"/> sets properties and calls the repository.
+        /// </summary>
         [Fact]
         public async Task AddAsync_SetsPropertiesAndCallsRepository()
         {
@@ -50,6 +60,9 @@ namespace TestBucket.Domain.UnitTests.Testing.Heuristics
             await _repo.Received(1).AddAsync(heuristic);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="HeuristicsManager.DeleteAsync"/> calls the repository with the correct ID.
+        /// </summary>
         [Fact]
         public async Task DeleteAsync_CallsRepository()
         {
@@ -60,6 +73,9 @@ namespace TestBucket.Domain.UnitTests.Testing.Heuristics
             await _repo.Received(1).DeleteAsync(42);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="HeuristicsManager.UpdateAsync"/> sets the modified properties and calls the repository.
+        /// </summary>
         [Fact]
         public async Task UpdateAsync_SetsModifiedAndCallsRepository()
         {
@@ -72,6 +88,9 @@ namespace TestBucket.Domain.UnitTests.Testing.Heuristics
             await _repo.Received(1).UpdateAsync(heuristic);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="HeuristicsManager.SearchAsync"/> applies the tenant filter and calls the repository.
+        /// </summary>
         [Fact]
         public async Task SearchAsync_CallsRepositoryWithTenantFilter()
         {
@@ -87,9 +106,16 @@ namespace TestBucket.Domain.UnitTests.Testing.Heuristics
         }
     }
 
-    // Helper extension for setting tenant id in tests
+    /// <summary>
+    /// Helper extension for setting the tenant ID on a <see cref="ClaimsPrincipal"/> in tests.
+    /// </summary>
     public static class ClaimsPrincipalExtensions
     {
+        /// <summary>
+        /// Adds a tenant ID claim to the specified <see cref="ClaimsPrincipal"/>.
+        /// </summary>
+        /// <param name="principal">The principal to modify.</param>
+        /// <param name="tenantId">The tenant ID to set.</param>
         public static void SetTenantId(this ClaimsPrincipal principal, string tenantId)
         {
             var identity = (ClaimsIdentity)principal.Identity!;

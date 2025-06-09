@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
@@ -91,6 +92,7 @@ public class UnconnectedPipelineIndexer : BackgroundService
         var testSuiteManager = scope.ServiceProvider.GetRequiredService<ITestSuiteManager>();
         var pipelineManager = scope.ServiceProvider.GetRequiredService<IPipelineManager>();
         var testrunManager = scope.ServiceProvider.GetRequiredService<ITestRunManager>();
+        var extensions = scope.ServiceProvider.GetRequiredService<IEnumerable<IExtension>>();
         var runners = await pipelineManager.GetExternalPipelineRunnersAsync(user, testSuite.TestProjectId.Value);
         var runner = runners.Where(x => x.SystemName == testSuite.CiCdSystem).FirstOrDefault();
 
@@ -138,6 +140,14 @@ public class UnconnectedPipelineIndexer : BackgroundService
 
                         // Create new run
                         var run = new TestRun { Name = runName, TestProjectId = testSuite.TestProjectId };
+
+                        // Assign icon from the extension
+                        var extension = extensions.Where(x => x.SystemName == runner.SystemName).FirstOrDefault();  
+                        if(extension is not null)
+                        {
+                            run.Icon = extension.Icon;
+                        }
+
                         await testrunManager.AddTestRunAsync(monitorUser, run);
 
                         var newPipeline = new Pipeline

@@ -448,11 +448,10 @@ internal class TestBrowser : TenantBaseService
         {
             Value = new BrowserItem() { TestRun = testRun },
             Text = testRun.Name,
-            Icon = TbIcons.BoldDuoTone.Box,
+            Icon = testRun.Icon ?? TbIcons.BoldDuoTone.Box,
             Expandable = true,
             Children = items.ToArray(),
         };
-
 
         return treeNode;
     }

@@ -63,6 +63,11 @@ public class TestRun : TestEntity
     /// </summary>
     public bool Open { get; set; }
 
+    /// <summary>
+    /// Icon for the test run (SVG)
+    /// </summary>
+    public string? Icon { get; set; }
+
     // Navigation
 
     /// <summary>

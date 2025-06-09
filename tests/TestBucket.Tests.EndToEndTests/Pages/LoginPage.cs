@@ -12,7 +12,7 @@ namespace TestBucket.Tests.EndToEndTests.Pages
         internal async Task LoginAsync(string email, string password)
         {
             var page = await Fixture.Browser.NewPageAsync();
-            await page.GotoAsync(Fixture.HttpsBaseUrl + "/Login");
+            await page.GotoAsync(Fixture.HttpsBaseUrl + "Login");
 
             await page.FillAsync("#Input.Email", email);
             await page.FillAsync("#Input.Password", password);

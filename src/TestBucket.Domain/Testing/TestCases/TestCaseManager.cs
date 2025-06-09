@@ -5,7 +5,6 @@ using Mediator;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Projects;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Duplication;

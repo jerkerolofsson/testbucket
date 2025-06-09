@@ -8,6 +8,8 @@ namespace TestBucket.Domain.UnitTests.Testing.Services.Import
     /// </summary>
     [EnrichedTest]
     [UnitTest]
+    [Component("Testing")]
+    [FunctionalTest]
     public class ZipGlobExtensionsTests
     {
         /// <summary>

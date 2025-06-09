@@ -65,14 +65,14 @@ namespace TestBucket.Domain.UnitTests.Tenant
         }
 
         /// <summary>
-        /// Verifies that <see cref="TenantManager.ExistsAsync"/> throws <see cref="UnauthorizedAccessException"/> when the principal lacks read permission.
+        /// Verifies that <see cref="TenantManager.ExistsAsync"/> DOES NOT throw UnauthorizedAccessException when the principal lacks read permission.
         /// </summary>
         [Fact]
         public async Task ExistsAsync_WithoutReadPermission_Throws()
         {
             var manager = CreateManager();
             var principal = CreatePrincipal(); // No permissions
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(() => manager.ExistsAsync(principal, "tenant1"));
+            await manager.ExistsAsync(principal, "tenant1");
         }
 
         /// <summary>

@@ -10,6 +10,8 @@ namespace TestBucket.Domain.UnitTests.Identity
     /// </summary>
     [UnitTest]
     [EnrichedTest]
+    [Component("Identity")]
+    [FunctionalTest]
     public class AccessTokenTests
     {
         /// <summary>

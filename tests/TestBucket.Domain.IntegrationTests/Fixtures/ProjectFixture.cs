@@ -36,6 +36,11 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         /// Commits
         /// </summary>
         public CommitFramework Commits => new CommitFramework(this);
+        
+        /// <summary>
+        /// Heuristics
+        /// </summary>
+        public HeuristicsFramework Heuristics => new HeuristicsFramework(this);
 
         /// <summary>
         /// Modify user preferences
@@ -82,6 +87,22 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         public ProjectFixture(TestBucketApp app)
         {
             _app = app;
+        }
+
+        public async Task<TestProject> CreateProjectAsync()
+        {
+            var name = "Project-" + Guid.NewGuid().ToString();
+            return await CreateProjectAsync(name);
+        }
+
+        public async Task<TestProject> CreateProjectAsync(string name)
+        {
+            var user = Impersonation.Impersonate(App.Tenant);
+            var project = new TestProject { Name = name, ShortName = "", Slug = "" };
+
+            var projectManager = Services.GetRequiredService<IProjectManager>();
+            await projectManager.AddAsync(user, project);
+            return project;
         }
 
         /// <summary>
@@ -157,6 +178,13 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
 
             _project.TeamId = _team.Id;
             await projectManager.AddAsync(_app.SiteAdministrator, _project);
+        }
+
+        internal async Task DeleteProjectAsync(TestProject project)
+        {
+            var user = Impersonation.Impersonate(App.Tenant);
+            var projectManager = Services.GetRequiredService<IProjectManager>();
+            await projectManager.DeleteAsync(user, project);
         }
     }
 }

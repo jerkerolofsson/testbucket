@@ -8,6 +8,8 @@ namespace TestBucket.Domain.UnitTests.Identity
     /// </summary>
     [EnrichedTest]
     [UnitTest]
+    [Component("Identity")]
+    [FunctionalTest]
     public class PermissionClaimSerializerTests
     {
         /// <summary>
@@ -29,6 +31,8 @@ namespace TestBucket.Domain.UnitTests.Identity
         [InlineData(PermissionEntityType.TestResource)]
         [InlineData(PermissionEntityType.TestAccount)]
         [InlineData(PermissionEntityType.Runner)]
+        [InlineData(PermissionEntityType.Issue)]
+        [InlineData(PermissionEntityType.Heuristic)]
         [Theory]
         public void Serialize_ValidClaim_ReturnsExpectedString(PermissionEntityType entity)
         {
@@ -52,6 +56,51 @@ namespace TestBucket.Domain.UnitTests.Identity
                 {
                     Assert.Equal(PermissionLevel.None, a.Level);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Tests that serializing and deserializing a <see cref="UserPermissions"/> instance containing multiple <see cref="EntityPermission"/>
+        /// objects for different entities produces the expected string and round-trips all permission levels correctly.
+        /// </summary>
+        [Fact]
+        public void Serialize_MultiplePermissions_RoundTripsAllEntities()
+        {
+            // Arrange
+            var permissions = new UserPermissions([
+                new EntityPermission(PermissionEntityType.Tenant, PermissionLevel.Read),
+                new EntityPermission(PermissionEntityType.User, PermissionLevel.Write),
+                new EntityPermission(PermissionEntityType.Project, PermissionLevel.Approve)
+            ]);
+
+            // Act
+            var result = PermissionClaimSerializer.Serialize(permissions);
+            var deserialized = PermissionClaimSerializer.Deserialize(result);
+
+            // Assert
+            Assert.Equal(PermissionLevel.Read, deserialized.Permisssions.First(x => x.EntityType == PermissionEntityType.Tenant).Level);
+            Assert.Equal(PermissionLevel.Write, deserialized.Permisssions.First(x => x.EntityType == PermissionEntityType.User).Level);
+            Assert.Equal(PermissionLevel.Approve, deserialized.Permisssions.First(x => x.EntityType == PermissionEntityType.Project).Level);
+        }
+
+        /// <summary>
+        /// Tests that serializing and deserializing an empty <see cref="UserPermissions"/> instance
+        /// results in all permissions being set to <see cref="PermissionLevel.None"/>.
+        /// </summary>
+        [Fact]
+        public void Serialize_EmptyPermissions_AllPermissionsHaveNoneLevel()
+        {
+            // Arrange
+            var permissions = new UserPermissions([]);
+
+            // Act
+            var result = PermissionClaimSerializer.Serialize(permissions);
+            var deserialized = PermissionClaimSerializer.Deserialize(result);
+
+            // Assert
+            foreach (var permission in deserialized.Permisssions)
+            {
+                Assert.Equal(PermissionLevel.None, permission.Level);
             }
         }
     }

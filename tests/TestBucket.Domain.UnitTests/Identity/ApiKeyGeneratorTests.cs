@@ -10,13 +10,14 @@ namespace TestBucket.Domain.UnitTests.Identity
     /// </summary>
     [UnitTest]
     [EnrichedTest]
+    [Component("Identity")]
+    [FunctionalTest]
     public class ApiKeyGeneratorTests
     {
         /// <summary>
         /// Generates an access token in scope of 'runner', using a ClaimsPrincipal with a tenant claim and verifies that the tenant claim is copied to the access token
         /// </summary>
         /// <returns></returns>
-        [Component("Identity")]
         [Fact]
         public async Task GenerateAccessToken_WithRunnerScopeAndTenantClaim_TokenHasTenantClaim()
         {
@@ -39,7 +40,6 @@ namespace TestBucket.Domain.UnitTests.Identity
         /// Generates an access token in scope of 'runner', using a ClaimsPrincipal with a project claim and verifies that the project claim is copied to the access token
         /// </summary>
         /// <returns></returns>
-        [Component("Identity")]
         [Fact]
         public async Task GenerateAccessToken_WithRunnerScopeAndProjectClaim_TokenHasProjectId()
         {

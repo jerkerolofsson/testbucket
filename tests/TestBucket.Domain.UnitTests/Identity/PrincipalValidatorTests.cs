@@ -13,13 +13,14 @@ namespace TestBucket.Domain.UnitTests.Identity
     /// </summary>
     [UnitTest]
     [EnrichedTest]
+    [Component("Identity")]
+    [FunctionalTest]
     public class PrincipalValidatorTests
     {
         /// <summary>
         /// Verifies that <see cref="PrincipalValidator.ThrowIfNoProjectId"/> does not throw an exception
         /// when the principal contains a valid project ID.
         /// </summary>
-        [Component("Identity")]
         [Fact]
         public void ThrowIfNoProjectId_WithProjectId_DoesNotThrowException()
         {
@@ -32,7 +33,6 @@ namespace TestBucket.Domain.UnitTests.Identity
         /// Verifies that <see cref="PrincipalValidator.ThrowIfNoProjectId"/> throws an <see cref="UnauthorizedAccessException"/>
         /// when the principal does not contain a project ID.
         /// </summary>
-        [Component("Identity")]
         [Fact]
         public void ThrowIfNoProjectId_WithoutProjectId_ThrowsUnauthorizedAccessException()
         {

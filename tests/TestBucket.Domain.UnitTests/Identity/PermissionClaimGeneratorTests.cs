@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.ApiKeys.Validation;
+﻿using System.Security.Claims;
 using TestBucket.Domain.Identity.Permissions;
-using TestBucket.Domain.Projects;
-using TestBucket.Domain.Settings.Fakes;
 
 namespace TestBucket.Domain.UnitTests.Identity
 {
@@ -17,12 +9,13 @@ namespace TestBucket.Domain.UnitTests.Identity
     /// </summary>
     [UnitTest]
     [EnrichedTest]
+    [Component("Identity")]
+    [FunctionalTest]
     public class PermissionClaimGeneratorTests
     {
         /// <summary>
         /// Verifies that when a user is not in any groups, the generated claim contains no permissions.
         /// </summary>
-        [Component("Identity")]
         [Fact]
         public void GenerateClaim_WithUserInNoGroups_ClaimHasNoPermissions()
         {
@@ -42,7 +35,6 @@ namespace TestBucket.Domain.UnitTests.Identity
         /// Verifies that when a user is in a group, the generated claim contains the correct role permissions,
         /// and no permissions are granted for unrelated entities.
         /// </summary>
-        [Component("Identity")]
         [Fact]
         public void GenerateClaim_WithUserInGroups_ClaimHasRolePermissions()
         {

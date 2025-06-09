@@ -38,6 +38,7 @@
                     <MudNavLink Icon="@SettingIcons.GetIcon(category.Icon)" Href="@url">@category.Name</MudNavLink>
                 }
                 <MudNavLink Icon="@Icons.Material.Filled.Security" Href="@ApiKeysUrl">@loc["api-keys"]</MudNavLink>
+                <MudNavLink Icon="@TbIcons.Filled.ModelContextProtocol" Href="@McpUrl">MCP</MudNavLink>
 
                 @if(Project is not null)
                 {
@@ -150,6 +151,7 @@
     private string AccountsUrl => $"{TenantId}/Settings/Accounts";
     private string ResourcesUrl => $"{TenantId}/Settings/Resources";
     private string ApiKeysUrl => $"{TenantId}/Settings/ManageApiKeys";
+    private string McpUrl => $"{TenantId}/Settings/Categories/MCP";
     private string TeamsUrl => $"{TenantId}/Settings/Teams";
     private string UsersUrl => $"{TenantId}/Settings/Users";
     private string RolesUrl => $"{TenantId}/Settings/Roles";

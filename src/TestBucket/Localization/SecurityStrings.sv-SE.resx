@@ -147,4 +147,10 @@
   <data name="token-created" xml:space="preserve">
     <value>Din nyckel</value>
   </data>
+  <data name="create-api-key" xml:space="preserve">
+    <value>Skapa access-token</value>
+  </data>
+  <data name="token-type" xml:space="preserve">
+    <value />
+  </data>
 </root>

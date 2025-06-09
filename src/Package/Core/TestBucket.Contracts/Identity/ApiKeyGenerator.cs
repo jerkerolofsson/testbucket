@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 using Microsoft.IdentityModel.Tokens;
 
@@ -53,6 +49,10 @@ namespace TestBucket.Contracts.Identity
         }
         public string GenerateAccessToken(ClaimsPrincipal principal, DateTime expires)
         {
+            return GenerateAccessToken(principal, null, expires);
+        }
+        public string GenerateAccessToken(ClaimsPrincipal principal, long? projectId, DateTime expires)
+        {
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var symmetricKey = _key;
@@ -65,6 +65,10 @@ namespace TestBucket.Contracts.Identity
                                     x.Type != JwtRegisteredClaimNames.Aud &&
                                     x.Type != JwtRegisteredClaimNames.Jti)
             ];
+            if(projectId is not null)
+            {
+                allClaims.Add(new Claim("project", projectId.Value.ToString()));
+            }
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(symmetricKey));
             securityKey.KeyId = _issuer + "-0";

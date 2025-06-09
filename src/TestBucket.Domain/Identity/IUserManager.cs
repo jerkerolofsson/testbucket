@@ -34,6 +34,13 @@ public interface IUserManager
     Task AddPersonalApiKeyAsync(ClaimsPrincipal principal, ApplicationUserApiKey apiKey);
 
     /// <summary>
+    /// Adds a project API key where the permissions are an exact impersonation of the principal and where a project claim is set
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <returns></returns>
+    Task AddProjectApiKeyAsync(ClaimsPrincipal principal, long projectId, ApplicationUserApiKey apiKey);
+
+    /// <summary>
     /// Adds an API key with a specific scope
     /// </summary>
     /// <param name="principal"></param>

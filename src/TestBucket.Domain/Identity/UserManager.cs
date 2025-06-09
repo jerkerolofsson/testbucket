@@ -128,6 +128,37 @@ internal class UserManager : IUserManager
         await _userService.AddApiKeyAsync(apiKey);
     }
 
+    public async Task AddProjectApiKeyAsync(ClaimsPrincipal principal, long projectId, ApplicationUserApiKey apiKey)
+    {
+        var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+        if (string.IsNullOrEmpty(settings.SymmetricJwtKey))
+        {
+            throw new InvalidDataException("No symmetric key has been configured");
+        }
+        if (string.IsNullOrEmpty(settings.JwtIssuer))
+        {
+            throw new InvalidDataException("No issuer has been configured");
+        }
+        if (string.IsNullOrEmpty(settings.JwtAudience))
+        {
+            throw new InvalidDataException("No audience has been configured");
+        }
+
+        var user = await FindAsync(principal) ?? throw new InvalidOperationException("User not found");
+        var tenantId = principal.GetTenantIdOrThrow();
+
+        // Generate the API key
+        var generator = new ApiKeyGenerator(settings.SymmetricJwtKey, settings.JwtIssuer, settings.JwtAudience);
+        apiKey.Key = generator.GenerateAccessToken(principal, projectId, apiKey.Expiry.DateTime);
+
+        apiKey.TenantId = tenantId;
+        apiKey.CreatedBy = principal.Identity?.Name ?? throw new Exception("Missing identity");
+        apiKey.Created = DateTimeOffset.UtcNow;
+        apiKey.ApplicationUserId = user.Id;
+        await _userService.AddApiKeyAsync(apiKey);
+    }
+
+
     public async Task DeleteApiKeyAsync(ClaimsPrincipal principal, ApplicationUserApiKey apiKey)
     {
         var user = await FindAsync(principal) ?? throw new InvalidOperationException("User not found");

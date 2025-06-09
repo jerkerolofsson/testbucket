@@ -153,6 +153,12 @@
   <data name="manage-users" xml:space="preserve">
     <value>Manage users</value>
   </data>
+  <data name="mcp-client-configuration" xml:space="preserve">
+    <value>MCP Client Configuration</value>
+  </data>
+  <data name="mcp-configure-caption" xml:space="preserve">
+    <value>To configure an AI Agent to use test bucket MCP server, register it with a "project access token</value>
+  </data>
   <data name="open-ai-settings" xml:space="preserve">
     <value>Open AI settings</value>
   </data>

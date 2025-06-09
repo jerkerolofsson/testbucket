@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Issues.States;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace TestBucket.Domain.Insights.Model;
 public class InsightsData<T,U> where T : notnull

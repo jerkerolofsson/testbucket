@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-
-using TestBucket.Domain.Insights.Model;
+﻿using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRuns.Search;

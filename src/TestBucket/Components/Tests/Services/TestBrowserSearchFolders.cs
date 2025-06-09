@@ -20,7 +20,7 @@ public class TestBrowserSearchFolders
             Text = loc["e2e-tests"],
             Expanded = false,
             Expandable = false,
-            Value = new BrowserItem() { Href = $"{appNavigationManager.GetTestCasesUrl()}?q=category:EndToEnd" },
+            Value = new BrowserItem() { Href = $"{appNavigationManager.GetTestCasesUrl()}?q=category:E2E" },
             Icon = TbIcons.BoldOutline.Folder,
         };
         yield return new TreeNode<BrowserItem>

@@ -153,6 +153,12 @@
   <data name="manage-users" xml:space="preserve">
     <value>Hantera användare</value>
   </data>
+  <data name="mcp-client-configuration" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mcp-configure-caption" xml:space="preserve">
+    <value />
+  </data>
   <data name="open-ai-settings" xml:space="preserve">
     <value>Öppna AI inställningar</value>
   </data>

@@ -25,6 +25,19 @@ namespace TestBucket.Domain.Shared
             }
             throw new InvalidOperationException("This resource can only be accessed by administrators");
         }
+        public static long? GetProjectId(this ClaimsPrincipal principal)
+        {
+            var claims = principal.Claims.Where(x => x.Type == "project" && !string.IsNullOrEmpty(x.Value)).ToList();
+            if (claims.Count == 0)
+            {
+                return null;
+            }
+            if(long.TryParse(claims.First().Value, out var projectId))
+            {
+                return projectId;
+            }
+            return null;
+        }
 
         public static string? GetTenantId(this ClaimsPrincipal principal)
         {

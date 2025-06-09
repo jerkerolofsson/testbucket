@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace TestBucket.Domain;
 
@@ -11,7 +6,7 @@ namespace TestBucket.Domain;
 internal class FakeTimeProvider : TimeProvider
 {
     private readonly DateTimeOffset _dateTimeOffset;
-    private TimeSpan _offset = TimeSpan.Zero;
+    private readonly TimeSpan _offset = TimeSpan.Zero;
 
     public FakeTimeProvider(DateTimeOffset dateTimeOffset, TimeSpan? offset = null)
     {

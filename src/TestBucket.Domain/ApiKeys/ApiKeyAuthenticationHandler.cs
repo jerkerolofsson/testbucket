@@ -21,12 +21,8 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthentic
 {
     private readonly IApiKeyAuthenticator _apiKeyAuthenticator;
 
-    public ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeyAuthenticationOptions> options,
-        IApiKeyAuthenticator apiKeyAuthenticator,
-                                       ILoggerFactory logger,
-                                       UrlEncoder encoder,
-                                       Microsoft.AspNetCore.Authentication.ISystemClock clock)
-        : base(options, logger, encoder, clock)
+    public ApiKeyAuthenticationHandler(IOptionsMonitor<ApiKeyAuthenticationOptions> options, IApiKeyAuthenticator apiKeyAuthenticator, ILoggerFactory logger, UrlEncoder encoder)
+        : base(options, logger, encoder)
     {
         _apiKeyAuthenticator = apiKeyAuthenticator;
     }

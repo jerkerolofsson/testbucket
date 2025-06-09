@@ -17,6 +17,7 @@ public partial class AISettingsPage
     private ISetting[] _settings = [];
     private SettingsSection[] _sections = [];
 
+
     private readonly Dictionary<long, FieldValue> _fieldMap = [];
     private readonly Dictionary<long, ISetting> _settingsMap = [];
 
@@ -29,6 +30,10 @@ public partial class AISettingsPage
         if (model.Vendor == "meta")
         {
             return TbIcons.Brands.Meta;
+        }
+        if (model.Vendor == "qwen")
+        {
+            return TbIcons.Brands.Qwen;
         }
         if (model.Vendor == "deepseek")
         {

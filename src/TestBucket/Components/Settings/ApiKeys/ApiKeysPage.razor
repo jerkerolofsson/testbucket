@@ -20,7 +20,8 @@
                 <MudIcon Icon="@Icons.Material.Filled.Security" Size="Size.Large" />
                 <MudText Typo="Typo.h2">@loc["api-keys"]</MudText>
                 <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddApiKeyAsync"></MudIconButton>
+                <MudButton StartIcon="@Icons.Material.Filled.Add"
+                           Class="tb-button-new" OnClick="AddApiKeyAsync" Variant="Variant.Filled">@loc["add"]</MudButton>
             </MudStack>
         </ToolBarContent>
 
@@ -29,6 +30,11 @@
             <TemplateColumn Title="@securityLoc["expires"]">
                 <CellTemplate>
                     @context.Item.Expiry.Humanize()
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="">
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Clear" OnClick="async () => await DeleteAsync(context.Item)"/>
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
@@ -43,9 +49,14 @@
     {
         <MudPaper Class="pa-2 mt-2">
             <MudStack Spacing="1">
-                <MudText Typo="Typo.h2">@securityLoc["token-created"]</MudText>
-                <MudTextField ReadOnly Value="@_newApiKey.Key"/>
-                <MudText Typo="Typo.body1">@securityLoc["access-token-created-message"]</MudText>
+                <MudText Typo="Typo.caption">@securityLoc["token-created"]</MudText>
+
+                <MudStack Row AlignItems="AlignItems.Center">
+                    <MudTextField ReadOnly Value="@_newApiKey.Key"/>
+                    <CopyToClipboard Text="@_newApiKey.Key"/>
+                </MudStack>
+                
+                <MudText Typo="Typo.subtitle2">@securityLoc["access-token-created-message"]</MudText>
             </MudStack>
         </MudPaper>
     }
@@ -57,10 +68,18 @@
     private ApplicationUserApiKey? _newApiKey = null;
 
     [Parameter] public string? TenantId { get; set; }
+    [CascadingParameter] public TestProject? TestProject { get; set; }
+
+    private async Task DeleteAsync(ApplicationUserApiKey accessToken)
+    {
+        await controller.DeleteApiKeyAsync(accessToken);
+        _keys = await controller.GetApiKeysAsync();
+    }
 
     private async Task AddApiKeyAsync() 
     {
-        _newApiKey = await controller.AddApiKeyAsync();
+        _newApiKey = await controller.AddApiKeyAsync(TestProject?.Id);
+        _keys = await controller.GetApiKeysAsync();
     }
 
     protected override async Task OnInitializedAsync()

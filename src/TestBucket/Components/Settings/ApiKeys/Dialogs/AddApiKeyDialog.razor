@@ -1,5 +1,5 @@
 ﻿@using TestBucket.Domain.Requirements.Models
-@attribute [Authorize(Roles = "ADMIN")]
+@attribute [Authorize()]
 @inject UserApiKeysController controller
 @inject IStringLocalizer<SecurityStrings> loc
 
@@ -18,11 +18,15 @@
 
 
                     <Field Row>
-                        <FieldHeader>@loc["scope"]</FieldHeader>
+                        <FieldHeader>@loc["token-type"]</FieldHeader>
                         <MudSpacer />
-                        <MudRadioGroup T="string" @bind-Value="_scope">
-                            <MudRadio Value="@("impersonate")">personal</MudRadio>
+                        <MudRadioGroup T="string" @bind-Value="_tokenType">
+                            <MudRadio Value="@("personal")">personal</MudRadio>
                             <MudRadio Value="@("runner")">runner</MudRadio>
+                            @if(TestProjectId is not null)
+                            {
+                                <MudRadio Value="@("project")">project</MudRadio>
+                            }
                         </MudRadioGroup>
                     </Field>
 
@@ -51,7 +55,10 @@
 
 @code {
     private string? _errorMessage;
-    private string _scope = "personal";
+    private string _tokenType = "project";
+
+    [Parameter] public long? TestProjectId { get; set; }
+    [Parameter] public string? Name { get; set; }
 
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
@@ -62,6 +69,14 @@
     {
         public string Name { get; set; } = "New Key";
         public TimeSpan Expiry { get; set; } = TimeSpan.FromDays(365);
+    }
+
+    protected override void OnParametersSet()
+    {
+        if(Name is not null)
+        {
+            _model.Name = Name;
+        }
     }
 
     private void Close()
@@ -77,7 +92,7 @@
             return;
         }
         var expires = DateTimeOffset.UtcNow.Add(_model.Expiry);
-        var apiKey = await controller.AddApiKeyAsync(_model.Name, _scope, expires);
+        var apiKey = await controller.AddApiKeyAsync(_model.Name, _tokenType, TestProjectId, expires);
         MudDialog.Close(apiKey);
     }
 }

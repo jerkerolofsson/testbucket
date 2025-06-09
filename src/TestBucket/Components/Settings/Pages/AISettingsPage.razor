@@ -6,6 +6,7 @@
 @inject ISettingsManager settingsManager
 @inject ISettingsProvider settingsProvider
 @inject AuthenticationStateProvider authenticationStateProvider
+@inject NavigationManager navigationManager
 
 <MudStack Class="container-settings-page">
 
@@ -17,6 +18,7 @@
             <li>Automatically classify metadata for test cases and other entities.</li>
         </ul>
     </MudText>
+
 
     @if (_globalSettings is not null)
     {

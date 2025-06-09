@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
+using TestBucket.Domain.AI.Mcp;
 using MudBlazor.Services;
 
 using MudExtensions.Services;
@@ -57,7 +58,6 @@ using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Identity;
-
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace TestBucket;
@@ -103,6 +103,12 @@ public static class TestBucketServerApp
 
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddMemoryCache();
+
+        // MCP
+        builder.Services.AddHttpContextAccessor();
+
+        builder.Services.AddMcpTools();
+       
 
         builder.Services.AddSettingLinks();
 
@@ -383,6 +389,8 @@ public static class TestBucketServerApp
             app.UseHttpsRedirection();
         }
         app.UseCors(localhostOrigin);
+
+        app.MapMcp("/mcp");
 
         app.MapStaticAssets();
         app.MapControllers();

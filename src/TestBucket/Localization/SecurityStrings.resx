@@ -147,4 +147,10 @@
   <data name="token-created" xml:space="preserve">
     <value>Your new access token</value>
   </data>
+  <data name="create-api-key" xml:space="preserve">
+    <value>Create access token</value>
+  </data>
+  <data name="token-type" xml:space="preserve">
+    <value>Token Type</value>
+  </data>
 </root>

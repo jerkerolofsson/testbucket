@@ -1,0 +1,35 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/Categories/MCP"
+@using TestBucket.Components.Settings.ApiKeys
+@using TestBucket.Domain
+@using TestBucket.Domain.Settings
+@layout SettingsLayout
+@inject ISettingsManager settingsManager
+@inject ISettingsProvider settingsProvider
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject NavigationManager navigationManager
+@inject IStringLocalizer<SettingStrings> settingsLoc
+@inject IStringLocalizer<SecurityStrings> securityLoc
+@inject UserApiKeysController controller
+
+<MudStack Class="container-settings-page">
+
+    <MudText Typo="Typo.h1">MCP</MudText>
+
+    <MudStack Class="pa-5">
+        <MudText Typo="Typo.caption">@settingsLoc["mcp-client-configuration"]</MudText>
+        <CodeBlock Language="json" Code="@McpRemoteConfiguration" />
+
+        @if(_key is null)
+        {
+            <MudText Typo="Typo.caption">@settingsLoc["mcp-configure-caption"]"</MudText>
+            <MudStack>
+                <MudSpacer/>
+                <MudButton StartIcon="@Icons.Material.Filled.Add"
+                           Class="tb-button-new" OnClick="AddApiKeyAsync" Variant="Variant.Filled">@securityLoc["create-api-key"]</MudButton>
+            </MudStack>
+        }
+
+    </MudStack>
+
+</MudStack>

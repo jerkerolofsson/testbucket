@@ -47,5 +47,10 @@ namespace TestBucket.Domain.Settings.Models
         /// Publicly accessible URL (in case the service is running behind a reverse-proxy)
         /// </summary>
         public string? PublicEndpointUrl { get; set; }
+
+        /// <summary>
+        /// Ollama base url (from TB_OLLAMA_BASE_URL)
+        /// </summary>
+        public string? OllamaBaseUrl { get; set; }
     }
 }

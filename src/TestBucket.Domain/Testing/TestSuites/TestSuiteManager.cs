@@ -181,11 +181,11 @@ namespace TestBucket.Domain.Testing.TestSuites
         /// <param name="principal"></param>
         /// <param name="slug"></param>
         /// <returns></returns>
-        public async Task<TestSuite?> GetTestSuiteBySlugAsync(ClaimsPrincipal principal, string slug)
+        public async Task<TestSuite?> GetTestSuiteBySlugAsync(ClaimsPrincipal principal, long? projectId, string slug)
         {
             var tenantId = principal.GetTenantIdOrThrow();
             principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Read);
-            return await _testCaseRepository.GetTestSuiteBySlugAsync(tenantId, slug);
+            return await _testCaseRepository.GetTestSuiteBySlugAsync(tenantId, projectId, slug);
         }
         /// <summary>
         /// Returns a test suite by name or null if not found

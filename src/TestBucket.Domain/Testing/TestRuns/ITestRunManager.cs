@@ -28,7 +28,7 @@ public interface ITestRunManager
     #region Test Runs
 
     Task<TestRun?> GetTestRunByIdAsync(ClaimsPrincipal principal, long id);
-    Task<TestRun?> GetTestRunBySlugAsync(ClaimsPrincipal user, string slug);
+    Task<TestRun?> GetTestRunBySlugAsync(ClaimsPrincipal user, long? projectId, string slug);
 
     /// <summary>
     /// Adds a TestRun (a collection of test cases for execution)

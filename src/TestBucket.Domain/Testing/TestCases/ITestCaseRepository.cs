@@ -15,7 +15,17 @@ public interface ITestCaseRepository
     /// <param name="tenantId"></param>
     /// <param name="slug"></param>
     /// <returns></returns>
-    Task<TestCase?> GetTestCaseBySlugAsync(string tenantId, string slug);
+    Task<TestCase?> GetTestCaseBySlugAsync(string tenantId, long? projectId, string slug);
+
+    /// <summary>
+    /// Returns a test case by name
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="projectId">If null all projects are checked</param>
+    /// <param name="testSuiteId">If null all test suites are checked</param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    Task<TestCase?> GetTestCaseByNameAsync(string tenantId, long? projectId, long? testSuiteId, string name);
 
     /// <summary>
     /// Returns a test case by ID
@@ -170,7 +180,7 @@ public interface ITestCaseRepository
     /// <param name="tenantId"></param>
     /// <param name="slug"></param>
     /// <returns></returns>
-    Task<TestSuite?> GetTestSuiteBySlugAsync(string tenantId, string slug);
+    Task<TestSuite?> GetTestSuiteBySlugAsync(string tenantId, long? projectId, string slug);
     /// <summary>
     /// Adds a test suite
     /// </summary>
@@ -288,7 +298,7 @@ public interface ITestCaseRepository
     Task<TestExecutionResultSummary> GetTestExecutionResultSummaryAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
     Task<Dictionary<string, TestExecutionResultSummary>> GetTestExecutionResultSummaryByFieldAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters, long fieldDefinitionId);
     Task<Dictionary<DateOnly, TestExecutionResultSummary>> GetTestExecutionResultSummaryByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters);
-    Task<TestRun?> GetTestRunBySlugAsync(string tenantId, string slug);
+    Task<TestRun?> GetTestRunBySlugAsync(string tenantId, long? projectId, string slug);
     Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId);
     Task<Dictionary<string, Dictionary<string, long>>> GetTestCaseCoverageMatrixByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId1, long fieldDefinitionId2);
 

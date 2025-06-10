@@ -123,7 +123,8 @@ public static class DomainServiceExtensions
         services.AddScoped<IMarkdownDetector,TemplateDetector>();
         services.AddScoped<ITestCompiler, TestCompiler>();
 
-        services.AddScoped<ITextTestResultsImporter, TextImporter>();
+        services.AddScoped<ITestCaseImporter, TestCaseImporter>();
+        services.AddScoped<ITextTestResultsImporter, TestResultTextImporter>();
         services.AddScoped<ITestCaseManager, TestCaseManager>();
         services.AddScoped<ITestSuiteManager, TestSuiteManager>();
         services.AddScoped<ITestRunManager, TestRunManager>();

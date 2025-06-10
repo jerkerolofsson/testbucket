@@ -1,0 +1,55 @@
+﻿@using TestBucket.Components.Uploads.Services
+@using TestBucket.Formats
+
+@inject TestCaseEditorController testCaseEditorService
+@inject AttachmentsService attachmentsService
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<ImportStrings> importLoc
+
+<EditForm Model="@_options" OnValidSubmit="Submit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
+        <DialogContent>
+            <MudStack>
+                @if (_options.File is null)
+                {
+                    <UploadTestRepo FileUploaded="OnFileUploaded" />
+                }
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            @if (_options.File is not null)
+            {
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            }
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    private ImportOptions _options = new();
+
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private Task OnFileUploaded(FileResource file)
+    {
+        _options.File = file;
+        return Task.CompletedTask;
+    }
+
+    private void Submit()
+    {
+        if (_options.File is not null)
+        {
+            MudDialog.Close(_options);
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+}
+

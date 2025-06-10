@@ -20,7 +20,6 @@ public class ProjectClient(HttpClient Client)
         return createdTeam.Slug;
     }
 
-
     /// <summary>
     /// Adds a project
     /// </summary>

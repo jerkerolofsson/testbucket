@@ -1,6 +1,9 @@
 ﻿@using TestBucket.Components.Uploads.Services
 @using TestBucket.Domain.Files.Models
 @inject UploadService uploadService
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<ImportStrings> importLoc
+@using Humanizer
 
 <MudStack Style="@Style" Class="@Class">
     <MudFileUpload T="IBrowserFile"
@@ -20,12 +23,19 @@
             <MudPaper Outlined="true" Class="@_dragClass">
                 @if (ChildContent is null)
                 {
-                    <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="mud-width-full mud-height-full" Row>
+                    <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="mud-width-full mud-height-full" Spacing="1">
                         @if (!_loading)
                         {
                             <MudIcon Size="Size.Large" Icon="@Icons.Material.Outlined.CloudUpload" />
                             <MudText Typo="Typo.h6">
+                                @importLoc["import-results-drop-header"]
                                 Drag and drop files here or click to select a file
+                            </MudText>
+                            <MudText>
+                                @importLoc["import-results-drop-description"]
+                            </MudText>
+                            <MudText Style="font-style: italic" Color="Color.Tertiary">
+                                @string.Format(loc["max-file-size"], MaxFileSize.Bytes().Humanize())
                             </MudText>
                         }
                     </MudStack>
@@ -33,7 +43,6 @@
                 else
                 {
                     @ChildContent
-                    ;
                 }
             </MudPaper>
         </ActivatorContent>
@@ -44,7 +53,7 @@
 @code {
     [Parameter] public EventCallback FileUploadStarted { get; set; }
     [Parameter] public EventCallback<FileResource> FileUploaded { get; set; }
-    [Parameter] public long MaxFileSize { get; set; } = 512000;
+    [Parameter] public long MaxFileSize { get; set; } = 10_000_000;
     [Parameter] public string? Accept { get; set; }
     [Parameter] public string? Label { get; set; }
 

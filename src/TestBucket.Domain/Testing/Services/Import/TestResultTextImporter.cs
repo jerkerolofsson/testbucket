@@ -2,7 +2,6 @@
 
 using Mediator;
 
-using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Teams;
 using TestBucket.Formats;
@@ -10,13 +9,13 @@ using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Domain.Testing.Services.Import;
 
-internal class TextImporter : ITextTestResultsImporter
+internal class TestResultTextImporter : ITextTestResultsImporter
 {
     private readonly IMediator _mediator;
     private readonly IProjectManager _projectManager;
     private readonly ITeamManager _teamManager;
 
-    public TextImporter(IMediator mediator, IProjectManager projectManager, ITeamManager teamManager)
+    public TestResultTextImporter(IMediator mediator, IProjectManager projectManager, ITeamManager teamManager)
     {
         _mediator = mediator;
         _projectManager = projectManager;
@@ -51,7 +50,6 @@ internal class TextImporter : ITextTestResultsImporter
     {
         var team = await _teamManager.GetTeamByIdAsync(principal, teamId);
         var project = await _projectManager.GetTestProjectByIdAsync(principal, projectId);
-
         if (project is null)
         {
             throw new ArgumentException("Project not found");

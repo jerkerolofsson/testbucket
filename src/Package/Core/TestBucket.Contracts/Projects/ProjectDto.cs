@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Integrations;
+﻿using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Testing.States;
 
 namespace TestBucket.Contracts.Projects;
 public record class ProjectDto
 {
+    public long Id { get; set; }
+
     /// <summary>
     /// Name of the project
     /// </summary>

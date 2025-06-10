@@ -62,7 +62,8 @@ public interface ITestCaseManager
     /// <param name="user"></param>
     /// <param name="slug"></param>
     /// <returns></returns>
-    Task<TestCase?> GetTestCaseBySlugAsync(ClaimsPrincipal user, string slug);
+    Task<TestCase?> GetTestCaseBySlugAsync(ClaimsPrincipal user, long? projectId, string slug);
+    Task<TestCase?> GetTestCaseByNameAsync(ClaimsPrincipal user, long? projectId, long? testSuiteId, string name);
     Task<Dictionary<string, Dictionary<string, long>>> GetTestCaseCoverageMatrixByFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId1, long fieldDefinitionId2);
     Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId);
 

@@ -28,6 +28,11 @@ public static class TestBucketEnvironmentVariables
     public const string TB_ADMIN_PASSWORD = nameof(TB_ADMIN_PASSWORD);
 
     /// <summary>
+    /// Ollama base url
+    /// </summary>
+    public const string TB_OLLAMA_BASE_URL = nameof(TB_OLLAMA_BASE_URL);
+
+    /// <summary>
     /// JWT symmetric key
     /// </summary>
     public const string TB_JWT_SYMMETRIC_KEY = nameof(TB_JWT_SYMMETRIC_KEY);

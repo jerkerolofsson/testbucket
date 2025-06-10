@@ -235,4 +235,10 @@
   <data name="add-new-team" xml:space="preserve">
     <value />
   </data>
+  <data name="max-file-size" xml:space="preserve">
+    <value />
+  </data>
+  <data name="import-test-cases" xml:space="preserve">
+    <value />
+  </data>
 </root>

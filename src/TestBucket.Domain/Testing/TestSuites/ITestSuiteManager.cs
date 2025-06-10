@@ -28,7 +28,7 @@ public interface ITestSuiteManager
     Task<TestSuite?> GetTestSuiteByIdAsync(ClaimsPrincipal principal, long id);
     Task UpdateTestSuiteAsync(ClaimsPrincipal principal, TestSuite suite);
     Task DeleteTestSuiteByIdAsync(ClaimsPrincipal principal, long testSuiteId);
-    Task<TestSuite?> GetTestSuiteBySlugAsync(ClaimsPrincipal principal, string slug);
+    Task<TestSuite?> GetTestSuiteBySlugAsync(ClaimsPrincipal principal, long? projectId, string slug);
     Task<TestSuite?> GetTestSuiteByNameAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string suiteName);
 
     /// <summary>

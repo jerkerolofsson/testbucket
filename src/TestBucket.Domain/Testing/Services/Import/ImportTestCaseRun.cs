@@ -1,18 +1,9 @@
-﻿using System.Diagnostics;
-using System.Text;
-
-using Mediator;
+﻿using Mediator;
 
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
-using TestBucket.Domain.Files;
-using TestBucket.Domain.Files.Models;
-using TestBucket.Domain.Projects;
-using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.States;
-using TestBucket.Domain.Teams;
 using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Formats;
@@ -51,7 +42,7 @@ public class ImportTestCaseRunHandler : IRequestHandler<ImportTestCaseRunRequest
         ArgumentNullException.ThrowIfNull(request.TestCaseRun.TestCaseSlug);
         var testRun = request.Run;
         var testCaseRunDto = request.TestCaseRun;
-        var testCase = await _testCaseManager.GetTestCaseBySlugAsync(principal, request.TestCaseRun.TestCaseSlug);
+        var testCase = await _testCaseManager.GetTestCaseBySlugAsync(principal, request.Run.TestProjectId, request.TestCaseRun.TestCaseSlug);
         if (testCase is null)
         {
             throw new ArgumentException("Invalid test case slug");

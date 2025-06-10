@@ -13,9 +13,6 @@ using TestBucket.Domain.Testing.Specifications.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Events;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-
-
 namespace TestBucket.Domain.Testing.TestRuns;
 internal class TestRunManager : ITestRunManager
 {
@@ -62,9 +59,9 @@ internal class TestRunManager : ITestRunManager
     }
 
     /// <inheritdoc/>
-    public async Task<TestRun?> GetTestRunBySlugAsync(ClaimsPrincipal principal, string slug)
+    public async Task<TestRun?> GetTestRunBySlugAsync(ClaimsPrincipal principal, long? projectId, string slug)
     {
-        return await _testCaseRepo.GetTestRunBySlugAsync(principal.GetTenantIdOrThrow(), slug);
+        return await _testCaseRepo.GetTestRunBySlugAsync(principal.GetTenantIdOrThrow(), projectId, slug);
     }
 
     /// <inheritdoc/>

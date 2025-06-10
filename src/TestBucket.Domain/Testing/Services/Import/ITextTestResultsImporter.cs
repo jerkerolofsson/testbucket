@@ -3,7 +3,7 @@
 using TestBucket.Formats;
 using TestBucket.Formats.Dtos;
 
-namespace TestBucket.Domain.Testing;
+namespace TestBucket.Domain.Testing.Services.Import;
 public interface ITextTestResultsImporter
 {
     Task ImportRunAsync(ClaimsPrincipal principal, long teamId, long projectId, TestRunDto run, ImportHandlingOptions options);

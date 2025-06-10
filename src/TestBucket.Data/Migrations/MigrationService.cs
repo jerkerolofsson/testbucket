@@ -189,10 +189,21 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         string? jwtIssuer = seedConfiguration.Issuer;
         string? jwtAudience = seedConfiguration.Audience;
 
-        if(seedConfiguration.PublicEndpointUrl is { })
+        if (seedConfiguration.PublicEndpointUrl is { })
         {
             settings.PublicEndpointUrl = seedConfiguration.PublicEndpointUrl;
             changed = true;
+        }
+
+        if (seedConfiguration.OllamaBaseUrl is { })
+        {
+            // Only do it the first time.. after this, it is done in the UI
+            if (settings.AiProviderUrl is null)
+            {
+                settings.AiProvider = "ollama";
+                settings.AiProviderUrl = seedConfiguration.OllamaBaseUrl;
+                changed = true;
+            }
         }
 
         // Default values if not set in environment variables

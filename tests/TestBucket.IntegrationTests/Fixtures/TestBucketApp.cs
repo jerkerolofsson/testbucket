@@ -20,6 +20,8 @@ namespace TestBucket.IntegrationTests.Fixtures
     {
         private DistributedApplication? _app;
 
+        public string HttpBaseUrl => _app?.GetEndpoint("testbucket", "http")?.ToString() ?? throw new InvalidOperationException("Not initialized yet");
+
         public string Tenant => _configuration.Tenant ?? throw new InvalidOperationException("Invalid SeedConfiguration in fixture");
         public SeedConfiguration Configuration => _configuration;
 
@@ -36,7 +38,18 @@ namespace TestBucket.IntegrationTests.Fixtures
         /// <summary>
         /// A principal with admin access
         /// </summary>
-        public ClaimsPrincipal SiteAdministrator => Impersonation.Impersonate(_configuration.Tenant); 
+        public ClaimsPrincipal SiteAdministrator => Impersonation.Impersonate(_configuration.Tenant);
+
+        /// <summary>
+        /// Generates a project access token
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <returns></returns>
+        public string GenerateProjectAccessToken(ClaimsPrincipal principal, long projectId)
+        {
+            var apiKeyGenerator = new ApiKeyGenerator(_configuration.SymmetricKey!, _configuration.Issuer!, _configuration.Audience!);
+            return apiKeyGenerator.GenerateAccessToken(principal, projectId, DateTime.UtcNow.AddDays(100));
+        }
 
         /// <summary>
         /// Generates an access token for the specified user

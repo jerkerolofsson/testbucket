@@ -26,8 +26,6 @@ namespace TestBucket.IntegrationTests.TestRuns
                 var run = await App.Client.TestRuns.AddRunAsync(inputRun);
                 Assert.NotNull(run);
                 Assert.NotNull(run.Slug);
-
-
             }
             finally
             {

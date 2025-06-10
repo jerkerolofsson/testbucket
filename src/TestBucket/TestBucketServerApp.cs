@@ -305,6 +305,7 @@ public static class TestBucketServerApp
 
         // Test Case Run
 
+        builder.Services.AddScoped<ICommand, ImportTestCasesCommand>();
         builder.Services.AddScoped<ICommand, ImportTestResultsCommand>();
 
         builder.Services.AddScoped<ICommand, LinkIssueCommand>();

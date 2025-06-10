@@ -1,4 +1,6 @@
-﻿using TestBucket.Formats.Dtos;
+﻿
+using TestBucket.Contracts.Fields;
+using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Contracts.Testing.Models;
 
@@ -55,7 +57,18 @@ public class TestCaseDto
     public string? TestSuiteSlug { get; set; }
 
     /// <summary>
+    /// Name for the test suite
+    /// </summary>
+    public string? TestSuiteName { get; set; }
+
+    /// <summary>
     /// Type of test case
     /// </summary>
     public TestExecutionType ExecutionType { get; set; }
+
+    /// <summary>
+    /// Folder path
+    /// </summary>
+    public string? Path { get; set; }
+    public string? ExternalDisplayId { get; set; }
 }

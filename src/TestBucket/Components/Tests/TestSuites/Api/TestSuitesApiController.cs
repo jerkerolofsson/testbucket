@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using TestBucket.Controllers.Api;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Shared;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Testing.Mapping;
 using TestBucket.Domain.Testing.TestSuites;
@@ -76,7 +77,8 @@ public class TestSuitesApiController : ProjectApiControllerBase
         {
             return Unauthorized();
         }
-        var suite = await _testSuiteManager.GetTestSuiteBySlugAsync(User, slug);
+        var projectId = User.GetProjectId();
+        var suite = await _testSuiteManager.GetTestSuiteBySlugAsync(User, projectId, slug);
         if (suite is null)
         {
             return NotFound();
@@ -94,7 +96,7 @@ public class TestSuitesApiController : ProjectApiControllerBase
             return Unauthorized();
         }
 
-        var testSuite = await _testSuiteManager.GetTestSuiteBySlugAsync(User, slug);
+        var testSuite = await _testSuiteManager.GetTestSuiteBySlugAsync(User, User.GetProjectId(), slug);
         if(testSuite is null)
         {
             return NotFound();

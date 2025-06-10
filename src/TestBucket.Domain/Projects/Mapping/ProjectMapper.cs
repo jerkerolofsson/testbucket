@@ -13,6 +13,7 @@ public static class ProjectMapper
     {
         var dto = new TestProject
         {
+            Id= project.Id,
             Name = project.Name,
             Slug = project.Slug,
             ShortName = project.ShortName,
@@ -32,6 +33,7 @@ public static class ProjectMapper
     {
         var dto = new ProjectDto
         {
+            Id = project.Id,
             Name = project.Name,
             Slug = project.Slug,
             ShortName = project.ShortName,

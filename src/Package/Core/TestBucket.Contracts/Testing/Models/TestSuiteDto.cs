@@ -35,9 +35,25 @@ namespace TestBucket.Formats.Dtos
         /// Slug for the project
         /// </summary>
         public string? ProjectSlug { get; set; }
+
+        /// <summary>
+        /// Test suite variables
+        /// </summary>
         public Dictionary<string, string>? Variables { get; set; }
+
+        /// <summary>
+        /// CI/CD system name
+        /// </summary>
         public string? CiCdSystem { get; set; }
+
+        /// <summary>
+        /// ID of the external system that this test suite is associated with, e.g. a Jira ID or GitHub ID
+        /// </summary>
         public long? ExternalSystemId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the default reference name used for CI/CD operations.
+        /// </summary>
         public string? DefaultCiCdRef { get; set; }
     }
 }

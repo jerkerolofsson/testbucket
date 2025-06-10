@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using TestBucket.Domain.Files.IntegrationEvents;
-using TestBucket.Domain.Testing;
+using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Formats;
 

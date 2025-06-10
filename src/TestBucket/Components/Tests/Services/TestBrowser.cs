@@ -10,7 +10,6 @@ using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Models;
 using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Components.Tests.TestSuites.Services;
-using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain;
 using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Code.Services;
@@ -18,9 +17,9 @@ using TestBucket.Domain.Files;
 using TestBucket.Domain.Milestones;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams;
-using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.ImportExport;
+using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestCases.Search;
@@ -44,6 +43,7 @@ internal class TestBrowser : TenantBaseService
     private readonly AppNavigationManager _appNavigationManager;
     private readonly PipelineController _pipelineController;
     private readonly IStringLocalizer<SharedStrings> _loc;
+    private readonly ITestCaseImporter _testCaseImporter;
 
     // todo: migrate to domain manager!
     private readonly ITestCaseRepository _testCaseRepository;
@@ -77,7 +77,8 @@ internal class TestBrowser : TenantBaseService
         ITeamManager teamManager,
         FieldController fieldController,
         IMilestoneManager milestoneManager,
-        IArchitectureManager architectureManager) : base(authenticationStateProvider)
+        IArchitectureManager architectureManager,
+        ITestCaseImporter testCaseImporter) : base(authenticationStateProvider)
 
     {
         _testSuiteService = testSuiteService;
@@ -94,6 +95,7 @@ internal class TestBrowser : TenantBaseService
         _fieldController = fieldController;
         _milestoneManager = milestoneManager;
         _architectureManager = architectureManager;
+        _testCaseImporter = testCaseImporter;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -121,12 +123,12 @@ internal class TestBrowser : TenantBaseService
     }
 
     /// <summary>
-    /// Imports test cases for the specified team/project
+    /// Imports test results for the specified team/project
     /// </summary>
     /// <param name="team"></param>
     /// <param name="project"></param>
     /// <returns></returns>
-    public async Task ImportAsync(Team? team, TestProject project)
+    public async Task ImportResultsAsync(Team? team, TestProject project)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         var tenantId = await GetTenantIdAsync();
@@ -142,7 +144,7 @@ internal class TestBrowser : TenantBaseService
         }
 
         // Show dialog
-        var dialog = await _dialogService.ShowAsync<ImportResultsDialog>(null, DefaultBehaviors.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<ImportResultsDialog>(_loc["import-test-results"], DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
 
         if (result?.Data is ImportOptions importOptions && importOptions.File?.Id is not null)
@@ -151,8 +153,59 @@ internal class TestBrowser : TenantBaseService
             var resource = await _fileRepository.GetResourceByIdAsync(tenantId, importOptions.File.Id);
             if (resource is not null)
             {
-                string xml = TextConversionUtils.FromUtf8(resource.Data, removeBom: true);
-                await _textImporter.ImportTextAsync(principal, team.Id, project.Id, importOptions.Format, xml, importOptions.HandlingOptions);
+                string xml = TextConversionUtils.FromBomEncoded(resource.Data);
+                try
+                {
+                    await _textImporter.ImportTextAsync(principal, team.Id, project.Id, importOptions.Format, xml, importOptions.HandlingOptions);
+                }
+                catch (Exception ex)
+                {
+                    await _dialogService.ShowMessageBox("Error", ex.Message);
+                }
+            }
+        }
+    }
+
+
+    /// <summary>
+    /// Imports test cases for the specified team/project
+    /// </summary>
+    /// <param name="team"></param>
+    /// <param name="project"></param>
+    /// <returns></returns>
+    public async Task ImportTestCasesAsync(Team? team, TestProject project)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var tenantId = await GetTenantIdAsync();
+
+        if (project.TeamId is null)
+        {
+            return;
+        }
+        team ??= await _teamManager.GetTeamByIdAsync(principal, project.TeamId.Value);
+        if (team is null)
+        {
+            return;
+        }
+
+        // Show dialog
+        var dialog = await _dialogService.ShowAsync<ImportRepoDialog>(_loc["import-test-cases"], DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+
+        if (result?.Data is ImportOptions importOptions && importOptions.File?.Id is not null)
+        {
+            // Get the uploaded file and import it
+            var resource = await _fileRepository.GetResourceByIdAsync(tenantId, importOptions.File.Id);
+            if (resource is not null)
+            {
+                try
+                {
+                    await _testCaseImporter.ImportAsync(principal, team.Id, project.Id, resource.Data, resource.ContentType, importOptions.HandlingOptions);
+                }
+                catch(Exception ex)
+                {
+                    await _dialogService.ShowMessageBox("Error", ex.Message);
+                }
             }
         }
     }

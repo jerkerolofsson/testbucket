@@ -30,4 +30,9 @@
         </AssemblyAttribute>
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="CsvHelper" Version="33.1.0" />
+      <PackageReference Include="Slugify.Core" Version="5.1.1" />
+    </ItemGroup>
+
 </Project>

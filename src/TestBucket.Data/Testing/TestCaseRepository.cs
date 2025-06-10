@@ -1,20 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
-
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Caching.Memory;
 
 using TestBucket.Contracts.Testing.Models;
-using TestBucket.Data.Migrations;
 using TestBucket.Domain.Insights.Model;
-using TestBucket.Domain.Issues.Models;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
-using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Testing.TestRuns.Search;
-
-using UglyToad.PdfPig.Filters;
 
 namespace TestBucket.Data.Testing;
 internal class TestCaseRepository : ITestCaseRepository
@@ -100,10 +89,33 @@ internal class TestCaseRepository : ITestCaseRepository
     }
 
     /// <inheritdoc/>
-    public async Task<TestCase?> GetTestCaseBySlugAsync(string tenantId, string slug)
+    public async Task<TestCase?> GetTestCaseBySlugAsync(string tenantId, long? projectId, string slug)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestCases.AsNoTracking().Where(x => x.TenantId == tenantId && x.Slug == slug).FirstOrDefaultAsync();
+        var query = dbContext.TestCases.AsNoTracking().Where(x => x.TenantId == tenantId && x.Slug == slug);
+        if(projectId is not null)
+        {
+            query = query.Where(x => x.TestProjectId == projectId);
+        }
+            
+        return await query.FirstOrDefaultAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<TestCase?> GetTestCaseByNameAsync(string tenantId, long? projectId, long? testSuiteId, string name)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var query = dbContext.TestCases.AsNoTracking().Where(x => x.TenantId == tenantId && x.Name == name);
+        if (projectId is not null)
+        {
+            query = query.Where(x => x.TestProjectId == projectId);
+        }
+        if (testSuiteId is not null)
+        {
+            query = query.Where(x => x.TestSuiteId == testSuiteId);
+        }
+
+        return await query.FirstOrDefaultAsync();
     }
 
     /// <inheritdoc/>
@@ -367,10 +379,15 @@ internal class TestCaseRepository : ITestCaseRepository
     #region Test Suites
 
     /// <inheritdoc/>
-    public async Task<TestSuite?> GetTestSuiteBySlugAsync(string tenantId, string slug)
+    public async Task<TestSuite?> GetTestSuiteBySlugAsync(string tenantId, long? projectId, string slug)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestSuites.AsNoTracking().Where(x => x.TenantId == tenantId && x.Slug == slug).FirstOrDefaultAsync();
+        var query = dbContext.TestSuites.AsNoTracking().Where(x => x.TenantId == tenantId && x.Slug == slug);
+        if(projectId is not null)
+        {
+            query = query.Where(x => x.TestProjectId == projectId);
+        }
+        return await query.FirstOrDefaultAsync();
     }
     /// <inheritdoc/>
     public async Task<TestSuite?> GetTestSuiteByIdAsync(string tenantId, long id)
@@ -633,15 +650,22 @@ internal class TestCaseRepository : ITestCaseRepository
     #region Test Runs
 
     /// <inheritdoc/>
-    public async Task<TestRun?> GetTestRunBySlugAsync(string tenantId, string slug)
+    public async Task<TestRun?> GetTestRunBySlugAsync(string tenantId, long? projectId, string slug)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestRuns.AsNoTracking()
+        var query = dbContext.TestRuns.AsNoTracking()
             .Include(x => x.TestRunFields)
             .Include(x => x.Team)
             .Include(x => x.TestProject)
             .Include(x => x.Comments)
-            .Where(x => x.TenantId == tenantId && x.Slug == slug).FirstOrDefaultAsync();
+            .Where(x => x.TenantId == tenantId && x.Slug == slug);
+
+        if(projectId is not null)
+        {
+            query = query.Where(x => x.TestProjectId == projectId);
+        }
+
+        return await query.FirstOrDefaultAsync();
     }
 
     /// <inheritdoc/>

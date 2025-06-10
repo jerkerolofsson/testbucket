@@ -1,0 +1,92 @@
+"ID","Title","Automation Type","Created By","Created On","Estimate","Expected Result","Forecast","Goals","Mission","Preconditions","Priority","References","Section","Section Depth","Section Description","Section Hierarchy","Steps","Steps (Additional Info)","Steps (Expected Result)","Steps (References)","Steps (Shared step ID)","Steps (Step)","Suite","Suite ID","Template","Type","Updated By","Updated On"
+"C2269","Check user should Register by filling all the required fields"," None","Tetiana Katrusha","12/1/2021 11:38 AM","","1. Users should be registered successfully.
+2. A successful registration message should show.
+3. Mail should send","","","","Required fields","High","","registration","0","","registration","1. Enter valid values in the required fields.
+2. Click the Register button.","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/1/2021 11:38 AM"
+"C2270","Check all the optional fields when do not fill data"," None","Tetiana Katrusha","12/1/2021 11:38 AM","","1. It should not ask to fill the optional fields
+2. User should be registered successfully
+","","","","Optional Fields","Low","","registration","0","","registration","1. Do not enter any detail in optional fields
+2. Enter valid data in required fields
+3. Click on the Signup button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/1/2021 12:10 PM"
+"C2271","Check all the optional fields when filling data"," None","Tetiana Katrusha","12/1/2021 11:39 AM","","1. User should be registered successfully
+2. A successful registration message should show
+3. Mail should send ","","","","Optional Fields","Medium","","registration","0","","registration","1. Enter valid data in optional fields
+2. Enter valid data in required fields
+3. Click on the Register button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/1/2021 11:39 AM"
+"C2272","Check all the valid emails"," None","Tetiana Katrusha","12/13/2021 3:10 PM","","It should not show any validation ","","","","Email validation","Critical","","validation","0","","validation","1. Enter valid Emails
+2. Click on the Register Button.","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 3:11 PM"
+"C2273","Phone Number validation"," None","Tetiana Katrusha","12/13/2021 3:16 PM","","It should show the validation message 8 for Phone Number","","","","Check the phone number when passing alphanumeric data","High","","validation","0","","validation","1. Enter alphanumeric data in phone field
+2. Click on Register button	","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 3:17 PM"
+"C2274","Check the phone number when not pass country code"," None","Tetiana Katrusha","12/13/2021 3:18 PM","","It should show the validation message for country code is required","","","","9012078654	","Low","","validation","0","","validation","1. Enter valid phone number without country code
+2. Click on Register button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 3:18 PM"
+"C2275","Check the phone number when passing country code"," None","Tetiana Katrusha","12/13/2021 3:19 PM","","It should not show any validation message","","","","Phone Number validation	","Medium","","validation","0","","validation","1. Enter valid phone number with country code
+2. Click on Register button	","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 3:20 PM"
+"C2276","Check the password limit when enter value less than min"," None","Tetiana Katrusha","12/13/2021 3:20 PM","","It should show validation message","","","","Password Validation","Medium","","validation","0","","validation","1. Enter value which is alphanumeric but less than 8.
+2. Click on Register button	","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 3:21 PM"
+"C2277","Check the password limit when enter value greater than max"," None","Tetiana Katrusha","12/13/2021 3:22 PM","","It should show validation message","","","","Password Validation","Critical","","validation","0","","validation","1. Enter alphanumeric value but more than 32 (Any Random string with numbers)
+2. Click on Register button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 3:23 PM"
+"C2278","Check the password when passing only numbers"," None","Tetiana Katrusha","12/13/2021 3:24 PM","","It should show validation message","","","","Password Validation","Medium","","validation","0","","validation","1. Enter a value in numbers which is in between 8-32
+2. Click on Register button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 3:24 PM"
+"C2279","Check the password when passing valid data"," None","Tetiana Katrusha","12/13/2021 3:25 PM","","It should not show any validation message","","","","Password Validation","Medium","","validation","0","","validation","1. Enter value in alphanumeric which is in between 8-32
+2. Click on Register button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 3:25 PM"
+"C2298","Verify new users should get the welcome email once after the login."," None","Tetiana Katrusha","12/13/2021 4:17 PM","","Users should get a welcome email on his/her email id.","","","","","Low","","Welcome Email","0","Welcome Email description","Welcome Email","1. Go to the Email.
+2. Enter Login Email.","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 4:18 PM"
+"C2299","Verify when passing incorrect Email and correct password"," None","Tetiana Katrusha","12/13/2021 4:18 PM","","User should not be able to log in and the error message should be displayed.","","","","","Medium","","Welcome Email","0","Welcome Email description","Welcome Email","1. Enter incorrect Email.
+2. Enter the correct password.
+3. Click on the Login Button.","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 4:19 PM"
+"C2300","Verify when passing both incorrect Email and password"," None","Tetiana Katrusha","12/13/2021 4:19 PM","","User should not be able to log in and the error message should be displayed.","","","","","Medium","","Welcome Email","0","Welcome Email description","Welcome Email","1. Enter incorrect Email.
+2. Enter the correct password.
+3. Click on the Login Button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 4:20 PM"
+"C2301","Verify Forgot Password sends a forgot password link."," None","Tetiana Katrusha","12/13/2021 4:20 PM","","User should get the forgot password link on his/her email id.","","","","User Forgot Password.","Medium","","Welcome Email","0","Welcome Email description","Welcome Email","1. Click on the Forgot Password link.
+2. Enter Email and click on the send button.
+3. Now go to mail7.io and enter the email id.","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 4:21 PM"
+"C2285","Check all the text boxes and buttons"," None","Tetiana Katrusha","12/13/2021 3:51 PM","","UI should be perfect
+Text boxes and button should be aligned","","","","","Critical","","Login page","0","Test Cases for Login Page","Login page","Check Page","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:44 PM"
+"C2286","Check the required fields by not filling any data"," None","Tetiana Katrusha","12/13/2021 3:53 PM","","User should not log in and should show proper error message","","","","Required Fields","Medium","","Login page","0","Test Cases for Login Page","Login page","1. Enter invalid username
+2. Enter correct password
+3. Click on Login Button	","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:44 PM"
+"C2287","Check When passing a correct username and invalid password"," None","Tetiana Katrusha","12/13/2021 3:54 PM","","User should not log in and should show proper error message","","","","User Login","Medium","","Login page","0","Test Cases for Login Page","Login page","1. Enter valid username
+2. Enter incorrect password
+3. Click on Login Button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:44 PM"
+"C2288","Check Keeping Password"," None","Tetiana Katrusha","12/13/2021 3:57 PM","","User should not log in and should show proper error message","","","","","Critical","","User Interface","0","","User Interface","1. Enter valid username
+2. Do not enter password
+3. Click on Login Button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:45 PM"
+"C2289","Check when pass correct email and password"," None","Tetiana Katrusha","12/13/2021 3:58 PM","","User should log in","","","","User Login","High","","User Interface","0","","User Interface","1. Enter valid username
+2. Enter valid password
+3. Click on Login Button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:45 PM"
+"C2290","Check if the password is entered in encrypted"," None","Tetiana Katrusha","12/13/2021 3:59 PM","","Password is entered in encrypted form","","","","User Login","Medium","","User Interface","0","","User Interface","1. Enter valid username
+2. Enter password
+3. Click on Login Button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:45 PM"
+"C2291","Signup Option for new users"," None","Tetiana Katrusha","12/13/2021 4:03 PM","","Clicking signup link takes the user to signup page successfully","","","","","Low","","User Interface","0","","User Interface","Check whether the signup link for the new user is working
+Click Signup link	","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:45 PM"
+"C2292","Verify user should get an error message when he/she enters not registered email id"," None","Tetiana Katrusha","12/13/2021 4:10 PM","","User should get an error message.","","","","Forgot Password","Medium","","User Interface","0","","User Interface","1. Click on the Forgot password link.
+2. Enter unregistered email id and click on the send button.","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:45 PM"
+"C2293","Verify user should get an error message when he/she enters the previous password."," None","Tetiana Katrusha","12/13/2021 4:11 PM","","User should get an error message.","","","","Reset Password","High","","User Interface","0","","User Interface","1. Go to the reset password link.
+2. Enter the previous password.
+3. Click on the Reset Password button.","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:45 PM"
+"C2294","Verify user should get an error message when password and confirm password not matches"," None","Tetiana Katrusha","12/13/2021 4:13 PM","","Users should get an error message.","","","","Reset Password","Critical","","User Interface","0","","User Interface","1. Go to the reset password link.
+2. Enter a different new password and a confirm password.
+3. Click on the Reset Password button.","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:45 PM"
+"C2295","Verify user should able to login with a new password"," None","Tetiana Katrusha","12/13/2021 4:14 PM","","User should able to login","","","","","High","","User Interface","0","","User Interface","1. Go to the reset password link.
+2. Enter a new password and a confirm password.
+3. Click on the Reset Password button.
+4. Log in by using the new password.","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:45 PM"
+"C2296","Verify if the user enters a new password that does not cover the basic requirements of password then the user should be displayed error message"," None","Tetiana Katrusha","12/13/2021 4:15 PM","","Users should get an error message.","","","","","Low","","User Interface","0","","User Interface","1. Go to the reset password link.
+2. Enter a new password that does not cover the basic requirements.
+3. Click on the Reset Password.","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:45 PM"
+"C2297","Verify if blank spaces are passed in required fields."," None","Tetiana Katrusha","12/13/2021 4:15 PM","","Those Blank spaces should trim and Validation error message for required fields should visible.","","","","","Medium","","User Interface","0","","User Interface","1. Go to the Site.
+2. Passed blank spaces in required fields.
+3. Click on the Login button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:45 PM"
+"C2280","Verify if blank spaces are passed in required fields"," None","Tetiana Katrusha","12/13/2021 3:32 PM","","Those Blank spaces should trim and Validation error message for required fields should visible.","","","","","Critical","","Required Fields","0","","Required Fields","1. Go to the Site.
+2. Passed blank spaces in required fields.
+3. Click on the Register button	","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:47 PM"
+"C2281","Verify user can verify its Email ID"," None","Tetiana Katrusha","12/13/2021 3:34 PM","","User should get a verification link and able to verify his/her Email ID.","","","","Required Fields","High","","Required Fields","0","","Required Fields","1. Go to the Email.
+2. Click on the verification link.","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:47 PM"
+"C2282","Verify if the length of the phone number is incorrect i.e. less than 10"," None","Tetiana Katrusha","12/13/2021 3:36 PM","","It should show the validation error message for phone number length","","","","Phone Number Validation	","Medium","","Required Fields","0","","Required Fields","1. Enter phone number less than 10 digits.
+2. Enter all required fields.
+3. Click on Register Button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:47 PM"
+"C2283","Verify if the length of the phone number is incorrect i.e. more than 10"," None","Tetiana Katrusha","12/13/2021 3:43 PM","","It should show the validation error message for phone number length.","","","","Phone Number Validation","Low","","Required Fields","0","","Required Fields","1. Enter phone number less than 10 digits.
+2. Enter all required fields.
+3. Click on Register Button","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:47 PM"
+"C2284","Verify if the password required rules are not satisfied in the password"," None","Tetiana Katrusha","12/13/2021 3:46 PM","","It should display error with required rules for password value (like it should contain a special character, a small case, a number)","","","","","Medium","","Required Fields","0","","Required Fields","1. Enter the password which not satisfies the required rule.
+2. Click on Register button	pass","","","","","","registration and login page","S9","Test Case (Text)","Other","Tetiana Katrusha","12/13/2021 5:47 PM"

@@ -245,7 +245,7 @@ public partial class TestTreeView
         {
             return;
         }
-        await testBrowser.ImportAsync(_team, _project);
+        await testBrowser.ImportResultsAsync(_team, _project);
     }
 
     private async Task OnSelectedValueChangedAsync(BrowserItem? item)

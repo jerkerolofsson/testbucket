@@ -4,26 +4,42 @@ using ModelContextProtocol.Server;
 
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.ApiKeys;
+using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Testing.TestCases.Mcp;
 
 [McpServerToolType]
-public class McpTestCaseTool : AuthenticatedTool
+public class TestCaseMcpTools : AuthenticatedTool
 {
     private readonly ITestCaseManager _testCaseManager;
 
-    public McpTestCaseTool(ITestCaseManager testCaseManager, IApiKeyAuthenticator apiKeyAuthenticator) : base(apiKeyAuthenticator)
+    public TestCaseMcpTools(ITestCaseManager testCaseManager, IApiKeyAuthenticator apiKeyAuthenticator) : base(apiKeyAuthenticator)
     {
         _testCaseManager = testCaseManager;
+    }
+
+    [McpServerTool(Name = "add-test-case"), Description("Adds a test case with a name and description to an existing test suite")]
+    public async Task AddTestCase(long testSuiteId, string testCaseName, string testCaseDescription)
+    {
+        var isAuthenticated = await IsAuthenticatedAsync();
+        if (isAuthenticated && _principal is not null)
+        {
+            var testCase = new TestCase
+            {
+                TestProjectId = _principal.GetProjectId(),
+                TestSuiteId = testSuiteId,
+                Name = testCaseName,
+                Description = testCaseDescription
+            };
+            await _testCaseManager.AddTestCaseAsync(_principal, testCase);
+        }
     }
 
     /// <summary>
     /// Returns the name of the user that is authenticated with the API key.
     /// </summary>
-    /// <param name="server"></param>
-    /// <param name="message"></param>
     /// <returns></returns>
-    [McpServerTool, Description("Gets number of test cases per category (unit tests, integration tests, end-to-end tests, api tests..)")]
+    [McpServerTool(Name = "get-number-of-testcases-by-category"), Description("Gets number of test cases per category (unit tests, integration tests, end-to-end tests, api tests..)")]
     public async Task<Dictionary<string,int>> GetNumberOfTestCasesByCategoryAsync()
     {
         var isAuthenticated = await IsAuthenticatedAsync();
@@ -46,6 +62,7 @@ public class McpTestCaseTool : AuthenticatedTool
                     }
                 }
             }
+            return map;
         }
         return [];
     }

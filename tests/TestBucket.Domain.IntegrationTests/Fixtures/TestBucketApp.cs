@@ -1,20 +1,15 @@
-﻿using DotNet.Testcontainers.Builders;
-using Mediator;
+﻿using Mediator;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
 using System.Security.Claims;
 using TestBucket.Contracts;
 using TestBucket.Contracts.Identity;
 using TestBucket.Data;
 using TestBucket.Data.Migrations;
-using TestBucket.Domain.Identity;
-using TestBucket.Domain.IntegrationTests.Fixtures;
 using TestBucket.Domain.Settings.Models;
+using Testcontainers.Ollama;
 using Testcontainers.PostgreSql;
-using Xunit;
 using Xunit.Sdk;
 
 [assembly: AssemblyFixture(typeof(TestBucketApp))]
@@ -53,9 +48,11 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
             Password = "Password@123",
             SymmetricKey = "01234567890123456789012345678901234567890123456789",
             Audience = "testbucket",
-            Issuer = "testbucket"
+            Issuer = "testbucket",
         };
         private PostgreSqlContainer? _postgresContainer;
+
+        private OllamaContainer? _ollamaContainer;
 
         /// <summary>
         /// A principal with admin access
@@ -86,12 +83,28 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
                 _host = null;
             }
 
+            if(_ollamaContainer is not null)
+            {
+                await _ollamaContainer.DisposeAsync();
+            }
+
             if (_postgresContainer is not null)
             {
                 await _postgresContainer.DisposeAsync();
             }
         }
+        private async Task StartOllamaAsync()
+        {
+            var builder = new OllamaBuilder();
+            builder.WithExposedPort(11435);
 
+            _ollamaContainer = builder.Build();
+            _configuration.OllamaBaseUrl = "http://localhost:11435";
+
+            // Start the container.
+            await _ollamaContainer.StartAsync()
+              .ConfigureAwait(false);
+        }
         private async Task StartPostgresAsync()
         {
             PostgreSqlBuilder builder = new PostgreSqlBuilder();
@@ -113,9 +126,12 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
             Environment.SetEnvironmentVariable(TestBucketEnvironmentVariables.TB_JWT_AUD, _configuration.Audience);
             Environment.SetEnvironmentVariable(TestBucketEnvironmentVariables.TB_ADMIN_USER, _configuration.Email);
             Environment.SetEnvironmentVariable(TestBucketEnvironmentVariables.TB_ADMIN_PASSWORD, _configuration.Password);
+            
             Environment.SetEnvironmentVariable("TB_IS_INTEGRATION_TEST", "yes");
 
             await StartPostgresAsync();
+            await StartOllamaAsync();
+            Environment.SetEnvironmentVariable(TestBucketEnvironmentVariables.TB_OLLAMA_BASE_URL, _configuration.OllamaBaseUrl);
 
             var builder = new HostBuilder();
             
@@ -131,6 +147,7 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
                     AccessToken = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_ADMIN_ACCESS_TOKEN),
                     PublicEndpointUrl = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_PUBLIC_ENDPOINT),
                     Password = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_ADMIN_PASSWORD),
+                    OllamaBaseUrl = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_OLLAMA_BASE_URL),
                 };
                 services.AddSingleton(seedConfiguration);
 

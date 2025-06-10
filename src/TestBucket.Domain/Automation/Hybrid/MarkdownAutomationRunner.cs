@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Progress;
-using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Domain.Automation.Hybrid;

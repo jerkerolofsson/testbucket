@@ -139,11 +139,28 @@ public static class SystemFieldDefinitions
         Target = FieldTarget.Requirement,
         RequiredPermission = PermissionLevel.Approve
     };
+
+
+    private static readonly FieldDefinition _testCategory = new()
+    {
+        Name = "Test Category",
+        Trait = "TestCategory",
+        TraitType = TraitType.TestCategory,
+        IsVisible = true,
+        Type = FieldType.SingleSelection,
+        IsDefinedBySystem = true,
+        Inherit = true,
+        ShowDescription = false,
+        UseClassifier = false,
+        Options = ["Unit", "Integration", "E2E", "API"],
+        Target = FieldTarget.TestCase | FieldTarget.TestCaseRun,
+        RequiredPermission = PermissionLevel.Write
+    };
     public static FieldDefinition[] Fixed
     {
         get
         {
-            return [_requirementApproval, _feature, _milestone, _commit, _branch, _label];
+            return [_requirementApproval, _feature, _milestone, _commit, _branch, _label, _testCategory];
         }
     }
 }

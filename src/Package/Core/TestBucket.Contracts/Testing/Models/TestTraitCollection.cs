@@ -272,6 +272,36 @@ namespace TestBucket.Formats.Dtos
             set => SetAttribute(TraitType.Tag, value);
         }
 
+        /// <summary>
+        /// Component
+        /// </summary>
+        [JsonIgnore]
+        public string? Component
+        {
+            get => GetAttribute(TraitType.Component);
+            set => SetAttribute(TraitType.Component, value);
+        }
+
+        /// <summary>
+        /// Feature
+        /// </summary>
+        [JsonIgnore]
+        public string? Feature
+        {
+            get => GetAttribute(TraitType.Feature);
+            set => SetAttribute(TraitType.Feature, value);
+        }
+
+        /// <summary>
+        /// Priority
+        /// </summary>
+        [JsonIgnore]
+        public string? TestPriority
+        {
+            get => GetAttribute(TraitType.TestPriority);
+            set => SetAttribute(TraitType.TestPriority, value);
+        }
+
         #endregion Convenience trait access properties
 
         /// <summary>

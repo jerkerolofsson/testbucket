@@ -767,4 +767,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="add-new-team" xml:space="preserve">
     <value>Add new team</value>
   </data>
+  <data name="max-file-size" xml:space="preserve">
+    <value>Maximum file size: {0}</value>
+  </data>
+  <data name="import-test-cases" xml:space="preserve">
+    <value>Import test cases</value>
+  </data>
 </root>

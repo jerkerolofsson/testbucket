@@ -233,16 +233,16 @@ namespace TestBucket.Domain.Testing.TestCases
 
         public async Task<TestCase?> GetTestCaseByIdAsync(ClaimsPrincipal principal, long testCaseId)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Delete);
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
             var tenantId = principal.GetTenantIdOrThrow();
             return await _testCaseRepo.GetTestCaseByIdAsync(tenantId, testCaseId);
         }
 
-        public async Task<TestCase?> GetTestCaseBySlugAsync(ClaimsPrincipal principal, string slug)
+        public async Task<TestCase?> GetTestCaseBySlugAsync(ClaimsPrincipal principal, long? projectId, string slug)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Delete);
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
             var tenantId = principal.GetTenantIdOrThrow();
-            return await _testCaseRepo.GetTestCaseBySlugAsync(tenantId, slug);
+            return await _testCaseRepo.GetTestCaseBySlugAsync(tenantId, projectId, slug);
         }
 
         public async Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId)
@@ -327,5 +327,12 @@ namespace TestBucket.Domain.Testing.TestCases
             return await _testCaseRepo.GetInsightsTestCountPerFieldAsync(filters, field.Id);
         }
 
+
+        public async Task<TestCase?> GetTestCaseByNameAsync(ClaimsPrincipal principal, long? projectId, long? testSuiteId, string name)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
+            var tenantId = principal.GetTenantIdOrThrow();
+            return await _testCaseRepo.GetTestCaseByNameAsync(tenantId, projectId, testSuiteId, name);
+        }
     }
 }

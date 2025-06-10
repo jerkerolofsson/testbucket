@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using TestBucket.Controllers.Api;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Shared;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Testing.Mapping;
 using TestBucket.Domain.Testing.TestCases;
@@ -19,13 +21,17 @@ public class TestCaseApiController : ProjectApiControllerBase
     private readonly ITestCaseManager _testCaseManager;
     private readonly ITestSuiteManager _testSuiteManager;
     private readonly IProjectManager _projectManager;
+    private readonly IFieldDefinitionManager _fieldDefinitionManager;
+    private readonly IFieldManager _fieldManager;
 
-    public TestCaseApiController(ITestCaseManager testCaseManager, ITeamManager teamManager, IProjectManager projectManager, ITestSuiteManager testSuiteManager)
+    public TestCaseApiController(ITestCaseManager testCaseManager, ITeamManager teamManager, IProjectManager projectManager, ITestSuiteManager testSuiteManager, IFieldDefinitionManager fieldDefinitionManager, IFieldManager fieldManager)
     {
         _testCaseManager = testCaseManager;
         _teamManager = teamManager;
         _projectManager = projectManager;
         _testSuiteManager = testSuiteManager;
+        _fieldDefinitionManager = fieldDefinitionManager;
+        _fieldManager = fieldManager;
     }
 
     [Authorize("ApiKeyOrBearer")]
@@ -37,7 +43,7 @@ public class TestCaseApiController : ProjectApiControllerBase
         {
             return Unauthorized();
         }
-        var testCase = await _testCaseManager.GetTestCaseBySlugAsync(User, slug);
+        var testCase = await _testCaseManager.GetTestCaseBySlugAsync(User, User.GetProjectId(), slug);
         if(testCase is null)
         {
             return NotFound();
@@ -54,7 +60,7 @@ public class TestCaseApiController : ProjectApiControllerBase
         {
             return Unauthorized();
         }
-        var testCase = await _testCaseManager.GetTestCaseBySlugAsync(User, slug);
+        var testCase = await _testCaseManager.GetTestCaseBySlugAsync(User, User.GetProjectId(), slug);
         if (testCase is null)
         {
             return NotFound();
@@ -73,7 +79,7 @@ public class TestCaseApiController : ProjectApiControllerBase
         {
             return Unauthorized();
         }
-        var testCase = await _testCaseManager.GetTestCaseBySlugAsync(User, slug);
+        var testCase = await _testCaseManager.GetTestCaseBySlugAsync(User, User.GetProjectId(), slug);
         if (testCase is null)
         {
             return NotFound($"Test case with slug '{slug}' was not found");
@@ -109,7 +115,12 @@ public class TestCaseApiController : ProjectApiControllerBase
 
         var team = await _teamManager.GetTeamBySlugAsync(User, testCase.TeamSlug);
         var project = await _projectManager.GetTestProjectBySlugAsync(User, testCase.ProjectSlug);
-        var testSuite = await _testSuiteManager.GetTestSuiteBySlugAsync(User, testCase.TestSuiteSlug);
+        if(project is null)
+        {
+            return NotFound("Project not found");
+        }
+
+        var testSuite = await _testSuiteManager.GetTestSuiteBySlugAsync(User, project.Id, testCase.TestSuiteSlug);
 
         if (team is null) return NotFound("Team not found");
         if (project is null) return NotFound("Project not found");
@@ -119,12 +130,43 @@ public class TestCaseApiController : ProjectApiControllerBase
         dbo.TeamId = team.Id;
         dbo.TestSuiteId = testSuite.Id;
 
-        await _testCaseManager.AddTestCaseAsync(User, dbo);
+        dbo = await _testCaseManager.AddTestCaseAsync(User, dbo);
+        testCase.Id = dbo.Id;
+
+        if (testCase.Traits?.Traits is not null)
+        {
+            await UpdateTestCaseFieldsAsync(testCase, project.Id);
+            dbo = (await _testCaseManager.GetTestCaseByIdAsync(User, dbo.Id))!;
+        }
+
         var response = dbo.ToDto();
-        response.TestSuiteSlug = 
         response.TeamSlug = team?.Slug;
         response.ProjectSlug = project?.Slug;
         response.TestSuiteSlug = testSuite?.Slug;
         return Ok(response);
+    }
+
+    private async Task UpdateTestCaseFieldsAsync(TestCaseDto testCase, long projectId)
+    {
+        if (testCase.Traits?.Traits is not null)
+        {
+            var fieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(User, projectId);
+
+            foreach (var trait in testCase.Traits.Traits)
+            {
+                var fieldDefinition = fieldDefinitions.FirstOrDefault(fd => fd.TraitType == trait.Type);
+                if (fieldDefinition is not null)
+                {
+                    var field = new TestCaseField
+                    {
+                        FieldDefinitionId = fieldDefinition.Id,
+                        TestCaseId = testCase.Id,
+                        Inherited = false,
+                    };
+                    FieldValueConverter.TryAssignValue(fieldDefinition, field, [trait.Value]);
+                    await _fieldManager.UpsertTestCaseFieldAsync(User, field);
+                }
+            }
+        }
     }
 }

@@ -320,7 +320,10 @@ public partial class TestCaseRunGrid
             return;
         }
         await testExecutionController.RunTestAsync(testCaseRun);
-        //await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
+    }
 
+    private void SetSelectedTestCaseRun(TestCaseRun testCaseRun)
+    {
+        appNavigationManager.State.SelectedTestCaseRun = testCaseRun;
     }
 }

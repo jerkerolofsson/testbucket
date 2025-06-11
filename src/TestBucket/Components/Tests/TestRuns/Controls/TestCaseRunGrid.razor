@@ -42,13 +42,13 @@
                 <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
 
                     <MudTextField Value="_searchText" T="string" ValueChanged="OnSearch"
-                    Class="default-search"
-                    Clearable="true"
-                    Placeholder="@loc["search-tests"]"
-                    Variant="Variant.Outlined"
-                    IconSize="Size.Small"
-                    Adornment="Adornment.Start"
-                    AdornmentIcon="@Icons.Material.Filled.Search" />
+                        Class="default-search"
+                        Clearable="true"
+                        Placeholder="@loc["search-tests"]"
+                        Variant="Variant.Outlined"
+                        IconSize="Size.Small"
+                        Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Search" />
 
                     <MudSpacer />
 
@@ -63,6 +63,7 @@
                 <col style="width: 2fr;" />
                 <col style="width: 220px;" />
                 <col style="width: 150px;" />
+                <col style="width: 70px;" />
             </ColGroup>
 
             <Columns>
@@ -112,6 +113,15 @@
                             @context.Item.Modified.Humanize()
                         }
 
+                    </CellTemplate>
+                </TemplateColumn>
+
+
+                <TemplateColumn Title="">
+                    <CellTemplate>
+                        <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert" OpenChanged="() => SetSelectedTestCaseRun(context.Item)">
+                            <CommandMenuItems TypeNames="TestCaseRun" />
+                        </MudMenu>
                     </CellTemplate>
                 </TemplateColumn>
 

@@ -342,6 +342,9 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, DeleteRunCommand>();
         builder.Services.AddScoped<ICommand, DuplicateRunCommand>();
 
+        // Test Case Run
+        builder.Services.AddScoped<ICommand, GoToTestCaseCommand>();
+
         // Settings
         builder.Services.AddScoped<ICommand, OpenAiSettingsCommand>();
 

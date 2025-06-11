@@ -83,6 +83,13 @@
                         SpellChecker="false">
                         </MarkdownEditor>
 
+                        @if(_needSave)
+                        {
+                            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.FlexEnd" Spacing="1" Style="width: 100%">
+                                <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveChangesAsync">@loc["save"]</MudButton>
+                            </MudStack>
+                        }
+
                         <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted"/>
                     }
 
@@ -217,7 +224,7 @@
     private Requirement? _requirement;
 
     private string[] TabLabels => ["view", "edit"];
-    private string _selectedTab = "view";
+    private string _selectedTab = "edit";
 
     private async Task OnSelectedTabChanged(string label)
     {
@@ -241,7 +248,7 @@
     }
 
     private MarkdownEditor? _editor;
-    private bool _preview = true;
+    private bool _preview = false;
 
     private RequirementState? State
     {
@@ -320,6 +327,7 @@
     {
         if (Requirement?.TestProjectId is not null)
         {
+            
             Requirement.RequirementType = type;
             //var types = await controller.GetRequirementTypesAsync(Requirement.TestProjectId.Value);
             //Requirement.MappedType = types.Where(x => x.Name == type).Select(x => x.MappedState).FirstOrDefault();
@@ -330,7 +338,9 @@
 
     private async Task SaveChangesAsync()
     {
+        _selectedTab = "view";
         _preview = true;
+        _needSave = false;
         if (Requirement is not null)
         {
             await editor.SaveRequirementAsync(Requirement);
@@ -367,6 +377,8 @@
         Requirement.Name = name;
     }
 
+    private bool _needSave = false;
+
     private void OnDescriptionChanged(string description)
     {
         if (Requirement is null)
@@ -374,6 +386,10 @@
             return;
         }
         Requirement.Description = description;
+        if(!_needSave)
+        {
+            _needSave = true;
+        }
     }
 
     private async Task OnCommentAdded(Comment comment)

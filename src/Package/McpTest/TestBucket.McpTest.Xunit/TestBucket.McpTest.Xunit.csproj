@@ -20,7 +20,7 @@
         <Authors>Jerker Olofsson</Authors>
         <Company>Jerker Olofsson</Company>
         <PackageId>TestBucket.McpTest.Xunit</PackageId>
-        <WebPage>https://github.com/jerkerolofsson/testbucket/blob/main/doc/mcptest.md</WebPage>
+        <WebPage>https://github.com/jerkerolofsson/testbucket/blob/main/src/Package/McpTest/TestBucket.McpTest.Xunit/readme.md</WebPage>
         <Version>1.0.0</Version>
     </PropertyGroup>
 </Project>

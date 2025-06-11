@@ -13,7 +13,7 @@ internal class MetricsManager : IMetricsManager
         _timeProvider = timeProvider;
     }
 
-    public async Task AddMetric(ClaimsPrincipal principal, Metric metric)
+    public async Task AddMetricAsync(ClaimsPrincipal principal, Metric metric)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
 

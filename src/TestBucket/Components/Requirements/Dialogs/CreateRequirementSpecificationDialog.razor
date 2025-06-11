@@ -4,6 +4,7 @@
 @inject RequirementEditorController controller
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<RequirementStrings> reqLoc
+@inject IStringLocalizer<ValidationStrings> validationLoc
 @inject IValidator<RequirementSpecification> validator
 
 <EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
@@ -30,7 +31,7 @@
                 </MudStack>
                 @if (_validationResult is not null)
                 {
-                    <FluentValidationResultSummary Result="@_validationResult" StringLocalizer="@reqLoc"/>
+                    <FluentValidationResultSummary Result="@_validationResult" StringLocalizer="@validationLoc" />
                 }
             </MudStack>
         </DialogContent>

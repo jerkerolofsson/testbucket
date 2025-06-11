@@ -1,7 +1,5 @@
 using FluentValidation;
 
-using Microsoft.Extensions.Localization;
-
 using TestBucket.Domain.Requirements.Models;
 
 public class RequirementSpecificationValidator : AbstractValidator<RequirementSpecification>

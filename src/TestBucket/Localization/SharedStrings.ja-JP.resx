@@ -241,4 +241,16 @@
   <data name="import-test-cases" xml:space="preserve">
     <value />
   </data>
+  <data name="Value" xml:space="preserve">
+    <value />
+  </data>
+  <data name="unit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="meter-name" xml:space="preserve">
+    <value />
+  </data>
+  <data name="edit-metric" xml:space="preserve">
+    <value />
+  </data>
 </root>

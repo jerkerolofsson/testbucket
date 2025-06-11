@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using ModelContextProtocol.Protocol;
+﻿using ModelContextProtocol.Protocol;
 
 using Xunit;
 
@@ -32,7 +26,7 @@ public class TestCallToolResponse
     /// <summary>
     /// Asserts that the <see cref="CallToolResponse"/> does not indicate an error.
     /// </summary>
-    public void AssertIsSuccess()
+    public void ShouldBeSuccess()
     {
         Assert.False(this.CallToolResponse.IsError, "CallToolResponse.IsError is true");
     }
@@ -40,7 +34,7 @@ public class TestCallToolResponse
     /// <summary>
     /// Asserts that the <see cref="CallToolResponse"/> contains non-empty content.
     /// </summary>
-    public void AssertHasContent()
+    public void ShouldHaveContent()
     {
         Assert.NotEmpty(this.CallToolResponse.Content);
     }

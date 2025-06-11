@@ -15,5 +15,5 @@ public interface IMetricsManager
     /// <param name="principal"></param>
     /// <param name="metric"></param>
     /// <returns></returns>
-    Task AddMetric(ClaimsPrincipal principal, Metric metric);
+    Task AddMetricAsync(ClaimsPrincipal principal, Metric metric);
 }

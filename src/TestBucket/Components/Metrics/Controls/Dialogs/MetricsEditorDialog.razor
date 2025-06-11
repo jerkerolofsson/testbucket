@@ -1,0 +1,88 @@
+﻿@using FluentValidation
+@using TestBucket.Domain.Metrics.Models;
+@attribute [Authorize()]
+@inject IStringLocalizer<SharedStrings> loc
+@inject IValidator<Metric> validator
+@inject IStringLocalizer<ValidationStrings> validationLoc
+
+@if(Metric is not null)
+{
+    <EditForm Model="@Metric" OnValidSubmit="Submit">
+        <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
+
+            <TitleContent>@loc["edit-metric"]</TitleContent>
+
+            <DialogContent>
+
+                <MudStack Spacing="1">
+                    <Field Row ValidationResult="_validationResult" For="Name">
+                        <FieldHeader>@loc["name"]</FieldHeader>
+                        <MudSpacer />
+                        <MudTextField Variant="Variant.Outlined" @bind-Value="@Metric.Name" AutoFocus Required />
+                        
+                    </Field>
+
+                    <Field Row ValidationResult="_validationResult" For="MeterName">
+                        <FieldHeader>@loc["meter-name"]</FieldHeader>
+                        <MudSpacer />
+                        <MudTextField Variant="Variant.Outlined" @bind-Value="@Metric.MeterName" Required />
+                    </Field>
+
+                    <Field Row>
+                        <FieldHeader>@loc["value"]</FieldHeader>
+                        <MudSpacer />
+                        <MudNumericField Variant="Variant.Outlined" @bind-Value="@Metric.Value" Required Placeholder="@loc["value"]" />
+                        <MudTextField Class="ml-1" Variant="Variant.Outlined" @bind-Value="@Metric.Unit" Required Placeholder="@loc["unit"]"/>
+                    </Field>
+
+                </MudStack>
+
+            </DialogContent>
+
+            <DialogActions>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+                <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </EditForm>
+}
+
+@code {
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public Metric? Metric { get; set; }
+
+    private FluentValidation.Results.ValidationResult? _validationResult;
+
+
+    private Metric? Validate()
+    {
+        _validationResult = null;
+        if (Metric is not null)
+        {
+            _validationResult = validator.Validate(Metric);
+
+            if (_validationResult.IsValid)
+            {
+                return Metric;
+            }
+        }
+        return null;
+    }
+
+    public void Submit()
+    {
+        var metric = Validate();
+        if (metric is null)
+        {
+            return;
+        }
+        MudDialog.Close(metric);
+    }
+    public void Close()
+    {
+        MudDialog.Close();
+    }
+}

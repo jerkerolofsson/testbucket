@@ -6,7 +6,7 @@ namespace TestBucket.McpTest.Xunit;
 
 public static class CallToolResponseExtensions
 {
-    public static void AssertIsSuccess(this CallToolResponse toolResponse)
+    public static void ShouldBeSuccess(this CallToolResponse toolResponse)
     {
         Assert.False(toolResponse.IsError, "CallToolResponse.IsError is true");
     }

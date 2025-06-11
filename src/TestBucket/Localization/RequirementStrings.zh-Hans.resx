@@ -1,159 +1,258 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-    <resheader name="resmimetype">
-        <value>text/microsoft-resx</value>
-    </resheader>
-    <resheader name="version">
-        <value>2.0</value>
-    </resheader>
-    <resheader name="reader">
-        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <resheader name="writer">
-        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <data name="confirm-delete-requirement-message" xml:space="preserve">
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="confirm-delete-requirement-message" xml:space="preserve">
     <value>您确定要删除此需求吗？</value>
   </data>
-    <data name="confirm-delete-requirement-title" xml:space="preserve">
+  <data name="confirm-delete-requirement-title" xml:space="preserve">
     <value>删除需求？</value>
   </data>
-    <data name="create-child-requirement" xml:space="preserve">
+  <data name="create-child-requirement" xml:space="preserve">
     <value>创建子需求</value>
   </data>
-    <data name="create-requirement" xml:space="preserve">
+  <data name="create-requirement" xml:space="preserve">
     <value>新建需求</value>
   </data>
-    <data name="create-test-from-requirement" xml:space="preserve">
+  <data name="create-test-from-requirement" xml:space="preserve">
     <value>从需求创建测试</value>
   </data>
-    <data name="delete-requirement" xml:space="preserve">
+  <data name="delete-requirement" xml:space="preserve">
     <value>删除需求</value>
   </data>
-    <data name="downstream-requirements" xml:space="preserve">
+  <data name="downstream-requirements" xml:space="preserve">
     <value>下游需求</value>
   </data>
-    <data name="linked-test-count--tooltip" xml:space="preserve">
+  <data name="linked-test-count--tooltip" xml:space="preserve">
     <value>关联测试数量</value>
   </data>
-    <data name="test-coverage" xml:space="preserve">
+  <data name="test-coverage" xml:space="preserve">
     <value>测试覆盖率</value>
   </data>
-    <data name="title" xml:space="preserve">
+  <data name="title" xml:space="preserve">
     <value>标题</value>
   </data>
-    <data name="state" xml:space="preserve">
+  <data name="state" xml:space="preserve">
     <value>状态</value>
   </data>
-    <data name="type" xml:space="preserve">
+  <data name="type" xml:space="preserve">
     <value>类型</value>
   </data>
-    <data name="parent" xml:space="preserve">
+  <data name="parent" xml:space="preserve">
     <value>父级</value>
   </data>
-    <data name="requirement-specifications" xml:space="preserve">
+  <data name="requirement-specifications" xml:space="preserve">
     <value>规范</value>
   </data>
-    <data name="add" xml:space="preserve">
+  <data name="add" xml:space="preserve">
     <value>添加</value>
   </data>
-    <data name="delete-folder" xml:space="preserve">
+  <data name="delete-folder" xml:space="preserve">
     <value>删除文件夹</value>
   </data>
-    <data name="type-epic" xml:space="preserve">
+  <data name="type-epic" xml:space="preserve">
     <value>史诗</value>
   </data>
-    <data name="type-general" xml:space="preserve">
+  <data name="type-general" xml:space="preserve">
     <value>一般</value>
   </data>
-    <data name="type-story" xml:space="preserve">
+  <data name="type-story" xml:space="preserve">
     <value>用户故事</value>
   </data>
-    <data name="type-initiative" xml:space="preserve">
+  <data name="type-initiative" xml:space="preserve">
     <value>倡议</value>
   </data>
-    <data name="type-task" xml:space="preserve">
+  <data name="type-task" xml:space="preserve">
     <value>任务</value>
   </data>
-    <data name="standard" xml:space="preserve">
+  <data name="standard" xml:space="preserve">
     <value>标准</value>
   </data>
-    <data name="type-business" xml:space="preserve">
+  <data name="type-business" xml:space="preserve">
     <value>业务</value>
   </data>
-    <data name="type-regulatory" xml:space="preserve">
+  <data name="type-regulatory" xml:space="preserve">
     <value>合规</value>
   </data>
-    <data name="milestones" xml:space="preserve">
+  <data name="milestones" xml:space="preserve">
     <value>里程碑</value>
   </data>
-    <data name="filter-requirements" xml:space="preserve">
+  <data name="filter-requirements" xml:space="preserve">
     <value>筛选</value>
   </data>
-    <data name="new-requirement" xml:space="preserve">
+  <data name="new-requirement" xml:space="preserve">
     <value>新建需求</value>
   </data>
-    <data name="search-requirements" xml:space="preserve">
+  <data name="search-requirements" xml:space="preserve">
     <value>搜索需求</value>
   </data>
-    <data name="search" xml:space="preserve">
+  <data name="search" xml:space="preserve">
     <value>搜索</value>
   </data>
-    <data name="create-requirement-specification" xml:space="preserve">
+  <data name="create-requirement-specification" xml:space="preserve">
     <value>创建规范</value>
   </data>
-    <data name="import-requirements" xml:space="preserve">
+  <data name="import-requirements" xml:space="preserve">
     <value>导入需求</value>
   </data>
-    <data name="collections" xml:space="preserve">
+  <data name="collections" xml:space="preserve">
     <value>集合</value>
   </data>
-    <data name="type-standard" xml:space="preserve">
+  <data name="type-standard" xml:space="preserve">
     <value>标准</value>
   </data>
-    <data name="create-collection" xml:space="preserve">
+  <data name="create-collection" xml:space="preserve">
     <value>新建集合</value>
   </data>
-    <data name="validation-folder-cannot-contain-slash" xml:space="preserve">
-    <value>文件夹名称不能包含斜杠（/）</value>
-  </data>
-    <data name="validation-folder-empty" xml:space="preserve">
-    <value>文件夹名称不能为空</value>
-  </data>
-    <data name="collection-type" xml:space="preserve">
+  <data name="collection-type" xml:space="preserve">
     <value>集合类型</value>
   </data>
-    <data name="create-child-task" xml:space="preserve">
+  <data name="create-child-task" xml:space="preserve">
     <value>创建子任务</value>
   </data>
-    <data name="split-requirement-specification" xml:space="preserve">
+  <data name="split-requirement-specification" xml:space="preserve">
     <value>提取章节并拆分为多个</value>
   </data>
-    <data name="delete-requirement-specification" xml:space="preserve">
+  <data name="delete-requirement-specification" xml:space="preserve">
     <value>删除集合</value>
   </data>
-    <data name="create-collection-description" xml:space="preserve">
+  <data name="create-collection-description" xml:space="preserve">
     <value>创建集合以存储需求、文档、任务或用户故事</value>
   </data>
-    <data name="import-requirements-description" xml:space="preserve">
+  <data name="import-requirements-description" xml:space="preserve">
     <value>上传包含需求的文档</value>
   </data>
-    <data name="approve-requirement-arg" xml:space="preserve">
+  <data name="approve-requirement-arg" xml:space="preserve">
     <value>批准 {0}</value>
   </data>
-    <data name="create-child-feature" xml:space="preserve">
+  <data name="create-child-feature" xml:space="preserve">
     <value>创建子功能</value>
   </data>
-    <data name="link-requirement-to-test" xml:space="preserve">
+  <data name="link-requirement-to-test" xml:space="preserve">
     <value>将需求关联到测试</value>
   </data>
-    <data name="new-task" xml:space="preserve">
+  <data name="new-task" xml:space="preserve">
     <value>新建任务</value>
   </data>
-    <data name="new-general" xml:space="preserve">
+  <data name="new-general" xml:space="preserve">
     <value>新建需求</value>
   </data>
-    <data name="type-documentation" xml:space="preserve">
+  <data name="type-documentation" xml:space="preserve">
     <value>文档</value>
   </data>
 </root>

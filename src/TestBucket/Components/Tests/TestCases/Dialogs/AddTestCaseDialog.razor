@@ -1,7 +1,8 @@
 ﻿@using TestBucket.Domain.Requirements.Models
-@attribute [Authorize(Roles = "ADMIN")]
+@attribute [Authorize()]
 @inject TestCaseEditorController testCaseEditorService
 @inject TestSuiteService testSuiteController
+@inject IStringLocalizer<SharedStrings> loc
 
 <EditForm Model="@_testCase" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">

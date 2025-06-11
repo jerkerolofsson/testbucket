@@ -42,7 +42,7 @@ The `TestBucket.McpTest.Xunit` package provides helpers for writing integration 
         );
 
         // Assert: check the response
-        response.AssertIsSuccess();
-        response.AssertHasContent();
+        response.ShouldBeSuccess();
+        response.ShouldHaveContent();
     }
 ```

@@ -1,5 +1,7 @@
-﻿@using TestBucket.Domain.Metrics.Models
+﻿@using TestBucket.Components.Metrics.Controls.Controllers
+@using TestBucket.Domain.Metrics.Models
 @inject IStringLocalizer<SharedStrings> loc
+@inject MetricsController metricsController
 
 <MudStack Spacing="1">
 
@@ -74,6 +76,13 @@
     }
     private async Task AddAsync()
     {
-        
+        if(_testCaseRun is not null)
+        {
+            var createdMetric = await metricsController.AddAsync(_testCaseRun);
+            if (createdMetric is not null)
+            {
+                _metrics = [.. _metrics, createdMetric];
+            }
+        }
     }
 }

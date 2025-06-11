@@ -773,4 +773,19 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="import-test-cases" xml:space="preserve">
     <value>Import test cases</value>
   </data>
+  <data name="Value" xml:space="preserve">
+    <value>value</value>
+    <comment>Metric value</comment>
+  </data>
+  <data name="unit" xml:space="preserve">
+    <value>Unit</value>
+    <comment>Metric unit (e.g. ms, fps, bps)</comment>
+  </data>
+  <data name="meter-name" xml:space="preserve">
+    <value>Meter</value>
+    <comment>Provider of metrics</comment>
+  </data>
+  <data name="edit-metric" xml:space="preserve">
+    <value>Edit Metric</value>
+  </data>
 </root>

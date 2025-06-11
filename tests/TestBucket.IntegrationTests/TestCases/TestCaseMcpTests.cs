@@ -28,8 +28,8 @@ namespace TestBucket.IntegrationTests.TestCases
             var response = await McpFixture.McpClient.TestCallToolAsync("get-number-of-testcases-by-category");
 
             // Assert
-            response.AssertIsSuccess();
-            response.AssertHasContent();
+            response.ShouldBeSuccess();
+            response.ShouldHaveContent();
         }
     }
 }

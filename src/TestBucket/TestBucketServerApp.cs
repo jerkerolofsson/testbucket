@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
-using TestBucket.Domain.AI.Mcp;
 using MudBlazor.Services;
 
 using MudExtensions.Services;
@@ -25,6 +24,7 @@ using TestBucket.Components.Issues.Commands;
 using TestBucket.Components.Issues.Controllers;
 using TestBucket.Components.Labels.Controllers;
 using TestBucket.Components.Layout.Controls;
+using TestBucket.Components.Metrics.Controls.Controllers;
 using TestBucket.Components.Milestones.Controllers;
 using TestBucket.Components.Projects;
 using TestBucket.Components.Reporting.Controllers;
@@ -54,10 +54,12 @@ using TestBucket.Components.Uploads.Services;
 using TestBucket.Components.Users;
 using TestBucket.Components.Users.Services;
 using TestBucket.Data.Migrations;
+using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Identity;
+
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace TestBucket;
@@ -240,6 +242,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ArchitectureController>();
         builder.Services.AddScoped<CommitController>();
 
+        builder.Services.AddScoped<MetricsController>();
         builder.Services.AddScoped<CommentsController>();
         builder.Services.AddScoped<UserApiKeysController>();
         builder.Services.AddScoped<UserRegistrationController>();

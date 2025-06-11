@@ -4,16 +4,19 @@
     {
         foreach (var error in Result.Errors)
         {
-            <div aria-live="assertive" role="alert" class="fluent-validation-error" test-id="error.ToString()">
-            @if (StringLocalizer is not null)
+            if(ForProperty is null || error.PropertyName == ForProperty)
             {
+                <div aria-live="assertive" role="alert" class="fluent-validation-error" data-testid="error.ToString()">
+                @if (StringLocalizer is not null)
+                {
                     <span>@StringLocalizer[error.ToString()]</span>
+                }
+                else
+                {
+                    <span>@error.ToString()</span>
+                }
+                </div>
             }
-            else
-            {
-                <span>@error.ToString()</span>
-            }
-            </div>
         }
     }
 }
@@ -22,4 +25,5 @@
 @code {
     [Parameter] public FluentValidation.Results.ValidationResult? Result { get; set; }
     [Parameter] public IStringLocalizer? StringLocalizer { get; set; }
+    [Parameter] public string? ForProperty { get; set; }
 }

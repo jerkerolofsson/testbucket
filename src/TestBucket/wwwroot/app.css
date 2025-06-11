@@ -437,6 +437,10 @@ input:focus-visible {
    overflow-x: hidden;
 }
 
+.tb-field.fluent-validation-error {
+    border-color: rgba(255,80,20, 0.5);
+}
+
 .tb-field .mud-picker-inline {
     flex: unset;
 }

@@ -4,6 +4,7 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<RequirementStrings> reqLoc
 @inject IValidator<RequirementSpecificationFolder> validator
+@inject IStringLocalizer<ValidationStrings> validationLoc
 
 <EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
@@ -19,7 +20,7 @@
 
                 @if (_validationResult is not null)
                 {
-                    <FluentValidationResultSummary Result="@_validationResult" StringLocalizer="@reqLoc"/>
+                    <FluentValidationResultSummary Result="@_validationResult" StringLocalizer="@validationLoc" />
                 }
             </MudStack>
         </DialogContent>

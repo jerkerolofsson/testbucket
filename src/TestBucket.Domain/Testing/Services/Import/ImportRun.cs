@@ -228,7 +228,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                     TeamId = testCaseRun.TeamId,
                     TenantId = testCaseRun.TenantId,
                 };
-                await _metricsManager.AddMetric(principal, metric);
+                await _metricsManager.AddMetricAsync(principal, metric);
             }
             catch (FormatException ex)
             {

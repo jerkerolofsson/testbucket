@@ -1,11 +1,24 @@
-﻿@using MudBlazor.Utilities
+﻿@using FluentValidation.Results
+@using MudBlazor.Utilities
 @using TestBucket.Components.Shared.Themeing
 @inject ThemingService theming
+@inject IStringLocalizer<ValidationStrings> validationLoc
 
 <MudPaper Class="@CssClass">
     <MudStack Spacing="@Spacing" Row="@Row" Style="@Style">
         @ChildContent
     </MudStack>
+
+    @if(ValidationResult is not null)
+    {
+        foreach(var result in ValidationErrorMessages)
+        {
+            <div aria-live="assertive" role="alert" class="fluent-validation-error" data-testid="error.ToString()">
+                @validationLoc[result.ErrorMessage]
+            </div>
+        }
+    }
+
 </MudPaper>
 
 @code {
@@ -14,11 +27,44 @@
     [Parameter] public int Spacing { get; set; } = 0;
     [Parameter] public bool Dense { get; set; } = false;
 
+    [Parameter] public FluentValidation.Results.ValidationResult? ValidationResult { get; set; }
+    [Parameter] public string? For { get; set; }
+    [Parameter] public string Style { get; set; } = "";
+
     public string CssClass => new CssBuilder("tb-field")
         .AddClass("pa-3", !Dense)
         .AddClass("row", Row)
         .AddClass("column", !Row)
+        .AddClass("fluent-validation-error", HasValidationError)
         .Build();
 
-    [Parameter] public string Style { get; set; } = "";
+
+    private IEnumerable<ValidationFailure> ValidationErrorMessages
+    {
+        get
+        {
+            if (For is not null && ValidationResult is not null)
+            {
+                foreach (var result in ValidationResult.Errors.Where(x => x.PropertyName == For))
+                {
+                    yield return result;
+                }
+            }
+        }
+    }
+
+    private bool HasValidationError
+    {
+        get
+        {
+            if (For is not null && ValidationResult is not null)
+            {
+                foreach (var result in ValidationResult.Errors.Where(x => x.PropertyName == For))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 }

@@ -117,142 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="confirm-delete-requirement-message" xml:space="preserve">
-    <value>Do you really want to delete this requirement?</value>
+  <data name="validation-description-empty" xml:space="preserve">
+    <value>Description is required</value>
   </data>
-  <data name="confirm-delete-requirement-title" xml:space="preserve">
-    <value>Delete requirement?</value>
+  <data name="validation-folder-cannot-contain-slash" xml:space="preserve">
+    <value>Folder cannot contain slash (/)</value>
   </data>
-  <data name="create-child-requirement" xml:space="preserve">
-    <value>Create child requirement</value>
+  <data name="validation-folder-empty" xml:space="preserve">
+    <value>Folder is required</value>
   </data>
-  <data name="create-requirement" xml:space="preserve">
-    <value>New requirement</value>
+  <data name="validation-invalid-opentelemetry" xml:space="preserve">
+    <value>Only lowercase characters, dot (.) and underscore (_) is allowed</value>
+    <comment>Compatibility with OpenTelemetry</comment>
   </data>
-  <data name="create-test-from-requirement" xml:space="preserve">
-    <value>Create test from requirement</value>
+  <data name="validation-name-empty" xml:space="preserve">
+    <value>Name is required</value>
   </data>
-  <data name="delete-requirement" xml:space="preserve">
-    <value>Delete requirement</value>
-  </data>
-  <data name="downstream-requirements" xml:space="preserve">
-    <value>Downstream requirements</value>
-  </data>
-  <data name="linked-test-count--tooltip" xml:space="preserve">
-    <value>Number of linked tests</value>
-  </data>
-  <data name="test-coverage" xml:space="preserve">
-    <value>Test coverage</value>
-  </data>
-  <data name="title" xml:space="preserve">
-    <value>Title</value>
-  </data>
-  <data name="state" xml:space="preserve">
-    <value>State</value>
-  </data>
-  <data name="type" xml:space="preserve">
-    <value>Type</value>
-  </data>
-  <data name="parent" xml:space="preserve">
-    <value>Parent</value>
-  </data>
-  <data name="requirement-specifications" xml:space="preserve">
-    <value>Specifications</value>
-  </data>
-  <data name="add" xml:space="preserve">
-    <value>Add</value>
-  </data>
-  <data name="delete-folder" xml:space="preserve">
-    <value>Delete folder</value>
-  </data>
-  <data name="type-epic" xml:space="preserve">
-    <value>Epic</value>
-  </data>
-  <data name="type-general" xml:space="preserve">
-    <value>General</value>
-  </data>
-  <data name="type-story" xml:space="preserve">
-    <value>Story</value>
-  </data>
-  <data name="type-initiative" xml:space="preserve">
-    <value>Initiative</value>
-  </data>
-  <data name="type-task" xml:space="preserve">
-    <value>Task</value>
-  </data>
-  <data name="standard" xml:space="preserve">
-    <value>Standard</value>
-  </data>
-  <data name="type-business" xml:space="preserve">
-    <value>Business</value>
-  </data>
-  <data name="type-regulatory" xml:space="preserve">
-    <value>Regulatory</value>
-  </data>
-  <data name="milestones" xml:space="preserve">
-    <value>Milestones</value>
-  </data>
-  <data name="filter-requirements" xml:space="preserve">
-    <value>Filter</value>
-  </data>
-  <data name="new-requirement" xml:space="preserve">
-    <value>New requirement</value>
-  </data>
-  <data name="search-requirements" xml:space="preserve">
-    <value>Search Requirements</value>
-  </data>
-  <data name="search" xml:space="preserve">
-    <value>Search</value>
-  </data>
-  <data name="create-requirement-specification" xml:space="preserve">
-    <value>Create specification</value>
-  </data>
-  <data name="import-requirements" xml:space="preserve">
-    <value>Import requirements</value>
-  </data>
-  <data name="collections" xml:space="preserve">
-    <value>Collections</value>
-  </data>
-  <data name="type-standard" xml:space="preserve">
-    <value>Standard</value>
-  </data>
-  <data name="create-collection" xml:space="preserve">
-    <value>New collection</value>
-  </data>
-  <data name="collection-type" xml:space="preserve">
-    <value>Collection type</value>
-  </data>
-  <data name="create-child-task" xml:space="preserve">
-    <value>Create child task</value>
-  </data>
-  <data name="split-requirement-specification" xml:space="preserve">
-    <value>Extract sections and split into many</value>
-  </data>
-  <data name="delete-requirement-specification" xml:space="preserve">
-    <value>Delete collection</value>
-  </data>
-  <data name="create-collection-description" xml:space="preserve">
-    <value>Create a collection to store Requirements, Documentation, Tasks or User Stories</value>
-  </data>
-  <data name="import-requirements-description" xml:space="preserve">
-    <value>Upload a document containing requirements</value>
-  </data>
-  <data name="approve-requirement-arg" xml:space="preserve">
-    <value>Approve {0}</value>
-  </data>
-  <data name="create-child-feature" xml:space="preserve">
-    <value>Create child feature</value>
-  </data>
-  <data name="link-requirement-to-test" xml:space="preserve">
-    <value>Link requirement to test</value>
-  </data>
-  <data name="new-task" xml:space="preserve">
-    <value>New task</value>
-  </data>
-  <data name="new-general" xml:space="preserve">
-    <value>New requirement</value>
-  </data>
-  <data name="type-documentation" xml:space="preserve">
-    <value>Documentation</value>
+  <data name="validation-unit-empty" xml:space="preserve">
+    <value>Unit is required</value>
   </data>
 </root>

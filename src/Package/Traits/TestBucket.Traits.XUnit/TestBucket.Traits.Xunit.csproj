@@ -24,7 +24,9 @@
             <_Parameter1>TestBucket.Traits.Core.UnitTests</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
-
+    <ItemGroup>
+        <None Include="readme.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="xunit.analyzers" Version="1.21.0">

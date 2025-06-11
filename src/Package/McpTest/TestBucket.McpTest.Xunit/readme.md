@@ -19,7 +19,7 @@ The `TestBucket.McpTest.Xunit` package provides helpers for writing integration 
 ## Example
 
 ```csharp
-  [Fact]
+    [Fact]
     public async Task Should_Invoke_MyTool_Successfully()
     {
         // Arrange: create your IMcpClient (using your factory or fixture)

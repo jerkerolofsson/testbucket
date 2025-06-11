@@ -1,4 +1,4 @@
-$version="1.0.2"
+$version="1.0.3"
 $package="TestBucket.Traits.Core"
 cd src/Package/Traits/${package}
 dotnet pack -p:PackageVersion=$version

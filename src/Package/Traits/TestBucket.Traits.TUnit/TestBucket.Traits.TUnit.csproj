@@ -16,6 +16,9 @@
         <Version>1.0.0</Version>
         <WebPage>https://github.com/jerkerolofsson/testbucket/blob/main/doc/traits.md</WebPage>
     </PropertyGroup>
+    <ItemGroup>
+        <None Include="readme.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
     <ItemGroup>
     <PackageReference Include="TUnit.Core" Version="0.22.31" />

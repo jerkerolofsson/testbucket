@@ -7,6 +7,7 @@
   </PropertyGroup>
     
     <PropertyGroup>
+        <PackageReadmeFile>readme.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <Description>xunit extension with standardized traits and reporting enrichments</Description>

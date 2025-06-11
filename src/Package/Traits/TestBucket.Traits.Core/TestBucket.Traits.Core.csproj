@@ -7,6 +7,7 @@
   </PropertyGroup>
     
     <PropertyGroup>
+        <PackageReadmeFile>readme.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <Description>Shared library. Do not reference directly. Use TestBucket.Traits.Xunit, TestBucket.Traits.TUnit etc</Description>

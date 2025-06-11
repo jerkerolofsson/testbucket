@@ -13,6 +13,7 @@
   </ItemGroup>
 
     <PropertyGroup>
+        <PackageReadmeFile>readme.md</PackageReadmeFile>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <AssemblyVersion>1.0.0</AssemblyVersion>
         <Description>MCP (Model Context Protocol) test helpers for writing xunit tests that target MCP servers</Description>

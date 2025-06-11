@@ -259,4 +259,16 @@
   <data name="run-n-tests" xml:space="preserve">
     <value />
   </data>
+  <data name="add-heuristic" xml:space="preserve">
+    <value />
+  </data>
+  <data name="history" xml:space="preserve">
+    <value />
+  </data>
+  <data name="main" xml:space="preserve">
+    <value />
+  </data>
+  <data name="run-test" xml:space="preserve">
+    <value />
+  </data>
 </root>

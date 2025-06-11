@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TestBucket.Contracts.Testing.Models;
+﻿namespace TestBucket.Contracts.Testing.Models;
 
 /// <summary>
 /// Defines the type of implementation of a test case.
@@ -28,4 +22,14 @@ public enum ScriptType
     /// These tests allow tracking test results on a step level.
     /// </summary>
     ScriptedSteps = 1,
+
+    /// <summary>
+    /// Exploratory test
+    /// </summary>
+    Exploratory = 2,
+
+    /// <summary>
+    /// Automated etc..
+    /// </summary>
+    Other = 100,
 }

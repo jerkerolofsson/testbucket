@@ -13,6 +13,10 @@ public partial class TestCaseRunGrid
     [Parameter] public TestCaseRun? SelectedTestCaseRun { get; set; }
     [Parameter] public EventCallback<TestCaseRun> SelectedTestCaseRunChanged { get; set; }
 
+    [Parameter] public bool CanAssign { get; set; } = false;
+    [Parameter] public bool CanRun { get; set; } = false;
+    [Parameter] public bool CanChangeResult { get; set; } = false;
+
     /// <summary>
     /// Currently displayed items
     /// </summary>
@@ -75,6 +79,7 @@ public partial class TestCaseRunGrid
         _selectedItem = SelectedTestCaseRun;
         testRunManager.AddObserver(this);
     }
+    private string? _prevSearchText;
 
     protected override void OnParametersSet()
     {
@@ -82,6 +87,7 @@ public partial class TestCaseRunGrid
         _query.TestRunId = null;
         _query.ProjectId = null;
         _searchText = _query.ToSearchText();
+        bool reloadGridData = _searchText != _prevSearchText;
 
         if (_selectedItem?.Id != SelectedTestCaseRun?.Id ||
             _selectedItem?.Result != SelectedTestCaseRun?.Result ||
@@ -92,11 +98,18 @@ public partial class TestCaseRunGrid
             _query.ProjectId = Project.Id;
 
             _selectedItem = SelectedTestCaseRun;
-            if (!_items.Contains(_selectedItem))
+            if (_selectedItem is not null && !_items.Contains(_selectedItem))
             {
-                _dataGrid?.ReloadServerData();
+                reloadGridData = true;
             }
         }
+
+        if(reloadGridData)
+        {
+            _dataGrid?.ReloadServerData();
+        }
+
+        _prevSearchText = _searchText;
     }
 
     public void Dispose()

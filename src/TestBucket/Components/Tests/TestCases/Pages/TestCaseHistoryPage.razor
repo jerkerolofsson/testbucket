@@ -1,7 +1,8 @@
 ﻿@attribute [Authorize()]
-@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/Variables"
+@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/History"
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Domain.Requirements.Models
+@using TestBucket.Domain.Testing.TestRuns.Search
 @layout TestCaseDetailsLayout
 @inject TestBrowser testBrowser
 @inject TestCaseEditorController testCaseEditorController
@@ -12,9 +13,8 @@
 @if (Test is not null)
 {
     <CascadingValue Value="@Test">
-        <MudStack Class="container-fill pa-2">
-            <MudText Typo="Typo.h1">@loc["variables"]</MudText>
-            <TestCaseVariables TestChanged="SaveAsync"/>
+        <MudStack Style="width:100%" Class="pa-2">
+            <TestCaseRunGrid @bind-Query="_query" @bind-SelectedTestCaseRun="_selectedTestCaseRun"/>
         </MudStack>
     </CascadingValue>
 }
@@ -26,11 +26,18 @@
     [CascadingParameter] public Team? Team { get; set; }
     [CascadingParameter] public TestCase? Test { get; set; }
 
-    private List<BreadcrumbItem> _nav = new();
+    private SearchTestCaseRunQuery _query = new();
+    private TestCaseRun? _selectedTestCaseRun;
 
+    private List<BreadcrumbItem> _nav = new();
     protected override void OnInitialized()
     {
-        _nav = [new BreadcrumbItem(loc["variables"], navigationManager.Uri)];
+        _nav = [new BreadcrumbItem(loc["history"], navigationManager.Uri)];
+    }
+
+    protected override void OnParametersSet()
+    {
+        _query.ExternalDisplayId = Test?.ExternalDisplayId;
     }
 
     //private TestCase? _testCase = null;

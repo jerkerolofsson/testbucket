@@ -16,7 +16,7 @@
 
 @if (Test is not null)
 {
-    <div class="container-fill-2-rows">
+    <div class="container-fill" data-testid="testcase-editor" @attributes="AdditionalAttributes">
         <Splitter Class="container-fill" Bordered="false" Dimension="80" EnableMargin="false" Color="Color.Default">
             <StartContent>
                 <MudStack Class="pa-2" Style="width: 100%; height: 100%">
@@ -24,7 +24,7 @@
                     <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
                         @if (_preview)
                         {
-                            <MudText Typo="Typo.h1" Color="Color.Primary">@Test.ExternalDisplayId</MudText>
+                            <MudText Typo="Typo.h1" Color="Color.Primary" data-testid="external-display-id" data-id="@Test.ExternalDisplayId">@Test.ExternalDisplayId</MudText>
                             <MudText Typo="Typo.h1">@Test.Name</MudText>
                         }
                         else

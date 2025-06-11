@@ -1,4 +1,5 @@
-﻿@using TestBucket.Components.Tests.TestRuns.Controllers
+﻿@using TestBucket.Components.Shared.Profile
+@using TestBucket.Components.Tests.TestRuns.Controllers
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject ITestCaseManager testCaseManager
@@ -61,14 +62,14 @@
                 <col style="width: 100px;" />
                 <col style="width: 2fr;" />
                 <col style="width: 220px;" />
-                <col style="width: 100px;" />
+                <col style="width: 150px;" />
             </ColGroup>
 
             <Columns>
 
                 <TemplateColumn Title="@loc["test-result"]">
                     <CellTemplate>
-                        <ResultPill Result="@context.Item.Result" ReadOnly="false" ResultChanged="async (result) => await SetTestCaseRunResultAsync(context.Item, result)" />
+                        <ResultPill Result="@context.Item.Result" ReadOnly="@(!CanChangeResult)" ResultChanged="async (result) => await SetTestCaseRunResultAsync(context.Item, result)" />
                     </CellTemplate>
                 </TemplateColumn>
 
@@ -80,22 +81,37 @@
 
                 <TemplateColumn Title="@loc["assigned-to"]">
                     <CellTemplate>
-                        <UserPicker 
-                            Clearable
-                            SelectedUserName="@context.Item.AssignedToUserName" SelectedUserNameChanged="async (user) => await AssignRunToUserAsync(context.Item, user)"/>
+                        @if(CanAssign)
+                        {
+                            <UserPicker 
+                                Clearable
+                                SelectedUserName="@context.Item.AssignedToUserName" SelectedUserNameChanged="async (user) => await AssignRunToUserAsync(context.Item, user)"/>
+                        }
+                        else if(!string.IsNullOrEmpty(context.Item.AssignedToUserName))
+                        {
+                            <UserProfileImage UserName="@context.Item.AssignedToUserName"/>
+                        }
                     </CellTemplate>
                 </TemplateColumn>
 
                 <TemplateColumn Title="">
                     <CellTemplate>
-                        @if(context.Item.Result != Contracts.Testing.Models.TestResult.NoRun)
+                        @if(CanRun)
                         {
-                            <MudLink OnClick="async () => await RunTestAgain(context.Item)" Style="font-size: 8pt">@loc["run-test-again"]</MudLink>
+                            @if(context.Item.Result != Contracts.Testing.Models.TestResult.NoRun)
+                            {
+                                <MudLink OnClick="async () => await RunTestAgain(context.Item)" Style="font-size: 8pt">@loc["run-test-again"]</MudLink>
+                            }
+                            else
+                            {
+                                <MudLink OnClick="async () => await RunTest(context.Item)" Style="font-size: 8pt">@loc["run"]</MudLink>
+                            }
                         }
                         else
                         {
-                            <MudLink OnClick="async () => await RunTest(context.Item)" Style="font-size: 8pt">@loc["run"]</MudLink>
+                            @context.Item.Modified.Humanize()
                         }
+
                     </CellTemplate>
                 </TemplateColumn>
 

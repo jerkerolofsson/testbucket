@@ -126,6 +126,9 @@
   <data name="manage-environments" xml:space="preserve">
     <value>Hantera miljöer</value>
   </data>
+  <data name="manage-heuristics" xml:space="preserve">
+    <value>Hantera heuristics</value>
+  </data>
   <data name="manage-labels" xml:space="preserve">
     <value>Hanter etiketter</value>
   </data>
@@ -154,10 +157,10 @@
     <value>Hantera användare</value>
   </data>
   <data name="mcp-client-configuration" xml:space="preserve">
-    <value />
+    <value>MCP Klientkonfiguration</value>
   </data>
   <data name="mcp-configure-caption" xml:space="preserve">
-    <value />
+    <value>Konfigurera en externa AI-agent att interagera med Test Bucket.</value>
   </data>
   <data name="open-ai-settings" xml:space="preserve">
     <value>Öppna AI inställningar</value>

@@ -59,6 +59,16 @@ public class TestCase : TestEntity
     public string? Description { get; set; }
 
     /// <summary>
+    /// Pre-conditions
+    /// </summary>
+    public string? Preconditions { get; set; }
+
+    /// <summary>
+    /// Post-conditions
+    /// </summary>
+    public string? Postconditions { get; set; }
+
+    /// <summary>
     /// Defines how the script of the test is defined,
     /// - ScriptedDefualt: as a single field describing all steps
     /// - ScriptedSteps: individual step descriptions
@@ -126,7 +136,7 @@ public class TestCase : TestEntity
     // Navigation
     public TestSuiteFolder? TestSuiteFolder { get; set; }
     public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }
-    public virtual IEnumerable<TestStep>? TestSteps { get; set; }
+    public virtual List<TestStep>? TestSteps { get; set; }
 
     public virtual List<Comment>? Comments { get; set; }
 }

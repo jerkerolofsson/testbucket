@@ -15,6 +15,7 @@
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public EventCallback OnClick { get; set; }
     [Parameter] public bool? Selected { get; set; }
+    [Parameter] public NavLinkMatch Match { get; set; } = NavLinkMatch.Prefix;
 
     public string CssClass
     {
@@ -30,9 +31,19 @@
             }
             if(currentUrl is not null && Href is not null)
             {
-                if (currentUrl.Trim('/').StartsWith(Href.Trim('/')))
+                if(Match == NavLinkMatch.Prefix)
                 {
-                    return "tb-nav-link active";
+                    if (currentUrl.Trim('/').StartsWith(Href.Trim('/')))
+                    {
+                        return "tb-nav-link active";
+                    }
+                }
+                else
+                {
+                    if (currentUrl.Trim('/').Equals(Href.Trim('/')))
+                    {
+                        return "tb-nav-link active";
+                    }
                 }
             }
             return "tb-nav-link";

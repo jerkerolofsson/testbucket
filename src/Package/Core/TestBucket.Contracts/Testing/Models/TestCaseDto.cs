@@ -67,8 +67,24 @@ public class TestCaseDto
     public TestExecutionType ExecutionType { get; set; }
 
     /// <summary>
+    /// Script type, for manual tests.
+    /// </summary>
+    public ScriptType ScriptType { get; set; }
+
+    /// <summary>
+    /// Pre-conditions
+    /// </summary>
+    public string? Preconditions { get; set; }
+
+    /// <summary>
+    /// Post-conditions
+    /// </summary>
+    public string? Postconditions { get; set; }
+    /// <summary>
     /// Folder path
     /// </summary>
     public string? Path { get; set; }
     public string? ExternalDisplayId { get; set; }
+
+    public List<TestStepDto> Steps { get; set; } = [];
 }

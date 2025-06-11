@@ -22,6 +22,8 @@ public partial class TestCaseEditor
             .AddClass(" mr-5", true)
             .Build();
 
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IDictionary<string, object>? AdditionalAttributes { get; set; }
     [Parameter] public Color Color { get; set; } = Color.Surface;
     [Parameter] public Color ColorAlt { get; set; } = Color.Tertiary;
 

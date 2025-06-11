@@ -769,6 +769,8 @@ function setPreview(elementId, wantedState) {
                 previewElement.style.display = "none";
                 rootElement.style.display = "grid";
                 instance.previewEnabled = false;
+
+                console.log("setValue from setPreview")
                 setValue(elementId, instance.editor.value());
             }
         }
@@ -794,18 +796,16 @@ function destroy(element, elementId) {
 function setValue(elementId, value) {
     const instance = _instances[elementId];
 
-    console.log("setValue()");
-
     if (instance) {
         instance.isChangingValue = true;
         instance.editor.value(value);
         instance.isChangingValue = false;
 
         if (instance.previewEnabled) {
-            console.log("SetValue in preview");
+            console.log("setValue() in preview", value);
             setPreview(elementId, true);
         } else {
-            console.log("SetValue, not in preview");
+            console.log("setValue(), not in preview", value);
         }
     }
 }

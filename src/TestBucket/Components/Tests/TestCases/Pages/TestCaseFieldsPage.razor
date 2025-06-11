@@ -11,18 +11,14 @@
 
 @if (Test is not null)
 {
-    <MudStack>
-        <CascadingValue Value="@Test">
-            <article >
-                <MudStack>
-                    <MudText Typo="Typo.h1">@loc["fields"]</MudText>
-                    <div class="tb-minmax-grid tb-fields-grid">
-                        <FieldsEditor TestCase="@Test" />
-                    </div>
-                </MudStack>
-            </article>
-        </CascadingValue>
-    </MudStack>
+    <CascadingValue Value="@Test">
+        <MudStack Style="width:100%" Class="pa-2">
+            <MudText Typo="Typo.h1">@loc["fields"]</MudText>
+            <div class="tb-minmax-grid tb-fields-grid">
+                <FieldsEditor TestCase="@Test" />
+            </div>
+        </MudStack>
+    </CascadingValue>
 }
 
 @code {

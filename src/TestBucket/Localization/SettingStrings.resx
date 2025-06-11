@@ -126,6 +126,9 @@
   <data name="manage-environments" xml:space="preserve">
     <value>Manage environments</value>
   </data>
+  <data name="manage-heuristics" xml:space="preserve">
+    <value>Manage heuristics</value>
+  </data>
   <data name="manage-labels" xml:space="preserve">
     <value>Manage labels</value>
   </data>

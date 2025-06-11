@@ -829,8 +829,8 @@ namespace TestBucket.MudBlazorExtensions.Markdown
             if (Initialized && _value != Value)
             {
                 await SetValueAsync(Value ?? "");
+                _value = Value;
             }
-            _value = Value;
 
             if (Initialized && State.Preview != Preview)
             {
@@ -862,6 +862,7 @@ namespace TestBucket.MudBlazorExtensions.Markdown
 
                 //string Value = this.Value;
 
+                _value = this.Value;
                 string initialValue = this.Value ?? "";
                 bool useChunkedSetValue = false;
                 if(initialValue.Length > 30_000)
@@ -939,6 +940,14 @@ namespace TestBucket.MudBlazorExtensions.Markdown
                 if (useChunkedSetValue)
                 {
                     await SetValueAsync(this.Value??"");
+                }
+            }
+            else if(Initialized)
+            {
+                if(_value != Value)
+                {
+                    await SetValueAsync(this.Value ?? "");
+                    _value = this.Value;
                 }
             }
         }

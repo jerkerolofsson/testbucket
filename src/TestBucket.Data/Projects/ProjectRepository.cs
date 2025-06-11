@@ -336,7 +336,9 @@ internal class ProjectRepository : IProjectRepository
         {
             dbContext.TestRuns.Remove(item);
         }
-        foreach (var testCase in dbContext.TestCases.Where(x => x.TestProjectId == project.Id))
+        foreach (var testCase in dbContext.TestCases
+            .Include(x=>x.TestSteps)
+            .Where(x => x.TestProjectId == project.Id))
         {
             dbContext.TestCases.Remove(testCase);
         }

@@ -18,6 +18,6 @@ public static class TestIcons
         {
             return Icons.Material.Filled.Api;
         }
-        return TbIcons.BoldDuoTone.File;
+        return TbIcons.BoldDuoTone.FileText;
     }
 }

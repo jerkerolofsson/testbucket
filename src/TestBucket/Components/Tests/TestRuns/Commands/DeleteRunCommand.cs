@@ -16,18 +16,8 @@ internal class DeleteRunCommand : ICommand
     private readonly AppNavigationManager _appNavigationManager;
     private readonly TestCaseEditorController _controller;
     private readonly IStringLocalizer<SharedStrings> _loc;
-
     public int SortOrder => 99;
-
     public string? Folder => null;
-
-    public DeleteRunCommand(AppNavigationManager appNavigationManager, TestCaseEditorController browser, IStringLocalizer<SharedStrings> loc)
-    {
-        _appNavigationManager = appNavigationManager;
-        _controller = browser;
-        _loc = loc;
-    }
-
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestRun;
     public PermissionLevel? RequiredLevel => PermissionLevel.Delete;
     public bool Enabled => _appNavigationManager.State.SelectedTestRun is not null;
@@ -37,6 +27,13 @@ internal class DeleteRunCommand : ICommand
     public KeyboardBinding? DefaultKeyboardBinding => null;
     public string? Icon => Icons.Material.Filled.Delete;
     public string[] ContextMenuTypes => ["TestRun"];
+    public DeleteRunCommand(AppNavigationManager appNavigationManager, TestCaseEditorController browser, IStringLocalizer<SharedStrings> loc)
+    {
+        _appNavigationManager = appNavigationManager;
+        _controller = browser;
+        _loc = loc;
+    }
+
 
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {

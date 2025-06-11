@@ -14,6 +14,8 @@ public partial class TestRunView
     private TestCaseRun? _selectedTestCaseRun = null;
     private TestCaseRunGrid? testCaseRunGrid;
     private string _markdown = "";
+    private string _preconditions = "";
+    private string _postconditions = "";
     private List<Comment> _comments = [];
     private TestState? State 
     {
@@ -32,11 +34,6 @@ public partial class TestRunView
         await QueryChanged.InvokeAsync(query);
     }
 
-    private int _activePanelIndex = 0;
-    private void OnActivePanelIndexChanged(int index)
-    {
-        _activePanelIndex = index;
-    }
 
     private async Task OnCommentAdded(Comment comment)
     {
@@ -65,52 +62,42 @@ public partial class TestRunView
 
     private async Task OnSelectedTestCaseRunChanged(TestCaseRun? testCaseRun)
     {
-        // Change the tab if changing test case, but keep the default if just opening
-        // the view for the first time
-        if (_selectedTestCaseRun is not null && _selectedTestCaseRun?.Id != testCaseRun?.Id)
-        {
-            _activePanelIndex = 1;
-        }
-
         _selectedTestCaseRun = testCaseRun;
         _comments = testCaseRun?.Comments ?? [];
 
         if (_selectedTestCaseRun?.TestCase is not null)
         {
             TestCase testCase = _selectedTestCaseRun.TestCase!;
-            string description = testCase.Description ?? "";
-            long testRunId = _selectedTestCaseRun.TestRunId;
-            List<CompilerError> errors = new List<CompilerError>();
+            List<CompilerError> errors = [];
 
-            var options = new CompilationOptions(testCase, description)
+            // Generate description
+            var options = new CompilationOptions(testCase, testCase.Description ?? "")
             {
-                TestRunId = testRunId,
+                TestRunId = _selectedTestCaseRun.TestRunId,
                 AllocateResources = false,
             };
             var context = await testCaseEditorController.CompileAsync(options, errors);
             _markdown = context?.CompiledText ?? "";
+
+            // Generate pre-conditions
+            options = new CompilationOptions(testCase, testCase.Preconditions ?? "")
+            {
+                TestRunId = _selectedTestCaseRun.TestRunId,
+                AllocateResources = false,
+            };
+            context = await testCaseEditorController.CompileAsync(options, errors);
+            _preconditions = context?.CompiledText ?? "";
+
+            // Generate post-conditions
+            options = new CompilationOptions(testCase, testCase.Postconditions ?? "")
+            {
+                TestRunId = _selectedTestCaseRun.TestRunId,
+                AllocateResources = false,
+            };
+            context = await testCaseEditorController.CompileAsync(options, errors);
+            _postconditions = context?.CompiledText ?? "";
         }
     }
-
-    private async Task OnTestCaseRunStateChanged(TestState? state)
-    {
-        if (_selectedTestCaseRun?.TestCase is not null)
-        {
-            _selectedTestCaseRun.State = state?.Name;
-            _selectedTestCaseRun.MappedState = state?.MappedState;
-
-            await testCaseEditorController.SaveTestCaseRunAsync(_selectedTestCaseRun);
-        }
-    }
-
-    private async Task OnTestCaseRunResultChanged(TestResult result)
-    {
-        if (_selectedTestCaseRun?.TestProjectId is not null)
-        {
-            await testExecutionController.SetTestCaseRunResultAsync(_selectedTestCaseRun, result);
-        }
-    }
-
 
     private void OnTestCompleted(object? sender, TestCaseRun testCaseRun)
     {

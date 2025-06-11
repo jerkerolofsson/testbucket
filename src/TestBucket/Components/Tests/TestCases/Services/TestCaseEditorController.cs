@@ -94,7 +94,13 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
                 Dependencies = []
             };
 
-            if(options.AllocateResources)
+            if (string.IsNullOrWhiteSpace(options.Text))
+            {
+                context.CompiledText = options.Text;
+                return context;
+            }
+
+            if (options.AllocateResources)
             {
                 if(testCase.Dependencies is not null)
                 {

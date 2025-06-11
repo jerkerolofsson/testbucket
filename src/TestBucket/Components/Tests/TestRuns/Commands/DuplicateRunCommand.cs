@@ -12,18 +12,8 @@ internal class DuplicateRunCommand : ICommand
     private readonly AppNavigationManager _appNavigationManager;
     private readonly TestRunCreationController _controller;
     private readonly IStringLocalizer<SharedStrings> _loc;
-
     public int SortOrder => 30;
-
     public string? Folder => null;
-
-    public DuplicateRunCommand(AppNavigationManager appNavigationManager, TestRunCreationController browser, IStringLocalizer<SharedStrings> loc)
-    {
-        _appNavigationManager = appNavigationManager;
-        _controller = browser;
-        _loc = loc;
-    }
-
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestRun;
     public PermissionLevel? RequiredLevel => PermissionLevel.Read;
     public bool Enabled => _appNavigationManager.State.SelectedTestRun is not null;
@@ -33,7 +23,12 @@ internal class DuplicateRunCommand : ICommand
     public KeyboardBinding? DefaultKeyboardBinding => null;
     public string? Icon => Icons.Material.Filled.ContentCopy;
     public string[] ContextMenuTypes => ["TestRun"];
-
+    public DuplicateRunCommand(AppNavigationManager appNavigationManager, TestRunCreationController browser, IStringLocalizer<SharedStrings> loc)
+    {
+        _appNavigationManager = appNavigationManager;
+        _controller = browser;
+        _loc = loc;
+    }
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         if (_appNavigationManager.State.SelectedTestRun is null)

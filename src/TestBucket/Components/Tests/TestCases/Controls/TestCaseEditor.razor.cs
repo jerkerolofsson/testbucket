@@ -38,8 +38,11 @@ public partial class TestCaseEditor
 
     private bool _preview = true;
     private MarkdownEditor? _editor;
+    private MarkdownEditor? _preconditionsEditor;
     private string? _descriptionText;
     private string? _previewText;
+    private string? _preconditionsText;
+    private string? _previewPreconditions;
     private readonly List<CompilerError> _errors = new List<CompilerError>();
     private List<Comment> _comments = [];
 
@@ -49,7 +52,7 @@ public partial class TestCaseEditor
     {
         get
         {
-            if(_preview && _previewText is not null)
+            if (_preview && _previewText is not null)
             {
                 return _previewText;
             }
@@ -57,6 +60,33 @@ public partial class TestCaseEditor
         }
     }
 
+    public string? PreconditionsText
+    {
+        get
+        {
+            if (_preview && _previewPreconditions is not null)
+            {
+                return _previewPreconditions;
+            }
+            return _preconditionsText;
+        }
+    }
+
+    public async Task OnPreconditionsChanged(string description)
+    {
+        if (_preview)
+        {
+            return;
+        }
+        if (Test is not null)
+        {
+            _preconditionsText = description;
+            Test.Preconditions = description;
+            await CompilePreviewAsync();
+
+            await TestChanged.InvokeAsync(Test);
+        }
+    }
     public async Task OnDescriptionChanged(string description)
     {
         if (_preview)
@@ -72,11 +102,7 @@ public partial class TestCaseEditor
             await TestChanged.InvokeAsync(Test);
         }
     }
-    private void BeginEdit()
-    {
-        _preview = false;
-    }
-
+  
     private async Task OnRunCodeClickedAsync(RunCodeRequest request)
     {
         if (Test is null || Test.TestProjectId is null || request.Code is null || request.Language is null)
@@ -113,6 +139,7 @@ public partial class TestCaseEditor
                 _testId = Test.Id;
 
                 _descriptionText = Test.Description;
+                _preconditionsText = Test.Preconditions;
                 await CompilePreviewAsync();
             }
         }
@@ -138,9 +165,13 @@ public partial class TestCaseEditor
     private async Task OnPreviewChanged(bool preview)
     {
         _preview = preview;
-        if (Text is not null && _editor is not null)
+        if (_descriptionText is not null && _editor is not null)
         {
-            await _editor.SetValueAsync(Text);
+            await _editor.SetValueAsync(_descriptionText);
+        }
+        if (_preconditionsText is not null && _preconditionsEditor is not null)
+        {
+            await _preconditionsEditor.SetValueAsync(_preconditionsText);
         }
     }
 
@@ -149,7 +180,6 @@ public partial class TestCaseEditor
         if (Test is not null)
         {
             var options = new CompilationOptions(Test, _descriptionText ?? "");
-
             var context = await testCaseEditorController.CompileAsync(options, _errors);
             var previewText = context?.CompiledText ?? _descriptionText;
             if (_previewText != previewText && previewText is not null)
@@ -163,6 +193,22 @@ public partial class TestCaseEditor
             else
             {
                 _previewText = "";
+            }
+
+            options = new CompilationOptions(Test, _preconditionsText ?? "");
+            context = await testCaseEditorController.CompileAsync(options, _errors);
+            previewText = context?.CompiledText ?? _preconditionsText;
+            if (_previewPreconditions != previewText && previewText is not null)
+            {
+                _previewPreconditions = previewText;
+                if (_preview && _preconditionsEditor is not null)
+                {
+                    await _preconditionsEditor.SetValueAsync(_previewPreconditions);
+                }
+            }
+            else
+            {
+                _previewPreconditions = "";
             }
         }
     }

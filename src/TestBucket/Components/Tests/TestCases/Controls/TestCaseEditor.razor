@@ -46,6 +46,15 @@
                         }
                     }
 
+
+                    <MarkdownEditor Value="@PreconditionsText"
+                                    @ref=_preconditionsEditor
+                                    UploadHandler="@UploadHandler"
+                                    ValueChanged="OnPreconditionsChanged"
+                                    Preview="@_preview"
+                                    PreviewChanged="OnPreviewChanged"
+                                    TextAreaClass="tb-test-preconditions" />
+
                     <MarkdownEditor Value="@Text"
                                     @ref=_editor
                                     UploadHandler="@UploadHandler"

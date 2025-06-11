@@ -4,14 +4,18 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.IntegrationTests.Features.Duplication;
 
-[Feature("Duplication 1.0")]
+[Feature("Duplication")]
+[Component("Testing")]
 [FunctionalTest]
 [EnrichedTest]
 [IntegrationTest]
 public class DuplicateTestRunTests(TestBucketApp App)
 {
+    /// <summary>
+    /// Verifies that a duplicated run has the same fields as the duplicated one
+    /// </summary>
+    /// <returns></returns>
     [Fact]
-    [TestDescription("Verifies that a duplicated run has the same fields as the duplicated one")]
     public async Task DuplicateTestRun_WithTrait_BothHaveTheSameFields()
     {
         // Arrange
@@ -35,8 +39,11 @@ public class DuplicateTestRunTests(TestBucketApp App)
         await App.Client.Teams.DeleteAsync(team);
     }
 
+    /// <summary>
+    /// Verifies that a duplicated run with tests contains the test
+    /// </summary>
+    /// <returns></returns>
     [Fact]
-    [TestDescription("Verifies that a duplicated run with tests contains the test")]
     public async Task DuplicateTestRun_WithTest_TestCaseRunIsDuplicated()
     {
         // Arrange

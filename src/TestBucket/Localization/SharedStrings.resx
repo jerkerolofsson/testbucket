@@ -788,4 +788,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="edit-metric" xml:space="preserve">
     <value>Edit Metric</value>
   </data>
+  <data name="run-n-tests" xml:space="preserve">
+    <value>Run {0} tests</value>
+  </data>
 </root>

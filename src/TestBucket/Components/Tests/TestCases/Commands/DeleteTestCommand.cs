@@ -18,16 +18,10 @@ internal class DeleteTestCommand : ICommand
 
     public string? Folder => null;
 
-    public DeleteTestCommand(AppNavigationManager appNavigationManager, TestCaseEditorController browser, IStringLocalizer<SharedStrings> loc)
-    {
-        _appNavigationManager = appNavigationManager;
-        _controller = browser;
-        _loc = loc;
-    }
-
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;
     public PermissionLevel? RequiredLevel => PermissionLevel.Delete;
-    public bool Enabled => _appNavigationManager.State.SelectedTestCase is not null;
+    public bool Enabled => _appNavigationManager.State.SelectedTestCase is not null ||
+        _appNavigationManager.State.MultiSelectedTestCases.Count > 0;
     public string Id => "delete-test";
     public string Name => _loc["delete-test"];
     public string Description => "";
@@ -35,13 +29,29 @@ internal class DeleteTestCommand : ICommand
     public string? Icon => Icons.Material.Filled.Delete;
     public string[] ContextMenuTypes => ["TestCase"];
 
+    public DeleteTestCommand(AppNavigationManager appNavigationManager, TestCaseEditorController browser, IStringLocalizer<SharedStrings> loc)
+    {
+        _appNavigationManager = appNavigationManager;
+        _controller = browser;
+        _loc = loc;
+    }
+
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
-        if (_appNavigationManager.State.SelectedTestCase is null)
+        if (_appNavigationManager.State.MultiSelectedTestCases.Count > 0)
         {
-            return;
+            foreach(var testCase in _appNavigationManager.State.MultiSelectedTestCases)
+            {
+                await _controller.DeleteTestCaseAsync(testCase);
+            }
         }
-        await _controller.DeleteTestCaseAsync(_appNavigationManager.State.SelectedTestCase);
-        //await _controller.DuplicateTestAsync(_appNavigationManager.State.SelectedTestCase);
+        else
+        {
+            if (_appNavigationManager.State.SelectedTestCase is null)
+            {
+                return;
+            }
+            await _controller.DeleteTestCaseAsync(_appNavigationManager.State.SelectedTestCase);
+        }
     }
 }

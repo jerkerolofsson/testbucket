@@ -122,17 +122,18 @@
             return;
         }
 
-        if(testCaseId != _testCase?.Id)
-        {
-            _testCase = await browser.GetTestCaseByIdAsync(testCaseId.Value);
-            appNavigationManager.State.SelectedTestCase = _testCase;
-        }
-
         _testSuite = appNavigationManager.State.SelectedTestSuite;
         if (_testCase is not null && _testSuite?.Id != _testCase.TestSuiteId)
         {
             _testSuite = await browser.GetTestSuiteByIdAsync(_testCase.TestSuiteId);
-            appNavigationManager.State.SelectedTestSuite = _testSuite;
+            appNavigationManager.State.SetSelectedTestSuite(_testSuite);
         }
+
+        if (testCaseId != _testCase?.Id)
+        {
+            _testCase = await browser.GetTestCaseByIdAsync(testCaseId.Value);
+            appNavigationManager.State.SetSelectedTestCase(_testCase);
+        }
+
     }
 }

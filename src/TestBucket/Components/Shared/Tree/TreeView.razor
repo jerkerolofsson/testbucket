@@ -6,6 +6,7 @@
         @foreach(var item in Items)
         {
             <TreeViewNode T="T" 
+                MultiSelection="@MultiSelection"
                 Item="item" SelectedValue="@SelectedValue" EditItem="@EditItem" 
                 ItemEdited="async (text) => await ItemEdited.InvokeAsync(text)"
                 ItemEditCanceled="async () => await ItemEditCanceled.InvokeAsync()" >
@@ -16,6 +17,8 @@
 
 @code {
     private string CssClass => $"treeview {Class} treeview-{Color.ToDescriptionString()}";
+
+    [Parameter] public bool MultiSelection { get; set; } = false;
 
     [Parameter] public TreeNode<T>? EditItem { get; set; }
 
@@ -38,8 +41,14 @@
 
     [Parameter] public RenderFragment<TreeNode<T>>? ItemTemplate { get; set; }
 
+    private List<T> _selectedValues = [];
+
     protected override void OnParametersSet()
     {
+        if(SelectedValues is not null)
+        {
+            _selectedValues = [.. SelectedValues];
+        }
     }
 
     public static TreeNode<BrowserItem>? RemoveTreeNode(TreeNode<BrowserItem>? parentNode, IEnumerable<TreeNode<BrowserItem>> treeItems, Predicate<BrowserItem> predicate)
@@ -66,7 +75,7 @@
         }
         return null;
     }
-   
+
     public static TreeNode<BrowserItem>? FindTreeNode(IEnumerable<TreeNode<BrowserItem>> treeItems, Predicate<BrowserItem> predicate)
     {
         foreach (var node in treeItems)
@@ -85,5 +94,103 @@
             }
         }
         return null;
+    }
+
+    /// <summary>
+    /// Returns true if the item is selected either  in SingleSelection mode or MultiSelection mode.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    public bool IsItemSelected(TreeNode<T> item)
+    {
+        if (item.Value is null)
+        {
+            return false;
+        }
+
+        if(SelectedValue == item.Value)
+        {
+            return true;
+        }
+
+        if(MultiSelection)
+        {
+            return IsItemMultiSelected(item);
+        }
+        return false;
+    }
+
+    public bool IsItemMultiSelected(TreeNode<T> item)
+    {
+        if (item.Value is null)
+        {
+            return false;
+        }
+        if (MultiSelection)
+        {
+            foreach (var selectedValue in _selectedValues)
+            {
+                if (item.Value.Equals(selectedValue))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public async Task ToggleMultiSelectionAsync(TreeNode<T> item, bool isSelected)
+    {
+        if(!MultiSelection)
+        {
+            return;            
+        }
+        if(item.Value is null)
+        {
+            return;
+        }
+
+        // Also update any children
+        await SetMultiSelectionAsync(item, isSelected);
+        await SelectedValuesChanged.InvokeAsync(_selectedValues);
+    }
+
+    private async Task SetMultiSelectionAsync(TreeNode<T> item, bool isSelected)
+    {
+        if (!MultiSelection || item.Value is null)
+        {
+            return;
+        }
+        if (isSelected)
+        {
+            if (!_selectedValues.Contains(item.Value))
+            {
+                _selectedValues.Add(item.Value);
+            }
+        }
+        else
+        {
+            _selectedValues.Remove(item.Value);
+        }
+
+        // If the item has children, toggle their selection state as well
+        if(!item.HasChildren && item.Expandable && isSelected)
+        {
+            if (ServerData is not null)
+            {
+                if (item.Children is null)
+                {
+                    item.Children = await ServerData(item.Value);
+                }
+            }
+        }
+
+        if(item.HasChildren)
+        {
+            foreach(var child in item.Children)
+            {
+                await SetMultiSelectionAsync(child, isSelected);
+            }
+        }
     }
 }

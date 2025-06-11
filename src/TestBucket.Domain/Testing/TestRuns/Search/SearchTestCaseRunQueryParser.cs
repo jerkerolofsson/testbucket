@@ -12,6 +12,7 @@ public class SearchTestCaseRunQueryParser
 {
     private static readonly HashSet<string> _keywords = 
         [
+        "id",
         "assigned-to", 
         "testsuite-id", 
         "testrun-id", 
@@ -34,6 +35,9 @@ public class SearchTestCaseRunQueryParser
         {
             switch (pair.Key)
             {
+                case "id":
+                    request.ExternalDisplayId = pair.Value;
+                    break;
                 case "assigned-to":
                     request.AssignedToUser = pair.Value;
                     break;

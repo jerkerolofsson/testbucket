@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Traits.Core;
 
@@ -37,6 +38,11 @@ public class TestCaseFilterSpecificationBuilder
                     specifications.Add(new FilterTestCasesByStringField(fieldFilter.FilterDefinitionId, fieldFilter.StringValue));
                 }
             }
+        }
+
+        if(query.ExternalDisplayId is not null)
+        {
+            specifications.Add(new FilterTestCasesByExternalDisplayId(query.ExternalDisplayId));
         }
 
         if(query.ExcludeAutomated == true)

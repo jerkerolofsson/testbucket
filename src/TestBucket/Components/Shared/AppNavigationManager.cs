@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿
+using Microsoft.AspNetCore.Components;
 
 using TestBucket.Components.Requirements.Controls;
 using TestBucket.Components.Tests.TestCases.Controls;
@@ -22,6 +23,9 @@ public class AppNavigationManager
 
     internal class NavigationState
     {
+        private List<TestCase> _multiSelectedTestCases = [];
+        private List<Requirement> _multiSelectedRequirements = [];
+
         /// <summary>
         /// Local issue currently in focus
         /// </summary>
@@ -85,6 +89,73 @@ public class AppNavigationManager
 
         public TestTreeView? TestTreeView { get; set; }
         public RequirementTreeView? RequirementTreeView { get; set; }
+
+        public IReadOnlyList<TestCase> MultiSelectedTestCases => _multiSelectedTestCases;
+
+        internal void SetMultiSelectedRequirements(List<Requirement> list)
+        {
+            _multiSelectedTestCases = [];
+            _multiSelectedRequirements = list;
+        }
+        internal void SetMultiSelectedTestCases(List<TestCase> list)
+        {
+            _multiSelectedTestCases = list;
+            _multiSelectedRequirements = [];
+        }
+
+        internal void SetMultiSelectedTestSuiteFolders(List<TestSuiteFolder> list)
+        {
+        }
+
+        internal void SetMultiSelectedTestSuites(List<TestSuite> list)
+        {
+        }
+
+        internal void SetSelectedTestSuite(TestSuite? suite)
+        {
+            SelectedTestSuite = suite;
+            SelectedTestSuiteFolder = null;
+            SelectedTestCase = null;
+            SelectedRequirement = null;
+            SelectedRequirementSpecification = null;
+            SelectedRequirementSpecificationFolder = null;
+            SelectedTestCaseRun = null;
+            SelectedTestRun = null;
+            _multiSelectedRequirements = [];
+        }
+        internal void SetSelectedTestSuiteFolder(TestSuiteFolder folder)
+        {
+            SelectedTestSuiteFolder = folder;
+            SelectedTestCase = null;
+            SelectedRequirement = null;
+            SelectedRequirementSpecification = null;
+            SelectedRequirementSpecificationFolder = null;
+            SelectedTestCaseRun = null;
+            SelectedTestRun = null;
+            _multiSelectedRequirements = [];
+        }
+        internal void SetSelectedTestCase(TestCase? testCase)
+        {
+            SelectedTestCase = testCase;
+            SelectedRequirement = null;
+            SelectedRequirementSpecification = null;
+            SelectedRequirementSpecificationFolder = null;
+            SelectedTestCaseRun = null;
+            SelectedTestRun = null;
+            _multiSelectedRequirements = [];
+        }
+
+        internal void SetSelectedTestRun(TestRun testRun)
+        {
+            SelectedTestRun = testRun;
+            SelectedRequirement = null;
+            SelectedRequirementSpecification = null;
+            SelectedRequirementSpecificationFolder = null;
+            SelectedTestCaseRun = null;
+            SelectedTestRun = null;
+            _multiSelectedRequirements = [];
+            _multiSelectedTestCases = [];
+        }
     }
 
     internal NavigationState State { get; } = new();
@@ -496,7 +567,7 @@ public class AppNavigationManager
 
     public void NavigateTo(TestRun testRun, bool forceLoad = false)
     {
-        this.State.SelectedTestRun = testRun;
+        this.State.SetSelectedTestRun(testRun);
         var url = GetUrl(testRun);
         _navigationManager.NavigateTo(url, forceLoad);
     }

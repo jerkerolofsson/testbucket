@@ -12,6 +12,11 @@ namespace TestBucket.Domain.Testing.TestRuns.Search;
 public class SearchTestCaseRunQuery : SearchQuery
 {
     /// <summary>
+    /// TestCase external display ID to filter by.
+    /// </summary>
+    public string? ExternalDisplayId { get; set; }
+
+    /// <summary>
     /// Gets or sets the test run ID to filter by.
     /// </summary>
     public long? TestRunId { get; set; }
@@ -113,6 +118,10 @@ public class SearchTestCaseRunQuery : SearchQuery
         if (State is not null)
         {
             items.Add($"state:{State}");
+        }
+        if (ExternalDisplayId is not null)
+        {
+            items.Add($"id:{ExternalDisplayId}");
         }
         if (TestRunId is not null)
         {

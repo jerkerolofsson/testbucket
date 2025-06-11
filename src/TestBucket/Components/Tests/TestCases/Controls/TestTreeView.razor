@@ -20,6 +20,12 @@
     <MudStack Row="true" class="tb-treeview-toolbar" Spacing="0">
 
         <MudStack Row="true" Class="pr-2 pl-2" Style="width: 100%" Spacing="0" AlignItems="AlignItems.Center">
+
+            <MudToggleIconButton Size="Size.Small"
+                                 ToggledIcon="@Icons.Material.Filled.CheckBox"
+                                 Icon="@Icons.Material.Filled.CheckBoxOutlineBlank" 
+                                 @bind-Toggled="@_multiSelect" />
+
             <MudTextField 
                 Placeholder="@loc["search-tests"]"
                 Class="default-search"
@@ -40,13 +46,15 @@
         </MudStack>
     </MudStack>
 
-    <TreeView 
+    <TreeView MultiSelection="@_multiSelect"
     Class="pa-2"
     @ref="_treeView"
     ItemEdited="OnRenamed"
     ItemEditCanceled="OnItemEditCanceled"
     EditItem="@_editItem"
     T="BrowserItem"
+              SelectedValues="@_selectedValues"
+              SelectedValuesChanged="(values) => OnSelectedValuesChanged(values)"
     SelectedValue="@_selectedTreeItem"
     SelectedValueChanged="OnSelectedValueChangedAsync"
     Color="Color.Tertiary" 

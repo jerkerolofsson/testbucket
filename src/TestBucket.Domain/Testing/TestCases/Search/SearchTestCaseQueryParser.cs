@@ -13,6 +13,7 @@ public class SearchTestCaseQueryParser
     private static readonly HashSet<string> _keywords = 
         [
         "is", 
+        "id",
         "testsuite-id", 
         "project-id", 
         "testrun-id", 
@@ -30,6 +31,9 @@ public class SearchTestCaseQueryParser
         {
             switch (pair.Key)
             {
+                case "id":
+                    request.ExternalDisplayId = pair.Value;
+                    break;
                 case "compare-folder":
                     request.CompareFolder = pair.Value == "yes";
                     break;

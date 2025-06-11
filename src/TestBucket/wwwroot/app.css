@@ -533,7 +533,7 @@ table.tb-environment-variables {
         min-height: 32px;
 
         display: grid;
-        grid-template-columns: auto auto 1fr;
+        grid-template-columns: auto auto auto 1fr;
         align-items: center;
 
         background-color: rgba(0,0,0,0);

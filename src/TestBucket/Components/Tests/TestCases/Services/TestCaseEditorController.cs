@@ -227,8 +227,19 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
     /// <exception cref="InvalidOperationException"></exception>
     public async ValueTask DeleteTestCaseAsync(TestCase testCase)
     {
-        var principal = await GetUserClaimsPrincipalAsync();
-        await _testCaseManager.DeleteTestCaseAsync(principal, testCase);
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc["yes"],
+            NoText = _loc["no"],
+            Title = _loc["confirm-delete-title"],
+            MarkupMessage = new MarkupString(_loc["confirm-delete-message"])
+        });
+        if (result == true)
+        {
+
+            var principal = await GetUserClaimsPrincipalAsync();
+            await _testCaseManager.DeleteTestCaseAsync(principal, testCase);
+        }
     }
 
 

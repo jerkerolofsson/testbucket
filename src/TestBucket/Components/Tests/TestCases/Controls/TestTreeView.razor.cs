@@ -1,7 +1,6 @@
 ﻿using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Domain.Automation.Pipelines.Models;
-using TestBucket.Domain.Testing.TestRuns.Search;
 
 
 namespace TestBucket.Components.Tests.TestCases.Controls;
@@ -53,16 +52,22 @@ public partial class TestTreeView
     private TestProject? _project;
     private Team? _team;
 
+    private bool _multiSelect = false;
+
     /// <summary>
     /// Instance of the tree view UI 
     /// </summary>
     private TreeView<BrowserItem> _treeView = default!;
-    //private TreeView<BrowserItem> _treeView2 = default!;
 
     /// <summary>
     /// Root items in the tree view
     /// </summary>
     private List<TreeNode<BrowserItem>> _rootItems = [];
+
+    /// <summary>
+    /// All selected nodes
+    /// </summary>
+    private List<BrowserItem> _selectedValues = [];
 
     /// <summary>
     /// currently selected item
@@ -235,17 +240,19 @@ public partial class TestTreeView
         }
     }
 
-    private async Task ImportAsync()
+    private void OnSelectedValuesChanged(IReadOnlyCollection<BrowserItem>? values)
     {
-        if (_team is null)
+        if (values is null)
         {
-            return;
+            _selectedValues.Clear();
         }
-        if (_project is null)
+        else
         {
-            return;
+            _selectedValues = values.ToList();
         }
-        await testBrowser.ImportResultsAsync(_team, _project);
+        appNavigationManager.State.SetMultiSelectedTestCases(_selectedValues.Select(x => x.TestCase!).Where(x => x is not null).ToList());
+        appNavigationManager.State.SetMultiSelectedTestSuites(_selectedValues.Select(x => x.TestSuite!).Where(x => x is not null).ToList());
+        appNavigationManager.State.SetMultiSelectedTestSuiteFolders(_selectedValues.Select(x => x.Folder!).Where(x => x is not null).ToList());
     }
 
     private async Task OnSelectedValueChangedAsync(BrowserItem? item)
@@ -700,8 +707,7 @@ public partial class TestTreeView
     {
         if (treeNode.Value?.TestCase is not null)
         {
-            
-            appNavigationManager.State.SelectedTestCase = treeNode.Value.TestCase;
+            appNavigationManager.State.SetSelectedTestCase(treeNode.Value.TestCase);
             appNavigationManager.State.SelectedTestSuiteFolder = null;
             if (treeNode.Value.TestCase.TestSuiteFolderId is not null)
             {
@@ -712,14 +718,14 @@ public partial class TestTreeView
         if (treeNode.Value?.Folder is not null)
         {
             appNavigationManager.State.SelectedTestCase = null;
-            appNavigationManager.State.SelectedTestSuiteFolder = treeNode.Value.Folder;
+            appNavigationManager.State.SetSelectedTestSuiteFolder(treeNode.Value.Folder);
             appNavigationManager.State.SelectedTestSuite = await testBrowser.GetTestSuiteByIdAsync(treeNode.Value.Folder.TestSuiteId);
         }
         if (treeNode.Value?.TestSuite is not null)
         {
             appNavigationManager.State.SelectedTestCase = null;
             appNavigationManager.State.SelectedTestSuiteFolder = null;
-            appNavigationManager.State.SelectedTestSuite = treeNode.Value.TestSuite;
+            appNavigationManager.State.SetSelectedTestSuite(treeNode.Value.TestSuite);
         }
     }
 }

@@ -785,4 +785,7 @@
   <data name="edit-metric" xml:space="preserve">
     <value />
   </data>
+  <data name="run-n-tests" xml:space="preserve">
+    <value />
+  </data>
 </root>

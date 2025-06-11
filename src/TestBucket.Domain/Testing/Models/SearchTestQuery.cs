@@ -11,6 +11,8 @@ public class SearchTestQuery : SearchQuery
     public long? TestSuiteId { get; set; }
     public long? FolderId { get; set; }
 
+    public string? ExternalDisplayId { get; set; }
+
     /// <summary>
     /// If true, excludes automated tests
     /// </summary>

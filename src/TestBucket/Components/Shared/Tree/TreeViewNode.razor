@@ -17,7 +17,18 @@
                         <MudIconButton Size="@Size.Small" Icon="@MudBlazor.Icons.Material.Outlined.KeyboardArrowRight" OnClick="Expand"></MudIconButton>
                     }
                 }
+               
             </div>
+            @if (MultiSelection)
+            {
+                <div class="checkbox">
+                    <MudCheckBox Value="@IsMultiSelected" ValueChanged="OnCheckboxSelectedValueChanged" T="bool" Size="Size.Small" />
+                </div>
+            }
+            else
+            {
+                <div/>
+            }
 
             <div class="icon">
                 @if (!string.IsNullOrEmpty(Item.Icon))
@@ -33,7 +44,7 @@
                 }
             </div>
 
-            <div @onclick="OnClicked">
+            <div @onclick="OnClicked" @ondblclick="OnDoubleClicked">
                 @if (EditItem == Item)
                 {
                     <MudFocusTrap>
@@ -60,7 +71,7 @@
         {
             @foreach(TreeNode<T> child in Item.Children)
             {
-                <TreeViewNode 
+                <TreeViewNode MultiSelection="@MultiSelection"
                 Item="@child" 
                 T="T"
                 SelectedValue="@SelectedValue" 
@@ -74,6 +85,7 @@
 }
 
 @code {
+    [Parameter] public bool MultiSelection { get; set; } = false;
     [Parameter] public TreeNode<T>? EditItem { get; set; }
     [Parameter] public TreeNode<T>? Item { get; set; }
     [Parameter] public T? SelectedValue { get; set; }
@@ -107,12 +119,38 @@
         _text = Item?.Text ?? "";
     }
 
+    private bool IsMultiSelected
+    {
+        get
+        {
+            if (Item is not null && Item.Value is not null && TreeView is not null)
+            {
+                if (MultiSelection)
+                {
+                    if (TreeView.IsItemMultiSelected(Item))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
     private bool IsSelected 
     {
         get
         {
             if(Item is not null && Item.Value is not null && TreeView is not null)
             {
+                if(MultiSelection)
+                {
+                    if (TreeView.IsItemMultiSelected(Item))
+                    {
+                        return true;                        
+                    }
+                }
+
                 if (Item.Value.Equals(SelectedValue))
                 {
                     return true;
@@ -140,6 +178,38 @@
                 Item.Children = await TreeView.ServerData(Item.Value);
             }
         }
+    }
+
+    private async Task OnDoubleClicked()
+    {
+        if (Item is null)
+        {
+            return;
+        }
+        if (Item.Expandable)
+        {
+            if(Item.Expanded)
+            {
+                Contract();
+            }
+            else
+            {
+                await Expand();
+            }
+        }
+        else if(MultiSelection)
+        {
+            // Toggle the selection for this item
+            await TreeView.ToggleMultiSelectionAsync(Item, !IsMultiSelected);
+        }
+    }
+
+    private async Task OnCheckboxSelectedValueChanged(bool selected)
+    {
+        if (TreeView is not null && Item is not null)
+        {
+            await TreeView.ToggleMultiSelectionAsync(Item, selected);
+        } 
     }
 
     private async Task OnClicked()

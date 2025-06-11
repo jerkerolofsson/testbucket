@@ -22,16 +22,10 @@ internal class DuplicateTestCommand : ICommand
 
     public string? Folder => null;
 
-    public DuplicateTestCommand(AppNavigationManager appNavigationManager, TestCaseEditorController browser, IStringLocalizer<SharedStrings> loc)
-    {
-        _appNavigationManager = appNavigationManager;
-        _controller = browser;
-        _loc = loc;
-    }
-
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;
     public PermissionLevel? RequiredLevel => PermissionLevel.Read;
-    public bool Enabled => _appNavigationManager.State.SelectedTestCase is not null;
+    public bool Enabled => _appNavigationManager.State.SelectedTestCase is not null || 
+        _appNavigationManager.State.MultiSelectedTestCases.Count > 0;
     public string Id => "duplicate-test";
     public string Name => _loc["duplicate-test"];
     public string Description => "";
@@ -39,13 +33,25 @@ internal class DuplicateTestCommand : ICommand
     public string? Icon => Icons.Material.Filled.ContentCopy;
     public string[] ContextMenuTypes => ["TestCase"];
 
+    public DuplicateTestCommand(AppNavigationManager appNavigationManager, TestCaseEditorController browser, IStringLocalizer<SharedStrings> loc)
+    {
+        _appNavigationManager = appNavigationManager;
+        _controller = browser;
+        _loc = loc;
+    }
+
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
-        if (_appNavigationManager.State.SelectedTestCase is null)
+        if(_appNavigationManager.State.MultiSelectedTestCases.Count > 0)
         {
-            return;
+            foreach(var test in _appNavigationManager.State.MultiSelectedTestCases)
+            {
+                await _controller.DuplicateTestAsync(test);
+            }
         }
-
-        await _controller.DuplicateTestAsync(_appNavigationManager.State.SelectedTestCase);
+        else if (_appNavigationManager.State.SelectedTestCase is { })
+        {
+            await _controller.DuplicateTestAsync(_appNavigationManager.State.SelectedTestCase);
+        }
     }
 }

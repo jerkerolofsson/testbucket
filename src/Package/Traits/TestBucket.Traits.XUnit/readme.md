@@ -25,6 +25,7 @@ using TestBucket.Traits.Xunit;
 namespace MyTests 
 {
     [UnitTest]
+    [EnrichedTest]
     public class MyTestClass
     {
         [Fact]

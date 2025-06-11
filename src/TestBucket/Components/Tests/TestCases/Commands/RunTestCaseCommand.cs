@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 
+using NGitLab.Models;
+
 using TestBucket.Components.Shared;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Components.Tests.TestCases.Models;
@@ -7,6 +9,7 @@ using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
+using TestBucket.Domain.Testing.Models;
 using TestBucket.Localization;
 
 namespace TestBucket.Components.Tests.TestCases.Commands;
@@ -35,9 +38,21 @@ internal class RunTestCaseCommand : ICommand
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;
     public PermissionLevel? RequiredLevel => PermissionLevel.Execute;
-    public bool Enabled => _appNavigationManager.State.SelectedTestCase is not null;
+    public bool Enabled => _appNavigationManager.State.SelectedTestCase is not null ||
+        _appNavigationManager.State.MultiSelectedTestCases.Count > 0;
     public string Id => "run-test-case";
-    public string Name => _loc["run"];
+    public string Name
+    {
+        get
+        {
+            if (_appNavigationManager.State.MultiSelectedTestCases.Count >= 2)
+            {
+                return string.Format(_loc["run-n-tests"], _appNavigationManager.State.MultiSelectedTestCases.Count);
+            }
+
+            return _loc["run"];
+        }
+    }
     public string Description => _loc["run-test-case-description"];
     public KeyboardBinding? DefaultKeyboardBinding => new KeyboardBinding() { CommandId = Id, Key = "KeyR", ModifierKeys = ModifierKey.Ctrl };
     public string? Icon => Icons.Material.Filled.PlayArrow;
@@ -45,20 +60,39 @@ internal class RunTestCaseCommand : ICommand
 
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
-        var testCase = _appNavigationManager.State.SelectedTestCase;
-        if (testCase is null)
+        if(_appNavigationManager.State.MultiSelectedTestCases.Count > 0)
         {
-            return;
+            var testCase = _appNavigationManager.State.MultiSelectedTestCases.First();
+            var projectId = testCase.TestProjectId;
+            if (projectId is null)
+            {
+                return;
+            }
+
+            var testCaseIds = _appNavigationManager.State.MultiSelectedTestCases.Select(x => x.Id).ToArray();
+            var names = _appNavigationManager.State.MultiSelectedTestCases.Take(3).Select(x => x.Name).ToArray();
+            var name = string.Join(",", names);
+
+            var run = await _testRunCreationController.CreateTestRunAsync(name, projectId.Value, testCaseIds);
+            if (run is not null)
+            {
+                _appNavigationManager.NavigateTo(run);
+            }
         }
-        var projectId = testCase.TestProjectId;
-        if (projectId is null)
+        else if (_appNavigationManager.State.SelectedTestCase is { })
         {
-            return;
-        }
-        var run = await _testRunCreationController.CreateTestRunAsync(testCase.Name, projectId.Value, [testCase.Id]);
-        if (run is not null)
-        {
-            _appNavigationManager.NavigateTo(run);
+            var testCase = _appNavigationManager.State.SelectedTestCase;
+            var projectId = testCase.TestProjectId;
+            if (projectId is null)
+            {
+                return;
+            }
+            var run = await _testRunCreationController.CreateTestRunAsync(testCase.Name, projectId.Value, [testCase.Id]);
+            if (run is not null)
+            {
+                _appNavigationManager.NavigateTo(run);
+            }
+
         }
     }
 }

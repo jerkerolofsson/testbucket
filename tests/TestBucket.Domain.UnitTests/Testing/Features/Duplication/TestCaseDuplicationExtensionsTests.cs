@@ -12,7 +12,8 @@ namespace TestBucket.Domain.UnitTests.Testing.Features.Duplication
     /// </summary>
     [UnitTest]
     [EnrichedTest]
-    [Feature("Duplication 1.0")]
+    [Feature("Duplication")]
+    [Component("Testing")]
     public class TestCaseDuplicationExtensionsTests
     {
         /// <summary>

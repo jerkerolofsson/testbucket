@@ -5,14 +5,18 @@ using TestBucket.Domain.Identity.Permissions;
 
 namespace TestBucket.IntegrationTests.Features.Duplication;
 
-[Feature("Duplication 1.0")]
+[Feature("Duplication")]
+[Component("Testing")]
 [EnrichedTest]
 [IntegrationTest]
 public class DuplicateTestCaseTests(TestBucketApp App)
 {
+    /// <summary>
+    /// Verifies that a test cannot be duplicated if the user doesn't have the correct permission
+    /// </summary>
+    /// <returns></returns>
     [Fact]
     [SecurityTest]
-    [TestDescription("Verifies that a test cannot be duplicated if the user doesn't have the correct permission")]
     public async Task DuplicateTestCase_WithoutTestCaseWritePermission_Fails()
     {
         // Arrange
@@ -43,9 +47,12 @@ public class DuplicateTestCaseTests(TestBucketApp App)
         await App.Client.Teams.DeleteAsync(team);
     }
 
+    /// <summary>
+    /// Verifies that a duplicated test has the same description as the test that was duplicated
+    /// </summary>
+    /// <returns></returns>
     [FunctionalTest]
     [Fact]
-    [TestDescription("Verifies that a duplicated test has the same description as the test that was duplicated")]
     public async Task DuplicateTestCase_BothHaveTheSameDescription()
     {
         // Arrange

@@ -40,6 +40,11 @@ public static class TestCaseRunsFilterSpecificationBuilder
             specifications.Add(new FilterTestCaseRunsByAssignment(query.AssignedToUser));
         }
 
+        if (query.ExternalDisplayId is not null)
+        {
+            specifications.Add(new FilterTestCaseRunsByExternalDisplayId(query.ExternalDisplayId));
+        }
+
         if (query.TestCaseId is not null)
         {
             specifications.Add(new FilterTestCaseRunsByTestCase(query.TestCaseId.Value));

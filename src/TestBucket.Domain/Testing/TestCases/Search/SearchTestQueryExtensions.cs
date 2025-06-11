@@ -23,7 +23,10 @@ namespace TestBucket.Domain.Testing.TestCases.Search
             }
 
             BaseQueryParser.Serialize(query, items);
-
+            if (query.ExternalDisplayId is not null)
+            {
+                items.Add($"id:{query.ExternalDisplayId}");
+            }
             if (query.TestRunId is not null)
             {
                 items.Add($"testrun-id:{query.TestRunId}");

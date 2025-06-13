@@ -58,6 +58,29 @@ public static class SystemFieldDefinitions
                     FieldTarget.Issue
     };
 
+    private static readonly FieldDefinition _component = new()
+    {
+        Name = "Component",
+        Trait = "component",
+        TraitType = TraitType.Component,
+        Description = "Component/Area/Module",
+        IsVisible = true,
+        Icon = TbIcons.BoldDuoTone.Components,
+        Type = FieldType.SingleSelection,
+        IsDefinedBySystem = true,
+        Inherit = true,
+        UseClassifier = true,
+        Options = [],
+        DataSourceType = FieldDataSourceType.Components,
+        RequiredPermission = PermissionLevel.Write,
+        Target = FieldTarget.TestCase |
+                FieldTarget.TestCaseRun |
+                FieldTarget.RequirementSpecificationFolder |
+                FieldTarget.RequirementSpecification |
+                FieldTarget.Requirement |
+                FieldTarget.Issue
+    };
+
     private static readonly FieldDefinition _milestone = new()
     {
         Name = "Milestone",
@@ -160,7 +183,7 @@ public static class SystemFieldDefinitions
     {
         get
         {
-            return [_requirementApproval, _feature, _milestone, _commit, _branch, _label, _testCategory];
+            return [_component,_requirementApproval, _feature, _milestone, _commit, _branch, _label, _testCategory];
         }
     }
 }

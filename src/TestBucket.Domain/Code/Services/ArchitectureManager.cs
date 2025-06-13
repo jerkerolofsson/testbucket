@@ -421,7 +421,7 @@ internal class ArchitectureManager : IArchitectureManager
             else
             {
                 UpdateComponent(principal, feature, existingFeature);
-
+                existingFeature.TestProjectId = project.Id;
                 await _repository.UpdateFeatureAsync(existingFeature);
             }
         }
@@ -473,6 +473,7 @@ internal class ArchitectureManager : IArchitectureManager
             else
             {
                 UpdateComponent(principal, layer, existingFeature);
+                existingFeature.TestProjectId = project.Id;
                 await _repository.UpdateLayerAsync(existingFeature);
             }
         }
@@ -508,6 +509,7 @@ internal class ArchitectureManager : IArchitectureManager
             else
             {
                 UpdateComponent(principal, component, existingComponent);
+                existingComponent.TestProjectId = project.Id;
                 await _repository.UpdateComponentAsync(existingComponent);
             }
         }
@@ -542,6 +544,7 @@ internal class ArchitectureManager : IArchitectureManager
             else
             {
                 UpdateComponent(principal, system, existingSystem);
+                existingSystem.TestProjectId = project.Id;
 
                 await _repository.UpdateSystemAsync(existingSystem);
             }

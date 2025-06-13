@@ -165,7 +165,14 @@ else
         navigationManager.LocationChanged += OnLocationChanged;
 
         _project = await projectService.GetActiveProjectAsync();
-        _team = await teamService.GetActiveTeamAsync();
+        if(_project?.Team is not null)
+        {
+            _team = _project.Team;
+        }
+        else
+        {
+            _team = await teamService.GetActiveTeamAsync();
+        }
 
         _userPreferences = await userPreferencesService.GetUserPreferencesAsync();
         _prefTextToIcons = _userPreferences?.PreferTextToIcons ?? false;

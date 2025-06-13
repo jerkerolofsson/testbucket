@@ -4,7 +4,6 @@ using Mediator;
 using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Code.Dialogs;
-using TestBucket.Components.Milestones.Dialogs;
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Code.Services.CommitFeatureMapping;
@@ -22,15 +21,16 @@ internal class ArchitectureController : TenantBaseService
     private readonly IMediator _mediator;
     private readonly IDialogService _dialogService;
     private readonly IStringLocalizer<SharedStrings> _loc;
+    private readonly AppNavigationManager _appNavigationManager;
 
-
-    public ArchitectureController(AuthenticationStateProvider authenticationStateProvider, IArchitectureManager manager, ICommitManager commitManager, IMediator mediator, IDialogService dialogService, IStringLocalizer<SharedStrings> loc) : base(authenticationStateProvider)
+    public ArchitectureController(AuthenticationStateProvider authenticationStateProvider, IArchitectureManager manager, ICommitManager commitManager, IMediator mediator, IDialogService dialogService, IStringLocalizer<SharedStrings> loc, AppNavigationManager appNavigationManager) : base(authenticationStateProvider)
     {
         _manager = manager;
         _commitManager = commitManager;
         _mediator = mediator;
         _dialogService = dialogService;
         _loc = loc;
+        _appNavigationManager = appNavigationManager;
     }
 
     #region Features
@@ -46,12 +46,14 @@ internal class ArchitectureController : TenantBaseService
         if (result?.Data is Feature feature)
         {
             var principal = await GetUserClaimsPrincipalAsync();
+            feature.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.AddFeatureAsync(principal,feature);
         }
     }
     public async Task SaveFeatureAsync(Feature feature)
     {
         var principal = await GetUserClaimsPrincipalAsync();
+        feature.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
         await _manager.UpdateFeatureAsync(principal, feature);
     }
     
@@ -79,6 +81,7 @@ internal class ArchitectureController : TenantBaseService
         if (result?.Data is Feature editedFeature)
         {
             var principal = await GetUserClaimsPrincipalAsync();
+            feature.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.UpdateFeatureAsync(principal, editedFeature);
         }
     }
@@ -125,6 +128,7 @@ internal class ArchitectureController : TenantBaseService
         if (result?.Data is Component component)
         {
             var principal = await GetUserClaimsPrincipalAsync();
+            component.TestProjectId = _appNavigationManager.State.SelectedProject?.Id;
             await _manager.AddComponentAsync(principal, component);
         }
     }
@@ -139,6 +143,7 @@ internal class ArchitectureController : TenantBaseService
         if (result?.Data is Component editedComponent)
         {
             var principal = await GetUserClaimsPrincipalAsync();
+            component.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.UpdateComponentAsync(principal, editedComponent);
         }
     }
@@ -184,6 +189,7 @@ internal class ArchitectureController : TenantBaseService
         if (result?.Data is ProductSystem system)
         {
             var principal = await GetUserClaimsPrincipalAsync();
+            system.TestProjectId = _appNavigationManager.State.SelectedProject?.Id;
             await _manager.AddSystemAsync(principal, system);
         }
     }
@@ -198,6 +204,7 @@ internal class ArchitectureController : TenantBaseService
         if (result?.Data is ProductSystem editedSystem)
         {
             var principal = await GetUserClaimsPrincipalAsync();
+            editedSystem.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.UpdateSystemAsync(principal, editedSystem);
         }
     }
@@ -237,6 +244,7 @@ internal class ArchitectureController : TenantBaseService
         if (result?.Data is ArchitecturalLayer layer)
         {
             var principal = await GetUserClaimsPrincipalAsync();
+            layer.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.AddLayerAsync(principal, layer);
         }
     }
@@ -251,6 +259,7 @@ internal class ArchitectureController : TenantBaseService
         if (result?.Data is ArchitecturalLayer editedLayer)
         {
             var principal = await GetUserClaimsPrincipalAsync();
+            editedLayer.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.UpdateLayerAsync(principal, editedLayer);
         }
     }

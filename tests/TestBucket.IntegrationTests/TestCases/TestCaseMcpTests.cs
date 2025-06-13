@@ -1,4 +1,5 @@
-﻿using TestBucket.Contracts.Testing.Models;
+﻿using TestBucket.AI.Xunit;
+using TestBucket.Contracts.Testing.Models;
 using TestBucket.Formats.Dtos;
 
 namespace TestBucket.IntegrationTests.TestCases

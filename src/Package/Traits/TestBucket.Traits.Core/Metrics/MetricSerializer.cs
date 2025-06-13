@@ -10,19 +10,11 @@ public class MetricSerializer
             return false;
 
         // ^[A-Za-z0-9-]+$ matches only letters, numbers, and dashes
-        return System.Text.RegularExpressions.Regex.IsMatch(name, @"^[A-Za-z0-9-]+$");
+        return System.Text.RegularExpressions.Regex.IsMatch(name, @"^[A-Za-z0-9_\-\.]+$");
     }
 
     public static string SerializeName(TestResultMetric metric)
     {
-        if (!ValidateName(metric.MeterName))
-        {
-            throw new FormatException("Invalid metric MeterName");
-        }
-        if (!ValidateName(metric.Name))
-        {
-            throw new FormatException("Invalid metric name");
-        }
         return $"metric:{metric.MeterName}:{metric.Name}";
     }
 
@@ -117,11 +109,11 @@ public class MetricSerializer
 
         if (!ValidateName(metricMeterName))
         {
-            throw new FormatException("Invalid meter name");
+            throw new FormatException("Invalid meter name: " + metricMeterName);
         }
         if (!ValidateName(metricName))
         {
-            throw new FormatException("Invalid metric name");
+            throw new FormatException("Invalid metric name: " + metricMeterName);
         }
 
         return new TestResultMetric(metricMeterName, metricName, value, unit)

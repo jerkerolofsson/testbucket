@@ -31,7 +31,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Package\Core\TestBucket.Sdk.Client\TestBucket.Sdk.Client.csproj" />
-		<ProjectReference Include="..\..\src\Package\McpTest\TestBucket.McpTest.Xunit\TestBucket.McpTest.Xunit.csproj" />
 		<ProjectReference Include="..\..\src\Package\Traits\TestBucket.Traits.XUnit\TestBucket.Traits.Xunit.csproj" />
 		<ProjectReference Include="..\..\src\TestBucket.AppHost\TestBucket.AppHost.csproj" />
 	</ItemGroup>

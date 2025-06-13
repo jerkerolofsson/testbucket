@@ -3,14 +3,14 @@
 @layout RequirementLayout
 @inject RequirementBrowser browser
 @inject AppNavigationManager appNavigationManager
-@page "/{TenantId}/Requirements/Requirements/{RequirementId:long}"
+@page "/{TenantId}/Requirements/Requirements/{RequirementId:long}/Edit"
 
-<div class="container-fill">
-    <RequirementView Requirement="@Requirement" />
-</div>
+<RequirementEditor Requirement="@Requirement"/>
 
 @code {
     [CascadingParameter] public Requirement? Requirement { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
     [Parameter] public long RequirementId { get; set; }
     [Parameter] public string? TenantId { get; set; }
 

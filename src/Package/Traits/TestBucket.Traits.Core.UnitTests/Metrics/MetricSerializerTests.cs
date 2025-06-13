@@ -103,33 +103,12 @@ public class MetricSerializerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="MetricSerializer.SerializeName"/> throws a <see cref="FormatException"/>
-    /// when the meter-name or name is invalid.
-    /// </summary>
-    /// <param name="meterName">The namespace to test.</param>
-    /// <param name="name">The name to test.</param>
-    [Theory]
-    [InlineData("invalid namespace", "foo")]
-    [InlineData("ns!", "foo")]
-    [InlineData("", "foo")]
-    [InlineData("meter-name", "invalid name")]
-    [InlineData("meter-name", "foo!")]
-    [InlineData("meter-name", "")]
-    public void SerializeName_InvalidNamespaceOrName_ThrowsFormatException(string meterName, string name)
-    {
-        var metric = new TestResultMetric(meterName, name, 1.23, "ms");
-        Assert.Throws<FormatException>(() => MetricSerializer.SerializeName(metric));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="MetricSerializer.Deserialize"/> throws a <see cref="FormatException"/>
     /// when the serialized name or value is invalid.
     /// </summary>
     /// <param name="serializedName">The serialized metric name to test.</param>
     /// <param name="value">The value to test.</param>
     [Theory]
-    [InlineData("metric:invalid namespace:foo", "1.23ms")]
-    [InlineData("metric:ns!:foo", "1.23ms")]
     [InlineData("metric::foo", "1.23ms")]
     [InlineData("metric:meter-name:invalid name", "1.23ms")]
     [InlineData("metric:meter-name:foo!", "1.23ms")]

@@ -368,6 +368,18 @@ public class AppNavigationManager
         return $"{tenantId}/Testing/TestCases/{testCaseId}/Requirements";
     }
 
+    public string GetRequirementUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var id = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Requirements/Requirements/{id}";
+    }
+    public string GetEditRequirementUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var id = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Requirements/Requirements/{id}/Edit";
+    }
     public string GetRequirementTraceUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);

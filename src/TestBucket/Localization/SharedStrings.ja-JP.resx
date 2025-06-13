@@ -271,4 +271,10 @@
   <data name="run-test" xml:space="preserve">
     <value />
   </data>
+  <data name="go-to-testcase" xml:space="preserve">
+    <value />
+  </data>
+  <data name="go-to-testcase-description" xml:space="preserve">
+    <value />
+  </data>
 </root>

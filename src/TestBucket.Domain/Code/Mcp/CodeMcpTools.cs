@@ -20,7 +20,7 @@ public class CodeMcpTools : AuthenticatedTool
         _architectureManager = architecture;
     }
 
-    [McpServerTool(Name = "search-features"), Description("Searches for features")]
+    [McpServerTool(Name = "search-features", Title ="Search features"), Description("Searches for features")]
     public async Task<IReadOnlyList<AritecturalComponentDto>> SearchFeaturesAsync(string searchText, int offset, int count)
     {
         var isAuthenticated = await IsAuthenticatedAsync();

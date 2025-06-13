@@ -803,4 +803,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="run-test" xml:space="preserve">
     <value>Run test</value>
   </data>
+  <data name="go-to-testcase" xml:space="preserve">
+    <value>Go to test case</value>
+  </data>
+  <data name="go-to-testcase-description" xml:space="preserve">
+    <value>Open the test case view</value>
+  </data>
 </root>

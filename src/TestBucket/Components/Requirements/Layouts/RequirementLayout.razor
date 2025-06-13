@@ -30,21 +30,26 @@
             <MudStack Row Style="width: 100%; margin-right: 16px" Spacing="1" AlignItems="AlignItems.Center">
                 <PathNavigation Requirement="@_requirement" />
                 <MudSpacer />
+                @if (_requirement is not null)
+                {
+                    <MudTooltip Text="@loc["main"]">
+                        <TbNavLink Href="@appNavigationManager.GetRequirementUrl()" Icon="@RequirementIcons.GetIcon(_requirement)" Match="NavLinkMatch.All" />
+                    </MudTooltip>
 
+                    <MudTooltip Text="@loc["edit"]">
+                        <TbNavLink Href="@appNavigationManager.GetEditRequirementUrl()" Icon="@Icons.Material.Filled.Edit" />
+                    </MudTooltip>
 
-                <MudTooltip Text="@loc["edit"]">
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="Edit" Class="rounded-0" />
-                </MudTooltip>
+                    <MudTooltip Text="@loc["traceability"]">
+                        <TbNavLink Icon="@TbIcons.BoldDuoTone.Trace" Href="@appNavigationManager.GetRequirementTraceUrl()"/>
+                    </MudTooltip>
 
-                <MudTooltip Text="@loc["traceability"]">
-                    <MudIconButton Icon="@TbIcons.BoldDuoTone.Trace" Href="@appNavigationManager.GetRequirementTraceUrl()" Class="rounded-0" />
-                </MudTooltip>
+                    <MudTooltip Text="@loc["coverage"]">
+                        <TbNavLink Icon="@TbIcons.BoldDuoTone.Coverage" Href="@appNavigationManager.GetRequirementCoverageUrl()"/>
+                    </MudTooltip>
 
-                <MudTooltip Text="@loc["coverage"]">
-                    <MudIconButton Icon="@TbIcons.BoldDuoTone.Coverage" Href="@appNavigationManager.GetRequirementCoverageUrl()" Class="rounded-0" />
-                </MudTooltip>
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
+                    <MudDivider DividerType="DividerType.Middle" Vertical />
+                }
 
             </MudStack>
         </div>

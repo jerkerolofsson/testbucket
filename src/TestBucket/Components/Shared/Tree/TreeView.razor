@@ -30,7 +30,7 @@
     [Parameter] public T? SelectedValue { get; set; }
     [Parameter] public EventCallback<T?> SelectedValueChanged { get; set; }
     [Parameter] public IReadOnlyCollection<T>? SelectedValues { get; set; }
-    [Parameter] public EventCallback<IRead<T>?> SelectedValuesChanged { get; set; }
+    [Parameter] public EventCallback<List<T>?> SelectedValuesChanged { get; set; }
     [Parameter] public EventCallback<string> ItemEdited { get; set; }
     [Parameter] public EventCallback<string> ItemEditCanceled { get; set; }
 

@@ -1,6 +1,5 @@
 ﻿using TestBucket.Contracts.Testing.Models;
 using TestBucket.Formats.Dtos;
-using TestBucket.McpTest.Xunit;
 
 namespace TestBucket.IntegrationTests.TestCases
 {

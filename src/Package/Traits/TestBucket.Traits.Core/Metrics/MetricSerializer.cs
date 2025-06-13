@@ -15,11 +15,14 @@ public class MetricSerializer
 
     public static string SerializeName(TestResultMetric metric)
     {
+        ArgumentNullException.ThrowIfNull(metric);
         return $"metric:{metric.MeterName}:{metric.Name}";
     }
 
     public static string SerializeValue(TestResultMetric metric)
     {
+        ArgumentNullException.ThrowIfNull(metric);
+
         if (string.IsNullOrWhiteSpace(metric.Unit))
         {
             return $"{metric.Value.ToString(CultureInfo.InvariantCulture)}";
@@ -29,6 +32,8 @@ public class MetricSerializer
 
     public static string SerializeCreatedSuffix(TestResultMetric metric)
     {
+        ArgumentNullException.ThrowIfNull(metric);
+
         string createdString = metric.Created.ToUnixTimeMilliseconds().ToString();
         return $"@{createdString}";
     }

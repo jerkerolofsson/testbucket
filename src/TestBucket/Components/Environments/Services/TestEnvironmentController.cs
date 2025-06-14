@@ -82,6 +82,8 @@ internal class TestEnvironmentController : TenantBaseService
         var result = await dialog.Result;
         if (result?.Data is TestEnvironment testEnvironment)
         {
+            testEnvironment.TeamId ??= team?.Id;
+            testEnvironment.TestProjectId ??= project?.Id;
             await _manager.AddTestEnvironmentAsync(principal, testEnvironment);
             return testEnvironment;
         }

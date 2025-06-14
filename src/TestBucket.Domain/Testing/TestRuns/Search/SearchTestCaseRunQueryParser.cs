@@ -20,6 +20,7 @@ public class SearchTestCaseRunQueryParser
         "completed", 
         "result", 
         "unassigned",
+        "metric",
         .. BaseQueryParser.Keywords
         ];
 
@@ -35,6 +36,9 @@ public class SearchTestCaseRunQueryParser
         {
             switch (pair.Key)
             {
+                case "metric":
+                    request.HasMetricName = pair.Value;
+                    break;
                 case "id":
                     request.ExternalDisplayId = pair.Value;
                     break;

@@ -26,6 +26,11 @@ public static class TestCaseRunsFilterSpecificationBuilder
             specifications.Add(new FilterTestCaseRunsAssigned());
         }
 
+        if(query.HasMetricName is not null)
+        {
+            specifications.Add(new FilterTestCaseRunsMetricFilter(query.HasMetricName));
+        }
+
         if (query.Completed == true)
         {
             specifications.Add(new FilterTestCaseRunsCompleted());

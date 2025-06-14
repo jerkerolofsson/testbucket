@@ -182,6 +182,11 @@ public partial class TestCaseRunGrid
             _selectedItem?.Result != SelectedTestCaseRun?.Result ||
             SelectedTestCaseRun is null || _run?.Id != Run?.Id)
         {
+            if(_run?.Id != Run?.Id)
+            {
+                reloadGridData = true;
+            }
+
             _run = Run;
             _query.TestRunId = _run?.Id;
             _query.ProjectId = Project.Id;

@@ -809,4 +809,28 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="go-to-testcase-description" xml:space="preserve">
     <value>Open the test case view</value>
   </data>
+  <data name="no-variables-alert" xml:space="preserve">
+    <value>There are no variables added</value>
+  </data>
+  <data name="pre-conditions" xml:space="preserve">
+    <value>Pre-conditions</value>
+  </data>
+  <data name="post-conditions" xml:space="preserve">
+    <value>Post-conditions</value>
+  </data>
+  <data name="add-variable" xml:space="preserve">
+    <value>Add variable</value>
+  </data>
+  <data name="test-case-runs" xml:space="preserve">
+    <value>Test results</value>
+  </data>
+  <data name="incomplete" xml:space="preserve">
+    <value>Incomplete</value>
+  </data>
+  <data name="recent-test-runs" xml:space="preserve">
+    <value>Recent test runs</value>
+  </data>
+  <data name="go-to-run" xml:space="preserve">
+    <value>Go to run</value>
+  </data>
 </root>

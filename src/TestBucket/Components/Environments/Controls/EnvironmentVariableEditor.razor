@@ -1,30 +1,33 @@
 ﻿@using TestBucket.Components.Environments.ViewModels
 @inject IStringLocalizer<SharedStrings> loc
 
-<MudToolBar Class="tb-toolbar environment-variable-toolbar" Style="width: unset; max-width: unset; min-width: unset">
-    @if (_editing)
-    {
-        @ToolbarTitle
-        <MudSpacer />
-        <MudTooltip Text="@loc["save"]">
-            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="Add"></MudIconButton>
-            <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="SaveChangesAsync" Class="rounded-0" Disabled="@_saveDisabled" />
-        </MudTooltip>
-    }
-    else
-    {
-        @ToolbarTitle
-        <MudSpacer />
-        <MudTooltip Text="@loc["edit"]">
-            <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="Add"></MudIconButton>
-            <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="BeginEdit" Class="rounded-0" />
-        </MudTooltip>
-    }
-</MudToolBar>
-
+@if(_variables?.Count > 0 || _editing)
+{
+    <MudToolBar Class="tb-toolbar environment-variable-toolbar" Style="width: unset; max-width: unset; min-width: unset">
+        @if (_editing)
+        {
+            @ToolbarTitle
+            <MudSpacer />
+            <MudTooltip Text="@loc["save"]">
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="Add"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="SaveChangesAsync" Class="rounded-0" Disabled="@_saveDisabled" />
+            </MudTooltip>
+        }
+        else
+        {
+            @ToolbarTitle
+            <MudSpacer />
+            <MudTooltip Text="@loc["edit"]">
+                <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="Add"></MudIconButton>
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="BeginEdit" Class="rounded-0" />
+            </MudTooltip>
+        }
+    </MudToolBar>
+}
 @if(_editing)
 {
     <MudDataGrid Items="@_variables"
+        Class="pa-2"
         Dense="true"
         Hover="true"
         EditMode="DataGridEditMode.Cell"
@@ -54,24 +57,40 @@
 }
 else
 {
-    <table class="tb-environment-variables">
-        <thead>
-            <tr>
-                <th>@loc["key"]</th>
-                <th>@loc["value"]</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if(_variables is not null)
-            {
-                @foreach (var variable in _variables)
-                {
+    if(_variables?.Count > 0)
+    {
+        <MudDivider />
+        <MudStack Class="pa-2">
+            <table class="tb-environment-variables">
+                <thead>
                     <tr>
-                        <td>@variable.Key</td>
-                        <td>●●●●●●●●</td>
+                        <th>@loc["key"]</th>
+                        <th>@loc["value"]</th>
                     </tr>
-                }
-            }
-        </tbody>
-    </table>
+                </thead>
+                <tbody>
+                    @if(_variables is not null)
+                    {
+                        @foreach (var variable in _variables)
+                        {
+                            <tr>
+                                <td>@variable.Key</td>
+                                <td>●●●●●●●●</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </MudStack>
+    }
+    else
+    {
+        <MudAlert Icon="@Icons.Material.Filled.ErrorOutline" Style="background: var(--mud-palette-surface)">
+            <MudStack Spacing="5">
+                <div>@loc["no-variables-alert"]</div>
+                <MudButton Class="tb-button-new" StartIcon="@Icons.Material.Filled.Add" OnClick="Add">@loc["add-variable"]</MudButton>
+            </MudStack>
+        </MudAlert>
+    }
 }
+

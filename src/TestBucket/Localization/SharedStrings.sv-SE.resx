@@ -804,4 +804,28 @@
   <data name="go-to-testcase-description" xml:space="preserve">
     <value />
   </data>
+  <data name="no-variables-alert" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pre-conditions" xml:space="preserve">
+    <value />
+  </data>
+  <data name="post-conditions" xml:space="preserve">
+    <value />
+  </data>
+  <data name="add-variable" xml:space="preserve">
+    <value />
+  </data>
+  <data name="test-case-runs" xml:space="preserve">
+    <value />
+  </data>
+  <data name="incomplete" xml:space="preserve">
+    <value />
+  </data>
+  <data name="recent-test-runs" xml:space="preserve">
+    <value />
+  </data>
+  <data name="go-to-run" xml:space="preserve">
+    <value />
+  </data>
 </root>

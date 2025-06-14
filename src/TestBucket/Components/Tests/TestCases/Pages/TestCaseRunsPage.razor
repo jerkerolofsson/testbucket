@@ -1,0 +1,88 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestCaseRuns"
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Components.Tests.Metrics.TestCases
+@using TestBucket.Domain.Requirements.Models
+@using TestBucket.Domain.Testing.TestCases.Search
+@using TestBucket.Domain.Testing.TestRuns.Search
+@layout TestingLayout
+@inject TestBrowser testBrowser
+@inject AppNavigationManager appNavigationManager
+@inject FieldController fieldController
+@inject IStringLocalizer<SharedStrings> loc
+
+<article class="center">
+    <MudStack>
+        <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h1">@loc["test-case-runs"]</MudText>
+        </MudStack>
+
+        <TestCaseRunGrid 
+            Query="_query"
+            QueryChanged="OnQueryChanged"/>
+
+    </MudStack>
+</article>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+    [SupplyParameterFromQuery(Name = "q")] public string? InitialQuery { get; set; }
+
+    private SearchTestCaseRunQuery _query = new();
+    private IReadOnlyList<FieldDefinition> _testCaseFields = [];
+    private FieldDefinition? _fieldCategory;
+    private FieldDefinition? _fieldFeature;
+
+
+    /// <summary>
+    /// Load the test suite when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        appNavigationManager.State.SelectedTestRun = null;
+
+        if(Project is null)
+        {
+            return;
+        }
+        _testCaseFields = await fieldController.GetDefinitionsAsync(Project.Id, Contracts.Fields.FieldTarget.TestCase);
+        _fieldCategory = _testCaseFields.Where(x => x.TraitType == TraitType.TestCategory).FirstOrDefault();
+        _fieldFeature = _testCaseFields.Where(x => x.TraitType == TraitType.Feature).FirstOrDefault();
+        OnQueryChanged(null);
+    }
+
+    private void OnQueryChanged(SearchTestCaseRunQuery? query)
+    {
+        if (query is null)
+        {
+            if (InitialQuery is null)
+            {
+                _query = new();
+                _query.ProjectId = Project?.Id;
+            }
+            else 
+            {
+                _query = SearchTestCaseRunQueryParser.Parse(InitialQuery, _testCaseFields);
+            }
+        }
+        else
+        {
+            _query = query;
+        }
+
+    }
+
+    private long? _totalNumberOfTestsChanged = null;
+    private void OnTotalNumberOfTestsChanged(long count)
+    {
+        _totalNumberOfTestsChanged = count;
+    }
+
+    private void OnTestCaseClicked(TestCase testCase)
+    {
+        appNavigationManager.NavigateTo(testCase);
+    }
+}

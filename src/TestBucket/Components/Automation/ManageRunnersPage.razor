@@ -3,6 +3,7 @@
 @inject RunnersController controller
 @page "/{tenantId}/settings/ManageRunners"
 @using TestBucket.Components.Shared.Permissions
+@using TestBucket.Domain
 @using TestBucket.Domain.Automation.Runners.Models
 @using TestBucket.Domain.Identity.Permissions
 @inject IStringLocalizer<SharedStrings> loc
@@ -21,7 +22,7 @@
 
         <ToolBarContent>
             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-                <MudIcon Icon="@Icons.Material.Filled.RunCircle" Size="Size.Large" Color="Color.Info" />
+                <MudIcon Icon="@TbIcons.BoldDuoTone.Running" Size="Size.Large" Color="Color.Info" />
                 <MudText Typo="Typo.h2">@loc["runners"]</MudText>
                 <MudSpacer />
             </MudStack>

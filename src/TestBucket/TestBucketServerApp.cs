@@ -268,6 +268,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<RunnersController>();
         builder.Services.AddScoped<IssueController>();
         builder.Services.AddScoped<InsightsController>();
+        builder.Services.AddScoped<TestRunController>();
 
         builder.Services.AddScoped<UserPreferencesService>();
         builder.Services.AddScoped<TestBrowser>();
@@ -343,6 +344,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, DuplicateRunCommand>();
 
         // Test Case Run
+        builder.Services.AddScoped<ICommand, GoToTestRunCommand>();
         builder.Services.AddScoped<ICommand, GoToTestCaseCommand>();
 
         // Settings

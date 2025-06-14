@@ -403,11 +403,12 @@ internal class TestBrowser : TenantBaseService
         {
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = _loc["tests"],
+                Text = _loc["test-case-runs"],
                 Children = [],
                 Expanded = false,
+                Expandable = false,
                 Value = new BrowserItem() { Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}" },
-                Icon = TbIcons.BoldOutline.Folder,
+                Icon = TbIcons.BoldDuoTone.FolderCheck,
             });
 
             items.Add(new TreeNode<BrowserItem>
@@ -422,7 +423,17 @@ internal class TestBrowser : TenantBaseService
 
 
             // Search folders
-
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = _loc["my-backlog"],
+                Children = [],
+                Expanded = false,
+                Value = new BrowserItem()
+                {
+                    Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=completed:no%20assigned-to:{WebUtility.UrlEncode(principal.Identity?.Name)}"
+                },
+                Icon = TbIcons.IconSaxDuoTone.Document1,
+            });
             items.Add(new TreeNode<BrowserItem>
             {
                 Text = _loc["assigned-to-me"],
@@ -458,18 +469,19 @@ internal class TestBrowser : TenantBaseService
                 },
                 Icon = TbIcons.BoldDuoTone.QuestionSquare,
             });
+          
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = _loc["my-backlog"],
+                Text = _loc["passed"],
                 Children = [],
                 Expanded = false,
-                Value = new BrowserItem() 
+                Value = new BrowserItem()
                 {
-                    Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=completed:no%20assigned-to:{WebUtility.UrlEncode(principal.Identity?.Name)}"
+                    Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=result:passed"
                 },
-                Icon = TbIcons.IconSaxDuoTone.Document1,
+                IconColor = "rgba(11, 186, 131, 1)",
+                Icon = TbIcons.BoldDuoTone.FolderCheck,
             });
-
             items.Add(new TreeNode<BrowserItem>
             {
                 Text = _loc["blocked"],
@@ -479,8 +491,8 @@ internal class TestBrowser : TenantBaseService
                 {
                     Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=result:blocked"
                 },
-                IconColor = "yellow",
-                Icon = TbIcons.BoldDuoTone.MenuDots,
+                IconColor = " rgb(250,220,80)",
+                Icon = TbIcons.BoldDuoTone.FolderError,
             });
             items.Add(new TreeNode<BrowserItem>
             {
@@ -491,10 +503,9 @@ internal class TestBrowser : TenantBaseService
                 {
                     Href = $"{_appNavigationManager.GetTestRunTestsUrl(testRun.Id)}?q=result:failed"
                 },
-                IconColor = "red",
-                Icon = TbIcons.BoldDuoTone.MenuDots,
+                IconColor = "rgba(246, 78, 98, 1)",
+                Icon = TbIcons.BoldDuoTone.FolderError,
             });
-
         }
 
         var treeNode = new TreeNode<BrowserItem>
@@ -833,10 +844,21 @@ internal class TestBrowser : TenantBaseService
         }
         if(request.ShowTestRuns)
         {
+
+            var testResults = new TreeNode<BrowserItem>
+            {
+                Text = _loc["test-case-runs"],
+                Expanded = false,
+                Expandable = false,
+                Value = new BrowserItem() { Href = _appNavigationManager.GetTestCaseRunsUrl() },
+                Icon = TbIcons.BoldDuoTone.FolderCheck,
+            };
+            items.Add(testResults);
+
             List<TreeNode<BrowserItem>> recentRuns = await CreateRecentTestRunsTreeNodeItemsAsync(request, teamId, projectId);
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = _loc["test-runs"],
+                Text = _loc["recent-test-runs"],
                 Children = recentRuns,
                 Expanded = false,
                 Expandable = true,

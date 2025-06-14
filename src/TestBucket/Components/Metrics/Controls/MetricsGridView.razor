@@ -1,7 +1,9 @@
-﻿@using TestBucket.Components.Metrics.Controls.Controllers
+﻿@using System.Net
+@using TestBucket.Components.Metrics.Controls.Controllers
 @using TestBucket.Domain.Metrics.Models
 @inject IStringLocalizer<SharedStrings> loc
 @inject MetricsController metricsController
+@inject AppNavigationManager appNavigationManager
 
 <MudStack Spacing="1">
 
@@ -16,16 +18,23 @@
                      T="Metric"
                      SortMode="SortMode.Single">
             <ColGroup>
-                <col style="width: 4fr;" />
-                <col style="width: 2fr;" />
-                <col style="width: 1fr;" />
+                <col style="width: 40%;" />
+                <col style="width: 40%;" />
+                <col style="width: 20%;" />
             </ColGroup>
 
             <Columns>
 
                 <TemplateColumn Title="@loc["name"]">
                     <CellTemplate>
-                        @context.Item.Name
+                        <MudTooltip Text="@context.Item.MeterName">
+                            @{
+                                string testResultsForMetricUrl = appNavigationManager.GetTestCaseRunsUrl() + "?q=" + WebUtility.UrlEncode($"metric:{context.Item.Name}");
+                            }
+                            <MudLink Href="@testResultsForMetricUrl">
+                                @context.Item.Name
+                            </MudLink>
+                        </MudTooltip>
                     </CellTemplate>
                 </TemplateColumn>
 

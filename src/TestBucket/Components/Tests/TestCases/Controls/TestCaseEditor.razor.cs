@@ -39,10 +39,13 @@ public partial class TestCaseEditor
     private bool _preview = true;
     private MarkdownEditor? _editor;
     private MarkdownEditor? _preconditionsEditor;
+    private MarkdownEditor? _postconditionsEditor;
     private string? _descriptionText;
     private string? _previewText;
     private string? _preconditionsText;
     private string? _previewPreconditions;
+    private string? _postconditionsText;
+    private string? _previewPostconditions;
     private readonly List<CompilerError> _errors = new List<CompilerError>();
     private List<Comment> _comments = [];
 
@@ -60,6 +63,17 @@ public partial class TestCaseEditor
         }
     }
 
+    public string? PostconditionsText
+    {
+        get
+        {
+            if (_preview && _previewPostconditions is not null)
+            {
+                return _previewPostconditions;
+            }
+            return _postconditionsText;
+        }
+    }
     public string? PreconditionsText
     {
         get
@@ -72,6 +86,21 @@ public partial class TestCaseEditor
         }
     }
 
+    public async Task OnPostconditionsChanged(string description)
+    {
+        if (_preview)
+        {
+            return;
+        }
+        if (Test is not null)
+        {
+            _postconditionsText = description;
+            Test.Postconditions = description;
+            await CompilePreviewAsync();
+
+            await TestChanged.InvokeAsync(Test);
+        }
+    }
     public async Task OnPreconditionsChanged(string description)
     {
         if (_preview)
@@ -140,6 +169,7 @@ public partial class TestCaseEditor
 
                 _descriptionText = Test.Description;
                 _preconditionsText = Test.Preconditions;
+                _postconditionsText = Test.Postconditions;
                 await CompilePreviewAsync();
             }
         }
@@ -172,6 +202,10 @@ public partial class TestCaseEditor
         if (_preconditionsText is not null && _preconditionsEditor is not null)
         {
             await _preconditionsEditor.SetValueAsync(_preconditionsText);
+        }
+        if (_postconditionsText is not null && _postconditionsEditor is not null)
+        {
+            await _postconditionsEditor.SetValueAsync(_postconditionsText);
         }
     }
 
@@ -209,6 +243,22 @@ public partial class TestCaseEditor
             else
             {
                 _previewPreconditions = "";
+            }
+
+            options = new CompilationOptions(Test, _postconditionsText ?? "");
+            context = await testCaseEditorController.CompileAsync(options, _errors);
+            previewText = context?.CompiledText ?? _postconditionsText;
+            if (_previewPostconditions != previewText && previewText is not null)
+            {
+                _previewPostconditions = previewText;
+                if (_preview && _postconditionsEditor is not null)
+                {
+                    await _postconditionsEditor.SetValueAsync(_previewPostconditions);
+                }
+            }
+            else
+            {
+                _previewPostconditions = "";
             }
         }
     }

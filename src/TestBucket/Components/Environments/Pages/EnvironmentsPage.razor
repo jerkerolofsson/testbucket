@@ -46,7 +46,7 @@
 
     </MudDataGrid>
 
-    <MudText Class="" Typo="Typo.subtitle1">@testEnvLoc["test-environment-description"]</MudText>
+    <MudText Typo="Typo.subtitle2">@testEnvLoc["test-environment-description"]</MudText>
 
 </MudStack>
 
@@ -61,13 +61,21 @@
 
     private async Task AddTestEnvironmentAsync()
     {
+        if (Project is null)
+        {
+            return;
+        }
         await controller.AddTestEnvironmentAsync(Team, Project);
-        _testEnvironments = await controller.GetTestEnvironmentsAsync();
+        _testEnvironments = await controller.GetProjectTestEnvironmentsAsync(Project.Id);
     }
 
     protected override async Task OnInitializedAsync()
     {
-        _testEnvironments = await controller.GetTestEnvironmentsAsync();
+        if (Project is null)
+        {
+            return;
+        }
+        _testEnvironments = await controller.GetProjectTestEnvironmentsAsync(Project.Id);
         SetupBreadcrumbs();
     }
 

@@ -12,6 +12,11 @@ namespace TestBucket.Domain.Testing.TestRuns.Search;
 public class SearchTestCaseRunQuery : SearchQuery
 {
     /// <summary>
+    /// Searches for test case results that has a metric by the specified name
+    /// </summary>
+    public string? HasMetricName { get; set; }
+
+    /// <summary>
     /// TestCase external display ID to filter by.
     /// </summary>
     public string? ExternalDisplayId { get; set; }
@@ -100,6 +105,10 @@ public class SearchTestCaseRunQuery : SearchQuery
         {
             items.Add($"assigned-to:{AssignedToUser}");
         }
+        if(HasMetricName is not null)
+        {
+            items.Add($"metric:{HasMetricName}");
+        }
         if (Unassigned is not null)
         {
             if (Unassigned == true)
@@ -181,6 +190,11 @@ public class SearchTestCaseRunQuery : SearchQuery
         {
             sb.Append("t=");
             sb.Append(TeamId);
+        }
+        if (HasMetricName is not null)
+        {
+            sb.Append("HasMetricName=");
+            sb.Append(HasMetricName);
         }
         if (Completed is not null)
         {

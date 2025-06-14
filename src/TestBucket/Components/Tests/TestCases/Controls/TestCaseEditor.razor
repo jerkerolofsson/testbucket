@@ -45,15 +45,28 @@
                             </MudStack>
                         }
                     }
+                    <MudExpansionPanels>
+                        <MudExpansionPanel Text="@loc["pre-conditions"]">
+                            <MarkdownEditor Value="@PreconditionsText"
+                                            @ref=_preconditionsEditor
+                                            UploadHandler="@UploadHandler"
+                                            ValueChanged="OnPreconditionsChanged"
+                                            Preview="@_preview"
+                                            PreviewChanged="OnPreviewChanged"
+                                            TextAreaClass="tb-test-preconditions" />
+                        </MudExpansionPanel>
+                        <MudExpansionPanel Text="@loc["post-conditions"]">
+                            <MarkdownEditor Value="@PostconditionsText"
+                                            @ref=_postconditionsEditor
+                                            UploadHandler="@UploadHandler"
+                                            ValueChanged="OnPostconditionsChanged"
+                                            Preview="@_preview"
+                                            PreviewChanged="OnPreviewChanged"
+                                            TextAreaClass="tb-test-postconditions" />
+                        </MudExpansionPanel>
+                       
+                    </MudExpansionPanels>
 
-
-                    <MarkdownEditor Value="@PreconditionsText"
-                                    @ref=_preconditionsEditor
-                                    UploadHandler="@UploadHandler"
-                                    ValueChanged="OnPreconditionsChanged"
-                                    Preview="@_preview"
-                                    PreviewChanged="OnPreviewChanged"
-                                    TextAreaClass="tb-test-preconditions" />
 
                     <MarkdownEditor Value="@Text"
                                     @ref=_editor

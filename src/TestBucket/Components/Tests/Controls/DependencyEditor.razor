@@ -1,5 +1,6 @@
 ﻿@using TestBucket.Components.Environments.Controls
 @using TestBucket.Components.Environments.ViewModels
+@using TestBucket.Domain
 @inject IStringLocalizer<SharedStrings> loc
 @inject IDialogService dialogService
 
@@ -14,12 +15,12 @@
     CommittedItemChanges="OnChangedAsync"
     EditMode="DataGridEditMode.Cell">
         <ToolBarContent>
-            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-                <MudIcon Icon="@Icons.Material.Filled.Devices" Size="Size.Large" Color="Color.Info" />
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                <MudIcon Icon="@TbIcons.BoldDuoTone.Laptop" Size="Size.Large" Color="Color.Info" />
                 <MudText Typo="Typo.h2">@loc["required-resources"]</MudText>
                 <MudSpacer/>
-                <MudButton StartIcon="@Icons.Material.Filled.Devices" OnClick="AddResourceAsync">@loc["add-resource"]</MudButton>
-                <MudButton StartIcon="@Icons.Material.Filled.AccountCircle" OnClick="AddAccountAsync">@loc["add-account"]</MudButton>
+                <MudButton StartIcon="@TbIcons.BoldDuoTone.Laptop" OnClick="AddResourceAsync">@loc["add-resource"]</MudButton>
+                <MudButton StartIcon="@TbIcons.BoldDuoTone.UserCircle" OnClick="AddAccountAsync">@loc["add-account"]</MudButton>
             </MudStack>
         </ToolBarContent>
         <Columns>
@@ -82,7 +83,7 @@
             </TemplateColumn>
         </Columns>
     </MudDataGrid>
-    <MudText>@loc["required-resources-description"]</MudText>
+    <MudText Typo="Typo.subtitle2">@loc["required-resources-description"]</MudText>
 }
 
 @code {

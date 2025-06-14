@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace TestBucket.Domain.Issues.Insights;
 public class IssueDataSourceNames
 {
+    public const string IssuesByComponent = nameof(IssuesByComponent);
     public const string IssuesByState = nameof(IssuesByState);
     public const string IssuesInflowOutflow = nameof(IssuesInflowOutflow);
 }

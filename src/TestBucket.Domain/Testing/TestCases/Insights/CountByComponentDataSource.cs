@@ -5,7 +5,7 @@ using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestCases.Search;
 
 namespace TestBucket.Domain.Testing.TestCases.Insights;
-internal class CountByCategoryDataSource : IInsightsDataSource
+internal class CountByComponentDataSource : IInsightsDataSource
 {
     private readonly ITestCaseManager _manager;
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
@@ -13,9 +13,9 @@ internal class CountByCategoryDataSource : IInsightsDataSource
     /// <summary>
     /// Gets the identifier of the data source
     /// </summary>
-    public string DataSource => TestCaseDataSourceNames.CountByCategory;
+    public string DataSource => TestCaseDataSourceNames.CountByComponent;
 
-    public CountByCategoryDataSource(ITestCaseManager manager, IFieldDefinitionManager fieldDefinitionManager)
+    public CountByComponentDataSource(ITestCaseManager manager, IFieldDefinitionManager fieldDefinitionManager)
     {
         _manager = manager;
         _fieldDefinitionManager = fieldDefinitionManager;
@@ -33,10 +33,10 @@ internal class CountByCategoryDataSource : IInsightsDataSource
         {
             testQuery.ProjectId = projectId;
         }
-        var data = await _manager.GetInsightsTestCountPerFieldAsync(principal, testQuery, Traits.Core.TraitType.TestCategory);
+        var data = await _manager.GetInsightsTestCountPerFieldAsync(principal, testQuery, Traits.Core.TraitType.Component);
         var stringLabelData = data.ConvertToStringLabels();
         stringLabelData.Series[0].SortBy = InsightsSort.ValueDescending;
-        stringLabelData.Series[0].Name = "count-per-testcategory";
+        stringLabelData.Series[0].Name = "count-per-component";
         return stringLabelData;
     }
 }

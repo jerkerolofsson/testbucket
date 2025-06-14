@@ -14,6 +14,7 @@ public interface IIssueRepository
 {
     #region Insights
     Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(IEnumerable<FilterSpecification<LocalIssue>> filters);
+    Task<InsightsData<string, int>> GetIssueCountPerFieldAsync(IEnumerable<FilterSpecification<LocalIssue>> filters, long fieldDefinitionId);
     #endregion
 
     Task AddLinkedIssueAsync(LinkedIssue linkedIssue);

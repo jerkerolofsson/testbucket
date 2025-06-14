@@ -102,7 +102,22 @@ public interface IIssueManager
     #endregion
 
     #region Insights
+    /// <summary>
+    /// Returns number of issues, grouped by state
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="request"></param>
+    /// <returns></returns>
     Task<InsightsData<MappedIssueState, int>> GetIssueCountPerStateAsync(ClaimsPrincipal principal, SearchIssueQuery request);
+
+    /// <summary>
+    /// Returns the number of issues, grouped by the string value of the specified field
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="request"></param>
+    /// <param name="fieldDefinitionId"></param>
+    /// <returns></returns>
+    Task<InsightsData<string, int>> GetIssueCountPerFieldAsync(ClaimsPrincipal principal, SearchIssueQuery request, long fieldDefinitionId);
     Task<InsightsData<DateOnly, int>> GetCreatedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request);
     Task<InsightsData<DateOnly, int>> GetClosedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request);
     #endregion

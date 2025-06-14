@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Code/Architecture"
+@using TestBucket.Components.Code.Controls
 @layout CodeLayout
 @inject ArchitectureController controller
 @inject AppNavigationManager appNavigationManager
@@ -11,7 +12,7 @@
         <MudSpacer/>
         <MudIconButton Href="@appNavigationManager.GetCodeArchitectureYamlToolUrl()" Icon="@Icons.Material.Filled.Edit"/>
     </MudStack>
-    <TestBucket.Components.Code.Controls.ProjectArchitectureView Model="@_model"/>
+    <ProjectArchitectureView Model="@_model"/>
 </MudStack>
 
 @code {

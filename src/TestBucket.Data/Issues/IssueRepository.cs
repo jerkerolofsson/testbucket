@@ -22,6 +22,7 @@ internal class IssueRepository : IIssueRepository
 
     #region Local Issues
 
+
     /// <summary>
     /// Returns number of issues per state
     /// </summary>

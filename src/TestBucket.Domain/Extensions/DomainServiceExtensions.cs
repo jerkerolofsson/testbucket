@@ -95,6 +95,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IFieldCompletionsProvider, LabelDataSource>();
 
         // Insight data sources
+        services.AddScoped<IInsightsDataSource, IssuesByComponentDataSource>();
         services.AddScoped<IInsightsDataSource, IssuesByStateDataSource>();
         services.AddScoped<IInsightsDataSource, IssuesInflowOutflow>();
         services.AddScoped<IInsightsDataSource, CountByResultDataSource>();
@@ -102,6 +103,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IInsightsDataSource, ExecutedTestsByAsigneeDataSource>();
         services.AddScoped<IInsightsDataSource, ResultsByComponentDataSource>();
         services.AddScoped<IInsightsDataSource, CountByCategoryDataSource>();
+        services.AddScoped<IInsightsDataSource, CountByComponentDataSource>();
 
         services.AddScoped<IInsightsDataManager, InsightsDataManager>();
 

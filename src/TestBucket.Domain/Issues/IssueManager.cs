@@ -351,6 +351,19 @@ public class IssueManager : IIssueManager
         return await _repository.GetIssueCountPerStateAsync(filters);
     }
 
+    public async Task<InsightsData<string, int>> GetIssueCountPerFieldAsync(ClaimsPrincipal principal, SearchIssueQuery request, long fieldDefinitionId)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
+        List<FilterSpecification<LocalIssue>> filters = [
+            new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow())
+        ];
+
+        filters.AddRange(SearchIssueRequestBuilder.Build(request));
+        return await _repository.GetIssueCountPerFieldAsync(filters, fieldDefinitionId);
+    }
+
+    
+
     public async Task<InsightsData<DateOnly, int>> GetCreatedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);

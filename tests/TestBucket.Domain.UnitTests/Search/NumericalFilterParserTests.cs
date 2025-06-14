@@ -92,9 +92,9 @@ namespace TestBucket.Domain.UnitTests.Search
         [InlineData(null)]
         [InlineData("")]
         [InlineData("   ")]
-        public void Parse_NullOrWhitespace_ThrowsArgumentException(string input)
+        public void Parse_NullOrWhitespace_ThrowsArgumentException(string? input)
         {
-            Assert.Throws<ArgumentException>(() => NumericalFilterParser.Parse(input));
+            Assert.Throws<ArgumentException>(() => NumericalFilterParser.Parse(input!));
         }
     }
 }

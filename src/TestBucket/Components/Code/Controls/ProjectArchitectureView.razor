@@ -1,10 +1,32 @@
-﻿@using TestBucket.Domain.Code.Yaml
+﻿@using TestBucket.Components.Reporting.Controllers
+@using TestBucket.Domain
+@using TestBucket.Domain.Code.Yaml
 @using TestBucket.Domain.Code.Yaml.Models
+@using TestBucket.Domain.Insights.Model
+@using TestBucket.Domain.Issues.Insights
+@using TestBucket.Domain.Testing.TestCases.Insights
+@using TestBucket.Domain.Testing.TestRuns.Insights
+@inject IStringLocalizer<SharedStrings> loc 
+@inject InsightsController insightsController
 
 <div class="tb-architecture-view">
 
     @if(_browser is not null)
     {
+        @if(_loading)
+        {
+            <MudProgressLinear Indeterminate Color="Color.Secondary"/>
+        }
+
+        <MudStack Row AlignItems="AlignItems.Center">
+            <MudToggleGroup T="string" SelectionMode="SelectionMode.MultiSelection" Values="_entitiesToShow" ValuesChanged="OnValuesChanged">
+                <MudToggleItem Value="@("issues")">@loc["issues"]</MudToggleItem>
+                @* <MudToggleItem Value="@("number-of-test-case-runs")">@loc["number-of-test-case-runs"]</MudToggleItem>
+                <MudToggleItem Value="@("failed-tests")">@loc["failed-tests"]</MudToggleItem> *@
+                <MudToggleItem  Value="@("number-of-test-cases")">@loc["number-of-test-cases"]</MudToggleItem>
+            </MudToggleGroup>
+        </MudStack>
+
         foreach(var system in _browser.GetSystems())
         {
             <div class="system" style="@GetStyle(system)">
@@ -26,24 +48,31 @@
                                                 cssClass += " feature-component";
                                             }
 
-                                            @if(!string.IsNullOrWhiteSpace(component.Description))
-                                            {
-                                                <MudTooltip Text="@component.Description">
-                                                    <ChildContent>
-                                                        <div class="@cssClass" style="@GetStyle(component)">
-                                                            <div class="title">@component.Name</div>
-                                                        </div>
-                                                    </ChildContent>
-                                                </MudTooltip>
-                                            }
-                                            else
-                                            {
+                                            <MudTooltip Text="@component.Description">
+                                                <ChildContent>
+                                                    <div class="@cssClass" style="@GetStyle(component)">
+                                                        <div class="title">@component.Name</div>
+                                                        @foreach(var insightsData in _data.Keys)
+                                                        {
+                                                            @if(_data[insightsData].Series.Count > 0)
+                                                            {
+                                                                if(_data[insightsData].Series[0].TryGetValue(component.Name, out double value))
+                                                                {
+                                                                    <MudChip T="string">
 
-                                                <div class="@cssClass" style="@GetStyle(component)">
-                                                    <div class="title">@component.Name</div>
-                                                </div>
-                                            }
+                                                                        @if(insightsData == "issues")
+                                                                        {
+                                                                            <MudIcon Icon="@TbIcons.BoldDuoTone.Bug" Size=Size.Small/>
+                                                                        }
 
+                                                                        @(Math.Round(value).ToString())
+                                                                    </MudChip>
+                                                                }
+                                                            }
+                                                        }
+                                                    </div>
+                                                </ChildContent>
+                                            </MudTooltip>
                                         }
                                     </div>
                                 </div>
@@ -58,10 +87,53 @@
 
 @code 
 {
+    [CascadingParameter] public TestProject? Project { get; set; }
     [Parameter] public ProjectArchitectureModel? Model { get; set; }
     [Parameter] public IReadOnlyList<NamedArchitecturalComponent>? SelectedItems { get; set; }
 
+    private List<string> _entitiesToShow = [];
+
+    private Dictionary<string, InsightsData<string, double>> _data = [];
+
+    private async Task OnValuesChanged(IEnumerable<string> entitiesToShow)
+    {
+        _loading = true;
+        this.StateHasChanged();
+
+        _entitiesToShow.Clear();
+        _entitiesToShow.AddRange(entitiesToShow);
+
+        foreach(var key in _data.Keys.ToArray())
+        {
+            if(!_entitiesToShow.Contains(key))
+            {
+                // It has been removed
+                _data.Remove(key);
+            }
+        }
+
+        foreach(var entityToShow in _entitiesToShow)
+        {
+            if(!_data.ContainsKey(entityToShow))
+            {
+                // We need to load it
+                switch(entityToShow)
+                {
+                    case "issues":
+                        _data[entityToShow] = await insightsController.GetDataAsync(Project?.Id, new InsightsDataQuery { DataSource = IssueDataSourceNames.IssuesByComponent });
+                        break;
+                    case "number-of-test-cases":
+                        _data[entityToShow] = await insightsController.GetDataAsync(Project?.Id, new InsightsDataQuery { DataSource = TestCaseDataSourceNames.CountByComponent });
+                        break;
+                }
+            }
+        }
+
+        _loading = false;
+    }
+
     private ArchitecturalComponentBrowser? _browser;
+    private bool _loading = false;
 
     private string GetStyle(NamedArchitecturalComponent component)
     {
@@ -79,6 +151,7 @@
         }
         return sb.ToString();
     }
+
 
     protected override void OnInitialized()
     {

@@ -833,4 +833,13 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="go-to-run" xml:space="preserve">
     <value>Go to run</value>
   </data>
+  <data name="number-of-test-case-runs" xml:space="preserve">
+    <value>Number of test case runs</value>
+  </data>
+  <data name="number-of-test-cases" xml:space="preserve">
+    <value>Number of test cases</value>
+  </data>
+  <data name="failed-tests" xml:space="preserve">
+    <value>Failed tests</value>
+  </data>
 </root>

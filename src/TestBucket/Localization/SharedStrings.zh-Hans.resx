@@ -830,4 +830,13 @@
   <data name="go-to-run" xml:space="preserve">
     <value />
   </data>
+  <data name="number-of-test-case-runs" xml:space="preserve">
+    <value />
+  </data>
+  <data name="number-of-test-cases" xml:space="preserve">
+    <value />
+  </data>
+  <data name="failed-tests" xml:space="preserve">
+    <value />
+  </data>
 </root>

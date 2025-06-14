@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Issues.States;
-using TestBucket.Domain.Fields;
+﻿using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights;
 using TestBucket.Domain.Insights.Extensions;
 using TestBucket.Domain.Insights.Model;
-using TestBucket.Domain.Issues.Search;
-using TestBucket.Domain.States;
-using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Testing.TestRuns.Insights;

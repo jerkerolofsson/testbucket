@@ -1,5 +1,7 @@
-﻿@using TestBucket.Domain.Testing.TestRuns.Search
+﻿@using TestBucket.Domain
+@using TestBucket.Domain.Testing.TestRuns.Search
 @inject IStringLocalizer<SharedStrings> loc
+@inject IDialogService dialogService;
 
 <MudStack Row AlignItems="AlignItems.Center">
 
@@ -10,6 +12,8 @@
         <MudChip Value="@("failed")" Text="@loc["failed"]" />
     </MudChipSet>
 
+    <MudIconButton Icon="@TbIcons.Filled.Globe" OnClick="ShowBrowserFilterAsync"></MudIconButton>
+
     @if (_query.Fields is not null && _query.Fields.Count > 0)
     {
 
@@ -18,6 +22,8 @@
 </MudStack>
 
 @code {
+    [CascadingParameter] public TestProject? Project{ get; set; }
+
     /// <summary>
     /// The current search query for filtering test case runs.
     /// </summary>
@@ -31,6 +37,22 @@
     private string _filterResult = "all";
 
     private SearchTestCaseRunQuery _query = new();
+
+    private async Task ShowBrowserFilterAsync()
+    {
+        var parameters = new DialogParameters<BrowserFieldBadgePickerDialog>
+        {
+            { x => x.Project, Project },
+        };
+        var dialog = await dialogService.ShowAsync<BrowserFieldBadgePickerDialog>(loc["browser"], parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is FieldFilter filter)
+        {
+            _query.RemoveFieldFilter(x => x.FilterDefinitionId == filter.FilterDefinitionId);
+            _query.AddFieldFilter(filter);
+            await QueryChanged.InvokeAsync(_query);
+        }
+    }
 
     protected override void OnParametersSet()
     {

@@ -15,7 +15,8 @@ internal class DefaultTheme : TestBucketTheme
     public DefaultTheme()
     {
         DarkScheme.Base.Background = "#111116";
-        DarkScheme.Base.Surface = "#25252e";//"#19191E";
+        DarkScheme.Base.Surface = "#25252e";
+        DarkScheme.Base.DialogSurface = "#20202A";
 
         DarkScheme.Base.TextPrimary = "#f0f6fc";
         DarkScheme.Base.Dark = "#0d1321";
@@ -32,6 +33,7 @@ internal class DefaultTheme : TestBucketTheme
         LightScheme.Base.TextPrimary = "#111";
         LightScheme.Base.Background = "#eee";
         LightScheme.Base.Surface = "#fff";
+        LightScheme.Base.DialogSurface = "#eee";
         LightScheme.Base.Primary = "#4f52b2";
         LightScheme.Base.Secondary = "#383966";
         LightScheme.Base.Tertiary = "#0c3b5e";

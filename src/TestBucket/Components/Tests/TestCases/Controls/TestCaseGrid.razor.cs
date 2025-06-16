@@ -1,4 +1,5 @@
 ﻿
+using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Models;
 using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Domain.Testing.TestCases.Search;
@@ -61,8 +62,15 @@ public partial class TestCaseGrid
         {
             return;
         }
-       
-        _compareFolder = Query.CompareFolder ?? false;
+
+        if (CompareFolder == false)
+        {
+            _compareFolder = false;
+        }
+        else
+        {
+            _compareFolder = Query.CompareFolder ?? false;
+        }
 
         if (_folderId != FolderId)
         {
@@ -145,6 +153,23 @@ public partial class TestCaseGrid
         await QueryChanged.InvokeAsync(null);
     }
 
+    private async Task ShowBrowserFilterAsync()
+    {
+        var parameters = new DialogParameters<BrowserFieldBadgePickerDialog>
+        {
+            { x => x.Project, Project },
+        };
+        var dialog = await dialogService.ShowAsync<BrowserFieldBadgePickerDialog>(loc["browser"], parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is FieldFilter filter)
+        {
+            _query.RemoveFieldFilter(x => x.FilterDefinitionId == filter.FilterDefinitionId);
+            _query.AddFieldFilter(filter);
+            SetSearchPhraseFromQuery();
+            await OnSearch(_searchPhrase);
+        }
+    }
+
     private async Task ShowFilterAsync()
     {
         var parameters = new DialogParameters<EditTestCaseFilterDialog>
@@ -152,13 +177,14 @@ public partial class TestCaseGrid
             { x => x.Query, _query },
             { x => x.Project, Project },
         };
-        var dialog = await dialogService.ShowAsync<EditTestCaseFilterDialog>(loc["filter-tests"], parameters);
+        var dialog = await dialogService.ShowAsync<EditTestCaseFilterDialog>(loc["filter-tests"], parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if (result?.Data is SearchTestQuery query)
         {
             _hasCustomFilter = true;
             _query = query;
-            await OnSearch(_query.ToSearchText());
+            SetSearchPhraseFromQuery();
+            await OnSearch(_searchPhrase);
         }
     }
 

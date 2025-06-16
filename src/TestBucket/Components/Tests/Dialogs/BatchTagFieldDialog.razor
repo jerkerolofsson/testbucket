@@ -70,8 +70,7 @@
 
 
 @code {
-    [CascadingParameter]
-    private IMudDialogInstance MudDialog { get; set; } = default!;
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
     private bool _loading = true;
 
     [Parameter] public long? ProjectId { get; set; }

@@ -3,7 +3,17 @@
 
 <EditForm Model="@Milestone" OnValidSubmit="Submit">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
-        <TitleContent>@Milestone?.Title</TitleContent>
+        <TitleContent>
+            @if(!string.IsNullOrEmpty(Milestone?.Title))
+            {
+                @Milestone?.Title
+            }
+            else
+            {
+                @loc["add-milestone"]
+            }
+
+        </TitleContent>
         <DialogContent>
             <MudStack>
                 @if (Milestone is not null)

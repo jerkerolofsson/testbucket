@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Fields;
+using TestBucket.Domain.Fields.Helpers;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Fields.SystemFields;
@@ -164,21 +165,8 @@ public static class SystemFieldDefinitions
     };
 
 
-    private static readonly FieldDefinition _testCategory = new()
-    {
-        Name = "Test Category",
-        Trait = "TestCategory",
-        TraitType = TraitType.TestCategory,
-        IsVisible = true,
-        Type = FieldType.SingleSelection,
-        IsDefinedBySystem = true,
-        Inherit = true,
-        ShowDescription = false,
-        UseClassifier = false,
-        Options = ["Unit", "Integration", "E2E", "API"],
-        Target = FieldTarget.TestCase | FieldTarget.TestCaseRun,
-        RequiredPermission = PermissionLevel.Write
-    };
+    private static readonly FieldDefinition _testCategory = FieldDefinitionTemplates.TestCategory;
+
     public static FieldDefinition[] Fixed
     {
         get

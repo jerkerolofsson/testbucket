@@ -7,6 +7,7 @@ namespace TestBucket.Domain.Appearance.Models;
 
 public class Base
 {
+    public ThemeColor? DialogSurface { get; set; }
     public ThemeColor? Surface { get; set; }
     public ThemeColor? Background { get; set; }
     public ThemeColor? Dark { get; set; }
@@ -122,6 +123,18 @@ public class TestBucketTheme : TestBucketBaseTheme
             css.AppendLine($"--mud-palette-surface: {scheme.Base.Surface};");
             css.AppendLine($"--mud-palette-surface-darken: {scheme.Base.Surface.ColorDarken(0.1)};");
             css.AppendLine($"--mud-palette-surface-lighten: {scheme.Base.Surface.ColorLighten(0.1)};");
+        }
+        if (scheme.Base.DialogSurface is not null)
+        {
+            css.AppendLine($"--mud-palette-dialog-surface: {scheme.Base.DialogSurface};");
+            css.AppendLine($"--mud-palette-dialog-surface-darken: {scheme.Base.DialogSurface.ColorDarken(0.1)};");
+            css.AppendLine($"--mud-palette-dialog-surface-lighten: {scheme.Base.DialogSurface.ColorLighten(0.1)};");
+        }
+        else if (scheme.Base.Surface is not null)
+        {
+            css.AppendLine($"--mud-palette-dialog-surface: {scheme.Base.Surface};");
+            css.AppendLine($"--mud-palette-dialog-surface-darken: {scheme.Base.Surface.ColorDarken(0.1)};");
+            css.AppendLine($"--mud-palette-dialog-surface-lighten: {scheme.Base.Surface.ColorLighten(0.1)};");
         }
         if (scheme.Base.Background is not null)
         {

@@ -39,7 +39,7 @@ namespace TestBucket.Domain.Testing.TestCases.Search
             {
                 items.Add($"folder-id:{query.FolderId}");
             }
-            if (query.CompareFolder is not null)
+            if (query.CompareFolder == true)
             {
                 items.Add($"compare-folder:yes");
             }

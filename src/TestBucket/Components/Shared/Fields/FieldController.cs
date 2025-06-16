@@ -188,6 +188,19 @@ internal class FieldController : TenantBaseService
     /// <param name="testProjectId"></param>
     /// <param name="target"></param>
     /// <returns></returns>
+    public async Task<IReadOnlyList<FieldDefinition>> GetDefinitionsAsync(long testProjectId)
+    {
+        return await SearchDefinitionsAsync(new SearchFieldQuery
+        {
+            ProjectId = testProjectId
+        });
+    }
+    /// <summary>
+    /// Returns all field definitions for the specified project and target
+    /// </summary>
+    /// <param name="testProjectId"></param>
+    /// <param name="target"></param>
+    /// <returns></returns>
     public async Task<IReadOnlyList<FieldDefinition>> GetDefinitionsAsync(long testProjectId, FieldTarget target)
     {
         return await SearchDefinitionsAsync(new SearchFieldQuery

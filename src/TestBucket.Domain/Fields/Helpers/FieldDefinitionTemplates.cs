@@ -1,34 +1,39 @@
 ﻿using TestBucket.Contracts.Fields;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Fields.Helpers;
 public class FieldDefinitionTemplates
 {
-    public static IReadOnlyList<FieldDefinition> Templates = [Browser,TestCategory, Priority, QChar, FailureType, Commit];
+    public static IReadOnlyList<FieldDefinition> Templates = [Browser, Priority, FailureType];
 
     public static FieldDefinition Browser => new FieldDefinition
     {
         Name = "Browser",
         Trait = "Browser",
-        Target = FieldTarget.TestCaseRun | FieldTarget.TestRun,
+        Icon = TbIcons.Filled.Globe,
+        Target = FieldTarget.TestCaseRun | FieldTarget.TestRun | FieldTarget.TestCase,
         Inherit = true,
         IsVisible = true,
-        TraitType = Traits.Core.TraitType.Browser,
+        TraitType = TraitType.Browser,
         Type = FieldType.SingleSelection,
-        Options = ["Chrome", "Edge", "Safari"],
+        Options = ["chromium", "firebox", "webkit"],
         Description = "Web browser used for testing"
     };
 
     public static FieldDefinition TestCategory => new FieldDefinition
     {
-        Name = "Category",
+        Name = "Test Category",
         Trait = "TestCategory",
-        Target = FieldTarget.TestCaseRun | FieldTarget.TestCase,
-        Inherit = true,
-        TraitType = Traits.Core.TraitType.TestCategory,
-        Type = FieldType.SingleSelection,
+        TraitType = TraitType.TestCategory,
         IsVisible = true,
-        Options = ["API", "Unit", "Integration", "EndToEnd"],
-        Description = "Category of test (unit, integration, api ..)"
+        Type = FieldType.SingleSelection,
+        IsDefinedBySystem = true,
+        Inherit = true,
+        ShowDescription = false,
+        UseClassifier = false,
+        Options = ["Unit", "Integration", "E2E", "API"],
+        Target = FieldTarget.TestCase | FieldTarget.TestCaseRun,
+        RequiredPermission = PermissionLevel.Write
     };
 
     public static FieldDefinition FailureType => new FieldDefinition
@@ -54,31 +59,5 @@ public class FieldDefinitionTemplates
         Options = ["Low", "Medium", "High"],
         Description = "Test Priority"
     };
-
-    public static FieldDefinition Commit => new FieldDefinition
-    {
-        Name = "Commit",
-        Trait = "Commit",
-        TraitType = Traits.Core.TraitType.Commit,
-        IsVisible = false,
-        Target = FieldTarget.TestRun | FieldTarget.TestCaseRun,
-        Inherit = true,
-        Type = FieldType.String,
-        Description = "Commit SHA1 hash"
-    };
-
-    public static FieldDefinition QChar => new FieldDefinition
-    {
-        Name = "Q-Char",
-        Trait = "QualityCharacteristic",
-        TraitType = Traits.Core.TraitType.QualityCharacteristic,
-        IsVisible = true,
-        Target = FieldTarget.TestCaseRun | FieldTarget.TestCase,
-        Inherit = true,
-        Type = FieldType.SingleSelection,
-        Options = ["Functional Suitability", "Reliability", "Usability", "Performance Efficiency", "Compatibility", "Security", "Maintainability", "Portability"],
-        Description = "ISO/IEC 25010 quality characteristic related to the type of checks performed in the test"
-    };
-
 
 }

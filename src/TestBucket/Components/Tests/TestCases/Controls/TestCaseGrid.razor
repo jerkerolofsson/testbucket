@@ -1,4 +1,5 @@
-﻿@using TestBucket.Domain.Testing.TestCases
+﻿@using TestBucket.Domain
+@using TestBucket.Domain.Testing.TestCases
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject ITestCaseManager testCaseManager
@@ -32,6 +33,7 @@
                           AdornmentIcon="@Icons.Material.Filled.Search" />
 
             <MudSpacer />
+            <MudIconButton Icon="@TbIcons.Filled.Globe" OnClick="ShowBrowserFilterAsync"></MudIconButton>
             <MudIconButton Icon="@Icons.Material.Filled.FilterList" OnClick="ShowFilterAsync"></MudIconButton>
 
             @if(_hasCustomFilter)

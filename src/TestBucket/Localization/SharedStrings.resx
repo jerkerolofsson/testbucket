@@ -851,4 +851,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="blocked" xml:space="preserve">
     <value>Blocked</value>
   </data>
+  <data name="add-milestone" xml:space="preserve">
+    <value>Add milestone</value>
+  </data>
 </root>

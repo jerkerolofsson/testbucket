@@ -322,4 +322,7 @@
   <data name="blocked" xml:space="preserve">
     <value />
   </data>
+  <data name="add-milestone" xml:space="preserve">
+    <value />
+  </data>
 </root>

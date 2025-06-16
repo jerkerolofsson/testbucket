@@ -1,0 +1,73 @@
+﻿@using TestBucket.Components.Shared.Profile
+@inject IDialogService dialogService
+@inject IStringLocalizer<SharedStrings> loc
+@inject FieldController controller
+
+<MudDialog Options="@DefaultBehaviors.DialogOptions">
+    <TitleContent>@loc["browser"]</TitleContent>
+    <DialogContent>
+        <div class="tb-card-picker-grid">
+        @foreach(var browser in _options)
+        {
+            <div @onclick="() => OnClicked(browser)" class="cursor-pointer tb-project-card">
+                <MudStack Class="pa-2" Style="height: 100%">
+                    
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        @if(_field is not null && _field.OptionIcons is not null && _field.OptionIcons.TryGetValue(browser, out var icon))
+                        {
+                            <MudIcon Size="Size.Large" Icon="@icon"/>
+                        }
+                        <div class="name">@browser</div>
+                    </MudStack>
+
+                    <MudDivider/>
+                    <MudSpacer/>
+                    
+                    <div>
+                        <div class="d-flex counters">
+                        </div>
+                    </div>
+                </MudStack>
+            </div>
+        }
+        </div>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [Parameter] public TestProject? Project { get; set; }
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private readonly List<string> _options = [];
+    private FieldDefinition? _field;
+
+    private void OnClicked(string browser)
+    {
+        if (_field is null)
+        {
+            MudDialog.Close(DialogResult.Cancel);
+            return;
+        }
+        MudDialog.Close(DialogResult.Ok(new FieldFilter() 
+        { 
+            FilterDefinitionId = _field.Id,
+            Name = _field.Name,
+            StringValue = browser
+        }));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender && Project is not null)
+        {
+            var fields = await controller.GetDefinitionsAsync(Project.Id);
+            _field = fields.Where(x=>x.TraitType == TraitType.Browser).FirstOrDefault();
+            if(_field?.Options is not null)
+            {
+                _options.Clear();
+                _options.AddRange(_field.Options);
+                this.StateHasChanged(); 
+            }
+        }
+    }
+}

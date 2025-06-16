@@ -19,12 +19,10 @@
         }
 
         <MudStack Row AlignItems="AlignItems.Center">
-            <MudToggleGroup T="string" SelectionMode="SelectionMode.MultiSelection" Values="_entitiesToShow" ValuesChanged="OnValuesChanged">
-                <MudToggleItem Value="@("issues")">@loc["issues"]</MudToggleItem>
-                @* <MudToggleItem Value="@("number-of-test-case-runs")">@loc["number-of-test-case-runs"]</MudToggleItem>
-                <MudToggleItem Value="@("failed-tests")">@loc["failed-tests"]</MudToggleItem> *@
-                <MudToggleItem  Value="@("number-of-test-cases")">@loc["number-of-test-cases"]</MudToggleItem>
-            </MudToggleGroup>
+            <MudChipSet T="string" SelectedValues="_entitiesToShow" SelectionMode="SelectionMode.MultiSelection" SelectedValuesChanged="OnValuesChanged" CheckMark Variant="Variant.Text" Color="Color.Info">
+                <MudChip Value="@("issues")" Text="@loc["issues"]"/>
+                <MudChip Value="@("number-of-test-cases")"  Text="@loc["number-of-test-cases"]"/>
+            </MudChipSet>
         </MudStack>
 
         foreach(var system in _browser.GetSystems())
@@ -95,13 +93,16 @@
 
     private Dictionary<string, InsightsData<string, double>> _data = [];
 
-    private async Task OnValuesChanged(IEnumerable<string> entitiesToShow)
+    private async Task OnValuesChanged(IReadOnlyCollection<string>? entitiesToShow)
     {
         _loading = true;
         this.StateHasChanged();
 
         _entitiesToShow.Clear();
-        _entitiesToShow.AddRange(entitiesToShow);
+        if(entitiesToShow is not null)
+        {
+            _entitiesToShow.AddRange(entitiesToShow);
+        }
 
         foreach(var key in _data.Keys.ToArray())
         {

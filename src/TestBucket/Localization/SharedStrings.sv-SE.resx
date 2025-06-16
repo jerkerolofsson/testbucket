@@ -837,4 +837,13 @@
   <data name="failed-tests" xml:space="preserve">
     <value />
   </data>
+  <data name="passed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="failed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="blocked" xml:space="preserve">
+    <value />
+  </data>
 </root>

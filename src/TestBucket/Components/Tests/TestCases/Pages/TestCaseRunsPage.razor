@@ -13,8 +13,10 @@
 
 <article class="center">
     <MudStack>
-        <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+        <MudStack Spacing="3" Row AlignItems="AlignItems.Center" Style="width: 100%">
             <MudText Typo="Typo.h1">@loc["test-case-runs"]</MudText>
+
+            <MudSpacer/>
         </MudStack>
 
         <TestCaseRunGrid 
@@ -30,11 +32,12 @@
     [CascadingParameter] public Team? Team { get; set; }
     [SupplyParameterFromQuery(Name = "q")] public string? InitialQuery { get; set; }
 
+    private string? _filterResult = "all";
+
     private SearchTestCaseRunQuery _query = new();
     private IReadOnlyList<FieldDefinition> _testCaseFields = [];
     private FieldDefinition? _fieldCategory;
     private FieldDefinition? _fieldFeature;
-
 
     /// <summary>
     /// Load the test suite when changed

@@ -349,6 +349,11 @@ public partial class TestCaseRunGrid
         await QueryChanged.InvokeAsync(_query);
     }
 
+    private async Task OnQueryChanged(SearchTestCaseRunQuery query)
+    {
+        await QueryChanged.InvokeAsync(query);
+    }
+
     /// <summary>
     /// Reloads the data in the server-side data grid.
     /// </summary>

@@ -1,0 +1,56 @@
+﻿@using TestBucket.Domain.Testing.TestRuns.Search
+@inject IStringLocalizer<SharedStrings> loc
+
+<MudStack Row AlignItems="AlignItems.Center">
+
+    <MudChipSet Size="Size.Small" T="string" SelectedValue="_filterResult" SelectionMode="SelectionMode.SingleSelection" SelectedValueChanged="OnFilterResultChanged" CheckMark Variant="Variant.Text" Color="Color.Info">
+        <MudChip Value="@("all")" Text="@loc["all"]" />
+        <MudChip Value="@("passed")" Text="@loc["passed"]" />
+        <MudChip Value="@("blocked")" Text="@loc["blocked"]" />
+        <MudChip Value="@("failed")" Text="@loc["failed"]" />
+    </MudChipSet>
+
+    @if (_query.Fields is not null && _query.Fields.Count > 0)
+    {
+
+    }
+
+</MudStack>
+
+@code {
+    /// <summary>
+    /// The current search query for filtering test case runs.
+    /// </summary>
+    [Parameter] public SearchTestCaseRunQuery? Query { get; set; }
+
+    /// <summary>
+    /// Event callback invoked when the search query changes.
+    /// </summary>
+    [Parameter] public EventCallback<SearchTestCaseRunQuery> QueryChanged { get; set; }
+
+    private string _filterResult = "all";
+
+    private SearchTestCaseRunQuery _query = new();
+
+    protected override void OnParametersSet()
+    {
+        if(Query is not null)
+        {
+            _query = Query;
+        }
+    }
+
+    private async Task OnFilterResultChanged(string filter)
+    {
+        _filterResult = filter;
+        _query.Result = filter switch
+        {
+            "passed" => TestResult.Passed,
+            "blocked" => TestResult.Blocked,
+            "failed" => TestResult.Failed,
+            _ => null
+        };
+
+        await QueryChanged.InvokeAsync(_query);
+    }
+}

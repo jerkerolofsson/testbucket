@@ -1,4 +1,6 @@
-﻿@using TestBucket.Components.Shared.Profile
+﻿@using TestBucket.Components.Metrics.Controls.Controls
+@using TestBucket.Components.Shared.Profile
+@using TestBucket.Components.Metrics.Controls
 @using TestBucket.Components.Tests.TestRuns.Controllers
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
@@ -62,9 +64,8 @@
 
             <ColGroup>
                 <col style="width: 100px;" />
-                <col style="width: 2fr;" />
-                <col style="width: 220px;" />
-                <col style="width: 150px;" />
+                <col style="width: 100%;" />
+                <col style="width: 120px;" />
                 <col style="width: 70px;" />
             </ColGroup>
 
@@ -78,24 +79,28 @@
 
                 <TemplateColumn Title="@loc["name"]" CellStyle="max-width: 100%; overflow: hidden">
                     <CellTemplate>
-                        @context.Item.Name
+                        <div class="name">@context.Item.Name</div>
+                        <MudStack Row Spacing="2" AlignItems="AlignItems.Center">
+                            @if (CanAssign)
+                            {
+                                <UserPicker Clearable 
+                                            SelectedUserName="@context.Item.AssignedToUserName" SelectedUserNameChanged="async (user) => await AssignRunToUserAsync(context.Item, user)" />
+                            }
+                            else if (!string.IsNullOrEmpty(context.Item.AssignedToUserName))
+                            {
+                                <UserPicker ReadOnly
+                                            SelectedUserName="@context.Item.AssignedToUserName" />
+                            }
+
+                            @if(context.Item.Metrics is not null && context.Item.Metrics.Count > 0)
+                            {
+                                <MetricChip Metric="@context.Item.Metrics[0]"/>
+                            }
+
+                        </MudStack>
                     </CellTemplate>
                 </TemplateColumn>
 
-                <TemplateColumn Title="@loc["assigned-to"]">
-                    <CellTemplate>
-                        @if(CanAssign)
-                        {
-                            <UserPicker 
-                                Clearable
-                                SelectedUserName="@context.Item.AssignedToUserName" SelectedUserNameChanged="async (user) => await AssignRunToUserAsync(context.Item, user)"/>
-                        }
-                        else if(!string.IsNullOrEmpty(context.Item.AssignedToUserName))
-                        {
-                            <UserProfileImage UserName="@context.Item.AssignedToUserName"/>
-                        }
-                    </CellTemplate>
-                </TemplateColumn>
 
                 <TemplateColumn Title="">
                     <CellTemplate>
@@ -119,7 +124,7 @@
                 </TemplateColumn>
 
 
-                <TemplateColumn Title="">
+                <TemplateColumn StickyRight>
                     <CellTemplate>
                         <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert" OpenChanged="() => SetSelectedTestCaseRun(context.Item)">
                             <CommandMenuItems TypeNames="TestCaseRun" />

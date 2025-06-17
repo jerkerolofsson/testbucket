@@ -336,6 +336,11 @@ public static class TbIcons
     public static class Filled
     {
         /// <summary>
+        /// Gauge
+        /// </summary>
+        public const string Gauge = "<svg  xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\r\n  <path d=\"M12 15l3.5-3.5\" />\r\n  <path d=\"M20.3 18c.4-1 .7-2.2.7-3.4C21 9.8 17 6 12 6s-9 3.8-9 8.6c0 1.2.3 2.4.7 3.4\" />\r\n</svg>";
+
+        /// <summary>
         /// Globe/Browser/Internet
         /// </summary>
         public const string Globe = "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n<circle cx=\"12\" cy=\"12\" r=\"8\" stroke=\"currentColor\" stroke-width=\"2\"/>\r\n<ellipse cx=\"12\" cy=\"12\" rx=\"3\" ry=\"8\" stroke=\"currentColor\" stroke-width=\"2\"/>\r\n<path d=\"M4 12H20\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/>\r\n</svg>";

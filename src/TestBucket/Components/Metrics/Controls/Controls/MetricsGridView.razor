@@ -21,6 +21,7 @@
                 <col style="width: 40%;" />
                 <col style="width: 40%;" />
                 <col style="width: 20%;" />
+                <col style="width: 10%;" />
             </ColGroup>
 
             <Columns>
@@ -49,6 +50,15 @@
                         @context.Item.Unit
                     </CellTemplate>
                 </TemplateColumn>
+
+                
+                <TemplateColumn Title="" StickyRight>
+                    <CellTemplate>
+                        <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert" OpenChanged="() => SetSelectedMetric(context.Item)">
+                            <MudMenuItem OnClick="async () => await DeleteMetricAsync(context.Item)">@loc["delete"]</MudMenuItem>
+                        </MudMenu>
+                    </CellTemplate>
+                </TemplateColumn>
             </Columns>
 
         </MudDataGrid>
@@ -75,6 +85,11 @@
 
     private List<Metric> _metrics = [];
 
+    private void SetSelectedMetric(Metric metric)
+    {
+        
+    }
+
     protected override void OnParametersSet()
     {
         if (_testCaseRun?.Id != TestCaseRun?.Id)
@@ -83,6 +98,18 @@
             _metrics = TestCaseRun?.Metrics?.ToList() ?? [];
         }
     }
+
+    private async Task DeleteMetricAsync(Metric metric)
+    {
+        if (_testCaseRun is not null)
+        {
+            if(await metricsController.DeleteAsync(metric))
+            {
+                _metrics = _metrics.Where(x=>x.Id != metric.Id).ToList();
+            }
+        }
+    }
+
     private async Task AddAsync()
     {
         if(_testCaseRun is not null)

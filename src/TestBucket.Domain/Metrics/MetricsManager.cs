@@ -13,6 +13,12 @@ internal class MetricsManager : IMetricsManager
         _timeProvider = timeProvider;
     }
 
+    public async Task DeleteMetricAsync(ClaimsPrincipal principal, Metric metric)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
+
+        await _repository.DeleteMetric(metric);
+    }
     public async Task AddMetricAsync(ClaimsPrincipal principal, Metric metric)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);

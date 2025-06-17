@@ -8,17 +8,15 @@
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <div @onclick="ToggleOpen" class="@CssClass">
-    <MudStack Row AlignItems="AlignItems.Center" Spacing="2">
+    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
         @if (!string.IsNullOrEmpty(_model.Name))
         {
-            <MudStack Spacing="1" Row>
-                <UserProfileImage Class="sm" UserName="@_model.Name"/>
-                <span>@_model.Name</span>
-            </MudStack>
+            <UserProfileImage Class="sm" UserName="@_model.Name"/>
+            <span>@_model.Name</span>
         }
         else
         {
-            <MudText Style="opacity: 0.5">@loc["unassigned"]</MudText>
+            <span class="unassigned">@loc["unassigned"]</span>
         }
     </MudStack>
 
@@ -29,7 +27,7 @@
                 @if (_recent.Count > 0)
                 {
                     <MudText Typo="Typo.h6">@loc["recent"]</MudText>
-                    <MudStack Row Class="pa-3">
+                    <MudStack Row Class="pa-2">
                         @foreach (var recent in _recent)
                         {
                             <UserProfileImage Class="cursor-pointer"
@@ -77,9 +75,10 @@
 
 
     public string CssClass => new CssBuilder("tb-user-picker")
-        .AddClass("cursor-pointer")
+        .AddClass("cursor-pointer", !ReadOnly)
         .AddClass("mud-input-outlined", Variant == Variant.Outlined)
         .AddClass("mud-input-filled", Variant == Variant.Filled)
+        .AddClass("read-only", ReadOnly)
         .Build();
 
     protected override void OnParametersSet()

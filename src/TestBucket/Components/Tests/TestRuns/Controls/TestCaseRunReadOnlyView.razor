@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Metrics.Controls
+@using TestBucket.Components.Metrics.Controls.Controls
 @inject IStringLocalizer<SharedStrings> loc
 
 @if(TestCaseRun is not null)
@@ -6,12 +7,20 @@
     
     @if(TestCaseRun.Metrics is not null && TestCaseRun.Metrics.Count > 0)
     {
-        <MudText Typo="Typo.h2">@loc["metrics"]</MudText>
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+            <MudIcon Icon="@TbIcons.Filled.Gauge"/>
+            <MudText Typo="Typo.h2">@loc["metrics"]</MudText>
+        </MudStack>
+        
         <MetricsGridView ReadOnly TestCaseRun="@TestCaseRun" />
     }
     @if (TestCaseRun.LinkedIssues is not null && TestCaseRun.LinkedIssues.Count > 0)
     {
-        <MudText Typo="Typo.h2">@loc["issues"]</MudText>
+        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+            <MudIcon Icon="@TbIcons.BoldDuoTone.Bug"/>
+            <MudText Typo="Typo.h2">@loc["issues"]</MudText>
+        </MudStack>
+
         <LinkedIssuesTable ReadOnly TestCaseRun="@TestCaseRun" />
     }
 

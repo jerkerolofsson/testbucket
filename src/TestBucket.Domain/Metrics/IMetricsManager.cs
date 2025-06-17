@@ -16,4 +16,12 @@ public interface IMetricsManager
     /// <param name="metric"></param>
     /// <returns></returns>
     Task AddMetricAsync(ClaimsPrincipal principal, Metric metric);
+
+    /// <summary>
+    /// Deletes a metric
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="metric"></param>
+    /// <returns></returns>
+    Task DeleteMetricAsync(ClaimsPrincipal principal, Metric metric);
 }

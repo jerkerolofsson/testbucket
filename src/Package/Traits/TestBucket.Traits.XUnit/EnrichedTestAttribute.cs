@@ -51,7 +51,7 @@ namespace TestBucket.Traits.Xunit
             if (_startTimestamp is not null)
             {
                 var elapsed = Stopwatch.GetElapsedTime(_startTimestamp.Value);
-                var duration = TestResultMetric.Create("xunit", "test-duration", elapsed);
+                var duration = TestResultMetric.Create("xunit", "test_duration", elapsed);
                 TestContext.Current.AddMetric(duration);
             }
 

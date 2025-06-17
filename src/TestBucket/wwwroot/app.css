@@ -331,6 +331,11 @@ input:focus-visible {
      grid-template-rows: auto 1fr auto;
  }
 
+ .tb-test-case-run-grid .name {
+     font-size: 9pt;
+     margin-bottom: 4px;
+ }
+
  .tb-test-case-grid > :nth-child(3),
  .tb-test-case-run-grid > :nth-child(3) {
      overflow: hidden;

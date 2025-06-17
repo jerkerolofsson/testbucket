@@ -1,0 +1,55 @@
+﻿@using TestBucket.Domain.Metrics.Models
+@if(Metric is not null)
+{
+    <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+        <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.Gauge" />
+        <span>@Value</span>
+        <span>@Unit</span>
+    </MudStack>
+}
+
+@code {
+    [Parameter] public Metric? Metric {get;set;}
+
+    private bool IsTime => Metric is not null && Metric.Unit is "ms" or "s" or "m" or "h";
+    private bool IsBytes => Metric is not null && Metric.Unit is "B" or "MB" or "GB" or "TB" or "PB";
+    private bool IsBitsPerSecond => Metric is not null && Metric.Unit is "bps" or "Kbps" or "Mbps" or "Gbps" or "Tbps";
+
+    public string Value 
+    {
+        get
+        {
+            if (IsTime && Metric is not null)
+            {
+                TimeSpan time = Metric.Unit switch
+                {
+                    "ms" => TimeSpan.FromMilliseconds(Metric.Value),
+                    "s" => TimeSpan.FromSeconds(Metric.Value),
+                    "m" => TimeSpan.FromMinutes(Metric.Value),
+                    "h" => TimeSpan.FromHours(Metric.Value),
+                    "d" => TimeSpan.FromDays(Metric.Value),
+                    _ => TimeSpan.Zero
+                };
+                return time.Humanize();
+            }
+            if(Metric is not null)
+            {
+                return Metric.Value.ToString();
+            }
+
+            return "";
+        }
+    }
+    public string Unit
+    {
+        get
+        {
+            // If it is a time unit, use humanizer
+            if(!IsTime)
+            {
+                return Metric?.Unit ?? "";
+            }
+            return "";
+        }
+    }
+}

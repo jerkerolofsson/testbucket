@@ -26,6 +26,7 @@
 	</ItemGroup>
 	
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Package\Reporting\TestBucket.Metrics.Xunit\TestBucket.Metrics.Xunit.csproj" />
     <ProjectReference Include="..\..\src\Package\Traits\TestBucket.Traits.XUnit\TestBucket.Traits.Xunit.csproj" />
     <ProjectReference Include="..\..\src\TestBucket.Data\TestBucket.Data.csproj" />
     <ProjectReference Include="..\..\src\TestBucket.Domain\TestBucket.Domain.csproj" />

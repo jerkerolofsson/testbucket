@@ -15,7 +15,6 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         private readonly TestBucketApp _app;
         private Team _team = new Team { Name = "", Slug="", ShortName = "" };
         private TestProject _project = new TestProject { Name = "", Slug = "", ShortName = "" };
-
         public TestProject Project => _project;
         public long ProjectId => _project.Id;
         public long TeamId => _team.Id;

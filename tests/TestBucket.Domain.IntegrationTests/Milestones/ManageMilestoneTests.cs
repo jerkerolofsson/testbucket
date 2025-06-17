@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Milestones;
+using TestBucket.Metrics.Xunit;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Milestones
 {
+    [EnrichedTest]
+    [IncludeDiagnostics]
     [IntegrationTest]
     [FunctionalTest]
     [Feature("Milestones")]

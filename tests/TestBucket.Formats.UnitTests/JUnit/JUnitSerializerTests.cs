@@ -1,5 +1,6 @@
 ﻿using TestBucket.Formats.JUnit;
 using TestBucket.Formats.UnitTests.Utilities;
+using TestBucket.Metrics.Xunit;
 using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.JUnit
@@ -9,6 +10,7 @@ namespace TestBucket.Formats.UnitTests.JUnit
     [Component("Test Result Formats")]
     [Feature("Import Test Results")]
     [EnrichedTest]
+    [IncludeDiagnostics]
     public class JUnitSerializerTests
     {
         /// <summary>

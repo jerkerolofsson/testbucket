@@ -97,6 +97,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Jira", "integrat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Tests.EndToEndTests", "..\tests\TestBucket.Tests.EndToEndTests\TestBucket.Tests.EndToEndTests.csproj", "{F6F46051-54F8-4E1D-90DD-85B61E339359}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metrics", "Metrics", "{82EF4447-EAD9-484D-84DC-C22FE41C506B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Metrics.Xunit", "Package\Reporting\TestBucket.Metrics.Xunit\TestBucket.Metrics.Xunit.csproj", "{75304E00-E946-493A-8068-03B4FC1C5FBB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -227,6 +231,10 @@ Global
 		{F6F46051-54F8-4E1D-90DD-85B61E339359}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6F46051-54F8-4E1D-90DD-85B61E339359}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6F46051-54F8-4E1D-90DD-85B61E339359}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75304E00-E946-493A-8068-03B4FC1C5FBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75304E00-E946-493A-8068-03B4FC1C5FBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75304E00-E946-493A-8068-03B4FC1C5FBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75304E00-E946-493A-8068-03B4FC1C5FBB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -273,6 +281,8 @@ Global
 		{EA5AD401-23B5-4179-9513-34DF2ACE54F9} = {685C80D1-64F7-4419-B9F0-588F6C5DB3F3}
 		{0DC31716-9BD9-47AB-AAF4-132B6C3BF6B3} = {F6F1BD5A-FFAC-40D0-9497-D30F9FE19B47}
 		{F6F46051-54F8-4E1D-90DD-85B61E339359} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{82EF4447-EAD9-484D-84DC-C22FE41C506B} = {5D9FF94E-3EE4-40B9-9C70-E68A2C65E6F4}
+		{75304E00-E946-493A-8068-03B4FC1C5FBB} = {82EF4447-EAD9-484D-84DC-C22FE41C506B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37FBEEC7-21BB-422E-866E-8B5C94540F5B}

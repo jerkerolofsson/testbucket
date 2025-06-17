@@ -9,6 +9,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.Ctrf
 {
+    /// <summary>
+    /// Tests for CtrfXunitSerializer
+    /// </summary>
     [UnitTest]
     [FunctionalTest]
     [Component("Test Result Formats")]

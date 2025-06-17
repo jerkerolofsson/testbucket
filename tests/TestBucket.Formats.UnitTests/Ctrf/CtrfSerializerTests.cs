@@ -10,6 +10,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.Ctrf
 {
+    /// <summary>
+    /// Tests for CtrfSerializer
+    /// </summary>
     [UnitTest]
     [FunctionalTest]
     [Component("Test Result Formats")]
@@ -17,9 +20,10 @@ namespace TestBucket.Formats.UnitTests.Ctrf
     [EnrichedTest]
     public class CtrfSerializerTests
     {
+        /// <summary>
+        /// Verifies that a deserialized CTRF has a run with StartedTime and EndedTime from the report
+        /// </summary>
         [Fact]
-        [TestDescription("Verifies that a deserialized CTRF has a run with StartedTime and EndedTime from the report")]
-        [Component("TestBucket.Formats")]
         public void Deserialize_WithStartStopInSummary_StartedAndEndedTimePropertiesSetOnTestRun()
         {
             var json = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.Ctrf.TestData.ctrf-summary.json");
@@ -30,9 +34,10 @@ namespace TestBucket.Formats.UnitTests.Ctrf
             Assert.NotNull(run.EndedTime);
         }
 
+        /// <summary>
+        /// Verifies that a CTRF with a screenshot
+        /// </summary>
         [Fact]
-        [TestDescription("Verifies that a CTRF with a screenshot ")]
-        [Component("TestBucket.Formats")]
         public void Deserialize_WithScreenshot_ScreenshotAddedAsAttachment()
         {
             var json = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.Ctrf.TestData.ctrf-screenshot.json");
@@ -53,9 +58,10 @@ namespace TestBucket.Formats.UnitTests.Ctrf
         }
 
 
+        /// <summary>
+        /// Verifies that a CTRF with a screenshot can be deserialized
+        /// </summary>
         [Fact]
-        [TestDescription("Verifies that a CTRF with a screenshot ")]
-        [Component("TestBucket.Formats")]
         public void Deserialize_WithAttachment_AttachmentLoadedCorrectly()
         {
             var json = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.Ctrf.TestData.ctrf-attachment.json");

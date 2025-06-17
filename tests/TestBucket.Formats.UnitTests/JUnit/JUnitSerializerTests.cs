@@ -5,6 +5,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.JUnit
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="JUnitSerializer"/> class, verifying correct deserialization of JUnit XML files into test run and suite models.
+    /// </summary>
     [UnitTest]
     [FunctionalTest]
     [Component("Test Result Formats")]
@@ -14,7 +17,7 @@ namespace TestBucket.Formats.UnitTests.JUnit
     public class JUnitSerializerTests
     {
         /// <summary>
-        /// Verifies that a junit xml without a name attribute on the testsuites node gets the name from the first testsuite node
+        /// Verifies that a JUnit XML without a name attribute on the testsuites node gets the name from the first testsuite node.
         /// </summary>
         [Fact]
         [TestId("JUNIT-001")]
@@ -29,9 +32,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             Assert.Equal(run.Name, run.Suites[0].Name);
         }
 
+        /// <summary>
+        /// Verifies that a JUnit XML contains the correct number of test suites and their names are deserialized correctly.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-002")]
-        [TestDescription("Verifies that a junit xml is contains the correct number of test suites")]
         public void Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-basic.xml");
@@ -44,9 +49,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             Assert.Equal("Tests.Authentication", run.Suites[1].Name);
         }
 
+        /// <summary>
+        /// Verifies that properties on the testcase element in a JUnit XML are extracted as traits.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-003")]
-        [TestDescription("Verifies that a junit xml containing properties on the testcase element are extracted as traits")]
         public void Deserialize_WithPropertiesOnTest_TwoTestsDeserializedWithCorrectTraits()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-properties.xml");
@@ -70,9 +77,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             }
         }
 
+        /// <summary>
+        /// Verifies that the assembly name is read from the testsuite name if no assembly trait is defined in the JUnit XML.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-004")]
-        [TestDescription("Verifies that the assembly name is read from the testsuite name if no assembly trait is defined")]
         public void Deserialize_WithoutAssemblyName_AssemblyNameSuiteName()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-basic.xml");
@@ -98,9 +107,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             }
         }
 
+        /// <summary>
+        /// Verifies that tests from nested testsuites in a JUnit XML are flattened into the parent container.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-005")]
-        [TestDescription("Verifies that tests from nested testsuites are flattened")]
         public void Deserialize_WithNestedTestSuites_AllTestsInParentContainer()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-basic.xml");
@@ -119,9 +130,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             Assert.Equal(6, run.Suites[1].Tests!.Count);
         }
 
+        /// <summary>
+        /// Verifies that tests from nested testsuites have a folder extracted from the nested testsuite name.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-006")]
-        [TestDescription("Verifies that tests from nested testsuites have a folder extracted from the nested testsuite name")]
         public void Deserialize_WithNestedTestSuites_FolderExtractedForNestedTests()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-basic.xml");
@@ -156,10 +169,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             }
         }
 
-
+        /// <summary>
+        /// Verifies that if a TestId trait exists in the JUnit XML, it will be used for the ExternalId property.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-007")]
-        [TestDescription("Verifies that if a TestId trait exists it will be used for ExternalId")]
         public void Deserialize_WithTestIdTrait_TestIdTraitUsedAsExternalId()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-testid-trait.xml");
@@ -175,10 +189,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             Assert.Equal("MY-EXTERNAL-ID", test.TestId);
         }
 
-
+        /// <summary>
+        /// Verifies that a JUnit XML with a test suite root is parsed successfully.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-008")]
-        [TestDescription("Verifies that if a TestId trait exists it will be used for ExternalId")]
         public void Deserialize_WithTestSuiteRoot_ParsedSuccess()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.junit-testid-trait.xml");

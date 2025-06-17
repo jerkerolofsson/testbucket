@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Traits.Core;
-using TestBucket.Traits.Xunit;
+﻿using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests
 {
+    /// <summary>
+    /// Tests for TestResultSerializerFactory
+    /// </summary>
     [FunctionalTest]
     [Component("Test Result Formats")]
     [Feature("Import Test Results")]

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Formats.Ctrf;
+﻿using TestBucket.Formats.Ctrf;
 using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.Ctrf
 {
+    /// <summary>
+    /// Contains unit tests for mapping between <see cref="TestResult"/> values and CTRF status strings.
+    /// </summary>
     [UnitTest]
     [FunctionalTest]
     [Component("Test Result Formats")]
@@ -15,6 +13,11 @@ namespace TestBucket.Formats.UnitTests.Ctrf
     [EnrichedTest]
     public class CtrfResultMappingTests
     {
+        /// <summary>
+        /// Verifies that <see cref="CtrfResultMapping.GetCtrfStatusFromTestResult(TestResult)"/> returns the correct CTRF status string for a given <see cref="TestResult"/>.
+        /// </summary>
+        /// <param name="result">The <see cref="TestResult"/> value to map.</param>
+        /// <param name="expectedStatus">The expected CTRF status string.</param>
         [InlineData(TestResult.Passed, "passed")]
         [InlineData(TestResult.Failed, "failed")]
         [InlineData(TestResult.NoRun, "pending")]
@@ -26,6 +29,11 @@ namespace TestBucket.Formats.UnitTests.Ctrf
             Assert.Equal(expectedStatus, status);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CtrfResultMapping.GetTestResultFromCtrfStatus(string)"/> returns the correct <see cref="TestResult"/> for a given CTRF status string.
+        /// </summary>
+        /// <param name="expectedResult">The expected <see cref="TestResult"/> value.</param>
+        /// <param name="status">The CTRF status string to map.</param>
         [InlineData(TestResult.Passed, "passed")]
         [InlineData(TestResult.Failed, "failed")]
         [InlineData(TestResult.NoRun, "pending")]

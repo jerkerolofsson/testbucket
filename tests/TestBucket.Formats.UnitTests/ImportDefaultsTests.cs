@@ -8,6 +8,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="ImportDefaults"/> class, specifically for the GetExternalId method.
+    /// </summary>
     [FunctionalTest]
     [Component("Test Result Formats")]
     [Feature("Import Test Results")]
@@ -15,6 +18,9 @@ namespace TestBucket.Formats.UnitTests
     [EnrichedTest]
     public class ImportDefaultsTests
     {
+        /// <summary>
+        /// Tests that <see cref="ImportDefaults.GetExternalId"/> returns a non-empty value when only the run name is provided.
+        /// </summary>
         [Fact]
         public void GetExternalId_WithOnlyRunName()
         {
@@ -26,6 +32,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.NotEmpty(name);
         }
 
+        /// <summary>
+        /// Tests that <see cref="ImportDefaults.GetExternalId"/> returns a non-empty value when only the suite name is provided.
+        /// </summary>
         [Fact]
         public void GetExternalId_WithOnlySuiteName()
         {
@@ -37,7 +46,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.NotEmpty(name);
         }
 
-
+        /// <summary>
+        /// Tests that <see cref="ImportDefaults.GetExternalId"/> returns a non-empty value when only the test case name is provided.
+        /// </summary>
         [Fact]
         public void GetExternalId_WithOnlyCaseName()
         {
@@ -49,6 +60,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.NotEmpty(name);
         }
 
+        /// <summary>
+        /// Tests that <see cref="ImportDefaults.GetExternalId"/> returns a non-empty value when all components (run, suite, and test case names) are provided.
+        /// </summary>
         [Fact]
         public void GetExternalId_WithAllComponents()
         {
@@ -56,7 +70,7 @@ namespace TestBucket.Formats.UnitTests
             var suite = new TestSuiteRunDto { Name = "suite" };
             var testCase = new TestCaseRunDto { Name = "test" };
 
-            var name = ImportDefaults.GetExternalId(run, suite, testCase );
+            var name = ImportDefaults.GetExternalId(run, suite, testCase);
             Assert.NotEmpty(name);
         }
     }

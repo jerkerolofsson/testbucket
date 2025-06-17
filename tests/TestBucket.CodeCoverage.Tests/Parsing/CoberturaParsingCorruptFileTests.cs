@@ -2,16 +2,20 @@
 
 namespace TestBucket.CodeCoverage.Tests.Parsing
 {
+    /// <summary>
+    /// Negative tests for CoberturaParser
+    /// </summary>
     [Feature("Code Coverage")]
     [UnitTest]
     [EnrichedTest]
     [FunctionalTest]
     public class CoberturaParsingCorruptFileTests
     {
+        /// <summary>
+        /// Verifies that hits is zero when the hits attribute is missing on a line
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that hits is zero when the hits attribute is missing on a line
-            """)]
         public async Task ParseCobertura_WithMissingHitsAttribute_HitsIsZero()
         {
             var xml = """
@@ -47,10 +51,11 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.Equal(0, report.Packages[0].Classes[0].Methods[0].Lines[0].Hits);
         }
 
+        /// <summary>
+        /// Verifies that when loading a file with missing filename on method, there is no crash or side-effect
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when loading a file with missing filename on method, there is no crash or side-effect
-            """)]
         public async Task ParseCobertura_WithMissingFilenameOnClass_ClassIsNotIngored()
         {
             var xml = """
@@ -84,10 +89,11 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.Single(report.Packages[0].Classes[0].Methods);
         }
 
+        /// <summary>
+        /// Verifies that when loading a file with missing method name, there is no crash and the method is not added
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when loading a file with missing method name, there is no crash and the method is not added
-            """)]
         public async Task ParseCobertura_WithMissingMethodName_MethodIsIgnored()
         {
             var xml = """

@@ -4,6 +4,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests
 {
+    /// <summary>
+    /// Contains unit tests for building and deserializing test result files in various formats.
+    /// </summary>
     [FunctionalTest]
     [Component("Test Result Formats")]
     [Feature("Import Test Results")]
@@ -11,6 +14,10 @@ namespace TestBucket.Formats.UnitTests
     [EnrichedTest]
     public class TestResultBuilderTests
     {
+        /// <summary>
+        /// Verifies that building a test result file with two test cases and deserializing it produces the expected structure.
+        /// </summary>
+        /// <param name="format">The test result file format to use.</param>
         [Theory]
         [InlineData(TestResultFormat.MicrosoftTrx)]
         [InlineData(TestResultFormat.JUnitXml)]
@@ -38,6 +45,10 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal("test2", run.Suites[0].Tests[1].Name);
         }
 
+        /// <summary>
+        /// Verifies that a custom trait added to a test case is correctly deserialized.
+        /// </summary>
+        /// <param name="format">The test result file format to use.</param>
         [Theory]
         [InlineData(TestResultFormat.MicrosoftTrx)]
         [InlineData(TestResultFormat.JUnitXml)]
@@ -66,6 +77,11 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal("UnitTest", trait.Value);
         }
 
+        /// <summary>
+        /// Verifies that a known trait type added to a test case is correctly deserialized.
+        /// </summary>
+        /// <param name="format">The test result file format to use.</param>
+        /// <param name="traitType">The trait type to add and verify.</param>
         [Theory]
         [InlineData(TestResultFormat.MicrosoftTrx, TraitType.TestCategory)]
         [InlineData(TestResultFormat.MicrosoftTrx, TraitType.TestPriority)]
@@ -97,6 +113,10 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal("UnitTest", trait.Value);
         }
 
+        /// <summary>
+        /// Verifies that an attachment added to a test case is correctly deserialized and matches the original data.
+        /// </summary>
+        /// <param name="format">The test result file format to use.</param>
         [Theory]
         [InlineData(TestResultFormat.MicrosoftTrx)]
         [InlineData(TestResultFormat.xUnitXml)]
@@ -129,7 +149,10 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(attachmentBytes, attachment.Data);
         }
 
-
+        /// <summary>
+        /// Verifies that setting start and end times for a test run are correctly serialized and deserialized.
+        /// </summary>
+        /// <param name="format">The test result file format to use.</param>
         [Theory]
         [InlineData(TestResultFormat.MicrosoftTrx)]
         [InlineData(TestResultFormat.xUnitXml)]

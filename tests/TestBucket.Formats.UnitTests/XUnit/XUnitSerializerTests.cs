@@ -7,6 +7,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.XUnit
 {
+    /// <summary>
+    /// Tests for XUnitSerializer
+    /// </summary>
     [UnitTest]
     [FunctionalTest]
     [Component("Test Result Formats")]
@@ -14,9 +17,11 @@ namespace TestBucket.Formats.UnitTests.XUnit
     [EnrichedTest]
     public class XUnitSerializerTests
     {
+        /// <summary>
+        /// Verifies that a xunit xml run name is from the first assembly
+        /// </summary>
         [Fact]
         [TestId("XUNIT-001")]
-        [TestDescription("Verifies that a xunit xml run name is from the first assembly")]
         [Component("TestBucket.Formats")]
         public void Deserialize_WithTwoTestSuites_TwoRunsDeserializedWithCorrectNames()
         {
@@ -27,9 +32,11 @@ namespace TestBucket.Formats.UnitTests.XUnit
             Assert.Equal("TestBucket.Formats.UnitTests.dll", run.Name);
         }
 
+        /// <summary>
+        /// Verifies that a xunit xml containing traits on the test element are extracted as traits
+        /// </summary>
         [Fact]
         [TestId("XUNIT-002")]
-        [TestDescription("Verifies that a xunit xml containing traits on the test element are extracted as traits")]
         [Component("TestBucket.Formats")]
         public void Deserialize_WithTraitsOnTest_TwoTestsDeserializedWithCorrectTraits()
         {
@@ -54,10 +61,11 @@ namespace TestBucket.Formats.UnitTests.XUnit
             }
         }
 
-
+        /// <summary>
+        /// Verifies that external ID is set to the TestId if specified
+        /// </summary>
         [Fact]
         [TestId("XUNIT-003")]
-        [TestDescription("Verifies that external ID is set to the TestId if specified")]
         [Component("TestBucket.Formats")]
         public void Deserialize_WithTestIdTrait_ExternalIdSetToTestIdValue()
         {
@@ -83,9 +91,11 @@ namespace TestBucket.Formats.UnitTests.XUnit
             }
         }
 
+        /// <summary>
+        /// Verifies that loading a file-attachment (base64) works
+        /// </summary>
         [Fact]
         [TestId("XUNIT-004")]
-        [TestDescription("Verifies that loading a file-attachment (base64) works")]
         [Component("TestBucket.Formats")]
         public void Deserialize_WithXunitImageAttachment_ImageLoadedCorrectly()
         {

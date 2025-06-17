@@ -5,6 +5,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.JUnit
 {
+    /// <summary>
+    /// Contains unit tests for verifying interoperability between JUnit XML and xUnit-specific behaviors.
+    /// </summary>
     [UnitTest]
     [FunctionalTest]
     [Component("Test Result Formats")]
@@ -12,10 +15,12 @@ namespace TestBucket.Formats.UnitTests.JUnit
     [EnrichedTest]
     public class XunitInteroperabilityTests
     {
+        /// <summary>
+        /// Verifies that a JUnit XML created by xUnit removes properties with the "trait:" prefix from traits.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-IOT-XUNIT-V3-001")]
         [Component("TestBucket.Formats")]
-        [TestDescription("Verifies that a junit xml created by xunit that properties with trait: prefix are removed")]
         public void Deserialize_WithTraitPrefixInProperty_TraitPrefixRemoved()
         {
             var xml = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.JUnit.TestData.created-by-xunit-v3.xml");
@@ -28,7 +33,7 @@ namespace TestBucket.Formats.UnitTests.JUnit
                 Assert.NotEmpty(suite.Tests);
                 foreach (var test in suite.Tests)
                 {
-                    foreach(var trait in test.Traits)
+                    foreach (var trait in test.Traits)
                     {
                         Assert.False(trait.Name.StartsWith("trait:"));
                     }
@@ -36,9 +41,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             }
         }
 
+        /// <summary>
+        /// Verifies that traits with the "attachment:" prefix are not added as traits and attachments are handled correctly.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-IOT-XUNIT-V3-002")]
-        [TestDescription("Verifies that traits with attachment: prefix are not added as traits")]
         [Component("TestBucket.Formats")]
         public void Deserialize_WithAttachmentPrefixInProperty_AddedAsAttachmentWithCorrectName()
         {
@@ -63,9 +70,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             }
         }
 
+        /// <summary>
+        /// Verifies that traits with the "attachment:" prefix do not have the prefix in the resulting trait names.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-IOT-XUNIT-V3-003")]
-        [TestDescription("Verifies that traits with attachment does not have the attachment: prefix")]
         [Component("TestBucket.Formats")]
         public void Deserialize_WithAttachmentPrefixInPropertyWithoutMimeType_AddedAsAttachmentWithTextPlain()
         {
@@ -88,9 +97,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             }
         }
 
+        /// <summary>
+        /// Verifies that a JUnit XML with an attachment and MIME type has the correct content type and is decoded from base64.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-IOT-XUNIT-V3-004")]
-        [TestDescription("Verifies that a JUnit XML with attachment and mime-type have correct content type and decoded from base64")]
         [Component("TestBucket.Formats")]
         public void Deserialize_WithAttachmentPrefixInPropertyWithMimeType_AddedAsAttachmentWithCorrectDataAndContentType()
         {
@@ -115,9 +126,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             }
         }
 
+        /// <summary>
+        /// Verifies that the name "Test collection for" and ID are removed from the run name in the deserialized JUnit XML.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-IOT-XUNIT-V3-004")]
-        [TestDescription("Verifies that name 'Test collection for' and ID is removed from the run name")]
         [Component("TestBucket.Formats")]
         public void Deserialize_WithXunitTestCollectionName_NameTrimmedCorrectly()
         {
@@ -130,9 +143,11 @@ namespace TestBucket.Formats.UnitTests.JUnit
             Assert.Equal("TestBucket.Formats.UnitTests.XUnit.XUnitSerializerTests", suite.Name);
         }
 
+        /// <summary>
+        /// Verifies that an image attachment in the JUnit XML is loaded correctly with the expected name, content type, and data.
+        /// </summary>
         [Fact]
         [TestId("JUNIT-IOT-XUNIT-V3-004")]
-        [TestDescription("Verifies that name 'Test collection for' and ID is removed from the run name")]
         [Component("TestBucket.Formats")]
         public void Deserialize_WithXunitImageAttachment_ImageLoadedCorrectly()
         {
@@ -144,10 +159,10 @@ namespace TestBucket.Formats.UnitTests.JUnit
 
             Assert.Single(run.Suites);
             var suite = run.Suites.First();
-            
+
             Assert.Single(suite.Tests);
             var test = suite.Tests.First();
-            
+
             Assert.Single(test.Attachments);
             var attachment = test.Attachments.First();
 

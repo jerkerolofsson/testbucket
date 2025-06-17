@@ -3,6 +3,9 @@ using TestBucket.CodeCoverage.Tests.Utils;
 
 namespace TestBucket.CodeCoverage.Tests
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="CoverageFormatDetector"/> class.
+    /// </summary>
     [Feature("Code Coverage")]
     [Component("Code Coverage")]
     [UnitTest]
@@ -10,12 +13,16 @@ namespace TestBucket.CodeCoverage.Tests
     [FunctionalTest]
     public class CoverageFormatDetectorTests
     {
+        /// <summary>
+        /// Verifies that <see cref="CoverageFormatDetector.Detect(byte[])"/> returns <see cref="CodeCoverageFormat.UnknownFormat"/>
+        /// when provided with an empty string.
+        /// </summary>
         [Fact]
         public void DetectFormat_WithEmptyString_ReturnsUnknown()
         {
             // Arrange
             var xml = "";
-            
+
             // Act
             var result = CoverageFormatDetector.Detect(Encoding.UTF8.GetBytes(xml));
 
@@ -23,6 +30,10 @@ namespace TestBucket.CodeCoverage.Tests
             Assert.Equal(CodeCoverageFormat.UnknownFormat, result);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CoverageFormatDetector.DetectFromFileAsync(string)"/> returns <see cref="CodeCoverageFormat.Cobertura"/>
+        /// when provided with a valid Cobertura XML file.
+        /// </summary>
         [Fact]
         public async Task DetectFromFileAsync_WithCoberturaXml_ReturnsCobertura()
         {
@@ -39,6 +50,10 @@ namespace TestBucket.CodeCoverage.Tests
             Assert.Equal(CodeCoverageFormat.Cobertura, result);
         }
 
+        /// <summary>
+        /// Verifies that <see cref="CoverageFormatDetector.Detect(byte[])"/> returns <see cref="CodeCoverageFormat.Cobertura"/>
+        /// when provided with a valid Cobertura XML string.
+        /// </summary>
         [Fact]
         public void DetectFormat_WithCoberturaXml_ReturnsCobertura()
         {
@@ -52,6 +67,10 @@ namespace TestBucket.CodeCoverage.Tests
             Assert.Equal(CodeCoverageFormat.Cobertura, result);
         }
 
+        /// <summary>
+        /// Returns a valid Cobertura XML string for testing purposes.
+        /// </summary>
+        /// <returns>A valid Cobertura XML string.</returns>
         private static string GetValidCoberturaXml()
         {
             return """

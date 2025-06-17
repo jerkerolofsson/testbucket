@@ -121,6 +121,89 @@ public class XmlDocSerializerTests
         Assert.Empty(member.Params);
     }
 
+    [Fact]
+    public void ParseXml_MethodWithCrefInSummary_StripsMarkupInMemberSummaryButKeepsCrefAttributeValue()
+    {
+        string xml = """
+            <?xml version="1.0"?>
+            <doc>
+                <assembly>
+                    <name>TestBucket.Traits.Core.UnitTests</name>
+                </assembly>
+                <members>
+                    <member name="M:TestBucket.Traits.Core.UnitTests.TraitTypeConverterTests.ConvertFromStringToKnownType_IsValid(System.String,TestBucket.Traits.Core.TraitType)">
+                        <summary>
+                            Verifies that converting from known trait name strings returns the correct <see cref="T:TestBucket.Traits.Core.TraitType"/> value.
+                        </summary>
+                        <param name="traitName">The trait name string to convert.</param>
+                        <param name="expectedType">The expected <see cref="T:TestBucket.Traits.Core.TraitType"/> value.</param>
+                    </member>
+                </members>
+            </doc>
+            """;
+
+        var xmlDoc = XmlDocSerializer.ParseXml(xml);
+        var expectedSummary = "Verifies that converting from known trait name strings returns the correct TestBucket.Traits.Core.TraitType value.";
+        Assert.Single(xmlDoc.Members);
+        var member = xmlDoc.Members[0];
+        Assert.Equal(expectedSummary, member.Summary);
+    }
+
+
+    [Fact]
+    public void ParseXml_MethodWithCXmlElement_ReplacesCWithMarkupBold()
+    {
+        string xml = """
+            <?xml version="1.0"?>
+            <doc>
+                <assembly>
+                    <name>TestBucket.Traits.Core.UnitTests</name>
+                </assembly>
+                <members>
+                    <member name="M:TestBucket.Traits.Core.UnitTests.TestName()">
+                        <summary>
+                            The <c>property</c> should be bold.
+                        </summary>
+                    </member>
+                </members>
+            </doc>
+            """;
+
+        var xmlDoc = XmlDocSerializer.ParseXml(xml);
+        var expectedSummary = "The **property* should be bold.";
+        Assert.Single(xmlDoc.Members);
+        var member = xmlDoc.Members[0];
+        Assert.Equal(expectedSummary, member.Summary);
+    }
+
+
+    [Fact]
+    public void ParseXml_MethodWithCrefInParameterSummary_StripsMarkupInButKeepsCrefAttributeValue()
+    {
+        string xml = """
+            <?xml version="1.0"?>
+            <doc>
+                <assembly>
+                    <name>TestBucket.Traits.Core.UnitTests</name>
+                </assembly>
+                <members>
+                    <member name="M:TestBucket.Traits.Core.UnitTests.TraitTypeConverterTests.ConvertFromStringToKnownType_IsValid(System.String,TestBucket.Traits.Core.TraitType)">
+                        <summary>
+                            Verifies that converting from known trait name strings returns the correct <see cref="T:TestBucket.Traits.Core.TraitType"/> value.
+                        </summary>
+                        <param name="expectedType">The expected <see cref="T:TestBucket.Traits.Core.TraitType"/> value.</param>
+                    </member>
+                </members>
+            </doc>
+            """;
+
+        var xmlDoc = XmlDocSerializer.ParseXml(xml);
+        var expectedSummary = "The expected TestBucket.Traits.Core.TraitType value.";
+        Assert.Single(xmlDoc.Members);
+        var member = xmlDoc.Members[0];
+        Assert.Single(member.Params);
+        Assert.Equal(expectedSummary, member.Params[0].Description);
+    }
 
     /// <summary>
     /// Verifies that ParseXml correctly parses a single property with summary

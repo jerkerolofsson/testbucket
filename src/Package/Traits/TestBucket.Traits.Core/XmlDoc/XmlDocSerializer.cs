@@ -1,4 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml;
 using System.Xml.Linq;
 
 using TestBucket.Traits.Core.XmlDoc.Models;
@@ -9,6 +12,23 @@ namespace TestBucket.Traits.Core.XmlDoc;
 /// </summary>
 public class XmlDocSerializer
 {
+    private static readonly Regex s_seeCrefRegex = new Regex(@"<see\s+cref=""T:([^""]+)""\s*/?>");
+    private static readonly Regex s_xmlRegex = new Regex("<.*?>");
+    private static readonly Regex s_xmlCOpen = new Regex("<c>");
+    private static readonly Regex s_xmlCClose = new Regex("</c>");
+
+    private static string StripXmlTags(string? xml)
+    {
+        if (string.IsNullOrWhiteSpace(xml))
+            return string.Empty;
+
+        xml = s_xmlCOpen.Replace(xml, "**");
+        xml = s_xmlCClose.Replace(xml, "**");
+        xml = s_seeCrefRegex.Replace(xml, "$1");
+
+        return s_xmlRegex.Replace(xml, string.Empty).Trim();
+    }
+
     /// <summary>
     /// Deserializes an XML documentation file from the specified file path.
     /// </summary>
@@ -76,14 +96,21 @@ public class XmlDocSerializer
 
             if (TryParseMemberName(name, out var member))
             {
-                member.Summary = memberElement.Element("summary")?.Value?.Trim();
+                var summary = memberElement.Element("summary");
+                if (summary is not null)
+                {
+                    string summaryInnerXml = string.Concat(summary.Nodes().Select(n => n.ToString()));
+                    member.Summary = StripXmlTags(summaryInnerXml);
+                }
 
                 foreach (var paramElem in memberElement.Elements("param"))
                 {
                     var paramName = paramElem.Attribute("name")?.Value;
-                    var paramDesc = paramElem.Value?.Trim();
+
                     if (!string.IsNullOrWhiteSpace(paramName))
                     {
+                        string paramElemInnerXml = string.Concat(paramElem.Nodes().Select(n => n.ToString()));
+                        var paramDesc = StripXmlTags(paramElemInnerXml);
                         member.Params.Add(new XmlDocParam(paramName, paramDesc));
                     }
                 }

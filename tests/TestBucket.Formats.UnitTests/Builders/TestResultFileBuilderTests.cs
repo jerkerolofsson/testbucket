@@ -11,6 +11,9 @@ using static TestBucket.Formats.Builders.TestResultFileBuilder;
 
 namespace TestBucket.Formats.UnitTests.Builders
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="TestResultFileBuilder"/> class, verifying correct construction and serialization of test result files.
+    /// </summary>
     [UnitTest]
     [FunctionalTest]
     [Component("Test Result Formats")]
@@ -18,8 +21,13 @@ namespace TestBucket.Formats.UnitTests.Builders
     [EnrichedTest]
     public class TestResultFileBuilderTests
     {
-        public TestResultFileBuilder Create() => new TestResultFileBuilder();
+        private TestResultFileBuilder Create() => new TestResultFileBuilder();
 
+        /// <summary>
+        /// Builds and deserializes a test run using the specified builder and the xUnit XML format.
+        /// </summary>
+        /// <param name="builder">The <see cref="TestResultFileBuilder"/> to use.</param>
+        /// <returns>The deserialized <see cref="TestRunDto"/>.</returns>
         private static TestRunDto BuildAndDeserialize(TestResultFileBuilder builder)
         {
             var xml = builder.Build(TestResultFormat.xUnitXml);
@@ -27,10 +35,13 @@ namespace TestBucket.Formats.UnitTests.Builders
             var run = serializer.Deserialize(xml);
             return run;
         }
+
+        /// <summary>
+        /// Verifies that a test run with a single passed test is correctly marked as passed.
+        /// </summary>
         [Fact]
         public void TestResultFileBuilder_WithOnePassedTests_IsPassed()
         {
-
             var builder = Create();
             builder.AddTestSuite()
                 .SetName("Suite1")
@@ -50,6 +61,9 @@ namespace TestBucket.Formats.UnitTests.Builders
             Assert.Equal(TestResult.Passed, test.Result);
         }
 
+        /// <summary>
+        /// Verifies that a test run with a failed test is correctly marked as failed and includes the failure message.
+        /// </summary>
         [Fact]
         public void TestResultFileBuilder_WithFailedTest_IsFailed()
         {
@@ -69,6 +83,10 @@ namespace TestBucket.Formats.UnitTests.Builders
             Assert.Equal(TestResult.Failed, test.Result);
             Assert.Equal("Failure message", test.Message);
         }
+
+        /// <summary>
+        /// Verifies that multiple test results are counted correctly for passed, failed, and skipped tests.
+        /// </summary>
         [Fact]
         public void TestResultFileBuilder_WithMultipleTestResults_CountsCorrectly()
         {
@@ -89,7 +107,9 @@ namespace TestBucket.Formats.UnitTests.Builders
             Assert.Equal(1, run.Count(TestResult.Skipped));
         }
 
-
+        /// <summary>
+        /// Verifies that attachments added to a test case are present in the serialized and deserialized result.
+        /// </summary>
         [Fact]
         public void TestResultFileBuilder_WithAttachment_AttachmentIsPresent()
         {
@@ -110,6 +130,9 @@ namespace TestBucket.Formats.UnitTests.Builders
             Assert.Equal("text/plain", test.Attachments[0].ContentType);
         }
 
+        /// <summary>
+        /// Verifies that custom traits added to a test case are present in the serialized and deserialized result.
+        /// </summary>
         [Fact]
         public void TestResultFileBuilder_WithCustomTrait_TraitIsPresent()
         {
@@ -126,7 +149,9 @@ namespace TestBucket.Formats.UnitTests.Builders
             Assert.Contains(test.Traits, t => t.Name == "CustomTrait" && t.Value == "CustomValue");
         }
 
-
+        /// <summary>
+        /// Verifies that multiple test suites are present in the serialized and deserialized result.
+        /// </summary>
         [Fact]
         public void TestResultFileBuilder_WithMultipleSuites_SuitesArePresent()
         {

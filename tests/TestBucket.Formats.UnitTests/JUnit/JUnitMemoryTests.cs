@@ -7,6 +7,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.JUnit
 {
+    /// <summary>
+    /// JUnitSerializerMemoryTests
+    /// </summary>
     [UnitTest]
     [PerformanceTest()]
     [Component("Test Result Formats")]

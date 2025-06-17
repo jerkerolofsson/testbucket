@@ -3,6 +3,9 @@ using TestBucket.CodeCoverage.Parsers;
 
 namespace TestBucket.CodeCoverage.Tests.Parsing
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="CoberturaParser"/> class, verifying correct parsing and merging of Cobertura code coverage reports.
+    /// </summary>
     [Feature("Code Coverage")]
     [UnitTest]
     [EnrichedTest]
@@ -10,10 +13,9 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
     public class CoberturaParsingTests
     {
         /// <summary>
-        /// Verifies that when loading the same coverage report twice and merging it, the number of 
-        /// packages are not duplicated
+        /// Verifies that when loading the same coverage report twice and merging it, the number of packages are not duplicated.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_Twice_PackagesCorrect()
         {
@@ -31,10 +33,9 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
         }
 
         /// <summary>
-        /// Verifies that when loading the same coverage report twice and merging it, the number of 
-        /// hits are added together
+        /// Verifies that when loading the same coverage report twice and merging it, the number of hits are added together.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_Twice_LineHitsAdded()
         {
@@ -58,9 +59,9 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
         }
 
         /// <summary>
-        /// Verifies that the parsed package names are correct
+        /// Verifies that the parsed package names are correct when no methods are present.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_WithNoMethods_CoveragePercentCorrect()
         {
@@ -69,13 +70,13 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
 
             Assert.Single(report.Packages);
             var percent = report.Packages[0].CoveragePercent.Value;
-            Assert.Equal(85.7, Math.Round(percent,1));
+            Assert.Equal(85.7, Math.Round(percent, 1));
         }
 
         /// <summary>
-        /// Verifies calling GetChildren on a packet returns all methods
+        /// Verifies calling <c>GetChildren</c> on a package returns all classes.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task GetChildrenOnPackage_After_ParseCobertura_WithClasses_ReturnsClasses()
         {
@@ -90,9 +91,9 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
         }
 
         /// <summary>
-        /// Verifies GetChildren on a class returns methods
+        /// Verifies <c>GetChildren</c> on a class returns methods.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task GetChildrenOnClass_After_ParseCobertura_WithClassesAndMethods_ReturnsMethods()
         {
@@ -113,9 +114,9 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
         }
 
         /// <summary>
-        /// Verifies GetChildren on a method returns lines
+        /// Verifies <c>GetChildren</c> on a method returns lines.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task GetChildrenOnMethods_After_ParseCobertura_WithClassesAndMethods_ReturnsLines()
         {
@@ -139,9 +140,9 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
         }
 
         /// <summary>
-        /// Verifies that the CoveragePercent is correct for the whole file
+        /// Verifies that the <c>CoveragePercent</c> is correct for the whole file.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_WithMethods_CoveragePercentIsCorrect()
         {
@@ -154,9 +155,9 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
         }
 
         /// <summary>
-        /// Verifies that the number of lines calculated is correct in a file with methods
+        /// Verifies that the number of lines calculated is correct in a file with methods.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_WithMethods_LineCountCorrect()
         {
@@ -170,9 +171,9 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
         }
 
         /// <summary>
-        /// Verifies that the number of lines calculated is correct in a file without methods
+        /// Verifies that the number of lines calculated is correct in a file without methods.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_WithNoMethods_PackageLineCountCorrect()
         {
@@ -185,9 +186,9 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
         }
 
         /// <summary>
-        /// Verifies that the parsed package names are correct
+        /// Verifies that the parsed package names are correct.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_PackagesCorrect()
         {
@@ -201,6 +202,10 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.Equal("TestBucket.Formats", report.Packages[2].Name);
         }
 
+        /// <summary>
+        /// Verifies that the class filename is parsed correctly.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_ClassFilenameCorrect()
         {
@@ -217,6 +222,10 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.Equal("D:\\local\\code\\testbucket\\src\\Package\\Reporting\\TestBucket.Formats\\ImportDefaults.cs", importDefaultsClass.FileName);
         }
 
+        /// <summary>
+        /// Verifies that the class is found in the parsed report.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_ClassFound()
         {
@@ -232,6 +241,10 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.NotNull(importDefaultsClass);
         }
 
+        /// <summary>
+        /// Verifies that the method is found in the parsed class.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_MethodFound()
         {
@@ -254,6 +267,10 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.Equal("GetExternalId", getExternalIdMethod.GetName());
         }
 
+        /// <summary>
+        /// Verifies that the line is found in the parsed method.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_LineFound()
         {
@@ -272,7 +289,10 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.NotNull(getExternalIdMethod);
         }
 
-
+        /// <summary>
+        /// Verifies that the condition type is parsed correctly for each line.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_ConditionTypeCorrect()
         {
@@ -302,6 +322,10 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.Equal("jump", line6.Conditions[4].Type);
         }
 
+        /// <summary>
+        /// Verifies that the condition coverage is parsed correctly for each line.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task ParseCobertura_ConditionCoverageCorrect()
         {
@@ -331,6 +355,10 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.Equal(1, line6.Conditions[4].Coverage);
         }
 
+        /// <summary>
+        /// Verifies that the branch attribute on a line is parsed correctly when it is false.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         [TestDescription("""
             Verifies that the branch attribute on a line is parsed correctly when it is false
@@ -369,6 +397,11 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.Single(report.Packages[0].Classes[0].Methods[0].Lines);
             Assert.False(report.Packages[0].Classes[0].Methods[0].Lines[0].IsBranch);
         }
+
+        /// <summary>
+        /// Verifies that the branch attribute on a line is parsed correctly when it is true.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         [TestDescription("""
             Verifies that the branch attribute on a line is parsed correctly when it is true

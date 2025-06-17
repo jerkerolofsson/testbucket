@@ -4,6 +4,9 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests
 {
+    /// <summary>
+    /// Contains unit tests for the <see cref="TestResultDetector"/> class, verifying detection of various test result formats.
+    /// </summary>
     [FunctionalTest]
     [Component("Test Result Formats")]
     [Feature("Import Test Results")]
@@ -11,6 +14,9 @@ namespace TestBucket.Formats.UnitTests
     [EnrichedTest]
     public class TestResultDetectorTests
     {
+        /// <summary>
+        /// Verifies that a ZIP file is detected as <see cref="TestResultFormat.ZipArchive"/>.
+        /// </summary>
         [Fact]
         public async Task DetectFromFileAsync_WithZip_ResultIsZipArchive()
         {
@@ -18,6 +24,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(TestResultFormat.ZipArchive, format);
         }
 
+        /// <summary>
+        /// Verifies that a TRX XML file is detected as <see cref="TestResultFormat.MicrosoftTrx"/>.
+        /// </summary>
         [Fact]
         public void Detect_WithTrx_ResultIsTrx()
         {
@@ -30,13 +39,15 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(TestResultFormat.MicrosoftTrx, format);
         }
 
-
+        /// <summary>
+        /// Verifies that a CTRF JSON file with additional whitespace is detected as <see cref="TestResultFormat.CommonTestReportFormat"/>.
+        /// </summary>
         [Fact]
         public void Detect_WithCtrfJsoncheck_ResultIsCtrf()
         {
             var json = TestDataUtils.GetResourceXml("TestBucket.Formats.UnitTests.Ctrf.TestData.ctrf-summary.json");
             var sb = new StringBuilder();
-            for(int i=0; i<2000; i++)
+            for (int i = 0; i < 2000; i++)
             {
                 sb.Append("            ");
             }
@@ -45,6 +56,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(TestResultFormat.CommonTestReportFormat, format);
         }
 
+        /// <summary>
+        /// Verifies that a CTRF JSON file with the "reportFormat" property is detected as <see cref="TestResultFormat.CommonTestReportFormat"/>.
+        /// </summary>
         [Fact]
         public void Detect_WithCtrfMagic_ResultIsCtrf()
         {
@@ -57,7 +71,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(TestResultFormat.CommonTestReportFormat, format);
         }
 
-
+        /// <summary>
+        /// Verifies that a CTRF JSON file with an alternative structure is detected as <see cref="TestResultFormat.CommonTestReportFormat"/>.
+        /// </summary>
         [Fact]
         public void Detect_WithCtrfMagicAlt_ResultIsCtrf()
         {
@@ -74,6 +90,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(TestResultFormat.CommonTestReportFormat, format);
         }
 
+        /// <summary>
+        /// Verifies that a JSON file with "reportFormat": "CTRF" is detected as <see cref="TestResultFormat.CommonTestReportFormat"/>.
+        /// </summary>
         [Fact]
         public void Detect_WithReportFormatCtrf_ResultIsCtrf()
         {
@@ -82,6 +101,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(TestResultFormat.CommonTestReportFormat, format);
         }
 
+        /// <summary>
+        /// Verifies that a JUnit XML file is detected as <see cref="TestResultFormat.JUnitXml"/>.
+        /// </summary>
         [Fact]
         public void Detect_WithJUnitXml_ResultIsJUnit()
         {
@@ -90,11 +112,14 @@ namespace TestBucket.Formats.UnitTests
                 <testsuites name="Test results" time="0.103" tests="9" failures="0" errors="0" skipped="0">
                 </testsuites>
                 """;
-                
+
             var format = TestResultDetector.Detect(Encoding.UTF8.GetBytes(text));
             Assert.Equal(TestResultFormat.JUnitXml, format);
         }
 
+        /// <summary>
+        /// Verifies that an xUnit XML file is detected as <see cref="TestResultFormat.xUnitXml"/>.
+        /// </summary>
         [Fact]
         public void Detect_WithXUnitXml_ResultIsXUnit()
         {
@@ -108,6 +133,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(TestResultFormat.xUnitXml, format);
         }
 
+        /// <summary>
+        /// Verifies that empty input is detected as <see cref="TestResultFormat.UnknownFormat"/>.
+        /// </summary>
         [Fact]
         public void Detect_WithEmptyInput_ResultIsUnknown()
         {
@@ -115,6 +143,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(TestResultFormat.UnknownFormat, format);
         }
 
+        /// <summary>
+        /// Verifies that random data is detected as <see cref="TestResultFormat.UnknownFormat"/>.
+        /// </summary>
         [Fact]
         public void Detect_WithRandomData_ResultIsUnknown()
         {
@@ -123,6 +154,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(TestResultFormat.UnknownFormat, format);
         }
 
+        /// <summary>
+        /// Verifies that malformed XML input is detected as <see cref="TestResultFormat.UnknownFormat"/>.
+        /// </summary>
         [Fact]
         public void Detect_WithMalformedXml_ResultIsUnknown()
         {
@@ -131,6 +165,9 @@ namespace TestBucket.Formats.UnitTests
             Assert.Equal(TestResultFormat.UnknownFormat, format);
         }
 
+        /// <summary>
+        /// Verifies that malformed JSON input is detected as <see cref="TestResultFormat.UnknownFormat"/>.
+        /// </summary>
         [Fact]
         public void Detect_WithMalformedJson_ResultIsUnknown()
         {

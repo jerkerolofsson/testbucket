@@ -8,10 +8,16 @@ using TestBucket.Traits.Xunit;
 
 namespace TestBucket.Formats.UnitTests.Csv
 {
+    /// <summary>
+    /// Contains unit tests for <see cref="CsvRepoSerializer"/> focusing on Qcase CSV data.
+    /// </summary>
     [UnitTest]
     [EnrichedTest]
     public class CsvSerializerQcaseTests
     {
+        /// <summary>
+        /// Verifies that the deserialized description contains the Markdown header "## Description".
+        /// </summary>
         [Fact]
         public async Task Deserialize_QcaseValidCsv_DescriptionContainsMarkdownHeader()
         {
@@ -26,6 +32,9 @@ namespace TestBucket.Formats.UnitTests.Csv
             Assert.Contains("## Description", repo.TestCases[0].Description);
         }
 
+        /// <summary>
+        /// Verifies that the deserialized description contains the Markdown header "## Pre-condition".
+        /// </summary>
         [Fact]
         public async Task Deserialize_QcaseValidCsv_DescriptionContainsMarkdownPreconditionHeader()
         {
@@ -40,6 +49,9 @@ namespace TestBucket.Formats.UnitTests.Csv
             Assert.Contains("## Pre-condition", repo.TestCases[0].Description);
         }
 
+        /// <summary>
+        /// Verifies that the deserialized description does not contain the Markdown header "## Pre-condition" when the precondition is empty.
+        /// </summary>
         [Fact]
         public async Task Deserialize_QcaseValidCsvAndEmptyPrecondition_DescriptionDoesNotContainsMarkdownPreconditionHeader()
         {
@@ -54,8 +66,9 @@ namespace TestBucket.Formats.UnitTests.Csv
             Assert.DoesNotContain("## Pre-condition", repo.TestCases[1].Description);
         }
 
-
-
+        /// <summary>
+        /// Verifies that the deserialized description contains the expected steps result text.
+        /// </summary>
         [Fact]
         public async Task Deserialize_QcaseValidCsv_DescriptionContainsStepsResult()
         {
@@ -70,6 +83,9 @@ namespace TestBucket.Formats.UnitTests.Csv
             Assert.Contains("UI should be perfect", repo.TestCases[0].Description);
         }
 
+        /// <summary>
+        /// Verifies that the deserialized suite and case counts are correct and that the first and last test case names match expectations.
+        /// </summary>
         [Fact]
         public async Task Deserialize_QcaseValidCsv_SuiteAndCaseCountCorrect()
         {

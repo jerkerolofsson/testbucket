@@ -21,16 +21,16 @@ internal class MetricsController : TenantBaseService
         _loc = loc;
     }
 
-    public async Task DeleteAsync(Metric metric)
+    public async Task<bool> DeleteAsync(Metric metric)
     {
         if (metric is null)
         {
-            return;
+            return false;
         }
         var principal = await GetUserClaimsPrincipalAsync();
         if (principal is null)
         {
-            return;
+            return false;
         }
         var confirmResult = await _dialogService.ShowMessageBox(new MessageBoxOptions
         {
@@ -40,9 +40,10 @@ internal class MetricsController : TenantBaseService
             MarkupMessage = new MarkupString(_loc["confirm-delete-message"])
         });
         if (confirmResult is false)
-            return;
+            return false;
         
         await _manager.DeleteMetricAsync(principal, metric);
+        return true;
     }
     public async Task<Metric?> AddAsync(TestCaseRun testCaseRun)
     {

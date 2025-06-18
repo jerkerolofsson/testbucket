@@ -302,6 +302,7 @@ public static class TestBucketServerApp
         // Test case
         builder.Services.AddScoped<ICommand, DuplicateTestCommand>();
         builder.Services.AddScoped<ICommand, NewTestCommand>();
+        builder.Services.AddScoped<ICommand, NewExploratoryTestCommand>();
         builder.Services.AddScoped<ICommand, NewTemplateCommand>();
         builder.Services.AddScoped<ICommand, NewSharedStepsCommand>();
         builder.Services.AddScoped<ICommand, DeleteTestCommand>();

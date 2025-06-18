@@ -44,6 +44,11 @@ public class TestCase : TestEntity
     public string? Module { get; set; }
 
     /// <summary>
+    /// Planned session duration, in minutes
+    /// </summary>
+    public int? SessionDuration { get; set; }
+
+    /// <summary>
     /// Method
     /// </summary>
     public string? Method { get; set; }

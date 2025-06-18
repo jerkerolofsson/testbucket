@@ -4,6 +4,10 @@
     position: relative;
 }
 
+.message { 
+    opacity: 0.8;
+}
+
 .comment-container {
     display: flex;
     gap: 4px;

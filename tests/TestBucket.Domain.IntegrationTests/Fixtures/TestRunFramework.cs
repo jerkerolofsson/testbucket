@@ -37,18 +37,17 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         internal async Task<TestCaseRun> AddTestAsync(TestRun run, TestCase testCase)
         {
             var user = Impersonation.Impersonate(Fixture.App.Tenant);
-            var testCaseRun = new TestCaseRun
-            {
-                Name = testCase.Name,
-                TestRunId = run.Id,
-                TeamId = run.TeamId,
-                TestProjectId = run.TestProjectId,
-                TestCaseId = testCase.Id
-            };
+            //var testCaseRun = new TestCaseRun
+            //{
+            //    Name = testCase.Name,
+            //    TestRunId = run.Id,
+            //    TeamId = run.TeamId,
+            //    TestProjectId = run.TestProjectId,
+            //    TestCaseId = testCase.Id
+            //};
 
             var manager = Fixture.Services.GetRequiredService<ITestRunManager>();
-            await manager.AddTestCaseRunAsync(user, testCaseRun);
-            return testCaseRun;
+            return await manager.AddTestCaseRunAsync(user, run, testCase);
         }
 
         internal async Task<TestRun?> GetByIdAsync(long id)

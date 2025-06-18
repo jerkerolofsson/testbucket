@@ -2,51 +2,67 @@
 @using TestBucket.Components.Metrics.Controls.Controls
 @inject IStringLocalizer<SharedStrings> loc
 
-@if(TestCaseRun is not null)
-{
-    
-    @if(TestCaseRun.Metrics is not null && TestCaseRun.Metrics.Count > 0)
+<MudExpansionPanels>
+    @if(TestCaseRun is not null)
     {
-        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudIcon Icon="@TbIcons.Filled.Gauge"/>
-            <MudText Typo="Typo.h2">@loc["metrics"]</MudText>
-        </MudStack>
-        
-        <MetricsGridView ReadOnly TestCaseRun="@TestCaseRun" />
-    }
-    @if (TestCaseRun.LinkedIssues is not null && TestCaseRun.LinkedIssues.Count > 0)
-    {
-        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudIcon Icon="@TbIcons.BoldDuoTone.Bug"/>
-            <MudText Typo="Typo.h2">@loc["issues"]</MudText>
-        </MudStack>
+        @if(TestCaseRun.Metrics is not null && TestCaseRun.Metrics.Count > 0)
+        {
+            string label = $"{loc["metrics"]} ({TestCaseRun.Metrics.Count})";
+            <MudExpansionPanel Text="@label">
+                <MetricsGridView ReadOnly TestCaseRun="@TestCaseRun" />
+            </MudExpansionPanel>
+        }
+        @if (TestCaseRun.LinkedIssues is not null && TestCaseRun.LinkedIssues.Count > 0)
+        {
+            string label = $"{loc["issues"]} ({TestCaseRun.LinkedIssues.Count})";
+            <MudExpansionPanel Text="@label">
+                <LinkedIssuesTable ReadOnly TestCaseRun="@TestCaseRun" />
+            </MudExpansionPanel>
+        }
 
-        <LinkedIssuesTable ReadOnly TestCaseRun="@TestCaseRun" />
-    }
+        if (!string.IsNullOrEmpty(TestCaseRun.Message))
+        {
+            @if (TestCaseRun.ScriptType == ScriptType.Exploratory)
+            {
+                <MudExpansionPanel Text="@loc["session-log"]" Expanded>
+                    <MudPaper Class="pa-2">
+                        <MarkdownEditor ShowToolbar="false" Preview Value="@TestCaseRun.Message" />
+                    </MudPaper>
+                </MudExpansionPanel>
+            }
+            else
+            {
+                <MudExpansionPanel Text="@loc["test-log"]" Expanded>
+                    <MudPaper Class="pa-2">
+                        <MarkdownEditor ShowToolbar="false" Preview Value="@TestCaseRun.Message" />
+                    </MudPaper>
+                </MudExpansionPanel>
+            }
+        }
 
-    if (!string.IsNullOrEmpty(TestCaseRun.Message))
-    {
-        <MudText Typo="Typo.h2">@loc["test-log"]</MudText>
-        <MarkdownEditor ShowToolbar="false" Preview Value="@TestCaseRun.Message" />
-    }
+        if (!string.IsNullOrEmpty(TestCaseRun.CallStack))
+        {
+            <MudExpansionPanel Text="@loc["call-stack"]" Expanded>
+                <MudText><pre>@TestCaseRun.CallStack</pre></MudText>
+            </MudExpansionPanel>
+        }
 
-    if (!string.IsNullOrEmpty(TestCaseRun.CallStack))
-    {
-        <MudText Typo="Typo.h2">@loc["call-stack"]</MudText>
-        <MudText><pre>@TestCaseRun.CallStack</pre></MudText>
-    }
+        if (!string.IsNullOrEmpty(TestCaseRun.SystemOut))
+        {
+            <MudExpansionPanel Text="@loc["std-out"]">
+                <MudText><pre>@TestCaseRun.SystemOut</pre></MudText>
+            </MudExpansionPanel>
+        }
 
-    if (!string.IsNullOrEmpty(TestCaseRun.SystemOut))
-    {
-        <MudText Typo="Typo.h2">@loc["std-out"]</MudText>
-        <MudText><pre>@TestCaseRun.SystemOut</pre></MudText>
-    }
+        <MudExpansionPanel Text="@loc["attachments"]">
+            <AttachmentGrid TestCaseRunId="@TestCaseRun.Id" Style="width: 100%" AllowUpload="false"/>
+        </MudExpansionPanel>
 
-    <Field>
-        <FieldHeader>@loc["attachments"]</FieldHeader>
-        <AttachmentGrid TestCaseRunId="@TestCaseRun.Id" Style="width: 100%" AllowUpload="false"/>
-    </Field>
-}
+        <MudExpansionPanel Text="@loc["fields"]">
+            <FieldsEditor TestCaseRun="@TestCaseRun" ReadOnly/>
+        </MudExpansionPanel>
+    }
+</MudExpansionPanels>
 
 @code {
     [Parameter] public TestCaseRun? TestCaseRun { get; set; }

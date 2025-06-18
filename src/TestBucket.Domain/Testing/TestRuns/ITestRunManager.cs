@@ -67,6 +67,15 @@ public interface ITestRunManager
     #region Test Case Runs
 
     /// <summary>
+    /// Creates a new TestCaseRun from a test case
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testCaseRun"></param>
+    /// <returns></returns>
+    Task<TestCaseRun> AddTestCaseRunAsync(ClaimsPrincipal principal, TestRun testRun, TestCase testCase);
+
+
+    /// <summary>
     /// Adds a TestCaseRun (a test case for execution)
     /// </summary>
     /// <param name="principal"></param>

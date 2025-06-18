@@ -16,6 +16,7 @@
     @if (_issues.Count > 0)
     {
         <MudDataGrid Items="_issues"
+            Elevation="0"
         Class="tb-test-case-run-grid"
         RowClick="x => RowClicked(x.Item)"
         RowClassFunc="RowClassFunc"

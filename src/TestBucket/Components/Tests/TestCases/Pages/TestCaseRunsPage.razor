@@ -32,8 +32,6 @@
     [CascadingParameter] public Team? Team { get; set; }
     [SupplyParameterFromQuery(Name = "q")] public string? InitialQuery { get; set; }
 
-    private string? _filterResult = "all";
-
     private SearchTestCaseRunQuery _query = new();
     private IReadOnlyList<FieldDefinition> _testCaseFields = [];
     private FieldDefinition? _fieldCategory;

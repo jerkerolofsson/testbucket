@@ -10,6 +10,43 @@ namespace TestBucket.Domain.IntegrationTests.Tests
     {
         [Fact]
         [FunctionalTest]
+        public async Task AddScriptedTestCaseToRun_CharterIsNotSet()
+        {
+            // Arrange
+            var run = new TestRun { Name = "ads" + Guid.NewGuid().ToString(), TestProjectId = Fixture.ProjectId };
+            await Fixture.Runs.AddAsync(run);
+
+            var testCase = new TestCase { Name = "Test Case 1", Description = "Description of test case.", ScriptType = ScriptType.ScriptedDefault };
+            await Fixture.Tests.AddAsync(testCase);
+
+            // Act
+            var testCaseRun = await Fixture.Runs.AddTestAsync(run, testCase);
+
+            // Assert 
+            Assert.Null(testCaseRun.Charter);
+        }
+
+
+        [Fact]
+        [FunctionalTest]
+        public async Task AddExploratoryTestCaseToRun_CharterIsSet()
+        {
+            // Arrange
+            var run = new TestRun { Name = "ads" + Guid.NewGuid().ToString(), TestProjectId = Fixture.ProjectId };
+            await Fixture.Runs.AddAsync(run);
+
+            var testCase = new TestCase { Name = "Test Case 1", Description = "Charter of test case.", ScriptType = ScriptType.Exploratory };
+            await Fixture.Tests.AddAsync(testCase);
+
+            // Act
+            var testCaseRun = await Fixture.Runs.AddTestAsync(run, testCase);
+
+            // Assert 
+            Assert.Equal(testCase.Description, testCaseRun.Charter);
+        }
+
+        [Fact]
+        [FunctionalTest]
         public async Task AddTestRun_WithProjectIdButNoTeamId_TeamIdIsSet()
         {
             // Arrange

@@ -103,6 +103,37 @@ internal class TestRunManager : ITestRunManager
     }
 
     /// <inheritdoc/>
+    public async Task<TestCaseRun> AddTestCaseRunAsync(ClaimsPrincipal principal, TestRun testRun, TestCase testCase)
+    {
+        if (testRun.TestProjectId is null)
+        {
+            throw new ArgumentException("TestRun must belong to a project!");
+        }
+
+        var testCaseRun = new TestCaseRun
+        {
+            Name = testCase.Name,
+            TestCaseId = testCase.Id,
+            TestRunId = testRun.Id,
+            TestProjectId = testRun.TestProjectId.Value,
+            State = "Not Started",
+            Result = TestResult.NoRun,
+            ScriptType = testCase.ScriptType
+        };
+        if (testCase.ScriptType == ScriptType.Exploratory)
+        {
+            testCaseRun.Charter = testCase.Description;
+            if (testCase.SessionDuration is not null)
+            {
+                // From minutes to milliseconds
+                testCaseRun.Estimate = testCase.SessionDuration.Value * 1000 * 60;
+            }
+        }
+        await AddTestCaseRunAsync(principal, testCaseRun);
+        return testCaseRun;
+    }
+
+    /// <inheritdoc/>
     public async Task AddTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
     {
         testCaseRun.TenantId = principal.GetTenantIdOrThrow();

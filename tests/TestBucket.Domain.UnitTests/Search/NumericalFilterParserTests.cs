@@ -8,6 +8,10 @@ namespace TestBucket.Domain.UnitTests.Search
     /// <summary>
     /// Unit tests for <see cref="NumericalFilterParser"/>.
     /// </summary>
+    [UnitTest]
+    [Component("Search")]
+    [Feature("Search")]
+    [FunctionalTest]
     public class NumericalFilterParserTests
     {
         /// <summary>

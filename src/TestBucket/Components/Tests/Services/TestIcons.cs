@@ -6,6 +6,11 @@ public static class TestIcons
 {
     public static string GetIcon(TestCase testCase)
     {
+        if(testCase.ScriptType == ScriptType.Exploratory)
+        {
+            return TbIcons.BoldDuoTone.MapArrowUp;
+        }
+
         if (testCase.IsTemplate)
         {
             return TbIcons.BoldDuoTone.TestTemplate;

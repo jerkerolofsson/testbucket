@@ -263,6 +263,14 @@ public partial class TestCaseEditor
         }
     }
 
+    private async Task OnSessionDurationChangedAsync(int? durationInMinutes)
+    {
+        if (Test is not null)
+        {
+            Test.SessionDuration = durationInMinutes;
+            await TestChanged.InvokeAsync(Test);
+        }
+    }
     public async Task OnNameChanged(string name)
     {
         if (Test is not null)

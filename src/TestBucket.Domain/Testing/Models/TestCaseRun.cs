@@ -53,7 +53,18 @@ public class TestCaseRun : TestEntity
     public MappedTestState? MappedState { get; set; }
 
     /// <summary>
-    /// Message/Error
+    /// Charter for exploratory testing
+    /// Copied from TestCase.Description when starting a new test
+    /// </summary>
+    public string? Charter { get; set; }
+
+    /// <summary>
+    /// Copied from test case
+    /// </summary>
+    public ScriptType ScriptType { get; set; }
+
+    /// <summary>
+    /// Message/Error/Session Log
     /// </summary>
     public string? Message { get; set; }
 
@@ -71,6 +82,13 @@ public class TestCaseRun : TestEntity
     /// stderr during test
     /// </summary>
     public string? SystemErr { get; set; }
+
+    /// <summary>
+    /// Estimated duration to run the test, in milliseconds
+    /// or
+    /// Planned session duration for exploratory testing
+    /// </summary>
+    public int? Estimate { get; set; }
 
     /// <summary>
     /// Total time to execute the test, in milliseconds
@@ -96,6 +114,7 @@ public class TestCaseRun : TestEntity
     public virtual List<LinkedIssue>? LinkedIssues { get; set; }
     public virtual List<Metric>? Metrics { get; set; }
     public virtual List<Comment>? Comments { get; set; }
+
     public override int GetHashCode()
     {
         return Id.GetHashCode();

@@ -282,12 +282,29 @@ input:focus-visible {
     width: 100%;
 }
 
+.tb-attachment-grid-table .mud-table-cell {
+    font-size: 8pt;
+}
+
  .file-resource-thumbnail {
-     padding: 16px;
+     padding: 4px;
      border-radius: 4px;
      overflow: hidden;
      width: 96px;
+     height: 96px;
      cursor: pointer;
+ }
+
+ .file-resource-thumbnail .mud-tooltip-root {
+     width: 100%;
+     height: 100%;
+     display: grid;
+     place-items: center;
+ }
+
+ .file-resource-thumbnail .image {
+     max-width: 100%; 
+     max-height: 100%;
  }
 
  .file-resource-thumbnail:hover {
@@ -1339,3 +1356,8 @@ div.tb-profile-image.tb-background-9 {
     height: 100%;
     grid-template-rows: 1fr auto;
 }
+
+.tb-dialog-run-testcase .mud-markdown-editor-root.mud-input-outlined > * {
+    padding: 16px 16px 16px 16px;
+}
+

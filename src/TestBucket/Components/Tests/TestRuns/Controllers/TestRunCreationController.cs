@@ -258,21 +258,7 @@ internal class TestRunCreationController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
 
-        if (run.TestProjectId is null)
-        {
-            throw new ArgumentException("TestRun must belong to a project!");
-        }    
-
-        var testCaseRun = new TestCaseRun
-        {
-            Name = testCase.Name,
-            TestCaseId = testCase.Id,
-            TestRunId = run.Id,
-            TestProjectId = run.TestProjectId.Value,
-            State = "Not Started",
-        };
-
-        await _testRunManager.AddTestCaseRunAsync(principal, testCaseRun);
+        await _testRunManager.AddTestCaseRunAsync(principal, run, testCase);
     }
 
     internal async Task EvalMarkdownCodeAsync(TestCase test, long? testRunId, string language, string code, CancellationToken cancellationToken = default)

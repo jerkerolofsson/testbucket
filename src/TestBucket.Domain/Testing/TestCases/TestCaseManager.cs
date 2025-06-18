@@ -116,6 +116,14 @@ namespace TestBucket.Domain.Testing.TestCases
             testCase.CreatedBy = testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
             testCase.ClassificationRequired = testCase.Description is not null && testCase.Description.Length > 0;
 
+            if(testCase.ScriptType == ScriptType.Exploratory)
+            {
+                if(testCase.SessionDuration is null)
+                {
+                    testCase.SessionDuration = 60; // minutes
+                }
+            }
+
             await AssignTeamIfNotAssignedAsync(testCase, testCase.TenantId);
             await CreateTestCaseFoldersAsync(principal, testCase);
 

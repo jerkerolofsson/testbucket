@@ -56,6 +56,26 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
             await fieldManager.UpsertTestCaseFieldAsync(principal, milestoneField);
         }
 
+
+        /// <summary>
+        /// Adds a test case
+        /// </summary>
+        /// <returns></returns>
+        internal async Task<TestCase> AddAsync(TestCase testCase, TestSuite? suite = null)
+        {
+            var user = Impersonation.Impersonate(Fixture.App.Tenant);
+
+            suite ??= await AddSuiteAsync();
+
+            testCase.TestSuiteId = suite.Id;
+            testCase.TestProjectId ??= Fixture.ProjectId;
+            testCase.TeamId ??= Fixture.TeamId;
+
+            var manager = Fixture.Services.GetRequiredService<ITestCaseManager>();
+            await manager.AddTestCaseAsync(user, testCase);
+            return testCase;
+        }
+
         /// <summary>
         /// Adds a test case
         /// </summary>
@@ -113,6 +133,13 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         {
             var manager = Fixture.Services.GetRequiredService<ITestSuiteManager>();
             await manager.DeleteTestSuiteByIdAsync(user, suite.Id);
+        }
+
+        internal async Task<TestCase?> GetTestCaseByIdAsync(long id)
+        {
+            var user = Impersonation.Impersonate(Fixture.App.Tenant);
+            var manager = Fixture.Services.GetRequiredService<ITestCaseManager>();
+            return await manager.GetTestCaseByIdAsync(user, id);
         }
     }
 }

@@ -4,6 +4,7 @@ using TestBucket.Formats.Dtos;
 
 namespace TestBucket.IntegrationTests.TestCases
 {
+    [IntegrationTest]
     public class TestCaseMcpTests(McpFixture McpFixture) : IClassFixture<McpFixture>
     {
         [Fact]

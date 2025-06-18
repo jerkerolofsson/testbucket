@@ -14,41 +14,43 @@
 {
     <TestResultQuickPicker TestCaseRun="@TestCaseRun" ResultChanged="OnResultChanged"/>
 
-    <MudStack Spacing="0">
-        <MudText Typo="Typo.h2">@loc["test-log"]</MudText>
-        <MarkdownEditor ShowToolbar="false"
-            MaxHeight="120" MinHeight="120"
-            Value="@TestCaseRun.Message" ValueChanged="OnMessageChanged" />
-    </MudStack>
+    <MudExpansionPanels>
 
-    <MudStack Spacing="0">
-        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudIcon Icon="@TbIcons.Filled.Gauge" />
-            <MudText Typo="Typo.h2">@loc["metrics"]</MudText>
-        </MudStack>
-        <MetricsGridView TestCaseRun="@TestCaseRun" />
-    </MudStack>
+        @if(TestCaseRun.ScriptType != ScriptType.Exploratory)
+        {
+            <MudExpansionPanel Text="@loc["test-log"]">
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.h2">@loc["test-log"]</MudText>
+                    <MarkdownEditor ShowToolbar="false"
+                        MaxHeight="120" MinHeight="120"
+                        Value="@TestCaseRun.Message" ValueChanged="OnMessageChanged" />
+                </MudStack>
+            </MudExpansionPanel>
+        }
 
-    <MudStack Spacing="0">
-    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-        <MudIcon Icon="@TbIcons.BoldDuoTone.Bug" />
-        <MudText Typo="Typo.h2">@loc["issues"]</MudText>
-    </MudStack>
-        <LinkedIssuesTable TestCaseRun="@TestCaseRun" />
-    </MudStack>
+        <MudExpansionPanel Text="@loc["metrics"]">
+            <MetricsGridView TestCaseRun="@TestCaseRun" />
+        </MudExpansionPanel>
 
-    <MudStack Spacing="0">
+        <MudExpansionPanel Text="@loc["issues"]">
+            <LinkedIssuesTable TestCaseRun="@TestCaseRun" />
+        </MudExpansionPanel>
 
-        <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-            <MudIcon Icon="@TbIcons.BoldDuoTone.PaperClip" />
-            <MudText Typo="Typo.h2">@loc["attachments"]</MudText>
-        </MudStack>
-        <AttachmentGrid TestCaseRunId="@TestCaseRun.Id" Style="width: 100%" AllowUpload @ref="_attachmentGrid"/>
-        <MudStack Row Style="width: 100%">
-            <MudSpacer/>
-            <CaptureScreenShotButton TestCaseRunId="@TestCaseRun.Id" ScreenshotCaptured="OnScreenshotCaptured" />
-        </MudStack>
-    </MudStack>
+        <MudExpansionPanel Text="@loc["attachments"]">
+            <MudStack Spacing="0">
+                <AttachmentGrid TestCaseRunId="@TestCaseRun.Id" Style="width: 100%" AllowUpload @ref="_attachmentGrid"/>
+                <MudStack Row Style="width: 100%">
+                    <MudSpacer/>
+                    <CaptureScreenShotButton TestCaseRunId="@TestCaseRun.Id" ScreenshotCaptured="OnScreenshotCaptured" />
+                </MudStack>
+            </MudStack>
+        </MudExpansionPanel>
+
+        <MudExpansionPanel Text="@loc["fields"]">
+            <FieldsEditor TestCaseRun="@TestCaseRun" />
+        </MudExpansionPanel>
+
+    </MudExpansionPanels>
 }
 
 @code {

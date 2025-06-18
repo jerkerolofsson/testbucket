@@ -1,19 +1,19 @@
 ﻿@if (Resource is not null)
 {
     <MudStack AlignItems="AlignItems.Center" Class="file-resource-thumbnail" @onclick="FileClicked">
-        @if (Resource.ContentType is not null && Resource.ContentType.StartsWith("image/"))
-        {
-            string src = $"/api/resources/{Resource.Id}";
-            <MudImage Src="@src" Style="max-width: 64px; max-height: 64px" />
-        }
-        else
-        {
-            // Icon by type
-            <FileTypeIcon ContentType="@Resource.ContentType" Size="Size.Large" Style="width: 64px; height: 64px" />
-        }
-        <MudSpacer />
-        <MudTooltip Text="@Resource.ContentType">
-            <MudText Class="filename">@Resource.Name</MudText>
+        <MudTooltip Text="@TooltipText">
+            @if (Resource.ContentType is not null && Resource.ContentType.StartsWith("image/"))
+            {
+                string src = $"/api/resources/{Resource.Id}";
+                <MudImage Class="image" Alt="@Resource.Name" Src="@src"/>
+            }
+            else
+            {
+                // Icon by type
+                <FileTypeIcon ContentType="@Resource.ContentType" Size="Size.Large" />
+                <MudSpacer />
+                <MudText Class="filename">@Resource.Name</MudText>
+            }
         </MudTooltip>
     </MudStack>
 }
@@ -21,6 +21,18 @@
 @code {
     [Parameter] public FileResource? Resource { get; set; }
     [Parameter] public EventCallback<FileResource> ResourceClicked { get; set; }
+
+    public string TooltipText
+    {
+        get
+        {
+            if(Resource is not null)
+            {
+                return $"{Resource.Name} {Resource.ContentType}";
+            }
+            return "";
+        }
+    }
 
     private async Task FileClicked(MouseEventArgs e)
     {

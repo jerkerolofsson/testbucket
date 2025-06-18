@@ -10,11 +10,12 @@
     @if (_metrics.Count > 0)
     {
         <MudDataGrid Items="_metrics"
+                     Elevation="0"
                      Class="tb-metrics-grid"
                      RowClass="tb-datarow cursor-pointer"
-                     Dense="true"
-                     Hover="true"
-                     Bordered="true"
+                     Dense
+                     Hover
+                     Bordered
                      T="Metric"
                      SortMode="SortMode.Single">
             <ColGroup>

@@ -184,17 +184,15 @@ internal class TestCaseRepository : ITestCaseRepository
 
     private static async Task DeleteTestCaseByIdAsync(long testCaseId, ApplicationDbContext dbContext)
     {
-        await dbContext.RequirementTestLinks.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
-
         // Delete all test case runs
         await DeleteTestCaseRunsByTestCaseIdAsync(testCaseId, dbContext);
 
-        //await dbContext.Comments.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
-        //await dbContext.TestCaseFields.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
+        await dbContext.RequirementTestLinks.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
+        await dbContext.Comments.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
+        await dbContext.TestCaseFields.Where(x => x.TestCaseId == testCaseId).ExecuteDeleteAsync();
+
         await dbContext.TestCases
             .Include(x => x.TestSteps)
-            .Include(x => x.Comments)
-            .Include(x => x.TestCaseFields)
             .Where(x => x.Id == testCaseId).ExecuteDeleteAsync();
     }
 

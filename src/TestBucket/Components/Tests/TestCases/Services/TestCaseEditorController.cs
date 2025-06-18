@@ -207,6 +207,25 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         }
         return null;
     }
+
+    public async ValueTask<TestCase?> CreateNewExploratoryTestCaseAsync(TestProject project, TestSuiteFolder? folder, long? testSuiteId, string name = "")
+    {
+        var parameters = new DialogParameters<AddTestCaseDialog>
+        {
+            { x => x.Name, name },
+            { x => x.Project, project },
+            { x => x.ScriptType, ScriptType.Exploratory },
+            { x => x.Folder, folder },
+            { x => x.TestSuiteId, testSuiteId ?? folder?.TestSuiteId }
+        };
+        var dialog = await _dialogService.ShowAsync<AddTestCaseDialog>(_loc["new-exploratory-charter-test"], parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is TestCase testCase)
+        {
+            return testCase;
+        }
+        return null;
+    }
     public async ValueTask<TestCase?> CreateNewTestCaseAsync(TestProject project, TestSuiteFolder? folder, long? testSuiteId, string name = "")
     {
         var parameters = new DialogParameters<AddTestCaseDialog>

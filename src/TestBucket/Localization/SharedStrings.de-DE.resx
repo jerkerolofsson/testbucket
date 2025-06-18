@@ -854,4 +854,16 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="add-milestone" xml:space="preserve">
     <value />
   </data>
+  <data name="new-exploratory-test-charter" xml:space="preserve">
+    <value />
+  </data>
+  <data name="new-exploratory-test-charter-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="session-duration" xml:space="preserve">
+    <value />
+  </data>
+  <data name="session-log" xml:space="preserve">
+    <value />
+  </data>
 </root>

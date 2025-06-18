@@ -4,14 +4,17 @@
 @inject IDialogService dialogService
 @inject IStringLocalizer<SharedStrings> loc
 
-<MudStack Class="@Class" Style="@Style">
+<MudStack Class="@Class" Style="@Style" Spacing="1">
 
     @if (_attachments.Count > 0)
     {
         <MudPaper Style="height: 100%; width: 100%" Outlined="true">
-            <MudToolBar Gutters="false" Style="height: auto; padding: 4px" Class="d-flex justify-end gap-4">
-                <MudIconButton Size="Size.Small" Color="@GridColor" Icon="@Icons.Material.Filled.ViewModule" OnClick="() => _isGrid = true"/>
-                <MudIconButton Size="Size.Small" Color="@ListColor" Icon="@Icons.Material.Filled.ViewList" OnClick="() => _isGrid = false" />
+            <MudToolBar Gutters="false" Style="height: auto; padding: 4px" Class="d-flex">
+                <MudSpacer/>
+                <MudChipSet Size="Size.Small" T="bool" SelectedValue="_isGrid" SelectionMode="SelectionMode.SingleSelection" SelectedValueChanged="SetGrid" CheckMark Variant="Variant.Text" Color="Color.Info">
+                    <MudChip Icon="@Icons.Material.Filled.ViewModule" Value="@(true)" Text="@loc["grid"]" />
+                    <MudChip Icon="@Icons.Material.Filled.ViewList" Value="@(false)" Text="@loc["list"]" />
+                </MudChipSet>
             </MudToolBar>
             @if (_isGrid)
             {

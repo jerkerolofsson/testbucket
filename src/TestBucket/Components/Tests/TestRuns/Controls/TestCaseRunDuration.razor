@@ -2,8 +2,28 @@
 @implements IAsyncDisposable
 
 <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
-    <MudIcon Icon="@Icons.Material.Outlined.Timer" Size="Size.Small" Style="margin: 0"/>
-    <div style="font-size: 8pt">@(TimeSpan.FromMilliseconds(_millis).Humanize())</div>
+
+    @if (!ReadOnly)
+    {
+        if (_isPaused)
+        {
+            <MudIconButton aria-label="resume" Icon="@Icons.Material.Outlined.PlayArrow" Size="Size.Small" Style="margin: 0" OnClick="StartTimer" />
+        }
+        else
+        {
+            <MudIconButton aria-label="pause" Icon="@Icons.Material.Outlined.Pause" Size="Size.Small" Style="margin: 0" OnClick="StopTimer" />
+        }
+    }
+    else
+    {
+        <MudIcon Icon="@TbIcons.BoldDuoTone.Stopwatch" Size="Size.Small" Style="margin: 0" />
+    }
+    <div class="elapsed">@(TimeSpan.FromMilliseconds(_millis).Humanize(precision:2))</div>
+
+    @if(_estimate > 0)
+    {
+        <div class="estimate">/ @(TimeSpan.FromMilliseconds(_estimate).Humanize(precision: 2))</div>
+    }
 </MudStack>
 
 @code {
@@ -11,6 +31,10 @@
 
     [Parameter] public bool ReadOnly { get; set; }
 
+    /// <summary>
+    /// Estimate, for planned session duration in milliseconds
+    /// </summary>
+    private int _estimate;
     private int _millis;
     private TestCaseRun? _testCaseRun;
 
@@ -21,10 +45,12 @@
     private int _startDuration = 0;
     private long _startRunTimestamp;
     private TestResult? _result;
+    private bool _isPaused = false;
 
     protected override async Task OnParametersSetAsync()
     {
         var before = _millis;
+        _estimate = TestCaseRun?.Estimate ?? 0;
         if (TestCaseRun?.Id != _testCaseRun?.Id || TestCaseRun?.Result != _result)
         {
             _startDuration = _millis = TestCaseRun?.Duration ?? 0;
@@ -52,6 +78,7 @@
         }
         if (_testCaseRun.Result == TestResult.NoRun)
         {
+            _isPaused = false;
             _startRunTimestamp = Stopwatch.GetTimestamp();
             _timer = new Timer(this.OnTimer, null, 1000, 1000);
         }
@@ -68,13 +95,19 @@
         }
     }
 
-    private ValueTask StopTimerAsync()
+    private void StopTimer()
     {
         if (_timer is not null)
         {
             _timer?.Dispose();
             _timer = null;
         }
+        _isPaused = true;
+    }
+
+    private ValueTask StopTimerAsync()
+    {
+        StopTimer();
         return ValueTask.CompletedTask;
     }
 

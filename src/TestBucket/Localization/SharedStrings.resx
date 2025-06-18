@@ -854,4 +854,17 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="add-milestone" xml:space="preserve">
     <value>Add milestone</value>
   </data>
+  <data name="new-exploratory-test-charter" xml:space="preserve">
+    <value>New exploratory test charter</value>
+  </data>
+  <data name="new-exploratory-test-charter-description" xml:space="preserve">
+    <value>Creates a pre-defined charter for exploratory testing</value>
+  </data>
+  <data name="session-duration" xml:space="preserve">
+    <value>Session duration</value>
+  </data>
+  <data name="session-log" xml:space="preserve">
+    <value>Session log</value>
+    <comment>Log from a exploratory test session</comment>
+  </data>
 </root>

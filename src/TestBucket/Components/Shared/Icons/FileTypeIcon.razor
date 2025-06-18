@@ -2,39 +2,52 @@
 
 @if (ContentType == "text/x-csharp")
 {
-    <MudIcon Icon="@TbIcons.ProgrammingLanguages.CSharp" Size="@Size" Style="@Style" />
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.CSharp" Size="@Size" Style="@Style" Class="@Class" />
 }
 else if (ContentType == "text/x-typescript")
 {
-    <MudIcon Icon="@TbIcons.ProgrammingLanguages.TypeScript" Size="@Size"  Style="@Style"/>
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.TypeScript" Size="@Size" Style="@Style" Class="@Class" />
 }
 else if (ContentType == "application/javascript")
 {
-    <MudIcon Icon="@TbIcons.ProgrammingLanguages.JavaScript" Size="@Size" Style="@Style" />
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.JavaScript" Size="@Size" Style="@Style" Class="@Class"/>
 }
 else if (ContentType == "text/x-powershell")
 {
-    <MudIcon Icon="@TbIcons.ProgrammingLanguages.PowerShell" Size="@Size" Style="@Style" />
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.PowerShell" Size="@Size" Style="@Style" Class="@Class"/>
 }
 else if (ContentType == "text/x-python")
 {
-    <MudIcon Icon="@TbIcons.ProgrammingLanguages.Python" Size="@Size" Style="@Style" />
+    <MudIcon Icon="@TbIcons.ProgrammingLanguages.Python" Size="@Size" Style="@Style" Class="@Class"/>
+}
+else if (ContentType == "text/csv")
+{
+    <MudIcon Icon="@TbIcons.FileTypes.Csv" Size="@Size" Style="@Style" Class="@Class" />
+}
+else if (ContentType == "image/png")
+{
+    <MudIcon Icon="@TbIcons.FileTypes.Png" Size="@Size" Style="@Style" Class="@Class" />
+}
+else if (ContentType == "image/jpeg")
+{
+    <MudIcon Icon="@TbIcons.FileTypes.Jpeg" Size="@Size" Style="@Style" Class="@Class" />
 }
 else if (ContentType == "application/json" || ContentType == "application/x-ctrf")
 {
-    <MudIcon Icon="@TbIcons.FileTypes.Json" Size="@Size" Style="@Style" />
+    <MudIcon Icon="@TbIcons.FileTypes.Json" Size="@Size" Style="@Style" Class="@Class" />
 }
 else if (ContentType == "text/xml" || ContentType == "application/xml" || ContentType == "application/x-xunit" || ContentType == "application/x-cobertura")
 {
-    <MudIcon Icon="@TbIcons.FileTypes.Xml" Size="@Size" Style="@Style"/>
+    <MudIcon Icon="@TbIcons.FileTypes.Xml" Size="@Size" Style="@Style" Class="@Class" />
 }
 else
 {
-    <MudIcon Icon="@Icons.Custom.FileFormats.FileDocument" Size="@Size" Style="@Style" />
+    <MudIcon Icon="@Icons.Custom.FileFormats.FileDocument" Size="@Size" Style="@Style" Class="@Class"/>
 }
 
 @code {
     [Parameter] public string Style { get; set; } = "";
     [Parameter] public Size Size { get; set; } = Size.Medium;
     [Parameter] public string? ContentType { get; set; }
+    [Parameter] public string Class { get; set; }
 }

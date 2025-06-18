@@ -95,7 +95,29 @@
                         </MudStack>
                     </Field>
 
-                    <FieldsEditor TestCase="@Test" ReadOnly="@(_preview)" />
+                    @if (Test.ScriptType == ScriptType.Exploratory)
+                    {
+                        <Field Row>
+                            <FieldHeader>@loc["session-duration"]</FieldHeader>
+                            <MudSpacer />
+                            @if (!_preview)
+                            {
+                                <MudNumericField 
+                                    HelperText="@loc["minutes"]"
+                                    Clearable Variant="Variant.Outlined" T="int?" Value="Test.SessionDuration" ValueChanged="OnSessionDurationChangedAsync" />
+                            }
+                            else if(Test.SessionDuration is not null)
+                            {
+                                @Test.SessionDuration.Value.Minutes().Humanize(precision:2)
+                            }
+                        </Field>
+                    }
+
+                    <MudExpansionPanels>
+                        <MudExpansionPanel Text="@loc["fields"]">
+                            <FieldsEditor TestCase="@Test" ReadOnly="@(_preview)" />
+                        </MudExpansionPanel>
+                    </MudExpansionPanels>
 
                 </MudStack>
             </EndContent>

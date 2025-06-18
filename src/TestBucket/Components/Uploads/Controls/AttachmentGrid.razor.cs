@@ -56,7 +56,7 @@ public partial class AttachmentGrid
     }
 
     public async Task ReloadAttachmentsAsync()
-    { 
+    {
         if (TestCaseId is not null)
         {
             _attachments = (await attachmentsService.GetTestCaseAttachmentsAsync(TestCaseId.Value)).ToList();
@@ -89,5 +89,12 @@ public partial class AttachmentGrid
         {
             _attachments = (await attachmentsService.GetTestRunAttachmentsAsync(TestRunId.Value)).ToList();
         }
+
+        await this.InvokeAsync(StateHasChanged);
+    }
+
+    private void SetGrid(bool isGrid)
+    {
+        _isGrid = isGrid;
     }
 }

@@ -1,14 +1,18 @@
-﻿@using TestBucket.Components.Tests.TestRuns.Controllers
+﻿@using TestBucket.Components.Comments
+@using TestBucket.Components.Comments.Controls
+@using TestBucket.Components.Tests.TestRuns.Controllers
 @using TestBucket.Contracts.Testing.States
+@using TestBucket.Domain.Comments.Models
 @inject TestCaseEditorController testCaseEditorController
 @inject TestBrowser browser
 @inject TestExecutionController testExecutionController
 @inject TestRunCreationController testRunCreation
 @inject IStringLocalizer<SharedStrings> loc
 @inject ISnackbar snackbar
+@inject CommentsController comments
 @implements IAsyncDisposable
 
-<MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 75vw">
+<MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 75vw" Class="tb-dialog-run-testcase">
     <TitleContent>@TestCaseRun?.Name</TitleContent>
     <DialogContent>
 
@@ -16,26 +20,39 @@
 
             <Splitter Style="height: 100%" Color="Color.Tertiary" Bordered="false" Dimension="60" EnableMargin="false">
                 <StartContent>
+                    <MudStack Style="width: 100%; padding-right: 4px">
+                        <MarkdownEditor ShowToolbar="false"
+                                        MaxHeight="100%"
+                                        MinHeight="100%"
+                                        EnableRunCode
+                                        RunCode="OnRunCodeClickedAsync"
+                                        RunCodeLanguages="pwsh http"
+                                        AllowResize="false"
+                                        Preview="true"
+                                        Value="@_markdown"
+                                        SpellChecker="false">
+                        </MarkdownEditor>
 
-                    <MarkdownEditor ShowToolbar="false"
-                                    MaxHeight="100%"
-                                    MinHeight="100%"
-                                    EnableRunCode
-                                    RunCode="OnRunCodeClickedAsync"
-                                    RunCodeLanguages="pwsh http"
-                                    AllowResize="false"
-                                    Preview="true"
-                                    Value="@_markdown"
-                                    SpellChecker="false">
-                    </MarkdownEditor>
-
-                    @if(_errors.Count > 0)
-                    {
-                        @foreach (var error in _errors)
+                        @if(TestCaseRun?.ScriptType == ScriptType.Exploratory)
                         {
-                            @error.Message
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.h2">@loc["session-log"]</MudText>
+                                <MarkdownEditor ShowToolbar="false"
+                                                MaxHeight="120" MinHeight="120"
+                                                Value="@TestCaseRun.Message" ValueChanged="OnMessageChanged" />
+                            </MudStack>
                         }
-                    }
+
+                        @if(_errors.Count > 0)
+                        {
+                            @foreach (var error in _errors)
+                            {
+                                @error.Message
+                            }
+                        }
+
+                        <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
+                    </MudStack>
 
                 </StartContent>
                 <EndContent>
@@ -54,8 +71,6 @@
                                     <TestCaseRunEditor TestCaseRun="@TestCaseRun" ResultChanged="OnTestCaseRunResultChanged" />
                                     <TestRunStatePicker State="@State" StateChanged="OnTestCaseRunStateChanged" />
 
-                                    <FieldsEditor TestCaseRun="@TestCaseRun" />
-                            
                                 </MudStack>
                             </CascadingValue>
                         }
@@ -75,10 +90,20 @@
 
     private string _resourceLockGuid = Guid.NewGuid().ToString();
     private List<CompilerError> _errors = [];
+    private List<Comment> _comments = [];
 
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
     [Parameter] public TestCaseRun? TestCaseRun { get; set; }
 
+
+    private async Task OnMessageChanged(string message)
+    {
+        if (TestCaseRun is null)
+        {
+            return;
+        }
+        await testExecutionController.SetTestCaseRunMessageAsync(TestCaseRun, message);
+    }
 
     private async Task OnRunCodeClickedAsync(RunCodeRequest request)
     {
@@ -131,6 +156,8 @@
             TestCase testCase = TestCaseRun.TestCase!;
             string description = testCase.Description ?? "";
 
+            _comments = TestCaseRun.Comments ?? [];
+
             var options = new CompilationOptions(testCase, description)
             {
                 ContextGuid = _resourceLockGuid,
@@ -168,7 +195,28 @@
     {
         if (TestCaseRun?.TenantId is not null)
         {
+            // Save changes, such as text and timing
+            await testCaseEditorController.SaveTestCaseRunAsync(TestCaseRun);
+
             await testCaseEditorController.ReleaseResourcesAsync(_resourceLockGuid, TestCaseRun.TenantId);
         }
     }
+
+    private async Task OnCommentAdded(Comment comment)
+    {
+        if (TestCaseRun is not null)
+        {
+            comment.TeamId = TestCaseRun.TeamId;
+            comment.TestProjectId = TestCaseRun.TestProjectId;
+            comment.TestCaseRunId = TestCaseRun.Id;
+            _comments.Add(comment);
+            await comments.AddCommentAsync(comment);
+        }
+    }
+    private async Task OnCommentDeleted(Comment comment)
+    {
+        _comments.Remove(comment);
+        await comments.DeleteCommentAsync(comment);
+    }
+
 }

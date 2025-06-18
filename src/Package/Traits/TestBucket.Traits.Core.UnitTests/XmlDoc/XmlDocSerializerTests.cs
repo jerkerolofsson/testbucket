@@ -15,7 +15,7 @@ namespace TestBucket.Traits.Core.UnitTests.XmlDoc;
 public class XmlDocSerializerTests
 {
     /// <summary>
-    /// Verifies that ParseXml returns a result containing the name of the assembly
+    /// Verifies that ParseXml returns a result containing the name of the assembly.
     /// </summary>
     [Fact]
     public void DeserializeXmlDoc_WithAssembly_AssemblyNameParsed()
@@ -62,7 +62,7 @@ public class XmlDocSerializerTests
     }
 
     /// <summary>
-    /// Verifies that ParseXml correctly parses a single property with summary
+    /// Verifies that ParseXml correctly parses a single property with summary.
     /// </summary>
     [Fact]
     public void ParseXml_SingleType_ParsesMember()
@@ -92,7 +92,7 @@ public class XmlDocSerializerTests
     }
 
     /// <summary>
-    /// Verifies that ParseXml correctly parses a single property with summary
+    /// Verifies that ParseXml correctly parses a single property with summary.
     /// </summary>
     [Fact]
     public void ParseXml_SingleProperty_ParsesMember()
@@ -121,6 +121,9 @@ public class XmlDocSerializerTests
         Assert.Empty(member.Params);
     }
 
+    /// <summary>
+    /// Verifies that ParseXml correctly strips markup in member summary but keeps cref attribute value.
+    /// </summary>
     [Fact]
     public void ParseXml_MethodWithCrefInSummary_StripsMarkupInMemberSummaryButKeepsCrefAttributeValue()
     {
@@ -149,7 +152,9 @@ public class XmlDocSerializerTests
         Assert.Equal(expectedSummary, member.Summary);
     }
 
-
+    /// <summary>
+    /// Verifies that ParseXml replaces &lt;c&gt; elements with bold markup in the summary.
+    /// </summary>
     [Fact]
     public void ParseXml_MethodWithCXmlElement_ReplacesCWithMarkupBold()
     {
@@ -170,13 +175,15 @@ public class XmlDocSerializerTests
             """;
 
         var xmlDoc = XmlDocSerializer.ParseXml(xml);
-        var expectedSummary = "The **property* should be bold.";
+        var expectedSummary = "The **property** should be bold.";
         Assert.Single(xmlDoc.Members);
         var member = xmlDoc.Members[0];
         Assert.Equal(expectedSummary, member.Summary);
     }
 
-
+    /// <summary>
+    /// Verifies that ParseXml correctly strips markup in parameter summary but keeps cref attribute value.
+    /// </summary>
     [Fact]
     public void ParseXml_MethodWithCrefInParameterSummary_StripsMarkupInButKeepsCrefAttributeValue()
     {
@@ -206,7 +213,7 @@ public class XmlDocSerializerTests
     }
 
     /// <summary>
-    /// Verifies that ParseXml correctly parses a single property with summary
+    /// Verifies that ParseXml correctly parses a method with arguments and parameters.
     /// </summary>
     [Fact]
     public void ParseXml_MethodWithArguments_ParsesMember()
@@ -241,7 +248,7 @@ public class XmlDocSerializerTests
     }
 
     /// <summary>
-    /// Verifies that ParseXml correctly parses a single property with summary
+    /// Verifies that ParseXml correctly parses a single field with summary.
     /// </summary>
     [Fact]
     public void ParseXml_SingleField_ParsesMember()

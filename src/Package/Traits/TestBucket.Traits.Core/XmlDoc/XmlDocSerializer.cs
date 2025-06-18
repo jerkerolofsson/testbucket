@@ -12,21 +12,21 @@ namespace TestBucket.Traits.Core.XmlDoc;
 /// </summary>
 public class XmlDocSerializer
 {
-    private static readonly Regex s_seeCrefRegex = new Regex(@"<see\s+cref=""T:([^""]+)""\s*/?>");
-    private static readonly Regex s_xmlRegex = new Regex("<.*?>");
-    private static readonly Regex s_xmlCOpen = new Regex("<c>");
-    private static readonly Regex s_xmlCClose = new Regex("</c>");
+    private static readonly Regex _seeCrefRegex = new Regex(@"<see\s+cref=""T:([^""]+)""\s*/?>");
+    private static readonly Regex _xmlRegex = new Regex("<.*?>");
+    private static readonly Regex _xmlCOpen = new Regex("<c>");
+    private static readonly Regex _xmlCClose = new Regex("</c>");
 
     private static string StripXmlTags(string? xml)
     {
         if (string.IsNullOrWhiteSpace(xml))
             return string.Empty;
 
-        xml = s_xmlCOpen.Replace(xml, "**");
-        xml = s_xmlCClose.Replace(xml, "**");
-        xml = s_seeCrefRegex.Replace(xml, "$1");
+        xml = _xmlCOpen.Replace(xml, "**");
+        xml = _xmlCClose.Replace(xml, "**");
+        xml = _seeCrefRegex.Replace(xml, "$1");
 
-        return s_xmlRegex.Replace(xml, string.Empty).Trim();
+        return _xmlRegex.Replace(xml, string.Empty).Trim();
     }
 
     /// <summary>

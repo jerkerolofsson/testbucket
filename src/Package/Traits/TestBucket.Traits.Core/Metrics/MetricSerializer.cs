@@ -1,8 +1,11 @@
 ﻿using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace TestBucket.Traits.Core.Metrics;
 public class MetricSerializer
 {
+    private static readonly Regex _validNameRegex = new(@"^[A-Za-z0-9_\-\.]+$");
+
     public static bool ValidateName(string name)
     {
         // Return false if the name contains anything else than alphanumeric characters, numbers or dashes
@@ -10,7 +13,7 @@ public class MetricSerializer
             return false;
 
         // ^[A-Za-z0-9-]+$ matches only letters, numbers, and dashes
-        return System.Text.RegularExpressions.Regex.IsMatch(name, @"^[A-Za-z0-9_\-\.]+$");
+        return _validNameRegex.IsMatch(name);
     }
 
     public static string SerializeName(TestResultMetric metric)
@@ -71,7 +74,7 @@ public class MetricSerializer
             metricName = items[2];
         }
 
-        double value = 0.0;
+        double value;
         string? unit = null;
 
         string valueAndUnit = valueAndUnitAndDate;

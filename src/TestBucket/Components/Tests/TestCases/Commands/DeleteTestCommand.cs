@@ -13,9 +13,7 @@ internal class DeleteTestCommand : ICommand
     private readonly AppNavigationManager _appNavigationManager;
     private readonly TestCaseEditorController _controller;
     private readonly IStringLocalizer<SharedStrings> _loc;
-
-    public int SortOrder => 99;
-
+    public int SortOrder => 95;
     public string? Folder => null;
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;

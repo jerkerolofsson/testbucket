@@ -1,8 +1,8 @@
 ﻿@using TestBucket.Components.Tests.Services
-@inject TestSuiteService testSuiteService
+@inject TestSuiteController testSuiteService
 @inject IStringLocalizer<SharedStrings> loc
 
-<EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
+<EditForm Model="@_name" OnValidSubmit="OnValidSubmit">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
 
         <TitleContent>@loc["new-folder"]</TitleContent>
@@ -40,9 +40,9 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
-    [Parameter] public long ProjectId { get; set; }
-    [Parameter] public long TestSuiteId { get; set; }
-    [Parameter] public long? ParentFolderId { get; set; }
+    //[Parameter] public long ProjectId { get; set; }
+    //[Parameter] public long TestSuiteId { get; set; }
+    //[Parameter] public long? ParentFolderId { get; set; }
 
     private void OnValueChanged(string name)
     {
@@ -55,7 +55,7 @@
         MudDialog.Close();
     }
 
-    private async Task OnValidSubmitAsync()
+    private void OnValidSubmit()
     {
         if (string.IsNullOrWhiteSpace(_name))
         {
@@ -68,7 +68,6 @@
             return;
         }
 
-        var testSuiteFolder = await testSuiteService.AddTestSuiteFolderAsync(ProjectId, TestSuiteId, ParentFolderId, _name);
-        MudDialog.Close(testSuiteFolder);
+        MudDialog.Close(_name);
     }
 }

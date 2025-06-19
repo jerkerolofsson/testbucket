@@ -121,14 +121,14 @@
 
 
 @code {
-        /// <summary>
-        /// Instance of the tree view UI
-        /// </summary>
-        //private MudTreeView<BrowserItem> _treeView = default!;
+    /// <summary>
+    /// Instance of the tree view UI
+    /// </summary>
+    //private MudTreeView<BrowserItem> _treeView = default!;
 
-        /// <summary>
-        /// Root items in the tree view
-        /// </summary>
+    /// <summary>
+    /// Root items in the tree view
+    /// </summary>
     private List<TreeNode<BrowserItem>> _rootItems = [];
 
     /// <summary>
@@ -208,10 +208,6 @@
         _selectedTreeItem = item;
         if (item is not null)
         {
-            // Reset as hotkeys may not work properly if both entity categories are selected
-            appNav.State.SelectedTestSuite = null;
-            appNav.State.SelectedTestCase = null;
-            appNav.State.SelectedTestSuiteFolder = null;
 
             if (item.Href is not null)
             {
@@ -220,25 +216,23 @@
             }
             else if (item.Requirement is not null)
             {
-                appNav.State.SelectedRequirement = item.Requirement;
-                appNav.State.SelectedRequirementSpecificationFolder = null;
+                appNav.State.SetSelectedRequirement(item.Requirement);
                 await OnRequirementClicked.InvokeAsync(item.Requirement);
             }
             else if (item.RequirementSpecification is not null)
             {
-                appNav.State.SelectedRequirement = null;
-                appNav.State.SelectedRequirementSpecificationFolder = null;
-                appNav.State.SelectedRequirementSpecification = item.RequirementSpecification;
+                appNav.State.SetSelectedRequirementSpecification(item.RequirementSpecification);
                 await OnSpecificationClicked.InvokeAsync(item.RequirementSpecification);
             }
             else if (item.RequirementFolder is not null)
             {
                 appNav.State.SelectedRequirement = null;
-                appNav.State.SelectedRequirementSpecificationFolder = item.RequirementFolder;
+                appNav.State.SetSelectedRequirementSpecificationFolder(item.RequirementFolder);
 
                 if(item.RequirementFolder.RequirementSpecificationId != appNav.State.SelectedRequirementSpecification?.Id)
                 {
-                    appNav.State.SelectedRequirementSpecification = await browser.GetRequirementSpecificationByIdAsync(item.RequirementFolder.RequirementSpecificationId);
+                    var spec = await browser.GetRequirementSpecificationByIdAsync(item.RequirementFolder.RequirementSpecificationId);
+                    appNav.State.SetSelectedRequirementSpecificationFolder(item.RequirementFolder, spec);
 
                 }
                 await OnFolderClicked.InvokeAsync(item.RequirementFolder);
@@ -605,26 +599,28 @@
     {
         if(treeNode.Value?.Requirement is not null)
         {
-            appNav.State.SelectedRequirement = treeNode.Value.Requirement;
-            appNav.State.SelectedRequirementSpecificationFolder = null;
-            appNav.State.SelectedRequirementSpecification = null;
+
+            var requirement = treeNode.Value.Requirement;
+            RequirementSpecificationFolder? folder = null;
             if (treeNode.Value.Requirement.ParentRequirementId is not null)
             {
-                appNav.State.SelectedRequirementSpecificationFolder = await browser.GetRequirementFolderByIdAsync(treeNode.Value.Requirement.ParentRequirementId.Value);
+                folder = await browser.GetRequirementFolderByIdAsync(treeNode.Value.Requirement.ParentRequirementId.Value);
             }
-            appNav.State.SelectedRequirementSpecification = await browser.GetRequirementSpecificationByIdAsync(treeNode.Value.Requirement.RequirementSpecificationId);
+            var spec = await browser.GetRequirementSpecificationByIdAsync(treeNode.Value.Requirement.RequirementSpecificationId);
+
+            appNav.State.SetSelectedRequirement(requirement, folder, spec);
+
         }
         if (treeNode.Value?.RequirementFolder is not null)
         {
             appNav.State.SelectedRequirement = null;
-            appNav.State.SelectedRequirementSpecificationFolder = treeNode.Value.RequirementFolder;
-            appNav.State.SelectedRequirementSpecification = await browser.GetRequirementSpecificationByIdAsync(treeNode.Value.RequirementFolder.RequirementSpecificationId);
+            var folder = treeNode.Value.RequirementFolder;
+            var spec = await browser.GetRequirementSpecificationByIdAsync(treeNode.Value.RequirementFolder.RequirementSpecificationId);
+            appNav.State.SetSelectedRequirementSpecificationFolder(folder, spec);
         }
         if (treeNode.Value?.RequirementSpecification is not null)
         {
-            appNav.State.SelectedRequirement = null;
-            appNav.State.SelectedRequirementSpecificationFolder = null;
-            appNav.State.SelectedRequirementSpecification = treeNode.Value.RequirementSpecification;
+            appNav.State.SetSelectedRequirementSpecification(treeNode.Value.RequirementSpecification);
         }
     }
 

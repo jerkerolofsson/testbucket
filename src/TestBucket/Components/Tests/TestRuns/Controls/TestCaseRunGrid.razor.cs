@@ -108,6 +108,10 @@ public partial class TestCaseRunGrid
     {
         return Task.CompletedTask;
     }
+    public Task OnRunMovedAsync(TestRun testRun)
+    {
+        return Task.CompletedTask;
+    }
 
     /// <summary>
     /// Called when a test run is deleted.

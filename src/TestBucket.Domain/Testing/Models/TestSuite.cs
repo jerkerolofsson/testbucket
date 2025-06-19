@@ -79,4 +79,7 @@ public class TestSuite : TestEntity
     // Navigation
 
     public virtual List<Comment>? Comments { get; set; }
+
+    public TestRepositoryFolder? Folder { get; set; }
+    public long? FolderId { get; set; }
 }

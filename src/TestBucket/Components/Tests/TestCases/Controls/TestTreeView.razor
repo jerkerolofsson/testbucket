@@ -1,19 +1,33 @@
-﻿@using TestBucket.Components.Tests.TestRuns.Controllers
+﻿@using TestBucket.Components.Tests.TestLab.Services
+@using TestBucket.Components.Tests.TestRepository.Services
+@using TestBucket.Components.Tests.TestRuns.Controllers
 @using TestBucket.Domain
+@using TestBucket.Domain.Testing.TestLab
+@using TestBucket.Domain.Testing.TestRepository
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
+
+@* Observers *@
 @inject ITestCaseManager testCaseManager
 @inject ITestRunManager testRunManager
-@inject TestSuiteService testSuiteService
+@inject ITestSuiteManager testSuiteManager
+@inject ITestLabManager testLabManager
+@inject ITestRepositoryManager testRepositoryManager
+
+@inject TestRunController testRunController
+@inject TestSuiteController testSuiteController
 @inject TestCaseEditorController testCaseEditor
 @inject TestRunCreationController testRunCreation
+@inject TestLabController testLabController
+@inject TestRepositoryController testRepositoryController
 @inject AppNavigationManager appNavigationManager
-@inject ITestSuiteManager testSuiteManager
 @inject IStringLocalizer<SharedStrings> loc
 @implements ITestCaseObserver
 @implements ITestSuiteObserver
 @implements ITestSuiteFolderObserver
 @implements ITestRunObserver
+@implements ITestLabObserver
+@implements ITestRepositoryObserver
 @implements IDisposable
 
 <MudStack Spacing="0" Style="width: 100%;">
@@ -41,25 +55,26 @@
             }
 
             <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert">
-                <CommandMenuItems TypeNames="TestSuite TestSuiteFolder TestRun TestCase menu-test" />
+                <CommandMenuItems TypeNames="TestSuite TestSuiteFolder TestRun TestCase TestRepositoryFolder TestLabFolder menu-test" />
             </MudMenu>
         </MudStack>
     </MudStack>
 
-    <TreeView MultiSelection="@_multiSelect"
-    Class="pa-2"
-    @ref="_treeView"
-    ItemEdited="OnRenamed"
-    ItemEditCanceled="OnItemEditCanceled"
-    EditItem="@_editItem"
-    T="BrowserItem"
-              SelectedValues="@_selectedValues"
-              SelectedValuesChanged="(values) => OnSelectedValuesChanged(values)"
-    SelectedValue="@_selectedTreeItem"
-    SelectedValueChanged="OnSelectedValueChangedAsync"
-    Color="Color.Tertiary" 
-    ServerData="@LoadServerData" 
-    Items="@_rootItems">
+    <TreeView 
+        MultiSelection="@_multiSelect"
+        Class="pa-2"
+        @ref="_treeView"
+        ItemEdited="OnRenamed"
+        ItemEditCanceled="OnItemEditCanceled"
+        EditItem="@_editItem"
+        T="BrowserItem"
+        SelectedValues="@_selectedValues"
+        SelectedValuesChanged="(values) => OnSelectedValuesChanged(values)"
+        SelectedValue="@_selectedTreeItem"
+        SelectedValueChanged="OnSelectedValueChangedAsync"
+        Color="Color.Tertiary" 
+        ServerData="@LoadServerData" 
+        Items="@_rootItems">
         <ItemTemplate>
 
             @{
@@ -134,6 +149,51 @@
                                 </div>
                             </Draggable>
                         }
+                        else if (context.Value?.TestRun is not null)
+                        {
+                            <Draggable T="TestEntity" Data="@context.Value.TestRun">
+                                <div style="@style">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%">
+                                        <span>@context.Text</span>
+                                        <MudSpacer />
+                                        @if (context.HasChildren)
+                                        {
+                                            <span class="child-count">@context.Children.Count</span>
+                                        }
+                                    </MudStack>
+                                </div>
+                            </Draggable>
+                        }
+                        else if (context.Value?.TestRepositoryFolder is not null)
+                        {
+                            <Draggable T="TestEntity" Data="@context.Value.TestRepositoryFolder">
+                                <div style="@style">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%">
+                                        <span>@context.Text</span>
+                                        <MudSpacer />
+                                        @if (context.HasChildren)
+                                        {
+                                            <span class="child-count">@context.Children.Count</span>
+                                        }
+                                    </MudStack>
+                                </div>
+                            </Draggable>
+                        }
+                         else if (context.Value?.TestLabFolder is not null)
+                        {
+                            <Draggable T="TestEntity" Data="@context.Value.TestLabFolder">
+                                <div style="@style">
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1" Style="width: 100%">
+                                        <span>@context.Text</span>
+                                        <MudSpacer />
+                                        @if (context.HasChildren)
+                                        {
+                                            <span class="child-count">@context.Children.Count</span>
+                                        }
+                                    </MudStack>
+                                </div>
+                            </Draggable>
+                        }
                         else
                         {
                             <div style="@style" class="non-draggable">
@@ -166,7 +226,15 @@
                         {
                             <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
                         }
-                        <CommandMenuItems TypeNames="TestSuite TestSuiteFolder TestRun TestCase menu-test" />
+                        else if (context.Value?.TestRepositoryFolder is not null)
+                        {
+                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
+                        }
+                        else if (context.Value?.TestLabFolder is not null)
+                        {
+                            <MudMenuItem Icon="@Icons.Material.Filled.Abc" OnClick="() => BeginRename(context)">@loc["rename"]</MudMenuItem>
+                        }
+                        <CommandMenuItems TypeNames="TestSuite TestSuiteFolder TestRun TestCase TestRepositoryFolder TestLabFolder menu-test" />
                     </ChildContent>
                 </MudMenu>
             </DropZone>

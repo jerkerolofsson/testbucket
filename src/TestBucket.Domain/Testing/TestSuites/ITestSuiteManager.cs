@@ -2,6 +2,7 @@
 using System.Security.Claims;
 
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestSuites.Search;
 
 namespace TestBucket.Domain.Testing.TestSuites;
 public interface ITestSuiteManager
@@ -37,7 +38,7 @@ public interface ITestSuiteManager
     /// <param name="principal"></param>
     /// <param name="query"></param>
     /// <returns></returns>
-    Task<PagedResult<TestSuite>> SearchTestSuitesAsync(ClaimsPrincipal principal, SearchQuery query);
+    Task<PagedResult<TestSuite>> SearchTestSuitesAsync(ClaimsPrincipal principal, SearchTestSuiteQuery query);
     Task<TestSuiteFolder[]> GetTestSuiteFoldersAsync(ClaimsPrincipal principal, long? projectId, long testSuiteId, long? parentFolderId);
 
 
@@ -52,7 +53,7 @@ public interface ITestSuiteManager
         var offset = 0;
         while (!cancellationToken.IsCancellationRequested)
         {
-            var result = await SearchTestSuitesAsync(principal, new SearchQuery() { Offset = offset, Count = pageSize });
+            var result = await SearchTestSuitesAsync(principal, new SearchTestSuiteQuery() { Offset = offset, Count = pageSize });
             foreach (var item in result.Items)
             {
                 yield return item;

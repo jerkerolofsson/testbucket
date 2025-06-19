@@ -54,7 +54,7 @@
         if (_testSuiteFolder is null || _testSuiteFolder.Id != FolderId)
         {
             _testSuiteFolder = await testBrowser.GetTestSuiteFolderByIdAsync(FolderId);
-            appNavigationManager.State.SelectedTestSuiteFolder = _testSuiteFolder;
+            appNavigationManager.State.SetSelectedTestSuiteFolder(_testSuiteFolder);
             changed = true;
 
         }
@@ -63,7 +63,7 @@
             if (_testSuite is null || _testSuite.Id != _testSuiteFolder.TestSuiteId)
             {
                 _testSuite = await testBrowser.GetTestSuiteByIdAsync(_testSuiteFolder.TestSuiteId);
-                appNavigationManager.State.SelectedTestSuite = _testSuite;
+                appNavigationManager.State.SetSelectedTestSuiteFolder(_testSuiteFolder, _testSuite);
                 changed = true;
             }
         }

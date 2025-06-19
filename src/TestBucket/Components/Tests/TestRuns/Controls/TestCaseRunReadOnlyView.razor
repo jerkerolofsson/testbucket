@@ -59,7 +59,9 @@
         </MudExpansionPanel>
 
         <MudExpansionPanel Text="@loc["fields"]">
-            <FieldsEditor TestCaseRun="@TestCaseRun" ReadOnly/>
+            <MudStack Spacing="1">
+                <FieldsEditor TestCaseRun="@TestCaseRun" ReadOnly/>
+            </MudStack>
         </MudExpansionPanel>
     }
 </MudExpansionPanels>

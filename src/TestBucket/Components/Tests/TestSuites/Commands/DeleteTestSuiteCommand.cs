@@ -10,10 +10,10 @@ namespace TestBucket.Components.Tests.TestSuites.Commands;
 internal class DeleteTestSuiteCommand : ICommand
 {
     private readonly AppNavigationManager _appNavigationManager;
-    private readonly TestSuiteService _browser;
+    private readonly TestSuiteController _browser;
     private readonly IStringLocalizer<SharedStrings> _loc;
     private readonly IDialogService _dialogService;
-    public DeleteTestSuiteCommand(AppNavigationManager appNavigationManager, TestSuiteService browser, IStringLocalizer<SharedStrings> loc, IDialogService dialogService)
+    public DeleteTestSuiteCommand(AppNavigationManager appNavigationManager, TestSuiteController browser, IStringLocalizer<SharedStrings> loc, IDialogService dialogService)
     {
         _appNavigationManager = appNavigationManager;
         _browser = browser;
@@ -21,11 +21,11 @@ internal class DeleteTestSuiteCommand : ICommand
         _dialogService = dialogService;
     }
 
-    public int SortOrder => 90;
+    public int SortOrder => 95;
     public string? Folder => null;
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
-    public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
+    public PermissionLevel? RequiredLevel => PermissionLevel.Delete;
     public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null &&
         _appNavigationManager.State.SelectedTestRun is null &&
         _appNavigationManager.State.SelectedTestCase is null &&

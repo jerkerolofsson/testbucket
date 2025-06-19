@@ -9,6 +9,7 @@ using Mediator;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestSuites.Search;
 
 namespace TestBucket.Domain.Testing.Events;
 internal class UpdateProjectCountersWhenTestEntityCreatedOrDeleted : 
@@ -92,7 +93,7 @@ internal class UpdateProjectCountersWhenTestEntityCreatedOrDeleted :
     {
         if (testProjectId is not null)
         {
-            var suites = await _repository.SearchTestSuitesAsync(tenantId, new SearchQuery { ProjectId = testProjectId, Count = 0, Offset = 0 });
+            var suites = await _repository.SearchTestSuitesAsync(tenantId, new SearchTestSuiteQuery { ProjectId = testProjectId, Count = 0, Offset = 0 });
             var project = await _projectRepository.GetProjectByIdAsync(tenantId, testProjectId.Value);
             if (project is not null)
             {

@@ -351,6 +351,17 @@ internal class ProjectRepository : IProjectRepository
             dbContext.TestSuites.Remove(item);
         }
 
+        // Folders
+        foreach (var item in dbContext.TestRepositoryFolders.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.TestRepositoryFolders.Remove(item);
+        }
+        foreach (var item in dbContext.TestLabFolders.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.TestLabFolders.Remove(item);
+        }
+
+
         // Requirement
 
         foreach (var item in dbContext.Requirements.Include(x => x.TestLinks).Include(x => x.RequirementFields).Where(x => x.TestProjectId == project.Id))

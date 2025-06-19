@@ -3150,6 +3150,128 @@ namespace TestBucket.Data.Migrations
                     b.ToTable("test_case_run_fields");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestLabFolder", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Color")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("ParentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<long[]>("PathIds")
+                        .HasColumnType("bigint[]");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.ToTable("testlab__folders");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRepositoryFolder", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Color")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("ParentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<long[]>("PathIds")
+                        .HasColumnType("bigint[]");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.ToTable("testrepository__folders");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRun", b =>
                 {
                     b.Property<long>("Id")
@@ -3177,6 +3299,9 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<long?>("ExternalSystemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("FolderId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Icon")
@@ -3214,6 +3339,8 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FolderId");
 
                     b.HasIndex("TeamId");
 
@@ -3382,6 +3509,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<long?>("ExternalSystemId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("FolderId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Icon")
                         .HasColumnType("text");
 
@@ -3411,6 +3541,8 @@ namespace TestBucket.Data.Migrations
                         .HasColumnType("jsonb");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("FolderId");
 
                     b.HasIndex("TeamId");
 
@@ -4499,8 +4631,66 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("TestRun");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestLabFolder", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestLabFolder", "Parent")
+                        .WithMany("ChildFolders")
+                        .HasForeignKey("ParentId");
+
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRepositoryFolder", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestRepositoryFolder", "Parent")
+                        .WithMany("ChildFolders")
+                        .HasForeignKey("ParentId");
+
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRun", b =>
                 {
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestLabFolder", "Folder")
+                        .WithMany("TestRuns")
+                        .HasForeignKey("FolderId");
+
                     b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
                         .WithMany()
                         .HasForeignKey("TeamId");
@@ -4516,6 +4706,8 @@ namespace TestBucket.Data.Migrations
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
                         .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Folder");
 
                     b.Navigation("Team");
 
@@ -4582,6 +4774,10 @@ namespace TestBucket.Data.Migrations
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestSuite", b =>
                 {
+                    b.HasOne("TestBucket.Domain.Testing.Models.TestRepositoryFolder", "Folder")
+                        .WithMany("TestSuites")
+                        .HasForeignKey("FolderId");
+
                     b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
                         .WithMany()
                         .HasForeignKey("TeamId");
@@ -4593,6 +4789,8 @@ namespace TestBucket.Data.Migrations
                     b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
                         .WithMany()
                         .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Folder");
 
                     b.Navigation("Team");
 
@@ -4714,6 +4912,20 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("Metrics");
 
                     b.Navigation("TestCaseRunFields");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestLabFolder", b =>
+                {
+                    b.Navigation("ChildFolders");
+
+                    b.Navigation("TestRuns");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRepositoryFolder", b =>
+                {
+                    b.Navigation("ChildFolders");
+
+                    b.Navigation("TestSuites");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Testing.Models.TestRun", b =>

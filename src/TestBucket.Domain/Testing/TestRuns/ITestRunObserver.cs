@@ -12,6 +12,13 @@ public interface ITestRunObserver
 {
     Task OnRunCreatedAsync(TestRun testRun);
     Task OnRunUpdatedAsync(TestRun testRun);
+
+    /// <summary>
+    /// Folder was changed
+    /// </summary>
+    /// <param name="testRun"></param>
+    /// <returns></returns>
+    Task OnRunMovedAsync(TestRun testRun);
     Task OnRunDeletedAsync(TestRun testRun);
 
     Task OnTestCaseRunCreatedAsync(TestCaseRun testCaseRun);

@@ -37,6 +37,9 @@ internal class ArchitectureController : TenantBaseService
 
     public async Task AddFeatureAsync()
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Write);
+
         var parameters = new DialogParameters<EditFeatureDialog>
         {
             { x => x.Feature, new Feature() { GlobPatterns = [], Name = "New feature" } }
@@ -45,7 +48,6 @@ internal class ArchitectureController : TenantBaseService
         var result = await dialog.Result;
         if (result?.Data is Feature feature)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             feature.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.AddFeatureAsync(principal,feature);
         }
@@ -53,6 +55,8 @@ internal class ArchitectureController : TenantBaseService
     public async Task SaveFeatureAsync(Feature feature)
     {
         var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Write);
+
         feature.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
         await _manager.UpdateFeatureAsync(principal, feature);
     }
@@ -60,6 +64,8 @@ internal class ArchitectureController : TenantBaseService
     public async Task AddCommitsToFeatureAsync(long projectId, string featureName, IEnumerable<Commit> commits)
     {
         var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Write);
+
         var feature = await _manager.GetFeatureByNameAsync(principal,projectId,featureName);
         if (feature is not null)
         {
@@ -72,6 +78,10 @@ internal class ArchitectureController : TenantBaseService
 
     public async Task EditFeatureAsync(Feature feature)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Write);
+
+
         var parameters = new DialogParameters<EditFeatureDialog>
         {
             { x => x.Feature, feature }
@@ -80,7 +90,6 @@ internal class ArchitectureController : TenantBaseService
         var result = await dialog.Result;
         if (result?.Data is Feature editedFeature)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             feature.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.UpdateFeatureAsync(principal, editedFeature);
         }
@@ -88,6 +97,9 @@ internal class ArchitectureController : TenantBaseService
 
     public async Task DeleteFeatureAsync(Feature feature)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Delete);
+
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
         {
             YesText = _loc["yes"],
@@ -97,7 +109,6 @@ internal class ArchitectureController : TenantBaseService
         });
         if (result == true)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             await _manager.DeleteFeatureAsync(principal, feature);
         }
     }
@@ -119,6 +130,9 @@ internal class ArchitectureController : TenantBaseService
 
     public async Task AddComponentAsync()
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Write);
+
         var parameters = new DialogParameters<EditFeatureDialog>
         {
             { x => x.Feature, new Component() { GlobPatterns = [], Name = "New component" } }
@@ -127,13 +141,15 @@ internal class ArchitectureController : TenantBaseService
         var result = await dialog.Result;
         if (result?.Data is Component component)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             component.TestProjectId = _appNavigationManager.State.SelectedProject?.Id;
             await _manager.AddComponentAsync(principal, component);
         }
     }
     public async Task EditComponentAsync(Component component)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Write);
+
         var parameters = new DialogParameters<EditFeatureDialog>
         {
             { x => x.Feature, component }
@@ -142,7 +158,6 @@ internal class ArchitectureController : TenantBaseService
         var result = await dialog.Result;
         if (result?.Data is Component editedComponent)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             component.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.UpdateComponentAsync(principal, editedComponent);
         }
@@ -150,6 +165,9 @@ internal class ArchitectureController : TenantBaseService
 
     public async Task DeleteComponentAsync(Component component)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Delete);
+
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
         {
             YesText = _loc["yes"],
@@ -159,7 +177,6 @@ internal class ArchitectureController : TenantBaseService
         });
         if (result == true)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             await _manager.DeleteComponentAsync(principal, component);
         }
     }
@@ -180,6 +197,9 @@ internal class ArchitectureController : TenantBaseService
 
     public async Task AddSystemAsync()
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Write);
+
         var parameters = new DialogParameters<EditFeatureDialog>
         {
             { x => x.Feature, new ProductSystem() { GlobPatterns = [], Name = "New system" } }
@@ -188,13 +208,15 @@ internal class ArchitectureController : TenantBaseService
         var result = await dialog.Result;
         if (result?.Data is ProductSystem system)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             system.TestProjectId = _appNavigationManager.State.SelectedProject?.Id;
             await _manager.AddSystemAsync(principal, system);
         }
     }
     public async Task EditSystemAsync(ProductSystem system)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Write);
+
         var parameters = new DialogParameters<EditFeatureDialog>
         {
             { x => x.Feature, system }
@@ -203,7 +225,6 @@ internal class ArchitectureController : TenantBaseService
         var result = await dialog.Result;
         if (result?.Data is ProductSystem editedSystem)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             editedSystem.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.UpdateSystemAsync(principal, editedSystem);
         }
@@ -211,6 +232,9 @@ internal class ArchitectureController : TenantBaseService
 
     public async Task DeleteSystemAsync(ProductSystem system)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Delete);
+
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
         {
             YesText = _loc["yes"],
@@ -220,7 +244,6 @@ internal class ArchitectureController : TenantBaseService
         });
         if (result == true)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             await _manager.DeleteSystemAsync(principal, system);
         }
     }
@@ -235,6 +258,9 @@ internal class ArchitectureController : TenantBaseService
 
     public async Task AddLayerAsync()
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Write);
+
         var parameters = new DialogParameters<EditFeatureDialog>
         {
             { x => x.Feature, new ArchitecturalLayer() { GlobPatterns = [], Name = "New layer" } }
@@ -243,13 +269,15 @@ internal class ArchitectureController : TenantBaseService
         var result = await dialog.Result;
         if (result?.Data is ArchitecturalLayer layer)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             layer.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.AddLayerAsync(principal, layer);
         }
     }
     public async Task EditLayerAsync(ArchitecturalLayer component)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Write);
+
         var parameters = new DialogParameters<EditFeatureDialog>
         {
             { x => x.Feature, component }
@@ -258,7 +286,6 @@ internal class ArchitectureController : TenantBaseService
         var result = await dialog.Result;
         if (result?.Data is ArchitecturalLayer editedLayer)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             editedLayer.TestProjectId ??= _appNavigationManager.State.SelectedProject?.Id;
             await _manager.UpdateLayerAsync(principal, editedLayer);
         }
@@ -266,6 +293,9 @@ internal class ArchitectureController : TenantBaseService
 
     public async Task DeleteLayerAsync(ArchitecturalLayer component)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Delete);
+
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
         {
             YesText = _loc["yes"],
@@ -275,7 +305,6 @@ internal class ArchitectureController : TenantBaseService
         });
         if (result == true)
         {
-            var principal = await GetUserClaimsPrincipalAsync();
             await _manager.DeleteLayerAsync(principal, component);
         }
     }
@@ -292,6 +321,8 @@ internal class ArchitectureController : TenantBaseService
     public async Task ImportProductArchitectureAsync(TestProject project, ProjectArchitectureModel model)
     {
         var principal = await GetUserClaimsPrincipalAsync();
+        await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Architecture, PermissionLevel.Write);
+
         await _manager.ImportProductArchitectureAsync(principal, project, model);
     }
     #endregion Model

@@ -3,7 +3,7 @@
 @inject TestBrowser testBrowser
 @inject IDialogService dialogService
 @inject ITestCaseManager testCaseManager
-@inject TestSuiteService testSuiteServer
+@inject TestSuiteController testSuiteServer
 @inject TestCaseEditorController testCaseEditor
 @inject FieldController fieldController
 @inject NavigationManager navigationManager
@@ -56,7 +56,7 @@
                 {
                     <Draggable T="TestEntity" Data="@context.Item.TestCase">
                         <MudStack Row AlignItems="AlignItems.Center">
-                            <MudIcon Icon="@testBrowser.GetIcon(context.Item.TestCase)"/>
+                            <MudIcon Icon="@TestIcons.GetIcon(context.Item.TestCase)" />
                             @context.Item.TestCase.Name
                         </MudStack>
                     </Draggable>
@@ -65,7 +65,7 @@
                 {
                     <Draggable T="TestEntity" Data="@context.Item.Folder">
                         <MudStack Row AlignItems="AlignItems.Center">
-                            <MudIcon Icon="@testBrowser.GetIcon(context.Item.Folder)" />
+                            <MudIcon Icon="@TestIcons.GetIcon(context.Item.Folder)" />
                             @context.Item.Folder.Name
                         </MudStack>
 

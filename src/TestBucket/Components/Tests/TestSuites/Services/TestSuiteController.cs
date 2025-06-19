@@ -1,29 +1,38 @@
-﻿using TestBucket.Components.Tests.TestSuites.Dialogs;
+﻿
+
+using Microsoft.Extensions.Localization;
+
+using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.TestCases.Search;
 using TestBucket.Domain.Testing.TestSuites;
+using TestBucket.Domain.Testing.TestSuites.Search;
+using TestBucket.Localization;
 
 namespace TestBucket.Components.Tests.TestSuites.Services;
 
-internal class TestSuiteService : TenantBaseService
+internal class TestSuiteController : TenantBaseService
 {
     private readonly ITestCaseRepository _testCaseRepo;
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
     private readonly ITestSuiteManager _testSuiteManager;
     private readonly IDialogService _dialogService;
+    private readonly IStringLocalizer<SharedStrings> _loc;
 
-    public TestSuiteService(ITestCaseRepository testCaseRepo,
+    public TestSuiteController(ITestCaseRepository testCaseRepo,
         AuthenticationStateProvider authenticationStateProvider,
         IFieldDefinitionManager fieldDefinitionManager,
         ITestSuiteManager testSuiteManager,
-        IDialogService dialogService) : base(authenticationStateProvider)
+        IDialogService dialogService,
+        IStringLocalizer<SharedStrings> loc) : base(authenticationStateProvider)
     {
         _testCaseRepo = testCaseRepo;
         _fieldDefinitionManager = fieldDefinitionManager;
         _testSuiteManager = testSuiteManager;
         _dialogService = dialogService;
+        _loc = loc;
     }
 
     /// <summary>
@@ -50,6 +59,8 @@ internal class TestSuiteService : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         return await _testSuiteManager.AddTestSuiteFolderAsync(principal, projectId, testSuiteId, parentFolderId, name);
     }
+   
+
 
     /// <summary>
     /// Gets folders
@@ -72,7 +83,7 @@ internal class TestSuiteService : TenantBaseService
             { x => x.Project, project },
         };
 
-        var dialog = await _dialogService.ShowAsync<PickTestFolderDialog>("Select folder", parameters, DefaultBehaviors.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<PickTestFolderDialog>(_loc["select-folder"], parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if (result?.Data is TestSuiteFolder folder)
         {
@@ -88,8 +99,23 @@ internal class TestSuiteService : TenantBaseService
     /// <returns></returns>
     public async Task DeleteFolderByIdAsync(long folderId)
     {
-        var principal = await GetUserClaimsPrincipalAsync();
-        await _testSuiteManager.DeleteTestSuiteFolderByIdAsync(principal, folderId);
+        if (!await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.TestSuite, PermissionLevel.Delete))
+        {
+            return;
+        }
+
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc["yes"],
+            NoText = _loc["no"],
+            Title = _loc["confirm-delete-title"],
+            MarkupMessage = new MarkupString(_loc["confirm-delete-message"])
+        });
+        if (result == true)
+        {
+            var principal = await GetUserClaimsPrincipalAsync();
+            await _testSuiteManager.DeleteTestSuiteFolderByIdAsync(principal, folderId);
+        }
     }
 
     /// <summary>
@@ -100,7 +126,22 @@ internal class TestSuiteService : TenantBaseService
     public async Task DeleteTestSuiteByIdAsync(long testSuiteId)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        await _testSuiteManager.DeleteTestSuiteByIdAsync(principal, testSuiteId);
+        if(!await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.TestSuite, PermissionLevel.Delete))
+        {
+            return;
+        }
+
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc["yes"],
+            NoText = _loc["no"],
+            Title = _loc["confirm-delete-title"],
+            MarkupMessage = new MarkupString(_loc["confirm-delete-message"])
+        });
+        if (result == true)
+        {
+            await _testSuiteManager.DeleteTestSuiteByIdAsync(principal, testSuiteId);
+        }
     }
 
     /// <summary>
@@ -109,9 +150,14 @@ internal class TestSuiteService : TenantBaseService
     /// <param name="projectId"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public async Task<TestSuite> AddTestSuiteAsync(long? teamId, long? projectId, string name, string? ciCdSystem, string? ciCdRef = null)
+    public async Task<TestSuite?> AddTestSuiteAsync(long? teamId, long? projectId, string name, string? ciCdSystem, string? ciCdRef = null)
     {
         var principal = await GetUserClaimsPrincipalAsync();
+        if (!await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.TestSuite, PermissionLevel.Write))
+        {
+            return null;
+        }
+
         return await _testSuiteManager.AddTestSuiteAsync(principal, teamId, projectId, name, ciCdSystem, ciCdRef);
     }
 
@@ -123,14 +169,43 @@ internal class TestSuiteService : TenantBaseService
     /// <exception cref="InvalidOperationException"></exception>
     public async Task SaveTestSuiteAsync(TestSuite suite)
     {
+        if (!await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.TestSuite, PermissionLevel.Write))
+        {
+            return;
+        }
+
         var principal = await GetUserClaimsPrincipalAsync();
         await _testSuiteManager.UpdateTestSuiteAsync(principal, suite);
     }
+    public async Task<PagedResult<TestSuite>> GetTestSuitesInFolderAsync(long? teamId, long? projectId, long folderId, int offset = 0, int count = 100)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testSuiteManager.SearchTestSuitesAsync(principal, new SearchTestSuiteQuery
+        {
+            FolderId = folderId,
+            TeamId = teamId,
+            ProjectId = projectId,
+            Offset = offset,
+            Count = count
+        });
+    }
 
+    public async Task<PagedResult<TestSuite>> GetRootTestSuitesAsync(long? teamId, long? projectId, int offset = 0, int count = 100)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testSuiteManager.SearchTestSuitesAsync(principal, new SearchTestSuiteQuery
+        {
+            RootFolders = true,
+            TeamId = teamId,
+            ProjectId = projectId,
+            Offset = offset,
+            Count = count
+        });
+    }
     public async Task<PagedResult<TestSuite>> GetTestSuitesAsync(long? teamId, long? projectId, int offset = 0, int count = 100)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        return await _testSuiteManager.SearchTestSuitesAsync(principal, new SearchQuery
+        return await _testSuiteManager.SearchTestSuitesAsync(principal, new SearchTestSuiteQuery
         {
             TeamId = teamId,
             ProjectId = projectId,

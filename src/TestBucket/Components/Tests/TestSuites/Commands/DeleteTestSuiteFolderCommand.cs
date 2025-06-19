@@ -7,19 +7,16 @@ using TestBucket.Localization;
 
 namespace TestBucket.Components.Tests.TestSuites.Commands;
 
+/// <summary>
+/// Deletesd a test suite folder and all child folders and test cases.
+/// </summary>
 internal class DeleteTestSuiteFolderCommand : ICommand
 {
     private readonly AppNavigationManager _appNavigationManager;
-    private readonly TestSuiteService _browser;
+    private readonly TestSuiteController _browser;
     private readonly IStringLocalizer<SharedStrings> _loc;
-    public DeleteTestSuiteFolderCommand(AppNavigationManager appNavigationManager, TestSuiteService browser, IStringLocalizer<SharedStrings> loc)
-    {
-        _appNavigationManager = appNavigationManager;
-        _browser = browser;
-        _loc = loc;
-    }
 
-    public int SortOrder => 90;
+    public int SortOrder => 95;
     public string? Folder => null;
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
@@ -27,10 +24,17 @@ internal class DeleteTestSuiteFolderCommand : ICommand
     public bool Enabled => _appNavigationManager.State.SelectedTestSuiteFolder is not null;
     public string Id => "delete-folder";
     public string Name => _loc["delete-folder"];
-    public string Description => _loc["delete-folder-description"];
+    public string Description => _loc["delete-test-suite-folder-description"];
     public KeyboardBinding? DefaultKeyboardBinding => null;
     public string? Icon => Icons.Material.Filled.Delete;
     public string[] ContextMenuTypes => ["TestSuiteFolder"];
+
+    public DeleteTestSuiteFolderCommand(AppNavigationManager appNavigationManager, TestSuiteController browser, IStringLocalizer<SharedStrings> loc)
+    {
+        _appNavigationManager = appNavigationManager;
+        _browser = browser;
+        _loc = loc;
+    }
 
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {

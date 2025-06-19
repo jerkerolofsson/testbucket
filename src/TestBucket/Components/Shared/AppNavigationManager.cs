@@ -7,8 +7,8 @@ using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.TestAccounts.Models;
+using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Domain.TestResources.Models;
 
@@ -40,7 +40,7 @@ public class AppNavigationManager
         /// <summary>
         /// Selected requirement specification
         /// </summary>
-        public RequirementSpecification? SelectedRequirementSpecification { get; set; }
+        public RequirementSpecification? SelectedRequirementSpecification { get; private set; }
 
         /// <summary>
         /// Selected requirement specification folder
@@ -55,7 +55,7 @@ public class AppNavigationManager
         /// <summary>
         /// Selected test case
         /// </summary>
-        public TestCase? SelectedTestCase { get; set; }
+        public TestCase? SelectedTestCase { get; private set; }
 
         /// <summary>
         /// Selected test run
@@ -70,12 +70,22 @@ public class AppNavigationManager
         /// <summary>
         /// Selected test suite
         /// </summary>
-        public TestSuite? SelectedTestSuite { get; set; }
+        public TestSuite? SelectedTestSuite { get; private set; }
 
         /// <summary>
-        /// Selected test suite
+        /// Selected folder within a test suite
         /// </summary>
-        public TestSuiteFolder? SelectedTestSuiteFolder { get; set; }
+        public TestSuiteFolder? SelectedTestSuiteFolder { get; private set; }
+
+        /// <summary>
+        /// Selected folder in test repo
+        /// </summary>
+        public TestRepositoryFolder? SelectedTestRepositoryFolder { get; private set; }
+
+        /// <summary>
+        /// Selected folder in test lab
+        /// </summary>
+        public TestLabFolder? SelectedTestLabFolder { get; private set; }
 
         /// <summary>
         /// Selected project
@@ -92,6 +102,49 @@ public class AppNavigationManager
 
         public IReadOnlyList<TestCase> MultiSelectedTestCases => _multiSelectedTestCases;
 
+        public bool IsTestLabSelected { get; private set; }
+        public bool IsTestRepositorySelected { get; private set; }
+
+        public void SetSelectedTestLabFolder(TestLabFolder folder)
+        {
+            ClearSelection();
+            this.SelectedTestLabFolder = folder;
+        }
+        public void SetSelectedTestRepositoryFolder(TestRepositoryFolder folder)
+        {
+            ClearSelection();
+            this.SelectedTestRepositoryFolder = folder;
+        }
+        public void SelectTestRepository()
+        {
+            ClearSelection();
+            IsTestRepositorySelected = true;
+        }
+        public void SelectTestLab()
+        {
+            ClearSelection();
+            IsTestLabSelected = true;
+        }
+
+        public void ClearSelection()
+        {
+            IsTestLabSelected = false;
+            IsTestRepositorySelected = false;
+
+            this.SelectedTestRepositoryFolder = null;
+            this.SelectedTestSuite = null;
+            this.SelectedTestSuiteFolder = null;
+            this.SelectedTestCase = null;
+            
+            this.SelectedTestRun = null;
+            this.SelectedTestLabFolder = null;
+            
+            this.SelectedRequirement = null;
+            this.SelectedRequirementSpecification = null;
+            this.SelectedRequirementSpecificationFolder = null;
+            
+            this.SelectedIssue = null;
+        }
         internal void SetMultiSelectedRequirements(List<Requirement> list)
         {
             _multiSelectedTestCases = [];
@@ -111,46 +164,80 @@ public class AppNavigationManager
         {
         }
 
+        internal void SetSelectedRequirement(Requirement? requirement)
+        {
+            ClearSelection();
+            SelectedRequirement = requirement;
+        }
+        internal void SetSelectedRequirementSpecificationFolder(RequirementSpecificationFolder? folder, RequirementSpecification? spec)
+        {
+            ClearSelection();
+            SelectedRequirementSpecificationFolder = folder;
+            SelectedRequirementSpecification = spec;
+        }
+        internal void SetSelectedRequirementSpecificationFolder(RequirementSpecificationFolder? folder)
+        {
+            ClearSelection();
+            SelectedRequirementSpecificationFolder = folder;
+        }
+        internal void SetSelectedRequirementSpecification(RequirementSpecification? spec)
+        {
+            ClearSelection();
+            SelectedRequirementSpecification = spec;
+        }
+        internal void SetSelectedRequirement(Requirement? requirement, RequirementSpecificationFolder? folder, RequirementSpecification? requirementSpecification)
+        {
+            ClearSelection();
+            SelectedRequirement = requirement;
+            SelectedRequirementSpecificationFolder = folder;
+            SelectedRequirementSpecification = requirementSpecification;
+        }
+        internal void SetSelectedRequirement(RequirementSpecification? requirementSpecification)
+        {
+            ClearSelection();
+            SelectedRequirementSpecification = requirementSpecification;
+        }
+
         internal void SetSelectedTestSuite(TestSuite? suite)
         {
+            ClearSelection();
             SelectedTestSuite = suite;
-            SelectedTestSuiteFolder = null;
-            SelectedTestCase = null;
-            SelectedRequirement = null;
-            SelectedRequirementSpecification = null;
-            SelectedRequirementSpecificationFolder = null;
-            SelectedTestCaseRun = null;
-            SelectedTestRun = null;
-            _multiSelectedRequirements = [];
+
         }
-        internal void SetSelectedTestSuiteFolder(TestSuiteFolder folder)
+        internal void SetSelectedTestSuiteFolder(TestSuiteFolder? folder, TestSuite? suite)
         {
+            ClearSelection();
             SelectedTestSuiteFolder = folder;
-            SelectedTestCase = null;
-            SelectedRequirement = null;
-            SelectedRequirementSpecification = null;
-            SelectedRequirementSpecificationFolder = null;
-            SelectedTestCaseRun = null;
-            SelectedTestRun = null;
-            _multiSelectedRequirements = [];
+            SelectedTestSuite = suite;
         }
+        internal void SetSelectedTestSuiteFolder(TestSuiteFolder? folder)
+        {
+            SetSelectedTestSuiteFolder(folder, SelectedTestSuite);
+        }
+
         internal void SetSelectedTestCase(TestCase? testCase)
         {
+            ClearSelection();
             SelectedTestCase = testCase;
-            SelectedRequirement = null;
-            SelectedRequirementSpecification = null;
-            SelectedRequirementSpecificationFolder = null;
-            SelectedTestCaseRun = null;
-            SelectedTestRun = null;
-            _multiSelectedRequirements = [];
+        }
+        internal void SetSelectedTestCase(TestCase? testCase, TestSuiteFolder? folder, TestSuite? suite)
+        {
+            ClearSelection();
+            SelectedTestCase = testCase;
+            SelectedTestSuiteFolder = folder;
+            SelectedTestSuite = suite;
         }
 
         internal void SetSelectedTestRun(TestRun testRun)
         {
+            ClearSelection();
             SelectedTestRun = testRun;
             SelectedRequirement = null;
             SelectedRequirementSpecification = null;
             SelectedRequirementSpecificationFolder = null;
+            SelectedTestLabFolder = null;
+            SelectedTestRepositoryFolder = null;
+
             SelectedTestCaseRun = null;
             SelectedTestRun = null;
             _multiSelectedRequirements = [];
@@ -605,14 +692,8 @@ public class AppNavigationManager
 
     public void NavigateTo(TestSuiteFolder folder, bool forceLoad = false)
     {
-        if(this.State.SelectedTestSuite?.Id != folder.TestSuiteId)
-        {
+        this.State.SetSelectedTestSuiteFolder(folder);
 
-        }
-
-        this.State.SelectedTestSuiteFolder = folder;
-        this.State.SelectedTestCase = null;
-        this.State.SelectedTestRun = null;
         var url = GetUrl(folder);
         _navigationManager.NavigateTo(url, forceLoad);
     }
@@ -629,17 +710,15 @@ public class AppNavigationManager
 
     public void NavigateTo(TestSuite suite, bool forceLoad = false)
     {
-        this.State.SelectedTestSuite = suite;
-        this.State.SelectedTestSuiteFolder = null;
-        this.State.SelectedTestCase = null;
-        this.State.SelectedTestRun = null;
+        State.SetSelectedTestSuite(suite);
+
         var url = GetUrl(suite);
         _navigationManager.NavigateTo(url, forceLoad);
     }
     public void NavigateTo(TestCase testCase, bool forceLoad = false)
     {
-        this.State.SelectedTestCase = testCase;
-        this.State.SelectedTestRun = null;
+        State.SetSelectedTestCase(testCase);
+
         var url = GetUrl(testCase);
         _navigationManager.NavigateTo(url, forceLoad);
     }
@@ -649,4 +728,5 @@ public class AppNavigationManager
         var url = GetUrl(project);
         _navigationManager.NavigateTo(url, forceLoad);
     }
+
 }

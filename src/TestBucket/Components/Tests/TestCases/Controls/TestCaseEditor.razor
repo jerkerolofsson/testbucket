@@ -95,7 +95,7 @@
                         </MudStack>
                     </Field>
 
-                    @if (Test.ScriptType == ScriptType.Exploratory)
+                    @if (Test?.ScriptType == ScriptType.Exploratory)
                     {
                         <Field Row>
                             <FieldHeader>@loc["session-duration"]</FieldHeader>
@@ -115,7 +115,9 @@
 
                     <MudExpansionPanels>
                         <MudExpansionPanel Text="@loc["fields"]">
-                            <FieldsEditor TestCase="@Test" ReadOnly="@(_preview)" />
+                            <MudStack Spacing="1">
+                                <FieldsEditor TestCase="@Test" ReadOnly="@(_preview)" />
+                            </MudStack>
                         </MudExpansionPanel>
                     </MudExpansionPanels>
 

@@ -20,6 +20,11 @@
             <TestTreeView @ref="_testTreeView"
                           Project="@_project" 
                           Team="@_team"
+                          OnTestRepositoryClicked="OnTestRepositoryClicked"
+                          OnTestLabClicked="OnTestLabClicked"
+                          OnOtherClicked="OnOtherClicked"
+                          OnTestLabFolderClicked="OnTestLabFolderClicked"
+                          OnTestRepositoryFolderClicked="OnTestRepositoryFolderClicked"
                           OnPipelineClicked="OnPipelineClicked"
                           OnTestRunTestsFolderClicked="OnTestRunTestsFolderClicked"
                           OnFolderClicked="OnFolderClicked" 
@@ -75,6 +80,7 @@
 
     private void OnTestCaseClicked(TestCase test)
     {
+        appNavigationManager.State.SetSelectedTestCase(test);
         appNavigationManager.NavigateTo(test);
     }
     private void OnTestSuiteClicked(TestSuite suite)
@@ -82,22 +88,33 @@
         appNavigationManager.NavigateTo(suite);
     }
 
+    private void OnTestLabClicked()
+    {
+        appNavigationManager.State.SelectTestLab();
+    }
+    private void OnTestRepositoryClicked()
+    {
+        appNavigationManager.State.SelectTestRepository();
+    }
+
+    private void OnOtherClicked()
+    {
+        appNavigationManager.State.ClearSelection();
+    }
+    private void OnTestRepositoryFolderClicked(TestRepositoryFolder folder)
+    {
+        appNavigationManager.State.SetSelectedTestRepositoryFolder(folder);        
+    }
+    private void OnTestLabFolderClicked(TestLabFolder folder)
+    {
+        appNavigationManager.State.SetSelectedTestLabFolder(folder);        
+    }
+
     private void OnPipelineClicked(Pipeline pipeline)
     {
         appNavigationManager.NavigateTo(pipeline);
     }
 
-    // private void OnTestCaseQueryClicked(string query)
-    // {
-    //     var url = appNavigationManager.GetTestCasesUrl() + "?q=" + WebUtility.UrlEncode(query);
-    //     navigationManager.NavigateTo(url);
-    // }
-    // private void OnTestCaseRunQueryClicked(string query)
-    // {
-    //     var url = appNavigationManager.GetUrl(query);
-    //     navigationManager.NavigateTo(url);
-    // }
-    
     private void OnTestRunTestsFolderClicked(TestRun run)
     {
         var url = appNavigationManager.GetUrl(run) + "/Tests";
@@ -105,11 +122,13 @@
     }
 
     private void OnFolderClicked(TestSuiteFolder folder)
-    {   
+    {
+        appNavigationManager.State.SetSelectedTestSuiteFolder(folder);
         appNavigationManager.NavigateTo(folder);
     }
     private void OnTestRunClicked(TestRun run)
     {
+        appNavigationManager.State.SetSelectedTestRun(run);
         appNavigationManager.NavigateTo(run);
     }
 }

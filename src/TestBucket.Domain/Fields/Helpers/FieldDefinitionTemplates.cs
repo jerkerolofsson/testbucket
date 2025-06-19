@@ -22,7 +22,7 @@ public class FieldDefinitionTemplates
 
     public static FieldDefinition TestCategory => new FieldDefinition
     {
-        Name = "Test Category",
+        Name = "Category",
         Trait = "TestCategory",
         TraitType = TraitType.TestCategory,
         IsVisible = true,

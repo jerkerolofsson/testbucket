@@ -1,5 +1,11 @@
 ﻿namespace TestBucket.Domain.Testing.Models;
 
+/// <summary>
+/// This is a folder within a test suite
+/// A test suite folder can have
+/// - Child folders
+/// - Test cases
+/// </summary>
 [Table("testsuite__folders")]
 [Index(nameof(TenantId), nameof(Created))]
 public class TestSuiteFolder : TestEntity

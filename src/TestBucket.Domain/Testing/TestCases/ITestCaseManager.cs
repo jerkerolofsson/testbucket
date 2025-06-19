@@ -15,6 +15,12 @@ public interface ITestCaseManager
     void AddObserver(ITestCaseObserver observer);
 
     /// <summary>
+    /// Removes an observer
+    /// </summary>
+    /// <param name="observer"></param>
+    void RemoveObserver(ITestCaseObserver observer);
+
+    /// <summary>
     /// Adds a test case
     /// </summary>
     /// <param name="principal"></param>
@@ -75,12 +81,6 @@ public interface ITestCaseManager
     /// <param name="query"></param>
     /// <returns></returns>
     Task<Dictionary<long, TestExecutionResultSummary>> GetTestExecutionResultSummaryForRunsAsync(ClaimsPrincipal principal, IReadOnlyList<long> testRunsIds, SearchTestCaseRunQuery query);
-
-    /// <summary>
-    /// Removes an observer
-    /// </summary>
-    /// <param name="observer"></param>
-    void RemoveObserver(ITestCaseObserver observer);
 
     /// <summary>
     /// Saves a test case

@@ -59,6 +59,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     /// </summary>
     internal DbSet<ExternalSystem> ExternalSystems { get; set; }
     internal DbSet<TestSuite> TestSuites { get; set; }
+    internal DbSet<TestLabFolder> TestLabFolders { get; set; }
+    internal DbSet<TestRepositoryFolder> TestRepositoryFolders { get; set; }
     internal DbSet<TestSuiteFolder> TestSuiteFolders { get; set; }
     internal DbSet<TestCase> TestCases { get; set; }
     internal DbSet<TestRun> TestRuns { get; set; }

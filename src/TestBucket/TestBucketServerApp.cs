@@ -45,6 +45,10 @@ using TestBucket.Components.Tests.Requiremnts.Commands;
 using TestBucket.Components.Tests.Services;
 using TestBucket.Components.Tests.TestCases.Commands;
 using TestBucket.Components.Tests.TestCases.Services;
+using TestBucket.Components.Tests.TestLab.Commands;
+using TestBucket.Components.Tests.TestLab.Services;
+using TestBucket.Components.Tests.TestRepository.Commands;
+using TestBucket.Components.Tests.TestRepository.Services;
 using TestBucket.Components.Tests.TestRuns.Commands;
 using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Components.Tests.TestRuns.LinkIssue;
@@ -252,7 +256,9 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<RolesController>();
         builder.Services.AddScoped<TeamController>();
         builder.Services.AddScoped<ProjectController>();
-        builder.Services.AddScoped<TestSuiteService>();
+        builder.Services.AddScoped<TestSuiteController>();
+        builder.Services.AddScoped<TestLabController>();
+        builder.Services.AddScoped<TestRepositoryController>();
         builder.Services.AddScoped<TestRunCreationController>();
         builder.Services.AddScoped<AttachmentsService>();
         builder.Services.AddScoped<AppNavigationManager>();
@@ -288,6 +294,8 @@ public static class TestBucketServerApp
 
         builder.Services.AddScoped<ICommand, AddTestSuiteToRunCommand>();
         builder.Services.AddScoped<ICommand, DeleteTestSuiteFolderCommand>();
+        builder.Services.AddScoped<ICommand, DeleteTestRepositoryFolderCommand>();
+        builder.Services.AddScoped<ICommand, DeleteTestLabFolderCommand>();
         builder.Services.AddScoped<ICommand, EditTestSuiteFolderCommand>();
         builder.Services.AddScoped<ICommand, RunTestSuiteFolderCommand>();
 

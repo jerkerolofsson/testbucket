@@ -21,6 +21,12 @@ public record class BrowserItem
 
     public TestCase? TestCase { get; set; }
     public TestSuite? TestSuite { get; set; }
+    public TestLabFolder? TestLabFolder { get; set; }
+    public TestRepositoryFolder? TestRepositoryFolder { get; set; }
+
+    /// <summary>
+    /// Test suite folder
+    /// </summary>
     public TestSuiteFolder? Folder { get; set; }
     public TestRun? TestRun { get; set; }
     public Pipeline? Pipeline { get; set; }

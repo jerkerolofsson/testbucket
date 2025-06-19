@@ -2,7 +2,7 @@
 @using TestBucket.Domain
 @using TestBucket.Domain.Teams.Models
 @attribute [Authorize(Roles = "ADMIN")]
-@inject TestSuiteService testSuiteService
+@inject TestSuiteController testSuiteService
 @inject IStringLocalizer<ProjectStrings> projectLoc
 @inject IStringLocalizer<SharedStrings> loc
 

@@ -88,15 +88,6 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         });
     }
 
-    //private IUserEmailStore<ApplicationUser> GetEmailStore(UserManager<ApplicationUser> userManager, IUserStore<ApplicationUser> userStore)
-    //{
-    //    if (!userManager.SupportsUserEmail)
-    //    {
-    //        throw new NotSupportedException("The default UI requires a user store with email support.");
-    //    }
-    //    return (IUserEmailStore<ApplicationUser>)userStore;
-    //}
-
     private async Task SeedDataAsync(CancellationToken cancellationToken)
     {
 

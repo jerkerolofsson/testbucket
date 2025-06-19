@@ -8,6 +8,9 @@ using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Models;
+using TestBucket.Components.Tests.TestLab.Services;
+using TestBucket.Components.Tests.TestRepository.Services;
+using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Components.Tests.TestSuites.Services;
 using TestBucket.Domain;
@@ -19,6 +22,7 @@ using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.ImportExport;
+using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestCases;
@@ -30,7 +34,10 @@ using TestBucket.Localization;
 namespace TestBucket.Components.Tests.Services;
 internal class TestBrowser : TenantBaseService
 {
-    private readonly TestSuiteService _testSuiteService;
+    private readonly TestRepositoryController _testRepositoryController;
+    private readonly TestLabController _testLabController;
+    private readonly TestSuiteController _testSuiteController;
+    private readonly TestRunController _testRunController;
     private readonly IDialogService _dialogService;
     private readonly ITextTestResultsImporter _textImporter;
     private readonly IFileRepository _fileRepository;
@@ -49,21 +56,26 @@ internal class TestBrowser : TenantBaseService
     private readonly ITestCaseRepository _testCaseRepository;
 
     /// <summary>
+    /// Virtual folder for test repo
+    /// </summary>
+    public const string ROOT_TEST_REPOSITORY = "TestRepository";
+
+    /// <summary>
+    /// Virtual folder for test lab
+    /// </summary>
+    public const string ROOT_TEST_LAB = "TestLab";
+
+    /// <summary>
     /// Virtual folder for pipelines
     /// </summary>
     public const string FOLDER_PIPELINES = "Pipelines";
 
     /// <summary>
-    /// Virtual folder for test suties
-    /// </summary>
-    public const string ROOT_TEST_SUITES = "TestSuites";
-
-    /// <summary>
     /// Virtual folder for test runs
     /// </summary>
-    public const string ROOT_TEST_RUNS = "TestRuns";
+    public const string ROOT_RECENT_TEST_RUNS = "RecentTestRuns";
 
-    public TestBrowser(TestSuiteService testSuiteService,
+    public TestBrowser(TestSuiteController testSuiteService,
         AuthenticationStateProvider authenticationStateProvider,
         IDialogService dialogService,
         ITextTestResultsImporter textImporter,
@@ -78,10 +90,13 @@ internal class TestBrowser : TenantBaseService
         FieldController fieldController,
         IMilestoneManager milestoneManager,
         IArchitectureManager architectureManager,
-        ITestCaseImporter testCaseImporter) : base(authenticationStateProvider)
+        ITestCaseImporter testCaseImporter,
+        TestRepositoryController testRepositoryController,
+        TestLabController testLabController,
+        TestRunController testRunController) : base(authenticationStateProvider)
 
     {
-        _testSuiteService = testSuiteService;
+        _testSuiteController = testSuiteService;
         _dialogService = dialogService;
         _textImporter = textImporter;
         _fileRepository = fileRepository;
@@ -96,6 +111,9 @@ internal class TestBrowser : TenantBaseService
         _milestoneManager = milestoneManager;
         _architectureManager = architectureManager;
         _testCaseImporter = testCaseImporter;
+        _testRepositoryController = testRepositoryController;
+        _testLabController = testLabController;
+        _testRunController = testRunController;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -232,7 +250,7 @@ internal class TestBrowser : TenantBaseService
         int folderCount = 0;
         if (includeFolders && query.TestSuiteId is not null)
         {
-            var folders = await _testSuiteService.GetTestSuiteFoldersAsync(query.ProjectId, query.TestSuiteId.Value, query.FolderId);
+            var folders = await _testSuiteController.GetTestSuiteFoldersAsync(query.ProjectId, query.TestSuiteId.Value, query.FolderId);
             items.AddRange(folders.Select(x => new TestSuiteItem() { Folder = x }).Skip(offset).Take(count));
             int visibleFolderCount = items.Count;
 
@@ -244,7 +262,7 @@ internal class TestBrowser : TenantBaseService
             query.Count = testCount;
             folderCount = folders.Length;
         }
-        var tests = await _testSuiteService.SearchTestCasesAsync(query);
+        var tests = await _testSuiteController.SearchTestCasesAsync(query);
 
         items.AddRange(tests.Items.Select(x => new TestSuiteItem() { TestCase = x }));
 
@@ -261,7 +279,7 @@ internal class TestBrowser : TenantBaseService
     //    query.Offset = offset;
     //    query.Count = count;
 
-    //    return await _testSuiteService.SearchTestCasesAsync(query);
+    //    return await _testSuiteController.SearchTestCasesAsync(query);
     //}
 
     public async Task<List<TreeNode<BrowserItem>>> BrowseAsync(TestBrowserRequest request)
@@ -273,18 +291,52 @@ internal class TestBrowser : TenantBaseService
 
         if (parent is not null)
         {
-            if(parent.TestCase is not null)
+            if (parent.TestRepositoryFolder is not null)
+            {
+                if(projectId is null)
+                {
+                    return [];
+                }
+                var folders = await _testRepositoryController.GetFoldersAsync(projectId.Value, parent.TestRepositoryFolder.Id);
+                var folderItems = folders.Select(x => CreateRepositoryFolderTreeNode(x));
+                
+                var suites = await _testSuiteController.GetTestSuitesInFolderAsync(null, projectId.Value, parent.TestRepositoryFolder.Id, 0, 100);
+                var suiteItems = suites.Items.Select(x => CreateTestSuiteTreeNode(x));
+
+                return [.. folderItems, .. suiteItems];
+            }
+            else if (parent.TestLabFolder is not null)
+            {
+                if (projectId is null)
+                {
+                    return [];
+                }
+                var folders = await _testLabController.GetFoldersAsync(projectId.Value, parent.TestLabFolder.Id);
+                
+                var folderItems = folders.Select(x => CreateLabFolderTreeNode(x));
+
+                var runs = await _testRunController.GetTestRunsInFolderAsync(projectId.Value, parent.TestLabFolder.Id, 0, 100);
+                List<TreeNode<BrowserItem>> runItems = [];
+                foreach(var run in runs.Items)
+                {
+                    runItems.Add(await CreateTestRunTreeNode(request, run));
+                }
+
+                return [.. folderItems, .. runItems];
+
+            }
+            else if (parent.TestCase is not null)
             {
                 return [];
             }
             else if(parent.Folder is not null)
             {
-                var folders = await _testSuiteService.GetTestSuiteFoldersAsync(projectId, parent.Folder.TestSuiteId, parent.Folder.Id);
+                var folders = await _testSuiteController.GetTestSuiteFoldersAsync(projectId, parent.Folder.TestSuiteId, parent.Folder.Id);
                 var items = MapFoldersToTreeNode(folders);
 
                 if (request.ShowTestCases)
                 {
-                    var tests = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
+                    var tests = await _testSuiteController.SearchTestCasesAsync(new SearchTestQuery
                     {
                         CompareFolder = true,
                         Count = 1_000,
@@ -300,10 +352,10 @@ internal class TestBrowser : TenantBaseService
             else if (parent.TestSuite is not null)
             {
                 long? parentFolderId = null;
-                var folders = await _testSuiteService.GetTestSuiteFoldersAsync(projectId, parent.TestSuite.Id, parentFolderId);
+                var folders = await _testSuiteController.GetTestSuiteFoldersAsync(projectId, parent.TestSuite.Id, parentFolderId);
                 var items = MapFoldersToTreeNode(folders);
 
-                var tests = await _testSuiteService.SearchTestCasesAsync(new SearchTestQuery
+                var tests = await _testSuiteController.SearchTestCasesAsync(new SearchTestQuery
                 {
                     CompareFolder = true,
                     Count = 1_000,
@@ -372,13 +424,34 @@ internal class TestBrowser : TenantBaseService
         return folders.Select(x => CreateTreeNodeFromFolder(x)).ToList();
     }
 
+    public TreeNode<BrowserItem> CreateLabFolderTreeNode(TestLabFolder folder)
+    {
+        return new TreeNode<BrowserItem>
+        {
+            Value = new BrowserItem() { TestLabFolder = folder, Color = folder.Color },
+            Text = folder.Name,
+            Icon = TestIcons.GetIcon(folder),
+            Children = null,
+        };
+    }
+    public TreeNode<BrowserItem> CreateRepositoryFolderTreeNode(TestRepositoryFolder folder)
+    {
+        return new TreeNode<BrowserItem>
+        {
+            Value = new BrowserItem() { TestRepositoryFolder = folder, Color = folder.Color },
+            Text = folder.Name,
+            Icon = TestIcons.GetIcon(folder),
+            Children = null,
+        };
+    }
+
     public TreeNode<BrowserItem> CreateTestSuiteTreeNode(TestSuite testSuite)
     {
         return new TreeNode<BrowserItem>
         {
             Value = new BrowserItem() { TestSuite = testSuite, Color = testSuite.Color },
             Text = testSuite.Name,
-            Icon = GetIcon(testSuite),
+            Icon = TestIcons.GetIcon(testSuite),
             Children = null,
         };
     }
@@ -519,48 +592,18 @@ internal class TestBrowser : TenantBaseService
 
         return treeNode;
     }
-    public string GetIcon(TestSuite suite)
-    {
-        if (!string.IsNullOrEmpty(suite.Icon))
-        {
-            return suite.Icon;
-        }
 
-        return TbIcons.BoldDuoTone.Box;
-    }
 
-    public string GetIcon(TestSuiteFolder folder)
-    {
-        if(!string.IsNullOrEmpty(folder.Icon))
-        {
-            return folder.Icon;
-        }
-
-        return TbIcons.BoldOutline.Folder;//Icons.Material.Outlined.Folder;
-    }
-    public string GetIcon(TestCase x)
-    {
-        return TestIcons.GetIcon(x);
-    }
     public TreeNode<BrowserItem> CreateTreeNodeFromPipeline(Pipeline pipeline)
     {
         var treeNode = new TreeNode<BrowserItem>
         {
             Value = new BrowserItem { Pipeline = pipeline },
             Text = pipeline.DisplayTitle ?? "#" + pipeline.CiCdPipelineIdentifier,
-            Icon = TbIcons.BoldDuoTone.Rocket,
+            Icon = TestIcons.GetIcon(pipeline),
             Expandable = false,
             Children = null,
         };
-
-        if (pipeline.CiCdSystem?.ToLower() == "gitlab")
-        {
-            treeNode.Icon = TbIcons.Brands.Gitlab;
-        }
-        if (pipeline.CiCdSystem?.ToLower() == "github")
-        {
-            treeNode.Icon = Icons.Custom.Brands.GitHub;
-        }
 
         return treeNode;
     }
@@ -570,7 +613,7 @@ internal class TestBrowser : TenantBaseService
         {
             Value = new BrowserItem { TestCase = x },
             Text = x.Name,
-            Icon = GetIcon(x),
+            Icon = TestIcons.GetIcon(x),
             Expandable = false,
             Children = null,
         };
@@ -581,12 +624,37 @@ internal class TestBrowser : TenantBaseService
     {
         var parameters = new DialogParameters<AddTestSuiteFolderDialog>
         {
-            { x => x.ProjectId, projectId },
-            { x => x.TestSuiteId, testSuiteId },
-            { x => x.ParentFolderId, parentFolderId },
         };
-        var dialog = await _dialogService.ShowAsync<AddTestSuiteFolderDialog>("Add folder", parameters, DefaultBehaviors.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<AddTestSuiteFolderDialog>(_loc["new-folder"], parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
+        if(result?.Data is string name)
+        {
+            var testSuiteFolder = await _testSuiteController.AddTestSuiteFolderAsync(projectId, testSuiteId, parentFolderId, name);
+        }
+    }
+    public async Task AddTestRepositoryFolderAsync(long projectId, long? parentFolderId)
+    {
+        var parameters = new DialogParameters<AddTestSuiteFolderDialog>
+        {
+        };
+        var dialog = await _dialogService.ShowAsync<AddTestSuiteFolderDialog>(_loc["new-folder"], parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is string name)
+        {
+            await _testRepositoryController.AddTestRepositoryFolderAsync(projectId, parentFolderId, name);
+        }
+    }
+    public async Task AddTestLabFolderAsync(long projectId, long? parentFolderId)
+    {
+        var parameters = new DialogParameters<AddTestSuiteFolderDialog>
+        {
+        };
+        var dialog = await _dialogService.ShowAsync<AddTestSuiteFolderDialog>(_loc["new-folder"], parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is string name)
+        {
+            await _testLabController.AddTestLabFolderAsync(projectId, parentFolderId, name);
+        }
     }
 
     public TreeNode<BrowserItem> CreateTreeNodeFromFolder(TestSuiteFolder x)
@@ -596,7 +664,7 @@ internal class TestBrowser : TenantBaseService
         {
             Value = new BrowserItem { Folder = x, Color = x.Color },
             Text = x.Name,
-            Icon = GetIcon(x),
+            Icon = TestIcons.GetIcon(x),
             Expandable = true,
             Children = null,
         };
@@ -718,7 +786,7 @@ internal class TestBrowser : TenantBaseService
         var searchRequest = SearchTestCaseQueryParser.Parse(request.Text, fields);
         searchRequest.ProjectId = request.ProjectId.Value;
 
-        var searchTestResult = await _testSuiteService.SearchTestCasesAsync(searchRequest); 
+        var searchTestResult = await _testSuiteController.SearchTestCasesAsync(searchRequest); 
         //new SearchTestQuery() 
         //{ 
         //    CompareFolder = false,
@@ -804,35 +872,44 @@ internal class TestBrowser : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
 
         // Load data
-        var suites = await _testSuiteService.GetTestSuitesAsync(teamId, projectId);
         var milestones = await _milestoneManager.GetMilestonesAsync(principal, projectId.Value);
         var components = await _architectureManager.GetComponentsAsync(principal, projectId.Value);
         var features = await _architectureManager.GetFeaturesAsync(principal, projectId.Value);
 
-        var suiteItems = suites.Items.Select(x => CreateTestSuiteTreeNode(x)).ToList();
-
-
         var items = new List<TreeNode<BrowserItem>>();
         if (request.ShowTestSuites)
         {
+            // Get test suites that are not located in any folder
+            var suites = await _testSuiteController.GetRootTestSuitesAsync(teamId, projectId);
+            var suiteItems = suites.Items.Select(x => CreateTestSuiteTreeNode(x)).ToList();
+
+            // Get root folders
+            var repositoryFolderItems = new List<TreeNode<BrowserItem>>();
+            if (projectId is not null)
+            {
+                var repositoryFolders = await _testRepositoryController.GetRootFoldersAsync(projectId.Value);
+                repositoryFolderItems = repositoryFolders.Select(x => CreateRepositoryFolderTreeNode(x)).ToList();
+            }
+            List<TreeNode<BrowserItem>> repositoryItems = [.. repositoryFolderItems, .. suiteItems];
+
             items.Add(new TreeNode<BrowserItem>
             {
-                Text = _loc["test-suites"],
-                Children = suiteItems,
+                Text = _loc["test-repository"],
+                Children = repositoryItems,
                 Expanded = true,
-                Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_SUITES },
+                Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_REPOSITORY },
                 Icon = TbIcons.BoldDuoTone.Database,
             });
 
+            // Virtual search folder for test cases
             var testCases = new TreeNode<BrowserItem>
             {
                 Text = _loc["test-cases"],
                 Expanded = false,
                 Expandable = true,
                 Value = new BrowserItem() { Href = _appNavigationManager.GetTestCasesUrl() },
-                Icon = TbIcons.BoldDuoTone.Database,
+                Icon = TbIcons.BoldDuoTone.FolderStar,
             };
-
             testCases.Children = 
             [
                 ..TestBrowserSearchFolders.GetTestCategoryFolders(_loc, _appNavigationManager),
@@ -840,31 +917,50 @@ internal class TestBrowser : TenantBaseService
                 ..TestBrowserSearchFolders.GetFeatureFolders(_loc, _appNavigationManager, features),
                 ..TestBrowserSearchFolders.GetComponentFolders(_loc, _appNavigationManager, components),
             ];
-            items.Add(testCases);
+            repositoryItems.Insert(0, testCases);
         }
         if(request.ShowTestRuns)
         {
+            var testLabItems = new List<TreeNode<BrowserItem>>();
+            items.Add(new TreeNode<BrowserItem>
+            {
+                Text = _loc["test-lab"],
+                Children = testLabItems,
+                Expanded = true,
+                Expandable = true,
+                Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_LAB },
+                Icon = TbIcons.Filled.Vial,
+            });
 
-            var testResults = new TreeNode<BrowserItem>
+            // All test results
+            testLabItems.Add(new TreeNode<BrowserItem>
             {
                 Text = _loc["test-case-runs"],
                 Expanded = false,
                 Expandable = false,
                 Value = new BrowserItem() { Href = _appNavigationManager.GetTestCaseRunsUrl() },
-                Icon = TbIcons.BoldDuoTone.FolderCheck,
-            };
-            items.Add(testResults);
+                Icon = TbIcons.BoldDuoTone.FolderStar,
+            });
 
+            // Recent test runs
             List<TreeNode<BrowserItem>> recentRuns = await CreateRecentTestRunsTreeNodeItemsAsync(request, teamId, projectId);
-            items.Add(new TreeNode<BrowserItem>
+            testLabItems.Add(new TreeNode<BrowserItem>
             {
                 Text = _loc["recent-test-runs"],
                 Children = recentRuns,
                 Expanded = false,
                 Expandable = true,
-                Value = new BrowserItem() { VirtualFolderName = ROOT_TEST_RUNS, Href = _appNavigationManager.GetTestRunsUrl() },
-                Icon = TbIcons.BoldDuoTone.Database,
+                Value = new BrowserItem() { VirtualFolderName = ROOT_RECENT_TEST_RUNS, Href = _appNavigationManager.GetTestRunsUrl() },
+                Icon = TbIcons.BoldDuoTone.FolderStar,
             });
+
+            if (projectId is not null)
+            {
+                var labFolders = await _testLabController.GetRootFoldersAsync(projectId.Value);
+                var labFoldersItems = labFolders.Select(x => CreateLabFolderTreeNode(x)).ToList();
+                testLabItems.AddRange(labFoldersItems);
+            }
+
         }
         return items;
     }
@@ -878,7 +974,7 @@ internal class TestBrowser : TenantBaseService
     public async Task<PagedResult<TestRun>> GetRecentTestRunsAsync(long? projectId, long? teamId)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        var query = new SearchTestRunQuery() { ProjectId = projectId, Count = 50, TeamId = teamId, Offset = 0 };
+        var query = new SearchTestRunQuery() { ProjectId = projectId, Count = 20, TeamId = teamId, Offset = 0 };
         var recentRunsResult = await _testRunManager.SearchTestRunsAsync(principal, query);
         return recentRunsResult;
     }
@@ -960,5 +1056,15 @@ internal class TestBrowser : TenantBaseService
         {
             await _appNavigationManager.State.TestTreeView.GoToTestCaseAsync(selectedTestCase);
         }
+    }
+
+    internal async Task UpdateTestRepositoryFolderAsync(TestRepositoryFolder testRepositoryFolder)
+    {
+        await _testRepositoryController.UpdateTestRepositoryFolderAsync(testRepositoryFolder);
+    }
+
+    internal async Task UpdateTestLabFolderAsync(TestLabFolder testLabFolder)
+    {
+        await _testLabController.UpdateTestLabFolderAsync(testLabFolder);
     }
 }

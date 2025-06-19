@@ -1,7 +1,7 @@
 ﻿@using TestBucket.Domain.Requirements.Models
 @attribute [Authorize()]
 @inject TestCaseEditorController testCaseEditorService
-@inject TestSuiteService testSuiteController
+@inject TestSuiteController testSuiteController
 @inject IStringLocalizer<SharedStrings> loc
 
 <EditForm Model="@_testCase" OnValidSubmit="async () => await OnValidSubmitAsync()">

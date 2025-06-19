@@ -2,6 +2,7 @@
 
 using TestBucket.Domain.Testing.Events;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestSuites.Search;
 
 namespace TestBucket.Domain.Testing.TestSuites
 {
@@ -78,6 +79,8 @@ namespace TestBucket.Domain.Testing.TestSuites
             return await AddTestSuiteAsync(principal, suite);
         }
 
+
+
         /// <summary>
         /// Adds a test suite
         /// </summary>
@@ -123,13 +126,27 @@ namespace TestBucket.Domain.Testing.TestSuites
         /// <returns></returns>
         public async Task UpdateTestSuiteAsync(ClaimsPrincipal principal, TestSuite suite)
         {
-            principal.ThrowIfEntityTenantIsDifferent(suite);
+            var tenantId = principal.ThrowIfEntityTenantIsDifferent(suite);
+            var existingTestSuite = await _testCaseRepository.GetTestSuiteByIdAsync(tenantId, suite.Id);
+            if(existingTestSuite is null)
+            {
+                throw new ArgumentException("Test suite was not found in database");
+            }
 
             suite.Modified = _timeProvider.GetUtcNow();
             suite.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 
             await _testCaseRepository.UpdateTestSuiteAsync(suite);
 
+            if(existingTestSuite?.FolderId != suite.FolderId)
+            {
+                foreach (var observer in _testSuiteObservers)
+                {
+                    await observer.OnTestSuiteMovedAsync(suite);
+                }
+            }
+
+            // Invoke saved listeners
             foreach (var observer in _testSuiteObservers)
             {
                 await observer.OnTestSuiteSavedAsync(suite);
@@ -168,7 +185,7 @@ namespace TestBucket.Domain.Testing.TestSuites
         /// <param name="principal"></param>
         /// <param name="query"></param>
         /// <returns></returns>
-        public async Task<PagedResult<TestSuite>> SearchTestSuitesAsync(ClaimsPrincipal principal, SearchQuery query) 
+        public async Task<PagedResult<TestSuite>> SearchTestSuitesAsync(ClaimsPrincipal principal, SearchTestSuiteQuery query) 
         {
             var tenantId = principal.GetTenantIdOrThrow();
             // todo: convert to specifications

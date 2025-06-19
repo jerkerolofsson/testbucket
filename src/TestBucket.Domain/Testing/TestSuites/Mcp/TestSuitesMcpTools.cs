@@ -5,6 +5,7 @@ using ModelContextProtocol.Server;
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Testing.Mapping;
+using TestBucket.Domain.Testing.TestSuites.Search;
 using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Domain.Testing.TestSuites.Mcp;
@@ -29,7 +30,7 @@ public class TestSuitesMcpTools : AuthenticatedTool
         var isAuthenticated = await IsAuthenticatedAsync();
         if (isAuthenticated && _principal is not null)
         {
-            var result = await _testSuiteManager.SearchTestSuitesAsync(_principal, new SearchQuery
+            var result = await _testSuiteManager.SearchTestSuitesAsync(_principal, new SearchTestSuiteQuery
             {
                 ProjectId = _principal.GetProjectId(),
                 Text = searchText,

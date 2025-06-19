@@ -190,12 +190,27 @@ internal class TestRunManager : ITestRunManager
     /// <inheritdoc/>
     public async Task SaveTestRunAsync(ClaimsPrincipal principal, TestRun testRun)
     {
-        principal.ThrowIfEntityTenantIsDifferent(testRun);
+        var tenantId = principal.ThrowIfEntityTenantIsDifferent(testRun);
+
+        var existingRun = await _testCaseRepo.GetTestRunByIdAsync(tenantId,testRun.Id);
+        if(existingRun is null)
+        {
+            throw new ArgumentException("Existing run was not found");
+        }
 
         testRun.Modified = _timeProvider.GetUtcNow();
         testRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 
         await _testCaseRepo.UpdateTestRunAsync(testRun);
+
+        if(existingRun.FolderId != testRun.FolderId)
+        {
+            foreach (var observer in _testRunObservers)
+            {
+                await observer.OnRunMovedAsync(testRun);
+            }
+
+        }
 
         foreach (var observer in _testRunObservers)
         {
@@ -230,7 +245,6 @@ internal class TestRunManager : ITestRunManager
     {
         var tenantId = principal.GetTenantIdOrThrow(); 
         principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Read);
-
 
         List<FilterSpecification<TestRun>> filters = TestRunFilterSpecificationBuilder.From(query);
         filters.Add(new FilterByTenant<TestRun>(tenantId));

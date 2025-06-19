@@ -21,7 +21,7 @@ public class TestBrowserSearchFolders
             Expanded = false,
             Expandable = false,
             Value = new BrowserItem() { Href = $"{appNavigationManager.GetTestCasesUrl()}?q=category:E2E" },
-            Icon = TbIcons.BoldOutline.Folder,
+            Icon = TbIcons.BoldDuoTone.FolderStar,
         };
         yield return new TreeNode<BrowserItem>
         {
@@ -29,7 +29,7 @@ public class TestBrowserSearchFolders
             Expanded = false,
             Expandable = false,
             Value = new BrowserItem() { Href = $"{appNavigationManager.GetTestCasesUrl()}?q=category:API" },
-            Icon = TbIcons.BoldOutline.Folder,
+            Icon = TbIcons.BoldDuoTone.FolderStar,
         };
         yield return new TreeNode<BrowserItem>
         {
@@ -37,7 +37,7 @@ public class TestBrowserSearchFolders
             Expanded = false,
             Expandable = false,
             Value = new BrowserItem() { Href = $"{appNavigationManager.GetTestCasesUrl()}?q=category:Integration" },
-            Icon = TbIcons.BoldOutline.Folder,
+            Icon = TbIcons.BoldDuoTone.FolderStar,
         };
         yield return new TreeNode<BrowserItem>
         {
@@ -45,7 +45,7 @@ public class TestBrowserSearchFolders
             Expanded = false,
             Expandable = false,
             Value = new BrowserItem() { Href = $"{appNavigationManager.GetTestCasesUrl()}?q=category:Unit" },
-            Icon = TbIcons.BoldOutline.Folder,
+            Icon = TbIcons.BoldDuoTone.FolderStar,
         };
     }
 
@@ -69,7 +69,7 @@ public class TestBrowserSearchFolders
                 Expanded = false,
                 Expandable = false,
                 Value = new BrowserItem() { Href = $"{appNavigationManager.GetTestCasesUrl()}?q=component:\"{WebUtility.UrlEncode(component.Name)}\"" },
-                Icon = TbIcons.BoldOutline.Folder,
+                Icon = TbIcons.BoldDuoTone.FolderStar,
             });
         }
 
@@ -79,7 +79,7 @@ public class TestBrowserSearchFolders
             Expanded = false,
             Expandable = true,
             Children = componentNodes,
-            Icon = TbIcons.BoldOutline.Folder,
+            Icon = TbIcons.BoldDuoTone.FolderStar,
         };
 
         yield return root;
@@ -106,7 +106,7 @@ public class TestBrowserSearchFolders
                 Expanded = false,
                 Expandable = false,
                 Value = new BrowserItem() { Href = $"{appNavigationManager.GetTestCasesUrl()}?q=feature:\"{WebUtility.UrlEncode(feature.Name)}\"" },
-                Icon = TbIcons.BoldOutline.Folder,
+                Icon = TbIcons.BoldDuoTone.FolderStar,
             });
         }
 
@@ -116,7 +116,7 @@ public class TestBrowserSearchFolders
             Expanded = false,
             Expandable = true,
             Children = featureNodes,
-            Icon = TbIcons.BoldOutline.Folder,
+            Icon = TbIcons.BoldDuoTone.FolderStar,
         };
 
         yield return root;
@@ -143,7 +143,7 @@ public class TestBrowserSearchFolders
                 Expanded = false,
                 Expandable = false,
                 Value = new BrowserItem() { Href = $"{appNavigationManager.GetTestCasesUrl()}?q=milestone:\"{WebUtility.UrlEncode(milestone.Title)}\"" },
-                Icon = TbIcons.BoldOutline.Folder,
+                Icon = TbIcons.BoldDuoTone.FolderStar,
             });
         }
 
@@ -153,7 +153,7 @@ public class TestBrowserSearchFolders
             Expanded = false,
             Expandable = true,
             Children = componentNodes,
-            Icon = TbIcons.BoldOutline.Folder,
+            Icon = TbIcons.BoldDuoTone.FolderStar,
         };
 
         yield return root;

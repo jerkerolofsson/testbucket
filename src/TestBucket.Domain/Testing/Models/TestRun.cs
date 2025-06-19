@@ -77,4 +77,7 @@ public class TestRun : TestEntity
     public TestEnvironment? TestEnvironment { get; set; }
     public virtual IEnumerable<TestRunField>? TestRunFields { get; set; }
     public virtual List<Comment>? Comments { get; set; }
+
+    public TestLabFolder? Folder { get; set; }
+    public long? FolderId { get; set; }
 }

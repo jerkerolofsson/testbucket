@@ -6,7 +6,7 @@
 @using TestBucket.Domain.Commands
 @layout TestingLayout
 @inject TestBrowser testBrowser
-@inject TestSuiteService controller
+@inject TestSuiteController controller
 @inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<SharedStrings> loc
 @inject TestRunCreationController testRunCreationController
@@ -97,7 +97,7 @@
                 _fieldCategory = _testCaseFields.Where(x => x.TraitType == TraitType.TestCategory).FirstOrDefault();
                 _fieldFeature = _testCaseFields.Where(x => x.TraitType == TraitType.Feature).FirstOrDefault();
             }
-            appNavigationManager.State.SelectedTestSuite = _testSuite;
+            appNavigationManager.State.SetSelectedTestSuite(_testSuite);
             OnQueryChanged(null);
         }
     }

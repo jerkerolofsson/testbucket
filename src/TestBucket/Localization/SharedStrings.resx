@@ -867,4 +867,16 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Session log</value>
     <comment>Log from a exploratory test session</comment>
   </data>
+  <data name="test-repository" xml:space="preserve">
+    <value>Repository</value>
+  </data>
+  <data name="test-lab" xml:space="preserve">
+    <value>Lab</value>
+  </data>
+  <data name="delete-test-suite-folder-description" xml:space="preserve">
+    <value>Deletes the test suite folder, all child folders and all test cases within those folders</value>
+  </data>
+  <data name="delete-test-repository-folder-description" xml:space="preserve">
+    <value>Deletes the folder, all child folders, all test suites and all test cases within those folders</value>
+  </data>
 </root>

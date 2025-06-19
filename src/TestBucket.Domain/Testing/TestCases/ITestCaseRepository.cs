@@ -3,6 +3,7 @@ using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestSuites.Search;
 
 
 public interface ITestCaseRepository
@@ -208,7 +209,7 @@ public interface ITestCaseRepository
     /// <param name="tenantId"></param>
     /// <param name="query"></param>
     /// <returns></returns>
-    Task<PagedResult<TestSuite>> SearchTestSuitesAsync(string tenantId, SearchQuery query);
+    Task<PagedResult<TestSuite>> SearchTestSuitesAsync(string tenantId, SearchTestSuiteQuery query);
 
     /// <summary>
     /// Returns a test suite by name or null if not found
@@ -317,4 +318,17 @@ public interface ITestCaseRepository
     Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAssigneeAsync(List<FilterSpecification<TestCaseRun>> filters);
 
     #endregion
+
+    Task AddTestRepositoryFolderAsync(TestRepositoryFolder folder);
+    Task AddTestLabFolderAsync(TestLabFolder folder);
+    Task<IReadOnlyList<TestRepositoryFolder>> GetRootTestRepositoryFoldersAsync(long projectId);
+    Task<IReadOnlyList<TestLabFolder>> GetRootTestLabFoldersAsync(long projectId);
+    Task<IReadOnlyList<TestLabFolder>> GetChildTestLabFoldersAsync(long projectId, long parentId);
+    Task<IReadOnlyList<TestRepositoryFolder>> GetChildTestRepositoryFoldersAsync(long projectId, long parentId);
+    Task UpdateTestRepositoryFolderAsync(TestRepositoryFolder folder);
+    Task UpdateTestLabFolderAsync(TestLabFolder folder);
+    Task DeleteTestRepositoryFolderAsync(TestRepositoryFolder folder);
+    Task DeleteTestLabFolderAsync(TestLabFolder folder);
+    Task<TestRepositoryFolder?> GetTestRepositoryFolderByIdAsync(long folderId);
+    Task<TestLabFolder?> GetTestLabFolderByIdAsync(long folderId);
 }

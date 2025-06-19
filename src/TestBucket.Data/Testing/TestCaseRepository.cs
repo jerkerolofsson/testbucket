@@ -4,8 +4,14 @@ using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
+using TestBucket.Domain.Testing.TestSuites.Search;
 
 namespace TestBucket.Data.Testing;
+
+/// <summary>
+/// Repository for managing test cases, test suites, test runs, and related entities.
+/// Provides methods for CRUD operations, searching, and insights.
+/// </summary>
 internal class TestCaseRepository : ITestCaseRepository
 {
     private readonly IMemoryCache _memoryCache;
@@ -22,7 +28,11 @@ internal class TestCaseRepository : ITestCaseRepository
 
     #region Test Cases
 
-
+    /// <summary>
+    /// Assigns an external ID to a test case if not already set.
+    /// </summary>
+    /// <param name="dbContext">The database context.</param>
+    /// <param name="testCase">The test case to update.</param>
     private async ValueTask AssignExternalIdAsync(ApplicationDbContext dbContext, TestCase testCase)
     {
         // Sequence number only used for internal issues
@@ -36,6 +46,13 @@ internal class TestCaseRepository : ITestCaseRepository
         }
     }
 
+    /// <summary>
+    /// Gets the maximum sequence number for a test case in a project and tenant.
+    /// </summary>
+    /// <param name="tenantId">The tenant ID.</param>
+    /// <param name="projectId">The project ID.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The maximum sequence number.</returns>
     private async ValueTask<int> GetMaxSequenceNumber(string tenantId, long projectId, CancellationToken cancellationToken)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -48,7 +65,6 @@ internal class TestCaseRepository : ITestCaseRepository
     }
 
     /// <inheritdoc/>
-
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -67,6 +83,7 @@ internal class TestCaseRepository : ITestCaseRepository
         };
     }
 
+    /// <inheritdoc/>
     public async Task<long[]> SearchTestCaseIdsAsync(IEnumerable<FilterSpecification<TestCase>> filters)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -399,7 +416,7 @@ internal class TestCaseRepository : ITestCaseRepository
             .Include(x => x.Comments)
             .AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
     }
-    public async Task<PagedResult<TestSuite>> SearchTestSuitesAsync(string tenantId, SearchQuery query)
+    public async Task<PagedResult<TestSuite>> SearchTestSuitesAsync(string tenantId, SearchTestSuiteQuery query)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var suites = dbContext.TestSuites
@@ -418,6 +435,14 @@ internal class TestCaseRepository : ITestCaseRepository
         if (query.Text is not null)
         {
             suites = suites.Where(x => x.Name.ToLower().Contains(query.Text.ToLower()));
+        }
+        if (query.RootFolders == true)
+        {
+            suites = suites.Where(x => x.FolderId == null);
+        }
+        if (query.FolderId is not null)
+        {
+            suites = suites.Where(x => x.FolderId == query.FolderId);
         }
 
         long totalCount = await suites.LongCountAsync();
@@ -1168,6 +1193,7 @@ internal class TestCaseRepository : ITestCaseRepository
         return data;
     }
 
+    /// <inheritdoc/>
     public async Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
     {
         var data = new InsightsData<DateOnly, int>();
@@ -1247,7 +1273,7 @@ internal class TestCaseRepository : ITestCaseRepository
         return data;
     }
 
-
+    /// <inheritdoc/>
     public async Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAssigneeAsync(List<FilterSpecification<TestCaseRun>> filters)
     {
         var data = new InsightsData<string, int>();
@@ -1272,6 +1298,8 @@ internal class TestCaseRepository : ITestCaseRepository
 
         return data;
     }
+
+    /// <inheritdoc/>
     public async Task<InsightsData<TestResult, int>> GetInsightsTestResultsAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
     {
         var data = new InsightsData<TestResult, int>();
@@ -1297,6 +1325,7 @@ internal class TestCaseRepository : ITestCaseRepository
         return data;
     }
 
+    /// <inheritdoc/>
     public async Task<InsightsData<TestResult, int>> GetInsightsLatestTestResultsAsync(IEnumerable<FilterSpecification<TestCaseRun>> filters)
     {
         var data = new InsightsData<TestResult, int>();
@@ -1326,7 +1355,7 @@ internal class TestCaseRepository : ITestCaseRepository
         return data;
     }
 
-
+    /// <inheritdoc/>
     public async Task<Dictionary<string, Dictionary<string, long>>> GetTestCaseCoverageMatrixByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId1, long fieldDefinitionId2)
     {
         var table = new Dictionary<string, Dictionary<string, long>>();
@@ -1358,6 +1387,8 @@ internal class TestCaseRepository : ITestCaseRepository
 
         return table;
     }
+
+    /// <inheritdoc/>
     public async Task<Dictionary<string, long>> GetTestCaseDistributionByFieldAsync(List<FilterSpecification<TestCase>> filters, long fieldDefinitionId)
     {
         var table = new Dictionary<string, long>();
@@ -1385,4 +1416,155 @@ internal class TestCaseRepository : ITestCaseRepository
         return table;
     }
 
+    /// <inheritdoc/>
+    public async Task AddTestRepositoryFolderAsync(TestRepositoryFolder folder)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.TestRepositoryFolders.AddAsync(folder);
+        await dbContext.SaveChangesAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task AddTestLabFolderAsync(TestLabFolder folder)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await dbContext.TestLabFolders.AddAsync(folder);
+        await dbContext.SaveChangesAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<TestRepositoryFolder>> GetRootTestRepositoryFoldersAsync(long projectId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestRepositoryFolders
+            .AsNoTracking()
+            .Where(x => x.ParentId == null && x.TestProjectId == projectId).ToListAsync();
+        
+    }
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<TestLabFolder>> GetRootTestLabFoldersAsync(long projectId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestLabFolders
+            .AsNoTracking()
+            .Where(x => x.ParentId == null && x.TestProjectId == projectId).ToListAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<TestRepositoryFolder>> GetChildTestRepositoryFoldersAsync(long projectId, long parentId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestRepositoryFolders
+            .AsNoTracking()
+            .Where(x => x.ParentId == parentId && x.TestProjectId == projectId).ToListAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<TestLabFolder>> GetChildTestLabFoldersAsync(long projectId, long parentId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestLabFolders
+            .AsNoTracking()
+            .Where(x => x.ParentId == parentId && x.TestProjectId == projectId).ToListAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task UpdateTestRepositoryFolderAsync(TestRepositoryFolder folder)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        dbContext.TestRepositoryFolders.Update(folder);
+        await dbContext.SaveChangesAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task UpdateTestLabFolderAsync(TestLabFolder folder)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        dbContext.TestLabFolders.Update(folder);
+        await dbContext.SaveChangesAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task DeleteTestRepositoryFolderAsync(TestRepositoryFolder folder)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await DeleteTestRepositoryFolderAsync(folder, dbContext);
+    }
+
+    private async Task DeleteTestRepositoryFolderAsync(TestRepositoryFolder folder, ApplicationDbContext dbContext)
+    {
+        // Delete all child folders
+        foreach (var childFolder in dbContext.TestRepositoryFolders.Where(x => x.ParentId == folder.Id))
+        {
+            if (childFolder.Id != folder.Id)
+            {
+                await DeleteTestRepositoryFolderAsync(childFolder, dbContext);
+            }
+        }
+
+        // Delete any test suites
+        foreach (var testSuite in dbContext.TestSuites.Where(x => x.FolderId == folder.Id))
+        {
+            if (testSuite.TenantId is not null)
+            {
+                await DeleteTestSuiteByIdAsync(testSuite.TenantId, testSuite.Id);
+            }
+            else
+            {
+                testSuite.FolderId = null;
+                await UpdateTestSuiteAsync(testSuite);
+            }
+        }
+
+        // Delete the folder
+        await dbContext.TestRepositoryFolders.Where(x => x.Id == folder.Id).ExecuteDeleteAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task DeleteTestLabFolderAsync(TestLabFolder folder)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        await DeleteTestLabFolderAsync(folder, dbContext);
+    }
+
+    private async Task DeleteTestLabFolderAsync(TestLabFolder folder, ApplicationDbContext dbContext)
+    {
+        // Delete all child folders
+        foreach (var childFolder in dbContext.TestLabFolders.Where(x => x.ParentId == folder.Id))
+        {
+            if (childFolder.Id != folder.Id)
+            {
+                await DeleteTestLabFolderAsync(childFolder, dbContext);
+            }
+        }
+
+        // Delete any test runs
+        foreach (var testRun in dbContext.TestRuns.Where(x => x.FolderId == folder.Id))
+        {
+            await DeleteTestRunAsync(testRun);
+        }
+
+        // Delete the folder
+        await dbContext.TestLabFolders.Where(x => x.Id == folder.Id).ExecuteDeleteAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<TestRepositoryFolder?> GetTestRepositoryFolderByIdAsync(long folderId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        return await dbContext.TestRepositoryFolders
+            .AsNoTracking()
+            .Where(x => x.Id == folderId).FirstOrDefaultAsync();
+    }
+
+    /// <inheritdoc/>
+    public async Task<TestLabFolder?> GetTestLabFolderByIdAsync(long folderId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.TestLabFolders
+            .AsNoTracking()
+            .Where(x => x.Id == folderId).FirstOrDefaultAsync();
+    }
 }

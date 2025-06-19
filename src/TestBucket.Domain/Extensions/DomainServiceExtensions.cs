@@ -58,6 +58,8 @@ using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Settings;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestCases.Insights;
+using TestBucket.Domain.Testing.TestLab;
+using TestBucket.Domain.Testing.TestRepository;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Insights;
 using TestBucket.Domain.Testing.TestSuites;
@@ -130,6 +132,8 @@ public static class DomainServiceExtensions
         services.AddScoped<ITestCaseManager, TestCaseManager>();
         services.AddScoped<ITestSuiteManager, TestSuiteManager>();
         services.AddScoped<ITestRunManager, TestRunManager>();
+        services.AddScoped<ITestLabManager, TestLabManager>();
+        services.AddScoped<ITestRepositoryManager, TestRepositoryManager>();
 
         // Backup / Export
         services.AddScoped<IBackupManager, BackupManager>();

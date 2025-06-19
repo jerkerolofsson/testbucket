@@ -9,6 +9,7 @@ using TestBucket.AdbProxy.Host;
 using TestBucket.AdbProxy.Inform;
 using TestBucket.AdbProxy.Models;
 using TestBucket.AdbProxy.Proxy;
+using TestBucket.ResourceServer.Contracts;
 
 namespace TestBucket.AdbProxy.DeviceHandling;
 public class AdbDeviceRepository : IAdbDeviceRepository
@@ -18,6 +19,8 @@ public class AdbDeviceRepository : IAdbDeviceRepository
     private readonly ConcurrentDictionary<string, AdbProxyServer> _servers = new();
     private readonly AdbProxyOptions _adbProxyOptions;
     private readonly IDeviceInformer _deviceInformer;
+    private readonly ConcurrentDictionary<string, AdbResource> _resources = [];
+    private readonly IResourceRegistry _registry;
 
     /// <summary>
     /// Returns a list of all devices
@@ -26,12 +29,13 @@ public class AdbDeviceRepository : IAdbDeviceRepository
 
     public AdbDeviceRepository(
         ILogger<AdbDeviceRepository> logger,
-        IServiceProvider serviceProvider, IOptions<AdbProxyOptions> options, IDeviceInformer deviceInformer)
+        IServiceProvider serviceProvider, IOptions<AdbProxyOptions> options, IDeviceInformer deviceInformer, IResourceRegistry registry)
     {
         _adbProxyOptions = options.Value;
         _logger = logger;
         _serviceProvider = serviceProvider;
         _deviceInformer = deviceInformer;
+        _registry = registry;
     }
 
     /// <summary>
@@ -120,12 +124,26 @@ public class AdbDeviceRepository : IAdbDeviceRepository
                 var server = ActivatorUtilities.CreateInstance<AdbProxyServer>(_serviceProvider, device);
                 server.Start(cancellationToken);
 
+                AddResource(device);
+
                 _logger.LogInformation("Server started for {deviceId} on {port}", device.DeviceId, server.Port);
                 _servers[device.DeviceId] = server;
                 changed = true;
             }
         }
         return changed;
+    }
+
+    private void AddResource(AdbDevice device)
+    {
+        var resource = new AdbResource(device, _adbProxyOptions);
+        _resources[device.DeviceId] = resource;
+        _registry.AddResource(resource);
+    }
+    private void RemoveResource(IResource resource)
+    {
+        _registry.RemoveResource(resource);
+        _resources.TryRemove(resource.ResourceId, out var _);
     }
 
     private async Task<bool> ExtractGetpropAsync(AdbDevice device, CancellationToken cancellationToken)
@@ -170,6 +188,11 @@ public class AdbDeviceRepository : IAdbDeviceRepository
             {
                 if (_servers.TryRemove(deviceId, out var server))
                 {
+                    if (_resources.TryGetValue(deviceId, out var resource))
+                    {
+                        RemoveResource(resource);
+                    }
+
                     _logger.LogInformation("Removing server for device {deviceId}", deviceId);
                     server.Dispose();
                     changed = true;

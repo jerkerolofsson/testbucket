@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Package\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" />
+    <ProjectReference Include="..\..\resourceserver\TestBucket.ResourceServer.Contracts\TestBucket.ResourceServer.Contracts.csproj" />
     <ProjectReference Include="..\..\TestBucket.ServiceDefaults\TestBucket.ServiceDefaults.csproj" />
   </ItemGroup>
 

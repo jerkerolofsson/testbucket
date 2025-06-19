@@ -12,18 +12,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.5" />
       <PackageReference Include="MudBlazor" Version="8.7.0" />
+      <PackageReference Include="Scalar.AspNetCore" Version="2.4.19" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Package\Blazor\TestBucket.MudBlazorExtensions.Markdown\TestBucket.MudBlazorExtensions.Markdown.csproj" />
+    <ProjectReference Include="..\..\resourceserver\TestBucket.ResourceServer\TestBucket.ResourceServer.csproj" />
     <ProjectReference Include="..\TestBucket.AdbProxy\TestBucket.AdbProxy.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
   <ItemGroup>

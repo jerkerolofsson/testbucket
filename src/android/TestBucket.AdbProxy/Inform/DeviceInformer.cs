@@ -1,15 +1,23 @@
 ﻿using System.Text.Json;
-using System.Net.Http.Json;
 
 using TestBucket.AdbProxy.Models;
 using TestBucket.Contracts.TestResources;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace TestBucket.AdbProxy.Inform;
+
+/// <summary>
+/// Provides functionality to inform an external system about connected Android devices,
+/// manage inform settings, and persist configuration for device reporting.
+/// </summary>
 internal class DeviceInformer(HttpClient httpClient) : IDeviceInformer
 {
     private InformSettings? _settings;
 
+    /// <summary>
+    /// Gets the file path for storing inform settings in the user's application data directory.
+    /// </summary>
+    /// <returns>The full file path to the inform settings JSON file.</returns>
     private string GetSettingsPath()
     {
         var directoryPath = Path.Combine(System.Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "testbucket-adbproxy");
@@ -17,16 +25,27 @@ internal class DeviceInformer(HttpClient httpClient) : IDeviceInformer
         return Path.Combine(directoryPath, "inform.json");
     }
 
+    /// <summary>
+    /// Saves the inform settings to disk and updates the in-memory settings.
+    /// </summary>
+    /// <param name="settings">The <see cref="InformSettings"/> to save.</param>
+    /// <returns>A task representing the asynchronous save operation.</returns>
     public async Task SaveInformSettingsAsync(InformSettings settings)
     {
         _settings = settings;
         var path = GetSettingsPath();
         await File.WriteAllTextAsync(path, JsonSerializer.Serialize(settings));
     }
-    
+
+    /// <summary>
+    /// Loads the inform settings from disk or environment variables, or creates defaults if not found.
+    /// </summary>
+    /// <returns>
+    /// A task that represents the asynchronous load operation. The task result contains the loaded <see cref="InformSettings"/>.
+    /// </returns>
     public async Task<InformSettings> LoadInformSettingsAsync()
     {
-        if(_settings is not null)
+        if (_settings is not null)
         {
             return _settings;
         }
@@ -67,11 +86,17 @@ internal class DeviceInformer(HttpClient httpClient) : IDeviceInformer
         return _settings;
     }
 
+    /// <summary>
+    /// Informs an external system about the current state of connected Android devices.
+    /// </summary>
+    /// <param name="devices">The array of <see cref="AdbDevice"/> objects to report.</param>
+    /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the asynchronous inform operation.</returns>
     public async Task InformAsync(AdbDevice[] devices, CancellationToken cancellationToken)
     {
         var settings = await LoadInformSettingsAsync();
 
-        if(string.IsNullOrEmpty(settings.Url))
+        if (string.IsNullOrEmpty(settings.Url))
         {
             return;
         }

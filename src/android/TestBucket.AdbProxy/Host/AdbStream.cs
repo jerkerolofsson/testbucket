@@ -50,6 +50,20 @@ public class AdbStream : IDisposable
         return text;
     }
 
+    /// <summary>
+    /// Reads all remaining data from the stream as a string and returns it
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    internal async Task<byte[]> ReadByteArrayAsync(CancellationToken cancellationToken)
+    {
+        var dest = new MemoryStream();
+        var source = GetStream();
+        await source.CopyToAsync(dest);
+
+        return dest.ToArray();
+    }
+
     public virtual void Dispose(bool disposing)
     {
         if (!_disposedValue)

@@ -14,6 +14,7 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<CodeStrings> codeLoc
 @inject AuthenticationStateProvider authenticationStateProvider 
+@inject AppNavigationManager appNavigationManager
 
 <Splitter Class="container-fill pa-2" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
@@ -138,6 +139,8 @@
     private async Task OnRowClicked(Feature feature)
     {
         _selectedFeature = feature;
+        appNavigationManager.State.SetSelectedFeature(feature);
+
         if(_project is not null)
         {
             var q = $"feature:\"{_selectedFeature.Name}\"";

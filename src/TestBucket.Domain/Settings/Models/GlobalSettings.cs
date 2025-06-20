@@ -38,7 +38,7 @@ public class GlobalSettings
     /// <summary>
     /// Default model to use for LLM
     /// </summary>
-    public string LlmModel { get; set; } = "deepseek-r1:30b";
+    public string LlmModel { get; set; } = "phi4-mini:3.8b";
 
     /// <summary>
     /// Model to use for LLM test case generation. If null the default model will be used

@@ -2,7 +2,7 @@
 @using MudBlazor.Utilities
 @if(Color is not null)
 {
-    <div class="@CssClass" style="@CssStyle" data-testid="@TestId" @onclick="OnClickedAsync" />
+    <div aria-role="button" class="@CssClass" style="@CssStyle" data-testid="@TestId" @onclick="OnClickedAsync" />
 }
 
 @code {

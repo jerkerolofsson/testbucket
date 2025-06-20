@@ -214,6 +214,9 @@
   <data name="duplicate-test" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
+  <data name="test-log" xml:space="preserve">
+    <value>テストログ</value>
+  </data>
   <data name="general" xml:space="preserve">
     <value>一般</value>
   </data>
@@ -341,7 +344,7 @@
     <value />
   </data>
   <data name="test-lab" xml:space="preserve">
-    <value />
+    <value>テストラボ</value>
   </data>
   <data name="delete-test-suite-folder-description" xml:space="preserve">
     <value />

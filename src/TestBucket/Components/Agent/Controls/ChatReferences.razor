@@ -1,0 +1,89 @@
+﻿@using TestBucket.Domain.AI.Agent
+@using TestBucket.Domain.AI.Agent.Models
+@inject AppNavigationManager appNavigationManager
+@inject TestBrowser testBrowser
+@inject IAppLocalization loc
+@implements IDisposable
+
+<div class="references">
+
+    <MudMenu Icon="@Icons.Material.Filled.Add" Color="Color.Success">
+        <MudMenuItem OnClick="AddTestCaseAsync">@loc.Shared["test-case"]</MudMenuItem>
+    </MudMenu>
+
+    @foreach (var reference in _context.References)
+    {
+        <MudChip Size="Size.Small" Value="@reference" T="ChatReference" OnClose="() => RemoveReference(reference)">@reference.Name</MudChip>
+    }
+
+</div>
+
+
+@code {
+    [Parameter] public ChatReference? ActiveDocument { get; set; }
+    [Parameter] public AgentChatContext? ChatContext { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private AgentChatContext _context = new();
+
+    private async Task AddTestCaseAsync()
+    {
+        var testCase = await testBrowser.PickTestCaseAsync(Project, Team);
+        if(testCase is not null)
+        {
+            AddReference(ChatReferenceBuilder.Create(testCase));
+        }
+    }
+
+    private void RemoveReference(ChatReference reference)
+    {
+        _context.References.Remove(reference);
+    }
+
+    private void OnActiveDocumentChanged(object? sender, ChatReference? reference)
+    {
+        _context.References.Clear();
+        if (reference is not null)
+        {
+            _context.References.Add(reference);
+        }
+        InvokeAsync(this.StateHasChanged);
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        appNavigationManager.State.ActiveDocumentChanged += OnActiveDocumentChanged;
+    }
+
+    public void Dispose()
+    {
+        appNavigationManager.State.ActiveDocumentChanged -= OnActiveDocumentChanged;
+    }
+
+    private void AddReference(ChatReference reference)
+    {
+        if (!_context.References.Contains(reference))
+        {
+            _context.References.Add(reference);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (ChatContext is not null)
+        {
+            _context = ChatContext;
+        }
+
+        if (ActiveDocument is not null)
+        {
+            if (!_context.References.Contains(ActiveDocument))
+            {
+                _context.References.Clear();
+                _context.References.Add(ActiveDocument);
+            }
+        }
+    }
+}

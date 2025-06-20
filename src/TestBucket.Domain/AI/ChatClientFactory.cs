@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using TestBucket.Domain.AI.Models;
@@ -47,8 +48,7 @@ internal class ChatClientFactory : IChatClientFactory
             try
             {
                 var ollama = new OllamaSharp.OllamaApiClient(settings.AiProviderUrl, model);
-
-                return ollama;
+                return new ChatClientBuilder(ollama).UseFunctionInvocation().Build();
             }
             catch (Exception) { }
         }
@@ -68,7 +68,7 @@ internal class ChatClientFactory : IChatClientFactory
     /// <returns></returns>
     private static string GetModelName(ModelType modelType, GlobalSettings settings)
     {
-        string model = settings.LlmModel ?? "deepseek-r1:30b";
+        string model = settings.LlmModel ?? "phi4-mini:3.8b";
         if (modelType == ModelType.TestGenerator && !string.IsNullOrEmpty(settings.LlmTestGenerationModel))
         {
             model = settings.LlmTestGenerationModel;

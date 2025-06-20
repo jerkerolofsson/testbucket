@@ -12,8 +12,8 @@ namespace TestBucket.Domain.Settings.Appearance
         {
             _userPreferencesManager = manager;
 
-            Metadata.Name = "Explorer Dock";
-            Metadata.Category.Name = "Appearance";
+            Metadata.Name = "explorer-dock";
+            Metadata.Category.Name = "appearance";
             Metadata.Category.Icon = SettingIcon.Appearance;
             Metadata.Section.Name = "Layout";
             Metadata.Type = FieldType.Integer;

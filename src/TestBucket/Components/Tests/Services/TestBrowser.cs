@@ -8,6 +8,7 @@ using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.Models;
+using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Components.Tests.TestLab.Services;
 using TestBucket.Components.Tests.TestRepository.Services;
 using TestBucket.Components.Tests.TestRuns.Controllers;
@@ -18,6 +19,7 @@ using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Milestones;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Testing.Aggregates;
@@ -114,6 +116,26 @@ internal class TestBrowser : TenantBaseService
         _testRepositoryController = testRepositoryController;
         _testLabController = testLabController;
         _testRunController = testRunController;
+    }
+
+
+    public async Task<TestCase?> PickTestCaseAsync(TestProject? project, Team? team)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        var parameters = new DialogParameters<PickTestCaseDialog>()
+        {
+            { x => x.Project, project },
+            { x => x.Team, team },
+        };
+
+        var dialog = await _dialogService.ShowAsync<PickTestCaseDialog>(_loc["select-test"], parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is TestCase testCase)
+        {
+            return testCase;
+        }
+        return null;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -1052,9 +1074,9 @@ internal class TestBrowser : TenantBaseService
 
     internal async Task SyncWithActiveDocumentAsync(TestCase selectedTestCase)
     {
-        if(_appNavigationManager.State.TestTreeView is not null)
+        if(_appNavigationManager.UIState.TestTreeView is not null)
         {
-            await _appNavigationManager.State.TestTreeView.GoToTestCaseAsync(selectedTestCase);
+            await _appNavigationManager.UIState.TestTreeView.GoToTestCaseAsync(selectedTestCase);
         }
     }
 

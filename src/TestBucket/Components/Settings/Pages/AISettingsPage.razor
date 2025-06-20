@@ -81,7 +81,7 @@
         <MudText Class="mt-5" Typo="Typo.h2">Default Model</MudText>
         <MudStack Row Spacing="5">
             <MudRadioGroup Value="_globalSettings.LlmModel" ValueChanged="OnDefaultModelChanged" T="string">
-                @foreach(var model in LlmModels.GetModels(ModelCapability.Reasoning))
+                @foreach(var model in LlmModels.GetModels(ModelCapability.Tools))
                 {
                     <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
                         <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />

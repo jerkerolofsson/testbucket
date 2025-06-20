@@ -228,4 +228,7 @@
   <data name="AI" xml:space="preserve">
     <value>AI</value>
   </data>
+  <data name="mcp" xml:space="preserve">
+    <value>MCP</value>
+  </data>
 </root>

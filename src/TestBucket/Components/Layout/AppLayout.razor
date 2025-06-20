@@ -58,10 +58,7 @@
                             <MudToolBar Style="@MenuStyle" Class="@MenuClass" data-testid="main-toolbar">
                                 <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
 
-                                    @* <TeamDropDown SelectedTeam="@_team" SelectedTeamChanged="OnSelectedTeamChanged" /> *@
-
                                     <ProjectBadgePicker Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" />
-                                    @* <ProjectDropDown Team="@_team" SelectedProject="@_project" SelectedProjectChanged="OnSelectedProjectChanged" /> *@
 
                                     <TbNavLink Href="@codeUrl">@loc["code"]</TbNavLink>
                                     <TbNavLink Href="@requirementsUrl">@loc["requirements"]</TbNavLink>

@@ -20,20 +20,34 @@ public class AuthenticatedTool
         _apiKeyAuthenticator = apiKeyAuthenticator ?? throw new ArgumentNullException(nameof(apiKeyAuthenticator));
     }
 
+    /// <summary>
+    /// This is used to enable the tool to use the current ClaimsPrincipal and invoke the tool directly from an
+    /// IChatClient or similar, not requiring authentication from the AuthorizationHeader
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <exception cref="ArgumentNullException"></exception>
+    public void SetClaimsPrincipal(ClaimsPrincipal principal)
+    {
+        _principal = principal ?? throw new ArgumentNullException(nameof(principal));
+    }
+
     public async Task<bool> IsAuthenticatedAsync()
     {
-        var authorization = AuthenticatedTool.AuthorizationHeader.Value;
-        if(authorization is null)
+        if (_principal is null)
         {
-            return false;
-        }
-        var header = AuthenticationHeaderValue.Parse(authorization);
-        if(header.Scheme.ToLower() != "bearer" || header.Parameter is null)
-        {
-            return false;
+            var authorization = AuthenticatedTool.AuthorizationHeader.Value;
+            if (authorization is null)
+            {
+                return false;
+            }
+            var header = AuthenticationHeaderValue.Parse(authorization);
+            if (header.Scheme.ToLower() != "bearer" || header.Parameter is null)
+            {
+                return false;
+            }
+            _principal = await _apiKeyAuthenticator.AuthenticateAsync(header.Parameter);
         }
 
-        _principal = await _apiKeyAuthenticator.AuthenticateAsync(header.Parameter);
         return _principal is not null && _principal.Identity?.IsAuthenticated == true;
     }
 }

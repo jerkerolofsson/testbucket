@@ -1361,3 +1361,114 @@ div.tb-profile-image.tb-background-9 {
     padding: 16px 16px 16px 16px;
 }
 
+.tb-navmenu > .mud-tabs-reverse {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    height: 100%;
+    overflow: hidden;
+    --border-color: var(--mud-palette-lines-inputs);
+
+}
+
+.tb-navmenu > .mud-tabs-reverse > .mud-tabs-tabbar {
+    order: 1;
+    padding: 1px;
+}
+.tb-navmenu > .mud-tabs-reverse > .mud-tabs-tabbar .mud-tabs-tabbar-inner {
+    min-height: fit-content;
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+/* If the tabs are not all visible, hide the border-line */
+.tb-navmenu > .mud-tabs-reverse > .mud-tabs-tabbar .mud-tabs-tabbar-inner:has(.mud-tabs-scroll-button) .mud-tabs-header-after {
+    display: none;
+}
+
+.tb-navmenu > .mud-tabs-reverse > .mud-tabs-panels {
+    overflow: auto;
+}
+
+.tb-navmenu > .mud-tabs-reverse .mud-tabs-tabbar-content {
+    flex: unset;
+}
+
+/* This is padding if the width is larger than the tab buttons */
+.tb-navmenu > .mud-tabs-reverse .mud-tabs-header-after {
+    width: 100%;
+    border-top: solid 1px var(--border-color);
+}
+
+.tb-navmenu > .mud-tabs-reverse > .mud-tabs-tabbar .mud-tab {
+    font-size: var(--mud-typography-subtitle1-size);
+    margin-top: 0px;
+    padding: 8px;
+    min-height:unset;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-top: solid 1px var(--border-color);
+
+}
+
+.tb-navmenu > .mud-tabs-reverse > .mud-tabs-tabbar .mud-tab.mud-tab-active {
+    border-top: none;
+    border-left: solid 1px var(--border-color);
+    border-right: solid 1px var(--border-color);
+    border-bottom: solid 1px var(--border-color);
+    background: inherit;
+}
+
+.tb-agent-chat {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100%;
+}
+
+.tb-agent-chat-conversation {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px;
+    overflow: auto;
+}
+
+.tb-agent-submit {
+    border-top: solid 1px var(--mud-palette-lines-inputs);
+}
+
+.tb-agent-submit .prompt {
+    background: var(--mud-palette-surface-darken);
+    padding: 5px;
+
+    display: grid;
+    grid-template-columns: 1fr 48px;
+    gap: 4px;
+}
+
+.tb-agent-chat .chat {
+    padding: 2px;
+    --chat-background: var(--mud-palette-secondary);
+    background: var(--chat-background);
+    border-radius: var(--mud-default-borderradius);
+}
+
+.tb-agent-chat .chat.assistant {
+    align-self: flex-start;
+    margin-right: 16px;
+}
+
+
+.tb-agent-chat .chat.function-call {
+    padding: 8px;
+    --chat-background: var(--mud-palette-primary);
+}
+
+.tb-agent-chat .chat .mud-markdown-preview {
+    background: var(--chat-background);
+}
+
+.tb-agent-chat .chat.user {
+    margin-left: 16px;
+    align-self: flex-end;
+    --chat-background: var(--mud-palette-surface-darken);
+}

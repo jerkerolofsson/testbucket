@@ -20,7 +20,7 @@ public class LlmModels
             Vendor = "meta",
             Name = "Llama3.2 1b",
             OllamaName = "llama3.2:1b",
-            Capabilities = ModelCapability.Classification | ModelCapability.Tools
+            Capabilities = ModelCapability.Classification
         },
         ["llama3.2:3b"] = new LlmModel
         {
@@ -28,6 +28,14 @@ public class LlmModels
             Vendor = "meta",
             Name = "Llama3.2 3b",
             OllamaName = "llama3.2:3b",
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools
+        },
+        ["llama3.1:8b"] = new LlmModel
+        {
+            Icon = TbIcons.Brands.Meta,
+            Vendor = "meta",
+            Name = "Llama3.1 8b",
+            OllamaName = "llama3.1:8b",
             Capabilities = ModelCapability.Classification | ModelCapability.Tools
         },
         ["deepseek-r1:1.5b"] = new LlmModel
@@ -44,14 +52,14 @@ public class LlmModels
             Vendor = "microsoft",
             Name = "Phi3 3.8b",
             OllamaName = "phi3:3.8b",
-            Capabilities = ModelCapability.Classification
+            Capabilities = ModelCapability.Classification | ModelCapability.Reasoning
         },
         ["phi4"] = new LlmModel
         {
             Vendor = "microsoft",
             Name = "phi4",
             OllamaName = "phi4",
-            Capabilities = ModelCapability.Classification | ModelCapability.Tools
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Reasoning
         },
         ["phi4-mini"] = new LlmModel
         {
@@ -59,7 +67,7 @@ public class LlmModels
             Vendor = "microsoft",
             Name = "Phi4 mini",
             OllamaName = "phi4-mini:3.8b",
-            Capabilities = ModelCapability.Classification | ModelCapability.Tools
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Reasoning
         },
         ["qwen3:0.6b"] = new LlmModel
         {
@@ -67,7 +75,7 @@ public class LlmModels
             Vendor = "alibaba-cloud",
             Name = "Qwen3 0.6b",
             OllamaName = "qwen3:0.6b",
-            Capabilities = ModelCapability.Classification | ModelCapability.Tools
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Reasoning
         },
         ["qwen3:1.7b"] = new LlmModel
         {
@@ -75,7 +83,7 @@ public class LlmModels
             Vendor = "alibaba-cloud",
             Name = "Qwen3 1.7b",
             OllamaName = "qwen3:1.7b",
-            Capabilities = ModelCapability.Classification | ModelCapability.Tools
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Reasoning
         },
     };
 

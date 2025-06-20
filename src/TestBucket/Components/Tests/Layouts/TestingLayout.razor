@@ -1,4 +1,5 @@
 ﻿@using System.Net
+@using TestBucket.Components.Agent.Controls
 @using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Domain.Automation.Pipelines.Models
 @using TestBucket.Domain.Testing.TestRuns.Search
@@ -16,21 +17,39 @@
 
 <Splitter Style="height: 100%" Dock="_dock" Bordered="false" Dimension="20" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
-        <div class="tb-navmenu side">
-            <TestTreeView @ref="_testTreeView"
-                          Project="@_project" 
-                          Team="@_team"
-                          OnTestRepositoryClicked="OnTestRepositoryClicked"
-                          OnTestLabClicked="OnTestLabClicked"
-                          OnOtherClicked="OnOtherClicked"
-                          OnTestLabFolderClicked="OnTestLabFolderClicked"
-                          OnTestRepositoryFolderClicked="OnTestRepositoryFolderClicked"
-                          OnPipelineClicked="OnPipelineClicked"
-                          OnTestRunTestsFolderClicked="OnTestRunTestsFolderClicked"
-                          OnFolderClicked="OnFolderClicked" 
-                          OnTestSuiteClicked="OnTestSuiteClicked" 
-                          OnTestCaseClicked="OnTestCaseClicked" 
-                          OnTestRunClicked="OnTestRunClicked" />
+        <div class="tb-navmenu side tb-explorermenu">
+
+            <MudTabs Position="Position.Bottom" ActivePanelIndex="1" MinimumTabWidth="80px">
+
+                <Header>
+                    <div class="tb-tab-padding"/>
+                </Header>
+
+                <ChildContent>
+                    <MudTabPanel Text="@loc["chat"]">
+                        <AgentChat ActiveDocument="@appNavigationManager.State.ActiveDocument"/>
+                    </MudTabPanel>
+
+                    <MudTabPanel Text="@loc["explorer"]">
+                        <TestTreeView @ref="_testTreeView"
+                                      Project="@_project"
+                                      Team="@_team"
+                                      OnTestRepositoryClicked="OnTestRepositoryClicked"
+                                      OnTestLabClicked="OnTestLabClicked"
+                                      OnOtherClicked="OnOtherClicked"
+                                      OnTestLabFolderClicked="OnTestLabFolderClicked"
+                                      OnTestRepositoryFolderClicked="OnTestRepositoryFolderClicked"
+                                      OnPipelineClicked="OnPipelineClicked"
+                                      OnTestRunTestsFolderClicked="OnTestRunTestsFolderClicked"
+                                      OnFolderClicked="OnFolderClicked"
+                                      OnTestSuiteClicked="OnTestSuiteClicked"
+                                      OnTestCaseClicked="OnTestCaseClicked"
+                                      OnTestRunClicked="OnTestRunClicked" />
+                    </MudTabPanel>
+                </ChildContent>
+
+            </MudTabs>
+
         </div>
     </StartContent>
 
@@ -74,7 +93,7 @@
 
     protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        appNavigationManager.State.TestTreeView = _testTreeView;
+        appNavigationManager.UIState.TestTreeView = _testTreeView;
         return base.OnAfterRenderAsync(firstRender);
     }
 

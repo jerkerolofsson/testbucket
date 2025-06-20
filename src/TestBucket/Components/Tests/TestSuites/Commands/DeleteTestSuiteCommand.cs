@@ -44,16 +44,7 @@ internal class DeleteTestSuiteCommand : ICommand
         {
             return;
         }
-        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
-        {
-            YesText = _loc["yes"],
-            NoText = _loc["no"],
-            Title = _loc["confirm-delete-title"],
-            MarkupMessage = new MarkupString(_loc["confirm-delete-message"])
-        });
-        if (result == true)
-        {
-            await _browser.DeleteTestSuiteByIdAsync(suite.Id);
-        }
+  
+        await _browser.DeleteTestSuiteByIdAsync(suite.Id);
     }
 }

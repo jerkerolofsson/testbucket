@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @layout AppLayout
 @using Humanizer
+@using TestBucket.Components.Agent.Controls
 @using TestBucket.Components.Code.Controls
 @using TestBucket.Components.Layout
 @using TestBucket.Blazor.Components.Splitter
@@ -17,9 +18,26 @@
 
 <Splitter Style="height: 100%" Bordered="false" Dock="_dock" Dimension="20" EnableMargin="false" Color="Color.Default">
     <StartContent>
-        <MudStack Class="pa-2 tb-navmenu side" Style="width: 100%;">
-            <MudText Typo="Typo.h1">@loc["code"]</MudText>
-            <CodeNavMenu />
+        <MudStack Class="tb-navmenu side tb-explorermenu" Style="width: 100%;">
+            <MudTabs Position="Position.Bottom" ActivePanelIndex="1" MinimumTabWidth="80px">
+
+                <Header>
+                    <div class="tb-tab-padding"/>
+                </Header>
+
+                <ChildContent>
+                    <MudTabPanel Text="@loc["chat"]">
+                        <AgentChat ActiveDocument="@appNavigationManager.State.ActiveDocument"/>
+                    </MudTabPanel>
+
+                    <MudTabPanel Text="@loc["explorer"]">
+                        <MudStack Class="pa-2" Style="width: 100%;">
+                            <MudText Typo="Typo.h1">@loc["code"]</MudText>
+                            <CodeNavMenu />
+                        </MudStack>
+                    </MudTabPanel>
+                </ChildContent>
+            </MudTabs>
         </MudStack>
     </StartContent>
 

@@ -21,8 +21,13 @@ public class CodeMcpTools : AuthenticatedTool
     }
 
     [McpServerTool(Name = "search-features", Title ="Search features"), Description("Searches for features")]
-    public async Task<IReadOnlyList<AritecturalComponentDto>> SearchFeaturesAsync(string searchText, int offset, int count)
+    public async Task<IReadOnlyList<AritecturalComponentDto>> SearchFeaturesAsync(string searchText, int offset = 0, int count = 1)
     {
+        if(count == 0)
+        {
+            count = 1;
+        }
+
         var isAuthenticated = await IsAuthenticatedAsync();
         if (isAuthenticated && _principal is not null)
         {

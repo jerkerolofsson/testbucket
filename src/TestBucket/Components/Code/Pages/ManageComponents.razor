@@ -18,6 +18,7 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<CodeStrings> codeLoc
 @inject AuthenticationStateProvider authenticationStateProvider 
+@inject AppNavigationManager appNavigationManager
 
 <Splitter Class="container-fill pa-2" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
     <StartContent>
@@ -156,6 +157,7 @@
     private async Task OnRowClicked(Component component)
     {
         _selectedComponent = component;
+        appNavigationManager.State.SetSelectedComponent(component);
         if (_project is not null)
         {
             var q = $"component:\"{_selectedComponent.Name}\"";

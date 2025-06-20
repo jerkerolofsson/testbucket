@@ -1,12 +1,14 @@
 ﻿
-using Microsoft.AspNetCore.Components;
-
 using TestBucket.Components.Requirements.Controls;
 using TestBucket.Components.Tests.TestCases.Controls;
+using TestBucket.Domain.AI.Agent;
+using TestBucket.Domain.AI.Agent.Models;
 using TestBucket.Domain.Automation.Pipelines.Models;
+using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Shared;
 using TestBucket.Domain.TestAccounts.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRuns.Search;
@@ -21,229 +23,14 @@ public class AppNavigationManager
 {
     private readonly NavigationManager _navigationManager;
 
-    internal class NavigationState
+    internal class UserInterfaceState
     {
-        private List<TestCase> _multiSelectedTestCases = [];
-        private List<Requirement> _multiSelectedRequirements = [];
-
-        /// <summary>
-        /// Local issue currently in focus
-        /// </summary>
-        public LocalIssue? SelectedIssue { get; set; }
-
-
-        /// <summary>
-        /// Linked issue currently in focus
-        /// </summary>
-        public LinkedIssue? SelectedLinkedIssue { get; set; }
-
-        /// <summary>
-        /// Selected requirement specification
-        /// </summary>
-        public RequirementSpecification? SelectedRequirementSpecification { get; private set; }
-
-        /// <summary>
-        /// Selected requirement specification folder
-        /// </summary>
-        public RequirementSpecificationFolder? SelectedRequirementSpecificationFolder { get; set; }
-
-        /// <summary>
-        /// Selected requirement
-        /// </summary>
-        public Requirement? SelectedRequirement { get; set; }
-
-        /// <summary>
-        /// Selected test case
-        /// </summary>
-        public TestCase? SelectedTestCase { get; private set; }
-
-        /// <summary>
-        /// Selected test run
-        /// </summary>
-        public TestRun? SelectedTestRun { get; set; }
-
-        /// <summary>
-        /// Selected test case run
-        /// </summary>
-        public TestCaseRun? SelectedTestCaseRun { get; set; }
-
-        /// <summary>
-        /// Selected test suite
-        /// </summary>
-        public TestSuite? SelectedTestSuite { get; private set; }
-
-        /// <summary>
-        /// Selected folder within a test suite
-        /// </summary>
-        public TestSuiteFolder? SelectedTestSuiteFolder { get; private set; }
-
-        /// <summary>
-        /// Selected folder in test repo
-        /// </summary>
-        public TestRepositoryFolder? SelectedTestRepositoryFolder { get; private set; }
-
-        /// <summary>
-        /// Selected folder in test lab
-        /// </summary>
-        public TestLabFolder? SelectedTestLabFolder { get; private set; }
-
-        /// <summary>
-        /// Selected project
-        /// </summary>
-        public TestProject? SelectedProject { get; set; }
-
-        /// <summary>
-        /// Selected team
-        /// </summary>
-        public Team? SelectedTeam { get; set; }
 
         public TestTreeView? TestTreeView { get; set; }
         public RequirementTreeView? RequirementTreeView { get; set; }
-
-        public IReadOnlyList<TestCase> MultiSelectedTestCases => _multiSelectedTestCases;
-
-        public bool IsTestLabSelected { get; private set; }
-        public bool IsTestRepositorySelected { get; private set; }
-
-        public void SetSelectedTestLabFolder(TestLabFolder folder)
-        {
-            ClearSelection();
-            this.SelectedTestLabFolder = folder;
-        }
-        public void SetSelectedTestRepositoryFolder(TestRepositoryFolder folder)
-        {
-            ClearSelection();
-            this.SelectedTestRepositoryFolder = folder;
-        }
-        public void SelectTestRepository()
-        {
-            ClearSelection();
-            IsTestRepositorySelected = true;
-        }
-        public void SelectTestLab()
-        {
-            ClearSelection();
-            IsTestLabSelected = true;
-        }
-
-        public void ClearSelection()
-        {
-            IsTestLabSelected = false;
-            IsTestRepositorySelected = false;
-
-            this.SelectedTestRepositoryFolder = null;
-            this.SelectedTestSuite = null;
-            this.SelectedTestSuiteFolder = null;
-            this.SelectedTestCase = null;
-            
-            this.SelectedTestRun = null;
-            this.SelectedTestLabFolder = null;
-            
-            this.SelectedRequirement = null;
-            this.SelectedRequirementSpecification = null;
-            this.SelectedRequirementSpecificationFolder = null;
-            
-            this.SelectedIssue = null;
-        }
-        internal void SetMultiSelectedRequirements(List<Requirement> list)
-        {
-            _multiSelectedTestCases = [];
-            _multiSelectedRequirements = list;
-        }
-        internal void SetMultiSelectedTestCases(List<TestCase> list)
-        {
-            _multiSelectedTestCases = list;
-            _multiSelectedRequirements = [];
-        }
-
-        internal void SetMultiSelectedTestSuiteFolders(List<TestSuiteFolder> list)
-        {
-        }
-
-        internal void SetMultiSelectedTestSuites(List<TestSuite> list)
-        {
-        }
-
-        internal void SetSelectedRequirement(Requirement? requirement)
-        {
-            ClearSelection();
-            SelectedRequirement = requirement;
-        }
-        internal void SetSelectedRequirementSpecificationFolder(RequirementSpecificationFolder? folder, RequirementSpecification? spec)
-        {
-            ClearSelection();
-            SelectedRequirementSpecificationFolder = folder;
-            SelectedRequirementSpecification = spec;
-        }
-        internal void SetSelectedRequirementSpecificationFolder(RequirementSpecificationFolder? folder)
-        {
-            ClearSelection();
-            SelectedRequirementSpecificationFolder = folder;
-        }
-        internal void SetSelectedRequirementSpecification(RequirementSpecification? spec)
-        {
-            ClearSelection();
-            SelectedRequirementSpecification = spec;
-        }
-        internal void SetSelectedRequirement(Requirement? requirement, RequirementSpecificationFolder? folder, RequirementSpecification? requirementSpecification)
-        {
-            ClearSelection();
-            SelectedRequirement = requirement;
-            SelectedRequirementSpecificationFolder = folder;
-            SelectedRequirementSpecification = requirementSpecification;
-        }
-        internal void SetSelectedRequirement(RequirementSpecification? requirementSpecification)
-        {
-            ClearSelection();
-            SelectedRequirementSpecification = requirementSpecification;
-        }
-
-        internal void SetSelectedTestSuite(TestSuite? suite)
-        {
-            ClearSelection();
-            SelectedTestSuite = suite;
-
-        }
-        internal void SetSelectedTestSuiteFolder(TestSuiteFolder? folder, TestSuite? suite)
-        {
-            ClearSelection();
-            SelectedTestSuiteFolder = folder;
-            SelectedTestSuite = suite;
-        }
-        internal void SetSelectedTestSuiteFolder(TestSuiteFolder? folder)
-        {
-            SetSelectedTestSuiteFolder(folder, SelectedTestSuite);
-        }
-
-        internal void SetSelectedTestCase(TestCase? testCase)
-        {
-            ClearSelection();
-            SelectedTestCase = testCase;
-        }
-        internal void SetSelectedTestCase(TestCase? testCase, TestSuiteFolder? folder, TestSuite? suite)
-        {
-            ClearSelection();
-            SelectedTestCase = testCase;
-            SelectedTestSuiteFolder = folder;
-            SelectedTestSuite = suite;
-        }
-
-        internal void SetSelectedTestRun(TestRun testRun)
-        {
-            ClearSelection();
-            SelectedTestRun = testRun;
-            SelectedRequirement = null;
-            SelectedRequirementSpecification = null;
-            SelectedRequirementSpecificationFolder = null;
-            SelectedTestLabFolder = null;
-            SelectedTestRepositoryFolder = null;
-
-            SelectedTestCaseRun = null;
-            SelectedTestRun = null;
-            _multiSelectedRequirements = [];
-            _multiSelectedTestCases = [];
-        }
     }
+
+    internal UserInterfaceState UIState { get; } = new();
 
     internal NavigationState State { get; } = new();
 

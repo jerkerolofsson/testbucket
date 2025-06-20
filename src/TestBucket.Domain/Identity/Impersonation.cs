@@ -39,6 +39,18 @@ namespace TestBucket.Domain.Identity
             return new ClaimsPrincipal([new ClaimsIdentity(claims)]);
         }
 
+        public static ClaimsPrincipal ChangeProject(ClaimsPrincipal user, long projectId)
+        {
+            // Permissions
+            var builder = new EntityPermissionBuilder();
+
+            var claims = new List<Claim>(user.Claims.Where(x=>x.Type != "project"));
+            claims.Add(new Claim("project", projectId.ToString()));
+
+
+            return new ClaimsPrincipal([new ClaimsIdentity(claims, user.Identity?.AuthenticationType)]);
+        }
+
 
         public static ClaimsPrincipal Impersonate(Action<EntityPermissionBuilder> configure)
         {

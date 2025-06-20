@@ -428,9 +428,9 @@ internal class RequirementBrowser : TenantBaseService
 
     internal async Task SyncWithActiveDocumentAsync(Requirement requirement)
     {
-        if (_appNavigationManager.State.RequirementTreeView is not null)
+        if (_appNavigationManager.UIState.RequirementTreeView is not null)
         {
-            await _appNavigationManager.State.RequirementTreeView.GoToRequirementAsync(requirement);
+            await _appNavigationManager.UIState.RequirementTreeView.GoToRequirementAsync(requirement);
         }
     }
 }

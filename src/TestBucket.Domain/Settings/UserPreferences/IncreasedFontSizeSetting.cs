@@ -19,11 +19,11 @@ namespace TestBucket.Domain.Settings.Appearance
         {
             _userPreferencesManager = manager;
 
-            Metadata.Name = "Increased Font Size";
-            Metadata.Description = "Increases the font size overriding theme settings";
-            Metadata.Category.Name = "Accessibility";
+            Metadata.Name = "increased-font-size";
+            Metadata.Description = "incrased-font-size-description";
+            Metadata.Category.Name = "accessibility";
             Metadata.Category.Icon = SettingIcon.Accessibility;
-            Metadata.Section.Name = "Appearance";
+            Metadata.Section.Name = "appearance";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.Boolean;
         }

@@ -875,4 +875,7 @@
   <data name="delete-test-repository-folder-description" xml:space="preserve">
     <value />
   </data>
+  <data name="api-keys-description" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -15,11 +15,11 @@ namespace TestBucket.Domain.AI.Settings
             _settingsProvider = settingsProvider;
             _mediator = progressManager;
 
-            Metadata.Name = "Test Generator Model";
-            Metadata.Description = "Model to use for test case generation. This model requires support for tools (DeepSeek-R1 is not supported). If empty the default model will be used.";
+            Metadata.Name = "ai-test-generator-model";
+            Metadata.Description = null;
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
-            Metadata.Section.Name = "Models";
+            Metadata.Section.Name = "ai-models";
             Metadata.SearchText = "ai-models";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;

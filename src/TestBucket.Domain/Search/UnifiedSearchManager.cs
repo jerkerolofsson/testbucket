@@ -14,12 +14,14 @@ namespace TestBucket.Domain.Search
         private readonly ITestCaseRepository _testCaseRepo;
         private readonly IFieldDefinitionManager _fieldDefinitionManager;
         private readonly IRequirementRepository _requirementRepo;
+        private readonly ISettingsManager _settingsManager;
 
-        public UnifiedSearchManager(ITestCaseRepository testCaseRepo, IFieldDefinitionManager fieldDefinitionManager, IRequirementRepository requirementRepo)
+        public UnifiedSearchManager(ITestCaseRepository testCaseRepo, IFieldDefinitionManager fieldDefinitionManager, IRequirementRepository requirementRepo, ISettingsManager settingsManager)
         {
             _testCaseRepo = testCaseRepo;
             _fieldDefinitionManager = fieldDefinitionManager;
             _requirementRepo = requirementRepo;
+            _settingsManager = settingsManager;
         }
 
         /// <summary>
@@ -36,10 +38,21 @@ namespace TestBucket.Domain.Search
 
             var result = new List<SearchResult>();
 
+            SearchForSettingLinks(principal,testProject,text,result);
             await SearchForTestsAsync(testProject, text, tenantId, result);
             await SearchForRequirementsAsync(testProject, text, tenantId, result);
 
             return result;
+        }
+
+        private void SearchForSettingLinks(ClaimsPrincipal principal, TestProject? testProject, string text, List<SearchResult> result)
+        {
+            var context = new SettingContext { Principal = principal, ProjectId = testProject?.Id };
+            var links = _settingsManager.SearchLinks(context, text);
+            foreach(var link in links)
+            {
+                result.Add(new SearchResult(link));
+            }
         }
 
         private async Task SearchForRequirementsAsync(TestProject? testProject, string text, string tenantId, List<SearchResult> result)

@@ -19,11 +19,11 @@ namespace TestBucket.Domain.Settings.Appearance
         {
             _userPreferencesManager = manager;
 
-            Metadata.Name = "Theme";
+            Metadata.Name = "theme";
             //Metadata.Description = "";
-            Metadata.Category.Name = "Appearance";
+            Metadata.Category.Name = "appearance";
             Metadata.Category.Icon = SettingIcon.Appearance;
-            Metadata.Section.Name = "Theme";
+            Metadata.Section.Name = "theme";
             Metadata.Options = ["Default", "Blue Steel", "Le Trigre"];
             Metadata.Type = FieldType.SingleSelection;
         }

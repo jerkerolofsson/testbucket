@@ -11,6 +11,15 @@ public static class SettingLinkExtensions
     {
         services.AddSingleton(new SettingsLink
         {
+            Title = "mcp",
+            Description = "mcp-description",
+            RelativeUrl = "/{tenantId}/Settings/Categories/MCP",
+            Keywords = "mcp model context protocol ai llm",
+            Icon = TbIcons.Filled.ModelContextProtocol
+        });
+
+        services.AddSingleton(new SettingsLink
+        {
             Title = "integrations",
             Description = "integrations-description",
             RelativeUrl = "/{tenantId}/Settings/Projects/{projectId}/Integrations",

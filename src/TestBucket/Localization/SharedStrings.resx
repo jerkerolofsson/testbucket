@@ -879,4 +879,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="delete-test-repository-folder-description" xml:space="preserve">
     <value>Deletes the folder, all child folders, all test suites and all test cases within those folders</value>
   </data>
+  <data name="api-keys-description" xml:space="preserve">
+    <value>Access tokens and API keys</value>
+  </data>
 </root>

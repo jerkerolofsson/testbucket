@@ -52,7 +52,7 @@
                 <MudText Typo="Typo.caption">@securityLoc["token-created"]</MudText>
 
                 <MudStack Row AlignItems="AlignItems.Center">
-                    <MudTextField ReadOnly Value="@_newApiKey.Key"/>
+                    <MudTextField Variant="Variant.Filled" ReadOnly Value="@_newApiKey.Key" Style="user-select: all" />
                     <CopyToClipboard Text="@_newApiKey.Key"/>
                 </MudStack>
                 

@@ -1,5 +1,6 @@
 ﻿@using TestBucket.Components.Account
 @using TestBucket.Components.Layout.Controls
+@using TestBucket.Components.Requirements
 @using TestBucket.Components.Shared.Themeing
 @using TestBucket.Components.Teams
 @using TestBucket.Components.Teams.Controls
@@ -12,17 +13,44 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject IUserPreferencesManager _userPreferencesManager
 @inject HotKeysService hotKeysService
+@inject IStringLocalizer<SharedStrings> loc 
 @implements IAsyncDisposable
 
 <MudAutocomplete 
     Class="tb-unified-search"
     @ref="_element"
     AdornmentIcon="@Icons.Material.Filled.Search" Clearable
-    T="SearchResult" Placeholder="/" Value="_searchState" ValueChanged="SearchStateChanged" SearchFunc="@Search" Variant="Variant.Outlined" />
+    T="SearchResult" Placeholder="/" Value="_searchState" ValueChanged="SearchStateChanged" SearchFunc="@Search" Variant="Variant.Outlined">
+    <ItemTemplate>
+        <MudStack Row AlignItems="AlignItems.Center">
+            @if(context.TestCase is not null)
+            {
+                <MudIcon Icon="@TestIcons.GetIcon(context.TestCase)"/>
+                <MudText>@context.TestCase.Name</MudText>
+            }
+            else if (context.Requirement is not null)
+            {
+                <MudIcon Icon="@RequirementIcons.GetIcon(context.Requirement)" />
+                <MudText>@context.Requirement.Name</MudText>
+            }
+            else if (context.SettingsLink is not null)
+            {
+                <MudIcon Icon="@TbIcons.BoldDuoTone.Settings" />
+                <MudText>@context.SettingsLink.Title</MudText>
+            }
+        </MudStack>
+    </ItemTemplate>
+</MudAutocomplete>
 
 @code {
     private SearchResult? _searchState;
     private MudAutocomplete<SearchResult>? _element;
+    [CascadingParameter] TestProject? Project { get; set; }
+
+    private string TransformSettingsUrl(string relativeUrl)
+    {
+        return relativeUrl.Replace("{tenantId}", Project?.TenantId ?? "select-tenant").Replace("{projectId}", (Project?.Slug ?? "select-project"));
+    }
 
     #region Search
     /// <summary>
@@ -36,9 +64,13 @@
         {
             appNavigationManager.NavigateTo(state.TestCase);
         }
-        if (state?.Requirement is not null)
+        else if (state?.Requirement is not null)
         {
             appNavigationManager.NavigateTo(state.Requirement);
+        }
+        else if(state?.SettingsLink is not null)
+        {
+            appNavigationManager.NavigateTo(TransformSettingsUrl(state.SettingsLink.RelativeUrl));
         }
     }
 

@@ -9,18 +9,32 @@
     
     <MudText Class="mb-3" Typo="Typo.h1">@Category</MudText>
 
-    @foreach(var section in _sections)
-    {
-        <MudText Class="mt-2 mb-2" Typo="Typo.h2">@(section.Name)</MudText>
-        <MudStack Spacing="1">
-            @foreach (var setting in _settings.Where(x => x.Metadata.Section.Name == section.Name))
+    <MudStack Class="pa-5">
+         <MudExpansionPanels>
+            @foreach (var settingSection in _sections)
             {
-                if(_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
-                {
-                    <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
-                    </FieldEditor>
-                }
+                <MudExpansionPanel>
+                    <TitleContent>
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@SettingIcons.GetIcon(settingSection.Icon)" />
+                            @settingSection.Name
+                        </MudStack>
+                    </TitleContent>
+                    <ChildContent>
+                        <MudStack Spacing="1">
+                            @foreach (var setting in _settings.Where(x => x.Metadata.Section.Name == settingSection.Name))
+                            {
+                                if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
+                                {
+                                    <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                                    </FieldEditor>
+                                }
+                            }
+                        </MudStack>
+
+                    </ChildContent>
+                </MudExpansionPanel>
             }
-        </MudStack>
-    }
+         </MudExpansionPanels>
+    </MudStack>
 </MudStack>

@@ -11,8 +11,8 @@ namespace TestBucket.Domain.Settings.Appearance
         {
             _userPreferencesManager = manager;
 
-            Metadata.Name = "Dark Mode";
-            Metadata.Category.Name = "Appearance";
+            Metadata.Name = "dark-mode";
+            Metadata.Category.Name = "appearance";
             Metadata.Category.Icon = SettingIcon.Appearance;
             Metadata.Section.Name = "Theme";
             Metadata.Type = FieldType.Boolean;

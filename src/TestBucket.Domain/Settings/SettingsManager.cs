@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 using TestBucket.Domain.Identity.Models;
-using TestBucket.Domain.Settings.Models;
 
 namespace TestBucket.Domain.Settings
 {
@@ -14,14 +9,42 @@ namespace TestBucket.Domain.Settings
 
         public SettingsCategory[] Categories { get; set; }
 
+        private readonly IAppLocalization _localization;
         private readonly ISetting[] _settings;
         private readonly List<SettingsLink> _links = new List<SettingsLink>();
 
-        public SettingsManager(IEnumerable<ISetting> settings, IEnumerable<SettingsLink> links)
+        public SettingsManager(IEnumerable<ISetting> settings, IEnumerable<SettingsLink> links, IAppLocalization localization)
         {
             _links = links.ToList();
             _settings = settings.ToArray();
-            Categories = settings.Select(x => x.Metadata.Category).Distinct().ToArray();
+            Categories = settings.Select(x=>x.Metadata.Category).Distinct().ToArray();
+            _localization = localization;
+
+            // Localize it
+            foreach (var link in _links)
+            {
+                link.Title = _localization.Settings[link.Title];
+                if (link.Description is not null)
+                {
+                    link.Description = _localization.Settings[link.Description];
+                }
+            }
+            foreach(var category in Categories)
+            {
+                category.Name = _localization.Settings[category.Name];
+            }
+            var a = CultureInfo.CurrentCulture;
+            var b = CultureInfo.CurrentUICulture;
+            foreach(var setting in _settings)
+            {
+                setting.Metadata.Category.Name = _localization.Settings[setting.Metadata.Category.Name];
+                setting.Metadata.Section.Name = _localization.Settings[setting.Metadata.Section.Name];
+                setting.Metadata.Name = _localization.Settings[setting.Metadata.Name];
+                if (setting.Metadata.Description is not null)
+                {
+                    setting.Metadata.Description = _localization.Settings[setting.Metadata.Description];
+                }
+            }
         }
 
         public ISetting[] Search(SettingContext context, string text)

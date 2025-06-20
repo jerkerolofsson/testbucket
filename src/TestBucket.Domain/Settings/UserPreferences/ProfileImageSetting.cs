@@ -16,10 +16,10 @@ namespace TestBucket.Domain.Settings.Appearance
         {
             _userManager = manager;
 
-            Metadata.Name = "Profile Image";
-            Metadata.Category.Name = "Profile";
+            Metadata.Name = "profile-image";
+            Metadata.Category.Name = "profile";
             Metadata.Category.Icon = SettingIcon.Profile;
-            Metadata.Section.Name = "Appearance";
+            Metadata.Section.Name = "appearance";
             Metadata.Type = FieldType.ImageUri;
             _profilePictureManager = profilePictureManager;
         }

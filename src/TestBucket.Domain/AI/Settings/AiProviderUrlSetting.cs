@@ -18,8 +18,8 @@ namespace TestBucket.Domain.AI.Settings
         {
             _settingsProvider = settingsProvider;
 
-            Metadata.Name = "AI URL";
-            Metadata.Description = "URL for the AI service";
+            Metadata.Name = "ai-provider-url";
+            Metadata.Description = null;
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
             Metadata.Section.Name = "Provider";

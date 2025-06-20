@@ -1,17 +1,19 @@
 # testbucket
 
-A modern test management system written in C#/Blazor.
+A modern test management system for manual and automated tests
 
 ## Key features
 
-> Note that test bucket is currently in early development. Not all features are fully implemented yet.
+> Note that test bucket is currently in early development. 
 
-- Consolidate manual and automated test results
-- Interactive reports, generate reports
-- Import test results from test automation in various formats (JUnit XML, xUnit XML, TRX, CTRF)
-- Integrate with LLMs to generate test cases based on product definition, test heuristics and requirements (using RAG)
-- Test execution of manual tests
+- MCP Server with support for Claude, VS Code, Visual Studio
+- Integrations with Github, Gitlab, Jira
+- Exploratory testing
+- Management of manual test cases
+- Requirement/Task management
+- Issue management
 - Parameterized tests
 - Templated tests
-- Test environment control
-- Distributed test running for execution of automated tests
+- Test environment configurations
+- Test account management
+- Test resources system for handling of resources such as Android devices

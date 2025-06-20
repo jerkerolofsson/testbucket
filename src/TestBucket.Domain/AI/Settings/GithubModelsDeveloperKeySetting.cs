@@ -9,11 +9,11 @@ namespace TestBucket.Domain.AI.Settings
         {
             _settingsProvider = settingsProvider;
 
-            Metadata.Name = "Github Models API Key";
-            Metadata.Description = "Personal Access Token for Github";
+            Metadata.Name = "ai-github-pat";
+            Metadata.Description = null;
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
-            Metadata.Section.Name = "Provider";
+            Metadata.Section.Name = "ai-provider";
             Metadata.ShowDescription = true;
             Metadata.SearchText = "github-models";
             Metadata.Type = FieldType.String;

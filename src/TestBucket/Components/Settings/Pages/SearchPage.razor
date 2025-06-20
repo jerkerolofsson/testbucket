@@ -7,24 +7,38 @@
 @inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Class="container-settings-page">
+    
+    <MudStack Class="pa-5">
+        @foreach(var link in _links)
+        {
+            <FieldLink Icon="@link.Icon" Href="@TransformUrl(link.RelativeUrl)" HeaderText="@link.Title" Description="@(link.Description??"")" />
+        }
 
-    @foreach(var link in _links)
-    {
-        <FieldLink Icon="@link.Icon" Href="@TransformUrl(link.RelativeUrl)" HeaderText="@loc[link.Title]" Description="@loc[(link.Description??"")]" />
-    }
-
-    @foreach(var section in _sections)
-    {
-        <MudText Class="mb-2" Typo="Typo.h2">@(section.Name)</MudText>
-        <MudStack Spacing="1">
-            @foreach (var setting in _settings.Where(x => x.Metadata.Section.Name == section.Name))
+        <MudExpansionPanels>
+            @foreach(var settingSection in _sections)
             {
-                if(_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
-                {
-                    <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
-                    </FieldEditor>
-                }
+                <MudExpansionPanel>
+                    <TitleContent>
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@SettingIcons.GetIcon(settingSection.Icon)" />
+                            @settingSection.Name
+                        </MudStack>
+                    </TitleContent>
+                    <ChildContent>
+                        <MudStack Spacing="1">
+                            @foreach (var setting in _settings.Where(x => x.Metadata.Section.Name == settingSection.Name))
+                            {
+                                if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
+                                {
+                                    <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                                    </FieldEditor>
+                                }
+                            }
+                        </MudStack>
+
+                    </ChildContent>
+                </MudExpansionPanel>
             }
-        </MudStack>
-    }
+        </MudExpansionPanels>
+</MudStack>
 </MudStack>

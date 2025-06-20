@@ -13,7 +13,7 @@
 
     @foreach (var section in _sections)
     {
-        <MudText Class="mb-2" Typo="Typo.h2">@loc["profile"]</MudText>
+        <MudText Class="mb-2" Typo="Typo.h2">@settingsLoc["profile"]</MudText>
         <MudStack Spacing="1">
             @foreach (var setting in _settings)
             {
@@ -23,14 +23,13 @@
                     </FieldEditor>
                 }
             }
-
-            <Field Row>
-                <FieldHeader>@settingsLoc["language-multilang"]</FieldHeader>
-                <MudSpacer/>
-                <LanguagePicker />
-            </Field>
-
         </MudStack>
     }
+
+    <Field Row>
+        <FieldHeader>@settingsLoc["language-multilang"]</FieldHeader>
+        <MudSpacer />
+        <LanguagePicker />
+    </Field>
 
 </MudStack>

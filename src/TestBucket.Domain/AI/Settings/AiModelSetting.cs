@@ -17,8 +17,8 @@ namespace TestBucket.Domain.AI.Settings
             _settingsProvider = settingsProvider;
             _progressManager = progressManager;
 
-            Metadata.Name = "Default model";
-            Metadata.Description = "Default model to use for inference";
+            Metadata.Name = "ai-default-model";
+            Metadata.Description = null;
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
             Metadata.Section.Name = "Models";

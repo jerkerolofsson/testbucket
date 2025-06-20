@@ -1,5 +1,3 @@
-using Microsoft.CodeAnalysis;
-
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Models;
 

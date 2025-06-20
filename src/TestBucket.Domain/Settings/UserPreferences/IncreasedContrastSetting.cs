@@ -19,11 +19,11 @@ namespace TestBucket.Domain.Settings.Appearance
         {
             _userPreferencesManager = manager;
 
-            Metadata.Name = "Increased Contrast";
-            Metadata.Description = "Increases color contrast to make the user interface easier to navigate";
-            Metadata.Category.Name = "Accessibility";
+            Metadata.Name = "increased-contrast";
+            Metadata.Description = "increased-contrast-description";
+            Metadata.Category.Name = "accessibility";
             Metadata.Category.Icon = SettingIcon.Accessibility;
-            Metadata.Section.Name = "Colors";
+            Metadata.Section.Name = "colors";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.Boolean;
         }

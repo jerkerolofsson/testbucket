@@ -58,11 +58,13 @@ using TestBucket.Components.Uploads.Services;
 using TestBucket.Components.Users;
 using TestBucket.Components.Users.Services;
 using TestBucket.Data.Migrations;
+using TestBucket.Domain;
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Identity;
+using TestBucket.Localization;
 
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
@@ -122,6 +124,8 @@ public static class TestBucketServerApp
         builder.Services.AddLocalization(options =>
         {
         });
+
+        builder.Services.AddSingleton<IAppLocalization, AppLocalization>();
 
         builder.Services.AddCascadingAuthenticationState();
         builder.Services.AddScoped<IdentityUserAccessor>();

@@ -20,6 +20,44 @@ public partial class McpSettingsPage
         _key = await controller.AddApiKeyAsync(Project?.Id, "MCP Access Token");
     }
 
+    private string VisualStudioMcpRemoteConfiguration
+    {
+        get
+        {
+            string baseUrl = "";
+
+            if (Uri.TryCreate(navigationManager.BaseUri, UriKind.Absolute, out var uri))
+            {
+                baseUrl = uri.GetLeftPart(UriPartial.Authority);
+            }
+
+            string token = _key?.Key ?? "<ProjectAccessToken>";
+
+            return $$"""
+                  {
+                  "inputs": [
+                    {
+                      "id": "testbucket_pat",
+                      "description": "Test bucket access token",
+                      "type": "promptString",
+                      "password": true
+                    }
+                  ],
+                  "servers": {
+                    "testbucket": {
+                      "type": "http",
+                      "url": "{{baseUrl}}/mcp",
+                      "headers": {
+                        "Authorization": "Bearer ${input:testbucket_pat}"
+                      }
+                    }
+                  }
+                }
+                
+                """;
+        }
+    }
+
     private string McpRemoteConfiguration
     {
         get

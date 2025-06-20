@@ -19,11 +19,11 @@ namespace TestBucket.Domain.AI.Settings
             _settingsProvider = settingsProvider;
             _mediator = mediator;
 
-            Metadata.Name = "Classification Model";
-            Metadata.Description = "Model to use for classification and categorization. DeepSeek-R1 and llama3.1 are both supported. If empty the default model will be used";
+            Metadata.Name = "ai-classification-model";
+            Metadata.Description = null;
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
-            Metadata.Section.Name = "Models";
+            Metadata.Section.Name = "ai-models";
             Metadata.ShowDescription = true;
             Metadata.SearchText = "ai-models";
             Metadata.Type = FieldType.String;

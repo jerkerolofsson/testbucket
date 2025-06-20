@@ -21,9 +21,9 @@ namespace TestBucket.Domain.Settings.Appearance
 
             Metadata.Name = "prefer-text-to-icons";
             Metadata.Description = "prefer-text-to-icons-description";
-            Metadata.Category.Name = "Accessibility";
+            Metadata.Category.Name = "accessibility";
             Metadata.Category.Icon = SettingIcon.Accessibility;
-            Metadata.Section.Name = "Appearance";
+            Metadata.Section.Name = "appearance";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.Boolean;
         }

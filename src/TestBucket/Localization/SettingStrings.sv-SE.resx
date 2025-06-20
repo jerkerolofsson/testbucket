@@ -159,8 +159,14 @@
   <data name="mcp-client-configuration" xml:space="preserve">
     <value>MCP Klientkonfiguration</value>
   </data>
-  <data name="mcp-configure-caption" xml:space="preserve">
-    <value>Konfigurera en externa AI-agent att interagera med Test Bucket.</value>
+  <data name="mcp-claude" xml:space="preserve">
+    <value>Lägg till ovanståande json till "claude_desktop_config.json" för att använda verktyg Test Bucket från Claude AI</value>
+  </data>
+  <data name="mcp-visualstudio" xml:space="preserve">
+    <value>Lägg till ovanstående JSON till ".vscode/mcp.json" för att använda verktyg från Test Bucket i Visual Studio.</value>
+  </data>
+  <data name="mcp-vscode" xml:space="preserve">
+    <value>Lägg till ovanstående JSON till ".vscode/mcp.json" för att använda verktyg från Test Bucket i VSCode.</value>
   </data>
   <data name="open-ai-settings" xml:space="preserve">
     <value>Öppna AI inställningar</value>
@@ -170,5 +176,56 @@
   </data>
   <data name="search-settings" xml:space="preserve">
     <value>Sök inställningar..</value>
+  </data>
+  <data name="accessibility" xml:space="preserve">
+    <value>Tillgänglighet</value>
+  </data>
+  <data name="theme" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="colors" xml:space="preserve">
+    <value>Färger</value>
+  </data>
+  <data name="appearance" xml:space="preserve">
+    <value>Utseende</value>
+  </data>
+  <data name="profile-image" xml:space="preserve">
+    <value>Profilbild</value>
+  </data>
+  <data name="increased-contrast" xml:space="preserve">
+    <value>Ökad kontrast</value>
+  </data>
+  <data name="increased-contrast-description" xml:space="preserve">
+    <value>Ökar färgkontrasten vilket gör användargränssnittet enklare att navigera</value>
+  </data>
+  <data name="dark-mode" xml:space="preserve">
+    <value>Mörkt färgtema</value>
+  </data>
+  <data name="prefer-text-to-icons" xml:space="preserve">
+    <value>Föredra text istället för ikoner</value>
+  </data>
+  <data name="increased-font-size" xml:space="preserve">
+    <value>Större text</value>
+  </data>
+  <data name="increased-font-size-description" xml:space="preserve">
+    <value>Visa ett större typsnitt oavsett vilket tema är valt</value>
+  </data>
+  <data name="ai-models" xml:space="preserve">
+    <value>Modeller</value>
+  </data>
+  <data name="ai-default-model" xml:space="preserve">
+    <value>Standardmodell</value>
+  </data>
+  <data name="ai-azure-provider-key" xml:space="preserve">
+    <value>Azure produktionsnyckel</value>
+  </data>
+  <data name="ai-provider" xml:space="preserve">
+    <value>AI-leverantör</value>
+  </data>
+  <data name="ai-github-pat" xml:space="preserve">
+    <value>Github Models Personal Access Token (PAT)</value>
+  </data>
+  <data name="AI" xml:space="preserve">
+    <value>AI</value>
   </data>
 </root>

@@ -8,11 +8,11 @@
         {
             _settingsProvider = settingsProvider;
 
-            Metadata.Name = "AI Provider";
-            Metadata.Description = "Provider of AI";
+            Metadata.Name = "ai-provider";
+            Metadata.Description = null;
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
-            Metadata.Section.Name = "Provider";
+            Metadata.Section.Name = "ai-provider";
             Metadata.Type = FieldType.SingleSelection;
             Metadata.ShowDescription = true;
             Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;

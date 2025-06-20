@@ -9,12 +9,12 @@ namespace TestBucket.Domain.AI.Settings
         {
             _settingsProvider = settingsProvider;
 
-            Metadata.Name = "Azure AI API Key";
-            Metadata.Description = "Production Key for Azure AI";
+            Metadata.Name = "ai-azure-provider-key";
+            Metadata.Description = null;
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
             Metadata.WriteOnly = true;
-            Metadata.Section.Name = "Provider";
+            Metadata.Section.Name = "ai-provider";
             Metadata.SearchText = "azure-ai";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.AI;
+using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.AI.Settings;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Appearance;
@@ -217,6 +218,9 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, AiLlmTestGenerationModelSetting>();
         services.AddScoped<ISetting, GithubModelsDeveloperKeySetting>();
         services.AddScoped<ISetting, AzureAiProductionKeySetting>();
+
+        // LLM
+        services.AddScoped<AgentChatContext>();
 
         // Metrics
         services.AddScoped<IMetricsManager, MetricsManager>();

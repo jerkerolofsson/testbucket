@@ -22,7 +22,7 @@ public enum ModelCapability
     Tools = 2,
 
     /// <summary>
-    /// Supports reasoning
+    /// Supports thinking
     /// </summary>
-    Reasoning = 4
+    Thinking = 4
 }

@@ -882,4 +882,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="api-keys-description" xml:space="preserve">
     <value>Access tokens and API keys</value>
   </data>
+  <data name="more-options" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="test-case" xml:space="preserve">
+    <value>Testcase</value>
+  </data>
 </root>

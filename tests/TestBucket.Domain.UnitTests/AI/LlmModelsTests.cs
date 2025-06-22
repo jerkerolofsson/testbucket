@@ -6,6 +6,8 @@ namespace TestBucket.Domain.UnitTests.AI
     /// <summary>
     /// Contains test cases for <see cref="LlmModels"/>.
     /// </summary>
+    [Feature("Chat")]
+    [Component("AI")]
     [UnitTest]
     [FunctionalTest]
     public class LlmModelsTests

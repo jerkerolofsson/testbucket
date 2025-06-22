@@ -1,11 +1,8 @@
 ﻿
 using Mediator;
 
-using OllamaSharp;
-
 using TestBucket.Domain.AI.Models;
 using TestBucket.Domain.AI.Ollama;
-using TestBucket.Domain.Progress;
 
 namespace TestBucket.Domain.AI.Settings
 {
@@ -39,7 +36,6 @@ namespace TestBucket.Domain.AI.Settings
 
         public override async Task WriteAsync(SettingContext context, FieldValue value)
         {
-           
             var settings = await _settingsProvider.LoadGlobalSettingsAsync();
 
             if (settings.LlmClassificationModel != value.StringValue)

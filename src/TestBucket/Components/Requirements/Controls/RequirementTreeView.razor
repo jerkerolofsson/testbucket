@@ -226,7 +226,6 @@
             }
             else if (item.RequirementFolder is not null)
             {
-                appNav.State.SelectedRequirement = null;
                 appNav.State.SetSelectedRequirementSpecificationFolder(item.RequirementFolder);
 
                 if(item.RequirementFolder.RequirementSpecificationId != appNav.State.SelectedRequirementSpecification?.Id)
@@ -613,7 +612,6 @@
         }
         if (treeNode.Value?.RequirementFolder is not null)
         {
-            appNav.State.SelectedRequirement = null;
             var folder = treeNode.Value.RequirementFolder;
             var spec = await browser.GetRequirementSpecificationByIdAsync(treeNode.Value.RequirementFolder.RequirementSpecificationId);
             appNav.State.SetSelectedRequirementSpecificationFolder(folder, spec);

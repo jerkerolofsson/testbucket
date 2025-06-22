@@ -48,11 +48,11 @@ namespace TestBucket.Domain.AI.Settings
                 settings.LlmModel = value.StringValue ?? "llama3.1";
                 await _settingsProvider.SaveGlobalSettingsAsync(settings);
 
-                if (settings.AiProvider == "ollama" && settings.AiProviderUrl != null && settings.LlmTestGenerationModel is not null)
+                if (settings.AiProvider == "ollama" && settings.AiProviderUrl != null && settings.LlmModel is not null)
                 {
-                    if (!string.IsNullOrEmpty(settings.LlmClassificationModel) && settings.AiProvider == "ollama" && !string.IsNullOrEmpty(settings.AiProviderUrl))
+                    if (!string.IsNullOrEmpty(settings.LlmModel) && settings.AiProvider == "ollama" && !string.IsNullOrEmpty(settings.AiProviderUrl))
                     {
-                        await _mediator.Send(new PullModelRequest(settings.LlmClassificationModel));
+                        await _mediator.Send(new PullModelRequest(settings.LlmModel));
                     }
                 }
             }

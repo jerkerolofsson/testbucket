@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 
+using TestBucket.Domain.AI.Agent.Models;
 using TestBucket.Domain.AI.Tools;
 using TestBucket.Domain.Identity;
 
@@ -18,54 +19,6 @@ public class AgentChatClient
         _chatClientFactory = chatClientFactory;
         _serviceProvider = serviceProvider;
     }
-    /*
-    public static List<ChatMessage> ToChatMessage(IEnumerable<ChatResponseUpdate> updates)
-    {
-        List<ChatMessage> messages = [];
-        var textBuilder = new StringBuilder();
-        var role = ChatRole.Assistant;
-
-        foreach (var update in updates)
-        {
-            if (update.Role.HasValue)
-                role = update.Role.Value;
-
-            foreach(var content in update.Contents)
-            {
-                if(content is TextContent textContent)
-                {
-                    if (!string.IsNullOrEmpty(textContent.Text))
-                    {
-                        textBuilder.Append(textContent.Text);
-                    }
-                }
-                else
-                {
-                    if (textBuilder.Length > 0)
-                    {
-                        var message = new ChatMessage(role, textBuilder.ToString());
-                        messages.Add(message);
-                        textBuilder.Clear();
-                    }
-                    else
-                    {
-                        // Other type of content, such as tool call
-                        var message = new ChatMessage(role, [content]);
-                        messages.Add(message);
-                    }
-                }
-            }
-
-        }
-
-        if (textBuilder.Length > 0)
-        {
-            var message = new ChatMessage(role, textBuilder.ToString());
-            messages.Add(message);
-        }
-
-        return messages;
-    }*/
 
     private ToolCollection GetTools(ClaimsPrincipal principal)
     {
@@ -79,7 +32,9 @@ public class AgentChatClient
 
     public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(ClaimsPrincipal principal, 
         TestProject? project,
-        AgentChatContext context, string userMessage, [EnumeratorCancellation] CancellationToken cancellationToken)
+        AgentChatContext context, 
+        ChatMessage userMessage, 
+        [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         if(project is not null)
         {
@@ -87,10 +42,12 @@ public class AgentChatClient
             principal = Impersonation.ChangeProject(principal, project.Id);
         }
 
-        var chatMessage = new ChatMessage(ChatRole.User, userMessage);
-        context.Messages.Add(chatMessage);
+        // Chat context
         var references = context.GetReferencesAsChatMessages();
-        ChatMessage[] chatMessages = [..references, ..context.Messages];
+        ChatMessage[] chatMessages = [..references, ..context.Messages, userMessage];
+
+        // Add to history
+        context.Messages.Add(userMessage);
 
         var options = new ChatOptions
         {

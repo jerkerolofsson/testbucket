@@ -43,7 +43,7 @@ html, body {
 .tb-codeblock {
     background: var(--mud-palette-surface-darken);
     padding: 8px;
-    border-radius: 4px;
+    border-radius: var(--mud-default-borderradius);
 }
 
 .tb-codeblock > div {
@@ -457,6 +457,7 @@ input:focus-visible {
    background: linear-gradient(0deg, var(--tb-palette-field-background) 0%, var(--tb-palette-field-background) 90%);
    border: solid 1px var(--tb-palette-field-border);
    overflow-x: hidden;
+   min-height: fit-content;
 }
 
 .tb-field.fluent-validation-error {
@@ -1416,59 +1417,4 @@ div.tb-profile-image.tb-background-9 {
     border-right: solid 1px var(--border-color);
     border-bottom: solid 1px var(--border-color);
     background: inherit;
-}
-
-.tb-agent-chat {
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    height: 100%;
-}
-
-.tb-agent-chat-conversation {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding: 4px;
-    overflow: auto;
-}
-
-.tb-agent-submit {
-    border-top: solid 1px var(--mud-palette-lines-inputs);
-}
-
-.tb-agent-submit .prompt {
-    background: var(--mud-palette-surface-darken);
-    padding: 5px;
-
-    display: grid;
-    grid-template-columns: 1fr 48px;
-    gap: 4px;
-}
-
-.tb-agent-chat .chat {
-    padding: 2px;
-    --chat-background: var(--mud-palette-secondary);
-    background: var(--chat-background);
-    border-radius: var(--mud-default-borderradius);
-}
-
-.tb-agent-chat .chat.assistant {
-    align-self: flex-start;
-    margin-right: 16px;
-}
-
-
-.tb-agent-chat .chat.function-call {
-    padding: 8px;
-    --chat-background: var(--mud-palette-primary);
-}
-
-.tb-agent-chat .chat .mud-markdown-preview {
-    background: var(--chat-background);
-}
-
-.tb-agent-chat .chat.user {
-    margin-left: 16px;
-    align-self: flex-end;
-    --chat-background: var(--mud-palette-surface-darken);
 }

@@ -21,25 +21,34 @@ public class AgentChatContext
     /// </summary>
     public List<ChatMessage> Messages { get; set; } = [];
 
+    public void Clear()
+    {
+        References.Clear();
+        Messages.Clear();
+    }
+
     internal IReadOnlyList<ChatMessage> GetReferencesAsChatMessages()
     {
         List<ChatMessage> messages = [];
 
-        foreach(var reference in References)
+        if (References.Count > 0)
         {
-            IList<AIContent> content = [];
-            var xml = $"""
-                <reference>
-                    <name>{reference.Name}</name>
-                    <id>{reference.Id}</url>
-                    <type>{reference.EntityTypeName ?? ""}</type>
-                    <description>{reference.Text}</description>
-                </reference>
-                """;
-            content.Add(new TextContent(xml));
-            messages.Add(new ChatMessage(ChatRole.System, content));
+            foreach (var reference in References)
+            {
+                IList<AIContent> content = [];
+                var xml = $"""
+                    <reference>
+                        <name>{reference.Name}</name>
+                        <id>{reference.Id}</url>
+                        <type>{reference.EntityTypeName ?? ""}</type>
+                        <description>{reference.Text}</description>
+                    </reference>
+                    """;
+                content.Add(new TextContent(xml));
+                messages.Add(new ChatMessage(ChatRole.User, content));
+            }
+            messages.Add(new ChatMessage(ChatRole.User, "Based on the references..."));
         }
-
         return messages;
     }
 }

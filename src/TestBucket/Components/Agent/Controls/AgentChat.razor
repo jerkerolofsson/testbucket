@@ -4,6 +4,7 @@
 @inject IServiceProvider serviceProvider
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject AppNavigationManager appNavigationManager
+@inject AgentChatContext context
 
 <div class="tb-agent-chat">
     <MudStack Style="width: 100%" Spacing="1">
@@ -17,132 +18,188 @@
             <MudProgressLinear Indeterminate Size="Size.Small" Color="Color.Primary" />
         }
     </MudStack>
-    <div class="tb-agent-chat-conversation">
-        @foreach(var message in _context.Messages)
-        {
-            @foreach(var content in message.Contents)
+
+    @if(context.Messages.Count == 0)
+    {
+        <div class="tb-agent-chat-suggestions">
+            @foreach (var suggestion in SuggestionProvider.GetSuggestions(context))
             {
-                if(content is FunctionCallContent functionCall)
+                <SuggestionTile Suggestion="@suggestion" SuggestionClicked="OnSuggestionClicked" />
+            }
+        </div>
+    }
+    else
+    {
+        <div class="tb-agent-chat-conversation">
+            @foreach(var message in context.Messages)
+            {
+                if(message is SuggestionChatMessage suggestionChatMessage)
                 {
-                    <div class="chat function-call @message.Role">
-                        <MudStack Row>
-                            <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.ModelContextProtocol" />
-                            @functionCall.Name
+                    <div class="chat suggestion @message.Role">
+                        <MudStack>
+                            @suggestionChatMessage.Suggestion.Title
                         </MudStack>
                     </div>
                 }
-                if (content is FunctionResultContent functionResult && functionResult.RawRepresentation is not null)
+                else
                 {
-                    <div class="chat function-call @message.Role">
-                        <MudStack>
-                            <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.ModelContextProtocol" />
-                            <CodeBlock Code="@functionResult.RawRepresentation.ToString()" Language="json"></CodeBlock>
-                        </MudStack>
-                    </div>
+                    foreach(var content in message.Contents)
+                    {
+                        if(content is FunctionCallContent functionCall)
+                        {
+                            <div class="chat function-call @message.Role">
+                                <MudStack Row>
+                                    <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.ModelContextProtocol" />
+                                    @functionCall.Name
+                                </MudStack>
+                            </div>
+                        }
+                        if (content is FunctionResultContent functionResult && functionResult.RawRepresentation is not null)
+                        {
+                            <div class="chat function-call @message.Role">
+                                <MudStack>
+                                    <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.ModelContextProtocol" />
+                                    <CodeBlock Code="@functionResult.RawRepresentation.ToString()" Language="json"></CodeBlock>
+                                </MudStack>
+                            </div>
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(message.Text))
+                    {
+                        <div class="chat @message.Role">
+                            <MarkdownEditor ShowToolbar="false" Preview Value="@message.Text" />
+                        </div>
+                    }
                 }
             }
 
-            @if(!string.IsNullOrEmpty(message.Text))
+            @if (_isWorking && _activeResponse.Length > 0)
             {
-                <div class="chat @message.Role">
-                    <MarkdownEditor ShowToolbar="false" Preview Value="@message.Text" />
+                <div class="chat Assistant">
+                    <MarkdownEditor ShowToolbar="false" Preview Value="@_activeResponse.ToString()" />
                 </div>
             }
-        }
-
-        @if (_isWorking && _activeResponse.Length > 0)
-        {
-            <div class="chat Assistant">
-                <MarkdownEditor ShowToolbar="false" Preview Value="@_activeResponse.ToString()" />
-            </div>
-        }
-    </div>
+        </div>
+    }
 
     <MudPaper Class="tb-agent-submit">
-        <ChatReferences ActiveDocument="@ActiveDocument" ChatContext="@_context"/>
+        <MudStack Row>
+            <ChatReferences ChatContext="@context" ReferencesChanged="OnReferencesChanged"/>
+        </MudStack>
 
         <div class="prompt">
-            <MudTextField Immediate="true"
-                            @ref="_mudTextField"
-                            KeyDownPreventDefault=_preventDefault
-                            Margin=Margin.Dense
-                            OnKeyDown="HandleKeyPress"
-                            Variant="Variant.Outlined" Lines="6" T="string" @bind-Text="@_userPrompt"></MudTextField>
+            <ChatTextField 
+                Lines="6"
+                OnEnter="(text) => Send(text)" @bind-Text="@_userPrompt" />
+           
             @if (!_isWorking)
             {
-                <MudIconButton ButtonType="ButtonType.Submit" Icon="@Icons.Material.Outlined.Send"/>
+                <MudIconButton OnClick="() => Send()" Icon="@Icons.Material.Outlined.Send"/>
             }
         </div>
     </MudPaper>
 </div>
 
 @code {
-    [Parameter] public ChatReference? ActiveDocument { get; set; }
     [CascadingParameter] public TestProject? Project { get; set; }
 
-    bool _preventDefault;
+    private ChatReference? _projectReference;
+    private ChatReference? _activeDocument;
+
     private string _userPrompt = "";
     private bool _isWorking = false;
-    private AgentChatContext _context = new AgentChatContext();
     private CancellationTokenSource _cts = new();
 
     private StringBuilder _activeResponse = new();
-    private MudTextField<string>? _mudTextField;
 
-    private async Task HandleKeyPress(KeyboardEventArgs e) 
-    { 
-        if (e.Key == "Enter" && !e.ShiftKey && !e.AltKey && !e.CtrlKey && !e.MetaKey) 
-        { 
-            _preventDefault = true;
-            await Send(); 
-        }
-        else
+    private void OnReferencesChanged()
+    {
+        // Repaint the UI as suggestions will have changed
+        this.StateHasChanged();
+    }
+
+    protected override void OnParametersSet()
+    {
+        // Determine if we need to reset the context
+
+        var needReset = false;
+        if (Project is not null && _projectReference?.Id != Project.Id)
         {
-            _preventDefault = false;
+            needReset = true;
+        }
+        var activeDocument = appNavigationManager.State.ActiveDocument;
+        if (activeDocument?.Id != _activeDocument?.Id || activeDocument?.EntityTypeName != _activeDocument?.EntityTypeName)
+        {
+            needReset = true;
+        }
+        if (needReset)
+        {
+            Clear();
         }
     }
 
     private void Clear()
     {
-        _context = new();
+        context.Clear();
 
-        var activeDocument = appNavigationManager.State.ActiveDocument;
-        if(activeDocument is not null)
+        _userPrompt = "";
+
+        _activeDocument = appNavigationManager.State.ActiveDocument;
+        if(_activeDocument is not null)
         {
-            _context.References.Add(activeDocument);
+            context.References.Add(_activeDocument);
         }
+
+        if(Project is not null)
+        {
+            _projectReference = ChatReferenceBuilder.Create(Project, false);
+            context.References.Add(_projectReference);
+        }
+    }
+
+    private async Task OnSuggestionClicked(Suggestion suggestion)
+    {
+        await SendAsync(new SuggestionChatMessage(suggestion));
     }
 
     private async Task Send()
     {
-        var message = _userPrompt;
-        _userPrompt = "";
-        if(_mudTextField is not null)
+        await Send(_userPrompt);
+    }
+    private async Task Send(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
         {
-            await _mudTextField.ResetAsync();
-            await _mudTextField.Clear();
-            this.StateHasChanged();
+            return;
         }
 
+        await SendAsync(new ChatMessage(ChatRole.User, message));
+    }
+    private async Task SendAsync(ChatMessage chatMessage)
+    {
+        _userPrompt = "";
         _isWorking = true;
         _activeResponse.Clear();
-
+        this.StateHasChanged();
+             
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var client = new AgentChatClient(chatClientFactory, serviceProvider);
 
         try
         {
-            await foreach (var update in client.GetStreamingResponseAsync(authState.User, Project, _context, message, _cts.Token))
+            await foreach (var update in client.GetStreamingResponseAsync(authState.User, Project, context, chatMessage, _cts.Token))
             {
                 _activeResponse.Append(update.Text);
-                this.StateHasChanged();
+                await InvokeAsync(this.StateHasChanged);
             }
         }
         catch(Exception ex)
         {
-            _context.Messages.Add(new ChatMessage(ChatRole.System, "Something went wrong:\n```\n" + ex.ToString() + "\n```\n"));
+            context.Messages.Add(new ChatMessage(ChatRole.System, "Something went wrong:\n```\n" + ex.ToString() + "\n```\n"));
         }
 
         _isWorking = false;
+        this.StateHasChanged();
     }
 }

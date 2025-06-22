@@ -80,7 +80,7 @@
             await editor.OpenEditDialogAsync(_requirement);
 
             _requirement = await browser.GetRequirementByIdAsync(_requirement.Id);
-            appNavigationManager.State.SelectedRequirement = _requirement;
+            appNavigationManager.State.SetSelectedRequirement(_requirement);
         }
     }
 
@@ -106,7 +106,7 @@
             this.StateHasChanged();
 
             _requirement = await browser.GetRequirementByIdAsync(requirementId.Value);
-            appNavigationManager.State.SelectedRequirement = _requirement;
+            appNavigationManager.State.SetSelectedRequirement(_requirement);
             _loading = false;
         }
     }
@@ -130,7 +130,7 @@
         if (_requirement?.Id == requirement.Id)
         {
             _requirement = requirement;
-            appNavigationManager.State.SelectedRequirement = _requirement;
+            appNavigationManager.State.SetSelectedRequirement(_requirement);
             await InvokeAsync(StateHasChanged);
         }
     }
@@ -140,7 +140,7 @@
         if(_requirement?.Id == requirement.Id)
         {
             _requirement = requirement;
-            appNavigationManager.State.SelectedRequirement = _requirement;
+            appNavigationManager.State.SetSelectedRequirement(_requirement);
             await InvokeAsync(StateHasChanged);
         }
     }

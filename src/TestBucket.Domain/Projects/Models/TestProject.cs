@@ -39,6 +39,11 @@ public class TestProject
     public required string ShortName { get; set; }
 
     /// <summary>
+    /// Project description, this is fed into the chat context as a reference
+    /// </summary>
+    public string? Description { get; set; }
+
+    /// <summary>
     /// Image icon URL
     /// </summary>
     public string? IconUrl { get; set; }

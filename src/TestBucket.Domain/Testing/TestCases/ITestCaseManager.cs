@@ -54,6 +54,8 @@ public interface ITestCaseManager
     Task<IReadOnlyList<TestEntity>> ExpandUntilRootAsync(ClaimsPrincipal principal, TestCase testCase);
     Task<InsightsData<string, int>> GetInsightsTestCountPerFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, TraitType traitType);
 
+    Task<PagedResult<TestCase>> SearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query);
+
     /// <summary>
     /// Returns a test case by ID
     /// </summary>

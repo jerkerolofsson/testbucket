@@ -2,6 +2,7 @@
 
 using Mediator;
 
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Projects;
@@ -341,6 +342,19 @@ namespace TestBucket.Domain.Testing.TestCases
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
             var tenantId = principal.GetTenantIdOrThrow();
             return await _testCaseRepo.GetTestCaseByNameAsync(tenantId, projectId, testSuiteId, name);
+        }
+
+        public async Task<PagedResult<TestCase>> SearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
+            var tenantId = principal.GetTenantIdOrThrow();
+
+            var fields = await _fieldDefinitionManager.GetDefinitionsAsync(principal, query.ProjectId, FieldTarget.TestCase);
+
+            var filters = TestCaseFilterSpecificationBuilder.From(query);
+
+            filters = [new FilterByTenant<TestCase>(tenantId), .. filters];
+            return await _testCaseRepo.SearchTestCasesAsync(query.Offset, query.Count, filters);
         }
     }
 }

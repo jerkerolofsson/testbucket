@@ -7,116 +7,130 @@
 @inject ISettingsProvider settingsProvider
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject NavigationManager navigationManager
+@inject IStringLocalizer<SettingStrings> settingsLoc
+@inject IStringLocalizer<SharedStrings> loc
 
 <MudStack Class="container-settings-page">
 
     <MudText Typo="Typo.h1">AI</MudText>
-    <MudText Class="" Typo="Typo.body1">
-        Test Bucket can use an external AI service to enrich the experience.
-        <ul>
-            <li>Generate test cases.</li>
-            <li>Automatically classify metadata for test cases and other entities.</li>
-        </ul>
-    </MudText>
 
+    <MudStack Class="pa-5">
+        <MudExpansionPanels>
 
-    @if (_globalSettings is not null)
-    {
-        <MudText Class="mt-5" Typo="Typo.h2">Choose AI Provider</MudText>
-        <MudStack>
-            <MudStack Row>
-                <MudRadioGroup Value="_globalSettings.AiProvider" ValueChanged="OnAiProviderChanged" T="string">
-                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("ollama")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Ollama"/>  Ollama</MudRadio>
-                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("github-models")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.GitHub" /> Github Models</MudRadio>
-                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("azure-ai")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.AzureAI" /> Azure AI</MudRadio>
-                </MudRadioGroup>
-            </MudStack>
-
-            @if(_globalSettings.AiProvider == "ollama")
+            @if (_aiProvider is not null)
             {
-                <Field Row>
-                    <FieldHeader>Ollama URL</FieldHeader>
-                    <MudSpacer/>
-                    <MudTextField T="string" Placeholder="Ollama URL" Variant="Variant.Outlined" Value="@_globalSettings.AiProviderUrl" ValueChanged="OnAiProviderUrlChanged" />
-                </Field>
-            }
+                <MudExpansionPanel>
+                    <TitleContent>
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@GetProviderIcon(_aiProvider)"/>
+                            @settingsLoc["ai-provider"]
+                        </MudStack>
+                    </TitleContent>
+                    <ChildContent>
+                        <MudStack>
+                            <MudStack Row>
+                                <MudRadioGroup Value="_aiProvider" ValueChanged="OnAiProviderChanged" T="string">
+                                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("ollama")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Ollama"/>  Ollama</MudRadio>
+                                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("github-models")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.GitHub" /> Github Models</MudRadio>
+                                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("azure-ai")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.AzureAI" /> Azure AI</MudRadio>
+                                </MudRadioGroup>
+                            </MudStack>
 
-            @if(_globalSettings.AiProvider == "azure-ai")
-            {
-                <Field Row>
-                    <FieldHeader>Azure URL</FieldHeader>
-                    <MudSpacer/>
-                    <MudTextField T="string"Placeholder="Azure URL"  Variant="Variant.Outlined" Value="@_globalSettings.AiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
-                </Field>
+                            @if(_aiProvider == "ollama")
+                            {
+                                <Field Row>
+                                    <FieldHeader>Ollama URL</FieldHeader>
+                                    <MudSpacer/>
+                                    <MudTextField T="string" Placeholder="Ollama URL" Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged" />
+                                </Field>
+                            }
 
-                @foreach (var setting in _settings.Where(x => x.Metadata.SearchText == "azure-ai"))
-                {
-                    if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
-                    {
-                        <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
-                        </FieldEditor>
+                            @if(_aiProvider == "azure-ai")
+                            {
+                                <Field Row>
+                                    <FieldHeader>Azure URL</FieldHeader>
+                                    <MudSpacer/>
+                                    <MudTextField T="string"Placeholder="Azure URL"  Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
+                                </Field>
+
+                                @foreach (var setting in _settings.Where(x => x.Metadata.SearchText == "azure-ai"))
+                                {
+                                    if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
+                                    {
+                                        <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                                        </FieldEditor>
+                                    }
+                                }
+                            }
+                            @if(_aiProvider == "github-models")
+                            {
+                                <Field Row>
+                                    <FieldHeader>Github Models URL</FieldHeader>
+                                    <MudSpacer/>
+                                    <MudTextField T="string"Placeholder="Github Models URL"  Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
+                                </Field>
+                                <MudText Typo="Typo.subtitle1" Color="Color.Warning">Gibhub models should only be used for prototyping</MudText>
+
+                                @foreach (var setting in _settings.Where(x => x.Metadata.SearchText == "github-models"))
+                                {
+                                    if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
+                                    {
+                                        <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                                        </FieldEditor>
+                                    }
+                                }           
+                            }
+                        </MudStack>
+                    </ChildContent>
+                </MudExpansionPanel>
+                
+                <MudExpansionPanel>
+                    <TitleContent>
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@GetModelIcon(_defaultModel)"/>
+                            @settingsLoc["ai-default-model"]
+                        </MudStack>
+                    </TitleContent>
+                    <ChildContent>
+                        <MudStack Row Spacing="5">
+                            <MudRadioGroup Value="_defaultModel" ValueChanged="OnDefaultModelChanged" T="string">
+                                @foreach(var model in LlmModels.GetModels(ModelCapability.Tools))
+                                {
+                                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
+                                        <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
+                                        <span>@model.Name</span>
+                                    </MudRadio>
+                                }
+                            </MudRadioGroup>
+                        </MudStack>
+                    </ChildContent>
+                </MudExpansionPanel>
+                
+                <MudExpansionPanel>
+                    <TitleContent>
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@GetModelIcon(_classificationModel)"/>
+                            @settingsLoc["ai-classification-model"]
+                        </MudStack>
+                    </TitleContent>
+                    <ChildContent>
+                    <MudStack Row Spacing="5">
+                        <MudRadioGroup Value="_classificationModel" ValueChanged="OnClassificationModelChanged" T="string">
+                            @foreach(var model in LlmModels.GetModels(ModelCapability.Classification))
+                            {
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
+                                    <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
+                                    <span>@model.Name</span>
+                                </MudRadio>
+                            }
+                        </MudRadioGroup>
+                    </MudStack>
+                    </ChildContent>
+                </MudExpansionPanel>
                     }
-                }
-            }
-            @if(_globalSettings.AiProvider == "github-models")
-            {
-                <Field Row>
-                    <FieldHeader>Github Models URL</FieldHeader>
-                    <MudSpacer/>
-                    <MudTextField T="string"Placeholder="Github Models URL"  Variant="Variant.Outlined" Value="@_globalSettings.AiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
-                </Field>
-                <MudText Typo="Typo.subtitle1" Color="Color.Warning">Gibhub models should only be used for prototyping</MudText>
+        </MudExpansionPanels>
 
-                @foreach (var setting in _settings.Where(x => x.Metadata.SearchText == "github-models"))
-                {
-                    if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
-                    {
-                        <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
-                        </FieldEditor>
-                    }
-                }           
-            }
-        </MudStack>
-        
-        <MudText Class="mt-5" Typo="Typo.h2">Default Model</MudText>
-        <MudStack Row Spacing="5">
-            <MudRadioGroup Value="_globalSettings.LlmModel" ValueChanged="OnDefaultModelChanged" T="string">
-                @foreach(var model in LlmModels.GetModels(ModelCapability.Tools))
-                {
-                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
-                        <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
-                        <span>@model.Name</span>
-                    </MudRadio>
-                }
-            </MudRadioGroup>
-        </MudStack>
+        <MudLink Href="@($"/{TenantId}/Settings/Search?q=ai-model")">@loc["more-options"]</MudLink>
 
-        <MudText Class="mt-2" Typo="Typo.h2">Classification Model</MudText>
-        <MudStack Row Spacing="5">
-            <MudRadioGroup Value="_globalSettings.LlmClassificationModel" ValueChanged="OnClassificationModelChanged" T="string">
-                @foreach(var model in LlmModels.GetModels(ModelCapability.Classification))
-                {
-                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
-                        <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
-                        <span>@model.Name</span>
-                    </MudRadio>
-                }
-            </MudRadioGroup>
-        </MudStack>
-
-        <MudText Class="mt-5" Typo="Typo.h2">Test Generator Model</MudText>
-        <MudStack Row Spacing="5">
-            <MudRadioGroup Value="_globalSettings.LlmTestGenerationModel" ValueChanged="OnGeneratorModelChanged" T="string">
-                @foreach(var model in LlmModels.GetModels(ModelCapability.Tools))
-                {
-                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
-                        <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
-                        <span>@model.Name</span>
-                    </MudRadio>
-                }
-            </MudRadioGroup>
-        </MudStack>
-        <MudLink Href="@($"/{TenantId}/Settings/Search?q=ai-model")">More Options</MudLink>
-    }
-
+    </MudStack>
 </MudStack>

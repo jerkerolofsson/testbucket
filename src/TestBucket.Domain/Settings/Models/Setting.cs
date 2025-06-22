@@ -14,6 +14,11 @@ namespace TestBucket.Domain.Settings.Models
         public required SettingsSection Section { get; set; }
 
         /// <summary>
+        /// The original text label
+        /// </summary>
+        public string? Label { get; set; }
+
+        /// <summary>
         /// Keywords for search
         /// </summary>
         public string SearchText { get; set; } = "";

@@ -21,13 +21,16 @@
 
         <MudStack Class="pa-5">
 
-            <MudText Typo="Typo.h3">Name</MudText>
             <Field Row>
                 <FieldHeader>@projectLoc["name-of-the-project"]</FieldHeader>
                 <MudSpacer/>
                 <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@Project.Name"></MudTextField>
             </Field>
-
+            
+            <Field>
+                <FieldHeader>@loc["description"]</FieldHeader>
+                <MudTextField Lines="10" Variant="Variant.Outlined" T="string" @bind-Value="@Project.Description"></MudTextField>
+            </Field>
 
             <Field Row>
                 <FieldHeader>@testEnvLoc["default-environment"]</FieldHeader>

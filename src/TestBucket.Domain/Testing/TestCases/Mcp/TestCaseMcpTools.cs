@@ -5,12 +5,14 @@ using ModelContextProtocol.Server;
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Testing.Mapping;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestSuites;
 
 namespace TestBucket.Domain.Testing.TestCases.Mcp;
 
 [McpServerToolType]
+[Description("Contains tools to search, modify or create test cases")]
 public class TestCaseMcpTools : AuthenticatedTool
 {
     private readonly ITestCaseManager _testCaseManager;
@@ -24,6 +26,45 @@ public class TestCaseMcpTools : AuthenticatedTool
         _projectManager = projectManager;
     }
 
+    [McpServerTool(Name = "search-test-cases"), Description("Searches for test cases")]
+    public async Task<PagedResult<TestCaseDto>> SearchForTestCases(string query, int offset = 0, int count = 10)
+    {
+        var isAuthenticated = await IsAuthenticatedAsync();
+        if (isAuthenticated && _principal is not null)
+        {
+            var projectId = _principal.GetProjectId();
+            if (projectId is null)
+            {
+                throw new ArgumentException("The user was authenticated but the project was defined in the claims");
+            }
+
+            if(count == 0)
+            {
+                count = 10;
+            }
+
+            var searchQuery = new SearchTestQuery
+            {
+                Offset = offset,
+                Count = count,
+                Text = query,
+                ProjectId = projectId.Value
+            };
+
+            var items = await _testCaseManager.SearchTestCasesAsync(_principal, searchQuery);
+            var tests = new List<TestCaseDto>();
+
+            tests.AddRange(items.Items.Select(x => x.ToDto()));
+
+            return new PagedResult<TestCaseDto>
+            {
+                Items = tests.ToArray(),
+                TotalCount = items.TotalCount
+            };
+        }
+        return new PagedResult<TestCaseDto> { Items = [], TotalCount = 0 };
+    }
+    /*
     [McpServerTool(Name = "add-test-case"), Description("Adds a test case with a name and description to an existing test suite")]
     public async Task AddTestCase(long testSuiteId, string testCaseName, string testCaseDescription)
     {
@@ -49,6 +90,56 @@ public class TestCaseMcpTools : AuthenticatedTool
             await _testCaseManager.AddTestCaseAsync(_principal, testCase);
         }
     }
+    */
+
+    [McpServerTool(Name = "add-test-case"), 
+        Description("Adds a single test case with a name, preconditions, description, steps, expected result to an existing test suite. Call this function many times to add multiple tests.")]
+    public async Task AddTestCase(
+        
+        [Description("ID of test suite. Set to 0 if unknown")] long testSuiteId, 
+        [Description("A descriptive name for the test case summarizing what it does")] string testCaseName, 
+        [Description("A brief description of the test case")] string description, 
+        [Description("Any required pre-conditions for the test case")] string? preconditions = "", 
+        [Description("Steps to perform for the test case. Format as a list with - starting each new line")] string steps = "", 
+        [Description("Expected results")] string expectedResults = "", 
+        [Description("Description of the required test environment to run the test")] string testEnvironment = "")
+    {
+        var isAuthenticated = await IsAuthenticatedAsync();
+        if (isAuthenticated && _principal is not null)
+        {
+            var projectId = _principal.GetProjectId();
+            if (projectId is null)
+            {
+                throw new ArgumentException("The user was authenticated but the project was defined in the claims");
+            }
+
+            // If there is no test suite, create a new one
+            testSuiteId = await CreateDefaultTestSuiteIfNotExistsAsync(testSuiteId, projectId);
+
+            var testCase = new TestCase
+            {
+                TestProjectId = projectId,
+                TestSuiteId = testSuiteId,
+                Name = testCaseName,
+                Preconditions = preconditions,
+                Description = $"""
+
+                {description}
+
+                # Steps
+                {steps}
+
+                # Expected results
+                {expectedResults}
+
+                # Test environment
+                {testEnvironment}
+                """
+            };
+            await _testCaseManager.AddTestCaseAsync(_principal, testCase);
+        }
+    }
+
 
     private async Task<long> CreateDefaultTestSuiteIfNotExistsAsync(long testSuiteId, long? projectId)
     {

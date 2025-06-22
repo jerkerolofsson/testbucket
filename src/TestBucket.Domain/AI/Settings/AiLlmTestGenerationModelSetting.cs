@@ -45,9 +45,9 @@ namespace TestBucket.Domain.AI.Settings
 
                 if (settings.AiProvider == "ollama" && settings.AiProviderUrl != null && settings.LlmTestGenerationModel is not null)
                 {
-                    if (!string.IsNullOrEmpty(settings.LlmClassificationModel) && settings.AiProvider == "ollama" && !string.IsNullOrEmpty(settings.AiProviderUrl))
+                    if (!string.IsNullOrEmpty(settings.LlmTestGenerationModel) && settings.AiProvider == "ollama" && !string.IsNullOrEmpty(settings.AiProviderUrl))
                     {
-                        await _mediator.Send(new PullModelRequest(settings.LlmClassificationModel));
+                        await _mediator.Send(new PullModelRequest(settings.LlmTestGenerationModel));
                     }
                 }
             }

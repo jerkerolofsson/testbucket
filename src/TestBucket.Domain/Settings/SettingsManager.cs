@@ -37,9 +37,12 @@ namespace TestBucket.Domain.Settings
             var b = CultureInfo.CurrentUICulture;
             foreach(var setting in _settings)
             {
+
                 setting.Metadata.Category.Name = _localization.Settings[setting.Metadata.Category.Name];
                 setting.Metadata.Section.Name = _localization.Settings[setting.Metadata.Section.Name];
-                setting.Metadata.Name = _localization.Settings[setting.Metadata.Name];
+
+                setting.Metadata.Label ??= setting.Metadata.Name;
+                setting.Metadata.Name = _localization.Settings[setting.Metadata.Label];
                 if (setting.Metadata.Description is not null)
                 {
                     setting.Metadata.Description = _localization.Settings[setting.Metadata.Description];
@@ -105,6 +108,12 @@ namespace TestBucket.Domain.Settings
                 x.Title.Contains(searchPhrase, StringComparison.InvariantCultureIgnoreCase) ||
                 x.Description?.Contains(searchPhrase, StringComparison.InvariantCultureIgnoreCase) == true ||
                 x.Keywords?.Contains(searchPhrase, StringComparison.InvariantCultureIgnoreCase) == true).ToList();
+        }
+
+        public ISetting? GetSettingByName(SettingContext context, string name)
+        {
+            var settings = GetSettings(context);
+            return settings.FirstOrDefault(x => x.Metadata.Label.Equals(name));
         }
     }
 }

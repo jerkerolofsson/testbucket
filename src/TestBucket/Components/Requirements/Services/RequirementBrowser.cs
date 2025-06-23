@@ -118,6 +118,14 @@ internal class RequirementBrowser : TenantBaseService
         return await _requirementManager.SearchRequirementsAsync(principal, query);
     }
 
+    public async Task<PagedResult<Requirement>> SearchAsync(SearchRequirementQuery query)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var result = await _requirementManager.SearchRequirementsAsync(principal, query);
+        return result;
+    }
+
+
     public async Task<List<TreeNode<BrowserItem>>> SearchAsync(long? teamId, long? projectId, string searchText)
     {
         if(projectId is null)
@@ -295,83 +303,18 @@ internal class RequirementBrowser : TenantBaseService
 
     private async Task<List<TreeNode<BrowserItem>>> BrowseRootAsync(long? teamId, long? projectId)
     {
+        var result = new List<TreeNode<BrowserItem>>();
+
         var specs = await _requirementEditorService.GetRequirementSpecificationsAsync(teamId, projectId);
         var specificationNodes = specs.Items.Select(x =>CreateSpecificationNode(x)).ToList();
 
-        TreeNode<BrowserItem> specificationNode = CreateSpecificationRootNode(specificationNodes);
+        // Folder for specifications
+        result.Add(CreateSpecificationRootNode(specificationNodes));
 
-        //TreeNode<BrowserItem> architecture = new TreeNode<BrowserItem>
-        //{
-        //    Expandable = true,
-        //    Expanded = true,
-        //    Icon = TbIcons.BoldDuoTone.Architecture,
-        //    Text = _codeLoc["subject"],
-        //    Children = new List<TreeNode<BrowserItem>>
-        //    {
-        //        new TreeNode<BrowserItem>
-        //        {
-        //            Text = _codeLoc["architecture"],
-        //            Expandable = false,
-        //            Icon = TbIcons.BoldDuoTone.Architecture,
-        //            Value = new BrowserItem
-        //            {
-        //                Href = _appNavigationManager.GetCodeArchitectureUrl()
-        //            }
-        //        },
-        //        new TreeNode<BrowserItem>
-        //        {
-        //            Text = _codeLoc["features"],
-        //            Expandable = false,
-        //            Icon = TbIcons.BoldDuoTone.Epic,
-        //            Value = new BrowserItem
-        //            {
-        //                Href = _appNavigationManager.GetFeaturesUrl()
-        //            }
-        //        },
-        //        new TreeNode<BrowserItem>
-        //        {
-        //            Text = _codeLoc["components"],
-        //            Expandable = false,
-        //            Icon = TbIcons.BoldDuoTone.Components,
-        //            Value = new BrowserItem
-        //            {
-        //                Href = _appNavigationManager.GetComponentsUrl()
-        //            }
-        //        },
-        //        new TreeNode<BrowserItem>
-        //        {
-        //            Text = _codeLoc["layers"],
-        //            Expandable = false,
-        //            Icon = TbIcons.BoldDuoTone.Layers,
-        //            Value = new BrowserItem
-        //            {
-        //                Href = _appNavigationManager.GetLayersUrl()
-        //            }
-        //        },
-        //        new TreeNode<BrowserItem>
-        //        {
-        //            Text = _codeLoc["systems"],
-        //            Expandable = false,
-        //            Icon = TbIcons.BoldDuoTone.Systems,
-        //            Value = new BrowserItem
-        //            {
-        //                Href = _appNavigationManager.GetSystemsUrl()
-        //            }
-        //        },
-        //        new TreeNode<BrowserItem>
-        //        {
-        //            Text = _codeLoc["commits"],
-        //            Expandable = false,
-        //            Icon = TbIcons.Git.Commit,
-        //            Value = new BrowserItem
-        //            {
-        //                Href = _appNavigationManager.GetCodeCommitsUrl()
-        //            }
-        //        }
+        // Search folders
+        result.AddRange(RequirementSearchFolders.GetSearchFolders(_loc, _appNavigationManager));
 
-        //    }
-        //};
-        return [specificationNode];
+        return result;
     }
 
 
@@ -424,7 +367,6 @@ internal class RequirementBrowser : TenantBaseService
             }
         }
     }
-
 
     internal async Task SyncWithActiveDocumentAsync(Requirement requirement)
     {

@@ -9,12 +9,22 @@
     {
         if (commandItem.Folder is not null)
         {
-            <MudMenu Label="@commandItem.Folder">
+            if(Flatten)
+            {
                 @foreach (var childCommand in commandItem.FolderCommands)
                 {
                     <CommandMenuItem Item="@childCommand" Bindings="@_bindings" Principal="@_claimsPrincipal" />
                 }
-            </MudMenu>
+            }
+            else
+            {
+                <MudMenu Label="@commandItem.Folder">
+                    @foreach (var childCommand in commandItem.FolderCommands)
+                    {
+                        <CommandMenuItem Item="@childCommand" Bindings="@_bindings" Principal="@_claimsPrincipal" />
+                    }
+                </MudMenu>
+            }
         }
         else
         {
@@ -28,6 +38,11 @@
     /// This is used to find/filter commands
     /// </summary>
     [Parameter] public string? TypeNames { get; set; }
+
+    /// <summary>
+    /// If true, folders are ignored
+    /// </summary>
+    [Parameter] public bool Flatten { get; set; } = false;
 
     private KeyboardBindings? _bindings;
     private ClaimsPrincipal? _claimsPrincipal;

@@ -1,0 +1,67 @@
+﻿@using TestBucket.Domain
+@using TestBucket.Domain.Requirements.Models
+@inject RequirementBrowser browser
+@inject IDialogService dialogService
+@inject FieldController fieldController
+@inject NavigationManager navigationManager
+@inject IStringLocalizer<SharedStrings> loc
+@implements IDisposable
+
+<MudDataGrid ServerData="LoadGridData"
+             Class="tb-requirement-grid"
+             Dense
+             RowClassFunc="RowClassFunc"
+             T="Requirement"
+             RowClick="(e) => OnItemClicked(e.Item)"
+             @ref="_dataGrid"
+             SortMode="SortMode.None">
+
+    <ToolBarContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
+
+            <MudTextField Value="@_searchPhrase" T="string" ValueChanged="OnSearch"
+                          Class="mt-2 default-search"
+                          Clearable="true"
+                          Variant="Variant.Outlined"
+                          IconSize="Size.Small"
+                          Adornment="Adornment.Start"
+                          Placeholder="@loc["search-tests"]"
+                          AdornmentIcon="@Icons.Material.Filled.Search" />
+
+            <MudSpacer />
+
+            @if(_hasCustomFilter)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.Clear" OnClick="ResetFilter"></MudIconButton>
+            }
+
+
+        </MudStack>
+    </ToolBarContent>
+
+    <Columns>
+        <TemplateColumn Title="@loc["name"]">
+            <CellTemplate>
+                <Draggable T="Requirement" Data="@context.Item">
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@RequirementIcons.GetIcon(context.Item)" />
+                        @context.Item.Name
+                    </MudStack>
+                </Draggable>
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn Title="@loc["modified"]">
+            <CellTemplate>
+                @if (context.Item is not null)
+                {
+                    @context.Item.Modified.Humanize()
+                }
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+
+    <PagerContent>
+        <MudDataGridPager T="Requirement" />
+    </PagerContent>
+</MudDataGrid>

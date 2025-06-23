@@ -13,7 +13,7 @@ using TestBucket.Domain.Keyboard;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Localization;
 
-namespace TestBucket.Components.Requirements.Commands;
+namespace TestBucket.Components.Requirements.Commands.Shared;
 
 internal class CreateTestCaseFromRequirementCommand : ICommand
 {

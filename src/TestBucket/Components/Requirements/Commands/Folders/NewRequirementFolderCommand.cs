@@ -7,7 +7,7 @@ using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;
 
-namespace TestBucket.Components.Tests.Requiremnts.Commands;
+namespace TestBucket.Components.Requirements.Commands.Folders;
 
 internal class NewRequirementFolderCommand : ICommand
 {

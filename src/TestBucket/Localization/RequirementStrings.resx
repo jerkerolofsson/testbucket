@@ -123,8 +123,8 @@
   <data name="confirm-delete-requirement-title" xml:space="preserve">
     <value>Delete requirement?</value>
   </data>
-  <data name="create-child-requirement" xml:space="preserve">
-    <value>Create child requirement</value>
+  <data name="create-general" xml:space="preserve">
+    <value>New requirement</value>
   </data>
   <data name="create-requirement" xml:space="preserve">
     <value>New requirement</value>
@@ -204,9 +204,6 @@
   <data name="search" xml:space="preserve">
     <value>Search</value>
   </data>
-  <data name="create-requirement-specification" xml:space="preserve">
-    <value>Create specification</value>
-  </data>
   <data name="import-requirements" xml:space="preserve">
     <value>Import requirements</value>
   </data>
@@ -222,8 +219,8 @@
   <data name="collection-type" xml:space="preserve">
     <value>Collection type</value>
   </data>
-  <data name="create-child-task" xml:space="preserve">
-    <value>Create child task</value>
+  <data name="create-task" xml:space="preserve">
+    <value>New task</value>
   </data>
   <data name="split-requirement-specification" xml:space="preserve">
     <value>Extract sections and split into many</value>
@@ -240,8 +237,8 @@
   <data name="approve-requirement-arg" xml:space="preserve">
     <value>Approve {0}</value>
   </data>
-  <data name="create-child-feature" xml:space="preserve">
-    <value>Create child feature</value>
+  <data name="create-epic" xml:space="preserve">
+    <value>New epic</value>
   </data>
   <data name="link-requirement-to-test" xml:space="preserve">
     <value>Link requirement to test</value>
@@ -254,5 +251,8 @@
   </data>
   <data name="type-documentation" xml:space="preserve">
     <value>Documentation</value>
+  </data>
+  <data name="create-initiative" xml:space="preserve">
+    <value>New initiative</value>
   </data>
 </root>

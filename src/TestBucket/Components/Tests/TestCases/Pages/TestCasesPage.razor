@@ -13,7 +13,7 @@
 <article class="center">
     <MudStack>
         <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
-            <MudText Typo="Typo.h1" Color="Color.Primary">@_totalNumberOfTestsChanged</MudText>
+            <MudText Typo="Typo.h1" Color="Color.Primary">@_totalCount</MudText>
             <MudText Typo="Typo.h1">@loc["test-cases"]</MudText>
         </MudStack>
 
@@ -79,10 +79,10 @@
 
     }
 
-    private long? _totalNumberOfTestsChanged = null;
+    private long? _totalCount = null;
     private void OnTotalNumberOfTestsChanged(long count)
     {
-        _totalNumberOfTestsChanged = count;
+        _totalCount = count;
     }
 
     private void OnTestCaseClicked(TestCase testCase)

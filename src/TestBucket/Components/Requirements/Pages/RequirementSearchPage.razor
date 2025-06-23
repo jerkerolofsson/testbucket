@@ -1,0 +1,91 @@
+﻿@attribute [Authorize()]
+@using TestBucket.Components.Requirements.Layouts
+@using TestBucket.Domain.Requirements.Search
+@layout RequirementsLayout
+@inject FieldController fieldController
+@inject AppNavigationManager appNavigationManager
+@inject IAppLocalization loc
+@page "/{TenantId}/Requirements/Search"
+
+<article class="center">
+    <MudStack>
+        <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h1" Color="Color.Primary">@_totalCount</MudText>
+            <MudText Typo="Typo.h1">@loc.Shared["requirements"]</MudText>
+        </MudStack>
+
+        <RequirementGrid 
+            Query="_query"
+            TotalNumberOfRequirementsChanged="OnTotalNumberOfRequirementsChanged"
+            QueryChanged="OnQueryChanged" Project="@Project" OnRequirementClicked="OnRequirementClicked" />
+
+    </MudStack>
+</article>
+
+@code {
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [Parameter] public string? TenantId { get; set; }
+    [SupplyParameterFromQuery(Name = "q")] public string? InitialQuery { get; set; }
+
+
+    private SearchRequirementQuery _query = new();
+    private IReadOnlyList<FieldDefinition> _requirementFields = [];
+    private long? _totalCount;
+
+    private void OnTotalNumberOfRequirementsChanged(long count)
+    {
+        _totalCount = count;
+    }
+
+    private void OnRequirementClicked(Requirement requirement)
+    {
+        appNavigationManager.NavigateTo(requirement);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Project is null)
+        {
+            return;
+        }
+        _requirementFields = await fieldController.GetDefinitionsAsync(Project.Id, Contracts.Fields.FieldTarget.Requirement);
+        OnQueryChanged(null);
+    }
+
+
+    /// <summary>
+    /// Load the test suite when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Project is null)
+        {
+            return;
+        }
+        _requirementFields ??= await fieldController.GetDefinitionsAsync(Project.Id, Contracts.Fields.FieldTarget.Requirement);
+        OnQueryChanged(null);
+    }
+
+    private void OnQueryChanged(SearchRequirementQuery? query)
+    {
+        if (query is null)
+        {
+            if (InitialQuery is null)
+            {
+                _query = new();
+                _query.ProjectId = Project?.Id;
+                _query.CompareFolder = false;
+            }
+            else
+            {
+                _query = SearchRequirementQueryParser.Parse(InitialQuery, _requirementFields);
+            }
+        }
+        else
+        {
+            _query = query;
+        }
+
+    }
+}

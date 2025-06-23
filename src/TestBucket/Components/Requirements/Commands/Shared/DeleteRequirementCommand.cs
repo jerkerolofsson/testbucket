@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Extensions.Localization;
+
 using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Shared.Icons;
 using TestBucket.Components.Tests.TestCases.Services;
@@ -8,35 +9,35 @@ using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;
 
-namespace TestBucket.Components.Requirements.Commands;
-internal class SplitSpecificationCommand : ICommand
+namespace TestBucket.Components.Requirements.Commands.Shared;
+internal class DeleteRequirementCommand : ICommand
 {
-    public string Id => "split-requirement-specification";
+    public string Id => "delete-requirement";
 
-    public string Name => _loc["split-requirement-specification"];
+    public string Name => _loc["delete-requirement"];
 
-    public string Description => _loc["split-requirement-specification-description"];
+    public string Description => _loc["delete-requirement-description"];
 
-    public bool Enabled => _appNav.State.SelectedRequirementSpecification is not null;
+    public bool Enabled => _appNav.State.SelectedRequirement is not null && _appNav.State.SelectedProject is not null;
 
     public KeyboardBinding? DefaultKeyboardBinding => null;
 
-    public string? Icon => Icons.Material.Filled.CallSplit;
+    public string? Icon => Icons.Material.Filled.Delete;
 
-    public string[] ContextMenuTypes => ["RequirementSpecification"];
+    public string[] ContextMenuTypes => ["Requirement"];
 
-    public int SortOrder => 80;
+    public int SortOrder => 90;
 
     public string? Folder => null;
 
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.Requirement;
-    public PermissionLevel? RequiredLevel => PermissionLevel.Write;
+    public PermissionLevel? RequiredLevel => PermissionLevel.Delete;
 
     private readonly IStringLocalizer<RequirementStrings> _loc;
     private readonly AppNavigationManager _appNav;
     private readonly RequirementEditorController _requirementEditor;
 
-    public SplitSpecificationCommand(
+    public DeleteRequirementCommand(
         IStringLocalizer<RequirementStrings> loc,
         AppNavigationManager appNav,
         RequirementEditorController requirementEditor)
@@ -48,10 +49,10 @@ internal class SplitSpecificationCommand : ICommand
 
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
-        if (_appNav.State.SelectedRequirementSpecification is null)
+        if (_appNav.State.SelectedRequirement is null)
         {
             return;
         }
-        await _requirementEditor.ExtractRequirementsFromSpecificationAsync(_appNav.State.SelectedRequirementSpecification);
+        await _requirementEditor.DeleteRequirementAsync(_appNav.State.SelectedRequirement);
     }
 }

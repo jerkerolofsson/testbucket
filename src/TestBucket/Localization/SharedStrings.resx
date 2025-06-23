@@ -888,4 +888,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="test-case" xml:space="preserve">
     <value>Testcase</value>
   </data>
+  <data name="requirements-and-workitems" xml:space="preserve">
+    <value>Requirements and Work Items</value>
+  </data>
 </root>

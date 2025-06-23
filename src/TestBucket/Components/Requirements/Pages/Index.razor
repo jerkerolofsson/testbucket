@@ -1,23 +1,39 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Requirements"
-
 @layout RequirementsLayout
+@inject AppNavigationManager appNavigationManager
+@inject IAppLocalization loc
 
-<MudStack Class="pa-2">
-    <MudText Class="mb-3" Typo="Typo.h1">Oracle</MudText>
-    <MudText Typo="Typo.h2">
-        Documentation, Requirements and Information about the system under test (SUT).
-    </MudText>
+<article class="center">
+    <MudStack AlignItems="AlignItems.Center">
+        <MudText Class="mb-3" Typo="Typo.h1">@loc.Shared["requirements-and-workitems"]</MudText>
 
-    <MudText>
-        Manage requirements, evaluate requirement coverage, or upload user documentation.
-        Documentation is useful to get value of AI to generate test cases.
-    </MudText>
-</MudStack>
+        <EditForm OnValidSubmit="Search" Model="@_searchPhrase">
+            <MudStack Row Spacing="1">
+                <MudTextField @bind-Value="@_searchPhrase" T="string"
+                              Class="mt-2 default-search"
+                              Clearable="true"
+                              Variant="Variant.Outlined"
+                              IconSize="Size.Small"
+                              Adornment="Adornment.Start"
+                              Placeholder="@loc.Shared["search"]"
+                              AdornmentIcon="@Icons.Material.Filled.Search" />
+                <MudButton ButtonType="ButtonType.Submit">@loc.Shared["search"]</MudButton>
+            </MudStack>
+        </EditForm>
+    </MudStack>
+</article>
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";
     [CascadingParameter] TestProject? Project { get; set; }
     [CascadingParameter] Team? Team { get; set; }
 
+    private string _searchPhrase = "";
+
+    private void Search()
+    {
+        var baseUrl = appNavigationManager.GetRequirementsSearchUrl() + "?q=" + _searchPhrase;
+        appNavigationManager.NavigateTo(baseUrl);
+    }
 }

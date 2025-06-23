@@ -17,7 +17,7 @@
         <RequirementGrid 
             Query="_query"
             TotalNumberOfRequirementsChanged="OnTotalNumberOfRequirementsChanged"
-                         QueryChanged="OnQueryChanged" Project="@Project" OnRequirementClicked="OnRequirementClicked" />
+            QueryChanged="OnQueryChanged" Project="@Project" OnRequirementClicked="OnRequirementClicked" />
 
     </MudStack>
 </article>
@@ -42,10 +42,16 @@
         appNavigationManager.NavigateTo(requirement);
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        if (Project is null)
+        {
+            return;
+        }
+        _requirementFields = await fieldController.GetDefinitionsAsync(Project.Id, Contracts.Fields.FieldTarget.Requirement);
+        OnQueryChanged(null);
     }
+
 
     /// <summary>
     /// Load the test suite when changed
@@ -57,9 +63,7 @@
         {
             return;
         }
-        _requirementFields = await fieldController.GetDefinitionsAsync(Project.Id, Contracts.Fields.FieldTarget.Requirement);
-        //_fieldCategory = _testCaseFields.Where(x => x.TraitType == TraitType.TestCategory).FirstOrDefault();
-        //_fieldFeature = _testCaseFields.Where(x => x.TraitType == TraitType.Feature).FirstOrDefault();
+        _requirementFields ??= await fieldController.GetDefinitionsAsync(Project.Id, Contracts.Fields.FieldTarget.Requirement);
         OnQueryChanged(null);
     }
 

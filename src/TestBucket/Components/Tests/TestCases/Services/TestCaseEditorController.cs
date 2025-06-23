@@ -7,6 +7,7 @@ using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Environments.Models;
+using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.States;
@@ -32,7 +33,7 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
     private readonly ITestEnvironmentManager _testEnvironmentManager;
     private readonly IMediator _mediator;
     private readonly IStringLocalizer<SharedStrings> _loc;
-
+    private readonly IProjectManager _projectManager;
 
     public TestCaseEditorController(
         ITestCaseManager testCaseManager,
@@ -45,7 +46,8 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         ITestEnvironmentManager testEnvironmentManager,
         IMediator mediator,
         ITestSuiteManager testSuiteManager,
-        IStringLocalizer<SharedStrings> loc) : base(authenticationStateProvider)
+        IStringLocalizer<SharedStrings> loc,
+        IProjectManager projectManager) : base(authenticationStateProvider)
     {
         _testCaseManager = testCaseManager;
         _testRunManager = testRunManager;
@@ -57,14 +59,24 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         _mediator = mediator;
         _testSuiteManager = testSuiteManager;
         _loc = loc;
+        _projectManager = projectManager;
     }
 
     public async ValueTask<TestExecutionContext?> CompileAsync(CompilationOptions options, List<CompilerError> errors, CancellationToken cancellationToken = default)
     {
         var testCase = options.TestCase;
-        if (testCase.TestProjectId is not null && testCase.TeamId is not null && testCase.TenantId is not null)
+        if (testCase.TestProjectId is not null && testCase.TenantId is not null)
         {
             var principal = await GetUserClaimsPrincipalAsync();
+            if (testCase.TeamId is null)
+            {
+                var project = await _projectManager.GetTestProjectByIdAsync(principal, testCase.TestProjectId.Value);
+                testCase.TeamId = project?.TeamId;
+            }
+            if (testCase.TeamId is null)
+            {
+                return null;
+            }
 
             TestRun? testRun;
             TestEnvironment? testEnvironment = null;
@@ -89,7 +101,7 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
                 TestSuiteId = testCase.TestSuiteId,
                 ProjectId = testCase.TestProjectId.Value,
                 TestRunId = options.TestRunId,
-                TeamId = testCase.TeamId.Value,
+                TeamId = testCase.TeamId.Value,,
                 TestEnvironmentId = testEnvironment?.Id,
                 Dependencies = []
             };

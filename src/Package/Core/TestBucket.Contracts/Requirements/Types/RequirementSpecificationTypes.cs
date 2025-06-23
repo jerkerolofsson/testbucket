@@ -11,7 +11,7 @@ namespace TestBucket.Contracts.Requirements.Types;
 /// </summary>
 public class RequirementSpecificationTypes
 {
-    public static string[] AllTypes => [TaskCollection, Documentation, SRS, PRS, FRS, BRS, RequirementSpecification, Other];
+    public static string[] AllTypes => [WorkItems, Documentation, SRS, PRS, FRS, BRS, RequirementSpecification, Other];
 
     /// <summary>
     /// General requirement
@@ -44,9 +44,9 @@ public class RequirementSpecificationTypes
     public const string RequirementSpecification = "Requirement Specification";
 
     /// <summary>
-    /// Collection for tasks
+    /// Collection for tasks, epics,..
     /// </summary>
-    public const string TaskCollection = "Task Collection";
+    public const string WorkItems = "Work Items";
 
     /// <summary>
     /// Other

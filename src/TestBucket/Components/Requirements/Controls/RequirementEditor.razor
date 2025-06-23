@@ -4,6 +4,7 @@
 @using TestBucket.Components.Requirements.Commands
 @using TestBucket.Contracts.Requirements.States
 @using TestBucket.Contracts.Requirements.Types
+@using TestBucket.Domain.Appearance
 @using TestBucket.Domain.Comments.Models
 @using TestBucket.Domain.Requirements
 @inject RequirementEditorController editor
@@ -175,7 +176,7 @@
                             @if(Requirement.RequirementType is not null)
                             {
                                 var label = "type-" + Requirement.RequirementType.ToLower();
-                                <div>@reqLoc[label]</div>
+                                <Chip Palette="@DefaultPalettes.Contrasting1" Text="@reqLoc[label]" ColorFromTextHash ColorFromText="@Requirement.RequirementType" />
                             }
                         </Field>
 
@@ -184,7 +185,9 @@
                             <Field Row>
                                 <FieldHeader>@reqLoc["parent"]</FieldHeader>
                                 <MudSpacer />
-                                <MudLink Href="@appNavigationManager.GetUrl(_parent)">@_parent.Name</MudLink>
+                                <MudLink Href="@appNavigationManager.GetUrl(_parent)">
+                                    <Chip Palette="@DefaultPalettes.Contrasting1" Text="@_parent.Name" ColorFromTextHash ColorFromText="@_parent.RequirementType" />
+                                </MudLink>
                             </Field>
                         }
 

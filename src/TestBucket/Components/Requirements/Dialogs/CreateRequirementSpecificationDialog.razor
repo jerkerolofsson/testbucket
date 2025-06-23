@@ -46,7 +46,7 @@
 
 @code {
     private string _name = "";
-    private string _type = "Product Requirements Specification (PRS)";
+    private string _type = RequirementSpecificationTypes.AllTypes.FirstOrDefault() ?? "Work Items";
 
     private FluentValidation.Results.ValidationResult? _validationResult;
 

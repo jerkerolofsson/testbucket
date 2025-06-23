@@ -15,9 +15,10 @@
 }
 
 .tb-kanban-board .list > .title {
-    font-weight: bold;
-    font-size: 150%;
-    margin-bottom: 8px;
+    font-weight: 600;
+    opacity: 0.75;
+    text-align: center;
+    font-size: 100%;
 }
 
 
@@ -25,17 +26,18 @@
     flex: 1;
 }
 .tb-kanban-board .list {
-    padding: 1rem;
-    background: var(--mud-palette-surface-darken);
+    padding: 4px;
+    background: var(--mud-palette-surface);
     border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
     gap: var(--gap);
+    height: 100%;
 }
 
 .tb-kanban-board .list .card {
     padding: 0.5rem;
-    background: var(--mud-palette-surface);
+    background: var(--mud-palette-surface-lighten);
     border-radius: var(--border-radius);
     border-left: solid 4px #ff595e;
 }

@@ -6,7 +6,7 @@ using TestBucket.Domain.Commands;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 
-namespace TestBucket.Components.Tests.Requirements.Commands;
+namespace TestBucket.Components.Requirements.Commands.Shared;
 
 internal class SyncWithActiveRequirementCommand : ICommand
 {

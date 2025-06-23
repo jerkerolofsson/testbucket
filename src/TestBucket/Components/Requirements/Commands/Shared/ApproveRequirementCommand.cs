@@ -15,7 +15,7 @@ using TestBucket.Domain.Keyboard;
 using TestBucket.Domain.Requirements;
 using TestBucket.Localization;
 
-namespace TestBucket.Components.Requirements.Commands;
+namespace TestBucket.Components.Requirements.Commands.Shared;
 internal class ApproveRequirementCommand : ICommand
 {
     private readonly IStringLocalizer _loc;

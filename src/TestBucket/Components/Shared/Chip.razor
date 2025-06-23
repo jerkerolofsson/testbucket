@@ -16,7 +16,22 @@ else
     [Parameter] public string Color { get; set; } = "#777";
     [Parameter] public EventCallback<Chip> OnClose { get; set; }
     [Parameter] public bool CanClose { get; set; }
+
+    /// <summary>
+    /// Assigns a chip color from ColorFromText, or if that is null, from the Text property
+    /// Note: Palette must be set
+    /// </summary>
     [Parameter] public bool ColorFromTextHash { get; set; }
+
+    /// <summary>
+    /// Text that is used to derive a color from, if ColorFromTextHash is true 
+    /// Note: Palette must be set
+    /// </summary>
+    [Parameter] public string? ColorFromText { get; set; }
+
+    /// <summary>
+    /// Palette to get a color from if ColorFromTextHash is true
+    /// </summary>
     [Parameter] public ThemePalette? Palette { get; set; }
 
     private string _textColor = "";
@@ -30,9 +45,10 @@ else
         ThemeColor color = (Color ?? "#777");
         if (ColorFromTextHash && Palette is not null && Palette.Colors.Count > 0)
         {
-            if(Text is not null)
+            var text = ColorFromText ?? Text;
+            if (text is not null)
             {
-                var hash = Math.Abs(Text.GetHashCode()) % Palette.Colors.Count;
+                var hash = Math.Abs(text.GetHashCode()) % Palette.Colors.Count;
                 color = Palette.Colors[hash];
             }
         }
@@ -41,14 +57,14 @@ else
         var backColor = color.ColorDarken(0.2);
         _backgroundColor = backColor.ToString(ColorOutputFormats.Hex);
 
-        if (backColor.L > 0.5)
+        if (backColor.L > 0.7)
         {
-            var amount = backColor.L - 0.1;
+            var amount = 0.7;
             _textColor = backColor.ColorDarken(amount).ToString(ColorOutputFormats.Hex);
         }
         else
         {
-            var amount = 0.9 - backColor.L;
+            var amount = 0.7;
             _textColor = backColor.ColorLighten(amount).ToString(ColorOutputFormats.Hex);
         }
     }

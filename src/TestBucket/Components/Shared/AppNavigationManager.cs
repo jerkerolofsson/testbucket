@@ -1,16 +1,12 @@
 ﻿
 using TestBucket.Components.Requirements.Controls;
 using TestBucket.Components.Tests.TestCases.Controls;
-using TestBucket.Domain.AI.Agent;
-using TestBucket.Domain.AI.Agent.Models;
 using TestBucket.Domain.Automation.Pipelines.Models;
-using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.TestAccounts.Models;
-using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Domain.TestResources.Models;
 
@@ -143,17 +139,22 @@ public class AppNavigationManager
         return $"/{tenantId}/Requirements/Import";
     }
 
+
+    public string GetRequirementsSearchUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Requirements/Search";
+    }
+
     public string GetTestCasesUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
-        var testSuiteId = ResolveEntityIdFromUrl(_navigationManager.Uri);
         return $"{tenantId}/Testing/TestCases";
     }
 
     public string GetTestCaseRunsUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
-        var testSuiteId = ResolveEntityIdFromUrl(_navigationManager.Uri);
         return $"{tenantId}/Testing/TestCaseRuns";
     }
 

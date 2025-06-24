@@ -876,6 +876,12 @@
   <data name="api-keys-description" xml:space="preserve">
     <value />
   </data>
+  <data name="more-options" xml:space="preserve">
+    <value />
+  </data>
+  <data name="test-case" xml:space="preserve">
+    <value />
+  </data>
   <data name="requirements-and-workitems" xml:space="preserve">
     <value />
   </data>

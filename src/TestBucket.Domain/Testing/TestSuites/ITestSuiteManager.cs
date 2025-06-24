@@ -31,6 +31,8 @@ public interface ITestSuiteManager
     Task DeleteTestSuiteByIdAsync(ClaimsPrincipal principal, long testSuiteId);
     Task<TestSuite?> GetTestSuiteBySlugAsync(ClaimsPrincipal principal, long? projectId, string slug);
     Task<TestSuite?> GetTestSuiteByNameAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string suiteName);
+    Task<TestSuiteFolder?> GetTestSuiteFolderByIdAsync(ClaimsPrincipal principal, long folderId);
+    
 
     /// <summary>
     /// Searches for test suites

@@ -6,4 +6,5 @@ public record class ChatReference
     public required string Name { get; set; }
     public required string Text { get; set; }
     public string? EntityTypeName { get; set; }
+    public bool IsActiveDocument { get; set; }
 }

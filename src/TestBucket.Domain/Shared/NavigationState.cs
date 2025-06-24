@@ -54,7 +54,7 @@ public class NavigationState
     /// <summary>
     /// Selected requirement
     /// </summary>
-    public Requirement? SelectedRequirement { get; set; }
+    public Requirement? SelectedRequirement { get; private set; }
 
     /// <summary>
     /// Selected test case
@@ -111,23 +111,23 @@ public class NavigationState
         {
             if (SelectedTestCase is not null)
             {
-                return ChatReferenceBuilder.Create(SelectedTestCase);
+                return ChatReferenceBuilder.Create(SelectedTestCase, isActiveDocument:true);
             }
             if (SelectedTestSuite is not null)
             {
-                return ChatReferenceBuilder.Create(SelectedTestSuite);
+                return ChatReferenceBuilder.Create(SelectedTestSuite, isActiveDocument: true);
             }
             if (SelectedRequirement is not null)
             {
-                return ChatReferenceBuilder.Create(SelectedRequirement);
+                return ChatReferenceBuilder.Create(SelectedRequirement, isActiveDocument: true);
             }
             if (SelectedFeature is not null)
             {
-                return ChatReferenceBuilder.Create(SelectedFeature);
+                return ChatReferenceBuilder.Create(SelectedFeature, isActiveDocument: true);
             }
             if (SelectedComponent is not null)
             {
-                return ChatReferenceBuilder.Create(SelectedComponent);
+                return ChatReferenceBuilder.Create(SelectedComponent, isActiveDocument: true);
             }
             return null;
         }
@@ -259,7 +259,6 @@ public class NavigationState
     {
         SetSelectedTestSuiteFolder(folder, SelectedTestSuite);
     }
-
     public void SetSelectedTestCase(TestCase? testCase)
     {
         ClearSelection();

@@ -44,22 +44,31 @@ public class LlmModels
             Vendor = "deepseek",
             Name = "Deepseek R1 1.5b",
             OllamaName = "deepseek-r1:1.5b",
-            Capabilities = ModelCapability.Reasoning
+            Capabilities = ModelCapability.Tools | ModelCapability.Thinking | ModelCapability.Classification
         },
+
+        ["nemotron-mini"] = new LlmModel
+        {
+            Vendor = "nvidia",
+            Name = "nemotron-mini:4b",
+            OllamaName = "nemotron-mini:4b",
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools
+        },
+
         ["phi3:3.8b"] = new LlmModel
         {
             Icon = TbIcons.Brands.Microsoft,
             Vendor = "microsoft",
             Name = "Phi3 3.8b",
             OllamaName = "phi3:3.8b",
-            Capabilities = ModelCapability.Classification | ModelCapability.Reasoning
+            Capabilities = ModelCapability.Classification
         },
         ["phi4"] = new LlmModel
         {
             Vendor = "microsoft",
             Name = "phi4",
             OllamaName = "phi4",
-            Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Reasoning
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools
         },
         ["phi4-mini"] = new LlmModel
         {
@@ -67,7 +76,7 @@ public class LlmModels
             Vendor = "microsoft",
             Name = "Phi4 mini",
             OllamaName = "phi4-mini:3.8b",
-            Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Reasoning
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools
         },
         ["qwen3:0.6b"] = new LlmModel
         {
@@ -75,7 +84,7 @@ public class LlmModels
             Vendor = "alibaba-cloud",
             Name = "Qwen3 0.6b",
             OllamaName = "qwen3:0.6b",
-            Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Reasoning
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Thinking
         },
         ["qwen3:1.7b"] = new LlmModel
         {
@@ -83,11 +92,11 @@ public class LlmModels
             Vendor = "alibaba-cloud",
             Name = "Qwen3 1.7b",
             OllamaName = "qwen3:1.7b",
-            Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Reasoning
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Thinking
         },
     };
 
-    internal static LlmModel? GetModelByName(string name)
+    public static LlmModel? GetModelByName(string name)
     {
         return Models.Values.Where(x => x.Name == name).FirstOrDefault();
     }

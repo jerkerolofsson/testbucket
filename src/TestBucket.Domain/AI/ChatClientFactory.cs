@@ -8,6 +8,8 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+using OllamaSharp;
+
 using TestBucket.Domain.AI.Models;
 
 namespace TestBucket.Domain.AI;
@@ -47,7 +49,11 @@ internal class ChatClientFactory : IChatClientFactory
 
             try
             {
-                var ollama = new OllamaSharp.OllamaApiClient(settings.AiProviderUrl, model);
+                var ollama = new OllamaSharp.OllamaApiClient(new OllamaApiClient.Configuration
+                {
+                    Model = model,
+                    Uri = new Uri(settings.AiProviderUrl),
+                });
                 return new ChatClientBuilder(ollama).UseFunctionInvocation().Build();
             }
             catch (Exception) { }

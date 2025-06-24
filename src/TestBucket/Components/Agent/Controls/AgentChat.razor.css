@@ -1,1 +1,76 @@
-﻿
+﻿.tb-agent-chat-suggestions {
+    padding: 8px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.tb-agent-chat-suggestions ::deep .mud-paper:hover {
+    background: var(--mud-palette-primary-hover);
+    border-color: var(--mud-palette-lines-inputs);
+}
+
+.tb-agent-chat-suggestions ::deep .mud-paper {
+    padding: 16px;
+    background: var(--mud-palette-surface-lighten);
+    cursor: pointer;
+    transition: all linear 150ms;
+    border: solid 1px transparent;
+}
+
+.tb-agent-chat-suggestions,
+.tb-agent-chat-conversation {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px;
+    overflow: auto;
+}
+
+.tb-agent-submit {
+    border-top: solid 1px var(--mud-palette-lines-inputs);
+}
+
+.tb-agent-submit .prompt {
+    background: var(--mud-palette-surface-darken);
+    padding: 5px;
+
+    display: grid;
+    grid-template-columns: 1fr 48px;
+    gap: 4px;
+}
+
+.tb-agent-chat .chat {
+    padding: 2px;
+    --chat-background: var(--mud-palette-secondary);
+    background: var(--chat-background);
+    border-radius: var(--mud-default-borderradius);
+}
+
+.tb-agent-chat .chat.assistant {
+    align-self: flex-start;
+    margin-right: 16px;
+}
+
+
+.tb-agent-chat {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    height: 100%;
+}
+
+
+.tb-agent-chat .chat.function-call {
+    padding: 8px;
+    --chat-background: var(--mud-palette-secondary-darken);
+}
+
+.tb-agent-chat .chat ::deep .mud-markdown-preview {
+    background: var(--chat-background);
+}
+
+.tb-agent-chat .chat.user {
+    margin-left: 16px;
+    align-self: flex-end;
+    --chat-background: var(--mud-palette-surface-darken);
+}

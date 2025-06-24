@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 using ModelContextProtocol.Server;
 
+using TestBucket.Contracts.Issues.Models;
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Testing.TestRuns;
@@ -29,7 +30,7 @@ public class MilstonesMcpTools : AuthenticatedTool
     /// </summary>
     /// <returns></returns>
     [McpServerTool(Name = "list-milestones"), Description("Returns a list of all project milestones")]
-    public async Task<string[]> GetMilestonesAsync()
+    public async Task<MilestoneDto[]> GetMilestonesAsync()
     {
         var isAuthenticated = await IsAuthenticatedAsync();
         if (isAuthenticated && _principal is not null)
@@ -38,7 +39,13 @@ public class MilstonesMcpTools : AuthenticatedTool
             if (projectId is not null)
             {
                 var result = await _manager.GetMilestonesAsync(_principal, projectId.Value);
-                return result.Where(x=>x.Title != null).Select(x => x.Title!).ToArray();
+                return result.Where(x=>x.Title != null).Select(x => new MilestoneDto 
+                {
+                    Title = x.Title ?? "",
+                    Description = x.Description,
+                    DueDate = x.EndDate,
+                    Id = x.Id
+                }).ToArray();
             }
 
         }

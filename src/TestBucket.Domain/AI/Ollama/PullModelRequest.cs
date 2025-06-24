@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Mediator;
-
+﻿using Mediator;
 using OllamaSharp;
-
 using TestBucket.Domain.Progress;
 
-using YamlDotNet.Serialization;
 
 namespace TestBucket.Domain.AI.Ollama;
 public record class PullModelRequest(string Name) : IRequest<bool>;

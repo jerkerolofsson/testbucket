@@ -1,0 +1,9 @@
+.tb-chat-text-field {
+    width: 100%;
+}
+.tb-chat-text-field ::deep textarea {
+    padding: 8px;
+    width: 100%;
+    resize: none;
+    border-radius: var(--mud-default-borderradius);
+}

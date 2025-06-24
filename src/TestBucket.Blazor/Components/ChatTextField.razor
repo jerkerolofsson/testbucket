@@ -1,0 +1,55 @@
+
+<div class="tb-chat-text-field">
+<Microsoft.AspNetCore.Components.Forms.InputTextArea rows="@Lines"
+                                                     @attributes="InputAttributes"
+                                                     @oninput="HandleInput"
+                                                     Value="@_text"
+                                                     ValueExpression="() => _text"
+                                                     @onkeydown="HandleKeyPress" />
+</div>
+@code {
+    [Parameter] public int? Lines { get; set; }
+    [Parameter] public string? Text { get; set; }
+    [Parameter] public EventCallback<string?> TextChanged { get; set; }
+    [Parameter] public EventCallback<string?> OnEnter { get; set; }
+
+    /// <summary>
+    /// TextChanged invoked for every update
+    /// </summary>
+    [Parameter] public bool Immediate { get; set; } = true;
+
+    private string _text = "";
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? InputAttributes { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        _text = Text ?? "";
+    }
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        _text = e.Value?.ToString() ?? "";
+        if (Immediate)
+        {
+            await TextChanged.InvokeAsync(_text);
+        }
+    }
+
+
+    private async Task HandleKeyPress(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            if(!Immediate)
+            {
+                await TextChanged.InvokeAsync(_text);
+            }
+            await OnEnter.InvokeAsync(_text);
+
+            // Clear after send
+            _text = "";
+        }
+    }
+}

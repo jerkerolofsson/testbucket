@@ -20,7 +20,8 @@
 
 
 @code {
-    [Parameter] public ChatReference? ActiveDocument { get; set; }
+    [Parameter] public EventCallback ReferencesChanged { get; set; }
+
     [Parameter] public AgentChatContext? ChatContext { get; set; }
     [CascadingParameter] public TestProject? Project { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
@@ -32,18 +33,19 @@
         var testCase = await testBrowser.PickTestCaseAsync(Project, Team);
         if(testCase is not null)
         {
-            AddReference(ChatReferenceBuilder.Create(testCase));
+            await AddReference(ChatReferenceBuilder.Create(testCase));
         }
     }
 
-    private void RemoveReference(ChatReference reference)
+    private async Task RemoveReference(ChatReference reference)
     {
         _context.References.Remove(reference);
+        await ReferencesChanged.InvokeAsync();
     }
 
     private void OnActiveDocumentChanged(object? sender, ChatReference? reference)
     {
-        _context.References.Clear();
+        _context.References.RemoveAll(x => x.IsActiveDocument);
         if (reference is not null)
         {
             _context.References.Add(reference);
@@ -62,12 +64,13 @@
         appNavigationManager.State.ActiveDocumentChanged -= OnActiveDocumentChanged;
     }
 
-    private void AddReference(ChatReference reference)
+    private async Task AddReference(ChatReference reference)
     {
         if (!_context.References.Contains(reference))
         {
             _context.References.Add(reference);
         }
+        await ReferencesChanged.InvokeAsync();
     }
 
     protected override void OnParametersSet()
@@ -75,15 +78,6 @@
         if (ChatContext is not null)
         {
             _context = ChatContext;
-        }
-
-        if (ActiveDocument is not null)
-        {
-            if (!_context.References.Contains(ActiveDocument))
-            {
-                _context.References.Clear();
-                _context.References.Add(ActiveDocument);
-            }
         }
     }
 }

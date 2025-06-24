@@ -30,6 +30,14 @@ public interface ISettingsManager
     ISetting[] GetSettings(SettingContext context);
 
     /// <summary>
+    /// Gets a setting by name
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    ISetting? GetSettingByName(SettingContext context, string name);
+
+    /// <summary>
     /// Searches for links
     /// </summary>
     /// <param name="context"></param>

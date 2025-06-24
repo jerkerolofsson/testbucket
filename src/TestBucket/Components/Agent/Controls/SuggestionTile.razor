@@ -1,0 +1,18 @@
+﻿@using TestBucket.Domain.AI.Agent.Models
+<MudPaper Class="pa-2" aria-role="button" @onclick="OnSuggestionClicked">
+    @Suggestion?.Title
+</MudPaper>
+
+@code {
+    [Parameter] public Suggestion? Suggestion {get;set;}
+    [Parameter] public EventCallback<Suggestion> SuggestionClicked{ get; set; }
+
+    private async Task OnSuggestionClicked()
+    {
+        if(Suggestion is null)
+        {
+            return;            
+        }
+        await SuggestionClicked.InvokeAsync(Suggestion);
+    }
+}

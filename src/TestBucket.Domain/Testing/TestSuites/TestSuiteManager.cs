@@ -53,14 +53,15 @@ namespace TestBucket.Domain.Testing.TestSuites
         #region Test Suites
         public async Task<TestSuite?> GetTestSuiteByIdAsync(ClaimsPrincipal principal, long id)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Read);
             var tenantId = principal.GetTenantIdOrThrow();
             return await _testCaseRepository.GetTestSuiteByIdAsync(tenantId, id);
         }
 
         public async Task<TestSuiteFolder[]> GetTestSuiteFoldersAsync(ClaimsPrincipal principal, long? projectId, long testSuiteId, long? parentFolderId)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Read);
             var tenantId = principal.GetTenantIdOrThrow();
-            // todo: convert to specifications
             return await _testCaseRepository.GetTestSuiteFoldersAsync(tenantId, projectId, testSuiteId, parentFolderId);
         }
 
@@ -75,6 +76,7 @@ namespace TestBucket.Domain.Testing.TestSuites
         /// <returns></returns>
         public async Task<TestSuite> AddTestSuiteAsync(ClaimsPrincipal principal, long? teamId, long? projectId, string name, string? ciCdSystem, string? ciCdRef)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Write);
             var suite = new TestSuite { Name = name, TestProjectId = projectId, TeamId = teamId, DefaultCiCdRef = ciCdRef, CiCdSystem = ciCdSystem };
             return await AddTestSuiteAsync(principal, suite);
         }
@@ -126,6 +128,8 @@ namespace TestBucket.Domain.Testing.TestSuites
         /// <returns></returns>
         public async Task UpdateTestSuiteAsync(ClaimsPrincipal principal, TestSuite suite)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Write);
+
             var tenantId = principal.ThrowIfEntityTenantIsDifferent(suite);
             var existingTestSuite = await _testCaseRepository.GetTestSuiteByIdAsync(tenantId, suite.Id);
             if(existingTestSuite is null)
@@ -187,8 +191,8 @@ namespace TestBucket.Domain.Testing.TestSuites
         /// <returns></returns>
         public async Task<PagedResult<TestSuite>> SearchTestSuitesAsync(ClaimsPrincipal principal, SearchTestSuiteQuery query) 
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Read);
             var tenantId = principal.GetTenantIdOrThrow();
-            // todo: convert to specifications
             return await _testCaseRepository.SearchTestSuitesAsync(tenantId, query);
         }
 
@@ -233,6 +237,7 @@ namespace TestBucket.Domain.Testing.TestSuites
         /// <returns></returns>
         public async Task<TestSuiteFolder> AddTestSuiteFolderAsync(ClaimsPrincipal principal, long? projectId, long testSuiteId, long? parentFolderId, string name)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Write);
             var tenantId = principal.GetTenantIdOrThrow();
 
             var folder = await _testCaseRepository.AddTestSuiteFolderAsync(tenantId, projectId, testSuiteId, parentFolderId, name);
@@ -255,6 +260,7 @@ namespace TestBucket.Domain.Testing.TestSuites
         /// <exception cref="InvalidOperationException"></exception>
         public async Task SaveTestSuiteFolderAsync(ClaimsPrincipal principal, TestSuiteFolder folder)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Delete);
             principal.ThrowIfEntityTenantIsDifferent(folder);
 
             folder.Modified = _timeProvider.GetUtcNow();
@@ -277,6 +283,7 @@ namespace TestBucket.Domain.Testing.TestSuites
         /// <returns></returns>
         public async Task DeleteTestSuiteFolderByIdAsync(ClaimsPrincipal principal, long folderId)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Delete);
             var tenantId = principal.GetTenantIdOrThrow();
             var folder = await _testCaseRepository.GetTestSuiteFolderByIdAsync(tenantId, folderId);
             if (folder is not null)
@@ -293,6 +300,7 @@ namespace TestBucket.Domain.Testing.TestSuites
         /// <returns></returns>
         public async Task DeleteTestSuiteFolderAsync(ClaimsPrincipal principal, TestSuiteFolder folder)
         {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Delete);
             principal.ThrowIfEntityTenantIsDifferent(folder);
             var tenantId = principal.GetTenantIdOrThrow();
             await _testCaseRepository.DeleteFolderByIdAsync(tenantId, folder.Id);
@@ -302,6 +310,13 @@ namespace TestBucket.Domain.Testing.TestSuites
             {
                 await observer.OnTestSuiteFolderDeletedAsync(folder);
             }
+        }
+
+        public async Task<TestSuiteFolder?> GetTestSuiteFolderByIdAsync(ClaimsPrincipal principal, long folderId)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Read);
+            var tenantId = principal.GetTenantIdOrThrow();
+            return await _testCaseRepository.GetTestSuiteFolderByIdAsync(tenantId, folderId);
         }
 
         #endregion Test Suite Folders

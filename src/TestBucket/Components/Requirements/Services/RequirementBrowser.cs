@@ -77,6 +77,12 @@ internal class RequirementBrowser : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         return await _requirementManager.GetLinksForTestAsync(principal, test);
     }
+
+    /// <summary>
+    /// Returns linked tests and other links
+    /// </summary>
+    /// <param name="requirement"></param>
+    /// <returns></returns>
     public async Task<RequirementTestLink[]> GetLinksForRequirementAsync(Requirement requirement)
     {
         var principal = await GetUserClaimsPrincipalAsync();

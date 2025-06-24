@@ -106,6 +106,21 @@ public class Requirement : RequirementEntity
     /// </summary>
     public long? RequirementSpecificationFolderId { get; set; }
 
+    /// <summary>
+    /// Work progress
+    /// </summary>
+    public double? Progress { get; set; }
+
+    /// <summary>
+    /// Start date
+    /// </summary>
+    public DateTimeOffset? StartDate { get; set; }
+
+    /// <summary>
+    /// End/due date
+    /// </summary>
+    public DateTimeOffset? DueDate { get; set; }
+
     // Navigation
     public RequirementSpecification? RequirementSpecification { get; set; }
     public RequirementSpecificationFolder? RequirementSpecificationFolder { get; set; }

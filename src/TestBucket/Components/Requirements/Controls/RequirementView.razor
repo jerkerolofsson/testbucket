@@ -18,93 +18,104 @@
 
 @if (_requirement is not null)
 {
-    <div class="container-fill-2-rows">
-        <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false" Color="Color.Tertiary">
-            <StartContent>
-                <MudStack Class="pa-2" Style="width: 100%; height: 100%">
+    <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false" Color="Color.Tertiary">
+        <StartContent>
+            <MudStack Class="pa-2" Style="width: 100%; height: 100%">
 
-                    <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
-                        <MudText Typo="Typo.h1" Color="Color.Primary">@_requirement.ExternalId</MudText>
-                        <MudText Typo="Typo.h1">@_requirement.Name</MudText>
+                <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.h1" Color="Color.Primary">@_requirement.ExternalId</MudText>
+                    <MudText Typo="Typo.h1">@_requirement.Name</MudText>
+                </MudStack>
+
+                <MarkdownEditor @ref="_editor"
+                                Preview="true"
+                                ShowToolbar="false"
+                                MaxHeight="100%"
+                                MinHeight="100%"
+                                Color="Color.Primary"
+                                AllowResize="true"
+                                Value="@_requirement.Description"
+                                TextAreaClass="tb-requirement-description"
+                                SpellChecker="false">
+                </MarkdownEditor>
+
+                <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
+
+            </MudStack>
+        </StartContent>
+        <EndContent>
+            <MudStack Class="pa-2" Style="width: 100%">
+
+                <Field>
+                    <FieldHeader>@loc["created"]</FieldHeader>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@_requirement.CreatedBy" />
+                        <div>@_requirement.Created.Humanize()</div>
                     </MudStack>
+                </Field>
 
-                    <MarkdownEditor @ref="_editor"
-                                    Preview="true"
-                                    ShowToolbar="false"
-                                    MaxHeight="100%"
-                                    MinHeight="100%"
-                                    Color="Color.Primary"
-                                    AllowResize="true"
-                                    Value="@_requirement.Description"
-                                    TextAreaClass="tb-requirement-description"
-                                    SpellChecker="false">
-                    </MarkdownEditor>
+                <Field Row>
+                    <FieldHeader>@stateLoc["state"]</FieldHeader>
+                    <MudSpacer />
+                    <div>@_requirement.State</div>
+                </Field>
 
-                    <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
+                <Field Row>
+                    <FieldHeader>@reqLoc["type"]</FieldHeader>
+                    <MudSpacer />
+                    @if (_requirement.RequirementType is not null)
+                    {
+                        var label = "type-" + _requirement.RequirementType.ToLower();
+                        <Chip Palette="@DefaultPalettes.Contrasting1" Text="@reqLoc[label]" ColorFromTextHash ColorFromText="@_requirement.RequirementType" />
+                    }
+                </Field>
 
-                </MudStack>
-            </StartContent>
-            <EndContent>
-                <MudStack Class="pa-2" Style="width: 100%">
+                @if (_parent is not null)
+                {
+                    <Field Row>
+                        <FieldHeader>@reqLoc["parent"]</FieldHeader>
+                        <MudSpacer />
+                        <MudLink Href="@appNavigationManager.GetUrl(_parent)">
+                            <Chip Palette="@DefaultPalettes.Contrasting1" Text="@_parent.Name" ColorFromTextHash ColorFromText="@_parent.RequirementType" />
+                        </MudLink>
+                    </Field>
+                }
 
-                    <Field>
-                        <FieldHeader>@loc["created"]</FieldHeader>
-                        <MudStack Row AlignItems="AlignItems.Center">
-                            <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@_requirement.CreatedBy" />
-                            <div>@_requirement.Created.Humanize()</div>
+                <MudExpansionPanels>
+                    <MudExpansionPanel Text="@loc["fields"]">
+                        <MudStack>
+
+                            <FieldsEditor Requirement="@_requirement" ReadOnly AutoSaveChanges="false" />
+
                         </MudStack>
-                    </Field>
+                    </MudExpansionPanel>
 
-                    <Field Row>
-                        <FieldHeader>@stateLoc["state"]</FieldHeader>
-                        <MudSpacer />
-                        <div>@_requirement.State</div>
-                    </Field>
+                    <MudExpansionPanel Text="@loc["identity"]">
+                        <MudStack>
 
-                    <Field Row>
-                        <FieldHeader>@reqLoc["type"]</FieldHeader>
-                        <MudSpacer />
-                        @if (_requirement.RequirementType is not null)
-                        {
-                            var label = "type-" + _requirement.RequirementType.ToLower();
-                            <Chip Palette="@DefaultPalettes.Contrasting1" Text="@reqLoc[label]" ColorFromTextHash ColorFromText="@_requirement.RequirementType" />
-                        }
-                    </Field>
+                            <MudTooltip Text="@loc["slug"]">
+                                <CopyToClipboard Text="@_requirement.Slug" IconSize="Size.Small">
+                                    <MudText Typo="Typo.subtitle1">@_requirement.Slug</MudText>
+                                </CopyToClipboard>
+                            </MudTooltip>
 
-                    @if (_parent is not null)
-                    {
-                        <Field Row>
-                            <FieldHeader>@reqLoc["parent"]</FieldHeader>
-                            <MudSpacer />
-                            <MudLink Href="@appNavigationManager.GetUrl(_parent)">
-                                <Chip Palette="@DefaultPalettes.Contrasting1" Text="@_parent.Name" ColorFromTextHash ColorFromText="@_parent.RequirementType" />
-                            </MudLink>
-                        </Field>
-                    }
+                            @if (!string.IsNullOrEmpty(_requirement.ExternalId))
+                            {
+                                <MudTooltip Text="@loc["external-id"]">
+                                    <CopyToClipboard Text="@_requirement.ExternalId" IconSize="Size.Small">
+                                        <MudText Typo="Typo.subtitle1">@_requirement.ExternalId</MudText>
+                                    </CopyToClipboard>
+                                </MudTooltip>
+                            }
+                        </MudStack>
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
 
-                    <FieldsEditor Requirement="@_requirement" ReadOnly AutoSaveChanges="false" />
 
-                    <MudTooltip Text="@loc["slug"]">
-                        <CopyToClipboard Text="@_requirement.Slug" IconSize="Size.Small">
-                            <MudText Typo="Typo.subtitle1">@_requirement.Slug</MudText>
-                        </CopyToClipboard>
-                    </MudTooltip>
+            </MudStack>
 
-                    @if (!string.IsNullOrEmpty(_requirement.ExternalId))
-                    {
-                        <MudTooltip Text="@loc["external-id"]">
-                            <CopyToClipboard Text="@_requirement.ExternalId" IconSize="Size.Small">
-                                <MudText Typo="Typo.subtitle1">@_requirement.ExternalId</MudText>
-                            </CopyToClipboard>
-                        </MudTooltip>
-                    }
-
-                </MudStack>
-
-            </EndContent>
-        </Splitter>
-
-    </div>
+        </EndContent>
+    </Splitter>
 }
 
 @code {
@@ -112,7 +123,6 @@
     [CascadingParameter] public Team? Team { get; set; }
     [CascadingParameter] public TestProject? Project { get; set; }
     private Requirement? _parent;
-    private RequirementTestLink[] _links = [];
     private Requirement? _requirement;
     private List<Comment> _comments = [];
 
@@ -150,18 +160,14 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        //if (Requirement is not null && _requirement?.Id != Requirement.Id)
+        if(Requirement is not null && _requirement?.Id != Requirement.Id)
         {
-            _parent = null;
             _requirement = Requirement;
-            if (_requirement is not null)
+            _comments = _requirement.Comments?.ToList() ?? [];
+            _parent = null;
+            if (_requirement.ParentRequirementId is not null)
             {
-                _comments = _requirement.Comments?.ToList() ?? [];
-                if (_requirement.ParentRequirementId is not null)
-                {
-                    _parent = await browser.GetRequirementByIdAsync(_requirement.ParentRequirementId.Value);
-                }
-                _links = await browser.GetLinksForRequirementAsync(_requirement);
+                _parent = await browser.GetRequirementByIdAsync(_requirement.ParentRequirementId.Value);
             }
         }
     }

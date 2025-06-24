@@ -5,6 +5,7 @@
 @using TestBucket.Components.Layout
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Components.Tests.TestRuns.Controllers
+@using TestBucket.Contracts.Requirements.Types
 @using TestBucket.Domain
 @using TestBucket.Domain.Requirements
 @using TestBucket.Domain.Requirements.Models
@@ -39,6 +40,13 @@
                     <MudTooltip Text="@loc["edit"]">
                         <TbNavLink Href="@appNavigationManager.GetEditRequirementUrl()" Icon="@Icons.Material.Filled.Edit" />
                     </MudTooltip>
+
+                    @if(_requirement.MappedType == MappedRequirementType.Epic)
+                    {
+                        <MudTooltip Text="@loc["board"]">
+                            <TbNavLink Icon="@TbIcons.Filled.Board" Href="@appNavigationManager.GetRequirementBoardUrl()"/>
+                        </MudTooltip>                        
+                    }
 
                     <MudTooltip Text="@loc["traceability"]">
                         <TbNavLink Icon="@TbIcons.BoldDuoTone.Trace" Href="@appNavigationManager.GetRequirementTraceUrl()"/>

@@ -3,6 +3,7 @@
 using Mediator;
 
 using TestBucket.Contracts.Requirements;
+using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain.Fields.Handlers;
 using TestBucket.Domain.Requirements.Events;
 using TestBucket.Domain.Requirements.Import;
@@ -182,9 +183,17 @@ namespace TestBucket.Domain.Requirements
 
             await GenerateFoldersFromPathAsync(requirement);
 
+            if (requirement.RequirementType is not null)
+            {
+                requirement.MappedType = RequirementTypeConverter.GetMappedRequirementTypeFromString(requirement.RequirementType);
+            }
+
+            // Update fields
             requirement.ModifiedBy = principal.Identity?.Name;
             requirement.Modified = _timeProvider.GetUtcNow();
             await _repository.UpdateRequirementAsync(requirement);
+
+            // Notify observers
             foreach (var observer in _requirementObservers)
             {
                 await observer.OnRequirementSavedAsync(requirement);

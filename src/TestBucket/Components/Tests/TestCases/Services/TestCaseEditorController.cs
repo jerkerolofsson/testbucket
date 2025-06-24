@@ -101,7 +101,7 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
                 TestSuiteId = testCase.TestSuiteId,
                 ProjectId = testCase.TestProjectId.Value,
                 TestRunId = options.TestRunId,
-                TeamId = testCase.TeamId.Value,,
+                TeamId = testCase.TeamId.Value,
                 TestEnvironmentId = testEnvironment?.Id,
                 Dependencies = []
             };

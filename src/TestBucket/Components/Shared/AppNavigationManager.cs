@@ -262,6 +262,12 @@ public class AppNavigationManager
         var id = ResolveEntityIdFromUrl(_navigationManager.Uri);
         return $"{tenantId}/Requirements/Requirements/{id}/Edit";
     }
+    public string GetRequirementBoardUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var id = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Requirements/Requirements/{id}/Board";
+    }
     public string GetRequirementTraceUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestBucket.Contracts.Code.Models;
@@ -18,9 +19,11 @@ using TestBucket.Domain.Keyboard;
 namespace TestBucket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250624022432_AddRequirementStartAndEndDate")]
+    partial class AddRequirementStartAndEndDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2240,9 +2243,6 @@ namespace TestBucket.Data.Migrations
 
                     b.PrimitiveCollection<long[]>("PathIds")
                         .HasColumnType("bigint[]");
-
-                    b.Property<double?>("Progress")
-                        .HasColumnType("double precision");
 
                     b.Property<bool>("ReadOnly")
                         .HasColumnType("boolean");

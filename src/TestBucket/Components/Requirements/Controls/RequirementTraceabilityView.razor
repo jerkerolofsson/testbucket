@@ -1,7 +1,6 @@
 ﻿@using TestBucket.Domain.Traceability.Models
 @inject RequirementEditorController controller
 
-
 <TestBucket.Components.Features.Traceability.Graph.TraceGraph Node="_node"/>
 
 
@@ -100,7 +99,6 @@
 
         if(_requirement is not null)
         {
-            await Task.Delay(150); // For testing
             _node = await controller.DiscoverTraceabilityAsync(_requirement, 2);
         }
 

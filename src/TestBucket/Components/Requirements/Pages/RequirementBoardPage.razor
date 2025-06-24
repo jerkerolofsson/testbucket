@@ -1,0 +1,49 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Requirements/Requirements/{RequirementId:long}/Board"
+@using TestBucket.Components.Requirements.Layouts
+@using TestBucket.Domain.Traceability.Models
+@layout RequirementLayout
+@inject AppNavigationManager appNavigationManager
+@inject RequirementEditorController controller
+
+<MudStack Class="pa-2" Style="height: 100%">
+    @if(Project is not null && _requirement is not null)
+    {
+        <RequirementKanbanBoard ProjectId="@Project.Id" Title="@_requirement.Name" Requirements="@_downstreamRequirements" />
+    }
+</MudStack>
+@code {
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Requirement? Requirement { get; set; }
+    [Parameter] public long RequirementId { get; set; }
+    [Parameter] public string? TenantId { get; set; }
+
+    private Requirement? _requirement = null;
+    private List<Requirement> _downstreamRequirements = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Check if the bound requirement has changed
+        if(Requirement is not null && _requirement?.Id != Requirement.Id)
+        {
+            _requirement = Requirement;
+            _downstreamRequirements.Clear();
+
+            var node = await controller.DiscoverTraceabilityAsync(_requirement, 5);
+            AddDownstreamRequirements(node);
+        }
+    }
+
+    private void AddDownstreamRequirements(TraceabilityNode node)
+    {
+        foreach(var child in node.Downstream)
+        {
+            if(child.Requirement is not null)
+            {
+                _downstreamRequirements.Add(child.Requirement);
+                AddDownstreamRequirements(child);
+            }
+        }
+    }
+}

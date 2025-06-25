@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Requirements.Services;
+using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain;
 using TestBucket.Localization;
 
@@ -14,7 +15,7 @@ internal class CreateInitiativeCommand : CreateWorkItemBaseCommand
         AppNavigationManager appNav,
         RequirementEditorController requirementEditor,
         IDialogService dialogService,
-        RequirementBrowser browser) : base("initiative", loc, appNav, requirementEditor, dialogService, browser)
+        RequirementBrowser browser) : base(RequirementTypes.Initiative, loc, appNav, requirementEditor, dialogService, browser)
     {
     }
     public override string? Icon => TbIcons.BoldDuoTone.Initiative;

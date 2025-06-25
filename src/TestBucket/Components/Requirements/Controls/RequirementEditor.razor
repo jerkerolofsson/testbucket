@@ -122,6 +122,12 @@
                             <MudSpacer />
                             <UserPicker SelectedUserName="@Requirement.AssignedTo" SelectedUserNameChanged="OnAssignedToChanged" />
                         </Field>
+
+                        <Field>
+                            <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="@loc["start-date"]" Date="_startDate" DateChanged="OnStartDateChanged"/>
+                            <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="@loc["end-date"]" Date="_endDate" DateChanged="OnEndDateChanged" />
+                        </Field>
+
                         <FieldsEditor Requirement="@Requirement" />
 
                         <Field>
@@ -252,6 +258,45 @@
 
     private MarkdownEditor? _editor;
     private bool _preview = false;
+    private DateTime? _startDate;
+    private DateTime? _endDate;
+
+    private async Task OnStartDateChanged(DateTime? date)
+    {
+        _startDate = date;
+        if(_requirement is not null)
+        {
+            if (date is null)
+            {
+                _requirement.StartDate = date;
+            }
+            else
+            {
+                _requirement.StartDate = date.Value.ToUniversalTime();
+            }
+            await editor.SaveRequirementAsync(_requirement);
+            //await SaveChangesAsync();
+        }
+    }
+
+    private async Task OnEndDateChanged(DateTime? date)
+    {
+        _endDate = date;
+        if (_requirement is not null)
+        {
+            if(date is null)
+            {
+                _requirement.DueDate = date;
+            }
+            else
+            {
+                _requirement.DueDate = date.Value.ToUniversalTime();
+            }
+            //wait SaveChangesAsync();
+            await editor.SaveRequirementAsync(_requirement);
+        }
+    }
+
 
     private RequirementState? State
     {
@@ -287,9 +332,19 @@
     {
         if (Requirement is not null && _requirement?.Id != Requirement.Id)
         {
+            _startDate = null;
+            _endDate = null;
             _parent = null;
             _requirement = Requirement;
             _comments = _requirement.Comments?.ToList() ?? []; 
+            if(_requirement.StartDate is not null)
+            {
+                _startDate = _requirement.StartDate.Value.DateTime.ToUniversalTime();
+            }
+            if(_requirement.DueDate is not null)
+            {
+                _endDate = _requirement.DueDate.Value.DateTime.ToUniversalTime();
+            }
             if (Requirement.ParentRequirementId is not null)
             {
                 _parent = await browser.GetRequirementByIdAsync(Requirement.ParentRequirementId.Value);

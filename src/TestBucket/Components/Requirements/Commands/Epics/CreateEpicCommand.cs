@@ -2,6 +2,7 @@
 
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Requirements.Services;
+using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
@@ -17,7 +18,7 @@ internal class CreateEpicCommand : CreateWorkItemBaseCommand
         AppNavigationManager appNav, 
         RequirementEditorController requirementEditor, 
         IDialogService dialogService, 
-        RequirementBrowser browser) : base("epic", loc, appNav, requirementEditor, dialogService, browser)
+        RequirementBrowser browser) : base(RequirementTypes.Epic, loc, appNav, requirementEditor, dialogService, browser)
     {
     }
 

@@ -41,11 +41,14 @@
                         <TbNavLink Href="@appNavigationManager.GetEditRequirementUrl()" Icon="@Icons.Material.Filled.Edit" />
                     </MudTooltip>
 
-                    @if(_requirement.MappedType == MappedRequirementType.Epic)
+                    @if (_requirement.MappedType == MappedRequirementType.Epic || _requirement.MappedType == MappedRequirementType.Initiative)
                     {
                         <MudTooltip Text="@loc["board"]">
                             <TbNavLink Icon="@TbIcons.Filled.Board" Href="@appNavigationManager.GetRequirementBoardUrl()"/>
-                        </MudTooltip>                        
+                        </MudTooltip>
+                        <MudTooltip Text="@loc["timeline"]">
+                            <TbNavLink Icon="@TbIcons.Filled.Gantt" Href="@appNavigationManager.GetRequirementTimelineUrl()"/>
+                        </MudTooltip>
                     }
 
                     <MudTooltip Text="@loc["traceability"]">

@@ -35,7 +35,7 @@
       <PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.6.0" />
       <PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.2.0-preview.3" />
       <PackageReference Include="MudBlazor" Version="8.8.0" />
-      <PackageReference Include="MudGantt" Version="0.1.2" />
+      <PackageReference Include="MudGantt" Version="0.2.0" />
       <PackageReference Include="OneOf" Version="3.0.271" />
       <PackageReference Include="Plotly.Blazor" Version="6.0.2" />
       <PackageReference Include="Toolbelt.Blazor.HotKeys2" Version="6.0.1" />

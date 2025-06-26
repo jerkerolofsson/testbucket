@@ -82,17 +82,17 @@
                     StartDate = x.StartDate ?? DateTime.UtcNow,
                     EndDate = x.DueDate ?? DateTimeOffset.UtcNow.AddDays(1),
                     Progress = x.Progress ?? 0,
-                    DependentOn = GetDependencies(x)
+                    Links = GetDependencies(x)
                 }
             ));
         }
     }
 
-    private string[] GetDependencies(Requirement requirement)
+    private Link[] GetDependencies(Requirement requirement)
     {
         if(requirement.ParentRequirementId is not null)
         {
-            return [requirement.ParentRequirementId.Value.ToString()];
+            return [new Link(requirement.ParentRequirementId.Value.ToString(), LinkType.StartToStart)];
         }
         return [];
     }

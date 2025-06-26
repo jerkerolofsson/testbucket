@@ -13,7 +13,17 @@
 <MudStack Class="pa-2" Style="height: 100%">
     @if(Project is not null && _requirement is not null)
     {
-        <MudGanttChart Tasks="@_tasks" Events="@_events" TaskDatesChanged="OnDatesChanged" TaskProgressChanged="OnProgressChanged" />
+        <MudGanttChart  Tasks="@_tasks" 
+                        Dense
+                        Size="Size.Small"
+                        Events="@_events" 
+                        TaskDatesChanged="OnDatesChanged"
+                        TaskClicked="OnTaskClicked"
+                        TaskProgressChanged="OnProgressChanged">
+                        <TaskContextMenu>
+                            <CommandMenuItems Flatten TypeNames="Requirement"/>
+                        </TaskContextMenu>
+        </MudGanttChart>
     }
 </MudStack>
 @code {
@@ -24,15 +34,26 @@
     [Parameter] public string? TenantId { get; set; }
 
     private Requirement? _requirement = null;
-    private List<Requirement> _downstreamRequirements = [];
+    private List<Requirement> _requirements = [];
     private List<MudGanttTask> _tasks = [];
     private List<MudGanttEvent> _events = [];
 
+    private void OnTaskClicked(MudGanttTask task)
+    {
+        if (long.TryParse(task.Id, out var id))
+        {
+            var requirement = _requirements.FirstOrDefault(x => x.Id == id);
+            if (requirement is not null)
+            {
+                appNavigationManager.NavigateTo(requirement);
+            }
+        }
+    }
     private async Task OnProgressChanged(MudGanttTask task)
     {
         if(long.TryParse(task.Id, out var id))
         {
-            var requirement = _downstreamRequirements.FirstOrDefault(x => x.Id == id);
+            var requirement = _requirements.FirstOrDefault(x => x.Id == id);
             if(requirement is not null)
             {
                 requirement.Progress = task.Progress;
@@ -44,7 +65,7 @@
     {
         if (long.TryParse(task.Id, out var id))
         {
-            var requirement = _downstreamRequirements.FirstOrDefault(x => x.Id == id);
+            var requirement = _requirements.FirstOrDefault(x => x.Id == id);
             if (requirement is not null)
             {
                 requirement.StartDate = task.StartDate?.ToUniversalTime();
@@ -60,7 +81,6 @@
         if(Requirement is not null && _requirement?.Id != Requirement.Id)
         {
             _requirement = Requirement;
-            _downstreamRequirements.Clear();
 
             var milestones = await milestonesController.GetMilestonesAsync(Project);
             _events = milestones.Where(x=>x.EndDate != null && !string.IsNullOrWhiteSpace(x.Title)).Select(x => new MudGanttEvent
@@ -71,10 +91,13 @@
                 }).ToList();
 
             var node = await controller.DiscoverTraceabilityAsync(_requirement, 5);
-            AddDownstreamRequirements(node);
+            List<Requirement> downstreamRequirements = [];
+            AddDownstreamRequirements(node, downstreamRequirements);
 
             _tasks.Clear();
-            _tasks.AddRange(_downstreamRequirements.Select(x =>
+
+            _requirements = [_requirement, .. downstreamRequirements];
+            _tasks.AddRange(_requirements.Select(x =>
                 new MudGanttTask
                 {
                     Id = x.Id.ToString(),
@@ -82,7 +105,8 @@
                     StartDate = x.StartDate ?? DateTime.UtcNow,
                     EndDate = x.DueDate ?? DateTimeOffset.UtcNow.AddDays(1),
                     Progress = x.Progress ?? 0,
-                    Links = GetDependencies(x)
+                    Links = GetDependencies(x),
+                    Color = RequirementColors.GetColor(x)
                 }
             ));
         }
@@ -97,14 +121,14 @@
         return [];
     }
 
-    private void AddDownstreamRequirements(TraceabilityNode node)
+    private void AddDownstreamRequirements(TraceabilityNode node, List<Requirement> requirements)
     {
         foreach(var child in node.Downstream)
         {
             if(child.Requirement is not null)
             {
-                _downstreamRequirements.Add(child.Requirement);
-                AddDownstreamRequirements(child);
+                requirements.Add(child.Requirement);
+                AddDownstreamRequirements(child, requirements);
             }
         }
     }

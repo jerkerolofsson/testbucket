@@ -60,4 +60,5 @@ public interface ITestRepositoryManager
     /// <param name="testRepositoryFolder">The folder with updated information.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     Task UpdateFolderAsync(ClaimsPrincipal principal, TestRepositoryFolder testRepositoryFolder);
+    Task<TestRepositoryFolder?> GetFolderByIdAsync(ClaimsPrincipal principal, long repositoryFolderId);
 }

@@ -1,9 +1,11 @@
 ﻿
 
+
 using Microsoft.Extensions.Localization;
 
 using NGitLab.Models;
 
+using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRepository;
 using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Localization;
@@ -82,5 +84,11 @@ internal class TestRepositoryController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         await _manager.UpdateFolderAsync(principal, testRepositoryFolder);
+    }
+
+    internal async Task<TestRepositoryFolder?> GetFolderByIdAsync(long repositoryFolderId)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.GetFolderByIdAsync(principal, repositoryFolderId);
     }
 }

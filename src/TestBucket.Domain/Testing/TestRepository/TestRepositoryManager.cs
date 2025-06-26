@@ -85,7 +85,7 @@ internal class TestRepositoryManager : ITestRepositoryManager
         }
     }
 
-    private async Task<TestRepositoryFolder?> GetFolderByIdAsync(ClaimsPrincipal principal, long folderId)
+    public async Task<TestRepositoryFolder?> GetFolderByIdAsync(ClaimsPrincipal principal, long folderId)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, PermissionLevel.Read);
         return await _testCaseRepository.GetTestRepositoryFolderByIdAsync(folderId);
@@ -94,4 +94,5 @@ internal class TestRepositoryManager : ITestRepositoryManager
     public void AddObserver(ITestRepositoryObserver observer) => _observers.Add(observer);
 
     public void RemoveObserver(ITestRepositoryObserver observer) => _observers.Remove(observer);
+
 }

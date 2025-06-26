@@ -219,7 +219,7 @@ else
     private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
     {
         currentUrl = navigationManager.ToBaseRelativePath(e.Location);
-        StateHasChanged();
+        //StateHasChanged();
     }
 
     public void Dispose()

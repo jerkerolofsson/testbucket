@@ -17,11 +17,11 @@
         <WebPage>https://github.com/jerkerolofsson/testbucket/blob/main/doc/traits.md</WebPage>
     </PropertyGroup>
     <ItemGroup>
-        <None Include="readme.md" Pack="true" PackagePath="\"/>
+        <None Include="readme.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>
-    <PackageReference Include="TUnit.Core" Version="0.22.31" />
+    <PackageReference Include="TUnit.Core" Version="0.25.21" />
   </ItemGroup>
 	
   <ItemGroup>

@@ -6,7 +6,6 @@ namespace TestBucket.Components.Requirements;
 
 public class RequirementIcons
 {
-
     public static string GetIcon(Requirement requirement)
     {
         if (requirement.RequirementType is not null)

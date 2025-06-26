@@ -13,9 +13,9 @@
 
   <ItemGroup>
       <FrameworkReference Include="Microsoft.AspNetCore.App" />
-      <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.5" />
-      <PackageReference Include="MudBlazor" Version="8.7.0" />
-      <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.2.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.6" />
+      <PackageReference Include="MudBlazor" Version="8.8.0" />
+      <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.2.3" />
 
   </ItemGroup>
 

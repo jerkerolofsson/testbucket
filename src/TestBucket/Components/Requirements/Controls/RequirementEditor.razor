@@ -264,7 +264,7 @@
     private async Task OnStartDateChanged(DateTime? date)
     {
         _startDate = date;
-        if(_requirement is not null)
+        if(_requirement is not null && _requirement.StartDate != date)
         {
             if (date is null)
             {
@@ -282,7 +282,7 @@
     private async Task OnEndDateChanged(DateTime? date)
     {
         _endDate = date;
-        if (_requirement is not null)
+        if (_requirement is not null && _requirement.DueDate != date)
         {
             if(date is null)
             {

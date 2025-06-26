@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Components.Shared.Tree
+@using TestBucket.Domain.AI.Agent.Models
 @using TestBucket.Domain.Requirements
 
 @implements IRequirementObserver
@@ -26,7 +27,7 @@
 
             @if (appNav.State.SelectedRequirement is not null)
             {
-                <MudIconButton Class="rounded-0" OnClick="SyncWithActiveDocumentAsync" Icon="@Icons.Material.Filled.CompareArrows" />
+                <MudIconButton Size="Size.Small" Class="rounded-0" OnClick="SyncWithActiveDocumentAsync" Icon="@Icons.Material.Rounded.CompareArrows" />
             }
 
             <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert">
@@ -163,8 +164,16 @@
 
     protected override async Task OnInitializedAsync()
     {
+        appNav.State.ActiveDocumentChanged += OnActiveDocumentChanged;
+
         var userPreferences = await userPreferencesService.GetUserPreferencesAsync();
         _prefTextToIcons = userPreferences?.PreferTextToIcons ?? false;
+    }
+
+    private void OnActiveDocumentChanged(object? sender, ChatReference? doc)
+    {
+        // Trigger update as the sync-active-document state may have changed
+        InvokeAsync(this.StateHasChanged);
     }
 
     private void BeginRename(TreeNode<BrowserItem> item)
@@ -249,6 +258,7 @@
     public void Dispose()
     {
         manager.RemoveObserver(this);
+        appNav.State.ActiveDocumentChanged -= OnActiveDocumentChanged;
     }
 
     #endregion Lifecycle
@@ -639,11 +649,18 @@
             return;
         }
         specificationNode.Expanded = true;
+        if(specificationNode.Children is null)
+        {
+            var items = await browser.BrowseAsync(Team?.Id, Project?.Id, specificationNode.Value);
+            specificationNode.Children = items;
+            specificationNode.Expanded = true;
+        }
 
         // Next traverse all folders
         if (requirement.PathIds is not null)
         {
             TreeNode<BrowserItem> parent = specificationNode;
+
             foreach (var folderId in requirement.PathIds)
             {
                 var folderNode = FindTreeNode(x => x.RequirementFolder?.Id == folderId);
@@ -651,6 +668,7 @@
                 {
                     var items = await browser.BrowseAsync(Team?.Id, Project?.Id, parent.Value);
                     parent.Children = items;
+                    parent.Expanded = true;
                     folderNode = FindTreeNode(x => x.RequirementFolder?.Id == folderId);
                 }
                 if (folderNode is null)

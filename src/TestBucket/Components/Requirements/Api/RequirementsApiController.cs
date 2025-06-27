@@ -43,6 +43,6 @@ public class RequirementsApiController : ProjectApiControllerBase
 
 
         var stream = await _backupManager.CreateBackupAsync(User, specification);
-        return File(stream, "application/zip");
+        return File(stream, "application/zip", $"{specification.Name.ToLower().Replace(' ', '_')}.tbz");
     }
 }

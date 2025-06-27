@@ -26,4 +26,14 @@ public class SearchRequirementQuery : SearchQuery
     /// State of requirement
     /// </summary>
     public string? RequirementState { get; set; }
+
+    /// <summary>
+    /// Assigned to user
+    /// </summary>
+    public string? AssignedTo { get; set; }
+
+    /// <summary>
+    /// Is open?
+    /// </summary>
+    public bool? IsOpen { get; set; }
 }

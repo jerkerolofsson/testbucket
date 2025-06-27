@@ -48,7 +48,7 @@ public partial class RequirementGrid
         if (Project is not null && _projectId != Project.Id)
         {
             _projectId = Project.Id;
-            _fields = await fieldController.GetDefinitionsAsync(_projectId.Value, Contracts.Fields.FieldTarget.TestCase);
+            _fields = await fieldController.GetDefinitionsAsync(_projectId.Value, Contracts.Fields.FieldTarget.Requirement);
         }
 
         Query.ProjectId = _projectId;

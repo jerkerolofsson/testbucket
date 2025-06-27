@@ -40,7 +40,7 @@ internal class ExportCollectionCommand : ICommand
             return ValueTask.CompletedTask;
         }
 
-        _appNav.NavigateTo(_appNav.GetExportSpecificationsUrl(collection), false);
+        _appNav.NavigateTo(_appNav.GetExportSpecificationsUrl(collection), true);
         return ValueTask.CompletedTask;
     }
 }

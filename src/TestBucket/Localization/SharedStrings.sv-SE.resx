@@ -888,4 +888,13 @@
   <data name="coverage" xml:space="preserve">
     <value />
   </data>
+  <data name="upload-file-hint" xml:space="preserve">
+    <value />
+  </data>
+  <data name="upload-max-filesize-fmt" xml:space="preserve">
+    <value />
+  </data>
+  <data name="browse" xml:space="preserve">
+    <value />
+  </data>
 </root>

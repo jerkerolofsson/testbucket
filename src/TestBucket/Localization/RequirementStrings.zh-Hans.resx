@@ -261,4 +261,16 @@
   <data name="export-collection" xml:space="preserve">
     <value />
   </data>
+  <data name="upload-collection-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="open-epics" xml:space="preserve">
+    <value />
+  </data>
+  <data name="closed-epics" xml:space="preserve">
+    <value />
+  </data>
+  <data name="my-open-items" xml:space="preserve">
+    <value />
+  </data>
 </root>

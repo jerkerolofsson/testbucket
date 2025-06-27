@@ -286,6 +286,24 @@ namespace TestBucket.Domain.Requirements
         /// <param name="principal"></param>
         /// <param name="slug"></param>
         /// <returns></returns>
+        public async Task<Requirement?> GetRequirementBySlugAsync(ClaimsPrincipal principal, long projectId, string slug)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+
+            FilterSpecification<Requirement>[] filters = [
+                new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow()),
+                new FilterByProject<Requirement>(projectId),
+                new FilterRequirementBySlug(slug)];
+
+            var result = await _repository.SearchRequirementsAsync(filters, 0, 1);
+            return result.Items.FirstOrDefault();
+        }
+        /// <summary>
+        /// Gets a requirement by slug
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="slug"></param>
+        /// <returns></returns>
         public async Task<Requirement?> GetRequirementBySlugAsync(ClaimsPrincipal principal, string slug)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
@@ -402,6 +420,7 @@ namespace TestBucket.Domain.Requirements
 
         public async Task AddRequirementLinkAsync(ClaimsPrincipal principal, Requirement requirement, long testCaseId)
         {
+            ArgumentNullException.ThrowIfNull(requirement);
             principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
 
@@ -603,12 +622,13 @@ namespace TestBucket.Domain.Requirements
             return await _repository.SearchRequirementSpecificationsAsync(filters, offset, count);
         }
 
-        public async Task<RequirementSpecification?> GetRequirementSpecificationBySlugAsync(ClaimsPrincipal principal, string slug)
+        public async Task<RequirementSpecification?> GetRequirementSpecificationBySlugAsync(ClaimsPrincipal principal, long projectId, string slug)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.RequirementSpecification, PermissionLevel.Read);
 
             FilterSpecification<RequirementSpecification>[] filters = [
                 new FilterByTenant<RequirementSpecification>(principal.GetTenantIdOrThrow()),
+                new FilterByProject<RequirementSpecification>(projectId),
                 new FilterRequirementSpecificationBySlug(slug)
                 ];
 
@@ -723,7 +743,7 @@ namespace TestBucket.Domain.Requirements
                     bool add = false;
                     if (specification.Slug is not null)
                     {
-                        var existingSpecification = await GetRequirementSpecificationBySlugAsync(principal, specification.Slug);
+                        var existingSpecification = await GetRequirementSpecificationBySlugAsync(principal, project.Id, specification.Slug);
                         if (existingSpecification is not null)
                         {
                             specificationMap[specification.Slug] = existingSpecification.Id;
@@ -768,14 +788,7 @@ namespace TestBucket.Domain.Requirements
                     requirement.TeamId = project.TeamId;
                     requirement.TenantId = project.TenantId;
 
-                    if (requirementDto.ParentRequirementSlug is not null)
-                    {
-                        // Todo:
-                        // - Need to import in order
-                        // - Circular dependencies? We need to do a 2nd pass for requirements to connect them
-                    }
-
-                    Requirement? existingRequirement = await GetRequirementBySlugAsync(principal, requirementDto.Slug);
+                    Requirement? existingRequirement = await GetRequirementBySlugAsync(principal, project.Id, requirementDto.Slug);
                     if (existingRequirement is null)
                     {
                         await AddRequirementAsync(principal, requirement);

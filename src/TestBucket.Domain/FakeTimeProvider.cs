@@ -5,7 +5,7 @@ namespace TestBucket.Domain;
 [ExcludeFromCodeCoverage]
 internal class FakeTimeProvider : TimeProvider
 {
-    private readonly DateTimeOffset _dateTimeOffset;
+    private DateTimeOffset _dateTimeOffset;
     private readonly TimeSpan _offset = TimeSpan.Zero;
 
     public FakeTimeProvider(DateTimeOffset dateTimeOffset, TimeSpan? offset = null)
@@ -15,6 +15,11 @@ internal class FakeTimeProvider : TimeProvider
         {
             _offset = offset.Value;
         }
+    }
+
+    public void SetDateTime(DateTimeOffset dateTime)
+    {
+        _dateTimeOffset = dateTime;
     }
 
     public override TimeZoneInfo LocalTimeZone

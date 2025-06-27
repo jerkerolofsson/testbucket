@@ -45,6 +45,22 @@ public class AppNavigationManager
         return ResolveEntityIdFromUrl(_navigationManager.Uri);
     }
 
+    public static string? ResolveSubPageFromPage(string? path)
+    {
+        if (path is null)
+        {
+            return null;
+        }
+        path = path.Split('?')[0].Split('#')[0];
+
+        var pathItems = path.Trim('/').Split('/');
+        if(pathItems.Length == 0)
+        {
+            return null;
+        }
+        return pathItems[^1];
+    }
+
     public static long? ResolveEntityIdFromPath(string? path)
     {
         if (path is null)
@@ -71,7 +87,6 @@ public class AppNavigationManager
         }
         return null;
     }
-
     public string GetSettingsUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
@@ -163,6 +178,10 @@ public class AppNavigationManager
         return $"{tenantId}/Testing/TestCaseRuns";
     }
 
+    public string? GetSubPage()
+    {
+        return ResolveSubPageFromPage(_navigationManager.Uri);
+    }
     public string GetTestSuiteVariablesUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
@@ -253,6 +272,18 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
         return $"{tenantId}/Testing/TestCases/{testCaseId}/Requirements";
+    }
+    public string GetRequirementSpecificationUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var id = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Requirements/Specifications/{id}";
+    }
+    public string GetEditRequirementSpecificationUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var id = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Requirements/Specifications/{id}/Edit";
     }
 
     public string GetRequirementUrl()

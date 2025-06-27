@@ -13,6 +13,7 @@ public class HeuristicsManager : IHeuristicsManager
         _repository = repository;
     }
 
+    /// <inheritdoc/>
     public async Task AddAsync(ClaimsPrincipal principal, Heuristic heuristic)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Heuristic, PermissionLevel.Write);
@@ -25,6 +26,7 @@ public class HeuristicsManager : IHeuristicsManager
         await _repository.AddAsync(heuristic);
     }
 
+    /// <inheritdoc/>
     public async Task DeleteAsync(ClaimsPrincipal principal, Heuristic heuristic)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Heuristic, PermissionLevel.Delete);
@@ -32,6 +34,7 @@ public class HeuristicsManager : IHeuristicsManager
         await _repository.DeleteAsync(heuristic.Id);
     }
 
+    /// <inheritdoc/>
     public async Task<PagedResult<Heuristic>> SearchAsync(ClaimsPrincipal principal, FilterSpecification<Heuristic>[] filters, int offset, int count)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Heuristic, PermissionLevel.Read);
@@ -43,6 +46,7 @@ public class HeuristicsManager : IHeuristicsManager
         return await _repository.SearchAsync(allFilters.ToArray(), offset, count);
     }
 
+    /// <inheritdoc/>
     public async Task UpdateAsync(ClaimsPrincipal principal, Heuristic heuristic)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Heuristic, PermissionLevel.Write);

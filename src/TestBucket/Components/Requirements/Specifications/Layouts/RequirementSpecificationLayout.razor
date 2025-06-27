@@ -1,0 +1,94 @@
+﻿@inherits LayoutComponentBase
+@layout RequirementsLayout
+@using Humanizer
+@inject RequirementEditorController editor
+@using TestBucket.Components.Layout
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Components.Tests.TestRuns.Controllers
+@using TestBucket.Contracts.Requirements.Types
+@using TestBucket.Domain
+@using TestBucket.Domain.Requirements
+@using TestBucket.Domain.Requirements.Models
+@using TestBucket.Domain.Teams.Models
+@inject RequirementBrowser browser
+@inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
+@inject IRequirementManager manager
+@inject IStringLocalizer<SharedStrings> loc
+
+<TenantRedirect />
+
+<div class="container-fill-2-rows">
+
+    <div>
+        @if (_loading)
+        {
+            <MudProgressLinear Indeterminate Color="Color.Tertiary" />
+        }
+        <div class="tb-toolbar">
+            <MudStack Row Style="width: 100%; margin-right: 16px" Spacing="1" AlignItems="AlignItems.Center">
+                <PathNavigation RequirementSpecification="@_requirementSpecification" />
+                <MudSpacer />
+                @if (_requirementSpecification is not null)
+                {
+                    <MudTooltip Text="@loc["main"]">
+                        <TbNavLink Href="@appNavigationManager.GetRequirementSpecificationUrl()" Icon="@RequirementIcons.GetIcon(_requirementSpecification)" Match="NavLinkMatch.All" />
+                    </MudTooltip>
+
+                    <MudTooltip Text="@loc["edit"]">
+                        <TbNavLink Href="@appNavigationManager.GetEditRequirementSpecificationUrl()" Icon="@Icons.Material.Filled.Edit" />
+                    </MudTooltip>
+
+                    <MudDivider DividerType="DividerType.Middle" Vertical />
+                }
+
+            </MudStack>
+        </div>
+
+    </div>
+
+    @if(_requirementSpecification is not null)
+    {
+        <CascadingValue Value="@_requirementSpecification">
+            <MudStack Style="width: 100%; overflow: auto; ">
+                @Body
+            </MudStack>
+        </CascadingValue>
+    }
+</div>
+
+@code {
+    [CascadingParameter] TestProject? Project { get; set; }
+    [CascadingParameter] Team? Team { get; set; }
+
+    private bool _loading = false;
+    private RequirementSpecification? _requirementSpecification;
+
+
+    /// <summary>
+    /// Load the test case when changed
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnParametersSetAsync()
+    {
+        if(_loading)
+        {
+            return;
+        }
+
+        var requirementSpecificationId = appNavigationManager.GetEntityIdFromCurrentUri();
+        if (requirementSpecificationId is null)
+        {
+            return;
+        }
+        if (_requirementSpecification is null || _requirementSpecification.Id != requirementSpecificationId)
+        {
+            _loading = true;
+            this.StateHasChanged();
+
+            _requirementSpecification = await browser.GetRequirementSpecificationByIdAsync(requirementSpecificationId.Value);
+            appNavigationManager.State.SetSelectedRequirementSpecification(_requirementSpecification);
+            _loading = false;
+        }
+    }
+}

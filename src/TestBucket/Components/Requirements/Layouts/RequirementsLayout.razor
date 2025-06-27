@@ -69,6 +69,15 @@
     }
     private void OnRequirementClicked(Requirement requirement)
     {
+        // If the user has navigated to a sub page, we append that to the target url instead of navigating to the "Main View" every time
+        var url = appNav.GetUrl(requirement);
+        var subPage = appNav.GetSubPage();
+        if(subPage is not null && subPage is "Edit" or "Trace" or "Coverage")
+        {
+            appNav.NavigateTo(url + "/" + subPage);
+            return;
+        }
+
         appNav.NavigateTo(requirement);
     }
     private void OnFolderClicked(RequirementSpecificationFolder folder)

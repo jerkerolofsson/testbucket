@@ -5,7 +5,7 @@
 @inject IStringLocalizer<RequirementStrings> reqLoc
 
 <EditForm Model="@_requirement" OnValidSubmit="OnValidSubmit">
-    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 50vw">
         <TitleContent>
             @reqLoc[TitleLabel]
         </TitleContent>
@@ -19,6 +19,11 @@
                 </MudStack>
 
                 <MudStack Spacing="0">
+                    <FieldHeader>@loc["description"]</FieldHeader>
+                    <MarkdownEditor @bind-Value="@_requirement.Description" @bind-Preview="@_preview" />
+                </MudStack>
+
+                <MudStack Spacing="0">
                     <FieldHeader>@reqLoc["type"]</FieldHeader>
                     <MudSelect T="string" @bind-Value="@_requirement.RequirementType" Variant="Variant.Outlined">
                         @foreach (var type in RequirementTypes.AllTypes)
@@ -28,11 +33,6 @@
                             </MudSelectItem>
                         }
                     </MudSelect>
-                </MudStack>
-
-                <MudStack Spacing="0">
-                    <FieldHeader>@loc["description"]</FieldHeader>
-                    <MarkdownEditor @bind-Value="@_requirement.Description" @bind-Preview="@_preview" />
                 </MudStack>
 
             </MudStack>

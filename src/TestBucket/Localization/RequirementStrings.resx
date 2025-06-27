@@ -261,4 +261,19 @@
   <data name="export-collection" xml:space="preserve">
     <value>Export</value>
   </data>
+  <data name="upload-collection-description" xml:space="preserve">
+    <value>Supported file formats: .txt, .md, .zip</value>
+  </data>
+  <data name="open-epics" xml:space="preserve">
+    <value>Open epics</value>
+    <comment>Search folder</comment>
+  </data>
+  <data name="closed-epics" xml:space="preserve">
+    <value>Closed epics</value>
+    <comment>Search folder</comment>
+  </data>
+  <data name="my-open-items" xml:space="preserve">
+    <value>My open items</value>
+    <comment>Search folder: Requirements, tasks, or other work items that are open and assigned to the user</comment>
+  </data>
 </root>

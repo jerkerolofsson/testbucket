@@ -113,7 +113,7 @@ namespace TestBucket.Domain.Settings
         public ISetting? GetSettingByName(SettingContext context, string name)
         {
             var settings = GetSettings(context);
-            return settings.FirstOrDefault(x => x.Metadata.Label.Equals(name));
+            return settings.FirstOrDefault(x => x.Metadata?.Label?.Equals(name) == true);
         }
     }
 }

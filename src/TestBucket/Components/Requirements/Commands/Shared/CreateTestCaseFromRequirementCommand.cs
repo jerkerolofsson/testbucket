@@ -56,14 +56,15 @@ internal class CreateTestCaseFromRequirementCommand : ICommand
 
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
-        if (_appNav.State.SelectedRequirement is null || _appNav.State.SelectedProject is null)
+        var requirement = _appNav.State.SelectedRequirement;
+        if (requirement is null || _appNav.State.SelectedProject is null)
         {
             return;
         }
-        var testCase = await _testCaseEditor.CreateNewTestCaseAsync(_appNav.State.SelectedProject, null, null, _appNav.State.SelectedRequirement.Name);
+        var testCase = await _testCaseEditor.CreateNewTestCaseAsync(_appNav.State.SelectedProject, null, null, requirement.Name);
         if (testCase is not null)
         {
-            await _requirementEditor.LinkRequirementToTestCaseAsync(_appNav.State.SelectedRequirement, testCase);
+            await _requirementEditor.LinkRequirementToTestCaseAsync(requirement, testCase);
         }
     }
 }

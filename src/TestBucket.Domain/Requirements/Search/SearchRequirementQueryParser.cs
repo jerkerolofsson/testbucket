@@ -15,6 +15,8 @@ public class SearchRequirementQueryParser
        [
         "is",
         "state",
+        "assigned-to",
+        "open",
         .. BaseQueryParser.Keywords
        ];
 
@@ -33,7 +35,20 @@ public class SearchRequirementQueryParser
                 case "state":
                     request.RequirementState = pair.Value;
                     break;
-               
+
+                case "assigned-to":
+                    request.AssignedTo = pair.Value;
+                    break;
+                case "open":
+                    if (pair.Value == "yes" || pair.Value == "true")
+                    {
+                        request.IsOpen = true;
+                    }
+                    else if(pair.Value == "no" || pair.Value == "false")
+                    {
+                        request.IsOpen = false;
+                    }
+                    break;
                 case "is":
                     request.RequirementType = pair.Value;
                     break;

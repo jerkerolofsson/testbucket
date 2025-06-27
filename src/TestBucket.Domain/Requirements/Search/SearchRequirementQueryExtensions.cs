@@ -17,7 +17,18 @@ namespace TestBucket.Domain.Requirements.Search
             {
                 items.Add($"state:{query.RequirementState}");
             }
-
+            if (query.AssignedTo is not null)
+            {
+                items.Add($"assigned-to:{query.AssignedTo}");
+            }
+            if (query.IsOpen == true)
+            {
+                items.Add($"open:yes");
+            }
+            else if(query.IsOpen == false)
+            {
+                items.Add($"open:no");
+            }
             BaseQueryParser.Serialize(query, items);
 
             foreach (var field in query.Fields)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
@@ -114,11 +115,44 @@ namespace TestBucket.Data.Requirements
 
         private async Task<string> GetTypeNameAsync(ApplicationDbContext dbContext, Requirement requirement)
         {
+            if (requirement.RequirementType == RequirementTypes.Task || requirement.MappedType == MappedRequirementType.Task)
+            {
+                return "TSK";
+            }
+            if (requirement.RequirementType == RequirementTypes.Epic || requirement.MappedType == MappedRequirementType.Epic)
+            {
+                return "EPIC";
+            }
+            if (requirement.RequirementType == RequirementTypes.Initiative || requirement.MappedType == MappedRequirementType.Initiative)
+            {
+                return "IN";
+            }
+            if (requirement.RequirementType == RequirementTypes.Story || requirement.MappedType == MappedRequirementType.Story)
+            {
+                return "STRY";
+            }
+            if (requirement.RequirementType == RequirementTypes.DesignDocument || requirement.MappedType == MappedRequirementType.DesignDocument)
+            {
+                return "DSGN";
+            }
+            if (requirement.RequirementType == RequirementTypes.Standard || requirement.MappedType == MappedRequirementType.Standard)
+            {
+                return "STD";
+            }
+            if (requirement.RequirementType == RequirementTypes.Documentation || requirement.MappedType == MappedRequirementType.Documentation)
+            {
+                return "DOC";
+            }
+            if (requirement.RequirementType == RequirementTypes.UserManual || requirement.MappedType == MappedRequirementType.UserManual)
+            {
+                return "MAN";
+            }
+
             var spec = await dbContext.RequirementSpecifications.AsNoTracking().Where(x => x.Id == requirement.RequirementSpecificationId).FirstOrDefaultAsync();
             if(spec?.SpecificationType is not null)
             {
                 var type = spec.SpecificationType;
-                foreach(var name in new string[] { "PRS", "SRS", "FRS", "BRS", "DOC" })
+                foreach(var name in new string[] { "PRS", "SRS", "FRS", "BRS", "DOC", "TASK" })
                 {
                     if (type.Contains(name, StringComparison.InvariantCultureIgnoreCase))
                     {
@@ -133,12 +167,10 @@ namespace TestBucket.Data.Requirements
 
         private async ValueTask AssignExternalIdAsync(ApplicationDbContext dbContext, Requirement requirement)
         {
-
             // Sequence number only used for internal issues
-            if (requirement.ExternalId is null && requirement.TestProjectId is not null && requirement.TenantId is not null)
+            if (requirement.TestProjectId is not null && requirement.TenantId is not null)
             {
                 var project = await dbContext.Projects.AsNoTracking().Where(x => x.Id == requirement.TestProjectId).FirstAsync();
-
                 var typeName = await GetTypeNameAsync(dbContext, requirement);
 
                 requirement.SequenceNumber = await _sequenceGenerator.GenerateSequenceNumberAsync(requirement.TenantId, requirement.TestProjectId.Value, "requirement", GetMaxSequenceNumber, default);
@@ -275,7 +307,10 @@ namespace TestBucket.Data.Requirements
                 throw new InvalidOperationException("Requirement does not exist!");
             }
 
-            await AssignExternalIdAsync(dbContext, requirement);
+            if (existingRequirement.RequirementType != requirement.RequirementType || existingRequirement.RequirementSpecificationId != requirement.RequirementSpecificationId || requirement.ExternalId is null)
+            {
+                await AssignExternalIdAsync(dbContext, requirement);
+            }
 
             var hasSpecChanged = requirement.RequirementSpecificationId != existingRequirement.RequirementSpecificationId;
             var hasPathChanged = requirement.RequirementSpecificationFolderId != existingRequirement.RequirementSpecificationFolderId;

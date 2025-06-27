@@ -1,6 +1,7 @@
 ﻿@using TestBucket.Components.Uploads.Services
 @using TestBucket.Domain.Files.Models
 @inject UploadService uploadService
+@inject IAppLocalization loc
 
 <MudStack Style="@Style" Class="@Class">
     <MudFileUpload T="IBrowserFile"
@@ -24,11 +25,11 @@
                     @if(!_loading)
                     {
                         <MudIcon Size="Size.Large" Icon="@Icons.Material.Outlined.CloudUpload"/>
-                            <MudStack Spacing="0">
-                                <MudText Typo="Typo.h6">Drag and drop files here or click to select a file</MudText>
-                                <MudText Typo="Typo.subtitle1">Max file size: @MaxFileSize.Bytes()</MudText>
-                            </MudStack>
-                        }
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.h6">@loc.Shared["upload-file-hint"]</MudText>
+                            <MudText Typo="Typo.subtitle2">@string.Format(loc.Shared["upload-max-filesize-fmt"], MaxFileSize.Bytes())</MudText>
+                        </MudStack>
+                    }
                     </MudStack>
                 }
                 else

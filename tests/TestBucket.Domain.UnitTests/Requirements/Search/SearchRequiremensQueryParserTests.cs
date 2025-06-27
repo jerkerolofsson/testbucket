@@ -66,17 +66,88 @@ namespace TestBucket.Domain.UnitTests.Requirements.Search
         /// </summary>
         /// <remarks>
         /// Steps:
-        /// 1. Define the query "state:Open"
-        /// 2. Verify that "Open" is assigned to the <c>RequirementState</c> property when parsed.
+        /// 1. Define the query "state:Completed"
+        /// 2. Verify that "Completed" is assigned to the <c>RequirementState</c> property when parsed.
         /// </remarks>
         [Fact]
        
-        public void Parse_WithStateOpen_TextIsNullTypeIsIssue()
+        public void Parse_WithStateCompleted_TextIsNullTypeIsIssue()
         {
-            string text = "state:Open";
+            string text = "state:Completed";
             var request = SearchRequirementQueryParser.Parse(text, []);
             Assert.Null(request.Text);
-            Assert.Equal("Open", request.RequirementState);
+            Assert.Equal("Completed", request.RequirementState);
+        }
+
+        /// <summary>
+        /// Verifies that the parser correctly sets <c>IsOpen</c> to <c>true</c> when the query contains "open:yes".
+        /// </summary>
+        /// <remarks>
+        /// Steps:
+        /// 1. Define the query "open:yes"
+        /// 2. Verify that <c>IsOpen</c> is set to <c>true</c> and all other properties are null.
+        /// </remarks>
+        [Fact]
+        public void Parse_WithOpenYes_IsOpenTrue()
+        {
+            string text = "open:yes";
+            var request = SearchRequirementQueryParser.Parse(text, []);
+            Assert.True(request.IsOpen);
+            Assert.Null(request.RequirementState);
+            Assert.Null(request.RequirementType);
+            Assert.Null(request.Text);
+        }
+
+        /// <summary>
+        /// Verifies that the parser correctly sets <c>IsOpen</c> to <c>false</c> when the query contains "open:no".
+        /// </summary>
+        /// <remarks>
+        /// Steps:
+        /// 1. Define the query "open:no"
+        /// 2. Verify that <c>IsOpen</c> is set to <c>false</c> and all other properties are null.
+        /// </remarks>
+        [Fact]
+        public void Parse_WithOpenNo_IsOpenFalse()
+        {
+            string text = "open:no";
+            var request = SearchRequirementQueryParser.Parse(text, []);
+            Assert.False(request.IsOpen);
+            Assert.Null(request.RequirementState);
+            Assert.Null(request.RequirementType);
+            Assert.Null(request.Text);
+        }
+
+        /// <summary>
+        /// Verifies that the "assigned-to" keyword in a query maps to the <c>AssignedTo</c> property.
+        /// </summary>
+        /// <remarks>
+        /// Steps:
+        /// 1. Define the query "assigned-to:alice"
+        /// 2. Verify that "alice" is assigned to the <c>AssignedTo</c> property when parsed.
+        /// </remarks>
+        [Fact]
+        public void Parse_WithAssignedToAlice_AssignedToIsAlice()
+        {
+            string text = "assigned-to:alice";
+            var request = SearchRequirementQueryParser.Parse(text, []);
+            Assert.Null(request.Text);
+            Assert.Equal("alice", request.AssignedTo);
+        }
+
+        /// <summary>
+        /// Verifies that the parser leaves <c>AssignedTo</c> as <c>null</c> when the "assigned-to" keyword is not present.
+        /// </summary>
+        /// <remarks>
+        /// Steps:
+        /// 1. Define the query "is:task"
+        /// 2. Verify that <c>AssignedTo</c> is <c>null</c> when parsed.
+        /// </remarks>
+        [Fact]
+        public void Parse_WithoutAssignedTo_AssignedToIsNull()
+        {
+            string text = "is:task";
+            var request = SearchRequirementQueryParser.Parse(text, []);
+            Assert.Null(request.AssignedTo);
         }
     }
 }

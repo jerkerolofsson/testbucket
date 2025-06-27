@@ -894,4 +894,14 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="coverage" xml:space="preserve">
     <value>Coverage</value>
   </data>
+  <data name="upload-file-hint" xml:space="preserve">
+    <value>Drag and drop files here or click to select a file</value>
+  </data>
+  <data name="upload-max-filesize-fmt" xml:space="preserve">
+    <value>Max file size: {0}</value>
+  </data>
+  <data name="browse" xml:space="preserve">
+    <value>Browse</value>
+    <comment>Browse for file or similar</comment>
+  </data>
 </root>

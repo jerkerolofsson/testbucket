@@ -104,6 +104,8 @@ internal class RequirementEditorController : TenantBaseService
 
     public async Task LinkRequirementToTestCaseAsync(Requirement requirement, TestProject? project, Team? team)
     {
+        ArgumentNullException.ThrowIfNull(requirement);
+
         var principal = await GetUserClaimsPrincipalAsync();
 
         var parameters = new DialogParameters<PickTestCaseDialog>()
@@ -123,12 +125,17 @@ internal class RequirementEditorController : TenantBaseService
 
     public async Task LinkRequirementToTestCaseAsync(Requirement requirement, TestCase testCase)
     {
+        ArgumentNullException.ThrowIfNull(requirement);
+        ArgumentNullException.ThrowIfNull(testCase);
+
         var principal = await GetUserClaimsPrincipalAsync();
         await _manager.AddRequirementLinkAsync(principal, requirement, testCase);
     }
 
     public async Task DeleteRequirementAsync(Requirement requirement)
     {
+        ArgumentNullException.ThrowIfNull(requirement);
+
         var principal = await GetUserClaimsPrincipalAsync();
         if(!PermissionClaims.HasPermission(principal, PermissionEntityType.Requirement, PermissionLevel.Delete))
         {

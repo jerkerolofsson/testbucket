@@ -157,7 +157,7 @@ public interface IRequirementManager
     /// <param name="specification"></param>
     /// <returns></returns>
     Task UpdateRequirementSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification);
-    Task<RequirementSpecification?> GetRequirementSpecificationBySlugAsync(ClaimsPrincipal principal, string slug);
+    Task<RequirementSpecification?> GetRequirementSpecificationBySlugAsync(ClaimsPrincipal principal, long projectId, string slug);
     Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(ClaimsPrincipal principal, long id);
 
     #endregion Requirement Specifications
@@ -201,4 +201,5 @@ public interface IRequirementManager
     Task OnRequirementFieldChangedAsync(ClaimsPrincipal principal, RequirementField field);
     Task ExtractRequirementsFromSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification, CancellationToken cancellationToken);
     Task ImportAsync(ClaimsPrincipal principal, TestProject project, List<RequirementEntityDto> entities);
+    Task<Requirement?> GetRequirementBySlugAsync(ClaimsPrincipal principal, long projectId, string slug);
 }

@@ -1,0 +1,15 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Requirements/Specifications/{Id:long}"
+@using TestBucket.Components.Requirements.Layouts
+@layout RequirementSpecificationLayout
+@inject RequirementBrowser browser
+
+<MudStack Class="container-fill">
+    <RequirementSpecificationView Specification="@RequirementSpecification" />
+</MudStack>
+
+@code {
+    [Parameter] public long Id { get; set; }
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public RequirementSpecification? RequirementSpecification { get; set; }
+}

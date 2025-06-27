@@ -478,6 +478,7 @@
             node.Value.RequirementSpecification = spec;
             node.Text = spec.Name;
             node.Icon = RequirementIcons.GetIcon(spec);
+            node.IconColor = spec.Color;
             await InvokeAsync(StateHasChanged);
         }
     }

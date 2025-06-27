@@ -7,6 +7,8 @@ using MudBlazor;
 
 using Octokit.Internal;
 
+using Plotly.Blazor.Traces.SankeyLib;
+
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Fields;
@@ -302,6 +304,7 @@ internal class RequirementBrowser : TenantBaseService
             Value = new BrowserItem { RequirementSpecification = specification, Color = specification.Color },
             Text = specification.Name,
             Icon = RequirementIcons.GetIcon(specification),
+            IconColor = specification.Color,
             Children = null,
         };
     }
@@ -309,6 +312,8 @@ internal class RequirementBrowser : TenantBaseService
 
     private async Task<List<TreeNode<BrowserItem>>> BrowseRootAsync(long? teamId, long? projectId)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
+
         var result = new List<TreeNode<BrowserItem>>();
 
         var specs = await _requirementEditorService.GetRequirementSpecificationsAsync(teamId, projectId);
@@ -318,7 +323,7 @@ internal class RequirementBrowser : TenantBaseService
         result.Add(CreateSpecificationRootNode(specificationNodes));
 
         // Search folders
-        result.AddRange(RequirementSearchFolders.GetSearchFolders(_loc, _appNavigationManager));
+        result.AddRange(RequirementSearchFolders.GetSearchFolders(_loc, _appNavigationManager, principal.Identity?.Name));
 
         return result;
     }

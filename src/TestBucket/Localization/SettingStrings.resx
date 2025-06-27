@@ -231,4 +231,10 @@
   <data name="mcp" xml:space="preserve">
     <value>MCP</value>
   </data>
+  <data name="color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="remove-icon" xml:space="preserve">
+    <value>Remove icon</value>
+  </data>
 </root>

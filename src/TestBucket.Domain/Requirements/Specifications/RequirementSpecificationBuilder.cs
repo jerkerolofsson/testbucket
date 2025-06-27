@@ -74,6 +74,18 @@ namespace TestBucket.Domain.Requirements.Specifications
             {
                 specifications.Add(new FilterRequirementBySpecification(query.RequirementSpecificationId.Value));
             }
+            if (query.IsOpen == true)
+            {
+                specifications.Add(new FilterRequirementByIsOpen());
+            }
+            else if (query.IsOpen == false)
+            {
+                specifications.Add(new FilterRequirementByIsClosed());
+            }
+            if (query.AssignedTo is not null)
+            {
+                specifications.Add(new FilterRequirementByAssignedTo(query.AssignedTo));
+            }
             if (query.CompareFolder)
             {
                 specifications.Add(new FilterRequirementByParentFolder(query.FolderId));

@@ -1,17 +1,22 @@
 ﻿@using TestBucket.Components.Dialogs
 @inject IDialogService dialogService
+@inject IAppLocalization loc
 
 <div class="tb-icon-picker">
     @if(!string.IsNullOrEmpty(Icon))
     {
         <MudStack Row="true" AlignItems="AlignItems.Center" Style="margin-right: 8px">
-            <MudIconButton Size="Size.Large" Icon="@Icon" OnClick="PickAsync"></MudIconButton>
-            <MudIconButton Size=Size.Small Color="Color.Error" Icon="@Icons.Material.Filled.Clear" OnClick="ClearAsync"></MudIconButton>
+            <MudTooltip Text="@loc.Shared["browse"]">
+                <MudIconButton data-testid="browse" aria-label="@loc.Shared["browse"]" Size="Size.Large" Icon="@Icon" OnClick="PickAsync"></MudIconButton>
+            </MudTooltip>
+            <MudTooltip Text="@loc.Settings["remove-icon"]">
+                <MudIconButton aria-label="@loc.Settings["remove-icon"]" Size=Size.Small Color="Color.Error" Icon="@Icons.Material.Filled.Clear" OnClick="ClearAsync"></MudIconButton>
+            </MudTooltip>
         </MudStack>
     }
     else
     {
-        <MudLink OnClick="PickAsync">Browse</MudLink>
+        <MudLink data-testid="browse" OnClick="PickAsync">@loc.Shared["browse"]</MudLink>
     }
 
 </div>
@@ -28,7 +33,7 @@
 
     public async Task PickAsync()
     {
-        var dialog = await dialogService.ShowAsync<IconPickerDialog>(null);
+        var dialog = await dialogService.ShowAsync<IconPickerDialog>(null, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if(result?.Data is string icon)
         {

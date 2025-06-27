@@ -13,8 +13,7 @@ namespace TestBucket.Components.Requirements.Commands.Epics;
 
 internal class CreateEpicCommand : CreateWorkItemBaseCommand
 {
-    public CreateEpicCommand(IStringLocalizer
-        <RequirementStrings> loc, 
+    public CreateEpicCommand(IStringLocalizer<RequirementStrings> loc, 
         AppNavigationManager appNav, 
         RequirementEditorController requirementEditor, 
         IDialogService dialogService, 

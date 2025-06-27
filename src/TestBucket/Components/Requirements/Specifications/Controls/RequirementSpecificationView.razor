@@ -1,0 +1,55 @@
+﻿@using MudBlazor.Utilities
+@using TestBucket.Components.Shared.Kanban
+@inject RequirementEditorController editor
+@inject RequirementBrowser browser
+@inject IAppLocalization loc
+
+@if(Specification is not null)
+{
+    <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false" Color="Color.Tertiary">
+        <StartContent>
+
+              <MudStack Class="pa-2" Style="width: 100%; height: 100%">
+
+                <MudStack Spacing="3" Row AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.h1" Color="Color.Primary">@Specification.ExternalId</MudText>
+                    <MudText Typo="Typo.h1">@Specification.Name</MudText>
+                </MudStack>
+
+                <MarkdownEditor Preview="true"
+                                ShowToolbar="false"
+                                MaxHeight="100%"
+                                Color="Color.Primary"
+                                AllowResize="false"
+                                Value="@Specification.Description"
+                                SpellChecker="false">
+                </MarkdownEditor>
+
+            </MudStack>
+             </StartContent>
+        <EndContent>
+            <MudStack Class="pa-2" Style="width: 100%">
+
+                <Field>
+                    <FieldHeader>@loc.Shared["created"]</FieldHeader>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Specification.CreatedBy" />
+                        <div>@Specification.Created.Humanize()</div>
+                    </MudStack>
+                </Field>
+
+                <Field Row>
+                    <FieldHeader>@loc.Shared["type"]</FieldHeader>
+                    <MudSpacer/>
+                    <Chip Text="@Specification.SpecificationType"/>
+                </Field>
+
+            </MudStack>
+
+        </EndContent>
+    </Splitter>
+}
+
+@code {
+    [Parameter] public RequirementSpecification? Specification { get; set; }
+}

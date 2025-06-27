@@ -1,19 +1,19 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Requirements/Import"
+@inject IAppLocalization loc
 
 @layout RequirementsLayout
 
 <MudStack Class="container-settings-page">
 
-    <MudText Class="mb-3" Typo="Typo.h1">Import Specification</MudText>
+    <MudStack Spacing="0">
+        <MudText Typo="Typo.h1">@loc.Requirements["import-requirements"]</MudText>
+        <MudText Typo="Typo.subtitle2">@loc.Requirements["import-requirements-description"]</MudText>
+    </MudStack>
 
     <MudItem Class="pa-2">
         <UploadRequirementSpecification />
     </MudItem>
-
-    <MudText>
-        Import product documentation or requirement specifications
-    </MudText>
 
 </MudStack>
 

@@ -8,7 +8,7 @@ using TestBucket.Localization;
 namespace TestBucket.Components.Tests.TestLab.Commands;
 
 /// <summary>
-/// Deletesd a test suite folder and all child folders and test cases.
+/// Deletes a test lab folder and all child runs
 /// </summary>
 internal class DeleteTestLabFolderCommand : ICommand
 {
@@ -21,7 +21,7 @@ internal class DeleteTestLabFolderCommand : ICommand
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.Delete;
     public bool Enabled => _appNavigationManager.State.SelectedTestLabFolder is not null;
-    public string Id => "delete-folder";
+    public string Id => "delete-lab-folder";
     public string Name => _loc["delete-folder"];
     public string Description => _loc["delete-test-lab-folder-description"];
     public KeyboardBinding? DefaultKeyboardBinding => null;

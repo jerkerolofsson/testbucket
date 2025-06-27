@@ -285,6 +285,18 @@ public class AppNavigationManager
         var id = ResolveEntityIdFromUrl(_navigationManager.Uri);
         return $"{tenantId}/Requirements/Specifications/{id}/Edit";
     }
+    public string GetRequirementSpecificationBoardUrl(RequirementSpecification specification)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var id = specification.Id;
+        return $"{tenantId}/Requirements/Specifications/{id}/Board";
+    }
+    public string GetRequirementSpecificationTimelineUrl(RequirementSpecification specification)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var id = specification.Id;
+        return $"{tenantId}/Requirements/Specifications/{id}/Timeline";
+    }
 
     public string GetRequirementUrl()
     {

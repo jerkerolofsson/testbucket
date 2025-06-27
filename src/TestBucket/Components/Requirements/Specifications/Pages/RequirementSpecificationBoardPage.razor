@@ -1,0 +1,36 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Requirements/Specifications/{Id:long}/Board"
+@layout RequirementSpecificationLayout
+@inject RequirementBrowser browser
+
+<MudStack Class="container-fill">
+    @if (_specification is not null && Project is not null)
+    {
+        <RequirementKanbanBoard ProjectId="@Project.Id" Requirements="@_requirements" Title="@_specification.Name"/>
+    }
+</MudStack>
+
+@code {
+    [Parameter] public long Id { get; set; }
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public RequirementSpecification? RequirementSpecification { get; set; }
+
+    private RequirementSpecification? _specification;
+    private Requirement[] _requirements = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(RequirementSpecification is not null && RequirementSpecification.Id != _specification?.Id)
+        {
+            _specification = RequirementSpecification;
+
+            var result = await browser.SearchRequirementsInSpecificationAsync(_specification.Id, 0, 100);
+            _requirements = result.Items;
+
+            this.StateHasChanged();
+        }
+    }
+
+}

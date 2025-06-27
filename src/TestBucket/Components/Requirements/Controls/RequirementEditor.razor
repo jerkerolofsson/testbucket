@@ -11,216 +11,102 @@
 @inject RequirementBrowser browser
 @inject ProjectController controller
 @inject AppNavigationManager appNavigationManager
-@inject IStringLocalizer<SharedStrings> loc
-@inject IStringLocalizer<RequirementStrings> reqLoc
-@inject IStringLocalizer<StateStrings> stateLoc
+@inject IAppLocalization loc
 @inject CommentsController comments
 
 @if(Requirement is not null)
 {
-    <div class="container-fill-2-rows">
-        <MudToolBar Class="tb-toolbar">
-            <TestBucket.Components.Shared.Tab.TbTabHeader Labels="@TabLabels" SelectedLabel="@_selectedTab" SelectedLabelChanged="OnSelectedTabChanged"/>
-            @if (_selectedTab == "edit" && _editor is not null)
-            {
-                <MudIconButton Icon="@Icons.Material.Filled.FormatBold" OnClick="async () => await _editor.ToggleBoldAsync()" Class="rounded-0" />
-                <MudIconButton Icon="@Icons.Material.Filled.FormatItalic" OnClick="async () => await _editor.ToggleItalicAsync()"  Class="rounded-0"/>
+    <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false" Color="Color.Tertiary">
+        <StartContent>
+            <div class="pa-2 container-fill-2-rows">
 
-                <MudDivider DividerType="DividerType.Middle" Vertical />
+                <MudTextField Variant="Variant.Outlined"
+                    Label="@loc.Shared["title"]"
+                    HelperText="@loc.Shared["title"]"
+                    AdornmentColor="Color.Tertiary" 
+                    Value="@Requirement.Name" 
+                    ValueChanged="OnNameChanged" 
+                    T="string" 
+                    AutoFocus="true" />
 
-                <MudIconButton Icon="@Icons.Material.Filled.FormatListNumbered" OnClick="async () => await _editor.ToggleOrderedListAsync()" Class="rounded-0"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.FormatListBulleted" OnClick="async () => await _editor.ToggleUnorderedListAsync()" Class="rounded-0"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.Code" OnClick="async () => await _editor.ToggleCodeBlockAsync()" Class="rounded-0"></MudIconButton>
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
-
-                <MudIconButton Icon="@Icons.Material.Filled.Grid3x3" OnClick="async () => await _editor.DrawTableAsync()" Class="rounded-0"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.AddLink" OnClick="async () => await _editor.DrawLinkAsync()" Class="rounded-0"></MudIconButton>
-                <MudIconButton Icon="@Icons.Material.Filled.Image" OnClick="async () => await _editor.DrawImageAsync()" Class="rounded-0"></MudIconButton>
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
-
-                <MudIconButton Icon="@Icons.Material.Filled.Fullscreen" OnClick="async () => await _editor.ToggleFullScreenAsync()" />
-
-                <MudDivider DividerType="DividerType.Middle" Vertical />
-                <MudSpacer />
-                <MudIconButton Icon="@Icons.Material.Filled.CompareArrows" Href="@appNavigationManager.GetUrl(Requirement)" />
-            }
-            else
-            {
-                <MudSpacer/>
-
-                <MudTooltip Text="@reqLoc["linked-test-count--tooltip"]">
-                    @(_links.Length) tests
-                </MudTooltip>
-            }
-        </MudToolBar>
-
-        <Splitter Class="container-fill" Bordered="false" Dimension="70" EnableMargin="false" Color="Color.Tertiary">
-            <StartContent>
-                <MudStack Class="pa-2" Style="width: 100%; height: 100%">
-
-                    @if (_selectedTab != "edit")
-                    {
-                        <MudStack Spacing="1" Row AlignItems="AlignItems.Center">
-                            <MudText Typo="Typo.h1">@Requirement.Name</MudText>
-                            <MudText Typo="Typo.h1" Color="Color.Primary">@Requirement.ExternalId</MudText>
-                        </MudStack>
-
-                    }
-
-                    @if (_selectedTab == "edit" || _selectedTab == "view")
-                    {
+                    <div>
                         <MarkdownEditor 
-                        @ref="_editor"
-                        @bind-Preview="_preview"
-                        ShowToolbar="false"
-                        MaxHeight="100%"
-                        MinHeight="100%"
-                        Color="Color.Primary"
-                        AllowResize="true"
-                        Value="@Requirement.Description"
-                        ValueChanged="OnDescriptionChanged"
-                        SpellChecker="false">
+                            Preview="false"
+                            ShowToolbar="true"
+                            MaxHeight="100%"
+                            MinHeight="100%"
+                            Color="Color.Primary"
+                            AllowResize="true"
+                            ValueUpdateMode="ValueUpdateMode.OnBlur"
+                            Value="@Requirement.Description"
+                            ValueChanged="OnDescriptionChanged"
+                            SpellChecker="false">
                         </MarkdownEditor>
 
-                        @if(_needSave)
-                        {
-                            <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.FlexEnd" Spacing="1" Style="width: 100%">
-                                <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="SaveChangesAsync">@loc["save"]</MudButton>
-                            </MudStack>
-                        }
-
                         <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted"/>
-                    }
+                    </div>
 
-                </MudStack>
-            </StartContent>
-            <EndContent>
-                <MudStack Class="pa-2" Style="width: 100%">
-                    @if (_selectedTab == "edit")
-                    {
-                        <Field>
-                            <MudTextField Variant="Variant.Outlined"
-                            Label="@loc["title"]"
-                            HelperText="@loc["title"]"
-                            AdornmentColor="Color.Tertiary" 
-                            Value="@Requirement.Name" 
-                            ValueChanged="OnNameChanged" 
-                            T="string" 
-                            AutoFocus="true" />
-                        </Field>
+            </div>
+        </StartContent>
+        <EndContent>
+            <MudStack Class="pa-2" Style="width: 100%">
+               
+                <Field Row>
+                    <FieldHeader>@loc.Shared["state"]</FieldHeader>
+                    <MudSpacer />
+                    <RequirementStateSelect State="@State" StateChanged="OnStateChanged" />
+                </Field>
 
-                        <Field Row>
-                            <FieldHeader>@loc["state"]</FieldHeader>
-                            <MudSpacer />
-                            <RequirementStateSelect State="@State" StateChanged="OnStateChanged" />
-                        </Field>
+                <Field Row>
+                    <FieldHeader>@loc.Shared["assigned-to"]</FieldHeader>
+                    <MudSpacer />
+                    <UserPicker SelectedUserName="@Requirement.AssignedTo" SelectedUserNameChanged="OnAssignedToChanged" />
+                </Field>
 
-                        <Field Row>
-                            <FieldHeader>@loc["assigned-to"]</FieldHeader>
-                            <MudSpacer />
-                            <UserPicker SelectedUserName="@Requirement.AssignedTo" SelectedUserNameChanged="OnAssignedToChanged" />
-                        </Field>
+                <Field>
+                    <MudDatePicker Variant="Variant.Filled" PickerVariant="PickerVariant.Dialog" Label="@loc.Shared["start-date"]" Date="_startDate" DateChanged="OnStartDateChanged"/>
+                    <MudDatePicker Variant="Variant.Filled" PickerVariant="PickerVariant.Dialog" Label="@loc.Shared["end-date"]" Date="_endDate" DateChanged="OnEndDateChanged" />
+                </Field>
 
-                        <Field>
-                            <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="@loc["start-date"]" Date="_startDate" DateChanged="OnStartDateChanged"/>
-                            <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="@loc["end-date"]" Date="_endDate" DateChanged="OnEndDateChanged" />
-                        </Field>
+                <FieldsEditor Requirement="@Requirement" />
 
-                        <FieldsEditor Requirement="@Requirement" />
-
-                        <Field>
-                            <FieldHeader>@loc["attachments"]</FieldHeader>
-                            <AttachmentGrid RequirementId="@Requirement.Id" Style="width: 100%" AllowUpload />
-                        </Field>
+                <Field>
+                    <FieldHeader>@loc.Shared["attachments"]</FieldHeader>
+                    <AttachmentGrid RequirementId="@Requirement.Id" Style="width: 100%" AllowUpload />
+                </Field>
 
 
-                        <Field Row>
-                            <FieldHeader>@reqLoc["parent"]</FieldHeader>
-                            <MudSpacer />
-                            <MudStack Row AlignItems="AlignItems.Center">                                
-                                @if(_parent is not null)
-                                {
-                                    <div>
-                                        <MudLink Href="@appNavigationManager.GetUrl(_parent)">@_parent.Name</MudLink>
-                                    </div>
-                                    <MudIconButton OnClick="RemoveParentLinkAsync" Icon="@Icons.Material.Filled.Clear"/>
-                                }
-                                else
-                                {
-                                    <MudIconButton OnClick="SelectParentLinkAsync" Icon="@Icons.Material.Filled.FolderOpen"/>
-                                }
-                            </MudStack>
-                        </Field>
-
-                        <Field Row>
-                            <FieldHeader>@reqLoc["type"]</FieldHeader>
-                            <MudSpacer/>
-                            <RequirementTypeSelect Type="@Type" TypeChanged="OnTypeChanged" />
-                        </Field>
-                    }
-                    else if(_selectedTab == "view")
-                    {
-                        <Field>
-                            <FieldHeader>@loc["created"]</FieldHeader>
-                            <MudStack Row AlignItems="AlignItems.Center">
-                                <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Requirement.CreatedBy" />
-                                <div>@Requirement.Created.Humanize()</div>
-                            </MudStack>
-                        </Field>
-
-                        <Field Row>
-                            <FieldHeader>@stateLoc["state"]</FieldHeader>
-                            <MudSpacer/>
-                            <div>@Requirement.State</div>
-                        </Field>
-
-                        <Field Row>
-                            <FieldHeader>@reqLoc["type"]</FieldHeader>
-                            <MudSpacer/>
-                            @if(Requirement.RequirementType is not null)
-                            {
-                                var label = "type-" + Requirement.RequirementType.ToLower();
-                                <Chip Text="@reqLoc[label]" Color="@RequirementColors.GetColor(Requirement)"/>
-                            }
-                        </Field>
-
-                        @if (_parent is not null)
+                <Field Row>
+                    <FieldHeader>@loc.Requirements["parent"]</FieldHeader>
+                    <MudSpacer />
+                    <MudStack Row AlignItems="AlignItems.Center">                                
+                        @if(_parent is not null)
                         {
-                            <Field Row>
-                                <FieldHeader>@reqLoc["parent"]</FieldHeader>
-                                <MudSpacer />
-                                <MudLink Href="@appNavigationManager.GetUrl(_parent)">
-                                    <Chip Text="@_parent.Name" Color="@RequirementColors.GetColor(Requirement)" />
-                                </MudLink>
-                            </Field>
-                        }
-
-                        <FieldsEditor Requirement="@Requirement" ReadOnly AutoSaveChanges="false"/>
-
-                        <MudTooltip Text="@loc["slug"]">
-                            <CopyToClipboard Text="@Requirement.Slug" IconSize="Size.Small">
-                                <MudText Typo="Typo.subtitle1">@Requirement.Slug</MudText>
-                            </CopyToClipboard>
-                        </MudTooltip>
-
-                        @if (!string.IsNullOrEmpty(Requirement.ExternalId))
-                        {
-                            <MudTooltip Text="@loc["external-id"]">
-                                <CopyToClipboard Text="@Requirement.ExternalId" IconSize="Size.Small">
-                                    <MudText Typo="Typo.subtitle1">@Requirement.ExternalId</MudText>
-                                </CopyToClipboard>
+                            <div>
+                                <MudLink Href="@appNavigationManager.GetUrl(_parent)">@_parent.Name</MudLink>
+                            </div>
+                            <MudTooltip Text="@loc.Shared["clear"]">
+                                <MudIconButton OnClick="RemoveParentLinkAsync" Icon="@Icons.Material.Filled.Clear"/>
                             </MudTooltip>
                         }
-                    }
+                        else
+                        {
+                            <MudTooltip Text="@loc.Shared["browse"]">
+                                <MudIconButton OnClick="SelectParentLinkAsync" Icon="@Icons.Material.Filled.FolderOpen"/>
+                            </MudTooltip>
+                        }
+                    </MudStack>
+                </Field>
 
-                </MudStack>
+                <Field Row>
+                    <FieldHeader>@loc.Requirements["type"]</FieldHeader>
+                    <MudSpacer/>
+                    <RequirementTypeSelect Type="@Type" TypeChanged="OnTypeChanged" />
+                </Field>
 
-            </EndContent>
-        </Splitter>
-
-    </div>
+            </MudStack>
+        </EndContent>
+    </Splitter>
 }
 
 @code {
@@ -232,32 +118,7 @@
     private List<Comment> _comments = [];
     private Requirement? _requirement;
 
-    private string[] TabLabels => ["view", "edit"];
-    private string _selectedTab = "edit";
-
-    private async Task OnSelectedTabChanged(string label)
-    {
-        if(_selectedTab == label)
-        {
-            return;
-        }
-
-        if(label == "edit" && _editor is not null) 
-        {
-            // Clicked on edit
-            await _editor.SetPreviewAsync(wantedState:false);
-        }
-        if (_selectedTab == "edit")
-        {
-            // Was edit
-            await SaveChangesAsync();
-        }
-        _preview = label == "preview";
-        _selectedTab = label;
-    }
-
     private MarkdownEditor? _editor;
-    private bool _preview = false;
     private DateTime? _startDate;
     private DateTime? _endDate;
 
@@ -274,8 +135,7 @@
             {
                 _requirement.StartDate = date.Value.ToUniversalTime();
             }
-            await editor.SaveRequirementAsync(_requirement);
-            //await SaveChangesAsync();
+            await SaveChangesAsync();
         }
     }
 
@@ -292,8 +152,7 @@
             {
                 _requirement.DueDate = date.Value.ToUniversalTime();
             }
-            //wait SaveChangesAsync();
-            await editor.SaveRequirementAsync(_requirement);
+            await SaveChangesAsync();
         }
     }
 
@@ -385,20 +244,13 @@
     {
         if (Requirement?.TestProjectId is not null)
         {
-            
             Requirement.RequirementType = type;
-            //var types = await controller.GetRequirementTypesAsync(Requirement.TestProjectId.Value);
-            //Requirement.MappedType = types.Where(x => x.Name == type).Select(x => x.MappedState).FirstOrDefault();
-
             await SaveChangesAsync();
         }
     }
 
     private async Task SaveChangesAsync()
     {
-        _selectedTab = "view";
-        _preview = true;
-        _needSave = false;
         if (Requirement is not null)
         {
             await editor.SaveRequirementAsync(Requirement);
@@ -422,32 +274,28 @@
         {
             _parent = null;
             Requirement.ParentRequirementId = null;
-            await editor.SaveRequirementAsync(Requirement);
+            await SaveChangesAsync();
         }
     }
 
-    private void OnNameChanged(string name)
+    private async Task OnNameChanged(string name)
     {
         if (Requirement is null)
         {
             return;
         }
         Requirement.Name = name;
+        await SaveChangesAsync();
     }
 
-    private bool _needSave = false;
-
-    private void OnDescriptionChanged(string description)
+    private async Task OnDescriptionChanged(string description)
     {
         if (Requirement is null)
         {
             return;
         }
         Requirement.Description = description;
-        if(!_needSave)
-        {
-            _needSave = true;
-        }
+        await SaveChangesAsync();
     }
 
     private async Task OnCommentAdded(Comment comment)

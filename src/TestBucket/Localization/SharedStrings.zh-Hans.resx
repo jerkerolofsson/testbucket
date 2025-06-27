@@ -899,4 +899,10 @@
   <data name="browse" xml:space="preserve">
     <value />
   </data>
+  <data name="board" xml:space="preserve">
+    <value />
+  </data>
+  <data name="timeline" xml:space="preserve">
+    <value />
+  </data>
 </root>

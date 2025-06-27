@@ -20,6 +20,23 @@ public class FieldDefinitionTemplates
         Description = "Web browser used for testing"
     };
 
+
+    public static FieldDefinition Wcag => new FieldDefinition
+    {
+        Name = "WCAG Level",
+        Trait = "",
+        TraitType = TraitType.Custom,
+        IsVisible = true,
+        Type = FieldType.SingleSelection,
+        Inherit = true,
+        ShowDescription = false,
+        UseClassifier = false,
+        Options = ["A", "AA", "AAA"],
+        Target = FieldTarget.Requirement,
+        RequiredPermission = PermissionLevel.Write,
+        Icon = TbIcons.BoldDuoTone.Accessibility,
+    };
+
     public static FieldDefinition TestCategory => new FieldDefinition
     {
         Name = "Category",

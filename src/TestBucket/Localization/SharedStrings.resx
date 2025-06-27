@@ -904,4 +904,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Browse</value>
     <comment>Browse for file or similar</comment>
   </data>
+  <data name="board" xml:space="preserve">
+    <value>Board</value>
+  </data>
+  <data name="timeline" xml:space="preserve">
+    <value>Timeline</value>
+  </data>
 </root>

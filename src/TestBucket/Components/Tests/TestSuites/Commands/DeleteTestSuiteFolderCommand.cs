@@ -22,7 +22,7 @@ internal class DeleteTestSuiteFolderCommand : ICommand
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
     public bool Enabled => _appNavigationManager.State.SelectedTestSuiteFolder is not null;
-    public string Id => "delete-folder";
+    public string Id => "delete-test-suite-folder";
     public string Name => _loc["delete-folder"];
     public string Description => _loc["delete-test-suite-folder-description"];
     public KeyboardBinding? DefaultKeyboardBinding => null;

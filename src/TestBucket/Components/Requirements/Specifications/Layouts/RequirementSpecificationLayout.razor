@@ -14,7 +14,7 @@
 @inject NavigationManager navigationManager
 @inject AppNavigationManager appNavigationManager
 @inject IRequirementManager manager
-@inject IStringLocalizer<SharedStrings> loc
+@inject IAppLocalization loc
 
 <TenantRedirect />
 
@@ -26,20 +26,25 @@
             <MudProgressLinear Indeterminate Color="Color.Tertiary" />
         }
         <div class="tb-toolbar">
-            <MudStack Row Style="width: 100%; margin-right: 16px" Spacing="1" AlignItems="AlignItems.Center">
+            <MudStack Row Style="width: 100%; padding-right: 16px" Spacing="1" AlignItems="AlignItems.Center">
                 <PathNavigation RequirementSpecification="@_requirementSpecification" />
                 <MudSpacer />
                 @if (_requirementSpecification is not null)
                 {
-                    <MudTooltip Text="@loc["main"]">
+                    <MudTooltip Text="@loc.Shared["main"]">
                         <TbNavLink Href="@appNavigationManager.GetRequirementSpecificationUrl()" Icon="@RequirementIcons.GetIcon(_requirementSpecification)" Match="NavLinkMatch.All" />
                     </MudTooltip>
 
-                    <MudTooltip Text="@loc["edit"]">
+                    <MudTooltip Text="@loc.Shared["edit"]">
                         <TbNavLink Href="@appNavigationManager.GetEditRequirementSpecificationUrl()" Icon="@Icons.Material.Filled.Edit" />
                     </MudTooltip>
-
-                    <MudDivider DividerType="DividerType.Middle" Vertical />
+                    
+                    <MudTooltip Text="@loc.Shared["board"]">
+                        <TbNavLink Icon="@TbIcons.Filled.Board" Href="@appNavigationManager.GetRequirementSpecificationBoardUrl(_requirementSpecification)" />
+                    </MudTooltip>
+                    <MudTooltip Text="@loc.Shared["timeline"]">
+                        <TbNavLink Icon="@TbIcons.Filled.Gantt" Href="@appNavigationManager.GetRequirementSpecificationTimelineUrl(_requirementSpecification)" />
+                    </MudTooltip>
                 }
 
             </MudStack>

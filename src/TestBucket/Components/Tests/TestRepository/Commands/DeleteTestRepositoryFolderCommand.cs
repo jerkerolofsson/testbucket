@@ -9,7 +9,7 @@ using TestBucket.Localization;
 namespace TestBucket.Components.Tests.TestRepository.Commands;
 
 /// <summary>
-/// Deletesd a test suite folder and all child folders and test cases.
+/// Deletes a test repository folder and all child suites, folders and test cases.
 /// </summary>
 internal class DeleteTestRepositoryFolderCommand : ICommand
 {
@@ -22,7 +22,7 @@ internal class DeleteTestRepositoryFolderCommand : ICommand
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.Delete;
     public bool Enabled => _appNavigationManager.State.SelectedTestRepositoryFolder is not null;
-    public string Id => "delete-folder";
+    public string Id => "delete-test-repo-folder";
     public string Name => _loc["delete-folder"];
     public string Description => _loc["delete-test-repository-folder-description"];
     public KeyboardBinding? DefaultKeyboardBinding => null;

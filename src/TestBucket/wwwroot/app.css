@@ -413,6 +413,9 @@ input:focus-visible {
      max-height: 100%;
      overflow: hidden;
  }
+.container-fill.scroll {
+     overflow: auto;
+ }
 
   .container-fill-2-rows {
      display: grid;

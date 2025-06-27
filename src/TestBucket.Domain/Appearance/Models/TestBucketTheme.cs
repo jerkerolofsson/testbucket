@@ -15,8 +15,8 @@ public class Base
     public ThemeColor? Secondary { get; set; }
     public ThemeColor? Tertiary { get; set; }
 
+    public ThemeColor? Text { get; set; }
     public ThemeColor? TextPrimary { get; set; }
-
 }
 
 public class Input
@@ -25,6 +25,8 @@ public class Input
 
     public ThemeColor? SearchBackground { get; set; }
     public ThemeColor? SearchBackgroundHover { get; set; }
+
+    public ThemeColor? Lines { get; set; }
 }
 
 public class FieldTheme
@@ -97,6 +99,8 @@ public class TestBucketTheme : TestBucketBaseTheme
             css.AppendLine($"--tb-palette-field-border: {scheme.Field.BorderColor};");
         }
 
+        // --mud-palette-dialog-surface
+
         if (scheme.Input.Background is not null)
         {
             css.AppendLine($"--tb-palette-input-background: {scheme.Input.Background};");
@@ -109,11 +113,24 @@ public class TestBucketTheme : TestBucketBaseTheme
         {
             css.AppendLine($"--tb-palette-input-search-background-hover: {scheme.Input.SearchBackgroundHover};");
         }
+        if (scheme.Input.Lines is not null)
+        {
+            css.AppendLine($"--mud-palette-lines-inputs: {scheme.Input.Lines};");
+        }
 
         if (scheme.Base.TextPrimary is not null)
         {
             css.AppendLine($"--mud-palette-text-primary: {scheme.Base.TextPrimary.ToString(ColorOutputFormats.HexA)};");
         }
+        if (scheme.Base.Text is not null)
+        {
+            css.AppendLine($"--mud-primary-text: {scheme.Base.Text.ToString(ColorOutputFormats.HexA)};");
+        }
+        else if (scheme.Base.TextPrimary is not null)
+        {
+            css.AppendLine($"--mud-primary-text: {scheme.Base.TextPrimary.ToString(ColorOutputFormats.HexA)};");
+        }
+
         if (scheme.Base.Dark is not null)
         {
             css.AppendLine($"--mud-palette-dark: {scheme.Base.Dark};");
@@ -178,6 +195,20 @@ public class TestBucketTheme : TestBucketBaseTheme
     /// </summary>
     public override string Dark => GenerateStyle(DarkScheme);
 
+    public static TestBucketTheme Material
+    {
+        get
+        {
+            return new Material();
+        }
+    }
+    public static TestBucketTheme DarkMoon
+    {
+        get
+        {
+            return new DarkMoon();
+        }
+    }
     public static TestBucketTheme BlueSteel
     {
         get

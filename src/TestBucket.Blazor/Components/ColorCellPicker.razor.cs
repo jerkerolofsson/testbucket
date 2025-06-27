@@ -23,6 +23,9 @@ public partial class ColorCellPicker
         AddColors("#FFD166");
         AddColors("#06D6A0");
         AddColors("#118AB2");
+        _colors.Add("#a4c639");
+        _colors.Add("#6200ee");
+        _colors.Add("#03dac6");
     }
 
     private static void AddColors(string baseColorString)

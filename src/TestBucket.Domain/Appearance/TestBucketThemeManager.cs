@@ -33,6 +33,12 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         {
             switch (name)
             {
+                case "Dark Moon":
+                    return TestBucketTheme.DarkMoon;
+                case "Material":
+                    return TestBucketTheme.Material;
+
+                case "Le Trigre": // This is intentional!
                 case "Blue Steel":
                     return TestBucketTheme.BlueSteel;
             }

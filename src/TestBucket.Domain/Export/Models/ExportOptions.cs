@@ -33,5 +33,6 @@ namespace TestBucket.Domain.Export.Models
         /// By default all types are included
         /// </summary>
         public Predicate<object> Filter { get; set; } = (object entity) => true;
+        public Stream DestinationStream { get; internal set; }
     }
 }

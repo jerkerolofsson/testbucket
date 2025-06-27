@@ -1,13 +1,8 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.Extensions.Localization;
+﻿using Microsoft.Extensions.Localization;
 
-using TestBucket.Components.Requirements.Dialogs;
-using TestBucket.Components.Requirements.Services;
-using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Localization;
 
 namespace TestBucket.Components.Requirements.Commands.Collections;
@@ -30,7 +25,7 @@ internal class ImportRequirementsCommand : ICommand
     public string? Icon => TbIcons.BoldDuoTone.Import;
     public string[] ContextMenuTypes => ["menu-requirements", "menu-import"];
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.RequirementSpecification;
-    public PermissionLevel? RequiredLevel => PermissionLevel.Read;
+    public PermissionLevel? RequiredLevel => PermissionLevel.Write;
     private readonly IStringLocalizer<SharedStrings> _loc;
     private readonly IStringLocalizer<RequirementStrings> _reqLoc;
     private readonly AppNavigationManager _appNav;

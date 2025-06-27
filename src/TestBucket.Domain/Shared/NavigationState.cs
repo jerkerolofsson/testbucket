@@ -273,20 +273,20 @@ public class NavigationState
         SelectedTestSuite = suite;
     }
 
+    public void SetSelectedTestCaseRun(TestRun run, TestCaseRun testCaseRun)
+    {
+        ClearSelection();
+        SelectedTestCaseRun = testCaseRun;
+        SelectedTestRun = run;
+    }
+    public void SetSelectedTestCaseRun(TestCaseRun testCaseRun)
+    {
+        ClearSelection();
+        SelectedTestCaseRun = testCaseRun;
+    }
     public void SetSelectedTestRun(TestRun testRun)
     {
         ClearSelection();
         SelectedTestRun = testRun;
-        SelectedRequirement = null;
-        SelectedRequirementSpecification = null;
-        SelectedRequirementSpecificationFolder = null;
-        SelectedTestLabFolder = null;
-        SelectedTestRepositoryFolder = null;
-
-        SelectedTestCaseRun = null;
-        SelectedTestRun = null;
-        _multiSelectedRequirements = [];
-        _multiSelectedTestCases = [];
     }
-
 }

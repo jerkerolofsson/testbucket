@@ -66,7 +66,7 @@
                     @if (_requirement.RequirementType is not null)
                     {
                         var label = "type-" + _requirement.RequirementType.ToLower();
-                        <Chip Palette="@DefaultPalettes.Contrasting1" Text="@reqLoc[label]" ColorFromTextHash ColorFromText="@_requirement.RequirementType" />
+                        <Chip Text="@reqLoc[label]" Color="@RequirementColors.GetColor(_requirement)" />
                     }
                 </Field>
 
@@ -76,7 +76,7 @@
                         <FieldHeader>@reqLoc["parent"]</FieldHeader>
                         <MudSpacer />
                         <MudLink Href="@appNavigationManager.GetUrl(_parent)">
-                            <Chip Palette="@DefaultPalettes.Contrasting1" Text="@_parent.Name" ColorFromTextHash ColorFromText="@_parent.RequirementType" />
+                            <Chip Text="@_parent.Name" Color="@RequirementColors.GetColor(_parent)" />
                         </MudLink>
                     </Field>
                 }

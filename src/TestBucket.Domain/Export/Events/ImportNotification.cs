@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Mediator;
+﻿using Mediator;
 
 namespace TestBucket.Domain.Export.Events;
-public record class ImportNotification(string TenantId) : INotification
+
+/// <summary>
+/// Import for the specified tenantid and projectid. 
+/// If the imported resource contains tenant id and project id, it will be used instead of these.
+/// </summary>
+/// <param name="TenantId"></param>
+/// <param name="ProjectId"></param>
+public record class ImportNotification(string? TenantId, string? ProjectId) : INotification
 {
 }

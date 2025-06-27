@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Mediator;
+﻿using Mediator;
 
 using TestBucket.Domain.Export.Events;
 using TestBucket.Domain.Fields;
@@ -12,11 +6,14 @@ using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Mapping;
 using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Requirements.Specifications;
 using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Domain.Export.Handlers.Requirements;
+
+/// <summary>
+/// Exports requirements and collections
+/// </summary>
 internal class RequirementExportHandler : INotificationHandler<ExportNotification>
 {
     private readonly IRequirementRepository _requirementRepository;

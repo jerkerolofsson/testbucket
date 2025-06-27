@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Testing.Models;
-using TestBucket.Formats.Dtos;
+﻿using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Domain.Export.Handlers;
+
+/// <summary>
+/// Serializes fields for export
+/// </summary>
 internal static class FieldSerializer
 {
     public static TestTraitCollection ToTraits<T>(this IEnumerable<T> fields) where T : FieldValue

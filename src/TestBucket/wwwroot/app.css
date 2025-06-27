@@ -1378,7 +1378,7 @@ div.tb-profile-image.tb-background-9 {
 .tb-navmenu > .mud-tabs-reverse > .mud-tabs-tabbar .mud-tabs-tabbar-inner {
     min-height: fit-content;
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto 1fr auto;
 }
 
 /* If the tabs are not all visible, hide the border-line */

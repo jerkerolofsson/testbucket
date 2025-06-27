@@ -19,6 +19,7 @@
                         Events="@_events" 
                         TaskDatesChanged="OnDatesChanged"
                         TaskClicked="OnTaskClicked"
+                       ContextMenuOpening="OnTaskContextMenuOpening"
                         TaskProgressChanged="OnProgressChanged">
                         <TaskContextMenu>
                             <CommandMenuItems Flatten TypeNames="Requirement"/>
@@ -37,6 +38,18 @@
     private List<Requirement> _requirements = [];
     private List<MudGanttTask> _tasks = [];
     private List<MudGanttEvent> _events = [];
+
+    private void OnTaskContextMenuOpening(MudGanttTask task)
+    {
+        if (long.TryParse(task.Id, out var id))
+        {
+            var requirement = _requirements.FirstOrDefault(x => x.Id == id);
+            if (requirement is not null)
+            {
+                appNavigationManager.State.SetSelectedRequirement(requirement);
+            }
+        }
+    }
 
     private void OnTaskClicked(MudGanttTask task)
     {

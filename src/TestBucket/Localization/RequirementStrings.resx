@@ -123,10 +123,10 @@
   <data name="confirm-delete-requirement-title" xml:space="preserve">
     <value>Delete requirement?</value>
   </data>
-  <data name="create-general" xml:space="preserve">
+  <data name="create-General" xml:space="preserve">
     <value>New requirement</value>
   </data>
-  <data name="create-requirement" xml:space="preserve">
+  <data name="create-Requirement" xml:space="preserve">
     <value>New requirement</value>
   </data>
   <data name="create-test-from-requirement" xml:space="preserve">
@@ -219,7 +219,7 @@
   <data name="collection-type" xml:space="preserve">
     <value>Collection type</value>
   </data>
-  <data name="create-task" xml:space="preserve">
+  <data name="create-Task" xml:space="preserve">
     <value>New task</value>
   </data>
   <data name="split-requirement-specification" xml:space="preserve">
@@ -237,7 +237,7 @@
   <data name="approve-requirement-arg" xml:space="preserve">
     <value>Approve {0}</value>
   </data>
-  <data name="create-epic" xml:space="preserve">
+  <data name="create-Epic" xml:space="preserve">
     <value>New epic</value>
   </data>
   <data name="link-requirement-to-test" xml:space="preserve">
@@ -252,7 +252,13 @@
   <data name="type-documentation" xml:space="preserve">
     <value>Documentation</value>
   </data>
-  <data name="create-initiative" xml:space="preserve">
+  <data name="create-Initiative" xml:space="preserve">
     <value>New initiative</value>
+  </data>
+  <data name="edit-requirement-description" xml:space="preserve">
+    <value>Open a window to edit</value>
+  </data>
+  <data name="export-collection" xml:space="preserve">
+    <value>Export</value>
   </data>
 </root>

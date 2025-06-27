@@ -342,6 +342,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, NewRequirementFolderCommand>();
         builder.Services.AddScoped<ICommand, SplitSpecificationCommand>();
         builder.Services.AddScoped<ICommand, ApproveRequirementCommand>();
+        builder.Services.AddScoped<ICommand, EditRequirementCommand>();
 
         builder.Services.AddScoped<ICommand, LinkRequirementToTestCommand>();
         builder.Services.AddScoped<ICommand, CreateRequirementCommand>();
@@ -350,6 +351,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, CreateTaskCommand>();
         builder.Services.AddScoped<ICommand, CreateSpecificationCommand>();
         builder.Services.AddScoped<ICommand, ImportRequirementsCommand>();
+        builder.Services.AddScoped<ICommand, ExportCollectionCommand>();
 
         // Issues
         builder.Services.AddScoped<ICommand, CreateIssueCommand>();

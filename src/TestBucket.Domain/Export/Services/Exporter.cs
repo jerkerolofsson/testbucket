@@ -11,6 +11,10 @@ using TestBucket.Domain.Export.Models;
 using TestBucket.Domain.Progress;
 
 namespace TestBucket.Domain.Export.Services;
+
+/// <summary>
+/// Exports entities to a sink
+/// </summary>
 public class Exporter
 {
     private readonly IMediator _mediator;
@@ -41,8 +45,14 @@ public class Exporter
                 throw new NotImplementedException($"Format not implemented: {options.ExportFormat}");
         }
 
-        await sink.WriteEntityAsync("exporter", "tenant", tenantId, new MemoryStream(), CancellationToken.None);
-
+        var tenant = new Tenant
+        {
+            Id = tenantId, Name = tenantId
+        };
+        if (options.Filter(tenant))
+        {
+            await sink.WriteEntityAsync("exporter", "tenant", tenantId, new MemoryStream(), CancellationToken.None);
+        }
         await _mediator.Publish(new ExportNotification(principal, tenantId, options, sink, progressTask));
 
         sink.Dispose();

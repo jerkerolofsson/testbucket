@@ -104,6 +104,12 @@ internal abstract class CreateWorkItemBaseCommand : ICommand
             requirement.RequirementSpecificationId = specificationId.Value;
             requirement.RequirementSpecificationFolderId = folderId;
             requirement.ParentRequirementId = parent?.Id;
+            if(parent is not null)
+            {
+                requirement.Progress = 0;
+                requirement.StartDate = parent.StartDate;
+                requirement.DueDate = parent.DueDate;
+            }
 
             await _requirementEditor.AddRequirementAsync(requirement);
         }

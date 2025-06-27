@@ -12,9 +12,14 @@ public class ZipExporter : IDataExporterSink
 {
     private readonly ZipArchive _zip;
 
-    public ZipExporter(Stream stream)
+    /// <summary>
+    /// Creates a new sink that will write the items as entities in a zip file.
+    /// The stream must be writable and will be not be closed.
+    /// </summary>
+    /// <param name="destination"></param>
+    public ZipExporter(Stream destination)
     {
-        _zip = new ZipArchive(stream, ZipArchiveMode.Create);
+        _zip = new ZipArchive(destination, ZipArchiveMode.Create, leaveOpen: true);
     }
 
     public void Dispose()

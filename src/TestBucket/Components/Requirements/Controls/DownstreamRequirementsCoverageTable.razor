@@ -116,15 +116,35 @@ else if(_downstream.Count > 0)
             return "0%";
         }
     }
-
     private int GetTestCountIncludingDescendants(RequirementCoverageViewModel requirement)
     {
+        var processedRequirements = new HashSet<long>();
+        return GetTestCountIncludingDescendants(requirement, 10, processedRequirements);
+    }
+
+    private int GetTestCountIncludingDescendants(RequirementCoverageViewModel requirement, int depth, HashSet<long> processedRequirements)
+    {
+        depth--;
+        if(depth < 0)
+        {
+            return 0; // Prevent deep recursion
+        }
         if(requirement.Requirement.TestLinks is not null)
         {
+            if (!processedRequirements.Contains(requirement.Requirement.Id))
+            {
+                processedRequirements.Add(requirement.Requirement.Id);
+            }
+            else
+            {
+                // Avoid counting the same requirement multiple times
+                return 0;
+            }
+
             int count = requirement.Requirement.TestLinks.Count;
             foreach(var downstreamRequirement in _downstream.Where(x=>x.Requirement.ParentRequirementId == requirement.Requirement.Id))
             {
-                count += GetTestCountIncludingDescendants(downstreamRequirement);
+                count += GetTestCountIncludingDescendants(downstreamRequirement, depth-1, processedRequirements);
             }
             return count;
         }

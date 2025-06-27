@@ -13,13 +13,13 @@ public class RequirementColors
             switch (requirement.RequirementType)
             {
                 case RequirementTypes.Task:
-                    return "#019356";
+                    return "#015326";
                 case RequirementTypes.Initiative:
                     return "#D31176";
                 case RequirementTypes.Epic:
                     return "#D31176";
             }
         }
-        return "#1176D3"; // blue
+        return "#1166c3"; // blue
     }
 }

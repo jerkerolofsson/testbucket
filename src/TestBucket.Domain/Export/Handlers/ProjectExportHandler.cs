@@ -1,24 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using Mediator;
 
-using Mediator;
-
-using TestBucket.Contracts.Projects;
 using TestBucket.Domain.Export.Events;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Mapping;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Teams;
-using TestBucket.Domain.Teams.Models;
 
 namespace TestBucket.Domain.Export.Handlers;
+
+/// <summary>
+/// Exports the project
+/// </summary>
 public class ProjectExportHandler : INotificationHandler<ExportNotification>
 {
     private readonly IProjectRepository _projectRepository;

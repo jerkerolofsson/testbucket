@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 using TestBucket.Domain.Export.Models;
 using TestBucket.Domain.Progress;
+using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Domain.Export.Services
 {
@@ -27,6 +28,22 @@ namespace TestBucket.Domain.Export.Services
             _logger = logger;
         }
 
+
+
+        public async Task CreateBackupAsync(ClaimsPrincipal principal, ExportOptions options, Stream destination)
+        {
+            options.DestinationType = ExportDestinationType.Stream;
+            options.Destination = null;
+            options.DestinationStream = destination;
+            await CreateBackupAsync(principal, options);
+        }
+
+        /// <summary>
+        /// Creates and saves a backup
+        /// </summary>
+        /// <param name="principal">User</param>
+        /// <param name="options">Backup options</param>
+        /// <returns></returns>
         public async Task CreateBackupAsync(ClaimsPrincipal principal, ExportOptions options)
         {
             var tenantId = principal.GetTenantIdOrThrow();
@@ -37,8 +54,11 @@ namespace TestBucket.Domain.Export.Services
             if (options.DestinationType == ExportDestinationType.Disk)
             {
                 AssignDefaultDiskOptions(options, date, defaultFilename);
-
                 await CreateDiskBackupAsync(principal, tenantId, options);
+            }
+            else if (options.DestinationType == ExportDestinationType.Stream)
+            {
+                await CreateStreamBackupAsync(principal, tenantId, options, options.DestinationStream);
             }
             else
             {
@@ -51,11 +71,23 @@ namespace TestBucket.Domain.Export.Services
             return $"{date.ToString("o")}".Replace(':', '_').Replace('.', '_').Replace('+', '_') + ".zip";
         }
 
+        /// <summary>
+        /// Creates a backup to a file
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="tenantId"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
         private async Task CreateDiskBackupAsync(ClaimsPrincipal principal, string tenantId, ExportOptions options)
         {
             ArgumentNullException.ThrowIfNull(options.Destination);
-            await using var progress = _progressManager.CreateProgressTask("Creating backup..");
             using var destinationStream = File.Create(options.Destination);
+            await CreateStreamBackupAsync(principal, tenantId, options, destinationStream);
+        }
+
+        private async Task CreateStreamBackupAsync(ClaimsPrincipal principal, string tenantId, ExportOptions options, Stream destinationStream)
+        {
+            await using var progress = _progressManager.CreateProgressTask("Creating backup..");
             await _exporter.ExportFullAsync(principal, options, tenantId, destinationStream, progress);
         }
 

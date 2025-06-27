@@ -1,4 +1,5 @@
 ﻿using TestBucket.Contracts.Requirements;
+using TestBucket.Domain.Export.Handlers;
 using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Domain.Requirements.Mapping;
@@ -38,14 +39,18 @@ public static class RequirementMapper
             Name = requirement.Name,
             Description = requirement.Description,
             ExternalId = requirement.ExternalId,
+            ExternalProvider = requirement.Provider,
             Path = requirement.Path ?? "",
             ReadOnly = requirement.ReadOnly,
             State = requirement.State,
             Slug = requirement.Slug,
-            ExternalProvider = requirement.RequirementType,
             RequirementType = requirement.RequirementType,
             MappedType = requirement.MappedType,
             MappedState = requirement.MappedState,
+            StartDate = requirement.StartDate,
+            DueDate = requirement.DueDate,
+            Progress = requirement.Progress,
+            Comments = CommentSerializer.Deserialize(requirement.Comments),
         };
     }
     public static RequirementDto ToDto(this Requirement requirement)
@@ -54,15 +59,22 @@ public static class RequirementMapper
         {
             Name = requirement.Name,
             Description = requirement.Description,
+            Provider = requirement.ExternalProvider,
             ExternalId = requirement.ExternalId,
             Path = requirement.Path,
             ReadOnly = requirement.ReadOnly,
-            State = requirement.State,
             Slug = requirement.Slug,
-            Provider = requirement.ExternalProvider,
+            Comments = CommentSerializer.Serialize(requirement.Comments),
+
             RequirementType = requirement.RequirementType,
             MappedType = requirement.MappedType,
+
+            State = requirement.State,
             MappedState = requirement.MappedState,
+
+            StartDate = requirement.StartDate,
+            DueDate = requirement.DueDate,
+            Progress = requirement.Progress,
         };
     }
 }

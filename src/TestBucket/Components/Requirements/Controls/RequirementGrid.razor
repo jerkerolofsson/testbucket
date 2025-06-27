@@ -4,7 +4,8 @@
 @inject IDialogService dialogService
 @inject FieldController fieldController
 @inject NavigationManager navigationManager
-@inject IStringLocalizer<SharedStrings> loc
+@inject AppNavigationManager appNavigationManager
+@inject IAppLocalization loc
 @implements IDisposable
 
 <MudDataGrid ServerData="LoadGridData"
@@ -25,7 +26,7 @@
                           Variant="Variant.Outlined"
                           IconSize="Size.Small"
                           Adornment="Adornment.Start"
-                          Placeholder="@loc["search-tests"]"
+                          Placeholder="@loc.Shared["search-tests"]"
                           AdornmentIcon="@Icons.Material.Filled.Search" />
 
             <MudSpacer />
@@ -39,8 +40,15 @@
         </MudStack>
     </ToolBarContent>
 
+    <ColGroup>
+        <col style="width: 100%;" />
+        <col style="width: 120px;" />
+        <col style="width: 120px;" />
+        <col style="width: 120px;" />
+        <col style="width: 70px;" />
+    </ColGroup>
     <Columns>
-        <TemplateColumn Title="@loc["name"]">
+        <TemplateColumn Title="@loc.Shared["name"]">
             <CellTemplate>
                 <Draggable T="Requirement" Data="@context.Item">
                     <MudStack Row AlignItems="AlignItems.Center">
@@ -51,12 +59,38 @@
             </CellTemplate>
         </TemplateColumn>
 
-        <TemplateColumn Title="@loc["modified"]">
+        <TemplateColumn Title="@loc.Shared["type"]">
+            <CellTemplate>
+                @if (context.Item?.RequirementType is not null)
+                {
+                    var label = "type-" + context.Item.RequirementType.ToLower();
+                    <Chip Text="@loc.Requirements[label]" Color="@RequirementColors.GetColor(context.Item)" />
+                }
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="@loc.Shared["state"]">
+            <CellTemplate>
+                @if (context.Item is not null)
+                {
+                    @context.Item.State
+                }
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn Title="@loc.Shared["modified"]">
             <CellTemplate>
                 @if (context.Item is not null)
                 {
                     @context.Item.Modified.Humanize()
                 }
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn StickyRight>
+            <CellTemplate>
+                <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert" OpenChanged="() => SetSelectedRequirement(context.Item)">
+                    <CommandMenuItems TypeNames="Requirement" />
+                </MudMenu>
             </CellTemplate>
         </TemplateColumn>
     </Columns>

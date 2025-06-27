@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using TestBucket.Contracts.Comments;
 using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Formats.Dtos;
@@ -31,4 +26,9 @@ public class RequirementDto : RequirementEntityDto
     /// Contains traits/custom properties
     /// </summary>
     public TestTraitCollection? Traits { get; set; }
+    public DateTimeOffset? StartDate { get; set; }
+    public DateTimeOffset? DueDate { get; set; }
+    public double? Progress { get; set; }
+
+    public List<CommentDto>? Comments { get; set; }
 }

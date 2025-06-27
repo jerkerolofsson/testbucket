@@ -20,6 +20,12 @@
             </MudStack>
         </ToolBarContent>
 
+
+        <ColGroup>
+            <col style="width: 100%;" />
+            <col style="width: 70px;" />
+        </ColGroup>
+
         <Columns>
             <TemplateColumn Title="">
                 <CellTemplate>
@@ -27,13 +33,16 @@
                         string url = $"{context.Item.Requirement!.TenantId}/Requirements/Requirements/{context.Item.RequirementId}";
                     }
                     <MudStack Row AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@RequirementIcons.GetIcon(context.Item.Requirement)"/>
-                        <MudLink Href="@url">@context.Item.Requirement!.Name</MudLink>
+                        <MudIcon Icon="@RequirementIcons.GetIcon(context.Item.Requirement)" Size="Size.Large"/>
+                        <MudLink Href="@url">
+                            <MudText Typo="Typo.h1" Color="Color.Primary">@context.Item.Requirement!.ExternalId</MudText>
+                            <span>@context.Item.Requirement!.Name</span>
+                        </MudLink>
                     </MudStack>
                 </CellTemplate>
             </TemplateColumn>
 
-            <TemplateColumn CellStyle="width: 1%">
+            <TemplateColumn StickyRight>
                 <CellTemplate>
                     <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteLinkAsync(context.Item)" />
                 </CellTemplate>

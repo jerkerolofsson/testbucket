@@ -1,4 +1,5 @@
 ﻿
+using TestBucket.Components.Shared;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.Search;
 
@@ -27,10 +28,18 @@ public partial class RequirementGrid
 
 
     #region Lifecycle
-
+    private void SetSelectedRequirement(Requirement requirement)
+    {
+        appNavigationManager.State.SetSelectedRequirement(requirement);
+    }
 
     protected override async Task OnParametersSetAsync()
     {
+        await UpdateQueryAsync();
+    }
+
+    private async Task UpdateQueryAsync()
+    { 
         if(Query is null)
         {
             return;

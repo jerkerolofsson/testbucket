@@ -138,6 +138,11 @@ public class AppNavigationManager
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         return $"/{tenantId}/Requirements/Import";
     }
+    public string GetExportSpecificationsUrl(RequirementSpecification collection)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/api/requirements/collections/{collection.Id}/export";
+    }
 
 
     public string GetRequirementsSearchUrl()

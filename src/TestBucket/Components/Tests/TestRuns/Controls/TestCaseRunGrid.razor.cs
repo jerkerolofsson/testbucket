@@ -490,6 +490,9 @@ public partial class TestCaseRunGrid
 
     private void SetSelectedTestCaseRun(TestCaseRun testCaseRun)
     {
-        appNavigationManager.State.SelectedTestCaseRun = testCaseRun;
+        if (Run is not null)
+        {
+            appNavigationManager.State.SetSelectedTestCaseRun(Run, testCaseRun);
+        }
     }
 }

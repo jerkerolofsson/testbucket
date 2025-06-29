@@ -1,0 +1,21 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Reporting/Dashboards/{id:long}"
+@using TestBucket.Components.Reporting.Layouts
+@layout DashboardsLayout
+@inject AppNavigationManager appNavigationManager
+
+<MudStack Style="width: 100%" Class="pa-2">
+    <InsightsDashboard DashboardId="Id" ReadOnly="false" Deleted="OnDeleted"/>
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [Parameter] public long Id { get; set; }
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+
+    private void OnDeleted(Domain.Insights.Model.Dashboard args)
+    {
+        appNavigationManager.NavigateTo(appNavigationManager.GetReportingDashboardsUrl());
+    }
+}

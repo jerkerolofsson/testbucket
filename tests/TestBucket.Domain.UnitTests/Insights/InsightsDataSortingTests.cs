@@ -1,5 +1,6 @@
 ﻿using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Insights.Extensions;
+using TestBucket.Contracts.Insights;
 
 namespace TestBucket.Domain.UnitTests.Insights
 {

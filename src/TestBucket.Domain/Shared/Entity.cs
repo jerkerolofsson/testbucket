@@ -14,7 +14,7 @@ namespace TestBucket.Domain.Shared
         public string? TenantId { get; set; }
 
         /// <summary>
-        /// Timestamp when the test case was created
+        /// Timestamp when the entity was created
         /// </summary>
         public DateTimeOffset Created { get; set; }
 
@@ -24,7 +24,7 @@ namespace TestBucket.Domain.Shared
         public string? ModifiedBy { get; set; }
 
         /// <summary>
-        /// Timestamp when the test case was Modified
+        /// Timestamp when the entity was Modified
         /// </summary>
         public DateTimeOffset Modified { get; set; }
 

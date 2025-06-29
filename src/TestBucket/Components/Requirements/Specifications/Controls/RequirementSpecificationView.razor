@@ -30,13 +30,7 @@
         <EndContent>
             <MudStack Class="pa-2" Style="width: 100%">
 
-                <Field>
-                    <FieldHeader>@loc.Shared["created"]</FieldHeader>
-                    <MudStack Row AlignItems="AlignItems.Center">
-                        <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@Specification.CreatedBy" />
-                        <div>@Specification.Created.Humanize()</div>
-                    </MudStack>
-                </Field>
+                <CreatedField Entity="@Specification" />
 
                 <Field Row>
                     <FieldHeader>@loc.Shared["type"]</FieldHeader>

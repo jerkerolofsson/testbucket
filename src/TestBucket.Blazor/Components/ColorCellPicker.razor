@@ -1,21 +1,22 @@
 @using MudBlazor
 @using TestBucket.Contracts.Appearance.Models
 
-<MudStack Row Spacing="1" AlignItems="AlignItems.Center">
+<div class="tb-color-cell-picker">
     <MudTextField T="string" Text="@_color" TextChanged="OnTextChanged" Variant="Variant.Outlined" />
-    <ColorCell Color="@_color" Size="Size.Large" OnClick="() => _open = !_open" />
+    <ColorCell HighlighyOnHover Color="@_color" Size="Size.Large" OnClick="() => _open = !_open" />
 
+    <MudOverlay @bind-Visible="_open" AutoClose />
     <MudPopover DropShadow
                 Square
                 Open="@_open" Fixed Class="px-4 pa-4" RelativeWidth="DropdownWidth.Relative" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
         <MudStack Row Wrap="Wrap.Wrap">
             @foreach (var color in _colors)
             {
-                <ColorCell Color="@color" Size="Size.Medium" OnClick="async () => await OnTextChanged(color)" />
+                <ColorCell HighlighyOnHover Color="@color" Size="Size.Medium" OnClick="async () => await OnTextChanged(color)" />
             }
         </MudStack>
     </MudPopover>
-</MudStack>
+</div>
 @code {
     [Parameter] public string? Color { get; set; }
     [Parameter] public EventCallback<string> ColorChanged { get; set; }

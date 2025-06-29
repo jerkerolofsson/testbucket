@@ -1,12 +1,13 @@
 ﻿@attribute [Authorize()]
-@using Plotly.Blazor.LayoutLib
 @using System.Diagnostics
 @using System.Diagnostics.CodeAnalysis
+@using Plotly.Blazor.LayoutLib
 @using TestBucket.Components.Reporting.Controllers
 @using TestBucket.Components.Reporting.Dialogs
 @using TestBucket.Components.Reporting.Helpers
 @using TestBucket.Components.Shared.Themeing.Models
 @using TestBucket.Contracts.Appearance.Models
+@using TestBucket.Contracts.Insights
 @using TestBucket.Domain.Appearance
 @using TestBucket.Domain.Appearance.Models
 @using TestBucket.Domain.Insights
@@ -53,6 +54,7 @@
                 @if(!ReadOnly)
                 {
                     <MudIconButton data-testid="edit" Icon="@Icons.Material.Filled.Brush" OnClick="EditAsync"/>
+                    <MudIconButton data-testid="delete" Icon="@Icons.Material.Filled.Delete" OnClick="DeleteAsync" />
                 }
             }
         </MudStack>
@@ -112,6 +114,7 @@
     [Parameter] public bool ReadOnly { get; set; }
     [Parameter] public InsightsVisualizationSpecification? Spec { get; set; }
     [Parameter] public EventCallback<InsightsVisualizationSpecification> SpecChanged { get; set; }
+    [Parameter] public EventCallback<InsightsVisualizationSpecification> Delete { get; set; }
     [Parameter] public TestProject Project { get; set; } = default!;
     [Parameter] public ApplicationState? State { get; set; }
 
@@ -406,21 +409,22 @@
 
         if (_chart is not null)
         {
-            /*
-            try
-            {
-                await _chart.Update(_data, _layout);
-                await _chart.React();
-                await _chart.NewPlot();
-                }
-            catch { }
-            */
-                        StateHasChanged();
+            StateHasChanged();
         }
         else
         {
             StateHasChanged();
         }
+    }
+
+    private async Task DeleteAsync()
+    {
+        if (Spec is null)
+        {
+            return;
+        }
+
+        await Delete.InvokeAsync(Spec);
     }
 
     private async Task EditAsync()

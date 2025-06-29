@@ -58,6 +58,11 @@ namespace TestBucket.Domain.Export.Services
             }
             else if (options.DestinationType == ExportDestinationType.Stream)
             {
+                if(options.DestinationStream is null)
+                {
+                    throw new ArgumentNullException(nameof(options.DestinationStream), "Destination stream cannot be null when using ExportDestinationType.Stream");
+                }
+
                 await CreateStreamBackupAsync(principal, tenantId, options, options.DestinationStream);
             }
             else

@@ -13,3 +13,13 @@
     width: 32px;
     height: 32px;
 }
+
+
+.tb-color.highlight-on-hover:hover {
+    border: solid 2px var(--mud-palette-action-default);
+}
+
+.tb-color.highlight-on-hover {
+    cursor: pointer;
+    border: solid 2px transparent;
+}

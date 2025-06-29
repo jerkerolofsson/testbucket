@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Domain.Appearance.Themes;
+﻿using TestBucket.Contracts.Appearance;
+
+namespace TestBucket.Domain.Appearance.Themes;
 internal class DarkMoon : DefaultTheme
 {
     public override string ToString() => "Dark Moon";

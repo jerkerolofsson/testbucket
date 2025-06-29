@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Appearance.Models;
-using TestBucket.Domain.Appearance;
+﻿using TestBucket.Contracts.Appearance.Models;
+using TestBucket.Contracts.Insights;
 using TestBucket.Domain.Insights.Model;
 
 namespace TestBucket.Domain.Insights;

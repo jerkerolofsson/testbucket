@@ -6,4 +6,16 @@
     width: 100%;
     resize: none;
     border-radius: var(--mud-default-borderradius);
+    border: solid 1px transparent;
+    outline: solid 2px transparent;
+    background: none;
+}
+
+.tb-chat-text-field ::deep textarea:hover {
+    border-color: var(--mud-palette-action-default);
+}
+
+.tb-chat-text-field ::deep textarea:focus-visible {
+    border: solid 1px transparent;
+    outline: solid 2px var(--mud-palette-primary);
 }

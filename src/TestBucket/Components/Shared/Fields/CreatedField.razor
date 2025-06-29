@@ -1,0 +1,18 @@
+﻿@using TestBucket.Components.Shared.Profile
+@using TestBucket.Domain.Shared
+@inject IAppLocalization loc
+
+@if (Entity is not null)
+{
+    <Field>
+        <FieldHeader>@loc.Shared["created"]</FieldHeader>
+        <MudStack Row AlignItems="AlignItems.Center">
+            <UserProfileImage UserName="@Entity.CreatedBy" />
+            <div>@Entity.Created.Humanize()</div>
+        </MudStack>
+    </Field>
+}
+
+@code {
+    [Parameter] public ProjectEntity? Entity { get; set; }
+}

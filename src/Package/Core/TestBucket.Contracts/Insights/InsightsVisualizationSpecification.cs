@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Components.Reporting.Models;
+﻿using TestBucket.Components.Reporting.Models;
 using TestBucket.Contracts.Appearance.Models;
 
-namespace TestBucket.Domain.Insights.Model;
+namespace TestBucket.Contracts.Insights;
 public class InsightsVisualizationSpecification
 {
     /// <summary>

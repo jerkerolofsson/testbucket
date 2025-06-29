@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Appearance.Models;
-
-namespace TestBucket.Domain.Insights.Model;
+﻿namespace TestBucket.Contracts.Insights;
 
 /// <summary>
 /// A query that contains a filter and a specific data source as identified by the DataSource property

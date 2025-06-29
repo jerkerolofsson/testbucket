@@ -42,7 +42,8 @@
 
 .tb-agent-chat .chat {
     padding: 2px;
-    --chat-background: var(--mud-palette-secondary);
+    border: solid 1px var(--mud-palette-lines-inputs);
+    --chat-background: var(--mud-palette-surface);
     background: var(--chat-background);
     border-radius: var(--mud-default-borderradius);
 }

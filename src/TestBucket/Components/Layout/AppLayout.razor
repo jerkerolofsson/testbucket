@@ -36,6 +36,7 @@
     string testsUrl = $"/{tenantId}/Testing";
     string settingsUrl = $"/{tenantId}/Settings";
     string manageUrl = $"/{tenantId}/Account/Manage";
+    string welcomeUrl = $"/{tenantId}/Welcome";
     string registerUrl = $"/{tenantId}/Account/Register";
     string loginUrl = $"/{tenantId}/Account/Login?returnUrl=/{tenantId}";
 
@@ -97,6 +98,7 @@
                                         <AuthorizeView>
                                             <MudMenuItem Icon="@TbIcons.BoldDuoTone.Settings" Label="@loc["settings"]" Href="@settingsUrl"></MudMenuItem>
                                             <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="@loc["account"]" Href="@manageUrl"></MudMenuItem>
+                                            <MudMenuItem Label="@loc["welcome"]" Href="@welcomeUrl"></MudMenuItem>
                                             <MudMenuItem Label="@loc["about"]" Href="/about"></MudMenuItem>
                                             <MudMenuItem>
                                                 <form action="/Logout" method="post">

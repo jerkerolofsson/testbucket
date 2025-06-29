@@ -208,12 +208,16 @@ input:not(.mud-input-slot) {
     background-color: var(--mud-palette-dark) !important;
     color: white;
     padding: 6px 8px;
-    border: solid 2px transparent;
+    border: solid 1px transparent;
     outline: solid 2px transparent;
 }
 
+input:hover {
+    border-color: var(--mud-palette-action-default);
+}
+
 input:focus-visible {
-    border: solid 2px transparent;
+    border: solid 1px transparent;
     outline: solid 2px var(--mud-palette-primary);
 }
 
@@ -1097,13 +1101,25 @@ div.tb-profile-image.tb-background-9 {
     flex: 1;
 }
 
-/*,.tb-tile:hover .mud-toggle-group */
+.tb-tile:hover [data-testid="delete"],
 .tb-tile:hover [data-testid="edit"] {
     opacity: 1;
 }
 
+.tb-tile [data-testid="delete"] {
+    color: var(--mud-palette-error);
+}
+
+.tb-tile button.add {
+    opacity: 0.5;
+}
+.tb-tile button.add:hover {
+    opacity: 1;
+}
+
 .tb-tile .mud-toggle-group, 
-.tb-tile [data-testid="edit"] {
+.tb-tile [data-testid="edit"], 
+.tb-tile [data-testid="delete"] {
     opacity: 0;
     transition: opacity linear 150ms;
 }

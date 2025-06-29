@@ -1,29 +1,25 @@
 @using MudBlazor
 @using MudBlazor.Utilities
-@if(Color is not null)
-{
-    <div aria-role="button" class="@CssClass" style="@CssStyle" data-testid="@TestId" @onclick="OnClickedAsync" />
-}
+<div role="button" class="@CssClass" style="@CssStyle" data-testid="@TestId" @onclick="OnClickedAsync" />
 
 @code {
     [Parameter] public Size Size { get; set; } = Size.Small;
     [Parameter] public string? Color { get; set; }
+    [Parameter] public bool HighlighyOnHover { get; set; } = false;
     [Parameter] public EventCallback<string> OnClick { get; set; }
 
-    public string CssStyle => $"background: {Color}";
+    public string CssStyle => Color is null ? "" : $"background: {Color}";
 
     public string CssClass => new CssBuilder("tb-color")
     .AddClass("small", Size == Size.Small)
     .AddClass("medium", Size == Size.Medium)
     .AddClass("large", Size == Size.Large)
+    .AddClass("highlight-on-hover", HighlighyOnHover)
     .Build();
 
     private string TestId => $"color-{Color}";
     private async Task OnClickedAsync()
     {
-        if(Color is not null)
-        {
-            await OnClick.InvokeAsync(Color);
-        }
+        await OnClick.InvokeAsync(Color);
     }
 }

@@ -14,7 +14,7 @@ public partial class ColorCellPicker
 
     private bool _open = false;
 
-    private string _color = "#000000";
+    private string? _color = "#000000";
 
     static ColorCellPicker()
     {
@@ -47,11 +47,18 @@ public partial class ColorCellPicker
 
     protected override void OnParametersSet()
     {
-        _color = Color ?? "#000000";
+        _color = Color;
     }
 
     private async Task OnTextChanged(string color)
     {
+        if(string.IsNullOrWhiteSpace(color))
+        {
+            _color = null;
+            await ColorChanged.InvokeAsync(_color);
+            return;
+        }
+
         if (color == "transparent" || ThemeColor.TryParse(color, out var mudColor))
         {
             _color = color;

@@ -910,4 +910,13 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="timeline" xml:space="preserve">
     <value>Timeline</value>
   </data>
+  <data name="welcome-add-team-title" xml:space="preserve">
+    <value>Add a team</value>
+  </data>
+  <data name="welcome-add-team-message" xml:space="preserve">
+    <value>Get started by adding a team</value>
+  </data>
+  <data name="dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
 </root>

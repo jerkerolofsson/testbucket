@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Appearance;
+
 namespace TestBucket.Domain.Appearance.Themes;
 internal class BlueSteel : DefaultTheme
 {

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using TestBucket.Contracts.Appearance;
 using TestBucket.Contracts.Appearance.Models;
-using TestBucket.Domain.Appearance;
 
-namespace TestBucket.Domain.Insights.Model;
+namespace TestBucket.Contracts.Insights;
 public class ChartColors
 {
 

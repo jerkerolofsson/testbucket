@@ -614,10 +614,7 @@ public partial class TestTreeView
             {
                 node.Text = suiteFolder.Name;
                 node.Icon = TestIcons.GetIcon(suiteFolder);
-                if (node.Value is not null)
-                {
-                    node.Value.Color = suiteFolder.Color;
-                }
+                node.IconColor = suiteFolder.Color;
                 this.StateHasChanged();
             }
         });
@@ -771,10 +768,7 @@ public partial class TestTreeView
             {
                 node.Text = folder.Name;
                 node.Icon = TestIcons.GetIcon(folder);
-                if (node.Value is not null)
-                {
-                    node.Value.Color = folder.Color;
-                }
+                node.IconColor = folder.Color;
                 this.StateHasChanged();
             }
         });
@@ -845,10 +839,7 @@ public partial class TestTreeView
             {
                 node.Text = folder.Name;
                 node.Icon = TestIcons.GetIcon(folder);
-                if (node.Value is not null)
-                {
-                    node.Value.Color = folder.Color;
-                }
+                node.IconColor = folder.Color;
                 this.StateHasChanged();
             }
         });
@@ -897,10 +888,7 @@ public partial class TestTreeView
             {
                 node.Text = suite.Name;
                 node.Icon = TestIcons.GetIcon(suite);
-                if (node.Value is not null)
-                {
-                    node.Value.Color = suite.Color;
-                }
+                node.IconColor = suite.Color;
                 this.StateHasChanged();
             }
         });

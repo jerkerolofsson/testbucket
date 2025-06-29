@@ -1,8 +1,61 @@
-﻿@if (Folder is not null)
+﻿@inject IAppLocalization loc
+@inject TestSuiteController controller
+
+@if (Folder is not null)
 {
-    <AttachmentGrid TestSuiteFolderId="@Folder.Id" />
+    <AttachmentGrid TestSuiteFolderId="@Folder.Id" AllowUpload />
+
+
+                    <MudExpansionPanels>
+                        <MudExpansionPanel Text="@loc.Settings["appearance"]">
+                            <MudStack Class="pa-2">
+                                <Field Row>
+                                    <FieldHeader>@loc.Settings["color"]</FieldHeader>
+                                    <MudSpacer/>
+                                    <ColorCellPicker Color="@Folder.Color" ColorChanged="OnColorChanged"/>
+                                </Field>
+
+                                <Field Row>
+                                    <FieldHeader>@loc.Shared["icon"]</FieldHeader>
+                                    <MudSpacer />
+                                    <IconPicker Icon="@Folder.Icon" IconChanged="OnIconChanged" />
+                                </Field>
+                            </MudStack>
+                        </MudExpansionPanel>
+                    </MudExpansionPanels>
+
 }
 
 @code {
     [Parameter] public TestSuiteFolder? Folder { get; set; }
+
+    private async Task SaveChangesAsync()
+    {
+          if (Folder is null)
+        {
+            return;
+        }
+        await controller.SaveTestSuiteFolderAsync(Folder);
+    }
+
+
+    private async Task OnIconChanged(string svgIcon)
+    {
+        if (Folder is null)
+        {
+            return;
+        }
+        Folder.Icon = svgIcon;
+        await SaveChangesAsync();
+    }
+    private async Task OnColorChanged(string color)
+    {
+        if (Folder is null)
+        {
+            return;
+        }
+        Folder.Color = color;
+        await SaveChangesAsync();
+    }
+
 }

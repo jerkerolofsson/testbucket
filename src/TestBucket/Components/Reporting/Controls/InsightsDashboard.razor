@@ -2,6 +2,8 @@
 @using TestBucket.Components.Issues.Layouts
 @using TestBucket.Components.Reporting.Controllers
 @using TestBucket.Components.Shared.Themeing.Models
+@using TestBucket.Contracts.Appearance
+@using TestBucket.Contracts.Insights
 @using TestBucket.Contracts.Issues.States
 @using TestBucket.Domain
 @using TestBucket.Domain.Appearance
@@ -19,251 +21,134 @@
 @inject ICommandManager commandManager
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
+@inject DashboardController controller
 
-<div class="tb-insights-dashboard">
-    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_testsByCat" />
-    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countByResultsSpec" />
-    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countByLatestResultsSpec" />
+<div>
 
+    @if(_dashboard is not null)
+    {
+        @if(!ReadOnly)
+        {
+            <MudStack Style="width: 100%" Row AlignItems="AlignItems.Center">
+                <MudTextField T="string" Value="_dashboard.Name" Variant="Variant.Outlined"/>
+                <MudSpacer/>
+                <MudIconButton Color="Color.Error" data-testid="delete-dashboard" Icon="@Icons.Material.Filled.Delete" OnClick="DeleteDashboardAsync" />
+            </MudStack>
+        }
 
-    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countResultsByComponentSpec" />
-    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countResultsByAsigneeSpec" />
-    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_countPerStateSpec" />
-    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" @bind-Spec="_inflowOutflowSpec" />
+        <div class="tb-insights-dashboard">
+            @if (_dashboard.Specifications is not null)
+            {
+                @foreach (var data in _dashboard.Specifications)
+                {
+                    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" Spec="@data" 
+                        Delete="OnDeleteAsync"
+                        SpecChanged="OnSpecChangedAsync" />
+                }
+
+                @if(!ReadOnly)
+                {
+                    <MudPaper Elevation="2" Class="tb-tile">
+                        <button @onclick="AddSpec" class="add" data-testid="add" style="font-size: 64pt; width: 100%; height: 100%">+</button>
+                    </MudPaper>
+                }
+            }
+        </div>
+    }
 </div>
 
 @code {
-    private bool ReadOnly => false;
+    [Parameter] public bool ReadOnly { get; set; } = true;
     [Parameter] public string? DashboardName { get; set; }
+    [Parameter] public long? DashboardId { get; set; }
     [Parameter] public string Query { get; set; } = "";
     [CascadingParameter] public TestProject Project { get; set; } = default!;
     [CascadingParameter] public ApplicationState? State { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
-    private long _projectId;
+
+    [Parameter] public EventCallback<Dashboard> Deleted { get; set; }
     private string _query = "";
+    private Dashboard? _dashboard;
 
-    private InsightsVisualizationSpecification? _testsByCat;
-    private InsightsVisualizationSpecification? _countByResultsSpec;
-    private InsightsVisualizationSpecification? _countByLatestResultsSpec;
-    private InsightsVisualizationSpecification? _countResultsByComponentSpec;
-    private InsightsVisualizationSpecification? _countResultsByAsigneeSpec;
-    
-    private InsightsVisualizationSpecification? _inflowOutflowSpec;
-    private InsightsVisualizationSpecification? _countPerStateSpec;
-
-    protected override void OnParametersSet()
+    private async Task AddSpec()
     {
-        Load();
+        if (_dashboard is not null)
+        {
+            _dashboard.Specifications ??= [];
+            _dashboard.Specifications.Add(new InsightsVisualizationSpecification()
+            {
+                Name = "New Insight"
+            });
+            await controller.UpdateDashboardAsync(_dashboard);
+        }
     }
 
-    private void Load()
+    private async Task DeleteDashboardAsync()
     {
-        if (Project is not null)
+        if (_dashboard is not null)
         {
-            if (Project.Id != _projectId || Query != _query)
+            var deleted = await controller.DeleteDashboardAsync(_dashboard);
+            if(deleted)
             {
-                _query = Query ?? "";
-                _projectId = Project.Id;
-                _countByResultsSpec = new InsightsVisualizationSpecification
-                {
-                    Name = "test-results",
-                    ChartType = ChartType.Bar,
-                    AllowedChartTypes = ChartType.Bar|ChartType.Donut|ChartType.Line|ChartType.Pie|ChartType.Text,
-                    DataQueries = [new InsightsDataQuery
-                    {
-                        DataSource = TestRunDataSourceNames.CountByResult,
-                        Colors = DefaultPalettes.TestResultColors,
-                        Query = ""
-                    }],
-                    DarkModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
-                        GridLineColor = "#444",
-                        TickLabelColor = "#777"
-                    },
-                    LightModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
-                        GridLineColor = "#ddd",
-                        TickLabelColor = "#aaa"
-                    },
-                    ShowLegend = true,
-                    ShowDataTable = true,
-                };
-
-                _countByLatestResultsSpec = new InsightsVisualizationSpecification
-                {
-                    Name = "latest-test-results",
-                    ChartType = ChartType.Bar,
-                    AllowedChartTypes = ChartType.Bar | ChartType.Donut | ChartType.Line | ChartType.Pie | ChartType.Text,
-                    DataQueries = [new InsightsDataQuery
-                    {
-                        DataSource = TestRunDataSourceNames.CountByLatestResult,
-                        Colors = DefaultPalettes.TestResultColors,
-                        Query = ""
-                    }],
-                    DarkModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
-                        GridLineColor = "#444",
-                        TickLabelColor = "#777"
-                    },
-                    LightModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
-                        GridLineColor = "#ddd",
-                        TickLabelColor = "#aaa"
-                    },
-                    ShowLegend = true,
-                    ShowDataTable = true,
-                };
-
-                _countResultsByAsigneeSpec = new InsightsVisualizationSpecification
-                {
-                    Name = "test-results",
-                    ChartType = ChartType.Bar,
-                    AllowedChartTypes = ChartType.Bar | ChartType.Donut | ChartType.Pie,
-                    DataQueries = [new InsightsDataQuery
-                    {
-                        DataSource = TestRunDataSourceNames.ExecutedTestsByAsignee
-                    }],
-                    DarkModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
-                        GridLineColor = "#444",
-                        TickLabelColor = "#777"
-                    },
-                    LightModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
-                        GridLineColor = "#ddd",
-                        TickLabelColor = "#aaa"
-                    },
-                    ShowLegend = true,
-                    ShowDataTable = true,
-                };
-
-                _countResultsByComponentSpec = new InsightsVisualizationSpecification
-                {
-                    Name = "test-results-by-component",
-                    ChartType = ChartType.StackedBar,
-                    AllowedChartTypes = ChartType.StackedBar,
-                    DataQueries = [new InsightsDataQuery
-                    {
-                        DataSource = TestRunDataSourceNames.ResultsByComponent,
-                    }],
-                    DarkModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.BySeries,
-                        GridLineColor = "#444",
-                        TickLabelColor = "#777"
-                    },
-                    LightModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.BySeries,
-                        GridLineColor = "#ddd",
-                        TickLabelColor = "#aaa"
-                    },
-                    ShowLegend = true,
-                    ShowDataTable = true,
-                };
-                _inflowOutflowSpec = new InsightsVisualizationSpecification
-                {
-                    Name = "issue-inflow-outflow",
-                    ChartType = ChartType.ActivityHeatmap,
-                    AllowedChartTypes = ChartType.Line | ChartType.ActivityHeatmap,
-                    DataQueries = [new InsightsDataQuery
-                    {
-                        DataSource = IssueDataSourceNames.IssuesInflowOutflow,
-                        Query = ""
-                    }],
-                    DarkModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.BySeries,
-                        GridLineColor = "#444",
-                        TickLabelColor = "#777"
-                    },
-                    LightModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.BySeries,
-                        GridLineColor = "#ddd",
-                        TickLabelColor = "#aaa"
-                    },
-                    ShowLegend = false,
-                    ShowDataTable = false,
-                };
-                _countPerStateSpec = new InsightsVisualizationSpecification
-                {
-                    Name = "issues-by-state",
-                    AllowedChartTypes = ChartType.Bar | ChartType.Donut | ChartType.Pie | ChartType.Text,
-                    DataQueries = [new InsightsDataQuery
-                    {
-                        DataSource = IssueDataSourceNames.IssuesByState,
-                        Colors = new Dictionary<string, string> {
-                            ["Open"]="#06D6A0",
-                            ["Closed"]="#EF476F",
-                            ["Canceled"]="#a4133c",
-                        },
-                        Query = ""
-                    }],
-                    DarkModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
-                        GridLineColor = "#444",
-                        TickLabelColor = "#777"
-                    },
-                    LightModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
-                        GridLineColor = "#ddd",
-                        TickLabelColor = "#aaa"
-                    },
-                    ShowLegend = true,
-                    ShowDataTable = false,
-                };
-
-                _testsByCat = new InsightsVisualizationSpecification
-                {
-                    Name = "count-per-testcategory",
-                    AllowedChartTypes = ChartType.Bar | ChartType.Donut |ChartType.Pie | ChartType.Text,
-                    DataQueries = [new InsightsDataQuery
-                    {
-                        DataSource = TestCaseDataSourceNames.CountByCategory,
-                        Query = _query
-                    }],
-                    DarkModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
-                        GridLineColor = "#444",
-                        TickLabelColor = "#777"
-                    },
-                    LightModeColors = new ChartColors()
-                    {
-                        Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
-                        GridLineColor = "#ddd",
-                        TickLabelColor = "#aaa"
-                    },
-                    ChartType = ChartType.Donut,
-                    ShowLegend = true,
-                    ShowDataTable = false,
-                };
-
-                // var _ = InvokeAsync(StateHasChanged);
+                await Deleted.InvokeAsync(_dashboard);
             }
         }
     }
+    private async Task OnDeleteAsync(InsightsVisualizationSpecification spec)
+    {
+        if (spec is not null && _dashboard is not null)
+        {
+            _dashboard.Specifications ??= [];
+            _dashboard.Specifications.Remove(spec);
+            await controller.UpdateDashboardAsync(_dashboard);
+        }
+    }
+    private async Task OnSpecChangedAsync(InsightsVisualizationSpecification? spec)
+    {
+        if(spec is not null && _dashboard is not null)
+        {
+            await controller.UpdateDashboardAsync(_dashboard);
+        }
+    }
+
+    // private InsightsVisualizationSpecification? _testsByCat;
+    // private InsightsVisualizationSpecification? _countByResultsSpec;
+    // private InsightsVisualizationSpecification? _countByLatestResultsSpec;
+    // private InsightsVisualizationSpecification? _countResultsByComponentSpec;
+    // private InsightsVisualizationSpecification? _countResultsByAsigneeSpec;
+
+    // private InsightsVisualizationSpecification? _inflowOutflowSpec;
+    // private InsightsVisualizationSpecification? _countPerStateSpec;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (DashboardId is not null)
+        {
+            _dashboard = await controller.GetDashboardByIdAsync(DashboardId.Value); 
+        }
+        else if (DashboardName is not null)
+        {
+            _dashboard = await controller.GetDashboardByNameAsync(Project.Id, DashboardName);
+        }
+
+        if(_dashboard is not null)
+        {
+            _dashboard.TestProjectId = Project.Id;
+        }
+
+        if (_dashboard?.Specifications is not null)
+        {
+            if(Query is not null)
+            {
+                foreach(var spec in _dashboard.Specifications)
+                {
+                    foreach(var query in spec.DataQueries)
+                    {
+                        query.Query = Query;
+                    }
+                }
+            }
+        }
+    }
+
 }

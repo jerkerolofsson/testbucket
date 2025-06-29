@@ -1,3 +1,7 @@
 ﻿.split-container {
 
 }
+
+.tb-insights-visualization-specification-editor ::deep .tb-splitter-content-end .tb-tile {
+    width: 100%;
+}

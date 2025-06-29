@@ -1,0 +1,13 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Reporting/Dashboards"
+@using TestBucket.Components.Reporting.Controllers
+@using TestBucket.Components.Reporting.Layouts
+@layout DashboardsLayout
+@inject DashboardController controller
+
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+}

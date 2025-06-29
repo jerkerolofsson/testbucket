@@ -240,6 +240,7 @@ internal class ProjectController : TenantBaseService
             if(project is not null)
             {
                 _appNavigationManager.State.SelectedProject = project;
+                _appNavigationManager.State.SelectedTeam = project?.Team;
             }
 
             return project;

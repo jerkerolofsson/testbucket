@@ -1,0 +1,63 @@
+﻿@inherits LayoutComponentBase
+@layout AppLayout
+@using Humanizer
+@using TestBucket.Components.Reporting.Controllers
+@using TestBucket.Contracts.Appearance.Models
+@using TestBucket.Domain.Insights.Model
+@using TestBucket.Domain.Testing.TestRuns.Search
+@inject AppNavigationManager appNavigationManager
+@inject UserPreferencesService preferencesController
+@inject IStringLocalizer<SharedStrings> loc
+@inject DashboardController controller
+
+<TenantRedirect />
+
+<Splitter Style="height: 100%" Bordered="false" Dock="_dock" Dimension="20" EnableMargin="false" Color="Color.Tertiary">
+    <StartContent>
+
+        <MudStack Class="pa-2 tb-navmenu side" Style="width: 100%;">
+            <MudNavMenu>
+                @foreach(var dashboard in _dashboards)
+                {
+                    string url = appNavigationManager.GetReportingDashboardUrl(dashboard.Id);
+
+                    <MudNavLink Href="@url">
+                        <MudText>@dashboard.Name</MudText>
+                    </MudNavLink>
+                }
+            </MudNavMenu>
+        </MudStack>
+
+    </StartContent>
+
+    <EndContent>
+            @Body
+    </EndContent>
+</Splitter>
+
+@code {
+    [CascadingParameter] TestProject? Project { get; set; }
+    [CascadingParameter] Team? Team { get; set; }
+
+    private Dock _dock = Dock.Left;
+
+    private TestProject? _project;
+
+    private List<Dashboard> _dashboards = [];
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userPreferences = await preferencesController.GetUserPreferencesAsync();
+        _dock = userPreferences?.ExplorerDock ?? Dock.Left;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Project is not null && _project?.Id != Project.Id) 
+        {
+            _project = Project;
+            _dashboards = await controller.GetDashboardsAsync(_project.Id);
+        }
+    }
+}

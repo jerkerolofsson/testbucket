@@ -905,4 +905,13 @@
   <data name="timeline" xml:space="preserve">
     <value />
   </data>
+  <data name="welcome-add-team-title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="welcome-add-team-message" xml:space="preserve">
+    <value />
+  </data>
+  <data name="dashboard" xml:space="preserve">
+    <value />
+  </data>
 </root>

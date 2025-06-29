@@ -40,16 +40,21 @@
 
     private async Task HandleKeyPress(KeyboardEventArgs e)
     {
-        if (e.Key == "Enter")
+        if (e.Key == "Enter" && !e.ShiftKey)
         {
             if(!Immediate)
             {
                 await TextChanged.InvokeAsync(_text);
             }
-            await OnEnter.InvokeAsync(_text);
+
+            var text = _text;
 
             // Clear after send
             _text = "";
+            this.StateHasChanged();
+
+            await OnEnter.InvokeAsync(text);
+
         }
     }
 }

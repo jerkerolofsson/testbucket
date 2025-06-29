@@ -208,11 +208,11 @@
     <value>APIキー</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="duplicate-test-run" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="duplicate-test-run" xml:space="preserve">
+    <value>テストランを複製</value>
   </data>
-  <data name="duplicate-test" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="duplicate-test" xml:space="preserve">
+    <value>テストを複製</value>
   </data>
   <data name="test-log" xml:space="preserve">
     <value>テストログ</value>
@@ -296,90 +296,99 @@
     <value>変数を追加</value>
   </data>
   <data name="test-case-runs" xml:space="preserve">
-    <value />
+    <value>テストケースの実行</value>
   </data>
   <data name="incomplete" xml:space="preserve">
-    <value />
+    <value>未完了</value>
   </data>
   <data name="recent-test-runs" xml:space="preserve">
-    <value />
+    <value>最近のテストラン</value>
   </data>
   <data name="go-to-run" xml:space="preserve">
-    <value />
+    <value>ランに移動</value>
   </data>
   <data name="number-of-test-case-runs" xml:space="preserve">
-    <value />
+    <value>テストケースの実行数</value>
   </data>
   <data name="number-of-test-cases" xml:space="preserve">
-    <value />
+    <value>テストケースの数</value>
   </data>
   <data name="failed-tests" xml:space="preserve">
-    <value />
+    <value>失敗したテスト</value>
   </data>
   <data name="passed" xml:space="preserve">
-    <value />
+    <value>合格</value>
   </data>
   <data name="failed" xml:space="preserve">
-    <value />
+    <value>失敗</value>
   </data>
   <data name="blocked" xml:space="preserve">
-    <value />
+    <value>ブロック</value>
   </data>
   <data name="add-milestone" xml:space="preserve">
-    <value />
+    <value>マイルストーンを追加</value>
   </data>
   <data name="new-exploratory-test-charter" xml:space="preserve">
-    <value />
+    <value>新しい探索的テストチャーター</value>
   </data>
   <data name="new-exploratory-test-charter-description" xml:space="preserve">
-    <value />
+    <value>探索的テストのための事前定義されたチャーターを作成</value>
   </data>
   <data name="session-duration" xml:space="preserve">
-    <value />
+    <value>セッションの期間</value>
   </data>
   <data name="session-log" xml:space="preserve">
-    <value />
+    <value>セッションログ</value>
   </data>
   <data name="test-repository" xml:space="preserve">
-    <value />
+    <value>テストリポジトリ</value>
   </data>
   <data name="test-lab" xml:space="preserve">
     <value>テストラボ</value>
   </data>
   <data name="delete-test-suite-folder-description" xml:space="preserve">
-    <value />
+    <value>テストスイートフォルダを削除し、すべてのサブフォルダとその中のテストケースを削除します</value>
   </data>
   <data name="delete-test-repository-folder-description" xml:space="preserve">
-    <value />
+    <value>テストリポジトリフォルダを削除し、すべてのサブフォルダとその中のテストケースを削除します</value>
   </data>
   <data name="api-keys-description" xml:space="preserve">
-    <value />
+    <value>アクセストークンとAPIキー</value>
   </data>
   <data name="requirements-and-workitems" xml:space="preserve">
-    <value />
+    <value>要件と作業項目</value>
   </data>
   <data name="more-options" xml:space="preserve">
-    <value />
+    <value>その他のオプション</value>
   </data>
   <data name="test-case" xml:space="preserve">
-    <value />
+    <value>テストケース</value>
   </data>
   <data name="coverage" xml:space="preserve">
-    <value />
+    <value>カバレッジ</value>
   </data>
   <data name="upload-file-hint" xml:space="preserve">
-    <value />
+    <value>ここにファイルをドラッグ＆ドロップするか、クリックしてファイルを選択してください</value>
   </data>
   <data name="upload-max-filesize-fmt" xml:space="preserve">
-    <value />
+    <value>最大ファイルサイズ: {0}</value>
   </data>
   <data name="browse" xml:space="preserve">
-    <value />
+    <value>ブラウズ</value>
   </data>
   <data name="board" xml:space="preserve">
-    <value />
+    <value>ボード</value>
   </data>
   <data name="timeline" xml:space="preserve">
-    <value />
+    <value>タイムライン</value>
+  </data>
+  <data name="welcome-add-team-title" xml:space="preserve">
+    <value>チームを追加</value>
+  </data>
+  <data name="welcome-add-team-message" xml:space="preserve">
+    <value>チームを追加して始めましょう</value>
+  </data>
+  <data name="dashboard" xml:space="preserve">
+    <value>ダッシュボード</value>
   </data>
 </root>

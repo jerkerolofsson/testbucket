@@ -34,4 +34,9 @@ internal class FakeTimeProvider : TimeProvider
     {
         return _dateTimeOffset;
     }
+
+    public DateTimeOffset GetCurrentTime()
+    {
+        return GetUtcNow();
+    }
 }

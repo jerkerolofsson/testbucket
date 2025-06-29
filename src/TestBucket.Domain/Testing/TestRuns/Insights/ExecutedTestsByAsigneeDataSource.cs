@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Fields;
+﻿using TestBucket.Contracts.Insights;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Testing.TestRuns.Search;
@@ -12,7 +13,7 @@ internal class ExecutedTestsByAsigneeDataSource : IInsightsDataSource
     /// <summary>
     /// Gets the identifier of the data source
     /// </summary>
-    public string DataSource => TestRunDataSourceNames.ExecutedTestsByAsignee;
+    public string DataSource => TestRunDataSourceNames.ExecutedTestsByAssignee;
 
     public ExecutedTestsByAsigneeDataSource(ITestRunManager manager, IFieldDefinitionManager fieldDefinitionManager)
     {

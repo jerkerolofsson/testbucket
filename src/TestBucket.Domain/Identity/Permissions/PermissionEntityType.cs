@@ -48,6 +48,8 @@ namespace TestBucket.Domain.Identity.Permissions
 
         Issue,
 
-        Heuristic
+        Heuristic,
+
+        Dashboard
     }
 }

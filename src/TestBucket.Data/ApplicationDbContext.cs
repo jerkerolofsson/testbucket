@@ -17,6 +17,7 @@ using TestBucket.Domain.Comments.Models;
 using TestBucket.Domain.Labels.Models;
 using TestBucket.Domain.Metrics.Models;
 using TestBucket.Domain.Testing.Heuristics.Models;
+using TestBucket.Domain.Insights.Model;
 
 namespace TestBucket.Data;
 
@@ -29,6 +30,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<UserPreferences> UserPreferences { get; set; }
     internal DbSet<ApplicationUserApiKey> ApiKeys { get; set; }
     internal DbSet<Comment> Comments { get; set; }
+
+    internal DbSet<Dashboard> Dashboards { get; set; }
 
     internal DbSet<Metric> Metrics { get; set; }
 

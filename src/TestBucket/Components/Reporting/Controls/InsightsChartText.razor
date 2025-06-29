@@ -1,4 +1,5 @@
-﻿@using TestBucket.Domain.Insights.Model
+﻿@using TestBucket.Contracts.Insights
+@using TestBucket.Domain.Insights.Model
 @if(Data is not null && ColorMap is not null)
 {
     @if (Data.Series.Count > 0 && Data.Series[0].HasData)

@@ -8,7 +8,7 @@
 @inject TestBrowser testBrowser
 @inject TestSuiteController controller
 @inject AppNavigationManager appNavigationManager
-@inject IStringLocalizer<SharedStrings> loc
+@inject IAppLocalization loc
 @inject TestRunCreationController testRunCreationController
 @inject FieldController fieldController 
 
@@ -28,33 +28,56 @@
                         </MudStack>
                         <MudSpacer/>
 
-                        <MudTooltip Text="@loc["attachments"]">
+                        <MudTooltip Text="@loc.Shared["attachments"]">
                             <MudIconButton Icon="@Icons.Material.Filled.AttachFile"  Href="@appNavigationManager.GetTestSuiteAttachmentsUrl()"/>
                         </MudTooltip>
-                        <MudTooltip Text="@loc["variables"]">
+                        <MudTooltip Text="@loc.Shared["variables"]">
                             <MudIconButton Icon="@Icons.Material.Filled.Abc" Href="@appNavigationManager.GetTestSuiteVariablesUrl()"/>
                         </MudTooltip>
-                        <MudTooltip Text="@loc["settings"]">
+                        <MudTooltip Text="@loc.Shared["settings"]">
                             <MudIconButton Icon="@Icons.Material.Filled.Settings" Href="@appNavigationManager.GetTestSuiteSettingsUrl()"/>
                         </MudTooltip>
                         <MudButton
                             data-testid="run-test-suite"
                             StartIcon="@Icons.Material.Filled.PlayArrow"
                             Class="tb-button-primary"
-                            OnClick="RunSuiteAsync" Variant="Variant.Filled">@loc["run"]</MudButton>
+                                   OnClick="RunSuiteAsync" Variant="Variant.Filled">@loc.Shared["run"]</MudButton>
                     </MudStack>
                     @if(_testSuite is not null)
                     {
                         <TestCaseGrid Query="_query" QueryChanged="OnQueryChanged"
                         Project="@Project" TestSuiteId="@SuiteId" CompareFolder="true" OnTestCaseClicked="OnTestCaseClicked" OnTestSuiteFolderClicked="OnFolderClicked"/>
 
-                        <BasicMarkdownEditor ToolbarTitle="@loc["readme"]" Text="@_testSuite.Description" TextChanged="OnDescriptionChanged"/>
+                        <BasicMarkdownEditor ToolbarTitle="@loc.Shared["readme"]" Text="@_testSuite.Description" TextChanged="OnDescriptionChanged" />
                     }
                 </MudStack>
             </article>
         </StartContent>
         <EndContent>
+            <MudStack Class="pa-2" Style="width: 100%">
+                @if (_testSuite is not null)
+                {
+                    <CreatedField Entity="@_testSuite" />
 
+                    <MudExpansionPanels>
+                        <MudExpansionPanel Text="@loc.Settings["appearance"]">
+                            <MudStack Class="pa-2">
+                                <Field Row>
+                                    <FieldHeader>@loc.Settings["color"]</FieldHeader>
+                                    <MudSpacer/>
+                                    <ColorCellPicker Color="@_testSuite.Color" ColorChanged="OnColorChanged"/>
+                                </Field>
+
+                                <Field Row>
+                                    <FieldHeader>@loc.Shared["icon"]</FieldHeader>
+                                    <MudSpacer />
+                                    <IconPicker Icon="@_testSuite.Icon" IconChanged="OnIconChanged" />
+                                </Field>
+                            </MudStack>
+                        </MudExpansionPanel>
+                    </MudExpansionPanels>
+                }
+            </MudStack>
         </EndContent>
     </Splitter>
 </div>
@@ -126,13 +149,36 @@
             return;
         }
         _testSuite.Description = description;
+        await SaveChangesAsync();
+    }
+
+    private async Task SaveChangesAsync()
+    {
+          if (_testSuite is null)
+        {
+            return;
+        }
         await controller.SaveTestSuiteAsync(_testSuite);
     }
 
-    private async Task OnTestSuiteChanged(TestSuite testSuite)
+
+    private async Task OnIconChanged(string svgIcon)
     {
-        _testSuite = testSuite;
-        await controller.SaveTestSuiteAsync(_testSuite);
+        if (_testSuite is null)
+        {
+            return;
+        }
+        _testSuite.Icon = svgIcon;
+        await SaveChangesAsync();
+    }
+    private async Task OnColorChanged(string color)
+    {
+        if (_testSuite is null)
+        {
+            return;
+        }
+        _testSuite.Color = color;
+        await SaveChangesAsync();
     }
 
     private void OnFolderClicked(TestSuiteFolder folder)

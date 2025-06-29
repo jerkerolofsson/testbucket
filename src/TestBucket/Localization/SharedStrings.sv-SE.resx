@@ -736,171 +736,159 @@
     <value>System</value>
   </data>
   <data name="menu-new-description" xml:space="preserve">
-    <value />
+    <value>Lägg till nya objekt</value>
   </data>
   <data name="open-command-palette" xml:space="preserve">
-    <value />
+    <value>Öppna kommandopalett</value>
   </data>
   <data name="general" xml:space="preserve">
-    <value />
+    <value>Allmänt</value>
   </data>
   <data name="metrics" xml:space="preserve">
-    <value />
+    <value>Mätvärden</value>
   </data>
   <data name="add-metric" xml:space="preserve">
-    <value />
+    <value>Lägg till mätvärde</value>
   </data>
   <data name="welcome-message" xml:space="preserve">
-    <value />
+    <value>Välkommen till Test Bucket</value>
   </data>
   <data name="welcome-add-project-title" xml:space="preserve">
-    <value />
+    <value>Lägg till ett nytt projekt</value>
   </data>
   <data name="welcome-add-project-message" xml:space="preserve">
-    <value />
+    <value>Lägg till ett projekt innan du lägger till tester, problem, krav eller andra enheter.</value>
   </data>
   <data name="add-new-project" xml:space="preserve">
-    <value />
+    <value>Lägg till nytt projekt</value>
   </data>
   <data name="add-new-team" xml:space="preserve">
-    <value />
+    <value>Lägg till nytt team</value>
   </data>
   <data name="max-file-size" xml:space="preserve">
-    <value />
+    <value>Maximal filstorlek: {0}</value>
   </data>
   <data name="import-test-cases" xml:space="preserve">
-    <value />
+    <value>Importera testfall</value>
   </data>
   <data name="Value" xml:space="preserve">
-    <value />
+    <value>värde</value>
   </data>
   <data name="unit" xml:space="preserve">
-    <value />
+    <value>Enhet</value>
   </data>
   <data name="meter-name" xml:space="preserve">
-    <value />
-  </data>
-  <data name="edit-metric" xml:space="preserve">
-    <value>Editera</value>
+    <value>Mätare</value>
   </data>
   <data name="run-n-tests" xml:space="preserve">
-    <value />
+    <value>Kör {0} tester</value>
   </data>
   <data name="add-heuristic" xml:space="preserve">
-    <value />
+    <value>Lägg till heuristik</value>
   </data>
   <data name="history" xml:space="preserve">
-    <value />
+    <value>Historik</value>
   </data>
   <data name="main" xml:space="preserve">
-    <value />
+    <value>Huvud</value>
   </data>
   <data name="run-test" xml:space="preserve">
-    <value />
+    <value>Kör test</value>
   </data>
   <data name="go-to-testcase" xml:space="preserve">
-    <value />
+    <value>Gå till testfall</value>
   </data>
   <data name="go-to-testcase-description" xml:space="preserve">
-    <value />
+    <value>Öppna testfallsvisningen</value>
   </data>
   <data name="no-variables-alert" xml:space="preserve">
-    <value />
+    <value>Inga variabler har lagts till</value>
   </data>
   <data name="pre-conditions" xml:space="preserve">
-    <value />
+    <value>Förutsättningar</value>
   </data>
   <data name="post-conditions" xml:space="preserve">
-    <value />
+    <value>Efterförutsättningar</value>
   </data>
   <data name="add-variable" xml:space="preserve">
-    <value />
+    <value>Lägg till variabel</value>
   </data>
   <data name="test-case-runs" xml:space="preserve">
-    <value />
-  </data>
-  <data name="incomplete" xml:space="preserve">
-    <value>Inkomplett</value>
+    <value>Testresultat</value>
   </data>
   <data name="recent-test-runs" xml:space="preserve">
-    <value />
+    <value>Senaste testkörningar</value>
   </data>
   <data name="go-to-run" xml:space="preserve">
-    <value />
+    <value>Gå till körning</value>
   </data>
   <data name="number-of-test-case-runs" xml:space="preserve">
-    <value />
+    <value>Antal testkörningar</value>
   </data>
   <data name="number-of-test-cases" xml:space="preserve">
-    <value />
+    <value>Antal testfall</value>
   </data>
   <data name="failed-tests" xml:space="preserve">
-    <value />
+    <value>Misslyckade tester</value>
   </data>
   <data name="passed" xml:space="preserve">
-    <value />
+    <value>Godkänd</value>
   </data>
   <data name="failed" xml:space="preserve">
-    <value />
-  </data>
-  <data name="blocked" xml:space="preserve">
-    <value>Blockerat</value>
-  </data>
-  <data name="add-milestone" xml:space="preserve">
-    <value>Lägg till milstolpe</value>
+    <value>Misslyckad</value>
   </data>
   <data name="new-exploratory-test-charter" xml:space="preserve">
-    <value />
+    <value>Ny utforskande testcharter</value>
   </data>
   <data name="new-exploratory-test-charter-description" xml:space="preserve">
-    <value />
+    <value>Skapar en fördefinierad charter för utforskande tester</value>
   </data>
   <data name="session-duration" xml:space="preserve">
-    <value />
+    <value>Sessionsvaraktighet</value>
   </data>
   <data name="session-log" xml:space="preserve">
-    <value />
-  </data>
-  <data name="test-repository" xml:space="preserve">
-    <value>Testdatabas</value>
-  </data>
-  <data name="test-lab" xml:space="preserve">
-    <value>Testlabb</value>
+    <value>Sessionslogg</value>
   </data>
   <data name="delete-test-suite-folder-description" xml:space="preserve">
-    <value />
-  </data>
-  <data name="delete-test-repository-folder-description" xml:space="preserve">
-    <value>Tar bort mappen, alla underkataloger, alla testsviter och alla testfall inom dessa mappar.</value>
+    <value>Tar bort testsvitmappen, alla undermappar och alla testfall inom dessa mappar</value>
   </data>
   <data name="api-keys-description" xml:space="preserve">
-    <value />
+    <value>Åtkomsttoken och API-nycklar</value>
   </data>
   <data name="requirements-and-workitems" xml:space="preserve">
-    <value />
+    <value>Krav och arbetsobjekt</value>
   </data>
   <data name="more-options" xml:space="preserve">
-    <value />
+    <value>Fler alternativ</value>
   </data>
   <data name="test-case" xml:space="preserve">
-    <value />
+    <value>Testfall</value>
   </data>
   <data name="coverage" xml:space="preserve">
-    <value />
+    <value>Täckning</value>
   </data>
   <data name="upload-file-hint" xml:space="preserve">
-    <value />
+    <value>Dra och släpp filer här eller klicka för att välja en fil</value>
   </data>
   <data name="upload-max-filesize-fmt" xml:space="preserve">
-    <value />
+    <value>Maximal filstorlek: {0}</value>
   </data>
   <data name="browse" xml:space="preserve">
-    <value />
+    <value>Bläddra</value>
   </data>
   <data name="board" xml:space="preserve">
-    <value />
+    <value>Bräda</value>
   </data>
   <data name="timeline" xml:space="preserve">
-    <value />
+    <value>Tidslinje</value>
+  </data>
+  <data name="welcome-add-team-title" xml:space="preserve">
+    <value>Lägg till ett team</value>
+  </data>
+  <data name="welcome-add-team-message" xml:space="preserve">
+    <value>Kom igång genom att lägga till ett team</value>
+  </data>
+  <data name="dashboard" xml:space="preserve">
+    <value>Instrumentpanel</value>
   </data>
 </root>

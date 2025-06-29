@@ -109,6 +109,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IInsightsDataSource, CountByComponentDataSource>();
 
         services.AddScoped<IInsightsDataManager, InsightsDataManager>();
+        services.AddScoped<IDashboardManager, DashboardManager>();
 
         // Runner/Hybrid
         services.AddScoped<IMarkdownTestRunner, HybridRunner>();

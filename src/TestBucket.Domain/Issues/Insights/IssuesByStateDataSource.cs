@@ -1,4 +1,5 @@
-﻿using TestBucket.Contracts.Issues.States;
+﻿using TestBucket.Contracts.Insights;
+using TestBucket.Contracts.Issues.States;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights;
 using TestBucket.Domain.Insights.Extensions;

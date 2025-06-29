@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Insights;
+﻿using TestBucket.Contracts.Insights;
+using TestBucket.Domain.Insights;
 using TestBucket.Domain.Insights.Model;
 
 namespace TestBucket.Components.Reporting.Controllers;

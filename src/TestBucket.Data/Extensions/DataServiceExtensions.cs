@@ -4,6 +4,7 @@ using TestBucket.Data.Comments;
 using TestBucket.Data.Fields;
 using TestBucket.Data.Files;
 using TestBucket.Data.Identity;
+using TestBucket.Data.Insights;
 using TestBucket.Data.Issues;
 using TestBucket.Data.Labels;
 using TestBucket.Data.Metrics;
@@ -27,6 +28,7 @@ using TestBucket.Domain.Environments;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Insights;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Labels;
 using TestBucket.Domain.Metrics;
@@ -45,6 +47,7 @@ public static class DataServiceExtensions
     {
         services.AddScoped<ISequenceGenerator, SequenceGenerator>();
 
+        services.AddScoped<IDashboardRepository, DashboardRepository>();
         services.AddScoped<IHeuristicsRepository, HeuristicsRepository>();
         services.AddScoped<IMetricsRepository, MetricsRepository>();
         services.AddScoped<ICommitRepository, CommitRepository>();

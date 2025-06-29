@@ -26,6 +26,11 @@
                 <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("1y")">@insightLoc["time-one-year"]</MudRadio>
             </MudRadioGroup>
 
+            <MudNavMenu>
+                <MudNavLink Href="@DashboardUrl">
+                        <MudText>@loc["dashboards"]</MudText>
+                </MudNavLink>
+            </MudNavMenu>
         </MudStack>
 
     </StartContent>
@@ -47,6 +52,8 @@
     private TestProject? _project;
     private Dock _dock = Dock.Left;
     private string _timeFilter = "all";
+
+    private string DashboardUrl => appNavigationManager.GetReportingDashboardsUrl();
 
     protected override async Task OnInitializedAsync()
     {
@@ -91,10 +98,5 @@
         }
         _query.ProjectId = _project?.Id;
         _query.TeamId = _team?.Id;
-    }
-
-    private void OnTestRunClicked(TestRun run)
-    {
-        appNavigationManager.NavigateTo(run);
     }
 }

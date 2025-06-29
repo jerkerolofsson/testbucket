@@ -450,9 +450,10 @@ internal class TestBrowser : TenantBaseService
     {
         return new TreeNode<BrowserItem>
         {
-            Value = new BrowserItem() { TestLabFolder = folder, Color = folder.Color },
+            Value = new BrowserItem() { TestLabFolder = folder },
             Text = folder.Name,
             Icon = TestIcons.GetIcon(folder),
+            IconColor = folder.Color,
             Children = null,
         };
     }
@@ -460,9 +461,10 @@ internal class TestBrowser : TenantBaseService
     {
         return new TreeNode<BrowserItem>
         {
-            Value = new BrowserItem() { TestRepositoryFolder = folder, Color = folder.Color },
+            Value = new BrowserItem() { TestRepositoryFolder = folder },
             Text = folder.Name,
             Icon = TestIcons.GetIcon(folder),
+            IconColor = folder.Color,
             Children = null,
         };
     }
@@ -471,9 +473,10 @@ internal class TestBrowser : TenantBaseService
     {
         return new TreeNode<BrowserItem>
         {
-            Value = new BrowserItem() { TestSuite = testSuite, Color = testSuite.Color },
+            Value = new BrowserItem() { TestSuite = testSuite },
             Text = testSuite.Name,
             Icon = TestIcons.GetIcon(testSuite),
+            IconColor = testSuite.Color,
             Children = null,
         };
     }
@@ -684,9 +687,10 @@ internal class TestBrowser : TenantBaseService
 
         return new TreeNode<BrowserItem>
         {
-            Value = new BrowserItem { Folder = x, Color = x.Color },
+            Value = new BrowserItem { Folder = x },
             Text = x.Name,
             Icon = TestIcons.GetIcon(x),
+            IconColor = x.Color,
             Expandable = true,
             Children = null,
         };

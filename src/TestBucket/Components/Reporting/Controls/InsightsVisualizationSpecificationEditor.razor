@@ -1,96 +1,157 @@
 ﻿@using TestBucket.Components.Reporting.Controllers
 @using TestBucket.Components.Shared.Themeing.Models
+@using TestBucket.Contracts.Appearance
 @using TestBucket.Contracts.Appearance.Models
+@using TestBucket.Contracts.Insights
 @using TestBucket.Domain.Appearance
 @using TestBucket.Domain.Insights.Model
 @inject InsightsController controller
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<InsightStrings> insightsLoc
 
-<Splitter Style="height: 100%" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
-    <StartContent>
-        <MudStack style="width:100%">
-            @if (Specification is null)
+<div class="tb-insights-visualization-specification-editor">
+    <Splitter Style="height: 100%" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
+        <StartContent>
+            <MudStack style="width:100%">
+                @if (Specification is not null)
+                {
+                    <MudTabs>
+
+                        <MudTabPanel Text="@loc["general"]">
+                            <MudStack Class="mt-2">
+                                <Field Row>
+                                    <FieldHeader>@loc["name"]</FieldHeader>
+                                    <MudSpacer/>
+                                    <MudTextField Value="@Specification.Name" T="string" ValueChanged="OnNameChanged" Placeholder="@loc["name"]" Variant="Variant.Outlined" />
+                                </Field>
+
+                                @if(_dataQuery is not null)
+                                {
+                                    <Field Row>
+                                        <FieldHeader>@insightsLoc["data-source"]</FieldHeader>
+                                        <MudSpacer/>
+                                        <MudTextField Value="@_dataQuery.DataSource" T="string" ValueChanged="OnDataSourceChanged" Placeholder="@insightsLoc["data-source"]" Variant="Variant.Outlined" />
+                                    </Field>
+
+                                
+                                    <Field Row>
+                                        <FieldHeader>@loc["filter"]</FieldHeader>
+                                        <MudSpacer/>
+                                        <MudTextField Value="@_dataQuery.Query" T="string" ValueChanged="OnQueryChanged" Placeholder="@loc["filter"]" Variant="Variant.Outlined" />
+                                    </Field>
+                                }
+                            </MudStack>
+                        </MudTabPanel>
+                        <MudTabPanel Text="@loc["elements"]">
+                            <MudStack Class="mt-2">
+                                <Field>
+                                    <FieldHeader>@insightsLoc["default-chart-type"]</FieldHeader>
+                                    <MudSelect Variant="Variant.Outlined" T="ChartType" Value="Specification.ChartType" ValueChanged="OnChartTypeChangedAsync">
+                                        @if((Specification.AllowedChartTypes&ChartType.Pie) == ChartType.Pie)
+                                        {
+                                            <MudSelectItem Value="@ChartType.Pie">@insightsLoc["chart-type-pie"]</MudSelectItem>
+                                        }
+                                        @if((Specification.AllowedChartTypes&ChartType.Donut) == ChartType.Donut)
+                                        {
+                                            <MudSelectItem Value="@ChartType.Donut">@insightsLoc["chart-type-donut"]</MudSelectItem>
+                                        }
+                                        @if((Specification.AllowedChartTypes&ChartType.Bar) == ChartType.Bar)
+                                        {
+                                            <MudSelectItem Value="@ChartType.Bar">@insightsLoc["chart-type-bar"]</MudSelectItem>
+                                        }
+                                        @if((Specification.AllowedChartTypes&ChartType.Line) == ChartType.Line)
+                                        {
+                                            <MudSelectItem Value="@ChartType.Line">@insightsLoc["chart-type-line"]</MudSelectItem>
+                                        }
+                                        @if((Specification.AllowedChartTypes&ChartType.Text) == ChartType.Text)
+                                        {
+                                            <MudSelectItem Value="@ChartType.Text">@insightsLoc["chart-type-text"]</MudSelectItem>
+                                        }
+                                        @if((Specification.AllowedChartTypes&ChartType.ActivityHeatmap) == ChartType.ActivityHeatmap)
+                                        {
+                                            <MudSelectItem Value="@ChartType.ActivityHeatmap">@insightsLoc["chart-type-heatmap"]</MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                </Field>
+
+                                <Field Row>
+                                    <FieldHeader>@insightsLoc["show-legend"]</FieldHeader>
+                                    <MudSpacer/>
+                                    <MudSwitchM3 Value="@Specification.ShowLegend" T="bool" ValueChanged="OnShowLegendChangedAsync" Color="Color.Primary"/>
+                                </Field>
+
+                                <Field Row>
+                                    <FieldHeader>@insightsLoc["show-table"]</FieldHeader>
+                                    <MudSpacer/>
+                                    <MudSwitchM3 Value="@Specification.ShowDataTable" T="bool" ValueChanged="OnShowTableChangedAsync" Color="Color.Primary"/>
+                                </Field>
+                            </MudStack>
+                        </MudTabPanel>
+                        <MudTabPanel Text="@loc["dark-mode"]">
+                            <MudStack Class="mt-2">
+                                <Field>
+                                    <FieldHeader>@insightsLoc["color-mode"]</FieldHeader>
+                                    <MudSelect Variant="Variant.Outlined" T="ChartColorMode" Value="Specification.DarkModeColors.ColorMode" ValueChanged="OnDarkModeColorModeChanged">
+                                        <MudSelectItem Value="@ChartColorMode.ByLabel">@insightsLoc["label"]</MudSelectItem>
+                                        <MudSelectItem Value="@ChartColorMode.BySeries">@insightsLoc["series"]</MudSelectItem>
+                                    </MudSelect>
+                                </Field>
+                                <Field>
+                                    <FieldHeader>@insightsLoc["palette"]</FieldHeader>
+                                    <PalettePicker Palettes="@Palettes" SelectedPalette="Specification.DarkModeColors.Palette" SelectedPaletteChanged="OnDarkModePaletteChanged"/>
+                                </Field>
+                                <Field>
+                                    <FieldHeader>@insightsLoc["grid-lines"]</FieldHeader>
+                                    <ColorCellPicker Color="@Specification.DarkModeColors.GridLineColor" ColorChanged="OnDarkModeGridLineColorChanged"/>
+                                </Field>
+                            </MudStack>
+                        </MudTabPanel>
+
+                        <MudTabPanel Text="@loc["light-mode"]">
+                            <MudStack Class="mt-2">
+                                <Field>
+                                    <FieldHeader>@insightsLoc["color-mode"]</FieldHeader>
+                                    <MudSelect Variant="Variant.Outlined" T="ChartColorMode" Value="Specification.LightModeColors.ColorMode" ValueChanged="OnLightModeColorModeChanged">
+                                        <MudSelectItem Value="@ChartColorMode.ByLabel">@insightsLoc["label"]</MudSelectItem>
+                                        <MudSelectItem Value="@ChartColorMode.BySeries">@insightsLoc["series"]</MudSelectItem>
+                                    </MudSelect>
+                                </Field>
+                               
+                                <Field>
+                                    <FieldHeader>@insightsLoc["palette"]</FieldHeader>
+                                    <PalettePicker Palettes="@Palettes" SelectedPalette="Specification.LightModeColors.Palette" SelectedPaletteChanged="OnLightModePaletteChanged" />
+                                </Field>
+                                <Field>
+                                    <FieldHeader>@insightsLoc["grid-lines"]</FieldHeader>
+                                    <ColorCellPicker Color="@Specification.LightModeColors.GridLineColor" ColorChanged="OnLightModeGridLineColorChanged" />
+                                </Field>
+
+                            </MudStack>
+                        </MudTabPanel>
+                    </MudTabs>
+
+                }
+            </MudStack>
+        </StartContent>
+        <EndContent>
+            @if (Specification is not null)
             {
+                <div style="display: flex; width: 100%; height: 100%">
+                    <InsightsChart State="State" Project="Project" Title="Preview" ReadOnly Spec="Specification"/>
+                </div>
             }
-            else
-            {
-                <Field>
-                    <FieldHeader>@insightsLoc["default-chart-type"]</FieldHeader>
-                    <MudSelect T="ChartType" Value="Specification.ChartType" ValueChanged="OnChartTypeChangedAsync">
-                        @if((Specification.AllowedChartTypes&ChartType.Pie) == ChartType.Pie)
-                        {
-                            <MudSelectItem Value="@ChartType.Pie">@insightsLoc["chart-type-pie"]</MudSelectItem>
-                        }
-                        @if((Specification.AllowedChartTypes&ChartType.Donut) == ChartType.Donut)
-                        {
-                            <MudSelectItem Value="@ChartType.Donut">@insightsLoc["chart-type-donut"]</MudSelectItem>
-                        }
-                        @if((Specification.AllowedChartTypes&ChartType.Bar) == ChartType.Bar)
-                        {
-                            <MudSelectItem Value="@ChartType.Bar">@insightsLoc["chart-type-bar"]</MudSelectItem>
-                        }
-                        @if((Specification.AllowedChartTypes&ChartType.Line) == ChartType.Line)
-                        {
-                            <MudSelectItem Value="@ChartType.Line">@insightsLoc["chart-type-line"]</MudSelectItem>
-                        }
-                        @if((Specification.AllowedChartTypes&ChartType.Text) == ChartType.Text)
-                        {
-                            <MudSelectItem Value="@ChartType.Text">@insightsLoc["chart-type-text"]</MudSelectItem>
-                        }
-                        @if((Specification.AllowedChartTypes&ChartType.ActivityHeatmap) == ChartType.ActivityHeatmap)
-                        {
-                            <MudSelectItem Value="@ChartType.ActivityHeatmap">@insightsLoc["chart-type-heatmap"]</MudSelectItem>
-                        }
-                    </MudSelect>
-                </Field>
-
-                <Field Row>
-                    <FieldHeader>@insightsLoc["show-legend"]</FieldHeader>
-                    <MudSpacer/>
-                    <MudSwitchM3 Value="@Specification.ShowLegend" T="bool" ValueChanged="OnShowLegendChangedAsync" Color="Color.Primary"/>
-                </Field>
-
-                <Field Row>
-                    <FieldHeader>@insightsLoc["show-table"]</FieldHeader>
-                    <MudSpacer/>
-                    <MudSwitchM3 Value="@Specification.ShowDataTable" T="bool" ValueChanged="OnShowTableChangedAsync" Color="Color.Primary"/>
-                </Field>
-
-                <MudText Typo="Typo.caption">@insightsLoc["dark-mode"]</MudText>
-                <Field>
-                    <FieldHeader>@insightsLoc["palette"]</FieldHeader>
-                    <PalettePicker Palettes="@Palettes" SelectedPalette="Specification.DarkModeColors.Palette" SelectedPaletteChanged="OnDarkModePaletteChanged"/>
-                </Field>
-                <Field>
-                    <FieldHeader>@insightsLoc["grid-lines"]</FieldHeader>
-                    <ColorCellPicker Color="@Specification.DarkModeColors.GridLineColor" ColorChanged="OnDarkModeGridLineColorChanged"/>
-                </Field>
-
-                <MudText Typo="Typo.caption">@insightsLoc["light-mode"]</MudText>
-                <Field>
-                    <FieldHeader>@insightsLoc["palette"]</FieldHeader>
-                    <PalettePicker Palettes="@Palettes" SelectedPalette="Specification.LightModeColors.Palette" SelectedPaletteChanged="OnLightModePaletteChanged"/>
-                </Field>
-            }
-        </MudStack>
-    </StartContent>
-    <EndContent>
-        @if (Specification is not null)
-        {
-            <div style="display: flex; width: 100%; height: 100%">
-                <InsightsChart State="State" Project="Project" Title="Preview" ReadOnly Spec="Specification"/>
-            </div>
-        }
-    </EndContent>
-</Splitter>
+        </EndContent>
+    </Splitter>
+</div>
 
 @code {
     [Parameter] public TestProject Project { get; set; } = default!;
     [Parameter] public ApplicationState? State { get; set; }
-
     [Parameter] public InsightsVisualizationSpecification? Specification { get; set; }
     [Parameter] public EventCallback<InsightsVisualizationSpecification> SpecificationChanged { get; set; }
+
+    private InsightsDataQuery? _dataQuery = null;
+
     private ThemePalette[] Palettes = [
     DefaultPalettes.ReportingDefault, 
         DefaultPalettes.Default, 
@@ -106,6 +167,37 @@
         DefaultPalettes.Contrasting2,
     ];
 
+
+    protected override void OnParametersSet()
+    {
+        if (Specification is not null)
+        {
+            if (Specification.DataQueries.Count == 0)
+            {
+                Specification.DataQueries.Add(new InsightsDataQuery()
+                {
+                    DataSource = "CountByResult"
+                });
+            }
+            _dataQuery = Specification.DataQueries[0];
+        }
+    }
+    private async Task OnLightModeColorModeChanged(ChartColorMode colorMode)
+    {
+        if (Specification is not null)
+        {
+            Specification.LightModeColors.ColorMode = colorMode;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+    private async Task OnDarkModeColorModeChanged(ChartColorMode colorMode)
+    {
+        if (Specification is not null)
+        {
+            Specification.DarkModeColors.ColorMode = colorMode;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
     private async Task OnDarkModePaletteChanged(ThemePalette palette)
     {
         if(Specification is not null)
@@ -115,9 +207,18 @@
         }
     }
 
-    private async Task OnDarkModeGridLineColorChanged(string color)
+    private async Task OnLightModeGridLineColorChanged(string color)
     {
         if(Specification is not null)
+        {
+            Specification.LightModeColors.GridLineColor = color;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+
+    private async Task OnDarkModeGridLineColorChanged(string color)
+    {
+        if (Specification is not null)
         {
             Specification.DarkModeColors.GridLineColor = color;
             await SpecificationChanged.InvokeAsync(Specification);
@@ -147,6 +248,33 @@
          if(Specification is not null)
         {
             Specification.ShowLegend = show;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+
+    private async Task OnNameChanged(string name)
+    {
+        if (Specification is not null)
+        {
+            Specification.Name = name;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+
+    private async Task OnDataSourceChanged(string dataSource)
+    {
+        if (Specification is not null && _dataQuery is not null)
+        {
+            _dataQuery.DataSource = dataSource;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+
+    private async Task OnQueryChanged(string query)
+    {
+        if (Specification is not null && _dataQuery is not null)
+        {
+            _dataQuery.Query = query;
             await SpecificationChanged.InvokeAsync(Specification);
         }
     }

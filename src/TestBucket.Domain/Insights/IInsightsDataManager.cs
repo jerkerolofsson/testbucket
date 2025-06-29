@@ -1,4 +1,5 @@
 ﻿
+using TestBucket.Contracts.Insights;
 using TestBucket.Domain.Insights.Model;
 
 namespace TestBucket.Domain.Insights;

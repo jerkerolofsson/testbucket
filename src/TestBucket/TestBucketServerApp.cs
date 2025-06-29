@@ -274,6 +274,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<HeuristicsController>();
         builder.Services.AddScoped<TestResourceController>();
         builder.Services.AddScoped<TestAccountController>();
+        builder.Services.AddScoped<DashboardController>();
         builder.Services.AddScoped<PipelineController>();
         builder.Services.AddSingleton<ResourceViewFactory>();
         builder.Services.AddScoped<RequirementBrowser>();

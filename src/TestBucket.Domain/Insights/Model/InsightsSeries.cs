@@ -1,5 +1,6 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using TestBucket.Contracts.Insights;
 
 namespace TestBucket.Domain.Insights.Model;
 public class InsightsSeries<T, U> where T : notnull

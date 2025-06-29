@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Domain.Appearance.Themes;
+﻿using TestBucket.Contracts.Appearance;
+
+namespace TestBucket.Domain.Appearance.Themes;
 internal class Material : DefaultTheme
 {
     public override string ToString() => "Material";

@@ -1,0 +1,15 @@
+.tb-color-cell-picker {
+    display: flex;
+    gap: 4px;
+}
+
+::deep .mud-input-input-control {
+    min-width: 100px !important;
+    max-width: 100px !important;
+}
+
+::deep .mud-input-input-control input {
+    font-family: monospace;
+    font-size: 12pt;
+    text-align: center;
+}

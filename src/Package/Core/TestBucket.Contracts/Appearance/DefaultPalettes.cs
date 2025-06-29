@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TestBucket.Contracts.Appearance.Models;
 
-using TestBucket.Contracts.Appearance.Models;
-
-namespace TestBucket.Domain.Appearance;
+namespace TestBucket.Contracts.Appearance;
 public static class DefaultPalettes
 {
     public static Dictionary<string,string> TestResultColors

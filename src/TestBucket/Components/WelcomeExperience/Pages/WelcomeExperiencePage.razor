@@ -4,6 +4,7 @@
 @inject AppNavigationManager appNav
 @inject TeamController teamController
 @inject ProjectController projectController
+@inject TestSuiteController testSuiteController
 @layout AppLayout
 
 <MudStack Class="pa-5">
@@ -29,23 +30,49 @@
             </MudCardActions>
         </MudCard>
 
-        <MudCard Class="welcome-tile">
-            <MudCardHeader>
-                <MudStack Row>
-                    @if (appNav.State.SelectedProject is not null)
-                    {
-                        <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
-                    }
-                    <MudText Typo="Typo.h3">@loc["welcome-add-project-title"]</MudText>
-                </MudStack>
-            </MudCardHeader>
-            <MudCardContent>
-                <MudText>@loc["welcome-add-project-message"]</MudText>
-            </MudCardContent>
-            <MudCardActions>
-                <MudButton OnClick="AddProjectAsync" Class="tb-button-primary" data-testid="welcome-add-project">@loc["continue"]</MudButton>
-            </MudCardActions>
-        </MudCard>
+        @if (appNav.State.SelectedTeam is not null)
+        {
+            <MudCard Class="welcome-tile">
+                <MudCardHeader>
+                    <MudStack Row>
+                        @if (appNav.State.SelectedProject is not null)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
+                        }
+                        <MudText Typo="Typo.h3">@loc["welcome-add-project-title"]</MudText>
+                    </MudStack>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText>@loc["welcome-add-project-message"]</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton OnClick="AddProjectAsync" Class="tb-button-primary" data-testid="welcome-add-project">@loc["continue"]</MudButton>
+                </MudCardActions>
+            </MudCard>
+        }
+
+
+        @if (appNav.State.SelectedProject is not null)
+        {
+            <MudCard Class="welcome-tile">
+                <MudCardHeader>
+                    <MudStack Row>
+                        @if (appNav.State.SelectedProject is not null)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" />
+                        }
+                        <MudText Typo="Typo.h3">@loc["welcome-add-testsuite"]</MudText>
+                    </MudStack>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudText>@loc["welcome-add-testsuite-message"]</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton OnClick="AddTestSuiteAsync" Class="tb-button-primary" data-testid="welcome-add-testsuite">@loc["continue"]</MudButton>
+                </MudCardActions>
+            </MudCard>
+        }
+
     </MudStack>
 </MudStack>
 
@@ -65,5 +92,17 @@
             return;
         }
         await projectController.AddProjectAsync(appNav.State.SelectedTeam);
+    }
+    private async Task AddTestSuiteAsync()
+    {
+        if (appNav.State.SelectedTeam is null || appNav.State.SelectedProject is null)
+        {
+            return;
+        }
+        var testSuite = await testSuiteController.AddTestSuiteAsync(appNav.State.SelectedTeam.Id, appNav.State.SelectedProject.Id, appNav.State.SelectedProject.Name + " tests", null, null);
+        if(testSuite is not null)
+        {
+            appNav.NavigateTo(testSuite);
+        }
     }
 }

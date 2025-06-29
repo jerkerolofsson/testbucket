@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Insights;
 using TestBucket.Domain.Insights.Model;
 
 namespace TestBucket.Domain.Insights;

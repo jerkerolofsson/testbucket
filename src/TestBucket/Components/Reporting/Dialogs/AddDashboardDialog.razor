@@ -1,0 +1,60 @@
+﻿@using TestBucket.Components.Teams.Controls
+@using TestBucket.Domain.Insights.Model
+@attribute [Authorize]
+@inject ProjectController controller
+@inject IAppLocalization loc
+
+<EditForm Model="@_name" OnValidSubmit="OnValidSubmit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" data-testid="add-project-dialog">
+        <TitleContent>@loc.Shared["add-dashboard"]</TitleContent>
+        <DialogContent>
+            <MudStack>
+                <MudStack Spacing="0">
+                    @if (_name is not null)
+                    {
+                        <MudTextField data-testid="name" Variant="Variant.Outlined" T="string" @bind-Value="@_name"></MudTextField>
+
+                    }
+                    @if (_errorMessage is not null)
+                    {
+                        <MudAlert data-testid="error-message" Severity="Severity.Error">@_errorMessage</MudAlert>
+                    }
+                </MudStack>
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton data-testid="ok" ButtonType="ButtonType.Submit" Color="Color.Primary">@loc.Shared["ok"]</MudButton>
+            <MudButton data-testid="cancel" OnClick="Close">@loc.Shared["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    private string _name = "";
+    private string? _errorMessage;
+
+    [Parameter]
+    public Team? Team { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+      
+        if (string.IsNullOrWhiteSpace(_name))
+        {
+            _errorMessage = loc.Errors["invalid-name"];
+            return;
+        }
+
+        MudDialog.Close(new Dashboard { Name = _name });
+    }
+}

@@ -31,6 +31,16 @@ public class PerformanceTestAttribute : TraitAttachmentPropertyAttribute
 }
 
 /// <summary>
+/// Usability
+/// Defines an attribute that will add create a trait related with ISO/IEC 25010 quality characteristic
+/// </summary>
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
+public class UsabilityTestAttribute : TraitAttachmentPropertyAttribute
+{
+    public UsabilityTestAttribute() : base(TestTraitNames.QualityCharacteristic, "Usability") { }
+}
+
+/// <summary>
 /// Functional Suitability
 /// Defines an attribute that will add create a trait related with ISO/IEC 25010 quality characteristic
 /// </summary>

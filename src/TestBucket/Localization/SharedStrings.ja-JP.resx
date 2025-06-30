@@ -396,4 +396,7 @@
   <data name="manage-dashboards" xml:space="preserve">
     <value />
   </data>
+  <data name="chat" xml:space="preserve">
+    <value />
+  </data>
 </root>

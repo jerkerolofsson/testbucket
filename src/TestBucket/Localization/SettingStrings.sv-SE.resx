@@ -232,9 +232,12 @@
     <value>MCP</value>
   </data>
   <data name="color" xml:space="preserve">
-    <value />
+    <value>Färg</value>
   </data>
   <data name="remove-icon" xml:space="preserve">
-    <value />
+    <value>Ta bort ikon</value>
+  </data>
+  <data name="light-mode" xml:space="preserve">
+    <value>Ljust tema</value>
   </data>
 </root>

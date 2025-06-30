@@ -6,6 +6,7 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 @inject TenantController tenantController
+@inject IAppLocalization loc
 
 <PageTitle>Log in</PageTitle>
 
@@ -16,7 +17,7 @@
 }
 
 <MudPaper Class="tb-login-container account-page" Style="min-width: 400px">
-    <section>
+    <main>
         <MudText Typo="Typo.h1" Color="Color.Tertiary">Login to TestBucket</MudText>
         <MudText>Enter your email and password to login.</MudText>
 
@@ -30,21 +31,23 @@
             <ValidationSummary class="text-danger" role="alert" />
 
             <MudStack Spacing="0" Class="mt-5">
+                <label for="Input.Email">@loc.Shared["email"]</label>
                 <InputText data-testid="email" @bind-Value="Input.Email" id="Input.Email" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <ValidationMessage For="() => Input.Email" class="text-danger" />
             </MudStack>
             <MudStack Spacing="0" Class="mt-3">
-                <InputText data-testid="password" type="password" @bind-Value="Input.Password" id="Input.Password" autocomplete="current-password" aria-required="true" placeholder="Password" />
+                <label for="Input.Password">@loc.Shared["password"]</label>
+                <InputText data-testid="password" type="password" @bind-Value="Input.Password" id="Input.Password" autocomplete="current-password" aria-required="true" placeholder="@loc.Shared["password"]" />
                 <ValidationMessage For="() => Input.Password" class="text-danger" />
             </MudStack>
 
             <MudStack Spacing="1" Row Class="mt-3">
-                <InputCheckbox @bind-Value="Input.RememberMe"></InputCheckbox>
-                Remember Me
+                <InputCheckbox id="Input.RememberMe" data-testid="remember-me" @bind-Value="Input.RememberMe"></InputCheckbox>
+                <label for="Input.RememberMe">@loc.Shared["remember-me"]</label>
             </MudStack>
 
             <MudStack Row Class="mt-3">
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" data-testid="login" id="Button.Login">Log in</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" data-testid="login" id="Button.Login">@loc.Shared["login"]</MudButton>
             </MudStack>
                     
             <div>
@@ -59,7 +62,7 @@
                 </p>
             </div>
         </EditForm>
-    </section>
+    </main>
 </MudPaper>
 
 @code {

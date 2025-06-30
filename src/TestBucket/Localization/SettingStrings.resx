@@ -237,4 +237,7 @@
   <data name="remove-icon" xml:space="preserve">
     <value>Remove icon</value>
   </data>
+  <data name="light-mode" xml:space="preserve">
+    <value>Light mode</value>
+  </data>
 </root>

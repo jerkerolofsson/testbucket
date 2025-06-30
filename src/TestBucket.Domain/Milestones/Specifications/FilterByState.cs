@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Issues.Models;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Shared.Specifications;
 

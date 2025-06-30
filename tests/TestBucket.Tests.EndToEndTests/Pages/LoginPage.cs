@@ -1,4 +1,5 @@
-﻿using TestBucket.Tests.EndToEndTests.Fixtures;
+﻿using Playwright.Axe;
+using TestBucket.Tests.EndToEndTests.Fixtures;
 
 namespace TestBucket.Tests.EndToEndTests.Pages
 {
@@ -18,9 +19,17 @@ namespace TestBucket.Tests.EndToEndTests.Pages
         {
             await using var context = await Browser.NewContextAsync(new() { IgnoreHTTPSErrors = true });
             return await LoginAsync(email, password, context);
+        }
 
-            // #Input.Email
-            // #Input.Password
+        internal async Task<AxeResults> RunAxeOnLoginAsync()
+        {
+            await using var context = await Browser.NewContextAsync(new() { IgnoreHTTPSErrors = true });
+            _page = await context.NewPageAsync();
+            await _page.GotoAsync(Fixture.HttpsBaseUrl + "Login");
+            await _page.GetByTestId("email").WaitForAsync();
+
+            AxeResults axeResults = await _page.RunAxe();
+            return axeResults;
         }
 
         internal async Task<bool> LoginAsync(string? email, string? password, IBrowserContext context)

@@ -39,13 +39,26 @@ public class MilstonesMcpTools : AuthenticatedTool
             if (projectId is not null)
             {
                 var result = await _manager.GetMilestonesAsync(_principal, projectId.Value);
-                return result.Where(x=>x.Title != null).Select(x => new MilestoneDto 
+                var dtos = result.Where(x=>x.Title != null).Select(x => new MilestoneDto 
                 {
                     Title = x.Title ?? "",
                     Description = x.Description,
                     DueDate = x.EndDate,
-                    Id = x.Id
+                    Id = x.Id,
+                    IsOpen = x.State == MilestoneState.Open,
                 }).ToArray();
+
+                var next = dtos.Where(x => x.DueDate > DateTime.UtcNow).FirstOrDefault();
+                if (next is not null)
+                {
+                    next.IsNext = true;
+                }
+                foreach(var dto in dtos.Where(x => x.DueDate < DateTime.UtcNow && x.IsOpen))
+                {
+                    dto.IsOverdue = true;
+                }
+
+                return dtos;
             }
 
         }

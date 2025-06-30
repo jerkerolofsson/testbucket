@@ -20,6 +20,8 @@ internal class FindLocalIssueByText : FilterSpecification<LocalIssue>
 
     protected override Expression<Func<LocalIssue, bool>> GetExpression()
     {
-        return x => (x.Title != null && x.Title.ToLower().Contains(_text)) || (x.Description != null && x.Description.ToLower().Contains(_text));
+        return x => (x.Title != null && x.Title.ToLower().Contains(_text)) ||
+        (x.ExternalDisplayId != null && x.ExternalDisplayId.ToLower().Contains(_text)) || 
+        (x.Description != null && x.Description.ToLower().Contains(_text));
     }
 }

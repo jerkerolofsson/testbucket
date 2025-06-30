@@ -10,8 +10,9 @@ namespace TestBucket.Tests.EndToEndTests
     [Component("Identity")]
     [EndToEndTest]
     [EnrichedTest]
-    public class LoginTests(PlaywrightFixture Playwright) : IClassFixture<PlaywrightFixture>
+    public class LoginTests(PlaywrightFixture Playwright, ITestOutputHelper testOutputHelper) : IClassFixture<PlaywrightFixture>
     {
+        [FunctionalTest]
         [Theory]
         [InlineData(BrowserType.Chromium)]
         [InlineData(BrowserType.Webkit)]
@@ -24,6 +25,7 @@ namespace TestBucket.Tests.EndToEndTests
             Assert.True(success, "Login should be successful with valid credentials");
         }
 
+        [FunctionalTest]
         [Theory]
         [InlineData(BrowserType.Chromium)]
         [InlineData(BrowserType.Webkit)]
@@ -35,5 +37,22 @@ namespace TestBucket.Tests.EndToEndTests
             var success = await loginPage.LoginAsync(Playwright.Configuration.Email, Playwright.Configuration.Password + "-not");
             Assert.False(success, "Login should not be successful with invalid credentials");
         }
+
+
+        [UsabilityTest]
+        [Fact]
+        public async Task Login_Accessibility()
+        {
+            await using var browser = await Playwright.CreateBrowserAsync(BrowserType.Chromium);
+            var loginPage = new LoginPage(Playwright, browser);
+            var results = await loginPage.RunAxeOnLoginAsync();
+            await Task.Delay(15000, TestContext.Current.CancellationToken);
+            foreach(var violation in results.Violations)
+            {
+                testOutputHelper.WriteLine($"Violation: {violation.Id}: {violation.Description}");
+            }
+            Assert.Empty(results.Violations);
+        }
+
     }
 }

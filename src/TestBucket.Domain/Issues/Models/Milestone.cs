@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Issues.Models;
+
 namespace TestBucket.Domain.Issues.Models;
 public class Milestone : ProjectEntity
 {

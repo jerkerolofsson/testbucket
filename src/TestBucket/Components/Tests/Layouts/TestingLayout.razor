@@ -19,17 +19,13 @@
     <StartContent>
         <div class="tb-navmenu side tb-explorermenu">
 
-            <MudTabs Position="Position.Bottom" ActivePanelIndex="1" MinimumTabWidth="80px">
+            <MudTabs Position="Position.Bottom" ActivePanelIndex="0" MinimumTabWidth="80px">
 
                 <Header>
                     <div class="tb-tab-padding"/>
                 </Header>
 
                 <ChildContent>
-                    <MudTabPanel Text="@loc["chat"]">
-                        <AgentChat />
-                    </MudTabPanel>
-
                     <MudTabPanel Text="@loc["explorer"]">
                         <TestTreeView @ref="_testTreeView"
                                       Project="@_project"
@@ -46,8 +42,12 @@
                                       OnTestCaseClicked="OnTestCaseClicked"
                                       OnTestRunClicked="OnTestRunClicked" />
                     </MudTabPanel>
-                </ChildContent>
 
+                    <MudTabPanel Text="@loc["chat"]">
+                        <AgentChat />
+                    </MudTabPanel>
+
+                </ChildContent>
             </MudTabs>
 
         </div>

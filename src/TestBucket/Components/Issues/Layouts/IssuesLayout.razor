@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @layout AppLayout
 @using Humanizer
+@using TestBucket.Components.Agent.Controls
 @using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Contracts.Issues.States
 @using TestBucket.Contracts.Issues.Types
@@ -22,48 +23,60 @@
 
         <MudStack Class="pa-2 tb-navmenu side" Style="width: 100%;">
 
-            <MudText Typo="Typo.h1">@loc["issues"]</MudText>
+            <MudTabs Position="Position.Bottom" ActivePanelIndex="0" MinimumTabWidth="80px">
 
-            <MudNavMenu>
-                <MudNavLink Href="@DashboardUrl">
-                        <MudText>@loc["dashboard"]</MudText>
-                </MudNavLink>
-                <MudNavLink Href="@Open">
-                    <MudBadge Content="@OpenCount" Color="Color.Primary" Overlap>
-                        <MudText>@issueLoc["open"]</MudText>
-                    </MudBadge>
-                </MudNavLink>
-                <MudNavLink Href="@OpenIncidents">
-                    <MudBadge Content="@OpenIncidentsCount" Color="Color.Primary" Overlap>
-                        @issueLoc["open-incidents"]
-                    </MudBadge>
-                </MudNavLink>
-                <MudNavLink Href="@Closed">
-                    <MudBadge Content="@ClosedCount" Color="Color.Primary" Overlap>
-                        <MudText>@issueLoc["closed"]</MudText>
-                    </MudBadge>
-                </MudNavLink>
-                <MudNavLink Href="@OpenHighPrio">
-                    @issueLoc["high-prio"]
-                </MudNavLink>
+                <Header>
+                    <div class="tb-tab-padding"/>
+                </Header>
+
+                <ChildContent>
+                    <MudTabPanel Text="@loc["issues"]">
+                        <MudNavMenu>
+                            <MudNavLink Href="@DashboardUrl">
+                                    <MudText>@loc["dashboard"]</MudText>
+                            </MudNavLink>
+                            <MudNavLink Href="@Open">
+                                <MudBadge Content="@OpenCount" Color="Color.Primary" Overlap>
+                                    <MudText>@issueLoc["open"]</MudText>
+                                </MudBadge>
+                            </MudNavLink>
+                            <MudNavLink Href="@OpenIncidents">
+                                <MudBadge Content="@OpenIncidentsCount" Color="Color.Primary" Overlap>
+                                    @issueLoc["open-incidents"]
+                                </MudBadge>
+                            </MudNavLink>
+                            <MudNavLink Href="@Closed">
+                                <MudBadge Content="@ClosedCount" Color="Color.Primary" Overlap>
+                                    <MudText>@issueLoc["closed"]</MudText>
+                                </MudBadge>
+                            </MudNavLink>
+                            <MudNavLink Href="@OpenHighPrio">
+                                @issueLoc["high-prio"]
+                            </MudNavLink>
 
 
-                <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Write">
-                    <Authorized>
-                        <MudText Class="mt-5">@loc["settings"]</MudText>
-                        <MudNavLink Href="@appNavigationManager.GetMilestonesUrl()" Icon="@TbIcons.BoldDuoTone.Flag">
-                            @settingLoc["manage-milestones"]
-                        </MudNavLink>
-                        <MudNavLink Href="@appNavigationManager.GetLabelsUrl()" Icon="@TbIcons.IconSaxDuoTone.Label">
-                            @settingLoc["manage-labels"]
-                        </MudNavLink>
-                    </Authorized>
-                </PermissionView>
+                            <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Write">
+                                <Authorized>
+                                    <MudText Class="mt-5">@loc["settings"]</MudText>
+                                    <MudNavLink Href="@appNavigationManager.GetMilestonesUrl()" Icon="@TbIcons.BoldDuoTone.Flag">
+                                        @settingLoc["manage-milestones"]
+                                    </MudNavLink>
+                                    <MudNavLink Href="@appNavigationManager.GetLabelsUrl()" Icon="@TbIcons.IconSaxDuoTone.Label">
+                                        @settingLoc["manage-labels"]
+                                    </MudNavLink>
+                                </Authorized>
+                            </PermissionView>
                
-            </MudNavMenu>
+                        </MudNavMenu>
             
-        </MudStack>
+                    </MudTabPanel>
 
+                    <MudTabPanel Text="@loc["chat"]">
+                        <AgentChat />
+                    </MudTabPanel>
+                </ChildContent>
+            </MudTabs>
+        </MudStack>
     </StartContent>
 
     <EndContent>

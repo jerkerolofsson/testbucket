@@ -33,7 +33,11 @@
         <div class="tb-agent-chat-conversation">
             @foreach(var message in context.Messages)
             {
-                if(message is SuggestionChatMessage suggestionChatMessage)
+                if(message is HiddenChatMessage hidden)
+                {
+                    // No action
+                }
+                else if(message is SuggestionChatMessage suggestionChatMessage)
                 {
                     <div class=" mud-elevation-1 chat suggestion @message.Role">
                         <MudStack>
@@ -182,7 +186,7 @@
         _isWorking = true;
         _activeResponse.Clear();
         this.StateHasChanged();
-             
+
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var client = new AgentChatClient(chatClientFactory, serviceProvider);
 
@@ -190,7 +194,14 @@
         {
             await foreach (var update in client.GetStreamingResponseAsync(authState.User, Project, context, chatMessage, _cts.Token))
             {
-                _activeResponse.Append(update.Text);
+                if (update is PipelineActionUpdate actionUpdate)
+                {
+                    _activeResponse.Append(actionUpdate.ActionName);
+                }
+                else
+                {
+                    _activeResponse.Append(update.Text);
+                }
                 await InvokeAsync(this.StateHasChanged);
             }
         }

@@ -34,7 +34,9 @@ public class SuggestionProvider
 
         if(suggestions.Count == 0)
         {
-            suggestions.Add(new Suggestion("What is the next milestone", $"list-milestones. What is the next milestone?"));
+            suggestions.Add(new Suggestion("What is the next milestone", $"What is the next milestone?"));
+
+            suggestions.Add(new Suggestion("Summarize all open issues", $"Summarize all open issues"));
         }
 
         return suggestions;

@@ -83,4 +83,5 @@ public class IssueDto
     /// Labels
     /// </summary>
     public string[]? Labels { get; set; }
+    public string? AssignedTo { get; set; }
 }

@@ -26,7 +26,7 @@ public class TestResultsMcpTools : AuthenticatedTool
     /// Returns the latest test results
     /// </summary>
     /// <returns></returns>
-    [McpServerTool(Name = "get-latest-results-for-milestone"), Description("Returns the latest test results for a specific milestone")]
+    [McpServerTool(Name = "get-latest-test-results-for-milestone"), Description("Returns the latest test results for a specific milestone. This only returns test-results, no information about the milestones.")]
     public async Task<Dictionary<string, int>> GetLatestTestResultsForMilestoneAsync(string milestone)
     {
         var isAuthenticated = await IsAuthenticatedAsync();
@@ -54,7 +54,7 @@ public class TestResultsMcpTools : AuthenticatedTool
     /// Returns the latest test results
     /// </summary>
     /// <returns></returns>
-    [McpServerTool(Name = "get-latest-results"), Description("Returns the latest test results (passed count, failed count..)")]
+    [McpServerTool(Name = "get-latest-test-results"), Description("Returns the latest test results (passed count, failed count..)")]
     public async Task<Dictionary<string,int>> GetLatestTestResultsAsync()
     {
         var isAuthenticated = await IsAuthenticatedAsync();

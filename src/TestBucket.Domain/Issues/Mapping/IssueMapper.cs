@@ -10,6 +10,7 @@ using TestBucket.Domain.Issues.Models;
 namespace TestBucket.Domain.Issues.Mapping;
 internal static class IssueMapper
 {
+  
     public static void CopyTo(IssueDto src, LinkedIssue dest)
     {
         dest.ExternalSystemId = src.ExternalSystemId;
@@ -37,6 +38,7 @@ internal static class IssueMapper
         dest.Modified = src.Modified ?? DateTimeOffset.UtcNow;
         dest.Author = src.Author;
         dest.IssueType = src.IssueType;
+        dest.AssignedTo = src.AssignedTo;
 
         dest.Title = src.Title;
         dest.State = src.State;
@@ -65,6 +67,7 @@ internal static class IssueMapper
         dest.ExternalSystemName = src.ExternalSystemName;
         dest.ExternalDisplayId = src.ExternalDisplayId;
         dest.ExternalId = src.ExternalId;
+        dest.AssignedTo = src.AssignedTo;
 
         dest.Created = src.Created;
         dest.Modified = src.Modified;

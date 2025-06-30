@@ -23,7 +23,7 @@
 @inject IStringLocalizer<IssueStrings> issueLoc
 @inject DashboardController controller
 
-<div>
+<div class="@ContainerCssClass">
 
     @if(_dashboard is not null)
     {
@@ -41,16 +41,20 @@
             {
                 @foreach (var data in _dashboard.Specifications)
                 {
-                    <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" Spec="@data" 
-                        Delete="OnDeleteAsync"
-                        SpecChanged="OnSpecChangedAsync" />
+                    <div class="dash-cell" style="@GetSpecCssStyle(data)">
+                        <InsightsChart State="State" Project="Project" ReadOnly="@ReadOnly" UserQuery="@_query" Spec="@data" 
+                            Delete="OnDeleteAsync"
+                            SpecChanged="OnSpecChangedAsync" />
+                    </div>
                 }
 
                 @if(!ReadOnly)
                 {
-                    <MudPaper Elevation="2" Class="tb-tile">
-                        <button @onclick="AddSpec" class="add" data-testid="add" style="font-size: 64pt; width: 100%; height: 100%">+</button>
-                    </MudPaper>
+                    <div class="dash-cell cell-add">
+                        <MudPaper Elevation="2" Class="tb-tile">
+                            <button @onclick="AddSpec" class="add" data-testid="add" style="font-size: 64pt; width: 100%; height: 100%">+</button>
+                        </MudPaper>
+                    </div>
                 }
             }
         </div>
@@ -65,6 +69,18 @@
     [CascadingParameter] public TestProject Project { get; set; } = default!;
     [CascadingParameter] public ApplicationState? State { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
+
+    private string GetSpecCssStyle(InsightsVisualizationSpecification spec)
+    {
+        if (spec is null)
+        {
+            return "";
+        }
+        return $"grid-column: auto/span {spec.Columns}; grid-row: auto/span {spec.Rows}";
+    }
+    private string ContainerCssClass => new MudBlazor.Utilities.CssBuilder("tb-insights-dashboard-container")
+        .AddClass("read-only", ReadOnly)
+        .Build();
 
     [Parameter] public EventCallback<Dashboard> Deleted { get; set; }
     private string _query = "";
@@ -111,43 +127,39 @@
         }
     }
 
-    // private InsightsVisualizationSpecification? _testsByCat;
-    // private InsightsVisualizationSpecification? _countByResultsSpec;
-    // private InsightsVisualizationSpecification? _countByLatestResultsSpec;
-    // private InsightsVisualizationSpecification? _countResultsByComponentSpec;
-    // private InsightsVisualizationSpecification? _countResultsByAsigneeSpec;
-
-    // private InsightsVisualizationSpecification? _inflowOutflowSpec;
-    // private InsightsVisualizationSpecification? _countPerStateSpec;
-
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (DashboardId is not null)
+        bool update = false;
+        if(_query != Query && Query is not null)
         {
-            _dashboard = await controller.GetDashboardByIdAsync(DashboardId.Value); 
+            update = true;
         }
-        else if (DashboardName is not null)
+        if (DashboardId is not null && DashboardId != _dashboard?.Id)
         {
-            _dashboard = await controller.GetDashboardByNameAsync(Project.Id, DashboardName);
+            update = true;
         }
+        if (DashboardName is not null && DashboardName != _dashboard?.Name)
+        {
+            update = true;
+        }
+        if(update)
+        {
+            _query = Query??"";
 
-        if(_dashboard is not null)
-        {
-            _dashboard.TestProjectId = Project.Id;
-        }
-
-        if (_dashboard?.Specifications is not null)
-        {
-            if(Query is not null)
+            if (DashboardId is not null)
             {
-                foreach(var spec in _dashboard.Specifications)
-                {
-                    foreach(var query in spec.DataQueries)
-                    {
-                        query.Query = Query;
-                    }
-                }
+                _dashboard = await controller.GetDashboardByIdAsync(DashboardId.Value);
             }
+            else if (DashboardName is not null)
+            {
+                _dashboard = await controller.GetDashboardByNameAsync(Project.Id, DashboardName);
+            }
+
+            if (_dashboard is not null)
+            {
+                _dashboard.TestProjectId = Project.Id;
+            }
+            this.StateHasChanged();
         }
     }
 

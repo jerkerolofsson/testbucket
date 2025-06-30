@@ -54,6 +54,7 @@
         {
             // Always filter on project id, so we hide it
             Query.ProjectId = null;
+            Query.TeamId = null; 
             _searchText = Query.ToSearchText();
             _queryText = _searchText + $" project-id:{Project.Id}";
         }

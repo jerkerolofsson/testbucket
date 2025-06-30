@@ -9,20 +9,16 @@
         var point = series.Data.First();
         if (Spec is not null)
         {
-            if(Spec.GetColorMode(true) == ChartColorMode.BySeries)
-            {
-                ColorMap.TryGetValue(series.Name, out color);
-            }
-            else
-            {
-                ColorMap.TryGetValue(point.Label, out color);
-            }
+            point = GetPoint();
+            ColorMap.TryGetValue(point.Label, out color);
         }
         color ??= "#2085fb";
         string cssStyle = $"color: {color}";
 
-        <div data-testid="value" class="tb-insights-chart-text value" style="@cssStyle">@point.Value</div>
-        <div data-testid="label" class="tb-insights-chart-text label">@point.Label</div>
+        <div class=tb-insights-chart-text-container>
+            <div data-testid="value" class="tb-insights-chart-text value" style="@cssStyle">@point.Value</div>
+            <div data-testid="label" class="tb-insights-chart-text label">@point.Label</div>
+        </div>
     }
 }
 
@@ -30,4 +26,27 @@
     [Parameter] public InsightsVisualizationSpecification? Spec { get; set; }
     [Parameter] public Dictionary<string, string> ColorMap { get; set; } = [];
     [Parameter] public InsightsData<string, double>? Data { get; set; }
+
+    private InsightsDataPoint<string,double>? GetPoint()
+    {
+        if (Spec is not null && Data.Series.Count > 0)
+        {
+            if(Spec.GetColorMode(true) == ChartColorMode.BySeries)
+            {
+                var series = Data.Series.Where(x => x.Name == Spec.Field).FirstOrDefault();
+                series ??= Data.Series.First();
+                var point = series.Data.First();
+                return point;
+            }
+            else
+            {
+                var series = Data.Series[0];
+                var point = series.Data.Where(x => x.Label == Spec.Field).FirstOrDefault();
+                point ??= series.Data.First();
+                return point;
+            }
+        }
+
+        return null;
+    }
 }

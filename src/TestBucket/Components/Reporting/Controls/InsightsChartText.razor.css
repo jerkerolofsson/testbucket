@@ -1,0 +1,18 @@
+﻿.tb-insights-chart-text-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.tb-insights-chart-text.value {
+    font-size: 40pt;
+    line-height: 1;
+}
+
+.tb-insights-chart-text.label {
+    font-size: 8pt;
+    line-height: 1;
+}

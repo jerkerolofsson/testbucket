@@ -8,6 +8,7 @@
 @inject InsightsController controller
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<InsightStrings> insightsLoc
+@inject IStringLocalizer<SettingStrings> settingsLoc
 
 <div class="tb-insights-visualization-specification-editor">
     <Splitter Style="height: 100%" Bordered="false" Dimension="50" EnableMargin="false" Color="Color.Tertiary">
@@ -30,19 +31,34 @@
                                     <Field Row>
                                         <FieldHeader>@insightsLoc["data-source"]</FieldHeader>
                                         <MudSpacer/>
-                                        <MudTextField Value="@_dataQuery.DataSource" T="string" ValueChanged="OnDataSourceChanged" Placeholder="@insightsLoc["data-source"]" Variant="Variant.Outlined" />
-                                    </Field>
 
+                                        <MudSelect Variant="Variant.Filled" Value="@_dataQuery.DataSource" T="string" ValueChanged="OnDataSourceChanged">
+                                            @foreach(var dataSourceName in controller.GetDataSourceNames())
+                                            {
+                                                <MudSelectItem Value="@dataSourceName">@insightsLoc[dataSourceName]</MudSelectItem>
+                                            }
+                                        </MudSelect>
+
+                                        
+                                    </Field>
                                 
                                     <Field Row>
-                                        <FieldHeader>@loc["filter"]</FieldHeader>
+                                        <FieldHeader>@insightsLoc["filter"]</FieldHeader>
                                         <MudSpacer/>
                                         <MudTextField Value="@_dataQuery.Query" T="string" ValueChanged="OnQueryChanged" Placeholder="@loc["filter"]" Variant="Variant.Outlined" />
                                     </Field>
                                 }
+
+                                <Field Row>
+                                    <FieldHeader>@insightsLoc["size"]</FieldHeader>
+                                    <MudSpacer />
+                                    <MudNumericField T="int" Value="@Specification.Columns" T="string" ValueChanged="OnColumnsChanged" Placeholder="@insightsLoc["width"]" Variant="Variant.Outlined" />
+                                    <MudNumericField T="int" Value="@Specification.Rows" T="string" ValueChanged="OnRowsChanged" Placeholder="@insightsLoc["height"]" Variant="Variant.Outlined" />
+                                </Field>
+
                             </MudStack>
                         </MudTabPanel>
-                        <MudTabPanel Text="@loc["elements"]">
+                        <MudTabPanel Text="@insightsLoc["chart"]">
                             <MudStack Class="mt-2">
                                 <Field>
                                     <FieldHeader>@insightsLoc["default-chart-type"]</FieldHeader>
@@ -74,6 +90,23 @@
                                     </MudSelect>
                                 </Field>
 
+                                <Field>
+                                    <FieldHeader>@insightsLoc["data-mode"]</FieldHeader>
+                                    <MudSelect Variant="Variant.Outlined" T="ChartColorMode" Value="Specification.ColorMode" ValueChanged="OnColorModeChanged">
+                                        <MudSelectItem Value="@ChartColorMode.ByLabel">@insightsLoc["label"]</MudSelectItem>
+                                        <MudSelectItem Value="@ChartColorMode.BySeries">@insightsLoc["series"]</MudSelectItem>
+                                    </MudSelect>
+                                </Field>
+
+                                @if(Specification.ChartType == ChartType.Text)
+                                {
+                                    <Field Row>
+                                        <FieldHeader>@insightsLoc["label-or-series"]</FieldHeader>
+                                        <MudSpacer />
+                                        <MudTextField Value="@Specification.Field" T="string" ValueChanged="OnTextFieldChanged" Variant="Variant.Outlined" />
+                                    </Field>
+                                }
+
                                 <Field Row>
                                     <FieldHeader>@insightsLoc["show-legend"]</FieldHeader>
                                     <MudSpacer/>
@@ -87,15 +120,8 @@
                                 </Field>
                             </MudStack>
                         </MudTabPanel>
-                        <MudTabPanel Text="@loc["dark-mode"]">
+                        <MudTabPanel Text="@settingsLoc["dark-mode"]">
                             <MudStack Class="mt-2">
-                                <Field>
-                                    <FieldHeader>@insightsLoc["color-mode"]</FieldHeader>
-                                    <MudSelect Variant="Variant.Outlined" T="ChartColorMode" Value="Specification.DarkModeColors.ColorMode" ValueChanged="OnDarkModeColorModeChanged">
-                                        <MudSelectItem Value="@ChartColorMode.ByLabel">@insightsLoc["label"]</MudSelectItem>
-                                        <MudSelectItem Value="@ChartColorMode.BySeries">@insightsLoc["series"]</MudSelectItem>
-                                    </MudSelect>
-                                </Field>
                                 <Field>
                                     <FieldHeader>@insightsLoc["palette"]</FieldHeader>
                                     <PalettePicker Palettes="@Palettes" SelectedPalette="Specification.DarkModeColors.Palette" SelectedPaletteChanged="OnDarkModePaletteChanged"/>
@@ -107,15 +133,8 @@
                             </MudStack>
                         </MudTabPanel>
 
-                        <MudTabPanel Text="@loc["light-mode"]">
+                        <MudTabPanel Text="@settingsLoc["light-mode"]">
                             <MudStack Class="mt-2">
-                                <Field>
-                                    <FieldHeader>@insightsLoc["color-mode"]</FieldHeader>
-                                    <MudSelect Variant="Variant.Outlined" T="ChartColorMode" Value="Specification.LightModeColors.ColorMode" ValueChanged="OnLightModeColorModeChanged">
-                                        <MudSelectItem Value="@ChartColorMode.ByLabel">@insightsLoc["label"]</MudSelectItem>
-                                        <MudSelectItem Value="@ChartColorMode.BySeries">@insightsLoc["series"]</MudSelectItem>
-                                    </MudSelect>
-                                </Field>
                                
                                 <Field>
                                     <FieldHeader>@insightsLoc["palette"]</FieldHeader>
@@ -182,19 +201,11 @@
             _dataQuery = Specification.DataQueries[0];
         }
     }
-    private async Task OnLightModeColorModeChanged(ChartColorMode colorMode)
+    private async Task OnColorModeChanged(ChartColorMode colorMode)
     {
         if (Specification is not null)
         {
-            Specification.LightModeColors.ColorMode = colorMode;
-            await SpecificationChanged.InvokeAsync(Specification);
-        }
-    }
-    private async Task OnDarkModeColorModeChanged(ChartColorMode colorMode)
-    {
-        if (Specification is not null)
-        {
-            Specification.DarkModeColors.ColorMode = colorMode;
+            Specification.ColorMode = colorMode;
             await SpecificationChanged.InvokeAsync(Specification);
         }
     }
@@ -252,6 +263,14 @@
         }
     }
 
+    private async Task OnTextFieldChanged(string name)
+    {
+        if (Specification is not null)
+        {
+            Specification.Field = name;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
     private async Task OnNameChanged(string name)
     {
         if (Specification is not null)
@@ -266,6 +285,23 @@
         if (Specification is not null && _dataQuery is not null)
         {
             _dataQuery.DataSource = dataSource;
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+
+    private async Task OnRowsChanged(int value)
+    {
+        if (Specification is not null)
+        {
+            Specification.Rows = Math.Max(1,Math.Min(30,value));
+            await SpecificationChanged.InvokeAsync(Specification);
+        }
+    }
+    private async Task OnColumnsChanged(int value)
+    {
+        if (Specification is not null)
+        {
+            Specification.Columns = Math.Max(1,Math.Min(30,value));
             await SpecificationChanged.InvokeAsync(Specification);
         }
     }

@@ -1248,10 +1248,14 @@ div.tb-profile-image.tb-background-9 {
     gap: 8px;
 }
 
+.tb-chart-skeleton {
+    height: 5vh; 
+
+}
+
 .tb-chart-skeleton,
 .tb-chart {
-    height: 5vh; 
-    min-height: 300px !important;
+    min-height: calc(100% - 100px) !important;
     overflow: hidden;
 }
 
@@ -1301,23 +1305,8 @@ div.tb-profile-image.tb-background-9 {
     font-weight: bold;
 }
 
-.tb-insights-dashboard {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: 100%;
-    gap: 8px;
-}
-
-.tb-insights-chart-text.value {
-    font-size: 40pt;
-    padding-top: 32px;
-}
-.tb-insights-chart-text.label {
-    font-size: 8pt;
-    padding-bottom: 32px;
-}
-
 .tb-insights-heatmap {
+    margin-top: 16px;
     display: grid;
     grid-template-columns: auto 1fr;
     row-gap: 4px;

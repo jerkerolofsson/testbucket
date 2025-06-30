@@ -28,23 +28,30 @@ internal class DashboardManager : IDashboardManager
         // If it does not exist, create a default one
         if(dashboard is null)
         {
-            if(name is "issues")
+            if (name is "issues")
             {
                 dashboard = GetDefaultIssueDashboard();
             }
-            else if (name is "testrun")
+            else if (name is "testrun" or "reporting")
             {
                 dashboard = GetDefaultTestResultsDashboard();
             }
 
-            if(dashboard is not null)
+            if (dashboard is not null)
             {
                 dashboard.TestProjectId = projectId;
                 dashboard.Name = name;
+                await AddDashboardAsync(principal, dashboard);
             }
         }
 
         return dashboard;
+    }
+
+    private async Task CreateDefaultDashboardsAsync(ClaimsPrincipal principal, long projectId)
+    {
+        await GetDashboardByNameAsync(principal, projectId, "issues");
+        await GetDashboardByNameAsync(principal, projectId, "testrun");
     }
 
 
@@ -63,17 +70,16 @@ internal class DashboardManager : IDashboardManager
                     {
                         DataSource = TestCaseDataSourceNames.CountByCategory,
                     }],
+                    ColorMode = ChartColorMode.ByLabel,
                     DarkModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
                         GridLineColor = "#444",
                         TickLabelColor = "#777"
                     },
                     LightModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
                         GridLineColor = "#ddd",
                         TickLabelColor = "#aaa"
                     },
@@ -92,17 +98,16 @@ internal class DashboardManager : IDashboardManager
                             Colors = DefaultPalettes.TestResultColors,
                             Query = ""
                         }],
+                    ColorMode = ChartColorMode.ByLabel,
                     DarkModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
                         GridLineColor = "#444",
                         TickLabelColor = "#777"
                     },
                     LightModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
                         GridLineColor = "#ddd",
                         TickLabelColor = "#aaa"
                     },
@@ -131,17 +136,16 @@ internal class DashboardManager : IDashboardManager
                         Colors = DefaultPalettes.TestResultColors,
                         Query = ""
                     }],
+                        ColorMode = ChartColorMode.ByLabel,
                     DarkModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
                         GridLineColor = "#444",
                         TickLabelColor = "#777"
                     },
                     LightModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
                         GridLineColor = "#ddd",
                         TickLabelColor = "#aaa"
                     },
@@ -157,17 +161,16 @@ internal class DashboardManager : IDashboardManager
                         {
                             DataSource = TestRunDataSourceNames.ExecutedTestsByAssignee
                         }],
+                        ColorMode = ChartColorMode.ByLabel,
                     DarkModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
                         GridLineColor = "#444",
                         TickLabelColor = "#777"
                     },
                     LightModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
                         GridLineColor = "#ddd",
                         TickLabelColor = "#aaa"
                     },
@@ -183,17 +186,16 @@ internal class DashboardManager : IDashboardManager
                         {
                             DataSource = TestRunDataSourceNames.ResultsByComponent,
                         }],
+                        ColorMode = ChartColorMode.BySeries,
                     DarkModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.BySeries,
                         GridLineColor = "#444",
                         TickLabelColor = "#777"
                     },
                     LightModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.BySeries,
                         GridLineColor = "#ddd",
                         TickLabelColor = "#aaa"
                     },
@@ -221,17 +223,16 @@ internal class DashboardManager : IDashboardManager
                         DataSource = IssueDataSourceNames.IssuesInflowOutflow,
                         Query = ""
                     }],
+                        ColorMode = ChartColorMode.BySeries,
                     DarkModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.BySeries,
                         GridLineColor = "#444",
                         TickLabelColor = "#777"
                     },
                     LightModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.BySeries,
                         GridLineColor = "#ddd",
                         TickLabelColor = "#aaa"
                     },
@@ -252,17 +253,16 @@ internal class DashboardManager : IDashboardManager
                             },
                             Query = ""
                         }],
+                        ColorMode = ChartColorMode.ByLabel,
                     DarkModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
                         GridLineColor = "#444",
                         TickLabelColor = "#777"
                     },
                     LightModeColors = new ChartColors()
                     {
                         Palette = DefaultPalettes.ReportingDefault,
-                        ColorMode = ChartColorMode.ByLabel,
                         GridLineColor = "#ddd",
                         TickLabelColor = "#aaa"
                     },
@@ -286,7 +286,13 @@ internal class DashboardManager : IDashboardManager
         principal.ThrowIfNoPermission(PermissionEntityType.Dashboard, PermissionLevel.Read);
 
         var tenantId = principal.GetTenantIdOrThrow();
-        return await _repository.GetAllDashboardsAsync(projectId);
+        var dashboards = (await _repository.GetAllDashboardsAsync(projectId)).ToList();
+
+        if (dashboards.Count == 0)
+        {
+            await CreateDefaultDashboardsAsync(principal, projectId);
+        }
+        return dashboards;
     }
 
     public async Task AddDashboardAsync(ClaimsPrincipal principal, Dashboard dashboard)
@@ -321,3 +327,4 @@ internal class DashboardManager : IDashboardManager
         await _repository.DeleteDashboardAsync(tenantId, id);
     }
 }
+

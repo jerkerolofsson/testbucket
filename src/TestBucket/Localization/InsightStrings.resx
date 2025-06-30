@@ -216,4 +216,29 @@
   <data name="time-one-year" xml:space="preserve">
     <value>One year</value>
   </data>
+  <data name="data-source" xml:space="preserve">
+    <value>Data source</value>
+  </data>
+  <data name="filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="size" xml:space="preserve">
+    <value>Size</value>
+    <comment>Size of dashboard tile in grid</comment>
+  </data>
+  <data name="width" xml:space="preserve">
+    <value>Width</value>
+    <comment>Number of columns in grid for a dashboard tile</comment>
+  </data>
+  <data name="height" xml:space="preserve">
+    <value>Height</value>
+    <comment>Number of rows for a dashboard tile within grid</comment>
+  </data>
+  <data name="chart" xml:space="preserve">
+    <value>Chart</value>
+  </data>
+  <data name="label-or-series" xml:space="preserve">
+    <value>Value to show</value>
+    <comment>The label or series name to show for text visualization in dashboard</comment>
+  </data>
 </root>

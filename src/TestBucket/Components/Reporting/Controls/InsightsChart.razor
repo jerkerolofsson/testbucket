@@ -24,11 +24,11 @@
 @inject IStringLocalizer<InsightStrings> insightLoc
 @inject IDialogService dialogService
 
-<MudPaper Elevation="2" Class="tb-tile">
-    <MudStack Spacing="0" Class="tb-insights-chart">
-        <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
-            @if(Spec is not null && State is not null)
-            {
+@if(Spec is not null && State is not null)
+{
+    <MudPaper Elevation="2" Class="tb-tile">
+        <MudStack Spacing="0" Class="tb-insights-chart">
+            <MudStack Row Style="width: 100%" AlignItems="AlignItems.Center">
                 <MudText Typo="Typo.h6">@insightLoc[Spec.Name]</MudText>
                 <MudSpacer />
 
@@ -56,57 +56,57 @@
                     <MudIconButton data-testid="edit" Icon="@Icons.Material.Filled.Brush" OnClick="EditAsync"/>
                     <MudIconButton data-testid="delete" Icon="@Icons.Material.Filled.Delete" OnClick="DeleteAsync" />
                 }
-            }
-        </MudStack>
+            </MudStack>
 
-        @if (_results is not null)
-        {
-            
-            @if (_layout is not null && _results is not null && _config is not null)
+            @if (_results is not null)
             {
-                if(Spec?.ChartType is ChartType.Bar or ChartType.Line or ChartType.Donut or ChartType.Pie or ChartType.StackedBar)
+            
+                @if (_layout is not null && _results is not null && _config is not null)
                 {
-                    <PlotlyChart class="tb-chart result-chart" @ref="_chart" Config="_config" Layout="@_layout" Data="@_data"/>
-                }
-                else if(Spec?.ChartType is ChartType.Text)
-                {
-                    <InsightsChartText Spec="@Spec" Data="_results" ColorMap="_legendTitleColorMap"/>
-                   
-                }
-                else if(Spec?.ChartType is ChartType.ActivityHeatmap)
-                {
-                    <InsightsHeatmap Data="_results" ColorMap="_legendTitleColorMap"/>
-                }
-
-                @if (Spec is not null)
-                {
-                    if (Spec.ShowLegend)
+                    if(Spec?.ChartType is ChartType.Bar or ChartType.Line or ChartType.Donut or ChartType.Pie or ChartType.StackedBar)
                     {
-                        <div class="legend">
-                            @foreach (var legendItem in _legendTitleColorMap)
-                            {
-                                var color = legendItem.Value;
-                                <div class="item">
-                                    <ColorCell Color="@color" />
-                                    @insightLoc[legendItem.Key]
-                                </div>
-                            }
-                        </div>
+                        <PlotlyChart class="tb-chart result-chart" @ref="_chart" Config="_config" Layout="@_layout" Data="@_data"/>
                     }
-                    if(Spec.ShowDataTable)
+                    else if(Spec?.ChartType is ChartType.Text)
                     {
-                        <InsightsDataTable Spec="@Spec" Results="@_results"/>
+                        <InsightsChartText Spec="@Spec" Data="_results" ColorMap="_legendTitleColorMap"/>
+                   
+                    }
+                    else if(Spec?.ChartType is ChartType.ActivityHeatmap)
+                    {
+                        <InsightsHeatmap Data="_results" ColorMap="_legendTitleColorMap"/>
+                    }
+
+                    @if (Spec is not null)
+                    {
+                        if (Spec.ShowLegend)
+                        {
+                            <div class="legend">
+                                @foreach (var legendItem in _legendTitleColorMap)
+                                {
+                                    var color = legendItem.Value;
+                                    <div class="item">
+                                        <ColorCell Color="@color" />
+                                        @insightLoc[legendItem.Key]
+                                    </div>
+                                }
+                            </div>
+                        }
+                        if(Spec.ShowDataTable)
+                        {
+                            <InsightsDataTable Spec="@Spec" Results="@_results"/>
+                        }
                     }
                 }
             }
-        }
-        else
-        {
-            <MudSkeleton SkeletonType="SkeletonType.Text" Class="tb-chart-skeleton" />
-        }
+            else
+            {
+                <MudSkeleton SkeletonType="SkeletonType.Text" Class="tb-chart-skeleton" />
+            }
        
-    </MudStack>
-</MudPaper>
+        </MudStack>
+    </MudPaper>
+}
 
 @code {
     [Parameter] public string Title { get; set; } = "";
@@ -117,6 +117,7 @@
     [Parameter] public EventCallback<InsightsVisualizationSpecification> Delete { get; set; }
     [Parameter] public TestProject Project { get; set; } = default!;
     [Parameter] public ApplicationState? State { get; set; }
+
 
     private ChartType _chartType = ChartType.Line;
 
@@ -141,12 +142,25 @@
         return Task.CompletedTask;
     }
 
+    private string? _userQuery;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(_results is null && Spec is not null && Spec.DataQueries.Count > 0)
+        if(Spec is null)
         {
+            return;
+        }
+        if (Spec.DataQueries.Count == 0)
+        {
+            return;
+        }
+
+        if(_results is null || _userQuery != UserQuery)
+        {
+            _userQuery = UserQuery;
+
             // Combine the query from the specification and the user
-            var realQueryString = string.Join(" ", Spec.DataQueries[0].Query, UserQuery);
+            var realQueryString = string.Join(" ", Spec.DataQueries[0].Query, UserQuery).Trim();
             var query = new InsightsDataQuery
                 {
                     Colors = Spec.DataQueries[0].Colors,

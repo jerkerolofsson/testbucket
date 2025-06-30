@@ -44,6 +44,20 @@ public class InsightsVisualizationSpecification
     /// </summary>
     public bool ShowDataTable { get; set; }
 
+    /// <summary>
+    /// Defines how the color is assigned
+    /// </summary>
+    public ChartColorMode ColorMode { get; set; } = ChartColorMode.ByLabel;
+
+    /// <summary>
+    /// Label or series to show for text.
+    /// If ChartColorMode is Label, this corresponds to a label
+    /// </summary>
+    public string? Field { get; set; }
+
+    public int Rows { get; set; } = 15;
+    public int Columns { get; set; } = 10;
+
     public string? GetTickLabelColor(bool isDarkMode)
     {
         if (isDarkMode) return DarkModeColors.TickLabelColor;
@@ -57,8 +71,7 @@ public class InsightsVisualizationSpecification
 
     public ChartColorMode GetColorMode(bool isDarkMode)
     {
-        if (isDarkMode) return DarkModeColors.ColorMode;
-        return LightModeColors.ColorMode;
+        return ColorMode;
     }
 
     public ThemePalette GetPalette(bool isDarkMode)

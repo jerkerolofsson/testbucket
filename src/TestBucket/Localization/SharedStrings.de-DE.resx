@@ -917,4 +917,10 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="dashboard" xml:space="preserve">
     <value />
   </data>
+  <data name="dashboards" xml:space="preserve">
+    <value />
+  </data>
+  <data name="manage-dashboards" xml:space="preserve">
+    <value />
+  </data>
 </root>

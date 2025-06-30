@@ -11,11 +11,6 @@ public class ChartColors
     public ThemePalette Palette { get; set; } = DefaultPalettes.Default;
 
     /// <summary>
-    /// Defines how the color is assigned
-    /// </summary>
-    public ChartColorMode ColorMode { get; set; } = ChartColorMode.ByLabel;
-
-    /// <summary>
     /// Color of grid lines
     /// </summary>
     public string? GridLineColor { get; set; }

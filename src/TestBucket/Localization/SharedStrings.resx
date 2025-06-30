@@ -919,4 +919,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="dashboard" xml:space="preserve">
     <value>Dashboard</value>
   </data>
+  <data name="dashboards" xml:space="preserve">
+    <value>Dashboards</value>
+  </data>
+  <data name="manage-dashboards" xml:space="preserve">
+    <value>Manage dashboards</value>
+  </data>
 </root>

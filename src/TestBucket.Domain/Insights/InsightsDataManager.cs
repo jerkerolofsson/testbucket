@@ -26,7 +26,8 @@ internal class InsightsDataManager : IInsightsDataManager
         {
             return await source.GetDataAsync(principal, projectId, query);
         }
-        throw new InvalidOperationException($"The data source '{query.DataSource}' is not registered.");
+        return new InsightsData<string, double>();
+        //throw new InvalidOperationException($"The data source '{query.DataSource}' is not registered.");
     }
 
     public string[] GetDataSourceNames()

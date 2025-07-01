@@ -290,6 +290,28 @@ code.tip {
         display: grid;
         place-items: center;
     }
+    .mud-markdown-preview code .tb-code-overlay > *:hover,
+    .EasyMDEContainer code .tb-code-overlay > *:hover {
+        background: var(--mud-palette-primary-hover);
+    }
+
+    .mud-markdown-preview code .tb-code-overlay .tb-code-run-overlay {
+        color: var(--mud-palette-success);
+    }
+
+    .mud-markdown-preview code .tb-code-overlay > .language:hover,
+    .EasyMDEContainer code .tb-code-overlay > .language:hover {
+        background: unset;
+        cursor: unset;
+    }
+    .mud-markdown-preview  code .tb-code-overlay > .language,
+    .EasyMDEContainer code .tb-code-overlay > .language {
+        background: unset;
+        width:unset;
+        opacity: 0.5;
+        font-size: 8pt;
+        margin-right: 4px;
+    }
 
     .mud-markdown-preview .tb-code-overlay,
     .EasyMDEContainer code .tb-code-overlay {
@@ -301,10 +323,7 @@ code.tip {
         gap: 4px;
     }
 
-    .mud-markdown-preview code .tb-code-overlay > *:hover,
-    .EasyMDEContainer code .tb-code-overlay > *:hover {
-        background: var(--mud-palette-primary-hover);
-    }
+ 
 
 
 
@@ -323,13 +342,17 @@ code.tip {
     margin: 0;
 }
 
+.mud-markdown-preview {
+    padding: 16px;
+}
+
 .mud-markdown-preview pre:has(code) ,
 .EasyMDEContainer .editor-preview pre:has(code) {
     padding: 12px;
     background: var(--mud-palette-black);
     border: solid 1px var(--mud-palette-dark);
     border-radius: 5px;
-    color: var(--mud-palette-text-primary);
+    color: var(--mud-palette-white);
 }
 
 .mud-markdown-preview .note,
@@ -345,6 +368,7 @@ code.tip {
 .mud-markdown-editor-root {
     color: var(--mud-palette-text-primary); 
     height: auto;
+    margin: 2px;
     transition: border-width,border-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 }
 
@@ -354,11 +378,13 @@ code.tip {
 }
 
 
-.mud-markdown-editor-root.mud-input-outlined {
+.mud-markdown-editor-root.mud-input-filled .mud-markdown-container,
+.mud-markdown-editor-root.mud-input-outlined .mud-markdown-container {
     border-radius: var(--mud-default-borderradius);
-    border-color: var(--mud-palette-lines-inputs);
+    border-color: transparent;
     border-width: 1px;
     border-style: solid;
+    width: calc(100% - 2px);
 }
 .mud-markdown-editor-root.mud-input-outlined > * {
     border-radius: var(--mud-default-borderradius);
@@ -371,17 +397,31 @@ code.tip {
     border-color: transparent;
 }
 
-.mud-markdown-editor-root.mud-input-outlined:hover {
+.mud-markdown-editor-root.mud-input-filled,
+.mud-markdown-editor-root.mud-input-outlined {
+    padding: 2px;
+}
+
+.mud-markdown-editor-root {
+    padding: 5px;
+}
+
+.mud-markdown-editor-root.mud-input-filled .mud-markdown-container,
+.mud-markdown-editor-root.mud-input-outlined .mud-markdown-container {
+    border-color: var(--mud-palette-lines-inputs)
+}
+
+.mud-markdown-editor-root.mud-input-filled:hover  .mud-markdown-container,
+.mud-markdown-editor-root.mud-input-outlined:hover  .mud-markdown-container {
     border-color: var(--mud-palette-action-default);
 }
 
-.mud-markdown-editor-root.mud-input-filled:focus-within,
-.mud-markdown-editor-root.mud-input-outlined:focus-within {
-    border-color: var(--clr-markdown-accent, var(--mud-palette-primary));
-    border-color: transparent;
-    border: solid 2px var(--mud-palette-primary);
+.mud-markdown-editor-root.mud-input-filled:focus-within .mud-markdown-container,
+.mud-markdown-editor-root.mud-input-outlined:focus-within .mud-markdown-container {
+    border: solid 1px transparent;
+    outline: solid 2px var(--mud-palette-primary);
 }
-.mud-markdown-editor-root.mud-input-text:focus-within {
+.mud-markdown-editor-root.mud-input-text:focus-within .mud-markdown-container {
     border-bottom: solid 2px var(--clr-markdown-accent);
 }
 
@@ -505,6 +545,7 @@ code.tip {
 .mud-markdown-preview pre:has(code),
 .EasyMDEContainer .editor-preview pre:has(code) {
     overflow: auto;
+    min-height: 4rem;
 }
 .mud-markdown-preview ol li,
 .mud-markdown-preview ul li,

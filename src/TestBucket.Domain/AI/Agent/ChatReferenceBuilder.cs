@@ -1,5 +1,6 @@
 ﻿using TestBucket.Domain.AI.Agent.Models;
 using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
 
@@ -29,5 +30,9 @@ public class ChatReferenceBuilder
     public static ChatReference Create(Component item, bool isActiveDocument = false)
     {
         return new ChatReference { Name = item.Name, Text = item.Description ?? "", Id = item.Id, EntityTypeName = "Component", IsActiveDocument = isActiveDocument };
+    }
+    public static ChatReference Create(LocalIssue item, bool isActiveDocument = false)
+    {
+        return new ChatReference { Name = item.Title ?? "", Text = item.Description ?? "", Id = item.Id, EntityTypeName = "Issue", IsActiveDocument = isActiveDocument };
     }
 }

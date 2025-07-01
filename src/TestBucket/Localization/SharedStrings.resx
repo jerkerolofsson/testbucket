@@ -928,4 +928,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="chat" xml:space="preserve">
     <value>Chat</value>
   </data>
+  <data name="explorer" xml:space="preserve">
+    <value>Explorer</value>
+  </data>
 </root>

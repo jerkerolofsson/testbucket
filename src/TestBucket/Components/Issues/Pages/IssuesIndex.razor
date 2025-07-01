@@ -155,7 +155,7 @@
             _labels = await labelController.GetLabelsAsync(Project);
         }
 
-        appNavigationManager.State.SelectedIssue = null;
+        appNavigationManager.State.ClearSelection();
         OnSearch(Query ?? "state:open is:issue");
     }
 

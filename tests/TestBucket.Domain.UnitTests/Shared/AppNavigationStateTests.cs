@@ -145,7 +145,7 @@ namespace TestBucket.Domain.UnitTests.Shared
             var issue = new LocalIssue { Id = 1, Title = "Issue 1" };
 
             // Act
-            _navState.SelectedIssue = issue;
+            _navState.SetSelectedIssue(issue);
 
             // Assert
             Assert.Equal(issue, _navState.SelectedIssue);

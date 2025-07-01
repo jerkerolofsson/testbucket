@@ -23,7 +23,7 @@ public class NavigationState
     /// <summary>
     /// Local issue currently in focus
     /// </summary>
-    public LocalIssue? SelectedIssue { get; set; }
+    public LocalIssue? SelectedIssue { get; private set; }
 
 
     /// <summary>
@@ -128,6 +128,10 @@ public class NavigationState
             if (SelectedComponent is not null)
             {
                 return ChatReferenceBuilder.Create(SelectedComponent, isActiveDocument: true);
+            }
+            if (SelectedIssue is not null)
+            {
+                return ChatReferenceBuilder.Create(SelectedIssue, isActiveDocument: true);
             }
             return null;
         }
@@ -288,5 +292,10 @@ public class NavigationState
     {
         ClearSelection();
         SelectedTestRun = testRun;
+    }
+    public void SetSelectedIssue(LocalIssue issue)
+    {
+        ClearSelection();
+        SelectedIssue = issue;
     }
 }

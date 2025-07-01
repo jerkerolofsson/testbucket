@@ -1017,12 +1017,6 @@ public partial class TestTreeView
 
     internal async Task<TreeNode<BrowserItem>?> FindTestSuiteNodeAsync(long testSuiteId)
     {
-        var testSuiteNode = FindTreeNode(x => x.TestSuite?.Id == testSuiteId);
-        if (testSuiteNode is not null)
-        {
-            return testSuiteNode;
-        }
-
         // It may be in a folder
         var suite = await testSuiteController.GetTestSuiteByIdAsync(testSuiteId);
         if (suite?.FolderId is not null)
@@ -1059,6 +1053,13 @@ public partial class TestTreeView
                 }
                 else
                 {
+                    if(folderNode.Children is null)
+                    {
+                        var request = CreateRequest();
+                        request.Parent = new BrowserItem() { TestRepositoryFolder = folder };
+                        folderNode.Children = await testBrowser.BrowseAsync(request);
+                    }
+
                     folderNode.Expanded = true;
                     parentNode = folderNode;
                 }
@@ -1078,7 +1079,14 @@ public partial class TestTreeView
         }
         testSuiteNode.Expanded = true;
 
-        // Next traverse all folders
+        if(testSuiteNode.Children is null)
+        {
+            var request = CreateRequest();
+            request.Parent = testSuiteNode.Value;
+            testSuiteNode.Children = await testBrowser.BrowseAsync(request);
+        }
+
+        // Next traverse all folders within the test suite
         if (testCase.PathIds is not null)
         {
             TreeNode<BrowserItem> parent = testSuiteNode;
@@ -1089,9 +1097,7 @@ public partial class TestTreeView
                 {
                     var request = CreateRequest();
                     request.Parent = parent.Value;
-
-                    var items = await testBrowser.BrowseAsync(request);
-                    parent.Children = items;
+                    parent.Children = await testBrowser.BrowseAsync(request);
                     folderNode = FindTreeNode(x => x.Folder?.Id == folderId);
                 }
                 if (folderNode is null)
@@ -1106,9 +1112,7 @@ public partial class TestTreeView
                 {
                     var request = CreateRequest();
                     request.Parent = folderNode.Value;
-
-                    var items = await testBrowser.BrowseAsync(request);
-                    folderNode.Children = items;
+                    folderNode.Children = await testBrowser.BrowseAsync(request);
                 }
             }
         }

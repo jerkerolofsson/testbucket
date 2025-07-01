@@ -124,114 +124,7 @@ namespace TestBucket.MudBlazorExtensions.Markdown
         protected bool ShouldAutoGenerateId => true;
 
         #endregion Local variable
-        #region AutoSave
-
-        /// <summary>
-        /// Gets or sets the automatic save delay.
-        /// Delay between saves, in milliseconds. Defaults to 10000 (10s).
-        /// </summary>
-        /// <value>
-        /// The automatic save delay.
-        /// </value>
-        [Parameter]
-        public int AutoSaveDelay { get; set; } = 10000;
-
-        /// <summary>
-        /// Gets or sets the setting for the auto save.
-        /// Saves the text that's being written and will load it back in the future.
-        /// It will forget the text when the form it's contained in is submitted.
-        /// Recommended to choose a unique ID for the Markdown Editor.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if the automatic save is enabled; otherwise, <c>false</c>.
-        /// </value>
-        [Parameter]
-        public bool AutoSaveEnabled { get; set; }
-
-        /// <summary>
-        /// Gets or sets the automatic save identifier.
-        /// You must set a unique string identifier so that EasyMDE can autosave.
-        /// Something that separates this from other instances of EasyMDE elsewhere on your website.
-        /// </summary>
-        /// <value>
-        /// The automatic save identifier.
-        /// </value>
-        [Parameter]
-        public string? AutoSaveId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the automatic save submit delay.
-        /// Delay before assuming that submit of the form failed and saving the text, in milliseconds.
-        /// </summary>
-        /// <value>
-        /// The automatic save submit delay.
-        /// </value>
-        [Parameter]
-        public int AutoSaveSubmitDelay { get; set; } = 5000;
-
-        /// <summary>
-        /// Gets or sets the automatic save text.
-        /// </summary>
-        /// <value>
-        /// The automatic save text.
-        /// </value>
-        [Parameter]
-        public string AutoSaveText { get; set; } = "Autosaved: ";
-
-        /// <summary>
-        /// Gets or sets the automatic save time format day.
-        /// </summary>
-        /// <value>
-        /// The automatic save time format day.
-        /// </value>
-        [Parameter]
-        public string AutoSaveTimeFormatDay { get; set; } = "2-digit";
-
-        /// <summary>
-        /// Gets or sets the automatic save time format hour.
-        /// </summary>
-        /// <value>
-        /// The automatic save time format hour.
-        /// </value>
-        [Parameter]
-        public string AutoSaveTimeFormatHour { get; set; } = "2-digit";
-
-        /// <summary>
-        /// Gets or sets the automatic save time format locale.
-        /// </summary>
-        /// <value>
-        /// The automatic save time format locale.
-        /// </value>
-        [Parameter]
-        public string AutoSaveTimeFormatLocale { get; set; } = "en-US";
-
-        /// <summary>
-        /// Gets or sets the automatic save time format minute.
-        /// </summary>
-        /// <value>
-        /// The automatic save time format m inute.
-        /// </value>
-        [Parameter]
-        public string AutoSaveTimeFormatMinute { get; set; } = "2-digit";
-
-        /// <summary>
-        /// Gets or sets the automatic save time format month.
-        /// </summary>
-        /// <value>
-        /// The automatic save time format month.
-        /// </value>
-        [Parameter]
-        public string AutoSaveTimeFormatMonth { get; set; } = "long";
-
-        /// <summary>
-        /// Gets or sets the automatic save time format year.
-        /// </summary>
-        /// <value>
-        /// The automatic save time format year.
-        /// </value>
-        [Parameter]
-        public string AutoSaveTimeFormatYear { get; set; } = "numeric";
-        #endregion AutoSave
+       
         #region Event Callback
 
         /// <summary>
@@ -243,11 +136,11 @@ namespace TestBucket.MudBlazorExtensions.Markdown
         /// <summary>
         /// An event that occurs after the markdown value has changed.
         /// </summary>
-        [Parameter]
-        public EventCallback<string> ValueChanged { get; set; }
+        [Parameter] public EventCallback<string> ValueChanged { get; set; }
 
-        [Parameter]
-        public EventCallback<RunCodeRequest> RunCode { get; set; }
+        [Parameter] public EventCallback OnSave { get; set; }
+
+        [Parameter] public EventCallback<RunCodeRequest> RunCode { get; set; }
 
         /// <summary>
         /// A space delimited list of code languages to show a run icon for 
@@ -255,8 +148,10 @@ namespace TestBucket.MudBlazorExtensions.Markdown
         [Parameter] public string? RunCodeLanguages { get; set; }
 
         #endregion Event Callback
-        #region Parameters
 
+        #region Parameters
+        [Parameter] public bool CanToggleEdit { get; set; } = true;
+        [Parameter] public bool ShowSaveButton { get; set; } = false;
         [Parameter] public string Style { get; set; } = "";
 
         /// <summary>
@@ -722,6 +617,11 @@ namespace TestBucket.MudBlazorExtensions.Markdown
             }
         }
 
+        public async Task SaveAsync()
+        {
+            await OnSave.InvokeAsync();
+        }
+
         /// <summary>
         /// Toggles preview mode
         /// </summary>
@@ -771,31 +671,6 @@ namespace TestBucket.MudBlazorExtensions.Markdown
             }
 
             await JSModule.SetValue(ElementId, value);
-        }
-
-        /// <summary>
-        /// Cleans all automatic save.
-        /// </summary>
-        public async Task CleanAllAutoSave()
-        {
-            if (JSModule is null)
-            {
-                return;
-            }
-            await JSModule.DeleteAllAutoSave();
-        }
-
-        /// <summary>
-        /// Cleans the automatic save in the local storage in the browser
-        /// </summary>
-        public async Task CleanAutoSave()
-        {
-            if (JSModule is null || AutoSaveId is null)
-            {
-                return;
-            }
-
-            await JSModule.DeleteAutoSave(AutoSaveId);
         }
 
         /// <summary>
@@ -878,23 +753,7 @@ namespace TestBucket.MudBlazorExtensions.Markdown
                 {
                     AutoSave = new
                     {
-                        enabled = AutoSaveEnabled,
-                        uniqueId = AutoSaveId,
-                        delay = AutoSaveDelay,
-                        submit_delay = AutoSaveSubmitDelay,
-                        timeFormat = new
-                        {
-                            locale = AutoSaveTimeFormatLocale,
-                            format = new
-                            {
-                                year = AutoSaveTimeFormatYear,
-                                month = AutoSaveTimeFormatMonth,
-                                day = AutoSaveTimeFormatDay,
-                                hour = AutoSaveTimeFormatHour,
-                                minute = AutoSaveTimeFormatMinute
-                            },
-                        },
-                        text = AutoSaveText
+                        enabled = false,
                     },
                     Value = initialValue,
                     AutoDownloadFontAwesome,
@@ -913,7 +772,6 @@ namespace TestBucket.MudBlazorExtensions.Markdown
                     SpellChecker,
                     StatusTexts = new
                     {
-                        Autosave = AutoSaveText,
                         Characters = CharactersStatusText,
                         Lines = LinesStatusText,
                         Words = WordsStatusText,
@@ -963,10 +821,6 @@ namespace TestBucket.MudBlazorExtensions.Markdown
                 JSModule = new JSMarkdownInterop(JSRuntime);
             }
 
-            if (string.IsNullOrEmpty(AutoSaveId))
-            {
-                AutoSaveId = ElementId;
-            }
 
             base.OnInitialized();
         }

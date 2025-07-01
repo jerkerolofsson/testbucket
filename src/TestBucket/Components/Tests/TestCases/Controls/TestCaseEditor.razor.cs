@@ -9,21 +9,7 @@ using TestBucket.Domain.Comments.Models;
 namespace TestBucket.Components.Tests.TestCases.Controls;
 public partial class TestCaseEditor
 {
-    protected string EditButtonClassname =>
-    new CssBuilder("mud-markdown-toolbar-toggle-button")
-        .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
-        .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview != true)
-        .Build();
-
-    protected string PreviewButtonClassname =>
-        new CssBuilder("mud-markdown-toolbar-toggle-button")
-            .AddClass($"mud-{ColorAlt.ToDescriptionString()}-selected", Color != Color.Default && Color != Color.Inherit)
-            .AddClass($"mud-markdown-toolbar-toggle-button-selected", _preview == true)
-            .AddClass(" mr-5", true)
-            .Build();
-
-    [Parameter(CaptureUnmatchedValues = true)]
-    public IDictionary<string, object>? AdditionalAttributes { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object>? AdditionalAttributes { get; set; }
     [Parameter] public Color Color { get; set; } = Color.Surface;
     [Parameter] public Color ColorAlt { get; set; } = Color.Tertiary;
 
@@ -33,10 +19,13 @@ public partial class TestCaseEditor
     [Parameter] public TestCase? Test { get; set; }
     [Parameter] public EventCallback<TestCase?> TestChanged { get; set; }
 
+    [Parameter] public bool ReadOnly { get; set; } = false;
+
+    public bool CanEdit => !ReadOnly;
+
     private IReadOnlyList<FieldDefinition> _fields = [];
     private long? _projectId;
 
-    private bool _preview = true;
     private MarkdownEditor? _editor;
     private MarkdownEditor? _preconditionsEditor;
     private MarkdownEditor? _postconditionsEditor;
@@ -55,7 +44,7 @@ public partial class TestCaseEditor
     {
         get
         {
-            if (_preview && _previewText is not null)
+            if (ReadOnly && _previewText is not null)
             {
                 return _previewText;
             }
@@ -67,7 +56,7 @@ public partial class TestCaseEditor
     {
         get
         {
-            if (_preview && _previewPostconditions is not null)
+            if (ReadOnly && _previewPostconditions is not null)
             {
                 return _previewPostconditions;
             }
@@ -78,7 +67,7 @@ public partial class TestCaseEditor
     {
         get
         {
-            if (_preview && _previewPreconditions is not null)
+            if (ReadOnly && _previewPreconditions is not null)
             {
                 return _previewPreconditions;
             }
@@ -88,7 +77,7 @@ public partial class TestCaseEditor
 
     public async Task OnPostconditionsChanged(string description)
     {
-        if (_preview)
+        if (ReadOnly)
         {
             return;
         }
@@ -103,7 +92,7 @@ public partial class TestCaseEditor
     }
     public async Task OnPreconditionsChanged(string description)
     {
-        if (_preview)
+        if (ReadOnly)
         {
             return;
         }
@@ -118,7 +107,7 @@ public partial class TestCaseEditor
     }
     public async Task OnDescriptionChanged(string description)
     {
-        if (_preview)
+        if (ReadOnly)
         {
             return;
         }
@@ -192,22 +181,22 @@ public partial class TestCaseEditor
         await comments.DeleteCommentAsync(comment);
     }
 
-    private async Task OnPreviewChanged(bool preview)
-    {
-        _preview = preview;
-        if (_descriptionText is not null && _editor is not null)
-        {
-            await _editor.SetValueAsync(_descriptionText);
-        }
-        if (_preconditionsText is not null && _preconditionsEditor is not null)
-        {
-            await _preconditionsEditor.SetValueAsync(_preconditionsText);
-        }
-        if (_postconditionsText is not null && _postconditionsEditor is not null)
-        {
-            await _postconditionsEditor.SetValueAsync(_postconditionsText);
-        }
-    }
+    //private async Task OnPreviewChanged(bool preview)
+    //{
+    //    _preview = preview;
+    //    if (_descriptionText is not null && _editor is not null)
+    //    {
+    //        await _editor.SetValueAsync(_descriptionText);
+    //    }
+    //    if (_preconditionsText is not null && _preconditionsEditor is not null)
+    //    {
+    //        await _preconditionsEditor.SetValueAsync(_preconditionsText);
+    //    }
+    //    if (_postconditionsText is not null && _postconditionsEditor is not null)
+    //    {
+    //        await _postconditionsEditor.SetValueAsync(_postconditionsText);
+    //    }
+    //}
 
     private async Task CompilePreviewAsync()
     {
@@ -219,7 +208,7 @@ public partial class TestCaseEditor
             if (_previewText != previewText && previewText is not null)
             {
                 _previewText = previewText;
-                if(_preview && _editor is not null)
+                if(ReadOnly && _editor is not null)
                 {
                     await _editor.SetValueAsync(_previewText);
                 }
@@ -235,7 +224,7 @@ public partial class TestCaseEditor
             if (_previewPreconditions != previewText && previewText is not null)
             {
                 _previewPreconditions = previewText;
-                if (_preview && _preconditionsEditor is not null)
+                if (ReadOnly && _preconditionsEditor is not null)
                 {
                     await _preconditionsEditor.SetValueAsync(_previewPreconditions);
                 }
@@ -251,7 +240,7 @@ public partial class TestCaseEditor
             if (_previewPostconditions != previewText && previewText is not null)
             {
                 _previewPostconditions = previewText;
-                if (_preview && _postconditionsEditor is not null)
+                if (ReadOnly && _postconditionsEditor is not null)
                 {
                     await _postconditionsEditor.SetValueAsync(_previewPostconditions);
                 }

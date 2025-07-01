@@ -22,8 +22,6 @@ public interface IMarkdownEditor
     Task SetFullScreenAsync(bool wantedState);
 
     Task SetValueAsync(string value);
-    Task CleanAllAutoSave();
-    Task CleanAutoSave();
     Task<string?> GetValueAsync();
 
 }

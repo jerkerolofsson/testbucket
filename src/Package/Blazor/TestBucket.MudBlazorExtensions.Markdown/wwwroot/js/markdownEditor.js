@@ -175,9 +175,12 @@ function initialize(dotNetObjectRef, element, elementId, previewElementId, optio
                         const language = hljs.getLanguage(lang) ? lang : 'plaintext';
                         let highlighted = hljs.highlight(code, { language }).value;
 
-                        console.log("highlight, options", options);
-
                         highlighted += `<div class='tb-code-overlay'>`;
+
+                        if (language) {
+                            highlighted += `<div data-language='${language}' class="language">${language}</div>`;
+                        }
+
                         if (options.enableRunCode && options.runCodeLanguages) {
 
                             // Only show play button for some languages
@@ -185,7 +188,7 @@ function initialize(dotNetObjectRef, element, elementId, previewElementId, optio
                             if (supportedLanguages.indexOf(language) != -1) {
 
                                 const wrapperCssClass = `tb-code-run-overlay-${parseInt(Math.random() * 100000)}`;
-                                highlighted += `<div class='tb-code-run-overlay ${wrapperCssClass}'>
+                                highlighted += `<div class='tb-code-run-overlay ${wrapperCssClass}' data-run-language='${language}'>
                                                     <svg width="24" height="24" viewBox="0 0 24 24"><path d=\"M0 0h24v24H0z\" fill=\"none\"/><path fill=\"currentColor\" d=\"M8 5v14l11-7z\"/></svg>
                                                 </div>`;
 

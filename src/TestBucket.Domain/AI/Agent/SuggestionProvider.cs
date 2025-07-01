@@ -25,6 +25,11 @@ public class SuggestionProvider
                 suggestions.Add(new Suggestion($"Review this test case: {reference.Name}", $"Review this test case: {reference.Name}. Please provide feedback on the test coverage and if there are any problems with this test case."));
             }
 
+            if (reference.EntityTypeName == "Issue")
+            {
+                suggestions.Add(new Suggestion("Summarize this issue", $"Please summarize the issue: {reference.Name}."));
+                suggestions.Add(new Suggestion($"Find issues similar to '{reference.Name}'", $"Find issues similar to '{reference.Name}'. Summarize the description and search for similar issues"));
+            }
 
             if (reference.EntityTypeName == "Feature")
             {

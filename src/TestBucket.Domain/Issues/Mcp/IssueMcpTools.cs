@@ -55,8 +55,8 @@ public class IssueMcpTools : AuthenticatedTool
     /// Assigns the issue to a user
     /// </summary>
     /// <returns></returns>
-    [McpServerTool(Name = "search-for-issue"), Description("Searches for an issue and returns issueId")]
-    public async Task<string> SearchForIssue(string text)
+    [McpServerTool(Name = "search-for-issue"), Description("Searches for an issue and returns the issue")]
+    public async Task<IssueDto?> SearchForIssue(string text)
     {
         var isAuthenticated = await IsAuthenticatedAsync();
         if (isAuthenticated && _principal is not null)
@@ -70,14 +70,14 @@ public class IssueMcpTools : AuthenticatedTool
                 }, 0, 1);
                 if (result is null || result.TotalCount == 0)
                 {
-                    return $"No issue was found";
+                    return null;
                 }
 
-                return result.Items[0].Id.ToString();
+                return result.Items[0].ToDto();
             }
 
         }
-        return "You don't have permission to use the tool";
+        return null;
     }
 
     private async Task<LocalIssue?> FindIssueAsync(string issueId)

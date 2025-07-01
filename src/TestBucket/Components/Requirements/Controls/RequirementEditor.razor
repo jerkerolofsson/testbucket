@@ -22,7 +22,6 @@
 
                 <MudTextField Variant="Variant.Outlined"
                     Label="@loc.Shared["title"]"
-                    HelperText="@loc.Shared["title"]"
                     AdornmentColor="Color.Tertiary" 
                     Value="@Requirement.Name" 
                     ValueChanged="OnNameChanged" 
@@ -31,11 +30,14 @@
 
                     <div>
                         <MarkdownEditor 
+                            ToolbarButtonClass="tb-markdown-toolbar-button"
+                            IconSize="Size.Medium"
+                            CanToggleEdit="false"
                             Preview="false"
                             ShowToolbar="true"
                             MaxHeight="100%"
                             MinHeight="100%"
-                            Color="Color.Primary"
+                            Color="Color.Surface"
                             AllowResize="true"
                             ValueUpdateMode="ValueUpdateMode.OnBlur"
                             Value="@Requirement.Description"

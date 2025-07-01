@@ -1,5 +1,5 @@
 ﻿@attribute [Authorize()]
-@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}"
+@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/Edit"
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Domain.Requirements.Models
 @layout TestCaseDetailsLayout
@@ -7,7 +7,7 @@
 @inject TestCaseEditorController testCaseEditorService
 @inject AppNavigationManager appNavigationManager
 
-<TestCaseEditor ReadOnly Test="@TestCase" TestChanged="OnTestModified" />
+<TestCaseEditor ReadOnly="false" Test="@TestCase" TestChanged="OnTestModified" />
 
 @code {
     [Parameter] public long TestCaseId { get; set; }

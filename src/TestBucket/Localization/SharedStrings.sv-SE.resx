@@ -900,4 +900,7 @@
   <data name="chat" xml:space="preserve">
     <value />
   </data>
+  <data name="explorer" xml:space="preserve">
+    <value />
+  </data>
 </root>

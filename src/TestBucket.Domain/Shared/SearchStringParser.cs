@@ -70,7 +70,14 @@ internal class SearchStringParser
                     }
                     else
                     {
-                        fieldFilters.Add(new FieldFilter { FilterDefinitionId = field.Id, Name=keyword, StringValue = value });
+                        if (field.Type == FieldType.Boolean)
+                        {
+                            fieldFilters.Add(new FieldFilter { FilterDefinitionId = field.Id, Name = keyword, BooleanValue = ParseBoolean(value) });
+                        }
+                        else
+                        {
+                            fieldFilters.Add(new FieldFilter { FilterDefinitionId = field.Id, Name = keyword, StringValue = value });
+                        }
                     }
                 }
             }
@@ -93,5 +100,18 @@ internal class SearchStringParser
             return textSearch;
         }
         return null;
+    }
+
+    private static bool ParseBoolean(string value)
+    {
+        if (value.Equals("true", StringComparison.InvariantCultureIgnoreCase))
+        {
+            return true;
+        }
+        if (value.Equals("yes", StringComparison.InvariantCultureIgnoreCase))
+        {
+            return true;
+        }
+        return false;
     }
 }

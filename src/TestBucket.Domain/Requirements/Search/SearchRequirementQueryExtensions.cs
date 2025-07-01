@@ -25,9 +25,13 @@ namespace TestBucket.Domain.Requirements.Search
             {
                 items.Add($"open:yes");
             }
-            else if(query.IsOpen == false)
+            else if (query.IsOpen == false)
             {
                 items.Add($"open:no");
+            }
+            else if (query.RequirementSpecificationId is not null)
+            {
+                items.Add($"collection-id:" + query.RequirementSpecificationId);
             }
             BaseQueryParser.Serialize(query, items);
 

@@ -1,16 +1,19 @@
 ﻿using Aspire.Hosting;
 using Aspire.Hosting.Testing;
+using k8s.KubeConfigModels;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
+using System;
 using System.Diagnostics;
 using System.Security.Claims;
 using TestBucket.Contracts;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Settings.Models;
-using Xunit.Sdk;
+using TestBucket.Tests.EndToEndTests.Pages;
 using TestBucket.Traits.Xunit.Enrichment;
+using Xunit.Sdk;
 
 namespace TestBucket.Tests.EndToEndTests.Fixtures
 {
@@ -18,6 +21,7 @@ namespace TestBucket.Tests.EndToEndTests.Fixtures
     {
         private DistributedApplication? _app;
         private IPlaywright? _playwright;
+        private IServiceProvider? _serviceProvider;
         public string Tenant => _configuration.Tenant ?? throw new InvalidOperationException("Invalid SeedConfiguration in fixture");
         public SeedConfiguration Configuration => _configuration;
 
@@ -39,6 +43,16 @@ namespace TestBucket.Tests.EndToEndTests.Fixtures
         /// </summary>
         public ClaimsPrincipal SiteAdministrator => Impersonation.Impersonate(_configuration.Tenant);
 
+        internal async ValueTask<LoginPage> OpenAsync(string browserType)
+        {
+            if (_serviceProvider is null)
+            {
+                throw new Exception("Fixture is not initialized");
+            }
+            var loginPage = await PageFactory.CreateAsync<LoginPage>(_serviceProvider, this, browserType);
+            await loginPage.NewPageAsync();
+            return loginPage;
+        }
 
         public async ValueTask InitializeAsync()
         {
@@ -71,6 +85,7 @@ namespace TestBucket.Tests.EndToEndTests.Fixtures
 
             using var ctsBuild = new CancellationTokenSource(TimeSpan.FromSeconds(120));
             var app = await builder.BuildAsync(ctsBuild.Token);
+            _serviceProvider = app.Services;
             var logger = app.Services.GetRequiredService<ILogger<PlaywrightFixture>>();
 
             using var ctsStart = new CancellationTokenSource(TimeSpan.FromSeconds(120));
@@ -100,6 +115,13 @@ namespace TestBucket.Tests.EndToEndTests.Fixtures
         }
 
         private BrowserTypeLaunchOptions DefaultBrowserTypeLaunchOptions => new BrowserTypeLaunchOptions { Headless = false };
+
+        public async Task<BrowserTestContext> CreateBrowserContextAsync(string type, BrowserTypeLaunchOptions? options = null)
+        {
+            var browser = await CreateBrowserAsync(type, options);
+            var context = await browser.NewContextAsync(new() { IgnoreHTTPSErrors = true });
+            return new BrowserTestContext { Browser = browser, Context = context, Fixture = this };
+        }
 
         public async Task<IBrowser> CreateBrowserAsync(string type, BrowserTypeLaunchOptions? options = null)
         {

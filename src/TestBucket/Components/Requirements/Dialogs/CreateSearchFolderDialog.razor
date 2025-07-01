@@ -1,0 +1,80 @@
+﻿@using FluentValidation
+@using TestBucket.Components.Tests.Services
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<ValidationStrings> validationLoc
+
+@inject IValidator<SearchFolder> validator
+
+<EditForm Model="@_folder" OnValidSubmit="OnValidSubmit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+
+        <TitleContent>@loc["new-search-folder"]</TitleContent>
+
+        <DialogContent>
+            <MudStack Spacing="0">
+                <MudTextField 
+                    AutoFocus="true"
+                    Variant="Variant.Outlined"
+                    Label="@loc["name"]"
+                    T="string" ValueChanged="OnValueChanged" Value="@_folder.Name"></MudTextField>
+
+                <MudTextField AutoFocus="true"
+                              Variant="Variant.Outlined"
+                              Label="@loc["filter"]"
+                              T="string" ValueChanged="OnQueryChanged" Value="@_folder.Query"></MudTextField>
+
+                @if (_validationResult is not null)
+                {
+                    <FluentValidationResultSummary Result="@_validationResult" StringLocalizer="@validationLoc" />
+                }
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private FluentValidation.Results.ValidationResult? _validationResult;
+
+    private SearchFolder _folder = new() { Name = "New Search Folder", Query = "" };
+
+    private void OnValueChanged(string name)
+    {
+        _folder.Name = name;
+        Validate();
+    }
+    private void OnQueryChanged(string query)
+    {
+        _folder.Query = query;
+        Validate();
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private bool Validate()
+    {
+        _validationResult = validator.Validate(_folder);
+
+        return _validationResult.IsValid;
+    }
+
+    private void OnValidSubmit()
+    {
+        if(!Validate())
+        {
+            return;
+        }
+
+        MudDialog.Close(_folder);
+    }
+}

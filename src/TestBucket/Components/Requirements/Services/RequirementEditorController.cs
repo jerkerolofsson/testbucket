@@ -2,19 +2,18 @@
 
 using Microsoft.Extensions.Localization;
 
-using TestBucket.Domain.Requirements.Mapping;
+using NGitLab.Models;
+
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Tests.TestCases.Dialogs;
-using TestBucket.Contracts.Requirements;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements;
+using TestBucket.Domain.Requirements.Fields;
 using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Traceability;
 using TestBucket.Domain.Traceability.Models;
 using TestBucket.Localization;
 using TestBucket.Traits.Core;
-using TestBucket.Domain.Requirements.Fields;
 
 namespace TestBucket.Components.Requirements.Services;
 
@@ -348,5 +347,23 @@ internal class RequirementEditorController : TenantBaseService
         });
     }
 
+    internal async Task AddSearchFolderAsync(RequirementSpecification specification)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var parameters = new DialogParameters<CreateSearchFolderDialog>
+        {
+        };
+        var dialog = await _dialogService.ShowAsync<CreateSearchFolderDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
 
+        if(result?.Data is SearchFolder searchFolder)
+        {
+            specification.SearchFolders ??= [];
+            specification.SearchFolders.Add(searchFolder);
+            specification.SearchFolders.Sort((a,b) => a.Name.CompareTo(b.Name));
+
+            await _manager.UpdateRequirementSpecificationAsync(principal, specification);
+        }
+
+    }
 }

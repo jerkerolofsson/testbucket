@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Requirements.Models;
+﻿using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.Specifications.Folders;
 using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCases;
-using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Requirements.Specifications
 {

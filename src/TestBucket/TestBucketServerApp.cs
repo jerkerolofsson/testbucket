@@ -340,7 +340,9 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, DeleteRequirementCommand>();
         builder.Services.AddScoped<ICommand, DeleteRequirementFolderCommand>();
         builder.Services.AddScoped<ICommand, DeleteRequirementSpecificationCommand>();
+        builder.Services.AddScoped<ICommand, NewRequirementSpecificationSearchFolderCommand>();
         builder.Services.AddScoped<ICommand, NewRequirementFolderCommand>();
+        
         builder.Services.AddScoped<ICommand, SplitSpecificationCommand>();
         builder.Services.AddScoped<ICommand, ApproveRequirementCommand>();
         builder.Services.AddScoped<ICommand, EditRequirementCommand>();

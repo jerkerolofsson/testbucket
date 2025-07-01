@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Teams.Models;
-using TestBucket.Domain.Tenants.Models;
-
-namespace TestBucket.Domain.Requirements.Models
+﻿namespace TestBucket.Domain.Requirements.Models
 {
     [Table("spec")]
     [Index(nameof(TenantId), nameof(Created))]
@@ -54,6 +45,12 @@ namespace TestBucket.Domain.Requirements.Models
         /// Read-only requirements are managed outside
         /// </summary>
         public bool ReadOnly { get; set; }
+
+        /// <summary>
+        /// Search folders specific to this specification
+        /// </summary>
+        [Column(TypeName = "jsonb")]
+        public List<SearchFolder>? SearchFolders { get; set; }
 
         // Customization
 

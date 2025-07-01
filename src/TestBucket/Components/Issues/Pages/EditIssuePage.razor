@@ -38,7 +38,10 @@
         if(_issue is null || _issue.Id != IssueId)
         {
             _issue = await controller.GetIssueByIdAsync(IssueId);
-            appNavigationManager.State.SetSelectedIssue(_issue);
+            if (_issue is not null)
+            {
+                appNavigationManager.State.SetSelectedIssue(_issue);
+            }
         }
     }
 

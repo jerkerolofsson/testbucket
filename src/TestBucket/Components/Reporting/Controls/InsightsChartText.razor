@@ -10,15 +10,21 @@
         if (Spec is not null)
         {
             point = GetPoint();
-            ColorMap.TryGetValue(point.Label, out color);
+            if (point is not null)
+            {
+                ColorMap.TryGetValue(point.Label, out color);
+            }
         }
         color ??= "#2085fb";
         string cssStyle = $"color: {color}";
 
-        <div class=tb-insights-chart-text-container>
-            <div data-testid="value" class="tb-insights-chart-text value" style="@cssStyle">@point.Value</div>
-            <div data-testid="label" class="tb-insights-chart-text label">@point.Label</div>
-        </div>
+        if(point is not null)
+        {
+            <div class=tb-insights-chart-text-container>
+                <div data-testid="value" class="tb-insights-chart-text value" style="@cssStyle">@point.Value</div>
+                <div data-testid="label" class="tb-insights-chart-text label">@point.Label</div>
+            </div>
+        }
     }
 }
 

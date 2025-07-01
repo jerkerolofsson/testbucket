@@ -1,21 +1,9 @@
-﻿using System.Collections.Generic;
-
-using Microsoft.CodeAnalysis;
-using Microsoft.Extensions.Localization;
-
-using MudBlazor;
-
-using Octokit.Internal;
-
-using Plotly.Blazor.Traces.SankeyLib;
+﻿using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Tree;
-using TestBucket.Components.Tests.Services;
-using TestBucket.Components.Tests.TestCases.Dialogs;
-using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Domain;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
@@ -257,6 +245,19 @@ internal class RequirementBrowser : TenantBaseService
                     Offset = 0,
                     Count = 1_000
                 };
+
+                // Add search folders
+                if(parent.RequirementSpecification.SearchFolders is not null)
+                {
+                    items.AddRange(parent.RequirementSpecification.SearchFolders.Select(x => new TreeNode<BrowserItem>
+                    {
+                        Value = new BrowserItem { Href = $"{_appNavigationManager.GetRequirementsSearchUrl()}?q=" + x.Query + " collection-id:" + parent.RequirementSpecification.Id },
+                        Text = x.Name,
+                        Icon = TbIcons.BoldDuoTone.FolderStar,
+                        Expandable = false,
+                        Children = null,
+                    }));
+                }
 
                 // Add folders
                 var folders = await _requirementManager.SearchRequirementFoldersAsync(principal, folderQuery);

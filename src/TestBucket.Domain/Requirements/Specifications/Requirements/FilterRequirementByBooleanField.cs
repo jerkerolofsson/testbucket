@@ -19,6 +19,13 @@ public class FilterRequirementByBooleanField : FilterSpecification<Requirement>
 
     protected override Expression<Func<Requirement, bool>> GetExpression()
     {
-        return x => x.RequirementFields!.Where(f => f.FieldDefinitionId == _fieldDefinitionId && f.BooleanValue == _value).Any();
+        if (_value)
+        {
+            return x => x.RequirementFields!.Where(f => f.FieldDefinitionId == _fieldDefinitionId && f.BooleanValue == true).Any();
+        }
+        else
+        {
+            return x => !x.RequirementFields!.Where(f => f.FieldDefinitionId == _fieldDefinitionId && f.BooleanValue == true).Any();
+        }
     }
 }

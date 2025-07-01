@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Tests.EndToEndTests.Fixtures;
+﻿using TestBucket.Tests.EndToEndTests.Fixtures;
 
 namespace TestBucket.Tests.EndToEndTests.Pages
 {
-    internal class WelcomePage : AuthentictedPage
+    internal class WelcomePage : BasePage
     {
-        public WelcomePage(PlaywrightFixture Fixture, string BrowserType) : base(Fixture, BrowserType)
+        public WelcomePage(BrowserTestContext context, IPage page) : base(context, page)
         {
+
+        }
+        public WelcomePage(BasePage otherPage) : base(otherPage)
+        {
+
         }
 
         internal async Task CreateProjectAsync(string teamName, string projectName)
@@ -21,14 +21,11 @@ namespace TestBucket.Tests.EndToEndTests.Pages
             await Page.GetByTestId("name").FillAsync(teamName);
             await Page.GetByTestId("ok").ClickAsync();
 
-            await Task.Delay(10000);
-
             await Page.GetByTestId("welcome-add-project").ClickAsync();
             await Page.GetByTestId("add-project-dialog").WaitForAsync();
             await Page.GetByTestId("name").FillAsync(projectName);
             await Page.GetByTestId("ok").ClickAsync();
 
-            await Task.Delay(10000);
         }
     }
 }

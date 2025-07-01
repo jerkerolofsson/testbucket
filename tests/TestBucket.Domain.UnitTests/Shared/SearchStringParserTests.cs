@@ -89,7 +89,7 @@ namespace TestBucket.Domain.UnitTests.Shared
         {
             Dictionary<string, string> result = new();
             List<FieldFilter> filters = [];
-            List<FieldDefinition> fieldDefinitions = [new FieldDefinition { Name = "Dark Mode", Id = 123 }];
+            List<FieldDefinition> fieldDefinitions = [new FieldDefinition { Name = "Dark Mode", Id = 123, Type = FieldType.String }];
             HashSet<string> keywords = ["is", "after", "before"];
             var text = SearchStringParser.Parse("hello \"Dark Mode\":\"Working Good!\"", result, filters, keywords, fieldDefinitions);
 
@@ -106,7 +106,7 @@ namespace TestBucket.Domain.UnitTests.Shared
         {
             Dictionary<string, string> result = new();
             List<FieldFilter> filters = [];
-            List<FieldDefinition> fieldDefinitions = [new FieldDefinition { Name = "Dark Mode", Id = 123 }];
+            List<FieldDefinition> fieldDefinitions = [new FieldDefinition { Name = "Dark Mode", Id = 123, Type = FieldType.String }];
             HashSet<string> keywords = ["is", "after", "before"];
             var text = SearchStringParser.Parse("hello \"Dark Mode\":abc", result, filters, keywords, fieldDefinitions);
 
@@ -123,7 +123,7 @@ namespace TestBucket.Domain.UnitTests.Shared
         {
             Dictionary<string, string> result = new();
             List<FieldFilter> filters = [];
-            List<FieldDefinition> fieldDefinitions = [new FieldDefinition { Name = "component", Id = 123 }];
+            List<FieldDefinition> fieldDefinitions = [new FieldDefinition { Name = "component", Id = 123, Type = FieldType.String }];
             HashSet<string> keywords = ["is", "after", "before"];
             var text = SearchStringParser.Parse("hello component:\"red color\"", result, filters, keywords, fieldDefinitions);
 
@@ -140,13 +140,36 @@ namespace TestBucket.Domain.UnitTests.Shared
         {
             Dictionary<string, string> result = new();
             List<FieldFilter> filters = [];
-            List<FieldDefinition> fieldDefinitions = [new FieldDefinition { Name = "component", Id = 123 }];
+            List<FieldDefinition> fieldDefinitions = [new FieldDefinition { Name = "component", Id = 123, Type = FieldType.String }];
             HashSet<string> keywords = ["is", "after", "before"];
             var text = SearchStringParser.Parse("hello component:keyboard", result, filters, keywords, fieldDefinitions);
 
             Assert.Single(filters);
             Assert.Equal(123, filters[0].FilterDefinitionId);
             Assert.Equal("keyboard", filters[0].StringValue);
+        }
+
+
+        /// <summary>
+        /// Verifies that a field and its value are correctly parsed and added to the filters list.
+        /// </summary>
+        [Theory]
+        [InlineData("yes", true)]
+        [InlineData("true", true)]
+        [InlineData("no", false)]
+        [InlineData("false", false)]
+        [InlineData("zzz", false)]
+        public void ParseString_WithBooleanFieldAndValue(string userValue, bool expectedValue)
+        {
+            Dictionary<string, string> result = new();
+            List<FieldFilter> filters = [];
+            List<FieldDefinition> fieldDefinitions = [new FieldDefinition { Name = "approved", Id = 123, Type = FieldType.Boolean }];
+            HashSet<string> keywords = [];
+            var text = SearchStringParser.Parse($"approved:{userValue}", result, filters, keywords, fieldDefinitions);
+
+            Assert.Single(filters);
+            Assert.Equal(123, filters[0].FilterDefinitionId);
+            Assert.Equal(expectedValue, filters[0].BooleanValue);
         }
 
         /// <summary>

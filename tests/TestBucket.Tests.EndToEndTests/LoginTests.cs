@@ -19,8 +19,7 @@ namespace TestBucket.Tests.EndToEndTests
         [InlineData(BrowserType.Firefox)]
         public async Task Login_WithValidCredentials_CanLogin(string browserType)
         {
-            await using var browser = await Playwright.CreateBrowserAsync(browserType);
-            var loginPage = new LoginPage(Playwright, browser);
+            await using var loginPage = await Playwright.OpenAsync(browserType);
             var success = await loginPage.LoginAsync(Playwright.Configuration.Email, Playwright.Configuration.Password);
             Assert.True(success, "Login should be successful with valid credentials");
         }
@@ -32,8 +31,7 @@ namespace TestBucket.Tests.EndToEndTests
         [InlineData(BrowserType.Firefox)]
         public async Task Login_WithInvalidCredentials_CannotLogin(string browserType)
         {
-            await using var browser = await Playwright.CreateBrowserAsync(browserType);
-            var loginPage = new LoginPage(Playwright, browser);
+            await using var loginPage = await Playwright.OpenAsync(browserType);
             var success = await loginPage.LoginAsync(Playwright.Configuration.Email, Playwright.Configuration.Password + "-not");
             Assert.False(success, "Login should not be successful with invalid credentials");
         }
@@ -43,8 +41,7 @@ namespace TestBucket.Tests.EndToEndTests
         [Fact]
         public async Task Login_Accessibility()
         {
-            await using var browser = await Playwright.CreateBrowserAsync(BrowserType.Chromium);
-            var loginPage = new LoginPage(Playwright, browser);
+            await using var loginPage = await Playwright.OpenAsync(BrowserType.Chromium);
             var results = await loginPage.RunAxeOnLoginAsync();
             await Task.Delay(15000, TestContext.Current.CancellationToken);
             foreach(var violation in results.Violations)

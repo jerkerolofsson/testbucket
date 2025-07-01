@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Requirements.Models;
+﻿using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Search;
-using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Requirements.Search;
 public class SearchRequirementQueryParser
@@ -16,6 +9,7 @@ public class SearchRequirementQueryParser
         "is",
         "state",
         "assigned-to",
+        "collection-id",
         "open",
         .. BaseQueryParser.Keywords
        ];
@@ -34,6 +28,13 @@ public class SearchRequirementQueryParser
             {
                 case "state":
                     request.RequirementState = pair.Value;
+                    break;
+
+                case "collection-id":
+                    if (long.TryParse(pair.Value, out var id))
+                    {
+                        request.RequirementSpecificationId = id;
+                    }
                     break;
 
                 case "assigned-to":

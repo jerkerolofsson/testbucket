@@ -2,6 +2,7 @@
 
 using TestBucket.Contracts.Issues.Models;
 using TestBucket.Contracts.Issues.States;
+using TestBucket.Domain.AI.Embeddings;
 using TestBucket.Domain.Issues.Mapping;
 using TestBucket.Domain.Projects.Mapping;
 

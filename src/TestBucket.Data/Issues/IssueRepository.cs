@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 
+using Pgvector.EntityFrameworkCore;
+
 using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Data.Sequence;
@@ -154,6 +156,37 @@ internal class IssueRepository : IIssueRepository
         }
 
         return data;
+    }
+
+    public async Task<PagedResult<LocalIssue>> SemanticSearchAsync(ReadOnlyMemory<float> embeddingVector, List<FilterSpecification<LocalIssue>> filters, int offset, int count)
+    {
+        var vector = new Pgvector.Vector(embeddingVector);
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var issues = dbContext.LocalIssues.AsNoTracking()
+            .Include(x => x.Comments)
+            .Include(x => x.IssueFields!).ThenInclude(y => y.FieldDefinition)
+            .AsQueryable();
+
+        foreach (var filter in filters)
+        {
+            issues = issues.Where(filter.Expression);
+        }
+        issues = issues.Where(x => x.Embedding != null);
+
+        var totalCount = issues.LongCount();
+
+        var page = issues.Select(x=> new { Issue = x, Distance = x.Embedding!.CosineDistance(vector) })
+            .OrderBy(x => x.Distance)
+            .Skip(offset)
+            .Take(count)
+            .Select(x => x.Issue);
+
+        return new PagedResult<LocalIssue>()
+        {
+            TotalCount = totalCount,
+            Items = await page.ToArrayAsync()
+        };
     }
     public async Task<PagedResult<LocalIssue>> SearchAsync(List<FilterSpecification<LocalIssue>> filters, int offset, int count)
     {

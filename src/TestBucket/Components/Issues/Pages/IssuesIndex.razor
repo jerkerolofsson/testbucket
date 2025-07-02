@@ -35,13 +35,15 @@
             <ToolBarContent>
                 <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
                     <MudTextField Value="@_searchText" T="string" ValueChanged="OnSearch"
-                    Class="mt-2 default-search"
+                    Class="default-search"
                     Clearable="true"
                     Variant="Variant.Outlined"
                     IconSize="Size.Small"
                     Adornment="Adornment.Start"
                     Placeholder="@loc["search"]"
                     AdornmentIcon="@Icons.Material.Filled.Search" />
+
+                    <SemanticSearchToggle @bind-Enabled="@_semanticSearch" EnabledLabel="@loc["semantic-search"]" DisabledLabel="@loc["normal-search"]" />
 
                     <MudSpacer />
                     <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Write">
@@ -137,6 +139,7 @@
 
     private MudDataGrid<LocalIssue>? _grid;
     private string? _searchText;
+    private bool _semanticSearch = true;
 
     private long? _totalCount;
 
@@ -187,7 +190,15 @@
             return new GridData<LocalIssue> { TotalItems = 0 };
         }
 
-        PagedResult<LocalIssue> result = await controller.SearchAsync(Project.Id, _searchText ?? "", state.Page * state.PageSize, state.PageSize);
+        PagedResult<LocalIssue> result;
+        if(_semanticSearch)
+        {
+            result = await controller.SemanticSearchAsync(Project.Id, _searchText ?? "", state.Page * state.PageSize, state.PageSize);
+        }
+        else
+        {
+            result = await controller.SearchAsync(Project.Id, _searchText ?? "", state.Page * state.PageSize, state.PageSize);
+        }
 
         if (_totalCount != result.TotalCount)
         {

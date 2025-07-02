@@ -2,6 +2,8 @@
 
 using Microsoft.Extensions.Logging;
 
+using ModelContextProtocol.Protocol;
+
 using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Issues.Types;
@@ -99,13 +101,35 @@ public class IssueManager : IIssueManager
         return await SearchLocalIssuesAsync(principal, SearchIssueRequestParser.Parse(projectId, text, definitions), offset, count);
     }
 
+    public async Task<PagedResult<LocalIssue>> SemanticSearchLocalIssuesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
+
+        var definitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, projectId, FieldTarget.Issue);
+        var query = SearchIssueRequestParser.Parse(projectId, text, definitions);
+        var semanticSearchText = query.Text;
+
+        // Clear the text field so we don't add a filter for it
+        query.Text = null;
+        List<FilterSpecification<LocalIssue>> filters = [new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow()), .. SearchIssueRequestBuilder.Build(query)];
+
+        if (!string.IsNullOrEmpty(semanticSearchText))
+        {
+            var embedding = await _mediator.Send(new GenerateEmbeddingRequest(projectId, semanticSearchText));
+            if(embedding?.EmbeddingVector is not null)
+            {
+                return await _repository.SemanticSearchAsync(embedding.EmbeddingVector.Value, filters, offset, count);
+            }
+        }
+        return await SearchLocalIssuesAsync(principal, projectId, text, offset, count);
+    }
+
     public async Task<PagedResult<LocalIssue>> SearchLocalIssuesAsync(ClaimsPrincipal principal, SearchIssueQuery request, int offset, int count)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
         List<FilterSpecification<LocalIssue>> filters = [
             new FilterByTenant<LocalIssue>(principal.GetTenantIdOrThrow())
         ];
-
         filters.AddRange(SearchIssueRequestBuilder.Build(request));
         return await _repository.SearchAsync(filters, offset, count);
     }

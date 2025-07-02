@@ -1,0 +1,74 @@
+.tb-semantic-toggle {
+    position: relative;
+    font-size: 7pt;
+    min-width: 80px;
+    min-height: 24px;
+    border-radius: 100vw;
+
+    --back-color: var(--mud-palette-tertiary);
+    --lock-color: var(--mud-palette-tertiary-lighten);
+    --circle-color: var(--mud-palette-tertiary-darken);
+
+    background: var(--back-color);
+    user-select: none;
+}
+
+.tb-semantic-toggle.enabled {
+    --back-color: var(--mud-palette-tertiary-lighten);
+    --lock-color: var(--mud-palette-tertiary);
+    --circle-color: white;
+}
+
+.tb-semantic-toggle ::deep .ai-icon {
+
+    color: var(--lock-color);
+
+    background: var(--circle-color);
+    border-radius: 100vw;
+
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%) translateX(5px);
+    padding: 2px;
+    width: 20px;
+    height: 20px;
+
+    transition: transform linear 150ms;
+}
+
+.tb-semantic-toggle.enabled ::deep .ai-icon {
+    transform: translateY(-50%) translateX(calc(80px - 20px - 4px));
+}
+
+.tb-semantic-toggle .enabled-label,
+.tb-semantic-toggle .disabled-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    transition: opacity linear 200ms;
+}
+
+.tb-semantic-toggle .enabled-label {
+    left: 8px;
+    color: var(--mud-palette-tertiary-text);
+}
+.tb-semantic-toggle .disabled-label {
+    right: 8px;
+    color: var(--mud-palette-tertiary-text);   
+}
+
+.tb-semantic-toggle .enabled-label {
+    opacity: 0;
+}
+.tb-semantic-toggle .disabled-label {
+    opacity: 1;
+}
+
+.tb-semantic-toggle.enabled .enabled-label {
+    opacity: 1;
+}
+.tb-semantic-toggle.enabled .disabled-label {
+    opacity: 0;
+}

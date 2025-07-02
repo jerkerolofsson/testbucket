@@ -28,4 +28,5 @@ public interface IIssueRepository
     Task UpdateLocalIssueAsync(LocalIssue localIssue);
     Task<InsightsData<DateOnly, int>> GetClosedIssuesPerDay(IEnumerable<FilterSpecification<LocalIssue>> filters);
     Task<InsightsData<DateOnly, int>> GetCreatedIssuesPerDay(IEnumerable<FilterSpecification<LocalIssue>> filters);
+    Task<PagedResult<LocalIssue>> SemanticSearchAsync(ReadOnlyMemory<float> embeddingVector, List<FilterSpecification<LocalIssue>> filters, int offset, int count);
 }

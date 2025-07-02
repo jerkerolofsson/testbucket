@@ -34,6 +34,7 @@ internal class SearchIssueRequestBuilder
         {
             filters.Add(new FindLocalIssueByMappedState(request.MappedState.Value));
         }
+       
         if (request.Fields.Count > 0)
         {
             foreach (var field in request.Fields)

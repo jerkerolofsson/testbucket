@@ -120,5 +120,6 @@ public interface IIssueManager
     Task<InsightsData<string, int>> GetIssueCountPerFieldAsync(ClaimsPrincipal principal, SearchIssueQuery request, long fieldDefinitionId);
     Task<InsightsData<DateOnly, int>> GetCreatedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request);
     Task<InsightsData<DateOnly, int>> GetClosedIssuesPerDay(ClaimsPrincipal principal, SearchIssueQuery request);
+    Task<PagedResult<LocalIssue>> SemanticSearchLocalIssuesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count);
     #endregion
 }

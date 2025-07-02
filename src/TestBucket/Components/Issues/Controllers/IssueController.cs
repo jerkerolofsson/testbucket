@@ -39,10 +39,16 @@ internal class IssueController : TenantBaseService
 
     }
 
+    public async Task<PagedResult<LocalIssue>> SemanticSearchAsync(long projectId, string text, int offset, int count)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _manager.SemanticSearchLocalIssuesAsync(principal, projectId, text, offset, count);
+    }
+
     public async Task<PagedResult<LocalIssue>> SearchAsync(long projectId, string text, int offset, int count)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        return await _manager.SearchLocalIssuesAsync(principal, projectId, text, offset,count);
+        return await _manager.SearchLocalIssuesAsync(principal, projectId, text, offset, count);
     }
     public async Task DeleteLocalIssueAsync(LocalIssue issue)
     {

@@ -161,6 +161,7 @@ public static class TestBucketServerApp
         {
             dbContextBuilder.UseNpgsql(builder =>
             {
+                builder.UseVector();
                 builder.ConfigureDataSource(dataSource =>
                 {
                     dataSource.EnableDynamicJson();

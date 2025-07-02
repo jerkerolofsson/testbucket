@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using OneOf.Types;
+
 using TestBucket.Domain.AI.Models;
 
 namespace TestBucket.Domain.AI;
@@ -93,6 +95,14 @@ public class LlmModels
             Name = "Qwen3 1.7b",
             OllamaName = "qwen3:1.7b",
             Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Thinking
+        },
+        ["all-minilm"] = new LlmModel
+        {
+            Icon = TbIcons.Brands.HuggingFace,
+            Vendor = "hugging-face",
+            Name = "all-minilm",
+            OllamaName = "all-minilm",
+            Capabilities = ModelCapability.Embedding
         },
     };
 

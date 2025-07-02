@@ -28,7 +28,9 @@ var apiKeyGenerator = new ApiKeyGenerator(symmetricKey, issuer, audience);
 string accessToken = apiKeyGenerator.GenerateAccessToken(principal, DateTime.UtcNow.AddDays(100));
 string runnerAccessToken = apiKeyGenerator.GenerateAccessToken("runner", principal, DateTime.UtcNow.AddDays(100));
 
-IResourceBuilder<PostgresServerResource> postgres = builder.AddPostgres("testbucket-postgres");
+IResourceBuilder<PostgresServerResource> postgres = builder.AddPostgres("testbucket-postgres")
+    .WithImage("ankane/pgvector")
+    .WithImageTag("latest");
 
 if (!isTest)
 {

@@ -216,7 +216,7 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, AiProviderUrlSetting>();
         services.AddScoped<ISetting, AiModelSetting>();
         services.AddScoped<ISetting, AiLlmClassificationModelSetting>();
-        services.AddScoped<ISetting, AiLlmTestGenerationModelSetting>();
+        services.AddScoped<ISetting, AiLlmEmbeddingModelSetting>();
         services.AddScoped<ISetting, GithubModelsDeveloperKeySetting>();
         services.AddScoped<ISetting, AzureAiProductionKeySetting>();
 

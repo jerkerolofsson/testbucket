@@ -2,8 +2,10 @@
 
 using Mediator;
 
+using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Requirements;
 using TestBucket.Contracts.Requirements.Types;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Handlers;
 using TestBucket.Domain.Requirements.Events;
 using TestBucket.Domain.Requirements.Import;
@@ -24,16 +26,18 @@ namespace TestBucket.Domain.Requirements
     {
         private readonly IRequirementRepository _repository;
         private readonly IRequirementImporter _importer;
+        private readonly IFieldManager _fieldManager;
         private readonly List<IRequirementObserver> _requirementObservers = new();
         private readonly IMediator _mediator;
         private readonly TimeProvider _timeProvider;
 
-        public RequirementManager(IRequirementRepository repository, IMediator mediator, TimeProvider timeProvider, IRequirementImporter importer)
+        public RequirementManager(IRequirementRepository repository, IMediator mediator, TimeProvider timeProvider, IRequirementImporter importer, IFieldManager fieldManager)
         {
             _repository = repository;
             _mediator = mediator;
             _timeProvider = timeProvider;
             _importer = importer;
+            _fieldManager = fieldManager;
         }
 
         #region Observer
@@ -792,6 +796,19 @@ namespace TestBucket.Domain.Requirements
                     if (existingRequirement is null)
                     {
                         await AddRequirementAsync(principal, requirement);
+
+                        // Fields
+                        if (requirementDto.Traits?.Traits is not null && requirementDto.Traits.Traits.Count > 0)
+                        {
+                            foreach (var trait in requirementDto.Traits.Traits)
+                            {
+                                var fieldDefinition = await _mediator.Send(new ImportTraitRequest(principal, project.Id, trait, FieldTarget.Requirement));
+                                var field = new RequirementField { FieldDefinitionId = fieldDefinition.Id, RequirementId = requirement.Id };
+                                FieldValueConverter.TryAssignValue(fieldDefinition, field, [trait.Value]);
+                                await _fieldManager.UpsertRequirementFieldAsync(principal, field);
+                            }
+                        }
+
                         importedEntities.Add(requirement);
                     }
                 }

@@ -24,5 +24,10 @@ public enum ModelCapability
     /// <summary>
     /// Supports thinking
     /// </summary>
-    Thinking = 4
+    Thinking = 4,
+
+    /// <summary>
+    /// Embedding model
+    /// </summary>
+    Embedding = 8,
 }

@@ -1,4 +1,6 @@
-﻿using TestBucket.Contracts.Issues.States;
+﻿using System.Numerics;
+
+using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Issues.Types;
 
 namespace TestBucket.Domain.Issues.Models;
@@ -93,6 +95,12 @@ public class LocalIssue : ProjectEntity
     /// ID to display in UI
     /// </summary>
     public string? ExternalDisplayId { get; set; }
+
+    /// <summary>
+    /// Text embedding for semantic search
+    /// </summary>
+    [Column(TypeName = "vector(384)")]
+    public Pgvector.Vector? Embedding { get; set; }
 
     // Navigation
 

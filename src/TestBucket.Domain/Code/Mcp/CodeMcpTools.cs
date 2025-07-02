@@ -20,7 +20,7 @@ public class CodeMcpTools : AuthenticatedTool
         _architectureManager = architecture;
     }
 
-    [McpServerTool(Name = "search-features", Title ="Search features"), Description("Searches for features")]
+    [McpServerTool(Name = "search-features"), Description("Searches for a project feature, returning description and information about the feature")]
     public async Task<IReadOnlyList<AritecturalComponentDto>> SearchFeaturesAsync(string searchText, int offset = 0, int count = 1)
     {
         if(count == 0)

@@ -5,17 +5,17 @@ using TestBucket.Domain.AI.Ollama;
 
 namespace TestBucket.Domain.AI.Settings
 {
-    class AiLlmTestGenerationModelSetting : SettingAdapter
+    class AiLlmEmbeddingModelSetting : SettingAdapter
     {
         private readonly ISettingsProvider _settingsProvider;
         private readonly IMediator _mediator;
 
-        public AiLlmTestGenerationModelSetting(ISettingsProvider settingsProvider, IMediator progressManager)
+        public AiLlmEmbeddingModelSetting(ISettingsProvider settingsProvider, IMediator progressManager)
         {
             _settingsProvider = settingsProvider;
             _mediator = progressManager;
 
-            Metadata.Name = "ai-test-generator-model";
+            Metadata.Name = "ai-embedding-model";
             Metadata.Description = null;
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
@@ -24,30 +24,29 @@ namespace TestBucket.Domain.AI.Settings
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;
             Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;
-            Metadata.Options = LlmModels.GetNames(ModelCapability.Tools);
+            Metadata.Options = LlmModels.GetNames(ModelCapability.Embedding);
         }
 
         public override async Task<FieldValue> ReadAsync(SettingContext context)
         {
             var settings = await _settingsProvider.LoadGlobalSettingsAsync();
-            return new FieldValue { StringValue = settings.LlmTestGenerationModel, FieldDefinitionId = 0 };
+            return new FieldValue { StringValue = settings.LlmEmbeddingModel, FieldDefinitionId = 0 };
         }
 
         public override async Task WriteAsync(SettingContext context, FieldValue value)
         {
-           
             var settings = await _settingsProvider.LoadGlobalSettingsAsync();
 
-            if (settings.LlmTestGenerationModel != value.StringValue)
+            if (settings.LlmEmbeddingModel != value.StringValue)
             {
-                settings.LlmTestGenerationModel = value.StringValue;
+                settings.LlmEmbeddingModel = value.StringValue;
                 await _settingsProvider.SaveGlobalSettingsAsync(settings);
 
-                if (settings.AiProvider == "ollama" && settings.AiProviderUrl != null && settings.LlmTestGenerationModel is not null)
+                if (settings.AiProvider == "ollama" && settings.AiProviderUrl != null && settings.LlmEmbeddingModel is not null)
                 {
-                    if (!string.IsNullOrEmpty(settings.LlmTestGenerationModel) && settings.AiProvider == "ollama" && !string.IsNullOrEmpty(settings.AiProviderUrl))
+                    if (!string.IsNullOrEmpty(settings.LlmEmbeddingModel) && settings.AiProvider == "ollama" && !string.IsNullOrEmpty(settings.AiProviderUrl))
                     {
-                        await _mediator.Send(new PullModelRequest(settings.LlmTestGenerationModel));
+                        await _mediator.Send(new PullModelRequest(settings.LlmEmbeddingModel));
                     }
                 }
             }

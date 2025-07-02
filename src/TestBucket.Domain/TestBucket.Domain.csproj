@@ -48,6 +48,7 @@
         </PackageReference>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.6" />
         <PackageReference Include="PdfPig" Version="0.1.10" />
+        <PackageReference Include="Pgvector" Version="0.3.2" />
         <PackageReference Include="Slugify.Core" Version="5.1.1" />
     </ItemGroup>
 

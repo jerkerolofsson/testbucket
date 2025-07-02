@@ -35,7 +35,7 @@
 
     private InsightsDataPoint<string,double>? GetPoint()
     {
-        if (Spec is not null && Data.Series.Count > 0)
+        if (Spec is not null && Data?.Series?.Count > 0)
         {
             if(Spec.GetColorMode(true) == ChartColorMode.BySeries)
             {

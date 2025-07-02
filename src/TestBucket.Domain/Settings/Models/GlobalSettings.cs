@@ -41,9 +41,9 @@ public class GlobalSettings
     public string LlmModel { get; set; } = "phi4-mini:3.8b";
 
     /// <summary>
-    /// Model to use for LLM test case generation. If null the default model will be used
+    /// Model to use for test embeddings.
     /// </summary>
-    public string? LlmTestGenerationModel { get; set; }
+    public string? LlmEmbeddingModel { get; set; } = "all-minilm";
 
     /// <summary>
     /// Model to use for LLM classification. If null the default model will be used

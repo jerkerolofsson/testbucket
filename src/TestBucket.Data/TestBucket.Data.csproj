@@ -32,17 +32,14 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.6" />
+        <PackageReference Include="Pgvector.EntityFrameworkCore" Version="0.2.2" />
         <PackageReference Include="Slugify.Core" Version="5.1.1" />
     </ItemGroup>
-
-
 
     <ItemGroup>
       <ProjectReference Include="..\Package\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" />
       <ProjectReference Include="..\TestBucket.Domain\TestBucket.Domain.csproj" />
     </ItemGroup>
-
-
 
     <ItemGroup>
       <Folder Include="Identity\Models\" />

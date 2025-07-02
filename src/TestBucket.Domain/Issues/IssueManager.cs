@@ -1,8 +1,11 @@
 ﻿using Mediator;
 
+using Microsoft.Extensions.Logging;
+
 using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Issues.Types;
+using TestBucket.Domain.AI.Embeddings;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues.Events;
@@ -21,12 +24,14 @@ public class IssueManager : IIssueManager
     private readonly IMediator _mediator;
     private readonly List<ILinkedIssueObserver> _observers = new();
     private readonly List<ILocalIssueObserver> _localObservers = new();
+    private readonly ILogger<IssueManager> _logger;
 
-    public IssueManager(IIssueRepository repository, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager)
+    public IssueManager(IIssueRepository repository, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager, ILogger<IssueManager> logger)
     {
         _repository = repository;
         _mediator = mediator;
         _fieldDefinitionManager = fieldDefinitionManager;
+        _logger = logger;
     }
 
     /// <summary>
@@ -77,6 +82,8 @@ public class IssueManager : IIssueManager
         issue.ModifiedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         issue.TenantId = principal.GetTenantIdOrThrow();
         issue.ClassificationRequired = true;
+
+        await GenerateEmbeddingAsync(issue);
 
         await _repository.AddLocalIssueAsync(issue);
         foreach (var observer in _localObservers)
@@ -173,11 +180,19 @@ public class IssueManager : IIssueManager
         // Get the existing issue to detect differences
         var existingIssue = await GetIssueByIdAsync(principal, updatedIssue.Id);
 
-        if (existingIssue is not null && existingIssue.State != updatedIssue.State)
+        if (existingIssue is not null)
         {
-            // State has changed, raise event 
-            await _mediator.Publish(new IssueStateChangingNotification(principal, updatedIssue, existingIssue.State));
+            if (existingIssue.State != updatedIssue.State)
+            {
+                // State has changed, raise event 
+                await _mediator.Publish(new IssueStateChangingNotification(principal, updatedIssue, existingIssue.State));
+            }
+            if(existingIssue.Title != updatedIssue.Title || existingIssue.Description != updatedIssue.Description)
+            {
+                await GenerateEmbeddingAsync(updatedIssue);
+            }
         }
+
 
         // Save it
         await _repository.UpdateLocalIssueAsync(updatedIssue);
@@ -208,6 +223,28 @@ public class IssueManager : IIssueManager
         }
 
         await _mediator.Publish(new IssueChanged(principal, updatedIssue));
+    }
+
+    private async Task GenerateEmbeddingAsync(LocalIssue updatedIssue)
+    {
+        if(updatedIssue.TestProjectId is null)
+        {
+            return;
+        }
+
+        try
+        {
+            var text = $"{updatedIssue.Title} {updatedIssue.Description}";
+            var response = await _mediator.Send(new GenerateEmbeddingRequest(updatedIssue.TestProjectId.Value, text));
+            if (response.EmbeddingVector is not null)
+            {
+                updatedIssue.Embedding = new Pgvector.Vector(response.EmbeddingVector.Value);
+            }
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex, "Error generating embedding for issue {IssueId}", updatedIssue.Id);
+        }
     }
 
     public async Task<LocalIssue?> GetIssueByIdAsync(ClaimsPrincipal principal, long id)

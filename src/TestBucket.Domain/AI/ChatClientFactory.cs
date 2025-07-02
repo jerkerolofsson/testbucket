@@ -75,10 +75,6 @@ internal class ChatClientFactory : IChatClientFactory
     private static string GetModelName(ModelType modelType, GlobalSettings settings)
     {
         string model = settings.LlmModel ?? "phi4-mini:3.8b";
-        if (modelType == ModelType.TestGenerator && !string.IsNullOrEmpty(settings.LlmTestGenerationModel))
-        {
-            model = settings.LlmTestGenerationModel;
-        }
         if (modelType == ModelType.Classification && !string.IsNullOrEmpty(settings.LlmClassificationModel))
         {
             model = settings.LlmClassificationModel;

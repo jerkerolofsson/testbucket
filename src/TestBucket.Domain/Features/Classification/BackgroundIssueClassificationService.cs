@@ -37,12 +37,13 @@ namespace TestBucket.Domain.Features.Classification
                 builder.UserName = username;
                 builder.Email = username;
                 builder.TenantId = issue.TenantId;
-                builder.Add(PermissionEntityType.Project, PermissionLevel.ReadWrite);
-                builder.Add(PermissionEntityType.Team, PermissionLevel.Read);
-                builder.Add(PermissionEntityType.TestCase, PermissionLevel.ReadWrite);
-                builder.Add(PermissionEntityType.Issue, PermissionLevel.ReadWrite);
-                builder.Add(PermissionEntityType.Requirement, PermissionLevel.ReadWrite);
-                builder.Add(PermissionEntityType.Architecture, PermissionLevel.Read);
+                builder.AddAllPermissions();
+                //builder.Add(PermissionEntityType.Project, PermissionLevel.ReadWrite);
+                //builder.Add(PermissionEntityType.Team, PermissionLevel.Read);
+                //builder.Add(PermissionEntityType.TestCase, PermissionLevel.ReadWrite);
+                //builder.Add(PermissionEntityType.Issue, PermissionLevel.ReadWrite);
+                //builder.Add(PermissionEntityType.Requirement, PermissionLevel.ReadWrite);
+                //builder.Add(PermissionEntityType.Architecture, PermissionLevel.Read);
             });
         }
 
@@ -53,7 +54,7 @@ namespace TestBucket.Domain.Features.Classification
                 return;
             }
             var classifier = scope.ServiceProvider.GetRequiredService<IClassifier>();
-            var username = await classifier.GetModelNameAsync(ModelType.Classification) ?? "ai-classifier";
+            var username = "classification-bot";
             var principal = Impersonate(issue, username);
             var fieldDefinitionManager = scope.ServiceProvider.GetRequiredService<IFieldDefinitionManager>();
             var fieldManager = scope.ServiceProvider.GetRequiredService<IFieldManager>();
@@ -74,7 +75,7 @@ namespace TestBucket.Domain.Features.Classification
                     }
                     else if (options.Count >= 2)
                     {
-                        var result = await classifier.ClassifyAsync(principal, field.FieldDefinition.Name, options.Select(x=>x.Title!).ToArray(), issue);
+                        var result = await classifier.ClassifyAsync(principal, field.FieldDefinition.Name, options, issue);
                         if (result.Length > 0)
                         {
                             _logger.LogInformation("Classified {issue} with {category}", issue.ExternalDisplayId, result[0]);

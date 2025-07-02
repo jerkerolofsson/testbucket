@@ -1,5 +1,11 @@
-﻿using TestBucket.Domain.Code.Models;
+﻿using Mediator;
+
+using Microsoft.Extensions.Logging;
+
+using TestBucket.Domain.AI.Embeddings;
+using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Specifications;
+using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Domain.Code.Services;
@@ -7,10 +13,14 @@ namespace TestBucket.Domain.Code.Services;
 internal class ArchitectureManager : IArchitectureManager
 {
     private readonly IArchitectureRepository _repository;
+    private readonly ILogger<ArchitectureManager> _logger;
+    private readonly IMediator _mediator;
 
-    public ArchitectureManager(IArchitectureRepository repository)
+    public ArchitectureManager(IArchitectureRepository repository, ILogger<ArchitectureManager> logger, IMediator mediator)
     {
         _repository = repository;
+        _logger = logger;
+        _mediator = mediator;
     }
 
     #region Systems
@@ -18,6 +28,18 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfEntityTenantIsDifferent(system);
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+
+        var existingItem = await _repository.GetSystemAsync(system.Id);
+        if (existingItem is null)
+        {
+            throw new ArgumentException("Item does not exist");
+        }
+        principal.ThrowIfEntityTenantIsDifferent(existingItem);
+        if (existingItem.Name != system.Name || existingItem.Description != system.Description)
+        {
+            await GenerateEmbeddingAsync(system);
+        }
+
         await _repository.UpdateSystemAsync(system);
     }
 
@@ -38,6 +60,9 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         system.TenantId = principal.GetTenantIdOrThrow();
+
+        await GenerateEmbeddingAsync(system);
+
         await _repository.AddSystemAsync(system);
     }
 
@@ -104,6 +129,16 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfEntityTenantIsDifferent(layer);
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+        var existingItem = await _repository.GetLayerAsync(layer.Id);
+        if (existingItem is null)
+        {
+            throw new ArgumentException("Item does not exist");
+        }
+        principal.ThrowIfEntityTenantIsDifferent(existingItem);
+        if (existingItem.Name != layer.Name || existingItem.Description != layer.Description)
+        {
+            await GenerateEmbeddingAsync(layer);
+        }
         await _repository.UpdateLayerAsync(layer);
     }
 
@@ -124,6 +159,7 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         component.TenantId = principal.GetTenantIdOrThrow();
+        await GenerateEmbeddingAsync(component);
         await _repository.AddLayerAsync(component);
     }
 
@@ -186,12 +222,24 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         component.TenantId = principal.GetTenantIdOrThrow();
+        await GenerateEmbeddingAsync(component);
         await _repository.AddComponentAsync(component);
     }
     public async Task UpdateComponentAsync(ClaimsPrincipal principal, Component component)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         component.TenantId = principal.GetTenantIdOrThrow();
+        var existingItem = await _repository.GetComponentAsync(component.Id);
+        if (existingItem is null)
+        {
+            throw new ArgumentException("Item does not exist");
+        }
+        principal.ThrowIfEntityTenantIsDifferent(existingItem);
+        if (existingItem.Name != component.Name || existingItem.Description != component.Description)
+        {
+            await GenerateEmbeddingAsync(component);
+        }
+
         await _repository.UpdateComponentAsync(component);
     }
 
@@ -269,6 +317,7 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         feature.TenantId = principal.GetTenantIdOrThrow();
+        await GenerateEmbeddingAsync(feature);
         await _repository.AddFeatureAsync(feature);
     }
 
@@ -331,6 +380,27 @@ internal class ArchitectureManager : IArchitectureManager
         return null;
     }
     #endregion Features
+    private async Task GenerateEmbeddingAsync(AritecturalComponentProjectEntity item)
+    {
+        if (item.TestProjectId is null)
+        {
+            return;
+        }
+
+        try
+        {
+            var text = $"{item.Name} {item.Description}";
+            var response = await _mediator.Send(new GenerateEmbeddingRequest(item.TestProjectId.Value, text));
+            if (response.EmbeddingVector is not null)
+            {
+                item.Embedding = new Pgvector.Vector(response.EmbeddingVector.Value);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error generating embedding for component {AritecturalComponentProjectEntityName}", item.Name);
+        }
+    }
 
     public async Task<ProjectArchitectureModel> GetProductArchitectureAsync(ClaimsPrincipal principal, TestProject project)
     {
@@ -416,11 +486,12 @@ internal class ArchitectureManager : IArchitectureManager
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
+                await GenerateEmbeddingAsync(existingFeature);
                 await _repository.AddFeatureAsync(existingFeature);
             }
             else
             {
-                UpdateComponent(principal, feature, existingFeature);
+                await UpdateComponentAsync(principal, feature, existingFeature);
                 existingFeature.TestProjectId = project.Id;
                 await _repository.UpdateFeatureAsync(existingFeature);
             }
@@ -431,6 +502,17 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfEntityTenantIsDifferent(feature);
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+
+        var existingFeature = await _repository.GetFeatureAsync(feature.Id);
+        if(existingFeature is null)
+        {
+            throw new ArgumentException("Item does not exist");
+        }
+        if(existingFeature.Name != feature.Name || existingFeature.Description != feature.Description)
+        {
+            await GenerateEmbeddingAsync(feature);
+        }
+
         feature.Modified = DateTimeOffset.UtcNow;
         feature.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
         await _repository.UpdateFeatureAsync(feature);
@@ -468,11 +550,12 @@ internal class ArchitectureManager : IArchitectureManager
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
+                await GenerateEmbeddingAsync(existingFeature);
                 await _repository.AddLayerAsync(existingFeature);
             }
             else
             {
-                UpdateComponent(principal, layer, existingFeature);
+                await UpdateComponentAsync(principal, layer, existingFeature);
                 existingFeature.TestProjectId = project.Id;
                 await _repository.UpdateLayerAsync(existingFeature);
             }
@@ -504,11 +587,12 @@ internal class ArchitectureManager : IArchitectureManager
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
+                await GenerateEmbeddingAsync(existingComponent);
                 await _repository.AddComponentAsync(existingComponent);
             }
             else
             {
-                UpdateComponent(principal, component, existingComponent);
+                await UpdateComponentAsync(principal, component, existingComponent);
                 existingComponent.TestProjectId = project.Id;
                 await _repository.UpdateComponentAsync(existingComponent);
             }
@@ -539,11 +623,12 @@ internal class ArchitectureManager : IArchitectureManager
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
+                await GenerateEmbeddingAsync(existingSystem);
                 await _repository.AddSystemAsync(existingSystem);
             }
             else
             {
-                UpdateComponent(principal, system, existingSystem);
+                await UpdateComponentAsync(principal, system, existingSystem);
                 existingSystem.TestProjectId = project.Id;
 
                 await _repository.UpdateSystemAsync(existingSystem);
@@ -551,10 +636,12 @@ internal class ArchitectureManager : IArchitectureManager
         }
     }
 
-    private static void UpdateComponent(
+    private async Task UpdateComponentAsync(
         ClaimsPrincipal principal,
         KeyValuePair<string, ArchitecturalComponent> system, AritecturalComponentProjectEntity existingSystem)
     {
+        bool hasDescriptionChanged = existingSystem.Description != system.Value.Description;
+
         existingSystem.Modified = DateTimeOffset.UtcNow;
         existingSystem.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
 
@@ -563,5 +650,9 @@ internal class ArchitectureManager : IArchitectureManager
         existingSystem.DevLead = system.Value.DevLead ?? existingSystem.DevLead;
         existingSystem.TestLead = system.Value.DevLead ?? existingSystem.TestLead;
         existingSystem.Description = system.Value.Description ?? existingSystem.Description;
+        if (hasDescriptionChanged)
+        {
+            await GenerateEmbeddingAsync(existingSystem);
+        }
     }
 }

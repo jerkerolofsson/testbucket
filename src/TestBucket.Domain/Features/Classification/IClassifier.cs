@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.AI.Models;
+﻿using TestBucket.Contracts.Integrations;
+using TestBucket.Domain.AI.Models;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Testing.Models;
 
@@ -21,6 +22,15 @@ public interface IClassifier
     Task<string[]> ClassifyAsync(ClaimsPrincipal principal, string fieldName, string[] categories, TestCase testCase);
 
     /// <summary>
+    /// Identifies a category for a test case
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="fieldName"></param>
+    /// <param name="categories"></param>
+    /// <param name="issue"></param>
+    /// <returns></returns>
+    Task<string[]> ClassifyAsync(ClaimsPrincipal principal, string fieldName, IReadOnlyList<GenericVisualEntity> categories, TestCase testCase);
+    /// <summary>
     /// Identifies a category for an issue
     /// </summary>
     /// <param name="principal"></param>
@@ -29,4 +39,14 @@ public interface IClassifier
     /// <param name="issue"></param>
     /// <returns></returns>
     Task<string[]> ClassifyAsync(ClaimsPrincipal principal, string fieldName, string[] categories, LocalIssue issue);
+
+    /// <summary>
+    /// Identifies a category for an issue
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="fieldName"></param>
+    /// <param name="categories"></param>
+    /// <param name="issue"></param>
+    /// <returns></returns>
+    Task<string[]> ClassifyAsync(ClaimsPrincipal principal, string fieldName, IReadOnlyList<GenericVisualEntity> categories, LocalIssue issue);
 }

@@ -138,6 +138,13 @@ public class TestCase : TestEntity
     [Column(TypeName = "jsonb")]
     public List<TestCaseDependency>? Dependencies { get; set; }
 
+    /// <summary>
+    /// Text embedding for semantic search and classification.
+    /// Consists of the Name and descriptions
+    /// </summary>
+    [Column(TypeName = "vector(384)")]
+    public Pgvector.Vector? Embedding { get; set; }
+
     // Navigation
     public TestSuiteFolder? TestSuiteFolder { get; set; }
     public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }

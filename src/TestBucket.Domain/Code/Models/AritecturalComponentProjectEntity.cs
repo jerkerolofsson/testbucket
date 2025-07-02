@@ -49,4 +49,12 @@ public class AritecturalComponentProjectEntity : ProjectEntity
     /// Test lead
     /// </summary>
     public string? TestLead { get; set; }
+
+    /// <summary>
+    /// Text embedding for semantic search and classification.
+    /// Consists of the Name and descriptions
+    /// </summary>
+    [Column(TypeName = "vector(384)")]
+    public Pgvector.Vector? Embedding { get; set; }
+
 }

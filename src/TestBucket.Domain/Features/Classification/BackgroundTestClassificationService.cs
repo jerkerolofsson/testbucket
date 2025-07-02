@@ -46,7 +46,7 @@ namespace TestBucket.Domain.Features.Classification
                 return;
             }
             var classifier = scope.ServiceProvider.GetRequiredService<IClassifier>();
-            var username = await classifier.GetModelNameAsync(ModelType.Classification) ?? "ai-classifier";
+            var username = "classification-bot";
             var principal = Impersonate(testCase, username);
             var fieldDefinitionManager = scope.ServiceProvider.GetRequiredService<IFieldDefinitionManager>();
             var fieldManager = scope.ServiceProvider.GetRequiredService<IFieldManager>();
@@ -67,7 +67,7 @@ namespace TestBucket.Domain.Features.Classification
                     }
                     else if (options.Count >= 2)
                     {
-                        var result = await classifier.ClassifyAsync(principal, field.FieldDefinition.Name, options.Select(x => x.Title!).ToArray(), testCase);
+                        var result = await classifier.ClassifyAsync(principal, field.FieldDefinition.Name, options, testCase);
                         if (result.Length > 0)
                         {
                             _logger.LogInformation("Classified {test} with {category}", testCase.Name, result[0]);

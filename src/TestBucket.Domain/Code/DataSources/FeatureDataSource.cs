@@ -24,7 +24,7 @@ internal class FeatureDataSource : IFieldCompletionsProvider
         if(type == FieldDataSourceType.Features)
         {
             var items = await _manager.GetFeaturesAsync(principal, projectId);
-            return items.Where(x => x.Name != null).Select(x => new GenericVisualEntity { Title = x.Name, Description = x.Description }).ToList();
+            return items.Where(x => x.Name != null).Select(x => new GenericVisualEntity { Embedding = x.Embedding?.Memory, Title = x.Name, Description = x.Description }).ToList();
         }
         return [];
     }
@@ -34,7 +34,7 @@ internal class FeatureDataSource : IFieldCompletionsProvider
         if (type == FieldDataSourceType.Features)
         {
             var items = await _manager.SearchFeaturesAsync(principal, projectId, text, offset:0, count);
-            return items.Where(x => x.Name != null && x.Name.Contains(text, StringComparison.InvariantCultureIgnoreCase)).Select(x => new GenericVisualEntity { Title = x.Name, Description = x.Description }).ToList();
+            return items.Where(x => x.Name != null && x.Name.Contains(text, StringComparison.InvariantCultureIgnoreCase)).Select(x => new GenericVisualEntity { Embedding = x.Embedding?.Memory, Title = x.Name, Description = x.Description }).ToList();
         }
         return [];
     }

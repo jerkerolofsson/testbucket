@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TestBucket.Contracts.Integrations;
+﻿namespace TestBucket.Contracts.Integrations;
 public record class GenericVisualEntity
 {
     /// <summary>
@@ -26,4 +20,9 @@ public record class GenericVisualEntity
     /// SVG
     /// </summary>
     public string? Icon { get; set; }
+
+    /// <summary>
+    /// Embedding vector for similarity / semantic search
+    /// </summary>
+    public ReadOnlyMemory<float>? Embedding { get; set; }
 }

@@ -25,7 +25,7 @@ internal class ComponentDataSource : IFieldCompletionsProvider
         if(type == FieldDataSourceType.Components)
         {
             var items = await _manager.GetComponentsAsync(principal, projectId);
-            return items.Where(x => x.Name != null).Select(x => new GenericVisualEntity { Title = x.Name, Description = x.Description }).ToList();
+            return items.Where(x => x.Name != null).Select(x => new GenericVisualEntity { Embedding = x.Embedding?.Memory, Title = x.Name, Description = x.Description }).ToList();
         }
         return [];
     }
@@ -35,7 +35,7 @@ internal class ComponentDataSource : IFieldCompletionsProvider
         if (type == FieldDataSourceType.Components)
         {
             var items = await _manager.GetComponentsAsync(principal, projectId);
-            return items.Where(x => x.Name != null && x.Name.Contains(text, StringComparison.InvariantCultureIgnoreCase)).Select(x => new GenericVisualEntity { Title = x.Name, Description = x.Description }).ToList();
+            return items.Where(x => x.Name != null && x.Name.Contains(text, StringComparison.InvariantCultureIgnoreCase)).Select(x => new GenericVisualEntity { Embedding = x.Embedding?.Memory, Title = x.Name, Description = x.Description }).ToList();
         }
         return [];
     }

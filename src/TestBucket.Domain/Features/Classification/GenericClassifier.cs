@@ -7,13 +7,17 @@ using Mediator;
 
 using Microsoft.Extensions.AI;
 
+using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.AI;
+using TestBucket.Domain.AI.Embeddings;
 using TestBucket.Domain.AI.Models;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Traceability;
+
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TestBucket.Domain.Features.Classification;
 
@@ -44,6 +48,21 @@ internal class GenericClassifier : IClassifier
         return _chatClientFactory.GetModelNameAsync(modelType);
     }
 
+    public async Task<string[]> ClassifyAsync(ClaimsPrincipal principal, string fieldName, IReadOnlyList<GenericVisualEntity> categories, LocalIssue issue)
+    {
+        var hasEmbeddings = categories.Where(x=>x.Embedding != null).Any();
+        if(hasEmbeddings && issue.TestProjectId is not null)
+        {
+            var response = await _mediator.Send(new GenerateEmbeddingRequest(issue.TestProjectId.Value, issue.Title + " " + issue.Description));
+            if (response.EmbeddingVector is not null)
+            {
+                var queryVector = response.EmbeddingVector.Value.ToArray();
+                var ordered = categories.Where(x=>x.Embedding is not null).OrderByDescending(x => CosineSimilarity.Calculate(queryVector, x.Embedding)).ToList();
+                return [ordered.First().Title!];
+            }
+        }
+        return await ClassifyAsync(principal, fieldName, categories.Where(x => x.Title != null).Select(x => x.Title!).ToArray(), issue);
+    }
 
     public async Task<string[]> ClassifyAsync(ClaimsPrincipal principal, string fieldName, string[] categories, LocalIssue issue)
     {
@@ -112,6 +131,21 @@ internal class GenericClassifier : IClassifier
         return [];
     }
 
+    public async Task<string[]> ClassifyAsync(ClaimsPrincipal principal, string fieldName, IReadOnlyList<GenericVisualEntity> categories, TestCase issue)
+    {
+        var hasEmbeddings = categories.Where(x => x.Embedding != null).Any();
+        if (hasEmbeddings && issue.TestProjectId is not null)
+        {
+            var response = await _mediator.Send(new GenerateEmbeddingRequest(issue.TestProjectId.Value, issue.Name + " " + issue.Description));
+            if (response.EmbeddingVector is not null)
+            {
+                var queryVector = response.EmbeddingVector.Value.ToArray();
+                var ordered = categories.Where(x => x.Embedding is not null).OrderBy(x => CosineSimilarity.Calculate(queryVector, x.Embedding)).ToList();
+                return [ordered.First().Title!];
+            }
+        }
+        return await ClassifyAsync(principal, fieldName, categories.Where(x => x.Title != null).Select(x => x.Title!).ToArray(), issue);
+    }
     public async Task<string[]> ClassifyAsync(ClaimsPrincipal principal, string fieldName, string[] categories, TestCase testCase)
     {
         string testName = testCase.Name;

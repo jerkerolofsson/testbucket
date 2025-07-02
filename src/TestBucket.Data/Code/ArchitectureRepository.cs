@@ -1,13 +1,6 @@
-﻿using System;
-using System.Linq;
-
-using TestBucket.Domain.Code;
+﻿using TestBucket.Domain.Code;
 using TestBucket.Domain.Code.Models;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Tenants.Models;
-
-using UglyToad.PdfPig.Filters;
 
 namespace TestBucket.Data.Code;
 public class ArchitectureRepository : IArchitectureRepository
@@ -20,6 +13,11 @@ public class ArchitectureRepository : IArchitectureRepository
     }
 
     #region Systems
+    public async Task<ProductSystem?> GetSystemAsync(long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.ProductSystems.AsNoTracking().Where(x => x.Id == id).FirstOrDefaultAsync();
+    }
     public async Task DeleteSystemAsync(long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -58,6 +56,12 @@ public class ArchitectureRepository : IArchitectureRepository
     #endregion Systems
 
     #region Layers
+
+    public async Task<ArchitecturalLayer?> GetLayerAsync(long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.ArchitecturalLayers.AsNoTracking().Where(x => x.Id == id).FirstOrDefaultAsync();
+    }
 
     public async Task DeleteLayerAsync(long id)
     {
@@ -98,6 +102,11 @@ public class ArchitectureRepository : IArchitectureRepository
 
 
     #region Components
+    public async Task<Component?> GetComponentAsync(long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.Components.AsNoTracking().Where(x => x.Id == id).FirstOrDefaultAsync();
+    }
     public async Task DeleteComponentAsync(long id)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -137,6 +146,12 @@ public class ArchitectureRepository : IArchitectureRepository
     #endregion Components
 
     #region Features
+    public async Task<Feature?> GetFeatureAsync(long id)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.Features.AsNoTracking().Where(x => x.Id == id).FirstOrDefaultAsync();
+    }
+
     public async Task AddFeatureAsync(Feature feature)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();

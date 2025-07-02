@@ -48,6 +48,7 @@ namespace TestBucket.Domain.Identity.Permissions
             Add(PermissionEntityType.Architecture, PermissionLevel.All);
             Add(PermissionEntityType.Issue, PermissionLevel.All);
             Add(PermissionEntityType.Heuristic, PermissionLevel.All);
+            Add(PermissionEntityType.Dashboard, PermissionLevel.All);
             return this;
         }
         public EntityPermissionBuilder Add(PermissionEntityType entityType, PermissionLevel level)

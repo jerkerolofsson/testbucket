@@ -2,8 +2,6 @@
 
 using Microsoft.Extensions.Logging;
 
-using ModelContextProtocol.Protocol;
-
 using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Issues.Types;

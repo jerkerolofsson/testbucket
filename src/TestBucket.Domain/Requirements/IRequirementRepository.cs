@@ -49,6 +49,13 @@ namespace TestBucket.Domain.Requirements
         Task<RequirementSpecification?> GetRequirementSpecificationByIdAsync(string tenantId, long requirementSpecificationId);
 
         /// <summary>
+        /// Returns all IDs matching the filters
+        /// </summary>
+        /// <param name="filters"></param>
+        /// <returns></returns>
+        Task<long[]> SearchRequirementIdsAsync(FilterSpecification<Requirement>[] filters);
+
+        /// <summary>
         /// Deletes a requirement specification, all folders and all requirements
         /// </summary>
         /// <param name="specification"></param>

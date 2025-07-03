@@ -32,7 +32,6 @@ internal class BatchTagCommand : ICommand
         IStringLocalizer<SharedStrings> loc,
         AppNavigationManager appNavigationManager,
         TestBrowser browser,
-        TestRunCreationController testRunCreationController,
         IDialogService dialogService,
         IProgressManager progressManager,
         FieldController fieldController,
@@ -48,12 +47,14 @@ internal class BatchTagCommand : ICommand
     }
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestCase;
     public PermissionLevel? RequiredLevel => PermissionLevel.ReadWrite;
-    public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null || 
+    public bool Enabled => _appNavigationManager.State.SelectedTestSuite is not null ||
+        _appNavigationManager.State.SelectedTestSuiteFolder is not null ||
+        _appNavigationManager.State.SelectedTestCase is not null ||
         _appNavigationManager.State.MultiSelectedTestCases.Count > 0;
 
     public string Id => "batch-tag";
     public string Name => _loc["batch-tag"];
-    public string Description => "Applies tags to all descendant tests";
+    public string Description => _loc["batch-tag-description"];
     public KeyboardBinding? DefaultKeyboardBinding => null;
     public string? Icon => TbIcons.BoldDuoTone.Field;
     public string[] ContextMenuTypes => ["TestSuiteFolder", "TestSuite", "TestCase"];
@@ -64,7 +65,7 @@ internal class BatchTagCommand : ICommand
         var folder = _appNavigationManager.State.SelectedTestSuiteFolder;
         var tests = _appNavigationManager.State.MultiSelectedTestCases.ToList();
 
-        if(tests.Count == 0 && _appNavigationManager.State.SelectedTestCase is not null)
+        if (tests.Count == 0 && _appNavigationManager.State.SelectedTestCase is not null)
         {
             tests.Add(_appNavigationManager.State.SelectedTestCase);
         }
@@ -74,7 +75,7 @@ internal class BatchTagCommand : ICommand
             return;
         }
         var projectId = folder?.TestProjectId ?? suite?.TestProjectId;
-        if(tests.Count > 0)
+        if (tests.Count > 0)
         {
             projectId = tests.First().TestProjectId;
         }
@@ -86,7 +87,7 @@ internal class BatchTagCommand : ICommand
         var parameters = new DialogParameters<BatchTagFieldDialog>() { { x => x.ProjectId, projectId }, { x => x.Target, FieldTarget.TestCase } };
         var dialog = await _dialogService.ShowAsync<BatchTagFieldDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
-        if(result?.Data is FieldValue field)
+        if (result?.Data is FieldValue field)
         {
             await using var progress = _progressManager.CreateProgressTask("Updating tests..");
             long[] testCaseIds = await GetTestCaseIdsAsync(suite, folder, tests);

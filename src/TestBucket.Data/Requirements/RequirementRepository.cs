@@ -60,6 +60,22 @@ namespace TestBucket.Data.Requirements
         }
         #endregion
 
+
+        public async Task<long[]> SearchRequirementIdsAsync(FilterSpecification<Requirement>[] filters)
+        {
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            var requirements = dbContext.Requirements
+                .Include(x => x.RequirementFields!).ThenInclude(x => x.FieldDefinition)
+                .Include(x => x.TestLinks).AsQueryable();
+
+            foreach (var filter in filters)
+            {
+                requirements = requirements.Where(filter.Expression);
+            }
+
+            return await requirements.Select(x=>x.Id).ToArrayAsync();
+        }
+
         public async Task<PagedResult<Requirement>> SearchRequirementsAsync(IEnumerable<FilterSpecification<Requirement>> filters, int offset, int count)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -281,7 +297,10 @@ namespace TestBucket.Data.Requirements
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
             await CalculatePathAsync(dbContext, requirement);
-            await AssignExternalIdAsync(dbContext, requirement);
+            if (requirement.ExternalId is null)
+            {
+                await AssignExternalIdAsync(dbContext, requirement);
+            }
 
             if (string.IsNullOrEmpty(requirement.Slug) && requirement.TenantId is not null)
             {
@@ -575,6 +594,7 @@ namespace TestBucket.Data.Requirements
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             return await dbContext.RequirementSpecifications.AsNoTracking().Where(x => x.Slug == slug && x.TenantId == tenantId).AnyAsync();
         }
+
         #endregion
     }
 }

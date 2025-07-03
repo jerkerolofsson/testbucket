@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 
 using TestBucket.Contracts.Requirements;
+using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain.Files.Models;
+using TestBucket.Domain.Progress;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
@@ -202,4 +204,6 @@ public interface IRequirementManager
     Task ExtractRequirementsFromSpecificationAsync(ClaimsPrincipal principal, RequirementSpecification specification, CancellationToken cancellationToken);
     Task ImportAsync(ClaimsPrincipal principal, TestProject project, List<RequirementEntityDto> entities);
     Task<Requirement?> GetRequirementBySlugAsync(ClaimsPrincipal principal, long projectId, string slug);
+    Task<long[]> SearchRequirementIdsAsync(ClaimsPrincipal principal, FilterSpecification<Requirement>[] specifications);
+    Task SetRequirementTypeAsync(ClaimsPrincipal principal, long[] requirementIds, RequirementType requirementType, ProgressTask progress);
 }

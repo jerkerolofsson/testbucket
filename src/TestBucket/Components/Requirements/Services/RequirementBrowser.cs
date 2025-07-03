@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Localization;
+﻿
+using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Shared;
@@ -8,6 +9,9 @@ using TestBucket.Domain;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.Search;
+using TestBucket.Domain.Requirements.Specifications.Requirements;
+using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Localization;
 namespace TestBucket.Components.Requirements.Services;
 
@@ -386,5 +390,21 @@ internal class RequirementBrowser : TenantBaseService
         {
             await _appNavigationManager.UIState.RequirementTreeView.GoToRequirementAsync(requirement);
         }
+    }
+
+    internal async Task<long[]> GetRequirementIdsFromFolderAsync(RequirementSpecificationFolder folder)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var tenantId = await GetTenantIdAsync();
+        FilterSpecification<Requirement>[] specifications = [new FilterRequirementByAncestorFolder(folder.Id)];
+        return await _requirementManager.SearchRequirementIdsAsync(principal, specifications);
+    }
+
+    internal async Task<long[]> GetRequirementIdsFromCollectionAsync(RequirementSpecification collection)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var tenantId = await GetTenantIdAsync();
+        FilterSpecification<Requirement>[] specifications = [new FilterRequirementBySpecification(collection.Id)];
+        return await _requirementManager.SearchRequirementIdsAsync(principal, specifications);
     }
 }

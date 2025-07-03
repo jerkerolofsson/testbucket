@@ -59,6 +59,11 @@ public class TestBucketThemeManager : ITestBucketThemeManager
     {
         var theme = await GetCurrentThemeAsync(user);
         var userPreferences = await _userPreferencesService.LoadUserPreferencesAsync(user);
+        return GetThemedStylesheet(theme, userPreferences);
+    }
+
+    internal static string GetThemedStylesheet(TestBucketBaseTheme theme, Identity.Models.UserPreferences userPreferences)
+    {
         bool highContrast = userPreferences.IncreasedContrast;
         bool highFontSize = userPreferences.IncreasedFontSize;
         bool isDarkMode = userPreferences.DarkMode;
@@ -93,7 +98,7 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         return css.ToString();
     }
 
-    private void AddBaseStyle(StringBuilder stylesheet, bool isDarkMode)
+    private static void AddBaseStyle(StringBuilder stylesheet, bool isDarkMode)
     {
         stylesheet.AppendLine(":root {");
         if (isDarkMode)
@@ -107,7 +112,7 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         stylesheet.AppendLine("}");
     }
 
-    private void AppendHighContrast(StringBuilder stylesheet, bool isDarkMode)
+    private static void AppendHighContrast(StringBuilder stylesheet, bool isDarkMode)
     {
         // High contrast mode overrides some settings
         var theme = new HighContrast();
@@ -122,7 +127,7 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         }
     }
 
-    private void AppendIncreasedFontSize(StringBuilder stylesheet, bool isDarkMode)
+    private static void AppendIncreasedFontSize(StringBuilder stylesheet, bool isDarkMode)
     {
         // High contrast mode overrides some settings
         var theme = new LargeTextOverlay();

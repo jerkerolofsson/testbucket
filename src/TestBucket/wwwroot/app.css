@@ -961,7 +961,7 @@ table tbody tr td {
     height: 16px;
 }
 
-.tb-toolbar  img.tb-profile-image.tb-avatar-generic,
+.tb-toolbar  img.tb-profile-vatar-generic,
 .tb-toolbar  div.tb-profile-image.tb-avatar-generic {
     border-bottom: solid 2px transparent;
     margin-right: 1rem;
@@ -1022,6 +1022,7 @@ div.tb-profile-image.tb-background-7,
 div.tb-profile-image.tb-background-8,
 div.tb-profile-image.tb-background-9 {
     background: var(--mud-palette-primary);
+    color: var(--mud-palette-primary-text);
 
 }
 

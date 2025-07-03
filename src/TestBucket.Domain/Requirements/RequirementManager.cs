@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-
-using Mediator;
+﻿using Mediator;
 
 using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Requirements;
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Handlers;
+using TestBucket.Domain.Progress;
 using TestBucket.Domain.Requirements.Events;
 using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Requirements.Mapping;
@@ -57,6 +56,35 @@ namespace TestBucket.Domain.Requirements
         #endregion Observer
 
         #region Requirement
+
+        public async Task SetRequirementTypeAsync(ClaimsPrincipal principal, long[] requirementIds, RequirementType requirementType, ProgressTask progress)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+            var tenantId = principal.GetTenantIdOrThrow();
+            var userName = principal.Identity?.Name ?? throw new UnauthorizedAccessException("User identity missing");
+
+            foreach (var item in requirementIds.Index())
+            {
+                var requirement = await _repository.GetRequirementByIdAsync(tenantId, item.Item);
+                if(requirement is not null)
+                {
+                    principal.ThrowIfEntityTenantIsDifferent(requirement);
+                    await progress.ReportStatusAsync($"Updating {requirement.Name}", item.Index * 100.0 / (double)requirementIds.Length);
+
+                    if(requirement.MappedType == requirementType.MappedType && requirement.RequirementType == requirementType.Name)
+                    {
+                        continue;
+                    }
+
+                    requirement.RequirementType = requirementType.Name;
+                    requirement.MappedState = requirement.MappedState;
+                    requirement.Modified = _timeProvider.GetUtcNow();
+                    requirement.ModifiedBy = userName;
+                    await _repository.UpdateRequirementAsync(requirement);
+                }
+            }
+        }
+
 
         private async Task<IReadOnlyList<Requirement>> GetChildRequirementsAsync(ClaimsPrincipal principal, long rootId, bool recurse)
         {
@@ -236,6 +264,17 @@ namespace TestBucket.Domain.Requirements
 
             return await _repository.SearchRequirementsAsync(filters, query.Offset, query.Count);
         }
+
+
+        public async Task<long[]> SearchRequirementIdsAsync(ClaimsPrincipal principal, FilterSpecification<Requirement>[] filters)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+
+            filters = [.. filters, new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow())];
+
+            return await _repository.SearchRequirementIdsAsync(filters);
+        }
+
 
         /// <summary>
         /// Searches for requirements

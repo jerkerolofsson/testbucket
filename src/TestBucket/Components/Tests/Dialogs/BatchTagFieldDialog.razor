@@ -1,5 +1,6 @@
 ﻿@using TestBucket.Components.Requirements.Controls
 @using TestBucket.Contracts.Fields
+@using TestBucket.Contracts.Requirements.Types
 @inject FieldController controller
 @inject TeamController teamController
 @inject ProjectController projectController
@@ -26,7 +27,16 @@
 
                     <MudNavMenu>
 
-                        <MudNavLink OnClick="ShowRequirement">@loc["link-requirement-to-test"]</MudNavLink>
+                        @if(Target == FieldTarget.TestCase)
+                        {
+                            <MudNavLink OnClick="ShowRequirement">@loc["link-requirement-to-test"]</MudNavLink>
+                        }
+
+                        @if (Target == FieldTarget.Requirement)
+                        {
+                            <MudNavLink OnClick="ShowRequirementType">@loc["type"]</MudNavLink>
+                        }
+
 
                         @foreach(var field in _fields)
                         {
@@ -39,6 +49,10 @@
                     @if(_showRequirement)
                     {
                         <RequirementTreeView Project="@_project" Team="@_team" OnRequirementClicked="SetRequirement" />
+                    }
+                    else if (_showRequirementType && _project is not null)
+                    {
+                        <RequirementTypeSelect TestProjectId="@_project.Id" TypeChanged="SetRequirementType"/>
                     }
                     else @if (_field?.FieldDefinition is not null)
                     {
@@ -73,6 +87,7 @@
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
     private bool _loading = true;
 
+
     [Parameter] public long? ProjectId { get; set; }
     [Parameter] public FieldTarget Target { get; set; } = FieldTarget.TestCase;
 
@@ -82,6 +97,7 @@
     private List<FieldValue> _fields = [];
     private FieldValue? _field;
     private bool _showRequirement = false;
+    private bool _showRequirementType = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -119,6 +135,10 @@
         }
     }
 
+    private void SetRequirementType(RequirementType requirementType)
+    {
+        MudDialog.Close(requirementType);
+    }
     private void SetRequirement(Requirement requirement)
     {
         MudDialog.Close(requirement);
@@ -128,10 +148,18 @@
     {
         _field = viewType;
         _showRequirement = false;
+        _showRequirementType = false;
     }
     private void ShowRequirement()
     {
         _showRequirement = true;
+        _showRequirementType = false;
+        _field = null;
+    }
+    private void ShowRequirementType()
+    {
+        _showRequirement = false;
+        _showRequirementType = true;
         _field = null;
     }
 

@@ -20,13 +20,22 @@
         <StartContent>
             <div class="pa-2 container-fill-2-rows">
 
-                <MudTextField Variant="Variant.Outlined"
-                    Label="@loc.Shared["title"]"
-                    AdornmentColor="Color.Tertiary" 
-                    Value="@Requirement.Name" 
-                    ValueChanged="OnNameChanged" 
-                    T="string" 
-                    AutoFocus="true" />
+                <MudStack Row>
+                    <MudTextField Variant="Variant.Outlined"
+                        Label="@loc.Shared["id"]"
+                        AdornmentColor="Color.Tertiary" 
+                        Value="@Requirement.ExternalId" 
+                        ValueChanged="OnExternalIdChanged" 
+                        T="string" />
+
+                    <MudTextField Variant="Variant.Outlined"
+                                  Label="@loc.Shared["title"]"
+                                  AdornmentColor="Color.Tertiary"
+                                  Value="@Requirement.Name"
+                                  ValueChanged="OnNameChanged"
+                                  T="string"
+                                  AutoFocus="true" />
+                </MudStack>
 
                     <div>
                         <MarkdownEditor 
@@ -277,6 +286,16 @@
             Requirement.ParentRequirementId = null;
             await SaveChangesAsync();
         }
+    }
+
+    private async Task OnExternalIdChanged(string externalId)
+    {
+        if (Requirement is null)
+        {
+            return;
+        }
+        Requirement.ExternalId = externalId;
+        await SaveChangesAsync();
     }
 
     private async Task OnNameChanged(string name)

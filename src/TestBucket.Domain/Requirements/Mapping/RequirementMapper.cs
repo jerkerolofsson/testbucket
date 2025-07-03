@@ -16,6 +16,7 @@ public static class RequirementMapper
             Icon = specification.Icon,
             ReadOnly = specification.ReadOnly,
             Color = specification.Color,
+            Type = specification.SpecificationType
         };
     }
     public static RequirementSpecification ToDbo(this RequirementSpecificationDto specification)
@@ -29,6 +30,7 @@ public static class RequirementMapper
             Icon = specification.Icon,
             ReadOnly = specification.ReadOnly,
             Color = specification.Color,
+            SpecificationType = specification.Type
         };
     }
 

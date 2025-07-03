@@ -17,4 +17,5 @@ public class RequirementSpecificationDto : RequirementEntityDto
     /// </summary>
     public string? Icon { get; set; }
     public string? Color { get; set; }
+    public string? Type { get; set; }
 }

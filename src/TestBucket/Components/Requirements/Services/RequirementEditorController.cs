@@ -6,7 +6,9 @@ using NGitLab.Models;
 
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Tests.TestCases.Dialogs;
+using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain.Files.Models;
+using TestBucket.Domain.Progress;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Fields;
 using TestBucket.Domain.Requirements.Import;
@@ -369,5 +371,11 @@ internal class RequirementEditorController : TenantBaseService
             await _manager.UpdateRequirementSpecificationAsync(principal, specification);
         }
 
+    }
+
+    internal async Task SetRequirementTypeAsync(long[] requirementIds, RequirementType requirementType, ProgressTask progress)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.SetRequirementTypeAsync(principal, requirementIds, requirementType, progress);
     }
 }

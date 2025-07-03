@@ -13,6 +13,11 @@ namespace TestBucket.Domain.Appearance;
 /// </summary>
 public class ContrastColorCalculator
 {
+    /// <summary>
+    /// WCAG 1.4.6
+    /// </summary>
+    private const double MinimumContrastRatio = 7;
+
     private static readonly ThemeColor _textColorLight = ThemeColor.Parse("#f1f1f1");
     private static readonly ThemeColor _textColorDark = ThemeColor.Parse("#111");
 
@@ -71,6 +76,11 @@ public class ContrastColorCalculator
 
         var contrastRatio1 = CalculateWcagContrastRatio(backColor, textColor1);
         var contrastRatio2 = CalculateWcagContrastRatio(backColor, textColor2);
+
+        if(contrastRatio1 < MinimumContrastRatio && contrastRatio2 < MinimumContrastRatio)
+        {
+            // Oh no..
+        }
 
         if (contrastRatio1 > contrastRatio2)
         {

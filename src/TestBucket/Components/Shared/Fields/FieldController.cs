@@ -35,7 +35,7 @@ internal class FieldController : TenantBaseService
 
     #region Test Case
     /// <summary>
-    /// Saves the test case fields
+    /// Upserts all the test case fields
     /// </summary>
     /// <param name="fields"></param>
     /// <returns></returns>
@@ -97,6 +97,20 @@ internal class FieldController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _manager.GetRequirementFieldsAsync(principal, id, fieldDefinitions);
+    }
+
+    /// <summary>
+    /// Upserts all the test case fields
+    /// </summary>
+    /// <param name="fields"></param>
+    /// <returns></returns>
+    public async Task SaveRequirementFieldsAsync(IEnumerable<RequirementField> fields)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        foreach (var field in fields)
+        {
+            await _manager.UpsertRequirementFieldAsync(principal, field);
+        }
     }
 
     public async Task UpsertRequirementFieldAsync(RequirementField field)
@@ -248,6 +262,30 @@ internal class FieldController : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         RemoveOptionsIfNotSelection(fieldDefinition);
         await _definitionManager.UpdateAsync(principal, fieldDefinition);
+    }
+    internal async Task UpdateRequirementFieldsAsync(long[] requirementIds, long? projectId, FieldValue[] fieldValues)
+    {
+        var fieldDefinitions = await SearchDefinitionsAsync(new SearchFieldQuery { ProjectId = projectId, Target = FieldTarget.TestCase });
+        foreach (var requirementId in requirementIds)
+        {
+            var requirementFields = (await GetRequirementFieldsAsync(requirementId, fieldDefinitions)).ToList();
+
+            foreach (var field in fieldValues)
+            {
+                // Remove old tag
+                requirementFields.RemoveAll(x => x.FieldDefinitionId == field.FieldDefinitionId);
+
+                // Add new tag
+                var newField = new RequirementField
+                {
+                    RequirementId = requirementId,
+                    FieldDefinitionId = field.FieldDefinitionId,
+                };
+                field.CopyTo(newField);
+                requirementFields.Add(newField);
+            }
+            await SaveRequirementFieldsAsync(requirementFields);
+        }
     }
 
     internal async Task UpdateTestCaseFieldsAsync(long[] testCaseIds, long? projectId, FieldValue[] fieldValues)

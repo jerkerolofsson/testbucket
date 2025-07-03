@@ -101,6 +101,7 @@ public class NavigationState
     /// </summary>
     public Team? SelectedTeam { get; set; }
 
+    public IReadOnlyList<Requirement> MultiSelectedRequirements => _multiSelectedRequirements;
     public IReadOnlyList<TestCase> MultiSelectedTestCases => _multiSelectedTestCases;
     public bool IsTestLabSelected { get; private set; }
     public bool IsTestRepositorySelected { get; private set; }

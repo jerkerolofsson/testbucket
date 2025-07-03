@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Identity.Models;
+﻿using TestBucket.Domain.Identity.Models;
 
 namespace TestBucket.Domain.Identity
 {
@@ -13,8 +6,10 @@ namespace TestBucket.Domain.Identity
     {
         private readonly IUserPreferenceRepository _userPreferenceRepository;
         private UserPreferences? _preferences;
+        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1);
 
         public event EventHandler<UserPreferences>? UserPreferencesChanged;
+
 
         public UserPreferencesManager(IUserPreferenceRepository userPreferenceRepository)
         {
@@ -26,25 +21,36 @@ namespace TestBucket.Domain.Identity
             var tenantId = principal.GetTenantIdOrThrow();
             var username = principal.Identity?.Name ?? throw new ArgumentException("User not authenticated");
 
-            var cachedPreferences = _preferences;
-            if (cachedPreferences is not null && cachedPreferences.UserName == username)
+            await _lock.WaitAsync();
+            try
             {
-                return cachedPreferences;
+                var cachedPreferences = _preferences;
+                if (cachedPreferences is not null && cachedPreferences.UserName == username)
+                {
+                    return cachedPreferences;
+                }
+                var preferences = await _userPreferenceRepository.GetUserPreferencesAsync(tenantId, username);
+
+                // Assign default values
+                if (preferences is null)
+                {
+                    preferences ??= new UserPreferences { TenantId = tenantId, UserName = username };
+                    preferences.KeyboardBindings ??= new();
+                    if (preferences.KeyboardBindings.UnifiedSearchBinding is null)
+                    {
+                        preferences.KeyboardBindings.UnifiedSearchBinding = new Keyboard.KeyboardBinding() { CommandId = "none", Key = "Slash", ModifierKeys = Keyboard.ModifierKey.None };
+                    }
+                    await _userPreferenceRepository.SaveUserPreferencesAsync(preferences);
+                }
+
+                _preferences = preferences;
+
+                return preferences;
             }
-
-            var preferences = await _userPreferenceRepository.GetUserPreferencesAsync(tenantId, username);
-
-            // Assign default values
-            preferences ??= new UserPreferences { TenantId = tenantId, UserName = username };
-            preferences.KeyboardBindings ??= new();
-            if(preferences.KeyboardBindings.UnifiedSearchBinding is null)
+            finally
             {
-                preferences.KeyboardBindings.UnifiedSearchBinding = new Keyboard.KeyboardBinding() { CommandId = "none", Key = "Slash", ModifierKeys = Keyboard.ModifierKey.None };
+                _lock.Release();
             }
-
-            _preferences = preferences;
-
-            return preferences;
         }
         public async Task SaveUserPreferencesAsync(ClaimsPrincipal principal, UserPreferences userPreferences)
         {
@@ -60,8 +66,16 @@ namespace TestBucket.Domain.Identity
                 throw new ArgumentException($"Cannot save data from another user: username:{username}, preferences: {userPreferences.UserName}");
             }
 
-            _preferences = userPreferences;
-            await _userPreferenceRepository.SaveUserPreferencesAsync(userPreferences);
+            await _lock.WaitAsync();
+            try
+            {
+                _preferences = userPreferences;
+                await _userPreferenceRepository.SaveUserPreferencesAsync(userPreferences);
+            }
+            finally
+            {
+                _lock.Release();
+            }
 
             UserPreferencesChanged?.Invoke(this, userPreferences);
         }

@@ -32,7 +32,10 @@
 
             <PermissionView Entity="PermissionEntityType.Project" Level="PermissionLevel.Write">
                 <Authorized>
-                    <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddFieldAsync"></MudIconButton>
+                    <MudButton data-testid="add-milestone"
+                               Class="tb-button-new"
+                               StartIcon="@Icons.Material.Filled.Add" OnClick="AddFieldAsync">@loc["add"]</MudButton>
+
                 </Authorized>
             </PermissionView>
         </MudStack>

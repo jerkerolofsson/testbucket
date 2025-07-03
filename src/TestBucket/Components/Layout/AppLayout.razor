@@ -193,7 +193,7 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender && _state is not null)
         {
             var isDarkMode = await themingService.IsDarkModeAsync();
             if(isDarkMode != _state.IsDarkMode)

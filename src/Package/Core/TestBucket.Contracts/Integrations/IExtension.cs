@@ -58,5 +58,11 @@ namespace TestBucket.Contracts.Integrations
         /// Description of access token specific to system we are integrating wtih
         /// </summary>
         string AccessTokenHelperText { get; }
+
+        /// <summary>
+        /// Configures default settings
+        /// </summary>
+        /// <param name="system"></param>
+        void ConfigureDefaults(ExternalSystemDto system);
     }
 }

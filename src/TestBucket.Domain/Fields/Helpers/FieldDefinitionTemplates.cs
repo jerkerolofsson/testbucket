@@ -4,7 +4,7 @@ using TestBucket.Traits.Core;
 namespace TestBucket.Domain.Fields.Helpers;
 public class FieldDefinitionTemplates
 {
-    public static IReadOnlyList<FieldDefinition> Templates = [Browser, Priority, FailureType];
+    public static IReadOnlyList<FieldDefinition> Templates = [Branch,  Browser, BrowserVersion, FailureType, HardwareVersion, Priority, Wcag];
 
     public static FieldDefinition Browser => new FieldDefinition
     {
@@ -19,7 +19,40 @@ public class FieldDefinitionTemplates
         Options = ["chromium", "firebox", "webkit"],
         Description = "Web browser used for testing"
     };
+    public static FieldDefinition BrowserVersion => new FieldDefinition
+    {
+        Name = "Browser Version",
+        Trait = "BrowserVersion",
+        Target = FieldTarget.TestCaseRun | FieldTarget.TestRun | FieldTarget.TestCase,
+        Inherit = true,
+        IsVisible = true,
+        TraitType = TraitType.BrowserVersion,
+        Type = FieldType.String,
+        Description = "Web browser version used for testing"
+    };
 
+    public static FieldDefinition Branch => new FieldDefinition
+    {
+        Name = "Branch",
+        Trait = "Branch",
+        Target = FieldTarget.TestCaseRun | FieldTarget.TestRun | FieldTarget.TestCase,
+        Inherit = true,
+        IsVisible = true,
+        TraitType = TraitType.Branch,
+        Type = FieldType.String,
+        Icon = TbIcons.Git.GitBranch,
+    };
+
+    public static FieldDefinition HardwareVersion => new FieldDefinition
+    {
+        Name = "HW Version",
+        Trait = "HardwareVersion",
+        Target = FieldTarget.TestCaseRun | FieldTarget.TestRun | FieldTarget.TestCase,
+        Inherit = true,
+        IsVisible = true,
+        TraitType = TraitType.HardwareVersion,
+        Type = FieldType.String,
+    };
 
     public static FieldDefinition Wcag => new FieldDefinition
     {

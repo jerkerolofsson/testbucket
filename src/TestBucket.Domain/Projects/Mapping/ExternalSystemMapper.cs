@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Integrations;
+﻿using TestBucket.Contracts.Integrations;
 
 namespace TestBucket.Domain.Projects.Mapping
 {
-    internal static class ExternalSystemMapper
+    public static class ExternalSystemMapper
     {
-        internal static ExternalSystem ToDbo(this ExternalSystemDto x)
+        public static ExternalSystem ToDbo(this ExternalSystemDto x)
         {
             return new ExternalSystem
             {
@@ -29,7 +23,7 @@ namespace TestBucket.Domain.Projects.Mapping
                 CoverageReportArtifactsPattern = x.CoverageReportArtifactsPattern,
             };
         }
-        internal static ExternalSystemDto ToDto(this ExternalSystem x)
+        public static ExternalSystemDto ToDto(this ExternalSystem x)
         {
             return new ExternalSystemDto
             {

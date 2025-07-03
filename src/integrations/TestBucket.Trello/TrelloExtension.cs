@@ -28,5 +28,9 @@ namespace TestBucket.Trello
         public string AccessTokenHelperText => "to be defined";
 
         public ExtensionFields RequiredFields => ExtensionFields.AccessToken | ExtensionFields.BaseUrl | ExtensionFields.ApiKey;
+
+        public void ConfigureDefaults(ExternalSystemDto system)
+        {
+        }
     }
 }

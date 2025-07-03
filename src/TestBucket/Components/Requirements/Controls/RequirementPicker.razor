@@ -1,6 +1,7 @@
-﻿<RequirementTreeView Project="@Project" Team="@Team" OnRequirementClicked="OnRequirementClicked" />
+﻿<RequirementTreeView @ref="_requirementTreeView" ShowSearchFolders="false" Project="@Project" Team="@Team" OnRequirementClicked="OnRequirementClicked" />
 
 @code {
+    private RequirementTreeView? _requirementTreeView;
 
     [Parameter]
     public EventCallback<Requirement> RequirementSelected { get; set; }
@@ -8,7 +9,18 @@
     [Parameter] public TestProject? Project { get; set; }
 
     [Parameter] public Team? Team { get; set; }
+    [Parameter] public Requirement? SelectedRequirement { get; set; }
 
+    private bool _didFocusSelectedRequirement = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(!_didFocusSelectedRequirement && SelectedRequirement is not null && _requirementTreeView is not null)  
+        {
+            _didFocusSelectedRequirement = true;            
+            await _requirementTreeView.GoToRequirementAsync(SelectedRequirement);
+        }
+    }
 
     private async Task OnRequirementClicked(Requirement requirement)
     {

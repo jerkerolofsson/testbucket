@@ -3,7 +3,7 @@
 
 <MudDialog DefaultFocus="DefaultFocus.FirstChild">
     <DialogContent>
-        <RequirementPicker Project="@Project" Team="@Team"
+        <RequirementPicker Project="@Project" Team="@Team" SelectedRequirement="@SelectedRequirement"
             RequirementSelected="OnRequirementSelected"/>
     </DialogContent>
 
@@ -20,11 +20,17 @@
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
 
+    [Parameter] public Requirement? SelectedRequirement { get; set; }
     [Parameter] public TestProject? Project { get; set; }
 
     [Parameter] public Team? Team { get; set; }
 
     private Requirement? _requirement;
+
+    protected override void OnParametersSet()
+    {
+        _requirement ??= SelectedRequirement;
+    }
 
     private void OnRequirementSelected(Requirement requirement)
     {

@@ -16,6 +16,7 @@ using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.States;
 using TestBucket.Localization;
+using TestBucket.Domain.Projects.Mapping;
 
 namespace TestBucket.Components.Projects;
 
@@ -82,14 +83,21 @@ internal class ProjectController : TenantBaseService
 
         var principal = await GetUserClaimsPrincipalAsync();
 
-        var system = new ExternalSystem 
+        var systemDto = new ExternalSystemDto
         { 
+            Id = 0,
+            Enabled = true,
             Name  = extension.FriendlyName,
             Provider = extension.SystemName,
             SupportedCapabilities = extension.SupportedCapabilities,
+            EnabledCapabilities = extension.SupportedCapabilities,
             TestResultsArtifactsPattern = "**/*xunit*.xml;**/*junit*.xml;**/*nunit*.xml;**/*test*.xml;**/*.trx;**/*.ctrf",
             CoverageReportArtifactsPattern = "**/*coverage*.xml",
+            BaseUrl = extension.DefaultBaseUrl
         };
+
+        extension.ConfigureDefaults(systemDto);
+        var system = systemDto.ToDbo();
 
         var parameters = new DialogParameters<EditIntegrationDialog>
         {

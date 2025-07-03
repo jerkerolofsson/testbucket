@@ -276,4 +276,7 @@
     <value>My open items</value>
     <comment>Search folder: Requirements, tasks, or other work items that are open and assigned to the user</comment>
   </data>
+  <data name="select-requirement" xml:space="preserve">
+    <value>Select requirement</value>
+  </data>
 </root>

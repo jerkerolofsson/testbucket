@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Appearance.Models;
+﻿using TestBucket.Contracts.Appearance.Models;
 using TestBucket.Domain.Keyboard;
 
 namespace TestBucket.Domain.Identity.Models;
+
+// todo: Add for next migration
+//[Index(nameof(UserName))]
 public class UserPreferences
 {
     public long Id { get; set; }

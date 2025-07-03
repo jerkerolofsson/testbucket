@@ -937,4 +937,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="normal-search" xml:space="preserve">
     <value>Normal</value>
   </data>
+  <data name="add-user" xml:space="preserve">
+    <value>Add user</value>
+  </data>
 </root>

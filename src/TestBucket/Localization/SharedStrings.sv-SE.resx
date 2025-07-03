@@ -837,6 +837,9 @@
   <data name="failed" xml:space="preserve">
     <value>Misslyckad</value>
   </data>
+  <data name="add-milestone" xml:space="preserve">
+    <value>Lägg till milstolpe</value>
+  </data>
   <data name="new-exploratory-test-charter" xml:space="preserve">
     <value>Ny utforskande testcharter</value>
   </data>
@@ -898,15 +901,18 @@
     <value />
   </data>
   <data name="chat" xml:space="preserve">
-    <value />
+    <value>Chat</value>
   </data>
   <data name="explorer" xml:space="preserve">
-    <value />
+    <value>Utforskare</value>
   </data>
   <data name="semantic-search" xml:space="preserve">
     <value />
   </data>
   <data name="normal-search" xml:space="preserve">
     <value />
+  </data>
+  <data name="add-user" xml:space="preserve">
+    <value>Lägg till användare</value>
   </data>
 </root>

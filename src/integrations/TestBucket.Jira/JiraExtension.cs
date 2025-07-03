@@ -27,5 +27,10 @@ namespace TestBucket.Jira
         public string AccessTokenHelperText => "Jira Access Token";
 
         public ExtensionFields RequiredFields => ExtensionFields.AccessToken | ExtensionFields.BaseUrl | ExtensionFields.ProjectId;
+
+        public void ConfigureDefaults(ExternalSystemDto system)
+        {
+        }
     }
+
 }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Code.Mapping;
 using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.ExtensionManagement;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
@@ -50,7 +51,7 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
         }
     }
 
-    private static async Task ProcessTenantAsync(IServiceScope scope, Tenant tenant, CancellationToken cancellationToken)
+    private async Task ProcessTenantAsync(IServiceScope scope, Tenant tenant, CancellationToken cancellationToken)
     {
         var principal = Impersonation.Impersonate(configure =>
         {
@@ -67,7 +68,7 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
         }
     }
 
-    private static async Task ProcessProjectAsync(ClaimsPrincipal principal, IServiceScope scope, TestProject project, CancellationToken cancellationToken)
+    private async Task ProcessProjectAsync(ClaimsPrincipal principal, IServiceScope scope, TestProject project, CancellationToken cancellationToken)
     {
         if (project.ExternalSystems is not null)
         {
@@ -79,17 +80,32 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
                 var integration = integrations.Where(x => x.SystemName == externalSystem.Name).FirstOrDefault();
                 if (integration is not null)
                 {
-                    var repo = await GetOrCreateRepositoryAsync(principal, scope, project, externalSystem, integration, cancellationToken);
-                    if(repo is not null)
+                    try
                     {
-                        await IndexRepositoryAsync(principal, scope, project, integration, repo, externalSystem, cancellationToken);
+                        var repo = await GetOrCreateRepositoryAsync(principal, scope, project, externalSystem, integration, cancellationToken);
+                        if (repo is not null)
+                        {
+                            await IndexRepositoryAsync(principal, scope, project, integration, repo, externalSystem, cancellationToken);
+                        }
+                        else
+                        {
+                            _logger.LogError("Failed to read repository from Name={ExternalSystemName} Project={ExternalProjectId}", externalSystem.Name, externalSystem.ExternalProjectId);
+
+                            // Todo: Logging so it can be shown in UI?
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        _logger.LogError(ex, "Failed to read index commits from Name={ExternalSystemName} Project={ExternalProjectId}", externalSystem.Name, externalSystem.ExternalProjectId);
+
+                        // Todo: Logging so it can be shown in UI?
                     }
                 }
             }
         }
     }
 
-    private static async Task IndexRepositoryAsync(ClaimsPrincipal principal, IServiceScope scope, TestProject project, IExternalCodeRepository integration, Repository repo, ExternalSystem externalSystem, CancellationToken cancellationToken)
+    private async Task IndexRepositoryAsync(ClaimsPrincipal principal, IServiceScope scope, TestProject project, IExternalCodeRepository integration, Repository repo, ExternalSystem externalSystem, CancellationToken cancellationToken)
     {
         DateTimeOffset until = DateTimeOffset.UtcNow;
         var manager = scope.ServiceProvider.GetRequiredService<ICommitManager>();
@@ -149,7 +165,7 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
     /// <param name="integration"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    private static async Task<Repository?> GetOrCreateRepositoryAsync(
+    private async Task<Repository?> GetOrCreateRepositoryAsync(
         ClaimsPrincipal principal,
         IServiceScope scope, 
         TestProject project, 

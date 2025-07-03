@@ -34,5 +34,12 @@ namespace TestBucket.Github
         public string AccessTokenHelperText => "Github Personal Access Token with valid scopes for the enabled capabilities";
 
         public ExtensionFields RequiredFields => ExtensionFields.AccessToken | ExtensionFields.BaseUrl | ExtensionFields.ProjectId;
+
+
+        public void ConfigureDefaults(ExternalSystemDto system)
+        {
+            system.ExternalProjectId ??= "<organization>/<project>";
+        }
     }
+
 }

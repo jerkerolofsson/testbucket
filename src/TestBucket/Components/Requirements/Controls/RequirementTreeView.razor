@@ -138,6 +138,11 @@
     private BrowserItem? _selectedTreeItem;
 
     /// <summary>
+    /// If false, search folders are not shown
+    /// </summary>
+    [Parameter] public bool ShowSearchFolders { get; set; } = true;
+
+    /// <summary>
     /// Invoked when a specification is clicked
     /// </summary>
     [Parameter] public EventCallback<RequirementSpecification> OnSpecificationClicked { get; set; }
@@ -495,7 +500,7 @@
             return [];
         }
 
-        return await browser.BrowseAsync(Team?.Id, Project?.Id, browserItem);
+        return await browser.BrowseAsync(Team?.Id, Project?.Id, browserItem, ShowSearchFolders);
     }
 
     private async Task AddRequirementSpecificationAsync()
@@ -575,7 +580,7 @@
         _searchText = text;
         if(string.IsNullOrWhiteSpace(_searchText))
         {
-            _rootItems = await browser.BrowseAsync(_team?.Id, _project?.Id, null);
+            _rootItems = await browser.BrowseAsync(_team?.Id, _project?.Id, null, ShowSearchFolders);
         }
         else
         {
@@ -594,7 +599,7 @@
             _selectedTreeItem = null;
             if (Project is not null)
             {
-                _rootItems = await browser.BrowseAsync(_team?.Id, _project?.Id, null);
+                _rootItems = await browser.BrowseAsync(_team?.Id, _project?.Id, null, ShowSearchFolders);
             }
         }
     }
@@ -652,7 +657,7 @@
         specificationNode.Expanded = true;
         if(specificationNode.Children is null)
         {
-            var items = await browser.BrowseAsync(Team?.Id, Project?.Id, specificationNode.Value);
+            var items = await browser.BrowseAsync(Team?.Id, Project?.Id, specificationNode.Value, ShowSearchFolders);
             specificationNode.Children = items;
             specificationNode.Expanded = true;
         }
@@ -667,7 +672,7 @@
                 var folderNode = FindTreeNode(x => x.RequirementFolder?.Id == folderId);
                 if (folderNode is null)
                 {
-                    var items = await browser.BrowseAsync(Team?.Id, Project?.Id, parent.Value);
+                    var items = await browser.BrowseAsync(Team?.Id, Project?.Id, parent.Value, ShowSearchFolders);
                     parent.Children = items;
                     parent.Expanded = true;
                     folderNode = FindTreeNode(x => x.RequirementFolder?.Id == folderId);
@@ -682,7 +687,7 @@
                 // Browse items in the folder, this will include tests, if any..
                 if (folderNode.Children is null)
                 {
-                    var items = await browser.BrowseAsync(Team?.Id, Project?.Id, parent.Value);
+                    var items = await browser.BrowseAsync(Team?.Id, Project?.Id, parent.Value, ShowSearchFolders);
                     folderNode.Children = items;
                 }
             }

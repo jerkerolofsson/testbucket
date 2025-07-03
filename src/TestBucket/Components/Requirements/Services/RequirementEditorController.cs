@@ -307,6 +307,8 @@ internal class RequirementEditorController : TenantBaseService
 
     }
 
+    private Requirement? _prevSelectedParentRequirement;
+
     public async Task SelectParentRequirementAsync(Requirement requirement, TestProject? project, Team? team)
     {
         var principal = await GetUserClaimsPrincipalAsync();
@@ -315,11 +317,13 @@ internal class RequirementEditorController : TenantBaseService
         {
             { x => x.Project, project },
             { x => x.Team, team },
+            { x => x.SelectedRequirement, _prevSelectedParentRequirement}
         };
-        var dialog = await _dialogService.ShowAsync<PickRequirementDialog>(_loc["select-requirement"], parameters, DefaultBehaviors.DialogOptions);
+        var dialog = await _dialogService.ShowAsync<PickRequirementDialog>(_reqLoc["select-requirement"], parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if(result is not null && result.Data is Requirement parent)
         {
+            _prevSelectedParentRequirement = parent;
             requirement.ParentRequirementId = parent.Id;
             await _manager.UpdateRequirementAsync(principal, requirement);
         }

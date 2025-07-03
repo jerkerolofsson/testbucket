@@ -28,5 +28,9 @@ namespace TestBucket.Azure
         public string AccessTokenHelperText => "tbd";
 
         public ExtensionFields RequiredFields => ExtensionFields.BaseUrl | ExtensionFields.AccessToken;
+
+        public void ConfigureDefaults(ExternalSystemDto system)
+        {
+        }
     }
 }

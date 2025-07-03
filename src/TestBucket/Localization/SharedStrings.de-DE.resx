@@ -935,4 +935,7 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="normal-search" xml:space="preserve">
     <value />
   </data>
+  <data name="add-user" xml:space="preserve">
+    <value />
+  </data>
 </root>

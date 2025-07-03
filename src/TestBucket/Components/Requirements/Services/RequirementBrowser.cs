@@ -187,7 +187,7 @@ internal class RequirementBrowser : TenantBaseService
     /// <param name="projectId"></param>
     /// <param name="parent"></param>
     /// <returns></returns>
-    public async Task<List<TreeNode<BrowserItem>>> BrowseAsync(long? teamId, long? projectId, BrowserItem? parent)
+    public async Task<List<TreeNode<BrowserItem>>> BrowseAsync(long? teamId, long? projectId, BrowserItem? parent, bool showSearchFolders)
     {
         if (parent is not null)
         {
@@ -247,7 +247,7 @@ internal class RequirementBrowser : TenantBaseService
                 };
 
                 // Add search folders
-                if(parent.RequirementSpecification.SearchFolders is not null)
+                if(parent.RequirementSpecification.SearchFolders is not null && showSearchFolders)
                 {
                     items.AddRange(parent.RequirementSpecification.SearchFolders.Select(x => new TreeNode<BrowserItem>
                     {
@@ -354,7 +354,7 @@ internal class RequirementBrowser : TenantBaseService
             var folderNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.Folder?.Id == folderId);
             if (folderNode is null)
             {
-                var items = await BrowseAsync(requirement.TeamId, requirement.TestProjectId, parent.Value);
+                var items = await BrowseAsync(requirement.TeamId, requirement.TestProjectId, parent.Value, false);
                 parent.Children = items;
                 folderNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.RequirementFolder?.Id == folderId);
             }

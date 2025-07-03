@@ -109,6 +109,37 @@ public static class SystemFieldDefinitions
                     FieldTarget.Requirement
     };
 
+
+    private static readonly FieldDefinition _qualityCharacteristic = new()
+    {
+        Name = "Quality Characteristic",
+        Trait = "QualityCharacteristic",
+        TraitType = TraitType.QualityCharacteristic,
+        Description = "ISO/IEC 25010 Software Quality Characteristic",
+        IsVisible = true,
+        Type = FieldType.SingleSelection,
+        IsDefinedBySystem = true,
+        Inherit = true,
+        ShowDescription = true,
+        UseClassifier = false,
+        Options = 
+        [
+            "Functional Suitability",
+            "Performance Efficiency",
+            "Compatibility",
+            "Usability",
+            "Reliability",
+            "Security",
+            "Maintainability",
+            "Portability"
+        ],
+        RequiredPermission = PermissionLevel.Write,
+        Target = FieldTarget.TestCase |
+                    FieldTarget.TestCaseRun |
+                    FieldTarget.Issue |
+                    FieldTarget.Requirement
+    };
+
     private static readonly FieldDefinition _branch = new()
     {
         Name = "Branch",
@@ -171,7 +202,7 @@ public static class SystemFieldDefinitions
     {
         get
         {
-            return [_component,_requirementApproval, _feature, _milestone, _commit, _branch, _label, _testCategory];
+            return [_component,_requirementApproval, _feature, _milestone, _commit, _branch, _label, _testCategory, _qualityCharacteristic];
         }
     }
 }

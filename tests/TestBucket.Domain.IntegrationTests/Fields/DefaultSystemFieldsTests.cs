@@ -16,6 +16,8 @@ namespace TestBucket.Domain.IntegrationTests.Fields
     [IntegrationTest]
     [FunctionalTest]
     [EnrichedTest]
+    [Feature("Fields")]
+    [Component("Fields")]
     public class DefaultSystemFieldsTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         /// <summary>

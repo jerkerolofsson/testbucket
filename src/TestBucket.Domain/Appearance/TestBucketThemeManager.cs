@@ -35,6 +35,10 @@ public class TestBucketThemeManager : ITestBucketThemeManager
             {
                 case "Dark Moon":
                     return TestBucketTheme.DarkMoon;
+                case "Winter":
+                    return TestBucketTheme.Winter;
+                case "Retro":
+                    return TestBucketTheme.Retro;
                 case "Material":
                     return TestBucketTheme.Material;
 

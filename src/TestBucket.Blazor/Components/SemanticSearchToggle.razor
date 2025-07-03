@@ -2,7 +2,7 @@
 @using MudBlazor.Utilities
 @using TestBucket.Contracts.Appearance.Models
 
-<div class="@CssClass" @onclick="Toggle" @onclick:stopPropagation="true">
+<div class="@CssClass" @onclick="Toggle" @onclick:stopPropagation="true" aria-checked="@Enabled" role="switch" aria-label="@EnabledLabel">
     <div class="enabled-label">@EnabledLabel</div>
     <MudBlazor.MudIcon Size="MudBlazor.Size.Small" Class="ai-icon" Icon="@SvgIcon" />
     <div class="disabled-label">@DisabledLabel</div>

@@ -2,7 +2,7 @@
 @using MudBlazor.Utilities
 @using TestBucket.Contracts.Appearance.Models
 
-<div class="@CssClass" @onclick="Toggle" @onclick:stopPropagation="true">
+<div class="@CssClass" @onclick="Toggle" @onclick:stopPropagation="true" aria-checked="@Locked" role="switch" aria-label="@LockedLabel">
     <div class="locked-label">@LockedLabel</div>
     <MudBlazor.MudIcon Size="MudBlazor.Size.Small" Class="lock-icon" Icon="@MudBlazor.Icons.Material.Filled.Lock"/>
     <div class="unlocked-label">@UnlockedLabel</div>

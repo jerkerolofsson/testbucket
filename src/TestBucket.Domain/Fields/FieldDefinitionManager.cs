@@ -210,6 +210,16 @@ namespace TestBucket.Domain.Fields
             return [];
         }
 
+        public async Task ClearCacheAsync(string tenantId, FieldDataSourceType dataSourceType)
+        {
+            var fieldDefinitions = await GetAllFilterDefinitionsForTenantAsync(tenantId);
+            foreach(var field in fieldDefinitions.Where(x=>x.DataSourceType == dataSourceType))
+            {
+                string cacheKey = $"field-options:{tenantId}:{field.Id}:{field.DataSourceType}";
+                _memoryCache.Remove(cacheKey);
+            }
+        }
+
         private async Task<IReadOnlyList<GenericVisualEntity>> LoadFieldOptionsAsync(
             ClaimsPrincipal principal,
             FieldDefinition field,

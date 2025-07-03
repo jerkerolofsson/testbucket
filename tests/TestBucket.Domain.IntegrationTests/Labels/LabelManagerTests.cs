@@ -12,8 +12,8 @@ namespace TestBucket.Domain.IntegrationTests.Labels
 {
     [IntegrationTest]
     [FunctionalTest]
-    [Component("Label")]
-    [Feature("Label")]
+    [Component("Labels")]
+    [Feature("Fields")]
     public class LabelManagerTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         /// <summary>

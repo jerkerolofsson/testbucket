@@ -24,7 +24,7 @@ namespace TestBucket.Domain.Settings.Appearance
             Metadata.Category.Name = "appearance";
             Metadata.Category.Icon = SettingIcon.Appearance;
             Metadata.Section.Name = "theme";
-            Metadata.Options = ["Default", "Blue Steel", "Dark Moon", "Material", "Le Trigre"];
+            Metadata.Options = ["Default", "Blue Steel", "Retro", "Winter", "Dark Moon", "Material", "Le Trigre"];
             Metadata.Type = FieldType.SingleSelection;
         }
 

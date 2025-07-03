@@ -231,6 +231,20 @@ public class TestBucketTheme : TestBucketBaseTheme
             return new Material();
         }
     }
+    public static TestBucketTheme Retro
+    {
+        get
+        {
+            return new Retro();
+        }
+    }
+    public static TestBucketTheme Winter
+    {
+        get
+        {
+            return new Winter();
+        }
+    }
     public static TestBucketTheme DarkMoon
     {
         get

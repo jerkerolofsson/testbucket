@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using TestBucket.Domain.AI.Embeddings;
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Specifications;
+using TestBucket.Domain.Fields.Handlers;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Domain.Code.Services;
@@ -223,7 +224,10 @@ internal class ArchitectureManager : IArchitectureManager
         component.TenantId = principal.GetTenantIdOrThrow();
         await GenerateEmbeddingAsync(component);
         await _repository.AddComponentAsync(component);
+
+        await OnComponentUpdatedAsync(principal, component);
     }
+
     public async Task UpdateComponentAsync(ClaimsPrincipal principal, Component component)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
@@ -240,6 +244,8 @@ internal class ArchitectureManager : IArchitectureManager
         }
 
         await _repository.UpdateComponentAsync(component);
+
+        await OnComponentUpdatedAsync(principal, component);
     }
 
     /// <summary>
@@ -318,6 +324,8 @@ internal class ArchitectureManager : IArchitectureManager
         feature.TenantId = principal.GetTenantIdOrThrow();
         await GenerateEmbeddingAsync(feature);
         await _repository.AddFeatureAsync(feature);
+
+        await OnFeatureUpdatedAsync(principal, feature);
     }
 
     /// <summary>
@@ -487,12 +495,16 @@ internal class ArchitectureManager : IArchitectureManager
                 };
                 await GenerateEmbeddingAsync(existingFeature);
                 await _repository.AddFeatureAsync(existingFeature);
+
+                await OnFeatureUpdatedAsync(principal, existingFeature);
             }
             else
             {
-                await UpdateComponentAsync(principal, feature, existingFeature);
+                await UpdateArchitecturalComponentAsync(principal, feature, existingFeature);
                 existingFeature.TestProjectId = project.Id;
                 await _repository.UpdateFeatureAsync(existingFeature);
+
+                await OnFeatureUpdatedAsync(principal, existingFeature);
             }
         }
     }
@@ -515,6 +527,8 @@ internal class ArchitectureManager : IArchitectureManager
         feature.Modified = DateTimeOffset.UtcNow;
         feature.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
         await _repository.UpdateFeatureAsync(feature);
+
+        await OnFeatureUpdatedAsync(principal, existingFeature);
     }
 
     public async Task DeleteFeatureAsync(ClaimsPrincipal principal, Feature feature)
@@ -554,7 +568,7 @@ internal class ArchitectureManager : IArchitectureManager
             }
             else
             {
-                await UpdateComponentAsync(principal, layer, existingFeature);
+                await UpdateArchitecturalComponentAsync(principal, layer, existingFeature);
                 existingFeature.TestProjectId = project.Id;
                 await _repository.UpdateLayerAsync(existingFeature);
             }
@@ -588,12 +602,16 @@ internal class ArchitectureManager : IArchitectureManager
                 };
                 await GenerateEmbeddingAsync(existingComponent);
                 await _repository.AddComponentAsync(existingComponent);
+
+                await OnComponentUpdatedAsync(principal, existingComponent);
             }
             else
             {
-                await UpdateComponentAsync(principal, component, existingComponent);
+                await UpdateArchitecturalComponentAsync(principal, component, existingComponent);
                 existingComponent.TestProjectId = project.Id;
                 await _repository.UpdateComponentAsync(existingComponent);
+
+                await OnComponentUpdatedAsync(principal, existingComponent);
             }
         }
     }
@@ -627,7 +645,7 @@ internal class ArchitectureManager : IArchitectureManager
             }
             else
             {
-                await UpdateComponentAsync(principal, system, existingSystem);
+                await UpdateArchitecturalComponentAsync(principal, system, existingSystem);
                 existingSystem.TestProjectId = project.Id;
 
                 await _repository.UpdateSystemAsync(existingSystem);
@@ -635,10 +653,10 @@ internal class ArchitectureManager : IArchitectureManager
         }
     }
 
-    private async Task UpdateComponentAsync(
+    private async Task UpdateArchitecturalComponentAsync(
         ClaimsPrincipal principal,
         KeyValuePair<string, ArchitecturalComponent> system, AritecturalComponentProjectEntity existingSystem)
-    {
+    {;
         bool hasDescriptionChanged = existingSystem.Description != system.Value.Description;
 
         existingSystem.Modified = DateTimeOffset.UtcNow;
@@ -654,4 +672,15 @@ internal class ArchitectureManager : IArchitectureManager
             await GenerateEmbeddingAsync(existingSystem);
         }
     }
+    private async Task OnFeatureUpdatedAsync(ClaimsPrincipal principal, Feature feature)
+    {
+        await _mediator.Send(new ClearFieldCacheRequest(principal.GetTenantIdOrThrow(), Contracts.Fields.FieldDataSourceType.Features));
+    }
+
+    private async Task OnComponentUpdatedAsync(ClaimsPrincipal principal, Component component)
+    {
+        await _mediator.Send(new ClearFieldCacheRequest(principal.GetTenantIdOrThrow(), Contracts.Fields.FieldDataSourceType.Components));
+    }
+
+
 }

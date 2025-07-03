@@ -78,4 +78,5 @@ public interface IFieldDefinitionManager
     /// <returns></returns>
     Task<IReadOnlyList<GenericVisualEntity>> SearchOptionsAsync(ClaimsPrincipal principal, FieldDefinition field, string text, int count, CancellationToken cancellationToken);
     void ClearTenantCache(string tenantId);
+    Task ClearCacheAsync(string tenantId, FieldDataSourceType dataSourceType);
 }

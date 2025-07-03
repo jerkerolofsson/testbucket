@@ -44,6 +44,13 @@ systems:
     paths:
     - src\Package\Core\TestBucket.Sdk.Client\
 components:
+  Code Coverage:
+    display: 
+    description: 'Parsing of cobertura code coverage XML '
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\Package\Reporting\TestBucket.CodeCoverage\**\*.*
   AI:
     display: 
     description: Chat, Agent, Semantic Search
@@ -60,16 +67,19 @@ components:
     - src\TestBucket.Domain\Issues\**\*.*
   Milestones:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: >-
+      CRUD operations and handling for Milestones
+
+      Data source for milestone fields.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\Milestones\**\*.*
   Jira:
     display: 
     description: Jira Integration
-    dev_lead: 
-    test_lead: 
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\integrations\TestBucket.Jira\**\*
   Python:
@@ -81,7 +91,7 @@ components:
     - src\runner\TestBucket.Runner\Runners\Python\**\*
   Agent UI:
     display: 
-    description: 
+    description: User interface for chat / agents
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
@@ -97,8 +107,8 @@ components:
   Files UI:
     display: 
     description: File upload UI, attachments, file viewers
-    dev_lead: 
-    test_lead: 
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket\Components\Uploads\**\*.*
   Testing UI:
@@ -119,16 +129,16 @@ components:
     - src\TestBucket\Components\Tests\**\*.*
   Requirements UI:
     display: 
-    description: User interface for Epics, Tasks, Requirements
-    dev_lead: 
-    test_lead: 
+    description: User interface for Epics, Tasks, Requirements, Collections and other work-items (requirement specifications)
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket\Components\Requirements\**\*.*
   Reporting UI:
     display: 
-    description: Dashboards, charts and visualizations
-    dev_lead: 
-    test_lead: 
+    description: User interface for dashboards, charts and visualizations
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket\Components\Reporting\**\*.*
   Welcome Experiance:
@@ -140,38 +150,38 @@ components:
     - src\TestBucket\Components\WelcomeExperience\**\*.*
   Azure:
     display: 
-    description: Azure integration
-    dev_lead: 
-    test_lead: 
+    description: Integraiton with Azure DevOps
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\integrations\TestBucket.Azure\**\*
   Identity:
     display: 
     description: Authentication, Authorization, Roles, API keys/tokens, User management
-    dev_lead: 
-    test_lead: 
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\ApiKeys\**\*.*
     - src\TestBucket.Domain\Identity\**\*.*
   Appearance:
     display: 
     description: Appearance settings and themes
-    dev_lead: 
-    test_lead: 
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\Appearance\**\*.*
   Metrics:
     display: 
-    description: Test metrics.Nnumerical results related to test cases
-    dev_lead: 
-    test_lead: 
+    description: Test metrics. Numerical results related to test cases
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\Metrics\**\*.*
   Backup:
     display: 
-    description: Export/Backup
-    dev_lead: 
-    test_lead: 
+    description: Export/Backup of entities
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\Export\**\*.*
   Extension Management:
@@ -181,55 +191,51 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\ExtensionManagement\**\*.*
-  Classification:
-    display: 
-    description: 
-    dev_lead: 
-    test_lead: 
-    paths:
-    - src\TestBucket.Domain\Features\Classification\**\*.*
   Labels:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: >
+      Handling of labels that can be provided by integrations or defined by users.
+
+      Data source for label-fields.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\Labels\**\*.*
   Power Shell:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Hybrid test execution of powershell scripts
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/runner/TestBucket.Runner/Runners/Powershell/**/*
+    - src\runner\TestBucket.Runner\Runners\Powershell\**\*
   dothttp:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: 'HTTP/API test framework. '
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/runner/TestBucket.Runner/Runners/Http/**/*
+    - src\runner\TestBucket.Runner\Runners\Http\**\*
   Registration:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Responsible to register the runner with the server
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/runner/TestBucket.Runner/Registration/**/*
+    - src\runner\TestBucket.Runner\Registration\**\*
   Poller:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Connection management between the runner and the server
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/runner/TestBucket.Runner/Poller/**/*
+    - src\runner\TestBucket.Runner\Poller\**\*
   Code UI:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: User interface for commits, SW features/components/layers/systems
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket/Components/Code/**/*
+    - src\TestBucket\Components\Code\**\*
   Settings UI:
     display: 
     description: 
@@ -239,18 +245,18 @@ components:
     - src/TestBucket/Components/Settings/**/*
   Fields:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Custom user-defined and system fields
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Domain/Fields/**/*
+    - src\TestBucket.Domain\Fields\**\*
   Migrations:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Database migrations and initial seeding
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Data/Migrations/**/*
+    - src\TestBucket.Data\Migrations\**\*
   Requirement Repository:
     display: 
     description: 
@@ -260,60 +266,67 @@ components:
     - src/TestBucket.Data/Requirements/*
   Settings Repository:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Database for settings and preferences
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Data/Settings/**/*
+    - src\TestBucket.Data\Settings\**\*
   Identity Repository:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Database for users and access tokens
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Data/Identity/**/*
+    - src\TestBucket.Data\Identity\**\*
   Code Repository:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Database for commits, features, layers, systems and SW components
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Data/Code/**/*
+    - src\TestBucket.Data\Code\**\*
   Test Repository:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Database for test cases, test suites, test runs
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Data/Testing/**/*
+    - src\TestBucket.Data\Testing\**\*
   Editor:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Markdown editor
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/Package/Blazor/TestBucket.MudBlazorExtensions.Markdown/**/*
+    - src\Package\Blazor\TestBucket.MudBlazorExtensions.Markdown\**\*
   Traits:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Handling of test traits (and other related metadata) in automated testing
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/Package/Traits/**/*.*
+    - src\Package\Traits\**\*.*
   Test Result Formats:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: >-
+      Serialization and de-serialization of test results from files, including
+
+      - junit xml
+
+      - xunit xml
+
+      - CTRF
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/Package/Reporting/TestBucket.Formats/**/*
+    - src\Package\Reporting\TestBucket.Formats\**\*
   Trello:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Integration with Trello
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/integrations/TestBucket.Trello/**/*
+    - src\integrations\TestBucket.Trello\**\*
   Github:
     display: 
     description: Github integration
@@ -337,11 +350,11 @@ components:
     - src\TestBucket\Localization\**\*
   Automation:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: CI/CD integration to run automated tests
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Domain/Automation/**/*
+    - src\TestBucket.Domain\Automation\**\*
   Requirements:
     display: 
     description: 
@@ -351,56 +364,63 @@ components:
     - src/TestBucket.Domain/Requirements/**/*
   Test Accounts:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: >-
+      Management of test accounts.
+
+
+      Test accounts can be allocated to test cases to avoid hard-coding accounts in test cases and prevent concurrent usage of an account while running a test.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Domain/TestAccounts/**/*
+    - src\TestBucket.Domain\TestAccounts\**\*
   Testing:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: Handling of test cases, test suites, test runs
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Domain/Tests/**/*
+    - src\TestBucket.Domain\Tests\**\*
   Code:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: >-
+      Handling of product architecture, including systems, layers, components and product features
+
+      Handling of commits
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Domain/Code/**/*
+    - src\TestBucket.Domain\Code\**\*
   Projects:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: CRUD management of projects and integrations
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Domain/Projects/**/*
+    - src\TestBucket.Domain\Projects\**\*
   Projects API:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: API for project CRUD operations
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket/Components/Projects/Api/ProjectApiController.cs
+    - src\TestBucket\Components\Projects\Api\ProjectApiController.cs
   Fields API:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: REST API for fields
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket/Components/Shared/Fields/Api/FieldApiController.cs
+    - src\TestBucket\Components\Shared\Fields\Api\FieldApiController.cs
   User Interface:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: User interface components, pages, layouts
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket/Components/**/Dialogs/**/*
-    - src/TestBucket/Components/**/Controls/**/*
-    - src/TestBucket/Components/**/Layouts/**/*
-    - src/TestBucket/Components/**/Pages/**/*
+    - src\TestBucket\Components\**\Dialogs\**\*
+    - src\TestBucket\Components\**\Controls\**\*
+    - src\TestBucket\Components\**\Layouts\**\*
+    - src\TestBucket\Components\**\Pages\**\*
 layers:
   runner:
     display:
@@ -469,6 +489,18 @@ layers:
     - src/TestBucket/Components/**/*
     - src/Package/Blazor/**/*
 features:
+  Code Coverage:
+    display: 
+    description: >-
+      Parsing of code coverage files
+
+
+      Visualization of code coverage
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\Package\Reporting\TestBucket.CodeCoverage\**\*.*
+    - src\TestBucket\Components\Code\Controls\**\*CodeCoverage*
   Semantic Search:
     display: 
     description: >-
@@ -531,11 +563,20 @@ features:
     - src\Package\Traits\**\*.*
   Field Inheritance:
     display: 
-    description: 
-    dev_lead: 
-    test_lead: 
+    description: >-
+      Sub-entities fields are populated from parent if not set by a user. 
+
+
+      - Test Suite -> Test Case -> Test Case Run
+
+      - Test Run -> Test Case Run
+
+
+      etc
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src/TestBucket.Domain/Fields/Inheritance/**/*
+    - src\TestBucket.Domain\Fields\Inheritance\**\*
   Architecture 1.0:
     display: 
     description: Handling of product architecture, including systems, layers, components and product features

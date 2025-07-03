@@ -70,9 +70,9 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
 
             // Assert
             TestBucketTheme? theme = await themeManager.GetThemeByNameAsync("default") as TestBucketTheme;
-            Assert.NotNull(theme?.DarkScheme?.Base?.TextPrimary);
+            Assert.NotNull(theme?.DarkScheme?.Base?.Text);
 
-            var expectedColor = theme.DarkScheme.Base.TextPrimary.ToString(Contracts.Appearance.Models.ColorOutputFormats.HexA);
+            var expectedColor = theme.DarkScheme.Base.Text.ToString(Contracts.Appearance.Models.ColorOutputFormats.HexA);
             Assert.NotNull(stylesheet);
             Assert.Contains(expectedColor, stylesheet);
         }
@@ -104,9 +104,9 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
 
             // Assert
             TestBucketTheme? theme = await themeManager.GetThemeByNameAsync(themeName) as TestBucketTheme;
-            Assert.NotNull(theme?.LightScheme?.Base?.TextPrimary);
+            Assert.NotNull(theme?.LightScheme?.Base?.Text);
             Assert.NotNull(stylesheet);
-            Assert.Contains(theme.LightScheme.Base.TextPrimary.ToString(Contracts.Appearance.Models.ColorOutputFormats.HexA), stylesheet);
+            Assert.Contains(theme.LightScheme.Base.Text.ToString(Contracts.Appearance.Models.ColorOutputFormats.HexA), stylesheet);
         }
 
         [Theory]
@@ -131,9 +131,9 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
 
             // Assert
             TestBucketTheme? theme = await themeManager.GetThemeByNameAsync(themeName) as TestBucketTheme;
-            Assert.NotNull(theme?.DarkScheme?.Base?.TextPrimary);
+            Assert.NotNull(theme?.DarkScheme?.Base?.Text);
             Assert.NotNull(stylesheet);
-            Assert.Contains(theme.DarkScheme.Base.TextPrimary.ToString(Contracts.Appearance.Models.ColorOutputFormats.HexA), stylesheet);
+            Assert.Contains(theme.DarkScheme.Base.Text.ToString(Contracts.Appearance.Models.ColorOutputFormats.HexA), stylesheet);
         }
 
     }

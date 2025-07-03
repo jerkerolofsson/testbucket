@@ -7,7 +7,7 @@ internal class Material : DefaultTheme
 
     public Material()
     {
-        DarkScheme.Base.TextPrimary = "#e6e1e3";
+        DarkScheme.Base.Text = "#e6e1e3";
         DarkScheme.Base.Background = "#141314";
         DarkScheme.Base.Surface = "#211f21";
         DarkScheme.Base.DialogSurface = "#110f11";

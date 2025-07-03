@@ -1,5 +1,6 @@
 ﻿@using MudBlazor.Utilities
 @using TestBucket.Contracts.Appearance.Models
+@using TestBucket.Domain.Appearance
 @if(!CanClose)
 {
     <MudChip T="string" Value="@Text" Class="tb-chip" Style="@Style" Size="@Size" />
@@ -57,15 +58,7 @@ else
         var backColor = color.ColorDarken(0.2);
         _backgroundColor = backColor.ToString(ColorOutputFormats.Hex);
 
-        if (backColor.L > 0.7)
-        {
-            var amount = 0.7;
-            _textColor = backColor.ColorDarken(amount).ToString(ColorOutputFormats.Hex);
-        }
-        else
-        {
-            var amount = 0.7;
-            _textColor = backColor.ColorLighten(amount).ToString(ColorOutputFormats.Hex);
-        }
+        var textColor = ContrastColorCalculator.GetContrastingTextColor(backColor);
+        _textColor = textColor.ToString(ColorOutputFormats.Hex);
     }
 }

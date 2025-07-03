@@ -15,8 +15,11 @@ public class Base
     public ThemeColor? Secondary { get; set; }
     public ThemeColor? Tertiary { get; set; }
 
+    public ThemeColor? PrimaryText { get; set; }
+    public ThemeColor? SecondaryText { get; set; }
+    public ThemeColor? TertiaryText { get; set; }
+
     public ThemeColor? Text { get; set; }
-    public ThemeColor? TextPrimary { get; set; }
 }
 
 public class Input
@@ -118,18 +121,11 @@ public class TestBucketTheme : TestBucketBaseTheme
             css.AppendLine($"--mud-palette-lines-inputs: {scheme.Input.Lines};");
         }
 
-        if (scheme.Base.TextPrimary is not null)
-        {
-            css.AppendLine($"--mud-palette-text-primary: {scheme.Base.TextPrimary.ToString(ColorOutputFormats.HexA)};");
-        }
         if (scheme.Base.Text is not null)
         {
-            css.AppendLine($"--mud-primary-text: {scheme.Base.Text.ToString(ColorOutputFormats.HexA)};");
+            css.AppendLine($"--mud-palette-text-primary: {scheme.Base.Text.ToString(ColorOutputFormats.HexA)};");
         }
-        else if (scheme.Base.TextPrimary is not null)
-        {
-            css.AppendLine($"--mud-primary-text: {scheme.Base.TextPrimary.ToString(ColorOutputFormats.HexA)};");
-        }
+        
 
         if (scheme.Base.Dark is not null)
         {
@@ -163,18 +159,51 @@ public class TestBucketTheme : TestBucketBaseTheme
             css.AppendLine($"--mud-palette-primary-darken: {scheme.Base.Primary.ColorDarken(0.1)};");
             css.AppendLine($"--mud-palette-primary-lighten: {scheme.Base.Primary.ColorLighten(0.1)};");
         }
+        if (scheme.Base.PrimaryText is not null)
+        {
+            css.AppendLine($"--mud-palette-primary-text: {scheme.Base.PrimaryText.ToString(ColorOutputFormats.HexA)};");
+        }
+        else if (scheme.Base.Primary is not null)
+        {
+            var primaryText = ContrastColorCalculator.GetContrastingTextColor(scheme.Base.Primary);
+            css.AppendLine($"--mud-palette-primary-text: {primaryText.ToString(ColorOutputFormats.HexA)};");
+        }
+
+
         if (scheme.Base.Secondary is not null)
         {
             css.AppendLine($"--mud-palette-secondary: {scheme.Base.Secondary};");
             css.AppendLine($"--mud-palette-secondary-darken: {scheme.Base.Secondary.ColorDarken(0.1)};");
             css.AppendLine($"--mud-palette-secondary-lighten: {scheme.Base.Secondary.ColorLighten(0.1)};");
         }
+
+        if (scheme.Base.SecondaryText is not null)
+        {
+            css.AppendLine($"--mud-palette-secondary-text: {scheme.Base.SecondaryText.ToString(ColorOutputFormats.HexA)};");
+        }
+        else if (scheme.Base.Secondary is not null)
+        {
+            var primaryText = ContrastColorCalculator.GetContrastingTextColor(scheme.Base.Secondary);
+            css.AppendLine($"--mud-palette-secondary-text: {primaryText.ToString(ColorOutputFormats.HexA)};");
+        }
+
         if (scheme.Base.Tertiary is not null)
         {
             css.AppendLine($"--mud-palette-tertiary: {scheme.Base.Tertiary};");
             css.AppendLine($"--mud-palette-tertiary-darken: {scheme.Base.Tertiary.ColorDarken(0.1)};");
             css.AppendLine($"--mud-palette-tertiary-lighten: {scheme.Base.Tertiary.ColorLighten(0.1)};");
         }
+
+        if (scheme.Base.TertiaryText is not null)
+        {
+            css.AppendLine($"--mud-palette-tertiary-text: {scheme.Base.TertiaryText.ToString(ColorOutputFormats.HexA)};");
+        }
+        else if (scheme.Base.Tertiary is not null)
+        {
+            var primaryText = ContrastColorCalculator.GetContrastingTextColor(scheme.Base.Tertiary);
+            css.AppendLine($"--mud-palette-tertiary-text: {primaryText.ToString(ColorOutputFormats.HexA)};");
+        }
+
         css.AppendLine("}");
         return css.ToString();
     }

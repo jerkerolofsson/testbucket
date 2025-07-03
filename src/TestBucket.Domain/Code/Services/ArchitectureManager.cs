@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using TestBucket.Domain.AI.Embeddings;
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Specifications;
-using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Shared.Specifications;
 
 namespace TestBucket.Domain.Code.Services;
@@ -35,7 +34,7 @@ internal class ArchitectureManager : IArchitectureManager
             throw new ArgumentException("Item does not exist");
         }
         principal.ThrowIfEntityTenantIsDifferent(existingItem);
-        if (existingItem.Name != system.Name || existingItem.Description != system.Description)
+        if (existingItem.Name != system.Name || existingItem.Description != system.Description || system.Embedding is null)
         {
             await GenerateEmbeddingAsync(system);
         }
@@ -135,7 +134,7 @@ internal class ArchitectureManager : IArchitectureManager
             throw new ArgumentException("Item does not exist");
         }
         principal.ThrowIfEntityTenantIsDifferent(existingItem);
-        if (existingItem.Name != layer.Name || existingItem.Description != layer.Description)
+        if (existingItem.Name != layer.Name || existingItem.Description != layer.Description || layer.Embedding is null)
         {
             await GenerateEmbeddingAsync(layer);
         }
@@ -235,7 +234,7 @@ internal class ArchitectureManager : IArchitectureManager
             throw new ArgumentException("Item does not exist");
         }
         principal.ThrowIfEntityTenantIsDifferent(existingItem);
-        if (existingItem.Name != component.Name || existingItem.Description != component.Description)
+        if (existingItem.Name != component.Name || existingItem.Description != component.Description || component.Embedding is null)
         {
             await GenerateEmbeddingAsync(component);
         }
@@ -508,7 +507,7 @@ internal class ArchitectureManager : IArchitectureManager
         {
             throw new ArgumentException("Item does not exist");
         }
-        if(existingFeature.Name != feature.Name || existingFeature.Description != feature.Description)
+        if(existingFeature.Name != feature.Name || existingFeature.Description != feature.Description || feature.Embedding is null)
         {
             await GenerateEmbeddingAsync(feature);
         }
@@ -650,7 +649,7 @@ internal class ArchitectureManager : IArchitectureManager
         existingSystem.DevLead = system.Value.DevLead ?? existingSystem.DevLead;
         existingSystem.TestLead = system.Value.DevLead ?? existingSystem.TestLead;
         existingSystem.Description = system.Value.Description ?? existingSystem.Description;
-        if (hasDescriptionChanged)
+        if (hasDescriptionChanged || existingSystem.Embedding is null)
         {
             await GenerateEmbeddingAsync(existingSystem);
         }

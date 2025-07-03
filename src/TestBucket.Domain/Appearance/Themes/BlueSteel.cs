@@ -13,7 +13,7 @@ internal class BlueSteel : DefaultTheme
 
     public BlueSteel()
     {
-        DarkScheme.Base.TextPrimary = "#E1F5FE";
+        DarkScheme.Base.Text = "#E1F5FE";
         DarkScheme.Base.Background = "#263238";
         DarkScheme.Base.Surface = "#37474F";
         DarkScheme.Base.Dark = "#0d1321";
@@ -27,7 +27,7 @@ internal class BlueSteel : DefaultTheme
         DarkScheme.Field.Background = "#37474F";
         DarkScheme.Field.BorderColor = DarkScheme.Field.Background.ColorLighten(0.2).ToString();
 
-        LightScheme.Base.TextPrimary = "#444444";
+        LightScheme.Base.Text = "#444444";
         LightScheme.Base.Primary = "#0D47A1";
         LightScheme.Base.Secondary = "#01579B";
         LightScheme.Base.Tertiary = "#006064";

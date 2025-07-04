@@ -10,5 +10,6 @@ public interface IAppLocalization
     IStringLocalizer Project { get; init; }
     IStringLocalizer Settings { get; init; }
     IStringLocalizer Shared { get; init; }
+    IStringLocalizer Account { get; init; }
     IStringLocalizer Requirements { get; init; }
 }

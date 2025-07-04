@@ -18,7 +18,8 @@ internal class DeleteRequirementFolderCommand : ICommand
 
     public string Description => _loc["delete-folder-description"];
 
-    public bool Enabled => _appNav.State.SelectedRequirementSpecificationFolder is not null;
+    public bool Enabled => _appNav.State.SelectedRequirementSpecificationFolder is not null ||
+        (_appNav.State.SelectedSearchFolder is not null && _appNav.State.SelectedRequirementSpecification is not null);
 
     public KeyboardBinding? DefaultKeyboardBinding => null;
 
@@ -49,10 +50,16 @@ internal class DeleteRequirementFolderCommand : ICommand
 
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
-        if (_appNav.State.SelectedRequirementSpecificationFolder is null)
+        if (_appNav.State.SelectedSearchFolder is not null && _appNav.State.SelectedRequirementSpecification is not null)
         {
-            return;
+            await _requirementEditor.DeleteSearchFolderAsync(_appNav.State.SelectedRequirementSpecification, _appNav.State.SelectedSearchFolder);
         }
-        await _requirementEditor.DeleteRequirementFolderAsync(_appNav.State.SelectedRequirementSpecificationFolder);
+        else
+        {
+            if (_appNav.State.SelectedRequirementSpecificationFolder is not null)
+            {
+                await _requirementEditor.DeleteRequirementFolderAsync(_appNav.State.SelectedRequirementSpecificationFolder);
+            }
+        }
     }
 }

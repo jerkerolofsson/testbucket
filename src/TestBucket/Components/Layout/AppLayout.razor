@@ -15,6 +15,7 @@
 @inject AppNavigationManager appNavigationManager
 @inject IUnifiedSearchManager unifiedSearchManager
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<AccountStrings> accountLoc
 @inject UserPreferencesService userPreferencesService
 
 @if (tenantId is not null && _state is not null)
@@ -97,16 +98,17 @@
                                         <!-- Profile / Logout -->
                                         <AuthorizeView>
                                             <MudMenuItem Icon="@TbIcons.BoldDuoTone.Settings" Label="@loc["settings"]" Href="@settingsUrl"></MudMenuItem>
-                                            <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="@loc["account"]" Href="@manageUrl"></MudMenuItem>
+                                            <MudMenuItem Icon="@Icons.Material.Filled.ManageAccounts" Label="@accountLoc["account"]" Href="@manageUrl"></MudMenuItem>
                                             <MudMenuItem Label="@loc["welcome"]" Href="@welcomeUrl"></MudMenuItem>
                                             <MudMenuItem Label="@loc["about"]" Href="/about"></MudMenuItem>
-                                            <MudMenuItem>
-                                                <form action="/Logout" method="post">
+                                            <MudMenuItem Label="@accountLoc["logout"]" OnClick="OnLogout"></MudMenuItem>
+                                            @* <MudMenuItem>
+                                                <form action="/Logout" method="post" @formname="nav-menu-logout-form">
                                                     <AntiforgeryToken />
                                                     <input type="hidden" name="ReturnUrl" value="/" />
                                                     <button type="submit">@loc["logout"]</button>
                                                 </form>
-                                            </MudMenuItem>
+                                            </MudMenuItem> *@
                                         </AuthorizeView>
                                     </MudMenu>
                                 </MudStack>
@@ -153,6 +155,11 @@ else
     private UserPreferences? _userPreferences;
 
     private string MoreLabel => _prefTextToIcons == true ? loc["more"] : "";
+
+    private void OnLogout()
+    {
+        navigationManager.NavigateTo($"/{tenantId}/Account/Login", true);
+    }
 
     protected override async Task OnInitializedAsync()
     {

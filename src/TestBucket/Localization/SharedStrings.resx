@@ -940,4 +940,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="add-user" xml:space="preserve">
     <value>Add user</value>
   </data>
+  <data name="password" xml:space="preserve">
+    <value>Password</value>
+  </data>
 </root>

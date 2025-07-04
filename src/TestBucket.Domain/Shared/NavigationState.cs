@@ -21,6 +21,12 @@ public class NavigationState
     public event EventHandler<ChatReference?>? ActiveDocumentChanged;
 
     /// <summary>
+    /// Search folder. This is always set in combination with another entity
+    /// </summary>
+    public SearchFolder? SelectedSearchFolder { get; private set; }
+
+
+    /// <summary>
     /// Local issue currently in focus
     /// </summary>
     public LocalIssue? SelectedIssue { get; private set; }
@@ -177,6 +183,7 @@ public class NavigationState
         IsTestLabSelected = false;
         IsTestRepositorySelected = false;
 
+        this.SelectedSearchFolder = null;
         this.SelectedFeature = null;
         this.SelectedComponent = null;
 
@@ -229,6 +236,13 @@ public class NavigationState
     {
         ClearSelection();
         SelectedRequirementSpecificationFolder = folder;
+    }
+
+    public void SetSelectedSearchFolder(RequirementSpecification spec, SearchFolder searchFolder)
+    {
+        ClearSelection();
+        SelectedRequirementSpecification = spec;
+        SelectedSearchFolder = searchFolder;
     }
     public void SetSelectedRequirementSpecification(RequirementSpecification? spec)
     {

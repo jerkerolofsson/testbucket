@@ -1,26 +1,27 @@
 ﻿@page "/{TenantId}/Account/Manage/PersonalData"
+@inject IAppLocalization loc
 
 @inject IdentityUserAccessor UserAccessor
 
-<PageTitle>Personal Data</PageTitle>
+<PageTitle>@loc.Account["personal-data"]</PageTitle>
 
 <StatusMessage />
-<h3>Personal Data</h3>
+<h3>@loc.Account["personal-data"]</h3>
 
 <div class="row">
-    <div class="col-md-6">
+    <MudStack Spacing="5">
         <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
         <p>
             <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
         </p>
         <form action="Account/Manage/DownloadPersonalData" method="post">
             <AntiforgeryToken />
-            <button class="btn btn-primary" type="submit">Download</button>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Success">@loc.Shared["download"]</MudButton>
         </form>
         <p>
-            <a href="Account/Manage/DeletePersonalData" class="btn btn-danger">Delete</a>
+            <MudButton Href="Account/Manage/DeletePersonalData" Variant="Variant.Filled" Color="Color.Error">@loc.Shared["delete"]</MudButton>
         </p>
-    </div>
+    </MudStack>
 </div>
 
 @code {

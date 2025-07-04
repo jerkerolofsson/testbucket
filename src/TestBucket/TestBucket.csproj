@@ -36,6 +36,7 @@
       <PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.2.0-preview.3" />
       <PackageReference Include="MudBlazor" Version="8.8.0" />
       <PackageReference Include="MudGantt" Version="0.3.2" />
+      <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="2.0.6" />
       <PackageReference Include="OneOf" Version="3.0.271" />
       <PackageReference Include="Plotly.Blazor" Version="6.0.2" />
       <PackageReference Include="Toolbelt.Blazor.HotKeys2" Version="6.0.1" />

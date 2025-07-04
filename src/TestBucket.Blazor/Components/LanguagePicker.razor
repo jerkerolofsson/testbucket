@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Http
 @using Microsoft.JSInterop
 @using MudBlazor
 @using Microsoft.Extensions.Options;
@@ -7,25 +9,64 @@
 @inject NavigationManager navigationManager
 @inject IOptions<RequestLocalizationOptions> requestLocalizationOptions
 
-<MudTooltip Text="@Tooltip">
-    <MudMenu StartIcon="@Icons.Material.Outlined.Language" AriaLabel="@Tooltip" Label="@CultureInfo.CurrentUICulture.NativeName">
-        @foreach (var locale in _locales)
-        {
-            <MudMenuItem OnClick="() => SetLocaleAsync(locale.Name)">@locale.NativeName</MudMenuItem>
-        }
-    </MudMenu>
-</MudTooltip>
+@if (RendererInfo.IsInteractive)
+{
+    <MudTooltip Text="@Tooltip">
+        <MudMenu StartIcon="@Icons.Material.Outlined.Language" AriaLabel="@Tooltip" Label="@CultureInfo.CurrentUICulture.NativeName">
+            @foreach (var locale in _locales)
+            {
+                <MudMenuItem OnClick="() => SetLocaleAsync(locale.Name)">@locale.NativeName</MudMenuItem>
+            }
+        </MudMenu>
+    </MudTooltip>
+}
+@* else
+{
+    <EditForm Model="@Model" OnValidSubmit="SetLanguage" FormName="locale">
+        <InputRadioGroup @bind-Value="Model.Locale" T="string" Name="Locale">
+            <label><InputRadio Value="@("en")" /> English</label>
+            <label><InputRadio Value="@("sv-SE")" /> Svenska</label>
+            <label><InputRadio Value="@("ja-JP")" /> 日本語</label>
+            <label><InputRadio Value="@("zh-Hans")" /> 中文 (Simplified Chinese)</label>
+        </InputRadioGroup>
+
+         <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Secondary">Apply</MudButton>
+    </EditForm>
+} *@
 
 @code {
     private IReadOnlyList<CultureInfo> _locales = [];
 
     private string Tooltip => "Language / Idioma / Langue / 语言 / 言語 / لغة / 언어";
 
+    // [CascadingParameter] public HttpContext? HttpContext { get; set; }
+
+    // public class InputModel
+    // {
+    //     public string? Locale { get; set; }
+    // }
+
+    // [SupplyParameterFromForm(FormName = "locale")] public InputModel Model { get; set; } = new();
+
     protected override void OnInitialized()
     {
         _locales = requestLocalizationOptions.Value?.SupportedUICultures?.ToList() ?? [];
         base.OnInitialized();
     }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+
+    // private void SetLanguage()
+    // {
+    //     if(HttpContext is not null && Model?.Locale is not null)
+    //     {
+    //         DateTimeOffset expiration = DateTimeOffset.UtcNow.AddDays(365);
+    //         HttpContext.Response.Cookies.Append("locale", Model.Locale, new CookieOptions { Expires = expiration, Path = "/" });
+    //     }
+    // }
 
     private async Task SetLocaleAsync(string locale)
     {

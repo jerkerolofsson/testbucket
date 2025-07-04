@@ -599,6 +599,14 @@ namespace TestBucket.Domain.Requirements
 
         #region Requirement Specifications
 
+        public async Task DeleteSearchFolderAsync(ClaimsPrincipal principal, RequirementSpecification collection, SearchFolder searchFolder)
+        {
+            if(collection.SearchFolders is not null && collection.SearchFolders.Remove(searchFolder))
+            {
+                await UpdateRequirementSpecificationAsync(principal, collection);
+            }
+        }
+
         /// <summary>
         /// Adds a new requirement specification
         /// </summary>

@@ -935,4 +935,7 @@
   <data name="add-user" xml:space="preserve">
     <value />
   </data>
+  <data name="password" xml:space="preserve">
+    <value />
+  </data>
 </root>

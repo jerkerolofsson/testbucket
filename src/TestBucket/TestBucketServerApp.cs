@@ -118,9 +118,7 @@ public static class TestBucketServerApp
 
         // MCP
         builder.Services.AddHttpContextAccessor();
-
         builder.Services.AddMcpTools();
-       
 
         builder.Services.AddSettingLinks();
 
@@ -218,11 +216,12 @@ public static class TestBucketServerApp
         builder.Services.AddIdentityCore<ApplicationUser>(options =>
         {
             options.SignIn.RequireConfirmedAccount = true;
+            options.Tokens.AuthenticatorIssuer = "TestBucket";
         })
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddSignInManager()
-            .AddDefaultTokenProviders();
+        .AddRoles<IdentityRole>()
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddSignInManager()
+        .AddDefaultTokenProviders();
 
         builder.Services.ConfigureApplicationCookie(o =>
         {

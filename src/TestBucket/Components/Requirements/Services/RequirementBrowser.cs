@@ -255,7 +255,7 @@ internal class RequirementBrowser : TenantBaseService
                 {
                     items.AddRange(parent.RequirementSpecification.SearchFolders.Select(x => new TreeNode<BrowserItem>
                     {
-                        Value = new BrowserItem { Href = $"{_appNavigationManager.GetRequirementsSearchUrl()}?q=" + x.Query + " collection-id:" + parent.RequirementSpecification.Id },
+                        Value = new BrowserItem { Href = $"{_appNavigationManager.GetRequirementsSearchUrl()}?q=" + x.Query + " collection-id:" + parent.RequirementSpecification.Id, SearchFolder = x, RequirementSpecification = parent.RequirementSpecification },
                         Text = x.Name,
                         Icon = TbIcons.BoldDuoTone.FolderStar,
                         Expandable = false,

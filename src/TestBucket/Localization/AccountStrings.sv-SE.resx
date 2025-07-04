@@ -118,86 +118,84 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="account" xml:space="preserve">
-    <value>Account</value>
+    <value>Konto</value>
   </data>
   <data name="account-details" xml:space="preserve">
-    <value>Account Details</value>
+    <value>Kontodetaljer</value>
   </data>
   <data name="account-name" xml:space="preserve">
-    <value>Account Name</value>
+    <value>Kontonamn</value>
   </data>
   <data name="account-sub-type" xml:space="preserve">
-    <value>Sub Type</value>
+    <value>Undertyp</value>
   </data>
   <data name="account-type" xml:space="preserve">
-    <value>Account Type</value>
+    <value>Kontotyp</value>
   </data>
   <data name="add-account" xml:space="preserve">
-    <value>Add Account</value>
+    <value>Lägg till konto</value>
   </data>
   <data name="change-password" xml:space="preserve">
-    <value>Change password</value>
+    <value>Ändra lösenord</value>
   </data>
   <data name="custom-variables" xml:space="preserve">
-    <value>Custom Variables</value>
+    <value>Variabler</value>
   </data>
   <data name="email" xml:space="preserve">
-    <value>Email</value>
+    <value>Epost</value>
   </data>
   <data name="enter-the-code" xml:space="preserve">
-    <value>Enter the code</value>
+    <value>Fyll i koden</value>
   </data>
   <data name="forgot-your-password" xml:space="preserve">
-    <value>Forgot your password?</value>
+    <value>Glömt lösenord?</value>
   </data>
   <data name="login" xml:space="preserve">
-    <value>Login</value>
+    <value>Logga in</value>
   </data>
   <data name="login-prompt" xml:space="preserve">
-    <value>Login to TB</value>
+    <value>Logga in till TB</value>
   </data>
   <data name="login-prompt-description" xml:space="preserve">
-    <value>Enter your email and password to login.</value>
+    <value>Fyll i din epostaddress och ditt lösenord för att logga in</value>
   </data>
   <data name="logout" xml:space="preserve">
-    <value>Logout</value>
+    <value>Logga ut</value>
   </data>
   <data name="password" xml:space="preserve">
-    <value>Password</value>
+    <value>Lösenord</value>
   </data>
   <data name="personal-data" xml:space="preserve">
-    <value>Personal data</value>
+    <value>Personlig data</value>
   </data>
   <data name="profile" xml:space="preserve">
-    <value>Profile</value>
+    <value>Profil</value>
   </data>
   <data name="register" xml:space="preserve">
-    <value>Register</value>
+    <value>Registrera</value>
   </data>
   <data name="register-new-user" xml:space="preserve">
-    <value>Register as a new user</value>
+    <value>Registrera ny användare</value>
   </data>
   <data name="remember-me" xml:space="preserve">
-    <value>Remember me</value>
-    <comment>Account Login</comment>
+    <value>Kom ihåg mig</value>
   </data>
   <data name="resend-email-confirmation" xml:space="preserve">
-    <value>Resend email confirmation</value>
+    <value>Skicka epost bekräftelse igen</value>
   </data>
   <data name="test-accounts-description" xml:space="preserve">
-    <value>Test accounts contain credentials or account settings and can be provisioned to test cases to avoid duplicate usage of the same account when running concurrent tests.</value>
+    <value>Testkonton innehåller inställningar som kan användas av testfall för att undvika att duplicera inställningar och göra underhåll enklare genom att referera till ett konto istället för att hårdkoda de.</value>
   </data>
   <data name="two-factor-auth" xml:space="preserve">
-    <value>Two factor authentification</value>
+    <value>Two-factor authentifiering</value>
   </data>
   <data name="username" xml:space="preserve">
-    <value>Username</value>
+    <value>Användarnamn</value>
   </data>
   <data name="verification-code" xml:space="preserve">
-    <value>Verification code</value>
+    <value>Verifieringskod</value>
   </data>
   <data name="verify" xml:space="preserve">
-    <value>Verify</value>
-    <comment>Verify TOTP code</comment>
+    <value>Verifiera</value>
   </data>
 </root>

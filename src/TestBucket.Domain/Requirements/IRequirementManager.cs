@@ -206,4 +206,5 @@ public interface IRequirementManager
     Task<Requirement?> GetRequirementBySlugAsync(ClaimsPrincipal principal, long projectId, string slug);
     Task<long[]> SearchRequirementIdsAsync(ClaimsPrincipal principal, FilterSpecification<Requirement>[] specifications);
     Task SetRequirementTypeAsync(ClaimsPrincipal principal, long[] requirementIds, RequirementType requirementType, ProgressTask progress);
+    Task DeleteSearchFolderAsync(ClaimsPrincipal principal, RequirementSpecification collection, SearchFolder searchFolder);
 }

@@ -18,6 +18,7 @@ public class AppLocalization : IAppLocalization
         IStringLocalizer<SettingStrings> settings,
         IStringLocalizer<InsightStrings> insight,
         IStringLocalizer<HttpStrings> http,
+        IStringLocalizer<AccountStrings> account,
         IStringLocalizer<IssueStrings> issues,
         IStringLocalizer<ErrorStrings> error,
         IStringLocalizer<ValidationStrings> validation,
@@ -27,6 +28,7 @@ public class AppLocalization : IAppLocalization
         IStringLocalizer<StateStrings> states,
         IStringLocalizer<FieldStrings> field)
     {
+        Account = account;
         Shared = shared;
         Project = project;
         Code = code;
@@ -43,6 +45,7 @@ public class AppLocalization : IAppLocalization
         Validation = validation;
     }
 
+    public required IStringLocalizer Account { get; init; }
     public required IStringLocalizer Validation { get; init; }
     public required IStringLocalizer Security { get; init; }
     public required IStringLocalizer States { get; init; }

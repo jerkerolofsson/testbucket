@@ -1,5 +1,6 @@
 ﻿@implements IDisposable
 @rendermode InteractiveServer
+@inject IAppLocalization loc
 
 @inject NavigationManager NavigationManager
 @{
@@ -21,19 +22,19 @@
 
 <div class="nav-scrollable" >
 
-    <MudPaper Class="pa-5">
+    <MudPaper Class="pa-2">
         <MudNavMenu>
             <AuthorizeView>
                 <Authorized>
-                    <MudNavLink Match="NavLinkMatch.All" Href="@manageUrl">Profile</MudNavLink>
-                    <MudNavLink Href="@emailUrl">Email</MudNavLink>
-                    <MudNavLink Href="@changePasswordUrl">Change Password</MudNavLink>
-                    <MudNavLink Href="@twoFactorAuthenticationUrl">TwoFactorAuthentication</MudNavLink>
-                    <MudNavLink Href="@personalDataUrl">Personal Data</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="@manageUrl">@loc.Account["profile"]</MudNavLink>
+                    <MudNavLink Href="@emailUrl">@loc.Account["email"]</MudNavLink>
+                    <MudNavLink Href="@changePasswordUrl">@loc.Account["change-password"]</MudNavLink>
+                    <MudNavLink Href="@twoFactorAuthenticationUrl">@loc.Account["two-factor-auth"]</MudNavLink>
+                    <MudNavLink Href="@personalDataUrl">@loc.Account["personal-data"]</MudNavLink>
                 </Authorized>
                 <NotAuthorized>
-                    <MudNavLink Href="@loginUrl">Login</MudNavLink>
-                    <MudNavLink Href="@registerUrl">Register</MudNavLink>
+                    <MudNavLink Href="@loginUrl">>@loc.Account["login"]</MudNavLink>
+                    <MudNavLink Href="@registerUrl">@loc.Account["register"]</MudNavLink>
                 </NotAuthorized>
             </AuthorizeView>
         </MudNavMenu>
@@ -41,11 +42,7 @@
 
      <AuthorizeView>
         <Authorized>
-            <form action="Account/Logout" method="post">
-                <AntiforgeryToken />
-                <input type="hidden" name="ReturnUrl" value="/" />
-                <button class="mt-3" type="submit">Logout</button>
-            </form>
+            <MudNavLink Href="@loginUrl">@loc.Account["logout"]</MudNavLink>
         </Authorized>
         </AuthorizeView>
 

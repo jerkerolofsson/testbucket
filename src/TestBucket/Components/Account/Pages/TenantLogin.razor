@@ -8,7 +8,7 @@
 @inject TenantController tenantController
 @inject IAppLocalization loc
 
-<PageTitle>Log in</PageTitle>
+<PageTitle>@loc.Shared["login"]</PageTitle>
 
 @{
     string resendEmailUrl = $"/{TenantId}/Account/ResendEmailConfirmation";
@@ -18,8 +18,8 @@
 
 <MudPaper Class="tb-login-container account-page" Style="min-width: 400px">
     <main>
-        <MudText Typo="Typo.h1" Color="Color.Tertiary">Login to TestBucket</MudText>
-        <MudText>Enter your email and password to login.</MudText>
+        <MudText Typo="Typo.h1" Color="Color.Tertiary">@loc.Account["login-prompt"]</MudText>
+        <MudText>@loc.Account["login-prompt-description"]</MudText>
 
         @if(errorMessage is not null)
         {
@@ -37,31 +37,32 @@
             </MudStack>
             <MudStack Spacing="0" Class="mt-3">
                 <label for="Input.Password">@loc.Shared["password"]</label>
-                <InputText data-testid="password" type="password" @bind-Value="Input.Password" id="Input.Password" autocomplete="current-password" aria-required="true" placeholder="@loc.Shared["password"]" />
+                <InputText data-testid="password" type="password" @bind-Value="Input.Password" id="Input.Password" autocomplete="current-password" aria-required="true" placeholder="@loc.Account["password"]" />
                 <ValidationMessage For="() => Input.Password" class="text-danger" />
             </MudStack>
 
             <MudStack Spacing="1" Row Class="mt-3">
                 <InputCheckbox id="Input.RememberMe" data-testid="remember-me" @bind-Value="Input.RememberMe"></InputCheckbox>
-                <label for="Input.RememberMe">@loc.Shared["remember-me"]</label>
+                <label for="Input.RememberMe">@loc.Account["remember-me"]</label>
             </MudStack>
 
             <MudStack Row Class="mt-3">
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" data-testid="login" id="Button.Login">@loc.Shared["login"]</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" data-testid="login" id="Button.Login">@loc.Account["login"]</MudButton>
             </MudStack>
-                    
-            <div>
-                <p>
-                    <a href="@forgotPasswordUrl">Forgot your password?</a>
-                </p>
-                <p>
-                    <a href="@(NavigationManager.GetUriWithQueryParameters($"/{TenantId}/Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">Register as a new user</a>
-                </p>
-                <p>
-                    <a href="@resendEmailUrl">Resend email confirmation</a>
-                </p>
-            </div>
         </EditForm>
+
+
+        <div>
+            <p>
+                <a href="@forgotPasswordUrl">@loc.Account["forgot-your-password"]</a>
+            </p>
+            <p>
+                <a href="@(NavigationManager.GetUriWithQueryParameters($"/{TenantId}/Account/Register", new Dictionary<string, object?> { ["ReturnUrl"] = ReturnUrl }))">@loc.Account["register-new-user"]</a>
+            </p>
+            <p>
+                <a href="@resendEmailUrl">@loc.Account["resend-email-confirmation"]</a>
+            </p>
+        </div>
     </main>
 </MudPaper>
 
@@ -91,6 +92,8 @@
         {
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
+            await HttpContext.SignOutAsync();
+            await SignInManager.SignOutAsync();
         }
 
         var tenantExists = await tenantController.ExistsAsync(TenantId);

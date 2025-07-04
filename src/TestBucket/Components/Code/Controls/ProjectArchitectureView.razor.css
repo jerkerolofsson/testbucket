@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    color: var(--mud-palette-primary-text);
+    color: var(--mud-palette-text-primary);
 }
 
 .tb-architecture-view .title {
@@ -20,7 +20,7 @@
     padding: 1rem;
     border-radius: 4px;
     background: rgba(0,0,0,0.25);
-    color: var(--mud-palette-primary-text);
+    color: var(--mud-palette-text-primary);
 }
 
 
@@ -59,7 +59,7 @@
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     background: rgba(0,0,0,0.25);
-    color: var(--mud-palette-primary-text);
+    color: var(--mud-palette-text-primary);
 }
 .tb-architecture-view .component.feature-component {
     color: black;

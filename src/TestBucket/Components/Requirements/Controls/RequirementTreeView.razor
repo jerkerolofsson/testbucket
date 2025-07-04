@@ -632,7 +632,11 @@
             var spec = await browser.GetRequirementSpecificationByIdAsync(treeNode.Value.RequirementFolder.RequirementSpecificationId);
             appNav.State.SetSelectedRequirementSpecificationFolder(folder, spec);
         }
-        if (treeNode.Value?.RequirementSpecification is not null)
+        if (treeNode.Value?.SearchFolder is not null && treeNode.Value.RequirementSpecification is not null)
+        {
+            appNav.State.SetSelectedSearchFolder(treeNode.Value.RequirementSpecification, treeNode.Value.SearchFolder);
+        }
+        else if (treeNode.Value?.RequirementSpecification is not null)
         {
             appNav.State.SetSelectedRequirementSpecification(treeNode.Value.RequirementSpecification);
         }

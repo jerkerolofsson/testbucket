@@ -1,4 +1,6 @@
-﻿using Mediator;
+﻿using System;
+
+using Mediator;
 
 using Microsoft.Extensions.Localization;
 
@@ -377,5 +379,11 @@ internal class RequirementEditorController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         await _manager.SetRequirementTypeAsync(principal, requirementIds, requirementType, progress);
+    }
+
+    internal async Task DeleteSearchFolderAsync(RequirementSpecification collection, SearchFolder searchFolder)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        await _manager.DeleteSearchFolderAsync(principal, collection, searchFolder);
     }
 }

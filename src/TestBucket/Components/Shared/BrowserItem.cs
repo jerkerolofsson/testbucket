@@ -30,6 +30,7 @@ public record class BrowserItem
     public TestSuiteFolder? Folder { get; set; }
     public TestRun? TestRun { get; set; }
     public Pipeline? Pipeline { get; set; }
+    public SearchFolder SearchFolder { get; internal set; }
 
     public override string ToString()
     {

@@ -9,6 +9,7 @@ namespace TestBucket.Traits.Core.UnitTests;
 [Feature("Import Test Results")]
 [Component("Traits")]
 [EnrichedTest]
+[FunctionalTest]
 public class TraitTypeConverterTests
 {
     /// <summary>

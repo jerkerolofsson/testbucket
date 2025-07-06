@@ -8,6 +8,8 @@ namespace TestBucket.Traits.Core.UnitTests.Xunit;
 [Feature("Import Test Results")]
 [Component("Traits")]
 [EnrichedTest]
+[FunctionalTest]
+[UnitTest]
 public class TestTraitAttributeTests
 {
     /// <summary>

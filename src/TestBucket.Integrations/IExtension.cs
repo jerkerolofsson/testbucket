@@ -29,11 +29,6 @@ namespace TestBucket.Contracts.Integrations
         public string Version { get; }
 
         /// <summary>
-        /// Helper text for the user regarding how to enter the project id
-        /// </summary>
-        public string ProjectIdHelperText { get; }
-
-        /// <summary>
         /// Icon (SVG)
         /// </summary>
         public string? Icon { get; }
@@ -53,6 +48,11 @@ namespace TestBucket.Contracts.Integrations
         /// The default URL to integrate with
         /// </summary>
         string DefaultBaseUrl { get; }
+
+        /// <summary>
+        /// Helper text for the user regarding how to enter the project id
+        /// </summary>
+        public string ProjectIdHelperText { get; }
 
         /// <summary>
         /// Description of access token specific to system we are integrating wtih

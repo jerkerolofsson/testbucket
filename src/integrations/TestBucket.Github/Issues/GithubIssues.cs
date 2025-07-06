@@ -7,8 +7,6 @@ using TestBucket.Contracts.Issues.Models;
 using TestBucket.Github.Mapping;
 using TestBucket.Github.Models;
 
-using static System.Net.Mime.MediaTypeNames;
-
 namespace TestBucket.Github.Issues;
 public class GithubIssues : GithubIntegrationBaseClient, IExternalIssueProvider
 {
@@ -28,12 +26,21 @@ public class GithubIssues : GithubIntegrationBaseClient, IExternalIssueProvider
 
         List<IssueDto> dtos = [];
 
-        var request = new RepositoryIssueRequest { Filter = IssueFilter.All };
+        var request = new RepositoryIssueRequest 
+        { 
+            Filter = IssueFilter.All,
+            State = ItemStateFilter.All,
+        };
         var apiOptions = new ApiOptions { PageCount = count/ offset, PageSize = count };
         var issues = await client.Issue.GetAllForRepository(ownerProject.Owner, ownerProject.Project, request, apiOptions);
 
         foreach(var issue in issues)
         {
+            if(issue.PullRequest is not null)
+            {
+                continue;
+            }
+
             if(text is null || (issue.Title is not null && issue.Title.Contains(text, StringComparison.InvariantCultureIgnoreCase)))
             {
                 dtos.Add(issue.ToDto(system.Id));
@@ -76,12 +83,20 @@ public class GithubIssues : GithubIntegrationBaseClient, IExternalIssueProvider
         {
             request.Since = from.Value.UtcDateTime;
         }
+        request.SortProperty = IssueSort.Updated;
+        request.SortDirection = SortDirection.Ascending;
+        request.State = ItemStateFilter.All;
+
         var issues = await client.Issue.GetAllForRepository(ownerProject.Owner, ownerProject.Project, request);
 
         foreach (var issue in issues)
         {
+            if (issue.PullRequest is not null)
+            {
+                continue;
+            }
+
             dtos.Add(issue.ToDto(system.Id));
-            
         }
 
         return dtos;

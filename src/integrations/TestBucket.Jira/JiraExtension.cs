@@ -11,7 +11,9 @@ namespace TestBucket.Jira
         /// This will show the option to enable the capability in the UI settings for the extension
         /// </summary>
         public ExternalSystemCapability SupportedCapabilities => 
-            ExternalSystemCapability.GetIssues;
+            ExternalSystemCapability.GetIssues |
+            ExternalSystemCapability.GetRequirements | 
+            ExternalSystemCapability.CreateIssues;
 
         public string FriendlyName => ExtensionConstants.FriendlyName;
 
@@ -23,10 +25,10 @@ namespace TestBucket.Jira
 
 
         public string DefaultBaseUrl => "https://<project>.atlassian.net";
-        public string ProjectIdHelperText => "User name";
+        public string ProjectIdHelperText => "Project ID";
         public string AccessTokenHelperText => "Jira Access Token";
 
-        public ExtensionFields RequiredFields => ExtensionFields.AccessToken | ExtensionFields.BaseUrl | ExtensionFields.ProjectId;
+        public ExtensionFields RequiredFields => ExtensionFields.ClientId | ExtensionFields.BaseUrl | ExtensionFields.ProjectId;
 
         public void ConfigureDefaults(ExternalSystemDto system)
         {

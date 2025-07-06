@@ -62,6 +62,7 @@
       <ProjectReference Include="..\Package\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" />
       <ProjectReference Include="..\Package\Reporting\TestBucket.CodeCoverage\TestBucket.CodeCoverage.csproj" />
       <ProjectReference Include="..\Package\Reporting\TestBucket.Formats\TestBucket.Formats.csproj" />
+      <ProjectReference Include="..\TestBucket.Integrations\TestBucket.Integrations.csproj" />
     </ItemGroup>
 
     <ItemGroup>

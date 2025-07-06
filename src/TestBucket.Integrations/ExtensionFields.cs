@@ -16,5 +16,5 @@ public enum ExtensionFields
     ApiKey      = 0x02,
     BaseUrl     = 0x04,
     ProjectId   = 0x08,
-
+    ClientId    = 0x10,
 }

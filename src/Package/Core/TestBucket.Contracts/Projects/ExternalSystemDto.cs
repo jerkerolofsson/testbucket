@@ -37,6 +37,16 @@ public record class ExternalSystemDto
     public string? ApiKey { get; set; }
 
     /// <summary>
+    /// Client ID (oauth)
+    /// </summary>
+    public string? ClientId { get; set; }
+
+    /// <summary>
+    /// Client Secret (oauth)
+    /// </summary>
+    public string? ClientSecret { get; set; }
+
+    /// <summary>
     /// API provides only read-only access
     /// </summary>
     public bool ReadOnly { get; set; }

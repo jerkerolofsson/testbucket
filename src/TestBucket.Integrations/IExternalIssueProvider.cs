@@ -32,6 +32,24 @@ public interface IExternalIssueProvider
     /// <param name="externalIssueId"></param>
     /// <returns></returns>
     Task<IssueDto?> GetIssueAsync(ExternalSystemDto system, string externalIssueId, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Returns all issues modified/updated between the specified dates
+    /// </summary>
+    /// <param name="system"></param>
+    /// <param name="from"></param>
+    /// <param name="until"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     Task<IReadOnlyList<IssueDto>> GetIssuesAsync(ExternalSystemDto system, DateTimeOffset? from, DateTimeOffset until, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Saves changes to an issue in an external system.
+    /// This should also create the issue if it doesn't exist.
+    /// </summary>
+    /// <param name="externalSystemDto"></param>
+    /// <param name="issueDto"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     Task UpdateIssueAsync(ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken);
 }

@@ -41,14 +41,32 @@
                                 <MudTextField Value="Integration.BaseUrl" T="string" ValueChanged="BaseUrlChanged" />
                             </Field>
                         }
-                        <Field Row>
-                            <FieldHeader>@intLoc["project-id"]</FieldHeader>
-                            <MudSpacer />
-                            <MudTextField Value="Integration.ExternalProjectId"
-                                          T="string"
-                                          ValueChanged="ExternalProjectIdChanged"
-                                          HelperText="@Extension?.ProjectIdHelperText" />
-                        </Field>
+
+                        @if (Extension is not null && (Extension.RequiredFields & ExtensionFields.ProjectId) == ExtensionFields.ProjectId)
+                        {
+                            <Field Row>
+                                <FieldHeader>@intLoc["project-id"]</FieldHeader>
+                                <MudSpacer />
+                                <MudTextField Value="Integration.ExternalProjectId"
+                                              T="string"
+                                              ValueChanged="ExternalProjectIdChanged"
+                                              HelperText="@Extension?.ProjectIdHelperText" />
+                            </Field>
+                        }
+
+                        @if (Extension is not null && (Extension.RequiredFields & ExtensionFields.ClientId) == ExtensionFields.ClientId)
+                        {
+                            <Field Row>
+                                <FieldHeader>@intLoc["client-id"]</FieldHeader>
+                                <MudSpacer />
+                                <MudTextField Value="Integration.ClientId" T="string" ValueChanged="OnClientIdChanged" />
+                            </Field>
+                              <Field Row>
+                                <FieldHeader>@intLoc["client-secret"]</FieldHeader>
+                                <MudSpacer />
+                                <MudTextField Value="Integration.ClientSecret" T="string" ValueChanged="OnClientSecretChanged" />
+                            </Field>
+                        }
 
                         @if (Extension is not null && (Extension.RequiredFields & ExtensionFields.AccessToken) == ExtensionFields.AccessToken)
                         {
@@ -192,6 +210,24 @@
             await OnChangedAsync();
         }
     }
+
+    private async Task OnClientIdChanged(string clientId)
+    {
+        if (Integration is not null)
+        {
+            Integration.ClientId = clientId;
+            await OnChangedAsync();
+        }
+    }
+    private async Task OnClientSecretChanged(string clientSecret)
+    {
+        if (Integration is not null)
+        {
+            Integration.ClientSecret = clientSecret;
+            await OnChangedAsync();
+        }
+    }
+
     private async Task AccessTokenChanged(string accessToken)
     {
         if (Integration is not null)

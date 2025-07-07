@@ -27,6 +27,8 @@ public enum MappedIssueState
     /// </summary>
     Canceled = 11,
 
+    InReview = 12,
+
     /// <summary>
     /// Other, used defined with no mapping to internal state
     /// </summary>

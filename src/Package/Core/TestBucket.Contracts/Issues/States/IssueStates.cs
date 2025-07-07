@@ -44,6 +44,11 @@ public class IssueStates
     public const string InProgress = nameof(MappedIssueState.InProgress);
 
     /// <summary>
+    /// Assigned for review
+    /// </summary>
+    public const string InReview = nameof(MappedIssueState.InReview);
+
+    /// <summary>
     /// Solution is Reviewed
     /// </summary>
     public const string Reviewed = nameof(MappedIssueState.Reviewed);
@@ -67,4 +72,9 @@ public class IssueStates
     /// Canceled
     /// </summary>
     public const string Canceled = nameof(MappedIssueState.Canceled);
+
+    /// <summary>
+    /// Other
+    /// </summary>
+    public const string Other = nameof(MappedIssueState.Other);
 }

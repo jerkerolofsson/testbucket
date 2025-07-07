@@ -87,7 +87,7 @@ public class IssueProviderBackgroundIndexer : BackgroundService
     private static async Task IndexIssuesAsync(ClaimsPrincipal principal, IServiceScope scope, TestProject project, IExternalIssueProvider integration, ExternalSystem externalSystem, CancellationToken cancellationToken)
     {
         DateTimeOffset? from = null;
-        DateTimeOffset until = DateTimeOffset.UtcNow;
+        DateTimeOffset until = DateTimeOffset.UtcNow.AddDays(1);
         var manager = scope.ServiceProvider.GetRequiredService<IIssueManager>();
 
         // We search for any issue since the last one from the same system

@@ -208,6 +208,10 @@
     }
     private async Task AuthenticateIntegrationAsync(ExternalSystem system)
     {
+        if (_project is null)
+        {
+            return;
+        }
         var url = await projectController.AuthenticateIntegrationAsync(_project, system);
         if(url is not null)
         {

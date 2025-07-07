@@ -17,6 +17,18 @@ public class IssueState
     public string? Color { get; set; }
 
     public override string ToString() => Name??"";
+
+    public IssueState()
+    {
+
+    }
+
+    public IssueState(string name, MappedIssueState mappedState)
+    {
+        Name = name;
+        MappedState = mappedState;
+    }
+
     public override bool Equals(object? obj)
     {
         if (obj is IssueState state)

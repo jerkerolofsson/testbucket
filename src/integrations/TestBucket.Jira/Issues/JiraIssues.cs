@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Contracts.Issues.Models;
 using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.Issues.Types;
+using TestBucket.Jira.Client;
+using TestBucket.Jira.Models;
 
 namespace TestBucket.Jira.Issues;
 internal class JiraIssues : IExternalIssueProvider
@@ -16,7 +19,7 @@ internal class JiraIssues : IExternalIssueProvider
         _logger = logger;
     }
 
-    private Atlassian.Jira.Jira CreateJiraClient(ExternalSystemDto system)
+    private async Task<JiraOauth2Client> CreateJiraClientAsync(ExternalSystemDto system)
     {
         if (string.IsNullOrEmpty(system.BaseUrl))
             throw new ArgumentException("Base URL is required for Jira integration", nameof(system));
@@ -24,19 +27,7 @@ internal class JiraIssues : IExternalIssueProvider
         if (string.IsNullOrEmpty(system.AccessToken))
             throw new ArgumentException("Access token is required for Jira integration", nameof(system));
 
-        _logger.LogDebug("Creating Jira client for base URL: {BaseUrl}", system.BaseUrl);
-
-        var settings = new Atlassian.Jira.JiraRestClientSettings
-        {
-            EnableUserPrivacyMode = true
-        };
-
-        // Use OAuth2 token authentication
-        return Atlassian.Jira.Jira.CreateRestClient(
-            system.BaseUrl,
-            string.Empty, // username not needed for token auth
-            "abc"+system.AccessToken, // OAuth2 access token
-            settings);
+        return await JiraOauth2Client.CreateAsync(system.BaseUrl, system.AccessToken);
     }
 
     public async Task<IssueDto?> GetIssueAsync(ExternalSystemDto system, string externalIssueId, CancellationToken cancellationToken)
@@ -44,7 +35,7 @@ internal class JiraIssues : IExternalIssueProvider
         try
         {
             _logger.LogDebug("Getting issue {IssueId} from Jira", externalIssueId);
-            var jira = CreateJiraClient(system);
+            var jira = await CreateJiraClientAsync(system);
             var issue = await jira.Issues.GetIssueAsync(externalIssueId);
 
             if (issue == null)
@@ -54,7 +45,8 @@ internal class JiraIssues : IExternalIssueProvider
             }
 
             _logger.LogDebug("Successfully retrieved issue {IssueId} from Jira", externalIssueId);
-            return MapJiraIssueToDto(issue, system);
+            //return MapJiraIssueToDto(issue, system);
+            return null;
         }
         catch (Exception ex)
         {
@@ -68,29 +60,31 @@ internal class JiraIssues : IExternalIssueProvider
         try
         {
             _logger.LogDebug("Getting issues from Jira for date range: {From} to {Until}", from, until);
-            var jira = CreateJiraClient(system);
+            var jira = await CreateJiraClientAsync(system);
 
-            var totalCount = jira.Issues.Queryable.Where(x=>x.Type == "Bug").Count();
+            IssueStateMapping stateMapping = new DefaultStateMap();
 
             // Build JQL query for date range
             var jqlBuilder = new StringBuilder();
-            //jqlBuilder.Append($"project = \"{system.ExternalProjectId}\" AND");
+            jqlBuilder.Append($"project = \"{system.ExternalProjectId}\" AND ");
             jqlBuilder.Append($"issuetype = Bug");
 
             if (from.HasValue)
             {
-                jqlBuilder.Append($" AND updated >= \"{from.Value:yyyy-MM-dd}\"");
+                jqlBuilder.Append($" AND updated >= \"{from.Value:yyyy-MM-dd HH:mm}\"");
             }
 
-            jqlBuilder.Append($" AND updated <= \"{until:yyyy-MM-dd}\"");
+            jqlBuilder.Append($" AND updated <= \"{until:yyyy-MM-dd HH:mm}\"");
 
             var jql = jqlBuilder.ToString();
             _logger.LogInformation("Executing JQL query: {JQL}", jql);
 
-            var issues = await jira.Issues.GetIssuesFromJqlAsync(jql);
-            _logger.LogInformation("Retrieved {Count} issues from Jira using JQL query", issues.Count());
-
-            return issues.Select(issue => MapJiraIssueToDto(issue, system)).ToList();
+            List<IssueDto> issues = [];
+            await foreach(var jiraIssue in jira.Issues.GetIssuesFromJqlAsync(jql, 0, 10000, cancellationToken))
+            {
+                issues.Add(MapJiraIssueToDto(jiraIssue, system, stateMapping));
+            }
+            return issues;
         }
         catch (Exception ex)
         {
@@ -104,7 +98,8 @@ internal class JiraIssues : IExternalIssueProvider
         try
         {
             _logger.LogDebug("Searching issues in Jira with text: {Text}, offset: {Offset}, count: {Count}", text, offset, count);
-            var jira = CreateJiraClient(system);
+            var jira = await CreateJiraClientAsync(system);
+            IssueStateMapping stateMapping = new DefaultStateMap();
 
             // Build JQL query for text search
             var jqlBuilder = new List<string>();
@@ -114,18 +109,18 @@ internal class JiraIssues : IExternalIssueProvider
             if (!string.IsNullOrWhiteSpace(text))
             {
                 jqlBuilder.Add($"text ~ \"{text}\"");
-            }
+            } 
 
             var jql = string.Join(" AND ", jqlBuilder);
             _logger.LogDebug("Executing search JQL query: {JQL}", jql);
-          
-            var issues = await jira.Issues.GetIssuesFromJqlAsync(
-                jql,
-                maxIssues: count,
-                startAt: offset);
 
-            _logger.LogInformation("Retrieved {Count} issues from Jira search", issues.Count());
-            return issues.Select(issue => MapJiraIssueToDto(issue, system)).ToList();
+            List<IssueDto> issues = [];
+            await foreach (var jiraIssue in jira.Issues.GetIssuesFromJqlAsync(jql, offset, count, cancellationToken))
+            {
+                issues.Add(MapJiraIssueToDto(jiraIssue, system, stateMapping));
+            }
+            return issues;
+
         }
         catch (Exception ex)
         {
@@ -138,17 +133,17 @@ internal class JiraIssues : IExternalIssueProvider
     {
         try
         {
-            var jira = CreateJiraClient(externalSystemDto);
+            var jira = await CreateJiraClientAsync(externalSystemDto);
 
             if (string.IsNullOrEmpty(issueDto.ExternalId))
             {
                 // Create new issue
-                await CreateNewIssueAsync(jira, externalSystemDto, issueDto, cancellationToken);
+                //await CreateNewIssueAsync(jira, externalSystemDto, issueDto, cancellationToken);
             }
             else
             {
                 // Update existing issue
-                await UpdateExistingIssueAsync(jira, issueDto, cancellationToken);
+                //await UpdateExistingIssueAsync(jira, issueDto, cancellationToken);
             }
         }
         catch (Exception)
@@ -158,91 +153,93 @@ internal class JiraIssues : IExternalIssueProvider
         }
     }
 
-    private async Task CreateNewIssueAsync(Atlassian.Jira.Jira jira, ExternalSystemDto system, IssueDto issueDto, CancellationToken cancellationToken)
-    {
-        var issue = jira.CreateIssue(system.ExternalProjectId);
-        issue.Type = issueDto.IssueType ?? "Task";
-        issue.Summary = issueDto.Title ?? "";
-        issue.Description = issueDto.Description;
+    //private async Task CreateNewIssueAsync(Atlassian.Jira.Jira jira, ExternalSystemDto system, IssueDto issueDto, CancellationToken cancellationToken)
+    //{
+    //    var issue = jira.CreateIssue(system.ExternalProjectId);
+    //    issue.Type = issueDto.IssueType ?? "Task";
+    //    issue.Summary = issueDto.Title ?? "";
+    //    issue.Description = issueDto.Description;
 
-        if (!string.IsNullOrEmpty(issueDto.AssignedTo))
-        {
-            issue.Assignee = issueDto.AssignedTo;
-        }
+    //    if (!string.IsNullOrEmpty(issueDto.AssignedTo))
+    //    {
+    //        issue.Assignee = issueDto.AssignedTo;
+    //    }
 
-        await issue.SaveChangesAsync();
+    //    await issue.SaveChangesAsync();
 
-        // Update the DTO with the created issue ID
-        issueDto.ExternalId = issue.Key?.Value;
-        issueDto.ExternalDisplayId = issue.Key?.Value;
-    }
+    //    // Update the DTO with the created issue ID
+    //    issueDto.ExternalId = issue.Key?.Value;
+    //    issueDto.ExternalDisplayId = issue.Key?.Value;
+    //}
 
-    private async Task UpdateExistingIssueAsync(Atlassian.Jira.Jira jira, IssueDto issueDto, CancellationToken cancellationToken)
-    {
-        var issue = await jira.Issues.GetIssueAsync(issueDto.ExternalId!);
+    //private async Task UpdateExistingIssueAsync(Atlassian.Jira.Jira jira, IssueDto issueDto, CancellationToken cancellationToken)
+    //{
+    //    var issue = await jira.Issues.GetIssueAsync(issueDto.ExternalId!);
 
-        if (issue != null)
-        {
-            if (issueDto.Title != null)
-                issue.Summary = issueDto.Title;
+    //    if (issue != null)
+    //    {
+    //        if (issueDto.Title != null)
+    //            issue.Summary = issueDto.Title;
 
-            if (issueDto.Description != null)
-                issue.Description = issueDto.Description;
+    //        if (issueDto.Description != null)
+    //            issue.Description = issueDto.Description;
 
-            if (issueDto.AssignedTo != null)
-                issue.Assignee = issueDto.AssignedTo;
+    //        if (issueDto.AssignedTo != null)
+    //            issue.Assignee = issueDto.AssignedTo;
 
-            await issue.SaveChangesAsync();
-        }
-    }
+    //        await issue.SaveChangesAsync();
+    //    }
+    //}
 
-    private static IssueDto MapJiraIssueToDto(Atlassian.Jira.Issue jiraIssue, ExternalSystemDto system)
+    internal static IssueDto MapJiraIssueToDto(JiraIssue jiraIssue, ExternalSystemDto system, IssueStateMapping stateMapping)
     {
         var dto = new IssueDto
         {
-            ExternalId = jiraIssue.Key?.Value,
-            ExternalDisplayId = jiraIssue.Key?.Value,
+            ExternalId = jiraIssue.key,
+            ExternalDisplayId = jiraIssue.key,
             ExternalSystemName = ExtensionConstants.SystemName,
             ExternalSystemId = system.Id,
-            Title = jiraIssue.Summary,
-            Description = jiraIssue.Description,
-            IssueType = jiraIssue.Type?.Name,
-            Author = jiraIssue.Reporter,
-            AssignedTo = jiraIssue.Assignee,
-            Created = jiraIssue.Created,
-            Modified = jiraIssue.Updated,
-            State = jiraIssue.Status?.Name,
-            Labels = jiraIssue.Labels?.ToArray()
+            Title = jiraIssue.fields?.summary,
+            Description = jiraIssue.fields?.description,
+            IssueType = jiraIssue.fields?.issuetype?.name,
+            Author = jiraIssue.fields?.reporter?.emailAddress,
+            AssignedTo = jiraIssue.fields?.assignee?.emailAddress,
+            Created = jiraIssue.fields?.created,
+            Modified = jiraIssue.fields?.updated,
+            State = jiraIssue.fields?.status?.name,
+            Labels = jiraIssue.fields?.labels,
         };
 
-        // Map Jira status to internal MappedIssueState
-        dto.MappedState = MapJiraStatusToMappedState(jiraIssue.Status?.Name);
-
-        // Build URL if we have base URL and issue key
-        if (!string.IsNullOrEmpty(system.BaseUrl) && !string.IsNullOrEmpty(jiraIssue.Key?.Value))
+        //    // Map Jira status to internal MappedIssueState
+        if (jiraIssue.fields?.status is not null)
         {
-            dto.Url = $"{system.BaseUrl.TrimEnd('/')}/browse/{jiraIssue.Key.Value}";
+            var state = MapJiraStatusToMappedState(jiraIssue.fields.status.name, stateMapping);
+            dto.MappedState = state.MappedState;
+            dto.State = state.Name;
+        }
+        if (jiraIssue.fields?.issuetype?.name is not null)
+        {
+            if(jiraIssue.fields.issuetype.name == "Bug")
+            {
+                dto.IssueType = IssueTypes.Issue;
+            }
         }
 
         return dto;
     }
 
-    private static MappedIssueState MapJiraStatusToMappedState(string? jiraStatus)
+    internal static IssueState MapJiraStatusToMappedState(string? jiraStatus, IssueStateMapping stateMapping)
     {
-        if (string.IsNullOrEmpty(jiraStatus))
-            return MappedIssueState.Other;
-
-        return jiraStatus.ToLowerInvariant() switch
+        if (string.IsNullOrWhiteSpace(jiraStatus))
         {
-            "open" or "new" or "to do" or "todo" => MappedIssueState.Open,
-            "in progress" or "in-progress" or "progress" => MappedIssueState.InProgress,
-            "done" or "completed" or "finished" or "resolved" => MappedIssueState.Completed,
-            "closed" => MappedIssueState.Closed,
-            "cancelled" or "canceled" => MappedIssueState.Canceled,
-            "review" or "in review" or "code review" => MappedIssueState.Reviewed,
-            "accepted" => MappedIssueState.Accepted,
-            "assigned" => MappedIssueState.Assigned,
-            _ => MappedIssueState.Other
-        };
+            return new IssueState(IssueStates.Other, MappedIssueState.Other);
+        }
+
+        if(stateMapping.TryGetValue(jiraStatus, out var result))
+        {
+            return result;
+        }
+
+        return new IssueState(jiraStatus, MappedIssueState.Other);
     }
 }

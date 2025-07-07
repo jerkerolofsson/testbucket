@@ -58,18 +58,45 @@ public class OAuthAuthManager
     /// <exception cref="InvalidOperationException"></exception>
     private async Task ExchangeTokenAsync(OAuthAuthState state, string code)
     {
+        await ExchangeTokenAsync(state, code, null, "authorization_code");
+    }
+
+    /// <summary>
+    /// Refreshes a token
+    /// </summary>
+    /// <param name="state"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    public async Task RefreshTokenAsync(OAuthAuthState state)
+    {
+        if(string.IsNullOrEmpty(state.RefreshToken))
+        {
+            throw new ArgumentException("Refresh token is missing");
+        }
+        await ExchangeTokenAsync(state, null, state.RefreshToken, "refresh_token");
+    }
+
+    private async Task ExchangeTokenAsync(OAuthAuthState state, string? code, string? refreshToken, string grantType)
+    {
         using var httpClient = _httpClientFactory.CreateClient();
         
         var tokenRequestParams = new Dictionary<string, string>
         {
-            ["grant_type"] = "authorization_code",
+            ["grant_type"] = grantType,
             ["client_id"] = state.ClientId,
             ["client_secret"] = state.ClientSecret,
-            ["code"] = code,
             ["state"] = state.Id
         };
+        if (refreshToken is not null)
+        {
+            tokenRequestParams["refresh_token"] = refreshToken;
+        }
+        if (code is not null)
+        {
+            tokenRequestParams["code"] = code;
+        }
 
-        if(state.RedirectUri is not null)
+        if (state.RedirectUri is not null)
         {
             tokenRequestParams["redirect_uri"] = state.RedirectUri;
         }

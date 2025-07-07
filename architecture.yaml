@@ -44,6 +44,12 @@ systems:
     paths:
     - src\Package\Core\TestBucket.Sdk.Client\
 components:
+  Environments:
+    display: 
+    description: Test Environment and Variables
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths: []
   Code Coverage:
     display: 
     description: 'Parsing of cobertura code coverage XML '
@@ -501,6 +507,47 @@ features:
     paths:
     - src\Package\Reporting\TestBucket.CodeCoverage\**\*.*
     - src\TestBucket\Components\Code\Controls\**\*CodeCoverage*
+  Jira:
+    display: 
+    description: Jira integration
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\integrations\TestBucket.Jira\**\*
+    - src\TestBucket.Domain\Identity\OAuth\**\*
+  OAuth:
+    display: 
+    description: OAuth authentication framework
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src\TestBucket.Domain\Identity\OAuth\**\*.*
+  Fields:
+    display: 
+    description: >-
+      Fields allow the user to assign metadata to tests, requirementd and other entities, which is usedful to link, group and analyze entities
+
+
+      - Custom fields
+
+      - Data sources for completion
+
+      - System defined fields
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Fields\**\*.*
+    - src\TestBucket.Domain\Labels\**\*.*
+    - src\TestBucket\Components\Labels\**\*.*
+    - src\TestBucket\Components\Shared\Fields\**\*.*
+  Themes:
+    display: 
+    description: >
+      User interface styling using themes.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Appearance\Themes\**\*.*
   Semantic Search:
     display: 
     description: >-

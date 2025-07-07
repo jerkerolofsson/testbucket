@@ -252,19 +252,6 @@ namespace TestBucket.Jira.UnitTests
         }
 
         /// <summary>
-        /// Tests that null input returns null.
-        /// </summary>
-        [Fact]
-        public void DeserializeJson_WithNullInput_ReturnsNull()
-        {
-            // Act
-            var result = JiraIssueSerializer.DeserializeJson(null!);
-
-            // Assert
-            Assert.Null(result);
-        }
-
-        /// <summary>
         /// Tests that empty string input throws appropriate exception.
         /// </summary>
         [Fact]

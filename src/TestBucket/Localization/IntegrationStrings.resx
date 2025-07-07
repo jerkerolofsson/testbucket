@@ -132,6 +132,15 @@
   <data name="artifacts-pattern-description" xml:space="preserve">
     <value>Define a glob pattern to define which artifacts created by pipelines that will be downloaded to test bucket when the pipeline completes.</value>
   </data>
+  <data name="authentication" xml:space="preserve">
+    <value>Authentication</value>
+  </data>
+  <data name="client-id" xml:space="preserve">
+    <value>Client ID</value>
+  </data>
+  <data name="client-secret" xml:space="preserve">
+    <value>Client Secret</value>
+  </data>
   <data name="coverage-report-artifact-pattern" xml:space="preserve">
     <value>Glob pattern for coverage reports</value>
   </data>
@@ -179,6 +188,10 @@
   </data>
   <data name="read-repository" xml:space="preserve">
     <value>Read Repository and Commits</value>
+  </data>
+  <data name="scope" xml:space="preserve">
+    <value>Scope</value>
+    <comment>OAuth2 scopes</comment>
   </data>
   <data name="system" xml:space="preserve">
     <value>System</value>

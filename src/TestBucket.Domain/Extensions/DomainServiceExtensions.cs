@@ -84,12 +84,10 @@ public static class DomainServiceExtensions
             options.ServiceLifetime = ServiceLifetime.Scoped;
         });
 
-        // HttpClient for OAuth
-        services.AddHttpClient();
-
         // OAuth
         services.AddSingleton<OAuthAuthManager>();
         services.AddScoped<IOAuth2Authenticator, OAuthAuthenticator>();
+        services.AddHostedService<BackgroundTokenRefresher>();
 
         services.AddSingleton<IApiKeyAuthenticator,ApiKeyAuthenticator>();
         services.AddScoped<IUserPermissionsManager, UserPermissionsManager>();

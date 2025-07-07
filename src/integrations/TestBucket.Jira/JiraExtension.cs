@@ -25,14 +25,18 @@ namespace TestBucket.Jira
 
 
         public string DefaultBaseUrl => "https://<project>.atlassian.net";
-        public string ProjectIdHelperText => "Project ID";
+        public string ProjectIdHelperText => "Jira Project Name";
         public string AccessTokenHelperText => "Jira Access Token";
 
         public ExtensionFields RequiredFields => ExtensionFields.ClientId | ExtensionFields.BaseUrl | ExtensionFields.ProjectId;
 
         public void ConfigureDefaults(ExternalSystemDto system)
         {
+            //string scope = "write:jira-work read:jira-work offline_access";
+
+            system.Scope = "write:jira-work read:jira-work offline_access";
+            system.AuthEndpoint ??= $"https://auth.atlassian.com/authorize?audience=api.atlassian.com&response_type=code&prompt=consent";
+            system.TokenEndpoint ??= "https://auth.atlassian.com/oauth/token";
         }
     }
-
 }

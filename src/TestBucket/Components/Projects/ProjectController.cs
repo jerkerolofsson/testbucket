@@ -12,11 +12,13 @@ using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Identity;
+using TestBucket.Domain.Identity.OAuth;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Projects.Mapping;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.States;
+using TestBucket.Integrations;
 using TestBucket.Localization;
-using TestBucket.Domain.Projects.Mapping;
 
 namespace TestBucket.Components.Projects;
 
@@ -31,6 +33,9 @@ internal class ProjectController : TenantBaseService
     private readonly IPipelineManager _pipelineManager;
     private readonly IDialogService _dialogService;
     private readonly IStringLocalizer<SharedStrings> _loc;
+    private readonly IOAuth2Authenticator _oauthAuthenticator;
+    private readonly NavigationManager _navigationManager;
+
     public ProjectController(
         IProjectRepository projectRepository,
         IUserPreferencesManager userPreferencesService,
@@ -41,7 +46,9 @@ internal class ProjectController : TenantBaseService
         IPipelineProjectManager pipelineProjectManager,
         IPipelineManager pipelineManager,
         IDialogService dialogService,
-        IStringLocalizer<SharedStrings> loc) : base(authenticationStateProvider)
+        IStringLocalizer<SharedStrings> loc,
+        IOAuth2Authenticator oauthAuthenticator,
+        NavigationManager navigationManager) : base(authenticationStateProvider)
     {
         _projectRepository = projectRepository;
         _userPreferencesService = userPreferencesService;
@@ -52,6 +59,8 @@ internal class ProjectController : TenantBaseService
         _pipelineManager = pipelineManager;
         _dialogService = dialogService;
         _loc = loc;
+        _oauthAuthenticator = oauthAuthenticator;
+        _navigationManager = navigationManager;
     }
 
     public async Task EditProjectIntegrationAsync(TestProject project, ExternalSystem system, IExtension extension)
@@ -75,11 +84,13 @@ internal class ProjectController : TenantBaseService
             await _projectManager.SaveProjectIntegrationAsync(principal, project.Slug, integration);
         }
     }
-    public async Task AddProjectIntegrationAsync(TestProject project, IExtension extension)
+    public async Task<ExternalSystem?> AddProjectIntegrationAsync(TestProject project, IExtension extension)
     {
         var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Project, PermissionLevel.Write);
         if (!hasPermission)
-            return;
+        {
+            return null;
+        }
 
         var principal = await GetUserClaimsPrincipalAsync();
 
@@ -110,7 +121,9 @@ internal class ProjectController : TenantBaseService
         {
             integration.TestProjectId = project.Id;
             await _projectManager.SaveProjectIntegrationAsync(principal, project.Slug, integration);
+            return integration;
         }
+        return null;
     }
     public async Task AddProjectAsync(Team team)
     {
@@ -275,6 +288,38 @@ internal class ProjectController : TenantBaseService
 
         var principal = await GetUserClaimsPrincipalAsync();
         await _projectManager.DeleteAsync(principal, project);
+    }
+
+    /// <summary>
+    /// Returns the initial redirect to the authentication endpoint 
+    /// </summary>
+    /// <param name="system"></param>
+    /// <returns></returns>
+    public async Task<string?> AuthenticateIntegrationAsync(TestProject project, ExternalSystem system)
+    {
+        // Final redirect once authenticated
+        string redirectUri = _navigationManager.Uri;
+        string baseUrl = _navigationManager.BaseUri;
+
+        if (system.ClientId is null || system.ClientSecret is null || system.AuthEndpoint is null || system.TokenEndpoint is null)
+        {
+            return null;
+        }
+
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _oauthAuthenticator.AuthenticateAsync(principal, system.Scope ?? "", system.ClientId, system.ClientSecret, system.AuthEndpoint, system.TokenEndpoint, system.Name, baseUrl, async (state) => 
+        {
+            state.SuccessRedirectUri = redirectUri;
+            system.AccessToken = state.AccessToken;
+            system.RefreshToken = state.RefreshToken;
+
+            system.TokenExpiry = null;
+            if(state.ExpiresIn > 0)
+            {
+                system.TokenExpiry = DateTimeOffset.UtcNow.AddSeconds(state.ExpiresIn);
+            }
+            await _projectManager.SaveProjectIntegrationAsync(principal, project.Slug, system);
+        });
     }
 
     public async Task DeleteProjectIntegrationAsync(ExternalSystem system)

@@ -32,9 +32,34 @@ public record class ExternalSystemDto
     public string? AccessToken { get; set; }
 
     /// <summary>
+    /// Refresh token for the external system
+    /// </summary>
+    public string? RefreshToken { get; set; }
+
+    /// <summary>
     /// API Key for the external system
     /// </summary>
     public string? ApiKey { get; set; }
+
+    /// <summary>
+    /// OAuth authentication endpoint
+    /// </summary>
+    public string? AuthEndpoint { get; set; }
+
+    /// <summary>
+    /// OAuth token endpoint
+    /// </summary>
+    public string? TokenEndpoint { get; set; }
+
+    /// <summary>
+    /// OAuth scope
+    /// </summary>
+    public string? Scope { get; set; }
+
+    /// <summary>
+    /// Timestamp when the token expires
+    /// </summary>
+    public DateTimeOffset? TokenExpiry { get; set; }
 
     /// <summary>
     /// Client ID (oauth)

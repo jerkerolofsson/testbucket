@@ -25,6 +25,7 @@ using TestBucket.Domain.Features.Classification;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Identity;
+using TestBucket.Domain.Identity.OAuth;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Insights;
 using TestBucket.Domain.Issues;
@@ -66,6 +67,7 @@ using TestBucket.Domain.Testing.TestRuns.Insights;
 using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Domain.TestResources;
 using TestBucket.Domain.TestResources.Allocation;
+using TestBucket.Integrations;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class DomainServiceExtensions
@@ -82,6 +84,12 @@ public static class DomainServiceExtensions
             options.ServiceLifetime = ServiceLifetime.Scoped;
         });
 
+        // HttpClient for OAuth
+        services.AddHttpClient();
+
+        // OAuth
+        services.AddSingleton<OAuthAuthManager>();
+        services.AddScoped<IOAuth2Authenticator, OAuthAuthenticator>();
 
         services.AddSingleton<IApiKeyAuthenticator,ApiKeyAuthenticator>();
         services.AddScoped<IUserPermissionsManager, UserPermissionsManager>();

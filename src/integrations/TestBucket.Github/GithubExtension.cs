@@ -35,11 +35,9 @@ namespace TestBucket.Github
 
         public ExtensionFields RequiredFields => ExtensionFields.AccessToken | ExtensionFields.BaseUrl | ExtensionFields.ProjectId;
 
-
         public void ConfigureDefaults(ExternalSystemDto system)
         {
             system.ExternalProjectId ??= "<organization>/<project>";
         }
     }
-
 }

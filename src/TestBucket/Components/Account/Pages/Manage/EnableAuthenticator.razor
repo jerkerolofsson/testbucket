@@ -119,7 +119,7 @@ else
 
         if (!is2faTokenValid)
         {
-            message = "Error: Verification code is invalid.";
+            message = "Error: Verification code is invalid. Ensure that your device has accurate time.";
             return;
         }
 
@@ -135,14 +135,13 @@ else
         }
         else
         {
-            RedirectManager.RedirectToWithStatus("Account/Manage/TwoFactorAuthentication", message, HttpContext);
+            RedirectManager.RedirectToWithStatus($"{TenantId}/Account/Manage/TwoFactorAuthentication", message, HttpContext);
         }
     }
 
     private async ValueTask LoadSharedKeyAndQrCodeUriAsync(ApplicationUser user)
     {
         // Load the authenticator key & QR code URI to display on the form
-        await UserManager.ResetAuthenticatorKeyAsync(user);
         var unformattedKey = await UserManager.GetAuthenticatorKeyAsync(user);
         if (string.IsNullOrEmpty(unformattedKey))
         {

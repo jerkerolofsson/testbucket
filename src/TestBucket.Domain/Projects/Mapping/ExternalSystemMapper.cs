@@ -16,6 +16,14 @@ namespace TestBucket.Domain.Projects.Mapping
                 Provider = x.Provider,
                 AccessToken = x.AccessToken,
                 ApiKey = x.ApiKey,
+
+                TokenEndpoint = x.TokenEndpoint,
+                AuthEndpoint = x.AuthEndpoint,
+                TokenExpiry = x.TokenExpiry,
+                RefreshToken = x.RefreshToken,
+                Scope = x.Scope,
+
+
                 ClientId = x.ClientId,
                 ClientSecret = x.ClientSecret,
                 BaseUrl = x.BaseUrl,
@@ -44,6 +52,10 @@ namespace TestBucket.Domain.Projects.Mapping
                 ReadOnly = x.ReadOnly,
                 TestResultsArtifactsPattern = x.TestResultsArtifactsPattern,
                 CoverageReportArtifactsPattern = x.CoverageReportArtifactsPattern,
+
+                TokenEndpoint = x.TokenEndpoint,
+                AuthEndpoint = x.AuthEndpoint,
+
             };
         }
     }

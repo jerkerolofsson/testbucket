@@ -7,6 +7,7 @@
 @attribute [Authorize(Roles = "ADMIN")]
 @inject ProjectController projectController
 @inject AppNavigationManager appNav
+@inject NavigationManager NavigationManager
 @inject IDialogService dialogService
 @inject IExtensionManager extensionManager
 @inject IStringLocalizer<ProjectStrings> projectLoc
@@ -49,47 +50,91 @@
 
         
         <ColGroup>
-            <col style="width: 10%" />
-            <col style="width: 20%" />
-            <col style="width: 20%" />
-            <col style="width: 20%" />
-            <col style="width: 20%" />
-            <col style="width: 10%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
+            <col style="width: 22%" />
         </ColGroup>
 
         <Columns>
-            <TemplateColumn>
-                <CellTemplate>
-                    @if (context.Item.Enabled)
-                    {
-                        <MudTooltip Text="@loc["enabled"]">
-                            <MudText Color="Color.Success">●</MudText>
-                        </MudTooltip>
-                    }
-                    else
-                    {
-                        <MudTooltip Text="@loc["disabled"]">
-                            <MudText Color="Color.Error">●</MudText>
-                        </MudTooltip>
-                    }
-                </CellTemplate>
-            </TemplateColumn>
-            <PropertyColumn Property="x => x.Name" Title="@loc["name"]"/>
-
+          
             <TemplateColumn Title="@intLoc["system"]">
                 <CellTemplate>
                     <MudStack Row Spacing="1">
+
+                        @if (context.Item.Enabled)
+                        {
+                            <MudTooltip Text="@loc["enabled"]">
+                                <MudText Color="Color.Success" aria-label="@loc["enabled"]">●</MudText>
+                            </MudTooltip>
+                        }
+                        else
+                        {
+                            <MudTooltip Text="@loc["disabled"]">
+                                <MudText Color="Color.Error" aria-label="@loc["disabled"]">●</MudText>
+                            </MudTooltip>
+                        }
+
                         <ExternalSystemIcon SystemName="@context.Item.Provider"/>
-                        <div>@context.Item.Provider</div>
+                        <div>@context.Item.Name</div>
                     </MudStack>
                 </CellTemplate>
             </TemplateColumn>
 
-
-            <PropertyColumn Property="x => x.BaseUrl" Title="@intLoc["integration-base-url"]"/>
             <PropertyColumn Property="x => x.ExternalProjectId" Title="@intLoc["project-id"]"/>
-            <TemplateColumn>
+
+
+            <TemplateColumn Title="@intLoc["authentication"]">
                 <CellTemplate>
+                    @if (context.Item.TokenExpiry is not null)
+                    {
+                        <MudTooltip Text="@intLoc["expiry"]"><div>@context.Item.TokenExpiry.Humanize()</div></MudTooltip>
+                    }
+                    @if (context.Item.AccessToken is not null)
+                    {
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Color="Color.Success" Icon="@Icons.Material.Filled.Check" Size="Size.Small" />
+                            <div>@intLoc["access-token"]</div>
+                        </MudStack>
+                    }
+                    else
+                    {
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Color="Color.Error" Icon="@Icons.Material.Filled.Remove" Size="Size.Small" />
+                            <div>@intLoc["access-token"]</div>
+                        </MudStack>
+                    }
+                    @if (context.Item.ClientId is not null)
+                    {
+                        @if (context.Item.RefreshToken is not null)
+                        {
+                            <MudStack Row AlignItems="AlignItems.Center">
+                                <MudIcon Color="Color.Success" Icon="@Icons.Material.Filled.Check" Size="Size.Small" />
+                                <div>@intLoc["refresh-token"]</div>
+                            </MudStack>
+                        }
+                        else
+                        {
+                            <MudStack Row AlignItems="AlignItems.Center">
+                                <MudIcon Color="Color.Error" Icon="@Icons.Material.Filled.Remove" Size="Size.Small" />
+                                <div>@intLoc["refresh-token"]</div>
+                            </MudStack>
+                        }
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+
+            <TemplateColumn StickyRight>
+                <CellTemplate>
+                    <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Write" Entity="PermissionEntityType.Project">
+                        <Authorized>
+                            @if(!string.IsNullOrEmpty(context.Item.ClientId))
+                            {
+                                <MudButton OnClick="async () => await AuthenticateIntegrationAsync(context.Item)">@intLoc["authenticate"]</MudButton>
+                            }
+                        </Authorized>
+                    </PermissionView>
+          
                     <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Delete" Entity="PermissionEntityType.Project">
                         <Authorized>
                             <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteIntegrationAsync(context.Item)"/>
@@ -161,6 +206,14 @@
         await projectController.DeleteProjectIntegrationAsync(system);
         await ReloadAsync();
     }
+    private async Task AuthenticateIntegrationAsync(ExternalSystem system)
+    {
+        var url = await projectController.AuthenticateIntegrationAsync(_project, system);
+        if(url is not null)
+        {
+            NavigationManager.NavigateTo(url, true);
+        }
+    }
 
     private async Task AddIntegrationAsync(IExtension extension)
     {
@@ -168,8 +221,16 @@
         {
             return;
         }
-        await projectController.AddProjectIntegrationAsync(_project, extension);
-        await ReloadAsync();
+        var system = await projectController.AddProjectIntegrationAsync(_project, extension);
+        if(system is not null)
+        {
+            await ReloadAsync();
+
+            if(!string.IsNullOrEmpty(system.ClientId))
+            {
+                await AuthenticateIntegrationAsync(system);
+            }
+        }
     }
 
     protected override async Task OnParametersSetAsync()

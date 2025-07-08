@@ -243,6 +243,9 @@ internal class IssueRepository : IIssueRepository
 
     public async Task UpdateLocalIssueAsync(LocalIssue localIssue)
     {
+        localIssue.Created = localIssue.Created.ToUniversalTime();
+        localIssue.Modified = localIssue.Modified.ToUniversalTime();
+
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         dbContext.LocalIssues.Update(localIssue);
         await dbContext.SaveChangesAsync();

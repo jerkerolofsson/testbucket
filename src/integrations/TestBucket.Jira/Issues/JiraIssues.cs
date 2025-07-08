@@ -6,6 +6,7 @@ using TestBucket.Contracts.Issues.Models;
 using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Issues.Types;
 using TestBucket.Jira.Client;
+using TestBucket.Jira.Converters;
 using TestBucket.Jira.Models;
 
 namespace TestBucket.Jira.Issues;
@@ -143,7 +144,7 @@ internal class JiraIssues : IExternalIssueProvider
             else
             {
                 // Update existing issue
-                //await UpdateExistingIssueAsync(jira, issueDto, cancellationToken);
+                await UpdateExistingIssueAsync(jira, issueDto, cancellationToken);
             }
         }
         catch (Exception)
@@ -172,24 +173,66 @@ internal class JiraIssues : IExternalIssueProvider
     //    issueDto.ExternalDisplayId = issue.Key?.Value;
     //}
 
-    //private async Task UpdateExistingIssueAsync(Atlassian.Jira.Jira jira, IssueDto issueDto, CancellationToken cancellationToken)
-    //{
-    //    var issue = await jira.Issues.GetIssueAsync(issueDto.ExternalId!);
+    private async Task UpdateExistingIssueAsync(JiraOauth2Client jira, IssueDto issueDto, CancellationToken cancellationToken)
+    {
+        var issue = await jira.Issues.GetIssueAsync(issueDto.ExternalId!);
 
-    //    if (issue != null)
-    //    {
-    //        if (issueDto.Title != null)
-    //            issue.Summary = issueDto.Title;
+        if (issue?.fields != null)
+        {
+            bool changed = false;
 
-    //        if (issueDto.Description != null)
-    //            issue.Description = issueDto.Description;
+            JiraIssueUpdate update = new();
 
-    //        if (issueDto.AssignedTo != null)
-    //            issue.Assignee = issueDto.AssignedTo;
+            if (issueDto.Title != issue.fields.summary && issueDto.Title != null)
+            {
+                update.SetSummary(issueDto.Title);
+                changed = true;
+            }
+            //if (issueDto.Description != issue.fields.description)
+            //{
+            //    if (issueDto.Description is not null)
+            //    {
+            //        update.SetDescription(issueDto.Description);
+            //    }
+            //    changed = true;
+            //}
+            if (issueDto.Labels is not null)
+            {
+                var labels = issue.fields?.labels ?? [];
 
-    //        await issue.SaveChangesAsync();
-    //    }
-    //}
+                foreach (var label in issueDto.Labels)
+                {
+                    if (!labels.Contains(label))
+                    {
+                        update.AddLabel(label);
+                    }
+                }
+                foreach (var label in labels)
+                {
+                    if (!issueDto.Labels.Contains(label))
+                    {
+                        update.RemoveLabel(label);
+                    }
+                }
+                //update.fields.labels = issueDto.Labels;
+                changed = true;
+            }
+
+            if (issue.fields is not null)
+            {
+                var state = MapJiraStatusToMappedState(issue.fields.status?.name, new DefaultStateMap());
+                if (issueDto.MappedState != state.MappedState)
+                {
+                    // todo..
+                }
+            }
+
+            if (changed && !string.IsNullOrEmpty(issue.key))
+            {
+                await jira.Issues.UpdateIssueAsync(issue.key, update, cancellationToken);
+            }
+        }
+    }
 
     internal static IssueDto MapJiraIssueToDto(JiraIssue jiraIssue, ExternalSystemDto system, IssueStateMapping stateMapping)
     {
@@ -200,15 +243,16 @@ internal class JiraIssues : IExternalIssueProvider
             ExternalSystemName = ExtensionConstants.SystemName,
             ExternalSystemId = system.Id,
             Title = jiraIssue.fields?.summary,
-            Description = jiraIssue.fields?.description,
             IssueType = jiraIssue.fields?.issuetype?.name,
             Author = jiraIssue.fields?.reporter?.emailAddress,
             AssignedTo = jiraIssue.fields?.assignee?.emailAddress,
-            Created = jiraIssue.fields?.created,
-            Modified = jiraIssue.fields?.updated,
+            Created = jiraIssue.fields?.created?.ToUniversalTime(),
+            Modified = jiraIssue.fields?.updated?.ToUniversalTime(),
             State = jiraIssue.fields?.status?.name,
             Labels = jiraIssue.fields?.labels,
         };
+
+        dto.Description = ContentConverter.ToMarkdown(jiraIssue.fields?.description);
 
         //    // Map Jira status to internal MappedIssueState
         if (jiraIssue.fields?.status is not null)

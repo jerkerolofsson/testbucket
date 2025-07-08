@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace TestBucket.Jira.Models;
-
 
 public class JiraIssue
 {
@@ -16,6 +16,7 @@ public class JiraIssue
     public Fields? fields { get; set; }
 }
 
+
 public class Component
 {
 
@@ -24,37 +25,72 @@ public class Component
 public class Fields
 {
     //public DateTimeOffset? statuscategorychangedate { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Issuetype? issuetype { get; set; }
-    public Component[]? components { get; set; }
+
+    //public Component[]? components { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Project? project { get; set; }
-    public string? description { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Content? description { get; set; }
     //public string[]? fixVersions { get; set; }
-    public Statuscategory? statusCategory { get; set; }
+    //public Statuscategory? statusCategory { get; set; }
     //public object aggregatetimespent { get; set; }
     //public object resolution { get; set; }
-    public Timetracking? timetracking { get; set; }
+    //public Timetracking? timetracking { get; set; }
     //public object customfield_10037 { get; set; }
     //public object security { get; set; }
     //public object[] attachment { get; set; }
     //public object aggregatetimeestimate { get; set; }
     //public object resolutiondate { get; set; }
-    public int workratio { get; set; }
+    //public int workratio { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? summary { get; set; }
-    public Issuerestriction? issuerestriction { get; set; }
+
+    //public Issuerestriction? issuerestriction { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public JiraUser? creator { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public DateTime? created { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public JiraUser? reporter { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Aggregateprogress? aggregateprogress { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Priority? priority { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string[]? labels { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public DateTime? duedate { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Progress? progress { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Votes? votes { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Comment? comment { get; set; }
     //public object[] issuelinks { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public JiraUser? assignee { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Worklog? worklog { get; set; }
-    public DateTime?updated { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public DateTime? updated { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Status? status { get; set; }
 }
 
@@ -96,7 +132,7 @@ public class Statuscategory
     public int? id { get; set; }
     public string? key { get; set; }
     public string? colorName { get; set; }
-    public string?  name { get; set; }
+    public string? name { get; set; }
 }
 
 public class Timetracking
@@ -165,8 +201,8 @@ public class Comment1
     public JiraUser? author { get; set; }
     public Body? body { get; set; }
     public JiraUser? updateAuthor { get; set; }
-    public DateTime?created { get; set; }
-    public DateTime?updated { get; set; }
+    public DateTime? created { get; set; }
+    public DateTime? updated { get; set; }
 }
 
 public class JiraUser
@@ -190,9 +226,26 @@ public class Body
 
 public class Content
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
     public string? type { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
     public string? text { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
     public Content[]? content { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ContentMark[]? marks { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Dictionary<string, object>? attrs { get; set; }
+}
+
+public class ContentMark
+{
+    public required string type { get; set; }
+    public Dictionary<string, object>[]? attrs { get; set; }
 }
 
 public class Worklog

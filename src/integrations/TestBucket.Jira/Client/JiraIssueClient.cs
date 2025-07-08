@@ -28,7 +28,7 @@ internal class JiraIssueClient(JiraOauth2Client Client)
         // Ensure the OAuth2 client has been properly configured with a cloud resource
         Client.ThrowIfCloudResourceNotInitialized();
 
-        var url = $"/ex/jira/{Client._cloudResource.id}/rest/api/3/resource/{resourceId}";
+        var url = $"/ex/jira/{Client._cloudResource.id}/rest/api/3/issue/{resourceId}";
         return await Client._httpClient.GetFromJsonAsync<JiraIssue>(url, JiraIssueSerializer.JsonOptions);
     }
 
@@ -133,5 +133,24 @@ internal class JiraIssueClient(JiraOauth2Client Client)
 
         var json = await Client._httpClient.GetStringAsync(url);
         return JiraIssueSerializer.DeserializeJson(json);
+    }
+
+    internal async Task UpdateIssueAsync(string key, JiraIssueUpdate issue, CancellationToken cancellationToken)
+    {
+        // Ensure the OAuth2 client has been properly configured with a cloud resource
+        Client.ThrowIfCloudResourceNotInitialized();
+
+        var url = $"/ex/jira/{Client._cloudResource.id}/rest/api/3/issue/{key}";
+
+        using var response = await Client._httpClient.PutAsJsonAsync(url, issue, cancellationToken);
+
+        if(!response.IsSuccessStatusCode)
+        {
+            var json = JsonSerializer.Serialize(issue);
+
+            var text = response.Content.ReadAsStringAsync();
+        }
+
+        response.EnsureSuccessStatusCode();
     }
 }

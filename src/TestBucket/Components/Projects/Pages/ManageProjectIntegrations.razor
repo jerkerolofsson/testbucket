@@ -50,10 +50,10 @@
 
         
         <ColGroup>
-            <col style="width: 22%" />
-            <col style="width: 22%" />
-            <col style="width: 22%" />
-            <col style="width: 22%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 33%" />
+            <col style="width: 10%" />
         </ColGroup>
 
         <Columns>
@@ -126,20 +126,25 @@
 
             <TemplateColumn StickyRight>
                 <CellTemplate>
-                    <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Write" Entity="PermissionEntityType.Project">
-                        <Authorized>
-                            @if(!string.IsNullOrEmpty(context.Item.ClientId))
-                            {
-                                <MudButton OnClick="async () => await AuthenticateIntegrationAsync(context.Item)">@intLoc["authenticate"]</MudButton>
-                            }
-                        </Authorized>
-                    </PermissionView>
-          
-                    <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Delete" Entity="PermissionEntityType.Project">
-                        <Authorized>
-                            <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async () => await DeleteIntegrationAsync(context.Item)"/>
-                        </Authorized>
-                    </PermissionView>
+
+                    <MudMenu Icon="@Icons.Material.Filled.MoreVert">
+
+                        <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Write" Entity="PermissionEntityType.Project">
+                            <Authorized>
+                                @if (!string.IsNullOrEmpty(context.Item.ClientId))
+                                {
+                                    <MudMenuItem OnClick="async () => await AuthenticateIntegrationAsync(context.Item)">@intLoc["authenticate"]</MudMenuItem>
+                                }
+                            </Authorized>
+                        </PermissionView>
+
+                        <PermissionView Level="Domain.Identity.Permissions.PermissionLevel.Delete" Entity="PermissionEntityType.Project">
+                            <Authorized>
+                                <MudMenuItem Icon="@Icons.Material.Filled.Clear" OnClick="async () => await DeleteIntegrationAsync(context.Item)">@loc["delete"]</MudMenuItem>
+                            </Authorized>
+                        </PermissionView>
+                    </MudMenu>
+
                 </CellTemplate>
             </TemplateColumn>
         </Columns>

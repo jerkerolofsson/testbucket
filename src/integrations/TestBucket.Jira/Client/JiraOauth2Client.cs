@@ -66,4 +66,5 @@ internal class JiraOauth2Client : IDisposable
     {
         _httpClient.Dispose();
     }
+
 }

@@ -941,4 +941,7 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="password" xml:space="preserve">
     <value />
   </data>
+  <data name="provider" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -1,5 +1,51 @@
-﻿<h3>IssueSystemSelect</h3>
+﻿@using TestBucket.Contracts.Integrations
+@using TestBucket.Contracts.Issues.Types
+@using TestBucket.Contracts.Testing.Models
+@using TestBucket.Contracts.Testing.States
+@using TestBucket.Domain.States
+@inject ProjectController controller
+@inject IStringLocalizer<IssueStrings> loc
+
+
+<MudSelect Variant="Variant.Outlined" T="ExternalSystem" Value="@Provider" ValueChanged="OnProviderChanged" @attributes="@AdditionalAttributes" Clearable>
+    @foreach (var system in _systems)
+    {
+        <MudSelectItem Value="@system">
+            <MudStack Spacing="1" Row AlignItems="AlignItems.Center">
+                <ExternalSystemIcon SystemName="@system.Name" />
+                @system.Name
+            </MudStack>
+        </MudSelectItem>
+    }
+</MudSelect>
 
 @code {
+    [Parameter] public long TestProjectId { get; set; }
+    [Parameter] public ExternalSystem? Provider { get; set; }
+    [Parameter] public EventCallback<ExternalSystem?> ProviderChanged { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object>? AdditionalAttributes { get; set; }
 
+    private long _testProjectId;
+    private IReadOnlyList<ExternalSystem> _systems = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(_testProjectId != TestProjectId)
+        {
+            _testProjectId  = TestProjectId;    
+            var project = await controller.GetProjectByIdAsync(TestProjectId);
+            if(project is not null)
+            {
+                project.ExternalSystems ??= [];
+                _systems = project.ExternalSystems.Where(x => (x.EnabledCapabilities & ExternalSystemCapability.CreateIssues) == ExternalSystemCapability.CreateIssues).ToList();
+
+                this.StateHasChanged();
+            }
+        }
+    }
+
+    private async Task OnProviderChanged(ExternalSystem? system)
+    {
+        await ProviderChanged.InvokeAsync(system);
+    }
 }

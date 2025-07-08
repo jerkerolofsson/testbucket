@@ -1,5 +1,5 @@
 ﻿
-<h6 class="tb-field-header">
+<label class="tb-field-header" @attributes="AdditionalAttributes">
 
     @if(Icon is not null)
     {
@@ -7,10 +7,12 @@
     }
 
     @ChildContent
-</h6>
+</label>
 
 @code {
     [Parameter] public string? Icon { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object>? AdditionalAttributes { get; set; }
 
 }

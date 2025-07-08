@@ -5,7 +5,7 @@
 @inject ProjectController controller
 @inject IStringLocalizer<IssueStrings> loc
 
-<MudSelect Variant="Variant.Outlined" T="IssueType" Value="@Type" ValueChanged="OnTypeChanged">
+<MudSelect Variant="Variant.Outlined" T="IssueType" Value="@Type" ValueChanged="OnTypeChanged" @attributes="@AdditionalAttributes">
     @foreach (var state in _types)
     {
         <MudSelectItem Value="@state">
@@ -27,6 +27,7 @@
     [Parameter] public long TestProjectId { get; set; }
     [Parameter] public IssueType? Type { get; set; }
     [Parameter] public EventCallback<IssueType?> TypeChanged { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object>? AdditionalAttributes { get; set; }
 
     private IReadOnlyList<IssueType> _types = [];
 

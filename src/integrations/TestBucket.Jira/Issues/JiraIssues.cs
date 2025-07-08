@@ -129,6 +129,76 @@ internal class JiraIssues : IExternalIssueProvider
             return [];
         }
     }
+    public async Task CreateIssueAsync(ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var jira = await CreateJiraClientAsync(externalSystemDto);
+
+            // Create a new issue
+            await CreateIssueAsync(jira, externalSystemDto, issueDto, cancellationToken);
+        }
+        catch (Exception)
+        {
+            // Log exception in real implementation
+            throw;
+        }
+    }
+
+    private async Task CreateIssueAsync(JiraOauth2Client jira, ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
+    {
+        try
+        {
+            ArgumentNullException.ThrowIfNull(externalSystemDto.ExternalProjectId);
+
+            // Get the project from the integration configuration
+            var projects = await jira.Projects.SeaarchProjectsAsync(externalSystemDto.ExternalProjectId, 1, null);
+            if(projects is null || projects.total == 0)
+            {
+                throw new ArgumentException($"No Jira project with name '{externalSystemDto.ExternalProjectId}' was found!");
+            }
+            Project? project = projects.values?.FirstOrDefault();
+            if (project is null)
+            {
+                throw new ArgumentException($"No Jira project with name '{externalSystemDto.ExternalProjectId}' was found!");
+            }
+
+            var issueTypes = await jira.Issues.GetIssueTypesAsync(cancellationToken);
+            var issueType = issueTypes.FirstOrDefault(x => x.name?.Equals(issueDto.IssueType, StringComparison.OrdinalIgnoreCase) == true)
+                            ?? issueTypes.FirstOrDefault(x => x.name?.Equals("Bug", StringComparison.OrdinalIgnoreCase) == true);
+
+            if (issueType is null)
+            {
+                throw new Exception($"Issue type '{issueDto.IssueType}' not found in Jira project '{externalSystemDto.ExternalProjectId}'");
+            }
+
+            var updateBean = new JiraIssueUpdateBean();
+            updateBean.fields.project = project;
+            updateBean.fields.issuetype = issueType;
+            if (issueDto.Title is not null)
+            {
+                updateBean.SetSummary(issueDto.Title);
+            }
+            if (issueDto.Description is not null)
+            {
+                updateBean.fields.description = ContentConverter.FromMarkdown(issueDto.Description);
+            }
+
+            if (issueDto.State is not null)
+            {
+                var stateName = MapStateToJiraStateName(new IssueState(issueDto.State, issueDto.MappedState), new DefaultStateMap());
+            }
+
+            var response = await jira.Issues.CreateIssueAsync(updateBean, cancellationToken);
+            issueDto.ExternalDisplayId = response.key;
+            issueDto.ExternalId = response.key;
+        }
+        catch (Exception)
+        {
+            // Log exception in real implementation
+            throw;
+        }
+    }
 
     public async Task UpdateIssueAsync(ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken)
     {
@@ -136,12 +206,7 @@ internal class JiraIssues : IExternalIssueProvider
         {
             var jira = await CreateJiraClientAsync(externalSystemDto);
 
-            if (string.IsNullOrEmpty(issueDto.ExternalId))
-            {
-                // Create new issue
-                //await CreateNewIssueAsync(jira, externalSystemDto, issueDto, cancellationToken);
-            }
-            else
+            if (!string.IsNullOrEmpty(issueDto.ExternalId))
             {
                 // Update existing issue
                 await UpdateExistingIssueAsync(jira, issueDto, cancellationToken);
@@ -181,21 +246,14 @@ internal class JiraIssues : IExternalIssueProvider
         {
             bool changed = false;
 
-            JiraIssueUpdate update = new();
+            JiraIssueUpdateBean update = new();
 
             if (issueDto.Title != issue.fields.summary && issueDto.Title != null)
             {
                 update.SetSummary(issueDto.Title);
                 changed = true;
             }
-            //if (issueDto.Description != issue.fields.description)
-            //{
-            //    if (issueDto.Description is not null)
-            //    {
-            //        update.SetDescription(issueDto.Description);
-            //    }
-            //    changed = true;
-            //}
+          
             if (issueDto.Labels is not null)
             {
                 var labels = issue.fields?.labels ?? [];
@@ -270,6 +328,30 @@ internal class JiraIssues : IExternalIssueProvider
         }
 
         return dto;
+    }
+
+
+    internal static string? MapStateToJiraStateName(IssueState? state, IssueStateMapping stateMapping)
+    {
+        if(stateMapping.Count == 0)
+        {
+            return null;
+        }
+
+        if (state == null)
+        {
+            return stateMapping.First().Key;
+        }
+
+        foreach(var pair in stateMapping)
+        {
+            if(pair.Value.Equals(state))
+            {
+                return pair.Key;
+            }
+        }
+
+        return stateMapping.First().Key;
     }
 
     internal static IssueState MapJiraStatusToMappedState(string? jiraStatus, IssueStateMapping stateMapping)

@@ -20,14 +20,16 @@ internal class ContentConverter
             return new Content()
             {
                 type = "doc",
-                content = []
+                content = [],
+                version = 1
             };
         }
 
         var content = new Content()
         {
             type = "doc",
-            content = []
+            content = [],
+            version = 1
         };
 
         var contentList = new List<Content>();

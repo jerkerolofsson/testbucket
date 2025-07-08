@@ -157,6 +157,10 @@ public class GitlabIssueProvider : IExternalIssueProvider
         return issues;
     }
 
+    public Task CreateIssueAsync(ExternalSystemDto config, IssueDto issue, CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
+    }
     public async Task UpdateIssueAsync(ExternalSystemDto config, IssueDto issue, CancellationToken cancellationToken)
     {
         if (long.TryParse(issue.ExternalId, out var issueId))

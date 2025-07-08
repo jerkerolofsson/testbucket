@@ -85,6 +85,14 @@ public class IssueManager : IIssueManager
 
         await GenerateEmbeddingAsync(issue);
 
+        try
+        {
+            await _mediator.Publish(new IssueCreated(principal, issue));
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex, "Error creating issue");
+        }
         await _repository.AddLocalIssueAsync(issue);
         foreach (var observer in _localObservers)
         {

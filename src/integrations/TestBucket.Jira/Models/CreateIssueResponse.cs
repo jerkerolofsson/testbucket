@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TestBucket.Jira.Models;
-internal class JiraType
+internal class CreateIssueResponse
 {
-    public string? Name { get; set; }
+    public required string id { get; set; }
+    public required string key { get; set; }
 }

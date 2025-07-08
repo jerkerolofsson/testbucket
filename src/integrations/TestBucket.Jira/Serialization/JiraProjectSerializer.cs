@@ -4,7 +4,7 @@ using TestBucket.Jira.Converters;
 using TestBucket.Jira.Models;
 
 namespace TestBucket.Jira.Serialization;
-internal class JiraIssueSerializer
+internal class JiraProjectSerializer
 {
     internal static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -12,8 +12,8 @@ internal class JiraIssueSerializer
         Converters = { new JiraDateTimeConverter(), new NullableJiraDateTimeConverter() }
     };
 
-    public static JiraPagedIssuesResponse<JiraIssue>? DeserializeJson(string json)
+    public static JiraPagedValuesResponse<Project>? DeserializeJson(string json)
     {
-        return JsonSerializer.Deserialize<JiraPagedIssuesResponse<JiraIssue>>(json, JsonOptions);
+        return JsonSerializer.Deserialize<JiraPagedValuesResponse<Project>>(json, JsonOptions);
     }
 }

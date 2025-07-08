@@ -17,6 +17,7 @@ internal class JiraOauth2Client : IDisposable
     internal CloudResource? _cloudResource;
 
     public JiraIssueClient Issues => new JiraIssueClient(this);
+    public JiraProjectClient Projects => new JiraProjectClient(this);
 
     /// <summary>
     /// 

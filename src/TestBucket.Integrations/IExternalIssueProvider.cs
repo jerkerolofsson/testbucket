@@ -44,8 +44,16 @@ public interface IExternalIssueProvider
     Task<IReadOnlyList<IssueDto>> GetIssuesAsync(ExternalSystemDto system, DateTimeOffset? from, DateTimeOffset until, CancellationToken cancellationToken);
 
     /// <summary>
+    /// Creates a new issue in an external system.
+    /// </summary>
+    /// <param name="externalSystemDto"></param>
+    /// <param name="issueDto"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    Task CreateIssueAsync(ExternalSystemDto externalSystemDto, IssueDto issueDto, CancellationToken cancellationToken);
+
+    /// <summary>
     /// Saves changes to an issue in an external system.
-    /// This should also create the issue if it doesn't exist.
     /// </summary>
     /// <param name="externalSystemDto"></param>
     /// <param name="issueDto"></param>

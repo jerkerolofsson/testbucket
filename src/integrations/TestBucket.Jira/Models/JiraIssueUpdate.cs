@@ -2,8 +2,11 @@
 
 namespace TestBucket.Jira.Models;
 
-public class JiraIssueUpdate
+public class JiraIssueUpdateBean
 {
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Fields fields { get; set; } = new();
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Update update { get; set; } = new();
@@ -13,7 +16,7 @@ public class JiraIssueUpdate
         update.summary = [new SetSummary() { set = title }];
     }
 
-    internal void SetDescription(string description)
+    internal void SetDescription(Content description)
     {
         update.description = [new SetDescription() { set = description }];
     }
@@ -65,7 +68,7 @@ public class SetSummary
 }
 public class SetDescription
 {
-    public required string set { get; set; }
+    public required Content set { get; set; }
 }
 
 

@@ -135,7 +135,34 @@ internal class JiraIssueClient(JiraOauth2Client Client)
         return JiraIssueSerializer.DeserializeJson(json);
     }
 
-    internal async Task UpdateIssueAsync(string key, JiraIssueUpdate issue, CancellationToken cancellationToken)
+    internal async Task<List<JiraIssueType>> GetIssueTypesAsync(CancellationToken cancellationToken)
+    {
+        // Ensure the OAuth2 client has been properly configured with a cloud resource
+        Client.ThrowIfCloudResourceNotInitialized();
+
+        var url = $"/ex/jira/{Client._cloudResource.id}/rest/api/3/issuetype";
+        return await Client._httpClient.GetFromJsonAsync<List<JiraIssueType>>(url, cancellationToken) ?? [];
+    }
+    internal async Task<CreateIssueResponse> CreateIssueAsync(JiraIssueUpdateBean issue, CancellationToken cancellationToken)
+    {
+        // Ensure the OAuth2 client has been properly configured with a cloud resource
+        Client.ThrowIfCloudResourceNotInitialized();
+
+        var url = $"/ex/jira/{Client._cloudResource.id}/rest/api/3/issue";
+
+        using var response = await Client._httpClient.PostAsJsonAsync(url, issue, cancellationToken);
+
+        var text = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            var json = JsonSerializer.Serialize(issue, JiraIssueSerializer.JsonOptions);
+            throw new Exception("Failed to create issue: " + text);
+        }
+
+        return JsonSerializer.Deserialize<CreateIssueResponse>(text, JiraIssueSerializer.JsonOptions)
+               ?? throw new Exception("Failed to deserialize CreateIssueResponse from Jira API response");  
+    }
+    internal async Task UpdateIssueAsync(string key, JiraIssueUpdateBean issue, CancellationToken cancellationToken)
     {
         // Ensure the OAuth2 client has been properly configured with a cloud resource
         Client.ThrowIfCloudResourceNotInitialized();
@@ -146,8 +173,7 @@ internal class JiraIssueClient(JiraOauth2Client Client)
 
         if(!response.IsSuccessStatusCode)
         {
-            var json = JsonSerializer.Serialize(issue);
-
+            var json = JsonSerializer.Serialize(issue, JiraIssueSerializer.JsonOptions);
             var text = response.Content.ReadAsStringAsync();
         }
 

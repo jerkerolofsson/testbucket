@@ -4,7 +4,7 @@
 
 <CascadingValue Value="@this" IsFixed="true">
 
-    <div class="@RootClassname" style="@Style">
+    <div class="@RootClassname" style="@Style" @attributes="@AdditionalAttributes">
         <div class="mud-markdown-container" id="@(RootElementId)">
             @if (ShowToolbar)
             {

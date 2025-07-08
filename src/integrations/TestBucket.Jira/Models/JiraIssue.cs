@@ -26,7 +26,7 @@ public class Fields
 {
     //public DateTimeOffset? statuscategorychangedate { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public Issuetype? issuetype { get; set; }
+    public JiraIssueType? issuetype { get; set; }
 
     //public Component[]? components { get; set; }
 
@@ -94,35 +94,43 @@ public class Fields
     public Status? status { get; set; }
 }
 
-public class Issuetype
-{
-    public string? self { get; set; }
-    public string? id { get; set; }
-    public string? description { get; set; }
-    public string? iconUrl { get; set; }
-    public string? name { get; set; }
-    public bool? subtask { get; set; }
-    public int? avatarId { get; set; }
-    public string? entityId { get; set; }
-    public int? hierarchyLevel { get; set; }
-}
-
 public class Project
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? self { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? id { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? key { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? name { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? projectTypeKey { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? simplified { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Avatarurls? avatarUrls { get; set; }
 }
 
 public class Avatarurls
 {
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? _48x48 { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? _24x24 { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? _16x16 { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? _32x32 { get; set; }
 }
 
@@ -226,7 +234,10 @@ public class Body
 
 public class Content
 {
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? version { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? type { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 

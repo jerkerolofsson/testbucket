@@ -943,4 +943,8 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="password" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="provider" xml:space="preserve">
+    <value>Provider</value>
+    <comment>External system like Jira or Github</comment>
+  </data>
 </root>

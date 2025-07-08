@@ -12,3 +12,12 @@ internal class JiraPagedIssuesResponse<T>
     public bool isLast { get; set; }
     public T[]? issues { get; set; }
 }
+
+internal class JiraPagedValuesResponse<T>
+{
+    public string? nextPageToken { get; set; }
+    public bool isLast { get; set; }
+    public long total { get; set; }
+    public long startAt { get; set; }
+    public T[]? values { get; set; }
+}

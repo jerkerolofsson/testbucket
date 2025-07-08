@@ -1,4 +1,10 @@
-﻿using Mediator;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Mediator;
 
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Issues.Events;
@@ -7,22 +13,25 @@ using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
 
 namespace TestBucket.Domain.Issues.Integrations;
-internal class UpdateExternalIssuesWhenChanged : INotificationHandler<IssueChanged>
+internal class CreateExternalIssuesWhenCreated : INotificationHandler<IssueCreated>
 {
     private readonly IProjectManager _projectManager;
     private readonly List<IExternalIssueProvider> _externalIssueProviders;
 
-    public UpdateExternalIssuesWhenChanged(IProjectManager projectManager, IEnumerable<IExternalIssueProvider> externalIssueProviders)
+    public CreateExternalIssuesWhenCreated(IProjectManager projectManager, IEnumerable<IExternalIssueProvider> externalIssueProviders)
     {
         _projectManager = projectManager;
         _externalIssueProviders = externalIssueProviders.ToList();
     }
 
-    public async ValueTask Handle(IssueChanged notification, CancellationToken cancellationToken)
+    public async ValueTask Handle(IssueCreated notification, CancellationToken cancellationToken)
     {
         var issue = notification.Issue;
         var principal = notification.Principal;
-        if (issue.ExternalSystemId is not null && issue.ExternalId is not null)
+
+        // Only create an external issue if the system id is set, but the external ID is not set.   
+        // If the external id is set, that means we are importing the issue and it already exists in the external system
+        if (issue.ExternalSystemId is not null && issue.ExternalId is null)
         {
             // Find integration
             if (issue.TestProjectId is not null)
@@ -36,10 +45,10 @@ internal class UpdateExternalIssuesWhenChanged : INotificationHandler<IssueChang
                     {
                         // Update issue in external system
                         var issueDto = issue.ToDto();
-                        await provider.UpdateIssueAsync(externalSystem.ToDto(), issueDto, cancellationToken);
+                        await provider.CreateIssueAsync(externalSystem.ToDto(), issueDto, cancellationToken);
 
                         // If the issue was successfully created, add the ID here..
-                        if(!string.IsNullOrEmpty(issueDto.ExternalDisplayId))
+                        if (!string.IsNullOrEmpty(issueDto.ExternalDisplayId))
                         {
                             issue.ExternalDisplayId = issueDto.ExternalDisplayId;
                             issue.ExternalId = issueDto.ExternalId;

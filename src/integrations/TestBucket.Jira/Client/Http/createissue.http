@@ -1,0 +1,67 @@
+POST https://api.atlassian.com/ex/jira/1b41b736-0978-4313-9a7b-4ddc909405f3/rest/api/3/issue
+Authorization: Bearer eyJraWQiOiJhdXRoLmF0bGFzc2lhbi5jb20tQUNDRVNTLTk0ZTczYTkwLTUxYWQtNGFjMS1hOWFjLWU4NGUwNDVjNDU3ZCIsImFsZyI6IlJTMjU2In0.eyJqdGkiOiI0MGQzZWQ5Mi0xNjI1LTQ3YzQtODU2OS0yMWYyOTAwYTEwODMiLCJzdWIiOiI3MTIwMjA6NWIyNjBlMWYtM2EwOC00MWM3LWJmYzEtMWYxNTkxOTRlMWE0IiwibmJmIjoxNzUxOTY0MTIzLCJpc3MiOiJodHRwczovL2F1dGguYXRsYXNzaWFuLmNvbSIsImlhdCI6MTc1MTk2NDEyMywiZXhwIjoxNzUxOTY3NzIzLCJhdWQiOiI1c1RqYlNEQ1lhUGEzdkxDTlM0Y3FzbFFWNlZtbjY2WiIsImh0dHBzOi8vYXRsYXNzaWFuLmNvbS9zeXN0ZW1BY2NvdW50RW1haWwiOiIzMjRmZGEyOC03NGIwLTQwZTgtODAzZC00Mjk2OGE2ZWVhYTRAY29ubmVjdC5hdGxhc3NpYW4uY29tIiwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tL2F1dGhQcm9maWxlIjoib2F1dGguZWNvc3lzdGVtLm9hdXRoSW50ZWdyYXRpb24iLCJzY29wZSI6Im9mZmxpbmVfYWNjZXNzIHJlYWQ6amlyYS13b3JrIHdyaXRlOmppcmEtd29yayIsImh0dHBzOi8vaWQuYXRsYXNzaWFuLmNvbS91anQiOiJkMzIyOTY1My1kNGEwLTQ2NTMtOTAyZi1lMjBmZmE0ZDc1ZTkiLCJodHRwczovL2lkLmF0bGFzc2lhbi5jb20vYXRsX3Rva2VuX3R5cGUiOiJBQ0NFU1MiLCJodHRwczovL2lkLmF0bGFzc2lhbi5jb20vcmVmcmVzaF9jaGFpbl9pZCI6IjVzVGpiU0RDWWFQYTN2TENOUzRjcXNsUVY2Vm1uNjZaLTcxMjAyMDo1YjI2MGUxZi0zYTA4LTQxYzctYmZjMS0xZjE1OTE5NGUxYTQtN2RlZDEzZWEtNGU5Mi00Zjc2LTlmNTQtZTEwNmZmYzFhMmIyIiwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tL2ZpcnN0UGFydHkiOmZhbHNlLCJjbGllbnRfaWQiOiI1c1RqYlNEQ1lhUGEzdkxDTlM0Y3FzbFFWNlZtbjY2WiIsImh0dHBzOi8vYXRsYXNzaWFuLmNvbS9zeXN0ZW1BY2NvdW50SWQiOiI3MTIwMjA6NmZhNjY3YzgtZmFhMi00OGNhLTkzMzYtMDEwNzQzNTQ4ZWM0IiwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tL3ZlcmlmaWVkIjp0cnVlLCJodHRwczovL2F0bGFzc2lhbi5jb20vZW1haWxEb21haW4iOiJvdXRsb29rLmNvbSIsInZlcmlmaWVkIjoidHJ1ZSIsImh0dHBzOi8vaWQuYXRsYXNzaWFuLmNvbS9zZXNzaW9uX2lkIjoiYTE2OTA3ZDYtYzE3MS00NGY0LTk2Y2YtMzUxMDUzZDM0NDlkIiwiaHR0cHM6Ly9pZC5hdGxhc3NpYW4uY29tL3Byb2Nlc3NSZWdpb24iOiJ1cy13ZXN0LTIiLCJodHRwczovL2lkLmF0bGFzc2lhbi5jb20vcnRpIjoiZmQwNTk4MDAtY2IwOC00OTc5LWJmYTktMTY4ODY2ZDliMDIxIiwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tLzNsbyI6dHJ1ZSwiaHR0cHM6Ly9pZC5hdGxhc3NpYW4uY29tL3ZlcmlmaWVkIjp0cnVlLCJodHRwczovL2F0bGFzc2lhbi5jb20vb2F1dGhDbGllbnRJZCI6IjVzVGpiU0RDWWFQYTN2TENOUzRjcXNsUVY2Vm1uNjZaIiwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tL3N5c3RlbUFjY291bnRFbWFpbERvbWFpbiI6ImNvbm5lY3QuYXRsYXNzaWFuLmNvbSJ9.SD2_DPLI4YhHaf0E8FkBwzZwLi5TdcMie_-EVf52A_pwMLedLsN2tAk0sQ7_peTustdlaV8eIga7LCqS6LqM1avJd_gz4pDG1uUV4W8QaLRdAvhUGmhGyAGVRcBUN07wQsJIkNMbbBykFoK3Puf4LoVDH-t9UCOJ6Q4YB85a5VacfLcpvIj4-81MYfsrViBcNAuQ62REugqXTdxw1oWc36cs7IrOinCHXeGJ-j9fEX-UZ6zx_CSzk1juMzN6JBlksWwD892237KpQFptPVDFk1AdvWy72Co6u6-Kld1mw-tX0R8T42JOLk8C-MxLydZZyTIJJWh_QbtM3wXKktrRiw
+X-Atlassian-Token: nocheck
+Content-Type: application/json
+
+{
+    "fields":
+    {
+        "issuetype":
+        {
+            "avatarId": 10303,
+            "description": "Bugs track problems or errors.",
+            "hierarchyLevel": 0,
+            "iconUrl": "https://api.atlassian.com/ex/jira/1b41b736-0978-4313-9a7b-4ddc909405f3/rest/api/2/universal_avatar/view/type/issuetype/avatar/10303?size=medium",
+            "id": "10006",
+            "name": "Bug",
+            "scope":
+            {
+                "project":
+                {
+                    "id": "10000"
+                },
+                "type": "PROJECT"
+            },
+            "self": "https://api.atlassian.com/ex/jira/1b41b736-0978-4313-9a7b-4ddc909405f3/rest/api/3/issuetype/10006",
+            "subtask": false
+        },
+        "project":
+        {
+            "self": "https://api.atlassian.com/ex/jira/1b41b736-0978-4313-9a7b-4ddc909405f3/rest/api/3/project/10000",
+            "id": "10000",
+            "key": "CPG",
+            "name": "Test Bucket",
+            "projectTypeKey": "software",
+            "simplified": true,
+            "avatarUrls":
+            {}
+        },
+        "description":
+        {
+            "version": 1,
+            "type": "doc",
+            "content":
+            [
+                {
+                    "type": "paragraph",
+                    "content":
+                    [
+                        {
+                            "type": "text",
+                            "text": "Here is some code"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "update":
+    {
+        "summary":
+        [
+            {
+                "set": "Test Create Jira issue with code block"
+            }
+        ]
+    }
+}

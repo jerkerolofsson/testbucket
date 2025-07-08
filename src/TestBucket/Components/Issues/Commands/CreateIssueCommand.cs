@@ -63,6 +63,7 @@ internal class CreateIssueCommand : ICommand
 
         var parameters = new DialogParameters<CreateIssueDialog>
         {
+            { x => x.TestProjectId, _appNav.State.SelectedProject.Id }
         };
         var dialog = await _dialogService.ShowAsync<CreateIssueDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;

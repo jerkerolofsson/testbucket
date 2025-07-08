@@ -37,6 +37,7 @@ namespace TestBucket.MudBlazorExtensions.Markdown
         [Parameter] public RenderFragment? ToolBarContent { get; set; }
         [Parameter] public Variant Variant { get; set; } = Variant.Outlined;
 
+        [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object>? AdditionalAttributes { get; set; }
         protected string RootClassname =>
             new CssBuilder("mud-markdown-editor-root")
             .AddClass("mud-input-outlined", Variant == Variant.Outlined)

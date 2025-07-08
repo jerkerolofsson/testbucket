@@ -6,6 +6,7 @@
 @using TestBucket.Domain
 @using TestBucket.Domain.Commands
 @using TestBucket.Domain.ExtensionManagement
+@using TestBucket.Domain.Issues
 @using TestBucket.Domain.Issues.Models
 @using TestBucket.Domain.Labels.Models
 @using TestBucket.Domain.Issues.Search
@@ -17,6 +18,9 @@
 @inject CommandController commandManager
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IssueStrings> issueLoc
+@inject IIssueManager issueManager
+@implements IDisposable
+@implements ILocalIssueObserver
 
 <MudStack Style="width: 100%" Class="pa-2">
     @if (Project is not null)
@@ -213,4 +217,33 @@
             };
     }
 
+    protected override void OnInitialized()
+    {
+        issueManager.AddObserver(this);
+    }
+
+    public void Dispose()
+    {
+        issueManager.RemoveObserver(this);
+    }
+    public Task OnLocalIssueAddedAsync(LocalIssue issue)
+    {
+        _grid?.ReloadServerData();
+        return Task.CompletedTask;
+    }
+    public Task OnLocalIssueUpdatedAsync(LocalIssue issue)
+    {
+        _grid?.ReloadServerData();
+        return Task.CompletedTask;
+    }
+    public Task OnLocalIssueFieldChangedAsync(LocalIssue issue)
+    {
+        _grid?.ReloadServerData();
+        return Task.CompletedTask;
+    }
+    public Task OnLocalIssueDeletedAsync(LocalIssue issue)
+    {
+        _grid?.ReloadServerData();
+        return Task.CompletedTask;
+    }
 }

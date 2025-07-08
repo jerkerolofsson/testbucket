@@ -252,7 +252,14 @@ public class IssueManager : IIssueManager
             }
         }
 
-        await _mediator.Publish(new IssueChanged(principal, updatedIssue));
+        try
+        {
+            await _mediator.Publish(new IssueChanged(principal, updatedIssue));
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex, "Error from IssueChanged event");
+        }
     }
 
     private async Task GenerateEmbeddingAsync(LocalIssue updatedIssue)
@@ -311,6 +318,15 @@ public class IssueManager : IIssueManager
         foreach (var observer in _localObservers)
         {
             await observer.OnLocalIssueFieldChangedAsync(issue);
+        }
+
+        try
+        {
+            await _mediator.Publish(new IssueChanged(principal, issue));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error from IssueChanged event");
         }
     }
 

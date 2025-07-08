@@ -45,19 +45,30 @@ internal class CreateExternalIssuesWhenCreated : INotificationHandler<IssueCreat
                     {
                         // Update issue in external system
                         var issueDto = issue.ToDto();
-                        await provider.CreateIssueAsync(externalSystem.ToDto(), issueDto, cancellationToken);
-
-                        // If the issue was successfully created, add the ID here..
-                        if (!string.IsNullOrEmpty(issueDto.ExternalDisplayId))
+                        try
                         {
-                            issue.ExternalDisplayId = issueDto.ExternalDisplayId;
-                            issue.ExternalId = issueDto.ExternalId;
+                            await provider.CreateIssueAsync(externalSystem.ToDto(), issueDto, cancellationToken);
+
+                            // If the issue was successfully created, add the ID here..
+                            if (!string.IsNullOrEmpty(issueDto.ExternalDisplayId))
+                            {
+                                issue.ExternalDisplayId = issueDto.ExternalDisplayId;
+                                issue.ExternalId = issueDto.ExternalId;
+                            }
+                            else
+                            {
+                                // Failed, remove mapping
+                                issue.ExternalSystemId = null;
+                                issue.ExternalSystemName = null;
+                            }
                         }
-                        else
+                        catch
                         {
                             // Failed, remove mapping
                             issue.ExternalSystemId = null;
                             issue.ExternalSystemName = null;
+
+                            throw;
                         }
                     }
                 }

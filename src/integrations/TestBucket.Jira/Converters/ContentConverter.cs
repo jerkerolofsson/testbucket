@@ -10,6 +10,8 @@ namespace TestBucket.Jira.Converters;
 
 /// <summary>
 /// Converts between markdown and jira content
+/// 
+/// https://developer.atlassian.com/cloud/jira/platform/apis/document/structure/
 /// </summary>
 internal class ContentConverter
 {
@@ -178,7 +180,7 @@ internal class ContentConverter
 
         var codeBlock = new Content
         {
-            type = "codeblock",
+            type = "codeBlock",
             content = [new Content { type = "text", text = codeText }]
         };
 
@@ -213,7 +215,7 @@ internal class ContentConverter
             var text = line.TrimStart().Substring(2); // Remove "- "
             listItems.Add(new Content
             {
-                type = "listitem",
+                type = "listItem",
                 content = [new Content 
                 { 
                     type = "paragraph",
@@ -226,7 +228,7 @@ internal class ContentConverter
         
         return (new Content
         {
-            type = "bulletlist",
+            type = "bulletList",
             content = listItems.ToArray()
         }, i);
     }
@@ -255,7 +257,7 @@ internal class ContentConverter
             var text = match.Groups[1].Value;
             listItems.Add(new Content
             {
-                type = "listitem",
+                type = "listItem",
                 content = [new Content 
                 { 
                     type = "paragraph",

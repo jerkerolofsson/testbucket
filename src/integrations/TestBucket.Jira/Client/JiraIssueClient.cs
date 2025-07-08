@@ -156,7 +156,7 @@ internal class JiraIssueClient(JiraOauth2Client Client)
         if (!response.IsSuccessStatusCode)
         {
             var json = JsonSerializer.Serialize(issue, JiraIssueSerializer.JsonOptions);
-            throw new Exception("Failed to create issue: " + text);
+            throw new Exception("Failed to create issue: " + text + "\njson=\n" + json);
         }
 
         return JsonSerializer.Deserialize<CreateIssueResponse>(text, JiraIssueSerializer.JsonOptions)

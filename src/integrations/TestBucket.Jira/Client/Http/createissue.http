@@ -43,14 +43,18 @@ Content-Type: application/json
             "content":
             [
                 {
-                    "type": "paragraph",
+                    "type": "codeBlock",
                     "content":
                     [
                         {
                             "type": "text",
-                            "text": "Here is some code"
+                            "text": "Hello"
                         }
-                    ]
+                    ],
+                    "attrs":
+                    {
+                        "language": "csharp"
+                    }
                 }
             ]
         }
@@ -60,7 +64,7 @@ Content-Type: application/json
         "summary":
         [
             {
-                "set": "Test Create Jira issue with code block"
+                "set": "C#"
             }
         ]
     }

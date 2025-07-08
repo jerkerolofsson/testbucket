@@ -163,7 +163,7 @@ namespace TestBucket.Domain.UnitTests.Identity.OAuth
             var callback = OnAuthenticated;
 
             // Act
-            var result = await _authenticator.AuthenticateAsync(_user, "", clientId, clientSecret, authEndpoint, tokenEndpoint, integrationName, BaseUrl, callback);
+            var result = await _authenticator.AuthenticateAsync(_user, "read write", clientId, clientSecret, authEndpoint, tokenEndpoint, integrationName, BaseUrl, callback);
 
             // Assert
             var uri = new Uri(result);

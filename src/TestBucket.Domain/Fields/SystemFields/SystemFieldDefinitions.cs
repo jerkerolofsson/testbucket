@@ -22,7 +22,7 @@ public static class SystemFieldDefinitions
         TraitType = TraitType.Label,
         Icon = TbIcons.IconSaxDuoTone.Label,
         IsVisible = true,
-        Type = FieldType.String,
+        Type = FieldType.MultiSelection,
         IsDefinedBySystem = true,
         Inherit = true,
         ShowDescription = false,
@@ -30,8 +30,7 @@ public static class SystemFieldDefinitions
         Options = [],
         DataSourceType = FieldDataSourceType.Labels,
         RequiredPermission = PermissionLevel.Write,
-        Target = FieldTarget.Issue |
-                    FieldTarget.Requirement
+        Target = FieldTarget.Issue | FieldTarget.Requirement
     };
 
     private static readonly FieldDefinition _feature = new()

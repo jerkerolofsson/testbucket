@@ -690,6 +690,12 @@ internal class ContentConverter
 
         foreach (var mark in marks)
         {
+            // Handle trailing and leading spaces for inline marks
+            // For example if text is "bold ", it need to be converted to "**bold** ", not "**bold **"
+
+            int leadingSpaces = CountLeadingSpaces(text);
+            int trailingSpaces = CountTrailingSpaces(text);
+            text = text.Trim();
 
             text = mark.type?.ToLowerInvariant() switch
             {
@@ -704,8 +710,52 @@ internal class ContentConverter
                 "subsup" => text, // Subscript/superscript not directly supported in standard markdown
                 _ => text
             };
+
+            if (leadingSpaces > 0)
+            {
+                text = new string(' ', leadingSpaces) + text;
+            }
+            if (trailingSpaces > 0)
+            {
+                text = text + new string(' ', trailingSpaces);
+            }
         }
         return text;
+    }
+
+    private static int CountTrailingSpaces(string text)
+    {
+        if (text.Length == 0) return 0;
+
+        int index = text.Length - 1;
+        int count = 0;
+        while (index >= 0)
+        {
+            if (text[index] != ' ')
+            {
+                break;
+            }
+            index--;
+            count++;
+        }
+        return count;
+    }
+
+    private static int CountLeadingSpaces(string text)
+    {
+        if (text.Length == 0) return 0;
+
+        int count = 0;
+        while(text.Length > count)
+        {
+            if (text[count] != ' ')
+            {
+                break;
+            }
+            count++;
+        }
+
+        return count;
     }
 
     private static void ProcessChildContent(Content content, StringBuilder markdown, int depth, JiraContentOptions options)

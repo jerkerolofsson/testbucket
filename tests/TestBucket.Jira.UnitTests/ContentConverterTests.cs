@@ -70,6 +70,39 @@ namespace TestBucket.Jira.UnitTests
         /// Verifies that text with bold formatting (strong marks) is correctly converted to markdown bold syntax.
         /// </summary>
         [Fact]
+        public void ToMarkdown_BoldTextWithTrailingSpace_ReturnsMarkdownWithBold()
+        {
+            // Arrange
+            var content = new Content
+            {
+                type = "doc",
+                content = [
+                    new Content
+                    {
+                        type = "paragraph",
+                        content = [
+                            new Content
+                            {
+                                type = "text",
+                                text = "bold text ",
+                                marks = [new ContentMark { type = "strong" }]
+                            }
+                        ]
+                    }
+                ]
+            };
+
+            // Act
+            var result = ContentConverter.ToMarkdown(content);
+
+            // Assert
+            Assert.Equal("**bold text** \n", result);
+        }
+
+        /// <summary>
+        /// Verifies that text with bold formatting (strong marks) is correctly converted to markdown bold syntax.
+        /// </summary>
+        [Fact]
         public void ToMarkdown_BoldText_ReturnsMarkdownWithBold()
         {
             // Arrange

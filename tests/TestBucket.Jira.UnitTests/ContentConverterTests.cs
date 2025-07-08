@@ -354,6 +354,36 @@ namespace TestBucket.Jira.UnitTests
             Assert.Equal("```csharp\nvar x = 5;\n```\n", result);
         }
 
+
+        /// <summary>
+        /// Verifies that a code block with text content (no paragraph) adds a new line before the end of the code block
+        /// </summary>
+        [Fact]
+        public void ToMarkdown_CodeBlockWithText_AddsNewLineBeforeEndOfCodeBlock()
+        {
+            // Arrange
+            var content = new Content
+            {
+                type = "doc",
+                content = [
+                    new Content
+                    {
+                        type = "codeblock",
+                        attrs = new Dictionary<string, object> { ["language"] = "csharp" },
+                        content = [
+                            new Content { type = "text", text = "var x = 5;" }
+                        ]
+                    }
+                ]
+            };
+
+            // Act
+            var result = ContentConverter.ToMarkdown(content);
+
+            // Assert
+            Assert.Equal("```csharp\nvar x = 5;\n```\n", result);
+        }
+
         /// <summary>
         /// Verifies that bullet list content is correctly converted to markdown unordered list syntax.
         /// </summary>

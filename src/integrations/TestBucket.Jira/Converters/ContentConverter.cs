@@ -569,7 +569,10 @@ internal class ContentConverter
                 {
                     ProcessChildContent(content, markdown, depth, options);
                 }
-                markdown.Append('\n');
+                if ((options.ParagraphHandling & ParagraphHandling.NoNewLine) != ParagraphHandling.NoNewLine)
+                {
+                    markdown.Append('\n');
+                }
                 break;
 
             //case "text":
@@ -606,7 +609,15 @@ internal class ContentConverter
                 {
                     markdown.Append("```\n");
                 }
-                ProcessChildContent(content, markdown, depth, options);
+                if (content.content?.Length > 0)
+                {
+                    ProcessChildContent(content, markdown, depth, options);
+                    if (content.content[0].type == "text")
+                    {
+                        markdown.Append("\n");
+                    }
+                }
+
                 markdown.Append("```\n");
                 break;
 

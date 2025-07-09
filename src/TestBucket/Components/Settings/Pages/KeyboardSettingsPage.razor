@@ -19,14 +19,14 @@
     {
         <MudText Typo="Typo.h1">@loc.Settings["tool-bar"]</MudText>
         <MudPaper>
-            <MudStack Spacing="0">
+            <MudStack Spacing="0" Class="pa-2">
                 <MudText Color="Color.Primary" Typo="Typo.h2">@loc.Settings["open-search"]</MudText>
                 <KeyboardShortcutEditor Modifiers="@(_bindings.UnifiedSearchBinding?.ModifierKeys ?? ModifierKey.None)" KeyCode="@_bindings.UnifiedSearchBinding?.Key" OnShortcutChanged="OnUnifiedSearchBindingChangedAsync" />
             </MudStack>
         </MudPaper>
 
         <MudPaper>
-            <MudStack Spacing="0">
+            <MudStack Spacing="0" Class="pa-2">
                 <MudText Color="Color.Primary" Typo="Typo.h2">@loc.Settings["open-command-palette"]</MudText>
                 <KeyboardShortcutEditor Modifiers="@(_bindings.CommandPaletteBinding?.ModifierKeys ?? ModifierKey.None)" KeyCode="@_bindings.CommandPaletteBinding?.Key" OnShortcutChanged="OnCommandPaletteBindingChangedAsync" />
             </MudStack>
@@ -37,12 +37,13 @@
     @foreach (var command in _commands)
     {
         <MudPaper>
-            <MudStack Spacing="0">
-                <MudText Color="Color.Primary" TTypo="Typo.h2">@command.Command.Id</MudText>
-                <KeyboardShortcutEditor Modifiers="@(command.UserBinding?.ModifierKeys ?? ModifierKey.None)" KeyCode="@command.UserBinding?.Key"
-                                        OnShortcutChanged="async (binding) => await OnCommandBindingChangedAsync(command, binding)" />
+            <MudStack Spacing="0" Class="pa-2">
+                <MudText Color="Color.Primary" Typo="Typo.h2">@command.Command.Id</MudText>
                 <MudText Typo="Typo.subtitle1">@command.Command.Name</MudText>
                 <MudText Typo="Typo.subtitle2">@command.Command.Description</MudText>
+
+                <KeyboardShortcutEditor Modifiers="@(command.UserBinding?.ModifierKeys ?? ModifierKey.None)" KeyCode="@command.UserBinding?.Key"
+                                        OnShortcutChanged="async (binding) => await OnCommandBindingChangedAsync(command, binding)" />
             </MudStack>
         </MudPaper>
 

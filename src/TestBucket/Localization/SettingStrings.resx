@@ -240,4 +240,13 @@
   <data name="light-mode" xml:space="preserve">
     <value>Light mode</value>
   </data>
+  <data name="reduced-motion" xml:space="preserve">
+    <value>Reduced motion</value>
+  </data>
+  <data name="reduced-motion-description" xml:space="preserve">
+    <value>Reduces transitions and animations</value>
+  </data>
+  <data name="prefer-text-to-icons-description" xml:space="preserve">
+    <value>Uses text instead of icons in the user interface in some locations</value>
+  </data>
 </root>

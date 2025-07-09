@@ -3,6 +3,7 @@
 using NGitLab.Models;
 
 using TestBucket.Components.Tests.Services;
+using TestBucket.Contracts.Keyboard;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;

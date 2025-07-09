@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Requirements.Services;
+using TestBucket.Contracts.Keyboard;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;

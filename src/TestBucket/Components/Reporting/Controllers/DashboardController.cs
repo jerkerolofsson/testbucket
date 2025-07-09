@@ -1,5 +1,4 @@
-﻿
-using TestBucket.Domain;
+﻿using TestBucket.Contracts.Localization;
 using TestBucket.Domain.Insights;
 using TestBucket.Domain.Insights.Model;
 

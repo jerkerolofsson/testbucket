@@ -240,4 +240,13 @@
   <data name="light-mode" xml:space="preserve">
     <value>Ljust tema</value>
   </data>
+  <data name="reduced-motion" xml:space="preserve">
+    <value>Mindre rörelse</value>
+  </data>
+  <data name="reduced-motion-description" xml:space="preserve">
+    <value>Minskar animeringar och övergångar </value>
+  </data>
+  <data name="prefer-text-to-icons-description" xml:space="preserve">
+    <value>Visar text istället för ikoner i vissa sammanhang</value>
+  </data>
 </root>

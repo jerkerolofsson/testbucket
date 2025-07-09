@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 
-namespace TestBucket.Domain;
+namespace TestBucket.Contracts.Localization;
 public interface IAppLocalization
 {
     IStringLocalizer Code { get; init; }

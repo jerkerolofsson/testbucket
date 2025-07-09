@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Localization;
 
-using TestBucket.Domain;
+using TestBucket.Contracts.Localization;
 
 namespace TestBucket.Localization;
 public class AppLocalization : IAppLocalization

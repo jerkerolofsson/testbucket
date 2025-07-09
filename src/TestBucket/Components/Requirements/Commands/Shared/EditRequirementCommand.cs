@@ -4,7 +4,7 @@ using Microsoft.Extensions.Localization;
 using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Shared.Icons;
 using TestBucket.Components.Tests.TestCases.Services;
-using TestBucket.Domain;
+using TestBucket.Contracts.Localization;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;

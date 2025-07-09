@@ -1,0 +1,50 @@
+﻿@using MudBlazor
+@using TestBucket.Blazor.Helpers
+@using TestBucket.Contracts.Keyboard
+<MudStack Spacing="1" Row Class="tb-keyboard-shortcut" @attributes=@Attributes>
+    @if ((Modifiers & ModifierKey.Meta) == ModifierKey.Meta)
+    {
+        <div class="tb-key tb-mod-key">
+            <MudIcon Icon="@CommandIcon" Style="width: 16px; height: 16px" />
+        </div>
+    }
+    @if ((Modifiers & ModifierKey.Ctrl) == ModifierKey.Ctrl)
+    {
+        <div class="tb-key tb-mod-key">
+            <MudIcon Icon="@CommandIcon" Style="width: 16px; height: 16px" />
+        </div>
+    }
+    @if ((Modifiers & ModifierKey.Shift) == ModifierKey.Shift) 
+    {
+        <div class="tb-key tb-mod-key">
+            <MudIcon Icon="@ShiftIcon" Style="width: 16px; height: 16px"/>
+        </div>
+    }
+    @if ((Modifiers & ModifierKey.Alt) == ModifierKey.Alt)
+    {
+        <div class="tb-key tb-mod-key">Alt</div>
+    }
+    @if (KeyCode is not null)
+    {
+        <div class="tb-key tb-key-code">@KeyPresenter.ToPrintable(KeyCode)</div>
+    }
+</MudStack>
+
+
+@code {
+    [Parameter] public ModifierKey Modifiers { get; set; } = ModifierKey.None;
+    [Parameter] public string? KeyCode { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? Attributes { get; set; }
+
+    /// <summary>
+    /// Shift key
+    /// </summary>
+    public static string ShiftIcon = "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M8 17V12H5.6302C4.71068 12 4.27858 10.8635 4.96584 10.2526L10.6713 5.18109C11.429 4.50752 12.571 4.50752 13.3287 5.18109L19.0342 10.2526C19.7214 10.8635 19.2893 12 18.3698 12H16V17C16 18.1046 15.1046 19 14 19H10C8.89543 19 8 18.1046 8 17Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>";
+
+    /// <summary>
+    /// Command/Meta
+    /// </summary>
+    public static string CommandIcon = "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7.5 19V19C6.11929 19 5 17.8807 5 16.5V16.5C5 15.1193 6.11929 14 7.5 14H16.5C17.8807 14 19 15.1193 19 16.5V16.5C19 17.8807 17.8807 19 16.5 19V19C15.1193 19 14 17.8807 14 16.5V7.5C14 6.11929 15.1193 5 16.5 5V5C17.8807 5 19 6.11929 19 7.5V7.5C19 8.88071 17.8807 10 16.5 10H7.5C6.11929 10 5 8.88071 5 7.5V7.5C5 6.11929 6.11929 5 7.5 5V5C8.88071 5 10 6.11929 10 7.5V16.5C10 17.8807 8.88071 19 7.5 19Z\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>";
+}

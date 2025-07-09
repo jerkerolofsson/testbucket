@@ -28,6 +28,13 @@ namespace TestBucket.Domain.Commands
             _userPreferencesManager = userPreferencesManager;
         }
 
+        public IReadOnlyList<ICommand> GetCommands()
+        {
+            return _commands.Values
+                .OrderBy(x => x.SortOrder)
+                .ToList();
+        }
+
         /// <inheritdoc/>
         public ICommand? GetCommandById(string id)
         {
@@ -44,8 +51,11 @@ namespace TestBucket.Domain.Commands
             var userPreferences = await _userPreferencesManager.LoadUserPreferencesAsync(principal);
             var bindings = userPreferences.KeyboardBindings ?? new();
             bindings.Commands ??= new();
-            bindings.Commands[commandId] = binding;
-            await _userPreferencesManager.SaveUserPreferencesAsync(principal, userPreferences);
+            if (!bindings.Commands.ContainsKey(commandId))
+            {
+                bindings.Commands[commandId] = binding;
+                await _userPreferencesManager.SaveUserPreferencesAsync(principal, userPreferences);
+            }
         }
 
         /// <inheritdoc/>

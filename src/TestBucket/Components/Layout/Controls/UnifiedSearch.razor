@@ -1,6 +1,9 @@
-﻿@using TestBucket.Components.Account
+﻿@using TestBucket.Blazor.Helpers
+@using TestBucket.Components.Account
 @using TestBucket.Components.Layout.Controls
 @using TestBucket.Components.Requirements
+@using TestBucket.Components.Search.Controllers
+@using TestBucket.Components.Settings.Controllers
 @using TestBucket.Components.Shared.Themeing
 @using TestBucket.Components.Teams
 @using TestBucket.Components.Teams.Controls
@@ -9,9 +12,8 @@
 @using TestBucket.Domain.Teams.Models
 @using Toolbelt.Blazor.HotKeys2
 @inject AppNavigationManager appNavigationManager
-@inject IUnifiedSearchManager unifiedSearchManager
-@inject AuthenticationStateProvider authStateProvider
-@inject IUserPreferencesManager _userPreferencesManager
+@inject UnifiedSearchController unifiedSearchController
+@inject UserPreferencesController userPreferencesController
 @inject HotKeysService hotKeysService
 @inject IStringLocalizer<SharedStrings> loc 
 @implements IAsyncDisposable
@@ -20,7 +22,7 @@
     Class="tb-unified-search"
     @ref="_element"
     AdornmentIcon="@Icons.Material.Filled.Search" Clearable
-    T="SearchResult" Placeholder="/" Value="_searchState" ValueChanged="SearchStateChanged" SearchFunc="@Search" Variant="Variant.Outlined">
+                 T="SearchResult" Placeholder="@UnifiedSearchBindingPlaceholder" Value="_searchState" ValueChanged="SearchStateChanged" SearchFunc="@Search" Variant="Variant.Outlined">
     <ItemTemplate>
         <MudStack Row AlignItems="AlignItems.Center">
             @if(context.TestCase is not null)
@@ -82,8 +84,7 @@
     /// <returns></returns>
     private async Task<IEnumerable<SearchResult>> Search(string text, CancellationToken token)
     {
-        var state = await authStateProvider.GetAuthenticationStateAsync();
-        return await unifiedSearchManager.SearchAsync(state.User, appNavigationManager.State.SelectedProject, text, token);
+        return await unifiedSearchController.SearchAsync(appNavigationManager.State.SelectedProject, text, token);
     }
     #endregion Search
 
@@ -107,6 +108,38 @@
 
     private ModCode _modCode;
     private Code? _keyCode;
+    private string _key = "";
+
+    public string UnifiedSearchBindingPlaceholder
+    {
+        get
+        {
+            var sb = new StringBuilder();
+
+            if((_modCode&ModCode.Alt) == ModCode.Alt)
+            {
+                sb.Append("Alt+");
+            }
+            if((_modCode&ModCode.Meta) == ModCode.Meta)
+            {
+                sb.Append("Meta+");
+            }
+            if((_modCode&ModCode.Ctrl) == ModCode.Ctrl)
+            {
+                sb.Append("Ctrl+");
+            }
+            if((_modCode&ModCode.Shift) == ModCode.Shift)
+            {
+                sb.Append("Shift+");
+            }
+
+            if(_key is not null)
+            {
+                sb.Append(KeyPresenter.ToPrintable(_key));
+            }
+            return sb.ToString();
+        }
+    }
 
     /// <summary>
     /// Setup key bindings
@@ -117,8 +150,7 @@
     {
         if (firstRender)
         {
-            var state = await authStateProvider.GetAuthenticationStateAsync();
-            var userPreferences = await _userPreferencesManager.LoadUserPreferencesAsync(state.User);
+            var userPreferences = await userPreferencesController.LoadUserPreferencesAsync();
             userPreferences.KeyboardBindings ??= new();
             var binding = userPreferences.KeyboardBindings.UnifiedSearchBinding;
             if (binding is not null)
@@ -129,12 +161,16 @@
                         Exclude = Exclude.Default
                     };
 
-                if(hotKeysService?.Context is not null)
+                if(hotKeysService?.Context is not null && !string.IsNullOrEmpty(binding.Key))
                 {
                     _modCode = HotKeysService.MapModCode(binding.ModifierKeys);
                     _keyCode = new Code(binding.Key);
+                    _key = binding.Key;
                     hotKeysService.Context.Add(_modCode, _keyCode.Value, FocusAsync, options);
                 }
+
+                // Repaint as the placeholder has changed
+                this.StateHasChanged();
             }
         }
     }

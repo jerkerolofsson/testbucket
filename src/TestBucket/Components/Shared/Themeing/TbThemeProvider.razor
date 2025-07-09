@@ -17,6 +17,7 @@
 
     private bool? _increasedContrast;
     private bool? _increasedFontSize;
+    private bool? _reducedMotion;
     private bool? _darkMode;
     private string? _theme;
     private Dock? _explorerDock = null;
@@ -30,6 +31,7 @@
         _increasedContrast = userPreferences.IncreasedContrast;
         _increasedFontSize = userPreferences.IncreasedFontSize;
         _explorerDock = userPreferences.ExplorerDock;
+        _reducedMotion = userPreferences.ReducedMotion;
         userPreferencesManager.UserPreferencesChanged += OnUserPreferencesChanged;
     }
     public void Dispose()
@@ -43,10 +45,12 @@
         _increasedFontSize != preferences.IncreasedFontSize ||
                 _explorerDock != preferences.ExplorerDock ||
                 _increasedContrast != preferences.IncreasedContrast ||
+                _reducedMotion != preferences.ReducedMotion ||
                 _theme != preferences.Theme;
         if (changed)
         {
             _explorerDock = preferences.ExplorerDock;
+            _reducedMotion = preferences.ReducedMotion;
             _increasedFontSize = preferences.IncreasedFontSize;
             _darkMode = preferences.DarkMode;
             _increasedContrast = preferences.IncreasedContrast;

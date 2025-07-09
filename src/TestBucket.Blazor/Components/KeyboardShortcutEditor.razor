@@ -1,0 +1,161 @@
+@using Microsoft.JSInterop
+@using TestBucket.Contracts.Keyboard
+@using TestBucket.Contracts.Localization
+@using MudBlazor
+@inject IJSRuntime JS
+@inject IAppLocalization loc
+@implements IAsyncDisposable
+
+<div class="tb-keyboard-shortcut-editor" @onclick="StartCaptureAsync">
+    <KeyboardShortcutLabel Modifiers=@Modifiers KeyCode=@KeyCode @attributes="@Attributes" id="@_id" />
+    <MudSpacer/>
+    @if(_isCapturing)
+    {
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="CancelCaptureAsync">@loc.Shared["cancel"]</MudButton>
+    }
+    else
+    {
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="StartCaptureAsync">@loc.Shared["change"]</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="DeleteShortcut">@loc.Shared["delete"]</MudButton>
+    }
+</div>
+
+@code {
+    ///  <summary>
+    /// Assign a special Id so we can identify the elements from javascript
+    /// </summary>
+    private string _id = "tbkb_" + Guid.NewGuid().ToString("N");
+
+    /// <summary>
+    /// JS module
+    /// </summary>
+    private IJSObjectReference? _jsModule;
+
+    /// <summary>
+    /// Class instance implemented in JS
+    /// </summary>
+    private IJSObjectReference? _jsInstance;
+
+    /// <summary>
+    /// Flag that indicates that we're capturing'
+    /// </summary>
+    private bool _isCapturing = false;
+
+    /// <summary>
+    /// Set modifier key (ctrl, shift etc), this is updated when the user presses a key
+    /// </summary>
+    [Parameter] public ModifierKey Modifiers { get; set; } = ModifierKey.None;
+
+    /// <summary>
+    /// Key, this is updated when the user presses a key
+    /// </summary>
+    [Parameter] public string? KeyCode { get; set; }
+    [Parameter] public EventCallback<(ModifierKey Modifiers, string? KeyCode)> OnShortcutChanged { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? Attributes { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await InitializeJsInterop();
+        }
+    }
+
+    private async Task InitializeJsInterop()
+    {
+        try
+        {
+            _jsModule = await JS.InvokeAsync<IJSObjectReference>("import",
+                "./_content/TestBucket.Blazor/Components/KeyboardShortcutEditor.razor.js");
+
+            _jsInstance = await _jsModule.InvokeAsync<IJSObjectReference>("initialize", _id);
+
+            // Add event listener for shortcut captured
+            await _jsInstance.InvokeVoidAsync("onShortcutCaptured", DotNetObjectReference.Create(this));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to initialize KeyboardShortcutEditor JS interop: {ex.Message}");
+        }
+    }
+
+    private async Task CancelCaptureAsync()
+    {
+        if (_jsInstance != null && _isCapturing)
+        {
+            _isCapturing = false;
+            await _jsInstance.InvokeVoidAsync("stopCapture");
+        }
+    }
+
+    private async Task DeleteShortcut()
+    {
+        await OnShortcutChanged.InvokeAsync((ModifierKey.None, null));
+    }
+
+    private async Task StartCaptureAsync()
+    {
+        if (_jsInstance != null && !_isCapturing)
+        {
+            _isCapturing = true;
+            StateHasChanged();
+            await _jsInstance.InvokeVoidAsync("startCapture");
+        }
+    }
+
+    [JSInvokable]
+    public Task OnShortcutChanging(ShortcutData data)
+    {
+        // Convert JavaScript modifiers to ModifierKey enum
+        var modifiers = ModifierKey.None;
+        if (data.Modifiers?.Contains("Ctrl") == true) modifiers |= ModifierKey.Ctrl;
+        if (data.Modifiers?.Contains("Shift") == true) modifiers |= ModifierKey.Shift;
+        if (data.Modifiers?.Contains("Alt") == true) modifiers |= ModifierKey.Alt;
+
+        Modifiers = modifiers;
+        KeyCode = data.KeyCode;
+
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    [JSInvokable]
+    public async Task OnShortcutCaptured(ShortcutData data)
+    {
+        _isCapturing = false;
+
+        // Convert JavaScript modifiers to ModifierKey enum
+        var modifiers = ModifierKey.None;
+        if (data.Modifiers?.Contains("Ctrl") == true) modifiers |= ModifierKey.Ctrl;
+        if (data.Modifiers?.Contains("Shift") == true) modifiers |= ModifierKey.Shift;
+        if (data.Modifiers?.Contains("Alt") == true) modifiers |= ModifierKey.Alt;
+
+        Modifiers = modifiers;
+        KeyCode = data.KeyCode;
+
+        await OnShortcutChanged.InvokeAsync((Modifiers, KeyCode));
+        StateHasChanged();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_jsInstance != null)
+        {
+            await _jsInstance.InvokeVoidAsync("dispose");
+            await _jsInstance.DisposeAsync();
+        }
+
+        if (_jsModule != null)
+        {
+            await _jsModule.DisposeAsync();
+        }
+    }
+
+    public class ShortcutData
+    {
+        public string[]? Modifiers { get; set; }
+        public string? KeyCode { get; set; }
+    }
+}

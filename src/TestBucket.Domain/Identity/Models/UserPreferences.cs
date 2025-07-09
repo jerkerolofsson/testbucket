@@ -63,6 +63,11 @@ public class UserPreferences
     public bool IncreasedFontSize { get; set; }
 
     /// <summary>
+    /// Reduced motion. This disables animation/transitions
+    /// </summary>
+    public bool? ReducedMotion { get; set; }
+
+    /// <summary>
     /// If true, text is used instead of icons or images
     /// </summary>
     public bool PreferTextToIcons { get; set; }

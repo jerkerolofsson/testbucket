@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Identity;
-using TestBucket.Domain.Settings.Models;
-using TestBucket.Domain.Tenants.Models;
+﻿using TestBucket.Domain.Identity;
 
 namespace TestBucket.Domain.Settings.Appearance
 {

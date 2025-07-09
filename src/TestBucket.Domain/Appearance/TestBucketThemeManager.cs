@@ -70,6 +70,7 @@ public class TestBucketThemeManager : ITestBucketThemeManager
     {
         bool highContrast = userPreferences.IncreasedContrast;
         bool highFontSize = userPreferences.IncreasedFontSize;
+        bool reducedMotion = userPreferences.ReducedMotion ?? false;
         bool isDarkMode = userPreferences.DarkMode;
 
         var css = new StringBuilder();
@@ -98,6 +99,10 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         {
             AppendIncreasedFontSize(css, isDarkMode);
         }
+        if(userPreferences.ReducedMotion == true)
+        {
+            AppendReducedMotion(css);
+        }
 
         return css.ToString();
     }
@@ -120,7 +125,7 @@ public class TestBucketThemeManager : ITestBucketThemeManager
     {
         // High contrast mode overrides some settings
         var theme = new HighContrast();
-        stylesheet.Append("/* High contrast */");
+        stylesheet.AppendLine("/* High contrast */");
         if (isDarkMode)
         {
             stylesheet.AppendLine(theme.GenerateStyle(theme.DarkScheme));
@@ -135,6 +140,7 @@ public class TestBucketThemeManager : ITestBucketThemeManager
     {
         // High contrast mode overrides some settings
         var theme = new LargeTextOverlay();
+        stylesheet.AppendLine("/* Large Text Overlay */");
         if (isDarkMode)
         {
             stylesheet.AppendLine(theme.GenerateStyle(theme.DarkScheme));
@@ -143,5 +149,24 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         {
             stylesheet.AppendLine(theme.GenerateStyle(theme.LightScheme));
         }
+    }
+
+
+    private static void AppendReducedMotion(StringBuilder stylesheet)
+    {
+        stylesheet.AppendLine("/* Reduced Motion */");
+        stylesheet.AppendLine("""
+            html, body {
+                --tb-animation-100: 0s;
+                --tb-animation-150: 0ms;
+                --tb-animation-200: 0ms;
+                --tb-animation-300: 0ms;
+                
+                -webkit-transition: none !important;
+                -moz-transition: none !important;
+                -o-transition: none !important;
+                transition: none !important;
+            }
+            """);
     }
 }

@@ -38,6 +38,11 @@ html, body {
     --mud-typography-h4-size: 16pt;
     --mud-typography-h5-size: 14pt;
     --mud-typography-h6-size: 12pt;
+
+    --tb-animation-100: 100ms;
+    --tb-animation-150: 150ms;
+    --tb-animation-200: 200ms;
+    --tb-animation-300: 300ms;
 }
 
 .tb-codeblock {
@@ -257,7 +262,7 @@ input:focus-visible {
 }
 
 .dropdown-container .mud-icon-button {
-    transition: background linear 200ms;
+    transition: background linear var(--tb-animation-200);
     background-color: transparent;
 }
 
@@ -344,7 +349,7 @@ input:focus-visible {
  .tb-nav-link {
      height: 100%;
      position: relative;
-     transition: all linear 150ms;
+     transition: all linear var(--tb-animation-100);
      padding: 6px;
      cursor: pointer;
      border-bottom: solid 2px transparent;
@@ -631,7 +636,7 @@ table.tb-environment-variables {
 
 .tb-command-palette .tb-keyboard-shortcut {
     opacity: 0.5;
-    transition: opacity ease-in-out 200ms;
+    transition: opacity ease-in-out var(--tb-animation-200);
     cursor: pointer;
 }
 
@@ -755,6 +760,12 @@ table.tb-environment-variables {
 
 .tb-splitter-bar-fill {
     background: var(--mud-palette-lines-inputs, rgba(255,255,255,0.2));
+    transition: all var(--tb-animation-100) linear;
+}
+
+.tb-splitter-bar.dragging .tb-splitter-bar-fill,
+.tb-splitter-bar:hover .tb-splitter-bar-fill {
+    background: var(--mud-palette-action-default);    
 }
 
 .splitter > .tb-splitter-content-start,
@@ -1136,7 +1147,7 @@ div.tb-profile-image.tb-background-9 {
 .tb-tile [data-testid="edit"], 
 .tb-tile [data-testid="delete"] {
     opacity: 0;
-    transition: opacity linear 150ms;
+    transition: opacity linear var(--tb-animation-150);
 }
 
 .tb-trace-view {
@@ -1260,7 +1271,7 @@ div.tb-profile-image.tb-background-9 {
 }
 
 .dock-toggle.mud-icon-button {
-    transition: transform ease-in-out 300ms;
+    transition: transform ease-in-out var(--tb-animation-300);
 }
 
 .tb-insights-chart {
@@ -1442,4 +1453,10 @@ div.tb-profile-image.tb-background-9 {
     border-right: solid 1px var(--border-color);
     border-bottom: solid 1px var(--border-color);
     background: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: unset !important;
+  }
 }

@@ -65,6 +65,8 @@ class Splitter {
 
         //console.log(e);
 
+        this.splitter.classList.add("dragging");
+
         this.dragging = true;
         if (e.touches?.length > 0) {
             this.dragStartX = e.touches[0].pageX;
@@ -175,6 +177,7 @@ class Splitter {
 
     #end() {
         //console.log("RESIZE END");
+        this.splitter.classList.remove("dragging");
         this.dragging = false;
     }
 

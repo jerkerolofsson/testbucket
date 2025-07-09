@@ -12,7 +12,7 @@ namespace TestBucket.Domain.Keyboard
     public class KeyboardBindings
     {
         public KeyboardBinding? UnifiedSearchBinding { get; set; }
-
+        public KeyboardBinding? CommandPaletteBinding { get; set; }
         public Dictionary<string, KeyboardBinding>? Commands { get; set;  }
     }
 }

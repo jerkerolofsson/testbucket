@@ -375,6 +375,7 @@ code.tip {
 .mud-markdown-editor-root .mud-markdown-toolbar {
     --mud-internal-toolbar-height: auto;
     padding: 8px;
+    gap: 8px;
 }
 
 

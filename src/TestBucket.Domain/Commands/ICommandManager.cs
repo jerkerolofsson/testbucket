@@ -71,5 +71,6 @@ namespace TestBucket.Domain.Commands
         /// <returns></returns>
         Task SetKeyboardBindingAsync(ClaimsPrincipal principal, string commandId, KeyboardBinding binding);
         IReadOnlyList<CommandContextMenuItem> SearchCommandMenuItems(string searchText, int count);
+        IReadOnlyList<ICommand> GetCommands();
     }
 }

@@ -17,7 +17,7 @@ using TestBucket.Components;
 using TestBucket.Components.Account;
 using TestBucket.Components.Automation;
 using TestBucket.Components.Code.Controllers;
-using TestBucket.Components.Commands;
+using TestBucket.Components.Shared.Commands;
 using TestBucket.Components.Comments;
 using TestBucket.Components.Environments.Services;
 using TestBucket.Components.Issues.Commands;
@@ -36,8 +36,10 @@ using TestBucket.Components.Requirements.Commands.Initatives;
 using TestBucket.Components.Requirements.Commands.Shared;
 using TestBucket.Components.Requirements.Commands.Tasks;
 using TestBucket.Components.Requirements.Services;
+using TestBucket.Components.Search.Controllers;
 using TestBucket.Components.Settings.ApiKeys;
 using TestBucket.Components.Settings.Commands;
+using TestBucket.Components.Settings.Controllers;
 using TestBucket.Components.Settings.Links;
 using TestBucket.Components.Settings.Roles;
 using TestBucket.Components.Shared.Fields;
@@ -61,8 +63,8 @@ using TestBucket.Components.Tests.TestSuites.Services;
 using TestBucket.Components.Uploads.Services;
 using TestBucket.Components.Users;
 using TestBucket.Components.Users.Services;
+using TestBucket.Contracts.Localization;
 using TestBucket.Data.Migrations;
-using TestBucket.Domain;
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Commands;
@@ -284,6 +286,11 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<IssueController>();
         builder.Services.AddScoped<InsightsController>();
         builder.Services.AddScoped<TestRunController>();
+        builder.Services.AddScoped<UnifiedSearchController>();
+        builder.Services.AddScoped<UserPreferencesController>();
+        builder.Services.AddScoped<CommandController>();
+        
+
 
         builder.Services.AddScoped<UserPreferencesService>();
         builder.Services.AddScoped<TestBrowser>();

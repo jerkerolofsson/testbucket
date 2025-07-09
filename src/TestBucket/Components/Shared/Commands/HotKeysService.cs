@@ -1,4 +1,4 @@
-﻿using TestBucket.Domain.Keyboard;
+﻿using TestBucket.Contracts.Keyboard;
 
 using Toolbelt.Blazor.HotKeys2;
 

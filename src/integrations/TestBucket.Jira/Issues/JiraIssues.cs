@@ -260,16 +260,19 @@ internal class JiraIssues : IExternalIssueProvider
 
                 foreach (var label in issueDto.Labels)
                 {
-                    if (!labels.Contains(label))
+                    var labelWithoutSpaces = label.Replace(' ', '-');
+
+                    if (!labels.Contains(labelWithoutSpaces))
                     {
-                        update.AddLabel(label);
+                        update.AddLabel(labelWithoutSpaces);
                     }
                 }
                 foreach (var label in labels)
                 {
-                    if (!issueDto.Labels.Contains(label))
+                    var labelWithoutSpaces = label.Replace(' ', '-');
+                    if (!issueDto.Labels.Contains(labelWithoutSpaces))
                     {
-                        update.RemoveLabel(label);
+                        update.RemoveLabel(labelWithoutSpaces);
                     }
                 }
                 //update.fields.labels = issueDto.Labels;
@@ -309,6 +312,14 @@ internal class JiraIssues : IExternalIssueProvider
             State = jiraIssue.fields?.status?.name,
             Labels = jiraIssue.fields?.labels,
         };
+        if(dto.Labels is not null)
+        {
+            // Jira issue labels cannot contain spaces
+            for(int i=0; i<dto.Labels.Length; i++)
+            {
+                dto.Labels[i] = dto.Labels[i].Replace('-', ' ');
+            }
+        }
 
         dto.Description = ContentConverter.ToMarkdown(jiraIssue.fields?.description);
 

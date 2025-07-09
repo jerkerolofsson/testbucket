@@ -1,0 +1,5 @@
+.tb-keyboard-shortcut-editor {
+    display: flex;
+    gap: 4px;
+    width: 100%;
+}

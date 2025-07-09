@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 
+using TestBucket.Contracts.Localization;
 using TestBucket.Domain.Identity.Models;
 
 namespace TestBucket.Domain.Settings

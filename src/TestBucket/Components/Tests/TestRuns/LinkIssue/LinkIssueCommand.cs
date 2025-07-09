@@ -2,6 +2,7 @@
 
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Contracts.Issues.Models;
+using TestBucket.Contracts.Keyboard;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Issues;

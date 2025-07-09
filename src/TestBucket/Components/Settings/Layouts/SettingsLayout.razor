@@ -37,6 +37,10 @@
                     string url = $"/{TenantId}/Settings/Categories/{category.Name}";
                     <MudNavLink Icon="@SettingIcons.GetIcon(category.Icon)" Href="@url">@category.Name</MudNavLink>
                 }
+
+                <MudNavLink Icon="@TbIcons.BoldDuoTone.Keyboard" Href="@KeyboardUrl">@loc["keyboard"]</MudNavLink>
+
+
                 <MudNavLink Icon="@Icons.Material.Filled.Security" Href="@ApiKeysUrl">@loc["api-keys"]</MudNavLink>
                 <MudNavLink Icon="@TbIcons.Filled.ModelContextProtocol" Href="@McpUrl">MCP</MudNavLink>
 
@@ -157,4 +161,6 @@
     private string RolesUrl => $"{TenantId}/Settings/Roles";
     private string BackupUrl => $"{TenantId}/Settings/Backup";
     private string RunnersUrl => $"{TenantId}/Settings/ManageRunners";
+    private string KeyboardUrl => $"{TenantId}/Settings/Keyboard";
+    
 }

@@ -78,6 +78,15 @@ internal static class IssueMapper
         dest.State = src.State;
         dest.MappedState = src.MappedState ?? Contracts.Issues.States.MappedIssueState.Other;
         dest.Description = src.Description;
+
+        if(src.IssueFields is not null)
+        {
+            var labels = src.GetLabels();
+            if(labels.Count > 0)
+            {
+                dest.Labels = labels.ToArray();
+            }
+        }
     }
     public static LocalIssue ToDbo(this IssueDto src)
     {

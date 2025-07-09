@@ -24,13 +24,13 @@ public class JiraIssueUpdateBean
     internal void RemoveLabel(string label)
     {
         update.labels ??= [];
-        update.labels = [.. update.labels, new UpdateOperation() {  remove = new OperationRemove() { name = label } }];
+        update.labels = [.. update.labels, new StringUpdateOperation() { remove = label }];
     }
 
     internal void AddLabel(string label)
     {
         update.labels ??= [];
-        update.labels = [.. update.labels, new UpdateOperation() { add = new OperationAdd() { name = label } }];
+        update.labels = [.. update.labels, new StringUpdateOperation() { add = label }];
     }
 }
 
@@ -48,6 +48,19 @@ public class OperationAdd
 public class OperationSet
 {
     public required string name { get; set; }
+}
+
+
+public class StringUpdateOperation
+{
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? add { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? set { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? remove { get; set; }
 }
 
 public class UpdateOperation
@@ -78,7 +91,7 @@ public class Update
     public UpdateOperation[]? components { get; set; }
     
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public UpdateOperation[]? labels { get; set; }
+    public StringUpdateOperation[]? labels { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
     public UpdateOperation[]? assignee { get; set; }

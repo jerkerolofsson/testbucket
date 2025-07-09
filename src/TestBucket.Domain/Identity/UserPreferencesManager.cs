@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain.Identity.Models;
+﻿using TestBucket.Contracts.Keyboard;
+using TestBucket.Domain.Identity.Models;
 
 namespace TestBucket.Domain.Identity
 {
@@ -36,10 +37,8 @@ namespace TestBucket.Domain.Identity
                 {
                     preferences ??= new UserPreferences { TenantId = tenantId, UserName = username };
                     preferences.KeyboardBindings ??= new();
-                    if (preferences.KeyboardBindings.UnifiedSearchBinding is null)
-                    {
-                        preferences.KeyboardBindings.UnifiedSearchBinding = new Keyboard.KeyboardBinding() { CommandId = "none", Key = "Slash", ModifierKeys = Keyboard.ModifierKey.None };
-                    }
+                    preferences.KeyboardBindings.UnifiedSearchBinding ??= new Keyboard.KeyboardBinding() { CommandId = "none", Key = "Slash", ModifierKeys = ModifierKey.None };
+                    preferences.KeyboardBindings.CommandPaletteBinding ??= new Keyboard.KeyboardBinding() { CommandId = "none", Key = "KeyP", ModifierKeys = ModifierKey.Ctrl | ModifierKey.Shift };
                     await _userPreferenceRepository.SaveUserPreferencesAsync(preferences);
                 }
 

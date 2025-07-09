@@ -1,11 +1,14 @@
-﻿@using TestBucket.Domain
+﻿@using TestBucket.Components.Settings.Controllers
+@using TestBucket.Contracts.Keyboard
+@using TestBucket.Domain
 @using TestBucket.Domain.Commands
-@using TestBucket.Domain.Keyboard
 @using TestBucket.Domain.Commands.Models
-@inject HotKeys HotKeys
+@using TestBucket.Domain.Keyboard
+@inject HotKeysService hotKeysService
 @implements IAsyncDisposable
-@inject ICommandManager commandManager
+@inject CommandController commandManager
 @inject AuthenticationStateProvider authenticationStateProvider
+@inject UserPreferencesController userPreferencesController
 @inject IStringLocalizer<SharedStrings> loc
 
 <MudOverlay Visible="_open" OnClick="CloseAsync" Class="tb-blur-overlay" />
@@ -57,7 +60,7 @@
 
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         _claimsPrincipal = authState.User;
-        _bindings = await commandManager.GetKeyboardBindingsAsync(_claimsPrincipal);
+        _bindings = await commandManager.GetKeyboardBindingsAsync();
     }
 
     private void OnCommandExecuting(object? sender, ICommand command)
@@ -75,23 +78,34 @@
         _commands = commandManager.SearchCommandMenuItems(text, 10);
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    private Code _keyCode;
+    private ModCode _modCode;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            _hotKeysContext = this.HotKeys.CreateContext();
+            var userPreferences = await userPreferencesController.LoadUserPreferencesAsync();
+            userPreferences.KeyboardBindings ??= new();
+            var binding = userPreferences.KeyboardBindings.CommandPaletteBinding;
+            if (binding is not null)
+            {
+                HotKeyOptions options = new()
+                    {
+                        Description = "Command Palette",
+                        Exclude = Exclude.Default
+                    };
 
-            HotKeyOptions optionsDefault = new()
-            {
-                Exclude = Exclude.Default
-            };
-            HotKeyOptions optionsNone = new()
-            {
-                Exclude = Exclude.None
-            };
-            _hotKeysContext.Add(HotKeysService.MapModCode(ModifierKey.Ctrl | ModifierKey.Shift), Code.P, OpenAsync, optionsDefault);
-            _hotKeysContext.Add(HotKeysService.MapModCode(ModifierKey.Meta | ModifierKey.Shift), Code.P, OpenAsync, optionsDefault);
-            _hotKeysContext.Add(Code.Escape, CloseAsync, optionsNone);
+                _hotKeysContext = hotKeysService.Context;
+
+                if (hotKeysService.Context is not null && !string.IsNullOrEmpty(binding.Key))
+                {
+                    _modCode = HotKeysService.MapModCode(binding.ModifierKeys);
+                    _keyCode = new Code(binding.Key);
+                    var key = binding.Key;
+                    hotKeysService.Context.Add(_modCode, _keyCode, OpenAsync, options);
+                }
+            }
         }
     }
 
@@ -145,6 +159,7 @@
             _hotKeysContext?.Add(Code.ArrowDown, KeyDownAsync, optionsNone);
             _hotKeysContext?.Add(Code.ArrowUp, KeyUpAsync, optionsNone);
             _hotKeysContext?.Add(Code.Enter, OnEnterAsync, optionsNone);
+            _hotKeysContext?.Add(Code.Escape, CloseAsync, optionsNone);
 
             await InvokeAsync(StateHasChanged);
         }
@@ -156,6 +171,7 @@
             _hotKeysContext?.Remove(Code.ArrowDown);
             _hotKeysContext?.Remove(Code.ArrowUp);
             _hotKeysContext?.Remove(Code.Enter);
+            _hotKeysContext?.Remove(Code.Escape);
 
             _searchText = "";
             _open = false;
@@ -163,13 +179,10 @@
         }
     }
 
-    public async ValueTask DisposeAsync()
+    public ValueTask DisposeAsync()
     {
+        _hotKeysContext?.Remove(_modCode, _keyCode);
         commandManager.CommandExecuting -= OnCommandExecuting;
-
-        if (_hotKeysContext != null)
-        {
-            await _hotKeysContext.DisposeAsync();
-        }
+        return ValueTask.CompletedTask;
     }
 }

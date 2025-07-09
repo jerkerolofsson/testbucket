@@ -1514,6 +1514,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<bool>("PreferTextToIcons")
                         .HasColumnType("boolean");
 
+                    b.Property<bool?>("ReducedMotion")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("ShowFailureMessageDialogWhenFailingTestCaseRun")
                         .HasColumnType("boolean");
 

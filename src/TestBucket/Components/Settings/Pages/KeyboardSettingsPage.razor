@@ -1,0 +1,52 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/Keyboard"
+@using TestBucket.Components.Settings.Controllers
+@using TestBucket.Components.Shared.Commands
+@using TestBucket.Contracts.Keyboard
+@using TestBucket.Contracts.Localization
+@using TestBucket.Domain
+@using TestBucket.Domain.Commands
+@using TestBucket.Domain.Keyboard
+@using TestBucket.Domain.Settings
+@layout SettingsLayout
+@inject CommandController commandManager
+@inject UserPreferencesController userPreferencesController
+@inject IAppLocalization loc
+
+<MudStack Class="container-settings-page">
+
+    @if (_bindings is not null)
+    {
+        <MudText Typo="Typo.h1">@loc.Settings["tool-bar"]</MudText>
+        <MudPaper>
+            <MudStack Spacing="0">
+                <MudText Color="Color.Primary" Typo="Typo.h2">@loc.Settings["open-search"]</MudText>
+                <KeyboardShortcutEditor Modifiers="@(_bindings.UnifiedSearchBinding?.ModifierKeys ?? ModifierKey.None)" KeyCode="@_bindings.UnifiedSearchBinding?.Key" OnShortcutChanged="OnUnifiedSearchBindingChangedAsync" />
+            </MudStack>
+        </MudPaper>
+
+        <MudPaper>
+            <MudStack Spacing="0">
+                <MudText Color="Color.Primary" Typo="Typo.h2">@loc.Settings["open-command-palette"]</MudText>
+                <KeyboardShortcutEditor Modifiers="@(_bindings.CommandPaletteBinding?.ModifierKeys ?? ModifierKey.None)" KeyCode="@_bindings.CommandPaletteBinding?.Key" OnShortcutChanged="OnCommandPaletteBindingChangedAsync" />
+            </MudStack>
+        </MudPaper>
+    }
+
+    <MudText Typo="Typo.h1">@loc.Settings["commands"]</MudText>
+    @foreach (var command in _commands)
+    {
+        <MudPaper>
+            <MudStack Spacing="0">
+                <MudText Color="Color.Primary" TTypo="Typo.h2">@command.Command.Id</MudText>
+                <KeyboardShortcutEditor Modifiers="@(command.UserBinding?.ModifierKeys ?? ModifierKey.None)" KeyCode="@command.UserBinding?.Key"
+                                        OnShortcutChanged="async (binding) => await OnCommandBindingChangedAsync(command, binding)" />
+                <MudText Typo="Typo.subtitle1">@command.Command.Name</MudText>
+                <MudText Typo="Typo.subtitle2">@command.Command.Description</MudText>
+            </MudStack>
+        </MudPaper>
+
+    }
+
+</MudStack>
+

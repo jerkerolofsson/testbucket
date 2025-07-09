@@ -1,4 +1,5 @@
-﻿using TestBucket.Domain;
+﻿using TestBucket.Contracts.Localization;
+using TestBucket.Domain;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
 

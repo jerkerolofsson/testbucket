@@ -27,7 +27,10 @@
                     }
                     else
                     {
-                        <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_issue.Title"></MudTextField>
+                        <MudStack Spacing="0" Style="width: 100%">
+                            <FieldHeader for="issue-title">@loc["title"]</FieldHeader>
+                            <MudTextField id="issue-title" Style="width: 100%" Variant="Variant.Outlined" T="string" ValueChanged="OnTitleChanged" Value="@_issue.Title"></MudTextField>
+                        </MudStack>
                     }
                 </MudStack>
 
@@ -36,8 +39,8 @@
                 </MudStack>
 
                 <MudStack Spacing="0" Class="mt-2 mb-2">
-                    <FieldHeader>@loc["description"]</FieldHeader>
-                    <MarkdownEditor ValueChanged="OnDescriptionChanged" Value="@_issue.Description" @bind-Preview="@_preview" TextAreaClass="tb-issue-description"/>
+                    <FieldHeader for="issue-description">@loc["description"]</FieldHeader>
+                    <MarkdownEditor id="issue-description" ValueChanged="OnDescriptionChanged" Value="@_issue.Description" @bind-Preview="@_preview" TextAreaClass="tb-issue-description"/>
                 </MudStack>
 
                 <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />

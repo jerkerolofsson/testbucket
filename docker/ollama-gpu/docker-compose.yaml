@@ -1,0 +1,15 @@
+services:
+  ollama_gpu:
+    container_name:  ollama_gpu
+    image: "ollama/ollama:latest"
+    restart: unless-stopped
+    ports:
+    - target: 11434
+      published: 17335
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

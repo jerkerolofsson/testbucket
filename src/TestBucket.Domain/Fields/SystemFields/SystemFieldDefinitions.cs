@@ -40,7 +40,7 @@ public static class SystemFieldDefinitions
         TraitType = TraitType.Feature,
         Description = "Related Product Feature",
         IsVisible = true,
-        Icon = TbIcons.BoldDuoTone.Epic,
+        Icon = TbIcons.BoldDuoTone.Camera,
         Type = FieldType.SingleSelection,
         IsDefinedBySystem = true,
         Inherit = true,

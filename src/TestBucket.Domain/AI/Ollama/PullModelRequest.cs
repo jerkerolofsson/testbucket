@@ -37,12 +37,20 @@ public class PullModelRequestHandler : IRequestHandler<PullModelRequest, bool>
             await using var progress = _progressManager.CreateProgressTask("Downloading " + model.OllamaName);
 
             var ollama = new OllamaApiClient(settings.AiProviderUrl, model.OllamaName);
-            await foreach (var response in ollama.PullModelAsync(model.OllamaName))
+            try
             {
-                if (response is not null)
+                await foreach (var response in ollama.PullModelAsync(model.OllamaName))
                 {
-                    await progress.ReportStatusAsync($"{response.Status}", response.Percent);
+                    if (response is not null)
+                    {
+                        await progress.ReportStatusAsync($"{response.Status}", response.Percent);
+                    }
                 }
+            }
+            catch(Exception ex)
+            {
+                await progress.ReportStatusAsync($"{ex.Message}", 0);
+                await Task.Delay(2000);
             }
         });
         return true;

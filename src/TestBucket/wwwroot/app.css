@@ -1333,13 +1333,30 @@ div.tb-profile-image.tb-background-9 {
 .tb-progress-overlay {
     position: absolute; 
     right: 50px; 
-    bottom: 50px; 
+    top: 80px; 
+    border: solid 2px var(--mud-palette-tertiary);
+    border-radius: 10px;
+
+    background: var(--mud-palette-background);
+
     display: flex; 
     flex-direction: column; 
     gap: 8px; 
     z-index: 100; 
     width: 20vw;
     overflow: hidden;
+
+    box-shadow: rgba(0,0,0,0.5) 5px 5px 10px;
+}
+.tb-progress-overlay .mud-typography-h1 {
+    margin: 0;
+    font-size: 12pt;
+    line-height: 1;
+}
+
+.tb-progress-overlay .mud-typography-body1 {
+    margin-top: -5px;
+    opacity: 0.8;
 }
 
 .tb-http-api-checks-datagrid {

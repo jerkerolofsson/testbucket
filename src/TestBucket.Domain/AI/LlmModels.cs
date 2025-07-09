@@ -46,9 +46,16 @@ public class LlmModels
             Vendor = "deepseek",
             Name = "Deepseek R1 1.5b",
             OllamaName = "deepseek-r1:1.5b",
+            Capabilities = ModelCapability.Thinking | ModelCapability.Classification
+        },
+        ["deepseek-r1:8b"] = new LlmModel
+        {
+            Icon = TbIcons.Brands.Deepseek,
+            Vendor = "deepseek",
+            Name = "Deepseek R1 8b",
+            OllamaName = "deepseek-r1:8b",
             Capabilities = ModelCapability.Tools | ModelCapability.Thinking | ModelCapability.Classification
         },
-
         ["nemotron-mini"] = new LlmModel
         {
             Vendor = "nvidia",
@@ -86,6 +93,14 @@ public class LlmModels
             Vendor = "alibaba-cloud",
             Name = "Qwen3 0.6b",
             OllamaName = "qwen3:0.6b",
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Thinking
+        },
+        ["qwen3:8b"] = new LlmModel
+        {
+            Icon = TbIcons.Brands.AlibabaCloud,
+            Vendor = "alibaba-cloud",
+            Name = "Qwen3 8b",
+            OllamaName = "qwen3:8b",
             Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Thinking
         },
         ["qwen3:1.7b"] = new LlmModel

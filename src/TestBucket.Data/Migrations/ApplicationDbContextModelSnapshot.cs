@@ -14,6 +14,7 @@ using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Data;
+using TestBucket.Domain.AI.Mcp.Models;
 using TestBucket.Domain.Keyboard;
 
 #nullable disable
@@ -231,6 +232,116 @@ namespace TestBucket.Data.Migrations
                     b.HasIndex("TenantId", "RequirementId");
 
                     b.ToTable("requirement_fields");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.AI.Mcp.Models.McpServerRegistration", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<McpServerConfiguration>("Configuration")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("Locked")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PublicForProject")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.ToTable("McpServerRegistrations");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.AI.Mcp.Models.McpServerUserInput", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("InputId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("McpServerRegistrationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("McpServerRegistrationId");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.ToTable("McpServerUserInputs");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Automation.Pipelines.Models.Pipeline", b =>
@@ -3809,6 +3920,56 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("Requirement");
 
                     b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.AI.Mcp.Models.McpServerRegistration", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.AI.Mcp.Models.McpServerUserInput", b =>
+                {
+                    b.HasOne("TestBucket.Domain.AI.Mcp.Models.McpServerRegistration", "McpServerRegistration")
+                        .WithMany()
+                        .HasForeignKey("McpServerRegistrationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("McpServerRegistration");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Automation.Pipelines.Models.Pipeline", b =>

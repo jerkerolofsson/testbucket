@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using ModelContextProtocol.Server;
 
 using TestBucket.Contracts.Issues.Models;
-using TestBucket.Domain.AI.Mcp;
+using TestBucket.Domain.AI.Mcp.Tools;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Search;

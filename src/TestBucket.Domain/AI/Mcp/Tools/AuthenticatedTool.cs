@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using TestBucket.Domain.ApiKeys;
 
-namespace TestBucket.Domain.AI.Mcp;
+namespace TestBucket.Domain.AI.Mcp.Tools;
 public class AuthenticatedTool
 {
     private readonly IApiKeyAuthenticator _apiKeyAuthenticator;
@@ -35,7 +35,7 @@ public class AuthenticatedTool
     {
         if (_principal is null)
         {
-            var authorization = AuthenticatedTool.AuthorizationHeader.Value;
+            var authorization = AuthorizationHeader.Value;
             if (authorization is null)
             {
                 return false;

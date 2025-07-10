@@ -5,6 +5,7 @@ public interface IAppLocalization
 {
     IStringLocalizer Code { get; init; }
     IStringLocalizer Errors { get; init; }
+    IStringLocalizer Validation { get; init; }
     IStringLocalizer Http { get; init; }
     IStringLocalizer Insights { get; init; }
     IStringLocalizer Project { get; init; }

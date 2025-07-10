@@ -33,7 +33,7 @@ public partial class KeyboardSettingsPage
         _commands.Clear();
         foreach (var command in commands)
         {
-            if (_bindings.Commands is not null && _bindings.Commands.TryGetValue(command.Id, out var binding))
+            if (_bindings?.Commands is not null && _bindings.Commands.TryGetValue(command.Id, out var binding))
             {
                 _commands.Add(new CommandBinding(command, binding));
             }

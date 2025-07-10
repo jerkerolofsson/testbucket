@@ -15,9 +15,9 @@ using MudExtensions.Services;
 
 using TestBucket.Components;
 using TestBucket.Components.Account;
+using TestBucket.Components.AI.Controllers;
 using TestBucket.Components.Automation;
 using TestBucket.Components.Code.Controllers;
-using TestBucket.Components.Shared.Commands;
 using TestBucket.Components.Comments;
 using TestBucket.Components.Environments.Services;
 using TestBucket.Components.Issues.Commands;
@@ -42,6 +42,7 @@ using TestBucket.Components.Settings.Commands;
 using TestBucket.Components.Settings.Controllers;
 using TestBucket.Components.Settings.Links;
 using TestBucket.Components.Settings.Roles;
+using TestBucket.Components.Shared.Commands;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Themeing;
 using TestBucket.Components.Teams;
@@ -65,7 +66,7 @@ using TestBucket.Components.Users;
 using TestBucket.Components.Users.Services;
 using TestBucket.Contracts.Localization;
 using TestBucket.Data.Migrations;
-using TestBucket.Domain.AI.Mcp;
+using TestBucket.Domain.AI.Mcp.Extensions;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Settings.Models;
@@ -289,7 +290,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<UnifiedSearchController>();
         builder.Services.AddScoped<UserPreferencesController>();
         builder.Services.AddScoped<CommandController>();
-        
+        builder.Services.AddScoped<McpController>();
 
 
         builder.Services.AddScoped<UserPreferencesService>();

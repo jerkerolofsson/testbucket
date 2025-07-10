@@ -126,14 +126,26 @@
   <data name="validation-folder-empty" xml:space="preserve">
     <value>Folder is required</value>
   </data>
+  <data name="validation-invalid-json" xml:space="preserve">
+    <value>Invalid JSON</value>
+  </data>
   <data name="validation-invalid-opentelemetry" xml:space="preserve">
     <value>Only lowercase characters, dot (.) and underscore (_) is allowed</value>
     <comment>Compatibility with OpenTelemetry</comment>
+  </data>
+  <data name="validation-mcp-server-empty" xml:space="preserve">
+    <value>No MCP servers are defined</value>
+  </data>
+  <data name="validation-mcp-server-url-and-command-empty" xml:space="preserve">
+    <value>Either url or command must be specified for MCP servers</value>
   </data>
   <data name="validation-name-empty" xml:space="preserve">
     <value>Name is required</value>
   </data>
   <data name="validation-unit-empty" xml:space="preserve">
     <value>Unit is required</value>
+  </data>
+  <data name="validation-value-empty" xml:space="preserve">
+    <value>Missing value</value>
   </data>
 </root>

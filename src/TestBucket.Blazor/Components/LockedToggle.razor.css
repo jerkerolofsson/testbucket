@@ -11,6 +11,8 @@
 
     background: var(--back-color);
     user-select: none;
+
+    cursor: pointer;
 }
 
 .tb-locked-toggle.locked {
@@ -34,7 +36,7 @@
     width: 24px;
     height: 24px;
 
-    transition: transform linear 150ms;
+    transition: transform linear var(--tb-animation-150, 150ms);
 }
 
 .tb-locked-toggle.locked ::deep .lock-icon {
@@ -47,7 +49,7 @@
     top: 50%;
     transform: translateY(-50%);
 
-    transition: opacity linear 200ms;
+    transition: opacity linear var(--tb-animation-200, 200ms);
 }
 
 .tb-locked-toggle .locked-label {

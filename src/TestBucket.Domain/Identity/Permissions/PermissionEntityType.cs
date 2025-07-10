@@ -50,6 +50,11 @@ namespace TestBucket.Domain.Identity.Permissions
 
         Heuristic,
 
-        Dashboard
+        Dashboard,
+
+        /// <summary>
+        /// Configure MCP servers on the server
+        /// </summary>
+        McpServer,
     }
 }

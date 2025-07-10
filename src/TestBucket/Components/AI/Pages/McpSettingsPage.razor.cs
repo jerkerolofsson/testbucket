@@ -1,9 +1,11 @@
+using TestBucket.Components.AI.Controllers;
 using TestBucket.Domain;
+using TestBucket.Domain.AI.Mcp.Models;
 using TestBucket.Domain.AI.Models;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Models;
 
-namespace TestBucket.Components.Settings.Pages;
+namespace TestBucket.Components.AI.Pages;
 public partial class McpSettingsPage
 {
     [Parameter] public string TenantId { get; set; } = "";
@@ -14,10 +16,82 @@ public partial class McpSettingsPage
     [CascadingParameter] public TestProject? Project { get; set; }
 
     private ApplicationUserApiKey? _key;
+    private TestProject? _project;
+    private List<McpServerRegistration> _serverRegistrations = [];
+
+    private string GetMcpServerRegistrationName(McpServerRegistration mcpServer)
+    {
+        if(mcpServer.Configuration.Servers?.Count > 0)
+        {
+            return mcpServer.Configuration.Servers.FirstOrDefault().Key;
+        }
+
+        return "MCP Server";
+    }
 
     public async Task AddApiKeyAsync()
     {
         _key = await controller.AddApiKeyAsync(Project?.Id, "MCP Access Token");
+    }
+
+
+    private async Task DeleteMcpServerAsync(McpServerRegistration mcpRegistration)
+    {
+        if (mcpRegistration is not null)
+        {
+            _serverRegistrations.Remove(mcpRegistration);
+            await mcpController.DeleteMcpServerAsync(mcpRegistration);
+        }
+    }
+    private async Task OnLockedChangedAsync(McpServerRegistration mcpRegistration, bool locked)
+    {
+        if (mcpRegistration is not null)
+        {
+            mcpRegistration.Locked = locked;
+            await mcpController.UpdateMcpServerAsync(mcpRegistration);
+        }
+
+    }
+    private async Task OnEnabledChangedAsync(McpServerRegistration mcpRegistration, bool enabled)
+    {
+        if (mcpRegistration is not null)
+        {
+            mcpRegistration.Enabled = enabled;
+            await mcpController.UpdateMcpServerAsync(mcpRegistration);
+        }
+
+    }
+    private async Task OnPublicForProjectChangedAsync(McpServerRegistration mcpRegistration, bool publicForProject)
+    {
+        if (mcpRegistration is not null)
+        {
+            mcpRegistration.PublicForProject = publicForProject;
+            await mcpController.UpdateMcpServerAsync(mcpRegistration);
+        }
+
+    }
+
+    private async Task AddMcpServerAsync()
+    {
+        if (Project is not null)
+        {
+            var mcpRegistration = await mcpController.AddMcpServerAsync(Project);
+            if (mcpRegistration is not null)
+            {
+                _serverRegistrations.Add(mcpRegistration);
+            }
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(Project is not null && _project?.Id != Project.Id)
+        {
+            _project = Project;
+
+            _serverRegistrations = (await mcpController.GetMcpServerRegistrationsAsync(Project.Id)).ToList();
+            this.StateHasChanged();
+        }
     }
 
     private string VisualStudioMcpRemoteConfiguration

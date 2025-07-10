@@ -18,6 +18,7 @@ using TestBucket.Domain.Labels.Models;
 using TestBucket.Domain.Metrics.Models;
 using TestBucket.Domain.Testing.Heuristics.Models;
 using TestBucket.Domain.Insights.Model;
+using TestBucket.Domain.AI.Mcp.Models;
 
 namespace TestBucket.Data;
 
@@ -26,6 +27,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<Tenant> Tenants { get; set; }
     internal DbSet<RolePermission> RolePermissions { get; set; }
     internal DbSet<ProjectUserPermission> ProjectUserPermissions { get; set; }
+
+    internal DbSet<McpServerRegistration> McpServerRegistrations { get; set; }
+    internal DbSet<McpServerUserInput> McpServerUserInputs { get; set; }
 
     internal DbSet<UserPreferences> UserPreferences { get; set; }
     internal DbSet<ApplicationUserApiKey> ApiKeys { get; set; }

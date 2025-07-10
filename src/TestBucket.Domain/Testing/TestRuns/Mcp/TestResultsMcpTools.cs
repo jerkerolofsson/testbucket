@@ -2,7 +2,7 @@
 
 using ModelContextProtocol.Server;
 
-using TestBucket.Domain.AI.Mcp;
+using TestBucket.Domain.AI.Mcp.Tools;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Testing.TestRuns.Search;

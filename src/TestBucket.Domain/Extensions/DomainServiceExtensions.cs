@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Agent;
+using TestBucket.Domain.AI.Mcp;
+using TestBucket.Domain.AI.Mcp.Services;
 using TestBucket.Domain.AI.Settings;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Appearance;
@@ -199,7 +201,9 @@ public static class DomainServiceExtensions
 
         // AI
         services.AddScoped<IChatClientFactory, ChatClientFactory>();
+        services.AddScoped<IMcpServerManager, McpServerManager>();
         services.AddScoped<ITestCaseGenerator, TestCaseGenerator>();
+        
 
         // Feature: Classification
         services.AddScoped<IClassifier, GenericClassifier>();

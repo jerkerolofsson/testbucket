@@ -157,7 +157,7 @@
     <value>Hantera användare</value>
   </data>
   <data name="mcp-client-configuration" xml:space="preserve">
-    <value>MCP Klientkonfiguration</value>
+    <value>MCP klientkonfiguration</value>
   </data>
   <data name="mcp-claude" xml:space="preserve">
     <value>Lägg till ovanståande json till "claude_desktop_config.json" för att använda verktyg Test Bucket från Claude AI</value>
@@ -248,5 +248,23 @@
   </data>
   <data name="prefer-text-to-icons-description" xml:space="preserve">
     <value>Visar text istället för ikoner i vissa sammanhang</value>
+  </data>
+  <data name="mcp-server-integrations" xml:space="preserve">
+    <value>Integrationer av MCP servers</value>
+  </data>
+  <data name="add-mcp-server" xml:space="preserve">
+    <value>Lägg till MCP server</value>
+  </data>
+  <data name="mcp-server" xml:space="preserve">
+    <value>MCP server</value>
+  </data>
+  <data name="mcp-server-json" xml:space="preserve">
+    <value>MCP server JSON</value>
+  </data>
+  <data name="mcp-public" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mcp-public-description" xml:space="preserve">
+    <value />
   </data>
 </root>

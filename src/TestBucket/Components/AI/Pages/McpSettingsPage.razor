@@ -1,0 +1,206 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/Categories/MCP"
+@using TestBucket.Components.AI.Controllers
+@using TestBucket.Components.Settings.ApiKeys
+@using TestBucket.Domain
+@using TestBucket.Domain.Settings
+@layout SettingsLayout
+@inject ISettingsManager settingsManager
+@inject ISettingsProvider settingsProvider
+@inject AuthenticationStateProvider authenticationStateProvider
+@inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
+@inject McpController mcpController
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<SettingStrings> settingsLoc
+@inject IStringLocalizer<SecurityStrings> securityLoc
+@inject UserApiKeysController controller
+
+<MudStack Class="container-settings-page">
+
+    <MudText Typo="Typo.h1">MCP</MudText>
+
+    <MudStack Class="pa-5">
+
+        <MudText Typo="Typo.h3">@settingsLoc["mcp-server-integrations"]</MudText>
+        <MudExpansionPanels>
+
+            @foreach (var registration in _serverRegistrations)
+            {
+                <MudExpansionPanel Text="@GetMcpServerRegistrationName(registration)">
+                    <ChildContent>
+
+                        <MudStack Spacing="1">
+                            <PermissionView Entity="PermissionEntityType.McpServer" Level="PermissionLevel.Write">
+                                <Authorized>
+                                    <Field Row>
+                                        <FieldHeader>@loc["enabled"]</FieldHeader>
+                                        <MudSpacer />
+                                        <MudSwitchM3 Color="Color.Primary" Value="@registration.Enabled" ValueChanged="async (bool value) => await OnEnabledChangedAsync(registration, value)"/>
+                                    </Field>
+                                    <Field Row>
+                                        <MudStack Spacing="0">
+                                            <FieldHeader>@settingsLoc["mcp-public"]</FieldHeader>
+                                            <MudText Typo="Typo.subtitle2">@settingsLoc["mcp-public-description"]</MudText>
+                                        </MudStack>
+                                        <MudSpacer />
+                                        <MudSwitchM3 Color="Color.Primary" Value="@registration.PublicForProject" ValueChanged="async (bool value) => await OnPublicForProjectChangedAsync(registration, value)" />
+                                    </Field>
+                                    <Field Row>
+                                        <FieldHeader>@loc["locked"]</FieldHeader>
+                                        <MudSpacer />
+                                        <LockedToggle Locked="@registration.Locked" LockedChanged="async (bool value) => await OnLockedChangedAsync(registration, value)" />
+                                    </Field>
+                                </Authorized>
+                                <NotAuthorized>
+                                    <Field Row>
+                                        <FieldHeader>@loc["enabled"]</FieldHeader>
+                                        <MudSpacer />
+                                        @registration.Enabled
+                                    </Field>
+                                    <Field Row>
+                                        <MudStack Spacing="0">
+                                            <FieldHeader>@settingsLoc["mcp-public"]</FieldHeader>
+                                            <MudText Typo="Typo.subtitle2">@settingsLoc["mcp-public-description"]</MudText>
+                                        </MudStack>
+                                        <MudSpacer />
+                                        @registration.PublicForProject
+                                    </Field>
+                                    <Field Row>
+                                        <FieldHeader>@loc["locked"]</FieldHeader>
+                                        <MudSpacer />
+                                        @registration.Locked
+                                    </Field>
+                                </NotAuthorized>
+                            </PermissionView>
+                            @if (registration.Configuration.Servers is not null)
+                            {
+                                foreach (var server in registration.Configuration.Servers)
+                                {
+                                    @if (server.Value.Type is not null)
+                                    {
+                                        <Field Row>
+                                            <FieldHeader>Type</FieldHeader>
+                                            <MudSpacer />
+                                            @server.Value.Type
+                                        </Field>
+                                    }
+                                    @if (server.Value.Url is not null)
+                                    {
+                                        <Field Row>
+                                            <FieldHeader>URL</FieldHeader>
+                                            <MudSpacer />
+                                            @server.Value.Url
+                                        </Field>
+                                    }
+                                    @if (server.Value.Command is not null)
+                                    {
+                                        <Field>
+                                            <FieldHeader>Command</FieldHeader>
+
+                                            <MudStack Spacing="1" Row>
+                                                <div style="color: cyan">@server.Value.Command</div>
+
+                                                @if (server.Value.Args is not null)
+                                                {
+                                                    foreach (var arg in server.Value.Args)
+                                                    {
+                                                        <div style="color: greenyellow">@arg</div>
+                                                    }
+                                                }
+                                            </MudStack>
+                                        </Field>
+                                    }
+                                }
+                            }
+
+                            <PermissionView Entity="PermissionEntityType.McpServer" Level="PermissionLevel.Delete">
+                                <Authorized>
+
+                                    <MudStack Row Justify="Justify.FlexEnd">
+                                        <MudButton data-testid="delete-issue"
+                                                   Class="tb-button-delete"
+                                                   Variant="Variant.Filled" OnClick="async () => await DeleteMcpServerAsync(registration)">@loc["delete"]</MudButton>
+                                    </MudStack>
+                                </Authorized>
+                            </PermissionView>
+                        </MudStack>
+                    </ChildContent>
+                </MudExpansionPanel>
+            }
+
+        </MudExpansionPanels>
+        <MudStack Row Style="width: 100%">
+            <MudSpacer/>
+              <MudButton 
+                            data-testid="add-mcp-server"
+                            Class="tb-button-new"
+                            StartIcon="@Icons.Material.Filled.Add" OnClick="AddMcpServerAsync">@loc["add"]</MudButton>
+        </MudStack>
+
+        <MudText Typo="Typo.h3" Class="mt-5">@settingsLoc["mcp-client-configuration"]</MudText>
+        
+        <MudExpansionPanels>
+            <MudExpansionPanel>
+                <TitleContent>
+                    <MudStack Row>
+                        <MudIcon Icon="@TbIcons.Brands.Claude"></MudIcon>
+                        <MudText>Anthropic Claude</MudText>
+                    </MudStack>
+                </TitleContent>
+                <ChildContent>
+                    <CodeBlock Language="json" Code="@McpRemoteConfiguration" />
+                    <MudText>@settingsLoc["mcp-claude"]</MudText>
+                </ChildContent>
+            </MudExpansionPanel>
+
+            <MudExpansionPanel>
+                <TitleContent>
+                    <MudStack Row>
+                        <MudIcon Icon="@TbIcons.Brands.VSCode"></MudIcon>
+                        <MudText>VS Code</MudText>
+                    </MudStack>
+                </TitleContent>
+                <ChildContent>
+                    <CodeBlock Language="json" Code="@VisualStudioMcpRemoteConfiguration" />
+                    <MudText>@settingsLoc["mcp-vscode"]</MudText>
+                </ChildContent>
+            </MudExpansionPanel>
+
+            <MudExpansionPanel>
+                <TitleContent>
+                    <MudStack Row>
+                        <MudIcon Icon="@TbIcons.Brands.VisualStudio"></MudIcon>
+                        <MudText>Visual Studio 2022</MudText>
+                    </MudStack>
+                </TitleContent>
+                <ChildContent>
+                    <CodeBlock Language="json" Code="@VisualStudioMcpRemoteConfiguration" />
+                    <MudText>@settingsLoc["mcp-visualstudio"]</MudText>
+                </ChildContent>
+            </MudExpansionPanel>
+
+
+            <MudExpansionPanel Text="@loc["api-key"]">
+                <MudStack Row Style="width: 100%">
+                    @if (_key is null)
+                    {
+                        <MudSpacer />
+                        <MudButton StartIcon="@Icons.Material.Filled.Add"
+                                   Class="tb-button-new" OnClick="AddApiKeyAsync" Variant="Variant.Filled">@securityLoc["create-api-key"]</MudButton>
+                    }
+                    else
+                    {
+                        <MudTextField Variant="Variant.Filled" ReadOnly T="string" Text="@_key.Key" Style="user-select: all"></MudTextField>
+                        <CopyToClipboard Text="@_key.Key"></CopyToClipboard>
+                    }
+                </MudStack>
+                @if (_key is not null)
+                {
+                    <MudText Typo="Typo.subtitle2">@securityLoc["access-token-created-message"]</MudText>
+                }
+
+            </MudExpansionPanel>
+        </MudExpansionPanels>
+    </MudStack>
+</MudStack>

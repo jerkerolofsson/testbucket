@@ -4,7 +4,7 @@ using System.Runtime.Intrinsics.X86;
 using ModelContextProtocol.Server;
 
 using TestBucket.Contracts.Issues.Models;
-using TestBucket.Domain.AI.Mcp;
+using TestBucket.Domain.AI.Mcp.Tools;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Mapping;

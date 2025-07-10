@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace TestBucket.Domain.AI.Mcp;
+using TestBucket.Domain.AI.Mcp.Tools;
+
+namespace TestBucket.Domain.AI.Mcp.Extensions;
 public static class McpServerExtensions
 {
     public static IServiceCollection AddMcpTools(this IServiceCollection services)

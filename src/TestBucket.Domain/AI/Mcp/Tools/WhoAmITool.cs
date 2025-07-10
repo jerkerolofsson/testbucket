@@ -4,7 +4,7 @@ using ModelContextProtocol.Server;
 
 using TestBucket.Domain.ApiKeys;
 
-namespace TestBucket.Domain.AI.Mcp;
+namespace TestBucket.Domain.AI.Mcp.Tools;
 
 /// <summary>
 /// This tool returns the name of the user that is authenticated with the API key.

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using ModelContextProtocol.Server;
 
-using TestBucket.Domain.AI.Mcp;
+using TestBucket.Domain.AI.Mcp.Tools;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Heuristics.Models;

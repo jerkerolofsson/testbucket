@@ -52,8 +52,7 @@
     [Parameter] public string? KeyCode { get; set; }
     [Parameter] public EventCallback<(ModifierKey Modifiers, string? KeyCode)> OnShortcutChanged { get; set; }
 
-    [Parameter(CaptureUnmatchedValues = true)]
-    public Dictionary<string, object>? Attributes { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 using ModelContextProtocol.Server;
 
-using TestBucket.Domain.AI.Mcp;
+using TestBucket.Domain.AI.Mcp.Tools;
 
 namespace TestBucket.Domain.AI.Tools;
 public class ToolCollection

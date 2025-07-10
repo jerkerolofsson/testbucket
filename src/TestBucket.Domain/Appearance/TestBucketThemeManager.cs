@@ -161,6 +161,8 @@ public class TestBucketThemeManager : ITestBucketThemeManager
                 --tb-animation-150: 0ms;
                 --tb-animation-200: 0ms;
                 --tb-animation-300: 0ms;
+            }
+            * {
                 
                 -webkit-transition: none !important;
                 -moz-transition: none !important;

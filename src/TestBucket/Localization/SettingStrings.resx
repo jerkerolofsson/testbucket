@@ -157,7 +157,7 @@
     <value>Manage users</value>
   </data>
   <data name="mcp-client-configuration" xml:space="preserve">
-    <value>MCP Client Configuration</value>
+    <value>MCP client configuration</value>
   </data>
   <data name="mcp-claude" xml:space="preserve">
     <value>Add the json above to "claude_desktop_config.json" to use Test Bucket tools from Claude AI</value>
@@ -248,5 +248,23 @@
   </data>
   <data name="prefer-text-to-icons-description" xml:space="preserve">
     <value>Uses text instead of icons in the user interface in some locations</value>
+  </data>
+  <data name="mcp-server-integrations" xml:space="preserve">
+    <value>MCP server integrations</value>
+  </data>
+  <data name="add-mcp-server" xml:space="preserve">
+    <value>Add MCP server</value>
+  </data>
+  <data name="mcp-server" xml:space="preserve">
+    <value>MCP server</value>
+  </data>
+  <data name="mcp-server-json" xml:space="preserve">
+    <value>MCP server JSON</value>
+  </data>
+  <data name="mcp-public" xml:space="preserve">
+    <value>Available to all project members</value>
+  </data>
+  <data name="mcp-public-description" xml:space="preserve">
+    <value>A public MCP server may be used by any project member. If it is not public it is only available to a single user.</value>
   </data>
 </root>

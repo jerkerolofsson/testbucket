@@ -1,0 +1,8 @@
+services:
+  playwright_mcp:
+    container_name: playwright_mcp
+    image: docker.io/acuvity/mcp-server-playwright:0.0.29
+    read_only: true
+    ports:
+      - "8000:8000"
+    restart: always

@@ -1,4 +1,5 @@
-﻿using TestBucket.Data.Automation;
+﻿using TestBucket.Data.AI.MCP;
+using TestBucket.Data.Automation;
 using TestBucket.Data.Code;
 using TestBucket.Data.Comments;
 using TestBucket.Data.Fields;
@@ -19,6 +20,7 @@ using TestBucket.Data.TestAccounts;
 using TestBucket.Data.TestEnvironments;
 using TestBucket.Data.Testing;
 using TestBucket.Data.TestResources;
+using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Automation.Runners;
 using TestBucket.Domain.Code;
@@ -74,7 +76,9 @@ public static class DataServiceExtensions
         services.AddScoped<IRunnerRepository, RunnerRepository>();
         services.AddScoped<IJobRepository, JobRepository>();
         services.AddScoped<ICommentRepository, CommentsRepository>();
-        
+        services.AddScoped<IMcpUserInputRepository, McpUserInputRepository>();
+        services.AddScoped<IMcpServerRepository, McpServerRepository>();
+
 
         return services;
     }

@@ -1,0 +1,42 @@
+﻿@using TestBucket.Components.Teams.Controls
+@using TestBucket.Contracts.Localization
+@using TestBucket.Domain.AI.Mcp.Models
+@attribute [Authorize]
+@inject ProjectController controller
+@inject IAppLocalization loc
+
+<EditForm Model="@_json" OnValidSubmit="OnValidSubmit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" data-testid="add-project-dialog">
+        <TitleContent>@loc.Settings["add-mcp-server"]</TitleContent>
+        <DialogContent>
+            <MudStack>
+                <MudStack Spacing="0">
+                    <FieldHeader for="mcp-json">@loc.Settings["mcp-server-json"]</FieldHeader>
+                    <MudTextField  
+                        id="mcp-icon" data-testid="mcp-json" Lines="20" Variant="Variant.Outlined" T="string" Value="@_json" ValueChanged="OnJsonChanged" 
+                        Style="min-width: 50vw; font-family: monospace"></MudTextField>
+
+                    @if (!string.IsNullOrEmpty(_errorMessage))
+                    {
+                        <MudAlert data-testid="error-message" Severity="Severity.Error">@_errorMessage</MudAlert>
+                    }
+                    else if(_configuration?.Servers is not null)
+                    {
+                        <MudAlert data-testid="success-message" Severity="Severity.Success">
+                            @string.Join(", ", _configuration.Servers.Keys)
+                        </MudAlert>
+                    }
+                </MudStack>
+
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton data-testid="ok" ButtonType="ButtonType.Submit" Color="Color.Primary">@loc.Shared["ok"]</MudButton>
+            <MudButton data-testid="cancel" OnClick="Close">@loc.Shared["cancel"]</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+

@@ -11,6 +11,8 @@ using TestBucket.Domain.AI.Agent.Models;
 namespace TestBucket.Domain.AI.Agent;
 public class AgentChatContext
 {
+    public long? ProjectId { get; set; }
+
     /// <summary>
     /// Documents etc
     /// </summary>
@@ -21,10 +23,14 @@ public class AgentChatContext
     /// </summary>
     public List<ChatMessage> Messages { get; set; } = [];
 
-    public void Clear()
+    public void ClearMessages()
+    {
+        Messages.Clear();
+    }
+
+    public void ClearReferences()
     {
         References.Clear();
-        Messages.Clear();
     }
 
     internal IReadOnlyList<ChatMessage> GetReferencesAsChatMessages()

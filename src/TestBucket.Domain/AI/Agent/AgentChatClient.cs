@@ -1,8 +1,12 @@
 ﻿using System.Runtime.CompilerServices;
 
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.DependencyInjection;
 
 using TestBucket.Domain.AI.Agent.Models;
+using TestBucket.Domain.AI.Mcp;
+using TestBucket.Domain.AI.Mcp.Services;
+using TestBucket.Domain.AI.Mcp.Tools;
 using TestBucket.Domain.AI.Tools;
 using TestBucket.Domain.Identity;
 
@@ -11,19 +15,33 @@ public class AgentChatClient
 {
     private readonly IChatClientFactory _chatClientFactory;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IMcpServerManager _mcpServerManager;
+    private readonly McpServerRunnerManager _mcpServerRunnerManager;
 
     public AgentChatClient(IChatClientFactory chatClientFactory, IServiceProvider serviceProvider)
     {
         _chatClientFactory = chatClientFactory;
         _serviceProvider = serviceProvider;
+        _mcpServerRunnerManager = serviceProvider.GetRequiredService<McpServerRunnerManager>();
+        _mcpServerManager = serviceProvider.GetRequiredService<IMcpServerManager>();
     }
 
-    private ToolCollection GetTools(ClaimsPrincipal principal)
+    private async Task<ToolCollection> GetToolsAsync(ClaimsPrincipal principal, AgentChatContext context, CancellationToken cancellationToken = default)
     {
         var toolCollection = new ToolCollection(_serviceProvider);
 
         // Index all MCP tools in assembly
         toolCollection.AddMcpServerToolsFromAssembly(principal, GetType().Assembly);
+
+        // Add MCP tools from the MCP server manager
+        if (context.ProjectId is not null)
+        {
+            var mcpTools = await _mcpServerRunnerManager.GetMcpToolsForUserAsync(principal, context.ProjectId.Value, cancellationToken);
+            foreach (var mcpTool in mcpTools)
+            {
+                toolCollection.Add(mcpTool.AIFunction);
+            }
+        }
 
         return toolCollection;
     }
@@ -86,6 +104,10 @@ public class AgentChatClient
 
         // Chat context
         var references = context.GetReferencesAsChatMessages();
+        if(references.Count > 0)
+        {
+            yield return new ChatResponseUpdate(ChatRole.System, $"Collected {references.Count} references..\n");
+        }
         
 
         using var client = await _chatClientFactory.CreateChatClientAsync(AI.Models.ModelType.Default);
@@ -104,6 +126,12 @@ public class AgentChatClient
                 yield return update;
             }
         }
+        else
+        {
+            string errorMessage = "AI provider configuration is incorrect or missing\n";
+            context.Messages.Add(new ChatMessage(ChatRole.System, errorMessage));
+            yield return new ChatResponseUpdate(ChatRole.System, errorMessage);
+        }
     }
 
     internal async IAsyncEnumerable<ChatResponseUpdate> CallModelAsync(ClaimsPrincipal principal, AgentChatContext context, ChatMessage userMessage, List<ChatMessage> chatMessages, IChatClient client,
@@ -115,11 +143,13 @@ public class AgentChatClient
         // Trigger a UI update
         yield return new ChatResponseUpdate();
 
+        var tools = await GetToolsAsync(principal, context, cancellationToken);
+
         var options = new ChatOptions
         {
             AllowMultipleToolCalls = true,
             ToolMode = ChatToolMode.Auto,
-            Tools = [.. GetTools(principal).Functions]
+            Tools = [.. tools.Functions]
         };
 
         List<ChatResponseUpdate> updates = [];

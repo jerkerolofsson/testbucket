@@ -1,6 +1,10 @@
 ﻿using System.Security.Principal;
 
+using Mediator;
+
+using TestBucket.Domain.AI.Mcp.Events;
 using TestBucket.Domain.AI.Mcp.Models;
+using TestBucket.Domain.AI.Mcp.Tools;
 
 namespace TestBucket.Domain.AI.Mcp.Services;
 internal class McpServerManager : IMcpServerManager, IMcpServerUserInputProvider
@@ -8,12 +12,14 @@ internal class McpServerManager : IMcpServerManager, IMcpServerUserInputProvider
     private readonly IMcpServerRepository _serverRepository;
     private readonly IMcpUserInputRepository _userInputRepository;
     private readonly TimeProvider _timeProvider;
+    private readonly IMediator _mediator;
 
-    public McpServerManager(IMcpServerRepository serverRepository, IMcpUserInputRepository userInputRepository, TimeProvider timeProvider)
+    public McpServerManager(IMcpServerRepository serverRepository, IMcpUserInputRepository userInputRepository, TimeProvider timeProvider, IMediator mediator)
     {
         _serverRepository = serverRepository;
         _userInputRepository = userInputRepository;
         _timeProvider = timeProvider;
+        _mediator = mediator;
     }
 
     public async Task AddMcpServerRegistrationAsync(ClaimsPrincipal principal, McpServerRegistration registration)
@@ -36,20 +42,46 @@ internal class McpServerManager : IMcpServerManager, IMcpServerUserInputProvider
             {
                 if (!string.IsNullOrEmpty(server.Value.Command))
                 {
-                    server.Value.Type = "stdio";
+                    server.Value.Type ??= "stdio";
                 }
                 if (!string.IsNullOrEmpty(server.Value.Url))
                 {
                     server.Value.Command = null;
                     server.Value.Args = null;
-                    server.Value.Type = "sse";
+                    server.Value.Type ??= "auto";
                 }
             }
         }
 
         await _serverRepository.AddAsync(registration);
+
+        await _mediator.Publish(new McpServerAdded(registration));
     }
 
+    public async Task DeleteMcpServerRegistrationAsync(ClaimsPrincipal principal, McpServerRegistration registration)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.McpServer, PermissionLevel.Delete);
+        principal.ThrowIfEntityTenantIsDifferent(registration);
+
+        await _serverRepository.DeleteAsync(registration);
+
+        await _mediator.Publish(new McpServerRemoved(registration));
+    }
+
+    public async Task UpdateMcpServerRegistrationAsync(ClaimsPrincipal principal, McpServerRegistration registration)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.McpServer, PermissionLevel.Write);
+        principal.ThrowIfEntityTenantIsDifferent(registration);
+        registration.TenantId = principal.GetTenantIdOrThrow();
+        registration.CreatedBy = principal.Identity?.Name ?? throw new Exception("Missing user identity");
+        registration.ModifiedBy = registration.CreatedBy;
+        registration.Created = _timeProvider.GetUtcNow();
+        registration.Modified = _timeProvider.GetUtcNow();
+
+        await _serverRepository.UpdateAsync(registration);
+
+        await _mediator.Publish(new McpServerUpdated(registration));
+    }
     public async Task AddUserInputAsync(ClaimsPrincipal principal, McpServerUserInput userInput)
     {
         userInput.TenantId = principal.GetTenantIdOrThrow();
@@ -63,14 +95,6 @@ internal class McpServerManager : IMcpServerManager, IMcpServerUserInputProvider
     {
         var userName = principal.Identity?.Name ?? throw new Exception("Missing user identity");
         await _userInputRepository.ClearUserInputsAsync(projectId, userName, mcpServerRegistrationId);
-    }
-
-    public async Task DeleteMcpServerRegistrationAsync(ClaimsPrincipal principal, McpServerRegistration registration)
-    {
-        principal.ThrowIfNoPermission(PermissionEntityType.McpServer, PermissionLevel.Delete);
-        principal.ThrowIfEntityTenantIsDifferent(registration);
-
-        await _serverRepository.DeleteAsync(registration);
     }
 
     public async Task DeleteUserInputAsync(ClaimsPrincipal principal, McpServerUserInput userInput)
@@ -105,18 +129,6 @@ internal class McpServerManager : IMcpServerManager, IMcpServerUserInputProvider
         return await _userInputRepository.GetUserInputAsync(projectId, userName, mcpServerRegistrationId, id); 
     }
 
-    public async Task UpdateMcpServerRegistrationAsync(ClaimsPrincipal principal, McpServerRegistration registration)
-    {
-        principal.ThrowIfNoPermission(PermissionEntityType.McpServer, PermissionLevel.Write);
-        principal.ThrowIfEntityTenantIsDifferent(registration);
-        registration.TenantId = principal.GetTenantIdOrThrow();
-        registration.CreatedBy = principal.Identity?.Name ?? throw new Exception("Missing user identity");
-        registration.ModifiedBy = registration.CreatedBy;
-        registration.Created = _timeProvider.GetUtcNow();
-        registration.Modified = _timeProvider.GetUtcNow();
-
-        await _serverRepository.UpdateAsync(registration);
-    }
 
     public async Task UpdateUserInputAsync(ClaimsPrincipal principal, McpServerUserInput userInput)
     {
@@ -126,4 +138,20 @@ internal class McpServerManager : IMcpServerManager, IMcpServerUserInputProvider
 
         await _userInputRepository.UpdateAsync(userInput); 
     }
+
+    //public async Task<McpAIFunction[]> GetMcpToolsForUserAsync(ClaimsPrincipal principal, long projectId)
+    //{
+    //    List<McpAIFunction> functions = [];
+    //    var registrations = await GetUserMcpServerRegistationsAsync(principal, projectId);
+
+    //    // Remove MCP servers that are locked and not enabled
+    //    registrations = registrations.Where(x => x.Enabled && !x.Locked).ToList();
+
+    //    // Todo: Locked by us is OK?
+
+    //    // Check MCP servers that are running and get the tools
+
+
+    //    return functions.ToArray();
+    //}
 }

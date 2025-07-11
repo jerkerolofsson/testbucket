@@ -42,11 +42,19 @@ public record class McpServer
     [JsonPropertyName("url")]
     public string? Url { get; set; }
 
+    [JsonPropertyName("cwd")]
+    public string? WorkingDirectory { get; set; }
+
     [JsonPropertyName("headers")]
     public McpHttpHeaders? Headers { get; set; }
 
     [JsonPropertyName("env")]
     public McpEnvironmentVariables? Env { get; set; }
+
+    /// <summary>
+    /// Error message if the server configuration is invalid or cannot start.
+    /// </summary>
+    public string? ErrorMessage { get; set; }
 }
 
 public class McpEnvironmentVariables : Dictionary<string, string>

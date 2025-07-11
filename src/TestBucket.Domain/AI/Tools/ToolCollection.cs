@@ -106,6 +106,11 @@ public class ToolCollection
             Name = serverToolAttribute?.Name ?? method.Name,
         };
         var function = AIFunctionFactory.Create(method, target, options);
+        this.Add(function);
+    }
+
+    public void Add(AIFunction function)
+    {
         _functions.Add(function);
     }
 }

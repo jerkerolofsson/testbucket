@@ -49,6 +49,7 @@ namespace TestBucket.Domain.Identity.Permissions
             Add(PermissionEntityType.Issue, PermissionLevel.All);
             Add(PermissionEntityType.Heuristic, PermissionLevel.All);
             Add(PermissionEntityType.Dashboard, PermissionLevel.All);
+            Add(PermissionEntityType.McpServer, PermissionLevel.All);
             return this;
         }
         public EntityPermissionBuilder Add(PermissionEntityType entityType, PermissionLevel level)

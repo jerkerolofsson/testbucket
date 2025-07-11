@@ -52,17 +52,35 @@
                         if(content is FunctionCallContent functionCall)
                         {
                             <div class=" mud-elevation-1 chat function-call @message.Role">
-                                <MudStack Row>
-                                    <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.ModelContextProtocol" />
-                                    @functionCall.Name
-                                </MudStack>
+                                <MudExpansionPanels>
+                                    <MudExpansionPanel>
+                                        <TitleContent>
+                                            <MudStack Row AlignItems="AlignItems.Center">
+                                                <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.Tools" Color="Color.Tertiary"/>
+                                                @functionCall.Name
+                                            </MudStack>
+                                        </TitleContent>
+                                        <ChildContent>
+                                            @if(functionCall.Arguments is not null)
+                                            {
+                                                <table>
+                                                    @foreach(var pair in functionCall.Arguments)
+                                                    {
+                                                        <tr><td>@pair.Key</td><td>@pair.Value</td></tr>
+
+                                                    }
+                                                </table>
+                                            }
+                                        </ChildContent>
+                                    </MudExpansionPanel>
+                                </MudExpansionPanels>
                             </div>
                         }
                         if (content is FunctionResultContent functionResult && functionResult.RawRepresentation is not null)
                         {
                             <div class=" mud-elevation-1 chat function-call @message.Role">
                                 <MudStack>
-                                    <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.ModelContextProtocol" />
+                                    <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.Tools" />
                                     <CodeBlock Code="@functionResult.RawRepresentation.ToString()" Language="json"></CodeBlock>
                                 </MudStack>
                             </div>
@@ -126,10 +144,16 @@
     protected override void OnParametersSet()
     {
         // Determine if we need to reset the context
+        if(Project is not null)
+        {
+            context.ProjectId = Project.Id;
+        }
 
         var needReset = false;
+        var clearMessages = false;
         if (Project is not null && _projectReference?.Id != Project.Id)
         {
+            clearMessages = true;
             needReset = true;
         }
         var activeDocument = appNavigationManager.State.ActiveDocument;
@@ -139,16 +163,25 @@
         }
         if (needReset)
         {
-            Clear();
+            Clear(clearMessages: clearMessages);
         }
     }
 
     private void Clear()
     {
-        context.Clear();
+        Clear(clearMessages: true);
+    }
+
+    private void Clear(bool clearMessages)
+    {
+        if (clearMessages)
+        {
+            context.ClearMessages();
+        }
 
         _userPrompt = "";
 
+        context.ClearReferences();
         _activeDocument = appNavigationManager.State.ActiveDocument;
         if(_activeDocument is not null)
         {

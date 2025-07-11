@@ -53,6 +53,8 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
 
     private async Task ProcessTenantAsync(IServiceScope scope, Tenant tenant, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         var principal = Impersonation.Impersonate(configure =>
         {
             configure.TenantId = tenant.Id;
@@ -70,6 +72,8 @@ public class CodeRepoCommmitBackgroundIndexer : BackgroundService
 
     private async Task ProcessProjectAsync(ClaimsPrincipal principal, IServiceScope scope, TestProject project, CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
         if (project.ExternalSystems is not null)
         {
             var integrations = scope.ServiceProvider.GetRequiredService<IEnumerable<IExternalCodeRepository>>();

@@ -203,6 +203,8 @@ public static class DomainServiceExtensions
         services.AddScoped<IChatClientFactory, ChatClientFactory>();
         services.AddScoped<IMcpServerManager, McpServerManager>();
         services.AddScoped<ITestCaseGenerator, TestCaseGenerator>();
+        services.AddSingleton<McpServerRunnerManager>();
+        services.AddHostedService<McpServerStartupService>();
         
 
         // Feature: Classification

@@ -1,4 +1,7 @@
-﻿using TestBucket.Domain.AI.Mcp.Models;
+﻿using Microsoft.Extensions.AI;
+
+using TestBucket.Domain.AI.Mcp.Models;
+using TestBucket.Domain.AI.Mcp.Tools;
 
 namespace TestBucket.Domain.AI.Mcp;
 

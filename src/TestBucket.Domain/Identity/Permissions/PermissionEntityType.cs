@@ -8,7 +8,11 @@ namespace TestBucket.Domain.Identity.Permissions
 {
     /// <summary>
     /// Types or groups of entities that can be protected with permission access levels
-    /// If adding an entity, make sure to update PermissionClaimSerializer
+    /// If adding an entity, make sure to update:
+    /// 1. PermissionClaimSerializer
+    /// 2. ManageRoles.razor
+    /// 3. EntityPermissionBuilder.AddAllPermissions() 
+    /// 4. MigrationServices adding default roles
     /// </summary>
     public enum PermissionEntityType
     {

@@ -928,7 +928,7 @@ namespace TestBucket.Jira.UnitTests
             Assert.Single(result.content!);
 
             var codeBlock = result.content![0];
-            Assert.Equal("codeblock", codeBlock.type);
+            Assert.Equal("codeBlock", codeBlock.type);
             Assert.Equal("csharp", codeBlock.attrs!["language"]);
             Assert.Single(codeBlock.content!);
             Assert.Equal("var x = 5;\nConsole.WriteLine(x);", codeBlock.content![0].text);
@@ -950,7 +950,7 @@ namespace TestBucket.Jira.UnitTests
             Assert.Single(result.content!);
 
             var codeBlock = result.content![0];
-            Assert.Equal("codeblock", codeBlock.type);
+            Assert.Equal("codeBlock", codeBlock.type);
             Assert.Null(codeBlock.attrs);
             Assert.Single(codeBlock.content!);
             Assert.Equal("some code", codeBlock.content![0].text);
@@ -972,12 +972,12 @@ namespace TestBucket.Jira.UnitTests
             Assert.Single(result.content!);
 
             var bulletList = result.content![0];
-            Assert.Equal("bulletlist", bulletList.type);
+            Assert.Equal("bulletList", bulletList.type);
             Assert.Equal(3, bulletList.content!.Length);
 
             foreach (var item in bulletList.content!)
             {
-                Assert.Equal("listitem", item.type);
+                Assert.Equal("listItem", item.type);
                 Assert.Single(item.content!);
                 Assert.Equal("paragraph", item.content![0].type);
             }
@@ -1008,7 +1008,7 @@ namespace TestBucket.Jira.UnitTests
 
             foreach (var item in orderedList.content!)
             {
-                Assert.Equal("listitem", item.type);
+                Assert.Equal("listItem", item.type);
                 Assert.Single(item.content!);
                 Assert.Equal("paragraph", item.content![0].type);
             }

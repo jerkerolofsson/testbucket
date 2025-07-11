@@ -1,10 +1,7 @@
-﻿using System.Security.Principal;
-
-using Mediator;
+﻿using Mediator;
 
 using TestBucket.Domain.AI.Mcp.Events;
 using TestBucket.Domain.AI.Mcp.Models;
-using TestBucket.Domain.AI.Mcp.Tools;
 
 namespace TestBucket.Domain.AI.Mcp.Services;
 internal class McpServerManager : IMcpServerManager, IMcpServerUserInputProvider

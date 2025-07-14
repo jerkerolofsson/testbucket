@@ -35,7 +35,7 @@ public class IssueMcpTools : AuthenticatedTool
             var projectId = _principal.GetProjectId();
             if (projectId is not null)
             {
-                var issue = await FindIssueAsync(issueId);
+                var issue = await FindIssueAsync(issueId, projectId.Value);
                 if (issue is null)
                 {
                     return null;
@@ -63,6 +63,7 @@ public class IssueMcpTools : AuthenticatedTool
             {
                 var result = await _manager.SearchLocalIssuesAsync(_principal, new SearchIssueQuery
                 {
+                    ProjectId = projectId,
                     Text = text
                 }, 0, 1);
                 if (result is null || result.TotalCount == 0)
@@ -77,7 +78,7 @@ public class IssueMcpTools : AuthenticatedTool
         return null;
     }
 
-    private async Task<LocalIssue?> FindIssueAsync(string issueId)
+    private async Task<LocalIssue?> FindIssueAsync(string issueId, long projectId)
     {
         if (_principal is not null)
         {
@@ -93,6 +94,7 @@ public class IssueMcpTools : AuthenticatedTool
 
             var result = await _manager.SearchLocalIssuesAsync(_principal, new SearchIssueQuery
             {
+                ProjectId = projectId,
                 Text = issueId
             }, 0, 1);
             if (result is null || result.TotalCount == 0)
@@ -118,7 +120,7 @@ public class IssueMcpTools : AuthenticatedTool
             var projectId = _principal.GetProjectId();
             if (projectId is not null)
             {
-                var issue = await FindIssueAsync(issueId);
+                var issue = await FindIssueAsync(issueId, projectId.Value);
                 if (issue is not null)
                 {
                     issue.AssignedTo = user;

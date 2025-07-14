@@ -1,10 +1,7 @@
 ﻿using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
 
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
-using ModelContextProtocol.Client;
 
 using TestBucket.Domain.AI.Mcp.Models;
 using TestBucket.Domain.AI.Mcp.Tools;
@@ -19,10 +16,12 @@ public class McpServerRunnerManager
     private readonly ConcurrentDictionary<long, McpServerRegistration> _serverRegistrations = new();
     private readonly ConcurrentDictionary<long, List<McpServerRunner>> _runners = new();
     private readonly ILogger<McpServerRunnerManager> _logger;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public McpServerRunnerManager(ILogger<McpServerRunnerManager> logger)
+    public McpServerRunnerManager(ILogger<McpServerRunnerManager> logger, IServiceScopeFactory serviceScopeFactory)
     {
         _logger = logger;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public async Task<List<McpAIFunction>> GetMcpToolsForUserAsync(ClaimsPrincipal principal, long projectId, CancellationToken cancellationToken = default)
@@ -78,14 +77,31 @@ public class McpServerRunnerManager
             {
                 _logger.LogInformation("Creating MCP server runner: {ServerName}", name);
                 var runner = await McpServerRunner.CreateAsync(registration, server, name, cancellationToken);
-                server.ErrorMessage = null;
                 _runners[registration.Id].Add(runner);
+
+                // Clear error message if successful
+                server.ErrorMessage = null;
+                await UpdateRegistrationAsync(registration);
             }
-            catch(Exception ex)
+
+            catch(OperationCanceledException)
+            {
+                server.ErrorMessage = "Timeout connecting to MCP server";
+                await UpdateRegistrationAsync(registration);
+            }
+            catch (Exception ex)
             {
                 server.ErrorMessage = ex.Message;
+                await UpdateRegistrationAsync(registration);
             }
         }
+    }
+
+    private async Task UpdateRegistrationAsync(McpServerRegistration registration)
+    {
+        using var scope = _serviceScopeFactory.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IMcpServerRepository>();  
+        await repository.UpdateAsync(registration);
     }
 
     public async Task RestartServerAsync(McpServerRegistration registration, CancellationToken cancellationToken)
@@ -94,11 +110,10 @@ public class McpServerRunnerManager
         {
             throw new ArgumentNullException(nameof(registration), "MCP server registration cannot be null.");
         }
-        if (!_serverRegistrations.ContainsKey(registration.Id))
+        if (_serverRegistrations.ContainsKey(registration.Id))
         {
-            throw new InvalidOperationException($"MCP server registration with ID {registration.Id} is not running.");
+            await StopServerAsync(registration, cancellationToken);
         }
-        await StopServerAsync(registration, cancellationToken);
         await StartServerAsync(registration, cancellationToken);    
     }
 

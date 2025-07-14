@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestBucket.Contracts;
-using TestBucket.Domain.Shared;
+using TestBucket.Domain.Search;
 
 namespace TestBucket.Domain.UnitTests.Shared
 {

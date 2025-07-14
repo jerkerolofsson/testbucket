@@ -10,7 +10,7 @@
         <MudText Class="mb-3" Typo="Typo.h1">@loc.Shared["requirements-and-workitems"]</MudText>
 
         <EditForm OnValidSubmit="Search" Model="@_searchPhrase">
-            <MudStack Row Spacing="1">
+            <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
                 <MudTextField @bind-Value="@_searchPhrase" T="string"
                               Class="mt-2 default-search"
                               Clearable="true"

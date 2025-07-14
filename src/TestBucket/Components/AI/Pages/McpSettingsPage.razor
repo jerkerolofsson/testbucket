@@ -27,7 +27,28 @@
 
             @foreach (var registration in _serverRegistrations)
             {
-                <MudExpansionPanel Text="@GetMcpServerRegistrationName(registration)">
+                <MudExpansionPanel>
+
+                    <TitleContent>
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            @if(registration.Configuration?.Servers is not null)
+                            {
+                                foreach(var serverConfig in registration.Configuration.Servers)
+                                {
+                                    @if (!string.IsNullOrEmpty(serverConfig.Value.ErrorMessage))
+                                    {
+                                        string errorMessage = $"{serverConfig.Key}: {serverConfig.Value.ErrorMessage}";
+                                        <MudTooltip Text="@errorMessage">
+                                            <MudIcon Color="Color.Error" Icon="@Icons.Material.Outlined.ErrorOutline" />
+                                        </MudTooltip>
+                                    }
+                                }
+                            }
+                            @GetMcpServerRegistrationName(registration)
+
+                        </MudStack>
+                    </TitleContent>
+
                     <ChildContent>
 
                         <MudStack Spacing="1">

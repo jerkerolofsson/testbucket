@@ -1,0 +1,26 @@
+.page {
+    position: relative;
+    display: grid;
+    width: 100dvw;
+    height: 100dvh;
+    grid-template-columns: auto 1fr;
+    overflow: hidden;
+}
+
+.page > * {
+    overflow: auto;
+}
+
+main {
+    flex: 1;
+}
+
+article {
+    height: 100%;
+
+}
+
+.sidebar {
+    background: var(--mud-palette-dark);
+    padding: 8px;
+}

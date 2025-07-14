@@ -113,7 +113,8 @@ internal class McpServerRunner : IAsyncDisposable
             Endpoint = new Uri(_configuration.Url!),
             AdditionalHeaders = _configuration.Headers?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) ?? new Dictionary<string, string>(),
             Name = _name,
-            TransportMode = transportMode
+            TransportMode = transportMode,
+            ConnectionTimeout = TimeSpan.FromSeconds(10)
         };
         var transport = new SseClientTransport(options);
         var client = await McpClientFactory.CreateAsync(transport);

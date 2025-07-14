@@ -111,7 +111,7 @@ namespace TestBucket.Domain.Testing.TestCases
             }
         }
 
-        private async Task GenerateEmbeddingAsync(TestCase item)
+        private async Task GenerateEmbeddingAsync(TestCase item, IEnumerable<TestCaseField>? fields)
         {
             if (item.TestProjectId is null)
             {
@@ -121,6 +121,19 @@ namespace TestBucket.Domain.Testing.TestCases
             try
             {
                 var text = $"{item.Name} {item.Description}";
+
+
+                if (fields is not null)
+                {
+                    foreach (var field in fields)
+                    {
+                        if (field.FieldDefinition is not null)
+                        {
+                            text += $"\n{field.FieldDefinition.Name}={field.GetValueAsString()}";
+                        }
+                    }
+                }
+
                 var response = await _mediator.Send(new GenerateEmbeddingRequest(item.TestProjectId.Value, text));
                 if (response.EmbeddingVector is not null)
                 {
@@ -158,7 +171,7 @@ namespace TestBucket.Domain.Testing.TestCases
 
             await AssignTeamIfNotAssignedAsync(testCase, testCase.TenantId);
             await CreateTestCaseFoldersAsync(principal, testCase);
-            await GenerateEmbeddingAsync(testCase);
+            await GenerateEmbeddingAsync(testCase, testCase.TestCaseFields);
 
             if (testCase.TeamId is null && testCase.TestProjectId is not null)
             {
@@ -245,7 +258,7 @@ namespace TestBucket.Domain.Testing.TestCases
             var isDescriptionChanged = existing?.Description != testCase.Description;
             if(isDescriptionChanged || testCase.Embedding is null || existing?.Name != testCase.Name)
             {
-                await GenerateEmbeddingAsync(testCase);
+                await GenerateEmbeddingAsync(testCase, testCase.TestCaseFields ?? existing?.TestCaseFields);
             }
 
             await _testCaseRepo.UpdateTestCaseAsync(testCase);

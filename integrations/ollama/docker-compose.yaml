@@ -1,0 +1,12 @@
+services:
+  ollama:
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    image: docker.io/ollama/ollama:latest
+    ports:
+      - 17335:11434
+    environment:
+      - OLLAMA_KEEP_ALIVE=12h
+      - OLLAMA_CONTEXT_LENGTH=32768

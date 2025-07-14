@@ -29,7 +29,13 @@ public class RequirementMcpTools : AuthenticatedTool
     /// Assigns the issue to a user
     /// </summary>
     /// <returns></returns>
-    [McpServerTool(Name = "get-requirement-from-id"), Description("Returns information about a specific requirement using the reqwuirementId to identify the requirement")]
+    [McpServerTool(Name = "get-requirement-from-id"), 
+        Description("""
+        Returns information about a specific requirement using the requirementId to identify the requirement. 
+        Only call this method with a valid requirement ID. 
+        If you don't know the ID use the search-for-requirements tool.
+        """)]
+        
     public async Task<RequirementDto?> GetRequirementeFromIdAsync(string requirementId)
     {
         var isAuthenticated = await IsAuthenticatedAsync();
@@ -38,7 +44,7 @@ public class RequirementMcpTools : AuthenticatedTool
             var projectId = _principal.GetProjectId();
             if (projectId is not null)
             {
-                var issue = await FindRequirementAsync(requirementId);
+                var issue = await FindRequirementAsync(requirementId, projectId.Value);
                 if (issue is null)
                 {
                     return null;
@@ -55,7 +61,8 @@ public class RequirementMcpTools : AuthenticatedTool
     /// Searches for requirements
     /// </summary>
     /// <returns></returns>
-    [McpServerTool(Name = "search-for-requirements"), Description("Searches for a requirements and returns the matching issues with the most similar requirement first")]
+    [McpServerTool(Name = "search-for-requirements"), 
+        Description("Searches for a requirements and returns the best match first")]
     public async Task<RequirementDto[]> SearchForRequirements(string text, int count = 1)
     {
         if(count == 0)
@@ -70,6 +77,8 @@ public class RequirementMcpTools : AuthenticatedTool
             {
                 var result = await _manager.SemanticSearchRequirementsAsync(_principal, new SearchRequirementQuery
                 {
+                    CompareFolder = false,
+                    ProjectId = projectId,
                     Text = text,
                     Offset = 0,
                     Count = count,
@@ -86,7 +95,7 @@ public class RequirementMcpTools : AuthenticatedTool
         return [];
     }
 
-    private async Task<Requirement?> FindRequirementAsync(string requirementId)
+    private async Task<Requirement?> FindRequirementAsync(string requirementId, long projectId)
     {
         if (_principal is not null)
         {
@@ -102,6 +111,8 @@ public class RequirementMcpTools : AuthenticatedTool
 
             var result = await _manager.SearchRequirementsAsync(_principal, new SearchRequirementQuery
             {
+                ProjectId = projectId,
+                CompareFolder = false,
                 Text = requirementId,
                 Offset = 0,
                 Count = 1,

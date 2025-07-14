@@ -21,6 +21,7 @@ using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Traceability;
 using TestBucket.Domain.Traceability.Models;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Requirements
 {
@@ -199,6 +200,9 @@ namespace TestBucket.Domain.Requirements
 
             // Trigger update of timestamp
             requirement.Modified = _timeProvider.GetUtcNow();
+
+            await GenerateEmbeddingAsync(requirement, requirement.RequirementFields);
+
             await _repository.UpdateRequirementAsync(requirement);
 
             foreach (var observer in _requirementObservers)
@@ -207,7 +211,7 @@ namespace TestBucket.Domain.Requirements
             }
         }
 
-        private async Task GenerateEmbeddingAsync(Requirement item)
+        private async Task GenerateEmbeddingAsync(Requirement item, IEnumerable<RequirementField>? fields)
         {
             if (item.TestProjectId is null)
             {
@@ -217,6 +221,18 @@ namespace TestBucket.Domain.Requirements
             try
             {
                 var text = $"{item.Name} {item.Description}";
+
+                if(fields is not null)
+                {
+                    foreach(var field in fields)
+                    {
+                        if (field.FieldDefinition is not null)
+                        {
+                            text += $"\n{field.FieldDefinition.Name}={field.GetValueAsString()}";
+                        }
+                    }
+                }
+
                 var response = await _mediator.Send(new GenerateEmbeddingRequest(item.TestProjectId.Value, text));
                 if (response.EmbeddingVector is not null)
                 {
@@ -255,7 +271,7 @@ namespace TestBucket.Domain.Requirements
             var isDescriptionChanged = existing?.Description != requirement.Description || existing?.Name != requirement.Name;
             if (isDescriptionChanged || requirement.Embedding is null)
             {
-                await GenerateEmbeddingAsync(requirement);
+                await GenerateEmbeddingAsync(requirement, requirement.RequirementFields ?? existing?.RequirementFields);
             }
 
             await _repository.UpdateRequirementAsync(requirement);
@@ -444,6 +460,7 @@ namespace TestBucket.Domain.Requirements
             requirement.ModifiedBy = principal.Identity?.Name;
 
             await GenerateFoldersFromPathAsync(requirement);
+            await GenerateEmbeddingAsync(requirement, requirement.RequirementFields);
 
             await _repository.AddRequirementAsync(requirement);
 

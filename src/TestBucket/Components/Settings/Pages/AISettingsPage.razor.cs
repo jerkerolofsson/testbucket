@@ -25,6 +25,7 @@ public partial class AISettingsPage
     private readonly Dictionary<long, ISetting> _settingsMap = [];
 
     private string? _defaultModel;
+    private string? _embeddingModel;
     private string? _classificationModel;
     private string? _generatorModel;
     private string? _aiProvider;
@@ -141,7 +142,23 @@ public partial class AISettingsPage
             }
         }
     }
- 
+
+    private async Task OnEmbeddingModelChanged(string model)
+    {
+        _embeddingModel = model;
+
+        if (_context is null)
+        {
+            return;
+        }
+
+        var setting = settingsManager.GetSettingByName(_context, "ai-embedding-model");
+        if (setting is not null)
+        {
+            await setting.WriteAsync(_context, new FieldValue { StringValue = model, FieldDefinitionId = 0 });
+        }
+    }
+
     private async Task OnClassificationModelChanged(string model)
     {
         _classificationModel = model;
@@ -152,7 +169,7 @@ public partial class AISettingsPage
         }
 
         var setting = settingsManager.GetSettingByName(_context, "ai-classification-model");
-        if(setting is not null)
+        if (setting is not null)
         {
             await setting.WriteAsync(_context, new FieldValue { StringValue = model, FieldDefinitionId = 0 });
         }
@@ -212,6 +229,7 @@ public partial class AISettingsPage
         var defaultModel = settingsManager.GetSettingByName(_context, "ai-default-model");
         var generatorModel = settingsManager.GetSettingByName(_context, "ai-test-generator-model");
         var classificationModel = settingsManager.GetSettingByName(_context, "ai-classification-model");
+        var embeddingModel = settingsManager.GetSettingByName(_context, "ai-embedding-model");
         var provider = settingsManager.GetSettingByName(_context, "ai-provider");
         var providerUrl = settingsManager.GetSettingByName(_context, "ai-provider-url");
 
@@ -226,6 +244,10 @@ public partial class AISettingsPage
         if (defaultModel is not null)
         {
             _defaultModel = (await defaultModel.ReadAsync(_context)).StringValue;
+        }
+        if (embeddingModel is not null)
+        {
+            _embeddingModel = (await embeddingModel.ReadAsync(_context)).StringValue;
         }
         if (classificationModel is not null)
         {

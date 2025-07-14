@@ -16,6 +16,7 @@
   </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\node\TestBucket.Servers.NodeResourceServer\TestBucket.Servers.NodeResourceServer.csproj" />
         <ProjectReference Include="..\Package\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" IsAspireProjectResource="false" />
         <ProjectReference Include="..\TestBucket.Domain\TestBucket.Domain.csproj" IsAspireProjectResource="false" />
     </ItemGroup>

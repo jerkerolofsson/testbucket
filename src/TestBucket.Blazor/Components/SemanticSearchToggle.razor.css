@@ -11,6 +11,8 @@
 
     background: var(--back-color);
     user-select: none;
+
+    cursor: pointer;
 }
 
 .tb-semantic-toggle.enabled {

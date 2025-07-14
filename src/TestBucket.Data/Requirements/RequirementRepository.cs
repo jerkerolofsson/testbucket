@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using Pgvector.EntityFrameworkCore;
+
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements;
@@ -98,6 +100,40 @@ namespace TestBucket.Data.Requirements
                 Items = items.ToArray()
             };
         }
+
+        public async Task<PagedResult<Requirement>> SemanticSearchRequirementsAsync(ReadOnlyMemory<float> embeddingVector, IReadOnlyList<FilterSpecification<Requirement>> filters, int offset, int count)
+        {
+            var vector = new Pgvector.Vector(embeddingVector);
+
+            using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+            var requirements = dbContext.Requirements
+                .Include(x => x.RequirementFields!).ThenInclude(x => x.FieldDefinition)
+                .Include(x => x.Comments)
+                .Include(x => x.TestLinks).AsQueryable();
+
+            foreach (var filter in filters)
+            {
+                requirements = requirements.Where(filter.Expression);
+            }
+
+            long totalCount = await requirements.LongCountAsync();
+
+            requirements = requirements.Where(x => x.Embedding != null);
+
+            var page = requirements.Select(x => new { Requirement = x, Distance = x.Embedding!.CosineDistance(vector) })
+               .Where(x => x.Distance < 1.0)
+               .OrderBy(x => x.Distance)
+               .Skip(offset)
+               .Take(count)
+               .Select(x => x.Requirement);
+
+            return new PagedResult<Requirement>
+            {
+                TotalCount = totalCount,
+                Items = page.ToArray()
+            };
+        }
+
         public async Task<PagedResult<RequirementSpecification>> SearchRequirementSpecificationsAsync(IEnumerable<FilterSpecification<RequirementSpecification>> filters, int offset, int count)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();

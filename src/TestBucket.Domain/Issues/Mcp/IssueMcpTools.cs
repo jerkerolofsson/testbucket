@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Runtime.Intrinsics.X86;
 
 using ModelContextProtocol.Server;
 
@@ -11,9 +10,7 @@ using TestBucket.Domain.Issues.Mapping;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Search;
 
-using static System.Net.Mime.MediaTypeNames;
-
-namespace TestBucket.Domain.Milestones.Mcp;
+namespace TestBucket.Domain.Issues.Mcp;
 
 [McpServerToolType]
 public class IssueMcpTools : AuthenticatedTool
@@ -52,7 +49,7 @@ public class IssueMcpTools : AuthenticatedTool
     }
 
     /// <summary>
-    /// Assigns the issue to a user
+    /// Searches for a specific issue
     /// </summary>
     /// <returns></returns>
     [McpServerTool(Name = "search-for-issue"), Description("Searches for an issue and returns the issue")]

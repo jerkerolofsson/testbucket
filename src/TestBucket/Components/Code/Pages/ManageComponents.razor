@@ -43,6 +43,7 @@
                                       Adornment="Adornment.Start"
                                       Placeholder="@loc["search"]"
                                       AdornmentIcon="@Icons.Material.Filled.Search" />
+                        <SemanticSearchToggle @bind-Enabled="@_semanticSearch" EnabledLabel="@loc["semantic-search"]" DisabledLabel="@loc["normal-search"]" />
 
                         <MudSpacer />
                         <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
@@ -134,6 +135,7 @@
     private SearchTestQuery _testCaseQuery = new();
     private SearchTestCaseRunQuery _testCaseRunQuery = new();
     private string _issueSearchText = "";
+    private bool _semanticSearch = true;
 
     private InsightsVisualizationSpecification? _testsByCat;
     private string _searchText = "";
@@ -246,33 +248,24 @@
     }
 
     /// <summary>
-    /// Loads commit data
+    /// Loads components
     /// </summary>
     /// <param name="state"></param>
     /// <returns></returns>
-    private Task<GridData<Component>> LoadGridData(GridState<Component> state)
+    private async Task<GridData<Component>> LoadGridData(GridState<Component> state)
     {
         if (Project is null)
         {
-            return Task.FromResult(new GridData<Component> { TotalItems = 0 });
+            return new GridData<Component> { TotalItems = 0 };
         }
 
-        Component[] page;
-        if (string.IsNullOrEmpty(_searchText))
-        {
-            page = _components.OrderBy(x=>x.Name).Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
-        }
-        else
-        {
-            page = _components.OrderBy(x => x.Name).Where(x => x.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase)).Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
-        }
-
+        var result = await architectureController.SearchComponentsAsync(Project.Id, _searchText, state.Page * state.PageSize, state.PageSize, _semanticSearch);
         GridData<Component> data = new()
         {
-            Items = page,
-            TotalItems = (int) _components.Count
+            Items = result.Items,
+            TotalItems = (int)result.TotalCount
         };
 
-        return Task.FromResult(data);
+        return data;
     }
 }

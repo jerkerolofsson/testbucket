@@ -17,6 +17,8 @@ public interface IArchitectureRepository
 {
     #region Systems
     Task AddSystemAsync(ProductSystem system);
+
+    Task<PagedResult<ProductSystem>> SemanticSearchSystemsAsync(ReadOnlyMemory<float> embeddingVector, FilterSpecification<ProductSystem>[] filters, int offset, int count);
     Task<PagedResult<ProductSystem>> SearchSystemsAsync(FilterSpecification<ProductSystem>[] filters, int offset, int count);
     Task UpdateSystemAsync(ProductSystem system);
     Task<ProductSystem?> GetSystemAsync(long id);
@@ -26,6 +28,8 @@ public interface IArchitectureRepository
 
     #region Layer
     Task AddLayerAsync(ArchitecturalLayer component);
+
+    Task<PagedResult<ArchitecturalLayer>> SemanticSearchLayersAsync(ReadOnlyMemory<float> embeddingVector, FilterSpecification<ArchitecturalLayer>[] filters, int offset, int count);
     Task<PagedResult<ArchitecturalLayer>> SearchLayersAsync(FilterSpecification<ArchitecturalLayer>[] filters, int offset, int count);
     Task UpdateLayerAsync(ArchitecturalLayer component);
     Task<ArchitecturalLayer?> GetLayerAsync(long id);
@@ -35,6 +39,8 @@ public interface IArchitectureRepository
 
     #region Components
     Task AddComponentAsync(Component component);
+    
+    Task<PagedResult<Component>> SemanticSearchComponentsAsync(ReadOnlyMemory<float> embeddingVector, FilterSpecification<Component>[] filters, int offset, int count);
     Task<PagedResult<Component>> SearchComponentsAsync(FilterSpecification<Component>[] filters, int offset, int count);
     Task UpdateComponentAsync(Component component);
     Task<Component?> GetComponentAsync(long id);
@@ -45,6 +51,8 @@ public interface IArchitectureRepository
     #region Features
     Task<Feature?> GetFeatureAsync(long id);
     Task AddFeatureAsync(Feature feature);
+
+    Task<PagedResult<Feature>> SemanticSearchFeaturesAsync(ReadOnlyMemory<float> embeddingVector, FilterSpecification<Feature>[] filters, int offset, int count);
     Task<PagedResult<Feature>> SearchFeaturesAsync(FilterSpecification<Feature>[] filters, int offset, int count);
     Task UpdateFeatureAsync(Feature feature);
     Task DeleteFeatureAsync(long id);

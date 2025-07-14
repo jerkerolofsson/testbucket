@@ -113,6 +113,16 @@ internal class ArchitectureController : TenantBaseService
         }
     }
 
+    public async Task<PagedResult<Feature>> SearchFeaturesAsync(long projectId, string text, int offset, int count, bool semantic)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        if(semantic)
+        {
+            return await _manager.SemanticSearchFeaturesAsync(principal, projectId, text, offset, count); 
+        }
+        return await _manager.SearchFeaturesAsync(principal, projectId, text, offset, count);
+    }
+
     public async Task<IReadOnlyList<Feature>> GetFeaturesAsync(long projectId)
     {
         var principal = await GetUserClaimsPrincipalAsync();
@@ -122,6 +132,17 @@ internal class ArchitectureController : TenantBaseService
     #endregion Features
 
     #region Components
+
+    public async Task<PagedResult<Component>> SearchComponentsAsync(long projectId, string text, int offset, int count, bool semantic)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        if (semantic)
+        {
+            return await _manager.SemanticSearchComponentsAsync(principal, projectId, text, offset, count);
+        }
+        return await _manager.SearchComponentsAsync(principal, projectId, text, offset, count);
+    }
+
     public async Task<IReadOnlyList<Component>> GetComponentsAsync(long projectId)
     {
         var principal = await GetUserClaimsPrincipalAsync();

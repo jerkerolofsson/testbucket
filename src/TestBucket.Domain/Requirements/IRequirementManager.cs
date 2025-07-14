@@ -1,8 +1,5 @@
-﻿using System.Security.Claims;
-
-using TestBucket.Contracts.Requirements;
+﻿using TestBucket.Contracts.Requirements;
 using TestBucket.Contracts.Requirements.Types;
-using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
@@ -36,6 +33,14 @@ public interface IRequirementManager
     /// <param name="query"></param>
     /// <returns></returns>
     Task<PagedResult<Requirement>> SearchRequirementsAsync(ClaimsPrincipal principal, SearchRequirementQuery query);
+
+    /// <summary>
+    /// Semantic search for requirements
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="query"></param>
+    /// <returns></returns>
+    Task<PagedResult<Requirement>> SemanticSearchRequirementsAsync(ClaimsPrincipal principal, SearchRequirementQuery query);
 
     /// <summary>
     /// Searches for requirements

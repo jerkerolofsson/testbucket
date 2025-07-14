@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 
+using Pgvector.EntityFrameworkCore;
+
 using TestBucket.Contracts.Testing.Models;
 using TestBucket.Domain.Insights.Model;
+using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.TestSuites.Search;
@@ -64,6 +67,34 @@ internal class TestCaseRepository : ITestCaseRepository
         return lastestSequenceNumber ?? 0;
     }
 
+    /// <inheritdoc/>
+    public async Task<PagedResult<TestCase>> SemanticSearchTestCasesAsync(ReadOnlyMemory<float> embeddingVector, int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters)
+    {
+        var vector = new Pgvector.Vector(embeddingVector);
+
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCases.Include(x => x.TestCaseFields).AsQueryable();
+        foreach (var spec in filters)
+        {
+            tests = tests.Where(spec.Expression);
+        }
+        long totalCount = await tests.LongCountAsync();
+
+        tests = tests.Where(x => x.Embedding != null);
+
+        var page = tests.Select(x => new { Test = x, Distance = x.Embedding!.CosineDistance(vector) })
+            .Where(x => x.Distance < 1.0)
+            .OrderBy(x => x.Distance)
+            .Skip(offset)
+            .Take(count)
+            .Select(x => x.Test);
+
+        return new PagedResult<TestCase>()
+        {
+            TotalCount = totalCount,
+            Items = await page.ToArrayAsync()
+        };
+    }
     /// <inheritdoc/>
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters)
     {

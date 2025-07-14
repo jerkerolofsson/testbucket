@@ -35,7 +35,7 @@ public class CodeMcpTools : AuthenticatedTool
             if (projectId is not null)
             {
                 var result = await _architectureManager.SearchFeaturesAsync(_principal, projectId.Value, searchText, offset, count);
-                return result.Select(x => AritecturalComponentMapper.ToDto(x)).ToList();
+                return result.Items.Select(x => AritecturalComponentMapper.ToDto(x)).ToList();
             }
         }
         return [];

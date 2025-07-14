@@ -28,7 +28,7 @@ public partial class TestCaseGrid
     private SearchTestQuery _query = new();
 
     private MudDataGrid<TestSuiteItem?> _dataGrid = default!;
-
+    private bool _semanticSearch = true;
 
     private bool _hasQueryChanged = false;
 
@@ -242,7 +242,7 @@ public partial class TestCaseGrid
     private async Task<GridData<TestSuiteItem>> LoadGridData(GridState<TestSuiteItem> state)
     {
         _query.ProjectId = Project?.Id;
-        var result = await testBrowser.SearchItemsAsync(_query, state.Page * state.PageSize, state.PageSize, !_hasCustomFilter);
+        var result = await testBrowser.SearchItemsAsync(_query, state.Page * state.PageSize, state.PageSize, !_hasCustomFilter, _semanticSearch);
 
         GridData<TestSuiteItem> data = new()
         {

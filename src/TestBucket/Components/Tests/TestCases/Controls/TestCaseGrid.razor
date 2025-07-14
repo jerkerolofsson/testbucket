@@ -31,6 +31,7 @@
                           Adornment="Adornment.Start"
                           Placeholder="@loc["search-tests"]"
                           AdornmentIcon="@Icons.Material.Filled.Search" />
+            <SemanticSearchToggle @bind-Enabled="@_semanticSearch" EnabledLabel="@loc["semantic-search"]" DisabledLabel="@loc["normal-search"]" />
 
             <MudSpacer />
             <MudIconButton Icon="@TbIcons.Filled.Globe" OnClick="ShowBrowserFilterAsync"></MudIconButton>

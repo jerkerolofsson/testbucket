@@ -264,25 +264,54 @@ internal class ArchitectureManager : IArchitectureManager
         return result.Items.ToList();
     }
 
-
     /// <summary>
-    /// Searches for features
+    /// Semantic search for components
     /// </summary>
     /// <param name="principal"></param>
     /// <param name="projectId"></param>
     /// <returns></returns>
-    public async Task<IReadOnlyList<Component>> SearchComponentsAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    public async Task<PagedResult<Component>> SemanticSearchComponentsAsync(ClaimsPrincipal principal, long projectId, string semanticSearchText, int offset, int count)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Component>[] filters = [
-            new SearchComponentWithText(text ?? ""),
             new FilterByProject<Component>(projectId),
             new FilterByTenant<Component>(tenantId)
         ];
 
-        PagedResult<Component> result = await _repository.SearchComponentsAsync(filters, offset, count);
-        return result.Items.ToList();
+        if (!string.IsNullOrEmpty(semanticSearchText))
+        {
+            var embedding = await _mediator.Send(new GenerateEmbeddingRequest(projectId, semanticSearchText));
+            if (embedding?.EmbeddingVector is not null)
+            {
+                return await _repository.SemanticSearchComponentsAsync(embedding.EmbeddingVector.Value, filters, offset, count);
+            }
+        }
+
+        return await SearchComponentsAsync(principal, projectId, semanticSearchText, offset, count);
+    }
+
+    /// <summary>
+    /// Searches for components
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<PagedResult<Component>> SearchComponentsAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Component>[] filters = [
+            new FilterByProject<Component>(projectId),
+            new FilterByTenant<Component>(tenantId)
+        ];
+
+
+        if(!string.IsNullOrEmpty(text))
+        {
+            filters = [.. filters, new SearchComponentWithText(text ?? "")];
+        }
+        return await _repository.SearchComponentsAsync(filters, offset, count);
     }
 
     /// <summary>
@@ -329,23 +358,54 @@ internal class ArchitectureManager : IArchitectureManager
     }
 
     /// <summary>
+    /// Semantic search for features
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<PagedResult<Feature>> SemanticSearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string semanticSearchText, int offset, int count)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Feature>[] filters = [
+            new FilterByProject<Feature>(projectId),
+            new FilterByTenant<Feature>(tenantId)
+        ];
+
+        if (!string.IsNullOrEmpty(semanticSearchText))
+        {
+            var embedding = await _mediator.Send(new GenerateEmbeddingRequest(projectId, semanticSearchText));
+            if (embedding?.EmbeddingVector is not null)
+            {
+                return await _repository.SemanticSearchFeaturesAsync(embedding.EmbeddingVector.Value, filters, offset, count);
+            }
+        }
+
+        return await SearchFeaturesAsync(principal, projectId, semanticSearchText, offset, count);
+    }
+
+    /// <summary>
     /// Searches for features
     /// </summary>
     /// <param name="principal"></param>
     /// <param name="projectId"></param>
     /// <returns></returns>
-    public async Task<IReadOnlyList<Feature>> SearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    public async Task<PagedResult<Feature>> SearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Feature>[] filters = [
-            new SearchFeatureWithText(text),
             new FilterByProject<Feature>(projectId), 
             new FilterByTenant<Feature>(tenantId)
         ];
 
-        PagedResult<Feature> result = await _repository.SearchFeaturesAsync(filters, offset, count);
-        return result.Items.ToList();
+        if (!string.IsNullOrEmpty(text))
+        {
+            filters = [.. filters, new SearchFeatureWithText(text ?? "")];
+        }
+
+
+        return await _repository.SearchFeaturesAsync(filters, offset, count);
     }
 
     /// <summary>

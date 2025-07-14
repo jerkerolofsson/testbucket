@@ -19,6 +19,7 @@
                               Adornment="Adornment.Start"
                               Placeholder="@loc.Shared["search"]"
                               AdornmentIcon="@Icons.Material.Filled.Search" />
+                <SemanticSearchToggle @bind-Enabled="@_semanticSearch" EnabledLabel="@loc.Shared["semantic-search"]" DisabledLabel="@loc.Shared["normal-search"]" />
                 <MudButton ButtonType="ButtonType.Submit">@loc.Shared["search"]</MudButton>
             </MudStack>
         </EditForm>
@@ -31,10 +32,17 @@
     [CascadingParameter] Team? Team { get; set; }
 
     private string _searchPhrase = "";
+    private bool _semanticSearch = true;
 
     private void Search()
     {
         var baseUrl = appNavigationManager.GetRequirementsSearchUrl() + "?q=" + _searchPhrase;
+
+        if(_semanticSearch)
+        {
+            baseUrl += "&semantic=true";
+        }
+
         appNavigationManager.NavigateTo(baseUrl);
     }
 }

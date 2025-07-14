@@ -15,7 +15,7 @@
             <MudText Typo="Typo.h1">@loc.Shared["requirements"]</MudText>
         </MudStack>
 
-        <RequirementGrid 
+        <RequirementGrid Semantic="@Semantic"
             Query="_query"
             TotalNumberOfRequirementsChanged="OnTotalNumberOfRequirementsChanged"
             QueryChanged="OnQueryChanged" Project="@Project" OnRequirementClicked="OnRequirementClicked" />
@@ -27,6 +27,7 @@
     [CascadingParameter] public TestProject? Project { get; set; }
     [Parameter] public string? TenantId { get; set; }
     [SupplyParameterFromQuery(Name = "q")] public string? InitialQuery { get; set; }
+    [SupplyParameterFromQuery(Name = "semantic")] public bool Semantic { get; set; } = false;
 
 
     private SearchRequirementQuery _query = new();

@@ -30,7 +30,7 @@ public class RequirementMcpTools : AuthenticatedTool
     /// </summary>
     /// <returns></returns>
     [McpServerTool(Name = "get-requirement-from-id"), Description("Returns information about a specific requirement using the reqwuirementId to identify the requirement")]
-    public async Task<IssueDto?> GetRequirementeFromIdAsync(string requirementId)
+    public async Task<RequirementDto?> GetRequirementeFromIdAsync(string requirementId)
     {
         var isAuthenticated = await IsAuthenticatedAsync();
         if (isAuthenticated && _principal is not null)

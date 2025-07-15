@@ -267,4 +267,10 @@
   <data name="mcp-public-description" xml:space="preserve">
     <value />
   </data>
+  <data name="test-resources" xml:space="preserve">
+    <value />
+  </data>
+  <data name="delete-resource-if-not-seen-for" xml:space="preserve">
+    <value />
+  </data>
 </root>

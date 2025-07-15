@@ -1,0 +1,122 @@
+@using MudBlazor
+@using TestBucket.Contracts.Localization
+@inject IAppLocalization loc
+
+<div class="tb-timespan-picker" @attributes="@Attributes">
+    @if(ShowDays)
+    {
+        <div class="container day">
+            <button class="day add" @onclick="async () => await AddDays(1)"><MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small"/></button>
+            <label>
+                <div class="value" id="day">@_days</div>
+                @loc.Shared["days"]
+            </label>
+            <button class="day sub" @onclick="async () => await AddDays(-1)"><MudIcon Icon="@Icons.Material.Filled.Remove" Size="Size.Small" /></button>
+        </div>
+    }
+    @if (ShowHours)
+    {
+        <div class="container hours">
+            <button class="hours add" @onclick="async () => await AddHours(1)"><MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small" /></button>
+            <label>
+                <div class="value" id="hours">@_hours</div>
+                @loc.Shared["hours"]
+            </label>
+            <button class="hours sub" @onclick="async () => await AddHours(-1)"><MudIcon Icon="@Icons.Material.Filled.Remove" Size="Size.Small" /></button>
+        </div>
+    }
+    @if (ShowMinutes)
+    {
+        <div class="container minutes">
+            <button class="minutes add" @onclick="async () => await AddMinutes(1)"><MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small" /></button>
+            <label>
+                <div class="value" id="minutes">@_minutes</div>
+                @loc.Shared["minutes"]
+            </label>
+            <button class="minutes sub" @onclick="async () => await AddMinutes(-1)"><MudIcon Icon="@Icons.Material.Filled.Remove" Size="Size.Small" /></button>
+        </div>
+    }
+    @if (ShowSeconds)
+    {
+        <div class="container seconds">
+            <button class="seconds add" @onclick="async () => await AddSeconds(1)"><MudIcon Icon="@Icons.Material.Filled.Add" Size="Size.Small" /></button>
+            <label>
+                <div class="value" id="seconds">@_seconds</div>
+                @loc.Shared["seconds"]
+            </label>
+            <button class="seconds sub" @onclick="async () => await AddSeconds(-1)"><MudIcon Icon="@Icons.Material.Filled.Remove" Size="Size.Small" /></button>
+        </div>
+    }
+</div>
+
+
+@code {
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
+
+    [Parameter] public TimeSpan? Duration { get; set; }
+    [Parameter] public EventCallback<TimeSpan> DurationChanged { get; set; }
+
+    [Parameter] public bool ShowDays { get; set; } = true;
+    [Parameter] public bool ShowHours { get; set; } = true;
+    [Parameter] public bool ShowMinutes { get; set; } = true;
+    [Parameter] public bool ShowSeconds { get; set; } = false;
+
+    private int _days = 0;
+    private int _hours = 0;
+    private int _minutes = 0;
+    private int _seconds = 0;
+
+    private async Task AddDays(int amount)
+    {
+        _days += amount;
+        _days = Math.Max(0, _days);
+        await UpdateTimeSpan();
+    }
+    private async Task AddHours(int amount)
+    {
+        _hours += amount;
+
+        if(_hours >= 24)
+        {
+            _days ++;
+            _hours -= 24;
+        }
+        if (_hours < 0)
+        {
+            if(_days < 0)
+            {
+                _days--;
+                _hours += 24;
+            }
+        }
+
+        _hours = Math.Max(0, _hours);
+        await UpdateTimeSpan();
+    }
+    private async Task AddMinutes(int amount)
+    {
+        _minutes += amount;
+        _minutes = Math.Max(0, _minutes);
+        await UpdateTimeSpan();
+    }
+
+    private async Task AddSeconds(int amount)
+    {
+        _seconds += amount;
+        _seconds = Math.Max(0, _seconds);
+        await UpdateTimeSpan();
+    }
+    protected override void OnParametersSet()
+    {
+        _days = Duration?.Days ?? 0;
+        _hours = Duration?.Hours ?? 0;
+        _minutes = Duration?.Minutes ?? 0;
+        _seconds = Duration?.Seconds ?? 0;
+    }
+
+    private async Task UpdateTimeSpan()
+    {
+        var duration = new TimeSpan(_days, _hours, _minutes, _seconds);
+        await DurationChanged.InvokeAsync(duration);
+    }
+}

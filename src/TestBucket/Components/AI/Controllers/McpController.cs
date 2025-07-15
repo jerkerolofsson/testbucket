@@ -47,6 +47,15 @@ internal class McpController : TenantBaseService
         return null;
     }
 
+    public async Task<IReadOnlyList<McpServerRegistration>> GetMcpServerRegistrationsAsync()
+    {
+        var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.McpServer, PermissionLevel.Read);
+        if (!hasPermission)
+            return [];
+
+        var user = await GetUserClaimsPrincipalAsync();
+        return await _mcpServerManager.GetAllMcpServerRegistationsAsync(user);
+    }
     public async Task<IReadOnlyList<McpServerRegistration>> GetMcpServerRegistrationsAsync(long projectId)
     {
         var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.McpServer, PermissionLevel.Read);

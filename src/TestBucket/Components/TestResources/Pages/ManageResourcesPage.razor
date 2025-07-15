@@ -25,9 +25,8 @@
 
         <ColGroup>
             <col style="width: 10%;" />
-            <col style="width: 10%;" />
             <col />
-            <col />
+            <col style="width: 30%;" />
             <col />
             <col />
             <col />
@@ -39,48 +38,48 @@
                 <CellTemplate>
                     @if (context.Item.Enabled)
                     {
-                        <MudText Color="Color.Success">●</MudText>
+                        <MudTooltip Text="@loc["resource-enabled"]">
+                            <MudText Color="Color.Success">●</MudText>
+                        </MudTooltip>
                     }
                     else
                     {
-                        <MudText Color="Color.Error">●</MudText>
+                        <MudTooltip Text="@loc["resource-disabled"]">
+                            <MudText Color="Color.Error">●</MudText>
+                        </MudTooltip>
                     }
                 </CellTemplate>
             </TemplateColumn>
+
             <TemplateColumn Title="@loc["locked"]">
                 <CellTemplate>
-                    @if (context.Item.Locked)
-                    {
-                        <PermissionView Entity="PermissionEntityType.TestResource" Level="PermissionLevel.Write">
-                            <Authorized>
-                                <MudIconButton Icon="@Icons.Material.Filled.Lock" Color="Color.Warning" OnClick="async () => await UnlockAsync(context.Item)" />
-                            </Authorized>
-                            <NotAuthorized>
-                                <MudIcon Icon="@Icons.Material.Filled.Lock" Color="Color.Warning" />
-                            </NotAuthorized>
-                        </PermissionView>
-                    }
+                    <PermissionView Entity="PermissionEntityType.TestResource" Level="PermissionLevel.Write">
+                        <Authorized>
+                            <LockedToggle Locked="@context.Item.Locked" LockedChanged="async (isLocked) => await SetLockedAsync(context.Item, isLocked)" />
+                        </Authorized>
+                        <NotAuthorized>
+                            @if (context.Item.Locked)
+                            {
+                                <MudTooltip Text="@loc["resource-locked"]">
+                                    <MudIcon Icon="@Icons.Material.Filled.Lock" Color="Color.Warning" />
+                                </MudTooltip>
+                            }
+                        </NotAuthorized>
+                    </PermissionView>
                 </CellTemplate>
             </TemplateColumn>
-            <PropertyColumn Property="x => x.ResourceId" Title="@loc["id"]"/>
-
-            <TemplateColumn Title="@loc["types"]">
-                <CellTemplate>
-                    @if (context.Item.Types is not null)
-                    {
-                        foreach (var type in context.Item.Types)
-                        {
-                            <MudText Color="Color.Secondary">@type</MudText>
-                        }
-                    }
-                </CellTemplate>
-            </TemplateColumn>
-
             <PropertyColumn Property="x => x.Name" Title="@loc["name"]" />
             <PropertyColumn Property="x => x.Manufacturer" Title="@loc["manufacturer"]" />
             <PropertyColumn Property="x => x.Model" Title="@loc["model"]" />
-            <TemplateColumn>
-                <CellTemplate>@context.Item.Modified.Humanize()</CellTemplate>
+
+
+            <TemplateColumn Title="@loc["last-seen"]">
+                <CellTemplate>
+                    @if(context.Item.LastSeen is not null)
+                    {
+                        @context.Item.LastSeen.Humanize()
+                    }
+                </CellTemplate>
             </TemplateColumn>
         </Columns>
 
@@ -120,9 +119,16 @@
         appNav.NavigateTo(resource);
     }
 
-    private async Task UnlockAsync(TestResource resource)
+    private async Task SetLockedAsync(TestResource resource, bool isLocked)
     {
-        await controller.UnlockAsync(resource);
+        if (isLocked)
+        {
+            await controller.LockAsync(resource);
+        }
+        else
+        {
+            await controller.UnlockAsync(resource);
+        }
     }
 
     private void SetupBreadcrumbs()

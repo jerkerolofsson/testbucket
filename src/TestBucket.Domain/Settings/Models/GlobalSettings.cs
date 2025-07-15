@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TestBucket.Domain.Settings.Models;
 
-namespace TestBucket.Domain.Settings.Models;
+/// <summary>
+/// Global settings, for all tenants
+/// </summary>
 public class GlobalSettings
 {
     public long Id { get; set; }
@@ -16,9 +14,13 @@ public class GlobalSettings
 
     /// <summary>
     /// Provider to use for LLM
-    /// ollama, github-models, azure-ai
     /// </summary>
     public string AiProvider { get; set; } = "ollama";
+
+    /// <summary>
+    /// Provider to use for embeddings
+    /// </summary>
+    public string EmbeddingAiProvider { get; set; } = "ollama";
 
     /// <summary>
     /// Symmetric key for signing
@@ -48,6 +50,7 @@ public class GlobalSettings
     /// <summary>
     /// Model to use for LLM classification. If null the default model will be used
     /// </summary>
+    [Obsolete]
     public string? LlmClassificationModel { get; set; }
 
     /// <summary>
@@ -56,14 +59,24 @@ public class GlobalSettings
     public string? AiProviderUrl { get; set; }
 
     /// <summary>
+    /// URL to ollama/azure etc..
+    /// </summary>
+    public string? EmbeddingAiProviderUrl { get; set; }
+
+    /// <summary>
     /// For github provider
     /// </summary>
     public string? GithubModelsDeveloperKey { get; set; }
 
     /// <summary>
-    /// Forazure-ai provider
+    /// For azure-ai provider
     /// </summary>
     public string? AzureAiProductionKey { get; set; }
+
+    /// <summary>
+    /// For anthropic provider
+    /// </summary>
+    public string? AnthropicApiKey { get; set; }
 
     /// <summary>
     /// Keep track of the changes

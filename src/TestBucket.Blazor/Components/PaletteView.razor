@@ -3,7 +3,7 @@
 
 @if(Palette is not null)
 {
-    <MudStack Row data-testid="@TestId" Spacing="1">
+    <MudStack Row data-testid="@TestId" Spacing="1" @attributes="@Attributes">
         @foreach(var color in Palette.Colors)
         {
             <ColorCell Color="@color.ToString(ColorOutputFormats.HexA)"/>
@@ -13,5 +13,8 @@
 
 @code {
     [Parameter] public ThemePalette? Palette{ get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
+
     private string TestId => $"palette-{Palette?.Name}";
 }

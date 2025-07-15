@@ -6,6 +6,7 @@
 @using TestBucket.Domain
 @using TestBucket.Domain.Settings
 @using TestBucket.Domain.Settings.Models
+@using TestBucket.Domain.Shared
 @inject NavigationManager navigationManager
 @inject ISettingsManager settingsManager
 @inject UserPreferencesService preferencesController
@@ -120,7 +121,7 @@
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var principal = authState.User;
 
-        return new SettingContext { Principal = principal, ProjectId = Project?.Id };
+        return new SettingContext { Principal = principal, ProjectId = Project?.Id, TenantId = principal.GetTenantIdOrThrow() };
     }
 
     private async Task OnSearchTextChangedAsync(string text)

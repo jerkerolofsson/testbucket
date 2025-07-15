@@ -944,4 +944,16 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="provider" xml:space="preserve">
     <value />
   </data>
+  <data name="resource-enabled" xml:space="preserve">
+    <value />
+  </data>
+  <data name="resource-disabled" xml:space="preserve">
+    <value />
+  </data>
+  <data name="resource-locked" xml:space="preserve">
+    <value />
+  </data>
+  <data name="last-seen" xml:space="preserve">
+    <value />
+  </data>
 </root>

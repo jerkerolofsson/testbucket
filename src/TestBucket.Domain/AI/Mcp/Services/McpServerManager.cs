@@ -102,6 +102,12 @@ internal class McpServerManager : IMcpServerManager, IMcpServerUserInputProvider
         await _userInputRepository.DeleteAsync(userInput);
     }
 
+    public async Task<IReadOnlyList<McpServerRegistration>> GetAllMcpServerRegistationsAsync(ClaimsPrincipal principal)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.McpServer, PermissionLevel.Read);
+        return await _serverRepository.GetAllAsync(principal.GetTenantIdOrThrow());
+    }
+
     public async Task<IReadOnlyList<McpServerRegistration>> GetAllMcpServerRegistationsAsync(ClaimsPrincipal principal, long projectId)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.McpServer, PermissionLevel.Read);

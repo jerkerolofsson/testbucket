@@ -22,7 +22,7 @@ namespace TestBucket.Domain.IntegrationTests.Settings
             Assert.NotNull(aiProviderSetting);
 
             // Verify the ISetting
-            var provider = await aiProviderSetting.ReadAsync(new SettingContext() { Principal = Fixture.App.SiteAdministrator });
+            var provider = await aiProviderSetting.ReadAsync(new SettingContext() { Principal = Fixture.App.SiteAdministrator, TenantId = "tenant1" });
             Assert.Equal("ollama", provider.StringValue);
 
             var globalSettings = await settingsProvider.LoadGlobalSettingsAsync();

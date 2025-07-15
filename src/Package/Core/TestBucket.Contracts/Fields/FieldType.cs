@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TestBucket.Domain.Fields.Models;
+﻿namespace TestBucket.Domain.Fields.Models;
 
 /// <summary>
 /// Type of field

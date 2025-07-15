@@ -27,21 +27,28 @@
     }
     else if (type == FieldType.String)
     {
-        @if(AutoCompleteEnabled)
+        @if (AutoCompleteEnabled)
         {
             <MudAutocomplete Clearable
-                T="string"
-                Value="@Field.StringValue"
-                ValueChanged="OnStringValueChanged"
-                SearchFunc="@Search"
-                Context="userName"
-                Variant="Variant.Outlined"/>
+                             T="string"
+                             Value="@Field.StringValue"
+                             ValueChanged="OnStringValueChanged"
+                             SearchFunc="@Search"
+                             Context="userName"
+                             Variant="Variant.Outlined" />
         }
         else
         {
-            <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable/>
+            <MudTextField Value="@Field.StringValue" T="string" ValueChanged="OnStringValueChanged" Variant="Variant.Outlined" Clearable />
         }
-        
+    }
+    else if (type == FieldType.Integer)
+    {
+        <MudNumericField Value="@Field.LongValue" T="long?" ValueChanged="OnLongValueChanged" Variant="Variant.Outlined" Clearable/>
+    }
+    else if (type == FieldType.TimeSpan)
+    {
+        <TimeSpanPicker Duration="@Field.TimeSpanValue" DurationChanged="OnTimeSpanValueChanged" />
     }
     else if (type == FieldType.DateOnly || type == FieldType.DateTimeOffset)
     {
@@ -276,6 +283,24 @@
         }
     }
 
+    
+    private async Task OnTimeSpanValueChanged(TimeSpan value)
+    {
+        if (Field is not null)
+        {
+            Field.TimeSpanValue = value;
+            await FieldChanged.InvokeAsync(Field);
+        }
+    }
+
+    private async Task OnLongValueChanged(long? value)
+    {
+        if (Field is not null)
+        {
+            Field.LongValue = value;
+            await FieldChanged.InvokeAsync(Field);
+        }
+    }
     private async Task OnStringValueChanged(string value)
     {
         if (Field is not null)

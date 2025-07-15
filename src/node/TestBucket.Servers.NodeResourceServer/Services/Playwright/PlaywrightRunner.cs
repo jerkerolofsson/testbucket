@@ -1,4 +1,6 @@
 ﻿
+using System.Diagnostics;
+
 using TestBucket.ResourceServer.Utilities;
 using TestBucket.Servers.NodeResourceServer.Models;
 using TestBucket.Servers.NodeResourceServer.Services.Inform;
@@ -8,27 +10,48 @@ namespace TestBucket.Servers.NodeResourceServer.Services.Playwright;
 public class PlaywrightRunner : BackgroundService
 {
     private readonly IServiceInformer _informer;
-
-    public PlaywrightRunner(IServiceInformer informer)
+    private readonly ILogger<PlaywrightRunner> _logger;
+    public PlaywrightRunner(IServiceInformer informer, ILogger<PlaywrightRunner> logger)
     {
         _informer = informer;
+        _logger = logger;
     }
 
     private async Task InformAsync(List<NodeService> services, CancellationToken cancellationToken)
     {
-        await _informer.InformAsync(services.Select(x=>x.Description).ToArray(), cancellationToken);
+        try
+        {
+            await _informer.InformAsync(services.Select(x => x.Description).ToArray(), cancellationToken);
+        }
+        catch(Exception ex)
+        {
+            _logger.LogError(ex, "Error informing about Playwright services");
+        }
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        if(Npx.GetIsInstalled() == false)
+        if (Npx.GetIsInstalled() == false)
         {
             return;
         }
 
+        try
+        {
+            await RunAsync(stoppingToken);
+        }
+        catch (OperationCanceledException) { }
+        finally
+        {
+
+        }
+    }
+
+    private async Task RunAsync(CancellationToken stoppingToken)
+    {
         List<NodeService> services = [];
         List<Task> tasks = [];
-        var instances  = Environment.GetEnvironmentVariable("TB_PLAYWRIGHT_INSTANCES");
+        var instances = Environment.GetEnvironmentVariable("TB_PLAYWRIGHT_INSTANCES");
         var owner = Environment.GetEnvironmentVariable("SERVER_UUID") ?? "no-uuid-configured";
         var hostname = PublicHostnameDetector.GetPublicHostname();
 
@@ -37,9 +60,6 @@ public class PlaywrightRunner : BackgroundService
             for (int i = 0; i < count; i++)
             {
                 int port = 8930 + i;
-
-                // Todo: as we launch npx, there may be child processes running, so should we kill them??
-
                 services.Add(new NodeService
                 {
                     Port = port,
@@ -48,7 +68,7 @@ public class PlaywrightRunner : BackgroundService
                         Name = "Playwright MCP server @ " + port,
                         Owner = owner,
                         ResourceId = $"playwright-{port}-" + hostname,
-                        Types = ["playwright-mcp"],
+                        Types = ["playwright-mcp", "mcp-server"],
                         Manufacturer = "Microsoft",
                         Model = "playwright-mcp",
                         Health = Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy,
@@ -58,12 +78,12 @@ public class PlaywrightRunner : BackgroundService
                     },
                 });
 
-                var task = PlaywrightService.RunAsync(port, stoppingToken);
+                var task = PlaywrightService.RunAsync(port, _logger, stoppingToken);
                 tasks.Add(task);
             }
         }
 
-        while(!stoppingToken.IsCancellationRequested && tasks.Count > 0)
+        while (!stoppingToken.IsCancellationRequested && tasks.Count > 0)
         {
             // Check the state and update..
             for (int i = 0; i < tasks.Count; i++)
@@ -87,14 +107,46 @@ public class PlaywrightRunner : BackgroundService
                 if (tasks[i].IsCompleted)
                 {
                     services[i].Description.Health = Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy;
-                    await InformAsync(services, stoppingToken);
 
                     int port = services[i].Port;
-                    var task = PlaywrightService.RunAsync(port, stoppingToken);
+                    Kill(port);
+                    var task = PlaywrightService.RunAsync(port, _logger, stoppingToken);
                     tasks[i] = task;
                 }
             }
+            await InformAsync(services, stoppingToken);
             await Task.Delay(5000);
+        }
+    }
+
+    /// <summary>
+    /// This only works if running as admin
+    /// </summary>
+    /// <param name="port"></param>
+    /// <returns></returns>
+    private void Kill(int port)
+    {
+        foreach(var process in Process.GetProcesses())
+        {
+            if(process.ProcessName == "node" || process.ProcessName == "npx")
+            {
+                try
+                {
+                    var cmdLine = process.StartInfo.Arguments;
+                    if (cmdLine.Contains($"--port {port}"))
+                    {
+                        _logger.LogInformation("Killing process {ProcessId} for port {Port}", process.Id, port);
+                        process.Kill();
+                    }
+                }
+                catch (InvalidOperationException)
+                { 
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error killing process {ProcessId} for port {Port}", process.Id, port);
+                }
+            }
         }
     }
 }

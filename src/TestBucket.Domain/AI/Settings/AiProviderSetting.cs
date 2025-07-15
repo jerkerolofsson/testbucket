@@ -17,7 +17,7 @@
             Metadata.ShowDescription = true;
             Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;
 
-            Metadata.Options = ["ollama", "github-models", "azure-ai"];
+            Metadata.Options = ["ollama", "github-models", "azure-ai", "anthropic"];
         }
 
         public override async Task<FieldValue> ReadAsync(SettingContext principal)
@@ -38,6 +38,9 @@
                 {
                     case "ollama":
                         settings.AiProviderUrl = Environment.GetEnvironmentVariable(TestBucketEnvironmentVariables.TB_OLLAMA_BASE_URL) ?? "http://localhost:11434";
+                        break;
+                    case "anthropic":
+                        settings.AiProviderUrl = "https://api.anthropic.com/v1";
                         break;
                     default:
                         settings.AiProviderUrl = "https://models.inference.ai.azure.com";

@@ -22,7 +22,7 @@ namespace TestBucket.Domain.AI.Settings
             Metadata.Description = null;
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcon.AI;
-            Metadata.Section.Name = "Provider";
+            Metadata.Section.Name = "ai-provider";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;
             Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;

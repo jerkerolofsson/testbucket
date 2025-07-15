@@ -4,6 +4,7 @@ using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Models;
 using TestBucket.Domain.Settings.Appearance;
 using TestBucket.Domain.Settings.Models;
+using TestBucket.Domain.Shared;
 
 namespace TestBucket.Domain.UnitTests.Settings.Appearance
 {
@@ -35,7 +36,7 @@ namespace TestBucket.Domain.UnitTests.Settings.Appearance
             manager.LoadUserPreferencesAsync(principal).Returns(preferences);
 
             var setting = new ThemeSetting(manager);
-            var context = new SettingContext { Principal = principal };
+            var context = new SettingContext { Principal = principal, TenantId = "tenant1" };
 
             // Act
             var result = await setting.ReadAsync(context);
@@ -54,7 +55,7 @@ namespace TestBucket.Domain.UnitTests.Settings.Appearance
             var principal = new ClaimsPrincipal(new ClaimsIdentity());
             var manager = Substitute.For<IUserPreferencesManager>();
             var setting = new ThemeSetting(manager);
-            var context = new SettingContext { Principal = principal };
+            var context = new SettingContext { Principal = principal, TenantId = "tenant1" };
 
             // Act
             var result = await setting.ReadAsync(context);
@@ -81,8 +82,8 @@ namespace TestBucket.Domain.UnitTests.Settings.Appearance
             manager.LoadUserPreferencesAsync(principal).Returns(preferences);
 
             var setting = new ThemeSetting(manager);
-            var context = new SettingContext { Principal = principal };
-            var value = new FieldValue { StringValue = "Le Trigre", FieldDefinitionId = 1 };
+            var context = new SettingContext { Principal = principal, TenantId = "tenant1" };
+            var value = new FieldValue { StringValue = "Le Trigre", FieldDefinitionId = 1, TenantId = "tenant1" };
 
             // Act
             await setting.WriteAsync(context, value);
@@ -102,8 +103,8 @@ namespace TestBucket.Domain.UnitTests.Settings.Appearance
             var principal = new ClaimsPrincipal(new ClaimsIdentity());
             var manager = Substitute.For<IUserPreferencesManager>();
             var setting = new ThemeSetting(manager);
-            var context = new SettingContext { Principal = principal };
-            var value = new FieldValue { StringValue = "Blue Steel", FieldDefinitionId = 1 };
+            var context = new SettingContext { Principal = principal, TenantId = "tenant1" };
+            var value = new FieldValue { StringValue = "Blue Steel", FieldDefinitionId = 1, TenantId = "tenant1" };
 
             // Act
             await setting.WriteAsync(context, value);

@@ -264,6 +264,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("text");
 
+                    b.Property<string>("Owner")
+                        .HasColumnType("text");
+
                     b.Property<bool>("PublicForProject")
                         .HasColumnType("boolean");
 
@@ -2700,6 +2703,36 @@ namespace TestBucket.Data.Migrations
                     b.ToTable("requirement_test_links");
                 });
 
+            modelBuilder.Entity("TestBucket.Domain.Settings.Models.DomainSettings", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Json")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TenantId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Type", "TestProjectId", "TenantId");
+
+                    b.ToTable("DomainSettings");
+                });
+
             modelBuilder.Entity("TestBucket.Domain.Settings.Models.GlobalSettings", b =>
                 {
                     b.Property<long>("Id")
@@ -2715,11 +2748,21 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("AiProviderUrl")
                         .HasColumnType("text");
 
+                    b.Property<string>("AnthropicApiKey")
+                        .HasColumnType("text");
+
                     b.Property<string>("AzureAiProductionKey")
                         .HasColumnType("text");
 
                     b.Property<string>("DefaultTenant")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EmbeddingAiProvider")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EmbeddingAiProviderUrl")
                         .HasColumnType("text");
 
                     b.Property<string>("GithubModelsDeveloperKey")
@@ -2903,6 +2946,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<string>("Icon")
                         .HasColumnType("text");
+
+                    b.Property<DateTimeOffset?>("LastSeen")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset?>("LockExpires")
                         .HasColumnType("timestamp with time zone");

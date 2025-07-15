@@ -21,14 +21,14 @@ public class GenerateEmbeddingHandler : IRequestHandler<GenerateEmbeddingRequest
     private async Task<IEmbeddingGenerator<string, Embedding<float>>?> CreateEmbeddingGeneratorAsync()
     {
         var settings = await _settingsProvider.LoadGlobalSettingsAsync();
-        if (settings.AiProvider == "ollama" && settings.AiProviderUrl is not null)
+        if (settings.EmbeddingAiProvider == "ollama" && settings.EmbeddingAiProviderUrl is not null)
         {
             string? model = settings.LlmEmbeddingModel;
             if(model is null)
             {
                 return null;
             }
-            var ollamaModelName = LlmModels.GetModelByName(model)?.OllamaName;
+            var ollamaModelName = LlmModels.GetModelByName(model)?.ModelName;
             if(ollamaModelName is null)
             {
                 return null;
@@ -39,7 +39,7 @@ public class GenerateEmbeddingHandler : IRequestHandler<GenerateEmbeddingRequest
                 var ollama = new OllamaApiClient(new OllamaApiClient.Configuration
                 {
                     Model = model,
-                    Uri = new Uri(settings.AiProviderUrl),
+                    Uri = new Uri(settings.EmbeddingAiProviderUrl),
                 });
                 return ollama;
             }

@@ -20,7 +20,7 @@ public class PullModelRequestHandler : IRequestHandler<PullModelRequest, bool>
     public async ValueTask<bool> Handle(PullModelRequest request, CancellationToken cancellationToken)
     {
         var model = LlmModels.GetModelByName(request.Name);
-        if (model?.OllamaName is null)
+        if (model?.ModelName is null)
         {
             return false;
         }
@@ -34,12 +34,12 @@ public class PullModelRequestHandler : IRequestHandler<PullModelRequest, bool>
         // Report progress of downloading the model in background task
         var task = Task.Run(async () =>
         {
-            await using var progress = _progressManager.CreateProgressTask("Downloading " + model.OllamaName);
+            await using var progress = _progressManager.CreateProgressTask("Downloading " + model.ModelName);
 
-            var ollama = new OllamaApiClient(settings.AiProviderUrl, model.OllamaName);
+            var ollama = new OllamaApiClient(settings.AiProviderUrl, model.ModelName);
             try
             {
-                await foreach (var response in ollama.PullModelAsync(model.OllamaName))
+                await foreach (var response in ollama.PullModelAsync(model.ModelName))
                 {
                     if (response is not null)
                     {

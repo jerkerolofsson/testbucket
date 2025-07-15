@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ClientModel;
 
 using Microsoft.Extensions.AI;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using OllamaSharp;
+
+using OpenAI;
 
 using TestBucket.Domain.AI.Models;
 
@@ -36,7 +33,35 @@ internal class ChatClientFactory : IChatClientFactory
     } 
     public async Task<IChatClient?> CreateChatClientAsync(ModelType modelType)
     {
-        return await CreateOllamaClientAsync(modelType);
+        var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+
+        if (settings.AiProvider == "ollama")
+        {
+            return await CreateOllamaClientAsync(modelType);
+        }
+        if (settings.AiProvider == "anthropic")
+        {
+            return CreateOpenAIChatClient(modelType, settings.AiProviderUrl, settings.AnthropicApiKey, settings.LlmModel);
+        }
+
+        return null;
+    }
+
+    private IChatClient? CreateOpenAIChatClient(ModelType modelType, string? aiProviderUrl, string? anthropicApiKey, string model)
+    {
+        if(anthropicApiKey is null || aiProviderUrl is null)
+        {
+            return null;
+        }
+        var client = new OpenAI.OpenAIClient(new ApiKeyCredential(anthropicApiKey), new OpenAIClientOptions
+        {
+            Endpoint = new Uri(aiProviderUrl)
+        });
+
+        model = GetApiModelName(model);
+
+        var chatClient = client.GetChatClient(model).AsIChatClient();
+        return new ChatClientBuilder(chatClient).UseFunctionInvocation().Build();
     }
 
     private async Task<IChatClient?> CreateOllamaClientAsync(ModelType modelType)
@@ -45,7 +70,7 @@ internal class ChatClientFactory : IChatClientFactory
         if (!string.IsNullOrEmpty(settings.AiProviderUrl))
         {
             string model = GetModelName(modelType, settings);
-            model = GetOllamaModelName(model);
+            model = GetApiModelName(model);
 
             try
             {
@@ -61,9 +86,9 @@ internal class ChatClientFactory : IChatClientFactory
         return null;
     }
 
-    private static string GetOllamaModelName(string model)
+    private static string GetApiModelName(string model)
     {
-        return LlmModels.GetModelByName(model)?.OllamaName ?? model;
+        return LlmModels.GetModelByName(model)?.ModelName ?? model;
     }
 
     /// <summary>
@@ -75,11 +100,6 @@ internal class ChatClientFactory : IChatClientFactory
     private static string GetModelName(ModelType modelType, GlobalSettings settings)
     {
         string model = settings.LlmModel ?? "phi4-mini:3.8b";
-        if (modelType == ModelType.Classification && !string.IsNullOrEmpty(settings.LlmClassificationModel))
-        {
-            model = settings.LlmClassificationModel;
-        }
-
         return model;
     }
 }

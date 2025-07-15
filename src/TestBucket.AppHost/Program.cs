@@ -72,8 +72,8 @@ builder.AddProject<Projects.TestBucket_Servers_AdbProxy>("testbucket-adbproxy")
 
 builder.AddProject<Projects.TestBucket_Servers_NodeResourceServer>("testbucket-noderesourceserver")
     .WithReference(testBucket)
-    .WithEnvironment("SERVER_UUID", "11111111")
-    .WithEnvironment("TB_PLAYWRIGHT_INSTANCES", "2")
+    .WithEnvironment("SERVER_UUID", "22222222")
+    .WithEnvironment("TB_PLAYWRIGHT_INSTANCES", "1")
     .WithEnvironment("TB_INFORM_URL", "https+http://testbucket/api/test-resources")
     .WithEnvironment("TB_AUTH_HEADER", $"Bearer {accessToken}")
     .WaitFor(testBucket);

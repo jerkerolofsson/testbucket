@@ -35,7 +35,7 @@ public class McpServerRunnerManager
             {
                 foreach (var runner in runners)
                 {
-                    if (runner.Registration.TestProjectId == projectId)
+                    if (runner.Registration.TestProjectId == projectId || runner.Registration.TestProjectId is null)
                     {
                         if (userName == runner.Registration.CreatedBy || runner.Registration.PublicForProject)
                         {

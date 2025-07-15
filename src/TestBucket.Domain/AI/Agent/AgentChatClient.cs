@@ -114,10 +114,10 @@ public class AgentChatClient
         if (client is not null)
         {
             List<ChatMessage> chatMessagesContext = [.. references, .. context.Messages];
-            await foreach (var update in PreProcessAsync(principal, context, userMessage, chatMessagesContext, client, cancellationToken))
-            {
-                yield return update;
-            }
+            //await foreach (var update in PreProcessAsync(principal, context, userMessage, chatMessagesContext, client, cancellationToken))
+            //{
+            //    yield return update;
+            //}
 
             // Finally, add to the user message and call the model
             chatMessagesContext = [.. references, .. context.Messages];
@@ -155,22 +155,33 @@ public class AgentChatClient
         List<ChatResponseUpdate> updates = [];
         try
         {
-            var update = await client.GetResponseAsync(chatMessages, options, cancellationToken);
+            //List<ChatMessage> withoutToolCalls = [.. chatMessages.Where(x => !x.Contents.Any(c => c is FunctionCallContent))];
 
-            foreach (var message in update.Messages)
+            await foreach(var message in client.GetStreamingResponseAsync(chatMessages, options, cancellationToken))
             {
+                updates.Add(message);
                 if (cancellationToken.IsCancellationRequested)
                 {
                     break;
                 }
-
-                yield return new ChatResponseUpdate
-                {
-                    Role = message.Role,
-                    Contents = message.Contents,
-                };
-                context.Messages.Add(message);
+                yield return message;
             }
+
+            //var update = await client.GetResponseAsync(chatMessages, options, cancellationToken);
+            //foreach (var message in update.Messages)
+            //{
+            //    if (cancellationToken.IsCancellationRequested)
+            //    {
+            //        break;
+            //    }
+
+            //    yield return new ChatResponseUpdate
+            //    {
+            //        Role = message.Role,
+            //        Contents = message.Contents,
+            //    };
+            //    context.Messages.Add(message);
+            //}
         }
         finally
         {

@@ -174,6 +174,8 @@
 
     private void Clear(bool clearMessages)
     {
+        _cts?.Cancel();
+
         if (clearMessages)
         {
             context.ClearMessages();
@@ -215,6 +217,10 @@
     }
     private async Task SendAsync(ChatMessage chatMessage)
     {
+        _cts?.Cancel();
+        _cts = new CancellationTokenSource();
+        var cancellationToken = _cts.Token;
+
         _userPrompt = "";
         _isWorking = true;
         _activeResponse.Clear();
@@ -225,11 +231,11 @@
 
         try
         {
-            await foreach (var update in client.GetStreamingResponseAsync(authState.User, Project, context, chatMessage, _cts.Token))
+            await foreach (var update in client.GetStreamingResponseAsync(authState.User, Project, context, chatMessage, cancellationToken))
             {
                 if (update is PipelineActionUpdate actionUpdate)
                 {
-                    _activeResponse.Append(actionUpdate.ActionName);
+                    _activeResponse.Append(actionUpdate.ActionName+"\n\n");
                 }
                 else
                 {
@@ -237,6 +243,10 @@
                 }
                 await InvokeAsync(this.StateHasChanged);
             }
+        }
+        catch(OperationCanceledException)
+        {
+            
         }
         catch(Exception ex)
         {

@@ -69,6 +69,7 @@ using TestBucket.Domain.Testing.TestRuns.Insights;
 using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Domain.TestResources;
 using TestBucket.Domain.TestResources.Allocation;
+using TestBucket.Domain.TestResources.Settings;
 using TestBucket.Integrations;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -186,6 +187,7 @@ public static class DomainServiceExtensions
 
         services.AddScoped<ITestResourceManager, TestResourceManager>();
         services.AddScoped<ITestAccountManager, TestAccountManager>();
+        services.AddTransient<ISetting, DeleteResourceIfNotSeenFor>();
 
         services.AddScoped<ICommandManager, CommandManager>();
         services.AddScoped<IUnifiedSearchManager, UnifiedSearchManager>();
@@ -229,11 +231,14 @@ public static class DomainServiceExtensions
 
         services.AddScoped<ISetting, AiProviderSetting>();
         services.AddScoped<ISetting, AiProviderUrlSetting>();
+        services.AddScoped<ISetting, EmbeddingAiProviderSetting>();
+        services.AddScoped<ISetting, EmbeddingAiProviderUrlSetting>();
         services.AddScoped<ISetting, AiModelSetting>();
-        services.AddScoped<ISetting, AiLlmClassificationModelSetting>();
+        //services.AddScoped<ISetting, AiLlmClassificationModelSetting>();
         services.AddScoped<ISetting, AiLlmEmbeddingModelSetting>();
         services.AddScoped<ISetting, GithubModelsDeveloperKeySetting>();
         services.AddScoped<ISetting, AzureAiProductionKeySetting>();
+        services.AddScoped<ISetting, AnthropicApiKeySetting>();
 
         // LLM
         services.AddScoped<AgentChatContext>();

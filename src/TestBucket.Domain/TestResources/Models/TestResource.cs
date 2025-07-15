@@ -44,6 +44,11 @@ public class TestResource : Entity
     public string? LockOwner { get; set; }
 
     /// <summary>
+    /// Time when last seen
+    /// </summary>
+    public DateTimeOffset? LastSeen { get; set; }
+
+    /// <summary>
     /// Timestamp when the lock expires
     /// </summary>
     public DateTimeOffset? LockExpires { get; set; }

@@ -46,6 +46,17 @@
         </MudTable>
     }
 
+    <PermissionView Entity="PermissionEntityType.TestResource" Level="PermissionLevel.Delete">
+        <Authorized>
+            <MudStack Row Justify="Justify.FlexEnd">
+                <MudButton data-testid="delete-resource"
+                           Class="tb-button-delete"
+                           Variant="Variant.Filled" OnClick="DeleteAsync">@loc["delete"]</MudButton>
+            </MudStack>
+
+        </Authorized>
+    </PermissionView>
+
 </MudStack>
 
 @code {
@@ -76,7 +87,7 @@
 
     private async Task ClearImageAsync()
     {
-       if (_resource is not null)
+        if (_resource is not null)
         {
             _resource.Icon = null;
             await controller.UpdateAsync(_resource);
@@ -95,5 +106,15 @@
 
         // Delete it, we no longer need it
         await attachments.DeleteResourceByIdAsync(file.Id);
+    }
+
+    private async Task DeleteAsync()
+    {
+         if (_resource is not null)
+        {
+            await controller.DeleteAsync(_resource);
+
+            appNav.NavigateTo(appNav.GetTestResourcesSettingsUrl());
+        }         
     }
 }

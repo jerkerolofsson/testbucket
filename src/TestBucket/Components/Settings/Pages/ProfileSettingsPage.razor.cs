@@ -2,6 +2,7 @@ using TestBucket.Domain;
 using TestBucket.Domain.AI.Models;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Models;
+using TestBucket.Domain.Shared;
 
 namespace TestBucket.Components.Settings.Pages;
 public partial class ProfileSettingsPage
@@ -33,7 +34,7 @@ public partial class ProfileSettingsPage
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var principal = authState.User;
 
-        return new SettingContext { Principal = principal, ProjectId = Project?.Id };
+        return new SettingContext { Principal = principal, ProjectId = Project?.Id, TenantId = principal.GetTenantIdOrThrow() };
     }
 
     private SettingContext? _context;

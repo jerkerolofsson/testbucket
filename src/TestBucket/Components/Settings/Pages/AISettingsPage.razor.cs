@@ -5,6 +5,7 @@ using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Models;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Models;
+using TestBucket.Domain.Shared;
 
 namespace TestBucket.Components.Settings.Pages;
 public partial class AISettingsPage
@@ -26,10 +27,10 @@ public partial class AISettingsPage
 
     private string? _defaultModel;
     private string? _embeddingModel;
-    private string? _classificationModel;
-    private string? _generatorModel;
     private string? _aiProvider;
     private string? _aiProviderUrl;
+    private string? _embeddingAiProvider;
+    private string? _embeddingAiProviderUrl;
 
     private string? GetModelIcon(string? name)
     {
@@ -61,6 +62,10 @@ public partial class AISettingsPage
         if (model.Vendor == "deepseek")
         {
             return TbIcons.Brands.Deepseek;
+        }
+        if (model.Vendor == "anthropic")
+        {
+            return TbIcons.Brands.Claude;
         }
         if (model.Vendor == "microsoft")
         {
@@ -96,9 +101,23 @@ public partial class AISettingsPage
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var principal = authState.User;
 
-        return new SettingContext { Principal = principal, ProjectId = Project?.Id };
+        return new SettingContext { Principal = principal, ProjectId = Project?.Id, TenantId = principal.GetTenantIdOrThrow() };
     }
+    private async Task OnEmbeddingAiProviderUrlChanged(string url)
+    {
+        _embeddingAiProviderUrl = url;
 
+        if (_context is null)
+        {
+            return;
+        }
+
+        var setting = settingsManager.GetSettingByName(_context, "embedding-ai-provider-url");
+        if (setting is not null)
+        {
+            await setting.WriteAsync(_context, new FieldValue { StringValue = url, FieldDefinitionId = 0 });
+        }
+    }
     private async Task OnAiProviderUrlChanged(string url)
     {
         _aiProviderUrl = url;
@@ -136,9 +155,36 @@ public partial class AISettingsPage
                 await OnAiProviderUrlChanged("https://models.inference.ai.azure.com");
             }
 
+            if (provider == "anthropic")
+            {
+                await OnAiProviderUrlChanged("https://api.anthropic.com/v1");
+            }
+
             if (provider == "ollama")
             {
                 await OnAiProviderUrlChanged(Environment.GetEnvironmentVariable("TB_OLLAMA_BASE_URL") ?? "http://localhost:11434");
+            }
+        }
+    }
+    private async Task OnEmbeddingAiProviderChanged(string provider)
+    {
+        if (_context is null)
+        {
+            return;
+        }
+
+        if (provider != _embeddingAiProvider)
+        {
+            _embeddingAiProvider = provider;
+            var setting = settingsManager.GetSettingByName(_context, "embedding-ai-provider");
+            if (setting is not null)
+            {
+                await setting.WriteAsync(_context, new FieldValue { StringValue = provider, FieldDefinitionId = 0 });
+            }
+           
+            if (provider == "ollama")
+            {
+                await OnEmbeddingAiProviderUrlChanged(Environment.GetEnvironmentVariable("TB_OLLAMA_BASE_URL") ?? "http://localhost:11434");
             }
         }
     }
@@ -158,39 +204,6 @@ public partial class AISettingsPage
             await setting.WriteAsync(_context, new FieldValue { StringValue = model, FieldDefinitionId = 0 });
         }
     }
-
-    private async Task OnClassificationModelChanged(string model)
-    {
-        _classificationModel = model;
-
-        if (_context is null)
-        {
-            return;
-        }
-
-        var setting = settingsManager.GetSettingByName(_context, "ai-classification-model");
-        if (setting is not null)
-        {
-            await setting.WriteAsync(_context, new FieldValue { StringValue = model, FieldDefinitionId = 0 });
-        }
-    }
-
-    private async Task OnGeneratorModelChanged(string model)
-    {
-        _generatorModel = model;
-
-        if (_context is null)
-        {
-            return;
-        }
-
-        var setting = settingsManager.GetSettingByName(_context, "ai-test-generator-model");
-        if (setting is not null)
-        {
-            await setting.WriteAsync(_context, new FieldValue { StringValue = model, FieldDefinitionId = 0 });
-        }
-    }
-
     private async Task OnDefaultModelChanged(string model)
     {
         _defaultModel = model;
@@ -218,6 +231,7 @@ public partial class AISettingsPage
             "ollama" => TbIcons.Brands.Ollama,
             "azure-ai" => TbIcons.Brands.AzureAI,
             "github-models" => Icons.Custom.Brands.GitHub,
+            "anthropic" => TbIcons.Brands.Claude,
             _ => null
         };
     }
@@ -228,10 +242,11 @@ public partial class AISettingsPage
 
         var defaultModel = settingsManager.GetSettingByName(_context, "ai-default-model");
         var generatorModel = settingsManager.GetSettingByName(_context, "ai-test-generator-model");
-        var classificationModel = settingsManager.GetSettingByName(_context, "ai-classification-model");
         var embeddingModel = settingsManager.GetSettingByName(_context, "ai-embedding-model");
         var provider = settingsManager.GetSettingByName(_context, "ai-provider");
         var providerUrl = settingsManager.GetSettingByName(_context, "ai-provider-url");
+        var embeddingProvider = settingsManager.GetSettingByName(_context, "embedding-ai-provider");
+        var embeddingProviderUrl = settingsManager.GetSettingByName(_context, "embedding-ai-provider-url");
 
         if (provider is not null)
         {
@@ -249,13 +264,13 @@ public partial class AISettingsPage
         {
             _embeddingModel = (await embeddingModel.ReadAsync(_context)).StringValue;
         }
-        if (classificationModel is not null)
+        if (embeddingProvider is not null)
         {
-            _classificationModel = (await classificationModel.ReadAsync(_context)).StringValue;
+            _embeddingAiProvider = (await embeddingProvider.ReadAsync(_context)).StringValue;
         }
-        if (generatorModel is not null)
+        if (embeddingProviderUrl is not null)
         {
-            _generatorModel = (await generatorModel.ReadAsync(_context)).StringValue;
+            _embeddingAiProviderUrl = (await embeddingProviderUrl.ReadAsync(_context)).StringValue;
         }
 
 

@@ -267,4 +267,10 @@
   <data name="mcp-public-description" xml:space="preserve">
     <value>A public MCP server may be used by any project member. If it is not public it is only available to a single user.</value>
   </data>
+  <data name="test-resources" xml:space="preserve">
+    <value>Test resources</value>
+  </data>
+  <data name="delete-resource-if-not-seen-for" xml:space="preserve">
+    <value>Delete resource if not seen for</value>
+  </data>
 </root>

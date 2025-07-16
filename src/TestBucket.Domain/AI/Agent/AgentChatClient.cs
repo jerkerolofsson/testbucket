@@ -4,18 +4,16 @@ using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 
 using TestBucket.Domain.AI.Agent.Models;
-using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.AI.Mcp.Services;
-using TestBucket.Domain.AI.Mcp.Tools;
 using TestBucket.Domain.AI.Tools;
 using TestBucket.Domain.Identity;
+using TestBucket.Domain.Testing.Compiler;
 
 namespace TestBucket.Domain.AI.Agent;
 public class AgentChatClient
 {
     private readonly IChatClientFactory _chatClientFactory;
     private readonly IServiceProvider _serviceProvider;
-    private readonly IMcpServerManager _mcpServerManager;
     private readonly McpServerRunnerManager _mcpServerRunnerManager;
 
     public AgentChatClient(IChatClientFactory chatClientFactory, IServiceProvider serviceProvider)
@@ -23,7 +21,6 @@ public class AgentChatClient
         _chatClientFactory = chatClientFactory;
         _serviceProvider = serviceProvider;
         _mcpServerRunnerManager = serviceProvider.GetRequiredService<McpServerRunnerManager>();
-        _mcpServerManager = serviceProvider.GetRequiredService<IMcpServerManager>();
     }
 
     private async Task<ToolCollection> GetToolsAsync(ClaimsPrincipal principal, AgentChatContext context, CancellationToken cancellationToken = default)
@@ -50,7 +47,6 @@ public class AgentChatClient
     /// Pre-processing is used to inject extra data into the context based on the user prompt
     /// </summary>
     /// <param name="principal"></param>
-    /// <param name="project"></param>
     /// <param name="context"></param>
     /// <param name="userMessage"></param>
     /// <param name="contextMessages"></param>
@@ -102,13 +98,11 @@ public class AgentChatClient
             principal = Impersonation.ChangeProject(principal, project.Id);
         }
 
-        // Chat context
         var references = context.GetReferencesAsChatMessages();
         if(references.Count > 0)
         {
             yield return new ChatResponseUpdate(ChatRole.System, $"Collected {references.Count} references..\n");
         }
-        
 
         using var client = await _chatClientFactory.CreateChatClientAsync(AI.Models.ModelType.Default);
         if (client is not null)

@@ -22,8 +22,8 @@ public interface IMcpServerManager
     Task<IReadOnlyList<McpServerRegistration>> GetUserMcpServerRegistationsAsync(ClaimsPrincipal principal, long projectId);
 
     /// <summary>
-    /// Gets all MCP server registrations for a specific project, regardless of visibility settings.
-    /// This method typically requires elevated permissions and returns all registrations in the project.
+    /// Gets all MCP server registrations for a tenant, regardless of visibility settings.
+    /// This method typically requires elevated permissions and returns all registrations
     /// </summary>
     /// <param name="principal">The authenticated user's security principal</param>
     

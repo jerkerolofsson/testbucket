@@ -137,6 +137,7 @@ public static class DomainServiceExtensions
 
         services.AddScoped<IMarkdownDetector,TemplateDetector>();
         services.AddScoped<ITestCompiler, TestCompiler>();
+        services.AddScoped<TestExecutionContextBuilder>();
 
         services.AddScoped<ITestCaseImporter, TestCaseImporter>();
         services.AddScoped<ITextTestResultsImporter, TestResultTextImporter>();

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Tenants;
+using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Domain.AI.Mcp.Services;
 
@@ -59,22 +60,18 @@ internal class McpServerStartupService : BackgroundService
             configure.AddAllPermissions();
         });
 
-        var projectRepository = scope.ServiceProvider.GetRequiredService<IProjectRepository>();
-        await foreach (var project in projectRepository.EnumerateAsync(tenant.Id, cancellationToken))
-        {
-            await ProcessProjectAsync(scope, tenant.Id, project.Id, cancellationToken);
-        }
-    }
-
-    private async Task ProcessProjectAsync(IServiceScope scope, string tenantId, long projectId, CancellationToken cancellationToken)
-    {
         var serverManager = scope.ServiceProvider.GetRequiredService<IMcpServerManager>();
         var serverRunnerManager = scope.ServiceProvider.GetRequiredService<McpServerRunnerManager>();
-        foreach (var registration in await serverManager.GetAllMcpServerRegistationsAsync(Impersonation.Impersonate(tenantId, projectId), projectId))
+        foreach (var registration in await serverManager.GetAllMcpServerRegistationsAsync(Impersonation.Impersonate(tenant.Id, null)))
         {
             cancellationToken.ThrowIfCancellationRequested();
             await serverRunnerManager.StartServerAsync(registration, cancellationToken);
         }
 
+        //var projectRepository = scope.ServiceProvider.GetRequiredService<IProjectRepository>();
+        //await foreach (var project in projectRepository.EnumerateAsync(tenant.Id, cancellationToken))
+        //{
+        //    await ProcessProjectAsync(scope, tenant.Id, project.Id, cancellationToken);
+        //}
     }
 }

@@ -3,6 +3,7 @@
 @using TestBucket.Domain.AI.Agent.Models
 @inject AppNavigationManager appNavigationManager
 @inject TestBrowser testBrowser
+@inject TestCaseEditorController testCaseEditorController
 @inject IAppLocalization loc
 @implements IDisposable
 
@@ -34,24 +35,31 @@
         var testCase = await testBrowser.PickTestCaseAsync(Project, Team);
         if(testCase is not null)
         {
-            await AddReference(ChatReferenceBuilder.Create(testCase));
+            await AddReferenceAsync(ChatReferenceBuilder.Create(testCase));
         }
     }
 
     private async Task RemoveReference(ChatReference reference)
     {
         _context.References.Remove(reference);
-        await ReferencesChanged.InvokeAsync();
+        await ReferencesChanged.InvokeAsync(_context);
     }
 
-    private void OnActiveDocumentChanged(object? sender, ChatReference? reference)
+    private async void OnActiveDocumentChanged(object? sender, ChatReference? reference)
     {
-        _context.References.RemoveAll(x => x.IsActiveDocument);
-        if (reference is not null)
+        try
         {
-            _context.References.Add(reference);
+            _context.References.RemoveAll(x => x.IsActiveDocument);
+            if (reference is not null)
+            {
+                await AddReferenceAsync(reference);
+            }
+            await InvokeAsync(this.StateHasChanged);
         }
-        InvokeAsync(this.StateHasChanged);
+        catch
+        {
+
+        }
     }
 
     protected override void OnInitialized()
@@ -65,20 +73,69 @@
         appNavigationManager.State.ActiveDocumentChanged -= OnActiveDocumentChanged;
     }
 
-    private async Task AddReference(ChatReference reference)
+    private async Task AddReferenceAsync(ChatReference reference)
     {
-        if (!_context.References.Contains(reference))
+        if (!_context.References.Any(x => x.Id == reference.Id))
         {
+            if(reference.EntityTypeName == "TestCase" && !reference.IsCompiled)
+            {
+                // Compile it
+                List<CompilerError> errors = [];
+                var testCase = await testBrowser.GetTestCaseByIdAsync(reference.Id);
+                if (testCase is null)
+                {
+                    return;
+                }
+                var options = new CompilationOptions(testCase, testCase.Description ?? "");
+                var context = await testCaseEditorController.CompileAsync(options, errors);
+                if (context?.CompiledText is not null)
+                {
+                    reference.Text = context.CompiledText;
+                    reference.IsCompiled = true;
+                }
+            }
+
             _context.References.Add(reference);
         }
-        await ReferencesChanged.InvokeAsync();
+        await ReferencesChanged.InvokeAsync(_context);
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         if (ChatContext is not null)
         {
-            _context = ChatContext;
+            // Check if it has changed
+            bool hasChanged = false;
+            if(_context.References.Count != ChatContext.References.Count)
+            {
+                hasChanged = true;
+            }
+            else
+            {
+                for(int i=0; i<_context.References.Count; i++)
+                {
+                    var a = _context.References[i];
+                    var b = ChatContext.References[i];
+                    if (!a.Equals(b) || (b.CanBeCompiled && !b.CanBeCompiled) || (a.CanBeCompiled && !a.CanBeCompiled))
+                    {
+                        hasChanged = true;
+                        break;
+                    }
+                }
+            }
+
+            if (hasChanged)
+            { 
+                _context = ChatContext;
+
+                // Call AddReferenceAsync so we compile tests
+                List<ChatReference> references = [.. _context.References];
+                _context.References.Clear();
+                foreach(var reference in references)
+                {
+                    await AddReferenceAsync(reference);
+                }
+            }
         }
     }
 }

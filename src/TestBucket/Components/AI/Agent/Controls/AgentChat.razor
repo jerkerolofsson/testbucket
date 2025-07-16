@@ -161,6 +161,13 @@
         {
             needReset = true;
         }
+
+        // Never reset if we have a user prompt
+        if(context.Messages.Count > 0 || !string.IsNullOrWhiteSpace(_userPrompt))
+        {
+            needReset = false;
+        }
+
         if (needReset)
         {
             Clear(clearMessages: clearMessages);

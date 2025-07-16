@@ -273,4 +273,13 @@
   <data name="delete-resource-if-not-seen-for" xml:space="preserve">
     <value />
   </data>
+  <data name="keyboard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="commands" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tool-bar" xml:space="preserve">
+    <value />
+  </data>
 </root>

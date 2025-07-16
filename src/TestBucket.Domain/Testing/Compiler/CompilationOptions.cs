@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Components.Tests.TestCases.Services;
+﻿using TestBucket.Domain.Testing.Models;
+
+namespace TestBucket.Domain.Testing.Compiler;
 
 public record class CompilationOptions(TestCase TestCase, string Text)
 {

@@ -9,5 +9,5 @@ internal class AiRunnerSettings
     /// <summary>
     /// Max tokens that can be used in a day
     /// </summary>
-    public int MaxTokensPerDay { get; set; } = 1_000_000;
+    public long MaxTokensPerDay { get; set; } = 1_000_000;
 }

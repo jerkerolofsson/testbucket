@@ -243,6 +243,8 @@ public static class DomainServiceExtensions
 
         // AI Runner settings
         services.AddScoped<ISetting, EnableAiRunnerSetting>();
+        services.AddScoped<ISetting, MaxTokensPerDayForAitRunnerSetting>();
+        
 
         // LLM
         services.AddScoped<AgentChatContext>();

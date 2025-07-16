@@ -56,7 +56,8 @@ internal class AddRemoveMcpServerForTestResource :
                         {
                             [resource.Name] = new McpServer
                             {
-                                Url = url
+                                Url = url,
+                                ToolName = resource.Types.FirstOrDefault()
                             }
                         }
                     }

@@ -300,4 +300,19 @@
   <data name="ai-provider-description" xml:space="preserve">
     <value>The AI provider to use for this tenant</value>
   </data>
+  <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
+    <value>AI Runner max. tokens per day</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
+    <value>Maximum number of tokens that can be consumed in a day by the AI runner</value>
+  </data>
+  <data name="mcp-tool-name" xml:space="preserve">
+    <value>MCP Tool</value>
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value>Testing</value>
+  </data>
+  <data name="test-execution" xml:space="preserve">
+    <value>Test execution</value>
+  </data>
 </root>

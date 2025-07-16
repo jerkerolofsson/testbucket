@@ -60,6 +60,7 @@ public class TestResource : Entity
 
     /// <summary>
     /// Types of resource (for example "phone"). A resource should have atleast one, but could have multiple types defined
+    /// The types should be defined so the first is the most specific one.
     /// </summary>
     public required string[] Types { get; set; }
 

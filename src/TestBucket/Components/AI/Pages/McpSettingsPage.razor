@@ -72,6 +72,7 @@
                                         <MudSpacer />
                                         <LockedToggle Locked="@registration.Locked" LockedChanged="async (bool value) => await OnLockedChangedAsync(registration, value)" />
                                     </Field>
+
                                 </Authorized>
                                 <NotAuthorized>
                                     <Field Row>
@@ -94,16 +95,27 @@
                                     </Field>
                                 </NotAuthorized>
                             </PermissionView>
+
+
                             @if (registration.Configuration.Servers is not null)
                             {
                                 foreach (var server in registration.Configuration.Servers)
                                 {
-                                    @if (server.Value.Type is not null)
+                                    @if (!string.IsNullOrEmpty(server.Value.Type))
                                     {
                                         <Field Row>
                                             <FieldHeader>Type</FieldHeader>
                                             <MudSpacer />
                                             @server.Value.Type
+                                        </Field>
+                                    }
+
+                                    @if (server.Value.ToolName is not null)
+                                    {
+                                        <Field Row>
+                                            <FieldHeader>@settingsLoc["mcp-tool-name"]</FieldHeader>
+                                            <MudSpacer />
+                                            @server.Value.ToolName
                                         </Field>
                                     }
                                     @if (server.Value.Url is not null)

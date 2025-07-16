@@ -30,6 +30,8 @@ internal class McpServerRunner : IAsyncDisposable
     /// </summary>
     public string Name => _name;
 
+    public string McpToolName => _configuration.ToolName ?? _name;
+
     /// <summary>
     /// Creates and initializes a new MCP server runner instance.
     /// </summary>

@@ -17,6 +17,7 @@ namespace TestBucket.Domain.AI.Mcp.Tools;
 /// </summary>
 public class McpAIFunction
 {
+    public bool Enabled { get; set; } = true;
     public required McpServerRegistration McpServerRegistration { get; set; }
     public required McpServer McpServer { get; set; }
     public required AIFunction AIFunction { get; set; }

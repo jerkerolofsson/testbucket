@@ -22,9 +22,11 @@ public record class McpServerConfiguration
         return JsonSerializer.Deserialize<McpServerConfiguration>(json, SerializerOptions);
     }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     [JsonPropertyName("inputs")]
     public List<McpInput>? Inputs { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] 
     public Dictionary<string, McpServer>? Servers { get; set; }
 }
 
@@ -52,8 +54,16 @@ public record class McpServer
     public McpEnvironmentVariables? Env { get; set; }
 
     /// <summary>
+    /// This is used to identify multiple tool that have the same implementation, and multiple
+    /// tools with the same name are not added to the same agent.
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? ToolName { get; set; }
+
+    /// <summary>
     /// Error message if the server configuration is invalid or cannot start.
     /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? ErrorMessage { get; set; }
 }
 

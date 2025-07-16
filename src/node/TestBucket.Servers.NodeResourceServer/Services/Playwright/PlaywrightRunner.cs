@@ -73,7 +73,9 @@ public class PlaywrightRunner : BackgroundService
                         Model = "playwright-mcp",
                         Health = Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy,
                         Variables = new Dictionary<string, string> {
-                            { "url", $"http://{hostname}:{port}/mcp" }
+                            { 
+                                "url", $"http://{hostname}:{port}/mcp"
+                            }
                         },
                     },
                 });

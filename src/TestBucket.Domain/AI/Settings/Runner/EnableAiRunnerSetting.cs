@@ -15,6 +15,7 @@ namespace TestBucket.Domain.AI.Settings
             Metadata.Category.Name = "testing";
             Metadata.Category.Icon = SettingIcon.Testing;
             Metadata.Section.Name = "ai-runner";
+            Metadata.Section.Icon = SettingIcon.AI;
             Metadata.SearchText = "ai-runner";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.Boolean;

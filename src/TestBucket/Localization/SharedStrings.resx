@@ -960,4 +960,16 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Last seen</value>
     <comment>Time when resource was last seen</comment>
   </data>
+  <data name="reload" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="assign-all-unassigned-to-ai" xml:space="preserve">
+    <value>Assign all unassigned to AI runner</value>
+  </data>
+  <data name="assign-all-unassigned-to-ai-description" xml:space="preserve">
+    <value>Assigns all unassigned test cases to the AI runner who will run the tests in the background</value>
+  </data>
+  <data name="run-test-case-description" xml:space="preserve">
+    <value>Run the active test case</value>
+  </data>
 </root>

@@ -29,7 +29,7 @@ public class AgentChatClient
         _testExecutionContextBuilder = serviceProvider.GetRequiredService<TestExecutionContextBuilder>();
     }
 
-    private async Task<ToolCollection> GetToolsAsync(ClaimsPrincipal principal, AgentChatContext context, CancellationToken cancellationToken = default)
+    public async Task<ToolCollection> GetToolsAsync(ClaimsPrincipal principal, AgentChatContext context, CancellationToken cancellationToken = default)
     {
         var toolCollection = new ToolCollection(_serviceProvider);
 
@@ -39,7 +39,7 @@ public class AgentChatClient
         // Add MCP tools from the MCP server manager
         if (context.ProjectId is not null)
         {
-            var mcpTools = await _mcpServerRunnerManager.GetMcpToolsForUserAsync(principal, context.ProjectId.Value, cancellationToken);
+            var mcpTools = await _mcpServerRunnerManager.GetMcpToolsForUserAsync(principal, context, cancellationToken);
             foreach (var mcpTool in mcpTools)
             {
                 toolCollection.Add(mcpTool.AIFunction);
@@ -188,13 +188,14 @@ public class AgentChatClient
         // Trigger a UI update
         yield return new ChatResponseUpdate();
 
-        var tools = await GetToolsAsync(principal, context, cancellationToken);
+        ToolCollection tools = context.Tools ?? await GetToolsAsync(principal, context, cancellationToken);
+        context.Tools = tools;
 
         var options = new ChatOptions
         {
             AllowMultipleToolCalls = true,
             ToolMode = ChatToolMode.Auto,
-            Tools = [.. tools.Functions]
+            Tools = [.. tools.EnabledFunctions]
         };
 
         List<ChatResponseUpdate> updates = [];

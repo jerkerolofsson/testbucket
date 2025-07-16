@@ -956,4 +956,16 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="last-seen" xml:space="preserve">
     <value />
   </data>
+  <data name="reload" xml:space="preserve">
+    <value />
+  </data>
+  <data name="assign-all-unassigned-to-ai" xml:space="preserve">
+    <value />
+  </data>
+  <data name="assign-all-unassigned-to-ai-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="run-test-case-description" xml:space="preserve">
+    <value />
+  </data>
 </root>

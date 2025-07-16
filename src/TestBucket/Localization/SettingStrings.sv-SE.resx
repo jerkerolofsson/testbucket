@@ -300,4 +300,19 @@
   <data name="ai-provider-description" xml:space="preserve">
     <value />
   </data>
+  <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mcp-tool-name" xml:space="preserve">
+    <value />
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value />
+  </data>
+  <data name="test-execution" xml:space="preserve">
+    <value />
+  </data>
 </root>

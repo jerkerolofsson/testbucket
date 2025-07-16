@@ -3,8 +3,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
+using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.AI.Mcp.Models;
 using TestBucket.Domain.AI.Mcp.Tools;
+using TestBucket.Domain.Automation.Runners.Models;
 
 namespace TestBucket.Domain.AI.Mcp.Services;
 
@@ -24,9 +26,14 @@ public class McpServerRunnerManager
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public async Task<List<McpAIFunction>> GetMcpToolsForUserAsync(ClaimsPrincipal principal, long projectId, CancellationToken cancellationToken = default)
+    public async Task<List<McpAIFunction>> GetMcpToolsForUserAsync(ClaimsPrincipal principal, AgentChatContext context, CancellationToken cancellationToken = default)
     {
+        var projectId = context.ProjectId;
         var userName = principal.Identity?.Name ?? throw new ArgumentNullException(nameof(principal.Identity.Name), "User identity is required to get MCP tools.");
+
+        // There may be multiple servers, for example "playwright", we should only return one of
+        // them.
+        HashSet<string> setToolTypes = [];
 
         List<McpAIFunction> tools = [];
         foreach (var registration in _serverRegistrations.Values)
@@ -39,12 +46,22 @@ public class McpServerRunnerManager
                     {
                         if (userName == runner.Registration.CreatedBy || runner.Registration.PublicForProject)
                         {
-                            tools.AddRange(await runner.GetToolsForSessionAsync(userName, cancellationToken));
+                            foreach (var tool in await runner.GetToolsForSessionAsync(userName, cancellationToken))
+                            {
+                                tool.Enabled = !setToolTypes.Contains(runner.McpToolName);
+                                tools.Add(tool);
+                            }
+
+                            if (!setToolTypes.Contains(runner.McpToolName))
+                            {
+                                setToolTypes.Add(runner.McpToolName);
+                            }
                         }
                     }
                 }
             }
         }
+
         return tools;
     }
 

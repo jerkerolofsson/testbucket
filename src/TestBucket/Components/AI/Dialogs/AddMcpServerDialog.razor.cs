@@ -13,8 +13,8 @@ public partial class AddMcpServerDialog
 
     private string _json = """
         {
-          "servers": {
-            "acuvity-mcp-server-playwright": {
+          "mcpServers": {
+            "playwright": {
               "url": "http://localhost:8000/sse"
             }
           }

@@ -53,7 +53,7 @@ public class AgentChatContext
                 content.Add(new TextContent(xml));
                 messages.Add(new ChatMessage(ChatRole.User, content));
             }
-            messages.Add(new ChatMessage(ChatRole.User, "Based on the references..."));
+            //messages.Add(new ChatMessage(ChatRole.User, "Based on the references..."));
         }
         return messages;
     }

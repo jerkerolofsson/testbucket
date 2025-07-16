@@ -4,8 +4,10 @@ using Microsoft.Extensions.AI;
 
 using OllamaSharp;
 
+using TestBucket.Domain.AI.Settings.LLM;
+
 namespace TestBucket.Domain.AI.Embeddings;
-public record class GenerateEmbeddingRequest(long ProjectId, string Text) : IRequest<GenerateEmbeddingResponse>;
+public record class GenerateEmbeddingRequest(ClaimsPrincipal Principal, long ProjectId, string Text) : IRequest<GenerateEmbeddingResponse>;
 public record class GenerateEmbeddingResponse(ReadOnlyMemory<float>? EmbeddingVector);
 
 public class GenerateEmbeddingHandler : IRequestHandler<GenerateEmbeddingRequest, GenerateEmbeddingResponse>
@@ -18,9 +20,11 @@ public class GenerateEmbeddingHandler : IRequestHandler<GenerateEmbeddingRequest
     }
 
 
-    private async Task<IEmbeddingGenerator<string, Embedding<float>>?> CreateEmbeddingGeneratorAsync()
+    private async Task<IEmbeddingGenerator<string, Embedding<float>>?> CreateEmbeddingGeneratorAsync(ClaimsPrincipal principal)
     {
-        var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+        var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(principal.GetTenantIdOrThrow(), null);
+        settings ??= new();
+
         if (settings.EmbeddingAiProvider == "ollama" && settings.EmbeddingAiProviderUrl is not null)
         {
             string? model = settings.LlmEmbeddingModel;
@@ -50,7 +54,7 @@ public class GenerateEmbeddingHandler : IRequestHandler<GenerateEmbeddingRequest
 
     public async ValueTask<GenerateEmbeddingResponse> Handle(GenerateEmbeddingRequest request, CancellationToken cancellationToken)
     {
-        var client = await CreateEmbeddingGeneratorAsync();
+        var client = await CreateEmbeddingGeneratorAsync(request.Principal);
         if(client is not null)
         {
             var embedding = await client.GenerateAsync(request.Text);

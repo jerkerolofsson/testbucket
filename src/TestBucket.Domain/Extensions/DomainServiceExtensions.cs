@@ -9,6 +9,7 @@ using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.AI.Mcp.Services;
 using TestBucket.Domain.AI.Settings;
+using TestBucket.Domain.AI.Settings.LLM;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Appearance;
 using TestBucket.Domain.Automation.Hybrid;
@@ -205,7 +206,6 @@ public static class DomainServiceExtensions
         // AI
         services.AddScoped<IChatClientFactory, ChatClientFactory>();
         services.AddScoped<IMcpServerManager, McpServerManager>();
-        services.AddScoped<ITestCaseGenerator, TestCaseGenerator>();
         services.AddSingleton<McpServerRunnerManager>();
         services.AddHostedService<McpServerStartupService>();
         
@@ -230,16 +230,19 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, PreferTextToIconsSetting>();
         services.AddScoped<ISetting, ReducedMotionSetting>();
 
+        // AI LLM settings
         services.AddScoped<ISetting, AiProviderSetting>();
         services.AddScoped<ISetting, AiProviderUrlSetting>();
         services.AddScoped<ISetting, EmbeddingAiProviderSetting>();
         services.AddScoped<ISetting, EmbeddingAiProviderUrlSetting>();
         services.AddScoped<ISetting, AiModelSetting>();
-        //services.AddScoped<ISetting, AiLlmClassificationModelSetting>();
         services.AddScoped<ISetting, AiLlmEmbeddingModelSetting>();
         services.AddScoped<ISetting, GithubModelsDeveloperKeySetting>();
         services.AddScoped<ISetting, AzureAiProductionKeySetting>();
         services.AddScoped<ISetting, AnthropicApiKeySetting>();
+
+        // AI Runner settings
+        services.AddScoped<ISetting, EnableAiRunnerSetting>();
 
         // LLM
         services.AddScoped<AgentChatContext>();

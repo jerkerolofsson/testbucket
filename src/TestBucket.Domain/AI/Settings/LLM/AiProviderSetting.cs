@@ -1,4 +1,4 @@
-﻿namespace TestBucket.Domain.AI.Settings
+﻿namespace TestBucket.Domain.AI.Settings.LLM
 {
     public class AiProviderSetting : SettingAdapter
     {
@@ -15,20 +15,24 @@
             Metadata.Section.Name = "ai-provider";
             Metadata.Type = FieldType.SingleSelection;
             Metadata.ShowDescription = true;
-            Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;
+            Metadata.AccessLevel = Identity.Models.AccessLevel.Admin;
 
             Metadata.Options = ["ollama", "github-models", "azure-ai", "anthropic"];
         }
 
-        public override async Task<FieldValue> ReadAsync(SettingContext principal)
+        public override async Task<FieldValue> ReadAsync(SettingContext context)
         {
-            var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+            context.Principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Read);
+            var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(context.Principal.GetTenantIdOrThrow(), null);
+            settings ??= new();
+
             return new FieldValue { StringValue = settings.AiProvider, FieldDefinitionId = 0 };
         }
 
-        public override async Task WriteAsync(SettingContext principal, FieldValue value)
+        public override async Task WriteAsync(SettingContext context, FieldValue value)
         {
-            var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+            var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(context.Principal.GetTenantIdOrThrow(), null);
+            settings ??= new();
 
             if (settings.AiProvider != value.StringValue)
             {
@@ -42,11 +46,14 @@
                     case "anthropic":
                         settings.AiProviderUrl = "https://api.anthropic.com/v1";
                         break;
+                    case "openai":
+                        settings.AiProviderUrl = "https://api.openai.com";
+                        break;
                     default:
                         settings.AiProviderUrl = "https://models.inference.ai.azure.com";
                         break;
                 }
-                await _settingsProvider.SaveGlobalSettingsAsync(settings);
+                await _settingsProvider.SaveDomainSettingsAsync(context.Principal.GetTenantIdOrThrow(), null, settings);
             }
         }
     }

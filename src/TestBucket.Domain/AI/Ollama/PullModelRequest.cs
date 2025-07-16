@@ -1,10 +1,13 @@
 ﻿using Mediator;
+
 using OllamaSharp;
+
+using TestBucket.Domain.AI.Settings.LLM;
 using TestBucket.Domain.Progress;
 
 
 namespace TestBucket.Domain.AI.Ollama;
-public record class PullModelRequest(string Name) : IRequest<bool>;
+public record class PullModelRequest(ClaimsPrincipal Principal, string Name) : IRequest<bool>;
 
 public class PullModelRequestHandler : IRequestHandler<PullModelRequest, bool>
 {
@@ -25,8 +28,9 @@ public class PullModelRequestHandler : IRequestHandler<PullModelRequest, bool>
             return false;
         }
 
-        var settings = await _settingsProvider.LoadGlobalSettingsAsync();
-        if(settings.AiProvider != "ollama" || string.IsNullOrEmpty(settings.AiProviderUrl))
+        var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(request.Principal.GetTenantIdOrThrow(), null);
+        settings ??= new();
+        if (settings.AiProvider != "ollama" || string.IsNullOrEmpty(settings.AiProviderUrl))
         {
             return false;
         }

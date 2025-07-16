@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Tenants.Models;
 
-namespace TestBucket.Domain.AI.Settings
+namespace TestBucket.Domain.AI.Settings.LLM
 {
     class AiProviderUrlSetting : SettingAdapter
     {
@@ -25,24 +25,30 @@ namespace TestBucket.Domain.AI.Settings
             Metadata.Section.Name = "ai-provider";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;
-            Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;
+            Metadata.AccessLevel = Identity.Models.AccessLevel.Admin;
 
         }
 
-        public override async Task<FieldValue> ReadAsync(SettingContext principal)
+        public override async Task<FieldValue> ReadAsync(SettingContext context)
         {
-            var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+            context.Principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Read);
+            var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(context.Principal.GetTenantIdOrThrow(), null);
+            settings ??= new();
+
             return new FieldValue { StringValue = settings.AiProviderUrl, FieldDefinitionId = 0 };
         }
 
-        public override async Task WriteAsync(SettingContext principal, FieldValue value)
+        public override async Task WriteAsync(SettingContext context, FieldValue value)
         {
-            var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+            context.Principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Write);
+            var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(context.Principal.GetTenantIdOrThrow(), null);
+            settings ??= new();
 
             if (settings.AiProvider != value.StringValue)
             {
                 settings.AiProviderUrl = value.StringValue;
-                await _settingsProvider.SaveGlobalSettingsAsync(settings);
+                await _settingsProvider.SaveDomainSettingsAsync(context.Principal.GetTenantIdOrThrow(), null, settings);
+
             }
         }
     }

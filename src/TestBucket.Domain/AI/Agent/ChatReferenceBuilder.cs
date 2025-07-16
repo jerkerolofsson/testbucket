@@ -15,8 +15,6 @@ public class ChatReferenceBuilder
     {
         return new ChatReference 
         { 
-            CanBeCompiled = true,
-            IsCompiled = false,
             Name = testCase.Name, Text = testCase.Description ?? "", Id = testCase.Id, EntityTypeName = "TestCase", IsActiveDocument = isActiveDocument };
     }
     public static ChatReference Create(TestSuite testSuite, bool isActiveDocument = false)

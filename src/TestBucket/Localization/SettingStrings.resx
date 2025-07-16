@@ -282,4 +282,22 @@
   <data name="tool-bar" xml:space="preserve">
     <value>Tool bar</value>
   </data>
+  <data name="embedding-ai-provider" xml:space="preserve">
+    <value>AI provider for embeddings</value>
+  </data>
+  <data name="ai-embedding-model" xml:space="preserve">
+    <value>Embedding model</value>
+  </data>
+  <data name="ai-runner" xml:space="preserve">
+    <value>AI runner</value>
+  </data>
+  <data name="ai-runner-enabled" xml:space="preserve">
+    <value>Use AI runner</value>
+  </data>
+  <data name="ai-runner-enabled-description" xml:space="preserve">
+    <value>Enables the usage of the AI runner for this project</value>
+  </data>
+  <data name="ai-provider-description" xml:space="preserve">
+    <value>The AI provider to use for this tenant</value>
+  </data>
 </root>

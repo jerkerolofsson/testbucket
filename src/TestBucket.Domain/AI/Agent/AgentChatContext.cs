@@ -33,28 +33,4 @@ public class AgentChatContext
         References.Clear();
     }
 
-    internal IReadOnlyList<ChatMessage> GetReferencesAsChatMessages()
-    {
-        List<ChatMessage> messages = [];
-
-        if (References.Count > 0)
-        {
-            foreach (var reference in References)
-            {
-                IList<AIContent> content = [];
-                var xml = $"""
-                    <reference>
-                        <name>{reference.Name}</name>
-                        <id>{reference.Id}</url>
-                        <type>{reference.EntityTypeName ?? ""}</type>
-                        <description>{reference.Text}</description>
-                    </reference>
-                    """;
-                content.Add(new TextContent(xml));
-                messages.Add(new ChatMessage(ChatRole.User, content));
-            }
-            messages.Add(new ChatMessage(ChatRole.User, "Based on the references..."));
-        }
-        return messages;
-    }
 }

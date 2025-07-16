@@ -62,11 +62,16 @@
     margin-bottom: 4px;
 }
 
+.tb-agent-chat .chat ::deep .mud-markdown-container .mud-markdown-preview hr {
+    margin-top: 24px;
+    background: var(--mud-palette-text-primary);
+    margin-bottom: 24px;
+}
+
 .tb-agent-chat .chat.assistant {
     align-self: flex-start;
     margin-right: 16px;
 }
-
 
 .tb-agent-chat {
     display: grid;

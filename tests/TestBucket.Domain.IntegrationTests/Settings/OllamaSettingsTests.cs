@@ -1,4 +1,4 @@
-﻿using TestBucket.Domain.AI.Settings;
+﻿using TestBucket.Domain.AI.Settings.LLM;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Models;
 
@@ -25,11 +25,12 @@ namespace TestBucket.Domain.IntegrationTests.Settings
             var provider = await aiProviderSetting.ReadAsync(new SettingContext() { Principal = Fixture.App.SiteAdministrator, TenantId = "tenant1" });
             Assert.Equal("ollama", provider.StringValue);
 
-            var globalSettings = await settingsProvider.LoadGlobalSettingsAsync();
-            Assert.Equal("ollama", globalSettings.AiProvider);
+            var llmSettings = await settingsProvider.GetDomainSettingsAsync<LlmSettings>("tenant1", null);
+            Assert.NotNull(llmSettings);
+            Assert.Equal("ollama", llmSettings.AiProvider);
 
             // Note: This URL is defined in the fixture setup, so it should match the expected value
-            Assert.Equal("http://localhost:11435", globalSettings.AiProviderUrl);
+            Assert.Equal("http://localhost:11435", llmSettings.AiProviderUrl);
         }
     }
 }

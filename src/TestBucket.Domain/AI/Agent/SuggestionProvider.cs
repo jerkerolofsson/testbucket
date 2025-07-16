@@ -49,8 +49,12 @@ public class SuggestionProvider
                 suggestions.Add(new Suggestion($"Run '{reference.Name}' with AI", $"""
                     Run the steps described in the reference description for '{reference.Name}' one by one. 
                     Use relevant tools as needed. 
-                    If a step fails, output FAILED: <DescriptiveErrorMessage>
-                    """));
+                    After running the steps, if a step failed, output "FAILED: <DescriptiveErrorMessage>" where <DescriptiveErrorMessage> describes what went wrong.
+                    If all steps passed, output "PASSED"
+                    """)
+                {
+                    Icon = TbIcons.BoldDuoTone.AI
+                });
                     
 
                 suggestions.Add(new Suggestion($"Suggest some tests similar to '{reference.Name}'", $"Suggest some tests similar to '{reference.Name}'. Use get-heuristics to get ideas."));
@@ -77,9 +81,22 @@ public class SuggestionProvider
 
         if(suggestions.Count == 0)
         {
-            suggestions.Add(new Suggestion("What is the next milestone", $"What is the next milestone?"));
+            suggestions.Add(new Suggestion("What is the next milestone", $"""
+                1. Use the 'list-milestones' tool to collect information about milestones.
+                2. Which is the next milestone?
+                """)
+            {
+                Icon = TbIcons.BoldDuoTone.AI
+            });
 
-            suggestions.Add(new Suggestion("Summarize all open issues", $"Summarize all open issues"));
+            suggestions.Add(new Suggestion("Summarize all open issues", $"""
+                1. Use the 'list-open-issues' tool to list all open issues
+                2. Show the issues in a table, with a summary in one column and the issue ID in the second column.
+                3. Group issues by similarity, showing another table with the summary and all related issue IDs in the second column.
+                """)
+            {
+                Icon = TbIcons.BoldDuoTone.Bug
+            });
         }
 
         return suggestions;

@@ -201,7 +201,7 @@ namespace TestBucket.Domain.Requirements
             // Trigger update of timestamp
             requirement.Modified = _timeProvider.GetUtcNow();
 
-            await GenerateEmbeddingAsync(requirement, requirement.RequirementFields);
+            await GenerateEmbeddingAsync(principal, requirement, requirement.RequirementFields);
 
             await _repository.UpdateRequirementAsync(requirement);
 
@@ -211,7 +211,7 @@ namespace TestBucket.Domain.Requirements
             }
         }
 
-        private async Task GenerateEmbeddingAsync(Requirement item, IEnumerable<RequirementField>? fields)
+        private async Task GenerateEmbeddingAsync(ClaimsPrincipal principal, Requirement item, IEnumerable<RequirementField>? fields)
         {
             if (item.TestProjectId is null)
             {
@@ -233,7 +233,7 @@ namespace TestBucket.Domain.Requirements
                     }
                 }
 
-                var response = await _mediator.Send(new GenerateEmbeddingRequest(item.TestProjectId.Value, text));
+                var response = await _mediator.Send(new GenerateEmbeddingRequest(principal, item.TestProjectId.Value, text));
                 if (response.EmbeddingVector is not null)
                 {
                     item.Embedding = new Pgvector.Vector(response.EmbeddingVector.Value);
@@ -271,7 +271,7 @@ namespace TestBucket.Domain.Requirements
             var isDescriptionChanged = existing?.Description != requirement.Description || existing?.Name != requirement.Name;
             if (isDescriptionChanged || requirement.Embedding is null)
             {
-                await GenerateEmbeddingAsync(requirement, requirement.RequirementFields ?? existing?.RequirementFields);
+                await GenerateEmbeddingAsync(principal, requirement, requirement.RequirementFields ?? existing?.RequirementFields);
             }
 
             await _repository.UpdateRequirementAsync(requirement);
@@ -338,7 +338,7 @@ namespace TestBucket.Domain.Requirements
 
                 if (!string.IsNullOrEmpty(semanticSearchText) && query.ProjectId is not null)
                 {
-                    var embedding = await _mediator.Send(new GenerateEmbeddingRequest(query.ProjectId.Value, semanticSearchText));
+                    var embedding = await _mediator.Send(new GenerateEmbeddingRequest(principal, query.ProjectId.Value, semanticSearchText));
                     if (embedding?.EmbeddingVector is not null)
                     {
                         return await _repository.SemanticSearchRequirementsAsync(embedding.EmbeddingVector.Value, filters, query.Offset, query.Count);
@@ -460,7 +460,7 @@ namespace TestBucket.Domain.Requirements
             requirement.ModifiedBy = principal.Identity?.Name;
 
             await GenerateFoldersFromPathAsync(requirement);
-            await GenerateEmbeddingAsync(requirement, requirement.RequirementFields);
+            await GenerateEmbeddingAsync(principal, requirement, requirement.RequirementFields);
 
             await _repository.AddRequirementAsync(requirement);
 

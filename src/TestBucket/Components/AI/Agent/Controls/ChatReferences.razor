@@ -77,24 +77,6 @@
     {
         if (!_context.References.Any(x => x.Id == reference.Id))
         {
-            if(reference.EntityTypeName == "TestCase" && !reference.IsCompiled)
-            {
-                // Compile it
-                List<CompilerError> errors = [];
-                var testCase = await testBrowser.GetTestCaseByIdAsync(reference.Id);
-                if (testCase is null)
-                {
-                    return;
-                }
-                var options = new CompilationOptions(testCase, testCase.Description ?? "");
-                var context = await testCaseEditorController.CompileAsync(options, errors);
-                if (context?.CompiledText is not null)
-                {
-                    reference.Text = context.CompiledText;
-                    reference.IsCompiled = true;
-                }
-            }
-
             _context.References.Add(reference);
         }
         await ReferencesChanged.InvokeAsync(_context);
@@ -116,7 +98,7 @@
                 {
                     var a = _context.References[i];
                     var b = ChatContext.References[i];
-                    if (!a.Equals(b) || (b.CanBeCompiled && !b.CanBeCompiled) || (a.CanBeCompiled && !a.CanBeCompiled))
+                    if (!a.Equals(b))
                     {
                         hasChanged = true;
                         break;

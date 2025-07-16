@@ -12,9 +12,9 @@ namespace TestBucket.Domain.Testing.Settings
 
             Metadata.Name = "Automatically advance to next test when completed";
             Metadata.Description = "Opens the next incomplete test when a test is assigned a result";
-            Metadata.Category.Name = "Testing";
+            Metadata.Category.Name = "testing";
             Metadata.Category.Icon = SettingIcon.Testing;
-            Metadata.Section.Name = "Test Execution";
+            Metadata.Section.Name = "test-execution";
             Metadata.Type = FieldType.Boolean;
         }
 

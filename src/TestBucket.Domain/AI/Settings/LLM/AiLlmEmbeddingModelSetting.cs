@@ -1,9 +1,10 @@
 ﻿
 using Mediator;
+
 using TestBucket.Domain.AI.Models;
 using TestBucket.Domain.AI.Ollama;
 
-namespace TestBucket.Domain.AI.Settings
+namespace TestBucket.Domain.AI.Settings.LLM
 {
     class AiLlmEmbeddingModelSetting : SettingAdapter
     {
@@ -23,30 +24,33 @@ namespace TestBucket.Domain.AI.Settings
             Metadata.SearchText = "ai-models";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;
-            Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;
+            Metadata.AccessLevel = Identity.Models.AccessLevel.Admin;
             Metadata.Options = LlmModels.GetNames(ModelCapability.Embedding);
         }
 
         public override async Task<FieldValue> ReadAsync(SettingContext context)
         {
-            var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+            var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(context.Principal.GetTenantIdOrThrow(), null);
+            settings ??= new();
             return new FieldValue { StringValue = settings.LlmEmbeddingModel, FieldDefinitionId = 0 };
         }
 
         public override async Task WriteAsync(SettingContext context, FieldValue value)
         {
-            var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+            context.Principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Write);
+            var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(context.Principal.GetTenantIdOrThrow(), null);
+            settings ??= new();
 
             if (settings.LlmEmbeddingModel != value.StringValue)
             {
                 settings.LlmEmbeddingModel = value.StringValue;
-                await _settingsProvider.SaveGlobalSettingsAsync(settings);
+                await _settingsProvider.SaveDomainSettingsAsync(context.Principal.GetTenantIdOrThrow(), null, settings);
 
                 if (settings.AiProvider == "ollama" && settings.AiProviderUrl != null && settings.LlmEmbeddingModel is not null)
                 {
                     if (!string.IsNullOrEmpty(settings.LlmEmbeddingModel) && settings.AiProvider == "ollama" && !string.IsNullOrEmpty(settings.AiProviderUrl))
                     {
-                        await _mediator.Send(new PullModelRequest(settings.LlmEmbeddingModel));
+                        await _mediator.Send(new PullModelRequest(context.Principal, settings.LlmEmbeddingModel));
                     }
                 }
             }

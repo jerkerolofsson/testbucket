@@ -16,9 +16,9 @@
                 @if (_name is not null)
                 {
                     <Field Row>
-                        <FieldHeader>@loc["name"]</FieldHeader>
+                        <FieldHeader for="name">@loc["name"]</FieldHeader>
                         <MudSpacer />
-                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+                        <MudTextField id="name" data-testid="name" AutoFocus="true" Variant="Variant.Outlined" T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
                     </Field>
 
                     <Field Row>
@@ -31,7 +31,7 @@
                         <MudIcon Icon="@TbIcons.Filled.Infinite"></MudIcon>
                         <div>
                             <FieldHeader>@loc["ci-cd"]</FieldHeader>
-                            <span>@loc["automation-ci-cd-description"]</span>
+                            <MudText Typo="Typo.subtitle2">@loc["automation-ci-cd-description"]</MudText>
                         </div>
                         <MudSpacer />
                         <PipelineSystemPicker Project="@_project" @bind-ExternalPipelineRunner="@_runner"/>

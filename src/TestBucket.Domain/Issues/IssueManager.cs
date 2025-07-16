@@ -83,7 +83,7 @@ public class IssueManager : IIssueManager
         issue.TenantId = principal.GetTenantIdOrThrow();
         issue.ClassificationRequired = true;
 
-        await GenerateEmbeddingAsync(issue);
+        await GenerateEmbeddingAsync(principal, issue);
 
         try
         {
@@ -121,7 +121,7 @@ public class IssueManager : IIssueManager
 
         if (!string.IsNullOrEmpty(semanticSearchText))
         {
-            var embedding = await _mediator.Send(new GenerateEmbeddingRequest(projectId, semanticSearchText));
+            var embedding = await _mediator.Send(new GenerateEmbeddingRequest(principal, projectId, semanticSearchText));
             if(embedding?.EmbeddingVector is not null)
             {
                 return await _repository.SemanticSearchAsync(embedding.EmbeddingVector.Value, filters, offset, count);
@@ -219,7 +219,7 @@ public class IssueManager : IIssueManager
             }
             if(existingIssue.Title != updatedIssue.Title || existingIssue.Description != updatedIssue.Description)
             {
-                await GenerateEmbeddingAsync(updatedIssue);
+                await GenerateEmbeddingAsync(principal, updatedIssue);
             }
         }
 
@@ -262,7 +262,7 @@ public class IssueManager : IIssueManager
         }
     }
 
-    private async Task GenerateEmbeddingAsync(LocalIssue updatedIssue)
+    private async Task GenerateEmbeddingAsync(ClaimsPrincipal principal, LocalIssue updatedIssue)
     {
         if(updatedIssue.TestProjectId is null)
         {
@@ -272,7 +272,7 @@ public class IssueManager : IIssueManager
         try
         {
             var text = $"{updatedIssue.Title} {updatedIssue.Description}";
-            var response = await _mediator.Send(new GenerateEmbeddingRequest(updatedIssue.TestProjectId.Value, text));
+            var response = await _mediator.Send(new GenerateEmbeddingRequest(principal, updatedIssue.TestProjectId.Value, text));
             if (response.EmbeddingVector is not null)
             {
                 updatedIssue.Embedding = new Pgvector.Vector(response.EmbeddingVector.Value);

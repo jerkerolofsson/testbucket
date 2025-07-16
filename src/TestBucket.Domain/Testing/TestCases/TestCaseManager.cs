@@ -111,7 +111,7 @@ namespace TestBucket.Domain.Testing.TestCases
             }
         }
 
-        private async Task GenerateEmbeddingAsync(TestCase item, IEnumerable<TestCaseField>? fields)
+        private async Task GenerateEmbeddingAsync(ClaimsPrincipal principal, TestCase item, IEnumerable<TestCaseField>? fields)
         {
             if (item.TestProjectId is null)
             {
@@ -134,7 +134,7 @@ namespace TestBucket.Domain.Testing.TestCases
                     }
                 }
 
-                var response = await _mediator.Send(new GenerateEmbeddingRequest(item.TestProjectId.Value, text));
+                var response = await _mediator.Send(new GenerateEmbeddingRequest(principal, item.TestProjectId.Value, text));
                 if (response.EmbeddingVector is not null)
                 {
                     item.Embedding = new Pgvector.Vector(response.EmbeddingVector.Value);
@@ -171,7 +171,7 @@ namespace TestBucket.Domain.Testing.TestCases
 
             await AssignTeamIfNotAssignedAsync(testCase, testCase.TenantId);
             await CreateTestCaseFoldersAsync(principal, testCase);
-            await GenerateEmbeddingAsync(testCase, testCase.TestCaseFields);
+            await GenerateEmbeddingAsync(principal, testCase, testCase.TestCaseFields);
 
             if (testCase.TeamId is null && testCase.TestProjectId is not null)
             {
@@ -258,7 +258,7 @@ namespace TestBucket.Domain.Testing.TestCases
             var isDescriptionChanged = existing?.Description != testCase.Description;
             if(isDescriptionChanged || testCase.Embedding is null || existing?.Name != testCase.Name)
             {
-                await GenerateEmbeddingAsync(testCase, testCase.TestCaseFields ?? existing?.TestCaseFields);
+                await GenerateEmbeddingAsync(principal, testCase, testCase.TestCaseFields ?? existing?.TestCaseFields);
             }
 
             await _testCaseRepo.UpdateTestCaseAsync(testCase);
@@ -413,7 +413,7 @@ namespace TestBucket.Domain.Testing.TestCases
 
                 if (!string.IsNullOrEmpty(semanticSearchText) && query.ProjectId is not null)
                 {
-                    var embedding = await _mediator.Send(new GenerateEmbeddingRequest(query.ProjectId.Value, semanticSearchText));
+                    var embedding = await _mediator.Send(new GenerateEmbeddingRequest(principal, query.ProjectId.Value, semanticSearchText));
                     if (embedding?.EmbeddingVector is not null)
                     {
                         return await _testCaseRepo.SemanticSearchTestCasesAsync(embedding.EmbeddingVector.Value, query.Offset, query.Count, filters);

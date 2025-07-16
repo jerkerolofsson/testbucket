@@ -8,6 +8,7 @@ using OllamaSharp;
 using OpenAI;
 
 using TestBucket.Domain.AI.Models;
+using TestBucket.Domain.AI.Settings.LLM;
 
 namespace TestBucket.Domain.AI;
 internal class ChatClientFactory : IChatClientFactory
@@ -21,9 +22,10 @@ internal class ChatClientFactory : IChatClientFactory
         _logger = logger;
     }
 
-    public async Task<string?> GetModelNameAsync(ModelType modelType)
+    public async Task<string?> GetModelNameAsync(ClaimsPrincipal principal, ModelType modelType)
     {
-        var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+        var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(principal.GetTenantIdOrThrow(), null);
+        settings ??= new();
         if (!string.IsNullOrEmpty(settings.AiProviderUrl))
         {
             return GetModelName(modelType, settings);
@@ -31,13 +33,14 @@ internal class ChatClientFactory : IChatClientFactory
         }
         return null;
     } 
-    public async Task<IChatClient?> CreateChatClientAsync(ModelType modelType)
+    public async Task<IChatClient?> CreateChatClientAsync(ClaimsPrincipal principal, ModelType modelType)
     {
-        var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+        var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(principal.GetTenantIdOrThrow(), null);
+        settings ??= new();
 
         if (settings.AiProvider == "ollama")
         {
-            return await CreateOllamaClientAsync(modelType);
+            return await CreateOllamaClientAsync(principal, modelType);
         }
         if (settings.AiProvider == "anthropic")
         {
@@ -64,9 +67,11 @@ internal class ChatClientFactory : IChatClientFactory
         return new ChatClientBuilder(chatClient).UseFunctionInvocation().Build();
     }
 
-    private async Task<IChatClient?> CreateOllamaClientAsync(ModelType modelType)
+    private async Task<IChatClient?> CreateOllamaClientAsync(ClaimsPrincipal principal, ModelType modelType)
     {
-        var settings = await _settingsProvider.LoadGlobalSettingsAsync();
+        var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(principal.GetTenantIdOrThrow(), null);
+        settings ??= new();
+
         if (!string.IsNullOrEmpty(settings.AiProviderUrl))
         {
             string model = GetModelName(modelType, settings);
@@ -97,7 +102,7 @@ internal class ChatClientFactory : IChatClientFactory
     /// <param name="modelType"></param>
     /// <param name="settings"></param>
     /// <returns></returns>
-    private static string GetModelName(ModelType modelType, GlobalSettings settings)
+    private static string GetModelName(ModelType modelType, LlmSettings settings)
     {
         string model = settings.LlmModel ?? "phi4-mini:3.8b";
         return model;

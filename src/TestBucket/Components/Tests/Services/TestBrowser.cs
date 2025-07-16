@@ -257,7 +257,7 @@ internal class TestBrowser : TenantBaseService
     /// <param name="offset"></param>
     /// <param name="count"></param>
     /// <returns></returns>
-    public async Task<PagedResult<TestSuiteItem>> SearchItemsAsync(SearchTestQuery query, int offset, int count = 20, bool includeFolders = true)
+    public async Task<PagedResult<TestSuiteItem>> SearchItemsAsync(SearchTestQuery query, int offset, int count = 20, bool includeFolders = true, bool semantic = false)
     {
         if(query.TestSuiteId is null && query.ProjectId is null)
         {
@@ -284,7 +284,7 @@ internal class TestBrowser : TenantBaseService
             query.Count = testCount;
             folderCount = folders.Length;
         }
-        var tests = await _testSuiteController.SearchTestCasesAsync(query);
+        var tests = await _testSuiteController.SearchTestCasesAsync(query, semantic);
 
         items.AddRange(tests.Items.Select(x => new TestSuiteItem() { TestCase = x }));
 

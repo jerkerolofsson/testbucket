@@ -267,4 +267,52 @@
   <data name="mcp-public-description" xml:space="preserve">
     <value />
   </data>
+  <data name="test-resources" xml:space="preserve">
+    <value />
+  </data>
+  <data name="delete-resource-if-not-seen-for" xml:space="preserve">
+    <value />
+  </data>
+  <data name="keyboard" xml:space="preserve">
+    <value />
+  </data>
+  <data name="commands" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tool-bar" xml:space="preserve">
+    <value />
+  </data>
+  <data name="embedding-ai-provider" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ai-embedding-model" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ai-runner" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ai-runner-enabled" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ai-runner-enabled-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ai-provider-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="mcp-tool-name" xml:space="preserve">
+    <value />
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value />
+  </data>
+  <data name="test-execution" xml:space="preserve">
+    <value />
+  </data>
 </root>

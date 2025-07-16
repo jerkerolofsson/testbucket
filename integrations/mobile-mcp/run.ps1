@@ -1,0 +1,1 @@
+npx @mobilenext/mobile-mcp@latest --port 18881

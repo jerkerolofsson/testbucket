@@ -9,6 +9,7 @@ using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.AI.Mcp.Services;
 using TestBucket.Domain.AI.Settings;
+using TestBucket.Domain.AI.Settings.LLM;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Appearance;
 using TestBucket.Domain.Automation.Hybrid;
@@ -69,6 +70,7 @@ using TestBucket.Domain.Testing.TestRuns.Insights;
 using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Domain.TestResources;
 using TestBucket.Domain.TestResources.Allocation;
+using TestBucket.Domain.TestResources.Settings;
 using TestBucket.Integrations;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -136,6 +138,7 @@ public static class DomainServiceExtensions
 
         services.AddScoped<IMarkdownDetector,TemplateDetector>();
         services.AddScoped<ITestCompiler, TestCompiler>();
+        services.AddScoped<TestExecutionContextBuilder>();
 
         services.AddScoped<ITestCaseImporter, TestCaseImporter>();
         services.AddScoped<ITextTestResultsImporter, TestResultTextImporter>();
@@ -186,6 +189,7 @@ public static class DomainServiceExtensions
 
         services.AddScoped<ITestResourceManager, TestResourceManager>();
         services.AddScoped<ITestAccountManager, TestAccountManager>();
+        services.AddTransient<ISetting, DeleteResourceIfNotSeenFor>();
 
         services.AddScoped<ICommandManager, CommandManager>();
         services.AddScoped<IUnifiedSearchManager, UnifiedSearchManager>();
@@ -202,7 +206,6 @@ public static class DomainServiceExtensions
         // AI
         services.AddScoped<IChatClientFactory, ChatClientFactory>();
         services.AddScoped<IMcpServerManager, McpServerManager>();
-        services.AddScoped<ITestCaseGenerator, TestCaseGenerator>();
         services.AddSingleton<McpServerRunnerManager>();
         services.AddHostedService<McpServerStartupService>();
         
@@ -227,13 +230,21 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, PreferTextToIconsSetting>();
         services.AddScoped<ISetting, ReducedMotionSetting>();
 
+        // AI LLM settings
         services.AddScoped<ISetting, AiProviderSetting>();
         services.AddScoped<ISetting, AiProviderUrlSetting>();
+        services.AddScoped<ISetting, EmbeddingAiProviderSetting>();
+        services.AddScoped<ISetting, EmbeddingAiProviderUrlSetting>();
         services.AddScoped<ISetting, AiModelSetting>();
-        services.AddScoped<ISetting, AiLlmClassificationModelSetting>();
         services.AddScoped<ISetting, AiLlmEmbeddingModelSetting>();
         services.AddScoped<ISetting, GithubModelsDeveloperKeySetting>();
         services.AddScoped<ISetting, AzureAiProductionKeySetting>();
+        services.AddScoped<ISetting, AnthropicApiKeySetting>();
+
+        // AI Runner settings
+        services.AddScoped<ISetting, EnableAiRunnerSetting>();
+        services.AddScoped<ISetting, MaxTokensPerDayForAitRunnerSetting>();
+        
 
         // LLM
         services.AddScoped<AgentChatContext>();

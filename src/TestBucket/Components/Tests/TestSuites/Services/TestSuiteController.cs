@@ -218,16 +218,13 @@ internal class TestSuiteController : TenantBaseService
         });
     }
 
-    internal async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery searchTestQuery)
+    internal async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery searchTestQuery, bool semantic = false)
     {
-        //var tenantId = await GetTenantIdAsync();
         var principal = await GetUserClaimsPrincipalAsync();
-        //var fields = await _fieldDefinitionManager.GetDefinitionsAsync(principal, searchTestQuery.ProjectId, FieldTarget.TestCase);
-
-        //var filters = TestCaseFilterSpecificationBuilder.From(searchTestQuery);
-
-        //filters = [new FilterByTenant<TestCase>(tenantId), .. filters];
-        //return await _testCaseRepo.SearchTestCasesAsync(searchTestQuery.Offset, searchTestQuery.Count, filters);
+        if(semantic)
+        {
+            return await _testCaseManager.SemanticSearchTestCasesAsync(principal, searchTestQuery);
+        }
         return await _testCaseManager.SearchTestCasesAsync(principal, searchTestQuery);
     }
 
@@ -235,17 +232,11 @@ internal class TestSuiteController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _testSuiteManager.GetTestSuiteByIdAsync(principal, testSuiteId);
-        //return await _testCaseRepo.GetTestSuiteByIdAsync(tenantId, testSuiteId);
     }
 
     internal async Task<TestSuiteFolder?> GetTestSuiteFolderByIdAsync(long folderId)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _testSuiteManager.GetTestSuiteFolderByIdAsync(principal, folderId);
-
-        //var tenantId = await GetTenantIdAsync();
-
-        //_testSuiteManager.GetTestSuiteByNameAsync
-        //return await _testCaseRepo.GetTestSuiteFolderByIdAsync(tenantId, folderId);
     }
 }

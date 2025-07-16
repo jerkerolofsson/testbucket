@@ -38,6 +38,7 @@
                                       Placeholder="@loc["search"]"
                                       AdornmentIcon="@Icons.Material.Filled.Search" />
 
+                        <SemanticSearchToggle @bind-Enabled="@_semanticSearch" EnabledLabel="@loc["semantic-search"]" DisabledLabel="@loc["normal-search"]" />
                         <MudSpacer />
 
                         <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
@@ -123,6 +124,7 @@
     private SearchTestQuery _testCaseQuery = new();
     private SearchTestCaseRunQuery _testCaseRunQuery = new();
     private string _issueSearchText = "";
+    private bool _semanticSearch = false;
 
     protected void OnSearch(string text)
     {
@@ -200,30 +202,20 @@
     /// </summary>
     /// <param name="state"></param>
     /// <returns></returns>
-    private Task<GridData<Feature>> LoadGridData(GridState<Feature> state)
+    private async Task<GridData<Feature>> LoadGridData(GridState<Feature> state)
     {
         if (Project is null)
         {
-            return Task.FromResult(new GridData<Feature> { TotalItems = 0 });
+            return new GridData<Feature> { TotalItems = 0 };
         }
 
-        Feature[] page;
-        if(string.IsNullOrEmpty(_searchText))
-        {
-            page = _features.OrderBy(x=>x.Name).Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
-        }
-        else
-        {
-            page = _features.OrderBy(x => x.Name).Where(x => x.Name.Contains(_searchText, StringComparison.OrdinalIgnoreCase)).Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
-        }
-
-
+        var result = await architectureController.SearchFeaturesAsync(Project.Id, _searchText, state.Page * state.PageSize, state.PageSize, _semanticSearch);
         GridData<Feature> data = new()
         {
-            Items = page,
-            TotalItems = (int) _features.Count
+            Items = result.Items,
+            TotalItems = (int) result.TotalCount
         };
 
-        return Task.FromResult(data);
+        return data;
     }
 }

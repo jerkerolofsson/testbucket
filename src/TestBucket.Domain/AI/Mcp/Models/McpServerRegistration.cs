@@ -22,6 +22,11 @@ public class McpServerRegistration : ProjectEntity
     public bool Locked { get; set; }
 
     /// <summary>
+    /// Owner, if created by a resource server or similar.
+    /// </summary>
+    public string? Owner { get; set; }
+
+    /// <summary>
     /// MCP server configuration
     /// </summary>
     [Column(TypeName = "jsonb")]

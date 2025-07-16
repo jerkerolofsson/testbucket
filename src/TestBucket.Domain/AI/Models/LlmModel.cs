@@ -26,9 +26,9 @@ public class LlmModel
     public string? Vendor { get; set; }
 
     /// <summary>
-    /// Gets or sets the model name as used by Ollama, if applicable.
+    /// Gets or sets the model name as used by the API
     /// </summary>
-    public string? OllamaName { get; set; }
+    public string? ModelName { get; set; }
 
     /// <summary>
     /// Gets or sets the model name as used by Azure, if applicable.

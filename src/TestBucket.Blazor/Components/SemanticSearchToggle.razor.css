@@ -11,6 +11,9 @@
 
     background: var(--back-color);
     user-select: none;
+
+    cursor: pointer;
+    max-height: 24px;
 }
 
 .tb-semantic-toggle.enabled {

@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using TestBucket.Domain.AI.Settings.LLM;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Models;
@@ -191,14 +192,17 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
             changed = true;
         }
 
-        if (seedConfiguration.OllamaBaseUrl is { })
+        if (seedConfiguration.OllamaBaseUrl is { } && seedConfiguration.Tenant is not null)
         {
             // Only do it the first time.. after this, it is done in the UI
-            if (settings.AiProviderUrl is null)
+            var llmSettings = await settingsProvider.GetDomainSettingsAsync<LlmSettings>(seedConfiguration.Tenant, null);
+            llmSettings ??= new();
+            if (llmSettings.AiProviderUrl is null)
             {
-                settings.AiProvider = "ollama";
-                settings.AiProviderUrl = seedConfiguration.OllamaBaseUrl;
+                llmSettings.AiProvider = "ollama";
+                llmSettings.AiProviderUrl = seedConfiguration.OllamaBaseUrl;
                 changed = true;
+                await settingsProvider.SaveDomainSettingsAsync(seedConfiguration.Tenant, null, llmSettings);
             }
         }
 

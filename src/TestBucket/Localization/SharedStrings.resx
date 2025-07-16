@@ -947,4 +947,29 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Provider</value>
     <comment>External system like Jira or Github</comment>
   </data>
+  <data name="resource-enabled" xml:space="preserve">
+    <value>The resource is enabled</value>
+  </data>
+  <data name="resource-disabled" xml:space="preserve">
+    <value>The resource is disabled. The resource may be down, disconnected or unavailable.</value>
+  </data>
+  <data name="resource-locked" xml:space="preserve">
+    <value>The resource is locked.</value>
+  </data>
+  <data name="last-seen" xml:space="preserve">
+    <value>Last seen</value>
+    <comment>Time when resource was last seen</comment>
+  </data>
+  <data name="reload" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="assign-all-unassigned-to-ai" xml:space="preserve">
+    <value>Assign all unassigned to AI runner</value>
+  </data>
+  <data name="assign-all-unassigned-to-ai-description" xml:space="preserve">
+    <value>Assigns all unassigned test cases to the AI runner who will run the tests in the background</value>
+  </data>
+  <data name="run-test-case-description" xml:space="preserve">
+    <value>Run the active test case</value>
+  </data>
 </root>

@@ -1,8 +1,11 @@
 ﻿using Mediator;
 
+using Microsoft.Extensions.Logging;
+
 using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Requirements;
 using TestBucket.Contracts.Requirements.Types;
+using TestBucket.Domain.AI.Embeddings;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Handlers;
 using TestBucket.Domain.Progress;
@@ -18,6 +21,7 @@ using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Traceability;
 using TestBucket.Domain.Traceability.Models;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Requirements
 {
@@ -29,14 +33,16 @@ namespace TestBucket.Domain.Requirements
         private readonly List<IRequirementObserver> _requirementObservers = new();
         private readonly IMediator _mediator;
         private readonly TimeProvider _timeProvider;
+        private readonly ILogger<RequirementManager> _logger;
 
-        public RequirementManager(IRequirementRepository repository, IMediator mediator, TimeProvider timeProvider, IRequirementImporter importer, IFieldManager fieldManager)
+        public RequirementManager(IRequirementRepository repository, IMediator mediator, TimeProvider timeProvider, IRequirementImporter importer, IFieldManager fieldManager, ILogger<RequirementManager> logger)
         {
             _repository = repository;
             _mediator = mediator;
             _timeProvider = timeProvider;
             _importer = importer;
             _fieldManager = fieldManager;
+            _logger = logger;
         }
 
         #region Observer
@@ -194,11 +200,48 @@ namespace TestBucket.Domain.Requirements
 
             // Trigger update of timestamp
             requirement.Modified = _timeProvider.GetUtcNow();
+
+            await GenerateEmbeddingAsync(principal, requirement, requirement.RequirementFields);
+
             await _repository.UpdateRequirementAsync(requirement);
 
             foreach (var observer in _requirementObservers)
             {
                 await observer.OnRequirementFieldChangedAsync(requirement);
+            }
+        }
+
+        private async Task GenerateEmbeddingAsync(ClaimsPrincipal principal, Requirement item, IEnumerable<RequirementField>? fields)
+        {
+            if (item.TestProjectId is null)
+            {
+                return;
+            }
+
+            try
+            {
+                var text = $"{item.Name} {item.Description}";
+
+                if(fields is not null)
+                {
+                    foreach(var field in fields)
+                    {
+                        if (field.FieldDefinition is not null)
+                        {
+                            text += $"\n{field.FieldDefinition.Name}={field.GetValueAsString()}";
+                        }
+                    }
+                }
+
+                var response = await _mediator.Send(new GenerateEmbeddingRequest(principal, item.TestProjectId.Value, text));
+                if (response.EmbeddingVector is not null)
+                {
+                    item.Embedding = new Pgvector.Vector(response.EmbeddingVector.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating embedding for component {RequirementName}", item.Name);
             }
         }
 
@@ -223,6 +266,14 @@ namespace TestBucket.Domain.Requirements
             // Update fields
             requirement.ModifiedBy = principal.Identity?.Name;
             requirement.Modified = _timeProvider.GetUtcNow();
+
+            var existing = await _repository.GetRequirementByIdAsync(tenantId, requirement.Id);
+            var isDescriptionChanged = existing?.Description != requirement.Description || existing?.Name != requirement.Name;
+            if (isDescriptionChanged || requirement.Embedding is null)
+            {
+                await GenerateEmbeddingAsync(principal, requirement, requirement.RequirementFields ?? existing?.RequirementFields);
+            }
+
             await _repository.UpdateRequirementAsync(requirement);
 
             // Notify observers
@@ -263,6 +314,44 @@ namespace TestBucket.Domain.Requirements
             filters = [.. filters, new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow())];
 
             return await _repository.SearchRequirementsAsync(filters, query.Offset, query.Count);
+        }
+
+        /// <summary>
+        /// Semantic search for requirements
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public async Task<PagedResult<Requirement>> SemanticSearchRequirementsAsync(ClaimsPrincipal principal, SearchRequirementQuery query)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+
+            // Get the text and temporarily remove it from the query to
+            // prevent the text filter to be created
+            var semanticSearchText = query.Text;
+            query.Text = null;
+            try
+            {
+
+                var filters = RequirementSpecificationBuilder.From(query);
+                filters = [.. filters, new FilterByTenant<Requirement>(principal.GetTenantIdOrThrow())];
+
+                if (!string.IsNullOrEmpty(semanticSearchText) && query.ProjectId is not null)
+                {
+                    var embedding = await _mediator.Send(new GenerateEmbeddingRequest(principal, query.ProjectId.Value, semanticSearchText));
+                    if (embedding?.EmbeddingVector is not null)
+                    {
+                        return await _repository.SemanticSearchRequirementsAsync(embedding.EmbeddingVector.Value, filters, query.Offset, query.Count);
+                    }
+                }
+            }
+            finally
+            {
+                // Restore the text filter
+                query.Text = semanticSearchText;
+            }
+
+            return await SearchRequirementsAsync(principal, query);
         }
 
 
@@ -371,6 +460,7 @@ namespace TestBucket.Domain.Requirements
             requirement.ModifiedBy = principal.Identity?.Name;
 
             await GenerateFoldersFromPathAsync(requirement);
+            await GenerateEmbeddingAsync(principal, requirement, requirement.RequirementFields);
 
             await _repository.AddRequirementAsync(requirement);
 

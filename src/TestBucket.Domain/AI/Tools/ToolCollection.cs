@@ -13,7 +13,26 @@ public class ToolCollection
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly List<AIFunction> _functions = [];
+    private readonly Dictionary<AIFunction, bool> _enabledFunctions = [];
+
     public IList<AIFunction> Functions => _functions;
+    public IList<AIFunction> EnabledFunctions
+    {
+        get
+        {
+            var functions = new List<AIFunction>();
+
+            foreach(var function in _functions)
+            {
+                if (_enabledFunctions.TryGetValue(function, out var isEnabled) && isEnabled)
+                {
+                    functions.Add(function);
+                }
+            }
+
+            return functions;
+        }
+    }
 
     public ToolCollection(IServiceProvider serviceProvider)
     {
@@ -112,5 +131,6 @@ public class ToolCollection
     public void Add(AIFunction function)
     {
         _functions.Add(function);
+        _enabledFunctions[function] = true;
     }
 }

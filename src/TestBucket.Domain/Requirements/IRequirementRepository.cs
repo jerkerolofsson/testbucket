@@ -76,6 +76,8 @@ namespace TestBucket.Domain.Requirements
         /// <returns></returns>
         Task<PagedResult<Requirement>> SearchRequirementsAsync(IEnumerable<FilterSpecification<Requirement>> filters, int offset, int count);
 
+        Task<PagedResult<Requirement>> SemanticSearchRequirementsAsync(ReadOnlyMemory<float> value, IReadOnlyList<FilterSpecification<Requirement>> filters, int offset, int count);
+
         /// <summary>
         /// Searches for requirement specifications
         /// </summary>

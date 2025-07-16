@@ -30,6 +30,8 @@ internal class McpServerRunner : IAsyncDisposable
     /// </summary>
     public string Name => _name;
 
+    public string McpToolName => _configuration.ToolName ?? _name;
+
     /// <summary>
     /// Creates and initializes a new MCP server runner instance.
     /// </summary>
@@ -113,7 +115,8 @@ internal class McpServerRunner : IAsyncDisposable
             Endpoint = new Uri(_configuration.Url!),
             AdditionalHeaders = _configuration.Headers?.ToDictionary(kvp => kvp.Key, kvp => kvp.Value) ?? new Dictionary<string, string>(),
             Name = _name,
-            TransportMode = transportMode
+            TransportMode = transportMode,
+            ConnectionTimeout = TimeSpan.FromSeconds(10)
         };
         var transport = new SseClientTransport(options);
         var client = await McpClientFactory.CreateAsync(transport);

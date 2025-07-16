@@ -37,7 +37,7 @@ internal class ArchitectureManager : IArchitectureManager
         principal.ThrowIfEntityTenantIsDifferent(existingItem);
         if (existingItem.Name != system.Name || existingItem.Description != system.Description || system.Embedding is null)
         {
-            await GenerateEmbeddingAsync(system);
+            await GenerateEmbeddingAsync(principal,system);
         }
 
         await _repository.UpdateSystemAsync(system);
@@ -61,7 +61,7 @@ internal class ArchitectureManager : IArchitectureManager
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         system.TenantId = principal.GetTenantIdOrThrow();
 
-        await GenerateEmbeddingAsync(system);
+        await GenerateEmbeddingAsync(principal,system);
 
         await _repository.AddSystemAsync(system);
     }
@@ -137,7 +137,7 @@ internal class ArchitectureManager : IArchitectureManager
         principal.ThrowIfEntityTenantIsDifferent(existingItem);
         if (existingItem.Name != layer.Name || existingItem.Description != layer.Description || layer.Embedding is null)
         {
-            await GenerateEmbeddingAsync(layer);
+            await GenerateEmbeddingAsync(principal,layer);
         }
         await _repository.UpdateLayerAsync(layer);
     }
@@ -159,7 +159,7 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         component.TenantId = principal.GetTenantIdOrThrow();
-        await GenerateEmbeddingAsync(component);
+        await GenerateEmbeddingAsync(principal,component);
         await _repository.AddLayerAsync(component);
     }
 
@@ -222,7 +222,7 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         component.TenantId = principal.GetTenantIdOrThrow();
-        await GenerateEmbeddingAsync(component);
+        await GenerateEmbeddingAsync(principal, component);
         await _repository.AddComponentAsync(component);
 
         await OnComponentUpdatedAsync(principal, component);
@@ -240,7 +240,7 @@ internal class ArchitectureManager : IArchitectureManager
         principal.ThrowIfEntityTenantIsDifferent(existingItem);
         if (existingItem.Name != component.Name || existingItem.Description != component.Description || component.Embedding is null)
         {
-            await GenerateEmbeddingAsync(component);
+            await GenerateEmbeddingAsync(principal,component);
         }
 
         await _repository.UpdateComponentAsync(component);
@@ -264,25 +264,54 @@ internal class ArchitectureManager : IArchitectureManager
         return result.Items.ToList();
     }
 
-
     /// <summary>
-    /// Searches for features
+    /// Semantic search for components
     /// </summary>
     /// <param name="principal"></param>
     /// <param name="projectId"></param>
     /// <returns></returns>
-    public async Task<IReadOnlyList<Component>> SearchComponentsAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    public async Task<PagedResult<Component>> SemanticSearchComponentsAsync(ClaimsPrincipal principal, long projectId, string semanticSearchText, int offset, int count)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Component>[] filters = [
-            new SearchComponentWithText(text ?? ""),
             new FilterByProject<Component>(projectId),
             new FilterByTenant<Component>(tenantId)
         ];
 
-        PagedResult<Component> result = await _repository.SearchComponentsAsync(filters, offset, count);
-        return result.Items.ToList();
+        if (!string.IsNullOrEmpty(semanticSearchText))
+        {
+            var embedding = await _mediator.Send(new GenerateEmbeddingRequest(principal, projectId, semanticSearchText));
+            if (embedding?.EmbeddingVector is not null)
+            {
+                return await _repository.SemanticSearchComponentsAsync(embedding.EmbeddingVector.Value, filters, offset, count);
+            }
+        }
+
+        return await SearchComponentsAsync(principal, projectId, semanticSearchText, offset, count);
+    }
+
+    /// <summary>
+    /// Searches for components
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<PagedResult<Component>> SearchComponentsAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Component>[] filters = [
+            new FilterByProject<Component>(projectId),
+            new FilterByTenant<Component>(tenantId)
+        ];
+
+
+        if(!string.IsNullOrEmpty(text))
+        {
+            filters = [.. filters, new SearchComponentWithText(text ?? "")];
+        }
+        return await _repository.SearchComponentsAsync(filters, offset, count);
     }
 
     /// <summary>
@@ -322,10 +351,37 @@ internal class ArchitectureManager : IArchitectureManager
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
         feature.TenantId = principal.GetTenantIdOrThrow();
-        await GenerateEmbeddingAsync(feature);
+        await GenerateEmbeddingAsync(principal, feature);
         await _repository.AddFeatureAsync(feature);
 
         await OnFeatureUpdatedAsync(principal, feature);
+    }
+
+    /// <summary>
+    /// Semantic search for features
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<PagedResult<Feature>> SemanticSearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string semanticSearchText, int offset, int count)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
+        var tenantId = principal.GetTenantIdOrThrow();
+        FilterSpecification<Feature>[] filters = [
+            new FilterByProject<Feature>(projectId),
+            new FilterByTenant<Feature>(tenantId)
+        ];
+
+        if (!string.IsNullOrEmpty(semanticSearchText))
+        {
+            var embedding = await _mediator.Send(new GenerateEmbeddingRequest(principal, projectId, semanticSearchText));
+            if (embedding?.EmbeddingVector is not null)
+            {
+                return await _repository.SemanticSearchFeaturesAsync(embedding.EmbeddingVector.Value, filters, offset, count);
+            }
+        }
+
+        return await SearchFeaturesAsync(principal, projectId, semanticSearchText, offset, count);
     }
 
     /// <summary>
@@ -334,18 +390,22 @@ internal class ArchitectureManager : IArchitectureManager
     /// <param name="principal"></param>
     /// <param name="projectId"></param>
     /// <returns></returns>
-    public async Task<IReadOnlyList<Feature>> SearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
+    public async Task<PagedResult<Feature>> SearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         FilterSpecification<Feature>[] filters = [
-            new SearchFeatureWithText(text),
             new FilterByProject<Feature>(projectId), 
             new FilterByTenant<Feature>(tenantId)
         ];
 
-        PagedResult<Feature> result = await _repository.SearchFeaturesAsync(filters, offset, count);
-        return result.Items.ToList();
+        if (!string.IsNullOrEmpty(text))
+        {
+            filters = [.. filters, new SearchFeatureWithText(text ?? "")];
+        }
+
+
+        return await _repository.SearchFeaturesAsync(filters, offset, count);
     }
 
     /// <summary>
@@ -387,7 +447,7 @@ internal class ArchitectureManager : IArchitectureManager
         return null;
     }
     #endregion Features
-    private async Task GenerateEmbeddingAsync(AritecturalComponentProjectEntity item)
+    private async Task GenerateEmbeddingAsync(ClaimsPrincipal principal, AritecturalComponentProjectEntity item)
     {
         if (item.TestProjectId is null)
         {
@@ -397,7 +457,7 @@ internal class ArchitectureManager : IArchitectureManager
         try
         {
             var text = $"{item.Name} {item.Description}";
-            var response = await _mediator.Send(new GenerateEmbeddingRequest(item.TestProjectId.Value, text));
+            var response = await _mediator.Send(new GenerateEmbeddingRequest(principal, item.TestProjectId.Value, text));
             if (response.EmbeddingVector is not null)
             {
                 item.Embedding = new Pgvector.Vector(response.EmbeddingVector.Value);
@@ -493,7 +553,7 @@ internal class ArchitectureManager : IArchitectureManager
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
-                await GenerateEmbeddingAsync(existingFeature);
+                await GenerateEmbeddingAsync(principal, existingFeature);
                 await _repository.AddFeatureAsync(existingFeature);
 
                 await OnFeatureUpdatedAsync(principal, existingFeature);
@@ -521,7 +581,7 @@ internal class ArchitectureManager : IArchitectureManager
         }
         if(existingFeature.Name != feature.Name || existingFeature.Description != feature.Description || feature.Embedding is null)
         {
-            await GenerateEmbeddingAsync(feature);
+            await GenerateEmbeddingAsync(principal, feature);
         }
 
         feature.Modified = DateTimeOffset.UtcNow;
@@ -563,7 +623,7 @@ internal class ArchitectureManager : IArchitectureManager
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
-                await GenerateEmbeddingAsync(existingFeature);
+                await GenerateEmbeddingAsync(principal,existingFeature);
                 await _repository.AddLayerAsync(existingFeature);
             }
             else
@@ -600,7 +660,7 @@ internal class ArchitectureManager : IArchitectureManager
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
-                await GenerateEmbeddingAsync(existingComponent);
+                await GenerateEmbeddingAsync(principal, existingComponent);
                 await _repository.AddComponentAsync(existingComponent);
 
                 await OnComponentUpdatedAsync(principal, existingComponent);
@@ -640,7 +700,7 @@ internal class ArchitectureManager : IArchitectureManager
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
-                await GenerateEmbeddingAsync(existingSystem);
+                await GenerateEmbeddingAsync(principal, existingSystem);
                 await _repository.AddSystemAsync(existingSystem);
             }
             else
@@ -669,7 +729,7 @@ internal class ArchitectureManager : IArchitectureManager
         existingSystem.Description = system.Value.Description ?? existingSystem.Description;
         if (hasDescriptionChanged || existingSystem.Embedding is null)
         {
-            await GenerateEmbeddingAsync(existingSystem);
+            await GenerateEmbeddingAsync(principal, existingSystem);
         }
     }
     private async Task OnFeatureUpdatedAsync(ClaimsPrincipal principal, Feature feature)

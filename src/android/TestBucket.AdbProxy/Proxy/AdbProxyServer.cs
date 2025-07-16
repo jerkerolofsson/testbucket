@@ -4,6 +4,7 @@ using System;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 using TestBucket.AdbProxy.Models;
+using TestBucket.ResourceServer.Utilities;
 
 namespace TestBucket.AdbProxy.Proxy
 {
@@ -35,20 +36,7 @@ namespace TestBucket.AdbProxy.Proxy
             // Port / URL
             Device.Port = Port;
 
-            // If running a docker container, use environment variable
-            string? hostname = Environment.GetEnvironmentVariable("ADB_PROXY_PUBLIC_IP");
-            if (hostname is null)
-            {
-                foreach (var address in Dns.GetHostAddresses(Dns.GetHostName(), AddressFamily.InterNetwork))
-                {
-                    if (!IPAddress.IsLoopback(address))
-                    {
-                        hostname = address.ToString();
-                        break;
-                    }
-                }
-            }
-
+            var hostname = PublicHostnameDetector.GetPublicHostname();
             Device.Url = DeviceUrl = $"{hostname??"localhost"}:{Port}";
         }
 

@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.Extensions.DependencyInjection;
-
 using Scalar.AspNetCore;
-
 using TestBucket.Servers.AdbProxy.Controllers;
 
 internal class Program
@@ -32,7 +29,6 @@ internal class Program
 
         app.UseAntiforgery();
         app.UseHttpsRedirection();
-
 
         app.MapOpenApi();
         app.MapScalarApiReference();

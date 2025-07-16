@@ -1,6 +1,16 @@
 ﻿@using TestBucket.Domain.AI.Agent.Models
 <MudPaper Class="pa-2" aria-role="button" @onclick="OnSuggestionClicked">
-    @Suggestion?.Title
+    <MudStack Row>
+        @if(Suggestion?.Icon is not null)
+        {
+            <MudIcon Icon="@Suggestion.Icon"/>
+        }
+        else
+        {
+            <MudIcon Icon="@TbIcons.BoldDuoTone.AI" />
+        }
+        @Suggestion?.Title
+    </MudStack>
 </MudPaper>
 
 @code {

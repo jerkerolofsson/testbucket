@@ -14,6 +14,11 @@ public class SettingContext
     public required ClaimsPrincipal Principal { get; set; }
 
     /// <summary>
+    /// Tenant Id
+    /// </summary>
+    public required string TenantId { get; set; }
+
+    /// <summary>
     /// Current project
     /// </summary>
     public long? ProjectId { get; set; }

@@ -1,0 +1,36 @@
+.tb-timespan-picker {
+    display: flex;
+    gap: 14px;
+}
+
+.tb-timespan-picker > * {
+    width: 50px;
+    aspect-ratio: 1;
+}
+
+.tb-timespan-picker .value {
+    font-size: var(--mud-typography-h3-size);
+    font-weight: bold;
+}
+
+.tb-timespan-picker label {
+    font-size: var(--mud-typography-subtitle2-size);
+    border: solid 1px var(--mud-palette-action-default);
+    padding: 4px;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tb-timespan-picker button {
+    width: 100%;
+    height: 20px;
+    border: solid 1px transparent;
+    transition: border-color linear 100ms;
+}
+
+.tb-timespan-picker button:hover {
+    border: solid 1px var(--mud-palette-primary);
+}

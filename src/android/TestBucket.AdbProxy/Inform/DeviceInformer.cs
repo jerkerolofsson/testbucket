@@ -50,8 +50,8 @@ internal class DeviceInformer(HttpClient httpClient) : IDeviceInformer
             return _settings;
         }
 
-        var informUrl = Environment.GetEnvironmentVariable("ADB_PROXY_INFORM_URL");
-        var auth = Environment.GetEnvironmentVariable("ADB_PROXY_AUTH_HEADER");
+        var informUrl = Environment.GetEnvironmentVariable("TB_INFORM_URL");
+        var auth = Environment.GetEnvironmentVariable("TB_AUTH_HEADER");
 
         var path = GetSettingsPath();
         if (File.Exists(path))

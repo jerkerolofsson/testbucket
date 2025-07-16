@@ -10,7 +10,7 @@
         <MudText Class="mb-3" Typo="Typo.h1">@loc.Shared["requirements-and-workitems"]</MudText>
 
         <EditForm OnValidSubmit="Search" Model="@_searchPhrase">
-            <MudStack Row Spacing="1">
+            <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
                 <MudTextField @bind-Value="@_searchPhrase" T="string"
                               Class="mt-2 default-search"
                               Clearable="true"
@@ -19,6 +19,7 @@
                               Adornment="Adornment.Start"
                               Placeholder="@loc.Shared["search"]"
                               AdornmentIcon="@Icons.Material.Filled.Search" />
+                <SemanticSearchToggle @bind-Enabled="@_semanticSearch" EnabledLabel="@loc.Shared["semantic-search"]" DisabledLabel="@loc.Shared["normal-search"]" />
                 <MudButton ButtonType="ButtonType.Submit">@loc.Shared["search"]</MudButton>
             </MudStack>
         </EditForm>
@@ -31,10 +32,17 @@
     [CascadingParameter] Team? Team { get; set; }
 
     private string _searchPhrase = "";
+    private bool _semanticSearch = true;
 
     private void Search()
     {
         var baseUrl = appNavigationManager.GetRequirementsSearchUrl() + "?q=" + _searchPhrase;
+
+        if(_semanticSearch)
+        {
+            baseUrl += "&semantic=true";
+        }
+
         appNavigationManager.NavigateTo(baseUrl);
     }
 }

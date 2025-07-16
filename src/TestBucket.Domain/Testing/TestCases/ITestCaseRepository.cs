@@ -331,4 +331,5 @@ public interface ITestCaseRepository
     Task DeleteTestLabFolderAsync(TestLabFolder folder);
     Task<TestRepositoryFolder?> GetTestRepositoryFolderByIdAsync(long folderId);
     Task<TestLabFolder?> GetTestLabFolderByIdAsync(long folderId);
+    Task<PagedResult<TestCase>> SemanticSearchTestCasesAsync(ReadOnlyMemory<float> embeddingVector, int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters);
 }

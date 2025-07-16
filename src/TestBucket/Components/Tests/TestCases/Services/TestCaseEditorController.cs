@@ -27,13 +27,10 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
     private readonly IStateService _stateService;
     private readonly ITestRunManager _testRunManager;
     private readonly ITestCaseManager _testCaseManager;
-    private readonly ITestSuiteManager _testSuiteManager;
     private readonly IRequirementManager _requirementManager;
-    private readonly ITestCompiler _testCompiler;
-    private readonly ITestEnvironmentManager _testEnvironmentManager;
     private readonly IMediator _mediator;
     private readonly IStringLocalizer<SharedStrings> _loc;
-    private readonly IProjectManager _projectManager;
+    private readonly TestExecutionContextBuilder _testExecutionContextBuilder;
 
     public TestCaseEditorController(
         ITestCaseManager testCaseManager,
@@ -42,105 +39,24 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         IDialogService dialogService,
         IStateService stateService,
         IRequirementManager requirementManager,
-        ITestCompiler testComplier,
-        ITestEnvironmentManager testEnvironmentManager,
         IMediator mediator,
-        ITestSuiteManager testSuiteManager,
         IStringLocalizer<SharedStrings> loc,
-        IProjectManager projectManager) : base(authenticationStateProvider)
+        TestExecutionContextBuilder testExecutionContextBuilder) : base(authenticationStateProvider)
     {
         _testCaseManager = testCaseManager;
         _testRunManager = testRunManager;
         _dialogService = dialogService;
         _stateService = stateService;
         _requirementManager = requirementManager;
-        _testCompiler = testComplier;
-        _testEnvironmentManager = testEnvironmentManager;
         _mediator = mediator;
-        _testSuiteManager = testSuiteManager;
         _loc = loc;
-        _projectManager = projectManager;
+        _testExecutionContextBuilder = testExecutionContextBuilder;
     }
 
     public async ValueTask<TestExecutionContext?> CompileAsync(CompilationOptions options, List<CompilerError> errors, CancellationToken cancellationToken = default)
     {
-        var testCase = options.TestCase;
-        if (testCase.TestProjectId is not null && testCase.TenantId is not null)
-        {
-            var principal = await GetUserClaimsPrincipalAsync();
-            if (testCase.TeamId is null)
-            {
-                var project = await _projectManager.GetTestProjectByIdAsync(principal, testCase.TestProjectId.Value);
-                testCase.TeamId = project?.TeamId;
-            }
-            if (testCase.TeamId is null)
-            {
-                return null;
-            }
-
-            TestRun? testRun;
-            TestEnvironment? testEnvironment = null;
-            if(options.TestRunId is not null)
-            {
-                testRun = await _testRunManager.GetTestRunByIdAsync(principal, options.TestRunId.Value);
-                if(testRun?.TestEnvironmentId is not null)
-                {
-                    testEnvironment = await _testEnvironmentManager.GetTestEnvironmentByIdAsync(principal, testRun.TestEnvironmentId.Value);
-                }
-            }
-            if (testEnvironment is null)
-            {
-                var defaultEnvironment = await _testEnvironmentManager.GetDefaultTestEnvironmentAsync(principal, testCase.TestProjectId.Value);
-                testEnvironment = defaultEnvironment;
-            }
-
-            var context = new TestExecutionContext()
-            {
-                Guid = options.ContextGuid,
-                TestCaseId = testCase.Id,
-                TestSuiteId = testCase.TestSuiteId,
-                ProjectId = testCase.TestProjectId.Value,
-                TestRunId = options.TestRunId,
-                TeamId = testCase.TeamId.Value,
-                TestEnvironmentId = testEnvironment?.Id,
-                Dependencies = []
-            };
-
-            if (string.IsNullOrWhiteSpace(options.Text))
-            {
-                context.CompiledText = options.Text;
-                return context;
-            }
-
-            if (options.AllocateResources)
-            {
-                if(testCase.Dependencies is not null)
-                {
-                    context.Dependencies = [.. testCase.Dependencies];
-                }
-
-                var suite = await _testSuiteManager.GetTestSuiteByIdAsync(principal, testCase.TestSuiteId);
-                if(suite?.Dependencies is not null) 
-                {
-                    context.Dependencies.AddRange(suite.Dependencies);
-                }
-            }
-
-            await _testCompiler.ResolveVariablesAsync(principal, context, cancellationToken);
-            var result = await _testCompiler.CompileAsync(principal, context, options.Text);
-
-            errors.Clear();
-            errors.AddRange(context.CompilerErrors);
-
-            if (options.ReleaseResourceDirectly)
-            {
-                await ReleaseResourcesAsync(context.Guid, testCase.TenantId);
-            }
-
-            context.CompiledText = result;
-            return context;
-        }
-        return null;
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _testExecutionContextBuilder.BuildAsync(principal, options, errors, cancellationToken);
     }
 
     public async ValueTask ReleaseResourcesAsync(string guid, string tenantId)
@@ -160,16 +76,7 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         testCase.TenantId = await GetTenantIdAsync();
         await _testCaseManager.AddTestCaseAsync(principal, testCase);
     }
-    public async ValueTask GenerateAiTestsAsync(TestSuiteFolder? folder, long? testSuiteId)
-    {
-        var parameters = new DialogParameters<CreateAITestsDialog>
-        {
-            { x => x.Folder, folder },
-            { x => x.TestSuiteId, testSuiteId ?? folder?.TestSuiteId}
-        };
-        var dialog = await _dialogService.ShowAsync<CreateAITestsDialog>("Generate test cases", parameters, DefaultBehaviors.DialogOptions);
-        var result = await dialog.Result;
-    }
+   
     public async ValueTask<TestCase?> CreateNewTemplateAsync(TestProject project, TestSuiteFolder? folder, long? testSuiteId, string name = "")
     {
         var parameters = new DialogParameters<AddTestCaseDialog>

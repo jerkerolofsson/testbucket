@@ -43,9 +43,9 @@ internal class GenericClassifier : IClassifier
     {
         public string? Category { get; set; }
     }
-    public Task<string?> GetModelNameAsync(ModelType modelType)
+    public Task<string?> GetModelNameAsync(ClaimsPrincipal principal, ModelType modelType)
     {
-        return _chatClientFactory.GetModelNameAsync(modelType);
+        return _chatClientFactory.GetModelNameAsync(principal, modelType);
     }
 
     public async Task<string[]> ClassifyAsync(ClaimsPrincipal principal, string fieldName, IReadOnlyList<GenericVisualEntity> categories, LocalIssue issue)
@@ -53,7 +53,7 @@ internal class GenericClassifier : IClassifier
         var hasEmbeddings = categories.Where(x=>x.Embedding != null).Any();
         if(hasEmbeddings && issue.TestProjectId is not null)
         {
-            var response = await _mediator.Send(new GenerateEmbeddingRequest(issue.TestProjectId.Value, issue.Title + " " + issue.Description));
+            var response = await _mediator.Send(new GenerateEmbeddingRequest(principal,issue.TestProjectId.Value, issue.Title + " " + issue.Description));
             if (response.EmbeddingVector is not null)
             {
                 var queryVector = response.EmbeddingVector.Value.ToArray();
@@ -104,7 +104,7 @@ internal class GenericClassifier : IClassifier
         }
         classification.AppendLine("Respond **only** with a single category.");
 
-        var chatClient = await _chatClientFactory.CreateChatClientAsync(ModelType.Classification);
+        var chatClient = await _chatClientFactory.CreateChatClientAsync(principal, ModelType.Classification);
         if (chatClient is not null)
         {
             List<ChatMessage> chatHistory =
@@ -136,7 +136,7 @@ internal class GenericClassifier : IClassifier
         var hasEmbeddings = categories.Where(x => x.Embedding != null).Any();
         if (hasEmbeddings && issue.TestProjectId is not null)
         {
-            var response = await _mediator.Send(new GenerateEmbeddingRequest(issue.TestProjectId.Value, issue.Name + " " + issue.Description));
+            var response = await _mediator.Send(new GenerateEmbeddingRequest(principal, issue.TestProjectId.Value, issue.Name + " " + issue.Description));
             if (response.EmbeddingVector is not null)
             {
                 var queryVector = response.EmbeddingVector.Value.ToArray();
@@ -199,7 +199,7 @@ internal class GenericClassifier : IClassifier
         }
         classification.AppendLine("Respond **only** with a single category.");
 
-        var chatClient = await _chatClientFactory.CreateChatClientAsync(ModelType.Classification);
+        var chatClient = await _chatClientFactory.CreateChatClientAsync(principal, ModelType.Classification);
         if (chatClient is not null)
         {
             List<ChatMessage> chatHistory = 

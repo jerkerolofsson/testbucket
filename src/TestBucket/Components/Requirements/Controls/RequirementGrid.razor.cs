@@ -10,6 +10,7 @@ public partial class RequirementGrid
     [Parameter] public TestProject? Project { get; set; }
     [Parameter] public EventCallback<Requirement> OnRequirementClicked { get; set; }
 
+    [Parameter] public bool Semantic { get; set; } = false;
     [Parameter] public SearchRequirementQuery? Query { get; set; }
     [Parameter] public EventCallback<SearchRequirementQuery> QueryChanged { get; set; }
 
@@ -25,7 +26,7 @@ public partial class RequirementGrid
     private bool _hasCustomFilter = false;
     private IReadOnlyList<FieldDefinition> _fields = [];
     private string _searchPhrase = "";
-
+    private bool _semanticSearch = true;
 
     #region Lifecycle
     private void SetSelectedRequirement(Requirement requirement)
@@ -35,6 +36,7 @@ public partial class RequirementGrid
 
     protected override async Task OnParametersSetAsync()
     {
+        _semanticSearch = Semantic;
         await UpdateQueryAsync();
     }
 
@@ -118,7 +120,8 @@ public partial class RequirementGrid
         _query.ProjectId = Project?.Id;
         _query.Offset = state.Page * state.PageSize;
         _query.Count = state.PageSize;
-        var result = await browser.SearchAsync(_query);
+
+        var result = await browser.SearchAsync(_query, semantic:_semanticSearch);
 
         GridData<Requirement> data = new()
         {

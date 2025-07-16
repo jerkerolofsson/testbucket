@@ -10,7 +10,7 @@ public interface IClassifier
     /// <summary>
     /// Name of the model used
     /// </summary>
-    Task<string?> GetModelNameAsync(ModelType modelType);
+    Task<string?> GetModelNameAsync(ClaimsPrincipal principal, ModelType modelType);
 
     /// <summary>
     /// Identifies a category from a test case

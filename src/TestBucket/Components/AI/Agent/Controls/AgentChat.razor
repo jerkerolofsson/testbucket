@@ -1,10 +1,12 @@
-﻿@using TestBucket.Domain.AI.Agent
+﻿@using TestBucket.Contracts.Localization
+@using TestBucket.Domain.AI.Agent
 @using TestBucket.Domain.AI.Agent.Models
 @inject IChatClientFactory chatClientFactory
 @inject IServiceProvider serviceProvider
 @inject AuthenticationStateProvider authenticationStateProvider
 @inject AppNavigationManager appNavigationManager
 @inject AgentChatContext context
+@inject IAppLocalization loc
 
 <div class="tb-agent-chat">
     <MudStack Style="width: 100%" Spacing="1">
@@ -108,6 +110,10 @@
     <MudPaper Class="tb-agent-submit">
         <MudStack Row>
             <ChatReferences ChatContext="@context" ReferencesChanged="OnReferencesChanged"/>
+            <MudSpacer/>
+            <MudMenu Icon="@TbIcons.Filled.Tools" Size="Size.Small">
+                <MudMenuItem OnClick="ReloadToolsAsync">@loc.Shared["reload"]</MudMenuItem>
+            </MudMenu>
         </MudStack>
 
         <div class="prompt">
@@ -135,13 +141,20 @@
 
     private StringBuilder _activeResponse = new();
 
+    private async Task ReloadToolsAsync()
+    {
+        var client = new AgentChatClient(chatClientFactory, serviceProvider);
+        var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
+        context.Tools = await client.GetToolsAsync(authState.User, context, default);
+    }
+
     private void OnReferencesChanged()
     {
         // Repaint the UI as suggestions will have changed
         this.StateHasChanged();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         // Determine if we need to reset the context
         if(Project is not null)
@@ -161,6 +174,18 @@
         {
             needReset = true;
         }
+
+        // Never reset if we have a user prompt
+        if(context.Messages.Count > 0 || !string.IsNullOrWhiteSpace(_userPrompt))
+        {
+            needReset = false;
+        }
+
+        if(context.Tools is null)
+        {
+            await ReloadToolsAsync();
+        }
+
         if (needReset)
         {
             Clear(clearMessages: clearMessages);
@@ -174,6 +199,8 @@
 
     private void Clear(bool clearMessages)
     {
+        _cts?.Cancel();
+
         if (clearMessages)
         {
             context.ClearMessages();
@@ -215,6 +242,10 @@
     }
     private async Task SendAsync(ChatMessage chatMessage)
     {
+        _cts?.Cancel();
+        _cts = new CancellationTokenSource();
+        var cancellationToken = _cts.Token;
+
         _userPrompt = "";
         _isWorking = true;
         _activeResponse.Clear();
@@ -225,11 +256,11 @@
 
         try
         {
-            await foreach (var update in client.GetStreamingResponseAsync(authState.User, Project, context, chatMessage, _cts.Token))
+            await foreach (var update in client.GetStreamingResponseAsync(authState.User, Project, context, chatMessage, cancellationToken))
             {
                 if (update is PipelineActionUpdate actionUpdate)
                 {
-                    _activeResponse.Append(actionUpdate.ActionName);
+                    _activeResponse.Append(actionUpdate.ActionName+"\n\n");
                 }
                 else
                 {
@@ -237,6 +268,10 @@
                 }
                 await InvokeAsync(this.StateHasChanged);
             }
+        }
+        catch(OperationCanceledException)
+        {
+            
         }
         catch(Exception ex)
         {

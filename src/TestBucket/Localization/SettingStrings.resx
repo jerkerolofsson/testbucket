@@ -267,4 +267,52 @@
   <data name="mcp-public-description" xml:space="preserve">
     <value>A public MCP server may be used by any project member. If it is not public it is only available to a single user.</value>
   </data>
+  <data name="test-resources" xml:space="preserve">
+    <value>Test resources</value>
+  </data>
+  <data name="delete-resource-if-not-seen-for" xml:space="preserve">
+    <value>Delete resource if not seen for</value>
+  </data>
+  <data name="keyboard" xml:space="preserve">
+    <value>Keyboard</value>
+  </data>
+  <data name="commands" xml:space="preserve">
+    <value>Commands</value>
+  </data>
+  <data name="tool-bar" xml:space="preserve">
+    <value>Tool bar</value>
+  </data>
+  <data name="embedding-ai-provider" xml:space="preserve">
+    <value>AI provider for embeddings</value>
+  </data>
+  <data name="ai-embedding-model" xml:space="preserve">
+    <value>Embedding model</value>
+  </data>
+  <data name="ai-runner" xml:space="preserve">
+    <value>AI runner</value>
+  </data>
+  <data name="ai-runner-enabled" xml:space="preserve">
+    <value>Use AI runner</value>
+  </data>
+  <data name="ai-runner-enabled-description" xml:space="preserve">
+    <value>Enables the usage of the AI runner for this project</value>
+  </data>
+  <data name="ai-provider-description" xml:space="preserve">
+    <value>The AI provider to use for this tenant</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
+    <value>AI Runner max. tokens per day</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
+    <value>Maximum number of tokens that can be consumed in a day by the AI runner</value>
+  </data>
+  <data name="mcp-tool-name" xml:space="preserve">
+    <value>MCP Tool</value>
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value>Testing</value>
+  </data>
+  <data name="test-execution" xml:space="preserve">
+    <value>Test execution</value>
+  </data>
 </root>

@@ -13,16 +13,10 @@
 @if (Folder is not null)
 {
     <CommandMenuItems TypeNames="TestSuiteFolder" />
-    
-    <MudMenuItem Icon="@Icons.Material.Filled.Add" OnClick="() => GenerateAiTestsAsync(Folder)">Generate New Tests with AI</MudMenuItem>
 }
 @code {
     [Parameter] public TestSuiteFolder? Folder { get; set; }
     [Parameter] public TestProject? Project { get; set; }
     [Parameter] public Team? Team { get; set; }
 
-    private async Task GenerateAiTestsAsync(TestSuiteFolder folder)
-    {
-        await testCaseEditor.GenerateAiTestsAsync(folder, folder.TestSuiteId);
-    }
 }

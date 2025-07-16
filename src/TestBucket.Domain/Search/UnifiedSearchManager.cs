@@ -47,7 +47,7 @@ namespace TestBucket.Domain.Search
 
         private void SearchForSettingLinks(ClaimsPrincipal principal, TestProject? testProject, string text, List<SearchResult> result)
         {
-            var context = new SettingContext { Principal = principal, ProjectId = testProject?.Id };
+            var context = new SettingContext { Principal = principal, ProjectId = testProject?.Id, TenantId = principal.GetTenantIdOrThrow() };
             var links = _settingsManager.SearchLinks(context, text);
             foreach(var link in links)
             {

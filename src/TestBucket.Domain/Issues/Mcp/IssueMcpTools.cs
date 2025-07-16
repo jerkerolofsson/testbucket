@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Runtime.Intrinsics.X86;
 
 using ModelContextProtocol.Server;
 
@@ -11,9 +10,7 @@ using TestBucket.Domain.Issues.Mapping;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Search;
 
-using static System.Net.Mime.MediaTypeNames;
-
-namespace TestBucket.Domain.Milestones.Mcp;
+namespace TestBucket.Domain.Issues.Mcp;
 
 [McpServerToolType]
 public class IssueMcpTools : AuthenticatedTool
@@ -38,7 +35,7 @@ public class IssueMcpTools : AuthenticatedTool
             var projectId = _principal.GetProjectId();
             if (projectId is not null)
             {
-                var issue = await FindIssueAsync(issueId);
+                var issue = await FindIssueAsync(issueId, projectId.Value);
                 if (issue is null)
                 {
                     return null;
@@ -52,7 +49,7 @@ public class IssueMcpTools : AuthenticatedTool
     }
 
     /// <summary>
-    /// Assigns the issue to a user
+    /// Searches for a specific issue
     /// </summary>
     /// <returns></returns>
     [McpServerTool(Name = "search-for-issue"), Description("Searches for an issue and returns the issue")]
@@ -66,6 +63,7 @@ public class IssueMcpTools : AuthenticatedTool
             {
                 var result = await _manager.SearchLocalIssuesAsync(_principal, new SearchIssueQuery
                 {
+                    ProjectId = projectId,
                     Text = text
                 }, 0, 1);
                 if (result is null || result.TotalCount == 0)
@@ -80,7 +78,7 @@ public class IssueMcpTools : AuthenticatedTool
         return null;
     }
 
-    private async Task<LocalIssue?> FindIssueAsync(string issueId)
+    private async Task<LocalIssue?> FindIssueAsync(string issueId, long projectId)
     {
         if (_principal is not null)
         {
@@ -96,6 +94,7 @@ public class IssueMcpTools : AuthenticatedTool
 
             var result = await _manager.SearchLocalIssuesAsync(_principal, new SearchIssueQuery
             {
+                ProjectId = projectId,
                 Text = issueId
             }, 0, 1);
             if (result is null || result.TotalCount == 0)
@@ -121,7 +120,7 @@ public class IssueMcpTools : AuthenticatedTool
             var projectId = _principal.GetProjectId();
             if (projectId is not null)
             {
-                var issue = await FindIssueAsync(issueId);
+                var issue = await FindIssueAsync(issueId, projectId.Value);
                 if (issue is not null)
                 {
                     issue.AssignedTo = user;

@@ -29,7 +29,7 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         internal ISetting[] Search(string text)
         {
             var principal = Impersonation.Impersonate(Fixture.App.Tenant);
-            var context = new SettingContext { Principal = principal, ProjectId = Fixture.ProjectId };
+            var context = new SettingContext { Principal = principal, ProjectId = Fixture.ProjectId, TenantId = Fixture.App.Tenant };
             var manager = Fixture.Services.GetRequiredService<ISettingsManager>();
             return manager.Search(context, text);
         }

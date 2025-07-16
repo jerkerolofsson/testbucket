@@ -89,7 +89,7 @@ public partial class McpSettingsPage
         {
             _project = Project;
 
-            _serverRegistrations = (await mcpController.GetMcpServerRegistrationsAsync(Project.Id)).ToList();
+            _serverRegistrations = (await mcpController.GetMcpServerRegistrationsAsync()).ToList();
             this.StateHasChanged();
         }
     }

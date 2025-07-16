@@ -118,14 +118,15 @@ internal class RequirementBrowser : TenantBaseService
         return await _requirementManager.SearchRequirementsAsync(principal, query);
     }
 
-    public async Task<PagedResult<Requirement>> SearchAsync(SearchRequirementQuery query)
+    public async Task<PagedResult<Requirement>> SearchAsync(SearchRequirementQuery query, bool semantic = false)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        var result = await _requirementManager.SearchRequirementsAsync(principal, query);
-        return result;
+        if(semantic)
+        {
+            return await _requirementManager.SemanticSearchRequirementsAsync(principal, query);
+        }
+        return await _requirementManager.SearchRequirementsAsync(principal, query);
     }
-
-
     public async Task<List<TreeNode<BrowserItem>>> SearchAsync(long? teamId, long? projectId, string searchText)
     {
         if(projectId is null)

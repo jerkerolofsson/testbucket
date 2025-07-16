@@ -6,6 +6,7 @@
 @using TestBucket.Domain
 @using TestBucket.Domain.Settings
 @using TestBucket.Domain.Settings.Models
+@using TestBucket.Domain.Shared
 @inject NavigationManager navigationManager
 @inject ISettingsManager settingsManager
 @inject UserPreferencesService preferencesController
@@ -38,7 +39,7 @@
                     <MudNavLink Icon="@SettingIcons.GetIcon(category.Icon)" Href="@url">@category.Name</MudNavLink>
                 }
 
-                <MudNavLink Icon="@TbIcons.BoldDuoTone.Keyboard" Href="@KeyboardUrl">@loc["keyboard"]</MudNavLink>
+                <MudNavLink Icon="@TbIcons.BoldDuoTone.Keyboard" Href="@KeyboardUrl">@settingsLoc["keyboard"]</MudNavLink>
 
 
                 <MudNavLink Icon="@Icons.Material.Filled.Security" Href="@ApiKeysUrl">@loc["api-keys"]</MudNavLink>
@@ -120,7 +121,7 @@
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var principal = authState.User;
 
-        return new SettingContext { Principal = principal, ProjectId = Project?.Id };
+        return new SettingContext { Principal = principal, ProjectId = Project?.Id, TenantId = principal.GetTenantIdOrThrow() };
     }
 
     private async Task OnSearchTextChangedAsync(string text)

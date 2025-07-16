@@ -38,7 +38,8 @@ public interface IArchitectureManager
 
     #region Features
 
-    Task<IReadOnlyList<Feature>> SearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count);
+    Task<PagedResult<Feature>> SemanticSearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string semanticSearchText, int offset, int count);
+    Task<PagedResult<Feature>> SearchFeaturesAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count);
     Task<IReadOnlyList<Feature>> GetFeaturesAsync(ClaimsPrincipal principal, long projectId);
     Task<Feature?> GetFeatureByNameAsync(ClaimsPrincipal principal, long projectId, string name);
     Task AddFeatureAsync(ClaimsPrincipal principal, Feature feature);
@@ -62,8 +63,8 @@ public interface IArchitectureManager
     Task AddComponentAsync(ClaimsPrincipal principal, Component component);
     Task UpdateComponentAsync(ClaimsPrincipal principal, Component component);
     Task DeleteComponentAsync(ClaimsPrincipal principal, Component component);
-
-    Task<IReadOnlyList<Component>> SearchComponentsAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count);
+    Task<PagedResult<Component>> SemanticSearchComponentsAsync(ClaimsPrincipal principal, long projectId, string semanticSearchText, int offset, int count);
+    Task<PagedResult<Component>> SearchComponentsAsync(ClaimsPrincipal principal, long projectId, string text, int offset, int count);
     Task<IReadOnlyList<Component>> GetComponentsAsync(ClaimsPrincipal principal, long projectId);
     Task<Component?> GetComponentByNameAsync(ClaimsPrincipal principal, long projectId, string name);
 

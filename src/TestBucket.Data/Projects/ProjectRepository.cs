@@ -272,6 +272,12 @@ internal class ProjectRepository : IProjectRepository
         {
             dbContext.Heuristics.Remove(heuristic);
         }
+
+        foreach (var domainSettings in dbContext.DomainSettings.Where(x => x.TestProjectId == project.Id))
+        {
+            dbContext.DomainSettings.Remove(domainSettings);
+        }
+
         // Fields
 
         foreach (var fieldDefinition in dbContext.FieldDefinitions.Where(x=>x.TestProjectId == project.Id).ToList())

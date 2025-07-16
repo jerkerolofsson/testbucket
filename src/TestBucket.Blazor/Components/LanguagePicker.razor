@@ -12,7 +12,7 @@
 @if (RendererInfo.IsInteractive)
 {
     <MudTooltip Text="@Tooltip">
-        <MudMenu StartIcon="@Icons.Material.Outlined.Language" AriaLabel="@Tooltip" Label="@CultureInfo.CurrentUICulture.NativeName">
+        <MudMenu StartIcon="@Icons.Material.Outlined.Language" AriaLabel="@Tooltip" Label="@CultureInfo.CurrentUICulture.NativeName" @attributes="@Attributes">
             @foreach (var locale in _locales)
             {
                 <MudMenuItem OnClick="() => SetLocaleAsync(locale.Name)">@locale.NativeName</MudMenuItem>
@@ -36,6 +36,8 @@
 
 @code {
     private IReadOnlyList<CultureInfo> _locales = [];
+
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
 
     private string Tooltip => "Language / Idioma / Langue / 语言 / 言語 / لغة / 언어";
 

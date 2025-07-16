@@ -3,6 +3,7 @@ using MudBlazor.Utilities;
 
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Contracts.Fields;
+using TestBucket.Domain.Testing.Compiler;
 
 namespace TestBucket.Components.Tests.TestCases.Controls;
 public partial class TestCaseView

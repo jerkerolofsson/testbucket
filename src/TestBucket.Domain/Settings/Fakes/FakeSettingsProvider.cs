@@ -19,9 +19,20 @@ namespace TestBucket.Domain.Settings.Fakes
             JwtAudience = "testbucket",
             SymmetricJwtKey = "01234567890123456789012345678901234567890123456789"
         };
+
+        public Task<T?> GetDomainSettingsAsync<T>(string tenantId, long? projectId) where T : class
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<GlobalSettings> LoadGlobalSettingsAsync()
         {
             return Task.FromResult(_globalSettings);
+        }
+
+        public Task SaveDomainSettingsAsync<T>(string tenantId, long? projectId, T setting) where T : class
+        {
+            throw new NotImplementedException();
         }
 
         public Task SaveGlobalSettingsAsync(GlobalSettings settings)

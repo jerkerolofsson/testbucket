@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Models;
@@ -26,7 +22,7 @@ internal class SettingsRepository : ISettingsProvider
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         await dbContext.GlobalSettings.ExecuteDeleteAsync();
-        await dbContext.GlobalSettings.AddAsync(settings);
+        dbContext.GlobalSettings.Add(settings);
         await dbContext.SaveChangesAsync();
     }
 
@@ -47,4 +43,50 @@ internal class SettingsRepository : ISettingsProvider
         }
         return _settings;
     }
+
+    public async Task SaveDomainSettingsAsync<T>(string tenantId, long? projectId, T setting) where T : class
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        string type = typeof(T).FullName ?? "";
+
+        var existingSetting = await dbContext.DomainSettings
+            .Where(s => s.TenantId == tenantId && s.TestProjectId == projectId && s.Type == type)
+            .FirstOrDefaultAsync();
+
+        if (existingSetting is not null)
+        {
+            existingSetting.Json = JsonSerializer.Serialize(setting);
+            dbContext.DomainSettings.Update(existingSetting);
+        }
+        else
+        {
+            existingSetting = new DomainSettings
+            {
+                Type = type,
+                TestProjectId = projectId,
+                TenantId = tenantId,
+                Json = JsonSerializer.Serialize(setting)
+            };
+            dbContext.DomainSettings.Add(existingSetting);
+        }
+        await dbContext.SaveChangesAsync();
+    }
+
+    public async Task<T?> GetDomainSettingsAsync<T>(string tenantId, long? projectId) where T : class
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        string type = typeof(T).FullName ?? "";
+
+        var existingSetting = await dbContext.DomainSettings
+            .Where(s => s.TenantId == tenantId && s.TestProjectId == projectId && s.Type == type)
+            .FirstOrDefaultAsync();
+
+        if(existingSetting is null)
+        {
+            return default(T);
+        }
+
+        return JsonSerializer.Deserialize<T>(existingSetting.Json) ?? default(T);
+    }
+
 }

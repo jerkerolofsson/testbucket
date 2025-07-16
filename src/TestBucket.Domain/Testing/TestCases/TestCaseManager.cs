@@ -2,10 +2,16 @@
 
 using Mediator;
 
+using Microsoft.Extensions.Logging;
+
 using TestBucket.Contracts.Fields;
+using TestBucket.Domain.AI.Embeddings;
+using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Requirements.Specifications;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Duplication;
@@ -26,6 +32,7 @@ namespace TestBucket.Domain.Testing.TestCases
     {
         private readonly List<ITestCaseObserver> _testCaseObservers = new();
         private readonly IReadOnlyList<IMarkdownDetector> _markdownDetectors;
+        private readonly ILogger<TestCaseManager> _logger;
         private readonly TimeProvider _timeProvider;
         private readonly ITestCaseRepository _testCaseRepo;
         private readonly IProjectRepository _projectRepo;
@@ -34,11 +41,13 @@ namespace TestBucket.Domain.Testing.TestCases
         private readonly IFieldDefinitionManager _fieldDefinitionManager;
 
         public TestCaseManager(
+            ILogger<TestCaseManager> logger,
             TimeProvider timeProvider,
             IEnumerable<IMarkdownDetector> markdownDetectors,
             ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager)
         {
             _markdownDetectors = markdownDetectors.ToList();
+            _logger = logger;
             _timeProvider = timeProvider;
             _testCaseRepo = testCaseRepo;
             _testSuiteManager = testSuiteManager;
@@ -102,6 +111,41 @@ namespace TestBucket.Domain.Testing.TestCases
             }
         }
 
+        private async Task GenerateEmbeddingAsync(ClaimsPrincipal principal, TestCase item, IEnumerable<TestCaseField>? fields)
+        {
+            if (item.TestProjectId is null)
+            {
+                return;
+            }
+
+            try
+            {
+                var text = $"{item.Name} {item.Description}";
+
+
+                if (fields is not null)
+                {
+                    foreach (var field in fields)
+                    {
+                        if (field.FieldDefinition is not null)
+                        {
+                            text += $"\n{field.FieldDefinition.Name}={field.GetValueAsString()}";
+                        }
+                    }
+                }
+
+                var response = await _mediator.Send(new GenerateEmbeddingRequest(principal, item.TestProjectId.Value, text));
+                if (response.EmbeddingVector is not null)
+                {
+                    item.Embedding = new Pgvector.Vector(response.EmbeddingVector.Value);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error generating embedding for component {TestCaseName}", item.Name);
+            }
+        }
+
 
         /// <summary>
         /// Adds a test case
@@ -127,6 +171,7 @@ namespace TestBucket.Domain.Testing.TestCases
 
             await AssignTeamIfNotAssignedAsync(testCase, testCase.TenantId);
             await CreateTestCaseFoldersAsync(principal, testCase);
+            await GenerateEmbeddingAsync(principal, testCase, testCase.TestCaseFields);
 
             if (testCase.TeamId is null && testCase.TestProjectId is not null)
             {
@@ -208,6 +253,13 @@ namespace TestBucket.Domain.Testing.TestCases
             testCase.Modified = _timeProvider.GetUtcNow();
             testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
             testCase.ClassificationRequired = testCase.Description is not null && testCase.Description.Length > 0;
+
+            var existing = await _testCaseRepo.GetTestCaseByIdAsync(tenantId, testCase.Id);
+            var isDescriptionChanged = existing?.Description != testCase.Description;
+            if(isDescriptionChanged || testCase.Embedding is null || existing?.Name != testCase.Name)
+            {
+                await GenerateEmbeddingAsync(principal, testCase, testCase.TestCaseFields ?? existing?.TestCaseFields);
+            }
 
             await _testCaseRepo.UpdateTestCaseAsync(testCase);
 
@@ -344,16 +396,47 @@ namespace TestBucket.Domain.Testing.TestCases
             return await _testCaseRepo.GetTestCaseByNameAsync(tenantId, projectId, testSuiteId, name);
         }
 
+        public async Task<PagedResult<TestCase>> SemanticSearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query)
+        {
+            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
+            var tenantId = principal.GetTenantIdOrThrow();
+
+            // Get the text and temporarily remove it from the query to
+            // prevent the text filter to be created
+            var semanticSearchText = query.Text;
+            query.Text = null;
+            try
+            {
+
+                var filters = TestCaseFilterSpecificationBuilder.From(query);
+                filters = [.. filters, new FilterByTenant<TestCase>(principal.GetTenantIdOrThrow())];
+
+                if (!string.IsNullOrEmpty(semanticSearchText) && query.ProjectId is not null)
+                {
+                    var embedding = await _mediator.Send(new GenerateEmbeddingRequest(principal, query.ProjectId.Value, semanticSearchText));
+                    if (embedding?.EmbeddingVector is not null)
+                    {
+                        return await _testCaseRepo.SemanticSearchTestCasesAsync(embedding.EmbeddingVector.Value, query.Offset, query.Count, filters);
+                    }
+                }
+            }
+            finally
+            {
+                // Restore the text filter
+                query.Text = semanticSearchText;
+            }
+            return await SearchTestCasesAsync(principal, query);
+        }
+
+
         public async Task<PagedResult<TestCase>> SearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
             var tenantId = principal.GetTenantIdOrThrow();
 
-            var fields = await _fieldDefinitionManager.GetDefinitionsAsync(principal, query.ProjectId, FieldTarget.TestCase);
-
             var filters = TestCaseFilterSpecificationBuilder.From(query);
-
             filters = [new FilterByTenant<TestCase>(tenantId), .. filters];
+
             return await _testCaseRepo.SearchTestCasesAsync(query.Offset, query.Count, filters);
         }
     }

@@ -44,6 +44,11 @@ public class TestResource : Entity
     public string? LockOwner { get; set; }
 
     /// <summary>
+    /// Time when last seen
+    /// </summary>
+    public DateTimeOffset? LastSeen { get; set; }
+
+    /// <summary>
     /// Timestamp when the lock expires
     /// </summary>
     public DateTimeOffset? LockExpires { get; set; }
@@ -55,6 +60,7 @@ public class TestResource : Entity
 
     /// <summary>
     /// Types of resource (for example "phone"). A resource should have atleast one, but could have multiple types defined
+    /// The types should be defined so the first is the most specific one.
     /// </summary>
     public required string[] Types { get; set; }
 

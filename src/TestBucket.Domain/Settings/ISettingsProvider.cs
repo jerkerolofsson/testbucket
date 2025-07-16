@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Settings.Models;
-
-namespace TestBucket.Domain.Settings;
+﻿namespace TestBucket.Domain.Settings;
 public interface ISettingsProvider
 {
     /// <summary>
@@ -21,4 +13,7 @@ public interface ISettingsProvider
     /// <param name="settings"></param>
     /// <returns></returns>
     Task SaveGlobalSettingsAsync(GlobalSettings settings);
+
+    Task SaveDomainSettingsAsync<T>(string tenantId, long? projectId, T setting) where T : class;
+    Task<T?> GetDomainSettingsAsync<T>(string tenantId, long? projectId) where T : class;
 }

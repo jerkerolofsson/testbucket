@@ -1,7 +1,4 @@
 ﻿
-
-using System.Threading;
-
 using TestBucket.Contracts.TestResources;
 
 namespace TestBucket.ResosurceServer.Registry;

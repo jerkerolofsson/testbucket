@@ -83,6 +83,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<TestEnvironment> TestEnvironments { get; set; }
 
     /// <summary>
+    /// Domain specific settings
+    /// </summary>
+    public DbSet<DomainSettings> DomainSettings { get; set; }
+
+    /// <summary>
     /// Settings common for all tenants
     /// </summary>
     internal DbSet<GlobalSettings> GlobalSettings { get; set; }

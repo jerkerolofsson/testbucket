@@ -12,9 +12,9 @@ namespace TestBucket.Domain.Testing.Settings
 
             Metadata.Name = "Show failure message dialog when failing a test";
             Metadata.Description = "Opens a dialog when failing a test, letting the tester enter a description of the failure";
-            Metadata.Category.Name = "Testing";
+            Metadata.Category.Name = "testing";
             Metadata.Category.Icon = SettingIcon.Testing;
-            Metadata.Section.Name = "Test Execution";
+            Metadata.Section.Name = "test-execution";
             Metadata.Type = FieldType.Boolean;
         }
 

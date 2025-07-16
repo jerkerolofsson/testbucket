@@ -17,106 +17,101 @@
     <MudStack Class="pa-5">
         <MudExpansionPanels>
 
-            @if (_aiProvider is not null)
-            {
-                <MudExpansionPanel>
-                    <TitleContent>
-                        <MudStack Row AlignItems="AlignItems.Center">
-                            <MudIcon Icon="@GetProviderIcon(_aiProvider)"/>
-                            @settingsLoc["ai-provider"]
-                        </MudStack>
-                    </TitleContent>
-                    <ChildContent>
-                        <MudStack>
-                            <MudStack Row>
-                                <MudRadioGroup Value="_aiProvider" ValueChanged="OnAiProviderChanged" T="string">
-                                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("ollama")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Ollama"/>  Ollama</MudRadio>
-                                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("github-models")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.GitHub" /> Github Models</MudRadio>
-                                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("azure-ai")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.AzureAI" /> Azure AI</MudRadio>
-                                </MudRadioGroup>
-                            </MudStack>
-
-                            @if(_aiProvider == "ollama")
-                            {
-                                <Field Row>
-                                    <FieldHeader>Ollama URL</FieldHeader>
-                                    <MudSpacer/>
-                                    <MudTextField T="string" Placeholder="Ollama URL" Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged" />
-                                </Field>
-                            }
-
-                            @if(_aiProvider == "azure-ai")
-                            {
-                                <Field Row>
-                                    <FieldHeader>Azure URL</FieldHeader>
-                                    <MudSpacer/>
-                                    <MudTextField T="string"Placeholder="Azure URL"  Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
-                                </Field>
-
-                                @foreach (var setting in _settings.Where(x => x.Metadata.SearchText == "azure-ai"))
-                                {
-                                    if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
-                                    {
-                                        <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
-                                        </FieldEditor>
-                                    }
-                                }
-                            }
-                            @if(_aiProvider == "github-models")
-                            {
-                                <Field Row>
-                                    <FieldHeader>Github Models URL</FieldHeader>
-                                    <MudSpacer/>
-                                    <MudTextField T="string"Placeholder="Github Models URL"  Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
-                                </Field>
-                                <MudText Typo="Typo.subtitle1" Color="Color.Warning">Gibhub models should only be used for prototyping</MudText>
-
-                                @foreach (var setting in _settings.Where(x => x.Metadata.SearchText == "github-models"))
-                                {
-                                    if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
-                                    {
-                                        <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
-                                        </FieldEditor>
-                                    }
-                                }           
-                            }
-                        </MudStack>
-                    </ChildContent>
-                </MudExpansionPanel>
-                
-                <MudExpansionPanel>
-                    <TitleContent>
-                        <MudStack Row AlignItems="AlignItems.Center">
-                            <MudIcon Icon="@GetModelIcon(_defaultModel)"/>
-                            @settingsLoc["ai-default-model"]
-                        </MudStack>
-                    </TitleContent>
-                    <ChildContent>
-                        <MudStack Row Spacing="5">
-                            <MudRadioGroup Value="_defaultModel" ValueChanged="OnDefaultModelChanged" T="string">
-                                @foreach(var model in LlmModels.GetModels(ModelCapability.Tools))
-                                {
-                                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
-                                        <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
-                                        <span>@model.Name</span>
-                                    </MudRadio>
-                                }
+            <MudExpansionPanel>
+                <TitleContent>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@GetProviderIcon(_aiProvider)"/>
+                        @settingsLoc["ai-provider"]
+                    </MudStack>
+                </TitleContent>
+                <ChildContent>
+                    <MudStack>
+                        <MudStack Row>
+                            <MudRadioGroup Value="_aiProvider" ValueChanged="OnAiProviderChanged" T="string">
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("ollama")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Ollama"/>  Ollama</MudRadio>
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("github-models")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.GitHub" /> Github Models</MudRadio>
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("azure-ai")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.AzureAI" /> Azure AI</MudRadio>
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("anthropic")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Claude" /> Anthropic</MudRadio>
                             </MudRadioGroup>
                         </MudStack>
-                    </ChildContent>
-                </MudExpansionPanel>
+
+                        @if(_aiProvider == "ollama")
+                        {
+                            <Field Row>
+                                <FieldHeader>Ollama URL</FieldHeader>
+                                <MudSpacer/>
+                                <MudTextField T="string" Placeholder="Ollama URL" Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged" />
+                            </Field>
+                        }
+
+                        @if(_aiProvider == "anthropic")
+                        {
+                            <Field Row>
+                                <FieldHeader>API URL</FieldHeader>
+                                <MudSpacer/>
+                                <MudTextField T="string"Placeholder="Azure URL"  Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
+                            </Field>
+
+                            @foreach (var setting in _settings.Where(x => x.Metadata.SearchText.Contains("anthropic")))
+                            {
+                                if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
+                                {
+                                    <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                                    </FieldEditor>
+                                }
+                            }
+                        }
+
+                        @if(_aiProvider == "azure-ai")
+                        {
+                            <Field Row>
+                                <FieldHeader>Azure URL</FieldHeader>
+                                <MudSpacer/>
+                                <MudTextField T="string"Placeholder="Azure URL"  Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
+                            </Field>
+
+                            @foreach (var setting in _settings.Where(x => x.Metadata.SearchText == "azure-ai"))
+                            {
+                                if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
+                                {
+                                    <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                                    </FieldEditor>
+                                }
+                            }
+                        }
+                        @if(_aiProvider == "github-models")
+                        {
+                            <Field Row>
+                                <FieldHeader>Github Models URL</FieldHeader>
+                                <MudSpacer/>
+                                <MudTextField T="string"Placeholder="Github Models URL"  Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged"/>
+                            </Field>
+                            <MudText Typo="Typo.subtitle1" Color="Color.Warning">Gibhub models should only be used for prototyping</MudText>
+
+                            @foreach (var setting in _settings.Where(x => x.Metadata.SearchText == "github-models"))
+                            {
+                                if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
+                                {
+                                    <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                                    </FieldEditor>
+                                }
+                            }           
+                        }
+                    </MudStack>
+                </ChildContent>
+            </MudExpansionPanel>
                 
-                <MudExpansionPanel>
-                    <TitleContent>
-                        <MudStack Row AlignItems="AlignItems.Center">
-                            <MudIcon Icon="@GetModelIcon(_classificationModel)"/>
-                            @settingsLoc["ai-classification-model"]
-                        </MudStack>
-                    </TitleContent>
-                    <ChildContent>
+            <MudExpansionPanel>
+                <TitleContent>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@GetModelIcon(_defaultModel)"/>
+                        @settingsLoc["ai-default-model"]
+                    </MudStack>
+                </TitleContent>
+                <ChildContent>
                     <MudStack Row Spacing="5">
-                        <MudRadioGroup Value="_classificationModel" ValueChanged="OnClassificationModelChanged" T="string">
-                            @foreach(var model in LlmModels.GetModels(ModelCapability.Classification))
+                        <MudRadioGroup Value="_defaultModel" ValueChanged="OnDefaultModelChanged" T="string">
+                            @foreach(var model in LlmModels.GetModels(_aiProvider, ModelCapability.Tools))
                             {
                                 <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
                                     <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
@@ -125,12 +120,62 @@
                             }
                         </MudRadioGroup>
                     </MudStack>
-                    </ChildContent>
-                </MudExpansionPanel>
-                    }
+                </ChildContent>
+            </MudExpansionPanel>
+
+            
+            <MudExpansionPanel>
+                <TitleContent>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@GetProviderIcon(_embeddingAiProvider)"/>
+                        @settingsLoc["embedding-ai-provider"]
+                    </MudStack>
+                </TitleContent>
+                <ChildContent>
+                    <MudStack>
+                        <MudStack Row>
+                            <MudRadioGroup Value="_embeddingAiProvider" ValueChanged="OnEmbeddingAiProviderChanged" T="string">
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("ollama")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Ollama"/>  Ollama</MudRadio>
+                            </MudRadioGroup>
+                        </MudStack>
+
+                        @if(_embeddingAiProvider == "ollama")
+                        {
+                            <Field Row>
+                                <FieldHeader>Ollama URL</FieldHeader>
+                                <MudSpacer/>
+                                <MudTextField T="string" Placeholder="Ollama URL" Variant="Variant.Outlined" Value="@_embeddingAiProviderUrl" ValueChanged="OnEmbeddingAiProviderUrlChanged" />
+                            </Field>
+                        }
+                    </MudStack>
+                </ChildContent>
+            </MudExpansionPanel>
+                
+            <MudExpansionPanel>
+                <TitleContent>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@GetModelIcon(_embeddingModel)"/>
+                        @settingsLoc["ai-embedding-model"]
+                    </MudStack>
+                </TitleContent>
+                <ChildContent>
+                <MudStack Row Spacing="5">
+                    <MudRadioGroup Value="_embeddingModel" ValueChanged="OnEmbeddingModelChanged" T="string">
+                        @foreach(var model in LlmModels.GetModels(ModelCapability.Embedding))
+                        {
+                            <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
+                                <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
+                                <span>@model.Name</span>
+                            </MudRadio>
+                        }
+                    </MudRadioGroup>
+                </MudStack>
+                </ChildContent>
+            </MudExpansionPanel>
         </MudExpansionPanels>
 
-        <MudLink Href="@($"/{TenantId}/Settings/Search?q=ai-model")">@loc["more-options"]</MudLink>
+        <MudLink Href="@($"/{TenantId}/Settings/Search?q=ai-")">@loc["more-options"]</MudLink>
+        <MudLink Href="@McpUrl">@settingsLoc["mcp"]</MudLink>
 
     </MudStack>
 </MudStack>

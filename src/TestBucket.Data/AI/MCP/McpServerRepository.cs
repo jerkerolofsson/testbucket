@@ -16,7 +16,17 @@ internal class McpServerRepository : IMcpServerRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.McpServerRegistrations
             .AsNoTracking()
-            .Where(x => x.TenantId == tenantId && x.TestProjectId == projectId && (x.PublicForProject || x.CreatedBy == userName))
+            .Where(x => x.TenantId == tenantId && 
+            (x.TestProjectId == projectId || x.TestProjectId == null) && 
+            (x.PublicForProject || x.CreatedBy == userName))
+            .ToListAsync();
+    }
+    public async Task<IReadOnlyList<McpServerRegistration>> GetAllAsync(string tenantId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await dbContext.McpServerRegistrations
+            .AsNoTracking()
+            .Where(x => x.TenantId == tenantId)
             .ToListAsync();
     }
     public async Task<IReadOnlyList<McpServerRegistration>> GetAllAsync(string tenantId, long projectId)

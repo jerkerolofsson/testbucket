@@ -9,6 +9,16 @@ systems:
     test_lead: 
     paths:
     - src/android/**/*
+  Test Bucket .NET SDK:
+    display:
+      sort: 3
+      back_color: '#52b69a'
+      fore_color: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src\Package\Core\TestBucket.Sdk.Client\
   Test Bucket Runner:
     display:
       sort: 1
@@ -33,68 +43,7 @@ systems:
     - src/TestBucket.Data/**/*
     - src/integrations/**/*
     - src/TestBucket/**/Api/*
-  Test Bucket .NET SDK:
-    display:
-      sort: 3
-      back_color: '#52b69a'
-      fore_color: 
-    description: 
-    dev_lead: 
-    test_lead: 
-    paths:
-    - src\Package\Core\TestBucket.Sdk.Client\
 components:
-  Environments:
-    display: 
-    description: Test Environment and Variables
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths: []
-  Code Coverage:
-    display: 
-    description: 'Parsing of cobertura code coverage XML '
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\Package\Reporting\TestBucket.CodeCoverage\**\*.*
-  AI:
-    display: 
-    description: Chat, Agent, Semantic Search
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\AI\**\*.*
-  Issues:
-    display: 
-    description: Issue handling (Bugs/Tickets)
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\Issues\**\*.*
-  Milestones:
-    display: 
-    description: >-
-      CRUD operations and handling for Milestones
-
-      Data source for milestone fields.
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\Milestones\**\*.*
-  Jira:
-    display: 
-    description: Jira Integration
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\integrations\TestBucket.Jira\**\*
-  Python:
-    display: 
-    description: Python Runner
-    dev_lead: 
-    test_lead: 
-    paths:
-    - src\runner\TestBucket.Runner\Runners\Python\**\*
   Agent UI:
     display: 
     description: User interface for chat / agents
@@ -102,6 +51,41 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket\Components\Agent\**\*.*
+  AI:
+    display: 
+    description: Chat, Agent, Semantic Search, MCP Server connections, Generic MCP tools
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\AI\**\*.*
+  Appearance:
+    display: 
+    description: Appearance settings and themes
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Appearance\**\*.*
+  Automation:
+    display: 
+    description: CI/CD integration to run automated tests
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Automation\**\*
+  Azure:
+    display: 
+    description: Integraiton with Azure DevOps
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\integrations\TestBucket.Azure\**\*
+  Backup:
+    display: 
+    description: Export/Backup of entities
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Export\**\*.*
   Blazor Components:
     display: 
     description: Shared blazor UI components
@@ -110,180 +94,23 @@ components:
     paths:
     - src\Package\Blazor\**\*.*
     - src\TestBucket.Blazor\**\*.*
-  Files UI:
-    display: 
-    description: File upload UI, attachments, file viewers
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket\Components\Uploads\**\*.*
-  Testing UI:
+  Code:
     display: 
     description: >-
-      User interface controls and pages for:
+      Handling of product architecture, including systems, layers, components and product features
 
-      - Test suites
-
-      - Test runs
-
-      - Test cases
-
-      - Test Metrics
+      Handling of commits
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket\Components\Tests\**\*.*
-  Requirements UI:
+    - src\TestBucket.Domain\Code\**\*
+  Code Coverage:
     display: 
-    description: User interface for Epics, Tasks, Requirements, Collections and other work-items (requirement specifications)
+    description: 'Parsing of cobertura code coverage XML '
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket\Components\Requirements\**\*.*
-  Reporting UI:
-    display: 
-    description: User interface for dashboards, charts and visualizations
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket\Components\Reporting\**\*.*
-  Welcome Experiance:
-    display: 
-    description: Recommended actions for new users
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket\Components\WelcomeExperience\**\*.*
-  Azure:
-    display: 
-    description: Integraiton with Azure DevOps
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\integrations\TestBucket.Azure\**\*
-  Identity:
-    display: 
-    description: Authentication, Authorization, Roles, API keys/tokens, User management
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\ApiKeys\**\*.*
-    - src\TestBucket.Domain\Identity\**\*.*
-  Appearance:
-    display: 
-    description: Appearance settings and themes
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\Appearance\**\*.*
-  Metrics:
-    display: 
-    description: Test metrics. Numerical results related to test cases
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\Metrics\**\*.*
-  Backup:
-    display: 
-    description: Export/Backup of entities
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\Export\**\*.*
-  Extension Management:
-    display: 
-    description: Handling of extensions/integrations
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\ExtensionManagement\**\*.*
-  Labels:
-    display: 
-    description: >
-      Handling of labels that can be provided by integrations or defined by users.
-
-      Data source for label-fields.
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\Labels\**\*.*
-  Power Shell:
-    display: 
-    description: Hybrid test execution of powershell scripts
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\runner\TestBucket.Runner\Runners\Powershell\**\*
-  dothttp:
-    display: 
-    description: 'HTTP/API test framework. '
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\runner\TestBucket.Runner\Runners\Http\**\*
-  Registration:
-    display: 
-    description: Responsible to register the runner with the server
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\runner\TestBucket.Runner\Registration\**\*
-  Poller:
-    display: 
-    description: Connection management between the runner and the server
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\runner\TestBucket.Runner\Poller\**\*
-  Code UI:
-    display: 
-    description: User interface for commits, SW features/components/layers/systems
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket\Components\Code\**\*
-  Settings UI:
-    display: 
-    description: 
-    dev_lead: 
-    test_lead: 
-    paths:
-    - src/TestBucket/Components/Settings/**/*
-  Fields:
-    display: 
-    description: Custom user-defined and system fields
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\Fields\**\*
-  Migrations:
-    display: 
-    description: Database migrations and initial seeding
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Data\Migrations\**\*
-  Requirement Repository:
-    display: 
-    description: 
-    dev_lead: 
-    test_lead: 
-    paths:
-    - src/TestBucket.Data/Requirements/*
-  Settings Repository:
-    display: 
-    description: Database for settings and preferences
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Data\Settings\**\*
-  Identity Repository:
-    display: 
-    description: Database for users and access tokens
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Data\Identity\**\*
+    - src\Package\Reporting\TestBucket.CodeCoverage\**\*.*
   Code Repository:
     display: 
     description: Database for commits, features, layers, systems and SW components
@@ -291,13 +118,20 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Data\Code\**\*
-  Test Repository:
+  Code UI:
     display: 
-    description: Database for test cases, test suites, test runs
+    description: User interface for commits, SW features/components/layers/systems
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket.Data\Testing\**\*
+    - src\TestBucket\Components\Code\**\*
+  dothttp:
+    display: 
+    description: 'HTTP/API test framework. '
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\runner\TestBucket.Runner\Runners\Http\**\*
   Editor:
     display: 
     description: Markdown editor
@@ -305,34 +139,40 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\Package\Blazor\TestBucket.MudBlazorExtensions.Markdown\**\*
-  Traits:
+  Environments:
     display: 
-    description: Handling of test traits (and other related metadata) in automated testing
+    description: Test Environment and Variables
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths: []
+  Extension Management:
+    display: 
+    description: Handling of extensions/integrations
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\Package\Traits\**\*.*
-  Test Result Formats:
+    - src\TestBucket.Domain\ExtensionManagement\**\*.*
+  Fields:
     display: 
-    description: >-
-      Serialization and de-serialization of test results from files, including
-
-      - junit xml
-
-      - xunit xml
-
-      - CTRF
+    description: Custom user-defined and system fields
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\Package\Reporting\TestBucket.Formats\**\*
-  Trello:
+    - src\TestBucket.Domain\Fields\**\*
+  Fields API:
     display: 
-    description: Integration with Trello
+    description: REST API for fields
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\integrations\TestBucket.Trello\**\*
+    - src\TestBucket\Components\Shared\Fields\Api\FieldApiController.cs
+  Files UI:
+    display: 
+    description: File upload UI, attachments, file viewers
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket\Components\Uploads\**\*.*
   Github:
     display: 
     description: Github integration
@@ -347,20 +187,125 @@ components:
     test_lead: 
     paths:
     - src/integrations/TestBucket.Gitlab/**/*
-  Translations:
+  Identity:
     display: 
-    description: Localized strings, resx format.
+    description: Authentication, Authorization, Roles, API keys/tokens, User management
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket\Localization\**\*
-  Automation:
+    - src\TestBucket.Domain\ApiKeys\**\*.*
+    - src\TestBucket.Domain\Identity\**\*.*
+  Identity Repository:
     display: 
-    description: CI/CD integration to run automated tests
+    description: Database for users and access tokens
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket.Domain\Automation\**\*
+    - src\TestBucket.Data\Identity\**\*
+  Issues:
+    display: 
+    description: Issue handling (Bugs/Tickets)
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Issues\**\*.*
+  Jira:
+    display: 
+    description: Jira Integration
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\integrations\TestBucket.Jira\**\*
+  Labels:
+    display: 
+    description: >
+      Handling of labels that can be provided by integrations or defined by users.
+
+      Data source for label-fields.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Labels\**\*.*
+  Metrics:
+    display: 
+    description: Test metrics. Numerical results related to test cases
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Metrics\**\*.*
+  Migrations:
+    display: 
+    description: Database migrations and initial seeding
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Data\Migrations\**\*
+  Milestones:
+    display: 
+    description: >-
+      CRUD operations and handling for Milestones
+
+      Data source for milestone fields.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Milestones\**\*.*
+  Poller:
+    display: 
+    description: Connection management between the runner and the server
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\runner\TestBucket.Runner\Poller\**\*
+  Power Shell:
+    display: 
+    description: Hybrid test execution of powershell scripts
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\runner\TestBucket.Runner\Runners\Powershell\**\*
+  Projects:
+    display: 
+    description: CRUD management of projects and integrations
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Projects\**\*
+  Projects API:
+    display: 
+    description: API for project CRUD operations
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket\Components\Projects\Api\ProjectApiController.cs
+  Python:
+    display: 
+    description: Python Runner
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src\runner\TestBucket.Runner\Runners\Python\**\*
+  Registration:
+    display: 
+    description: Responsible to register the runner with the server
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\runner\TestBucket.Runner\Registration\**\*
+  Reporting UI:
+    display: 
+    description: User interface for dashboards, charts and visualizations
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket\Components\Reporting\**\*.*
+  Requirement Repository:
+    display: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src/TestBucket.Data/Requirements/*
   Requirements:
     display: 
     description: 
@@ -368,6 +313,44 @@ components:
     test_lead: 
     paths:
     - src/TestBucket.Domain/Requirements/**/*
+  Requirements UI:
+    display: 
+    description: User interface for Epics, Tasks, Requirements, Collections and other work-items (requirement specifications)
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket\Components\Requirements\**\*.*
+  Search:
+    display: 
+    description: >-
+      - Universal search framework
+
+      - Base query parser
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Search\**\*.*
+  Search UI:
+    display: 
+    description: User interface for universal search
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src\TestBucket\Components\Search\**\*.*
+  Settings Repository:
+    display: 
+    description: Database for settings and preferences
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Data\Settings\**\*
+  Settings UI:
+    display: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src/TestBucket/Components/Settings/**/*
   Test Accounts:
     display: 
     description: >-
@@ -386,37 +369,64 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\Tests\**\*
-  Code:
+  Testing UI:
     display: 
     description: >-
-      Handling of product architecture, including systems, layers, components and product features
+      User interface controls and pages for:
 
-      Handling of commits
+      - Test suites
+
+      - Test runs
+
+      - Test cases
+
+      - Test Metrics
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket.Domain\Code\**\*
-  Projects:
+    - src\TestBucket\Components\Tests\**\*.*
+  Test Repository:
     display: 
-    description: CRUD management of projects and integrations
+    description: Database for test cases, test suites, test runs
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket.Domain\Projects\**\*
-  Projects API:
+    - src\TestBucket.Data\Testing\**\*
+  Test Result Formats:
     display: 
-    description: API for project CRUD operations
+    description: >-
+      Serialization and de-serialization of test results from files, including
+
+      - junit xml
+
+      - xunit xml
+
+      - CTRF
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket\Components\Projects\Api\ProjectApiController.cs
-  Fields API:
+    - src\Package\Reporting\TestBucket.Formats\**\*
+  Traits:
     display: 
-    description: REST API for fields
+    description: Handling of test traits (and other related metadata) in automated testing
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket\Components\Shared\Fields\Api\FieldApiController.cs
+    - src\Package\Traits\**\*.*
+  Translations:
+    display: 
+    description: Localized strings, resx format.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket\Localization\**\*
+  Trello:
+    display: 
+    description: Integration with Trello
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\integrations\TestBucket.Trello\**\*
   User Interface:
     display: 
     description: User interface components, pages, layouts
@@ -427,49 +437,14 @@ components:
     - src\TestBucket\Components\**\Controls\**\*
     - src\TestBucket\Components\**\Layouts\**\*
     - src\TestBucket\Components\**\Pages\**\*
+  Welcome Experiance:
+    display: 
+    description: Recommended actions for new users
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket\Components\WelcomeExperience\**\*.*
 layers:
-  runner:
-    display:
-      sort: 1
-      back_color: 
-      fore_color: 
-    description: 
-    dev_lead: 
-    test_lead: 
-    paths:
-    - src/runner/**/*
-  data:
-    display:
-      sort: 2
-      back_color: 
-      fore_color: 
-    description: 
-    dev_lead: 
-    test_lead: 
-    paths:
-    - src/TestBucket.Data/**/*
-  integrations:
-    display:
-      sort: 2
-      back_color: 
-      fore_color: 
-    description: 
-    dev_lead: 
-    test_lead: 
-    paths:
-    - src/integrations/**/*
-  domain:
-    display:
-      sort: 1
-      back_color: 
-      fore_color: 
-    description: 
-    dev_lead: 
-    test_lead: 
-    paths:
-    - src/TestBucket.Domain/**/*
-    - src/Package/Traits/**/*
-    - src/Package/Reporting/**/*
   API:
     display:
       sort: 0
@@ -494,7 +469,69 @@ layers:
     - src/TestBucket/Localization/**/*
     - src/TestBucket/Components/**/*
     - src/Package/Blazor/**/*
+  data:
+    display:
+      sort: 2
+      back_color: 
+      fore_color: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src/TestBucket.Data/**/*
+  domain:
+    display:
+      sort: 1
+      back_color: 
+      fore_color: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src/TestBucket.Domain/**/*
+    - src/Package/Traits/**/*
+    - src/Package/Reporting/**/*
+  integrations:
+    display:
+      sort: 2
+      back_color: 
+      fore_color: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src/integrations/**/*
+  runner:
+    display:
+      sort: 1
+      back_color: 
+      fore_color: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src/runner/**/*
 features:
+  Architecture 1.0:
+    display: 
+    description: Handling of product architecture, including systems, layers, components and product features
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Code\**\*
+    - src\TestBucket.Data\Code\**\*
+    - src\TestBucket\Code\**\*
+    - src\integrations\TestBucket.Github\**\*
+    - src\integrations\TestBucket.Gitlab\**\*
+    - src\TestBucket\Components\Code\**\*
+    - src\Package\Core\TestBucket.Contracts\Code\**\*
+  Chat:
+    display: 
+    description: Agent/Chat
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket\Components\Agent\**\*.*
   Code Coverage:
     display: 
     description: >-
@@ -507,21 +544,22 @@ features:
     paths:
     - src\Package\Reporting\TestBucket.CodeCoverage\**\*.*
     - src\TestBucket\Components\Code\Controls\**\*CodeCoverage*
-  Jira:
+  Field Inheritance:
     display: 
-    description: Jira integration
+    description: >-
+      Sub-entities fields are populated from parent if not set by a user. 
+
+
+      - Test Suite -> Test Case -> Test Case Run
+
+      - Test Run -> Test Case Run
+
+
+      etc
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\integrations\TestBucket.Jira\**\*
-    - src\TestBucket.Domain\Identity\OAuth\**\*
-  OAuth:
-    display: 
-    description: OAuth authentication framework
-    dev_lead: 
-    test_lead: 
-    paths:
-    - src\TestBucket.Domain\Identity\OAuth\**\*.*
+    - src\TestBucket.Domain\Fields\Inheritance\**\*
   Fields:
     display: 
     description: >-
@@ -533,6 +571,9 @@ features:
       - Data sources for completion
 
       - System defined fields
+
+
+      User defined fields allow administrators to customize and adapt the user interface and database.
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
@@ -540,56 +581,18 @@ features:
     - src\TestBucket.Domain\Labels\**\*.*
     - src\TestBucket\Components\Labels\**\*.*
     - src\TestBucket\Components\Shared\Fields\**\*.*
-  Themes:
+  Hybrid Tests:
     display: 
-    description: >
-      User interface styling using themes.
+    description: Partial test automation where markdown code-blocks can be embedded in test descriptions, and executed.
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket.Domain\Appearance\Themes\**\*.*
-  Semantic Search:
-    display: 
-    description: >-
-      Search for items based on similarity and not text-match.
-
-
-      Embedding vectors are created by AI provider (e.g. Ollama)
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\AI\Embeddings\**\*.*
-  MCP Tools:
-    display: 
-    description: MCP tools for model-context-protocol integration with Agent/Chat or external tools
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\**\Mcp\**\*.*
-  Insights:
-    display: 
-    description: Metrics and Dashboard framework
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket.Domain\Insights\**\*.*
-  Chat:
-    display: 
-    description: Agent/Chat
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
-    paths:
-    - src\TestBucket\Components\Agent\**\*.*
-  Settings 1.0:
-    display: 
-    description: 
-    dev_lead: 
-    test_lead: 
-    paths:
-    - src/TestBucket/Components/Settings/**/*
-    - src/TestBucket.Domain/Settings/**/*
-    - src/TestBucket.Data/Settings/**/*
-    - src/TestBucket.Data/Identity/UserPreferenceRepository.cs
+    - src\Package\Blazor\TestBucket.MudBlazorExtensions.Markdown\**\*
+    - src\TestBucket.Domain\Tests\Services\TestExecutionController.cs
+    - src\runner\TestBucket.Runner\Runners\Powershell\**\*
+    - src\runner\TestBucket.Runner\Runners\Http\**\*
+    - src\runner\TestBucket.Runner\Registration\**\*
+    - src\runner\TestBucket.Runner\Poller\**\*
   Import Test Results:
     display: 
     description: >
@@ -608,50 +611,339 @@ features:
     paths:
     - src\Package\Reporting\TestBucket.Formats\**\*
     - src\Package\Traits\**\*.*
-  Field Inheritance:
+  Insights:
+    display: 
+    description: Metrics and Dashboard framework
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Insights\**\*.*
+  Jira:
     display: 
     description: >-
-      Sub-entities fields are populated from parent if not set by a user. 
+      Integration with Jira to read/write issues and work items.
 
-
-      - Test Suite -> Test Case -> Test Case Run
-
-      - Test Run -> Test Case Run
-
-
-      etc
+      Uses OAuth2 authentication.
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket.Domain\Fields\Inheritance\**\*
-  Architecture 1.0:
+    - src\integrations\TestBucket.Jira\**\*
+    - src\TestBucket.Domain\Identity\OAuth\**\*
+  MCP Tools:
     display: 
-    description: Handling of product architecture, including systems, layers, components and product features
+    description: MCP tools for model-context-protocol integration with Agent/Chat or external tools
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket.Domain\Code\**\*
-    - src\TestBucket.Data\Code\**\*
-    - src\TestBucket\Code\**\*
-    - src\integrations\TestBucket.Github\**\*
-    - src\integrations\TestBucket.Gitlab\**\*
-    - src\TestBucket\Components\Code\**\*
-    - src\Package\Core\TestBucket.Contracts\Code\**\*
-  Hybrid Tests:
+    - src\TestBucket.Domain\**\Mcp\**\*.*
+  OAuth:
     display: 
-    description: Partial test automation where markdown code-blocks can be embedded in test descriptions, and executed.
-    dev_lead: jerker.olofsson@hotmail.com
-    test_lead: jerker.olofsson@hotmail.com
+    description: OAuth authentication framework
+    dev_lead: 
+    test_lead: 
     paths:
-    - src\Package\Blazor\TestBucket.MudBlazorExtensions.Markdown\**\*
-    - src\TestBucket.Domain\Tests\Services\TestExecutionController.cs
-    - src\runner\TestBucket.Runner\Runners\Powershell\**\*
-    - src\runner\TestBucket.Runner\Runners\Http\**\*
-    - src\runner\TestBucket.Runner\Registration\**\*
-    - src\runner\TestBucket.Runner\Poller\**\*
+    - src\TestBucket.Domain\Identity\OAuth\**\*.*
   Requirements 1.0:
     display: 
-    description: Handling of requirements, tasks, epics and other work items
+    description: >2
+
+      This document describes the requirements domain and its implementation in the TestBucket Blazor project.
+
+
+      ## 1. Domain Model
+
+
+      ### Requirement
+
+
+      - **Purpose:** Represents a single requirement in the system.
+
+      - **Key Properties:**
+        - `Id`: Unique identifier.
+        - `Name`: Title of the requirement.
+        - `Text`: Detailed description.
+        - `RequirementType`: Category/type (e.g., General, Functional).
+        - `State`: Current state (e.g., Draft, Approved).
+        - `MappedType`, `MappedState`: Internal mapping for type/state.
+        - `ParentRequirementId`: Supports hierarchical relationships.
+        - `Comments`: List of associated comments.
+        - `TeamId`, `TestProjectId`, `TenantId`: Multi-tenancy and project context.
+
+      ### RequirementSpecification & RequirementSpecificationFolder
+
+
+      - **RequirementSpecification:** Logical grouping of requirements.
+
+      - **RequirementSpecificationFolder:** Hierarchical folder structure for organizing requirements.
+
+
+      ---
+
+
+      ## 2. Services & Managers
+
+
+      ### IRequirementManager / RequirementManager
+
+
+      - **Role:** Core interface/service for managing requirements.
+
+      - **Key Operations:**
+        - `AddRequirementAsync(user, requirement)`: Add new requirement.
+        - `SearchRequirementsAsync(user, query)`: Search/filter requirements.
+        - `AddFolderAsync(user, folder)`: Add folder to specification.
+        - `UpdateRequirementSpecificationAsync(user, spec)`: Update specification.
+        - `DiscoverTraceabilityAsync(principal, requirement, depth)`: Trace requirement relationships.
+
+      ### IRequirementRepository / RequirementRepository
+
+
+      - **Role:** Data access layer for requirements.
+
+      - **Responsibilities:** CRUD operations and queries.
+
+
+      ### RequirementBrowser
+
+
+      - **Role:** UI/service layer for fetching and displaying requirements and folders.
+
+      - **Example Methods:**
+        - `GetRequirementByIdAsync(id)`
+        - `GetRequirementsByAncestorFolderIdAsync(folderId, offset, count)`
+        - `GetRequirementFolderByIdAsync(id)`
+
+      ---
+
+
+      ## 3. UI Components
+
+
+      ### RequirementView.razor
+
+
+      - Displays a single requirement, its state, type, and comments.
+
+      - Supports parent-child relationships.
+
+      - Allows adding/deleting comments.
+
+
+      ### RequirementSpecificationFolderPage.razor
+
+
+      - Displays requirements within a folder using a Kanban board.
+
+      - Loads requirements and folder details on navigation.
+
+
+      ### RequirementGrid.razor
+
+
+      - Tabular/grid view for requirements.
+
+
+      ---
+
+
+      ## 4. Commands & Batch Operations
+
+
+      ### BatchTagRequirementsCommand
+
+
+      - Allows batch tagging or updating fields/types for multiple requirements.
+
+      - Supports selection from folders, specifications, or direct requirement selection.
+
+      - Uses dialogs for user interaction.
+
+
+      ---
+
+
+      ## 5. Editing & Traceability
+
+
+      ### RequirementEditorController
+
+
+      - Handles dialogs for editing requirements.
+
+      - Supports setting fields, types, and discovering traceability.
+
+      - Integrates with permission checks.
+
+
+      ---
+
+
+      ## 6. Integration & Import
+
+
+      - **IRequirementImporter:** Supports importing requirements from external sources.
+
+      - **RequirementMcpTools:** Tools for integration with external systems.
+
+
+      ---
+
+
+      ## 7. Testing & Milestones
+
+
+      - Requirements can be associated with milestones via custom fields.
+
+      - Test cases and traceability nodes can be linked to requirements.
+
+
+      ---
+
+
+      ## 8. Security & Permissions
+
+
+      - Most operations require permission checks (read/write) on requirements.
+
+      - Multi-tenancy is supported via `TenantId`.
+
+
+      ---
+
+
+      ## 9. Extensibility
+
+
+      - Requirements support custom fields and traits (e.g., milestone, tags).
+
+      - Hierarchical organization via folders and parent-child relationships.
+
+
+      ---
+
+
+      ## 10. Example Usage Scenarios
+
+
+      - **Add Requirement:** User creates a new requirement, assigns to a folder/specification.
+
+      - **Edit Requirement:** User updates fields, type, or state via dialogs.
+
+      - **Batch Update:** User selects multiple requirements and applies tags or field changes.
+
+      - **Traceability:** User discovers links between requirements and test cases/features.
+
+      - **Commenting:** Users can add/delete comments on requirements.
+
+      - **Import:** Requirements can be imported from external sources.
+
+
+      ---
+
+
+      ## 11. Related Types
+
+
+      - `Requirement`
+
+      - `RequirementSpecification`
+
+      - `RequirementSpecificationFolder`
+
+      - `RequirementType`
+
+      - `RequirementState`
+
+      - `Comment`
+
+      - `TraceabilityNode`
+
+
+      ---
+
+
+      ## 12. Key Interfaces
+
+
+      - `IRequirementManager`
+
+      - `IRequirementRepository`
+
+      - `IRequirementImporter`
+
+
+      ---
+
+
+      ## 13. UI Navigation
+
+
+      - Requirements are accessible via pages like `/Requirements/Folders/{Id}`.
+
+      - Kanban and grid views are available for organization and management.
+
+
+      ---
+
+
+      ## 14. Permissions
+
+
+      - Operations are protected by permission checks (e.g., `PermissionEntityType.Requirement`).
+
+
+      ---
+
+
+      ## 15. Multi-Project & Multi-Team Support
+
+
+      - Requirements are scoped to projects and teams.
+
+
+      ---
+
+
+      ## 16. Extensible Fields
+
+
+      - Requirements support custom fields via traits (e.g., milestone, tags).
+
+
+      ---
+
+
+      ## 17. Comments & Collaboration
+
+
+      - Requirements support threaded comments for collaboration.
+
+
+      ---
+
+
+      ## 18. Import & External Integration
+
+
+      - Importers and MCP tools allow integration with external requirement sources.
+
+
+      ---
+
+
+      ## 19. Testing Integration
+
+
+      - Requirements are linked to test cases and can be used for test coverage analysis.
+
+
+      ---
+
+
+      ## 20. Example Code Snippets
+
+
+      ### Add Requirement
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
@@ -663,3 +955,328 @@ features:
     dev_lead: 
     test_lead: 
     paths: []
+  Search:
+    display: 
+    description: "# Areas\n- Universal search framework\n- Search UI\n- Base query parsing\n\n## Overview\nThe search functionality enables users to efficiently locate and filter entities (e.g., Requirements, Features, Components, Issues, Test Cases) within the TestBucket application. It supports both simple keyword search and advanced semantic search, providing relevant results with high accuracy and performance.\n\n### Functional Requirements\n### 2.1. Search Scope\n\n#### Entities Supported:\n- Requirements\n- Features\n- Components\n- Issues\n- Test Cases\n\n#### Searchable Fields:\n- Name/title\n- Description/text\n- Tags, labels or other fields. Fields can be searched by using the field name as keyword\n\n### 2.2. Search Modes\n\n#### Keyword Search:\n- Users can enter keywords to match against searchable fields.\n- Supports partial matches and case-insensitive search.\n- Users can filter by entity type, status, date range, owner, and tags.\n- Supports combining multiple filters.\n\n#### Semantic Search:\n- Users can toggle semantic search via the UI (see SemanticSearchToggle.razor).\n- Utilizes AI/NLP to find contextually relevant results beyond exact keyword matches.\n\n### 2.3. Search Results\n\n#### Result Display:\n- Results are shown in paginated lists/grids.\n- Each result displays key fields and highlights matched terms.\n- Option to sort results by relevance, date, or other fields.\n\n#### Result Actions:\n- Users can click to view details, edit, or perform actions on results.\n- Bulk actions (e.g., select multiple results for batch operations).\n\n# Search APIs are exposed for use in other components and services.\n\n## 3. Non-Functional Requirements\n\n### 3.1. Performance\n- Search queries should return results within 500ms for typical datasets.\n- Pagination and lazy loading for large result sets.\n\n### 3.2. Scalability\n- Must support thousands of entities without degradation.\n- Backend search logic should be optimized for large datasets.\n\n### 3.3. Reliability\n- Search should be available 99.9% of the time.\n- Graceful error handling for failed queries.\n\n## 4. UI/UX Requirements\n\n### Consistent Search Bar:\n- Search bar should be prominent and accessible on all relevant pages.\n- Clear indication of search mode (keyword vs. semantic).\n\n### Feedback:\n- Loading indicators during search.\n- No results message if nothing matches.\n- Error messages for failed searches.\n\n### Accessibility:\n- Keyboard navigation and screen reader support.\n \n## 5. Security Requirements\n### Access Control:\n- Search results must respect user permissions; users only see entities they are authorized to view.\n\n### Input Validation:\n- Prevent injection attacks by sanitizing search inputs when relevant.\n- \n## 6. Extensibility Requirements (Universal Search)\n\n### Pluggable Search Providers:\n- Ability to add new search providers (e.g., external repositories, AI models).\n\n\n## 7. API Requirements\n### Search API Endpoints:\n- RESTful endpoints for search queries.\n\n### Integration with AI/ML:\n- Endpoints for semantic search using AI models."
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Search\**\*.*
+    - src\TestBucket\Components\Search\**\*.*
+  Semantic Search:
+    display: 
+    description: >
+      # Requirement Specification: Semantic Search in TestBucket
+
+
+      ## Overview
+
+
+      Semantic Search enables users to find entities using natural language queries, leveraging vector embeddings for improved relevance over traditional keyword-based search. It is integrated into the requirements management workflow and exposed via the UI and backend services.
+
+
+      ## Supported Entities
+
+
+      - Test Cases
+
+      - Requirements
+
+      - Issues
+
+      - Features
+
+      - Components
+
+
+      ## Functional Requirements
+
+
+      ### 1. User Interface
+
+
+      - **Toggle Search Mode**
+        - Users can switch between "Normal Search" and "Semantic Search" using the `SemanticSearchToggle` component.
+
+      ### 3. Semantic Search Execution
+
+
+      - **Embedding Generation**
+        - For semantic queries, the backend uses a mediator/request pattern to generate an embedding vector from the query text and project context.
+
+      - **Repository Search**
+        - The repository interface exposes `SemanticSearchAsync` method, which accepts an embedding vector and filter specifications.
+        - The repository performs a vector-based similarity search to return relevant requirements.
+
+      - **Fallback**
+        - If semantic search is not enabled or embedding generation fails, the system falls back to standard text-based search.
+
+      ### 4. Filtering and Permissions
+
+
+      - **Tenant and Project Filtering**
+        - All searches are filtered by tenant and project context to ensure data isolation.
+
+      - **Permission Checks**
+        - The backend enforces read permissions for entities before executing any search.
+
+      ## Non-Functional Requirements
+
+
+      - **Performance**
+        - Embedding generation and vector search should be optimized for low latency.
+        - Fallback to keyword search must be seamless and fast.
+
+      - **Scalability**
+        - The system should support large numbers of requirements and concurrent semantic searches.
+
+      - **Security**
+        - All search operations must respect tenant boundaries and user permissions.
+
+      - **Extensibility**
+        - The semantic search implementation should allow for future improvements in embedding models and search algorithms.
+
+      ## Integration Points
+
+
+      - **UI Components**
+        - `SemanticSearchToggle.razor`: Toggle for enabling/disabling semantic search.
+        - Requirements search pages (e.g., `Index.razor`): Integrate toggle and pass semantic flag.
+
+      ## Example Workflow
+
+
+      1. User enters a search phrase and enables Semantic Search.
+
+      2. Backend generates embedding vector for the query.
+
+      3. Repository performs vector similarity search and returns results.
+
+      4. If embedding fails, fallback to keyword search.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\AI\Embeddings\**\*.*
+  Settings 1.0:
+    display: 
+    description: >-
+      # 1. Overview
+
+      Settings in the TestBucket Blazor project provide configurable options for users, projects, and tenants. They are managed via a modular, extensible system supporting categories, sections, metadata, and field-based editing. Settings are accessible and editable through dedicated UI pages and programmatic APIs.
+
+
+      # 2. Functional Requirements
+
+      ## 2.1. Settings Structure
+
+      - Settings are organized by:
+
+      - Category (e.g., General, Profile)
+
+      - Section (e.g., Common, AI, Profile)
+
+      - Metadata (name, type, description, etc.)
+
+      - Each setting must have:
+
+      - Unique identifier
+
+      - Name and description
+
+      - Type (string, int, bool, etc.)
+
+      - Category and section
+
+      - Field editor compatibility
+
+
+      ## 2.2. Settings Management
+
+      - CRUD Operations:
+
+      - Read setting value (per context: user, project, tenant)
+
+      - Write/update setting value
+
+      - List/search settings by context and phrase
+
+      - Link settings to related entities (e.g., requirements, features)
+
+      - Contextual Access:
+
+      - Settings are accessed via a SettingContext containing principal (user), project ID, and other relevant info.
+
+      - Field Mapping:
+
+      - Settings are mapped to field definitions for UI editing.
+
+      - Changes to fields trigger updates to the underlying setting.
+
+
+      ## 2.3. UI Integration
+
+      - Settings pages must:
+
+      - Display settings grouped by section and category.
+
+      - Support field-based editing (FieldEditor component).
+
+      - Reflect changes immediately upon user interaction.
+
+      - Support search/filtering of settings.
+
+      - Provide links to related settings and documentation.
+
+      - Profile and AI settings pages:
+
+      - Must allow users to edit personal and AI-related preferences.
+
+      - Support language selection and other profile options.
+
+
+      ## 2.4. Search Integration
+
+      - Settings must be searchable:
+
+      - Via unified search manager (UnifiedSearchManager)
+
+      - Return links and results relevant to the search phrase and context.
+
+
+      # 3. Non-Functional Requirements
+
+      ## 3.1. Security
+
+      - Only authorized users can view or edit settings.
+
+      - Settings access must respect tenant and project boundaries.
+
+
+      ## 3.2. Extensibility
+
+      - New settings can be added via implementing ISetting or extending SettingAdapter.
+
+      - Metadata-driven approach allows dynamic UI generation.
+
+
+      ## 3.3. Performance
+
+      - Settings retrieval and updates should be asynchronous.
+
+      - UI should batch load settings and values for efficiency.
+
+
+      ## 3.4. Localization
+
+      - Setting names, descriptions, and UI labels must support localization.
+
+
+      # 4. API Requirements
+
+
+      ## 4.1. Interfaces
+
+      - ISetting
+
+      - Setting Metadata { get; }
+
+      - Task WriteAsync(SettingContext context, FieldValue value)
+
+      - Task<FieldValue> ReadAsync(SettingContext context)
+
+      - SettingAdapter (abstract base)
+
+      - Implements ISetting
+
+      - Provides default metadata and structure
+
+
+      ## 4.2. Managers
+
+      - ISettingsManager
+
+      - Search settings and links
+
+      - CRUD operations
+
+      - ISettingsProvider
+
+      - Supplies settings to UI and other consumers
+
+
+      # 5. Data Model Requirements
+
+      ## Setting
+
+      - Metadata: category, section, name, type, description, etc.
+
+      - Value: stored per context (user/project/tenant)
+
+
+      ## SettingsCategory
+
+      - Name, description
+
+
+      ## SettingsSection
+
+      - Name, description
+
+
+      ## FieldValue
+
+      - Value, field definition, field ID
+
+
+      # 6. UI/UX Requirements
+
+      - Settings pages must be responsive and accessible.
+
+      - Field editors must validate input according to type.
+
+      - Changes must be persisted and reflected in real-time.
+
+      - Support for multi-language and theme preferences.
+
+
+      # 7. Example Usage
+
+
+      ```csharp
+
+      // Reading a setting value
+
+      var value = await setting.ReadAsync(context);
+
+
+      // Writing a setting value
+
+      await setting.WriteAsync(context, fieldValue);
+
+
+      // Searching for settings
+
+      var settings = settingsManager.Search(context, searchPhrase);
+
+      ```
+
+      # 8. Extensibility & Customization
+
+      - Developers can add new settings by implementing ISetting or extending SettingAdapter.
+
+      - UI automatically adapts to new settings via metadata and field editors.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket\Components\Settings\**\*
+    - src\TestBucket.Domain\Settings\**\*
+    - src\TestBucket.Data\Settings\**\*
+    - src\TestBucket.Data\Identity\UserPreferenceRepository.cs
+  Themes:
+    display: 
+    description: >
+      User interface styling using themes.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Appearance\Themes\**\*.*

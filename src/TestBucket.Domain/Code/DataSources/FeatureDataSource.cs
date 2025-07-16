@@ -33,8 +33,8 @@ internal class FeatureDataSource : IFieldCompletionsProvider
     {
         if (type == FieldDataSourceType.Features)
         {
-            var items = await _manager.SearchFeaturesAsync(principal, projectId, text, offset:0, count);
-            return items.Where(x => x.Name != null && x.Name.Contains(text, StringComparison.InvariantCultureIgnoreCase)).Select(x => new GenericVisualEntity { Embedding = x.Embedding?.Memory, Title = x.Name, Description = x.Description }).ToList();
+            var result = await _manager.SearchFeaturesAsync(principal, projectId, text, offset:0, count);
+            return result.Items.Where(x => x.Name != null && x.Name.Contains(text, StringComparison.InvariantCultureIgnoreCase)).Select(x => new GenericVisualEntity { Embedding = x.Embedding?.Memory, Title = x.Name, Description = x.Description }).ToList();
         }
         return [];
     }

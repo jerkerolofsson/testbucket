@@ -12,9 +12,10 @@ namespace TestBucket.Domain.Settings.Appearance
 
             Metadata.Name = "increased-contrast";
             Metadata.Description = "increased-contrast-description";
-            Metadata.Category.Name = "accessibility";
-            Metadata.Category.Icon = SettingIcon.Accessibility;
-            Metadata.Section.Name = "colors";
+            Metadata.Category.Name = "appearance";
+            Metadata.Category.Icon = SettingIcons.Appearance;
+            Metadata.Section.Name = "accessibility";
+            Metadata.Section.Icon = SettingIcons.Accessibility;
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.Boolean;
         }

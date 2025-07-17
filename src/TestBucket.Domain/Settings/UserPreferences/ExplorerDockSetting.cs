@@ -14,8 +14,9 @@ namespace TestBucket.Domain.Settings.Appearance
 
             Metadata.Name = "explorer-dock";
             Metadata.Category.Name = "appearance";
-            Metadata.Category.Icon = SettingIcon.Appearance;
-            Metadata.Section.Name = "Layout";
+            Metadata.Category.Icon = SettingIcons.Appearance;
+            Metadata.Section.Name = "layout";
+            Metadata.Section.Icon = SettingIcons.Generic;
             Metadata.Type = FieldType.Integer;
             Metadata.DataSourceType = Contracts.Fields.FieldDataSourceType.Dock;
         }

@@ -33,6 +33,12 @@ public class AgentChatClient
     {
         var toolCollection = new ToolCollection(_serviceProvider);
 
+        if (context.ProjectId is not null)
+        {
+            // Add the project claim
+            principal = Impersonation.ChangeProject(principal, context.ProjectId.Value);
+        }
+
         // Index all MCP tools in assembly
         toolCollection.AddMcpServerToolsFromAssembly(principal, GetType().Assembly);
 
@@ -143,12 +149,6 @@ public class AgentChatClient
         ChatMessage userMessage, 
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        if(project is not null)
-        {
-            // Add the project claim
-            principal = Impersonation.ChangeProject(principal, project.Id);
-        }
-
         var references = await GetReferencesAsChatMessagesAsync(principal, context, cancellationToken);
         if(references.Count > 0)
         {

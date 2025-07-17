@@ -12,9 +12,12 @@ namespace TestBucket.Domain.Settings.Appearance
 
             Metadata.Name = "increased-font-size";
             Metadata.Description = "incrased-font-size-description";
-            Metadata.Category.Name = "accessibility";
-            Metadata.Category.Icon = SettingIcon.Accessibility;
-            Metadata.Section.Name = "appearance";
+            Metadata.Category.Name = "appearance";
+            Metadata.Category.Icon = SettingIcons.Appearance;
+            
+            Metadata.Section.Name = "accessibility";
+            Metadata.Section.Icon = SettingIcons.Accessibility;
+
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.Boolean;
         }

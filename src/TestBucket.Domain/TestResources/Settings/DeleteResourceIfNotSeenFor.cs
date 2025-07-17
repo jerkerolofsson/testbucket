@@ -18,15 +18,16 @@ internal class DeleteResourceIfNotSeenFor : SettingAdapter
         _settingsProvider = settingsProvider;
 
         Metadata.Name = "delete-resource-if-not-seen-for";
-        Metadata.Category.Name = "test-resources";
-        Metadata.Category.Icon = SettingIcon.Default;
+        Metadata.Category.Name = "tenant";
+        Metadata.Category.Icon = SettingIcons.Tenant;
         Metadata.Section.Name = "test-resources";
+        Metadata.Section.Icon = SettingIcons.TestResources;
         Metadata.Type = FieldType.TimeSpan;
     }
 
     public override async Task<FieldValue> ReadAsync(SettingContext context)
     {
-        var resourceManagerSettings = await _settingsProvider.GetDomainSettingsAsync<TestResourceManagerSettings>(context.TenantId, context.ProjectId);
+        var resourceManagerSettings = await _settingsProvider.GetDomainSettingsAsync<TestResourceManagerSettings>(context.TenantId, null);
         resourceManagerSettings ??= new();
 
         return new FieldValue { TimeSpanValue = resourceManagerSettings.DeleteResourceIfNotSeenFor, FieldDefinitionId = 0 };
@@ -34,13 +35,13 @@ internal class DeleteResourceIfNotSeenFor : SettingAdapter
 
     public override async Task WriteAsync(SettingContext context, FieldValue value)
     {
-        var resourceManagerSettings = await _settingsProvider.GetDomainSettingsAsync<TestResourceManagerSettings>(context.TenantId, context.ProjectId);
+        var resourceManagerSettings = await _settingsProvider.GetDomainSettingsAsync<TestResourceManagerSettings>(context.TenantId, null);
         resourceManagerSettings ??= new();
 
         if (value.TimeSpanValue is not null)
         {
             resourceManagerSettings.DeleteResourceIfNotSeenFor = value.TimeSpanValue.Value;
-            await _settingsProvider.SaveDomainSettingsAsync(context.TenantId, context.ProjectId, resourceManagerSettings);
+            await _settingsProvider.SaveDomainSettingsAsync(context.TenantId, null, resourceManagerSettings);
         }
     }
 }

@@ -36,7 +36,7 @@
                 @foreach(var category in _categories)
                 {
                     string url = $"/{TenantId}/Settings/Categories/{category.Name}";
-                    <MudNavLink Icon="@SettingIcons.GetIcon(category.Icon)" Href="@url">@category.Name</MudNavLink>
+                    <MudNavLink Icon="@category.Icon" Href="@url">@category.Name</MudNavLink>
                 }
 
                 <MudNavLink Icon="@TbIcons.BoldDuoTone.Keyboard" Href="@KeyboardUrl">@settingsLoc["keyboard"]</MudNavLink>
@@ -83,7 +83,7 @@
                 
                 <AuthorizeView Roles="SUPERADMIN">
                     <Authorized>
-                        <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" IconColor="Color.Secondary" Href="@TenantsUrl">@settingsLoc["manage-roles"]</MudNavLink>
+                        <MudNavLink Icon="@Icons.Material.Outlined.AdminPanelSettings" IconColor="Color.Secondary" Href="@TenantsUrl">@settingsLoc["manage-tenants"]</MudNavLink>
                     </Authorized>
                 </AuthorizeView>
 
@@ -149,7 +149,7 @@
 
     private string TenantId => TenantResolver.ResolveTenantIdFromUrl(navigationManager.Uri) ?? "default";
 
-    private string AppearanceUrl => $"{TenantId}/Settings/Appearance";
+    //private string AppearanceUrl => $"{TenantId}/Settings/Appearance";
     private string TenantsUrl => $"{TenantId}/Settings/Tenants";
     private string ProjectsUrl => $"{TenantId}/Settings/ManageProjects";
     private string EnvironmentsUrl => $"{TenantId}/Settings/ManageEnvironments";

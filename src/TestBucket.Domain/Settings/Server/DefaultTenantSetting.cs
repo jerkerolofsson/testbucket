@@ -18,9 +18,9 @@ namespace TestBucket.Domain.Settings.Server
             _settingsProvider = settingsProvider;
             Metadata.Name = "Default Tenant";
             Metadata.Description = "The default tenant when accessing the application without a specified tenant";
-            Metadata.Category.Name = "Server";
-            Metadata.Category.Icon = SettingIcon.Server;
-            Metadata.Section.Name = "Defaults";
+            Metadata.Category.Name = "server";
+            Metadata.Category.Icon = SettingIcons.Server;
+            Metadata.Section.Name = "tenant";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;
             Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;

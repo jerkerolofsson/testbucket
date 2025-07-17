@@ -11,10 +11,11 @@
 
 <MudStack Class="container-settings-page">
 
-    @foreach (var section in _sections)
-    {
-        <MudText Class="mb-2" Typo="Typo.h2">@settingsLoc["profile"]</MudText>
-        <MudStack Spacing="1">
+    <MudText Class="mb-3" Typo="Typo.h1">@settingsLoc["profile"]</MudText>
+
+    <MudStack Spacing="1" Class="pa-5">
+        @foreach (var section in _sections)
+        {
             @foreach (var setting in _settings)
             {
                 if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
@@ -23,13 +24,13 @@
                     </FieldEditor>
                 }
             }
-        </MudStack>
-    }
+        }
 
-    <Field Row>
-        <FieldHeader>@settingsLoc["language-multilang"]</FieldHeader>
-        <MudSpacer />
-        <LanguagePicker />
-    </Field>
+        <Field Row>
+            <FieldHeader>@settingsLoc["language-multilang"]</FieldHeader>
+            <MudSpacer />
+            <LanguagePicker />
+        </Field>
+    </MudStack>
 
 </MudStack>

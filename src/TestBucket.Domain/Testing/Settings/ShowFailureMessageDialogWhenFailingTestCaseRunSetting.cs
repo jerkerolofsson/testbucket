@@ -1,4 +1,5 @@
 ﻿using TestBucket.Domain.Identity;
+using TestBucket.Domain.Settings;
 
 namespace TestBucket.Domain.Testing.Settings
 {
@@ -13,8 +14,9 @@ namespace TestBucket.Domain.Testing.Settings
             Metadata.Name = "Show failure message dialog when failing a test";
             Metadata.Description = "Opens a dialog when failing a test, letting the tester enter a description of the failure";
             Metadata.Category.Name = "testing";
-            Metadata.Category.Icon = SettingIcon.Testing;
+            Metadata.Category.Icon = SettingIcons.Testing;
             Metadata.Section.Name = "test-execution";
+            Metadata.Section.Icon = SettingIcons.Testing;
             Metadata.Type = FieldType.Boolean;
         }
 

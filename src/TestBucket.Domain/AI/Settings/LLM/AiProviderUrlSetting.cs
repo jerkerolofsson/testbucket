@@ -21,7 +21,7 @@ namespace TestBucket.Domain.AI.Settings.LLM
             Metadata.Name = "ai-provider-url";
             Metadata.Description = null;
             Metadata.Category.Name = "AI";
-            Metadata.Category.Icon = SettingIcon.AI;
+            Metadata.Category.Icon = SettingIcons.AI;
             Metadata.Section.Name = "ai-provider";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;

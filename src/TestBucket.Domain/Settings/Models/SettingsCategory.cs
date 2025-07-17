@@ -9,7 +9,10 @@ namespace TestBucket.Domain.Settings.Models
     public record class SettingsCategory
     {
         public required string Name { get; set; }
-        public SettingIcon Icon { get; set; } = SettingIcon.Default;
+        /// <summary>
+        /// SVG  Icon
+        /// </summary>
+        public string? Icon { get; set; }
 
     }
 }

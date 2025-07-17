@@ -13,9 +13,9 @@ namespace TestBucket.Domain.AI.Settings
             Metadata.Name = "ai-runner-enabled";
             Metadata.Description = "ai-runner-enabled-description";
             Metadata.Category.Name = "testing";
-            Metadata.Category.Icon = SettingIcon.Testing;
+            Metadata.Category.Icon = SettingIcons.Testing;
             Metadata.Section.Name = "ai-runner";
-            Metadata.Section.Icon = SettingIcon.AI;
+            Metadata.Section.Icon = SettingIcons.AI;
             Metadata.SearchText = "ai-runner";
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.Boolean;

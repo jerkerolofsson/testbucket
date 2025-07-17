@@ -11,7 +11,7 @@
             Metadata.Name = "ai-azure-provider-key";
             Metadata.Description = null;
             Metadata.Category.Name = "AI";
-            Metadata.Category.Icon = SettingIcon.AI;
+            Metadata.Category.Icon = SettingIcons.AI;
             Metadata.WriteOnly = true;
             Metadata.Section.Name = "ai-provider";
             Metadata.SearchText = "azure-ai";

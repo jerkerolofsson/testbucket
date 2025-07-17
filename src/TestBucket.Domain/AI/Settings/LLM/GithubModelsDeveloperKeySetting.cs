@@ -11,7 +11,7 @@
             Metadata.Name = "ai-github-pat";
             Metadata.Description = null;
             Metadata.Category.Name = "AI";
-            Metadata.Category.Icon = SettingIcon.AI;
+            Metadata.Category.Icon = SettingIcons.AI;
             Metadata.Section.Name = "ai-provider";
             Metadata.ShowDescription = true;
             Metadata.SearchText = "github-models";

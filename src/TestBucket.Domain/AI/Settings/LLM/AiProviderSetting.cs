@@ -11,7 +11,7 @@
             Metadata.Name = "ai-provider";
             Metadata.Description = null;
             Metadata.Category.Name = "AI";
-            Metadata.Category.Icon = SettingIcon.AI;
+            Metadata.Category.Icon = SettingIcons.AI;
             Metadata.Section.Name = "ai-provider";
             Metadata.Type = FieldType.SingleSelection;
             Metadata.ShowDescription = true;

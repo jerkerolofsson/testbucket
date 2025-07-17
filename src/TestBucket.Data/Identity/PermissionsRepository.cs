@@ -20,14 +20,14 @@ namespace TestBucket.Data.Identity
         public async Task AddProjectUserPermissionAsync(ProjectUserPermission userPermission)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-            await dbContext.ProjectUserPermissions.AddAsync(userPermission);
+            dbContext.ProjectUserPermissions.Add(userPermission);
             await dbContext.SaveChangesAsync();
         }
 
         public async Task AddTenantRolePermissionAsync(RolePermission rolePermission)
         {
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-            await dbContext.RolePermissions.AddAsync(rolePermission);
+            dbContext.RolePermissions.Add(rolePermission);
             await dbContext.SaveChangesAsync();
         }
 

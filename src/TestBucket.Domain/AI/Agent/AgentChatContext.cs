@@ -38,5 +38,4 @@ public class AgentChatContext
     {
         References.Clear();
     }
-
 }

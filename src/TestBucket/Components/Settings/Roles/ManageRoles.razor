@@ -183,6 +183,11 @@
         {
             foreach(var entity in _entities)
             {
+                if(entity == PermissionEntityType.McpServer)
+                {
+
+                }
+
                 var permission = _permissions.Where(x => x.Entity == entity && x.Role == role).FirstOrDefault();
                 if(permission is null)
                 {

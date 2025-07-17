@@ -13,6 +13,7 @@ using TestBucket.Domain.Issues.Search;
 namespace TestBucket.Domain.Issues.Mcp;
 
 [McpServerToolType]
+[DisplayName("issues")]
 public class IssueMcpTools : AuthenticatedTool
 {
     private readonly IIssueManager _manager;

@@ -17,6 +17,7 @@ using TestBucket.Domain.Testing.Models;
 namespace TestBucket.Domain.Code.Mcp;
 
 [McpServerToolType]
+[DisplayName("specifications")]
 public class CodeMcpTools : AuthenticatedTool
 {
     private readonly IArchitectureManager _architectureManager;

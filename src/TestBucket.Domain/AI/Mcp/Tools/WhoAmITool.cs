@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Xml.Linq;
 
 using ModelContextProtocol.Server;
 
@@ -11,6 +12,7 @@ namespace TestBucket.Domain.AI.Mcp.Tools;
 /// It is useful to debug to verify that authentication is working correctly with the MCP client configuration.
 /// </summary>
 [McpServerToolType()]
+[DisplayName("system")]
 public class WhoAmITool : AuthenticatedTool
 {
     public WhoAmITool(IApiKeyAuthenticator apiKeyAuthenticator) : base(apiKeyAuthenticator)
@@ -23,7 +25,7 @@ public class WhoAmITool : AuthenticatedTool
     /// <param name="server"></param>
     /// <param name="message"></param>
     /// <returns></returns>
-    [McpServerTool(Name = "who-am-i"), Description("Returns the name of the user")]
+    [McpServerTool(Name = "who_am_i"), Description("Returns the name of the user")]
     public async Task<string> WhoAmIAsync()
     {
         var isAuthenticated = await IsAuthenticatedAsync();

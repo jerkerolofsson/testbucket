@@ -2,20 +2,17 @@
 
 using ModelContextProtocol.Server;
 
-using TestBucket.Contracts.Issues.Models;
 using TestBucket.Contracts.Requirements;
 using TestBucket.Domain.AI.Mcp.Tools;
 using TestBucket.Domain.ApiKeys;
-using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Mapping;
-using TestBucket.Domain.Issues.Models;
-using TestBucket.Domain.Issues.Search;
 using TestBucket.Domain.Requirements.Mapping;
 using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Domain.Requirements.Mcp;
 
 [McpServerToolType]
+[DisplayName("specifications")]
 public class RequirementMcpTools : AuthenticatedTool
 {
     private readonly IRequirementManager _manager;

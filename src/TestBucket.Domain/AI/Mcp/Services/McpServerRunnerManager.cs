@@ -49,6 +49,7 @@ public class McpServerRunnerManager
                             foreach (var tool in await runner.GetToolsForSessionAsync(userName, cancellationToken))
                             {
                                 tool.Enabled = !setToolTypes.Contains(runner.McpToolName);
+                                tool.ToolName = runner.McpToolName;
                                 tools.Add(tool);
                             }
 

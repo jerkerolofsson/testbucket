@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Text;
-using System.Threading.Tasks;
 
 using ModelContextProtocol.Server;
 
@@ -15,7 +11,7 @@ using TestBucket.Domain.Testing.Heuristics.Models;
 namespace TestBucket.Domain.Testing.Heuristics.Mcp;
 
 [McpServerToolType]
-
+[DisplayName("testing")]
 public class HeuristicsMcpTools : AuthenticatedTool
 {
     private readonly IHeuristicsManager _manager;

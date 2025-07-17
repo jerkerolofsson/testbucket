@@ -9,6 +9,7 @@ namespace TestBucket.Domain.AI.Mcp.Tools;
 /// <summary>
 /// </summary>
 [McpServerToolType()]
+[DisplayName("system")]
 public class DateAndTimeTool : AuthenticatedTool
 {
     public DateAndTimeTool(IApiKeyAuthenticator apiKeyAuthenticator) : base(apiKeyAuthenticator)

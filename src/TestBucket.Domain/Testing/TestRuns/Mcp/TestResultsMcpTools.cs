@@ -11,6 +11,7 @@ using TestBucket.Traits.Core;
 namespace TestBucket.Domain.Testing.TestRuns.Mcp;
 
 [McpServerToolType]
+[DisplayName("testing")]
 public class TestResultsMcpTools : AuthenticatedTool
 {
     private readonly ITestRunManager _manager;

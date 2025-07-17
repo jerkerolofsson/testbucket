@@ -112,7 +112,49 @@
             <ChatReferences ChatContext="@context" ReferencesChanged="OnReferencesChanged"/>
             <MudSpacer/>
             <MudMenu Icon="@TbIcons.Filled.Tools" Size="Size.Small">
-                <MudMenuItem OnClick="ReloadToolsAsync">@loc.Shared["reload"]</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Outlined.Refresh" OnClick="ReloadToolsAsync">@loc.Shared["reload"]</MudMenuItem>
+
+                @if(context.Tools is not null)
+                {
+                    foreach(var toolName in context.Tools.ToolNames)
+                    {
+                        var toolEnabled = context.Tools.IsToolEnabled(toolName);
+                        bool triState = toolEnabled is null;
+                        int enabledCount = context.Tools.GetEnabledFunctionCount(toolName);
+                        int totalCount = context.Tools.GetTotalFunctionCount(toolName);
+
+                        <MudMenu>
+                            <ActivatorContent>
+                                <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Class="pa-2" Style="width: 100%">
+                                    <MudCheckBox 
+                                        IndeterminateIcon="@Icons.Material.Filled.Square"
+                                        Color=Color.Tertiary 
+                                        TriState="@triState" 
+                                        UncheckedColor=Color.Error 
+                                        Value="@toolEnabled" 
+                                        ValueChanged="(bool? isChecked) => context.Tools.SetToolEnabled(toolName, isChecked)"></MudCheckBox>
+                                    @loc.Shared[toolName]
+                                    <MudSpacer/>
+                                    <MudText Typo="Typo.subtitle2">
+                                        @enabledCount/@totalCount
+                                    </MudText>
+                                    <MudIcon Icon="@Icons.Material.Filled.ArrowRight" Size="Size.Small"/>
+                                </MudStack>
+                            </ActivatorContent>
+                            <ChildContent>
+                                @foreach (var function in context.Tools.GetFunctionsByToolName(toolName))
+                                {
+                                    bool enabled = context.Tools.IsEnabled(function);
+                                    <MudStack Row Spacing="1" AlignItems="AlignItems.Center" Class="pa-2" Style="width: 100%">
+                                        <MudCheckBox Color=Color.Tertiary UncheckedColor=Color.Error T="bool" Value="@enabled" ValueChanged="(isChecked) => context.Tools.SetFunctionEnabled(function, isChecked)"></MudCheckBox>
+                                        <div @onclick="() => context.Tools.ToggleFunctionEnabled(function)">@function.Name</div>
+                                    </MudStack>
+                                }
+                            </ChildContent>
+                        </MudMenu>
+
+                    }
+                }
             </MudMenu>
         </MudStack>
 

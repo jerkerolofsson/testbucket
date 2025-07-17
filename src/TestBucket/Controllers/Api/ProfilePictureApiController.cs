@@ -26,6 +26,12 @@ public class ProfilePictureApiController : ControllerBase
         {
             return File(image.Bytes, image.MediaType);
         }
+
+        if(userName is "classification-bot" or "ai-runner")
+        {
+            return Redirect("/img/ai-user.png");
+        }
+
         return NotFound();
     }
 }

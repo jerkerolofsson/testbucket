@@ -16,11 +16,12 @@ namespace TestBucket.Domain.Settings.Server
         public DefaultTenantSetting(ISettingsProvider settingsProvider)
         {
             _settingsProvider = settingsProvider;
-            Metadata.Name = "Default Tenant";
+            Metadata.Name = "default-tenant";
             Metadata.Description = "The default tenant when accessing the application without a specified tenant";
-            Metadata.Category.Name = "server";
-            Metadata.Category.Icon = SettingIcons.Server;
-            Metadata.Section.Name = "tenant";
+            Metadata.Category.Name = "tenant";
+            Metadata.Category.Icon = SettingIcons.Tenant;
+            Metadata.Section.Name = "defaults";
+            Metadata.Section.Icon = SettingIcons.Generic;
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;
             Metadata.AccessLevel = Identity.Models.AccessLevel.SuperAdmin;

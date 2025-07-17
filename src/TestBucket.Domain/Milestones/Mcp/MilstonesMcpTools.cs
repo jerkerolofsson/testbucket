@@ -16,6 +16,7 @@ using TestBucket.Domain.Testing.TestRuns.Search;
 namespace TestBucket.Domain.Milestones.Mcp;
 
 [McpServerToolType]
+[DisplayName("milestones")]
 public class MilstonesMcpTools : AuthenticatedTool
 {
     private readonly IMilestoneManager _manager;

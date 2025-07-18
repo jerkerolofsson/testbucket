@@ -25,6 +25,8 @@ internal class McpServerStartupService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
+
         try
         {
             using var scope = _serviceScopeFactory.CreateScope();

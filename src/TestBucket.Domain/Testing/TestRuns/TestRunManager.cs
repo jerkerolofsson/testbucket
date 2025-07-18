@@ -3,6 +3,7 @@
 using Mediator;
 
 using TestBucket.Contracts.Fields;
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Shared.Specifications;
@@ -221,16 +222,35 @@ internal class TestRunManager : ITestRunManager
     /// <inheritdoc/>
     public async Task SaveTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun, bool informObservers = true)
     {
+        var tenantId = principal.GetTenantIdOrThrow();
         principal.GetTenantIdOrThrow(testCaseRun);
         principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
+
+        var existing = await _testCaseRepo.GetTestCaseRunByIdAsync(tenantId, testCaseRun.Id);
+        bool assignmentChanged = existing?.AssignedToUserName != testCaseRun.AssignedToUserName;
+        bool wasUnassigned = assignmentChanged && string.IsNullOrEmpty(testCaseRun.AssignedToUserName);
+        bool wasAssigned = assignmentChanged && !string.IsNullOrEmpty(testCaseRun.AssignedToUserName);
 
         testCaseRun.Modified = _timeProvider.GetUtcNow();
         testCaseRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
         testCaseRun.TestCaseRunFields = await _fieldManager.GetTestCaseRunFieldsAsync(principal, testCaseRun.TestRunId, testCaseRun.Id, []);
+
+        // Update the state if it has been assigned or unassigned
+        if(existing is not null)
+        {
+            await _mediator.Publish(new TestCaseRunUpdatingNotification(principal, existing, testCaseRun));
+        }
+      
+
+        // Save in DB
         await _testCaseRepo.UpdateTestCaseRunAsync(testCaseRun);
 
+        // Notifications and events
         await _mediator.Publish(new TestCaseRunSavedNotification(principal, testCaseRun));
-
+        if(assignmentChanged)
+        {
+            await _mediator.Publish(new TestCaseRunAssignmentChangedNotification(principal, testCaseRun, existing?.AssignedToUserName));
+        }
         if (informObservers)
         {
             foreach (var observer in _testRunObservers)

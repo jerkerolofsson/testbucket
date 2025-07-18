@@ -95,20 +95,22 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         }
         private async Task StartOllamaAsync()
         {
-            var builder = new OllamaBuilder();
-            builder.WithExposedPort(11435);
+            var builder = new OllamaBuilder().WithExposedPort(11434);
 
             _ollamaContainer = builder.Build();
-            _configuration.OllamaBaseUrl = "http://localhost:11435";
 
             // Start the container.
             await _ollamaContainer.StartAsync()
               .ConfigureAwait(false);
+
+            int mappedPort = _ollamaContainer.GetMappedPublicPort(11434);
+            _configuration.OllamaBaseUrl = $"http://localhost:{mappedPort}";
+
         }
         private async Task StartPostgresAsync()
         {
-            PostgreSqlBuilder builder = new PostgreSqlBuilder();
-            builder.WithDatabase("tb-int");
+            PostgreSqlBuilder builder = new PostgreSqlBuilder().WithImage("ankane/pgvector");
+            //builder.WithDatabase("tb-int");
 
             _postgresContainer = builder.Build();
 
@@ -156,9 +158,10 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
                 services.AddLogging((builder) => builder.AddXUnit(Sink));
 
                 services.AddDbContext<ApplicationDbContext>(options => 
-                { 
+                {
                     options.UseNpgsql(_postgresContainer!.GetConnectionString(), builder =>
                     {
+                        builder.UseVector();
                         builder.ConfigureDataSource(dataSource =>
                         {
                             dataSource.EnableDynamicJson();

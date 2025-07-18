@@ -20,8 +20,8 @@ public class DashboardApi : ProjectApiControllerBase
     }
 
     [Authorize]
-    [HttpPut("/api/projects")]
-    [HttpPost("/api/projects")]
+    [HttpPut("/api/dashboards")]
+    [HttpPost("/api/dashboards")]
     [ProducesDefaultResponseType(typeof(DashboardDto))]
     public async Task<IActionResult> AddAsync([FromBody] DashboardDto dashboard)
     {
@@ -31,7 +31,7 @@ public class DashboardApi : ProjectApiControllerBase
     }
 
     [Authorize]
-    [HttpDelete("/api/projects/{id:long}")]
+    [HttpDelete("/api/dashboards/{id:long}")]
     [ProducesDefaultResponseType(typeof(DashboardDto))]
     public async Task DeleteAsync([FromRoute] long id)
     {

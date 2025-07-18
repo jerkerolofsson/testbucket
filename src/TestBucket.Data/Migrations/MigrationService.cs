@@ -59,6 +59,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "Error running migrations");
             activity?.AddException(ex);
             throw;
         }
@@ -201,7 +202,8 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
             {
                 llmSettings.AiProvider = "ollama";
                 llmSettings.AiProviderUrl = seedConfiguration.OllamaBaseUrl;
-                changed = true;
+                llmSettings.EmbeddingAiProvider = "ollama";
+                llmSettings.EmbeddingAiProviderUrl = seedConfiguration.OllamaBaseUrl;
                 await settingsProvider.SaveDomainSettingsAsync(seedConfiguration.Tenant, null, llmSettings);
             }
         }

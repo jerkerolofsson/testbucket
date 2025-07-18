@@ -3,6 +3,13 @@
 namespace TestBucket.Domain.AI.Agent;
 public class SuggestionProvider
 {
+    public static string GetAiRunTestPrompt(string name) => $"""
+                    Run the steps described in the reference description for '{name}' one by one. 
+                    Use relevant tools as needed. 
+                    After running the steps, if a step failed, output "FAILED: <DescriptiveErrorMessage>" where <DescriptiveErrorMessage> describes what went wrong.
+                    If all steps passed, output "PASSED"
+                    """;
+
     public static IReadOnlyList<Suggestion> GetSuggestions(AgentChatContext context)
     {
         string suggestTests = $"get-heuristics. Consider different test heuristics and the project and use a relevant heuristic to come up with some test ideas. Format the test case as markdown";
@@ -46,12 +53,7 @@ public class SuggestionProvider
 
             if (reference.EntityTypeName == "TestCase")
             {
-                suggestions.Add(new Suggestion($"Run '{reference.Name}' with AI", $"""
-                    Run the steps described in the reference description for '{reference.Name}' one by one. 
-                    Use relevant tools as needed. 
-                    After running the steps, if a step failed, output "FAILED: <DescriptiveErrorMessage>" where <DescriptiveErrorMessage> describes what went wrong.
-                    If all steps passed, output "PASSED"
-                    """)
+                suggestions.Add(new Suggestion($"Run '{reference.Name}' with AI", GetAiRunTestPrompt(reference.Name))
                 {
                     Icon = TbIcons.BoldDuoTone.AI
                 });

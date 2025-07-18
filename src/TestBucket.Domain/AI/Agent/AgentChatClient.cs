@@ -48,7 +48,7 @@ public class AgentChatClient
             var mcpTools = await _mcpServerRunnerManager.GetMcpToolsForUserAsync(principal, context, cancellationToken);
             foreach (var mcpTool in mcpTools)
             {
-                toolCollection.Add(mcpTool.ToolName, mcpTool.AIFunction, mcpTool.Enabled);
+                toolCollection.Add(mcpTool.ToolName??"UnknownTool", mcpTool.AIFunction, mcpTool.Enabled);
             }
         }
 

@@ -11,6 +11,8 @@ using TestBucket.Domain.AI.Models;
 namespace TestBucket.Domain.AI;
 public class LlmModels
 {
+    public const string DefaultEmbeddingModel = "all-minilm";
+
     /// <summary>
     /// List of LLM models that will be options in the UI
     /// </summary>

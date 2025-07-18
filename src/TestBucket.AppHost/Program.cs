@@ -1,10 +1,8 @@
 using System.Net;
-using System.Security.Claims;
-
-using Aspire.Hosting;
 
 using TestBucket.Contracts;
 using TestBucket.Contracts.Identity;
+using TestBucket.Domain.AI;
 using TestBucket.Domain.Identity;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -28,19 +26,28 @@ var apiKeyGenerator = new ApiKeyGenerator(symmetricKey, issuer, audience);
 string accessToken = apiKeyGenerator.GenerateAccessToken(principal, DateTime.UtcNow.AddDays(100));
 string runnerAccessToken = apiKeyGenerator.GenerateAccessToken("runner", principal, DateTime.UtcNow.AddDays(100));
 
+// Postgres
 IResourceBuilder<PostgresServerResource> postgres = builder.AddPostgres("testbucket-postgres")
     .WithImage("ankane/pgvector")
     .WithImageTag("latest");
-
 if (!isTest)
 {
     postgres.WithDataVolume("testbucket-dev", isReadOnly: false).WithLifetime(ContainerLifetime.Persistent); 
 }
-else
-{
-    //postgres.WithPgAdmin(pgAdmin => pgAdmin.WithHostPort(5050));
-}
-    var db = postgres.AddDatabase("testbucketdb");
+var db = postgres.AddDatabase("testbucketdb");
+
+// Ollama
+var ollamaEndpoint = "http://localhost:11434";
+//IResourceBuilder<OllamaResource>? ollama = null;
+//if(isTest)
+//{
+//    ollama = builder.AddOllama("ollama")
+//        .WithDataVolume()
+//        .WithContainerRuntimeArgs("--gpus=all")
+//        .WithEndpoint(port: 11434, targetPort: 21434);
+//    ollama.AddModel(LlmModels.DefaultEmbeddingModel);
+//    ollamaEndpoint = "http://localhost:21434";
+//}
 
 //var publicEndpoint = $"http://{Dns.GetHostName()}:5002";
 //var publicEndpoint = $"http://192.168.0.241:5002";
@@ -56,11 +63,15 @@ var testBucket = builder.AddProject<Projects.TestBucket>("testbucket")
     .WithEnvironment(TestBucketEnvironmentVariables.TB_JWT_ISS, issuer)
     .WithEnvironment(TestBucketEnvironmentVariables.TB_JWT_AUD, audience)
     .WithEnvironment(TestBucketEnvironmentVariables.TB_ADMIN_ACCESS_TOKEN, accessToken)
-    .WithEnvironment("TB_OLLAMA_BASE_URL", "http://localhost:11434")
+    .WithEnvironment("TB_OLLAMA_BASE_URL", ollamaEndpoint)
     .WithEnvironment(TestBucketEnvironmentVariables.TB_PUBLIC_ENDPOINT, publicEndpoint)
     .WithEnvironment("TB_HTTPS_REDIRECT", "disabled") // Disable HTTPS redirect so we can test without proper certificates
     .WithHttpHealthCheck("/health")
     .WaitFor(db);
+//if(ollama is not null)
+//{
+//    testBucket.WaitFor(ollama);
+//}
 
 builder.AddProject<Projects.TestBucket_Servers_AdbProxy>("testbucket-adbproxy")
     .WithReference(testBucket)

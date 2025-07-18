@@ -10,9 +10,7 @@ using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Mapping;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.Search;
-using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Code.Mcp;
 
@@ -24,7 +22,6 @@ public class CodeMcpTools : AuthenticatedTool
     private readonly TimeProvider _timeProvider;
     private readonly IRequirementManager _requirementManager;
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
-
     public CodeMcpTools(IArchitectureManager architecture,
         TimeProvider timeProvider,
         IApiKeyAuthenticator apiKeyAuthenticator, IRequirementManager requirementManager, IFieldDefinitionManager fieldDefinitionManager) : base(apiKeyAuthenticator)
@@ -41,6 +38,65 @@ public class CodeMcpTools : AuthenticatedTool
         public required string Name { get; set; }
         public required string Description { get; set; }
         public IReadOnlyList<RequirementDto> RelatedRequirements { get; set; } = [];
+    }
+
+
+    [McpServerTool(Name = "search-components"), Description("""
+        Searches for SW component, returning description and information about the component and related requirements.
+        """)]
+    public async Task<IReadOnlyList<FeatureMcpDto>> SearchComponentsAsync(string searchText, int offset = 0, int count = 1)
+    {
+        if (count == 0)
+        {
+            count = 1;
+        }
+
+        var isAuthenticated = await IsAuthenticatedAsync();
+        if (isAuthenticated && _principal is not null)
+        {
+            var projectId = _principal.GetProjectId();
+            if (projectId is not null)
+            {
+                var result = await _architectureManager.SearchComponentsAsync(_principal, projectId.Value, searchText, offset, count);
+
+                if (result.Items.Length == 0)
+                {
+                    // Sometimes the llm adds "feature" in the searchText
+                    if (searchText.Contains("components", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        searchText = searchText.Replace("components", "", StringComparison.InvariantCultureIgnoreCase);
+                    }
+                    result = await _architectureManager.SearchComponentsAsync(_principal, projectId.Value, searchText, offset, count);
+                }
+
+                var items = result.Items.Select(x => new FeatureMcpDto
+                {
+                    Id = x.Id,
+                    Description = x.Description ?? "",
+                    Name = x.Name,
+                }).ToList();
+
+                // Find requirements related to this feature
+
+                var fields = await _fieldDefinitionManager.GetDefinitionsAsync(_principal, projectId, Contracts.Fields.FieldTarget.Requirement);
+
+                foreach (var item in items)
+                {
+                    string queryText = $"component:\"{item.Name}\"";
+                    var query = SearchRequirementQueryParser.Parse(queryText, fields, _timeProvider);
+                    query.Count = 100;
+                    query.Offset = 0;
+                    query.ProjectId = projectId.Value;
+                    query.CompareFolder = false;
+                    var requirements = await _requirementManager.SearchRequirementsAsync(_principal, query);
+
+                    item.RelatedRequirements = requirements.Items.Select(x => x.ToDto()).ToList();
+                }
+
+                return items;
+            }
+        }
+        return [];
     }
 
     [McpServerTool(Name = "search-features"), Description("""

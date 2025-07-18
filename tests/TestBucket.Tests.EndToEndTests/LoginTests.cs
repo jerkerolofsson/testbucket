@@ -36,7 +36,7 @@ namespace TestBucket.Tests.EndToEndTests
             Assert.False(success, "Login should not be successful with invalid credentials");
         }
 
-
+        [CoveredRequirement("WCAG1.4.3")]
         [UsabilityTest]
         [Fact]
         public async Task Login_Accessibility()

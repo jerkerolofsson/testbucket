@@ -36,10 +36,9 @@ namespace TestBucket.Tests.EndToEndTests
             Assert.False(success, "Login should not be successful with invalid credentials");
         }
 
-        [CoveredRequirement("WCAG1.4.3")]
         [UsabilityTest]
         [Fact]
-        public async Task Login_Accessibility()
+        public async Task AxeCheck_OnLoginScreen()
         {
             await using var loginPage = await Playwright.OpenAsync(BrowserType.Chromium);
             var results = await loginPage.RunAxeOnLoginAsync();

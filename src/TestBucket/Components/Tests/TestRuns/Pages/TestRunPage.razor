@@ -32,7 +32,10 @@ else
         if (_testRun is null || _testRun.Id != RunId)
         {
             _testRun = await testBrowser.GetTestRunByIdAsync(RunId);
-            appNavigationManager.State.SelectedTestRun = _testRun;
+            if (_testRun is not null)
+            {
+                appNavigationManager.State.SetSelectedTestRun(_testRun);
+            }
         }
     }
 }

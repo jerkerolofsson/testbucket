@@ -52,7 +52,10 @@
         if (_testRun is null || _testRun.Id != RunId)
         {
             _testRun = await testBrowser.GetTestRunByIdAsync(RunId);
-            appNav.State.SelectedTestRun = _testRun;
+            if (_testRun is not null)
+            {
+                appNav.State.SetSelectedTestRun(_testRun);
+            }
             SetupBreadcrumbs();
         }
     }

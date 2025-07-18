@@ -37,10 +37,13 @@
     /// <returns></returns>
     protected override async Task OnParametersSetAsync()
     {
-        if (_testRun is null || _testRun.Id != RunId)
+        if (_testRun is null || _testRun.Id != RunId || appNav.State.SelectedTestRun is null)
         {
             _testRun = await testBrowser.GetTestRunByIdAsync(RunId);
-            appNav.State.SelectedTestRun = _testRun;
+            if (_testRun is not null)
+            {
+                appNav.State.SetSelectedTestRun(_testRun);
+            }
         }
         if (Project?.Id is not null)
         {

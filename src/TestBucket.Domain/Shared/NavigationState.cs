@@ -70,7 +70,7 @@ public class NavigationState
     /// <summary>
     /// Selected test run
     /// </summary>
-    public TestRun? SelectedTestRun { get; set; }
+    public TestRun? SelectedTestRun { get; private set; }
 
     /// <summary>
     /// Selected test case run

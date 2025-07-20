@@ -17,31 +17,37 @@
                 @if (_run is not null)
                 {
                     <Field>
-                        <FieldHeader>@loc["name"]</FieldHeader>
-                        <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_run.Name"></MudTextField>
+                        <FieldHeader for="name" >@loc["name"]</FieldHeader>
+                        <MudTextField id="name" AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_run.Name"></MudTextField>
                     </Field>
 
                     <Field Row>
-                        <FieldHeader Icon="@TbIcons.BoldDuoTone.Leaf">@loc["test-environment"]</FieldHeader>
+                        <FieldHeader for="environment" Icon="@TbIcons.BoldDuoTone.Leaf">@loc["test-environment"]</FieldHeader>
                         <MudSpacer />
-                        <EnvironmentDropDown Project="@_project" SelectedEnvironment="@_testEnvironment" SelectedEnvironmentChanged="OnTestEnvironmentChanged" />
+                        <EnvironmentDropDown id="environment" Project="@_project" SelectedEnvironment="@_testEnvironment" SelectedEnvironmentChanged="OnTestEnvironmentChanged" />
                     </Field>
+
+                        <Field Row>
+                            <FieldHeader for="assign-to-ai-runner" Icon="@TbIcons.BoldDuoTone.AI">@loc["assign-to-ai-runner"]</FieldHeader>
+                            <MudSpacer />
+                        <MudSwitchM3 id="assign-to-ai-runner" @bind-Value="@_assignToAi" Color="Color.Primary" />
+                        </Field>
 
                     @if (_ciCdSystem is not null)
                     {
                         <MudText Class="mt-3" Typo="Typo.h6">@loc["test-automation"]</MudText>
                         <Field Row>
-                            <FieldHeader Icon="@TbIcons.BoldDuoTone.CodeSquare">@loc["launch-automation"]</FieldHeader>
+                            <FieldHeader for="start-automation" Icon="@TbIcons.BoldDuoTone.CodeSquare">@loc["launch-automation"]</FieldHeader>
                             <MudSpacer />
-                            <MudSwitchM3 @bind-Value="@_startAutomation" Color="Color.Primary"/>
+                            <MudSwitchM3 id="start-automation" @bind-Value="@_startAutomation" Color="Color.Primary"/>
                         </Field>
 
                         @if (_startAutomation)
                         {
                             <Field Row>
-                                <FieldHeader Icon="@TbIcons.Git.GitBranch">@loc["ci-cd-ref"]</FieldHeader>
+                                <FieldHeader for="ci-cd-ref" Icon="@TbIcons.Git.GitBranch">@loc["ci-cd-ref"]</FieldHeader>
                                 <MudSpacer />
-                                <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_ciCdRef"></MudTextField>
+                                <MudTextField id="ci-cd-ref" AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@_ciCdRef"></MudTextField>
                             </Field>    
                         }
 
@@ -90,6 +96,7 @@
     private TestRun _run = new() { Name = "", TenantId = "", Created = DateTimeOffset.UtcNow };
 
     private bool _startAutomation = true;
+    private bool _assignToAi = false;
 
     private long? _teamId;
     private bool _loading = true;
@@ -146,6 +153,7 @@
         _run.CiCdRef = _ciCdRef;
         _run.CiCdSystem = _ciCdSystem;
         _run.TestEnvironmentId = _testEnvironment?.Id;
+        _run.AssignTestCaseRunsTo = _assignToAi ? "ai-runner" : null; // todo: AiRunnerConstants
 
         if (!_startAutomation)
         {

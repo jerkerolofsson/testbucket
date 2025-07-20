@@ -118,7 +118,8 @@ internal class TestRunManager : ITestRunManager
             TestProjectId = testRun.TestProjectId.Value,
             State = "Not Started",
             Result = TestResult.NoRun,
-            ScriptType = testCase.ScriptType
+            ScriptType = testCase.ScriptType,
+            AssignedToUserName = testRun.AssignTestCaseRunsTo
         };
         if (testCase.ScriptType == ScriptType.Exploratory)
         {

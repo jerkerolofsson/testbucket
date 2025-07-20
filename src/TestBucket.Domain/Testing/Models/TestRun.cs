@@ -68,12 +68,18 @@ public class TestRun : TestEntity
     /// </summary>
     public string? Icon { get; set; }
 
+    /// <summary>
+    /// Default assignment
+    /// </summary>
+    public string? AssignTestCaseRunsTo { get; set; }
+
     // Navigation
 
     /// <summary>
     /// The selected environment for the run
     /// </summary>
     public long? TestEnvironmentId { get; set; }
+
     public TestEnvironment? TestEnvironment { get; set; }
     public virtual IEnumerable<TestRunField>? TestRunFields { get; set; }
     public virtual List<Comment>? Comments { get; set; }

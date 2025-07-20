@@ -441,4 +441,7 @@
   <data name="run-test-case-description" xml:space="preserve">
     <value />
   </data>
+  <data name="assign-to-ai-runner" xml:space="preserve">
+    <value />
+  </data>
 </root>

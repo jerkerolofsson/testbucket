@@ -2,7 +2,7 @@
 @inject IDialogService dialogService
 @inject IStringLocalizer<SharedStrings> loc
 
-<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="dropdown-container">
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="dropdown-container" @attributes="@Attributes">
     <MudSelect 
     Variant="Variant.Outlined" 
     Label="@loc["test-environment"]"
@@ -36,6 +36,7 @@
 
 @code {
     private IReadOnlyList<TestEnvironment> _environments = [];
+        [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
 
     [Parameter] public TestProject? Project { get; set; }
     [Parameter] public Team? Team { get; set; }

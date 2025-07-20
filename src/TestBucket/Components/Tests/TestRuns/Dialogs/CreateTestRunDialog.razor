@@ -1,4 +1,5 @@
 ﻿@using TestBucket.Domain
+@using TestBucket.Domain.AI.Runner
 @inject TestCaseEditorController testCaseEditorService
 @inject ProjectController projectController
 @inject TestEnvironmentController testEnvironmentController
@@ -153,7 +154,7 @@
         _run.CiCdRef = _ciCdRef;
         _run.CiCdSystem = _ciCdSystem;
         _run.TestEnvironmentId = _testEnvironment?.Id;
-        _run.AssignTestCaseRunsTo = _assignToAi ? "ai-runner" : null; // todo: AiRunnerConstants
+        _run.AssignTestCaseRunsTo = _assignToAi ? AiRunnerConstants.Username : null; // todo: AiRunnerConstants
 
         if (!_startAutomation)
         {

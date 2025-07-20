@@ -948,4 +948,7 @@
   <data name="assign-to-ai-runner" xml:space="preserve">
     <value />
   </data>
+  <data name="specifications" xml:space="preserve">
+    <value />
+  </data>
 </root>

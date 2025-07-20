@@ -4,13 +4,14 @@ using TestBucket.Components.Tests.Services;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Domain;
+using TestBucket.Domain.AI.Runner;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Localization;
 
-namespace TestBucket.Components.Tests.TestRuns.Commands;
+namespace TestBucket.Components.AI.Runner.Commands;
 
 internal class AssignAllUnassignedToAiRunner : ICommand
 {
@@ -68,7 +69,7 @@ internal class AssignAllUnassignedToAiRunner : ICommand
                 Count = count, 
                 Offset = 0
             });
-            offset += (int)result.Items.Length;
+            offset += result.Items.Length;
 
             if(result.TotalCount == 0)
             {
@@ -77,7 +78,7 @@ internal class AssignAllUnassignedToAiRunner : ICommand
 
             foreach(var testCaseRun in result.Items)
             {
-                testCaseRun.AssignedToUserName = "ai-runner"; 
+                testCaseRun.AssignedToUserName = AiRunnerConstants.Username;
                 await _controller.SaveTestCaseRunAsync(testCaseRun, informObservers:false);
             }
 

@@ -63,6 +63,7 @@ public class TestExecutionContextBuilder
             var context = new TestExecutionContext()
             {
                 Guid = options.ContextGuid,
+                TenantId = testCase.TenantId,
                 TestCaseId = testCase.Id,
                 TestSuiteId = testCase.TestSuiteId,
                 ProjectId = testCase.TestProjectId.Value,
@@ -107,6 +108,11 @@ public class TestExecutionContextBuilder
             return context;
         }
         return null;
+    }
+
+    public async Task ReleaseResourcesAsync(TestExecutionContext context)
+    {
+        await ReleaseResourcesAsync(context.Guid, context.TenantId ?? "");
     }
 
     private async ValueTask ReleaseResourcesAsync(string guid, string tenantId)

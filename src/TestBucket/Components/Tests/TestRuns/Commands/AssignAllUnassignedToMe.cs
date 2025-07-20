@@ -5,8 +5,10 @@ using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Domain;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Identity;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Domain.Progress;
+using TestBucket.Domain.States;
 using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Localization;
 
@@ -48,6 +50,7 @@ internal class AssignAllUnassignedToMe : ICommand
     public string? Icon => TbIcons.BoldDuoTone.UserCircle;
     public string[] ContextMenuTypes => ["TestRun"];
 
+   
     public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var run = _appNavigationManager.State.SelectedTestRun;

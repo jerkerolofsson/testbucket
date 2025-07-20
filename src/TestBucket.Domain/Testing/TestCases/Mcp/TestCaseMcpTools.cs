@@ -13,6 +13,7 @@ namespace TestBucket.Domain.Testing.TestCases.Mcp;
 
 [McpServerToolType]
 [Description("Contains tools to search, modify or create test cases")]
+[DisplayName("testing")]
 public class TestCaseMcpTools : AuthenticatedTool
 {
     private readonly ITestCaseManager _testCaseManager;

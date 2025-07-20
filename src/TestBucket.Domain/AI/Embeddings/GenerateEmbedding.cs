@@ -1,6 +1,7 @@
 ﻿using Mediator;
 
 using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Logging;
 
 using OllamaSharp;
 
@@ -12,10 +13,12 @@ public record class GenerateEmbeddingResponse(ReadOnlyMemory<float>? EmbeddingVe
 
 public class GenerateEmbeddingHandler : IRequestHandler<GenerateEmbeddingRequest, GenerateEmbeddingResponse>
 {
+    private readonly ILogger<GenerateEmbeddingHandler> _logger;
     private readonly ISettingsProvider _settingsProvider;
 
-    public GenerateEmbeddingHandler(ISettingsProvider settingsProvider)
+    public GenerateEmbeddingHandler(ILogger<GenerateEmbeddingHandler> logger, ISettingsProvider settingsProvider)
     {
+        _logger = logger;
         _settingsProvider = settingsProvider;
     }
 
@@ -45,7 +48,8 @@ public class GenerateEmbeddingHandler : IRequestHandler<GenerateEmbeddingRequest
                     Model = model,
                     Uri = new Uri(settings.EmbeddingAiProviderUrl),
                 });
-                return ollama;
+
+                return new OllamaModelPullingEmbeddingGenerator(ollama, _logger);
             }
             catch (Exception) { }
         }

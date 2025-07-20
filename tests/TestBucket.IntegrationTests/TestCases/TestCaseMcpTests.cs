@@ -4,9 +4,15 @@ using TestBucket.Formats.Dtos;
 
 namespace TestBucket.IntegrationTests.TestCases
 {
+    /// <summary>
+    /// Integration tests for verifying the behavior of test cases in the MCP system.
+    /// </summary>
     [IntegrationTest]
     public class TestCaseMcpTests(McpFixture McpFixture) : IClassFixture<McpFixture>
     {
+        /// <summary>
+        /// Tests the retrieval of the number of test cases by category using the MCP client.
+        /// </summary>
         [Fact]
         public async Task GetNumberOfTestCasesAsync()
         {
@@ -23,7 +29,6 @@ namespace TestBucket.IntegrationTests.TestCases
             };
             testCase.Traits.Traits.Add(new TestTrait(Traits.Core.TraitType.TestCategory, "Unit"));
             await McpFixture.TestBucket.Client.TestRepository.AddTestAsync(testCase);
-            
 
             // Act
             var response = await McpFixture.McpClient.TestCallToolAsync("get-number-of-testcases-by-category");

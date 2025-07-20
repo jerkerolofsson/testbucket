@@ -73,7 +73,14 @@
 
                 <TemplateColumn Title="@loc["test-result"]">
                     <CellTemplate>
-                        <ResultPill Result="@context.Item.Result" ReadOnly="@(!CanChangeResult)" ResultChanged="async (result) => await SetTestCaseRunResultAsync(context.Item, result)" />
+                        @if(context.Item.MappedState == Contracts.Testing.States.MappedTestState.Ongoing)
+                        {
+                            <MudProgressCircular Size="Size.Small" Indeterminate/>
+                        }
+                        else 
+                        {
+                            <ResultPill Result="@context.Item.Result" ReadOnly="@(!CanChangeResult)" ResultChanged="async (result) => await SetTestCaseRunResultAsync(context.Item, result)" />
+                        }
                     </CellTemplate>
                 </TemplateColumn>
 

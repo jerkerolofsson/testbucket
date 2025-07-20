@@ -22,4 +22,5 @@ public class McpAIFunction
     public required McpServer McpServer { get; set; }
     public required AIFunction AIFunction { get; set; }
     public required McpClientTool Tool { get; set; }
+    public string? ToolName { get;  set; }
 }

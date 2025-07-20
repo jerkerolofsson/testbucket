@@ -11,6 +11,8 @@ using TestBucket.Domain.AI.Models;
 namespace TestBucket.Domain.AI;
 public class LlmModels
 {
+    public const string DefaultEmbeddingModel = "all-minilm";
+
     /// <summary>
     /// List of LLM models that will be options in the UI
     /// </summary>
@@ -56,6 +58,14 @@ public class LlmModels
             ModelName = "deepseek-r1:8b",
             Capabilities = ModelCapability.Tools | ModelCapability.Thinking | ModelCapability.Classification
         },
+        ["mistral:7b"] = new LlmModel 
+        { 
+            Name = "Mistral 7b",    
+            ModelName = "mistral:7b",
+            Vendor = "mistral",
+            Capabilities = ModelCapability.Tools,
+            Icon = TbIcons.Brands.Mistral
+        },
         ["nemotron-mini"] = new LlmModel
         {
             Vendor = "nvidia",
@@ -63,7 +73,6 @@ public class LlmModels
             ModelName = "nemotron-mini:4b",
             Capabilities = ModelCapability.Classification | ModelCapability.Tools
         },
-
         ["phi3:3.8b"] = new LlmModel
         {
             Icon = TbIcons.Brands.Microsoft,

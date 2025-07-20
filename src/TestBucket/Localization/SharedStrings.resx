@@ -975,4 +975,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="assign-to-ai-runner" xml:space="preserve">
     <value>Assign to AI runner</value>
   </data>
+  <data name="specifications" xml:space="preserve">
+    <value>Specifications</value>
+  </data>
 </root>

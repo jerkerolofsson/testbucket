@@ -76,6 +76,10 @@ public partial class AISettingsPage
         {
             return TbIcons.Brands.Nvidia;
         }
+        if (model.Vendor == "mistral")
+        {
+            return TbIcons.Brands.Mistral;
+        }
         if (model.Vendor == "alibaba-cloud")
         {
             return TbIcons.Brands.AlibabaCloud;

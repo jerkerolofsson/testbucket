@@ -43,7 +43,7 @@
     /// <returns></returns>
     protected override async Task OnParametersSetAsync()
     {
-        appNavigationManager.State.SelectedTestRun = null;
+        appNavigationManager.State.ClearSelection();
 
         if(Project is null)
         {

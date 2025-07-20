@@ -315,4 +315,10 @@
   <data name="test-execution" xml:space="preserve">
     <value />
   </data>
+  <data name="server" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tenant" xml:space="preserve">
+    <value />
+  </data>
 </root>

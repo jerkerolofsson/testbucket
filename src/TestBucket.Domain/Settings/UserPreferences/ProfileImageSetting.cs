@@ -18,7 +18,7 @@ namespace TestBucket.Domain.Settings.Appearance
 
             Metadata.Name = "profile-image";
             Metadata.Category.Name = "profile";
-            Metadata.Category.Icon = SettingIcon.Profile;
+            Metadata.Category.Icon = SettingIcons.Profile;
             Metadata.Section.Name = "appearance";
             Metadata.Type = FieldType.ImageUri;
             _profilePictureManager = profilePictureManager;

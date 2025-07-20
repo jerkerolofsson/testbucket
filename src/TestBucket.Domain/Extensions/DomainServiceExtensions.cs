@@ -8,6 +8,7 @@ using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.AI.Mcp.Services;
+using TestBucket.Domain.AI.Runner;
 using TestBucket.Domain.AI.Settings;
 using TestBucket.Domain.AI.Settings.LLM;
 using TestBucket.Domain.ApiKeys;
@@ -244,10 +245,14 @@ public static class DomainServiceExtensions
         // AI Runner settings
         services.AddScoped<ISetting, EnableAiRunnerSetting>();
         services.AddScoped<ISetting, MaxTokensPerDayForAitRunnerSetting>();
-        
 
         // LLM
         services.AddScoped<AgentChatContext>();
+
+        // AI Runner
+        services.AddSingleton<AiRunnerJobQueue>();
+        services.AddHostedService<AiRunner>();
+        services.AddScoped<AiResultInterpreter>();
 
         // Metrics
         services.AddScoped<IMetricsManager, MetricsManager>();

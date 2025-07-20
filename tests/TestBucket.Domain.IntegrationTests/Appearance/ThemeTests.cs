@@ -17,6 +17,7 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
     [IntegrationTest]
     [FunctionalTest]
     [EnrichedTest]
+    [Component("Appearance")]
     public class ThemeTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         /// <summary>

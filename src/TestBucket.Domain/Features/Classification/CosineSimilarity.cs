@@ -1,21 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TestBucket.Domain.Features.Classification;
+﻿namespace TestBucket.Domain.Features.Classification;
 public class CosineSimilarity
 {
+    public static double Calculate(ReadOnlyMemory<float> vector1, ReadOnlyMemory<float> vector2)
+    {
+        return Calculate(vector1.ToArray(), vector2.ToArray());
+    }
     public static double Calculate(float[] vector1, ReadOnlyMemory<float>? vector2)
     {
-        if(vector2 is null)
+        if (vector2 is null)
         {
             return double.MaxValue;
         }
         return Calculate(vector1, vector2.Value.ToArray());
     }
-    
+
+    /// <summary>
+    /// Calculates cosine similarity between two vectors.
+    /// </summary>
+    /// <param name="vector1"></param>
+    /// <param name="vector2"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public static double Calculate(float[] vector1, float[] vector2)
     {
         if (vector1.Length != vector2.Length)

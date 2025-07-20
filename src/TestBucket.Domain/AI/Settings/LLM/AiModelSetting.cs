@@ -20,7 +20,7 @@ namespace TestBucket.Domain.AI.Settings.LLM
             Metadata.Name = "ai-default-model";
             Metadata.Description = null;
             Metadata.Category.Name = "AI";
-            Metadata.Category.Icon = SettingIcon.AI;
+            Metadata.Category.Icon = SettingIcons.AI;
             Metadata.Section.Name = "Models";
             Metadata.SearchText = "ai-models";
             Metadata.ShowDescription = true;

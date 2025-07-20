@@ -11,6 +11,7 @@ using TestBucket.Formats.Dtos;
 namespace TestBucket.Domain.Testing.TestSuites.Mcp;
 
 [McpServerToolType]
+[DisplayName("testing")]
 public class TestSuitesMcpTools : AuthenticatedTool
 {
     private readonly ITestSuiteManager _testSuiteManager;

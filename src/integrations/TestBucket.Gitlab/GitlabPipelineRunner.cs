@@ -141,12 +141,7 @@ namespace TestBucket.Gitlab
 
             foreach (var job in jobs)
             {
-                bool hasArtifacts = job.Artifacts?.Size > 0;
-
-                if (job.Status == JobStatus.Success)
-                {
-
-                }
+                bool hasArtifacts = job.Artifacts?.Length > 0;
 
                 var dto = new PipelineJobDto
                 {

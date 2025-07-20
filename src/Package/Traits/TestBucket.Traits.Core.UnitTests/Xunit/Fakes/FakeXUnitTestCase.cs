@@ -58,6 +58,8 @@ internal class FakeXUnitTestCase : IXunitTestCase
 
     public string UniqueID => throw new NotImplementedException();
 
+    public int? TestMethodArity => null;
+
     ITestClass? ITestCase.TestClass => TestClass;
 
     ITestCollection ITestCase.TestCollection => TestCollection;

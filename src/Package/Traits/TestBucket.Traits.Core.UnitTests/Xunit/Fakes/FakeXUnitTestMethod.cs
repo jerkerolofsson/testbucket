@@ -42,9 +42,11 @@ internal class FakeXUnitTestMethod : IXunitTestMethod
 
     ITestClass ITestMethod.TestClass => TestClass;
 
+    public int? MethodArity => throw new NotImplementedException();
+
     public string GetDisplayName(string baseDisplayName, object?[]? testMethodArguments, Type[]? methodGenericTypes)
     {
-        throw new NotImplementedException();
+        return baseDisplayName;
     }
 
     public MethodInfo MakeGenericMethod(Type[] genericTypes)
@@ -67,5 +69,10 @@ internal class FakeXUnitTestMethod : IXunitTestMethod
     public void FakeTestMethod()
     {
 
+    }
+
+    public string GetDisplayName(string baseDisplayName, string? label, object?[]? testMethodArguments, Type[]? methodGenericTypes)
+    {
+        throw new NotImplementedException();
     }
 }

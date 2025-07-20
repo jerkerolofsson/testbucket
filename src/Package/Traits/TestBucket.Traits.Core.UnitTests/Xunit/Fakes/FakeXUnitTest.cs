@@ -31,5 +31,11 @@ internal class FakeXUnitTest : IXunitTest
 
     public string UniqueID { get; } = Guid.NewGuid().ToString();
 
+    public Type? SkipType => null;
+
+    public string? SkipUnless => null;
+
+    public string? SkipWhen => null;
+
     ITestCase ITest.TestCase => TestCase;
 }

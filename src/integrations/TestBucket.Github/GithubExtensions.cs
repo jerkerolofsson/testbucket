@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Github;
 using TestBucket.Github.Issues;
+using TestBucket.Github.Mcp;
+using TestBucket.Integrations;
 
 namespace Microsoft.Extensions.DependencyInjection;
 public static class GithubExtensions
@@ -18,6 +20,7 @@ public static class GithubExtensions
         services.AddSingleton<IExternalPipelineRunner, GithubWorkflowRunner>();
         services.AddSingleton<IExternalCodeRepository, GithubRepository>();
         services.AddSingleton<IExternalIssueProvider, GithubIssues>();
+        services.AddSingleton<IExternalMcpProvider, GithubMcpProvider>();
         return services;
     }
 }

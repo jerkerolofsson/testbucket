@@ -1,4 +1,6 @@
-﻿using TestBucket.Domain.AI.Agent.Models;
+﻿using System.Text;
+
+using TestBucket.Domain.AI.Agent.Models;
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
@@ -9,7 +11,32 @@ public class ChatReferenceBuilder
 {
     public static ChatReference Create(TestProject project, bool isActiveDocument = false)
     {
-        return new ChatReference { Name = project.Name, Text = project.Description ?? "", Id = project.Id, EntityTypeName = "Project", IsActiveDocument = isActiveDocument };
+
+        var description = new StringBuilder();
+        if(project.Description is not null)
+        {
+            description.AppendLine("# Project description");
+            description.AppendLine(project.Description);
+        }
+        if (project.ExternalSystems is not null )
+        {
+            foreach(var externalSystem in project.ExternalSystems)
+            {
+                if (externalSystem.ExternalProjectId is not null && externalSystem.Provider?.Equals("github", StringComparison.InvariantCultureIgnoreCase) == true)
+                {
+                    if(externalSystem.ExternalProjectId.Contains('/'))
+                    {
+                        var items = externalSystem.ExternalProjectId.Split('/');
+                        description.AppendLine();
+                        description.AppendLine("Use this information when invoking GitHub tools:");
+                        description.AppendLine($"- Owner: {items[0]}");
+                        description.AppendLine($"- Repository: {items[1]}");
+                    }
+                }
+            }
+        }
+
+        return new ChatReference { Name = project.Name, Text = description.ToString(), Id = project.Id, EntityTypeName = "Project", IsActiveDocument = isActiveDocument };
     }
     public static ChatReference Create(TestCase testCase, bool isActiveDocument = false)
     {

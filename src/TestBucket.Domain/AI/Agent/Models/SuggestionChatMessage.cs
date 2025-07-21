@@ -9,6 +9,7 @@ namespace TestBucket.Domain.AI.Agent.Models;
 public class SuggestionChatMessage : ChatMessage
 {
     public Suggestion Suggestion { get; }
+
     public SuggestionChatMessage(Suggestion suggestion) : base(ChatRole.User, suggestion.Text)
     {
         Suggestion = suggestion;

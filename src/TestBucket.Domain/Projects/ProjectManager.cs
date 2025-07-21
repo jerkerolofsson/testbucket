@@ -148,8 +148,10 @@ internal class ProjectManager : IProjectManager
         {
             await _projectRepository.UpdateProjectIntegrationAsync(tenantId, slug, system);
         }
-    }
 
+        // Send event
+        await _mediator.Publish(new ProjectIntegrationUpdated(principal, system));
+    }
     public async Task<TestProject?> GetTestProjectBySlugAsync(ClaimsPrincipal principal, string slug)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);

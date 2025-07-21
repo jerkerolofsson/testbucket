@@ -97,7 +97,6 @@ public class TestCaseMcpTools : AuthenticatedTool
         Description("Adds a single test case with a name, preconditions, description, steps, expected result to an existing test suite. Call this function many times to add multiple tests.")]
     public async Task AddTestCase(
         
-        [Description("ID of test suite. Set to 0 if unknown")] long testSuiteId, 
         [Description("A descriptive name for the test case summarizing what it does")] string testCaseName, 
         [Description("A brief description of the test case")] string description, 
         [Description("Any required pre-conditions for the test case")] string? preconditions = "", 
@@ -115,6 +114,7 @@ public class TestCaseMcpTools : AuthenticatedTool
             }
 
             // If there is no test suite, create a new one
+            long testSuiteId = 0;
             testSuiteId = await CreateDefaultTestSuiteIfNotExistsAsync(testSuiteId, projectId);
 
             var testCase = new TestCase

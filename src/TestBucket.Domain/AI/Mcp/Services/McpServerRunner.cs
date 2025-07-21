@@ -1,5 +1,7 @@
 ﻿using System.Collections.Concurrent;
 
+using Microsoft.SemanticKernel;
+
 using ModelContextProtocol.Client;
 
 using TestBucket.Domain.AI.Mcp.Models;

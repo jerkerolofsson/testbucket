@@ -24,26 +24,30 @@ public class SuggestionProvider
             {
                 if(reference.EntityTypeName == "Feature")
                 {
-                    suggestions.Add(new Suggestion($"Give me some test ideas for the feature: '{reference.Name}'", 
-                        $"""
-                        1. Call the search-features tool with \"{reference.Name}\" as argument to collect related requirements.
-                        2. Call the get-heuristics tool to collect test heuristics for general test ideas. Consider them in combination with the feature description and requirements.
-                        3. Based on the feature description and for each requirement and relevant hueristic, think about how to test the feature and describe them as test cases in markdown format.
-                        """));
+                    suggestions.Add(new Suggestion($"Give me some test ideas for the feature: '{reference.Name}'", $"Give me some test ideas for the feature: '{reference.Name}'")
+                    {
+                        AgentId = "test-designer"
+                    });
                 }
                 else
                 {
-                    suggestions.Add(new Suggestion($"Give me some test ideas for '{reference.Name}'", suggestTests));
+                    suggestions.Add(new Suggestion($"Give me some test ideas for '{reference.Name}'", suggestTests)
+                    {
+                        AgentId = "test-designer"
+                    });
                 }
 
                 if (reference.EntityTypeName == "Feature")
                 {
-                    suggestions.Add(new Suggestion($"Add tests for the feature: '{reference.Name}'",
-                        $"""
-                        1. Call the search-features tool with \"{reference.Name}\" as argument to collect related requirements.
-                        2. Call the get-heuristics tool to collect test heuristics for general test ideas. Consider them in combination with the feature description and requirements.
-                        3. Based on the feature description and for each requirement and relevant hueristic, think about how to test the feature and describe them as test cases in markdown format. Call the add-test-case tool for each test.
-                        """));
+                    suggestions.Add(new Suggestion($"Add tests for the feature: '{reference.Name}'", $"Add tests for the feature: '{reference.Name}'")
+                    {
+                        AgentId = "test-creator"
+                    });
+                        //$"""
+                        //1. Call the search-features tool with \"{reference.Name}\" as argument to collect related requirements.
+                        //2. Call the get-heuristics tool to collect test heuristics for general test ideas. Consider them in combination with the feature description and requirements.
+                        //3. Based on the feature description and for each requirement and relevant hueristic, think about how to test the feature and describe them as test cases in markdown format. Call the add-test-case tool for each test.
+                        //"""););
                 }
                 else
                 {

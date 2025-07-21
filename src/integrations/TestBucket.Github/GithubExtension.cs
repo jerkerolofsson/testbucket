@@ -19,7 +19,8 @@ namespace TestBucket.Github
             ExternalSystemCapability.ReadPipelineArtifacts | 
             ExternalSystemCapability.GetIssues | 
             ExternalSystemCapability.GetLabels |
-            ExternalSystemCapability.CreateIssues;
+            ExternalSystemCapability.CreateIssues |
+            ExternalSystemCapability.McpServerProvider;
 
         public string FriendlyName => ExtensionConstants.FriendlyName;
 

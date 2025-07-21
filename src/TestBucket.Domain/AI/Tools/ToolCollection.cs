@@ -3,6 +3,7 @@ using System.Reflection;
 
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.SemanticKernel;
 
 using ModelContextProtocol.Server;
 
@@ -15,7 +16,6 @@ public class ToolCollection
     private readonly List<AIFunction> _functions = [];
     private readonly Dictionary<AIFunction, bool> _enabledFunctions = [];
     private readonly Dictionary<string, List<AIFunction>> _toolsByToolName = [];
-
     public IList<AIFunction> Functions => _functions;
 
     public IEnumerable<string> ToolNames => _toolsByToolName.Keys;
@@ -128,6 +128,11 @@ public class ToolCollection
             Description = descriptionAttribute?.Description,
             Name = serverToolAttribute?.Name ?? method.Name,
         };
+        //var kernelOptions = new KernelFunctionFromMethodOptions
+        //{
+        //    FunctionName = serverToolAttribute?.Name ?? method.Name,
+        //    Description = descriptionAttribute?.Description,
+        //};
 
         var toolName = method.DeclaringType?.Name ?? "UnknownTool";
 
@@ -140,6 +145,8 @@ public class ToolCollection
             }
         }
 
+        //var kernelFunction = KernelFunctionFactory.CreateFromMethod(method, target, kernelOptions);
+
         var function = AIFunctionFactory.Create(method, target, options);
         this.Add(toolName, function, enabled: true);
     }
@@ -150,7 +157,7 @@ public class ToolCollection
         {
             foreach (var function in tools)
             {
-                _enabledFunctions[function] = true;
+                _enabledFunctions[function] = enabled ?? true;
             }
         }
     }
@@ -224,6 +231,22 @@ public class ToolCollection
         return _enabledFunctions.TryGetValue(function, out var isEnabled) && isEnabled;
     }
 
+    public IReadOnlyList<AIFunction> GetEnabledFunctionsByToolName(string toolName)
+    {
+        if (_toolsByToolName.TryGetValue(toolName, out var tools))
+        {
+            var enabledTools = new List<AIFunction>();
+            foreach(var tool in tools)
+            {
+                if(_enabledFunctions.TryGetValue(tool, out var enabled) && enabled)
+                {
+                    enabledTools.Add(tool);
+                }
+            }
+            return enabledTools;
+        }
+        return [];
+    }
     public IReadOnlyList<AIFunction> GetFunctionsByToolName(string toolName)
     {
         if (_toolsByToolName.TryGetValue(toolName, out var tools))

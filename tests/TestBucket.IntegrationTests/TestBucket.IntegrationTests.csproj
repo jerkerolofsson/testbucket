@@ -11,7 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="ModelContextProtocol" Version="0.2.0-preview.3" />
+		<PackageReference Include="ModelContextProtocol" Version="0.3.0-preview.3" />
 
 		<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="17.14.2" />
 		<PackageReference Include="MartinCostello.Logging.XUnit.v3" Version="0.6.0" />

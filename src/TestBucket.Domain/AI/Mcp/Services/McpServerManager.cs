@@ -25,8 +25,8 @@ internal class McpServerManager : IMcpServerManager, IMcpServerUserInputProvider
         registration.TenantId = principal.GetTenantIdOrThrow();
         registration.ModifiedBy = registration.CreatedBy = principal.Identity?.Name ?? throw new Exception("Missing user identity");
         registration.Modified = registration.Created = _timeProvider.GetUtcNow();
-        registration.PublicForProject = false;
-        registration.Enabled = true;
+        //registration.PublicForProject = false;
+        //registration.Enabled = true;
         registration.Locked = false;
 
         if (registration.Configuration.Servers is null)

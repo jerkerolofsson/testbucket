@@ -209,6 +209,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IMcpServerManager, McpServerManager>();
         services.AddSingleton<McpServerRunnerManager>();
         services.AddHostedService<McpServerStartupService>();
+        services.AddScoped<SemanticKernelFactory>();
         
 
         // Feature: Classification

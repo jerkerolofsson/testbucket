@@ -296,13 +296,20 @@
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var client = new AgentChatClient(chatClientFactory, serviceProvider);
 
+        string agentId = "default";
+        if(chatMessage is SuggestionChatMessage suggestionChatMessage && !string.IsNullOrEmpty(suggestionChatMessage.Suggestion.AgentId))
+        {
+            agentId = suggestionChatMessage.Suggestion.AgentId;
+        }
+
         try
         {
-            await foreach (var update in client.GetStreamingResponseAsync(authState.User, Project, context, chatMessage, cancellationToken))
+            //await foreach (var update in client.GetStreamingResponseAsync(authState.User, Project, context, chatMessage, cancellationToken))
+            await foreach (var update in client.InvokeAsync(agentId, authState.User, Project, context, chatMessage, cancellationToken))
             {
-                if (update is PipelineActionUpdate actionUpdate)
+                if (string.IsNullOrEmpty(update.Text))//update is PipelineActionUpdate actionUpdate)
                 {
-                    _activeResponse.Append(actionUpdate.ActionName+"\n\n");
+                    //_activeResponse.Append(actionUpdate.ActionName+"\n\n");
                 }
                 else
                 {

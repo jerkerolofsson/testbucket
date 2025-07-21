@@ -102,7 +102,7 @@ internal class ChatClientFactory : IChatClientFactory
     /// <param name="modelType"></param>
     /// <param name="settings"></param>
     /// <returns></returns>
-    private static string GetModelName(ModelType modelType, LlmSettings settings)
+    public static string GetModelName(ModelType modelType, LlmSettings settings)
     {
         string model = settings.LlmModel ?? "phi4-mini:3.8b";
         return model;

@@ -27,7 +27,7 @@ namespace TestBucket.Contracts.Integrations
         /// Extension can read issues
         /// Implemented by IExternalIssueProvider
         /// </summary>
-        GetIssues               = 0x04,
+        GetIssues = 0x04,
 
         /// <summary>
         /// Extension can read, update and create issues
@@ -71,5 +71,10 @@ namespace TestBucket.Contracts.Integrations
         /// Implemented by IProjectDataSource using TraitType.Label
         /// </summary>
         GetLabels = 0x200,
+
+        /// <summary>
+        /// Extension can provider MCP server. 
+        /// </summary>
+        McpServerProvider = 0x400,
     }
 }

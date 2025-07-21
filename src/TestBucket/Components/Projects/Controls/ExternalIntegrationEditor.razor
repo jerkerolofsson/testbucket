@@ -112,8 +112,8 @@
                 <MudStack Class="pt-3">
                     @if (Extension is not null)
                     {
-                        ExternalSystemCapability[] capabilities = [ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases, ExternalSystemCapability.GetLabels, ExternalSystemCapability.GetRequirements, ExternalSystemCapability.ReadCodeRepository, ExternalSystemCapability.ReadPipelineArtifacts];
-                        string[] labels = ["create-pipeline", "create-issues", "get-issues", "get-milestones", "get-releases", "get-labels", "get-requirements", "read-repository", "read-artifacts"];
+                        ExternalSystemCapability[] capabilities = [ExternalSystemCapability.McpServerProvider, ExternalSystemCapability.CreatePipeline, ExternalSystemCapability.CreateIssues, ExternalSystemCapability.GetIssues, ExternalSystemCapability.GetMilestones, ExternalSystemCapability.GetReleases, ExternalSystemCapability.GetLabels, ExternalSystemCapability.GetRequirements, ExternalSystemCapability.ReadCodeRepository, ExternalSystemCapability.ReadPipelineArtifacts];
+                        string[] labels = ["mcp-server", "create-pipeline", "create-issues", "get-issues", "get-milestones", "get-releases", "get-labels", "get-requirements", "read-repository", "read-artifacts"];
 
                         @for (int i = 0; i < Math.Min(capabilities.Length, labels.Length); i++)
                         {

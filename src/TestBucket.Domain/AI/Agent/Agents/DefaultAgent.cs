@@ -5,10 +5,11 @@ using Microsoft.SemanticKernel.Agents;
 namespace TestBucket.Domain.AI.Agent.Agents;
 internal class DefaultAgent
 {
-    public static ChatCompletionAgent Create(Kernel kernel)
+    public static ChatCompletionAgent Create(Kernel kernel, Microsoft.Extensions.Logging.ILoggerFactory loggerFactory)
     {
         return new ChatCompletionAgent()
         {
+            LoggerFactory = loggerFactory,
             Description = "Helpful assistant",
             Instructions =
             """
@@ -17,7 +18,7 @@ internal class DefaultAgent
 
             You never answer with code unless explicitly asked to do so.
             """,
-            Name = "QA Support Agent",
+            Name = "Default Agent",
             Kernel = kernel,
             Arguments = new KernelArguments(new PromptExecutionSettings
             {

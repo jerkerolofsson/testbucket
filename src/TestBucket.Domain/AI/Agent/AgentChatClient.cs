@@ -1,18 +1,14 @@
 ﻿using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Channels;
-
-using Azure;
 
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
-using Microsoft.SemanticKernel.Agents.Magentic;
 using Microsoft.SemanticKernel.Agents.Orchestration.GroupChat;
 using Microsoft.SemanticKernel.Agents.Runtime.InProcess;
 using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.Ollama;
 
 using TestBucket.Domain.AI.Agent.Agents;
 using TestBucket.Domain.AI.Agent.Models;
@@ -189,6 +185,7 @@ public class AgentChatClient
                 history.Add(reference.ToSemanticKernelChatMessage());
             }
         }
+        context.Messages.Add(userMessage);
 
         // Create kernel
         var kernel = await _semanticKernelFactory.CreateKernelAsync(principal);
@@ -204,23 +201,45 @@ public class AgentChatClient
         }
 
         agentId ??= "default";
+
+        var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
         List<ChatCompletionAgent> members = [];
         switch(agentId)
         {
             case "test-designer":
-                members.Add(TestCaseDesignerAgent.Create(kernel));
-                members.Add(TestReviewerAgent.Create(kernel));
-                members.Add(TestCaseDesignerTerminatorAgent.Create(kernel));
+                members.Add(TestCaseDesignerAgent.Create(kernel, loggerFactory));
+                members.Add(TestReviewerAgent.Create(kernel, loggerFactory));
+                members.Add(TestCaseDesignerTerminatorAgent.Create(kernel, loggerFactory));
+                break;
+
+            case "requirement-designer":
+                members.Add(RequirementAnalystAgent.Create(kernel, loggerFactory));
+
+                // We treat unit tests and code as a source of truth.
+                members.Add(TestCoverageAnalystAgent.Create(kernel, loggerFactory));
+                members.Add(RequirementDesignerAgent.Create(kernel, loggerFactory));
+                members.Add(RequirementReviewerAgent.Create(kernel, loggerFactory));
+                break;
+
+            case "requirement-creator":
+
+                // Collect information
+                members.Add(RequirementAnalystAgent.Create(kernel, loggerFactory));
+                members.Add(TestCoverageAnalystAgent.Create(kernel, loggerFactory));
+
+                members.Add(RequirementDesignerAgent.Create(kernel, loggerFactory));
+                members.Add(RequirementReviewerAgent.Create(kernel, loggerFactory));
+                members.Add(RequirementCreatorAgent.Create(kernel, loggerFactory));
                 break;
 
             case "test-creator":
-                members.Add(TestCaseDesignerAgent.Create(kernel));
-                members.Add(TestReviewerAgent.Create(kernel));
-                members.Add(TestCreatorAgent.Create(kernel));
+                members.Add(TestCaseDesignerAgent.Create(kernel, loggerFactory));
+                members.Add(TestReviewerAgent.Create(kernel, loggerFactory));
+                members.Add(TestCreatorAgent.Create(kernel, loggerFactory));
                 break;
 
             default:
-                members.Add(DefaultAgent.Create(kernel));
+                members.Add(DefaultAgent.Create(kernel, loggerFactory));
                 break;
         }
 
@@ -232,6 +251,9 @@ public class AgentChatClient
 
         var orchestration = new GroupChatOrchestrationWithChatHistory(history, chatManager, members.ToArray())
         {
+            Name = $"GroupChatOrchestrationWithChatHistory ({agentId})",
+            Description = $"Group chat orchestration for agent {agentId}",
+            LoggerFactory = loggerFactory,
             ResponseCallback = (response) =>
             {
                 history.Add(response);
@@ -243,21 +265,18 @@ public class AgentChatClient
             }
         };
 
-        InProcessRuntime runtime = new InProcessRuntime();
+        await using InProcessRuntime runtime = new InProcessRuntime();
         await runtime.StartAsync();
-
-        //context.Messages.Add(userMessage);
 
         try
         {
-            //await foreach (var message in agent.InvokeStreamingAsync(chat, thread:null, options, cancellationToken: cancellationToken))
             var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             var task = Task.Run(async () =>
             {
                 var result = await orchestration.InvokeAsync(userMessage.Text, runtime, cancellationToken: cts.Token);
                 try
                 {
-                    string output = await result.GetValueAsync(TimeSpan.FromSeconds(300));
+                    string output = await result.GetValueAsync(TimeSpan.FromSeconds(300), cts.Token);
                     await runtime.RunUntilIdleAsync();
                 }
                 catch (Exception) { }
@@ -266,8 +285,8 @@ public class AgentChatClient
                     cts.Cancel();
                 }
             });
-            
 
+            // Read from channel and yield restult in order to update the UI
             while(!cts.IsCancellationRequested)
             {
                 ChatResponseUpdate? update = null;
@@ -275,9 +294,6 @@ public class AgentChatClient
                 {
                     var response = await channel.Reader.ReadAsync(cts.Token);
                     update = response.ToChatResponseUpdate();
-
-                    //var chatMessage = response.ToChatMessage();
-                    //update = new ChatResponseUpdate(chatMessage.Role, chatMessage.Contents);
                 }
                 catch (OperationCanceledException) { }
 
@@ -293,11 +309,14 @@ public class AgentChatClient
             {
                 foreach (var message in history)
                 {
-                    context.Messages.Add(message.ToChatMessage());
+                    // We add user messages first so the UI is updated directly after the user asks
+                    // the question
+                    if (message.Role != AuthorRole.User)
+                    {
+                        context.Messages.Add(message.ToChatMessage());
+                    }
                 }
             }
-            //var response = ChatResponseExtensions.ToChatResponse(updates);
-            //context.Messages.AddRange(response.Messages);
         }
     }
 

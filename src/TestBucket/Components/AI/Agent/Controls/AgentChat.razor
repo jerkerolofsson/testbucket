@@ -21,7 +21,7 @@
         }
     </MudStack>
 
-    @if(context.Messages.Count == 0)
+    @if (context.Messages.Count == 0 && !_isWorking)
     {
         <div class="tb-agent-chat-suggestions">
             @foreach (var suggestion in SuggestionProvider.GetSuggestions(context))
@@ -35,7 +35,7 @@
         <div class="tb-agent-chat-conversation">
             @foreach(var message in context.Messages)
             {
-                if(message is HiddenChatMessage hidden)
+                if(message is HiddenChatMessage hidden)// || message.Role == ChatRole.System)
                 {
                     // No action
                 }
@@ -92,6 +92,7 @@
                     if (!string.IsNullOrEmpty(message.Text))
                     {
                         <div class="chat @message.Role">
+                            <div class="author">@message.AuthorName</div>
                             <MarkdownEditor ShowToolbar="false" Preview Value="@message.Text" />
                         </div>
                     }

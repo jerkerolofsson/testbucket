@@ -5,10 +5,11 @@ using Microsoft.SemanticKernel.Agents;
 namespace TestBucket.Domain.AI.Agent.Agents;
 internal class TestReviewerAgent
 {
-    public static ChatCompletionAgent Create(Kernel kernel)
+    public static ChatCompletionAgent Create(Kernel kernel, Microsoft.Extensions.Logging.ILoggerFactory loggerFactory)
     {
         return new ChatCompletionAgent()
         {
+            LoggerFactory = loggerFactory,
             Description = "A test reviewer",
             Instructions =
             """

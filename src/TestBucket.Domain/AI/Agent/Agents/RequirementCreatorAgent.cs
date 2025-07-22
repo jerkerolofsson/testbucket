@@ -1,26 +1,30 @@
-﻿
-using Microsoft.SemanticKernel;
+﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 
 namespace TestBucket.Domain.AI.Agent.Agents;
-internal class TestCaseDesignerTerminatorAgent
+internal class RequirementCreatorAgent
 {
     public static ChatCompletionAgent Create(Kernel kernel, Microsoft.Extensions.Logging.ILoggerFactory loggerFactory)
     {
         return new ChatCompletionAgent()
         {
             LoggerFactory = loggerFactory,
-            Description = "A test idea guard",
+            Description = "A requirement creator",
             Instructions =
             """
-            If test ideas are created and they are approved: TERMINATE.
+            You are an assistant to a requirement designer.
+
+            Your job is to take approved requirements and add them using the add_requirement tool.
+            If the requirements are not approved, you will not add them or call any tool. Provide feedback that the requirements were not approved yet.
+
+            If requirements are added, TERMINATE.
             """,
-            Name = "Test Idea Guard",
+            Name = "Requirement Creator",
             Kernel = kernel,
             Arguments = new KernelArguments(new PromptExecutionSettings
             {
                 FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
-            })
+            }),
         };
     }
 }

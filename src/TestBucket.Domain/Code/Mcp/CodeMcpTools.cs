@@ -38,8 +38,8 @@ public class CodeMcpTools : AuthenticatedTool
         public required string Name { get; set; }
         public required string Description { get; set; }
         public IReadOnlyList<RequirementDto> RelatedRequirements { get; set; } = [];
+        public List<string> SourceCodeGlobPaths { get; set; } = [];
     }
-
 
     [McpServerTool(Name = "search-components"), Description("""
         Searches for SW component, returning description and information about the component and related requirements.
@@ -74,6 +74,7 @@ public class CodeMcpTools : AuthenticatedTool
                     Id = x.Id,
                     Description = x.Description ?? "",
                     Name = x.Name,
+                    SourceCodeGlobPaths = x.GlobPatterns,
                 }).ToList();
 
                 // Find requirements related to this feature
@@ -99,7 +100,7 @@ public class CodeMcpTools : AuthenticatedTool
         return [];
     }
 
-    [McpServerTool(Name = "search-features"), Description("""
+    [McpServerTool(Name = "search_features"), Description("""
         Searches for a feature, returning description and information about the feature and related requirements.
         """)]
     public async Task<IReadOnlyList<FeatureMcpDto>> SearchFeaturesAsync(string searchText, int offset = 0, int count = 1)
@@ -131,7 +132,8 @@ public class CodeMcpTools : AuthenticatedTool
                 { 
                     Id = x.Id,
                     Description = x.Description ?? "",
-                    Name = x.Name, 
+                    Name = x.Name,
+                    SourceCodeGlobPaths = x.GlobPatterns,
                 }).ToList();
 
                 // Find requirements related to this feature

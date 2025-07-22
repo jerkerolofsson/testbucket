@@ -752,8 +752,13 @@ namespace TestBucket.Domain.Requirements
         {
             principal.ThrowIfNoPermission(PermissionEntityType.RequirementSpecification, PermissionLevel.Read);
 
-            var filters = Specifications.RequirementSpecificationBuilder.From(query);
+            var filters = RequirementSpecificationBuilder.From(query);
             filters = [.. filters, new FilterByTenant<RequirementSpecification>(principal.GetTenantIdOrThrow())];
+
+            if(!string.IsNullOrEmpty(query.Text))
+            {
+                filters = [.. filters, new FilterRequirementSpecificationByText(query.Text)];
+            }
 
             return await _repository.SearchRequirementSpecificationsAsync(filters, query.Offset, query.Count);
         }

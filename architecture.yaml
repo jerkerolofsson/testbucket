@@ -512,6 +512,15 @@ layers:
     paths:
     - src/runner/**/*
 features:
+  AI Runner:
+    display: 
+    description: Test execution by AI using MCP tools for integration with the product under test.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\AI\Runner\**\*.*
+    - src\TestBucket.Domain\AI\Agent\**\*.*
+    - src\TestBucket.Domain\AI\Embeddings\**\*.*
   Architecture 1.0:
     display: 
     description: Handling of product architecture, including systems, layers, components and product features
@@ -534,11 +543,14 @@ features:
     - src\TestBucket\Components\Agent\**\*.*
   Code Coverage:
     display: 
-    description: >-
-      Parsing of code coverage files
+    description: >
+      - Code coverage files can be uploaded to test runs
 
+      - Users can view code coverage reports, inspect coverage percentages, and drill down into packages, classes, and methods.
 
-      Visualization of code coverage
+      - The UI visually indicates coverage levels and allows navigation through the code structure.
+
+      - Coverage format detection supports multiple report formats (e.g., Cobertura).
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
@@ -546,7 +558,9 @@ features:
     - src\TestBucket\Components\Code\Controls\**\*CodeCoverage*
   Field Inheritance:
     display: 
-    description: >-
+    description: >
+      ## Summary
+
       Sub-entities fields are populated from parent if not set by a user. 
 
 
@@ -556,6 +570,15 @@ features:
 
 
       etc
+
+
+      ## Behavior
+
+      - When a child entity is added, unless the value is set on the child, the value is retreived from the closest ancestor.
+
+      - If a user manually changes a value on a child, it will not be updated through inheritance.
+
+      - If a user has not changed a value and the value of a parent is changed, the change will cascade to descendant entities.
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
@@ -563,7 +586,7 @@ features:
   Fields:
     display: 
     description: >-
-      Fields allow the user to assign metadata to tests, requirementd and other entities, which is usedful to link, group and analyze entities
+      Fields allow the user to assign metadata to tests, requirements and other entities, which is usedful to link, group and analyze entities
 
 
       - Custom fields
@@ -639,8 +662,8 @@ features:
   OAuth:
     display: 
     description: OAuth authentication framework
-    dev_lead: 
-    test_lead: 
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\Identity\OAuth\**\*.*
   Requirements 1.0:
@@ -1274,8 +1297,16 @@ features:
     - src\TestBucket.Data\Identity\UserPreferenceRepository.cs
   Themes:
     display: 
-    description: >
+    description: >-
       User interface styling using themes.
+
+
+      Themes can be changed in the settings UI in the Appearance section.
+
+      Changing theme is persistant across browser settings and the choice is saved in User Preferences in the database.
+
+
+      Some accessibility settings may override any theme settings, for example "Increased contrast", "Increased font size".
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:

@@ -5,15 +5,21 @@ using Microsoft.SemanticKernel.Agents;
 namespace TestBucket.Domain.AI.Agent.Agents;
 internal class TestCreatorAgent
 {
-    public static ChatCompletionAgent Create(Kernel kernel)
+    public static ChatCompletionAgent Create(Kernel kernel, Microsoft.Extensions.Logging.ILoggerFactory loggerFactory)
     {
         return new ChatCompletionAgent()
         {
+            LoggerFactory = loggerFactory,
             Description = "A test creator",
             Instructions =
             """
-            You are a test creator.
-            Your job is to take approved test cases and add them using the add-test-case tool.
+            You are an assistant to a test engineer.
+
+            If you add tests, 
+
+            Your job is to take approved test cases and add them using the add_test_case tool.
+            If the tests are not approved, you will not add them or call any tool. Provide feedback that the tests were not approved yet.
+
             If tests are added, TERMINATE.
             """,
             Name = "Test Creator",
@@ -21,7 +27,7 @@ internal class TestCreatorAgent
             Arguments = new KernelArguments(new PromptExecutionSettings
             {
                 FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
-            })
+            }),
         };
     }
 }

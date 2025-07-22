@@ -76,7 +76,8 @@ public partial class AddMcpServerDialog
             var registration = new McpServerRegistration
             {
                 Configuration = configuration,
-                TestProjectId = Project.Id
+                TestProjectId = Project.Id,
+                Enabled = true
             };
             return registration;
         }

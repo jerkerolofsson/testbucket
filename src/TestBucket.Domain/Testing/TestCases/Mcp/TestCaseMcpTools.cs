@@ -4,9 +4,11 @@ using ModelContextProtocol.Server;
 
 using TestBucket.Domain.AI.Mcp.Tools;
 using TestBucket.Domain.ApiKeys;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Testing.Mapping;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestCases.Search;
 using TestBucket.Domain.Testing.TestSuites;
 
 namespace TestBucket.Domain.Testing.TestCases.Mcp;
@@ -19,15 +21,20 @@ public class TestCaseMcpTools : AuthenticatedTool
     private readonly ITestCaseManager _testCaseManager;
     private readonly ITestSuiteManager _testSuiteManager;
     private readonly IProjectManager _projectManager;
-
-    public TestCaseMcpTools(ITestCaseManager testCaseManager, IApiKeyAuthenticator apiKeyAuthenticator, ITestSuiteManager testSuiteManager, IProjectManager projectManager) : base(apiKeyAuthenticator)
+    private readonly IFieldDefinitionManager _fieldDefinitionManager;
+    public TestCaseMcpTools(ITestCaseManager testCaseManager, IApiKeyAuthenticator apiKeyAuthenticator, ITestSuiteManager testSuiteManager, IProjectManager projectManager, IFieldDefinitionManager fieldDefinitionManager) : base(apiKeyAuthenticator)
     {
         _testCaseManager = testCaseManager;
         _testSuiteManager = testSuiteManager;
         _projectManager = projectManager;
+        _fieldDefinitionManager = fieldDefinitionManager;
     }
 
-    [McpServerTool(Name = "search-test-cases"), Description("Searches for test cases")]
+    [McpServerTool(Name = "search_test_cases"), Description("""
+        Searches for test cases.
+        - If you want to search for a feature, use the query: "feature:"FEATURE_NAME" where FEATURE_NAME is the name of the feature you want to search for. FEATURE_NAME must be in quotes!
+        - If you want to search for a component, use the query: "component:"COMPONENT_NAME" where COMPONENT_NAME is the name of the component you want to search for. COMPONENT_NAME must be in quotes!
+        """)]
     public async Task<PagedResult<TestCaseDto>> SearchForTestCases(string query, int offset = 0, int count = 10)
     {
         var isAuthenticated = await IsAuthenticatedAsync();
@@ -44,15 +51,28 @@ public class TestCaseMcpTools : AuthenticatedTool
                 count = 10;
             }
 
-            var searchQuery = new SearchTestQuery
-            {
-                Offset = offset,
-                Count = count,
-                Text = query,
-                ProjectId = projectId.Value
-            };
+            var fields = await _fieldDefinitionManager.GetDefinitionsAsync(_principal, projectId.Value, Contracts.Fields.FieldTarget.TestCase);
+            var searchQuery = SearchTestCaseQueryParser.Parse(query, fields);
+            searchQuery.Count = count;
+            searchQuery.ProjectId = projectId.Value;
+            searchQuery.Offset = offset;
 
-            var items = await _testCaseManager.SearchTestCasesAsync(_principal, searchQuery);
+            var items = await _testCaseManager.SemanticSearchTestCasesAsync(_principal, searchQuery);
+
+            if(items.Items.Length == 0)
+            {
+                // Sometimes the AI is not putting quotes around features
+                if(query.StartsWith("feature:") && !query.Contains('\"'))
+                {
+                    var quotedQuery = query.Replace(":", ":\"") + "\"";
+                    searchQuery = SearchTestCaseQueryParser.Parse(quotedQuery, fields);
+                    searchQuery.Count = count;
+                    searchQuery.ProjectId = projectId.Value;
+                    searchQuery.Offset = offset;
+                    items = await _testCaseManager.SemanticSearchTestCasesAsync(_principal, searchQuery);
+                }
+            }
+
             var tests = new List<TestCaseDto>();
 
             tests.AddRange(items.Items.Select(x => x.ToDto()));
@@ -93,9 +113,9 @@ public class TestCaseMcpTools : AuthenticatedTool
     }
     */
 
-    [McpServerTool(Name = "add-test-case"), 
+    [McpServerTool(Name = "add_test_case"), 
         Description("Adds a single test case with a name, preconditions, description, steps, expected result to an existing test suite. Call this function many times to add multiple tests.")]
-    public async Task AddTestCase(
+    public async Task<string> AddTestCase(
         
         [Description("A descriptive name for the test case summarizing what it does")] string testCaseName, 
         [Description("A brief description of the test case")] string description, 
@@ -138,6 +158,12 @@ public class TestCaseMcpTools : AuthenticatedTool
                 """
             };
             await _testCaseManager.AddTestCaseAsync(_principal, testCase);
+
+            return $"A test case was added with ID: {testCase.Id}";
+        }
+        else 
+        {
+            return "Failed to add the test case";
         }
     }
 

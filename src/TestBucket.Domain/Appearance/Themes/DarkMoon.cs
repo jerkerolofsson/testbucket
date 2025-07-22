@@ -7,7 +7,7 @@ internal class DarkMoon : DefaultTheme
 
     public DarkMoon()
     {
-        DarkScheme.Base.Text = "#ecf2f8";
+        DarkScheme.Base.Text = "#e4ecf0";
         DarkScheme.Base.Background = "#0d1117";
         DarkScheme.Base.Surface = "#161b22";
         DarkScheme.Base.DialogSurface = "#060b12";

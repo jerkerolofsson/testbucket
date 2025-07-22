@@ -1,14 +1,16 @@
 ﻿
+using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 
 namespace TestBucket.Domain.AI.Agent.Agents;
 internal class TestCaseDesignerAgent
 {
-    public static ChatCompletionAgent Create(Kernel kernel)
+    public static ChatCompletionAgent Create(Kernel kernel, ILoggerFactory loggerFactory)
     {
         return new ChatCompletionAgent()
         {
+            LoggerFactory = loggerFactory,
             Description = "A test designer",
             Instructions =
             """
@@ -16,7 +18,7 @@ internal class TestCaseDesignerAgent
             Your job is to spawn ideas how to test a feature or requirement. 
 
             You have tools available to help you collect more information about requirements and features that describe what should be tested.
-            Call the search-features to get a description about a feature and related requirements.
+            Call the search_features to get a description about a feature and related requirements.
 
             You have tools available to collect test hueristics which are guiding ideas for testing. 
             You should select relevant test heuristics and combine these with functions of the product under test.

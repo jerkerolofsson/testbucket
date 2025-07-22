@@ -12,9 +12,6 @@ public class SuggestionProvider
 
     public static IReadOnlyList<Suggestion> GetSuggestions(AgentChatContext context)
     {
-        string suggestTests = $"get-heuristics. Consider different test heuristics and the project and use a relevant heuristic to come up with some test ideas. Format the test case as markdown";
-        string addTests = $"get-heuristics. Consider different test heuristics and the project and use a relevant heuristic to come up with some test ideas. For each test idea add-test-case with the step parameter as a string.";
-
         List<Suggestion> suggestions = [];
         foreach(var reference in context.References)
         {
@@ -31,7 +28,7 @@ public class SuggestionProvider
                 }
                 else
                 {
-                    suggestions.Add(new Suggestion($"Give me some test ideas for '{reference.Name}'", suggestTests)
+                    suggestions.Add(new Suggestion($"Give me some test ideas for '{reference.Name}'", $"Give me some test ideas for '{reference.Name}'")
                     {
                         AgentId = "test-designer"
                     });
@@ -43,15 +40,34 @@ public class SuggestionProvider
                     {
                         AgentId = "test-creator"
                     });
-                        //$"""
-                        //1. Call the search-features tool with \"{reference.Name}\" as argument to collect related requirements.
-                        //2. Call the get-heuristics tool to collect test heuristics for general test ideas. Consider them in combination with the feature description and requirements.
-                        //3. Based on the feature description and for each requirement and relevant hueristic, think about how to test the feature and describe them as test cases in markdown format. Call the add-test-case tool for each test.
-                        //"""););
+
+                    //suggestions.Add(new Suggestion($"Add requirements for the feature: '{reference.Name}'", $"""
+                    //    # Scope
+                    //    - Feature: '{reference.Name}'
+
+                    //    # Steps
+                    //    1. Collect information about current test cases for the feature
+                    //    2. Collect existing requirements for the feature
+                    //    3. Design new requirements for the feature
+                    //    4. Review the requirements
+                    //    5. Add the requirements
+                    //    """)
+                    //{
+                    //    AgentId = "requirement-creator"
+                    //});
+                    suggestions.Add(new Suggestion($"Add requirements for the feature: '{reference.Name}'", $"""
+                        Add requirements for the feature: '{reference.Name}'
+                        """)
+                    {
+                        AgentId = "requirement-creator"
+                    });
                 }
                 else
                 {
-                    suggestions.Add(new Suggestion($"Add some tests for '{reference.Name}'", addTests));
+                    suggestions.Add(new Suggestion($"Add tests for '{reference.Name}'", $"Add tests for '{reference.Name}'")
+                    {
+                        AgentId = "test-creator"
+                    });
                 }
             }
 
@@ -61,7 +77,6 @@ public class SuggestionProvider
                 {
                     Icon = TbIcons.BoldDuoTone.AI
                 });
-                    
 
                 suggestions.Add(new Suggestion($"Suggest some tests similar to '{reference.Name}'", $"Suggest some tests similar to '{reference.Name}'. Use get-heuristics to get ideas."));
                 suggestions.Add(new Suggestion($"Review this test case: {reference.Name}", $"Review this test case: {reference.Name}. Please provide feedback on the test coverage and if there are any problems with this test case."));
@@ -78,9 +93,13 @@ public class SuggestionProvider
 
             if (reference.EntityTypeName == "Feature")
             {
-                suggestions.Add(new Suggestion("Summarize this issue", $"""
-                    1. Search for the feature {reference.Name} using the search-features tool.
+                suggestions.Add(new Suggestion("Summarize this feature", $"""
+                    1. Search for the feature {reference.Name} using the search_features tool.
                     2. Summarize the feature: {reference.Name} considering both the feature description and the related requirements.
+                    """));
+
+                suggestions.Add(new Suggestion("Show me test coverage for this feature", $"""
+                    Show me test coverage for the "{reference.Name}" feature
                     """));
             }
         }

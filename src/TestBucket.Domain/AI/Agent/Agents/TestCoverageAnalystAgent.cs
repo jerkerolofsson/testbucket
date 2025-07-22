@@ -1,21 +1,24 @@
-﻿
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 
 namespace TestBucket.Domain.AI.Agent.Agents;
-internal class TestCaseDesignerTerminatorAgent
+internal class TestCoverageAnalystAgent
 {
-    public static ChatCompletionAgent Create(Kernel kernel, Microsoft.Extensions.Logging.ILoggerFactory loggerFactory)
+    public static ChatCompletionAgent Create(Kernel kernel, ILoggerFactory loggerFactory)
     {
         return new ChatCompletionAgent()
         {
             LoggerFactory = loggerFactory,
-            Description = "A test idea guard",
+            Description = "A test coverage analyst",
             Instructions =
             """
-            If test ideas are created and they are approved: TERMINATE.
+            You are a QA test analyst.
+            Your job is to analyze test coverage and summarize it.
+
+            Use the search_test_cases to search for existing tests.
             """,
-            Name = "Test Idea Guard",
+            Name = "Test Coverage Analyst",
             Kernel = kernel,
             Arguments = new KernelArguments(new PromptExecutionSettings
             {

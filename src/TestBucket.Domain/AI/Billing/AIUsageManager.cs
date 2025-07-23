@@ -9,9 +9,9 @@ namespace TestBucket.Domain.AI.Billing;
 /// <summary>
 /// Keeps track of billing for AI usage.
 /// </summary>
-internal class AIBillingManager
+internal class AIUsageManager
 {
-    public Task RecordCostAsync(ClaimsPrincipal principal, string provider, string model, int tokenCount)
+    public Task AppendCostAsync(ChatUsage usage)
     {
         return Task.CompletedTask;
     }

@@ -17,6 +17,9 @@ internal class TestCoverageAnalystAgent
 
             Your goal is to find out what tests exists for a the scope defined by the user.
             Use the search_test_cases tool to search for existing tests.
+            
+            # Rules
+            - Never ask for user input
             """,
             Name = "Test-Coverage-Analyst",
             Kernel = kernel,

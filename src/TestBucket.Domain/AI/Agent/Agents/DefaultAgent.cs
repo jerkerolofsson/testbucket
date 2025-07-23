@@ -18,7 +18,7 @@ internal class DefaultAgent
 
             You never answer with code unless explicitly asked to do so.
             """,
-            Name = "Default Agent",
+            Name = "Default-Agent",
             Kernel = kernel,
             Arguments = new KernelArguments(new PromptExecutionSettings
             {

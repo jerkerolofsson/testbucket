@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
+using Microsoft.SemanticKernel.Agents.Orchestration;
 using Microsoft.SemanticKernel.Agents.Orchestration.GroupChat;
 using Microsoft.SemanticKernel.Agents.Orchestration.Sequential;
 using Microsoft.SemanticKernel.Agents.Runtime.InProcess;
@@ -14,6 +15,7 @@ using Microsoft.SemanticKernel.ChatCompletion;
 
 using TestBucket.Domain.AI.Agent.Agents;
 using TestBucket.Domain.AI.Agent.Models;
+using TestBucket.Domain.AI.Agent.Orchestration;
 using TestBucket.Domain.AI.Mcp.Services;
 using TestBucket.Domain.AI.Tools;
 using TestBucket.Domain.Identity;
@@ -73,48 +75,6 @@ public class AgentChatClient
         return toolCollection;
     }
 
-    /// <summary>
-    /// Pre-processing is used to inject extra data into the context based on the user prompt
-    /// </summary>
-    /// <param name="principal"></param>
-    /// <param name="context"></param>
-    /// <param name="userMessage"></param>
-    /// <param name="contextMessages"></param>
-    /// <param name="client"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    public async IAsyncEnumerable<ChatResponseUpdate> PreProcessAsync(ClaimsPrincipal principal,
-        AgentChatContext context,
-        ChatMessage userMessage,
-        List<ChatMessage> contextMessages, 
-        IChatClient client,
-        [EnumeratorCancellation] CancellationToken cancellationToken)
-    {
-        List<PipelineAction> actions = [];
-        if(userMessage.Text.Contains("milestone", StringComparison.InvariantCulture))
-        {
-            actions.Add(new PipelineAction { Prompt = "Use the 'list-milestones' tool to collect information about milestones." });
-        }
-
-        foreach(var action in actions)
-        {
-            if(cancellationToken.IsCancellationRequested)
-            {
-                break;
-            }
-
-            // The pipeline action update is just used to update the UI. It has no relevance to the 
-            var notifyUpdate = new PipelineActionUpdate() { ActionName = "Collecting information about milestones.." };
-            yield return notifyUpdate;
-
-            var message = new HiddenChatMessage(ChatRole.User, action.Prompt);
-            await foreach (var update in CallModelAsync(principal, context, message, contextMessages, client, cancellationToken))
-            {
-                yield return update;
-            }
-
-        }
-    }
     internal async ValueTask<IReadOnlyList<ChatMessage>> GetReferencesAsChatMessagesAsync(
         ClaimsPrincipal principal, 
         AgentChatContext context,
@@ -144,15 +104,6 @@ public class AgentChatClient
                 }
 
                 IList<AIContent> content = [];
-                //var xml = $"""
-                //    <reference>
-                //        <name>{reference.Name}</name>
-                //        <id>{reference.Id}</url>
-                //        <type>{reference.EntityTypeName ?? ""}</type>
-                //        <description>{text}</description>
-                //    </reference>
-                //    """;
-                //content.Add(new Microsoft.Extensions.AI.TextContent(xml));
                 var prompt = $"""
                     # {reference.Name}
                     - ID: {reference.Id}
@@ -167,197 +118,67 @@ public class AgentChatClient
         return messages;
     }
 
-    private ChatCompletionAgent CreateChatCompletionAgent(string name, string instructions, string description, Kernel kernel)
-    {
-        // This method is not used in the current implementation
-        // It can be used to create a custom chat completion agent
-        // var agent = new ChatCompletionAgent(name, instructions, description);
-        // return agent;
-        return new ChatCompletionAgent()
-        {
-            Name = name,
-            Instructions = instructions,
-            Description = description,
-            Kernel = kernel,
-            LoggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>(),
-            Arguments = new KernelArguments(new PromptExecutionSettings
-            {
-                FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
-            })
-        };
-    }
-
     public async IAsyncEnumerable<ChatResponseUpdate> InvokeAgentAsync(
-        string? agentId,
+        string? orchestrationStrategy,
         ClaimsPrincipal principal, 
         TestProject? project,
         AgentChatContext context,
         ChatMessage userMessage,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        if(orchestrationStrategy is null || orchestrationStrategy == OrchestrationStrategies.Default)
+        {
+            await foreach(var update in AskAsync(principal, project, context,userMessage, cancellationToken))
+            {
+                yield return update;
+            }
+            yield break;
+        }
+
         ChatHistory newMessages = []; // This only contain the new messages
         ChatHistory groupChatHistory = [];
-//        var reducer = new ChatHistoryTruncationReducer(targetCount: 3);
 
         // Enrich context with references
-        if (context.Messages.Count == 0)
-        {
-            var references = await GetReferencesAsChatMessagesAsync(principal, context, cancellationToken);
-            foreach (var reference in references)
-            {
-                groupChatHistory.Add(reference.ToSemanticKernelChatMessage());
-            }
-        }
-        else
-        {
-            foreach(var historyMessage in context.Messages)
-            {
-                groupChatHistory.Add(historyMessage.ToSemanticKernelChatMessage());
-            }
-        }
-        context.Messages.Add(userMessage);
+        await SetupReferencesInContextAsync(principal, context, userMessage, groupChatHistory, cancellationToken);
 
         // Create kernel
         var kernel = await _semanticKernelFactory.CreateKernelAsync(principal);
 
         // Add tools as plugins to semantic kernel
-        ToolCollection tools = context.Tools ?? await GetToolsAsync(principal, context, cancellationToken);
-        context.Tools = tools;
-        foreach (var toolName in tools.ToolNames)
+        await PrepareToolsAsync(principal, context, kernel, cancellationToken);
+
+        OrchestrationResponseCallback responseCallback = (response) =>
         {
-            var kernelTools = tools.GetEnabledFunctionsByToolName(toolName).Select(x => x.AsKernelFunction());
-            var toolNameForSemanticKernel = SemanticKernelToolNaming.GetSemanticKernelPluginName(toolName);
-            kernel.Plugins.AddFromFunctions(toolNameForSemanticKernel, kernelTools);
-        }
+            _logger.LogInformation("Received response from agent {AuthorName}", response.AuthorName);
+            groupChatHistory.Add(response);
 
-        agentId ??= "default";
+            // Save response into history, we use this to build the context
+            newMessages.Add(response);
 
-        var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
-        List<ChatCompletionAgent> members = [];
-        switch(agentId)
-        {
-            case "test-designer":
-                // Analyze inputs
-                members.Add(RequirementAnalystAgent.Create(kernel, loggerFactory));
-                //members.Add(TestCoverageAnalystAgent.Create(kernel, loggerFactory));
+            // Log the message for usage/billing information
 
-                // Create test
-                members.Add(TestCaseDesignerAgent.Create(kernel, loggerFactory));
 
-                // Review
-                members.Add(TestReviewerAgent.Create(kernel, loggerFactory));
-
-                // Terminate
-                //members.Add(TestCaseDesignerTerminatorAgent.Create(kernel, loggerFactory));
-                break;
-
-            case "requirement-designer":
-                // Analyze inputs
-                members.Add(RequirementAnalystAgent.Create(kernel, loggerFactory));
-                members.Add(TestCoverageAnalystAgent.Create(kernel, loggerFactory));
-
-                // Create
-                members.Add(RequirementDesignerAgent.Create(kernel, loggerFactory));
-
-                // Review
-                members.Add(RequirementReviewerAgent.Create(kernel, loggerFactory));
-                break;
-
-            case "requirement-creator":
-                // Analyze inputs
-                members.Add(RequirementAnalystAgent.Create(kernel, loggerFactory));
-                members.Add(TestCoverageAnalystAgent.Create(kernel, loggerFactory));
-
-                // Design/Draft
-                members.Add(RequirementDesignerAgent.Create(kernel, loggerFactory));
-
-                // Review
-                members.Add(RequirementReviewerAgent.Create(kernel, loggerFactory));
-
-                // Add
-                members.Add(RequirementCreatorAgent.Create(kernel, loggerFactory));
-                break;
-
-            case "test-creator":
-                // Analyze inputs
-                members.Add(RequirementAnalystAgent.Create(kernel, loggerFactory));
-                members.Add(TestCoverageAnalystAgent.Create(kernel, loggerFactory));
-
-                // Design/Draft
-                members.Add(TestCaseDesignerAgent.Create(kernel, loggerFactory));
-
-                // Review
-                members.Add(TestReviewerAgent.Create(kernel, loggerFactory));
-
-                // Add
-                members.Add(TestCreatorAgent.Create(kernel, loggerFactory));
-                break;
-
-            default:
-                members.Add(DefaultAgent.Create(kernel, loggerFactory));
-                break;
-        }
-
-        //ChatCompletionAgent analystAgent =
-        //   this.CreateChatCompletionAgent(
-        //       name: "Analyst",
-        //       instructions:
-        //       """
-        //        You are a marketing analyst. Given a product description, identify:
-        //        - Key features
-        //        - Target audience
-        //        - Unique selling points
-        //        """,
-        //       description: "A agent that extracts key concepts from a product description.", kernel);
-        //ChatCompletionAgent writerAgent =
-        //    this.CreateChatCompletionAgent(
-        //        name: "copywriter",
-        //        instructions:
-        //        """
-        //        You are a marketing copywriter. Given a block of text describing features, audience, and USPs,
-        //        compose a compelling marketing copy (like a newsletter section) that highlights these points.
-        //        Output should be short (around 150 words), output just the copy as a single text block.
-        //        """,
-        //        description: "An agent that writes a marketing copy based on the extracted concepts.", kernel);
-        //ChatCompletionAgent editorAgent =
-        //    this.CreateChatCompletionAgent(
-        //        name: "editor",
-        //        instructions:
-        //        """
-        //        You are an editor. Given the draft copy, correct grammar, improve clarity, ensure consistent tone,
-        //        give format and make it polished. Output the final improved copy as a single text block.
-        //        """,
-        //        description: "An agent that formats and proofreads the marketing copy.", kernel);
-
-        //members = [analystAgent, writerAgent, editorAgent];
-
-        var channel = Channel.CreateUnbounded<StreamingChatMessageContent>();
-        var chatManager = new LoggingRoundRobinGroupChatManager(_serviceProvider.GetRequiredService<ILogger<LoggingRoundRobinGroupChatManager>>())
-        {
-            MaximumInvocationCount = members.Count*2,
+            return ValueTask.CompletedTask;
         };
 
-        var orchestration = new GroupChatOrchestrationWithChatHistory(groupChatHistory, chatManager, members.ToArray())
-        //var orchestration = new GroupChatOrchestration<string, string>(chatManager, members.ToArray())
-        //var orchestration = new SequentialOrchestration(members.ToArray())
+        // Channel that sends updates from the agents to us
+        var channel = Channel.CreateUnbounded<ChatResponseUpdate>();
+        OrchestrationStreamingCallback streamingCallback = async (StreamingChatMessageContent response, bool isFinal) =>
         {
-            Name = $"GroupChatOrchestrationWithChatHistory ({agentId})",
-            Description = $"Group chat orchestration for agent {agentId}",
-            LoggerFactory = loggerFactory,
-            ResponseCallback = (response) =>
+            try
             {
-                _logger.LogInformation("Received response from agent {AuthorName}", response.AuthorName);
-                newMessages.Add(response);
-                groupChatHistory.Add(response);
-
-                return ValueTask.CompletedTask;
-            },
-            StreamingResponseCallback = async (StreamingChatMessageContent response, bool isFinal) =>
+                await channel.Writer.WriteAsync(response.ToChatResponseUpdate());
+            }
+            catch (Exception ex)
             {
-                await channel.Writer.WriteAsync(response);
+                _logger.LogError(ex, "Error converting response to ChatResponseUpdate");
             }
         };
 
+        orchestrationStrategy ??= OrchestrationStrategies.Default;
+        var orchestration = new OrchestrationBuilder().Build(orchestrationStrategy, kernel, groupChatHistory, _serviceProvider, responseCallback, streamingCallback);
+
+        // We start running..
         await using InProcessRuntime runtime = new InProcessRuntime();
         await runtime.StartAsync();
 
@@ -366,15 +187,16 @@ public class AgentChatClient
             var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             var task = Task.Run(async () =>
             {
-                //string input = "An eco-friendly stainless steel water bottle that keeps drinks cold for 24 hours";
                 var result = await orchestration.InvokeAsync(userMessage.Text, runtime, cancellationToken: cts.Token);
-                //var result = await orchestration.InvokeAsync(input, runtime, cancellationToken: cts.Token);
                 try
                 {
                     string output = await result.GetValueAsync(TimeSpan.FromSeconds(300), cts.Token);
                     await runtime.RunUntilIdleAsync();
                 }
-                catch (Exception) { }
+                catch (Exception ex)
+                {
+                    await channel.Writer.WriteAsync(new ChatResponseUpdate(ChatRole.Assistant, $"An error occured: {ex.Message}"));
+                }
                 finally
                 {
                     cts.Cancel();
@@ -382,18 +204,17 @@ public class AgentChatClient
             });
 
             // Read from channel and yield restult in order to update the UI
-            while(!cts.IsCancellationRequested)
+            while (!cts.IsCancellationRequested)
             {
                 ChatResponseUpdate? update = null;
                 try
                 {
-                    var response = await channel.Reader.ReadAsync(cts.Token);
-                    update = response.ToChatResponseUpdate();
+                    update = await channel.Reader.ReadAsync(cts.Token);
                 }
                 catch (OperationCanceledException) { }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error converting response to ChatResponseUpdate");
+                    _logger.LogError(ex, "Error reading chat updates from channel");
                 }
 
                 if (update is not null)
@@ -417,6 +238,38 @@ public class AgentChatClient
                 }
             }
         }
+    }
+
+    private async Task PrepareToolsAsync(ClaimsPrincipal principal, AgentChatContext context, Kernel kernel, CancellationToken cancellationToken)
+    {
+        ToolCollection tools = context.Tools ?? await GetToolsAsync(principal, context, cancellationToken);
+        context.Tools = tools;
+        foreach (var toolName in tools.ToolNames)
+        {
+            var kernelTools = tools.GetEnabledFunctionsByToolName(toolName).Select(x => x.AsKernelFunction());
+            var toolNameForSemanticKernel = SemanticKernelToolNaming.GetSemanticKernelPluginName(toolName);
+            kernel.Plugins.AddFromFunctions(toolNameForSemanticKernel, kernelTools);
+        }
+    }
+
+    private async Task SetupReferencesInContextAsync(ClaimsPrincipal principal, AgentChatContext context, ChatMessage userMessage, ChatHistory groupChatHistory, CancellationToken cancellationToken)
+    {
+        if (context.Messages.Count == 0)
+        {
+            var references = await GetReferencesAsChatMessagesAsync(principal, context, cancellationToken);
+            foreach (var reference in references)
+            {
+                groupChatHistory.Add(reference.ToSemanticKernelChatMessage());
+            }
+        }
+        else
+        {
+            foreach (var historyMessage in context.Messages)
+            {
+                groupChatHistory.Add(historyMessage.ToSemanticKernelChatMessage());
+            }
+        }
+        context.Messages.Add(userMessage);
     }
 
     public async IAsyncEnumerable<ChatResponseUpdate> AskAsync(ClaimsPrincipal principal, 

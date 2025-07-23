@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.SemanticKernel;
+﻿using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents.Orchestration.Extensions;
 using Microsoft.SemanticKernel.Agents.Orchestration.GroupChat;
 using Microsoft.SemanticKernel.Agents.Runtime;
 using Microsoft.SemanticKernel.ChatCompletion;
 
-namespace TestBucket.Domain.AI.Agent;
-
-#pragma warning disable SKEXP0110
+namespace TestBucket.Domain.AI.Agent.Orchestration;
 
 internal class GroupChatOrchestrationWithChatHistory :  GroupChatOrchestration<string, string>
 {

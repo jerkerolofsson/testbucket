@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Agent;
+using TestBucket.Domain.AI.Agent.Logging;
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.AI.Mcp.Services;
 using TestBucket.Domain.AI.Runner;
@@ -250,6 +251,8 @@ public static class DomainServiceExtensions
 
         // LLM
         services.AddScoped<AgentChatContext>();
+        services.AddScoped<IAgentLogManager, AgentLogManager>();
+        services.AddScoped<IAgentLogManager, AgentLogManager>();
 
         // AI Runner
         services.AddSingleton<AiRunnerJobQueue>();

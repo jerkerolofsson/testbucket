@@ -1,4 +1,5 @@
 ﻿using TestBucket.Domain.AI.Agent.Models;
+using TestBucket.Domain.AI.Agent.Orchestration;
 
 namespace TestBucket.Domain.AI.Agent;
 public class SuggestionProvider
@@ -23,14 +24,14 @@ public class SuggestionProvider
                 {
                     suggestions.Add(new Suggestion($"Give me some test ideas for the feature: '{reference.Name}'", $"Feature: '{reference.Name}'")
                     {
-                        AgentId = "test-designer"
+                        AgentId = OrchestrationStrategies.DraftTests
                     });
                 }
                 else
                 {
                     suggestions.Add(new Suggestion($"Give me some test ideas for '{reference.Name}'", $"Scope: '{reference.Name}'")
                     {
-                        AgentId = "test-designer"
+                        AgentId = OrchestrationStrategies.DraftTests
                     });
                 }
 
@@ -38,19 +39,19 @@ public class SuggestionProvider
                 {
                     suggestions.Add(new Suggestion($"Add tests for the feature: '{reference.Name}'", $"Feature: '{reference.Name}'")
                     {
-                        AgentId = "test-creator"
+                        AgentId = OrchestrationStrategies.AddTests
                     });
 
                     suggestions.Add(new Suggestion($"Add requirements for the feature: '{reference.Name}'", $"Feature: '{reference.Name}'")
                     {
-                        AgentId = "requirement-creator"
+                        AgentId = OrchestrationStrategies.AddRequirements
                     });
                 }
                 else
                 {
                     suggestions.Add(new Suggestion($"Add tests for '{reference.Name}'", $"Scope:'{reference.Name}'")
                     {
-                        AgentId = "test-creator"
+                        AgentId = OrchestrationStrategies.AddTests
                     });
                 }
             }
@@ -59,7 +60,7 @@ public class SuggestionProvider
             {
                 suggestions.Add(new Suggestion($"Run '{reference.Name}' with AI", GetAiRunTestPrompt(reference.Name))
                 {
-                    Icon = TbIcons.BoldDuoTone.AI
+                    AgentId = OrchestrationStrategies.AiRunner
                 });
 
                 suggestions.Add(new Suggestion($"Suggest some tests similar to '{reference.Name}'", $"Suggest some tests similar to '{reference.Name}'. Use get-heuristics to get ideas."));

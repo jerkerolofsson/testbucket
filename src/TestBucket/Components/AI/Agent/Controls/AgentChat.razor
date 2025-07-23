@@ -1,6 +1,7 @@
 ﻿@using TestBucket.Contracts.Localization
 @using TestBucket.Domain.AI.Agent
 @using TestBucket.Domain.AI.Agent.Models
+@using TestBucket.Domain.AI.Agent.Orchestration
 @inject IChatClientFactory chatClientFactory
 @inject IServiceProvider serviceProvider
 @inject AuthenticationStateProvider authenticationStateProvider
@@ -249,7 +250,7 @@
             context.ClearMessages();
         }
 
-        _agentId = "default";
+        _agentId = OrchestrationStrategies.Default;
         _userPrompt = "";
 
         context.ClearReferences();
@@ -285,7 +286,7 @@
         await SendAsync(new ChatMessage(ChatRole.User, message));
     }
 
-    private string _agentId = "default";
+    private string _agentId = OrchestrationStrategies.Default;
 
     private async Task SendAsync(ChatMessage chatMessage)
     {

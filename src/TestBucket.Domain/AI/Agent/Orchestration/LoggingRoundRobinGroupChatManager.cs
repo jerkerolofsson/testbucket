@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel.Agents.Orchestration.GroupChat;
 using Microsoft.SemanticKernel.ChatCompletion;
 
-namespace TestBucket.Domain.AI.Agent;
+namespace TestBucket.Domain.AI.Agent.Orchestration;
 
-#pragma warning disable SKEXP0110
-#pragma warning disable SKEXP0001
 internal class LoggingRoundRobinGroupChatManager : RoundRobinGroupChatManager
 {
     private readonly ILogger _logger;

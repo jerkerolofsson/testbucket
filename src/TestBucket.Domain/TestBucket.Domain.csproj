@@ -6,6 +6,7 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+
     <ItemGroup>
       <Compile Remove="Automation\Pipelines\IntegrationEvents\**" />
       <Compile Remove="Requirements\Relationships\**" />
@@ -17,6 +18,11 @@
       <None Remove="Requirements\Relationships\**" />
       <None Remove="Requirements\Specifications\Specification\**" />
     </ItemGroup>
+    
+    <!-- Disable experimental warnings for SemanticKernel -->
+    <PropertyGroup>
+        <NoWarn>SKEXP0001;SKEXP0110</NoWarn>
+    </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="DotNet.Glob" Version="3.1.3" />

@@ -25,6 +25,9 @@ internal class RequirementReviewerAgent
             If the requirement contains all information, state that it is approved. 
             
             If not, provide insight on how to refine suggested test case with the following example:
+            
+            # Rules
+            - Never ask for user input
 
             # EXAMPLE
             

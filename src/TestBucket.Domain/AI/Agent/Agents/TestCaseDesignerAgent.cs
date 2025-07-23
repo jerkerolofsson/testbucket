@@ -22,6 +22,7 @@ internal class TestCaseDesignerAgent
 
             # Rules
             - Don't add any test cases using tools. Just create drafts.
+            - Never ask for user input
             """,
             Name = "Test-Designer",
             Kernel = kernel,

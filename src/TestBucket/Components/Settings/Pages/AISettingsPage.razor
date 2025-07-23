@@ -29,8 +29,9 @@
                         <MudStack Row>
                             <MudRadioGroup Value="_aiProvider" ValueChanged="OnAiProviderChanged" T="string">
                                 <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("ollama")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Ollama"/>  Ollama</MudRadio>
-                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("github-models")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.GitHub" /> Github Models</MudRadio>
-                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("azure-ai")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.AzureAI" /> Azure AI</MudRadio>
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("open-ai")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.OpenAI" />  Open AI</MudRadio>
+                                @* <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("github-models")"><MudIcon Size="Size.Small" Icon="@Icons.Custom.Brands.GitHub" /> Github Models</MudRadio>
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("azure-ai")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.AzureAI" /> Azure AI</MudRadio> *@
                                 <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("anthropic")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Claude" /> Anthropic</MudRadio>
                             </MudRadioGroup>
                         </MudStack>
@@ -42,6 +43,8 @@
                                 <MudSpacer/>
                                 <MudTextField T="string" Placeholder="Ollama URL" Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged" />
                             </Field>
+
+                            <MudAlert>@settingsLoc["ollama-context-length-message"]</MudAlert>
                         }
 
                         @if(_aiProvider == "anthropic")
@@ -53,6 +56,25 @@
                             </Field>
 
                             @foreach (var setting in _settings.Where(x => x.Metadata.SearchText.Contains("anthropic")))
+                            {
+                                if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
+                                {
+                                    <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                                    </FieldEditor>
+                                }
+                            }
+                        }
+
+
+                        @if (_aiProvider == "open-ai")
+                        {
+                            <Field Row>
+                                <FieldHeader>OpenAI API URL</FieldHeader>
+                                <MudSpacer />
+                                <MudTextField T="string" Placeholder="OpenAI URL" Variant="Variant.Outlined" Value="@_aiProviderUrl" ValueChanged="OnAiProviderUrlChanged" />
+                            </Field>
+
+                            @foreach (var setting in _settings.Where(x => x.Metadata.SearchText.Contains("open-ai")))
                             {
                                 if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
                                 {

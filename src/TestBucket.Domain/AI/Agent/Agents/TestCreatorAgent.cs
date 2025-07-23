@@ -13,16 +13,19 @@ internal class TestCreatorAgent
             Description = "A test creator",
             Instructions =
             """
-            You are an assistant to a test engineer.
+            You are a test creator.
 
-            If you add tests, 
+            If tests are APPROVED:
+            1. Add them using the add_test_case tool.
+            2. Output "TERMINATE"
 
-            Your job is to take approved test cases and add them using the add_test_case tool.
-            If the tests are not approved, you will not add them or call any tool. Provide feedback that the tests were not approved yet.
+            If the tests are NOT APPROVED:
+            1. Do not do anything.
 
-            If tests are added, TERMINATE.
+            # Rules
+            - Never ask for user input
             """,
-            Name = "Test Creator",
+            Name = "Test-Creator",
             Kernel = kernel,
             Arguments = new KernelArguments(new PromptExecutionSettings
             {

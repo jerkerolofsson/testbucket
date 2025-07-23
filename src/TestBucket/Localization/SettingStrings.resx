@@ -321,4 +321,7 @@
   <data name="tenant" xml:space="preserve">
     <value>Tenant</value>
   </data>
+  <data name="ollama-context-length-message" xml:space="preserve">
+    <value>When using Ollama make sure to configure a context length suitable for the model used. You can configure the Ollama context size using the environment variable OLLAMA_CONTEXT_LENGTH for the Ollama docker container. For example OLLAMA_CONTEXT_LENGTH=131072 (128k) context length for Gemma3 or 40960 (40k) for Qwen3.</value>
+  </data>
 </root>

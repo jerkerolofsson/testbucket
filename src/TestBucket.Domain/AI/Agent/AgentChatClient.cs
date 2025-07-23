@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Text.Json;
 using System.Threading.Channels;
 
 using Microsoft.Extensions.AI;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 using Microsoft.SemanticKernel.Agents.Orchestration.GroupChat;
+using Microsoft.SemanticKernel.Agents.Orchestration.Sequential;
 using Microsoft.SemanticKernel.Agents.Runtime.InProcess;
 using Microsoft.SemanticKernel.ChatCompletion;
 
@@ -32,6 +34,7 @@ public class AgentChatClient
     private readonly ITestCaseManager _testCaseManager;
     private readonly TestExecutionContextBuilder _testExecutionContextBuilder;
     private readonly SemanticKernelFactory _semanticKernelFactory;
+    private readonly ILogger<AgentChatClient> _logger;
 
     public AgentChatClient(IChatClientFactory chatClientFactory, IServiceProvider serviceProvider)
     {
@@ -41,6 +44,7 @@ public class AgentChatClient
         _testCaseManager = serviceProvider.GetRequiredService<ITestCaseManager>();
         _testExecutionContextBuilder = serviceProvider.GetRequiredService<TestExecutionContextBuilder>();
         _semanticKernelFactory = serviceProvider.GetRequiredService<SemanticKernelFactory>();
+        _logger = serviceProvider.GetRequiredService<ILogger<AgentChatClient>>();
     }
 
     public async Task<ToolCollection> GetToolsAsync(ClaimsPrincipal principal, AgentChatContext context, CancellationToken cancellationToken = default)
@@ -111,8 +115,6 @@ public class AgentChatClient
 
         }
     }
-
-
     internal async ValueTask<IReadOnlyList<ChatMessage>> GetReferencesAsChatMessagesAsync(
         ClaimsPrincipal principal, 
         AgentChatContext context,
@@ -165,7 +167,27 @@ public class AgentChatClient
         return messages;
     }
 
-    public async IAsyncEnumerable<ChatResponseUpdate> InvokeAsync(
+    private ChatCompletionAgent CreateChatCompletionAgent(string name, string instructions, string description, Kernel kernel)
+    {
+        // This method is not used in the current implementation
+        // It can be used to create a custom chat completion agent
+        // var agent = new ChatCompletionAgent(name, instructions, description);
+        // return agent;
+        return new ChatCompletionAgent()
+        {
+            Name = name,
+            Instructions = instructions,
+            Description = description,
+            Kernel = kernel,
+            LoggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>(),
+            Arguments = new KernelArguments(new PromptExecutionSettings
+            {
+                FunctionChoiceBehavior = FunctionChoiceBehavior.Auto()
+            })
+        };
+    }
+
+    public async IAsyncEnumerable<ChatResponseUpdate> InvokeAgentAsync(
         string? agentId,
         ClaimsPrincipal principal, 
         TestProject? project,
@@ -173,16 +195,24 @@ public class AgentChatClient
         ChatMessage userMessage,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        ChatHistory history = [];
+        ChatHistory newMessages = []; // This only contain the new messages
+        ChatHistory groupChatHistory = [];
+//        var reducer = new ChatHistoryTruncationReducer(targetCount: 3);
 
         // Enrich context with references
         if (context.Messages.Count == 0)
         {
             var references = await GetReferencesAsChatMessagesAsync(principal, context, cancellationToken);
-            //context.Messages.AddRange(references);
             foreach (var reference in references)
             {
-                history.Add(reference.ToSemanticKernelChatMessage());
+                groupChatHistory.Add(reference.ToSemanticKernelChatMessage());
+            }
+        }
+        else
+        {
+            foreach(var historyMessage in context.Messages)
+            {
+                groupChatHistory.Add(historyMessage.ToSemanticKernelChatMessage());
             }
         }
         context.Messages.Add(userMessage);
@@ -207,34 +237,59 @@ public class AgentChatClient
         switch(agentId)
         {
             case "test-designer":
+                // Analyze inputs
+                members.Add(RequirementAnalystAgent.Create(kernel, loggerFactory));
+                //members.Add(TestCoverageAnalystAgent.Create(kernel, loggerFactory));
+
+                // Create test
                 members.Add(TestCaseDesignerAgent.Create(kernel, loggerFactory));
+
+                // Review
                 members.Add(TestReviewerAgent.Create(kernel, loggerFactory));
-                members.Add(TestCaseDesignerTerminatorAgent.Create(kernel, loggerFactory));
+
+                // Terminate
+                //members.Add(TestCaseDesignerTerminatorAgent.Create(kernel, loggerFactory));
                 break;
 
             case "requirement-designer":
+                // Analyze inputs
                 members.Add(RequirementAnalystAgent.Create(kernel, loggerFactory));
-
-                // We treat unit tests and code as a source of truth.
                 members.Add(TestCoverageAnalystAgent.Create(kernel, loggerFactory));
+
+                // Create
                 members.Add(RequirementDesignerAgent.Create(kernel, loggerFactory));
+
+                // Review
                 members.Add(RequirementReviewerAgent.Create(kernel, loggerFactory));
                 break;
 
             case "requirement-creator":
-
-                // Collect information
+                // Analyze inputs
                 members.Add(RequirementAnalystAgent.Create(kernel, loggerFactory));
                 members.Add(TestCoverageAnalystAgent.Create(kernel, loggerFactory));
 
+                // Design/Draft
                 members.Add(RequirementDesignerAgent.Create(kernel, loggerFactory));
+
+                // Review
                 members.Add(RequirementReviewerAgent.Create(kernel, loggerFactory));
+
+                // Add
                 members.Add(RequirementCreatorAgent.Create(kernel, loggerFactory));
                 break;
 
             case "test-creator":
+                // Analyze inputs
+                members.Add(RequirementAnalystAgent.Create(kernel, loggerFactory));
+                members.Add(TestCoverageAnalystAgent.Create(kernel, loggerFactory));
+
+                // Design/Draft
                 members.Add(TestCaseDesignerAgent.Create(kernel, loggerFactory));
+
+                // Review
                 members.Add(TestReviewerAgent.Create(kernel, loggerFactory));
+
+                // Add
                 members.Add(TestCreatorAgent.Create(kernel, loggerFactory));
                 break;
 
@@ -243,20 +298,58 @@ public class AgentChatClient
                 break;
         }
 
+        //ChatCompletionAgent analystAgent =
+        //   this.CreateChatCompletionAgent(
+        //       name: "Analyst",
+        //       instructions:
+        //       """
+        //        You are a marketing analyst. Given a product description, identify:
+        //        - Key features
+        //        - Target audience
+        //        - Unique selling points
+        //        """,
+        //       description: "A agent that extracts key concepts from a product description.", kernel);
+        //ChatCompletionAgent writerAgent =
+        //    this.CreateChatCompletionAgent(
+        //        name: "copywriter",
+        //        instructions:
+        //        """
+        //        You are a marketing copywriter. Given a block of text describing features, audience, and USPs,
+        //        compose a compelling marketing copy (like a newsletter section) that highlights these points.
+        //        Output should be short (around 150 words), output just the copy as a single text block.
+        //        """,
+        //        description: "An agent that writes a marketing copy based on the extracted concepts.", kernel);
+        //ChatCompletionAgent editorAgent =
+        //    this.CreateChatCompletionAgent(
+        //        name: "editor",
+        //        instructions:
+        //        """
+        //        You are an editor. Given the draft copy, correct grammar, improve clarity, ensure consistent tone,
+        //        give format and make it polished. Output the final improved copy as a single text block.
+        //        """,
+        //        description: "An agent that formats and proofreads the marketing copy.", kernel);
+
+        //members = [analystAgent, writerAgent, editorAgent];
+
         var channel = Channel.CreateUnbounded<StreamingChatMessageContent>();
-        var chatManager = new RoundRobinGroupChatManager
+        var chatManager = new LoggingRoundRobinGroupChatManager(_serviceProvider.GetRequiredService<ILogger<LoggingRoundRobinGroupChatManager>>())
         {
-            MaximumInvocationCount = 5,
+            MaximumInvocationCount = members.Count*2,
         };
 
-        var orchestration = new GroupChatOrchestrationWithChatHistory(history, chatManager, members.ToArray())
+        var orchestration = new GroupChatOrchestrationWithChatHistory(groupChatHistory, chatManager, members.ToArray())
+        //var orchestration = new GroupChatOrchestration<string, string>(chatManager, members.ToArray())
+        //var orchestration = new SequentialOrchestration(members.ToArray())
         {
             Name = $"GroupChatOrchestrationWithChatHistory ({agentId})",
             Description = $"Group chat orchestration for agent {agentId}",
             LoggerFactory = loggerFactory,
             ResponseCallback = (response) =>
             {
-                history.Add(response);
+                _logger.LogInformation("Received response from agent {AuthorName}", response.AuthorName);
+                newMessages.Add(response);
+                groupChatHistory.Add(response);
+
                 return ValueTask.CompletedTask;
             },
             StreamingResponseCallback = async (StreamingChatMessageContent response, bool isFinal) =>
@@ -273,7 +366,9 @@ public class AgentChatClient
             var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             var task = Task.Run(async () =>
             {
+                //string input = "An eco-friendly stainless steel water bottle that keeps drinks cold for 24 hours";
                 var result = await orchestration.InvokeAsync(userMessage.Text, runtime, cancellationToken: cts.Token);
+                //var result = await orchestration.InvokeAsync(input, runtime, cancellationToken: cts.Token);
                 try
                 {
                     string output = await result.GetValueAsync(TimeSpan.FromSeconds(300), cts.Token);
@@ -296,8 +391,12 @@ public class AgentChatClient
                     update = response.ToChatResponseUpdate();
                 }
                 catch (OperationCanceledException) { }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error converting response to ChatResponseUpdate");
+                }
 
-                if(update is not null)
+                if (update is not null)
                 {
                     yield return update;
                 }
@@ -307,7 +406,7 @@ public class AgentChatClient
         {
             if (!cancellationToken.IsCancellationRequested)
             {
-                foreach (var message in history)
+                foreach (var message in newMessages)
                 {
                     // We add user messages first so the UI is updated directly after the user asks
                     // the question
@@ -320,7 +419,7 @@ public class AgentChatClient
         }
     }
 
-    public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(ClaimsPrincipal principal, 
+    public async IAsyncEnumerable<ChatResponseUpdate> AskAsync(ClaimsPrincipal principal, 
         TestProject? project,
         AgentChatContext context, 
         ChatMessage userMessage, 

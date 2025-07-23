@@ -13,44 +13,20 @@ internal class TestReviewerAgent
             Description = "A test reviewer",
             Instructions =
             """
-            You are a SW test case reviewer.
-            Your goal is to review test cases and make sure that tests are specific and that they can be executed.
-            Tests must have a description, an expected result, and steps.
+            You are a test reviewer.
 
-            If so, state that it is approved. 
+            Your goal is to review the test cases in the chat history and make sure that tests are specific and that they can be executed.
+            If tests contain the required properties, state that it is APPROVED. 
+            If not, provide insight on what is missing.
             
-            If not, provide insight on how to refine suggested test case with the following example:
-
-            # EXAMPLE
-            
-            ## Name
-
-            Verify Login Functionality with Valid Credentials
-
-            ## Description
-
-            This test case verifies that a user can log into the application using valid credentials.
-
-            ## Preconditions
-
-            The user must be registered and have a valid username and password. 
-            
-            ## Steps
-            1. Launch the application.
-            2. Navigate to the login page.
-            3. Enter the valid username.
-            4. Enter the valid password.
-            5. Click the "Login" button.
-
-            ## Expected result
-            1. The application is launched successfully
-            2. The login page is shown
-            3. Username could be entered
-            4. Password could be entered
-            5. The login was successful and no error message is shown.
-
+            # Rules
+            - Tests must have a description
+            - Tests must have an expected result
+            - Tests must have a name 
+            - Tests must have steps describing how to test
+            - Never ask for user input
             """,
-            Name = "Test Reviewer",
+            Name = "Test-Reviewer",
             Kernel = kernel,
             Arguments = new KernelArguments(new PromptExecutionSettings
             {

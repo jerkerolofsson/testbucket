@@ -155,6 +155,11 @@ public partial class AISettingsPage
                 await setting.WriteAsync(_context, new FieldValue { StringValue = provider, FieldDefinitionId = 0 });
             }
 
+            if(provider == "open-ai")
+            {
+                await OnAiProviderUrlChanged("https://api.openai.com/v1");
+            }
+
             if (provider == "azure-ai" || provider == "github-models")
             {
                 await OnAiProviderUrlChanged("https://models.inference.ai.azure.com");
@@ -234,6 +239,7 @@ public partial class AISettingsPage
         return name switch
         {
             "ollama" => TbIcons.Brands.Ollama,
+            "open-ai" => TbIcons.Brands.OpenAI,
             "azure-ai" => TbIcons.Brands.AzureAI,
             "github-models" => Icons.Custom.Brands.GitHub,
             "anthropic" => TbIcons.Brands.Claude,

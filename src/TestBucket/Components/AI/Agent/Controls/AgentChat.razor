@@ -249,6 +249,7 @@
             context.ClearMessages();
         }
 
+        _agentId = "default";
         _userPrompt = "";
 
         context.ClearReferences();
@@ -283,6 +284,9 @@
 
         await SendAsync(new ChatMessage(ChatRole.User, message));
     }
+
+    private string _agentId = "default";
+
     private async Task SendAsync(ChatMessage chatMessage)
     {
         _cts?.Cancel();
@@ -297,23 +301,29 @@
         var authState = await authenticationStateProvider.GetAuthenticationStateAsync();
         var client = new AgentChatClient(chatClientFactory, serviceProvider);
 
-        string agentId = "default";
         if(chatMessage is SuggestionChatMessage suggestionChatMessage && !string.IsNullOrEmpty(suggestionChatMessage.Suggestion.AgentId))
         {
-            agentId = suggestionChatMessage.Suggestion.AgentId;
+            _agentId = suggestionChatMessage.Suggestion.AgentId;
         }
 
         try
         {
             //await foreach (var update in client.GetStreamingResponseAsync(authState.User, Project, context, chatMessage, cancellationToken))
-            await foreach (var update in client.InvokeAsync(agentId, authState.User, Project, context, chatMessage, cancellationToken))
+            string? currentAuthor = null;
+            await foreach (var update in client.InvokeAgentAsync(_agentId, authState.User, Project, context, chatMessage, cancellationToken))
             {
-                if (string.IsNullOrEmpty(update.Text))//update is PipelineActionUpdate actionUpdate)
+                if (string.IsNullOrEmpty(update.Text) && currentAuthor == update.AuthorName)
                 {
                     //_activeResponse.Append(actionUpdate.ActionName+"\n\n");
                 }
                 else
                 {
+                    if (currentAuthor != update.AuthorName)
+                    {
+                        _activeResponse.AppendLine($"\n#### {update.AuthorName}:");
+                        currentAuthor = update.AuthorName;
+                    }
+
                     _activeResponse.Append(update.Text);
                 }
                 await InvokeAsync(this.StateHasChanged);

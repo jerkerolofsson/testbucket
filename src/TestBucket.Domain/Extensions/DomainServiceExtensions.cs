@@ -242,6 +242,7 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, GithubModelsDeveloperKeySetting>();
         services.AddScoped<ISetting, AzureAiProductionKeySetting>();
         services.AddScoped<ISetting, AnthropicApiKeySetting>();
+        services.AddScoped<ISetting, OpenAiApiKeySetting>();
 
         // AI Runner settings
         services.AddScoped<ISetting, EnableAiRunnerSetting>();

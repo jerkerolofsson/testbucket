@@ -38,7 +38,7 @@ internal class RequirementReviewerAgent
             could not be parsed.
 
             """,
-            Name = "Requirement Reviewer",
+            Name = "Requirement-Reviewer",
             Kernel = kernel,
             Arguments = new KernelArguments(new PromptExecutionSettings
             {

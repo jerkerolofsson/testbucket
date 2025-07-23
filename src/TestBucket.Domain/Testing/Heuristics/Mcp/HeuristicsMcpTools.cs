@@ -25,7 +25,7 @@ public class HeuristicsMcpTools : AuthenticatedTool
     /// Returns the name of the user that is authenticated with the API key.
     /// </summary>
     /// <returns></returns>
-    [McpServerTool(Name = "get-hueristics"), Description("Gets a list of test heuristics, containing general ideas and best-practices for how to do exploratory testing and ideas to consider when creating new test cases")]
+    [McpServerTool(Name = "get_hueristics"), Description("Gets a list of test heuristics, containing general ideas and best-practices for how to do exploratory testing and ideas to consider when creating new test cases")]
     public async Task<string> GetHeuristics()
     {
         var isAuthenticated = await IsAuthenticatedAsync();

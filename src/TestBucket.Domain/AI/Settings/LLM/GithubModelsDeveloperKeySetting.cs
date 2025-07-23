@@ -34,7 +34,6 @@
             var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(context.Principal.GetTenantIdOrThrow(), null);
             settings ??= new();
 
-
             if (settings.AiProvider != value.StringValue)
             {
                 settings.GithubModelsDeveloperKey = value.StringValue;

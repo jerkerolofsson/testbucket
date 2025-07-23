@@ -14,7 +14,7 @@ namespace TestBucket.Domain.AI.Agent;
 
 #pragma warning disable SKEXP0110
 
-internal class GroupChatOrchestrationWithChatHistory : GroupChatOrchestration<string, string>
+internal class GroupChatOrchestrationWithChatHistory :  GroupChatOrchestration<string, string>
 {
     private readonly ChatHistory _chatHistory;
 

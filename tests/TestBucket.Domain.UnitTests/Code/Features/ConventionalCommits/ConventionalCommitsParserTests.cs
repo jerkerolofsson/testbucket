@@ -14,6 +14,8 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
     [UnitTest]
     [EnrichedTest]
     [FunctionalTest]
+    [Feature("Conventional Commits")]
+    [Component("Code")]
     public class ConventionalCommitsParserTests
     {
         /// <summary>
@@ -60,7 +62,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-10")]
+        [CoveredRequirement("CONV-12")]
         public void Parse_WithExclamationPointForType_BreakingChangeIsTrue()
         {
             var message = """
@@ -82,7 +84,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-10")]
+        [CoveredRequirement("CONV-12")]
         public void Parse_WithExclamationPointForTypeWithScope_BreakingChangeIsTrue()
         {
             var message = """
@@ -104,6 +106,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
+        [CoveredRequirement("CONV-4")]
         public void Parse_WithSpaceInScope_ScopeParsedCorrectly()
         {
             var message = """
@@ -127,7 +130,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-5")]
+        [CoveredRequirement("CONV-6")]
         public void Parse_WithLongerDescriptionNoFooter_LongerDescriptionCorrect()
         {
             var message = """
@@ -151,7 +154,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-9")]
+        [CoveredRequirement("CONV-14")]
         public void Parse_WithBreakingChangeFooterAndNoDescription_BreakingChangeIsTrue()
         {
             var message = """
@@ -189,7 +192,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-13")]
+        [CoveredRequirement("CONV-14")]
         public void Parse_WithBreakingChangeWithHyphenFooterAndNoDescription_BreakingChangeIsTrue()
         {
             var message = """
@@ -219,7 +222,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-13")]
+        [CoveredRequirement("CONV-14")]
         public void Parse_WithBreakingChangeFooterAndSingleLineDescription_BreakingChangeIsTrue()
         {
             var message = """
@@ -246,6 +249,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
+        [CoveredRequirement("CONV-14")]
         public void Parse_WithBothBreakingChangeFooterAndExclamationPoint_BreakingChangeIsTrue()
         {
             var message = """
@@ -268,7 +272,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-3")]
+        [CoveredRequirement("CONV-6")]
         public void Parse_SingleLineWithFix_FixItemAdded()
         {
             var message = "fix: this is a commit message without a type or footer.";
@@ -290,7 +294,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-3")]
+        [CoveredRequirement("CONV-4")]
         public void Parse_WithNumericScope_ScopeParsedCorrectly()
         {
             var message = "feat(123): add Swedish language";
@@ -313,7 +317,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>        
         [Fact]
-        [CoveredRequirement("CC-3")]
+        [CoveredRequirement("CONV-6")]
         public void Parse_WithNoBody_TypeParsedCorrectly()
         {
             var message = "feat(lang): add Swedish language";
@@ -345,7 +349,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-7")]
+        [CoveredRequirement("CONV-12")]
         public void Parse_WithMultipleFootersAndBreakingChange_FootersParsedCorrectly()
         {
             var message = """
@@ -401,7 +405,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// 
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-7")]
+        [CoveredRequirement("CONV-9")]
         public void Parse_WithMultipleFooters_FootersParsedCorrectly()
         {
             var message = """
@@ -443,7 +447,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-8")]
+        [CoveredRequirement("CONV-9")]
         public void Parse_WithFooterValueNewLine_FooterValueParsedCorrectly()
         {
             var message = """
@@ -468,7 +472,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-11")]
+        [CoveredRequirement("CONV-4")]
         public void Parse_WithTypeExtensions_ScopeParsedCorrectly()
         {
             var message = "xyz: Value";
@@ -483,6 +487,54 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         }
 
         /// <summary>
+        /// Verifies that a multi-paragraph body which looks like a footer is treated as body if there's a space
+        /// </summary>
+        [Fact]
+        [CoveredRequirement("CONV-10")]
+        public void Parse_BodyWithSpaceAndColon_ParsedCorrectlyAsDescription()
+        {
+            var message = """
+                xyz: Value
+
+                Custom Not Footer: blue white
+                """;
+
+            // Act
+            var conventionalMessage = new ConventionalCommitParser().Parse(message);
+
+            Assert.Equal("Value", conventionalMessage.Description);
+            Assert.Single(conventionalMessage.Types);
+            Assert.Equal("xyz", conventionalMessage.Types[0].Type);
+            Assert.Equal("Value", conventionalMessage.Types[0].Description);
+            Assert.Empty(conventionalMessage.Footer);
+            Assert.Equal("Custom Not Footer: blue white", conventionalMessage.LongerDescription);
+        }
+
+        /// <summary>
+        /// Verifies that a footer value (description) can contain space
+        /// </summary>
+        [Fact]
+        [CoveredRequirement("CONV-11")]
+        public void Parse_FooterWithWhitespace_ParsedCorrectly()
+        {
+            var message = """
+                xyz: Value
+
+                Custom-Footer: blue white
+                """;
+
+            // Act
+            var conventionalMessage = new ConventionalCommitParser().Parse(message);
+
+            Assert.Equal("Value", conventionalMessage.Description);
+            Assert.Single(conventionalMessage.Types);
+            Assert.Equal("xyz", conventionalMessage.Types[0].Type);
+            Assert.Equal("Value", conventionalMessage.Types[0].Description);
+            Assert.Equal("Custom-Footer", conventionalMessage.Footer[0].Type);
+            Assert.Equal("blue white", conventionalMessage.Footer[0].Description);
+        }
+
+        /// <summary>
         /// Verifies that a footer that has a # separator, followed by a string value is supported
         /// 
         /// ```
@@ -492,7 +544,7 @@ namespace TestBucket.Domain.UnitTests.Code.Features.ConventionalCommits
         /// ```
         /// </summary>
         [Fact]
-        [CoveredRequirement("CC-6")]
+        [CoveredRequirement("CONV-15")]
         public void Parse_WithHashSeparator_FootersParsedCorrectly()
         {
             var message = """

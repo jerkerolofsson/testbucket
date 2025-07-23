@@ -13,12 +13,12 @@ internal class TestCoverageAnalystAgent
             Description = "A test coverage analyst",
             Instructions =
             """
-            You are a QA test analyst.
-            Your job is to analyze test coverage and summarize it.
+            You are a test coverage analyst.
 
-            Use the search_test_cases to search for existing tests.
+            Your goal is to find out what tests exists for a the scope defined by the user.
+            Use the search_test_cases tool to search for existing tests.
             """,
-            Name = "Test Coverage Analyst",
+            Name = "Test-Coverage-Analyst",
             Kernel = kernel,
             Arguments = new KernelArguments(new PromptExecutionSettings
             {

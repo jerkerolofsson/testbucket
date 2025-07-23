@@ -51,4 +51,9 @@ public class LlmSettings
     /// For anthropic provider
     /// </summary>
     public string? AnthropicApiKey { get; set; }
+
+    /// <summary>
+    /// Open AI API key
+    /// </summary>
+    public string? OpenAiApiKey { get; set; }
 }

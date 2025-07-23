@@ -60,7 +60,10 @@ components:
     - src\TestBucket.Domain\AI\**\*.*
   Appearance:
     display: 
-    description: Appearance settings and themes
+    description: >-
+      Appearance settings and UI themes.
+
+      (This includes accessibility settings).
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
@@ -556,6 +559,76 @@ features:
     paths:
     - src\Package\Reporting\TestBucket.CodeCoverage\**\*.*
     - src\TestBucket\Components\Code\Controls\**\*CodeCoverage*
+  Conventional Commits:
+    display: 
+    description: >
+      # Conventional Commits
+
+      Conventional Commits are a lightweight convention on top of commit messages, providing a standardized format for writing Git commit messages. This convention makes the commit history more explicit and easier to understand for both humans and machines. 
+
+
+      ## Structure
+
+      Conventional Commits follow a specific structure: {type}({scope}): {description}.
+
+
+      ### Type
+
+      The type specifies the kind of change introduced by the commit. Common types include:
+
+      - feat: A new feature or functionality.
+
+      - fix: A bug fix.
+
+      - docs: Documentation-only changes.
+
+      - chore: Maintenance tasks or other changes that don't directly modify source or test files, such as updating dependencies.
+
+      - perf: Improvements to performance without changing functionality.
+
+      - test: Adding or modifying tests.
+
+      - refactor: Refactoring code without changing public API or behavior.
+
+      - build: Changes affecting the build system or external dependencies.
+
+      - ci: Changes to CI configuration files and scripts.
+
+      - style: Code style and formatting changes.
+
+      - revert: Reverting previous changes.
+
+
+      ### Scope (optional)
+
+      The scope indicates the part of the codebase affected by the change. For example: feat(authentication): add OAuth login.
+
+
+      ### Description
+
+
+      A concise summary of the changes made.
+
+
+      ## Breaking Changes
+
+      Conventional Commits clearly mark breaking changes, which are changes that are not backward compatible and may require users to update their code or configuration. Breaking changes can be indicated either by adding ! after the type/scope, or by including BREAKING CHANGE: at the beginning of the commit body or footer section. 
+
+
+      # Benefits of Conventional Commits
+
+      - Clarity and Consistency: Provides a clear and consistent format for commit messages, making the commit history easier to understand for developers.
+
+      - Automation: Enables the use of tools to automatically generate changelogs, bump version numbers (following Semantic Versioning), and trigger build/deployment processes based on commit types.
+
+      - Improved Collaboration: Facilitates communication and collaboration among team members by providing a shared understanding of changes.
+
+      - Semantic Versioning (SemVer) Integration: Works well with SemVer, making it easier to determine the next major, minor, or patch version based on the commit types.  
+
+      - Conventional Commits helps to create a more organized and informative Git history, improving both developer experience and the maintainability of software projects. 
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths: []
   Field Inheritance:
     display: 
     description: >
@@ -606,7 +679,53 @@ features:
     - src\TestBucket\Components\Shared\Fields\**\*.*
   Hybrid Tests:
     display: 
-    description: Partial test automation where markdown code-blocks can be embedded in test descriptions, and executed.
+    description: >-
+      # Summary
+
+
+      Partial test automation where markdown code-blocks can be embedded in test descriptions, and executed when the user is running the test.
+
+
+      The tester will run some steps manually, but the code block can be executed by clicking on a play button next to the code block.
+
+
+      # Supported languages
+
+
+      The following programming languages should be possible to execute from within a test case:
+
+
+      1. python
+
+      2. pwsh (Powershell)
+
+
+      # Markdown requirements
+
+
+      Code blocks in markdown must declare the code language.
+
+
+      # Examples
+
+
+      ## Powershell
+
+
+      ```pwsh
+
+      echo "Hello, World"
+
+      ```
+
+
+      ## Python
+
+      ```python
+
+      print("Hello, World")
+
+      ```
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:

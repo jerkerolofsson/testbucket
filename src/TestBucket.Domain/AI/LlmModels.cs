@@ -18,6 +18,15 @@ public class LlmModels
     /// </summary>
     public static IReadOnlyDictionary<string, LlmModel> Models = new Dictionary<string, LlmModel>
     {
+        ["orieg/gemma3-tools:12b"] = new LlmModel 
+        {
+            Icon = TbIcons.Brands.Gemma,
+            Vendor = "google",
+            Name = "Gemma 3 12b",
+            ModelName = "orieg/gemma3-tools:12b",
+            Capabilities = ModelCapability.Classification | ModelCapability.Tools
+        },
+
         ["llama3.2:1b"] = new LlmModel
         {
             Icon = TbIcons.Brands.Meta,
@@ -133,6 +142,28 @@ public class LlmModels
     /// <summary>
     /// List of LLM models that will be options in the UI
     /// </summary>
+    public static IReadOnlyDictionary<string, LlmModel> OpenAiModels = new Dictionary<string, LlmModel>
+    {
+        ["gpt-4.1-mini"] = new LlmModel
+        {
+            Icon = TbIcons.Brands.OpenAI,
+            Vendor = "open-ai",
+            Name = "GPT-4.1 Mini",
+            ModelName = "gpt-4.1-mini",
+            Capabilities = ModelCapability.Tools
+        },
+        ["gpt-4o-mini"] = new LlmModel
+        {
+            Icon = TbIcons.Brands.OpenAI,
+            Vendor = "open-ai",
+            Name = "GPT o4 Mini",
+            ModelName = "o4-mini-2025-04-16",
+            Capabilities = ModelCapability.Tools
+        }
+    };
+    /// <summary>
+    /// List of LLM models that will be options in the UI
+    /// </summary>
     public static IReadOnlyDictionary<string, LlmModel> AnthropicModels = new Dictionary<string, LlmModel>
     {
         ["claude-sonnet-4-20250514"] = new LlmModel
@@ -156,6 +187,7 @@ public class LlmModels
     public static LlmModel? GetModelByName(string name)
     {
         var model = Models.Values.Where(x => x.Name == name).FirstOrDefault();
+        model ??= OpenAiModels.Values.Where(x => x.Name == name).FirstOrDefault();
         model ??= AnthropicModels.Values.Where(x => x.Name == name).FirstOrDefault();
         return model;
     }
@@ -165,6 +197,10 @@ public class LlmModels
         if(aiProvider == "anthropic")
         {
             return AnthropicModels.Values.Where(x => (x.Capabilities & requiredCapability) == requiredCapability);
+        }
+        if (aiProvider == "open-ai")
+        {
+            return OpenAiModels.Values.Where(x => (x.Capabilities & requiredCapability) == requiredCapability);
         }
         return Models.Values.Where(x => (x.Capabilities & requiredCapability) == requiredCapability);
     }

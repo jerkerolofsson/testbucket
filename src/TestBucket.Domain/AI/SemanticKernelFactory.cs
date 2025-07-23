@@ -36,9 +36,16 @@ internal class SemanticKernelFactory
                 builder.AddOllamaChatCompletion(modelId, new Uri(settings.AiProviderUrl));
                 break;
 
-            case "openai":
-                //builder.AddOpenAIChatCompletion(settings.LlmModel, new Uri(settings.AiProviderUrl));
+            case "anthropic":
+                builder.AddOpenAIChatCompletion(modelId, new Uri(settings.AiProviderUrl), settings.AnthropicApiKey);
                 break;
+
+            case "open-ai":
+                builder.AddOpenAIChatCompletion(modelId, new Uri(settings.AiProviderUrl), settings.OpenAiApiKey);
+                break;
+
+            default:
+                throw new NotImplementedException();
         }
 
         var kernel = builder.Build();

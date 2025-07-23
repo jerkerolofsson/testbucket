@@ -24,7 +24,7 @@ internal class RequirementDesignerAgent
             A requirement must have a title and a description. 
             The title can be a short summary of the requirement, while the description should provide detailed information about what the requirement entails.
             """,
-            Name = "Requirement Designer",
+            Name = "Requirement-Designer",
             Kernel = kernel,
             Arguments = new KernelArguments(new PromptExecutionSettings
             {

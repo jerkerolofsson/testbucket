@@ -42,7 +42,7 @@ internal class ChatClientFactory : IChatClientFactory
         {
             return await CreateOllamaClientAsync(principal, modelType);
         }
-        if (settings.AiProvider == "anthropic")
+        if (settings.AiProvider == "anthropic" || settings.AiProvider == "open-ai")
         {
             return CreateOpenAIChatClient(modelType, settings.AiProviderUrl, settings.AnthropicApiKey, settings.LlmModel);
         }

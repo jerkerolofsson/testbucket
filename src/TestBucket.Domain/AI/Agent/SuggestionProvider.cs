@@ -21,14 +21,14 @@ public class SuggestionProvider
             {
                 if(reference.EntityTypeName == "Feature")
                 {
-                    suggestions.Add(new Suggestion($"Give me some test ideas for the feature: '{reference.Name}'", $"Give me some test ideas for the feature: '{reference.Name}'")
+                    suggestions.Add(new Suggestion($"Give me some test ideas for the feature: '{reference.Name}'", $"Feature: '{reference.Name}'")
                     {
                         AgentId = "test-designer"
                     });
                 }
                 else
                 {
-                    suggestions.Add(new Suggestion($"Give me some test ideas for '{reference.Name}'", $"Give me some test ideas for '{reference.Name}'")
+                    suggestions.Add(new Suggestion($"Give me some test ideas for '{reference.Name}'", $"Scope: '{reference.Name}'")
                     {
                         AgentId = "test-designer"
                     });
@@ -36,35 +36,19 @@ public class SuggestionProvider
 
                 if (reference.EntityTypeName == "Feature")
                 {
-                    suggestions.Add(new Suggestion($"Add tests for the feature: '{reference.Name}'", $"Add tests for the feature: '{reference.Name}'")
+                    suggestions.Add(new Suggestion($"Add tests for the feature: '{reference.Name}'", $"Feature: '{reference.Name}'")
                     {
                         AgentId = "test-creator"
                     });
 
-                    //suggestions.Add(new Suggestion($"Add requirements for the feature: '{reference.Name}'", $"""
-                    //    # Scope
-                    //    - Feature: '{reference.Name}'
-
-                    //    # Steps
-                    //    1. Collect information about current test cases for the feature
-                    //    2. Collect existing requirements for the feature
-                    //    3. Design new requirements for the feature
-                    //    4. Review the requirements
-                    //    5. Add the requirements
-                    //    """)
-                    //{
-                    //    AgentId = "requirement-creator"
-                    //});
-                    suggestions.Add(new Suggestion($"Add requirements for the feature: '{reference.Name}'", $"""
-                        Add requirements for the feature: '{reference.Name}'
-                        """)
+                    suggestions.Add(new Suggestion($"Add requirements for the feature: '{reference.Name}'", $"Feature: '{reference.Name}'")
                     {
                         AgentId = "requirement-creator"
                     });
                 }
                 else
                 {
-                    suggestions.Add(new Suggestion($"Add tests for '{reference.Name}'", $"Add tests for '{reference.Name}'")
+                    suggestions.Add(new Suggestion($"Add tests for '{reference.Name}'", $"Scope:'{reference.Name}'")
                     {
                         AgentId = "test-creator"
                     });

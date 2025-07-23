@@ -15,7 +15,7 @@ internal class TestCaseDesignerTerminatorAgent
             """
             If test ideas are created and they are approved: TERMINATE.
             """,
-            Name = "Test Idea Guard",
+            Name = "Test-Idea-Guard",
             Kernel = kernel,
             Arguments = new KernelArguments(new PromptExecutionSettings
             {

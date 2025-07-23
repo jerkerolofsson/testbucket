@@ -42,6 +42,7 @@
 
 .tb-agent-chat .chat .author {
     color: var(--mud-palette-primary-lighten);
+    font-size: var(--mud-typography-h1-size);
 }
 
 .tb-agent-chat .chat {

@@ -236,7 +236,7 @@ internal class AiRunner : BackgroundService
         var chatMessage = new ChatMessage(ChatRole.User, SuggestionProvider.GetAiRunTestPrompt(testCase.Name));
         var client = new AgentChatClient(chatClientFactory, scope.ServiceProvider);
         var responseBuilder = new StringBuilder();
-        await foreach (var update in client.GetStreamingResponseAsync(principal, project, agentContext, chatMessage, cancellationToken))
+        await foreach (var update in client.AskAsync(principal, project, agentContext, chatMessage, cancellationToken))
         {
             foreach (var content in update.Contents)
             {

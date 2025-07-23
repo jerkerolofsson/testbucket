@@ -1,29 +1,31 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
+using TestBucket.Domain.AI.Billing;
+using TestBucket.Domain.AI.Mcp.Models;
+using TestBucket.Domain.Automation.Pipelines.Models;
+using TestBucket.Domain.Automation.Runners.Models;
+using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.Comments.Models;
 using TestBucket.Domain.Environments.Models;
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Insights.Model;
+using TestBucket.Domain.Issues.Models;
+using TestBucket.Domain.Labels.Models;
+using TestBucket.Domain.Metrics.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Settings.Models;
 using TestBucket.Domain.Teams.Models;
-using TestBucket.Domain.TestResources.Models;
 using TestBucket.Domain.TestAccounts.Models;
-using TestBucket.Domain.Issues.Models;
-using TestBucket.Domain.Automation.Runners.Models;
-using TestBucket.Domain.Automation.Pipelines.Models;
-using TestBucket.Domain.Code.Models;
-using TestBucket.Domain.Comments.Models;
-using TestBucket.Domain.Labels.Models;
-using TestBucket.Domain.Metrics.Models;
 using TestBucket.Domain.Testing.Heuristics.Models;
-using TestBucket.Domain.Insights.Model;
-using TestBucket.Domain.AI.Mcp.Models;
+using TestBucket.Domain.TestResources.Models;
 
 namespace TestBucket.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
+    internal DbSet<ChatUsage> ChatUsages { get; set; }
     internal DbSet<Tenant> Tenants { get; set; }
     internal DbSet<RolePermission> RolePermissions { get; set; }
     internal DbSet<ProjectUserPermission> ProjectUserPermissions { get; set; }

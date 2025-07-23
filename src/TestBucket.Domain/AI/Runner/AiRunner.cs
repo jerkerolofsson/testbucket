@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.AI.Agent;
+using TestBucket.Domain.AI.Agent.Orchestration;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared.Specifications;
@@ -223,11 +224,7 @@ internal class AiRunner : BackgroundService
     private static async Task<StringBuilder> RunWithAgentAsync(IServiceScope scope, TestProject project, TestCase testCase, ClaimsPrincipal principal, TestExecutionContext? testExecutionContext, CancellationToken cancellationToken)
     {
         var chatClientFactory = scope.ServiceProvider.GetRequiredService<IChatClientFactory>();
-        var chatClient = await chatClientFactory.CreateChatClientAsync(principal, Models.ModelType.Default);
-        if (chatClient is null)
-        {
-            throw new Exception("Failed to create IChatClient. Make sure that the AI provider and model is configured");
-        }
+      
         var agentContext = scope.ServiceProvider.GetRequiredService<AgentChatContext>();
         agentContext.ProjectId = project.Id;
         testCase.Description = testExecutionContext!.CompiledText;
@@ -236,7 +233,7 @@ internal class AiRunner : BackgroundService
         var chatMessage = new ChatMessage(ChatRole.User, SuggestionProvider.GetAiRunTestPrompt(testCase.Name));
         var client = new AgentChatClient(chatClientFactory, scope.ServiceProvider);
         var responseBuilder = new StringBuilder();
-        await foreach (var update in client.AskAsync(principal, project, agentContext, chatMessage, cancellationToken))
+        await foreach (var update in client.InvokeAgentAsync(OrchestrationStrategies.AiRunner, principal, project, agentContext, chatMessage, cancellationToken))
         {
             foreach (var content in update.Contents)
             {

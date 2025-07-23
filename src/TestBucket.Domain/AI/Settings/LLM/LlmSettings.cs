@@ -28,6 +28,11 @@ public class LlmSettings
     public string? LlmEmbeddingModel { get; set; } = "all-minilm";
 
     /// <summary>
+    /// Price for 1 000 000 tokens in USD with the current model
+    /// </summary>
+    public double LlmModelUsdPerMillionTokens { get; set; }
+
+    /// <summary>
     /// URL to ollama/azure etc..
     /// </summary>
     public string? AiProviderUrl { get; set; }

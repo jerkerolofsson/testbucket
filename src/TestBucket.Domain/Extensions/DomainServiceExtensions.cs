@@ -7,6 +7,7 @@ using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.AI;
 using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.AI.Agent.Logging;
+using TestBucket.Domain.AI.Billing;
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.AI.Mcp.Services;
 using TestBucket.Domain.AI.Runner;
@@ -244,6 +245,7 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, AzureAiProductionKeySetting>();
         services.AddScoped<ISetting, AnthropicApiKeySetting>();
         services.AddScoped<ISetting, OpenAiApiKeySetting>();
+        services.AddScoped<ISetting, AiLlmModelUsdPerMillionTokensSetting>();
 
         // AI Runner settings
         services.AddScoped<ISetting, EnableAiRunnerSetting>();
@@ -253,6 +255,7 @@ public static class DomainServiceExtensions
         services.AddScoped<AgentChatContext>();
         services.AddScoped<IAgentLogManager, AgentLogManager>();
         services.AddScoped<IAgentLogManager, AgentLogManager>();
+        services.AddScoped<IAIUsageManager, AIUsageManager>();
 
         // AI Runner
         services.AddSingleton<AiRunnerJobQueue>();

@@ -46,6 +46,10 @@
     {
         <MudNumericField Value="@Field.LongValue" T="long?" ValueChanged="OnLongValueChanged" Variant="Variant.Outlined" Clearable/>
     }
+    else if (type == FieldType.Double)
+    {
+        <MudNumericField Value="@Field.DoubleValue" T="double?" ValueChanged="OnDoubleValueChanged" Variant="Variant.Outlined" Clearable />
+    }
     else if (type == FieldType.TimeSpan)
     {
         <TimeSpanPicker Duration="@Field.TimeSpanValue" DurationChanged="OnTimeSpanValueChanged" />
@@ -293,6 +297,14 @@
         }
     }
 
+    private async Task OnDoubleValueChanged(double? value)
+    {
+        if (Field is not null)
+        {
+            Field.DoubleValue = value;
+            await FieldChanged.InvokeAsync(Field);
+        }
+    }
     private async Task OnLongValueChanged(long? value)
     {
         if (Field is not null)

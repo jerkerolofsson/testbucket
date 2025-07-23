@@ -227,6 +227,9 @@ public partial class AISettingsPage
         if (setting is not null)
         {
             await setting.WriteAsync(_context, new FieldValue { StringValue = model, FieldDefinitionId = 0 });
+
+            // Reload settings as changing the model may change billing info
+            await LoadSettingsAsync();
         }
     }
 

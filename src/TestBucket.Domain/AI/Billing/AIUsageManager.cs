@@ -9,10 +9,29 @@ namespace TestBucket.Domain.AI.Billing;
 /// <summary>
 /// Keeps track of billing for AI usage.
 /// </summary>
-internal class AIUsageManager
+internal class AIUsageManager : IAIUsageManager
 {
-    public Task AppendCostAsync(ChatUsage usage)
+    private readonly TimeProvider _timeProvider;
+    private readonly IAIUsageRepository _repository;
+
+    public AIUsageManager(IAIUsageRepository repository, TimeProvider timeProvider)
     {
-        return Task.CompletedTask;
+        _repository = repository;
+        _timeProvider = timeProvider;
+    }
+
+    public async Task<TokenUsage> GetTotalUsageAsync(ClaimsPrincipal principal, DateTimeOffset from, DateTimeOffset until)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        return await _repository.GetTotalUsageAsync(tenantId, from, until);
+    }
+
+    public async Task AddCostAsync(ClaimsPrincipal principal, ChatUsage usage)
+    {
+        usage.TenantId = principal.GetTenantIdOrThrow();
+        usage.CreatedBy = usage.ModifiedBy = principal.Identity?.Name ?? "unknown";
+        usage.Created = usage.Modified = _timeProvider.GetUtcNow();
+
+        await _repository.AddAsync(usage);
     }
 }

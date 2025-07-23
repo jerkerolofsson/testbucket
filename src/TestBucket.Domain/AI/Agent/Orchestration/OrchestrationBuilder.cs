@@ -21,7 +21,10 @@ internal class OrchestrationBuilder
     private readonly IReadOnlyList<IOrchestrationStrategy> _strategies = [
             new DefaultStrategy(),
             new AddTestsStrategy(),
-            new DraftTestsStrategy()
+            new DraftTestsStrategy(),
+            new AddRequirements(),
+            new DraftRequirements(),
+            new AIRunner(),
         ];
 
     public AgentOrchestration<string,string> Build(

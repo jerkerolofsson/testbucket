@@ -28,6 +28,10 @@ internal static class ChatMessageExtensions
         {
             role = AuthorRole.System;
         }
+        else if (message.Role == ChatRole.Tool)
+        {
+            role = AuthorRole.Tool;
+        }
         else
         {
             throw new ArgumentOutOfRangeException(nameof(message.Role), "Unsupported role");

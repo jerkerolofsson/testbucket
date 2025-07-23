@@ -324,4 +324,19 @@
   <data name="ollama-context-length-message" xml:space="preserve">
     <value />
   </data>
+  <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
+    <value>Kostnad för 1M tokens</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
+    <value>Kostnad för 1 miljon tokens. Används för att uppskatta vad kostnaden är och påverkar ingen faktiskt kostnad. </value>
+  </data>
+  <data name="openai-provider-key" xml:space="preserve">
+    <value>Open AI API-nyckel</value>
+  </data>
+  <data name="ai-usage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="year-to-date" xml:space="preserve">
+    <value />
+  </data>
 </root>

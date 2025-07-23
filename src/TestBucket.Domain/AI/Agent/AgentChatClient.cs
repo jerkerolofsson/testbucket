@@ -2,6 +2,8 @@
 using System.Text.Json;
 using System.Threading.Channels;
 
+using Azure;
+
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -14,6 +16,7 @@ using Microsoft.SemanticKernel.Agents.Runtime.InProcess;
 using Microsoft.SemanticKernel.ChatCompletion;
 
 using TestBucket.Domain.AI.Agent.Agents;
+using TestBucket.Domain.AI.Agent.Logging;
 using TestBucket.Domain.AI.Agent.Models;
 using TestBucket.Domain.AI.Agent.Orchestration;
 using TestBucket.Domain.AI.Mcp.Services;
@@ -37,6 +40,7 @@ public class AgentChatClient
     private readonly TestExecutionContextBuilder _testExecutionContextBuilder;
     private readonly SemanticKernelFactory _semanticKernelFactory;
     private readonly ILogger<AgentChatClient> _logger;
+    private readonly IAgentLogManager _agentLogManager;
 
     public AgentChatClient(IChatClientFactory chatClientFactory, IServiceProvider serviceProvider)
     {
@@ -47,6 +51,7 @@ public class AgentChatClient
         _testExecutionContextBuilder = serviceProvider.GetRequiredService<TestExecutionContextBuilder>();
         _semanticKernelFactory = serviceProvider.GetRequiredService<SemanticKernelFactory>();
         _logger = serviceProvider.GetRequiredService<ILogger<AgentChatClient>>();
+        _agentLogManager = serviceProvider.GetRequiredService<IAgentLogManager>();
     }
 
     public async Task<ToolCollection> GetToolsAsync(ClaimsPrincipal principal, AgentChatContext context, CancellationToken cancellationToken = default)
@@ -147,7 +152,7 @@ public class AgentChatClient
         // Add tools as plugins to semantic kernel
         await PrepareToolsAsync(principal, context, kernel, cancellationToken);
 
-        OrchestrationResponseCallback responseCallback = (response) =>
+        OrchestrationResponseCallback responseCallback = async (response) =>
         {
             _logger.LogInformation("Received response from agent {AuthorName}", response.AuthorName);
             groupChatHistory.Add(response);
@@ -156,9 +161,7 @@ public class AgentChatClient
             newMessages.Add(response);
 
             // Log the message for usage/billing information
-
-
-            return ValueTask.CompletedTask;
+            await _agentLogManager.LogResponseAsync(project?.TeamId, project?.TeamId, orchestrationStrategy, principal, response);
         };
 
         // Channel that sends updates from the agents to us
@@ -272,31 +275,25 @@ public class AgentChatClient
         context.Messages.Add(userMessage);
     }
 
-    public async IAsyncEnumerable<ChatResponseUpdate> AskAsync(ClaimsPrincipal principal, 
+    public async IAsyncEnumerable<ChatResponseUpdate> AskAsync(ClaimsPrincipal principal,
         TestProject? project,
         AgentChatContext context, 
         ChatMessage userMessage, 
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         var references = await GetReferencesAsChatMessagesAsync(principal, context, cancellationToken);
-        if(references.Count > 0)
-        {
-            yield return new ChatResponseUpdate(ChatRole.System, $"Collected {references.Count} references..\n");
-        }
 
         using var client = await _chatClientFactory.CreateChatClientAsync(principal, AI.Models.ModelType.Default);
         if (client is not null)
         {
             List<ChatMessage> chatMessagesContext = [.. references, .. context.Messages];
-            //await foreach (var update in PreProcessAsync(principal, context, userMessage, chatMessagesContext, client, cancellationToken))
-            //{
-            //    yield return update;
-            //}
 
             // Finally, add to the user message and call the model
             chatMessagesContext = [.. references, .. context.Messages];
             await foreach (var update in CallModelAsync(principal, context, userMessage, chatMessagesContext, client, cancellationToken))
             {
+                await _agentLogManager.LogResponseAsync(project?.TeamId, project?.Id, principal, update);
+
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return update;
             }
@@ -323,7 +320,6 @@ public class AgentChatClient
 
         var options = new ChatOptions
         {
-            AllowMultipleToolCalls = true,
             ToolMode = ChatToolMode.Auto,
             Tools = [.. tools.EnabledFunctions]
         };

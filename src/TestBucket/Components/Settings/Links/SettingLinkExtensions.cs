@@ -17,6 +17,14 @@ public static class SettingLinkExtensions
             Keywords = "mcp model context protocol ai llm",
             Icon = TbIcons.Filled.ModelContextProtocol
         });
+        services.AddSingleton(new SettingsLink
+        {
+            Title = "ai-usage",
+            Description = "ai-usage-description",
+            RelativeUrl = "/{tenantId}/Settings/AI/Usage",
+            Keywords = "mcp ai llm usage billing money cost token",
+            Icon = TbIcons.BoldDuoTone.AI
+        });
 
         services.AddSingleton(new SettingsLink
         {

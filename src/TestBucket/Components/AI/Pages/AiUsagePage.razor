@@ -1,0 +1,75 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/AI/Usage"
+@using TestBucket.Components.AI.Controllers
+@using TestBucket.Components.Settings.ApiKeys
+@using TestBucket.Domain
+@using TestBucket.Domain.AI.Billing
+@using TestBucket.Domain.Settings
+@layout SettingsLayout
+@inject AiUsageController aiUsageController
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<SettingStrings> settingsLoc
+
+<MudStack Class="container-settings-page">
+
+    <MudText Typo="Typo.h1">@settingsLoc["ai-usage"]</MudText>
+
+    <MudStack Class="pa-5">
+        <MudText Typo="Typo.h3">@loc["year-to-date"]</MudText>
+
+        @if (_yearlyUsage is null)
+        {
+            <MudSkeleton Height="40"/>
+        }
+        else
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>@loc["total"]</th>
+                        <th>@loc["input"]</th>
+                        <th>@loc["output"]</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>@loc["tokens"]</td>
+                        <td>@_yearlyUsage.TotalTokenCount</td>
+                        <td>@_yearlyUsage.InputTokenCount</td>
+                        <td>@_yearlyUsage.OutputTokenCount</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>@FormatUSD(_yearlyUsage.TotalSumUSD)</td>
+                        <td>@FormatUSD(_yearlyUsage.InputSumUSD)</td>
+                        <td>@FormatUSD(_yearlyUsage.OutputSumUSD)</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+
+    </MudStack>
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+
+    private TokenUsage? _yearlyUsage;
+
+    private string FormatUSD(double usd)
+    {
+        return $"${Math.Round(usd,2)}";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            _yearlyUsage = await aiUsageController.GetYearlyUsageAsync(DateTime.Now.Year);
+            StateHasChanged();
+        }
+    }
+}

@@ -131,16 +131,27 @@
                     </MudStack>
                 </TitleContent>
                 <ChildContent>
-                    <MudStack Row Spacing="5">
-                        <MudRadioGroup Value="_defaultModel" ValueChanged="OnDefaultModelChanged" T="string">
-                            @foreach(var model in LlmModels.GetModels(_aiProvider, ModelCapability.Tools))
+                    <MudStack>
+                        <MudStack Row Spacing="5">
+                            <MudRadioGroup Value="_defaultModel" ValueChanged="OnDefaultModelChanged" T="string">
+                                @foreach(var model in LlmModels.GetModels(_aiProvider, ModelCapability.Tools))
+                                {
+                                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
+                                        <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
+                                        <span>@model.Name</span>
+                                    </MudRadio>
+                                }
+                            </MudRadioGroup>
+                        </MudStack>
+
+                        @foreach (var setting in _settings.Where(x => x.Metadata.SearchText.Contains("ai-models-shared")))
+                        {
+                            if (_fieldMap.TryGetValue(setting.Metadata.Id, out var fieldValue))
                             {
-                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
-                                    <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
-                                    <span>@model.Name</span>
-                                </MudRadio>
+                                <FieldEditor Field="@fieldValue" FieldChanged="OnFieldChangedAsync">
+                                </FieldEditor>
                             }
-                        </MudRadioGroup>
+                        }
                     </MudStack>
                 </ChildContent>
             </MudExpansionPanel>

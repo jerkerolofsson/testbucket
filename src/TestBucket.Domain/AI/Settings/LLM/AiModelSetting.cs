@@ -26,9 +26,6 @@ namespace TestBucket.Domain.AI.Settings.LLM
             Metadata.ShowDescription = true;
             Metadata.Type = FieldType.String;
             Metadata.AccessLevel = Identity.Models.AccessLevel.Admin;
-
-            // Azure
-            Metadata.Options = ["llama3.1"];
             _mediator = mediator;
         }
 
@@ -49,6 +46,13 @@ namespace TestBucket.Domain.AI.Settings.LLM
             if (settings.LlmModel != value.StringValue)
             {
                 settings.LlmModel = value.StringValue ?? "llama3.1";
+
+                var model = LlmModels.GetModelByName(settings.LlmModel);
+                if(model is not null)
+                {
+                    settings.LlmModelUsdPerMillionTokens = model.UsdPerMillionTokens;
+                }
+
                 await _settingsProvider.SaveDomainSettingsAsync(context.Principal.GetTenantIdOrThrow(), null, settings);
 
                 if (settings.AiProvider == "ollama" && settings.AiProviderUrl != null && settings.LlmModel is not null)

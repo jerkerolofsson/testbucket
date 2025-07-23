@@ -447,4 +447,16 @@
   <data name="specifications" xml:space="preserve">
     <value />
   </data>
+  <data name="total" xml:space="preserve">
+    <value />
+  </data>
+  <data name="input" xml:space="preserve">
+    <value />
+  </data>
+  <data name="output" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tokens" xml:space="preserve">
+    <value />
+  </data>
 </root>

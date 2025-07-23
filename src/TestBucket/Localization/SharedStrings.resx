@@ -978,4 +978,17 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="specifications" xml:space="preserve">
     <value>Specifications</value>
   </data>
+  <data name="total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="input" xml:space="preserve">
+    <value>Input</value>
+  </data>
+  <data name="output" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="tokens" xml:space="preserve">
+    <value>Tokens</value>
+    <comment>Tokens (LLM/AI)</comment>
+  </data>
 </root>

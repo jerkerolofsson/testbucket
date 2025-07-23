@@ -11,6 +11,11 @@ namespace TestBucket.Domain.AI.Models;
 public class LlmModel
 {
     /// <summary>
+    /// Price for 1 000 000 tokens in USD.
+    /// </summary>
+    public double UsdPerMillionTokens { get; set; }
+
+    /// <summary>
     /// Gets or sets the SVG icon representing the model.
     /// </summary>
     public string? Icon { get; set; }

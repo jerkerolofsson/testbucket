@@ -25,6 +25,7 @@ internal class TestReviewerAgent
             - Tests must have a name 
             - Tests must have steps describing how to test
             - Never ask for user input
+            - Never add test cases. Only review the tests.
             """,
             Name = "Test-Reviewer",
             Kernel = kernel,

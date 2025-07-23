@@ -2,10 +2,7 @@
 
 using Microsoft.Extensions.Localization;
 
-using NGitLab.Models;
-
 using TestBucket.Components.AI.Dialogs;
-using TestBucket.Contracts.Localization;
 using TestBucket.Domain.AI.Mcp;
 using TestBucket.Domain.AI.Mcp.Models;
 using TestBucket.Localization;

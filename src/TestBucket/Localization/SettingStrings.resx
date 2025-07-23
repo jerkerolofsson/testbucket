@@ -169,7 +169,7 @@
     <value>Add the json above to ".vscode/mcp.json" to use Test Bucket from VS Code</value>
   </data>
   <data name="open-ai-settings" xml:space="preserve">
-    <value>Open AI settings</value>
+    <value>OpenAI settings</value>
   </data>
   <data name="profile" xml:space="preserve">
     <value>Profile</value>
@@ -323,5 +323,20 @@
   </data>
   <data name="ollama-context-length-message" xml:space="preserve">
     <value>When using Ollama make sure to configure a context length suitable for the model used. You can configure the Ollama context size using the environment variable OLLAMA_CONTEXT_LENGTH for the Ollama docker container. For example OLLAMA_CONTEXT_LENGTH=131072 (128k) context length for Gemma3 or 40960 (40k) for Qwen3.</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
+    <value>Cost for 1M tokens</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
+    <value>Billing cost for 1 million tokens in USD. This is only used to estimate and visualize costs for internal reports and will not affect any actual billing.</value>
+  </data>
+  <data name="openai-provider-key" xml:space="preserve">
+    <value>OpenAI API key</value>
+  </data>
+  <data name="ai-usage" xml:space="preserve">
+    <value>AI usage</value>
+  </data>
+  <data name="year-to-date" xml:space="preserve">
+    <value>Year to date</value>
   </data>
 </root>

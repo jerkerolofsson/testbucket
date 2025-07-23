@@ -144,20 +144,40 @@ public class LlmModels
     /// </summary>
     public static IReadOnlyDictionary<string, LlmModel> OpenAiModels = new Dictionary<string, LlmModel>
     {
-        ["gpt-4.1-mini"] = new LlmModel
+        ["gpt-4.1"] = new LlmModel
         {
+            UsdPerMillionTokens = 2.0,
             Icon = TbIcons.Brands.OpenAI,
             Vendor = "open-ai",
-            Name = "GPT-4.1 Mini",
+            Name = "GPT 4.1",
+            ModelName = "gpt-4.1",
+            Capabilities = ModelCapability.Tools
+        },
+        ["gpt-4.1-mini"] = new LlmModel
+        {
+            UsdPerMillionTokens = 0.4,
+            Icon = TbIcons.Brands.OpenAI,
+            Vendor = "open-ai",
+            Name = "GPT 4.1 Mini",
             ModelName = "gpt-4.1-mini",
             Capabilities = ModelCapability.Tools
         },
         ["gpt-4o-mini"] = new LlmModel
         {
+            UsdPerMillionTokens = 0.15,
             Icon = TbIcons.Brands.OpenAI,
             Vendor = "open-ai",
-            Name = "GPT o4 Mini",
-            ModelName = "o4-mini-2025-04-16",
+            Name = "GPT 4o Mini",
+            ModelName = "gpt-4o-mini",
+            Capabilities = ModelCapability.Tools
+        },
+        ["o4-mini"] = new LlmModel
+        {
+            UsdPerMillionTokens = 1.1,
+            Icon = TbIcons.Brands.OpenAI,
+            Vendor = "open-ai",
+            Name = "o4 Mini",
+            ModelName = "o4-mini",
             Capabilities = ModelCapability.Tools
         }
     };
@@ -202,7 +222,11 @@ public class LlmModels
         {
             return OpenAiModels.Values.Where(x => (x.Capabilities & requiredCapability) == requiredCapability);
         }
-        return Models.Values.Where(x => (x.Capabilities & requiredCapability) == requiredCapability);
+        if (aiProvider == "ollama")
+        {
+            return Models.Values.Where(x => (x.Capabilities & requiredCapability) == requiredCapability);
+        }
+        return [];
     }
 
     public static IEnumerable<LlmModel> GetModels(ModelCapability requiredCapability)

@@ -292,7 +292,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<UserPreferencesController>();
         builder.Services.AddScoped<CommandController>();
         builder.Services.AddScoped<McpController>();
-
+        builder.Services.AddScoped<AiUsageController>();
 
         builder.Services.AddScoped<UserPreferencesService>();
         builder.Services.AddScoped<TestBrowser>();

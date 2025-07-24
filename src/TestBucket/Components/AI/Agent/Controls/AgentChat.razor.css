@@ -5,17 +5,44 @@
     height: 100%;
 }
 
+
+.tb-agent-chat-suggestions ::deep .mud-paper:hover::after {
+    opacity: 1;
+}
+
+
+.tb-agent-chat-suggestions ::deep .mud-paper::after {
+    opacity: 0;
+  --angle: 0deg;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 4px; 
+  padding: 2px; 
+  animation: 8s rotate linear infinite;
+  transition: all linear var(--tb-animation-300);
+
+  background: conic-gradient(from var(--angle), var(--mud-palette-primary-darken), var(--mud-palette-tertiary), var(--mud-palette-primary-darken), var(--mud-palette-secondary), var(--mud-palette-primary-darken));
+  mask: 
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  mask-composite: exclude; 
+}
+
 .tb-agent-chat-suggestions ::deep .mud-paper:hover {
-    background: var(--mud-palette-primary-hover);
-    border-color: var(--mud-palette-lines-inputs);
+    background: var(--mud-palette-surface);
 }
 
 .tb-agent-chat-suggestions ::deep .mud-paper {
-    padding: 16px;
+    position: relative;
+    padding: 12px !important;
     background: var(--mud-palette-surface-lighten);
     cursor: pointer;
-    transition: all linear 150ms;
-    border: solid 1px transparent;
+    transition: all linear var(--tb-animation-150);
+}
+
+.tb-agent-chat-suggestions ::deep .mud-paper > .flex-row {
+    align-items: center;
 }
 
 .tb-agent-chat-suggestions,
@@ -106,4 +133,16 @@
     margin-left: 16px;
     align-self: flex-end;
     --chat-background: var(--mud-palette-surface-darken);
+}
+
+@keyframes rotate {
+	to {
+		--angle: 360deg;
+	}
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
 }

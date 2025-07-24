@@ -32,7 +32,6 @@
             var result = await projectController.SearchAsync(new SearchQuery() { Count = 1 });
             if (result.TotalCount == 0)
             {
-                // No projects found, redirect to welcome experience
                 navigationManager.NavigateTo($"/{tenantId}/Welcome", true);
                 return;
             }

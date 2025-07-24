@@ -36,6 +36,8 @@ internal class AiRunner : BackgroundService
     {
         while(!stoppingToken.IsCancellationRequested)
         {
+            _logger.LogInformation("AI runner is started, waiting for new tests..");
+
             var job = await _queue.DequeueAsync(stoppingToken);
             if (job == null)
             {
@@ -62,7 +64,7 @@ internal class AiRunner : BackgroundService
             {
                 try
                 {
-
+                    _logger.LogInformation("Processing pending tests..");
                     var result = await ProcessPendingTestsAsync(scope, stoppingToken);
                     if(!result)
                     {
@@ -164,7 +166,7 @@ internal class AiRunner : BackgroundService
         await CompileAndRunAsync(scope, project, testCaseRun, testCase, testRun, cancellationToken);
     }
 
-    private static async Task<bool> CompileAndRunAsync(IServiceScope scope, TestProject project, TestCaseRun testCaseRun, TestCase testCase, TestRun testRun, CancellationToken cancellationToken)
+    private async Task<bool> CompileAndRunAsync(IServiceScope scope, TestProject project, TestCaseRun testCaseRun, TestCase testCase, TestRun testRun, CancellationToken cancellationToken)
     {
         var principal = Impersonation.Impersonate(testCaseRun.TenantId, testCaseRun.TestProjectId);
 
@@ -221,7 +223,7 @@ internal class AiRunner : BackgroundService
         return true;
     }
 
-    private static async Task<StringBuilder> RunWithAgentAsync(IServiceScope scope, TestProject project, TestCase testCase, ClaimsPrincipal principal, TestExecutionContext? testExecutionContext, CancellationToken cancellationToken)
+    private async Task<StringBuilder> RunWithAgentAsync(IServiceScope scope, TestProject project, TestCase testCase, ClaimsPrincipal principal, TestExecutionContext? testExecutionContext, CancellationToken cancellationToken)
     {
         var chatClientFactory = scope.ServiceProvider.GetRequiredService<IChatClientFactory>();
       
@@ -271,6 +273,7 @@ internal class AiRunner : BackgroundService
                 }
                 else if (content is TextContent textContent)
                 {
+                    _logger.LogInformation(textContent.Text);
                     responseBuilder.Append(textContent.Text);
                 }
                 else

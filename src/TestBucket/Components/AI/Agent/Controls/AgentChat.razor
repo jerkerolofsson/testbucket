@@ -50,10 +50,13 @@
                 }
                 else
                 {
+                    bool showText = true;
                     foreach(var content in message.Contents)
                     {
-                        if(content is FunctionCallContent functionCall)
+                        @if(content is FunctionCallContent functionCall)
                         {
+                            showText = false;
+
                             <div class=" mud-elevation-1 chat function-call @message.Role">
                                 <MudExpansionPanels>
                                     <MudExpansionPanel>
@@ -69,8 +72,7 @@
                                                 <table>
                                                     @foreach(var pair in functionCall.Arguments)
                                                     {
-                                                        <tr><td>@pair.Key</td><td>@pair.Value</td></tr>
-
+                                                        <tr><td>@pair.Key</td><td>@pair.Value (@pair.Value?.GetType()?.Name)</td></tr>
                                                     }
                                                 </table>
                                             }
@@ -79,8 +81,10 @@
                                 </MudExpansionPanels>
                             </div>
                         }
-                        if (content is FunctionResultContent functionResult && functionResult.RawRepresentation is not null)
+                        else if (content is FunctionResultContent functionResult && functionResult.RawRepresentation is not null)
                         {
+                            showText = false;
+
                             <div class=" mud-elevation-1 chat function-call @message.Role">
                                 <MudStack>
                                     <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.Tools" />
@@ -90,7 +94,7 @@
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(message.Text))
+                    if (showText && !string.IsNullOrEmpty(message.Text))
                     {
                         <div class="chat @message.Role">
                             <div class="author">@message.AuthorName</div>

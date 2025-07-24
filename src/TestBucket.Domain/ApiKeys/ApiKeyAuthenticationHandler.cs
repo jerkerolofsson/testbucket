@@ -53,7 +53,7 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<ApiKeyAuthentic
 
         if(apiKey is null)
         {
-            return AuthenticateResult.Fail("Missing API Key");
+            return AuthenticateResult.Fail("Missing API Key for request " + Request.Path);
         }
 
         ClaimsPrincipal? principal = await _apiKeyAuthenticator.AuthenticateAsync(apiKey);

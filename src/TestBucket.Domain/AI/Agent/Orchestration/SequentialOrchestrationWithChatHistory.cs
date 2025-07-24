@@ -22,7 +22,7 @@ internal class SequentialOrchestrationWithChatHistory :  SequentialOrchestration
         _chatHistory = chatHistory;
     }
 
-    protected override ValueTask StartAsync(IAgentRuntime runtime, TopicId topic, IEnumerable<ChatMessageContent> input, AgentType? entryAgent)
+    protected override async ValueTask StartAsync(IAgentRuntime runtime, TopicId topic, IEnumerable<ChatMessageContent> input, AgentType? entryAgent)
     {
         if (!entryAgent.HasValue)
         {
@@ -30,6 +30,6 @@ internal class SequentialOrchestrationWithChatHistory :  SequentialOrchestration
         }
         _chatHistory.AddRange(input); // This will be an input from InvokeAsync
 
-        return runtime.PublishMessageAsync(_chatHistory.AsInputTaskMessage(), entryAgent.Value);
+        await runtime.PublishMessageAsync(_chatHistory.AsInputTaskMessage(), entryAgent.Value);
     }
 }

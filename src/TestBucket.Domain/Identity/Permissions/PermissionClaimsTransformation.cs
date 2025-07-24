@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authentication;
 
-using TestBucket.Domain.Identity.Permissions.Models;
-
 namespace TestBucket.Domain.Identity.Permissions
 {
     public class PermissionClaimsTransformation : IClaimsTransformation
@@ -23,6 +21,13 @@ namespace TestBucket.Domain.Identity.Permissions
         public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
         {
             ClaimsIdentity claimsIdentity = new ClaimsIdentity();
+
+            var tenantId = principal.GetTenantId();
+            if(tenantId is null)
+            {
+                return principal;
+            }
+
 
             var rolePermissions = await _userPermissionsManager.GetTenantRolePermissionsAsync(principal);
             var roles = rolePermissions.Select(x => x.Role).Distinct().ToArray();

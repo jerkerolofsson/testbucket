@@ -195,6 +195,7 @@ internal class IssueRepository : IIssueRepository
         var issues = dbContext.LocalIssues.AsNoTracking()
             .Include(x=>x.Comments)
             .Include(x => x.IssueFields!).ThenInclude(y=>y.FieldDefinition)
+            .AsSplitQuery()
             .AsQueryable();
 
         foreach (var filter in filters)

@@ -32,6 +32,7 @@ public class ProfilePictureApiController : ControllerBase
             return Redirect("/img/ai-user.png");
         }
 
-        return NotFound();
+        var imageBytes = Array.Empty<byte>();
+        return File(imageBytes, "image/jpg");
     }
 }

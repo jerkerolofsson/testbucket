@@ -4,12 +4,7 @@ using TestBucket.Domain.AI.Agent.Orchestration;
 namespace TestBucket.Domain.AI.Agent;
 public class SuggestionProvider
 {
-    public static string GetAiRunTestPrompt(string name) => $"""
-                    Run the steps described in the reference description for '{name}' one by one. 
-                    Use relevant tools as needed. 
-                    After running the steps, if a step failed, output "FAILED: <DescriptiveErrorMessage>" where <DescriptiveErrorMessage> describes what went wrong.
-                    If all steps passed, output "PASSED"
-                    """;
+    public static string GetAiRunTestPrompt(string name) => $"Test Case: {name}";
 
     public static IReadOnlyList<Suggestion> GetSuggestions(AgentChatContext context)
     {

@@ -50,5 +50,5 @@
 
     private IComponentRenderMode? PageRenderMode =>
     HttpContext.AcceptsInteractiveRouting() ? new InteractiveServerRenderMode(false) : null;
-        //HttpContext.AcceptsInteractiveRouting() ? InteractiveServer : null;
+    //    HttpContext.AcceptsInteractiveRouting() ? InteractiveServer : null;
 }

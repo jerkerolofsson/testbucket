@@ -21,14 +21,15 @@ internal class AIRunner : IOrchestrationStrategy
     {
         var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         var members = GetMembers(kernel, loggerFactory);
-        return OrchestrationHelper.CreateSequential(history, members, responseCallback, streamingCallback, serviceProvider);
+        return OrchestrationHelper.CreateGroupChat(history, members, responseCallback, streamingCallback, serviceProvider);
     }
 
     public ChatCompletionAgent[] GetMembers(Kernel kernel, ILoggerFactory loggerFactory)
     {
         return 
             [
-                AIRunnerAgent.Create(kernel, loggerFactory)
+                AIRunnerAgent.Create(kernel, loggerFactory),
+                AiRunnerResultEvaluator.Create(kernel, loggerFactory),
             ];
     }
 }

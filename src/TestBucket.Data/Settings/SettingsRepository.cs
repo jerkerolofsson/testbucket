@@ -35,7 +35,7 @@ internal class SettingsRepository : ISettingsProvider
 
         // Read from database
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        _settings = await dbContext.GlobalSettings.AsNoTracking().FirstOrDefaultAsync();
+        _settings = await dbContext.GlobalSettings.AsNoTracking().OrderBy(x=>x.Id).FirstOrDefaultAsync();
 
         if (_settings is null)
         {
@@ -51,6 +51,7 @@ internal class SettingsRepository : ISettingsProvider
 
         var existingSetting = await dbContext.DomainSettings
             .Where(s => s.TenantId == tenantId && s.TestProjectId == projectId && s.Type == type)
+            .OrderBy(x=>x.Id)
             .FirstOrDefaultAsync();
 
         if (existingSetting is not null)
@@ -79,6 +80,7 @@ internal class SettingsRepository : ISettingsProvider
 
         var existingSetting = await dbContext.DomainSettings
             .Where(s => s.TenantId == tenantId && s.TestProjectId == projectId && s.Type == type)
+            .OrderBy(x=>x.Id)
             .FirstOrDefaultAsync();
 
         if(existingSetting is null)

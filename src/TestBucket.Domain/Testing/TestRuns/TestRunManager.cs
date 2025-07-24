@@ -132,6 +132,12 @@ internal class TestRunManager : ITestRunManager
             }
         }
         await AddTestCaseRunAsync(principal, testCaseRun);
+
+        if(testCaseRun.AssignedToUserName is not null)
+        {
+            await _mediator.Publish(new TestCaseRunAssignmentChangedNotification(principal, testCaseRun, null));
+        }
+
         return testCaseRun;
     }
 

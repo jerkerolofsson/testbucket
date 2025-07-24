@@ -68,7 +68,8 @@ namespace TestBucket.Data.Requirements
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             var requirements = dbContext.Requirements
                 .Include(x => x.RequirementFields!).ThenInclude(x => x.FieldDefinition)
-                .Include(x => x.TestLinks).AsQueryable();
+                .Include(x => x.TestLinks)
+                .AsSplitQuery().AsQueryable();
 
             foreach (var filter in filters)
             {
@@ -84,7 +85,8 @@ namespace TestBucket.Data.Requirements
             var requirements = dbContext.Requirements
                 .Include(x=>x.RequirementFields!).ThenInclude(x=>x.FieldDefinition)
                 .Include(x => x.Comments)
-                .Include(x=>x.TestLinks).AsQueryable();
+                .Include(x=>x.TestLinks)
+                .AsSplitQuery().AsQueryable();
 
             foreach (var filter in filters)
             {
@@ -109,7 +111,8 @@ namespace TestBucket.Data.Requirements
             var requirements = dbContext.Requirements
                 .Include(x => x.RequirementFields!).ThenInclude(x => x.FieldDefinition)
                 .Include(x => x.Comments)
-                .Include(x => x.TestLinks).AsQueryable();
+                .Include(x => x.TestLinks)
+                .AsSplitQuery().AsQueryable();
 
             foreach (var filter in filters)
             {
@@ -246,7 +249,7 @@ namespace TestBucket.Data.Requirements
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             return await dbContext.RequirementSpecifications
                 .Include(x => x.Comments)
-                .Where(x => x.TenantId == tenantId && x.Id == requirementSpecificationId).FirstOrDefaultAsync();
+                .AsSplitQuery().Where(x => x.TenantId == tenantId && x.Id == requirementSpecificationId).FirstOrDefaultAsync();
         }
 
         public async Task DeleteRequirementSpecificationAsync(RequirementSpecification specification)
@@ -430,7 +433,7 @@ namespace TestBucket.Data.Requirements
             return await dbContext.Requirements
                 .Include(x=>x.RequirementFields)
                 .Include(x=>x.Comments)
-                .AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
+                .AsSplitQuery().AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task DeleteRequirementAsync(Requirement requirement)
@@ -455,7 +458,7 @@ namespace TestBucket.Data.Requirements
             var requirements = dbContext.RequirementTestLinks
                 .Include(x => x.Requirement)
                 .Include(x => x.TestCase!).ThenInclude(y => y.TestCaseFields)
-                .AsQueryable();
+                .AsSplitQuery().AsQueryable();
 
             foreach (var filter in filters)
             {

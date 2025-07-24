@@ -1,1 +1,0 @@
- npx @playwright/mcp@latest --isolated --port 8000

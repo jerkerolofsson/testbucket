@@ -113,7 +113,7 @@
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo($"/{TenantId}");
+            RedirectManager.RedirectTo($"/{TenantId}/Welcome");
         }
         else if (result.RequiresTwoFactor)
         {

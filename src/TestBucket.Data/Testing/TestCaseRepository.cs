@@ -73,7 +73,9 @@ internal class TestCaseRepository : ITestCaseRepository
         var vector = new Pgvector.Vector(embeddingVector);
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var tests = dbContext.TestCases.Include(x => x.TestCaseFields).AsQueryable();
+        var tests = dbContext.TestCases
+            .AsSingleQuery()
+            .Include(x => x.TestCaseFields).AsQueryable();
         foreach (var spec in filters)
         {
             tests = tests.Where(spec.Expression);
@@ -99,7 +101,9 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var tests = dbContext.TestCases.Include(x => x.TestCaseFields).AsQueryable();
+        var tests = dbContext.TestCases
+            .AsSingleQuery()
+            .Include(x => x.TestCaseFields).AsQueryable();
         foreach (var spec in filters)
         {
             tests = tests.Where(spec.Expression);
@@ -118,7 +122,9 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<long[]> SearchTestCaseIdsAsync(IEnumerable<FilterSpecification<TestCase>> filters)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var tests = dbContext.TestCases.AsNoTracking().Include(x => x.TestCaseFields).AsQueryable();
+        var tests = dbContext.TestCases.AsNoTracking()
+            .AsSingleQuery()
+            .Include(x => x.TestCaseFields).AsQueryable();
         foreach (var spec in filters)
         {
             tests = tests.Where(spec.Expression);
@@ -133,6 +139,7 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.TestCases
             .Include(x => x.Comments)
+            .AsSingleQuery()
             .AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == testCaseId).FirstOrDefaultAsync();
     }
 
@@ -241,6 +248,7 @@ internal class TestCaseRepository : ITestCaseRepository
 
         await dbContext.TestCases
             .Include(x => x.TestSteps)
+            .AsSingleQuery()
             .Where(x => x.Id == testCaseId).ExecuteDeleteAsync();
     }
 
@@ -445,6 +453,7 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.TestSuites
             .Include(x => x.Comments)
+            .AsSingleQuery()
             .AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
     }
     public async Task<PagedResult<TestSuite>> SearchTestSuitesAsync(string tenantId, SearchTestSuiteQuery query)
@@ -452,6 +461,7 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var suites = dbContext.TestSuites
             .Include(x => x.TestProject)
+            .AsSingleQuery()
             .Where(x => x.TenantId == tenantId);
 
         // Apply filter
@@ -716,6 +726,7 @@ internal class TestCaseRepository : ITestCaseRepository
             .Include(x => x.Team)
             .Include(x => x.TestProject)
             .Include(x => x.Comments)
+            .AsSplitQuery()
             .Where(x => x.TenantId == tenantId && x.Slug == slug);
 
         if(projectId is not null)
@@ -741,6 +752,7 @@ internal class TestCaseRepository : ITestCaseRepository
                 .Include(x => x.Team)
                 .Include(x => x.TestProject)
                 .Include(x => x.Comments)
+                .AsSplitQuery()
                 .Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
         });
     }
@@ -797,6 +809,7 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var runs = dbContext.TestRuns
             .Include(x=>x.TestRunFields!).ThenInclude(u=>u.FieldDefinition)
+            .AsSplitQuery()
             .AsQueryable();
 
         foreach(var filter in filters)
@@ -852,6 +865,7 @@ internal class TestCaseRepository : ITestCaseRepository
             .Include(x => x.LinkedIssues)
             .Include(x => x.Comments)
             .Include(x => x.Metrics)
+            .AsSplitQuery()
             .Where(x => x.TestRunId == id).AsAsyncEnumerable())
         {
             dbContext.TestCaseRuns.Remove(run);
@@ -886,6 +900,7 @@ internal class TestCaseRepository : ITestCaseRepository
             .Include(x => x.TestCase)
             .Include(x => x.Comments)
             .Include(x => x.Metrics)
+            .AsSplitQuery()
             .Where(x => x.TenantId == tenantId && x.Id == id).FirstOrDefaultAsync();
     }
 
@@ -899,6 +914,7 @@ internal class TestCaseRepository : ITestCaseRepository
             .Include(x => x.TestCase)
             .Include(x => x.Metrics)
             .Include(x => x.TestCaseRunFields!).ThenInclude(y => y.FieldDefinition)
+            .AsSplitQuery()
             .AsQueryable();
 
         foreach(var filter in filters)
@@ -1045,6 +1061,7 @@ internal class TestCaseRepository : ITestCaseRepository
         var tests = dbContext.TestCaseRuns
             .Include(x => x.TestCase)
             .Include(x => x.TestCaseRunFields)
+            .AsSplitQuery()
             .Where(x=>x.TestCaseRunFields!.Any(f => f.FieldDefinitionId == fieldDefinitionId))
             .AsQueryable();
 
@@ -1087,6 +1104,7 @@ internal class TestCaseRepository : ITestCaseRepository
             .Where(x=> testRunsIds.Contains(x.TestRunId))
             .Include(x => x.TestCase)
             .Include(x => x.TestCaseRunFields)
+            .AsSplitQuery()
             .AsQueryable();
 
         foreach (var filter in filters)
@@ -1125,6 +1143,7 @@ internal class TestCaseRepository : ITestCaseRepository
         var tests = dbContext.TestCaseRuns
             .Include(x => x.TestCase)
             .Include(x => x.TestCaseRunFields)
+            .AsSplitQuery()
             .AsQueryable();
 
         foreach (var filter in filters)
@@ -1168,6 +1187,7 @@ internal class TestCaseRepository : ITestCaseRepository
         var tests = dbContext.TestCaseRuns
             .Include(x => x.TestCase)
             .Include(x => x.TestCaseRunFields)
+            .AsSplitQuery()
             .AsQueryable();
 
         foreach (var filter in filters)
@@ -1204,6 +1224,7 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var localIsses = dbContext.TestCases
             .Include(x => x.TestCaseFields)
+            .AsSingleQuery()
             .Where(x => x.TestCaseFields!.Any(f => f.FieldDefinitionId == fieldDefinitionId))
             .AsQueryable();
 
@@ -1233,6 +1254,7 @@ internal class TestCaseRepository : ITestCaseRepository
         var tests = dbContext.TestCaseRuns
             .Include(x => x.TestCase)
             .Include(x => x.TestCaseRunFields)
+            .AsSplitQuery()
             .AsQueryable();
 
         foreach (var filter in filters)
@@ -1272,6 +1294,7 @@ internal class TestCaseRepository : ITestCaseRepository
         var tests = dbContext.TestCaseRuns
             .Include(x => x.TestCase)
             .Include(x => x.TestCaseRunFields)
+            .AsSplitQuery()
             .Where(x => x.TestCaseRunFields!.Any(f => f.FieldDefinitionId == fieldDefinitionId))
             .AsQueryable();
 
@@ -1314,6 +1337,7 @@ internal class TestCaseRepository : ITestCaseRepository
         var tests = dbContext.TestCaseRuns
             .Include(x => x.TestCase)
             .Include(x => x.TestCaseRunFields)
+            .AsSplitQuery()
             .AsQueryable();
 
         foreach (var filter in filters)
@@ -1340,6 +1364,7 @@ internal class TestCaseRepository : ITestCaseRepository
         var tests = dbContext.TestCaseRuns
             .Include(x => x.TestCase)
             .Include(x => x.TestCaseRunFields)
+            .AsSplitQuery()
             .AsQueryable();
 
         foreach (var filter in filters)
@@ -1366,6 +1391,7 @@ internal class TestCaseRepository : ITestCaseRepository
         var tests = dbContext.TestCaseRuns
             .Include(x => x.TestCase)
             .Include(x => x.TestCaseRunFields)
+            .AsSplitQuery()
             .AsQueryable();
 
         foreach (var filter in filters)
@@ -1427,6 +1453,7 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var tests = dbContext.TestCases
             .Include(x => x.TestCaseFields)
+            .AsSingleQuery()
             .Where(x => x.TestCaseFields!.Any(f => f.FieldDefinitionId == fieldDefinitionId))
             .AsQueryable();
 

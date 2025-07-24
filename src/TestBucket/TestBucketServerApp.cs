@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
@@ -161,6 +162,7 @@ public static class TestBucketServerApp
         },
         dbContextBuilder =>
         {
+            //dbContextBuilder.ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
             dbContextBuilder.UseNpgsql(builder =>
             {
                 builder.UseVector();
@@ -402,10 +404,10 @@ public static class TestBucketServerApp
 
         builder.Services.AddControllers(options =>
         {
-            var policy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
-            options.Filters.Add(new AuthorizeFilter(policy));
+            //var policy = new AuthorizationPolicyBuilder()
+            //    .RequireAuthenticatedUser()
+            //    .Build();
+            //options.Filters.Add(new AuthorizeFilter(policy));
         });
 
         var app = builder.Build();

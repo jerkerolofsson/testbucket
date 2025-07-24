@@ -46,7 +46,7 @@ internal class TestAccountRepository : ITestAccountRepository
         return new PagedResult<TestAccount>
         {
             TotalCount = totalCount,
-            Items = await accounts.Skip(offset).Take(count).ToArrayAsync()
+            Items = await accounts.OrderBy(x=>x.Name).Skip(offset).Take(count).ToArrayAsync()
         };
     }
 

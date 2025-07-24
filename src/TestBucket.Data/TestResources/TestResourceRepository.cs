@@ -52,7 +52,7 @@ internal class TestResourceRepository : ITestResourceRepository
         return new PagedResult<TestResource>
         {
             TotalCount = totalCount,
-            Items = await resources.Skip(offset).Take(count).ToArrayAsync()
+            Items = await resources.OrderBy(x=>x.Name).Skip(offset).Take(count).ToArrayAsync()
         };
     }
 

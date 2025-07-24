@@ -8,28 +8,34 @@ using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Agents;
 
 namespace TestBucket.Domain.AI.Agent.Agents;
-internal class AIRunnerAgent
+internal class AiRunnerResultEvaluator
 {
     public static ChatCompletionAgent Create(Kernel kernel, Microsoft.Extensions.Logging.ILoggerFactory loggerFactory)
     {
         return new ChatCompletionAgent()
         {
             LoggerFactory = loggerFactory,
-            Description = "AI Runner",
+            Description = "AI Runner Result evaluator",
             Instructions =
             """
-            You are a QA tester.
+            You are a tester.
 
-            Your goal is to execute the test case that was defined by the user.
+            Your goal is to evaluate if a test is passed or failed.
 
             # Rules
-            - Follow the steps and execute them with the provided tools. 
-            - Describe what you are doing and what the outcome from the executed steps are.
-            - Don't make up steps. Only follow the steps described in the test case description.
-            - Don't check for things unless you are asked explicitly to check for it.
-            - Use available tools to execute the steps.
+            - You must not call any tools
+
+            # Steps
+            1. Evaluate the test result from the context
+            2. Output conclusion based on the evaluation
+            3. Output "TERMINATE"
+
+            # Conclusion
+            - If a problem or a failure is detected. Respond with "FAILED". Summarize what the problem is.
+            - If all steps are executed successfully, respond with "PASSED".
+            - If the result cannot be determined, respond with "INCONCLUSIVE"
             """,
-            Name = "ai-runner",
+            Name = "ai-runner-evaluator",
             Kernel = kernel,
             Arguments = new KernelArguments(new PromptExecutionSettings
             {

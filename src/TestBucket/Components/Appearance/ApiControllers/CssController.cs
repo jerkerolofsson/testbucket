@@ -17,10 +17,21 @@ public class CssController : ProjectApiControllerBase
         _themeManager = themeManager;
     }
 
-    [Authorize("ApiKeyOrBearer")]
+    //[Authorize("ApiKeyOrBearer")]
     [HttpGet("/api/appearance/usertheme.css")]
     public async Task<IActionResult> GetUserThemeCssAsync()
     {
+        // Check if the user is authenticated
+        if (!User.Identity?.IsAuthenticated ?? true)
+        {
+            return new ContentResult
+            {
+                Content = "",
+                ContentType = "text/css",
+                StatusCode = 200
+            };
+        }
+
         var css = await _themeManager.GetThemedStylesheetAsync(User);
         return new ContentResult
         {

@@ -1,35 +1,26 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text.Json;
+﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading.Channels;
-
-using Azure;
 
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.Agents;
 using Microsoft.SemanticKernel.Agents.Orchestration;
-using Microsoft.SemanticKernel.Agents.Orchestration.GroupChat;
-using Microsoft.SemanticKernel.Agents.Orchestration.Sequential;
 using Microsoft.SemanticKernel.Agents.Runtime.InProcess;
 using Microsoft.SemanticKernel.ChatCompletion;
 
-using TestBucket.Domain.AI.Agent.Agents;
 using TestBucket.Domain.AI.Agent.Logging;
-using TestBucket.Domain.AI.Agent.Models;
 using TestBucket.Domain.AI.Agent.Orchestration;
+using TestBucket.Domain.AI.Diagnostics.Filters;
 using TestBucket.Domain.AI.Mcp.Services;
 using TestBucket.Domain.AI.Tools;
+using TestBucket.Domain.Diagnostics;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Testing.Compiler;
 using TestBucket.Domain.Testing.TestCases;
 
 namespace TestBucket.Domain.AI.Agent;
-
-// AsKernelFunction
-#pragma warning disable SKEXP0001
-#pragma warning disable SKEXP0110
 
 public class AgentChatClient
 {
@@ -41,6 +32,8 @@ public class AgentChatClient
     private readonly SemanticKernelFactory _semanticKernelFactory;
     private readonly ILogger<AgentChatClient> _logger;
     private readonly IAgentLogManager _agentLogManager;
+
+    private ActivitySource ActivitySource => TestBucketActivitySource.ActivitySource;
 
     public AgentChatClient(IChatClientFactory chatClientFactory, IServiceProvider serviceProvider)
     {
@@ -106,18 +99,32 @@ public class AgentChatClient
                             text = testExecutionContext.CompiledText;
                         }
                     }
+
+                    IList<AIContent> content = [];
+                    var prompt = $"""
+                        <testcase>
+                            <name>{reference.Name}</name>
+                            <id>{reference.Id}</id>
+                            <description>{text}</description>
+                        </testcase>
+                        """;
+                    content.Add(new Microsoft.Extensions.AI.TextContent(prompt));
+                    messages.Add(new ChatMessage(ChatRole.User, content));
                 }
+                else
+                {
 
-                IList<AIContent> content = [];
-                var prompt = $"""
-                    # {reference.Name}
-                    - ID: {reference.Id}
-                    - Type: {reference.EntityTypeName}
+                    IList<AIContent> content = [];
+                    var prompt = $"""
+                        # {reference.Name}
+                        - ID: {reference.Id}
+                        - Type: {reference.EntityTypeName}
 
-                    {text}
-                    """;
-                content.Add(new Microsoft.Extensions.AI.TextContent(prompt));
-                messages.Add(new ChatMessage(ChatRole.System, content));
+                        {text}
+                        """;
+                    content.Add(new Microsoft.Extensions.AI.TextContent(prompt));
+                    messages.Add(new ChatMessage(ChatRole.System, content));
+                }
             }
         }
         return messages;
@@ -131,14 +138,16 @@ public class AgentChatClient
         ChatMessage userMessage,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        if(orchestrationStrategy is null || orchestrationStrategy == OrchestrationStrategies.Default)
+        if(orchestrationStrategy is null || orchestrationStrategy is OrchestrationStrategies.Default)
         {
-            await foreach(var update in AskAsync(principal, project, context,userMessage, cancellationToken))
+            await foreach(var update in AskAsync(principal, project, context, userMessage, cancellationToken))
             {
                 yield return update;
             }
             yield break;
         }
+
+        using var activity =  ActivitySource.StartActivity("InvokeAgentAsync");
 
         ChatHistory newMessages = []; // This only contain the new messages
         ChatHistory groupChatHistory = [];
@@ -148,12 +157,16 @@ public class AgentChatClient
 
         // Create kernel
         var kernel = await _semanticKernelFactory.CreateKernelAsync(principal);
+        kernel.FunctionInvocationFilters.Add(new FunctionTracingFilter(ActivitySource));
+        kernel.PromptRenderFilters.Add(new PromptTracingFilter(ActivitySource));
 
         // Add tools as plugins to semantic kernel
         await PrepareToolsAsync(principal, context, kernel, cancellationToken);
 
         OrchestrationResponseCallback responseCallback = async (response) =>
         {
+            activity?.AddEvent(new ActivityEvent("OrchestrationResponseCallback"));
+
             _logger.LogInformation("Received response from agent {AuthorName}", response.AuthorName);
             groupChatHistory.Add(response);
 
@@ -170,6 +183,8 @@ public class AgentChatClient
         {
             try
             {
+                activity?.AddEvent(new ActivityEvent("OrchestrationStreamingCallback"));
+
                 await channel.Writer.WriteAsync(response.ToChatResponseUpdate());
             }
             catch (Exception ex)
@@ -193,12 +208,16 @@ public class AgentChatClient
                 var result = await orchestration.InvokeAsync(userMessage.Text, runtime, cancellationToken: cts.Token);
                 try
                 {
+                    activity?.AddEvent(new ActivityEvent("InvokeAsync"));
+
                     string output = await result.GetValueAsync(TimeSpan.FromSeconds(300), cts.Token);
                     await runtime.RunUntilIdleAsync();
                 }
                 catch (Exception ex)
                 {
-                    await channel.Writer.WriteAsync(new ChatResponseUpdate(ChatRole.Assistant, $"An error occured: {ex.Message}"));
+                    var errorMessage = $"An error occured: {ex.Message}";
+
+                    await channel.Writer.WriteAsync(new ChatResponseUpdate(ChatRole.Assistant, errorMessage));
                 }
                 finally
                 {
@@ -245,18 +264,25 @@ public class AgentChatClient
 
     private async Task PrepareToolsAsync(ClaimsPrincipal principal, AgentChatContext context, Kernel kernel, CancellationToken cancellationToken)
     {
-        ToolCollection tools = context.Tools ?? await GetToolsAsync(principal, context, cancellationToken);
-        context.Tools = tools;
+        using var activity = ActivitySource.StartActivity("PrepareToolsAsync");
+        activity?.Start();
+
+        ToolCollection tools = context.Tools = await GetToolsAsync(principal, context, cancellationToken);
         foreach (var toolName in tools.ToolNames)
         {
             var kernelTools = tools.GetEnabledFunctionsByToolName(toolName).Select(x => x.AsKernelFunction());
             var toolNameForSemanticKernel = SemanticKernelToolNaming.GetSemanticKernelPluginName(toolName);
             kernel.Plugins.AddFromFunctions(toolNameForSemanticKernel, kernelTools);
+
+            activity?.AddTag("tools.count", kernelTools.Count().ToString());
         }
     }
 
     private async Task SetupReferencesInContextAsync(ClaimsPrincipal principal, AgentChatContext context, ChatMessage userMessage, ChatHistory groupChatHistory, CancellationToken cancellationToken)
     {
+        using var activity = ActivitySource.StartActivity("SetupReferencesInContextAsync");
+        activity?.Start();
+
         if (context.Messages.Count == 0)
         {
             var references = await GetReferencesAsChatMessagesAsync(principal, context, cancellationToken);

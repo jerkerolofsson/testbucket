@@ -1,0 +1,11 @@
+﻿.tb-metric-chip {
+    border-radius: 4px;
+    color: var(--mud-palette-text-primary);
+    padding: 2px 4px;
+    font-size: var(--mud-typography-subtitle2-size);
+    opacity: 0.5;
+}
+
+.tb-metric-chip:hover {
+    opacity :1;
+}

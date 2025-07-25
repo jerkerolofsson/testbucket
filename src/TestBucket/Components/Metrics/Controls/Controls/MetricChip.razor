@@ -1,11 +1,12 @@
 ﻿@using TestBucket.Domain.Metrics.Models
 @if(Metric is not null)
 {
-    <MudStack Row Spacing="1" AlignItems="AlignItems.Center">
-        <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.Gauge" />
-        <span>@Value</span>
-        <span>@Unit</span>
-    </MudStack>
+    <div class="tb-metric-chip">
+        <MudStack Row Spacing="0" AlignItems="AlignItems.Center">
+            <span>@Value</span>
+            <span>@Unit</span>
+        </MudStack>
+    </div>
 }
 
 @code {

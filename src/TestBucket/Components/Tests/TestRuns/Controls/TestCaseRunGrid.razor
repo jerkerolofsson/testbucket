@@ -98,8 +98,16 @@
 
                     <TemplateColumn Title="@loc["name"]" CellStyle="max-width: 100%; overflow: hidden">
                         <CellTemplate>
-                            <div class="name">@context.Item.Name</div>
+                            <MudTooltip Text="@context.Item.Name">
+                                <div class="name">@context.Item.Name</div>
+                            </MudTooltip>
                             <MudStack Row Spacing="2" AlignItems="AlignItems.Center" Justify="Justify.FlexEnd">
+
+                                @if(context.Item.Metrics is not null && context.Item.Metrics.Count > 0)
+                                {
+                                    <MetricChip Metric="@context.Item.Metrics[0]"/>
+                                }
+
                                 @if (CanAssign)
                                 {
                                     <UserPicker Clearable 
@@ -109,11 +117,6 @@
                                 {
                                     <UserPicker ReadOnly
                                                 SelectedUserName="@context.Item.AssignedToUserName" />
-                                }
-
-                                @if(context.Item.Metrics is not null && context.Item.Metrics.Count > 0)
-                                {
-                                    <MetricChip Metric="@context.Item.Metrics[0]"/>
                                 }
 
                             </MudStack>

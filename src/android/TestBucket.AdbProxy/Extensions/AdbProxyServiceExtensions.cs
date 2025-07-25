@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.DependencyInject.Extensions;
 
+using TestBucket.AdbProxy.Appium;
 using TestBucket.AdbProxy.DeviceHandling;
 using TestBucket.AdbProxy.Inform;
 using TestBucket.AdbProxy.Proxy;
@@ -18,6 +15,8 @@ public static class AdbProxyServiceExtensions
         services.AddSingleton<IPortGenerator, AdbProxyServerPortGenerator>();
         services.AddSingleton<IDeviceInformer, DeviceInformer>();
         services.AddHostedService<AdbDeviceIndexingService>();
+        services.AddDockerCompose();
+        services.AddHostedService<AppiumDockerCleaner>();
 
         return services;
     }

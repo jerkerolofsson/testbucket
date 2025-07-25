@@ -8,6 +8,9 @@ using TestBucket.ResourceServer.Utilities;
 
 namespace TestBucket.AdbProxy.Proxy
 {
+    /// <summary>
+    /// Runs a ADB proxy for a specific device
+    /// </summary>
     public class AdbProxyServer : IDisposable, IConnectionObserver, ILocalIdProvider
     {
         private readonly TcpListener _tcpServer;
@@ -37,7 +40,8 @@ namespace TestBucket.AdbProxy.Proxy
             Device.Port = Port;
 
             var hostname = PublicHostnameDetector.GetPublicHostname();
-            Device.Url = DeviceUrl = $"{hostname??"localhost"}:{Port}";
+            Device.Hostname = hostname ?? "localhost";
+            Device.Url = DeviceUrl = $"{Device.Hostname}:{Port}";
         }
 
         /// <summary>

@@ -21,6 +21,7 @@
                 {
                     @if(!_readOnly)
                     {
+                        <MudSpacer />
                         <FieldValueEditor Field="@Field" FieldChanged="async (f) => await OnWriteOnlyFieldChangedAsync(f)" />
                     }
                 }

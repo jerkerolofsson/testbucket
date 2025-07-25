@@ -10,8 +10,9 @@
       <PackageReference Include="CliWrap" Version="3.9.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.7" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7" />
-    <PackageReference Include="System.Text.Json" Version="9.0.7" />
+      <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7" />
+      <PackageReference Include="System.Text.Json" Version="9.0.7" />
+      <PackageReference Include="RedMaple.Orchestrator.DockerCompose" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>

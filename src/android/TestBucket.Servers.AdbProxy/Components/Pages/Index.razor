@@ -19,10 +19,17 @@
         <Columns>
             <PropertyColumn Property="x => x.DeviceId" />
             <PropertyColumn Property="x => x.Status" />
-            <TemplateColumn Title="Connect">
+            <TemplateColumn Title="ADB">
                 <CellTemplate>
                     <pre style="background: #111; padding: 5px; border-radius: 5px; border: solid 1px #222">
                         <span style="color: cornflowerblue">adb</span>&nbsp;<span style="color: cornflowerblue">connect</span>&nbsp;<span style="color: lightcoral">@context.Item.Url</span>
+                    </pre>
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="Appium">
+                <CellTemplate>
+                    <pre style="background: #111; padding: 5px; border-radius: 5px; border: solid 1px #222">
+                        <span style="color: lightgreen">@context.Item.AppiumUrl</span>
                     </pre>
                 </CellTemplate>
             </TemplateColumn>
@@ -33,6 +40,8 @@
             <PropertyColumn Property="x => x.Version.CodeName" />
         </Columns>
     </MudDataGrid>
+
+    <MudAlert>Set the environment variable TB_PUBLIC_IP to override hostname/IP</MudAlert>
 
     <MudStack Class="mt-5">
         @if (_settings is not null)

@@ -1,10 +1,13 @@
 ﻿using System.Collections.Concurrent;
 
+using Docker.DotNet.Models;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 using TestBucket.AdbProxy.Android;
+using TestBucket.AdbProxy.Appium;
 using TestBucket.AdbProxy.Host;
 using TestBucket.AdbProxy.Inform;
 using TestBucket.AdbProxy.Models;
@@ -12,11 +15,16 @@ using TestBucket.AdbProxy.Proxy;
 using TestBucket.ResourceServer.Contracts;
 
 namespace TestBucket.AdbProxy.DeviceHandling;
+
+/// <summary>
+/// Central repository for managing ADB devices and their proxy servers.
+/// </summary>
 public class AdbDeviceRepository : IAdbDeviceRepository
 {
     private readonly ILogger<AdbDeviceRepository> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly ConcurrentDictionary<string, AdbProxyServer> _servers = new();
+    private readonly ConcurrentDictionary<string, AppiumServer> _appiumServers = new();
     private readonly AdbProxyOptions _adbProxyOptions;
     private readonly IDeviceInformer _deviceInformer;
     private readonly ConcurrentDictionary<string, AdbResource> _resources = [];
@@ -29,7 +37,10 @@ public class AdbDeviceRepository : IAdbDeviceRepository
 
     public AdbDeviceRepository(
         ILogger<AdbDeviceRepository> logger,
-        IServiceProvider serviceProvider, IOptions<AdbProxyOptions> options, IDeviceInformer deviceInformer, IResourceRegistry registry)
+        IServiceProvider serviceProvider, 
+        IOptions<AdbProxyOptions> options, 
+        IDeviceInformer deviceInformer, 
+        IResourceRegistry registry)
     {
         _adbProxyOptions = options.Value;
         _logger = logger;
@@ -56,11 +67,12 @@ public class AdbDeviceRepository : IAdbDeviceRepository
             {
                 device.Url = proxyServer.DeviceUrl;
                 device.Port = proxyServer.Port;
+                device.AppiumUrl = $"{device.Hostname}:{device.AppiumPort}"; ;
             }
         }
 
         // Stop servers where the device has been removed
-        bool changed = RemoveServersForRemovedDevices(deviceDict);
+        bool changed = await RemoveServersForRemovedDevicesAsync(deviceDict);
 
         // Start new servers if a device has been added
         if(await StartServersForAddedDevicesAsync(deviceDict, cancellationToken))
@@ -118,18 +130,31 @@ public class AdbDeviceRepository : IAdbDeviceRepository
                 changed = true;
             }
 
+           
             if (!_servers.ContainsKey(device.DeviceId))
             {
                 // Start server
                 var server = ActivatorUtilities.CreateInstance<AdbProxyServer>(_serviceProvider, device);
                 server.Start(cancellationToken);
+                _logger.LogInformation("ADB proxy server started for {deviceId} on {port}", device.DeviceId, server.Port);
+
+                device.AppiumPort = 0;
+                if (!_appiumServers.TryGetValue(device.DeviceId, out var appiumServer))
+                {
+                    appiumServer = ActivatorUtilities.CreateInstance<AppiumServer>(_serviceProvider, device);
+                    await appiumServer.StartAsync(cancellationToken);
+                    _appiumServers[device.DeviceId] = appiumServer;
+                    _logger.LogInformation("Appium server started for {deviceId} on {port}", device.DeviceId, server.Port);
+                }
+                device.AppiumPort = appiumServer.Port;
+                device.AppiumUrl = $"{device.Hostname}:{device.AppiumPort}";
 
                 AddResource(device);
 
-                _logger.LogInformation("Server started for {deviceId} on {port}", device.DeviceId, server.Port);
                 _servers[device.DeviceId] = server;
                 changed = true;
             }
+
         }
         return changed;
     }
@@ -179,9 +204,10 @@ public class AdbDeviceRepository : IAdbDeviceRepository
         return changed;
     }
 
-    private bool RemoveServersForRemovedDevices(Dictionary<string, AdbDevice> deviceDict)
+    private async Task<bool> RemoveServersForRemovedDevicesAsync(Dictionary<string, AdbDevice> deviceDict)
     {
         bool changed = false;
+
         foreach (var deviceId in _servers.Keys.ToArray())
         {
             if (!deviceDict.ContainsKey(deviceId))
@@ -197,8 +223,17 @@ public class AdbDeviceRepository : IAdbDeviceRepository
                     server.Dispose();
                     changed = true;
                 }
+
+                // Stop appium servers
+                if(_appiumServers.TryGetValue(deviceId, out var appiumServer))
+                {
+                    _appiumServers.TryRemove(deviceId, out _);
+                    await appiumServer.DisposeAsync();
+                    changed = true;
+                }
             }
         }
+
         return changed;
     }
 }

@@ -1,5 +1,8 @@
-﻿using TestBucket.Contracts.Fields;
+﻿
+using TestBucket.Components.Tests.TestRuns.ViewModels;
+using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Components.Tests.TestRuns.Controls;
@@ -56,13 +59,18 @@ public partial class TestCaseRunGrid
     [Parameter] public bool CanChangeResult { get; set; } = false;
 
     /// <summary>
-    /// Currently displayed items in the grid.
+    /// Current items
     /// </summary>
-    private TestCaseRun[] _items = [];
+    private TestCaseRunGridState? _state = null;
 
-    /// <summary>
-    /// The selected item in the data grid.
-    /// </summary>
+    ///// <summary>
+    ///// Currently displayed items in the grid.
+    ///// </summary>
+    //private TestCaseRun[] _items = [];
+
+    ///// <summary>
+    ///// The selected item in the data grid.
+    ///// </summary>
     private TestCaseRun? _selectedItem;
 
     /// <summary>
@@ -108,6 +116,8 @@ public partial class TestCaseRunGrid
     {
         return Task.CompletedTask;
     }
+
+
     public Task OnRunMovedAsync(TestRun testRun)
     {
         return Task.CompletedTask;
@@ -166,18 +176,32 @@ public partial class TestCaseRunGrid
     /// </summary>
     protected override void OnInitialized()
     {
+        testExecutionController.TestCaseRunGridStateChanged += OnTestCaseRunGridStateChanged;
         _selectedItem = SelectedTestCaseRun;
         testRunManager.AddObserver(this);
+    }
+
+    private void OnTestCaseRunGridStateChanged(object? sender, TestCaseRunGridState state)
+    {
+        _state = state;
+        if (_dataGrid is not null)
+        {
+            _currentPage = _state.Query.Offset / _state.Query.Count;
+
+            //_dataGrid.CurrentPage = _state.Query.Offset / _state.Query.Count;
+            _dataGrid.ReloadServerData();
+        }
     }
 
     /// <summary>
     /// Handles parameter changes and updates the grid/filter state accordingly.
     /// </summary>
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         _query = Query ?? new();
         _query.TestRunId = null;
         _query.ProjectId = null;
+        _query.Count = _rowsPerPage;
         _searchText = _query.ToSearchText();
         bool reloadGridData = _searchText != _prevSearchText;
 
@@ -192,20 +216,15 @@ public partial class TestCaseRunGrid
             }
 
             _run = Run;
-            _query.TestRunId = _run?.Id;
-            _query.ProjectId = Project.Id;
-
             _selectedItem = SelectedTestCaseRun;
-            // If the selected item is not in the current items, reload data.
-            if (_selectedItem is not null && !_items.Contains(_selectedItem))
-            {
-                reloadGridData = true;
-            }
         }
+        _query.TestRunId = _run?.Id;
+        _query.ProjectId = Project.Id;
 
         if (reloadGridData)
         {
-            _dataGrid?.ReloadServerData();
+            //_dataGrid?.ReloadServerData();
+            await ReloadDataAsync();
         }
 
         _prevSearchText = _searchText;
@@ -216,6 +235,7 @@ public partial class TestCaseRunGrid
     /// </summary>
     public void Dispose()
     {
+        testExecutionController.TestCaseRunGridStateChanged -= OnTestCaseRunGridStateChanged;
         testRunManager.RemoveObserver(this);
     }
     #endregion
@@ -262,7 +282,8 @@ public partial class TestCaseRunGrid
             await testRunCreationService.AddTestCaseToRunAsync(Run, testCaseId);
         }
 
-        _dataGrid?.ReloadServerData();
+        await ReloadDataAsync();
+        //_dataGrid?.ReloadServerData();
     }
 
     /// <summary>
@@ -279,7 +300,8 @@ public partial class TestCaseRunGrid
 
         await testRunCreationService.AddTestCaseToRunAsync(Run, testCase);
 
-        _dataGrid?.ReloadServerData();
+        //_dataGrid?.ReloadServerData();
+        await ReloadDataAsync();
     }
 
     /// <summary>
@@ -289,12 +311,39 @@ public partial class TestCaseRunGrid
     /// <param name="testCaseRun">The clicked test case run.</param>
     private async Task OnClicked(TestCaseRun testCaseRun)
     {
-        appNavigationManager.State.SelectedTestCaseRun = testCaseRun;
+        appNavigationManager.State.SetSelectedTestCaseRun(testCaseRun);
+        appNavigationManager.State.SetMultiSelectedTestCaseRuns([testCaseRun]);
         if (_selectedItem?.Id != testCaseRun.Id)
         {
             _selectedItem = testCaseRun;
             await SelectedTestCaseRunChanged.InvokeAsync(testCaseRun);
         }
+    }
+
+    public void SetSelected(TestCaseRun testCaseRun, bool selected)
+    {
+        if (appNavigationManager.State.MultiSelectedTestCaseRuns.Contains(testCaseRun))
+        {
+            if (!selected)
+            {
+                if (_selectedItem?.Id == testCaseRun.Id)
+                {
+                    _selectedItem = null;
+                }
+                var testCaseRuns = appNavigationManager.State.MultiSelectedTestCaseRuns.Where(x => x.Id != testCaseRun.Id);
+                appNavigationManager.State.SetMultiSelectedTestCaseRuns(testCaseRuns.ToList());
+            }
+        }
+        else if(selected)
+        {
+            _selectedItem = testCaseRun;
+            appNavigationManager.State.SetMultiSelectedTestCaseRuns([testCaseRun, .. appNavigationManager.State.MultiSelectedTestCaseRuns]);
+        }
+    }
+
+    public bool IsSelected(TestCaseRun testCaseRun)
+    {
+        return appNavigationManager.State.MultiSelectedTestCaseRuns.Any(x => x.Id == testCaseRun.Id);
     }
 
     /// <summary>
@@ -320,6 +369,7 @@ public partial class TestCaseRunGrid
     private async Task SetTestCaseRunResultAsync(TestCaseRun testCaseRun, TestResult result)
     {
         await testExecutionController.SetTestCaseRunResultAsync(testCaseRun, result);
+        await ReloadDataAsync();
     }
 
     /// <summary>
@@ -331,6 +381,7 @@ public partial class TestCaseRunGrid
     {
         testCaseRun.AssignedToUserName = user;
         await testCaseEditor.SaveTestCaseRunAsync(testCaseRun);
+        await ReloadDataAsync();
     }
 
     /// <summary>
@@ -358,46 +409,56 @@ public partial class TestCaseRunGrid
         await QueryChanged.InvokeAsync(query);
     }
 
-    /// <summary>
-    /// Reloads the data in the server-side data grid.
-    /// </summary>
-    public void ReloadServerData()
+
+
+    private int _rowsPerPage = 15;
+    private int _currentPage = 1;
+
+    private async Task OnRowsPerPageChanged(int rowsPerPage)
     {
-        _dataGrid?.ReloadServerData();
+        _rowsPerPage = rowsPerPage;
+        if (_state is not null)
+        {
+            _state.Query.Offset = _currentPage * _rowsPerPage;
+            _state.Query.Count = _rowsPerPage;
+            _state = await testExecutionController.SearchTestCaseRunsAsync(_state.Query, _selectedItem);
+            _totalCount = _state.Data.TotalCount;
+            _dataGrid?.ReloadServerData();
+        }
     }
 
-    /// <summary>
-    /// Selects the next test case run in the grid, if available.
-    /// </summary>
-    public async Task SelectNextTestCaseRun()
+    private async Task OnCurrentPageChanged(int page)
     {
-        if (_items.Length > 0)
+        _currentPage = page;
+        if (_state is not null)
         {
-            if (_selectedItem is null)
-            {
-                if (_selectedItem?.Id != _items[0].Id)
-                {
-                    _selectedItem = _items[0];
-                    await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
-                    return;
-                }
-            }
-
-            var index = Array.IndexOf(_items, _selectedItem);
-            index++;
-            if (index < _items.Length)
-            {
-                if (_selectedItem?.Id != _items[index].Id)
-                {
-                    _selectedItem = _items[index];
-                    await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
-                }
-            }
-            else
-            {
-                // Next page? (Not implemented)
-            }
+            _state.Query.Offset = _currentPage * _rowsPerPage;
+            _state.Query.Count = _rowsPerPage;
+            _state = await testExecutionController.SearchTestCaseRunsAsync(_state.Query, _selectedItem);
+            _totalCount = _state.Data.TotalCount;
+            _dataGrid?.ReloadServerData();
         }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _query.TestRunId = _run?.Id;
+            _query.ProjectId = Project.Id;
+
+            // Search for test case runs.
+            _state = await testExecutionController.SearchTestCaseRunsAsync(_query, _selectedItem);
+            _totalCount = _state.Data.TotalCount;
+            this.StateHasChanged();
+        }
+    }
+
+    private async Task ReloadDataAsync()
+    {
+        _state = await testExecutionController.SearchTestCaseRunsAsync(_query, _selectedItem);
+        _totalCount = _state.Data.TotalCount;
+        _dataGrid?.ReloadServerData();
     }
 
     /// <summary>
@@ -407,57 +468,20 @@ public partial class TestCaseRunGrid
     /// <returns>Grid data containing items and total count.</returns>
     private async Task<GridData<TestCaseRun>> LoadGridData(GridState<TestCaseRun> state)
     {
-        // Set paging parameters on the query.
-        _query.Offset = state.Page * state.PageSize;
-        _query.Count = state.PageSize;
-        _query.TestRunId = _run?.Id;
-        _query.ProjectId = Project.Id;
-
-        // Search for test case runs.
-        var searchTestCaseRunsResult = await testBrowser.SearchTestCaseRunsAsync(_query);
-        _items = searchTestCaseRunsResult.Items;
-
-        // Update selected item if it was reloaded.
-        if (_selectedItem is not null)
+        if(_state is null)
         {
-            _selectedItem = _items.FirstOrDefault(x => x.Id == _selectedItem.Id);
-            await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
-        }
-
-        // Select the first item if nothing is selected.
-        if (_selectedItem is null)
-        {
-            await SelectFirstItemIfNoSelectionOrCurrentSelectionIsNotFoundAsync();
-        }
-
-        // Update total count and notify UI if changed.
-        if (_totalCount != searchTestCaseRunsResult.TotalCount)
-        {
-            _totalCount = searchTestCaseRunsResult.TotalCount;
-            await InvokeAsync(StateHasChanged);
-        }
-        GridData<TestCaseRun> data = new()
-        {
-            Items = _items,
-            TotalItems = (int)searchTestCaseRunsResult.TotalCount
-        };
-
-        return data;
-    }
-
-    /// <summary>
-    /// Selects the first item in the grid if no selection exists or the current selection is not found.
-    /// </summary>
-    private async Task SelectFirstItemIfNoSelectionOrCurrentSelectionIsNotFoundAsync()
-    {
-        if (_items.Length > 0)
-        {
-            if (_selectedItem is null || !_items.Contains(_selectedItem))
+            return new GridData<TestCaseRun>()
             {
-                _selectedItem = _items[0];
-                await SelectedTestCaseRunChanged.InvokeAsync(_selectedItem);
-            }
+                Items = [],
+                TotalItems = 0
+            };
         }
+
+        return new GridData<TestCaseRun>
+        {
+            Items = _state.Data.Items,
+            TotalItems = (int)_state.Data.TotalCount
+        };
     }
 
     /// <summary>

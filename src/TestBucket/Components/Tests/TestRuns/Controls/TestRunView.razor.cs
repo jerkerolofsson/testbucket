@@ -100,24 +100,24 @@ public partial class TestRunView
         }
     }
 
-    private void OnTestCompleted(object? sender, TestCaseRun testCaseRun)
-    {
-        if (_selectedTestCaseRun == testCaseRun && testCaseRunGrid is not null)
-        {
-            var _ = InvokeAsync(async () => 
-            {
-                await testCaseRunGrid.SelectNextTestCaseRun();
-            });
-        }
-    }
+    //private void OnTestCompleted(object? sender, TestCaseRun testCaseRun)
+    //{
+    //    if (_selectedTestCaseRun == testCaseRun && testCaseRunGrid is not null)
+    //    {
+    //        var _ = InvokeAsync(async () => 
+    //        {
+    //            await testCaseRunGrid.SelectNextTestCaseRun();
+    //        });
+    //    }
+    //}
     protected override void OnInitialized()
     {
-        testExecutionController.TestCompleted += OnTestCompleted;
+        //testExecutionController.TestCompleted += OnTestCompleted;
     }
 
     public ValueTask DisposeAsync()
     {
-        testExecutionController.TestCompleted -= OnTestCompleted;
+        //testExecutionController.TestCompleted -= OnTestCompleted;
         return ValueTask.CompletedTask;
     }
 }

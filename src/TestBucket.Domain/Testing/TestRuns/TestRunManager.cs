@@ -95,17 +95,20 @@ internal class TestRunManager : ITestRunManager
     }
 
     /// <inheritdoc/>
-    public Task DeleteTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
+    public async Task DeleteTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
     {
-        principal.GetTenantIdOrThrow(testCaseRun);
-        //await _testCaseRepo.DeleteTestRunByIdAsync(testRun.Id);
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Delete);
+        principal.ThrowIfEntityTenantIsDifferent(testCaseRun);
 
-        throw new NotImplementedException("todo");
+        await _testCaseRepo.DeleteTestCaseRunAsync(testCaseRun);
+
     }
 
     /// <inheritdoc/>
     public async Task<TestCaseRun> AddTestCaseRunAsync(ClaimsPrincipal principal, TestRun testRun, TestCase testCase)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
+
         if (testRun.TestProjectId is null)
         {
             throw new ArgumentException("TestRun must belong to a project!");
@@ -144,8 +147,9 @@ internal class TestRunManager : ITestRunManager
     /// <inheritdoc/>
     public async Task AddTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun)
     {
-        testCaseRun.TenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, PermissionLevel.Write);
 
+        testCaseRun.TenantId = principal.GetTenantIdOrThrow();
         testCaseRun.Modified = testCaseRun.Created = _timeProvider.GetUtcNow();
         testCaseRun.CreatedBy = testCaseRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
 

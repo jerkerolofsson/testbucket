@@ -274,6 +274,13 @@ public interface ITestCaseRepository
     #region Test Case Runs
 
     /// <summary>
+    /// Deletes a test case run
+    /// </summary>
+    /// <param name="testCaseRun"></param>
+    /// <returns></returns>
+    Task DeleteTestCaseRunAsync(TestCaseRun testCaseRun);
+
+    /// <summary>
     /// Adds a test case run
     /// </summary>
     /// <param name="testCaseRun"></param>

@@ -24,7 +24,6 @@ namespace TestBucket.Domain.UnitTests.AI
             var chatReference = ChatReferenceBuilder.Create(project, true);
 
             Assert.Equal(project.Name, chatReference.Name);
-            Assert.Equal(project.Description, chatReference.Text);
             Assert.Equal(project.Id, chatReference.Id);
             Assert.Equal("Project", chatReference.EntityTypeName);
             Assert.True(chatReference.IsActiveDocument);

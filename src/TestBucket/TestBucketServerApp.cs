@@ -11,6 +11,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
 using MudBlazor.Services;
+using MudBlazor.Translations;
 
 using MudExtensions.Services;
 
@@ -59,6 +60,8 @@ using TestBucket.Components.Tests.TestLab.Services;
 using TestBucket.Components.Tests.TestRepository.Commands;
 using TestBucket.Components.Tests.TestRepository.Services;
 using TestBucket.Components.Tests.TestRuns.Commands;
+using TestBucket.Components.Tests.TestRuns.Commands.TestCaseRuns;
+using TestBucket.Components.Tests.TestRuns.Commands.TestRuns;
 using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Components.Tests.TestRuns.LinkIssue;
 using TestBucket.Components.Tests.TestSuites.Commands;
@@ -381,6 +384,9 @@ public static class TestBucketServerApp
         // Test Case Run
         builder.Services.AddScoped<ICommand, GoToTestRunCommand>();
         builder.Services.AddScoped<ICommand, GoToTestCaseCommand>();
+        builder.Services.AddScoped<ICommand, DeleteTestCaseRunCommand>();
+        builder.Services.AddScoped<ICommand, DeleteManyTestCaseRunsCommand>();
+        
 
         // Settings
         builder.Services.AddScoped<ICommand, OpenAiSettingsCommand>();
@@ -401,6 +407,7 @@ public static class TestBucketServerApp
         {
         });
         builder.Services.AddMudExtensions();
+        builder.Services.AddMudTranslations();
 
         builder.Services.AddControllers(options =>
         {

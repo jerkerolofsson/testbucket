@@ -17,6 +17,7 @@ public class NavigationState
 {
     private List<TestCase> _multiSelectedTestCases = [];
     private List<Requirement> _multiSelectedRequirements = [];
+    private List<TestCaseRun> _multiSelectedTestCaseRuns = [];
 
     public event EventHandler<ChatReference?>? ActiveDocumentChanged;
 
@@ -107,6 +108,7 @@ public class NavigationState
     /// </summary>
     public Team? SelectedTeam { get; set; }
 
+    public IReadOnlyList<TestCaseRun> MultiSelectedTestCaseRuns => _multiSelectedTestCaseRuns;
     public IReadOnlyList<Requirement> MultiSelectedRequirements => _multiSelectedRequirements;
     public IReadOnlyList<TestCase> MultiSelectedTestCases => _multiSelectedTestCases;
     public bool IsTestLabSelected { get; private set; }
@@ -200,6 +202,12 @@ public class NavigationState
         this.SelectedRequirementSpecificationFolder = null;
 
         this.SelectedIssue = null;
+    }
+    public void SetMultiSelectedTestCaseRuns(List<TestCaseRun> list)
+    {
+        _multiSelectedTestCases = [];
+        _multiSelectedRequirements = [];
+        _multiSelectedTestCaseRuns = list;
     }
     public void SetMultiSelectedRequirements(List<Requirement> list)
     {

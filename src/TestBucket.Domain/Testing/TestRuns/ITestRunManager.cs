@@ -73,6 +73,7 @@ public interface ITestRunManager
     /// <param name="testCaseRun"></param>
     /// <returns></returns>
     Task<TestCaseRun> AddTestCaseRunAsync(ClaimsPrincipal principal, TestRun testRun, TestCase testCase);
+    Task DeleteTestCaseRunAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun);
 
 
     /// <summary>
@@ -117,6 +118,10 @@ public interface ITestRunManager
     /// <param name="run"></param>
     /// <returns></returns>
     Task<TestRun> DuplicateTestRunAsync(ClaimsPrincipal principal, TestRun run);
+
+    #endregion Test Case Runs
+
+
     Task<InsightsData<DateOnly, int>> GetInsightsTestResultsByDayAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
 
     /// <summary>
@@ -137,5 +142,4 @@ public interface ITestRunManager
     Task<InsightsData<string, int>> GetInsightsTestResultsByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId);
     Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAsigneeAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
 
-    #endregion Test Case Runs
 }

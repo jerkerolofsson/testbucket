@@ -991,4 +991,13 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Tokens</value>
     <comment>Tokens (LLM/AI)</comment>
   </data>
+  <data name="delete-test-case-run-fmt" xml:space="preserve">
+    <value>Delete {0}</value>
+  </data>
+  <data name="delete-many-test-case-runs" xml:space="preserve">
+    <value>Delete {0} test case runs</value>
+  </data>
+  <data name="delete-many-test-case-runs-description" xml:space="preserve">
+    <value>Deletes all selected test case runs</value>
+  </data>
 </root>

@@ -12,7 +12,7 @@ using TestBucket.Domain.States;
 using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Localization;
 
-namespace TestBucket.Components.Tests.TestRuns.Commands;
+namespace TestBucket.Components.Tests.TestRuns.Commands.TestRuns;
 
 internal class AssignAllUnassignedToMe : ICommand
 {
@@ -71,7 +71,7 @@ internal class AssignAllUnassignedToMe : ICommand
                 Count = count, 
                 Offset = 0
             });
-            offset += (int)result.Items.Length;
+            offset += result.Items.Length;
 
             if(result.TotalCount == 0)
             {

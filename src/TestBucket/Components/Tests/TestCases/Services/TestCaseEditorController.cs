@@ -237,8 +237,18 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
 
     internal async ValueTask DeleteTestRunAsync(TestRun testRun)
     {
-        var principal = await GetUserClaimsPrincipalAsync();
-        await _testRunManager.DeleteTestRunAsync(principal, testRun);
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc["yes"],
+            NoText = _loc["no"],
+            Title = _loc["confirm-delete-title"],
+            MarkupMessage = new MarkupString(_loc["confirm-delete-message"])
+        });
+        if (result == true)
+        {
+            var principal = await GetUserClaimsPrincipalAsync();
+            await _testRunManager.DeleteTestRunAsync(principal, testRun);
+        }
     }
 
     /// <summary>

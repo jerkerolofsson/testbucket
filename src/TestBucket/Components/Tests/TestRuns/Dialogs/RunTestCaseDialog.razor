@@ -82,6 +82,7 @@
 
     <DialogActions>
         <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" OnClick="Submit">@loc["ok"]</MudButton>
+        <MudButton OnClick="() => MudDialog.Close()">@loc["cancel"]</MudButton>
     </DialogActions>
 </MudDialog>
 @code {

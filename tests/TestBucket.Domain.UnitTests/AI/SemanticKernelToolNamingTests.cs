@@ -24,7 +24,7 @@ namespace TestBucket.Domain.UnitTests.AI
         {
             string name = "playwright-mcp";
             var pluginName = SemanticKernelToolNaming.GetSemanticKernelPluginName(name);
-            Assert.Equal("playwright_mcp", name);
+            Assert.Equal("playwright_mcp", pluginName);
         }
     }
 }

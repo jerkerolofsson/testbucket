@@ -1,0 +1,6 @@
+﻿.tb-test-case-run-grid .name {
+    font-size: 10pt;
+    font-weight: bold;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

@@ -81,16 +81,19 @@
                                 </MudExpansionPanels>
                             </div>
                         }
-                        else if (content is FunctionResultContent functionResult && functionResult.RawRepresentation is not null)
+                        else if (content is FunctionResultContent functionResult)
                         {
                             showText = false;
 
-                            <div class=" mud-elevation-1 chat function-call @message.Role">
-                                <MudStack>
-                                    <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.Tools" />
-                                    <CodeBlock Code="@functionResult.RawRepresentation.ToString()" Language="json"></CodeBlock>
-                                </MudStack>
-                            </div>
+                            @if (functionResult.RawRepresentation is not null)
+                            {
+                                <div class=" mud-elevation-1 chat function-call @message.Role">
+                                    <MudStack>
+                                        <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.Tools" />
+                                        <CodeBlock Code="@functionResult.RawRepresentation.ToString()" Language="json"></CodeBlock>
+                                    </MudStack>
+                                </div>
+                            }
                         }
                     }
 

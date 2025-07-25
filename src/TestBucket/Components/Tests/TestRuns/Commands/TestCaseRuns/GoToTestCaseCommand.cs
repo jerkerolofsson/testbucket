@@ -6,7 +6,7 @@ using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;
 
-namespace TestBucket.Components.Tests.TestRuns.Commands;
+namespace TestBucket.Components.Tests.TestRuns.Commands.TestCaseRuns;
 
 /// <summary>
 /// Goes to the test case associated with the test case run
@@ -25,7 +25,7 @@ internal class GoToTestCaseCommand : ICommand
     public string Name => _loc["go-to-testcase"];
     public string Description => _loc["go-to-testcase-description"];
     public KeyboardBinding? DefaultKeyboardBinding => null;
-    public string? Icon => Icons.Material.Filled.Link;
+    public string? Icon => Icons.Material.Filled.ArrowOutward;
     public string[] ContextMenuTypes => ["TestCaseRun"];
     public GoToTestCaseCommand(AppNavigationManager appNavigationManager, IStringLocalizer<SharedStrings> loc)
     {

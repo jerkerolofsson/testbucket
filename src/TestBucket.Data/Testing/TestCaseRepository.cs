@@ -224,7 +224,7 @@ internal class TestCaseRepository : ITestCaseRepository
         await LookupProjectIdFromSuiteId(testCase, dbContext);
         await CalculatePathAsync(dbContext, testCase);
 
-        await dbContext.TestCases.AddAsync(testCase);
+        dbContext.TestCases.Add(testCase);
         await dbContext.SaveChangesAsync();
 
         await GenerateTestSlugIfMissingAsync(testCase, dbContext);
@@ -416,7 +416,7 @@ internal class TestCaseRepository : ITestCaseRepository
 
         await CalculatePathAsync(dbContext, folder);
 
-        await dbContext.TestSuiteFolders.AddAsync(folder);
+        dbContext.TestSuiteFolders.Add(folder);
         await dbContext.SaveChangesAsync();
         return folder;
     }
@@ -427,7 +427,7 @@ internal class TestCaseRepository : ITestCaseRepository
 
         await CalculatePathAsync(dbContext, folder);
 
-        await dbContext.TestSuiteFolders.AddAsync(folder);
+        dbContext.TestSuiteFolders.Add(folder);
         await dbContext.SaveChangesAsync();
         return folder;
     }
@@ -667,7 +667,7 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         try
         {
-            await dbContext.TestSuites.AddAsync(testSuite);
+            dbContext.TestSuites.Add(testSuite);
             await dbContext.SaveChangesAsync();
             return testSuite;
         }
@@ -785,7 +785,7 @@ internal class TestCaseRepository : ITestCaseRepository
             testRun.TeamId = project?.TeamId;   
         }
 
-        await dbContext.TestRuns.AddAsync(testRun);
+        dbContext.TestRuns.Add(testRun);
         await dbContext.SaveChangesAsync();
     }
 
@@ -931,6 +931,12 @@ internal class TestCaseRepository : ITestCaseRepository
             Items = items,
         };
     }
+    public async Task DeleteTestCaseRunAsync(TestCaseRun testCaseRun)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        dbContext.TestCaseRuns.Remove(testCaseRun);
+        await dbContext.SaveChangesAsync();
+    }
 
     public async Task AddTestCaseRunAsync(TestCaseRun testCaseRun)
     {
@@ -951,7 +957,7 @@ internal class TestCaseRepository : ITestCaseRepository
         }
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        await dbContext.TestCaseRuns.AddAsync(testCaseRun);
+        dbContext.TestCaseRuns.Add(testCaseRun);
         await dbContext.SaveChangesAsync();
     }
 
@@ -1478,7 +1484,7 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task AddTestRepositoryFolderAsync(TestRepositoryFolder folder)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        await dbContext.TestRepositoryFolders.AddAsync(folder);
+        dbContext.TestRepositoryFolders.Add(folder);
         await dbContext.SaveChangesAsync();
     }
 
@@ -1486,7 +1492,7 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task AddTestLabFolderAsync(TestLabFolder folder)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        await dbContext.TestLabFolders.AddAsync(folder);
+        dbContext.TestLabFolders.Add(folder);
         await dbContext.SaveChangesAsync();
     }
 

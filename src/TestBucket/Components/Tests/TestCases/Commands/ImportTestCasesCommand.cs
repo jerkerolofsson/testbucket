@@ -6,7 +6,7 @@ using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;
 
-namespace TestBucket.Components.Tests.TestRuns.Commands;
+namespace TestBucket.Components.Tests.TestCases.Commands;
 
 /// <summary>
 /// Command for importing test cases into the selected project.

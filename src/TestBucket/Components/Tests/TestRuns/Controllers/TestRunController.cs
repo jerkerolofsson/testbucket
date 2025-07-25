@@ -1,23 +1,7 @@
 ﻿
-using Mediator;
-
-using TestBucket.Components.Tests.Dialogs;
-using TestBucket.Components.Tests.TestCases.Models;
-using TestBucket.Components.Tests.TestCases.Services;
-using TestBucket.Components.Tests.TestRuns.Dialogs;
-using TestBucket.Domain.Automation.Hybrid;
-using TestBucket.Domain.Environments;
-using TestBucket.Domain.Projects;
-using TestBucket.Domain.Shared;
-using TestBucket.Domain.Tenants;
-using TestBucket.Domain.TestAccounts.Allocation;
-using TestBucket.Domain.Testing.Compiler;
+using TestBucket.Contracts.Localization;
 using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestRuns;
-using TestBucket.Domain.Testing.TestSuites;
-using TestBucket.Domain.Testing.TestSuites.Search;
-using TestBucket.Domain.TestResources.Allocation;
 
 namespace TestBucket.Components.Tests.TestRuns.Controllers;
 
@@ -25,11 +9,20 @@ internal class TestRunController : TenantBaseService
 {
     private readonly AppNavigationManager _appNavigationManager;
     private readonly ITestRunManager _testRunManager;
+    private readonly IAppLocalization _loc;
+    private readonly IDialogService _dialogService;
 
-    public TestRunController(AuthenticationStateProvider authenticationStateProvider, AppNavigationManager appNavigationManager, ITestRunManager testRunManager) : base(authenticationStateProvider)
+    public TestRunController(
+        AuthenticationStateProvider authenticationStateProvider, 
+        AppNavigationManager appNavigationManager, 
+        ITestRunManager testRunManager, 
+        IAppLocalization loc, 
+        IDialogService dialogService) : base(authenticationStateProvider)
     {
         _appNavigationManager = appNavigationManager;
         _testRunManager = testRunManager;
+        _loc = loc;
+        _dialogService = dialogService;
     }
 
     public async Task<TestRun?> GetTestRunByIdAsync(long id)
@@ -42,6 +35,42 @@ internal class TestRunController : TenantBaseService
         var principal = await GetUserClaimsPrincipalAsync();
         await _testRunManager.SaveTestRunAsync(principal, run);
     }
+
+    internal async Task DeleteTestCaseRunsAsync(IReadOnlyList<TestCaseRun> testCaseRuns)
+    {
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc.Shared["yes"],
+            NoText = _loc.Shared["no"],
+            Title = _loc.Shared["confirm-delete-title"],
+            MarkupMessage = new MarkupString(_loc.Shared["confirm-delete-message"])
+        });
+        if (result == true)
+        {
+            var principal = await GetUserClaimsPrincipalAsync();
+            foreach (var testCaseRun in testCaseRuns)
+            {
+                await _testRunManager.DeleteTestCaseRunAsync(principal, testCaseRun);
+            }
+        }
+    }
+
+    internal async Task DeleteTestCaseRunAsync(TestCaseRun testCaseRun)
+    {
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc.Shared["yes"],
+            NoText = _loc.Shared["no"],
+            Title = _loc.Shared["confirm-delete-title"],
+            MarkupMessage = new MarkupString(_loc.Shared["confirm-delete-message"])
+        });
+        if (result == true)
+        {
+            var principal = await GetUserClaimsPrincipalAsync();
+            await _testRunManager.DeleteTestCaseRunAsync(principal, testCaseRun);
+        }
+    }
+
 
     internal async Task<PagedResult<TestRun>> GetTestRunsInFolderAsync(long projectId, long folderId, int offset =0, int count = 100)
     {

@@ -1,11 +1,16 @@
-﻿using TestBucket.Components.Tests.Dialogs;
-using TestBucket.Domain.Identity;
-using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Shared;
-using TestBucket.Domain.Testing.Specifications.TestCases;
+﻿using System.Diagnostics;
+
+using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Components.Tests.TestRuns.Dialogs;
+using TestBucket.Components.Tests.TestRuns.ViewModels;
 using TestBucket.Contracts.Testing.States;
+using TestBucket.Domain.Identity;
+using TestBucket.Domain.Shared;
+using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing.Specifications.TestCases;
+using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Components.Tests.Services;
 
@@ -14,32 +19,96 @@ internal class TestExecutionController : TenantBaseService
     private readonly IDialogService _dialogService;
     private readonly TestCaseEditorController _editorController;
     private readonly IUserPreferencesManager _userPreferencesManager;
+    private readonly ITestRunManager _testRunManager;
+    private TestCaseRunGridState? _state = null;
+    private readonly AppNavigationManager _appNavigationManager;
 
     /// <summary>
     /// Invoked when a result is set, unless the result is NoRun
     /// </summary>
     public event EventHandler<TestCaseRun>? TestCompleted;
+    public event EventHandler<TestCaseRunGridState>? TestCaseRunGridStateChanged;
 
     public TestExecutionController(
         AuthenticationStateProvider authenticationStateProvider,
         TestCaseEditorController testCaseEditor,
         IDialogService dialogService,
         TestCaseEditorController editorController,
-        IUserPreferencesManager userPreferencesManager) : base(authenticationStateProvider)
+        IUserPreferencesManager userPreferencesManager,
+        ITestRunManager testRunManager,
+        AppNavigationManager appNavigationManager) : base(authenticationStateProvider)
     {
         _dialogService = dialogService;
         _editorController = editorController;
         _userPreferencesManager = userPreferencesManager;
+        _testRunManager = testRunManager;
+        _appNavigationManager = appNavigationManager;
     }
 
+
+    public async Task<TestCaseRunGridState> SearchTestCaseRunsAsync(SearchTestCaseRunQuery query, TestCaseRun? SelectedTestCaseRun)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var result = await _testRunManager.SearchTestCaseRunsAsync(principal, query);
+        _state = new TestCaseRunGridState(query, result);
+
+        SelectedTestCaseRun ??= _state.Data.Items.FirstOrDefault();
+        if (SelectedTestCaseRun is not null)
+        {
+            _appNavigationManager.State.SetSelectedTestCaseRun(SelectedTestCaseRun);
+        }
+
+        return _state;
+    }
+
+    /// <summary>
+    /// Runs a test case. If _state is set, we can run the next case after
+    /// </summary>
+    /// <param name="testCaseRun"></param>
+    /// <returns></returns>
     public async Task RunTestAsync(TestCaseRun testCaseRun)
     {
-        var parameters = new DialogParameters<RunTestCaseDialog>()
+        var principal = await GetUserClaimsPrincipalAsync();
+
+        bool continueTesting = true;
+        while (continueTesting)
         {
-            { x => x.TestCaseRun, testCaseRun }
-        };
-        var dialog = await _dialogService.ShowAsync<RunTestCaseDialog>(null, parameters, DefaultBehaviors.DialogOptions);
-        await dialog.Result;
+            var parameters = new DialogParameters<RunTestCaseDialog>()
+            {
+                { x => x.TestCaseRun, testCaseRun }
+            };
+            var dialog = await _dialogService.ShowAsync<RunTestCaseDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+            var dialogResult = await dialog.Result;
+
+            if (testCaseRun.Result != TestResult.NoRun && _state is not null && dialogResult is not null && dialogResult.Data is TestCaseRun)
+            {
+                var userPreferences = await _userPreferencesManager.LoadUserPreferencesAsync(principal);
+                if (userPreferences.AdvanceToNextNotCompletedTestWhenSettingResult)
+                {
+                    if (_state is not null)
+                    {
+                        var next = await AdvanceToNextNotCompletedAsync(testCaseRun);
+                        if (next is not null)
+                        {
+                            testCaseRun = next;
+                            continueTesting = true;
+                        }
+                        else
+                        {
+                            continueTesting = false;
+                        }
+                    }
+                }
+                else
+                {
+                    continueTesting = false;
+                }
+            }
+            else
+            {
+                continueTesting = false;
+            }
+        }
     }
 
     public async Task SetTestCaseRunResultAsync(TestCaseRun testCaseRun, TestResult result)
@@ -77,13 +146,62 @@ internal class TestExecutionController : TenantBaseService
         {
             await ShowTestCaseRunFailureDialogAsync(testCaseRun);
         }
-
-        if(result != TestResult.NoRun && userPreferences.AdvanceToNextNotCompletedTestWhenSettingResult)
-        {
-            TestCompleted?.Invoke(this, testCaseRun);
-        }
     }
 
+    private async Task<TestCaseRun?> AdvanceToNextNotCompletedAsync(TestCaseRun testCaseRun)
+    {
+        bool wasStateChanged = false;
+        TestCaseRunGridState? initialState = _state;
+        if (_state is not null)
+        {
+            int offset = _state.Query.Offset;
+            var current = _state.Data.Items.Index().FirstOrDefault(x => x.Item.Id == testCaseRun.Id);
+            if(current != default)
+            {
+                var index = current.Index;
+                while(_state.Data.Items.Length > 0)
+                {
+                    index++;
+                    if(_state.Data.Items.Length <= index)
+                    {
+                        // Load next page
+                        offset += _state.Query.Count;
+                        if(offset > _state.Data.TotalCount)
+                        {
+                            if (!wasStateChanged)
+                            {
+                                _state = initialState;
+                            }
+                            return null;
+                        }
+                        index = 0;
+                        _state.Query.Offset = offset;
+                        _state = await SearchTestCaseRunsAsync(_state.Query, null);
+                        wasStateChanged = true;
+                    }
+                    if(_state.Data.Items.Length > index)
+                    {
+                        if(_state.Data.Items[index].Result == TestResult.NoRun)
+                        {
+                            if(wasStateChanged)
+                            {
+                                TestCaseRunGridStateChanged?.Invoke(this, _state);
+                            }
+
+                            return _state.Data.Items[index];
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!wasStateChanged)
+        {
+            _state = initialState;
+        }
+
+        return null;
+    }
 
     public async Task SetTestCaseRunMessageAsync(TestCaseRun testCaseRun, string message)
     {

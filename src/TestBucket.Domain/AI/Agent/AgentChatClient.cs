@@ -85,11 +85,11 @@ public class AgentChatClient
             foreach (var reference in context.References)
             {
                 var text = reference.Text ?? "";
-                if (reference.EntityTypeName == "TestCase")
+                if (reference.EntityTypeName == "TestCase" && long.TryParse(reference.Id, out var dbid))
                 {
                     // Compile it
                     List<CompilerError> errors = [];
-                    var testCase = await _testCaseManager.GetTestCaseByIdAsync(principal, reference.Id);
+                    var testCase = await _testCaseManager.GetTestCaseByIdAsync(principal, dbid);
                     if (testCase is not null)
                     {
                         var options = new CompilationOptions(testCase, testCase.Description ?? "");

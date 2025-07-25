@@ -67,9 +67,20 @@
     gap: 4px;
 }
 
+.tb-agent-chat .chat .author span {
+    margin-left: 6px;
+}
+
 .tb-agent-chat .chat .author {
-    color: var(--mud-palette-primary-lighten);
-    font-size: var(--mud-typography-h1-size);
+
+    --color: var(--mud-palette-text-primary);
+
+    color: var(--color);
+    font-size: var(--mud-typography-h5-size);
+    font-weight: bold;
+
+    display: flex;
+    align-items: center;
 }
 
 .tb-agent-chat .chat {

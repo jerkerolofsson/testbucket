@@ -1,5 +1,6 @@
 ﻿using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.Requirements.Models;
 
@@ -24,7 +25,7 @@ namespace TestBucket.Domain.UnitTests.AI
             var chatReference = ChatReferenceBuilder.Create(project, true);
 
             Assert.Equal(project.Name, chatReference.Name);
-            Assert.Equal(project.Id, chatReference.Id);
+            Assert.Equal(project.Id.ToString(), chatReference.Id);
             Assert.Equal("Project", chatReference.EntityTypeName);
             Assert.True(chatReference.IsActiveDocument);
         }
@@ -40,7 +41,7 @@ namespace TestBucket.Domain.UnitTests.AI
 
             Assert.Equal(testCase.Name, chatReference.Name);
             Assert.Equal(testCase.Description, chatReference.Text);
-            Assert.Equal(testCase.Id, chatReference.Id);
+            Assert.Equal(testCase.Id.ToString(), chatReference.Id);
             Assert.Equal("TestCase", chatReference.EntityTypeName);
             Assert.False(chatReference.IsActiveDocument);
         }
@@ -56,7 +57,7 @@ namespace TestBucket.Domain.UnitTests.AI
 
             Assert.Equal(testSuite.Name, chatReference.Name);
             Assert.Equal(testSuite.Description, chatReference.Text);
-            Assert.Equal(testSuite.Id, chatReference.Id);
+            Assert.Equal(testSuite.Id.ToString(), chatReference.Id);
             Assert.Equal("TestSuite", chatReference.EntityTypeName);
             Assert.False(chatReference.IsActiveDocument);
         }
@@ -72,7 +73,7 @@ namespace TestBucket.Domain.UnitTests.AI
 
             Assert.Equal(requirement.Name, chatReference.Name);
             Assert.Equal(requirement.Description, chatReference.Text);
-            Assert.Equal(requirement.Id, chatReference.Id);
+            Assert.Equal(requirement.Id.ToString(), chatReference.Id);
             Assert.Equal("Requirement", chatReference.EntityTypeName);
             Assert.False(chatReference.IsActiveDocument);
         }
@@ -88,7 +89,7 @@ namespace TestBucket.Domain.UnitTests.AI
 
             Assert.Equal(feature.Name, chatReference.Name);
             Assert.Equal(feature.Description, chatReference.Text);
-            Assert.Equal(feature.Id, chatReference.Id);
+            Assert.Equal(feature.Id.ToString(), chatReference.Id);
             Assert.Equal("Feature", chatReference.EntityTypeName);
             Assert.False(chatReference.IsActiveDocument);
         }
@@ -104,8 +105,25 @@ namespace TestBucket.Domain.UnitTests.AI
 
             Assert.Equal(component.Name, chatReference.Name);
             Assert.Equal(component.Description, chatReference.Text);
-            Assert.Equal(component.Id, chatReference.Id);
+            Assert.Equal(component.Id.ToString(), chatReference.Id);
             Assert.Equal("Component", chatReference.EntityTypeName);
+            Assert.False(chatReference.IsActiveDocument);
+        }
+
+
+        /// <summary>
+        /// Tests that a chat reference created from a <see cref="Component"/> maps properties correctly.
+        /// </summary>
+        [Fact]
+        public void CreateChatReference_FromLocalIssue_ShouldMapPropertiesCorrectly()
+        {
+            var component = new LocalIssue { Title = "LocalIssue A", Description = "LocalIssue F", Id = 1, ExternalDisplayId = "ABC-123" };
+            var chatReference = ChatReferenceBuilder.Create(component);
+
+            Assert.Equal(component.Title, chatReference.Name);
+            Assert.Equal(component.Description, chatReference.Text);
+            Assert.Equal("ABC-123", chatReference.Id);
+            Assert.Equal("Issue", chatReference.EntityTypeName);
             Assert.False(chatReference.IsActiveDocument);
         }
     }

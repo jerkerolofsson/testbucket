@@ -27,7 +27,7 @@ public class IssueMcpTools : AuthenticatedTool
     /// Assigns the issue to a user
     /// </summary>
     /// <returns></returns>
-    [McpServerTool(Name = "get-issue-from-id"), Description("Returns information about a specific issue using the issueId to identify the issue")]
+    [McpServerTool(Name = "get_issue_from_id"), Description("Returns information about a specific issue using the issueId to identify the issue")]
     public async Task<IssueDto?> GetIssueFromId(string issueId)
     {
         var isAuthenticated = await IsAuthenticatedAsync();
@@ -53,7 +53,38 @@ public class IssueMcpTools : AuthenticatedTool
     /// Searches for a specific issue
     /// </summary>
     /// <returns></returns>
-    [McpServerTool(Name = "search-for-issue"), Description("Searches for an issue and returns the issue")]
+    [McpServerTool(Name = "search_for_issues"), Description("Searches for issues and returns the most similar issues. ")]
+    public async Task<IssueDto[]> SearchForSimilarIssues(string query, int? count)
+    {
+        count ??= 10;
+        if(count == 0)
+        {
+            count = 10;
+        }
+
+        var isAuthenticated = await IsAuthenticatedAsync();
+        if (isAuthenticated && _principal is not null)
+        {
+            var projectId = _principal.GetProjectId();
+            if (projectId is not null)
+            {
+                var result = await _manager.SemanticSearchLocalIssuesAsync(_principal, projectId.Value, query, 0, count.Value);
+                if (result is null || result.TotalCount == 0)
+                {
+                    return [];
+                }
+
+                return result.Items.Select(x=>x.ToDto()).ToArray();
+            }
+
+        }
+        return [];
+    }
+    /// <summary>
+    /// Searches for a specific issue
+    /// </summary>
+    /// <returns></returns>
+    [McpServerTool(Name = "search_for_issue"), Description("Searches for an issue and returns the issue")]
     public async Task<IssueDto?> SearchForIssue(string text)
     {
         var isAuthenticated = await IsAuthenticatedAsync();
@@ -112,7 +143,7 @@ public class IssueMcpTools : AuthenticatedTool
     /// Assigns the issue to a user
     /// </summary>
     /// <returns></returns>
-    [McpServerTool(Name = "assign-issue"), Description("Assigns an issue to a user. If you don't know the issueId, search for the issue using the search-for-issue tool first.")]
+    [McpServerTool(Name = "assign_issue"), Description("Assigns an issue to a user. If you don't know the issueId, search for the issue using the search-for-issue tool first.")]
     public async Task<string> AssignIssue(string issueId, string user)
     {
         var isAuthenticated = await IsAuthenticatedAsync();
@@ -137,7 +168,7 @@ public class IssueMcpTools : AuthenticatedTool
     /// Returns the latest test results
     /// </summary>
     /// <returns></returns>
-    [McpServerTool(Name = "list-open-issues"), Description("Returns a list of all open issues/bugs/tickets")]
+    [McpServerTool(Name = "list_open_issues"), Description("Returns a list of all open issues/bugs/tickets")]
     public async Task<PagedResult<IssueDto>> GetOpenIssues(int offset=0, int count=100)
     {
         if(count == 0)

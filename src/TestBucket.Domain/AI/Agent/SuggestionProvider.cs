@@ -64,11 +64,15 @@ public class SuggestionProvider
 
             if (reference.EntityTypeName == "Issue")
             {
-                suggestions.Add(new Suggestion("Summarize this issue", $"""
-                    1. Summarize the issue: {reference.Name}.
-                    """));
+                suggestions.Add(new Suggestion("Summarize this issue", $"Issue ID: '{reference.Id}'")
+                {
+                    AgentId = OrchestrationStrategies.SummarizeIssue
+                });
                     
-                suggestions.Add(new Suggestion($"Find issues similar to '{reference.Name}'", $"Find issues similar to '{reference.Name}'. Summarize the description and search for similar issues"));
+                suggestions.Add(new Suggestion($"Find issues similar to '{reference.Name}'", $"Issue ID: '{reference.Id}'")
+                {
+                    AgentId = OrchestrationStrategies.FindSimilarIssues
+                });
             }
 
             if (reference.EntityTypeName == "Feature")

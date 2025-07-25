@@ -100,7 +100,10 @@
                     if (showText && !string.IsNullOrEmpty(message.Text))
                     {
                         <div class="chat @message.Role">
-                            <div class="author">@message.AuthorName</div>
+                            <div class="author"> 
+                                <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.Agent"/>
+                                <span>@message.AuthorName</span>
+                            </div>
                             <MarkdownEditor ShowToolbar="false" Preview Value="@message.Text" />
                         </div>
                     }
@@ -215,7 +218,7 @@
 
         var needReset = false;
         var clearMessages = false;
-        if (Project is not null && _projectReference?.Id != Project.Id)
+        if (Project is not null && _projectReference?.Id != Project.Id.ToString())
         {
             clearMessages = true;
             needReset = true;

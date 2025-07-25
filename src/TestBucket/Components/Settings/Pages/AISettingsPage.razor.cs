@@ -18,6 +18,7 @@ public partial class AISettingsPage
     [CascadingParameter] public TestProject? Project { get; set; }
 
     private string McpUrl => $"{TenantId}/Settings/Categories/MCP";
+    private string AiUsageUrl => $"{TenantId}/Settings/AI/Usage";
 
     private ISetting[] _settings = [];
     private SettingContext? _context;

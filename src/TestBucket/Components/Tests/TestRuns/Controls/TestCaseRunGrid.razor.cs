@@ -466,22 +466,22 @@ public partial class TestCaseRunGrid
     /// </summary>
     /// <param name="state">The grid state (paging, sorting, etc.).</param>
     /// <returns>Grid data containing items and total count.</returns>
-    private async Task<GridData<TestCaseRun>> LoadGridData(GridState<TestCaseRun> state)
+    private Task<GridData<TestCaseRun>> LoadGridData(GridState<TestCaseRun> state)
     {
         if(_state is null)
         {
-            return new GridData<TestCaseRun>()
+            return Task.FromResult(new GridData<TestCaseRun>()
             {
                 Items = [],
                 TotalItems = 0
-            };
+            });
         }
 
-        return new GridData<TestCaseRun>
+        return Task.FromResult(new GridData<TestCaseRun>
         {
             Items = _state.Data.Items,
             TotalItems = (int)_state.Data.TotalCount
-        };
+        });
     }
 
     /// <summary>

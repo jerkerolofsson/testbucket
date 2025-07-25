@@ -14,6 +14,9 @@ using Microsoft.SemanticKernel.ChatCompletion;
 
 using TestBucket.Domain.AI.Agent.Agents;
 using TestBucket.Domain.AI.Agent.Orchestration.Strategies;
+using TestBucket.Domain.AI.Agent.Orchestration.Strategies.Issues;
+using TestBucket.Domain.AI.Agent.Orchestration.Strategies.Requirements;
+using TestBucket.Domain.AI.Agent.Orchestration.Strategies.Testing;
 
 namespace TestBucket.Domain.AI.Agent.Orchestration;
 internal class OrchestrationBuilder
@@ -25,6 +28,8 @@ internal class OrchestrationBuilder
             new AddRequirements(),
             new DraftRequirements(),
             new AIRunner(),
+            new FindSimilarIssues(),
+            new SummarizeIssue()
         ];
 
     public AgentOrchestration<string,string> Build(

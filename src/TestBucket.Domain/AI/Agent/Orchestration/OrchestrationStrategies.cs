@@ -11,4 +11,7 @@ public sealed class OrchestrationStrategies
     public const string AddRequirements = "add-requirements";
     public const string DraftRequirements = "draft-requirements";
 
+    public const string FindSimilarIssues = "find-similar-issues";
+    public const string SummarizeIssue = "summarize-issue";
+
 }

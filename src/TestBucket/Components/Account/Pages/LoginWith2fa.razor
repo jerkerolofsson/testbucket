@@ -4,6 +4,9 @@
 @inject UserManager<ApplicationUser> UserManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<LoginWith2fa> Logger
+@inject IAppLocalization loc
+@page "/{TenantId}/Account/LoginWith2fa"
+@using TestBucket.Contracts.Localization
 
 <PageTitle>Two-factor authentication</PageTitle>
 
@@ -16,8 +19,10 @@
         <EditForm Model="Input" FormName="login-with-2fa" OnValidSubmit="OnValidSubmitAsync" method="post">
             <input type="hidden" name="ReturnUrl" value="@ReturnUrl" />
             <input type="hidden" name="RememberMe" value="@RememberMe" />
+
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert" />
+
             <div class="form-floating mb-3">
                 <InputText @bind-Value="Input.TwoFactorCode" id="Input.TwoFactorCode" class="form-control" autocomplete="off" />
                 <label for="Input.TwoFactorCode" class="form-label">Authenticator code</label>
@@ -26,11 +31,11 @@
             <div class="checkbox mb-3">
                 <label for="remember-machine" class="form-label">
                     <InputCheckbox @bind-Value="Input.RememberMachine" />
-                    Remember this machine
+                    @loc.Account["remember-this-machine"]
                 </label>
             </div>
             <div>
-                <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" data-testid="login-2fa">@loc.Account["login"]</MudButton>
             </div>
         </EditForm>
     </div>

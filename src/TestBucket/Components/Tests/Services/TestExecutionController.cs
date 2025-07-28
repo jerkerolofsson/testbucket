@@ -24,9 +24,8 @@ internal class TestExecutionController : TenantBaseService
     private readonly AppNavigationManager _appNavigationManager;
 
     /// <summary>
-    /// Invoked when a result is set, unless the result is NoRun
+    /// Invoked when the state is changed (e.g. when a the list of items has changed).
     /// </summary>
-    public event EventHandler<TestCaseRun>? TestCompleted;
     public event EventHandler<TestCaseRunGridState>? TestCaseRunGridStateChanged;
 
     public TestExecutionController(

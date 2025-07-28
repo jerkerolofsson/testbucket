@@ -181,6 +181,9 @@
     <value>Remember me</value>
     <comment>Account Login</comment>
   </data>
+  <data name="remember-this-machine" xml:space="preserve">
+    <value>Remember this machine</value>
+  </data>
   <data name="resend-email-confirmation" xml:space="preserve">
     <value>Resend email confirmation</value>
   </data>

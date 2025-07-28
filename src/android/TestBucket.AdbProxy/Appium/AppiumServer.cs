@@ -61,6 +61,24 @@ public class AppiumServer : IAsyncDisposable, IProgress<string>
             throw new ArgumentNullException("_device.Url must be set");
         }
 
+        // As we are running appium on the same host as the device, use host.docker.internal to access the host machine
+        var url = _device.Url;
+        var portSeparator = url.IndexOf(':');
+        if(portSeparator > 0)
+        {
+            var portString = url.Substring(portSeparator + 1);
+            if(int.TryParse(portString, out int parsedPort))
+            {
+                var hostnameFromContainer = Environment.GetEnvironmentVariable("TB_APPIUM_HOSTNAME_FOR_ADBPROXY") ?? "host.docker.internal:";
+                url = hostnameFromContainer + parsedPort;
+            }
+            else
+            {
+                _logger.LogWarning("Failed to parse port from device URL '{Url}'", url);
+            }
+        }
+
+
         var containerName = GetProjectName(_device.DeviceId);
         var projectName = containerName;
 
@@ -75,7 +93,7 @@ public class AppiumServer : IAsyncDisposable, IProgress<string>
                   - {port}:4723
                 environment:
                   - REMOTE_ADB=true
-                  - ANDROID_DEVICES={_device.Url}
+                  - ANDROID_DEVICES={url}
                   - REMOTE_ADB_POLLING_SEC=60
             """;
 

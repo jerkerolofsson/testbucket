@@ -8,4 +8,5 @@ public interface IResourceRegistry
     void AddResource(IResource resource);
     void RemoveResource(IResource resource);
     Task<ScreenshotDto?> CaptureScreenshotAsync(string resourceId, CancellationToken cancellationToken);
+    Task<IResource?> GetResourceAsync(string resourceId, CancellationToken cancellationToken);
 }

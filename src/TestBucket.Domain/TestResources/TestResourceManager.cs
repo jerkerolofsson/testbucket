@@ -31,6 +31,8 @@ internal class TestResourceManager : ITestResourceManager
         resource.ModifiedBy = resource.CreatedBy;
         resource.Modified = _timeProvider.GetUtcNow();
         await _repository.UpdateAsync(resource);
+
+        await _mediator.Publish(new TestResourceUpdated(principal, resource));
     }
 
     public async Task AddAsync(ClaimsPrincipal principal, TestResource resource)

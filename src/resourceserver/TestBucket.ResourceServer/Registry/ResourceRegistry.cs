@@ -15,6 +15,14 @@ internal class ResourceRegistry : IResourceRegistry
     {
         _resources.TryRemove(resource.ResourceId, out _);
     }
+
+    public Task<IResource?> GetResourceAsync(string resourceId, CancellationToken cancellationToken)
+    {
+        IResource? resource;
+        _resources.TryGetValue(resourceId, out resource);
+        return Task.FromResult(resource);
+    }
+
     public async Task<ScreenshotDto?> CaptureScreenshotAsync(string resourceId, CancellationToken cancellationToken)
     {
         if(_resources.TryGetValue(resourceId, out var resource))
@@ -23,5 +31,4 @@ internal class ResourceRegistry : IResourceRegistry
         }
         return null;
     }
-
 }

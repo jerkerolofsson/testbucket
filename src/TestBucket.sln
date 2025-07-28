@@ -118,6 +118,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Node", "Node", "{FC2DC683-B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Servers.NodeResourceServer", "node\TestBucket.Servers.NodeResourceServer\TestBucket.Servers.NodeResourceServer.csproj", "{5A770BDE-15F8-4353-ADFC-8207AE1D6D4D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.AdbProxy.DeviceIntegrationTests", "..\tests\TestBucket.AdbProxy.DeviceIntegrationTests\TestBucket.AdbProxy.DeviceIntegrationTests.csproj", "{F0B4A5DE-2F46-4784-9AEB-4C299ECCC410}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -272,6 +274,10 @@ Global
 		{5A770BDE-15F8-4353-ADFC-8207AE1D6D4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A770BDE-15F8-4353-ADFC-8207AE1D6D4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A770BDE-15F8-4353-ADFC-8207AE1D6D4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0B4A5DE-2F46-4784-9AEB-4C299ECCC410}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0B4A5DE-2F46-4784-9AEB-4C299ECCC410}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0B4A5DE-2F46-4784-9AEB-4C299ECCC410}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0B4A5DE-2F46-4784-9AEB-4C299ECCC410}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -326,6 +332,7 @@ Global
 		{D6C64C9D-DA29-4E89-B227-B399F33F042F} = {F6F1BD5A-FFAC-40D0-9497-D30F9FE19B47}
 		{FC2DC683-B225-4D2D-9BCB-B966305BEC55} = {58D182B5-156D-427E-A682-5661B1D67094}
 		{5A770BDE-15F8-4353-ADFC-8207AE1D6D4D} = {FC2DC683-B225-4D2D-9BCB-B966305BEC55}
+		{F0B4A5DE-2F46-4784-9AEB-4C299ECCC410} = {4F69E7E1-31EE-42A6-AA55-4570DB417F92}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37FBEEC7-21BB-422E-866E-8B5C94540F5B}

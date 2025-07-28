@@ -52,7 +52,7 @@ public class AppiumServer : IAsyncDisposable, IProgress<string>
         await _dockerCompose.UpAsync(this, plan, null, cancellationToken);
     }
 
-    public static string GetProjectName(string deviceId) => $"tb-appium-{deviceId}";
+    public static string GetProjectName(string deviceId) => $"tb-appium-{deviceId.Replace(":", "_")}";
 
     private DockerComposePlan CreateDockerComposePlan(int port)
     {

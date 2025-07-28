@@ -8,7 +8,7 @@ systems:
     dev_lead: 
     test_lead: 
     paths:
-    - src/android/**/*
+    - src\android\**\*
   Test Bucket .NET SDK:
     display:
       sort: 3
@@ -44,6 +44,35 @@ systems:
     - src/integrations/**/*
     - src/TestBucket/**/Api/*
 components:
+  ADB Device Handling:
+    display: 
+    description: >-
+      Device registry and commands for Android devices:
+
+      - Capture screenshot
+
+      - Getprop 
+
+      - etc
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\android\TestBucket.AdbProxy\DeviceHandling\**\*.*
+  ADB Protocol:
+    display: 
+    description: ADB client and host protocol
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\android\TestBucket.AdbProxy\Protocol\**\*.*
+    - src\android\TestBucket.AdbProxy\Host\**\*.*
+  ADB Proxy:
+    display: 
+    description: Implements a proxy accepting incoming TCP connections, proxying them to the ADB host.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\android\TestBucket.AdbProxy\Proxy\**\*.*
   Agent UI:
     display: 
     description: User interface for chat / agents
@@ -68,6 +97,20 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\Appearance\**\*.*
+  Appium:
+    display: 
+    description: Appium container orchestration and connection management
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\android\TestBucket.AdbProxy\Appium\**\*.*
+  Appium MCP:
+    display: 
+    description: MCP server for Appium
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src\android\TestBucket.AdbProxy\Appium\Mcp\**\*.*
   Automation:
     display: 
     description: CI/CD integration to run automated tests
@@ -448,6 +491,46 @@ components:
     paths:
     - src\TestBucket\Components\WelcomeExperience\**\*.*
 layers:
+  adb-appium:
+    display:
+      sort: 2
+      back_color: 
+      fore_color: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src\android\TestBucket.AdbProxy\Appium\**\*.*
+  adb-devices:
+    display:
+      sort: 3
+      back_color: 
+      fore_color: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src\android\TestBucket.AdbProxy\DeviceHandling\**\*.*
+  adb-protocol:
+    display:
+      sort: 5
+      back_color: 
+      fore_color: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src\android\TestBucket.AdbProxy\Protocol\**\*.*
+  adb-proxy:
+    display:
+      sort: 4
+      back_color: 
+      fore_color: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src\android\TestBucket.AdbProxy\Proxy\**\*.*
   API:
     display:
       sort: 0
@@ -539,7 +622,12 @@ features:
     - src\Package\Core\TestBucket.Contracts\Code\**\*
   Chat:
     display: 
-    description: Agent/Chat
+    description: >
+      #### Summary
+
+      - User can ask the LLM in a chat UI.
+
+      - User can run in Agent mode, where an agentic orchestration is used.
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
@@ -562,70 +650,7 @@ features:
   Conventional Commits:
     display: 
     description: >
-      # Conventional Commits
-
       Conventional Commits are a lightweight convention on top of commit messages, providing a standardized format for writing Git commit messages. This convention makes the commit history more explicit and easier to understand for both humans and machines. 
-
-
-      ## Structure
-
-      Conventional Commits follow a specific structure: {type}({scope}): {description}.
-
-
-      ### Type
-
-      The type specifies the kind of change introduced by the commit. Common types include:
-
-      - feat: A new feature or functionality.
-
-      - fix: A bug fix.
-
-      - docs: Documentation-only changes.
-
-      - chore: Maintenance tasks or other changes that don't directly modify source or test files, such as updating dependencies.
-
-      - perf: Improvements to performance without changing functionality.
-
-      - test: Adding or modifying tests.
-
-      - refactor: Refactoring code without changing public API or behavior.
-
-      - build: Changes affecting the build system or external dependencies.
-
-      - ci: Changes to CI configuration files and scripts.
-
-      - style: Code style and formatting changes.
-
-      - revert: Reverting previous changes.
-
-
-      ### Scope (optional)
-
-      The scope indicates the part of the codebase affected by the change. For example: feat(authentication): add OAuth login.
-
-
-      ### Description
-
-
-      A concise summary of the changes made.
-
-
-      ## Breaking Changes
-
-      Conventional Commits clearly mark breaking changes, which are changes that are not backward compatible and may require users to update their code or configuration. Breaking changes can be indicated either by adding ! after the type/scope, or by including BREAKING CHANGE: at the beginning of the commit body or footer section. 
-
-
-      # Benefits of Conventional Commits
-
-      - Clarity and Consistency: Provides a clear and consistent format for commit messages, making the commit history easier to understand for developers.
-
-      - Automation: Enables the use of tools to automatically generate changelogs, bump version numbers (following Semantic Versioning), and trigger build/deployment processes based on commit types.
-
-      - Improved Collaboration: Facilitates communication and collaboration among team members by providing a shared understanding of changes.
-
-      - Semantic Versioning (SemVer) Integration: Works well with SemVer, making it easier to determine the next major, minor, or patch version based on the commit types.  
-
-      - Conventional Commits helps to create a more organized and informative Git history, improving both developer experience and the maintainability of software projects. 
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths: []

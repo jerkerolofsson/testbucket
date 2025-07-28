@@ -46,6 +46,14 @@ public record class AdbDevice
     /// Version information
     /// </summary>
     public AndroidVersion Version { get; set; } = new();
-    public int ApiLevel { get; internal set; }
-    public string Hostname { get; internal set; }
+
+    /// <summary>
+    /// Android API level
+    /// </summary>
+    public int ApiLevel { get; set; }
+
+    /// <summary>
+    /// Public IP or hostname
+    /// </summary>
+    public string? Hostname { get; set; }
 }

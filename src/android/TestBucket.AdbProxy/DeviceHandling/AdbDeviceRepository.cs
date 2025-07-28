@@ -2,6 +2,8 @@
 
 using Docker.DotNet.Models;
 
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -58,6 +60,10 @@ public class AdbDeviceRepository : IAdbDeviceRepository
     {
         var adb = new AdbHostClient(_adbProxyOptions);
         var devices = await adb.ListDevicesAsync(cancellationToken);
+
+        // Remove remote devices, only include local devices
+        devices = devices.Where(x => x.DeviceId.Contains(':') == false).ToArray();
+
         var deviceDict = new Dictionary<string, AdbDevice>();
         foreach (var device in devices)
         {
@@ -65,9 +71,14 @@ public class AdbDeviceRepository : IAdbDeviceRepository
 
             if(_servers.TryGetValue(device.DeviceId, out var proxyServer))
             {
+                if(_appiumServers.TryGetValue(device.DeviceId, out var appiumServer))
+                {
+                    device.AppiumPort = appiumServer.Port;
+                }
+
                 device.Url = proxyServer.DeviceUrl;
                 device.Port = proxyServer.Port;
-                device.AppiumUrl = $"{device.Hostname}:{device.AppiumPort}"; ;
+                device.AppiumUrl = $"http://{device.Hostname}:{device.AppiumPort}"; ;
             }
         }
 
@@ -99,6 +110,7 @@ public class AdbDeviceRepository : IAdbDeviceRepository
         }
     }
 
+
     private bool UpdateDeviceStatus(Dictionary<string, AdbDevice> deviceDict)
     {
         var changed = false;
@@ -113,6 +125,12 @@ public class AdbDeviceRepository : IAdbDeviceRepository
                         changed = true;
                         server.Device.Status = device.Status;
                     }
+                }
+
+                if (_appiumServers.TryGetValue(device.DeviceId, out var appiumServer))
+                {
+                    device.AppiumPort = appiumServer.Port;
+                    device.AppiumUrl = $"http://{device.Hostname}:{device.AppiumPort}"; ;
                 }
             }
         }
@@ -147,7 +165,7 @@ public class AdbDeviceRepository : IAdbDeviceRepository
                     _logger.LogInformation("Appium server started for {deviceId} on {port}", device.DeviceId, server.Port);
                 }
                 device.AppiumPort = appiumServer.Port;
-                device.AppiumUrl = $"{device.Hostname}:{device.AppiumPort}";
+                device.AppiumUrl = $"http://{device.Hostname}:{device.AppiumPort}";
 
                 AddResource(device);
 

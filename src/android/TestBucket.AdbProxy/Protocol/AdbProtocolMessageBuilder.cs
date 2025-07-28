@@ -50,17 +50,26 @@ namespace TestBucket.AdbProxy.Protocol
             return Encoding.UTF8.GetString(_payload, 0, _payload.Length-1); // -1 = remove null termination char
         }
 
-        public async Task WriteToAsync(Stream destination, CancellationToken cancellationToken)
+        public async Task WriteToAsync(Stream destination, SemaphoreSlim writeLock, CancellationToken cancellationToken)
         {
             var headerBytes = this.Header.ToByteArray();
-            await destination.WriteAsync(headerBytes, cancellationToken);
 
-            if(_payload is not null)
+            await writeLock.WaitAsync(cancellationToken);
+            try
             {
-                await destination.WriteAsync(_payload, cancellationToken);
-            }
+                await destination.WriteAsync(headerBytes, cancellationToken);
 
-            await destination.FlushAsync(cancellationToken);
+                if (_payload is not null)
+                {
+                    await destination.WriteAsync(_payload, cancellationToken);
+                }
+
+                await destination.FlushAsync(cancellationToken);
+            }
+            finally
+            {
+                writeLock.Release();
+            }
         }
 
         public static AdbProtocolMessageBuilder Create(uint command, uint arg0, uint arg1, byte[] bytes)

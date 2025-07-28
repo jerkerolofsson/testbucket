@@ -90,7 +90,8 @@ namespace TestBucket.AdbProxy.Proxy
                 _tcpServer.Start();
                 while (!_cancellationTokenSource.IsCancellationRequested)
                 {
-                    // Someone connected to us
+                    // Someone connected to us. This may be an adbd.
+                    // Note that this single connection may be used for many commands.
                     var source = await _tcpServer.AcceptTcpClientAsync(_cancellationTokenSource.Token);
 
                     _logger.LogInformation("Client connected: {RemoteEndPoint}", source.Client.RemoteEndPoint);
@@ -116,7 +117,7 @@ namespace TestBucket.AdbProxy.Proxy
                 _tcpServer.Stop();
                 _tcpServer.Dispose();
 
-                foreach (var connection in _connections)
+                foreach (var connection in _connections.ToArray())
                 {
                     connection.Dispose();
                 }
@@ -145,13 +146,16 @@ namespace TestBucket.AdbProxy.Proxy
 
         public int IncrementAndGetLocalId()
         {
-            var localId = _nextLocalId;
-            _nextLocalId++;
-            if (_nextLocalId == int.MaxValue)
+            lock (_lock)
             {
-                _nextLocalId = 1;
+                var localId = _nextLocalId;
+                _nextLocalId++;
+                if (_nextLocalId == int.MaxValue)
+                {
+                    _nextLocalId = 1;
+                }
+                return localId;
             }
-            return localId;
         }
     }
 }

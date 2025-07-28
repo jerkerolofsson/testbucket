@@ -3,6 +3,7 @@
 @using TestBucket.Domain.AI.Agent.Models
 @inject AppNavigationManager appNavigationManager
 @inject TestBrowser testBrowser
+@inject TestResourceController testResourceController
 @inject TestCaseEditorController testCaseEditorController
 @inject IAppLocalization loc
 @implements IDisposable
@@ -10,6 +11,7 @@
 <div class="references">
 
     <MudMenu Icon="@Icons.Material.Filled.Add" Color="Color.Success">
+        <MudMenuItem OnClick="AddResourceAsync">@loc.Shared["test-resource"]</MudMenuItem>
         <MudMenuItem OnClick="AddTestCaseAsync">@loc.Shared["test-case"]</MudMenuItem>
     </MudMenu>
 
@@ -36,6 +38,21 @@
         if(testCase is not null)
         {
             await AddReferenceAsync(ChatReferenceBuilder.Create(testCase));
+        }
+    }
+    private async Task AddResourceAsync()
+    {
+        TestResource? resource = await testResourceController.PickResourceAsync();
+        if (resource is not null)
+        {
+            // Add MCP tool for this resource
+            if(_context.Tools is not null)
+            {
+                //_context.Tools.Add();
+            }
+
+
+            await AddReferenceAsync(ChatReferenceBuilder.Create(resource));
         }
     }
 

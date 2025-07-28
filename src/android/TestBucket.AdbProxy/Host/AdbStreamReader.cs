@@ -42,7 +42,7 @@ internal class AdbStreamReader : IDisposable
             {
                 int readbytes = await _hostStream.ReadAsync(buffer, 0, buffer.Length, token);
               
-                string debug = Encoding.UTF8.GetString(buffer, 0, readbytes);
+                //string debug = Encoding.UTF8.GetString(buffer, 0, readbytes);
 
                 await _callback.OnDataReceivedAsync(_adbStream, new Memory<byte>(buffer, 0, readbytes));
             }

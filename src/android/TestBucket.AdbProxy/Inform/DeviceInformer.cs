@@ -1,8 +1,12 @@
 ﻿using System.Text.Json;
 
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+
 using TestBucket.AdbProxy.Models;
 using TestBucket.Contracts.TestResources;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+using TestBucket.ResourceServer.Utilities;
 
 namespace TestBucket.AdbProxy.Inform;
 
@@ -10,7 +14,7 @@ namespace TestBucket.AdbProxy.Inform;
 /// Provides functionality to inform an external system about connected Android devices,
 /// manage inform settings, and persist configuration for device reporting.
 /// </summary>
-internal class DeviceInformer(HttpClient httpClient) : IDeviceInformer
+internal class DeviceInformer(HttpClient httpClient, IServer Server) : IDeviceInformer
 {
     private InformSettings? _settings;
 
@@ -103,6 +107,53 @@ internal class DeviceInformer(HttpClient httpClient) : IDeviceInformer
 
         List<TestResourceDto> resources = new();
         var owner = Environment.GetEnvironmentVariable("SERVER_UUID") ?? "no-uuid-configured";
+        AddDevicesAsResources(devices, resources, owner);
+        AddMcpResource(resources, owner);
+
+        using var request = new HttpRequestMessage(HttpMethod.Post, settings.Url);
+
+        if (!string.IsNullOrEmpty(settings.AuthHeader))
+        {
+            bool success = request.Headers.TryAddWithoutValidation("Authorization", settings.AuthHeader);
+        }
+
+        request.Content = new StringContent(JsonSerializer.Serialize(resources), System.Text.Encoding.UTF8, "application/json");
+        using var response = await httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
+    }
+
+    private void AddMcpResource(List<TestResourceDto> resources, string owner)
+    {
+        var hostname = PublicHostnameDetector.GetPublicHostname() ?? "localhost";
+
+        var addressFeature = Server.Features.Get<IServerAddressesFeature>();
+        if (addressFeature != null)
+        {
+            foreach (var address in addressFeature.Addresses)
+            {
+                if (address.StartsWith("http:"))
+                {
+                    resources.Add(new TestResourceDto
+                    {
+                        Name = $"adb-mcp-server@{hostname}",
+                        Owner = owner,
+                        ResourceId = hostname + "-mcp-server",
+                        Model = "AdbProxy",
+                        Manufacturer = "TestBucket",
+                        Types = ["appium-mcp", "adb-mcp", "mcp-server"],
+                        Health = HealthStatus.Healthy,
+                        Variables =
+                        {
+                            ["url"] = address.TrimEnd('/') + "/mcp"
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    private static void AddDevicesAsResources(AdbDevice[] devices, List<TestResourceDto> resources, string owner)
+    {
         foreach (var device in devices)
         {
             HealthStatus status = device.Status switch
@@ -128,6 +179,15 @@ internal class DeviceInformer(HttpClient httpClient) : IDeviceInformer
             {
                 resource.Variables["url"] = device.Url;
             }
+            if (device.AppiumUrl is not null)
+            {
+                resource.Variables["appium-url"] = device.AppiumUrl;
+            }
+
+            if (device.AppiumPort > 0)
+            {
+                resource.Variables["appium-port"] = device.AppiumPort.ToString();
+            }
             if (device.Version.VersionName is not null)
             {
                 resource.Variables["version-name"] = device.Version.VersionName;
@@ -139,16 +199,5 @@ internal class DeviceInformer(HttpClient httpClient) : IDeviceInformer
 
             resources.Add(resource);
         }
-
-        using var request = new HttpRequestMessage(HttpMethod.Post, settings.Url);
-
-        if (!string.IsNullOrEmpty(settings.AuthHeader))
-        {
-            bool success = request.Headers.TryAddWithoutValidation("Authorization", settings.AuthHeader);
-        }
-
-        request.Content = new StringContent(JsonSerializer.Serialize(resources), System.Text.Encoding.UTF8, "application/json");
-        using var response = await httpClient.SendAsync(request, cancellationToken);
-        response.EnsureSuccessStatusCode();
     }
 }

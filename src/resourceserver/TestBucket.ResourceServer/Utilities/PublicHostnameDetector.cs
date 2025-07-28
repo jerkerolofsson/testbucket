@@ -20,6 +20,6 @@ public class PublicHostnameDetector
             }
         }
 
-        return Environment.MachineName;
+        return hostname ?? Environment.MachineName;
     }
 }

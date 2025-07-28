@@ -1000,4 +1000,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="delete-many-test-case-runs-description" xml:space="preserve">
     <value>Deletes all selected test case runs</value>
   </data>
+  <data name="test-resources-description" xml:space="preserve">
+    <value>Devices, services or other resources that are accessible from test bucket. These resources are hosted by resource servers, enabling remote access to them.</value>
+  </data>
 </root>

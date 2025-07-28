@@ -46,6 +46,7 @@ namespace TestBucket.AdbProxy.Proxy
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly Task _readTask;
         private bool _disposed;
+        private readonly SemaphoreSlim _writeLock = new SemaphoreSlim(1);
         //private uint _remoteId;
         //private uint _localId;
 
@@ -93,6 +94,11 @@ namespace TestBucket.AdbProxy.Proxy
             await RunProxyLoopAsync("client=>proxy");
         }
 
+        /// <summary>
+        /// Reads from the client (e.g. adb shell...)
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
         private async Task RunProxyLoopAsync(string tag)
         {
             try
@@ -111,6 +117,7 @@ namespace TestBucket.AdbProxy.Proxy
                             bytesToRead = buffer.Length;
                         }
 
+                        // Read from the adb client (e.g. remote PC)
                         int readBytes = await _clientStream.ReadAsync(buffer, 0, bytesToRead, cancellationToken);
                         if (readBytes > 0)
                         {
@@ -121,7 +128,7 @@ namespace TestBucket.AdbProxy.Proxy
                             {
                                 LogMessageHeaderReceived(tag, message);
 
-                                await HandleCompleteMessageAsync(message, cancellationToken);
+                                await HandleCompleteMessageFromClientAsync(message, cancellationToken);
 
                                 // Reset the message and start to build a new one
                                 message = new();
@@ -130,6 +137,9 @@ namespace TestBucket.AdbProxy.Proxy
                         else
                         {
                             _observer.OnConnectionException(this, new Exception("No bytes read"));
+                            if (!_clientStream.Socket.Connected)
+                            {
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -141,7 +151,7 @@ namespace TestBucket.AdbProxy.Proxy
             catch (OperationCanceledException) { }
         }
 
-        private async Task HandleCompleteMessageAsync(AdbProtocolMessageBuilder message, CancellationToken cancellationToken = default)
+        private async Task HandleCompleteMessageFromClientAsync(AdbProtocolMessageBuilder message, CancellationToken cancellationToken = default)
         {
             if (State == AdbProxyClientState.Initial)
             {
@@ -240,13 +250,20 @@ namespace TestBucket.AdbProxy.Proxy
             if (adbStream is not null)
             {
                 var stream = adbStream.GetStream();
-                await stream.WriteAsync(message.Payload, cancellationToken);
-
-                // Send READY
+                await message.WriteToAsync(stream, _writeLock, cancellationToken);
+              
+                // Send OKAY to client
                 await SendReadyAsync(adbStream, cancellationToken);
             }
         }
 
+        /// <summary>
+        /// Opens a new stream. Each stream is represented by IDs, so we need to pass these back and forth when sending and receiving messages.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         private async Task OnOpenReceivedAsync(AdbProtocolMessageBuilder message, CancellationToken cancellationToken = default)
         {
             // shell:getprop\0
@@ -263,11 +280,12 @@ namespace TestBucket.AdbProxy.Proxy
             var adbStream = await host.CreateStreamAsync(localId, remoteId, [$"host:transport:{_deviceSerial}", path], cancellationToken);
             _adbStreams[remoteId] = adbStream;
 
-            // reply with READY message
-            await SendReadyAsync(adbStream, cancellationToken);
 
             // Create reader that will read data in a background thread from the ADB host and send it to us via a callback
             adbStream.CreateReader(this, cancellationToken);
+
+            // reply with OKAY message to client
+            await SendReadyAsync(adbStream, cancellationToken);
 
             // initial ready state is true after open
             SetReadyState();
@@ -276,7 +294,7 @@ namespace TestBucket.AdbProxy.Proxy
         private async Task SendReadyAsync(AdbStream adbStream, CancellationToken cancellationToken)
         {
             var ready = AdbProtocolMessageBuilder.Create(AdbProtocolConstants.A_OKAY, adbStream.LocalId, adbStream.RemoteId, []);
-            await ready.WriteToAsync(_clientStream, cancellationToken);
+            await ready.WriteToAsync(_clientStream, _writeLock, cancellationToken);
         }
 
         private void SetReadyState()
@@ -299,7 +317,7 @@ namespace TestBucket.AdbProxy.Proxy
 
             var packet = AdbProtocolMessageBuilder.Create(AdbProtocolConstants.A_CNXN, _version, _maxDataLength, payload);
             _logger.LogInformation("< CNXN");
-            await packet.WriteToAsync(_clientStream, cancellationToken);
+            await packet.WriteToAsync(_clientStream, _writeLock, cancellationToken);
 
             State = AdbProxyClientState.Connected;
         }
@@ -313,6 +331,10 @@ namespace TestBucket.AdbProxy.Proxy
                     break;
                 case AdbProtocolConstants.A_OPEN:
                     _logger.LogInformation("{tag} OPEN", tag);
+
+                    //var msg = message.DecodePayloadAsString();
+                    //_logger.LogInformation("{tag}: {msg}", tag, msg);
+
                     break;
                 case AdbProtocolConstants.A_SYNC:
                     _logger.LogInformation("{tag} SYNC", tag);
@@ -354,21 +376,24 @@ namespace TestBucket.AdbProxy.Proxy
 
             if (data.Length == 0)
             {
+                await CloseStreamAsync(adbStream);
+
                 adbStream.Dispose();
 
-                // TDD: REmove from adb stream collection
-
-                var closePacket = AdbProtocolMessageBuilder.Create(AdbProtocolConstants.A_CLSE, adbStream.LocalId, adbStream.RemoteId, []);
-                await closePacket.WriteToAsync(_clientStream, _cancellationTokenSource.Token);
+                // Remove from adb stream collection
+                _adbStreams.TryRemove(adbStream.RemoteId, out var _);
+                return;
             }
             var bytes = data.ToArray();
 
             // Write to client
             if (data.Length <= _maxDataLength)
             {
-                WaitForReadyState();
                 var packet = AdbProtocolMessageBuilder.Create(AdbProtocolConstants.A_WRTE, adbStream.LocalId, adbStream.RemoteId, bytes);
-                await packet.WriteToAsync(_clientStream, _cancellationTokenSource.Token);
+                await packet.WriteToAsync(_clientStream, _writeLock, _cancellationTokenSource.Token);
+
+                //await SendReadyAsync(adbStream, _cancellationTokenSource.Token);
+                //WaitForReadyState();
             }
             else
             {
@@ -381,12 +406,10 @@ namespace TestBucket.AdbProxy.Proxy
                     remainingBytes -= length;
                     offset += length;
 
-                    WaitForReadyState();
-
                     var fragment = new Memory<byte>(bytes, offset, length);
                     var packet = AdbProtocolMessageBuilder.Create(AdbProtocolConstants.A_WRTE, adbStream.LocalId, adbStream.RemoteId, fragment.ToArray());
-                    await packet.WriteToAsync(_clientStream, _cancellationTokenSource.Token);
-
+                    await packet.WriteToAsync(_clientStream, _writeLock, _cancellationTokenSource.Token);
+                    //WaitForReadyState();
                 }
             }
         }
@@ -395,7 +418,11 @@ namespace TestBucket.AdbProxy.Proxy
         {
             // Wait for ready state.
             // Initial state is ready.
-            _isReady.Wait(_cancellationTokenSource.Token);
+
+            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token, timeout.Token);
+
+            _isReady.Wait(cts.Token);
 
             // After a write the ready state is reset.
             _isReady.Reset();
@@ -410,7 +437,7 @@ namespace TestBucket.AdbProxy.Proxy
         private async Task CloseStreamAsync(AdbStream adbStream)
         {
             var closePacket = AdbProtocolMessageBuilder.Create(AdbProtocolConstants.A_CLSE, adbStream.LocalId, adbStream.RemoteId, []);
-            await closePacket.WriteToAsync(_clientStream, _cancellationTokenSource.Token);
+            await closePacket.WriteToAsync(_clientStream, _writeLock, _cancellationTokenSource.Token);
         }
     }
 }

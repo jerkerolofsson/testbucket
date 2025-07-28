@@ -1,4 +1,7 @@
 ﻿
+using TestBucket.Components.TestResources.Dialogs;
+using TestBucket.Components.Tests.TestCases.Dialogs;
+using TestBucket.Domain.Shared;
 using TestBucket.Domain.TestResources;
 using TestBucket.Domain.TestResources.Models;
 
@@ -7,12 +10,33 @@ namespace TestBucket.Components.TestResources.Services;
 internal class TestResourceController : TenantBaseService
 {
     private readonly ITestResourceManager _manager;
+    private readonly IDialogService _dialogService;
 
     public TestResourceController(
         ITestResourceManager manager,
-        AuthenticationStateProvider authenticationStateProvider) : base(authenticationStateProvider)
+        AuthenticationStateProvider authenticationStateProvider,
+        IDialogService dialogService) : base(authenticationStateProvider)
     {
         _manager = manager;
+        _dialogService = dialogService;
+    }
+
+    public async Task<TestResource?> PickResourceAsync()
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        string tenantId = principal.GetTenantIdOrThrow();
+
+        var parameters = new DialogParameters<PickResourceDialog>()
+        {
+        };
+
+        var dialog = await _dialogService.ShowAsync<PickResourceDialog>(null, parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is TestResource testResource)
+        {
+            return testResource;
+        }
+        return null;
     }
 
     public async Task UpdateAsync(TestResource resource)

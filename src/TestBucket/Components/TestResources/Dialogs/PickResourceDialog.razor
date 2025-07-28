@@ -1,0 +1,51 @@
+﻿@using TestBucket.Contracts.Localization
+@using TestBucket.Domain.Requirements.Models
+@inject TestResourceController controller
+@inject IAppLocalization loc
+
+<MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <DialogContent>
+      <MudDataGrid ServerData="LoadGridState" T="TestResource"
+          RowClick="(e) => Close(e.Item)">
+          <ToolBarContent>
+            <MudText Typo="Typo.h6" Color="Color.Tertiary">@loc.Shared["select-resource"]</MudText>
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn Property="x => x.Name" Title="@loc.Shared["name"]" />
+            <PropertyColumn Property="x => x.Manufacturer" Title="@loc.Shared["manufacturer"]" />
+            <PropertyColumn Property="x => x.Model" Title="@loc.Shared["model"]" />
+        </Columns>
+      </MudDataGrid>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Close">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private async Task<GridData<TestResource>> LoadGridState(GridState<TestResource> state)
+    {
+        var result = await controller.GetResourcesAsync(state.Page*state.PageSize, state.PageSize);
+        return new GridData<TestResource>()
+            {
+                TotalItems = (int)result.TotalCount,
+                Items = result.Items.ToList()
+            };
+    }   
+
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void Close(TestResource resource)
+    {
+        MudDialog.Close(resource);
+    }
+}
+

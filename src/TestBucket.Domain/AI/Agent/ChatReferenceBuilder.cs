@@ -5,6 +5,7 @@ using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.TestResources.Models;
 
 namespace TestBucket.Domain.AI.Agent;
 public class ChatReferenceBuilder
@@ -37,6 +38,23 @@ public class ChatReferenceBuilder
         }
 
         return new ChatReference { Name = project.Name, Text = description.ToString(), Id = project.Id.ToString(), EntityTypeName = "Project", IsActiveDocument = isActiveDocument };
+    }
+
+    public static ChatReference Create(TestResource resource, bool isActiveDocument = false)
+    {
+        return new ChatReference
+        {
+            Name = resource.Name,
+            Text = $"""
+            # Resource
+            - Manufacturer: {resource.Manufacturer}
+            - Model: {resource.Model}
+            - Types: {string.Join(',', resource.Types)}
+            """,
+            Id = resource.ResourceId.ToString(),
+            EntityTypeName = "TestResource",
+            IsActiveDocument = isActiveDocument
+        };
     }
     public static ChatReference Create(TestCase testCase, bool isActiveDocument = false)
     {

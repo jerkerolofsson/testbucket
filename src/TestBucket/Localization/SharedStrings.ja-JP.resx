@@ -468,4 +468,7 @@
   <data name="delete-many-test-case-runs-description" xml:space="preserve">
     <value />
   </data>
+  <data name="test-resources-description" xml:space="preserve">
+    <value />
+  </data>
 </root>

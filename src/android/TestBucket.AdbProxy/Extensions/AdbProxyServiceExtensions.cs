@@ -17,6 +17,7 @@ public static class AdbProxyServiceExtensions
         services.AddHostedService<AdbDeviceIndexingService>();
         services.AddDockerCompose();
         services.AddHostedService<AppiumDockerCleaner>();
+        services.AddSingleton<AppiumConnectionPool>();
 
         return services;
     }

@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.ApplicationParts;
+﻿using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+
 using Scalar.AspNetCore;
+
+using TestBucket.AdbProxy.Appium.MCP;
 using TestBucket.Servers.AdbProxy.Controllers;
 
 internal class Program
@@ -25,6 +29,13 @@ internal class Program
         // Proxy services
         builder.Services.AddAdbProxyServices();
 
+        // MCP
+        builder.Services.AddMcpServer().WithHttpTransport(httpTransportOptions =>
+        {
+            httpTransportOptions.Stateless = false; // We need stateful for the authentication to work
+        })
+       .WithToolsFromAssembly(typeof(AppiumMcpTools).Assembly);
+
         var app = builder.Build();
 
         app.UseAntiforgery();
@@ -34,6 +45,7 @@ internal class Program
         app.MapScalarApiReference();
 
         app.MapStaticAssets();
+        app.MapMcp("/mcp");
         app.MapControllers();
         app.MapRazorComponents<App>()
             .AddInteractiveServerRenderMode();

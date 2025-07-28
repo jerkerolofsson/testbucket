@@ -68,7 +68,7 @@ public class PlaywrightRunner : BackgroundService
                         Name = "Playwright MCP server @ " + port,
                         Owner = owner,
                         ResourceId = $"playwright-{port}-" + hostname,
-                        Types = ["playwright_mcp", "mcp_server"],
+                        Types = ["playwright-mcp", "mcp-server"],
                         Manufacturer = "Microsoft",
                         Model = "playwright_mcp",
                         Health = Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy,

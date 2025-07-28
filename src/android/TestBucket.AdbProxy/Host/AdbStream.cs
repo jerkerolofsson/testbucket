@@ -112,6 +112,10 @@ public class AdbStream : IDisposable
         await stream.ReadExactlyAsync(sizeBytes);
 
         var size = (int)BinaryPrimitives.ReadUInt32LittleEndian(sizeBytes);
+        if(size > 1_000_000)
+        {
+            throw new Exception($"Overflow reading error from stream, size was reported as {size} which is too large");
+        }
 
         var messageBytes = new byte[size];
         await stream.ReadExactlyAsync(messageBytes);

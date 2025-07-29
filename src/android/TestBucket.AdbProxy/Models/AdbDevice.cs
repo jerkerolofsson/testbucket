@@ -56,4 +56,5 @@ public record class AdbDevice
     /// Public IP or hostname
     /// </summary>
     public string? Hostname { get; set; }
+    public string? AppiumDockerDeviceId { get; set; }
 }

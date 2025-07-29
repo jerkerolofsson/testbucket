@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using TestBucket.AdbProxy.Models;
 
 namespace TestBucket.AdbProxy.Android;
-internal sealed class AndroidVersionProvider
+public sealed class AndroidVersionProvider
 {
     // language=json
     private static readonly string s_json = """

@@ -24,6 +24,7 @@ namespace TestBucket.AdbProxy.Protocol
             var expectedMagic = header.Command ^ 0xffffffff;
             if (expectedMagic != header.Magic)
             {
+                
                 throw new InvalidDataException($"Magic mismatch, got: {header.Magic.ToString("x8")}, expected: {expectedMagic.ToString("x8")}");
             }
         }

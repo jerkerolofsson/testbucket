@@ -5,6 +5,8 @@ using ModelContextProtocol.Server;
 using TestBucket.AdbProxy.DeviceHandling;
 using TestBucket.ResourceServer.Contracts;
 
+using static System.Net.Mime.MediaTypeNames;
+
 namespace TestBucket.AdbProxy.Appium.MCP;
 
 [McpServerToolType, Description("Tools to interact with appium (android phones etc)")]
@@ -22,82 +24,115 @@ public class AppiumMcpTools
     }
 
     /// <summary>
-    /// Clicks on the specified text
+    /// Launches the specified app
     /// </summary>
-    [McpServerTool(Name = "click_text"), Description("Clicks/taps on the text for the device specified by resourceId")]
-    public string ClickText(
-        [Description("The device")] string resourceId, 
-        [Description("The text to click on ")] string text)
+    [McpServerTool(Name = "launch_app"), Description("Launches the specified app on the device specified by resourceId")]
+    public async Task<string> LaunchApp(
+        [Description("The device")] string resourceId,
+        [Description("Name of the app")] string appName)
     {
-        var appium = _appiumConnectionPool.GetOrCreate(resourceId);
         try
         {
-            appium.ClickText(text);
-            return $"OK. Clicked on '{text}'";
+            await RunActionAsync(resourceId, (appium) =>
+            {
+                appium.StartApp(appName);
+                return Task.CompletedTask;
+            });
+            return $"OK. Started '{appName}'";
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
+            _appiumConnectionPool.Destroy(resourceId);
+
             return $"Error: {ex.Message}";
         }
     }
 
     /// <summary>
-    /// Gets the list of connected devices.
+    /// Clicks on the specified text
     /// </summary>
-    /// <returns>A list of connected devices.</returns>
-    [McpServerTool(Name = "get_connected_appium_devices"), Description("Gets the ID for connected devices")]
-    public Task<string[]> GetConnectedDevicesAsync()
+    [McpServerTool(Name = "clear"), Description("Clears content for a UI element on the device specified by resourceId")]
+    public async Task<string> Clear(
+        [Description("The device")] string resourceId,
+        [Description("Text, ID, content-description or other locator used to find the UI element")] string locator)
     {
-        return Task.FromResult(_service.Devices.Select(x=>x.DeviceId).ToArray());
+        try
+        {
+            await RunActionAsync(resourceId, async (appium) =>
+            {
+                await appium.Clear(locator);
+            });
+            return $"OK. Cleared '{locator}'";
+        }
+        catch (Exception ex)
+        {
+            _appiumConnectionPool.Destroy(resourceId);
+
+            return $"Error: {ex.Message}";
+        }
     }
 
     /// <summary>
-    /// Opens settings
+    /// Clicks on the specified text
     /// </summary>
-    /// <param name="resourceId"></param>
-    /// <returns></returns>
-    [McpServerTool(Name = "open_settings"), Description("Opens the settings app")]
-    public async Task<string> OpenSettingsAsync(string resourceId)
+    [McpServerTool(Name = "click"), Description("Clicks/taps on a UI element on the device specified by resourceId")]
+    public async Task<string> Click(
+        [Description("The device")] string resourceId,
+        [Description("Text, ID, content-description or other locator used to find the UI element")] string locator)
     {
-        CancellationToken cancellationToken = default;
-
-        var resource = await _resourceRegistry.GetResourceAsync(resourceId, cancellationToken);
-        if (resource is null)
+        try
         {
-            return $"Failed: No resource found with ID '{resourceId}'";
+            await RunActionAsync(resourceId, async (appium) =>
+            {
+                await appium.Click(locator);
+            });
+            return $"OK. Clicked on '{locator}'";
         }
-
-        if (resource is AdbResource adbResource)
+        catch(Exception ex)
         {
-            var text = await adbResource.ExecShellGetStringAsync(resourceId, "shell:am start com.android.settings", cancellationToken);
+            _appiumConnectionPool.Destroy(resourceId);
 
-            return "OK. I have opened the settings app.";
+            return $"Error: {ex.Message}";
         }
-        return "This is not an ADB resource. Cannot use this tool for this device.";
     }
 
     /// <summary>
-    /// Presses the home key
+    /// Clicks on the specified text
     /// </summary>
-    /// <param name="resourceId"></param>
-    /// <returns></returns>
-    [McpServerTool(Name = "go_home"), Description("Goes to home")]
-    public async Task<string> GoHomeAsync(string resourceId)
+    [McpServerTool(Name = "send_text"), Description("Inputs text on the device specified by resourceId for the UI element indicated by the ")]
+    public async Task<string> SendText(
+        [Description("The device")] string resourceId,
+        [Description("The text to send")] string text,
+        [Description("Text, ID, content-description or other locator used to find the UI element")] string locator)
     {
-        CancellationToken cancellationToken = default;
-
-        var resource = await _resourceRegistry.GetResourceAsync(resourceId, cancellationToken);
-        if(resource is null)
+        try
         {
-            return $"Failed: No resource found with ID '{resourceId}'";
+            await RunActionAsync(resourceId, async (appium) =>
+            {
+                await appium.SendText(text, locator);
+            });
+            return $"OK. ";
         }
-
-        if(resource is AdbResource adbResource)
+        catch (Exception ex)
         {
-            var text = await adbResource.ExecShellGetStringAsync(resourceId, "shell:input keyevent KEYCODE_HOME", cancellationToken);
-
-            return "OK. Going to home screen.";
+            _appiumConnectionPool.Destroy(resourceId);
+            return $"Error: {ex.Message}";
         }
-        return "This is not an ADB resource. Cannot use this tool for this device.";
     }
+
+    private async Task RunActionAsync(string resourceId, Func<AppiumConnection, Task> action)
+    {
+        try
+        {
+            var appium = _appiumConnectionPool.GetOrCreate(resourceId);
+            await action(appium);
+        }
+        catch
+        {
+            _appiumConnectionPool.Destroy(resourceId);
+            var appium = _appiumConnectionPool.GetOrCreate(resourceId);
+            await action(appium);
+        }
+    }
+
 }

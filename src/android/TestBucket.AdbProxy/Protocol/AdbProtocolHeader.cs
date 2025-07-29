@@ -1,10 +1,4 @@
-﻿using System;
-using System.Buffers.Binary;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Buffers.Binary;
 
 namespace TestBucket.AdbProxy.Protocol
 {
@@ -16,6 +10,8 @@ namespace TestBucket.AdbProxy.Protocol
         public uint DataLength { get; set; }
         public uint DataCrc32 { get; set; }
         public uint Magic { get; set; } // Command ^ 0xffffffff
+
+        public const int HeaderSize = 6 * 4;
 
         internal void ReadFrom(byte[] headerBytes)
         {
@@ -30,7 +26,7 @@ namespace TestBucket.AdbProxy.Protocol
 
             AdbProtocolHeaderValidator.Validate(this);
 
-            var commandText = Encoding.ASCII.GetString(memory.Slice(0, 4).Span);
+            //var commandText = Encoding.ASCII.GetString(memory.Slice(0, 4).Span);
         }
 
         internal byte[] ToByteArray()

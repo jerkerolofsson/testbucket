@@ -22,6 +22,12 @@ public class AdbStream : IDisposable
     private AdbStreamReader? _reader;
     private const string OKAY = "OKAY";
     private const string FAIL = "FAIL";
+
+    /// <summary>
+    /// Is in SYNC mode?
+    /// </summary>
+    public bool SyncMode { get; set; }
+
     public uint LocalId { get; }
     public uint RemoteId { get; }
 

@@ -23,12 +23,19 @@ public class AppiumConnectionPool
     {
         return _connections.GetOrAdd(deviceId, id =>
         {
-            var device = _deviceRepository.Devices.FirstOrDefault(x=> x.DeviceId == id);
+            var device = _deviceRepository.Devices.FirstOrDefault(x => x.DeviceId == id);
             if (device == null)
             {
                 throw new InvalidOperationException($"No device found with ID {id}");
             }
             return new AppiumConnection(device);
         });
+    }
+    public void Destroy(string deviceId)
+    {
+        if(_connections.TryRemove(deviceId, out var connection))
+        {
+            connection.Dispose();
+        }
     }
 }

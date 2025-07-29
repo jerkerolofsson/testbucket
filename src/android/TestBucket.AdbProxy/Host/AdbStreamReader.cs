@@ -34,17 +34,28 @@ internal class AdbStreamReader : IDisposable
 
     private async Task ReadLoopAsync()
     {
-        var token = _cancellationTokenSource.Token;
+        var cancellationToken = _cancellationTokenSource.Token;
         try
         {
             var buffer = new byte[AdbProtocolConstants.MaxDataLength];
-            while (!token.IsCancellationRequested)
+            var header = new AdbProtocolHeader();
+            while (!cancellationToken.IsCancellationRequested)
             {
-                int readbytes = await _hostStream.ReadAsync(buffer, 0, buffer.Length, token);
-              
-                //string debug = Encoding.UTF8.GetString(buffer, 0, readbytes);
+                //await _hostStream.ReadExactlyAsync(buffer, 0, AdbProtocolHeader.HeaderSize, cancellationToken);
+                //header.ReadFrom(buffer);
 
-                await _callback.OnDataReceivedAsync(_adbStream, new Memory<byte>(buffer, 0, readbytes));
+                //int offset = AdbProtocolHeader.HeaderSize;
+                //int payloadLength = (int)header.DataLength;
+                //await _hostStream.ReadExactlyAsync(buffer, offset, payloadLength, cancellationToken);
+
+                //// Total packet length, payload and header
+                //int packetLength = AdbProtocolHeader.HeaderSize + payloadLength;
+
+                int packetLength = await _hostStream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+
+                var debug = Encoding.UTF8.GetString(buffer,0,packetLength);
+
+                await _callback.OnDataReceivedAsync(_adbStream, new Memory<byte>(buffer, 0, packetLength));
             }
         }
         catch (OperationCanceledException) { }

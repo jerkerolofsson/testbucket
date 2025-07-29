@@ -1,14 +1,9 @@
-﻿using System;
-using System.Buffers.Binary;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace TestBucket.AdbProxy.Protocol
 {
-    public class AdbProtocolMessageBuilder
+    public class AdbProtocolMessage
     {
         public AdbProtocolHeader Header { get; } = new();
 
@@ -29,7 +24,7 @@ namespace TestBucket.AdbProxy.Protocol
 
         public bool HasReadPayload => HasReadHeader ? RemainingPayloadBytes == 0 : false;
 
-        public static AdbProtocolMessageBuilder Create(uint command, uint arg0, uint arg1, string text)
+        public static AdbProtocolMessage Create(uint command, uint arg0, uint arg1, string text)
         {
             var payloadLength = Encoding.ASCII.GetByteCount(text) + 1;
             var bytes = new byte[payloadLength];
@@ -47,34 +42,40 @@ namespace TestBucket.AdbProxy.Protocol
             {
                 return null;
             }
-            return Encoding.UTF8.GetString(_payload, 0, _payload.Length-1); // -1 = remove null termination char
+            return Encoding.UTF8.GetString(_payload, 0, _payload.Length);
+        }
+        public string? DecodePayloadAsString(int maxSize)
+        {
+            if (_payload is null)
+            {
+                return null;
+            }
+            return Encoding.UTF8.GetString(_payload, 0, Math.Min(maxSize,_payload.Length)).Replace("\n", "\\n");
         }
 
-        public async Task WriteToAsync(Stream destination, SemaphoreSlim writeLock, CancellationToken cancellationToken)
+        public async Task WriteToAsync(Stream destination, CancellationToken cancellationToken)
         {
             var headerBytes = this.Header.ToByteArray();
 
-            await writeLock.WaitAsync(cancellationToken);
-            try
+            if (_payload is not null)
+            {
+                var bytes = new byte[_payload.Length + AdbProtocolConstants.HeaderLength];
+                Array.Copy(headerBytes, 0, bytes, 0, headerBytes.Length);
+                Array.Copy(_payload, 0, bytes, headerBytes.Length, _payload.Length);
+
+                await destination.WriteAsync(bytes, cancellationToken);
+            }
+            else
             {
                 await destination.WriteAsync(headerBytes, cancellationToken);
-
-                if (_payload is not null)
-                {
-                    await destination.WriteAsync(_payload, cancellationToken);
-                }
-
-                await destination.FlushAsync(cancellationToken);
             }
-            finally
-            {
-                writeLock.Release();
-            }
+
+            await destination.FlushAsync(cancellationToken);
         }
 
-        public static AdbProtocolMessageBuilder Create(uint command, uint arg0, uint arg1, byte[] bytes)
+        public static AdbProtocolMessage Create(uint command, uint arg0, uint arg1, byte[] bytes)
         {
-            var message = new AdbProtocolMessageBuilder();
+            var message = new AdbProtocolMessage();
             message.Header.Command = command;
             message.Header.Arg0 = arg0;
             message.Header.Arg1 = arg1;

@@ -14,8 +14,14 @@ using Xunit;
 using TestBucket.Domain.Settings;
 using Microsoft.Extensions.AI;
 
+/// <summary>
+/// Unit tests for the <see cref="AgentLogManager"/> class.
+/// </summary>
 namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
 {
+    /// <summary>
+    /// Unit tests for the <see cref="AgentLogManager"/> class.
+    /// </summary>
     [Feature("Chat")]
     [Component("AI")]
     [UnitTest]
@@ -27,6 +33,9 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
         private readonly ISettingsProvider _mockSettingsProvider;
         private readonly AgentLogManager _agentLogManager;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AgentLogManagerTests"/> class.
+        /// </summary>
         public AgentLogManagerTests()
         {
             _mockUsageManager = Substitute.For<IAIUsageManager>();
@@ -34,7 +43,9 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
             _agentLogManager = new AgentLogManager(_mockUsageManager, _mockSettingsProvider);
         }
 
-
+        /// <summary>
+        /// Tests that <see cref="AgentLogManager.LogResponseAsync(long?, long?, string, ClaimsPrincipal, ChatMessageContent)"/> returns null when the response contains no usage content.
+        /// </summary>
         [Fact]
         public async Task LogResponseAsync_WithSemanticKernelChatMessageContentAndNoUsageContent_ReturnsNull()
         {
@@ -49,7 +60,6 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
                 {
                 },
             };
-             
 
             _mockSettingsProvider.GetDomainSettingsAsync<LlmSettings>("tenant1", null).Returns(new LlmSettings { LlmModelUsdPerMillionTokens = 0.02 });
 
@@ -61,6 +71,9 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
             await _mockUsageManager.DidNotReceive().AddCostAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<ChatUsage>());
         }
 
+        /// <summary>
+        /// Tests that <see cref="AgentLogManager.LogResponseAsync(long?, long?, ClaimsPrincipal, ChatResponseUpdate)"/> logs usage and returns a valid <see cref="ChatUsage"/> when the response contains valid usage content.
+        /// </summary>
         [Fact]
         public async Task LogResponseAsync_WithValidUsage_LogsUsageAndReturnsChatUsage()
         {
@@ -93,6 +106,9 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
             await _mockUsageManager.Received(1).AddCostAsync(principal, Arg.Is<ChatUsage>(u => u.TotalTokenCount == 30));
         }
 
+        /// <summary>
+        /// Tests that <see cref="AgentLogManager.LogResponseAsync(long?, long?, ClaimsPrincipal, ChatResponseUpdate)"/> returns an empty <see cref="ChatUsage"/> when the response contains no usage content.
+        /// </summary>
         [Fact]
         public async Task LogResponseAsync_WithNoUsageContent_ReturnsEmpty()
         {
@@ -113,6 +129,9 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
             await _mockUsageManager.DidNotReceive().AddCostAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<ChatUsage>());
         }
 
+        /// <summary>
+        /// Tests that <see cref="AgentLogManager.LogResponseAsync(long?, long?, ClaimsPrincipal, ChatResponseUpdate)"/> accumulates usage correctly when the response contains multiple usage contents.
+        /// </summary>
         [Fact]
         public async Task LogResponseAsync_WithChatResponseUpdate_AccumulatesUsage()
         {
@@ -137,7 +156,6 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
             {
                 ModelId = "test-model"
             };
-
 
             _mockSettingsProvider.GetDomainSettingsAsync<LlmSettings>("tenant1", null).Returns(new LlmSettings { LlmModelUsdPerMillionTokens = (double)0.02m });
 

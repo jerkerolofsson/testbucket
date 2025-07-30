@@ -656,7 +656,7 @@ namespace TestBucket.Domain.UnitTests.Requirements.Search
         public void FilterRequirementFoldersByText_ShouldMatchPartialText()
         {
             // Arrange
-            var specification = new FilterRequirementFoldersByText("part");
+            var specification = new FilterRequirementFoldersByText("port");
             var folder = new RequirementSpecificationFolder { Name = "Important Folder" };
 
             // Act

@@ -31,17 +31,15 @@ foreach ($csproj in $projects)
 
 	if (Test-Path $codeCoverageSettingsFile -PathType Leaf) {
 		echo "Testing with codecoverage.xml"
-		dotnet test $csproj -- --report-xunit --report-xunit-filename $xunitReportFile  --coverage --coverage-output-format cobertura --coverage-output $codeCoverageReportFile  --coverage-settings codecoverage.xml
+		dotnet test $csproj -- --report-xunit --report-xunit-filename $xunitReportFile --coverage --coverage-output-format cobertura --coverage-output $codeCoverageReportFile --coverage-settings codecoverage.xml
 	} else {
 		echo "Testing without codecoverage.xml"
-		dotnet test $csproj -- --report-xunit --report-xunit-filename $xunitReportFile  --coverage --coverage-output-format cobertura --coverage-output $codeCoverageReportFile 
+		dotnet test $csproj -- --report-xunit --report-xunit-filename $xunitReportFile --coverage --coverage-output-format cobertura --coverage-output $codeCoverageReportFile 
 	}
 
-	#$fullResultFile = (Get-ChildItem -Recurse $xunitReportFile).FullName
-	#$content = Get-Content -Path $fullResultFile -Raw
-	#echo $content
-
-	$fullCoverageFile = (Get-ChildItem -Recurse $codeCoverageReportFile).FullName
+	# This will convert the code coverage to relative paths instead of absolute!
+	$fullCoverageFile = (Get-ChildItem -Path $dirName -File -Recurse $codeCoverageReportFile  | Select-Object -First 1).FullName
+	echo "Updating $fullCoverageFile "
 
 	$filenameReplace1 = "filename=`"$srcRootPath/"
 	$filenameReplace2 = "filename=`"$srcRootPath`\"

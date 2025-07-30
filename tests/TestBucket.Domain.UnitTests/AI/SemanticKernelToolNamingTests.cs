@@ -14,6 +14,7 @@ namespace TestBucket.Domain.UnitTests.AI
     [Component("AI")]
     [UnitTest]
     [FunctionalTest]
+    [EnrichedTest]
     public class SemanticKernelToolNamingTests
     {
         /// <summary>

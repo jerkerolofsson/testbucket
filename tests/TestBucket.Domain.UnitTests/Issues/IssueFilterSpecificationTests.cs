@@ -13,7 +13,7 @@ namespace TestBucket.Domain.UnitTests.Issues
     [UnitTest]
     [Feature("Search")]
     [Component("Issues")]
-    public class SearchIssueTests
+    public class IssueFilterSpecificationTests
     {
         /// <summary>
         /// Verifies that <see cref="FindLocalIssueByExternalId"/> returns true when the external ID matches.

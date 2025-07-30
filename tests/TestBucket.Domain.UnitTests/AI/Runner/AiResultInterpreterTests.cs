@@ -14,6 +14,7 @@ namespace TestBucket.Domain.UnitTests.AI.Runner
     [Component("AI")]
     [UnitTest]
     [FunctionalTest]
+    [EnrichedTest]
     public class AiResultInterpreterTests
     {
         /// <summary>

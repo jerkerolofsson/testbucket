@@ -12,6 +12,7 @@ namespace TestBucket.Domain.UnitTests.AI.Mcp
     [Component("AI")]
     [UnitTest]
     [FunctionalTest]
+    [EnrichedTest]
     public class McpConfigurationJsonTests
     {
 

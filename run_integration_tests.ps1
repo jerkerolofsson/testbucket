@@ -37,14 +37,15 @@ foreach ($csproj in $projects)
 		dotnet test $csproj -- --report-xunit --report-xunit-filename $xunitReportFile  --coverage --coverage-output-format cobertura --coverage-output $codeCoverageReportFile 
 	}
 
-	# Change the coverage file to contain relative paths instead of absolute
-	$fullResultFile = (Get-ChildItem -Recurse $codeCoverageReportFile).FullName
+	# This will convert the code coverage to relative paths instead of absolute!
+	$fullCoverageFile = (Get-ChildItem -Path $dirName -File -Recurse $codeCoverageReportFile  | Select-Object -First 1).FullName
+	echo "Updating $fullCoverageFile "
 
 	$filenameReplace1 = "filename=`"$srcRootPath/"
 	$filenameReplace2 = "filename=`"$srcRootPath`\"
 
-	$content = Get-Content -Path $fullResultFile  -Raw
+	$content = Get-Content -Path $fullCoverageFile -Raw
 	$content = $content.Replace($filenameReplace1 , "filename=`"")
 	$content = $content.Replace($filenameReplace2 , "filename=`"")
-	$content | Set-Content -Path $fullResultFile 
+	$content | Set-Content -Path $fullCoverageFile 
 }

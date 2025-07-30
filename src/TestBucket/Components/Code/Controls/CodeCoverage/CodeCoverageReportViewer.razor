@@ -1,0 +1,156 @@
+﻿@using TestBucket.CodeCoverage
+@using TestBucket.CodeCoverage.Models
+@using TestBucket.Contracts.Localization
+@using TestBucket.Domain
+@inject IAppLocalization loc
+@inject ArchitectureController controller
+@inject AppNavigationManager appNav
+
+@if (Report is not null)
+{
+    @if(_rootNodes is null)
+    {
+        <MudProgressLinear Indeterminate Color="Color.Tertiary" />
+    }
+    else
+    {
+        <Splitter>
+            <StartContent>
+                <div class="container-fill-2-rows">
+                    <MudStack Row>
+                        <MudChipSet Size="Size.Small" T="CodeCoverageStructure" SelectedValue="_structure" SelectionMode="SelectionMode.SingleSelection" SelectedValueChanged="OnStructureChanged" CheckMark Variant="Variant.Text" Color="Color.Info">
+                            <MudChip Value="@(CodeCoverageStructure.Package)" Text="@loc.Shared["package"]" />
+                            <MudChip Value="@(CodeCoverageStructure.Component)" Text="@loc.Shared["component"]" />
+                            <MudChip Value="@(CodeCoverageStructure.Feature)" Text="@loc.Shared["feature"]" />
+                        </MudChipSet>
+                    </MudStack>
+
+                    <TreeView ServerData="LoadServerData"
+                        T="CodeEntity" Items="@RootNodes" SelectedValue="_selected" SelectedValueChanged="OnSelectedValueChanged">
+                        <ItemTemplate>
+                            <MudStack Row Spacing="1" Style="width: 100%" AlignItems="AlignItems.Center">
+                                <div>@context.Text</div>
+                                <MudSpacer/>
+                                <div class="@GetCoverageClassName(context.Value?.CoveragePercent.Value)">@(context.Value?.CoveragePercent.Value)%</div>
+                            </MudStack>
+                        </ItemTemplate>
+                    </TreeView>
+                </div>
+            </StartContent>
+            <EndContent>
+                @if(_selected is CodeCoverageMethod method)
+                {
+                    @(method.Name)@(method.Signature)
+                }
+            </EndContent>
+        </Splitter>
+    }
+}
+
+@code {
+    [Parameter] public CodeCoverageReport? Report { get; set; }
+
+    private CodeEntity? _selected;
+    private IReadOnlyList<TreeNode<CodeEntity>>? _rootNodes = null;
+    private CodeCoverageStructure _structure = CodeCoverageStructure.Package;
+    private CodeCoverageTreeBuilder? _builder;
+    private IReadOnlyList<Component> _components = [];
+    private IReadOnlyList<Feature> _features = [];
+
+    public Task<IReadOnlyCollection<TreeNode<CodeEntity>>> LoadServerData(CodeEntity? browserItem)
+    {
+        IReadOnlyCollection<TreeNode<CodeEntity>> children =  new List<TreeNode<CodeEntity>>();
+        if(browserItem is not null && Report is not null)
+        {
+            children = new CodeCoverageTreeBuilder(Report).GetChildren(_structure, browserItem);
+        }
+        return Task.FromResult(children);
+    }
+
+    private string GetCoverageClassName(double? value)
+    {
+        if(value is not null)
+        {
+            if(value <= 0)
+            {
+                return "coverage none";
+            }
+            if (value >= 100)
+            {
+                return "coverage c100";
+            }
+            if (value > 99)
+            {
+                return "coverage c99";
+            }
+            if (value > 90)
+            {
+                return "coverage c90";
+            }
+            if (value > 80)
+            {
+                return "coverage c80";
+            }
+            return "coverage";
+        }
+        return "";
+    }
+
+    private void OnSelectedValueChanged(CodeEntity code)
+    {
+        _selected = code;
+    }
+
+    private string GetIcon(CodeEntity entity)
+    {
+        return TbIcons.BoldDuoTone.CodeSquare;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        bool stateHasChanged = false;
+        var projectId = appNav.State.SelectedProject?.Id;
+
+        if(_components.Count == 0 && projectId is not null)
+        {
+            _components = await controller.GetComponentsAsync(projectId.Value);
+        }
+        if(_features.Count == 0 && projectId is not null)
+        {
+            _features = await controller.GetFeaturesAsync(projectId.Value);
+        }
+
+        if(Report is not null && _rootNodes is null)
+        {
+            _rootNodes = new CodeCoverageTreeBuilder(Report).Build(_structure, _components, _features);
+            stateHasChanged = true;
+        }
+
+        if(stateHasChanged)
+        {
+            this.StateHasChanged();
+        }
+    }
+
+    private void OnStructureChanged(CodeCoverageStructure structure)
+    {
+        if (Report is not null)
+        {
+            _structure = structure;
+            _rootNodes = null;
+        }
+    }
+
+    private IReadOnlyCollection<TreeNode<CodeEntity>> RootNodes
+    {
+        get
+        {
+            if (_rootNodes is not null)
+            {
+                return _rootNodes;    
+            }
+            return [];
+
+        }
+    }
+}

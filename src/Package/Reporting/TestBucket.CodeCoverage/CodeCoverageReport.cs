@@ -80,4 +80,44 @@ public class CodeCoverageReport
     {
         return _packages.FirstOrDefault(x => predicate(x));
     }
+
+
+    /// <summary>
+    /// Gets all classes
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<CodeCoverageClass> GetClasses(Predicate<CodeCoverageClass> predicate)
+    {
+        foreach (var package in _packages)
+        {
+            foreach (var @class in package.Classes)
+            {
+                if (predicate(@class))
+                {
+                    yield return @class;
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Gets all methods
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerable<CodeCoverageMethod> GetMethods(Predicate<CodeCoverageMethod> predicate)
+    {
+        foreach(var package in _packages)
+        {
+            foreach(var @class in package.Classes)
+            {
+                foreach(var method in @class.Methods)
+                {
+                    if(predicate(method))
+                    {
+                        yield return method;
+                    }
+                }
+            }
+        }
+    }
 }

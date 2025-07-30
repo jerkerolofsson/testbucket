@@ -1,12 +1,13 @@
 ﻿@using System.Text.Json
 @using TestBucket.CodeCoverage
+@using TestBucket.Components.Code.Controls.CodeCoverage
 @using TestBucket.Components.Uploads.Services
 @inject AttachmentsService controller
 @inject IJSRuntime js
 
 @if (_resource is not null)
 {
-    <TestBucket.Components.Code.Controls.CodeCoverageReportViewer Report="@_report"/>
+    <CodeCoverageReportViewer Report="@_report"/>
 }
 else
 {

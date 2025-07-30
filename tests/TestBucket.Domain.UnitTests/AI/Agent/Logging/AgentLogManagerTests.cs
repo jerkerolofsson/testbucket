@@ -14,9 +14,6 @@ using Xunit;
 using TestBucket.Domain.Settings;
 using Microsoft.Extensions.AI;
 
-/// <summary>
-/// Unit tests for the <see cref="AgentLogManager"/> class.
-/// </summary>
 namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
 {
     /// <summary>
@@ -44,7 +41,7 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
         }
 
         /// <summary>
-        /// Tests that <see cref="AgentLogManager.LogResponseAsync(long?, long?, string, ClaimsPrincipal, ChatMessageContent)"/> returns null when the response contains no usage content.
+        /// Tests that AgentLogManager.LogResponseAsync returns null when the response contains no usage content.
         /// </summary>
         [Fact]
         public async Task LogResponseAsync_WithSemanticKernelChatMessageContentAndNoUsageContent_ReturnsNull()
@@ -107,7 +104,7 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
         }
 
         /// <summary>
-        /// Tests that <see cref="AgentLogManager.LogResponseAsync(long?, long?, ClaimsPrincipal, ChatResponseUpdate)"/> returns an empty <see cref="ChatUsage"/> when the response contains no usage content.
+        /// Tests that AgentLogManager.LogResponseAsync(long?, long?, ClaimsPrincipal, ChatResponseUpdate) returns an empty ChatUsage when the response contains no usage content.
         /// </summary>
         [Fact]
         public async Task LogResponseAsync_WithNoUsageContent_ReturnsEmpty()
@@ -130,7 +127,7 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
         }
 
         /// <summary>
-        /// Tests that <see cref="AgentLogManager.LogResponseAsync(long?, long?, ClaimsPrincipal, ChatResponseUpdate)"/> accumulates usage correctly when the response contains multiple usage contents.
+        /// Tests that AgentLogManager.LogResponseAsync accumulates usage correctly when the response contains multiple usage contents.
         /// </summary>
         [Fact]
         public async Task LogResponseAsync_WithChatResponseUpdate_AccumulatesUsage()

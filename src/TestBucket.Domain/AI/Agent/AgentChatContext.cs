@@ -29,7 +29,11 @@ public class AgentChatContext
     /// Tools
     /// </summary>
     public ToolCollection? Tools { get; set; }
-    public ChatUsage InvokationUsage { get; internal set; }
+
+    /// <summary>
+    /// Accumulated usage for one call to AskAsync or InvokeAsync
+    /// </summary>
+    public ChatUsage? InvokationUsage { get; set; }
 
     public void ClearMessages()
     {

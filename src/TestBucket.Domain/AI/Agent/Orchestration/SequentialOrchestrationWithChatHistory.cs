@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Agents.Magentic;
 using Microsoft.SemanticKernel.Agents.Orchestration.Extensions;
 using Microsoft.SemanticKernel.Agents.Orchestration.GroupChat;
 using Microsoft.SemanticKernel.Agents.Orchestration.Sequential;
@@ -29,7 +30,6 @@ internal class SequentialOrchestrationWithChatHistory :  SequentialOrchestration
             throw new ArgumentException("Entry agent is not defined.", nameof(entryAgent));
         }
         _chatHistory.AddRange(input); // This will be an input from InvokeAsync
-
-        await runtime.PublishMessageAsync(_chatHistory.AsInputTaskMessage(), entryAgent.Value);
+        await base.StartAsync(runtime, topic, _chatHistory, entryAgent);
     }
 }

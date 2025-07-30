@@ -1,4 +1,5 @@
 ﻿using Microsoft.SemanticKernel;
+using Microsoft.SemanticKernel.Agents.Magentic;
 using Microsoft.SemanticKernel.Agents.Orchestration.Extensions;
 using Microsoft.SemanticKernel.Agents.Orchestration.GroupChat;
 using Microsoft.SemanticKernel.Agents.Runtime;
@@ -15,14 +16,14 @@ internal class GroupChatOrchestrationWithChatHistory :  GroupChatOrchestration<s
         _chatHistory = chatHistory;
     }
 
-    protected override ValueTask StartAsync(IAgentRuntime runtime, TopicId topic, IEnumerable<ChatMessageContent> input, AgentType? entryAgent)
+    protected override async ValueTask StartAsync(IAgentRuntime runtime, TopicId topic, IEnumerable<ChatMessageContent> input, AgentType? entryAgent)
     {
         if (!entryAgent.HasValue)
         {
             throw new ArgumentException("Entry agent is not defined.", nameof(entryAgent));
         }
-        _chatHistory.AddRange(input); // This will be an input from InvokeAsync
+        _chatHistory.AddRange(input);
+        await base.StartAsync(runtime, topic, _chatHistory, entryAgent);
 
-        return runtime.PublishMessageAsync(_chatHistory.AsInputTaskMessage(), entryAgent.Value);
     }
 }

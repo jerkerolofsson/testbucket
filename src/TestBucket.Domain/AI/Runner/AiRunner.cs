@@ -263,11 +263,15 @@ internal class AiRunner : BackgroundService
 
     private static async Task AddMetricsAsync(IServiceScope scope, TestCaseRun testCaseRun, ClaimsPrincipal principal, AgentChatContext agentContext, int numToolCalls)
     {
-        var totalTokensMetric = new Metric { Unit = "tokens", MeterName = "ai_runner", Name = "total_tokens", Value = agentContext.InvokationUsage.TotalTokenCount, TestCaseRunId = testCaseRun.Id, TestProjectId = testCaseRun.TestProjectId, TeamId = testCaseRun.TeamId };
-        var numToolCallsMetric = new Metric { Unit = "calls", MeterName = "ai_runner", Name = "tool_calls", Value = numToolCalls, TestCaseRunId = testCaseRun.Id, TestProjectId = testCaseRun.TestProjectId, TeamId = testCaseRun.TeamId };
 
         var metricsManager = scope.ServiceProvider.GetRequiredService<IMetricsManager>();
-        await metricsManager.AddMetricAsync(principal, totalTokensMetric);
+        if (agentContext.InvokationUsage is not null)
+        {
+            var totalTokensMetric = new Metric { Unit = "tokens", MeterName = "ai_runner", Name = "total_tokens", Value = agentContext.InvokationUsage.TotalTokenCount, TestCaseRunId = testCaseRun.Id, TestProjectId = testCaseRun.TestProjectId, TeamId = testCaseRun.TeamId };
+            await metricsManager.AddMetricAsync(principal, totalTokensMetric);
+        }
+
+        var numToolCallsMetric = new Metric { Unit = "calls", MeterName = "ai_runner", Name = "tool_calls", Value = numToolCalls, TestCaseRunId = testCaseRun.Id, TestProjectId = testCaseRun.TestProjectId, TeamId = testCaseRun.TeamId };
         await metricsManager.AddMetricAsync(principal, numToolCallsMetric);
     }
 

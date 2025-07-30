@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TestBucket.AdbProxy.DeviceHandling;
-internal class GetPropParser
+public class GetPropParser
 {
     private static string? ExtractTextInBrackets(string line, out string? remainder)
     {

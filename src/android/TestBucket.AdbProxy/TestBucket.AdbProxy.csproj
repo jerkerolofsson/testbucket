@@ -13,7 +13,7 @@
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
       <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.7" />
       <PackageReference Include="System.Text.Json" Version="9.0.7" />
-      <PackageReference Include="RedMaple.Orchestrator.DockerCompose" Version="1.0.2" />
+      <PackageReference Include="RedMaple.Orchestrator.DockerCompose" Version="1.0.3" />
       <PackageReference Include="ModelContextProtocol" Version="0.3.0-preview.3" />
 
   </ItemGroup>

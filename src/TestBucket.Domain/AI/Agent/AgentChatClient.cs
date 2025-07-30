@@ -206,7 +206,7 @@ public class AgentChatClient
 
         // We start running..
         await using InProcessRuntime runtime = new InProcessRuntime();
-        await runtime.StartAsync();
+        await runtime.StartAsync(cancellationToken);
 
         try
         {

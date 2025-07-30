@@ -21,7 +21,7 @@ internal class ReviewTestsStrategy : IOrchestrationStrategy
     {
         var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         var members = GetMembers(kernel, loggerFactory);
-        return OrchestrationHelper.CreateSequential(history, members, responseCallback, streamingCallback, serviceProvider);
+        return OrchestrationHelper.CreateGroupChat(history, members, responseCallback, streamingCallback, serviceProvider);
     }
 
     public ChatCompletionAgent[] GetMembers(Kernel kernel, ILoggerFactory loggerFactory)

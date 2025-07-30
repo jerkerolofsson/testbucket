@@ -25,7 +25,16 @@ namespace TestBucket.AdbProxy.UnitTests.DeviceHandling
         public void Parse_ValidGetPropOutput_ReturnsCorrectDictionary()
         {
             // Arrange
-            var getPropOutput = @"[DEVICE_PROVISIONED]: [1]\n[aaudio.hw_burst_min_usec]: [2000]\n[aaudio.mmap_exclusive_policy]: [2]\n[aaudio.mmap_policy]: [2]\n[af.fast_track_multiplier]: [1]\n[arm64.memtag.process.system_server]: [off]\n[audio.deep_buffer.media]: [true]\n[audio.offload.min.duration.secs]: [30]";
+            var getPropOutput = """
+                [DEVICE_PROVISIONED]: [1]
+                [aaudio.hw_burst_min_usec]: [2000]
+                [aaudio.mmap_exclusive_policy]: [2]
+                [aaudio.mmap_policy]: [2]
+                [af.fast_track_multiplier]: [1]
+                [arm64.memtag.process.system_server]: [off]
+                [audio.deep_buffer.media]: [true]
+                [audio.offload.min.duration.secs]: [30]
+                """;
 
             var expected = new Dictionary<string, string>
             {
@@ -69,7 +78,11 @@ namespace TestBucket.AdbProxy.UnitTests.DeviceHandling
         public void Parse_InvalidLines_SkipsInvalidLines()
         {
             // Arrange
-            var getPropOutput = @"[DEVICE_PROVISIONED]: [1]\nInvalidLineWithoutBrackets\n[aaudio.hw_burst_min_usec]: [2000]";
+            var getPropOutput = """
+                [DEVICE_PROVISIONED]: [1]
+                InvalidLineWithoutBrackets
+                [aaudio.hw_burst_min_usec]: [2000]
+                """;
 
             var expected = new Dictionary<string, string>
             {

@@ -379,6 +379,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, AssignAllUnassignedToAiRunner>();
         builder.Services.AddScoped<ICommand, AssignAllUnassignedToMe>();
         builder.Services.AddScoped<ICommand, DeleteRunCommand>();
+        builder.Services.AddScoped<ICommand, ArchiveRunCommand>();
         builder.Services.AddScoped<ICommand, DuplicateRunCommand>();
 
         // Test Case Run

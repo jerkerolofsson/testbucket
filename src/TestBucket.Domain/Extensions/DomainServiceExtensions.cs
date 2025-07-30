@@ -269,6 +269,10 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, ShowFailureMessageDialogWhenFailingTestCaseRunSetting>();
         services.AddScoped<ISetting, AdvanceToNextNotCompletedTestWhenSettingResultSetting>();
 
+        // Archiving settings
+        services.AddScoped<ISetting, ArchiveTestRunsAutomaticallySetting>();
+        services.AddScoped<ISetting, AgeBeforeArchivingTestRunsSetting>();
+
         services.AddScoped<ITestBucketThemeManager, TestBucketThemeManager>();
 
         return services;

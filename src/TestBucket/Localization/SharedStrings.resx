@@ -1003,4 +1003,16 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="test-resources-description" xml:space="preserve">
     <value>Devices, services or other resources that are accessible from test bucket. These resources are hosted by resource servers, enabling remote access to them.</value>
   </data>
+  <data name="confirm-archive-title" xml:space="preserve">
+    <value>Archive item?</value>
+  </data>
+  <data name="confirm-archive-message" xml:space="preserve">
+    <value>Do you really want to archive this item?</value>
+  </data>
+  <data name="archive-test-run" xml:space="preserve">
+    <value>Archive test run</value>
+  </data>
+  <data name="archive-test-run-description" xml:space="preserve">
+    <value>Archives the test run and hides it from certain user interface views</value>
+  </data>
 </root>

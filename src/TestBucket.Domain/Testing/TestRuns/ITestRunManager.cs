@@ -47,6 +47,14 @@ public interface ITestRunManager
     Task SaveTestRunAsync(ClaimsPrincipal principal, TestRun testRun);
 
     /// <summary>
+    /// Archives a run 
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testRun"></param>
+    /// <returns></returns>
+    Task ArchiveTestRunAsync(ClaimsPrincipal principal, TestRun testRun);
+
+    /// <summary>
     /// Deletes a run and all references items such as test case runs
     /// </summary>
     /// <param name="principal"></param>

@@ -8,6 +8,7 @@ namespace TestBucket.Domain.UnitTests.Insights
     /// Contains unit tests for the <see cref="InsightsData{TLabel, TValue}"/> and related insights data operations.
     /// </summary>
     [Component("Insights")]
+    [Feature("Insights")]
     [UnitTest]
     [EnrichedTest]
     [FunctionalTest]

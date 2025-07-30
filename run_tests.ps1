@@ -6,8 +6,7 @@ $srcRootPath = (Get-Location).Path
 Write-Host "TestSuite: ${testSuite}"
 Write-Host "Path: $srcRootPath"
 
-# $projects = @("tests/TestBucket.AdbProxy.UnitTests/TestBucket.AdbProxy.UnitTests.csproj", "tests/TestBucket.Jira.UnitTests/TestBucket.Jira.UnitTests.csproj", "tests/TestBucket.Formats.UnitTests/TestBucket.Formats.UnitTests.csproj", "tests/TestBucket.Blazor.Tests/TestBucket.Blazor.Tests.csproj", "tests/TestBucket.CodeCoverage.Tests/TestBucket.CodeCoverage.Tests.csproj", "tests/TestBucket.Domain.UnitTests/TestBucket.Domain.UnitTests.csproj", "src/Package/Traits/TestBucket.Traits.Core.UnitTests/TestBucket.Traits.Core.UnitTests.csproj")
-$projects = @("tests/TestBucket.AdbProxy.UnitTests/TestBucket.AdbProxy.UnitTests.csproj")
+$projects = @("tests/TestBucket.AdbProxy.UnitTests/TestBucket.AdbProxy.UnitTests.csproj", "tests/TestBucket.Jira.UnitTests/TestBucket.Jira.UnitTests.csproj", "tests/TestBucket.Formats.UnitTests/TestBucket.Formats.UnitTests.csproj", "tests/TestBucket.Blazor.Tests/TestBucket.Blazor.Tests.csproj", "tests/TestBucket.CodeCoverage.Tests/TestBucket.CodeCoverage.Tests.csproj", "tests/TestBucket.Domain.UnitTests/TestBucket.Domain.UnitTests.csproj", "src/Package/Traits/TestBucket.Traits.Core.UnitTests/TestBucket.Traits.Core.UnitTests.csproj")
 
 foreach ($csproj in $projects)
 {

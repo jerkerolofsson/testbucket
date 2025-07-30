@@ -8,6 +8,8 @@ namespace TestBucket.Domain.Testing.Models;
 /// </summary>
 [Table("runs")]
 [Index(nameof(TenantId), nameof(Created))]
+[Index(nameof(TenantId), nameof(TestProjectId), nameof(Archived))]
+[Index(nameof(TenantId), nameof(TestProjectId), nameof(Open))]
 public class TestRun : TestEntity
 {
     /// <summary>
@@ -72,6 +74,12 @@ public class TestRun : TestEntity
     /// Default assignment
     /// </summary>
     public string? AssignTestCaseRunsTo { get; set; }
+
+    /// <summary>
+    /// True if archived.
+    /// Archived issues may be excluded by default in the UI
+    /// </summary>
+    public bool Archived { get; set; }
 
     // Navigation
 

@@ -8,6 +8,7 @@ namespace TestBucket.Domain.UnitTests.Insights
     /// specifically testing the <c>ToDouble</c> extension method for various numeric types.
     /// </summary>
     [Component("Insights")]
+    [Feature("Insights")]
     [UnitTest]
     [EnrichedTest]
     [FunctionalTest]

@@ -262,64 +262,64 @@
     <value>MCP server JSON</value>
   </data>
   <data name="mcp-public" xml:space="preserve">
-    <value />
+    <value>Tillgänglig för alla projektmedlemmar</value>
   </data>
   <data name="mcp-public-description" xml:space="preserve">
-    <value />
+    <value>Om denna inställning inte är aktiverad kommer bara din användare kunna använda verktyg från denna server.</value>
   </data>
   <data name="test-resources" xml:space="preserve">
-    <value />
+    <value>Testresurser</value>
   </data>
   <data name="delete-resource-if-not-seen-for" xml:space="preserve">
-    <value />
+    <value>Ta bort resurser om den inte varit aktiv sedan</value>
   </data>
   <data name="keyboard" xml:space="preserve">
-    <value />
+    <value>Tangentbord</value>
   </data>
   <data name="commands" xml:space="preserve">
-    <value />
+    <value>Kommandon</value>
   </data>
   <data name="tool-bar" xml:space="preserve">
-    <value />
+    <value>Verktyg</value>
   </data>
   <data name="embedding-ai-provider" xml:space="preserve">
-    <value />
+    <value>AI leverantör för embeddings</value>
   </data>
   <data name="ai-embedding-model" xml:space="preserve">
-    <value />
+    <value>Embedding-modell</value>
   </data>
   <data name="ai-runner" xml:space="preserve">
-    <value />
+    <value>AI-testare</value>
   </data>
   <data name="ai-runner-enabled" xml:space="preserve">
-    <value />
+    <value>Använd AI-testare</value>
   </data>
   <data name="ai-runner-enabled-description" xml:space="preserve">
-    <value />
+    <value>Aktiverar AI-testare för detta projektet</value>
   </data>
   <data name="ai-provider-description" xml:space="preserve">
-    <value />
+    <value>AI-leverantör för att använda för denna tenant.</value>
   </data>
   <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
-    <value />
+    <value>Max antal tokens som AI-testaren kan använda per dag.</value>
   </data>
   <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
-    <value />
+    <value>Observera att antal tokens utvärderas när AI-testaren börjar att arbeta. Antalet tokens kan således överstiga detta värde och denna gräns används bara för att förhindra att nya körningar startas.</value>
   </data>
   <data name="mcp-tool-name" xml:space="preserve">
     <value />
   </data>
   <data name="testing" xml:space="preserve">
-    <value />
+    <value>Testning</value>
   </data>
   <data name="test-execution" xml:space="preserve">
-    <value />
+    <value>Testexekvering</value>
   </data>
   <data name="server" xml:space="preserve">
-    <value />
+    <value>Server</value>
   </data>
   <data name="tenant" xml:space="preserve">
-    <value />
+    <value>Tenant</value>
   </data>
   <data name="ollama-context-length-message" xml:space="preserve">
     <value />
@@ -334,9 +334,24 @@
     <value>Open AI API-nyckel</value>
   </data>
   <data name="ai-usage" xml:space="preserve">
-    <value />
+    <value>AI-användning</value>
   </data>
   <data name="year-to-date" xml:space="preserve">
-    <value />
+    <value>Detta året (hittils)</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled" xml:space="preserve">
+    <value>Arkivera testkörningar</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled-description" xml:space="preserve">
+    <value>Om aktiverat så arkiveras testkörningar automatiskt om de är äldre än den konfigurerade åldern</value>
+  </data>
+  <data name="archive-test-runs-automatically-age" xml:space="preserve">
+    <value>Arkivera testkörningar efter</value>
+  </data>
+  <data name="archive-test-runs-automatically-age-description" xml:space="preserve">
+    <value>Stängda testkörningar arkiveras när deras ålder överstiger denna gräns</value>
+  </data>
+  <data name="archiving" xml:space="preserve">
+    <value>Arkivering</value>
   </data>
 </root>

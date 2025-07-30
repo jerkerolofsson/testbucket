@@ -8,6 +8,7 @@ namespace TestBucket.Domain.UnitTests.Insights
     /// Contains unit tests for verifying the sorting behavior of <see cref="InsightsData{TLabel, TValue}"/> and its series.
     /// </summary>
     [Component("Insights")]
+    [Feature("Insights")]
     [UnitTest]
     [EnrichedTest]
     [FunctionalTest]

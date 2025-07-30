@@ -68,6 +68,8 @@ internal class TestRunManager : ITestRunManager
     /// <inheritdoc/>
     public async Task AddTestRunAsync(ClaimsPrincipal principal, TestRun testRun)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestRun, PermissionLevel.Write);
+
         testRun.TenantId = principal.GetTenantIdOrThrow();
         testRun.Modified = testRun.Created = _timeProvider.GetUtcNow();
         testRun.CreatedBy = testRun.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
@@ -82,8 +84,19 @@ internal class TestRunManager : ITestRunManager
     }
 
     /// <inheritdoc/>
+    public async Task ArchiveTestRunAsync(ClaimsPrincipal principal, TestRun testRun)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestRun, PermissionLevel.Write);
+        principal.GetTenantIdOrThrow(testRun);
+        testRun.Archived = true;
+        await SaveTestRunAsync(principal, testRun);
+    }
+
+    /// <inheritdoc/>
     public async Task DeleteTestRunAsync(ClaimsPrincipal principal, TestRun testRun)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestRun, PermissionLevel.Delete);
+
         principal.GetTenantIdOrThrow(testRun);
         await _testCaseRepo.DeleteTestRunAsync(testRun);
 
@@ -164,45 +177,46 @@ internal class TestRunManager : ITestRunManager
         }
     }
 
-    /// <summary>
-    /// Appends a field if it has a value and it targets TestCaseRun
-    /// </summary>
-    /// <param name="testCaseRun"></param>
-    /// <param name="testCaseRunFields"></param>
-    /// <param name="field"></param>
-    private static void AppendField(TestCaseRun testCaseRun, List<TestCaseRunField> testCaseRunFields, FieldValue field)
-    {
-        ArgumentNullException.ThrowIfNull(field.FieldDefinition);
-        if(!field.FieldDefinition.Inherit)
-        {
-            // Field inheritance is disabled
-            return;
-        }
-        if(!field.HasValue())
-        {
-            // No action if the field has no value
-            return;
-        }
+    ///// <summary>
+    ///// Appends a field if it has a value and it targets TestCaseRun
+    ///// </summary>
+    ///// <param name="testCaseRun"></param>
+    ///// <param name="testCaseRunFields"></param>
+    ///// <param name="field"></param>
+    //private static void AppendField(TestCaseRun testCaseRun, List<TestCaseRunField> testCaseRunFields, FieldValue field)
+    //{
+    //    ArgumentNullException.ThrowIfNull(field.FieldDefinition);
+    //    if(!field.FieldDefinition.Inherit)
+    //    {
+    //        // Field inheritance is disabled
+    //        return;
+    //    }
+    //    if(!field.HasValue())
+    //    {
+    //        // No action if the field has no value
+    //        return;
+    //    }
 
-        if ((field.FieldDefinition.Target & FieldTarget.TestCaseRun) == FieldTarget.TestCaseRun && field.HasValue())
-        {
-            TestCaseRunField testCaseRunField = new TestCaseRunField
-            {
-                FieldDefinitionId = field.FieldDefinitionId,
-                TestRunId = testCaseRun.TestRunId,
-                TestCaseRunId = testCaseRun.Id
-            };
-            field.CopyTo(testCaseRunField);
-            testCaseRunFields.RemoveAll(x => x.FieldDefinitionId == field.FieldDefinitionId);
-            testCaseRunFields.Add(testCaseRunField);
-        }
-    }
+    //    if ((field.FieldDefinition.Target & FieldTarget.TestCaseRun) == FieldTarget.TestCaseRun && field.HasValue())
+    //    {
+    //        TestCaseRunField testCaseRunField = new TestCaseRunField
+    //        {
+    //            FieldDefinitionId = field.FieldDefinitionId,
+    //            TestRunId = testCaseRun.TestRunId,
+    //            TestCaseRunId = testCaseRun.Id
+    //        };
+    //        field.CopyTo(testCaseRunField);
+    //        testCaseRunFields.RemoveAll(x => x.FieldDefinitionId == field.FieldDefinitionId);
+    //        testCaseRunFields.Add(testCaseRunField);
+    //    }
+    //}
 
 
     /// <inheritdoc/>
     public async Task SaveTestRunAsync(ClaimsPrincipal principal, TestRun testRun)
     {
         var tenantId = principal.ThrowIfEntityTenantIsDifferent(testRun);
+        principal.ThrowIfNoPermission(PermissionEntityType.TestRun, PermissionLevel.Write);
 
         var existingRun = await _testCaseRepo.GetTestRunByIdAsync(tenantId,testRun.Id);
         if(existingRun is null)

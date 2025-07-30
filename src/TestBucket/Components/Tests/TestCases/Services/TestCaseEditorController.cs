@@ -234,7 +234,21 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         var principal = await GetUserClaimsPrincipalAsync();
         await _testCaseManager.SaveTestCaseAsync(principal, testCase);
     }
-
+    internal async ValueTask ArchiveTestRunAsync(TestRun testRun)
+    {
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc["yes"],
+            NoText = _loc["no"],
+            Title = _loc["confirm-archive-title"],
+            MarkupMessage = new MarkupString(_loc["confirm-archive-message"])
+        });
+        if (result == true)
+        {
+            var principal = await GetUserClaimsPrincipalAsync();
+            await _testRunManager.ArchiveTestRunAsync(principal, testRun);
+        }
+    }
     internal async ValueTask DeleteTestRunAsync(TestRun testRun)
     {
         var result = await _dialogService.ShowMessageBox(new MessageBoxOptions

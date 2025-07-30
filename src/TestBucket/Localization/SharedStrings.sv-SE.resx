@@ -975,4 +975,16 @@
   <data name="test-resources-description" xml:space="preserve">
     <value />
   </data>
+  <data name="confirm-archive-title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="confirm-archive-message" xml:space="preserve">
+    <value />
+  </data>
+  <data name="archive-test-run" xml:space="preserve">
+    <value>Arkivera testkörning</value>
+  </data>
+  <data name="archive-test-run-description" xml:space="preserve">
+    <value>Gömmer testkörningen i vissa användagränssnitt</value>
+  </data>
 </root>

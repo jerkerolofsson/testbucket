@@ -339,4 +339,19 @@
   <data name="year-to-date" xml:space="preserve">
     <value>Year to date</value>
   </data>
+  <data name="archive-test-runs-automatically-enabled" xml:space="preserve">
+    <value>Archive test runs</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled-description" xml:space="preserve">
+    <value>If enabled, closed test runs older than the configured limit will be archived automatically</value>
+  </data>
+  <data name="archive-test-runs-automatically-age" xml:space="preserve">
+    <value>Archive test runs after</value>
+  </data>
+  <data name="archive-test-runs-automatically-age-description" xml:space="preserve">
+    <value>Closed test runs will be archived after this time period</value>
+  </data>
+  <data name="archiving" xml:space="preserve">
+    <value>Archiving</value>
+  </data>
 </root>

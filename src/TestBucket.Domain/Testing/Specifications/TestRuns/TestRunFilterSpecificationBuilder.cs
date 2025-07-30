@@ -10,9 +10,20 @@ public class TestRunFilterSpecificationBuilder
     {
         var specifications = ProjectEntityFilterSpecificationBuilder.From<TestRun>(query);
 
-        if(query.FolderId is not null)
+        if (query.FolderId is not null)
         {
             specifications.Add(new FilterTestRunsByLabFolder(query.FolderId.Value));
+        }
+        if (query.Archived is not null)
+        {
+            if (query.Archived == true)
+            {
+                specifications.Add(new OnlyArchivedTestRuns());
+            }
+            else if (query.Archived == false)
+            {
+                specifications.Add(new ExcludeArchivedTestRuns());
+            }
         }
 
         return specifications;

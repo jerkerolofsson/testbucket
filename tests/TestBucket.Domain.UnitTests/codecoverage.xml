@@ -15,7 +15,10 @@
 		<Sources>
 			<Exclude>
 				<Source>.*TestBucket\.Traits.*</Source>
+				<Source>.*TestBucket\.Formats.*</Source>
 				<Source>.*TestBucket\.Contracts.*</Source>
+				<Source>.*TestBucket\.CodeCoverage.*</Source>
+				<Source>.*TestBucket\.Integrations.*</Source>
 			</Exclude>
 		</Sources>
 	</CodeCoverage>

@@ -1000,7 +1000,7 @@ internal class TestBrowser : TenantBaseService
     public async Task<PagedResult<TestRun>> GetRecentTestRunsAsync(long? projectId, long? teamId)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        var query = new SearchTestRunQuery() { ProjectId = projectId, Count = 20, TeamId = teamId, Offset = 0 };
+        var query = new SearchTestRunQuery() { ProjectId = projectId, Count = 20, TeamId = teamId, Offset = 0, Archived = false };
         var recentRunsResult = await _testRunManager.SearchTestRunsAsync(principal, query);
         return recentRunsResult;
     }

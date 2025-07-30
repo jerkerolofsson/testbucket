@@ -14,6 +14,9 @@ internal class DashboardManager : IDashboardManager
 
     public DashboardManager(IDashboardRepository repository, TimeProvider timeProvider)
     {
+        ArgumentNullException.ThrowIfNull(repository);
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
         _repository = repository;
         _timeProvider = timeProvider;
     }

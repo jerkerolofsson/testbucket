@@ -67,9 +67,9 @@ public class XmlPageSourceTests
     {
         // Arrange
         string xml = """
-            <hierarchy rotation=\"90\" width=\"1080\" height=\"1920\">
-                <ParentNode index=\"0\" class=\"ParentClass\">
-                    <ChildNode index=\"1\" class=\"ChildClass\" />
+            <hierarchy rotation="90" width="1080" height="1920">
+                <ParentNode index="0" class="ParentClass">
+                    <ChildNode index="1" class="ChildClass" />
                 </ParentNode>
             </hierarchy>
         """;

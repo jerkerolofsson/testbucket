@@ -8,6 +8,7 @@ namespace TestBucket.Domain.UnitTests.TestResources
     /// </summary>
     [EnrichedTest]
     [UnitTest]
+    [Component("Test Resources")]
     public class TestCaseDependencyMergerTests
     {
         /// <summary>

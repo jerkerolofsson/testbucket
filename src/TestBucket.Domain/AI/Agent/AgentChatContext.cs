@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.AI;
 
 using TestBucket.Domain.AI.Agent.Models;
+using TestBucket.Domain.AI.Billing;
 using TestBucket.Domain.AI.Tools;
 
 namespace TestBucket.Domain.AI.Agent;
@@ -28,6 +29,7 @@ public class AgentChatContext
     /// Tools
     /// </summary>
     public ToolCollection? Tools { get; set; }
+    public ChatUsage InvokationUsage { get; internal set; }
 
     public void ClearMessages()
     {

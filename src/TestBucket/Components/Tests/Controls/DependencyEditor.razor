@@ -1,5 +1,6 @@
 ﻿@using TestBucket.Components.Environments.Controls
 @using TestBucket.Components.Environments.ViewModels
+@using TestBucket.Components.TestResources
 @using TestBucket.Domain
 @inject IStringLocalizer<SharedStrings> loc
 @inject IDialogService dialogService
@@ -30,7 +31,7 @@
                     <MudStack Row>
                         @if (context.Item.ResourceType is not null)
                         {
-                            <MudIcon Icon="@Icons.Material.Filled.Devices" Size="Size.Small" Color="Color.Info"/>
+                            <MudIcon Icon="@ResourceIcons.GetResourceIcon(context.Item.ResourceType)" Size="Size.Small" Color="Color.Info" />
                             <MudText>@context.Item.ResourceType</MudText>
                         }
                         else if (context.Item.AccountType is not null)

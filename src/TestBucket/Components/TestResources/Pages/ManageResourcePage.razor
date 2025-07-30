@@ -33,6 +33,15 @@
             </Field>
         }
 
+        <MudTable Items="@_resource.Types" Dense RowClass="tb-datarow">
+            <HeaderContent>
+                <MudTh>@loc["type"]</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="@loc["type"]"><MudChip Size="Size.Large" Icon="@ResourceIcons.GetResourceIcon(context)" T="string" Value="@context" /></MudTd>
+            </RowTemplate>
+        </MudTable>
+
 
         <MudTable Items="@_resource.Variables" Dense RowClass="tb-datarow">
             <HeaderContent>

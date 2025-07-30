@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Text.Json;
 
 using Microsoft.Extensions.AI;
@@ -10,6 +11,8 @@ using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.AI.Agent.Orchestration;
 using TestBucket.Domain.Identity;
+using TestBucket.Domain.Metrics;
+using TestBucket.Domain.Metrics.Models;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.States;
@@ -17,6 +20,7 @@ using TestBucket.Domain.Tenants;
 using TestBucket.Domain.Testing.Compiler;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
+using TestBucket.Domain.TestResources.Mapping;
 
 namespace TestBucket.Domain.AI.Runner;
 internal class AiRunner : BackgroundService
@@ -179,13 +183,6 @@ internal class AiRunner : BackgroundService
             TestRunId = testRun.Id
         };
 
-        if (errors.Count > 0)
-        {
-            string errorList = string.Join("- ", errors.Select(x => x.Message));
-            string message = $"{AiRunnerConstants.Username}: Test case run could not be started as there were compilation errors:\n{errorList}";
-            await OnTestCaseRunFailedAsync(scope, testCaseRun, message);
-            return false;
-        }
 
         var testExecutionContext = await builder.BuildAsync(principal, options, errors, cancellationToken);
         if (testExecutionContext is null)
@@ -194,15 +191,28 @@ internal class AiRunner : BackgroundService
             await OnTestCaseRunFailedAsync(scope, testCaseRun, message);
             return false;
         }
+
+        if (errors.Count > 0)
+        {
+            string errorList = string.Join("- ", errors.Select(x => x.Message));
+            string message = $"{AiRunnerConstants.Username}: Test case run could not be started as there were compilation errors:\n{errorList}";
+            await OnTestCaseRunFailedAsync(scope, testCaseRun, message);
+            return false;
+        }
         try
         {
             await OnStartingAsync(scope, testCaseRun);
 
-            StringBuilder responseBuilder = await RunWithAgentAsync(scope, project, testCase, principal, testExecutionContext, cancellationToken);
+            var startTimestamp = Stopwatch.GetTimestamp();
+
+            StringBuilder responseBuilder = await RunWithAgentAsync(scope, testCaseRun, project, testCase, principal, testExecutionContext, cancellationToken);
             var responseMarkdown = responseBuilder.ToString();
 
             var interpreter = scope.ServiceProvider.GetRequiredService<AiResultInterpreter>();
             var result = await interpreter.InterpretAiRunnerAsync(principal, project.Id, responseMarkdown);
+
+            // Log the test duration
+            testCaseRun.Duration = (int)Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
 
             await OnTestCaseRunResultAsync(scope, testCaseRun, responseMarkdown, result);
         }
@@ -223,67 +233,59 @@ internal class AiRunner : BackgroundService
         return true;
     }
 
-    private async Task<StringBuilder> RunWithAgentAsync(IServiceScope scope, TestProject project, TestCase testCase, ClaimsPrincipal principal, TestExecutionContext? testExecutionContext, CancellationToken cancellationToken)
+    private async Task<StringBuilder> RunWithAgentAsync(IServiceScope scope, TestCaseRun testCaseRun, TestProject project, TestCase testCase, ClaimsPrincipal principal, TestExecutionContext testExecutionContext, CancellationToken cancellationToken)
     {
         var chatClientFactory = scope.ServiceProvider.GetRequiredService<IChatClientFactory>();
-      
-        var agentContext = scope.ServiceProvider.GetRequiredService<AgentChatContext>();
-        agentContext.ProjectId = project.Id;
-        testCase.Description = testExecutionContext!.CompiledText;
-        agentContext.References.Add(ChatReferenceBuilder.Create(testCase));
+
+        AgentChatContext agentContext = CreateContext(scope, project, testCase, testExecutionContext);
 
         var chatMessage = new ChatMessage(ChatRole.User, SuggestionProvider.GetAiRunTestPrompt(testCase.Name));
         var client = new AgentChatClient(chatClientFactory, scope.ServiceProvider);
         var responseBuilder = new StringBuilder();
+        int numToolCalls = 0;
         await foreach (var update in client.InvokeAgentAsync(OrchestrationStrategies.AiRunner, principal, project, agentContext, chatMessage, cancellationToken))
         {
             foreach (var content in update.Contents)
             {
-                if (content is FunctionCallContent functionCallContent)
+                if (content is FunctionCallContent)
                 {
-                    responseBuilder.AppendLine();
-                    responseBuilder.AppendLine($"#### Function Call: {functionCallContent.Name}");
-                    if (functionCallContent.Arguments is not null)
-                    {
-                        foreach (var arg in functionCallContent.Arguments)
-                        {
-                            responseBuilder.AppendLine($"- {arg.Key}: {arg.Value}");
-                        }
-                    }
-                    if (functionCallContent.RawRepresentation is not null)
-                    {
-                        responseBuilder.AppendLine($"""
-                            ```json
-                            {JsonSerializer.Serialize(functionCallContent.RawRepresentation)}
-                            ```
-                            """);
-                        responseBuilder.AppendLine();
-                    }
-                }
-                else if(content is FunctionResultContent functionResult)
-                {
-                    if (functionResult.RawRepresentation is not null)
-                    {
-                        responseBuilder.AppendLine($"""
-                            ```json
-                            {JsonSerializer.Serialize(functionResult.RawRepresentation)}
-                            ```
-                            """);
-                    }
-                }
-                else if (content is TextContent textContent)
-                {
-                    _logger.LogInformation(textContent.Text);
-                    responseBuilder.Append(textContent.Text);
-                }
-                else
-                {
-                    responseBuilder.Append(content.ToString());
+                    numToolCalls++;
                 }
             }
+
+            AiRunnerTestLogBuilder.Append(responseBuilder, update);
         }
 
+        await AddMetricsAsync(scope, testCaseRun, principal, agentContext, numToolCalls);
+
         return responseBuilder;
+    }
+
+    private static async Task AddMetricsAsync(IServiceScope scope, TestCaseRun testCaseRun, ClaimsPrincipal principal, AgentChatContext agentContext, int numToolCalls)
+    {
+        var totalTokensMetric = new Metric { Unit = "tokens", MeterName = "ai_runner", Name = "total_tokens", Value = agentContext.InvokationUsage.TotalTokenCount, TestCaseRunId = testCaseRun.Id, TestProjectId = testCaseRun.TestProjectId, TeamId = testCaseRun.TeamId };
+        var numToolCallsMetric = new Metric { Unit = "calls", MeterName = "ai_runner", Name = "tool_calls", Value = numToolCalls, TestCaseRunId = testCaseRun.Id, TestProjectId = testCaseRun.TestProjectId, TeamId = testCaseRun.TeamId };
+
+        var metricsManager = scope.ServiceProvider.GetRequiredService<IMetricsManager>();
+        await metricsManager.AddMetricAsync(principal, totalTokensMetric);
+        await metricsManager.AddMetricAsync(principal, numToolCallsMetric);
+    }
+
+    private static AgentChatContext CreateContext(IServiceScope scope, TestProject project, TestCase testCase, TestExecutionContext testExecutionContext)
+    {
+        var agentContext = scope.ServiceProvider.GetRequiredService<AgentChatContext>();
+        agentContext.ProjectId = project.Id;
+        testCase.Description = testExecutionContext!.CompiledText;
+        agentContext.ClearReferences();
+        if (testExecutionContext?.Resources?.Count > 0)
+        {
+            foreach (var resource in testExecutionContext.Resources)
+            {
+                agentContext.References.Add(ChatReferenceBuilder.Create(resource.ToDbo()));
+            }
+        }
+        agentContext.References.Add(ChatReferenceBuilder.Create(testCase));
+        return agentContext;
     }
 
     private static async Task OnStartingAsync(IServiceScope scope, TestCaseRun testCaseRun)

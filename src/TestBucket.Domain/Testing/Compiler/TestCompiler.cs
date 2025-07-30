@@ -2,15 +2,17 @@
 using System.Text;
 using System.Text.RegularExpressions;
 
-using Microsoft.AspNetCore.Authentication;
-
+using TestBucket.Contracts.TestAccounts;
+using TestBucket.Contracts.TestResources;
 using TestBucket.Domain.Environments;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.TestAccounts.Allocation;
+using TestBucket.Domain.TestAccounts.Mapping;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.TestResources.Allocation;
+using TestBucket.Domain.TestResources.Mapping;
 
 namespace TestBucket.Domain.Testing.Compiler;
 
@@ -56,8 +58,18 @@ internal class TestCompiler : ITestCompiler
         // To unlock resources, use context.Guid as the lock owner.
         // @see ReleaseResourcesRequest
         var resourceBag = await _resourceAllocator.CollectDependenciesAsync(principal, context, cancellationToken);
+        context.Resources = new List<TestResourceDto>();
+        foreach(var resource in resourceBag.Resources)
+        {
+            context.Resources.Add(resource.ToDto());
+        }
 
         var accountBag = await _accountAllocator.CollectDependenciesAsync(principal, context, cancellationToken);
+        context.Accounts = new List<TestAccountDto>();
+        foreach (var account in accountBag.Accounts)
+        {
+            context.Accounts.Add(account.ToDto());
+        }
 
         if (context.TestRunId is not null)
         {

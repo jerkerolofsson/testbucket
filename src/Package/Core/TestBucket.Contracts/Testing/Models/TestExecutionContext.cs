@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.TestAccounts;
+using TestBucket.Contracts.TestResources;
+
 namespace TestBucket.Contracts.Testing.Models;
 public class TestExecutionContext
 {
@@ -105,4 +108,14 @@ public class TestExecutionContext
     /// Compiled text (parameters replaced with variable values)
     /// </summary>
     public string? CompiledText { get; set; }
+
+    /// <summary>
+    /// Allocated resources for the test execution context
+    /// </summary>
+    public List<TestResourceDto> Resources { get; set; } = [];
+
+    /// <summary>
+    /// Allocted accounts for the test execution context
+    /// </summary>
+    public List<TestAccountDto> Accounts { get; set; } = [];
 }

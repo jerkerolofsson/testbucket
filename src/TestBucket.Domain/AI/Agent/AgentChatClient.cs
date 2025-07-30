@@ -12,6 +12,7 @@ using Microsoft.SemanticKernel.ChatCompletion;
 
 using TestBucket.Domain.AI.Agent.Logging;
 using TestBucket.Domain.AI.Agent.Orchestration;
+using TestBucket.Domain.AI.Billing;
 using TestBucket.Domain.AI.Diagnostics.Filters;
 using TestBucket.Domain.AI.Mcp.Services;
 using TestBucket.Domain.AI.Tools;
@@ -138,7 +139,10 @@ public class AgentChatClient
         ChatMessage userMessage,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
-        if(orchestrationStrategy is null || orchestrationStrategy is OrchestrationStrategies.Default)
+        // Track usage for this session
+        context.InvokationUsage = new ChatUsage() { InputTokenCount = 0, OutputTokenCount = 0, TotalTokenCount = 0, UsageCategory = "" };
+
+        if (orchestrationStrategy is null || orchestrationStrategy is OrchestrationStrategies.Default)
         {
             await foreach(var update in AskAsync(principal, project, context, userMessage, cancellationToken))
             {
@@ -174,7 +178,11 @@ public class AgentChatClient
             newMessages.Add(response);
 
             // Log the message for usage/billing information
-            await _agentLogManager.LogResponseAsync(project?.TeamId, project?.TeamId, orchestrationStrategy, principal, response);
+            var usage = await _agentLogManager.LogResponseAsync(project?.TeamId, project?.TeamId, orchestrationStrategy, principal, response);
+            if(usage is not null)
+            {
+                context.InvokationUsage.Add(usage);
+            }
         };
 
         // Channel that sends updates from the agents to us
@@ -307,6 +315,9 @@ public class AgentChatClient
         ChatMessage userMessage, 
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
+        // Track usage for this session
+        context.InvokationUsage = new ChatUsage() { InputTokenCount = 0, OutputTokenCount = 0, TotalTokenCount = 0, UsageCategory = "" };
+
         var references = await GetReferencesAsChatMessagesAsync(principal, context, cancellationToken);
 
         using var client = await _chatClientFactory.CreateChatClientAsync(principal, AI.Models.ModelType.Default);
@@ -318,7 +329,11 @@ public class AgentChatClient
             chatMessagesContext = [.. references, .. context.Messages];
             await foreach (var update in CallModelAsync(principal, context, userMessage, chatMessagesContext, client, cancellationToken))
             {
-                await _agentLogManager.LogResponseAsync(project?.TeamId, project?.Id, principal, update);
+                var usage = await _agentLogManager.LogResponseAsync(project?.TeamId, project?.Id, principal, update);
+                if(usage is not null)
+                {
+                    context.InvokationUsage.Add(usage);
+                }
 
                 cancellationToken.ThrowIfCancellationRequested();
                 yield return update;

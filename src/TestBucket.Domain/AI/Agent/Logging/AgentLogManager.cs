@@ -17,7 +17,7 @@ internal class AgentLogManager : IAgentLogManager
         _settingsProvider = settingsProvider;
     }
 
-    public async ValueTask LogResponseAsync(long? teamId, long? projectId, string orchestrationStrategy, ClaimsPrincipal principal, ChatMessageContent response)
+    public async ValueTask<ChatUsage?> LogResponseAsync(long? teamId, long? projectId, string orchestrationStrategy, ClaimsPrincipal principal, ChatMessageContent response)
     {
         if (response.Metadata is not null && response.Metadata.TryGetValue("Usage", out var usage))
         {
@@ -25,12 +25,13 @@ internal class AgentLogManager : IAgentLogManager
             if (usage is OpenAI.Chat.ChatTokenUsage openAiUsage)
             {
                 string category = orchestrationStrategy;
-                await LogUsageAsync( teamId, projectId, category, principal, openAiUsage.InputTokenCount, openAiUsage.OutputTokenCount, openAiUsage.TotalTokenCount);
+                return await LogUsageAsync( teamId, projectId, category, principal, openAiUsage.InputTokenCount, openAiUsage.OutputTokenCount, openAiUsage.TotalTokenCount);
             }
         }
+        return null;
     }
 
-    private async ValueTask LogUsageAsync(long? teamId, long? projectId, string category, ClaimsPrincipal principal, long? inputTokenCount, long? outputTokenCount, long? totalTokenCount)
+    private async ValueTask<ChatUsage?> LogUsageAsync(long? teamId, long? projectId, string category, ClaimsPrincipal principal, long? inputTokenCount, long? outputTokenCount, long? totalTokenCount)
     {
         string tenantId = principal.GetTenantIdOrThrow();
         inputTokenCount ??= 0;
@@ -52,11 +53,14 @@ internal class AgentLogManager : IAgentLogManager
                 UsdPerMillionTokens = _settings?.LlmModelUsdPerMillionTokens ?? 0
             };
             await _manager.AddCostAsync(principal, cost);
+            return cost;
         }
+        return null;
     }
 
-    public async ValueTask LogResponseAsync(long? teamId, long? projectId, ClaimsPrincipal principal, ChatResponseUpdate response)
+    public async ValueTask<ChatUsage?> LogResponseAsync(long? teamId, long? projectId, ClaimsPrincipal principal, ChatResponseUpdate response)
     {
+        var accumulatedUsage = new ChatUsage() { InputTokenCount = 0, OutputTokenCount = 0, UsageCategory = "", TotalTokenCount = 0 };
         if (response.Contents is not null)
         {
             string? modelId = response.ModelId;
@@ -64,9 +68,14 @@ internal class AgentLogManager : IAgentLogManager
             {
                 if(content is UsageContent usageContent)
                 {
-                    await LogUsageAsync(teamId, projectId, "Chat", principal, usageContent.Details.InputTokenCount, usageContent.Details.OutputTokenCount, usageContent.Details.TotalTokenCount);
+                    var usage = await LogUsageAsync(teamId, projectId, "Chat", principal, usageContent.Details.InputTokenCount, usageContent.Details.OutputTokenCount, usageContent.Details.TotalTokenCount);
+                    if(usage is not null)
+                    {
+                        accumulatedUsage.Add(usage);
+                    }
                 }
             }
         }
+        return accumulatedUsage;
     }
 }

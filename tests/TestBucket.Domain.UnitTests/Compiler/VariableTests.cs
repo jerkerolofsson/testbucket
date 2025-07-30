@@ -8,6 +8,7 @@ namespace TestBucket.Domain.UnitTests.Compiler
     /// </summary>
     [UnitTest]
     [EnrichedTest]
+    [Feature("Testing")]
     public class VariableTests
     {
         /// <summary>

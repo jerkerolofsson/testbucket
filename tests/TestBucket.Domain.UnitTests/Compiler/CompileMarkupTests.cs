@@ -15,6 +15,8 @@ namespace TestBucket.Domain.UnitTests.Compiler
     /// </summary>
     [UnitTest]
     [EnrichedTest]
+    [Feature("Testing")]
+    [Component("Compiler")]
     public class CompileMarkupTests
     {
         /// <summary>
@@ -61,7 +63,6 @@ namespace TestBucket.Domain.UnitTests.Compiler
         /// <summary>
         /// Verifies that <see cref="TestCompiler.CompileMarkupAsync"/> correctly resolves a template using the <c>@template</c> directive.
         /// </summary>
-        [Component("Compiler")]
         [Fact]
         public async Task CompileMarkupAsync_WithTemplate_TemplateResolved()
         {
@@ -84,7 +85,6 @@ namespace TestBucket.Domain.UnitTests.Compiler
         /// <summary>
         /// Verifies that <see cref="TestCompiler.CompileMarkupAsync"/> correctly resolves the <c>@include</c> directive.
         /// </summary>
-        [Component("Compiler")]
         [Fact]
         public async Task CompileMarkupAsync_WithInclude_IncludeDirectiveResolved()
         {
@@ -106,7 +106,6 @@ namespace TestBucket.Domain.UnitTests.Compiler
         /// <summary>
         /// Verifies that <see cref="TestCompiler.CompileMarkupAsync"/> correctly resolves recursive <c>@include</c> directives.
         /// </summary>
-        [Component("Compiler")]
         [Fact]
         public async Task CompileMarkupAsync_WithRecursiveInclude_IncludeDirectiveResolved()
         {

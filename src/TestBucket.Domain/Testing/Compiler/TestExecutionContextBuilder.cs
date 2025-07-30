@@ -94,9 +94,12 @@ public class TestExecutionContextBuilder
             }
 
             await _compiler.ResolveVariablesAsync(principal, context, cancellationToken);
+            CompilerError[] resolveErrors = [..context.CompilerErrors];
+
             var result = await _compiler.CompileAsync(principal, context, options.Text);
 
             errors.Clear();
+            errors.AddRange(resolveErrors);
             errors.AddRange(context.CompilerErrors);
 
             if (options.ReleaseResourceDirectly)

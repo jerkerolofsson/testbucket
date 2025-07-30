@@ -13,4 +13,14 @@ public class ChatUsage : ProjectEntity
     /// </summary>
     public double UsdPerMillionTokens { get; set; }
 
+    public void Add(ChatUsage usage)
+    {
+        InputTokenCount += usage.InputTokenCount;
+        OutputTokenCount += usage.OutputTokenCount;
+        TotalTokenCount += usage.TotalTokenCount;
+        if(string.IsNullOrEmpty(UsageCategory))
+        {
+            UsageCategory = usage.UsageCategory;
+        }
+    }
 }

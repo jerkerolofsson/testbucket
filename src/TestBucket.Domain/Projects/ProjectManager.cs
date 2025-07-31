@@ -3,10 +3,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
-using TestBucket.Contracts.Integrations;
 using TestBucket.Domain.Projects.Events;
-using TestBucket.Domain.Projects.Mapping;
-using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Projects;
 internal class ProjectManager : IProjectManager

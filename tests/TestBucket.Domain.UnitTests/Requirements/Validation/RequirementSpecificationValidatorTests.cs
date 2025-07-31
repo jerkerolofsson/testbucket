@@ -10,6 +10,7 @@ namespace TestBucket.Domain.UnitTests.Requirements.Validation;
 [EnrichedTest]
 [UnitTest]
 [FunctionalTest]
+[Component("Requirements")]
 public class RequirementSpecificationValidatorTests
 {
     private readonly RequirementSpecificationValidator _validator = new();

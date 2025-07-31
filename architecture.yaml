@@ -620,6 +620,14 @@ features:
     - src\integrations\TestBucket.Gitlab\**\*
     - src\TestBucket\Components\Code\**\*
     - src\Package\Core\TestBucket.Contracts\Code\**\*
+  Archiving:
+    display: 
+    description: Archiving of items to hide them from the user interface.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Features\Archiving\**\*.*
+    - src\TestBucket.Domain\Testing\Specifications\TestRuns\**\*.*
   Chat:
     display: 
     description: >
@@ -654,6 +662,14 @@ features:
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths: []
+  Extensions:
+    display: 
+    description: Adds the possibility to add extensions and integrations with other systems
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\ExtensionManagement\**\*.*
+    - src\TestBucket.Domain\Projects\Models\ExternalSystem.cs
   Field Inheritance:
     display: 
     description: >
@@ -1439,6 +1455,15 @@ features:
     - src\TestBucket.Domain\Settings\**\*
     - src\TestBucket.Data\Settings\**\*
     - src\TestBucket.Data\Identity\UserPreferenceRepository.cs
+  Test Resources:
+    display: 
+    description: Handling of test resources, resource servers providing resources, MCP servers providing APIs to automate the resources
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\resourceserver\**\*.*
+    - src\TestBucket\Components\TestResources\**\*.*
+    - src\TestBucket.Domain\TestResources\**\*.*
   Themes:
     display: 
     description: >-

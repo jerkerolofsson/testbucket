@@ -3,10 +3,11 @@ using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestSuites.Search;
 
 
-public interface ITestCaseRepository
+public interface ITestCaseRepository : ITestRunRepository
 {
     #region Test Case
 
@@ -224,17 +225,6 @@ public interface ITestCaseRepository
 
     #region Test Runs
 
-    Task<TestCaseRun?> GetTestCaseRunByIdAsync(string tenantId, long testCaseId);
-    Task<TestRun?> GetTestRunByIdAsync(string tenantId, long id);
-
-    /// <summary>
-    /// Searches for test case runs
-    /// </summary>
-    /// <param name="tenantId"></param>
-    /// <param name="searchTestQuery"></param>
-    /// <returns></returns>
-    Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(IReadOnlyList<FilterSpecification<TestCaseRun>> filters, int offset, int count);
-
     /// <summary>
     /// Returns run years
     /// </summary>
@@ -244,34 +234,19 @@ public interface ITestCaseRepository
     /// <returns></returns>
     Task<int[]> GetTestRunYearsAsync(string tenantId, long? teamId, long? projectId);
 
-    /// <summary>
-    /// Adds a run
-    /// </summary>
-    /// <param name="testRun"></param>
-    /// <returns></returns>
-    Task AddTestRunAsync(TestRun testRun);
-
-    /// <summary>
-    /// Searches for test runs
-    /// </summary>
-    /// <returns></returns>
-    Task<PagedResult<TestRun>> SearchTestRunsAsync(IReadOnlyList<FilterSpecification<TestRun>> filters, int offset, int count);
-
-    /// <summary>
-    /// Deletes a test run
-    /// </summary>
-    /// <returns></returns>
-    Task DeleteTestRunAsync(TestRun testRun);
-
-    /// <summary>
-    /// Updates a test run / saves changes
-    /// </summary>
-    /// <param name="testRun"></param>
-    /// <returns></returns>
-    Task UpdateTestRunAsync(TestRun testRun);
     #endregion Test Runs
 
     #region Test Case Runs
+
+    /// <summary>
+    /// Searches for test case runs
+    /// </summary>
+    /// <param name="tenantId"></param>
+    /// <param name="searchTestQuery"></param>
+    /// <returns></returns>
+    Task<PagedResult<TestCaseRun>> SearchTestCaseRunsAsync(IReadOnlyList<FilterSpecification<TestCaseRun>> filters, int offset, int count);
+
+    Task<TestCaseRun?> GetTestCaseRunByIdAsync(string tenantId, long testCaseId);
 
     /// <summary>
     /// Deletes a test case run

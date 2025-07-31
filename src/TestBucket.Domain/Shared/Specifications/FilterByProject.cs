@@ -15,16 +15,16 @@ namespace TestBucket.Domain.Shared.Specifications
     /// <typeparam name="T"></typeparam>
     public class FilterByProject<T> : ProjectSpecification<T> where T : ProjectEntity
     {
-        private readonly long _testProjectId;
+        public long Id { get; private set; }
 
         public FilterByProject(long testProjectId)
         {
-            _testProjectId = testProjectId;
+            Id = testProjectId;
         }
 
         protected override Expression<Func<T, bool>> GetExpression()
         {
-            return x => x.TestProjectId == _testProjectId || x.TestProjectId == null;
+            return x => x.TestProjectId == Id || x.TestProjectId == null;
         }
     }
 }

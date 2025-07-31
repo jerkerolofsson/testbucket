@@ -24,29 +24,30 @@ namespace TestBucket.Domain.Settings
             // Localize it
             foreach (var link in _links)
             {
-                link.Title = _localization.Settings[link.Title];
+                link.Title = (_localization.Settings[link.Title]) ?? link.Title;
                 if (link.Description is not null)
                 {
-                    link.Description = _localization.Settings[link.Description];
+                    link.Description = _localization.Settings[link.Description] ?? link.Description;
                 }
             }
             foreach(var category in Categories)
             {
-                category.Name = _localization.Settings[category.Name];
+                category.Name = _localization.Settings[category.Name] ?? category.Name;
             }
             var a = CultureInfo.CurrentCulture;
             var b = CultureInfo.CurrentUICulture;
             foreach(var setting in _settings)
             {
 
-                setting.Metadata.Category.Name = _localization.Settings[setting.Metadata.Category.Name];
-                setting.Metadata.Section.Name = _localization.Settings[setting.Metadata.Section.Name];
+                setting.Metadata.Category.Name = _localization.Settings[setting.Metadata.Category.Name] ?? setting.Metadata.Category.Name;
+                setting.Metadata.Section.Name = _localization.Settings[setting.Metadata.Section.Name] ?? setting.Metadata.Section.Name;
 
                 setting.Metadata.Label ??= setting.Metadata.Name;
-                setting.Metadata.Name = _localization.Settings[setting.Metadata.Label];
+                setting.Metadata.Name = _localization.Settings[setting.Metadata.Label] ?? setting.Metadata.Label;
                 if (setting.Metadata.Description is not null)
                 {
-                    setting.Metadata.Description = _localization.Settings[setting.Metadata.Description];
+                    setting.Metadata.Description = _localization.Settings[setting.Metadata.Description]
+                        ?? setting.Metadata.Description;
                 }
             }
         }

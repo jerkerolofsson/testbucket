@@ -106,7 +106,7 @@ internal class DeviceInformer(HttpClient httpClient, IServer Server) : IDeviceIn
         }
 
         List<TestResourceDto> resources = new();
-        var owner = Environment.GetEnvironmentVariable("SERVER_UUID") ?? "no-uuid-configured";
+        var owner = ResourceServerOwner.Name;
         AddDevicesAsResources(devices, resources, owner);
         AddMcpResource(resources, owner);
 
@@ -137,7 +137,7 @@ internal class DeviceInformer(HttpClient httpClient, IServer Server) : IDeviceIn
                     {
                         Name = $"adb-mcp-server@{hostname}",
                         Owner = owner,
-                        ResourceId = hostname + "-mcp-server",
+                        ResourceId = hostname + "-adb-mcp-server",
                         Model = "AdbProxy",
                         Manufacturer = "TestBucket",
                         Types = ["appium-mcp", "adb-mcp", "mcp-server"],

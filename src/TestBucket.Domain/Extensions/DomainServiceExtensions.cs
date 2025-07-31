@@ -27,6 +27,8 @@ using TestBucket.Domain.Environments;
 using TestBucket.Domain.Export;
 using TestBucket.Domain.Export.Services;
 using TestBucket.Domain.ExtensionManagement;
+using TestBucket.Domain.Features.Archiving;
+using TestBucket.Domain.Features.Archiving.Settings;
 using TestBucket.Domain.Features.Classification;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
@@ -212,7 +214,11 @@ public static class DomainServiceExtensions
         services.AddSingleton<McpServerRunnerManager>();
         services.AddHostedService<McpServerStartupService>();
         services.AddScoped<SemanticKernelFactory>();
-        
+
+        // Feature: Archiving
+        services.AddHostedService<TestRunArchivingBackgroundService>();
+        services.AddScoped<ISetting, ArchiveTestRunsAutomaticallySetting>();
+        services.AddScoped<ISetting, AgeBeforeArchivingTestRunsSetting>();
 
         // Feature: Classification
         services.AddScoped<IClassifier, GenericClassifier>();
@@ -268,10 +274,6 @@ public static class DomainServiceExtensions
         // Test settings
         services.AddScoped<ISetting, ShowFailureMessageDialogWhenFailingTestCaseRunSetting>();
         services.AddScoped<ISetting, AdvanceToNextNotCompletedTestWhenSettingResultSetting>();
-
-        // Archiving settings
-        services.AddScoped<ISetting, ArchiveTestRunsAutomaticallySetting>();
-        services.AddScoped<ISetting, AgeBeforeArchivingTestRunsSetting>();
 
         services.AddScoped<ITestBucketThemeManager, TestBucketThemeManager>();
 

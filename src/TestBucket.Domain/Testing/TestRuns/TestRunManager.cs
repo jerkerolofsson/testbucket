@@ -1,9 +1,5 @@
-﻿using System.Security.Claims;
+﻿using Mediator;
 
-using Mediator;
-
-using TestBucket.Contracts.Fields;
-using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Shared.Specifications;

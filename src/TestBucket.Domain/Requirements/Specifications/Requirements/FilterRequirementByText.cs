@@ -12,16 +12,16 @@ namespace TestBucket.Domain.Requirements.Specifications.Requirements
 {
     public class FilterRequirementByText : FilterSpecification<Requirement>
     {
-        private readonly string _text;
+        internal string Text { get; private set; }
 
         public FilterRequirementByText(string text)
         {
-            _text = text.ToLower();
+            Text = text.ToLower();
         }
 
         protected override Expression<Func<Requirement, bool>> GetExpression()
         {
-            return x => x.Name.ToLower().Contains(_text) || x.Description != null && x.Description.ToLower().Contains(_text);
+            return x => x.Name.ToLower().Contains(Text) || x.Description != null && x.Description.ToLower().Contains(Text);
         }
     }
 }

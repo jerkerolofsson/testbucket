@@ -11,6 +11,7 @@
     </ItemGroup>
     
   <ItemGroup>
+    <ProjectReference Include="..\..\Package\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" />
     <ProjectReference Include="..\TestBucket.ResourceServer.Contracts\TestBucket.ResourceServer.Contracts.csproj" />
   </ItemGroup>
 

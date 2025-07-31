@@ -75,16 +75,14 @@ var testBucket = builder.AddProject<Projects.TestBucket>("testbucket")
 
 builder.AddProject<Projects.TestBucket_Servers_AdbProxy>("testbucket-adbproxy")
     .WithReference(testBucket)
-    .WithEnvironment("SERVER_UUID", "11111111")
+    .WithEnvironment("TB_SERVER_UUID", "11111111")
     .WithEnvironment("TB_INFORM_URL", "https+http://testbucket/api/test-resources")
     .WithEnvironment("TB_AUTH_HEADER", $"Bearer {accessToken}")
     .WaitFor(testBucket);
 
-
-builder.AddProject<Projects.TestBucket_Servers_NodeResourceServer>("testbucket-noderesourceserver")
+builder.AddProject<Projects.TestBucket_ResourceServer_Playwright>("testbucket-playwright")
     .WithReference(testBucket)
-    .WithEnvironment("SERVER_UUID", "22222222")
-    .WithEnvironment("TB_PLAYWRIGHT_INSTANCES", "0")
+    .WithEnvironment("TB_SERVER_UUID", "22222222")
     .WithEnvironment("TB_INFORM_URL", "https+http://testbucket/api/test-resources")
     .WithEnvironment("TB_AUTH_HEADER", $"Bearer {accessToken}")
     .WaitFor(testBucket)

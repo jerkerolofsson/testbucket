@@ -1,10 +1,8 @@
 services:
-  playwright_mcp:
-    container_name: playwright_mcp
-    image: docker.io/acuvity/mcp-server-playwright:0.0.29
-    read_only: true
+  tb-playwright-manual:
+    entrypoint: ["node", "cli.js", "--headless", "--browser", "chromium", "--no-sandbox", "--port", "4723"]
+    container_name: tb-playwright-manual
+    restart: unless-stopped
+    image: mcr.microsoft.com/playwright/mcp
     ports:
-      - "8000:8000"
-    restart: always
-    tmpfs:
-      - /tmp:size=10g,mode=1777
+      - 4723:4723

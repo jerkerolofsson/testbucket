@@ -5,8 +5,6 @@ using ModelContextProtocol.Server;
 using TestBucket.AdbProxy.DeviceHandling;
 using TestBucket.ResourceServer.Contracts;
 
-using static System.Net.Mime.MediaTypeNames;
-
 namespace TestBucket.AdbProxy.Appium.MCP;
 
 [McpServerToolType, Description("Tools to interact with appium (android phones etc)")]

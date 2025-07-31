@@ -11,6 +11,7 @@ namespace TestBucket.Domain.UnitTests.Shared
     [UnitTest]
     [FunctionalTest]
     [Component("User Interface")]
+    [EnrichedTest]
     public class AppNavigationStateTests
     {
         private readonly NavigationState _navState;

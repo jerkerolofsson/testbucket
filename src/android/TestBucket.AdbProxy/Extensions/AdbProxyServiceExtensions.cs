@@ -1,6 +1,4 @@
-﻿using Microsoft.DependencyInject.Extensions;
-
-using TestBucket.AdbProxy.Appium;
+﻿using TestBucket.AdbProxy.Appium;
 using TestBucket.AdbProxy.DeviceHandling;
 using TestBucket.AdbProxy.Inform;
 using TestBucket.AdbProxy.Proxy;

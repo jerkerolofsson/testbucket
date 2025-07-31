@@ -19,12 +19,13 @@ namespace TestBucket.Domain.UnitTests.Identity.OAuth
     [Feature("OAuth")]
     [Component("Identity")]
     [FunctionalTest]
+    [EnrichedTest]
     public class OAuthManagerTests : IDisposable
     {
         /// <summary>
         /// Mock HTTP server for simulating OAuth endpoints during testing.
         /// </summary>
-        private WireMockServer? _server;
+        private readonly WireMockServer _server;
 
         /// <summary>
         /// HTTP client factory implementation that creates clients configured to use the WireMock server.

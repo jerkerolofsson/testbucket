@@ -12,6 +12,7 @@ namespace TestBucket.Domain.UnitTests.Identity.OAuth
     [Feature("OAuth")]
     [Component("Identity")]
     [FunctionalTest]
+    [EnrichedTest]
     public class OAuthTokenResponseTests
     {
         /// <summary>

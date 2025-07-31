@@ -92,16 +92,18 @@ public class CoberturaParser : ParserBase
             string displayName = name.Value;
             if (displayName.Contains('<'))
             {
-                if (displayName.Contains("__"))
+                var matchGeneric = GenericClassRegex.Match(displayName);
+                var matchAsync = CleanupRegex.Match(displayName);
+                if (matchAsync.Success)
                 {
                     displayName = CleanupRegex.Replace(displayName, string.Empty);
                 }
-                var match = GenericClassRegex.Match(displayName);
-                if (match.Success)
+                if (matchGeneric.Success)
                 {
-                    displayName = match.Groups["ClassName"].Value;
+                    displayName = matchGeneric.Groups["ClassName"].Value;
                 }
             }
+
             var codeCoverageClass = package.GetOrCreateClass(displayName, filename?.Value ?? "");
 
             foreach (var methodsNode in classNode.Elements("methods"))

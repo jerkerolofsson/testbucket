@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Fields.Models;
+﻿using System.Linq.Expressions;
 
 namespace TestBucket.Domain.Shared.Specifications
 {
@@ -15,16 +8,16 @@ namespace TestBucket.Domain.Shared.Specifications
     /// <typeparam name="T"></typeparam>
     public class FilterByTenant<T> : FilterSpecification<T> where T : Entity
     {
-        private readonly string _tenantId;
+        internal string TenantId { get; private set; }
 
         public FilterByTenant(string tenantId)
         {
-            _tenantId = tenantId;
+            TenantId = tenantId;
         }
 
         protected override Expression<Func<T, bool>> GetExpression()
         {
-            return x => x.TenantId == _tenantId;
+            return x => x.TenantId == TenantId;
         }
     }
 }

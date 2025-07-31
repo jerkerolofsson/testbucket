@@ -151,7 +151,7 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
 
             Assert.NotEmpty(report.Packages);
             var percent = report.CoveragePercent.Value;
-            Assert.Equal(22.28, percent);
+            Assert.Equal(22.34, percent);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.NotEmpty(report.Packages);
             var domainLineCount = report.LineCount.Value;
             var percent = report.CoveragePercent.Value;
-            Assert.Equal(16071, domainLineCount);
+            Assert.Equal(16014, domainLineCount);
         }
 
         /// <summary>
@@ -183,6 +183,34 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.Single(report.Packages);
             var domainLineCount = report.Packages[0].LineCount.Value;
             Assert.Equal(7, domainLineCount);
+        }
+
+        /// <summary>
+        /// Verifies that generated classes for the async state machine are merged into a single class, as per the code
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        [Theory]
+        [InlineData("TestBucket.Domain.Traceability.DiscoverRequirementRelationshipsHandler")]
+        [InlineData("TestBucket.Domain.TestResources.TestCaseDependencyMerger")]
+        public async Task ParseCobertura_WithAsyncClass_MergedWithRealClass(string className)
+        {
+            var parser = new CoberturaParser();
+            CodeCoverageReport report = await parser.ParseFileAsync("./TestData/coverage.cobertura.xml", TestContext.Current.CancellationToken);
+
+            Assert.NotEmpty(report.Packages);
+            int count = 0;
+            foreach(var @class in report.GetClasses(_ => true))
+            {
+                if (@class.Name == className)
+                {
+                    count++;
+                }
+                else if (@class.Name.StartsWith(className))
+                {
+                    Assert.Fail($"Expected class {@class.Name} to be trimmed and merged");
+                }
+            }
+            Assert.Equal(1, count);
         }
 
         /// <summary>

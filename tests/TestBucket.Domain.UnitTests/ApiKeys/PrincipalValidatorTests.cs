@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using TestBucket.Domain.ApiKeys.Validation;
-using Xunit;
 namespace TestBucket.Domain.UnitTests.ApiKeys.Validation;
 
 /// <summary>
@@ -9,6 +8,7 @@ namespace TestBucket.Domain.UnitTests.ApiKeys.Validation;
 [UnitTest]
 [FunctionalTest]
 [Component("Identity")]
+[EnrichedTest]
 public class PrincipalValidatorTests
 {
     /// <summary>

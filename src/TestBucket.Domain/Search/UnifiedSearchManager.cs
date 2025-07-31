@@ -64,9 +64,13 @@ namespace TestBucket.Domain.Search
 
             filters = [new FilterByTenant<Requirement>(tenantId), .. filters];
             var requirements = await _requirementRepo.SearchRequirementsAsync(filters, query.Offset, query.Count);
-            foreach (var requirement in requirements.Items)
+
+            if (requirements is not null)
             {
-                result.Add(new SearchResult(requirement));
+                foreach (var requirement in requirements.Items)
+                {
+                    result.Add(new SearchResult(requirement));
+                }
             }
         }
         private async Task SearchForTestsAsync(TestProject? testProject, string text, string tenantId, List<SearchResult> result)
@@ -77,9 +81,12 @@ namespace TestBucket.Domain.Search
 
             filters = [new FilterByTenant<TestCase>(tenantId), .. filters];
             var tests = await _testCaseRepo.SearchTestCasesAsync(query.Offset, query.Count, filters);
-            foreach (var test in tests.Items)
+            if (tests is not null)
             {
-                result.Add(new SearchResult(test));
+                foreach (var test in tests.Items)
+                {
+                    result.Add(new SearchResult(test));
+                }
             }
         }
     }

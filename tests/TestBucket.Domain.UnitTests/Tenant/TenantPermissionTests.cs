@@ -15,6 +15,7 @@ namespace TestBucket.Domain.UnitTests.Tenant
     [Component("Tenant")]
     [UnitTest]
     [SecurityTest]
+    [EnrichedTest]
     public class TenantManagerPermissionTests
     {
         private readonly IProjectRepository _projectRepo = Substitute.For<IProjectRepository>();

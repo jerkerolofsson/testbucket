@@ -3,32 +3,40 @@
 @using TestBucket.Domain.Requirements.Models
 @inject FieldController fieldController
 
-@foreach (var field in _testCaseFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
+@foreach (var grouping in _groupings)
 {
-    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestCaseFieldChangedAsync" />
-}
-@foreach (var field in _testRunFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
-{
-    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestRunFieldChangedAsync" />
-}
-@foreach (var field in _testCaseRunFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
-{
-    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestCaseRunFieldChangedAsync" />
-}
-@foreach (var field in _requirementFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
-{
-    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnRequirementFieldChangedAsync" />
-}
-@foreach (var field in _issueFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
-{
-    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnIssueFieldChangedAsync" />
+    @if(!string.IsNullOrEmpty(grouping))
+    {
+        <MudText Class="tb-fields-grouping-header">@grouping</MudText>
+    }
+
+    @foreach (var field in _testCaseFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible && x.FieldDefinition.Grouping == grouping))
+    {
+        <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestCaseFieldChangedAsync" />
+    }
+    @foreach (var field in _testRunFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible && x.FieldDefinition.Grouping == grouping))
+    {
+        <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestRunFieldChangedAsync" />
+    }
+    @foreach (var field in _testCaseRunFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible && x.FieldDefinition.Grouping == grouping))
+    {
+        <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnTestCaseRunFieldChangedAsync" />
+    }
+    @foreach (var field in _requirementFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible && x.FieldDefinition.Grouping == grouping))
+    {
+        <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnRequirementFieldChangedAsync" />
+    }
+    @foreach (var field in _issueFields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible && x.FieldDefinition.Grouping == grouping))
+    {
+        <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="OnIssueFieldChangedAsync" />
+    }
+
+    @foreach (var field in Fields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible && x.FieldDefinition.Grouping == grouping))
+    {
+        <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="async (f) => await FieldChanged.InvokeAsync(f)" />
+    }
 }
 
-
-@foreach (var field in Fields.Where(x => x.FieldDefinition != null && x.FieldDefinition.IsVisible))
-{
-    <FieldEditor ReadOnly="@ReadOnly" AllowMultiSelection="@AllowMultiSelection" Field="@field" FieldChanged="async(f) => await FieldChanged.InvokeAsync(f)" />
-}
 @code {
     [Parameter] public Requirement? Requirement { get; set; }
     [Parameter] public TestCase? TestCase { get; set; }
@@ -52,7 +60,6 @@
     public IReadOnlyList<RequirementField> RequirementFields => _requirementFields;
     public IReadOnlyList<IssueField> IssueFields => _issueFields;
 
-
     private List<TestCaseField> _testCaseFields = [];
     private List<TestCaseRunField> _testCaseRunFields = [];
     private List<TestRunField> _testRunFields = [];
@@ -65,6 +72,22 @@
     private long? _testProjectId;
     private Requirement? _requirement;
     private LocalIssue? _issue;
+
+    public List<string?> _groupings = [];
+
+    private void CalculateGroupings()
+    {
+        HashSet<string?> groupings = [];
+        FieldValue[] fields = [..Fields, .._testCaseFields.Cast<FieldValue>(), .._testCaseRunFields.Cast<FieldValue>(), .._testRunFields.Cast<FieldValue>(), .. _requirementFields.Cast<FieldValue>(), .._issueFields.Cast<FieldValue>()];
+        foreach (FieldValue field in fields)
+        {
+            if(!groupings.Contains(field.FieldDefinition?.Grouping))
+            {
+                groupings.Add(field.FieldDefinition?.Grouping);
+            }
+        }
+        _groupings = groupings.OrderBy(x => x).ToList();
+    }
 
     private async Task LoadAsync()
     {
@@ -148,8 +171,8 @@
             {
                 return a.FieldDefinition!.Name.CompareTo(b.FieldDefinition!.Name);
             });
-
         }
+        CalculateGroupings();
     }
 
     protected override async Task OnInitializedAsync()

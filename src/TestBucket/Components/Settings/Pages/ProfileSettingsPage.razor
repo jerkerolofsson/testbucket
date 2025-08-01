@@ -27,9 +27,15 @@
         }
 
         <Field Row>
-            <FieldHeader>@settingsLoc["language-multilang"]</FieldHeader>
+
+            <FieldHeader Icon="@TbIcons.BoldDuoTone.Language">
+                <div class="tb-fields-name-description-tight">
+                    <div>@settingsLoc["language"]</div>
+                    <FieldDescription>@settingsLoc["language-multilang"]</FieldDescription>
+                </div>
+            </FieldHeader>
             <MudSpacer />
-            <LanguagePicker />
+            <LanguagePicker ShowIcon="false"/>
         </Field>
     </MudStack>
 

@@ -6,9 +6,22 @@
 {
     <MudStack Spacing="0">
         <Field Row="@Row">
-            <MudTooltip Text="@Field.FieldDefinition.Description">
-                <FieldHeader Icon="@Field.FieldDefinition.Icon">@Field.FieldDefinition.Name</FieldHeader>
-            </MudTooltip>
+
+            @if (Field.FieldDefinition.ShowDescription)
+            {
+                <FieldHeader Icon="@Field.FieldDefinition.Icon">
+                    <div class="tb-fields-name-description-tight">
+                        <div>@Field.FieldDefinition.Name</div>
+                        <FieldDescription>@Field.FieldDefinition.Description</FieldDescription>
+                    </div>
+                </FieldHeader>
+            }
+            else
+            {
+                <MudTooltip Text="@Field.FieldDefinition.Description">
+                    <FieldHeader Icon="@Field.FieldDefinition.Icon">@Field.FieldDefinition.Name</FieldHeader>
+                </MudTooltip>
+            }
 
             @if (Row && !Field.FieldDefinition.WriteOnly)
             {
@@ -53,10 +66,6 @@
 
         </Field>
 
-        @if (Field.FieldDefinition.ShowDescription)
-        {
-            <FieldDescription>@Field.FieldDefinition.Description</FieldDescription>
-        }
     </MudStack>
 }
 

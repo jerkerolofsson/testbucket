@@ -12,7 +12,7 @@
 @if (RendererInfo.IsInteractive)
 {
     <MudTooltip Text="@Tooltip">
-        <MudMenu StartIcon="@Icons.Material.Outlined.Language" AriaLabel="@Tooltip" Label="@CultureInfo.CurrentUICulture.NativeName" @attributes="@Attributes">
+        <MudMenu StartIcon="@GetIcon()" AriaLabel="@Tooltip" Label="@CultureInfo.CurrentUICulture.NativeName" @attributes="@Attributes">
             @foreach (var locale in _locales)
             {
                 <MudMenuItem OnClick="() => SetLocaleAsync(locale.Name)">@locale.NativeName</MudMenuItem>
@@ -20,35 +20,20 @@
         </MudMenu>
     </MudTooltip>
 }
-@* else
-{
-    <EditForm Model="@Model" OnValidSubmit="SetLanguage" FormName="locale">
-        <InputRadioGroup @bind-Value="Model.Locale" T="string" Name="Locale">
-            <label><InputRadio Value="@("en")" /> English</label>
-            <label><InputRadio Value="@("sv-SE")" /> Svenska</label>
-            <label><InputRadio Value="@("ja-JP")" /> 日本語</label>
-            <label><InputRadio Value="@("zh-Hans")" /> 中文 (Simplified Chinese)</label>
-        </InputRadioGroup>
-
-         <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Secondary">Apply</MudButton>
-    </EditForm>
-} *@
 
 @code {
     private IReadOnlyList<CultureInfo> _locales = [];
 
+    private const string _defaultIcon = "<svg viewBox=\"0 0 512 512\" xmlns=\"http://www.w3.org/2000/svg\">\r\n<line  x1=\"48\" y1=\"112\" x2=\"336\" y2=\"112\" style=\"fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px\"/>\r\n<line x1=\"192\" y1=\"64\" x2=\"192\" y2=\"112\" style=\"fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px\"/>\r\n<path d=\"M281.3,112S257,206,199,277,80,384,80,384\" style=\"fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px\"/>\r\n<path d=\"M256,336s-35-27-72-75-56-85-56-85\" style=\"fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px\"/>\r\n<polyline opacity=\"0.5\" points=\"272 448 368 224 464 448 437 384 301 384\" style=\"fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px\"/>\r\n</svg>";
+
+    [Parameter] public string? Icon { get; set; } = _defaultIcon;
+    [Parameter] public bool ShowIcon { get; set; } = true;
+
+    private string? GetIcon() => ShowIcon ? Icon : null;
+
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
 
     private string Tooltip => "Language / Idioma / Langue / 语言 / 言語 / لغة / 언어";
-
-    // [CascadingParameter] public HttpContext? HttpContext { get; set; }
-
-    // public class InputModel
-    // {
-    //     public string? Locale { get; set; }
-    // }
-
-    // [SupplyParameterFromForm(FormName = "locale")] public InputModel Model { get; set; } = new();
 
     protected override void OnInitialized()
     {

@@ -1010,4 +1010,10 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="archive-test-run-description" xml:space="preserve">
     <value />
   </data>
+  <data name="grid" xml:space="preserve">
+    <value>Rost</value>
+  </data>
+  <data name="list" xml:space="preserve">
+    <value />
+  </data>
 </root>

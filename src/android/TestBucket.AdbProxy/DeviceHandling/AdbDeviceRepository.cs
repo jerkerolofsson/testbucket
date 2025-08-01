@@ -15,6 +15,7 @@ using TestBucket.AdbProxy.Inform;
 using TestBucket.AdbProxy.Models;
 using TestBucket.AdbProxy.Proxy;
 using TestBucket.ResourceServer.Contracts;
+using TestBucket.ResourceServer.Utilities;
 
 namespace TestBucket.AdbProxy.DeviceHandling;
 
@@ -65,11 +66,13 @@ public class AdbDeviceRepository : IAdbDeviceRepository
         devices = devices.Where(x => x.DeviceId.Contains(':') == false).ToArray();
 
         var deviceDict = new Dictionary<string, AdbDevice>();
+        var hostname = PublicHostnameDetector.GetPublicHostname();
         foreach (var device in devices)
         {
             deviceDict[device.DeviceId] = device;
+            device.Hostname = hostname ?? "localhost";
 
-            if(_servers.TryGetValue(device.DeviceId, out var proxyServer))
+            if (_servers.TryGetValue(device.DeviceId, out var proxyServer))
             {
                 if(_appiumServers.TryGetValue(device.DeviceId, out var appiumServer))
                 {
@@ -194,7 +197,16 @@ public class AdbDeviceRepository : IAdbDeviceRepository
         bool changed = false;
         var getpropResponse = await new GetProp(_adbProxyOptions).RunAsync(device.DeviceId, cancellationToken);
         var properties = GetPropParser.Parse(getpropResponse);
-        if (properties.TryGetValue("ro.product.model", out var model))
+
+        if(properties.TryGetValue("ro.semc.product.name", out var xperiaModel))
+        {
+            if (device.ModelInfo.Name != xperiaModel)
+            {
+                changed = true;
+                device.ModelInfo.Name = xperiaModel;
+            }
+        }
+        else if (properties.TryGetValue("ro.product.model", out var model))
         {
             if (device.ModelInfo.Name != model)
             {
@@ -202,6 +214,23 @@ public class AdbDeviceRepository : IAdbDeviceRepository
                 device.ModelInfo.Name = model;
             }
         }
+
+        if(properties.TryGetValue("ro.product.cpu.abi", out var abi))
+        {
+            // arm64-v8a
+            device.CpuAbi = abi;
+        }
+        if(properties.TryGetValue("dalvik.vm.isa.arm64.variant", out var arm64Variant))
+        {
+            device.CpuName = arm64Variant;
+        }
+        if(properties.TryGetValue("ro.build.type", out var buildVariant))
+        {
+            device.SoftwareVariant = buildVariant;
+        }
+
+        // PLMN
+        // gsm.sim.operator.numeric
 
         if (properties.TryGetValue("ro.soc.manufacturer", out var socManufacturer))
         {

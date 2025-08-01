@@ -1015,4 +1015,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="archive-test-run-description" xml:space="preserve">
     <value>Archives the test run and hides it from certain user interface views</value>
   </data>
+  <data name="grid" xml:space="preserve">
+    <value>Grid</value>
+  </data>
+  <data name="list" xml:space="preserve">
+    <value>List</value>
+  </data>
 </root>

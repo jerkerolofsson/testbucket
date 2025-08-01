@@ -307,7 +307,7 @@
     <value>Observera att antal tokens utvärderas när AI-testaren börjar att arbeta. Antalet tokens kan således överstiga detta värde och denna gräns används bara för att förhindra att nya körningar startas.</value>
   </data>
   <data name="mcp-tool-name" xml:space="preserve">
-    <value />
+    <value>MCP-verktyg</value>
   </data>
   <data name="testing" xml:space="preserve">
     <value>Testning</value>
@@ -322,7 +322,7 @@
     <value>Tenant</value>
   </data>
   <data name="ollama-context-length-message" xml:space="preserve">
-    <value />
+    <value>När Ollama används var noga med att välja en lämplig modell och att anpassa kontextlängden genom att sätta miljövariabeln OLLAMA_CONTEXT_LENGTH för Ollama beroende på vilken modell som används.</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
     <value>Kostnad för 1M tokens</value>

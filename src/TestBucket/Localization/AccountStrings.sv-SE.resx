@@ -181,7 +181,7 @@
     <value>Kom ihåg mig</value>
   </data>
   <data name="remember-this-machine" xml:space="preserve">
-    <value />
+    <value>Kom ihåg denna enhet</value>
   </data>
   <data name="resend-email-confirmation" xml:space="preserve">
     <value>Skicka epost bekräftelse igen</value>

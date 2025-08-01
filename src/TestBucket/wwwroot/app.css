@@ -898,10 +898,17 @@ table.tb-environment-variables {
 
 .tb-field-description {
     font-size: 9pt; 
-    margin-top: 8px; 
     color: #666;
     text-decoration: none;
     text-align: end;
+}
+
+.tb-fields-grouping-header {
+    margin-top: 12px;
+}
+
+.tb-fields-name-description-tight {
+
 }
 
 table {

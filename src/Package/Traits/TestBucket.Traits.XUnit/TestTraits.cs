@@ -1,7 +1,7 @@
 ﻿namespace TestBucket.Traits.Xunit;
 
 /// <summary>
-/// ReliaSecuritybility
+/// Security
 /// Defines an attribute that will add create a trait related with ISO/IEC 25010 quality characteristic
 /// </summary>
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]

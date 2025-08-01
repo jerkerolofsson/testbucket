@@ -4,16 +4,21 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+
+        <EnableMSTestRunner>true</EnableMSTestRunner>
+        <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+        <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+
     </PropertyGroup>
 
     <PropertyGroup>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <AssemblyVersion>1.0.0</AssemblyVersion>
-        <Description>TUnit extension with standardized traits and reporting enrichments</Description>
-        <Title>TestBucket.Traits.TUnit</Title>
+        <Description>MSUnit v4 extension with standardized attributes for metadata definition</Description>
+        <Title>TestBucket.Traits.MSTest</Title>
         <Authors>Jerker Olofsson</Authors>
         <Company>Jerker Olofsson</Company>
-        <PackageId>TestBucket.Traits.TUnit</PackageId>
+        <PackageId>TestBucket.Traits.MSTest</PackageId>
         <Version>1.0.0</Version>
         <WebPage>https://github.com/jerkerolofsson/testbucket/blob/main/doc/traits.md</WebPage>
     </PropertyGroup>
@@ -22,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="TUnit.Core" Version="0.25.21" />
+        <PackageReference Include="MSTest.TestFramework" Version="4.0.0-preview.25372.6" />
     </ItemGroup>
 
     <ItemGroup>

@@ -987,4 +987,10 @@
   <data name="archive-test-run-description" xml:space="preserve">
     <value>Gömmer testkörningen i vissa användagränssnitt</value>
   </data>
+  <data name="grid" xml:space="preserve">
+    <value>Rutnät</value>
+  </data>
+  <data name="list" xml:space="preserve">
+    <value>Lista</value>
+  </data>
 </root>

@@ -15,7 +15,7 @@ namespace TestBucket.Domain.UnitTests.Labels;
 [Component("Labels")]
 public class LabelManagerTests
 {
-    private readonly ILabelRepository _mockRepository;
+    private readonly FakeLabelRepository _fakeRepository;
     private readonly TimeProvider _mockTimeProvider;
     private readonly LabelManager _labelManager;
 
@@ -27,9 +27,9 @@ public class LabelManagerTests
     /// </summary>
     public LabelManagerTests()
     {
-        _mockRepository = Substitute.For<ILabelRepository>();
+        _fakeRepository = new FakeLabelRepository();
         _mockTimeProvider = Substitute.For<TimeProvider>();
-        _labelManager = new LabelManager(_mockRepository, _mockTimeProvider);
+        _labelManager = new LabelManager(_fakeRepository, _mockTimeProvider);
     }
 
     /// <summary>
@@ -54,7 +54,7 @@ public class LabelManagerTests
         await _labelManager.AddLabelAsync(principal, label);
 
         // Assert
-        await _mockRepository.Received(1).AddLabelAsync(label);
+        await _fakeRepository.Received(1).AddLabelAsync(label);
         Assert.Equal(label.Created, time);
         Assert.Equal(label.Created, label.Modified);
         Assert.Equal(TenantId, label.TenantId);
@@ -75,8 +75,11 @@ public class LabelManagerTests
             builder.AddAllPermissions();
         });
         var projectId = 1L;
-        var labels = new List<Label> { new Label { Title = "Label1" }, new Label { Title = "Label2" } };
-        _mockRepository.GetLabelsAsync(Arg.Any<IEnumerable<FilterSpecification<Label>>>()).Returns(labels);
+        var labels = new List<Label> { new Label { Title = "Label1", TenantId = TenantId }, new Label { Title = "Label2", TenantId = TenantId } };
+        foreach (var label in labels)
+        {
+            await _fakeRepository.AddLabelAsync(label);
+        }
 
         // Act
         var result = await _labelManager.GetLabelsAsync(principal, projectId);
@@ -102,8 +105,8 @@ public class LabelManagerTests
         });
         var projectId = 1L;
         var labelName = "Test Label";
-        var label = new Label { Title = labelName };
-        _mockRepository.GetLabelsAsync(Arg.Any<IEnumerable<FilterSpecification<Label>>>()).Returns(new List<Label> { label });
+        var label = new Label { Title = labelName, TenantId = TenantId };
+        await _fakeRepository.AddLabelAsync(label);
 
         // Act
         var result = await _labelManager.GetLabelByNameAsync(principal, projectId, labelName);
@@ -154,7 +157,7 @@ public class LabelManagerTests
         await _labelManager.DeleteAsync(principal, label);
 
         // Assert
-        await _mockRepository.Received(1).DeleteLabelByIdAsync(label.Id);
+        await _fakeRepository.Received(1).DeleteLabelByIdAsync(label.Id);
     }
 
 
@@ -181,7 +184,7 @@ public class LabelManagerTests
         await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _labelManager.AddLabelAsync(principal, label));
 
         // Assert
-        await _mockRepository.Received(0).AddLabelAsync(Arg.Any<Label>());
+        await _fakeRepository.Received(0).AddLabelAsync(Arg.Any<Label>());
     }
 
     /// <summary>
@@ -207,7 +210,7 @@ public class LabelManagerTests
         await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _labelManager.UpdateLabelAsync(principal, label));
 
         // Assert
-        await _mockRepository.Received(0).UpdateLabelAsync(Arg.Any<Label>());
+        await _fakeRepository.Received(0).UpdateLabelAsync(Arg.Any<Label>());
     }
 
     /// <summary>
@@ -231,7 +234,7 @@ public class LabelManagerTests
         await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _labelManager.UpdateLabelAsync(principal, label));
 
         // Assert
-        await _mockRepository.Received(0).UpdateLabelAsync(Arg.Any<Label>());
+        await _fakeRepository.Received(0).UpdateLabelAsync(Arg.Any<Label>());
     }
 
     /// <summary>
@@ -255,7 +258,7 @@ public class LabelManagerTests
         await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _labelManager.DeleteAsync(principal, label));
 
         // Assert
-        await _mockRepository.Received(0).DeleteLabelByIdAsync(label.Id);
+        await _fakeRepository.Received(0).DeleteLabelByIdAsync(label.Id);
     }
 
     /// <summary>
@@ -280,7 +283,36 @@ public class LabelManagerTests
         await _labelManager.UpdateLabelAsync(principal, label);
 
         // Assert
-        await _mockRepository.Received(1).UpdateLabelAsync(label);
+        await _fakeRepository.Received(1).UpdateLabelAsync(label);
         Assert.Equal(label.Modified, _mockTimeProvider.GetUtcNow());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="LabelManager.SearchLabelsAsync"/> searches labels successfully.
+    /// </summary>
+    [Fact]
+    [FunctionalTest]
+    public async Task SearchLabelsAsync_WithValidText_ReturnsMatchingLabels()
+    {
+        // Arrange
+        var principal = Impersonation.Impersonate(builder =>
+        {
+            builder.TenantId = TenantId;
+            builder.UserName = builder.Email = UserName;
+            builder.AddAllPermissions();
+        });
+        var projectId = 1L;
+        var label1 = new Label { Title = "Test Label 1", TenantId = TenantId };
+        var label2 = new Label { Title = "Another Label", TenantId = TenantId };
+        await _fakeRepository.AddLabelAsync(label1);
+        await _fakeRepository.AddLabelAsync(label2);
+
+        // Act
+        var result = await _labelManager.SearchLabelsAsync(principal, projectId, "Test", 0, 10);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Single(result);
+        Assert.Equal("Test Label 1", result.First().Title);
     }
 }

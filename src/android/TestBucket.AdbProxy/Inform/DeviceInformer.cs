@@ -182,11 +182,11 @@ internal class DeviceInformer(HttpClient httpClient, IServer Server) : IDeviceIn
             }
             if (device.AppiumUrl is not null)
             {
-                resource.Variables["appium-url"] = device.AppiumUrl;
+                resource.Variables["appium.url"] = device.AppiumUrl;
             }
             if (device.AppiumPort > 0)
             {
-                resource.Variables["appium-port"] = device.AppiumPort.ToString();
+                resource.Variables["appium.port"] = device.AppiumPort.ToString();
             }
 
             resource.Variables[TargetTraitNames.SutOperatingSystemName] = "Android";

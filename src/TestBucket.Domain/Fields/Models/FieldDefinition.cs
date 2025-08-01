@@ -58,6 +58,12 @@ public class FieldDefinition : ProjectEntity
     public bool Inherit { get; set; }
 
     /// <summary>
+    /// Field definitions with the same value will be grouped when displayed in UI under
+    /// this category
+    /// </summary>
+    public string? Grouping { get; set; }
+
+    /// <summary>
     /// Options that can be selected in the UI
     /// </summary>
     [Column(TypeName = "jsonb")]

@@ -147,7 +147,14 @@
                                 </MudSelect>
                             </MudStack>
                         </Field>
-
+                        
+                        <Field>
+                            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
+                                <FieldHeader>@fieldLoc["grouping"]</FieldHeader>
+                                <MudSpacer />
+                                <MudTextField Value="@FieldDefinition.Grouping" ValueChanged="OnGroupingChanged" T="string" Variant="Variant.Outlined" />
+                            </MudStack>
+                        </Field>
                         <Field>
                             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%">
                                 <FieldHeader>@fieldLoc["visible"]</FieldHeader>
@@ -337,6 +344,14 @@
         if (FieldDefinition is not null)
         {
             FieldDefinition.UseClassifier = useClassifier;
+            await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
+        }
+    }
+    private async Task OnGroupingChanged(string grouping)
+    {
+        if (FieldDefinition is not null)
+        {
+            FieldDefinition.Grouping = grouping;
             await FieldDefinitionChanged.InvokeAsync(FieldDefinition);
         }
     }

@@ -61,5 +61,20 @@ public record class AdbDevice
     /// ro.product.build.id
     /// </summary>
     public string? SoftwareVersion { get; set; }
-    public string SocModel { get; internal set; }
+    public string? SocModel { get; internal set; }
+
+    /// <summary>
+    /// CPU architecture
+    /// </summary>
+    public string? CpuAbi { get; internal set; }
+
+    /// <summary>
+    /// CPU name/id
+    /// </summary>
+    public string? CpuName { get; internal set; }
+
+    /// <summary>
+    /// Build variant
+    /// </summary>
+    public string? SoftwareVariant { get; internal set; }
 }

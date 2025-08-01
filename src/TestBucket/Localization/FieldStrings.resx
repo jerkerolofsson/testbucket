@@ -221,6 +221,9 @@
     <value>Good first issue</value>
     <comment>Label type</comment>
   </data>
+  <data name="grouping" xml:space="preserve">
+    <value>Grouping</value>
+  </data>
   <data name="help wanted" xml:space="preserve">
     <value>Help wanted</value>
     <comment>Label type</comment>

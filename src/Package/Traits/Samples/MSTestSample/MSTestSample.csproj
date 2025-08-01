@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- Enable Microsoft.Testing.Platform, this is an opt-in feature -->
+        <EnableMSTestRunner>true</EnableMSTestRunner>
+        <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+        <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+
+        <OutputType>Exe</OutputType>
+
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+   
+        <PackageReference Include="MSTest" Version="4.0.0-preview.25372.6" />
+
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\TestBucket.Traits.MSTest\TestBucket.Traits.MSTest.csproj" />
+    </ItemGroup>
+
+</Project>

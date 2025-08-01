@@ -106,6 +106,7 @@ public class UnconnectedPipelineIndexer : BackgroundService
                 var now = DateTimeOffset.UtcNow;
                 DateOnly until = new DateOnly(now.Year, now.Month, now.Day);
                 var from = until.AddDays(-3);
+                _logger.LogWarning("Getting pipelines for {ExternalSystemName}..", config.Name);
                 var pipelines = await runner.GetPipelineRunsAsync(config, from, until, cancellationToken);
 
                 // Add missing pipelines

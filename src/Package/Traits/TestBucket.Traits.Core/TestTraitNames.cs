@@ -1,7 +1,7 @@
 ﻿namespace TestBucket.Traits.Core;
 
 /// <summary>
-/// Traits that relate to the test
+/// Traits that relate to the test, but not specific to the System-Under-Test (SUT)
 /// </summary>
 public class TestTraitNames
 {
@@ -62,19 +62,14 @@ public class TestTraitNames
     public const string MachineName = nameof(MachineName);
 
     /// <summary>
-    /// Operating System
+    /// Operating System for the test runner
     /// </summary>
-    public const string OperatingSystemPlatform = nameof(OperatingSystemPlatform);
+    public const string RunnerOperatingSystemName = nameof(RunnerOperatingSystemName);
 
     /// <summary>
-    /// Operating System Release
+    /// Operating System Version for the test runner
     /// </summary>
-    public const string OperatingSystemRelease = nameof(OperatingSystemRelease);
-
-    /// <summary>
-    /// Operating System Version
-    /// </summary>
-    public const string OperatingSystemVersion = nameof(OperatingSystemVersion);
+    public const string RunnerOperatingSystemVersion = nameof(RunnerOperatingSystemVersion);
 
     /// <summary>
     /// Quality Characteristic

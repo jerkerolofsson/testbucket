@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using TestBucket.Contracts.Fields;
 using TestBucket.Domain.AI.Embeddings;
 using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.Features.Traceability.Models;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Projects;
@@ -22,8 +23,7 @@ using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.Testing.TestCases.Search;
 using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Domain.Testing.TestSuites;
-using TestBucket.Domain.Traceability;
-using TestBucket.Domain.Traceability.Models;
+using TestBucket.Domain.Features.Traceability;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Testing.TestCases

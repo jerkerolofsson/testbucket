@@ -1,24 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OpenTelemetry.Trace;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Data.Migrations;
-using TestBucket.Domain.Code.Models;
-using TestBucket.Domain.Fields;
-using TestBucket.Domain.IntegrationTests.Fixtures;
-using TestBucket.Domain.Issues.Models;
-using TestBucket.Domain.Requirements;
-using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.Features.Traceability.Models;
 using TestBucket.Domain.Testing.TestCases;
-using TestBucket.Domain.Testing.TestSuites;
-using TestBucket.Domain.Traceability.Models;
-using TestBucket.Traits.Xunit;
-using Xunit;
-using static Xunit.Sdk.TestOptionsNames;
 
 namespace TestBucket.Domain.IntegrationTests.Features.Traceability
 {

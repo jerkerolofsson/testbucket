@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
 
-namespace TestBucket.Domain.Traceability.Models;
+namespace TestBucket.Domain.Features.Traceability.Models;
 public class TraceabilityNode
 {
     public Requirement? Requirement { get; init; }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Mediator;
 
+using TestBucket.Domain.Features.Traceability.Models;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.Specifications;
@@ -13,9 +14,8 @@ using TestBucket.Domain.Requirements.Specifications.Links;
 using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Traceability.Models;
 
-namespace TestBucket.Domain.Traceability;
+namespace TestBucket.Domain.Features.Traceability;
 public record class DiscoverRequirementRelationshipsRequest(ClaimsPrincipal Principal, Requirement Requirement, int Depth) : IRequest<TraceabilityNode>;
 public record class DiscoverTestCaseRelationshipsRequest(ClaimsPrincipal Principal, TestCase TestCase, int Depth) : IRequest<TraceabilityNode>;
 

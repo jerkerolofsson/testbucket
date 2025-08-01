@@ -5,6 +5,7 @@ using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.TestResources.Events;
 using TestBucket.Domain.TestResources.Models;
 using TestBucket.Domain.TestResources.Specifications;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.TestResources;
 internal class TestResourceManager : ITestResourceManager
@@ -116,8 +117,8 @@ internal class TestResourceManager : ITestResourceManager
                         Variables = resource.Variables,
                     };
                     testResource.LastSeen = _timeProvider.GetUtcNow();
-                    testResource.Variables["model"] = resource.Model ?? "";
-                    testResource.Variables["manufacturer"] = resource.Manufacturer ?? "";
+                    testResource.Variables[TargetTraitNames.SutModel] = resource.Model ?? "";
+                    testResource.Variables[TargetTraitNames.SutManufacturer] = resource.Manufacturer ?? "";
                     await AddAsync(principal, testResource);
                 }
                 else
@@ -129,8 +130,8 @@ internal class TestResourceManager : ITestResourceManager
                     existingResource.Variables = resource.Variables;
                     existingResource.LastSeen = _timeProvider.GetUtcNow();
 
-                    existingResource.Variables["model"] = resource.Model ?? "";
-                    existingResource.Variables["manufacturer"] = resource.Manufacturer ?? "";
+                    existingResource.Variables[TargetTraitNames.SutModel] = resource.Model ?? "";
+                    existingResource.Variables[TargetTraitNames.SutManufacturer] = resource.Manufacturer ?? "";
                     await UpdateAsync(principal, existingResource);
                 }
             }

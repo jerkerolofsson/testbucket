@@ -9,13 +9,13 @@ using NGitLab.Models;
 using TestBucket.Components.Requirements.Dialogs;
 using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Contracts.Requirements.Types;
+using TestBucket.Domain.Features.Traceability.Models;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Fields;
 using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Traceability.Models;
 using TestBucket.Localization;
 using TestBucket.Traits.Core;
 

@@ -108,7 +108,7 @@ public class EnrichedTestAttributeTests
         var attribute = new EnrichedTestAttribute(OperatingSystemCreator.CreateWindows());
         attribute.After(typeof(EnrichedTestAttribute).GetMethod(nameof(EnrichedTest_HasMachineNameAttachment))!, test);
 
-        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.OperatingSystemPlatform).FirstOrDefault();
+        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.RunnerOperatingSystemName).FirstOrDefault();
         Assert.NotNull(attachment.Key);
         Assert.Equal("Windows", attachment.Value.AsString());
     }
@@ -124,7 +124,7 @@ public class EnrichedTestAttributeTests
         var attribute = new EnrichedTestAttribute(OperatingSystemCreator.CreateLinux());
         attribute.After(typeof(EnrichedTestAttribute).GetMethod(nameof(EnrichedTest_HasMachineNameAttachment))!, test);
 
-        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.OperatingSystemPlatform).FirstOrDefault();
+        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.RunnerOperatingSystemName).FirstOrDefault();
         Assert.NotNull(attachment.Key);
         Assert.Equal("Linux", attachment.Value.AsString());
     }
@@ -140,7 +140,7 @@ public class EnrichedTestAttributeTests
         var attribute = new EnrichedTestAttribute(OperatingSystemCreator.CreateAndroid());
         attribute.After(typeof(EnrichedTestAttribute).GetMethod(nameof(EnrichedTest_HasMachineNameAttachment))!, test);
 
-        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.OperatingSystemPlatform).FirstOrDefault();
+        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.RunnerOperatingSystemName).FirstOrDefault();
         Assert.NotNull(attachment.Key);
         Assert.Equal("Android", attachment.Value.AsString());
     }
@@ -156,7 +156,7 @@ public class EnrichedTestAttributeTests
         var attribute = new EnrichedTestAttribute(OperatingSystemCreator.CreateMacOS());
         attribute.After(typeof(EnrichedTestAttribute).GetMethod(nameof(EnrichedTest_HasMachineNameAttachment))!, test);
 
-        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.OperatingSystemPlatform).FirstOrDefault();
+        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.RunnerOperatingSystemName).FirstOrDefault();
         Assert.NotNull(attachment.Key);
         Assert.Equal("MacOS", attachment.Value.AsString());
     }
@@ -172,7 +172,7 @@ public class EnrichedTestAttributeTests
         var attribute = new EnrichedTestAttribute(OperatingSystemCreator.CreateBrowser());
         attribute.After(typeof(EnrichedTestAttribute).GetMethod(nameof(EnrichedTest_HasMachineNameAttachment))!, test);
 
-        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.OperatingSystemPlatform).FirstOrDefault();
+        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.RunnerOperatingSystemName).FirstOrDefault();
         Assert.NotNull(attachment.Key);
         Assert.Equal("Browser", attachment.Value.AsString());
     }
@@ -188,7 +188,7 @@ public class EnrichedTestAttributeTests
         var attribute = new EnrichedTestAttribute(OperatingSystemCreator.CreateIOS());
         attribute.After(typeof(EnrichedTestAttribute).GetMethod(nameof(EnrichedTest_HasMachineNameAttachment))!, test);
 
-        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.OperatingSystemPlatform).FirstOrDefault();
+        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.RunnerOperatingSystemName).FirstOrDefault();
         Assert.NotNull(attachment.Key);
         Assert.Equal("iOS", attachment.Value.AsString());
     }
@@ -204,7 +204,7 @@ public class EnrichedTestAttributeTests
         var attribute = new EnrichedTestAttribute(OperatingSystemCreator.CreateMacCatalyst());
         attribute.After(typeof(EnrichedTestAttribute).GetMethod(nameof(EnrichedTest_HasMachineNameAttachment))!, test);
 
-        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.OperatingSystemPlatform).FirstOrDefault();
+        var attachment = TestContext.Current.Attachments!.Where(x => x.Key == TestTraitNames.RunnerOperatingSystemName).FirstOrDefault();
         Assert.NotNull(attachment.Key);
         Assert.Equal("MacCatalyst", attachment.Value.AsString());
     }

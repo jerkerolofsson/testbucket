@@ -3,7 +3,7 @@
 using TestBucket.Components.Requirements;
 using TestBucket.Components.Requirements.Services;
 using TestBucket.Components.Tests.Services;
-using TestBucket.Domain.Traceability.Models;
+using TestBucket.Domain.Features.Traceability.Models;
 
 namespace TestBucket.Components.Features.Traceability.Graph;
 

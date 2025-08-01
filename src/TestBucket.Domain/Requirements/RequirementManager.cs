@@ -6,6 +6,7 @@ using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Requirements;
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain.AI.Embeddings;
+using TestBucket.Domain.Features.Traceability.Models;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Handlers;
 using TestBucket.Domain.Progress;
@@ -19,8 +20,7 @@ using TestBucket.Domain.Requirements.Specifications.Links;
 using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Traceability;
-using TestBucket.Domain.Traceability.Models;
+using TestBucket.Domain.Features.Traceability;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Requirements

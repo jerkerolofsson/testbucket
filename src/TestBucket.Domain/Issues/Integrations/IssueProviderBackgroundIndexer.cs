@@ -54,7 +54,7 @@ public class IssueProviderBackgroundIndexer : BackgroundService
         }
     }
 
-    private static async Task ProcessTenantAsync(IServiceScope scope, Tenant tenant, CancellationToken cancellationToken)
+    private async Task ProcessTenantAsync(IServiceScope scope, Tenant tenant, CancellationToken cancellationToken)
     {
         var principal = Impersonation.Impersonate(tenant.Id);
 
@@ -66,7 +66,7 @@ public class IssueProviderBackgroundIndexer : BackgroundService
         }
     }
 
-    private static async Task ProcessProjectAsync(ClaimsPrincipal principal, IServiceScope scope, TestProject project, CancellationToken cancellationToken)
+    private async Task ProcessProjectAsync(ClaimsPrincipal principal, IServiceScope scope, TestProject project, CancellationToken cancellationToken)
     {
         if (project.ExternalSystems is not null)
         {
@@ -78,7 +78,14 @@ public class IssueProviderBackgroundIndexer : BackgroundService
                 var integration = integrations.Where(x => x.SystemName == externalSystem.Name).FirstOrDefault();
                 if (integration is not null)
                 {
-                    await IndexIssuesAsync(principal, scope, project, integration, externalSystem, cancellationToken);
+                    try
+                    {
+                        await IndexIssuesAsync(principal, scope, project, integration, externalSystem, cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error processing {ExternalSystemName}", externalSystem.Name);
+                    }
                 }
             }
         }

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
 
@@ -19,7 +14,6 @@ namespace TestBucket.Github;
 internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipelineRunner
 {
     public string SystemName => ExtensionConstants.SystemName;
-
     private readonly ILogger<GithubWorkflowRunner> _logger;
 
     public GithubWorkflowRunner(ILogger<GithubWorkflowRunner> logger)
@@ -179,6 +173,7 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
         {
             Created = created
         };
+        _logger.LogInformation("Getting Github workflow runs for {GithubOwner}/{GithubProject}", ownerProject.Owner, ownerProject.Project);
         var response = await client.Actions.Workflows.Runs.List(ownerProject.Owner, ownerProject.Project, request);
         var result = new List<PipelineDto>();
         foreach (var run in response.WorkflowRuns)

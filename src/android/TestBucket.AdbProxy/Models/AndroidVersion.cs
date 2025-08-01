@@ -13,6 +13,9 @@ public class AndroidVersion
     [JsonPropertyName("code_name")]
     public string? CodeName { get; set; }
 
+    [JsonPropertyName("version_number")]
+    public string? VersionNumber { get; set; }
+
     [JsonPropertyName("version_name")]
     public string? VersionName { get; set; }
 

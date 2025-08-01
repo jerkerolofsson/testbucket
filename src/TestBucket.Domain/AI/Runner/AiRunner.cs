@@ -7,9 +7,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Testing.States;
+using TestBucket.Contracts.TestResources;
 using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.AI.Agent.Orchestration;
+using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Metrics;
 using TestBucket.Domain.Metrics.Models;
@@ -18,6 +21,7 @@ using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Tenants;
 using TestBucket.Domain.Testing.Compiler;
+using TestBucket.Domain.Testing.Execution;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.TestResources.Mapping;
@@ -214,7 +218,7 @@ internal class AiRunner : BackgroundService
             // Log the test duration
             testCaseRun.Duration = (int)Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
 
-            await OnTestCaseRunResultAsync(scope, testCaseRun, responseMarkdown, result);
+            await OnTestCaseRunResultAsync(principal, scope, testCaseRun, responseMarkdown, result, testExecutionContext);
         }
         catch (Exception ex)
         {
@@ -299,16 +303,49 @@ internal class AiRunner : BackgroundService
         await testCaseRepository.UpdateTestCaseRunAsync(testCaseRun);
     }
 
-    private static async Task OnTestCaseRunResultAsync(IServiceScope scope, TestCaseRun testCaseRun, string message, TestResult result)
+    private static async Task OnTestCaseRunResultAsync(ClaimsPrincipal principal, IServiceScope scope, TestCaseRun testCaseRun, string message, TestResult result, TestExecutionContext testExecutionContext)
     {
         var testCaseRepository = scope.ServiceProvider.GetRequiredService<ITestCaseRepository>();
+        var fieldDefinitionManager = scope.ServiceProvider.GetRequiredService<IFieldDefinitionManager>();
+        var fieldManager = scope.ServiceProvider.GetRequiredService<IFieldManager>();
         testCaseRun.Message = message;
         testCaseRun.Result = result;
+
+        await CopyFieldsFromTestResourcesToTestCaseRunAsync(principal, fieldManager, fieldDefinitionManager, testCaseRun, testExecutionContext.Resources);
 
         // Set completed state
         await SetStateAsync(scope, testCaseRun, MappedTestState.Completed);
         await testCaseRepository.UpdateTestCaseRunAsync(testCaseRun);
     }
+
+    /// <summary>
+    /// Extracts fields from the resource and assigns the to the test case run
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="fieldDefinitionManager"></param>
+    /// <param name="testCaseRun"></param>
+    /// <param name="resources"></param>
+    /// <returns></returns>
+    private static async Task CopyFieldsFromTestResourcesToTestCaseRunAsync(
+        ClaimsPrincipal principal,
+        IFieldManager fieldManager,
+        IFieldDefinitionManager fieldDefinitionManager, 
+        TestCaseRun testCaseRun, 
+        List<TestResourceDto> resources)
+    {
+        if (resources is null || resources.Count == 0)
+        {
+            return;
+        }
+        var fields = await fieldDefinitionManager.GetDefinitionsAsync(principal, testCaseRun.TestProjectId, FieldTarget.TestCaseRun);
+
+        List<TestCaseRunField> mappedFields = TestResourceFieldMapper.MapResourcesToFields(fields, testCaseRun, resources);
+        foreach(var field in mappedFields)
+        {
+            await fieldManager.UpsertTestCaseRunFieldAsync(principal, field);
+        }
+    }
+
     private static async Task OnTestCaseRunFailedAsync(IServiceScope scope, TestCaseRun testCaseRun, string message)
     {
         var testCaseRepository = scope.ServiceProvider.GetRequiredService<ITestCaseRepository>();

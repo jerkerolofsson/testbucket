@@ -1,20 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Code.Models;
-using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Requirements;
-using TestBucket.Traits.Xunit;
-using Xunit;
-using TestBucket.Domain.IntegrationTests.Fixtures;
-using Microsoft.Extensions.DependencyInjection;
-using TestBucket.Domain.Fields;
-using TestBucket.Domain.Testing.TestSuites;
+﻿using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.Features.Traceability.Models;
 using TestBucket.Domain.Testing.TestCases;
-using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Traceability.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Features.Traceability
 {

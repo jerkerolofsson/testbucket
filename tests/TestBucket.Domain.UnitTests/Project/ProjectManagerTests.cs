@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Claims;
-using TestBucket.Domain.Projects;
-using TestBucket.Domain.Projects.Models;
-using Xunit;
-using TestBucket.Domain.Identity;
-using Microsoft.Extensions.Logging.Abstractions;
-using Mediator;
+﻿using Mediator;
+
 using Microsoft.Extensions.Caching.Memory;
-using TestBucket.Domain.Identity.Permissions;
-using TestBucket.Domain.Projects.Events;
+using Microsoft.Extensions.Logging.Abstractions;
+
 using NSubstitute;
+
+using TestBucket.Domain.Identity;
+using TestBucket.Domain.Identity.Permissions;
+using TestBucket.Domain.Projects;
+using TestBucket.Domain.Projects.Events;
+using TestBucket.Domain.Projects.Models;
 
 namespace TestBucket.Domain.UnitTests.Project;
 
@@ -289,5 +285,60 @@ public class ProjectManagerTests
 
         // Assert
         await mediator.Received(1).Publish(Arg.Is<ProjectUpdated>(e => e.Project == project), Arg.Any<CancellationToken>());
+    }
+
+    /// <summary>
+    /// Tests that <see cref="ProjectManager.BrowseTestProjectsAsync"/> retrieves a paginated list of projects successfully.
+    /// </summary>
+    [Fact]
+    public async Task BrowseTestProjectsAsync_ShouldReturnPagedProjects()
+    {
+        // Arrange
+        var mediator = NSubstitute.Substitute.For<IMediator>();
+        var memoryCache = NSubstitute.Substitute.For<IMemoryCache>();
+        var fakeRepository = new FakeProjectRepository();
+        var projectManager = new ProjectManager(fakeRepository, memoryCache, mediator, NullLogger<ProjectManager>.Instance);
+
+        var principal = Impersonation.Impersonate(TenantId);
+        var project1 = new TestProject { Name = "Project 1", TenantId = TenantId, Slug = "project-1", ShortName = "P1" };
+        var project2 = new TestProject { Name = "Project 2", TenantId = TenantId, Slug = "project-2", ShortName = "P2" };
+
+        await fakeRepository.AddAsync(project1);
+        await fakeRepository.AddAsync(project2);
+
+        // Act
+        var result = await projectManager.BrowseTestProjectsAsync(principal, 0, 10);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(2, result.Items.Length);
+        Assert.Contains(result.Items, p => p.Name == "Project 1");
+        Assert.Contains(result.Items, p => p.Name == "Project 2");
+    }
+
+    /// <summary>
+    /// Tests that <see cref="ProjectManager.GetTestProjectBySlugAsync"/> retrieves a project by its slug successfully.
+    /// </summary>
+    [Fact]
+    public async Task GetTestProjectBySlugAsync_ShouldReturnProject()
+    {
+        // Arrange
+        var mediator = NSubstitute.Substitute.For<IMediator>();
+        var memoryCache = NSubstitute.Substitute.For<IMemoryCache>();
+        var fakeRepository = new FakeProjectRepository();
+        var projectManager = new ProjectManager(fakeRepository, memoryCache, mediator, NullLogger<ProjectManager>.Instance);
+
+        var principal = Impersonation.Impersonate(TenantId);
+        var project = new TestProject { Name = "Test Project", TenantId = TenantId, Slug = "test-project", ShortName = "TP" };
+
+        await fakeRepository.AddAsync(project);
+
+        // Act
+        var retrievedProject = await projectManager.GetTestProjectBySlugAsync(principal, "test-project");
+
+        // Assert
+        Assert.NotNull(retrievedProject);
+        Assert.Equal("Test Project", retrievedProject.Name);
+        Assert.Equal("test-project", retrievedProject.Slug);
     }
 }

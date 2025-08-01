@@ -116,7 +116,7 @@ public enum TraitType
     Commit = 20,
 
     /// <summary>
-    /// SW Version
+    /// SW Version for SUT
     /// </summary>
     SoftwareVersion = 21,
 
@@ -131,12 +131,23 @@ public enum TraitType
     Release = 23,
 
     /// <summary>
-    /// HW Version
+    /// HW Version for SUT
     /// </summary>
-    HardwareVersion =24,
+    HardwareVersion = 24,
 
+    /// <summary>
+    /// Test created time
+    /// </summary>
     CreatedTime = 25,
+
+    /// <summary>
+    /// Test started time
+    /// </summary>
     StartedTime = 26,
+
+    /// <summary>
+    /// Test ended time
+    /// </summary>
     EndedTime = 27,
 
     /// <summary>
@@ -149,8 +160,14 @@ public enum TraitType
     /// </summary>
     SystemErr = 29,
 
+    /// <summary>
+    /// Generic project name
+    /// </summary>
     Project = 30,
 
+    /// <summary>
+    /// Generic version
+    /// </summary>
     Version = 31,
 
     /// <summary>
@@ -163,10 +180,29 @@ public enum TraitType
     /// </summary>
     CollectionName = 33,
 
+    /// <summary>
+    /// Test environment ID or name
+    /// </summary>
     Environment = 34,
+
+    /// <summary>
+    /// Custom tag
+    /// </summary>
     Tag = 35,
+
+    /// <summary>
+    /// Quality characteristic
+    /// </summary>
     QualityCharacteristic = 36,
+
+    /// <summary>
+    /// Test area
+    /// </summary>
     Area = 37,
+
+    /// <summary>
+    /// Component
+    /// </summary>
     Component = 38,
 
     /// <summary>
@@ -230,4 +266,50 @@ public enum TraitType
     /// Version of browser
     /// </summary>
     BrowserVersion = 51,
+
+    /// <summary>
+    /// SW variant
+    /// </summary>
+    SoftwareVariant = 52,
+
+    /// <summary>
+    /// OS for the system under test, could be windows, android etc
+    /// </summary>
+    SutOperatingSystemName = 53,
+    SutOperatingSystemVersion = 54,
+
+    /// <summary>
+    /// Platform for the system under test, could be qualcom snapdragon or similar
+    /// </summary>
+    SutPlatformName = 55,
+    SutPlatformVersion = 56,
+
+    /// <summary>
+    /// Device manufacturer
+    /// </summary>
+    SutManufacturer = 57,
+
+    /// <summary>
+    /// Device model
+    /// </summary>
+    SutModel = 58,
+
+    /// <summary>
+    /// Geographical longitude of SUT
+    /// </summary>
+    SutLocationLongitude = 59,
+
+    /// <summary>
+    /// Geographical latitude of SUT
+    /// </summary>
+    SutLocationLatitude = 60,
+
+    // Test runner / test execution environment
+
+    RunnerOperatingSystemName = 200,
+    RunnerOperatingSystemVersion = 201,
+
+    // Work items etc
+    CoveredWorkItem = 300,
+    CoveredUserStory = 301
 }

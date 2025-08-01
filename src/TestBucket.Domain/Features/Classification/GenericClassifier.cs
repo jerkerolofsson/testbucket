@@ -15,7 +15,7 @@ using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Testing;
 using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Traceability;
+using TestBucket.Domain.Features.Traceability;
 
 using static System.Net.Mime.MediaTypeNames;
 

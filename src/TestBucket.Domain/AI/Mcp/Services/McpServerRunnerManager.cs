@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using TestBucket.Domain.AI.Agent;
+using TestBucket.Domain.AI.Mcp.Helpers;
 using TestBucket.Domain.AI.Mcp.Models;
 using TestBucket.Domain.AI.Mcp.Tools;
 using TestBucket.Domain.Automation.Runners.Models;
@@ -42,21 +43,18 @@ public class McpServerRunnerManager
             {
                 foreach (var runner in runners)
                 {
-                    if (runner.Registration.TestProjectId == projectId || runner.Registration.TestProjectId is null)
+                    if (McpToolAccessChecker.HasAccess(projectId, principal, runner.Registration))
                     {
-                        if (userName == runner.Registration.CreatedBy || runner.Registration.PublicForProject)
+                        foreach (var tool in await runner.GetToolsForSessionAsync(userName, cancellationToken))
                         {
-                            foreach (var tool in await runner.GetToolsForSessionAsync(userName, cancellationToken))
-                            {
-                                tool.Enabled = !setToolTypes.Contains(runner.McpToolName);
-                                tool.ToolName = runner.McpToolName;
-                                tools.Add(tool);
-                            }
+                            tool.Enabled = !setToolTypes.Contains(runner.McpToolName);
+                            tool.ToolName = runner.McpToolName;
+                            tools.Add(tool);
+                        }
 
-                            if (!setToolTypes.Contains(runner.McpToolName))
-                            {
-                                setToolTypes.Add(runner.McpToolName);
-                            }
+                        if (!setToolTypes.Contains(runner.McpToolName))
+                        {
+                            setToolTypes.Add(runner.McpToolName);
                         }
                     }
                 }

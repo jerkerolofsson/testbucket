@@ -27,6 +27,13 @@ public class TraitTypeConverter
         [TraitType.Milestone] = TargetTraitNames.Milestone,
         [TraitType.Feature] = TargetTraitNames.Feature,
 
+        [TraitType.SutPlatformName] = TargetTraitNames.SutPlatformName,
+        [TraitType.SutPlatformVersion] = TargetTraitNames.SutPlatformVersion,
+
+        [TraitType.SutOperatingSystemName] = TargetTraitNames.SutOperatingSystemName,
+        [TraitType.SutOperatingSystemVersion] = TargetTraitNames.SutOperatingSystemVersion,
+
+
         [TraitType.Assembly] = AutomationTraitNames.Assembly,
         [TraitType.Module] = AutomationTraitNames.Module,
         [TraitType.ClassName] = AutomationTraitNames.ClassName,
@@ -46,6 +53,9 @@ public class TraitTypeConverter
         [TraitType.BrowserVersion] = TestTraitNames.BrowserVersion,
         [TraitType.Approved] = TestTraitNames.Approved,
         [TraitType.Label] = TestTraitNames.Label,
+
+        [TraitType.RunnerOperatingSystemName] = TestTraitNames.RunnerOperatingSystemName,
+        [TraitType.RunnerOperatingSystemVersion] = TestTraitNames.RunnerOperatingSystemVersion,
 
         [TraitType.Tag] = TestTraitNames.Tag,
     }.ToFrozenDictionary();

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using TestBucket.AdbProxy.Models;
 using TestBucket.Contracts.TestResources;
 using TestBucket.ResourceServer.Utilities;
+using TestBucket.Traits.Core;
 
 namespace TestBucket.AdbProxy.Inform;
 
@@ -183,20 +184,24 @@ internal class DeviceInformer(HttpClient httpClient, IServer Server) : IDeviceIn
             {
                 resource.Variables["appium-url"] = device.AppiumUrl;
             }
-
             if (device.AppiumPort > 0)
             {
                 resource.Variables["appium-port"] = device.AppiumPort.ToString();
             }
-            if (device.Version.VersionName is not null)
-            {
-                resource.Variables["version-name"] = device.Version.VersionName;
-            }
-            if (device.Version.CodeName is not null)
-            {
-                resource.Variables["version-code-name"] = device.Version.CodeName;
-            }
 
+            resource.Variables[TargetTraitNames.SutOperatingSystemName] = "Android";
+            if (device.Version.VersionNumber is not null)
+            {
+                resource.Variables[TargetTraitNames.SutOperatingSystemVersion] = device.Version.VersionNumber;
+            }
+            if (device.SocModel is not null)
+            {
+                resource.Variables[TargetTraitNames.SutPlatformName] = device.SocModel;
+            }
+            if (device.SoftwareVersion is not null)
+            {
+                resource.Variables[TargetTraitNames.SoftwareVersion] = device.SoftwareVersion;
+            }
             resources.Add(resource);
         }
     }

@@ -131,38 +131,38 @@ namespace TestBucket.Traits.Xunit
 
         private void EnrichWithOperatingSystem()
         {
-            if (TestContext.Current.Attachments?.Any(x => x.Key == TestTraitNames.OperatingSystemPlatform) == true)
+            if (TestContext.Current.Attachments?.Any(x => x.Key == TestTraitNames.RunnerOperatingSystemName) == true)
             {
                 return;
             }
 
             if (_operatingSystem.IsWindows)
             {
-                TestContext.Current.AddAttachment(TestTraitNames.OperatingSystemPlatform, "Windows");
+                TestContext.Current.AddAttachment(TestTraitNames.RunnerOperatingSystemName, "Windows");
             }
             else if (_operatingSystem.IsMacOS)
             {
-                TestContext.Current.AddAttachment(TestTraitNames.OperatingSystemPlatform, "MacOS");
+                TestContext.Current.AddAttachment(TestTraitNames.RunnerOperatingSystemName, "MacOS");
             }
             else if (_operatingSystem.IsLinux)
             {
-                TestContext.Current.AddAttachment(TestTraitNames.OperatingSystemPlatform, "Linux");
+                TestContext.Current.AddAttachment(TestTraitNames.RunnerOperatingSystemName, "Linux");
             }
             else if (_operatingSystem.IsIOS)
             {
-                TestContext.Current.AddAttachment(TestTraitNames.OperatingSystemPlatform, "iOS");
+                TestContext.Current.AddAttachment(TestTraitNames.RunnerOperatingSystemName, "iOS");
             }
             else if (_operatingSystem.IsAndroid)
             {
-                TestContext.Current.AddAttachment(TestTraitNames.OperatingSystemPlatform, "Android");
+                TestContext.Current.AddAttachment(TestTraitNames.RunnerOperatingSystemName, "Android");
             }
             else if (_operatingSystem.IsBrowser)
             {
-                TestContext.Current.AddAttachment(TestTraitNames.OperatingSystemPlatform, "Browser");
+                TestContext.Current.AddAttachment(TestTraitNames.RunnerOperatingSystemName, "Browser");
             }
             else if (_operatingSystem.IsMacCatalyst)
             {
-                TestContext.Current.AddAttachment(TestTraitNames.OperatingSystemPlatform, "MacCatalyst");
+                TestContext.Current.AddAttachment(TestTraitNames.RunnerOperatingSystemName, "MacCatalyst");
             }
         }
 

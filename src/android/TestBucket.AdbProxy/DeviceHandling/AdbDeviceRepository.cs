@@ -202,6 +202,28 @@ public class AdbDeviceRepository : IAdbDeviceRepository
                 device.ModelInfo.Name = model;
             }
         }
+
+        if (properties.TryGetValue("ro.soc.manufacturer", out var socManufacturer))
+        {
+        }
+        if (properties.TryGetValue("ro.soc.model", out var socModel))
+        {
+            if (device.SocModel != socModel)
+            {
+                changed = true;
+                device.SocModel = socModel;
+            }
+        }
+        //ro.soc.model
+
+        if (properties.TryGetValue("ro.product.build.id", out var softwareVersion))
+        {
+            if (device.SoftwareVersion != softwareVersion)
+            {
+                changed = true;
+                device.SoftwareVersion = softwareVersion;
+            }
+        }
         if (properties.TryGetValue("ro.product.manufacturer", out var manufacturer))
         {
             if(device.ModelInfo.Manufacturer != manufacturer)

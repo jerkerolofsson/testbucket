@@ -59,10 +59,20 @@ namespace TestBucket.Domain.UnitTests.Search
         }
 
         /// <summary>
-        /// Tests parsing the 'equals' operator ('==').
+        /// Tests parsing the 'equals' operator ('=').
         /// </summary>
         [Fact]
         public void Parse_EqualsOperator_ReturnsCorrectFilter()
+        {
+            var filter = NumericalFilterParser.Parse("=123.456");
+            Assert.Equal(FilterOperator.Equals, filter.Operator);
+            Assert.Equal(123.456, filter.Value);
+        }
+        /// <summary>
+        /// Tests parsing the 'equals' operator ('==').
+        /// </summary>
+        [Fact]
+        public void Parse_DpubleEqualsOperator_ReturnsCorrectFilter()
         {
             var filter = NumericalFilterParser.Parse("==123.456");
             Assert.Equal(FilterOperator.Equals, filter.Operator);
@@ -81,7 +91,7 @@ namespace TestBucket.Domain.UnitTests.Search
         }
 
         /// <summary>
-        /// Tests that parsing a non-numeric value throws a <see cref="FormatException"/>.
+        /// Tests that parsing a non-numeric value throws a FormatException
         /// </summary>
         [Fact]
         public void Parse_InvalidValue_ThrowsFormatException()
@@ -89,8 +99,18 @@ namespace TestBucket.Domain.UnitTests.Search
             Assert.Throws<FormatException>(() => NumericalFilterParser.Parse(">abc"));
         }
 
+
         /// <summary>
-        /// Tests that parsing a null or whitespace string throws an <see cref="ArgumentException"/>.
+        /// Tests that parsing an invalid operator FormatException
+        /// </summary>
+        [Fact]
+        public void Parse_InvalidOperation_ThrowsFormatException()
+        {
+            Assert.Throws<FormatException>(() => NumericalFilterParser.Parse("'123"));
+        }
+
+        /// <summary>
+        /// Tests that parsing a null or whitespace string throws an ArgumentException
         /// </summary>
         [Theory]
         [InlineData(null)]

@@ -4,7 +4,28 @@ using TestBucket.Traits.Core;
 namespace TestBucket.Domain.Fields.Helpers;
 public class FieldDefinitionTemplates
 {
-    public static IReadOnlyList<FieldDefinition> Templates = [Branch,  Browser, BrowserVersion, FailureType, HardwareVersion, Priority, Wcag];
+    public static IReadOnlyList<FieldDefinition> Templates = 
+        [
+        Branch,  
+
+        Browser, 
+        BrowserVersion, 
+
+        SoftwareVersion, 
+        SoftwareVariant,
+        HardwareVersion,
+
+        SutManufacturer,
+        SutModel,
+
+        SutPlatformName,
+        SutOperatingSystemName,
+        SutOperatingSystemVersion,
+
+        FailureType, 
+        Priority, 
+        Wcag
+        ];
 
     public static FieldDefinition Browser => new FieldDefinition
     {
@@ -19,6 +40,7 @@ public class FieldDefinitionTemplates
         Options = ["chromium", "firebox", "webkit"],
         Description = "Web browser used for testing"
     };
+
     public static FieldDefinition BrowserVersion => new FieldDefinition
     {
         Name = "Browser Version",
@@ -43,9 +65,93 @@ public class FieldDefinitionTemplates
         Icon = TbIcons.Git.GitBranch,
     };
 
+    public static FieldDefinition SutOperatingSystemName => new FieldDefinition
+    {
+        Name = "Operating System (SUT)",
+        Description = "Operating system for the system under test",
+        Trait = "SutOperatingSystemName",
+        Target = FieldTarget.TestCaseRun | FieldTarget.Issue,
+        Inherit = true,
+        IsVisible = true,
+        TraitType = TraitType.SutOperatingSystemName,
+        Type = FieldType.String,
+    };
+
+
+    public static FieldDefinition SutOperatingSystemVersion => new FieldDefinition
+    {
+        Name = "Operating System Version (SUT)",
+        Description = "Operating system version for the system under test",
+        Trait = "SutOperatingSystemVersion",
+        Target = FieldTarget.TestCaseRun | FieldTarget.Issue,
+        Inherit = true,
+        IsVisible = true,
+        TraitType = TraitType.SutOperatingSystemVersion,
+        Type = FieldType.String,
+    };
+
+    public static FieldDefinition SoftwareVersion => new FieldDefinition
+    {
+        Name = "SW Version",
+        Description = "Software version for the system under test",
+        Trait = "SoftwareVersion",
+        Target = FieldTarget.TestCaseRun | FieldTarget.Issue,
+        Inherit = true,
+        IsVisible = true,
+        TraitType = TraitType.SoftwareVersion,
+        Type = FieldType.String,
+    };
+    public static FieldDefinition SutPlatformName => new FieldDefinition
+    {
+        Name = "Platform",
+        Description = "Platform or SoC for the system under test",
+        Trait = "SutPlatformName",
+        Target = FieldTarget.TestCaseRun | FieldTarget.Issue,
+        Icon = TbIcons.BoldDuoTone.Cpu,
+        Inherit = true,
+        IsVisible = true,
+        TraitType = TraitType.SutPlatformName,
+        Type = FieldType.String,
+    };
+    public static FieldDefinition SutManufacturer => new FieldDefinition
+    {
+        Name = "Manufacturer",
+        Description = "Product manufacturer of the system under test",
+        Trait = "SutManufacturer",
+        Target = FieldTarget.TestCaseRun | FieldTarget.Issue | FieldTarget.TestRun,
+        Inherit = true,
+        IsVisible = true,
+        TraitType = TraitType.SutManufacturer,
+        Type = FieldType.String,
+    };
+
+    public static FieldDefinition SutModel => new FieldDefinition
+    {
+        Name = "Model",
+        Description = "Product model name for the system under test",
+        Trait = "SutModel",
+        Target = FieldTarget.TestCaseRun | FieldTarget.Issue | FieldTarget.TestRun,
+        Inherit = true,
+        IsVisible = true,
+        TraitType = TraitType.SutModel,
+        Type = FieldType.String,
+    };
+
+    public static FieldDefinition SoftwareVariant => new FieldDefinition
+    {
+        Name = "SW Variant",
+        Description = "Software build variant for the system under test",
+        Trait = "SoftwareVariant",
+        Target = FieldTarget.TestCaseRun | FieldTarget.Issue,
+        Inherit = true,
+        IsVisible = true,
+        TraitType = TraitType.SoftwareVariant,
+        Type = FieldType.String,
+    };
     public static FieldDefinition HardwareVersion => new FieldDefinition
     {
         Name = "HW Version",
+        Description = "Hardware version for the system under test",
         Trait = "HardwareVersion",
         Target = FieldTarget.TestCaseRun | FieldTarget.TestRun | FieldTarget.TestCase,
         Inherit = true,

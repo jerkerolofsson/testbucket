@@ -1,8 +1,8 @@
-﻿using TestBucket.Domain.Insights.Model;
+﻿using TestBucket.Domain.Features.Traceability.Models;
+using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRuns.Search;
-using TestBucket.Domain.Traceability.Models;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Testing.TestCases;

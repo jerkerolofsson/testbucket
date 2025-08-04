@@ -179,7 +179,8 @@ function initialize(dotNetObjectRef, element, elementId, previewElementId, optio
 
                         if (language) {
                             highlighted += `<div data-language='${language}' class="language">${language}</div>`;
-                        }
+                        } 
+                        console.log(`hljs language=${language} (${lang})`);
 
                         if (options.enableRunCode && options.runCodeLanguages) {
 
@@ -196,9 +197,11 @@ function initialize(dotNetObjectRef, element, elementId, previewElementId, optio
                                 window.setTimeout(() => {
                                     const selector = `.${wrapperCssClass}`;
                                     const buttonElement = document.querySelector(selector);
-                                    buttonElement.addEventListener("click", () => {
-                                        dotNetObjectRef.invokeMethodAsync("RunCodeInternal", lang, code);
-                                    });
+                                    if (buttonElement) {
+                                        buttonElement.addEventListener("click", () => {
+                                            dotNetObjectRef.invokeMethodAsync("RunCodeInternal", lang, code);
+                                        });
+                                    }
                                 }, 1000);
                             }
                         }
@@ -215,17 +218,19 @@ function initialize(dotNetObjectRef, element, elementId, previewElementId, optio
                             window.setTimeout(() => {
                                 const selector = `.${wrapperCssClass}`;
                                 const buttonElement = document.querySelector(selector);
-                                buttonElement.addEventListener("click", async () => {
-                                    await navigator.clipboard.writeText(code);
-                                });
+                                if (buttonElement) {
+                                    buttonElement.addEventListener("click", async () => {
+                                        await navigator.clipboard.writeText(code);
+                                    });
+                                }
                             }, 1000);
                         }
                         highlighted += `</div>`;
 
-                        console.log("returning highlighted", highlighted);
+                        //console.log("returning highlighted", highlighted);
                         return highlighted;
                     }
-                    console.log("returning code", code);
+                    //console.log("returning code", code);
                     return code;
                 }
             }

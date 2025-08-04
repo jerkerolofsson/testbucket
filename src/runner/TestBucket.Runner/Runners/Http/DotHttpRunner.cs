@@ -133,8 +133,8 @@ public class DotHttpRunner : IScriptRunner
                 messageBuilder.AppendLine($"# {request.RequestName}");
                 messageBuilder.AppendLine($"| Attribute | Value     |");
                 messageBuilder.AppendLine($"| --------- | --------- |");
-                messageBuilder.AppendLine($"| Method    | {request.Method?.ToString(status)} |");
-                messageBuilder.AppendLine($"| URL       | {request.Url?.ToString(status)} |");
+                messageBuilder.AppendLine($"| Method    | {request.Method?.ToString(status, null)} |");
+                messageBuilder.AppendLine($"| URL       | {request.Url?.ToString(status, null)} |");
                 if (status.PreviousResponse is not null)
                 {
                     var response = status.PreviousResponse;
@@ -164,10 +164,10 @@ public class DotHttpRunner : IScriptRunner
 
                 messageBuilder.AppendLine("## Request");
                 messageBuilder.AppendLine("```http");
-                messageBuilder.AppendLine($"{request.Method?.ToString(status)} {request.Url?.ToString(status)} {request.Version?.ToString(status)} ");
+                messageBuilder.AppendLine($"{request.Method?.ToString(status, null)} {request.Url?.ToString(status, null)} {request.Version?.ToString(status, null)} ");
                 foreach (var header in request.Headers)
                 {
-                    messageBuilder.AppendLine($"{header?.ToString(status)}");
+                    messageBuilder.AppendLine($"{header?.ToString(status, null)}");
                 }
                 messageBuilder.AppendLine("```");
 
@@ -178,14 +178,17 @@ public class DotHttpRunner : IScriptRunner
                     messageBuilder.AppendLine("## Response");
                     messageBuilder.AppendLine("```http");
                     messageBuilder.AppendLine($"{statusCode} {response.ReasonPhrase}");
+                    string contentType = "";
                     foreach (var header in response.Headers)
                     {
-                        if (header.Values is not null)
+                        foreach (var headerValue in header.Value)
                         {
-                            foreach (var value in header.Values)
+                            if (header.Key.Equals("content-type", StringComparison.InvariantCultureIgnoreCase))
                             {
-                                messageBuilder.AppendLine($"{header.Name}: {value}");
+                                contentType = headerValue;
                             }
+
+                            messageBuilder.AppendLine($"{header.Key}: {headerValue}");
                         }
                     }
                     messageBuilder.AppendLine();
@@ -194,9 +197,9 @@ public class DotHttpRunner : IScriptRunner
                     {
                         if (response.ContentBytes.Length < 10 * 1024)
                         {
-                            if (response.Content.Headers.ContentType?.MediaType?.StartsWith("text") == true ||
-                                response.Content.Headers.ContentType?.MediaType?.StartsWith("application/json") == true ||
-                                response.Content.Headers.ContentType?.MediaType?.StartsWith("application/xml") == true)
+                            if (contentType.StartsWith("text") == true ||
+                                contentType.StartsWith("application/json") == true ||
+                                contentType.StartsWith("application/xml") == true)
                             {
                                 messageBuilder.AppendLine(Encoding.UTF8.GetString(response.ContentBytes));
                             }
@@ -227,7 +230,8 @@ public class DotHttpRunner : IScriptRunner
             messageBuilder.AppendLine($"| --- | --------- | --------- | --------- |");
             foreach (var check in failedChecks)
             {
-                messageBuilder.AppendLine($"| {check.Request.Url} | {check.Check?.ExpectedValue} | {check.ActualValue} | {check.Error} |");
+                var error = check.Error?.Replace("\n", " ");
+            messageBuilder.AppendLine($"| {check.Request.Url} | {check.Check?.ExpectedValue} | {check.ActualValue} | {error} |");
             }
         }
         test.Message = messageBuilder.ToString();

@@ -84,14 +84,14 @@ internal class DotHttpLogger : ITestPlanRunnerProgressHandler
                 }
             }
             var responseDto = new HttpResponseMessageDto((int)response.StatusCode, response.ReasonPhrase ?? "", responseHeaders, response.ContentBytes);
-
-            var method = request.Method?.ToString(currentState) ?? "GET";
-            var url = request.Url.ToString(currentState);
+            
+            var method = request.Method?.ToString(currentState, null) ?? "GET";
+            var url = request.Url.ToString(currentState, null);
             var requestHeaders = MapHeaders(currentState, request.Headers);
             byte[] body = [];
             if (request.Body is not null)
             {
-                body = request.Body.ToByteArray(Encoding.UTF8, currentState);
+                body = request.Body.ToByteArray(Encoding.UTF8, currentState, null);
             }
 
             var requestDto = new HttpRequestMessageDto(method, url, requestHeaders, body);
@@ -113,7 +113,7 @@ internal class DotHttpLogger : ITestPlanRunnerProgressHandler
     private static HeadersCollectionDto MapHeaders(TestStatus currentState, ExpressionListHeaderCollection headerCollection)
     {
         HeadersCollectionDto headers = new();
-        foreach (var line in headerCollection.Select(x => x.ToString(currentState)))
+        foreach (var line in headerCollection.Select(x => x.ToString(currentState, null)))
         {
             var p = line.IndexOf(':');
             var name = line[0..p].Trim();

@@ -140,7 +140,7 @@ public class PlaywrightDockerService : BackgroundService, IProgress<string>
               tb-playwright:
                 container_name: {containerName}
                 image: {_imageName}
-                entrypoint: ["node", "cli.js", "--headless", "--browser", {browser}, "--no-sandbox", "--port", "4723"]
+                entrypoint: ["node", "cli.js", "--headless", "--isolated", "--browser", {browser}, "--no-sandbox", "--port", "4723"]
                 restart: unless-stopped
                 ports:
                   - {port}:4723

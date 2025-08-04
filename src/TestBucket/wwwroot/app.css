@@ -903,6 +903,20 @@ table.tb-environment-variables {
     text-align: end;
 }
 
+.hljs-comment .hljs-verify {
+    font-style: normal;
+    color: #98c379;
+}
+
+.hljs-comment .hljs-verifier {
+    font-style: normal;
+    color: lightseagreen;
+}
+.hljs-comment .hljs-operator {
+    font-style: normal;
+    color: lightseagreen;
+}
+
 .tb-fields-grouping-header {
     margin-top: 12px;
 }

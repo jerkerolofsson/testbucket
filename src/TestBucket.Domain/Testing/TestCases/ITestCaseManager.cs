@@ -29,6 +29,15 @@ public interface ITestCaseManager
     Task<TestCase> AddTestCaseAsync(ClaimsPrincipal principal, TestCase testCase);
 
     /// <summary>
+    /// Adds a test case with a template
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="testCase"></param>
+    /// <param name="template"></param>
+    /// <returns></returns>
+    Task<TestCase> AddTestCaseAsync(ClaimsPrincipal principal, TestCase testCase, string? template);
+
+    /// <summary>
     /// Deletes a test case
     /// </summary>
     /// <param name="principal"></param>

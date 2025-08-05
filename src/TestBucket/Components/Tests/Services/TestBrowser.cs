@@ -353,8 +353,12 @@ internal class TestBrowser : TenantBaseService
             }
             else if(parent.Folder is not null)
             {
-                var folders = await _testSuiteController.GetTestSuiteFoldersAsync(projectId, parent.Folder.TestSuiteId, parent.Folder.Id);
-                var items = MapFoldersToTreeNode(folders);
+                List<TreeNode<BrowserItem>> items = [];
+                if (request.ShowTestSuiteFolders)
+                {
+                    var folders = await _testSuiteController.GetTestSuiteFoldersAsync(projectId, parent.Folder.TestSuiteId, parent.Folder.Id);
+                    items = MapFoldersToTreeNode(folders);
+                }
 
                 if (request.ShowTestCases)
                 {
@@ -374,18 +378,25 @@ internal class TestBrowser : TenantBaseService
             else if (parent.TestSuite is not null)
             {
                 long? parentFolderId = null;
-                var folders = await _testSuiteController.GetTestSuiteFoldersAsync(projectId, parent.TestSuite.Id, parentFolderId);
-                var items = MapFoldersToTreeNode(folders);
-
-                var tests = await _testSuiteController.SearchTestCasesAsync(new SearchTestQuery
+                List<TreeNode<BrowserItem>> items = [];
+                if (request.ShowTestSuiteFolders)
                 {
-                    CompareFolder = true,
-                    Count = 1_000,
-                    Offset = 0,
-                    FolderId = null,
-                    TestSuiteId = parent.TestSuite.Id,
-                });
-                items.AddRange(MapTestsToTreeNode(tests.Items));
+                    var folders = await _testSuiteController.GetTestSuiteFoldersAsync(projectId, parent.TestSuite.Id, parentFolderId);
+                    items.AddRange(MapFoldersToTreeNode(folders));
+                }
+
+                if (request.ShowTestCases)
+                {
+                    var tests = await _testSuiteController.SearchTestCasesAsync(new SearchTestQuery
+                    {
+                        CompareFolder = true,
+                        Count = 1_000,
+                        Offset = 0,
+                        FolderId = null,
+                        TestSuiteId = parent.TestSuite.Id,
+                    });
+                    items.AddRange(MapTestsToTreeNode(tests.Items));
+                }
 
                 return items;
             }

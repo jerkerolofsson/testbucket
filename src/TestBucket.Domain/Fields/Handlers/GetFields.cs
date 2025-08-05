@@ -28,12 +28,19 @@ public class GetFieldsHandler : IRequestHandler<GetFieldsRequest, GetFieldsRespo
         switch (request.Target)
         {
             case FieldTarget.TestCase:
+                request.Principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
                 return new GetFieldsResponse(await _fieldManager.GetTestCaseFieldsAsync(request.Principal, request.EntityId, definitions));
 
             case FieldTarget.TestRun:
+                request.Principal.ThrowIfNoPermission(PermissionEntityType.TestRun, PermissionLevel.Read);
                 return new GetFieldsResponse(await _fieldManager.GetTestRunFieldsAsync(request.Principal, request.EntityId, definitions));
 
+            case FieldTarget.Requirement:
+                request.Principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Read);
+                return new GetFieldsResponse(await _fieldManager.GetRequirementFieldsAsync(request.Principal, request.EntityId, definitions));
+
             case FieldTarget.Issue:
+                request.Principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
                 return new GetFieldsResponse(await _fieldManager.GetIssueFieldsAsync(request.Principal, request.EntityId, definitions));
 
             default:

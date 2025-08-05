@@ -8,10 +8,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using TestBucket.Contracts.Fields;
+using TestBucket.Contracts.Testing.Models;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Contracts.TestResources;
 using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.AI.Agent.Orchestration;
+using TestBucket.Domain.Automation.Helpers;
+using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Metrics;
@@ -23,8 +26,10 @@ using TestBucket.Domain.Tenants;
 using TestBucket.Domain.Testing.Compiler;
 using TestBucket.Domain.Testing.Execution;
 using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.TestResources.Mapping;
+using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Domain.AI.Runner;
 internal class AiRunner : BackgroundService
@@ -130,7 +135,7 @@ internal class AiRunner : BackgroundService
             return;
         }
 
-        _logger.LogInformation("Processing AI test case run {TestCaseRunId}..", testCaseRun.Id);
+        _logger.LogInformation("Processing test case run {TestCaseRunId}..", testCaseRun.Id);
 
         var projectRepository = scope.ServiceProvider.GetRequiredService<IProjectRepository>();
         if (testCaseRun.TestProjectId is null)
@@ -187,7 +192,6 @@ internal class AiRunner : BackgroundService
             TestRunId = testRun.Id
         };
 
-
         var testExecutionContext = await builder.BuildAsync(principal, options, errors, cancellationToken);
         if (testExecutionContext is null)
         {
@@ -207,18 +211,25 @@ internal class AiRunner : BackgroundService
         {
             await OnStartingAsync(scope, testCaseRun);
 
-            var startTimestamp = Stopwatch.GetTimestamp();
-
-            StringBuilder responseBuilder = await RunWithAgentAsync(scope, testCaseRun, project, testCase, principal, testExecutionContext, cancellationToken);
-            var responseMarkdown = responseBuilder.ToString();
-
-            var interpreter = scope.ServiceProvider.GetRequiredService<AiResultInterpreter>();
-            var result = await interpreter.InterpretAiRunnerAsync(principal, project.Id, responseMarkdown);
-
-            // Log the test duration
-            testCaseRun.Duration = (int)Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-
-            await OnTestCaseRunResultAsync(principal, scope, testCaseRun, responseMarkdown, result, testExecutionContext);
+            if (testCase.ExecutionType == TestExecutionType.Manual)
+            {
+                await RunManualTestCaseWithAiAsync(scope, project, testCaseRun, testCase, principal, testExecutionContext, cancellationToken);
+                return true;
+            }
+            else if(testCase.ExecutionType is TestExecutionType.Automated or TestExecutionType.HybridAutomated)
+            {
+                return await RunAutomatedTestAsync(scope, project, testCaseRun, testCase, principal, testExecutionContext, cancellationToken);
+            }
+            else if(testCase.ExecutionType == TestExecutionType.Hybrid)
+            {
+                await OnTestCaseRunFailedAsync(scope, testCaseRun, $"Hybrid tests must be executed manually");
+                return false;
+            }
+            else
+            {
+                await OnTestCaseRunFailedAsync(scope, testCaseRun, $"Unknown execution tyoe: {testCase.ExecutionType}");
+                return false;
+            }
         }
         catch (Exception ex)
         {
@@ -234,7 +245,63 @@ internal class AiRunner : BackgroundService
                 await builder.ReleaseResourcesAsync(testExecutionContext);
             }
         }
+    }
+
+    /// <summary>
+    /// This interprets the description of the test as an automated test and runs it on a TestBucket runner
+    /// </summary>
+    /// <param name="scope"></param>
+    /// <param name="project"></param>
+    /// <param name="testCaseRun"></param>
+    /// <param name="testCase"></param>
+    /// <param name="principal"></param>
+    /// <param name="testExecutionContext"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    private async Task<bool> RunAutomatedTestAsync(IServiceScope scope, TestProject project, TestCaseRun testCaseRun, TestCase testCase, ClaimsPrincipal principal, TestExecutionContext testExecutionContext, CancellationToken cancellationToken)
+    {
+        var runnerResult = await AutomatedTestRunner.RunAsync(scope, testCaseRun, testCase, principal, testExecutionContext, cancellationToken);
+        var result = TestRunnerResultParser.ParseSingleResult(runnerResult.Result, runnerResult.Format);
+        if (result is null)
+        {
+            await OnTestCaseRunResultAsync(principal, scope, testCaseRun, "No result from runner", TestResult.Inconclusive, testExecutionContext);
+        }
+        else
+        {
+            // Set result
+            await OnTestCaseRunResultAsync(principal, scope, testCaseRun, result.Message ?? "", result.Result ?? TestResult.Inconclusive, testExecutionContext);
+
+            // Import Traits
+            var fieldManager = scope.ServiceProvider.GetRequiredService<IFieldManager>();
+            var fieldDefinitionManager = scope.ServiceProvider.GetRequiredService<IFieldDefinitionManager>();
+            var fieldImporter = new TestCaseRunFieldImporter(principal, fieldManager, fieldDefinitionManager);
+            await fieldImporter.ImportAsync(result, testCaseRun);
+
+            // Todo: Add additional artifacts as attachments
+            if(runnerResult.ArtifactContent is not null)
+            {
+                foreach(var artifact in runnerResult.ArtifactContent)
+                {
+                }
+            }
+        }
         return true;
+    }
+
+    private async Task RunManualTestCaseWithAiAsync(IServiceScope scope, TestProject project, TestCaseRun testCaseRun, TestCase testCase, ClaimsPrincipal principal, TestExecutionContext testExecutionContext, CancellationToken cancellationToken)
+    {
+        var startTimestamp = Stopwatch.GetTimestamp();
+
+        StringBuilder responseBuilder = await RunWithAgentAsync(scope, testCaseRun, project, testCase, principal, testExecutionContext, cancellationToken);
+        var responseMarkdown = responseBuilder.ToString();
+
+        var interpreter = scope.ServiceProvider.GetRequiredService<AiResultInterpreter>();
+        var result = await interpreter.InterpretAiRunnerAsync(principal, project.Id, responseMarkdown);
+
+        // Log the test duration
+        testCaseRun.Duration = (int)Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+
+        await OnTestCaseRunResultAsync(principal, scope, testCaseRun, responseMarkdown, result, testExecutionContext);
     }
 
     private async Task<StringBuilder> RunWithAgentAsync(IServiceScope scope, TestCaseRun testCaseRun, TestProject project, TestCase testCase, ClaimsPrincipal principal, TestExecutionContext testExecutionContext, CancellationToken cancellationToken)

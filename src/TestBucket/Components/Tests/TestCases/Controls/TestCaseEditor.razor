@@ -71,20 +71,27 @@
                        
                     </MudExpansionPanels>
 
-
-                    <MarkdownEditor Value="@Text"
-                                    @ref=_editor
-                                    ToolbarButtonClass="tb-markdown-toolbar-button"
-                                    IconSize="Size.Medium"
-                                    CanToggleEdit="false"
-                                    UploadHandler="@UploadHandler"
-                                    EnableRunCode
-                                    EnableCopyCodeToClipboard
-                                    RunCodeLanguages="http pwsh"
-                                    RunCode="OnRunCodeClickedAsync"
-                                    ValueChanged="OnDescriptionChanged"
-                                    Preview="@ReadOnly"
-                                    TextAreaClass="tb-test-description" />
+                    @if (string.IsNullOrEmpty(Test.RunnerLanguage) || !ReadOnly)
+                    {
+                        <MarkdownEditor Value="@Text"
+                                        @ref=_editor
+                                        ToolbarButtonClass="tb-markdown-toolbar-button"
+                                        IconSize="Size.Medium"
+                                        CanToggleEdit="false"
+                                        UploadHandler="@UploadHandler"
+                                        EnableRunCode
+                                        EnableCopyCodeToClipboard
+                                        RunCodeLanguages="http pwsh"
+                                        RunCode="OnRunCodeClickedAsync"
+                                        ValueChanged="OnDescriptionChanged"
+                                        Preview="@ReadOnly"
+                                        TextAreaClass="tb-test-description" />
+                    }
+                    else
+                    {
+                        // Read only, automated test 
+                        <code><pre>@Text</pre></code>
+                    }
 
                     <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
                 </MudStack>

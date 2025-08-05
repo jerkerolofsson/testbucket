@@ -86,13 +86,14 @@ builder.AddProject<Projects.TestBucket_ResourceServer_Playwright>("testbucket-pl
     .WithEnvironment("TB_INFORM_URL", "https+http://testbucket/api/test-resources")
     .WithEnvironment("TB_AUTH_HEADER", $"Bearer {accessToken}")
     .WaitFor(testBucket)
-    .WithExplicitStart();
+    ;
+//.WithExplicitStart()
 
 builder.AddProject<Projects.TestBucket_Runner>("testbucket-runner")
     .WithReference(testBucket)
     .WithEnvironment("TB_ACCESS_TOKEN", runnerAccessToken)
     .WithReference(testBucket)
     .WaitFor(testBucket)
-    .WithExplicitStart();
+    ;
 
 builder.Build().Run();

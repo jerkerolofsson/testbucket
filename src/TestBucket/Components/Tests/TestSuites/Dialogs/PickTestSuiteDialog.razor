@@ -3,12 +3,12 @@
 
 <MudDialog DefaultFocus="DefaultFocus.FirstChild">
     <DialogContent>
-        <TestSuiteFolderPicker Project="@Project" Team="@Team"
-            FolderSelected="OnFolderSelected"/>
+        <TestSuitePicker Project="@Project" Team="@Team"
+                         TestSuiteSelected="OnTestSuiteSelected" />
     </DialogContent>
 
     <DialogActions>
-        @if (_folder is not null)
+        @if (_testSuite is not null)
         {
             <MudButton OnClick="OnValidSubmit" Color="Color.Primary">@loc["ok"]</MudButton>
         }
@@ -24,11 +24,11 @@
 
     [Parameter] public Team? Team { get; set; }
 
-    private TestSuiteFolder? _folder;
+    private TestSuite? _testSuite;
 
-    private void OnFolderSelected(TestSuiteFolder folder)
+    private void OnTestSuiteSelected(TestSuite testSuite)
     {
-        _folder = folder;
+        _testSuite = testSuite;
     }
 
     private void Close()
@@ -38,11 +38,11 @@
 
     private void OnValidSubmit()
     {
-        if (_folder is null)
+        if (_testSuite is null)
         {
             return;
         }
-        MudDialog.Close(_folder);
+        MudDialog.Close(_testSuite);
     }
 }
 

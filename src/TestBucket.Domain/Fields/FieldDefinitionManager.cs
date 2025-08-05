@@ -12,19 +12,16 @@ namespace TestBucket.Domain.Fields
     {
         private readonly IMemoryCache _memoryCache;
         private readonly IFieldRepository _fieldRepository;
-        private readonly IProjectManager _projectManager;
         private readonly IReadOnlyList<IFieldCompletionsProvider> _completionProviders;
 
         public FieldDefinitionManager(
             IMemoryCache memoryCache,
             IEnumerable<IFieldCompletionsProvider> completionProviders,
-            IFieldRepository fieldRepository,
-            IProjectManager projectManager)
+            IFieldRepository fieldRepository)
         {
             _completionProviders = completionProviders.ToList();
             _memoryCache = memoryCache;
             _fieldRepository = fieldRepository;
-            _projectManager = projectManager;
         }
 
         public async Task AddAsync(ClaimsPrincipal principal, FieldDefinition fieldDefinition)

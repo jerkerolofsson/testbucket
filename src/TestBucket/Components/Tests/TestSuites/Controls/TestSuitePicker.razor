@@ -1,0 +1,20 @@
+﻿<TestTreeView 
+    ShowTestRuns="false"
+    ShowTestCases="false"
+    ShowTestRunTests="false"
+    ShowTestRunPipelines="false"
+    ShowTestSuiteFolders="false"
+    ShowTestSuites="true"
+    Project="@Project" Team="@Team" OnTestSuiteClicked="OnTestSuiteClicked" />
+
+@code {
+
+    [Parameter] public EventCallback<TestSuite> TestSuiteSelected { get; set; }
+    [Parameter] public TestProject? Project { get; set; }
+    [Parameter] public Team? Team { get; set; }
+
+    private async Task OnTestSuiteClicked(TestSuite testSuite)
+    {
+        await TestSuiteSelected.InvokeAsync(testSuite);
+    }
+}

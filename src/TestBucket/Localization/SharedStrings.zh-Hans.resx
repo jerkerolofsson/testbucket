@@ -1013,4 +1013,25 @@
   <data name="list" xml:space="preserve">
     <value />
   </data>
+  <data name="select-test-suite" xml:space="preserve">
+    <value />
+  </data>
+  <data name="template-blank" xml:space="preserve">
+    <value />
+  </data>
+  <data name="template" xml:space="preserve">
+    <value />
+  </data>
+  <data name="template-dothttp.api" xml:space="preserve">
+    <value />
+  </data>
+  <data name="template-dothttp.mcp" xml:space="preserve">
+    <value />
+  </data>
+  <data name="template-pwsh" xml:space="preserve">
+    <value />
+  </data>
+  <data name="template-python" xml:space="preserve">
+    <value />
+  </data>
 </root>

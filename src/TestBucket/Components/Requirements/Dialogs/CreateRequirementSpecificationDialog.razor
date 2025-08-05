@@ -13,22 +13,26 @@
         <TitleContent>@reqLoc["create-collection"]</TitleContent>
 
         <DialogContent>
-            <MudStack Spacing="0">
-                <MudText Typo="Typo.caption">@loc["name"]</MudText>
-                <MudTextField 
-                    AutoFocus="true"
-                    Variant="Variant.Outlined"
-                    T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+            <MudStack Spacing="5">
+                <label>@loc["name"]
+                    <MudTextField 
+                        data-testid="name"
+                        AutoFocus="true"
+                        Variant="Variant.Outlined"
+                        T="string" ValueChanged="OnValueChanged" Value="@_name"></MudTextField>
+                </label>
 
-                <MudText Typo="Typo.caption" Class="mt-2">@reqLoc["collection-type"]</MudText>
-                <MudStack Row Wrap="Wrap.Wrap">
-                    <MudRadioGroup Value="_type" ValueChanged="OnTypeChanged" T="string">
-                        @foreach (var type in RequirementSpecificationTypes.AllTypes)
-                        {
-                            <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@type">@reqLoc[type]</MudRadio>
-                        }
-                    </MudRadioGroup>
-                </MudStack>
+                <label>@reqLoc["collection-type"]
+                    <MudStack Row Wrap="Wrap.Wrap" Style="max-width: 50vw">
+                        <MudRadioGroup Value="_type" ValueChanged="OnTypeChanged" T="string" data-testid="collection-type">
+                            @foreach (var type in RequirementSpecificationTypes.AllTypes)
+                            {
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@type">@reqLoc[type]</MudRadio>
+                            }
+                        </MudRadioGroup>
+                    </MudStack>
+                </label>
+
                 @if (_validationResult is not null)
                 {
                     <FluentValidationResultSummary Result="@_validationResult" StringLocalizer="@validationLoc" />

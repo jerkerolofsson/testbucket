@@ -79,7 +79,31 @@ internal class TestSuiteController : TenantBaseService
         return await _testSuiteManager.GetTestSuiteFoldersAsync(principal, projectId, testSuiteId, parentFolderId);
     }
 
+    /// <summary>
+    /// Shows a dialog to pick a test suite
+    /// </summary>
+    /// <param name="project"></param>
+    /// <returns></returns>
+    public async Task<TestSuite?> PickTestSuiteAsync(TestProject project)
+    {
+        var parameters = new DialogParameters<PickTestSuiteDialog>()
+        {
+            { x => x.Project, project },
+        };
 
+        var dialog = await _dialogService.ShowAsync<PickTestSuiteDialog>(_loc["select-test-suite"], parameters, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        if (result?.Data is TestSuite suite)
+        {
+            return suite;
+        }
+        return null;
+    }
+    /// <summary>
+    /// Shows a dialog to pick a folder for a within a test suite
+    /// </summary>
+    /// <param name="project"></param>
+    /// <returns></returns>
     public async Task<TestSuiteFolder?> PickFolderAsync(TestProject project)
     {
         var parameters = new DialogParameters<PickTestFolderDialog>()

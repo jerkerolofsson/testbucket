@@ -1,41 +1,87 @@
-﻿@using TestBucket.Domain.Requirements.Models
+﻿@using FluentValidation
+@using FluentValidation.Results
+@using TestBucket.Domain.Testing.TestCases.Templates
 @attribute [Authorize()]
 @inject TestCaseEditorController testCaseEditorService
 @inject TestSuiteController testSuiteController
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<ValidationStrings> validationLoc
+@inject IValidator<TestCase> validator
+@inject IEnumerable<ITestCaseTemplate> templates
 
 <EditForm Model="@_testCase" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <DialogContent>
-            <MudStack Spacing="1" Style="min-width: 30vw" Row AlignItems="AlignItems.Center">
-                <MudLink OnClick="ChangeFolderAsync">@(FolderPath)/</MudLink>
-                <MudTextField AutoFocus T="string" Value="@_name" ValueChanged="OnNameChanged"></MudTextField>
-            </MudStack>
 
-            @if (_errorMessage is not null)
+            @if(_loading)
             {
-                <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+                <MudProgressLinear Indeterminate/>
             }
+            else
+            {
+                <MudStack Spacing="5">
 
+                    @* Folder and name *@
+                    <label>@loc["name"]
+                        <MudStack Spacing="1" Style="min-width: 30vw" Row AlignItems="AlignItems.Center">
+                            <MudLink OnClick="ChangeFolderAsync">@(FolderPath)/</MudLink>
+                            <MudTextField 
+                                AutoFocus T="string" Value="@_testCase.Name" ValueChanged="OnNameChanged"></MudTextField>
+                        </MudStack>
+                    </label>
+                    <label>@loc["template"]
+                        @* Test case template *@
+                        <MudStack Row Wrap="Wrap.Wrap" Style="max-width: 50vw">
+                            <MudRadioGroup @bind-Value="_template">
+
+                                @foreach(var template in templates)
+                                {
+                                    <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@template.Name">
+                                        @if(template.Icon is not null)
+                                        {
+                                            <MudIcon Icon="@template.Icon"/>
+                                        }
+                                        @loc[("template-" + template.Name.ToLower())]
+                                    </MudRadio>    
+                                }
+                            </MudRadioGroup>
+                        </MudStack>
+                    </label>
+
+                    @* If no test suite is selected, allow the user to pick one *@
+                    @if(_testCase.TestSuiteId == 0)
+                    {
+                        <MudLink OnClick="ChangeTestSuiteAsync">@loc["select-test-suite"]</MudLink>
+                    }
+                    else
+                    {
+                        <MudLink OnClick="ChangeTestSuiteAsync">@_testSuite?.Name</MudLink>
+
+                        @if (_validationResult is not null)
+                        {
+                            <FluentValidationResultSummary Result="@_validationResult" StringLocalizer="@validationLoc" />
+                        }
+                    }
+
+                </MudStack>
+          }
         </DialogContent>
 
         <DialogActions>
-            @if (_testSuite is not null &&
-            !string.IsNullOrEmpty(_testCase.Name) && 
-            _testCase.TestProjectId is not null)
+            @if (_validationResult is null)
             {
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
             }
-            <MudButton OnClick="Close">Cancel</MudButton>
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>
 
 @code {
-    private string? _errorMessage;
-
     [CascadingParameter]
     private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private bool _loading = false;
 
     [Parameter] public string? Name { get; set; }
     [Parameter] public TestProject? Project { get; set; }
@@ -49,6 +95,8 @@
     private TestSuite? _testSuite;
     private TestSuiteFolder? _folder;
     private string _name = "";
+    private string _template = "blank";
+    private FluentValidation.Results.ValidationResult? _validationResult = new FluentValidation.Results.ValidationResult();
 
     /// <summary>
     /// Returns the name shown in the UI
@@ -85,7 +133,7 @@
     private void OnNameChanged(string name)
     {
         _name = name;
-        var components = _name.Split('/');
+        var components = name.Split('/');
         if(components.Length == 1)
         {
             _testCase.Name = name;
@@ -96,10 +144,13 @@
             _testCase.Name = components.Last();
             _testCase.Path = string.Join('/', components.Take(components.Length-1));
         }
+        Validate();
     }
 
     protected override async Task OnParametersSetAsync()
     {
+        _testCase.TestProjectId ??= Project?.Id;
+
         this.OnNameChanged(Name ?? "New Test");
 
         if(TestSuiteId is not null)
@@ -109,6 +160,7 @@
         }
 
         await OnFolderChangedAsync(Folder);
+        Validate();
     }
 
     private void ChangeTestSuite(TestSuite? suite)
@@ -126,6 +178,11 @@
                 _testCase.TestSuiteFolderId = null;
             }
         }
+        else
+        {
+            _testCase.TestSuiteId = 0;
+        }
+        Validate();
     }
     private async Task OnFolderChangedAsync(TestSuiteFolder? folder)
     {
@@ -145,6 +202,18 @@
     }
 
 
+    public async Task ChangeTestSuiteAsync()
+    {
+        if (Project is not null)
+        {
+            var testSuite = await testSuiteController.PickTestSuiteAsync(Project);
+            if (testSuite is not null)
+            {
+                ChangeTestSuite(testSuite);
+            }
+        }
+    }
+
     public async Task ChangeFolderAsync()
     {
         if (Project is not null)
@@ -162,17 +231,38 @@
         MudDialog.Close();
     }
 
+
+    private bool Validate()
+    {
+        _validationResult = validator.Validate(_testCase);
+
+        if(_validationResult.IsValid)
+        {
+            _validationResult = null;
+            return true;
+        }
+        return false;
+    }
+
     private async Task OnValidSubmitAsync()
     {
-        if (string.IsNullOrWhiteSpace(_testCase.Name))
+        Validate();
+        if(_validationResult is not null)
         {
-            _errorMessage = "Invalid name";
             return;
         }
 
+        if(_loading)
+        {
+            return;
+        }
+
+        _loading = true;
+        this.StateHasChanged();
+
         _testCase.ScriptType = ScriptType;
         _testCase.IsTemplate = IsTemplate;
-        await testCaseEditorService.AddTestCaseAsync(_testCase);
+        await testCaseEditorService.AddTestCaseAsync(_testCase, _template);
         MudDialog.Close(_testCase);
     }
 }

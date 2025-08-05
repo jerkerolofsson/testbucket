@@ -2,6 +2,7 @@
 @using TestBucket.Components.Features.Http.Controls
 @using TestBucket.Components.Uploads.Services
 @using TestBucket.Contracts.Automation.Api
+@using TestBucket.Domain.Automation.Helpers
 @using TestBucket.Formats
 @using TestBucket.Formats.Dtos
 
@@ -63,22 +64,16 @@
     [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = default!;
     [Parameter] public TestRunnerResult? TestRunnerResult { get; set; }
 
-    private TestRunDto? _testRun;
     private TestCaseRunDto? _testCaseRun;
     private List<HttpMessageTestResult> _httpResults = [];
 
     protected override void OnInitialized()
     {
         _httpResults.Clear();
-        if (TestRunnerResult?.Result is not null && TestRunnerResult?.Format is not null && TestRunnerResult.Format != TestResultFormat.UnknownFormat)
-        {
-            var serializer = TestResultSerializerFactory.Create(TestRunnerResult.Format);
-            _testRun = serializer.Deserialize(TestRunnerResult.Result);
-            if(_testRun.Suites.Count > 0 && _testRun.Suites[0].Tests.Count > 0)
-            {
-                _testCaseRun = _testRun.Suites[0].Tests[0];
-            }
 
+        _testCaseRun = TestRunnerResultParser.ParseSingleResult(TestRunnerResult?.Result, TestRunnerResult?.Format);
+        if (TestRunnerResult is not null)
+        {
             if (TestRunnerResult.ArtifactContent is not null)
             {
                 foreach (var artifact in TestRunnerResult.ArtifactContent)

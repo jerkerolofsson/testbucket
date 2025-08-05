@@ -4,15 +4,12 @@ using Mediator;
 
 using Microsoft.Extensions.Logging;
 
-using TestBucket.Contracts.Fields;
 using TestBucket.Domain.AI.Embeddings;
-using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.Features.Traceability;
 using TestBucket.Domain.Features.Traceability.Models;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Projects;
-using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Requirements.Specifications;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Duplication;
@@ -21,9 +18,9 @@ using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.Testing.TestCases.Search;
+using TestBucket.Domain.Testing.TestCases.Templates;
 using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Domain.Testing.TestSuites;
-using TestBucket.Domain.Features.Traceability;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Testing.TestCases
@@ -39,14 +36,17 @@ namespace TestBucket.Domain.Testing.TestCases
         private readonly ITestSuiteManager _testSuiteManager;
         private readonly IMediator _mediator;
         private readonly IFieldDefinitionManager _fieldDefinitionManager;
+        private readonly List<ITestCaseTemplate> _templates = [];
 
         public TestCaseManager(
             ILogger<TestCaseManager> logger,
             TimeProvider timeProvider,
             IEnumerable<IMarkdownDetector> markdownDetectors,
+            IEnumerable<ITestCaseTemplate> templates,
             ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager)
         {
             _markdownDetectors = markdownDetectors.ToList();
+            _templates = templates.ToList();
             _logger = logger;
             _timeProvider = timeProvider;
             _testCaseRepo = testCaseRepo;
@@ -146,6 +146,19 @@ namespace TestBucket.Domain.Testing.TestCases
             }
         }
 
+        public async Task<TestCase> AddTestCaseAsync(ClaimsPrincipal principal, TestCase testCase, string? template)
+        {
+            if(template is not null)
+            {
+                var templateProvider = _templates.FirstOrDefault(x => x.Name == template);
+                if(templateProvider is not null)
+                {
+                    await templateProvider.ApplyAsync(testCase);
+                }
+            }
+
+            return await AddTestCaseAsync(principal, testCase);
+        }
 
         /// <summary>
         /// Adds a test case

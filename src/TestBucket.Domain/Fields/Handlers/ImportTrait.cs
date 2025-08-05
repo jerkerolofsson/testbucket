@@ -5,6 +5,10 @@ using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Domain.Fields.Handlers;
 public record class ImportTraitRequest(ClaimsPrincipal Principal, long ProjectId, TestTrait Trait, FieldTarget Target) : IRequest<FieldDefinition>;
+
+/// <summary>
+/// Imports a trait, adding it as a FieldDefinition
+/// </summary>
 public class ImportTraitHandler : IRequestHandler<ImportTraitRequest, FieldDefinition>
 {
     private readonly IFieldDefinitionManager _fieldDefinitionManager;

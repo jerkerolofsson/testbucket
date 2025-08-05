@@ -68,6 +68,7 @@ using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Settings;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestCases.Insights;
+using TestBucket.Domain.Testing.TestCases.Templates;
 using TestBucket.Domain.Testing.TestLab;
 using TestBucket.Domain.Testing.TestRepository;
 using TestBucket.Domain.Testing.TestRuns;
@@ -135,6 +136,13 @@ public static class DomainServiceExtensions
         services.AddScoped<IJobManager, JobManager>();
         services.AddScoped<TestResourceDependencyAllocator>();
         services.AddScoped<TestAccountDependencyAllocator>();
+
+        // Test templates
+        services.AddTransient<ITestCaseTemplate, BlankTemplate>();
+        services.AddTransient<ITestCaseTemplate, DotHttpTemplate>();
+        services.AddTransient<ITestCaseTemplate, DotHttpMcpTemplate>();
+        services.AddTransient<ITestCaseTemplate, PowershellTemplate>();
+        services.AddTransient<ITestCaseTemplate, PythonTemplate>();
 
         services.AddScoped<IFileResourceManager, FileResourceManager>();
 

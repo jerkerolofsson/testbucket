@@ -69,22 +69,8 @@ public class ImportTestCaseRunHandler : IRequestHandler<ImportTestCaseRunRequest
         await _testRunManager.AddTestCaseRunAsync(principal, testCaseRun);
 
         // Set fields from DTO (overriding any inherited values)
-        var fieldDefinitions = await _fieldDefinitionManager.GetDefinitionsAsync(principal, testRun.TestProjectId.Value, FieldTarget.TestCaseRun);
-        var fields = await _fieldManager.GetTestCaseRunFieldsAsync(principal, testRun.Id, testCaseRun.Id, fieldDefinitions);
-
-        foreach(var field in fields)
-        {
-            var fieldDefinition = field.FieldDefinition;
-            if(fieldDefinition is null)
-            {
-                continue;
-            }
-            var values = testCaseRunDto.Traits.Where(x => x.Type == fieldDefinition.TraitType).Select(x => x.Value).ToArray();
-            if (FieldValueConverter.TryAssignValue(fieldDefinition, field, values))
-            {
-                await _fieldManager.UpsertTestCaseRunFieldAsync(principal, field);
-            }
-        }
+        var fieldImporter = new TestCaseRunFieldImporter(principal, _fieldManager, _fieldDefinitionManager);
+        await fieldImporter.ImportAsync(testCaseRunDto, testCaseRun);
 
         return testCaseRun;
     }

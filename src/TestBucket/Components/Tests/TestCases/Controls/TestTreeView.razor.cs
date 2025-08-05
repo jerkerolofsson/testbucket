@@ -10,6 +10,7 @@ public partial class TestTreeView
     #region Parameters
     [Parameter] public bool ShowTestCases { get; set; } = true;
     [Parameter] public bool ShowTestRuns { get; set; } = true;
+    [Parameter] public bool ShowTestSuiteFolders { get; set; } = true;
     [Parameter] public bool ShowTestSuites { get; set; } = true;
     [Parameter] public bool ShowTestRunPipelines { get; set; } = true;
     [Parameter] public bool ShowTestRunTests { get; set; } = true;
@@ -112,6 +113,7 @@ public partial class TestTreeView
             TeamId = _team?.Id,
             ProjectId = _project?.Id,
             Text = text,
+            ShowTestSuiteFolders = ShowTestSuiteFolders,
             ShowTestCases = ShowTestCases,
             ShowTestRuns = ShowTestRuns,
             ShowTestSuites = ShowTestSuites,

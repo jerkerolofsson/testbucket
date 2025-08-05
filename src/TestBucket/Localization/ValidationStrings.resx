@@ -142,6 +142,12 @@
   <data name="validation-name-empty" xml:space="preserve">
     <value>Name is required</value>
   </data>
+  <data name="validation-project-required" xml:space="preserve">
+    <value>Project is required</value>
+  </data>
+  <data name="validation-testsuite-required" xml:space="preserve">
+    <value>Test suite is required</value>
+  </data>
   <data name="validation-unit-empty" xml:space="preserve">
     <value>Unit is required</value>
   </data>

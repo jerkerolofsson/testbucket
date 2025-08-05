@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize(Roles = "SUPERADMIN")]
 @inject TestSuiteController testSuiteService
+@inject IStringLocalizer<SharedStrings> loc
 
 @if (Folder is not null)
 {
@@ -13,20 +14,6 @@
                             <FieldHeader>Name</FieldHeader>
                             <MudTextField Variant="Variant.Outlined" @bind-Value="Folder.Name"></MudTextField>
                         </Field>
-
-                        <Field>
-                            <FieldHeader>Feature</FieldHeader>
-                            <MudSwitchM3 @bind-Value="Folder.IsFeature" Color="Color.Tertiary"/>
-                        </Field>
-
-                        @if (Folder.IsFeature)
-                        {
-                            <Field>
-                                <FieldHeader>Feature Description</FieldHeader>
-                                <MudTextField  Variant="Variant.Outlined" Lines="10" @bind-Value="Folder.FeatureDescription"/>
-                                <FieldDescription>Describe the feature and enter requirements. This information is used as input the the AI when generating test cases</FieldDescription>
-                            </Field>
-                        }
 
                         <MudDivider/>
                         
@@ -44,8 +31,8 @@
             </DialogContent>
 
             <DialogActions>
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
-                <MudButton OnClick="Close">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+                <MudButton OnClick="Close">@loc["cancel"]</MudButton>
             </DialogActions>
         </MudDialog>
     </EditForm>

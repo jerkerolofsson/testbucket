@@ -1021,4 +1021,25 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="list" xml:space="preserve">
     <value>List</value>
   </data>
+  <data name="select-test-suite" xml:space="preserve">
+    <value>Select test suite</value>
+  </data>
+  <data name="template-blank" xml:space="preserve">
+    <value>Blank</value>
+  </data>
+  <data name="template" xml:space="preserve">
+    <value>Template</value>
+  </data>
+  <data name="template-dothttp.api" xml:space="preserve">
+    <value>API test</value>
+  </data>
+  <data name="template-dothttp.mcp" xml:space="preserve">
+    <value>MCP test</value>
+  </data>
+  <data name="template-pwsh" xml:space="preserve">
+    <value>Powershell script</value>
+  </data>
+  <data name="template-python" xml:space="preserve">
+    <value>Python script</value>
+  </data>
 </root>

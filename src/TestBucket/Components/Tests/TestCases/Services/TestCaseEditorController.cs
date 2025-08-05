@@ -70,11 +70,11 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
     /// </summary>
     /// <param name="testCase"></param>
     /// <returns></returns>
-    public async ValueTask AddTestCaseAsync(TestCase testCase)
+    public async ValueTask AddTestCaseAsync(TestCase testCase, string? template)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         testCase.TenantId = await GetTenantIdAsync();
-        await _testCaseManager.AddTestCaseAsync(principal, testCase);
+        await _testCaseManager.AddTestCaseAsync(principal, testCase, template);
     }
    
     public async ValueTask<TestCase?> CreateNewTemplateAsync(TestProject project, TestSuiteFolder? folder, long? testSuiteId, string name = "")

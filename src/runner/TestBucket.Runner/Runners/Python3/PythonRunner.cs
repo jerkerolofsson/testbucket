@@ -4,26 +4,20 @@ using TestBucket.Runner.Shared;
 
 namespace TestBucket.Runner.Runners.Powershell
 {
-    public class PowershellRunner : IScriptRunner
+    public class PythonRunner : IScriptRunner
     {
         public async Task<ScriptResult> RunAsync(Script script, IScriptRunnerObserver observer, CancellationToken cancellationToken)
         {
-            var name = Guid.NewGuid().ToString() + ".ps1";
+            var name = Guid.NewGuid().ToString() + ".py";
             var tempFile = Path.Combine(script.WorkingDirectory, name);
             await File.WriteAllTextAsync(tempFile, script.Text, cancellationToken);
 
             try
             {
-                var exe = "powershell";
-                if(OperatingSystem.IsLinux())
-                {
-                    exe = "pwsh";
-                }
-
+                var exe = "python";
                 var result = await Cli.Wrap(exe)
                     .WithArguments((args) =>
                     {
-                        args.Add("/f");
                         args.Add(tempFile);
                     })
                     .Enrich(script)

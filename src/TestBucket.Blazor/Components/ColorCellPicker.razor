@@ -1,7 +1,7 @@
 @using MudBlazor
 @using TestBucket.Contracts.Appearance.Models
 
-<div class="tb-color-cell-picker">
+<div class="tb-color-cell-picker" @attributes="@Attributes">
     <MudTextField T="string" Text="@_color" TextChanged="OnTextChanged" Variant="Variant.Outlined" />
     <ColorCell HighlighyOnHover Color="@_color" Size="Size.Large" OnClick="() => _open = !_open" />
 
@@ -20,5 +20,5 @@
 @code {
     [Parameter] public string? Color { get; set; }
     [Parameter] public EventCallback<string> ColorChanged { get; set; }
-
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
 }

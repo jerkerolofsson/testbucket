@@ -94,7 +94,19 @@ public class GetJobPoller(
             }
 
             // Done
-            response.Status = PipelineJobStatus.Completed;
+            if (scriptResult.Exception is not null)
+            {
+                response.ErrorMessage = scriptResult.Exception.ToString();
+            }
+            if(scriptResult.Success)
+            {
+                response.Status = PipelineJobStatus.Success;
+            }
+            else
+            {
+                response.Status = PipelineJobStatus.Failed;
+
+            }
             response.StdOut = observer.StdOut;
             response.StdErr = observer.StdErr;
             await Client.PostJobResponseAsync(runnerId, response, accessToken);

@@ -17,6 +17,11 @@ public class TestRunnerResult
     /// Was the execution completed
     /// </summary>
     public bool Completed { get; set; } = true;
+    
+    /// <summary>
+    /// Was the execution successful
+    /// </summary>
+    public bool Success { get; set; } = true;
 
     /// <summary>
     /// Error message should be set if Completed is false

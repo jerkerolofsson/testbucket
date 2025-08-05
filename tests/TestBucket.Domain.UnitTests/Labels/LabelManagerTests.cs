@@ -46,7 +46,7 @@ public class LabelManagerTests
             builder.UserName = builder.Email = UserName;
             builder.AddAllPermissions();
         });
-        var label = new Label { Title = "Test Label" };
+        var label = new Label { Title = "AddLabelAsync_WithValidData_AddsLabelSuccessfully", TestProjectId = 55 };
         var time = DateTime.UtcNow;
         _mockTimeProvider.GetUtcNow().Returns(time);
 
@@ -54,9 +54,10 @@ public class LabelManagerTests
         await _labelManager.AddLabelAsync(principal, label);
 
         // Assert
-        await _fakeRepository.Received(1).AddLabelAsync(label);
-        Assert.Equal(label.Created, time);
-        Assert.Equal(label.Created, label.Modified);
+        var labels = await _labelManager.GetLabelsAsync(principal, label.TestProjectId!.Value);
+        Assert.NotNull(labels.FirstOrDefault(x => x.Title == label.Title));
+        Assert.Equal(time, label.Created);
+        Assert.Equal(label.Modified, label.Created);
         Assert.Equal(TenantId, label.TenantId);
     }
 
@@ -94,6 +95,32 @@ public class LabelManagerTests
     /// </summary>
     [Fact]
     [FunctionalTest]
+    public async Task GetLabelByNameAsync_WithInvalidProjectId_ReturnsNull()
+    {
+        // Arrange
+        var principal = Impersonation.Impersonate(builder =>
+        {
+            builder.TenantId = TenantId;
+            builder.UserName = builder.Email = UserName;
+            builder.AddAllPermissions();
+        });
+        var projectId = 1L;
+        var labelName = "Test Label";
+        var label = new Label { Title = labelName, TenantId = TenantId, TestProjectId = projectId };
+        await _fakeRepository.AddLabelAsync(label);
+
+        // Act
+        var result = await _labelManager.GetLabelByNameAsync(principal, 11111, labelName);
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="LabelManager.GetLabelByNameAsync"/> retrieves a label by name successfully.
+    /// </summary>
+    [Fact]
+    [FunctionalTest]
     public async Task GetLabelByNameAsync_WithValidName_ReturnsLabel()
     {
         // Arrange
@@ -105,7 +132,7 @@ public class LabelManagerTests
         });
         var projectId = 1L;
         var labelName = "Test Label";
-        var label = new Label { Title = labelName, TenantId = TenantId };
+        var label = new Label { Title = labelName, TenantId = TenantId, TestProjectId = projectId };
         await _fakeRepository.AddLabelAsync(label);
 
         // Act
@@ -151,13 +178,15 @@ public class LabelManagerTests
             builder.UserName = builder.Email = UserName;
             builder.AddAllPermissions();
         });
-        var label = new Label { Id = 1L, TenantId = TenantId };
+        var label = new Label { Description = "DeleteAsync_WithValidLabel_DeletesLabelSuccessfully", TenantId = TenantId, TestProjectId = 1 };
+        await _labelManager.AddLabelAsync(Impersonation.Impersonate(TenantId), label);
 
         // Act
         await _labelManager.DeleteAsync(principal, label);
 
         // Assert
-        await _fakeRepository.Received(1).DeleteLabelByIdAsync(label.Id);
+        var labels = await _labelManager.GetLabelsAsync(principal, 1);
+        Assert.Null(labels.FirstOrDefault(x => x.Description == label.Description));
     }
 
 
@@ -178,13 +207,10 @@ public class LabelManagerTests
             // Only read access
             builder.Add(PermissionEntityType.Issue, PermissionLevel.Read);
         });
-        var label = new Label { Id = 1L, TenantId = "other-tenant" };
+        var label = new Label { Description = "AddLabelAsync_WithoutWritePermission_ThrowsUnauthorizedAccessException", TenantId = "other-tenant" };
 
         // Act
         await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _labelManager.AddLabelAsync(principal, label));
-
-        // Assert
-        await _fakeRepository.Received(0).AddLabelAsync(Arg.Any<Label>());
     }
 
     /// <summary>
@@ -204,17 +230,18 @@ public class LabelManagerTests
             // Only read access
             builder.Add(PermissionEntityType.Issue, PermissionLevel.Read);
         });
-        var label = new Label { Id = 1L, TenantId = "other-tenant" };
+        var label = new Label { Id = 1L, TenantId = "other-tenant", Title = "UpdateLabelAsync_WithoutWritePermission_ThrowsUnauthorizedAccessException", TestProjectId = 4441 };
 
         // Act
         await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _labelManager.UpdateLabelAsync(principal, label));
 
         // Assert
-        await _fakeRepository.Received(0).UpdateLabelAsync(Arg.Any<Label>());
+        var createdLabel = await _labelManager.GetLabelByNameAsync(principal, label.TestProjectId!.Value, label.Title);
+        Assert.Null(createdLabel);
     }
 
     /// <summary>
-    /// Verifies that UpdateAsync throws an UnauthorizedAccessException if trying to update the label
+    /// Verifies that UpdateLabelAsync throws an UnauthorizedAccessException if trying to update the label
     /// with a user from another tenant than the label
     /// </summary>
     [Fact]
@@ -228,13 +255,17 @@ public class LabelManagerTests
             builder.UserName = builder.Email = UserName;
             builder.AddAllPermissions();
         });
-        var label = new Label { Id = 1L, TenantId = "other-tenant" };
+        var principal2 = Impersonation.Impersonate(builder =>
+        {
+            builder.TenantId = "other-tenant";
+            builder.UserName = builder.Email = UserName;
+            builder.AddAllPermissions();
+        });
+        var label = new Label { Title = "UpdateLabelAsync_WithWrongTenant_ThrowsUnauthorizedAccessException", TestProjectId = 4511 };
+        await _labelManager.AddLabelAsync(principal, label);
 
         // Act
-        await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _labelManager.UpdateLabelAsync(principal, label));
-
-        // Assert
-        await _fakeRepository.Received(0).UpdateLabelAsync(Arg.Any<Label>());
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _labelManager.UpdateLabelAsync(principal2, label));
     }
 
     /// <summary>
@@ -252,13 +283,16 @@ public class LabelManagerTests
             builder.UserName = builder.Email = UserName;
             builder.AddAllPermissions();
         });
-        var label = new Label { Id = 1L, TenantId = "other-tenant" };
+        var label = new Label { Id = 1L, TenantId = TenantId, TestProjectId = 546581, Title = "DeleteAsync_WithWrongTenant_ThrowsUnauthorizedAccessException" };
+        await _labelManager.AddLabelAsync(principal, label);
 
         // Act
-        await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _labelManager.DeleteAsync(principal, label));
+        var otherPrincipal = Impersonation.Impersonate("other-tenant");
+        await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await _labelManager.DeleteAsync(otherPrincipal, label));
 
         // Assert
-        await _fakeRepository.Received(0).DeleteLabelByIdAsync(label.Id);
+        var createdLabel = await _labelManager.GetLabelByNameAsync(principal, label.TestProjectId!.Value, label.Title!);
+        Assert.NotNull(createdLabel);
     }
 
     /// <summary>
@@ -275,16 +309,19 @@ public class LabelManagerTests
             builder.UserName = builder.Email = UserName;
             builder.AddAllPermissions();
         });
-        var label = new Label { Id = 1L, Title = "Updated Label", TenantId = TenantId };
+        var label = new Label { Id = 1L, Title = "Updated Label", TenantId = TenantId, TestProjectId = 13999 };
+        await _labelManager.AddLabelAsync(principal, label);
         _mockTimeProvider.GetUtcNow().Returns(DateTime.UtcNow);
 
 
         // Act
-        await _labelManager.UpdateLabelAsync(principal, label);
+        var label2 = new Label { Id = label.Id, Title = "UpdateLabelAsync_WithValidLabel_UpdatesLabelSuccessfully", TenantId = TenantId, TestProjectId = 13999 };
+        await _labelManager.UpdateLabelAsync(principal, label2);
 
         // Assert
-        await _fakeRepository.Received(1).UpdateLabelAsync(label);
-        Assert.Equal(label.Modified, _mockTimeProvider.GetUtcNow());
+        var storedLabel = await _labelManager.GetLabelByNameAsync(principal, label2.TestProjectId!.Value, label2.Title!);
+        Assert.NotNull(storedLabel);
+        Assert.Equal(storedLabel.Modified, _mockTimeProvider.GetUtcNow());
     }
 
     /// <summary>

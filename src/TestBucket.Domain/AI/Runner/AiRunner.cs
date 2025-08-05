@@ -264,12 +264,22 @@ internal class AiRunner : BackgroundService
         var result = TestRunnerResultParser.ParseSingleResult(runnerResult.Result, runnerResult.Format);
         if (result is null)
         {
-            await OnTestCaseRunResultAsync(principal, scope, testCaseRun, "No result from runner", TestResult.Inconclusive, testExecutionContext);
+            // No JUnitXML or similar was provided by the runner, so we judge the result based on the actual runner (this may be the exit code)
+            if (!runnerResult.Success)
+            {
+                var error = runnerResult.ErrorMessage ?? "No result from runner";
+                await OnTestCaseRunResultAsync(principal, scope, testCaseRun, error, TestResult.Failed, testExecutionContext);
+            }
+            else
+            {
+
+                await OnTestCaseRunResultAsync(principal, scope, testCaseRun, runnerResult.StdOut ?? "", TestResult.Passed, testExecutionContext);
+            }
         }
         else
         {
             // Set result
-            await OnTestCaseRunResultAsync(principal, scope, testCaseRun, result.Message ?? "", result.Result ?? TestResult.Inconclusive, testExecutionContext);
+            await OnTestCaseRunResultAsync(principal, scope, testCaseRun, result.Message ?? runnerResult.StdOut ?? "", result.Result ?? TestResult.Inconclusive, testExecutionContext);
 
             // Import Traits
             var fieldManager = scope.ServiceProvider.GetRequiredService<IFieldManager>();

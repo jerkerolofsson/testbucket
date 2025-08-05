@@ -1,12 +1,13 @@
 @using MudBlazor
 @using MudBlazor.Utilities
-<div role="button" class="@CssClass" style="@CssStyle" data-testid="@TestId" @onclick="OnClickedAsync" />
+<div role="button" class="@CssClass" style="@CssStyle" data-testid="@TestId" @onclick="OnClickedAsync" @attributes="@Attributes" />
 
 @code {
     [Parameter] public Size Size { get; set; } = Size.Small;
     [Parameter] public string? Color { get; set; }
     [Parameter] public bool HighlighyOnHover { get; set; } = false;
     [Parameter] public EventCallback<string> OnClick { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
 
     public string CssStyle => Color is null ? "" : $"background: {Color}";
 

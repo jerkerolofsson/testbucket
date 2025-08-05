@@ -17,6 +17,9 @@ namespace TestBucket.Runner.Runners
             return name switch
             {
                 "cmd" => new CmdRunner(),
+
+                "python" => new PythonRunner(),
+
                 "pwsh" => new PowershellRunner(),
                 "powershell" => new PowershellRunner(),
                 "http" => new DotHttpRunner(),

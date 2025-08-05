@@ -397,6 +397,13 @@ components:
     test_lead: 
     paths:
     - src/TestBucket/Components/Settings/**/*
+  Tenants:
+    display: 
+    description: Creation, deletion, and admin of tenants to allow isolation for other entities in the database.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Tenants\**\*.*
   Test Accounts:
     display: 
     description: >-
@@ -607,6 +614,27 @@ features:
     - src\TestBucket.Domain\AI\Runner\**\*.*
     - src\TestBucket.Domain\AI\Agent\**\*.*
     - src\TestBucket.Domain\AI\Embeddings\**\*.*
+  Android Testing:
+    display: 
+    description: >-
+      Support for testing Android phones/devices.
+
+
+      - MCP server for Appium
+
+      - ADB proxy for remote access to ADB devices from CI and hybrid tests
+
+      - Automatic population of fields from actual device data (such as SW version)
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths: []
+  API Testing:
+    display: 
+    description: Support for API testing using .http files
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\runner\TestBucket.Runner\Runners\Http\**\*.*
   Architecture 1.0:
     display: 
     description: Handling of product architecture, including systems, layers, components and product features
@@ -812,6 +840,13 @@ features:
     paths:
     - src\integrations\TestBucket.Jira\**\*
     - src\TestBucket.Domain\Identity\OAuth\**\*
+  MCP Testing:
+    display: 
+    description: Support to test MCP servers
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\runner\TestBucket.Runner\Runners\Http\**\*.*
   MCP Tools:
     display: 
     description: MCP tools for model-context-protocol integration with Agent/Chat or external tools
@@ -1455,6 +1490,13 @@ features:
     - src\TestBucket.Domain\Settings\**\*
     - src\TestBucket.Data\Settings\**\*
     - src\TestBucket.Data\Identity\UserPreferenceRepository.cs
+  Templates:
+    display: 
+    description: Templates to pre-define test case fields and description when creating new ones.
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Testing\TestCases\Templates\**\*.*
   Test Resources:
     display: 
     description: Handling of test resources, resource servers providing resources, MCP servers providing APIs to automate the resources
@@ -1480,3 +1522,19 @@ features:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Domain\Appearance\Themes\**\*.*
+  Traceability:
+    display: 
+    description: >-
+      Handling of links between entities.
+
+
+      Example:
+
+      - Requirements -> Test Cases
+
+      - Test Case Runs -> Issues
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Features\Traceability\**\*.*
+    - src\TestBucket\Components\Features\Traceability\**\*.*

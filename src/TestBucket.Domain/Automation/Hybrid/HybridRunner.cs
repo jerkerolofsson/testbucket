@@ -51,7 +51,7 @@ namespace TestBucket.Domain.Automation.Hybrid
                 var updatedJob = await _jobRepository.GetByIdAsync(job.Id);
                 if (updatedJob is null)
                 {
-                    return new TestRunnerResult { Completed = false, ErrorMessage = "Job deleted", Format = Formats.TestResultFormat.UnknownFormat, Result = "" };
+                    return new TestRunnerResult { Completed = false, ErrorMessage = "Job deleted", Format = Formats.TestResultFormat.UnknownFormat, Result = "", Success = false };
                 }
                 switch (updatedJob.Status)
                 {
@@ -63,6 +63,7 @@ namespace TestBucket.Domain.Automation.Hybrid
                         // The job is completed, and attachments should have been uploaded
                         return new TestRunnerResult 
                         { 
+                            Success = updatedJob.Status == PipelineJobStatus.Success,
                             StdOut = updatedJob.StdOut??"",
                             StdErr = updatedJob.StdErr ?? "",
                             Completed = true, 
@@ -71,12 +72,12 @@ namespace TestBucket.Domain.Automation.Hybrid
                             ArtifactContent = updatedJob.ArtifactContent,
                         };
                     case PipelineJobStatus.Error:
-                        return new TestRunnerResult { Completed = true, Format = Formats.TestResultFormat.UnknownFormat, Result = "", ErrorMessage = updatedJob.ErrorMessage};
+                        return new TestRunnerResult { Completed = true, Format = Formats.TestResultFormat.UnknownFormat, Result = "", ErrorMessage = updatedJob.ErrorMessage, Success = false};
                 }
 
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    return new TestRunnerResult { Completed = false, ErrorMessage = "Timeout", Format = Formats.TestResultFormat.UnknownFormat, Result = "" };
+                    return new TestRunnerResult { Completed = false, ErrorMessage = "Timeout", Format = Formats.TestResultFormat.UnknownFormat, Result = "", Success = false };
                 }
                 await Task.Delay(TimeSpan.FromMilliseconds(sleepTime), cancellationToken);
 

@@ -1,7 +1,7 @@
 ﻿@using TestBucket.Domain
 @inject IJSRuntime js
 
-<MudStack Class="tb-codeblock" Spacing="0">
+<MudStack Class="tb-codeblock" Spacing="0" @attributes="@Attributes">
 
     <MudStack Row AlignItems="AlignItems.Center">
         <LanguageIcon Size="Size.Small" Language=@Language />
@@ -19,6 +19,7 @@
     [Parameter] public string MaxHeight { get; set; } = "50vh";
     [Parameter] public string Language { get; set; } = "json";
     [Parameter] public string? Code { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
 
     private string _elementId = "code-block-" + Guid.NewGuid().ToString();
 

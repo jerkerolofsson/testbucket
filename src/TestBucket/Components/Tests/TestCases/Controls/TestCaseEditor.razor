@@ -81,7 +81,7 @@
                                         UploadHandler="@UploadHandler"
                                         EnableRunCode
                                         EnableCopyCodeToClipboard
-                                        RunCodeLanguages="http pwsh"
+                                        RunCodeLanguages="http pwsh python"
                                         RunCode="OnRunCodeClickedAsync"
                                         ValueChanged="OnDescriptionChanged"
                                         Preview="@ReadOnly"
@@ -90,7 +90,7 @@
                     else
                     {
                         // Read only, automated test 
-                        <code><pre>@Text</pre></code>
+                        <CodeBlock Language="@Test.RunnerLanguage" Code="@Text"/>
                     }
 
                     <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />

@@ -16,7 +16,7 @@ internal class DotHttpMcpTemplate : ITestCaseTemplate
         test.Description = $$"""
             # @name {{test.Name}}
             # @verify mcp success
-            CALL https://localhost:32223#browser_navigate MCP/SSE
+            CALL http://localhost:32223#browser_navigate MCP/SSE
 
             {
                 "url": "https://www.github.com"

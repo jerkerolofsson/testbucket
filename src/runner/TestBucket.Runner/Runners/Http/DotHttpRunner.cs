@@ -78,6 +78,11 @@ public class DotHttpRunner : IScriptRunner
         suite.EndedTime = run.EndedTime;
         suite.SystemOut = logger.ToString();
 
+        if(report.Stages.Count == 0)
+        {
+            
+        }
+
         foreach (var stage in report.Stages)
         {
             var test = new TestCaseRunDto

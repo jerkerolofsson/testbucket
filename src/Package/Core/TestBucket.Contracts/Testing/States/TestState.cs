@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.States;
 
 namespace TestBucket.Contracts.Testing.States;
@@ -19,6 +20,35 @@ public class TestState : BaseState
     /// Known state
     /// </summary>
     public MappedTestState MappedState { get; set; } = MappedTestState.NotStarted;
+
+    public override string? GetMappedState()
+    {
+        return MappedState.ToString();
+    }
+
+    public override bool SetMappedState(string name)
+    {
+        if(Enum.TryParse<MappedTestState>(name, true, out var state))
+        {
+            MappedState = state;
+            return true;
+        }
+        MappedState = MappedTestState.Other;
+        return false;
+    }
+
+    public override string[] GetMappedStates()
+    {
+        return 
+            [
+                TestCaseStates.Draft,
+                TestCaseStates.Review,
+                TestCaseStates.Ongoing,
+                TestCaseStates.Completed,
+                TestCaseRunStates.Assigned,
+                TestCaseRunStates.NotStarted,
+            ];
+    }
 
     public override bool Equals(object? obj)
     {

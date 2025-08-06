@@ -1054,4 +1054,13 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="test-run" xml:space="preserve">
     <value>Test run</value>
   </data>
+  <data name="welcome-add-testsuite" xml:space="preserve">
+    <value>Add a test suite</value>
+  </data>
+  <data name="continue" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="identity" xml:space="preserve">
+    <value>Identity</value>
+  </data>
 </root>

@@ -32,6 +32,19 @@ public class StateService : IStateService
     }
 
     /// <summary>
+    /// Returns the initial state for test cases
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<TestState> GetTestCaseInitialStateAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var states = await GetTestCaseRunStatesAsync(principal, projectId);
+        states ??= DefaultStates.GetDefaultTestCaseStates();
+        var state = states.Where(x => x.IsInitial).FirstOrDefault();
+        return state ?? new TestState() { Name = TestCaseStates.Draft, MappedState = MappedTestState.Draft, IsFinal = false, IsInitial = true };
+    }
+    /// <summary>
     /// Returns the initial state for test case runs
     /// </summary>
     /// <param name="principal"></param>
@@ -58,6 +71,25 @@ public class StateService : IStateService
         var state = states.Where(x => x.IsFinal).FirstOrDefault();
         return state ?? new TestState() { Name = TestCaseRunStates.Completed, MappedState = MappedTestState.Completed, IsFinal = true, IsInitial = false };
     }
+
+    /// <summary>
+    /// State for test case runs
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    public async Task<IReadOnlyList<TestState>> GetTestCaseStatesAsync(ClaimsPrincipal principal, long projectId)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
+
+        if (!_cache.TryGetValue(projectId, out ProjectStateCacheEntry? entry))
+        {
+            entry = await RefreshAsync(principal, projectId);
+        }
+        return entry?.TestCaseStates ?? DefaultStates.GetDefaultTestCaseStates();
+    }
+
 
     /// <summary>
     /// State for test case runs

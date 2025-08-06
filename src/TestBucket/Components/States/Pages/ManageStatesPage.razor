@@ -3,6 +3,7 @@
 @using TestBucket.Components.States.Controllers
 @using TestBucket.Components.States.Controls
 @using TestBucket.Contracts.Localization
+@using TestBucket.Contracts.States
 @using TestBucket.Domain
 @using TestBucket.Domain.Settings
 @using TestBucket.Domain.States.Models
@@ -22,30 +23,100 @@
         <MudTabs>
             <MudTabPanel Text="@loc.Shared["issue"]">
                 <MudStack Class="pa-5">
-                    <MudStack>
-                        <MudText Typo="Typo.caption">@loc.Shared["tenant"]</MudText>
-                        <StateDefinitionEditor StateDefinition="@_tenantState" StateDefinitionChanged="async () => await SaveAsync(_tenantState)" EntityType="@StateEntityType.Issue" />
-                    </MudStack>
-                    <MudStack>
-                        <MudText Typo="Typo.caption">@loc.Shared["team"]</MudText>
-                        <StateDefinitionEditor StateDefinition="@_teamState" StateDefinitionChanged="async () => await SaveAsync(_teamState)" EntityType="@StateEntityType.Issue" />
-                    </MudStack>
-                    <MudStack>
-                        <MudText Typo="Typo.caption">@loc.Shared["project"]</MudText>
-                        <StateDefinitionEditor StateDefinition="@_projectState" StateDefinitionChanged="async () => await SaveAsync(_projectState)" EntityType="@StateEntityType.Issue" />
-                    </MudStack>
+
+                    <StateGraph States="_issueStates"/>
+
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["tenant"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_tenantState" StateDefinitionChanged="async () => await SaveAsync(_tenantState)" EntityType="@StateEntityType.Issue" />
+                        </MudStack>
+                    </MudPaper>
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["team"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_teamState" StateDefinitionChanged="async () => await SaveAsync(_teamState)" EntityType="@StateEntityType.Issue" />
+                        </MudStack>
+                    </MudPaper>
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["project"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_projectState" StateDefinitionChanged="async () => await SaveAsync(_projectState)" EntityType="@StateEntityType.Issue" />
+                        </MudStack>
+                    </MudPaper>
                 </MudStack>
             </MudTabPanel>
             <MudTabPanel Text="@loc.Shared["requirement"]">
                 <MudStack Class="pa-5">
+
+                    <StateGraph States="_requirementStates" />
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["tenant"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_tenantState" StateDefinitionChanged="async () => await SaveAsync(_tenantState)" EntityType="@StateEntityType.Requirement" />
+                        </MudStack>
+                    </MudPaper>
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["team"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_teamState" StateDefinitionChanged="async () => await SaveAsync(_teamState)" EntityType="@StateEntityType.Requirement" />
+                        </MudStack>
+                    </MudPaper>
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["project"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_projectState" StateDefinitionChanged="async () => await SaveAsync(_projectState)" EntityType="@StateEntityType.Requirement" />
+                        </MudStack>
+                    </MudPaper>
                 </MudStack>
             </MudTabPanel>
             <MudTabPanel Text="@loc.Shared["test-case"]">
                 <MudStack Class="pa-5">
+
+                    <StateGraph States="_testCaseStates"/>
+
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["tenant"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_tenantState" StateDefinitionChanged="async () => await SaveAsync(_tenantState)" EntityType="@StateEntityType.TestCase" />
+                        </MudStack>
+                    </MudPaper>
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["team"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_teamState" StateDefinitionChanged="async () => await SaveAsync(_teamState)" EntityType="@StateEntityType.TestCase" />
+                        </MudStack>
+                    </MudPaper>
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["project"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_projectState" StateDefinitionChanged="async () => await SaveAsync(_projectState)" EntityType="@StateEntityType.TestCase" />
+                        </MudStack>
+                    </MudPaper>
                 </MudStack>
             </MudTabPanel>
             <MudTabPanel Text="@loc.Shared["test-case-run"]">
                 <MudStack Class="pa-5">
+
+                    <StateGraph States="_testCaseRunStates"/>
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["tenant"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_tenantState" StateDefinitionChanged="async () => await SaveAsync(_tenantState)" EntityType="@StateEntityType.TestCaseRun" />
+                        </MudStack>
+                    </MudPaper>
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["team"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_teamState" StateDefinitionChanged="async () => await SaveAsync(_teamState)" EntityType="@StateEntityType.TestCaseRun" />
+                        </MudStack>
+                    </MudPaper>
+                    <MudPaper Class="pa-3">
+                        <MudStack>
+                            <MudText Typo="Typo.caption">@loc.Shared["project"]</MudText>
+                            <StateDefinitionEditor StateDefinition="@_projectState" StateDefinitionChanged="async () => await SaveAsync(_projectState)" EntityType="@StateEntityType.TestCaseRun" />
+                        </MudStack>
+                    </MudPaper>
                 </MudStack>
             </MudTabPanel>
         </MudTabs>
@@ -64,12 +135,32 @@
     private StateDefinition? _tenantState = null;
     private StateDefinition? _projectState = null;
     private StateDefinition? _teamState = null;
+    private List<BaseState> _issueStates = [];
+    private List<BaseState> _requirementStates = [];
+    private List<BaseState> _testCaseStates = [];
+    private List<BaseState> _testCaseRunStates = [];
 
     private async Task SaveAsync(StateDefinition? stateDefinition)
     {
         if(stateDefinition is not null)
         {
             await stateController.SaveStateDefinitionAsync(stateDefinition);
+            await ReloadStatesAsync();
+        }
+    }
+
+    private async Task ReloadStatesAsync()
+    {
+        if(Project is not null)
+        {
+            var issueStates = await stateController.GetIssueStatesAsync(Project.Id);
+            var requirementStates = await stateController.GetRequirementStatesAsync(Project.Id);
+            var testCaseStates = await stateController.GetTestCaseStatesAsync(Project.Id);
+            var testCaseRunStates = await stateController.GetTestCaseRunStatesAsync(Project.Id);
+            _requirementStates = requirementStates.Cast<BaseState>().ToList();
+            _issueStates = issueStates.Cast<BaseState>().ToList();
+            _testCaseStates = testCaseStates.Cast<BaseState>().ToList();
+            _testCaseRunStates = testCaseRunStates.Cast<BaseState>().ToList();
         }
     }
 
@@ -86,6 +177,8 @@
             {
                 _projectState = await stateController.GetProjectStateDefinitionAsync(Project.Id);
             }
+
+            await ReloadStatesAsync();
 
             _loading = false;
             this.StateHasChanged();

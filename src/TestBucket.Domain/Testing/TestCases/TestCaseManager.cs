@@ -4,6 +4,7 @@ using Mediator;
 
 using Microsoft.Extensions.Logging;
 
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.AI.Embeddings;
 using TestBucket.Domain.Features.Traceability;
 using TestBucket.Domain.Features.Traceability.Models;
@@ -11,6 +12,7 @@ using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.States;
 using TestBucket.Domain.Testing.Aggregates;
 using TestBucket.Domain.Testing.Duplication;
 using TestBucket.Domain.Testing.Events;
@@ -37,13 +39,14 @@ namespace TestBucket.Domain.Testing.TestCases
         private readonly IMediator _mediator;
         private readonly IFieldDefinitionManager _fieldDefinitionManager;
         private readonly List<ITestCaseTemplate> _templates = [];
+        private readonly IStateService _stateService;
 
         public TestCaseManager(
             ILogger<TestCaseManager> logger,
             TimeProvider timeProvider,
             IEnumerable<IMarkdownDetector> markdownDetectors,
             IEnumerable<ITestCaseTemplate> templates,
-            ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager)
+            ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager, IStateService stateService)
         {
             _markdownDetectors = markdownDetectors.ToList();
             _templates = templates.ToList();
@@ -54,6 +57,7 @@ namespace TestBucket.Domain.Testing.TestCases
             _projectRepo = projectRepo;
             _mediator = mediator;
             _fieldDefinitionManager = fieldDefinitionManager;
+            _stateService = stateService;
         }
 
         /// <summary>
@@ -173,6 +177,22 @@ namespace TestBucket.Domain.Testing.TestCases
             testCase.Modified = testCase.Created = _timeProvider.GetUtcNow();
             testCase.CreatedBy = testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
             testCase.ClassificationRequired = testCase.Description is not null && testCase.Description.Length > 0;
+
+            if (testCase.TestProjectId is not null)
+            {
+                try
+                {
+                    var initialState = await _stateService.GetTestCaseInitialStateAsync(principal, testCase.TestProjectId.Value);
+                    testCase.State = initialState?.Name ?? TestCaseStates.Draft;
+                    testCase.MappedState = initialState?.MappedState ?? MappedTestState.Draft;
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, "Error getting initial state for test case {TestCaseName}", testCase.Name);
+                    testCase.State = TestCaseStates.Draft;
+                    testCase.MappedState = MappedTestState.Draft;
+                }
+            }
 
             if(testCase.ScriptType == ScriptType.Exploratory)
             {

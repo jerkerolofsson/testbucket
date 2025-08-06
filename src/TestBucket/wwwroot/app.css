@@ -130,6 +130,14 @@ table {
     margin-left: 8px;
 }
 
+div.mud-input-slot.mud-input-root:has(.tb-chip) {
+    height: calc(1lh + 4px);
+}
+
+.mud-chip.tb-chip {
+    margin: 0px;
+}
+
 .mud-chip-content {
     overflow: hidden;
     padding-right: 2px;
@@ -1230,6 +1238,10 @@ div.tb-profile-image.tb-background-9 {
 .resource-group .node-border {
     opacity: 0.5;
 }
+.resource-group .state-node-border {
+    opacity: 0;
+}
+.resource-group:hover .state-node-border,
 .resource-group:hover .node-border {
     opacity: 1;
 }

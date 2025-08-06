@@ -361,4 +361,88 @@ public class StateServiceTests
         Assert.Equal("Tenant2-Closed", tenant2States[0].Name);
         Assert.DoesNotContain(tenant2States, x => x.Name == "Tenant1-Open");
     }
+
+    /// <summary>
+    /// Tests that GetTestCaseStatesAsync returns default test case states when no custom state definitions exist.
+    /// </summary>
+    [FunctionalTest]
+    [Fact]
+    public async Task GetTestCaseStatesAsync_ReturnsDefaultStates_WhenNoCustomStatesExist()
+    {
+        var sut = CreateSut();
+        var user = GetUserWithAllPermissions();
+        var states = await sut.GetTestCaseStatesAsync(user, ProjectId);
+        Assert.NotNull(states);
+        Assert.Equal(DefaultStates.GetDefaultTestCaseStates().Count, states.Count);
+    }
+
+    /// <summary>
+    /// Tests that GetTestCaseRunStatesAsync returns default test case run states when no custom state definitions exist.
+    /// </summary>
+    [FunctionalTest]
+    [Fact]
+    public async Task GetTestCaseRunStatesAsync_ReturnsDefaultStates_WhenNoCustomStatesExist()
+    {
+        var sut = CreateSut();
+        var user = GetUserWithAllPermissions();
+        var states = await sut.GetTestCaseRunStatesAsync(user, ProjectId);
+        Assert.NotNull(states);
+        Assert.Equal(DefaultStates.GetDefaultTestCaseRunStates().Count, states.Count);
+    }
+
+    /// <summary>
+    /// Tests that GetTestCaseRunFinalStateAsync returns the expected final state.
+    /// </summary>
+    [FunctionalTest]
+    [Fact]
+    public async Task GetTestCaseRunFinalStateAsync_ReturnsFinalState()
+    {
+        var sut = CreateSut();
+        var user = GetUserWithAllPermissions();
+        var state = await sut.GetTestCaseRunFinalStateAsync(user, ProjectId);
+        Assert.NotNull(state);
+        Assert.Equal(DefaultStates.GetDefaultTestCaseRunFinalState().Name, state.Name);
+    }
+
+    /// <summary>
+    /// Tests that GetTestCaseRunInitialStateAsync returns the expected initial state.
+    /// </summary>
+    [FunctionalTest]
+    [Fact]
+    public async Task GetTestCaseRunInitialStateAsync_ReturnsInitialState()
+    {
+        var sut = CreateSut();
+        var user = GetUserWithAllPermissions();
+        var state = await sut.GetTestCaseRunInitialStateAsync(user, ProjectId);
+        Assert.NotNull(state);
+        Assert.Equal(DefaultStates.GetDefaultTestCaseRunInitialState().Name, state.Name);
+    }
+
+    /// <summary>
+    /// Tests that GetRequirementTypesAsync returns non-empty types.
+    /// </summary>
+    [FunctionalTest]
+    [Fact]
+    public async Task GetRequirementTypesAsync_ReturnsTypes()
+    {
+        var sut = CreateSut();
+        var user = GetUserWithAllPermissions();
+        var types = await sut.GetRequirementTypesAsync(user, ProjectId);
+        Assert.NotNull(types);
+        Assert.NotEmpty(types);
+    }
+
+    /// <summary>
+    /// Tests that GetIssueTypesAsync returns non-empty types.
+    /// </summary>
+    [FunctionalTest]
+    [Fact]
+    public async Task GetIssueTypesAsync_ReturnsTypes()
+    {
+        var sut = CreateSut();
+        var user = GetUserWithAllPermissions();
+        var types = await sut.GetIssueTypesAsync(user, ProjectId);
+        Assert.NotNull(types);
+        Assert.NotEmpty(types);
+    }
 }

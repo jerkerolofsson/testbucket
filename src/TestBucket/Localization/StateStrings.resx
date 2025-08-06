@@ -120,6 +120,9 @@
   <data name="accepted" xml:space="preserve">
     <value>Accepted</value>
   </data>
+  <data name="allowed-transitions" xml:space="preserve">
+    <value>Allowed state transitions</value>
+  </data>
   <data name="assigned" xml:space="preserve">
     <value>Assigned</value>
   </data>
@@ -153,6 +156,9 @@
   <data name="inprogress" xml:space="preserve">
     <value>In Progress</value>
   </data>
+  <data name="notstarted" xml:space="preserve">
+    <value>Not started</value>
+  </data>
   <data name="ongoing" xml:space="preserve">
     <value>Ongoing</value>
   </data>
@@ -170,6 +176,9 @@
   </data>
   <data name="submitted" xml:space="preserve">
     <value>Submitted</value>
+  </data>
+  <data name="triage" xml:space="preserve">
+    <value>Triage</value>
   </data>
   <data name="triaged" xml:space="preserve">
     <value>Triaged</value>

@@ -1049,4 +1049,13 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="test-run" xml:space="preserve">
     <value />
   </data>
+  <data name="welcome-add-testsuite" xml:space="preserve">
+    <value />
+  </data>
+  <data name="continue" xml:space="preserve">
+    <value />
+  </data>
+  <data name="identity" xml:space="preserve">
+    <value />
+  </data>
 </root>

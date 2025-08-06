@@ -13,15 +13,7 @@
         @foreach (var state in _states)
         {
             <MudSelectItem Value="@state">
-                @if (state.MappedState == MappedIssueState.Other)
-                {
-                    @state.Name
-                }
-                else
-                {
-                    var name = state.MappedState.ToString().ToLower();
-                    @loc[name]
-                }
+                <Chip Color="@state.Color" Text="@state.Name" />
             </MudSelectItem>
         }
     </MudSelect>
@@ -34,17 +26,34 @@
 
     private IReadOnlyList<IssueState> _states = [];
 
+    public long? ProjectId => TestProjectId ?? appNavigationManager.State.SelectedProject?.Id;
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        long? testProjectId = TestProjectId;
-        if(testProjectId is null)
+        if (ProjectId is not null && _states.Count == 0)
         {
-            testProjectId = appNavigationManager.State.SelectedProject?.Id;
-        }
+            await RefreshStatesAsync(State);
 
-        if (testProjectId != 0 && testProjectId is not null && _states.Count == 0)
+        }
+    }
+
+    public async Task RefreshStatesAsync(IssueState? state)
+    {
+        if(ProjectId is not null)
         {
-            _states = await controller.GetIssueStatesAsync(testProjectId.Value);
+            var states = await controller.GetIssueStatesAsync(ProjectId.Value);
+            _states = states;
+
+            var currentStateName = state?.Name;
+            if (currentStateName is not null)
+            {
+                var actualState = _states.FirstOrDefault(x => x.Name == currentStateName);
+                if (actualState?.AllowedStates is not null)
+                {
+                    _states = [actualState, .. _states.Where(x => x.Name != null && actualState.AllowedStates.Contains(x.Name))];
+                }
+            }
+
             if (_states.Count > 0)
             {
                 this.StateHasChanged();
@@ -54,6 +63,7 @@
 
     private async Task OnStateChanged(IssueState? state)
     {
+        await RefreshStatesAsync(state);
         await StateChanged.InvokeAsync(state);
     }
 }

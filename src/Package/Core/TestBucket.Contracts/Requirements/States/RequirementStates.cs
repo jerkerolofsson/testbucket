@@ -11,7 +11,7 @@ namespace TestBucket.Contracts.Requirements.States;
 /// </summary>
 public class RequirementStates
 {
-    public static string[] DefaultStateNames => [Draft, Accepted, InProgress, Reviewed, Completed, Delivered];
+    public static string[] DefaultStateNames => [Draft, Accepted, InProgress, Reviewed, Completed, Delivered, Canceled];
 
     /// <summary>
     /// A new requirement

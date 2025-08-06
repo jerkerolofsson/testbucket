@@ -4,6 +4,7 @@ using MudBlazor.Utilities;
 using TestBucket.Components.Shared.Editor;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Contracts.Fields;
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Comments.Models;
 using TestBucket.Domain.Testing.Compiler;
 
@@ -42,6 +43,17 @@ public partial class TestCaseEditor
 
     public ImageUploadHandler UploadHandler => new TestCaseImageUploadHandler(uploads, Test?.Id);
 
+    private TestState? State
+    {
+        get
+        {
+            if (Test?.State is not null)
+            {
+                return new TestState() { MappedState = Test.MappedState ?? MappedTestState.Draft, Name = Test.State };
+            }
+            return null;
+        }
+    }
     public string? Text
     {
         get
@@ -74,6 +86,17 @@ public partial class TestCaseEditor
                 return _previewPreconditions;
             }
             return _preconditionsText;
+        }
+    }
+
+    private async Task OnTestCaseStateChanged(TestState? state)
+    {
+        if (Test is not null)
+        {
+            Test.State = state?.Name;
+            Test.MappedState = state?.MappedState;
+
+            await TestChanged.InvokeAsync(Test);
         }
     }
 

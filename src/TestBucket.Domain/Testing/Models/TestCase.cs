@@ -1,4 +1,6 @@
-﻿namespace TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Contracts.Testing.States;
+
+namespace TestBucket.Domain.Testing.Models;
 
 [Table("testcases")]
 [Index(nameof(Created))]
@@ -125,6 +127,16 @@ public class TestCase : TestEntity
     /// Template flag
     /// </summary>
     public bool IsTemplate { get; set; }
+
+    /// <summary>
+    /// Test state
+    /// </summary>
+    public string? State { get; set; }
+
+    /// <summary>
+    /// Mapped state
+    /// </summary>
+    public MappedTestState? MappedState { get; set; }
 
     /// <summary>
     /// Variables for the test case

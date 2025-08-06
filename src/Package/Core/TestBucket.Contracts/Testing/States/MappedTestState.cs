@@ -30,6 +30,8 @@ public enum MappedTestState
     /// </summary>
     Review = 4,
 
+    Draft = 5,
+
     /// <summary>
     /// Other, used defined with no mapping to internal state
     /// </summary>

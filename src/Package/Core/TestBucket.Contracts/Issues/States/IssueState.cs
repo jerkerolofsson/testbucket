@@ -1,4 +1,5 @@
-﻿using TestBucket.Contracts.States;
+﻿using TestBucket.Contracts.Requirements.States;
+using TestBucket.Contracts.States;
 
 namespace TestBucket.Contracts.Issues.States;
 public class IssueState : BaseState
@@ -20,6 +21,25 @@ public class IssueState : BaseState
         Name = name;
         MappedState = mappedState;
     }
+
+    public override string? GetMappedState()
+    {
+        return MappedState.ToString();
+    }
+
+    public override bool SetMappedState(string name)
+    {
+        if (Enum.TryParse<MappedIssueState>(name, true, out var state))
+        {
+            MappedState = state;
+            return true;
+        }
+        MappedState = MappedIssueState.Other;
+        return false;
+    }
+
+    public override string[] GetMappedStates() => IssueStates.AllStates;
+
 
     public override bool Equals(object? obj)
     {

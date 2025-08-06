@@ -5,7 +5,9 @@ using Microsoft.Extensions.Localization;
 using TestBucket.Components.Projects.Dialogs;
 using TestBucket.Components.States.Dialogs;
 using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.States;
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.States;
 using TestBucket.Domain.States.Models;
 using TestBucket.Localization;
@@ -92,5 +94,20 @@ internal class StateController : TenantBaseService
     {
         var principal = await GetUserClaimsPrincipalAsync();
         return await _stateService.GetIssueStatesAsync(principal, projectId);
+    }
+    public async Task<IReadOnlyList<RequirementState>> GetRequirementStatesAsync(long projectId)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _stateService.GetRequirementStatesAsync(principal, projectId);
+    }
+    public async Task<IReadOnlyList<TestState>> GetTestCaseStatesAsync(long projectId)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _stateService.GetTestCaseStatesAsync(principal, projectId);
+    }
+    public async Task<IReadOnlyList<TestState>> GetTestCaseRunStatesAsync(long projectId)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _stateService.GetTestCaseRunStatesAsync(principal, projectId);
     }
 }

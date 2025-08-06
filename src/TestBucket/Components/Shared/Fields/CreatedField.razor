@@ -5,10 +5,11 @@
 
 @if (Entity is not null)
 {
-    <Field>
+    <Field Row>
         <FieldHeader>@loc.Shared["created"]</FieldHeader>
+        <MudSpacer/>
         <MudStack Row AlignItems="AlignItems.Center">
-            <UserProfileImage UserName="@Entity.CreatedBy" />
+            <UserProfileImage Size="Size.Small" UserName="@Entity.CreatedBy" />
             <div>@Entity.Created.Humanize()</div>
         </MudStack>
     </Field>

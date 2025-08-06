@@ -47,6 +47,15 @@ public interface IStateService
     Task<TestState> GetTestCaseRunFinalStateAsync(ClaimsPrincipal principal, long projectId);
 
     /// <summary>
+    /// Returns the initial state for a test case
+    /// The types are merged and contains both team and project definitions
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="projectId"></param>
+    /// <returns></returns>
+    Task<TestState> GetTestCaseInitialStateAsync(ClaimsPrincipal principal, long projectId);
+
+    /// <summary>
     /// Returns the initial state for a test case run
     /// The types are merged and contains both team and project definitions
     /// </summary>
@@ -106,4 +115,5 @@ public interface IStateService
     /// <returns></returns>
     Task DeleteDefinitionAsync(ClaimsPrincipal principal, StateDefinition stateDefinition);
     Task<StateDefinition> GetTenantDefinitionAsync(ClaimsPrincipal principal);
+    Task<IReadOnlyList<TestState>> GetTestCaseStatesAsync(ClaimsPrincipal principal, long projectId);
 }

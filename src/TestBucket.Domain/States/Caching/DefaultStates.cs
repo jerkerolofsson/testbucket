@@ -17,9 +17,35 @@ public class DefaultStates
     internal static IReadOnlyList<TestState> GetDefaultTestCaseStates()
     {
         return [
-                new() { Name = TestCaseStates.Draft, MappedState = MappedTestState.Ongoing, IsInitial = true },
-                new() { Name = TestCaseStates.Review, MappedState = MappedTestState.Review },
-                new() { Name = TestCaseStates.Completed, MappedState = MappedTestState.Completed, IsFinal = true },
+                new()
+                {
+                    Name = TestCaseStates.Draft,
+                    MappedState = MappedTestState.Draft,
+                    IsInitial = true,
+                    Color = "greenyellow",
+                    AllowedStates = [TestCaseStates.Ongoing, TestCaseStates.Completed]
+                },
+                new()
+                {
+                    Name = TestCaseStates.Ongoing, 
+                    MappedState = MappedTestState.Ongoing, 
+                    IsInitial = true, 
+                    AllowedStates = [TestCaseStates.Review, TestCaseStates.Completed]
+                },
+                new() 
+                { 
+                    Name = TestCaseStates.Review, 
+                    MappedState = MappedTestState.Review, 
+                    AllowedStates = [TestCaseStates.Draft, TestCaseStates.Completed] 
+                },
+                new() 
+                {
+                    Color = "purple",
+                    Name = TestCaseStates.Completed, 
+                    MappedState = MappedTestState.Completed, 
+                    IsFinal = true, 
+                    AllowedStates = [TestCaseStates.Review, TestCaseStates.Draft] 
+                },
             ];
     }
 
@@ -30,11 +56,53 @@ public class DefaultStates
     internal static IReadOnlyList<TestState> GetDefaultTestCaseRunStates()
     {
         return [
-                new() { Name = TestCaseRunStates.NotStarted, MappedState = MappedTestState.NotStarted, IsInitial = true },
-                new() { Name = TestCaseRunStates.Assigned, MappedState = MappedTestState.Assigned },
-                new() { Name = TestCaseRunStates.Ongoing, MappedState = MappedTestState.Ongoing },
-                new() { Name = TestCaseRunStates.Completed, MappedState = MappedTestState.Completed, IsFinal = true },
+                new() 
+                { 
+                    Name = TestCaseRunStates.NotStarted,
+                    MappedState = MappedTestState.NotStarted,
+                    IsInitial = true,
+                    Color = "greenyellow",
+                    AllowedStates = [TestCaseRunStates.Assigned, TestCaseRunStates.Ongoing, TestCaseRunStates.Completed]
+                },
+                new() 
+                { 
+                    Name = TestCaseRunStates.Assigned, 
+                    MappedState = MappedTestState.Assigned,
+                    AllowedStates = [TestCaseRunStates.Ongoing] 
+                },
+                new() 
+                { 
+                    Name = TestCaseRunStates.Ongoing, 
+                    MappedState = MappedTestState.Ongoing, 
+                    AllowedStates = [TestCaseRunStates.Assigned, TestCaseRunStates.Completed]
+                },
+                new() 
+                {
+                    Color = "purple",
+                    Name = TestCaseRunStates.Completed, 
+                    MappedState = MappedTestState.Completed, 
+                    IsFinal = true,  
+                    AllowedStates = [TestCaseRunStates.Assigned, TestCaseRunStates.Ongoing] 
+                }
             ];
+    }
+
+    /// <summary>
+    /// Returns the default final state for test case runs.
+    /// </summary>
+    internal static TestState GetDefaultTestCaseRunFinalState()
+    {
+        return GetDefaultTestCaseRunStates().FirstOrDefault(x => x.IsFinal)
+            ?? throw new InvalidOperationException("No final state defined in default test case run states.");
+    }
+
+    /// <summary>
+    /// Returns the default initial state for test case runs.
+    /// </summary>
+    internal static TestState GetDefaultTestCaseRunInitialState()
+    {
+        return GetDefaultTestCaseRunStates().FirstOrDefault(x => x.IsInitial)
+            ?? throw new InvalidOperationException("No initial state defined in default test case run states.");
     }
 
     /// <summary>
@@ -44,13 +112,93 @@ public class DefaultStates
     internal static IReadOnlyList<RequirementState> GetDefaultRequirementStates()
     {
         return [
-                new() { Name = RequirementStates.Draft, MappedState = MappedRequirementState.Draft, IsInitial = true },
-                new() { Name = RequirementStates.Accepted, MappedState = MappedRequirementState.Accepted },
-                new() { Name = RequirementStates.Assigned, MappedState = MappedRequirementState.Assigned },
-                new() { Name = RequirementStates.InProgress, MappedState = MappedRequirementState.InProgress },
-                new() { Name = RequirementStates.Delivered, MappedState = MappedRequirementState.Delivered },
-                new() { Name = RequirementStates.Completed, MappedState = MappedRequirementState.Completed, IsFinal = true },
-                new() { Name = RequirementStates.Canceled, MappedState = MappedRequirementState.Canceled },
+                new() 
+                {
+                    Name = RequirementStates.Draft, 
+                    MappedState = MappedRequirementState.Draft, 
+                    IsInitial = true,
+                    Color = "greenyellow",
+                    AllowedStates =
+                    [
+                        RequirementStates.Accepted,
+                        RequirementStates.Assigned,
+                        RequirementStates.InProgress,
+                        RequirementStates.Completed,
+                        RequirementStates.Delivered,
+                        RequirementStates.Canceled
+                    ] 
+                },
+                new() 
+                { 
+                    Name = RequirementStates.Accepted, 
+                    MappedState = MappedRequirementState.Accepted, 
+                    AllowedStates =
+                    [
+                        RequirementStates.Assigned,
+                        RequirementStates.InProgress,
+                        RequirementStates.Completed,
+                        RequirementStates.Delivered,
+                        RequirementStates.Canceled
+                    ] 
+                },
+                new() 
+                { 
+                    Name = RequirementStates.Assigned, 
+                    MappedState = MappedRequirementState.Assigned, 
+                    AllowedStates =
+                    [
+                        RequirementStates.Accepted,
+
+                        RequirementStates.InProgress,
+                        RequirementStates.Completed,
+                        RequirementStates.Delivered,
+                        RequirementStates.Canceled
+                    ] 
+                },
+                new() 
+                { 
+                    Name = RequirementStates.InProgress, 
+                    MappedState = MappedRequirementState.InProgress, 
+                    AllowedStates =
+                    [
+                        RequirementStates.Assigned,
+
+                        RequirementStates.Completed,
+                        RequirementStates.Delivered,
+                        RequirementStates.Canceled
+                    ]  
+                },
+                new() 
+                { 
+                    Name = RequirementStates.Delivered, 
+                    MappedState = MappedRequirementState.Delivered, 
+                    AllowedStates =
+                    [
+                        RequirementStates.Assigned,
+                        RequirementStates.InProgress,
+
+                        RequirementStates.Completed,
+                        RequirementStates.Canceled
+                    ]  
+                },
+                new() 
+                { 
+                    Name = RequirementStates.Completed,
+                    MappedState = MappedRequirementState.Completed, 
+                    IsFinal = true, 
+                    AllowedStates =
+                    [
+                        RequirementStates.Assigned,
+                        RequirementStates.InProgress,
+                        RequirementStates.Canceled
+                    ]  
+                },
+                new() 
+                { 
+                    Name = RequirementStates.Canceled, 
+                    MappedState = MappedRequirementState.Canceled, 
+                    AllowedStates = [] 
+                },
             ];
     }
 
@@ -62,14 +210,88 @@ public class DefaultStates
     internal static IReadOnlyList<IssueState> GetDefaultIssueStates()
     {
         return [
-                new() { Name = IssueStates.Open, MappedState = MappedIssueState.Open, IsInitial = true },
-                new() { Name = IssueStates.Triage, MappedState = MappedIssueState.Triage },
-                new() { Name = IssueStates.Triaged, MappedState = MappedIssueState.Triaged },
-                new() { Name = IssueStates.Accepted, MappedState = MappedIssueState.Accepted },
-                new() { Name = IssueStates.Assigned, MappedState = MappedIssueState.Assigned },
-                new() { Name = IssueStates.InProgress, MappedState = MappedIssueState.InProgress },
-                new() { Name = IssueStates.Reviewed, MappedState = MappedIssueState.Reviewed },
-                new() { Name = IssueStates.Closed, MappedState = MappedIssueState.Closed, IsFinal = true },
+                new() { 
+                    Name = IssueStates.Open, 
+                    MappedState = MappedIssueState.Open, 
+                    IsInitial = true,
+                    Color = "greenyellow",
+                    AllowedStates =
+                    [
+                        IssueStates.Triage,
+                        IssueStates.Closed
+                    ]
+                },
+                new() 
+                { 
+                    Name = IssueStates.Triage, 
+                    MappedState = MappedIssueState.Triage ,
+                    AllowedStates =
+                    [
+                        IssueStates.Accepted,
+                        IssueStates.Closed
+                    ]
+                },
+                new() 
+                { 
+                    Name = IssueStates.Accepted, 
+                    MappedState = MappedIssueState.Accepted,
+                    AllowedStates =
+                    [
+                        IssueStates.Assigned,
+                        IssueStates.InProgress,
+                        IssueStates.Closed
+                    ] },
+                new() 
+                { 
+                    Name = IssueStates.Assigned, 
+                    MappedState = MappedIssueState.Assigned,
+                    AllowedStates =
+                    [
+                        IssueStates.InProgress,
+                        IssueStates.Closed
+                    ]  
+                },
+                new() 
+                { 
+                    Name = IssueStates.InProgress, 
+                    MappedState = MappedIssueState.InProgress,
+                    AllowedStates =
+                    [
+                        IssueStates.Assigned,
+                        IssueStates.InProgress,
+                        IssueStates.Closed
+                    ]
+                },
+                new() 
+                { 
+                    Name = IssueStates.InReview, 
+                    MappedState = MappedIssueState.InReview,
+                    AllowedStates =
+                    [
+                        IssueStates.Assigned,
+                        IssueStates.Reviewed,
+                        IssueStates.Closed
+                    ]
+                },
+                new() 
+                { 
+                    Name = IssueStates.Reviewed, 
+                    MappedState = MappedIssueState.Reviewed ,
+                    AllowedStates =
+                    [
+                        IssueStates.Assigned,
+                        IssueStates.InReview,
+                        IssueStates.Closed
+                    ]
+                },
+                new() 
+                { 
+                    Name = IssueStates.Closed,
+                    Color = "purple",
+                    MappedState = MappedIssueState.Closed, 
+                    IsFinal = true,
+                    AllowedStates = []
+                },
             ];
     }
 
@@ -112,5 +334,4 @@ public class DefaultStates
             TestCaseStates = DefaultStates.GetDefaultTestCaseStates().ToList()
         };
     }
-
 }

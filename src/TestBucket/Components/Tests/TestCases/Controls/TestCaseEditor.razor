@@ -71,7 +71,7 @@
                        
                     </MudExpansionPanels>
 
-                    @if (string.IsNullOrEmpty(Test.RunnerLanguage) || !ReadOnly)
+                    @if (string.IsNullOrEmpty(Test?.RunnerLanguage) || !ReadOnly)
                     {
                         <MarkdownEditor Value="@Text"
                                         @ref=_editor
@@ -87,7 +87,7 @@
                                         Preview="@ReadOnly"
                                         TextAreaClass="tb-test-description" />
                     }
-                    else
+                    else if(Test is not null)
                     {
                         // Read only, automated test
                         <CodeBlock Language="@Test.RunnerLanguage" Code="@Text" ShowEditButton EditClicked="EditClicked" />
@@ -133,6 +133,8 @@
                             </MudStack>
                         </MudExpansionPanel>
                     </MudExpansionPanels>
+
+                    <TestRunStatePicker State="@State" StateChanged="OnTestCaseStateChanged" />
 
                 </MudStack>
             </EndContent>

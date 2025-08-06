@@ -17,6 +17,24 @@ public class RequirementState : BaseState
 
     public override string ToString() => Name??"";
 
+    public override string? GetMappedState()
+    {
+        return MappedState.ToString();
+    }
+
+    public override bool SetMappedState(string name)
+    {
+        if (Enum.TryParse<MappedRequirementState>(name, true, out var state))
+        {
+            MappedState = state;
+            return true;
+        }
+        MappedState = MappedRequirementState.Other;
+        return false;
+    }
+
+    public override string[] GetMappedStates() => RequirementStates.DefaultStateNames;
+
     public override bool Equals(object? obj)
     {
         if (obj is RequirementState state)

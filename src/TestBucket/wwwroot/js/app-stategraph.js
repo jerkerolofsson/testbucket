@@ -1,50 +1,50 @@
 import './d3.v7.min.js'
 
-let resourceGraph = null;
-
-
-export function initializeNodes(resourcesInterop) {
-    resourceGraph = new ResourceGraph(resourcesInterop);
-    resourceGraph.resize();
+let graph = null;
+export function initializeStates(resourcesInterop) {
+    graph = new StatesGraph(resourcesInterop);
+    graph.resize();
 
     const observer = new ResizeObserver(function () {
-        resourceGraph.resize();
+        graph.resize();
     });
 
-    for (const child of document.getElementsByClassName('trace-graph')) {
+    for (const child of document.getElementsByClassName('state-graph')) {
         observer.observe(child);
     }
 }
 
-export function updateGraph(resources) {
+export function updateGraph(states) {
 
-    console.log("updateGraph", resources);
+    console.log("updateGraph", states);
 
-    if (resourceGraph) {
+    if (graph) {
         try {
-            resourceGraph.updateResources(resources);
+            graph.update(states);
         } catch (e) {
             console.error(e);
         }
     }
 }
 
-export function updateResourcesGraphSelected(resourceName) {
-    if (resourceGraph) {
-        resourceGraph.switchTo(resourceName);
+export function updateSelected(name) {
+    if (graph) {
+        graph.switchTo(name);
     }
 }
 
-class ResourceGraph {
+class StatesGraph {
     constructor(resourcesInterop) {
         this.resources = [];
         this.resourcesInterop = resourcesInterop;
         this.openContextMenu = false;
 
-        this.nodes = [];
+        this.circleSize = 15;
+
+        this.states = [];
         this.links = [];
 
-        this.svg = d3.select('.trace-graph');
+        this.svg = d3.select('.state-graph');
         this.baseGroup = this.svg.append("g");
 
         // Enable zoom + pan
@@ -67,7 +67,7 @@ class ResourceGraph {
             .force('link', this.linkForce)
             .force('charge', d3.forceManyBody().strength(-800))
             .force("collide", d3.forceCollide(110).iterations(10))
-            .force("x", d3.forceX().strength(0.1))
+            .force("x", d3.forceX().strength(0.2))
             .force("y", d3.forceY().strength(0.2));
 
         // Drag start is trigger on mousedown from click.
@@ -96,36 +96,10 @@ class ResourceGraph {
         });
 
         var defs = this.svg.append("defs");
-        this.createArrowMarker(defs, "arrow-normal", "arrow-normal", 10, 10, 66);
-        this.createArrowMarker(defs, "arrow-highlight", "arrow-highlight", 15, 15, 48);
-        this.createArrowMarker(defs, "arrow-highlight-expand", "arrow-highlight-expand", 15, 15, 56);
-
-        var highlightedPattern = defs.append("pattern")
-            .attr("id", "highlighted-pattern")
-            .attr("patternUnits", "userSpaceOnUse")
-            .attr("width", "17.5")
-            .attr("height", "17.5")
-            .attr("patternTransform", "rotate(45)");
-
-        highlightedPattern
-            .append("rect")
-            .attr("x", "0")
-            .attr("y", "0")
-            .attr("width", "17.5")
-            .attr("height", "17.5")
-            .attr("fill", "var(--fill-color, red)");
-
-        highlightedPattern
-            .append("line")
-            .attr("x1", "0")
-            .attr("y", "0")
-            .attr("x2", "0")
-            .attr("y2", "17.5")
-            .attr("stroke", "var(--neutral-fill-secondary-hover, magenta)")
-            .attr("stroke-width", "15");
+        this.createArrowMarker(defs, "arrow-normal", "arrow-normal", this.circleSize, this.circleSize, this.circleSize+1);
 
         this.linkElementsG = this.baseGroup.append("g").attr("class", "links").attr("stroke", "#99F");
-        this.nodeElementsG = this.baseGroup.append("g").attr("class", "nodes");
+        this.nodeElementsG = this.baseGroup.append("g").attr("class", "state");
 
         this.initializeButtons();
     }
@@ -154,6 +128,7 @@ class ResourceGraph {
             .attr("viewBox", "0 -5 10 10")
             .attr("refX", x)
             .attr("refY", 0)
+            .attr("fill", "#99F")
             .attr("markerWidth", width)
             .attr("markerHeight", height)
             .attr("orient", "auto")
@@ -164,7 +139,7 @@ class ResourceGraph {
     }
 
     resize() {
-        var container = document.querySelector(".trace-graph");
+        var container = document.querySelector(".state-graph");
         if (container) {
             var width = container.clientWidth;
             var height = Math.max(container.clientHeight - 50, 0);
@@ -172,9 +147,8 @@ class ResourceGraph {
         }
     }
 
-    switchTo(resourceName) {
-        this.selectedNode = this.nodes.find(node => node.id === resourceName);
-        //this.updateNodeHighlights(null);
+    switchTo(name) {
+        this.selectedNode = this.states.find(node => node.name === name);
     }
 
     resourceEqual(r1, r2) {
@@ -184,21 +158,13 @@ class ResourceGraph {
         if (r1.type !== r2.type) {
             return false;
         }
+        if (r1.color !== r2.color) {
+            return false;
+        }
         if (r1.name !== r2.name) {
             return false;
         }
-        if (!this.iconEqual(r1.icon, r2.icon)) {
-            return false;
-        }
-        if (r1.references.length !== r2.references.length) {
-            return false;
-        }
-        for (var i = 0; i < r1.references.length; i++) {
-            if (r1.references[i] !== r2.references[i]) {
-                return false;
-            }
-        }
-
+       
         return true;
     }
 
@@ -216,7 +182,7 @@ class ResourceGraph {
         return true;
     }
 
-    resourcesChanged(existingResource, newResources) {
+    hasChanged(existingResource, newResources) {
         if (!existingResource || newResources.length != existingResource.length) {
             return true;
         }
@@ -230,58 +196,56 @@ class ResourceGraph {
         return false;
     }
 
-    updateNodes(newResources) {
-        const existingNodes = this.nodes || []; // Ensure nodes is initialized
+    updateStates(newStates) {
+        const existingNodes = this.states || []; // Ensure nodes is initialized
         const updatedNodes = [];
 
-        newResources.forEach(resource => {
-            const existingNode = existingNodes.find(node => node.id === resource.id);
+        newStates.forEach(resource => {
+            resource.id = resource.name;
+            const existingNode = existingNodes.find(node => node.name === resource.name);
 
             if (existingNode) {
                 // Update existing node without replacing it
                 updatedNodes.push({
                     ...existingNode,
                     name: resource.name,
+                    id: resource.id,
                     type: resource.type,
-                    icon: createIcon(resource.icon),
                 });
             } else {
                 // Add new resource
                 updatedNodes.push({
-                    id: resource.id,
                     name: resource.name,
+                    id: resource.id,
                     type: resource.type,
-                    icon: createIcon(resource.icon),
                 });
             }
         });
 
-        this.nodes = updatedNodes;
-
-        function createIcon(resourceIcon) {
-            return {
-                svg: resourceIcon.svg,
-                color: resourceIcon.color,
-                tooltip: resourceIcon.tooltip
-            };
-        }
+        this.states = updatedNodes;
     }
 
-    updateResources(newResources) {
+    update(states) {
         // Check if the overall structure of the graph has changed. i.e. nodes or links have been added or removed.
-        var hasStructureChanged = this.resourcesChanged(this.resources, newResources);
-
-        this.resources = newResources;
-
-        this.updateNodes(newResources);
+        var hasStructureChanged = this.hasChanged(this.states, states);
+        this.states = states;
+        this.updateStates(states);
 
         this.links = [];
-        for (var i = 0; i < newResources.length; i++) {
-            var resource = newResources[i];
+        const stateNames = [...states.map(x => x.name)];
 
-            var resourceLinks = resource.references
+        for (var i = 0; i < states.length; i++) {
+            var resource = states[i];
+
+            resource.allowedStates ??= [];
+
+            console.log("resource.allowedStates", resource.allowedStates);
+            const allowedStates = [...resource.allowedStates.filter(x => stateNames.indexOf(x) != -1)];
+            console.log("allowedStates", allowedStates);
+
+            var resourceLinks = allowedStates
                 .filter((refId) => {
-                    return newResources.filter(r => r.id === refId);
+                    return states.filter(r => r.id === refId);
                 })
                 .map((refId, index) => {
                     return {
@@ -298,7 +262,7 @@ class ResourceGraph {
         // Update nodes
         this.nodeElements = this.nodeElementsG
             .selectAll(".resource-group")
-            .data(this.nodes, n => n.id);
+            .data(this.states, n => n.id);
 
         // Remove excess nodes:
         this.nodeElements
@@ -321,44 +285,29 @@ class ResourceGraph {
             .on('click', this.selectNode)
             .on('contextmenu', this.nodeContextMenu);
 
-            // Outline
+        // Outline
         newNodesContainer
             .append("circle")
-            .attr("r", 35)
-            .attr("class", "node-border")
+            .attr("r", this.circleSize+2)
+            .attr("class", "state-node-border")
             .attr("stroke", "white")
             .attr("stroke-width", "2");
 
         newNodesContainer
             .append("circle")
-            .attr("r", 32)
+            .attr("r", this.circleSize)
+            .attr("fill", n => n.color ?? "#999")
             .attr("class", n => {
-                return (n.type == "Requirement" ? "node-background requirement" : "node-background testcase")
+                return "";
             });
 
-        // Icon
-        newNodesContainer
-            .append("g")
-            .attr("transform", "scale(2.1) translate(-10,-10)")
-            .append("svg")
-            .attr("class", "node-icon")
-            .attr("color", n => n.icon.color)
-            .attr("width", "20").attr("height", "20")
-            .html(n => n.icon.svg);
-;
-
-            //.attr("d", n => n.icon.path)
-            //.append("title")
-            //.text(n => "HELLO" ?? n.icon.tooltip);
-
-        console.log("newResources", newResources);
         var resourceNameGroup = newNodesContainer
             .append("g")
-            .attr("transform", "translate(0,51)")
+            .attr("transform", `translate(${this.circleSize + 5},${this.circleSize/2-5})`)
             .attr("class", "resource-name");
         resourceNameGroup
             .append("text")
-            .text(n => trimText(n.name, 30) )
+            .text(n => n.name)
             .attr("fill", "#999");
         resourceNameGroup
             .append("title")
@@ -374,7 +323,6 @@ class ResourceGraph {
             .select(".resource-endpoint")
             .select("title")
             .text(n => n.endpointText);
-      
 
         // Update links
         this.linkElements = this.linkElementsG
@@ -390,6 +338,7 @@ class ResourceGraph {
         var newLinks = this.linkElements
             .enter().append("line")
             .attr("opacity", 0)
+            .attr("marker-end", "url(#arrow-normal)")
             .attr("class", "resource-link");
 
         newLinks.transition()
@@ -398,7 +347,7 @@ class ResourceGraph {
         this.linkElements = newLinks.merge(this.linkElements);
 
         this.simulation
-            .nodes(this.nodes)
+            .nodes(this.states)
             .on('tick', this.onTick);
 
         this.simulation.force("link").links(this.links);
@@ -407,13 +356,6 @@ class ResourceGraph {
         }
         else {
             this.simulation.restart();
-        }
-
-        function trimText(text, maxLength) {
-            if (text && text.length > maxLength) {
-                return text.slice(0, maxLength) + "\u2026";
-            }
-            return text;
         }
    }
 
@@ -426,32 +368,6 @@ class ResourceGraph {
             .attr('y2', function (link) { return link.target.y });
     }
 
-    getNeighbors(node) {
-        return this.links.reduce(function (neighbors, link) {
-            if (link.target.id === node.id) {
-                neighbors.push(link.source.id);
-            } else if (link.source.id === node.id) {
-                neighbors.push(link.target.id);
-            }
-            return neighbors;
-        },
-            [node.id]);
-    }
-
-    isNeighborLink(node, link) {
-        return link.target.id === node.id || link.source.id === node.id
-    }
-
-    getLinkClass(nodes, selectedNode, link) {
-        if (nodes.find(n => this.isNeighborLink(n, link))) {
-            if (this.nodeEquals(selectedNode, link.target)) {
-                return 'resource-link-highlight-expand';
-            }
-            return 'resource-link-highlight';
-        }
-        return 'resource-link';
-    }
-
     nodeContextMenu = async (event) => {
         var data = event.target.__data__;
 
@@ -462,7 +378,7 @@ class ResourceGraph {
 
         try {
             // Wait for method completion. It completes when the context menu is closed.
-            await this.resourcesInterop.invokeMethodAsync('ResourceContextMenu', data.id, window.innerWidth, window.innerHeight, event.clientX, event.clientY);
+            await this.resourcesInterop.invokeMethodAsync('StateContextMenu', data.id, window.innerWidth, window.innerHeight, event.clientX, event.clientY);
         } finally {
             this.openContextMenu = false;
 
@@ -475,7 +391,7 @@ class ResourceGraph {
         var data = event.target.__data__;
 
         // Always send the clicked on resource to the server. It will clear the selection if the same resource is clicked again.
-        this.resourcesInterop.invokeMethodAsync('SelectResource', data.id);
+        this.resourcesInterop.invokeMethodAsync('SelectState', data.id);
 
         // Unscale the previous selected node.
         if (this.selectedNode) {
@@ -492,72 +408,28 @@ class ResourceGraph {
 
         function changeScale(self, id, scale) {
             let match = self.nodeElementsG
-                .selectAll(".resource-group")
+                .selectAll(".node-group")
                 .filter(function (d) {
                     return d.id == id;
                 });
 
             match
-                .select(".resource-scale")
+                .select(".node-scale")
                 .transition()
                 .duration(300)
                 .style("transform", `scale(${scale})`)
                 .on("end", s => {
-                    match.select(".resource-scale").style("transform", null);
+                    match.select(".node-scale").style("transform", null);
                     //self.updateNodeHighlights(null);
                 });
         }
     }
 
-    //hoverNode = (event) => {
-    //    var mouseoverNode = event.target.__data__;
-
-    //    this.updateNodeHighlights(mouseoverNode);
-    //}
-
-    //unHoverNode = (event) => {
-    //    // Don't unhover the selected node when the context menu is open.
-    //    // This is done to keep the node selected until the context menu is closed.
-    //    if (!this.openContextMenu) {
-    //        this.updateNodeHighlights(null);
-    //    }
-    //};
 
     nodeEquals(resource1, resource2) {
         if (!resource1 || !resource2) {
             return false;
         }
-        return resource1.id === resource2.id;
+        return resource1.name === resource2.name;
     }
-
-    //updateNodeHighlights = (mouseoverNode) => {
-    //    var mouseoverNeighbors = mouseoverNode ? this.getNeighbors(mouseoverNode) : [];
-    //    var selectNeighbors = this.selectedNode ? this.getNeighbors(this.selectedNode) : [];
-    //    var neighbors = [...mouseoverNeighbors, ...selectNeighbors];
-
-    //    // we modify the styles to highlight selected nodes
-    //    this.nodeElements.attr('class', (node) => {
-    //        var classNames = ['resource-group'];
-    //        if (this.nodeEquals(node, mouseoverNode)) {
-    //            classNames.push('resource-group-hover');
-    //        }
-    //        if (this.nodeEquals(node, this.selectedNode)) {
-    //            classNames.push('resource-group-selected');
-    //        }
-    //        if (neighbors.indexOf(node.id) > -1) {
-    //            classNames.push('resource-group-highlight');
-    //        }
-    //        return classNames.join(' ');
-    //    });
-    //    this.linkElements.attr('class', (link) => {
-    //        var nodes = [];
-    //        if (mouseoverNode) {
-    //            nodes.push(mouseoverNode);
-    //        }
-    //        if (this.selectedNode) {
-    //            nodes.push(this.selectedNode);
-    //        }
-    //        return this.getLinkClass(nodes, this.selectedNode, link);
-    //    });
-    //};
 };

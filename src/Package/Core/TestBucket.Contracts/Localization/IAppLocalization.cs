@@ -3,6 +3,7 @@
 namespace TestBucket.Contracts.Localization;
 public interface IAppLocalization
 {
+    IStringLocalizer States { get; init; }
     IStringLocalizer Code { get; init; }
     IStringLocalizer Errors { get; init; }
     IStringLocalizer Validation { get; init; }

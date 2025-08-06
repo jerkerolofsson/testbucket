@@ -17,7 +17,7 @@ public class BaseState
     /// 
     /// The key represents the current state, and the list defines the possible states
     /// </summary>
-    public Dictionary<string, List<string>>? AllowedTransitions { get; set; }
+    public List<string>? AllowedStates { get; set; }
 
     /// <summary>
     /// Is the final state
@@ -28,6 +28,24 @@ public class BaseState
     /// Is the initial state
     /// </summary>
     public bool IsInitial { get; set; }
+
+    /// <summary>
+    /// Tries to set a mapped state from a string
+    /// </summary>
+    /// <param name="name"></param>
+    public virtual bool SetMappedState(string name) => false;
+
+    /// <summary>
+    /// Returns an array of possible mapped state for this entity type
+    /// </summary>
+    /// <returns></returns>
+    public virtual string[] GetMappedStates() => [];
+
+    /// <summary>
+    /// Returns the mapped state, as a string
+    /// </summary>
+    /// <returns></returns>
+    public virtual string? GetMappedState() => null;
 
     public override int GetHashCode()
     {

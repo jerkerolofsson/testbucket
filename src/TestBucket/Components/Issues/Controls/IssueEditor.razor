@@ -1,5 +1,6 @@
 ﻿@using TestBucket.Components.Comments
 @using TestBucket.Components.Comments.Controls
+@using TestBucket.Components.States.Controllers
 @using TestBucket.Contracts.Issues.States
 @using TestBucket.Contracts.Issues.Types
 @using TestBucket.Domain.Comments.Models
@@ -8,6 +9,7 @@
 @inject IssueController controller
 @inject IIssueManager manager
 @inject CommentsController comments
+@inject StateController stateController
 @implements IDisposable
 @implements ILocalIssueObserver
 @using TestBucket.Components.Shared.Fields
@@ -35,7 +37,7 @@
                 </MudStack>
 
                 <MudStack Spacing="0" Row AlignItems="AlignItems.Center">
-                    <MudChip T="string" Style="@StateColorStyle">@_issue.State</MudChip>
+                    <Chip Text="@_issue.State" Color="@StateColor" />
                 </MudStack>
 
                 <MudStack Spacing="0" Class="mt-2 mb-2">
@@ -49,15 +51,8 @@
         <EndContent>
             <MudStack Style="width: 100%" Class="pa-2">
 
-                <Field>
-                    <FieldHeader>@loc["created"]</FieldHeader>
-                    <div>
-                        <div>@_issue.Created</div>
-                        <div>@_issue.Modified</div>
-                        <div>@_issue.Closed</div>
-                    </div>
-                </Field>
-
+                <CreatedField Entity="@_issue" />
+               
                 <Field>
                     <FieldHeader>@loc["assigned-to"]</FieldHeader>
                     <UserPicker SelectedUserName="@_issue.AssignedTo" SelectedUserNameChanged="OnAssignedToChanged"/>
@@ -96,12 +91,27 @@
     private List<Comment> _comments = [];
     private LocalIssue? _issue;
 
-    private string StateColorStyle => $"color: {IssueStateColors.GetDefaultTextColor(Issue?.MappedState)}; background: {IssueStateColors.GetDefaultBackgroundColor(Issue?.MappedState)}";
+    private string StateColor
+    {
+        get
+        {
+            if(Issue is not null)
+            {
+                var state = _states.FirstOrDefault(x=>x.Name == Issue.State);
+                if(state?.Color is not null)
+                {
+                    return state.Color;
+                }
+            }
+            return "#777";
+        }
+    }
 
     private bool _preview = true;
 
     private IssueState _state = new IssueState { MappedState = MappedIssueState.Open };
     private IssueType _type = new IssueType { MappedType = MappedIssueType.Issue };
+    private IReadOnlyList<IssueState> _states = [];
 
     protected override void OnParametersSet()
     {
@@ -113,6 +123,16 @@
             _type = new IssueType { MappedType = _issue.MappedType ?? MappedIssueType.Issue, Name = _issue.IssueType };
         }
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && _issue?.TestProjectId is not null)
+        {
+            _states = await stateController.GetIssueStatesAsync(_issue.TestProjectId.Value);
+            this.StateHasChanged();
+        }
+    }
+
     private async Task OnAssignedToChanged(string name)
     {
         if (Issue is not null && Issue.AssignedTo != name)

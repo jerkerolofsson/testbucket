@@ -1,5 +1,4 @@
 ﻿@using TestBucket.Components.States.Controllers
-@using TestBucket.Contracts.Requirements.States
 @using TestBucket.Contracts.Testing.Models
 @using TestBucket.Contracts.Testing.States
 @using TestBucket.Domain.States
@@ -7,22 +6,25 @@
 @inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<StateStrings> loc
 
-<MudSelect Variant="Variant.Outlined" T="RequirementState" Value="@State" ValueChanged="OnStateChanged">
-    @foreach (var state in _states)
-    {
-        <MudSelectItem Value="@state">
-            <Chip Color="@state.Color" Text="@state.Name" />
-        </MudSelectItem>
-    }
-</MudSelect>
+<Field Row>
+    <FieldHeader for="test-case-state">@loc["state"]</FieldHeader>
+    <MudSpacer/>
+    <MudSelect id="test-case-state" Variant="Variant.Outlined" T="TestState" Value="@State" ValueChanged="OnStateChanged">
+        @foreach(var state in _states)
+        {
+            <MudSelectItem Value="@state">
+                <Chip Color="@state.Color" Text="@state.Name" />
+            </MudSelectItem>
+        }
+    </MudSelect>
+</Field>
 
 @code {
     [Parameter] public long? TestProjectId { get; set; }
-    [Parameter] public RequirementState? State { get; set; }
-    [Parameter] public EventCallback<RequirementState?> StateChanged { get; set; }
+    [Parameter] public TestState? State { get; set; }
+    [Parameter] public EventCallback<TestState?> StateChanged { get; set; }
 
-    private IReadOnlyList<RequirementState> _states = [];
-
+    private IReadOnlyList<TestState> _states = [];
 
     public long? ProjectId => TestProjectId ?? appNavigationManager.State.SelectedProject?.Id;
 
@@ -34,11 +36,11 @@
         }
     }
 
-    public async Task RefreshStatesAsync(RequirementState? state)
+    public async Task RefreshStatesAsync(TestState? state)
     {
         if (ProjectId is not null)
         {
-            var states = await controller.GetRequirementStatesAsync(ProjectId.Value);
+            var states = await controller.GetTestCaseStatesAsync(ProjectId.Value);
             _states = states;
 
             var currentStateName = state?.Name;
@@ -58,7 +60,7 @@
         }
     }
 
-    private async Task OnStateChanged(RequirementState? state)
+    private async Task OnStateChanged(TestState? state)
     {
         await RefreshStatesAsync(state);
         await StateChanged.InvokeAsync(state);

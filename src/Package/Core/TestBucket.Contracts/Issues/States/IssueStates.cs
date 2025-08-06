@@ -11,7 +11,12 @@ namespace TestBucket.Contracts.Issues.States;
 /// </summary>
 public class IssueStates
 {
-    public static string[] AllStates => [Open, Triage, Triaged, Accepted, InProgress, Reviewed, Completed, Closed, Delivered];
+    public static string[] AllStates => [Open, Triage, Triaged, Accepted, InProgress, Reviewed, Completed, Closed, Delivered, Canceled, Rejected];
+    /// <summary>
+    /// A new issue
+    /// </summary>
+    public const string Rejected = nameof(MappedIssueState.Rejected);
+
 
     /// <summary>
     /// A new issue

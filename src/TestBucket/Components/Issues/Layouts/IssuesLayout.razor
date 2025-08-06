@@ -45,6 +45,13 @@
                                     @issueLoc["open-incidents"]
                                 </MudBadge>
                             </MudNavLink>
+
+                            <MudNavLink Href="@Triage">
+                                <MudBadge Content="@TriagenCount" Color="Color.Primary" Overlap>
+                                    <MudText>@issueLoc["triage"]</MudText>
+                                </MudBadge>
+                            </MudNavLink>
+
                             <MudNavLink Href="@Closed">
                                 <MudBadge Content="@ClosedCount" Color="Color.Primary" Overlap>
                                     <MudText>@issueLoc["closed"]</MudText>
@@ -90,6 +97,7 @@
 
     private string OpenHighPrio => appNavigationManager.GetIssuesUrl() + "?q=is:open%20priority:High";
     private string Open => appNavigationManager.GetIssuesUrl() + "?q=state:open";
+    private string Triage => appNavigationManager.GetIssuesUrl() + "?q=state:triage";
     private string OpenIncidents => appNavigationManager.GetIssuesUrl() + "?q=is:incident%20state:open";
     private string Closed => appNavigationManager.GetIssuesUrl() + "?q=state:closed";
     private string DashboardUrl => appNavigationManager.GetIssueDashboardUrl();
@@ -98,6 +106,7 @@
 
     private string OpenIncidentsCount => GetIncidentBadgePerState(MappedIssueState.Open);
     private string OpenCount => GetBadgePerState(MappedIssueState.Open);
+    private string TriageCount => GetBadgePerState(MappedIssueState.Triage);
     private string ClosedCount => GetBadgePerState(MappedIssueState.Closed);
     private Dock _dock = Dock.Left;
 

@@ -8,13 +8,30 @@
         <Field Row>
             <FieldHeader for="state-name">@loc.Shared["name"]</FieldHeader>
             <MudSpacer/>
-            <MudTextField id="state-name" Variant="Variant.Outlined" @bind-Value="State.Name"></MudTextField>
+            <MudTextField id="state-name" Variant="Variant.Outlined" Value="State.Name" T="string" ValueChanged="OnNameChanged"></MudTextField>
         </Field>
+
+        <Field Row>
+            <FieldHeader for="mapped-state">@loc.States["mapped-state"]</FieldHeader>
+            <MudSpacer />
+            <MudSelect id="mapped-state" Variant="Variant.Outlined" T="string" Value="@State.GetMappedState()" ValueChanged="OnMappedStateChanged">
+                @foreach (var mappedStateString in State.GetMappedStates())
+                {
+                    <MudSelectItem Value="@mappedStateString">@mappedStateString</MudSelectItem>
+                }
+            </MudSelect>
+        </Field>
+
 
         <Field Row>
             <FieldHeader for="state-color">@loc.Settings["color"]</FieldHeader>
             <MudSpacer />
-            <ColorCellPicker id="state-color" @bind-Color="State.Color"/>
+            <ColorCellPicker id="state-color" @bind-Color="State.Color" />
+        </Field>
+        <Field Row>
+            <FieldHeader for="state-allowed">@loc.States["allowed-transitions"]</FieldHeader>
+            <MudSpacer />
+            <MudTextField Lines="10" id="state-allowed" Variant="Variant.Outlined" Value="@_allowedTransitions" T="string" ValueChanged="OnAllowedTransitionsChanged"></MudTextField>
         </Field>
 
     </MudStack>
@@ -22,4 +39,41 @@
 
 @code {
     [Parameter] public BaseState? State { get; set; }
+
+    private string _allowedTransitions = "";
+
+    private void OnMappedStateChanged(string mappedStateString)
+    {
+        if (State is not null)
+        {
+            State.SetMappedState(mappedStateString);
+        }
+    }
+    private void OnNameChanged(string name)
+    {
+        if(State is not null)
+        {
+            State.Name = name;
+            State.SetMappedState(name);
+        }
+    }
+
+    private void OnAllowedTransitionsChanged(string allowedTransitions)
+    {
+        if (State is not null)
+        {
+            State.AllowedStates = allowedTransitions.Split('\n').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToList();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (State is not null)
+        {
+            if (State.AllowedStates is not null)
+            {
+                _allowedTransitions = string.Join('\n', State.AllowedStates);
+            }
+        }
+    }
 }

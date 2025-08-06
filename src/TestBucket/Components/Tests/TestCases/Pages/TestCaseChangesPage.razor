@@ -1,0 +1,34 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/Changes"
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Domain.Requirements.Models
+@using TestBucket.Domain.Testing.TestRuns.Search
+@layout TestCaseDetailsLayout
+@inject TestBrowser testBrowser
+@inject TestCaseEditorController testCaseEditorController
+@inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+
+@if (Test is not null)
+{
+    <CascadingValue Value="@Test">
+        <MudStack Style="width:100%" Class="pa-2">
+        </MudStack>
+    </CascadingValue>
+}
+
+@code {
+    [Parameter] public long TestCaseId { get; set; }
+    [Parameter] public string TenantId { get; set; } = "";
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+    [CascadingParameter] public TestCase? Test { get; set; }
+
+    private List<BreadcrumbItem> _nav = new();
+    protected override void OnInitialized()
+    {
+        _nav = [new BreadcrumbItem(loc["changes"], navigationManager.Uri)];
+    }
+
+}

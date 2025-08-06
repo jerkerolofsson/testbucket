@@ -150,6 +150,9 @@
   <data name="refresh-linked-issue-description" xml:space="preserve">
     <value>Updates an issue from external system</value>
   </data>
+  <data name="triage" xml:space="preserve">
+    <value>Triage</value>
+  </data>
   <data name="type" xml:space="preserve">
     <value>Type</value>
   </data>

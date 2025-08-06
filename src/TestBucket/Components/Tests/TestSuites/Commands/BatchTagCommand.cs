@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Localization;
+﻿using System.Threading;
+
+using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Tests.Dialogs;
@@ -6,6 +8,7 @@ using TestBucket.Components.Tests.Services;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Contracts.Fields;
+using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
@@ -84,24 +87,46 @@ internal class BatchTagCommand : ICommand
             return;
         }
 
+        var progressMessage = _loc["batch-updating-tests"];
+
         var parameters = new DialogParameters<BatchTagFieldDialog>() { { x => x.ProjectId, projectId }, { x => x.Target, FieldTarget.TestCase } };
         var dialog = await _dialogService.ShowAsync<BatchTagFieldDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
         if (result?.Data is FieldValue field)
         {
-            await using var progress = _progressManager.CreateProgressTask("Updating tests..");
+            await using var progress = _progressManager.CreateProgressTask(progressMessage);
             long[] testCaseIds = await GetTestCaseIdsAsync(suite, folder, tests);
 
             await _fieldController.UpdateTestCaseFieldsAsync(testCaseIds, projectId, new FieldValue[] { field });
         }
         else if (result?.Data is Requirement requirement)
         {
-            await using var progress = _progressManager.CreateProgressTask("Updating tests..");
+            await using var progress = _progressManager.CreateProgressTask(progressMessage);
             long[] testCaseIds = await GetTestCaseIdsAsync(suite, folder, tests);
 
+            int count = 0;
             foreach (var testCaseId in testCaseIds)
             {
                 await _testEditor.LinkTestCaseToRequirementAsync(testCaseId, requirement);
+
+                count++;
+                double percent = count * 100.0 / testCaseIds.Length;
+                await progress.ReportStatusAsync(progressMessage, percent);
+            }
+        }
+        else if (result?.Data is TestState state)
+        {
+            await using var progress = _progressManager.CreateProgressTask(progressMessage);
+            long[] testCaseIds = await GetTestCaseIdsAsync(suite, folder, tests);
+
+            int count = 0;
+            foreach (var testCaseId in testCaseIds)
+            {
+                await _testEditor.SetTestCaseStateAsync(testCaseId, state);
+
+                count++;
+                double percent = count * 100.0 / testCaseIds.Length;
+                await progress.ReportStatusAsync(progressMessage, percent);
             }
         }
     }

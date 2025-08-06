@@ -17,6 +17,7 @@ public class SearchTestCaseQueryParser
         "testsuite-id", 
         "project-id", 
         "testrun-id", 
+        "state",
         .. BaseQueryParser.Keywords
         ];
 
@@ -33,6 +34,9 @@ public class SearchTestCaseQueryParser
             {
                 case "id":
                     request.ExternalDisplayId = pair.Value;
+                    break;
+                case "state":
+                    request.State = pair.Value;
                     break;
                 case "compare-folder":
                     request.CompareFolder = pair.Value == "yes";

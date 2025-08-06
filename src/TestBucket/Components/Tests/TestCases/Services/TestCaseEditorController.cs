@@ -332,4 +332,16 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
     }
 
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;
+
+    internal async Task SetTestCaseStateAsync(long testCaseId, TestState state)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        var test = await _testCaseManager.GetTestCaseByIdAsync(principal, testCaseId);
+        if(test is not null)
+        {
+            test.State = state.Name;
+            test.MappedState = state.MappedState;
+            await _testCaseManager.SaveTestCaseAsync(principal, test);
+        }
+    }
 }

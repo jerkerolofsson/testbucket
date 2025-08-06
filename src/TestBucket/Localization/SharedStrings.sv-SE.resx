@@ -1035,4 +1035,7 @@
   <data name="identity" xml:space="preserve">
     <value />
   </data>
+  <data name="batch-updating-tests" xml:space="preserve">
+    <value />
+  </data>
 </root>

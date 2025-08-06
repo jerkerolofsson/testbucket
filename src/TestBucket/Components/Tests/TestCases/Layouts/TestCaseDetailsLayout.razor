@@ -36,8 +36,12 @@
                     <TbNavLink Href="@appNavigationManager.GetTestCaseEditUrl()" Icon="@Icons.Material.Filled.Edit" Match="NavLinkMatch.All" />
                 </MudTooltip>
 
-                <MudTooltip Text="@loc["history"]">
-                    <TbNavLink Href="@appNavigationManager.GetTestCaseHistoryUrl()" Icon="@TbIcons.IconSaxDuoTone.Clock1" Match="NavLinkMatch.All" />
+                <MudTooltip Text="@loc["test-runs"]">
+                    <TbNavLink Href="@appNavigationManager.GetTestCaseExecutionHistoryUrl()" Icon="@TbIcons.Filled.Vial" Match="NavLinkMatch.All" />
+                </MudTooltip>
+
+                <MudTooltip Text="@loc["changes"]">
+                    <TbNavLink Href="@appNavigationManager.GetTestCaseChangeHistoryUrl()" Icon="@TbIcons.IconSaxDuoTone.Clock1" Match="NavLinkMatch.All" />
                 </MudTooltip>
 
                 <MudTooltip Text="@loc["variables"]">

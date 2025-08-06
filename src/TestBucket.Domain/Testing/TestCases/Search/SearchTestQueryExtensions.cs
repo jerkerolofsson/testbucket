@@ -27,6 +27,10 @@ namespace TestBucket.Domain.Testing.TestCases.Search
             {
                 items.Add($"id:{query.ExternalDisplayId}");
             }
+            if (query.State is not null)
+            {
+                items.Add($"state:{query.State}");
+            }
             if (query.TestRunId is not null)
             {
                 items.Add($"testrun-id:{query.TestRunId}");

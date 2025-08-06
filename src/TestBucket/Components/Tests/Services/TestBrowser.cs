@@ -4,6 +4,7 @@ using System.Net;
 using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Automation;
+using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Dialogs;
@@ -949,6 +950,15 @@ internal class TestBrowser : TenantBaseService
             };
             testCases.Children = 
             [
+                new TreeNode<BrowserItem>
+                {
+                    Text = _loc["review"],
+                    Expanded = false,
+                    Expandable = false,
+                    Value = new BrowserItem() { Href = $"{_appNavigationManager.GetTestCasesUrl()}?q=state:Review" },
+                    Icon = TbIcons.BoldDuoTone.FolderStar,
+                },
+
                 ..TestBrowserSearchFolders.GetTestCategoryFolders(_loc, _appNavigationManager),
                 ..TestBrowserSearchFolders.GetMilestoneFolders(_loc, _appNavigationManager, milestones),
                 ..TestBrowserSearchFolders.GetFeatureFolders(_loc, _appNavigationManager, features),

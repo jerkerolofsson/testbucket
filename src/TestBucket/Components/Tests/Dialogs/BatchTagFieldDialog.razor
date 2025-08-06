@@ -1,8 +1,11 @@
 ﻿@using TestBucket.Components.Requirements.Controls
+@using TestBucket.Components.States.Controllers
 @using TestBucket.Contracts.Fields
 @using TestBucket.Contracts.Requirements.Types
+@using TestBucket.Contracts.Testing.States
 @inject FieldController controller
 @inject TeamController teamController
+@inject StateController stateController
 @inject ProjectController projectController
 @inject IStringLocalizer<SharedStrings> loc
 
@@ -14,7 +17,10 @@
         {
             <div style="display: grid; grid-template-columns: 200px 1fr; min-width: 700px; gap: 5px">
                 <div>
-                    <MudSkeleton SkeletonType="SkeletonType.Text" Height="400"/>
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="40"/>
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="40"/>
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="40"/>
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="40" />
                 </div>
                 <div>
                 </div>
@@ -27,9 +33,10 @@
 
                     <MudNavMenu>
 
-                        @if(Target == FieldTarget.TestCase)
+                        @if (Target == FieldTarget.TestCase)
                         {
                             <MudNavLink OnClick="ShowRequirement">@loc["link-requirement-to-test"]</MudNavLink>
+                            <MudNavLink OnClick="ShowTestCaseState">@loc["state"]</MudNavLink>
                         }
 
                         @if (Target == FieldTarget.Requirement)
@@ -52,9 +59,20 @@
                     }
                     else if (_showRequirementType && _project is not null)
                     {
-                        <RequirementTypeSelect TestProjectId="@_project.Id" TypeChanged="SetRequirementType"/>
+                        <MudStack Style="max-width: 400px">
+                            <MudText Typo="Typo.h1">@loc["type"]</MudText>
+                            <RequirementTypeSelect TestProjectId="@_project.Id" TypeChanged="SetRequirementType" />
+                        </MudStack>
                     }
-                    else @if (_field?.FieldDefinition is not null)
+                    else if(_showTestCaseState && _project is not null)
+                    {
+                        <MudStack Style="max-width: 400px">
+                            <MudText Typo="Typo.h1">@loc["state"]</MudText>
+                            <TestCaseStatePicker TestProjectId="@_project.Id" StateChanged="SetTestState" />
+                        </MudStack>
+                    }
+                    else 
+                @if (_field?.FieldDefinition is not null)
                     {
                         <MudStack Style="max-width: 400px">
                             <MudText Typo="Typo.h1">@_field.FieldDefinition.Name</MudText>
@@ -98,21 +116,26 @@
     private FieldValue? _field;
     private bool _showRequirement = false;
     private bool _showRequirementType = false;
+    private bool _showTestCaseState = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await LoadFieldDefinitionsAsync();
-
-        if (ProjectId is not null)
+        if(firstRender)
         {
-            _project = await projectController.GetProjectByIdAsync(ProjectId.Value);
-            if (_project?.TeamId is not null)
-            {
-                _team = await teamController.GetTeamByIdAsync(_project.TeamId.Value);
-            }
-        }
+            await LoadFieldDefinitionsAsync();
 
-        _loading = false;
+            if (ProjectId is not null)
+            {
+                _project = await projectController.GetProjectByIdAsync(ProjectId.Value);
+                if (_project?.TeamId is not null)
+                {
+                    _team = await teamController.GetTeamByIdAsync(_project.TeamId.Value);
+                }
+            }
+
+            _loading = false;
+            this.StateHasChanged();
+        }
     }
 
     private async Task LoadFieldDefinitionsAsync()
@@ -135,6 +158,11 @@
         }
     }
 
+    private void SetTestState(TestState state)
+    {
+        MudDialog.Close(state);
+    }
+
     private void SetRequirementType(RequirementType requirementType)
     {
         MudDialog.Close(requirementType);
@@ -149,18 +177,29 @@
         _field = viewType;
         _showRequirement = false;
         _showRequirementType = false;
+        _showTestCaseState = false;
     }
     private void ShowRequirement()
     {
         _showRequirement = true;
         _showRequirementType = false;
+        _showTestCaseState = false;
         _field = null;
     }
     private void ShowRequirementType()
     {
         _showRequirement = false;
         _showRequirementType = true;
+        _showTestCaseState = false;
         _field = null;
+    }
+    private void ShowTestCaseState()
+    {
+        _showRequirement = false;
+        _showRequirementType = false;
+        _showTestCaseState = true;
+        _field = null;
+
     }
 
     private string SelectedRowClassFunc(FieldValue element, int rowNumber)

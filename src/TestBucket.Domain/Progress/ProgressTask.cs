@@ -13,7 +13,7 @@ public class ProgressTask : IAsyncDisposable
     public string Title { get; private set; }
     public string Status { get; private set; }
     public bool Completed { get; private set; } = false;
-    public double Percent { get; set; } = 0;
+    public double Percent { get; private set; } = 0;
 
     internal ProgressTask(string title, ProgressManager progressManager)
     {

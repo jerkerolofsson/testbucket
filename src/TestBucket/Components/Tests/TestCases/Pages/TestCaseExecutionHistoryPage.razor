@@ -1,5 +1,5 @@
 ﻿@attribute [Authorize()]
-@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/History"
+@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/Runs"
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Domain.Requirements.Models
 @using TestBucket.Domain.Testing.TestRuns.Search
@@ -12,11 +12,9 @@
 
 @if (Test is not null)
 {
-    <CascadingValue Value="@Test">
-        <MudStack Style="width:100%" Class="pa-2">
-            <TestCaseRunGrid @bind-Query="_query" @bind-SelectedTestCaseRun="_selectedTestCaseRun"/>
-        </MudStack>
-    </CascadingValue>
+    <MudStack Style="width:100%" Class="pa-2">
+        <TestCaseRunGrid @bind-Query="_query" @bind-SelectedTestCaseRun="_selectedTestCaseRun" />
+    </MudStack>
 }
 
 @code {
@@ -32,23 +30,11 @@
     private List<BreadcrumbItem> _nav = new();
     protected override void OnInitialized()
     {
-        _nav = [new BreadcrumbItem(loc["history"], navigationManager.Uri)];
+        _nav = [new BreadcrumbItem(loc["test-runs"], navigationManager.Uri)];
     }
 
     protected override void OnParametersSet()
     {
         _query.ExternalDisplayId = Test?.ExternalDisplayId;
-    }
-
-    //private TestCase? _testCase = null;
-
-    private async Task SaveAsync(TestCase test)
-    {
-        await testCaseEditorController.SaveTestCaseAsync(test);
-    }
-
-    private async Task OnTestModified(TestCase test)
-    {
-        await testCaseEditorController.SaveTestCaseAsync(test);
     }
 }

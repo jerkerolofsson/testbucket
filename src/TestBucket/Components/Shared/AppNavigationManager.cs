@@ -200,11 +200,17 @@ public class AppNavigationManager
         var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
         return $"{tenantId}/Testing/TestCases/{testCaseId}/Edit";
     }
-    public string GetTestCaseHistoryUrl()
+    public string GetTestCaseChangeHistoryUrl()
     {
         var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
         var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
-        return $"{tenantId}/Testing/TestCases/{testCaseId}/History";
+        return $"{tenantId}/Testing/TestCases/{testCaseId}/Changes";
+    }
+    public string GetTestCaseExecutionHistoryUrl()
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        var testCaseId = ResolveEntityIdFromUrl(_navigationManager.Uri);
+        return $"{tenantId}/Testing/TestCases/{testCaseId}/Runs";
     }
     public string GetTestCaseVariablesUrl()
     {

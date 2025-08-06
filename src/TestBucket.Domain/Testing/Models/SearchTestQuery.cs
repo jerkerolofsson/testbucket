@@ -1,6 +1,5 @@
 ﻿
 
-using OneOf.Types;
 
 using TestBucket.Domain.Testing.TestCases.Search;
 
@@ -27,6 +26,8 @@ public class SearchTestQuery : SearchQuery
     /// If comparing folder, returns all descendants, not only the direct children
     /// </summary>
     public bool Recurse { get; set; } = false;
+
+    public string? State { get; set; }
 
     /// <summary>
     /// Filter on test execution type

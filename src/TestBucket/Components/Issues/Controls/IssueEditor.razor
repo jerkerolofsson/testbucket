@@ -53,18 +53,22 @@
 
                 <CreatedField Entity="@_issue" />
                
-                <Field>
-                    <FieldHeader>@loc["assigned-to"]</FieldHeader>
-                    <UserPicker SelectedUserName="@_issue.AssignedTo" SelectedUserNameChanged="OnAssignedToChanged"/>
-                </Field>
-                <Field>
+                <Field Row>
                     <FieldHeader>@loc["state"]</FieldHeader>
+                    <MudSpacer/>
                     <IssueStateSelect State="_state" StateChanged="OnStateChanged" TestProjectId="@Issue?.TestProjectId"/>
                 </Field>
+                <Field Row>
+                    <FieldHeader>@loc["assigned-to"]</FieldHeader>
+                    <MudSpacer/>
+                    <UserPicker SelectedUserName="@_issue.AssignedTo" SelectedUserNameChanged="OnAssignedToChanged" />
+                </Field>
+
                 <FieldsEditor Issue="@_issue" />
 
-                <Field>
+                <Field Row>
                     <FieldHeader>@loc["type"]</FieldHeader>
+                    <MudSpacer/>
                     <IssueTypeSelect Type="_type" TypeChanged="OnTypeChanged" TestProjectId="@Issue?.TestProjectId" />
                 </Field>
 

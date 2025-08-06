@@ -45,9 +45,13 @@ public class TestCaseFilterSpecificationBuilder
             specifications.Add(new FilterTestCasesByExternalDisplayId(query.ExternalDisplayId));
         }
 
-        if(query.ExcludeAutomated == true)
+        if (query.ExcludeAutomated == true)
         {
             specifications.Add(new FilterTestCasesExcludeAutomated());
+        }
+        if (query.State is not null)
+        {
+            specifications.Add(new FilterTestCasesByState(query.State));
         }
 
         if (query.TestSuiteId is not null)

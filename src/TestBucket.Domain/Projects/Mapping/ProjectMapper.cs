@@ -17,7 +17,6 @@ public static class ProjectMapper
             Name = project.Name,
             Slug = project.Slug,
             ShortName = project.ShortName,
-            TestStates = project.TestStates?.ToArray(),
             ExternalSystems = []
         };
 
@@ -37,7 +36,6 @@ public static class ProjectMapper
             Name = project.Name,
             Slug = project.Slug,
             ShortName = project.ShortName,
-            TestStates = project.TestStates?.ToArray(),
             ExternalSystems = [],
             Team = project.Team?.Slug
         };

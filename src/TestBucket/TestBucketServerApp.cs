@@ -48,6 +48,7 @@ using TestBucket.Components.Settings.Roles;
 using TestBucket.Components.Shared.Commands;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Themeing;
+using TestBucket.Components.States.Controllers;
 using TestBucket.Components.Teams;
 using TestBucket.Components.TestAccounts.Services;
 using TestBucket.Components.TestResources.Services;
@@ -298,6 +299,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<CommandController>();
         builder.Services.AddScoped<McpController>();
         builder.Services.AddScoped<AiUsageController>();
+        builder.Services.AddScoped<StateController>();
 
         builder.Services.AddScoped<UserPreferencesService>();
         builder.Services.AddScoped<TestBrowser>();

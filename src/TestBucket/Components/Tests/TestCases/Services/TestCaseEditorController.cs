@@ -319,16 +319,16 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
         await _testRunManager.SaveTestRunAsync(principal, testRun);
     }
 
-    internal async ValueTask<TestState> GetProjectFinalStateAsync(long testProjectId)
+    internal async ValueTask<TestState> GetTestCaseRunFinalStateAsync(long testProjectId)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        return await _stateService.GetProjectFinalStateAsync(principal, testProjectId);
+        return await _stateService.GetTestCaseRunFinalStateAsync(principal, testProjectId);
     }
 
-    internal async ValueTask<TestState> GetProjectInitialStateAsync(long testProjectId)
+    internal async ValueTask<TestState> GetTestCaseRunInitialStateAsync(long testProjectId)
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        return await _stateService.GetProjectInitialStateAsync(principal, testProjectId);
+        return await _stateService.GetTestCaseRunInitialStateAsync(principal, testProjectId);
     }
 
     public ValueTask DisposeAsync() => ValueTask.CompletedTask;

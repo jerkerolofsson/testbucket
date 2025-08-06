@@ -16,6 +16,7 @@ using TestBucket.Domain.Labels.Models;
 using TestBucket.Domain.Metrics.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Settings.Models;
+using TestBucket.Domain.States.Models;
 using TestBucket.Domain.Teams.Models;
 using TestBucket.Domain.TestAccounts.Models;
 using TestBucket.Domain.Testing.Heuristics.Models;
@@ -25,6 +26,8 @@ namespace TestBucket.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
+    internal DbSet<StateDefinition> StateDefinitions { get; set; }
+
     internal DbSet<ChatUsage> ChatUsages { get; set; }
     internal DbSet<Tenant> Tenants { get; set; }
     internal DbSet<RolePermission> RolePermissions { get; set; }

@@ -4,38 +4,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.States;
+
 namespace TestBucket.Contracts.Testing.States;
 
 /// <summary>
 /// User defined state of a test case
 /// </summary>
-public class TestState
+public class TestState : BaseState
 {
-    /// <summary>
-    /// Name of the state
-    /// </summary>
-    public string? Name { get; set; }
-
+  
     /// <summary>
     /// Known state
     /// </summary>
     public MappedTestState MappedState { get; set; } = MappedTestState.NotStarted;
 
-    /// <summary>
-    /// Flag that indicates that this state is the initial state (e.g. Not Started)
-    /// </summary>
-    public bool IsInitial { get; set; }
-
-    /// <summary>
-    /// Flag that indicates that this state is the final state (e.g. Completed)
-    /// </summary>
-    public bool IsFinal { get; set; }
-
     public override bool Equals(object? obj)
     {
         if(obj is TestState state)
         {
-            return state.MappedState == MappedState ||
+            return (state.MappedState == MappedState && MappedState != MappedTestState.Other) ||
                 (state.MappedState == MappedTestState.Other && state.Name == Name);
         }
         return false;

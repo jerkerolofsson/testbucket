@@ -120,13 +120,13 @@ internal class TestExecutionController : TenantBaseService
         {
             if (testCaseRun.Result != TestResult.NoRun)
             {
-                TestState completedState = await _editorController.GetProjectFinalStateAsync(testCaseRun.TestProjectId.Value);
+                TestState completedState = await _editorController.GetTestCaseRunFinalStateAsync(testCaseRun.TestProjectId.Value);
                 testCaseRun.MappedState = completedState.MappedState;
                 testCaseRun.State = completedState.Name;
             }
             else
             {
-                TestState initialState = await _editorController.GetProjectInitialStateAsync(testCaseRun.TestProjectId.Value);
+                TestState initialState = await _editorController.GetTestCaseRunInitialStateAsync(testCaseRun.TestProjectId.Value);
                 testCaseRun.MappedState = initialState.MappedState;
                 testCaseRun.State = initialState.Name;
             }

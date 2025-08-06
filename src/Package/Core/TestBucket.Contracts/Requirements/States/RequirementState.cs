@@ -1,14 +1,14 @@
-﻿namespace TestBucket.Contracts.Requirements.States;
+﻿using TestBucket.Contracts.Issues.States;
+using TestBucket.Contracts.States;
+using TestBucket.Contracts.Testing.States;
+
+namespace TestBucket.Contracts.Requirements.States;
 
 /// <summary>
 /// User defined state of a requirement
 /// </summary>
-public class RequirementState
+public class RequirementState : BaseState
 {
-    /// <summary>
-    /// Name of the state (this can be anything, defined by external systems)
-    /// </summary>
-    public string? Name { get; set; }
 
     /// <summary>
     /// Mapped internal state
@@ -21,7 +21,7 @@ public class RequirementState
     {
         if (obj is RequirementState state)
         {
-            return state.MappedState == MappedState ||
+            return (state.MappedState == MappedState && MappedState != MappedRequirementState.Other) ||
                 (state.MappedState == MappedRequirementState.Other && state.Name == Name);
         }
         return false;

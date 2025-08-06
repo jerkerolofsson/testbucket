@@ -11,6 +11,8 @@ using TestBucket.Domain.AI.Settings.LLM;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Models;
+using TestBucket.Domain.States;
+using TestBucket.Domain.States.Caching;
 
 
 namespace TestBucket.Data.Migrations;
@@ -398,6 +400,11 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
         if (!await repo.ExistsAsync(tenantId))
         {
             await repo.CreateAsync(name, tenantId);
+
+            // Add default states for the tenant
+            var stateRepo = scope.ServiceProvider.GetRequiredService<IStateRepository>();
+            var stateDefinition = DefaultStates.CreateDefaultTenantDefinition(tenantId);
+            await stateRepo.AddStateDefinitionAsync(stateDefinition);
         }
     }
 

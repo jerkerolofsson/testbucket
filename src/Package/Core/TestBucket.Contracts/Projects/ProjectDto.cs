@@ -27,11 +27,6 @@ public record class ProjectDto
     public required string ShortName { get; set; }
 
     /// <summary>
-    /// States for test case runs
-    /// </summary>
-    public TestState[]? TestStates { get; set; }
-
-    /// <summary>
     /// Slug for team
     /// </summary>
     public string? Team { get; set; }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TestBucket.Contracts.Requirements.Types;
 
 namespace TestBucket.Contracts.Testing.States;
-public class TestStates
+public class TestCaseRunStates
 {
     public const string NotStarted = nameof(MappedTestState.NotStarted);
     public const string Assigned = nameof(MappedTestState.Assigned);

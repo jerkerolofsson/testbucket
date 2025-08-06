@@ -4,35 +4,52 @@
 @using TestBucket.Contracts.Testing.States
 @using TestBucket.Domain.States
 @inject ProjectController controller
+@inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<StateStrings> loc
 
-<MudSelect Variant="Variant.Outlined" T="IssueState" Value="@State" ValueChanged="OnStateChanged">
-    @foreach (var state in _states)
-    {
-        <MudSelectItem Value="@state">
-            @if (state.MappedState == MappedIssueState.Other)
-            {
-                @state.Name
-            }
-            else
-            {
-                var name = state.MappedState.ToString().ToLower();
-                @loc[name]
-            }
-        </MudSelectItem>
-    }
-</MudSelect>
+@if(_states.Count > 0)
+{
+    <MudSelect Variant="Variant.Outlined" T="IssueState" Value="@State" ValueChanged="OnStateChanged">
+        @foreach (var state in _states)
+        {
+            <MudSelectItem Value="@state">
+                @if (state.MappedState == MappedIssueState.Other)
+                {
+                    @state.Name
+                }
+                else
+                {
+                    var name = state.MappedState.ToString().ToLower();
+                    @loc[name]
+                }
+            </MudSelectItem>
+        }
+    </MudSelect>
+}
 
 @code {
-    [Parameter] public long TestProjectId { get; set; }
+    [Parameter] public long? TestProjectId { get; set; }
     [Parameter] public IssueState? State { get; set; }
     [Parameter] public EventCallback<IssueState?> StateChanged { get; set; }
 
     private IReadOnlyList<IssueState> _states = [];
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _states = await controller.GetIssueStatesAsync(TestProjectId);
+        long? testProjectId = TestProjectId;
+        if(testProjectId is null)
+        {
+            testProjectId = appNavigationManager.State.SelectedProject?.Id;
+        }
+
+        if (testProjectId != 0 && testProjectId is not null && _states.Count == 0)
+        {
+            _states = await controller.GetIssueStatesAsync(testProjectId.Value);
+            if (_states.Count > 0)
+            {
+                this.StateHasChanged();
+            }
+        }
     }
 
     private async Task OnStateChanged(IssueState? state)

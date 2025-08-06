@@ -1,0 +1,60 @@
+﻿@using TestBucket.Components.States.Controllers
+@using TestBucket.Contracts.Localization
+@using TestBucket.Contracts.States
+@using TestBucket.Domain.States.Models
+@inject IAppLocalization loc
+@inject StateController stateController
+
+@if (StateDefinition is not null)
+{
+    <MudStack Row Wrap="Wrap.Wrap" Spacing="5">
+        @foreach (var state in StateDefinition.GetStates(EntityType))
+        {
+            <Chip CanClose OnClick="async() => await EditAsync(state)" Text="@state.Name" Color="@state.Color" OnClose="async (_) => await DeleteAsync(state)" />
+        }
+    </MudStack>
+
+    <MudStack Row Justify="Justify.FlexEnd">
+        <PermissionView Entity="PermissionEntityType.Project" Level="PermissionLevel.Write">
+            <Authorized>
+                <MudButton data-testid="add-state"
+                           Class="tb-button-new"
+                           StartIcon="@Icons.Material.Filled.Add" OnClick="AddAsync">@loc.Shared["add"]</MudButton>
+            </Authorized>
+        </PermissionView>
+    </MudStack>
+}
+
+@code {
+    [Parameter] public StateDefinition? StateDefinition { get; set; }
+    [Parameter] public EventCallback<StateDefinition> StateDefinitionChanged { get; set; }
+
+    [Parameter] public StateEntityType EntityType { get; set; } = StateEntityType.Unknown;
+
+    private async Task EditAsync(BaseState state)
+    {
+        if (StateDefinition is not null)
+        {
+            await stateController.EditStateAsync(StateDefinition, EntityType, state);
+            await StateDefinitionChanged.InvokeAsync(StateDefinition);
+        }
+    } 
+
+    private async Task DeleteAsync(BaseState state)
+    {
+        if(StateDefinition is not null)
+        {
+            StateDefinition.Remove(EntityType, state);
+            await StateDefinitionChanged.InvokeAsync(StateDefinition);
+        }
+    }
+
+    private async Task AddAsync()
+    {
+        if (StateDefinition is not null)
+        {
+            await stateController.AddStateAsync(StateDefinition, EntityType);
+            await StateDefinitionChanged.InvokeAsync(StateDefinition);
+        }
+    }
+}

@@ -1,20 +1,12 @@
-﻿namespace TestBucket.Contracts.Issues.States;
-public class IssueState
-{
-    /// <summary>
-    /// Name of the state (this can be anything, defined by external systems)
-    /// </summary>
-    public string? Name { get; set; }
+﻿using TestBucket.Contracts.States;
 
+namespace TestBucket.Contracts.Issues.States;
+public class IssueState : BaseState
+{
     /// <summary>
     /// Mapped internal state
     /// </summary>
     public MappedIssueState MappedState { get; set; }
-
-    /// <summary>
-    /// Color associated with the state
-    /// </summary>
-    public string? Color { get; set; }
 
     public override string ToString() => Name??"";
 
@@ -33,7 +25,7 @@ public class IssueState
     {
         if (obj is IssueState state)
         {
-            return state.MappedState == MappedState ||
+            return (state.MappedState == MappedState && MappedState != MappedIssueState.Other) ||
                 (state.MappedState == MappedIssueState.Other && state.Name == Name);
         }
         return false;

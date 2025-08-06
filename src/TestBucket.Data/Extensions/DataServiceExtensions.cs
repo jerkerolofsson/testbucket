@@ -11,6 +11,7 @@ using TestBucket.Data.Issues;
 using TestBucket.Data.Labels;
 using TestBucket.Data.Metrics;
 using TestBucket.Data.Milestones;
+using TestBucket.Data.Projects;
 using TestBucket.Data.Requirements;
 using TestBucket.Data.Runners;
 using TestBucket.Data.Sequence;
@@ -39,6 +40,7 @@ using TestBucket.Domain.Metrics;
 using TestBucket.Domain.Milestones;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Settings;
+using TestBucket.Domain.States;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.TestAccounts;
 using TestBucket.Domain.Testing.Heuristics;
@@ -81,6 +83,7 @@ public static class DataServiceExtensions
         services.AddScoped<IMcpUserInputRepository, McpUserInputRepository>();
         services.AddScoped<IMcpServerRepository, McpServerRepository>();
         services.AddScoped<IAIUsageRepository, AIUsageRepository>();
+        services.AddScoped<IStateRepository, StateRepository>();
 
 
         return services;

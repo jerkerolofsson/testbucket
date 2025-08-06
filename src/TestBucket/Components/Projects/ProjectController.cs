@@ -168,7 +168,14 @@ internal class ProjectController : TenantBaseService
     {
         var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Project, PermissionLevel.Read);
         if (!hasPermission)
-            return []; 
+        {
+            return [];
+        }
+
+        if (testProjectId == 0)
+        {
+            return [];
+        }
 
         var principal = await GetUserClaimsPrincipalAsync();
         return await _pipelineManager.GetExternalPipelineRunnersAsync(principal, testProjectId);
@@ -183,7 +190,14 @@ internal class ProjectController : TenantBaseService
     {
         var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Project, PermissionLevel.Read);
         if (!hasPermission)
+        {
             return [];
+        }
+
+        if (projectId == 0)
+        {
+            return [];
+        }
 
         var principal = await GetUserClaimsPrincipalAsync();
         return await _stateService.GetTestCaseRunStatesAsync(principal, projectId);
@@ -197,8 +211,16 @@ internal class ProjectController : TenantBaseService
     public async Task<IReadOnlyList<IssueState>> GetIssueStatesAsync(long projectId)
     {
         var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Project, PermissionLevel.Read);
+
         if (!hasPermission)
+        {
             return [];
+        }
+
+        if (projectId == 0)
+        {
+            return [];
+        }
 
         var principal = await GetUserClaimsPrincipalAsync();
         return await _stateService.GetIssueStatesAsync(principal, projectId);
@@ -213,7 +235,14 @@ internal class ProjectController : TenantBaseService
     {
         var hasPermission = await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.Project, PermissionLevel.Read);
         if (!hasPermission)
+        {
             return [];
+        }
+
+        if(projectId == 0)
+        {
+            return [];
+        }
 
         var principal = await GetUserClaimsPrincipalAsync();
         return await _stateService.GetRequirementStatesAsync(principal, projectId);

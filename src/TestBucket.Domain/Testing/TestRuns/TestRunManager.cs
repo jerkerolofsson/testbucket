@@ -261,7 +261,6 @@ internal class TestRunManager : ITestRunManager
         {
             await _mediator.Publish(new TestCaseRunUpdatingNotification(principal, existing, testCaseRun));
         }
-      
 
         // Save in DB
         await _testCaseRepo.UpdateTestCaseRunAsync(testCaseRun);

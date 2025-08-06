@@ -3,12 +3,12 @@
 @using TestBucket.Domain.Appearance
 @if(!CanClose)
 {
-    <MudChip T="string" Value="@Text" Class="tb-chip" Style="@Style" Size="@Size" @attributes="AdditionalAttributes"/>
+    <MudChip T="string" Value="@Text" Class="tb-chip" Style="@Style" Size="@Size" @attributes="AdditionalAttributes" OnClick="OnClick"/>
 
 }
 else
 {
-    <MudChip T="string" Value="@Text" Class="tb-chip" Style="@Style" Size="@Size" OnClose="async () => await OnClose.InvokeAsync(this)" @attributes="AdditionalAttributes" />
+    <MudChip T="string" Value="@Text" Class="tb-chip" Style="@Style" Size="@Size" OnClick="OnClick" OnClose="async () => await OnClose.InvokeAsync(this)" @attributes="AdditionalAttributes" />
 }
 
 @code {
@@ -16,6 +16,7 @@ else
     [Parameter] public string Text { get; set; } = "";
     [Parameter] public string Color { get; set; } = "#777";
     [Parameter] public EventCallback<Chip> OnClose { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
     [Parameter] public bool CanClose { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object>? AdditionalAttributes { get; set; }
 

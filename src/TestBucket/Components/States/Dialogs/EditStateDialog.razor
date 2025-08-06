@@ -1,0 +1,42 @@
+﻿@using TestBucket.Components.States.Controls
+@using TestBucket.Contracts.States
+@attribute [Authorize()]
+@inject TeamController teamService
+@inject IStringLocalizer<SharedStrings> loc
+
+@if (State is not null)
+{
+    <EditForm Model="@State" OnValidSubmit="OnValidSubmit">
+        <MudDialog data-testid="edit-state-dialog" Style="min-width: 50vw">
+            <TitleContent>@State.Name</TitleContent>
+            <DialogContent>
+                <StateEditor State="@State"/>
+            </DialogContent>
+
+            <DialogActions>
+                <MudButton data-testid="ok" ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+                <MudButton data-testid="cancel" OnClick="Close">@loc["cancel"]</MudButton>
+            </DialogActions>
+        </MudDialog>
+    </EditForm>
+}
+
+@code {
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public BaseState? State { get; set; }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+       
+        MudDialog.Close(State);
+      
+    }
+}

@@ -3,6 +3,7 @@
 @using TestBucket.Contracts.Testing.States
 @using TestBucket.Domain.States
 @inject ProjectController controller
+@inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<IssueStrings> loc
 
 <MudSelect Variant="Variant.Outlined" T="IssueType" Value="@Type" ValueChanged="OnTypeChanged" @attributes="@AdditionalAttributes">
@@ -24,18 +25,31 @@
 </MudSelect>
 
 @code {
-    [Parameter] public long TestProjectId { get; set; }
+    [Parameter] public long? TestProjectId { get; set; }
     [Parameter] public IssueType? Type { get; set; }
     [Parameter] public EventCallback<IssueType?> TypeChanged { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object>? AdditionalAttributes { get; set; }
 
     private IReadOnlyList<IssueType> _types = [];
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _types = await controller.GetIssueTypesAsync(TestProjectId);
-    }
+        long? testProjectId = TestProjectId;
+        if (testProjectId is null)
+        {
+            testProjectId = appNavigationManager.State.SelectedProject?.Id;
+        }
 
+        if (testProjectId != 0 && testProjectId is not null && _types.Count == 0)
+        {
+            _types = await controller.GetIssueTypesAsync(testProjectId.Value);
+            if (_types.Count > 0)
+            {
+                this.StateHasChanged();
+            }
+        }
+    }
+   
     private async Task OnTypeChanged(IssueType? state)
     {
         await TypeChanged.InvokeAsync(state);

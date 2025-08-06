@@ -436,7 +436,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         var tenantId = principal.GetTenantIdOrThrow();
 
         var testName = testCase.Name ?? "-";
-        var completedState = await _stateService.GetProjectFinalStateAsync(principal, testRun.TestProjectId.Value);
+        var completedState = await _stateService.GetTestCaseRunFinalStateAsync(principal, testRun.TestProjectId.Value);
         var testCaseRun = new TestCaseRun()
         {
             Name = testName,

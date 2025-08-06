@@ -54,7 +54,7 @@ public class ImportTestCaseRunHandler : IRequestHandler<ImportTestCaseRunRequest
 
 
         var testName = testCaseRunDto.Name ?? testCase.Name ?? "-";
-        var completedState = await _stateService.GetProjectFinalStateAsync(principal, testRun.TestProjectId.Value);
+        var completedState = await _stateService.GetTestCaseRunFinalStateAsync(principal, testRun.TestProjectId.Value);
         var testCaseRun = new TestCaseRun()
         {
             Name = testName,

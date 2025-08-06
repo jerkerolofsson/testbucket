@@ -61,12 +61,16 @@
 
                                 @{
                                     string message = string.Format(loc["logged-action-" + comment.LoggedAction], comment.CreatedBy, comment.LoggedActionArgument);
+                                    string style = "width: 24px; height: 24px";
+                                    if(comment.LoggedActionColor is not null)
+                                    {
+                                        style += $"; color: {comment.LoggedActionColor}";
+                                    }
                                 }
 
                                 @if(comment.LoggedActionIcon is not null)
                                 {
-                                    string color = comment.LoggedActionColor ?? "rgb(128,128,128)";
-                                    <MudIcon Style="width: 24px; height: 24px" Icon="@comment.LoggedActionIcon"/>
+                                    <MudIcon Style="@style" Icon="@comment.LoggedActionIcon"/>
                                 }
                                 else
                                 {
@@ -75,6 +79,14 @@
 
                                 <div class="message">@message</div>
                                 <div class="when">@comment.Created.Humanize()</div>
+
+                                @if (comment.CreatedBy == _currentUserName ||
+                                                    _authState?.User?.HasPermission(EntityType, PermissionLevel.Delete) == true)
+                                {
+                                    <MudTooltip Text="@loc["delete"]">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Clear" Size="Size.Small" OnClick="async () => await DeleteCommentAsync(comment)" />
+                                    </MudTooltip>
+                                }
                             </div>
                         </div>
                     </div>

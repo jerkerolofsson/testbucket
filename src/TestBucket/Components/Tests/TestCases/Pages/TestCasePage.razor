@@ -7,7 +7,7 @@
 @inject TestCaseEditorController testCaseEditorService
 @inject AppNavigationManager appNavigationManager
 
-<TestCaseEditor ReadOnly Test="@TestCase" TestChanged="OnTestModified" />
+<TestCaseEditor ReadOnly Test="@TestCase" TestChanged="OnTestModified" EditClicked="OnEditClicked" />
 
 @code {
     [Parameter] public long TestCaseId { get; set; }
@@ -19,5 +19,9 @@
     private async Task OnTestModified(TestCase test)
     {
         await testCaseEditorService.SaveTestCaseAsync(test);
+    }
+    private void OnEditClicked()
+    {
+        appNavigationManager.NavigateTo(appNavigationManager.GetTestCaseEditUrl());
     }
 }

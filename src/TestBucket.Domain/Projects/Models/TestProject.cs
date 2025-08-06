@@ -83,24 +83,6 @@ public class TestProject
     /// </summary>
     public int NumberOfRuns { get; set; }
 
-    /// <summary>
-    /// Applicable states for tests that a user can select
-    /// </summary>
-    [Column(TypeName = "jsonb")]
-    public TestState[]? TestStates { get; set; }
-
-    /// <summary>
-    /// Applicable states for requirements that a user can select
-    /// </summary>
-    [Column(TypeName = "jsonb")]
-    public RequirementState[]? RequirementStates { get; set; }
-
-    /// <summary>
-    /// Applicable states for issues that a user can select
-    /// </summary>
-    [Column(TypeName = "jsonb")]
-    public IssueState[]? IssueStates { get; set; }
-
     // Navigation
 
     public string? TenantId { get; set; }

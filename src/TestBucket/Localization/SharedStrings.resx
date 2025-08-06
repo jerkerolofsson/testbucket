@@ -889,7 +889,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>More options</value>
   </data>
   <data name="test-case" xml:space="preserve">
-    <value>Testcase</value>
+    <value>Test case</value>
   </data>
   <data name="coverage" xml:space="preserve">
     <value>Coverage</value>
@@ -1041,5 +1041,17 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="template-python" xml:space="preserve">
     <value>Python script</value>
+  </data>
+  <data name="new-search-folder" xml:space="preserve">
+    <value>New search folder</value>
+  </data>
+  <data name="logged-action-result-changed" xml:space="preserve">
+    <value>{0} changed the result to {1}</value>
+  </data>
+  <data name="test-case-run" xml:space="preserve">
+    <value>Test result</value>
+  </data>
+  <data name="test-run" xml:space="preserve">
+    <value>Test run</value>
   </data>
 </root>

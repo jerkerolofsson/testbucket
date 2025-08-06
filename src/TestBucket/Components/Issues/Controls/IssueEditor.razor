@@ -64,13 +64,13 @@
                 </Field>
                 <Field>
                     <FieldHeader>@loc["state"]</FieldHeader>
-                    <IssueStateSelect State="_state" StateChanged="OnStateChanged"/>
+                    <IssueStateSelect State="_state" StateChanged="OnStateChanged" TestProjectId="@Issue?.TestProjectId"/>
                 </Field>
                 <FieldsEditor Issue="@_issue" />
 
                 <Field>
                     <FieldHeader>@loc["type"]</FieldHeader>
-                    <IssueTypeSelect Type="_type" TypeChanged="OnTypeChanged" />
+                    <IssueTypeSelect Type="_type" TypeChanged="OnTypeChanged" TestProjectId="@Issue?.TestProjectId" />
                 </Field>
 
                 <PermissionView Entity="PermissionEntityType.Issue" Level="PermissionLevel.Delete">

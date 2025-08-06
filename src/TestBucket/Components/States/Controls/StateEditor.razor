@@ -1,0 +1,25 @@
+﻿@using TestBucket.Contracts.Localization
+@using TestBucket.Contracts.States
+@inject IAppLocalization loc
+
+@if(State is not null)
+{
+    <MudStack>
+        <Field Row>
+            <FieldHeader for="state-name">@loc.Shared["name"]</FieldHeader>
+            <MudSpacer/>
+            <MudTextField id="state-name" Variant="Variant.Outlined" @bind-Value="State.Name"></MudTextField>
+        </Field>
+
+        <Field Row>
+            <FieldHeader for="state-color">@loc.Settings["color"]</FieldHeader>
+            <MudSpacer />
+            <ColorCellPicker id="state-color" @bind-Color="State.Color"/>
+        </Field>
+
+    </MudStack>
+}
+
+@code {
+    [Parameter] public BaseState? State { get; set; }
+}

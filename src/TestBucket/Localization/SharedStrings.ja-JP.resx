@@ -510,4 +510,16 @@
   <data name="template-python" xml:space="preserve">
     <value />
   </data>
+  <data name="new-search-folder" xml:space="preserve">
+    <value />
+  </data>
+  <data name="logged-action-result-changed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="test-case-run" xml:space="preserve">
+    <value />
+  </data>
+  <data name="test-run" xml:space="preserve">
+    <value />
+  </data>
 </root>

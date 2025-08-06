@@ -10,32 +10,29 @@ using TestBucket.Domain.Projects;
 
 namespace TestBucket.Domain.States.Caching;
 
-public record class RefreshProjectStateCacheRequest(ClaimsPrincipal Principal, long ProjectId) : IRequest<ProjectStateCacheEntry?>;
+public record class RefreshProjectStateCacheRequest(ClaimsPrincipal Principal, long ProjectId, long TeamId) : IRequest<ProjectStateCacheEntry>;
 
-public class RefreshProjectStateCacheHandler : IRequestHandler<RefreshProjectStateCacheRequest, ProjectStateCacheEntry?>
+public class RefreshProjectStateCacheHandler : IRequestHandler<RefreshProjectStateCacheRequest, ProjectStateCacheEntry>
 {
-    private readonly IProjectRepository _projectRepository;
+    private readonly IStateRepository _repository;
     private readonly ProjectStateCache _stateCache;
 
-    public RefreshProjectStateCacheHandler(IProjectRepository projectRepository, ProjectStateCache stateCache)
+    public RefreshProjectStateCacheHandler(IStateRepository projectRepository, ProjectStateCache stateCache)
     {
-        _projectRepository = projectRepository;
+        _repository = projectRepository;
         _stateCache = stateCache;
     }
 
-    public async ValueTask<ProjectStateCacheEntry?> Handle(RefreshProjectStateCacheRequest request, CancellationToken cancellationToken)
+    public async ValueTask<ProjectStateCacheEntry> Handle(RefreshProjectStateCacheRequest request, CancellationToken cancellationToken)
     {
         var principal = request.Principal;
         var tenantId = principal.GetTenantIdOrThrow();
         principal.ThrowIfNoPermission(PermissionEntityType.Project, PermissionLevel.Read);
 
-        var project = await _projectRepository.GetProjectByIdAsync(tenantId, request.ProjectId);
+        var projectDefinition = await _repository.GetProjectStateDefinitionAsync(tenantId, request.ProjectId);
+        var teamDefinition = await _repository.GetTeamStateDefinitionAsync(tenantId, request.TeamId);
+        var tenantDefinition = await _repository.GetTenantStateDefinitionAsync(tenantId);
 
-        if (project is not null)
-        {
-            return _stateCache.Update(project);
-        }
-
-        return null;
+        return _stateCache.Update(projectDefinition, teamDefinition, tenantDefinition, request.ProjectId);
     }
 }

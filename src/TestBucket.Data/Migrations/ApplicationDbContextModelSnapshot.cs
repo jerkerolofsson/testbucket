@@ -2398,9 +2398,6 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("IconUrl")
                         .HasColumnType("text");
 
-                    b.Property<IssueState[]>("IssueStates")
-                        .HasColumnType("jsonb");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -2420,9 +2417,6 @@ namespace TestBucket.Data.Migrations
                     b.Property<int>("NumberOfTestSuites")
                         .HasColumnType("integer");
 
-                    b.Property<RequirementState[]>("RequirementStates")
-                        .HasColumnType("jsonb");
-
                     b.Property<string>("ShortName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -2436,9 +2430,6 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<string>("TenantId")
                         .HasColumnType("text");
-
-                    b.Property<TestState[]>("TestStates")
-                        .HasColumnType("jsonb");
 
                     b.HasKey("Id");
 
@@ -2822,6 +2813,62 @@ namespace TestBucket.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("GlobalSettings");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.States.Models.StateDefinition", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("Created")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<List<IssueState>>("IssueStates")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<DateTimeOffset>("Modified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<List<RequirementState>>("RequirementStates")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<long?>("TeamId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<List<TestState>>("TestCaseRunStates")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<List<TestState>>("TestCaseStates")
+                        .IsRequired()
+                        .HasColumnType("jsonb");
+
+                    b.Property<long?>("TestProjectId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("TestProjectId");
+
+                    b.ToTable("StateDefinitions");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Teams.Models.Team", b =>
@@ -4855,6 +4902,27 @@ namespace TestBucket.Data.Migrations
                     b.Navigation("Tenant");
 
                     b.Navigation("TestCase");
+                });
+
+            modelBuilder.Entity("TestBucket.Domain.States.Models.StateDefinition", b =>
+                {
+                    b.HasOne("TestBucket.Domain.Teams.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId");
+
+                    b.HasOne("TestBucket.Domain.Tenants.Models.Tenant", "Tenant")
+                        .WithMany()
+                        .HasForeignKey("TenantId");
+
+                    b.HasOne("TestBucket.Domain.Projects.Models.TestProject", "TestProject")
+                        .WithMany()
+                        .HasForeignKey("TestProjectId");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("TestProject");
                 });
 
             modelBuilder.Entity("TestBucket.Domain.Teams.Models.Team", b =>

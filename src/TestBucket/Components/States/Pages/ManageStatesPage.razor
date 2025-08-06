@@ -1,0 +1,94 @@
+﻿@attribute [Authorize()]
+@page "/{TenantId}/Settings/ManageStates"
+@using TestBucket.Components.States.Controllers
+@using TestBucket.Components.States.Controls
+@using TestBucket.Contracts.Localization
+@using TestBucket.Domain
+@using TestBucket.Domain.Settings
+@using TestBucket.Domain.States.Models
+@layout SettingsLayout
+@inject IAppLocalization loc
+@inject StateController stateController
+
+<MudStack Class="container-settings-page">
+
+    @if (_loading)
+    {
+        <MudProgressLinear Indeterminate
+        />
+    }
+    else
+    {
+        <MudTabs>
+            <MudTabPanel Text="@loc.Shared["issue"]">
+                <MudStack Class="pa-5">
+                    <MudStack>
+                        <MudText Typo="Typo.caption">@loc.Shared["tenant"]</MudText>
+                        <StateDefinitionEditor StateDefinition="@_tenantState" StateDefinitionChanged="async () => await SaveAsync(_tenantState)" EntityType="@StateEntityType.Issue" />
+                    </MudStack>
+                    <MudStack>
+                        <MudText Typo="Typo.caption">@loc.Shared["team"]</MudText>
+                        <StateDefinitionEditor StateDefinition="@_teamState" StateDefinitionChanged="async () => await SaveAsync(_teamState)" EntityType="@StateEntityType.Issue" />
+                    </MudStack>
+                    <MudStack>
+                        <MudText Typo="Typo.caption">@loc.Shared["project"]</MudText>
+                        <StateDefinitionEditor StateDefinition="@_projectState" StateDefinitionChanged="async () => await SaveAsync(_projectState)" EntityType="@StateEntityType.Issue" />
+                    </MudStack>
+                </MudStack>
+            </MudTabPanel>
+            <MudTabPanel Text="@loc.Shared["requirement"]">
+                <MudStack Class="pa-5">
+                </MudStack>
+            </MudTabPanel>
+            <MudTabPanel Text="@loc.Shared["test-case"]">
+                <MudStack Class="pa-5">
+                </MudStack>
+            </MudTabPanel>
+            <MudTabPanel Text="@loc.Shared["test-case-run"]">
+                <MudStack Class="pa-5">
+                </MudStack>
+            </MudTabPanel>
+        </MudTabs>
+    }
+</MudStack>
+
+@code {
+    [Parameter] public string TenantId { get; set; } = "";
+
+    /// <summary>
+    /// Currently selected project
+    /// </summary>
+    [CascadingParameter] public TestProject? Project { get; set; }
+
+    private bool _loading = true;
+    private StateDefinition? _tenantState = null;
+    private StateDefinition? _projectState = null;
+    private StateDefinition? _teamState = null;
+
+    private async Task SaveAsync(StateDefinition? stateDefinition)
+    {
+        if(stateDefinition is not null)
+        {
+            await stateController.SaveStateDefinitionAsync(stateDefinition);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            _tenantState = await stateController.GetTenantStateDefinitionAsync();
+            if (Project?.TeamId is not null)
+            {
+                _teamState = await stateController.GetTeamStateDefinitionAsync(Project.TeamId.Value);
+            }
+            if (Project is not null)
+            {
+                _projectState = await stateController.GetProjectStateDefinitionAsync(Project.Id);
+            }
+
+            _loading = false;
+            this.StateHasChanged();
+        }
+    }
+}

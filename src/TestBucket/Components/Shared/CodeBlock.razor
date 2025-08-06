@@ -7,6 +7,10 @@
         <LanguageIcon Size="Size.Small" Language=@Language />
         <div>@Language</div>
         <MudSpacer />
+        @if(ShowEditButton)
+        {
+            <MudIconButton Icon="@MudBlazor.Icons.Material.Filled.Edit" OnClick="OnClick"/>
+        }
         <CopyToClipboard Text="@Code" />
     </MudStack>
 
@@ -19,9 +23,17 @@
     [Parameter] public string MaxHeight { get; set; } = "50vh";
     [Parameter] public string Language { get; set; } = "json";
     [Parameter] public string? Code { get; set; }
+    [Parameter] public bool ShowEditButton { get; set; }
+    [Parameter] public EventCallback EditClicked {get;set;
+    }
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
 
     private string _elementId = "code-block-" + Guid.NewGuid().ToString();
+
+    public async Task OnClick()
+    {
+        await EditClicked.InvokeAsync();
+    }
 
     private string? _code;
 

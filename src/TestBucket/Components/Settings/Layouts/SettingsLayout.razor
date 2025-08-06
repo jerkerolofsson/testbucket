@@ -65,6 +65,8 @@
                     <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.BoldDuoTone.Heuristic" IconColor="Color.Tertiary" Href="@heuristicsUrl">@settingsLoc["manage-heuristics"]</MudNavLink>
                 }
 
+                <MudNavLink Match="NavLinkMatch.All" Icon="@TbIcons.Filled.ProcessDiagram" IconColor="Color.Tertiary" Href="@StatesUrl">@loc["states"]</MudNavLink>
+
                 <MudItem Class="mt-5"/>
 
                 <MudNavLink Icon="@TbIcons.BoldDuoTone.Leaf" IconColor="Color.Info" Href="@EnvironmentsUrl">@settingsLoc["manage-environments"]</MudNavLink>
@@ -152,6 +154,8 @@
     //private string AppearanceUrl => $"{TenantId}/Settings/Appearance";
     private string TenantsUrl => $"{TenantId}/Settings/Tenants";
     private string ProjectsUrl => $"{TenantId}/Settings/ManageProjects";
+    private string StatesUrl => $"{TenantId}/Settings/ManageStates";
+
     private string EnvironmentsUrl => $"{TenantId}/Settings/ManageEnvironments";
     private string AccountsUrl => $"{TenantId}/Settings/Accounts";
     private string ResourcesUrl => $"{TenantId}/Settings/Resources";

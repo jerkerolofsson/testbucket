@@ -19,6 +19,7 @@ public partial class TestCaseEditor
     [CascadingParameter] public Tenant? Tenant { get; set; }
     [Parameter] public TestCase? Test { get; set; }
     [Parameter] public EventCallback<TestCase?> TestChanged { get; set; }
+    [Parameter] public EventCallback EditClicked { get; set; }
 
     [Parameter] public bool ReadOnly { get; set; } = false;
 

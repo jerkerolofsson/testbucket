@@ -89,8 +89,8 @@
                     }
                     else
                     {
-                        // Read only, automated test 
-                        <CodeBlock Language="@Test.RunnerLanguage" Code="@Text"/>
+                        // Read only, automated test
+                        <CodeBlock Language="@Test.RunnerLanguage" Code="@Text" ShowEditButton EditClicked="EditClicked" />
                     }
 
                     <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />

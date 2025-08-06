@@ -1,26 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TestBucket.Contracts.Testing.States;
+﻿namespace TestBucket.Contracts.Testing.States;
 
 /// <summary>
-/// States for test execution
+/// States for test cases and test case runs
 /// </summary>
 public enum MappedTestState
 {
-    NotStarted,
+    /// <summary>
+    /// Test not started
+    /// </summary>
+    NotStarted = 0,
 
-    Assigned,
+    /// <summary>
+    /// Assigned to a user for work
+    /// </summary>
+    Assigned = 1,
 
-    Ongoing,
+    /// <summary>
+    /// Test is ongoing / test case in draft state
+    /// </summary>
+    Ongoing = 2,
 
-    Completed,
+    /// <summary>
+    /// Test is completed
+    /// </summary>
+    Completed = 3,
+
+    /// <summary>
+    /// Test case in review
+    /// </summary>
+    Review = 4,
 
     /// <summary>
     /// Other, used defined with no mapping to internal state
     /// </summary>
-    Other,
+    Other = 100,
 }

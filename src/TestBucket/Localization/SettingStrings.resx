@@ -354,4 +354,13 @@
   <data name="archiving" xml:space="preserve">
     <value>Archiving</value>
   </data>
+  <data name="change-state-to-ongoing-when-editing-tests" xml:space="preserve">
+    <value>Change state to ongoing when editing a completed test</value>
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
+    <value>This changes the state to ongoing if the description is changed while in the completed state.</value>
+  </data>
+  <data name="editor" xml:space="preserve">
+    <value>Editor</value>
+  </data>
 </root>

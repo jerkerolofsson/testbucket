@@ -1,11 +1,12 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/Changes"
+@using TestBucket.Components.Shared.Review.Controllers
 @using TestBucket.Components.Tests.Layouts
+@using TestBucket.Domain.Audit.Models
 @using TestBucket.Domain.Requirements.Models
 @using TestBucket.Domain.Testing.TestRuns.Search
 @layout TestCaseDetailsLayout
-@inject TestBrowser testBrowser
-@inject TestCaseEditorController testCaseEditorController
+@inject ReviewController reviewController
 @inject NavigationManager navigationManager
 @inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<SharedStrings> loc
@@ -14,6 +15,12 @@
 {
     <CascadingValue Value="@Test">
         <MudStack Style="width:100%" Class="pa-2">
+            <MudTimeline>
+                @foreach(var item in _entries)
+                {
+                    <MudTimelineItem Color="Color.Primary">@item.Created.Humanize()</MudTimelineItem>
+                }
+            </MudTimeline>
         </MudStack>
     </CascadingValue>
 }
@@ -25,10 +32,14 @@
     [CascadingParameter] public Team? Team { get; set; }
     [CascadingParameter] public TestCase? Test { get; set; }
 
-    private List<BreadcrumbItem> _nav = new();
-    protected override void OnInitialized()
-    {
-        _nav = [new BreadcrumbItem(loc["changes"], navigationManager.Uri)];
-    }
+    private IReadOnlyList<AuditEntry> _entries = [];
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender && Test is not null)
+        {
+            _entries = await reviewController.GetTestCaseDiffAsync(Test.Id);
+            this.StateHasChanged();
+        }
+    }
 }

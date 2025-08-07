@@ -47,6 +47,7 @@ using TestBucket.Components.Settings.Links;
 using TestBucket.Components.Settings.Roles;
 using TestBucket.Components.Shared.Commands;
 using TestBucket.Components.Shared.Fields;
+using TestBucket.Components.Shared.Review.Controllers;
 using TestBucket.Components.Shared.Themeing;
 using TestBucket.Components.States.Controllers;
 using TestBucket.Components.Teams;
@@ -263,7 +264,7 @@ public static class TestBucketServerApp
 
         builder.Services.AddScoped<ArchitectureController>();
         builder.Services.AddScoped<CommitController>();
-
+        builder.Services.AddScoped<ReviewController>();
         builder.Services.AddScoped<MetricsController>();
         builder.Services.AddScoped<CommentsController>();
         builder.Services.AddScoped<UserApiKeysController>();

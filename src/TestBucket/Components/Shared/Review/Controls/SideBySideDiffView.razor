@@ -1,0 +1,74 @@
+﻿@using DiffPlex
+@using DiffPlex.DiffBuilder
+@using DiffPlex.DiffBuilder.Model
+
+<div class="diff-viewer">
+    <div class="diff-header">
+        <div class="left-header">
+            <h5>@OldTextHeader</h5>
+        </div>
+        <div class="right-header">
+            <h5>@NewTextHeader</h5>
+        </div>
+    </div>
+
+    <div class="diff-content">
+        @if (_diffModel != null)
+        {
+            <div class="left-panel">
+                @foreach (var line in _diffModel.OldText.Lines)
+                {
+                    <div class="line @GetLineClass(line.Type)">
+                        <span class="line-number">@(line.Position?.ToString() ?? "")</span>
+                        <span class="line-content">@line.Text</span>
+                    </div>
+                }
+            </div>
+
+            <div class="right-panel">
+                @foreach (var line in _diffModel.NewText.Lines)
+                {
+                    <div class="line @GetLineClass(line.Type)">
+                        <span class="line-number">@(line.Position?.ToString() ?? "")</span>
+                        <span class="line-content">@line.Text</span>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string OldText { get; set; } = "";
+    [Parameter] public string NewText { get; set; } = "";
+    [Parameter] public string OldTextHeader { get; set; } = "Original";
+    [Parameter] public string NewTextHeader { get; set; } = "Modified";
+    [Parameter] public bool IgnoreWhiteSpace { get; set; } = true;
+
+    private SideBySideDiffModel? _diffModel;
+
+    protected override void OnParametersSet()
+    {
+        UpdateDiff();
+    }
+
+    private void UpdateDiff()
+    {
+        if (!string.IsNullOrEmpty(OldText) || !string.IsNullOrEmpty(NewText))
+        {
+            var differ = new SideBySideDiffBuilder(new Differ());
+            _diffModel = differ.BuildDiffModel(OldText ?? "", NewText ?? "", IgnoreWhiteSpace);
+        }
+    }
+
+    private string GetLineClass(ChangeType changeType)
+    {
+        return changeType switch
+        {
+            ChangeType.Inserted => "inserted",
+            ChangeType.Deleted => "deleted",
+            ChangeType.Modified => "modified",
+            _ => "unchanged"
+        };
+    }
+}

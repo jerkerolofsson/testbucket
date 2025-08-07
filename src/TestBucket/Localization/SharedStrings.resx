@@ -1066,4 +1066,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="batch-updating-tests" xml:space="preserve">
     <value>Please wait. Updating tests..</value>
   </data>
+  <data name="review" xml:space="preserve">
+    <value>Review</value>
+  </data>
+  <data name="changes" xml:space="preserve">
+    <value>Changes</value>
+  </data>
 </root>

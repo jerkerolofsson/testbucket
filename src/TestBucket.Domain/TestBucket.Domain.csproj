@@ -81,6 +81,7 @@
 
     <ItemGroup>
       <Folder Include="Export\Handlers\Tests\" />
+      <Folder Include="Features\Review\" />
     </ItemGroup>
 
 </Project>

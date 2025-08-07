@@ -1,0 +1,68 @@
+﻿@using DiffPlex
+@using DiffPlex.DiffBuilder
+@using DiffPlex.DiffBuilder.Model
+
+<div class="inline-diff-viewer">
+    <div class="diff-header">
+        <h5>@Header</h5>
+    </div>
+
+    <div class="diff-content">
+        @if (_diffModel != null)
+        {
+            @foreach (var line in _diffModel.Lines)
+            {
+                <div class="line @GetLineClass(line.Type)">
+                    <span class="line-number">@(line.Position?.ToString() ?? "")</span>
+                    <span class="change-type">@GetChangeSymbol(line.Type)</span>
+                    <span class="line-content">@line.Text</span>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string OldText { get; set; } = "";
+    [Parameter] public string NewText { get; set; } = "";
+    [Parameter] public string Header { get; set; } = "Diff";
+    [Parameter] public bool IgnoreWhiteSpace { get; set; } = true;
+
+    private DiffPaneModel? _diffModel;
+
+    protected override void OnParametersSet()
+    {
+        UpdateDiff();
+    }
+
+    private void UpdateDiff()
+    {
+        if (!string.IsNullOrEmpty(OldText) || !string.IsNullOrEmpty(NewText))
+        {
+            var differ = new InlineDiffBuilder(new Differ());
+            _diffModel = differ.BuildDiffModel(OldText ?? "", NewText ?? "", IgnoreWhiteSpace);
+        }
+    }
+
+    private string GetLineClass(ChangeType changeType)
+    {
+        return changeType switch
+        {
+            ChangeType.Inserted => "inserted",
+            ChangeType.Deleted => "deleted",
+            ChangeType.Modified => "modified",
+            _ => "unchanged"
+        };
+    }
+
+    private string GetChangeSymbol(ChangeType changeType)
+    {
+        return changeType switch
+        {
+            ChangeType.Inserted => "+",
+            ChangeType.Deleted => "-",
+            ChangeType.Modified => "~",
+            _ => " "
+        };
+    }
+}

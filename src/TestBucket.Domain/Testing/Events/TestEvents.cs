@@ -11,6 +11,7 @@ using TestBucket.Domain.Testing.Models;
 namespace TestBucket.Domain.Testing.Events;
 
 public record TestCaseCreatedEvent(TestCase Test) : INotification;
+public record TestCaseSavingEvent(ClaimsPrincipal Principal, TestCase? Old, TestCase New) : INotification;
 public record TestCaseDeletedEvent(TestCase Test) : INotification;
 
 public record TestSuiteCreatedEvent(TestSuite Suite) : INotification;

@@ -15,6 +15,7 @@ using TestBucket.Domain.AI.Settings;
 using TestBucket.Domain.AI.Settings.LLM;
 using TestBucket.Domain.ApiKeys;
 using TestBucket.Domain.Appearance;
+using TestBucket.Domain.Audit;
 using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Automation.Runners;
@@ -67,6 +68,7 @@ using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Settings;
 using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Testing.TestCases.Features.ChangeStateToOngoingWhenEditingTests;
 using TestBucket.Domain.Testing.TestCases.Insights;
 using TestBucket.Domain.Testing.TestCases.Templates;
 using TestBucket.Domain.Testing.TestLab;
@@ -213,6 +215,9 @@ public static class DomainServiceExtensions
         // automation
         services.AddScoped<IMarkdownAutomationRunner, MarkdownAutomationRunner>();
 
+        // audit
+        services.AddScoped<IAuditor, Auditor>();
+
         // validation
         services.AddValidatorsFromAssemblyContaining<RequirementSpecificationFolderValidator>();
 
@@ -264,6 +269,9 @@ public static class DomainServiceExtensions
         // AI Runner settings
         services.AddScoped<ISetting, EnableAiRunnerSetting>();
         services.AddScoped<ISetting, MaxTokensPerDayForAitRunnerSetting>();
+
+        // Editor settings
+        services.AddScoped<ISetting, ChangeStateToOngoingWhenEditingTestsSetting>();
 
         // LLM
         services.AddScoped<AgentChatContext>();

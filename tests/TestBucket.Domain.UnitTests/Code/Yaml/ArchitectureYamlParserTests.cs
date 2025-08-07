@@ -8,8 +8,10 @@ namespace TestBucket.Domain.UnitTests.Code.Yaml
     /// focusing on validation, serialization, and parsing of architecture YAML files.
     /// </summary>
     [Feature("Architecture 1.0")]
+    [Component("Code")]
     [UnitTest]
     [EnrichedTest]
+    [FunctionalTest]
     public class ArchitectureYamlParserTests
     {
         /// <summary>

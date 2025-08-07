@@ -4,6 +4,7 @@ using Mediator;
 
 using Microsoft.Extensions.Logging;
 
+using TestBucket.Domain.Testing.TestCases.Features;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.AI.Embeddings;
 using TestBucket.Domain.Features.Traceability;
@@ -24,6 +25,7 @@ using TestBucket.Domain.Testing.TestCases.Templates;
 using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Traits.Core;
+using TestBucket.Domain.Audit;
 
 namespace TestBucket.Domain.Testing.TestCases
 {
@@ -40,13 +42,13 @@ namespace TestBucket.Domain.Testing.TestCases
         private readonly IFieldDefinitionManager _fieldDefinitionManager;
         private readonly List<ITestCaseTemplate> _templates = [];
         private readonly IStateService _stateService;
-
+        private readonly IAuditor _auditor;
         public TestCaseManager(
             ILogger<TestCaseManager> logger,
             TimeProvider timeProvider,
             IEnumerable<IMarkdownDetector> markdownDetectors,
             IEnumerable<ITestCaseTemplate> templates,
-            ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager, IStateService stateService)
+            ITestCaseRepository testCaseRepo, ITestSuiteManager testSuiteManager, IProjectRepository projectRepo, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager, IStateService stateService, IAuditor auditor)
         {
             _markdownDetectors = markdownDetectors.ToList();
             _templates = templates.ToList();
@@ -58,6 +60,7 @@ namespace TestBucket.Domain.Testing.TestCases
             _mediator = mediator;
             _fieldDefinitionManager = fieldDefinitionManager;
             _stateService = stateService;
+            _auditor = auditor;
         }
 
         /// <summary>
@@ -202,7 +205,6 @@ namespace TestBucket.Domain.Testing.TestCases
                 }
             }
 
-            await AssignTeamIfNotAssignedAsync(testCase, testCase.TenantId);
             await CreateTestCaseFoldersAsync(principal, testCase);
             await GenerateEmbeddingAsync(principal, testCase, testCase.TestCaseFields);
 
@@ -211,7 +213,9 @@ namespace TestBucket.Domain.Testing.TestCases
                 var project = await _projectRepo.GetProjectByIdAsync(testCase.TenantId, testCase.TestProjectId.Value);
                 testCase.TeamId = project?.TeamId;
             }
-            await DetectThingsWithMarkdownDetectorsAsync(principal, testCase);
+            await AnalyzeTestCaseWithMarkdownDetectorsWhenSaving.DetectThingsWithMarkdownDetectorsAsync(principal, testCase, _markdownDetectors);
+
+            await _mediator.Publish(new TestCaseSavingEvent(principal, null, testCase));
             await _testCaseRepo.AddTestCaseAsync(testCase);
 
             // Notify observers
@@ -279,22 +283,33 @@ namespace TestBucket.Domain.Testing.TestCases
             principal.ThrowIfEntityTenantIsDifferent(testCase);
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Write);
 
-            await DetectThingsWithMarkdownDetectorsAsync(principal, testCase);
-
-            await AssignTeamIfNotAssignedAsync(testCase, tenantId);
+            await AnalyzeTestCaseWithMarkdownDetectorsWhenSaving.DetectThingsWithMarkdownDetectorsAsync(principal, testCase, _markdownDetectors);
 
             testCase.Modified = _timeProvider.GetUtcNow();
             testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
             testCase.ClassificationRequired = testCase.Description is not null && testCase.Description.Length > 0;
 
             var existing = await _testCaseRepo.GetTestCaseByIdAsync(tenantId, testCase.Id);
-            var isDescriptionChanged = existing?.Description != testCase.Description;
-            if(isDescriptionChanged || testCase.Embedding is null || existing?.Name != testCase.Name)
+            if (existing is null)
             {
-                await GenerateEmbeddingAsync(principal, testCase, testCase.TestCaseFields ?? existing?.TestCaseFields);
+                throw new ArgumentException("Test case does not exist.");
             }
 
+            var isDescriptionChanged = existing.Description != testCase.Description;
+            if(isDescriptionChanged || testCase.Embedding is null || existing.Name != testCase.Name)
+            {
+                await GenerateEmbeddingAsync(principal, testCase, testCase.TestCaseFields ?? existing.TestCaseFields);
+            }
+
+            await _mediator.Publish(new TestCaseSavingEvent(principal, existing, testCase));
+
             await _testCaseRepo.UpdateTestCaseAsync(testCase);
+
+            if (testCase.TestProjectId is not null)
+            {
+                string[] properties = [nameof(testCase.Description), nameof(testCase.ExternalDisplayId), nameof(testCase.State), nameof(testCase.MappedState), nameof(testCase.Preconditions), nameof(testCase.Postconditions)];
+                await _auditor.LogAsync(properties, testCase.TestProjectId.Value, testCase.Id, existing, testCase);
+            }
 
             // Notify observers
             foreach (var observer in _testCaseObservers.ToList())
@@ -303,22 +318,6 @@ namespace TestBucket.Domain.Testing.TestCases
             }
         }
 
-        private async Task DetectThingsWithMarkdownDetectorsAsync(ClaimsPrincipal principal, TestCase testCase)
-        {
-            foreach (var detector in _markdownDetectors)
-            {
-                await detector.ProcessAsync(principal, testCase);
-            }
-        }
-
-        private async Task AssignTeamIfNotAssignedAsync(TestCase testCase, string tenantId)
-        {
-            if (testCase.TeamId is null && testCase.TestProjectId is not null)
-            {
-                var project = await _projectRepo.GetProjectByIdAsync(tenantId, testCase.TestProjectId.Value);
-                testCase.TeamId = project?.TeamId;
-            }
-        }
 
         public async Task<TestCase> DuplicateTestCaseAsync(ClaimsPrincipal principal, TestCase testCase)
         {

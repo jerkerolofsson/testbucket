@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 using TestBucket.Domain.AI.Billing;
 using TestBucket.Domain.AI.Mcp.Models;
+using TestBucket.Domain.Audit.Models;
 using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Automation.Runners.Models;
 using TestBucket.Domain.Code.Models;
@@ -26,8 +27,8 @@ namespace TestBucket.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
+    internal DbSet<AuditEntry> AuditEntries { get; set; }
     internal DbSet<StateDefinition> StateDefinitions { get; set; }
-
     internal DbSet<ChatUsage> ChatUsages { get; set; }
     internal DbSet<Tenant> Tenants { get; set; }
     internal DbSet<RolePermission> RolePermissions { get; set; }

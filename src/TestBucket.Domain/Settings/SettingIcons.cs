@@ -11,6 +11,7 @@ public static class SettingIcons
     public static string Generic => TbIcons.BoldDuoTone.Settings;
     public static string TestResources => TbIcons.BoldDuoTone.Laptop;
     public static string Testing => TbIcons.BoldDuoTone.Settings;
+    public static string Editor => TbIcons.BoldDuoTone.Settings;
     public static string Profile => TbIcons.BoldDuoTone.UserId;
     public static string Tenant => TbIcons.BoldDuoTone.Settings;
 }

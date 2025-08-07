@@ -1,5 +1,6 @@
 ﻿using TestBucket.Data.AI;
 using TestBucket.Data.AI.MCP;
+using TestBucket.Data.Audit;
 using TestBucket.Data.Automation;
 using TestBucket.Data.Code;
 using TestBucket.Data.Comments;
@@ -24,6 +25,7 @@ using TestBucket.Data.Testing;
 using TestBucket.Data.TestResources;
 using TestBucket.Domain.AI.Billing;
 using TestBucket.Domain.AI.Mcp;
+using TestBucket.Domain.Audit;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Automation.Runners;
 using TestBucket.Domain.Code;
@@ -53,6 +55,7 @@ public static class DataServiceExtensions
     {
         services.AddScoped<ISequenceGenerator, SequenceGenerator>();
 
+        services.AddScoped<IAuditRepository, AuditRepository>();
         services.AddScoped<IDashboardRepository, DashboardRepository>();
         services.AddScoped<IHeuristicsRepository, HeuristicsRepository>();
         services.AddScoped<IMetricsRepository, MetricsRepository>();

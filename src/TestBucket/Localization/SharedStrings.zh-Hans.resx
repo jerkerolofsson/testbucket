@@ -1058,4 +1058,10 @@
   <data name="batch-updating-tests" xml:space="preserve">
     <value />
   </data>
+  <data name="review" xml:space="preserve">
+    <value />
+  </data>
+  <data name="changes" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -354,4 +354,13 @@
   <data name="archiving" xml:space="preserve">
     <value>Arkivering</value>
   </data>
+  <data name="change-state-to-ongoing-when-editing-tests" xml:space="preserve">
+    <value />
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
+    <value />
+  </data>
+  <data name="editor" xml:space="preserve">
+    <value />
+  </data>
 </root>

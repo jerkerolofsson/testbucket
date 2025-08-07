@@ -243,37 +243,20 @@ internal class ProjectRepository : IProjectRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 
-        // Code
-       
-        foreach (var commit in dbContext.Commits.Where(x => x.TestProjectId == project.Id))
-        {
-            dbContext.Commits.Remove(commit);
-        }
-        foreach (var layer in dbContext.ArchitecturalLayers.Where(x => x.TestProjectId == project.Id))
-        {
-            dbContext.ArchitecturalLayers.Remove(layer);
-        }
-        foreach (var system in dbContext.ProductSystems.Where(x => x.TestProjectId == project.Id))
-        {
-            dbContext.ProductSystems.Remove(system);
-        }
-        foreach (var component in dbContext.Components.Where(x => x.TestProjectId == project.Id))
-        {
-            dbContext.Components.Remove(component);
-        }
-        foreach (var feature in dbContext.Features.Where(x => x.TestProjectId == project.Id))
-        {
-            dbContext.Features.Remove(feature);
-        }
-        foreach (var heuristic in dbContext.Heuristics.Where(x => x.TestProjectId == project.Id))
-        {
-            dbContext.Heuristics.Remove(heuristic);
-        }
+        // Audit
+        await dbContext.AuditEntries.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
 
-        foreach (var domainSettings in dbContext.DomainSettings.Where(x => x.TestProjectId == project.Id))
-        {
-            dbContext.DomainSettings.Remove(domainSettings);
-        }
+        // Code
+        await dbContext.Commits.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
+        await dbContext.ArchitecturalLayers.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
+        await dbContext.ProductSystems.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
+        await dbContext.Components.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
+        await dbContext.Features.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
+
+        // Settings
+        await dbContext.Heuristics.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
+        await dbContext.DomainSettings.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
+        await dbContext.StateDefinitions.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
 
         // Fields
 
@@ -327,18 +310,10 @@ internal class ProjectRepository : IProjectRepository
             dbContext.Labels.Remove(label);
         }
         // Test
-        foreach (var item in dbContext.Metrics.Where(x => x.TestProjectId == project.Id))
-        {
-            dbContext.Metrics.Remove(item);
-        }
-        foreach (var item in dbContext.TestCaseRuns.Where(x => x.TestProjectId == project.Id))
-        {
-            dbContext.TestCaseRuns.Remove(item);
-        }
-        foreach (var item in dbContext.TestRuns.Where(x => x.TestProjectId == project.Id))
-        {
-            dbContext.TestRuns.Remove(item);
-        }
+        await dbContext.TestCaseRuns.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
+        await dbContext.Metrics.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
+        await dbContext.TestRuns.Where(x => x.TestProjectId == project.Id).ExecuteDeleteAsync();
+
         foreach (var testCase in dbContext.TestCases
             .Include(x=>x.TestSteps)
             .Where(x => x.TestProjectId == project.Id))

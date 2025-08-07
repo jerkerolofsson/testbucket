@@ -1044,4 +1044,13 @@
   <data name="changes" xml:space="preserve">
     <value />
   </data>
+  <data name="side-by-side-diff" xml:space="preserve">
+    <value />
+  </data>
+  <data name="inline-diff" xml:space="preserve">
+    <value />
+  </data>
+  <data name="latest" xml:space="preserve">
+    <value />
+  </data>
 </root>

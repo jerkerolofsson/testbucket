@@ -4,7 +4,6 @@ using System.Net;
 using Microsoft.Extensions.Localization;
 
 using TestBucket.Components.Automation;
-using TestBucket.Components.Shared;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Components.Tests.Dialogs;
@@ -20,7 +19,6 @@ using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Milestones;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Teams;
 using TestBucket.Domain.Testing.Aggregates;
@@ -307,8 +305,8 @@ internal class TestBrowser : TenantBaseService
 
     public async Task<List<TreeNode<BrowserItem>>> BrowseAsync(TestBrowserRequest request)
     {
-        long? teamId = request.TeamId;
-        long? projectId = request.ProjectId;
+        long? teamId = request.TeamId ?? _appNavigationManager.State.SelectedProject?.TeamId;
+        long? projectId = request.ProjectId ?? _appNavigationManager.State.SelectedProject?.Id;
         BrowserItem? parent = request.Parent;
         string? searchText = request.Text;
 
@@ -825,18 +823,13 @@ internal class TestBrowser : TenantBaseService
         searchRequest.ProjectId = request.ProjectId.Value;
 
         var searchTestResult = await _testSuiteController.SearchTestCasesAsync(searchRequest); 
-        //new SearchTestQuery() 
-        //{ 
-        //    CompareFolder = false,
-        //    ProjectId = request.ProjectId, 
-        //    Count = 20, 
-        //    TeamId = request.TeamId, 
-        //    Offset = 0,
-        //    Text = request.Text
-        //});
-
         var rootItems = await BrowseRootAsync(request);
-        rootItems[0].Expanded = true;
+
+        // Expand repository
+        if (!rootItems[0].Expanded)
+        {
+            rootItems[0].Expanded = true;
+        }
 
         foreach (var testCase in searchTestResult.Items)
         {
@@ -844,20 +837,80 @@ internal class TestBrowser : TenantBaseService
         }
         return rootItems;
     }
+    internal async Task<TreeNode<BrowserItem>?> FindTestSuiteNodeAsync(long testSuiteId, List<TreeNode<BrowserItem>> rootItems)
+    {
+        var existingNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.TestSuite?.Id == testSuiteId);
+        if(existingNode is not null)
+        {
+            return existingNode;
+        }
 
-    private async Task AddToHierarchyAsync(TestCase testCase, List<TreeNode<BrowserItem>> rootItems)
+        // It may be in a folder
+        var suite = await GetTestSuiteByIdAsync(testSuiteId);
+        if (suite?.FolderId is not null)
+        {
+            List<TestRepositoryFolder> folders = [];
+            long repositoryFolderId = suite.FolderId.Value;
+
+            // Read all repo folders from the test suite to the root
+            TestRepositoryFolder? repoFolder = await _testRepositoryController.GetFolderByIdAsync(repositoryFolderId);
+            while (repoFolder is not null)
+            {
+                folders.Add(repoFolder);
+                if (repoFolder.ParentId is null)
+                {
+                    break;
+                }
+                repoFolder = await _testRepositoryController.GetFolderByIdAsync(repoFolder.ParentId.Value);
+            }
+
+            // Get the root and then navigate to the last folder
+            TreeNode<BrowserItem>? parentNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.VirtualFolderName == TestBrowser.ROOT_TEST_REPOSITORY);
+            foreach (var folder in folders.AsEnumerable().Reverse())
+            {
+                var folderNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.TestRepositoryFolder?.Id == folder.Id);
+                if (folderNode is null)
+                {
+                    var request = new TestBrowserRequest();
+                    request.Parent = new BrowserItem() { TestRepositoryFolder = folder };
+                    var nodes = await BrowseAsync(request);
+                    if (parentNode is not null)
+                    {
+                        parentNode.Children = nodes;
+                    }
+                }
+                else
+                {
+                    if (folderNode.Children is null)
+                    {
+                        var request = new TestBrowserRequest();
+                        request.Parent = new BrowserItem() { TestRepositoryFolder = folder };
+                        folderNode.Children = await BrowseAsync(request);
+                    }
+
+                    folderNode.Expanded = true;
+                    parentNode = folderNode;
+                }
+            }
+        }
+
+        return TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.TestSuite?.Id == testSuiteId);
+    }
+
+
+    private async Task<TreeNode<BrowserItem>?> AddToHierarchyAsync(TestCase testCase, List<TreeNode<BrowserItem>> rootItems)
     {
         if(testCase.PathIds is null)
         {
             // We can't show dangling tests..
-            return;
+            return null;
         }
 
         // The root items should already contain the test suites, so we should be able to find it here
-        var testSuiteNode = TreeView<BrowserItem>.FindTreeNode(rootItems, x => x.TestSuite?.Id == testCase.TestSuiteId);
+        var testSuiteNode = await FindTestSuiteNodeAsync(testCase.TestSuiteId, rootItems);
         if(testSuiteNode is null)
         {
-            return;
+            return null;
         }
 
         TreeNode<BrowserItem> parent = testSuiteNode;
@@ -878,7 +931,7 @@ internal class TestBrowser : TenantBaseService
             }
             if (folderNode is null)
             {
-                return;
+                return null;
             }
             folderNode.Expanded = true;
             parent = folderNode;
@@ -895,7 +948,9 @@ internal class TestBrowser : TenantBaseService
             {
                 parent.Children = [.. parent.Children, testCaseNode];
             }
+            return parent;
         }
+        return null;
     }
 
 

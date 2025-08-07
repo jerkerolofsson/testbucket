@@ -1,6 +1,7 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/Changes"
 @using TestBucket.Components.Shared.Review.Controllers
+@using TestBucket.Components.Shared.Review.Controls
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Domain.Audit.Models
 @using TestBucket.Domain.Requirements.Models
@@ -14,14 +15,64 @@
 @if (Test is not null)
 {
     <CascadingValue Value="@Test">
-        <MudStack Style="width:100%" Class="pa-2">
-            <MudTimeline>
-                @foreach(var item in _entries)
+        <div class="pa-3 diff-container">
+            <MudTimeline SelectedIndex="_selectedIndex" SelectedIndexChanged="OnSelectedIndexChanged"> 
+                @foreach(var entry in _entries)
                 {
-                    <MudTimelineItem Color="Color.Primary">@item.Created.Humanize()</MudTimelineItem>
+                    <MudTimelineItem Style="cursor: pointer" Color="@(_selectedEntry == entry ? Color.Primary : Color.Default)">
+                        @if (entry.NewValues.TryGetValue("State", out var state))
+                        {
+                            <div class="state">@state</div>
+                        }
+                        <div class="created">@entry.Created.Humanize()</div>
+                    </MudTimelineItem>
                 }
             </MudTimeline>
-        </MudStack>
+            <MudTabs>
+                <MudTabPanel Text="@loc["inline-diff"]">
+                    <div class="container-inline-diff">
+                        @if(_selectedEntry is not null && Test is not null)
+                        {
+                            foreach(var changeKey in _selectedEntry.NewValues.Keys)
+                            {
+                                if (_selectedEntry.OldValues.TryGetValue(changeKey, out var oldValue) && _selectedEntry.NewValues.TryGetValue(changeKey, out var newValue))
+                                {
+                                    var oldText = oldValue is null ? "" : (oldValue.ToString() ?? "");
+                                    var newText = GetNewText(changeKey);
+
+                                    <InlineDiffView Header="@changeKey" OldText="@oldText" NewText="@newText"/>
+                                }
+                            }
+                        }
+                    </div>
+
+                </MudTabPanel>
+                <MudTabPanel Text="@loc["side-by-side-diff"]">
+                    <div class="container-side-by-side-diff">
+                        @if(_selectedEntry is not null && Test is not null)
+                        {
+                            foreach(var changeKey in _selectedEntry.NewValues.Keys)
+                            {
+                                if (changeKey == nameof(TestCase.Description) || changeKey == nameof(TestCase.Preconditions) || changeKey == nameof(TestCase.Postconditions))
+                                {
+                                    if (_selectedEntry.OldValues.TryGetValue(changeKey, out var oldValue) && _selectedEntry.NewValues.TryGetValue(changeKey, out var newValue))
+                                    {
+                                        var oldText = oldValue is null ? "" : (oldValue.ToString() ?? "");
+                                        var newText = GetNewText(changeKey);
+
+                                        <MudStack Spacing="0">
+                                            <MudText Typo="Typo.h6">@changeKey</MudText>
+                                            <SideBySideDiffView OldText="@oldText" NewText="@newText" NewTextHeader="@loc["latest"]" OldTextHeader="@_selectedEntry.Created.Humanize()"/>
+                                        </MudStack>
+                                    }
+                                }
+                            }
+                        }
+                    </div>
+                </MudTabPanel>
+            </MudTabs>
+
+        </div>
     </CascadingValue>
 }
 
@@ -31,14 +82,60 @@
     [CascadingParameter] public TestProject? Project { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
     [CascadingParameter] public TestCase? Test { get; set; }
+    private AuditEntry? _selectedEntry;
+    private int _selectedIndex;
 
     private IReadOnlyList<AuditEntry> _entries = [];
+
+    private string GetNewText(string changeKey)
+    {
+        if (Test is not null)
+        {
+            if(changeKey == nameof(TestCase.Description))
+            {
+                return Test.Description ?? "";
+            }
+            if(changeKey == nameof(TestCase.Preconditions))
+            {
+                return Test.Preconditions ?? "";
+            }
+            if (changeKey == nameof(TestCase.Postconditions))
+            {
+                return Test.Postconditions ?? "";
+            }
+            if (changeKey == nameof(TestCase.State))
+            {
+                return Test.State ?? "";
+            }
+        }
+        return "";
+    }
+
+    private void OnSelectedIndexChanged(int index)
+    {
+        _selectedIndex = index;
+        if(index >= 0 && index < _entries.Count)
+        {
+            _selectedEntry = _entries[index];
+        }
+    }
+
+    private void FilterEntries()
+    {
+        // We will only show entries that has changes in the selected fields
+        _entries = _entries.Where(x => 
+            x.NewValues.ContainsKey(nameof(TestCase.Description)) ||
+            x.NewValues.ContainsKey(nameof(TestCase.Postconditions)) ||
+            x.NewValues.ContainsKey(nameof(TestCase.Preconditions))
+        ).ToList();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if(firstRender && Test is not null)
         {
             _entries = await reviewController.GetTestCaseDiffAsync(Test.Id);
+            FilterEntries();
             this.StateHasChanged();
         }
     }

@@ -1,97 +1,88 @@
 ﻿.inline-diff-viewer {
-border: 1px solid #d0d7de;
-border-radius: 6px;
-overflow: hidden;
-font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-font-size: 12px;
+    border: 1px solid var(--mud-palette-lines-inputs);
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    color: var(--mud-palette-text-primary);
 }
 
 .diff-header {
-background-color: #f6f8fa;
-border-bottom: 1px solid #d0d7de;
-padding: 8px 12px;
+    background: var(--mud-palette-surface);
+    border-bottom: 1px solid var(--mud-palette-lines-inputs);
+    padding: 8px 12px;
 }
 
 .diff-header h5 {
     margin: 0;
     font-weight: 600;
-    color: #24292f;
 }
 
 .diff-content {
-max-height: 500px;
-overflow: auto;
+    max-height: 500px;
+    overflow: auto;
 }
 
 .line {
-display: flex;
-min-height: 20px;
-line-height: 20px;
-white-space: nowrap;
+    display: flex;
+    min-height: 20px;
+    line-height: 20px;
+    white-space: nowrap;
 }
 
 .line-number {
-width: 50px;
-padding: 0 8px;
-text-align: right;
-color: #656d76;
-background-color: #f6f8fa;
-border-right: 1px solid #d0d7de;
-user-select: none;
-flex-shrink: 0;
+    width: 50px;
+    padding: 0 8px;
+    text-align: right;
+    color: var(--mud-palette-text-primary);
+    border-right: 1px solid var(--mud-palette-lines-inputs);
+    user-select: none;
+    flex-shrink: 0;
 }
 
 .change-type {
-width: 20px;
-padding: 0 4px;
-text-align: center;
-font-weight: bold;
-border-right: 1px solid #d0d7de;
-user-select: none;
-flex-shrink: 0;
+    width: 20px;
+    padding: 0 4px;
+    text-align: center;
+    font-weight: bold;
+    border-right: 1px solid var(--mud-palette-lines-inputs);
+    user-select: none;
+    flex-shrink: 0;
 }
 
 .line-content {
-padding: 0 8px;
-white-space: pre;
-overflow-x: auto;
-flex: 1;
+    padding: 0 8px;
+    white-space: pre;
+    overflow-x: auto;
+    flex: 1;
 }
 
 .line.inserted {
-background-color: #d1f4d0;
+    background-color: rgba(0,255,0,0.2);
 }
 
 .line.inserted .line-number,
 .line.inserted .change-type {
-    background-color: #a7f3d0;
-    color: #0d7377;
+    background-color: rgba(0,255,0,0.2);
 }
 
 .line.deleted {
-background-color: #ffeef0;
+    background-color: rgba(255,0,0,0.2);
 }
 
 .line.deleted .line-number,
 .line.deleted .change-type {
-    background-color: #fecdd3;
-    color: #d1242f;
+    background-color: rgba(255,0,0,0.2);
 }
 
 .line.modified {
-background-color: #fff8dc;
+    background-color: rgba(255,255,0,0.2);
 }
 
 .line.modified .line-number,
 .line.modified .change-type {
-    background-color: #fef3c7;
-    color: #b45309;
+    background-color: rgba(255,255,0,0.2);
 }
 
 .line.unchanged {
-background-color: #ffffff;
-}
-
-.line.unchanged .change-type {
-    background-color: #f6f8fa;
+    opacity: 0.5;
 }

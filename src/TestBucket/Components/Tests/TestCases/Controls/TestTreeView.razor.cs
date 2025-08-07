@@ -1017,64 +1017,11 @@ public partial class TestTreeView
         }
     }
 
-    internal async Task<TreeNode<BrowserItem>?> FindTestSuiteNodeAsync(long testSuiteId)
-    {
-        // It may be in a folder
-        var suite = await testSuiteController.GetTestSuiteByIdAsync(testSuiteId);
-        if (suite?.FolderId is not null)
-        {
-            List<TestRepositoryFolder> folders = [];
-            long repositoryFolderId = suite.FolderId.Value;
-
-            // Read all repo folders from the test suite to the root
-            TestRepositoryFolder? repoFolder = await testRepositoryController.GetFolderByIdAsync(repositoryFolderId);
-            while(repoFolder is not null)
-            {
-                folders.Add(repoFolder);
-                if(repoFolder.ParentId is null)
-                {
-                    break;
-                }
-                repoFolder = await testRepositoryController.GetFolderByIdAsync(repoFolder.ParentId.Value);
-            }
-
-            // Get the root and then navigate to the last folder
-            TreeNode<BrowserItem>? parentNode = FindTreeNode(x => x.VirtualFolderName == TestBrowser.ROOT_TEST_REPOSITORY);
-            foreach (var folder in folders.AsEnumerable().Reverse())
-            {
-                var folderNode = FindTreeNode(x => x.TestRepositoryFolder?.Id == folder.Id);
-                if (folderNode is null)
-                {
-                    var request = CreateRequest();
-                    request.Parent = new BrowserItem() { TestRepositoryFolder = folder };
-                    var nodes = await testBrowser.BrowseAsync(request);
-                    if (parentNode is not null)
-                    {
-                        parentNode.Children = nodes;
-                    }
-                }
-                else
-                {
-                    if(folderNode.Children is null)
-                    {
-                        var request = CreateRequest();
-                        request.Parent = new BrowserItem() { TestRepositoryFolder = folder };
-                        folderNode.Children = await testBrowser.BrowseAsync(request);
-                    }
-
-                    folderNode.Expanded = true;
-                    parentNode = folderNode;
-                }
-            }
-        }
-
-        return FindTreeNode(x => x.TestSuite?.Id == testSuiteId); ;
-    }
 
     internal async Task GoToTestCaseAsync(TestCase testCase, bool invokeStateHasChanged = true)
     {
         // Find the test suite node
-        var testSuiteNode = await FindTestSuiteNodeAsync(testCase.TestSuiteId);
+        var testSuiteNode = await testBrowser.FindTestSuiteNodeAsync(testCase.TestSuiteId, _rootItems);
         if (testSuiteNode is null)
         {
             return;

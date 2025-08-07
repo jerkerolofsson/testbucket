@@ -1,0 +1,26 @@
+﻿.diff-container {
+    display: grid; 
+    grid-template-columns: 250px 1fr; 
+    height: 100%;
+    overflow: hidden;
+}
+
+.diff-container > * {
+    overflow: auto;
+}
+
+.diff-container .container-side-by-side-diff,
+.diff-container .container-inline-diff {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.state {
+    font-weight: bold;
+}
+
+.created {
+    font-size: 75%;
+}

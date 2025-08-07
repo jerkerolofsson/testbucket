@@ -8,6 +8,8 @@ namespace TestBucket.Components.Shared.Tree;
 /// <typeparam name="T">The type of value stored in the node.</typeparam>
 public class TreeNode<T> : IEquatable<TreeNode<T>> where T : class
 {
+    private bool _expanded;
+
     /// <summary>
     /// Gets or sets the display text for the node.
     /// </summary>
@@ -26,7 +28,34 @@ public class TreeNode<T> : IEquatable<TreeNode<T>> where T : class
     /// <summary>
     /// Gets or sets a value indicating whether the node is expanded in the UI.
     /// </summary>
-    public virtual bool Expanded { get; set; }
+    public virtual bool Expanded
+    {
+        get => _expanded;
+        set
+        {
+            _expanded = value;
+
+            // Debugging
+            if(_expanded)
+            {
+                if(Value is not null)
+                {
+                    if (Value is TestRepositoryFolder)
+                    {
+
+                    }
+                    if (Value is TestSuiteFolder)
+                    {
+
+                    }
+                    if (Value is TestSuite)
+                    {
+
+                    }
+                }
+            }
+        }
+    }
 
     /// <summary>
     /// Gets or sets a value indicating whether the node can be expanded.
@@ -129,11 +158,13 @@ public class TreeNode<T> : IEquatable<TreeNode<T>> where T : class
     /// <returns>A string representation of the node.</returns>
     public override string ToString()
     {
+        var value = "TreeNode";
         if (Value is not null)
         {
-            return Value.ToString() ?? "Value: (null)";
+            value = Value.ToString() ?? "Value: (null)";
         }
-        return "TreeNode";
+        var childCount = HasChildren ? Children.Count : 0;
+        return $"{Text} Expanded={Expanded}, ChildCount={childCount}, Value={value}";
     }
 
     /// <summary>

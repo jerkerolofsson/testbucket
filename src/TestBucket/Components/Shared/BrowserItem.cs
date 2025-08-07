@@ -38,28 +38,32 @@ public record class BrowserItem
 
         if (TestSuite is not null)
         {
-            sb.AppendLine($"TestSuite: {TestSuite.Id} ({TestSuite.Name})");
+            sb.Append($"TestSuite: {TestSuite.Id} ({TestSuite.Name})");
         }
-        if (Folder is not null)
+        else if (Folder is not null)
         {
-            sb.AppendLine($"TestSuiteFolder: {Folder.Id} ({Folder.Name})");
+            sb.Append($"TestSuiteFolder: {Folder.Id} ({Folder.Name})");
         }
-        if (TestCase is not null)
+        else if (TestCase is not null)
         {
-            sb.AppendLine($"TestCase: {TestCase.Id} ({TestCase.Name})");
+            sb.Append($"TestCase: {TestCase.Id} ({TestCase.Name})");
         }
 
-        if (Requirement is not null)
+        else if (Requirement is not null)
         {
-            sb.AppendLine($"Requirement: {Requirement.Id} ({Requirement.Name})");
+            sb.Append($"Requirement: {Requirement.Id} ({Requirement.Name})");
         }
-        if (RequirementFolder is not null)
+        else if (RequirementFolder is not null)
         {
-            sb.AppendLine($"RequirementFolder: {RequirementFolder.Id} ({RequirementFolder.Name})");
+            sb.Append($"RequirementFolder: {RequirementFolder.Id} ({RequirementFolder.Name})");
         }
-        if (RequirementSpecification is not null)
+        else if (RequirementSpecification is not null)
         {
-            sb.AppendLine($"RequirementSpecification: {RequirementSpecification.Id} ({RequirementSpecification.Name})");
+            sb.Append($"RequirementSpecification: {RequirementSpecification.Id} ({RequirementSpecification.Name})");
+        }
+        else if(VirtualFolderName is not null)
+        {
+            sb.Append(this.VirtualFolderName);
         }
 
         return sb.ToString();

@@ -23,7 +23,7 @@ internal class MilestoneManager : IMilestoneManager
 
     public async Task<IReadOnlyList<Milestone>> GetMilestonesAsync(ClaimsPrincipal principal, long projectId)
     {
-        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Write);
+        principal.ThrowIfNoPermission(PermissionEntityType.Issue, PermissionLevel.Read);
         var filters = new List<FilterSpecification<Milestone>>
         {
             new FilterByTenant<Milestone>(principal.GetTenantIdOrThrow()),

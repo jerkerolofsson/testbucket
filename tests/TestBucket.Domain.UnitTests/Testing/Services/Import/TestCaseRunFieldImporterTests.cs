@@ -13,6 +13,11 @@ namespace TestBucket.Domain.UnitTests.Testing.Services.Import;
 /// <summary>
 /// Unit tests for the <see cref="TestCaseRunFieldImporter"/> class.
 /// </summary>
+[UnitTest]
+[FunctionalTest]
+[EnrichedTest]
+[Component("Testing")]
+[Feature("Import Test Results")]
 public class TestCaseRunFieldImporterTests
 {
     /// <summary>

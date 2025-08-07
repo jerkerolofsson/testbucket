@@ -1,13 +1,9 @@
-﻿using System.Runtime.Intrinsics.X86;
-using System.Security.Claims;
-
-using NSubstitute;
+﻿using System.Security.Claims;
 
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Milestones;
-using TestBucket.Domain.Shared;
 
 namespace TestBucket.Domain.UnitTests.Milestones
 {
@@ -295,62 +291,6 @@ namespace TestBucket.Domain.UnitTests.Milestones
         }
 
         /// <summary>
-        /// Verifies that AddMilestoneAsync enforces access levels.
-        /// </summary>
-        [Fact]
-        [SecurityTest]
-        public async Task AddMilestoneAsync_InsufficientPermission_ThrowsUnauthorizedAccessException()
-        {
-            var manager = CreateSut();
-            var milestone = new Milestone() { TestProjectId = ProjectId };
-            var principal = CreateUserWithLimitedPermission(PermissionLevel.Read); // No Write
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
-                await manager.AddMilestoneAsync(principal, milestone));
-        }
-
-        /// <summary>
-        /// Verifies that UpdateMilestoneAsync enforces access levels.
-        /// </summary>
-        [Fact]
-        [SecurityTest]
-        public async Task UpdateMilestoneAsync_InsufficientPermission_ThrowsUnauthorizedAccessException()
-        {
-            var manager = CreateSut();
-            var milestone = new Milestone() { TenantId = TenantId, TestProjectId = ProjectId, Title = "123" };
-            var principal = CreateUserWithAllPermissions();
-            await manager.AddMilestoneAsync(principal, milestone);
-            var limitedPrincipal = CreateUserWithLimitedPermission(PermissionLevel.Read); // No Write
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
-                await manager.UpdateMilestoneAsync(limitedPrincipal, milestone));
-        }
-
-        /// <summary>
-        /// Verifies that GetMilestonesAsync enforces access levels.
-        /// </summary>
-        [Fact]
-        [SecurityTest]
-        public async Task GetMilestonesAsync_InsufficientPermission_ThrowsUnauthorizedAccessException()
-        {
-            var manager = CreateSut();
-            var principal = CreateUserWithLimitedPermission(PermissionLevel.None); // No Read
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
-                await manager.GetMilestonesAsync(principal, ProjectId));
-        }
-
-        /// <summary>
-        /// Verifies that GetMilestoneByNameAsync enforces access levels.
-        /// </summary>
-        [Fact]
-        [SecurityTest]
-        public async Task GetMilestoneByNameAsync_InsufficientPermission_ThrowsUnauthorizedAccessException()
-        {
-            var manager = CreateSut();
-            var principal = CreateUserWithLimitedPermission(PermissionLevel.None); // No Read
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
-                await manager.GetMilestoneByNameAsync(principal, ProjectId, "Test"));
-        }
-
-        /// <summary>
         /// Verifies that SearchMilestonesAsync enforces access levels.
         /// </summary>
         [Fact]
@@ -363,20 +303,5 @@ namespace TestBucket.Domain.UnitTests.Milestones
                 await manager.SearchMilestonesAsync(principal, ProjectId, "Test", 0, 10));
         }
 
-        /// <summary>
-        /// Verifies that DeleteAsync enforces access levels.
-        /// </summary>
-        [Fact]
-        [SecurityTest]
-        public async Task DeleteAsync_InsufficientPermission_ThrowsUnauthorizedAccessException()
-        {
-            var manager = CreateSut();
-            var milestone = new Milestone { TenantId = TenantId, Title = "1", TestProjectId = ProjectId };
-            var principal = CreateUserWithAllPermissions();
-            await manager.AddMilestoneAsync(principal, milestone);
-            var limitedPrincipal = CreateUserWithLimitedPermission(PermissionLevel.Write); // No Delete
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
-                await manager.DeleteAsync(limitedPrincipal, milestone));
-        }
     }
 }

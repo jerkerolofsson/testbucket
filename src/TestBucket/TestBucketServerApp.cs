@@ -384,6 +384,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, DeleteRunCommand>();
         builder.Services.AddScoped<ICommand, ArchiveRunCommand>();
         builder.Services.AddScoped<ICommand, DuplicateRunCommand>();
+        builder.Services.AddScoped<ICommand, RunFailedAgainCommand>();
 
         // Test Case Run
         builder.Services.AddScoped<ICommand, GoToTestRunCommand>();

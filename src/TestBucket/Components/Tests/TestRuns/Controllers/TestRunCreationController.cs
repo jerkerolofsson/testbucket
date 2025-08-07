@@ -11,7 +11,6 @@ using TestBucket.Domain.Shared;
 using TestBucket.Domain.Tenants;
 using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.Testing.Compiler;
-using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestSuites;
@@ -22,7 +21,6 @@ namespace TestBucket.Components.Tests.TestRuns.Controllers;
 internal class TestRunCreationController : TenantBaseService
 {
     private readonly AppNavigationManager _appNavigationManager;
-    private readonly TestCaseEditorController _testCaseEditor;
     private readonly ITestCaseManager _testCaseManager;
     private readonly ITestSuiteManager _testSuiteManager;
     private readonly ITestRunManager _testRunManager;
@@ -37,7 +35,6 @@ internal class TestRunCreationController : TenantBaseService
 
     public TestRunCreationController(
         AuthenticationStateProvider authenticationStateProvider,
-        TestCaseEditorController testCaseEditor,
         IDialogService dialogService,
         IMarkdownAutomationRunner markdownAutomationRunner,
         ITestEnvironmentManager testEnvironmentManager,
@@ -50,7 +47,6 @@ internal class TestRunCreationController : TenantBaseService
         ITestSuiteManager testSuiteManager,
         ITestRunManager testRunManager) : base(authenticationStateProvider)
     {
-        _testCaseEditor = testCaseEditor;
         _dialogService = dialogService;
         _markdownAutomationRunner = markdownAutomationRunner;
         _testEnvironmentManager = testEnvironmentManager;
@@ -392,9 +388,9 @@ internal class TestRunCreationController : TenantBaseService
         //}
     }
 
-    internal async Task<TestRun> DuplicateTestRunAsync(TestRun run)
+    internal async Task<TestRun> DuplicateTestRunAsync(TestRun run, string filter = "")
     {
         var principal = await GetUserClaimsPrincipalAsync();
-        return await _testRunManager.DuplicateTestRunAsync(principal, run);
+        return await _testRunManager.DuplicateTestRunAsync(principal, run, filter);
     }
 }

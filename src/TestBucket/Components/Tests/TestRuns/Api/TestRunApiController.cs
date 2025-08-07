@@ -154,7 +154,7 @@ public class TestRunApiController : ProjectApiControllerBase
             return NotFound("Test run not found");
         }
 
-        var createdTestRun = await _mediator.Send(new DuplicateTestRunRequest(User, run));
+        var createdTestRun = await _mediator.Send(new DuplicateTestRunRequest(User, run, ""));
         var exportedRun = await _mediator.Send(new ExportRunRequest(User, createdTestRun.Id));
         return Ok(exportedRun);
     }

@@ -390,6 +390,11 @@ internal class TestRunManager : ITestRunManager
 
     public async Task<TestRun> DuplicateTestRunAsync(ClaimsPrincipal principal, TestRun run)
     {
-        return await _mediator.Send(new Duplication.DuplicateTestRunRequest(principal, run));
+        return await DuplicateTestRunAsync(principal, run, "");
+    }
+
+    public async Task<TestRun> DuplicateTestRunAsync(ClaimsPrincipal principal, TestRun run, string filter)
+    {
+        return await _mediator.Send(new Duplication.DuplicateTestRunRequest(principal, run, filter));
     }
 }

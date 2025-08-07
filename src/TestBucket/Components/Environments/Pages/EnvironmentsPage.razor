@@ -15,14 +15,13 @@
     <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudDataGrid Items="@_testEnvironments"
-                 Dense="true"
-                 Hover="true"
+                 Dense Hover RowClass="tb-datarow cursor-pointer"
                  RowClick="(row) => OnTestEnvironmentClicked(row.Item)"
                  T="TestEnvironment"
                  SortMode="SortMode.None">
 
         <ToolBarContent>
-            <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%" Class="pa-3">
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
                 <MudIcon Icon="@TbIcons.BoldDuoTone.Leaf" Size="Size.Large" Color="Color.Info" />
                 <MudText Typo="Typo.h2">@loc["test-environments"]</MudText>
                 <MudSpacer />

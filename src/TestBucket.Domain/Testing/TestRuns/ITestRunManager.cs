@@ -149,5 +149,5 @@ public interface ITestRunManager
     Task<InsightsData<TestResult, int>> GetInsightsLatestTestResultsAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
     Task<InsightsData<string, int>> GetInsightsTestResultsByFieldAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query, long fieldDefinitionId);
     Task<InsightsData<string, int>> GetInsightsTestCaseRunCountByAsigneeAsync(ClaimsPrincipal principal, SearchTestCaseRunQuery query);
-
+    Task<TestRun> DuplicateTestRunAsync(ClaimsPrincipal principal, TestRun run, string filter);
 }

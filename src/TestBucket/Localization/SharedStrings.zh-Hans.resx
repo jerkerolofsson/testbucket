@@ -1073,4 +1073,13 @@
   <data name="latest" xml:space="preserve">
     <value />
   </data>
+  <data name="duplicating-test-run" xml:space="preserve">
+    <value />
+  </data>
+  <data name="run-failed-again" xml:space="preserve">
+    <value />
+  </data>
+  <data name="run-failed-again-description" xml:space="preserve">
+    <value />
+  </data>
 </root>

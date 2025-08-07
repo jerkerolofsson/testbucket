@@ -1081,4 +1081,14 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="latest" xml:space="preserve">
     <value>Latest</value>
   </data>
+  <data name="duplicating-test-run" xml:space="preserve">
+    <value>Duplicating run..</value>
+  </data>
+  <data name="run-failed-again" xml:space="preserve">
+    <value>Run failed tests again</value>
+    <comment>Creates a new run with only failed tests</comment>
+  </data>
+  <data name="run-failed-again-description" xml:space="preserve">
+    <value>Duplicates the run but only includes failed tests</value>
+  </data>
 </root>

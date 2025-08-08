@@ -110,4 +110,5 @@ public interface ITestCaseManager
     /// <returns></returns>
     IAsyncEnumerable<long> SearchTestCaseIdsAsync(ClaimsPrincipal principal, SearchTestQuery query, CancellationToken cancellationToken = default);
     Task<PagedResult<TestCase>> SemanticSearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query);
+    Task ApproveTestAsync(ClaimsPrincipal principal, TestCase test);
 }

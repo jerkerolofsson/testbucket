@@ -1,0 +1,405 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="accessibility" xml:space="preserve">
+    <value>可访问性</value>
+  </data>
+  <data name="add-mcp-server" xml:space="preserve">
+    <value>添加MCP服务器</value>
+  </data>
+  <data name="AI" xml:space="preserve">
+    <value>人工智能</value>
+  </data>
+  <data name="ai-azure-provider-key" xml:space="preserve">
+    <value>Azure生产密钥</value>
+  </data>
+  <data name="ai-default-model" xml:space="preserve">
+    <value>默认AI模型</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
+    <value>100万代币的成本</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
+    <value>100万个令牌的计费成本。 这仅用于估计和可视化内部报告的成本，不会影响任何实际的计费。</value>
+  </data>
+  <data name="ai-embedding-model" xml:space="preserve">
+    <value>嵌入模型</value>
+  </data>
+  <data name="ai-github-pat" xml:space="preserve">
+    <value>GitHub模型个人访问令牌（PAT）</value>
+  </data>
+  <data name="ai-models" xml:space="preserve">
+    <value>型号</value>
+  </data>
+  <data name="ai-provider" xml:space="preserve">
+    <value>AI提供商</value>
+  </data>
+  <data name="ai-provider-description" xml:space="preserve">
+    <value>该租户使用的AI提供商</value>
+  </data>
+  <data name="ai-runner" xml:space="preserve">
+    <value>AI跑步者</value>
+  </data>
+  <data name="ai-runner-enabled" xml:space="preserve">
+    <value>使用AI跑步者</value>
+  </data>
+  <data name="ai-runner-enabled-description" xml:space="preserve">
+    <value>启用该项目的AI跑步者的用法</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
+    <value>AI Runner Max。 令牌每天</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
+    <value>AI跑步者一天可以消耗的最大代币数量</value>
+  </data>
+  <data name="ai-usage" xml:space="preserve">
+    <value>AI的用法</value>
+  </data>
+  <data name="appearance" xml:space="preserve">
+    <value>外貌</value>
+  </data>
+  <data name="archive-test-runs-automatically-age" xml:space="preserve">
+    <value>档案测试在此之后进行</value>
+  </data>
+  <data name="archive-test-runs-automatically-age-description" xml:space="preserve">
+    <value>封闭的测试运行将在此时间段之后存档</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled" xml:space="preserve">
+    <value>存档测试运行</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled-description" xml:space="preserve">
+    <value>如果启用，关闭的测试运行比配置的限制将自动存档</value>
+  </data>
+  <data name="archiving" xml:space="preserve">
+    <value>存档</value>
+  </data>
+  <data name="auto-approve-tests" xml:space="preserve">
+    <value>自动批准测试</value>
+  </data>
+  <data name="auto-approve-tests-description" xml:space="preserve">
+    <value>所有审阅者都投票肯定的批准测试</value>
+  </data>
+  <data name="backup" xml:space="preserve">
+    <value>备份</value>
+  </data>
+  <data name="block-edit-in-review-state" xml:space="preserve">
+    <value>当状态为“评论”时块编辑</value>
+  </data>
+  <data name="change-state-to-completed-when-approved" xml:space="preserve">
+    <value>批准后将状态更改为完成</value>
+  </data>
+  <data name="change-state-to-completed-when-approved-description" xml:space="preserve">
+    <value>当有人批准测试案例时，将状态更改为完成。 这要求启用批准的字段，并为测试定义一个完整的状态。</value>
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests" xml:space="preserve">
+    <value>编辑完成的测试时，将状态更改为正在进行的</value>
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
+    <value>如果在完整状态时更改了描述，则将状态更改为正在进行的状态。</value>
+  </data>
+  <data name="color" xml:space="preserve">
+    <value>颜色</value>
+  </data>
+  <data name="colors" xml:space="preserve">
+    <value>颜色</value>
+  </data>
+  <data name="commands" xml:space="preserve">
+    <value>命令</value>
+  </data>
+  <data name="dark-mode" xml:space="preserve">
+    <value>黑暗模式</value>
+  </data>
+  <data name="defaults" xml:space="preserve">
+    <value>默认值</value>
+  </data>
+  <data name="default-tenant" xml:space="preserve">
+    <value>默认租户</value>
+  </data>
+  <data name="default-tenant-description" xml:space="preserve">
+    <value>如果用户在没有指定租户的情况下访问testbucket，则将默认租户用作默认重定向。</value>
+  </data>
+  <data name="delete-resource-if-not-seen-for" xml:space="preserve">
+    <value>删除资源如果看不到</value>
+  </data>
+  <data name="editor" xml:space="preserve">
+    <value>编辑</value>
+  </data>
+  <data name="embedding-ai-provider" xml:space="preserve">
+    <value>AI嵌入的AI提供商</value>
+  </data>
+  <data name="explorer-dock" xml:space="preserve">
+    <value>资源管理器码头</value>
+  </data>
+  <data name="explorer-dock-description" xml:space="preserve">
+    <value>资源管理器面板的位置在您的用户界面中</value>
+  </data>
+  <data name="increased-contrast" xml:space="preserve">
+    <value>对比度增加</value>
+  </data>
+  <data name="increased-contrast-description" xml:space="preserve">
+    <value>增加颜色对比度使用户界面更易于导航</value>
+  </data>
+  <data name="increased-font-size" xml:space="preserve">
+    <value>字体尺寸增加</value>
+  </data>
+  <data name="increased-font-size-description" xml:space="preserve">
+    <value>增加字体大小的主题设置</value>
+  </data>
+  <data name="keyboard" xml:space="preserve">
+    <value>键盘</value>
+  </data>
+  <data name="language-multilang" xml:space="preserve">
+    <value>语言 /习语 / langue /语言 /言语 / /언어 /언어</value>
+  </data>
+  <data name="layout" xml:space="preserve">
+    <value>布局</value>
+  </data>
+  <data name="light-mode" xml:space="preserve">
+    <value>光模式</value>
+  </data>
+  <data name="manage-accounts" xml:space="preserve">
+    <value>管理帐户</value>
+  </data>
+  <data name="manage-environments" xml:space="preserve">
+    <value>管理环境</value>
+  </data>
+  <data name="manage-heuristics" xml:space="preserve">
+    <value>管理启发式方法</value>
+  </data>
+  <data name="manage-labels" xml:space="preserve">
+    <value>管理标签</value>
+  </data>
+  <data name="manage-milestones" xml:space="preserve">
+    <value>管理里程碑</value>
+  </data>
+  <data name="manage-projects" xml:space="preserve">
+    <value>管理项目</value>
+  </data>
+  <data name="manage-resources" xml:space="preserve">
+    <value>资源和设备</value>
+  </data>
+  <data name="manage-roles" xml:space="preserve">
+    <value>管理角色</value>
+  </data>
+  <data name="manage-runners" xml:space="preserve">
+    <value>管理跑步者</value>
+  </data>
+  <data name="manage-states" xml:space="preserve">
+    <value>管理国家</value>
+  </data>
+  <data name="manage-teams" xml:space="preserve">
+    <value>管理团队</value>
+  </data>
+  <data name="manage-tenants" xml:space="preserve">
+    <value>管理租户</value>
+  </data>
+  <data name="manage-users" xml:space="preserve">
+    <value>管理用户</value>
+  </data>
+  <data name="mcp" xml:space="preserve">
+    <value>MCP</value>
+  </data>
+  <data name="mcp-claude" xml:space="preserve">
+    <value>将上面的JSON添加到“ Claude_desktop_config.json”中，以使用Claude AI的TestBucket工具</value>
+  </data>
+  <data name="mcp-client-configuration" xml:space="preserve">
+    <value>MCP客户端配置</value>
+  </data>
+  <data name="mcp-public" xml:space="preserve">
+    <value>所有项目成员可用</value>
+  </data>
+  <data name="mcp-public-description" xml:space="preserve">
+    <value>任何项目成员都可以使用公共MCP服务器。 如果不是公共的，则仅适用于单个用户。</value>
+  </data>
+  <data name="mcp-server" xml:space="preserve">
+    <value>MCP服务器</value>
+  </data>
+  <data name="mcp-server-integrations" xml:space="preserve">
+    <value>MCP服务器集成</value>
+  </data>
+  <data name="mcp-server-json" xml:space="preserve">
+    <value>MCP服务器JSON</value>
+  </data>
+  <data name="mcp-tool-name" xml:space="preserve">
+    <value>MCP工具</value>
+  </data>
+  <data name="mcp-visualstudio" xml:space="preserve">
+    <value>将上面的JSON添加到“ .VSCODE/MCP.JSON”中以使用Visual Studio中的TestBucket</value>
+  </data>
+  <data name="mcp-vscode" xml:space="preserve">
+    <value>将上面的JSON添加到“ .VSCODE/MCP.JSON”中以使用VS代码的TestBucket</value>
+  </data>
+  <data name="ollama-context-length-message" xml:space="preserve">
+    <value>使用Ollama时，请确保配置适合使用的模型的上下文长度。 您可以使用环境变量Ollama_context_length为Ollama Docker容器配置Ollama上下文大小。 例如，ollama_context_length = 131072（128K）gemma3或40960（40k）的上下文长度（40k）qwen3。</value>
+  </data>
+  <data name="openai-provider-key" xml:space="preserve">
+    <value>OpenAI API键</value>
+  </data>
+  <data name="open-ai-settings" xml:space="preserve">
+    <value>Openai设置</value>
+  </data>
+  <data name="prefer-text-to-icons" xml:space="preserve">
+    <value>PREF文字而不是图标</value>
+  </data>
+  <data name="prefer-text-to-icons-description" xml:space="preserve">
+    <value>在某些位置使用文本而不是用户界面中的图标</value>
+  </data>
+  <data name="profile" xml:space="preserve">
+    <value>轮廓</value>
+  </data>
+  <data name="profile-image" xml:space="preserve">
+    <value>个人资料图像</value>
+  </data>
+  <data name="reduced-motion" xml:space="preserve">
+    <value>减少运动</value>
+  </data>
+  <data name="reduced-motion-description" xml:space="preserve">
+    <value>减少过渡和动画</value>
+  </data>
+  <data name="remove-icon" xml:space="preserve">
+    <value>删除图标</value>
+  </data>
+  <data name="search-settings" xml:space="preserve">
+    <value>搜索设置..</value>
+  </data>
+  <data name="server" xml:space="preserve">
+    <value>服务器</value>
+  </data>
+  <data name="tenant" xml:space="preserve">
+    <value>租户</value>
+  </data>
+  <data name="test-execution" xml:space="preserve">
+    <value>测试执行</value>
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value>测试</value>
+  </data>
+  <data name="test-resources" xml:space="preserve">
+    <value>测试资源</value>
+  </data>
+  <data name="theme" xml:space="preserve">
+    <value>主题</value>
+  </data>
+  <data name="tool-bar" xml:space="preserve">
+    <value>工具栏</value>
+  </data>
+  <data name="year-to-date" xml:space="preserve">
+    <value>今年迄今为止</value>
+  </data>
+</root>

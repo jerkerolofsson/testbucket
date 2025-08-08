@@ -1,0 +1,405 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="accessibility" xml:space="preserve">
+    <value>Accessibilité</value>
+  </data>
+  <data name="add-mcp-server" xml:space="preserve">
+    <value>Ajouter le serveur MCP</value>
+  </data>
+  <data name="AI" xml:space="preserve">
+    <value>IA</value>
+  </data>
+  <data name="ai-azure-provider-key" xml:space="preserve">
+    <value>Clé de production Azure</value>
+  </data>
+  <data name="ai-default-model" xml:space="preserve">
+    <value>Modèle AI par défaut</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
+    <value>Coût pour les jetons de 1 m</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
+    <value>Le coût de facturation pour 1 million de jetons en USD. Ceci est uniquement utilisé pour estimer et visualiser les coûts des rapports internes et n'affectera aucune facturation réelle.</value>
+  </data>
+  <data name="ai-embedding-model" xml:space="preserve">
+    <value>Modèle d'incorporation</value>
+  </data>
+  <data name="ai-github-pat" xml:space="preserve">
+    <value>Modèles GitHub Token d'accès personnel (PAT)</value>
+  </data>
+  <data name="ai-models" xml:space="preserve">
+    <value>Modèles</value>
+  </data>
+  <data name="ai-provider" xml:space="preserve">
+    <value>Fournisseur d'IA</value>
+  </data>
+  <data name="ai-provider-description" xml:space="preserve">
+    <value>Le fournisseur d'IA à utiliser pour ce locataire</value>
+  </data>
+  <data name="ai-runner" xml:space="preserve">
+    <value>Runner AI</value>
+  </data>
+  <data name="ai-runner-enabled" xml:space="preserve">
+    <value>Utiliser AI Runner</value>
+  </data>
+  <data name="ai-runner-enabled-description" xml:space="preserve">
+    <value>Permet l'utilisation du coureur d'IA pour ce projet</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
+    <value>AI Runner Max. Tokens par jour</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
+    <value>Nombre maximum de jetons qui peuvent être consommés en une journée par le coureur d'IA</value>
+  </data>
+  <data name="ai-usage" xml:space="preserve">
+    <value>Utilisation de l'IA</value>
+  </data>
+  <data name="appearance" xml:space="preserve">
+    <value>Apparence</value>
+  </data>
+  <data name="archive-test-runs-automatically-age" xml:space="preserve">
+    <value>Les tests d'archives fonctionnent après</value>
+  </data>
+  <data name="archive-test-runs-automatically-age-description" xml:space="preserve">
+    <value>Les essais fermés seront archivés après cette période</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled" xml:space="preserve">
+    <value>Test d'archives exécutives</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled-description" xml:space="preserve">
+    <value>S'il est activé, le test fermé s'exécute plus ancien que la limite configurée sera archivée automatiquement</value>
+  </data>
+  <data name="archiving" xml:space="preserve">
+    <value>Archivage</value>
+  </data>
+  <data name="auto-approve-tests" xml:space="preserve">
+    <value>Approuver automatiquement les tests</value>
+  </data>
+  <data name="auto-approve-tests-description" xml:space="preserve">
+    <value>Tests approuvés lorsque tous les examinateurs ont voté positif</value>
+  </data>
+  <data name="backup" xml:space="preserve">
+    <value>Sauvegarde</value>
+  </data>
+  <data name="block-edit-in-review-state" xml:space="preserve">
+    <value>Bloquer l'édition lorsque l'état est "revue"</value>
+  </data>
+  <data name="change-state-to-completed-when-approved" xml:space="preserve">
+    <value>Changer d'état à terminé lorsqu'il est approuvé</value>
+  </data>
+  <data name="change-state-to-completed-when-approved-description" xml:space="preserve">
+    <value>Modifie l'état à terminé lorsque quelqu'un approuve le cas de test. Cela nécessite que le champ approuvé soit activé et qu'un état terminé soit défini pour les tests.</value>
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests" xml:space="preserve">
+    <value>Changer l'état en cours lors de la modification d'un test terminé</value>
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
+    <value>Cela modifie l'état en continu si la description est modifiée dans l'état terminé.</value>
+  </data>
+  <data name="color" xml:space="preserve">
+    <value>Couleur</value>
+  </data>
+  <data name="colors" xml:space="preserve">
+    <value>Couleurs</value>
+  </data>
+  <data name="commands" xml:space="preserve">
+    <value>Commandes</value>
+  </data>
+  <data name="dark-mode" xml:space="preserve">
+    <value>Mode sombre</value>
+  </data>
+  <data name="defaults" xml:space="preserve">
+    <value>Par défaut</value>
+  </data>
+  <data name="default-tenant" xml:space="preserve">
+    <value>Locataire par défaut</value>
+  </data>
+  <data name="default-tenant-description" xml:space="preserve">
+    <value>Le locataire par défaut est utilisé comme redirection par défaut si un utilisateur accède à TestBucket sans spécifier un locataire.</value>
+  </data>
+  <data name="delete-resource-if-not-seen-for" xml:space="preserve">
+    <value>Supprimer la ressource si elle n'est pas vue pour</value>
+  </data>
+  <data name="editor" xml:space="preserve">
+    <value>Éditeur</value>
+  </data>
+  <data name="embedding-ai-provider" xml:space="preserve">
+    <value>Fournisseur d'IA pour les intégres</value>
+  </data>
+  <data name="explorer-dock" xml:space="preserve">
+    <value>Quai d'explorateur</value>
+  </data>
+  <data name="explorer-dock-description" xml:space="preserve">
+    <value>Emplacement du panneau Explorer dans l'interface utilisateur</value>
+  </data>
+  <data name="increased-contrast" xml:space="preserve">
+    <value>Contraste accru</value>
+  </data>
+  <data name="increased-contrast-description" xml:space="preserve">
+    <value>Augmente le contraste des couleurs pour rendre l'interface utilisateur plus facile à naviguer</value>
+  </data>
+  <data name="increased-font-size" xml:space="preserve">
+    <value>Augmentation de la taille de la police</value>
+  </data>
+  <data name="increased-font-size-description" xml:space="preserve">
+    <value>Augmente les paramètres de thème subordonnés de la taille de la police</value>
+  </data>
+  <data name="keyboard" xml:space="preserve">
+    <value>Clavier</value>
+  </data>
+  <data name="language-multilang" xml:space="preserve">
+    <value>Langue / idioma / langue / 语言 / 言語 / لغة / 언어</value>
+  </data>
+  <data name="layout" xml:space="preserve">
+    <value>Mise en page</value>
+  </data>
+  <data name="light-mode" xml:space="preserve">
+    <value>Mode léger</value>
+  </data>
+  <data name="manage-accounts" xml:space="preserve">
+    <value>Gérer les comptes</value>
+  </data>
+  <data name="manage-environments" xml:space="preserve">
+    <value>Gérer les environnements</value>
+  </data>
+  <data name="manage-heuristics" xml:space="preserve">
+    <value>Gérer l'heuristique</value>
+  </data>
+  <data name="manage-labels" xml:space="preserve">
+    <value>Gérer les étiquettes</value>
+  </data>
+  <data name="manage-milestones" xml:space="preserve">
+    <value>Gérer les jalons</value>
+  </data>
+  <data name="manage-projects" xml:space="preserve">
+    <value>Gérer les projets</value>
+  </data>
+  <data name="manage-resources" xml:space="preserve">
+    <value>Ressources et appareils</value>
+  </data>
+  <data name="manage-roles" xml:space="preserve">
+    <value>Gérer les rôles</value>
+  </data>
+  <data name="manage-runners" xml:space="preserve">
+    <value>Gérer les coureurs</value>
+  </data>
+  <data name="manage-states" xml:space="preserve">
+    <value>Gérer les États</value>
+  </data>
+  <data name="manage-teams" xml:space="preserve">
+    <value>Gérer les équipes</value>
+  </data>
+  <data name="manage-tenants" xml:space="preserve">
+    <value>Gérer les locataires</value>
+  </data>
+  <data name="manage-users" xml:space="preserve">
+    <value>Gérer les utilisateurs</value>
+  </data>
+  <data name="mcp" xml:space="preserve">
+    <value>MCP</value>
+  </data>
+  <data name="mcp-claude" xml:space="preserve">
+    <value>Ajoutez le JSON ci-dessus à "Claude_desktop_config.json" pour utiliser des outils TestBucket de Claude AI</value>
+  </data>
+  <data name="mcp-client-configuration" xml:space="preserve">
+    <value>Configuration du client MCP</value>
+  </data>
+  <data name="mcp-public" xml:space="preserve">
+    <value>Disponible pour tous les membres du projet</value>
+  </data>
+  <data name="mcp-public-description" xml:space="preserve">
+    <value>Un serveur MCP public peut être utilisé par n'importe quel membre du projet. S'il n'est pas public, il n'est disponible que pour un seul utilisateur.</value>
+  </data>
+  <data name="mcp-server" xml:space="preserve">
+    <value>Serveur MCP</value>
+  </data>
+  <data name="mcp-server-integrations" xml:space="preserve">
+    <value>Intégrations du serveur MCP</value>
+  </data>
+  <data name="mcp-server-json" xml:space="preserve">
+    <value>MCP Server JSON</value>
+  </data>
+  <data name="mcp-tool-name" xml:space="preserve">
+    <value>Outil MCP</value>
+  </data>
+  <data name="mcp-visualstudio" xml:space="preserve">
+    <value>Ajoutez le JSON ci-dessus à ".vscode / mcp.json" pour utiliser TestBucket de Visual Studio</value>
+  </data>
+  <data name="mcp-vscode" xml:space="preserve">
+    <value>Ajoutez le JSON ci-dessus à ".vscode / mcp.json" pour utiliser TestBucket à partir du code vs</value>
+  </data>
+  <data name="ollama-context-length-message" xml:space="preserve">
+    <value>Lorsque vous utilisez Olllama, assurez-vous de configurer une longueur de contexte adaptée au modèle utilisé. Vous pouvez configurer la taille du contexte Olllama à l'aide de la variable d'environnement OLLAMA_CONTEXT_LENGTH pour le conteneur Docker Olllama. Par exemple, ollama_context_length = 131072 (128k) Longueur de contexte pour GEMMA3 ou 40960 (40K) pour qwen3.</value>
+  </data>
+  <data name="openai-provider-key" xml:space="preserve">
+    <value>Clé API Openai</value>
+  </data>
+  <data name="open-ai-settings" xml:space="preserve">
+    <value>Paramètres OpenAI</value>
+  </data>
+  <data name="prefer-text-to-icons" xml:space="preserve">
+    <value>Préfère le texte au lieu des icônes</value>
+  </data>
+  <data name="prefer-text-to-icons-description" xml:space="preserve">
+    <value>Utilise du texte au lieu d'icônes dans l'interface utilisateur à certains endroits</value>
+  </data>
+  <data name="profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="profile-image" xml:space="preserve">
+    <value>Image de profil</value>
+  </data>
+  <data name="reduced-motion" xml:space="preserve">
+    <value>Mouvement réduit</value>
+  </data>
+  <data name="reduced-motion-description" xml:space="preserve">
+    <value>Réduit les transitions et les animations</value>
+  </data>
+  <data name="remove-icon" xml:space="preserve">
+    <value>Supprimer l'icône</value>
+  </data>
+  <data name="search-settings" xml:space="preserve">
+    <value>Paramètres de recherche ..</value>
+  </data>
+  <data name="server" xml:space="preserve">
+    <value>Serveur</value>
+  </data>
+  <data name="tenant" xml:space="preserve">
+    <value>Locataire</value>
+  </data>
+  <data name="test-execution" xml:space="preserve">
+    <value>Exécution de test</value>
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value>Essai</value>
+  </data>
+  <data name="test-resources" xml:space="preserve">
+    <value>Tester les ressources</value>
+  </data>
+  <data name="theme" xml:space="preserve">
+    <value>Thème</value>
+  </data>
+  <data name="tool-bar" xml:space="preserve">
+    <value>Barre d'outils</value>
+  </data>
+  <data name="year-to-date" xml:space="preserve">
+    <value>Année à ce jour</value>
+  </data>
+</root>

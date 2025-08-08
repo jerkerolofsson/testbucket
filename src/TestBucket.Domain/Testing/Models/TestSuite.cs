@@ -27,6 +27,12 @@ public class TestSuite : TestEntity
     /// </summary>
     public string? Description { get; set; }
 
+    /// <summary>
+    /// List of reviewers that are assigned to review tests in this test suite
+    /// </summary>
+    [Column(TypeName = "jsonb")]
+    public List<AssignedReviewer>? DefaultReviewers { get; set; }
+
     // Customization
 
     /// <summary>

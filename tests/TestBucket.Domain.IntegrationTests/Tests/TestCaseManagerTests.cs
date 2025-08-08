@@ -2,12 +2,18 @@
 
 namespace TestBucket.Domain.IntegrationTests.Tests
 {
+    /// <summary>
+    /// Integration tests for the TestCaseManager, verifying test case behaviors and defaults.
+    /// </summary>
     [IntegrationTest]
     [EnrichedTest]
     [Component("Testing")]
     [FunctionalTest]
     public class TestCaseManagerTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that adding an exploratory test case with no session duration sets the default duration to 60 minutes.
+        /// </summary>
         [Fact]
         [FunctionalTest]
         public async Task AddExploratoryTestCase_WithNoSessionDuration_DefaultsTo60Minutes()

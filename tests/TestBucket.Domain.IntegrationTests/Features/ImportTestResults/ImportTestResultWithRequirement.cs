@@ -27,7 +27,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.ImportTestResults
         /// <summary>
         /// Verifies that a link is created between a test and a requirement when the test result has the CoveredRequirement trait
         /// when the requirement matches the CoveredRequirement from "external ID"
-
+        /// 
         /// # Steps
         /// 1. Create a requirement with an external ID
         /// 2. Create a new run

@@ -822,12 +822,10 @@ namespace TestBucket.Domain.Requirements
 
             return await _mediator.Send(new DiscoverRequirementRelationshipsRequest(principal, requirement, depth));
         }
-
         public async Task ApproveRequirementAsync(ClaimsPrincipal principal, Requirement requirement)
         {
             await _mediator.Send(new ApproveRequirementRequest(principal, requirement, true));
         }
-
 
         private async Task RestoreRequirementLinks(ClaimsPrincipal principal, List<RequirementTestLink> oldLinks, Requirement requirement)
         {

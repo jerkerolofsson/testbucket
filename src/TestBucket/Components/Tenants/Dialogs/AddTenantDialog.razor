@@ -1,10 +1,11 @@
 ﻿@attribute [Authorize(Roles = "SUPERADMIN")]
 @inject TenantController tenantService
+@inject IStringLocalizer<SharedStrings> loc
 @inject ISuperAdminUserService userService
 
 <EditForm Model="@_model" OnValidSubmit="async () => await OnValidSubmitAsync()">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
-        <TitleContent>Add new tenant</TitleContent>
+        <TitleContent>@loc["add-new-tenant"]</TitleContent>
         <DialogContent>
             <MudStack>
                 <MudStack Spacing="0">
@@ -20,8 +21,8 @@
         </DialogContent>
 
         <DialogActions>
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
-            <MudButton OnClick="Close">Cancel</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+            <MudButton OnClick="Close">@loc["cancel"]</MudButton>
         </DialogActions>
     </MudDialog>
 </EditForm>

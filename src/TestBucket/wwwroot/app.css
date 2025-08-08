@@ -886,6 +886,7 @@ table.tb-environment-variables {
 
 .tb-field-header {
     font-size: var(--mud-typography-caption-size); 
+    font-weight: 400;
     margin: 0; 
     text-decoration: none;
     margin-right: 5px;
@@ -908,7 +909,7 @@ table.tb-environment-variables {
     font-size: 9pt; 
     color: #666;
     text-decoration: none;
-    text-align: end;
+    font-weight: normal;
 }
 
 .hljs-comment .hljs-verify {

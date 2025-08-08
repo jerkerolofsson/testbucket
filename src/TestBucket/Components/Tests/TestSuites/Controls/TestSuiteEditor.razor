@@ -1,6 +1,8 @@
-﻿@using TestBucket.Contracts.Integrations
+﻿@using TestBucket.Components.Shared.Reviews
+@using TestBucket.Contracts.Integrations
 @using TestBucket.Contracts.Projects
 @using TestBucket.Domain
+@using TestBucket.Domain.Shared
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<IntegrationStrings> integrationLoc
 @inject ProjectController controller
@@ -8,59 +10,66 @@
 
 @if (TestSuite is not null)
 {
-    <MudText Typo="Typo.h1">@loc["automation"]</MudText>
+    <MudStack Spacing="1">
+        <MudText Typo="Typo.h1">@loc["default-reviewers"]</MudText>
+        <AssignedReviewerListEditor AssignedReviewers="TestSuite.DefaultReviewers" AssignedReviewersChanged="OnAssignedReviewersChanged" FooterText="@loc["test-suite-default-reviewers-description"]" />
+    </MudStack>
 
-    @if(_integrations.Count == 0)
-    {
-        @if (Project is not null)
-        { 
-            string url = appNavigationManager.GetUrl(Project) + "/Integrations";
-            <MudLink Href="@url">@integrationLoc["no-integration"]</MudLink>
+    <MudStack Spacing="1">
+        <MudText Typo="Typo.h1">@loc["automation"]</MudText>
+
+        @if(_integrations.Count == 0)
+        {
+            @if (Project is not null)
+            { 
+                string url = appNavigationManager.GetUrl(Project) + "/Integrations";
+                <MudLink Href="@url">@integrationLoc["no-integration"]</MudLink>
+            }
         }
-    }
-    else
-    {
-        <Field Row>
-            <MudIcon Icon="@TbIcons.Filled.Infinite"></MudIcon>
-            <div>
-                <FieldHeader>@loc["ci-cd"]</FieldHeader>
-                <span>@loc["automation-ci-cd-description"]</span>
-            </div>
-            <MudSpacer />
-            <ExternalSystemPicker Project="@_project" Integration="@_integration" IntegrationChanged="OnIntegrationChanged" />
-        </Field>
-
-        @if (_integration is not null)
+        else
         {
             <Field Row>
-                <MudIcon Icon="@TbIcons.Git.GitBranch"></MudIcon>
+                <MudIcon Icon="@TbIcons.Filled.Infinite"></MudIcon>
                 <div>
-                    <FieldHeader>@loc["ci-cd-ref"]</FieldHeader>
-                    <span>@loc["automation-default-ci-cd-ref-description"]</span>
+                    <FieldHeader>@loc["ci-cd"]</FieldHeader>
+                    <span>@loc["automation-ci-cd-description"]</span>
                 </div>
                 <MudSpacer />
-                <MudTextField Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdRefChanged" Value="@TestSuite.DefaultCiCdRef"></MudTextField>
+                <ExternalSystemPicker Project="@_project" Integration="@_integration" IntegrationChanged="OnIntegrationChanged" />
             </Field>
 
-            <Field Row>
-                <MudIcon Icon="@TbIcons.Git.GitBranch"></MudIcon>
-                <div>
-                    <FieldHeader>@loc["ci-cd-workflow"]</FieldHeader>
-                    <span>@loc["ci-cd-workflow-description"]</span>
-                </div>
-                <MudSpacer />
-                <MudTextField Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdWorkflowChanged" Value="@TestSuite.CiCdWorkflow"></MudTextField>
-            </Field>
-            <Field Row>
-                <div>
-                    <FieldHeader>@loc["automation-ci-cd-add-outside-pipelines"]</FieldHeader>
-                    <span>@loc["automation-ci-cd-add-outside-pipelines-description"]</span>
-                </div>
-                <MudSpacer />
-                <MudSwitchM3 Color="Color.Primary" T="bool" ValueChanged="OnAddPipelinesStartedFromOutsideChanged" Value="@_addOutsidePipelines"></MudSwitchM3>
-            </Field>
+            @if (_integration is not null)
+            {
+                <Field Row>
+                    <MudIcon Icon="@TbIcons.Git.GitBranch"></MudIcon>
+                    <div>
+                        <FieldHeader>@loc["ci-cd-ref"]</FieldHeader>
+                        <span>@loc["automation-default-ci-cd-ref-description"]</span>
+                    </div>
+                    <MudSpacer />
+                    <MudTextField Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdRefChanged" Value="@TestSuite.DefaultCiCdRef"></MudTextField>
+                </Field>
+
+                <Field Row>
+                    <MudIcon Icon="@TbIcons.Git.GitBranch"></MudIcon>
+                    <div>
+                        <FieldHeader>@loc["ci-cd-workflow"]</FieldHeader>
+                        <span>@loc["ci-cd-workflow-description"]</span>
+                    </div>
+                    <MudSpacer />
+                    <MudTextField Variant="Variant.Outlined" T="string" ValueChanged="OnDefaultCiCdWorkflowChanged" Value="@TestSuite.CiCdWorkflow"></MudTextField>
+                </Field>
+                <Field Row>
+                    <div>
+                        <FieldHeader>@loc["automation-ci-cd-add-outside-pipelines"]</FieldHeader>
+                        <span>@loc["automation-ci-cd-add-outside-pipelines-description"]</span>
+                    </div>
+                    <MudSpacer />
+                    <MudSwitchM3 Color="Color.Primary" T="bool" ValueChanged="OnAddPipelinesStartedFromOutsideChanged" Value="@_addOutsidePipelines"></MudSwitchM3>
+                </Field>
+            }
         }
-    }
+    </MudStack>
 }
 
 @code {
@@ -82,6 +91,17 @@
         TestSuite.DefaultCiCdRef = value;
         await TestSuiteChanged.InvokeAsync(TestSuite);
     }
+
+    private async Task OnAssignedReviewersChanged(List<AssignedReviewer> assignedReviewers)
+    {
+        if (TestSuite is null)
+        {
+            return;
+        }
+        TestSuite.DefaultReviewers = assignedReviewers;
+        await TestSuiteChanged.InvokeAsync(TestSuite);
+    }
+
     private async Task OnDefaultCiCdWorkflowChanged(string value)
     {
         if (TestSuite is null)

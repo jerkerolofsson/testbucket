@@ -106,7 +106,14 @@ public static class TestBucketServerApp
 
         builder.Services.Configure<RequestLocalizationOptions>(options =>
         {
-            List<CultureInfo> supportedUICultures = [new CultureInfo("en"), new CultureInfo("de-DE"), new CultureInfo("ja-JP"), new CultureInfo("sv-SE"), new CultureInfo("zh-Hans")];
+            List<CultureInfo> supportedUICultures = [
+                new CultureInfo("en"), 
+                new CultureInfo("de-DE"),
+                new CultureInfo("fr-FR"),
+                new CultureInfo("ja-JP"),
+                new CultureInfo("pt-BR"),
+                new CultureInfo("sv-SE"),
+                new CultureInfo("zh-CN")];
 
             options.DefaultRequestCulture = new RequestCulture("en", "en");
             options.SupportedUICultures = supportedUICultures;
@@ -309,7 +316,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<FieldController>();
         builder.Services.AddScoped<UserController>();
         builder.Services.AddScoped<CommandController>();
-
+        builder.Services.AddScoped<SettingsController>();
         builder.Services.AddScoped<HotKeysService>();
 
         // Test suite

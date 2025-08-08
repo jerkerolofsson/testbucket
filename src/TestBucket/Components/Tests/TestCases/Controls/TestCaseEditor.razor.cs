@@ -6,6 +6,7 @@ using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Comments.Models;
+using TestBucket.Domain.Editor.Models;
 using TestBucket.Domain.Testing.Compiler;
 
 namespace TestBucket.Components.Tests.TestCases.Controls;

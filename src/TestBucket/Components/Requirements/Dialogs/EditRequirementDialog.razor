@@ -71,7 +71,7 @@
 
                                     <div>@reqLoc["type"]</div>
                                     <div>@stateLoc["state"]</div>
-                                    <div>@reqLoc["assigned-to"]</div>
+                                    <div>@loc["assigned-to"]</div>
 
                                     <MudSelect T="string" Value="@Requirement.RequirementType" ValueChanged="OnTypeChanged" Variant="Variant.Outlined">
                                         @foreach (var type in RequirementTypes.AllTypes)

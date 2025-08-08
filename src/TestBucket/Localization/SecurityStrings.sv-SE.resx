@@ -123,6 +123,9 @@
   <data name="access-token-name" xml:space="preserve">
     <value>Namn</value>
   </data>
+  <data name="create-api-key" xml:space="preserve">
+    <value>Skapa access-token</value>
+  </data>
   <data name="expires" xml:space="preserve">
     <value>Utgångsdatum</value>
   </data>
@@ -144,13 +147,13 @@
   <data name="expiry-730" xml:space="preserve">
     <value>2 år</value>
   </data>
+  <data name="role" xml:space="preserve">
+    <value>Roll</value>
+  </data>
   <data name="token-created" xml:space="preserve">
     <value>Din nyckel</value>
   </data>
-  <data name="create-api-key" xml:space="preserve">
-    <value>Skapa access-token</value>
-  </data>
   <data name="token-type" xml:space="preserve">
-    <value />
+    <value>Tokenstyp</value>
   </data>
 </root>

@@ -1,6 +1,7 @@
 ﻿@using TestBucket.Contracts.Issues.Models
 @using TestBucket.Domain.Issues.Models
 @inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<SettingStrings> settingLoc
 
 <EditForm Model="@Milestone" OnValidSubmit="Submit">
     <MudDialog DefaultFocus="DefaultFocus.FirstChild" Style="min-width: 30vw">
@@ -39,8 +40,8 @@
                         AutoFocus="true" />
                     </Field>
                     
-                    <Field>
-                        <FieldHeader>@loc["color"]</FieldHeader>
+                    <Field Row>
+                        <FieldHeader>@settingLoc["color"]</FieldHeader>
                         <MudSpacer/>
                          <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
                             <ColorCellPicker @bind-Color="Milestone.Color"/>

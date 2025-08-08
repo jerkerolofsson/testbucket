@@ -277,7 +277,7 @@ namespace TestBucket.Domain.IntegrationTests.TestResources
 
         /// <summary>
         /// Verifies that a resource cannot be allocated if Enabled is false
-
+        ///
         /// # Steps
         /// 1. Add a resource
         /// 2. Set Enabled to false

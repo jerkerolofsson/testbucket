@@ -36,10 +36,16 @@
 }
 
 .tb-kanban-board .list .card {
+    cursor: pointer;
     padding: 0.5rem;
     background: var(--mud-palette-surface-lighten);
     border-radius: var(--border-radius);
     border-left: solid 4px #ff595e;
+    border: solid 1px transparent;
+}
+
+.tb-kanban-board .list .card:hover {
+    border-color: var(--mud-palette-action-default);
 }
 
 .tb-kanban-board .list .card[data-hash="1"] {

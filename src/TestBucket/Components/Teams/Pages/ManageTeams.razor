@@ -13,8 +13,7 @@
     <MudBreadcrumbs Items="@_nav"></MudBreadcrumbs>
 
     <MudDataGrid ServerData="LoadGridData"
-    Dense="true"
-    Hover="true"
+                 Dense Hover RowClass="tb-datarow cursor-pointer"
     T="Team"
     @ref="_dataGrid"
     SortMode="SortMode.None">

@@ -3,6 +3,10 @@ using TestBucket.Domain.AI.Embeddings;
 
 namespace TestBucket.Domain.IntegrationTests.AI
 {
+    /// <summary>
+    /// Tests related to creating vector embeddings
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [FunctionalTest]
     [EnrichedTest]

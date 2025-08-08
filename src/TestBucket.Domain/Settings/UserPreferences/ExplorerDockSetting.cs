@@ -16,7 +16,7 @@ namespace TestBucket.Domain.Settings.Appearance
             Metadata.Category.Name = "appearance";
             Metadata.Category.Icon = SettingIcons.Appearance;
             Metadata.Section.Name = "layout";
-            Metadata.Section.Icon = SettingIcons.Generic;
+            Metadata.Section.Icon = SettingIcons.Layout;
             Metadata.Type = FieldType.Integer;
             Metadata.DataSourceType = Contracts.Fields.FieldDataSourceType.Dock;
         }

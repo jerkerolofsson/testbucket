@@ -117,8 +117,161 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="accessibility" xml:space="preserve">
+    <value>Tillgänglighet</value>
+  </data>
+  <data name="add-mcp-server" xml:space="preserve">
+    <value>Lägg till MCP -server</value>
+  </data>
+  <data name="AI" xml:space="preserve">
+    <value>Ai</value>
+  </data>
+  <data name="ai-azure-provider-key" xml:space="preserve">
+    <value>Azure -produktionsnyckel</value>
+  </data>
+  <data name="ai-default-model" xml:space="preserve">
+    <value>Standard AI -modell</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
+    <value>Kostnad för 1 m tokens</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
+    <value>Faktureringskostnad för 1 miljon tokens i USD. Detta används endast för att uppskatta och visualisera kostnader för interna rapporter och kommer inte att påverka någon faktisk fakturering.</value>
+  </data>
+  <data name="ai-embedding-model" xml:space="preserve">
+    <value>Inbäddningsmodell</value>
+  </data>
+  <data name="ai-github-pat" xml:space="preserve">
+    <value>Github modellerar personlig åtkomsttoken (PAT)</value>
+  </data>
+  <data name="ai-models" xml:space="preserve">
+    <value>Modeller</value>
+  </data>
+  <data name="ai-provider" xml:space="preserve">
+    <value>AI -leverantör</value>
+  </data>
+  <data name="ai-provider-description" xml:space="preserve">
+    <value>AI -leverantören att använda för denna hyresgäst</value>
+  </data>
+  <data name="ai-runner" xml:space="preserve">
+    <value>AI Runner</value>
+  </data>
+  <data name="ai-runner-enabled" xml:space="preserve">
+    <value>Använd AI Runner</value>
+  </data>
+  <data name="ai-runner-enabled-description" xml:space="preserve">
+    <value>Möjliggör användning av AI -löparen för detta projekt</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
+    <value>AI Runner Max. tokens per dag</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
+    <value>Maximalt antal tokens som kan konsumeras på en dag av AI -löparen</value>
+  </data>
+  <data name="ai-usage" xml:space="preserve">
+    <value>AI -användning</value>
+  </data>
+  <data name="appearance" xml:space="preserve">
+    <value>Utseende</value>
+  </data>
+  <data name="archive-test-runs-automatically-age" xml:space="preserve">
+    <value>Arkivtest körs efter</value>
+  </data>
+  <data name="archive-test-runs-automatically-age-description" xml:space="preserve">
+    <value>Stängda testkörningar arkiveras efter denna tidsperiod</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled" xml:space="preserve">
+    <value>Arkivtestkörningar</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled-description" xml:space="preserve">
+    <value>Om det är aktiverat, kommer det stängda testet äldre än den konfigurerade gränsen att arkiveras automatiskt</value>
+  </data>
+  <data name="archiving" xml:space="preserve">
+    <value>Arkivering</value>
+  </data>
+  <data name="auto-approve-tests" xml:space="preserve">
+    <value>Godkänna automatiskt tester</value>
+  </data>
+  <data name="auto-approve-tests-description" xml:space="preserve">
+    <value>Godkända tester när alla granskare har röstat positiva</value>
+  </data>
+  <data name="backup" xml:space="preserve">
+    <value>Säkerhetskopiering</value>
+  </data>
+  <data name="block-edit-in-review-state" xml:space="preserve">
+    <value>Blockera redigera när tillståndet är "recension"</value>
+  </data>
+  <data name="change-state-to-completed-when-approved" xml:space="preserve">
+    <value>Ändra tillstånd till slutförd när den godkänns</value>
+  </data>
+  <data name="change-state-to-completed-when-approved-description" xml:space="preserve">
+    <value>Ändrar tillstånd till slutförd när någon godkänner testfallet. Detta kräver att det godkända fältet ska aktiveras och ett slutfört tillstånd definieras för tester.</value>
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests" xml:space="preserve">
+    <value>Ändra tillstånd till pågående när du redigerar ett slutfört test</value>
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
+    <value>Detta ändrar staten till pågående om beskrivningen ändras i det färdiga tillståndet.</value>
+  </data>
+  <data name="color" xml:space="preserve">
+    <value>Färg</value>
+  </data>
+  <data name="colors" xml:space="preserve">
+    <value>Färger</value>
+  </data>
+  <data name="commands" xml:space="preserve">
+    <value>Kommandon</value>
+  </data>
+  <data name="dark-mode" xml:space="preserve">
+    <value>Mörkt läge</value>
+  </data>
+  <data name="defaults" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="default-tenant" xml:space="preserve">
+    <value>Standardhyresgäst</value>
+  </data>
+  <data name="default-tenant-description" xml:space="preserve">
+    <value>Standardhyresgästen används som standarddirigering om en användare kommer åt testbucket utan att ange en hyresgäst.</value>
+  </data>
+  <data name="delete-resource-if-not-seen-for" xml:space="preserve">
+    <value>Ta bort resursen om den inte ses för</value>
+  </data>
+  <data name="editor" xml:space="preserve">
+    <value>Redaktör</value>
+  </data>
+  <data name="embedding-ai-provider" xml:space="preserve">
+    <value>AI -leverantör för inbäddningar</value>
+  </data>
+  <data name="explorer-dock" xml:space="preserve">
+    <value>Explorer</value>
+  </data>
+  <data name="explorer-dock-description" xml:space="preserve">
+    <value>Plats för Explorer -panelen i dig användargränssnitt</value>
+  </data>
+  <data name="increased-contrast" xml:space="preserve">
+    <value>Ökad kontrast</value>
+  </data>
+  <data name="increased-contrast-description" xml:space="preserve">
+    <value>Ökar färgkontrasten för att göra användargränssnittet lättare att navigera</value>
+  </data>
+  <data name="increased-font-size" xml:space="preserve">
+    <value>Ökad teckensnittsstorlek</value>
+  </data>
+  <data name="increased-font-size-description" xml:space="preserve">
+    <value>Ökar tematinställningarna för teckensnittsstorlek</value>
+  </data>
+  <data name="keyboard" xml:space="preserve">
+    <value>Tangentbord</value>
+  </data>
   <data name="language-multilang" xml:space="preserve">
-    <value>Språk / Language / Idioma / Langue / 语言 / 言語 / لغة / 언어</value>
+    <value>Språk / idiom / langue / 语言 / 言語 / لغة / 언어</value>
+  </data>
+  <data name="layout" xml:space="preserve">
+    <value>Layout</value>
+  </data>
+  <data name="light-mode" xml:space="preserve">
+    <value>Ljusläge</value>
   </data>
   <data name="manage-accounts" xml:space="preserve">
     <value>Hantera konton</value>
@@ -127,10 +280,10 @@
     <value>Hantera miljöer</value>
   </data>
   <data name="manage-heuristics" xml:space="preserve">
-    <value>Hantera heuristics</value>
+    <value>Hantera heuristik</value>
   </data>
   <data name="manage-labels" xml:space="preserve">
-    <value>Hanter etiketter</value>
+    <value>Hantera etiketter</value>
   </data>
   <data name="manage-milestones" xml:space="preserve">
     <value>Hantera milstolpar</value>
@@ -145,222 +298,108 @@
     <value>Hantera roller</value>
   </data>
   <data name="manage-runners" xml:space="preserve">
-    <value>Hantera runners</value>
+    <value>Hantera löpare</value>
+  </data>
+  <data name="manage-states" xml:space="preserve">
+    <value>Hantera stater</value>
   </data>
   <data name="manage-teams" xml:space="preserve">
-    <value>Hantera team</value>
+    <value>Hantera lag</value>
   </data>
   <data name="manage-tenants" xml:space="preserve">
-    <value>Hantera tenants</value>
+    <value>Hantera hyresgäster</value>
   </data>
   <data name="manage-users" xml:space="preserve">
     <value>Hantera användare</value>
   </data>
-  <data name="mcp-client-configuration" xml:space="preserve">
-    <value>MCP klientkonfiguration</value>
+  <data name="mcp" xml:space="preserve">
+    <value>Mcp</value>
   </data>
   <data name="mcp-claude" xml:space="preserve">
-    <value>Lägg till ovanståande json till "claude_desktop_config.json" för att använda verktyg Test Bucket från Claude AI</value>
+    <value>Lägg till JSON ovan till "CLAUDE_DESKTOP_CONFIG.JSON" för att använda TestBucket från Claude AI</value>
   </data>
-  <data name="mcp-visualstudio" xml:space="preserve">
-    <value>Lägg till ovanstående JSON till ".vscode/mcp.json" för att använda verktyg från Test Bucket i Visual Studio.</value>
-  </data>
-  <data name="mcp-vscode" xml:space="preserve">
-    <value>Lägg till ovanstående JSON till ".vscode/mcp.json" för att använda verktyg från Test Bucket i VSCode.</value>
-  </data>
-  <data name="open-ai-settings" xml:space="preserve">
-    <value>Öppna AI inställningar</value>
-  </data>
-  <data name="profile" xml:space="preserve">
-    <value>Profil</value>
-  </data>
-  <data name="search-settings" xml:space="preserve">
-    <value>Sök inställningar..</value>
-  </data>
-  <data name="accessibility" xml:space="preserve">
-    <value>Tillgänglighet</value>
-  </data>
-  <data name="theme" xml:space="preserve">
-    <value>Tema</value>
-  </data>
-  <data name="colors" xml:space="preserve">
-    <value>Färger</value>
-  </data>
-  <data name="appearance" xml:space="preserve">
-    <value>Utseende</value>
-  </data>
-  <data name="profile-image" xml:space="preserve">
-    <value>Profilbild</value>
-  </data>
-  <data name="increased-contrast" xml:space="preserve">
-    <value>Ökad kontrast</value>
-  </data>
-  <data name="increased-contrast-description" xml:space="preserve">
-    <value>Ökar färgkontrasten vilket gör användargränssnittet enklare att navigera</value>
-  </data>
-  <data name="dark-mode" xml:space="preserve">
-    <value>Mörkt färgtema</value>
-  </data>
-  <data name="prefer-text-to-icons" xml:space="preserve">
-    <value>Föredra text istället för ikoner</value>
-  </data>
-  <data name="increased-font-size" xml:space="preserve">
-    <value>Större text</value>
-  </data>
-  <data name="increased-font-size-description" xml:space="preserve">
-    <value>Visa ett större typsnitt oavsett vilket tema är valt</value>
-  </data>
-  <data name="ai-models" xml:space="preserve">
-    <value>Modeller</value>
-  </data>
-  <data name="ai-default-model" xml:space="preserve">
-    <value>Standardmodell</value>
-  </data>
-  <data name="ai-azure-provider-key" xml:space="preserve">
-    <value>Azure produktionsnyckel</value>
-  </data>
-  <data name="ai-provider" xml:space="preserve">
-    <value>AI-leverantör</value>
-  </data>
-  <data name="ai-github-pat" xml:space="preserve">
-    <value>Github Models Personal Access Token (PAT)</value>
-  </data>
-  <data name="AI" xml:space="preserve">
-    <value>AI</value>
-  </data>
-  <data name="mcp" xml:space="preserve">
-    <value>MCP</value>
-  </data>
-  <data name="color" xml:space="preserve">
-    <value>Färg</value>
-  </data>
-  <data name="remove-icon" xml:space="preserve">
-    <value>Ta bort ikon</value>
-  </data>
-  <data name="light-mode" xml:space="preserve">
-    <value>Ljust tema</value>
-  </data>
-  <data name="reduced-motion" xml:space="preserve">
-    <value>Mindre rörelse</value>
-  </data>
-  <data name="reduced-motion-description" xml:space="preserve">
-    <value>Minskar animeringar och övergångar </value>
-  </data>
-  <data name="prefer-text-to-icons-description" xml:space="preserve">
-    <value>Visar text istället för ikoner i vissa sammanhang</value>
-  </data>
-  <data name="mcp-server-integrations" xml:space="preserve">
-    <value>Integrationer av MCP servers</value>
-  </data>
-  <data name="add-mcp-server" xml:space="preserve">
-    <value>Lägg till MCP server</value>
-  </data>
-  <data name="mcp-server" xml:space="preserve">
-    <value>MCP server</value>
-  </data>
-  <data name="mcp-server-json" xml:space="preserve">
-    <value>MCP server JSON</value>
+  <data name="mcp-client-configuration" xml:space="preserve">
+    <value>MCP -klientkonfiguration</value>
   </data>
   <data name="mcp-public" xml:space="preserve">
     <value>Tillgänglig för alla projektmedlemmar</value>
   </data>
   <data name="mcp-public-description" xml:space="preserve">
-    <value>Om denna inställning inte är aktiverad kommer bara din användare kunna använda verktyg från denna server.</value>
+    <value>En offentlig MCP -server kan användas av alla projektmedlemmar. Om det inte är offentligt är det bara tillgängligt för en enda användare.</value>
   </data>
-  <data name="test-resources" xml:space="preserve">
-    <value>Testresurser</value>
+  <data name="mcp-server" xml:space="preserve">
+    <value>MCP -server</value>
   </data>
-  <data name="delete-resource-if-not-seen-for" xml:space="preserve">
-    <value>Ta bort resurser om den inte varit aktiv sedan</value>
+  <data name="mcp-server-integrations" xml:space="preserve">
+    <value>MCP -serverintegrationer</value>
   </data>
-  <data name="keyboard" xml:space="preserve">
-    <value>Tangentbord</value>
-  </data>
-  <data name="commands" xml:space="preserve">
-    <value>Kommandon</value>
-  </data>
-  <data name="tool-bar" xml:space="preserve">
-    <value>Verktyg</value>
-  </data>
-  <data name="embedding-ai-provider" xml:space="preserve">
-    <value>AI leverantör för embeddings</value>
-  </data>
-  <data name="ai-embedding-model" xml:space="preserve">
-    <value>Embedding-modell</value>
-  </data>
-  <data name="ai-runner" xml:space="preserve">
-    <value>AI-testare</value>
-  </data>
-  <data name="ai-runner-enabled" xml:space="preserve">
-    <value>Använd AI-testare</value>
-  </data>
-  <data name="ai-runner-enabled-description" xml:space="preserve">
-    <value>Aktiverar AI-testare för detta projektet</value>
-  </data>
-  <data name="ai-provider-description" xml:space="preserve">
-    <value>AI-leverantör för att använda för denna tenant.</value>
-  </data>
-  <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
-    <value>Max antal tokens som AI-testaren kan använda per dag.</value>
-  </data>
-  <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
-    <value>Observera att antal tokens utvärderas när AI-testaren börjar att arbeta. Antalet tokens kan således överstiga detta värde och denna gräns används bara för att förhindra att nya körningar startas.</value>
+  <data name="mcp-server-json" xml:space="preserve">
+    <value>MCP -server JSON</value>
   </data>
   <data name="mcp-tool-name" xml:space="preserve">
-    <value>MCP-verktyg</value>
+    <value>MCP -verktyg</value>
+  </data>
+  <data name="mcp-visualstudio" xml:space="preserve">
+    <value>Lägg till JSON ovan till ".vscode/mcp.json" för att använda TestBucket från Visual Studio</value>
+  </data>
+  <data name="mcp-vscode" xml:space="preserve">
+    <value>Lägg till JSON ovan till ".vscode/MCP.JSON" för att använda TestBucket från VSCode</value>
+  </data>
+  <data name="ollama-context-length-message" xml:space="preserve">
+    <value>När du använder Ollama måste du konfigurera en kontextlängd som är lämplig för den använda modellen. Du kan konfigurera Ollama -kontextstorleken med hjälp av miljövariabeln Ollama_Context_Length för Ollama Docker -behållaren. Till exempel ollama_Context_Length = 131072 (128K) Kontextlängd för GEMMA3 eller 40960 (40K) för QWEN3.</value>
+  </data>
+  <data name="openai-provider-key" xml:space="preserve">
+    <value>OpenAI API -nyckel</value>
+  </data>
+  <data name="open-ai-settings" xml:space="preserve">
+    <value>Openai -inställningar</value>
+  </data>
+  <data name="prefer-text-to-icons" xml:space="preserve">
+    <value>Preftext istället för ikoner</value>
+  </data>
+  <data name="prefer-text-to-icons-description" xml:space="preserve">
+    <value>Använder text istället för ikoner i användargränssnittet på vissa platser</value>
+  </data>
+  <data name="profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="profile-image" xml:space="preserve">
+    <value>Profilbild</value>
+  </data>
+  <data name="reduced-motion" xml:space="preserve">
+    <value>Reducerad rörelse</value>
+  </data>
+  <data name="reduced-motion-description" xml:space="preserve">
+    <value>Minskar övergångar och animationer</value>
+  </data>
+  <data name="remove-icon" xml:space="preserve">
+    <value>Ta bort ikonen</value>
+  </data>
+  <data name="search-settings" xml:space="preserve">
+    <value>Sökinställningar ..</value>
+  </data>
+  <data name="server" xml:space="preserve">
+    <value>Servern</value>
+  </data>
+  <data name="tenant" xml:space="preserve">
+    <value>Hyresgäst</value>
+  </data>
+  <data name="test-execution" xml:space="preserve">
+    <value>Testutförande</value>
   </data>
   <data name="testing" xml:space="preserve">
     <value>Testning</value>
   </data>
-  <data name="test-execution" xml:space="preserve">
-    <value>Testexekvering</value>
+  <data name="test-resources" xml:space="preserve">
+    <value>Testresurser</value>
   </data>
-  <data name="server" xml:space="preserve">
-    <value>Server</value>
+  <data name="theme" xml:space="preserve">
+    <value>Tema</value>
   </data>
-  <data name="tenant" xml:space="preserve">
-    <value>Tenant</value>
-  </data>
-  <data name="ollama-context-length-message" xml:space="preserve">
-    <value>När Ollama används var noga med att välja en lämplig modell och att anpassa kontextlängden genom att sätta miljövariabeln OLLAMA_CONTEXT_LENGTH för Ollama beroende på vilken modell som används.</value>
-  </data>
-  <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
-    <value>Kostnad för 1M tokens</value>
-  </data>
-  <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
-    <value>Kostnad för 1 miljon tokens. Används för att uppskatta vad kostnaden är och påverkar ingen faktiskt kostnad. </value>
-  </data>
-  <data name="openai-provider-key" xml:space="preserve">
-    <value>Open AI API-nyckel</value>
-  </data>
-  <data name="ai-usage" xml:space="preserve">
-    <value>AI-användning</value>
+  <data name="tool-bar" xml:space="preserve">
+    <value>Verktygsfält</value>
   </data>
   <data name="year-to-date" xml:space="preserve">
-    <value>Detta året (hittils)</value>
-  </data>
-  <data name="archive-test-runs-automatically-enabled" xml:space="preserve">
-    <value>Arkivera testkörningar</value>
-  </data>
-  <data name="archive-test-runs-automatically-enabled-description" xml:space="preserve">
-    <value>Om aktiverat så arkiveras testkörningar automatiskt om de är äldre än den konfigurerade åldern</value>
-  </data>
-  <data name="archive-test-runs-automatically-age" xml:space="preserve">
-    <value>Arkivera testkörningar efter</value>
-  </data>
-  <data name="archive-test-runs-automatically-age-description" xml:space="preserve">
-    <value>Stängda testkörningar arkiveras när deras ålder överstiger denna gräns</value>
-  </data>
-  <data name="archiving" xml:space="preserve">
-    <value>Arkivering</value>
-  </data>
-  <data name="change-state-to-ongoing-when-editing-tests" xml:space="preserve">
-    <value />
-  </data>
-  <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
-    <value />
-  </data>
-  <data name="editor" xml:space="preserve">
-    <value />
+    <value>År hittills</value>
   </data>
 </root>

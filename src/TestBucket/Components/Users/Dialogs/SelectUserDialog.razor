@@ -1,0 +1,93 @@
+﻿@using TestBucket.Components.Account.Shared
+@using TestBucket.Components.Shared.Profile
+@using TestBucket.Components.Users.Services
+@using TestBucket.Domain.Requirements.Models
+@attribute [Authorize]
+@inject IStringLocalizer<SharedStrings> loc
+@inject UserController userController
+
+<MudDialog DefaultFocus="DefaultFocus.FirstChild">
+    <TitleContent>@loc["select-user"]</TitleContent>
+    <DialogContent>
+        <MudStack Spacing="1">
+            
+    <MudDataGrid ServerData="LoadGridData"
+        RowClick="OnRowClicked"
+        Dense Hover RowClass="tb-datarow cursor-pointer"
+        T="string" @ref="_grid"
+    SortMode="SortMode.None">
+
+        <ToolBarContent>
+            <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
+                        <MudTextField Value="@_searchText" T="string" ValueChanged="OnSearch"
+                                      Class="default-search"
+                                      Clearable="true"
+                                      Variant="Variant.Outlined"
+                                      IconSize="Size.Small"
+                                      Adornment="Adornment.Start"
+                                      Placeholder="@loc["search"]"
+                                      AdornmentIcon="@Icons.Material.Filled.Search" />
+
+                        <MudSpacer />
+            </MudStack>
+        </ToolBarContent>
+
+        <Columns>
+            <TemplateColumn Title="@loc["name"]" SortBy="x => x" Sortable="true">
+                <CellTemplate>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <UserProfileImage UserName="@context.Item"/>
+                        <MudText>@context.Item</MudText>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+
+        <PagerContent>
+            <MudDataGridPager T="string" />
+        </PagerContent>
+    </MudDataGrid>
+
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Close">@loc["cancel"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    private MudDataGrid<string>? _grid;
+    private string _searchText = "";
+
+    private void OnRowClicked(DataGridRowClickEventArgs<string> row)
+    {
+        MudDialog.Close(row.Item);
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    protected void OnSearch(string text)
+    {
+        _searchText = text;
+        _grid?.ReloadServerData();
+    }
+
+    private async Task<GridData<string>> LoadGridData(GridState<string> state)
+    {
+        var result = await userController.BrowseUserNamesAsync(_searchText, state.Page * state.PageSize, state.PageSize);
+
+        return new GridData<string>()
+        {
+            Items = result.Items,
+            TotalItems = (int)result.TotalCount
+        };
+    }
+}
+

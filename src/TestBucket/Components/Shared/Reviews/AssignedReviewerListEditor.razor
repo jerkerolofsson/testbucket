@@ -1,0 +1,71 @@
+﻿@using TestBucket.Components.Users.Services
+@using TestBucket.Domain.Shared
+@inject IStringLocalizer<SharedStrings> loc
+@inject IStringLocalizer<SecurityStrings> securityLoc
+@inject UserController userController
+
+<MudDataGrid CommittedItemChanges="OnCommittedItemChanges"
+    Items="AssignedReviewers" Dense Hover RowClass="tb-datarow cursor-pointer" T="AssignedReviewer" EditMode="DataGridEditMode.Cell" ReadOnly=false SortMode="SortMode.Single">
+    <Columns>
+        <PropertyColumn Property="x => x.UserName" Title="@loc["username"]" Editable="false"/>
+        <PropertyColumn Property="x => x.Role" Title="@securityLoc["role"]" Required=false />
+            <TemplateColumn Title="" StickyRight>
+                <EditTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="async()=>await DeleteAsync(context.Item)"></MudIconButton>
+                </EditTemplate>
+            </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+<MudStack Row Style="width: 100%">
+    @if(FooterText is not null)
+    {
+        <MudText Typo="Typo.subtitle1">@FooterText</MudText>
+    }
+    <MudSpacer/>
+    <MudButton data-testid="add-reviewer"
+                Class="tb-button-new"
+                StartIcon="@Icons.Material.Filled.Add" OnClick="AddAsync">@loc["add"]</MudButton>
+</MudStack>
+
+@code {
+    [Parameter] public List<AssignedReviewer> AssignedReviewers { get; set; } = new List<AssignedReviewer>();
+    [Parameter] public EventCallback<List<AssignedReviewer>> AssignedReviewersChanged { get; set; }
+    [Parameter] public string? FooterText { get; set; }
+
+    private async Task DeleteAsync(AssignedReviewer reviewer)
+    {
+        AssignedReviewers ??= new();
+        AssignedReviewers.RemoveAll(x => x == reviewer);
+        await AssignedReviewersChanged.InvokeAsync(AssignedReviewers);
+    }
+
+    public async Task OnCommittedItemChanges()
+    {
+        AssignedReviewers ??= new();
+        await AssignedReviewersChanged.InvokeAsync(AssignedReviewers);
+    }
+
+    private async Task AddAsync()
+    {
+        var reviewer = await userController.PickUserAsync();
+        if(reviewer is not null)
+        {
+            AssignedReviewers??=new();
+
+            var exists = AssignedReviewers.Any(x => x.UserName == reviewer);
+            if(exists)
+            {
+                return;
+            }
+
+            AssignedReviewers.Add(new AssignedReviewer
+            {
+                Role = "",
+                UserName = reviewer
+            });
+
+            await AssignedReviewersChanged.InvokeAsync(AssignedReviewers);
+        }
+    }
+}

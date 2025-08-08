@@ -117,8 +117,161 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="accessibility" xml:space="preserve">
+    <value>Accessibility</value>
+  </data>
+  <data name="add-mcp-server" xml:space="preserve">
+    <value>Add MCP server</value>
+  </data>
+  <data name="AI" xml:space="preserve">
+    <value>AI</value>
+  </data>
+  <data name="ai-azure-provider-key" xml:space="preserve">
+    <value>Azure production key</value>
+  </data>
+  <data name="ai-default-model" xml:space="preserve">
+    <value>Default AI model</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
+    <value>Cost for 1M tokens</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
+    <value>Billing cost for 1 million tokens in USD. This is only used to estimate and visualize costs for internal reports and will not affect any actual billing.</value>
+  </data>
+  <data name="ai-embedding-model" xml:space="preserve">
+    <value>Embedding model</value>
+  </data>
+  <data name="ai-github-pat" xml:space="preserve">
+    <value>Github Models Personal Access Token (PAT)</value>
+  </data>
+  <data name="ai-models" xml:space="preserve">
+    <value>Models</value>
+  </data>
+  <data name="ai-provider" xml:space="preserve">
+    <value>AI provider</value>
+  </data>
+  <data name="ai-provider-description" xml:space="preserve">
+    <value>The AI provider to use for this tenant</value>
+  </data>
+  <data name="ai-runner" xml:space="preserve">
+    <value>AI runner</value>
+  </data>
+  <data name="ai-runner-enabled" xml:space="preserve">
+    <value>Use AI runner</value>
+  </data>
+  <data name="ai-runner-enabled-description" xml:space="preserve">
+    <value>Enables the usage of the AI runner for this project</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
+    <value>AI Runner max. tokens per day</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
+    <value>Maximum number of tokens that can be consumed in a day by the AI runner</value>
+  </data>
+  <data name="ai-usage" xml:space="preserve">
+    <value>AI usage</value>
+  </data>
+  <data name="appearance" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="archive-test-runs-automatically-age" xml:space="preserve">
+    <value>Archive test runs after</value>
+  </data>
+  <data name="archive-test-runs-automatically-age-description" xml:space="preserve">
+    <value>Closed test runs will be archived after this time period</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled" xml:space="preserve">
+    <value>Archive test runs</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled-description" xml:space="preserve">
+    <value>If enabled, closed test runs older than the configured limit will be archived automatically</value>
+  </data>
+  <data name="archiving" xml:space="preserve">
+    <value>Archiving</value>
+  </data>
+  <data name="auto-approve-tests" xml:space="preserve">
+    <value>Automatically approve tests</value>
+  </data>
+  <data name="auto-approve-tests-description" xml:space="preserve">
+    <value>Approves tests when all reviewers have voted postive</value>
+  </data>
+  <data name="backup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
+  <data name="block-edit-in-review-state" xml:space="preserve">
+    <value>Block edit when state is "Review"</value>
+  </data>
+  <data name="change-state-to-completed-when-approved" xml:space="preserve">
+    <value>Change state to completed when approved</value>
+  </data>
+  <data name="change-state-to-completed-when-approved-description" xml:space="preserve">
+    <value>Changes state to Completed when someone approves the test case. This requires the Approved field to be enabled and a Completed state to be defined for tests.</value>
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests" xml:space="preserve">
+    <value>Change state to ongoing when editing a completed test</value>
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
+    <value>This changes the state to ongoing if the description is changed while in the completed state.</value>
+  </data>
+  <data name="color" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="colors" xml:space="preserve">
+    <value>Colors</value>
+  </data>
+  <data name="commands" xml:space="preserve">
+    <value>Commands</value>
+  </data>
+  <data name="dark-mode" xml:space="preserve">
+    <value>Dark mode</value>
+  </data>
+  <data name="defaults" xml:space="preserve">
+    <value>Defaults</value>
+  </data>
+  <data name="default-tenant" xml:space="preserve">
+    <value>Default tenant</value>
+  </data>
+  <data name="default-tenant-description" xml:space="preserve">
+    <value>The default tenant is used as the default redirect if a user accesses TestBucket without specifying a tenant.</value>
+  </data>
+  <data name="delete-resource-if-not-seen-for" xml:space="preserve">
+    <value>Delete resource if not seen for</value>
+  </data>
+  <data name="editor" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="embedding-ai-provider" xml:space="preserve">
+    <value>AI provider for embeddings</value>
+  </data>
+  <data name="explorer-dock" xml:space="preserve">
+    <value>Explorer dock</value>
+  </data>
+  <data name="explorer-dock-description" xml:space="preserve">
+    <value>Location of the explorer panel in thee user interface</value>
+  </data>
+  <data name="increased-contrast" xml:space="preserve">
+    <value>Increased contrast</value>
+  </data>
+  <data name="increased-contrast-description" xml:space="preserve">
+    <value>Increases color contrast to make the user interface easier to navigate</value>
+  </data>
+  <data name="increased-font-size" xml:space="preserve">
+    <value>Increased font size</value>
+  </data>
+  <data name="increased-font-size-description" xml:space="preserve">
+    <value>Increases the font size overriding theme settings</value>
+  </data>
+  <data name="keyboard" xml:space="preserve">
+    <value>Keyboard</value>
+  </data>
   <data name="language-multilang" xml:space="preserve">
     <value>Language / Idioma / Langue / 语言 / 言語 / لغة / 언어</value>
+  </data>
+  <data name="layout" xml:space="preserve">
+    <value>Layout</value>
+  </data>
+  <data name="light-mode" xml:space="preserve">
+    <value>Light mode</value>
   </data>
   <data name="manage-accounts" xml:space="preserve">
     <value>Manage accounts</value>
@@ -147,6 +300,9 @@
   <data name="manage-runners" xml:space="preserve">
     <value>Manage runners</value>
   </data>
+  <data name="manage-states" xml:space="preserve">
+    <value>Manage states</value>
+  </data>
   <data name="manage-teams" xml:space="preserve">
     <value>Manage teams</value>
   </data>
@@ -156,110 +312,14 @@
   <data name="manage-users" xml:space="preserve">
     <value>Manage users</value>
   </data>
-  <data name="mcp-client-configuration" xml:space="preserve">
-    <value>MCP client configuration</value>
-  </data>
-  <data name="mcp-claude" xml:space="preserve">
-    <value>Add the json above to "claude_desktop_config.json" to use Test Bucket tools from Claude AI</value>
-  </data>
-  <data name="mcp-visualstudio" xml:space="preserve">
-    <value>Add the json above to ".vscode/mcp.json" to use Test Bucket from Visual Studio</value>
-  </data>
-  <data name="mcp-vscode" xml:space="preserve">
-    <value>Add the json above to ".vscode/mcp.json" to use Test Bucket from VS Code</value>
-  </data>
-  <data name="open-ai-settings" xml:space="preserve">
-    <value>OpenAI settings</value>
-  </data>
-  <data name="profile" xml:space="preserve">
-    <value>Profile</value>
-  </data>
-  <data name="search-settings" xml:space="preserve">
-    <value>Search settings..</value>
-  </data>
-  <data name="accessibility" xml:space="preserve">
-    <value>Accessibility</value>
-  </data>
-  <data name="theme" xml:space="preserve">
-    <value>Theme</value>
-  </data>
-  <data name="colors" xml:space="preserve">
-    <value>Colors</value>
-  </data>
-  <data name="appearance" xml:space="preserve">
-    <value>Appearance</value>
-  </data>
-  <data name="profile-image" xml:space="preserve">
-    <value>Profile image</value>
-  </data>
-  <data name="increased-contrast" xml:space="preserve">
-    <value>Increased contrast</value>
-  </data>
-  <data name="increased-contrast-description" xml:space="preserve">
-    <value>Increases color contrast to make the user interface easier to navigate</value>
-  </data>
-  <data name="dark-mode" xml:space="preserve">
-    <value>Dark mode</value>
-  </data>
-  <data name="prefer-text-to-icons" xml:space="preserve">
-    <value>Pref text instead of icons</value>
-  </data>
-  <data name="increased-font-size" xml:space="preserve">
-    <value>Increased font size</value>
-  </data>
-  <data name="increased-font-size-description" xml:space="preserve">
-    <value>Increases the font size overriding theme settings</value>
-  </data>
-  <data name="ai-models" xml:space="preserve">
-    <value>Models</value>
-  </data>
-  <data name="ai-default-model" xml:space="preserve">
-    <value>Default AI model</value>
-  </data>
-  <data name="ai-azure-provider-key" xml:space="preserve">
-    <value>Azure production key</value>
-  </data>
-  <data name="ai-provider" xml:space="preserve">
-    <value>AI provider</value>
-  </data>
-  <data name="ai-github-pat" xml:space="preserve">
-    <value>Github Models Personal Access Token (PAT)</value>
-  </data>
-  <data name="AI" xml:space="preserve">
-    <value>AI</value>
-  </data>
   <data name="mcp" xml:space="preserve">
     <value>MCP</value>
   </data>
-  <data name="color" xml:space="preserve">
-    <value>Color</value>
+  <data name="mcp-claude" xml:space="preserve">
+    <value>Add the json above to "claude_desktop_config.json" to use TestBucket tools from Claude AI</value>
   </data>
-  <data name="remove-icon" xml:space="preserve">
-    <value>Remove icon</value>
-  </data>
-  <data name="light-mode" xml:space="preserve">
-    <value>Light mode</value>
-  </data>
-  <data name="reduced-motion" xml:space="preserve">
-    <value>Reduced motion</value>
-  </data>
-  <data name="reduced-motion-description" xml:space="preserve">
-    <value>Reduces transitions and animations</value>
-  </data>
-  <data name="prefer-text-to-icons-description" xml:space="preserve">
-    <value>Uses text instead of icons in the user interface in some locations</value>
-  </data>
-  <data name="mcp-server-integrations" xml:space="preserve">
-    <value>MCP server integrations</value>
-  </data>
-  <data name="add-mcp-server" xml:space="preserve">
-    <value>Add MCP server</value>
-  </data>
-  <data name="mcp-server" xml:space="preserve">
-    <value>MCP server</value>
-  </data>
-  <data name="mcp-server-json" xml:space="preserve">
-    <value>MCP server JSON</value>
+  <data name="mcp-client-configuration" xml:space="preserve">
+    <value>MCP client configuration</value>
   </data>
   <data name="mcp-public" xml:space="preserve">
     <value>Available to all project members</value>
@@ -267,53 +327,56 @@
   <data name="mcp-public-description" xml:space="preserve">
     <value>A public MCP server may be used by any project member. If it is not public it is only available to a single user.</value>
   </data>
-  <data name="test-resources" xml:space="preserve">
-    <value>Test resources</value>
+  <data name="mcp-server" xml:space="preserve">
+    <value>MCP server</value>
   </data>
-  <data name="delete-resource-if-not-seen-for" xml:space="preserve">
-    <value>Delete resource if not seen for</value>
+  <data name="mcp-server-integrations" xml:space="preserve">
+    <value>MCP server integrations</value>
   </data>
-  <data name="keyboard" xml:space="preserve">
-    <value>Keyboard</value>
-  </data>
-  <data name="commands" xml:space="preserve">
-    <value>Commands</value>
-  </data>
-  <data name="tool-bar" xml:space="preserve">
-    <value>Tool bar</value>
-  </data>
-  <data name="embedding-ai-provider" xml:space="preserve">
-    <value>AI provider for embeddings</value>
-  </data>
-  <data name="ai-embedding-model" xml:space="preserve">
-    <value>Embedding model</value>
-  </data>
-  <data name="ai-runner" xml:space="preserve">
-    <value>AI runner</value>
-  </data>
-  <data name="ai-runner-enabled" xml:space="preserve">
-    <value>Use AI runner</value>
-  </data>
-  <data name="ai-runner-enabled-description" xml:space="preserve">
-    <value>Enables the usage of the AI runner for this project</value>
-  </data>
-  <data name="ai-provider-description" xml:space="preserve">
-    <value>The AI provider to use for this tenant</value>
-  </data>
-  <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
-    <value>AI Runner max. tokens per day</value>
-  </data>
-  <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
-    <value>Maximum number of tokens that can be consumed in a day by the AI runner</value>
+  <data name="mcp-server-json" xml:space="preserve">
+    <value>MCP server JSON</value>
   </data>
   <data name="mcp-tool-name" xml:space="preserve">
     <value>MCP Tool</value>
   </data>
-  <data name="testing" xml:space="preserve">
-    <value>Testing</value>
+  <data name="mcp-visualstudio" xml:space="preserve">
+    <value>Add the json above to ".vscode/mcp.json" to use TestBucket from Visual Studio</value>
   </data>
-  <data name="test-execution" xml:space="preserve">
-    <value>Test execution</value>
+  <data name="mcp-vscode" xml:space="preserve">
+    <value>Add the json above to ".vscode/mcp.json" to use TestBucket from VS Code</value>
+  </data>
+  <data name="ollama-context-length-message" xml:space="preserve">
+    <value>When using Ollama make sure to configure a context length suitable for the model used. You can configure the Ollama context size using the environment variable OLLAMA_CONTEXT_LENGTH for the Ollama docker container. For example OLLAMA_CONTEXT_LENGTH=131072 (128k) context length for Gemma3 or 40960 (40k) for Qwen3.</value>
+  </data>
+  <data name="openai-provider-key" xml:space="preserve">
+    <value>OpenAI API key</value>
+  </data>
+  <data name="open-ai-settings" xml:space="preserve">
+    <value>OpenAI settings</value>
+  </data>
+  <data name="prefer-text-to-icons" xml:space="preserve">
+    <value>Pref text instead of icons</value>
+  </data>
+  <data name="prefer-text-to-icons-description" xml:space="preserve">
+    <value>Uses text instead of icons in the user interface in some locations</value>
+  </data>
+  <data name="profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="profile-image" xml:space="preserve">
+    <value>Profile image</value>
+  </data>
+  <data name="reduced-motion" xml:space="preserve">
+    <value>Reduced motion</value>
+  </data>
+  <data name="reduced-motion-description" xml:space="preserve">
+    <value>Reduces transitions and animations</value>
+  </data>
+  <data name="remove-icon" xml:space="preserve">
+    <value>Remove icon</value>
+  </data>
+  <data name="search-settings" xml:space="preserve">
+    <value>Search settings..</value>
   </data>
   <data name="server" xml:space="preserve">
     <value>Server</value>
@@ -321,46 +384,22 @@
   <data name="tenant" xml:space="preserve">
     <value>Tenant</value>
   </data>
-  <data name="ollama-context-length-message" xml:space="preserve">
-    <value>When using Ollama make sure to configure a context length suitable for the model used. You can configure the Ollama context size using the environment variable OLLAMA_CONTEXT_LENGTH for the Ollama docker container. For example OLLAMA_CONTEXT_LENGTH=131072 (128k) context length for Gemma3 or 40960 (40k) for Qwen3.</value>
+  <data name="test-execution" xml:space="preserve">
+    <value>Test execution</value>
   </data>
-  <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
-    <value>Cost for 1M tokens</value>
+  <data name="testing" xml:space="preserve">
+    <value>Testing</value>
   </data>
-  <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
-    <value>Billing cost for 1 million tokens in USD. This is only used to estimate and visualize costs for internal reports and will not affect any actual billing.</value>
+  <data name="test-resources" xml:space="preserve">
+    <value>Test resources</value>
   </data>
-  <data name="openai-provider-key" xml:space="preserve">
-    <value>OpenAI API key</value>
+  <data name="theme" xml:space="preserve">
+    <value>Theme</value>
   </data>
-  <data name="ai-usage" xml:space="preserve">
-    <value>AI usage</value>
+  <data name="tool-bar" xml:space="preserve">
+    <value>Tool bar</value>
   </data>
   <data name="year-to-date" xml:space="preserve">
     <value>Year to date</value>
-  </data>
-  <data name="archive-test-runs-automatically-enabled" xml:space="preserve">
-    <value>Archive test runs</value>
-  </data>
-  <data name="archive-test-runs-automatically-enabled-description" xml:space="preserve">
-    <value>If enabled, closed test runs older than the configured limit will be archived automatically</value>
-  </data>
-  <data name="archive-test-runs-automatically-age" xml:space="preserve">
-    <value>Archive test runs after</value>
-  </data>
-  <data name="archive-test-runs-automatically-age-description" xml:space="preserve">
-    <value>Closed test runs will be archived after this time period</value>
-  </data>
-  <data name="archiving" xml:space="preserve">
-    <value>Archiving</value>
-  </data>
-  <data name="change-state-to-ongoing-when-editing-tests" xml:space="preserve">
-    <value>Change state to ongoing when editing a completed test</value>
-  </data>
-  <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
-    <value>This changes the state to ongoing if the description is changed while in the completed state.</value>
-  </data>
-  <data name="editor" xml:space="preserve">
-    <value>Editor</value>
   </data>
 </root>

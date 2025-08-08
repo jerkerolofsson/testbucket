@@ -1,0 +1,405 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="accessibility" xml:space="preserve">
+    <value>アクセシビリティ</value>
+  </data>
+  <data name="add-mcp-server" xml:space="preserve">
+    <value>MCPサーバーを追加します</value>
+  </data>
+  <data name="AI" xml:space="preserve">
+    <value>ai</value>
+  </data>
+  <data name="ai-azure-provider-key" xml:space="preserve">
+    <value>Azure Productionキー</value>
+  </data>
+  <data name="ai-default-model" xml:space="preserve">
+    <value>デフォルトAIモデル</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
+    <value>1Mトークンのコスト</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
+    <value>100万米ドルのトークンの請求費用。これは、内部レポートのコストを推定および視覚化するためにのみ使用され、実際の請求には影響しません。</value>
+  </data>
+  <data name="ai-embedding-model" xml:space="preserve">
+    <value>埋め込みモデル</value>
+  </data>
+  <data name="ai-github-pat" xml:space="preserve">
+    <value>githubモデルパーソナルアクセストークン（pat）</value>
+  </data>
+  <data name="ai-models" xml:space="preserve">
+    <value>モデル</value>
+  </data>
+  <data name="ai-provider" xml:space="preserve">
+    <value>AIプロバイダー</value>
+  </data>
+  <data name="ai-provider-description" xml:space="preserve">
+    <value>このテナントに使用するAIプロバイダー</value>
+  </data>
+  <data name="ai-runner" xml:space="preserve">
+    <value>AIランナー</value>
+  </data>
+  <data name="ai-runner-enabled" xml:space="preserve">
+    <value>AIランナーを使用します</value>
+  </data>
+  <data name="ai-runner-enabled-description" xml:space="preserve">
+    <value>このプロジェクトのAIランナーの使用を可能にします</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day" xml:space="preserve">
+    <value>AIランナーマックス。 1日あたりのトークン</value>
+  </data>
+  <data name="ai-runner-max-tokens-per-day-description" xml:space="preserve">
+    <value>AIランナーが1日で消費できるトークンの最大数</value>
+  </data>
+  <data name="ai-usage" xml:space="preserve">
+    <value>AIの使用</value>
+  </data>
+  <data name="appearance" xml:space="preserve">
+    <value>外観</value>
+  </data>
+  <data name="archive-test-runs-automatically-age" xml:space="preserve">
+    <value>アーカイブテストはその後実行されます</value>
+  </data>
+  <data name="archive-test-runs-automatically-age-description" xml:space="preserve">
+    <value>クローズドテストの実行は、この期間の後にアーカイブされます</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled" xml:space="preserve">
+    <value>アーカイブテストが実行されます</value>
+  </data>
+  <data name="archive-test-runs-automatically-enabled-description" xml:space="preserve">
+    <value>有効にすると、構成された制限が自動的にアーカイブされるよりも古いテスト実行が実行されます</value>
+  </data>
+  <data name="archiving" xml:space="preserve">
+    <value>アーカイブ</value>
+  </data>
+  <data name="auto-approve-tests" xml:space="preserve">
+    <value>テストを自動的に承認します</value>
+  </data>
+  <data name="auto-approve-tests-description" xml:space="preserve">
+    <value>すべてのレビュアーがポジティブに投票した場合、承認されたテスト</value>
+  </data>
+  <data name="backup" xml:space="preserve">
+    <value>バックアップ</value>
+  </data>
+  <data name="block-edit-in-review-state" xml:space="preserve">
+    <value>状態が「レビュー」であるときにブロック編集</value>
+  </data>
+  <data name="change-state-to-completed-when-approved" xml:space="preserve">
+    <value>承認されたときに状態を完了して完了します</value>
+  </data>
+  <data name="change-state-to-completed-when-approved-description" xml:space="preserve">
+    <value>誰かがテストケースを承認したときに状態を変更して完了します。これには、承認されたフィールドを有効にする必要があり、完了した状態をテスト用に定義する必要があります。</value>
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests" xml:space="preserve">
+    <value>完了したテストを編集するときに、状態を継続的に変更します</value>
+  </data>
+  <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
+    <value>これにより、完了した状態で説明が変更された場合、状態は継続的に変更されます。</value>
+  </data>
+  <data name="color" xml:space="preserve">
+    <value>色</value>
+  </data>
+  <data name="colors" xml:space="preserve">
+    <value>色</value>
+  </data>
+  <data name="commands" xml:space="preserve">
+    <value>コマンド</value>
+  </data>
+  <data name="dark-mode" xml:space="preserve">
+    <value>ダークモード</value>
+  </data>
+  <data name="defaults" xml:space="preserve">
+    <value>デフォルト</value>
+  </data>
+  <data name="default-tenant" xml:space="preserve">
+    <value>デフォルトのテナント</value>
+  </data>
+  <data name="default-tenant-description" xml:space="preserve">
+    <value>デフォルトのテナントは、テナントを指定せずにユーザーがTestBucketにアクセスする場合、デフォルトのリダイレクトとして使用されます。</value>
+  </data>
+  <data name="delete-resource-if-not-seen-for" xml:space="preserve">
+    <value>見られない場合はリソースを削除します</value>
+  </data>
+  <data name="editor" xml:space="preserve">
+    <value>エディタ</value>
+  </data>
+  <data name="embedding-ai-provider" xml:space="preserve">
+    <value>埋め込みのAIプロバイダー</value>
+  </data>
+  <data name="explorer-dock" xml:space="preserve">
+    <value>エクスプローラードック</value>
+  </data>
+  <data name="explorer-dock-description" xml:space="preserve">
+    <value>ユーザーインターフェイスのエクスプローラーパネルの場所</value>
+  </data>
+  <data name="increased-contrast" xml:space="preserve">
+    <value>コントラストの増加</value>
+  </data>
+  <data name="increased-contrast-description" xml:space="preserve">
+    <value>色のコントラストを増やして、ユーザーインターフェイスをナビゲートしやすくする</value>
+  </data>
+  <data name="increased-font-size" xml:space="preserve">
+    <value>フォントサイズの増加</value>
+  </data>
+  <data name="increased-font-size-description" xml:space="preserve">
+    <value>テーマ設定をオーバーライドするフォントサイズを増やします</value>
+  </data>
+  <data name="keyboard" xml:space="preserve">
+    <value>キーボード</value>
+  </data>
+  <data name="language-multilang" xml:space="preserve">
+    <value>言語 /イディオマ / langue /语言 /言語 /¹ /언어</value>
+  </data>
+  <data name="layout" xml:space="preserve">
+    <value>レイアウト</value>
+  </data>
+  <data name="light-mode" xml:space="preserve">
+    <value>ライトモード</value>
+  </data>
+  <data name="manage-accounts" xml:space="preserve">
+    <value>アカウントを管理します</value>
+  </data>
+  <data name="manage-environments" xml:space="preserve">
+    <value>環境を管理します</value>
+  </data>
+  <data name="manage-heuristics" xml:space="preserve">
+    <value>ヒューリスティックを管理します</value>
+  </data>
+  <data name="manage-labels" xml:space="preserve">
+    <value>ラベルを管理します</value>
+  </data>
+  <data name="manage-milestones" xml:space="preserve">
+    <value>マイルストーンを管理します</value>
+  </data>
+  <data name="manage-projects" xml:space="preserve">
+    <value>プロジェクトを管理します</value>
+  </data>
+  <data name="manage-resources" xml:space="preserve">
+    <value>リソースとデバイス</value>
+  </data>
+  <data name="manage-roles" xml:space="preserve">
+    <value>役割を管理します</value>
+  </data>
+  <data name="manage-runners" xml:space="preserve">
+    <value>ランナーを管理します</value>
+  </data>
+  <data name="manage-states" xml:space="preserve">
+    <value>状態を管理します</value>
+  </data>
+  <data name="manage-teams" xml:space="preserve">
+    <value>チームを管理します</value>
+  </data>
+  <data name="manage-tenants" xml:space="preserve">
+    <value>テナントを管理します</value>
+  </data>
+  <data name="manage-users" xml:space="preserve">
+    <value>ユーザーを管理します</value>
+  </data>
+  <data name="mcp" xml:space="preserve">
+    <value>MCP</value>
+  </data>
+  <data name="mcp-claude" xml:space="preserve">
+    <value>上記のjsonを「claude_desktop_config.json」に追加して、claude aiのテストバケットツールを使用します</value>
+  </data>
+  <data name="mcp-client-configuration" xml:space="preserve">
+    <value>MCPクライアント構成</value>
+  </data>
+  <data name="mcp-public" xml:space="preserve">
+    <value>すべてのプロジェクトメンバーが利用できます</value>
+  </data>
+  <data name="mcp-public-description" xml:space="preserve">
+    <value>パブリックMCPサーバーは、プロジェクトメンバーが使用できます。公開されていない場合は、単一のユーザーのみが利用できます。</value>
+  </data>
+  <data name="mcp-server" xml:space="preserve">
+    <value>MCPサーバー</value>
+  </data>
+  <data name="mcp-server-integrations" xml:space="preserve">
+    <value>MCPサーバーの統合</value>
+  </data>
+  <data name="mcp-server-json" xml:space="preserve">
+    <value>MCPサーバーJSON</value>
+  </data>
+  <data name="mcp-tool-name" xml:space="preserve">
+    <value>MCPツール</value>
+  </data>
+  <data name="mcp-visualstudio" xml:space="preserve">
+    <value>上記のjsonを「.vscode/mcp.json」に追加して、Visual Studioのテストバケットを使用します</value>
+  </data>
+  <data name="mcp-vscode" xml:space="preserve">
+    <value>上記のjsonを「.vscode/mcp.json」に追加して、VSコードからテストバケットを使用します</value>
+  </data>
+  <data name="ollama-context-length-message" xml:space="preserve">
+    <value>Ollamaを使用する場合、使用するモデルに適したコンテキスト長を確実に構成してください。 Ollama Dockerコンテナの環境変数ollama_context_lengthを使用して、Ollamaコンテキストサイズを構成できます。たとえば、ollama_context_length = 131072（128k）gemma3のコンテキスト長またはqwen3の40960（40k）。</value>
+  </data>
+  <data name="openai-provider-key" xml:space="preserve">
+    <value>Openai APIキー</value>
+  </data>
+  <data name="open-ai-settings" xml:space="preserve">
+    <value>Openai設定</value>
+  </data>
+  <data name="prefer-text-to-icons" xml:space="preserve">
+    <value>アイコンの代わりにプレイテキスト</value>
+  </data>
+  <data name="prefer-text-to-icons-description" xml:space="preserve">
+    <value>一部の場所のユーザーインターフェイスのアイコンの代わりにテキストを使用します</value>
+  </data>
+  <data name="profile" xml:space="preserve">
+    <value>プロフィール</value>
+  </data>
+  <data name="profile-image" xml:space="preserve">
+    <value>プロファイル画像</value>
+  </data>
+  <data name="reduced-motion" xml:space="preserve">
+    <value>モーションの減少</value>
+  </data>
+  <data name="reduced-motion-description" xml:space="preserve">
+    <value>遷移とアニメーションを削減します</value>
+  </data>
+  <data name="remove-icon" xml:space="preserve">
+    <value>アイコンを削除します</value>
+  </data>
+  <data name="search-settings" xml:space="preserve">
+    <value>検索設定..</value>
+  </data>
+  <data name="server" xml:space="preserve">
+    <value>サーバ</value>
+  </data>
+  <data name="tenant" xml:space="preserve">
+    <value>テナント</value>
+  </data>
+  <data name="test-execution" xml:space="preserve">
+    <value>テスト実行</value>
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value>テスト</value>
+  </data>
+  <data name="test-resources" xml:space="preserve">
+    <value>テストリソース</value>
+  </data>
+  <data name="theme" xml:space="preserve">
+    <value>テーマ</value>
+  </data>
+  <data name="tool-bar" xml:space="preserve">
+    <value>ツールバー</value>
+  </data>
+  <data name="year-to-date" xml:space="preserve">
+    <value>年初来</value>
+  </data>
+</root>

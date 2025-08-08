@@ -92,6 +92,12 @@ public class Requirement : RequirementEntity
     public string? AssignedTo { get; set; }
 
     /// <summary>
+    /// List of reviewers that are assigned to review this test
+    /// </summary>
+    [Column(TypeName = "jsonb")] 
+    public List<AssignedReviewer>? ReviewAssignedTo { get; set; }
+
+    /// <summary>
     /// Known type of the requiremnt
     /// </summary>
     public MappedRequirementType? MappedType { get; set; }

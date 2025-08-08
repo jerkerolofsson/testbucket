@@ -22,10 +22,11 @@ namespace TestBucket.Domain.IntegrationTests.Fields
     {
         /// <summary>
         /// Verifies that the default "Approved" requirement field is correctly defined,
-        /// has the correct target (Requirement), and requires the correct permission (Approve).
+        /// has the correct target (Requirement and TestCase), and requires the correct permission (Approve).
         /// </summary>
         /// <returns>A task representing the asynchronous test operation.</returns>
         [Fact]
+        [CoveredRequirement("TB-REVIEW-001")]
         public async Task DefaultApproveRequirementField_CorrectlyDefined()
         {
             using var scope = Fixture.Services.CreateScope();
@@ -38,7 +39,8 @@ namespace TestBucket.Domain.IntegrationTests.Fields
             var fields = await manager.GetDefinitionsAsync(principal, Fixture.ProjectId);
             var field = fields.Where(x => x.TraitType == Traits.Core.TraitType.Approved).FirstOrDefault();
             Assert.NotNull(field);
-            Assert.Equal(FieldTarget.Requirement, field.Target);
+            Assert.Equal(FieldTarget.Requirement, (field.Target & FieldTarget.Requirement));
+            Assert.Equal(FieldTarget.TestCase, (field.Target & FieldTarget.TestCase));
             Assert.Equal(PermissionLevel.Approve, field.RequiredPermission);
         }
     }

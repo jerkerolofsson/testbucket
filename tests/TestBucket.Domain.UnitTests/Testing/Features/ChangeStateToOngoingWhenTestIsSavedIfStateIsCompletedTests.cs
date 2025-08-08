@@ -18,6 +18,8 @@ namespace TestBucket.Domain.UnitTests.Testing.Features;
 [EnrichedTest]
 [UnitTest]
 [FunctionalTest]
+[Component("Testing")]
+[Feature("Review")]
 public class ChangeStateToOngoingWhenTestIsSavedIfStateIsCompletedTests
 {
     /// <summary>

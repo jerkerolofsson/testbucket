@@ -65,29 +65,6 @@
                         </Authorized>
                     </PermissionView>
 
-                    @* @if (context.Item.Locked)
-                    {
-                        <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
-                            <Authorized>
-                                <MudIconButton Icon="@Icons.Material.Filled.Lock" Color="Color.Warning" OnClick="async () => await UnlockAsync(context.Item)"/>
-
-                            </Authorized>
-                            <NotAuthorized>
-                                <MudIcon Icon="@Icons.Material.Filled.Lock" Color="Color.Warning"/>
-                            </NotAuthorized>
-                        </PermissionView>
-                    }
-                    else
-                    {
-                        <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
-                            <Authorized>
-                                <MudIconButton Icon="@Icons.Material.Filled.Lock" OnClick="async () => await LockAsync(context.Item)"/>
-                            </Authorized>
-                            <NotAuthorized>
-                                <MudIcon Icon="@Icons.Material.Filled.Lock"/>
-                            </NotAuthorized>
-                        </PermissionView>
-                    } *@
                 </CellTemplate>
             </TemplateColumn>
 

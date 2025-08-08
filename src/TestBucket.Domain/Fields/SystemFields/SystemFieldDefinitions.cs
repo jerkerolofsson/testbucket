@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Contracts.Fields;
+﻿using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields.Helpers;
 using TestBucket.Traits.Core;
 
@@ -176,7 +170,7 @@ public static class SystemFieldDefinitions
         RequiredPermission = PermissionLevel.Write
     };
 
-    private static readonly FieldDefinition _requirementApproval = new()
+    private static readonly FieldDefinition _approved = new()
     {
         Name = "Approved",
         Trait = "approved",
@@ -190,7 +184,7 @@ public static class SystemFieldDefinitions
         ShowDescription = false,
         UseClassifier = false,
         Options = [],
-        Target = FieldTarget.Requirement,
+        Target = FieldTarget.Requirement|FieldTarget.TestCase,
         RequiredPermission = PermissionLevel.Approve
     };
 
@@ -201,7 +195,7 @@ public static class SystemFieldDefinitions
     {
         get
         {
-            return [_component,_requirementApproval, _feature, _milestone, _commit, _branch, _label, _testCategory, _qualityCharacteristic];
+            return [_component,_approved, _feature, _milestone, _commit, _branch, _label, _testCategory, _qualityCharacteristic];
         }
     }
 }

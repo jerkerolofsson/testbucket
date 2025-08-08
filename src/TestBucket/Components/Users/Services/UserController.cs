@@ -28,6 +28,13 @@ internal class UserController : TenantBaseService
         _dialogService = dialogService;
     }
 
+    public async Task<string?> PickUserAsync()
+    {
+        var dialog = await _dialogService.ShowAsync<SelectUserDialog>(null, DefaultBehaviors.DialogOptions);
+        var result = await dialog.Result;
+        return result?.Data as string;
+    }
+
     public async Task<bool> DeleteUserAsync(ApplicationUser user)
     {
         ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();
@@ -59,13 +66,21 @@ internal class UserController : TenantBaseService
         return result.Items;
     }
 
+    public async Task<PagedResult<string>> BrowseUserNamesAsync(string query, int offset = 0, int count = 25)
+    {
+        ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();
+        var tenantId = principal.GetTenantIdOrThrow();
+        var result = await _userService.SearchUserNamesAsync(tenantId, new SearchQuery { Text = query, Offset = offset, Count = count }, default);
+        return result;
+    }
+
     public async Task AddUserAsync()
     {
         if (!await ShowErrorIfNoPermissionAsync(_loc, _dialogService, PermissionEntityType.User, PermissionLevel.Write))
         {
             return;
         }
-        var dialog = await _dialogService.ShowAsync<AddUserDialog>(null);
+        var dialog = await _dialogService.ShowAsync<AddUserDialog>(null, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
     }
 

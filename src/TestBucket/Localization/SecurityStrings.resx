@@ -123,6 +123,9 @@
   <data name="access-token-name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="create-api-key" xml:space="preserve">
+    <value>Create access token</value>
+  </data>
   <data name="expires" xml:space="preserve">
     <value>Expires</value>
   </data>
@@ -144,11 +147,11 @@
   <data name="expiry-730" xml:space="preserve">
     <value>2 Years</value>
   </data>
+  <data name="role" xml:space="preserve">
+    <value>Role</value>
+  </data>
   <data name="token-created" xml:space="preserve">
     <value>Your new access token</value>
-  </data>
-  <data name="create-api-key" xml:space="preserve">
-    <value>Create access token</value>
   </data>
   <data name="token-type" xml:space="preserve">
     <value>Token Type</value>

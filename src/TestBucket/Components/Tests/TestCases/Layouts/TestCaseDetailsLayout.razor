@@ -2,17 +2,24 @@
 @layout TestingLayout
 @using Humanizer
 @using TestBucket.Components.Layout
+@using TestBucket.Components.Settings.Controllers
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Components.Tests.TestRuns.Controllers
+@using TestBucket.Contracts.Testing.States
 @using TestBucket.Domain
+@using TestBucket.Domain.Editor.Models
 @using TestBucket.Domain.Requirements.Models
 @using TestBucket.Domain.Teams.Models
 @inject TestBrowser browser
+@inject SettingsController settingsController
 @inject TestCaseEditorController testCaseEditor
 @inject TestRunCreationController testRunCreation
 @inject NavigationManager navigationManager
 @inject AppNavigationManager appNavigationManager
 @inject IStringLocalizer<SharedStrings> loc
+@inject ITestCaseManager testCaseManager
+@implements IDisposable
+@implements ITestCaseObserver
 
 <TenantRedirect />
 
@@ -32,17 +39,27 @@
                     <TbNavLink Href="@appNavigationManager.GetTestCaseUrl()" Icon="@TbIcons.BoldDuoTone.FileText" Match="NavLinkMatch.All" />
                 </MudTooltip>
 
-                <MudTooltip Text="@loc["edit"]">
-                    <TbNavLink Href="@appNavigationManager.GetTestCaseEditUrl()" Icon="@Icons.Material.Filled.Edit" Match="NavLinkMatch.All" />
+                @if(CanEdit)
+                {
+                    <MudTooltip Text="@loc["edit"]">
+                        <TbNavLink Href="@appNavigationManager.GetTestCaseEditUrl()" Icon="@Icons.Material.Filled.Edit" Match="NavLinkMatch.All" />
+                    </MudTooltip>
+                }
+                @if(IsReviewState)
+                {
+                    <MudTooltip Text="@loc["review"]">
+                        <TbNavLink Href="@appNavigationManager.GetTestCaseEditUrl()" Icon="@TbIcons.BoldDuoTone.Review" Match="NavLinkMatch.All" />
+                    </MudTooltip>
+
+                }
+                <MudTooltip Text="@loc["changes"]">
+                    <TbNavLink Href="@appNavigationManager.GetTestCaseChangeHistoryUrl()" Icon="@TbIcons.IconSaxDuoTone.Clock1" Match="NavLinkMatch.All" />
                 </MudTooltip>
 
                 <MudTooltip Text="@loc["test-runs"]">
                     <TbNavLink Href="@appNavigationManager.GetTestCaseExecutionHistoryUrl()" Icon="@TbIcons.Filled.Vial" Match="NavLinkMatch.All" />
                 </MudTooltip>
 
-                <MudTooltip Text="@loc["changes"]">
-                    <TbNavLink Href="@appNavigationManager.GetTestCaseChangeHistoryUrl()" Icon="@TbIcons.IconSaxDuoTone.Clock1" Match="NavLinkMatch.All" />
-                </MudTooltip>
 
                 <MudTooltip Text="@loc["variables"]">
                     <TbNavLink Href="@appNavigationManager.GetTestCaseVariablesUrl()" Icon="@Icons.Material.Filled.Abc"  Match="NavLinkMatch.All"/>
@@ -92,6 +109,8 @@
 
     private TestCase? _testCase;
     private TestSuite? _testSuite;
+    private EditorSettings? _editorSettings;
+    private MappedTestState? _testState = null;
 
     private Team? _team;
     private TestProject? _project;
@@ -125,12 +144,20 @@
         await LoadAsync();
     }
 
+    public bool CanEdit => _testCase is null ? false :
+        (_testCase.MappedState != MappedTestState.Review ? true : _editorSettings?.BlockEditInReviewState == false);
+
+    public bool IsReviewState => _testCase is null ? false : _testCase.MappedState == MappedTestState.Review;
+
     private async Task LoadAsync()
     {
         if (_project != Project || _team != Team)
         {
             _project = Project;
             _team = Team;
+
+            _editorSettings = await settingsController.GetEditorSettingsAsync();
+
         }
         var testCaseId = appNavigationManager.GetEntityIdFromCurrentUri();
         if(testCaseId is null)
@@ -148,7 +175,39 @@
         if (testCaseId != _testCase?.Id)
         {
             _testCase = await browser.GetTestCaseByIdAsync(testCaseId.Value);
+            if(_testCase is not null)
+            {
+                _testState = _testCase.MappedState;
+            }
             appNavigationManager.State.SetSelectedTestCase(_testCase, null, _testSuite);
         }
+    }
+
+    public Task OnTestCreatedAsync(TestCase testCase) => Task.CompletedTask;
+    public Task OnTestDeletedAsync(TestCase testCase) => Task.CompletedTask;
+
+    public Task OnTestSavedAsync(TestCase testCase)
+    {
+        if(testCase.Id == _testCase?.Id)
+        {
+            _testCase = testCase;
+            if (_testState != _testCase.MappedState)
+            {
+                this.StateHasChanged();
+            }
+            _testState = _testCase.MappedState;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    protected override void OnInitialized()
+    {
+        testCaseManager.AddObserver(this);
+    }
+
+    public void Dispose()
+    {
+        testCaseManager.RemoveObserver(this);
     }
 }

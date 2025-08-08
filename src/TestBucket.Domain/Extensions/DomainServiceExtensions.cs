@@ -272,10 +272,11 @@ public static class DomainServiceExtensions
 
         // Editor settings
         services.AddScoped<ISetting, ChangeStateToOngoingWhenEditingTestsSetting>();
+        services.AddScoped<ISetting, ChangeStateToCompletedWhenApprovedSetting>();
+        services.AddScoped<ISetting, BlockEditInReviewStateSetting>();
 
         // LLM
         services.AddScoped<AgentChatContext>();
-        services.AddScoped<IAgentLogManager, AgentLogManager>();
         services.AddScoped<IAgentLogManager, AgentLogManager>();
         services.AddScoped<IAIUsageManager, AIUsageManager>();
 

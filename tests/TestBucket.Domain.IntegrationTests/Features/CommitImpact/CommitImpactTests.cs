@@ -15,6 +15,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.CommitImpact
         /// <summary>
         /// Verifies that a commit with files that map to a component will be linked by comparing the modified files
         /// for the commit
+        /// </summary>
         [Fact]
         public async Task AddCommit_WithModifiedFileAndACorrespondingComponent_ComponentAddedToCommit()
         {

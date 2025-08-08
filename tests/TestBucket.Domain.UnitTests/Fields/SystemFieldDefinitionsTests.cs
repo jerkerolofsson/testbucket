@@ -119,5 +119,64 @@ namespace TestBucket.Domain.UnitTests.Fields
             Assert.True((commit.Target & FieldTarget.TestCaseRun) == FieldTarget.TestCaseRun);
             Assert.True((commit.Target & FieldTarget.Issue) == FieldTarget.Issue);
         }
+
+        /// <summary>
+        /// Verifies that the "Approved" field exists in the system fields.
+        /// </summary>
+        [Fact]
+        [CoveredRequirement("TB-REVIEW-001")]
+        public void ApprovedField_ShouldExist()
+        {
+            var approved = SystemFieldDefinitions.Fixed.FirstOrDefault(f => f.Name == "Approved");
+            Assert.NotNull(approved);
+        }
+
+        /// <summary>
+        /// Verifies that the "Approved" field is of Boolean type.
+        /// </summary>
+        [Fact]
+        [CoveredRequirement("TB-REVIEW-001")]
+        public void ApprovedField_ShouldBeBooleanType()
+        {
+            var approved = SystemFieldDefinitions.Fixed.FirstOrDefault(f => f.Name == "Approved");
+            Assert.NotNull(approved);
+            Assert.Equal(FieldType.Boolean, approved.Type);
+        }
+
+        /// <summary>
+        /// Verifies that the "Approved" field is visible.
+        /// </summary>
+        [Fact]
+        [CoveredRequirement("TB-REVIEW-001")]
+        public void ApprovedField_ShouldBeVisible()
+        {
+            var approved = SystemFieldDefinitions.Fixed.FirstOrDefault(f => f.Name == "Approved");
+            Assert.NotNull(approved);
+            Assert.True(approved.IsVisible);
+        }
+
+        /// <summary>
+        /// Verifies that the "Approved" field has a target that contains TestCase
+        /// </summary>
+        [Fact]
+        [CoveredRequirement("TB-REVIEW-001")]
+        public void ApprovedField_ShouldTargetTests()
+        {
+            var approved = SystemFieldDefinitions.Fixed.FirstOrDefault(f => f.Name == "Approved");
+            Assert.NotNull(approved);
+            Assert.Equal(FieldTarget.TestCase, (approved.Target| FieldTarget.TestCase));
+        }
+
+        /// <summary>
+        /// Verifies that the "Approved" field is defined by the system.
+        /// </summary>
+        [Fact]
+        [CoveredRequirement("TB-REVIEW-001")]
+        public void ApprovedField_ShouldBeDefinedBySystem()
+        {
+            var approved = SystemFieldDefinitions.Fixed.FirstOrDefault(f => f.Name == "Approved");
+            Assert.NotNull(approved);
+            Assert.True(approved.IsDefinedBySystem);
+        }
     }
 }

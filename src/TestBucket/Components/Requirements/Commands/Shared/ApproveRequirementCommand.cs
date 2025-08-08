@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Localization;
 
-using Microsoft.Extensions.Localization;
-
-using TestBucket.Components.Shared;
-using TestBucket.Contracts.Issues.States;
 using TestBucket.Domain;
 using TestBucket.Domain.Commands;
-using TestBucket.Domain.Issues;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Domain.Requirements;
 using TestBucket.Localization;

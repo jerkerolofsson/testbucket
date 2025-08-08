@@ -4,14 +4,16 @@ using Mediator;
 
 using Microsoft.Extensions.Logging;
 
-using TestBucket.Domain.Testing.TestCases.Features;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.AI.Embeddings;
+using TestBucket.Domain.Audit;
 using TestBucket.Domain.Features.Traceability;
 using TestBucket.Domain.Features.Traceability.Models;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Fields.Handlers;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Testing.Aggregates;
@@ -20,12 +22,12 @@ using TestBucket.Domain.Testing.Events;
 using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
+using TestBucket.Domain.Testing.TestCases.Features;
 using TestBucket.Domain.Testing.TestCases.Search;
 using TestBucket.Domain.Testing.TestCases.Templates;
 using TestBucket.Domain.Testing.TestRuns.Search;
 using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Traits.Core;
-using TestBucket.Domain.Audit;
 
 namespace TestBucket.Domain.Testing.TestCases
 {
@@ -347,7 +349,10 @@ namespace TestBucket.Domain.Testing.TestCases
             return await _testCaseRepo.GetTestCaseDistributionByFieldAsync(filters, fieldDefinitionId);
         }
 
-
+        public async Task ApproveTestAsync(ClaimsPrincipal principal, TestCase test)
+        {
+            await _mediator.Send(new ApproveTestCaseRequest(principal, test, true));
+        }
         public async Task<Dictionary<string, Dictionary<string,long>>> GetTestCaseCoverageMatrixByFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, long fieldDefinitionId1, long fieldDefinitionId2)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);

@@ -124,6 +124,7 @@
     <value>Standard miljö</value>
   </data>
   <data name="test-environment-description" xml:space="preserve">
-    <value>Environments contain configuration specific to a deployed environment for the "system under test" and can be used to provision test cases when running them, both manual and automated tests.</value>
+    <value>Miljöer innehåller konfiguration som är specifika för en utplacerad miljö för "systemet under test" och kan användas för att tillhandahålla testfall när du kör dem, både manuella och automatiserade tester.
+Konfigurationen för en miljö består av variabler. Dessa variabler kommer att lösas när man kör tester.</value>
   </data>
 </root>

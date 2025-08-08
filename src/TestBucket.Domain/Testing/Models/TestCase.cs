@@ -151,6 +151,17 @@ public class TestCase : TestEntity
     public List<TestCaseDependency>? Dependencies { get; set; }
 
     /// <summary>
+    /// Assigned to (responsible test designer)
+    /// </summary>
+    public string? AssignedTo { get; set; }
+
+    /// <summary>
+    /// List of reviewers that are assigned to review this test
+    /// </summary>
+    [Column(TypeName = "jsonb")] 
+    public List<AssignedReviewer>? ReviewAssignedTo { get; set; }
+
+    /// <summary>
     /// Text embedding for semantic search and classification.
     /// Consists of the Name and descriptions
     /// </summary>

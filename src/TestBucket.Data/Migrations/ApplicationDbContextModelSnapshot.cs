@@ -16,6 +16,7 @@ using TestBucket.Contracts.Testing.States;
 using TestBucket.Data;
 using TestBucket.Domain.AI.Mcp.Models;
 using TestBucket.Domain.Keyboard;
+using TestBucket.Domain.Shared;
 
 #nullable disable
 
@@ -2551,6 +2552,9 @@ namespace TestBucket.Data.Migrations
                     b.Property<string>("RequirementType")
                         .HasColumnType("text");
 
+                    b.Property<List<AssignedReviewer>>("ReviewAssignedTo")
+                        .HasColumnType("jsonb");
+
                     b.Property<long?>("RootRequirementId")
                         .HasColumnType("bigint");
 
@@ -3171,6 +3175,9 @@ namespace TestBucket.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("AssignedTo")
+                        .HasColumnType("text");
+
                     b.Property<string>("AutomationAssembly")
                         .HasColumnType("text");
 
@@ -3238,6 +3245,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<string>("Preconditions")
                         .HasColumnType("text");
+
+                    b.Property<List<AssignedReviewer>>("ReviewAssignedTo")
+                        .HasColumnType("jsonb");
 
                     b.Property<string>("RunnerLanguage")
                         .HasColumnType("text");
@@ -3894,6 +3904,9 @@ namespace TestBucket.Data.Migrations
 
                     b.Property<string>("DefaultCiCdRef")
                         .HasColumnType("text");
+
+                    b.Property<List<AssignedReviewer>>("DefaultReviewers")
+                        .HasColumnType("jsonb");
 
                     b.Property<List<TestCaseDependency>>("Dependencies")
                         .HasColumnType("jsonb");

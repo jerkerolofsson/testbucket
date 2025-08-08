@@ -1,16 +1,18 @@
-using NSubstitute;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
-using TestBucket.Domain.Features.Review;
+
+using NSubstitute;
+
 using TestBucket.Domain.Editor.Models;
-using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Features.Review;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Shared;
-using Xunit;
+using TestBucket.Domain.Testing.TestCases;
 
 namespace TestBucket.Domain.UnitTests.Features.Review;
+
+/// <summary>
+/// Approval of test under review
+/// </summary>
 public class AutoApproveTestTests
 {
     /// <summary>

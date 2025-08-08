@@ -16,8 +16,8 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
     public class ProjectFixture : IAsyncLifetime
     {
         private readonly TestBucketApp _app;
-        private Team _team = new Team { Name = "", Slug="", ShortName = "" };
-        private TestProject _project = new TestProject { Name = "", Slug = "", ShortName = "" };
+        private readonly Team _team = new Team { Name = "", Slug="", ShortName = "" };
+        private readonly TestProject _project = new TestProject { Name = "", Slug = "", ShortName = "" };
 
         /// <summary>
         /// Gets the current test project.

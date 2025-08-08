@@ -15,12 +15,6 @@ namespace TestBucket.Domain.IntegrationTests.AI
     public class GenerateEmbeddingTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="GenerateEmbeddingTests"/> class.
-        /// </summary>
-        /// <param name="Fixture">The project fixture used for integration testing.</param>
-        public GenerateEmbeddingTests(ProjectFixture Fixture) : base(Fixture) { }
-
-        /// <summary>
         /// Verifies that a non-empty embedding vector is returned by the AI embedding generator.
         /// </summary>
         /// <returns>A task representing the asynchronous test operation.</returns>

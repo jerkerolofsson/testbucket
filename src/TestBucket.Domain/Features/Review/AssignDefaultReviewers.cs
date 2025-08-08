@@ -53,9 +53,16 @@ public class AssignDefaultReviewers : INotificationHandler<TestCaseSavingEvent>
         {
             return;
         }
+
         if (test.ReviewAssignedTo?.Count > 0)
         {
             // Reviewers already assigned
+            foreach (var reviewer in test.ReviewAssignedTo)
+            {
+                // Reset vote when test goes to review state
+                reviewer.Vote = 0;
+            }
+
             return;
         }
 

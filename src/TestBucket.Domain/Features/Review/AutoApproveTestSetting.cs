@@ -18,9 +18,9 @@ internal class AutoApproveTestSetting : SettingAdapter
         Metadata.Name = "auto-approve-tests";
         Metadata.Description = "auto-approve-tests-description";
         Metadata.Category.Name = "testing";
-        Metadata.Category.Icon = SettingIcons.Review;
-        Metadata.Section.Name = "edior";
-        Metadata.Section.Icon = SettingIcons.Editor;
+        Metadata.Category.Icon = SettingIcons.Testing;
+        Metadata.Section.Name = "review";
+        Metadata.Section.Icon = SettingIcons.Review;
         Metadata.SearchText = "review approve";
         Metadata.ShowDescription = true;
         Metadata.Type = FieldType.Boolean;
@@ -30,20 +30,20 @@ internal class AutoApproveTestSetting : SettingAdapter
     public override async Task<FieldValue> ReadAsync(SettingContext context)
     {
         context.Principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Read);
-        var settings = await _settingsProvider.GetDomainSettingsAsync<EditorSettings>(context.Principal.GetTenantIdOrThrow(), context.ProjectId);
+        var settings = await _settingsProvider.GetDomainSettingsAsync<ReviewSettings>(context.Principal.GetTenantIdOrThrow(), context.ProjectId);
         settings ??= new();
 
-        return new FieldValue { BooleanValue = settings.ChangeStateToCompletedWhenApproved, FieldDefinitionId = 0 };
+        return new FieldValue { BooleanValue = settings.AutomaticallyApproveTestIfReviewFinishedWithOnlyPositiveVotes, FieldDefinitionId = 0 };
     }
 
     public override async Task WriteAsync(SettingContext context, FieldValue value)
     {
-        var settings = await _settingsProvider.GetDomainSettingsAsync<EditorSettings>(context.Principal.GetTenantIdOrThrow(), context.ProjectId);
+        var settings = await _settingsProvider.GetDomainSettingsAsync<ReviewSettings>(context.Principal.GetTenantIdOrThrow(), context.ProjectId);
         settings ??= new();
 
-        if (settings.ChangeStateToCompletedWhenApproved != value.BooleanValue)
+        if (settings.AutomaticallyApproveTestIfReviewFinishedWithOnlyPositiveVotes != value.BooleanValue)
         {
-            settings.ChangeStateToCompletedWhenApproved = value.BooleanValue ?? false;
+            settings.AutomaticallyApproveTestIfReviewFinishedWithOnlyPositiveVotes = value.BooleanValue ?? false;
             await _settingsProvider.SaveDomainSettingsAsync(context.Principal.GetTenantIdOrThrow(), context.ProjectId, settings);
         }
     }

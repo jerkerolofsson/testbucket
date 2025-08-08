@@ -31,6 +31,7 @@ using TestBucket.Domain.ExtensionManagement;
 using TestBucket.Domain.Features.Archiving;
 using TestBucket.Domain.Features.Archiving.Settings;
 using TestBucket.Domain.Features.Classification;
+using TestBucket.Domain.Features.Review;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Identity;
@@ -273,8 +274,11 @@ public static class DomainServiceExtensions
         // Editor settings
         services.AddScoped<ISetting, ChangeStateToOngoingWhenEditingTestsSetting>();
         services.AddScoped<ISetting, ChangeStateToCompletedWhenApprovedSetting>();
-        services.AddScoped<ISetting, BlockEditInReviewStateSetting>();
 
+        // Review settings
+        services.AddScoped<ISetting, BlockEditInReviewStateSetting>();
+        services.AddScoped<ISetting, AutoApproveTestSetting>();
+        
         // LLM
         services.AddScoped<AgentChatContext>();
         services.AddScoped<IAgentLogManager, AgentLogManager>();

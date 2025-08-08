@@ -24,6 +24,9 @@ public class AutoApproveTest : INotificationHandler<TestCaseSavingEvent>
         if(result == true)
         {
             await _testCaseManager.ApproveTestAsync(notification.Principal, test);
+
+            // Move to completed state automatically
+
         }
     }
 
@@ -49,7 +52,8 @@ public class AutoApproveTest : INotificationHandler<TestCaseSavingEvent>
 
         // Read settings
         var settings = await _settingsProvider.GetDomainSettingsAsync<ReviewSettings>(test.TenantId!, test.TestProjectId!.Value);
-        var enabled = settings?.AutomaticallyApproveTestIfReviewFinishedWithOnlyPositiveVotes == true;
+        settings ??= new();
+        var enabled = settings.AutomaticallyApproveTestIfReviewFinishedWithOnlyPositiveVotes == true;
         if (!enabled)
         {
             return false;

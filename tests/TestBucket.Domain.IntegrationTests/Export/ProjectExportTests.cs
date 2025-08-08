@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using TestBucket.Contracts.Projects;
+﻿using TestBucket.Contracts.Projects;
 using TestBucket.Domain.Export;
 using TestBucket.Domain.Export.Models;
 using TestBucket.Domain.Export.Zip;
 using TestBucket.Domain.Projects.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Export
-{
+{ 
+    /// <summary>
+    /// Tests for project export
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [FunctionalTest]
     [EnrichedTest]

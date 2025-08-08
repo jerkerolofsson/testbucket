@@ -19,61 +19,72 @@
 @if (Test is not null)
 {
     <CascadingValue Value="@Test">
-        <div class="pa-3 diff-container">
-            <MudTimeline SelectedIndex="_selectedIndex" SelectedIndexChanged="OnSelectedIndexChanged" TimelineOrientation="TimelineOrientation.Horizontal"> 
-                @foreach(var entry in _entries)
-                {
-                    <MudTimelineItem Style="cursor: pointer" Color="@(_selectedEntry == entry ? Color.Primary : Color.Default)" Size="@(_selectedEntry == entry ? Size.Medium : Size.Small)">
-                        <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                            @if (entry.NewValues.TryGetValue("State", out var state))
-                            {
-                                <div class="state">@state</div>
-                            }
-                            <div class="created">@entry.Created.Humanize()</div>
-                        </MudStack>
-                    </MudTimelineItem>
-                }
-            </MudTimeline>
+        <MudStack Spacing="3" Class="pa-3 diff-container" Style="width:100%">
 
-            <div>
-
-                <div class="container-inline-diff">
-                    @if (_selectedEntry is not null && Test is not null)
-                    {
-                        foreach (var changeKey in _selectedEntry.NewValues.Keys)
+            <MudExpansionPanels>
+                <MudExpansionPanel Text="@loc["changes"]">
+                    <MudTimeline SelectedIndex="_selectedIndex" SelectedIndexChanged="OnSelectedIndexChanged" TimelineOrientation="TimelineOrientation.Horizontal" Style="height:200px">
+                        @foreach (var entry in _entries)
                         {
-                            if (changeKey == "Description")
+                            <MudTimelineItem Style="cursor: pointer" Color="@(_selectedEntry == entry ? Color.Primary : Color.Default)" Size="@(_selectedEntry == entry ? Size.Medium : Size.Small)">
+                                <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                                    @if (entry.NewValues.TryGetValue("State", out var state))
+                                    {
+                                        <div class="state">@state</div>
+                                    }
+                                    <div class="created">@entry.Created.Humanize()</div>
+                                </MudStack>
+                            </MudTimelineItem>
+                        }
+                    </MudTimeline>
+                    <div class="container-inline-diff">
+                        @if (_selectedEntry is not null && Test is not null)
+                        {
+                            foreach (var changeKey in _selectedEntry.NewValues.Keys)
                             {
-                                if (_selectedEntry.OldValues.TryGetValue(changeKey, out var oldValue) && _selectedEntry.NewValues.TryGetValue(changeKey, out var newValue))
+                                if (changeKey == "Description")
                                 {
-                                    var oldText = oldValue is null ? "" : (oldValue.ToString() ?? "");
-                                    var newText = GetNewText(changeKey);
+                                    if (_selectedEntry.OldValues.TryGetValue(changeKey, out var oldValue) && _selectedEntry.NewValues.TryGetValue(changeKey, out var newValue))
+                                    {
+                                        var oldText = oldValue is null ? "" : (oldValue.ToString() ?? "");
+                                        var newText = GetNewText(changeKey);
 
-                                    <InlineDiffView Header="@changeKey" OldText="@oldText" NewText="@newText" />
+                                        <InlineDiffView Header="@changeKey" OldText="@oldText" NewText="@newText" />
+                                    }
                                 }
                             }
                         }
+                    </div>
+                </MudExpansionPanel>
+
+                <MudExpansionPanel Text="@loc["reviewers"]">
+                    @if (Test?.ReviewAssignedTo is not null)
+                    {
+                        <MudStack Spacing="1">
+                            <TestBucket.Components.Shared.Reviews.AssignedReviewerListEditor ShowVotes="true" AssignedReviewers="@Test.ReviewAssignedTo" />
+                        </MudStack>
                     }
-                </div>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
 
-                @if(Test?.ReviewAssignedTo is not null)
-                {
-                    <TestBucket.Components.Shared.Reviews.AssignedReviewerListEditor AssignedReviewers="@Test.ReviewAssignedTo"/>
-                }
-
-                <MudStack Row>
-                    <MudStack>
-                        <MudIconButton Icon="@Icons.Material.Filled.ThumbUp" Size="Size.Large"></MudIconButton>
-                    </MudStack>
-                    
-                    <MudStack>
-                        <MudIconButton Icon="@Icons.Material.Filled.ThumbDown" Size="Size.Large"></MudIconButton>
+            <MudPaper>
+                <MudStack Style="width:100%" Class="pa-5">
+                    <MudText Typo="Typo.h1" Color="Color.Primary">@loc["vote"]</MudText>
+                    <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Style="width:100%">
+                        <MudStack Row>
+                            <MudIconButton Icon="@Icons.Material.Filled.ThumbUp" Size="Size.Large" OnClick="async () => await Vote(1)"></MudIconButton>
+                            <MudDivider Vertical/>
+                            <MudIconButton Icon="@Icons.Material.Filled.ThumbDown" Size="Size.Large" OnClick="async ()=>await Vote(-1)"></MudIconButton>
+                        </MudStack>
                     </MudStack>
                 </MudStack>
+            </MudPaper>
 
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h1">@loc["comments"]</MudText>
                 <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
-            </div>
-        </div>
+            </MudStack>
+        </MudStack>
     </CascadingValue>
 }
 
@@ -89,6 +100,16 @@
     private long _testId = 0;
 
     private IReadOnlyList<AuditEntry> _entries = [];
+
+    private async Task Vote(int amount)
+    {
+        if(Test is null)
+        {
+            return;            
+        }
+
+        await reviewController.VoteAsync(Test, amount);
+    }
 
     protected override void OnParametersSet()
     {

@@ -117,593 +117,110 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="access-failed-count" xml:space="preserve">
-    <value>Antal misslyckade inloggningar</value>
-  </data>
-  <data name="account" xml:space="preserve">
-    <value>Konto</value>
-  </data>
-  <data name="add" xml:space="preserve">
-    <value>Lägg till</value>
-  </data>
-  <data name="add-account" xml:space="preserve">
-    <value>Lägg till konto</value>
-  </data>
-  <data name="add-comment" xml:space="preserve">
-    <value>Lägg till kommentar</value>
-  </data>
-  <data name="add-heuristic" xml:space="preserve">
-    <value>Lägg till heuristik</value>
-  </data>
-  <data name="add-metric" xml:space="preserve">
-    <value>Lägg till mätvärde</value>
-  </data>
-  <data name="add-milestone" xml:space="preserve">
-    <value>Lägg till milstolpe</value>
-  </data>
-  <data name="add-new-project" xml:space="preserve">
-    <value>Lägg till nytt projekt</value>
-  </data>
-  <data name="add-new-team" xml:space="preserve">
-    <value>Lägg till nytt team</value>
-  </data>
-  <data name="add-new-tenant" xml:space="preserve">
-    <value>Lägg till ny hyresgäst</value>
-  </data>
-  <data name="add-resource" xml:space="preserve">
-    <value>Lägg till resurs</value>
-  </data>
-  <data name="add-to-run" xml:space="preserve">
-    <value>Lägg till körning</value>
-  </data>
-  <data name="add-user" xml:space="preserve">
-    <value>Lägg till användare</value>
-  </data>
-  <data name="add-variable" xml:space="preserve">
-    <value>Lägg till variabel</value>
-  </data>
-  <data name="advanced" xml:space="preserve">
-    <value>Avancerat</value>
-  </data>
-  <data name="all" xml:space="preserve">
-    <value>Alla</value>
-  </data>
-  <data name="api-key" xml:space="preserve">
-    <value>API Nyckel</value>
-  </data>
-  <data name="api-keys" xml:space="preserve">
-    <value>API Nycklar</value>
-  </data>
-  <data name="api-keys-description" xml:space="preserve">
-    <value>Åtkomsttoken och API-nycklar</value>
-  </data>
-  <data name="api-tests" xml:space="preserve">
-    <value>API test</value>
-  </data>
-  <data name="archive-test-run" xml:space="preserve">
-    <value>Arkivera testkörning</value>
-  </data>
-  <data name="archive-test-run-description" xml:space="preserve">
-    <value>Gömmer testkörningen i vissa användagränssnitt</value>
-  </data>
-  <data name="assign-all-unassigned-to-ai" xml:space="preserve">
-    <value>Tilldela alla tilldelade AI -löpare</value>
-  </data>
-  <data name="assign-all-unassigned-to-ai-description" xml:space="preserve">
-    <value>Tilldelar alla oöverträffade testfall till AI -löparen som kommer att köra testerna i bakgrunden</value>
-  </data>
-  <data name="assign-all-unassigned-to-me" xml:space="preserve">
-    <value>Tilldela alla otilldelade till mig</value>
-  </data>
-  <data name="assign-all-unassigned-to-me-description" xml:space="preserve">
-    <value>Tilldelar alla otilldelade till dig</value>
-  </data>
-  <data name="assigned-to" xml:space="preserve">
-    <value>Allockerat till</value>
-  </data>
-  <data name="assigned-to-me" xml:space="preserve">
-    <value>Mina</value>
-  </data>
-  <data name="assigning-tests" xml:space="preserve">
-    <value>Tilldelar tester..</value>
-  </data>
-  <data name="assign-to-ai-runner" xml:space="preserve">
-    <value>Tilldela AI Runner</value>
-  </data>
-  <data name="attachments" xml:space="preserve">
-    <value>Bilagor</value>
-  </data>
-  <data name="automation" xml:space="preserve">
-    <value>Automatisering</value>
-  </data>
-  <data name="automation-ci-cd-add-outside-pipelines" xml:space="preserve">
-    <value>Indexera testresultat från CI/CD</value>
-  </data>
-  <data name="automation-ci-cd-add-outside-pipelines-description" xml:space="preserve">
-    <value>Skannar CI/CD -systemet för testresultat för alla rörledningar, även de som inte började inom testhink</value>
-  </data>
-  <data name="automation-ci-cd-description" xml:space="preserve">
-    <value>Välj CI/CD -systemet som kör denna testsvit</value>
-  </data>
-  <data name="automation-default-ci-cd-ref-description" xml:space="preserve">
-    <value>Välj default branch eller referens</value>
-  </data>
-  <data name="backup" xml:space="preserve">
-    <value>Backup</value>
-  </data>
-  <data name="batch-tag" xml:space="preserve">
-    <value>Updatera flera..</value>
-  </data>
-  <data name="batch-tag-description" xml:space="preserve">
-    <value>Länka ett krav eller ändra ett fält för alla ättlingar</value>
-  </data>
-  <data name="batch-updating-tests" xml:space="preserve">
-    <value>Vänta. Uppdateringstester ..</value>
-  </data>
-  <data name="blocked" xml:space="preserve">
-    <value>Blockerad</value>
-  </data>
-  <data name="board" xml:space="preserve">
-    <value>Bräda</value>
-  </data>
-  <data name="browse" xml:space="preserve">
-    <value>Bläddra</value>
-  </data>
-  <data name="calendar" xml:space="preserve">
-    <value>Kalender</value>
-  </data>
-  <data name="callstack" xml:space="preserve">
-    <value>Call Stack</value>
-  </data>
-  <data name="capture-screenshot-on-this-device" xml:space="preserve">
-    <value>Fånga en skärmdump från denna enheten</value>
-  </data>
-  <data name="changes" xml:space="preserve">
-    <value>Förändringar</value>
-  </data>
-  <data name="chat" xml:space="preserve">
-    <value>Chat</value>
-  </data>
-  <data name="ci-cd" xml:space="preserve">
-    <value>CI/CD</value>
-  </data>
-  <data name="ci-cd-job" xml:space="preserve">
-    <value>CI/CD jobb</value>
-  </data>
-  <data name="ci-cd-jobs" xml:space="preserve">
-    <value>CI/CDjobb</value>
-  </data>
-  <data name="ci-cd-ref" xml:space="preserve">
-    <value>CI/CD Ref. (Git)</value>
-  </data>
-  <data name="ci-cd-system" xml:space="preserve">
-    <value>CI/CD system</value>
-  </data>
-  <data name="code" xml:space="preserve">
-    <value>Kod</value>
-  </data>
-  <data name="column" xml:space="preserve">
-    <value>Kolumn</value>
-  </data>
-  <data name="components" xml:space="preserve">
-    <value>Komponenter</value>
-  </data>
-  <data name="confirm-archive-message" xml:space="preserve">
-    <value>Vill du verkligen arkivera det här objektet?</value>
-  </data>
-  <data name="confirm-archive-title" xml:space="preserve">
-    <value>Arkivobjekt?</value>
-  </data>
-  <data name="confirm-delete-message" xml:space="preserve">
-    <value>Vill du verkligen ta bort denna saken?</value>
-  </data>
-  <data name="confirm-delete-title" xml:space="preserve">
-    <value>Ta bort?</value>
-  </data>
-  <data name="continue" xml:space="preserve">
-    <value>Fortsätta</value>
-  </data>
-  <data name="copied-to-clipboard-notification" xml:space="preserve">
-    <value>Kopierat</value>
-  </data>
-  <data name="coverage" xml:space="preserve">
-    <value>Täckning</value>
-  </data>
-  <data name="coverage-matrix" xml:space="preserve">
-    <value>Täckningsmatris</value>
-  </data>
-  <data name="created" xml:space="preserve">
-    <value>Skapad</value>
-  </data>
-  <data name="create-test-run" xml:space="preserve">
-    <value>Skapa körning</value>
-  </data>
-  <data name="dashboard" xml:space="preserve">
-    <value>Instrumentpanel</value>
-  </data>
-  <data name="dashboards" xml:space="preserve">
-    <value>Instrumentpaneler</value>
-  </data>
-  <data name="data-source" xml:space="preserve">
-    <value>Datakälla</value>
-  </data>
-  <data name="default-reviewers" xml:space="preserve">
-    <value>Standardreparatorer</value>
-  </data>
-  <data name="delete" xml:space="preserve">
-    <value>Ta bort</value>
-  </data>
-  <data name="delete-folder" xml:space="preserve">
-    <value>Ta bort folder</value>
-  </data>
-  <data name="delete-many-test-case-runs" xml:space="preserve">
-    <value>Radera {0} testväska körs</value>
-  </data>
-  <data name="delete-many-test-case-runs-description" xml:space="preserve">
-    <value>Raderar alla utvalda testfallskörningar</value>
-  </data>
-  <data name="delete-run" xml:space="preserve">
-    <value>Ta bort körning</value>
-  </data>
-  <data name="delete-test" xml:space="preserve">
-    <value>Ta bort testfall</value>
-  </data>
-  <data name="delete-test-case-run-fmt" xml:space="preserve">
-    <value>Ta bort {0}</value>
-  </data>
-  <data name="delete-test-repository-folder-description" xml:space="preserve">
-    <value>Raderar mappen, alla barnmappar, alla testsviter och alla testfall i dessa mappar</value>
-  </data>
-  <data name="delete-test-run" xml:space="preserve">
-    <value>Ta bort körning</value>
-  </data>
-  <data name="delete-test-run-description" xml:space="preserve">
-    <value>Ta bort körningen och alla testresultat</value>
-  </data>
-  <data name="delete-test-suite" xml:space="preserve">
-    <value>Ta bort testsvit</value>
-  </data>
-  <data name="delete-test-suite-folder-description" xml:space="preserve">
-    <value>Tar bort testsvitmappen, alla undermappar och alla testfall inom dessa mappar</value>
+  <data name="name" xml:space="preserve">
+    <value>Namn</value>
   </data>
   <data name="description" xml:space="preserve">
     <value>Beskrivning</value>
   </data>
-  <data name="duplicate-test" xml:space="preserve">
-    <value>Duplicera testfall</value>
+  <data name="project" xml:space="preserve">
+    <value>Projekt</value>
   </data>
-  <data name="duplicate-test-run" xml:space="preserve">
-    <value>Duplicera körning</value>
+  <data name="team" xml:space="preserve">
+    <value>Team</value>
   </data>
-  <data name="duplicating-test-run" xml:space="preserve">
-    <value>Duplicerar körning ..</value>
+  <data name="settings" xml:space="preserve">
+    <value>Inställningar</value>
   </data>
-  <data name="duration" xml:space="preserve">
-    <value>Varaktighet</value>
+  <data name="projects" xml:space="preserve">
+    <value>Projekt</value>
   </data>
-  <data name="e2e-tests" xml:space="preserve">
-    <value>E2E-tester</value>
+  <data name="variables" xml:space="preserve">
+    <value>Variabler</value>
   </data>
-  <data name="edit" xml:space="preserve">
-    <value>Editera</value>
+  <data name="test-environment" xml:space="preserve">
+    <value>Testmiljö</value>
   </data>
-  <data name="edit-folder" xml:space="preserve">
-    <value>Editera folder</value>
+  <data name="test-environments" xml:space="preserve">
+    <value>Testmiljöer</value>
   </data>
-  <data name="edit-metric" xml:space="preserve">
-    <value>Redigera metrisk</value>
+  <data name="attachments" xml:space="preserve">
+    <value>Bilagor</value>
   </data>
-  <data name="edit-test-run" xml:space="preserve">
-    <value>Editer körning</value>
-  </data>
-  <data name="email" xml:space="preserve">
-    <value>Email</value>
-  </data>
-  <data name="enabled" xml:space="preserve">
-    <value>Aktiverad</value>
-  </data>
-  <data name="end-date" xml:space="preserve">
-    <value>Slut datum</value>
-  </data>
-  <data name="expiry" xml:space="preserve">
-    <value>Utgångsdatum</value>
-  </data>
-  <data name="explorer" xml:space="preserve">
-    <value>Utforskare</value>
-  </data>
-  <data name="external-id" xml:space="preserve">
-    <value>Externt ID</value>
-  </data>
-  <data name="failed" xml:space="preserve">
-    <value>Misslyckad</value>
-  </data>
-  <data name="failed-tests" xml:space="preserve">
-    <value>Misslyckade tester</value>
-  </data>
-  <data name="failures" xml:space="preserve">
-    <value>Fel</value>
-  </data>
-  <data name="features" xml:space="preserve">
-    <value>Funktioner</value>
-  </data>
-  <data name="field" xml:space="preserve">
-    <value>Fält</value>
-  </data>
-  <data name="fields" xml:space="preserve">
-    <value>Fält</value>
-  </data>
-  <data name="file-name" xml:space="preserve">
-    <value>Namn</value>
-  </data>
-  <data name="file-size" xml:space="preserve">
-    <value>Längd</value>
-  </data>
-  <data name="file-type" xml:space="preserve">
-    <value>Filtyp</value>
-  </data>
-  <data name="filter-tests" xml:space="preserve">
-    <value>Filtrera testfall</value>
-  </data>
-  <data name="general" xml:space="preserve">
-    <value>Allmänt</value>
-  </data>
-  <data name="go-to-run" xml:space="preserve">
-    <value>Gå till körning</value>
-  </data>
-  <data name="go-to-testcase" xml:space="preserve">
-    <value>Gå till testfall</value>
-  </data>
-  <data name="go-to-testcase-description" xml:space="preserve">
-    <value>Öppna testfallsvisningen</value>
-  </data>
-  <data name="grid" xml:space="preserve">
-    <value>Rutnät</value>
-  </data>
-  <data name="groupby-category" xml:space="preserve">
-    <value>Kategori</value>
-  </data>
-  <data name="groupby-result" xml:space="preserve">
-    <value>Result</value>
-  </data>
-  <data name="history" xml:space="preserve">
-    <value>Historik</value>
-  </data>
-  <data name="icon" xml:space="preserve">
-    <value>Ikon</value>
-  </data>
-  <data name="icons" xml:space="preserve">
-    <value>Ikoner</value>
-  </data>
-  <data name="id" xml:space="preserve">
-    <value>ID</value>
-  </data>
-  <data name="identity" xml:space="preserve">
-    <value>Identitet</value>
-  </data>
-  <data name="import-test-cases" xml:space="preserve">
-    <value>Importera testfall</value>
-  </data>
-  <data name="import-test-results" xml:space="preserve">
-    <value>Importera testresultat..</value>
-  </data>
-  <data name="incomplete" xml:space="preserve">
-    <value>Ofullständig</value>
-  </data>
-  <data name="inline-diff" xml:space="preserve">
-    <value>Inline</value>
-  </data>
-  <data name="input" xml:space="preserve">
-    <value>Input</value>
-  </data>
-  <data name="integration-tests" xml:space="preserve">
-    <value>Integrationstest</value>
-  </data>
-  <data name="issue" xml:space="preserve">
-    <value>Bugg</value>
-  </data>
-  <data name="issues" xml:space="preserve">
-    <value>Issues</value>
-  </data>
-  <data name="label" xml:space="preserve">
-    <value>Etikett</value>
-  </data>
-  <data name="labels" xml:space="preserve">
-    <value>Etiketter</value>
-  </data>
-  <data name="last-seen" xml:space="preserve">
-    <value>Senast sett</value>
-  <comment>Time when resource was last seen</comment></data>
-  <data name="latest" xml:space="preserve">
-    <value>Senast</value>
-  </data>
-  <data name="latest-test-results" xml:space="preserve">
-    <value>Senaste testresultat</value>
-  </data>
-  <data name="launch-automation" xml:space="preserve">
-    <value>Start automatisering</value>
-  </data>
-  <data name="link-issue" xml:space="preserve">
-    <value>Länka en issue</value>
-  </data>
-  <data name="link-requirement-to-test" xml:space="preserve">
-    <value>Länka krav till test</value>
-  </data>
-  <data name="list" xml:space="preserve">
-    <value>Lista</value>
-  </data>
-  <data name="locked" xml:space="preserve">
-    <value>Låst</value>
-  </data>
-  <data name="logged-action-add-component" xml:space="preserve">
-    <value>{0} länkade en komponent: {1}</value>
-  </data>
-  <data name="logged-action-add-milestone" xml:space="preserve">
-    <value>{0} länkade en milstolpe: {1}</value>
-  </data>
-  <data name="logged-action-approved" xml:space="preserve">
-    <value>{0} godkände</value>
-  </data>
-  <data name="logged-action-assignedto" xml:space="preserve">
-    <value>{0} tilldelade denna till {1}</value>
-  </data>
-  <data name="logged-action-commit" xml:space="preserve">
-    <value>{0} länkade en commit {1}</value>
-  </data>
-  <data name="logged-action-component" xml:space="preserve">
-    <value>{0} la till {1}</value>
-  </data>
-  <data name="logged-action-component-removed" xml:space="preserve">
-    <value>{0} tog bort komponenten</value>
-  </data>
-  <data name="logged-action-remove-component" xml:space="preserve">
-    <value>{0} tog bort komponenten:{1}</value>
-  </data>
-  <data name="logged-action-remove-milestone" xml:space="preserve">
-    <value>{0} tog bort milstolpen: {1}</value>
-  </data>
-  <data name="logged-action-result-changed" xml:space="preserve">
-    <value>{0} ändrade resultatet till {1}</value>
-  </data>
-  <data name="logged-action-statechange" xml:space="preserve">
-    <value>{0} ändrade status till {1}</value>
-  </data>
-  <data name="logout" xml:space="preserve">
-    <value>Utloggning</value>
-  </data>
-  <data name="main" xml:space="preserve">
-    <value>Huvud</value>
-  </data>
-  <data name="manage" xml:space="preserve">
-    <value>Hantera</value>
-  </data>
-  <data name="manage-dashboards" xml:space="preserve">
-    <value>Hantera instrumentpaneler</value>
-  </data>
-  <data name="manufacturer" xml:space="preserve">
-    <value>Tillverkare</value>
-  </data>
-  <data name="max-file-size" xml:space="preserve">
-    <value>Maximal filstorlek: {0}</value>
-  </data>
-  <data name="menu-new-description" xml:space="preserve">
-    <value>Lägg till nya objekt</value>
+  <data name="callstack" xml:space="preserve">
+    <value>Call Stack</value>
   </data>
   <data name="message" xml:space="preserve">
     <value>Meddelande</value>
   </data>
-  <data name="meter-name" xml:space="preserve">
-    <value>Mätare</value>
+  <data name="test-result" xml:space="preserve">
+    <value>Testresultat</value>
   </data>
-  <data name="metrics" xml:space="preserve">
-    <value>Mätvärden</value>
+  <data name="result-passed" xml:space="preserve">
+    <value>Passerat</value>
   </data>
-  <data name="milestones" xml:space="preserve">
-    <value>Milstolpar</value>
+  <data name="result-norun" xml:space="preserve">
+    <value>Inte Testat</value>
   </data>
-  <data name="missing-permission-general" xml:space="preserve">
-    <value>Du saknar rättigheter för denna resurs</value>
+  <data name="result-blocked" xml:space="preserve">
+    <value>Blockerat</value>
   </data>
-  <data name="model" xml:space="preserve">
-    <value>Modell</value>
+  <data name="result-skipped" xml:space="preserve">
+    <value>Skippat</value>
   </data>
-  <data name="modified" xml:space="preserve">
-    <value>Ändrad</value>
+  <data name="result-failed" xml:space="preserve">
+    <value>Falerat</value>
   </data>
-  <data name="more-options" xml:space="preserve">
-    <value>Fler alternativ</value>
+  <data name="unassigned" xml:space="preserve">
+    <value>Icke Allokerade</value>
   </data>
-  <data name="my-backlog" xml:space="preserve">
-    <value>Min backlog</value>
+  <data name="assigned-to-me" xml:space="preserve">
+    <value>Mina</value>
   </data>
-  <data name="name" xml:space="preserve">
+  <data name="run-test-again" xml:space="preserve">
+    <value>Testa en gång till</value>
+  </data>
+  <data name="assigned-to" xml:space="preserve">
+    <value>Allockerat till</value>
+  </data>
+  <data name="tenant" xml:space="preserve">
+    <value>Tenant</value>
+  </data>
+  <data name="tenants" xml:space="preserve">
+    <value>Tenants</value>
+  </data>
+  <data name="id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="expiry" xml:space="preserve">
+    <value>Utgångsdatum</value>
+  </data>
+  <data name="confirm-delete-title" xml:space="preserve">
+    <value>Ta bort?</value>
+  </data>
+  <data name="confirm-delete-message" xml:space="preserve">
+    <value>Vill du verkligen ta bort denna saken?</value>
+  </data>
+  <data name="api-keys" xml:space="preserve">
+    <value>API Nycklar</value>
+  </data>
+  <data name="api-key" xml:space="preserve">
+    <value>API Nyckel</value>
+  </data>
+  <data name="test-case-variables-description" xml:space="preserve">
+    <value>Test variabler är värden som ersätter placeholders i testfallet som {{Name}} med värdet definerat i i tabellen. Om en testmiljö används så kan värdet från testmiljön användas, men om variablen finns definerad i båda så används värdet från testfallet. </value>
+  </data>
+  <data name="variable-key" xml:space="preserve">
     <value>Namn</value>
   </data>
-  <data name="new-exploratory-test-charter" xml:space="preserve">
-    <value>Ny utforskande testcharter</value>
+  <data name="variable-value" xml:space="preserve">
+    <value>Innehåll</value>
   </data>
-  <data name="new-exploratory-test-charter-description" xml:space="preserve">
-    <value>Skapar en fördefinierad charter för utforskande tester</value>
+  <data name="requirement-coverage" xml:space="preserve">
+    <value>Kravtäckning</value>
   </data>
-  <data name="new-folder" xml:space="preserve">
-    <value>Lägg till en folder</value>
-  </data>
-  <data name="new-search-folder" xml:space="preserve">
-    <value>Ny sökmapp</value>
-  </data>
-  <data name="new-shared-steps" xml:space="preserve">
-    <value>Ny delade teststeg</value>
-  </data>
-  <data name="new-test" xml:space="preserve">
-    <value>Nytt testfall</value>
-  </data>
-  <data name="new-test-description" xml:space="preserve">
-    <value>Skapa nytt testfall</value>
-  </data>
-  <data name="new-test-suite" xml:space="preserve">
-    <value>Ny testsvit</value>
-  </data>
-  <data name="new-test-suite-description" xml:space="preserve">
-    <value>Skapa en tom testsvit</value>
-  </data>
-  <data name="new-test-template" xml:space="preserve">
-    <value>Ny testmall</value>
-  </data>
-  <data name="new-test-template-description" xml:space="preserve">
-    <value>Skapa en ny mall för testfall</value>
-  </data>
-  <data name="no-permission-message" xml:space="preserve">
-    <value>Du saknar tillstånd för att utföra denna operation. Kontakta en administratör</value>
-  </data>
-  <data name="no-permission-title" xml:space="preserve">
-    <value>Inget tillstång</value>
-  </data>
-  <data name="normal-search" xml:space="preserve">
-    <value>Normal</value>
-  </data>
-  <data name="no-variables-alert" xml:space="preserve">
-    <value>Inga variabler har lagts till</value>
-  </data>
-  <data name="number-of-test-case-runs" xml:space="preserve">
-    <value>Antal testkörningar</value>
-  </data>
-  <data name="number-of-test-cases" xml:space="preserve">
-    <value>Antal testfall</value>
-  </data>
-  <data name="number-of-tests" xml:space="preserve">
-    <value>Tester</value>
-  </data>
-  <data name="open" xml:space="preserve">
-    <value>Öppen</value>
-  </data>
-  <data name="open-command-palette" xml:space="preserve">
-    <value>Öppna kommandopalett</value>
-  </data>
-  <data name="option" xml:space="preserve">
-    <value>Alternativ</value>
-  </data>
-  <data name="options" xml:space="preserve">
-    <value>Alternativ</value>
-  </data>
-  <data name="output" xml:space="preserve">
-    <value>Produktion</value>
-  </data>
-  <data name="overview" xml:space="preserve">
-    <value>Översikt</value>
-  </data>
-  <data name="passed" xml:space="preserve">
-    <value>Godkänd</value>
-  </data>
-  <data name="password" xml:space="preserve">
-    <value>Lösenord</value>
-  </data>
-  <data name="permission-approve" xml:space="preserve">
-    <value>Godkänn</value>
-  </data>
-  <data name="permission-delete" xml:space="preserve">
-    <value>Ta bort</value>
-  </data>
-  <data name="permission-execute" xml:space="preserve">
-    <value>Exekvera</value>
+  <data name="users" xml:space="preserve">
+    <value>Användare</value>
   </data>
   <data name="permission-none" xml:space="preserve">
     <value>Inga</value>
@@ -714,107 +231,11 @@
   <data name="permission-write" xml:space="preserve">
     <value>Editera/Skapa</value>
   </data>
-  <data name="pick-test-run" xml:space="preserve">
-    <value>Välj</value>
-  </data>
-  <data name="pipelines" xml:space="preserve">
-    <value>Pipelines</value>
-  </data>
-  <data name="post-conditions" xml:space="preserve">
-    <value>Efterförutsättningar</value>
-  </data>
-  <data name="pre-conditions" xml:space="preserve">
-    <value>Förutsättningar</value>
-  </data>
-  <data name="preview" xml:space="preserve">
-    <value>Förhandsgranskning</value>
-  </data>
-  <data name="project" xml:space="preserve">
-    <value>Projekt</value>
-  </data>
-  <data name="projects" xml:space="preserve">
-    <value>Projekt</value>
-  </data>
-  <data name="provider" xml:space="preserve">
-    <value>Leverantör</value>
-  <comment>External system like Jira or Github</comment></data>
-  <data name="recent" xml:space="preserve">
-    <value>Nya</value>
-  </data>
-  <data name="recent-test-runs" xml:space="preserve">
-    <value>Senaste testkörningar</value>
-  </data>
-  <data name="reload" xml:space="preserve">
-    <value>Ladda om</value>
-  </data>
-  <data name="rename" xml:space="preserve">
-    <value>Döp om</value>
-  </data>
-  <data name="reporting" xml:space="preserve">
-    <value>Rapportering</value>
-  </data>
-  <data name="required-resources" xml:space="preserve">
-    <value>Obligatoriska resurser</value>
-  </data>
-  <data name="required-resources-description" xml:space="preserve">
-    <value>Resurser som kommer att allokeras till testkörningar</value>
-  </data>
-  <data name="requirement" xml:space="preserve">
-    <value>Krav</value>
-  </data>
-  <data name="requirement-coverage" xml:space="preserve">
-    <value>Kravtäckning</value>
-  </data>
-  <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
-    <value>Släpp krav här för att länka med ett testfall</value>
-  </data>
-  <data name="requirements" xml:space="preserve">
-    <value>Krav</value>
-  </data>
-  <data name="requirements-and-workitems" xml:space="preserve">
-    <value>Krav och arbetsobjekt</value>
-  </data>
-  <data name="resource-disabled" xml:space="preserve">
-    <value>Resursen är inaktiverad. Resursen kan vara nere, frånkopplad eller otillgänglig.</value>
-  </data>
-  <data name="resource-enabled" xml:space="preserve">
-    <value>Resursen är aktiverad</value>
-  </data>
-  <data name="resource-locked" xml:space="preserve">
-    <value>Resursen är låst.</value>
-  </data>
-  <data name="resource-type" xml:space="preserve">
-    <value>Resurstyp</value>
-  </data>
-  <data name="result-blocked" xml:space="preserve">
-    <value>Blockerat</value>
-  </data>
-  <data name="result-failed" xml:space="preserve">
-    <value>Falerat</value>
-  </data>
-  <data name="result-inconclusive" xml:space="preserve">
-    <value>Odefinierat</value>
-  </data>
-  <data name="result-norun" xml:space="preserve">
-    <value>Inte Testat</value>
-  </data>
-  <data name="result-passed" xml:space="preserve">
-    <value>Passerat</value>
-  </data>
-  <data name="result-skipped" xml:space="preserve">
-    <value>Skippat</value>
-  </data>
-  <data name="review" xml:space="preserve">
-    <value>Recension</value>
+  <data name="permission-delete" xml:space="preserve">
+    <value>Ta bort</value>
   </data>
   <data name="role-read-only" xml:space="preserve">
     <value>Read Only</value>
-  </data>
-  <data name="role-regular-user" xml:space="preserve">
-    <value>Vanlig användare</value>
-  </data>
-  <data name="roles" xml:space="preserve">
-    <value>Roller</value>
   </data>
   <data name="role-site-admin" xml:space="preserve">
     <value>Sajt administratör</value>
@@ -822,20 +243,110 @@
   <data name="role-tenant-admin" xml:space="preserve">
     <value>Administratör</value>
   </data>
-  <data name="row" xml:space="preserve">
-    <value>Rad</value>
+  <data name="role-regular-user" xml:space="preserve">
+    <value>Vanlig användare</value>
+  </data>
+  <data name="missing-permission-general" xml:space="preserve">
+    <value>Du saknar rättigheter för denna resurs</value>
+  </data>
+  <data name="ci-cd" xml:space="preserve">
+    <value>CI/CD</value>
+  </data>
+  <data name="test-suite-variables-description" xml:space="preserve">
+    <value>Dessa variabler kommer att användas för testfall som körs från denna testsvit</value>
+  </data>
+  <data name="automation" xml:space="preserve">
+    <value>Automatisering</value>
+  </data>
+  <data name="ci-cd-ref" xml:space="preserve">
+    <value>CI/CD Ref. (Git)</value>
+  </data>
+  <data name="test-accounts" xml:space="preserve">
+    <value>Testkonton</value>
+  </data>
+  <data name="test-resources" xml:space="preserve">
+    <value>Testresurser</value>
+  </data>
+  <data name="model" xml:space="preserve">
+    <value>Modell</value>
+  </data>
+  <data name="roles" xml:space="preserve">
+    <value>Roller</value>
+  </data>
+  <data name="field" xml:space="preserve">
+    <value>Fält</value>
+  </data>
+  <data name="fields" xml:space="preserve">
+    <value>Fält</value>
+  </data>
+  <data name="requirements" xml:space="preserve">
+    <value>Krav</value>
+  </data>
+  <data name="add-to-run" xml:space="preserve">
+    <value>Lägg till körning</value>
   </data>
   <data name="run" xml:space="preserve">
     <value>Körning</value>
   </data>
-  <data name="run-failed-again" xml:space="preserve">
-    <value>Kör misslyckade tester igen</value>
-  <comment>Creates a new run with only failed tests</comment></data>
-  <data name="run-failed-again-description" xml:space="preserve">
-    <value>Duplicerar körningen men inkluderar endast misslyckade tester</value>
+  <data name="duration" xml:space="preserve">
+    <value>Varaktighet</value>
   </data>
-  <data name="run-folder" xml:space="preserve">
-    <value>Kör folder</value>
+  <data name="ci-cd-system" xml:space="preserve">
+    <value>CI/CD system</value>
+  </data>
+  <data name="modified" xml:space="preserve">
+    <value>Ändrad</value>
+  </data>
+  <data name="manufacturer" xml:space="preserve">
+    <value>Tillverkare</value>
+  </data>
+  <data name="result-inconclusive" xml:space="preserve">
+    <value>Odefinierat</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Ta bort</value>
+  </data>
+  <data name="groupby-category" xml:space="preserve">
+    <value>Kategori</value>
+  </data>
+  <data name="groupby-result" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="filter-tests" xml:space="preserve">
+    <value>Filtrera testfall</value>
+  </data>
+  <data name="search-tests" xml:space="preserve">
+    <value>Sök testfall</value>
+  </data>
+  <data name="created" xml:space="preserve">
+    <value>Skapad</value>
+  </data>
+  <data name="start-date" xml:space="preserve">
+    <value>Start Datum</value>
+  </data>
+  <data name="end-date" xml:space="preserve">
+    <value>Slut datum</value>
+  </data>
+  <data name="link-issue" xml:space="preserve">
+    <value>Länka en issue</value>
+  </data>
+  <data name="file-name" xml:space="preserve">
+    <value>Namn</value>
+  </data>
+  <data name="file-size" xml:space="preserve">
+    <value>Längd</value>
+  </data>
+  <data name="file-type" xml:space="preserve">
+    <value>Filtyp</value>
+  </data>
+  <data name="no-permission-title" xml:space="preserve">
+    <value>Inget tillstång</value>
+  </data>
+  <data name="no-permission-message" xml:space="preserve">
+    <value>Du saknar tillstånd för att utföra denna operation. Kontakta en administratör</value>
+  </data>
+  <data name="required-resources" xml:space="preserve">
+    <value>Obligatoriska resurser</value>
   </data>
   <data name="runner" xml:space="preserve">
     <value>Runner</value>
@@ -843,35 +354,506 @@
   <data name="runners" xml:space="preserve">
     <value>Runners</value>
   </data>
-  <data name="run-n-tests" xml:space="preserve">
-    <value>Kör {0} tester</value>
+  <data name="teams" xml:space="preserve">
+    <value>Team</value>
   </data>
-  <data name="run-test" xml:space="preserve">
-    <value>Kör test</value>
+  <data name="test-suites" xml:space="preserve">
+    <value>Testsviter</value>
   </data>
-  <data name="run-test-again" xml:space="preserve">
-    <value>Testa en gång till</value>
+  <data name="test-cases" xml:space="preserve">
+    <value>Testfall</value>
   </data>
-  <data name="run-test-case-description" xml:space="preserve">
-    <value>Kör det aktiva testfallet</value>
+  <data name="recent" xml:space="preserve">
+    <value>Nya</value>
+  </data>
+  <data name="user" xml:space="preserve">
+    <value>Användare</value>
+  </data>
+  <data name="batch-tag" xml:space="preserve">
+    <value>Updatera flera..</value>
+  </data>
+  <data name="traceability" xml:space="preserve">
+    <value>Spårbarhet</value>
+  </data>
+  <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
+    <value>Släpp krav här för att länka med ett testfall</value>
+  </data>
+  <data name="link-requirement-to-test" xml:space="preserve">
+    <value>Länka krav till test</value>
+  </data>
+  <data name="number-of-tests" xml:space="preserve">
+    <value>Tester</value>
+  </data>
+  <data name="requirement" xml:space="preserve">
+    <value>Krav</value>
+  </data>
+  <data name="new-folder" xml:space="preserve">
+    <value>Lägg till en folder</value>
+  </data>
+  <data name="test-coverage" xml:space="preserve">
+    <value>Testtäckning</value>
+  </data>
+  <data name="icon" xml:space="preserve">
+    <value>Ikon</value>
+  </data>
+  <data name="icons" xml:space="preserve">
+    <value>Ikoner</value>
+  </data>
+  <data name="option" xml:space="preserve">
+    <value>Alternativ</value>
+  </data>
+  <data name="data-source" xml:space="preserve">
+    <value>Datakälla</value>
+  </data>
+  <data name="options" xml:space="preserve">
+    <value>Alternativ</value>
+  </data>
+  <data name="advanced" xml:space="preserve">
+    <value>Avancerat</value>
+  </data>
+  <data name="preview" xml:space="preserve">
+    <value>Förhandsgranskning</value>
+  </data>
+  <data name="copied-to-clipboard-notification" xml:space="preserve">
+    <value>Kopierat</value>
+  </data>
+  <data name="backup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
+  <data name="rename" xml:space="preserve">
+    <value>Döp om</value>
+  </data>
+  <data name="create-test-run" xml:space="preserve">
+    <value>Skapa körning</value>
+  </data>
+  <data name="edit-test-run" xml:space="preserve">
+    <value>Editer körning</value>
+  </data>
+  <data name="pick-test-run" xml:space="preserve">
+    <value>Välj</value>
+  </data>
+  <data name="duplicate-test-run" xml:space="preserve">
+    <value>Duplicera körning</value>
+  </data>
+  <data name="delete-test-run" xml:space="preserve">
+    <value>Ta bort körning</value>
+  </data>
+  <data name="new-test" xml:space="preserve">
+    <value>Nytt testfall</value>
+  </data>
+  <data name="new-shared-steps" xml:space="preserve">
+    <value>Ny delade teststeg</value>
+  </data>
+  <data name="permission-approve" xml:space="preserve">
+    <value>Godkänn</value>
+  </data>
+  <data name="permission-execute" xml:space="preserve">
+    <value>Exekvera</value>
+  </data>
+  <data name="milestones" xml:space="preserve">
+    <value>Milstolpar</value>
+  </data>
+  <data name="calendar" xml:space="preserve">
+    <value>Kalender</value>
+  </data>
+  <data name="manage" xml:space="preserve">
+    <value>Hantera</value>
+  </data>
+  <data name="launch-automation" xml:space="preserve">
+    <value>Start automatisering</value>
+  </data>
+  <data name="test-automation" xml:space="preserve">
+    <value>Testautomatisering</value>
+  </data>
+  <data name="coverage-matrix" xml:space="preserve">
+    <value>Täckningsmatris</value>
+  </data>
+  <data name="column" xml:space="preserve">
+    <value>Kolumn</value>
+  </data>
+  <data name="row" xml:space="preserve">
+    <value>Rad</value>
+  </data>
+  <data name="external-id" xml:space="preserve">
+    <value>Externt ID</value>
+  </data>
+  <data name="slug" xml:space="preserve">
+    <value>SLUG</value>
+  </data>
+  <data name="test-runs" xml:space="preserve">
+    <value>Testkörningar</value>
+  </data>
+  <data name="my-backlog" xml:space="preserve">
+    <value>Min backlog</value>
+  </data>
+  <data name="failures" xml:space="preserve">
+    <value>Fel</value>
+  </data>
+  <data name="pipelines" xml:space="preserve">
+    <value>Pipelines</value>
+  </data>
+  <data name="tests" xml:space="preserve">
+    <value>Testfall</value>
+  </data>
+  <data name="add-comment" xml:space="preserve">
+    <value>Lägg till kommentar</value>
+  </data>
+  <data name="logged-action-approved" xml:space="preserve">
+    <value>{0} godkände</value>
+  </data>
+  <data name="logged-action-statechange" xml:space="preserve">
+    <value>{0} ändrade status till {1}</value>
+  </data>
+  <data name="delete-test" xml:space="preserve">
+    <value>Ta bort testfall</value>
+  </data>
+  <data name="delete-run" xml:space="preserve">
+    <value>Ta bort körning</value>
+  </data>
+  <data name="duplicate-test" xml:space="preserve">
+    <value>Duplicera testfall</value>
+  </data>
+  <data name="delete-test-suite" xml:space="preserve">
+    <value>Ta bort testsvit</value>
+  </data>
+  <data name="new-test-suite" xml:space="preserve">
+    <value>Ny testsvit</value>
+  </data>
+  <data name="batch-tag-description" xml:space="preserve">
+    <value>Länka ett krav eller ändra ett fält för alla ättlingar</value>
+  </data>
+  <data name="import-test-results" xml:space="preserve">
+    <value>Importera testresultat..</value>
+  </data>
+  <data name="run-folder" xml:space="preserve">
+    <value>Kör folder</value>
+  </data>
+  <data name="edit-folder" xml:space="preserve">
+    <value>Editera folder</value>
+  </data>
+  <data name="delete-folder" xml:space="preserve">
+    <value>Ta bort folder</value>
+  </data>
+  <data name="enabled" xml:space="preserve">
+    <value>Aktiverad</value>
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value>Testning</value>
+  </data>
+  <data name="reporting" xml:space="preserve">
+    <value>Rapportering</value>
+  </data>
+  <data name="issues" xml:space="preserve">
+    <value>Issues</value>
+  </data>
+  <data name="logged-action-commit" xml:space="preserve">
+    <value>{0} länkade en commit {1}</value>
+  </data>
+  <data name="state" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="logged-action-assignedto" xml:space="preserve">
+    <value>{0} tilldelade denna till {1}</value>
+  </data>
+  <data name="type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="label" xml:space="preserve">
+    <value>Etikett</value>
+  </data>
+  <data name="code" xml:space="preserve">
+    <value>Kod</value>
+  </data>
+  <data name="test-results" xml:space="preserve">
+    <value>Testresultat</value>
+  </data>
+  <data name="all" xml:space="preserve">
+    <value>Alla</value>
+  </data>
+  <data name="issue" xml:space="preserve">
+    <value>Bugg</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="logged-action-component" xml:space="preserve">
+    <value>{0} la till {1}</value>
+  </data>
+  <data name="logged-action-component-removed" xml:space="preserve">
+    <value>{0} tog bort komponenten</value>
   </data>
   <data name="run-test-suite" xml:space="preserve">
     <value>Kör testsvit</value>
   </data>
+  <data name="e2e-tests" xml:space="preserve">
+    <value>E2E-tester</value>
+  </data>
+  <data name="integration-tests" xml:space="preserve">
+    <value>Integrationstest</value>
+  </data>
+  <data name="unit-tests" xml:space="preserve">
+    <value>Enhetstest</value>
+  </data>
+  <data name="api-tests" xml:space="preserve">
+    <value>API test</value>
+  </data>
+  <data name="features" xml:space="preserve">
+    <value>Funktioner</value>
+  </data>
+  <data name="components" xml:space="preserve">
+    <value>Komponenter</value>
+  </data>
+  <data name="automation-ci-cd-description" xml:space="preserve">
+    <value>Välj CI/CD -systemet som kör denna testsvit</value>
+  </data>
+  <data name="automation-default-ci-cd-ref-description" xml:space="preserve">
+    <value>Välj default branch eller referens</value>
+  </data>
+  <data name="required-resources-description" xml:space="preserve">
+    <value>Resurser som kommer att allokeras till testkörningar</value>
+  </data>
+  <data name="resource-type" xml:space="preserve">
+    <value>Resurstyp</value>
+  </data>
+  <data name="add-resource" xml:space="preserve">
+    <value>Lägg till resurs</value>
+  </data>
+  <data name="add-account" xml:space="preserve">
+    <value>Lägg till konto</value>
+  </data>
+  <data name="automation-ci-cd-add-outside-pipelines" xml:space="preserve">
+    <value>Indexera testresultat från CI/CD</value>
+  </data>
+  <data name="automation-ci-cd-add-outside-pipelines-description" xml:space="preserve">
+    <value>Skannar CI/CD -systemet för testresultat för alla rörledningar, även de som inte började inom testhink</value>
+  </data>
+  <data name="ci-cd-jobs" xml:space="preserve">
+    <value>CI/CDjobb</value>
+  </data>
+  <data name="ci-cd-job" xml:space="preserve">
+    <value>CI/CD jobb</value>
+  </data>
+  <data name="new-test-template" xml:space="preserve">
+    <value>Ny testmall</value>
+  </data>
+  <data name="add" xml:space="preserve">
+    <value>Lägg till</value>
+  </data>
+  <data name="new-test-suite-description" xml:space="preserve">
+    <value>Skapa en tom testsvit</value>
+  </data>
+  <data name="new-test-description" xml:space="preserve">
+    <value>Skapa nytt testfall</value>
+  </data>
+  <data name="new-test-template-description" xml:space="preserve">
+    <value>Skapa en ny mall för testfall</value>
+  </data>
+  <data name="logged-action-add-milestone" xml:space="preserve">
+    <value>{0} länkade en milstolpe: {1}</value>
+  </data>
+  <data name="logged-action-remove-milestone" xml:space="preserve">
+    <value>{0} tog bort milstolpen: {1}</value>
+  </data>
+  <data name="logged-action-remove-component" xml:space="preserve">
+    <value>{0} tog bort komponenten:{1}</value>
+  </data>
+  <data name="logged-action-add-component" xml:space="preserve">
+    <value>{0} länkade en komponent: {1}</value>
+  </data>
   <data name="search" xml:space="preserve">
     <value>Sök</value>
   </data>
-  <data name="search-tests" xml:space="preserve">
-    <value>Sök testfall</value>
+  <data name="overview" xml:space="preserve">
+    <value>Översikt</value>
   </data>
-  <data name="select-test-suite" xml:space="preserve">
-    <value>Välj testsvit</value>
+  <data name="edit" xml:space="preserve">
+    <value>Editera</value>
   </data>
-  <data name="select-user" xml:space="preserve">
-    <value>Välj användare</value>
+  <data name="test-log" xml:space="preserve">
+    <value>Testlogg</value>
   </data>
-  <data name="semantic-search" xml:space="preserve">
-    <value>Semantisk</value>
+  <data name="capture-screenshot-on-this-device" xml:space="preserve">
+    <value>Fånga en skärmdump från denna enheten</value>
+  </data>
+  <data name="logout" xml:space="preserve">
+    <value>Utloggning</value>
+  </data>
+  <data name="account" xml:space="preserve">
+    <value>Konto</value>
+  </data>
+  <data name="state-open" xml:space="preserve">
+    <value>Öppen</value>
+  </data>
+  <data name="state-closed" xml:space="preserve">
+    <value>Stängd</value>
+  </data>
+  <data name="delete-test-run-description" xml:space="preserve">
+    <value>Ta bort körningen och alla testresultat</value>
+  </data>
+  <data name="assigning-tests" xml:space="preserve">
+    <value>Tilldelar tester..</value>
+  </data>
+  <data name="assign-all-unassigned-to-me" xml:space="preserve">
+    <value>Tilldela alla otilldelade till mig</value>
+  </data>
+  <data name="assign-all-unassigned-to-me-description" xml:space="preserve">
+    <value>Tilldelar alla otilldelade till dig</value>
+  </data>
+  <data name="latest-test-results" xml:space="preserve">
+    <value>Senaste testresultat</value>
+  </data>
+  <data name="std-out" xml:space="preserve">
+    <value>Standard Output</value>
+  </data>
+  <data name="std-err" xml:space="preserve">
+    <value>Standard Error</value>
+  </data>
+  <data name="username" xml:space="preserve">
+    <value>Användarnamn</value>
+  </data>
+  <data name="email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="access-failed-count" xml:space="preserve">
+    <value>Antal misslyckade inloggningar</value>
+  </data>
+  <data name="locked" xml:space="preserve">
+    <value>Låst</value>
+  </data>
+  <data name="set-light-mode" xml:space="preserve">
+    <value>Ändra till ljust färgtema</value>
+  </data>
+  <data name="set-dark-mode" xml:space="preserve">
+    <value>Ändra till mörkt färgtema</value>
+  </data>
+  <data name="open" xml:space="preserve">
+    <value>Öppen</value>
+  </data>
+  <data name="labels" xml:space="preserve">
+    <value>Etiketter</value>
+  </data>
+  <data name="system" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="menu-new-description" xml:space="preserve">
+    <value>Lägg till nya objekt</value>
+  </data>
+  <data name="open-command-palette" xml:space="preserve">
+    <value>Öppna kommandopalett</value>
+  </data>
+  <data name="general" xml:space="preserve">
+    <value>Allmänt</value>
+  </data>
+  <data name="metrics" xml:space="preserve">
+    <value>Mätvärden</value>
+  </data>
+  <data name="add-metric" xml:space="preserve">
+    <value>Lägg till mätvärde</value>
+  </data>
+  <data name="welcome-message" xml:space="preserve">
+    <value>Välkommen till Test Bucket</value>
+  </data>
+  <data name="welcome-add-project-title" xml:space="preserve">
+    <value>Lägg till ett nytt projekt</value>
+  </data>
+  <data name="welcome-add-project-message" xml:space="preserve">
+    <value>Lägg till ett projekt innan du lägger till tester, problem, krav eller andra enheter.</value>
+  </data>
+  <data name="add-new-project" xml:space="preserve">
+    <value>Lägg till nytt projekt</value>
+  </data>
+  <data name="add-new-team" xml:space="preserve">
+    <value>Lägg till nytt team</value>
+  </data>
+  <data name="max-file-size" xml:space="preserve">
+    <value>Maximal filstorlek: {0}</value>
+  </data>
+  <data name="import-test-cases" xml:space="preserve">
+    <value>Importera testfall</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>värde</value>
+  </data>
+  <data name="unit" xml:space="preserve">
+    <value>Enhet</value>
+  </data>
+  <data name="meter-name" xml:space="preserve">
+    <value>Mätare</value>
+  </data>
+  <data name="edit-metric" xml:space="preserve">
+    <value>Redigera metrisk</value>
+  </data>
+  <data name="run-n-tests" xml:space="preserve">
+    <value>Kör {0} tester</value>
+  </data>
+  <data name="add-heuristic" xml:space="preserve">
+    <value>Lägg till heuristik</value>
+  </data>
+  <data name="history" xml:space="preserve">
+    <value>Historik</value>
+  </data>
+  <data name="main" xml:space="preserve">
+    <value>Huvud</value>
+  </data>
+  <data name="run-test" xml:space="preserve">
+    <value>Kör test</value>
+  </data>
+  <data name="go-to-testcase" xml:space="preserve">
+    <value>Gå till testfall</value>
+  </data>
+  <data name="go-to-testcase-description" xml:space="preserve">
+    <value>Öppna testfallsvisningen</value>
+  </data>
+  <data name="no-variables-alert" xml:space="preserve">
+    <value>Inga variabler har lagts till</value>
+  </data>
+  <data name="pre-conditions" xml:space="preserve">
+    <value>Förutsättningar</value>
+  </data>
+  <data name="post-conditions" xml:space="preserve">
+    <value>Efterförutsättningar</value>
+  </data>
+  <data name="add-variable" xml:space="preserve">
+    <value>Lägg till variabel</value>
+  </data>
+  <data name="test-case-runs" xml:space="preserve">
+    <value>Testresultat</value>
+  </data>
+  <data name="incomplete" xml:space="preserve">
+    <value>Ofullständig</value>
+  </data>
+  <data name="recent-test-runs" xml:space="preserve">
+    <value>Senaste testkörningar</value>
+  </data>
+  <data name="go-to-run" xml:space="preserve">
+    <value>Gå till körning</value>
+  </data>
+  <data name="number-of-test-case-runs" xml:space="preserve">
+    <value>Antal testkörningar</value>
+  </data>
+  <data name="number-of-test-cases" xml:space="preserve">
+    <value>Antal testfall</value>
+  </data>
+  <data name="failed-tests" xml:space="preserve">
+    <value>Misslyckade tester</value>
+  </data>
+  <data name="passed" xml:space="preserve">
+    <value>Godkänd</value>
+  </data>
+  <data name="failed" xml:space="preserve">
+    <value>Misslyckad</value>
+  </data>
+  <data name="blocked" xml:space="preserve">
+    <value>Blockerad</value>
+  </data>
+  <data name="add-milestone" xml:space="preserve">
+    <value>Lägg till milstolpe</value>
+  </data>
+  <data name="new-exploratory-test-charter" xml:space="preserve">
+    <value>Ny utforskande testcharter</value>
+  </data>
+  <data name="new-exploratory-test-charter-description" xml:space="preserve">
+    <value>Skapar en fördefinierad charter för utforskande tester</value>
   </data>
   <data name="session-duration" xml:space="preserve">
     <value>Sessionsvaraktighet</value>
@@ -879,56 +861,167 @@
   <data name="session-log" xml:space="preserve">
     <value>Sessionslogg</value>
   </data>
-  <data name="set-dark-mode" xml:space="preserve">
-    <value>Ändra till mörkt färgtema</value>
+  <data name="test-repository" xml:space="preserve">
+    <value>Förvar</value>
   </data>
-  <data name="set-light-mode" xml:space="preserve">
-    <value>Ändra till ljust färgtema</value>
+  <data name="test-lab" xml:space="preserve">
+    <value>Labb</value>
   </data>
-  <data name="settings" xml:space="preserve">
-    <value>Inställningar</value>
+  <data name="delete-test-suite-folder-description" xml:space="preserve">
+    <value>Tar bort testsvitmappen, alla undermappar och alla testfall inom dessa mappar</value>
   </data>
-  <data name="side-by-side-diff" xml:space="preserve">
-    <value>Sida vid sida</value>
+  <data name="delete-test-repository-folder-description" xml:space="preserve">
+    <value>Raderar mappen, alla barnmappar, alla testsviter och alla testfall i dessa mappar</value>
   </data>
-  <data name="slug" xml:space="preserve">
-    <value>SLUG</value>
+  <data name="api-keys-description" xml:space="preserve">
+    <value>Åtkomsttoken och API-nycklar</value>
+  </data>
+  <data name="requirements-and-workitems" xml:space="preserve">
+    <value>Krav och arbetsobjekt</value>
+  </data>
+  <data name="more-options" xml:space="preserve">
+    <value>Fler alternativ</value>
+  </data>
+  <data name="test-case" xml:space="preserve">
+    <value>Testfall</value>
+  </data>
+  <data name="coverage" xml:space="preserve">
+    <value>Täckning</value>
+  </data>
+  <data name="upload-file-hint" xml:space="preserve">
+    <value>Dra och släpp filer här eller klicka för att välja en fil</value>
+  </data>
+  <data name="upload-max-filesize-fmt" xml:space="preserve">
+    <value>Maximal filstorlek: {0}</value>
+  </data>
+  <data name="browse" xml:space="preserve">
+    <value>Bläddra</value>
+  </data>
+  <data name="board" xml:space="preserve">
+    <value>Bräda</value>
+  </data>
+  <data name="timeline" xml:space="preserve">
+    <value>Tidslinje</value>
+  </data>
+  <data name="welcome-add-team-title" xml:space="preserve">
+    <value>Lägg till ett team</value>
+  </data>
+  <data name="welcome-add-team-message" xml:space="preserve">
+    <value>Kom igång genom att lägga till ett team</value>
+  </data>
+  <data name="dashboard" xml:space="preserve">
+    <value>Instrumentpanel</value>
+  </data>
+  <data name="dashboards" xml:space="preserve">
+    <value>Instrumentpaneler</value>
+  </data>
+  <data name="manage-dashboards" xml:space="preserve">
+    <value>Hantera instrumentpaneler</value>
+  </data>
+  <data name="chat" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="explorer" xml:space="preserve">
+    <value>Utforskare</value>
+  </data>
+  <data name="semantic-search" xml:space="preserve">
+    <value>Semantisk</value>
+  </data>
+  <data name="normal-search" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="add-user" xml:space="preserve">
+    <value>Lägg till användare</value>
+  </data>
+  <data name="password" xml:space="preserve">
+    <value>Lösenord</value>
+  </data>
+  <data name="provider" xml:space="preserve">
+    <value>Leverantör</value>
+    <comment>External system like Jira or Github</comment>
+  </data>
+  <data name="resource-enabled" xml:space="preserve">
+    <value>Resursen är aktiverad</value>
+  </data>
+  <data name="resource-disabled" xml:space="preserve">
+    <value>Resursen är inaktiverad. Resursen kan vara nere, frånkopplad eller otillgänglig.</value>
+  </data>
+  <data name="resource-locked" xml:space="preserve">
+    <value>Resursen är låst.</value>
+  </data>
+  <data name="last-seen" xml:space="preserve">
+    <value>Senast sett</value>
+    <comment>Time when resource was last seen</comment>
+  </data>
+  <data name="reload" xml:space="preserve">
+    <value>Ladda om</value>
+  </data>
+  <data name="assign-all-unassigned-to-ai" xml:space="preserve">
+    <value>Tilldela alla tilldelade AI -löpare</value>
+  </data>
+  <data name="assign-all-unassigned-to-ai-description" xml:space="preserve">
+    <value>Tilldelar alla oöverträffade testfall till AI -löparen som kommer att köra testerna i bakgrunden</value>
+  </data>
+  <data name="run-test-case-description" xml:space="preserve">
+    <value>Kör det aktiva testfallet</value>
+  </data>
+  <data name="assign-to-ai-runner" xml:space="preserve">
+    <value>Tilldela AI Runner</value>
   </data>
   <data name="specifications" xml:space="preserve">
     <value>Specifikationer</value>
   </data>
-  <data name="start-date" xml:space="preserve">
-    <value>Start Datum</value>
+  <data name="total" xml:space="preserve">
+    <value>Total</value>
   </data>
-  <data name="state" xml:space="preserve">
-    <value>State</value>
+  <data name="input" xml:space="preserve">
+    <value>Input</value>
   </data>
-  <data name="state-closed" xml:space="preserve">
-    <value>Stängd</value>
+  <data name="output" xml:space="preserve">
+    <value>Produktion</value>
   </data>
-  <data name="state-open" xml:space="preserve">
-    <value>Öppen</value>
+  <data name="tokens" xml:space="preserve">
+    <value>Tokens</value>
+    <comment>Tokens (LLM/AI)</comment>
   </data>
-  <data name="std-err" xml:space="preserve">
-    <value>Standard Error</value>
+  <data name="delete-test-case-run-fmt" xml:space="preserve">
+    <value>Ta bort {0}</value>
   </data>
-  <data name="std-out" xml:space="preserve">
-    <value>Standard Output</value>
+  <data name="delete-many-test-case-runs" xml:space="preserve">
+    <value>Radera {0} testväska körs</value>
   </data>
-  <data name="system" xml:space="preserve">
-    <value>System</value>
+  <data name="delete-many-test-case-runs-description" xml:space="preserve">
+    <value>Raderar alla utvalda testfallskörningar</value>
   </data>
-  <data name="team" xml:space="preserve">
-    <value>Team</value>
+  <data name="test-resources-description" xml:space="preserve">
+    <value>Enheter, tjänster eller andra resurser som är tillgängliga från testhink. Dessa resurser är värd av resursservrar, vilket möjliggör fjärråtkomst till dem.</value>
   </data>
-  <data name="teams" xml:space="preserve">
-    <value>Team</value>
+  <data name="confirm-archive-title" xml:space="preserve">
+    <value>Arkivobjekt?</value>
   </data>
-  <data name="template" xml:space="preserve">
-    <value>Mall</value>
+  <data name="confirm-archive-message" xml:space="preserve">
+    <value>Vill du verkligen arkivera det här objektet?</value>
+  </data>
+  <data name="archive-test-run" xml:space="preserve">
+    <value>Arkivera testkörning</value>
+  </data>
+  <data name="archive-test-run-description" xml:space="preserve">
+    <value>Gömmer testkörningen i vissa användagränssnitt</value>
+  </data>
+  <data name="grid" xml:space="preserve">
+    <value>Rutnät</value>
+  </data>
+  <data name="list" xml:space="preserve">
+    <value>Lista</value>
+  </data>
+  <data name="select-test-suite" xml:space="preserve">
+    <value>Välj testsvit</value>
   </data>
   <data name="template-blank" xml:space="preserve">
     <value>Tom</value>
+  </data>
+  <data name="template" xml:space="preserve">
+    <value>Mall</value>
   </data>
   <data name="template-dothttp.api" xml:space="preserve">
     <value>API -test</value>
@@ -942,154 +1035,74 @@
   <data name="template-python" xml:space="preserve">
     <value>Pythonskript</value>
   </data>
-  <data name="tenant" xml:space="preserve">
-    <value>Tenant</value>
+  <data name="new-search-folder" xml:space="preserve">
+    <value>Ny sökmapp</value>
   </data>
-  <data name="tenants" xml:space="preserve">
-    <value>Tenants</value>
-  </data>
-  <data name="test-accounts" xml:space="preserve">
-    <value>Testkonton</value>
-  </data>
-  <data name="test-automation" xml:space="preserve">
-    <value>Testautomatisering</value>
-  </data>
-  <data name="test-case" xml:space="preserve">
-    <value>Testfall</value>
+  <data name="logged-action-result-changed" xml:space="preserve">
+    <value>{0} ändrade resultatet till {1}</value>
   </data>
   <data name="test-case-run" xml:space="preserve">
-    <value>Testresultat</value>
-  </data>
-  <data name="test-case-runs" xml:space="preserve">
-    <value>Testresultat</value>
-  </data>
-  <data name="test-cases" xml:space="preserve">
-    <value>Testfall</value>
-  </data>
-  <data name="test-case-variables-description" xml:space="preserve">
-    <value>Test variabler är värden som ersätter placeholders i testfallet som {{Name}} med värdet definerat i i tabellen. Om en testmiljö används så kan värdet från testmiljön användas, men om variablen finns definerad i båda så används värdet från testfallet. </value>
-  </data>
-  <data name="test-coverage" xml:space="preserve">
-    <value>Testtäckning</value>
-  </data>
-  <data name="test-environment" xml:space="preserve">
-    <value>Testmiljö</value>
-  </data>
-  <data name="test-environments" xml:space="preserve">
-    <value>Testmiljöer</value>
-  </data>
-  <data name="testing" xml:space="preserve">
-    <value>Testning</value>
-  </data>
-  <data name="test-lab" xml:space="preserve">
-    <value>Labb</value>
-  </data>
-  <data name="test-log" xml:space="preserve">
-    <value>Testlogg</value>
-  </data>
-  <data name="test-repository" xml:space="preserve">
-    <value>Förvar</value>
-  </data>
-  <data name="test-resources" xml:space="preserve">
-    <value>Testresurser</value>
-  </data>
-  <data name="test-resources-description" xml:space="preserve">
-    <value>Enheter, tjänster eller andra resurser som är tillgängliga från testhink. Dessa resurser är värd av resursservrar, vilket möjliggör fjärråtkomst till dem.</value>
-  </data>
-  <data name="test-result" xml:space="preserve">
-    <value>Testresultat</value>
-  </data>
-  <data name="test-results" xml:space="preserve">
     <value>Testresultat</value>
   </data>
   <data name="test-run" xml:space="preserve">
     <value>Testkörning</value>
   </data>
-  <data name="test-runs" xml:space="preserve">
-    <value>Testkörningar</value>
+  <data name="welcome-add-testsuite" xml:space="preserve">
+    <value>Lägg till en testsvit</value>
   </data>
-  <data name="tests" xml:space="preserve">
-    <value>Testfall</value>
+  <data name="continue" xml:space="preserve">
+    <value>Fortsätta</value>
+  </data>
+  <data name="identity" xml:space="preserve">
+    <value>Identitet</value>
+  </data>
+  <data name="batch-updating-tests" xml:space="preserve">
+    <value>Vänta. Uppdateringstester ..</value>
+  </data>
+  <data name="review" xml:space="preserve">
+    <value>Recension</value>
+  </data>
+  <data name="changes" xml:space="preserve">
+    <value>Förändringar</value>
+  </data>
+  <data name="side-by-side-diff" xml:space="preserve">
+    <value>Sida vid sida</value>
+  </data>
+  <data name="inline-diff" xml:space="preserve">
+    <value>Inline</value>
+  </data>
+  <data name="latest" xml:space="preserve">
+    <value>Senast</value>
+  </data>
+  <data name="duplicating-test-run" xml:space="preserve">
+    <value>Duplicerar körning ..</value>
+  </data>
+  <data name="run-failed-again" xml:space="preserve">
+    <value>Kör misslyckade tester igen</value>
+    <comment>Creates a new run with only failed tests</comment>
+  </data>
+  <data name="run-failed-again-description" xml:space="preserve">
+    <value>Duplicerar körningen men inkluderar endast misslyckade tester</value>
+  </data>
+  <data name="add-new-tenant" xml:space="preserve">
+    <value>Lägg till ny hyresgäst</value>
+  </data>
+  <data name="select-user" xml:space="preserve">
+    <value>Välj användare</value>
+  </data>
+  <data name="default-reviewers" xml:space="preserve">
+    <value>Standardreparatorer</value>
   </data>
   <data name="test-suite-default-reviewers-description" xml:space="preserve">
     <value>Granskare som tilldelas som standard att granska ändringar relaterade till testfall i denna testsvit</value>
   </data>
-  <data name="test-suites" xml:space="preserve">
-    <value>Testsviter</value>
+  <data name="votes" xml:space="preserve">
+    <value />
   </data>
-  <data name="test-suite-variables-description" xml:space="preserve">
-    <value>Dessa variabler kommer att användas för testfall som körs från denna testsvit</value>
+  <data name="reviewers" xml:space="preserve">
+    <value />
   </data>
-  <data name="timeline" xml:space="preserve">
-    <value>Tidslinje</value>
-  </data>
-  <data name="title" xml:space="preserve">
-    <value>Titel</value>
-  </data>
-  <data name="tokens" xml:space="preserve">
-    <value>Tokens</value>
-  <comment>Tokens (LLM/AI)</comment></data>
-  <data name="total" xml:space="preserve">
-    <value>Total</value>
-  </data>
-  <data name="traceability" xml:space="preserve">
-    <value>Spårbarhet</value>
-  </data>
-  <data name="type" xml:space="preserve">
-    <value>Typ</value>
-  </data>
-  <data name="unassigned" xml:space="preserve">
-    <value>Icke Allokerade</value>
-  </data>
-  <data name="unit" xml:space="preserve">
-    <value>Enhet</value>
-  </data>
-  <data name="unit-tests" xml:space="preserve">
-    <value>Enhetstest</value>
-  </data>
-  <data name="upload-file-hint" xml:space="preserve">
-    <value>Dra och släpp filer här eller klicka för att välja en fil</value>
-  </data>
-  <data name="upload-max-filesize-fmt" xml:space="preserve">
-    <value>Maximal filstorlek: {0}</value>
-  </data>
-  <data name="user" xml:space="preserve">
-    <value>Användare</value>
-  </data>
-  <data name="username" xml:space="preserve">
-    <value>Användarnamn</value>
-  </data>
-  <data name="users" xml:space="preserve">
-    <value>Användare</value>
-  </data>
-  <data name="Value" xml:space="preserve">
-    <value>värde</value>
-  </data>
-  <data name="variable-key" xml:space="preserve">
-    <value>Namn</value>
-  </data>
-  <data name="variables" xml:space="preserve">
-    <value>Variabler</value>
-  </data>
-  <data name="variable-value" xml:space="preserve">
-    <value>Innehåll</value>
-  </data>
-  <data name="welcome-add-project-message" xml:space="preserve">
-    <value>Lägg till ett projekt innan du lägger till tester, problem, krav eller andra enheter.</value>
-  </data>
-  <data name="welcome-add-project-title" xml:space="preserve">
-    <value>Lägg till ett nytt projekt</value>
-  </data>
-  <data name="welcome-add-team-message" xml:space="preserve">
-    <value>Kom igång genom att lägga till ett team</value>
-  </data>
-  <data name="welcome-add-team-title" xml:space="preserve">
-    <value>Lägg till ett team</value>
-  </data>
-  <data name="welcome-add-testsuite" xml:space="preserve">
-    <value>Lägg till en testsvit</value>
-  </data>
-  <data name="welcome-message" xml:space="preserve">
-    <value>Välkommen till Test Bucket</value>
+  <data name="vote" xml:space="preserve">
+    <value />
   </data>
 </root>

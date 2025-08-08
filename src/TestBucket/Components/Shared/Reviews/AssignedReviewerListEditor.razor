@@ -6,9 +6,36 @@
 
 <MudDataGrid CommittedItemChanges="OnCommittedItemChanges"
     Items="AssignedReviewers" Dense Hover RowClass="tb-datarow cursor-pointer" T="AssignedReviewer" EditMode="DataGridEditMode.Cell" ReadOnly=false SortMode="SortMode.Single">
+
+    <ColGroup>
+        <col />
+        <col />
+        @if (ShowVotes)
+        {
+            <col />
+        }
+        <col style="width:80px"/>
+    </ColGroup>
+
     <Columns>
         <PropertyColumn Property="x => x.UserName" Title="@loc["username"]" Editable="false"/>
         <PropertyColumn Property="x => x.Role" Title="@securityLoc["role"]" Required=false />
+            @if(ShowVotes)
+            {
+                <TemplateColumn Title="@loc["votes"]" Required=false>
+                    <EditTemplate>
+                        @if(context.Item.Vote > 0)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.ThumbUp" Color="Color.Success"></MudIcon>
+                        }
+                        else if(context.Item.Vote < 0)
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.ThumbDown" Color="Color.Error"></MudIcon>
+                        }
+
+                    </EditTemplate>
+                </TemplateColumn>
+            }
             <TemplateColumn Title="" StickyRight>
                 <EditTemplate>
                     <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="async()=>await DeleteAsync(context.Item)"></MudIconButton>
@@ -32,6 +59,7 @@
     [Parameter] public List<AssignedReviewer> AssignedReviewers { get; set; } = new List<AssignedReviewer>();
     [Parameter] public EventCallback<List<AssignedReviewer>> AssignedReviewersChanged { get; set; }
     [Parameter] public string? FooterText { get; set; }
+    [Parameter] public bool ShowVotes { get; set; } = false;
 
     private async Task DeleteAsync(AssignedReviewer reviewer)
     {

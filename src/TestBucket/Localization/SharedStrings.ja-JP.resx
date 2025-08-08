@@ -117,594 +117,112 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="access-failed-count" xml:space="preserve">
-    <value>アクセスに失敗したカウント</value>
-  </data>
-  <data name="account" xml:space="preserve">
-    <value>アカウント</value>
-  </data>
-  <data name="add" xml:space="preserve">
-    <value>追加</value>
-  </data>
-  <data name="add-account" xml:space="preserve">
-    <value>アカウントを追加します</value>
-  </data>
-  <data name="add-comment" xml:space="preserve">
-    <value>コメントを追加します</value>
-  </data>
-  <data name="add-heuristic" xml:space="preserve">
-    <value>ヒューリスティックを追加</value>
-  </data>
-  <data name="add-metric" xml:space="preserve">
-    <value>メトリクスを追加</value>
-  </data>
-  <data name="add-milestone" xml:space="preserve">
-    <value>マイルストーンを追加</value>
-  </data>
-  <data name="add-new-project" xml:space="preserve">
-    <value>新しいプロジェクトを追加</value>
-  </data>
-  <data name="add-new-team" xml:space="preserve">
-    <value>新しいチームを追加</value>
-  </data>
-  <data name="add-new-tenant" xml:space="preserve">
-    <value>新しいテナントを追加します</value>
-  </data>
-  <data name="add-resource" xml:space="preserve">
-    <value>リソースを追加します</value>
-  </data>
-  <data name="add-to-run" xml:space="preserve">
-    <value>実行に追加します</value>
-  </data>
-  <data name="add-user" xml:space="preserve">
-    <value>ユーザーを追加します</value>
-  </data>
-  <data name="add-variable" xml:space="preserve">
-    <value>変数を追加</value>
-  </data>
-  <data name="advanced" xml:space="preserve">
-    <value>高度な</value>
-  </data>
-  <data name="all" xml:space="preserve">
-    <value>全て</value>
-  </data>
-  <data name="api-key" xml:space="preserve">
-    <value>APIキー</value>
-  </data>
-  <data name="api-keys" xml:space="preserve">
-    <value>APIキー</value>
-  </data>
-  <data name="api-keys-description" xml:space="preserve">
-    <value>アクセストークンとAPIキー</value>
-  </data>
-  <data name="api-tests" xml:space="preserve">
-    <value>APIテスト</value>
-  </data>
-  <data name="archive-test-run" xml:space="preserve">
-    <value>アーカイブテストの実行</value>
-  </data>
-  <data name="archive-test-run-description" xml:space="preserve">
-    <value>テストの実行をアーカイブして、特定のユーザーインターフェイスビューから隠してください</value>
-  </data>
-  <data name="assign-all-unassigned-to-ai" xml:space="preserve">
-    <value>AIランナーに割り当てられていないすべてを割り当てます</value>
-  </data>
-  <data name="assign-all-unassigned-to-ai-description" xml:space="preserve">
-    <value>バックグラウンドでテストを実行するAIランナーに割り当てられていないすべてのテストケースを割り当てます</value>
-  </data>
-  <data name="assign-all-unassigned-to-me" xml:space="preserve">
-    <value>私にすべて割り当てられていないすべてを割り当ててください。</value>
-  </data>
-  <data name="assign-all-unassigned-to-me-description" xml:space="preserve">
-    <value>現在割り当てられていないすべてのテストを現在のユーザーに割り当てます</value>
-  </data>
-  <data name="assigned-to" xml:space="preserve">
-    <value>割り当て先</value>
-  </data>
-  <data name="assigned-to-me" xml:space="preserve">
-    <value>自分に割り当て</value>
-  </data>
-  <data name="assigning-tests" xml:space="preserve">
-    <value>テストの割り当て..</value>
-  </data>
-  <data name="assign-to-ai-runner" xml:space="preserve">
-    <value>AIランナーに割り当てます</value>
-  </data>
-  <data name="attachments" xml:space="preserve">
-    <value>添付ファイル</value>
-  </data>
-  <data name="automation" xml:space="preserve">
-    <value>オートメーション</value>
-  </data>
-  <data name="automation-ci-cd-add-outside-pipelines" xml:space="preserve">
-    <value>結果のインデックスCI/CD</value>
-  </data>
-  <data name="automation-ci-cd-add-outside-pipelines-description" xml:space="preserve">
-    <value>すべてのパイプラインのテスト結果のためにCI/CDシステムをスキャンします。</value>
-  </data>
-  <data name="automation-ci-cd-description" xml:space="preserve">
-    <value>このテストスイートを実行するCI/CDシステムを選択します</value>
-  </data>
-  <data name="automation-default-ci-cd-ref-description" xml:space="preserve">
-    <value>デフォルトのブランチ /リファレンスを選択します</value>
-  </data>
-  <data name="backup" xml:space="preserve">
-    <value>バックアップ</value>
-  </data>
-  <data name="batch-tag" xml:space="preserve">
-    <value>バッチアップデート..</value>
-  </data>
-  <data name="batch-tag-description" xml:space="preserve">
-    <value>要件をリンクするか、すべての子孫のフィールドを変更します。</value>
-  </data>
-  <data name="batch-updating-tests" xml:space="preserve">
-    <value>お待ちください。 テストの更新..</value>
-  </data>
-  <data name="blocked" xml:space="preserve">
-    <value>ブロック</value>
-  </data>
-  <data name="board" xml:space="preserve">
-    <value>ボード</value>
-  </data>
-  <data name="browse" xml:space="preserve">
-    <value>ブラウズ</value>
-  </data>
-  <data name="calendar" xml:space="preserve">
-    <value>カレンダー</value>
-  </data>
-  <data name="callstack" xml:space="preserve">
-    <value>コールスタック</value>
-  </data>
-  <data name="capture-screenshot-on-this-device" xml:space="preserve">
-    <value>このデバイスでスクリーンショットをキャプチャします</value>
-  </data>
-  <data name="changes" xml:space="preserve">
-    <value>変更</value>
-  </data>
-  <data name="chat" xml:space="preserve">
-    <value>チャット</value>
-  </data>
-  <data name="ci-cd" xml:space="preserve">
-    <value>CI/CD</value>
-  </data>
-  <data name="ci-cd-job" xml:space="preserve">
-    <value>CI/CDジョブ</value>
-  </data>
-  <data name="ci-cd-jobs" xml:space="preserve">
-    <value>CI/CDジョブ</value>
-  </data>
-  <data name="ci-cd-ref" xml:space="preserve">
-    <value>CI/CD Ref。 （git）</value>
-  </data>
-  <data name="ci-cd-system" xml:space="preserve">
-    <value>CI/CDシステム</value>
-  </data>
-  <data name="code" xml:space="preserve">
-    <value>コード</value>
-  </data>
-  <data name="column" xml:space="preserve">
-    <value>カラム</value>
-  </data>
-  <data name="components" xml:space="preserve">
-    <value>コンポーネント</value>
-  </data>
-  <data name="confirm-archive-message" xml:space="preserve">
-    <value>あなたは本当にこのアイテムをアーカイブしたいですか？</value>
-  </data>
-  <data name="confirm-archive-title" xml:space="preserve">
-    <value>アーカイブアイテム？</value>
-  </data>
-  <data name="confirm-delete-message" xml:space="preserve">
-    <value>本当にこのアイテムを削除しますか？</value>
-  </data>
-  <data name="confirm-delete-title" xml:space="preserve">
-    <value>アイテムを削除しますか？</value>
-  </data>
-  <data name="continue" xml:space="preserve">
-    <value>続く</value>
-  </data>
-  <data name="copied-to-clipboard-notification" xml:space="preserve">
-    <value>クリップボードにコピーされました</value>
-  </data>
-  <data name="coverage" xml:space="preserve">
-    <value>カバレッジ</value>
-  </data>
-  <data name="coverage-matrix" xml:space="preserve">
-    <value>カバレッジマトリックス</value>
-  </data>
-  <data name="created" xml:space="preserve">
-    <value>作成されました</value>
-  </data>
-  <data name="create-test-run" xml:space="preserve">
-    <value>実行してください</value>
-  </data>
-  <data name="dashboard" xml:space="preserve">
-    <value>ダッシュボード</value>
-  </data>
-  <data name="dashboards" xml:space="preserve">
-    <value>ダッシュボード</value>
-  </data>
-  <data name="data-source" xml:space="preserve">
-    <value>データソース</value>
-  </data>
-  <data name="default-reviewers" xml:space="preserve">
-    <value>デフォルトのレビュアー</value>
-  </data>
-  <data name="delete" xml:space="preserve">
-    <value>消去</value>
-  </data>
-  <data name="delete-folder" xml:space="preserve">
-    <value>フォルダーを削除します</value>
-  </data>
-  <data name="delete-many-test-case-runs" xml:space="preserve">
-    <value>{0}テストケースの実行を削除します</value>
-  </data>
-  <data name="delete-many-test-case-runs-description" xml:space="preserve">
-    <value>選択したすべてのテストケースの実行を削除します</value>
-  </data>
-  <data name="delete-run" xml:space="preserve">
-    <value>実行してください</value>
-  </data>
-  <data name="delete-test" xml:space="preserve">
-    <value>テストを削除します</value>
-  </data>
-  <data name="delete-test-case-run-fmt" xml:space="preserve">
-    <value>{0}を削除します</value>
-  </data>
-  <data name="delete-test-repository-folder-description" xml:space="preserve">
-    <value>テストリポジトリフォルダを削除し、すべてのサブフォルダとその中のテストケースを削除します</value>
-  </data>
-  <data name="delete-test-run" xml:space="preserve">
-    <value>実行してください</value>
-  </data>
-  <data name="delete-test-run-description" xml:space="preserve">
-    <value>テストの実行とすべての結果を削除します</value>
-  </data>
-  <data name="delete-test-suite" xml:space="preserve">
-    <value>テストスイートを削除します</value>
-  </data>
-  <data name="delete-test-suite-folder-description" xml:space="preserve">
-    <value>テストスイートフォルダを削除し、すべてのサブフォルダとその中のテストケースを削除します</value>
+  <data name="name" xml:space="preserve">
+    <value>名前</value>
   </data>
   <data name="description" xml:space="preserve">
     <value>説明</value>
   </data>
-  <data name="duplicate-test" xml:space="preserve">
-    <value>テストを複製</value>
+  <data name="project" xml:space="preserve">
+    <value>プロジェクト</value>
   </data>
-  <data name="duplicate-test-run" xml:space="preserve">
-    <value>テストランを複製</value>
+  <data name="team" xml:space="preserve">
+    <value>チーム</value>
   </data>
-  <data name="duplicating-test-run" xml:space="preserve">
-    <value>複製ラン。</value>
+  <data name="settings" xml:space="preserve">
+    <value>設定</value>
   </data>
-  <data name="duration" xml:space="preserve">
-    <value>間隔</value>
+  <data name="projects" xml:space="preserve">
+    <value>プロジェクト一覧</value>
   </data>
-  <data name="e2e-tests" xml:space="preserve">
-    <value>E2Eテスト</value>
+  <data name="variables" xml:space="preserve">
+    <value>変数</value>
   </data>
-  <data name="edit" xml:space="preserve">
-    <value>編集</value>
+  <data name="test-environment" xml:space="preserve">
+    <value>テスト環境</value>
   </data>
-  <data name="edit-folder" xml:space="preserve">
-    <value>フォルダーを編集します</value>
+  <data name="test-environments" xml:space="preserve">
+    <value>テスト環境一覧</value>
   </data>
-  <data name="edit-metric" xml:space="preserve">
-    <value>メトリクスを編集</value>
+  <data name="attachments" xml:space="preserve">
+    <value>添付ファイル</value>
   </data>
-  <data name="edit-test-run" xml:space="preserve">
-    <value>編集します</value>
-  </data>
-  <data name="email" xml:space="preserve">
-    <value>メール</value>
-  </data>
-  <data name="enabled" xml:space="preserve">
-    <value>有効になっています</value>
-  </data>
-  <data name="end-date" xml:space="preserve">
-    <value>終了日</value>
-  </data>
-  <data name="expiry" xml:space="preserve">
-    <value>有効期限</value>
-  </data>
-  <data name="explorer" xml:space="preserve">
-    <value>エクスプローラ</value>
-  </data>
-  <data name="external-id" xml:space="preserve">
-    <value>外部ID</value>
-  </data>
-  <data name="failed" xml:space="preserve">
-    <value>失敗</value>
-  </data>
-  <data name="failed-tests" xml:space="preserve">
-    <value>失敗したテスト</value>
-  </data>
-  <data name="failures" xml:space="preserve">
-    <value>障害</value>
-  </data>
-  <data name="features" xml:space="preserve">
-    <value>特徴</value>
-  </data>
-  <data name="field" xml:space="preserve">
-    <value>分野</value>
-  </data>
-  <data name="fields" xml:space="preserve">
-    <value>フィールド</value>
-  </data>
-  <data name="file-name" xml:space="preserve">
-    <value>名前</value>
-  </data>
-  <data name="file-size" xml:space="preserve">
-    <value>長さ</value>
-  </data>
-  <data name="file-type" xml:space="preserve">
-    <value>タイプ</value>
-  </data>
-  <data name="filter-tests" xml:space="preserve">
-    <value>フィルターテスト</value>
-  </data>
-  <data name="general" xml:space="preserve">
-    <value>一般</value>
-  </data>
-  <data name="go-to-run" xml:space="preserve">
-    <value>ランに移動</value>
-  </data>
-  <data name="go-to-testcase" xml:space="preserve">
-    <value>テストケースへ移動</value>
-  </data>
-  <data name="go-to-testcase-description" xml:space="preserve">
-    <value>テストケースビューを開く</value>
-  </data>
-  <data name="grid" xml:space="preserve">
-    <value>グリッド</value>
-  </data>
-  <data name="groupby-category" xml:space="preserve">
-    <value>カテゴリ</value>
-  </data>
-  <data name="groupby-result" xml:space="preserve">
-    <value>結果</value>
-  </data>
-  <data name="history" xml:space="preserve">
-    <value>履歴</value>
-  </data>
-  <data name="icon" xml:space="preserve">
-    <value>アイコン</value>
-  </data>
-  <data name="icons" xml:space="preserve">
-    <value>アイコン</value>
-  </data>
-  <data name="id" xml:space="preserve">
-    <value>ID</value>
-  </data>
-  <data name="identity" xml:space="preserve">
-    <value>身元</value>
-  </data>
-  <data name="import-test-cases" xml:space="preserve">
-    <value>テストケースをインポート</value>
-  </data>
-  <data name="import-test-results" xml:space="preserve">
-    <value>テスト結果をインポート。</value>
-  </data>
-  <data name="incomplete" xml:space="preserve">
-    <value>未完了</value>
-  </data>
-  <data name="inline-diff" xml:space="preserve">
-    <value>列をなして</value>
-  </data>
-  <data name="input" xml:space="preserve">
-    <value>入力</value>
-  </data>
-  <data name="integration-tests" xml:space="preserve">
-    <value>統合テスト</value>
-  </data>
-  <data name="issue" xml:space="preserve">
-    <value>問題</value>
-  </data>
-  <data name="issues" xml:space="preserve">
-    <value>問題</value>
-  </data>
-  <data name="label" xml:space="preserve">
-    <value>ラベル</value>
-  </data>
-  <data name="labels" xml:space="preserve">
-    <value>ラベル</value>
-  </data>
-  <data name="last-seen" xml:space="preserve">
-    <value>最後に見た</value>
-  <comment>Time when resource was last seen</comment></data>
-  <data name="latest" xml:space="preserve">
-    <value>最新</value>
-  </data>
-  <data name="latest-test-results" xml:space="preserve">
-    <value>最新のテスト結果</value>
-  </data>
-  <data name="launch-automation" xml:space="preserve">
-    <value>自動化を起動します</value>
-  </data>
-  <data name="link-issue" xml:space="preserve">
-    <value>リンクの問題</value>
-  </data>
-  <data name="link-requirement-to-test" xml:space="preserve">
-    <value>テストするリンク要件</value>
-  </data>
-  <data name="list" xml:space="preserve">
-    <value>リスト</value>
-  </data>
-  <data name="locked" xml:space="preserve">
-    <value>ロックされています</value>
-  </data>
-  <data name="logged-action-add-component" xml:space="preserve">
-    <value>{0}コンポーネントを追加しました：{1}</value>
-  </data>
-  <data name="logged-action-add-milestone" xml:space="preserve">
-    <value>{0}マイルストーンを追加しました：{1}</value>
-  </data>
-  <data name="logged-action-approved" xml:space="preserve">
-    <value>{0}これを承認しました</value>
-  </data>
-  <data name="logged-action-assignedto" xml:space="preserve">
-    <value>{0}これを{1}に割り当てました</value>
-  </data>
-  <data name="logged-action-commit" xml:space="preserve">
-    <value>{0}はコミットを参照しました：{1}</value>
-  </data>
-  <data name="logged-action-component" xml:space="preserve">
-    <value>{0}コンポーネントを{1}に変更しました</value>
-  </data>
-  <data name="logged-action-component-removed" xml:space="preserve">
-    <value>{0}コンポーネントを削除しました</value>
-  </data>
-  <data name="logged-action-remove-component" xml:space="preserve">
-    <value>{0}コンポーネントを削除{1}</value>
-  </data>
-  <data name="logged-action-remove-milestone" xml:space="preserve">
-    <value>{0}マイルストーンを削除しました：{1}</value>
-  </data>
-  <data name="logged-action-result-changed" xml:space="preserve">
-    <value>{0}結果を{1}に変更しました</value>
-  </data>
-  <data name="logged-action-statechange" xml:space="preserve">
-    <value>{0}状態を{1}に変更しました</value>
-  </data>
-  <data name="logout" xml:space="preserve">
-    <value>ログアウト</value>
-  </data>
-  <data name="main" xml:space="preserve">
-    <value>メイン</value>
-  </data>
-  <data name="manage" xml:space="preserve">
-    <value>管理</value>
-  </data>
-  <data name="manage-dashboards" xml:space="preserve">
-    <value>ダッシュボードを管理します</value>
-  </data>
-  <data name="manufacturer" xml:space="preserve">
-    <value>メーカー</value>
-  </data>
-  <data name="max-file-size" xml:space="preserve">
-    <value>最大ファイルサイズ: {0}</value>
-  </data>
-  <data name="menu-new-description" xml:space="preserve">
-    <value>新しいアイテムを追加します</value>
+  <data name="callstack" xml:space="preserve">
+    <value>コールスタック</value>
   </data>
   <data name="message" xml:space="preserve">
     <value>メッセージ</value>
   </data>
-  <data name="meter-name" xml:space="preserve">
-    <value>メーター</value>
-    <comment>メトリクスの提供元</comment>
+  <data name="test-result" xml:space="preserve">
+    <value>結果</value>
   </data>
-  <data name="metrics" xml:space="preserve">
-    <value>メトリクス</value>
-  </data>
-  <data name="milestones" xml:space="preserve">
-    <value>マイルストーン</value>
-  </data>
-  <data name="missing-permission-general" xml:space="preserve">
-    <value>このコンテンツを表示するために必要なアクセス許可がありません</value>
-  </data>
-  <data name="model" xml:space="preserve">
-    <value>モデル</value>
-  </data>
-  <data name="modified" xml:space="preserve">
-    <value>修正</value>
-  </data>
-  <data name="more-options" xml:space="preserve">
-    <value>その他のオプション</value>
-  </data>
-  <data name="my-backlog" xml:space="preserve">
-    <value>私のバックログ</value>
-  </data>
-  <data name="name" xml:space="preserve">
-    <value>名前</value>
-  </data>
-  <data name="new-exploratory-test-charter" xml:space="preserve">
-    <value>新しい探索的テストチャーター</value>
-  </data>
-  <data name="new-exploratory-test-charter-description" xml:space="preserve">
-    <value>探索的テストのための事前定義されたチャーターを作成</value>
-  </data>
-  <data name="new-folder" xml:space="preserve">
-    <value>フォルダーを追加します</value>
-  </data>
-  <data name="new-search-folder" xml:space="preserve">
-    <value>新しい検索フォルダー</value>
-  </data>
-  <data name="new-shared-steps" xml:space="preserve">
-    <value>新しい共有ステップ</value>
-  </data>
-  <data name="new-test" xml:space="preserve">
-    <value>新しいテスト</value>
-  </data>
-  <data name="new-test-description" xml:space="preserve">
-    <value>新しいテストケースを作成します</value>
-  </data>
-  <data name="new-test-suite" xml:space="preserve">
-    <value>新しいテストスイート</value>
-  </data>
-  <data name="new-test-suite-description" xml:space="preserve">
-    <value>テストケースを保存するための新しい空白のテストスイートを作成する</value>
-  </data>
-  <data name="new-test-template" xml:space="preserve">
-    <value>新しいテストテンプレート</value>
-  </data>
-  <data name="new-test-template-description" xml:space="preserve">
-    <value>テンプレートを使用してすべてのテストケースによってテキストが共有されるテストケースの共有テンプレートを作成します</value>
-  </data>
-  <data name="no-permission-message" xml:space="preserve">
-    <value>このアクションを実行する許可はありません。 これに許可が必要な場合は、管理者に連絡してください。</value>
-  </data>
-  <data name="no-permission-title" xml:space="preserve">
-    <value>許可なし！</value>
-  </data>
-  <data name="normal-search" xml:space="preserve">
-    <value>普通</value>
-  </data>
-  <data name="no-variables-alert" xml:space="preserve">
-    <value>変数が追加されていません</value>
-  </data>
-  <data name="number-of-test-case-runs" xml:space="preserve">
-    <value>テストケースの実行数</value>
-  </data>
-  <data name="number-of-test-cases" xml:space="preserve">
-    <value>テストケースの数</value>
-  </data>
-  <data name="number-of-tests" xml:space="preserve">
-    <value>テスト</value>
-  </data>
-  <data name="open" xml:space="preserve">
-    <value>開ける</value>
-  </data>
-  <data name="open-command-palette" xml:space="preserve">
-    <value>コマンドパレットを開きます</value>
-  </data>
-  <data name="option" xml:space="preserve">
-    <value>オプション</value>
-  </data>
-  <data name="options" xml:space="preserve">
-    <value>オプション</value>
-  </data>
-  <data name="output" xml:space="preserve">
-    <value>出力</value>
-  </data>
-  <data name="overview" xml:space="preserve">
-    <value>概要</value>
-  </data>
-  <data name="passed" xml:space="preserve">
+  <data name="result-passed" xml:space="preserve">
     <value>合格</value>
   </data>
-  <data name="password" xml:space="preserve">
-    <value>パスワード</value>
+  <data name="result-norun" xml:space="preserve">
+    <value>未実行</value>
   </data>
-  <data name="permission-approve" xml:space="preserve">
-    <value>承認する</value>
+  <data name="result-blocked" xml:space="preserve">
+    <value>ブロック</value>
   </data>
-  <data name="permission-delete" xml:space="preserve">
-    <value>消去</value>
+  <data name="result-skipped" xml:space="preserve">
+    <value>スキップ</value>
   </data>
-  <data name="permission-execute" xml:space="preserve">
-    <value>実行する</value>
+  <data name="result-failed" xml:space="preserve">
+    <value>失敗</value>
+  </data>
+  <data name="unassigned" xml:space="preserve">
+    <value>未割り当て</value>
+  </data>
+  <data name="assigned-to-me" xml:space="preserve">
+    <value>自分に割り当て</value>
+  </data>
+  <data name="run-test-again" xml:space="preserve">
+    <value>再実行</value>
+  </data>
+  <data name="assigned-to" xml:space="preserve">
+    <value>割り当て先</value>
+  </data>
+  <data name="tenant" xml:space="preserve">
+    <value>テナント</value>
+  </data>
+  <data name="tenants" xml:space="preserve">
+    <value>テナント一覧</value>
+  </data>
+  <data name="id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="expiry" xml:space="preserve">
+    <value>有効期限</value>
+  </data>
+  <data name="confirm-delete-title" xml:space="preserve">
+    <value>アイテムを削除しますか？</value>
+  </data>
+  <data name="confirm-delete-message" xml:space="preserve">
+    <value>本当にこのアイテムを削除しますか？</value>
+  </data>
+  <data name="api-keys" xml:space="preserve">
+    <value>APIキー</value>
+  </data>
+  <data name="api-key" xml:space="preserve">
+    <value>APIキー</value>
+  </data>
+  <data name="test-case-variables-description" xml:space="preserve">
+    <value>テストケース変数には、環境変数をオーバーライドするパラメーターが含まれており、テンプレートで使用してテンプレートをカスタマイズできます。 テストパラメーター名は一意であり、特定の名前を持つものしかありません。 データ駆動型のテストケースには複数の構成セットがあり、各データ列に対してテストケースが1回実行されます。
+
+変数はテストケースで{{key}}として定義され、テストケースを実行すると、{{key}}は{{key}}という名前の変数に置き換えられます。</value>
+  </data>
+  <data name="variable-key" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="variable-value" xml:space="preserve">
+    <value>価値</value>
+  </data>
+  <data name="requirement-coverage" xml:space="preserve">
+    <value>要件カバレッジ</value>
+  </data>
+  <data name="users" xml:space="preserve">
+    <value>ユーザー</value>
   </data>
   <data name="permission-none" xml:space="preserve">
     <value>なし</value>
@@ -715,107 +233,11 @@
   <data name="permission-write" xml:space="preserve">
     <value>書く</value>
   </data>
-  <data name="pick-test-run" xml:space="preserve">
-    <value>実行してください</value>
-  </data>
-  <data name="pipelines" xml:space="preserve">
-    <value>パイプライン</value>
-  </data>
-  <data name="post-conditions" xml:space="preserve">
-    <value>事後条件</value>
-  </data>
-  <data name="pre-conditions" xml:space="preserve">
-    <value>事前条件</value>
-  </data>
-  <data name="preview" xml:space="preserve">
-    <value>プレビュー</value>
-  </data>
-  <data name="project" xml:space="preserve">
-    <value>プロジェクト</value>
-  </data>
-  <data name="projects" xml:space="preserve">
-    <value>プロジェクト一覧</value>
-  </data>
-  <data name="provider" xml:space="preserve">
-    <value>プロバイダー</value>
-  <comment>External system like Jira or Github</comment></data>
-  <data name="recent" xml:space="preserve">
-    <value>最近の</value>
-  </data>
-  <data name="recent-test-runs" xml:space="preserve">
-    <value>最近のテストラン</value>
-  </data>
-  <data name="reload" xml:space="preserve">
-    <value>リロード</value>
-  </data>
-  <data name="rename" xml:space="preserve">
-    <value>名前を変更します</value>
-  </data>
-  <data name="reporting" xml:space="preserve">
-    <value>報告</value>
-  </data>
-  <data name="required-resources" xml:space="preserve">
-    <value>必要なリソース</value>
-  </data>
-  <data name="required-resources-description" xml:space="preserve">
-    <value>自動化テストを実行するときに割り当てられ、テスト実行に割り当てられる必要なリソース。</value>
-  </data>
-  <data name="requirement" xml:space="preserve">
-    <value>要件</value>
-  </data>
-  <data name="requirement-coverage" xml:space="preserve">
-    <value>要件カバレッジ</value>
-  </data>
-  <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
-    <value>ここに要件を削除して、テストと要件の間にリンクを作成する</value>
-  </data>
-  <data name="requirements" xml:space="preserve">
-    <value>要件</value>
-  </data>
-  <data name="requirements-and-workitems" xml:space="preserve">
-    <value>要件と作業項目</value>
-  </data>
-  <data name="resource-disabled" xml:space="preserve">
-    <value>リソースは無効になっています。 リソースは、減少、切断、または利用できない場合があります。</value>
-  </data>
-  <data name="resource-enabled" xml:space="preserve">
-    <value>リソースが有効になっています</value>
-  </data>
-  <data name="resource-locked" xml:space="preserve">
-    <value>リソースがロックされています。</value>
-  </data>
-  <data name="resource-type" xml:space="preserve">
-    <value>リソースタイプ</value>
-  </data>
-  <data name="result-blocked" xml:space="preserve">
-    <value>ブロック</value>
-  </data>
-  <data name="result-failed" xml:space="preserve">
-    <value>失敗</value>
-  </data>
-  <data name="result-inconclusive" xml:space="preserve">
-    <value>決定的ではありません</value>
-  </data>
-  <data name="result-norun" xml:space="preserve">
-    <value>未実行</value>
-  </data>
-  <data name="result-passed" xml:space="preserve">
-    <value>合格</value>
-  </data>
-  <data name="result-skipped" xml:space="preserve">
-    <value>スキップ</value>
-  </data>
-  <data name="review" xml:space="preserve">
-    <value>レビュー</value>
+  <data name="permission-delete" xml:space="preserve">
+    <value>消去</value>
   </data>
   <data name="role-read-only" xml:space="preserve">
     <value>読むだけです</value>
-  </data>
-  <data name="role-regular-user" xml:space="preserve">
-    <value>通常のユーザー</value>
-  </data>
-  <data name="roles" xml:space="preserve">
-    <value>役割</value>
   </data>
   <data name="role-site-admin" xml:space="preserve">
     <value>サイト管理者</value>
@@ -823,20 +245,110 @@
   <data name="role-tenant-admin" xml:space="preserve">
     <value>管理者</value>
   </data>
-  <data name="row" xml:space="preserve">
-    <value>行</value>
+  <data name="role-regular-user" xml:space="preserve">
+    <value>通常のユーザー</value>
+  </data>
+  <data name="missing-permission-general" xml:space="preserve">
+    <value>このコンテンツを表示するために必要なアクセス許可がありません</value>
+  </data>
+  <data name="ci-cd" xml:space="preserve">
+    <value>CI/CD</value>
+  </data>
+  <data name="test-suite-variables-description" xml:space="preserve">
+    <value>これらの変数は、このテストスイートから実行されたテストに追加されます</value>
+  </data>
+  <data name="automation" xml:space="preserve">
+    <value>オートメーション</value>
+  </data>
+  <data name="ci-cd-ref" xml:space="preserve">
+    <value>CI/CD Ref。 （git）</value>
+  </data>
+  <data name="test-accounts" xml:space="preserve">
+    <value>テストアカウント</value>
+  </data>
+  <data name="test-resources" xml:space="preserve">
+    <value>テストリソース</value>
+  </data>
+  <data name="model" xml:space="preserve">
+    <value>モデル</value>
+  </data>
+  <data name="roles" xml:space="preserve">
+    <value>役割</value>
+  </data>
+  <data name="field" xml:space="preserve">
+    <value>分野</value>
+  </data>
+  <data name="fields" xml:space="preserve">
+    <value>フィールド</value>
+  </data>
+  <data name="requirements" xml:space="preserve">
+    <value>要件</value>
+  </data>
+  <data name="add-to-run" xml:space="preserve">
+    <value>実行に追加します</value>
   </data>
   <data name="run" xml:space="preserve">
     <value>走る</value>
   </data>
-  <data name="run-failed-again" xml:space="preserve">
-    <value>再度失敗したテストを実行します</value>
-  <comment>Creates a new run with only failed tests</comment></data>
-  <data name="run-failed-again-description" xml:space="preserve">
-    <value>実行を複製しますが、失敗したテストのみが含まれます</value>
+  <data name="duration" xml:space="preserve">
+    <value>間隔</value>
   </data>
-  <data name="run-folder" xml:space="preserve">
-    <value>フォルダーを実行します</value>
+  <data name="ci-cd-system" xml:space="preserve">
+    <value>CI/CDシステム</value>
+  </data>
+  <data name="modified" xml:space="preserve">
+    <value>修正</value>
+  </data>
+  <data name="manufacturer" xml:space="preserve">
+    <value>メーカー</value>
+  </data>
+  <data name="result-inconclusive" xml:space="preserve">
+    <value>決定的ではありません</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>消去</value>
+  </data>
+  <data name="groupby-category" xml:space="preserve">
+    <value>カテゴリ</value>
+  </data>
+  <data name="groupby-result" xml:space="preserve">
+    <value>結果</value>
+  </data>
+  <data name="filter-tests" xml:space="preserve">
+    <value>フィルターテスト</value>
+  </data>
+  <data name="search-tests" xml:space="preserve">
+    <value>検索テスト</value>
+  </data>
+  <data name="created" xml:space="preserve">
+    <value>作成されました</value>
+  </data>
+  <data name="start-date" xml:space="preserve">
+    <value>開始日</value>
+  </data>
+  <data name="end-date" xml:space="preserve">
+    <value>終了日</value>
+  </data>
+  <data name="link-issue" xml:space="preserve">
+    <value>リンクの問題</value>
+  </data>
+  <data name="file-name" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="file-size" xml:space="preserve">
+    <value>長さ</value>
+  </data>
+  <data name="file-type" xml:space="preserve">
+    <value>タイプ</value>
+  </data>
+  <data name="no-permission-title" xml:space="preserve">
+    <value>許可なし！</value>
+  </data>
+  <data name="no-permission-message" xml:space="preserve">
+    <value>このアクションを実行する許可はありません。 これに許可が必要な場合は、管理者に連絡してください。</value>
+  </data>
+  <data name="required-resources" xml:space="preserve">
+    <value>必要なリソース</value>
   </data>
   <data name="runner" xml:space="preserve">
     <value>ランナー</value>
@@ -844,35 +356,509 @@
   <data name="runners" xml:space="preserve">
     <value>ランナー</value>
   </data>
-  <data name="run-n-tests" xml:space="preserve">
-    <value>{0} 件のテストを実行</value>
+  <data name="teams" xml:space="preserve">
+    <value>チーム</value>
   </data>
-  <data name="run-test" xml:space="preserve">
-    <value>テストを実行</value>
+  <data name="test-suites" xml:space="preserve">
+    <value>テストスイート</value>
   </data>
-  <data name="run-test-again" xml:space="preserve">
-    <value>再実行</value>
+  <data name="test-cases" xml:space="preserve">
+    <value>テストケース</value>
   </data>
-  <data name="run-test-case-description" xml:space="preserve">
-    <value>アクティブなテストケースを実行します</value>
+  <data name="recent" xml:space="preserve">
+    <value>最近の</value>
+  </data>
+  <data name="user" xml:space="preserve">
+    <value>ユーザー</value>
+  </data>
+  <data name="batch-tag" xml:space="preserve">
+    <value>バッチアップデート..</value>
+  </data>
+  <data name="traceability" xml:space="preserve">
+    <value>トレーサビリティ</value>
+  </data>
+  <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
+    <value>ここに要件を削除して、テストと要件の間にリンクを作成する</value>
+  </data>
+  <data name="link-requirement-to-test" xml:space="preserve">
+    <value>テストするリンク要件</value>
+  </data>
+  <data name="number-of-tests" xml:space="preserve">
+    <value>テスト</value>
+  </data>
+  <data name="requirement" xml:space="preserve">
+    <value>要件</value>
+  </data>
+  <data name="new-folder" xml:space="preserve">
+    <value>フォルダーを追加します</value>
+  </data>
+  <data name="test-coverage" xml:space="preserve">
+    <value>テストカバレッジ</value>
+  </data>
+  <data name="icon" xml:space="preserve">
+    <value>アイコン</value>
+  </data>
+  <data name="icons" xml:space="preserve">
+    <value>アイコン</value>
+  </data>
+  <data name="option" xml:space="preserve">
+    <value>オプション</value>
+  </data>
+  <data name="data-source" xml:space="preserve">
+    <value>データソース</value>
+  </data>
+  <data name="options" xml:space="preserve">
+    <value>オプション</value>
+  </data>
+  <data name="advanced" xml:space="preserve">
+    <value>高度な</value>
+  </data>
+  <data name="preview" xml:space="preserve">
+    <value>プレビュー</value>
+  </data>
+  <data name="copied-to-clipboard-notification" xml:space="preserve">
+    <value>クリップボードにコピーされました</value>
+  </data>
+  <data name="backup" xml:space="preserve">
+    <value>バックアップ</value>
+  </data>
+  <data name="rename" xml:space="preserve">
+    <value>名前を変更します</value>
+  </data>
+  <data name="create-test-run" xml:space="preserve">
+    <value>実行してください</value>
+  </data>
+  <data name="edit-test-run" xml:space="preserve">
+    <value>編集します</value>
+  </data>
+  <data name="pick-test-run" xml:space="preserve">
+    <value>実行してください</value>
+  </data>
+  <data name="duplicate-test-run" xml:space="preserve">
+    <value>テストランを複製</value>
+  </data>
+  <data name="delete-test-run" xml:space="preserve">
+    <value>実行してください</value>
+  </data>
+  <data name="new-test" xml:space="preserve">
+    <value>新しいテスト</value>
+  </data>
+  <data name="new-shared-steps" xml:space="preserve">
+    <value>新しい共有ステップ</value>
+  </data>
+  <data name="permission-approve" xml:space="preserve">
+    <value>承認する</value>
+  </data>
+  <data name="permission-execute" xml:space="preserve">
+    <value>実行する</value>
+  </data>
+  <data name="milestones" xml:space="preserve">
+    <value>マイルストーン</value>
+  </data>
+  <data name="calendar" xml:space="preserve">
+    <value>カレンダー</value>
+  </data>
+  <data name="manage" xml:space="preserve">
+    <value>管理</value>
+  </data>
+  <data name="launch-automation" xml:space="preserve">
+    <value>自動化を起動します</value>
+  </data>
+  <data name="test-automation" xml:space="preserve">
+    <value>テスト自動化</value>
+  </data>
+  <data name="coverage-matrix" xml:space="preserve">
+    <value>カバレッジマトリックス</value>
+  </data>
+  <data name="column" xml:space="preserve">
+    <value>カラム</value>
+  </data>
+  <data name="row" xml:space="preserve">
+    <value>行</value>
+  </data>
+  <data name="external-id" xml:space="preserve">
+    <value>外部ID</value>
+  </data>
+  <data name="slug" xml:space="preserve">
+    <value>ナメクジ</value>
+  </data>
+  <data name="test-runs" xml:space="preserve">
+    <value>テスト実行</value>
+  </data>
+  <data name="my-backlog" xml:space="preserve">
+    <value>私のバックログ</value>
+  </data>
+  <data name="failures" xml:space="preserve">
+    <value>障害</value>
+  </data>
+  <data name="pipelines" xml:space="preserve">
+    <value>パイプライン</value>
+  </data>
+  <data name="tests" xml:space="preserve">
+    <value>テスト</value>
+  </data>
+  <data name="add-comment" xml:space="preserve">
+    <value>コメントを追加します</value>
+  </data>
+  <data name="logged-action-approved" xml:space="preserve">
+    <value>{0}これを承認しました</value>
+  </data>
+  <data name="logged-action-statechange" xml:space="preserve">
+    <value>{0}状態を{1}に変更しました</value>
+  </data>
+  <data name="delete-test" xml:space="preserve">
+    <value>テストを削除します</value>
+  </data>
+  <data name="delete-run" xml:space="preserve">
+    <value>実行してください</value>
+  </data>
+  <data name="duplicate-test" xml:space="preserve">
+    <value>テストを複製</value>
+  </data>
+  <data name="delete-test-suite" xml:space="preserve">
+    <value>テストスイートを削除します</value>
+  </data>
+  <data name="new-test-suite" xml:space="preserve">
+    <value>新しいテストスイート</value>
+  </data>
+  <data name="batch-tag-description" xml:space="preserve">
+    <value>要件をリンクするか、すべての子孫のフィールドを変更します。</value>
+  </data>
+  <data name="import-test-results" xml:space="preserve">
+    <value>テスト結果をインポート。</value>
+  </data>
+  <data name="run-folder" xml:space="preserve">
+    <value>フォルダーを実行します</value>
+  </data>
+  <data name="edit-folder" xml:space="preserve">
+    <value>フォルダーを編集します</value>
+  </data>
+  <data name="delete-folder" xml:space="preserve">
+    <value>フォルダーを削除します</value>
+  </data>
+  <data name="enabled" xml:space="preserve">
+    <value>有効になっています</value>
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value>テスト</value>
+  </data>
+  <data name="reporting" xml:space="preserve">
+    <value>報告</value>
+  </data>
+  <data name="issues" xml:space="preserve">
+    <value>問題</value>
+  </data>
+  <data name="logged-action-commit" xml:space="preserve">
+    <value>{0}はコミットを参照しました：{1}</value>
+  </data>
+  <data name="state" xml:space="preserve">
+    <value>州</value>
+  </data>
+  <data name="logged-action-assignedto" xml:space="preserve">
+    <value>{0}これを{1}に割り当てました</value>
+  </data>
+  <data name="type" xml:space="preserve">
+    <value>タイプ</value>
+  </data>
+  <data name="label" xml:space="preserve">
+    <value>ラベル</value>
+  </data>
+  <data name="code" xml:space="preserve">
+    <value>コード</value>
+  </data>
+  <data name="test-results" xml:space="preserve">
+    <value>テスト結果</value>
+  </data>
+  <data name="all" xml:space="preserve">
+    <value>全て</value>
+  </data>
+  <data name="issue" xml:space="preserve">
+    <value>問題</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>タイトル</value>
+  </data>
+  <data name="logged-action-component" xml:space="preserve">
+    <value>{0}コンポーネントを{1}に変更しました</value>
+  </data>
+  <data name="logged-action-component-removed" xml:space="preserve">
+    <value>{0}コンポーネントを削除しました</value>
   </data>
   <data name="run-test-suite" xml:space="preserve">
     <value>テストスイートを実行します</value>
   </data>
+  <data name="e2e-tests" xml:space="preserve">
+    <value>E2Eテスト</value>
+  </data>
+  <data name="integration-tests" xml:space="preserve">
+    <value>統合テスト</value>
+  </data>
+  <data name="unit-tests" xml:space="preserve">
+    <value>ユニットテスト</value>
+  </data>
+  <data name="api-tests" xml:space="preserve">
+    <value>APIテスト</value>
+  </data>
+  <data name="features" xml:space="preserve">
+    <value>特徴</value>
+  </data>
+  <data name="components" xml:space="preserve">
+    <value>コンポーネント</value>
+  </data>
+  <data name="automation-ci-cd-description" xml:space="preserve">
+    <value>このテストスイートを実行するCI/CDシステムを選択します</value>
+  </data>
+  <data name="automation-default-ci-cd-ref-description" xml:space="preserve">
+    <value>デフォルトのブランチ /リファレンスを選択します</value>
+  </data>
+  <data name="required-resources-description" xml:space="preserve">
+    <value>自動化テストを実行するときに割り当てられ、テスト実行に割り当てられる必要なリソース。</value>
+  </data>
+  <data name="resource-type" xml:space="preserve">
+    <value>リソースタイプ</value>
+  </data>
+  <data name="add-resource" xml:space="preserve">
+    <value>リソースを追加します</value>
+  </data>
+  <data name="add-account" xml:space="preserve">
+    <value>アカウントを追加します</value>
+  </data>
+  <data name="automation-ci-cd-add-outside-pipelines" xml:space="preserve">
+    <value>結果のインデックスCI/CD</value>
+  </data>
+  <data name="automation-ci-cd-add-outside-pipelines-description" xml:space="preserve">
+    <value>すべてのパイプラインのテスト結果のためにCI/CDシステムをスキャンします。</value>
+  </data>
+  <data name="ci-cd-jobs" xml:space="preserve">
+    <value>CI/CDジョブ</value>
+  </data>
+  <data name="ci-cd-job" xml:space="preserve">
+    <value>CI/CDジョブ</value>
+  </data>
+  <data name="new-test-template" xml:space="preserve">
+    <value>新しいテストテンプレート</value>
+  </data>
+  <data name="add" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="new-test-suite-description" xml:space="preserve">
+    <value>テストケースを保存するための新しい空白のテストスイートを作成する</value>
+  </data>
+  <data name="new-test-description" xml:space="preserve">
+    <value>新しいテストケースを作成します</value>
+  </data>
+  <data name="new-test-template-description" xml:space="preserve">
+    <value>テンプレートを使用してすべてのテストケースによってテキストが共有されるテストケースの共有テンプレートを作成します</value>
+  </data>
+  <data name="logged-action-add-milestone" xml:space="preserve">
+    <value>{0}マイルストーンを追加しました：{1}</value>
+  </data>
+  <data name="logged-action-remove-milestone" xml:space="preserve">
+    <value>{0}マイルストーンを削除しました：{1}</value>
+  </data>
+  <data name="logged-action-remove-component" xml:space="preserve">
+    <value>{0}コンポーネントを削除{1}</value>
+  </data>
+  <data name="logged-action-add-component" xml:space="preserve">
+    <value>{0}コンポーネントを追加しました：{1}</value>
+  </data>
   <data name="search" xml:space="preserve">
     <value>検索</value>
   </data>
-  <data name="search-tests" xml:space="preserve">
-    <value>検索テスト</value>
+  <data name="overview" xml:space="preserve">
+    <value>概要</value>
   </data>
-  <data name="select-test-suite" xml:space="preserve">
-    <value>テストスイートを選択します</value>
+  <data name="edit" xml:space="preserve">
+    <value>編集</value>
   </data>
-  <data name="select-user" xml:space="preserve">
-    <value>ユーザーを選択します</value>
+  <data name="test-log" xml:space="preserve">
+    <value>テストログ</value>
   </data>
-  <data name="semantic-search" xml:space="preserve">
-    <value>セマンティック</value>
+  <data name="capture-screenshot-on-this-device" xml:space="preserve">
+    <value>このデバイスでスクリーンショットをキャプチャします</value>
+  </data>
+  <data name="logout" xml:space="preserve">
+    <value>ログアウト</value>
+  </data>
+  <data name="account" xml:space="preserve">
+    <value>アカウント</value>
+  </data>
+  <data name="state-open" xml:space="preserve">
+    <value>開ける</value>
+  </data>
+  <data name="state-closed" xml:space="preserve">
+    <value>閉じた</value>
+  </data>
+  <data name="delete-test-run-description" xml:space="preserve">
+    <value>テストの実行とすべての結果を削除します</value>
+  </data>
+  <data name="assigning-tests" xml:space="preserve">
+    <value>テストの割り当て..</value>
+  </data>
+  <data name="assign-all-unassigned-to-me" xml:space="preserve">
+    <value>私にすべて割り当てられていないすべてを割り当ててください。</value>
+  </data>
+  <data name="assign-all-unassigned-to-me-description" xml:space="preserve">
+    <value>現在割り当てられていないすべてのテストを現在のユーザーに割り当てます</value>
+  </data>
+  <data name="latest-test-results" xml:space="preserve">
+    <value>最新のテスト結果</value>
+  </data>
+  <data name="std-out" xml:space="preserve">
+    <value>標準出力</value>
+  </data>
+  <data name="std-err" xml:space="preserve">
+    <value>標準誤差</value>
+  </data>
+  <data name="username" xml:space="preserve">
+    <value>ユーザー名</value>
+  </data>
+  <data name="email" xml:space="preserve">
+    <value>メール</value>
+  </data>
+  <data name="access-failed-count" xml:space="preserve">
+    <value>アクセスに失敗したカウント</value>
+  </data>
+  <data name="locked" xml:space="preserve">
+    <value>ロックされています</value>
+  </data>
+  <data name="set-light-mode" xml:space="preserve">
+    <value>ライトモードを設定します</value>
+  </data>
+  <data name="set-dark-mode" xml:space="preserve">
+    <value>ダークモードを設定します</value>
+  </data>
+  <data name="open" xml:space="preserve">
+    <value>開ける</value>
+  </data>
+  <data name="labels" xml:space="preserve">
+    <value>ラベル</value>
+  </data>
+  <data name="system" xml:space="preserve">
+    <value>システム</value>
+  </data>
+  <data name="menu-new-description" xml:space="preserve">
+    <value>新しいアイテムを追加します</value>
+  </data>
+  <data name="open-command-palette" xml:space="preserve">
+    <value>コマンドパレットを開きます</value>
+  </data>
+  <data name="general" xml:space="preserve">
+    <value>一般</value>
+  </data>
+  <data name="metrics" xml:space="preserve">
+    <value>メトリクス</value>
+  </data>
+  <data name="add-metric" xml:space="preserve">
+    <value>メトリクスを追加</value>
+  </data>
+  <data name="welcome-message" xml:space="preserve">
+    <value>Test Bucket へようこそ</value>
+  </data>
+  <data name="welcome-add-project-title" xml:space="preserve">
+    <value>新しいプロジェクトを追加</value>
+  </data>
+  <data name="welcome-add-project-message" xml:space="preserve">
+    <value>テスト、課題、要件、または他のエンティティを追加する前にプロジェクトを追加してください。</value>
+  </data>
+  <data name="add-new-project" xml:space="preserve">
+    <value>新しいプロジェクトを追加</value>
+  </data>
+  <data name="add-new-team" xml:space="preserve">
+    <value>新しいチームを追加</value>
+  </data>
+  <data name="max-file-size" xml:space="preserve">
+    <value>最大ファイルサイズ: {0}</value>
+  </data>
+  <data name="import-test-cases" xml:space="preserve">
+    <value>テストケースをインポート</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>値</value>
+    <comment>メトリクス値</comment>
+  </data>
+  <data name="unit" xml:space="preserve">
+    <value>単位</value>
+    <comment>メトリクス単位（例: ms, fps, bps）</comment>
+  </data>
+  <data name="meter-name" xml:space="preserve">
+    <value>メーター</value>
+    <comment>メトリクスの提供元</comment>
+  </data>
+  <data name="edit-metric" xml:space="preserve">
+    <value>メトリクスを編集</value>
+  </data>
+  <data name="run-n-tests" xml:space="preserve">
+    <value>{0} 件のテストを実行</value>
+  </data>
+  <data name="add-heuristic" xml:space="preserve">
+    <value>ヒューリスティックを追加</value>
+  </data>
+  <data name="history" xml:space="preserve">
+    <value>履歴</value>
+  </data>
+  <data name="main" xml:space="preserve">
+    <value>メイン</value>
+  </data>
+  <data name="run-test" xml:space="preserve">
+    <value>テストを実行</value>
+  </data>
+  <data name="go-to-testcase" xml:space="preserve">
+    <value>テストケースへ移動</value>
+  </data>
+  <data name="go-to-testcase-description" xml:space="preserve">
+    <value>テストケースビューを開く</value>
+  </data>
+  <data name="no-variables-alert" xml:space="preserve">
+    <value>変数が追加されていません</value>
+  </data>
+  <data name="pre-conditions" xml:space="preserve">
+    <value>事前条件</value>
+  </data>
+  <data name="post-conditions" xml:space="preserve">
+    <value>事後条件</value>
+  </data>
+  <data name="add-variable" xml:space="preserve">
+    <value>変数を追加</value>
+  </data>
+  <data name="test-case-runs" xml:space="preserve">
+    <value>テストケースの実行</value>
+  </data>
+  <data name="incomplete" xml:space="preserve">
+    <value>未完了</value>
+  </data>
+  <data name="recent-test-runs" xml:space="preserve">
+    <value>最近のテストラン</value>
+  </data>
+  <data name="go-to-run" xml:space="preserve">
+    <value>ランに移動</value>
+  </data>
+  <data name="number-of-test-case-runs" xml:space="preserve">
+    <value>テストケースの実行数</value>
+  </data>
+  <data name="number-of-test-cases" xml:space="preserve">
+    <value>テストケースの数</value>
+  </data>
+  <data name="failed-tests" xml:space="preserve">
+    <value>失敗したテスト</value>
+  </data>
+  <data name="passed" xml:space="preserve">
+    <value>合格</value>
+  </data>
+  <data name="failed" xml:space="preserve">
+    <value>失敗</value>
+  </data>
+  <data name="blocked" xml:space="preserve">
+    <value>ブロック</value>
+  </data>
+  <data name="add-milestone" xml:space="preserve">
+    <value>マイルストーンを追加</value>
+  </data>
+  <data name="new-exploratory-test-charter" xml:space="preserve">
+    <value>新しい探索的テストチャーター</value>
+  </data>
+  <data name="new-exploratory-test-charter-description" xml:space="preserve">
+    <value>探索的テストのための事前定義されたチャーターを作成</value>
   </data>
   <data name="session-duration" xml:space="preserve">
     <value>セッションの期間</value>
@@ -880,56 +866,167 @@
   <data name="session-log" xml:space="preserve">
     <value>セッションログ</value>
   </data>
-  <data name="set-dark-mode" xml:space="preserve">
-    <value>ダークモードを設定します</value>
+  <data name="test-repository" xml:space="preserve">
+    <value>テストリポジトリ</value>
   </data>
-  <data name="set-light-mode" xml:space="preserve">
-    <value>ライトモードを設定します</value>
+  <data name="test-lab" xml:space="preserve">
+    <value>テストラボ</value>
   </data>
-  <data name="settings" xml:space="preserve">
-    <value>設定</value>
+  <data name="delete-test-suite-folder-description" xml:space="preserve">
+    <value>テストスイートフォルダを削除し、すべてのサブフォルダとその中のテストケースを削除します</value>
   </data>
-  <data name="side-by-side-diff" xml:space="preserve">
-    <value>並んで</value>
+  <data name="delete-test-repository-folder-description" xml:space="preserve">
+    <value>テストリポジトリフォルダを削除し、すべてのサブフォルダとその中のテストケースを削除します</value>
   </data>
-  <data name="slug" xml:space="preserve">
-    <value>ナメクジ</value>
+  <data name="api-keys-description" xml:space="preserve">
+    <value>アクセストークンとAPIキー</value>
+  </data>
+  <data name="requirements-and-workitems" xml:space="preserve">
+    <value>要件と作業項目</value>
+  </data>
+  <data name="more-options" xml:space="preserve">
+    <value>その他のオプション</value>
+  </data>
+  <data name="test-case" xml:space="preserve">
+    <value>テストケース</value>
+  </data>
+  <data name="coverage" xml:space="preserve">
+    <value>カバレッジ</value>
+  </data>
+  <data name="upload-file-hint" xml:space="preserve">
+    <value>ここにファイルをドラッグ＆ドロップするか、クリックしてファイルを選択してください</value>
+  </data>
+  <data name="upload-max-filesize-fmt" xml:space="preserve">
+    <value>最大ファイルサイズ: {0}</value>
+  </data>
+  <data name="browse" xml:space="preserve">
+    <value>ブラウズ</value>
+  </data>
+  <data name="board" xml:space="preserve">
+    <value>ボード</value>
+  </data>
+  <data name="timeline" xml:space="preserve">
+    <value>タイムライン</value>
+  </data>
+  <data name="welcome-add-team-title" xml:space="preserve">
+    <value>チームを追加</value>
+  </data>
+  <data name="welcome-add-team-message" xml:space="preserve">
+    <value>チームを追加して始めましょう</value>
+  </data>
+  <data name="dashboard" xml:space="preserve">
+    <value>ダッシュボード</value>
+  </data>
+  <data name="dashboards" xml:space="preserve">
+    <value>ダッシュボード</value>
+  </data>
+  <data name="manage-dashboards" xml:space="preserve">
+    <value>ダッシュボードを管理します</value>
+  </data>
+  <data name="chat" xml:space="preserve">
+    <value>チャット</value>
+  </data>
+  <data name="explorer" xml:space="preserve">
+    <value>エクスプローラ</value>
+  </data>
+  <data name="semantic-search" xml:space="preserve">
+    <value>セマンティック</value>
+  </data>
+  <data name="normal-search" xml:space="preserve">
+    <value>普通</value>
+  </data>
+  <data name="add-user" xml:space="preserve">
+    <value>ユーザーを追加します</value>
+  </data>
+  <data name="password" xml:space="preserve">
+    <value>パスワード</value>
+  </data>
+  <data name="provider" xml:space="preserve">
+    <value>プロバイダー</value>
+    <comment>External system like Jira or Github</comment>
+  </data>
+  <data name="resource-enabled" xml:space="preserve">
+    <value>リソースが有効になっています</value>
+  </data>
+  <data name="resource-disabled" xml:space="preserve">
+    <value>リソースは無効になっています。 リソースは、減少、切断、または利用できない場合があります。</value>
+  </data>
+  <data name="resource-locked" xml:space="preserve">
+    <value>リソースがロックされています。</value>
+  </data>
+  <data name="last-seen" xml:space="preserve">
+    <value>最後に見た</value>
+    <comment>Time when resource was last seen</comment>
+  </data>
+  <data name="reload" xml:space="preserve">
+    <value>リロード</value>
+  </data>
+  <data name="assign-all-unassigned-to-ai" xml:space="preserve">
+    <value>AIランナーに割り当てられていないすべてを割り当てます</value>
+  </data>
+  <data name="assign-all-unassigned-to-ai-description" xml:space="preserve">
+    <value>バックグラウンドでテストを実行するAIランナーに割り当てられていないすべてのテストケースを割り当てます</value>
+  </data>
+  <data name="run-test-case-description" xml:space="preserve">
+    <value>アクティブなテストケースを実行します</value>
+  </data>
+  <data name="assign-to-ai-runner" xml:space="preserve">
+    <value>AIランナーに割り当てます</value>
   </data>
   <data name="specifications" xml:space="preserve">
     <value>仕様</value>
   </data>
-  <data name="start-date" xml:space="preserve">
-    <value>開始日</value>
+  <data name="total" xml:space="preserve">
+    <value>合計</value>
   </data>
-  <data name="state" xml:space="preserve">
-    <value>州</value>
+  <data name="input" xml:space="preserve">
+    <value>入力</value>
   </data>
-  <data name="state-closed" xml:space="preserve">
-    <value>閉じた</value>
+  <data name="output" xml:space="preserve">
+    <value>出力</value>
   </data>
-  <data name="state-open" xml:space="preserve">
-    <value>開ける</value>
+  <data name="tokens" xml:space="preserve">
+    <value>トークン</value>
+    <comment>Tokens (LLM/AI)</comment>
   </data>
-  <data name="std-err" xml:space="preserve">
-    <value>標準誤差</value>
+  <data name="delete-test-case-run-fmt" xml:space="preserve">
+    <value>{0}を削除します</value>
   </data>
-  <data name="std-out" xml:space="preserve">
-    <value>標準出力</value>
+  <data name="delete-many-test-case-runs" xml:space="preserve">
+    <value>{0}テストケースの実行を削除します</value>
   </data>
-  <data name="system" xml:space="preserve">
-    <value>システム</value>
+  <data name="delete-many-test-case-runs-description" xml:space="preserve">
+    <value>選択したすべてのテストケースの実行を削除します</value>
   </data>
-  <data name="team" xml:space="preserve">
-    <value>チーム</value>
+  <data name="test-resources-description" xml:space="preserve">
+    <value>テストバケットからアクセス可能なデバイス、サービス、またはその他のリソース。 これらのリソースは、リソースサーバーによってホストされており、リモートアクセスを可能にします。</value>
   </data>
-  <data name="teams" xml:space="preserve">
-    <value>チーム</value>
+  <data name="confirm-archive-title" xml:space="preserve">
+    <value>アーカイブアイテム？</value>
   </data>
-  <data name="template" xml:space="preserve">
-    <value>テンプレート</value>
+  <data name="confirm-archive-message" xml:space="preserve">
+    <value>あなたは本当にこのアイテムをアーカイブしたいですか？</value>
+  </data>
+  <data name="archive-test-run" xml:space="preserve">
+    <value>アーカイブテストの実行</value>
+  </data>
+  <data name="archive-test-run-description" xml:space="preserve">
+    <value>テストの実行をアーカイブして、特定のユーザーインターフェイスビューから隠してください</value>
+  </data>
+  <data name="grid" xml:space="preserve">
+    <value>グリッド</value>
+  </data>
+  <data name="list" xml:space="preserve">
+    <value>リスト</value>
+  </data>
+  <data name="select-test-suite" xml:space="preserve">
+    <value>テストスイートを選択します</value>
   </data>
   <data name="template-blank" xml:space="preserve">
     <value>空白</value>
+  </data>
+  <data name="template" xml:space="preserve">
+    <value>テンプレート</value>
   </data>
   <data name="template-dothttp.api" xml:space="preserve">
     <value>APIテスト</value>
@@ -943,158 +1040,74 @@
   <data name="template-python" xml:space="preserve">
     <value>Pythonスクリプト</value>
   </data>
-  <data name="tenant" xml:space="preserve">
-    <value>テナント</value>
+  <data name="new-search-folder" xml:space="preserve">
+    <value>新しい検索フォルダー</value>
   </data>
-  <data name="tenants" xml:space="preserve">
-    <value>テナント一覧</value>
-  </data>
-  <data name="test-accounts" xml:space="preserve">
-    <value>テストアカウント</value>
-  </data>
-  <data name="test-automation" xml:space="preserve">
-    <value>テスト自動化</value>
-  </data>
-  <data name="test-case" xml:space="preserve">
-    <value>テストケース</value>
+  <data name="logged-action-result-changed" xml:space="preserve">
+    <value>{0}結果を{1}に変更しました</value>
   </data>
   <data name="test-case-run" xml:space="preserve">
-    <value>テスト結果</value>
-  </data>
-  <data name="test-case-runs" xml:space="preserve">
-    <value>テストケースの実行</value>
-  </data>
-  <data name="test-cases" xml:space="preserve">
-    <value>テストケース</value>
-  </data>
-  <data name="test-case-variables-description" xml:space="preserve">
-    <value>テストケース変数には、環境変数をオーバーライドするパラメーターが含まれており、テンプレートで使用してテンプレートをカスタマイズできます。 テストパラメーター名は一意であり、特定の名前を持つものしかありません。 データ駆動型のテストケースには複数の構成セットがあり、各データ列に対してテストケースが1回実行されます。
-
-変数はテストケースで{{key}}として定義され、テストケースを実行すると、{{key}}は{{key}}という名前の変数に置き換えられます。</value>
-  </data>
-  <data name="test-coverage" xml:space="preserve">
-    <value>テストカバレッジ</value>
-  </data>
-  <data name="test-environment" xml:space="preserve">
-    <value>テスト環境</value>
-  </data>
-  <data name="test-environments" xml:space="preserve">
-    <value>テスト環境一覧</value>
-  </data>
-  <data name="testing" xml:space="preserve">
-    <value>テスト</value>
-  </data>
-  <data name="test-lab" xml:space="preserve">
-    <value>テストラボ</value>
-  </data>
-  <data name="test-log" xml:space="preserve">
-    <value>テストログ</value>
-  </data>
-  <data name="test-repository" xml:space="preserve">
-    <value>テストリポジトリ</value>
-  </data>
-  <data name="test-resources" xml:space="preserve">
-    <value>テストリソース</value>
-  </data>
-  <data name="test-resources-description" xml:space="preserve">
-    <value>テストバケットからアクセス可能なデバイス、サービス、またはその他のリソース。 これらのリソースは、リソースサーバーによってホストされており、リモートアクセスを可能にします。</value>
-  </data>
-  <data name="test-result" xml:space="preserve">
-    <value>結果</value>
-  </data>
-  <data name="test-results" xml:space="preserve">
     <value>テスト結果</value>
   </data>
   <data name="test-run" xml:space="preserve">
     <value>試運転</value>
   </data>
-  <data name="test-runs" xml:space="preserve">
-    <value>テスト実行</value>
+  <data name="welcome-add-testsuite" xml:space="preserve">
+    <value>テストスイートを追加します</value>
   </data>
-  <data name="tests" xml:space="preserve">
-    <value>テスト</value>
+  <data name="continue" xml:space="preserve">
+    <value>続く</value>
+  </data>
+  <data name="identity" xml:space="preserve">
+    <value>身元</value>
+  </data>
+  <data name="batch-updating-tests" xml:space="preserve">
+    <value>お待ちください。 テストの更新..</value>
+  </data>
+  <data name="review" xml:space="preserve">
+    <value>レビュー</value>
+  </data>
+  <data name="changes" xml:space="preserve">
+    <value>変更</value>
+  </data>
+  <data name="side-by-side-diff" xml:space="preserve">
+    <value>並んで</value>
+  </data>
+  <data name="inline-diff" xml:space="preserve">
+    <value>列をなして</value>
+  </data>
+  <data name="latest" xml:space="preserve">
+    <value>最新</value>
+  </data>
+  <data name="duplicating-test-run" xml:space="preserve">
+    <value>複製ラン。</value>
+  </data>
+  <data name="run-failed-again" xml:space="preserve">
+    <value>再度失敗したテストを実行します</value>
+    <comment>Creates a new run with only failed tests</comment>
+  </data>
+  <data name="run-failed-again-description" xml:space="preserve">
+    <value>実行を複製しますが、失敗したテストのみが含まれます</value>
+  </data>
+  <data name="add-new-tenant" xml:space="preserve">
+    <value>新しいテナントを追加します</value>
+  </data>
+  <data name="select-user" xml:space="preserve">
+    <value>ユーザーを選択します</value>
+  </data>
+  <data name="default-reviewers" xml:space="preserve">
+    <value>デフォルトのレビュアー</value>
   </data>
   <data name="test-suite-default-reviewers-description" xml:space="preserve">
     <value>このテストスイートのテストケースに関連する変更をレビューするためにデフォルトで割り当てられたレビュー担当者</value>
   </data>
-  <data name="test-suites" xml:space="preserve">
-    <value>テストスイート</value>
+  <data name="votes" xml:space="preserve">
+    <value />
   </data>
-  <data name="test-suite-variables-description" xml:space="preserve">
-    <value>これらの変数は、このテストスイートから実行されたテストに追加されます</value>
+  <data name="reviewers" xml:space="preserve">
+    <value />
   </data>
-  <data name="timeline" xml:space="preserve">
-    <value>タイムライン</value>
-  </data>
-  <data name="title" xml:space="preserve">
-    <value>タイトル</value>
-  </data>
-  <data name="tokens" xml:space="preserve">
-    <value>トークン</value>
-  <comment>Tokens (LLM/AI)</comment></data>
-  <data name="total" xml:space="preserve">
-    <value>合計</value>
-  </data>
-  <data name="traceability" xml:space="preserve">
-    <value>トレーサビリティ</value>
-  </data>
-  <data name="type" xml:space="preserve">
-    <value>タイプ</value>
-  </data>
-  <data name="unassigned" xml:space="preserve">
-    <value>未割り当て</value>
-  </data>
-  <data name="unit" xml:space="preserve">
-    <value>単位</value>
-    <comment>メトリクス単位（例: ms, fps, bps）</comment>
-  </data>
-  <data name="unit-tests" xml:space="preserve">
-    <value>ユニットテスト</value>
-  </data>
-  <data name="upload-file-hint" xml:space="preserve">
-    <value>ここにファイルをドラッグ＆ドロップするか、クリックしてファイルを選択してください</value>
-  </data>
-  <data name="upload-max-filesize-fmt" xml:space="preserve">
-    <value>最大ファイルサイズ: {0}</value>
-  </data>
-  <data name="user" xml:space="preserve">
-    <value>ユーザー</value>
-  </data>
-  <data name="username" xml:space="preserve">
-    <value>ユーザー名</value>
-  </data>
-  <data name="users" xml:space="preserve">
-    <value>ユーザー</value>
-  </data>
-  <data name="Value" xml:space="preserve">
-    <value>値</value>
-    <comment>メトリクス値</comment>
-  </data>
-  <data name="variable-key" xml:space="preserve">
-    <value>名前</value>
-  </data>
-  <data name="variables" xml:space="preserve">
-    <value>変数</value>
-  </data>
-  <data name="variable-value" xml:space="preserve">
-    <value>価値</value>
-  </data>
-  <data name="welcome-add-project-message" xml:space="preserve">
-    <value>テスト、課題、要件、または他のエンティティを追加する前にプロジェクトを追加してください。</value>
-  </data>
-  <data name="welcome-add-project-title" xml:space="preserve">
-    <value>新しいプロジェクトを追加</value>
-  </data>
-  <data name="welcome-add-team-message" xml:space="preserve">
-    <value>チームを追加して始めましょう</value>
-  </data>
-  <data name="welcome-add-team-title" xml:space="preserve">
-    <value>チームを追加</value>
-  </data>
-  <data name="welcome-add-testsuite" xml:space="preserve">
-    <value>テストスイートを追加します</value>
-  </data>
-  <data name="welcome-message" xml:space="preserve">
-    <value>Test Bucket へようこそ</value>
+  <data name="vote" xml:space="preserve">
+    <value />
   </data>
 </root>

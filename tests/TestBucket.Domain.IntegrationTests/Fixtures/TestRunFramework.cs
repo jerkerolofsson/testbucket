@@ -14,6 +14,11 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Fixture"></param>
+
     public class TestRunFramework(ProjectFixture Fixture)
     {
         internal async Task AddAsync(TestRun run)

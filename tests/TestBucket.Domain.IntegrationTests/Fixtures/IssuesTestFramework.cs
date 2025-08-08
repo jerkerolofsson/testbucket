@@ -1,24 +1,17 @@
-﻿using Docker.DotNet.Models;
-using Mediator;
-using Org.BouncyCastle.Asn1.X509;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Mediator;
+
 using TestBucket.Contracts;
-using TestBucket.Data.Migrations;
-using TestBucket.Domain.Fields;
 using TestBucket.Domain.Issues;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Requests;
 using TestBucket.Domain.Issues.Search;
-using TestBucket.Domain.Projects.Models;
-using TestBucket.Domain.Requirements.Models;
-using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Fixture"></param>
     public class IssuesTestFramework(ProjectFixture Fixture)
     {
         internal async Task<LocalIssue> AddIssueAsync()

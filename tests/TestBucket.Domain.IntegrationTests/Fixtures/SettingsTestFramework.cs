@@ -15,10 +15,14 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Fixture"></param>
     public class SettingsTestFramework(ProjectFixture Fixture)
     {
 
-        public SettingsCategory[] Categories
+        internal SettingsCategory[] Categories
         {
             get
             {

@@ -1,18 +1,13 @@
-﻿using Org.BouncyCastle.Asn1.X509;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Contracts;
-using TestBucket.Data.Migrations;
+﻿using TestBucket.Contracts;
 using TestBucket.Domain.Fields;
-using TestBucket.Domain.Requirements.Import;
-using TestBucket.Domain.Requirements.Models;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Fixture"></param>
     public class RequirementsTestFramework(ProjectFixture Fixture)
     {
         internal async Task<RequirementSpecification> AddSpecificationAsync()

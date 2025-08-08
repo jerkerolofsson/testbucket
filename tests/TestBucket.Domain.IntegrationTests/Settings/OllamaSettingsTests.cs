@@ -4,6 +4,10 @@ using TestBucket.Domain.Settings.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Settings
 {
+    /// <summary>
+    /// Tests releated to ollama settings
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [FunctionalTest]
     [Component("Settings")]

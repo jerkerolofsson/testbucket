@@ -7,6 +7,10 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Milestones
 {
+    /// <summary>
+    /// Tests for milestones
+    /// </summary>
+    /// <param name="Fixture"></param>
     [EnrichedTest]
     [IncludeDiagnostics]
     [IntegrationTest]
@@ -88,7 +92,7 @@ namespace TestBucket.Domain.IntegrationTests.Milestones
             Assert.Single(milestones);
 
             // Act
-            await manager.DeleteAsync(principal, milestones.First());
+            await manager.DeleteAsync(principal, milestones[0]);
 
             // Assert
             var milestonesAfterDelete = await manager.GetMilestonesAsync(principal, Fixture.ProjectId);

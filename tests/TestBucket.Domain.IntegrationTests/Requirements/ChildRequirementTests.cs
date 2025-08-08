@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace TestBucket.Domain.IntegrationTests.Requirements
 {
-
+    /// <summary>
+    /// tests realted to child requirements
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     [FunctionalTest]
+    [Component("Requirements")]
     public class ChildRequirementTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         /// <summary>

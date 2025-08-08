@@ -4,28 +4,23 @@ using TestBucket.Domain.Testing.TestCases;
 
 namespace TestBucket.Domain.IntegrationTests.Features.Traceability
 {
+    /// <summary>
+    /// Tests related to tracing
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     [FunctionalTest]
     [Feature("Traceability")]
     public class TestCaseTraceabilityTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that when collecting a trace for a *testcase* with a "test case linked to a requirement" the **requirement**
+        /// is returned.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [CoveredRequirement("requirement-traceability")]
-        [TestDescription("""
-            Verifies that when collecting a trace for a *testcase* with a "test case linked to a requirement" the **requirement**
-            is returned.
-
-            # Steps
-            1. Create a requirement specification
-            2. Create a requirement
-            3. Add a milestone field to the requirement
-            4. Create a test suite
-            5. Create a test case
-            6. Link the test case to the requirement
-            7. Discover traceability for the test-case
-            8. Assert that the requirement is included in the traceability node
-            """)]
         public async Task GetTestCaseTrace_WithRequirementLink_LinkIncluded()
         {
             using var scope = Fixture.Services.CreateScope();

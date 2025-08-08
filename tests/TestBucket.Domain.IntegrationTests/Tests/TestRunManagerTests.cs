@@ -2,12 +2,20 @@
 
 namespace TestBucket.Domain.IntegrationTests.Tests
 {
+    /// <summary>
+    /// Tests related to test run
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     [Component("Testing")]
     [FunctionalTest]
     public class TestRunManagerTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that a chart is not set when adding a scripted default test case to a run.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
         public async Task AddScriptedTestCaseToRun_CharterIsNotSet()
@@ -26,7 +34,11 @@ namespace TestBucket.Domain.IntegrationTests.Tests
             Assert.Null(testCaseRun.Charter);
         }
 
-
+        /// <summary>
+        /// Verfies that a charter is set when adding an exploratory test case to a run.
+        /// Checks that the chart is set to the test case description by default
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
         public async Task AddExploratoryTestCaseToRun_CharterIsSet()
@@ -45,6 +57,10 @@ namespace TestBucket.Domain.IntegrationTests.Tests
             Assert.Equal(testCase.Description, testCaseRun.Charter);
         }
 
+        /// <summary>
+        /// Verifies that when adding a test run with a project ID but no team ID, the team ID is set to the project's team ID.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
         public async Task AddTestRun_WithProjectIdButNoTeamId_TeamIdIsSet()
@@ -60,6 +76,10 @@ namespace TestBucket.Domain.IntegrationTests.Tests
             Assert.Equal(Fixture.Project.TeamId, run.TeamId);
         }
 
+        /// <summary>
+        /// Verifies that when adding a test run, the Created date is set to the current time.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
         public async Task AddTestRun_CreatedDateSet()
@@ -75,7 +95,10 @@ namespace TestBucket.Domain.IntegrationTests.Tests
             Assert.Equal(Fixture.App.TimeProvider.GetUtcNow(), run.Created);
         }
 
-
+        /// <summary>
+        /// Verifies that closing an open test run sets its Open property to false.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
         public async Task CloseRun_WithOpenRun_ClosesTheRun()

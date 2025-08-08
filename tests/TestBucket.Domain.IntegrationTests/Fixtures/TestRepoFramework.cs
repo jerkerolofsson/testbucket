@@ -8,9 +8,14 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Fixture"></param>
+
     public class TestRepoFramework(ProjectFixture Fixture)
     {
-        public TestBucketApp App => Fixture.App;
+        internal TestBucketApp App => Fixture.App;
 
         internal async Task<HashSet<long>> SearchTestIdsAsync(string text)
         {

@@ -182,7 +182,7 @@ public class AutoApproveTestTests
         await testCaseManager.DidNotReceive().ApproveTestAsync(principal, testCase);
 
         // Also test empty list
-        testCase.ReviewAssignedTo = new List<AssignedReviewer>();
+        testCase.ReviewAssignedTo = [];
         await autoApprove.Handle(evt, CancellationToken.None);
         await testCaseManager.DidNotReceive().ApproveTestAsync(principal, testCase);
     }

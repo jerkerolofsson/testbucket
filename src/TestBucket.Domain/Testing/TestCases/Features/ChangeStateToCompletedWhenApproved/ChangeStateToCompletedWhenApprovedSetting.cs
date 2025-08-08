@@ -1,6 +1,6 @@
 ﻿using TestBucket.Domain.Editor.Models;
 
-namespace TestBucket.Domain.Testing.TestCases.Features.ChangeStateToOngoingWhenEditingTests;
+namespace TestBucket.Domain.Testing.TestCases.Features.ChangeStateToCompletedWhenApproved;
 internal class ChangeStateToCompletedWhenApprovedSetting : SettingAdapter
 {
     private readonly ISettingsProvider _settingsProvider;

@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Projects.Models;
+﻿using TestBucket.Domain.Projects.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Projects
 {
+    /// <summary>
+    /// Tests related to managing integrations
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [FunctionalTest]
     [EnrichedTest]
+    [Feature("Extensions")]
+    [Component("Extension Management")]
     public class ProjectIntegrations(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         /// <summary>

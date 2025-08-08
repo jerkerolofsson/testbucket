@@ -1,20 +1,18 @@
 ﻿using Mediator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using TestBucket.Contracts;
 using TestBucket.Contracts.TestResources;
-using TestBucket.Domain.TestAccounts;
-using TestBucket.Domain.TestAccounts.Allocation;
-using TestBucket.Domain.TestAccounts.Models;
 using TestBucket.Domain.TestResources;
 using TestBucket.Domain.TestResources.Allocation;
 using TestBucket.Domain.TestResources.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Fixture"></param>
+
     public class TestResourcesFramework(ProjectFixture Fixture)
     {
         internal async Task<TestResource> AddDisabledTestResourceAsync(string owner, string[] types)

@@ -4,9 +4,14 @@ using TestBucket.Domain.Testing.TestCases;
 
 namespace TestBucket.Domain.IntegrationTests.Features.Traceability
 {
+    /// <summary>
+    /// Tests related to traceability of requirements
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     [FunctionalTest]
+    [Component("Requirements")]
     [Feature("Traceability")]
     public class RequirementTraceabilityTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {

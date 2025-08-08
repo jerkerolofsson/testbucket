@@ -2,6 +2,10 @@
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Fixture"></param>
     public class UserPreferencesFramework(ProjectFixture Fixture)
     {
         internal async Task<UserPreferences> LoadUserPreferencesAsync()

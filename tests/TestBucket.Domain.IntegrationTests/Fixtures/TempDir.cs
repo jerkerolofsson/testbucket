@@ -7,7 +7,7 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
     /// </summary>
     internal class TempDir : IDisposable
     {
-        private string _root;
+        private readonly string _root;
 
         /// <summary>
         /// Gets the full path of the temporary directory.

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Code.Models;
+﻿using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Services;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture for testing code architecture related functions
+    /// </summary>
+    /// <param name="Fixture"></param>
     public class ArchitectureFramework(ProjectFixture Fixture)
     {
         /// <summary>

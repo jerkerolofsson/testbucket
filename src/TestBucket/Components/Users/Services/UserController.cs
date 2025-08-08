@@ -99,7 +99,7 @@ internal class UserController : TenantBaseService
 
         if (user.NormalizedEmail is null)
         {
-            throw new ArgumentNullException(nameof(user.NormalizedEmail));
+            throw new ArgumentException(nameof(user.NormalizedEmail));
         }
 
         ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();
@@ -114,7 +114,7 @@ internal class UserController : TenantBaseService
     {
         if (user.NormalizedEmail is null)
         {
-            throw new ArgumentNullException(nameof(user.NormalizedEmail));
+            throw new ArgumentException(nameof(user.NormalizedEmail));
         }
 
         ClaimsPrincipal principal = await GetUserClaimsPrincipalAsync();

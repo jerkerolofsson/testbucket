@@ -5,6 +5,10 @@ using TestBucket.Domain.Testing.Heuristics.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Fixture"></param>
     public class HeuristicsFramework(ProjectFixture Fixture)
     {
         internal async Task<Heuristic> AddHeuristicAsync(long projectId, ClaimsPrincipal? principal = null)

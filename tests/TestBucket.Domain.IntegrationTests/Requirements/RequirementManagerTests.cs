@@ -1,23 +1,18 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.IntegrationTests.Fixtures;
-using TestBucket.Domain.Requirements;
-using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Testing.TestSuites;
-using TestBucket.Traits.Xunit;
-using Xunit;
-
-namespace TestBucket.Domain.IntegrationTests.Requirements
+﻿namespace TestBucket.Domain.IntegrationTests.Requirements
 {
+    /// <summary>
+    /// Tests related to managing requirements
+    /// </summary>
+    /// <param name="Fixture"></param>
+    [Component("Requirements")]
     [IntegrationTest]
     [EnrichedTest]
     public class RequirementManagerTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that a requirement can be added
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
         public async Task AddRequirement_ToSpecificationRoot()
@@ -33,7 +28,10 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
             await manager.AddRequirementAsync(principal, requirement);
         }
 
-
+        /// <summary>
+        /// Verifies searching requirements when there are two collections/specifications
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
         public async Task SearchRequirementsInSpecification_WithTwoSpecs_CorrectResult()

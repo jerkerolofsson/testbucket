@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TestBucket.Domain.IntegrationTests.Search
+﻿namespace TestBucket.Domain.IntegrationTests.Search
 {
+    /// <summary>
+    /// Tests related to searching for tests
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     [Component("Testing")]
     [FunctionalTest]
     public class SearchTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verfies that a test can be found by searching for a milestone using field-syntax:
+        /// field:value
+        /// 
+        /// Example
+        /// milestone:1.0
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that it is possible to filter on the milestone field when searching for test cases
-
-            # Steps
-            1. Add a test suite
-            2. Add 3 test cases
-            3. Assign 1.0, 2.0 and 3.0 milestones to each test respectively
-            4. Search for test IDs with the query: "milestone:2.0"
-            5. The test ID for the second test is returned
-            """)]
         public async Task SearchTests_WithMilestoneFilter()
         {
             var suite = await Fixture.Tests.AddSuiteAsync();
@@ -41,23 +37,16 @@ namespace TestBucket.Domain.IntegrationTests.Search
             Assert.Contains(test2.Id, ids);
         }
 
+        /// <summary>
+        /// Verifies that it is possible to find tests by filtering on test suite id
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that it is possible to filter on the milestone field when searching for test cases
-
-            # Steps
-            1. Add a test suite
-            2. Add two tests to the first suite
-            3. Add a second test suite
-            4. Add 3 test cases to the second suite
-            5. Search for test IDs with the query: "testsuite-id:{secondSuite.Id}"
-            6. The test ID for the all 3 tests returned
-            """)]
         public async Task SearchTests_WithSuiteIdFilter()
         {
             var suiteA = await Fixture.Tests.AddSuiteAsync();
-            var test1A = await Fixture.Tests.AddAsync(suiteA);
-            var test2A = await Fixture.Tests.AddAsync(suiteA);
+            await Fixture.Tests.AddAsync(suiteA);
+            await Fixture.Tests.AddAsync(suiteA);
 
 
             var secondSuite = await Fixture.Tests.AddSuiteAsync();
@@ -78,24 +67,17 @@ namespace TestBucket.Domain.IntegrationTests.Search
             Assert.Contains(test3.Id, ids);
         }
 
+        /// <summary>
+        /// Verifies that it is possible to find a test by searching for its name
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that it is possible to filter on the milestone field when searching for test cases
-
-            # Steps
-            1. Add a test suite
-            2. Add a test case with a specific name
-            3. Add 2 other test cases with other names
-            4. Search for test IDs with name for the first test case
-            5. The ID for the first test returned
-            
-            """)]
         public async Task SearchTests_WithNameFilter()
         {
             var suite = await Fixture.Tests.AddSuiteAsync();
             var test1 = await Fixture.Tests.AddAsync(suite);
-            var test2 = await Fixture.Tests.AddAsync(suite);
-            var test3 = await Fixture.Tests.AddAsync(suite);
+            await Fixture.Tests.AddAsync(suite);
+            await Fixture.Tests.AddAsync(suite);
 
             // Act
             var ids = await Fixture.Tests.SearchTestIdsAsync(test1.Name);
@@ -105,18 +87,11 @@ namespace TestBucket.Domain.IntegrationTests.Search
             Assert.Contains(test1.Id, ids);
         }
 
+        /// <summary>
+        /// Verifies that it is possible to filter using the sunce-syntax
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that it is possible to filter on the milestone field when searching for test cases
-
-            # Steps
-            1. Set the time to 2025-05-21 00:00:00
-            2. Add a test suite
-            3. Add one test
-            4. Set the time to 2025-05-21 05:00:00
-            5. Search with query "testsuite-id:{suite.Id} since:1h"
-            6. Only the ID of the second test was returned
-            """)]
         public async Task SearchTests_WithSince1hFilter()
         {
             var time1 = new DateTimeOffset(2025, 5, 21, 0, 0, 0, TimeSpan.Zero);
@@ -139,18 +114,11 @@ namespace TestBucket.Domain.IntegrationTests.Search
             Assert.Contains(test2.Id, ids);
         }
 
+        /// <summary>
+        /// Verifies that it is possible to filter on a test suite and dates
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that it is possible to filter on the milestone field when searching for test cases
-
-            # Steps
-            1. Set the time to 2025-05-21 00:00:00
-            2. Add a test suite
-            3. Add one test
-            4. Set the time to 2025-05-23 05:00:00
-            5. Search with query "testsuite-id:{suite.Id} from:2025-05-21 until:2025-05-22"
-            6. Only the ID of the first test was returned
-            """)]
         public async Task SearchTests_WithFromUntilFilter()
         {
             Fixture.App.TimeProvider.SetTime(new DateTimeOffset(2025, 5, 21, 0, 0, 0, TimeSpan.Zero));
@@ -158,7 +126,7 @@ namespace TestBucket.Domain.IntegrationTests.Search
             var test1 = await Fixture.Tests.AddAsync(suite);
 
             Fixture.App.TimeProvider.SetTime(new DateTimeOffset(2025, 5, 23, 5, 0, 0, TimeSpan.Zero));
-            var test2 = await Fixture.Tests.AddAsync(suite);
+            await Fixture.Tests.AddAsync(suite);
 
             // Act
             var ids = await Fixture.Tests.SearchTestIdsAsync($"testsuite-id:{suite.Id} from:2025-05-21 until:2025-05-22");

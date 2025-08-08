@@ -3,10 +3,13 @@ using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using TestBucket.Contracts.TestResources;
-using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
 
 namespace TestBucket.Domain.IntegrationTests.TestResources
 {
+    /// <summary>
+    /// Tests related to manging test resources
+    /// </summary>
+    /// <param name="Fixture"></param>
     [Component("Test Resources")]
     [IntegrationTest]
     [FunctionalTest]
@@ -261,7 +264,7 @@ namespace TestBucket.Domain.IntegrationTests.TestResources
                 {
                     new TestCaseDependency { ResourceType = "phone" }
                 };
-                var resources = await Fixture.Resources.AllocateAsync(run, guid, dependencies);
+                await Fixture.Resources.AllocateAsync(run, guid, dependencies);
 
                 // Act
                 var resourcesShouldFail = await Fixture.Resources.AllocateAsync(run, guid2, dependencies);

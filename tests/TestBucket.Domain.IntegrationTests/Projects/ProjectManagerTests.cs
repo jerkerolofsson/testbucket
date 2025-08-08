@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace TestBucket.Domain.IntegrationTests.Projects
 {
+    /// <summary>
+    /// Tests for managing projects
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     [Component("Projects")]

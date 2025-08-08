@@ -69,6 +69,8 @@ using TestBucket.Domain.Testing.Markdown;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Settings;
 using TestBucket.Domain.Testing.TestCases;
+using TestBucket.Domain.Testing.TestCases.Features.BlockEditInReviewState;
+using TestBucket.Domain.Testing.TestCases.Features.ChangeStateToCompletedWhenApproved;
 using TestBucket.Domain.Testing.TestCases.Features.ChangeStateToOngoingWhenEditingTests;
 using TestBucket.Domain.Testing.TestCases.Insights;
 using TestBucket.Domain.Testing.TestCases.Templates;

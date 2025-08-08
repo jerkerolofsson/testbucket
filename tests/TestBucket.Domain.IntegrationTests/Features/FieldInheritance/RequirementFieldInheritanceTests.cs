@@ -1,25 +1,34 @@
-﻿using TestBucket.Domain.Code.Models;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+
+using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Features.FieldInheritance
 {
+    /// <summary>
+    /// Tests relaweted to field inheritance for requirements
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     [FunctionalTest]
+    [Component("Requirements")]
     [Feature("Field Inheritance")]
     public class RequirementFieldInheritanceTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that a requirement field is inherited from the parent requirement when a child requirement is created.
+        /// 
+        /// # Steps
+        /// 1. Create a requirement specification
+        /// 2. Create a parent requirement
+        /// 3. Add a field to the parent requirement
+        /// 4. Create a child requirement with the parent requirement
+        /// 5. Verify that the child requirement has the same field value as the parent requirement
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that a requirement field is inherited from the parent requirement when a child requirement is created.
-
-            # Steps
-            1. Create a requirement specification
-            2. Create a parent requirement
-            3. Add a field to the parent requirement
-            4. Create a child requirement with the parent requirement
-            5. Verify that the child requirement has the same field value as the parent requirement
-            """)]
         public async Task AddRequirement_WithParentRequirement_FieldsInherited()
         {
             using var scope = Fixture.Services.CreateScope();

@@ -9,11 +9,19 @@ using TestBucket.Domain.Tenants;
 
 namespace TestBucket.Domain.IntegrationTests.Tenant
 {
+    /// <summary>
+    /// Tests for managing tenants
+    /// </summary>
+    /// <param name="Fixture"></param>
     [Component("Tenant")]
     [IntegrationTest]
     [FunctionalTest]
     public class TenantCrudTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that a tenant can be added and deleted
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddAndDeleteTenant_Successful()
         {
@@ -26,6 +34,10 @@ namespace TestBucket.Domain.IntegrationTests.Tenant
             await tenantManager.DeleteAsync(user, result.AsT0.Id, TestContext.Current.CancellationToken);
         }
 
+        /// <summary>
+        /// Verifies that a project is delected when deleting a tenant
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task DeleteTenant_WithProject_ProjectAlsoDeleted()
         {
@@ -48,7 +60,10 @@ namespace TestBucket.Domain.IntegrationTests.Tenant
             Assert.Null(projectAfterDelete);
         }
 
-
+        /// <summary>
+        /// Verifies that a CI/CD token is created when a tenant is created
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task AddTenant_CiCdTokenCreated()
         {

@@ -14,6 +14,10 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Issues
 {
+    /// <summary>
+    /// Search for issue tests
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [FunctionalTest]
     [Feature("Search")]

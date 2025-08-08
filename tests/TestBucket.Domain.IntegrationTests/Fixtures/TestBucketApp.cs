@@ -16,6 +16,11 @@ using Xunit.Sdk;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Sink"></param>
+
     public class TestBucketApp(IMessageSink Sink) : IAsyncLifetime
     {
         private IHost? _host;
@@ -38,10 +43,10 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
             } 
         }
 
-        public string Tenant => _configuration.Tenant ?? throw new InvalidOperationException("Invalid SeedConfiguration in fixture");
-        public SeedConfiguration Configuration => _configuration;
+        internal string Tenant => _configuration.Tenant ?? throw new InvalidOperationException("Invalid SeedConfiguration in fixture");
+        internal SeedConfiguration Configuration => _configuration;
 
-        private SeedConfiguration _configuration = new SeedConfiguration
+        private readonly SeedConfiguration _configuration = new SeedConfiguration
         {
             Tenant  = "jerkerolofsson",
             Email = "admin@admin.com",
@@ -75,6 +80,10 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         /// </summary>
         public IServiceProvider Services => _serviceProvider ?? throw new InvalidOperationException("Not inintialized!");
 
+        /// <summary>
+        /// Disposes resources
+        /// </summary>
+        /// <returns></returns>
         public async ValueTask DisposeAsync()
         {
             if (_host is not null)
@@ -119,6 +128,10 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
               .ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Creates the app
+        /// </summary>
+        /// <returns></returns>
         public async ValueTask InitializeAsync()
         {
             // Set environment variables to create the initial seed 

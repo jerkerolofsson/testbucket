@@ -10,6 +10,10 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Labels
 {
+    /// <summary>
+    /// TEsts related managing labels
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [FunctionalTest]
     [Component("Labels")]

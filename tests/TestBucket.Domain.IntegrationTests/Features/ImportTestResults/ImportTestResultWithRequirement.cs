@@ -1,22 +1,19 @@
 ﻿
 using Mediator;
-using OllamaSharp;
+
 using TestBucket.Domain.Automation.Artifact.Events;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Helpers;
-using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Formats;
-using TestBucket.Traits.Core;
-using Xunit.Sdk;
-using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
-using static System.Net.Mime.MediaTypeNames;
-using static TestBucket.Domain.TbIcons;
 
 namespace TestBucket.Domain.IntegrationTests.Features.ImportTestResults
 {
+    /// <summary>
+    /// TEsts related to importing test results
+    /// </summary>
+    /// <param name="Fixture"></param>
     [Feature("Import Test Results")]
     [IntegrationTest]
     [EnrichedTest]
@@ -36,9 +33,6 @@ namespace TestBucket.Domain.IntegrationTests.Features.ImportTestResults
         /// </summary>
         /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            
-            """)]
         public async Task ImportTestResults_WithCoveredRequirementMatchingExternalId_LinkCreated()
         {
             var mediator = Fixture.Services.GetRequiredService<IMediator>();

@@ -2,10 +2,19 @@
 
 namespace TestBucket.Domain.IntegrationTests.Requirements
 {
+    /// <summary>
+    /// Tests related to permissions when managing requirements
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
+    [Component("Requirements")]
     public class RequirementManagerPermissionTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that a requirement/collection can be added when the user has permissions
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [SecurityTest]
         public async Task AddRequirementSpecification_WithPermission_IsSuccess()
@@ -18,6 +27,10 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
             await manager.AddRequirementSpecificationAsync(principal, requirementSpec);
         }
 
+        /// <summary>
+        /// Verifies that requirement specification/collection can be deleted if the user has permissi9ons
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [SecurityTest]
         public async Task DeleteRequirementSpecification_WithPermission_IsSuccess()
@@ -31,6 +44,10 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
             await manager.DeleteRequirementSpecificationAsync(principal, requirementSpec);
         }
 
+        /// <summary>
+        /// Verifies that an UnauthorizedAccessException is thrown if the user tries to add a requirement specification when they only have read permissions.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [SecurityTest]
         public async Task AddRequirementSpecification_WithOnlyReadPermission_Unauthorized()
@@ -50,6 +67,10 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
             });
         }
 
+        /// <summary>
+        /// Verifies that a UnauthorizedAccessException is thrown if the user tries to delete a requirement specification when they only have read permissions.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [SecurityTest]
         public async Task DeleteRequirementSpecification_WithOnlyReadPermission_Unauthorized()

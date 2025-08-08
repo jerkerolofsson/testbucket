@@ -2,6 +2,10 @@
 
 namespace TestBucket.Domain.IntegrationTests.Issues
 {
+    /// <summary>
+    /// Testsa for issue manager
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [FunctionalTest]
     [Feature("Issues")]
@@ -59,7 +63,7 @@ namespace TestBucket.Domain.IntegrationTests.Issues
         [Fact]
         public async Task SearchForIssues()
         {
-            var issue1 = await Fixture.Issues.AddIssueAsync();
+            await Fixture.Issues.AddIssueAsync();
             var issue2 = await Fixture.Issues.AddIssueAsync();
             issue2.Title = "MyTitle";
             issue2.State = IssueStates.Accepted;

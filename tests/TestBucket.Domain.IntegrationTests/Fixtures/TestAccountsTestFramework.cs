@@ -6,6 +6,12 @@ using TestBucket.Domain.TestAccounts.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Fixture"></param>
+
     public class TestAccountsTestFramework(ProjectFixture Fixture)
     {
         internal async Task<TestAccount> AddTestAccountAsync(string owner, string type)

@@ -1,5 +1,11 @@
-﻿namespace TestBucket.Domain.IntegrationTests.TestAccounts
+﻿using static Org.BouncyCastle.Bcpg.Attr.ImageAttrib;
+
+namespace TestBucket.Domain.IntegrationTests.TestAccounts
 {
+    /// <summary>
+    /// Tests releated to manage test-accounts
+    /// </summary>
+    /// <param name="Fixture"></param>
     [Component("TestAccounts")]
     [IntegrationTest]
     [FunctionalTest]
@@ -156,11 +162,11 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that when allocating a resource with variables, those variables are added to the TestExecutionContext in the format accounts__type__index__key = value
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when allocating a resource with variables, those variables are added to the TestExecutionContext in the 
-            format accounts__type__index__key = value
-            """)]
         public async Task AllocateAccountWithVariables_AccountIsLockedAndVariablesAdded()
         {
             // Arrange
@@ -201,10 +207,11 @@
             }
         }
 
+        /// <summary>
+        /// Verifies that an account is unlocked (Locked==false) when released
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that an account is unlocked (Locked==false) when released
-            """)]
         public async Task ReleaseAccounts_AccountIsUnlocked()
         {
             // Arrange

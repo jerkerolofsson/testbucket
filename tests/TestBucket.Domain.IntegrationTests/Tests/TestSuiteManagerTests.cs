@@ -1,30 +1,27 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using TestBucket.Domain.Identity;
-using TestBucket.Domain.Identity.Permissions;
-using TestBucket.Domain.IntegrationTests.Fixtures;
-using TestBucket.Domain.Teams.Models;
-using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Testing.TestSuites;
-using TestBucket.Traits.Xunit;
-using Xunit;
+﻿using System.Collections.Generic;
 
 namespace TestBucket.Domain.IntegrationTests.Tests
 {
+    /// <summary>
+    /// Tests releated to test suties
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     [Component("Testing")]
     public class TestSuiteManagerTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that timestamps are updated correctly on test suites
+        /// 
+        /// # Steps
+        /// 1. Set the time to 2025-05-21 07:00:00
+        /// 2. Add a test suite
+        /// 3. Verify that the Created and Modified
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
-        [TestDescription("""
-            Verifies that timestamps are updated correctly on test suites
-
-            # Steps
-            1. Set the time to 2025-05-21 07:00:00
-            2. Add a test suite
-            3. Verify that the Created and Modified 
-            """)]
         public async Task AddTestSuite_CreatedAndMofifiedTimesUpdated()
         {
             Fixture.App.TimeProvider.SetTime(new DateTimeOffset(2025, 5, 21, 0, 0, 0, TimeSpan.Zero));
@@ -37,17 +34,18 @@ namespace TestBucket.Domain.IntegrationTests.Tests
             Assert.Equal(Fixture.App.TimeProvider.GetUtcNow(), suite.Modified);
         }
 
+        /// <summary>
+        /// Verifies that timestamps are updated correctly on test suites
+        /// 
+        /// # Steps
+        /// 1. Set the time to 2025-05-21 07:00:00
+        /// 2. Add a test suite
+        /// 3. Set the time to 2025-05-21 08:00:00
+        /// 4. Verify that the Created and Modified
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
-        [TestDescription("""
-            Verifies that timestamps are updated correctly on test suites
-
-            # Steps
-            1. Set the time to 2025-05-21 07:00:00
-            2. Add a test suite
-            3. Set the time to 2025-05-21 08:00:00
-            4. Verify that the Created and Modified 
-            """)]
         public async Task UppdateTestSuite_CreatedAndMofifiedTimesUpdated()
         {
             var created = new DateTimeOffset(2025, 5, 21, 7, 0, 0, TimeSpan.Zero);
@@ -65,6 +63,10 @@ namespace TestBucket.Domain.IntegrationTests.Tests
             Assert.Equal(updated, suite.Modified);
         }
 
+        /// <summary>
+        /// Verifies that a test suite can be added successfully when the user has the required permissions.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
         public async Task AddTestSuite_WithPermission_IsSuccess()
@@ -73,6 +75,10 @@ namespace TestBucket.Domain.IntegrationTests.Tests
             await Fixture.Tests.AddSuiteAsync(principal);
         }
 
+        /// <summary>
+        /// Verifies that an UnauthorizedAccessException is thrown when trying to add a test suite
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [SecurityTest]
         public async Task AddTestSuite_WithOnlyReadPermission_UnauthorizedAccessExceptionThrown()
@@ -83,12 +89,13 @@ namespace TestBucket.Domain.IntegrationTests.Tests
                 builder.Add(PermissionEntityType.TestSuite, PermissionLevel.Read);
             });
 
-            await Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
-            {
-                await Fixture.Tests.AddSuiteAsync(principal);
-            });
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(async () => await Fixture.Tests.AddSuiteAsync(principal));
         }
 
+        /// <summary>
+        /// Checks that an UnauthorizedAccessException is thrown when trying to add a test suite
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [SecurityTest]
         public async Task AddTestSuite_WithoutPermission_UnauthorizedAccessExceptionThrown()
@@ -105,6 +112,10 @@ namespace TestBucket.Domain.IntegrationTests.Tests
             });
         }
 
+        /// <summary>
+        /// Verifies that a test suite can be deleted successfully when the user has the required permissions.
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [SecurityTest]
         public async Task DeleteTestSuite_WithoutPermission_UnauthorizedAccessExceptionThrown()

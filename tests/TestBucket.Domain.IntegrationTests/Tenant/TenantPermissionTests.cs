@@ -3,6 +3,10 @@ using TestBucket.Domain.Tenants;
 
 namespace TestBucket.Domain.IntegrationTests.Tenant
 {
+    /// <summary>
+    /// Tests releated to managing tenants 
+    /// </summary>
+    /// <param name="Fixture"></param>
     [Component("Tenant")]
     [IntegrationTest]
     [SecurityTest]
@@ -35,6 +39,10 @@ namespace TestBucket.Domain.IntegrationTests.Tenant
             });
         }
 
+        /// <summary>
+        /// Verifies that an UnauthorizedAccessException is thrown if trying to delete a tenant without delete permission
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         public async Task DeleteTenant_WithoutDeletePermission_NotSuccessful()
         {

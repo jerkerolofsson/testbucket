@@ -3,6 +3,10 @@ using TestBucket.Domain.Labels.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Fixture"></param>
     public class LabelsTestFramework(ProjectFixture Fixture)
     {
         internal async Task<IReadOnlyList<Label>> SearchLabelsAsync(string text, int offset, int count)

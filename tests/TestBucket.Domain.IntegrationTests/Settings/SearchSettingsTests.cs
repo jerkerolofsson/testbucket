@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace TestBucket.Domain.IntegrationTests.Settings
 {
+    /// <summary>
+    /// Tests related to searching settings
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [FunctionalTest]
     [Component("Settings")]
@@ -13,10 +17,10 @@ namespace TestBucket.Domain.IntegrationTests.Settings
     {
         private const string IncreasedContrastName = "Increased Contrast";
 
+        /// <summary>
+        /// Verifies that a setting is found when searching for it's name
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that a setting is found when searching for it's name
-            """)]
         public void Search_WithName_SettingFound()
         {
             var settings = Fixture.Settings.Search("Increased Contrast");
@@ -24,10 +28,10 @@ namespace TestBucket.Domain.IntegrationTests.Settings
             Assert.NotNull(settings.FirstOrDefault(x => x.Metadata.Name == IncreasedContrastName));
         }
 
+        /// <summary>
+        /// Verifies that a setting is found when searching for it's partial name
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that a setting is found when searching for it's partial name
-            """)]
         public void Search_WithPartialName_SettingFound()
         {
             var settings = Fixture.Settings.Search("Contrast");
@@ -35,10 +39,10 @@ namespace TestBucket.Domain.IntegrationTests.Settings
             Assert.NotNull(settings.FirstOrDefault(x => x.Metadata.Name == IncreasedContrastName));
         }
 
+        /// <summary>
+        /// Verifies that a setting is found when searching for it's partial name in lower case
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that a setting is found when searching for it's partial name in lower case
-            """)]
         public void Search_WithPartialNameInLowerCase_SettingFound()
         {
             var settings = Fixture.Settings.Search("contrast");
@@ -46,10 +50,10 @@ namespace TestBucket.Domain.IntegrationTests.Settings
             Assert.NotNull(settings.FirstOrDefault(x => x.Metadata.Name == IncreasedContrastName));
         }
 
+        /// <summary>
+        /// Verifies that a setting is found when searching for it's partial name in lower case
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that a setting is found when searching for it's partial name in lower case
-            """)]
         public void Search_WithCategory_SettingFound()
         {
             var settings = Fixture.Settings.Search("Accessibility");
@@ -57,11 +61,10 @@ namespace TestBucket.Domain.IntegrationTests.Settings
             Assert.NotNull(settings.FirstOrDefault(x => x.Metadata.Name == IncreasedContrastName));
         }
 
-
+        /// <summary>
+        /// Verifies that a setting is found when searching when the search phrase matches the description
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that a setting is found when searching when the search phrase matches the description
-            """)]
         public void Search_WithDescription_SettingFound()
         {
             var settings = Fixture.Settings.Search("easier");
@@ -69,10 +72,10 @@ namespace TestBucket.Domain.IntegrationTests.Settings
             Assert.NotNull(settings.FirstOrDefault(x => x.Metadata.Name == IncreasedContrastName));
         }
 
+        /// <summary>
+        /// Verifies that there is a category for every setting
+        /// </summary>
         [Fact]
-        [TestDescription("""
-            Verifies that there is a category for every setting
-            """)]
         public void Categories_EverySettingBelongsToACategory()
         {
             var settings = Fixture.Settings.Search("");

@@ -12,21 +12,21 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Issues
 {
+    /// <summary>
+    /// State related tests
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [FunctionalTest]
     [Feature("Issues")]
     [Component("Issues")]
     public class IssueStateTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that when an issue is changed from one state to Closed, the Closed timestamp is updated
+        /// </summary>
+        /// <returns></returns>
         [Fact]
-        [TestDescription("""
-            Verifies that when an issue is changed from one state to Closed, the Closed timestamp is updated
-
-            # Steps
-            1. Add an issue
-            2. Change the state to "Closed"
-            3. ClosedTimestamp is set
-            """)]
         public async Task ChangeState_ToClosed_ClosedTimestampIsUpdated()
         {
             var issue = await Fixture.Issues.AddIssueAsync();

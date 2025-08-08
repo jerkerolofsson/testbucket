@@ -1,7 +1,9 @@
-﻿using TestBucket.Contracts.Issues.States;
-
-namespace TestBucket.Domain.IntegrationTests.Issues
+﻿namespace TestBucket.Domain.IntegrationTests.Issues
 {
+    /// <summary>
+    /// Tests related to the timeline (automatic short comments)
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [FunctionalTest]
     [Feature("Issues")]

@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Contracts.Requirements;
+﻿using TestBucket.Contracts.Requirements;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Requirements.Import.Strategies;
 
 namespace TestBucket.Domain.IntegrationTests.Requirements
 {
+    /// <summary>
+    /// Tests related to importing requirements
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     [FunctionalTest]
     [Feature("Import Requirements")]
+    [Component("Requirements")]
     public class PdfImportRequirementTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
         /// <summary>

@@ -8,6 +8,11 @@ using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.IntegrationTests.Features.ImportTestResults
 {
+    /// <summary>
+    /// Tests releated to importing test results
+    /// </summary>
+    /// <param name="Fixture"></param>
+    [Component("Testing")]
     [Feature("Import Test Results")]
     [IntegrationTest]
     [EnrichedTest]

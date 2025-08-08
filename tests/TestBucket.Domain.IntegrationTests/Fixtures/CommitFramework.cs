@@ -10,14 +10,18 @@ using TestBucket.Domain.Projects.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Fixtures
 {
+    /// <summary>
+    /// Test fixture
+    /// </summary>
+    /// <param name="Fixture"></param>
+
     public class CommitFramework(ProjectFixture Fixture)
     {
         /// <summary>
         /// Adds a source code repo
         /// </summary>
-        /// <param name="commit"></param>
         /// <returns></returns>
-        public async Task AddRepoAsync(Repository repo)
+        internal async Task AddRepoAsync(Repository repo)
         {
             var principal = Impersonation.Impersonate(Fixture.App.Tenant);
             repo.TestProjectId = Fixture.ProjectId;

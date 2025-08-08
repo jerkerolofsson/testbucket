@@ -1,18 +1,18 @@
-﻿
-using ICSharpCode.SharpZipLib.GZip;
-using Mediator;
-using Microsoft.Extensions.FileSystemGlobbing.Internal;
-using OllamaSharp;
-using OneOf.Types;
-using Org.BouncyCastle.Utilities;
-using System.Net.Mail;
+﻿using Mediator;
+
 using TestBucket.Domain.Automation.Artifact.Events;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
-namespace TestBucket.Domain.IntegrationTests.Features.Automation.Artifacts
+namespace TestBucket.Domain.IntegrationTests.Features.Automation.Pipelines
 {
+    /// <summary>
+    /// Tests a related to job artifacts (from CI builds) being imported as test results if their format is supported and
+    /// the files are valid.
+    /// </summary>
+    /// <param name="Fixture"></param>
     [Feature("Import Test Results")]
+    [Component("Automation")]
     [IntegrationTest]
     [EnrichedTest]
     [FunctionalTest]

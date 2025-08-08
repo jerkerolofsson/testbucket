@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Fields.Models;
 using TestBucket.Domain.Projects;

@@ -8,13 +8,17 @@ using TestBucket.Domain.Requirements.Import.Strategies;
 
 namespace TestBucket.Domain.IntegrationTests.Requirements
 {
+    /// <summary>
+    /// Tests related to importing requirements
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     [FunctionalTest]
     [Feature("Import Requirements")]
     public class ImportRequirementTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
-        private string mConventionalCommitsMarkdownSpec = """
+        private readonly string _conventionalCommitsMarkdownSpec = """
             # feat type
             [CC-1]
             The type feat MUST be used when a commit adds a new feature to your application or library.
@@ -81,7 +85,7 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
         {
             // Arrange
             var specification = await Fixture.Requirements.AddSpecificationAsync();
-            specification.Description = mConventionalCommitsMarkdownSpec;
+            specification.Description = _conventionalCommitsMarkdownSpec;
             await Fixture.Requirements.UpdateAsync(specification);
 
             // Act 

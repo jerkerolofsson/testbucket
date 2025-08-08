@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Code.Models;
+﻿using TestBucket.Domain.Code.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Features.CommitImpact
 {
+    /// <summary>
+    /// Tests related to verifying the relationship between commits and components in the codebase. 
+    /// </summary>
+    /// <param name="Fixture"></param>
+    [Component("Code")]
     [IntegrationTest]
     [EnrichedTest]
     [FunctionalTest]

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TestBucket.Domain.Code.Models;
+﻿using TestBucket.Domain.Code.Models;
 
 namespace TestBucket.Domain.IntegrationTests.Features.ConventionalCommits
 {
+    /// <summary>
+    /// Tests related to conventional commits
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     [FunctionalTest]
@@ -47,6 +46,10 @@ namespace TestBucket.Domain.IntegrationTests.Features.ConventionalCommits
             Assert.Contains("Feature Name", commit.FeatureNames);
         }
 
+        /// <summary>
+        /// Verifies that a commit with a conventional commit with a 'feat' type in upper case adds the feature as a reference if the
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [CoveredRequirement("CC-12")]
         public async Task AddCommit_WithFeatureTypeInUpperCase_FeatureScopeAddedAsFeatureName()

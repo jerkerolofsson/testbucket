@@ -1,15 +1,20 @@
 ﻿namespace TestBucket.Domain.IntegrationTests.Requirements
 {
+    /// <summary>
+    /// Tests related to approving requirements
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
     public class RequirementApprovalTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that a requirement can be successfully approved
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [CoveredRequirement("approval-of-requirements")]
         [FunctionalTest]
-        [TestDescription("""
-            Verifies that a requirement can be successfully approved
-            """)]
         public async Task ApproveRequirement_WithPermission_Success()
         {
             using var scope = Fixture.Services.CreateScope();
@@ -29,13 +34,13 @@
             Assert.Equal(true, approvedField.BooleanValue);
         }
 
+        /// <summary>
+        /// Verifies that a log entry is added when approving a requirement
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [CoveredRequirement("approval-of-requirements")]
-
         [FunctionalTest]
-        [TestDescription("""
-            Verifies that a log entry is added when approving a requirement
-            """)]
         public async Task ApproveRequirement_LogEntryIsAdded()
         {
             using var scope = Fixture.Services.CreateScope();
@@ -55,12 +60,13 @@
             Assert.Equal("approved", approvedRequirement.Comments.First().LoggedAction);
         }
 
+        /// <summary>
+        /// Verifies that a user without approval permission for requirements cannot approve a requirement
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [CoveredRequirement("approval-of-requirements")]
         [SecurityTest]
-        [TestDescription("""
-            Verifies that a user without approval permission for requirements cannot approve a requirement
-            """)]
         public async Task ApproveRequirement_WithoutPermission_Failure()
         {
             using var scope = Fixture.Services.CreateScope();

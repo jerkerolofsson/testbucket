@@ -14,15 +14,21 @@ using Xunit;
 
 namespace TestBucket.Domain.IntegrationTests.Requirements
 {
+    /// <summary>
+    /// Tests related to requirement folders
+    /// </summary>
+    /// <param name="Fixture"></param>
     [IntegrationTest]
     [EnrichedTest]
+    [Component("Requirements")]
     public class RequirementFolderTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
+        /// <summary>
+        /// Verifies that the Path is updated on a requirement when it is moved to a folder
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
-        [TestDescription("""
-            Verifies that the Path is updated on a requirement when it is moved to a folder
-            """)]
         public async Task MoveRequirement_IntoFolder_PathUpdated()
         {
             // Arrange
@@ -45,11 +51,12 @@ namespace TestBucket.Domain.IntegrationTests.Requirements
             Assert.Equal(folder.Name, requirement.Path);
         }
 
+        /// <summary>
+        /// Verifies that the path is updated on a requirement when renaming a folder
+        /// </summary>
+        /// <returns></returns>
         [Fact]
         [FunctionalTest]
-        [TestDescription("""
-            Verifies that the path is updated on a requirement when renaming a folder
-            """)]
         public async Task RenameFolder_WithRequirement_PathUpdated()
         {
             // Arrange

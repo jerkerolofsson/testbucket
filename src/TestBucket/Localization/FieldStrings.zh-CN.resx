@@ -118,183 +118,183 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="add-custom-field" xml:space="preserve">
-    <value>Add custom field</value>
+    <value>添加自定义字段</value>
   </data>
   <data name="add-new-field" xml:space="preserve">
-    <value>Add new field</value>
+    <value>添加新字段</value>
   </data>
   <data name="advanced" xml:space="preserve">
-    <value>Advanced</value>
+    <value>先进的</value>
   </data>
   <data name="appearance" xml:space="preserve">
-    <value>Appearance</value>
+    <value>外貌</value>
   </data>
   <data name="bug" xml:space="preserve">
-    <value>Bug</value>
+    <value>漏洞</value>
     <comment>Label type</comment>
   </data>
   <data name="data-source" xml:space="preserve">
-    <value>Data Source</value>
+    <value>数据源</value>
   </data>
   <data name="data-source-type-commits" xml:space="preserve">
-    <value>Commits</value>
+    <value>提交</value>
   </data>
   <data name="data-source-type-components" xml:space="preserve">
-    <value>Components</value>
+    <value>成分</value>
   </data>
   <data name="data-source-type-external" xml:space="preserve">
-    <value>Fetch data from external service</value>
+    <value>从外部服务获取数据</value>
   </data>
   <data name="data-source-type-features" xml:space="preserve">
-    <value>Features</value>
+    <value>特征</value>
   </data>
   <data name="data-source-type-issues" xml:space="preserve">
-    <value>Issues</value>
+    <value>问题</value>
   </data>
   <data name="data-source-type-labels" xml:space="preserve">
-    <value>Labels</value>
+    <value>标签</value>
   </data>
   <data name="data-source-type-layers" xml:space="preserve">
-    <value>Layers</value>
+    <value>层</value>
   </data>
   <data name="data-source-type-list" xml:space="preserve">
-    <value>User defined list</value>
+    <value>用户定义的列表</value>
   </data>
   <data name="data-source-type-milestones" xml:space="preserve">
-    <value>Milestones</value>
+    <value>里程碑</value>
   </data>
   <data name="data-source-type-releases" xml:space="preserve">
-    <value>Releases</value>
+    <value>发行</value>
   </data>
   <data name="data-source-type-requirements" xml:space="preserve">
-    <value>Requirements</value>
+    <value>要求</value>
   </data>
   <data name="data-source-type-systems" xml:space="preserve">
-    <value>Systems</value>
+    <value>系统</value>
   </data>
   <data name="data-source-type-testcases" xml:space="preserve">
-    <value>Test Cases</value>
+    <value>测试用例</value>
   </data>
   <data name="description" xml:space="preserve">
-    <value>Description</value>
+    <value>描述</value>
   </data>
   <data name="description-helpertext" xml:space="preserve">
-    <value>A helpful description that may be shown to the user</value>
+    <value>可以向用户显示的有用描述</value>
   </data>
   <data name="documentation" xml:space="preserve">
-    <value>Documentation</value>
+    <value>文档</value>
     <comment>Label type</comment>
   </data>
   <data name="duplicate" xml:space="preserve">
-    <value>Duplicate</value>
+    <value>复制</value>
     <comment>Label type</comment>
   </data>
   <data name="enhancement" xml:space="preserve">
-    <value>Enhancement</value>
+    <value>增强</value>
     <comment>Label type</comment>
   </data>
   <data name="field-data-source-not-available" xml:space="preserve">
-    <value>Data source is not available for this type of input</value>
+    <value>此类输入不可用数据源</value>
   </data>
   <data name="field-icon" xml:space="preserve">
-    <value>Field Icon</value>
+    <value>现场图标</value>
   </data>
   <data name="field-options" xml:space="preserve">
-    <value>Options</value>
+    <value>选项</value>
   </data>
   <data name="field-readonly" xml:space="preserve">
-    <value>Read-Only</value>
+    <value>只读</value>
   </data>
   <data name="field-required-permission" xml:space="preserve">
-    <value>Required permission to edit</value>
+    <value>需要编辑的许可</value>
   </data>
   <data name="field-target" xml:space="preserve">
-    <value>Target</value>
+    <value>目标</value>
   </data>
   <data name="field-target-helpertext" xml:space="preserve">
-    <value>Defines the types of entities that can be have this field</value>
+    <value>定义可以具有此字段的实体类型</value>
   </data>
   <data name="field-type" xml:space="preserve">
-    <value>Type</value>
+    <value>类型</value>
   </data>
   <data name="good first issue" xml:space="preserve">
-    <value>Good first issue</value>
+    <value>好的第一个问题</value>
     <comment>Label type</comment>
   </data>
   <data name="grouping" xml:space="preserve">
-    <value>Grouping</value>
+    <value>分组</value>
   </data>
   <data name="help wanted" xml:space="preserve">
-    <value>Help wanted</value>
+    <value>把招工广告</value>
     <comment>Label type</comment>
   </data>
   <data name="icons" xml:space="preserve">
-    <value>Icons</value>
+    <value>图标</value>
   </data>
   <data name="inherit" xml:space="preserve">
-    <value>Inherit</value>
+    <value>继承</value>
   </data>
   <data name="inherited" xml:space="preserve">
-    <value>Inherited</value>
+    <value>遗传</value>
   </data>
   <data name="inherit-helpertext" xml:space="preserve">
-    <value>If enabled, entities will inherit the value from a parent entity. For example a test case could inherit the value from a folder which inherits the value from a test suite, or an executed test case will inherit the value from the test case.</value>
+    <value>如果启用，实体将从父实体继承该值。 例如，测试用例可以从文件夹中继承该值，该文件夹从测试套件中继承了值，或者执行的测试用例将从测试案例继承该值。</value>
   </data>
   <data name="input-type" xml:space="preserve">
-    <value>Input Type</value>
+    <value>输入类型</value>
   </data>
   <data name="input-type-helpertext" xml:space="preserve">
-    <value>The type of input UI control that will be shown to the user to enter a value for the field</value>
+    <value>将显示给用户输入字段值的输入UI控件的类型</value>
   </data>
   <data name="invalid" xml:space="preserve">
-    <value>Invalid</value>
+    <value>无效的</value>
     <comment>Label type</comment>
   </data>
   <data name="name" xml:space="preserve">
-    <value>Name</value>
+    <value>姓名</value>
   </data>
   <data name="name-helpertext" xml:space="preserve">
-    <value>Unique name for the custom field</value>
+    <value>自定义字段的唯一名称</value>
   </data>
   <data name="options" xml:space="preserve">
-    <value>Input Options</value>
+    <value>输入选项</value>
   </data>
   <data name="options-helpertext" xml:space="preserve">
-    <value>Options that the user can choose from for this field</value>
+    <value>用户可以选择此字段的选项</value>
   </data>
   <data name="preview" xml:space="preserve">
-    <value>Preview</value>
+    <value>预览</value>
   </data>
   <data name="question" xml:space="preserve">
-    <value>Question</value>
+    <value>问题</value>
     <comment>Label type</comment>
   </data>
   <data name="show-description" xml:space="preserve">
-    <value>Show Description</value>
+    <value>显示描述</value>
   </data>
   <data name="trait" xml:space="preserve">
-    <value>Field Trait Mapping</value>
+    <value>现场特征映射</value>
   </data>
   <data name="trait-helpertext" xml:space="preserve">
-    <value>Well-defined trait that this field maps to. The trait is used to map import/export fields between various formats and can be used for reporting and analytics</value>
+    <value>该字段映射到的定义明确的特征。 该性状用于映射各种格式之间的导入/导出字段，可用于报告和分析</value>
   </data>
   <data name="trait-match-known-type" xml:space="preserve">
-    <value>This trait matches a well known type</value>
+    <value>这个特征与众所周知的类型相匹配</value>
   </data>
   <data name="use-classifier" xml:space="preserve">
-    <value>AI Classification</value>
+    <value>AI分类</value>
   </data>
   <data name="use-classifier-helpertext" xml:space="preserve">
-    <value>Uses AI to update this field, if it is empty after changes has been made.</value>
+    <value>如果进行更改后，则使用AI更新此字段，如果它是空的。</value>
   </data>
   <data name="use-predefined-field" xml:space="preserve">
-    <value>Use a predefined field</value>
+    <value>使用预定义的字段</value>
   </data>
   <data name="visible" xml:space="preserve">
-    <value>Visible</value>
+    <value>可见的</value>
   </data>
   <data name="wontfix" xml:space="preserve">
-    <value>Won't Fix</value>
+    <value>不会修复</value>
     <comment>Label type</comment>
   </data>
 </root>

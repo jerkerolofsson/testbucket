@@ -1,77 +1,78 @@
 ﻿@attribute [Authorize()]
-@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/Changes"
+@page "/{TenantId}/Testing/TestCases/{TestCaseId:long}/Review"
+@using TestBucket.Components.Comments
+@using TestBucket.Components.Comments.Controls
 @using TestBucket.Components.Shared.Review.Controllers
 @using TestBucket.Components.Shared.Review.Controls
 @using TestBucket.Components.Tests.Layouts
 @using TestBucket.Domain.Audit.Models
+@using TestBucket.Domain.Comments.Models
 @using TestBucket.Domain.Requirements.Models
 @using TestBucket.Domain.Testing.TestRuns.Search
 @layout TestCaseDetailsLayout
 @inject ReviewController reviewController
 @inject NavigationManager navigationManager
 @inject AppNavigationManager appNavigationManager
+@inject CommentsController comments
 @inject IStringLocalizer<SharedStrings> loc
 
 @if (Test is not null)
 {
     <CascadingValue Value="@Test">
         <div class="pa-3 diff-container">
-            <MudTimeline SelectedIndex="_selectedIndex" SelectedIndexChanged="OnSelectedIndexChanged"> 
+            <MudTimeline SelectedIndex="_selectedIndex" SelectedIndexChanged="OnSelectedIndexChanged" TimelineOrientation="TimelineOrientation.Horizontal"> 
                 @foreach(var entry in _entries)
                 {
                     <MudTimelineItem Style="cursor: pointer" Color="@(_selectedEntry == entry ? Color.Primary : Color.Default)" Size="@(_selectedEntry == entry ? Size.Medium : Size.Small)">
-                        @if (entry.NewValues.TryGetValue("State", out var state))
-                        {
-                            <div class="state">@state</div>
-                        }
-                        <div class="created">@entry.Created.Humanize()</div>
+                        <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                            @if (entry.NewValues.TryGetValue("State", out var state))
+                            {
+                                <div class="state">@state</div>
+                            }
+                            <div class="created">@entry.Created.Humanize()</div>
+                        </MudStack>
                     </MudTimelineItem>
                 }
             </MudTimeline>
-            <MudTabs>
-                <MudTabPanel Text="@loc["inline-diff"]">
-                    <div class="container-inline-diff">
-                        @if(_selectedEntry is not null && Test is not null)
+
+            <div>
+
+                <div class="container-inline-diff">
+                    @if (_selectedEntry is not null && Test is not null)
+                    {
+                        foreach (var changeKey in _selectedEntry.NewValues.Keys)
                         {
-                            foreach(var changeKey in _selectedEntry.NewValues.Keys)
+                            if (changeKey == "Description")
                             {
                                 if (_selectedEntry.OldValues.TryGetValue(changeKey, out var oldValue) && _selectedEntry.NewValues.TryGetValue(changeKey, out var newValue))
                                 {
                                     var oldText = oldValue is null ? "" : (oldValue.ToString() ?? "");
                                     var newText = GetNewText(changeKey);
 
-                                    <InlineDiffView Header="@changeKey" OldText="@oldText" NewText="@newText"/>
+                                    <InlineDiffView Header="@changeKey" OldText="@oldText" NewText="@newText" />
                                 }
                             }
                         }
-                    </div>
+                    }
+                </div>
 
-                </MudTabPanel>
-                <MudTabPanel Text="@loc["side-by-side-diff"]">
-                    <div class="container-side-by-side-diff">
-                        @if(_selectedEntry is not null && Test is not null)
-                        {
-                            foreach(var changeKey in _selectedEntry.NewValues.Keys)
-                            {
-                                if (changeKey == nameof(TestCase.Description) || changeKey == nameof(TestCase.Preconditions) || changeKey == nameof(TestCase.Postconditions))
-                                {
-                                    if (_selectedEntry.OldValues.TryGetValue(changeKey, out var oldValue) && _selectedEntry.NewValues.TryGetValue(changeKey, out var newValue))
-                                    {
-                                        var oldText = oldValue is null ? "" : (oldValue.ToString() ?? "");
-                                        var newText = GetNewText(changeKey);
+                @if(Test?.ReviewAssignedTo is not null)
+                {
+                    <TestBucket.Components.Shared.Reviews.AssignedReviewerListEditor AssignedReviewers="@Test.ReviewAssignedTo"/>
+                }
 
-                                        <MudStack Spacing="0">
-                                            <MudText Typo="Typo.h6">@changeKey</MudText>
-                                            <SideBySideDiffView OldText="@oldText" NewText="@newText" NewTextHeader="@loc["latest"]" OldTextHeader="@_selectedEntry.Created.Humanize()"/>
-                                        </MudStack>
-                                    }
-                                }
-                            }
-                        }
-                    </div>
-                </MudTabPanel>
-            </MudTabs>
+                <MudStack Row>
+                    <MudStack>
+                        <MudIconButton Icon="@Icons.Material.Filled.ThumbUp" Size="Size.Large"></MudIconButton>
+                    </MudStack>
+                    
+                    <MudStack>
+                        <MudIconButton Icon="@Icons.Material.Filled.ThumbDown" Size="Size.Large"></MudIconButton>
+                    </MudStack>
+                </MudStack>
 
+                <CommentThread Comments="@_comments" CommentAdded="OnCommentAdded" CommentDeleted="OnCommentDeleted" />
+            </div>
         </div>
     </CascadingValue>
 }
@@ -84,8 +85,39 @@
     [CascadingParameter] public TestCase? Test { get; set; }
     private AuditEntry? _selectedEntry;
     private int _selectedIndex;
+    private List<Comment> _comments = [];
+    private long _testId = 0;
 
     private IReadOnlyList<AuditEntry> _entries = [];
+
+    protected override void OnParametersSet()
+    {
+        if (Test is not null)
+        {
+            if (_testId != Test.Id)
+            {
+                _comments = Test.Comments ?? [];
+                _testId = Test.Id;
+            }
+        }
+    }
+
+    private async Task OnCommentAdded(Comment comment)
+    {
+        if (Test is not null)
+        {
+            comment.TeamId = Test.TeamId;
+            comment.TestProjectId = Test.TestProjectId;
+            comment.TestCaseId = Test.Id;
+            _comments.Add(comment);
+            await comments.AddCommentAsync(comment);
+        }
+    }
+    private async Task OnCommentDeleted(Comment comment)
+    {
+        _comments.Remove(comment);
+        await comments.DeleteCommentAsync(comment);
+    }
 
     private string GetNewText(string changeKey)
     {
@@ -124,9 +156,7 @@
     {
         // We will only show entries that has changes in the selected fields
         _entries = _entries.Where(x => 
-            x.NewValues.ContainsKey(nameof(TestCase.Description)) ||
-            x.NewValues.ContainsKey(nameof(TestCase.Postconditions)) ||
-            x.NewValues.ContainsKey(nameof(TestCase.Preconditions))
+            x.NewValues.ContainsKey(nameof(TestCase.Description))
         ).ToList();
     }
 

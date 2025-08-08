@@ -1,0 +1,27 @@
+﻿.diff-container {
+    display: grid; 
+    grid-template-rows: 150px 1fr; 
+    height: 100%;
+    overflow: hidden;
+}
+
+.diff-container > * {
+    overflow: auto;
+}
+
+.diff-container .container-side-by-side-diff,
+.diff-container .container-inline-diff {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.state {
+    font-weight: bold;
+    color: var(--mud-palette-primary);
+}
+
+.created {
+    font-size: 75%;
+}

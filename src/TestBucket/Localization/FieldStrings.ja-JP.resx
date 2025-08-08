@@ -118,183 +118,183 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="add-custom-field" xml:space="preserve">
-    <value>Add custom field</value>
+    <value>カスタムフィールドを追加します</value>
   </data>
   <data name="add-new-field" xml:space="preserve">
-    <value>Add new field</value>
+    <value>新しいフィールドを追加します</value>
   </data>
   <data name="advanced" xml:space="preserve">
-    <value>Advanced</value>
+    <value>高度な</value>
   </data>
   <data name="appearance" xml:space="preserve">
-    <value>Appearance</value>
+    <value>外観</value>
   </data>
   <data name="bug" xml:space="preserve">
-    <value>Bug</value>
+    <value>バグ</value>
     <comment>Label type</comment>
   </data>
   <data name="data-source" xml:space="preserve">
-    <value>Data Source</value>
+    <value>データソース</value>
   </data>
   <data name="data-source-type-commits" xml:space="preserve">
-    <value>Commits</value>
+    <value>コミット</value>
   </data>
   <data name="data-source-type-components" xml:space="preserve">
-    <value>Components</value>
+    <value>コンポーネント</value>
   </data>
   <data name="data-source-type-external" xml:space="preserve">
-    <value>Fetch data from external service</value>
+    <value>外部サービスからデータを取得します</value>
   </data>
   <data name="data-source-type-features" xml:space="preserve">
-    <value>Features</value>
+    <value>特徴</value>
   </data>
   <data name="data-source-type-issues" xml:space="preserve">
-    <value>Issues</value>
+    <value>問題</value>
   </data>
   <data name="data-source-type-labels" xml:space="preserve">
-    <value>Labels</value>
+    <value>ラベル</value>
   </data>
   <data name="data-source-type-layers" xml:space="preserve">
-    <value>Layers</value>
+    <value>レイヤー</value>
   </data>
   <data name="data-source-type-list" xml:space="preserve">
-    <value>User defined list</value>
+    <value>ユーザー定義リスト</value>
   </data>
   <data name="data-source-type-milestones" xml:space="preserve">
-    <value>Milestones</value>
+    <value>マイルストーン</value>
   </data>
   <data name="data-source-type-releases" xml:space="preserve">
-    <value>Releases</value>
+    <value>リリース</value>
   </data>
   <data name="data-source-type-requirements" xml:space="preserve">
-    <value>Requirements</value>
+    <value>要件</value>
   </data>
   <data name="data-source-type-systems" xml:space="preserve">
-    <value>Systems</value>
+    <value>システム</value>
   </data>
   <data name="data-source-type-testcases" xml:space="preserve">
-    <value>Test Cases</value>
+    <value>テストケース</value>
   </data>
   <data name="description" xml:space="preserve">
-    <value>Description</value>
+    <value>説明</value>
   </data>
   <data name="description-helpertext" xml:space="preserve">
-    <value>A helpful description that may be shown to the user</value>
+    <value>ユーザーに表示される可能性のある役立つ説明</value>
   </data>
   <data name="documentation" xml:space="preserve">
-    <value>Documentation</value>
+    <value>ドキュメント</value>
     <comment>Label type</comment>
   </data>
   <data name="duplicate" xml:space="preserve">
-    <value>Duplicate</value>
+    <value>重複</value>
     <comment>Label type</comment>
   </data>
   <data name="enhancement" xml:space="preserve">
-    <value>Enhancement</value>
+    <value>強化</value>
     <comment>Label type</comment>
   </data>
   <data name="field-data-source-not-available" xml:space="preserve">
-    <value>Data source is not available for this type of input</value>
+    <value>このタイプの入力ではデータソースが利用できません</value>
   </data>
   <data name="field-icon" xml:space="preserve">
-    <value>Field Icon</value>
+    <value>フィールドアイコン</value>
   </data>
   <data name="field-options" xml:space="preserve">
-    <value>Options</value>
+    <value>オプション</value>
   </data>
   <data name="field-readonly" xml:space="preserve">
-    <value>Read-Only</value>
+    <value>読み取り専用</value>
   </data>
   <data name="field-required-permission" xml:space="preserve">
-    <value>Required permission to edit</value>
+    <value>編集に必要な許可が必要です</value>
   </data>
   <data name="field-target" xml:space="preserve">
-    <value>Target</value>
+    <value>ターゲット</value>
   </data>
   <data name="field-target-helpertext" xml:space="preserve">
-    <value>Defines the types of entities that can be have this field</value>
+    <value>このフィールドを持つことができるエンティティのタイプを定義します</value>
   </data>
   <data name="field-type" xml:space="preserve">
-    <value>Type</value>
+    <value>タイプ</value>
   </data>
   <data name="good first issue" xml:space="preserve">
-    <value>Good first issue</value>
+    <value>良い最初の問題</value>
     <comment>Label type</comment>
   </data>
   <data name="grouping" xml:space="preserve">
-    <value>Grouping</value>
+    <value>グループ化</value>
   </data>
   <data name="help wanted" xml:space="preserve">
-    <value>Help wanted</value>
+    <value>従業員求む</value>
     <comment>Label type</comment>
   </data>
   <data name="icons" xml:space="preserve">
-    <value>Icons</value>
+    <value>アイコン</value>
   </data>
   <data name="inherit" xml:space="preserve">
-    <value>Inherit</value>
+    <value>継承</value>
   </data>
   <data name="inherited" xml:space="preserve">
-    <value>Inherited</value>
+    <value>継承</value>
   </data>
   <data name="inherit-helpertext" xml:space="preserve">
-    <value>If enabled, entities will inherit the value from a parent entity. For example a test case could inherit the value from a folder which inherits the value from a test suite, or an executed test case will inherit the value from the test case.</value>
+    <value>有効にすると、エンティティは親エンティティから値を継承します。 たとえば、テストケースは、テストスイートから値を継承するフォルダーから値を継承する可能性があります。または、実行されたテストケースがテストケースから値を継承します。</value>
   </data>
   <data name="input-type" xml:space="preserve">
-    <value>Input Type</value>
+    <value>入力タイプ</value>
   </data>
   <data name="input-type-helpertext" xml:space="preserve">
-    <value>The type of input UI control that will be shown to the user to enter a value for the field</value>
+    <value>フィールドの値を入力するためにユーザーに表示される入力UIコントロールのタイプ</value>
   </data>
   <data name="invalid" xml:space="preserve">
-    <value>Invalid</value>
+    <value>無効</value>
     <comment>Label type</comment>
   </data>
   <data name="name" xml:space="preserve">
-    <value>Name</value>
+    <value>名前</value>
   </data>
   <data name="name-helpertext" xml:space="preserve">
-    <value>Unique name for the custom field</value>
+    <value>カスタムフィールドのユニークな名前</value>
   </data>
   <data name="options" xml:space="preserve">
-    <value>Input Options</value>
+    <value>入力オプション</value>
   </data>
   <data name="options-helpertext" xml:space="preserve">
-    <value>Options that the user can choose from for this field</value>
+    <value>ユーザーがこのフィールドに選択できるオプション</value>
   </data>
   <data name="preview" xml:space="preserve">
-    <value>Preview</value>
+    <value>プレビュー</value>
   </data>
   <data name="question" xml:space="preserve">
-    <value>Question</value>
+    <value>質問</value>
     <comment>Label type</comment>
   </data>
   <data name="show-description" xml:space="preserve">
-    <value>Show Description</value>
+    <value>説明を表示します</value>
   </data>
   <data name="trait" xml:space="preserve">
-    <value>Field Trait Mapping</value>
+    <value>フィールド特性マッピング</value>
   </data>
   <data name="trait-helpertext" xml:space="preserve">
-    <value>Well-defined trait that this field maps to. The trait is used to map import/export fields between various formats and can be used for reporting and analytics</value>
+    <value>このフィールドがマップする明確な特性。 特性は、さまざまな形式間のインポートフィールドのマッピング/エクスポートに使用され、レポートと分析に使用できます</value>
   </data>
   <data name="trait-match-known-type" xml:space="preserve">
-    <value>This trait matches a well known type</value>
+    <value>この特性は、よく知られているタイプと一致します</value>
   </data>
   <data name="use-classifier" xml:space="preserve">
-    <value>AI Classification</value>
+    <value>AI分類</value>
   </data>
   <data name="use-classifier-helpertext" xml:space="preserve">
-    <value>Uses AI to update this field, if it is empty after changes has been made.</value>
+    <value>AIを使用して、変更が行われた後に空の場合、このフィールドを更新します。</value>
   </data>
   <data name="use-predefined-field" xml:space="preserve">
-    <value>Use a predefined field</value>
+    <value>事前定義されたフィールドを使用します</value>
   </data>
   <data name="visible" xml:space="preserve">
-    <value>Visible</value>
+    <value>見える</value>
   </data>
   <data name="wontfix" xml:space="preserve">
-    <value>Won't Fix</value>
+    <value>修正しません</value>
     <comment>Label type</comment>
   </data>
 </root>

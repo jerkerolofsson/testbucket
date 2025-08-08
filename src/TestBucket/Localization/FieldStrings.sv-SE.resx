@@ -118,183 +118,183 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="add-custom-field" xml:space="preserve">
-    <value>Add custom field</value>
+    <value>Lägg till anpassat fält</value>
   </data>
   <data name="add-new-field" xml:space="preserve">
-    <value>Add new field</value>
+    <value>Lägg till nytt fält</value>
   </data>
   <data name="advanced" xml:space="preserve">
-    <value>Advanced</value>
+    <value>Avancerad</value>
   </data>
   <data name="appearance" xml:space="preserve">
-    <value>Appearance</value>
+    <value>Utseende</value>
   </data>
   <data name="bug" xml:space="preserve">
-    <value>Bug</value>
+    <value>Bugga</value>
     <comment>Label type</comment>
   </data>
   <data name="data-source" xml:space="preserve">
-    <value>Data Source</value>
+    <value>Datakälla</value>
   </data>
   <data name="data-source-type-commits" xml:space="preserve">
-    <value>Commits</value>
+    <value>Uppmana</value>
   </data>
   <data name="data-source-type-components" xml:space="preserve">
-    <value>Components</value>
+    <value>Komponenter</value>
   </data>
   <data name="data-source-type-external" xml:space="preserve">
-    <value>Fetch data from external service</value>
+    <value>Hämta data från extern tjänst</value>
   </data>
   <data name="data-source-type-features" xml:space="preserve">
-    <value>Features</value>
+    <value>Drag</value>
   </data>
   <data name="data-source-type-issues" xml:space="preserve">
-    <value>Issues</value>
+    <value>Utfärdar</value>
   </data>
   <data name="data-source-type-labels" xml:space="preserve">
-    <value>Labels</value>
+    <value>Etiketter</value>
   </data>
   <data name="data-source-type-layers" xml:space="preserve">
-    <value>Layers</value>
+    <value>Lager</value>
   </data>
   <data name="data-source-type-list" xml:space="preserve">
-    <value>User defined list</value>
+    <value>Användardefinierad lista</value>
   </data>
   <data name="data-source-type-milestones" xml:space="preserve">
-    <value>Milestones</value>
+    <value>Milstolpar</value>
   </data>
   <data name="data-source-type-releases" xml:space="preserve">
-    <value>Releases</value>
+    <value>Utsläpp</value>
   </data>
   <data name="data-source-type-requirements" xml:space="preserve">
-    <value>Requirements</value>
+    <value>Krav</value>
   </data>
   <data name="data-source-type-systems" xml:space="preserve">
-    <value>Systems</value>
+    <value>System</value>
   </data>
   <data name="data-source-type-testcases" xml:space="preserve">
-    <value>Test Cases</value>
+    <value>Testfall</value>
   </data>
   <data name="description" xml:space="preserve">
-    <value>Description</value>
+    <value>Beskrivning</value>
   </data>
   <data name="description-helpertext" xml:space="preserve">
-    <value>A helpful description that may be shown to the user</value>
+    <value>En användbar beskrivning som kan visas för användaren</value>
   </data>
   <data name="documentation" xml:space="preserve">
-    <value>Documentation</value>
+    <value>Dokumentation</value>
     <comment>Label type</comment>
   </data>
   <data name="duplicate" xml:space="preserve">
-    <value>Duplicate</value>
+    <value>Duplicera</value>
     <comment>Label type</comment>
   </data>
   <data name="enhancement" xml:space="preserve">
-    <value>Enhancement</value>
+    <value>Förbättring</value>
     <comment>Label type</comment>
   </data>
   <data name="field-data-source-not-available" xml:space="preserve">
-    <value>Data source is not available for this type of input</value>
+    <value>Datakällan är inte tillgänglig för denna typ av input</value>
   </data>
   <data name="field-icon" xml:space="preserve">
-    <value>Field Icon</value>
+    <value>Fältikon</value>
   </data>
   <data name="field-options" xml:space="preserve">
-    <value>Options</value>
+    <value>Alternativ</value>
   </data>
   <data name="field-readonly" xml:space="preserve">
-    <value>Read-Only</value>
+    <value>Skrivskyddad</value>
   </data>
   <data name="field-required-permission" xml:space="preserve">
-    <value>Required permission to edit</value>
+    <value>Obligatorisk tillåtelse att redigera</value>
   </data>
   <data name="field-target" xml:space="preserve">
-    <value>Target</value>
+    <value>Mål</value>
   </data>
   <data name="field-target-helpertext" xml:space="preserve">
-    <value>Defines the types of entities that can be have this field</value>
+    <value>Definierar de typer av enheter som kan ha detta fält</value>
   </data>
   <data name="field-type" xml:space="preserve">
-    <value>Type</value>
+    <value>Typ</value>
   </data>
   <data name="good first issue" xml:space="preserve">
-    <value>Good first issue</value>
+    <value>Bra första nummer</value>
     <comment>Label type</comment>
   </data>
   <data name="grouping" xml:space="preserve">
-    <value>Grouping</value>
+    <value>Gruppering</value>
   </data>
   <data name="help wanted" xml:space="preserve">
-    <value>Help wanted</value>
+    <value>Hjälp efterlyst</value>
     <comment>Label type</comment>
   </data>
   <data name="icons" xml:space="preserve">
-    <value>Icons</value>
+    <value>Ikoner</value>
   </data>
   <data name="inherit" xml:space="preserve">
-    <value>Inherit</value>
+    <value>Ärva</value>
   </data>
   <data name="inherited" xml:space="preserve">
-    <value>Inherited</value>
+    <value>Ärftlig</value>
   </data>
   <data name="inherit-helpertext" xml:space="preserve">
-    <value>If enabled, entities will inherit the value from a parent entity. For example a test case could inherit the value from a folder which inherits the value from a test suite, or an executed test case will inherit the value from the test case.</value>
+    <value>Om det är aktiverat kommer enheter att ärva värdet från en moderenhet. Till exempel kan ett testfall ärva värdet från en mapp som ärver värdet från en testsvit, eller ett genomfört testfall kommer att ärva värdet från testfallet.</value>
   </data>
   <data name="input-type" xml:space="preserve">
-    <value>Input Type</value>
+    <value>Ingångstyp</value>
   </data>
   <data name="input-type-helpertext" xml:space="preserve">
-    <value>The type of input UI control that will be shown to the user to enter a value for the field</value>
+    <value>Den typ av ingång UI -kontroll som kommer att visas för användaren att ange ett värde för fältet</value>
   </data>
   <data name="invalid" xml:space="preserve">
-    <value>Invalid</value>
+    <value>Ogiltig</value>
     <comment>Label type</comment>
   </data>
   <data name="name" xml:space="preserve">
-    <value>Name</value>
+    <value>Namn</value>
   </data>
   <data name="name-helpertext" xml:space="preserve">
-    <value>Unique name for the custom field</value>
+    <value>Unikt namn för det anpassade fältet</value>
   </data>
   <data name="options" xml:space="preserve">
-    <value>Input Options</value>
+    <value>Inmatningsalternativ</value>
   </data>
   <data name="options-helpertext" xml:space="preserve">
-    <value>Options that the user can choose from for this field</value>
+    <value>Alternativ som användaren kan välja mellan för detta fält</value>
   </data>
   <data name="preview" xml:space="preserve">
-    <value>Preview</value>
+    <value>Förhandsvisning</value>
   </data>
   <data name="question" xml:space="preserve">
-    <value>Question</value>
+    <value>Fråga</value>
     <comment>Label type</comment>
   </data>
   <data name="show-description" xml:space="preserve">
-    <value>Show Description</value>
+    <value>Visningsbeskrivning</value>
   </data>
   <data name="trait" xml:space="preserve">
-    <value>Field Trait Mapping</value>
+    <value>Fältrekleringskartläggning</value>
   </data>
   <data name="trait-helpertext" xml:space="preserve">
-    <value>Well-defined trait that this field maps to. The trait is used to map import/export fields between various formats and can be used for reporting and analytics</value>
+    <value>Väl definierat drag som detta fält kartlägger till. Egenskapen används för att kartlägga import/exportfält mellan olika format och kan användas för rapportering och analys</value>
   </data>
   <data name="trait-match-known-type" xml:space="preserve">
-    <value>This trait matches a well known type</value>
+    <value>Denna egenskap matchar en välkänd typ</value>
   </data>
   <data name="use-classifier" xml:space="preserve">
-    <value>AI Classification</value>
+    <value>AI -klassificering</value>
   </data>
   <data name="use-classifier-helpertext" xml:space="preserve">
-    <value>Uses AI to update this field, if it is empty after changes has been made.</value>
+    <value>Använder AI för att uppdatera detta fält, om det är tomt efter att ändringar har gjorts.</value>
   </data>
   <data name="use-predefined-field" xml:space="preserve">
-    <value>Use a predefined field</value>
+    <value>Använd ett fördefinierat fält</value>
   </data>
   <data name="visible" xml:space="preserve">
-    <value>Visible</value>
+    <value>Synlig</value>
   </data>
   <data name="wontfix" xml:space="preserve">
-    <value>Won't Fix</value>
+    <value>Kommer inte att fixa</value>
     <comment>Label type</comment>
   </data>
 </root>

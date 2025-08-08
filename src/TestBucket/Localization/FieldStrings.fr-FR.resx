@@ -118,183 +118,183 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="add-custom-field" xml:space="preserve">
-    <value>Add custom field</value>
+    <value>Ajouter un champ personnalisé</value>
   </data>
   <data name="add-new-field" xml:space="preserve">
-    <value>Add new field</value>
+    <value>Ajouter un nouveau champ</value>
   </data>
   <data name="advanced" xml:space="preserve">
-    <value>Advanced</value>
+    <value>Avancée</value>
   </data>
   <data name="appearance" xml:space="preserve">
-    <value>Appearance</value>
+    <value>Apparence</value>
   </data>
   <data name="bug" xml:space="preserve">
-    <value>Bug</value>
+    <value>Bogue</value>
     <comment>Label type</comment>
   </data>
   <data name="data-source" xml:space="preserve">
-    <value>Data Source</value>
+    <value>Source de données</value>
   </data>
   <data name="data-source-type-commits" xml:space="preserve">
-    <value>Commits</value>
+    <value>Engagements</value>
   </data>
   <data name="data-source-type-components" xml:space="preserve">
-    <value>Components</value>
+    <value>Composantes</value>
   </data>
   <data name="data-source-type-external" xml:space="preserve">
-    <value>Fetch data from external service</value>
+    <value>Recherchez les données du service externe</value>
   </data>
   <data name="data-source-type-features" xml:space="preserve">
-    <value>Features</value>
+    <value>Caractéristiques</value>
   </data>
   <data name="data-source-type-issues" xml:space="preserve">
-    <value>Issues</value>
+    <value>Problèmes</value>
   </data>
   <data name="data-source-type-labels" xml:space="preserve">
-    <value>Labels</value>
+    <value>Étiquettes</value>
   </data>
   <data name="data-source-type-layers" xml:space="preserve">
-    <value>Layers</value>
+    <value>Couches</value>
   </data>
   <data name="data-source-type-list" xml:space="preserve">
-    <value>User defined list</value>
+    <value>Liste définie par l'utilisateur</value>
   </data>
   <data name="data-source-type-milestones" xml:space="preserve">
-    <value>Milestones</value>
+    <value>Jalons</value>
   </data>
   <data name="data-source-type-releases" xml:space="preserve">
-    <value>Releases</value>
+    <value>Sorties</value>
   </data>
   <data name="data-source-type-requirements" xml:space="preserve">
-    <value>Requirements</value>
+    <value>Exigences</value>
   </data>
   <data name="data-source-type-systems" xml:space="preserve">
-    <value>Systems</value>
+    <value>Systèmes</value>
   </data>
   <data name="data-source-type-testcases" xml:space="preserve">
-    <value>Test Cases</value>
+    <value>Cas de test</value>
   </data>
   <data name="description" xml:space="preserve">
     <value>Description</value>
   </data>
   <data name="description-helpertext" xml:space="preserve">
-    <value>A helpful description that may be shown to the user</value>
+    <value>Une description utile qui peut être montrée à l'utilisateur</value>
   </data>
   <data name="documentation" xml:space="preserve">
     <value>Documentation</value>
     <comment>Label type</comment>
   </data>
   <data name="duplicate" xml:space="preserve">
-    <value>Duplicate</value>
+    <value>Double</value>
     <comment>Label type</comment>
   </data>
   <data name="enhancement" xml:space="preserve">
-    <value>Enhancement</value>
+    <value>Renforcement</value>
     <comment>Label type</comment>
   </data>
   <data name="field-data-source-not-available" xml:space="preserve">
-    <value>Data source is not available for this type of input</value>
+    <value>La source de données n'est pas disponible pour ce type d'entrée</value>
   </data>
   <data name="field-icon" xml:space="preserve">
-    <value>Field Icon</value>
+    <value>Icône de terrain</value>
   </data>
   <data name="field-options" xml:space="preserve">
     <value>Options</value>
   </data>
   <data name="field-readonly" xml:space="preserve">
-    <value>Read-Only</value>
+    <value>En lecture seule</value>
   </data>
   <data name="field-required-permission" xml:space="preserve">
-    <value>Required permission to edit</value>
+    <value>Autorisation requise pour modifier</value>
   </data>
   <data name="field-target" xml:space="preserve">
-    <value>Target</value>
+    <value>Cible</value>
   </data>
   <data name="field-target-helpertext" xml:space="preserve">
-    <value>Defines the types of entities that can be have this field</value>
+    <value>Définit les types d'entités qui peuvent être ce champ</value>
   </data>
   <data name="field-type" xml:space="preserve">
-    <value>Type</value>
+    <value>Taper</value>
   </data>
   <data name="good first issue" xml:space="preserve">
-    <value>Good first issue</value>
+    <value>Bon premier problème</value>
     <comment>Label type</comment>
   </data>
   <data name="grouping" xml:space="preserve">
-    <value>Grouping</value>
+    <value>Regroupement</value>
   </data>
   <data name="help wanted" xml:space="preserve">
-    <value>Help wanted</value>
+    <value>Aide recherchée</value>
     <comment>Label type</comment>
   </data>
   <data name="icons" xml:space="preserve">
-    <value>Icons</value>
+    <value>Icônes</value>
   </data>
   <data name="inherit" xml:space="preserve">
-    <value>Inherit</value>
+    <value>Hériter</value>
   </data>
   <data name="inherited" xml:space="preserve">
-    <value>Inherited</value>
+    <value>Hérité</value>
   </data>
   <data name="inherit-helpertext" xml:space="preserve">
-    <value>If enabled, entities will inherit the value from a parent entity. For example a test case could inherit the value from a folder which inherits the value from a test suite, or an executed test case will inherit the value from the test case.</value>
+    <value>S'ils sont activés, les entités hériteront de la valeur d'une entité parent. Par exemple, un cas de test pourrait hériter de la valeur d'un dossier qui hérite de la valeur d'une suite de test, ou un cas de test exécuté héritera de la valeur du cas de test.</value>
   </data>
   <data name="input-type" xml:space="preserve">
-    <value>Input Type</value>
+    <value>Type d'entrée</value>
   </data>
   <data name="input-type-helpertext" xml:space="preserve">
-    <value>The type of input UI control that will be shown to the user to enter a value for the field</value>
+    <value>Le type de contrôle d'interface utilisateur d'entrée qui sera affiché à l'utilisateur pour saisir une valeur pour le champ</value>
   </data>
   <data name="invalid" xml:space="preserve">
-    <value>Invalid</value>
+    <value>Invalide</value>
     <comment>Label type</comment>
   </data>
   <data name="name" xml:space="preserve">
-    <value>Name</value>
+    <value>Nom</value>
   </data>
   <data name="name-helpertext" xml:space="preserve">
-    <value>Unique name for the custom field</value>
+    <value>Nom unique pour le champ personnalisé</value>
   </data>
   <data name="options" xml:space="preserve">
-    <value>Input Options</value>
+    <value>Options d'entrée</value>
   </data>
   <data name="options-helpertext" xml:space="preserve">
-    <value>Options that the user can choose from for this field</value>
+    <value>Options parmi lesquelles l'utilisateur peut choisir pour ce champ</value>
   </data>
   <data name="preview" xml:space="preserve">
-    <value>Preview</value>
+    <value>Prévisualisation</value>
   </data>
   <data name="question" xml:space="preserve">
     <value>Question</value>
     <comment>Label type</comment>
   </data>
   <data name="show-description" xml:space="preserve">
-    <value>Show Description</value>
+    <value>Description de la démonstration</value>
   </data>
   <data name="trait" xml:space="preserve">
-    <value>Field Trait Mapping</value>
+    <value>Cartographie des traits de terrain</value>
   </data>
   <data name="trait-helpertext" xml:space="preserve">
-    <value>Well-defined trait that this field maps to. The trait is used to map import/export fields between various formats and can be used for reporting and analytics</value>
+    <value>Trait bien défini auquel ce champ est à la recherche. Le trait est utilisé pour cartographier les champs d'importation / d'exportation entre différents formats et peut être utilisé pour les rapports et l'analyse</value>
   </data>
   <data name="trait-match-known-type" xml:space="preserve">
-    <value>This trait matches a well known type</value>
+    <value>Ce trait correspond à un type bien connu</value>
   </data>
   <data name="use-classifier" xml:space="preserve">
-    <value>AI Classification</value>
+    <value>Classification de l'IA</value>
   </data>
   <data name="use-classifier-helpertext" xml:space="preserve">
-    <value>Uses AI to update this field, if it is empty after changes has been made.</value>
+    <value>Utilise l'IA pour mettre à jour ce champ, s'il est vide après les modifications.</value>
   </data>
   <data name="use-predefined-field" xml:space="preserve">
-    <value>Use a predefined field</value>
+    <value>Utilisez un champ prédéfini</value>
   </data>
   <data name="visible" xml:space="preserve">
     <value>Visible</value>
   </data>
   <data name="wontfix" xml:space="preserve">
-    <value>Won't Fix</value>
+    <value>Ne réparera pas</value>
     <comment>Label type</comment>
   </data>
 </root>

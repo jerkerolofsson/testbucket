@@ -1,42 +1,31 @@
-﻿using System.Security.Claims;
-
 using NSubstitute;
-
-using TestBucket.Domain.Editor.Models;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 using TestBucket.Domain.Features.Review;
-using TestBucket.Domain.Identity;
+using TestBucket.Domain.Editor.Models;
+using TestBucket.Domain.Testing.Models;
+using TestBucket.Domain.Testing.TestCases;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Shared;
-using TestBucket.Domain.Testing.Events;
-using TestBucket.Domain.Testing.TestCases;
+using Xunit;
 
 namespace TestBucket.Domain.UnitTests.Features.Review;
-
-/// <summary>
-/// Tests that verify that auto approval of tests works
-/// </summary>
-[UnitTest]
-[FunctionalTest]
-[Component("Testing")]
-[Feature("Review")]
-[EnrichedTest]
 public class AutoApproveTestTests
 {
-    private const string TenantId = "tenant1";
-
     /// <summary>
     /// Tests that Handle approves the test when all votes are positive and the setting is enabled.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-REVIEW-005")]
     public async Task Handle_ApprovesTest_WhenAllVotesPositiveAndSettingEnabled()
     {
         // Arrange
+        var settingsProvider = Substitute.For<ISettingsProvider>();
         var testCaseManager = Substitute.For<ITestCaseManager>();
         var principal = new ClaimsPrincipal();
         var testCase = new TestCase
         {
-            TenantId = TenantId,
+            TenantId = "tenant1",
             TestProjectId = 1,
             Name = "TestName",
             MappedState = TestBucket.Contracts.Testing.States.MappedTestState.Review,
@@ -46,30 +35,32 @@ public class AutoApproveTestTests
                 new AssignedReviewer { UserName = "user2", Role = "reviewer", Vote = 1 }
             }
         };
-        ISettingsProvider settingsProvider = CreateSettingsProvider(TenantId, 1, true);
-
+        var reviewSettings = new ReviewSettings { AutomaticallyApproveTestIfReviewFinishedWithOnlyPositiveVotes = true };
+        settingsProvider.GetDomainSettingsAsync<ReviewSettings>("tenant1", 1).Returns(reviewSettings);
         var autoApprove = new AutoApproveTest(settingsProvider, testCaseManager);
-        var evt = new TestCaseSavingEvent(GetPrincipal(TenantId), null, testCase);
+        var evt = Substitute.For<TestBucket.Domain.Testing.Events.TestCaseSavingEvent>();
+        evt.New.Returns(testCase);
+        evt.Principal.Returns(principal);
 
         // Act
         await autoApprove.Handle(evt, CancellationToken.None);
 
         // Assert
-        await testCaseManager.Received(1).ApproveTestAsync(Arg.Any<ClaimsPrincipal>(), testCase);
+        await testCaseManager.Received(1).ApproveTestAsync(principal, testCase);
     }
 
     /// <summary>
     /// Tests that Handle does not approve the test when the setting is disabled.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-REVIEW-005")]
     public async Task Handle_DoesNotApprove_WhenSettingDisabled()
     {
+        var settingsProvider = Substitute.For<ISettingsProvider>();
         var testCaseManager = Substitute.For<ITestCaseManager>();
         var principal = new ClaimsPrincipal();
         var testCase = new TestCase
         {
-            TenantId = TenantId,
+            TenantId = "tenant1",
             TestProjectId = 1,
             Name = "TestName",
             MappedState = TestBucket.Contracts.Testing.States.MappedTestState.Review,
@@ -79,28 +70,30 @@ public class AutoApproveTestTests
                 new AssignedReviewer { UserName = "user2", Role = "reviewer", Vote = 1 }
             }
         };
-        ISettingsProvider settingsProvider = CreateSettingsProvider(TenantId, 1, false);
-
+        var reviewSettings = new ReviewSettings { AutomaticallyApproveTestIfReviewFinishedWithOnlyPositiveVotes = false };
+        settingsProvider.GetDomainSettingsAsync<ReviewSettings>("tenant1", 1).Returns(reviewSettings);
         var autoApprove = new AutoApproveTest(settingsProvider, testCaseManager);
-        var evt = new TestCaseSavingEvent(GetPrincipal(TenantId), null, testCase);
+        var evt = Substitute.For<TestBucket.Domain.Testing.Events.TestCaseSavingEvent>();
+        evt.New.Returns(testCase);
+        evt.Principal.Returns(principal);
 
         await autoApprove.Handle(evt, CancellationToken.None);
 
-        await testCaseManager.DidNotReceive().ApproveTestAsync(Arg.Any<ClaimsPrincipal>(), testCase);
+        await testCaseManager.DidNotReceive().ApproveTestAsync(principal, testCase);
     }
 
     /// <summary>
     /// Tests that Handle does not approve the test when not all votes are positive.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-REVIEW-005")]
     public async Task Handle_DoesNotApprove_WhenNotAllVotesPositive()
     {
+        var settingsProvider = Substitute.For<ISettingsProvider>();
         var testCaseManager = Substitute.For<ITestCaseManager>();
         var principal = new ClaimsPrincipal();
         var testCase = new TestCase
         {
-            TenantId = TenantId,
+            TenantId = "tenant1",
             TestProjectId = 1,
             Name = "TestName",
             MappedState = TestBucket.Contracts.Testing.States.MappedTestState.Review,
@@ -110,28 +103,35 @@ public class AutoApproveTestTests
                 new AssignedReviewer { UserName = "user2", Role = "reviewer", Vote = 0 }
             }
         };
-        ISettingsProvider settingsProvider = CreateSettingsProvider(TenantId, 1, true);
+        var reviewSettings = new ReviewSettings { AutomaticallyApproveTestIfReviewFinishedWithOnlyPositiveVotes = true };
+        settingsProvider.GetDomainSettingsAsync<ReviewSettings>("tenant1", 1).Returns(reviewSettings);
         var autoApprove = new AutoApproveTest(settingsProvider, testCaseManager);
-        var evt = new TestCaseSavingEvent(GetPrincipal(TenantId), null, testCase);
+        var evt = Substitute.For<TestBucket.Domain.Testing.Events.TestCaseSavingEvent>();
+        evt.New.Returns(testCase);
+        evt.Principal.Returns(principal);
 
         await autoApprove.Handle(evt, CancellationToken.None);
 
-        await testCaseManager.DidNotReceive().ApproveTestAsync(Arg.Any<ClaimsPrincipal>(), testCase);
+        await testCaseManager.DidNotReceive().ApproveTestAsync(principal, testCase);
     }
 
     /// <summary>
     /// Tests that Handle does not approve the test when tenant or project ID is missing.
     /// </summary>
-    [Fact]
-    [CoveredRequirement("TB-REVIEW-005")]
-    public async Task Handle_DoesNotApprove_WhenProjectIdMissing()
+    /// <param name="tenantId">The tenant ID to test.</param>
+    /// <param name="projectId">The project ID to test.</param>
+    [Theory]
+    [InlineData(null, 1)]
+    [InlineData("tenant1", null)]
+    public async Task Handle_DoesNotApprove_WhenTenantOrProjectIdMissing(string? tenantId, long? projectId)
     {
+        var settingsProvider = Substitute.For<ISettingsProvider>();
         var testCaseManager = Substitute.For<ITestCaseManager>();
         var principal = new ClaimsPrincipal();
         var testCase = new TestCase
         {
-            TenantId = TenantId,
-            TestProjectId = null,
+            TenantId = tenantId,
+            TestProjectId = projectId,
             Name = "TestName",
             MappedState = TestBucket.Contracts.Testing.States.MappedTestState.Review,
             ReviewAssignedTo = new List<AssignedReviewer>
@@ -139,66 +139,49 @@ public class AutoApproveTestTests
                 new AssignedReviewer { UserName = "user1", Role = "reviewer", Vote = 1 }
             }
         };
-        ISettingsProvider settingsProvider = CreateSettingsProvider(TenantId, 1, true);
+        var reviewSettings = new ReviewSettings { AutomaticallyApproveTestIfReviewFinishedWithOnlyPositiveVotes = true };
+        settingsProvider.GetDomainSettingsAsync<ReviewSettings>(tenantId!, projectId).Returns(reviewSettings);
         var autoApprove = new AutoApproveTest(settingsProvider, testCaseManager);
-        var evt = new TestCaseSavingEvent(GetPrincipal(TenantId), null, testCase);
+        var evt = Substitute.For<TestBucket.Domain.Testing.Events.TestCaseSavingEvent>();
+        evt.New.Returns(testCase);
+        evt.Principal.Returns(principal);
 
         await autoApprove.Handle(evt, CancellationToken.None);
 
-        await testCaseManager.DidNotReceive().ApproveTestAsync(Arg.Any<ClaimsPrincipal>(), testCase);
+        await testCaseManager.DidNotReceive().ApproveTestAsync(principal, testCase);
     }
-
 
     /// <summary>
     /// Tests that Handle does not approve the test when ReviewAssignedTo is null or empty.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-REVIEW-005")]
     public async Task Handle_DoesNotApprove_WhenReviewAssignedToIsNullOrEmpty()
     {
+        var settingsProvider = Substitute.For<ISettingsProvider>();
         var testCaseManager = Substitute.For<ITestCaseManager>();
         var principal = new ClaimsPrincipal();
         var testCase = new TestCase
         {
-            TenantId = TenantId,
+            TenantId = "tenant1",
             TestProjectId = 1,
             Name = "TestName",
             MappedState = TestBucket.Contracts.Testing.States.MappedTestState.Review,
             ReviewAssignedTo = null
         };
-        ISettingsProvider settingsProvider = CreateSettingsProvider(TenantId, 1, true);
-
+        var reviewSettings = new ReviewSettings { AutomaticallyApproveTestIfReviewFinishedWithOnlyPositiveVotes = true };
+        settingsProvider.GetDomainSettingsAsync<ReviewSettings>("tenant1", 1).Returns(reviewSettings);
         var autoApprove = new AutoApproveTest(settingsProvider, testCaseManager);
-        var evt = new TestCaseSavingEvent(GetPrincipal(TenantId), null, testCase);
+        var evt = Substitute.For<TestBucket.Domain.Testing.Events.TestCaseSavingEvent>();
+        evt.New.Returns(testCase);
+        evt.Principal.Returns(principal);
 
         await autoApprove.Handle(evt, CancellationToken.None);
 
-        await testCaseManager.DidNotReceive().ApproveTestAsync(Arg.Any<ClaimsPrincipal>(), testCase);
+        await testCaseManager.DidNotReceive().ApproveTestAsync(principal, testCase);
 
         // Also test empty list
         testCase.ReviewAssignedTo = new List<AssignedReviewer>();
         await autoApprove.Handle(evt, CancellationToken.None);
-        await testCaseManager.DidNotReceive().ApproveTestAsync(Arg.Any<ClaimsPrincipal>(), testCase);
-    }
-
-
-    private static ISettingsProvider CreateSettingsProvider(string? tenantId, long? projectId, bool enabled)
-    {
-        var settingsProvider = Substitute.For<ISettingsProvider>();
-        var reviewSettings = new ReviewSettings { AutomaticallyApproveTestIfReviewFinishedWithOnlyPositiveVotes = enabled };
-        settingsProvider.GetDomainSettingsAsync<ReviewSettings>(tenantId!, projectId).Returns(reviewSettings);
-        return settingsProvider;
-    }
-
-    private ClaimsPrincipal GetPrincipal(string? tenantId)
-    {
-        if (tenantId is null)
-        {
-            return Impersonation.Impersonate(x =>
-            {
-                x.UserName = "user1";
-            });
-        }
-        return Impersonation.Impersonate(tenantId);
+        await testCaseManager.DidNotReceive().ApproveTestAsync(principal, testCase);
     }
 }

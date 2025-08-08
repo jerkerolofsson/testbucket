@@ -1,4 +1,4 @@
-﻿using TestBucket.Domain.Testing.TestRuns.Events;
+using TestBucket.Domain.Testing.TestRuns.Events;
 
 namespace TestBucket.Domain.IntegrationTests.Tests
 {

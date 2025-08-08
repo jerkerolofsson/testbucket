@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,10 +10,10 @@ using TestBucket.Domain.Appearance.Themes;
 namespace TestBucket.Domain.IntegrationTests.Appearance
 {
     /// <summary>
-    /// Verifies the appearance of themes by inspecting the CSS style sheets that are generated when different themes
-    /// and settings are used. 
+    /// Contains integration tests for verifying the appearance of themes by inspecting the CSS style sheets
+    /// generated when different themes and settings are used.
     /// </summary>
-    /// <param name="Fixture"></param>
+    /// <param name="Fixture">The project fixture used for setting up the test environment.</param>
     [IntegrationTest]
     [FunctionalTest]
     [EnrichedTest]
@@ -23,7 +23,7 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
         /// <summary>
         /// Verifies that the default theme colors are included in the CSS stylesheet for a user when no theme is set.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task GetThemeStylesheet_WithNoThemeSet()
         {
@@ -47,9 +47,9 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
         }
 
         /// <summary>
-        /// Verifies that the CSS stylesheet returned for a user contains the correct colors when an unknown theme is set in the user preferences
+        /// Verifies that the CSS stylesheet returned for a user contains the correct colors when an unknown theme is set in the user preferences.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Fact]
         public async Task GetThemeStylesheet_WithUnknownThemeInDarkMode_StylesheetIsThemedAsDefault()
         {
@@ -81,8 +81,8 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
         /// <summary>
         /// Verifies the colors when light mode is used and a theme is set by the user.
         /// </summary>
-        /// <param name="themeName"></param>
-        /// <returns></returns>
+        /// <param name="themeName">The name of the theme to test.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Theory]
         [InlineData("Blue Steel")]
         [InlineData("Default")]
@@ -110,6 +110,11 @@ namespace TestBucket.Domain.IntegrationTests.Appearance
             Assert.Contains(theme.LightScheme.Base.Text.ToString(Contracts.Appearance.Models.ColorOutputFormats.HexA), stylesheet);
         }
 
+        /// <summary>
+        /// Verifies the colors when dark mode is used and a theme is set by the user.
+        /// </summary>
+        /// <param name="themeName">The name of the theme to test.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         [Theory]
         [InlineData("Blue Steel")]
         [InlineData("Default")]

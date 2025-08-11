@@ -118,65 +118,65 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="add" xml:space="preserve">
-    <value>Add</value>
+    <value>Hinzufügen</value>
   </data>
   <data name="approve-requirement-arg" xml:space="preserve">
-    <value>Approve {0}</value>
+    <value>Genehmigen {0}</value>
   </data>
   <data name="closed-epics" xml:space="preserve">
-    <value>Closed epics</value>
+    <value>Geschlossene Epen</value>
     <comment>Search folder</comment>
   </data>
   <data name="collections" xml:space="preserve">
-    <value>Collections</value>
+    <value>Sammlungen</value>
   </data>
   <data name="collection-type" xml:space="preserve">
-    <value>Collection type</value>
+    <value>Sammlungstyp</value>
   </data>
   <data name="confirm-delete-requirement-message" xml:space="preserve">
-    <value>Do you really want to delete this requirement?</value>
+    <value>Möchten Sie diese Anforderung wirklich löschen?</value>
   </data>
   <data name="confirm-delete-requirement-title" xml:space="preserve">
-    <value>Delete requirement?</value>
+    <value>Anforderungen löschen?</value>
   </data>
   <data name="create-collection" xml:space="preserve">
-    <value>New collection</value>
+    <value>Neue Sammlung</value>
   </data>
   <data name="create-collection-description" xml:space="preserve">
-    <value>Create a collection to store Requirements, Documentation, Tasks or User Stories</value>
+    <value>Erstellen Sie eine Sammlung, um Anforderungen, Dokumentationen, Aufgaben oder Benutzergeschichten zu speichern</value>
   </data>
   <data name="create-Epic" xml:space="preserve">
-    <value>New epic</value>
+    <value>Neues Epos</value>
   </data>
   <data name="create-General" xml:space="preserve">
-    <value>New requirement</value>
+    <value>Neue Anforderung</value>
   </data>
   <data name="create-Initiative" xml:space="preserve">
-    <value>New initiative</value>
+    <value>Neue Initiative</value>
   </data>
   <data name="create-Requirement" xml:space="preserve">
-    <value>New requirement</value>
+    <value>Neue Anforderung</value>
   </data>
   <data name="create-Task" xml:space="preserve">
-    <value>New task</value>
+    <value>Neue Aufgabe</value>
   </data>
   <data name="create-test-from-requirement" xml:space="preserve">
-    <value>Create test from requirement</value>
+    <value>Erstellen Sie Test aus den Anforderungen</value>
   </data>
   <data name="delete-folder" xml:space="preserve">
-    <value>Delete folder</value>
+    <value>Ordner löschen</value>
   </data>
   <data name="delete-requirement" xml:space="preserve">
-    <value>Delete requirement</value>
+    <value>Anforderung löschen</value>
   </data>
   <data name="delete-requirement-specification" xml:space="preserve">
-    <value>Delete collection</value>
+    <value>Sammlung löschen</value>
   </data>
   <data name="downstream-requirements" xml:space="preserve">
-    <value>Downstream requirements</value>
+    <value>Nachgelagerte Anforderungen</value>
   </data>
   <data name="edit-requirement-description" xml:space="preserve">
-    <value>Open a window to edit</value>
+    <value>Öffnen Sie ein Fenster zum Bearbeiten</value>
   </data>
   <data name="export-collection" xml:space="preserve">
     <value>Export</value>
@@ -185,98 +185,98 @@
     <value>Filter</value>
   </data>
   <data name="import-requirements" xml:space="preserve">
-    <value>Import requirements</value>
+    <value>Importanforderungen</value>
   </data>
   <data name="import-requirements-description" xml:space="preserve">
-    <value>Upload a document containing requirements</value>
+    <value>Laden Sie ein Dokument mit Anforderungen hoch</value>
   </data>
   <data name="linked-test-count--tooltip" xml:space="preserve">
-    <value>Number of linked tests</value>
+    <value>Anzahl der verknüpften Tests</value>
   </data>
   <data name="link-requirement-to-test" xml:space="preserve">
-    <value>Link requirement to test</value>
+    <value>Verknüpfungsanforderung zum Testen</value>
   </data>
   <data name="milestones" xml:space="preserve">
-    <value>Milestones</value>
+    <value>Meilensteine</value>
   </data>
   <data name="my-open-items" xml:space="preserve">
-    <value>My open items</value>
+    <value>Meine offenen Gegenstände</value>
     <comment>Search folder: Requirements, tasks, or other work items that are open and assigned to the user</comment>
   </data>
   <data name="new-general" xml:space="preserve">
-    <value>New requirement</value>
+    <value>Neue Anforderung</value>
   </data>
   <data name="new-requirement" xml:space="preserve">
-    <value>New requirement</value>
+    <value>Neue Anforderung</value>
   </data>
   <data name="new-task" xml:space="preserve">
-    <value>New task</value>
+    <value>Neue Aufgabe</value>
   </data>
   <data name="open-epics" xml:space="preserve">
-    <value>Open epics</value>
+    <value>Offene Epen</value>
     <comment>Search folder</comment>
   </data>
   <data name="parent" xml:space="preserve">
-    <value>Parent</value>
+    <value>Elternteil</value>
   </data>
   <data name="requirement-specifications" xml:space="preserve">
-    <value>Specifications</value>
+    <value>Spezifikationen</value>
   </data>
   <data name="search" xml:space="preserve">
-    <value>Search</value>
+    <value>Suchen</value>
   </data>
   <data name="search-requirements" xml:space="preserve">
-    <value>Search Requirements</value>
+    <value>Suchanforderungen</value>
   </data>
   <data name="select-requirement" xml:space="preserve">
-    <value>Select requirement</value>
+    <value>Wählen Sie die Anforderung aus</value>
   </data>
   <data name="split-requirement-specification" xml:space="preserve">
-    <value>Extract sections and split into many</value>
+    <value>Abschnitte extrahieren und in viele aufgeteilt</value>
   </data>
   <data name="standard" xml:space="preserve">
     <value>Standard</value>
   </data>
   <data name="state" xml:space="preserve">
-    <value>State</value>
+    <value>Zustand</value>
   </data>
   <data name="test-coverage" xml:space="preserve">
-    <value>Test coverage</value>
+    <value>Testabdeckung</value>
   </data>
   <data name="title" xml:space="preserve">
-    <value>Title</value>
+    <value>Titel</value>
   </data>
   <data name="type" xml:space="preserve">
-    <value>Type</value>
+    <value>Typ</value>
   </data>
   <data name="type-business" xml:space="preserve">
-    <value>Business</value>
+    <value>Geschäft</value>
   </data>
   <data name="type-documentation" xml:space="preserve">
-    <value>Documentation</value>
+    <value>Dokumentation</value>
   </data>
   <data name="type-epic" xml:space="preserve">
-    <value>Epic</value>
+    <value>Epos</value>
   </data>
   <data name="type-general" xml:space="preserve">
-    <value>General</value>
+    <value>Allgemein</value>
   </data>
   <data name="type-initiative" xml:space="preserve">
     <value>Initiative</value>
   </data>
   <data name="type-regulatory" xml:space="preserve">
-    <value>Regulatory</value>
+    <value>Regulatorisch</value>
   </data>
   <data name="type-standard" xml:space="preserve">
     <value>Standard</value>
   </data>
   <data name="type-story" xml:space="preserve">
-    <value>Story</value>
+    <value>Geschichte</value>
   </data>
   <data name="type-task" xml:space="preserve">
-    <value>Task</value>
+    <value>Aufgabe</value>
   </data>
   <data name="upload-collection-description" xml:space="preserve">
-    <value>Supported file formats: .txt, .md, .zip</value>
+    <value>Unterstützte Dateiformate: .txt, .md, .zip</value>
   </data>
 </root>

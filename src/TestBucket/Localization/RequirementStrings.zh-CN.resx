@@ -118,165 +118,165 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="add" xml:space="preserve">
-    <value>Add</value>
+    <value>添加</value>
   </data>
   <data name="approve-requirement-arg" xml:space="preserve">
-    <value>Approve {0}</value>
+    <value>批准{0}</value>
   </data>
   <data name="closed-epics" xml:space="preserve">
-    <value>Closed epics</value>
+    <value>封闭的史诗</value>
     <comment>Search folder</comment>
   </data>
   <data name="collections" xml:space="preserve">
-    <value>Collections</value>
+    <value>收藏</value>
   </data>
   <data name="collection-type" xml:space="preserve">
-    <value>Collection type</value>
+    <value>收集类型</value>
   </data>
   <data name="confirm-delete-requirement-message" xml:space="preserve">
-    <value>Do you really want to delete this requirement?</value>
+    <value>您真的想删除此要求吗？</value>
   </data>
   <data name="confirm-delete-requirement-title" xml:space="preserve">
-    <value>Delete requirement?</value>
+    <value>删除要求？</value>
   </data>
   <data name="create-collection" xml:space="preserve">
-    <value>New collection</value>
+    <value>新系列</value>
   </data>
   <data name="create-collection-description" xml:space="preserve">
-    <value>Create a collection to store Requirements, Documentation, Tasks or User Stories</value>
+    <value>创建一个集合以存储需求，文档，任务或用户故事</value>
   </data>
   <data name="create-Epic" xml:space="preserve">
-    <value>New epic</value>
+    <value>新史诗</value>
   </data>
   <data name="create-General" xml:space="preserve">
-    <value>New requirement</value>
+    <value>新要求</value>
   </data>
   <data name="create-Initiative" xml:space="preserve">
-    <value>New initiative</value>
+    <value>新计划</value>
   </data>
   <data name="create-Requirement" xml:space="preserve">
-    <value>New requirement</value>
+    <value>新要求</value>
   </data>
   <data name="create-Task" xml:space="preserve">
-    <value>New task</value>
+    <value>新任务</value>
   </data>
   <data name="create-test-from-requirement" xml:space="preserve">
-    <value>Create test from requirement</value>
+    <value>从需求创建测试</value>
   </data>
   <data name="delete-folder" xml:space="preserve">
-    <value>Delete folder</value>
+    <value>删除文件夹</value>
   </data>
   <data name="delete-requirement" xml:space="preserve">
-    <value>Delete requirement</value>
+    <value>删除要求</value>
   </data>
   <data name="delete-requirement-specification" xml:space="preserve">
-    <value>Delete collection</value>
+    <value>删除集合</value>
   </data>
   <data name="downstream-requirements" xml:space="preserve">
-    <value>Downstream requirements</value>
+    <value>下游要求</value>
   </data>
   <data name="edit-requirement-description" xml:space="preserve">
-    <value>Open a window to edit</value>
+    <value>打开一个窗口进行编辑</value>
   </data>
   <data name="export-collection" xml:space="preserve">
-    <value>Export</value>
+    <value>出口</value>
   </data>
   <data name="filter-requirements" xml:space="preserve">
-    <value>Filter</value>
+    <value>筛选</value>
   </data>
   <data name="import-requirements" xml:space="preserve">
-    <value>Import requirements</value>
+    <value>进口要求</value>
   </data>
   <data name="import-requirements-description" xml:space="preserve">
-    <value>Upload a document containing requirements</value>
+    <value>上传包含要求的文档</value>
   </data>
   <data name="linked-test-count--tooltip" xml:space="preserve">
-    <value>Number of linked tests</value>
+    <value>链接测试的数量</value>
   </data>
   <data name="link-requirement-to-test" xml:space="preserve">
-    <value>Link requirement to test</value>
+    <value>测试链接要求</value>
   </data>
   <data name="milestones" xml:space="preserve">
-    <value>Milestones</value>
+    <value>里程碑</value>
   </data>
   <data name="my-open-items" xml:space="preserve">
-    <value>My open items</value>
+    <value>我的开放物品</value>
     <comment>Search folder: Requirements, tasks, or other work items that are open and assigned to the user</comment>
   </data>
   <data name="new-general" xml:space="preserve">
-    <value>New requirement</value>
+    <value>新要求</value>
   </data>
   <data name="new-requirement" xml:space="preserve">
-    <value>New requirement</value>
+    <value>新要求</value>
   </data>
   <data name="new-task" xml:space="preserve">
-    <value>New task</value>
+    <value>新任务</value>
   </data>
   <data name="open-epics" xml:space="preserve">
-    <value>Open epics</value>
+    <value>开放史诗</value>
     <comment>Search folder</comment>
   </data>
   <data name="parent" xml:space="preserve">
-    <value>Parent</value>
+    <value>父母</value>
   </data>
   <data name="requirement-specifications" xml:space="preserve">
-    <value>Specifications</value>
+    <value>规格</value>
   </data>
   <data name="search" xml:space="preserve">
-    <value>Search</value>
+    <value>搜索</value>
   </data>
   <data name="search-requirements" xml:space="preserve">
-    <value>Search Requirements</value>
+    <value>搜索要求</value>
   </data>
   <data name="select-requirement" xml:space="preserve">
-    <value>Select requirement</value>
+    <value>选择要求</value>
   </data>
   <data name="split-requirement-specification" xml:space="preserve">
-    <value>Extract sections and split into many</value>
+    <value>提取部分并分成许多</value>
   </data>
   <data name="standard" xml:space="preserve">
-    <value>Standard</value>
+    <value>标准</value>
   </data>
   <data name="state" xml:space="preserve">
-    <value>State</value>
+    <value>状态</value>
   </data>
   <data name="test-coverage" xml:space="preserve">
-    <value>Test coverage</value>
+    <value>测试覆盖范围</value>
   </data>
   <data name="title" xml:space="preserve">
-    <value>Title</value>
+    <value>标题</value>
   </data>
   <data name="type" xml:space="preserve">
-    <value>Type</value>
+    <value>类型</value>
   </data>
   <data name="type-business" xml:space="preserve">
-    <value>Business</value>
+    <value>商业</value>
   </data>
   <data name="type-documentation" xml:space="preserve">
-    <value>Documentation</value>
+    <value>文档</value>
   </data>
   <data name="type-epic" xml:space="preserve">
-    <value>Epic</value>
+    <value>史诗</value>
   </data>
   <data name="type-general" xml:space="preserve">
-    <value>General</value>
+    <value>一般的</value>
   </data>
   <data name="type-initiative" xml:space="preserve">
-    <value>Initiative</value>
+    <value>倡议</value>
   </data>
   <data name="type-regulatory" xml:space="preserve">
-    <value>Regulatory</value>
+    <value>监管</value>
   </data>
   <data name="type-standard" xml:space="preserve">
-    <value>Standard</value>
+    <value>标准</value>
   </data>
   <data name="type-story" xml:space="preserve">
-    <value>Story</value>
+    <value>故事</value>
   </data>
   <data name="type-task" xml:space="preserve">
-    <value>Task</value>
+    <value>任务</value>
   </data>
   <data name="upload-collection-description" xml:space="preserve">
-    <value>Supported file formats: .txt, .md, .zip</value>
+    <value>支持的文件格式：.txt，.md，.zip</value>
   </data>
 </root>

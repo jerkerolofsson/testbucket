@@ -118,165 +118,165 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="add" xml:space="preserve">
-    <value>Add</value>
+    <value>追加</value>
   </data>
   <data name="approve-requirement-arg" xml:space="preserve">
-    <value>Approve {0}</value>
+    <value>承認{0}</value>
   </data>
   <data name="closed-epics" xml:space="preserve">
-    <value>Closed epics</value>
+    <value>閉じた叙事詩</value>
     <comment>Search folder</comment>
   </data>
   <data name="collections" xml:space="preserve">
-    <value>Collections</value>
+    <value>コレクション</value>
   </data>
   <data name="collection-type" xml:space="preserve">
-    <value>Collection type</value>
+    <value>コレクションタイプ</value>
   </data>
   <data name="confirm-delete-requirement-message" xml:space="preserve">
-    <value>Do you really want to delete this requirement?</value>
+    <value>本当にこの要件を削除したいですか？</value>
   </data>
   <data name="confirm-delete-requirement-title" xml:space="preserve">
-    <value>Delete requirement?</value>
+    <value>要件を削除しますか？</value>
   </data>
   <data name="create-collection" xml:space="preserve">
-    <value>New collection</value>
+    <value>新しいコレクション</value>
   </data>
   <data name="create-collection-description" xml:space="preserve">
-    <value>Create a collection to store Requirements, Documentation, Tasks or User Stories</value>
+    <value>要件、ドキュメント、タスク、またはユーザーストーリーを保存するコレクションを作成する</value>
   </data>
   <data name="create-Epic" xml:space="preserve">
-    <value>New epic</value>
+    <value>新しい叙事詩</value>
   </data>
   <data name="create-General" xml:space="preserve">
-    <value>New requirement</value>
+    <value>新しい要件</value>
   </data>
   <data name="create-Initiative" xml:space="preserve">
-    <value>New initiative</value>
+    <value>新しいイニシアチブ</value>
   </data>
   <data name="create-Requirement" xml:space="preserve">
-    <value>New requirement</value>
+    <value>新しい要件</value>
   </data>
   <data name="create-Task" xml:space="preserve">
-    <value>New task</value>
+    <value>新しいタスク</value>
   </data>
   <data name="create-test-from-requirement" xml:space="preserve">
-    <value>Create test from requirement</value>
+    <value>要件からテストを作成します</value>
   </data>
   <data name="delete-folder" xml:space="preserve">
-    <value>Delete folder</value>
+    <value>フォルダーを削除します</value>
   </data>
   <data name="delete-requirement" xml:space="preserve">
-    <value>Delete requirement</value>
+    <value>要件を削除します</value>
   </data>
   <data name="delete-requirement-specification" xml:space="preserve">
-    <value>Delete collection</value>
+    <value>コレクションを削除します</value>
   </data>
   <data name="downstream-requirements" xml:space="preserve">
-    <value>Downstream requirements</value>
+    <value>ダウンストリーム要件</value>
   </data>
   <data name="edit-requirement-description" xml:space="preserve">
-    <value>Open a window to edit</value>
+    <value>編集するためにウィンドウを開きます</value>
   </data>
   <data name="export-collection" xml:space="preserve">
-    <value>Export</value>
+    <value>輸出</value>
   </data>
   <data name="filter-requirements" xml:space="preserve">
-    <value>Filter</value>
+    <value>フィルター</value>
   </data>
   <data name="import-requirements" xml:space="preserve">
-    <value>Import requirements</value>
+    <value>インポート要件</value>
   </data>
   <data name="import-requirements-description" xml:space="preserve">
-    <value>Upload a document containing requirements</value>
+    <value>要件を含むドキュメントをアップロードします</value>
   </data>
   <data name="linked-test-count--tooltip" xml:space="preserve">
-    <value>Number of linked tests</value>
+    <value>リンクされたテストの数</value>
   </data>
   <data name="link-requirement-to-test" xml:space="preserve">
-    <value>Link requirement to test</value>
+    <value>テストするリンク要件</value>
   </data>
   <data name="milestones" xml:space="preserve">
-    <value>Milestones</value>
+    <value>マイルストーン</value>
   </data>
   <data name="my-open-items" xml:space="preserve">
-    <value>My open items</value>
+    <value>私のオープンアイテム</value>
     <comment>Search folder: Requirements, tasks, or other work items that are open and assigned to the user</comment>
   </data>
   <data name="new-general" xml:space="preserve">
-    <value>New requirement</value>
+    <value>新しい要件</value>
   </data>
   <data name="new-requirement" xml:space="preserve">
-    <value>New requirement</value>
+    <value>新しい要件</value>
   </data>
   <data name="new-task" xml:space="preserve">
-    <value>New task</value>
+    <value>新しいタスク</value>
   </data>
   <data name="open-epics" xml:space="preserve">
-    <value>Open epics</value>
+    <value>叙事詩をオープン</value>
     <comment>Search folder</comment>
   </data>
   <data name="parent" xml:space="preserve">
-    <value>Parent</value>
+    <value>親</value>
   </data>
   <data name="requirement-specifications" xml:space="preserve">
-    <value>Specifications</value>
+    <value>仕様</value>
   </data>
   <data name="search" xml:space="preserve">
-    <value>Search</value>
+    <value>検索</value>
   </data>
   <data name="search-requirements" xml:space="preserve">
-    <value>Search Requirements</value>
+    <value>検索要件</value>
   </data>
   <data name="select-requirement" xml:space="preserve">
-    <value>Select requirement</value>
+    <value>要件を選択します</value>
   </data>
   <data name="split-requirement-specification" xml:space="preserve">
-    <value>Extract sections and split into many</value>
+    <value>セクションを抽出し、多くに分割します</value>
   </data>
   <data name="standard" xml:space="preserve">
-    <value>Standard</value>
+    <value>標準</value>
   </data>
   <data name="state" xml:space="preserve">
-    <value>State</value>
+    <value>州</value>
   </data>
   <data name="test-coverage" xml:space="preserve">
-    <value>Test coverage</value>
+    <value>テストカバレッジ</value>
   </data>
   <data name="title" xml:space="preserve">
-    <value>Title</value>
+    <value>タイトル</value>
   </data>
   <data name="type" xml:space="preserve">
-    <value>Type</value>
+    <value>タイプ</value>
   </data>
   <data name="type-business" xml:space="preserve">
-    <value>Business</value>
+    <value>仕事</value>
   </data>
   <data name="type-documentation" xml:space="preserve">
-    <value>Documentation</value>
+    <value>ドキュメント</value>
   </data>
   <data name="type-epic" xml:space="preserve">
-    <value>Epic</value>
+    <value>すごい</value>
   </data>
   <data name="type-general" xml:space="preserve">
-    <value>General</value>
+    <value>一般的な</value>
   </data>
   <data name="type-initiative" xml:space="preserve">
-    <value>Initiative</value>
+    <value>主導権</value>
   </data>
   <data name="type-regulatory" xml:space="preserve">
-    <value>Regulatory</value>
+    <value>規制</value>
   </data>
   <data name="type-standard" xml:space="preserve">
-    <value>Standard</value>
+    <value>標準</value>
   </data>
   <data name="type-story" xml:space="preserve">
-    <value>Story</value>
+    <value>話</value>
   </data>
   <data name="type-task" xml:space="preserve">
-    <value>Task</value>
+    <value>タスク</value>
   </data>
   <data name="upload-collection-description" xml:space="preserve">
-    <value>Supported file formats: .txt, .md, .zip</value>
+    <value>サポートされているファイル形式：.txt、.md、.zip</value>
   </data>
 </root>

@@ -111,6 +111,13 @@ components:
     test_lead: 
     paths:
     - src\android\TestBucket.AdbProxy\Appium\Mcp\**\*.*
+  Auditor:
+    display: 
+    description: Contains code to generate change logs for entities
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Audit\**\*.*
   Automation:
     display: 
     description: CI/CD integration to run automated tests
@@ -397,6 +404,16 @@ components:
     test_lead: 
     paths:
     - src/TestBucket/Components/Settings/**/*
+  States & Types:
+    display: 
+    description: >-
+      Handling of states for requirements, tests, issues and allowed transitions
+
+      Handling of types (for example enhancement, bug, question) for issues, requirements..
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\States\**\*.*
   Tenants:
     display: 
     description: Creation, deletion, and admin of tenants to allow isolation for other entities in the database.
@@ -1173,6 +1190,24 @@ features:
     dev_lead: 
     test_lead: 
     paths: []
+  Review:
+    display: 
+    description: >-
+      Facilitates review of entities.
+
+
+      - Change detection and tracking using audit tables
+
+      - Diff functions
+
+      - Approval of entity
+
+      - Assign for approval
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Audit\**\*.*
+    - src\TestBucket.Domain\Features\Review\**\*.*
   Search:
     display: 
     description: "# Areas\n- Universal search framework\n- Search UI\n- Base query parsing\n\n## Overview\nThe search functionality enables users to efficiently locate and filter entities (e.g., Requirements, Features, Components, Issues, Test Cases) within the TestBucket application. It supports both simple keyword search and advanced semantic search, providing relevant results with high accuracy and performance.\n\n### Functional Requirements\n### 2.1. Search Scope\n\n#### Entities Supported:\n- Requirements\n- Features\n- Components\n- Issues\n- Test Cases\n\n#### Searchable Fields:\n- Name/title\n- Description/text\n- Tags, labels or other fields. Fields can be searched by using the field name as keyword\n\n### 2.2. Search Modes\n\n#### Keyword Search:\n- Users can enter keywords to match against searchable fields.\n- Supports partial matches and case-insensitive search.\n- Users can filter by entity type, status, date range, owner, and tags.\n- Supports combining multiple filters.\n\n#### Semantic Search:\n- Users can toggle semantic search via the UI (see SemanticSearchToggle.razor).\n- Utilizes AI/NLP to find contextually relevant results beyond exact keyword matches.\n\n### 2.3. Search Results\n\n#### Result Display:\n- Results are shown in paginated lists/grids.\n- Each result displays key fields and highlights matched terms.\n- Option to sort results by relevance, date, or other fields.\n\n#### Result Actions:\n- Users can click to view details, edit, or perform actions on results.\n- Bulk actions (e.g., select multiple results for batch operations).\n\n# Search APIs are exposed for use in other components and services.\n\n## 3. Non-Functional Requirements\n\n### 3.1. Performance\n- Search queries should return results within 500ms for typical datasets.\n- Pagination and lazy loading for large result sets.\n\n### 3.2. Scalability\n- Must support thousands of entities without degradation.\n- Backend search logic should be optimized for large datasets.\n\n### 3.3. Reliability\n- Search should be available 99.9% of the time.\n- Graceful error handling for failed queries.\n\n## 4. UI/UX Requirements\n\n### Consistent Search Bar:\n- Search bar should be prominent and accessible on all relevant pages.\n- Clear indication of search mode (keyword vs. semantic).\n\n### Feedback:\n- Loading indicators during search.\n- No results message if nothing matches.\n- Error messages for failed searches.\n\n### Accessibility:\n- Keyboard navigation and screen reader support.\n \n## 5. Security Requirements\n### Access Control:\n- Search results must respect user permissions; users only see entities they are authorized to view.\n\n### Input Validation:\n- Prevent injection attacks by sanitizing search inputs when relevant.\n- \n## 6. Extensibility Requirements (Universal Search)\n\n### Pluggable Search Providers:\n- Ability to add new search providers (e.g., external repositories, AI models).\n\n\n## 7. API Requirements\n### Search API Endpoints:\n- RESTful endpoints for search queries.\n\n### Integration with AI/ML:\n- Endpoints for semantic search using AI models."

@@ -118,127 +118,127 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="appearance" xml:space="preserve">
-    <value>Appearance</value>
+    <value>Utseende</value>
   </data>
   <data name="chart" xml:space="preserve">
-    <value>Chart</value>
+    <value>Diagram</value>
   </data>
   <data name="chart-type-bar" xml:space="preserve">
     <value>Bar</value>
   </data>
   <data name="chart-type-donut" xml:space="preserve">
-    <value>Donut</value>
+    <value>Dyster</value>
   </data>
   <data name="chart-type-heatmap" xml:space="preserve">
-    <value>Heatmap</value>
+    <value>Värmepart</value>
   </data>
   <data name="chart-type-line" xml:space="preserve">
-    <value>Line</value>
+    <value>Linje</value>
   </data>
   <data name="chart-type-pie" xml:space="preserve">
-    <value>Pie</value>
+    <value>Paj</value>
   </data>
   <data name="chart-type-text" xml:space="preserve">
     <value>Text</value>
   </data>
   <data name="closed-issues" xml:space="preserve">
-    <value>Closed issues</value>
+    <value>Stängda frågor</value>
   </data>
   <data name="closed-issues-by-day" xml:space="preserve">
-    <value>Closed issues</value>
+    <value>Stängda frågor</value>
   </data>
   <data name="configure-data-visualization" xml:space="preserve">
-    <value>Configure data visualization</value>
+    <value>Konfigurera datavisualisering</value>
   </data>
   <data name="count-by-state" xml:space="preserve">
-    <value>Count by state</value>
+    <value>Räknas med staten</value>
   </data>
   <data name="count-per-testcategory" xml:space="preserve">
-    <value>Tests / category</value>
+    <value>Tester / kategori</value>
   </data>
   <data name="created-issues" xml:space="preserve">
-    <value>Created issues</value>
+    <value>Skapade frågor</value>
   </data>
   <data name="created-issues-by-day" xml:space="preserve">
-    <value>Created issues</value>
+    <value>Skapade frågor</value>
   </data>
   <data name="dark-mode" xml:space="preserve">
-    <value>Dark mode</value>
+    <value>Mörkt läge</value>
   </data>
   <data name="data-source" xml:space="preserve">
-    <value>Data source</value>
+    <value>Datakälla</value>
   </data>
   <data name="default-chart-type" xml:space="preserve">
-    <value>Chart type</value>
+    <value>Diagramtyp</value>
   </data>
   <data name="filter" xml:space="preserve">
-    <value>Filter</value>
+    <value>Filtrera</value>
   </data>
   <data name="grid-lines" xml:space="preserve">
-    <value>Grid lines</value>
+    <value>Rutnät</value>
   </data>
   <data name="height" xml:space="preserve">
-    <value>Height</value>
+    <value>Höjd</value>
     <comment>Number of rows for a dashboard tile within grid</comment>
   </data>
   <data name="issue-inflow-outflow" xml:space="preserve">
-    <value>Issue inflow &amp; outflow</value>
+    <value>Utgivande inflöde och utflöde</value>
   </data>
   <data name="issues-by-state" xml:space="preserve">
-    <value>Issues / state</value>
+    <value>Frågor / stat</value>
   </data>
   <data name="label" xml:space="preserve">
-    <value>Label</value>
+    <value>Märka</value>
   </data>
   <data name="label-or-series" xml:space="preserve">
-    <value>Value to show</value>
+    <value>Värde att visa</value>
     <comment>The label or series name to show for text visualization in dashboard</comment>
   </data>
   <data name="light-mode" xml:space="preserve">
-    <value>Light mode</value>
+    <value>Ljusläge</value>
   </data>
   <data name="palette" xml:space="preserve">
-    <value>Palette</value>
+    <value>Palett</value>
   </data>
   <data name="results" xml:space="preserve">
-    <value>Results</value>
+    <value>Resultat</value>
   </data>
   <data name="show-legend" xml:space="preserve">
-    <value>Show legend</value>
+    <value>Visa legend</value>
   </data>
   <data name="show-table" xml:space="preserve">
-    <value>Show table</value>
+    <value>Visningsbord</value>
   </data>
   <data name="size" xml:space="preserve">
-    <value>Size</value>
+    <value>Storlek</value>
     <comment>Size of dashboard tile in grid</comment>
   </data>
   <data name="test-results" xml:space="preserve">
-    <value>Test results</value>
+    <value>Testresultat</value>
   </data>
   <data name="test-results-by-component" xml:space="preserve">
-    <value>Test results by component</value>
+    <value>Testresultat efter komponent</value>
   </data>
   <data name="time-alltime" xml:space="preserve">
-    <value>All time</value>
+    <value>Hela tiden</value>
   </data>
   <data name="time-one-month" xml:space="preserve">
-    <value>One month</value>
+    <value>En månad</value>
   </data>
   <data name="time-one-week" xml:space="preserve">
-    <value>One week</value>
+    <value>En vecka</value>
   </data>
   <data name="time-one-year" xml:space="preserve">
-    <value>One year</value>
+    <value>Ett år</value>
   </data>
   <data name="time-today" xml:space="preserve">
-    <value>Today</value>
+    <value>I dag</value>
   </data>
   <data name="value" xml:space="preserve">
-    <value>Value</value>
+    <value>Värde</value>
   </data>
   <data name="width" xml:space="preserve">
-    <value>Width</value>
+    <value>Bredd</value>
     <comment>Number of columns in grid for a dashboard tile</comment>
   </data>
 </root>

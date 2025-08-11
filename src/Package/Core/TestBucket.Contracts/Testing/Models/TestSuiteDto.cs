@@ -73,5 +73,7 @@ namespace TestBucket.Formats.Dtos
         /// Comments
         /// </summary>
         public List<CommentDto>? Comments { get; set; }
+        public string? Color { get; set; }
+        public string? Icon { get; set; }
     }
 }

@@ -118,127 +118,127 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="appearance" xml:space="preserve">
-    <value>Appearance</value>
+    <value>外貌</value>
   </data>
   <data name="chart" xml:space="preserve">
-    <value>Chart</value>
+    <value>图表</value>
   </data>
   <data name="chart-type-bar" xml:space="preserve">
-    <value>Bar</value>
+    <value>酒吧</value>
   </data>
   <data name="chart-type-donut" xml:space="preserve">
-    <value>Donut</value>
+    <value>油炸圈饼</value>
   </data>
   <data name="chart-type-heatmap" xml:space="preserve">
-    <value>Heatmap</value>
+    <value>热图</value>
   </data>
   <data name="chart-type-line" xml:space="preserve">
-    <value>Line</value>
+    <value>线</value>
   </data>
   <data name="chart-type-pie" xml:space="preserve">
-    <value>Pie</value>
+    <value>馅饼</value>
   </data>
   <data name="chart-type-text" xml:space="preserve">
-    <value>Text</value>
+    <value>文本</value>
   </data>
   <data name="closed-issues" xml:space="preserve">
-    <value>Closed issues</value>
+    <value>封闭的问题</value>
   </data>
   <data name="closed-issues-by-day" xml:space="preserve">
-    <value>Closed issues</value>
+    <value>封闭的问题</value>
   </data>
   <data name="configure-data-visualization" xml:space="preserve">
-    <value>Configure data visualization</value>
+    <value>配置数据可视化</value>
   </data>
   <data name="count-by-state" xml:space="preserve">
-    <value>Count by state</value>
+    <value>按州计数</value>
   </data>
   <data name="count-per-testcategory" xml:space="preserve">
-    <value>Tests / category</value>
+    <value>测试 /类别</value>
   </data>
   <data name="created-issues" xml:space="preserve">
-    <value>Created issues</value>
+    <value>创建的问题</value>
   </data>
   <data name="created-issues-by-day" xml:space="preserve">
-    <value>Created issues</value>
+    <value>创建的问题</value>
   </data>
   <data name="dark-mode" xml:space="preserve">
-    <value>Dark mode</value>
+    <value>黑暗模式</value>
   </data>
   <data name="data-source" xml:space="preserve">
-    <value>Data source</value>
+    <value>数据源</value>
   </data>
   <data name="default-chart-type" xml:space="preserve">
-    <value>Chart type</value>
+    <value>图表类型</value>
   </data>
   <data name="filter" xml:space="preserve">
-    <value>Filter</value>
+    <value>筛选</value>
   </data>
   <data name="grid-lines" xml:space="preserve">
-    <value>Grid lines</value>
+    <value>网格线</value>
   </data>
   <data name="height" xml:space="preserve">
-    <value>Height</value>
+    <value>高度</value>
     <comment>Number of rows for a dashboard tile within grid</comment>
   </data>
   <data name="issue-inflow-outflow" xml:space="preserve">
-    <value>Issue inflow &amp; outflow</value>
+    <value>发出流入和流出</value>
   </data>
   <data name="issues-by-state" xml:space="preserve">
-    <value>Issues / state</value>
+    <value>问题 /状态</value>
   </data>
   <data name="label" xml:space="preserve">
-    <value>Label</value>
+    <value>标签</value>
   </data>
   <data name="label-or-series" xml:space="preserve">
-    <value>Value to show</value>
+    <value>值得显示的价值</value>
     <comment>The label or series name to show for text visualization in dashboard</comment>
   </data>
   <data name="light-mode" xml:space="preserve">
-    <value>Light mode</value>
+    <value>光模式</value>
   </data>
   <data name="palette" xml:space="preserve">
-    <value>Palette</value>
+    <value>调色板</value>
   </data>
   <data name="results" xml:space="preserve">
-    <value>Results</value>
+    <value>结果</value>
   </data>
   <data name="show-legend" xml:space="preserve">
-    <value>Show legend</value>
+    <value>展示传奇</value>
   </data>
   <data name="show-table" xml:space="preserve">
-    <value>Show table</value>
+    <value>显示表</value>
   </data>
   <data name="size" xml:space="preserve">
-    <value>Size</value>
+    <value>尺寸</value>
     <comment>Size of dashboard tile in grid</comment>
   </data>
   <data name="test-results" xml:space="preserve">
-    <value>Test results</value>
+    <value>测试结果</value>
   </data>
   <data name="test-results-by-component" xml:space="preserve">
-    <value>Test results by component</value>
+    <value>通过组件测试结果</value>
   </data>
   <data name="time-alltime" xml:space="preserve">
-    <value>All time</value>
+    <value>一直以来</value>
   </data>
   <data name="time-one-month" xml:space="preserve">
-    <value>One month</value>
+    <value>一个月</value>
   </data>
   <data name="time-one-week" xml:space="preserve">
-    <value>One week</value>
+    <value>一周</value>
   </data>
   <data name="time-one-year" xml:space="preserve">
-    <value>One year</value>
+    <value>一年</value>
   </data>
   <data name="time-today" xml:space="preserve">
-    <value>Today</value>
+    <value>今天</value>
   </data>
   <data name="value" xml:space="preserve">
-    <value>Value</value>
+    <value>价值</value>
   </data>
   <data name="width" xml:space="preserve">
-    <value>Width</value>
+    <value>宽度</value>
     <comment>Number of columns in grid for a dashboard tile</comment>
   </data>
 </root>

@@ -1,4 +1,6 @@
-﻿using TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Contracts.Testing.States;
+using TestBucket.Domain.Export.Handlers;
+using TestBucket.Domain.Testing.Models;
 using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Domain.Testing.Mapping;
@@ -60,7 +62,8 @@ public static class TestCaseMapping
             ScriptType = item.ScriptType,
             Preconditions = item.Preconditions,
             Postconditions = item.Postconditions,
-            TestSteps = item.Steps?.Select(s => s.ToDbo(item.Id)).ToList() ?? new List<TestStep>()
+            TestSteps = item.Steps?.Select(s => s.ToDbo(item.Id)).ToList() ?? new List<TestStep>(),
+            Comments = CommentSerializer.Deserialize(item.Comments),
         };
         return dto;
     }
@@ -88,7 +91,9 @@ public static class TestCaseMapping
             ScriptType = item.ScriptType,
             Preconditions = item.Preconditions,
             Postconditions = item.Postconditions,
-            Steps = item.TestSteps?.Select(s => s.ToDto()).ToList() ?? new List<TestStepDto>()
+            Steps = item.TestSteps?.Select(s => s.ToDto()).ToList() ?? new List<TestStepDto>(),
+            Comments = CommentSerializer.Serialize(item.Comments),
+
         };
 
         dto.Traits.ExternalId = item.ExternalId;

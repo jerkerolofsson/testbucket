@@ -19,6 +19,8 @@ public static class TestSuiteMapper
             DefaultCiCdRef = testSuite.DefaultCiCdRef,
             ExternalSystemId = testSuite.ExternalSystemId,
             Slug = testSuite.Slug,
+            Icon = testSuite.Icon,
+            Color = testSuite.Color,
             Dependencies = testSuite.Dependencies?.ToList(),
             AddPipelinesStartedFromOutside = testSuite.AddPipelinesStartedFromOutside,
             Comments = CommentSerializer.Deserialize(testSuite.Comments),
@@ -37,6 +39,8 @@ public static class TestSuiteMapper
             DefaultCiCdRef = testSuite.DefaultCiCdRef,
             ExternalSystemId = testSuite.ExternalSystemId,
             Slug = testSuite.Slug,
+            Icon = testSuite.Icon,
+            Color = testSuite.Color,
             Dependencies = testSuite.Dependencies?.ToList(),
             Comments = CommentSerializer.Serialize(testSuite.Comments),
             AddPipelinesStartedFromOutside = testSuite.AddPipelinesStartedFromOutside

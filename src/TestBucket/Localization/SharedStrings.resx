@@ -1112,4 +1112,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="vote" xml:space="preserve">
     <value>Vote</value>
   </data>
+  <data name="export-test-suite" xml:space="preserve">
+    <value>Export test suite</value>
+  </data>
+  <data name="export-test-suite-description" xml:space="preserve">
+    <value>Exports the all tests for the test suite</value>
+  </data>
 </root>

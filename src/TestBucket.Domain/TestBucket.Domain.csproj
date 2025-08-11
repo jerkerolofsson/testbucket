@@ -79,8 +79,4 @@
       <ProjectReference Include="..\TestBucket.Integrations\TestBucket.Integrations.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Export\Handlers\Tests\" />
-    </ItemGroup>
-
 </Project>

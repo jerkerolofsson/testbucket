@@ -21,6 +21,11 @@ namespace TestBucket.Domain.UnitTests.Features.Review;
 /// <summary>
 /// Unit tests for the AssignDefaultReviewers class.
 /// </summary>
+[UnitTest]
+[EnrichedTest]
+[FunctionalTest]
+[Component("Testing")]
+[Feature("Review")]
 public class AssignDefaultReviewersTests
 {
     private const string TenantId = "tenant-1";

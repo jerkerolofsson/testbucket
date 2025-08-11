@@ -1,9 +1,11 @@
-﻿using System.Net;
+﻿using TestBucket.Domain.Export.Handlers.TestSuites;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using TestBucket.Controllers.Api;
+using TestBucket.Domain.Export;
+using TestBucket.Domain.Export.Handlers.Requirements;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.Teams;
@@ -19,12 +21,14 @@ public class TestSuitesApiController : ProjectApiControllerBase
     private readonly ITeamManager _teamManager;
     private readonly ITestSuiteManager _testSuiteManager;
     private readonly IProjectManager _projectManager;
+    private readonly IBackupManager _backupManager;
 
-    public TestSuitesApiController(ITestSuiteManager testSuiteManager, ITeamManager teamManager, IProjectManager projectManager)
+    public TestSuitesApiController(ITestSuiteManager testSuiteManager, ITeamManager teamManager, IProjectManager projectManager, IBackupManager backupManager)
     {
         _testSuiteManager = testSuiteManager;
         _teamManager = teamManager;
         _projectManager = projectManager;
+        _backupManager = backupManager;
     }
 
     [Authorize("ApiKeyOrBearer")]
@@ -66,6 +70,26 @@ public class TestSuitesApiController : ProjectApiControllerBase
         {
             throw new Exception($"Error adding suite '{dbo.Slug}' with team={testSuite.TeamSlug}, project={testSuite.ProjectSlug}", ex);
         }
+    }
+
+    [Authorize("ApiKeyOrBearer")]
+    [EndpointDescription("Exports a test suite")]
+    [HttpGet("/api/testsuites/{slug}/export")]
+    public async Task<IActionResult> ExportAsync(string slug)
+    {
+        if (!User.HasPermission(PermissionEntityType.TestCase, PermissionLevel.Read))
+        {
+            return Unauthorized();
+        }
+        var projectId = User.GetProjectId();
+        var suite = await _testSuiteManager.GetTestSuiteBySlugAsync(User, projectId, slug);
+        if (suite is null)
+        {
+            return NotFound();
+        }
+
+        var stream = await _backupManager.CreateBackupAsync(User, suite);
+        return File(stream, "application/zip", $"{suite.Name.ToLower().Replace(' ', '_')}.tbz");
     }
 
     [Authorize("ApiKeyOrBearer")]

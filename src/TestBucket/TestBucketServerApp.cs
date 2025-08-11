@@ -326,6 +326,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, DeleteTestSuiteCommand>();
 
         builder.Services.AddScoped<ICommand, AddTestSuiteToRunCommand>();
+        builder.Services.AddScoped<ICommand, ExportTestSuiteCommand>();
         builder.Services.AddScoped<ICommand, DeleteTestSuiteFolderCommand>();
         builder.Services.AddScoped<ICommand, DeleteTestRepositoryFolderCommand>();
         builder.Services.AddScoped<ICommand, DeleteTestLabFolderCommand>();

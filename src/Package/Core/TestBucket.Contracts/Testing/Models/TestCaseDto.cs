@@ -1,4 +1,5 @@
 ﻿
+using TestBucket.Contracts.Comments;
 using TestBucket.Contracts.Fields;
 using TestBucket.Formats.Dtos;
 
@@ -87,4 +88,5 @@ public class TestCaseDto
     public string? ExternalDisplayId { get; set; }
 
     public List<TestStepDto> Steps { get; set; } = [];
+    public List<CommentDto>? Comments { get; set; }
 }

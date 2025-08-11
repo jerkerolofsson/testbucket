@@ -1,4 +1,6 @@
-﻿using TestBucket.Domain.Testing.Models;
+﻿using TestBucket.Domain.Export.Handlers;
+using TestBucket.Domain.Requirements.Models;
+using TestBucket.Domain.Testing.Models;
 using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Domain.Testing.Mapping;
@@ -17,6 +19,9 @@ public static class TestSuiteMapper
             DefaultCiCdRef = testSuite.DefaultCiCdRef,
             ExternalSystemId = testSuite.ExternalSystemId,
             Slug = testSuite.Slug,
+            Dependencies = testSuite.Dependencies?.ToList(),
+            AddPipelinesStartedFromOutside = testSuite.AddPipelinesStartedFromOutside,
+            Comments = CommentSerializer.Deserialize(testSuite.Comments),
         };
     }
 
@@ -32,6 +37,9 @@ public static class TestSuiteMapper
             DefaultCiCdRef = testSuite.DefaultCiCdRef,
             ExternalSystemId = testSuite.ExternalSystemId,
             Slug = testSuite.Slug,
+            Dependencies = testSuite.Dependencies?.ToList(),
+            Comments = CommentSerializer.Serialize(testSuite.Comments),
+            AddPipelinesStartedFromOutside = testSuite.AddPipelinesStartedFromOutside
         };
     }
 }

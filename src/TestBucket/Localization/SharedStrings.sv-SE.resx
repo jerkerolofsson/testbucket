@@ -1105,4 +1105,10 @@
   <data name="vote" xml:space="preserve">
     <value />
   </data>
+  <data name="export-test-suite" xml:space="preserve">
+    <value />
+  </data>
+  <data name="export-test-suite-description" xml:space="preserve">
+    <value />
+  </data>
 </root>

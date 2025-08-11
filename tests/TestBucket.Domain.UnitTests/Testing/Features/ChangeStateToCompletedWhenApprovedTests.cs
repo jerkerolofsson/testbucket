@@ -4,6 +4,7 @@ using TestBucket.Domain.Editor.Models;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Settings.Models;
+using TestBucket.Domain.Testing.TestCases.Features.ChangeStateToCompletedWhenApproved;
 using TestBucket.Domain.Testing.TestCases.Features.ChangeStateToOngoingWhenEditingTests;
 
 namespace TestBucket.Domain.UnitTests.Testing.Features;

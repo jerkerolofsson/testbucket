@@ -1112,4 +1112,10 @@ As variáveis são definidas em um caso de teste como {{key}} e ao executar um c
   <data name="vote" xml:space="preserve">
     <value />
   </data>
+  <data name="export-test-suite" xml:space="preserve">
+    <value />
+  </data>
+  <data name="export-test-suite-description" xml:space="preserve">
+    <value />
+  </data>
 </root>

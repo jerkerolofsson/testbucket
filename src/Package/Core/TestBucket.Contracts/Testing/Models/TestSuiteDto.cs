@@ -1,5 +1,8 @@
 ﻿
 
+
+using TestBucket.Contracts.Comments;
+
 namespace TestBucket.Formats.Dtos
 {
     public class TestSuiteDto
@@ -55,5 +58,20 @@ namespace TestBucket.Formats.Dtos
         /// Gets or sets the default reference name used for CI/CD operations.
         /// </summary>
         public string? DefaultCiCdRef { get; set; }
+
+        /// <summary>
+        /// Required resources/accounts
+        /// </summary>
+        public List<TestCaseDependency>? Dependencies { get; set; }
+
+        /// <summary>
+        /// If true, pipelines started from an outside source (e.g. regular CI pipeline) will be indexed and runs added
+        /// </summary>
+        public bool? AddPipelinesStartedFromOutside { get; set; }
+
+        /// <summary>
+        /// Comments
+        /// </summary>
+        public List<CommentDto>? Comments { get; set; }
     }
 }

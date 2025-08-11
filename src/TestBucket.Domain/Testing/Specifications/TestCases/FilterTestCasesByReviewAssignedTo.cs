@@ -5,19 +5,19 @@ using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Testing.Specifications.TestCases;
 
-public class FilterTestCasesByState : FilterSpecification<TestCase>
+public class FilterTestCasesByReviewAssignedTo : FilterSpecification<TestCase>
 {
     private readonly string _query;
 
-    internal string State => _query;
+    internal string User => _query;
 
-    public FilterTestCasesByState(string name)
+    public FilterTestCasesByReviewAssignedTo(string user)
     {
-        _query = name;
+        _query = user;
     }
 
     protected override Expression<Func<TestCase, bool>> GetExpression()
     {
-        return x => x.State == _query;
+        return x => x.ReviewAssignedTo != null && x.ReviewAssignedTo.Any(x=>x.UserName == _query);
     }
 }

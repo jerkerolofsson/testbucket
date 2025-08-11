@@ -36,7 +36,7 @@ public class ChangeStateToCompletedWhenApprovedTests
     /// Verifies ReadAsync returns true when the setting is enabled.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-EDITOR-003")]
+    [CoveredRequirement("TB-REVIEW-003")]
     public async Task ReadAsync_ReturnsTrue_WhenSettingIsTrue()
     {
         ISettingsProvider settingsProvider = CreateMockedSettingProvider(true);
@@ -50,7 +50,7 @@ public class ChangeStateToCompletedWhenApprovedTests
     /// Verifies ReadAsync returns false when the setting is disabled.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-EDITOR-003")]
+    [CoveredRequirement("TB-REVIEW-003")]
     public async Task ReadAsync_ReturnsFalse_WhenSettingIsFalse()
     {
         ISettingsProvider settingsProvider = CreateMockedSettingProvider(false); 
@@ -64,7 +64,7 @@ public class ChangeStateToCompletedWhenApprovedTests
     /// Verifies WriteAsync updates the setting when the value changes.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-EDITOR-003")]
+    [CoveredRequirement("TB-REVIEW-003")]
     public async Task WriteAsync_UpdatesSetting_WhenValueChanges()
     {
         var settings = new EditorSettings { ChangeStateToCompletedWhenApproved = false };
@@ -84,7 +84,7 @@ public class ChangeStateToCompletedWhenApprovedTests
     /// Verifies WriteAsync does not update the setting when the value is unchanged.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-EDITOR-003")]
+    [CoveredRequirement("TB-REVIEW-003")]
     public async Task WriteAsync_DoesNotUpdate_WhenValueIsSame()
     {
         var settings = new EditorSettings { ChangeStateToCompletedWhenApproved = true };

@@ -117,220 +117,327 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="name" xml:space="preserve">
-    <value>Name</value>
+  <data name="access-failed-count" xml:space="preserve">
+    <value>Zugriffsfehleranzahl</value>
   </data>
-  <data name="description" xml:space="preserve">
-    <value>Beschreibung</value>
+  <data name="account" xml:space="preserve">
+    <value>Konto</value>
   </data>
-  <data name="project" xml:space="preserve">
-    <value>Projekt</value>
+  <data name="add" xml:space="preserve">
+    <value>Hinzufügen</value>
   </data>
-  <data name="team" xml:space="preserve">
-    <value>Team</value>
+  <data name="add-account" xml:space="preserve">
+    <value>Konto hinzufügen</value>
   </data>
-  <data name="settings" xml:space="preserve">
-    <value>Einstellungen</value>
+  <data name="add-comment" xml:space="preserve">
+    <value>Kommentar hinzufügen</value>
   </data>
-  <data name="projects" xml:space="preserve">
-    <value>Projekte</value>
+  <data name="add-heuristic" xml:space="preserve">
+    <value>Heuristik hinzufügen</value>
   </data>
-  <data name="variables" xml:space="preserve">
-    <value>Variablen</value>
+  <data name="add-metric" xml:space="preserve">
+    <value>Metrik hinzufügen</value>
   </data>
-  <data name="test-environment" xml:space="preserve">
-    <value>Testumgebung</value>
+  <data name="add-milestone" xml:space="preserve">
+    <value>Meilenstein hinzufügen</value>
   </data>
-  <data name="test-environments" xml:space="preserve">
-    <value>Testumgebungen</value>
+  <data name="add-new-project" xml:space="preserve">
+    <value>Neues Projekt hinzufügen</value>
   </data>
-  <data name="attachments" xml:space="preserve">
-    <value>Anhänge</value>
+  <data name="add-new-team" xml:space="preserve">
+    <value>Neues Team hinzufügen</value>
   </data>
-  <data name="callstack" xml:space="preserve">
-    <value>Aufrufstapel</value>
+  <data name="add-new-tenant" xml:space="preserve">
+    <value>Neuen Mieter hinzufügen</value>
   </data>
-  <data name="message" xml:space="preserve">
-    <value>Nachricht</value>
+  <data name="add-resource" xml:space="preserve">
+    <value>Ressource hinzufügen</value>
   </data>
-  <data name="test-result" xml:space="preserve">
-    <value>Ergebnis</value>
+  <data name="add-to-run" xml:space="preserve">
+    <value>Zum Lauf hinzufügen</value>
   </data>
-  <data name="result-passed" xml:space="preserve">
-    <value>Bestanden</value>
+  <data name="add-user" xml:space="preserve">
+    <value>Benutzer hinzufügen</value>
   </data>
-  <data name="result-norun" xml:space="preserve">
-    <value>Nicht ausgeführt</value>
+  <data name="add-variable" xml:space="preserve">
+    <value>Variable hinzufügen</value>
   </data>
-  <data name="result-blocked" xml:space="preserve">
-    <value>Blockiert</value>
+  <data name="advanced" xml:space="preserve">
+    <value>Erweitert</value>
   </data>
-  <data name="result-skipped" xml:space="preserve">
-    <value>Übersprungen</value>
-  </data>
-  <data name="result-failed" xml:space="preserve">
-    <value>Fehlgeschlagen</value>
-  </data>
-  <data name="unassigned" xml:space="preserve">
-    <value>Nicht zugewiesen</value>
-  </data>
-  <data name="assigned-to-me" xml:space="preserve">
-    <value>Mir zugewiesen</value>
-  </data>
-  <data name="run-test-again" xml:space="preserve">
-    <value>Erneut ausführen</value>
-  </data>
-  <data name="assigned-to" xml:space="preserve">
-    <value>Zugewiesen an</value>
-  </data>
-  <data name="tenant" xml:space="preserve">
-    <value>Mandant</value>
-  </data>
-  <data name="tenants" xml:space="preserve">
-    <value>Mandanten</value>
-  </data>
-  <data name="id" xml:space="preserve">
-    <value>ID</value>
-  </data>
-  <data name="expiry" xml:space="preserve">
-    <value>Ablauf</value>
-  </data>
-  <data name="confirm-delete-title" xml:space="preserve">
-    <value>Element löschen?</value>
-  </data>
-  <data name="confirm-delete-message" xml:space="preserve">
-    <value>Möchten Sie dieses Element wirklich löschen?</value>
-  </data>
-  <data name="api-keys" xml:space="preserve">
-    <value>API-Schlüssel</value>
+  <data name="all" xml:space="preserve">
+    <value>Alle</value>
   </data>
   <data name="api-key" xml:space="preserve">
     <value>API-Schlüssel</value>
   </data>
-  <data name="test-case-variables-description" xml:space="preserve">
-    <value>Testfallvariablen enthalten Parameter, die Umgebungsvariablen überschreiben und mit Vorlagen verwendet werden können, um Vorlagen anzupassen. Ein Testparametername ist eindeutig und es kann nur einen mit diesem Namen geben. Datengetriebene Testfälle können mehrere Konfigurationssätze haben und ein Testfall wird einmal pro Datenzeile ausgeführt.
-
-Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen eines Testfalls wird {{Key}} durch eine Variable mit dem Namen {{Key}} ersetzt.</value>
+  <data name="api-keys" xml:space="preserve">
+    <value>API-Schlüssel</value>
   </data>
-  <data name="variable-key" xml:space="preserve">
-    <value>Name</value>
+  <data name="api-keys-description" xml:space="preserve">
+    <value>Zugriff auf Token- und API -Schlüssel</value>
   </data>
-  <data name="variable-value" xml:space="preserve">
-    <value>Wert</value>
+  <data name="api-tests" xml:space="preserve">
+    <value>API-Tests</value>
   </data>
-  <data name="requirement-coverage" xml:space="preserve">
-    <value>Anforderungsabdeckung</value>
+  <data name="archive-test-run" xml:space="preserve">
+    <value>Archiv -Testlauf</value>
   </data>
-  <data name="users" xml:space="preserve">
-    <value>Benutzer</value>
+  <data name="archive-test-run-description" xml:space="preserve">
+    <value>Archiviert den Testlauf und verbirgt ihn vor bestimmten Ansichten der Benutzeroberfläche</value>
   </data>
-  <data name="permission-none" xml:space="preserve">
-    <value>Keine</value>
+  <data name="assign-all-unassigned-to-ai" xml:space="preserve">
+    <value>Weisen Sie AI -Läufer nicht zu, ohne zugewiesen zu sein</value>
   </data>
-  <data name="permission-read" xml:space="preserve">
-    <value>Nur Lesen</value>
+  <data name="assign-all-unassigned-to-ai-description" xml:space="preserve">
+    <value>Weist alle nicht zugewiesenen Testfälle dem KI -Läufer zu, der die Tests im Hintergrund durchführt</value>
   </data>
-  <data name="permission-write" xml:space="preserve">
-    <value>Schreiben</value>
+  <data name="assign-all-unassigned-to-me" xml:space="preserve">
+    <value>Alle nicht zugewiesenen mir zuweisen..</value>
   </data>
-  <data name="permission-delete" xml:space="preserve">
-    <value>Löschen</value>
+  <data name="assign-all-unassigned-to-me-description" xml:space="preserve">
+    <value>Weist alle derzeit nicht zugewiesenen Tests dem aktuellen Benutzer zu</value>
   </data>
-  <data name="role-read-only" xml:space="preserve">
-    <value>Nur Lesen</value>
+  <data name="assigned-to" xml:space="preserve">
+    <value>Zugewiesen an</value>
   </data>
-  <data name="role-site-admin" xml:space="preserve">
-    <value>Seitenadministrator</value>
+  <data name="assigned-to-me" xml:space="preserve">
+    <value>Mir zugewiesen</value>
   </data>
-  <data name="role-tenant-admin" xml:space="preserve">
-    <value>Administrator</value>
+  <data name="assigning-tests" xml:space="preserve">
+    <value>Tests werden zugewiesen..</value>
   </data>
-  <data name="role-regular-user" xml:space="preserve">
-    <value>Standardbenutzer</value>
+  <data name="assign-to-ai-runner" xml:space="preserve">
+    <value>AI Runner zuweisen</value>
   </data>
-  <data name="missing-permission-general" xml:space="preserve">
-    <value>Sie haben nicht die erforderlichen Berechtigungen, um diesen Inhalt anzuzeigen</value>
-  </data>
-  <data name="ci-cd" xml:space="preserve">
-    <value>CI/CD</value>
-  </data>
-  <data name="test-suite-variables-description" xml:space="preserve">
-    <value>Diese Variablen werden zu Tests hinzugefügt, die aus dieser Testsuite ausgeführt werden</value>
+  <data name="attachments" xml:space="preserve">
+    <value>Anhänge</value>
   </data>
   <data name="automation" xml:space="preserve">
     <value>Automatisierung</value>
   </data>
+  <data name="automation-ci-cd-add-outside-pipelines" xml:space="preserve">
+    <value>CI/CD für Ergebnisse indizieren</value>
+  </data>
+  <data name="automation-ci-cd-add-outside-pipelines-description" xml:space="preserve">
+    <value>Durchsucht das CI/CD-System nach Testergebnissen für alle Pipelines, auch solche, die nicht aus Test Bucket gestartet wurden</value>
+  </data>
+  <data name="automation-ci-cd-description" xml:space="preserve">
+    <value>Wählen Sie das CI/CD-System aus, das diese Testsuite ausführt</value>
+  </data>
+  <data name="automation-default-ci-cd-ref-description" xml:space="preserve">
+    <value>Wählen Sie den Standard-Branch / die Referenz aus</value>
+  </data>
+  <data name="backup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
+  <data name="batch-tag" xml:space="preserve">
+    <value>Stapelaktualisierung..</value>
+  </data>
+  <data name="batch-tag-description" xml:space="preserve">
+    <value>Verknüpfen Sie eine Anforderung oder ändern Sie ein Feld für alle Nachfolger.</value>
+  </data>
+  <data name="batch-updating-tests" xml:space="preserve">
+    <value>Bitte warten. Tests aktualisieren ..</value>
+  </data>
+  <data name="blocked" xml:space="preserve">
+    <value>Blockiert</value>
+  </data>
+  <data name="board" xml:space="preserve">
+    <value>Planke</value>
+  </data>
+  <data name="browse" xml:space="preserve">
+    <value>Durchsuchen</value>
+    <comment>Browse for file or similar</comment>
+  </data>
+  <data name="calendar" xml:space="preserve">
+    <value>Kalender</value>
+  </data>
+  <data name="callstack" xml:space="preserve">
+    <value>Aufrufstapel</value>
+  </data>
+  <data name="capture-screenshot-on-this-device" xml:space="preserve">
+    <value>Screenshot auf diesem Gerät aufnehmen</value>
+  </data>
+  <data name="changes" xml:space="preserve">
+    <value>Änderungen</value>
+  </data>
+  <data name="chat" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="ci-cd" xml:space="preserve">
+    <value>CI/CD</value>
+  </data>
+  <data name="ci-cd-job" xml:space="preserve">
+    <value>CI/CD-Job</value>
+  </data>
+  <data name="ci-cd-jobs" xml:space="preserve">
+    <value>CI/CD-Jobs</value>
+  </data>
   <data name="ci-cd-ref" xml:space="preserve">
     <value>CI/CD-Ref. (Git)</value>
   </data>
-  <data name="test-accounts" xml:space="preserve">
-    <value>Testkonten</value>
+  <data name="ci-cd-system" xml:space="preserve">
+    <value>CI/CD-System</value>
   </data>
-  <data name="test-resources" xml:space="preserve">
-    <value>Testressourcen</value>
+  <data name="code" xml:space="preserve">
+    <value>Code</value>
   </data>
-  <data name="model" xml:space="preserve">
-    <value>Modell</value>
+  <data name="column" xml:space="preserve">
+    <value>Spalte</value>
   </data>
-  <data name="roles" xml:space="preserve">
-    <value>Rollen</value>
+  <data name="components" xml:space="preserve">
+    <value>Komponenten</value>
+  </data>
+  <data name="confirm-archive-message" xml:space="preserve">
+    <value>Möchten Sie diesen Artikel wirklich archivieren?</value>
+  </data>
+  <data name="confirm-archive-title" xml:space="preserve">
+    <value>Archivartikel?</value>
+  </data>
+  <data name="confirm-delete-message" xml:space="preserve">
+    <value>Möchten Sie dieses Element wirklich löschen?</value>
+  </data>
+  <data name="confirm-delete-title" xml:space="preserve">
+    <value>Element löschen?</value>
+  </data>
+  <data name="continue" xml:space="preserve">
+    <value>Weitermachen</value>
+  </data>
+  <data name="copied-to-clipboard-notification" xml:space="preserve">
+    <value>In die Zwischenablage kopiert</value>
+  </data>
+  <data name="coverage" xml:space="preserve">
+    <value>Berichterstattung</value>
+  </data>
+  <data name="coverage-matrix" xml:space="preserve">
+    <value>Abdeckungsmatrix</value>
+  </data>
+  <data name="created" xml:space="preserve">
+    <value>Erstellt</value>
+  </data>
+  <data name="create-test-run" xml:space="preserve">
+    <value>Lauf erstellen</value>
+  </data>
+  <data name="dashboard" xml:space="preserve">
+    <value>Armaturenbrett</value>
+  </data>
+  <data name="dashboards" xml:space="preserve">
+    <value>Dashboards</value>
+  </data>
+  <data name="data-source" xml:space="preserve">
+    <value>Datenquelle</value>
+  </data>
+  <data name="default-reviewers" xml:space="preserve">
+    <value>Standardprüfer</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="delete-folder" xml:space="preserve">
+    <value>Ordner löschen</value>
+  </data>
+  <data name="delete-many-test-case-runs" xml:space="preserve">
+    <value>Löschen Sie {0} Testfallläufe</value>
+  </data>
+  <data name="delete-many-test-case-runs-description" xml:space="preserve">
+    <value>Löscht alle ausgewählten Testfallläufe</value>
+  </data>
+  <data name="delete-run" xml:space="preserve">
+    <value>Lauf löschen</value>
+  </data>
+  <data name="delete-test" xml:space="preserve">
+    <value>Test löschen</value>
+  </data>
+  <data name="delete-test-case-run-fmt" xml:space="preserve">
+    <value>{0} löschen</value>
+  </data>
+  <data name="delete-test-repository-folder-description" xml:space="preserve">
+    <value>Löscht den Ordner, alle untergeordneten Ordner, alle Testsuiten und alle Testfälle in diesen Ordnern</value>
+  </data>
+  <data name="delete-test-run" xml:space="preserve">
+    <value>Lauf löschen</value>
+  </data>
+  <data name="delete-test-run-description" xml:space="preserve">
+    <value>Löscht den Testlauf und alle Ergebnisse</value>
+  </data>
+  <data name="delete-test-suite" xml:space="preserve">
+    <value>Testsuite löschen</value>
+  </data>
+  <data name="delete-test-suite-folder-description" xml:space="preserve">
+    <value>Löscht den Testsuite -Ordner, alle untergeordneten Ordner und alle Testfälle in diesen Ordnern</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="duplicate-test" xml:space="preserve">
+    <value>Test duplizieren</value>
+  </data>
+  <data name="duplicate-test-run" xml:space="preserve">
+    <value>Lauf duplizieren</value>
+  </data>
+  <data name="duplicating-test-run" xml:space="preserve">
+    <value>Duplizierter Lauf ..</value>
+  </data>
+  <data name="duration" xml:space="preserve">
+    <value>Dauer</value>
+  </data>
+  <data name="e2e-tests" xml:space="preserve">
+    <value>E2E-Tests</value>
+  </data>
+  <data name="edit" xml:space="preserve">
+    <value>Bearbeiten</value>
+  </data>
+  <data name="edit-folder" xml:space="preserve">
+    <value>Ordner bearbeiten</value>
+  </data>
+  <data name="edit-metric" xml:space="preserve">
+    <value>Metrik bearbeiten</value>
+  </data>
+  <data name="edit-test-run" xml:space="preserve">
+    <value>Lauf bearbeiten</value>
+  </data>
+  <data name="email" xml:space="preserve">
+    <value>E-Mail</value>
+  </data>
+  <data name="enabled" xml:space="preserve">
+    <value>Aktiviert</value>
+  </data>
+  <data name="end-date" xml:space="preserve">
+    <value>Enddatum</value>
+  </data>
+  <data name="expiry" xml:space="preserve">
+    <value>Ablauf</value>
+  </data>
+  <data name="explorer" xml:space="preserve">
+    <value>Forscherin</value>
+  </data>
+  <data name="export-test-suite" xml:space="preserve">
+    <value>Exporttestsuite</value>
+  </data>
+  <data name="export-test-suite-description" xml:space="preserve">
+    <value>Exportiert alle Tests für die Testsuite</value>
+  </data>
+  <data name="external-id" xml:space="preserve">
+    <value>Externe ID</value>
+  </data>
+  <data name="failed" xml:space="preserve">
+    <value>Fehlgeschlagen</value>
+  </data>
+  <data name="failed-tests" xml:space="preserve">
+    <value>Fehlgeschlagene Tests</value>
+  </data>
+  <data name="failures" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="features" xml:space="preserve">
+    <value>Funktionen</value>
   </data>
   <data name="field" xml:space="preserve">
     <value>Feld</value>
   </data>
   <data name="fields" xml:space="preserve">
     <value>Felder</value>
-  </data>
-  <data name="requirements" xml:space="preserve">
-    <value>Anforderungen</value>
-  </data>
-  <data name="add-to-run" xml:space="preserve">
-    <value>Zum Lauf hinzufügen</value>
-  </data>
-  <data name="run" xml:space="preserve">
-    <value>Lauf</value>
-  </data>
-  <data name="duration" xml:space="preserve">
-    <value>Dauer</value>
-  </data>
-  <data name="ci-cd-system" xml:space="preserve">
-    <value>CI/CD-System</value>
-  </data>
-  <data name="modified" xml:space="preserve">
-    <value>Geändert</value>
-  </data>
-  <data name="manufacturer" xml:space="preserve">
-    <value>Hersteller</value>
-  </data>
-  <data name="result-inconclusive" xml:space="preserve">
-    <value>Unschlüssig</value>
-  </data>
-  <data name="delete" xml:space="preserve">
-    <value>Löschen</value>
-  </data>
-  <data name="groupby-category" xml:space="preserve">
-    <value>Kategorie</value>
-  </data>
-  <data name="groupby-result" xml:space="preserve">
-    <value>Ergebnis</value>
-  </data>
-  <data name="filter-tests" xml:space="preserve">
-    <value>Tests filtern</value>
-  </data>
-  <data name="search-tests" xml:space="preserve">
-    <value>Tests suchen</value>
-  </data>
-  <data name="created" xml:space="preserve">
-    <value>Erstellt</value>
-  </data>
-  <data name="start-date" xml:space="preserve">
-    <value>Startdatum</value>
-  </data>
-  <data name="end-date" xml:space="preserve">
-    <value>Enddatum</value>
-  </data>
-  <data name="link-issue" xml:space="preserve">
-    <value>Problem verknüpfen</value>
   </data>
   <data name="file-name" xml:space="preserve">
     <value>Name</value>
@@ -341,467 +448,14 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="file-type" xml:space="preserve">
     <value>Typ</value>
   </data>
-  <data name="no-permission-title" xml:space="preserve">
-    <value>Keine Berechtigung!</value>
-  </data>
-  <data name="no-permission-message" xml:space="preserve">
-    <value>Sie haben keine Berechtigung, diese Aktion auszuführen. Wenden Sie sich an den Administrator, wenn Sie eine Berechtigung benötigen.</value>
-  </data>
-  <data name="required-resources" xml:space="preserve">
-    <value>Erforderliche Ressourcen</value>
-  </data>
-  <data name="runner" xml:space="preserve">
-    <value>Runner</value>
-  </data>
-  <data name="runners" xml:space="preserve">
-    <value>Runner</value>
-  </data>
-  <data name="teams" xml:space="preserve">
-    <value>Teams</value>
-  </data>
-  <data name="test-suites" xml:space="preserve">
-    <value>Testsuiten</value>
-  </data>
-  <data name="test-cases" xml:space="preserve">
-    <value>Testfälle</value>
-  </data>
-  <data name="recent" xml:space="preserve">
-    <value>Zuletzt</value>
-  </data>
-  <data name="user" xml:space="preserve">
-    <value>Benutzer</value>
-  </data>
-  <data name="batch-tag" xml:space="preserve">
-    <value>Stapelaktualisierung..</value>
-  </data>
-  <data name="traceability" xml:space="preserve">
-    <value>Rückverfolgbarkeit</value>
-  </data>
-  <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
-    <value>Ziehen Sie Anforderungen hierher, um eine Verbindung zwischen Tests und der Anforderung herzustellen</value>
-  </data>
-  <data name="link-requirement-to-test" xml:space="preserve">
-    <value>Anforderung mit Test verknüpfen</value>
-  </data>
-  <data name="number-of-tests" xml:space="preserve">
-    <value>Tests</value>
-  </data>
-  <data name="requirement" xml:space="preserve">
-    <value>Anforderung</value>
-  </data>
-  <data name="new-folder" xml:space="preserve">
-    <value>Ordner hinzufügen</value>
-  </data>
-  <data name="test-coverage" xml:space="preserve">
-    <value>Testabdeckung</value>
-  </data>
-  <data name="icon" xml:space="preserve">
-    <value>Icon</value>
-  </data>
-  <data name="icons" xml:space="preserve">
-    <value>Icons</value>
-  </data>
-  <data name="option" xml:space="preserve">
-    <value>Option</value>
-  </data>
-  <data name="data-source" xml:space="preserve">
-    <value>Datenquelle</value>
-  </data>
-  <data name="options" xml:space="preserve">
-    <value>Optionen</value>
-  </data>
-  <data name="advanced" xml:space="preserve">
-    <value>Erweitert</value>
-  </data>
-  <data name="preview" xml:space="preserve">
-    <value>Vorschau</value>
-  </data>
-  <data name="copied-to-clipboard-notification" xml:space="preserve">
-    <value>In die Zwischenablage kopiert</value>
-  </data>
-  <data name="backup" xml:space="preserve">
-    <value>Backup</value>
-  </data>
-  <data name="rename" xml:space="preserve">
-    <value>Umbenennen</value>
-  </data>
-  <data name="create-test-run" xml:space="preserve">
-    <value>Lauf erstellen</value>
-  </data>
-  <data name="edit-test-run" xml:space="preserve">
-    <value>Lauf bearbeiten</value>
-  </data>
-  <data name="pick-test-run" xml:space="preserve">
-    <value>Lauf auswählen</value>
-  </data>
-  <data name="duplicate-test-run" xml:space="preserve">
-    <value>Lauf duplizieren</value>
-  </data>
-  <data name="delete-test-run" xml:space="preserve">
-    <value>Lauf löschen</value>
-  </data>
-  <data name="new-test" xml:space="preserve">
-    <value>Neuer Test</value>
-  </data>
-  <data name="new-shared-steps" xml:space="preserve">
-    <value>Neue gemeinsame Schritte</value>
-  </data>
-  <data name="permission-approve" xml:space="preserve">
-    <value>Genehmigen</value>
-  </data>
-  <data name="permission-execute" xml:space="preserve">
-    <value>Ausführen</value>
-  </data>
-  <data name="milestones" xml:space="preserve">
-    <value>Meilensteine</value>
-  </data>
-  <data name="calendar" xml:space="preserve">
-    <value>Kalender</value>
-  </data>
-  <data name="manage" xml:space="preserve">
-    <value>Verwalten</value>
-  </data>
-  <data name="launch-automation" xml:space="preserve">
-    <value>Automatisierung starten</value>
-  </data>
-  <data name="test-automation" xml:space="preserve">
-    <value>Testautomatisierung</value>
-  </data>
-  <data name="coverage-matrix" xml:space="preserve">
-    <value>Abdeckungsmatrix</value>
-  </data>
-  <data name="column" xml:space="preserve">
-    <value>Spalte</value>
-  </data>
-  <data name="row" xml:space="preserve">
-    <value>Zeile</value>
-  </data>
-  <data name="external-id" xml:space="preserve">
-    <value>Externe ID</value>
-  </data>
-  <data name="slug" xml:space="preserve">
-    <value>SLUG</value>
-  </data>
-  <data name="test-runs" xml:space="preserve">
-    <value>Testläufe</value>
-  </data>
-  <data name="my-backlog" xml:space="preserve">
-    <value>Mein Backlog</value>
-  </data>
-  <data name="failures" xml:space="preserve">
-    <value>Fehler</value>
-  </data>
-  <data name="pipelines" xml:space="preserve">
-    <value>Pipelines</value>
-  </data>
-  <data name="tests" xml:space="preserve">
-    <value>Tests</value>
-  </data>
-  <data name="add-comment" xml:space="preserve">
-    <value>Kommentar hinzufügen</value>
-  </data>
-  <data name="logged-action-approved" xml:space="preserve">
-    <value>{0} hat dies genehmigt</value>
-  </data>
-  <data name="logged-action-statechange" xml:space="preserve">
-    <value>{0} hat den Status auf {1} geändert</value>
-  </data>
-  <data name="delete-test" xml:space="preserve">
-    <value>Test löschen</value>
-  </data>
-  <data name="delete-run" xml:space="preserve">
-    <value>Lauf löschen</value>
-  </data>
-  <data name="duplicate-test" xml:space="preserve">
-    <value>Test duplizieren</value>
-  </data>
-  <data name="delete-test-suite" xml:space="preserve">
-    <value>Testsuite löschen</value>
-  </data>
-  <data name="new-test-suite" xml:space="preserve">
-    <value>Neue Testsuite</value>
-  </data>
-  <data name="batch-tag-description" xml:space="preserve">
-    <value>Verknüpfen Sie eine Anforderung oder ändern Sie ein Feld für alle Nachfolger.</value>
-  </data>
-  <data name="import-test-results" xml:space="preserve">
-    <value>Testergebnisse importieren..</value>
-  </data>
-  <data name="run-folder" xml:space="preserve">
-    <value>Ordner ausführen</value>
-  </data>
-  <data name="edit-folder" xml:space="preserve">
-    <value>Ordner bearbeiten</value>
-  </data>
-  <data name="delete-folder" xml:space="preserve">
-    <value>Ordner löschen</value>
-  </data>
-  <data name="enabled" xml:space="preserve">
-    <value>Aktiviert</value>
-  </data>
-  <data name="testing" xml:space="preserve">
-    <value>Testen</value>
-  </data>
-  <data name="reporting" xml:space="preserve">
-    <value>Berichterstattung</value>
-  </data>
-  <data name="issues" xml:space="preserve">
-    <value>Probleme</value>
-  </data>
-  <data name="logged-action-commit" xml:space="preserve">
-    <value>{0} hat einen Commit referenziert: {1}</value>
-  </data>
-  <data name="state" xml:space="preserve">
-    <value>Status</value>
-  </data>
-  <data name="logged-action-assignedto" xml:space="preserve">
-    <value>{0} hat dies {1} zugewiesen</value>
-  </data>
-  <data name="type" xml:space="preserve">
-    <value>Typ</value>
-  </data>
-  <data name="label" xml:space="preserve">
-    <value>Label</value>
-  </data>
-  <data name="code" xml:space="preserve">
-    <value>Code</value>
-  </data>
-  <data name="test-results" xml:space="preserve">
-    <value>Testergebnisse</value>
-  </data>
-  <data name="all" xml:space="preserve">
-    <value>Alle</value>
-  </data>
-  <data name="issue" xml:space="preserve">
-    <value>Problem</value>
-  </data>
-  <data name="title" xml:space="preserve">
-    <value>Titel</value>
-  </data>
-  <data name="logged-action-component" xml:space="preserve">
-    <value>{0} hat die Komponente auf {1} geändert</value>
-  </data>
-  <data name="logged-action-component-removed" xml:space="preserve">
-    <value>{0} hat die Komponente entfernt</value>
-  </data>
-  <data name="run-test-suite" xml:space="preserve">
-    <value>Testsuite ausführen</value>
-  </data>
-  <data name="e2e-tests" xml:space="preserve">
-    <value>E2E-Tests</value>
-  </data>
-  <data name="integration-tests" xml:space="preserve">
-    <value>Integrationstests</value>
-  </data>
-  <data name="unit-tests" xml:space="preserve">
-    <value>Unit-Tests</value>
-  </data>
-  <data name="api-tests" xml:space="preserve">
-    <value>API-Tests</value>
-  </data>
-  <data name="features" xml:space="preserve">
-    <value>Funktionen</value>
-  </data>
-  <data name="components" xml:space="preserve">
-    <value>Komponenten</value>
-  </data>
-  <data name="automation-ci-cd-description" xml:space="preserve">
-    <value>Wählen Sie das CI/CD-System aus, das diese Testsuite ausführt</value>
-  </data>
-  <data name="automation-default-ci-cd-ref-description" xml:space="preserve">
-    <value>Wählen Sie den Standard-Branch / die Referenz aus</value>
-  </data>
-  <data name="required-resources-description" xml:space="preserve">
-    <value>Erforderliche Ressourcen, die dem Testlauf zugewiesen werden, wenn automatisierte Tests ausgeführt werden.</value>
-  </data>
-  <data name="resource-type" xml:space="preserve">
-    <value>Ressourcentyp</value>
-  </data>
-  <data name="add-resource" xml:space="preserve">
-    <value>Ressource hinzufügen</value>
-  </data>
-  <data name="add-account" xml:space="preserve">
-    <value>Konto hinzufügen</value>
-  </data>
-  <data name="automation-ci-cd-add-outside-pipelines" xml:space="preserve">
-    <value>CI/CD für Ergebnisse indizieren</value>
-  </data>
-  <data name="automation-ci-cd-add-outside-pipelines-description" xml:space="preserve">
-    <value>Durchsucht das CI/CD-System nach Testergebnissen für alle Pipelines, auch solche, die nicht aus Test Bucket gestartet wurden</value>
-  </data>
-  <data name="ci-cd-jobs" xml:space="preserve">
-    <value>CI/CD-Jobs</value>
-  </data>
-  <data name="ci-cd-job" xml:space="preserve">
-    <value>CI/CD-Job</value>
-  </data>
-  <data name="new-test-template" xml:space="preserve">
-    <value>Neue Testvorlage</value>
-  </data>
-  <data name="add" xml:space="preserve">
-    <value>Hinzufügen</value>
-  </data>
-  <data name="new-test-suite-description" xml:space="preserve">
-    <value>Erstellen Sie eine neue leere Testsuite, um Testfälle zu speichern</value>
-  </data>
-  <data name="new-test-description" xml:space="preserve">
-    <value>Erstellen Sie einen neuen Testfall</value>
-  </data>
-  <data name="new-test-template-description" xml:space="preserve">
-    <value>Erstellen Sie eine gemeinsame Vorlage für Testfälle, bei denen der Text von allen Testfällen verwendet wird, die die Vorlage nutzen</value>
-  </data>
-  <data name="logged-action-add-milestone" xml:space="preserve">
-    <value>{0} hat einen Meilenstein hinzugefügt: {1}</value>
-  </data>
-  <data name="logged-action-remove-milestone" xml:space="preserve">
-    <value>{0} hat einen Meilenstein entfernt: {1}</value>
-  </data>
-  <data name="logged-action-remove-component" xml:space="preserve">
-    <value>{0} hat die Komponente {1} entfernt</value>
-  </data>
-  <data name="logged-action-add-component" xml:space="preserve">
-    <value>{0} hat eine Komponente hinzugefügt: {1}</value>
-  </data>
-  <data name="search" xml:space="preserve">
-    <value>Suchen</value>
-  </data>
-  <data name="overview" xml:space="preserve">
-    <value>Übersicht</value>
-  </data>
-  <data name="edit" xml:space="preserve">
-    <value>Bearbeiten</value>
-  </data>
-  <data name="test-log" xml:space="preserve">
-    <value>Testprotokoll</value>
-  </data>
-  <data name="capture-screenshot-on-this-device" xml:space="preserve">
-    <value>Screenshot auf diesem Gerät aufnehmen</value>
-  </data>
-  <data name="logout" xml:space="preserve">
-    <value>Abmelden</value>
-  </data>
-  <data name="account" xml:space="preserve">
-    <value>Konto</value>
-  </data>
-  <data name="state-open" xml:space="preserve">
-    <value>Offen</value>
-  </data>
-  <data name="state-closed" xml:space="preserve">
-    <value>Geschlossen</value>
-  </data>
-  <data name="delete-test-run-description" xml:space="preserve">
-    <value>Löscht den Testlauf und alle Ergebnisse</value>
-  </data>
-  <data name="assigning-tests" xml:space="preserve">
-    <value>Tests werden zugewiesen..</value>
-  </data>
-  <data name="assign-all-unassigned-to-me" xml:space="preserve">
-    <value>Alle nicht zugewiesenen mir zuweisen..</value>
-  </data>
-  <data name="assign-all-unassigned-to-me-description" xml:space="preserve">
-    <value>Weist alle derzeit nicht zugewiesenen Tests dem aktuellen Benutzer zu</value>
-  </data>
-  <data name="latest-test-results" xml:space="preserve">
-    <value>Neueste Testergebnisse</value>
-  </data>
-  <data name="std-out" xml:space="preserve">
-    <value>Standardausgabe</value>
-  </data>
-  <data name="std-err" xml:space="preserve">
-    <value>Standardfehler</value>
-  </data>
-  <data name="username" xml:space="preserve">
-    <value>Benutzername</value>
-  </data>
-  <data name="email" xml:space="preserve">
-    <value>E-Mail</value>
-  </data>
-  <data name="access-failed-count" xml:space="preserve">
-    <value>Zugriffsfehleranzahl</value>
-  </data>
-  <data name="locked" xml:space="preserve">
-    <value>Gesperrt</value>
-  </data>
-  <data name="set-light-mode" xml:space="preserve">
-    <value>Lichtmodus einstellen</value>
-  </data>
-  <data name="set-dark-mode" xml:space="preserve">
-    <value>Dunkelmodus einstellen</value>
-  </data>
-  <data name="open" xml:space="preserve">
-    <value>Öffnen</value>
-  </data>
-  <data name="labels" xml:space="preserve">
-    <value>Labels</value>
-  </data>
-  <data name="system" xml:space="preserve">
-    <value>System</value>
-  </data>
-  <data name="menu-new-description" xml:space="preserve">
-    <value>Neue Elemente hinzufügen</value>
-  </data>
-  <data name="open-command-palette" xml:space="preserve">
-    <value>Befehls-Palette öffnen</value>
+  <data name="filter-tests" xml:space="preserve">
+    <value>Tests filtern</value>
   </data>
   <data name="general" xml:space="preserve">
     <value>Allgemein</value>
   </data>
-  <data name="metrics" xml:space="preserve">
-    <value>Metriken</value>
-  </data>
-  <data name="add-metric" xml:space="preserve">
-    <value>Metrik hinzufügen</value>
-  </data>
-  <data name="welcome-message" xml:space="preserve">
-    <value>Willkommen bei Test Bucket</value>
-  </data>
-  <data name="welcome-add-project-title" xml:space="preserve">
-    <value>Neues Projekt hinzufügen</value>
-  </data>
-  <data name="welcome-add-project-message" xml:space="preserve">
-    <value>Fügen Sie ein Projekt hinzu, bevor Sie Tests, Probleme, Anforderungen oder andere Entitäten hinzufügen.</value>
-  </data>
-  <data name="add-new-project" xml:space="preserve">
-    <value>Neues Projekt hinzufügen</value>
-  </data>
-  <data name="add-new-team" xml:space="preserve">
-    <value>Neues Team hinzufügen</value>
-  </data>
-  <data name="max-file-size" xml:space="preserve">
-    <value>Maximale Dateigröße: {0}</value>
-  </data>
-  <data name="import-test-cases" xml:space="preserve">
-    <value>Testfälle importieren</value>
-  </data>
-  <data name="Value" xml:space="preserve">
-    <value>Wert</value>
-    <comment>Metrikwert</comment>
-  </data>
-  <data name="unit" xml:space="preserve">
-    <value>Einheit</value>
-    <comment>Metrikeinheit (z.B. ms, fps, bps)</comment>
-  </data>
-  <data name="meter-name" xml:space="preserve">
-    <value>Zähler</value>
-    <comment>Anbieter der Metriken</comment>
-  </data>
-  <data name="edit-metric" xml:space="preserve">
-    <value>Metrik bearbeiten</value>
-  </data>
-  <data name="run-n-tests" xml:space="preserve">
-    <value>{0} Tests ausführen</value>
-  </data>
-  <data name="add-heuristic" xml:space="preserve">
-    <value>Heuristik hinzufügen</value>
-  </data>
-  <data name="history" xml:space="preserve">
-    <value>Verlauf</value>
-  </data>
-  <data name="main" xml:space="preserve">
-    <value>Haupt</value>
-  </data>
-  <data name="run-test" xml:space="preserve">
-    <value>Test ausführen</value>
+  <data name="go-to-run" xml:space="preserve">
+    <value>Gehen Sie rennen</value>
   </data>
   <data name="go-to-testcase" xml:space="preserve">
     <value>Zum Testfall gehen</value>
@@ -809,29 +463,214 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="go-to-testcase-description" xml:space="preserve">
     <value>Testfallansicht öffnen</value>
   </data>
-  <data name="no-variables-alert" xml:space="preserve">
-    <value>Es wurden keine Variablen hinzugefügt</value>
+  <data name="grid" xml:space="preserve">
+    <value>Rost</value>
   </data>
-  <data name="pre-conditions" xml:space="preserve">
-    <value>Vorbedingungen</value>
+  <data name="groupby-category" xml:space="preserve">
+    <value>Kategorie</value>
   </data>
-  <data name="post-conditions" xml:space="preserve">
-    <value>Nachbedingungen</value>
+  <data name="groupby-result" xml:space="preserve">
+    <value>Ergebnis</value>
   </data>
-  <data name="add-variable" xml:space="preserve">
-    <value>Variable hinzufügen</value>
+  <data name="history" xml:space="preserve">
+    <value>Verlauf</value>
   </data>
-  <data name="test-case-runs" xml:space="preserve">
-    <value>Testergebnisse</value>
+  <data name="icon" xml:space="preserve">
+    <value>Icon</value>
+  </data>
+  <data name="icons" xml:space="preserve">
+    <value>Icons</value>
+  </data>
+  <data name="id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="identity" xml:space="preserve">
+    <value>Identität</value>
+  </data>
+  <data name="import-test-cases" xml:space="preserve">
+    <value>Testfälle importieren</value>
+  </data>
+  <data name="import-test-results" xml:space="preserve">
+    <value>Testergebnisse importieren..</value>
   </data>
   <data name="incomplete" xml:space="preserve">
     <value>Unvollständig</value>
   </data>
-  <data name="recent-test-runs" xml:space="preserve">
-    <value>Neuere Testläufe</value>
+  <data name="inline-diff" xml:space="preserve">
+    <value>Im Einklang</value>
   </data>
-  <data name="go-to-run" xml:space="preserve">
-    <value>Gehen Sie rennen</value>
+  <data name="input" xml:space="preserve">
+    <value>Eingang</value>
+  </data>
+  <data name="integration-tests" xml:space="preserve">
+    <value>Integrationstests</value>
+  </data>
+  <data name="issue" xml:space="preserve">
+    <value>Problem</value>
+  </data>
+  <data name="issues" xml:space="preserve">
+    <value>Probleme</value>
+  </data>
+  <data name="label" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="labels" xml:space="preserve">
+    <value>Labels</value>
+  </data>
+  <data name="last-seen" xml:space="preserve">
+    <value>Zuletzt gesehen</value>
+    <comment>Time when resource was last seen</comment>
+  </data>
+  <data name="latest" xml:space="preserve">
+    <value>Letzte</value>
+  </data>
+  <data name="latest-test-results" xml:space="preserve">
+    <value>Neueste Testergebnisse</value>
+  </data>
+  <data name="launch-automation" xml:space="preserve">
+    <value>Automatisierung starten</value>
+  </data>
+  <data name="link-issue" xml:space="preserve">
+    <value>Problem verknüpfen</value>
+  </data>
+  <data name="link-requirement-to-test" xml:space="preserve">
+    <value>Anforderung mit Test verknüpfen</value>
+  </data>
+  <data name="list" xml:space="preserve">
+    <value>Liste</value>
+  </data>
+  <data name="locked" xml:space="preserve">
+    <value>Gesperrt</value>
+  </data>
+  <data name="logged-action-add-component" xml:space="preserve">
+    <value>{0} hat eine Komponente hinzugefügt: {1}</value>
+  </data>
+  <data name="logged-action-add-milestone" xml:space="preserve">
+    <value>{0} hat einen Meilenstein hinzugefügt: {1}</value>
+  </data>
+  <data name="logged-action-approved" xml:space="preserve">
+    <value>{0} hat dies genehmigt</value>
+  </data>
+  <data name="logged-action-assignedto" xml:space="preserve">
+    <value>{0} hat dies {1} zugewiesen</value>
+  </data>
+  <data name="logged-action-commit" xml:space="preserve">
+    <value>{0} hat einen Commit referenziert: {1}</value>
+  </data>
+  <data name="logged-action-component" xml:space="preserve">
+    <value>{0} hat die Komponente auf {1} geändert</value>
+  </data>
+  <data name="logged-action-component-removed" xml:space="preserve">
+    <value>{0} hat die Komponente entfernt</value>
+  </data>
+  <data name="logged-action-remove-component" xml:space="preserve">
+    <value>{0} hat die Komponente {1} entfernt</value>
+  </data>
+  <data name="logged-action-remove-milestone" xml:space="preserve">
+    <value>{0} hat einen Meilenstein entfernt: {1}</value>
+  </data>
+  <data name="logged-action-result-changed" xml:space="preserve">
+    <value>{0} hat das Ergebnis in {1} geändert</value>
+  </data>
+  <data name="logged-action-statechange" xml:space="preserve">
+    <value>{0} hat den Status auf {1} geändert</value>
+  </data>
+  <data name="logout" xml:space="preserve">
+    <value>Abmelden</value>
+  </data>
+  <data name="main" xml:space="preserve">
+    <value>Haupt</value>
+  </data>
+  <data name="manage" xml:space="preserve">
+    <value>Verwalten</value>
+  </data>
+  <data name="manage-dashboards" xml:space="preserve">
+    <value>Dashboards verwalten</value>
+  </data>
+  <data name="manufacturer" xml:space="preserve">
+    <value>Hersteller</value>
+  </data>
+  <data name="max-file-size" xml:space="preserve">
+    <value>Maximale Dateigröße: {0}</value>
+  </data>
+  <data name="menu-new-description" xml:space="preserve">
+    <value>Neue Elemente hinzufügen</value>
+  </data>
+  <data name="message" xml:space="preserve">
+    <value>Nachricht</value>
+  </data>
+  <data name="meter-name" xml:space="preserve">
+    <value>Zähler</value>
+    <comment>Anbieter der Metriken</comment>
+  </data>
+  <data name="metrics" xml:space="preserve">
+    <value>Metriken</value>
+  </data>
+  <data name="milestones" xml:space="preserve">
+    <value>Meilensteine</value>
+  </data>
+  <data name="missing-permission-general" xml:space="preserve">
+    <value>Sie haben nicht die erforderlichen Berechtigungen, um diesen Inhalt anzuzeigen</value>
+  </data>
+  <data name="model" xml:space="preserve">
+    <value>Modell</value>
+  </data>
+  <data name="modified" xml:space="preserve">
+    <value>Geändert</value>
+  </data>
+  <data name="more-options" xml:space="preserve">
+    <value>Weitere Optionen</value>
+  </data>
+  <data name="my-backlog" xml:space="preserve">
+    <value>Mein Backlog</value>
+  </data>
+  <data name="name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="new-exploratory-test-charter" xml:space="preserve">
+    <value>Neue Erkundungstestcharter</value>
+  </data>
+  <data name="new-exploratory-test-charter-description" xml:space="preserve">
+    <value>Erstellt eine vordefinierte Charta für Erkundungstests</value>
+  </data>
+  <data name="new-folder" xml:space="preserve">
+    <value>Ordner hinzufügen</value>
+  </data>
+  <data name="new-search-folder" xml:space="preserve">
+    <value>Neuer Suchordner</value>
+  </data>
+  <data name="new-shared-steps" xml:space="preserve">
+    <value>Neue gemeinsame Schritte</value>
+  </data>
+  <data name="new-test" xml:space="preserve">
+    <value>Neuer Test</value>
+  </data>
+  <data name="new-test-description" xml:space="preserve">
+    <value>Erstellen Sie einen neuen Testfall</value>
+  </data>
+  <data name="new-test-suite" xml:space="preserve">
+    <value>Neue Testsuite</value>
+  </data>
+  <data name="new-test-suite-description" xml:space="preserve">
+    <value>Erstellen Sie eine neue leere Testsuite, um Testfälle zu speichern</value>
+  </data>
+  <data name="new-test-template" xml:space="preserve">
+    <value>Neue Testvorlage</value>
+  </data>
+  <data name="new-test-template-description" xml:space="preserve">
+    <value>Erstellen Sie eine gemeinsame Vorlage für Testfälle, bei denen der Text von allen Testfällen verwendet wird, die die Vorlage nutzen</value>
+  </data>
+  <data name="no-permission-message" xml:space="preserve">
+    <value>Sie haben keine Berechtigung, diese Aktion auszuführen. Wenden Sie sich an den Administrator, wenn Sie eine Berechtigung benötigen.</value>
+  </data>
+  <data name="no-permission-title" xml:space="preserve">
+    <value>Keine Berechtigung!</value>
+  </data>
+  <data name="normal-search" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="no-variables-alert" xml:space="preserve">
+    <value>Es wurden keine Variablen hinzugefügt</value>
   </data>
   <data name="number-of-test-case-runs" xml:space="preserve">
     <value>Anzahl der Testfallläufe</value>
@@ -839,26 +678,214 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="number-of-test-cases" xml:space="preserve">
     <value>Anzahl der Testfälle</value>
   </data>
-  <data name="failed-tests" xml:space="preserve">
-    <value>Fehlgeschlagene Tests</value>
+  <data name="number-of-tests" xml:space="preserve">
+    <value>Tests</value>
+  </data>
+  <data name="open" xml:space="preserve">
+    <value>Öffnen</value>
+  </data>
+  <data name="open-command-palette" xml:space="preserve">
+    <value>Befehls-Palette öffnen</value>
+  </data>
+  <data name="option" xml:space="preserve">
+    <value>Option</value>
+  </data>
+  <data name="options" xml:space="preserve">
+    <value>Optionen</value>
+  </data>
+  <data name="output" xml:space="preserve">
+    <value>Ausgabe</value>
+  </data>
+  <data name="overview" xml:space="preserve">
+    <value>Übersicht</value>
   </data>
   <data name="passed" xml:space="preserve">
     <value>Bestanden</value>
   </data>
-  <data name="failed" xml:space="preserve">
-    <value>Fehlgeschlagen</value>
+  <data name="password" xml:space="preserve">
+    <value>Passwort</value>
   </data>
-  <data name="blocked" xml:space="preserve">
+  <data name="permission-approve" xml:space="preserve">
+    <value>Genehmigen</value>
+  </data>
+  <data name="permission-delete" xml:space="preserve">
+    <value>Löschen</value>
+  </data>
+  <data name="permission-execute" xml:space="preserve">
+    <value>Ausführen</value>
+  </data>
+  <data name="permission-none" xml:space="preserve">
+    <value>Keine</value>
+  </data>
+  <data name="permission-read" xml:space="preserve">
+    <value>Nur Lesen</value>
+  </data>
+  <data name="permission-write" xml:space="preserve">
+    <value>Schreiben</value>
+  </data>
+  <data name="pick-test-run" xml:space="preserve">
+    <value>Lauf auswählen</value>
+  </data>
+  <data name="pipelines" xml:space="preserve">
+    <value>Pipelines</value>
+  </data>
+  <data name="post-conditions" xml:space="preserve">
+    <value>Nachbedingungen</value>
+  </data>
+  <data name="pre-conditions" xml:space="preserve">
+    <value>Vorbedingungen</value>
+  </data>
+  <data name="preview" xml:space="preserve">
+    <value>Vorschau</value>
+  </data>
+  <data name="project" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="projects" xml:space="preserve">
+    <value>Projekte</value>
+  </data>
+  <data name="provider" xml:space="preserve">
+    <value>Anbieterin</value>
+    <comment>External system like Jira or Github</comment>
+  </data>
+  <data name="recent" xml:space="preserve">
+    <value>Zuletzt</value>
+  </data>
+  <data name="recent-test-runs" xml:space="preserve">
+    <value>Neuere Testläufe</value>
+  </data>
+  <data name="reload" xml:space="preserve">
+    <value>Neu laden</value>
+  </data>
+  <data name="rename" xml:space="preserve">
+    <value>Umbenennen</value>
+  </data>
+  <data name="reporting" xml:space="preserve">
+    <value>Berichterstattung</value>
+  </data>
+  <data name="required-resources" xml:space="preserve">
+    <value>Erforderliche Ressourcen</value>
+  </data>
+  <data name="required-resources-description" xml:space="preserve">
+    <value>Erforderliche Ressourcen, die dem Testlauf zugewiesen werden, wenn automatisierte Tests ausgeführt werden.</value>
+  </data>
+  <data name="requirement" xml:space="preserve">
+    <value>Anforderung</value>
+  </data>
+  <data name="requirement-coverage" xml:space="preserve">
+    <value>Anforderungsabdeckung</value>
+  </data>
+  <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
+    <value>Ziehen Sie Anforderungen hierher, um eine Verbindung zwischen Tests und der Anforderung herzustellen</value>
+  </data>
+  <data name="requirements" xml:space="preserve">
+    <value>Anforderungen</value>
+  </data>
+  <data name="requirements-and-workitems" xml:space="preserve">
+    <value>Anforderungen und Arbeitsgegenstände</value>
+  </data>
+  <data name="resource-disabled" xml:space="preserve">
+    <value>Die Ressource ist deaktiviert. Die Ressource kann nicht mehr oder nicht verfügbar sein.</value>
+  </data>
+  <data name="resource-enabled" xml:space="preserve">
+    <value>Die Ressource ist aktiviert</value>
+  </data>
+  <data name="resource-locked" xml:space="preserve">
+    <value>Die Ressource ist verschlossen.</value>
+  </data>
+  <data name="resource-type" xml:space="preserve">
+    <value>Ressourcentyp</value>
+  </data>
+  <data name="result-blocked" xml:space="preserve">
     <value>Blockiert</value>
   </data>
-  <data name="add-milestone" xml:space="preserve">
-    <value>Meilenstein hinzufügen</value>
+  <data name="result-failed" xml:space="preserve">
+    <value>Fehlgeschlagen</value>
   </data>
-  <data name="new-exploratory-test-charter" xml:space="preserve">
-    <value>Neue Erkundungstestcharter</value>
+  <data name="result-inconclusive" xml:space="preserve">
+    <value>Unschlüssig</value>
   </data>
-  <data name="new-exploratory-test-charter-description" xml:space="preserve">
-    <value>Erstellt eine vordefinierte Charta für Erkundungstests</value>
+  <data name="result-norun" xml:space="preserve">
+    <value>Nicht ausgeführt</value>
+  </data>
+  <data name="result-passed" xml:space="preserve">
+    <value>Bestanden</value>
+  </data>
+  <data name="result-skipped" xml:space="preserve">
+    <value>Übersprungen</value>
+  </data>
+  <data name="review" xml:space="preserve">
+    <value>Rezension</value>
+  </data>
+  <data name="reviewers" xml:space="preserve">
+    <value>Rezensentinnen</value>
+  </data>
+  <data name="role-read-only" xml:space="preserve">
+    <value>Nur Lesen</value>
+  </data>
+  <data name="role-regular-user" xml:space="preserve">
+    <value>Standardbenutzer</value>
+  </data>
+  <data name="roles" xml:space="preserve">
+    <value>Rollen</value>
+  </data>
+  <data name="role-site-admin" xml:space="preserve">
+    <value>Seitenadministrator</value>
+  </data>
+  <data name="role-tenant-admin" xml:space="preserve">
+    <value>Administrator</value>
+  </data>
+  <data name="row" xml:space="preserve">
+    <value>Zeile</value>
+  </data>
+  <data name="run" xml:space="preserve">
+    <value>Lauf</value>
+  </data>
+  <data name="run-failed-again" xml:space="preserve">
+    <value>Run fehlgeschlagene Tests erneut</value>
+    <comment>Creates a new run with only failed tests</comment>
+  </data>
+  <data name="run-failed-again-description" xml:space="preserve">
+    <value>Dupliziert den Lauf, enthält jedoch nur fehlgeschlagene Tests</value>
+  </data>
+  <data name="run-folder" xml:space="preserve">
+    <value>Ordner ausführen</value>
+  </data>
+  <data name="runner" xml:space="preserve">
+    <value>Runner</value>
+  </data>
+  <data name="runners" xml:space="preserve">
+    <value>Runner</value>
+  </data>
+  <data name="run-n-tests" xml:space="preserve">
+    <value>{0} Tests ausführen</value>
+  </data>
+  <data name="run-test" xml:space="preserve">
+    <value>Test ausführen</value>
+  </data>
+  <data name="run-test-again" xml:space="preserve">
+    <value>Erneut ausführen</value>
+  </data>
+  <data name="run-test-case-description" xml:space="preserve">
+    <value>Führen Sie den aktiven Testfall aus</value>
+  </data>
+  <data name="run-test-suite" xml:space="preserve">
+    <value>Testsuite ausführen</value>
+  </data>
+  <data name="search" xml:space="preserve">
+    <value>Suchen</value>
+  </data>
+  <data name="search-tests" xml:space="preserve">
+    <value>Tests suchen</value>
+  </data>
+  <data name="select-test-suite" xml:space="preserve">
+    <value>Wählen Sie Testsuite</value>
+  </data>
+  <data name="select-user" xml:space="preserve">
+    <value>Benutzer auswählen</value>
+  </data>
+  <data name="semantic-search" xml:space="preserve">
+    <value>Semantisch</value>
   </data>
   <data name="session-duration" xml:space="preserve">
     <value>Sitzungsdauer</value>
@@ -867,168 +894,56 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
     <value>Sitzungsprotokoll</value>
     <comment>Log from a exploratory test session</comment>
   </data>
-  <data name="test-repository" xml:space="preserve">
-    <value>Repository</value>
+  <data name="set-dark-mode" xml:space="preserve">
+    <value>Dunkelmodus einstellen</value>
   </data>
-  <data name="test-lab" xml:space="preserve">
-    <value>Labor</value>
+  <data name="set-light-mode" xml:space="preserve">
+    <value>Lichtmodus einstellen</value>
   </data>
-  <data name="delete-test-suite-folder-description" xml:space="preserve">
-    <value>Löscht den Testsuite -Ordner, alle untergeordneten Ordner und alle Testfälle in diesen Ordnern</value>
+  <data name="settings" xml:space="preserve">
+    <value>Einstellungen</value>
   </data>
-  <data name="delete-test-repository-folder-description" xml:space="preserve">
-    <value>Löscht den Ordner, alle untergeordneten Ordner, alle Testsuiten und alle Testfälle in diesen Ordnern</value>
+  <data name="side-by-side-diff" xml:space="preserve">
+    <value>Nebeneinander</value>
   </data>
-  <data name="api-keys-description" xml:space="preserve">
-    <value>Zugriff auf Token- und API -Schlüssel</value>
-  </data>
-  <data name="requirements-and-workitems" xml:space="preserve">
-    <value>Anforderungen und Arbeitsgegenstände</value>
-  </data>
-  <data name="more-options" xml:space="preserve">
-    <value>Weitere Optionen</value>
-  </data>
-  <data name="test-case" xml:space="preserve">
-    <value>Testfall</value>
-  </data>
-  <data name="coverage" xml:space="preserve">
-    <value>Berichterstattung</value>
-  </data>
-  <data name="upload-file-hint" xml:space="preserve">
-    <value>Ziehen Sie Dateien hier oder klicken Sie hier, um eine Datei auszuwählen</value>
-  </data>
-  <data name="upload-max-filesize-fmt" xml:space="preserve">
-    <value>Max -Dateigröße: {0}</value>
-  </data>
-  <data name="browse" xml:space="preserve">
-    <value>Durchsuchen</value>
-    <comment>Browse for file or similar</comment>
-  </data>
-  <data name="board" xml:space="preserve">
-    <value>Planke</value>
-  </data>
-  <data name="timeline" xml:space="preserve">
-    <value>Zeitleiste</value>
-  </data>
-  <data name="welcome-add-team-title" xml:space="preserve">
-    <value>Fügen Sie ein Team hinzu</value>
-  </data>
-  <data name="welcome-add-team-message" xml:space="preserve">
-    <value>Beginnen Sie mit dem Hinzufügen eines Teams</value>
-  </data>
-  <data name="dashboard" xml:space="preserve">
-    <value>Armaturenbrett</value>
-  </data>
-  <data name="dashboards" xml:space="preserve">
-    <value>Dashboards</value>
-  </data>
-  <data name="manage-dashboards" xml:space="preserve">
-    <value>Dashboards verwalten</value>
-  </data>
-  <data name="chat" xml:space="preserve">
-    <value>Chat</value>
-  </data>
-  <data name="explorer" xml:space="preserve">
-    <value>Forscherin</value>
-  </data>
-  <data name="semantic-search" xml:space="preserve">
-    <value>Semantisch</value>
-  </data>
-  <data name="normal-search" xml:space="preserve">
-    <value>Normal</value>
-  </data>
-  <data name="add-user" xml:space="preserve">
-    <value>Benutzer hinzufügen</value>
-  </data>
-  <data name="password" xml:space="preserve">
-    <value>Passwort</value>
-  </data>
-  <data name="provider" xml:space="preserve">
-    <value>Anbieterin</value>
-    <comment>External system like Jira or Github</comment>
-  </data>
-  <data name="resource-enabled" xml:space="preserve">
-    <value>Die Ressource ist aktiviert</value>
-  </data>
-  <data name="resource-disabled" xml:space="preserve">
-    <value>Die Ressource ist deaktiviert. Die Ressource kann nicht mehr oder nicht verfügbar sein.</value>
-  </data>
-  <data name="resource-locked" xml:space="preserve">
-    <value>Die Ressource ist verschlossen.</value>
-  </data>
-  <data name="last-seen" xml:space="preserve">
-    <value>Zuletzt gesehen</value>
-    <comment>Time when resource was last seen</comment>
-  </data>
-  <data name="reload" xml:space="preserve">
-    <value>Neu laden</value>
-  </data>
-  <data name="assign-all-unassigned-to-ai" xml:space="preserve">
-    <value>Weisen Sie AI -Läufer nicht zu, ohne zugewiesen zu sein</value>
-  </data>
-  <data name="assign-all-unassigned-to-ai-description" xml:space="preserve">
-    <value>Weist alle nicht zugewiesenen Testfälle dem KI -Läufer zu, der die Tests im Hintergrund durchführt</value>
-  </data>
-  <data name="run-test-case-description" xml:space="preserve">
-    <value>Führen Sie den aktiven Testfall aus</value>
-  </data>
-  <data name="assign-to-ai-runner" xml:space="preserve">
-    <value>AI Runner zuweisen</value>
+  <data name="slug" xml:space="preserve">
+    <value>SLUG</value>
   </data>
   <data name="specifications" xml:space="preserve">
     <value>Spezifikationen</value>
   </data>
-  <data name="total" xml:space="preserve">
-    <value>Gesamt</value>
+  <data name="start-date" xml:space="preserve">
+    <value>Startdatum</value>
   </data>
-  <data name="input" xml:space="preserve">
-    <value>Eingang</value>
+  <data name="state" xml:space="preserve">
+    <value>Status</value>
   </data>
-  <data name="output" xml:space="preserve">
-    <value>Ausgabe</value>
+  <data name="state-closed" xml:space="preserve">
+    <value>Geschlossen</value>
   </data>
-  <data name="tokens" xml:space="preserve">
-    <value>Token</value>
-    <comment>Tokens (LLM/AI)</comment>
+  <data name="state-open" xml:space="preserve">
+    <value>Offen</value>
   </data>
-  <data name="delete-test-case-run-fmt" xml:space="preserve">
-    <value>{0} löschen</value>
+  <data name="std-err" xml:space="preserve">
+    <value>Standardfehler</value>
   </data>
-  <data name="delete-many-test-case-runs" xml:space="preserve">
-    <value>Löschen Sie {0} Testfallläufe</value>
+  <data name="std-out" xml:space="preserve">
+    <value>Standardausgabe</value>
   </data>
-  <data name="delete-many-test-case-runs-description" xml:space="preserve">
-    <value>Löscht alle ausgewählten Testfallläufe</value>
+  <data name="system" xml:space="preserve">
+    <value>System</value>
   </data>
-  <data name="test-resources-description" xml:space="preserve">
-    <value>Geräte, Dienste oder andere Ressourcen, die über den Test -Eimer zugänglich sind. Diese Ressourcen werden von Ressourcenservern gehostet, um den Remote -Zugriff auf sie zu ermöglichen.</value>
+  <data name="team" xml:space="preserve">
+    <value>Team</value>
   </data>
-  <data name="confirm-archive-title" xml:space="preserve">
-    <value>Archivartikel?</value>
-  </data>
-  <data name="confirm-archive-message" xml:space="preserve">
-    <value>Möchten Sie diesen Artikel wirklich archivieren?</value>
-  </data>
-  <data name="archive-test-run" xml:space="preserve">
-    <value>Archiv -Testlauf</value>
-  </data>
-  <data name="archive-test-run-description" xml:space="preserve">
-    <value>Archiviert den Testlauf und verbirgt ihn vor bestimmten Ansichten der Benutzeroberfläche</value>
-  </data>
-  <data name="grid" xml:space="preserve">
-    <value>Rost</value>
-  </data>
-  <data name="list" xml:space="preserve">
-    <value>Liste</value>
-  </data>
-  <data name="select-test-suite" xml:space="preserve">
-    <value>Wählen Sie Testsuite</value>
-  </data>
-  <data name="template-blank" xml:space="preserve">
-    <value>Leer</value>
+  <data name="teams" xml:space="preserve">
+    <value>Teams</value>
   </data>
   <data name="template" xml:space="preserve">
     <value>Vorlage</value>
+  </data>
+  <data name="template-blank" xml:space="preserve">
+    <value>Leer</value>
   </data>
   <data name="template-dothttp.api" xml:space="preserve">
     <value>API -Test</value>
@@ -1042,80 +957,165 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="template-python" xml:space="preserve">
     <value>Python -Skript</value>
   </data>
-  <data name="new-search-folder" xml:space="preserve">
-    <value>Neuer Suchordner</value>
+  <data name="tenant" xml:space="preserve">
+    <value>Mandant</value>
   </data>
-  <data name="logged-action-result-changed" xml:space="preserve">
-    <value>{0} hat das Ergebnis in {1} geändert</value>
+  <data name="tenants" xml:space="preserve">
+    <value>Mandanten</value>
+  </data>
+  <data name="test-accounts" xml:space="preserve">
+    <value>Testkonten</value>
+  </data>
+  <data name="test-automation" xml:space="preserve">
+    <value>Testautomatisierung</value>
+  </data>
+  <data name="test-case" xml:space="preserve">
+    <value>Testfall</value>
   </data>
   <data name="test-case-run" xml:space="preserve">
     <value>Testergebnis</value>
   </data>
+  <data name="test-case-runs" xml:space="preserve">
+    <value>Testergebnisse</value>
+  </data>
+  <data name="test-cases" xml:space="preserve">
+    <value>Testfälle</value>
+  </data>
+  <data name="test-case-variables-description" xml:space="preserve">
+    <value>Testfallvariablen enthalten Parameter, die Umgebungsvariablen überschreiben und mit Vorlagen verwendet werden können, um Vorlagen anzupassen. Ein Testparametername ist eindeutig und es kann nur einen mit diesem Namen geben. Datengetriebene Testfälle können mehrere Konfigurationssätze haben und ein Testfall wird einmal pro Datenzeile ausgeführt.
+
+Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen eines Testfalls wird {{Key}} durch eine Variable mit dem Namen {{Key}} ersetzt.</value>
+  </data>
+  <data name="test-coverage" xml:space="preserve">
+    <value>Testabdeckung</value>
+  </data>
+  <data name="test-environment" xml:space="preserve">
+    <value>Testumgebung</value>
+  </data>
+  <data name="test-environments" xml:space="preserve">
+    <value>Testumgebungen</value>
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value>Testen</value>
+  </data>
+  <data name="test-lab" xml:space="preserve">
+    <value>Labor</value>
+  </data>
+  <data name="test-log" xml:space="preserve">
+    <value>Testprotokoll</value>
+  </data>
+  <data name="test-repository" xml:space="preserve">
+    <value>Repository</value>
+  </data>
+  <data name="test-resources" xml:space="preserve">
+    <value>Testressourcen</value>
+  </data>
+  <data name="test-resources-description" xml:space="preserve">
+    <value>Geräte, Dienste oder andere Ressourcen, die über den Test -Eimer zugänglich sind. Diese Ressourcen werden von Ressourcenservern gehostet, um den Remote -Zugriff auf sie zu ermöglichen.</value>
+  </data>
+  <data name="test-result" xml:space="preserve">
+    <value>Ergebnis</value>
+  </data>
+  <data name="test-results" xml:space="preserve">
+    <value>Testergebnisse</value>
+  </data>
   <data name="test-run" xml:space="preserve">
     <value>Probelauf</value>
   </data>
-  <data name="welcome-add-testsuite" xml:space="preserve">
-    <value>Fügen Sie eine Testsuite hinzu</value>
+  <data name="test-runs" xml:space="preserve">
+    <value>Testläufe</value>
   </data>
-  <data name="continue" xml:space="preserve">
-    <value>Weitermachen</value>
-  </data>
-  <data name="identity" xml:space="preserve">
-    <value>Identität</value>
-  </data>
-  <data name="batch-updating-tests" xml:space="preserve">
-    <value>Bitte warten. Tests aktualisieren ..</value>
-  </data>
-  <data name="review" xml:space="preserve">
-    <value>Rezension</value>
-  </data>
-  <data name="changes" xml:space="preserve">
-    <value>Änderungen</value>
-  </data>
-  <data name="side-by-side-diff" xml:space="preserve">
-    <value>Nebeneinander</value>
-  </data>
-  <data name="inline-diff" xml:space="preserve">
-    <value>Im Einklang</value>
-  </data>
-  <data name="latest" xml:space="preserve">
-    <value>Letzte</value>
-  </data>
-  <data name="duplicating-test-run" xml:space="preserve">
-    <value>Duplizierter Lauf ..</value>
-  </data>
-  <data name="run-failed-again" xml:space="preserve">
-    <value>Run fehlgeschlagene Tests erneut</value>
-    <comment>Creates a new run with only failed tests</comment>
-  </data>
-  <data name="run-failed-again-description" xml:space="preserve">
-    <value>Dupliziert den Lauf, enthält jedoch nur fehlgeschlagene Tests</value>
-  </data>
-  <data name="add-new-tenant" xml:space="preserve">
-    <value>Neuen Mieter hinzufügen</value>
-  </data>
-  <data name="select-user" xml:space="preserve">
-    <value>Benutzer auswählen</value>
-  </data>
-  <data name="default-reviewers" xml:space="preserve">
-    <value>Standardprüfer</value>
+  <data name="tests" xml:space="preserve">
+    <value>Tests</value>
   </data>
   <data name="test-suite-default-reviewers-description" xml:space="preserve">
     <value>Gutachter, die standardmäßig zugewiesen sind, um Änderungen im Zusammenhang mit Testfällen in dieser Testsuite zu überprüfen</value>
   </data>
-  <data name="votes" xml:space="preserve">
-    <value />
+  <data name="test-suites" xml:space="preserve">
+    <value>Testsuiten</value>
   </data>
-  <data name="reviewers" xml:space="preserve">
-    <value />
+  <data name="test-suite-variables-description" xml:space="preserve">
+    <value>Diese Variablen werden zu Tests hinzugefügt, die aus dieser Testsuite ausgeführt werden</value>
+  </data>
+  <data name="timeline" xml:space="preserve">
+    <value>Zeitleiste</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>Titel</value>
+  </data>
+  <data name="tokens" xml:space="preserve">
+    <value>Token</value>
+    <comment>Tokens (LLM/AI)</comment>
+  </data>
+  <data name="total" xml:space="preserve">
+    <value>Gesamt</value>
+  </data>
+  <data name="traceability" xml:space="preserve">
+    <value>Rückverfolgbarkeit</value>
+  </data>
+  <data name="type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="unassigned" xml:space="preserve">
+    <value>Nicht zugewiesen</value>
+  </data>
+  <data name="unit" xml:space="preserve">
+    <value>Einheit</value>
+    <comment>Metrikeinheit (z.B. ms, fps, bps)</comment>
+  </data>
+  <data name="unit-tests" xml:space="preserve">
+    <value>Unit-Tests</value>
+  </data>
+  <data name="upload-file-hint" xml:space="preserve">
+    <value>Ziehen Sie Dateien hier oder klicken Sie hier, um eine Datei auszuwählen</value>
+  </data>
+  <data name="upload-max-filesize-fmt" xml:space="preserve">
+    <value>Max -Dateigröße: {0}</value>
+  </data>
+  <data name="user" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="username" xml:space="preserve">
+    <value>Benutzername</value>
+  </data>
+  <data name="users" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Wert</value>
+    <comment>Metrikwert</comment>
+  </data>
+  <data name="variable-key" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="variables" xml:space="preserve">
+    <value>Variablen</value>
+  </data>
+  <data name="variable-value" xml:space="preserve">
+    <value>Wert</value>
   </data>
   <data name="vote" xml:space="preserve">
-    <value />
+    <value>Abstimmung</value>
   </data>
-  <data name="export-test-suite" xml:space="preserve">
-    <value />
+  <data name="votes" xml:space="preserve">
+    <value>Stimmen</value>
   </data>
-  <data name="export-test-suite-description" xml:space="preserve">
-    <value />
+  <data name="welcome-add-project-message" xml:space="preserve">
+    <value>Fügen Sie ein Projekt hinzu, bevor Sie Tests, Probleme, Anforderungen oder andere Entitäten hinzufügen.</value>
+  </data>
+  <data name="welcome-add-project-title" xml:space="preserve">
+    <value>Neues Projekt hinzufügen</value>
+  </data>
+  <data name="welcome-add-team-message" xml:space="preserve">
+    <value>Beginnen Sie mit dem Hinzufügen eines Teams</value>
+  </data>
+  <data name="welcome-add-team-title" xml:space="preserve">
+    <value>Fügen Sie ein Team hinzu</value>
+  </data>
+  <data name="welcome-add-testsuite" xml:space="preserve">
+    <value>Fügen Sie eine Testsuite hinzu</value>
+  </data>
+  <data name="welcome-message" xml:space="preserve">
+    <value>Willkommen bei Test Bucket</value>
   </data>
 </root>

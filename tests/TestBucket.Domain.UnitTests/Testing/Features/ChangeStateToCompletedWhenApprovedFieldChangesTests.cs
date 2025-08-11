@@ -56,7 +56,7 @@ public class ChangeStateToCompletedWhenApprovedFieldChangesTests
     /// Changes state to Completed when Approved field is set to true and test case is not already completed.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-EDITOR-003")]
+    [CoveredRequirement("TB-REVIEW-003")]
     public async Task Handle_ChangesStateToCompleted_WhenApprovedTrueAndNotCompleted()
     {
         var testCase = CreateTestCase(TestCaseId, ProjectId, MappedTestState.Ongoing);
@@ -79,7 +79,7 @@ public class ChangeStateToCompletedWhenApprovedFieldChangesTests
     /// Does nothing when the field definition is null.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-EDITOR-003")]
+    [CoveredRequirement("TB-REVIEW-003")]
     public async Task Handle_DoesNothing_WhenFieldDefinitionIsNull()
     {
         var testCaseManager = Substitute.For<ITestCaseManager>();
@@ -98,7 +98,7 @@ public class ChangeStateToCompletedWhenApprovedFieldChangesTests
     /// Does nothing when the trait type is not Approved.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-EDITOR-003")]
+    [CoveredRequirement("TB-REVIEW-003")]
     public async Task Handle_DoesNothing_WhenTraitTypeIsNotApproved()
     {
         var testCaseManager = Substitute.For<ITestCaseManager>();
@@ -116,7 +116,7 @@ public class ChangeStateToCompletedWhenApprovedFieldChangesTests
     /// Does nothing when the boolean value is not true.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-EDITOR-003")]
+    [CoveredRequirement("TB-REVIEW-003")]
     public async Task Handle_DoesNothing_WhenBooleanValueIsNotTrue()
     {
         var testCaseManager = Substitute.For<ITestCaseManager>();
@@ -131,7 +131,7 @@ public class ChangeStateToCompletedWhenApprovedFieldChangesTests
     /// Does nothing when the test case is already completed.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-EDITOR-003")]
+    [CoveredRequirement("TB-REVIEW-003")]
     public async Task Handle_DoesNothing_WhenTestCaseAlreadyCompleted()
     {
         var testCase = CreateTestCase(TestCaseId, ProjectId, MappedTestState.Completed);
@@ -152,7 +152,7 @@ public class ChangeStateToCompletedWhenApprovedFieldChangesTests
     /// Does nothing when the completed state is not found.
     /// </summary>
     [Fact]
-    [CoveredRequirement("TB-EDITOR-003")]
+    [CoveredRequirement("TB-REVIEW-003")]
     public async Task Handle_DoesNothing_WhenCompletedStateNotFound()
     {
         var testCase = CreateTestCase(TestCaseId, ProjectId, MappedTestState.Ongoing);

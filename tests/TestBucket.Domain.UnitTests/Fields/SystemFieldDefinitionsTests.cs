@@ -164,7 +164,7 @@ namespace TestBucket.Domain.UnitTests.Fields
         {
             var approved = SystemFieldDefinitions.Fixed.FirstOrDefault(f => f.Name == "Approved");
             Assert.NotNull(approved);
-            Assert.Equal(FieldTarget.TestCase, (approved.Target| FieldTarget.TestCase));
+            Assert.Equal(FieldTarget.TestCase, (approved.Target & FieldTarget.TestCase));
         }
 
         /// <summary>

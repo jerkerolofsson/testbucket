@@ -21,7 +21,9 @@ namespace TestBucket.Domain.Requirements.Specifications.Requirements
 
         protected override Expression<Func<Requirement, bool>> GetExpression()
         {
-            return x => x.Name.ToLower().Contains(Text) || x.Description != null && x.Description.ToLower().Contains(Text);
+            return x => x.Name.ToLower().Contains(Text) || 
+            (x.Description != null && x.Description.ToLower().Contains(Text)) ||
+            (x.ExternalId != null && x.ExternalId.ToLower().Contains(Text));
         }
     }
 }

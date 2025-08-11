@@ -33,6 +33,25 @@ namespace TestBucket.Domain.UnitTests.Testing.Search
             Assert.Equal(text, request.Text);
         }
 
+
+
+        /// <summary>
+        /// Verifies that a query with "review-assigned-to:admin@admin.com" sets the ReviewAssignedTo property
+        /// </summary>
+        [Fact]
+        [CoveredRequirement("TB-REVIEW-002")]
+        public void Parse_WithReviewAssignedTop_ParsedCorrectly()
+        {
+            var currentDate = new DateTimeOffset(2025, 5, 20, 12, 0, 0, TimeSpan.Zero);
+            var expectedDate = currentDate.Subtract(TimeSpan.FromHours(5));
+            var timeProvider = new FakeTimeProvider(currentDate);
+
+            var request = SearchTestCaseQueryParser.Parse("review-assigned-to:admin@admin.com", [], timeProvider);
+
+            Assert.NotNull(request.ReviewAssignedTo);
+            Assert.Equal("admin@admin.com", request.ReviewAssignedTo);
+        }
+
         /// <summary>
         /// Verifies that a query with "since:5h" sets the <c>CreatedFrom</c> property to 5 hours before the current time.
         /// </summary>

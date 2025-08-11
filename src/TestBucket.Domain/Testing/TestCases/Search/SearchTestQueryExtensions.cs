@@ -27,9 +27,9 @@ namespace TestBucket.Domain.Testing.TestCases.Search
             {
                 items.Add($"id:{query.ExternalDisplayId}");
             }
-            if (query.State is not null)
+            if (query.ReviewAssignedTo is not null)
             {
-                items.Add($"state:{query.State}");
+                items.Add($"state:{query.ReviewAssignedTo}");
             }
             if (query.TestRunId is not null)
             {

@@ -117,220 +117,327 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="name" xml:space="preserve">
-    <value>姓名</value>
+  <data name="access-failed-count" xml:space="preserve">
+    <value>访问失败计数</value>
   </data>
-  <data name="description" xml:space="preserve">
-    <value>描述</value>
+  <data name="account" xml:space="preserve">
+    <value>帐户</value>
   </data>
-  <data name="project" xml:space="preserve">
-    <value>项目</value>
+  <data name="add" xml:space="preserve">
+    <value>添加</value>
   </data>
-  <data name="team" xml:space="preserve">
-    <value>团队</value>
+  <data name="add-account" xml:space="preserve">
+    <value>添加帐户</value>
   </data>
-  <data name="settings" xml:space="preserve">
-    <value>设置</value>
+  <data name="add-comment" xml:space="preserve">
+    <value>添加评论</value>
   </data>
-  <data name="projects" xml:space="preserve">
-    <value>项目</value>
+  <data name="add-heuristic" xml:space="preserve">
+    <value>添加启发式</value>
   </data>
-  <data name="variables" xml:space="preserve">
-    <value>变量</value>
+  <data name="add-metric" xml:space="preserve">
+    <value>添加度量</value>
   </data>
-  <data name="test-environment" xml:space="preserve">
-    <value>测试环境</value>
+  <data name="add-milestone" xml:space="preserve">
+    <value>添加里程碑</value>
   </data>
-  <data name="test-environments" xml:space="preserve">
-    <value>测试环境</value>
+  <data name="add-new-project" xml:space="preserve">
+    <value>添加新项目</value>
   </data>
-  <data name="attachments" xml:space="preserve">
-    <value>附件</value>
+  <data name="add-new-team" xml:space="preserve">
+    <value>添加新团队</value>
   </data>
-  <data name="callstack" xml:space="preserve">
-    <value>致电堆栈</value>
+  <data name="add-new-tenant" xml:space="preserve">
+    <value>添加新租户</value>
   </data>
-  <data name="message" xml:space="preserve">
-    <value>信息</value>
+  <data name="add-resource" xml:space="preserve">
+    <value>添加资源</value>
   </data>
-  <data name="test-result" xml:space="preserve">
-    <value>结果</value>
+  <data name="add-to-run" xml:space="preserve">
+    <value>添加到运行</value>
   </data>
-  <data name="result-passed" xml:space="preserve">
-    <value>通过</value>
+  <data name="add-user" xml:space="preserve">
+    <value>添加用户</value>
   </data>
-  <data name="result-norun" xml:space="preserve">
-    <value>未执行</value>
+  <data name="add-variable" xml:space="preserve">
+    <value>添加变量</value>
   </data>
-  <data name="result-blocked" xml:space="preserve">
-    <value>阻止</value>
+  <data name="advanced" xml:space="preserve">
+    <value>先进的</value>
   </data>
-  <data name="result-skipped" xml:space="preserve">
-    <value>跳过</value>
-  </data>
-  <data name="result-failed" xml:space="preserve">
-    <value>失败的</value>
-  </data>
-  <data name="unassigned" xml:space="preserve">
-    <value>未分配</value>
-  </data>
-  <data name="assigned-to-me" xml:space="preserve">
-    <value>分配给我</value>
-  </data>
-  <data name="run-test-again" xml:space="preserve">
-    <value>再次运行</value>
-  </data>
-  <data name="assigned-to" xml:space="preserve">
-    <value>分配给</value>
-  </data>
-  <data name="tenant" xml:space="preserve">
-    <value>租户</value>
-  </data>
-  <data name="tenants" xml:space="preserve">
-    <value>租户</value>
-  </data>
-  <data name="id" xml:space="preserve">
-    <value>ID</value>
-  </data>
-  <data name="expiry" xml:space="preserve">
-    <value>到期</value>
-  </data>
-  <data name="confirm-delete-title" xml:space="preserve">
-    <value>删除项目？</value>
-  </data>
-  <data name="confirm-delete-message" xml:space="preserve">
-    <value>您真的想删除此项目吗？</value>
-  </data>
-  <data name="api-keys" xml:space="preserve">
-    <value>API键</value>
+  <data name="all" xml:space="preserve">
+    <value>全部</value>
   </data>
   <data name="api-key" xml:space="preserve">
     <value>API键</value>
   </data>
-  <data name="test-case-variables-description" xml:space="preserve">
-    <value>测试用例变量包含覆盖环境变量的参数，可与模板一起使用以自定义模板。 测试参数名称是唯一的，只能有一个特定名称。 数据驱动的测试用例可以具有多个配置集，并且每个数据行执行一次测试用例。
-
-变量在测试用例中定义为{{key}}，并且在运行测试用例时，{{key}}将被称为{{key}}的变量代替。</value>
+  <data name="api-keys" xml:space="preserve">
+    <value>API键</value>
   </data>
-  <data name="variable-key" xml:space="preserve">
-    <value>姓名</value>
+  <data name="api-keys-description" xml:space="preserve">
+    <value>访问令牌和API键</value>
   </data>
-  <data name="variable-value" xml:space="preserve">
-    <value>价值</value>
+  <data name="api-tests" xml:space="preserve">
+    <value>API测试</value>
   </data>
-  <data name="requirement-coverage" xml:space="preserve">
-    <value>需求覆盖范围</value>
+  <data name="archive-test-run" xml:space="preserve">
+    <value>存档测试运行</value>
   </data>
-  <data name="users" xml:space="preserve">
-    <value>用户</value>
+  <data name="archive-test-run-description" xml:space="preserve">
+    <value>存档测试运行并将其从某些用户界面视图中隐藏</value>
   </data>
-  <data name="permission-none" xml:space="preserve">
-    <value>没有任何</value>
+  <data name="assign-all-unassigned-to-ai" xml:space="preserve">
+    <value>将所有未分配给AI跑步者分配</value>
   </data>
-  <data name="permission-read" xml:space="preserve">
-    <value>只读</value>
+  <data name="assign-all-unassigned-to-ai-description" xml:space="preserve">
+    <value>将所有未分配的测试用例分配给AI跑步者，后者将在后台运行测试</value>
   </data>
-  <data name="permission-write" xml:space="preserve">
-    <value>写</value>
+  <data name="assign-all-unassigned-to-me" xml:space="preserve">
+    <value>将所有人都没有分配给我。</value>
   </data>
-  <data name="permission-delete" xml:space="preserve">
-    <value>删除</value>
+  <data name="assign-all-unassigned-to-me-description" xml:space="preserve">
+    <value>将当前未分配的测试分配给当前用户</value>
   </data>
-  <data name="role-read-only" xml:space="preserve">
-    <value>只读</value>
+  <data name="assigned-to" xml:space="preserve">
+    <value>分配给</value>
   </data>
-  <data name="role-site-admin" xml:space="preserve">
-    <value>站点管理员</value>
+  <data name="assigned-to-me" xml:space="preserve">
+    <value>分配给我</value>
   </data>
-  <data name="role-tenant-admin" xml:space="preserve">
-    <value>行政人员</value>
+  <data name="assigning-tests" xml:space="preserve">
+    <value>分配测试..</value>
   </data>
-  <data name="role-regular-user" xml:space="preserve">
-    <value>常规用户</value>
+  <data name="assign-to-ai-runner" xml:space="preserve">
+    <value>分配给AI跑步者</value>
   </data>
-  <data name="missing-permission-general" xml:space="preserve">
-    <value>您没有必要的权限来查看此内容</value>
-  </data>
-  <data name="ci-cd" xml:space="preserve">
-    <value>CI/CD</value>
-  </data>
-  <data name="test-suite-variables-description" xml:space="preserve">
-    <value>这些变量被添加到此测试套件执行的测试中</value>
+  <data name="attachments" xml:space="preserve">
+    <value>附件</value>
   </data>
   <data name="automation" xml:space="preserve">
     <value>自动化</value>
   </data>
+  <data name="automation-ci-cd-add-outside-pipelines" xml:space="preserve">
+    <value>索引CI/CD的结果</value>
+  </data>
+  <data name="automation-ci-cd-add-outside-pipelines-description" xml:space="preserve">
+    <value>扫描CI/CD系统以获取所有管道的测试结果，即使是从测试存储桶内开始的。</value>
+  </data>
+  <data name="automation-ci-cd-description" xml:space="preserve">
+    <value>选择执行此测试套件的CI/CD系统</value>
+  </data>
+  <data name="automation-default-ci-cd-ref-description" xml:space="preserve">
+    <value>选择默认分支 /参考</value>
+  </data>
+  <data name="backup" xml:space="preserve">
+    <value>备份</value>
+  </data>
+  <data name="batch-tag" xml:space="preserve">
+    <value>批处理更新..</value>
+  </data>
+  <data name="batch-tag-description" xml:space="preserve">
+    <value>链接要求，或更改所有后代的字段。</value>
+  </data>
+  <data name="batch-updating-tests" xml:space="preserve">
+    <value>请稍等。 更新测试..</value>
+  </data>
+  <data name="blocked" xml:space="preserve">
+    <value>阻止</value>
+  </data>
+  <data name="board" xml:space="preserve">
+    <value>木板</value>
+  </data>
+  <data name="browse" xml:space="preserve">
+    <value>浏览</value>
+    <comment>Browse for file or similar</comment>
+  </data>
+  <data name="calendar" xml:space="preserve">
+    <value>日历</value>
+  </data>
+  <data name="callstack" xml:space="preserve">
+    <value>致电堆栈</value>
+  </data>
+  <data name="capture-screenshot-on-this-device" xml:space="preserve">
+    <value>在此设备上捕获屏幕截图</value>
+  </data>
+  <data name="changes" xml:space="preserve">
+    <value>更改</value>
+  </data>
+  <data name="chat" xml:space="preserve">
+    <value>聊天</value>
+  </data>
+  <data name="ci-cd" xml:space="preserve">
+    <value>CI/CD</value>
+  </data>
+  <data name="ci-cd-job" xml:space="preserve">
+    <value>CI/CD工作</value>
+  </data>
+  <data name="ci-cd-jobs" xml:space="preserve">
+    <value>CI/CD工作</value>
+  </data>
   <data name="ci-cd-ref" xml:space="preserve">
     <value>CI/CD Ref。 （git）</value>
   </data>
-  <data name="test-accounts" xml:space="preserve">
-    <value>测试帐户</value>
+  <data name="ci-cd-system" xml:space="preserve">
+    <value>CI/CD系统</value>
   </data>
-  <data name="test-resources" xml:space="preserve">
-    <value>测试资源</value>
+  <data name="code" xml:space="preserve">
+    <value>代码</value>
   </data>
-  <data name="model" xml:space="preserve">
-    <value>模型</value>
+  <data name="column" xml:space="preserve">
+    <value>柱子</value>
   </data>
-  <data name="roles" xml:space="preserve">
-    <value>角色</value>
+  <data name="components" xml:space="preserve">
+    <value>成分</value>
+  </data>
+  <data name="confirm-archive-message" xml:space="preserve">
+    <value>您真的想存档这个项目吗？</value>
+  </data>
+  <data name="confirm-archive-title" xml:space="preserve">
+    <value>档案项目？</value>
+  </data>
+  <data name="confirm-delete-message" xml:space="preserve">
+    <value>您真的想删除此项目吗？</value>
+  </data>
+  <data name="confirm-delete-title" xml:space="preserve">
+    <value>删除项目？</value>
+  </data>
+  <data name="continue" xml:space="preserve">
+    <value>继续</value>
+  </data>
+  <data name="copied-to-clipboard-notification" xml:space="preserve">
+    <value>复制到剪贴板</value>
+  </data>
+  <data name="coverage" xml:space="preserve">
+    <value>覆盖范围</value>
+  </data>
+  <data name="coverage-matrix" xml:space="preserve">
+    <value>覆盖矩阵</value>
+  </data>
+  <data name="created" xml:space="preserve">
+    <value>创建</value>
+  </data>
+  <data name="create-test-run" xml:space="preserve">
+    <value>创建运行</value>
+  </data>
+  <data name="dashboard" xml:space="preserve">
+    <value>仪表板</value>
+  </data>
+  <data name="dashboards" xml:space="preserve">
+    <value>仪表板</value>
+  </data>
+  <data name="data-source" xml:space="preserve">
+    <value>数据源</value>
+  </data>
+  <data name="default-reviewers" xml:space="preserve">
+    <value>默认审阅者</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="delete-folder" xml:space="preserve">
+    <value>删除文件夹</value>
+  </data>
+  <data name="delete-many-test-case-runs" xml:space="preserve">
+    <value>删除{0}测试用例运行</value>
+  </data>
+  <data name="delete-many-test-case-runs-description" xml:space="preserve">
+    <value>删除所有选定的测试用例运行</value>
+  </data>
+  <data name="delete-run" xml:space="preserve">
+    <value>删除运行</value>
+  </data>
+  <data name="delete-test" xml:space="preserve">
+    <value>删除测试</value>
+  </data>
+  <data name="delete-test-case-run-fmt" xml:space="preserve">
+    <value>删除{0}</value>
+  </data>
+  <data name="delete-test-repository-folder-description" xml:space="preserve">
+    <value>删除文件夹，所有子文件夹，所有测试套件以及这些文件夹中的所有测试用例</value>
+  </data>
+  <data name="delete-test-run" xml:space="preserve">
+    <value>删除运行</value>
+  </data>
+  <data name="delete-test-run-description" xml:space="preserve">
+    <value>删除测试运行和所有结果</value>
+  </data>
+  <data name="delete-test-suite" xml:space="preserve">
+    <value>删除测试套件</value>
+  </data>
+  <data name="delete-test-suite-folder-description" xml:space="preserve">
+    <value>删除这些文件夹中的测试套件文件夹，所有子文件夹和所有测试用例</value>
+  </data>
+  <data name="description" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="duplicate-test" xml:space="preserve">
+    <value>重复测试</value>
+  </data>
+  <data name="duplicate-test-run" xml:space="preserve">
+    <value>重复运行</value>
+  </data>
+  <data name="duplicating-test-run" xml:space="preserve">
+    <value>复制运行..</value>
+  </data>
+  <data name="duration" xml:space="preserve">
+    <value>期间</value>
+  </data>
+  <data name="e2e-tests" xml:space="preserve">
+    <value>E2E测试</value>
+  </data>
+  <data name="edit" xml:space="preserve">
+    <value>编辑</value>
+  </data>
+  <data name="edit-folder" xml:space="preserve">
+    <value>编辑文件夹</value>
+  </data>
+  <data name="edit-metric" xml:space="preserve">
+    <value>编辑公制</value>
+  </data>
+  <data name="edit-test-run" xml:space="preserve">
+    <value>编辑运行</value>
+  </data>
+  <data name="email" xml:space="preserve">
+    <value>电子邮件</value>
+  </data>
+  <data name="enabled" xml:space="preserve">
+    <value>启用</value>
+  </data>
+  <data name="end-date" xml:space="preserve">
+    <value>结束日期</value>
+  </data>
+  <data name="expiry" xml:space="preserve">
+    <value>到期</value>
+  </data>
+  <data name="explorer" xml:space="preserve">
+    <value>资源管理器</value>
+  </data>
+  <data name="export-test-suite" xml:space="preserve">
+    <value>出口测试套件</value>
+  </data>
+  <data name="export-test-suite-description" xml:space="preserve">
+    <value>导出测试套件的所有测试</value>
+  </data>
+  <data name="external-id" xml:space="preserve">
+    <value>外部ID</value>
+  </data>
+  <data name="failed" xml:space="preserve">
+    <value>失败的</value>
+  </data>
+  <data name="failed-tests" xml:space="preserve">
+    <value>测试失败</value>
+  </data>
+  <data name="failures" xml:space="preserve">
+    <value>失败</value>
+  </data>
+  <data name="features" xml:space="preserve">
+    <value>特征</value>
   </data>
   <data name="field" xml:space="preserve">
     <value>场地</value>
   </data>
   <data name="fields" xml:space="preserve">
     <value>字段</value>
-  </data>
-  <data name="requirements" xml:space="preserve">
-    <value>要求</value>
-  </data>
-  <data name="add-to-run" xml:space="preserve">
-    <value>添加到运行</value>
-  </data>
-  <data name="run" xml:space="preserve">
-    <value>跑步</value>
-  </data>
-  <data name="duration" xml:space="preserve">
-    <value>期间</value>
-  </data>
-  <data name="ci-cd-system" xml:space="preserve">
-    <value>CI/CD系统</value>
-  </data>
-  <data name="modified" xml:space="preserve">
-    <value>修改的</value>
-  </data>
-  <data name="manufacturer" xml:space="preserve">
-    <value>制造商</value>
-  </data>
-  <data name="result-inconclusive" xml:space="preserve">
-    <value>尚无定论</value>
-  </data>
-  <data name="delete" xml:space="preserve">
-    <value>删除</value>
-  </data>
-  <data name="groupby-category" xml:space="preserve">
-    <value>类别</value>
-  </data>
-  <data name="groupby-result" xml:space="preserve">
-    <value>结果</value>
-  </data>
-  <data name="filter-tests" xml:space="preserve">
-    <value>过滤器测试</value>
-  </data>
-  <data name="search-tests" xml:space="preserve">
-    <value>搜索测试</value>
-  </data>
-  <data name="created" xml:space="preserve">
-    <value>创建</value>
-  </data>
-  <data name="start-date" xml:space="preserve">
-    <value>开始日期</value>
-  </data>
-  <data name="end-date" xml:space="preserve">
-    <value>结束日期</value>
-  </data>
-  <data name="link-issue" xml:space="preserve">
-    <value>链接问题</value>
   </data>
   <data name="file-name" xml:space="preserve">
     <value>姓名</value>
@@ -341,467 +448,14 @@
   <data name="file-type" xml:space="preserve">
     <value>类型</value>
   </data>
-  <data name="no-permission-title" xml:space="preserve">
-    <value>没有许可！</value>
-  </data>
-  <data name="no-permission-message" xml:space="preserve">
-    <value>您无权执行此操作。 如果您需要此许可，请联系管理员。</value>
-  </data>
-  <data name="required-resources" xml:space="preserve">
-    <value>需要资源</value>
-  </data>
-  <data name="runner" xml:space="preserve">
-    <value>跑步者</value>
-  </data>
-  <data name="runners" xml:space="preserve">
-    <value>跑步者</value>
-  </data>
-  <data name="teams" xml:space="preserve">
-    <value>团队</value>
-  </data>
-  <data name="test-suites" xml:space="preserve">
-    <value>测试套件</value>
-  </data>
-  <data name="test-cases" xml:space="preserve">
-    <value>测试用例</value>
-  </data>
-  <data name="recent" xml:space="preserve">
-    <value>最近的</value>
-  </data>
-  <data name="user" xml:space="preserve">
-    <value>用户</value>
-  </data>
-  <data name="batch-tag" xml:space="preserve">
-    <value>批处理更新..</value>
-  </data>
-  <data name="traceability" xml:space="preserve">
-    <value>可追溯性</value>
-  </data>
-  <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
-    <value>在此处删除要求，以在测试和要求之间创建链接</value>
-  </data>
-  <data name="link-requirement-to-test" xml:space="preserve">
-    <value>测试链接要求</value>
-  </data>
-  <data name="number-of-tests" xml:space="preserve">
-    <value>测试</value>
-  </data>
-  <data name="requirement" xml:space="preserve">
-    <value>要求</value>
-  </data>
-  <data name="new-folder" xml:space="preserve">
-    <value>添加文件夹</value>
-  </data>
-  <data name="test-coverage" xml:space="preserve">
-    <value>测试覆盖范围</value>
-  </data>
-  <data name="icon" xml:space="preserve">
-    <value>图标</value>
-  </data>
-  <data name="icons" xml:space="preserve">
-    <value>图标</value>
-  </data>
-  <data name="option" xml:space="preserve">
-    <value>选项</value>
-  </data>
-  <data name="data-source" xml:space="preserve">
-    <value>数据源</value>
-  </data>
-  <data name="options" xml:space="preserve">
-    <value>选项</value>
-  </data>
-  <data name="advanced" xml:space="preserve">
-    <value>先进的</value>
-  </data>
-  <data name="preview" xml:space="preserve">
-    <value>预览</value>
-  </data>
-  <data name="copied-to-clipboard-notification" xml:space="preserve">
-    <value>复制到剪贴板</value>
-  </data>
-  <data name="backup" xml:space="preserve">
-    <value>备份</value>
-  </data>
-  <data name="rename" xml:space="preserve">
-    <value>重命名</value>
-  </data>
-  <data name="create-test-run" xml:space="preserve">
-    <value>创建运行</value>
-  </data>
-  <data name="edit-test-run" xml:space="preserve">
-    <value>编辑运行</value>
-  </data>
-  <data name="pick-test-run" xml:space="preserve">
-    <value>选跑</value>
-  </data>
-  <data name="duplicate-test-run" xml:space="preserve">
-    <value>重复运行</value>
-  </data>
-  <data name="delete-test-run" xml:space="preserve">
-    <value>删除运行</value>
-  </data>
-  <data name="new-test" xml:space="preserve">
-    <value>新测试</value>
-  </data>
-  <data name="new-shared-steps" xml:space="preserve">
-    <value>新的共享步骤</value>
-  </data>
-  <data name="permission-approve" xml:space="preserve">
-    <value>批准</value>
-  </data>
-  <data name="permission-execute" xml:space="preserve">
-    <value>执行</value>
-  </data>
-  <data name="milestones" xml:space="preserve">
-    <value>里程碑</value>
-  </data>
-  <data name="calendar" xml:space="preserve">
-    <value>日历</value>
-  </data>
-  <data name="manage" xml:space="preserve">
-    <value>管理</value>
-  </data>
-  <data name="launch-automation" xml:space="preserve">
-    <value>启动自动化</value>
-  </data>
-  <data name="test-automation" xml:space="preserve">
-    <value>测试自动化</value>
-  </data>
-  <data name="coverage-matrix" xml:space="preserve">
-    <value>覆盖矩阵</value>
-  </data>
-  <data name="column" xml:space="preserve">
-    <value>柱子</value>
-  </data>
-  <data name="row" xml:space="preserve">
-    <value>排</value>
-  </data>
-  <data name="external-id" xml:space="preserve">
-    <value>外部ID</value>
-  </data>
-  <data name="slug" xml:space="preserve">
-    <value>sl</value>
-  </data>
-  <data name="test-runs" xml:space="preserve">
-    <value>测试运行</value>
-  </data>
-  <data name="my-backlog" xml:space="preserve">
-    <value>我的积压</value>
-  </data>
-  <data name="failures" xml:space="preserve">
-    <value>失败</value>
-  </data>
-  <data name="pipelines" xml:space="preserve">
-    <value>管道</value>
-  </data>
-  <data name="tests" xml:space="preserve">
-    <value>测试</value>
-  </data>
-  <data name="add-comment" xml:space="preserve">
-    <value>添加评论</value>
-  </data>
-  <data name="logged-action-approved" xml:space="preserve">
-    <value>{0}批准了此</value>
-  </data>
-  <data name="logged-action-statechange" xml:space="preserve">
-    <value>{0}将状态更改为{1}</value>
-  </data>
-  <data name="delete-test" xml:space="preserve">
-    <value>删除测试</value>
-  </data>
-  <data name="delete-run" xml:space="preserve">
-    <value>删除运行</value>
-  </data>
-  <data name="duplicate-test" xml:space="preserve">
-    <value>重复测试</value>
-  </data>
-  <data name="delete-test-suite" xml:space="preserve">
-    <value>删除测试套件</value>
-  </data>
-  <data name="new-test-suite" xml:space="preserve">
-    <value>新测试套件</value>
-  </data>
-  <data name="batch-tag-description" xml:space="preserve">
-    <value>链接要求，或更改所有后代的字段。</value>
-  </data>
-  <data name="import-test-results" xml:space="preserve">
-    <value>进口测试结果..</value>
-  </data>
-  <data name="run-folder" xml:space="preserve">
-    <value>运行文件夹</value>
-  </data>
-  <data name="edit-folder" xml:space="preserve">
-    <value>编辑文件夹</value>
-  </data>
-  <data name="delete-folder" xml:space="preserve">
-    <value>删除文件夹</value>
-  </data>
-  <data name="enabled" xml:space="preserve">
-    <value>启用</value>
-  </data>
-  <data name="testing" xml:space="preserve">
-    <value>测试</value>
-  </data>
-  <data name="reporting" xml:space="preserve">
-    <value>报告</value>
-  </data>
-  <data name="issues" xml:space="preserve">
-    <value>问题</value>
-  </data>
-  <data name="logged-action-commit" xml:space="preserve">
-    <value>{0}引用一个提交：{1}</value>
-  </data>
-  <data name="state" xml:space="preserve">
-    <value>状态</value>
-  </data>
-  <data name="logged-action-assignedto" xml:space="preserve">
-    <value>{0}将其分配给{1}</value>
-  </data>
-  <data name="type" xml:space="preserve">
-    <value>类型</value>
-  </data>
-  <data name="label" xml:space="preserve">
-    <value>标签</value>
-  </data>
-  <data name="code" xml:space="preserve">
-    <value>代码</value>
-  </data>
-  <data name="test-results" xml:space="preserve">
-    <value>测试结果</value>
-  </data>
-  <data name="all" xml:space="preserve">
-    <value>全部</value>
-  </data>
-  <data name="issue" xml:space="preserve">
-    <value>问题</value>
-  </data>
-  <data name="title" xml:space="preserve">
-    <value>标题</value>
-  </data>
-  <data name="logged-action-component" xml:space="preserve">
-    <value>{0}将组件更改为{1}</value>
-  </data>
-  <data name="logged-action-component-removed" xml:space="preserve">
-    <value>{0}删除了组件</value>
-  </data>
-  <data name="run-test-suite" xml:space="preserve">
-    <value>运行测试套件</value>
-  </data>
-  <data name="e2e-tests" xml:space="preserve">
-    <value>E2E测试</value>
-  </data>
-  <data name="integration-tests" xml:space="preserve">
-    <value>集成测试</value>
-  </data>
-  <data name="unit-tests" xml:space="preserve">
-    <value>单位测试</value>
-  </data>
-  <data name="api-tests" xml:space="preserve">
-    <value>API测试</value>
-  </data>
-  <data name="features" xml:space="preserve">
-    <value>特征</value>
-  </data>
-  <data name="components" xml:space="preserve">
-    <value>成分</value>
-  </data>
-  <data name="automation-ci-cd-description" xml:space="preserve">
-    <value>选择执行此测试套件的CI/CD系统</value>
-  </data>
-  <data name="automation-default-ci-cd-ref-description" xml:space="preserve">
-    <value>选择默认分支 /参考</value>
-  </data>
-  <data name="required-resources-description" xml:space="preserve">
-    <value>运行自动化测试时，将分配并分配给测试运行的资源。</value>
-  </data>
-  <data name="resource-type" xml:space="preserve">
-    <value>资源类型</value>
-  </data>
-  <data name="add-resource" xml:space="preserve">
-    <value>添加资源</value>
-  </data>
-  <data name="add-account" xml:space="preserve">
-    <value>添加帐户</value>
-  </data>
-  <data name="automation-ci-cd-add-outside-pipelines" xml:space="preserve">
-    <value>索引CI/CD的结果</value>
-  </data>
-  <data name="automation-ci-cd-add-outside-pipelines-description" xml:space="preserve">
-    <value>扫描CI/CD系统以获取所有管道的测试结果，即使是从测试存储桶内开始的。</value>
-  </data>
-  <data name="ci-cd-jobs" xml:space="preserve">
-    <value>CI/CD工作</value>
-  </data>
-  <data name="ci-cd-job" xml:space="preserve">
-    <value>CI/CD工作</value>
-  </data>
-  <data name="new-test-template" xml:space="preserve">
-    <value>新的测试模板</value>
-  </data>
-  <data name="add" xml:space="preserve">
-    <value>添加</value>
-  </data>
-  <data name="new-test-suite-description" xml:space="preserve">
-    <value>创建一个新的空白测试套件来存储测试用例</value>
-  </data>
-  <data name="new-test-description" xml:space="preserve">
-    <value>创建一个新的测试用例</value>
-  </data>
-  <data name="new-test-template-description" xml:space="preserve">
-    <value>为测试用例创建共享模板，其中所有测试用例都使用模板共享文本</value>
-  </data>
-  <data name="logged-action-add-milestone" xml:space="preserve">
-    <value>{0}添加了一个里程碑：{1}</value>
-  </data>
-  <data name="logged-action-remove-milestone" xml:space="preserve">
-    <value>{0}删除了一个里程碑：{1}</value>
-  </data>
-  <data name="logged-action-remove-component" xml:space="preserve">
-    <value>{0}删除了组件{1}</value>
-  </data>
-  <data name="logged-action-add-component" xml:space="preserve">
-    <value>{0}添加了一个组件：{1}</value>
-  </data>
-  <data name="search" xml:space="preserve">
-    <value>搜索</value>
-  </data>
-  <data name="overview" xml:space="preserve">
-    <value>概述</value>
-  </data>
-  <data name="edit" xml:space="preserve">
-    <value>编辑</value>
-  </data>
-  <data name="test-log" xml:space="preserve">
-    <value>测试日志</value>
-  </data>
-  <data name="capture-screenshot-on-this-device" xml:space="preserve">
-    <value>在此设备上捕获屏幕截图</value>
-  </data>
-  <data name="logout" xml:space="preserve">
-    <value>注销</value>
-  </data>
-  <data name="account" xml:space="preserve">
-    <value>帐户</value>
-  </data>
-  <data name="state-open" xml:space="preserve">
-    <value>打开</value>
-  </data>
-  <data name="state-closed" xml:space="preserve">
-    <value>关闭</value>
-  </data>
-  <data name="delete-test-run-description" xml:space="preserve">
-    <value>删除测试运行和所有结果</value>
-  </data>
-  <data name="assigning-tests" xml:space="preserve">
-    <value>分配测试..</value>
-  </data>
-  <data name="assign-all-unassigned-to-me" xml:space="preserve">
-    <value>将所有人都没有分配给我。</value>
-  </data>
-  <data name="assign-all-unassigned-to-me-description" xml:space="preserve">
-    <value>将当前未分配的测试分配给当前用户</value>
-  </data>
-  <data name="latest-test-results" xml:space="preserve">
-    <value>最新的测试结果</value>
-  </data>
-  <data name="std-out" xml:space="preserve">
-    <value>标准输出</value>
-  </data>
-  <data name="std-err" xml:space="preserve">
-    <value>标准错误</value>
-  </data>
-  <data name="username" xml:space="preserve">
-    <value>用户名</value>
-  </data>
-  <data name="email" xml:space="preserve">
-    <value>电子邮件</value>
-  </data>
-  <data name="access-failed-count" xml:space="preserve">
-    <value>访问失败计数</value>
-  </data>
-  <data name="locked" xml:space="preserve">
-    <value>锁定</value>
-  </data>
-  <data name="set-light-mode" xml:space="preserve">
-    <value>设置光模式</value>
-  </data>
-  <data name="set-dark-mode" xml:space="preserve">
-    <value>设置暗模式</value>
-  </data>
-  <data name="open" xml:space="preserve">
-    <value>打开</value>
-  </data>
-  <data name="labels" xml:space="preserve">
-    <value>标签</value>
-  </data>
-  <data name="system" xml:space="preserve">
-    <value>系统</value>
-  </data>
-  <data name="menu-new-description" xml:space="preserve">
-    <value>添加新项目</value>
-  </data>
-  <data name="open-command-palette" xml:space="preserve">
-    <value>打开命令调色板</value>
+  <data name="filter-tests" xml:space="preserve">
+    <value>过滤器测试</value>
   </data>
   <data name="general" xml:space="preserve">
     <value>一般的</value>
   </data>
-  <data name="metrics" xml:space="preserve">
-    <value>指标</value>
-  </data>
-  <data name="add-metric" xml:space="preserve">
-    <value>添加度量</value>
-  </data>
-  <data name="welcome-message" xml:space="preserve">
-    <value>欢迎来测试水桶</value>
-  </data>
-  <data name="welcome-add-project-title" xml:space="preserve">
-    <value>添加一个新项目</value>
-  </data>
-  <data name="welcome-add-project-message" xml:space="preserve">
-    <value>在添加测试，问题，需求或其他实体之前添加项目。</value>
-  </data>
-  <data name="add-new-project" xml:space="preserve">
-    <value>添加新项目</value>
-  </data>
-  <data name="add-new-team" xml:space="preserve">
-    <value>添加新团队</value>
-  </data>
-  <data name="max-file-size" xml:space="preserve">
-    <value>最大文件大小：{0}</value>
-  </data>
-  <data name="import-test-cases" xml:space="preserve">
-    <value>进口测试案例</value>
-  </data>
-  <data name="Value" xml:space="preserve">
-    <value>价值</value>
-    <comment>Metric value</comment>
-  </data>
-  <data name="unit" xml:space="preserve">
-    <value>单元</value>
-    <comment>Metric unit (e.g. ms, fps, bps)</comment>
-  </data>
-  <data name="meter-name" xml:space="preserve">
-    <value>仪表</value>
-    <comment>Provider of metrics</comment>
-  </data>
-  <data name="edit-metric" xml:space="preserve">
-    <value>编辑公制</value>
-  </data>
-  <data name="run-n-tests" xml:space="preserve">
-    <value>运行{0}测试</value>
-  </data>
-  <data name="add-heuristic" xml:space="preserve">
-    <value>添加启发式</value>
-  </data>
-  <data name="history" xml:space="preserve">
-    <value>历史</value>
-  </data>
-  <data name="main" xml:space="preserve">
-    <value>主要的</value>
-  </data>
-  <data name="run-test" xml:space="preserve">
-    <value>运行测试</value>
+  <data name="go-to-run" xml:space="preserve">
+    <value>去跑步</value>
   </data>
   <data name="go-to-testcase" xml:space="preserve">
     <value>去测试案例</value>
@@ -809,29 +463,214 @@
   <data name="go-to-testcase-description" xml:space="preserve">
     <value>打开测试案例视图</value>
   </data>
-  <data name="no-variables-alert" xml:space="preserve">
-    <value>没有添加变量</value>
+  <data name="grid" xml:space="preserve">
+    <value>网格</value>
   </data>
-  <data name="pre-conditions" xml:space="preserve">
-    <value>前提</value>
+  <data name="groupby-category" xml:space="preserve">
+    <value>类别</value>
   </data>
-  <data name="post-conditions" xml:space="preserve">
-    <value>后条件</value>
+  <data name="groupby-result" xml:space="preserve">
+    <value>结果</value>
   </data>
-  <data name="add-variable" xml:space="preserve">
-    <value>添加变量</value>
+  <data name="history" xml:space="preserve">
+    <value>历史</value>
   </data>
-  <data name="test-case-runs" xml:space="preserve">
-    <value>测试结果</value>
+  <data name="icon" xml:space="preserve">
+    <value>图标</value>
+  </data>
+  <data name="icons" xml:space="preserve">
+    <value>图标</value>
+  </data>
+  <data name="id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="identity" xml:space="preserve">
+    <value>身份</value>
+  </data>
+  <data name="import-test-cases" xml:space="preserve">
+    <value>进口测试案例</value>
+  </data>
+  <data name="import-test-results" xml:space="preserve">
+    <value>进口测试结果..</value>
   </data>
   <data name="incomplete" xml:space="preserve">
     <value>不完整</value>
   </data>
-  <data name="recent-test-runs" xml:space="preserve">
-    <value>最近的测试运行</value>
+  <data name="inline-diff" xml:space="preserve">
+    <value>排队</value>
   </data>
-  <data name="go-to-run" xml:space="preserve">
-    <value>去跑步</value>
+  <data name="input" xml:space="preserve">
+    <value>输入</value>
+  </data>
+  <data name="integration-tests" xml:space="preserve">
+    <value>集成测试</value>
+  </data>
+  <data name="issue" xml:space="preserve">
+    <value>问题</value>
+  </data>
+  <data name="issues" xml:space="preserve">
+    <value>问题</value>
+  </data>
+  <data name="label" xml:space="preserve">
+    <value>标签</value>
+  </data>
+  <data name="labels" xml:space="preserve">
+    <value>标签</value>
+  </data>
+  <data name="last-seen" xml:space="preserve">
+    <value>最后一个见面</value>
+    <comment>Time when resource was last seen</comment>
+  </data>
+  <data name="latest" xml:space="preserve">
+    <value>最新的</value>
+  </data>
+  <data name="latest-test-results" xml:space="preserve">
+    <value>最新的测试结果</value>
+  </data>
+  <data name="launch-automation" xml:space="preserve">
+    <value>启动自动化</value>
+  </data>
+  <data name="link-issue" xml:space="preserve">
+    <value>链接问题</value>
+  </data>
+  <data name="link-requirement-to-test" xml:space="preserve">
+    <value>测试链接要求</value>
+  </data>
+  <data name="list" xml:space="preserve">
+    <value>列表</value>
+  </data>
+  <data name="locked" xml:space="preserve">
+    <value>锁定</value>
+  </data>
+  <data name="logged-action-add-component" xml:space="preserve">
+    <value>{0}添加了一个组件：{1}</value>
+  </data>
+  <data name="logged-action-add-milestone" xml:space="preserve">
+    <value>{0}添加了一个里程碑：{1}</value>
+  </data>
+  <data name="logged-action-approved" xml:space="preserve">
+    <value>{0}批准了此</value>
+  </data>
+  <data name="logged-action-assignedto" xml:space="preserve">
+    <value>{0}将其分配给{1}</value>
+  </data>
+  <data name="logged-action-commit" xml:space="preserve">
+    <value>{0}引用一个提交：{1}</value>
+  </data>
+  <data name="logged-action-component" xml:space="preserve">
+    <value>{0}将组件更改为{1}</value>
+  </data>
+  <data name="logged-action-component-removed" xml:space="preserve">
+    <value>{0}删除了组件</value>
+  </data>
+  <data name="logged-action-remove-component" xml:space="preserve">
+    <value>{0}删除了组件{1}</value>
+  </data>
+  <data name="logged-action-remove-milestone" xml:space="preserve">
+    <value>{0}删除了一个里程碑：{1}</value>
+  </data>
+  <data name="logged-action-result-changed" xml:space="preserve">
+    <value>{0}将结果更改为{1}</value>
+  </data>
+  <data name="logged-action-statechange" xml:space="preserve">
+    <value>{0}将状态更改为{1}</value>
+  </data>
+  <data name="logout" xml:space="preserve">
+    <value>注销</value>
+  </data>
+  <data name="main" xml:space="preserve">
+    <value>主要的</value>
+  </data>
+  <data name="manage" xml:space="preserve">
+    <value>管理</value>
+  </data>
+  <data name="manage-dashboards" xml:space="preserve">
+    <value>管理仪表板</value>
+  </data>
+  <data name="manufacturer" xml:space="preserve">
+    <value>制造商</value>
+  </data>
+  <data name="max-file-size" xml:space="preserve">
+    <value>最大文件大小：{0}</value>
+  </data>
+  <data name="menu-new-description" xml:space="preserve">
+    <value>添加新项目</value>
+  </data>
+  <data name="message" xml:space="preserve">
+    <value>信息</value>
+  </data>
+  <data name="meter-name" xml:space="preserve">
+    <value>仪表</value>
+    <comment>Provider of metrics</comment>
+  </data>
+  <data name="metrics" xml:space="preserve">
+    <value>指标</value>
+  </data>
+  <data name="milestones" xml:space="preserve">
+    <value>里程碑</value>
+  </data>
+  <data name="missing-permission-general" xml:space="preserve">
+    <value>您没有必要的权限来查看此内容</value>
+  </data>
+  <data name="model" xml:space="preserve">
+    <value>模型</value>
+  </data>
+  <data name="modified" xml:space="preserve">
+    <value>修改的</value>
+  </data>
+  <data name="more-options" xml:space="preserve">
+    <value>更多选项</value>
+  </data>
+  <data name="my-backlog" xml:space="preserve">
+    <value>我的积压</value>
+  </data>
+  <data name="name" xml:space="preserve">
+    <value>姓名</value>
+  </data>
+  <data name="new-exploratory-test-charter" xml:space="preserve">
+    <value>新的探索性测试宪章</value>
+  </data>
+  <data name="new-exploratory-test-charter-description" xml:space="preserve">
+    <value>创建预定义的宪章以进行探索性测试</value>
+  </data>
+  <data name="new-folder" xml:space="preserve">
+    <value>添加文件夹</value>
+  </data>
+  <data name="new-search-folder" xml:space="preserve">
+    <value>新的搜索文件夹</value>
+  </data>
+  <data name="new-shared-steps" xml:space="preserve">
+    <value>新的共享步骤</value>
+  </data>
+  <data name="new-test" xml:space="preserve">
+    <value>新测试</value>
+  </data>
+  <data name="new-test-description" xml:space="preserve">
+    <value>创建一个新的测试用例</value>
+  </data>
+  <data name="new-test-suite" xml:space="preserve">
+    <value>新测试套件</value>
+  </data>
+  <data name="new-test-suite-description" xml:space="preserve">
+    <value>创建一个新的空白测试套件来存储测试用例</value>
+  </data>
+  <data name="new-test-template" xml:space="preserve">
+    <value>新的测试模板</value>
+  </data>
+  <data name="new-test-template-description" xml:space="preserve">
+    <value>为测试用例创建共享模板，其中所有测试用例都使用模板共享文本</value>
+  </data>
+  <data name="no-permission-message" xml:space="preserve">
+    <value>您无权执行此操作。 如果您需要此许可，请联系管理员。</value>
+  </data>
+  <data name="no-permission-title" xml:space="preserve">
+    <value>没有许可！</value>
+  </data>
+  <data name="normal-search" xml:space="preserve">
+    <value>普通的</value>
+  </data>
+  <data name="no-variables-alert" xml:space="preserve">
+    <value>没有添加变量</value>
   </data>
   <data name="number-of-test-case-runs" xml:space="preserve">
     <value>测试案例的数量运行</value>
@@ -839,26 +678,214 @@
   <data name="number-of-test-cases" xml:space="preserve">
     <value>测试用例数</value>
   </data>
-  <data name="failed-tests" xml:space="preserve">
-    <value>测试失败</value>
+  <data name="number-of-tests" xml:space="preserve">
+    <value>测试</value>
+  </data>
+  <data name="open" xml:space="preserve">
+    <value>打开</value>
+  </data>
+  <data name="open-command-palette" xml:space="preserve">
+    <value>打开命令调色板</value>
+  </data>
+  <data name="option" xml:space="preserve">
+    <value>选项</value>
+  </data>
+  <data name="options" xml:space="preserve">
+    <value>选项</value>
+  </data>
+  <data name="output" xml:space="preserve">
+    <value>输出</value>
+  </data>
+  <data name="overview" xml:space="preserve">
+    <value>概述</value>
   </data>
   <data name="passed" xml:space="preserve">
     <value>通过</value>
   </data>
-  <data name="failed" xml:space="preserve">
-    <value>失败的</value>
+  <data name="password" xml:space="preserve">
+    <value>密码</value>
   </data>
-  <data name="blocked" xml:space="preserve">
+  <data name="permission-approve" xml:space="preserve">
+    <value>批准</value>
+  </data>
+  <data name="permission-delete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="permission-execute" xml:space="preserve">
+    <value>执行</value>
+  </data>
+  <data name="permission-none" xml:space="preserve">
+    <value>没有任何</value>
+  </data>
+  <data name="permission-read" xml:space="preserve">
+    <value>只读</value>
+  </data>
+  <data name="permission-write" xml:space="preserve">
+    <value>写</value>
+  </data>
+  <data name="pick-test-run" xml:space="preserve">
+    <value>选跑</value>
+  </data>
+  <data name="pipelines" xml:space="preserve">
+    <value>管道</value>
+  </data>
+  <data name="post-conditions" xml:space="preserve">
+    <value>后条件</value>
+  </data>
+  <data name="pre-conditions" xml:space="preserve">
+    <value>前提</value>
+  </data>
+  <data name="preview" xml:space="preserve">
+    <value>预览</value>
+  </data>
+  <data name="project" xml:space="preserve">
+    <value>项目</value>
+  </data>
+  <data name="projects" xml:space="preserve">
+    <value>项目</value>
+  </data>
+  <data name="provider" xml:space="preserve">
+    <value>提供者</value>
+    <comment>External system like Jira or Github</comment>
+  </data>
+  <data name="recent" xml:space="preserve">
+    <value>最近的</value>
+  </data>
+  <data name="recent-test-runs" xml:space="preserve">
+    <value>最近的测试运行</value>
+  </data>
+  <data name="reload" xml:space="preserve">
+    <value>重新加载</value>
+  </data>
+  <data name="rename" xml:space="preserve">
+    <value>重命名</value>
+  </data>
+  <data name="reporting" xml:space="preserve">
+    <value>报告</value>
+  </data>
+  <data name="required-resources" xml:space="preserve">
+    <value>需要资源</value>
+  </data>
+  <data name="required-resources-description" xml:space="preserve">
+    <value>运行自动化测试时，将分配并分配给测试运行的资源。</value>
+  </data>
+  <data name="requirement" xml:space="preserve">
+    <value>要求</value>
+  </data>
+  <data name="requirement-coverage" xml:space="preserve">
+    <value>需求覆盖范围</value>
+  </data>
+  <data name="requirement-coverage--drop-requirements-helpertext" xml:space="preserve">
+    <value>在此处删除要求，以在测试和要求之间创建链接</value>
+  </data>
+  <data name="requirements" xml:space="preserve">
+    <value>要求</value>
+  </data>
+  <data name="requirements-and-workitems" xml:space="preserve">
+    <value>要求和工作项目</value>
+  </data>
+  <data name="resource-disabled" xml:space="preserve">
+    <value>资源被禁用。 资源可能会失去，断开或不可用。</value>
+  </data>
+  <data name="resource-enabled" xml:space="preserve">
+    <value>资源已启用</value>
+  </data>
+  <data name="resource-locked" xml:space="preserve">
+    <value>资源已锁定。</value>
+  </data>
+  <data name="resource-type" xml:space="preserve">
+    <value>资源类型</value>
+  </data>
+  <data name="result-blocked" xml:space="preserve">
     <value>阻止</value>
   </data>
-  <data name="add-milestone" xml:space="preserve">
-    <value>添加里程碑</value>
+  <data name="result-failed" xml:space="preserve">
+    <value>失败的</value>
   </data>
-  <data name="new-exploratory-test-charter" xml:space="preserve">
-    <value>新的探索性测试宪章</value>
+  <data name="result-inconclusive" xml:space="preserve">
+    <value>尚无定论</value>
   </data>
-  <data name="new-exploratory-test-charter-description" xml:space="preserve">
-    <value>创建预定义的宪章以进行探索性测试</value>
+  <data name="result-norun" xml:space="preserve">
+    <value>未执行</value>
+  </data>
+  <data name="result-passed" xml:space="preserve">
+    <value>通过</value>
+  </data>
+  <data name="result-skipped" xml:space="preserve">
+    <value>跳过</value>
+  </data>
+  <data name="review" xml:space="preserve">
+    <value>审查</value>
+  </data>
+  <data name="reviewers" xml:space="preserve">
+    <value>评论者</value>
+  </data>
+  <data name="role-read-only" xml:space="preserve">
+    <value>只读</value>
+  </data>
+  <data name="role-regular-user" xml:space="preserve">
+    <value>常规用户</value>
+  </data>
+  <data name="roles" xml:space="preserve">
+    <value>角色</value>
+  </data>
+  <data name="role-site-admin" xml:space="preserve">
+    <value>站点管理员</value>
+  </data>
+  <data name="role-tenant-admin" xml:space="preserve">
+    <value>行政人员</value>
+  </data>
+  <data name="row" xml:space="preserve">
+    <value>排</value>
+  </data>
+  <data name="run" xml:space="preserve">
+    <value>跑步</value>
+  </data>
+  <data name="run-failed-again" xml:space="preserve">
+    <value>再次运行失败测试</value>
+    <comment>Creates a new run with only failed tests</comment>
+  </data>
+  <data name="run-failed-again-description" xml:space="preserve">
+    <value>重复运行，但仅包括失败的测试</value>
+  </data>
+  <data name="run-folder" xml:space="preserve">
+    <value>运行文件夹</value>
+  </data>
+  <data name="runner" xml:space="preserve">
+    <value>跑步者</value>
+  </data>
+  <data name="runners" xml:space="preserve">
+    <value>跑步者</value>
+  </data>
+  <data name="run-n-tests" xml:space="preserve">
+    <value>运行{0}测试</value>
+  </data>
+  <data name="run-test" xml:space="preserve">
+    <value>运行测试</value>
+  </data>
+  <data name="run-test-again" xml:space="preserve">
+    <value>再次运行</value>
+  </data>
+  <data name="run-test-case-description" xml:space="preserve">
+    <value>运行活动测试案例</value>
+  </data>
+  <data name="run-test-suite" xml:space="preserve">
+    <value>运行测试套件</value>
+  </data>
+  <data name="search" xml:space="preserve">
+    <value>搜索</value>
+  </data>
+  <data name="search-tests" xml:space="preserve">
+    <value>搜索测试</value>
+  </data>
+  <data name="select-test-suite" xml:space="preserve">
+    <value>选择测试套件</value>
+  </data>
+  <data name="select-user" xml:space="preserve">
+    <value>选择用户</value>
+  </data>
+  <data name="semantic-search" xml:space="preserve">
+    <value>语义</value>
   </data>
   <data name="session-duration" xml:space="preserve">
     <value>会话持续时间</value>
@@ -867,168 +894,56 @@
     <value>会话日志</value>
     <comment>Log from a exploratory test session</comment>
   </data>
-  <data name="test-repository" xml:space="preserve">
-    <value>存储库</value>
+  <data name="set-dark-mode" xml:space="preserve">
+    <value>设置暗模式</value>
   </data>
-  <data name="test-lab" xml:space="preserve">
-    <value>实验室</value>
+  <data name="set-light-mode" xml:space="preserve">
+    <value>设置光模式</value>
   </data>
-  <data name="delete-test-suite-folder-description" xml:space="preserve">
-    <value>删除这些文件夹中的测试套件文件夹，所有子文件夹和所有测试用例</value>
+  <data name="settings" xml:space="preserve">
+    <value>设置</value>
   </data>
-  <data name="delete-test-repository-folder-description" xml:space="preserve">
-    <value>删除文件夹，所有子文件夹，所有测试套件以及这些文件夹中的所有测试用例</value>
+  <data name="side-by-side-diff" xml:space="preserve">
+    <value>并排</value>
   </data>
-  <data name="api-keys-description" xml:space="preserve">
-    <value>访问令牌和API键</value>
-  </data>
-  <data name="requirements-and-workitems" xml:space="preserve">
-    <value>要求和工作项目</value>
-  </data>
-  <data name="more-options" xml:space="preserve">
-    <value>更多选项</value>
-  </data>
-  <data name="test-case" xml:space="preserve">
-    <value>测试案例</value>
-  </data>
-  <data name="coverage" xml:space="preserve">
-    <value>覆盖范围</value>
-  </data>
-  <data name="upload-file-hint" xml:space="preserve">
-    <value>在这里拖放文件或单击以选择文件</value>
-  </data>
-  <data name="upload-max-filesize-fmt" xml:space="preserve">
-    <value>最大文件大小：{0}</value>
-  </data>
-  <data name="browse" xml:space="preserve">
-    <value>浏览</value>
-    <comment>Browse for file or similar</comment>
-  </data>
-  <data name="board" xml:space="preserve">
-    <value>木板</value>
-  </data>
-  <data name="timeline" xml:space="preserve">
-    <value>时间表</value>
-  </data>
-  <data name="welcome-add-team-title" xml:space="preserve">
-    <value>添加一个团队</value>
-  </data>
-  <data name="welcome-add-team-message" xml:space="preserve">
-    <value>通过添加团队开始</value>
-  </data>
-  <data name="dashboard" xml:space="preserve">
-    <value>仪表板</value>
-  </data>
-  <data name="dashboards" xml:space="preserve">
-    <value>仪表板</value>
-  </data>
-  <data name="manage-dashboards" xml:space="preserve">
-    <value>管理仪表板</value>
-  </data>
-  <data name="chat" xml:space="preserve">
-    <value>聊天</value>
-  </data>
-  <data name="explorer" xml:space="preserve">
-    <value>资源管理器</value>
-  </data>
-  <data name="semantic-search" xml:space="preserve">
-    <value>语义</value>
-  </data>
-  <data name="normal-search" xml:space="preserve">
-    <value>普通的</value>
-  </data>
-  <data name="add-user" xml:space="preserve">
-    <value>添加用户</value>
-  </data>
-  <data name="password" xml:space="preserve">
-    <value>密码</value>
-  </data>
-  <data name="provider" xml:space="preserve">
-    <value>提供者</value>
-    <comment>External system like Jira or Github</comment>
-  </data>
-  <data name="resource-enabled" xml:space="preserve">
-    <value>资源已启用</value>
-  </data>
-  <data name="resource-disabled" xml:space="preserve">
-    <value>资源被禁用。 资源可能会失去，断开或不可用。</value>
-  </data>
-  <data name="resource-locked" xml:space="preserve">
-    <value>资源已锁定。</value>
-  </data>
-  <data name="last-seen" xml:space="preserve">
-    <value>最后一个见面</value>
-    <comment>Time when resource was last seen</comment>
-  </data>
-  <data name="reload" xml:space="preserve">
-    <value>重新加载</value>
-  </data>
-  <data name="assign-all-unassigned-to-ai" xml:space="preserve">
-    <value>将所有未分配给AI跑步者分配</value>
-  </data>
-  <data name="assign-all-unassigned-to-ai-description" xml:space="preserve">
-    <value>将所有未分配的测试用例分配给AI跑步者，后者将在后台运行测试</value>
-  </data>
-  <data name="run-test-case-description" xml:space="preserve">
-    <value>运行活动测试案例</value>
-  </data>
-  <data name="assign-to-ai-runner" xml:space="preserve">
-    <value>分配给AI跑步者</value>
+  <data name="slug" xml:space="preserve">
+    <value>sl</value>
   </data>
   <data name="specifications" xml:space="preserve">
     <value>规格</value>
   </data>
-  <data name="total" xml:space="preserve">
-    <value>全部的</value>
+  <data name="start-date" xml:space="preserve">
+    <value>开始日期</value>
   </data>
-  <data name="input" xml:space="preserve">
-    <value>输入</value>
+  <data name="state" xml:space="preserve">
+    <value>状态</value>
   </data>
-  <data name="output" xml:space="preserve">
-    <value>输出</value>
+  <data name="state-closed" xml:space="preserve">
+    <value>关闭</value>
   </data>
-  <data name="tokens" xml:space="preserve">
-    <value>令牌</value>
-    <comment>Tokens (LLM/AI)</comment>
+  <data name="state-open" xml:space="preserve">
+    <value>打开</value>
   </data>
-  <data name="delete-test-case-run-fmt" xml:space="preserve">
-    <value>删除{0}</value>
+  <data name="std-err" xml:space="preserve">
+    <value>标准错误</value>
   </data>
-  <data name="delete-many-test-case-runs" xml:space="preserve">
-    <value>删除{0}测试用例运行</value>
+  <data name="std-out" xml:space="preserve">
+    <value>标准输出</value>
   </data>
-  <data name="delete-many-test-case-runs-description" xml:space="preserve">
-    <value>删除所有选定的测试用例运行</value>
+  <data name="system" xml:space="preserve">
+    <value>系统</value>
   </data>
-  <data name="test-resources-description" xml:space="preserve">
-    <value>可以从测试桶中访问的设备，服务或其他资源。 这些资源由资源服务器托管，使远程访问能够访问它们。</value>
+  <data name="team" xml:space="preserve">
+    <value>团队</value>
   </data>
-  <data name="confirm-archive-title" xml:space="preserve">
-    <value>档案项目？</value>
-  </data>
-  <data name="confirm-archive-message" xml:space="preserve">
-    <value>您真的想存档这个项目吗？</value>
-  </data>
-  <data name="archive-test-run" xml:space="preserve">
-    <value>存档测试运行</value>
-  </data>
-  <data name="archive-test-run-description" xml:space="preserve">
-    <value>存档测试运行并将其从某些用户界面视图中隐藏</value>
-  </data>
-  <data name="grid" xml:space="preserve">
-    <value>网格</value>
-  </data>
-  <data name="list" xml:space="preserve">
-    <value>列表</value>
-  </data>
-  <data name="select-test-suite" xml:space="preserve">
-    <value>选择测试套件</value>
-  </data>
-  <data name="template-blank" xml:space="preserve">
-    <value>空白的</value>
+  <data name="teams" xml:space="preserve">
+    <value>团队</value>
   </data>
   <data name="template" xml:space="preserve">
     <value>模板</value>
+  </data>
+  <data name="template-blank" xml:space="preserve">
+    <value>空白的</value>
   </data>
   <data name="template-dothttp.api" xml:space="preserve">
     <value>API测试</value>
@@ -1042,80 +957,165 @@
   <data name="template-python" xml:space="preserve">
     <value>Python脚本</value>
   </data>
-  <data name="new-search-folder" xml:space="preserve">
-    <value>新的搜索文件夹</value>
+  <data name="tenant" xml:space="preserve">
+    <value>租户</value>
   </data>
-  <data name="logged-action-result-changed" xml:space="preserve">
-    <value>{0}将结果更改为{1}</value>
+  <data name="tenants" xml:space="preserve">
+    <value>租户</value>
+  </data>
+  <data name="test-accounts" xml:space="preserve">
+    <value>测试帐户</value>
+  </data>
+  <data name="test-automation" xml:space="preserve">
+    <value>测试自动化</value>
+  </data>
+  <data name="test-case" xml:space="preserve">
+    <value>测试案例</value>
   </data>
   <data name="test-case-run" xml:space="preserve">
+    <value>测试结果</value>
+  </data>
+  <data name="test-case-runs" xml:space="preserve">
+    <value>测试结果</value>
+  </data>
+  <data name="test-cases" xml:space="preserve">
+    <value>测试用例</value>
+  </data>
+  <data name="test-case-variables-description" xml:space="preserve">
+    <value>测试用例变量包含覆盖环境变量的参数，可与模板一起使用以自定义模板。 测试参数名称是唯一的，只能有一个特定名称。 数据驱动的测试用例可以具有多个配置集，并且每个数据行执行一次测试用例。
+
+变量在测试用例中定义为{{key}}，并且在运行测试用例时，{{key}}将被称为{{key}}的变量代替。</value>
+  </data>
+  <data name="test-coverage" xml:space="preserve">
+    <value>测试覆盖范围</value>
+  </data>
+  <data name="test-environment" xml:space="preserve">
+    <value>测试环境</value>
+  </data>
+  <data name="test-environments" xml:space="preserve">
+    <value>测试环境</value>
+  </data>
+  <data name="testing" xml:space="preserve">
+    <value>测试</value>
+  </data>
+  <data name="test-lab" xml:space="preserve">
+    <value>实验室</value>
+  </data>
+  <data name="test-log" xml:space="preserve">
+    <value>测试日志</value>
+  </data>
+  <data name="test-repository" xml:space="preserve">
+    <value>存储库</value>
+  </data>
+  <data name="test-resources" xml:space="preserve">
+    <value>测试资源</value>
+  </data>
+  <data name="test-resources-description" xml:space="preserve">
+    <value>可以从测试桶中访问的设备，服务或其他资源。 这些资源由资源服务器托管，使远程访问能够访问它们。</value>
+  </data>
+  <data name="test-result" xml:space="preserve">
+    <value>结果</value>
+  </data>
+  <data name="test-results" xml:space="preserve">
     <value>测试结果</value>
   </data>
   <data name="test-run" xml:space="preserve">
     <value>测试运行</value>
   </data>
-  <data name="welcome-add-testsuite" xml:space="preserve">
-    <value>添加测试套件</value>
+  <data name="test-runs" xml:space="preserve">
+    <value>测试运行</value>
   </data>
-  <data name="continue" xml:space="preserve">
-    <value>继续</value>
-  </data>
-  <data name="identity" xml:space="preserve">
-    <value>身份</value>
-  </data>
-  <data name="batch-updating-tests" xml:space="preserve">
-    <value>请稍等。 更新测试..</value>
-  </data>
-  <data name="review" xml:space="preserve">
-    <value>审查</value>
-  </data>
-  <data name="changes" xml:space="preserve">
-    <value>更改</value>
-  </data>
-  <data name="side-by-side-diff" xml:space="preserve">
-    <value>并排</value>
-  </data>
-  <data name="inline-diff" xml:space="preserve">
-    <value>排队</value>
-  </data>
-  <data name="latest" xml:space="preserve">
-    <value>最新的</value>
-  </data>
-  <data name="duplicating-test-run" xml:space="preserve">
-    <value>复制运行..</value>
-  </data>
-  <data name="run-failed-again" xml:space="preserve">
-    <value>再次运行失败测试</value>
-    <comment>Creates a new run with only failed tests</comment>
-  </data>
-  <data name="run-failed-again-description" xml:space="preserve">
-    <value>重复运行，但仅包括失败的测试</value>
-  </data>
-  <data name="add-new-tenant" xml:space="preserve">
-    <value>添加新租户</value>
-  </data>
-  <data name="select-user" xml:space="preserve">
-    <value>选择用户</value>
-  </data>
-  <data name="default-reviewers" xml:space="preserve">
-    <value>默认审阅者</value>
+  <data name="tests" xml:space="preserve">
+    <value>测试</value>
   </data>
   <data name="test-suite-default-reviewers-description" xml:space="preserve">
     <value>默认情况下分配的审阅者在此测试套件中审查与测试案例有关的更改</value>
   </data>
-  <data name="votes" xml:space="preserve">
-    <value />
+  <data name="test-suites" xml:space="preserve">
+    <value>测试套件</value>
   </data>
-  <data name="reviewers" xml:space="preserve">
-    <value />
+  <data name="test-suite-variables-description" xml:space="preserve">
+    <value>这些变量被添加到此测试套件执行的测试中</value>
+  </data>
+  <data name="timeline" xml:space="preserve">
+    <value>时间表</value>
+  </data>
+  <data name="title" xml:space="preserve">
+    <value>标题</value>
+  </data>
+  <data name="tokens" xml:space="preserve">
+    <value>令牌</value>
+    <comment>Tokens (LLM/AI)</comment>
+  </data>
+  <data name="total" xml:space="preserve">
+    <value>全部的</value>
+  </data>
+  <data name="traceability" xml:space="preserve">
+    <value>可追溯性</value>
+  </data>
+  <data name="type" xml:space="preserve">
+    <value>类型</value>
+  </data>
+  <data name="unassigned" xml:space="preserve">
+    <value>未分配</value>
+  </data>
+  <data name="unit" xml:space="preserve">
+    <value>单元</value>
+    <comment>Metric unit (e.g. ms, fps, bps)</comment>
+  </data>
+  <data name="unit-tests" xml:space="preserve">
+    <value>单位测试</value>
+  </data>
+  <data name="upload-file-hint" xml:space="preserve">
+    <value>在这里拖放文件或单击以选择文件</value>
+  </data>
+  <data name="upload-max-filesize-fmt" xml:space="preserve">
+    <value>最大文件大小：{0}</value>
+  </data>
+  <data name="user" xml:space="preserve">
+    <value>用户</value>
+  </data>
+  <data name="username" xml:space="preserve">
+    <value>用户名</value>
+  </data>
+  <data name="users" xml:space="preserve">
+    <value>用户</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>价值</value>
+    <comment>Metric value</comment>
+  </data>
+  <data name="variable-key" xml:space="preserve">
+    <value>姓名</value>
+  </data>
+  <data name="variables" xml:space="preserve">
+    <value>变量</value>
+  </data>
+  <data name="variable-value" xml:space="preserve">
+    <value>价值</value>
   </data>
   <data name="vote" xml:space="preserve">
-    <value />
+    <value>投票</value>
   </data>
-  <data name="export-test-suite" xml:space="preserve">
-    <value />
+  <data name="votes" xml:space="preserve">
+    <value>投票</value>
   </data>
-  <data name="export-test-suite-description" xml:space="preserve">
-    <value />
+  <data name="welcome-add-project-message" xml:space="preserve">
+    <value>在添加测试，问题，需求或其他实体之前添加项目。</value>
+  </data>
+  <data name="welcome-add-project-title" xml:space="preserve">
+    <value>添加一个新项目</value>
+  </data>
+  <data name="welcome-add-team-message" xml:space="preserve">
+    <value>通过添加团队开始</value>
+  </data>
+  <data name="welcome-add-team-title" xml:space="preserve">
+    <value>添加一个团队</value>
+  </data>
+  <data name="welcome-add-testsuite" xml:space="preserve">
+    <value>添加测试套件</value>
+  </data>
+  <data name="welcome-message" xml:space="preserve">
+    <value>欢迎来测试水桶</value>
   </data>
 </root>

@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Shared.Specifications;
+﻿using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Traits.Core;
 
@@ -61,6 +54,10 @@ public class TestCaseFilterSpecificationBuilder
         if (query.TestExecutionType is not null)
         {
             specifications.Add(new FilterTestCasesByExecutionType(query.TestExecutionType.Value));
+        }
+        if (query.ReviewAssignedTo is not null)
+        {
+            specifications.Add(new FilterTestCasesByReviewAssignedTo(query.ReviewAssignedTo));
         }
         if (query.Text is not null)
         {

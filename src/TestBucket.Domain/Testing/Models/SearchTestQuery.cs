@@ -27,12 +27,20 @@ public class SearchTestQuery : SearchQuery
     /// </summary>
     public bool Recurse { get; set; } = false;
 
-    public string? State { get; set; }
+    /// <summary>
+    /// Filters tests by the TestCase.ReviewAssignedTo contains this value
+    /// </summary>
+    public string? ReviewAssignedTo { get; set; }
 
     /// <summary>
     /// Filter on test execution type
     /// </summary>
     public TestExecutionType? TestExecutionType { get; set; }
+
+    /// <summary>
+    /// Filter by test case state
+    /// </summary>
+    public string? State { get; set; }
 
     public override int GetHashCode() => this.ToSearchText().GetHashCode();
 

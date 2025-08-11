@@ -18,6 +18,10 @@ public class FilterTestCasesByStringField : FilterSpecification<TestCase>
 
     protected override Expression<Func<TestCase, bool>> GetExpression()
     {
+        if(_categeory == "null")
+        {
+            return x => !x.TestCaseFields!.Where(f => f.FieldDefinitionId == _fieldDefinitionId && (f.StringValue != null && f.StringValue.Length > 0)).Any();
+        }
         return x => x.TestCaseFields!.Where(f => f.FieldDefinitionId == _fieldDefinitionId && f.StringValue == _categeory).Any();
     }
 }

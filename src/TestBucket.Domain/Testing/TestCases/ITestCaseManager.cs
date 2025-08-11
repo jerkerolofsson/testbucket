@@ -63,7 +63,9 @@ public interface ITestCaseManager
     Task<IReadOnlyList<TestEntity>> ExpandUntilRootAsync(ClaimsPrincipal principal, TestCase testCase);
     Task<InsightsData<string, int>> GetInsightsTestCountPerFieldAsync(ClaimsPrincipal principal, SearchTestQuery query, TraitType traitType);
 
-    Task<PagedResult<TestCase>> SearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query);
+    Task<PagedResult<TestCase>> SearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query, string sortBy = "Created", bool descending = false);
+
+    Task<PagedResult<TestCase>> SemanticSearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query, string sortBy = "Created", bool descending = false);
 
     /// <summary>
     /// Returns a test case by ID
@@ -109,6 +111,5 @@ public interface ITestCaseManager
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     IAsyncEnumerable<long> SearchTestCaseIdsAsync(ClaimsPrincipal principal, SearchTestQuery query, CancellationToken cancellationToken = default);
-    Task<PagedResult<TestCase>> SemanticSearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query);
     Task ApproveTestAsync(ClaimsPrincipal principal, TestCase test);
 }

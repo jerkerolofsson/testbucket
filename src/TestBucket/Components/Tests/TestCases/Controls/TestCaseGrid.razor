@@ -18,7 +18,7 @@
              T="TestSuiteItem"
              RowClick="(e) => OnItemClicked(e.Item)"
              @ref="_dataGrid"
-             SortMode="SortMode.None">
+             SortMode="@(SortMode)">
 
     <ToolBarContent>
         <MudStack Row="true" AlignItems="AlignItems.Center" Style="width: 100%">
@@ -50,8 +50,14 @@
         </MudStack>
     </ToolBarContent>
 
+    <ColGroup>
+        <col style="width: 70%" />
+        <col style="width: 15%" />
+        <col style="width: 15%"/>
+    </ColGroup>
+
     <Columns>
-        <TemplateColumn Title="@loc["name"]">
+        <TemplateColumn Title="@loc["name"]" SortBy="@(_ => nameof(TestSuiteItem.Name))" Sortable="true">
             <CellTemplate>
                 @if (context.Item.TestCase is not null)
                 {
@@ -75,7 +81,16 @@
             </CellTemplate>
         </TemplateColumn>
 
-        <TemplateColumn Title="@loc["modified"]">
+        <TemplateColumn Title="@loc["state"]" SortBy="@(_ => nameof(TestSuiteItem.State))" Sortable="true">
+            <CellTemplate>
+                @if (context.Item.TestCase is not null)
+                {
+                    @context.Item.TestCase.State
+                }
+            </CellTemplate>
+        </TemplateColumn>
+
+        <TemplateColumn Title="@loc["modified"]" SortBy="@(_ => nameof(TestSuiteItem.Modified))" Sortable="true">
             <CellTemplate>
                 @if (context.Item.TestCase is not null)
                 {
@@ -87,6 +102,8 @@
                 }
             </CellTemplate>
         </TemplateColumn>
+
+
     </Columns>
 
     <PagerContent>

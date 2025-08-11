@@ -677,6 +677,10 @@ table.tb-environment-variables {
     border: 1px solid transparent;
 }
 
+.tb-datarow {
+    border: 1px solid transparent;
+}
+
 .tb-trace-view .tb-traceability-node-link-wrapper:hover,
 .tb-background-hover:hover,
 .tb-datarow:hover,

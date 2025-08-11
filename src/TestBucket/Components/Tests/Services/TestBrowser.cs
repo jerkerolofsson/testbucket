@@ -251,12 +251,14 @@ internal class TestBrowser : TenantBaseService
 
     /// <summary>
     /// Returns a flat list of test cases and folders
+    /// 
+    /// Note: sorting only applies when semantic is false
     /// </summary>
     /// <param name="query"></param>
     /// <param name="offset"></param>
     /// <param name="count"></param>
     /// <returns></returns>
-    public async Task<PagedResult<TestSuiteItem>> SearchItemsAsync(SearchTestQuery query, int offset, int count = 20, bool includeFolders = true, bool semantic = false)
+    public async Task<PagedResult<TestSuiteItem>> SearchItemsAsync(SearchTestQuery query, int offset, int count = 20, bool includeFolders = true, bool semantic = false, string sortBy = "Created", bool descending = false)
     {
         if(query.TestSuiteId is null && query.ProjectId is null)
         {
@@ -283,8 +285,7 @@ internal class TestBrowser : TenantBaseService
             query.Count = testCount;
             folderCount = folders.Length;
         }
-        var tests = await _testSuiteController.SearchTestCasesAsync(query, semantic);
-
+        var tests = await _testSuiteController.SearchTestCasesAsync(query, semantic, sortBy, descending);
         items.AddRange(tests.Items.Select(x => new TestSuiteItem() { TestCase = x }));
 
         return new PagedResult<TestSuiteItem>()

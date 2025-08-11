@@ -18,6 +18,37 @@ namespace TestBucket.Domain.UnitTests.Shared
     public class SearchTestQueryExtensionsTests
     {
         /// <summary>
+        /// Verifies that SearchTestQuery.ToSearchText returns "state:[State] whenthe State property is set
+        /// </summary>
+        [Fact]
+        public void ToSearchText_WithState()
+        {
+            var query = new SearchTestQuery();
+            query.State = "Completed";
+
+            // Act
+            var result = query.ToSearchText();
+
+            // Assert
+            Assert.Equal("state:Completed", result);
+        }
+        /// <summary>
+        /// Verifies that SearchTestQuery.ToSearchText returns "review-assigned-to:[user] whenthe ReviewAssignedTo property is set
+        /// </summary>
+        [Fact]
+        public void ToSearchText_WithReviewAssignedTo()
+        {
+            var query = new SearchTestQuery();
+            query.ReviewAssignedTo = "admin@admin.com";
+
+            // Act
+            var result = query.ToSearchText();
+
+            // Assert
+            Assert.Equal("review-assigned-to:admin@admin.com", result);
+        }
+
+        /// <summary>
         /// Verifies that SearchTestQuery.ToSearchText returns the plain text when only the <c>Text</c> property is set.
         /// </summary>
         [Fact]

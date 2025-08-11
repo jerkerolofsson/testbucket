@@ -25,6 +25,7 @@ public class FilterRequirementByBooleanField : FilterSpecification<Requirement>
         }
         else
         {
+            // false or missing field
             return x => !x.RequirementFields!.Where(f => f.FieldDefinitionId == _fieldDefinitionId && f.BooleanValue == true).Any();
         }
     }

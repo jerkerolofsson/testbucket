@@ -95,7 +95,7 @@ namespace TestBucket.Domain.Features.Classification
 
             while(!stoppingToken.IsCancellationRequested)
             {
-                var result = await testRepo.SearchTestCasesAsync(0, 5, filters);
+                var result = await testRepo.SearchTestCasesAsync(0, 5, filters, x => x.Created, false);
                 if(result.Items.Length > 0)
                 {
                     foreach (var testCase in result.Items)

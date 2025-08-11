@@ -29,7 +29,11 @@ namespace TestBucket.Domain.Testing.TestCases.Search
             }
             if (query.ReviewAssignedTo is not null)
             {
-                items.Add($"state:{query.ReviewAssignedTo}");
+                items.Add($"review-assigned-to:{query.ReviewAssignedTo}");
+            }
+            if (query.State is not null)
+            {
+                items.Add($"state:{query.State}");
             }
             if (query.TestRunId is not null)
             {

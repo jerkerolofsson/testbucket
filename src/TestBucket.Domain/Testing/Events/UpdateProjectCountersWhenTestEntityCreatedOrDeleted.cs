@@ -80,7 +80,7 @@ internal class UpdateProjectCountersWhenTestEntityCreatedOrDeleted :
                 new FilterByProject<TestCase>(testProjectId.Value),
                 new FilterByTenant<TestCase>(tenantId)
                 ];
-            var testCases = await _repository.SearchTestCasesAsync(0, 0, filters);
+            var testCases = await _repository.SearchTestCasesAsync(0, 0, filters, x => x.Created, false);
             var project = await _projectRepository.GetProjectByIdAsync(tenantId, testProjectId.Value);
             if (project is not null)
             {

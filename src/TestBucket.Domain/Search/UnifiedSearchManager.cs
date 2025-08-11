@@ -80,7 +80,7 @@ namespace TestBucket.Domain.Search
             var filters = TestCaseFilterSpecificationBuilder.From(query);
 
             filters = [new FilterByTenant<TestCase>(tenantId), .. filters];
-            var tests = await _testCaseRepo.SearchTestCasesAsync(query.Offset, query.Count, filters);
+            var tests = await _testCaseRepo.SearchTestCasesAsync(query.Offset, query.Count, filters, x => x.Created, true);
             if (tests is not null)
             {
                 foreach (var test in tests.Items)

@@ -79,7 +79,7 @@ public interface ITestCaseRepository : ITestRunRepository
     /// <param name="tenantId"></param>
     /// <param name="filters"></param>
     /// <returns></returns>
-    Task<PagedResult<TestCase>> SearchTestCasesAsync(int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters);
+    Task<PagedResult<TestCase>> SearchTestCasesAsync(int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters, Func<TestCase, object> orderBy, bool descending);
 
     /// <summary>
     /// Searches for test cases

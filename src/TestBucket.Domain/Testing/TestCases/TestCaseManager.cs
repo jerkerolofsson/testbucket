@@ -433,7 +433,7 @@ namespace TestBucket.Domain.Testing.TestCases
             return await _testCaseRepo.GetTestCaseByNameAsync(tenantId, projectId, testSuiteId, name);
         }
 
-        public async Task<PagedResult<TestCase>> SemanticSearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query)
+        public async Task<PagedResult<TestCase>> SemanticSearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query, string sortBy, bool descending)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
             var tenantId = principal.GetTenantIdOrThrow();
@@ -462,11 +462,11 @@ namespace TestBucket.Domain.Testing.TestCases
                 // Restore the text filter
                 query.Text = semanticSearchText;
             }
-            return await SearchTestCasesAsync(principal, query);
+            return await SearchTestCasesAsync(principal, query, sortBy, descending);
         }
 
 
-        public async Task<PagedResult<TestCase>> SearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query)
+        public async Task<PagedResult<TestCase>> SearchTestCasesAsync(ClaimsPrincipal principal, SearchTestQuery query, string sortBy, bool descending)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.TestCase, PermissionLevel.Read);
             var tenantId = principal.GetTenantIdOrThrow();
@@ -474,7 +474,15 @@ namespace TestBucket.Domain.Testing.TestCases
             var filters = TestCaseFilterSpecificationBuilder.From(query);
             filters = [new FilterByTenant<TestCase>(tenantId), .. filters];
 
-            return await _testCaseRepo.SearchTestCasesAsync(query.Offset, query.Count, filters);
+            Func<TestCase, object> orderBy = sortBy switch
+            {
+                "Name" => x => x.Name,
+                "Modified" => x => x.Modified,
+                "State" => x => x.State!,
+                _ => x => x.Created
+            };
+
+            return await _testCaseRepo.SearchTestCasesAsync(query.Offset, query.Count, filters, orderBy, descending);
         }
     }
 }

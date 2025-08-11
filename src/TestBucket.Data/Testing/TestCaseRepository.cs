@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using System.Globalization;
+
+using Microsoft.Extensions.Caching.Memory;
 
 using Pgvector.EntityFrameworkCore;
 
@@ -97,6 +99,36 @@ internal class TestCaseRepository : ITestCaseRepository
             Items = await page.ToArrayAsync()
         };
     }
+
+    /// <inheritdoc/>
+    public async Task<PagedResult<TestCase>> SearchTestCasesAsync(int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters, Func<TestCase, object> orderBy, bool descending)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var tests = dbContext.TestCases
+            .AsSingleQuery()
+            .Include(x => x.TestCaseFields).AsQueryable();
+        foreach (var spec in filters)
+        {
+            tests = tests.Where(spec.Expression);
+        }
+        long totalCount = await tests.LongCountAsync();
+
+        if (descending)
+        {
+            return new PagedResult<TestCase>
+            {
+                TotalCount = totalCount,
+                Items = tests.OrderByDescending(orderBy).Skip(offset).Take(count).ToArray(),
+            };
+        }
+
+        return new PagedResult<TestCase>
+        {
+            TotalCount = totalCount,
+            Items = tests.OrderBy(orderBy).Skip(offset).Take(count).ToArray(),
+        };
+    }
+
     /// <inheritdoc/>
     public async Task<PagedResult<TestCase>> SearchTestCasesAsync(int offset, int count, IEnumerable<FilterSpecification<TestCase>> filters)
     {

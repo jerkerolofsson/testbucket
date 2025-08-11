@@ -80,7 +80,7 @@ internal class TestExportHandler : INotificationHandler<ExportNotification>
             new FilterByTenant<TestCase>(tenantId),
             new FilterTestCasesByTestSuite(testSuite.Id)
         };
-        var response = await _testRepository.SearchTestCasesAsync(offset, count, filters);
+        var response = await _testRepository.SearchTestCasesAsync(offset, count, filters, x => x.Created, false);
         while (response.Items.Length > 0)
         {
             foreach (var item in response.Items)
@@ -101,7 +101,7 @@ internal class TestExportHandler : INotificationHandler<ExportNotification>
             }
 
             offset += count;
-            response = await _testRepository.SearchTestCasesAsync(offset, count, filters);
+            response = await _testRepository.SearchTestCasesAsync(offset, count, filters, x => x.Created, false);
         }
     }
 }

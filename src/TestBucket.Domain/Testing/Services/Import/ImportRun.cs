@@ -500,7 +500,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                 new FilterByProject<TestCase>(projectId),
                 new FilterTestCasesByExternalId(test.ExternalId)
             ];
-            var testCase = (await _testCaseRepository.SearchTestCasesAsync(0, 1, filters)).Items.FirstOrDefault();
+            var testCase = (await _testCaseRepository.SearchTestCasesAsync(0, 1, filters, x => x.Created, false)).Items.FirstOrDefault();
             if (testCase is not null)
             {
                 bool changed = false;

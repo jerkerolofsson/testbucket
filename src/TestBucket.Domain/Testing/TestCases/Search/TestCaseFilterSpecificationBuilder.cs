@@ -7,16 +7,23 @@ namespace TestBucket.Domain.Testing.TestCases.Search;
 
 public class TestCaseFilterSpecificationBuilder
 {
-    public static List<FilterSpecification<TestCase>> GetTraitFilter(IReadOnlyList<FieldDefinition> definitions, TraitType trait, string value)
-    {
-        var definition = definitions.FirstOrDefault(x => x.TraitType == trait);
-        if(definition is not null)
-        {
-            return [new FilterTestCasesByStringField(definition.Id, value)];
-        }
+    //public static List<FilterSpecification<TestCase>> GetTraitFilter(IReadOnlyList<FieldDefinition> definitions, TraitType trait, string value)
+    //{
+    //    var definition = definitions.FirstOrDefault(x => x.TraitType == trait);
+    //    if(definition is not null)
+    //    {
+    //        if (definition.Type == FieldType.String || definition.Type == FieldType.SingleSelection)
+    //        {
+    //            return [new FilterTestCasesByStringField(definition.Id, value)];
+    //        }
+    //        else if (definition.Type == FieldType.Boolean)
+    //        {
+    //            return [new FilterTestCasesByBooleanField(definition.Id, value)];
+    //        }
+    //    }
 
-        return [];
-    }
+    //    return [];
+    //}
 
     public static List<FilterSpecification<TestCase>> From(SearchTestQuery query)
     {
@@ -26,9 +33,13 @@ public class TestCaseFilterSpecificationBuilder
         {
             foreach(var fieldFilter in query.Fields)
             {
-                if(!string.IsNullOrEmpty(fieldFilter.StringValue))
+                if (!string.IsNullOrEmpty(fieldFilter.StringValue))
                 {
                     specifications.Add(new FilterTestCasesByStringField(fieldFilter.FilterDefinitionId, fieldFilter.StringValue));
+                }
+                if (fieldFilter.BooleanValue is not null)
+                {
+                    specifications.Add(new FilterTestCasesByBooleanField(fieldFilter.FilterDefinitionId, fieldFilter.BooleanValue.Value));
                 }
             }
         }

@@ -150,7 +150,7 @@ internal class TestCompiler : ITestCompiler
     private async Task<TestCase?> FindTestCaseByIdAsync(ClaimsPrincipal principal, long id)
     {
         FilterSpecification<TestCase>[] filters = [new FilterByTenant<TestCase>(principal.GetTenantIdOrThrow()), new FilterTestCasesById(id)];
-        var tests = await _testCaseRepository.SearchTestCasesAsync(0, 1, filters);
+        var tests = await _testCaseRepository.SearchTestCasesAsync(0, 1, filters, x => x.Created, false);
         if (tests.Items.Length > 0)
         {
             var test = tests.Items[0];
@@ -276,7 +276,7 @@ internal class TestCompiler : ITestCompiler
     private async Task<TestCase?> FindTestCaseByNameAsync(ClaimsPrincipal principal, string name)
     {
         FilterSpecification<TestCase>[] filters = [new FilterByTenant<TestCase>(principal.GetTenantIdOrThrow()), new FilterTestCasesByName(name)];
-        var tests = await _testCaseRepository.SearchTestCasesAsync(0, 1, filters);
+        var tests = await _testCaseRepository.SearchTestCasesAsync(0, 1, filters, x => x.Created, false);
         if (tests.Items.Length > 0)
         {
             var test = tests.Items[0];

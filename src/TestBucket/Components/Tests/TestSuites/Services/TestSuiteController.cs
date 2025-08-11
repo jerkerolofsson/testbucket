@@ -242,14 +242,14 @@ internal class TestSuiteController : TenantBaseService
         });
     }
 
-    internal async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery searchTestQuery, bool semantic = false)
+    internal async Task<PagedResult<TestCase>> SearchTestCasesAsync(SearchTestQuery searchTestQuery, bool semantic = false, string sortBy = "Created", bool descending = false)
     {
         var principal = await GetUserClaimsPrincipalAsync();
         if(semantic)
         {
-            return await _testCaseManager.SemanticSearchTestCasesAsync(principal, searchTestQuery);
+            return await _testCaseManager.SemanticSearchTestCasesAsync(principal, searchTestQuery, sortBy, descending);
         }
-        return await _testCaseManager.SearchTestCasesAsync(principal, searchTestQuery);
+        return await _testCaseManager.SearchTestCasesAsync(principal, searchTestQuery, sortBy, descending);
     }
 
     internal async Task<TestSuite?> GetTestSuiteByIdAsync(long testSuiteId)

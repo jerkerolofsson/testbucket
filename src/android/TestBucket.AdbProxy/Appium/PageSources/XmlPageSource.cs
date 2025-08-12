@@ -96,7 +96,7 @@ public class XmlPageSource
 
         bounds = bounds.Replace("][", ",");
         var parts = bounds.Trim('[', ']').Split(',');
-        if(parts.Length != 4)
+        if (parts.Length != 4)
         {
             return 0;
         }
@@ -110,79 +110,4 @@ public class XmlPageSource
         return 0;
     }
 
-    internal List<MatchedHierarchyNode> FindElements(string query)
-    {
-        List<MatchedHierarchyNode> matches = [];
-        FindElementRecursive(query, matches, Nodes);
-
-        if(matches.Count == 0)
-        {
-            // Remove some keywords that may be added by the AI
-            query = query.ToLower();
-            string[] keywordsToRemove = ["button", "field", "box", "text", "input", "element", "control", "widget", "toggle"];
-            foreach(var keyword in keywordsToRemove)
-            {
-                query = query.Replace(keyword, "");
-            }
-            query = query.Trim();
-            if (!string.IsNullOrEmpty(query))
-            {
-                FindElementRecursive(query, matches, Nodes);
-            }
-        }
-
-        // Sort to return the best match first
-        matches.Sort((a, b) => b.MatchScore - a.MatchScore);
-
-        return matches;
-    }
-
-    private void FindElementRecursive(string query, List<MatchedHierarchyNode> matches, List<HierarchyNode> nodes)
-    {
-        foreach(var node in nodes)
-        {
-            bool match = false;
-            if (!string.IsNullOrEmpty(node.ResourceId) && !match)
-            {
-                if (node.ResourceId == query)
-                {
-                    match = true;
-                    matches.Add(new MatchedHierarchyNode(NodeMatchType.ExactText, node));
-                }
-                else if (node.ResourceId.Contains(query, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    match = true;
-                    matches.Add(new MatchedHierarchyNode(NodeMatchType.PartialText, node));
-                }
-            }
-            if (!string.IsNullOrEmpty(node.ContentDescription) && !match)
-            {
-                if (node.ContentDescription == query)
-                {
-                    match = true;
-                    matches.Add(new MatchedHierarchyNode(NodeMatchType.ExactContentDescription, node));
-                }
-                else if (node.ContentDescription.Contains(query, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    match = true;
-                    matches.Add(new MatchedHierarchyNode(NodeMatchType.PartialContentDescription, node));
-                }
-            }
-            if (!string.IsNullOrEmpty(node.Text) && !match)
-            {
-                if (node.Text == query)
-                {
-                    match = true;
-                    matches.Add(new MatchedHierarchyNode(NodeMatchType.ExactText, node));
-                }
-                else if (node.Text.Contains(query, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    match = true;
-                    matches.Add(new MatchedHierarchyNode(NodeMatchType.PartialText, node));
-                }
-            }
-
-            FindElementRecursive(query, matches, node.Nodes);
-        }
-    }
 }

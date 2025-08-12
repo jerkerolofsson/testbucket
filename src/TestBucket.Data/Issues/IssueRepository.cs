@@ -174,10 +174,12 @@ internal class IssueRepository : IIssueRepository
         }
         issues = issues.Where(x => x.Embedding != null);
 
-        var totalCount = issues.LongCount();
+        var distance = issues.Select(x => new { Issue = x, Distance = x.Embedding!.CosineDistance(vector) })
+            .Where(x => x.Distance < 1.0);
 
-        var page = issues.Select(x=> new { Issue = x, Distance = x.Embedding!.CosineDistance(vector) })
-            .Where(x => x.Distance < 1.0)
+        var totalCount = distance.LongCount();
+
+        var page = distance
             .OrderBy(x => x.Distance)
             .Skip(offset)
             .Take(count)

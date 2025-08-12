@@ -5,6 +5,7 @@ using Xunit;
 
 namespace TestBucket.AdbProxy.UnitTests.Appium;
 
+[FunctionalTest]
 [EnrichedTest]
 [UnitTest]
 [Component("Appium")]

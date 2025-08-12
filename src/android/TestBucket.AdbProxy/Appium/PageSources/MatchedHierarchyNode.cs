@@ -1,24 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace TestBucket.AdbProxy.Appium.PageSources;
 
 public record class MatchedHierarchyNode(NodeMatchType MatchType, HierarchyNode Node)
 {
+    public double? EmbeddingDistance { get; set; }
+
     public int MatchScore => MatchType switch
     {
-        NodeMatchType.ExactId => 100,
-        NodeMatchType.ExactContentDescription => 100,
-        NodeMatchType.ExactText => 100,
+        NodeMatchType.ExactId => 1000,
+        NodeMatchType.ExactContentDescription => 1000,
+        NodeMatchType.ExactText => 1000,
 
-        NodeMatchType.PartialId => 50,
-        NodeMatchType.PartialContentDescription => 50,
-        NodeMatchType.PartialText => 50,
+        NodeMatchType.PartialId => 500,
+        NodeMatchType.PartialContentDescription => 500,
+        NodeMatchType.PartialText => 500,
+
+        NodeMatchType.EmbeddingText => 400,
+        NodeMatchType.EmbeddingContentDescription => 300,
+        NodeMatchType.EmbeddingId => 200,
         _ => 0,
-    } + GetIsClickableScore() + GetIsParentClickableScore() + GetAccessibilityScore();
+    } + GetIsClickableScore() + GetAccessibilityScore() + GetEmbeddingDistanceScore();
+
+    private int GetEmbeddingDistanceScore()
+    {
+        if(EmbeddingDistance != null)
+        {
+            return (int)(EmbeddingDistance.Value*100.0);
+        }
+        return 0;
+    }
 
     /// <summary>
     /// Rank items that are important for accessibility higher
@@ -35,24 +45,26 @@ public record class MatchedHierarchyNode(NodeMatchType MatchType, HierarchyNode 
     /// <returns></returns>
     private int GetIsClickableScore()
     {
-        return Node.Clickable == true ? 20 : 0;
-    }
-
-    /// <summary>
-    /// Rank items where the parent is clickable higher
-    /// </summary>
-    /// <returns></returns>
-    private int GetIsParentClickableScore()
-    {
-        HierarchyNode? parent = Node.Parent;
-        while (parent is not null)
+        if (Node.Clickable == true)
         {
-            if(parent.Clickable == true)
-            {
-                return 10;
-            }
-            parent = parent.Parent;
+            return 30;
+        }
+
+        // Check if parent is clickable
+        if (Node.MatchThisOrAncestor(x => x.Clickable == true))
+        {
+            return 10;
         }
         return 0;
+    }
+
+
+    /// <summary>
+    /// Returns true if this element or a parent element is clickable
+    /// </summary>
+    /// <returns></returns>
+    public bool IsThisOrParentClickable()
+    {
+        return Node.MatchThisOrAncestor(x => x.Clickable == true);
     }
 }

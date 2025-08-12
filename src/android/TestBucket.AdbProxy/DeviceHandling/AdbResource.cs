@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Threading;
 
 using TestBucket.AdbProxy.Host;
 using TestBucket.AdbProxy.Models;
@@ -11,16 +12,26 @@ internal class AdbResource(AdbDevice Device, Proxy.AdbProxyOptions AdbProxyOptio
 {
     public string ResourceId => Device.DeviceId;
 
-    public async Task<ScreenshotDto?> CaptureScreenshot(CancellationToken cancellationToken)
+    public async Task<ScreenshotDto?> CaptureScreenshot(CancellationToken cancellationToken = default)
     {
         var screenshot = new CaptureScreenshot(AdbProxyOptions);
         var bytes = await screenshot.RunAsync(ResourceId, cancellationToken);
         return new ScreenshotDto { Bytes = bytes, ContentType = "image/png" };
     }
 
-    internal async Task<string> ExecShellGetStringAsync(string deviceId, string command, CancellationToken cancellationToken)
+    public async Task<string[]> ListPackagesAsync(CancellationToken cancellationToken = default)
+    {
+        var text = await ExecShellGetStringAsync("shell:cmd package list packages", cancellationToken);
+
+        return text.Split('\n')
+            .Select(line => line.Replace("package:", "").Trim())
+            .ToArray();
+    }
+
+    internal async Task<string> ExecShellGetStringAsync(string command, CancellationToken cancellationToken = default)
     {
         var adb = new AdbHostClient(AdbProxyOptions);
+        string deviceId = ResourceId;
 
         uint localId = 1;
         uint remoteId = 1;

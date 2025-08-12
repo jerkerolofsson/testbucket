@@ -1,4 +1,4 @@
-﻿namespace TestBucket.Domain.Features.Classification;
+﻿namespace TestBucket.Embeddings;
 public class CosineSimilarity
 {
     public static double Calculate(ReadOnlyMemory<float> vector1, ReadOnlyMemory<float> vector2)

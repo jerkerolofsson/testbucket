@@ -18,6 +18,7 @@ using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Features.Traceability;
 
 using static System.Net.Mime.MediaTypeNames;
+using TestBucket.Embeddings;
 
 namespace TestBucket.Domain.Features.Classification;
 

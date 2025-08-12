@@ -168,7 +168,8 @@
                     <MudStack>
                         <MudStack Row>
                             <MudRadioGroup Value="_embeddingAiProvider" ValueChanged="OnEmbeddingAiProviderChanged" T="string">
-                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("ollama")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Ollama"/>  Ollama</MudRadio>
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("default")"><MudIcon Size="Size.Small"/>  Default (ONNX)</MudRadio>
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@("ollama")"><MudIcon Size="Size.Small" Icon="@TbIcons.Brands.Ollama" />  Ollama</MudRadio>
                             </MudRadioGroup>
                         </MudStack>
 
@@ -184,27 +185,30 @@
                 </ChildContent>
             </MudExpansionPanel>
                 
-            <MudExpansionPanel>
-                <TitleContent>
-                    <MudStack Row AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@GetModelIcon(_embeddingModel)"/>
-                        @settingsLoc["ai-embedding-model"]
+            @if(_embeddingAiProvider == "ollama")
+            {
+                <MudExpansionPanel>
+                    <TitleContent>
+                        <MudStack Row AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@GetModelIcon(_embeddingModel)"/>
+                            @settingsLoc["ai-embedding-model"]
+                        </MudStack>
+                    </TitleContent>
+                    <ChildContent>
+                    <MudStack Row Spacing="5">
+                        <MudRadioGroup Value="_embeddingModel" ValueChanged="OnEmbeddingModelChanged" T="string">
+                            @foreach(var model in LlmModels.GetModels(ModelCapability.Embedding))
+                            {
+                                <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
+                                    <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
+                                    <span>@model.Name</span>
+                                </MudRadio>
+                            }
+                        </MudRadioGroup>
                     </MudStack>
-                </TitleContent>
-                <ChildContent>
-                <MudStack Row Spacing="5">
-                    <MudRadioGroup Value="_embeddingModel" ValueChanged="OnEmbeddingModelChanged" T="string">
-                        @foreach(var model in LlmModels.GetModels(ModelCapability.Embedding))
-                        {
-                            <MudRadio Class="settings-radio-lg" Color="Color.Tertiary" Value="@model.Name">
-                                <MudIcon Size="Size.Small" Icon="@GetModelIcon(model)" />
-                                <span>@model.Name</span>
-                            </MudRadio>
-                        }
-                    </MudRadioGroup>
-                </MudStack>
-                </ChildContent>
-            </MudExpansionPanel>
+                    </ChildContent>
+                </MudExpansionPanel>
+            }
         </MudExpansionPanels>
 
         <MudLink Href="@($"/{TenantId}/Settings/Search?q=ai-")">@loc["more-options"]</MudLink>

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text;
 
 using ModelContextProtocol.Server;
 
@@ -35,7 +36,7 @@ public class AdbMcpTools
     /// <param name="resourceId"></param>
     /// <returns></returns>
     [McpServerTool(Name = "open_settings"), Description("Opens the settings app")]
-    public async Task<string> OpenSettingsAsync(string resourceId)
+    public async Task<string> OpenSettingsAsync([Description("The device")] string resourceId)
     {
         CancellationToken cancellationToken = default;
 
@@ -47,9 +48,41 @@ public class AdbMcpTools
 
         if (resource is AdbResource adbResource)
         {
-            var text = await adbResource.ExecShellGetStringAsync(resourceId, "shell:am start com.android.settings", cancellationToken);
+            var text = await adbResource.ExecShellGetStringAsync("shell:am start com.android.settings", cancellationToken);
 
             return "OK. I have opened the settings app.";
+        }
+        return "This is not an ADB resource. Cannot use this tool for this device.";
+    }
+
+    /// <summary>
+    /// Lists all packages
+    /// </summary>
+    /// <param name="resourceId"></param>
+    /// <returns></returns>
+    [McpServerTool(Name = "list_packages"), Description("Lists all packages / apps")]
+    public async Task<string> ListPackagesAsync(string resourceId)
+    {
+        CancellationToken cancellationToken = default;
+
+        var resource = await _resourceRegistry.GetResourceAsync(resourceId, cancellationToken);
+        if (resource is null)
+        {
+            return $"Failed: No resource found with ID '{resourceId}'";
+        }
+
+        if (resource is AdbResource adbResource)
+        {
+            var packages = await adbResource.ListPackagesAsync(cancellationToken);
+
+            var sb = new StringBuilder();
+            sb.AppendLine("Here is a list of all installed packages:");
+            foreach(var package in packages)
+            {
+                sb.AppendLine(package);
+            }
+
+            return sb.ToString();
         }
         return "This is not an ADB resource. Cannot use this tool for this device.";
     }
@@ -72,7 +105,7 @@ public class AdbMcpTools
 
         if(resource is AdbResource adbResource)
         {
-            var text = await adbResource.ExecShellGetStringAsync(resourceId, "shell:input keyevent KEYCODE_HOME", cancellationToken);
+            var text = await adbResource.ExecShellGetStringAsync("shell:input keyevent KEYCODE_HOME", cancellationToken);
 
             return "OK. Going to home screen.";
         }

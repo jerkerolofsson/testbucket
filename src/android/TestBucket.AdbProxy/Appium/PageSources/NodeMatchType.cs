@@ -15,4 +15,8 @@ public enum NodeMatchType
 
     ExactId,
     PartialId,
+
+    EmbeddingText,
+    EmbeddingContentDescription,
+    EmbeddingId
 }

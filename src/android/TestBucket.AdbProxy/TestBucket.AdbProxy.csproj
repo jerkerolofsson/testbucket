@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Package\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" />
+    <ProjectReference Include="..\..\Package\Core\TestBucket.Embeddings\TestBucket.Embeddings.csproj" />
     <ProjectReference Include="..\..\resourceserver\TestBucket.ResourceServer.Contracts\TestBucket.ResourceServer.Contracts.csproj" />
     <ProjectReference Include="..\..\resourceserver\TestBucket.ResourceServer\TestBucket.ResourceServer.csproj" />
     <ProjectReference Include="..\..\TestBucket.ServiceDefaults\TestBucket.ServiceDefaults.csproj" />

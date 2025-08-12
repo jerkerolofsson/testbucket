@@ -1,11 +1,13 @@
 ﻿using Mediator;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using TestBucket.Domain.AI.Embeddings;
-using TestBucket.Domain.Features.Classification;
+using TestBucket.Embeddings;
 
 namespace TestBucket.Domain.IntegrationTests.AI
 {
@@ -38,7 +40,8 @@ namespace TestBucket.Domain.IntegrationTests.AI
         [InlineData("passed",           "passing",  "failed")]
         [InlineData("failing",          "failed",   "passed")]
         [InlineData("error",            "failed",   "passed")]
-        [InlineData("police",           "cop",      "rain")]
+        [InlineData("police", "cop", "rain")]
+        [InlineData("open player view", "enter player view", "open a bottle of water")]
         [Theory]
         public async Task CalculateCosineSimilarity_WithTwoEmbeddings_SimilarityAsExpected(string embedding1, string embedding2, string embedding3)
         {

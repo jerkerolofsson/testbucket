@@ -130,6 +130,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{A62A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSTestSample", "Package\Traits\Samples\MSTestSample\MSTestSample.csproj", "{777622A9-C1D2-4698-B106-DD209E60E2B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBucket.Embeddings", "Package\Core\TestBucket.Embeddings\TestBucket.Embeddings.csproj", "{CEF9434D-8E14-4907-8FF9-06BD5AAA9334}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -300,6 +302,10 @@ Global
 		{777622A9-C1D2-4698-B106-DD209E60E2B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{777622A9-C1D2-4698-B106-DD209E60E2B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{777622A9-C1D2-4698-B106-DD209E60E2B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEF9434D-8E14-4907-8FF9-06BD5AAA9334}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEF9434D-8E14-4907-8FF9-06BD5AAA9334}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEF9434D-8E14-4907-8FF9-06BD5AAA9334}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEF9434D-8E14-4907-8FF9-06BD5AAA9334}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -360,6 +366,7 @@ Global
 		{95193856-3B19-4E6E-844D-54A5E6352091} = {23D65EC5-905A-406F-94B0-808DA0E67E2A}
 		{A62AE488-8EE4-4035-8242-AE06EF9952C8} = {23D65EC5-905A-406F-94B0-808DA0E67E2A}
 		{777622A9-C1D2-4698-B106-DD209E60E2B5} = {A62AE488-8EE4-4035-8242-AE06EF9952C8}
+		{CEF9434D-8E14-4907-8FF9-06BD5AAA9334} = {FE85F1D8-3AEC-48E5-8FFA-E2BC1389EDE2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {37FBEEC7-21BB-422E-866E-8B5C94540F5B}

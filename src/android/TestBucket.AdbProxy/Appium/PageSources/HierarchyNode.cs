@@ -24,7 +24,7 @@ public record class HierarchyNode
     /// Gets or sets the index of the node.
     /// </summary>
     public int Index { get; set; }
-    
+
     /// <summary>
     /// Gets or sets the text for the node.
     /// </summary>
@@ -179,4 +179,112 @@ public record class HierarchyNode
     /// Gets or sets the child nodes of the current node.
     /// </summary>
     public List<HierarchyNode> Nodes { get; set; } = new List<HierarchyNode>();
+
+    /// <summary>
+    /// Matches this node, or a descendant. If it doesn't match it moves to an ancestor and repeats.
+    /// </summary>
+    /// <param name="predicate"></param>
+    /// <param name="maxAncestors"></param>
+    /// <returns></returns>
+    public bool MatchThisOrSibling(Predicate<HierarchyNode> predicate, int maxAncestors)
+    {
+        if (predicate(this))
+        {
+            return true;
+        }
+
+        var node = this;
+
+        for (int i = 0; i <= maxAncestors && node is not null; i++)
+        {
+            if (node.MatchThisOrDescendant(predicate))
+            {
+                return true;
+            }
+            node = node.Parent;
+        }
+
+        return false;
+    }
+
+    public IEnumerable<HierarchyNode> Descendants()
+    {
+        foreach (var node in Nodes)
+        {
+            yield return node;
+
+            foreach (var childNode in node.Descendants())
+            {
+                yield return childNode;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Moves up numAncestors ancestors then scans all descendants
+    /// </summary>
+    /// <param name="predicate"></param>
+    /// <param name="numAncestors"></param>
+    /// <returns></returns>
+    public IEnumerable<HierarchyNode> FindAncestorDescendants(Predicate<HierarchyNode> predicate, int numAncestors)
+    {
+        var node = this.Parent;
+        for (int i = 0; i <= numAncestors && node is not null; i++)
+        {
+            // Exit early
+            if (node.Parent is null)
+            {
+                break;
+            }
+            node = node.Parent;
+        }
+
+        if (node is not null)
+        {
+            foreach (var descenant in node.Descendants())
+                if (predicate(descenant))
+                {
+                    yield return descenant;
+                }
+
+        }
+    }
+    public bool MatchThisOrDescendant(Predicate<HierarchyNode> predicate)
+    {
+        if (predicate(this))
+        {
+            return true;
+        }
+
+        // Check if parent is clickable
+        foreach (var node in this.Nodes)
+        {
+            if (node.MatchThisOrDescendant(predicate))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool MatchThisOrAncestor(Predicate<HierarchyNode> predicate)
+    {
+        if (predicate(this))
+        {
+            return true;
+        }
+
+        // Check if parent is clickable
+        var node = this.Parent;
+        while (node is not null)
+        {
+            if (predicate(node))
+            {
+                return true;
+            }
+            node = node.Parent;
+        }
+
+        return false;
+    }
 }

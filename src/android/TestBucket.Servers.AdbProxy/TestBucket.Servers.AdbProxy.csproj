@@ -11,7 +11,10 @@
     <Content Remove="Properties\launchSettings.json" />
   </ItemGroup>
 
-  <ItemGroup>
+    <Import Project="..\..\Package\Core\TestBucket.Embeddings\build\TestBucket.Embeddings.targets" />
+
+
+    <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.7" />

@@ -14,7 +14,9 @@
     <None Remove="Components\Milestones\Controls\**" />
   </ItemGroup>
 
-  <ItemGroup>
+    <Import Project="..\Package\Core\TestBucket.Embeddings\build\TestBucket.Embeddings.targets" />
+
+    <ItemGroup>
     <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.4.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="CodeBeam.MudBlazor.Extensions" Version="8.2.4" />

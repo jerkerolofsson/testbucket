@@ -53,6 +53,11 @@ public class GenerateEmbeddingHandler : IRequestHandler<GenerateEmbeddingRequest
             }
             catch (Exception) { }
         }
+        else
+        {
+            // Use local embeddings
+            return new TestBucket.Embeddings.LocalEmbedder();
+        }
         return null;
     }
 

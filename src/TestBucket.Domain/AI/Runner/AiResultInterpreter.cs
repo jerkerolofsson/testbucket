@@ -1,7 +1,7 @@
 ﻿using Mediator;
 
 using TestBucket.Domain.AI.Embeddings;
-using TestBucket.Domain.Features.Classification;
+using TestBucket.Embeddings;
 
 namespace TestBucket.Domain.AI.Runner;
 

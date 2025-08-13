@@ -878,6 +878,9 @@
   <data name="search-tests" xml:space="preserve">
     <value>Testes de pesquisa</value>
   </data>
+  <data name="select-resource" xml:space="preserve">
+    <value>Selecione Recurso</value>
+  </data>
   <data name="select-test-suite" xml:space="preserve">
     <value>Selecione o conjunto de testes</value>
   </data>
@@ -986,6 +989,9 @@
 
 As variáveis são definidas em um caso de teste como {{key}} e ao executar um caso de teste, o {{key}} será substituído por uma variável chamada {{key}}.</value>
   </data>
+  <data name="test-category" xml:space="preserve">
+    <value>Categoria de teste</value>
+  </data>
   <data name="test-coverage" xml:space="preserve">
     <value>Cobertura de teste</value>
   </data>
@@ -1006,6 +1012,9 @@ As variáveis são definidas em um caso de teste como {{key}} e ao executar um c
   </data>
   <data name="test-repository" xml:space="preserve">
     <value>Repositório</value>
+  </data>
+  <data name="test-resource" xml:space="preserve">
+    <value>Recurso de teste</value>
   </data>
   <data name="test-resources" xml:space="preserve">
     <value>Recursos de teste</value>

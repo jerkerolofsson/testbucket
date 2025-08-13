@@ -22,6 +22,7 @@ internal class RequirementAnalystAgent
             - Use the search_features tool to search for features.
             - Use the search_requirements tool to search for requirement.
             - Never create or add any requirements
+            - Never create or add any test cases.
             - Never ask for user input
             """,
             Name = "Requirement-Analyst",

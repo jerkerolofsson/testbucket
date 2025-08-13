@@ -35,6 +35,10 @@ namespace TestBucket.Domain.Testing.TestCases.Search
             {
                 items.Add($"state:{query.State}");
             }
+            if (query.RequirementId is not null)
+            {
+                items.Add($"requirement:{query.RequirementId.Value}");
+            }
             if (query.TestRunId is not null)
             {
                 items.Add($"testrun-id:{query.TestRunId}");

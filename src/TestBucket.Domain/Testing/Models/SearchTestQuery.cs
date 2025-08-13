@@ -10,6 +10,11 @@ public class SearchTestQuery : SearchQuery
     public long? TestSuiteId { get; set; }
     public long? FolderId { get; set; }
 
+    /// <summary>
+    /// Filters by requirement
+    /// </summary>
+    public long? RequirementId { get; set; }
+
     public string? ExternalDisplayId { get; set; }
 
     /// <summary>

@@ -5,8 +5,7 @@
 
 <MudDialog DefaultFocus="DefaultFocus.FirstChild">
     <DialogContent>
-      <MudDataGrid ServerData="LoadGridState" T="TestResource"
-          RowClick="(e) => Close(e.Item)">
+      <MudDataGrid ServerData="LoadGridState" T="TestResource" Dense Hover RowClass="tb-datarow cursor-pointer" RowClick="(e) => Close(e.Item)">
           <ToolBarContent>
             <MudText Typo="Typo.h6" Color="Color.Tertiary">@loc.Shared["select-resource"]</MudText>
         </ToolBarContent>

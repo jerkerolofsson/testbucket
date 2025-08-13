@@ -32,6 +32,7 @@ public class TestCaseMcpTools : AuthenticatedTool
 
     [McpServerTool(Name = "search_test_cases"), Description("""
         Searches for test cases.
+        - If you want to search for tests that cover a requirement, use the query "requirement:REQUIREMENT_ID"
         - If you want to search for a feature, use the query: "feature:"FEATURE_NAME" where FEATURE_NAME is the name of the feature you want to search for. FEATURE_NAME must be in quotes!
         - If you want to search for a component, use the query: "component:"COMPONENT_NAME" where COMPONENT_NAME is the name of the component you want to search for. COMPONENT_NAME must be in quotes!
         """)]

@@ -1,4 +1,5 @@
 ﻿using TestBucket.Contracts.Testing.States;
+using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Domain.Testing.Models;
 
@@ -172,6 +173,6 @@ public class TestCase : TestEntity
     public TestSuiteFolder? TestSuiteFolder { get; set; }
     public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }
     public virtual List<TestStep>? TestSteps { get; set; }
-
     public virtual List<Comment>? Comments { get; set; }
+    public virtual List<RequirementTestLink>? RequirementLinks { get; set; }
 }

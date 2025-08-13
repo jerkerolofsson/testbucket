@@ -877,6 +877,9 @@
   <data name="search-tests" xml:space="preserve">
     <value>検索テスト</value>
   </data>
+  <data name="select-resource" xml:space="preserve">
+    <value>リソースを選択します</value>
+  </data>
   <data name="select-test-suite" xml:space="preserve">
     <value>テストスイートを選択します</value>
   </data>
@@ -984,6 +987,9 @@
 
 変数はテストケースで{{key}}として定義され、テストケースを実行すると、{{key}}は{{key}}という名前の変数に置き換えられます。</value>
   </data>
+  <data name="test-category" xml:space="preserve">
+    <value>テストカテゴリ</value>
+  </data>
   <data name="test-coverage" xml:space="preserve">
     <value>テストカバレッジ</value>
   </data>
@@ -1004,6 +1010,9 @@
   </data>
   <data name="test-repository" xml:space="preserve">
     <value>テストリポジトリ</value>
+  </data>
+  <data name="test-resource" xml:space="preserve">
+    <value>テストリソース</value>
   </data>
   <data name="test-resources" xml:space="preserve">
     <value>テストリソース</value>

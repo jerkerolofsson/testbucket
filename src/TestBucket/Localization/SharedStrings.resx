@@ -878,6 +878,9 @@
   <data name="search-tests" xml:space="preserve">
     <value>Search tests</value>
   </data>
+  <data name="select-resource" xml:space="preserve">
+    <value>Select resource</value>
+  </data>
   <data name="select-test-suite" xml:space="preserve">
     <value>Select test suite</value>
   </data>
@@ -986,6 +989,9 @@
 
 Variables are defined in a test case as {{Key}} and when running a test case the {{Key}} will be replaced by a variable named {{Key}}. </value>
   </data>
+  <data name="test-category" xml:space="preserve">
+    <value>Test category</value>
+  </data>
   <data name="test-coverage" xml:space="preserve">
     <value>Test coverage</value>
   </data>
@@ -1006,6 +1012,9 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="test-repository" xml:space="preserve">
     <value>Repository</value>
+  </data>
+  <data name="test-resource" xml:space="preserve">
+    <value>Test resource</value>
   </data>
   <data name="test-resources" xml:space="preserve">
     <value>Test resources</value>

@@ -878,6 +878,9 @@
   <data name="search-tests" xml:space="preserve">
     <value>Tests suchen</value>
   </data>
+  <data name="select-resource" xml:space="preserve">
+    <value>Wählen Sie Ressource</value>
+  </data>
   <data name="select-test-suite" xml:space="preserve">
     <value>Wählen Sie Testsuite</value>
   </data>
@@ -986,6 +989,9 @@
 
 Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen eines Testfalls wird {{Key}} durch eine Variable mit dem Namen {{Key}} ersetzt.</value>
   </data>
+  <data name="test-category" xml:space="preserve">
+    <value>Testkategorie</value>
+  </data>
   <data name="test-coverage" xml:space="preserve">
     <value>Testabdeckung</value>
   </data>
@@ -1006,6 +1012,9 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   </data>
   <data name="test-repository" xml:space="preserve">
     <value>Repository</value>
+  </data>
+  <data name="test-resource" xml:space="preserve">
+    <value>Ressource testen</value>
   </data>
   <data name="test-resources" xml:space="preserve">
     <value>Testressourcen</value>

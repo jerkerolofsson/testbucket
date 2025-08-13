@@ -19,6 +19,7 @@ public class SearchTestCaseQueryParser
         "testrun-id", 
         "state",
         "review-assigned-to",
+        "requirement",
         .. BaseQueryParser.Keywords
         ];
 
@@ -46,6 +47,12 @@ public class SearchTestCaseQueryParser
                     if (long.TryParse(pair.Value, out var testSuiteId))
                     {
                         request.TestSuiteId = testSuiteId;
+                    }
+                    break;
+                case "requirement":
+                    if (long.TryParse(pair.Value, out var requirementId))
+                    {
+                        request.RequirementId = requirementId;
                     }
                     break;
                 case "review-assigned-to":

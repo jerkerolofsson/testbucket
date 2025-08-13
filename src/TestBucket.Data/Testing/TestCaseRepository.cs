@@ -105,7 +105,8 @@ internal class TestCaseRepository : ITestCaseRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var tests = dbContext.TestCases
-            .AsSingleQuery()
+            .AsSplitQuery()
+            .Include(x => x.RequirementLinks)
             .Include(x => x.TestCaseFields).AsQueryable();
         foreach (var spec in filters)
         {

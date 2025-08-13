@@ -878,6 +878,9 @@
   <data name="search-tests" xml:space="preserve">
     <value>搜索测试</value>
   </data>
+  <data name="select-resource" xml:space="preserve">
+    <value>选择资源</value>
+  </data>
   <data name="select-test-suite" xml:space="preserve">
     <value>选择测试套件</value>
   </data>
@@ -986,6 +989,9 @@
 
 变量在测试用例中定义为{{key}}，并且在运行测试用例时，{{key}}将被称为{{key}}的变量代替。</value>
   </data>
+  <data name="test-category" xml:space="preserve">
+    <value>测试类别</value>
+  </data>
   <data name="test-coverage" xml:space="preserve">
     <value>测试覆盖范围</value>
   </data>
@@ -1006,6 +1012,9 @@
   </data>
   <data name="test-repository" xml:space="preserve">
     <value>存储库</value>
+  </data>
+  <data name="test-resource" xml:space="preserve">
+    <value>测试资源</value>
   </data>
   <data name="test-resources" xml:space="preserve">
     <value>测试资源</value>

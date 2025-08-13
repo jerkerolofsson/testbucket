@@ -7,23 +7,6 @@ namespace TestBucket.Domain.Testing.TestCases.Search;
 
 public class TestCaseFilterSpecificationBuilder
 {
-    //public static List<FilterSpecification<TestCase>> GetTraitFilter(IReadOnlyList<FieldDefinition> definitions, TraitType trait, string value)
-    //{
-    //    var definition = definitions.FirstOrDefault(x => x.TraitType == trait);
-    //    if(definition is not null)
-    //    {
-    //        if (definition.Type == FieldType.String || definition.Type == FieldType.SingleSelection)
-    //        {
-    //            return [new FilterTestCasesByStringField(definition.Id, value)];
-    //        }
-    //        else if (definition.Type == FieldType.Boolean)
-    //        {
-    //            return [new FilterTestCasesByBooleanField(definition.Id, value)];
-    //        }
-    //    }
-
-    //    return [];
-    //}
 
     public static List<FilterSpecification<TestCase>> From(SearchTestQuery query)
     {
@@ -42,6 +25,10 @@ public class TestCaseFilterSpecificationBuilder
                     specifications.Add(new FilterTestCasesByBooleanField(fieldFilter.FilterDefinitionId, fieldFilter.BooleanValue.Value));
                 }
             }
+        }
+        if(query.RequirementId is not null)
+        {
+            specifications.Add(new FilterTestCasesByRequirementId(query.RequirementId.Value));
         }
 
         if(query.ExternalDisplayId is not null)

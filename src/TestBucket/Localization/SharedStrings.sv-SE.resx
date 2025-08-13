@@ -876,6 +876,9 @@
   <data name="search-tests" xml:space="preserve">
     <value>Sök testfall</value>
   </data>
+  <data name="select-resource" xml:space="preserve">
+    <value>Välj resurs</value>
+  </data>
   <data name="select-test-suite" xml:space="preserve">
     <value>Välj testsvit</value>
   </data>
@@ -981,6 +984,9 @@
   <data name="test-case-variables-description" xml:space="preserve">
     <value>Test variabler är värden som ersätter placeholders i testfallet som {{Name}} med värdet definerat i i tabellen. Om en testmiljö används så kan värdet från testmiljön användas, men om variablen finns definerad i båda så används värdet från testfallet. </value>
   </data>
+  <data name="test-category" xml:space="preserve">
+    <value>Testkategori</value>
+  </data>
   <data name="test-coverage" xml:space="preserve">
     <value>Testtäckning</value>
   </data>
@@ -1001,6 +1007,9 @@
   </data>
   <data name="test-repository" xml:space="preserve">
     <value>Förvar</value>
+  </data>
+  <data name="test-resource" xml:space="preserve">
+    <value>Testresurs</value>
   </data>
   <data name="test-resources" xml:space="preserve">
     <value>Testresurser</value>

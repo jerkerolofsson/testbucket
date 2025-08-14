@@ -1,10 +1,12 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading;
 
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Appium.Enums;
+using OpenQA.Selenium.Interactions;
 
 using TestBucket.AdbProxy.Appium.PageSources;
 using TestBucket.AdbProxy.DeviceHandling;
@@ -12,11 +14,13 @@ using TestBucket.AdbProxy.Models;
 using TestBucket.Embeddings;
 using TestBucket.ResourceServer.Contracts;
 
+using static OpenQA.Selenium.Interactions.PointerInputDevice;
+
 namespace TestBucket.AdbProxy.Appium;
 public class AppiumConnection : IDisposable
 {
     private readonly AndroidDriver _driver;
-    private readonly TimeSpan _findWait = TimeSpan.FromSeconds(15);
+    private readonly TimeSpan _findWait = TimeSpan.FromSeconds(5);
     private readonly IAdbDeviceRepository _deviceRepository;
     private readonly IResourceRegistry _resourceRegistry;
     private readonly AdbDevice _device;
@@ -142,13 +146,13 @@ public class AppiumConnection : IDisposable
         var start = Stopwatch.GetTimestamp();
         while (Stopwatch.GetElapsedTime(start) < _findWait)
         {
-            var element = await FindFromPageSourceAsync(elementQuery, x => x.MatchThisOrAncestor(e=> e.Clickable == true));
+            var element = await FindFromPageSourceAsync(elementQuery, x => x.MatchThisOrAncestor(e=> e.Clickable == true), matchWithEmbeddings:true);
             if (element is not null)
             {
                 element.Click();
                 return;
             }
-            await Task.Delay(500);
+            await Task.Delay(AppiumDefaults.FindDelayDuration);
         }
         throw new Exception("Not found: " + elementQuery);
     }
@@ -157,13 +161,13 @@ public class AppiumConnection : IDisposable
         var start = Stopwatch.GetTimestamp();
         while (Stopwatch.GetElapsedTime(start) < _findWait)
         {
-            var element = await FindFromPageSourceAsync(elementQuery, _ => true);
+            var element = await FindFromPageSourceAsync(elementQuery, _ => true, matchWithEmbeddings:true);
             if (element is not null)
             {
                 element.Clear();
                 return;
             }
-            await Task.Delay(500);
+            await Task.Delay(AppiumDefaults.FindDelayDuration);
         }
         throw new Exception("Not found: " + elementQuery);
     }
@@ -181,7 +185,7 @@ public class AppiumConnection : IDisposable
         var start = Stopwatch.GetTimestamp();
         while (Stopwatch.GetElapsedTime(start) < _findWait)
         {
-            var matchedNode = await FindNodeFromPageSourceAsync(elementQuery, x => x.MatchThisOrSibling(e => e.Checkable == true, 2));
+            var matchedNode = await FindNodeFromPageSourceAsync(elementQuery, x => x.MatchThisOrSibling(e => e.Checkable == true, 2), matchWithEmbeddings: true);
             if (matchedNode is not null)
             {
                 bool needToggle = matchedNode.Node.Checked != state;
@@ -193,7 +197,7 @@ public class AppiumConnection : IDisposable
                 }
                 return false;
             }
-            await Task.Delay(500);
+            await Task.Delay(AppiumDefaults.FindDelayDuration);
         }
         throw new Exception("Not found: " + elementQuery);
     }
@@ -203,27 +207,35 @@ public class AppiumConnection : IDisposable
         var start = Stopwatch.GetTimestamp();
         while (Stopwatch.GetElapsedTime(start) < _findWait)
         {
-            var element = await FindFromPageSourceAsync(elementQuery, _ => true);
+            var element = await FindFromPageSourceAsync(elementQuery, _ => true, matchWithEmbeddings:true);
             if (element is not null)
             {
                 element.SendKeys(text);
                 return;
             }
-            await Task.Delay(500);
+            await Task.Delay(AppiumDefaults.FindDelayDuration);
         }
         throw new Exception("Not found: " + elementQuery);
     }
-    internal async Task<AppiumElement?> Find(string elementQuery, Predicate<HierarchyNode> predicate)
+
+    /// <summary>
+    /// Finds an element or throws an exception if it is not found within the specified timeout.
+    /// </summary>
+    /// <param name="elementQuery"></param>
+    /// <param name="predicate"></param>
+    /// <returns></returns>
+    /// <exception cref="Exception"></exception>
+    internal async Task<AppiumElement?> FindOrThrow(string elementQuery, Predicate<HierarchyNode> predicate, TimeSpan timeout)
     {
         var start = Stopwatch.GetTimestamp();
-        while (Stopwatch.GetElapsedTime(start) < _findWait)
+        while (Stopwatch.GetElapsedTime(start) < timeout)
         {
-            var element = await FindFromPageSourceAsync(elementQuery, predicate);
+            var element = await FindFromPageSourceAsync(elementQuery, predicate, matchWithEmbeddings:true);
             if (element is not null)
             {
                 return element;
             }
-            await Task.Delay(500);
+            await Task.Delay(AppiumDefaults.FindDelayDuration);
         }
         throw new Exception("Not found: " + elementQuery);
     }
@@ -256,14 +268,14 @@ public class AppiumConnection : IDisposable
     /// </summary>
     /// <param name="textOrId"></param>
     /// <returns></returns>
-    public async Task<AppiumElement?> FindFromPageSourceAsync(string textOrId, Predicate<HierarchyNode> predicate)
+    public async Task<AppiumElement?> FindFromPageSourceAsync(string textOrId, Predicate<HierarchyNode> predicate, bool matchWithEmbeddings)
     {
         var source = _driver.PageSource;
         if (source.StartsWith('<'))
         {
             // Try to parse it as XML
             XmlPageSource pageSource = XmlPageSource.FromString(source);
-            var elements = await pageSource.FindElementsAsync(textOrId, predicate);
+            var elements = await pageSource.FindElementsAsync(textOrId, predicate, matchWithEmbeddings);
             if (elements.Count > 0)
             {
                 var bestElement = elements[0];
@@ -274,14 +286,14 @@ public class AppiumConnection : IDisposable
         return null;
     }
 
-    public async Task<MatchedHierarchyNode?> FindNodeFromPageSourceAsync(string textOrId, Predicate<HierarchyNode> predicate)
+    public async Task<MatchedHierarchyNode?> FindNodeFromPageSourceAsync(string textOrId, Predicate<HierarchyNode> predicate, bool matchWithEmbeddings)
     {
         var source = _driver.PageSource;
         if (source.StartsWith('<'))
         {
             // Try to parse it as XML
             XmlPageSource pageSource = XmlPageSource.FromString(source);
-            var elements = await pageSource.FindElementsAsync(textOrId, predicate);
+            var elements = await pageSource.FindElementsAsync(textOrId, predicate, matchWithEmbeddings);
             if (elements.Count > 0)
             {
                 return elements[0];
@@ -308,5 +320,156 @@ public class AppiumConnection : IDisposable
         xpathIndices.Reverse();
         string xpath = "/*/" + string.Join("/", xpathIndices);
         return _driver.FindElement(By.XPath(xpath));
+    }
+
+    internal async Task<AppiumElement?> FindLargestScrollableAsync()
+    {
+        var source = _driver.PageSource;
+        if (source.StartsWith('<'))
+        {
+            // Try to parse it as XML
+            XmlPageSource pageSource = XmlPageSource.FromString(source);
+            var elements = await pageSource.FindElementsAsync("", x => x.Scrollable == true, matchWithEmbeddings:false);
+            if (elements.Count > 0)
+            {
+                elements.Sort((a, b) =>
+                {
+                    var aSize = a.Node.Width * a.Node.Height;
+                    var bSize = b.Node.Width * b.Node.Height;
+                    return bSize - aSize;
+                });
+                return CreateXPathAndFindElement(elements[0]);
+            }
+        }
+        return null;
+    }
+
+    internal async Task SwipeAsync(string direction, TimeSpan swipeDuration)
+    {
+        // Find the largest scrollable component
+        var largest = await FindLargestScrollableAsync();
+        if(largest is null)
+        {
+            throw new Exception("There are no scrollable UI components found");
+        }
+
+        var bounds = largest.Rect;
+        var centerX = bounds.X  + bounds.Width / 2;
+        var centerY = bounds.Y + bounds.Height / 2;
+
+        var marginsX = Math.Max(1, bounds.Width / 10);
+        var marginsY = Math.Max(1, bounds.Height / 10);
+
+        int fromX = 0, fromY = 0, toX = 0, toY = 0;
+        switch (direction)
+        {
+            case "up":
+                fromX = centerX;
+                toX = centerX;
+
+                fromY = bounds.Bottom - marginsY; // Start from the bottom of the component
+                toY = bounds.Top + marginsY; // End at the top of the component
+                break;
+            case "down":
+                fromX = centerX;
+                toX = centerX;
+
+                toY = bounds.Bottom - marginsY;
+                fromY = bounds.Top + marginsY;
+                break;
+
+            case "left":
+                fromY = centerY;
+                toY = centerY;
+
+                fromX = bounds.Right - marginsX;
+                toX = bounds.Left + marginsX;
+                break;
+
+            case "right":
+                fromY = centerY;
+                toY = centerY;
+
+                toX = bounds.Right - marginsX;
+                fromX = bounds.Left + marginsX;
+                break;
+            default:
+                throw new Exception("Expected direction to be up, down, left, right");
+        }
+
+        var touch = new PointerInputDevice(PointerKind.Touch, "finger");
+        var sequence = new ActionSequence(touch);
+        var move1 = touch.CreatePointerMove(CoordinateOrigin.Viewport, fromX, fromY, TimeSpan.FromSeconds(0));
+        var actionPress = touch.CreatePointerDown(MouseButton.Touch);
+        var move2 = touch.CreatePointerMove(CoordinateOrigin.Viewport, toX, toY, swipeDuration);
+        var actionRelease = touch.CreatePointerUp(MouseButton.Touch);
+
+        sequence.AddAction(move1);
+        sequence.AddAction(actionPress);
+        sequence.AddAction(move2);
+        sequence.AddAction(actionRelease);
+
+        var actionsSeq = new List<ActionSequence>
+        {
+            sequence
+        };
+
+        _driver.PerformActions(actionsSeq);
+    }
+
+    internal async Task SwipeToFindAsync(string textOrId, string direction)
+    {
+        int maxSwipes = 10;
+
+        try
+        {
+            await SwipeToFindAsync(textOrId, direction, maxSwipes);
+        }
+        catch
+        {
+            string reverseDirection = direction switch
+            {
+                "up" => "down",
+                "down" => "up",
+                "left" => "right",
+                "right" => "left",
+                _ => throw new Exception("Expected direction to be up, down, left, right")
+            };
+
+            // Could not be located, scroll back to top
+            await SwipeAsync(reverseDirection, AppiumDefaults.FlickDuration);
+            await SwipeAsync(reverseDirection, AppiumDefaults.FlickDuration);
+
+            await SwipeToFindAsync(textOrId, direction, maxSwipes);
+        }
+    }
+
+    private async Task SwipeToFindAsync(string textOrId, string direction, int maxSwipes)
+    {
+        for (int i = 0; i < maxSwipes; i++)
+        {
+            try
+            {
+                var element = await FindFromPageSourceAsync(textOrId, _ => true, matchWithEmbeddings:false);
+                if (element is not null)
+                {
+                    return;
+                }
+                if (i == 0)
+                {
+                    await Task.Delay(500);
+                }
+                else
+                {
+                    await SwipeAsync(direction, AppiumDefaults.SwipeDuration);
+                    await Task.Delay(200);
+                }
+            }
+            catch (Exception)
+            {
+                // Ignore exceptions, continue swiping
+            }
+        }
+        throw new Exception($"The UI element {textOrId} could not be found");
     }
 }

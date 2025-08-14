@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using OneOf.Types;
-
-using TestBucket.Domain.AI.Models;
+﻿using TestBucket.Domain.AI.Models;
 
 namespace TestBucket.Domain.AI;
 public class LlmModels
@@ -129,6 +121,22 @@ public class LlmModels
             ModelName = "qwen3:1.7b",
             Capabilities = ModelCapability.Classification | ModelCapability.Tools | ModelCapability.Thinking
         },
+        ["gpt-oss:20b"] = new LlmModel
+        {
+            Icon = TbIcons.Brands.OpenAI,
+            Vendor = "open-ai",
+            Name = "gpt-oss:20b",
+            ModelName = "gpt-oss:20b",
+            Capabilities = ModelCapability.Thinking | ModelCapability.Tools
+        },
+        ["gpt-oss:120b"] = new LlmModel
+        {
+            Icon = TbIcons.Brands.OpenAI,
+            Vendor = "open-ai",
+            Name = "gpt-oss:120b",
+            ModelName = "gpt-oss:120b",
+            Capabilities = ModelCapability.Thinking | ModelCapability.Tools
+        },
         ["all-minilm"] = new LlmModel
         {
             Icon = TbIcons.Brands.HuggingFace,
@@ -144,9 +152,41 @@ public class LlmModels
     /// </summary>
     public static IReadOnlyDictionary<string, LlmModel> OpenAiModels = new Dictionary<string, LlmModel>
     {
+        ["gpt-5"] = new LlmModel
+        {
+            UsdPerMillionInputTokens = 1.25,
+            UsdPerMillionOutputTokens = 10.0,
+            Icon = TbIcons.Brands.OpenAI,
+            Vendor = "open-ai",
+            Name = "GPT 5",
+            ModelName = "gpt-5",
+            Capabilities = ModelCapability.Tools
+        },
+        ["gpt-5-mini"] = new LlmModel
+        {
+            UsdPerMillionInputTokens = 0.25,
+            UsdPerMillionOutputTokens = 2.0,
+            Icon = TbIcons.Brands.OpenAI,
+            Vendor = "open-ai",
+            Name = "GPT 5 Mini",
+            ModelName = "gpt-5-mini",
+            Capabilities = ModelCapability.Tools
+        },
+        ["gpt-5-nano"] = new LlmModel
+        {
+            UsdPerMillionInputTokens = 0.05,
+            UsdPerMillionOutputTokens = 0.40,
+            Icon = TbIcons.Brands.OpenAI,
+            Vendor = "open-ai",
+            Name = "GPT 5 Nano",
+            ModelName = "gpt-5-nano",
+            Capabilities = ModelCapability.Tools
+        },
+
         ["gpt-4.1"] = new LlmModel
         {
-            UsdPerMillionTokens = 2.0,
+            UsdPerMillionInputTokens = 2,
+            UsdPerMillionOutputTokens = 8,
             Icon = TbIcons.Brands.OpenAI,
             Vendor = "open-ai",
             Name = "GPT 4.1",
@@ -155,7 +195,6 @@ public class LlmModels
         },
         ["gpt-4.1-mini"] = new LlmModel
         {
-            UsdPerMillionTokens = 0.4,
             Icon = TbIcons.Brands.OpenAI,
             Vendor = "open-ai",
             Name = "GPT 4.1 Mini",
@@ -164,7 +203,6 @@ public class LlmModels
         },
         ["gpt-4o-mini"] = new LlmModel
         {
-            UsdPerMillionTokens = 0.15,
             Icon = TbIcons.Brands.OpenAI,
             Vendor = "open-ai",
             Name = "GPT 4o Mini",
@@ -173,13 +211,20 @@ public class LlmModels
         },
         ["o4-mini"] = new LlmModel
         {
-            UsdPerMillionTokens = 1.1,
             Icon = TbIcons.Brands.OpenAI,
             Vendor = "open-ai",
             Name = "o4 Mini",
             ModelName = "o4-mini",
             Capabilities = ModelCapability.Tools
-        }
+        },
+        ["gpt-4o-mini"] = new LlmModel
+        {
+            Icon = TbIcons.Brands.OpenAI,
+            Vendor = "open-ai",
+            Name = "GPT 4o Mini",
+            ModelName = "gpt-4o-mini",
+            Capabilities = ModelCapability.Tools
+        },
     };
     /// <summary>
     /// List of LLM models that will be options in the UI
@@ -238,3 +283,4 @@ public class LlmModels
         return Models.Values.Where(x => (x.Capabilities & requiredCapability) == requiredCapability).Select(x => x.Name).ToList();
     }
 }
+

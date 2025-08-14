@@ -2,15 +2,15 @@
 
 namespace TestBucket.Domain.AI.Settings.LLM
 {
-    class AiLlmModelUsdPerMillionTokensSetting : SettingAdapter
+    class AiLlmModelUsdPerMillionOutputTokensSetting : SettingAdapter
     {
         private readonly ISettingsProvider _settingsProvider;
 
-        public AiLlmModelUsdPerMillionTokensSetting(ISettingsProvider settingsProvider)
+        public AiLlmModelUsdPerMillionOutputTokensSetting(ISettingsProvider settingsProvider)
         {
             _settingsProvider = settingsProvider;
 
-            Metadata.Name = "ai-default-model-price-per-1M-tokens";
+            Metadata.Name = "ai-default-model-price-per-1M-tokens-output";
             Metadata.Description = "ai-default-model-price-per-1M-tokens-description";
             Metadata.Category.Name = "AI";
             Metadata.Category.Icon = SettingIcons.AI;
@@ -27,7 +27,7 @@ namespace TestBucket.Domain.AI.Settings.LLM
             var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(context.Principal.GetTenantIdOrThrow(), null);
             settings ??= new();
 
-            return new FieldValue { DoubleValue = settings.LlmModelUsdPerMillionTokens, FieldDefinitionId = 0 };
+            return new FieldValue { DoubleValue = settings.LlmModelUsdPerMillionOutputTokens, FieldDefinitionId = 0 };
         }
 
         public override async Task WriteAsync(SettingContext context, FieldValue value)
@@ -35,9 +35,9 @@ namespace TestBucket.Domain.AI.Settings.LLM
             var settings = await _settingsProvider.GetDomainSettingsAsync<LlmSettings>(context.Principal.GetTenantIdOrThrow(), null);
             settings ??= new();
 
-            if (settings.LlmModelUsdPerMillionTokens != value.DoubleValue)
+            if (settings.LlmModelUsdPerMillionOutputTokens != value.DoubleValue)
             {
-                settings.LlmModelUsdPerMillionTokens = value.DoubleValue ?? 0;
+                settings.LlmModelUsdPerMillionOutputTokens = value.DoubleValue ?? 0;
                 await _settingsProvider.SaveDomainSettingsAsync(context.Principal.GetTenantIdOrThrow(), null, settings);
             }
         }

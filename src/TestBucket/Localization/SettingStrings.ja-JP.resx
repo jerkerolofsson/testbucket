@@ -133,10 +133,13 @@
     <value>デフォルトAIモデル</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
-    <value>1Mトークンのコスト</value>
+    <value>1Mの入力トークンのコスト</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
     <value>100万米ドルのトークンの請求費用。これは、内部レポートのコストを推定および視覚化するためにのみ使用され、実際の請求には影響しません。</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-output" xml:space="preserve">
+    <value>1mの出力トークンのコスト</value>
   </data>
   <data name="ai-embedding-model" xml:space="preserve">
     <value>埋め込みモデル</value>

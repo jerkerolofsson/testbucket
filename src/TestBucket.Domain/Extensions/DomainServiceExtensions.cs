@@ -267,7 +267,8 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, AzureAiProductionKeySetting>();
         services.AddScoped<ISetting, AnthropicApiKeySetting>();
         services.AddScoped<ISetting, OpenAiApiKeySetting>();
-        services.AddScoped<ISetting, AiLlmModelUsdPerMillionTokensSetting>();
+        services.AddScoped<ISetting, AiLlmModelUsdPerMillionInputTokensSetting>();
+        services.AddScoped<ISetting, AiLlmModelUsdPerMillionOutputTokensSetting>();
 
         // AI Runner settings
         services.AddScoped<ISetting, EnableAiRunnerSetting>();

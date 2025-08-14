@@ -133,10 +133,13 @@
     <value>Modèle AI par défaut</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
-    <value>Coût pour les jetons de 1 m</value>
+    <value>Coût pour 1 M jetons d'entrée</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
     <value>Le coût de facturation pour 1 million de jetons en USD. Ceci est uniquement utilisé pour estimer et visualiser les coûts des rapports internes et n'affectera aucune facturation réelle.</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-output" xml:space="preserve">
+    <value>Coût pour 1 M jetons de sortie</value>
   </data>
   <data name="ai-embedding-model" xml:space="preserve">
     <value>Modèle d'incorporation</value>

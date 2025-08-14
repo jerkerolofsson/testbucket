@@ -133,10 +133,13 @@
     <value>Standard -AI -Modell</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
-    <value>Kosten für 1 M -Token</value>
+    <value>Kosten für 1 -m -Eingangs -Token</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
     <value>Abrechnungskosten für 1 Million Token in USD. Dies wird nur verwendet, um die Kosten für interne Berichte abzuschätzen und zu visualisieren, und wirkt sich nicht auf eine tatsächliche Abrechnung aus.</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-output" xml:space="preserve">
+    <value>Kosten für 1 -m -Ausgangs -Token</value>
   </data>
   <data name="ai-embedding-model" xml:space="preserve">
     <value>Einbettungsmodell</value>

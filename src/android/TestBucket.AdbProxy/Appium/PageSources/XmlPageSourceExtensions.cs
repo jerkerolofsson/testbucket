@@ -13,18 +13,31 @@ public static class XmlPageSourceExtensions
         return matches;
     }
 
-    internal static async Task<List<MatchedHierarchyNode>> FindElementsAsync(this XmlPageSource xmlPageSource, string query, Predicate<HierarchyNode> predicate)
+    /// <summary>
+    /// Finds elements
+    /// </summary>
+    /// <param name="xmlPageSource"></param>
+    /// <param name="query">Text or id</param>
+    /// <param name="predicate">Filter</param>
+    /// <param name="matchWithEmbeddings">If true, embeddings are used to compare the item</param>
+    /// <returns></returns>
+    internal static async Task<List<MatchedHierarchyNode>> FindElementsAsync(this XmlPageSource xmlPageSource, string query, Predicate<HierarchyNode> predicate, bool matchWithEmbeddings)
     {
-        List<MatchedHierarchyNode> matches = [];
-        await FindElementStrategyAsync(xmlPageSource, query, matches, predicate);
+        if(query.Length == 0)
+        {
+            return Flatten(xmlPageSource).Where(x => predicate(x.Node)).ToList();
+        }
 
-        if (matches.Count == 0)
+        List<MatchedHierarchyNode> matches = [];
+        await FindElementStrategyAsync(xmlPageSource, query, matches, predicate, matchWithEmbeddings);
+
+        if (matches.Count == 0 && query.Length > 0)
         {
             // Remove some keywords that may be added by the AI
             query = CleanQuery(query);
             if (!string.IsNullOrEmpty(query))
             {
-                await FindElementStrategyAsync(xmlPageSource, query, matches, predicate);
+                await FindElementStrategyAsync(xmlPageSource, query, matches, predicate, matchWithEmbeddings);
             }
         }
 
@@ -34,7 +47,7 @@ public static class XmlPageSourceExtensions
         return matches;
     }
 
-    private static async Task FindElementStrategyAsync(this XmlPageSource xmlPageSource, string query, List<MatchedHierarchyNode> matches, Predicate<HierarchyNode> predicate)
+    private static async Task FindElementStrategyAsync(this XmlPageSource xmlPageSource, string query, List<MatchedHierarchyNode> matches, Predicate<HierarchyNode> predicate, bool matchWithEmbeddings)
     {
         await FindElementRecursiveAsync(query, matches, xmlPageSource.Nodes, predicate, ElementMatching.MatchText);
         if (matches.Count == 0)
@@ -45,17 +58,20 @@ public static class XmlPageSourceExtensions
         {
             await FindElementRecursiveAsync(query, matches, xmlPageSource.Nodes, predicate, ElementMatching.MatchId);
         }
-        if (matches.Count == 0)
+        if (matchWithEmbeddings)
         {
-            await FindElementRecursiveAsync(query, matches, xmlPageSource.Nodes, predicate, ElementMatching.MatchText | ElementMatching.UseEmbeddings);
-        }
-        if (matches.Count == 0)
-        {
-            await FindElementRecursiveAsync(query, matches, xmlPageSource.Nodes, predicate, ElementMatching.MatchContentDescription | ElementMatching.UseEmbeddings);
-        }
-        if (matches.Count == 0)
-        {
-            await FindElementRecursiveAsync(query, matches, xmlPageSource.Nodes, predicate, ElementMatching.MatchId | ElementMatching.UseEmbeddings);
+            if (matches.Count == 0)
+            {
+                await FindElementRecursiveAsync(query, matches, xmlPageSource.Nodes, predicate, ElementMatching.MatchText | ElementMatching.UseEmbeddings);
+            }
+            if (matches.Count == 0)
+            {
+                await FindElementRecursiveAsync(query, matches, xmlPageSource.Nodes, predicate, ElementMatching.MatchContentDescription | ElementMatching.UseEmbeddings);
+            }
+            if (matches.Count == 0)
+            {
+                await FindElementRecursiveAsync(query, matches, xmlPageSource.Nodes, predicate, ElementMatching.MatchId | ElementMatching.UseEmbeddings);
+            }
         }
     }
 

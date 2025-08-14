@@ -50,7 +50,8 @@ internal class AgentLogManager : IAgentLogManager
                 InputTokenCount = inputTokenCount.Value,
                 OutputTokenCount = outputTokenCount.Value,
                 TotalTokenCount = totalTokenCount.Value,
-                UsdPerMillionTokens = _settings?.LlmModelUsdPerMillionTokens ?? 0
+                UsdPerMillionInputTokens = _settings?.LlmModelUsdPerMillionInputTokens ?? 0,
+                UsdPerMillionOutputTokens = _settings?.LlmModelUsdPerMillionOutputTokens ?? 0
             };
             await _manager.AddCostAsync(principal, cost);
             return cost;

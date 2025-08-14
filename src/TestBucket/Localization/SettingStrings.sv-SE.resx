@@ -133,10 +133,13 @@
     <value>Standard AI -modell</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
-    <value>Kostnad för 1 m tokens</value>
+    <value>Kostnad för 1M ingångstokens</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
     <value>Faktureringskostnad för 1 miljon tokens i USD. Detta används endast för att uppskatta och visualisera kostnader för interna rapporter och kommer inte att påverka någon faktisk fakturering.</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-output" xml:space="preserve">
+    <value>Kostnad för 1M utgångstokens</value>
   </data>
   <data name="ai-embedding-model" xml:space="preserve">
     <value>Inbäddningsmodell</value>

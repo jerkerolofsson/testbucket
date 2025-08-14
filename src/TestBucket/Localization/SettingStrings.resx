@@ -133,10 +133,13 @@
     <value>Default AI model</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
-    <value>Cost for 1M tokens</value>
+    <value>Cost for 1M input tokens</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
     <value>Billing cost for 1 million tokens in USD. This is only used to estimate and visualize costs for internal reports and will not affect any actual billing.</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-output" xml:space="preserve">
+    <value>Cost for 1M output tokens</value>
   </data>
   <data name="ai-embedding-model" xml:space="preserve">
     <value>Embedding model</value>

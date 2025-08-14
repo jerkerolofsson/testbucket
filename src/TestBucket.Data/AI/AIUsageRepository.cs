@@ -36,21 +36,24 @@ internal class AIUsageRepository : IAIUsageRepository
                 InputTokenCount = group.Sum(usage => usage.InputTokenCount),
                 OutputTokenCount = group.Sum(usage => usage.OutputTokenCount),
 
-                OutputUSD = group.Sum(usage => usage.OutputTokenCount * usage.UsdPerMillionTokens),
-                InputUSD = group.Sum(usage => usage.InputTokenCount * usage.UsdPerMillionTokens),
-                TotalUSD = group.Sum(usage => usage.TotalTokenCount * usage.UsdPerMillionTokens),
+                InputUSD = group.Sum(usage => usage.InputTokenCount * usage.UsdPerMillionInputTokens / 1_000_000),
+                OutputUSD = group.Sum(usage => usage.OutputTokenCount * usage.UsdPerMillionOutputTokens / 1_000_000),
             })
             .FirstOrDefaultAsync();
 
+        var inputTokens = usageData?.InputTokenCount ?? 0;
+        var outputTokens = usageData?.OutputTokenCount ?? 0;
+        var totalTokens = usageData?.TotalTokenCount ?? 0;
+
         return new TokenUsage
         {
-            TotalTokenCount = usageData?.TotalTokenCount ?? 0,
-            InputTokenCount = usageData?.InputTokenCount ?? 0,
-            OutputTokenCount = usageData?.OutputTokenCount ?? 0,
+            TotalTokenCount = totalTokens,
+            InputTokenCount = inputTokens,
+            OutputTokenCount = outputTokens,
 
-            OutputSumUSD = (usageData?.OutputUSD ?? 0) / 1_000_000,
-            InputSumUSD = (usageData?.InputUSD ?? 0) / 1_000_000,
-            TotalSumUSD = (usageData?.TotalUSD ?? 0) / 1_000_000
+            OutputSumUSD = usageData?.OutputUSD ?? 0,
+            InputSumUSD = usageData?.InputUSD ?? 0,
+            TotalSumUSD = (usageData?.OutputUSD ?? 0) + (usageData?.InputUSD ?? 0)
         };
     }
 }

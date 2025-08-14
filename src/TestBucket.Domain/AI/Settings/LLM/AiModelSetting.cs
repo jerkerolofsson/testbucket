@@ -50,7 +50,8 @@ namespace TestBucket.Domain.AI.Settings.LLM
                 var model = LlmModels.GetModelByName(settings.LlmModel);
                 if(model is not null)
                 {
-                    settings.LlmModelUsdPerMillionTokens = model.UsdPerMillionTokens;
+                    settings.LlmModelUsdPerMillionInputTokens = model.UsdPerMillionInputTokens;
+                    settings.LlmModelUsdPerMillionOutputTokens = model.UsdPerMillionOutputTokens;
                 }
 
                 await _settingsProvider.SaveDomainSettingsAsync(context.Principal.GetTenantIdOrThrow(), null, settings);

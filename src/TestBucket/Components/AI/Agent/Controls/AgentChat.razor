@@ -325,13 +325,26 @@
             {
                 if (string.IsNullOrEmpty(update.Text) && currentAuthor == update.AuthorName)
                 {
+                    foreach(var content in update.Contents)
+                    {
+                        if (content is FunctionCallContent functionCallContent && !string.IsNullOrEmpty(functionCallContent.Name))
+                        {
+                            string args = "";
+                            if(functionCallContent.Arguments is not null)
+                            {
+                                args = string.Join(',', functionCallContent.Arguments.Select(kv => $"{kv.Key}: {kv.Value}"));
+                            }
+                            _activeResponse.AppendLine($"**{functionCallContent.Name}**({args})\n");
+                        }
+                    }
+
                     //_activeResponse.Append(actionUpdate.ActionName+"\n\n");
                 }
                 else
                 {
                     if (currentAuthor != update.AuthorName)
                     {
-                        _activeResponse.AppendLine($"\n#### {update.AuthorName}:");
+                        _activeResponse.AppendLine($"\n### {update.AuthorName}:");
                         currentAuthor = update.AuthorName;
                     }
 

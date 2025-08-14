@@ -11,7 +11,12 @@ public class ChatUsage : ProjectEntity
     /// <summary>
     /// Price for 1 000 000 tokens in USD.
     /// </summary>
-    public double UsdPerMillionTokens { get; set; }
+    public double UsdPerMillionInputTokens { get; set; }
+
+    /// <summary>
+    /// Price for 1 000 000 tokens in USD.
+    /// </summary>
+    public double UsdPerMillionOutputTokens { get; set; }
 
     public void Add(ChatUsage usage)
     {

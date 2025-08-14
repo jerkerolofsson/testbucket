@@ -13,7 +13,12 @@ public class LlmModel
     /// <summary>
     /// Price for 1 000 000 tokens in USD.
     /// </summary>
-    public double UsdPerMillionTokens { get; set; }
+    public double UsdPerMillionInputTokens { get; set; }
+
+    /// <summary>
+    /// Price for 1 000 000 tokens in USD.
+    /// </summary>
+    public double UsdPerMillionOutputTokens { get; set; }
 
     /// <summary>
     /// Gets or sets the SVG icon representing the model.

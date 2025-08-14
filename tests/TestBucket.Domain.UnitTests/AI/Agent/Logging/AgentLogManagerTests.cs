@@ -58,7 +58,7 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
                 },
             };
 
-            _mockSettingsProvider.GetDomainSettingsAsync<LlmSettings>("tenant1", null).Returns(new LlmSettings { LlmModelUsdPerMillionTokens = 0.02 });
+            _mockSettingsProvider.GetDomainSettingsAsync<LlmSettings>("tenant1", null).Returns(new LlmSettings { LlmModelUsdPerMillionInputTokens = 0.02, LlmModelUsdPerMillionOutputTokens = 0.04 });
 
             // Act
             var result = await _agentLogManager.LogResponseAsync(teamId, projectId, orchestration, principal, response);
@@ -90,7 +90,7 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
                 ModelId = "test-model"
             };
 
-            _mockSettingsProvider.GetDomainSettingsAsync<LlmSettings>("tenant1", null).Returns(new LlmSettings { LlmModelUsdPerMillionTokens = 0.02 });
+            _mockSettingsProvider.GetDomainSettingsAsync<LlmSettings>("tenant1", null).Returns(new LlmSettings { LlmModelUsdPerMillionInputTokens = 0.02, LlmModelUsdPerMillionOutputTokens = 0.04 });
 
             // Act
             var result = await _agentLogManager.LogResponseAsync(teamId, projectId, principal, response);
@@ -154,7 +154,7 @@ namespace TestBucket.Domain.UnitTests.AI.Agent.Logging
                 ModelId = "test-model"
             };
 
-            _mockSettingsProvider.GetDomainSettingsAsync<LlmSettings>("tenant1", null).Returns(new LlmSettings { LlmModelUsdPerMillionTokens = (double)0.02m });
+            _mockSettingsProvider.GetDomainSettingsAsync<LlmSettings>("tenant1", null).Returns(new LlmSettings { LlmModelUsdPerMillionInputTokens = 0.02, LlmModelUsdPerMillionOutputTokens = 0.04 });
 
             // Act
             var result = await _agentLogManager.LogResponseAsync(teamId, projectId, principal, response);

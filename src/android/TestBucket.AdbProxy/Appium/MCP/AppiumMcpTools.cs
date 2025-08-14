@@ -25,6 +25,26 @@ public class AppiumMcpTools
         _appiumConnectionPool = appiumConnectionPool;
     }
 
+
+    [McpServerTool(Name = "swipe"), Description("Swipes in the specified direction")]
+    public async Task<string> Swipe(
+        [Description("The device")] string resourceId,
+        [Description("Direction of swipe: down, up, left or right")] string direction)
+    {
+        try
+        {
+            await RunActionAsync(resourceId, async (appium) =>
+            {
+                await appium.SwipeAsync(direction, AppiumDefaults.SwipeDuration);
+            });
+            return $"OK. ";
+        }
+        catch (Exception ex)
+        {
+            return $"Error: {ex.Message}";
+        }
+    }
+
     /// <summary>
     /// Launches the specified app
     /// </summary>
@@ -118,6 +138,26 @@ public class AppiumMcpTools
     }
 
 
+    [McpServerTool(Name = "swipe_to_find"), Description("Tries to find a UI element by swiping")]
+    public async Task<string> SwipeToFind(
+        [Description("The device")] string resourceId,
+        [Description("Text, ID, content-description or other locator used to find the UI element")] string textOrId,
+        [Description("Direction of swipe: down, up, left or right")] string direction)
+    {
+        try
+        {
+            await RunActionAsync(resourceId, async (appium) =>
+            {
+                await appium.SwipeToFindAsync(textOrId, direction);
+            });
+            return $"'{textOrId}' is visible";
+        }
+        catch
+        {
+            return $"'{textOrId}' is not visible";
+        }
+    }
+
     [McpServerTool(Name = "is_visible"), Description("Checks if a UI component is visible")]
     public async Task<string> IsVisible(
         [Description("The device")] string resourceId,
@@ -127,36 +167,39 @@ public class AppiumMcpTools
         {
             await RunActionAsync(resourceId, async (appium) =>
             {
-                await appium.Find(textOrId, _ => true);
+                await appium.FindOrThrow(textOrId, _ => true, TimeSpan.FromSeconds(2));
             });
             return $"'{textOrId}' is visible";
         }
-        catch (Exception ex)
+        catch
         {
-            return $"Error: {ex.Message}";
+            return $"'{textOrId}' is not visible";
         }
     }
 
     /// <summary>
     /// Clicks on the specified text
     /// </summary>
-    [McpServerTool(Name = "toggle_checkbox_or_switch"), Description("Clicks/taps on a UI element on the device specified by resourceId")]
-    public async Task<string> Click(
+    [McpServerTool(Name = "toggle_checkbox_or_switch"), Description("Toggles a checkbox or switch UI component to the desired state")]
+    public async Task<string> ToggleCheckboxOrSwitch(
         [Description("The device")] string resourceId,
         [Description("Text, ID, content-description or other locator used to find the UI element")] string locator,
-        [Description("true to check, false to uncheck")] bool state)
+        [Description("true: to check, false: to uncheck")] string state)
     {
         try
         {
+            state ??= "false";
+            bool boolState = state == "1" || state.ToLower() == "yes" || state.ToLower() == "true";   
+
             bool res = false;
             await RunActionAsync(resourceId, async (appium) =>
             {
-                res = await appium.ToggleCheckbox(locator, state);
+                res = await appium.ToggleCheckbox(locator, boolState);
             });
 
             if (!res)
             {
-                if (state)
+                if (boolState)
                 {
                     return $"'{locator}' was already checked";
                 }
@@ -166,7 +209,7 @@ public class AppiumMcpTools
                 }
             }
 
-            if (state)
+            if (boolState)
             {
                 return $"OK. '{locator}' is now checked";
             }

@@ -133,10 +133,13 @@
     <value>默认AI模型</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens" xml:space="preserve">
-    <value>100万代币的成本</value>
+    <value>1M输入令牌的成本</value>
   </data>
   <data name="ai-default-model-price-per-1M-tokens-description" xml:space="preserve">
     <value>100万个令牌的计费成本。 这仅用于估计和可视化内部报告的成本，不会影响任何实际的计费。</value>
+  </data>
+  <data name="ai-default-model-price-per-1M-tokens-output" xml:space="preserve">
+    <value>1m输出令牌的成本</value>
   </data>
   <data name="ai-embedding-model" xml:space="preserve">
     <value>嵌入模型</value>

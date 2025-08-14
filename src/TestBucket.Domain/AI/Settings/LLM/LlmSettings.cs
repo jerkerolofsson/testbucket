@@ -30,7 +30,12 @@ public class LlmSettings
     /// <summary>
     /// Price for 1 000 000 tokens in USD with the current model
     /// </summary>
-    public double LlmModelUsdPerMillionTokens { get; set; }
+    public double LlmModelUsdPerMillionInputTokens { get; set; }
+
+    /// <summary>
+    /// Price for 1 000 000 tokens in USD with the current model
+    /// </summary>
+    public double LlmModelUsdPerMillionOutputTokens { get; set; }
 
     /// <summary>
     /// URL to ollama/azure etc..

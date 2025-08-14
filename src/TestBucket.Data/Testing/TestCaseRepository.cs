@@ -156,7 +156,7 @@ internal class TestCaseRepository : ITestCaseRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var tests = dbContext.TestCases.AsNoTracking()
-            .AsSingleQuery()
+            .AsSplitQuery()
             .Include(x => x.TestCaseFields).AsQueryable();
         foreach (var spec in filters)
         {
@@ -172,7 +172,8 @@ internal class TestCaseRepository : ITestCaseRepository
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.TestCases
             .Include(x => x.Comments)
-            .AsSingleQuery()
+            .Include(x => x.TestCaseFields)
+            .AsSplitQuery()
             .AsNoTracking().Where(x => x.TenantId == tenantId && x.Id == testCaseId).FirstOrDefaultAsync();
     }
 
@@ -193,7 +194,11 @@ internal class TestCaseRepository : ITestCaseRepository
     public async Task<TestCase?> GetTestCaseByNameAsync(string tenantId, long? projectId, long? testSuiteId, string name)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var query = dbContext.TestCases.AsNoTracking().Where(x => x.TenantId == tenantId && x.Name == name);
+        var query = dbContext.TestCases.AsNoTracking()
+            .Include(x => x.Comments)
+            .Include(x => x.TestCaseFields)
+            .AsSplitQuery()
+            .Where(x => x.TenantId == tenantId && x.Name == name);
         if (projectId is not null)
         {
             query = query.Where(x => x.TestProjectId == projectId);
@@ -215,7 +220,11 @@ internal class TestCaseRepository : ITestCaseRepository
         }
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        return await dbContext.TestCases.AsNoTracking().Where(x => x.TenantId == tenantId && x.ExternalId == externalId).FirstOrDefaultAsync();
+        return await dbContext.TestCases.AsNoTracking()
+            .Include(x => x.Comments)
+            .Include(x => x.TestCaseFields)
+            .AsSplitQuery()
+            .Where(x => x.TenantId == tenantId && x.ExternalId == externalId).FirstOrDefaultAsync();
     }
 
     /// <inheritdoc/>
@@ -228,6 +237,9 @@ internal class TestCaseRepository : ITestCaseRepository
 
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         return await dbContext.TestCases.AsNoTracking()
+            .Include(x => x.Comments)
+            .Include(x => x.TestCaseFields)
+            .AsSplitQuery()
             .Where(x => x.TenantId == tenantId && 
             x.AutomationAssembly == assemblyName &&
             x.Module == module &&

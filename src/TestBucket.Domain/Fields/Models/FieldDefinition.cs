@@ -75,6 +75,11 @@ public class FieldDefinition : ProjectEntity
     public string? Description { get; set; }
 
     /// <summary>
+    /// Defualt value
+    /// </summary>
+    public string? DefaultValue { get; set; }
+
+    /// <summary>
     /// If true, the description is shown in the FieldEditor
     /// </summary>
     public bool ShowDescription { get; set; }

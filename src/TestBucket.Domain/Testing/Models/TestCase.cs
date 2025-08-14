@@ -171,7 +171,7 @@ public class TestCase : TestEntity
 
     // Navigation
     public TestSuiteFolder? TestSuiteFolder { get; set; }
-    public virtual IEnumerable<TestCaseField>? TestCaseFields { get; set; }
+    public virtual List<TestCaseField>? TestCaseFields { get; set; }
     public virtual List<TestStep>? TestSteps { get; set; }
     public virtual List<Comment>? Comments { get; set; }
     public virtual List<RequirementTestLink>? RequirementLinks { get; set; }

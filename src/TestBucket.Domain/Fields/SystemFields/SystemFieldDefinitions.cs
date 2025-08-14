@@ -105,7 +105,7 @@ public static class SystemFieldDefinitions
 
     private static readonly FieldDefinition _qualityCharacteristic = new()
     {
-        Name = "Quality Characteristic",
+        Name = "Q-Char",
         Trait = "QualityCharacteristic",
         TraitType = TraitType.QualityCharacteristic,
         Description = "ISO/IEC 25010 Software Quality Characteristic",
@@ -115,6 +115,7 @@ public static class SystemFieldDefinitions
         Inherit = true,
         ShowDescription = true,
         UseClassifier = false,
+        DefaultValue = "Functional Suitability",
         Options = 
         [
             "Functional Suitability",

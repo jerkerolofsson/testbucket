@@ -7,6 +7,7 @@ using TestBucket.Contracts.Issues.States;
 using TestBucket.Contracts.Issues.Types;
 using TestBucket.Domain.AI.Embeddings;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Fields.Defaults;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Issues.Events;
 using TestBucket.Domain.Issues.Mapping;
@@ -14,6 +15,7 @@ using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Issues.Search;
 using TestBucket.Domain.Issues.Specifications;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Testing.Models;
 
 namespace TestBucket.Domain.Issues;
 
@@ -82,6 +84,10 @@ public class IssueManager : IIssueManager
         issue.ModifiedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         issue.TenantId = principal.GetTenantIdOrThrow();
         issue.ClassificationRequired = true;
+
+        // Assign default values
+        var fields = await _fieldDefinitionManager.GetDefinitionsAsync(principal, issue.TestProjectId, FieldTarget.Issue);
+        DefaultFieldAssigner.AssignDefaultFields(issue, fields);
 
         await GenerateEmbeddingAsync(principal, issue);
 

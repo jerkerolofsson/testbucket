@@ -1,8 +1,5 @@
 ﻿using System.Security.Claims;
 
-using Mediator;
-
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 
 using TestBucket.Domain.Fields;

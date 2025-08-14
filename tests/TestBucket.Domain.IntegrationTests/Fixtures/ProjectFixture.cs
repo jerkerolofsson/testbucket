@@ -194,6 +194,17 @@ namespace TestBucket.Domain.IntegrationTests.Fixtures
         }
 
         /// <summary>
+        /// Gets the quality characteristics field definition for the current project.
+        /// </summary>
+        /// <returns>The milestone field definition.</returns>
+        public async Task<FieldDefinition> GetQualityCharacteristicsFieldAsync()
+        {
+            var fieldDefinitionManager = Services.GetRequiredService<IFieldDefinitionManager>();
+            var fieldDefinitions = await fieldDefinitionManager.GetDefinitionsAsync(App.SiteAdministrator, this.ProjectId);
+            return fieldDefinitions.Where(x => x.TraitType == TraitType.QualityCharacteristic).First();
+        }
+
+        /// <summary>
         /// Disposes of the resources used by the fixture.
         /// </summary>
         /// <returns>A task that represents the asynchronous operation.</returns>

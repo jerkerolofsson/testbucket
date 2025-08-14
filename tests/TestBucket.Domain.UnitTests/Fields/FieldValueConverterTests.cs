@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunit;
-using TestBucket.Domain.Fields;
-using TestBucket.Domain.Fields.Models;
+﻿using TestBucket.Domain.Fields;
 
 namespace TestBucket.Domain.UnitTests.Fields
 {
@@ -15,6 +8,7 @@ namespace TestBucket.Domain.UnitTests.Fields
     /// </summary>
     [UnitTest]
     [Component("Fields")]
+    [Feature("Custom Fields")]
     [EnrichedTest]
     [FunctionalTest]
     public class FieldValueConverterTests

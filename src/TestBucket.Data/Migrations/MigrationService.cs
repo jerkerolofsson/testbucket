@@ -204,7 +204,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
             {
                 llmSettings.AiProvider = "ollama";
                 llmSettings.AiProviderUrl = seedConfiguration.OllamaBaseUrl;
-                llmSettings.EmbeddingAiProvider = "ollama";
+                llmSettings.EmbeddingAiProvider = "default";
                 llmSettings.EmbeddingAiProviderUrl = seedConfiguration.OllamaBaseUrl;
                 await settingsProvider.SaveDomainSettingsAsync(seedConfiguration.Tenant, null, llmSettings);
             }

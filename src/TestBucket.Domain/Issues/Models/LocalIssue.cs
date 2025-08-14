@@ -103,8 +103,7 @@ public class LocalIssue : ProjectEntity
     public Pgvector.Vector? Embedding { get; set; }
 
     // Navigation
-
-    public virtual IEnumerable<IssueField>? IssueFields { get; set; }
+    public virtual List<IssueField>? IssueFields { get; set; }
 
     public virtual List<Comment>? Comments { get; set; }
 }

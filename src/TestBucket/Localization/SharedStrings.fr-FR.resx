@@ -1127,4 +1127,7 @@ Les variables sont définies dans un cas de test comme {{key}} et lors de l'exé
   <data name="welcome-message" xml:space="preserve">
     <value>Bienvenue à Tester Bucket</value>
   </data>
+  <data name="permission" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -207,13 +207,13 @@ public class FieldDefinitionTemplates
     {
         Name = "Priority",
         Trait = "Priority",
-        Target = FieldTarget.TestCase | FieldTarget.TestCaseRun,
-        TraitType = Traits.Core.TraitType.TestPriority,
+        Target = FieldTarget.TestCase | FieldTarget.TestCaseRun | FieldTarget.Issue | FieldTarget.Requirement,
+        TraitType = TraitType.TestPriority,
         Inherit = true,
         IsVisible = true,
         Type = FieldType.SingleSelection,
         Options = ["Low", "Medium", "High"],
-        Description = "Test Priority"
+        Description = "Priority"
     };
 
 }

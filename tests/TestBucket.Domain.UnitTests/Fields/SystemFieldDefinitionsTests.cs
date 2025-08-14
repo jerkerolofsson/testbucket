@@ -35,6 +35,7 @@ namespace TestBucket.Domain.UnitTests.Fields
             Assert.Contains("Branch", names);
             Assert.Contains("Commit", names);
             Assert.Contains("Approved", names);
+            Assert.Contains("Q-Char", names);
         }
 
         /// <summary>
@@ -45,6 +46,19 @@ namespace TestBucket.Domain.UnitTests.Fields
         {
             var fields = SystemFieldDefinitions.Fixed;
             Assert.All(fields, f => Assert.True(f.IsDefinedBySystem));
+        }
+
+
+        /// <summary>
+        /// Verifies that the quality characteristic field has a default value
+        /// </summary>
+        [Fact]
+        [CoveredRequirement("TB-FIELDS-001")]
+        public void QCharField_HasFunctionalSuitabilityDefaultValue()
+        {
+            var qchar = SystemFieldDefinitions.Fixed.FirstOrDefault(f => f.Name == "Q-Char");
+            Assert.NotNull(qchar);
+            Assert.Equal("Functional Suitability", qchar.DefaultValue);
         }
 
         /// <summary>

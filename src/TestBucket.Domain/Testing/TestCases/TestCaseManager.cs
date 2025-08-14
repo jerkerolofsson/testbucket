@@ -4,12 +4,14 @@ using Mediator;
 
 using Microsoft.Extensions.Logging;
 
+using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.AI.Embeddings;
 using TestBucket.Domain.Audit;
 using TestBucket.Domain.Features.Traceability;
 using TestBucket.Domain.Features.Traceability.Models;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Fields.Defaults;
 using TestBucket.Domain.Fields.Handlers;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Projects;
@@ -182,6 +184,10 @@ namespace TestBucket.Domain.Testing.TestCases
             testCase.Modified = testCase.Created = _timeProvider.GetUtcNow();
             testCase.CreatedBy = testCase.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("User not authenticated");
             testCase.ClassificationRequired = testCase.Description is not null && testCase.Description.Length > 0;
+
+            // Assign default values
+            var fields = await _fieldDefinitionManager.GetDefinitionsAsync(principal, testCase.TestProjectId, FieldTarget.TestCase);
+            DefaultFieldAssigner.AssignDefaultFields(testCase, fields);
 
             if (testCase.TestProjectId is not null)
             {

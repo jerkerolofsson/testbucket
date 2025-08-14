@@ -7,7 +7,6 @@ namespace TestBucket.Domain.IntegrationTests.Tests
     /// </summary>
     [IntegrationTest]
     [EnrichedTest]
-    [Component("Testing")]
     [FunctionalTest]
     public class TestCaseManagerTests(ProjectFixture Fixture) : IClassFixture<ProjectFixture>
     {
@@ -16,6 +15,8 @@ namespace TestBucket.Domain.IntegrationTests.Tests
         /// </summary>
         [Fact]
         [FunctionalTest]
+        [Component("Testing")]
+
         public async Task AddExploratoryTestCase_WithNoSessionDuration_DefaultsTo60Minutes()
         {
             // Arrange
@@ -31,5 +32,29 @@ namespace TestBucket.Domain.IntegrationTests.Tests
             Assert.Equal(60, test.SessionDuration.Value);
         }
 
+        /// <summary>
+        /// Verifies that adding a new test case adds default values for default fields
+        /// </summary>
+        [Fact]
+        [FunctionalTest]
+        [CoveredRequirement("TB-FIELDS-001")]
+        [Component("Fields")]
+
+        public async Task AddTestCase_DefaultValueFieldAdded()
+        {
+            // Arrange
+            var testCase = new TestCase { Name = "Test Case With Field", Description = "Charter of test case." };
+
+            // Act
+            await Fixture.Tests.AddAsync(testCase);
+
+            // Assert 
+            TestCase? test = await Fixture.Tests.GetTestCaseByIdAsync(testCase.Id);
+            Assert.NotNull(test);
+            Assert.NotNull(test.TestCaseFields);
+
+            var qcharField = await Fixture.GetQualityCharacteristicsFieldAsync();
+            Assert.Contains(test.TestCaseFields, x => x.FieldDefinitionId == qcharField.Id && x.StringValue == qcharField.DefaultValue);
+        }
     }
 }

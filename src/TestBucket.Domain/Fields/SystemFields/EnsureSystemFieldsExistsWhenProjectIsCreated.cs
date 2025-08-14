@@ -93,6 +93,7 @@ internal class EnsureSystemFieldsExistsWhenProjectIsCreated :
             OptionIcons = definition.OptionIcons,
             Options = definition.Options,
             Icon = definition.Icon,
+            DefaultValue = definition.DefaultValue,
             IsDefinedBySystem = definition.IsDefinedBySystem,
             Target = definition.Target,
             ShowDescription = definition.ShowDescription,

@@ -6,8 +6,10 @@ using TestBucket.Contracts.Fields;
 using TestBucket.Contracts.Requirements;
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain.AI.Embeddings;
+using TestBucket.Domain.Features.Traceability;
 using TestBucket.Domain.Features.Traceability.Models;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Fields.Defaults;
 using TestBucket.Domain.Fields.Handlers;
 using TestBucket.Domain.Progress;
 using TestBucket.Domain.Requirements.Events;
@@ -20,7 +22,6 @@ using TestBucket.Domain.Requirements.Specifications.Links;
 using TestBucket.Domain.Requirements.Specifications.Requirements;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.Testing.Models;
-using TestBucket.Domain.Features.Traceability;
 using TestBucket.Traits.Core;
 
 namespace TestBucket.Domain.Requirements
@@ -30,12 +31,13 @@ namespace TestBucket.Domain.Requirements
         private readonly IRequirementRepository _repository;
         private readonly IRequirementImporter _importer;
         private readonly IFieldManager _fieldManager;
+        private readonly IFieldDefinitionManager _fieldDefinitionManager;
         private readonly List<IRequirementObserver> _requirementObservers = new();
         private readonly IMediator _mediator;
         private readonly TimeProvider _timeProvider;
         private readonly ILogger<RequirementManager> _logger;
 
-        public RequirementManager(IRequirementRepository repository, IMediator mediator, TimeProvider timeProvider, IRequirementImporter importer, IFieldManager fieldManager, ILogger<RequirementManager> logger)
+        public RequirementManager(IRequirementRepository repository, IMediator mediator, TimeProvider timeProvider, IRequirementImporter importer, IFieldManager fieldManager, ILogger<RequirementManager> logger, IFieldDefinitionManager fieldDefinitionManager)
         {
             _repository = repository;
             _mediator = mediator;
@@ -43,6 +45,7 @@ namespace TestBucket.Domain.Requirements
             _importer = importer;
             _fieldManager = fieldManager;
             _logger = logger;
+            _fieldDefinitionManager = fieldDefinitionManager;
         }
 
         #region Observer
@@ -458,6 +461,10 @@ namespace TestBucket.Domain.Requirements
             requirement.Modified = _timeProvider.GetUtcNow();
             requirement.CreatedBy = principal.Identity?.Name;
             requirement.ModifiedBy = principal.Identity?.Name;
+
+            // Assign default values
+            var fields = await _fieldDefinitionManager.GetDefinitionsAsync(principal, requirement.TestProjectId, FieldTarget.Requirement);
+            DefaultFieldAssigner.AssignDefaultFields(requirement, fields);
 
             await GenerateFoldersFromPathAsync(requirement);
             await GenerateEmbeddingAsync(principal, requirement, requirement.RequirementFields);

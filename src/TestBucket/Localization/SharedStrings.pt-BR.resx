@@ -1127,4 +1127,7 @@ As variáveis são definidas em um caso de teste como {{key}} e ao executar um c
   <data name="welcome-message" xml:space="preserve">
     <value>Bem -vindo ao balde de teste</value>
   </data>
+  <data name="permission" xml:space="preserve">
+    <value />
+  </data>
 </root>

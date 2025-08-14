@@ -15,7 +15,7 @@ public class LlmSettings
     /// <summary>
     /// Provider to use for embeddings
     /// </summary>
-    public string EmbeddingAiProvider { get; set; } = "ollama";
+    public string EmbeddingAiProvider { get; set; } = "default";
 
     /// <summary>
     /// Default model to use for LLM

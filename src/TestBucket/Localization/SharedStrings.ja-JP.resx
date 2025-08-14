@@ -1125,4 +1125,7 @@
   <data name="welcome-message" xml:space="preserve">
     <value>Test Bucket へようこそ</value>
   </data>
+  <data name="permission" xml:space="preserve">
+    <value />
+  </data>
 </root>

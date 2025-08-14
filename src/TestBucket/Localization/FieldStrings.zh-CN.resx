@@ -297,4 +297,7 @@
     <value>不会修复</value>
     <comment>Label type</comment>
   </data>
+  <data name="default-value" xml:space="preserve">
+    <value />
+  </data>
 </root>

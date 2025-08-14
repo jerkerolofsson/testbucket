@@ -1127,4 +1127,7 @@
   <data name="welcome-message" xml:space="preserve">
     <value>欢迎来测试水桶</value>
   </data>
+  <data name="permission" xml:space="preserve">
+    <value />
+  </data>
 </root>

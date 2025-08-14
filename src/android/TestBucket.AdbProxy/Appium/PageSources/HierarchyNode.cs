@@ -207,6 +207,23 @@ public record class HierarchyNode
         return false;
     }
 
+    public HierarchyNode? FindDescendant(Func<HierarchyNode, bool> predicate)
+    {
+        if (predicate(this))
+        {
+            return this;
+        }
+        foreach (var child in this.Nodes)
+        {
+            var result = child.FindDescendant(predicate);
+            if (result != null)
+            {
+                return result;
+            }
+        }
+        return null;
+    }
+
     public IEnumerable<HierarchyNode> Descendants()
     {
         foreach (var node in Nodes)

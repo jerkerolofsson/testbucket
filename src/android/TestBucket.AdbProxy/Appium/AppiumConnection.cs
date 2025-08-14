@@ -185,17 +185,37 @@ public class AppiumConnection : IDisposable
         var start = Stopwatch.GetTimestamp();
         while (Stopwatch.GetElapsedTime(start) < _findWait)
         {
-            var matchedNode = await FindNodeFromPageSourceAsync(elementQuery, x => x.MatchThisOrSibling(e => e.Checkable == true, 2), matchWithEmbeddings: true);
+            // Find a node that matches the query and has a sibling which is checkable
+            // This checks the ancestors two levels up, and searches all descendants of that ancestor to make sure it has one element
+            // which is checkable
+            int numAncestors = 2;
+            var matchedNode = await FindNodeFromPageSourceAsync(elementQuery, x => x.MatchThisOrSibling(e => e.Checkable == true, numAncestors), matchWithEmbeddings: true);
             if (matchedNode is not null)
             {
-                bool needToggle = matchedNode.Node.Checked != state;
-                if (needToggle)
+                // We have found the text, now navigate up to find the ancestor which has the toggle
+                HierarchyNode? node = matchedNode.Node;
+                for(int i=0; i<numAncestors; i++)
                 {
-                    var element = CreateXPathAndFindElement(matchedNode);
-                    element.Click();
-                    return true;
+                    node = node?.Parent;
                 }
-                return false;
+                if (node is not null)
+                {
+                    // find toggle
+                    var checkableNode = node.FindDescendant(e => e.Checkable == true);
+                    if (checkableNode is not null)
+                    {
+                        bool needToggle = checkableNode.Checked != state;
+                        if (needToggle)
+                        {
+                            var element = CreateXPathAndFindElement(checkableNode);
+                            element.Click();
+                            return true;
+                        }
+
+                        // No need to click it, already the desired state
+                        return false;
+                    }
+                }
             }
             await Task.Delay(AppiumDefaults.FindDelayDuration);
         }
@@ -303,12 +323,17 @@ public class AppiumConnection : IDisposable
         return null;
     }
 
-    private AppiumElement CreateXPathAndFindElement(MatchedHierarchyNode bestElement)
+    private AppiumElement CreateXPathAndFindElement(MatchedHierarchyNode matchedHierarchyNode)
     {
+        return CreateXPathAndFindElement(matchedHierarchyNode.Node);
+    }
+    private AppiumElement CreateXPathAndFindElement(HierarchyNode? element)
+    {
+        ArgumentNullException.ThrowIfNull(element, nameof(element));
+
         // Create xpath query for the hierarchy
         List<string> xpathIndices = [];
 
-        var element = bestElement.Node;
         while (element is not null)
         {
             //var xpathIndex = element.Inde; // xpath uses 1-based indices

@@ -61,9 +61,9 @@
                                 <MudExpansionPanels>
                                     <MudExpansionPanel>
                                         <TitleContent>
-                                            <MudStack Row AlignItems="AlignItems.Center">
-                                                <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.Tools" Color="Color.Tertiary"/>
-                                                @functionCall.Name
+                                            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                                <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.Tools" Color="Color.Default" />
+                                                @FormatFunctionCallContent(functionCall)
                                             </MudStack>
                                         </TitleContent>
                                         <ChildContent>
@@ -99,13 +99,26 @@
 
                     if (showText && !string.IsNullOrEmpty(message.Text))
                     {
-                        <div class="chat @message.Role">
-                            <div class="author"> 
-                                <MudIcon Size="Size.Small" Icon="@TbIcons.Filled.Agent"/>
-                                <span>@message.AuthorName</span>
-                            </div>
-                            <MarkdownEditor ShowToolbar="false" Preview Value="@message.Text" />
-                        </div>
+                        <MudExpansionPanels>
+                            <MudExpansionPanel>
+                                <TitleContent>
+                                    <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                                        @if(message.Role == ChatRole.Assistant)
+                                        {
+                                            <MudIcon Size="Size.Small" Icon="@TbIcons.BoldDuoTone.AI" Color="Color.Default" />
+                                        }
+                                        else if (message.Role == ChatRole.User)
+                                        {
+                                            <MudIcon Size="Size.Small" Icon="@TbIcons.BoldDuoTone.UserCircle" Color="Color.Default" />
+                                        }
+                                        <span>@message.AuthorName</span>
+                                    </MudStack>
+                                </TitleContent>
+                                <ChildContent>
+                                    <MarkdownEditor ShowToolbar="false" Preview Value="@message.Text" />
+                                </ChildContent>
+                            </MudExpansionPanel>
+                        </MudExpansionPanels>
                     }
                 }
             }
@@ -297,6 +310,26 @@
     }
 
     private string _agentId = OrchestrationStrategies.Default;
+
+    private MarkupString FormatFunctionCallContent(FunctionCallContent functionCallContent)
+    {
+        var sb = new StringBuilder();
+        if(!string.IsNullOrEmpty(functionCallContent.Name))
+        {
+            sb.Append("<div class='function-call-content'>");
+            sb.Append("<span class='method'>");
+            sb.Append(functionCallContent.Name);
+            sb.Append("</span>(");
+            if(functionCallContent.Arguments is not null)
+            {
+                var args = string.Join(", ", functionCallContent.Arguments.Select(kv => $"<span class='arg-name'>{kv.Key}</span>: <span class='arg-value'>{kv.Value}</span>"));
+                sb.Append(args);
+            }
+            sb.Append(")</div>");
+        }
+
+        return new MarkupString(sb.ToString());
+    }
 
     private async Task SendAsync(ChatMessage chatMessage)
     {

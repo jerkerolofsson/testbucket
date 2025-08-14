@@ -10,6 +10,22 @@
     opacity: 1;
 }
 
+::deep .function-call-content {
+    font-family: monospace;
+    font-size: 10pt;
+}
+
+::deep .function-call-content .method {
+    font-weight: bold;
+    color: lightseagreen;
+}
+::deep .function-call-content .arg-name {
+    font-weight: normal;
+    color: #777;
+}
+::deep .function-call-content .arg-value {
+    font-weight: normal;
+}
 
 .tb-agent-chat-suggestions ::deep .mud-paper::after {
     opacity: 0;

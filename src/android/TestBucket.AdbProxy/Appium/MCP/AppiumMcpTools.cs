@@ -14,14 +14,10 @@ namespace TestBucket.AdbProxy.Appium.MCP;
 [McpServerToolType, Description("Tools to interact with appium (android phones etc)")]
 public class AppiumMcpTools
 {
-    private readonly IAdbDeviceRepository _service;
-    private readonly IResourceRegistry _resourceRegistry;
     private readonly AppiumConnectionPool _appiumConnectionPool;
 
-    public AppiumMcpTools(IAdbDeviceRepository service, IResourceRegistry resourceRegistry, AppiumConnectionPool appiumConnectionPool)
+    public AppiumMcpTools(AppiumConnectionPool appiumConnectionPool)
     {
-        _service = service;
-        _resourceRegistry = resourceRegistry;
         _appiumConnectionPool = appiumConnectionPool;
     }
 
@@ -100,15 +96,15 @@ public class AppiumMcpTools
     [McpServerTool(Name = "clear"), Description("Clears content for a UI element on the device specified by resourceId")]
     public async Task<string> Clear(
         [Description("The device")] string resourceId,
-        [Description("Text, ID, content-description or other locator used to find the UI element")] string locator)
+        [Description("Text, ID, content-description or other locator used to find the UI element")] string textOrId)
     {
         try
         {
             await RunActionAsync(resourceId, async (appium) =>
             {
-                await appium.Clear(locator);
+                await appium.Clear(textOrId);
             });
-            return $"OK. Cleared '{locator}'";
+            return $"OK. Cleared '{textOrId}'";
         }
         catch (Exception ex)
         {
@@ -183,7 +179,7 @@ public class AppiumMcpTools
     [McpServerTool(Name = "toggle_checkbox_or_switch"), Description("Toggles a checkbox or switch UI component to the desired state")]
     public async Task<string> ToggleCheckboxOrSwitch(
         [Description("The device")] string resourceId,
-        [Description("Text, ID, content-description or other locator used to find the UI element")] string locator,
+        [Description("Text, ID, content-description or other locator used to find the UI element")] string textOrId,
         [Description("true: to check, false: to uncheck")] string state)
     {
         try
@@ -194,28 +190,28 @@ public class AppiumMcpTools
             bool res = false;
             await RunActionAsync(resourceId, async (appium) =>
             {
-                res = await appium.ToggleCheckbox(locator, boolState);
+                res = await appium.ToggleCheckbox(textOrId, boolState);
             });
 
             if (!res)
             {
                 if (boolState)
                 {
-                    return $"'{locator}' was already checked";
+                    return $"'{textOrId}' was already checked";
                 }
                 else
                 {
-                    return $"'{locator}' was already unchecked";
+                    return $"'{textOrId}' was already unchecked";
                 }
             }
 
             if (boolState)
             {
-                return $"OK. '{locator}' is now checked";
+                return $"OK. '{textOrId}' is now checked";
             }
             else
             {
-                return $"OK. '{locator}' is now unchecked";
+                return $"OK. '{textOrId}' is now unchecked";
             }
         }
         catch (Exception ex)
@@ -232,15 +228,15 @@ public class AppiumMcpTools
     [McpServerTool(Name = "click"), Description("Clicks/taps on a UI element on the device specified by resourceId")]
     public async Task<string> Click(
         [Description("The device")] string resourceId,
-        [Description("Text, ID, content-description or other locator used to find the UI element")] string locator)
+        [Description("Text, ID, content-description or other locator used to find the UI element")] string textOrId)
     {
         try
         {
             await RunActionAsync(resourceId, async (appium) =>
             {
-                await appium.Click(locator);
+                await appium.Click(textOrId);
             });
-            return $"OK. Clicked on '{locator}'";
+            return $"OK. Clicked on '{textOrId}'";
         }
         catch(Exception ex)
         {
@@ -257,13 +253,13 @@ public class AppiumMcpTools
     public async Task<string> SendText(
         [Description("The device")] string resourceId,
         [Description("The text to send")] string text,
-        [Description("Text, ID, content-description or other locator used to find the UI element")] string locator)
+        [Description("Text, ID, content-description or other locator used to find the UI element")] string textOrId)
     {
         try
         {
             await RunActionAsync(resourceId, async (appium) =>
             {
-                await appium.SendText(text, locator);
+                await appium.SendText(text, textOrId);
             });
             return $"OK. ";
         }

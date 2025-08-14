@@ -703,6 +703,9 @@
   <data name="password" xml:space="preserve">
     <value>Lösenord</value>
   </data>
+  <data name="permission" xml:space="preserve">
+    <value>Tillstånd</value>
+  </data>
   <data name="permission-approve" xml:space="preserve">
     <value>Godkänn</value>
   </data>
@@ -1119,8 +1122,5 @@
   </data>
   <data name="welcome-message" xml:space="preserve">
     <value>Välkommen till Test Bucket</value>
-  </data>
-  <data name="permission" xml:space="preserve">
-    <value />
   </data>
 </root>

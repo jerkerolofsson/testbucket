@@ -705,6 +705,9 @@
   <data name="password" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="permission" xml:space="preserve">
+    <value>Permission</value>
+  </data>
   <data name="permission-approve" xml:space="preserve">
     <value>Approve</value>
   </data>
@@ -1126,8 +1129,5 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="welcome-message" xml:space="preserve">
     <value>Welcome to Test Bucket</value>
-  </data>
-  <data name="permission" xml:space="preserve">
-    <value>Permission</value>
   </data>
 </root>

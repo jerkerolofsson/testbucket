@@ -1,10 +1,9 @@
-﻿@attribute [Authorize()]
-@inject TeamController teamService
+﻿@inject TeamController teamService
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<ErrorStrings> errorLoc
 
 <EditForm Model="@_name" OnValidSubmit="async () => await OnValidSubmitAsync()">
-    <MudDialog DefaultFocus="DefaultFocus.FirstChild" data-testid="add-team-dialog" >
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" data-testid="add-team-dialog">
         <TitleContent>@loc["add-new-team"]</TitleContent>
         <DialogContent>
             <MudStack Spacing="0">
@@ -12,7 +11,7 @@
                 {
                     <MudTextField data-testid="name" Variant="Variant.Outlined" T="string" @bind-Value="@_name"></MudTextField>
                 }
-                @if(_errorMessage is not null)
+                @if (_errorMessage is not null)
                 {
                     <MudAlert data-testid="error-message" Severity="Severity.Error">@_errorMessage</MudAlert>
                 }
@@ -45,7 +44,7 @@
 
     private async Task OnValidSubmitAsync()
     {
-        if(string.IsNullOrWhiteSpace(_name))
+        if (string.IsNullOrWhiteSpace(_name))
         {
             _errorMessage = errorLoc["invalid-name"];
             return;
@@ -55,7 +54,7 @@
         _shortName = await teamService.GenerateShortNameAsync(_slug);
 
         var result = await teamService.CreateAsync(_name);
-        if(result.IsT0)
+        if (result.IsT0)
         {
             MudDialog.Close(result.AsT0);
         }

@@ -704,6 +704,9 @@
   <data name="password" xml:space="preserve">
     <value>パスワード</value>
   </data>
+  <data name="permission" xml:space="preserve">
+    <value>許可</value>
+  </data>
   <data name="permission-approve" xml:space="preserve">
     <value>承認する</value>
   </data>
@@ -1124,8 +1127,5 @@
   </data>
   <data name="welcome-message" xml:space="preserve">
     <value>Test Bucket へようこそ</value>
-  </data>
-  <data name="permission" xml:space="preserve">
-    <value />
   </data>
 </root>

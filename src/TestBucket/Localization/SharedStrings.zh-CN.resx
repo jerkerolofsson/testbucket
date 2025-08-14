@@ -705,6 +705,9 @@
   <data name="password" xml:space="preserve">
     <value>密码</value>
   </data>
+  <data name="permission" xml:space="preserve">
+    <value>允许</value>
+  </data>
   <data name="permission-approve" xml:space="preserve">
     <value>批准</value>
   </data>
@@ -1126,8 +1129,5 @@
   </data>
   <data name="welcome-message" xml:space="preserve">
     <value>欢迎来测试水桶</value>
-  </data>
-  <data name="permission" xml:space="preserve">
-    <value />
   </data>
 </root>

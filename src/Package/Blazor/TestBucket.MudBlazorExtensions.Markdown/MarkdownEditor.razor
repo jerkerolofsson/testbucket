@@ -1,6 +1,7 @@
 ﻿@implements IDisposable
 @implements IMarkdownEditor
 @inject IJSRuntime JSRuntime
+@inject IDialogService dialogService
 
 <CascadingValue Value="@this" IsFixed="true">
 
@@ -39,8 +40,13 @@
 
                                 <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.Grid3x3" OnClick="DrawTableAsync" Class="@ToolbarButtonClass"></MudIconButton>
                                 <MudIconButton Size="@IconSize" Icon="@Icons.Material.Filled.AddLink" OnClick="DrawLinkAsync" Class="@ToolbarButtonClass"></MudIconButton>
-                            
-                                 <MudFileUpload T="IBrowserFile"
+
+                                <MudDivider Vertical="true" FlexItem="true" />
+
+                                <MudIconButton Size="@IconSize" Icon="@Icons.Custom.Brands.YouTube" OnClick="AddYoutubeEmbedding" Class="@ToolbarButtonClass"></MudIconButton>
+                                <MudIconButton Size="@IconSize" Icon="@FigmaIcon" OnClick="AddFigmaEmbedding" Class="@ToolbarButtonClass"></MudIconButton>
+
+                                <MudFileUpload T="IBrowserFile"
                                                Class="@ToolbarButtonClass"
                                     Accept="@ImageAccept"
                                     FilesChanged="UploadImageAsync"

@@ -548,6 +548,15 @@ code.tip {
     overflow: auto;
     min-height: 4rem;
 }
+
+.mud-markdown-preview pre:has(iframe),
+.EasyMDEContainer .editor-preview pre:has(iframe),
+.mud-markdown-preview pre:has(iframe) code,
+.EasyMDEContainer .editor-preview pre:has(iframe) code{
+    padding: 0;
+    margin: 0;
+}
+
 .mud-markdown-preview ol li,
 .mud-markdown-preview ul li,
 .EasyMDEContainer .editor-preview ol li,

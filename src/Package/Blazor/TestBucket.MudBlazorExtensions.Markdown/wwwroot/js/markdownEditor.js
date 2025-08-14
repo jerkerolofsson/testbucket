@@ -113,20 +113,15 @@ function initialize(dotNetObjectRef, element, elementId, previewElementId, optio
                 langPrefix: "",
                 highlight: (code, lang) => {
 
-                    if (lang === "mermaid" && mermaidInstalled) {
-                        //const tempDiv = document.createElement("div");
-                        //tempDiv.className = "mermaid-container";
+                    const iframeWidth = 640;
+                    const iframeHeight = 360;
 
-                        //console.log("Rendering mermaid", code)
-                        //try {
-                        //    const svg = mermaid.render("mermaid0", code);
-                        //    tempDiv.innerHTML = svg;
-                        //}catch (err) {
-                        //    tempDiv.innerHTML = "Error rendering mermaid chart";
-                        //    console.error(err);
-                        //}
-                        //return tempDiv;
+                    console.log("highlight, lang: " + lang);
 
+                    if (lang == "figma") {
+                        return `<iframe src="${code}" allowfullscreen style="height: ${iframeHeight}px"></iframe>`
+                    }
+                    else if (lang === "mermaid" && mermaidInstalled) {
                         window.setTimeout(() => {
                             mermaid.run({
                                 querySelector: `#${previewElementId} code.mermaid`,
@@ -159,17 +154,23 @@ function initialize(dotNetObjectRef, element, elementId, previewElementId, optio
                             code + '</p></div>';
                     }
                     else if (lang === "video") {
-                        var videoCode = '<div class="video-container">';
+                        let videoCode = "";
+                        if (code.includes("youtube.com") || code.includes("youtu.be")) {
 
-                        if (code.includes("youtube.com") || code.includes("youtu.be"))
-                            videoCode = videoCode + '<iframe width="560" height="315" src="' + code + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-                        else if (code.includes("vimeo.com"))
-                            videoCode = videoCode + '<iframe src="' + code + '" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>';
-                        else
-                            videoCode = videoCode + '<video controls><source src="' + code + '" type="video/mp4"></video>';
+                            /*
+                            <iframe width="560" height="315" src="https://www.youtube.com/embed/WzF5XpzkZeg?si=euzzaXfg0SWCvcwB" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                            */
 
-                        videoCode = videoCode + '</div>';
-                        return videoCode;
+                            videoCode = videoCode + `<iframe width="560" height="315" src="${code}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+                        }
+                        else if (code.includes("vimeo.com")) {
+                            videoCode = videoCode + `<iframe src="${code}" width="${iframeWidth}" height="${iframeHeight}" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
+                        }
+                        else {
+                            videoCode = videoCode + `<video controls><source src="${code}" type="video/mp4"></video>`;
+                        }
+
+                        return `<div class="video-container">${videoCode}</div>`;
                     }
                     else if (lang && hljsInstalled) {
                         const language = hljs.getLanguage(lang) ? lang : 'plaintext';

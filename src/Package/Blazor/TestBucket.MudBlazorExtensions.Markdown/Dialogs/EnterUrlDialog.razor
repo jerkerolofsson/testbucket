@@ -1,0 +1,48 @@
+﻿
+
+<EditForm Model="@_url" OnValidSubmit="OnValidSubmit">
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild" data-testid="add-team-dialog">
+        <TitleContent>URL</TitleContent>
+        <DialogContent>
+            <MudStack Spacing="0">
+                @if (_url is not null)
+                {
+                    <MudTextField data-testid="url" Variant="Variant.Outlined" T="string" @bind-Value="@_url"></MudTextField>
+                }
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton data-testid="ok" ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
+            <MudButton data-testid="cancel" OnClick="Close">Cancel</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+
+@code {
+    private string _url = "https://";
+
+    [Parameter] public string? Url { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; } = default!;
+
+    protected override void OnParametersSet()
+    {
+        if (Url is not null)
+        {
+            _url = Url;
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private void OnValidSubmit()
+    {
+        MudDialog.Close(_url);
+    }
+}

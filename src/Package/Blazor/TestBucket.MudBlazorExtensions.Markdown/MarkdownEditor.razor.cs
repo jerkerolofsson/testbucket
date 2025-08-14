@@ -1,7 +1,12 @@
+using System;
+using System.Xml.Linq;
+
 using Microsoft.AspNetCore.Components.Forms;
 
 using MudBlazor;
 using MudBlazor.Utilities;
+
+using TestBucket.MudBlazorExtensions.Markdown.Dialogs;
 
 using static MudBlazor.Colors;
 
@@ -14,6 +19,8 @@ namespace TestBucket.MudBlazorExtensions.Markdown
     /// <seealso cref="Microsoft.AspNetCore.Components.ComponentBase" />
     public partial class MarkdownEditor : IDisposable
     {
+        public const string FigmaIcon = "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\r\n<path opacity=\"0.6\" d=\"M11.6667 2H8.33333C6.49238 2 5 3.49238 5 5.33333C5 7.17428 6.49238 8.66667 8.33333 8.66667H11.6667V2Z\" fill=\"currentColor\"/>\r\n<path opacity=\"0.4\" d=\"M11.6667 8.6665H8.33333C6.49238 8.6665 5 10.1589 5 11.9998C5 13.8408 6.49238 15.3332 8.33333 15.3332H11.6667V8.6665Z\" fill=\"currentColor\"/>\r\n<path d=\"M18.3327 11.9998C18.3327 13.8408 16.8403 15.3332 14.9993 15.3332C13.1584 15.3332 11.666 13.8408 11.666 11.9998C11.666 10.1589 13.1584 8.6665 14.9993 8.6665C16.8403 8.6665 18.3327 10.1589 18.3327 11.9998Z\" fill=\"currentColor\"/>\r\n<path opacity=\"0.2\" d=\"M8.33333 15.3335H11.6667V18.6668C11.6667 20.5078 10.1743 22.0002 8.33333 22.0002C6.49238 22.0002 5 20.5078 5 18.6668C5 16.8259 6.49238 15.3335 8.33333 15.3335Z\" fill=\"currentColor\"/>\r\n<path opacity=\"0.8\" d=\"M11.666 2H14.9993C16.8403 2 18.3327 3.49238 18.3327 5.33333C18.3327 7.17428 16.8403 8.66667 14.9993 8.66667H11.666V2Z\" fill=\"currentColor\"/>\r\n</svg>";
+
         /// <summary>
         /// State of the editor, cascaded to the toolbar
         /// </summary>
@@ -687,8 +694,53 @@ namespace TestBucket.MudBlazorExtensions.Markdown
 
             return await JSModule.GetValue(ElementId);
         }
-       
+
         #endregion
+
+        private async Task AddFigmaEmbedding()
+        {
+            var url = "https://embed.figma.com/design/nrPSsILSYjesyc5UHjYYa4?embed-host=figma-embed-docs";
+
+            var parameters = new DialogParameters<EnterUrlDialog>
+            {
+                { x => x.Url, url },
+            };
+            var dialog = await dialogService.ShowAsync<EnterUrlDialog>(null, parameters);
+            var result = await dialog.Result;
+
+            if (result?.Data is string userUrl && JSModule is not null)
+            {
+                var markdown = $"""
+                    ```figma
+                    {url}
+                    ```
+                    """;
+
+                await JSModule.InsertText(ElementId, markdown);
+            }
+        }
+        private async Task AddYoutubeEmbedding()
+        {
+            var url = "https://www.youtube.com/embed/awztkr8n0AA?si=m4B3SnjkMB9NMpwN";
+
+            var parameters = new DialogParameters<EnterUrlDialog>
+            {
+                { x => x.Url, url },
+            };
+            var dialog = await dialogService.ShowAsync<EnterUrlDialog>(null, parameters);
+            var result = await dialog.Result;
+
+            if (result?.Data is string userUrl && JSModule is not null)
+            {
+                var markdown = $"""
+                    ```video
+                    {url}
+                    ```
+                    """;
+
+                await JSModule.InsertText(ElementId, markdown);
+            }
+        }
 
         protected override async Task OnParametersSetAsync()
         {

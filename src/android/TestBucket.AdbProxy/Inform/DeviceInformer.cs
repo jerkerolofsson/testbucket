@@ -126,6 +126,7 @@ internal class DeviceInformer(HttpClient httpClient, IServer Server) : IDeviceIn
     private void AddMcpResource(List<TestResourceDto> resources, string owner)
     {
         var hostname = PublicHostnameDetector.GetPublicHostname() ?? "localhost";
+        var publicPort = PublicHostnameDetector.GetPublicPort();
 
         var addressFeature = Server.Features.Get<IServerAddressesFeature>();
         if (addressFeature != null)
@@ -134,20 +135,25 @@ internal class DeviceInformer(HttpClient httpClient, IServer Server) : IDeviceIn
             {
                 if (address.StartsWith("http:"))
                 {
-                    resources.Add(new TestResourceDto
+                    if (Uri.TryCreate(address, UriKind.Absolute, out var uri))
                     {
-                        Name = $"adb-mcp-server@{hostname}",
-                        Owner = owner,
-                        ResourceId = hostname + "-adb-mcp-server",
-                        Model = "AdbProxy",
-                        Manufacturer = "TestBucket",
-                        Types = ["appium-mcp", "adb-mcp", "mcp-server"],
-                        Health = HealthStatus.Healthy,
-                        Variables =
+                        string baseUrl = "http://" + hostname + ":" + publicPort ?? uri.Port.ToString();
+
+                        resources.Add(new TestResourceDto
                         {
-                            ["url"] = address.TrimEnd('/') + "/mcp"
-                        }
-                    });
+                            Name = $"adb-mcp-server@{hostname}",
+                            Owner = owner,
+                            ResourceId = baseUrl + "-adb-mcp-server",
+                            Model = "AdbProxy",
+                            Manufacturer = "TestBucket",
+                            Types = ["appium-mcp", "adb-mcp", "mcp-server"],
+                            Health = HealthStatus.Healthy,
+                            Variables =
+                            {
+                                ["url"] = address.TrimEnd('/') + "/mcp"
+                            }
+                        });
+                    }
                 }
             }
         }

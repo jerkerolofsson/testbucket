@@ -7,7 +7,7 @@ using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
 using TestBucket.Domain.Shared.Specifications;
 
-namespace TestBucket.Domain.Export.Handlers;
+namespace TestBucket.Domain.Export.Handlers.Project;
 
 /// <summary>
 /// Exports the project

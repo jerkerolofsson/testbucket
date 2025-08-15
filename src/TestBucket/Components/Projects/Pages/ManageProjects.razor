@@ -36,6 +36,13 @@
             </MudStack>
         </ToolBarContent>
 
+        <ColGroup>
+            <col />
+            <col />
+            <col />
+            <col style="width: 65px"/>
+        </ColGroup>
+
         <Columns>
 
             <TemplateColumn Title="@loc["name"]" SortBy="x => x.Name" Sortable="true">
@@ -47,16 +54,23 @@
                 </CellTemplate>
             </TemplateColumn>
 
-            <PropertyColumn Property="x => x.NumberOfTestSuites" />
-            <PropertyColumn Property="x => x.NumberOfTestCases" />
+            <PropertyColumn Property="x => x.NumberOfTestSuites" Title="@loc["number-of-test-suites"]"/>
+            <PropertyColumn Property="x => x.NumberOfTestCases" Title="@loc["number-of-test-cases"]" />
 
-            <TemplateColumn>
+            <TemplateColumn StickyRight>
                 <CellTemplate>
-                    <PermissionView Entity="PermissionEntityType.Team" Level="PermissionLevel.Delete">
-                        <Authorized>
-                            <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Clear" OnClick="async() => await DeleteAsync(context.Item)"></MudIconButton>
-                        </Authorized>
-                    </PermissionView>
+
+                    <MudMenu Class="rounded-0" Icon="@Icons.Material.Filled.MoreVert">
+
+                        <MudMenuItem Icon="@TbIcons.BoldDuoTone.Export" OnClick="() => Export(context.Item)">@loc["export"]</MudMenuItem>
+
+                        <PermissionView Entity="PermissionEntityType.Project" Level="PermissionLevel.Delete">
+                            <Authorized>
+                                <MudMenuItem Icon="@Icons.Material.Filled.Clear" OnClick="async () => await DeleteAsync(context.Item)">@loc["delete"]</MudMenuItem>
+                            </Authorized>
+                        </PermissionView>
+                    </MudMenu>
+
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
@@ -80,6 +94,10 @@
         SetupBreadcrumbs();
     }
 
+    private void Export(TestProject project)
+    {
+        appNav.NavigateTo(appNav.GetExportProjectUrl(project), true);
+    }
     private async Task DeleteAsync(TestProject project)
     {
         await controller.DeleteAsync(project);

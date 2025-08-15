@@ -232,10 +232,13 @@
     <value>Backup</value>
   </data>
   <data name="batch-tag" xml:space="preserve">
-    <value>Updatera flera..</value>
+    <value>Uppdatera valda tester ..</value>
   </data>
   <data name="batch-tag-description" xml:space="preserve">
     <value>Länka ett krav eller ändra ett fält för alla ättlingar</value>
+  </data>
+  <data name="batch-tag-requirements" xml:space="preserve">
+    <value>Uppdatera valda krav ..</value>
   </data>
   <data name="batch-updating-tests" xml:space="preserve">
     <value>Vänta. Uppdateringstester ..</value>
@@ -410,6 +413,9 @@
   </data>
   <data name="explorer" xml:space="preserve">
     <value>Utforskare</value>
+  </data>
+  <data name="export" xml:space="preserve">
+    <value>Exportera</value>
   </data>
   <data name="export-test-suite" xml:space="preserve">
     <value>Exporttestsvit</value>
@@ -678,6 +684,9 @@
   </data>
   <data name="number-of-tests" xml:space="preserve">
     <value>Tester</value>
+  </data>
+  <data name="number-of-test-suites" xml:space="preserve">
+    <value>Antal testsviter</value>
   </data>
   <data name="open" xml:space="preserve">
     <value>Öppen</value>

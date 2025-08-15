@@ -232,10 +232,13 @@
     <value>Sauvegarde</value>
   </data>
   <data name="batch-tag" xml:space="preserve">
-    <value>Mise à jour par lots ..</value>
+    <value>Mettre à jour les tests sélectionnés.</value>
   </data>
   <data name="batch-tag-description" xml:space="preserve">
     <value>Lier une exigence ou modifier un champ pour tous les descendants.</value>
+  </data>
+  <data name="batch-tag-requirements" xml:space="preserve">
+    <value>Mettre à jour les exigences sélectionnées.</value>
   </data>
   <data name="batch-updating-tests" xml:space="preserve">
     <value>S'il vous plaît, attendez. Mettre à jour les tests ..</value>
@@ -411,6 +414,9 @@
   </data>
   <data name="explorer" xml:space="preserve">
     <value>Explorateur</value>
+  </data>
+  <data name="export" xml:space="preserve">
+    <value>Exporter</value>
   </data>
   <data name="export-test-suite" xml:space="preserve">
     <value>Suite de tests d'exportation</value>
@@ -680,6 +686,9 @@
   </data>
   <data name="number-of-tests" xml:space="preserve">
     <value>Tests</value>
+  </data>
+  <data name="number-of-test-suites" xml:space="preserve">
+    <value>Nombre de suites de test</value>
   </data>
   <data name="open" xml:space="preserve">
     <value>Ouvrir</value>

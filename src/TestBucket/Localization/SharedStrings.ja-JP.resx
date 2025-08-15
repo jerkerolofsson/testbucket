@@ -232,10 +232,13 @@
     <value>バックアップ</value>
   </data>
   <data name="batch-tag" xml:space="preserve">
-    <value>バッチアップデート..</value>
+    <value>選択したテストを更新します。</value>
   </data>
   <data name="batch-tag-description" xml:space="preserve">
     <value>要件をリンクするか、すべての子孫のフィールドを変更します。</value>
+  </data>
+  <data name="batch-tag-requirements" xml:space="preserve">
+    <value>選択した要件を更新します。</value>
   </data>
   <data name="batch-updating-tests" xml:space="preserve">
     <value>お待ちください。 テストの更新..</value>
@@ -410,6 +413,9 @@
   </data>
   <data name="explorer" xml:space="preserve">
     <value>エクスプローラ</value>
+  </data>
+  <data name="export" xml:space="preserve">
+    <value>輸出</value>
   </data>
   <data name="export-test-suite" xml:space="preserve">
     <value>輸出テストスイート</value>
@@ -679,6 +685,9 @@
   </data>
   <data name="number-of-tests" xml:space="preserve">
     <value>テスト</value>
+  </data>
+  <data name="number-of-test-suites" xml:space="preserve">
+    <value>テストスイートの数</value>
   </data>
   <data name="open" xml:space="preserve">
     <value>開ける</value>

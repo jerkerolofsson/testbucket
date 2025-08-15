@@ -23,6 +23,7 @@
                         <MudRadioGroup T="string" @bind-Value="_tokenType">
                             <MudRadio Value="@("personal")">personal</MudRadio>
                             <MudRadio Value="@("runner")">runner</MudRadio>
+                            <MudRadio Value="@("resource-server")">resource-server</MudRadio>
                             @if(TestProjectId is not null)
                             {
                                 <MudRadio Value="@("project")">project</MudRadio>

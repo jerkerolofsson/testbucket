@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using TestBucket.Contracts.Projects;
 using TestBucket.Controllers.Api;
+using TestBucket.Domain.Export;
+using TestBucket.Domain.Export.Handlers.Project;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Projects.Mapping;
 using TestBucket.Domain.Teams;
@@ -17,12 +19,14 @@ public class ProjectApiController : ProjectApiControllerBase
     private readonly IProjectManager _manager;
     private readonly ITeamManager _teamManager;
     private readonly ILogger<ProjectApiController> _logger;
+    private readonly IBackupManager _backupManager;
 
-    public ProjectApiController(IProjectManager manager, ITeamManager teamManager, ILogger<ProjectApiController> logger)
+    public ProjectApiController(IProjectManager manager, ITeamManager teamManager, ILogger<ProjectApiController> logger, IBackupManager backupManager)
     {
         _manager = manager;
         _teamManager = teamManager;
         _logger = logger;
+        _backupManager = backupManager;
     }
 
     [Authorize("ApiKeyOrBearer")]
@@ -89,7 +93,7 @@ public class ProjectApiController : ProjectApiControllerBase
 
     [Authorize("ApiKeyOrBearer")]
     [HttpGet("/api/projects/{slug}")]
-    [ProducesDefaultResponseType(typeof(TestCaseDto))]
+    [ProducesDefaultResponseType(typeof(ProjectDto))]
     public async Task<IActionResult> GetAsync([FromRoute] string slug)
     {
         if (!User.HasPermission(PermissionEntityType.Project, PermissionLevel.Read))
@@ -114,5 +118,31 @@ public class ProjectApiController : ProjectApiControllerBase
         {
             return Ok(project.ToDto(false));
         }
+    }
+
+
+    [Authorize("ApiKeyOrBearer")]
+    [HttpGet("/api/projects/{slug}/export")]
+    [ProducesDefaultResponseType(typeof(ProjectDto))]
+    public async Task<IActionResult> ExportProjectAsync([FromRoute] string slug)
+    {
+        if (!User.HasPermission(PermissionEntityType.Project, PermissionLevel.Read))
+        {
+            return Unauthorized();
+        }
+       
+        if (string.IsNullOrEmpty(slug))
+        {
+            return BadRequest("Project slug cannot be empty");
+        }
+
+        var project = await _manager.GetTestProjectBySlugAsync(User, slug);
+        if (project is null)
+        {
+            return NotFound();
+        }
+        var stream = await _backupManager.CreateBackupAsync(User, project);
+        return File(stream, "application/zip", $"{project.Name.ToLower().Replace(' ', '_')}.tbz");
+
     }
 }

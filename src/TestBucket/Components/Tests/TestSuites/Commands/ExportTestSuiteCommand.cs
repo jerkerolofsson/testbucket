@@ -14,11 +14,11 @@ internal class ExportTestSuiteCommand : ICommand
     public string Description => _loc.Shared["export-test-suite-description"];
 
     public bool Enabled => _appNav.State.SelectedTestSuite is not null;
-    public int SortOrder => 70;
+    public int SortOrder => 69;
     public string? Folder => null;
 
     public KeyboardBinding? DefaultKeyboardBinding => null;
-    public string? Icon => TbIcons.BoldDuoTone.Import;
+    public string? Icon => TbIcons.BoldDuoTone.Export;
     public string[] ContextMenuTypes => ["TestSuite"];
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.TestSuite;
     public PermissionLevel? RequiredLevel => PermissionLevel.Read;

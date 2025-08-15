@@ -4,6 +4,11 @@ using System.Net.Sockets;
 namespace TestBucket.ResourceServer.Utilities;
 public class PublicHostnameDetector
 {
+    public static string? GetPublicPort()
+    {
+        return Environment.GetEnvironmentVariable("TB_PUBLIC_PORT");
+    }
+
     public static string GetPublicHostname()
     {
         // If running a docker container, use environment variable

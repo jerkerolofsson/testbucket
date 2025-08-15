@@ -165,6 +165,12 @@ public class AppNavigationManager
         return $"/api/testsuites/{testSuite.Slug}/export";
     }
 
+    public string GetExportProjectUrl(TestProject project)
+    {
+        var tenantId = TenantResolver.ResolveTenantIdFromUrl(_navigationManager.Uri);
+        return $"/api/projects/{project.Slug}/export";
+    }
+
 
     public string GetRequirementsSearchUrl()
     {

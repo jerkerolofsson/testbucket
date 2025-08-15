@@ -195,7 +195,8 @@ internal class IssueRepository : IIssueRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var issues = dbContext.LocalIssues.AsNoTracking()
-            .Include(x=>x.Comments)
+            .Include(x => x.Comments)
+            .Include(x => x.TestProject)
             .Include(x => x.IssueFields!).ThenInclude(y=>y.FieldDefinition)
             .AsSplitQuery()
             .AsQueryable();

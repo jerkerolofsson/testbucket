@@ -5,19 +5,11 @@ public class MilestoneDto
     public string? Description { get; set; }
     public DateTimeOffset? DueDate { get; set; }
     public long Id { get; set; }
-
-    /// <summary>
-    /// True if this is the next milestone
-    /// </summary>
-    public bool IsNext { get; set; }
-
-    /// <summary>
-    /// True if the milestone is open, i.e. not completed
-    /// </summary>
-    public bool IsOpen { get; set; }
-
-    /// <summary>
-    /// True if the due date is in the past
-    /// </summary>
-    public bool IsOverdue { get; set; }
+    public string? Color { get; set; }
+    public MilestoneState State { get; set; }
+    public DateTimeOffset? StartDate { get; set; }
+    public string? ExternalId { get; set; }
+    public string? ExternalSystemName { get; set; }
+    public long? ExternalSystemId { get; set; }
+    public string? ProjectSlug { get; set; }
 }

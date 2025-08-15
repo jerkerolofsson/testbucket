@@ -41,7 +41,10 @@ internal class MilestoneRepository : IMilestoneRepository
     public async Task<IReadOnlyList<Milestone>> GetMilestonesAsync(IEnumerable<FilterSpecification<Milestone>> filters)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-        var milestones = dbContext.Milestones.AsNoTracking().AsQueryable();
+        var milestones = dbContext.Milestones.AsNoTracking()
+            .Include(x=>x.TestProject)
+            .AsSingleQuery()
+            .AsQueryable();
         foreach(var filter in filters)
         {
             milestones = milestones.Where(filter.Expression);

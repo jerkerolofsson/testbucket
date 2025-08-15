@@ -26,12 +26,36 @@ public class MilstonesMcpTools : AuthenticatedTool
         _manager = manager;
     }
 
+    public class MilestoneMcpDto
+    {
+        public required string Title { get; set; }
+        public string? Description { get; set; }
+        public DateTimeOffset? DueDate { get; set; }
+        public long Id { get; set; }
+
+        /// <summary>
+        /// True if this is the next milestone
+        /// </summary>
+        public bool IsNext { get; set; }
+
+        /// <summary>
+        /// True if the milestone is open, i.e. not completed
+        /// </summary>
+        public bool IsOpen { get; set; }
+
+        /// <summary>
+        /// True if the due date is in the past
+        /// </summary>
+        public bool IsOverdue { get; set; }
+    }
+
+
     /// <summary>
     /// Returns the latest test results
     /// </summary>
     /// <returns></returns>
     [McpServerTool(Name = "list-milestones"), Description("Returns a list of all project milestones")]
-    public async Task<MilestoneDto[]> GetMilestonesAsync()
+    public async Task<MilestoneMcpDto[]> GetMilestonesAsync()
     {
         var isAuthenticated = await IsAuthenticatedAsync();
         if (isAuthenticated && _principal is not null)
@@ -40,7 +64,7 @@ public class MilstonesMcpTools : AuthenticatedTool
             if (projectId is not null)
             {
                 var result = await _manager.GetMilestonesAsync(_principal, projectId.Value);
-                var dtos = result.Where(x=>x.Title != null).Select(x => new MilestoneDto 
+                var dtos = result.Where(x=>x.Title != null).Select(x => new MilestoneMcpDto
                 {
                     Title = x.Title ?? "",
                     Description = x.Description,

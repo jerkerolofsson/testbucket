@@ -14,13 +14,19 @@ public static class TestSuiteBackupExtensions
 
         options.Filter = (entity) =>
         {
-            if (entity is TestCase testCase && testCase.TestSuiteId == testSuite.Id)
+            if (principal.HasPermission(PermissionEntityType.TestCase, PermissionLevel.Read))
             {
-                return true;
+                if (entity is TestCase testCase && testCase.TestSuiteId == testSuite.Id)
+                {
+                    return true;
+                }
             }
-            if (entity is TestSuite entitySpec && entitySpec.Id == testSuite.Id)
+            if (principal.HasPermission(PermissionEntityType.TestSuite, PermissionLevel.Read))
             {
-                return true;
+                if (entity is TestSuite entitySpec && entitySpec.Id == testSuite.Id)
+                {
+                    return true;
+                }
             }
 
             return false;

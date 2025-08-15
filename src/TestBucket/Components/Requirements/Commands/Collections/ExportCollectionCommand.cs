@@ -14,11 +14,11 @@ internal class ExportCollectionCommand : ICommand
     public string Description => _loc.Requirements["export-collection-description"];
 
     public bool Enabled => _appNav.State.SelectedRequirementSpecification is not null;
-    public int SortOrder => 70;
+    public int SortOrder => 69;
     public string? Folder => null;
 
     public KeyboardBinding? DefaultKeyboardBinding => null;
-    public string? Icon => TbIcons.BoldDuoTone.Import;
+    public string? Icon => TbIcons.BoldDuoTone.Export;
     public string[] ContextMenuTypes => ["menu-requirements", "RequirementSpecification"];
     public PermissionEntityType? PermissionEntityType => Domain.Identity.Permissions.PermissionEntityType.RequirementSpecification;
     public PermissionLevel? RequiredLevel => PermissionLevel.Read;

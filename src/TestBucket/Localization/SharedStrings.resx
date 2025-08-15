@@ -232,10 +232,13 @@
     <value>Backup</value>
   </data>
   <data name="batch-tag" xml:space="preserve">
-    <value>Batch update..</value>
+    <value>Update selected tests..</value>
   </data>
   <data name="batch-tag-description" xml:space="preserve">
     <value>Link a requirement, or change a field for all descendants.</value>
+  </data>
+  <data name="batch-tag-requirements" xml:space="preserve">
+    <value>Update selected requirements..</value>
   </data>
   <data name="batch-updating-tests" xml:space="preserve">
     <value>Please wait. Updating tests..</value>
@@ -411,6 +414,9 @@
   </data>
   <data name="explorer" xml:space="preserve">
     <value>Explorer</value>
+  </data>
+  <data name="export" xml:space="preserve">
+    <value>Export</value>
   </data>
   <data name="export-test-suite" xml:space="preserve">
     <value>Export test suite</value>
@@ -680,6 +686,9 @@
   </data>
   <data name="number-of-tests" xml:space="preserve">
     <value>Tests</value>
+  </data>
+  <data name="number-of-test-suites" xml:space="preserve">
+    <value>Number of test suites</value>
   </data>
   <data name="open" xml:space="preserve">
     <value>Open</value>

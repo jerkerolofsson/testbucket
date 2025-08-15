@@ -232,10 +232,13 @@
     <value>备份</value>
   </data>
   <data name="batch-tag" xml:space="preserve">
-    <value>批处理更新..</value>
+    <value>更新选定的测试..</value>
   </data>
   <data name="batch-tag-description" xml:space="preserve">
     <value>链接要求，或更改所有后代的字段。</value>
+  </data>
+  <data name="batch-tag-requirements" xml:space="preserve">
+    <value>更新选定的要求。</value>
   </data>
   <data name="batch-updating-tests" xml:space="preserve">
     <value>请稍等。 更新测试..</value>
@@ -411,6 +414,9 @@
   </data>
   <data name="explorer" xml:space="preserve">
     <value>资源管理器</value>
+  </data>
+  <data name="export" xml:space="preserve">
+    <value>出口</value>
   </data>
   <data name="export-test-suite" xml:space="preserve">
     <value>出口测试套件</value>
@@ -680,6 +686,9 @@
   </data>
   <data name="number-of-tests" xml:space="preserve">
     <value>测试</value>
+  </data>
+  <data name="number-of-test-suites" xml:space="preserve">
+    <value>测试套件的数量</value>
   </data>
   <data name="open" xml:space="preserve">
     <value>打开</value>

@@ -12,7 +12,7 @@ namespace TestBucket.Formats.UnitTests.JUnit
     /// </summary>
     [UnitTest]
     [PerformanceTest()]
-    [Component("Test Result Formats")]
+    [Component("Test Formats")]
     [Feature("Import Test Results")]
     [EnrichedTest]
     [IncludeDiagnostics]

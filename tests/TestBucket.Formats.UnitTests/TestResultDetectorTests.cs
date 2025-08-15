@@ -8,7 +8,7 @@ namespace TestBucket.Formats.UnitTests
     /// Contains unit tests for the <see cref="TestResultDetector"/> class, verifying detection of various test result formats.
     /// </summary>
     [FunctionalTest]
-    [Component("Test Result Formats")]
+    [Component("Test Formats")]
     [Feature("Import Test Results")]
     [UnitTest]
     [EnrichedTest]

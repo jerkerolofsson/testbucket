@@ -6,6 +6,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+    <PropertyGroup>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <Description>Calculate local embeddings using Microsoft.SemanticKernel.Connectors.Onnx. This is based on SmartComponents.LocalEmbeddings</Description>
+        <Title>TestBucket.Embeddings</Title>
+        <Authors>Jerker Olofsson</Authors>
+        <Company>Jerker Olofsson</Company>
+        <PackageId>TestBucket.Embeddings</PackageId>
+        <WebPage>https://github.com/jerkerolofsson/testbucket</WebPage>
+        <Version>1.0.0</Version>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="Microsoft.SemanticKernel.Connectors.Onnx" Version="1.61.0-alpha" />
     </ItemGroup>

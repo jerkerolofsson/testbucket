@@ -22,6 +22,7 @@
     
   <ItemGroup>
     <ProjectReference Include="..\..\Core\TestBucket.Contracts\TestBucket.Contracts.csproj" />
+    <ProjectReference Include="..\..\Core\TestBucket.Embeddings\TestBucket.Embeddings.csproj" />
   </ItemGroup>
 
     <ItemGroup>

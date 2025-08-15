@@ -8,7 +8,7 @@ namespace TestBucket.Formats.UnitTests
     /// Contains unit tests for building and deserializing test result files in various formats.
     /// </summary>
     [FunctionalTest]
-    [Component("Test Result Formats")]
+    [Component("Test Formats")]
     [Feature("Import Test Results")]
     [UnitTest]
     [EnrichedTest]

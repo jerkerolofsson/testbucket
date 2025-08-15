@@ -7,7 +7,7 @@ namespace TestBucket.Formats.UnitTests
     /// Contains unit tests for the <see cref="ImportHandlingOptions"/> class.
     /// </summary>
     [FunctionalTest]
-    [Component("Test Result Formats")]
+    [Component("Test Formats")]
     [Feature("Import Test Results")]
     [UnitTest]
     [EnrichedTest]

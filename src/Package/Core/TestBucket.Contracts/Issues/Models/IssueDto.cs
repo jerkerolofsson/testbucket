@@ -85,6 +85,6 @@ public class IssueDto
     /// </summary>
     public string[]? Labels { get; set; }
     public string? AssignedTo { get; set; }
-    public TestTraitCollection Traits { get; set; }
+    public TestTraitCollection? Traits { get; set; }
     public string? ProjectSlug { get; set; }
 }

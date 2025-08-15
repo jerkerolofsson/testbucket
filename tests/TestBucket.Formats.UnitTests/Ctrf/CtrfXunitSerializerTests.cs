@@ -14,7 +14,7 @@ namespace TestBucket.Formats.UnitTests.Ctrf
     /// </summary>
     [UnitTest]
     [FunctionalTest]
-    [Component("Test Result Formats")]
+    [Component("Test Formats")]
     [Feature("Import Test Results")]
     [EnrichedTest]
     public class CtrfXunitSerializerTests

@@ -16,7 +16,7 @@ namespace TestBucket.Formats.UnitTests.Builders
     /// </summary>
     [UnitTest]
     [FunctionalTest]
-    [Component("Test Result Formats")]
+    [Component("Test Formats")]
     [Feature("Import Test Results")]
     [EnrichedTest]
     public class TestResultFileBuilderTests

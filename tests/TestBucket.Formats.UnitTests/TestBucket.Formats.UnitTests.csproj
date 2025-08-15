@@ -21,7 +21,10 @@
     <None Remove="XUnit\TestData\xunit-testid.xml" />
   </ItemGroup>
 
-  <ItemGroup>
+    <Import Project="..\..\src\Package\Core\TestBucket.Embeddings\build\TestBucket.Embeddings.targets" />
+
+
+    <ItemGroup>
     <EmbeddedResource Include="Ctrf\TestData\ctrf-summary.json" />
     <EmbeddedResource Include="Ctrf\TestData\ctrf-screenshot.json" />
     <EmbeddedResource Include="Ctrf\TestData\ctrf-attachment.json" />
@@ -67,7 +70,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Csv\TestData\Qcase.csv">
+    <None Update="Csv\TestData\qase.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Csv\TestData\TestRail.csv">
@@ -76,10 +79,6 @@
     <None Update="Zip\TestData\junit-no-testsuites.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Csv\TestData\" />
   </ItemGroup>
 
 </Project>

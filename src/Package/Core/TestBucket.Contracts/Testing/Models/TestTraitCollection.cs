@@ -145,6 +145,7 @@ namespace TestBucket.Formats.Dtos
         /// <summary>
         /// Commit attribute
         /// </summary>
+        [JsonIgnore]
         public string? Commit
         {
             get => GetAttribute(TraitType.Commit);
@@ -300,6 +301,16 @@ namespace TestBucket.Formats.Dtos
         {
             get => GetAttribute(TraitType.TestPriority);
             set => SetAttribute(TraitType.TestPriority, value);
+        }
+
+        /// <summary>
+        /// Q-Char / Quality Characteristic
+        /// </summary>
+        [JsonIgnore]
+        public string? QualityCharacteristic
+        {
+            get => GetAttribute(TraitType.QualityCharacteristic);
+            set => SetAttribute(TraitType.QualityCharacteristic, value);
         }
 
         #endregion Convenience trait access properties

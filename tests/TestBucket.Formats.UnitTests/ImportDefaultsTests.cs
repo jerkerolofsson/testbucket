@@ -12,7 +12,7 @@ namespace TestBucket.Formats.UnitTests
     /// Contains unit tests for the <see cref="ImportDefaults"/> class, specifically for the GetExternalId method.
     /// </summary>
     [FunctionalTest]
-    [Component("Test Result Formats")]
+    [Component("Test Formats")]
     [Feature("Import Test Results")]
     [UnitTest]
     [EnrichedTest]

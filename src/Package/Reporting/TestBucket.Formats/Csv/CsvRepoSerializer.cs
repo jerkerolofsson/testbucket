@@ -30,7 +30,7 @@ public class CsvRepoSerializer : ITestRepositorySerializer
         return result;
     }
 
-    private ValueTask ProcessRowAsync(RepositoryDeserializationContext context, TestRepositoryDto result, string[] row)
+    private async ValueTask ProcessRowAsync(RepositoryDeserializationContext context, TestRepositoryDto result, string[] row)
     {
         HashSet<string> suiteNames = ["suite"];
 
@@ -62,68 +62,12 @@ public class CsvRepoSerializer : ITestRepositorySerializer
             if (row.Length > header.Index)
             {
                 var value = row[header.Index];
-                if(string.IsNullOrWhiteSpace(value))
+                if (string.IsNullOrWhiteSpace(value))
                 {
                     continue;
                 }
 
-                switch (header.Item.ToLower())
-                {
-                    case "suite":
-                        testCase.TestSuiteName = value;
-                        break;
-                    case "tb_suite_slug":
-                        testCase.TestSuiteSlug = value;
-                        break;
-
-                    case "title":
-                    case "name":
-                    case "case":
-                        testCase.TestCaseName = value;
-                        break;
-                    case "slug":
-                        testCase.Slug = value;
-                        break;
-                    case "id":
-                    case "case id":
-                        testCase.ExternalDisplayId = value;
-                        break;
-                    case "path":
-                    case "folder":
-                    case "section hierarchy":
-                        testCase.Path = value;
-                        break;
-
-                    case "preconditions":
-                        testCase.Description += "\n\n## Pre-condition\n" + value;
-                        break;
-
-                    case "description":
-
-                        // If this is import from TestBucket format, keep the description as-is
-                        if (isTestBucketCsv)
-                        {
-                            testCase.Description = value;
-                        }
-                        else
-                        {
-                            testCase.Description += "## Description\n" + value;
-                        }
-                        break;
-
-                    case "postconditions":
-                        testCase.Description += "\n\n## Post-condition\n" + value;
-                        break;
-
-                    case "steps":
-                    case "steps_actions":
-                        testCase.Description += "\n\n## Steps\n" + value;
-                        break;
-                    case "steps_result":
-                    case "expected result":
-                        testCase.Description += "\n\n## Expected Result\n" + value;
-                        break;
-                }
+                await AssignValueToTestCaseAsync(isTestBucketCsv, testCase, header, value);
             }
         }
 
@@ -131,7 +75,98 @@ public class CsvRepoSerializer : ITestRepositorySerializer
         {
             result.TestCases.Add(testCase);
         }
-        return ValueTask.CompletedTask;
+    }
+
+    private static async Task AssignValueToTestCaseAsync(bool isTestBucketCsv, TestCaseDto testCase, (int Index, string Item) header, string value)
+    {
+        var headerKey = await HeaderTranslator.TranslateHeaderAsync(header.Item);
+
+        testCase.Traits ??= new();
+
+        switch (headerKey)
+        {
+            case "suite":
+                testCase.TestSuiteName = value;
+                break;
+
+            case "tb-slug":
+                testCase.Slug = value;
+                break;
+            case "tb-suite-slug":
+                testCase.TestSuiteSlug = value;
+                break;
+            case "tb-project-slug":
+                testCase.ProjectSlug = value;
+                break;
+
+            case "name":
+                testCase.TestCaseName = value;
+                break;
+            case "slug":
+                testCase.Slug = value;
+                break;
+            case "id":
+                testCase.ExternalDisplayId = value;
+                break;
+            case "path":
+                testCase.Path = value;
+                break;
+
+            case "preconditions":
+                testCase.Description += "\n\n## Pre-condition\n" + value;
+                break;
+
+            case "description":
+
+                // If this is import from TestBucket format, keep the description as-is
+                if (isTestBucketCsv)
+                {
+                    testCase.Description = value;
+                }
+                else
+                {
+                    testCase.Description += "## Description\n" + value;
+                }
+                break;
+
+            case "postconditions":
+                testCase.Description += "\n\n## Post-condition\n" + value;
+                break;
+
+            case "steps":
+                testCase.Description += "\n\n## Steps\n" + value;
+                break;
+            case "expected-results":
+                testCase.Description += "\n\n## Expected Result\n" + value;
+                break;
+
+            case "component":
+                testCase.Traits.Component = value;
+                break;
+            case "feature":
+                testCase.Traits.Feature = value;
+                break;
+            case "category":
+                testCase.Traits.TestCategory = value;
+                break;
+            case "priority":
+                testCase.Traits.TestPriority = value;
+                break;
+            case "quality-characteristic":
+                testCase.Traits.QualityCharacteristic = value;
+                break;
+
+            default:
+                // Add as a trait
+                testCase.Traits.Traits.Add(new TestTrait
+                {
+                    Value = value,
+                    Name = header.Item,
+                    Type = Traits.Core.TraitType.Custom,
+                    ExportType = TraitExportType.Static
+                });
+                break;
+        }
     }
 
     public ValueTask SerializeAsync(TestRepositoryDto source, Stream destination)
@@ -143,7 +178,7 @@ public class CsvRepoSerializer : ITestRepositorySerializer
         List<string> header = 
             [
             "id", 
-            "tb_slug", 
+            "tb-slug", 
             "title", 
             "path",
             "description",
@@ -152,9 +187,10 @@ public class CsvRepoSerializer : ITestRepositorySerializer
             "feature",
             "component",
             "priority",
+            "quality-characteristic",
 
             "suite", 
-            "tb_suite_slug"
+            "tb-suite-slug",
             ];
         foreach (var column in header)
         {
@@ -176,6 +212,7 @@ public class CsvRepoSerializer : ITestRepositorySerializer
             writer.WriteField(testCase.Traits?.Feature);
             writer.WriteField(testCase.Traits?.Component);
             writer.WriteField(testCase.Traits?.TestPriority);
+            writer.WriteField(testCase.Traits?.QualityCharacteristic);
 
             writer.WriteField(suite?.Name?.ToString());
             writer.WriteField(suite?.Slug?.ToString());

@@ -6,7 +6,7 @@ namespace TestBucket.Formats.UnitTests
     /// Tests for TestResultSerializerFactory
     /// </summary>
     [FunctionalTest]
-    [Component("Test Result Formats")]
+    [Component("Test Formats")]
     [Feature("Import Test Results")]
     [UnitTest]
     [EnrichedTest]

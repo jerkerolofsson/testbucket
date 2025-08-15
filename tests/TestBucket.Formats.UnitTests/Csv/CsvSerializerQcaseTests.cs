@@ -13,6 +13,9 @@ namespace TestBucket.Formats.UnitTests.Csv
     /// </summary>
     [UnitTest]
     [EnrichedTest]
+    [Component("Test Formats")]
+    [Feature("Import Tests")]
+    [FunctionalTest]
     public class CsvSerializerQcaseTests
     {
         /// <summary>
@@ -22,7 +25,7 @@ namespace TestBucket.Formats.UnitTests.Csv
         public async Task Deserialize_QcaseValidCsv_DescriptionContainsMarkdownHeader()
         {
             // Arrange
-            using var source = File.OpenRead("./Csv/TestData/Qcase.csv");
+            using var source = File.OpenRead("./Csv/TestData/qase.csv");
             var reader = new CsvRepoSerializer();
 
             // Act
@@ -39,7 +42,7 @@ namespace TestBucket.Formats.UnitTests.Csv
         public async Task Deserialize_QcaseValidCsv_DescriptionContainsMarkdownPreconditionHeader()
         {
             // Arrange
-            using var source = File.OpenRead("./Csv/TestData/Qcase.csv");
+            using var source = File.OpenRead("./Csv/TestData/qase.csv");
             var reader = new CsvRepoSerializer();
 
             // Act
@@ -56,13 +59,14 @@ namespace TestBucket.Formats.UnitTests.Csv
         public async Task Deserialize_QcaseValidCsvAndEmptyPrecondition_DescriptionDoesNotContainsMarkdownPreconditionHeader()
         {
             // Arrange
-            using var source = File.OpenRead("./Csv/TestData/Qcase.csv");
+            using var source = File.OpenRead("./Csv/TestData/qase.csv");
             var reader = new CsvRepoSerializer();
 
             // Act
             var repo = await reader.DeserializeAsync(source);
 
             // Assert
+            Assert.True(repo.TestCases.Count >= 1);
             Assert.DoesNotContain("## Pre-condition", repo.TestCases[1].Description);
         }
 
@@ -73,7 +77,7 @@ namespace TestBucket.Formats.UnitTests.Csv
         public async Task Deserialize_QcaseValidCsv_DescriptionContainsStepsResult()
         {
             // Arrange
-            using var source = File.OpenRead("./Csv/TestData/Qcase.csv");
+            using var source = File.OpenRead("./Csv/TestData/qase.csv");
             var reader = new CsvRepoSerializer();
 
             // Act
@@ -90,7 +94,7 @@ namespace TestBucket.Formats.UnitTests.Csv
         public async Task Deserialize_QcaseValidCsv_SuiteAndCaseCountCorrect()
         {
             // Arrange
-            using var source = File.OpenRead("./Csv/TestData/Qcase.csv");
+            using var source = File.OpenRead("./Csv/TestData/qase.csv");
             var reader = new CsvRepoSerializer();
 
             // Act

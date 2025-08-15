@@ -6,7 +6,7 @@ namespace TestBucket.Formats.UnitTests.NUnit
     /// NUnit tests
     /// </summary>
     [FunctionalTest]
-    [Component("Test Result Formats")]
+    [Component("Test Formats")]
     [Feature("Import Test Results")]
     public class NUnitSerializerTests
     {

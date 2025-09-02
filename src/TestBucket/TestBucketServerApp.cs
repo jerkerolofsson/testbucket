@@ -349,6 +349,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ICommand, NewSharedStepsCommand>();
         builder.Services.AddScoped<ICommand, DeleteTestCommand>();
         builder.Services.AddScoped<ICommand, RunTestCaseCommand>();
+        builder.Services.AddScoped<ICommand, EditAutomationPropertiesCommand>();
 
         // Test Case Run
 

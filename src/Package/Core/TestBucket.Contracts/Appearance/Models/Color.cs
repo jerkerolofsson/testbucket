@@ -642,10 +642,22 @@ public partial class ThemeColor : ISerializable, IEquatable<ThemeColor>, IParsab
 
     private static RGBA ParseStringHexToRgba(string value)
     {
+        if(HtmlColorNames.TryGetFromColorName(value, out var htmlColor))
+        {
+            value = htmlColor;
+        }
+
         if (value.StartsWith('#'))
         {
             value = value.Substring(1);
         }
+
+        // Default if invalid hex values
+        if (value.Any(x => !Char.IsAsciiHexDigit(x)))
+        {
+            throw new ArgumentException($"Invalid color: '{value}'");
+        }
+
         switch (value.Length)
         {
             case 3:
@@ -660,7 +672,7 @@ public partial class ThemeColor : ISerializable, IEquatable<ThemeColor>, IParsab
             case 8:
                 break;
             default:
-                throw new ArgumentException(@"Not a valid color.", nameof(value));
+                throw new ArgumentException($"Invalid color: '{value}'");
         }
         return new RGBA(GetByteFromValuePart(value, 0), GetByteFromValuePart(value, 2), GetByteFromValuePart(value, 4), GetByteFromValuePart(value, 6));
     }

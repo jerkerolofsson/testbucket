@@ -1,38 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using TestBucket.Contracts.Requirements;
+﻿using System.Text.Json;
 
 using TestBucket.Domain.Export.Models;
+using TestBucket.Formats.Dtos;
 
 namespace TestBucket.Domain.Export.Handlers.Requirements;
-public class RequirementSerialization
+public class TestSerialization
 {
-    public static async Task<RequirementEntityDto?> DeserializeAsync(ExportEntity exportedEntity)
-    {
-        if (exportedEntity.Type == "requirement-specification")
-        {
-            return await DeserializeSpecificationAsync(exportedEntity);
-        }
-        if (exportedEntity.Type == "requirement")
-        {
-            return await DeserializeRequirementAsync(exportedEntity);
-        }
-        return null;
-    }
-
-    public static async Task<RequirementDto?> DeserializeRequirementAsync(ExportEntity exportedEntity)
+    public static async Task<TestSuiteDto?> DeserializeTestSuiteAsync(ExportEntity exportedEntity)
     {
         using var stream = exportedEntity.Open();
-        return await JsonSerializer.DeserializeAsync<RequirementDto>(stream);
+        return await JsonSerializer.DeserializeAsync<TestSuiteDto>(stream);
     }
 
-    public static async Task<RequirementSpecificationDto?> DeserializeSpecificationAsync(ExportEntity exportedEntity)
+    public static async Task<TestCaseDto?> DeserializeTestCaseAsync(ExportEntity exportedEntity)
     {
         using var stream = exportedEntity.Open();
-        return await JsonSerializer.DeserializeAsync<RequirementSpecificationDto>(stream);
+        return await JsonSerializer.DeserializeAsync<TestCaseDto>(stream);
     }
 }

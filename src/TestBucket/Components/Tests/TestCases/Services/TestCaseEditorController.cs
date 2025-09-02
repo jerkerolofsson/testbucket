@@ -290,14 +290,18 @@ internal class TestCaseEditorController : TenantBaseService, IAsyncDisposable
        
     }
 
-    internal async ValueTask EditTestCaseAutomationLinkAsync(TestCase testCase)
+    internal async ValueTask EditTestCaseAutomationPropertiesAsync(TestCase testCase)
     {
         var parameters = new DialogParameters<EditTestCaseAutomationLinkDialog>
         {
             { x => x.TestCase, testCase },
         };
-        var dialog = await _dialogService.ShowAsync<EditTestCaseAutomationLinkDialog>(null, parameters);
+        var dialog = await _dialogService.ShowAsync<EditTestCaseAutomationLinkDialog>(null, parameters, DefaultBehaviors.DialogOptions);
         var result = await dialog.Result;
+        if(result?.Data is TestCase updatedTestCase)
+        {
+            await SaveTestCaseAsync(updatedTestCase);
+        }
     }
 
     internal async ValueTask AddTestCaseRunAsync(TestCaseRun testCaseRun)

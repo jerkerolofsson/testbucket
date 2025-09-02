@@ -1,7 +1,7 @@
-﻿@using FluentValidation
+﻿@attribute [Authorize()]
+@using FluentValidation
 @using FluentValidation.Results
 @using TestBucket.Domain.Testing.TestCases.Templates
-@attribute [Authorize()]
 @inject TestCaseEditorController testCaseEditorService
 @inject TestSuiteController testSuiteController
 @inject IStringLocalizer<SharedStrings> loc

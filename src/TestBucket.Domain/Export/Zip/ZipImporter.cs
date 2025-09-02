@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
+﻿using System.IO.Compression;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-using Microsoft.Extensions.AI;
-
-using TestBucket.Contracts.Projects;
 using TestBucket.Domain.Export.Models;
 
 namespace TestBucket.Domain.Export.Zip;
+
+/// <summary>
+/// Reads a zip file as an import source (.tbz)
+/// </summary>
 public class ZipImporter : IDataImporterSource
 {
     private readonly ZipArchive _zip;

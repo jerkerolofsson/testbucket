@@ -1,12 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 
-using TestBucket.Components.Shared;
-using TestBucket.Components.Tests.Controls;
-using TestBucket.Components.Tests.Services;
-using TestBucket.Components.Tests.TestCases.Controls;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Domain.Commands;
-using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 using TestBucket.Localization;
 

@@ -1,5 +1,6 @@
-﻿@attribute [Authorize(Roles = "ADMIN")]
+﻿@attribute [Authorize()]
 @inject TestCaseEditorController testCaseEditorService
+@inject IStringLocalizer<SharedStrings> loc
 
 @if (TestCase is not null)
 {
@@ -8,28 +9,48 @@
             <DialogContent>
                 <MudStack Spacing="1">
 
-                    <h1>Link by Test ID</h1>
-                    <Field>
+                    <Field Row>
+                        <FieldHeader>
+                            <div class="tb-fields-name-description-tight">
+                                <div>@loc["external-id"]</div>
+                                <FieldDescription>@loc["test-case-external-id-description"]</FieldDescription>
+                            </div>
+                        </FieldHeader>
+                        <MudSpacer />
+
                         <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@TestCase.ExternalId"></MudTextField>
                     </Field>
 
-                    <MudText>--- or ---</MudText>
+                    <Field Row>
+                        <FieldHeader>
+                            <div class="tb-fields-name-description-tight">
+                                <div>@loc["runner-language"]</div>
+                                <FieldDescription>@loc["runner-language-description"]</FieldDescription>
+                            </div>
+                        </FieldHeader>
+                        <MudSpacer />
+                        <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@TestCase.RunnerLanguage"></MudTextField>
+                    </Field>
 
-                    <h1>Link by Test Automation Attributes</h1>
-                    <Field>
+                    <Field Row>
                         <FieldHeader>Assembly name</FieldHeader>
+                        <MudSpacer />
+
                         <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@TestCase.AutomationAssembly"></MudTextField>
                     </Field>
-                    <Field>
+                    <Field Row>
                         <FieldHeader>Module name</FieldHeader>
+                        <MudSpacer />
                         <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@TestCase.Module"></MudTextField>
                     </Field>
-                    <Field>
+                    <Field Row>
                         <FieldHeader>Class name</FieldHeader>
+                        <MudSpacer />
                         <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@TestCase.ClassName"></MudTextField>
                     </Field>
-                    <Field>
+                    <Field Row>
                         <FieldHeader>Method</FieldHeader>
+                        <MudSpacer/>
                         <MudTextField AutoFocus="true" Variant="Variant.Outlined" T="string" @bind-Value="@TestCase.Method"></MudTextField>
                     </Field>
 
@@ -37,8 +58,8 @@
             </DialogContent>
 
             <DialogActions>
-                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">OK</MudButton>
-                <MudButton OnClick="Close">Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary">@loc["ok"]</MudButton>
+                <MudButton OnClick="Close">@loc["cancel"]</MudButton>
             </DialogActions>
         </MudDialog>
     </EditForm>

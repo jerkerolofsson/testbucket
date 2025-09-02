@@ -64,6 +64,8 @@ public static class TestCaseMapping
             Postconditions = item.Postconditions,
             TestSteps = item.Steps?.Select(s => s.ToDbo(item.Id)).ToList() ?? new List<TestStep>(),
             Comments = CommentSerializer.Deserialize(item.Comments),
+            RunnerLanguage = item.RunnerLanguage,
+
         };
         return dto;
     }
@@ -93,6 +95,7 @@ public static class TestCaseMapping
             Postconditions = item.Postconditions,
             Steps = item.TestSteps?.Select(s => s.ToDto()).ToList() ?? new List<TestStepDto>(),
             Comments = CommentSerializer.Serialize(item.Comments),
+            RunnerLanguage = item.RunnerLanguage,
 
         };
 

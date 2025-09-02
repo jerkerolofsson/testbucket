@@ -14,9 +14,16 @@
                 T="string" Variant="Variant.Outlined" Lines="20" AutoGrow/>
 
             <MudStack Row Style="width:100%;" Spacing="1" Class="pa-2">
-                <MudSpacer />
-                <MudButton OnClick="Validate" Color="Color.Primary" Variant="Variant.Outlined">@loc["validate"]</MudButton>
-                <MudButton OnClick="Apply" Color="Color.Primary" Variant="Variant.Filled">@loc["apply"]</MudButton>
+                @if(_loading)
+                {
+                    <MudProgressLinear Indeterminate Style="width: 100%"/>
+                }  
+                else
+                {
+                    <MudSpacer />
+                    <MudButton OnClick="Validate" Color="Color.Primary" Variant="Variant.Outlined">@loc["validate"]</MudButton>
+                    <MudButton OnClick="Apply" Color="Color.Primary" Variant="Variant.Filled">@loc["apply"]</MudButton>
+                }
             </MudStack>
         </div>
     </StartContent>
@@ -52,6 +59,8 @@
     private ProjectArchitectureModel? _model;
     private List<ArchitectureYamlValidationError> _errors = [];
 
+    private bool _loading = false;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -66,10 +75,20 @@
 
     private async Task Apply()
     {
-        Validate();
-        if (Project is not null && _model is not null)
+        _loading = true;
+        StateHasChanged();
+
+        try
         {
-            await controller.ImportProductArchitectureAsync(Project, _model);
+            Validate();
+            if (Project is not null && _model is not null)
+            {
+                await controller.ImportProductArchitectureAsync(Project, _model);
+            }
+        }
+        finally
+        {
+             _loading = false;
         }
     }
 

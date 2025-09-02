@@ -3,11 +3,7 @@
 
 using Microsoft.Extensions.Localization;
 
-using NGitLab.Models;
-
-using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRepository;
-using TestBucket.Domain.Testing.TestSuites;
 using TestBucket.Localization;
 
 namespace TestBucket.Components.Tests.TestRepository.Services;

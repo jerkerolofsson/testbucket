@@ -243,7 +243,7 @@ internal class TestBrowser : TenantBaseService
                 }
                 catch(Exception ex)
                 {
-                    await _dialogService.ShowMessageBox("Error", ex.Message);
+                    await _dialogService.ShowMessageBox(_loc["error"], ex.Message);
                 }
             }
         }

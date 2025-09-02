@@ -89,4 +89,5 @@ public class TestCaseDto
 
     public List<TestStepDto> Steps { get; set; } = [];
     public List<CommentDto>? Comments { get; set; }
+    public string? RunnerLanguage { get; set; }
 }

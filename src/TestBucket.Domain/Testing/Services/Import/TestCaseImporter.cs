@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Mediator;
+﻿using Mediator;
 
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Requirements.Import;
 using TestBucket.Domain.Teams;
 using TestBucket.Formats;
 using TestBucket.Formats.Csv;
@@ -43,6 +38,9 @@ internal class TestCaseImporter : ITestCaseImporter
         {
             case "text/csv":
                 serializer = new CsvRepoSerializer();
+                break;
+            case "application/zip":
+                serializer = new TestZipImporter();
                 break;
         }
 

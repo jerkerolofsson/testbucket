@@ -22,7 +22,7 @@ public class DefaultStates
                     Name = TestCaseStates.Draft,
                     MappedState = MappedTestState.Draft,
                     IsInitial = true,
-                    Color = "greenyellow",
+                    Color = "#ADFF2F",  // greenyellow
                     AllowedStates = [TestCaseStates.Ongoing, TestCaseStates.Completed]
                 },
                 new()
@@ -40,7 +40,7 @@ public class DefaultStates
                 },
                 new() 
                 {
-                    Color = "purple",
+                    Color = "#800080", // purple
                     Name = TestCaseStates.Completed, 
                     MappedState = MappedTestState.Completed, 
                     IsFinal = true, 

@@ -528,9 +528,42 @@ internal class ArchitectureManager : IArchitectureManager
         }
     }
 
+
+    public async Task UpdateFeatureAsync(ClaimsPrincipal principal, Feature feature)
+    {
+        principal.ThrowIfEntityTenantIsDifferent(feature);
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+
+        var existingFeature = await _repository.GetFeatureAsync(feature.Id);
+        if(existingFeature is null)
+        {
+            throw new ArgumentException("Item does not exist");
+        }
+        if(existingFeature.Name != feature.Name || existingFeature.Description != feature.Description || feature.Embedding is null)
+        {
+            await GenerateEmbeddingAsync(principal, feature);
+        }
+
+        feature.Modified = DateTimeOffset.UtcNow;
+        feature.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
+        await _repository.UpdateFeatureAsync(feature);
+
+        await OnFeatureUpdatedAsync(principal, existingFeature);
+    }
+
+    public async Task DeleteFeatureAsync(ClaimsPrincipal principal, Feature feature)
+    {
+        principal.ThrowIfEntityTenantIsDifferent(feature);
+        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Delete);
+        await _repository.DeleteFeatureAsync(feature.Id);
+    }
+
+
     private async Task ImportFeaturesAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+        List<Feature> addedOrUpdated = [];
+
         foreach (var feature in model.Features)
         {
             var existingFeature = await GetFeatureByNameAsync(principal, project.Id, feature.Key);
@@ -566,47 +599,33 @@ internal class ArchitectureManager : IArchitectureManager
 
                 await OnFeatureUpdatedAsync(principal, existingFeature);
             }
+
+            addedOrUpdated.Add(existingFeature);
         }
-    }
 
-    public async Task UpdateFeatureAsync(ClaimsPrincipal principal, Feature feature)
-    {
-        principal.ThrowIfEntityTenantIsDifferent(feature);
-        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
-
-        var existingFeature = await _repository.GetFeatureAsync(feature.Id);
-        if(existingFeature is null)
+        // Delete existing items that are not in the model
+        foreach (var feature in await GetFeaturesAsync(principal, project.Id))
         {
-            throw new ArgumentException("Item does not exist");
+            var exists = addedOrUpdated.Any(x => x.Id == feature.Id);
+            if (!exists)
+            {
+                await DeleteFeatureAsync(principal, feature);
+            }
         }
-        if(existingFeature.Name != feature.Name || existingFeature.Description != feature.Description || feature.Embedding is null)
-        {
-            await GenerateEmbeddingAsync(principal, feature);
-        }
-
-        feature.Modified = DateTimeOffset.UtcNow;
-        feature.ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity");
-        await _repository.UpdateFeatureAsync(feature);
-
-        await OnFeatureUpdatedAsync(principal, existingFeature);
-    }
-
-    public async Task DeleteFeatureAsync(ClaimsPrincipal principal, Feature feature)
-    {
-        principal.ThrowIfEntityTenantIsDifferent(feature);
-        principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Delete);
-        await _repository.DeleteFeatureAsync(feature.Id);
     }
 
     private async Task ImportLayersAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+
+        List<ArchitecturalLayer> addedOrUpdated = [];
+
         foreach (var layer in model.Layers)
         {
-            var existingFeature = await GetLayerByNameAsync(principal, project.Id, layer.Key);
-            if (existingFeature is null)
+            var existingLayer = await GetLayerByNameAsync(principal, project.Id, layer.Key);
+            if (existingLayer is null)
             {
-                existingFeature = new ArchitecturalLayer
+                existingLayer = new ArchitecturalLayer
                 {
                     TenantId = principal.GetTenantIdOrThrow(),
                     Name = layer.Key,
@@ -623,14 +642,26 @@ internal class ArchitectureManager : IArchitectureManager
                     CreatedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                     ModifiedBy = principal.Identity?.Name ?? throw new InvalidOperationException("Invalid identity"),
                 };
-                await GenerateEmbeddingAsync(principal,existingFeature);
-                await _repository.AddLayerAsync(existingFeature);
+                await GenerateEmbeddingAsync(principal,existingLayer);
+                await _repository.AddLayerAsync(existingLayer);
             }
             else
             {
-                await UpdateArchitecturalComponentAsync(principal, layer, existingFeature);
-                existingFeature.TestProjectId = project.Id;
-                await _repository.UpdateLayerAsync(existingFeature);
+                await UpdateArchitecturalComponentAsync(principal, layer, existingLayer);
+                existingLayer.TestProjectId = project.Id;
+                await _repository.UpdateLayerAsync(existingLayer);
+            }
+
+            addedOrUpdated.Add(existingLayer);
+        }
+
+        // Delete existing items that are not in the model
+        foreach (var layer in await GetLayersAsync(principal, project.Id))
+        {
+            var exists = addedOrUpdated.Any(x => x.Id == layer.Id);
+            if (!exists)
+            {
+                await DeleteLayerAsync(principal, layer);
             }
         }
     }
@@ -638,6 +669,9 @@ internal class ArchitectureManager : IArchitectureManager
     private async Task ImportComponentsAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+
+        List<Component> addedOrUpdated = [];
+
         foreach (var component in model.Components)
         {
             var existingComponent = await GetComponentByNameAsync(principal, project.Id, component.Key);
@@ -673,12 +707,26 @@ internal class ArchitectureManager : IArchitectureManager
 
                 await OnComponentUpdatedAsync(principal, existingComponent);
             }
+            addedOrUpdated.Add(existingComponent);
+        }
+
+        // Delete existing items that are not in the model
+        foreach (var component in await GetComponentsAsync(principal, project.Id))
+        {
+            var exists = addedOrUpdated.Any(x => x.Id == component.Id);
+            if (!exists)
+            {
+                await DeleteComponentAsync(principal, component);
+            }
         }
     }
 
     private async Task ImportSystemsAsync(ClaimsPrincipal principal, TestProject project, ProjectArchitectureModel model)
     {
         principal.ThrowIfNoPermission(PermissionEntityType.Architecture, PermissionLevel.Write);
+
+        List<ProductSystem> addedOrUpdated = [];
+
         foreach (var system in model.Systems)
         {
             var existingSystem = await GetSystemByNameAsync(principal, project.Id, system.Key);
@@ -709,6 +757,18 @@ internal class ArchitectureManager : IArchitectureManager
                 existingSystem.TestProjectId = project.Id;
 
                 await _repository.UpdateSystemAsync(existingSystem);
+            }
+
+            addedOrUpdated.Add(existingSystem);
+        }
+
+        // Delete existing items that are not in  the model
+        foreach(var system in await GetSystemsAsync(principal, project.Id))
+        {
+            var exists = addedOrUpdated.Any(x => x.Id == system.Id);
+            if(!exists)
+            {
+                await DeleteSystemAsync(principal, system);
             }
         }
     }

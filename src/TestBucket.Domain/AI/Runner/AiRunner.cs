@@ -280,7 +280,7 @@ internal class AiRunner : BackgroundService
         {
             var message = new StringBuilder();
 
-            if (string.IsNullOrEmpty(runnerResult.ErrorMessage))
+            if (!string.IsNullOrEmpty(runnerResult.ErrorMessage))
             {
                 message.AppendLine("# Error:");
                 message.AppendLine(runnerResult.ErrorMessage);
@@ -293,12 +293,12 @@ internal class AiRunner : BackgroundService
                 message.AppendLine();
 
             }
-            if (string.IsNullOrEmpty(runnerResult.StdOut))
+            if (!string.IsNullOrEmpty(runnerResult.StdOut))
             {
                 message.AppendLine(runnerResult.StdOut);
                 message.AppendLine();
             }
-            if (string.IsNullOrEmpty(runnerResult.StdErr))
+            if (!string.IsNullOrEmpty(runnerResult.StdErr))
             {
                 message.AppendLine("# Standard Error:");
                 message.AppendLine(runnerResult.StdErr);
@@ -326,10 +326,11 @@ internal class AiRunner : BackgroundService
             var fieldDefinitionManager = scope.ServiceProvider.GetRequiredService<IFieldDefinitionManager>();
             var fieldImporter = new TestCaseRunFieldImporter(principal, fieldManager, fieldDefinitionManager);
             await fieldImporter.ImportAsync(result, testCaseRun);
-
-            // Add additional artifacts as attachments
-            await SaveTestCaseRunArtifactsAsync(scope, testCaseRun, principal, runnerResult);
         }
+
+        // Add additional artifacts as attachments
+        await SaveTestCaseRunArtifactsAsync(scope, testCaseRun, principal, runnerResult);
+
         return true;
     }
 

@@ -20,7 +20,8 @@ namespace TestBucket.Runner.Shared
                 envVars[kvp.Key] = kvp.Value;
             }
 
-            return cmd.WithEnvironmentVariables((env) =>
+
+            return cmd.WithWorkingDirectory(script.WorkingDirectory).WithEnvironmentVariables((env) =>
             {
                 if (script.EnvironmentVariables is not null)
                 {

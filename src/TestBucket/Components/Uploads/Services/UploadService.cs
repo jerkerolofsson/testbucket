@@ -93,8 +93,6 @@ internal class UploadService : TenantBaseService
 
         await _fileResourceManager.AddResourceAsync(principal, resource);
 
-        //await _repo.AddResourceAsync(resource);
-
         return resource;
     }
 

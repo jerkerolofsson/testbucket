@@ -1,11 +1,5 @@
 ﻿using CliWrap;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using TestBucket.Runner.Shared;
 
 namespace TestBucket.Runner.Runners.Bash
@@ -30,7 +24,6 @@ namespace TestBucket.Runner.Runners.Bash
 
             try
             {
-
                 var result = await Cli.Wrap(tempFile)
                     .Enrich(script)
                     .LinkObserver(observer)

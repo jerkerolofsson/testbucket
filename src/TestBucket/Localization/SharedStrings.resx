@@ -334,6 +334,9 @@
   <data name="default-reviewers" xml:space="preserve">
     <value>Default reviewers</value>
   </data>
+  <data name="Defines the runner for automated tests when running within TB." xml:space="preserve">
+    <value>runner-language-description</value>
+  </data>
   <data name="delete" xml:space="preserve">
     <value>Delete</value>
   </data>
@@ -390,6 +393,9 @@
   </data>
   <data name="edit" xml:space="preserve">
     <value>Edit</value>
+  </data>
+  <data name="edit-automation-properties" xml:space="preserve">
+    <value>Edit automation properties</value>
   </data>
   <data name="edit-folder" xml:space="preserve">
     <value>Edit folder</value>
@@ -866,6 +872,9 @@
   <data name="runner" xml:space="preserve">
     <value>Runner</value>
   </data>
+  <data name="runner-language" xml:space="preserve">
+    <value>Runner language</value>
+  </data>
   <data name="runners" xml:space="preserve">
     <value>Runners</value>
   </data>
@@ -986,6 +995,9 @@
   </data>
   <data name="test-case" xml:space="preserve">
     <value>Test case</value>
+  </data>
+  <data name="test-case-external-id-description" xml:space="preserve">
+    <value>The external ID for test cases is used to map imported automated results to the correct test case</value>
   </data>
   <data name="test-case-run" xml:space="preserve">
     <value>Test result</value>
@@ -1138,17 +1150,5 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="welcome-message" xml:space="preserve">
     <value>Welcome to Test Bucket</value>
-  </data>
-  <data name="test-case-external-id-description" xml:space="preserve">
-    <value>The external ID for test cases is used to map imported automated results to the correct test case</value>
-  </data>
-  <data name="Defines the runner for automated tests when running within TB." xml:space="preserve">
-    <value>runner-language-description</value>
-  </data>
-  <data name="runner-language" xml:space="preserve">
-    <value>Runner language</value>
-  </data>
-  <data name="edit-automation-properties" xml:space="preserve">
-    <value>Edit automation properties</value>
   </data>
 </root>

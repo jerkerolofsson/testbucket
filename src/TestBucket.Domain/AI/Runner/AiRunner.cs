@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Text;
-using System.Text.Json;
 
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,18 +7,19 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using TestBucket.Contracts.Fields;
-using TestBucket.Contracts.Testing.Models;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Contracts.TestResources;
 using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.AI.Agent.Orchestration;
 using TestBucket.Domain.Automation.Helpers;
-using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Fields;
+using TestBucket.Domain.Files;
+using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Metrics;
 using TestBucket.Domain.Metrics.Models;
 using TestBucket.Domain.Projects;
+using TestBucket.Domain.Resources;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Tenants;
@@ -29,7 +29,8 @@ using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Services.Import;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.TestResources.Mapping;
-using TestBucket.Formats.Dtos;
+
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TestBucket.Domain.AI.Runner;
 internal class AiRunner : BackgroundService
@@ -261,25 +262,64 @@ internal class AiRunner : BackgroundService
     private async Task<bool> RunAutomatedTestAsync(IServiceScope scope, TestProject project, TestCaseRun testCaseRun, TestCase testCase, ClaimsPrincipal principal, TestExecutionContext testExecutionContext, CancellationToken cancellationToken)
     {
         var runnerResult = await AutomatedTestRunner.RunAsync(scope, testCaseRun, testCase, principal, testExecutionContext, cancellationToken);
+        testCaseRun.SystemErr = runnerResult.StdErr;
+        testCaseRun.SystemOut = runnerResult.StdOut;
+
+        // Set to null if empty
+        if (string.IsNullOrEmpty(runnerResult.StdOut))
+        {
+            runnerResult.StdOut = null;
+        }
+        if (string.IsNullOrEmpty(runnerResult.StdErr))
+        {
+            runnerResult.StdErr = null;
+        }
+
         var result = TestRunnerResultParser.ParseSingleResult(runnerResult.Result, runnerResult.Format);
         if (result is null)
         {
+            var message = new StringBuilder();
+
+            if (string.IsNullOrEmpty(runnerResult.ErrorMessage))
+            {
+                message.AppendLine("# Error:");
+                message.AppendLine(runnerResult.ErrorMessage);
+                message.AppendLine();
+            }
+            else if(!runnerResult.Success)
+            {
+                message.AppendLine("# Error:");
+                message.AppendLine("The test runner did not provide any error details");
+                message.AppendLine();
+
+            }
+            if (string.IsNullOrEmpty(runnerResult.StdOut))
+            {
+                message.AppendLine(runnerResult.StdOut);
+                message.AppendLine();
+            }
+            if (string.IsNullOrEmpty(runnerResult.StdErr))
+            {
+                message.AppendLine("# Standard Error:");
+                message.AppendLine(runnerResult.StdErr);
+                message.AppendLine();
+            }
+
             // No JUnitXML or similar was provided by the runner, so we judge the result based on the actual runner (this may be the exit code)
             if (!runnerResult.Success)
             {
-                var error = runnerResult.ErrorMessage ?? "No result from runner";
-                await OnTestCaseRunResultAsync(principal, scope, testCaseRun, error, TestResult.Failed, testExecutionContext);
+                await OnTestCaseRunResultAsync(principal, scope, testCaseRun, message.ToString(), TestResult.Failed, testExecutionContext);
             }
             else
             {
-
-                await OnTestCaseRunResultAsync(principal, scope, testCaseRun, runnerResult.StdOut ?? "", TestResult.Passed, testExecutionContext);
+                await OnTestCaseRunResultAsync(principal, scope, testCaseRun, message.ToString(), TestResult.Passed, testExecutionContext);
             }
         }
         else
         {
             // Set result
-            await OnTestCaseRunResultAsync(principal, scope, testCaseRun, result.Message ?? runnerResult.StdOut ?? "", result.Result ?? TestResult.Inconclusive, testExecutionContext);
+            var message = result.Message ?? runnerResult.StdOut ?? runnerResult.StdErr ?? "";
+            await OnTestCaseRunResultAsync(principal, scope, testCaseRun, message, result.Result ?? TestResult.Inconclusive, testExecutionContext);
 
             // Import Traits
             var fieldManager = scope.ServiceProvider.GetRequiredService<IFieldManager>();
@@ -287,15 +327,19 @@ internal class AiRunner : BackgroundService
             var fieldImporter = new TestCaseRunFieldImporter(principal, fieldManager, fieldDefinitionManager);
             await fieldImporter.ImportAsync(result, testCaseRun);
 
-            // Todo: Add additional artifacts as attachments
-            if(runnerResult.ArtifactContent is not null)
-            {
-                foreach(var artifact in runnerResult.ArtifactContent)
-                {
-                }
-            }
+            // Add additional artifacts as attachments
+            await SaveTestCaseRunArtifactsAsync(scope, testCaseRun, principal, runnerResult);
         }
         return true;
+    }
+
+    private static async Task SaveTestCaseRunArtifactsAsync(IServiceScope scope, TestCaseRun testCaseRun, ClaimsPrincipal principal, TestRunnerResult runnerResult)
+    {
+        IFileResourceManager fileResourceManager = scope.ServiceProvider.GetRequiredService<IFileResourceManager>();
+        if (runnerResult.ArtifactContent is not null)
+        {
+            await fileResourceManager.SaveArtifactsAsync(principal, testCaseRun, runnerResult.ArtifactContent);
+        }
     }
 
     private async Task RunManualTestCaseWithAiAsync(IServiceScope scope, TestProject project, TestCaseRun testCaseRun, TestCase testCase, ClaimsPrincipal principal, TestExecutionContext testExecutionContext, CancellationToken cancellationToken)

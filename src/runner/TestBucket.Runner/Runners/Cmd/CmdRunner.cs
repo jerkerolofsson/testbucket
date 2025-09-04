@@ -1,6 +1,5 @@
 ﻿using CliWrap;
 
-using TestBucket.Runner.Runners;
 using TestBucket.Runner.Shared;
 
 namespace TestBucket.Runner.Runners.Cmd

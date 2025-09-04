@@ -31,7 +31,7 @@ public interface ISettingsManager
 
     /// <summary>
     /// Gets a setting by name
-    /// </summary>
+    /// </summary>termin
     /// <param name="context"></param>
     /// <param name="name"></param>
     /// <returns></returns>
@@ -43,5 +43,5 @@ public interface ISettingsManager
     /// <param name="context"></param>
     /// <param name="searchPhrase"></param>
     /// <returns></returns>
-    List<SettingsLink> SearchLinks(SettingContext context, string searchPhrase);
+    List<SettingsLink> SearchLinks(SettingContext context, string? searchPhrase);
 }

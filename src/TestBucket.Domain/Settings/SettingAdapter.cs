@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Fields;
-using TestBucket.Domain.Settings.Models;
-
-namespace TestBucket.Domain.Settings
+﻿namespace TestBucket.Domain.Settings
 {
     public interface ISetting
     {

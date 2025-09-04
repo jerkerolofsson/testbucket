@@ -101,6 +101,7 @@ public class ImportTestsHandler : IRequestHandler<ImportTestsRequest>
         if (testCase is null)
         {
             testCase = TestCaseMapping.ToDbo(testDto);
+            testCase.Id = 0; // Ensure it's treated as new
             testCase.TestSuiteId = suite.Id;
             testCase.TestProjectId = request.Project.Id;
             testCase.TeamId = request.Team.Id;

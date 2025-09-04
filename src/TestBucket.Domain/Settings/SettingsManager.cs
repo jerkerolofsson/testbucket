@@ -100,7 +100,7 @@ namespace TestBucket.Domain.Settings
             return filtered.ToArray();
         }
 
-        public List<SettingsLink> SearchLinks(SettingContext context, string searchPhrase)
+        public List<SettingsLink> SearchLinks(SettingContext context, string? searchPhrase)
         {
             if(searchPhrase is null)
             {

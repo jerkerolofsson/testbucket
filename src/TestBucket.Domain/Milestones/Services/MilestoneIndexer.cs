@@ -61,8 +61,15 @@ internal class MilestoneIndexer : BackgroundService
                             {
                                 continue;
                             }
-                            // Todo: get by provider/ExternalId
-                            var existingMilestone = await milestoneManager.GetMilestoneByNameAsync(principal, project.Id, milestone.Title);
+
+                            // Try to get by external ID first..
+                            Milestone? existingMilestone = null;
+                            if (milestone.ExternalId is not null && milestone.ExternalSystemName is not null)
+                            {
+                                existingMilestone = await milestoneManager.GetMilestoneByExternalIdAsync(principal, project.Id, milestone.ExternalSystemName, milestone.ExternalId);
+                            }
+                            existingMilestone ??= await milestoneManager.GetMilestoneByNameAsync(principal, project.Id, milestone.Title);
+
                             if (existingMilestone is null)
                             {
                                 await milestoneManager.AddMilestoneAsync(principal, milestone);
@@ -72,6 +79,11 @@ internal class MilestoneIndexer : BackgroundService
                                 // Update the milestone
                                 existingMilestone.Description = milestone.Description;
                                 existingMilestone.EndDate = milestone.EndDate;
+                                existingMilestone.State = milestone.State;
+                                if(milestone.StartDate is not null)
+                                {
+                                    existingMilestone.StartDate = milestone.StartDate;
+                                }
                                 await milestoneManager.UpdateMilestoneAsync(principal, existingMilestone);
                             }
                         }
@@ -115,8 +127,9 @@ internal class MilestoneIndexer : BackgroundService
                                     Description = milestone.Description,
                                     EndDate = milestone.DueDate,
                                     TestProjectId = testProjectId,
-                                    ExternalSystemId = milestone.Id,
+                                    ExternalId = milestone.Id.ToString(),
                                     ExternalSystemName = integration.Provider,
+
                                 });
                             }
                         }

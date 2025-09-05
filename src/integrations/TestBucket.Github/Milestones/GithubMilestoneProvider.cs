@@ -33,7 +33,8 @@ internal class GithubMilestoneProvider : GithubIntegrationBaseClient, IExternalM
                 PageSize = 100,
                 StartPage = pageToFetch
             };
-            var milestones = await client.Issue.Milestone.GetAllForRepository(ownerProject.Owner, ownerProject.Project, options);
+            var request = new MilestoneRequest { State = ItemStateFilter.All };
+            var milestones = await client.Issue.Milestone.GetAllForRepository(ownerProject.Owner, ownerProject.Project, request, options);
             foreach (var milestone in milestones)
             {
                 if (milestone.UpdatedAt is null || 

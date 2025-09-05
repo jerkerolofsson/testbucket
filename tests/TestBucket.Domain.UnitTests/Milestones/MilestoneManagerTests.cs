@@ -303,5 +303,110 @@ namespace TestBucket.Domain.UnitTests.Milestones
                 await manager.SearchMilestonesAsync(principal, ProjectId, "Test", 0, 10));
         }
 
+        /// <summary>
+        /// Verifies that <see cref="MilestoneManager.GetMilestoneByExternalIdAsync"/> retrieves the correct milestone for a valid external ID.
+        /// </summary>
+        [Fact]
+        [FunctionalTest]
+        public async Task GetMilestoneByExternalIdAsync_ValidExternalId_ReturnsMilestone()
+        {
+            // Arrange
+            var manager = CreateSut();
+            var principal = CreateUserWithAllPermissions();
+            var milestone = new Milestone
+            {
+                TenantId = TenantId,
+                TestProjectId = ProjectId,
+                ExternalSystemName = "github",
+                ExternalId = "12345",
+                Title = "Milestone 1"
+            };
+            await manager.AddMilestoneAsync(principal, milestone);
+
+            // Act
+            var result = await manager.GetMilestoneByExternalIdAsync(principal, ProjectId, "github", "12345");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal("Milestone 1", result.Title);
+            Assert.Equal("12345", result.ExternalId);
+        }
+
+        /// <summary>
+        /// Verifies that <see cref="MilestoneManager.GetMilestoneByExternalIdAsync"/> returns null for an invalid external ID.
+        /// </summary>
+        [Fact]
+        [FunctionalTest]
+        public async Task GetMilestoneByExternalIdAsync_InvalidExternalId_ReturnsNull()
+        {
+            // Arrange
+            var manager = CreateSut();
+            var principal = CreateUserWithAllPermissions();
+            var milestone = new Milestone
+            {
+                TenantId = TenantId,
+                TestProjectId = ProjectId,
+                ExternalSystemName = "github",
+                ExternalId = "12345",
+                Title = "Milestone 1"
+            };
+            await manager.AddMilestoneAsync(principal, milestone);
+
+            // Act
+            var result = await manager.GetMilestoneByExternalIdAsync(principal, ProjectId, "github", "67890");
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        /// <summary>
+        /// Verifies that <see cref="MilestoneManager.GetMilestoneByExternalIdAsync"/> throws an UnauthorizedAccessException for insufficient permissions.
+        /// </summary>
+        [Fact]
+        [SecurityTest]
+        public async Task GetMilestoneByExternalIdAsync_InsufficientPermission_ThrowsUnauthorizedAccessException()
+        {
+            // Arrange
+            var manager = CreateSut();
+            var principal = CreateUserWithLimitedPermission(PermissionLevel.None); // No Read
+
+            // Act & Assert
+            await Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
+                await manager.GetMilestoneByExternalIdAsync(principal, ProjectId, "github", "12345"));
+        }
+
+        /// <summary>
+        /// Verifies that <see cref="MilestoneManager.GetMilestoneByExternalIdAsync"/> does not retrieve milestones from other tenants.
+        /// </summary>
+        [Fact]
+        [SecurityTest]
+        public async Task GetMilestoneByExternalIdAsync_DifferentTenant_NoAccess()
+        {
+            // Arrange
+            var manager = CreateSut();
+            var principalTenant1 = CreateUserWithAllPermissions();
+            var principalTenant2 = Impersonation.Impersonate(builder =>
+            {
+                builder.UserName = "user2";
+                builder.TenantId = "tenant2";
+                builder.AddAllPermissions();
+            });
+
+            var milestone = new Milestone
+            {
+                TenantId = TenantId,
+                TestProjectId = ProjectId,
+                ExternalSystemName = "github",
+                ExternalId = "12345",
+                Title = "Milestone 1"
+            };
+            await manager.AddMilestoneAsync(principalTenant1, milestone);
+
+            // Act
+            var result = await manager.GetMilestoneByExternalIdAsync(principalTenant2, ProjectId, "github", "12345");
+
+            // Assert
+            Assert.Null(result);
+        }
     }
 }

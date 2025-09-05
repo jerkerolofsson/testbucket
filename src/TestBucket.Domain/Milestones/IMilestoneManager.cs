@@ -7,6 +7,9 @@ namespace TestBucket.Domain.Milestones;
 /// </summary>
 public interface IMilestoneManager
 {
+    Task<Milestone?> GetMilestoneByExternalIdAsync(ClaimsPrincipal principal, long projectId, string systemName, string externalId);
+
+
     /// <summary>
     /// Returns a milestone by its name within a specific project.
     /// </summary>

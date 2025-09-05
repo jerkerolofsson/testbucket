@@ -195,6 +195,10 @@ div.mud-input-slot.mud-input-root:has(.tb-chip) {
     background-color: var(--mud-palette-primary-hover);
 }
 
+.mud-tab-panel {
+    height: 100%;
+}
+
 .mud-tab-slider.mud-tab-slider-horizontal  {
     background: var(--mud-palette-primary);
     height: 0px;
@@ -492,6 +496,10 @@ input:focus-visible {
    border: solid 1px var(--tb-palette-field-border);
    overflow-x: hidden;
    min-height: fit-content;
+}
+
+.mud-expand-panel-content .tb-field {
+    box-shadow: none;
 }
 
 .tb-field.fluent-validation-error {

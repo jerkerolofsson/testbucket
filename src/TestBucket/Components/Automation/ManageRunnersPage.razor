@@ -1,4 +1,4 @@
-﻿@attribute [Authorize(Roles = "ADMIN")]
+﻿@attribute [Authorize]
 @layout SettingsLayout
 @inject RunnersController controller
 @page "/{tenantId}/settings/ManageRunners"
@@ -27,6 +27,13 @@
                 <MudSpacer />
             </MudStack>
         </ToolBarContent>
+
+        <ColGroup>
+            <col />
+            <col />
+            <col style="width: 65px"/>
+        </ColGroup>
+
 
         <Columns>
 

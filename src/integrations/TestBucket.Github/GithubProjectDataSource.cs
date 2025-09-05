@@ -31,6 +31,7 @@ public class GithubProjectDataSource : GithubIntegrationBaseClient, IExternalPro
             switch (trait)
             {
                 case TraitType.Milestone:
+
                     var milestones = await client.Issue.Milestone.GetAllForRepository(ownerProject.Owner, ownerProject.Project);
                     return milestones.Select(x => new GenericVisualEntity { Title = x.Title, Description = x.Description }).ToArray();
 

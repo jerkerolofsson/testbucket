@@ -34,12 +34,12 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.3.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.8" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
-        <PackageReference Include="Microsoft.Extensions.AI" Version="9.7.1" />
-        <PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.7.1" />
+        <PackageReference Include="Microsoft.Extensions.AI" Version="9.8.0" />
+        <PackageReference Include="Microsoft.Extensions.AI.Abstractions" Version="9.8.0" />
         <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.7.1-preview.1.25365.4" />
-        <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.7" />
+        <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="9.0.8" />
         <PackageReference Include="Microsoft.SemanticKernel" Version="1.61.0" />
         <PackageReference Include="Microsoft.SemanticKernel.Agents.Core" Version="1.61.0" />
         <PackageReference Include="Microsoft.SemanticKernel.Agents.Magentic" Version="1.61.0-preview" />
@@ -55,20 +55,20 @@
         <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.12.0" />
         <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.12.0" />
 
-        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.7" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.8" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.7">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.8">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.8" />
         <PackageReference Include="PdfPig" Version="0.1.10" />
         <PackageReference Include="Pgvector" Version="0.3.2" />
         <PackageReference Include="Slugify.Core" Version="5.1.1" />
     </ItemGroup>
 
     <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.8" />
     <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 

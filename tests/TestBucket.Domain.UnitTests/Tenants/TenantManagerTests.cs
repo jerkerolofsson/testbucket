@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 
 using TestBucket.Contracts;
+using TestBucket.Domain.Errors;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Projects.Models;
 using TestBucket.Domain.Settings.Fakes;
@@ -41,6 +42,66 @@ public class TenantManagerTests
         var identity = new ClaimsIdentity();
         identity.AddClaim(new Claim(PermissionClaims.Permissions, PermissionClaimSerializer.Serialize(builder.Build())));
         return new ClaimsPrincipal(identity);
+    }
+
+    /// <summary>
+    /// Tests that <see cref="TenantManager.CreateAsync"/> returns an error when the tenant name is blank
+    /// </summary>
+    [Fact]
+    public async Task CreateAsync_ShouldReturnError_WhenTenantNameIsBlank()
+    {
+        // Arrange
+        var principal = CreatePrincipal();
+        var tenantManager = new TenantManager(new FakeProjectRepository(), new FakeTenantRepository(), _settingsProvider, TimeProvider.System);
+
+        // Act
+        var result = await tenantManager.CreateAsync(principal, "");
+
+        // Assert
+        Assert.True(result.IsT1);
+    }
+
+    /// <summary>
+    /// Tests that <see cref="TenantManager.CreateAsync"/> returns an error when the tenant name already exists.
+    /// </summary>
+    [Fact]
+    public async Task CreateAsync_ShouldReturnError_WhenTenantNameAlreadyExists()
+    {
+        // Arrange
+        var principal = CreatePrincipal();
+        var tenantName = "DuplicateTenant";
+        var tenantManager = new TenantManager(new FakeProjectRepository(), new FakeTenantRepository(), _settingsProvider, TimeProvider.System);
+
+        // Create the first tenant
+        await tenantManager.CreateAsync(principal, tenantName);
+
+        // Act
+        var result = await tenantManager.CreateAsync(principal, tenantName);
+
+        // Assert
+        Assert.True(result.IsT1);
+    }
+
+    /// <summary>
+    /// Tests that <see cref="TenantManager.CreateAsync"/> returns an error when the tenant slug already exists.
+    /// </summary>
+    [Fact]
+    public async Task CreateAsync_ShouldReturnError_WhenTenantSlugAlreadyExists()
+    {
+        // Arrange
+        var principal = CreatePrincipal();
+        var tenantName1 = "Tenant One";
+        var tenantName2 = "Tenant-One"; // Generates the same slug as "Tenant One"
+        var tenantManager = new TenantManager(new FakeProjectRepository(), new FakeTenantRepository(), _settingsProvider, TimeProvider.System);
+
+        // Create the first tenant
+        await tenantManager.CreateAsync(principal, tenantName1);
+
+        // Act
+        var result = await tenantManager.CreateAsync(principal, tenantName2);
+
+        // Assert
+        Assert.True(result.IsT1);
     }
 
     /// <summary>

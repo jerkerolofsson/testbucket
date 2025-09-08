@@ -165,6 +165,8 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                 foreach (var testIndex in runSuite.Tests.Index())
                 {
                     var test = testIndex.Item;
+                    var startTimestamp = Stopwatch.GetTimestamp();
+                    _logger.LogInformation("Importing result for {TestName}", test.Name);
                     await progress.ReportStatusAsync($"Importing {test.Name}", (testIndex.Index*100.0/(double)runSuite.Tests.Count));
 
                     // Get the existing case or create a new one
@@ -186,6 +188,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                         }
 
                         // Add traits to the test case
+                        _logger.LogInformation("Updating test case traits for {TestName}", test.Name);
                         foreach (var traitName in test.Traits.Select(x => x.Name))
                         {
                             // Get all traits for the specific name
@@ -193,10 +196,14 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                             await UpsertTestCaseTraitsAsync(principal, testCaseFieldDefinitions, testCase, traits);
                         }
 
+                        _logger.LogInformation("Creating test case run for {TestName}", test.Name);
                         TestCaseRun testCaseRun = await AddTestCaseRunAsync(principal, testRun, test, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRunFieldDefinitions, options);
 
+                        _logger.LogInformation("Updating requirements for {TestName}", test.Name);
                         await LinkWithRequirementsAsync(principal, testCase, test.Traits);
                         await AddMetricsAsync(principal, test, testCaseRun);
+
+                        _logger.LogInformation("Importing result for {TestName}, completed in {ElapsedMillis}ms", test.Name, (int)Stopwatch.GetElapsedTime(startTimestamp).TotalMicroseconds);
                     }
                 }
             }

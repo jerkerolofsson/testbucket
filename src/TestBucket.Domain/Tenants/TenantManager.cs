@@ -39,6 +39,11 @@ public class TenantManager : ITenantManager
         {
             return new AlreadyExistsError();
         }
+        var existingTenant = await _tenantRepository.GetTenantByIdAsync(tenantId);
+        if(existingTenant is not null)
+        {
+            return new AlreadyExistsError();
+        }
 
         var result = await _tenantRepository.CreateAsync(name, tenantId);
 

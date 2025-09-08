@@ -4,7 +4,7 @@ using TestBucket.Domain.Code;
 namespace TestBucket.Domain.UnitTests.Code;
 
 /// <summary>
-/// Unit tests for the <see cref="GlobMatcher"/> class, which is responsible for matching file paths against glob patterns.
+/// Unit tests for the GlobMatcher class, which is responsible for matching file paths against glob patterns.
 /// </summary>
 [Component("Code")]
 [UnitTest]

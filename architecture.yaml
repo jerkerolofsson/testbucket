@@ -178,6 +178,13 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket\Components\Code\**\*
+  Comments:
+    display: 
+    description: User comments
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Comments\**\*
   dothttp:
     display: 
     description: 'HTTP/API test framework. '
@@ -255,6 +262,13 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Data\Identity\**\*
+  Insights:
+    display: 
+    description: Metrics and visualization/charts
+    dev_lead: jerker.olofsson@hotmail.com
+    test_lead: jerker.olofsson@hotmail.com
+    paths:
+    - src\TestBucket.Domain\Insights\**\*.*
   Issues:
     display: 
     description: Issue handling (Bugs/Tickets)
@@ -390,6 +404,13 @@ components:
     test_lead: 
     paths:
     - src\TestBucket\Components\Search\**\*.*
+  Settings:
+    display: 
+    description: 
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src\TestBucket.Domain\Settings\**\*.*
   Settings Repository:
     display: 
     description: Database for settings and preferences
@@ -438,7 +459,7 @@ components:
     dev_lead: jerker.olofsson@hotmail.com
     test_lead: jerker.olofsson@hotmail.com
     paths:
-    - src\TestBucket.Domain\Tests\**\*
+    - src\TestBucket.Domain\Testing\**\*
   Testing UI:
     display: 
     description: >-
@@ -462,6 +483,13 @@ components:
     test_lead: jerker.olofsson@hotmail.com
     paths:
     - src\TestBucket.Data\Testing\**\*
+  Test Resources:
+    display: 
+    description: Handling of external resources, such as devices or services
+    dev_lead: 
+    test_lead: 
+    paths:
+    - src\TestBucket.Domain\TestResources\**\*.*
   Test Result Formats:
     display: 
     description: >-

@@ -6,7 +6,7 @@ using TestBucket.Domain.Projects;
 using TestBucket.Domain.Settings;
 using TestBucket.Domain.Tenants;
 
-namespace TestBucket.Domain.UnitTests.Tenant
+namespace TestBucket.Domain.UnitTests.Tenants
 {
     /// <summary>
     /// Unit tests for <see cref="TenantManager"/> permission enforcement.
@@ -27,7 +27,7 @@ namespace TestBucket.Domain.UnitTests.Tenant
         /// </summary>
         /// <returns>A <see cref="TenantManager"/> instance.</returns>
         private TenantManager CreateManager() =>
-            new TenantManager(_projectRepo, _tenantRepo, _settingsProvider);
+            new TenantManager(_projectRepo, _tenantRepo, _settingsProvider, TimeProvider.System);
 
         /// <summary>
         /// Creates a <see cref="ClaimsPrincipal"/> with optional permission configuration.

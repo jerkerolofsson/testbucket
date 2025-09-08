@@ -5,18 +5,25 @@ using TestBucket.Domain.Tenants.Models;
 namespace TestBucket.Domain.Tenants;
 public class TenantManager : ITenantManager
 {
+    public const string TenantNotFoundExceptionMessage = "Tenant not found";
+    public const string SymmetricKeyConfigurationError = "No symmetric key has been configured";
+    public const string JwtConfigurationError = "Invalid JWT configuration";
+    public const int CiCdAccessTokenExpiryDays = 365 * 5;
     private readonly IProjectRepository _projectRepository;
     private readonly ITenantRepository _tenantRepository;
     private readonly ISettingsProvider _settingsProvider;
+    private readonly TimeProvider _timeProvider;
 
     public TenantManager(
         IProjectRepository projectRepository,
-        ITenantRepository tenantRepository, 
-        ISettingsProvider settingsProvider)
+        ITenantRepository tenantRepository,
+        ISettingsProvider settingsProvider,
+        TimeProvider timeProvider)
     {
         _projectRepository = projectRepository;
         _tenantRepository = tenantRepository;
         _settingsProvider = settingsProvider;
+        _timeProvider = timeProvider;
     }
 
     public async Task<OneOf<Tenant, AlreadyExistsError>> CreateAsync(ClaimsPrincipal principal, string name)
@@ -81,24 +88,24 @@ public class TenantManager : ITenantManager
         var tenant = await _tenantRepository.GetTenantByIdAsync(tenantId);
         if (tenant is null)
         {
-            throw new ArgumentException("Tenant not found");
+            throw new ArgumentException(TenantNotFoundExceptionMessage);
         }
 
         var settings = await _settingsProvider.LoadGlobalSettingsAsync();
         if (string.IsNullOrEmpty(settings.SymmetricJwtKey))
         {
-            throw new InvalidDataException("No symmetric key has been configured");
+            throw new InvalidDataException(SymmetricKeyConfigurationError);
         }
         if (string.IsNullOrEmpty(settings.JwtIssuer))
         {
-            throw new InvalidDataException("No issuer has been configured");
+            throw new InvalidDataException(JwtConfigurationError);
         }
         if (string.IsNullOrEmpty(settings.JwtAudience))
         {
-            throw new InvalidDataException("No audience has been configured");
+            throw new InvalidDataException(JwtConfigurationError);
         }
 
-        var expires = DateTimeOffset.UtcNow.AddDays(365 * 5);
+        var expires = _timeProvider.GetUtcNow().AddDays(CiCdAccessTokenExpiryDays);
 
         var builder = new EntityPermissionBuilder();
         builder.Add(PermissionEntityType.Project, PermissionLevel.All);

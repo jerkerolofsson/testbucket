@@ -9,6 +9,7 @@ using TestBucket.Contracts.Issues.Types;
 using TestBucket.Contracts.Requirements.States;
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Contracts.Testing.States;
+using TestBucket.Domain.Automation.Artifact;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Errors;
 using TestBucket.Domain.Identity;
@@ -102,8 +103,8 @@ internal class ProjectController : TenantBaseService
             Provider = extension.SystemName,
             SupportedCapabilities = extension.SupportedCapabilities,
             EnabledCapabilities = extension.SupportedCapabilities,
-            TestResultsArtifactsPattern = "**/*xunit*.xml;**/*junit*.xml;**/*nunit*.xml;**/*test*.xml;**/*.trx;**/*.ctrf",
-            CoverageReportArtifactsPattern = "**/*coverage*.xml",
+            TestResultsArtifactsPattern = DefaultGlobPatterns.DefaultTestResultsArtifactsPattern,
+            CoverageReportArtifactsPattern = DefaultGlobPatterns.DefaultCoverageReportArtifactsPattern,
             BaseUrl = extension.DefaultBaseUrl
         };
 

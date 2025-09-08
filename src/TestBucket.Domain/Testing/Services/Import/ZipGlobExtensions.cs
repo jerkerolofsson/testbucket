@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 using DotNet.Globbing;
 
+using TestBucket.Domain.Code;
+
 namespace TestBucket.Domain.Testing.Services.Import
 {
     public static class ZipGlobExtensions
@@ -19,17 +21,11 @@ namespace TestBucket.Domain.Testing.Services.Import
         /// <returns></returns>
         public static IEnumerable<ZipArchiveEntry> GlobFind(this ZipArchive archive, string[] globPatterns)
         {
-            var globs = globPatterns.Select(globPatterns => Glob.Parse(globPatterns));    
-
             foreach (var zipEntry in archive.Entries)
             {
-                foreach (var glob in globs)
+                if(GLobMatcher.IsMatch(zipEntry.FullName, globPatterns))
                 {
-                    if (glob.IsMatch(zipEntry.FullName))
-                    {
-                        yield return zipEntry;
-                        break;
-                    }
+                    yield return zipEntry;
                 }
             }
         }

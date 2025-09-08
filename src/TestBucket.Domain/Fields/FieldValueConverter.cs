@@ -16,19 +16,28 @@ public static class FieldValueConverter
         {
             return false;
         }
-        fieldValue.StringValue = null;
-        fieldValue.DoubleValue = null;
-        fieldValue.LongValue = null;
+        if(fieldDefinition.Type != FieldType.String && fieldDefinition.Type != FieldType.StringArray) fieldValue.StringValue = null;
+        if (fieldDefinition.Type != FieldType.Double) fieldValue.DoubleValue = null;
+        if (fieldDefinition.Type != FieldType.Integer) fieldValue.LongValue = null;
+        if (fieldDefinition.Type != FieldType.Boolean) fieldValue.BooleanValue = null;
+        if (fieldDefinition.Type != FieldType.DateOnly) fieldValue.DateValue = null;
+        if (fieldDefinition.Type != FieldType.TimeSpan) fieldValue.TimeSpanValue = null;
+        if (fieldDefinition.Type != FieldType.DateTimeOffset) fieldValue.DateTimeOffsetValue = null;
         fieldValue.StringValuesList = null;
 
         switch (fieldDefinition.Type)
         {
             case FieldType.Boolean:
-                fieldValue.BooleanValue = values[0] == "true";
-                return true;
+                var booleanValue = values[0] == "true";
+                if (fieldValue.BooleanValue != booleanValue)
+                {
+                    fieldValue.BooleanValue = booleanValue;
+                    return true;
+                }
+                return false;
 
             case FieldType.Integer:
-                if (long.TryParse(values[0], out long longValue))
+                if (long.TryParse(values[0], out long longValue) && longValue != fieldValue.LongValue)
                 {
                     fieldValue.LongValue = longValue;
                     return true;
@@ -36,7 +45,7 @@ public static class FieldValueConverter
                 break;
 
             case FieldType.TimeSpan:
-                if (TimeSpan.TryParse(values[0], out var timespan))
+                if (TimeSpan.TryParse(values[0], out var timespan) && fieldValue.TimeSpanValue != timespan)
                 {
                     fieldValue.TimeSpanValue = timespan;
                     return true;
@@ -44,7 +53,7 @@ public static class FieldValueConverter
                 break;
 
             case FieldType.DateTimeOffset:
-                if (DateTimeOffset.TryParse(values[0], out var dateTimeOffset))
+                if (DateTimeOffset.TryParse(values[0], out var dateTimeOffset) && fieldValue.DateTimeOffsetValue != dateTimeOffset)
                 {
                     fieldValue.DateTimeOffsetValue = dateTimeOffset;
                     return true;
@@ -52,14 +61,14 @@ public static class FieldValueConverter
                 break;
 
             case FieldType.DateOnly:
-                if (DateOnly.TryParse(values[0], out var date))
+                if (DateOnly.TryParse(values[0], out var date) && fieldValue.DateValue != date)
                 {
                     fieldValue.DateValue = date;
                     return true;
                 }
                 break;
             case FieldType.Double:
-                if (double.TryParse(values[0], CultureInfo.InvariantCulture, out double doubleValue))
+                if (double.TryParse(values[0], CultureInfo.InvariantCulture, out double doubleValue) && fieldValue.DoubleValue != doubleValue)
                 {
                     fieldValue.DoubleValue = doubleValue;
                     return true;
@@ -73,8 +82,12 @@ public static class FieldValueConverter
 
             case FieldType.SingleSelection:
             case FieldType.String:
-                fieldValue.StringValue = values[0];
-                return true;
+                if (fieldValue.StringValue != values[0])
+                {
+                    fieldValue.StringValue = values[0];
+                    return true;
+                }
+                return false;
         }
 
         return false;

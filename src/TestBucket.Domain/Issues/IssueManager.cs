@@ -27,13 +27,18 @@ public class IssueManager : IIssueManager
     private readonly List<ILinkedIssueObserver> _observers = new();
     private readonly List<ILocalIssueObserver> _localObservers = new();
     private readonly ILogger<IssueManager> _logger;
+    private readonly TimeProvider _timeProvider;
 
-    public IssueManager(IIssueRepository repository, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager, ILogger<IssueManager> logger)
+    internal IReadOnlyList<ILocalIssueObserver> LocalIssueObservers => _localObservers;
+    internal IReadOnlyList<ILinkedIssueObserver> LinkedIssueObservers => _observers;
+
+    public IssueManager(IIssueRepository repository, IMediator mediator, IFieldDefinitionManager fieldDefinitionManager, ILogger<IssueManager> logger, TimeProvider timeProvider)
     {
         _repository = repository;
         _mediator = mediator;
         _fieldDefinitionManager = fieldDefinitionManager;
         _logger = logger;
+        _timeProvider = timeProvider;
     }
 
     /// <summary>
@@ -77,8 +82,8 @@ public class IssueManager : IIssueManager
             issue.MappedType = MappedIssueType.Issue;
         }
 
-        issue.Created = DateTimeOffset.UtcNow;
-        issue.Modified = DateTimeOffset.UtcNow;
+        issue.Created = _timeProvider.GetUtcNow();
+        issue.Modified = _timeProvider.GetUtcNow();
         issue.CreatedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         issue.Author ??= issue.CreatedBy;
         issue.ModifiedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
@@ -206,10 +211,10 @@ public class IssueManager : IIssueManager
 
         if (updatedIssue.Created == default)
         {
-            updatedIssue.Created = DateTimeOffset.UtcNow;
+            updatedIssue.Created = _timeProvider.GetUtcNow();
         }
         updatedIssue.CreatedBy ??= principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
-        updatedIssue.Modified = DateTimeOffset.UtcNow;
+        updatedIssue.Modified = _timeProvider.GetUtcNow();
         updatedIssue.ModifiedBy = principal.Identity?.Name ?? throw new ArgumentException("No user name in principal");
         updatedIssue.ClassificationRequired = true;
 

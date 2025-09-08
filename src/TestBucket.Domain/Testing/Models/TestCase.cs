@@ -5,10 +5,9 @@ namespace TestBucket.Domain.Testing.Models;
 
 [Table("testcases")]
 [Index(nameof(Created))]
-[Index(nameof(Name))]
+[Index(nameof(Name), nameof(Created))]
 [Index(nameof(TenantId), nameof(Slug))]
-[Index(nameof(TenantId), nameof(TestProjectId), nameof(ExternalId))]
-[Index(nameof(TenantId), nameof(TestProjectId), nameof(AutomationAssembly), nameof(ClassName), nameof(Module), nameof(Method))]
+[Index(nameof(TenantId), nameof(TestProjectId), nameof(ExternalId), nameof(Created))]
 public class TestCase : TestEntity
 {
     /// <summary>

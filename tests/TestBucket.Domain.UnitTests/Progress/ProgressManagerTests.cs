@@ -63,7 +63,7 @@ namespace TestBucket.Domain.UnitTests.Progress
 
             // Assert
             Assert.True(task.Completed);
-            Assert.Equal(1000, task.Percent);
+            Assert.Equal(100, task.Percent);
         }
     }
 

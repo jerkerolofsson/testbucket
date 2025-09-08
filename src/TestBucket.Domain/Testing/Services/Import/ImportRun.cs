@@ -188,7 +188,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                         }
 
                         // Add traits to the test case
-                        _logger.LogInformation("Updating test case traits for {TestName}", test.Name);
+                        _logger.LogInformation("Updating test case traits for {TestName}, {ElapsedMillis}ms", test.Name, (int)Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds);
                         foreach (var traitName in test.Traits.Select(x => x.Name))
                         {
                             // Get all traits for the specific name
@@ -196,14 +196,14 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                             await UpsertTestCaseTraitsAsync(principal, testCaseFieldDefinitions, testCase, traits);
                         }
 
-                        _logger.LogInformation("Creating test case run for {TestName}", test.Name);
+                        _logger.LogInformation("Creating test case run for {TestName}, {ElapsedMillis}ms", test.Name, (int)Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds);
                         TestCaseRun testCaseRun = await AddTestCaseRunAsync(principal, testRun, test, testCase, testCaseFieldDefinitions, testRunFieldDefinitions, testCaseRunFieldDefinitions, options);
 
-                        _logger.LogInformation("Updating requirements for {TestName}", test.Name);
+                        _logger.LogInformation("Updating requirements for {TestName}, {ElapsedMillis}ms", test.Name, (int)Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds);
                         await LinkWithRequirementsAsync(principal, testCase, test.Traits);
                         await AddMetricsAsync(principal, test, testCaseRun);
 
-                        _logger.LogInformation("Importing result for {TestName}, completed in {ElapsedMillis}ms", test.Name, (int)Stopwatch.GetElapsedTime(startTimestamp).TotalMicroseconds);
+                        _logger.LogInformation("Importing result for {TestName}, completed in {ElapsedMillis}ms", test.Name, (int)Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds);
                     }
                 }
             }

@@ -81,7 +81,6 @@ public class TenantManager : ITenantManager
         principal.ThrowIfNoPermission(PermissionEntityType.Tenant, PermissionLevel.Read);
         return await _tenantRepository.SearchAsync(query);
     }
-
   
     public async Task UpdateTenantCiCdKeyAsync(string tenantId)
     {

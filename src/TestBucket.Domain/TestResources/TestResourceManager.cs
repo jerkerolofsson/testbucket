@@ -73,6 +73,7 @@ internal class TestResourceManager : ITestResourceManager
     public async Task UpdateResourcesFromResourceServerAsync(ClaimsPrincipal principal, List<TestResourceDto> resources)
     {
         var tenantId = principal.GetTenantIdOrThrow();
+        principal.ThrowIfNoPermission(PermissionEntityType.TestResource, PermissionLevel.Write);
 
         var owners = resources.Select(x => x.Owner).Distinct();
 
@@ -86,7 +87,7 @@ internal class TestResourceManager : ITestResourceManager
 
             foreach(var resource in existingResources.Items)
             {
-                var updatedResource = resources.Where(x => x.ResourceId == resource.ResourceId).FirstOrDefault();
+                var updatedResource = resources.Where(x => x.ResourceId == resource.ResourceId && x.Owner == owner).FirstOrDefault();
                 if(updatedResource is null)
                 {
                     // Mark non existing resources as disabled
@@ -98,7 +99,7 @@ internal class TestResourceManager : ITestResourceManager
             // Process all new or updated resources
             foreach(var resource in resources)
             {
-                var existingResource = existingResources.Items.Where(x => x.ResourceId == resource.ResourceId).FirstOrDefault();
+                var existingResource = existingResources.Items.Where(x => x.ResourceId == resource.ResourceId && x.Owner == owner).FirstOrDefault();
 
                 var enabled = resource.Health == Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy;
                 if (existingResource is null)
@@ -129,6 +130,7 @@ internal class TestResourceManager : ITestResourceManager
                     existingResource.Manufacturer = resource.Manufacturer;
                     existingResource.Variables = resource.Variables;
                     existingResource.LastSeen = _timeProvider.GetUtcNow();
+                    existingResource.Name = resource.Name;
 
                     existingResource.Variables[TargetTraitNames.SutModel] = resource.Model ?? "";
                     existingResource.Variables[TargetTraitNames.SutManufacturer] = resource.Manufacturer ?? "";
@@ -138,9 +140,29 @@ internal class TestResourceManager : ITestResourceManager
         }
     }
 
+    /// <inheritdoc/>
     public async Task<TestResource?> GetByIdAsync(ClaimsPrincipal principal, long id)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestResource, PermissionLevel.Read);
         var tenantId = principal.GetTenantIdOrThrow();
         return await _repository.GetByIdAsync(tenantId, id);
+    }
+
+    /// <inheritdoc/>
+    public async Task<TestResource?> GetByResourceIdAsync(ClaimsPrincipal principal, string owner, string resourceId)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestResource, PermissionLevel.Read);
+        var tenantId = principal.GetTenantIdOrThrow();
+
+        FilterSpecification<TestResource>[] filters = [
+                       new FilterByTenant<TestResource>(principal.GetTenantIdOrThrow()),
+                new FindResourceByOwner(owner)
+                       ];
+        var existingResources = await _repository.SearchAsync(filters, 0, 1);
+        if(existingResources.Items.Length == 1)
+        {
+            return existingResources.Items[0];
+        }
+        return null;
     }
 }

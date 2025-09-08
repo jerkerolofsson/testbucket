@@ -1151,4 +1151,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="welcome-message" xml:space="preserve">
     <value>Welcome to Test Bucket</value>
   </data>
+  <data name="please-wait" xml:space="preserve">
+    <value>Please wait..</value>
+  </data>
+  <data name="creating-pipeline" xml:space="preserve">
+    <value>Creating pipeline..</value>
+  </data>
 </root>

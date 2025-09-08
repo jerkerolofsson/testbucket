@@ -4,8 +4,10 @@ using TestBucket.Components.Tests.Dialogs;
 using TestBucket.Components.Tests.TestCases.Models;
 using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Components.Tests.TestRuns.Dialogs;
+using TestBucket.Contracts.Localization;
 using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Environments;
+using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Shared;
 using TestBucket.Domain.Tenants;
@@ -24,12 +26,13 @@ internal class TestRunCreationController : TenantBaseService
     private readonly ITestCaseManager _testCaseManager;
     private readonly ITestSuiteManager _testSuiteManager;
     private readonly ITestRunManager _testRunManager;
+    private readonly IProgressManager _progressManager;
+    private readonly IAppLocalization _loc;
 
     private readonly IDialogService _dialogService;
     private readonly IMarkdownAutomationRunner _markdownAutomationRunner;
     private readonly ITestEnvironmentManager _testEnvironmentManager;
     private readonly IPipelineProjectManager _pipelineProjectManager;
-    private readonly ITenantManager _tenantManager;
     private readonly IMediator _mediator;
     private readonly ITestCompiler _compiler;
 
@@ -40,24 +43,26 @@ internal class TestRunCreationController : TenantBaseService
         ITestEnvironmentManager testEnvironmentManager,
         AppNavigationManager appNavigationManager,
         IPipelineProjectManager pipelineProjectManager,
-        ITenantManager tenantManager,
         IMediator mediator,
         ITestCompiler compiler,
         ITestCaseManager testCaseManager,
         ITestSuiteManager testSuiteManager,
-        ITestRunManager testRunManager) : base(authenticationStateProvider)
+        ITestRunManager testRunManager,
+        IProgressManager progressManager,
+        IAppLocalization loc) : base(authenticationStateProvider)
     {
         _dialogService = dialogService;
         _markdownAutomationRunner = markdownAutomationRunner;
         _testEnvironmentManager = testEnvironmentManager;
         _appNavigationManager = appNavigationManager;
         _pipelineProjectManager = pipelineProjectManager;
-        _tenantManager = tenantManager;
         _mediator = mediator;
         _compiler = compiler;
         _testCaseManager = testCaseManager;
         _testSuiteManager = testSuiteManager;
         _testRunManager = testRunManager;
+        _progressManager = progressManager;
+        _loc = loc;
     }
 
     public async Task<TestRun?> CreateTestRunAsync(TestSuite testSuite, SearchTestQuery query)
@@ -67,6 +72,8 @@ internal class TestRunCreationController : TenantBaseService
         var testRun = await CreateTestRunAsync(testSuite);
         if (testRun is not null)
         {
+            await using var progress = _progressManager.CreateProgressTask(_loc.Shared["please-wait"]);
+
             var testCaseList = new TestCaseList { Query = query };
 
             // Add all manual test cases
@@ -78,7 +85,7 @@ internal class TestRunCreationController : TenantBaseService
             // Start automation pipeline
             if (!string.IsNullOrEmpty(testRun.CiCdSystem))
             {
-                await StartAutomationAsync(testRun, testSuite.Variables, testSuite);
+                await StartAutomationAsync(testSuite, testRun, progress);
             }
         }
         return testRun;
@@ -91,19 +98,38 @@ internal class TestRunCreationController : TenantBaseService
         var testRun = await CreateTestRunAsync(testSuite);
         if (testRun is not null)
         {
+            await using var progress = _progressManager.CreateProgressTask(_loc.Shared["please-wait"]);
+
             // Add test cases
-            foreach(var testCaseId in testCaseIds)
+            foreach (var testCase in testCaseIds.Index())
             {
-                await AddTestCaseToRunAsync(testRun, testCaseId);
+                double progressPercent = testCase.Index * 90.0 / (double)testCaseIds.Length;
+                await progress.ReportStatusAsync(_loc.Shared["please-wait"], progressPercent);
+                await AddTestCaseToRunAsync(testRun, testCase.Item);
             }
 
             // Start automation pipeline
             if(startAutomation && !string.IsNullOrEmpty(testRun.CiCdSystem))
             {
-                await StartAutomationAsync(testRun, testSuite.Variables, testSuite);
+                await StartAutomationAsync(testSuite, testRun, progress);
             }
         }
         return testRun;
+    }
+
+    private async Task StartAutomationAsync(TestSuite testSuite, TestRun testRun, ProgressTask progress)
+    {
+        try
+        {
+            await progress.ReportStatusAsync(_loc.Shared["creating-pipeline"], 90);
+            await StartAutomationAsync(testRun, testSuite.Variables, testSuite);
+        }
+        catch (Exception ex)
+        {
+            await progress.ReportStatusAsync(ex.Message, 90);
+            await Task.Delay(5000); // Let the user see the error
+            throw;
+        }
     }
 
     /// <summary>

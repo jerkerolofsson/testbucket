@@ -146,6 +146,7 @@ internal class GithubWorkflowRunner : GithubIntegrationBaseClient, IExternalPipe
         {
             foreach (var artifact in artifacts.Artifacts)
             {
+                _logger.LogInformation("Downloading Github artifact {ArtifactName}..", artifact.Name);
                 using var sourceStream = await client.Actions.Artifacts.DownloadArtifact(ownerProject.Owner, ownerProject.Project, artifact.Id, "zip");
                 using var artifactZip = new ZipArchive(sourceStream, ZipArchiveMode.Read);
                 foreach (var srcEntry in artifactZip.Entries)

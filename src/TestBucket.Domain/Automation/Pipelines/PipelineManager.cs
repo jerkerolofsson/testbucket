@@ -384,6 +384,7 @@ internal class PipelineManager : IPipelineManager
                 if (job.HasArtifacts && job.CiCdJobIdentifier is not null && pipeline.CiCdPipelineIdentifier is not null)
                 {
                     // Add as attachments to the test case
+                    _logger.LogInformation("Downloading pipeline artifacts (as zip) for job {CiCdJobIdentifier}", job.CiCdJobIdentifier);
                     try
                     {
                         var bytes = await configuredRunner.Service.GetArtifactsZipAsByteArrayAsync(configuredRunner.Config,

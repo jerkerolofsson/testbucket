@@ -1,27 +1,18 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
+﻿using OneOf;
 
-using OneOf;
-
-using TestBucket.Components.Shared;
-using TestBucket.Contracts;
 using TestBucket.Domain.Errors;
-using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Tenants;
-using TestBucket.Domain.Tenants.Models;
 
 namespace TestBucket.Components.Tenants;
 
 internal class TenantController : SuperAdminGuard
 {
-    private readonly ITenantRepository _repository;
     private readonly ITenantManager _tenantManager;
 
     public TenantController(
-        ITenantRepository repository,
         ITenantManager tenantManager,
         AuthenticationStateProvider authenticationStateProvider) : base(authenticationStateProvider)
     {
-        _repository = repository;
         _tenantManager = tenantManager;
     }
 

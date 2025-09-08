@@ -54,4 +54,13 @@ public interface ITestResourceManager
     /// <param name="resources"></param>
     /// <returns></returns>
     Task UpdateResourcesFromResourceServerAsync(ClaimsPrincipal principal, List<TestResourceDto> resources);
+
+    /// <summary>
+    /// Returns a resource by the external owner and the owner-specific resource id
+    /// </summary>
+    /// <param name="principal"></param>
+    /// <param name="owner"></param>
+    /// <param name="resourceId"></param>
+    /// <returns></returns>
+    Task<TestResource?> GetByResourceIdAsync(ClaimsPrincipal principal, string owner, string resourceId);
 }

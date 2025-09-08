@@ -13,6 +13,10 @@ public class ProgressTask : IAsyncDisposable
     public string Title { get; private set; }
     public string Status { get; private set; }
     public bool Completed { get; private set; } = false;
+
+    /// <summary>
+    /// Percent complete, from 0 to 100
+    /// </summary>
     public double Percent { get; private set; } = 0;
 
     internal ProgressTask(string title, ProgressManager progressManager)
@@ -34,6 +38,12 @@ public class ProgressTask : IAsyncDisposable
     /// </summary>
     public CancellationToken CancellationToken => _cts.Token;
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="status"></param>
+    /// <param name="percent">0.0-100.0</param>
+    /// <returns></returns>
     public async Task ReportStatusAsync(string status, double percent)
     {
         this.Status = status;
@@ -44,7 +54,7 @@ public class ProgressTask : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         _cts.Dispose();
-        this.Percent = 1000;
+        this.Percent = 100;
         this.Completed = true;
         await _progressManager.NotifyAsync(this);
     }

@@ -1,14 +1,9 @@
-﻿using System.Diagnostics;
-
-using TestBucket.Components.Tests.Dialogs;
-using TestBucket.Components.Tests.TestCases.Services;
+﻿using TestBucket.Components.Tests.TestCases.Services;
 using TestBucket.Components.Tests.TestRuns.Dialogs;
 using TestBucket.Components.Tests.TestRuns.ViewModels;
 using TestBucket.Contracts.Testing.States;
 using TestBucket.Domain.Identity;
-using TestBucket.Domain.Shared;
-using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Testing.Specifications.TestCases;
+using TestBucket.Domain.Progress;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Search;
 

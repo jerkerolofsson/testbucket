@@ -36,12 +36,6 @@ namespace TestBucket.Domain.Automation.Artifact
                 return;
             }
 
-            if (string.IsNullOrEmpty(notification.TestResultsArtifactsPattern))
-            {
-                // If no pattern was defined, we cannot do anything
-                _logger.LogDebug("[CI_CD_AUTO] glob-pattern for test results is not set in JobArtifactDownloaded notification");
-                return;
-            }
             try
             {
                 await ScanZipAsync(notification, cancellationToken);
@@ -65,13 +59,28 @@ namespace TestBucket.Domain.Automation.Artifact
 
             if (notification.TestResultsArtifactsPattern is not null)
             {
-                await ScanForTestResultsInZipAsync(notification, files, principal, zip, cancellationToken);
+                try
+                {
+                    await ScanForTestResultsInZipAsync(notification, files, principal, zip, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to scan test results from artifact zip");
+                }
             }
             if (notification.CoverageReportArtifactsPattern is not null)
             {
-                await ScanForCoverageReportsInZipAsync(notification, files, principal, zip, cancellationToken);
+                try 
+                {
+                    await ScanForCoverageReportsInZipAsync(notification, files, principal, zip, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Failed to scan coverage reports from artifact zip");
+                }
             }
         }
+
         private async Task ScanForCoverageReportsInZipAsync(JobArtifactDownloaded notification, IFileResourceManager files, ClaimsPrincipal principal, ZipArchive zip, CancellationToken cancellationToken)
         {
             var globPatterns = notification.CoverageReportArtifactsPattern!.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);

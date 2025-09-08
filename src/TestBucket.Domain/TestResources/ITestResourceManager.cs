@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 
 using TestBucket.Contracts.TestResources;
+using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.TestResources.Models;
 
 namespace TestBucket.Domain.TestResources;
@@ -63,4 +64,5 @@ public interface ITestResourceManager
     /// <param name="resourceId"></param>
     /// <returns></returns>
     Task<TestResource?> GetByResourceIdAsync(ClaimsPrincipal principal, string owner, string resourceId);
+    Task<PagedResult<TestResource>> SearchAsync(ClaimsPrincipal principal, FilterSpecification<TestResource>[] filters, int offset, int count);
 }

@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Mediator;
+﻿using Mediator;
 
 using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.TestResources.Models;
 using TestBucket.Domain.TestResources.Specifications;
 
@@ -19,14 +12,12 @@ namespace TestBucket.Domain.TestResources.Allocation;
 public class TestResourceDependencyAllocator
 {
     private readonly ITestResourceManager _testResourceManager;
-    private readonly ITestResourceRepository _resourceRepository;
     private readonly IMediator _mediator;
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
-    public TestResourceDependencyAllocator(ITestResourceManager testResourceManager, ITestResourceRepository resourceRepository, IMediator mediator)
+    public TestResourceDependencyAllocator(ITestResourceManager testResourceManager, IMediator mediator)
     {
         _testResourceManager = testResourceManager;
-        _resourceRepository = resourceRepository;
         _mediator = mediator;
     }
 
@@ -83,7 +74,7 @@ public class TestResourceDependencyAllocator
     {
         FilterSpecification<TestResource>[] filters = GetAllocationFilters(principal, resourceType);
 
-        var page = await _resourceRepository.SearchAsync(filters, 0, 1);
+        var page = await _testResourceManager.SearchAsync(principal, filters, 0, 1);
         if (page.Items.Length > 0)
         {
             return page.Items[0];
@@ -93,6 +84,9 @@ public class TestResourceDependencyAllocator
 
     internal static FilterSpecification<TestResource>[] GetAllocationFilters(ClaimsPrincipal principal, string resourceType)
     {
+        ArgumentNullException.ThrowIfNull(principal);
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(resourceType);
+
         return [
             new FindEnabledResource(),
             new FindUnlockedResource(),

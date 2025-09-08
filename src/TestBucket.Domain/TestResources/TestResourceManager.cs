@@ -165,4 +165,13 @@ internal class TestResourceManager : ITestResourceManager
         }
         return null;
     }
+
+    public async Task<PagedResult<TestResource>> SearchAsync(ClaimsPrincipal principal, FilterSpecification<TestResource>[] filters, int offset, int count)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestResource, PermissionLevel.Read);
+        var tenantId = principal.GetTenantIdOrThrow();
+
+        filters = [..filters, new FilterByTenant<TestResource>(tenantId)];
+        return await _repository.SearchAsync(filters, offset, count);
+    }
 }

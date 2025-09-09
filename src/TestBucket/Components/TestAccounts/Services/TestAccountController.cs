@@ -79,6 +79,16 @@ internal class TestAccountController : TenantBaseService
         }
     }
 
+    public async Task<PagedResult<TestAccount>> SearchAccountsAsync(string? text, int offset, int count)
+    {
+        var principal = await GetUserClaimsPrincipalAsync();
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return await _manager.BrowseAsync(principal, offset, count);
+        }
+        return await _manager.SearchAsync(principal, text, offset, count);
+    }
+
     public async Task<PagedResult<TestAccount>> GetAccountsAsync(int offset, int count)
     {
         var principal = await GetUserClaimsPrincipalAsync();

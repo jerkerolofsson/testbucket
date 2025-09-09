@@ -11,6 +11,7 @@ using TestBucket.Domain.TestResources;
 using TestBucket.Domain.TestResources.Events;
 using TestBucket.Domain.TestResources.Mapping;
 using TestBucket.Domain.TestResources.Models;
+using TestBucket.Domain.UnitTests.TestResources.Fakes;
 
 namespace TestBucket.Domain.UnitTests.TestResources;
 

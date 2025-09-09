@@ -1,5 +1,6 @@
 ﻿using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.TestAccounts.Models;
+using TestBucket.Domain.TestAccounts.Specifications;
 
 namespace TestBucket.Domain.TestAccounts;
 internal class TestAccountManager : ITestAccountManager
@@ -41,6 +42,17 @@ internal class TestAccountManager : ITestAccountManager
         principal.ThrowIfNoPermission(PermissionEntityType.TestAccount, PermissionLevel.Read);
 
         FilterSpecification<TestAccount>[] filters = [new FilterByTenant<TestAccount>(principal.GetTenantIdOrThrow())];
+        return await _repository.SearchAsync(filters, offset, count);
+    }
+    public async Task<PagedResult<TestAccount>> SearchAsync(ClaimsPrincipal principal, string text, int offset, int count)
+    {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestAccount, PermissionLevel.Read);
+
+        FilterSpecification<TestAccount>[] filters = [
+            new FilterByTenant<TestAccount>(principal.GetTenantIdOrThrow()),
+            new FindAccountBySearch(text)
+        ];
+
         return await _repository.SearchAsync(filters, offset, count);
     }
 

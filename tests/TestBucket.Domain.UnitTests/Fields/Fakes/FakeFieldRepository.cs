@@ -2,7 +2,7 @@
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 
-namespace TestBucket.Domain.UnitTests.Fakes.NewFolder;
+namespace TestBucket.Domain.UnitTests.Fakes;
 internal class FakeFieldRepository : IFieldRepository
 {
     private readonly List<FieldDefinition> _fieldDefinitions = new();
@@ -11,6 +11,8 @@ internal class FakeFieldRepository : IFieldRepository
     private readonly List<TestCaseField> _testCaseFields = new();
     private readonly List<TestCaseRunField> _testCaseRunFields = new();
     private readonly List<TestRunField> _testRunFields = new();
+
+    private long _idCounter = 0;
 
     public void Clear()
     {
@@ -24,6 +26,10 @@ internal class FakeFieldRepository : IFieldRepository
 
     public Task AddAsync(FieldDefinition fieldDefinition)
     {
+        if (fieldDefinition.Id == 0)
+        {
+            fieldDefinition.Id = _idCounter++;
+        }
         _fieldDefinitions.Add(fieldDefinition);
         return Task.CompletedTask;
     }

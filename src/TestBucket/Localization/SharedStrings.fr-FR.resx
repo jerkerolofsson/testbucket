@@ -1044,9 +1044,6 @@ Les variables sont définies dans un cas de test comme {{key}} et lors de l'exé
   <data name="test-resources" xml:space="preserve">
     <value>Tester les ressources</value>
   </data>
-  <data name="test-resources-description" xml:space="preserve">
-    <value>Dispositifs, services ou autres ressources accessibles à partir du seau de test. Ces ressources sont hébergées par des serveurs de ressources, ce qui leur permet un accès à distance.</value>
-  </data>
   <data name="test-result" xml:space="preserve">
     <value>Résultat</value>
   </data>

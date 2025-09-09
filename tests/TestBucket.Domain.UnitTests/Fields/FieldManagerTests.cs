@@ -6,7 +6,7 @@ using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Issues.Models;
-using TestBucket.Domain.UnitTests.Fakes.NewFolder;
+using TestBucket.Domain.UnitTests.Fakes;
 
 namespace TestBucket.Domain.UnitTests.Fields;
 

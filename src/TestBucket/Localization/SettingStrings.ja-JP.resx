@@ -454,7 +454,7 @@
   <data name="fields" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="fields-descriptions" type="System.Resources.ResXNullRef, System.Windows.Forms">
+  <data name="fields-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
 </root>

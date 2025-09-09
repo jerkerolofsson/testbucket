@@ -20,7 +20,7 @@ namespace TestBucket.Domain.UnitTests.TestAccounts
         [Fact]
         public void GetSubTypesForAccountType_ReturnsWifiSubTypes()
         {
-            var result = TestAccountTemplateHelper.GetSubTypesForAccountType(AccountTypes.Wifi);
+            var result = TestAccountTemplateHelper.GetSubTypesForAccountType(PrimaryAccountTypes.Wifi);
             Assert.Equal(WifiAccountSubTypes.All, result);
         }
 
@@ -30,7 +30,7 @@ namespace TestBucket.Domain.UnitTests.TestAccounts
         [Fact]
         public void GetSubTypesForAccountType_ReturnsEmailSubTypes()
         {
-            var result = TestAccountTemplateHelper.GetSubTypesForAccountType(AccountTypes.Email);
+            var result = TestAccountTemplateHelper.GetSubTypesForAccountType(PrimaryAccountTypes.Email);
             Assert.Equal(EmailAccountTypes.All, result);
         }
 
@@ -51,7 +51,7 @@ namespace TestBucket.Domain.UnitTests.TestAccounts
         public void GetFieldDefinitionsForAccount_WifiWpa2Psk_ReturnsSsidAndPassword()
         {
             var localizer = Substitute.For<IStringLocalizer>();
-            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, AccountTypes.Wifi, WifiAccountSubTypes.Wpa2Psk);
+            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, PrimaryAccountTypes.Wifi, WifiAccountSubTypes.Wpa2Psk);
             Assert.Contains(result, f => f.Name == "ssid" && f.Type == FieldType.String);
             Assert.Contains(result, f => f.Name == "password" && f.Type == FieldType.String);
             Assert.Equal(2, result.Length);
@@ -64,7 +64,7 @@ namespace TestBucket.Domain.UnitTests.TestAccounts
         public void GetFieldDefinitionsForAccount_WifiOpen_ReturnsOnlySsid()
         {
             var localizer = Substitute.For<IStringLocalizer>();
-            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, AccountTypes.Wifi, "open");
+            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, PrimaryAccountTypes.Wifi, "open");
             Assert.Contains(result, f => f.Name == "ssid" && f.Type == FieldType.String);
             Assert.DoesNotContain(result, f => f.Name == "password");
             Assert.Single(result);
@@ -77,7 +77,7 @@ namespace TestBucket.Domain.UnitTests.TestAccounts
         public void GetFieldDefinitionsForAccount_Server_ReturnsUsernameAndPassword()
         {
             var localizer = Substitute.For<IStringLocalizer>();
-            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, AccountTypes.Server, "");
+            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, PrimaryAccountTypes.Server, "");
             Assert.Contains(result, f => f.Name == "username" && f.Type == FieldType.String);
             Assert.Contains(result, f => f.Name == "password" && f.Type == FieldType.String);
             Assert.Equal(2, result.Length);
@@ -90,7 +90,7 @@ namespace TestBucket.Domain.UnitTests.TestAccounts
         public void GetFieldDefinitionsForAccount_EmailPop3_ReturnsAllPop3Fields()
         {
             var localizer = Substitute.For<IStringLocalizer>();
-            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, AccountTypes.Email, EmailAccountTypes.Pop3);
+            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, PrimaryAccountTypes.Email, EmailAccountTypes.Pop3);
             Assert.Contains(result, f => f.Name == "smtp_server");
             Assert.Contains(result, f => f.Name == "smtp_port");
             Assert.Contains(result, f => f.Name == "email");
@@ -106,7 +106,7 @@ namespace TestBucket.Domain.UnitTests.TestAccounts
         public void GetFieldDefinitionsForAccount_EmailImap_ReturnsAllImapFields()
         {
             var localizer = Substitute.For<IStringLocalizer>();
-            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, AccountTypes.Email, EmailAccountTypes.Imap);
+            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, PrimaryAccountTypes.Email, EmailAccountTypes.Imap);
             Assert.Contains(result, f => f.Name == "smtp_server");
             Assert.Contains(result, f => f.Name == "smtp_port");
             Assert.Contains(result, f => f.Name == "email");
@@ -122,10 +122,50 @@ namespace TestBucket.Domain.UnitTests.TestAccounts
         public void GetFieldDefinitionsForAccount_EmailOther_ReturnsEmailAndPassword()
         {
             var localizer = Substitute.For<IStringLocalizer>();
-            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, AccountTypes.Email, "other");
+            var result = TestAccountTemplateHelper.GetFieldDefinitionsForAccount(localizer, PrimaryAccountTypes.Email, "other");
             Assert.Contains(result, f => f.Name == "email");
             Assert.Contains(result, f => f.Name == "password");
             Assert.Equal(2, result.Length);
+        }
+
+        /// <summary>
+        /// Verifies that <see cref="TestAccountTemplateHelper.Types"/> returns all essential account types.
+        /// </summary>
+        [Fact]
+        public void Types_ReturnsEssetialAccountTypes()
+        {
+            var result = TestAccountTemplateHelper.Types;
+            var expectedTypes = new[]
+            {
+                "wifi",
+                "email",
+                "wechat",
+                "google",
+                "facebook",
+                "outlook",
+                "server"
+            };
+
+            foreach (var type in expectedTypes)
+            {
+                Assert.Contains(type, result);
+            }
+        }
+
+
+        /// <summary>
+        /// Verifies that <see cref="TestAccountTemplateHelper.Types"/> returns all primary account types.
+        /// </summary>
+        [Fact]
+        public void Types_ReturnsAllPrimaryAccountTypes()
+        {
+            var result = TestAccountTemplateHelper.Types;
+            var expectedTypes = PrimaryAccountTypes.All;
+
+            foreach (var type in expectedTypes)
+            {
+                Assert.Contains(type, result);
+            }
         }
     }
 }

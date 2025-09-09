@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestBucket.Domain.UnitTests.TestResources;
+namespace TestBucket.Domain.UnitTests.TestResources.Fakes;
 using System.Collections.Concurrent;
 
 using TestBucket.Contracts;

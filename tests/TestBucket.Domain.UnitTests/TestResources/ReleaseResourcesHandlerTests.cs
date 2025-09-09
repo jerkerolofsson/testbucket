@@ -1,8 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
+using TestBucket.Domain.TestAccounts.Allocation;
+using TestBucket.Domain.TestAccounts.Models;
 using TestBucket.Domain.TestResources.Allocation;
 using TestBucket.Domain.TestResources.Models;
+using TestBucket.Domain.UnitTests.TestAccounts.Fakes;
+using TestBucket.Domain.UnitTests.TestResources.Fakes;
 
 using Xunit;
 
@@ -82,5 +86,53 @@ public class ReleaseResourcesHandlerTests
 
         Assert.True(unchangedResource3!.Locked);
         Assert.Equal("owner2", unchangedResource3.LockOwner);
+    }
+
+    /// <summary>
+    /// Verifies that all resources are released when the number of locked resources are larger than a single page
+    /// </summary>
+    /// <returns></returns>
+    [Fact]
+    public async Task Handle_WithMoreResourcesThanASinglePage_AllResourcesReleased()
+    {
+        int lockedCount = 25;
+        string tenant1 = "tenant-1";
+        string lockOwner = "lock-owner123";
+
+        var repository = new FakeTestResourceRepository();
+
+        // Arrange
+        var lockedResources = Enumerable.Range(0, lockedCount).Select(i => new TestResource
+        {
+            Id = i + 1,
+            ResourceId = "123" + i,
+            Types = ["type"],
+            Name = $"TestResource{i}",
+            Owner = "owner1",
+            Locked = true,
+            LockOwner = lockOwner,
+            TenantId = tenant1
+        }).ToArray();
+
+        foreach (var respirce in lockedResources)
+        {
+            await repository.AddAsync(respirce);
+        }
+
+        var request = new ReleaseResourcesRequest(lockOwner, tenant1);
+        var handler = new ReleaseResourcesHandler(repository);
+
+        // Act
+        await handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        var resources = await repository.SearchAsync([], 0, lockedCount + 100);
+        Assert.Equal(lockedCount, resources.Items.Length);
+        foreach (var resource in resources.Items)
+        {
+            Assert.False(resource.Locked);
+            Assert.Null(resource.LockOwner);
+            Assert.Null(resource.LockExpires);
+        }
     }
 }

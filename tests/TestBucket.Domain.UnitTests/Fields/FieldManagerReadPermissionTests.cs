@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TestBucket.Domain.Fields;
 using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Permissions;
-using TestBucket.Domain.UnitTests.Fakes.NewFolder;
+using TestBucket.Domain.UnitTests.Fakes;
 
 namespace TestBucket.Domain.UnitTests.Fields;
 

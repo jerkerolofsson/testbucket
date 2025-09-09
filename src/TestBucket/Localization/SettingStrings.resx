@@ -453,7 +453,7 @@
   <data name="fields" xml:space="preserve">
     <value>Fields</value>
   </data>
-  <data name="fields-descriptions" xml:space="preserve">
+  <data name="fields-description" xml:space="preserve">
     <value>Add, edit or delete custom fields for tests, requirements, results, issues..</value>
   </data>
 </root>

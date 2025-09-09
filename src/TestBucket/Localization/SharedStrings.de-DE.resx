@@ -1044,9 +1044,6 @@ Variablen werden in einem Testfall als {{Key}} definiert und beim Ausführen ein
   <data name="test-resources" xml:space="preserve">
     <value>Testressourcen</value>
   </data>
-  <data name="test-resources-description" xml:space="preserve">
-    <value>Geräte, Dienste oder andere Ressourcen, die über den Test -Eimer zugänglich sind. Diese Ressourcen werden von Ressourcenservern gehostet, um den Remote -Zugriff auf sie zu ermöglichen.</value>
-  </data>
   <data name="test-result" xml:space="preserve">
     <value>Ergebnis</value>
   </data>

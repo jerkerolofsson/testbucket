@@ -1044,9 +1044,6 @@
   <data name="test-resources" xml:space="preserve">
     <value>测试资源</value>
   </data>
-  <data name="test-resources-description" xml:space="preserve">
-    <value>可以从测试桶中访问的设备，服务或其他资源。 这些资源由资源服务器托管，使远程访问能够访问它们。</value>
-  </data>
   <data name="test-result" xml:space="preserve">
     <value>结果</value>
   </data>

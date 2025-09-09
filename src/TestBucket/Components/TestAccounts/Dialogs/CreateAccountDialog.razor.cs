@@ -15,9 +15,6 @@ public partial class CreateAccountDialog
         Owner = "server"
     };
 
-    public bool ShowUsername => _account.Type == "email";
-    public bool ShowPassword => _account.Type is "email" or "wifi";
-
     private string?[] _subTypes = [];
     private FieldDefinition[] _fieldDefinitions = [];
     private readonly Dictionary<string, FieldValue> _fields = [];
@@ -39,7 +36,7 @@ public partial class CreateAccountDialog
 
     private Task<IEnumerable<string?>> SearchType(string value, CancellationToken token)
     {
-        string?[] types = AccountTypes.All;
+        string?[] types = TestAccountTemplateHelper.Types;
         if (string.IsNullOrEmpty(value))
             return Task.FromResult(types.AsEnumerable());
         return Task.FromResult(types.Where(x => x?.Contains(value, StringComparison.InvariantCultureIgnoreCase) == true));

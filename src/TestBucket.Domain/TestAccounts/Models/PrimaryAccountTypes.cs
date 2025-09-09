@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TestBucket.Domain.TestAccounts.Models;
-public class AccountTypes
+public class PrimaryAccountTypes
 {
     /// <summary>
     /// A wifi account

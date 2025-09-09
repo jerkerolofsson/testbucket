@@ -7,7 +7,7 @@ using TestBucket.Domain.Identity;
 using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
-using TestBucket.Domain.UnitTests.Fakes.NewFolder;
+using TestBucket.Domain.UnitTests.Fakes;
 
 namespace TestBucket.Domain.UnitTests.Fields;
 

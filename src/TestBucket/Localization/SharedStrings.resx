@@ -1044,7 +1044,7 @@ Variables are defined in a test case as {{Key}} and when running a test case the
     <value>Test resources</value>
   </data>
   <data name="test-resources-description" xml:space="preserve">
-    <value>Devices, services or other resources that are accessible from test bucket. These resources are hosted by resource servers, enabling remote access to them.</value>
+    <value>Devices, services or other resources that can be used for testing. These resources may be hosted by resource servers, enabling remote access to them. </value>
   </data>
   <data name="test-result" xml:space="preserve">
     <value>Result</value>

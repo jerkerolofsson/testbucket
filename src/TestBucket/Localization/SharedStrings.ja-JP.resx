@@ -1042,9 +1042,6 @@
   <data name="test-resources" xml:space="preserve">
     <value>テストリソース</value>
   </data>
-  <data name="test-resources-description" xml:space="preserve">
-    <value>テストバケットからアクセス可能なデバイス、サービス、またはその他のリソース。 これらのリソースは、リソースサーバーによってホストされており、リモートアクセスを可能にします。</value>
-  </data>
   <data name="test-result" xml:space="preserve">
     <value>結果</value>
   </data>

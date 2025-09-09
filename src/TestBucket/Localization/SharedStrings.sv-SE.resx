@@ -1039,9 +1039,6 @@
   <data name="test-resources" xml:space="preserve">
     <value>Testresurser</value>
   </data>
-  <data name="test-resources-description" xml:space="preserve">
-    <value>Enheter, tjänster eller andra resurser som är tillgängliga från testhink. Dessa resurser är värd av resursservrar, vilket möjliggör fjärråtkomst till dem.</value>
-  </data>
   <data name="test-result" xml:space="preserve">
     <value>Testresultat</value>
   </data>

@@ -1044,9 +1044,6 @@ As variáveis são definidas em um caso de teste como {{key}} e ao executar um c
   <data name="test-resources" xml:space="preserve">
     <value>Recursos de teste</value>
   </data>
-  <data name="test-resources-description" xml:space="preserve">
-    <value>Dispositivos, serviços ou outros recursos acessíveis a partir do balde de teste. Esses recursos são hospedados por servidores de recursos, permitindo o acesso remoto a eles.</value>
-  </data>
   <data name="test-result" xml:space="preserve">
     <value>Resultado</value>
   </data>

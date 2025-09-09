@@ -11,6 +11,7 @@
 @inject IStringLocalizer<SharedStrings> loc
 @inject IStringLocalizer<TestEnvironmentStrings> testEnvLoc
 @inject IStringLocalizer<ProjectStrings> projectLoc
+@inject IStringLocalizer<SettingStrings> settingsLoc
 
 @if (Project is not null)
 {
@@ -20,6 +21,8 @@
     <EditForm Model="@Project" OnValidSubmit="async () => await OnValidSubmitAsync()">
 
         <MudStack Class="pa-5">
+
+            <MudText Typo="Typo.h3" Class="pa-3">@Project.Name</MudText>
 
             <Field Row>
                 <FieldHeader>@projectLoc["name-of-the-project"]</FieldHeader>
@@ -33,18 +36,17 @@
             </Field>
 
             <Field Row>
-                <FieldHeader>@testEnvLoc["default-environment"]</FieldHeader>
+                <FieldHeader Icon="@TbIcons.BoldDuoTone.Leaf">@testEnvLoc["default-environment"]</FieldHeader>
                 <MudSpacer/>
                 <EnvironmentDropDown Project="Project"
                     Team="_team"
                     SelectedEnvironment="@_selectedEnvironment" SelectedEnvironmentChanged="OnDefaultEnvironmentChanged" EnableAdd EnableSettings/>
             </Field>
 
-
-            <FieldLink Icon="@TbIcons.BoldDuoTone.Field" Href="@projectFieldsUrl" HeaderText="Fields" Description="Manage custom fields and traits"/>
+            <FieldLink Icon="@TbIcons.BoldDuoTone.Field" Href="@projectFieldsUrl" HeaderText="@settingsLoc["fields"]" Description="@settingsLoc["fields-description"]" />
             <FieldLink Icon="@TbIcons.Filled.Extensions" Href="@projectIntegrationsUrl" HeaderText="@projectLoc["integrations"]" Description="@projectLoc["integrations-description"]" />
 
-            <MudText Typo="Typo.h3" Class="pa-3">Appearance</MudText>
+            <MudText Typo="Typo.h3" Class="pa-3">@settingsLoc["appearance"]</MudText>
             <Field>
                 <MudStack Row AlignItems="AlignItems.Start">
                     <FieldHeader>@projectLoc["project-icon"]</FieldHeader>
@@ -60,16 +62,17 @@
 
             <MudText Typo="Typo.h3" Class="pa-3">Access</MudText>
             <Field Row>
-                <FieldHeader>@loc["team"]</FieldHeader>
+                <FieldHeader Icon="@Icons.Material.Outlined.Groups">@loc["team"]</FieldHeader>
                 <MudSpacer/>
-                <TeamDropDown SelectedTeam="_team" SelectedTeamChanged="OnTeamChanged" />
+                @* <TeamDropDown SelectedTeam="_team" SelectedTeamChanged="OnTeamChanged" /> *@
+                @_team?.Name
             </Field>
 
-            <Field Row>
+          @*   <Field Row>
                 <FieldHeader>Grant access to all users</FieldHeader>
                 <MudSpacer/>
                 <MudSwitchM3 T="bool" @bind-Value="@Project.GrantAccessToAllTenantUsers"/>
-            </Field>
+            </Field> *@
 
             <Field Row Spacing="3">
 

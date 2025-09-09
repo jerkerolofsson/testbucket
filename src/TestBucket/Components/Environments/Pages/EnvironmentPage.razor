@@ -26,18 +26,13 @@
             <MudTextField Variant="Variant.Outlined" T="string" Value="@_selectedEnvironment.Description" ValueChanged="OnDescriptionChangedAsync"></MudTextField>
         </Field>
 
-        <Field>
-            <EnvironmentVariableEditor Variables="@_environmentVariables" VariablesChanged="OnEnvironmentVariablesChangedAsync">
-                <ToolbarTitle>
-                    <MudIcon Icon="@Icons.Material.Filled.Abc" Size="Size.Large" Color="Color.Tertiary" />
-                    <MudText Typo="Typo.h2">@loc["variables"]</MudText>
-                </ToolbarTitle>
-            </EnvironmentVariableEditor>
-        </Field>
+        <EnvironmentVariableEditor Variables="@_environmentVariables" VariablesChanged="OnEnvironmentVariablesChangedAsync">
+            <ToolbarTitle>
+                <MudText Typo="Typo.h2">@loc["variables"]</MudText>
+            </ToolbarTitle>
+        </EnvironmentVariableEditor>
 
-        <Field>
-            <DependencyEditor Dependencies="@_dependencies" DependenciesChanged="OnDependenciesChangedAsync"/>
-        </Field>
+        <DependencyEditor Dependencies="@_dependencies" DependenciesChanged="OnDependenciesChangedAsync"/>
     }
 
 </MudStack>

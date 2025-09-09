@@ -1,6 +1,7 @@
 ﻿using Mediator;
 
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.TestAccounts.Allocation;
 using TestBucket.Domain.TestResources.Models;
 using TestBucket.Domain.TestResources.Specifications;
 
@@ -26,6 +27,8 @@ public class TestResourceDependencyAllocator
         TestExecutionContext context,
         CancellationToken cancellationToken = default)
     {
+        principal.ThrowIfNoPermission(PermissionEntityType.TestResource, PermissionLevel.Read);
+
         var bag = new TestResourceBag(principal, _testResourceManager);
 
         await _semaphore.WaitAsync(cancellationToken);
@@ -57,6 +60,11 @@ public class TestResourceDependencyAllocator
                 }
             }
         }
+        catch (UnauthorizedAccessException)
+        {
+            await _mediator.Send(new ReleaseAccountsRequest(context.Guid, principal.GetTenantIdOrThrow()));
+            throw;
+        }
         catch
         {
             // Release any resources already allocated
@@ -72,8 +80,9 @@ public class TestResourceDependencyAllocator
 
     private async Task<TestResource?> AllocateResourceAsync(ClaimsPrincipal principal, string resourceType)
     {
-        FilterSpecification<TestResource>[] filters = GetAllocationFilters(principal, resourceType);
+        principal.ThrowIfNoPermission(PermissionEntityType.TestResource, PermissionLevel.Read);
 
+        FilterSpecification<TestResource>[] filters = GetAllocationFilters(principal, resourceType);
         var page = await _testResourceManager.SearchAsync(principal, filters, 0, 1);
         if (page.Items.Length > 0)
         {

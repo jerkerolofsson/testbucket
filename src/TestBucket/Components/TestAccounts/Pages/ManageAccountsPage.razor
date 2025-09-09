@@ -23,15 +23,16 @@
                 <MudIcon Icon="@TbIcons.BoldDuoTone.UserCircle" Size="Size.Large" Color="Color.Info" />
                 <MudText Typo="Typo.h2">@loc["test-accounts"]</MudText>
                 <MudSpacer />
-                <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
-                    <Authorized>
-                        <MudButton 
-                            data-testid="add-account"
-                            Class="tb-button-new"
-                            StartIcon="@Icons.Material.Filled.Add" OnClick="AddAsync">@loc["add"]</MudButton>
 
-                    </Authorized>
-                </PermissionView>
+                <MudTextField Value="@_searchPhrase" T="string" ValueChanged="OnSearch"
+                              Class="mt-2 default-search"
+                              Clearable="true"
+                              Variant="Variant.Outlined"
+                              IconSize="Size.Small"
+                              Adornment="Adornment.Start"
+                              Placeholder="@loc["search"]"
+                              AdornmentIcon="@Icons.Material.Filled.Search" />
+
             </MudStack>
         </ToolBarContent>
         <ColGroup>
@@ -85,9 +86,26 @@
             </TemplateColumn>
         </Columns>
 
+        <PagerContent>
+            <MudDataGridPager T="TestAccount" />
+        </PagerContent>
     </MudDataGrid>
 
-    <MudText Class="" Typo="Typo.subtitle1">@accountLoc["test-accounts-description"]</MudText>
+    <MudPaper Class="pa-5">
+        <MudStack>
+            <MudText Typo="Typo.body1">@accountLoc["test-accounts-description"]</MudText>
+
+            <PermissionView Entity="PermissionEntityType.TestAccount" Level="PermissionLevel.Write">
+                <Authorized>
+                    <MudStack Row>
+                        <MudButton data-testid="add-account"
+                                   Class="tb-button-new"
+                                   StartIcon="@Icons.Material.Filled.Add" OnClick="AddAsync">@loc["add"]</MudButton>
+                    </MudStack>
+                </Authorized>
+            </PermissionView>
+        </MudStack>
+    </MudPaper>
 
 </MudStack>
 
@@ -96,12 +114,13 @@
     [CascadingParameter] public TestProject? Project { get; set; }
     [CascadingParameter] public Team? Team { get; set; }
 
+    private string? _searchPhrase = null;
     private List<BreadcrumbItem> _nav = [];
     private MudDataGrid<TestAccount>? _dataGrid;
 
     private async Task<GridData<TestAccount>> LoadGridData(GridState<TestAccount> state)
     {
-        var result = await controller.GetAccountsAsync(state.Page * state.PageSize, state.PageSize);
+        var result = await controller.SearchAccountsAsync(_searchPhrase, state.Page * state.PageSize, state.PageSize);
 
         GridData<TestAccount> data = new()
             {
@@ -110,6 +129,12 @@
             };
 
         return data;
+    }
+
+    private void OnSearch(string text)
+    {
+        _searchPhrase = text;
+        _dataGrid?.ReloadServerData();
     }
 
     protected override void OnInitialized()

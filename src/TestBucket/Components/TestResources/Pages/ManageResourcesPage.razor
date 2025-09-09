@@ -82,10 +82,15 @@
                 </CellTemplate>
             </TemplateColumn>
         </Columns>
+        <PagerContent>
+            <MudDataGridPager T="TestResource" />
+        </PagerContent>
 
     </MudDataGrid>
 
-    <MudText Class="" Typo="Typo.subtitle1">@loc["test-resources-description"]</MudText>
+    <MudStack Class="pa-3">
+        <MudText Typo="Typo.body1">@loc["test-resources-description"]</MudText>
+    </MudStack>
 
 </MudStack>
 

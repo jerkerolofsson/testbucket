@@ -18,9 +18,9 @@
                     ActiveStepChanged="OnActiveStepChanged" 
                     ShowStepResultIndicator="false">
                     <ChildContent>
-                        <MudStepExtended Title="@accountLoc["account"]" Icon="@Icons.Material.Filled.AccountCircle">
+                        <MudStepExtended Title="@accountLoc["account"]" Icon="@TbIcons.BoldDuoTone.UserCircle">
 
-                            <MudStack>
+                            <MudStack Class="pa-3">
                                 <MudStack Spacing="0">
                                     <MudText Typo="Typo.body1">@loc["name"]</MudText>
                                     <MudTextField Variant="Variant.Outlined" T="string" @bind-Value="@_account.Name" Placeholder="@accountLoc["account-name"]"></MudTextField>
@@ -38,23 +38,33 @@
                             </MudStack>
 
                         </MudStepExtended>
-                        <MudStepExtended Title="@accountLoc["account-details"]" Icon="@Icons.Material.Filled.Abc">
-                            <MudStack>
-                            @if(_fieldDefinitions.Length > 0)
-                            {
-                                @foreach(var field in _fields.Values)
+                        <MudStepExtended Title="@accountLoc["account-details"]" Icon="@TbIcons.BoldDuoTone.Field">
+                            <MudStack Class="pa-3">
+                                @if(_fieldDefinitions.Length > 0)
                                 {
-                                    FieldValue fieldValue = field;
-                                    <FieldEditor @bind-Field="fieldValue"/>
+                                    @foreach(var field in _fields.Values)
+                                    {
+                                        FieldValue fieldValue = field;
+                                        <FieldEditor @bind-Field="fieldValue"/>
+                                    }
                                 }
-                            }
                             </MudStack>
                         </MudStepExtended>
 
-                        <MudStepExtended Title="@loc["custom-variables"]" StatusChanged="FinalStatusChanged" Icon="@Icons.Material.Filled.Abc">
-                            <EnvironmentVariableEditor @bind-Variables="@_customVariables" Editing="true">
-                                <ToolbarTitle>@loc["variables"]</ToolbarTitle>
-                            </EnvironmentVariableEditor>
+                        <MudStepExtended Title="@accountLoc["custom-variables"]" StatusChanged="FinalStatusChanged" Icon="@Icons.Material.Filled.Abc">
+                            <MudStack Class="pa-3">
+                                <EnvironmentVariableEditor @bind-Variables="@_customVariables">
+                                    <ToolbarTitle>
+                                        <MudText Typo="Typo.h2">@accountLoc["custom-variables"]</MudText>
+                                    </ToolbarTitle>
+                                </EnvironmentVariableEditor>
+
+                                <MudPaper Class="pa-5">
+                                    <MudStack>
+                                        <MudText Typo="Typo.body1">@accountLoc["custom-variables-wizard-description"]</MudText>
+                                    </MudStack>
+                                </MudPaper>
+                            </MudStack>
                         </MudStepExtended>
                     </ChildContent>
                 </MudStepperExtended>

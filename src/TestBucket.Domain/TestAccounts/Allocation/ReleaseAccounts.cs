@@ -28,6 +28,7 @@ public class ReleaseAccountsHandler : IRequestHandler<ReleaseAccountsRequest>
             new FindAccountByLockOwner(request.LockOwner)
        ];
 
+        // Note: Don't increment offset as we are filtering by unlocked..
         int offset = 0;
         int pageSize = 10;
         while (true)

@@ -49,7 +49,7 @@ public static class SettingLinkExtensions
         {
             Title = "milestones",
             Description = "milestones-description",
-            RelativeUrl = "/{tenantId}/Settings/Milestones",
+            RelativeUrl = "/{tenantId}/Milestones",
             Keywords = "milestones",
             Icon = TbIcons.BoldDuoTone.Flag
         });

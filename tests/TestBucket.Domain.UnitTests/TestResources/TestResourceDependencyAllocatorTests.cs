@@ -12,6 +12,7 @@ using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.TestResources;
 using TestBucket.Domain.TestResources.Allocation;
 using TestBucket.Domain.TestResources.Models;
+using TestBucket.Domain.UnitTests.TestResources.Fakes;
 
 namespace TestBucket.Domain.UnitTests.TestResources
 {
@@ -299,6 +300,42 @@ namespace TestBucket.Domain.UnitTests.TestResources
         }
 
         /// <summary>
+        /// Verifies that CollectDependenciesAsync allocates two unique resources when two resources of the same type are requested.
+        /// </summary>
+        [Fact]
+        public async Task CollectDependenciesAsync_WithTwoOfSameType_TwoUniqueAllocated()
+        {
+            // Arrange
+            var principal = CreatePrincipal(PermissionLevel.All);
+            var sut = await CreateSutAsync(async (manager) =>
+            {
+                await manager.AddAsync(principal, new TestResource { Name = "phone1", Types = ["phone"], Owner = "owner-1", ResourceId = "id1", Enabled = true, Health = HealthStatus.Healthy });
+                await manager.AddAsync(principal, new TestResource { Name = "phone2", Types = ["phone"], Owner = "owner-1", ResourceId = "id2", Enabled = true, Health = HealthStatus.Healthy });
+            });
+
+            var context = new TestExecutionContext
+            {
+                Guid = Guid.NewGuid().ToString(),
+                TestRunId = 1,
+                ProjectId = 1,
+                TeamId = 1,
+                Dependencies = new List<TestCaseDependency>
+                {
+                    new TestCaseDependency { ResourceType = "phone" },
+                    new TestCaseDependency { ResourceType = "phone" }
+                }
+            };
+
+            // Act
+            var result = await sut.CollectDependenciesAsync(principal, context, TestContext.Current.CancellationToken);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Resources.Count);
+            Assert.True(result.Resources[0].Name != result.Resources[1].Name);
+        }
+
+        /// <summary>
         /// Verifies that CollectDependenciesAsync returns an empty TestResourceBag with correct resources when valid inputs are provided but all the resoures are disabled.
         /// </summary>
         [Fact]
@@ -332,7 +369,6 @@ namespace TestBucket.Domain.UnitTests.TestResources
             Assert.NotNull(result);
             Assert.Empty(result.Resources);
         }
-
 
         /// <summary>
         /// Verifies that CollectDependenciesAsync returns an empty TestResourceBag with correct resources when valid inputs are provided but all the resoures are unhealrhy.

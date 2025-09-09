@@ -38,6 +38,9 @@ public class TestAccountDependencyAllocator
         TestExecutionContext context,
         CancellationToken cancellationToken = default)
     {
+        ArgumentNullException.ThrowIfNull(principal);
+        ArgumentNullException.ThrowIfNull(context);
+
         var bag = new TestAccountBag(principal, _testResourceManager);
 
         await _semaphore.WaitAsync(cancellationToken);
@@ -69,6 +72,11 @@ public class TestAccountDependencyAllocator
                 }
             }
         }
+        catch(UnauthorizedAccessException)
+        {
+            await _mediator.Send(new ReleaseAccountsRequest(context.Guid, principal.GetTenantIdOrThrow()));
+            throw;
+        }
         catch
         {
             // Release any resources already allocated
@@ -90,6 +98,8 @@ public class TestAccountDependencyAllocator
             new FindAccountByType(resourceType),
             new FilterByTenant<TestAccount>(principal.GetTenantIdOrThrow())
         ];
+
+        principal.ThrowIfNoPermission(PermissionEntityType.TestAccount, PermissionLevel.Read);
 
         var page = await _resourceRepository.SearchAsync(filters, 0, 1);
         if(page.Items.Length > 0)

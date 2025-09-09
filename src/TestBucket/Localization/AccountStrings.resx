@@ -141,6 +141,9 @@
   <data name="custom-variables" xml:space="preserve">
     <value>Custom Variables</value>
   </data>
+  <data name="custom-variables-wizard-description" xml:space="preserve">
+    <value>Add any custom properties that will be associated with the account. These properties will be accessible by test cases as variables after an account has been locked and allocated (e.g. when running the test case). These custom properties are user-defined and may optionally be added in addition to the fixed properties on the previous page.</value>
+  </data>
   <data name="email" xml:space="preserve">
     <value>Email</value>
   </data>

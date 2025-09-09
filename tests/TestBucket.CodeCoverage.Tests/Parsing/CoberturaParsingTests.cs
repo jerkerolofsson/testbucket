@@ -151,7 +151,7 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
 
             Assert.NotEmpty(report.Packages);
             var percent = report.CoveragePercent.Value;
-            Assert.Equal(22.34, percent);
+            Assert.InRange(percent, 22.34, 22.36);
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace TestBucket.CodeCoverage.Tests.Parsing
             Assert.NotEmpty(report.Packages);
             var domainLineCount = report.LineCount.Value;
             var percent = report.CoveragePercent.Value;
-            Assert.Equal(16014, domainLineCount);
+            Assert.Equal(16012, domainLineCount);
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
 @inject IDialogService dialogService
 @inject IStringLocalizer<SharedStrings> loc
 
-<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="dropdown-container" @attributes="@Attributes">
+<MudStack Row AlignItems="AlignItems.Center" Spacing="1" Class="dropdown-container" @attributes="@Attributes">
     <MudSelect 
     Variant="Variant.Outlined" 
     Label="@loc["test-environment"]"
@@ -21,17 +21,21 @@
         }
     </MudSelect>
 
-    <AuthorizeView Roles="ADMIN">
-        @if (SelectedEnvironment is not null && EnableSettings)
-        {
-            string projectAdminUrl = $"{SelectedEnvironment.TenantId}/Settings/ManageEnvironments/{SelectedEnvironment.Id}";
-            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Settings" Href="@projectAdminUrl"></MudIconButton>
-        }
-        @if(EnableAdd)
-        {
-            <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"></MudIconButton>
-        }
-    </AuthorizeView>
+    <PermissionView Entity="PermissionEntityType.Project" Level="PermissionLevel.Write">
+        <Authorized>
+            <MudStack Row AlignItems="AlignItems.Center" Spacing="1">
+                @if (SelectedEnvironment is not null && EnableSettings)
+                {
+                    string testEnvironmentAdminUrl = $"{SelectedEnvironment.TenantId}/Settings/ManageEnvironments/{SelectedEnvironment.Id}";
+                    <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Settings" Href="@testEnvironmentAdminUrl"></MudIconButton>
+                }
+                @if (EnableAdd)
+                {
+                    <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.Add" OnClick="AddAsync"></MudIconButton>
+                }
+            </MudStack>
+        </Authorized>
+    </PermissionView>
 </MudStack>
 
 @code {

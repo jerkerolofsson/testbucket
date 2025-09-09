@@ -1,5 +1,6 @@
 ﻿using TestBucket.Domain.Fields;
 using TestBucket.Domain.Issues.Models;
+using TestBucket.Domain.Requirements.Models;
 
 namespace TestBucket.Domain.UnitTests.Fakes.NewFolder;
 internal class FakeFieldRepository : IFieldRepository

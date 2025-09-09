@@ -26,8 +26,7 @@ public class ArchitectureCodeCoverageStructureBuilder<TComponent>
     public override IReadOnlyList<TreeNode<CodeEntity>> Build(CodeCoverageReport report)
     {
         var components = new List<CodeCoveragePackage>();
-        var other = new CodeCoveragePackage() { Name = "other" };
-        components.Add(other);
+        var other = new CodeCoveragePackage() { Name = "-- UNMAPPED --" };
 
         foreach (var node in report.GetClasses(_ => true))
         {
@@ -45,7 +44,14 @@ public class ArchitectureCodeCoverageStructureBuilder<TComponent>
             }
             package.AddClass(node);
         }
-        return components.Select(x=>CreateNode(x)).ToList();
+
+
+        if (other.Classes.Count > 0)
+        {
+            components.Add(other);
+        }
+
+        return components.Select(x=>CreateNode(x)).OrderBy(x=>x.Text).ToList();
     }
 
     private TComponent? FindComponentFromFilename(string fileName)

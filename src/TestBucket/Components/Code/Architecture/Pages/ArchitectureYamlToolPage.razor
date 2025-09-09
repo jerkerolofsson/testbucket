@@ -1,5 +1,7 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Code/ArchitectureYamlTool"
+@using TestBucket.Components.Code.Architecture.Controllers
+@using TestBucket.Components.Code.Architecture.Controls
 @layout CodeLayout
 @inject ArchitectureController controller
 @inject IStringLocalizer<CodeStrings> loc
@@ -33,7 +35,7 @@
             @if(_errors.Count == 0)
             {
                 <MudText Typo="Typo.h1">@loc["preview"]</MudText>
-                <TestBucket.Components.Code.Controls.ProjectArchitectureView Model="@_model"/>
+                <ProjectArchitectureView Model="@_model"/>
             }
             else
             {

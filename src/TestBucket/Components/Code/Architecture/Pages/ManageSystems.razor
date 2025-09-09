@@ -1,5 +1,6 @@
 ﻿@attribute [Authorize()]
-@page "/{TenantId}/Code/Layers"
+@page "/{TenantId}/Code/Systems"
+@using TestBucket.Components.Code.Architecture.Controllers
 @using TestBucket.Components.Code.Controls
 @using TestBucket.Components.Shared.Profile
 @using TestBucket.Domain
@@ -14,15 +15,15 @@
 {
     <MudDataGrid 
         @ref="_grid"
-        ServerData="LoadGridData"
+                 ServerData="LoadGridData"
         Dense Hover RowClass="tb-datarow cursor-pointer"
         RowClick="async (row) => await OnRowClicked(row.Item)"
-        T="ArchitecturalLayer" SortMode="SortMode.None">
+        T="ProductSystem" SortMode="SortMode.None">
 
         <ToolBarContent>
             <MudStack Row AlignItems="AlignItems.Center" Style="width: 100%" Class="pt-5">
-                <MudIcon Icon="@TbIcons.BoldDuoTone.Layers" Size="Size.Large" />
-                <MudText Typo="Typo.h2">@codeLoc["layers"]</MudText>
+                <MudIcon Icon="@TbIcons.BoldDuoTone.Systems" Size="Size.Large" />
+                <MudText Typo="Typo.h2">@codeLoc["systems"]</MudText>
                 <MudSpacer />
                 <PermissionView Entity="PermissionEntityType.Architecture" Level="PermissionLevel.Write">
                     <Authorized>
@@ -44,6 +45,7 @@
                     <TemplateColumn Title="@loc["name"]">
                         <CellTemplate>
                             <div class="name">@context.Item.Name</div>
+                           
                         </CellTemplate>
                     </TemplateColumn>
                     <TemplateColumn Title="@codeLoc["dev-lead"]">
@@ -66,7 +68,7 @@
                 </Columns>
 
         <PagerContent>
-            <MudDataGridPager T="Component" />
+            <MudDataGridPager T="ProductSystem" />
         </PagerContent>
     </MudDataGrid>
 }
@@ -76,21 +78,21 @@
     [Parameter] public string? TenantId { get; set; }
     [CascadingParameter] public TestProject? Project { get; set; }
     private TestProject? _project;
-    private IReadOnlyList<ArchitecturalLayer> _components = [];
-    private MudDataGrid<ArchitecturalLayer>? _grid;
+    private IReadOnlyList<ProductSystem> _components = [];
+    private MudDataGrid<ProductSystem>? _grid;
 
     private async Task AddAsync()
     {
-        await architectureController.AddLayerAsync();
+        await architectureController.AddSystemAsync();
         await ReloadAsync();
     }
 
-    private async Task OnRowClicked(ArchitecturalLayer component)
+    private async Task OnRowClicked(ProductSystem system)
     {
         var state = await authenticationStateProvider.GetAuthenticationStateAsync();
         if (state.User.HasPermission(PermissionEntityType.Architecture, PermissionLevel.Write))
         {
-            await architectureController.EditLayerAsync(component);
+            await architectureController.EditSystemAsync(system);
             await ReloadAsync();
         }
     }
@@ -112,19 +114,19 @@
             _project = Project;
             await ReloadAsync();
         }
-    }    
+    }
     private async Task ReloadAsync()
     {
         if(Project is not null)
         {
-            _components = await architectureController.GetLayersAsync(Project.Id);
+            _components = await architectureController.GetSystemsAsync(Project.Id);
             _grid?.ReloadServerData();
         }
     }
 
-    protected async Task DeleteAsync(ArchitecturalLayer item)
+    protected async Task DeleteAsync(ProductSystem item)
     {
-        await architectureController.DeleteLayerAsync(item);
+        await architectureController.DeleteSystemAsync(item);
         await ReloadAsync();
     }
 
@@ -133,16 +135,16 @@
     /// </summary>
     /// <param name="state"></param>
     /// <returns></returns>
-    private Task<GridData<ArchitecturalLayer>> LoadGridData(GridState<ArchitecturalLayer> state)
+    private Task<GridData<ProductSystem>> LoadGridData(GridState<ProductSystem> state)
     {
         if (Project is null)
         {
-            return Task.FromResult(new GridData<ArchitecturalLayer> { TotalItems = 0 });
+            return Task.FromResult(new GridData<ProductSystem> { TotalItems = 0 });
         }
 
         var page = _components.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
 
-        GridData<ArchitecturalLayer> data = new()
+        GridData<ProductSystem> data = new()
         {
             Items = page,
             TotalItems = (int) _components.Count

@@ -1,11 +1,8 @@
 ﻿
-using TestBucket.Domain.Code.Services;
-using TestBucket.Domain.Code.Yaml;
-using TestBucket.Domain.Shared.Specifications;
-using TestBucket.Domain.Shared;
 using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.Code.Services;
 
-namespace TestBucket.Components.Code.Controllers;
+namespace TestBucket.Components.Code.Commits.Controllers;
 
 /// <summary>
 /// Blazor controller for commit

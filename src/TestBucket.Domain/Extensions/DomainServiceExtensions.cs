@@ -20,6 +20,8 @@ using TestBucket.Domain.Automation.Hybrid;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Automation.Runners;
 using TestBucket.Domain.Automation.Runners.Jobs;
+using TestBucket.Domain.Code.CodeCoverage;
+using TestBucket.Domain.Code.CodeCoverage.Settings;
 using TestBucket.Domain.Code.DataSources;
 using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Commands;
@@ -51,6 +53,7 @@ using TestBucket.Domain.Progress;
 using TestBucket.Domain.Projects;
 using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Requirements.Import;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Requirements.RequirementExtensions;
 using TestBucket.Domain.Search;
 using TestBucket.Domain.Settings;
@@ -194,7 +197,12 @@ public static class DomainServiceExtensions
         // Code
         services.AddScoped<IArchitectureManager, ArchitectureManager>();
         services.AddScoped<ICommitManager, CommitManager>();
+        services.AddScoped<ICodeCoverageManager, CodeCoverageManager>();
         services.AddHostedService<CodeRepoCommmitBackgroundIndexer>();
+
+        services.AddScoped<ISetting, StretchTargetSetting>();
+        services.AddScoped<ISetting, TargetSetting>();
+        services.AddScoped<ISetting, MinTargetSetting>();
 
         services.AddScoped<ITeamManager, TeamManager>();
         services.AddScoped<IProjectManager, ProjectManager>();

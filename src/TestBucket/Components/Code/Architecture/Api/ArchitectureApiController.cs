@@ -8,7 +8,7 @@ using TestBucket.Domain.Code.Yaml;
 using TestBucket.Domain.Projects;
 using TestBucket.Formats.Dtos;
 
-namespace TestBucket.Components.Code.Api;
+namespace TestBucket.Components.Code.Architecture.Api;
 
 [ApiController]
 public class ArchitectureApiController : ProjectApiControllerBase

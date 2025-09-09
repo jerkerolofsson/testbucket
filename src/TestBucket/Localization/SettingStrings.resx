@@ -358,7 +358,7 @@
     <value>OpenAI settings</value>
   </data>
   <data name="prefer-text-to-icons" xml:space="preserve">
-    <value>Pref text instead of icons</value>
+    <value>Prefer text instead of icons</value>
   </data>
   <data name="prefer-text-to-icons-description" xml:space="preserve">
     <value>Uses text instead of icons in the user interface in some locations</value>
@@ -404,5 +404,56 @@
   </data>
   <data name="year-to-date" xml:space="preserve">
     <value>Year to date</value>
+  </data>
+  <data name="code-coverage-stretch-target" xml:space="preserve">
+    <value>Stretch target</value>
+  </data>
+  <data name="code-coverage-target" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="code-coverage-min-target" xml:space="preserve">
+    <value>Minimum</value>
+  </data>
+  <data name="code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="code-coverage" xml:space="preserve">
+    <value>Code coverage</value>
+  </data>
+  <data name="test-accounts" xml:space="preserve">
+    <value>Test accounts</value>
+  </data>
+  <data name="test-environments" xml:space="preserve">
+    <value>Test environments</value>
+  </data>
+  <data name="test-environments-description" xml:space="preserve">
+    <value>Manage environments for testing such as production or staging and define custom variables that can be used in test cases </value>
+  </data>
+  <data name="test-accounts-description" xml:space="preserve">
+    <value>Add, edit or delete accounts or credentials for testing</value>
+  </data>
+  <data name="review" xml:space="preserve">
+    <value>Review</value>
+  </data>
+  <data name="ai-usage-description" xml:space="preserve">
+    <value>View details for how many tokens are used for AI / LLM</value>
+  </data>
+  <data name="api-keys" xml:space="preserve">
+    <value>API Keys</value>
+  </data>
+  <data name="api-keys-description" xml:space="preserve">
+    <value>Add keys or tokens for API usage</value>
+  </data>
+  <data name="integrations" xml:space="preserve">
+    <value>Integrations</value>
+  </data>
+  <data name="integrations-description" xml:space="preserve">
+    <value>Manage extensions that integrate with remote services such as Github, Gitlab, Jira etc..</value>
+  </data>
+  <data name="fields" xml:space="preserve">
+    <value>Fields</value>
+  </data>
+  <data name="fields-descriptions" xml:space="preserve">
+    <value>Add, edit or delete custom fields for tests, requirements, results, issues..</value>
   </data>
 </root>

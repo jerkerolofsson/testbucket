@@ -3,13 +3,13 @@ using Mediator;
 
 using Microsoft.Extensions.Localization;
 
-using TestBucket.Components.Code.Dialogs;
+using TestBucket.Components.Code.Architecture.Dialogs;
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Code.Services.CommitFeatureMapping;
 using TestBucket.Localization;
 
-namespace TestBucket.Components.Code.Controllers;
+namespace TestBucket.Components.Code.Architecture.Controllers;
 
 /// <summary>
 /// Blazor controller for architecture

@@ -1,7 +1,6 @@
 ﻿
 using TestBucket.CodeCoverage;
 using TestBucket.CodeCoverage.Models;
-using TestBucket.Components.Code.Controllers;
 using TestBucket.Components.Shared.Tree;
 using TestBucket.Domain.Code.Models;
 

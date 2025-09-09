@@ -13,7 +13,7 @@ public abstract class BaseCodeStructureBuilder : ICodeCoverageStructureBuilder
         return new TreeNode<CodeEntity>
         {
             Expandable = entity.GetChildren().Count > 0,
-            Children = null,//entity.GetChildren().Select(CreateNode).ToList(),
+            Children = null,
             Value = entity,
             Text = entity.GetName(),
             Icon = null
@@ -24,7 +24,7 @@ public abstract class BaseCodeStructureBuilder : ICodeCoverageStructureBuilder
     {
         var children = codeEntity.GetChildren();
         var list = new List<TreeNode<CodeEntity>>();
-        foreach (var child in children)
+        foreach (var child in children.OrderBy(x=>x.GetName()))
         {
             list.Add(CreateNode(child));
         }

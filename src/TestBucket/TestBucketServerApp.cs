@@ -3,10 +3,7 @@
 using Blazored.LocalStorage;
 
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
@@ -20,7 +17,9 @@ using TestBucket.Components.Account;
 using TestBucket.Components.AI.Controllers;
 using TestBucket.Components.AI.Runner.Commands;
 using TestBucket.Components.Automation;
-using TestBucket.Components.Code.Controllers;
+using TestBucket.Components.Code.Architecture.Controllers;
+using TestBucket.Components.Code.CodeCoverage.Controllers;
+using TestBucket.Components.Code.Commits.Controllers;
 using TestBucket.Components.Comments;
 using TestBucket.Components.Environments.Services;
 using TestBucket.Components.Issues.Commands;
@@ -271,6 +270,8 @@ public static class TestBucketServerApp
 
         builder.Services.AddScoped<ArchitectureController>();
         builder.Services.AddScoped<CommitController>();
+        builder.Services.AddScoped<CodeCoverageController>();
+
         builder.Services.AddScoped<ReviewController>();
         builder.Services.AddScoped<MetricsController>();
         builder.Services.AddScoped<CommentsController>();

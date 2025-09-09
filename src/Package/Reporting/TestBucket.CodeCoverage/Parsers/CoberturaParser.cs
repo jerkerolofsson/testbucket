@@ -11,8 +11,6 @@ using TestBucket.CodeCoverage.Models;
 namespace TestBucket.CodeCoverage.Parsers;
 public class CoberturaParser : ParserBase
 {
-    private static readonly Regex CleanupRegex = new Regex(".<.*>\\w_?_?\\w*\\d*", RegexOptions.Compiled);
-    private static readonly Regex GenericClassRegex = new Regex("(?<ClassName>.+)(?<GenericTypes><.+>)$", RegexOptions.Compiled);
     private static readonly Regex LambdaMethodNameRegex = new Regex("<.+>.+__", RegexOptions.Compiled);
     private static readonly Regex CompilerGeneratedMethodNameRegex = new Regex(@"(?<ClassName>.+)(/|\.)<(?<CompilerGeneratedName>.+)>.+__.+MoveNext\(\)$", RegexOptions.Compiled);
     private static readonly Regex LocalFunctionMethodNameRegex = new Regex(@"^.*(?<ParentMethodName><.+>).*__(?<NestedMethodName>[^\|]+)\|.*$", RegexOptions.Compiled);
@@ -89,20 +87,7 @@ public class CoberturaParser : ParserBase
         var filename = classNode.Attribute("filename");
         if (name is not null)
         {
-            string displayName = name.Value;
-            if (displayName.Contains('<'))
-            {
-                var matchGeneric = GenericClassRegex.Match(displayName);
-                var matchAsync = CleanupRegex.Match(displayName);
-                if (matchAsync.Success)
-                {
-                    displayName = CleanupRegex.Replace(displayName, string.Empty);
-                }
-                if (matchGeneric.Success)
-                {
-                    displayName = matchGeneric.Groups["ClassName"].Value;
-                }
-            }
+            string displayName = CSharp.CSharpCleanup.CleanupClassName(name.Value);
 
             var codeCoverageClass = package.GetOrCreateClass(displayName, filename?.Value ?? "");
 

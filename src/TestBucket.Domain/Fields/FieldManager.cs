@@ -6,6 +6,7 @@ using TestBucket.Contracts.Fields;
 using TestBucket.Domain.Fields.Events;
 using TestBucket.Domain.Fields.Helpers;
 using TestBucket.Domain.Issues.Models;
+using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Traits.Core;
 

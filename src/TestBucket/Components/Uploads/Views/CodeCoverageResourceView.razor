@@ -1,5 +1,6 @@
 ﻿@using System.Text.Json
 @using TestBucket.CodeCoverage
+@using TestBucket.Components.Code.CodeCoverage.Controls
 @using TestBucket.Components.Code.Controls.CodeCoverage
 @using TestBucket.Components.Uploads.Services
 @inject AttachmentsService controller
@@ -17,13 +18,16 @@ else
 
 @code {
     [Parameter] public FileResource? Resource { get; set; }
+
+    private long _resourceId;
     private FileResource? _resource;
     private readonly CodeCoverageReport _report = new();
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (_resource?.Id != Resource?.Id && Resource is not null)
+        if (_resourceId != Resource?.Id && Resource is not null)
         {
+            _resourceId = Resource.Id;
             _resource = await controller.GetResourceByIdAsync(Resource.Id);
             if (_resource is not null)
             {
@@ -31,6 +35,7 @@ else
                 var parser = CodeCoverageParserFactory.Create(format);
                 using var stream = new MemoryStream(_resource.Data);
                 await parser.ParseStreamAsync(_report, stream, CancellationToken.None);
+                this.StateHasChanged();
             }
         }
     }

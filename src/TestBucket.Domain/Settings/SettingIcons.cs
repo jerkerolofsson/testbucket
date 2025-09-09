@@ -14,6 +14,8 @@ public static class SettingIcons
     public static string Review => TbIcons.BoldDuoTone.Review;
     public static string Editor => TbIcons.IconSaxDuoTone.Document1;
     public static string Layout => TbIcons.IconSaxDuoTone.Grid6;
+    public static string Code => TbIcons.BoldDuoTone.CodeSquare;
+    public static string Coverage => TbIcons.BoldDuoTone.Coverage;
     public static string Profile => TbIcons.BoldDuoTone.UserId;
-    public static string Tenant => TbIcons.BoldDuoTone.Settings;
+    public static string Tenant => TbIcons.BoldDuoTone.Home2;
 }

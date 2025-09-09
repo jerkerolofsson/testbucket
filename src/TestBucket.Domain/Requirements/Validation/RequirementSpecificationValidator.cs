@@ -2,6 +2,7 @@ using FluentValidation;
 
 using TestBucket.Domain.Requirements.Models;
 
+namespace TestBucket.Domain.Requirements.Models;
 public class RequirementSpecificationValidator : AbstractValidator<RequirementSpecification>
 {
     public RequirementSpecificationValidator()

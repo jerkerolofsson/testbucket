@@ -1,5 +1,6 @@
 using FluentValidation;
 
+namespace TestBucket.Domain.Requirements.Models;
 public class SearchFolderValidator : AbstractValidator<SearchFolder>
 {
     public SearchFolderValidator()

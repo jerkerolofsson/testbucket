@@ -1,9 +1,8 @@
 using FluentValidation;
 
-using Microsoft.Extensions.Localization;
-
 using TestBucket.Domain.Requirements.Models;
 
+namespace TestBucket.Domain.Requirements.Models;
 public class RequirementSpecificationFolderValidator : AbstractValidator<RequirementSpecificationFolder>
 {
     public RequirementSpecificationFolderValidator()

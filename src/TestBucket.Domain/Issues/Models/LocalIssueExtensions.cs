@@ -10,7 +10,18 @@ public static class LocalIssueExtensions
         {
             return [];
         }
-        return field.StringValuesList ?? [field.StringValue];
+
+        if(field.StringValuesList is not null)
+        {
+            return field.StringValuesList;
+        }
+
+        if(field.StringValue is not null)
+        {
+            return [field.StringValue];
+        }
+
+        return [];
     }
 
     public static IssueField? GetFieldByTrait(this LocalIssue issue, TraitType type)

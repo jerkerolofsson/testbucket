@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="TUnit.Core" Version="0.25.21" />
+        <PackageReference Include="TUnit.Core" Version="0.57.63" />
     </ItemGroup>
 
     <ItemGroup>

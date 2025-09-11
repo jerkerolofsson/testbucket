@@ -89,17 +89,13 @@
                             <Field>
                                 <FieldHeader>@fieldLoc["data-source"]</FieldHeader>
                                 <MudRadioGroup @bind-Value="@FieldDefinition.DataSourceType">
-                                    <MudRadio Value="@FieldDataSourceType.List" Color="Color.Primary">@fieldLoc["data-source-type-list"]</MudRadio>
-                                    @* <MudRadio Value="@FieldDataSourceType.External" Color="Color.Primary">@fieldLoc["data-source-type-external"]</MudRadio> *@
-                                    <MudRadio Value="@FieldDataSourceType.Milestones">@fieldLoc["data-source-type-milestones"]</MudRadio>
-                                    <MudRadio Value="@FieldDataSourceType.Labels">@fieldLoc["data-source-type-labels"]</MudRadio>
-                                    <MudRadio Value="@FieldDataSourceType.Releases">@fieldLoc["data-source-type-releases"]</MudRadio>
-                                    <MudRadio Value="@FieldDataSourceType.Features">@fieldLoc["data-source-type-features"]</MudRadio>
-
-                                    @* <MudRadio Value="@FieldDataSourceType.Systems">@fieldLoc["data-source-type-systems"]</MudRadio> *@
-                                    @* <MudRadio Value="@FieldDataSourceType.Layers">@fieldLoc["data-source-type-layers"]</MudRadio> *@
-                                    <MudRadio Value="@FieldDataSourceType.Commit">@fieldLoc["data-source-type-commits"]</MudRadio>
-                                    <MudRadio Value="@FieldDataSourceType.Components">@fieldLoc["data-source-type-components"]</MudRadio>
+                                    <MudRadio Color="Color.Tertiary" Value="@FieldDataSourceType.List">@fieldLoc["data-source-type-list"]</MudRadio>
+                                    <MudRadio Color="Color.Tertiary" Value="@FieldDataSourceType.Milestones">@fieldLoc["data-source-type-milestones"]</MudRadio>
+                                    <MudRadio Color="Color.Tertiary" Value="@FieldDataSourceType.Labels">@fieldLoc["data-source-type-labels"]</MudRadio>
+                                    <MudRadio Color="Color.Tertiary" Value="@FieldDataSourceType.Releases">@fieldLoc["data-source-type-releases"]</MudRadio>
+                                    <MudRadio Color="Color.Tertiary" Value="@FieldDataSourceType.Features">@fieldLoc["data-source-type-features"]</MudRadio>
+                                    <MudRadio Color="Color.Tertiary" Value="@FieldDataSourceType.Commit">@fieldLoc["data-source-type-commits"]</MudRadio>
+                                    <MudRadio Color="Color.Tertiary" Value="@FieldDataSourceType.Components">@fieldLoc["data-source-type-components"]</MudRadio>
                                 </MudRadioGroup>
                             </Field>
 

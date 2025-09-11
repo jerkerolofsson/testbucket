@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Principal;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using TestBucket.Domain.Files;
@@ -36,6 +38,16 @@ public class ResourceController : ControllerBase
         {
             return NotFound();
         }
+
+        try
+        {
+            this.User.ThrowIfNoPermission(file);
+        }
+        catch(UnauthorizedAccessException)
+        {
+            return Unauthorized();
+        }
+
         return File(file.Data, file.ContentType);
     }
 }

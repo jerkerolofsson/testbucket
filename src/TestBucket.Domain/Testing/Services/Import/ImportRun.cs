@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Security.Principal;
 using System.Text;
 
 using Mediator;
@@ -17,6 +18,7 @@ using TestBucket.Domain.Requirements;
 using TestBucket.Domain.Shared.Specifications;
 using TestBucket.Domain.States;
 using TestBucket.Domain.Teams;
+using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCases;
 using TestBucket.Domain.Testing.TestCases;
@@ -119,17 +121,17 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
 
         // Add test suite run
         await progress.ReportStatusAsync("Creating run", 0);
-        TestRun testRun = await ResolveTestRunAsync(principal, teamId, projectId, run, options, testRunFieldDefinitions);
+        TestRun testRun = await ResolveTestRunAsync(principal, teamId, projectId, run, options);
 
         if (run.Suites is not null)
         {
             // Copy some attributes from tests to the run
             AssignRunPropertiesFromTests(run);
             AssignRunPropertiesFromSuites(run);
+            await UpdateTestRunFieldsAsync(principal, testRun, run, testRunFieldDefinitions);
 
             // Update test run
             testRun.SystemOut = run.SystemOut;
-            //testRun.SystemErr = run.SystemErr;
             await _testRunManager.SaveTestRunAsync(principal, testRun);
 
             foreach (var runSuite in run.Suites)
@@ -291,6 +293,16 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
             }
             run.SystemErr = stderr.ToString();
         }
+        if(string.IsNullOrEmpty(run.Commit))
+        {
+            foreach (var suite in run.Suites)
+            {
+                if (!string.IsNullOrEmpty(suite.Commit))
+                {
+                    run.Commit = suite.Commit;
+                }
+            }
+        }
     }
     private static void AssignRunPropertiesFromTests(TestRunDto run)
     {
@@ -302,11 +314,34 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                 {
                     suite.Assembly = test.Assembly;
                 }
+                if (!string.IsNullOrEmpty(test.Commit))
+                {
+                    suite.Commit = test.Commit;
+                }
             }
         }
     }
 
-    private async Task<TestRun> ResolveTestRunAsync(ClaimsPrincipal principal, long? teamId, long? projectId, TestRunDto run, ImportHandlingOptions options, IReadOnlyList<FieldDefinition> testRunFieldDefinitions)
+    private async Task UpdateTestRunFieldsAsync(ClaimsPrincipal principal, TestRun testRun, TestRunDto run, IReadOnlyList<FieldDefinition> testRunFieldDefinitions)
+    {
+        var tenantId = principal.GetTenantIdOrThrow();
+        foreach (var fieldDefinition in testRunFieldDefinitions)
+        {
+            var field = new TestRunField
+            {
+                TenantId = tenantId,
+                TestRunId = testRun.Id,
+                FieldDefinitionId = fieldDefinition.Id,
+            };
+            var values = run.Traits.Where(x => x.Type == fieldDefinition.TraitType).Select(x => x.Value).ToArray();
+            if (FieldValueConverter.TryAssignValue(fieldDefinition, field, values))
+            {
+                await _fieldManager.UpsertTestRunFieldAsync(principal, field);
+            }
+        }
+    }
+
+    private async Task<TestRun> ResolveTestRunAsync(ClaimsPrincipal principal, long? teamId, long? projectId, TestRunDto run, ImportHandlingOptions options)
     {
         var tenantId = principal.GetTenantIdOrThrow();
 
@@ -331,20 +366,6 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
             };
             await _testRunManager.AddTestRunAsync(principal, testRun);
 
-            foreach(var fieldDefinition in testRunFieldDefinitions)
-            {
-                var field = new TestRunField
-                {
-                    TenantId = tenantId,
-                    TestRunId = testRun.Id,
-                    FieldDefinitionId = fieldDefinition.Id,
-                };
-                var values = run.Traits.Where(x=>x.Type == fieldDefinition.TraitType).Select(x => x.Value).ToArray();
-                if (FieldValueConverter.TryAssignValue(fieldDefinition, field, values))
-                {
-                    await _fieldManager.UpsertTestRunFieldAsync(principal, field);
-                }
-            }
         }
         else
         {

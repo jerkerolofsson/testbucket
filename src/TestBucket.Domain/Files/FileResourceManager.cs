@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using Mediator;
+﻿using Mediator;
 
 using TestBucket.Domain.Files.IntegrationEvents;
 using TestBucket.Domain.Files.Models;
@@ -23,9 +16,17 @@ namespace TestBucket.Domain.Files
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// Adds a file resource
+        /// </summary>
+        /// <param name="principal"></param>
+        /// <param name="resource"></param>
+        /// <returns></returns>
         public async Task AddResourceAsync(ClaimsPrincipal principal, FileResource resource)
         {
             resource.TenantId = principal.GetTenantIdOrThrow();
+            principal.ThrowIfNoPermission(resource);
+
             resource.Created = DateTimeOffset.UtcNow;
             await _fileRepository.AddResourceAsync(resource);
 

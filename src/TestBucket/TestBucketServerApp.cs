@@ -71,6 +71,7 @@ using TestBucket.Components.Tests.TestRuns.Controllers;
 using TestBucket.Components.Tests.TestRuns.LinkIssue;
 using TestBucket.Components.Tests.TestSuites.Commands;
 using TestBucket.Components.Tests.TestSuites.Services;
+using TestBucket.Components.Uploads.Commands;
 using TestBucket.Components.Uploads.Services;
 using TestBucket.Components.Users;
 using TestBucket.Components.Users.Services;
@@ -340,6 +341,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<TestCaseEditorController>();
         builder.Services.AddScoped<UploadService>();
         builder.Services.AddScoped<ICommand, ImportCodeCoverageCommand>();
+        builder.Services.AddScoped<ICommand, DownloadFileResourceCommand>();
 
         builder.Services.AddScoped<FieldController>();
         builder.Services.AddScoped<UserController>();

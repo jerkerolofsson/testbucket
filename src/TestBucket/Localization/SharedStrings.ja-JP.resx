@@ -1153,4 +1153,10 @@
   <data name="creating-pipeline" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
+  <data name="download" xml:space="preserve">
+    <value />
+  </data>
+  <data name="upload" xml:space="preserve">
+    <value />
+  </data>
 </root>

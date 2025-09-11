@@ -1157,4 +1157,10 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="creating-pipeline" xml:space="preserve">
     <value>Creating pipeline..</value>
   </data>
+  <data name="download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="upload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
 </root>

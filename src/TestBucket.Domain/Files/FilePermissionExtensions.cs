@@ -7,6 +7,11 @@ public static class FilePermissionExtensions
     public static void ThrowIfNoPermission(this ClaimsPrincipal principal, FileResource file)
     {
         var level = PermissionLevel.Read;
+        ThrowIfNoPermission(principal, file, level);
+    }
+
+    public static void ThrowIfNoPermission(this ClaimsPrincipal principal, FileResource file, PermissionLevel level)
+    {
         principal.ThrowIfEntityTenantIsDifferent(file.TenantId);
 
         if (file.TestCaseId is not null)
@@ -43,7 +48,7 @@ public static class FilePermissionExtensions
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Architecture, level);
         }
-        
+
         if (file.TestProjectId is not null)
         {
             principal.ThrowIfNoPermission(PermissionEntityType.Project, level);

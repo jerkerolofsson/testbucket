@@ -1,25 +1,33 @@
-﻿using TestBucket.Contracts.Localization;
+﻿using Quartz;
+
+using TestBucket.CodeCoverage;
+using TestBucket.Components.Uploads.Services;
+using TestBucket.Contracts.Localization;
 using TestBucket.Domain;
+using TestBucket.Domain.Code.CodeCoverage.Import;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Files;
+using TestBucket.Domain.Identity.Permissions;
 using TestBucket.Domain.Keyboard;
 
 namespace TestBucket.Components.Uploads.Commands;
 
-public class DownloadFileResourceCommand : ICommand
+internal class DeleteFileResourceCommand : ICommand
 {
     private readonly IAppLocalization _loc;
     private readonly AppNavigationManager _appNav;
+    private readonly AttachmentsService _attachments;
 
-    public DownloadFileResourceCommand(IAppLocalization loc, AppNavigationManager appNav)
+    public DeleteFileResourceCommand(IAppLocalization loc, AppNavigationManager appNav, AttachmentsService attachments)
     {
         _loc = loc;
         _appNav = appNav;
+        _attachments = attachments;
     }
 
-    public string Id => "download-file-resource";
+    public string Id => "delete-file-resource";
 
-    public string Name => _loc.Shared["download"];
+    public string Name => _loc.Shared["delete"];
 
     public string Description => "";
 
@@ -27,7 +35,7 @@ public class DownloadFileResourceCommand : ICommand
 
     public KeyboardBinding? DefaultKeyboardBinding => null;
 
-    public string? Icon => TbIcons.BoldDuoTone.CloudDownload;
+    public string? Icon => Icons.Material.Filled.Delete;
 
     public string[] ContextMenuTypes => ["file"];
 
@@ -39,18 +47,15 @@ public class DownloadFileResourceCommand : ICommand
 
     public PermissionLevel? RequiredLevel => null;
 
-    public ValueTask ExecuteAsync(ClaimsPrincipal principal)
+    public async ValueTask ExecuteAsync(ClaimsPrincipal principal)
     {
         var file = _appNav.State.SelectedFileResource;
         if (file is null)
         {
-            return ValueTask.CompletedTask;
+            return;
         }
 
-        principal.ThrowIfNoPermission(file);
+        await _attachments.DeleteResourceByIdAsync(file.Id);
 
-        string url = $"/api/resources/{file.Id}";
-        _appNav.NavigateTo(url);
-        return ValueTask.CompletedTask;
     }
 }

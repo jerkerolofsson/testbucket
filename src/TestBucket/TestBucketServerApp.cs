@@ -342,6 +342,7 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<UploadService>();
         builder.Services.AddScoped<ICommand, ImportCodeCoverageCommand>();
         builder.Services.AddScoped<ICommand, DownloadFileResourceCommand>();
+        builder.Services.AddScoped<ICommand, DeleteFileResourceCommand>();
 
         builder.Services.AddScoped<FieldController>();
         builder.Services.AddScoped<UserController>();

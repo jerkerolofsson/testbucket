@@ -1,15 +1,22 @@
-﻿using TestBucket.Domain.Files;
+﻿using System.Security.Principal;
+
+using TestBucket.Contracts.Localization;
+using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
 
 namespace TestBucket.Components.Uploads.Services;
 
 internal class AttachmentsService : TenantBaseService
 {
-    private readonly IFileRepository _fileRepository;
+    private readonly IFileResourceManager _fileResourceManager;
+    private readonly IDialogService _dialogService;
+    private readonly IAppLocalization _loc;
 
-    public AttachmentsService(IFileRepository fileRepository, AuthenticationStateProvider authenticationStateProvider) : base(authenticationStateProvider)
+    public AttachmentsService(IFileResourceManager fileResourceManager, AuthenticationStateProvider authenticationStateProvider, IDialogService dialogService, IAppLocalization loc) : base(authenticationStateProvider)
     {
-        _fileRepository = fileRepository;
+        _fileResourceManager = fileResourceManager;
+        _dialogService = dialogService;
+        _loc = loc;
     }
 
     /// <summary>
@@ -17,11 +24,23 @@ internal class AttachmentsService : TenantBaseService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public async Task DeleteResourceByIdAsync(long id)
+    public async Task<bool> DeleteResourceByIdAsync(long id)
     {
-        var tenantId = await GetTenantIdAsync();
-        await _fileRepository.DeleteResourceByIdAsync(tenantId, id);
+        var result = await _dialogService.ShowMessageBox(new MessageBoxOptions
+        {
+            YesText = _loc.Shared["yes"],
+            NoText = _loc.Shared["no"],
+            Title = _loc.Shared["confirm-delete-title"],
+            MarkupMessage = new MarkupString(_loc.Shared["confirm-delete-message"])
+        });
+        if (result == true)
+        {
+            var principal = await GetUserClaimsPrincipalAsync();
+            return await _fileResourceManager.DeleteResourceByIdAsync(principal, id);
+        }
+        return false;
     }
+
     /// <summary>
     /// Gets the resource with data
     /// </summary>
@@ -29,8 +48,8 @@ internal class AttachmentsService : TenantBaseService
     /// <returns></returns>
     public async Task<FileResource?> GetResourceByIdAsync(long id)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _fileRepository.GetResourceByIdAsync(tenantId, id);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _fileResourceManager.GetResourceByIdAsync(principal, id);
     }
 
     /// <summary>
@@ -40,8 +59,8 @@ internal class AttachmentsService : TenantBaseService
     /// <returns></returns>
     public async Task<IReadOnlyList<FileResource>> GetTestRunAttachmentsAsync(long id)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _fileRepository.GetTestRunAttachmentsAsync(tenantId, id);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _fileResourceManager.GetTestRunAttachmentsAsync(principal, id);
     }
 
     /// <summary>
@@ -51,8 +70,8 @@ internal class AttachmentsService : TenantBaseService
     /// <returns></returns>
     public async Task<IReadOnlyList<FileResource>> GetRequirementAttachmentsAsync(long id)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _fileRepository.GetRequirementAttachmentsAsync(tenantId, id);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _fileResourceManager.GetRequirementAttachmentsAsync(principal, id);
     }
 
     /// <summary>
@@ -62,8 +81,8 @@ internal class AttachmentsService : TenantBaseService
     /// <returns></returns>
     public async Task<IReadOnlyList<FileResource>> GetRequirementSpecificationAttachmentsAsync(long id)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _fileRepository.GetRequirementSpecificationAttachmentsAsync(tenantId, id);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _fileResourceManager.GetRequirementSpecificationAttachmentsAsync(principal, id);
     }
 
     /// <summary>
@@ -73,8 +92,8 @@ internal class AttachmentsService : TenantBaseService
     /// <returns></returns>
     public async Task<IReadOnlyList<FileResource>> GetTestCaseRunAttachmentsAsync(long testCaseRunId)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _fileRepository.GetTestCaseRunAttachmentsAsync(tenantId, testCaseRunId);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _fileResourceManager.GetTestCaseRunAttachmentsAsync(principal, testCaseRunId);
     }
 
     /// <summary>
@@ -84,8 +103,8 @@ internal class AttachmentsService : TenantBaseService
     /// <returns></returns>
     public async Task<IReadOnlyList<FileResource>> GetTestCaseAttachmentsAsync(long testCaseId)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _fileRepository.GetTestCaseAttachmentsAsync(tenantId, testCaseId);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _fileResourceManager.GetTestCaseAttachmentsAsync(principal, testCaseId);
     }
 
     /// <summary>
@@ -95,8 +114,8 @@ internal class AttachmentsService : TenantBaseService
     /// <returns></returns>
     public async Task<IReadOnlyList<FileResource>> GetTestSuiteAttachmentsAsync(long testSuiteId)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _fileRepository.GetTestSuiteAttachmentsAsync(tenantId, testSuiteId);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _fileResourceManager.GetTestSuiteAttachmentsAsync(principal, testSuiteId);
     }
 
     /// <summary>
@@ -106,8 +125,8 @@ internal class AttachmentsService : TenantBaseService
     /// <returns></returns>
     public async Task<IReadOnlyList<FileResource>> GetTestProjectAttachmentsAsync(long testProjectId)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _fileRepository.GetTestProjectAttachmentsAsync(tenantId, testProjectId);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _fileResourceManager.GetTestProjectAttachmentsAsync(principal, testProjectId);
     }
 
     /// <summary>
@@ -117,7 +136,7 @@ internal class AttachmentsService : TenantBaseService
     /// <returns></returns>
     public async Task<IReadOnlyList<FileResource>> GetTestSuiteFolderAttachmentsAsync(long testSuiteFolderId)
     {
-        var tenantId = await GetTenantIdAsync();
-        return await _fileRepository.GetTestSuiteFolderAttachmentsAsync(tenantId, testSuiteFolderId);
+        var principal = await GetUserClaimsPrincipalAsync();
+        return await _fileResourceManager.GetTestSuiteFolderAttachmentsAsync(principal, testSuiteFolderId);
     }
 }

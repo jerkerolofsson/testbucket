@@ -1,9 +1,13 @@
 ﻿@using Humanizer
 @using TestBucket.Components.Uploads.Services
+@using TestBucket.Domain.Files
 @inject AttachmentsService attachmentsService
 @inject AppNavigationManager appNavigationManager
 @inject IDialogService dialogService
 @inject IStringLocalizer<SharedStrings> loc
+@inject IFileResourceManager fileResourceManager 
+@implements IDisposable
+@implements IFileResourceObserver
 
 <MudStack Class="@Class" Style="@Style" Spacing="1">
 
@@ -29,7 +33,6 @@
 							<ChildContent>
 								<CommandMenuItems TypeNames="file" />
 							</ChildContent>
-
 						</MudMenu>
                     }
                 </MudStack>
@@ -57,10 +60,17 @@
 
                         <TemplateColumn Title="@loc["file-name"]">
                             <CellTemplate>
-                                <MudStack Row Spacing="0" AlignItems="AlignItems.Center">
-                                    <FileTypeIcon ContentType="@context.Item.ContentType" Size="Size.Large" Style="width: 32x; height: 32px" />
-                                    <div>@context.Item.Name</div>
-                                </MudStack>
+								<MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true" OpenChanged="() => OnMenuOpened(context.Item)">
+									<ActivatorContent>
+										<MudStack Row Spacing="0" AlignItems="AlignItems.Center">
+											<FileTypeIcon ContentType="@context.Item.ContentType" Size="Size.Large" Style="width: 32x; height: 32px" />
+											<div>@context.Item.Name</div>
+										</MudStack>
+									</ActivatorContent>
+									<ChildContent>
+										<CommandMenuItems TypeNames="file" />
+									</ChildContent>
+								</MudMenu>
                             </CellTemplate>
                         </TemplateColumn>
 
@@ -82,7 +92,10 @@
 
                         <TemplateColumn>
                             <CellTemplate>
-                                <MudIconButton Icon="@Icons.Material.Filled.Clear" Color="Color.Error" OnClick="async()=>await DeleteAttachmentAsync(context.Item)"/>
+
+								<MudMenu Icon="@Icons.Material.Filled.MoreHoriz" Dense="true" OpenChanged="() => OnMenuOpened(context.Item)">
+									<CommandMenuItems TypeNames="file" />
+								</MudMenu>
                             </CellTemplate>
                         </TemplateColumn>
                     </Columns>

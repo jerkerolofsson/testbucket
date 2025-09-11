@@ -1,6 +1,4 @@
-﻿using TestBucket.Components.Shared.Tree;
-using TestBucket.Components.Tests.TestSuites.Dialogs;
-using TestBucket.Components.Uploads.Dialogs;
+﻿using TestBucket.Components.Uploads.Dialogs;
 using TestBucket.Domain.Files.Models;
 
 namespace TestBucket.Components.Uploads.Controls;
@@ -33,11 +31,6 @@ public partial class AttachmentGrid
     {
         appNavigationManager.State.SetSelectedFileResource(resource);
         return Task.CompletedTask;
-    }
-    private async Task DeleteAttachmentAsync(FileResource resource)
-    {
-        await attachmentsService.DeleteResourceByIdAsync(resource.Id);
-        _attachments.RemoveAll(x => x.Id == resource?.Id);
     }
 
     private async Task OnAttachmentClickedAsync(FileResource resource)
@@ -99,8 +92,22 @@ public partial class AttachmentGrid
         await this.InvokeAsync(StateHasChanged);
     }
 
+
+    public Task OnAddedAsync(FileResource file) => ReloadAttachmentsAsync();
+    public Task OnDeletedAsync(FileResource file) => ReloadAttachmentsAsync();
+
     private void SetGrid(bool isGrid)
     {
         _isGrid = isGrid;
+    }
+
+    protected override void OnInitialized()
+    {
+        fileResourceManager.AddObserver(this);
+    }
+
+    public void Dispose()
+    {
+        fileResourceManager.RemoveObserver(this);
     }
 }

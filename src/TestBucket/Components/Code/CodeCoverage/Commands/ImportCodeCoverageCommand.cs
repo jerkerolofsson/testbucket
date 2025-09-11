@@ -2,8 +2,8 @@
 using Quartz;
 
 using TestBucket.CodeCoverage;
-using TestBucket.Components.Code.CodeCoverage.Jobs;
 using TestBucket.Contracts.Localization;
+using TestBucket.Domain.Code.CodeCoverage.Import;
 using TestBucket.Domain.Commands;
 using TestBucket.Domain.Keyboard;
 

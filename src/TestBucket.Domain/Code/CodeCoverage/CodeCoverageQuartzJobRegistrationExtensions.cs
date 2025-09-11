@@ -1,6 +1,8 @@
 ﻿using Quartz;
 
-namespace TestBucket.Components.Code.CodeCoverage.Jobs;
+using TestBucket.Domain.Code.CodeCoverage.Import;
+
+namespace TestBucket.Domain.Code.CodeCoverage;
 
 public static class CodeCoverageQuartzJobRegistrationExtensions
 {

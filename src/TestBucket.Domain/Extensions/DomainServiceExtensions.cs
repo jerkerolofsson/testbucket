@@ -21,6 +21,7 @@ using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Automation.Runners;
 using TestBucket.Domain.Automation.Runners.Jobs;
 using TestBucket.Domain.Code.CodeCoverage;
+using TestBucket.Domain.Code.CodeCoverage.Import;
 using TestBucket.Domain.Code.CodeCoverage.Settings;
 using TestBucket.Domain.Code.DataSources;
 using TestBucket.Domain.Code.Services;
@@ -194,6 +195,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IArchitectureManager, ArchitectureManager>();
         services.AddScoped<ICommitManager, CommitManager>();
         services.AddScoped<ICodeCoverageManager, CodeCoverageManager>();
+        services.AddScoped<CodeCoverageImporter>();
         services.AddHostedService<CodeRepoCommmitBackgroundIndexer>();
 
         services.AddScoped<ISetting, StretchTargetSetting>();

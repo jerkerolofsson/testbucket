@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+	<IncludeTestAssembly>False</IncludeTestAssembly>
+	<CodeCoverage>
+
+		<Attributes>
+			<Exclude>
+				<Attribute>^System\.Diagnostics\.DebuggerHiddenAttribute$</Attribute>
+				<Attribute>^System\.Diagnostics\.DebuggerNonUserCodeAttribute$</Attribute>
+				<Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
+				<Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
+			</Exclude>
+		</Attributes>
+		
+		<Sources>
+			<Exclude>
+				<Source>.*TestBucket\.Contracts.*</Source>
+			</Exclude>
+		</Sources>
+	</CodeCoverage>
+</Configuration>

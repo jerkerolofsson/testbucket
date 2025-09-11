@@ -1,4 +1,5 @@
-﻿using TestBucket.Components.Tests.TestSuites.Dialogs;
+﻿using TestBucket.Components.Shared.Tree;
+using TestBucket.Components.Tests.TestSuites.Dialogs;
 using TestBucket.Components.Uploads.Dialogs;
 using TestBucket.Domain.Files.Models;
 
@@ -28,6 +29,11 @@ public partial class AttachmentGrid
     public Color GridColor => _isGrid ? Color.Tertiary : Color.Default;
     public Color ListColor => !_isGrid ? Color.Tertiary : Color.Default;
 
+    private Task OnMenuOpened(FileResource resource)
+    {
+        appNavigationManager.State.SetSelectedFileResource(resource);
+        return Task.CompletedTask;
+    }
     private async Task DeleteAttachmentAsync(FileResource resource)
     {
         await attachmentsService.DeleteResourceByIdAsync(resource.Id);

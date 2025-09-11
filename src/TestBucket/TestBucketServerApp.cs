@@ -12,13 +12,18 @@ using MudBlazor.Translations;
 
 using MudExtensions.Services;
 
+using Quartz;
+using Quartz.Impl.AdoJobStore;
+
 using TestBucket.Components;
 using TestBucket.Components.Account;
 using TestBucket.Components.AI.Controllers;
 using TestBucket.Components.AI.Runner.Commands;
 using TestBucket.Components.Automation;
 using TestBucket.Components.Code.Architecture.Controllers;
+using TestBucket.Components.Code.CodeCoverage.Commands;
 using TestBucket.Components.Code.CodeCoverage.Controllers;
+using TestBucket.Components.Code.CodeCoverage.Jobs;
 using TestBucket.Components.Code.Commits.Controllers;
 using TestBucket.Components.Comments;
 using TestBucket.Components.Environments.Services;
@@ -85,7 +90,7 @@ namespace TestBucket;
 
 public static class TestBucketServerApp
 {
-    public static WebApplication CreateApp(this WebApplicationBuilder builder)
+    public static async Task<WebApplication> CreateApp(this WebApplicationBuilder builder)
     {
 
         builder.AddServiceDefaults();
@@ -164,8 +169,8 @@ public static class TestBucketServerApp
         {
             options.DefaultScheme = IdentityConstants.ApplicationScheme;
             options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-        })
-            .AddIdentityCookies();
+        }).AddIdentityCookies();
+
         string? connectionString = null;
         builder.AddNpgsqlDbContext<ApplicationDbContext>("testbucketdb", configureSettings =>
         {
@@ -230,6 +235,25 @@ public static class TestBucketServerApp
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         builder.Services.AddHostedService<MigrationService>();
 
+        builder.Services.AddQuartz(q =>
+        {
+            q.AddCodeCoverageJobs();
+
+            q.UsePersistentStore(c =>
+            {
+                c.UseSystemTextJsonSerializer();
+                c.UseProperties = true;
+
+                // Use for PostgresSQL database
+                c.UsePostgres(postgresOptions =>
+                {
+                    postgresOptions.UseDriverDelegate<PostgreSQLDelegate>();
+                    postgresOptions.ConnectionString = connectionString ?? string.Empty;
+                    postgresOptions.TablePrefix = "quartz.qrtz_";
+                });
+            });
+        });
+
         builder.Services.AddIdentityCore<ApplicationUser>(options =>
         {
             options.SignIn.RequireConfirmedAccount = true;
@@ -264,6 +288,7 @@ public static class TestBucketServerApp
                 }
             };
         });
+
 
         builder.Services.AddScoped<SignInManager<ApplicationUser>, ApplicationSignInManager>();
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
@@ -314,6 +339,8 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<TestBrowser>();
         builder.Services.AddScoped<TestCaseEditorController>();
         builder.Services.AddScoped<UploadService>();
+        builder.Services.AddScoped<ICommand, ImportCodeCoverageCommand>();
+
         builder.Services.AddScoped<FieldController>();
         builder.Services.AddScoped<UserController>();
         builder.Services.AddScoped<CommandController>();
@@ -465,6 +492,18 @@ public static class TestBucketServerApp
 
         // Add additional endpoints required by the Identity /Account Razor components.
         app.MapAdditionalIdentityEndpoints();
+
+        // Configure logging for Quartz
+        ILoggerFactory loggerFactory = app.Services.GetRequiredService<ILoggerFactory>();
+        Quartz.Logging.LogContext.SetCurrentLogProvider(loggerFactory);
+
+        await MigrationReadyWaiter.AddWhenReadyAsync(async () =>
+        {
+            // Start Quartz scheduler
+            var schedulerFactory = app.Services.GetRequiredService<ISchedulerFactory>();
+            var scheduler = await schedulerFactory.GetScheduler();
+            scheduler?.Start();
+        });
 
         return app;
     }

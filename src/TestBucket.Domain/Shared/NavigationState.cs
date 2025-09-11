@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TestBucket.Domain.AI.Agent;
 using TestBucket.Domain.AI.Agent.Models;
 using TestBucket.Domain.Code.Models;
+using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Issues.Models;
 using TestBucket.Domain.Requirements.Models;
 using TestBucket.Domain.Teams.Models;
@@ -25,6 +26,11 @@ public class NavigationState
     /// Search folder. This is always set in combination with another entity
     /// </summary>
     public SearchFolder? SelectedSearchFolder { get; private set; }
+
+    /// <summary>
+    /// Selected file resource
+    /// </summary>
+    public FileResource? SelectedFileResource { get; private set; }
 
 
     /// <summary>
@@ -185,6 +191,8 @@ public class NavigationState
         IsTestLabSelected = false;
         IsTestRepositorySelected = false;
 
+        this.SelectedFileResource = null;
+
         this.SelectedSearchFolder = null;
         this.SelectedFeature = null;
         this.SelectedComponent = null;
@@ -320,5 +328,11 @@ public class NavigationState
     {
         ClearSelection();
         SelectedIssue = issue;
+    }
+
+    public void SetSelectedFileResource(FileResource resource)
+    {
+        ClearSelection();
+        SelectedFileResource = resource;
     }
 }

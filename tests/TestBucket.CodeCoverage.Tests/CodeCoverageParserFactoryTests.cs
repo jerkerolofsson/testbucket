@@ -27,6 +27,7 @@ namespace TestBucket.CodeCoverage.Tests
         /// Verifies that the correct parser is created for the Cobertura MIME type.
         /// </summary>
         [Fact]
+        [CoveredRequirement("COV-2")]
         public void CreateFromContentType_WithCoberturaMime_CorrectParserCreated()
         {
             var parser = CodeCoverageParserFactory.CreateFromContentType("application/x-cobertura");
@@ -37,6 +38,7 @@ namespace TestBucket.CodeCoverage.Tests
         /// Verifies that the correct content type is returned for the Cobertura format.
         /// </summary>
         [Fact]
+        [CoveredRequirement("COV-2")]
         public void GetContentTypeFromFormat_WithCobertura_CorrectContentTypeReturned()
         {
             var mediaType = CodeCoverageParserFactory.GetContentTypeFromFormat(CodeCoverageFormat.Cobertura);
@@ -57,6 +59,7 @@ namespace TestBucket.CodeCoverage.Tests
         /// Verifies that the correct format is returned for the Cobertura content type.
         /// </summary>
         [Fact]
+        [CoveredRequirement("COV-2")]
         public void GetFormatFromContentType_WithCobertura_CorrectContentTypeReturned()
         {
             var format = CodeCoverageParserFactory.GetFormatFromContentType("application/x-cobertura");

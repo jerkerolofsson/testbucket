@@ -1,6 +1,7 @@
 ﻿@using Humanizer
 @using TestBucket.Components.Uploads.Services
 @inject AttachmentsService attachmentsService
+@inject AppNavigationManager appNavigationManager
 @inject IDialogService dialogService
 @inject IStringLocalizer<SharedStrings> loc
 
@@ -21,7 +22,15 @@
                 <MudStack Class="tb-attachment-grid-icons pa-2" Spacing="3" Row Wrap="Wrap.Wrap">
                     @foreach (var attachment in _attachments)
                     {
-                        <ResourceThumbnail ResourceClicked="OnAttachmentClickedAsync" Resource="@attachment" />
+						<MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true" OpenChanged="() => OnMenuOpened(attachment)">
+							<ActivatorContent>
+								<ResourceThumbnail ResourceClicked="OnAttachmentClickedAsync" Resource="@attachment" />
+							</ActivatorContent>
+							<ChildContent>
+								<CommandMenuItems TypeNames="file" />
+							</ChildContent>
+
+						</MudMenu>
                     }
                 </MudStack>
             }

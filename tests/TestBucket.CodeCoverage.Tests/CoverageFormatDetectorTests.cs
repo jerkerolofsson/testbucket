@@ -35,6 +35,7 @@ namespace TestBucket.CodeCoverage.Tests
         /// when provided with a valid Cobertura XML file.
         /// </summary>
         [Fact]
+        [CoveredRequirement("COV-2")]
         public async Task DetectFromFileAsync_WithCoberturaXml_ReturnsCobertura()
         {
             // Arrange
@@ -55,6 +56,7 @@ namespace TestBucket.CodeCoverage.Tests
         /// when provided with a valid Cobertura XML string.
         /// </summary>
         [Fact]
+        [CoveredRequirement("COV-2")]
         public void DetectFormat_WithCoberturaXml_ReturnsCobertura()
         {
             // Arrange

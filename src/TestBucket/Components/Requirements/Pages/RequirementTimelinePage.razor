@@ -6,9 +6,13 @@
 @using TestBucket.Components.Requirements.Utilities
 @using TestBucket.Domain.Features.Traceability.Models
 @using TestBucket.Domain.Issues.Models
+@using TestBucket.Domain.Requirements
 @layout RequirementLayout
+@implements IDisposable
+@implements IRequirementObserver
 @inject AppNavigationManager appNavigationManager
 @inject RequirementEditorController controller
+@inject IRequirementManager requirementManager
 @inject MilestonesController milestonesController
 
 <MudStack Class="pa-2" Style="height: 100%">
@@ -104,26 +108,36 @@
                     Id = x.Id.ToString(),
                 }).ToList();
 
-            var node = await controller.DiscoverTraceabilityAsync(_requirement, 5);
-            List<Requirement> downstreamRequirements = [];
-            AddDownstreamRequirements(node, downstreamRequirements);
-
-            _tasks.Clear();
-
-            _requirements = [_requirement, .. downstreamRequirements];
-            _tasks.AddRange(_requirements.Select(x =>
-                new MudGanttTask
-                {
-                    Id = x.Id.ToString(),
-                    Name = x.Name,
-                    StartDate = x.StartDate ?? DateTime.UtcNow,
-                    EndDate = x.DueDate ?? DateTimeOffset.UtcNow.AddDays(1),
-                    Progress = x.Progress ?? 0,
-                    Links = RequirementGanntHelper.GetDependencies(x),
-                    Color = RequirementColors.GetColor(x)
-                }
-            ));
+            await RefreshTasksAsync();
         }
+    }
+
+    private async Task RefreshTasksAsync()
+    {
+        if (_requirement is null)
+        {
+            return;
+        }
+
+        var node = await controller.DiscoverTraceabilityAsync(_requirement, 5);
+        List<Requirement> downstreamRequirements = [];
+        AddDownstreamRequirements(node, downstreamRequirements);
+
+        _tasks.Clear();
+
+        _requirements = [_requirement, .. downstreamRequirements];
+        _tasks.AddRange(_requirements.Select(x =>
+            new MudGanttTask
+            {
+                Id = x.Id.ToString(),
+                Name = x.Name,
+                StartDate = x.StartDate ?? DateTime.UtcNow,
+                EndDate = x.DueDate ?? DateTimeOffset.UtcNow.AddDays(1),
+                Progress = x.Progress ?? 0,
+                Links = RequirementGanntHelper.GetDependencies(x),
+                Color = RequirementColors.GetColor(x)
+            }
+        ));
     }
 
 
@@ -137,5 +151,45 @@
                 AddDownstreamRequirements(child, requirements);
             }
         }
+    }
+
+    protected override void OnInitialized()
+    {
+        requirementManager.AddObserver(this);
+    }
+
+    public Task OnSpecificationCreatedAsync(RequirementSpecification spec) => Task.CompletedTask;
+
+    public Task OnSpecificationDeletedAsync(RequirementSpecification spec) => Task.CompletedTask;
+
+    public Task OnSpecificationSavedAsync(RequirementSpecification spec) => Task.CompletedTask;
+
+    public Task OnFolderCreatedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
+
+    public Task OnFolderDeletedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
+
+    public Task OnFolderSavedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
+
+    public async Task OnRequirementCreatedAsync(Requirement requirement)
+    {
+        await RefreshTasksAsync();
+        this.StateHasChanged();
+
+    }
+
+    public async Task OnRequirementDeletedAsync(Requirement requirement)
+    {
+        await RefreshTasksAsync();
+        this.StateHasChanged();
+    }
+
+    public Task OnRequirementSavedAsync(Requirement requirement) => Task.CompletedTask;
+
+
+    public Task OnRequirementFieldChangedAsync(Requirement requirement) => Task.CompletedTask;
+
+    public void Dispose()
+    {
+        requirementManager.RemoveObserver(this);
     }
 }

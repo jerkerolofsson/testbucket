@@ -2,7 +2,6 @@ using System.Net;
 
 using TestBucket.Contracts;
 using TestBucket.Contracts.Identity;
-using TestBucket.Domain.AI;
 using TestBucket.Domain.Identity;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -29,6 +28,7 @@ string runnerAccessToken = apiKeyGenerator.GenerateAccessToken("runner", princip
 // Postgres
 IResourceBuilder<PostgresServerResource> postgres = builder.AddPostgres("testbucket-postgres")
     .WithImage("ankane/pgvector")
+    .WithPgAdmin()
     .WithImageTag("latest");
 if (!isTest)
 {

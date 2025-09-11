@@ -2,10 +2,10 @@ namespace TestBucket;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        var app = builder.CreateApp();
+        var app = await builder.CreateApp();
         app.Run();
     }
 }

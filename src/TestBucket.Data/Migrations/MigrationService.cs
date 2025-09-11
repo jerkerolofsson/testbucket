@@ -55,7 +55,7 @@ public class MigrationService(IServiceProvider serviceProvider, ILogger<Migratio
             finally
             {
 
-                MigrationReadyWaiter.SetReady();
+                await MigrationReadyWaiter.SetReadyAsync();
                 s_lock.Release();
             }
         }

@@ -25,7 +25,7 @@ namespace TestBucket.CodeCoverage
         /// </summary>
         private static readonly Dictionary<string, CodeCoverageFormat> _mediaTypes = new()
         {
-            {"application/x-cobertura" , CodeCoverageFormat.Cobertura},
+            {CodeCoverageMediaTypes.Cobertura , CodeCoverageFormat.Cobertura},
         };
 
         /// <summary>

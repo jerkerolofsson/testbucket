@@ -92,11 +92,7 @@ public static class DomainServiceExtensions
 {
     public static IServiceCollection AddDomainServices(this IServiceCollection services)
     {
-        //services.AddMediatR(o =>
-        //{
-        //    o.RegisterServicesFromAssembly(typeof(DomainServiceExtensions).Assembly);
-        //});
-
+        // Mediator
         services.AddMediator(options =>
         {
             options.ServiceLifetime = ServiceLifetime.Scoped;

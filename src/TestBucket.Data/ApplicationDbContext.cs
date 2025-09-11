@@ -1,4 +1,8 @@
+using AppAny.Quartz.EntityFrameworkCore.Migrations;
+using AppAny.Quartz.EntityFrameworkCore.Migrations.PostgreSQL;
+
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 using TestBucket.Domain.AI.Billing;
 using TestBucket.Domain.AI.Mcp.Models;
@@ -137,7 +141,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         builder.HasPostgresExtension("vector");
         base.OnModelCreating(builder);
+
+        // Adds Quartz.NET PostgreSQL schema to EntityFrameworkCore
+        builder.AddQuartz(builder => {
+            builder.UsePostgreSql();
+            });
     }
-
-
 }

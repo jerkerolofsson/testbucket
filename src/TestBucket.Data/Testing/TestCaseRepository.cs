@@ -767,7 +767,7 @@ internal class TestCaseRepository : ITestCaseRepository
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
         var query = dbContext.TestRuns.AsNoTracking()
-            .Include(x => x.TestRunFields)
+            .Include(x => x.TestRunFields!).ThenInclude(field => field.FieldDefinition)
             .Include(x => x.Team)
             .Include(x => x.TestProject)
             .Include(x => x.Comments)
@@ -793,7 +793,7 @@ internal class TestCaseRepository : ITestCaseRepository
 
             using var dbContext = await _dbContextFactory.CreateDbContextAsync();
             return await dbContext.TestRuns.AsNoTracking()
-                .Include(x => x.TestRunFields)
+                .Include(x => x.TestRunFields!).ThenInclude(field => field.FieldDefinition)
                 .Include(x => x.Team)
                 .Include(x => x.TestProject)
                 .Include(x => x.Comments)

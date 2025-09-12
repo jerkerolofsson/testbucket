@@ -9,6 +9,7 @@ using TestBucket.Domain.AI.Mcp.Models;
 using TestBucket.Domain.Audit.Models;
 using TestBucket.Domain.Automation.Pipelines.Models;
 using TestBucket.Domain.Automation.Runners.Models;
+using TestBucket.Domain.Code.CodeCoverage.Models;
 using TestBucket.Domain.Code.Models;
 using TestBucket.Domain.Comments.Models;
 using TestBucket.Domain.Environments.Models;
@@ -59,6 +60,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     internal DbSet<Milestone> Milestones { get; set; }
     internal DbSet<Label> Labels { get; set; }
 
+    internal DbSet<CodeCoverageGroup> CodeCoverageGroups { get; set; }
     internal DbSet<Repository> Repositories { get; set; }
     internal DbSet<Commit> Commits { get; set; }
     internal DbSet<CommitFile> CommitFiless { get; set; }

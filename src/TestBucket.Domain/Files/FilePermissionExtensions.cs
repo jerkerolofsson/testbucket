@@ -10,48 +10,86 @@ public static class FilePermissionExtensions
         ThrowIfNoPermission(principal, file, level);
     }
 
-    public static void ThrowIfNoPermission(this ClaimsPrincipal principal, FileResource file, PermissionLevel level)
+    public static bool HasPermission(this ClaimsPrincipal principal, FileResource file, PermissionLevel level)
     {
-        principal.ThrowIfEntityTenantIsDifferent(file.TenantId);
+        var tenantId = principal.GetTenantIdOrThrow();
+        if(tenantId != file.TenantId)
+        {
+            return false;
+        }
 
         if (file.TestCaseId is not null)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.TestCase, level);
+            if(!principal.HasPermission(PermissionEntityType.TestCase, level))
+            {
+                return false;
+            }
         }
         if (file.TestRunId is not null)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.TestRun, level);
+            if(!principal.HasPermission(PermissionEntityType.TestRun, level))
+            {
+                return false;
+            }
         }
         if (file.TestCaseRunId is not null)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.TestCaseRun, level);
+            if(!principal.HasPermission(PermissionEntityType.TestCaseRun, level))
+            {
+                return false;
+            }
         }
         if (file.TestSuiteId is not null || file.TestSuiteFolderId is not null)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.TestSuite, level);
+            if(!principal.HasPermission(PermissionEntityType.TestSuite, level))
+            {
+                return false;
+            }
         }
-
         if (file.LocalIssueId is not null)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.Issue, level);
+            if(!principal.HasPermission(PermissionEntityType.Issue, level))
+            {
+                return false;
+            }
         }
-
         if (file.RequirementId is not null)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.Requirement, level);
+            if(!principal.HasPermission(PermissionEntityType.Requirement, level))
+            {
+                return false;
+            }
         }
         if (file.RequirementSpecificationId is not null)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.RequirementSpecification, level);
+            if(!principal.HasPermission(PermissionEntityType.RequirementSpecification, level))
+            {
+                return false;
+            }
         }
         if (file.FeatureId is not null || file.ComponentId is not null || file.SystemId is not null || file.LayerId is not null)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.Architecture, level);
+            if(!principal.HasPermission(PermissionEntityType.Architecture, level))
+            {
+                return false;
+            }
         }
-
         if (file.TestProjectId is not null)
         {
-            principal.ThrowIfNoPermission(PermissionEntityType.Project, level);
+            if(!principal.HasPermission(PermissionEntityType.Project, level))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static void ThrowIfNoPermission(this ClaimsPrincipal principal, FileResource file, PermissionLevel level)
+    {
+        if(!HasPermission(principal, file, level))
+        {
+            throw new UnauthorizedAccessException($"The user {principal.Identity?.Name} does not have the required access ({level}) for the file resource {file.Name} ({file.Id})");
         }
     }
 }

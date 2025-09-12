@@ -4,9 +4,8 @@ using Mediator;
 
 using Microsoft.Extensions.Localization;
 
-using NGitLab.Models;
-
 using TestBucket.Components.Requirements.Dialogs;
+using TestBucket.Components.Shared.Alerts;
 using TestBucket.Components.Tests.TestCases.Dialogs;
 using TestBucket.Contracts.Requirements.Types;
 using TestBucket.Domain.Features.Traceability.Models;
@@ -23,6 +22,7 @@ namespace TestBucket.Components.Requirements.Services;
 
 internal class RequirementEditorController : TenantBaseService
 {
+    private readonly AlertController _alertController;
     private readonly IStringLocalizer<SharedStrings> _loc;
     private readonly IStringLocalizer<RequirementStrings> _reqLoc;
     private readonly IRequirementImporter _importer;
@@ -38,7 +38,8 @@ internal class RequirementEditorController : TenantBaseService
         IRequirementImporter importer,
         IRequirementManager manager,
         IDialogService dialogService,
-        IMediator mediator) : base(authenticationStateProvider)
+        IMediator mediator,
+        AlertController alertController) : base(authenticationStateProvider)
     {
         _loc = loc;
         _reqLoc = reqLoc;
@@ -46,6 +47,7 @@ internal class RequirementEditorController : TenantBaseService
         _manager = manager;
         _dialogService = dialogService;
         _mediator = mediator;
+        _alertController = alertController;
     }
 
     public async Task OpenEditDialogAsync(Requirement requirement)
@@ -63,9 +65,11 @@ internal class RequirementEditorController : TenantBaseService
 
     public async Task SetFieldAsync(Requirement requirement, TraitType type, string? value)
     {
+        if(! await _alertController.HasPermissionAsync(PermissionEntityType.Requirement, PermissionLevel.Write))
+        {
+            return;
+        }
         var principal = await GetUserClaimsPrincipalAsync();
-        principal.ThrowIfNoPermission(PermissionEntityType.Requirement, PermissionLevel.Write);
-
         await _mediator.Send(new SetRequirementFieldRequest(principal, requirement, type, value));
     }
 
@@ -140,14 +144,9 @@ internal class RequirementEditorController : TenantBaseService
         ArgumentNullException.ThrowIfNull(requirement);
 
         var principal = await GetUserClaimsPrincipalAsync();
-        if(!PermissionClaims.HasPermission(principal, PermissionEntityType.Requirement, PermissionLevel.Delete))
+
+        if (!await _alertController.HasPermissionAsync(PermissionEntityType.Requirement, PermissionLevel.Delete))
         {
-            await _dialogService.ShowMessageBox(new MessageBoxOptions
-            {
-                YesText = _loc["ok"],
-                Title = _loc["no-permission-title"],
-                MarkupMessage = new MarkupString(_loc["no-permission-message"])
-            });
             return;
         }
 

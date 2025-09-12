@@ -48,6 +48,7 @@ using TestBucket.Components.Settings.Commands;
 using TestBucket.Components.Settings.Controllers;
 using TestBucket.Components.Settings.Links;
 using TestBucket.Components.Settings.Roles;
+using TestBucket.Components.Shared.Alerts;
 using TestBucket.Components.Shared.Commands;
 using TestBucket.Components.Shared.Fields;
 using TestBucket.Components.Shared.Review.Controllers;
@@ -297,6 +298,8 @@ public static class TestBucketServerApp
         builder.Services.AddScoped<ArchitectureController>();
         builder.Services.AddScoped<CommitController>();
         builder.Services.AddScoped<CodeCoverageController>();
+        
+        builder.Services.AddScoped<AlertController>();
 
         builder.Services.AddScoped<ReviewController>();
         builder.Services.AddScoped<MetricsController>();

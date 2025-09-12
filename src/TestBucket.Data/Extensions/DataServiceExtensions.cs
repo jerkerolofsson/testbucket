@@ -29,6 +29,7 @@ using TestBucket.Domain.Audit;
 using TestBucket.Domain.Automation.Pipelines;
 using TestBucket.Domain.Automation.Runners;
 using TestBucket.Domain.Code;
+using TestBucket.Domain.Code.CodeCoverage;
 using TestBucket.Domain.Code.Services;
 using TestBucket.Domain.Comments;
 using TestBucket.Domain.Environments;
@@ -55,6 +56,7 @@ public static class DataServiceExtensions
     {
         services.AddScoped<ISequenceGenerator, SequenceGenerator>();
 
+        services.AddScoped<ICodeCoverageRepository, CodeCoverageRepository>();
         services.AddScoped<IAuditRepository, AuditRepository>();
         services.AddScoped<IDashboardRepository, DashboardRepository>();
         services.AddScoped<IHeuristicsRepository, HeuristicsRepository>();

@@ -2,24 +2,28 @@
 using Quartz;
 
 using TestBucket.CodeCoverage;
+using TestBucket.Components.Shared.Alerts;
 using TestBucket.Contracts.Localization;
 using TestBucket.Domain.Code.CodeCoverage.Import;
 using TestBucket.Domain.Commands;
+using TestBucket.Domain.Files;
 using TestBucket.Domain.Keyboard;
 
 namespace TestBucket.Components.Code.CodeCoverage.Commands;
 
-public class ImportCodeCoverageCommand : ICommand
+internal class ImportCodeCoverageCommand : ICommand
 {
     private readonly IAppLocalization _loc;
     private readonly ISchedulerFactory _scheduler;
     private readonly AppNavigationManager _appNav;
+    private readonly AlertController _alertController;
 
-    public ImportCodeCoverageCommand(IAppLocalization loc, ISchedulerFactory scheduler, AppNavigationManager appNav)
+    public ImportCodeCoverageCommand(IAppLocalization loc, ISchedulerFactory scheduler, AppNavigationManager appNav, AlertController alertController)
     {
         _loc = loc;
         _scheduler = scheduler;
         _appNav = appNav;
+        _alertController = alertController;
     }
 
     public string Id => "import-code-coverage";
@@ -52,11 +56,19 @@ public class ImportCodeCoverageCommand : ICommand
             return;
         }
 
+        // Make sure the user has read-access to the resource
+        if (!principal.HasPermission(file, PermissionLevel.Read))
+        {
+            await _alertController.ShowNoPermissionAlertAsync();
+            return;
+        }
+
         var scheduler = await _scheduler.GetScheduler();
         var jobData = new JobDataMap
         {
             { "ResourceId", file.Id.ToString() },
-            { "TenantId", file.TenantId }
+            { "TenantId", file.TenantId },
+            { "Email", principal.Identity?.Name ?? "system" }
         };
         await scheduler.TriggerJob(new JobKey(nameof(ImportCodeCoverageResourceJob)), jobData);
     }

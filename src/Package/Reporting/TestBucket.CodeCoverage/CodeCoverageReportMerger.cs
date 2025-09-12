@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TestBucket.CodeCoverage;
 
-namespace TestBucket.CodeCoverage;
-
-internal class CodeCoverageReportMerger
+/// <summary>
+/// Merges code coverage reports into a single report
+/// </summary>
+public class CodeCoverageReportMerger
 {
     public CodeCoverageReport Merge(CodeCoverageReport report1, CodeCoverageReport report2)
     {

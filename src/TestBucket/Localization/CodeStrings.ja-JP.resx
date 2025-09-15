@@ -161,7 +161,7 @@
     <value>インパクト</value>
   </data>
   <data name="import-code-coverage" xml:space="preserve">
-    <value />
+    <value>コードカバレッジをインポートします</value>
   </data>
   <data name="layer" xml:space="preserve">
     <value>層</value>

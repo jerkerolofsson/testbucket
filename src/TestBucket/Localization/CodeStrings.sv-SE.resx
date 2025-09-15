@@ -161,7 +161,7 @@
     <value>Inverkan</value>
   </data>
   <data name="import-code-coverage" xml:space="preserve">
-    <value />
+    <value>Importkodtäckning</value>
   </data>
   <data name="layer" xml:space="preserve">
     <value>Lager</value>

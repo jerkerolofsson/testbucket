@@ -117,6 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="accessibility" xml:space="preserve">
     <value>Zugänglichkeit</value>
   </data>
@@ -215,6 +216,12 @@
   </data>
   <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
     <value>Dies ändert den Staat in laufend, wenn die Beschreibung im vollständigen Zustand geändert wird.</value>
+  </data>
+  <data name="code-coverage-auto-import" xml:space="preserve">
+    <value>Automatisch Berichte importieren</value>
+  </data>
+  <data name="code-coverage-auto-import-description" xml:space="preserve">
+    <value>Importiert Code -Deckungsberichte, wenn sie als Anhänge zu einem Testlauf hinzugefügt werden</value>
   </data>
   <data name="color" xml:space="preserve">
     <value>Farbe</value>
@@ -405,62 +412,55 @@
   <data name="year-to-date" xml:space="preserve">
     <value>Der bisherige Jahresverlauf</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="code-coverage-stretch-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code-coverage-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code-coverage-min-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="api-keys" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>API -Schlüssel</value>
   </data>
   <data name="code" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Code</value>
   </data>
   <data name="code-coverage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-accounts" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-environments" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-environments-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-accounts-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="review" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Codeabdeckung</value>
   </data>
   <data name="ai-usage-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="api-keys" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="api-keys-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="integrations" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="integrations-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Details anzeigen, wie viele Token für AI / LLM verwendet werden</value>
   </data>
   <data name="fields" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Felder</value>
   </data>
   <data name="fields-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Fügen Sie benutzerdefinierte Felder für Tests, Anforderungen, Ergebnisse, Probleme hinzu oder löschen Sie benutzerdefinierte Felder.</value>
   </data>
-  <data name="code-coverage-auto-import" xml:space="preserve">
-    <value />
+  <data name="test-accounts-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Fügen Sie Konten oder Anmeldeinformationen zum Testen hinzu, bearbeiten oder löschen Sie diese Anmeldeinformationen</value>
   </data>
-  <data name="code-coverage-auto-import-description" xml:space="preserve">
-    <value />
+  <data name="api-keys-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Fügen Sie Schlüssel oder Token für die API -Verwendung hinzu</value>
+  </data>
+  <data name="integrations" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Integrationen</value>
+  </data>
+  <data name="code-coverage-min-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Minimum</value>
+  </data>
+  <data name="review" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Rezension</value>
+  </data>
+  <data name="test-accounts" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Testkonten</value>
+  </data>
+  <data name="test-environments" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Testumgebungen</value>
+  </data>
+  <data name="integrations-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Verwalten Sie Erweiterungen, die sich in Remotedienste wie Github, Gitlab, Jira usw. integrieren.</value>
+  </data>
+  <data name="test-environments-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Verwalten Sie Umgebungen für Tests wie Produktion oder Staging und definieren Sie benutzerdefinierte Variablen, die in Testfällen verwendet werden können</value>
+  </data>
+  <data name="code-coverage-stretch-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Ziel</value>
+  </data>
+  <data name="code-coverage-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Ziel</value>
   </data>
 </root>

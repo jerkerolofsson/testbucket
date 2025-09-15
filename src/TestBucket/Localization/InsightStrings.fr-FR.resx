@@ -148,7 +148,7 @@
     <value>Problèmes fermés</value>
   </data>
   <data name="code-coverage" xml:space="preserve">
-    <value />
+    <value>Couverture de code</value>
   </data>
   <data name="configure-data-visualization" xml:space="preserve">
     <value>Configurer la visualisation des données</value>
@@ -169,7 +169,7 @@
     <value>Mode sombre</value>
   </data>
   <data name="data-mode" xml:space="preserve">
-    <value />
+    <value>Mode de données</value>
   </data>
   <data name="data-source" xml:space="preserve">
     <value>Source de données</value>
@@ -226,10 +226,10 @@
     <value>Résultats de test par composant</value>
   </data>
   <data name="test-results-by-user" xml:space="preserve">
-    <value />
+    <value>Résultats des tests par l'utilisateur</value>
   </data>
   <data name="text-format" xml:space="preserve">
-    <value />
+    <value>Format de texte</value>
   </data>
   <data name="time-alltime" xml:space="preserve">
     <value>De tout</value>

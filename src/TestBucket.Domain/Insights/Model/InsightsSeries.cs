@@ -77,12 +77,56 @@ public class InsightsSeries<T, U> where T : notnull
         }
     }
 
+    /// <summary>
+    /// Sets or gets a value
+    /// </summary>
+    /// <param name="label"></param>
+    /// <returns></returns>
+    public U? this [T label]
+    {
+        get
+        {
+            if(TryGetValue(label, out var value))
+            {
+                return value;
+            }
+            return default;
+        }
+        set
+        {
+            ArgumentNullException.ThrowIfNull(value);
+
+            var point = _data.FirstOrDefault(x => x.Label.Equals(label));
+            if(point is null)
+            {
+                Add(label, value);
+            }
+            else
+            {
+                var index =_data.IndexOf(point);
+                _data.RemoveAt(index);
+                _data.Insert(index, new InsightsDataPoint<T, U>(label, value));
+            }
+        }
+    }
+
+    /// <summary>
+    /// Adds a value
+    /// </summary>
+    /// <param name="label"></param>
+    /// <param name="value"></param>
     public void Add(T label, U value)
     {
         var point = new InsightsDataPoint<T, U>(label, value);
         _data.Add(point);
     }
 
+    /// <summary>
+    /// Reads the value for a label. Returns true if found.
+    /// </summary>
+    /// <param name="label"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public bool TryGetValue(T label, [NotNullWhen(true)] out U? value)
     {
         value = default;

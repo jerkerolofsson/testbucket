@@ -117,6 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="account" xml:space="preserve">
     <value>アカウント</value>
   </data>
@@ -140,10 +141,6 @@
   </data>
   <data name="custom-variables" xml:space="preserve">
     <value>カスタム変数</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="custom-variables-wizard-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
   </data>
   <data name="email" xml:space="preserve">
     <value>メール</value>
@@ -206,5 +203,8 @@
   <data name="verify" xml:space="preserve">
     <value>確認する</value>
     <comment>Verify TOTP code</comment>
+  </data>
+  <data name="custom-variables-wizard-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>アカウントに関連付けられるカスタムプロパティを追加します。 これらのプロパティは、アカウントがロックされて割り当てられた後（テストケースを実行するとき）、変数としてテストケースによってアクセス可能になります。 これらのカスタムプロパティはユーザー定義されており、前のページの固定プロパティに加えてオプションで追加される場合があります。</value>
   </data>
 </root>

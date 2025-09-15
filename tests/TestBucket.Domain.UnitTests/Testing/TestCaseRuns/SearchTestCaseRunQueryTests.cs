@@ -1,6 +1,6 @@
 ﻿using TestBucket.Domain.Testing.TestRuns.Search;
 
-namespace TestBucket.Domain.UnitTests.Testing.Models
+namespace TestBucket.Domain.UnitTests.Testing.TestCaseRuns
 {
     /// <summary>
     /// Contains unit tests for the <see cref="SearchTestCaseRunQuery"/> class, 
@@ -8,6 +8,9 @@ namespace TestBucket.Domain.UnitTests.Testing.Models
     /// </summary>
     [EnrichedTest]
     [UnitTest]
+    [FunctionalTest]
+    [Component("Testing")]
+    [Feature("Search")]
     public class SearchTestCaseRunQueryTests
     {
         /// <summary>

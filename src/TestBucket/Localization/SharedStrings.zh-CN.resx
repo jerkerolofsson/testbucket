@@ -117,6 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="access-failed-count" xml:space="preserve">
     <value>访问失败计数</value>
   </data>
@@ -334,10 +335,6 @@
   <data name="default-reviewers" xml:space="preserve">
     <value>默认审阅者</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Defines the runner for automated tests when running within TB." type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="delete" xml:space="preserve">
     <value>删除</value>
   </data>
@@ -377,6 +374,9 @@
   <data name="description" xml:space="preserve">
     <value>描述</value>
   </data>
+  <data name="download" xml:space="preserve">
+    <value>下载</value>
+  </data>
   <data name="duplicate-test" xml:space="preserve">
     <value>重复测试</value>
   </data>
@@ -394,9 +394,6 @@
   </data>
   <data name="edit" xml:space="preserve">
     <value>编辑</value>
-  </data>
-  <data name="edit-automation-properties" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
   </data>
   <data name="edit-folder" xml:space="preserve">
     <value>编辑文件夹</value>
@@ -873,9 +870,6 @@
   <data name="runner" xml:space="preserve">
     <value>跑步者</value>
   </data>
-  <data name="runner-language" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="runners" xml:space="preserve">
     <value>跑步者</value>
   </data>
@@ -997,9 +991,6 @@
   <data name="test-case" xml:space="preserve">
     <value>测试案例</value>
   </data>
-  <data name="test-case-external-id-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="test-case-run" xml:space="preserve">
     <value>测试结果</value>
   </data>
@@ -1043,6 +1034,9 @@
   </data>
   <data name="test-resources" xml:space="preserve">
     <value>测试资源</value>
+  </data>
+  <data name="test-resources-description" xml:space="preserve">
+    <value>可用于测试的设备，服务或其他资源。这些资源可以由资源服务器托管，从而使远程访问能够访问它们。，从而使远程访问能够访问它们。</value>
   </data>
   <data name="test-result" xml:space="preserve">
     <value>结果</value>
@@ -1097,6 +1091,9 @@
   <data name="unit-tests" xml:space="preserve">
     <value>单位测试</value>
   </data>
+  <data name="upload" xml:space="preserve">
+    <value>上传</value>
+  </data>
   <data name="upload-file-hint" xml:space="preserve">
     <value>在这里拖放文件或单击以选择文件</value>
   </data>
@@ -1149,16 +1146,22 @@
   <data name="welcome-message" xml:space="preserve">
     <value>欢迎来测试水桶</value>
   </data>
-  <data name="please-wait" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="creating-pipeline" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>创建管道..</value>
   </data>
-  <data name="download" xml:space="preserve">
-    <value />
+  <data name="test-case-external-id-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>测试用例的外部ID用于将导入的自动化结果映射到正确的测试用例</value>
   </data>
-  <data name="upload" xml:space="preserve">
-    <value />
+  <data name="edit-automation-properties" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>编辑自动化属性</value>
+  </data>
+  <data name="please-wait" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>请稍等..</value>
+  </data>
+  <data name="Defines the runner for automated tests when running within TB." type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>跑步者描述</value>
+  </data>
+  <data name="runner-language" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>跑步者语言</value>
   </data>
 </root>

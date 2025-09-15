@@ -148,7 +148,7 @@
     <value>Stängda frågor</value>
   </data>
   <data name="code-coverage" xml:space="preserve">
-    <value />
+    <value>Kodtäckning</value>
   </data>
   <data name="configure-data-visualization" xml:space="preserve">
     <value>Konfigurera datavisualisering</value>
@@ -169,7 +169,7 @@
     <value>Mörkt läge</value>
   </data>
   <data name="data-mode" xml:space="preserve">
-    <value />
+    <value>Dataläge</value>
   </data>
   <data name="data-source" xml:space="preserve">
     <value>Datakälla</value>
@@ -226,10 +226,10 @@
     <value>Testresultat efter komponent</value>
   </data>
   <data name="test-results-by-user" xml:space="preserve">
-    <value />
+    <value>Testresultat av användaren</value>
   </data>
   <data name="text-format" xml:space="preserve">
-    <value />
+    <value>Textformat</value>
   </data>
   <data name="time-alltime" xml:space="preserve">
     <value>Hela tiden</value>

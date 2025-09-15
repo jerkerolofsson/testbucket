@@ -322,6 +322,9 @@
   <data name="create-test-run" xml:space="preserve">
     <value>Create run</value>
   </data>
+  <data name="creating-pipeline" xml:space="preserve">
+    <value>Creating pipeline..</value>
+  </data>
   <data name="dashboard" xml:space="preserve">
     <value>Dashboard</value>
   </data>
@@ -375,6 +378,9 @@
   </data>
   <data name="description" xml:space="preserve">
     <value>Description</value>
+  </data>
+  <data name="download" xml:space="preserve">
+    <value>Download</value>
   </data>
   <data name="duplicate-test" xml:space="preserve">
     <value>Duplicate test</value>
@@ -747,6 +753,9 @@
   <data name="pipelines" xml:space="preserve">
     <value>Pipelines</value>
   </data>
+  <data name="please-wait" xml:space="preserve">
+    <value>Please wait..</value>
+  </data>
   <data name="post-conditions" xml:space="preserve">
     <value>Post-conditions</value>
   </data>
@@ -1099,6 +1108,9 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   <data name="unit-tests" xml:space="preserve">
     <value>Unit tests</value>
   </data>
+  <data name="upload" xml:space="preserve">
+    <value>Upload</value>
+  </data>
   <data name="upload-file-hint" xml:space="preserve">
     <value>Drag and drop files here or click to select a file</value>
   </data>
@@ -1150,17 +1162,5 @@ Variables are defined in a test case as {{Key}} and when running a test case the
   </data>
   <data name="welcome-message" xml:space="preserve">
     <value>Welcome to Test Bucket</value>
-  </data>
-  <data name="please-wait" xml:space="preserve">
-    <value>Please wait..</value>
-  </data>
-  <data name="creating-pipeline" xml:space="preserve">
-    <value>Creating pipeline..</value>
-  </data>
-  <data name="download" xml:space="preserve">
-    <value>Download</value>
-  </data>
-  <data name="upload" xml:space="preserve">
-    <value>Upload</value>
   </data>
 </root>

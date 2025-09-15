@@ -117,6 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="accessibility" xml:space="preserve">
     <value>アクセシビリティ</value>
   </data>
@@ -215,6 +216,12 @@
   </data>
   <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
     <value>これにより、完了した状態で説明が変更された場合、状態は継続的に変更されます。</value>
+  </data>
+  <data name="code-coverage-auto-import" xml:space="preserve">
+    <value>レポートを自動的にインポートします</value>
+  </data>
+  <data name="code-coverage-auto-import-description" xml:space="preserve">
+    <value>テスト実行の添付ファイルとして追加されたときにコードカバレッジレポートをインポートします</value>
   </data>
   <data name="color" xml:space="preserve">
     <value>色</value>
@@ -405,62 +412,55 @@
   <data name="year-to-date" xml:space="preserve">
     <value>年初来</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="code-coverage-stretch-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code-coverage-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code-coverage-min-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code-coverage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-accounts" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-environments" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-environments-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-accounts-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="review" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="ai-usage-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>AI / LLMに使用されるトークンの数の詳細を見る</value>
   </data>
   <data name="api-keys" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>APIキー</value>
   </data>
   <data name="api-keys-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="integrations" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>API使用量のためにキーまたはトークンを追加します</value>
   </data>
   <data name="integrations-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Github、Gitlab、Jiraなどのリモートサービスと統合する拡張機能を管理します。</value>
   </data>
-  <data name="fields" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="code" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>コード</value>
+  </data>
+  <data name="code-coverage" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>コードカバレッジ</value>
+  </data>
+  <data name="code-coverage-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>ターゲット</value>
+  </data>
+  <data name="code-coverage-stretch-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>ターゲットを伸ばします</value>
   </data>
   <data name="fields-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>テスト、要件、結果、問題にカスタムフィールドを追加、編集、または削除します。</value>
   </data>
-  <data name="code-coverage-auto-import" xml:space="preserve">
-    <value />
+  <data name="test-accounts" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>テストアカウント</value>
   </data>
-  <data name="code-coverage-auto-import-description" xml:space="preserve">
-    <value />
+  <data name="test-accounts-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>テストのためにアカウントまたは資格情報を追加、編集、または削除します</value>
+  </data>
+  <data name="test-environments" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>テスト環境</value>
+  </data>
+  <data name="fields" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>フィールド</value>
+  </data>
+  <data name="review" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>レビュー</value>
+  </data>
+  <data name="code-coverage-min-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>最小</value>
+  </data>
+  <data name="test-environments-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>生産やステージングなどのテストの環境を管理し、テストケースで使用できるカスタム変数の定義</value>
+  </data>
+  <data name="integrations" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>統合</value>
   </data>
 </root>

@@ -161,7 +161,7 @@
     <value>影响</value>
   </data>
   <data name="import-code-coverage" xml:space="preserve">
-    <value />
+    <value>导入代码覆盖范围</value>
   </data>
   <data name="layer" xml:space="preserve">
     <value>层</value>

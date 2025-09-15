@@ -45,6 +45,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Code\CodeCoverage\Import\" />
+	  <Folder Include="Testing\Models\" />
 	</ItemGroup>
 
 </Project>

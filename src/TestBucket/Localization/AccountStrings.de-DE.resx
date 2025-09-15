@@ -117,6 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="account" xml:space="preserve">
     <value>Konto</value>
   </data>
@@ -140,10 +141,6 @@
   </data>
   <data name="custom-variables" xml:space="preserve">
     <value>Benutzerdefinierte Variablen</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="custom-variables-wizard-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
   </data>
   <data name="email" xml:space="preserve">
     <value>E-Mail</value>
@@ -206,5 +203,8 @@
   <data name="verify" xml:space="preserve">
     <value>Verifizieren</value>
     <comment>Verify TOTP code</comment>
+  </data>
+  <data name="custom-variables-wizard-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Fügen Sie alle benutzerdefinierten Eigenschaften hinzu, die dem Konto zugeordnet sind. Diese Eigenschaften sind nach Testfällen als Variablen zugänglich, nachdem ein Konto gesperrt und zugewiesen wurde (z. B. beim Ausführen des Testfalles). Diese benutzerdefinierten Eigenschaften sind benutzerdefiniert und können zusätzlich zu den festen Eigenschaften auf der vorherigen Seite optional hinzugefügt werden.</value>
   </data>
 </root>

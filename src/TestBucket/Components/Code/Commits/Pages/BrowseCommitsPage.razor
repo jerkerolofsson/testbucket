@@ -4,11 +4,14 @@
 @using TestBucket.Components.Code.Architecture.Controls
 @using TestBucket.Components.Code.Commits.Controllers
 @using TestBucket.Components.Code.Controls
+@using TestBucket.Components.Shared.Themeing.Models
 @using TestBucket.Contracts.Appearance
 @using TestBucket.Contracts.Fields
+@using TestBucket.Contracts.Insights
 @using TestBucket.Domain
 @using TestBucket.Domain.Appearance
 @using TestBucket.Domain.Code.Models
+@using TestBucket.Domain.Testing.TestRuns.Insights
 @using TestBucket.Domain.Testing.TestRuns.Search
 @layout CodeLayout
 
@@ -106,6 +109,10 @@
                 <MudTabPanel Text="@loc["test-results"]">
                     <TestCaseRunGrid @bind-Query="_testCaseRunQuery" />
                 </MudTabPanel>
+
+				<MudTabPanel Text="@loc["code-coverage"]">
+					<InsightsChart State="State" Project="Project" ReadOnly @bind-Spec="_coverageSpec" />
+				</MudTabPanel>
                 <MudTabPanel Text="@codeLoc["changed-files"]">
                     <MudStack Spacing="0">
                         <div class="changed-files">
@@ -144,34 +151,71 @@
 
 
 @code {
-    [Parameter] public string? TenantId { get; set; }
-    [CascadingParameter] public TestProject? Project { get; set; }
-    private List<NamedArchitecturalComponent> _impact = [];
-    private ProjectArchitectureModel? _model;
-    private HashSet<Commit> _selectedItems = [];
-    private string? _selectedFeature = null;
-    private SearchTestCaseRunQuery _testCaseRunQuery = new();
+	[Parameter] public string? TenantId { get; set; }
+	[CascadingParameter] public TestProject? Project { get; set; }
 
-    private async Task AssignChangedFilesToFeature()
-    {
-        if (_selectedFeature is not null && Project?.Id is not null)
-        {
-            await architectureController.AddCommitsToFeatureAsync(Project.Id, _selectedFeature, _selectedItems);
-        }
-    }
+	[CascadingParameter] public ApplicationState? State { get; set; }
 
-    private async Task OnSelectedItemsChanged(HashSet<Commit> selectedItems)
-    {
-        if (Project is null)
-        {
-            return;
-        }
-        _selectedItems = selectedItems;
-        _impact.Clear();
-        foreach (var commit in _selectedItems)
-        {
-            if (commit?.ComponentNames is not null)
-            {
+	private List<NamedArchitecturalComponent> _impact = [];
+	private ProjectArchitectureModel? _model;
+	private HashSet<Commit> _selectedItems = [];
+	private string? _selectedFeature = null;
+	private SearchTestCaseRunQuery _testCaseRunQuery = new();
+
+	private InsightsVisualizationSpecification? _coverageSpec;
+
+	private void CreateCodeCoverageSpec(string searchText)
+	{
+		_coverageSpec =  new InsightsVisualizationSpecification
+		{
+			Name = "code-coverage",
+			TextFormat = "{0}%",
+			Field = "Code Coverage",
+			ChartType = ChartType.Text,
+			DataQueries = [new InsightsDataQuery
+			{
+				DataSource = TestRunDataSourceNames.CodeCoverage,
+				Query = searchText
+			}],
+			ColorMode = ChartColorMode.ByLabel,
+			DarkModeColors = new ChartColors()
+			{
+				Palette = DefaultPalettes.ReportingDefault,
+				GridLineColor = "#444",
+				TickLabelColor = "#777"
+			},
+			LightModeColors = new ChartColors()
+			{
+				Palette = DefaultPalettes.ReportingDefault,
+				GridLineColor = "#ddd",
+				TickLabelColor = "#aaa"
+			},
+			ShowLegend = false,
+			ShowDataTable = false,
+		};
+	}
+
+
+	private async Task AssignChangedFilesToFeature()
+	{
+		if (_selectedFeature is not null && Project?.Id is not null)
+		{
+			await architectureController.AddCommitsToFeatureAsync(Project.Id, _selectedFeature, _selectedItems);
+		}
+	}
+
+	private async Task OnSelectedItemsChanged(HashSet<Commit> selectedItems)
+	{
+		if (Project is null)
+		{
+			return;
+		}
+		_selectedItems = selectedItems;
+		_impact.Clear();
+		foreach (var commit in _selectedItems)
+		{
+			if (commit?.ComponentNames is not null)
+			{
                 foreach (var componentName in commit.ComponentNames)
                 {
                     var component = await architectureController.GetComponentByNameAsync(Project, componentName);
@@ -187,6 +231,9 @@
         {
             var commit = _selectedItems.First();
             var q = $"commit:\"{commit.Sha}\"";
+
+			CreateCodeCoverageSpec(q);
+
             var testCaseRunFields = await fieldController.GetDefinitionsAsync(Project.Id, FieldTarget.TestCaseRun);
             _testCaseRunQuery = SearchTestCaseRunQueryParser.Parse(q, testCaseRunFields);
         }

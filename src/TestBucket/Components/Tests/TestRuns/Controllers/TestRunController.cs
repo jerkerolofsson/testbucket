@@ -2,6 +2,7 @@
 using TestBucket.Contracts.Localization;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.TestRuns;
+using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Components.Tests.TestRuns.Controllers;
 

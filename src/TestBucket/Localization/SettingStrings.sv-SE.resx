@@ -117,6 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="accessibility" xml:space="preserve">
     <value>Tillgänglighet</value>
   </data>
@@ -215,6 +216,12 @@
   </data>
   <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
     <value>Detta ändrar staten till pågående om beskrivningen ändras i det färdiga tillståndet.</value>
+  </data>
+  <data name="code-coverage-auto-import" xml:space="preserve">
+    <value>Importera automatiskt rapporter</value>
+  </data>
+  <data name="code-coverage-auto-import-description" xml:space="preserve">
+    <value>Importerar kodtäckningsrapporter när de läggs till som bilagor till en testkörning</value>
   </data>
   <data name="color" xml:space="preserve">
     <value>Färg</value>
@@ -405,62 +412,55 @@
   <data name="year-to-date" xml:space="preserve">
     <value>År hittills</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="code-coverage-stretch-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code-coverage-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code-coverage-min-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code-coverage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-accounts" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-environments" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-environments-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-accounts-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="review" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="ai-usage-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="api-keys" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="api-keys-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="integrations" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="integrations-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>API -nycklar</value>
   </data>
   <data name="fields" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Fält</value>
+  </data>
+  <data name="test-environments-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Hantera miljöer för testning som produktion eller iscensättning och definiera anpassade variabler som kan användas i testfall</value>
+  </data>
+  <data name="integrations-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Hantera tillägg som integreras med fjärrtjänster som GitHub, Gitlab, Jira osv.</value>
+  </data>
+  <data name="integrations" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Integrationer</value>
+  </data>
+  <data name="code" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Koda</value>
+  </data>
+  <data name="code-coverage" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Kodtäckning</value>
+  </data>
+  <data name="api-keys-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Lägg till nycklar eller tokens för API -användning</value>
   </data>
   <data name="fields-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>Lägg till, redigera eller ta bort anpassade fält för tester, krav, resultat, problem ..</value>
   </data>
-  <data name="code-coverage-auto-import" xml:space="preserve">
-    <value />
+  <data name="test-accounts-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Lägg till, redigera eller ta bort konton eller referenser för testning</value>
   </data>
-  <data name="code-coverage-auto-import-description" xml:space="preserve">
-    <value />
+  <data name="code-coverage-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Mål</value>
+  </data>
+  <data name="code-coverage-min-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Minimum</value>
+  </data>
+  <data name="review" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Recension</value>
+  </data>
+  <data name="code-coverage-stretch-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Stretchmål</value>
+  </data>
+  <data name="test-accounts" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Testkonton</value>
+  </data>
+  <data name="test-environments" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Testmiljöer</value>
+  </data>
+  <data name="ai-usage-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>Visa detaljer för hur många symboler som används för AI / LLM</value>
   </data>
 </root>

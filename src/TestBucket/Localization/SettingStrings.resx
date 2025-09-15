@@ -174,6 +174,15 @@
   <data name="ai-usage" xml:space="preserve">
     <value>AI usage</value>
   </data>
+  <data name="ai-usage-description" xml:space="preserve">
+    <value>View details for how many tokens are used for AI / LLM</value>
+  </data>
+  <data name="api-keys" xml:space="preserve">
+    <value>API Keys</value>
+  </data>
+  <data name="api-keys-description" xml:space="preserve">
+    <value>Add keys or tokens for API usage</value>
+  </data>
   <data name="appearance" xml:space="preserve">
     <value>Appearance</value>
   </data>
@@ -216,6 +225,27 @@
   <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
     <value>This changes the state to ongoing if the description is changed while in the completed state.</value>
   </data>
+  <data name="code" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="code-coverage" xml:space="preserve">
+    <value>Code coverage</value>
+  </data>
+  <data name="code-coverage-auto-import" xml:space="preserve">
+    <value>Automatically import reports</value>
+  </data>
+  <data name="code-coverage-auto-import-description" xml:space="preserve">
+    <value>Imports code coverage reports when they are added as attachments to a test run</value>
+  </data>
+  <data name="code-coverage-min-target" xml:space="preserve">
+    <value>Minimum</value>
+  </data>
+  <data name="code-coverage-stretch-target" xml:space="preserve">
+    <value>Stretch target</value>
+  </data>
+  <data name="code-coverage-target" xml:space="preserve">
+    <value>Target</value>
+  </data>
   <data name="color" xml:space="preserve">
     <value>Color</value>
   </data>
@@ -252,6 +282,12 @@
   <data name="explorer-dock-description" xml:space="preserve">
     <value>Location of the explorer panel in thee user interface</value>
   </data>
+  <data name="fields" xml:space="preserve">
+    <value>Fields</value>
+  </data>
+  <data name="fields-description" xml:space="preserve">
+    <value>Add, edit or delete custom fields for tests, requirements, results, issues..</value>
+  </data>
   <data name="increased-contrast" xml:space="preserve">
     <value>Increased contrast</value>
   </data>
@@ -263,6 +299,12 @@
   </data>
   <data name="increased-font-size-description" xml:space="preserve">
     <value>Increases the font size overriding theme settings</value>
+  </data>
+  <data name="integrations" xml:space="preserve">
+    <value>Integrations</value>
+  </data>
+  <data name="integrations-description" xml:space="preserve">
+    <value>Manage extensions that integrate with remote services such as Github, Gitlab, Jira etc..</value>
   </data>
   <data name="keyboard" xml:space="preserve">
     <value>Keyboard</value>
@@ -378,6 +420,9 @@
   <data name="remove-icon" xml:space="preserve">
     <value>Remove icon</value>
   </data>
+  <data name="review" xml:space="preserve">
+    <value>Review</value>
+  </data>
   <data name="search-settings" xml:space="preserve">
     <value>Search settings..</value>
   </data>
@@ -386,6 +431,18 @@
   </data>
   <data name="tenant" xml:space="preserve">
     <value>Tenant</value>
+  </data>
+  <data name="test-accounts" xml:space="preserve">
+    <value>Test accounts</value>
+  </data>
+  <data name="test-accounts-description" xml:space="preserve">
+    <value>Add, edit or delete accounts or credentials for testing</value>
+  </data>
+  <data name="test-environments" xml:space="preserve">
+    <value>Test environments</value>
+  </data>
+  <data name="test-environments-description" xml:space="preserve">
+    <value>Manage environments for testing such as production or staging and define custom variables that can be used in test cases </value>
   </data>
   <data name="test-execution" xml:space="preserve">
     <value>Test execution</value>
@@ -404,62 +461,5 @@
   </data>
   <data name="year-to-date" xml:space="preserve">
     <value>Year to date</value>
-  </data>
-  <data name="code-coverage-stretch-target" xml:space="preserve">
-    <value>Stretch target</value>
-  </data>
-  <data name="code-coverage-target" xml:space="preserve">
-    <value>Target</value>
-  </data>
-  <data name="code-coverage-min-target" xml:space="preserve">
-    <value>Minimum</value>
-  </data>
-  <data name="code" xml:space="preserve">
-    <value>Code</value>
-  </data>
-  <data name="code-coverage" xml:space="preserve">
-    <value>Code coverage</value>
-  </data>
-  <data name="test-accounts" xml:space="preserve">
-    <value>Test accounts</value>
-  </data>
-  <data name="test-environments" xml:space="preserve">
-    <value>Test environments</value>
-  </data>
-  <data name="test-environments-description" xml:space="preserve">
-    <value>Manage environments for testing such as production or staging and define custom variables that can be used in test cases </value>
-  </data>
-  <data name="test-accounts-description" xml:space="preserve">
-    <value>Add, edit or delete accounts or credentials for testing</value>
-  </data>
-  <data name="review" xml:space="preserve">
-    <value>Review</value>
-  </data>
-  <data name="ai-usage-description" xml:space="preserve">
-    <value>View details for how many tokens are used for AI / LLM</value>
-  </data>
-  <data name="api-keys" xml:space="preserve">
-    <value>API Keys</value>
-  </data>
-  <data name="api-keys-description" xml:space="preserve">
-    <value>Add keys or tokens for API usage</value>
-  </data>
-  <data name="integrations" xml:space="preserve">
-    <value>Integrations</value>
-  </data>
-  <data name="integrations-description" xml:space="preserve">
-    <value>Manage extensions that integrate with remote services such as Github, Gitlab, Jira etc..</value>
-  </data>
-  <data name="fields" xml:space="preserve">
-    <value>Fields</value>
-  </data>
-  <data name="fields-description" xml:space="preserve">
-    <value>Add, edit or delete custom fields for tests, requirements, results, issues..</value>
-  </data>
-  <data name="code-coverage-auto-import" xml:space="preserve">
-    <value>Automatically import reports</value>
-  </data>
-  <data name="code-coverage-auto-import-description" xml:space="preserve">
-    <value>Imports code coverage reports when they are added as attachments to a test run</value>
   </data>
 </root>

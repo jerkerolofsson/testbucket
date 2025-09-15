@@ -161,7 +161,7 @@
     <value>Impacto</value>
   </data>
   <data name="import-code-coverage" xml:space="preserve">
-    <value />
+    <value>Cobertura de código de importação</value>
   </data>
   <data name="layer" xml:space="preserve">
     <value>Camada</value>

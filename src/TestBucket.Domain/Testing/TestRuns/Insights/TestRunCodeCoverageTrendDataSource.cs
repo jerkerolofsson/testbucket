@@ -3,13 +3,14 @@ using TestBucket.Domain.Fields;
 using TestBucket.Domain.Insights;
 using TestBucket.Domain.Insights.Model;
 using TestBucket.Domain.Shared.Specifications;
+using TestBucket.Domain.Tenants.Models;
 using TestBucket.Domain.Testing.Models;
 using TestBucket.Domain.Testing.Specifications.TestCaseRuns;
 using TestBucket.Domain.Testing.Specifications.TestRuns;
 using TestBucket.Domain.Testing.TestRuns.Search;
 
 namespace TestBucket.Domain.Testing.TestRuns.Insights;
-internal class TestRunCodeCoverageDataSource : IInsightsDataSource
+internal class TestRunCodeCoverageTrendDataSource : IInsightsDataSource
 {
     private readonly ITestRunInsightsRepository _repo;
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
@@ -17,9 +18,9 @@ internal class TestRunCodeCoverageDataSource : IInsightsDataSource
     /// <summary>
     /// Gets the identifier of the data source
     /// </summary>
-    public string DataSource => TestRunDataSourceNames.CodeCoverage;
+    public string DataSource => TestRunDataSourceNames.CodeCoverageTrend;
 
-    public TestRunCodeCoverageDataSource(ITestRunInsightsRepository manager, IFieldDefinitionManager fieldDefinitionManager)
+    public TestRunCodeCoverageTrendDataSource(ITestRunInsightsRepository manager, IFieldDefinitionManager fieldDefinitionManager)
     {
         _repo = manager;
         _fieldDefinitionManager = fieldDefinitionManager;
@@ -39,10 +40,8 @@ internal class TestRunCodeCoverageDataSource : IInsightsDataSource
         List<FilterSpecification<TestRun>> filters = TestRunFilterSpecificationBuilder.From(testRunQuery);
         filters.Add(new FilterByTenant<TestRun>(tenantId));
 
-        double percent  = await _repo.GetCodeCoverageAsync(filters);
 
-        InsightsData<string, double> data = new InsightsData<string, double>();
-        data.Add("Code Coverage").Add("Code Coverage", Math.Round(percent,1));
-        return data;
+        var data = await _repo.GetCodeCoverageTrendAsync(filters);
+        return data.ConvertToStringLabels();
     }
 }

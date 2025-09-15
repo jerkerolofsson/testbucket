@@ -117,6 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="accessibility" xml:space="preserve">
     <value>可访问性</value>
   </data>
@@ -215,6 +216,12 @@
   </data>
   <data name="change-state-to-ongoing-when-editing-tests-description" xml:space="preserve">
     <value>如果在完整状态时更改了描述，则将状态更改为正在进行的状态。</value>
+  </data>
+  <data name="code-coverage-auto-import" xml:space="preserve">
+    <value>自动导入报告</value>
+  </data>
+  <data name="code-coverage-auto-import-description" xml:space="preserve">
+    <value>导入代码覆盖报告作为测试运行的附件时</value>
   </data>
   <data name="color" xml:space="preserve">
     <value>颜色</value>
@@ -405,62 +412,55 @@
   <data name="year-to-date" xml:space="preserve">
     <value>今年迄今为止</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="code-coverage-stretch-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code-coverage-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code-coverage-min-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="code-coverage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-accounts" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-environments" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-environments-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="test-accounts-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="review" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="ai-usage-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="api-keys" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>API键</value>
   </data>
   <data name="api-keys-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>为API使用添加键或令牌</value>
   </data>
-  <data name="integrations" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="code" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>代码</value>
   </data>
-  <data name="integrations-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+  <data name="code-coverage" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>代码覆盖范围</value>
+  </data>
+  <data name="code-coverage-stretch-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>伸展目标</value>
   </data>
   <data name="fields" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>字段</value>
+  </data>
+  <data name="review" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>审查</value>
+  </data>
+  <data name="code-coverage-min-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>最低限度</value>
+  </data>
+  <data name="ai-usage-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>查看AI / LLM使用多少个令牌的详细信息</value>
+  </data>
+  <data name="test-accounts" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>测试帐户</value>
+  </data>
+  <data name="test-environments" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>测试环境</value>
+  </data>
+  <data name="test-accounts-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>添加，编辑或删除用于测试的帐户或凭据</value>
   </data>
   <data name="fields-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
+    <value>添加，编辑或删除自定义字段以进行测试，需求，结果，问题。</value>
   </data>
-  <data name="code-coverage-auto-import" xml:space="preserve">
-    <value />
+  <data name="code-coverage-target" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>目标</value>
   </data>
-  <data name="code-coverage-auto-import-description" xml:space="preserve">
-    <value />
+  <data name="integrations-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>管理与GitHub，Gitlab，Jira等远程服务集成的扩展。</value>
+  </data>
+  <data name="test-environments-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>管理用于测试的环境，例如生产或分期，并定义可以在测试用例中使用的自定义变量</value>
+  </data>
+  <data name="integrations" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value>集成</value>
   </data>
 </root>

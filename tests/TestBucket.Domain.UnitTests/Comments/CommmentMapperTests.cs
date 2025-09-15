@@ -15,7 +15,7 @@ namespace TestBucket.Domain.UnitTests.Comments;
 public class CommmentMapperTests
 {
     /// <summary>
-    /// Verifies that <see cref="Comment.ToDto"/> maps all properties from <see cref="Comment"/> to <see cref="CommentDto"/> correctly.
+    /// Verifies that Comment.ToDto maps all properties from <see cref="Comment"/> to <see cref="CommentDto"/> correctly.
     /// </summary>
     [Fact]
     public void ToDto_MapsAllPropertiesCorrectly()
@@ -48,7 +48,7 @@ public class CommmentMapperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CommentDto.ToDbo"/> maps all properties from <see cref="CommentDto"/> to <see cref="Comment"/> correctly.
+    /// Verifies that CommentDto.ToDbo maps all properties from <see cref="CommentDto"/> to <see cref="Comment"/> correctly.
     /// </summary>
     [Fact]
     public void ToDbo_MapsAllPropertiesCorrectly()

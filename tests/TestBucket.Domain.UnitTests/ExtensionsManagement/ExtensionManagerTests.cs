@@ -10,7 +10,7 @@ namespace TestBucket.Domain.UnitTests.ExtensionsManagement;
 /// </summary>
 [EnrichedTest]
 [UnitTest]
-[Component("Extensions Management")]
+[Component("Extension Management")]
 [FunctionalTest]
 public class ExtensionManagerTests
 {

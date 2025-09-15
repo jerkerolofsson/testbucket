@@ -148,7 +148,7 @@
     <value>Questões fechadas</value>
   </data>
   <data name="code-coverage" xml:space="preserve">
-    <value />
+    <value>Cobertura de código</value>
   </data>
   <data name="configure-data-visualization" xml:space="preserve">
     <value>Configure a visualização de dados</value>
@@ -169,7 +169,7 @@
     <value>Modo escuro</value>
   </data>
   <data name="data-mode" xml:space="preserve">
-    <value />
+    <value>Modo de dados</value>
   </data>
   <data name="data-source" xml:space="preserve">
     <value>Fonte de dados</value>
@@ -226,10 +226,10 @@
     <value>Resultados do teste por componente</value>
   </data>
   <data name="test-results-by-user" xml:space="preserve">
-    <value />
+    <value>Resultados do teste pelo usuário</value>
   </data>
   <data name="text-format" xml:space="preserve">
-    <value />
+    <value>Formato de texto</value>
   </data>
   <data name="time-alltime" xml:space="preserve">
     <value>O tempo todo</value>

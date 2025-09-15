@@ -31,11 +31,15 @@ internal class DashboardManager : IDashboardManager
         // If it does not exist, create a default one
         if(dashboard is null)
         {
-            if (name is "issues")
+            if (name == "issues")
             {
                 dashboard = GetDefaultIssueDashboard();
             }
-            else if (name is "testrun" or "reporting")
+            else if (name == "testrun")
+            {
+                dashboard = GetDefaultTestRunDashboard();
+            }
+            else if (name == "reporting")
             {
                 dashboard = GetDefaultTestResultsDashboard();
             }
@@ -131,7 +135,7 @@ internal class DashboardManager : IDashboardManager
                 new InsightsVisualizationSpecification
                 {
                     Name = "test-results",
-                    ChartType = ChartType.Bar,
+                    ChartType = ChartType.Donut,
                     AllowedChartTypes = ChartType.Bar|ChartType.Donut|ChartType.Line|ChartType.Pie|ChartType.Text,
                     DataQueries = [new InsightsDataQuery
                     {
@@ -157,7 +161,7 @@ internal class DashboardManager : IDashboardManager
                 },
                 new InsightsVisualizationSpecification
                 {
-                    Name = "test-results",
+                    Name = "test-results-by-user",
                     ChartType = ChartType.Bar,
                     AllowedChartTypes = ChartType.Bar | ChartType.Donut | ChartType.Pie,
                     DataQueries = [new InsightsDataQuery
@@ -205,6 +209,152 @@ internal class DashboardManager : IDashboardManager
                     ShowLegend = true,
                     ShowDataTable = true,
                 }
+            ]
+        };
+    }
+
+    private Dashboard? GetDefaultTestRunDashboard()
+    {
+        return new Dashboard
+        {
+            Name = "testrun",
+            Specifications =
+            [
+                new InsightsVisualizationSpecification
+                {
+                    Name = "test-results",
+                    ChartType = ChartType.Donut,
+                    AllowedChartTypes = ChartType.Bar|ChartType.Donut|ChartType.Line|ChartType.Pie|ChartType.Text,
+                    DataQueries = [new InsightsDataQuery
+                    {
+                        DataSource = TestRunDataSourceNames.CountByResult,
+                        Colors = DefaultPalettes.TestResultColors,
+                        Query = ""
+                    }],
+                        ColorMode = ChartColorMode.ByLabel,
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
+                    ShowLegend = true,
+                    ShowDataTable = true,
+                },
+                new InsightsVisualizationSpecification
+                {
+                    Name = "test-results-by-user",
+                    ChartType = ChartType.Bar,
+                    AllowedChartTypes = ChartType.Bar | ChartType.Donut | ChartType.Pie,
+                    DataQueries = [new InsightsDataQuery
+                        {
+                            DataSource = TestRunDataSourceNames.ExecutedTestsByAssignee
+                        }],
+                        ColorMode = ChartColorMode.ByLabel,
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
+                    ShowLegend = true,
+                    ShowDataTable = true,
+                },
+                new InsightsVisualizationSpecification
+                {
+                    Name = "test-results-by-component",
+                    ChartType = ChartType.StackedBar,
+                    AllowedChartTypes = ChartType.StackedBar,
+                    DataQueries = [new InsightsDataQuery
+                        {
+                            DataSource = TestRunDataSourceNames.ResultsByComponent,
+                        }],
+                        ColorMode = ChartColorMode.BySeries,
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
+                    ShowLegend = true,
+                    ShowDataTable = true,
+                },
+                new InsightsVisualizationSpecification
+                {
+                    Name = "passed",
+                    ChartType = ChartType.Text,
+                    AllowedChartTypes = ChartType.Text,
+                    Field = "Passed",
+                    TextFormat = "{0}",
+                    DataQueries = [new InsightsDataQuery
+                        {
+                            DataSource = TestRunDataSourceNames.CountByResult,
+                        }],
+                        ColorMode = ChartColorMode.ByLabel,
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
+                    ShowLegend = false,
+                    ShowDataTable = false,
+                    Columns = 5,
+                    Rows = 8,
+                },
+                new InsightsVisualizationSpecification
+                {
+                    Name = "code-coverage",
+                    ChartType = ChartType.Text,
+                    AllowedChartTypes = ChartType.Text,
+                    Field = "Code Coverage",
+                    TextFormat = "{0}%",
+                    DataQueries = [new InsightsDataQuery
+                        {
+                            DataSource = TestRunDataSourceNames.CodeCoverage,
+                        }],
+                        ColorMode = ChartColorMode.ByLabel,
+                    DarkModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        GridLineColor = "#444",
+                        TickLabelColor = "#777"
+                    },
+                    LightModeColors = new ChartColors()
+                    {
+                        Palette = DefaultPalettes.ReportingDefault,
+                        GridLineColor = "#ddd",
+                        TickLabelColor = "#aaa"
+                    },
+                    ShowLegend = false,
+                    ShowDataTable = false,
+                    Columns = 5,
+                    Rows = 7,
+                },
             ]
         };
     }

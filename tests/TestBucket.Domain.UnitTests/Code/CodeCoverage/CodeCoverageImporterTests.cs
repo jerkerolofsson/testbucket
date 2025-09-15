@@ -196,4 +196,58 @@ public class CodeCoverageImporterTests
         Assert.Equal(2, group.LineCount);
         Assert.Equal(1, group.CoveredLineCount);
     }
+
+
+    /// <summary>
+    /// Verifies that <see cref="CodeCoverageImporter.ImportAsync"/> creates a <see cref="CodeCoverageGroup"/> for a test run.
+    /// </summary>
+    [Fact]
+    public async Task ImportAsync_Twice_DoesntAddNewLines()
+    {
+        // Arrange
+        var fileResourceManager = Substitute.For<IFileResourceManager>();
+        var testRunManager = Substitute.For<ITestRunManager>();
+        var codeCoverageManager = await CreateManagerAsync();
+        var logger = Logger;
+
+        var importer = new CodeCoverageImporter(fileResourceManager, logger, codeCoverageManager, testRunManager);
+
+        var userName = "user1";
+        var tenantId = "tenant-1";
+        var resourceId = 123L;
+        var cancellationToken = CancellationToken.None;
+
+        var principal = CreateUser(tenantId);
+        var fileResource = new FileResource
+        {
+            TenantId = tenantId,
+            ContentType = CodeCoverageMediaTypes.Cobertura,
+            Id = resourceId,
+            Name = "coverage.json",
+            Data = GetValidCobertura(),
+            Length = GetValidCobertura().Length,
+            TestRunId = 4
+        };
+        var testRun = new TestRun
+        {
+            Name = "Test run 1",
+            Id = 4,
+            TenantId = tenantId,
+            TestProjectId = 1,
+            TestRunFields = new List<TestRunField>()
+        };
+        fileResourceManager.GetResourceByIdAsync(Arg.Any<ClaimsPrincipal>(), resourceId).Returns(Task.FromResult<FileResource?>(fileResource));
+        testRunManager.GetTestRunByIdAsync(Arg.Any<ClaimsPrincipal>(), Arg.Any<long>()).Returns(Task.FromResult<TestRun?>(testRun));
+
+        // Act
+        await importer.ImportAsync(userName, tenantId, resourceId, cancellationToken);
+        await importer.ImportAsync(userName, tenantId, resourceId, cancellationToken);
+
+        // Assert
+        var group = await codeCoverageManager.GetCodeCoverageGroupAsync(principal, 1, CodeCoverageGroupType.TestRun, "4");
+        Assert.NotNull(group);
+        Assert.Equal("4", group.Name);
+        Assert.Equal(2, group.LineCount);
+        Assert.Equal(1, group.CoveredLineCount);
+    }
 }

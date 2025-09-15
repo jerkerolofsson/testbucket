@@ -21,8 +21,19 @@
         if(point is not null)
         {
             <div class=tb-insights-chart-text-container>
-                <div data-testid="value" class="tb-insights-chart-text value" style="@cssStyle">@point.Value</div>
-                <div data-testid="label" class="tb-insights-chart-text label">@point.Label</div>
+                <div data-testid="value" class="tb-insights-chart-text value" style="@cssStyle">
+					@if(Spec?.TextFormat is not null)
+					{
+						@string.Format(Spec.TextFormat, point.Value);
+					}
+					else
+					{
+						@point.Value
+					}
+				</div>
+                <div data-testid="label" class="tb-insights-chart-text label">
+					@point.Label
+				</div>
             </div>
         }
     }

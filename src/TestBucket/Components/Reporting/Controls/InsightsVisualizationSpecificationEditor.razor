@@ -105,7 +105,12 @@
                                         <MudSpacer />
                                         <MudTextField Value="@Specification.Field" T="string" ValueChanged="OnTextFieldChanged" Variant="Variant.Outlined" />
                                     </Field>
-                                }
+									<Field Row>
+										<FieldHeader>@insightsLoc["text-format"]</FieldHeader>
+										<MudSpacer />
+										<MudTextField Value="@Specification.TextFormat" T="string" ValueChanged="OnTextFormatChanged" Variant="Variant.Outlined" />
+									</Field>
+								}
 
                                 <Field Row>
                                     <FieldHeader>@insightsLoc["show-legend"]</FieldHeader>
@@ -263,15 +268,23 @@
         }
     }
 
-    private async Task OnTextFieldChanged(string name)
+    private async Task OnTextFormatChanged(string name)
     {
         if (Specification is not null)
         {
-            Specification.Field = name;
+            Specification.TextFormat = name;
             await SpecificationChanged.InvokeAsync(Specification);
         }
     }
-    private async Task OnNameChanged(string name)
+	private async Task OnTextFieldChanged(string name)
+	{
+		if (Specification is not null)
+		{
+			Specification.Field = name;
+			await SpecificationChanged.InvokeAsync(Specification);
+		}
+	}
+	private async Task OnNameChanged(string name)
     {
         if (Specification is not null)
         {

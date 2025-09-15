@@ -266,6 +266,10 @@ input:focus-visible {
     background: var(--mud-palette-surface);
 }
 
+.tb-footer {
+    height: 32px;
+}
+
 .tb-navmenu {
     width: 100%;
 }

@@ -2,9 +2,10 @@
 @page "/{TenantId}/Testing/TestRuns/{RunId:long}/Pipelines/{PipelineId:long}"
 @using TestBucket.Components.Automation
 @using TestBucket.Components.Tests.Layouts
+@using TestBucket.Components.Tests.TestRuns.Layouts
 @using TestBucket.Domain.Automation.Pipelines
 @using TestBucket.Domain.Automation.Pipelines.Models
-@layout TestingLayout
+@layout TestRunLayout
 @inject AppNavigationManager appNavigation
 @inject PipelineController controller
 @inject IPipelineManager manager
@@ -125,11 +126,12 @@ else
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";
-    [CascadingParameter] public TestProject? Project { get; set; }
-    [CascadingParameter] public Team? Team { get; set; }
-
     [Parameter] public long RunId { get; set; }
     [Parameter] public long PipelineId { get; set; }
+
+    [CascadingParameter] public TestProject? Project { get; set; }
+    [CascadingParameter] public Team? Team { get; set; }
+	[CascadingParameter] public TestRun? TestRun { get; set; }
 
     private Pipeline? _pipeline = null;
 

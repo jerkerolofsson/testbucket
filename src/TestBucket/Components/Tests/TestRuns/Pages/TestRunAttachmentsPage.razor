@@ -1,12 +1,17 @@
 ﻿@attribute [Authorize()]
-@page "/{TenantId}/Testing/TestRuns/{RunId:long}"
+@page "/{TenantId}/Testing/TestRuns/{RunId:long}/Attachments"
 @using TestBucket.Components.Tests.TestRuns.Layouts
 @layout TestRunLayout
 @inject TestBrowser testBrowser
 @inject AppNavigationManager appNavigationManager
 
-<TestRunMainView TestRun="@TestRun" />
 
+@if (TestRun is not null)
+{
+	<MudStack Spacing="0" Style="width: 100%" Class="pa-5">
+		<AttachmentGrid AllowUpload TestRunId="@TestRun.Id" Style="width: 100%" />
+	</MudStack>
+}
 @code {
     [Parameter] public string TenantId { get; set; } = "";
     [Parameter] public long RunId { get; set; }

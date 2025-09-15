@@ -55,6 +55,11 @@ public class InsightsVisualizationSpecification
     /// </summary>
     public string? Field { get; set; }
 
+    /// <summary>
+    /// If showing text, this is a text format
+    /// </summary>
+    public string? TextFormat { get; set; }
+
     public int Rows { get; set; } = 15;
     public int Columns { get; set; } = 10;
 

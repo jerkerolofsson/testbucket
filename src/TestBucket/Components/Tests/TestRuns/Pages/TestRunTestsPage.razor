@@ -2,26 +2,28 @@
 @page "/{TenantId}/Testing/TestRuns/{RunId:long}/Tests"
 @using TestBucket.Components.Automation
 @using TestBucket.Components.Tests.Layouts
+@using TestBucket.Components.Tests.TestRuns.Layouts
 @using TestBucket.Contracts.Fields
 @using TestBucket.Domain.Testing.TestRuns.Search
-@layout TestingLayout
+@layout TestRunLayout
 @inject TestBrowser testBrowser
 @inject NavigationManager navigationManager
 @inject AppNavigationManager appNav
 @inject FieldController fieldController
 
-@if (_testRun is not null && _query is not null)
+@if (TestRun is not null && _query is not null)
 {
-    <TestRunView TestRun="@_testRun" Query="@_query" QueryChanged="OnQueryChanged" />
+	<TestRunView TestRun="@TestRun" Query="@_query" QueryChanged="OnQueryChanged" />
 }
 
 @code {
     [Parameter] public string TenantId { get; set; } = "";
-    [CascadingParameter] public TestProject? Project { get; set; }
-    [CascadingParameter] public Team? Team { get; set; }
-    [Parameter] public long RunId { get; set; }
+	[Parameter] public long RunId { get; set; }
+	
+	[CascadingParameter] public TestProject? Project { get; set; }
+	[CascadingParameter] public Team? Team { get; set; }
+	[CascadingParameter] public TestRun? TestRun { get; set; }
 
-    private TestRun? _testRun = null;
     private SearchTestCaseRunQuery _query = new SearchTestCaseRunQuery();
     private IReadOnlyList<FieldDefinition> _fields = [];
     private long _testProjectId;
@@ -37,14 +39,6 @@
     /// <returns></returns>
     protected override async Task OnParametersSetAsync()
     {
-        if (_testRun is null || _testRun.Id != RunId || appNav.State.SelectedTestRun is null)
-        {
-            _testRun = await testBrowser.GetTestRunByIdAsync(RunId);
-            if (_testRun is not null)
-            {
-                appNav.State.SetSelectedTestRun(_testRun);
-            }
-        }
         if (Project?.Id is not null)
         {
             if (_fields.Count == 0 || Project.Id != _testProjectId)

@@ -122,6 +122,7 @@ public static class DomainServiceExtensions
         services.AddScoped<IInsightsDataSource, IssuesByComponentDataSource>();
         services.AddScoped<IInsightsDataSource, IssuesByStateDataSource>();
         services.AddScoped<IInsightsDataSource, IssuesInflowOutflow>();
+        services.AddScoped<IInsightsDataSource, TestRunCodeCoverageDataSource>();
         services.AddScoped<IInsightsDataSource, CountByResultDataSource>();
         services.AddScoped<IInsightsDataSource, CountByLatestResultDataSource>();
         services.AddScoped<IInsightsDataSource, ExecutedTestsByAsigneeDataSource>();

@@ -88,7 +88,7 @@
                 <MudDivider DividerType="DividerType.Middle" Vertical />
 
                 <MudMenu Icon="@Icons.Material.Filled.MoreVert">
-                    <MudMenuItem Icon="@Icons.Material.Filled.Delete" IconColor="Color.Error" OnClick="async x => await DeleteTestCaseAsync()">@loc["delete"]</MudMenuItem>
+					<CommandMenuItems TypeNames="TestCase"/>
                 </MudMenu>
 
             </MudStack>
@@ -104,84 +104,84 @@
 </div>
 
 @code {
-    [CascadingParameter] TestProject? Project { get; set; }
-    [CascadingParameter] Team? Team { get; set; }
 
-    private TestCase? _testCase;
-    private TestSuite? _testSuite;
-    private EditorSettings? _editorSettings;
-    private MappedTestState? _testState = null;
+	public bool CanEdit => _testCase is null ? false :
+		(_testCase.MappedState != MappedTestState.Review ? true : _editorSettings?.BlockEditInReviewState == false);
 
-    private Team? _team;
-    private TestProject? _project;
+	public bool IsReviewState => _testCase is null ? false : _testCase.MappedState == MappedTestState.Review;
 
-    private bool _loading = false;
 
-    private async Task DeleteTestCaseAsync()
-    {
-        if (_testCase is null)
-        {
-            return;
-        }
-        await testCaseEditor.DeleteTestCaseAsync(_testCase);
-    }
+	[CascadingParameter] TestProject? Project { get; set; }
+	[CascadingParameter] Team? Team { get; set; }
 
-    private async Task RunTestAsync()
-    {
-        if (_testCase is null || _testCase.TestProjectId is null)
-        {
-            return;
-        }
-        var run = await testRunCreation.CreateTestRunAsync(_testCase.Name, _testCase.TestProjectId.Value, [_testCase.Id]);
-        if (run is not null)
-        {
-            appNavigationManager.NavigateTo(run);
-        }
-    }
+	private TestCase? _testCase;
+	private TestSuite? _testSuite;
+	private EditorSettings? _editorSettings;
+	private MappedTestState? _testState = null;
 
-    protected override async Task OnParametersSetAsync()
-    {
-        await LoadAsync();
-    }
+	private Team? _team;
+	private TestProject? _project;
 
-    public bool CanEdit => _testCase is null ? false :
-        (_testCase.MappedState != MappedTestState.Review ? true : _editorSettings?.BlockEditInReviewState == false);
+	private bool _loading = false;
 
-    public bool IsReviewState => _testCase is null ? false : _testCase.MappedState == MappedTestState.Review;
+	private async Task RunTestAsync()
+	{
+		if (_testCase is null || _testCase.TestProjectId is null)
+		{
+			return;
+		}
+		var run = await testRunCreation.CreateTestRunAsync(_testCase.Name, _testCase.TestProjectId.Value, [_testCase.Id]);
+		if (run is not null)
+		{
+			appNavigationManager.NavigateTo(run);
+		}
+	}
 
-    private async Task LoadAsync()
-    {
-        if (_project != Project || _team != Team)
-        {
-            _project = Project;
-            _team = Team;
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await LoadAsync();
+	}
 
-            _editorSettings = await settingsController.GetEditorSettingsAsync();
+	private async Task LoadAsync()
+	{
+		var changed = false;
+		if (_project != Project || _team != Team)
+		{
+			_project = Project;
+			_team = Team;
 
-        }
-        var testCaseId = appNavigationManager.GetEntityIdFromCurrentUri();
-        if(testCaseId is null)
-        {
-            _testCase = null;
-            return;
-        }
+			_editorSettings = await settingsController.GetEditorSettingsAsync();
+			changed = true;
 
-        _testSuite = appNavigationManager.State.SelectedTestSuite;
-        if (_testCase is not null && _testSuite?.Id != _testCase.TestSuiteId)
-        {
-            _testSuite = await browser.GetTestSuiteByIdAsync(_testCase.TestSuiteId);
-        }
+		}
+		var testCaseId = appNavigationManager.GetEntityIdFromCurrentUri();
+		if(testCaseId is null)
+		{
+			_testCase = null;
+			return;
+		}
 
-        if (testCaseId != _testCase?.Id)
-        {
-            _testCase = await browser.GetTestCaseByIdAsync(testCaseId.Value);
-            if(_testCase is not null)
-            {
-                _testState = _testCase.MappedState;
-            }
-            appNavigationManager.State.SetSelectedTestCase(_testCase, null, _testSuite);
-        }
-    }
+		_testSuite = appNavigationManager.State.SelectedTestSuite;
+		if (_testCase is not null && _testSuite?.Id != _testCase.TestSuiteId)
+		{
+			_testSuite = await browser.GetTestSuiteByIdAsync(_testCase.TestSuiteId);
+		}
+
+		if (testCaseId != _testCase?.Id)
+		{
+			_testCase = await browser.GetTestCaseByIdAsync(testCaseId.Value);
+			if(_testCase is not null)
+			{
+				_testState = _testCase.MappedState;
+			}
+			appNavigationManager.State.SetSelectedTestCase(_testCase, null, _testSuite);
+			changed = true;
+		}
+		if(changed)
+		{
+			this.StateHasChanged();
+		}
+	}
 
     public Task OnTestCreatedAsync(TestCase testCase) => Task.CompletedTask;
     public Task OnTestDeletedAsync(TestCase testCase) => Task.CompletedTask;

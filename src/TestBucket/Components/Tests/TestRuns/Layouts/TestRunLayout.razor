@@ -1,0 +1,151 @@
+﻿@inherits LayoutComponentBase
+@layout TestingLayout
+@using Humanizer
+@using TestBucket.Components.Layout
+@using TestBucket.Components.Settings.Controllers
+@using TestBucket.Components.Tests.Layouts
+@using TestBucket.Components.Tests.TestRuns.Controllers
+@using TestBucket.Contracts.Testing.States
+@using TestBucket.Domain
+@using TestBucket.Domain.Editor.Models
+@using TestBucket.Domain.Requirements.Models
+@using TestBucket.Domain.Teams.Models
+@inject TestBrowser browser
+@inject NavigationManager navigationManager
+@inject AppNavigationManager appNavigationManager
+@inject IStringLocalizer<SharedStrings> loc
+@inject ITestRunManager testRunManager
+@implements IDisposable
+@implements ITestRunObserver
+
+<TenantRedirect />
+
+<div class="container-fill-2-rows">
+
+    <div>
+        @if (_loading)
+        {
+            <MudProgressLinear Indeterminate Color="Color.Tertiary" />
+        }
+
+        <div class="tb-toolbar">
+            <MudStack Row Style="width: 100%; padding-right: 32px; padding-left: 32px" AlignItems="AlignItems.Center" Spacing="1">
+				@if (_testRun is not null)
+				{
+					<MudTooltip Text="@loc["overview"]">
+						<TbNavLink Href="@MainUrl" Match="NavLinkMatch.All">@loc["overview"]</TbNavLink>
+					</MudTooltip>
+					<MudTooltip Text="@loc["tests"]">
+						<TbNavLink Href="@TestsUrl" Match="NavLinkMatch.Prefix">@loc["tests"]</TbNavLink>
+					</MudTooltip>
+
+					<MudSpacer/>
+					<MudTooltip Text="@loc["fields"]">
+						<TbNavLink Href="@FieldsUrl" Icon="@TbIcons.BoldDuoTone.Field" Match="NavLinkMatch.All" />
+					</MudTooltip>
+					<MudTooltip Text="@loc["attachments"]">
+						<TbNavLink Href="@AttachmentsUrl" Icon="@TbIcons.BoldDuoTone.PaperClip" Match="NavLinkMatch.All" />
+					</MudTooltip>
+				}
+
+            </MudStack>
+        </div>
+    </div>
+    <CascadingValue Value="@_testRun">
+        <MudStack Style="width: 100%; overflow: auto; ">
+            @Body
+        </MudStack>
+    </CascadingValue>
+</div>
+
+@code {
+
+	private string MainUrl => appNavigationManager.GetTestRunUrl(_testRun?.Id ?? 0);
+	private string FieldsUrl => $"{MainUrl}/Fields";
+	private string AttachmentsUrl => $"{MainUrl}/Attachments";
+	private string TestsUrl => $"{MainUrl}/Tests";
+
+	[CascadingParameter] TestProject? Project { get; set; }
+	[CascadingParameter] Team? Team { get; set; }
+
+	private TestRun? _testRun;
+
+	private Team? _team;
+	private TestProject? _project;
+
+	private bool _loading = false;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await LoadAsync();
+	}
+	
+	private async Task LoadAsync()
+	{
+		var changed = false;
+		if (_project != Project || _team != Team)
+		{
+			_project = Project;
+			_team = Team;
+			changed = true;
+
+		}
+		var testRunId = appNavigationManager.GetEntityIdFromCurrentUri();
+		if(testRunId is null)
+		{
+			_testRun = null;
+			return;
+		}
+
+		if (testRunId != _testRun?.Id)
+		{
+			_testRun = await browser.GetTestRunByIdAsync(testRunId.Value);
+			if (_testRun is not null)
+			{
+				appNavigationManager.State.SetSelectedTestRun(_testRun);
+			}
+			changed = true;
+		}
+
+		if(changed)
+		{
+			this.StateHasChanged();
+		}
+	}
+
+	protected override void OnInitialized()
+	{
+		testRunManager.AddObserver(this);
+	}
+
+	public Task OnRunCreatedAsync(TestRun testRun) => Task.CompletedTask;
+
+	public async Task OnRunUpdatedAsync(TestRun testRun)
+	{
+		if(_testRun?.Id == testRun.Id)
+		{
+			_testRun = null;
+			await LoadAsync();
+		}
+	}
+
+	public Task OnRunMovedAsync(TestRun testRun) => Task.CompletedTask;
+
+	public Task OnRunDeletedAsync(TestRun testRun)
+	{
+		if(testRun.Id == _testRun?.Id)
+		{
+			navigationManager.NavigateTo(appNavigationManager.GetTestRunsUrl());
+		}
+		 return Task.CompletedTask;
+	}
+
+	public Task OnTestCaseRunCreatedAsync(TestCaseRun testCaseRun) => Task.CompletedTask;
+
+	public Task OnTestCaseRunUpdatedAsync(TestCaseRun testCaseRun) => Task.CompletedTask;
+
+    public void Dispose()
+    {
+        testRunManager.RemoveObserver(this);
+    }
+}

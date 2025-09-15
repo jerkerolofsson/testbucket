@@ -147,6 +147,9 @@
   <data name="closed-issues-by-day" xml:space="preserve">
     <value>Closed issues</value>
   </data>
+  <data name="code-coverage" xml:space="preserve">
+    <value>Code coverage</value>
+  </data>
   <data name="configure-data-visualization" xml:space="preserve">
     <value>Configure data visualization</value>
   </data>
@@ -164,6 +167,9 @@
   </data>
   <data name="dark-mode" xml:space="preserve">
     <value>Dark mode</value>
+  </data>
+  <data name="data-mode" xml:space="preserve">
+    <value>Data mode</value>
   </data>
   <data name="data-source" xml:space="preserve">
     <value>Data source</value>
@@ -218,6 +224,12 @@
   </data>
   <data name="test-results-by-component" xml:space="preserve">
     <value>Test results by component</value>
+  </data>
+  <data name="test-results-by-user" xml:space="preserve">
+    <value>Test results by user</value>
+  </data>
+  <data name="text-format" xml:space="preserve">
+    <value>Text format</value>
   </data>
   <data name="time-alltime" xml:space="preserve">
     <value>All time</value>

@@ -202,6 +202,7 @@ public static class DomainServiceExtensions
         services.AddScoped<ISetting, StretchTargetSetting>();
         services.AddScoped<ISetting, TargetSetting>();
         services.AddScoped<ISetting, MinTargetSetting>();
+        services.AddScoped<ISetting, AutomaticallyImportTestRunCodeCoverageReportsSetting>();
 
         services.AddScoped<ITeamManager, TeamManager>();
         services.AddScoped<IProjectManager, ProjectManager>();

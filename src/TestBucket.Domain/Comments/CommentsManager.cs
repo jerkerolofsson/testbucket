@@ -8,16 +8,18 @@ namespace TestBucket.Domain.Comments;
 internal class CommentsManager : ICommentsManager
 {
     private readonly ICommentRepository _repository;
+    private readonly TimeProvider _timeProvider;
 
-    public CommentsManager(ICommentRepository repository)
+    public CommentsManager(ICommentRepository repository, TimeProvider timeProvider)
     {
         _repository = repository;
+        _timeProvider = timeProvider;
     }
 
     public async Task AddCommentAsync(ClaimsPrincipal principal, Comment comment)
     {
-        comment.Created = DateTime.UtcNow;
-        comment.CreatedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity");
+        comment.Modified = comment.Created = _timeProvider.GetUtcNow();
+        comment.ModifiedBy = comment.CreatedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity");
 
         ThrowIfNoPermission(principal, comment, PermissionLevel.Write);
         comment.TenantId = principal.GetTenantIdOrThrow();
@@ -26,7 +28,7 @@ internal class CommentsManager : ICommentsManager
 
     public async Task UpdateCommentAsync(ClaimsPrincipal principal, Comment comment)
     {
-        comment.Modified = DateTime.UtcNow;
+        comment.Modified = _timeProvider.GetUtcNow();
         comment.ModifiedBy = principal.Identity?.Name ?? throw new UnauthorizedAccessException("Invalid identity");
 
         ThrowIfNoPermission(principal, comment, PermissionLevel.Write);

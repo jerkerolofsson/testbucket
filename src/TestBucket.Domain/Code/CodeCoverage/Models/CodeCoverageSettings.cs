@@ -21,4 +21,9 @@ public class CodeCoverageSettings
     /// Min target in percentage, default is 70%
     /// </summary>
     public int MinTarget { get; set; } = 70;
+
+    /// <summary>
+    /// Automatically imports code coverage report attachments when added to test runs
+    /// </summary>
+    public bool AutomaticallyImportTestRunCodeCoverageReports { get; set; }
 }

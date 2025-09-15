@@ -457,4 +457,10 @@
   <data name="fields-description" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
+  <data name="code-coverage-auto-import" xml:space="preserve">
+    <value />
+  </data>
+  <data name="code-coverage-auto-import-description" xml:space="preserve">
+    <value />
+  </data>
 </root>

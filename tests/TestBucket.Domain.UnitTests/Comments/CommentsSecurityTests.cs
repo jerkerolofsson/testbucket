@@ -16,6 +16,7 @@ namespace TestBucket.Domain.UnitTests.Comments
     [UnitTest]
     [SecurityTest]
     [EnrichedTest]
+    [Component("Comments")]
     public class CommentsSecurityTests
     {
         /// <summary>

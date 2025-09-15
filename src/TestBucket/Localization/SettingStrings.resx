@@ -456,4 +456,10 @@
   <data name="fields-description" xml:space="preserve">
     <value>Add, edit or delete custom fields for tests, requirements, results, issues..</value>
   </data>
+  <data name="code-coverage-auto-import" xml:space="preserve">
+    <value>Automatically import reports</value>
+  </data>
+  <data name="code-coverage-auto-import-description" xml:space="preserve">
+    <value>Imports code coverage reports when they are added as attachments to a test run</value>
+  </data>
 </root>

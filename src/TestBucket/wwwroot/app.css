@@ -333,6 +333,12 @@ input:focus-visible {
     font-size: 8pt;
 }
 
+[data-testid='external-display-id'] {
+    word-break: manual;
+    white-space: nowrap;
+    word-wrap: normal;
+}
+
  .file-resource-thumbnail {
      padding: 4px;
      border-radius: 4px;

@@ -46,7 +46,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.ImportTestResults
 
             // Import results
             byte[] zipBytes = File.ReadAllBytes("TestData/xunit.zip");
-            await mediator.Publish(new JobArtifactDownloaded(principal, run.Id, "**/*.xml", null, zipBytes), TestContext.Current.CancellationToken);
+            await mediator.Publish(new JobArtifactDownloaded(principal, run.TestProjectId.Value, run.Id, "**/*.xml", null, zipBytes), TestContext.Current.CancellationToken);
 
             // Assert
 

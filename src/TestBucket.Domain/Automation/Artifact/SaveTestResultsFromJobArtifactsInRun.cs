@@ -124,6 +124,7 @@ namespace TestBucket.Domain.Automation.Artifact
                 TenantId = principal.GetTenantIdOrThrow(),
                 Data = bytes,
                 Length = bytes.Length,
+                TestProjectId = notification.TestProjectId,
                 TestRunId = notification.TestRunId,
                 Name = entry.Name,
                 ContentType = contentType

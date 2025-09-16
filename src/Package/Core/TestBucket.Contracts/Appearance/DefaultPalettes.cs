@@ -47,6 +47,35 @@ public static class DefaultPalettes
         ]
     };
 
+
+    public static readonly ThemePalette Pastel = new ThemePalette
+    {
+        Name = "Pastel",
+        Colors = [
+            ThemeColor.Parse("#dc8a78"),
+            ThemeColor.Parse("#ea76cb"),
+            ThemeColor.Parse("#8839ef"),
+            ThemeColor.Parse("#d20f39"),
+            ThemeColor.Parse("#fe640b"),
+            ThemeColor.Parse("#40a02b"),
+            ThemeColor.Parse("#179299"),
+        ]
+    };
+
+    public static readonly ThemePalette PastelLight = new ThemePalette
+    {
+        Name = "Pastel Light",
+        Colors = [
+            ThemeColor.Parse("#f2d5cf"),
+            ThemeColor.Parse("#f4b8e4"),
+            ThemeColor.Parse("#ca9ee6"),
+            ThemeColor.Parse("#e78284"),
+            ThemeColor.Parse("#ef9f76"),
+            ThemeColor.Parse("#e5c890"),
+            ThemeColor.Parse("#a6d189"),
+        ]
+    };
+
     public static readonly ThemePalette Monochromatic = new ThemePalette
     {
         Name = "Monochromatic",
@@ -96,6 +125,36 @@ public static class DefaultPalettes
             ThemeColor.Parse("#004b23"),
         ]
     };
+
+    public static readonly ThemePalette PurpleSunsetHeatmap = new ThemePalette
+    {
+        Name = "Purple Sunset (Heatmap)",
+        Colors = [
+            ThemeColor.Parse("#390099"),
+            ThemeColor.Parse("#9e0059"),
+            ThemeColor.Parse("#ff0054"),
+            ThemeColor.Parse("#ff5400"),
+            ThemeColor.Parse("#ffbd00"),
+        ]
+    };
+
+    public static readonly ThemePalette SunsetHeatmap = new ThemePalette
+    {
+        Name = "Sunset (Heatmap)",
+        Colors = [
+            ThemeColor.Parse("#ff7b00"),
+            ThemeColor.Parse("#ff8800"),
+            ThemeColor.Parse("#ff9500"),
+            ThemeColor.Parse("#ffa200"),
+            ThemeColor.Parse("#ffaa00"),
+            ThemeColor.Parse("#ffb700"),
+            ThemeColor.Parse("#ffc300"),
+            ThemeColor.Parse("#ffd000"),
+            ThemeColor.Parse("#ffdd00"),
+            ThemeColor.Parse("#ffea00"),
+        ]
+    };
+
 
     public static readonly ThemePalette Sunset = new ThemePalette
     {

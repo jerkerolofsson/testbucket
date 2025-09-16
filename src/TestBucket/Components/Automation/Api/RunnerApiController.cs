@@ -64,14 +64,16 @@ public class RunnerApiController : ProjectApiControllerBase
         }
 
         var job = await _jobManager.GetJobByGuidAsync(principal, jobGuid);
-        if (job?.TestRunId is null)
+        if (job?.TestRunId is null || job?.TestProjectId is null)
         {
             return BadRequest();
         }
 
         var pattern = "**/*.trx;**/*.xml;**/*.json;**/*.txt";
         byte[] zipBytes = await ReadRequestBodyAsByteArrayAsync();
-        var request = new JobArtifactDownloaded(principal, job.TestRunId.Value, pattern, null, zipBytes);
+        var request = new JobArtifactDownloaded(principal, 
+            job.TestProjectId.Value,
+            job.TestRunId.Value, pattern, null, zipBytes);
         await _mediator.Publish(request);
         return Ok();
     }

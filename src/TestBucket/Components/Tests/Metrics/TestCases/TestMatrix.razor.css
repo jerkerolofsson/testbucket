@@ -1,17 +1,28 @@
 ﻿.tb-test-matrix {
     display: grid;
-    gap: 1px;
+    gap: 0px;
     max-width: 100%;
     overflow: auto;
 
     margin-top: 2rem;
+    border-collapse: collapse;
+}
+
+.tb-test-matrix > * {
+    border: solid 1px var(--mud-palette-lines-inputs);
 }
 
 .tb-test-matrix .value {
     display: grid;
     place-items: center;
     text-align: center;
-    background: rgb(0, 255, 144, 0.2);
+/*    background: rgb(0, 255, 144, 0.2);*/
+    background: var(--mud-palette-primary-hover);
+    padding: 2px;
+    color: black;
+}
+
+.tb-test-matrix .value > div {
 }
 
 .tb-test-matrix .value.empty {
@@ -20,10 +31,16 @@
 
 .tb-test-matrix .header {
     font-weight: bold;
+    font-size: 8pt;
+}
+
+.tb-test-matrix .header.row {
+    display: flex;
+    align-items: center;
 }
 
 .tb-test-matrix .header.col {
-   display: grid;
-   place-items: center;
    text-align: center;
+   line-height: 1;
+   padding: 4px;
 }

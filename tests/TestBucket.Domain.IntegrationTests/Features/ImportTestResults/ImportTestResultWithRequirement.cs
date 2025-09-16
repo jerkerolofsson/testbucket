@@ -58,7 +58,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.ImportTestResults
             await textImporter.ImportTextAsync(principal, Fixture.TeamId, Fixture.ProjectId, Formats.TestResultFormat.xUnitXml, text, new ImportHandlingOptions());
 
             byte[] zipBytes = File.ReadAllBytes("TestData/xunit.zip");
-            await mediator.Publish(new JobArtifactDownloaded(principal, run.Id, "**/*.xml", null, zipBytes), TestContext.Current.CancellationToken);
+            await mediator.Publish(new JobArtifactDownloaded(principal, run.TestProjectId.Value, run.Id, "**/*.xml", null, zipBytes), TestContext.Current.CancellationToken);
 
             // Assert
             var links = await requirementManager.GetLinksForRequirementAsync(principal, requirement);

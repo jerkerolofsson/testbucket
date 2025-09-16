@@ -41,7 +41,7 @@ namespace TestBucket.Domain.IntegrationTests.Features.Automation.Pipelines
             await runManager.AddTestRunAsync(principal, run);
 
             byte[] zipBytes = File.ReadAllBytes("TestData/xunit.zip");
-            await mediator.Publish(new JobArtifactDownloaded(principal, run.Id, "**/*.xml", null, zipBytes), TestContext.Current.CancellationToken);
+            await mediator.Publish(new JobArtifactDownloaded(principal, run.TestProjectId.Value, run.Id, "**/*.xml", null, zipBytes), TestContext.Current.CancellationToken);
 
             // Get tests from the run
             var result = await runManager.SearchTestCaseRunsAsync(principal, new SearchTestCaseRunQuery { TestRunId = run.Id, Offset = 0, Count = 1 });

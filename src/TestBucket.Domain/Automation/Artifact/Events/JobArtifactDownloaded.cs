@@ -11,6 +11,7 @@ namespace TestBucket.Domain.Automation.Artifact.Events
     /// <param name="ZipBytes"></param>
     public sealed record JobArtifactDownloaded(
         ClaimsPrincipal Principal, 
+        long TestProjectId,
         long TestRunId,
         string? TestResultsArtifactsPattern,
         string? CoverageReportArtifactsPattern,

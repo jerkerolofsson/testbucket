@@ -600,7 +600,9 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
             TestSuiteId = suite.Id,
             TestSuiteFolderId = folderId,
             Description = test.Description,
-            ExecutionType = TestExecutionType.Automated
+            ExecutionType = TestExecutionType.Automated,
+            MappedState = Contracts.Testing.States.MappedTestState.Draft,
+            State = "Draft"
         };
         await _testCaseManager.AddTestCaseAsync(principal, testCase);
         return testCase;

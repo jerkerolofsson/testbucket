@@ -393,10 +393,11 @@ internal class PipelineManager : IPipelineManager
                              configuredRunner.Config.TestResultsArtifactsPattern,
                             CancellationToken.None);
 
-                        if (bytes.Length > 0 && pipeline.TestRunId is not null && pipeline.TenantId is not null)
+                        if (bytes.Length > 0 && pipeline.TestRunId is not null && pipeline.TenantId is not null && pipeline.TestProjectId is not null)
                         {
                             // Sends event that will scan the artifact zip for test results and add them to the run as attachments
                             var notification = new JobArtifactDownloaded(principal, 
+                                pipeline.TestProjectId.Value,
                                 pipeline.TestRunId.Value, 
                                 configuredRunner.Config.TestResultsArtifactsPattern,
                                 configuredRunner.Config.CoverageReportArtifactsPattern,

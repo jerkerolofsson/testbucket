@@ -16,6 +16,11 @@ public abstract class TestBucketBaseTheme
     public ThemePalette ChartPalette { get; set; } = DefaultPalettes.Default;
 
     /// <summary>
+    /// Palette used for heatmap
+    /// </summary>
+    public ThemePalette HeatmapPalette { get; set; } = DefaultPalettes.PurpleSunsetHeatmap;
+
+    /// <summary>
     /// CSS Stylesheet
     /// </summary>
     public abstract string Dark { get; }

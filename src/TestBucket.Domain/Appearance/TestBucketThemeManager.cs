@@ -33,8 +33,12 @@ public class TestBucketThemeManager : ITestBucketThemeManager
         {
             switch (name)
             {
+                case "Pastel Light":
+                    return new PastelLight();
                 case "Dark Moon":
                     return TestBucketTheme.DarkMoon;
+                case "Darker Moon":
+                    return new DarkerMoon();
                 case "Winter":
                     return TestBucketTheme.Winter;
                 case "Retro":
@@ -181,7 +185,7 @@ public class TestBucketThemeManager : ITestBucketThemeManager
 
     public async Task<IReadOnlyList<TestBucketBaseTheme>> GetThemesAsync()
     {
-        string[] names = ["Default", "Blue Steel", "Le Trigre", "Retro", "Winter", "Dark Moon", "Ganymede", "Io", "Material"];
+        string[] names = ["Default", "Blue Steel", "Le Tigre", "Retro", "Winter", "Darker Moon", "Dark Moon", "Ganymede", "Io", "Material", "Pastel Light"];
         var themes = new List<TestBucketBaseTheme>();
 
         foreach(var name in names)

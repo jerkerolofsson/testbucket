@@ -1,4 +1,5 @@
-﻿@using TestBucket.Components.Uploads.Services
+﻿@using TestBucket.Components.Appearance.Controls
+@using TestBucket.Components.Uploads.Services
 @using TestBucket.Contracts.Appearance.Models
 @using TestBucket.Contracts.Integrations
 @inject AttachmentsService attachmentController
@@ -25,7 +26,11 @@
     {
         <DockToggle Dock="_dock" DockChanged="OnDockChanged"/>
     }
-    else if (type == FieldType.String)
+	else if (Field.FieldDefinition.DataSourceType == Contracts.Fields.FieldDataSourceType.Theme)
+	{
+		<ThemePicker Theme="@Field.StringValue" ThemeChanged="OnStringValueChanged" />
+	}
+	else if (type == FieldType.String)
     {
         @if (AutoCompleteEnabled)
         {

@@ -38,7 +38,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
     private readonly IStateService _stateService;
     private readonly ITestCaseRepository _testCaseRepository;
     private readonly IFieldDefinitionManager _fieldDefinitionManager;
-    private readonly IFileRepository _fileRepository;
+    private readonly IFileResourceManager _fileRepository;
     private readonly ITestSuiteManager _testSuiteManager;
     private readonly ITestRunManager _testRunManager;
     private readonly ITestCaseManager _testCaseManager;
@@ -54,7 +54,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         IStateService stateService,
         ITestCaseRepository testCaseRepository,
         IFieldDefinitionManager fieldDefinitionManager,
-        IFileRepository fileRepository,
+        IFileResourceManager fileRepository,
         ITestSuiteManager testSuiteManager,
         ITestRunManager testRunManager,
         ITestCaseManager testCaseManager,
@@ -483,13 +483,13 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         };
 
         await _testRunManager.AddTestCaseRunAsync(principal, testCaseRun);
-        await AddAttachmentsAsync(testCaseRun, test.Attachments);
+        await AddAttachmentsAsync(principal, testCaseRun, test.Attachments);
 
         return testCaseRun;
     }
 
 
-    private async Task AddAttachmentsAsync(TestCaseRun testCaseRun, List<AttachmentDto>? attachments)
+    private async Task AddAttachmentsAsync(ClaimsPrincipal principal, TestCaseRun testCaseRun, List<AttachmentDto>? attachments)
     {
         Debug.Assert(testCaseRun.TenantId != null);
 
@@ -510,7 +510,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
                     Length = data.Length
                 };
 
-                await _fileRepository.AddResourceAsync(dbo);
+                await _fileRepository.AddResourceAsync(principal, dbo);
             }
         }
     }

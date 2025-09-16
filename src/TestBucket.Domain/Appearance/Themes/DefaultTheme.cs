@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Appearance.Models;
-using TestBucket.Contracts.Appearance.Models;
+﻿using TestBucket.Domain.Appearance.Models;
 
 namespace TestBucket.Domain.Appearance.Themes;
 internal class DefaultTheme : TestBucketTheme
@@ -23,6 +16,11 @@ internal class DefaultTheme : TestBucketTheme
         DarkScheme.Base.Primary = "#7f85f5";
         DarkScheme.Base.Secondary = "#5b5fc7";
         DarkScheme.Base.Tertiary = "#444791";
+        DarkScheme.Base.Action = "#adadb1";
+        DarkScheme.Base.ActionHover = "#adadb10f";
+
+        DarkScheme.Input.Background = "#111116";
+        DarkScheme.Input.BackgroundHover = "#212126";
 
         DarkScheme.Input.SearchBackground = "#111116";
         DarkScheme.Input.SearchBackgroundHover = "#000";
@@ -32,7 +30,11 @@ internal class DefaultTheme : TestBucketTheme
 
         LightScheme.Base.Text = "#111";
         LightScheme.Base.Background = "#eee";
-        LightScheme.Base.Surface = "#fff";
+        LightScheme.Base.Surface = "#f8f8f8";
+
+        LightScheme.Base.Action = "#0000008a";
+        LightScheme.Base.ActionHover = "#0000000f";
+
         LightScheme.Base.DialogSurface = "#eee";
         LightScheme.Base.Primary = "#4f52b2";
         LightScheme.Base.Secondary = "#383966";
@@ -41,6 +43,8 @@ internal class DefaultTheme : TestBucketTheme
         LightScheme.Input.SearchBackgroundHover = "#fff";
 
         LightScheme.Input.Background = "#fff";
+        LightScheme.Input.BackgroundHover = "#fff";
+
         LightScheme.Field.Background = "#fff";
         LightScheme.Field.BorderColor = "#eee";
 

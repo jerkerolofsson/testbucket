@@ -67,7 +67,15 @@ table {
     border: solid 1px var(--tb-palette-field-border);
 }
 
+.mud-popover:has(> .mud-menu-list) {
+    background: var(--tb-palette-contextmenu-background, var(--mud-palette-surface));
+}
+
 .mud-input-control-input-container .mud-input-outlined {
+    background: var(--tb-palette-input-background, transparent);
+}
+.mud-input-control-input-container .mud-input-outlined:hover {
+    background: var(--tb-palette-input-background-hover, transparent);
 }
 
 .treeview .template {
@@ -332,6 +340,7 @@ input:focus-visible {
      width: 96px;
      height: 96px;
      cursor: pointer;
+     text-align: center;
  }
 
  .file-resource-thumbnail .mud-tooltip-root {

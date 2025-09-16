@@ -42,7 +42,14 @@ public class TestBucketThemeManager : ITestBucketThemeManager
                 case "Material":
                     return TestBucketTheme.Material;
 
-                case "Le Trigre": // This is intentional!
+                case "Ganymede":
+                    return new Ganymede();
+                case "Io":
+                    return new Io();
+
+                case "Le Tigre": // This is intentional!
+                    return TestBucketTheme.LeTigre;
+
                 case "Blue Steel":
                     return TestBucketTheme.BlueSteel;
             }
@@ -170,5 +177,19 @@ public class TestBucketThemeManager : ITestBucketThemeManager
                 transition: none !important;
             }
             """);
+    }
+
+    public async Task<IReadOnlyList<TestBucketBaseTheme>> GetThemesAsync()
+    {
+        string[] names = ["Default", "Blue Steel", "Le Trigre", "Retro", "Winter", "Dark Moon", "Ganymede", "Io", "Material"];
+        var themes = new List<TestBucketBaseTheme>();
+
+        foreach(var name in names)
+        {
+            var theme = await GetThemeByNameAsync(name);
+            themes.Add(theme);
+        }
+
+        return themes;
     }
 }

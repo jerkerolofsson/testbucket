@@ -35,3 +35,8 @@ internal class BlueSteel : DefaultTheme
         ChartPalette = DefaultPalettes.Cyan;
     }
 }
+
+internal class LeTigre : BlueSteel {
+    public override string ToString() => "Le Tigre";
+
+}

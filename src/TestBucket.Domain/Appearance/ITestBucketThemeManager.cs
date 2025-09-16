@@ -4,6 +4,8 @@ using TestBucket.Domain.Appearance.Models;
 namespace TestBucket.Domain.Appearance;
 public interface ITestBucketThemeManager
 {
+    Task<IReadOnlyList<TestBucketBaseTheme>> GetThemesAsync();
+
     /// <summary>
     /// Returns the theme for hte current user
     /// </summary>

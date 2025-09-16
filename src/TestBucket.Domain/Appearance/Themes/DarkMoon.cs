@@ -13,6 +13,9 @@ internal class DarkMoon : DefaultTheme
         DarkScheme.Base.DialogSurface = "#060b12";
         DarkScheme.Base.Dark = DarkScheme.Base.Background;
 
+        DarkScheme.ContextMenu.Background = "#060b12";
+
+
         DarkScheme.Base.Primary = "#03dac6";
         DarkScheme.Base.Secondary = "#cea5fb";
         DarkScheme.Base.Tertiary = "#04eab6";
@@ -20,6 +23,8 @@ internal class DarkMoon : DefaultTheme
         DarkScheme.Input.Lines = DarkScheme.Base.Surface;
         DarkScheme.Input.SearchBackground = DarkScheme.Base.Surface.ColorDarken(0.1);
         DarkScheme.Input.SearchBackgroundHover = DarkScheme.Base.Surface.ColorDarken(0.05);
+        DarkScheme.Input.Background = DarkScheme.Input.SearchBackground;
+        DarkScheme.Input.BackgroundHover = DarkScheme.Input.SearchBackgroundHover;
 
         DarkScheme.Field.Background = DarkScheme.Base.Surface.ColorLighten(0.035);
         DarkScheme.Field.BorderColor = DarkScheme.Base.Surface.ColorLighten(0.1);

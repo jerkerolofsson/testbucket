@@ -101,6 +101,7 @@ internal class UploadService : TenantBaseService
       long? requirementId, long? requirementSpecificationId,
       CancellationToken cancellationToken = default)
     {
+        var principal = await GetUserClaimsPrincipalAsync();
         var tenantId = await GetTenantIdAsync();
 
         var data = attachment.Data ?? [];
@@ -125,7 +126,7 @@ internal class UploadService : TenantBaseService
             TestSuiteFolderId = testSuiteFolderId
         };
 
-        await _repo.AddResourceAsync(resource);
+        await _fileResourceManager.AddResourceAsync(principal, resource);
 
         return resource;
     }

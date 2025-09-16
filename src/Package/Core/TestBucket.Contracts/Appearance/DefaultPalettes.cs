@@ -81,6 +81,39 @@ public static class DefaultPalettes
         ]
     };
 
+
+    public static readonly ThemePalette BrightGreen = new ThemePalette
+    {
+        Name = "Bright Green",
+        Colors = [
+            ThemeColor.Parse("#ccff33"),
+            ThemeColor.Parse("#9ef01a"),
+            ThemeColor.Parse("#70e000"),
+            ThemeColor.Parse("#38b000"),
+            ThemeColor.Parse("#008000"),
+            ThemeColor.Parse("#007200"),
+            ThemeColor.Parse("#006400"),
+            ThemeColor.Parse("#004b23"),
+        ]
+    };
+
+    public static readonly ThemePalette Sunset = new ThemePalette
+    {
+        Name = "Sunset",
+        Colors = [
+            ThemeColor.Parse("#ffea00"),
+            ThemeColor.Parse("#ffdd00"),
+            ThemeColor.Parse("#ffd000"),
+            ThemeColor.Parse("#ffc300"),
+            ThemeColor.Parse("#ffb700"),
+            ThemeColor.Parse("#ffaa00"),
+            ThemeColor.Parse("#ffa200"),
+            ThemeColor.Parse("#ff9500"),
+            ThemeColor.Parse("#ff8800"),
+            ThemeColor.Parse("#ff7b00"),
+        ]
+    };
+
     public static readonly ThemePalette Cyan = new ThemePalette
     {
         Name = "Cyan",

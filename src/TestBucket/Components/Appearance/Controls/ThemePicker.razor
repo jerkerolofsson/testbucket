@@ -1,0 +1,36 @@
+﻿@using TestBucket.Contracts.Appearance.Models
+@using TestBucket.Domain.Appearance
+@using TestBucket.Domain.Appearance.Models
+@inject ITestBucketThemeManager themeManager
+
+<div class="tb-theme-picker">
+	@foreach (var theme in _themes)
+	{
+		bool isSelected = theme.ToString() == Theme;
+		string cssClass = $"tb-theme";
+		if(isSelected)
+		{
+			cssClass += " tb-theme-selected";
+		}
+
+		<div class="@cssClass" @onclick="async () => await OnThemeClicked(theme)">
+			<div class="color-schemes">
+				@GetSurface(theme.LightScheme)
+				@GetColorSchemePreview(theme.LightScheme)
+				@GetSurface(theme.DarkScheme)
+				@GetColorSchemePreview(theme.DarkScheme)
+			</div>
+			<div class="gradient">
+				@foreach(var color in theme.ChartPalette.Colors)
+				{
+					string hex = @color.ToString(ColorOutputFormats.Hex);
+					string style = $"background: {hex}";
+					<div style="@style"/>
+				}
+			</div>
+			<div class="name">@theme.ToString()</div>
+		</div>
+	}
+</div>
+
+

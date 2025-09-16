@@ -1,0 +1,82 @@
+﻿.tb-theme-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.tb-theme {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    place-items: center;
+
+    row-gap: 1px;
+    cursor: pointer;
+
+    padding: 8px;
+    width: 140px;
+    border-radius: var(--mud-default-borderradius);
+    border: solid 1px var(--mud-palette-lines-inputs);
+}
+
+.tb-theme:hover {
+    background: var(--mud-palette-primary-hover)
+}
+
+.tb-theme.tb-theme-selected {
+    border-color: var(--mud-palette-primary);
+}
+
+.color-schemes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 1px;
+    column-gap:  0px;
+}
+
+.gradient {
+    margin-top: 4px;
+    display: flex;
+    gap: 2px;
+}
+
+.gradient > * {
+    width: 2px;
+    height: 2px;
+}
+
+.color-schemes ::deep .surface,
+.color-schemes ::deep .color-scheme {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    --border-radius: var(--mud-default-borderradius);
+
+    gap: 8px;
+    padding: 12px;
+}
+
+.color-schemes ::deep .cell:nth-child(1) {
+    border-top-left-radius: var(--border-radius);
+}
+.color-schemes ::deep .cell:nth-child(2) {
+    border-top-right-radius: var(--border-radius);
+}
+.color-schemes ::deep .cell:nth-child(3) {
+    border-bottom-left-radius: var(--border-radius);
+}
+.color-schemes ::deep .cell:nth-child(4) {
+    border-bottom-right-radius: var(--border-radius);
+}
+
+
+.color-schemes ::deep  .color-scheme .color {
+    border-radius: var(--mud-default-borderradius);
+    width: 8px;
+    height: 25px;
+}
+
+.color-schemes ::deep  .surface .color {
+    border-radius: 100vw;
+    height: 8px;
+    width: 8px;
+}

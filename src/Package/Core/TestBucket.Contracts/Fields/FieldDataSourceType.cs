@@ -76,4 +76,6 @@ public enum FieldDataSourceType
     /// Labels
     /// </summary>
     Labels = 13,
+
+    Theme = 14,
 }

@@ -10,6 +10,11 @@ namespace TestBucket.Domain.UnitTests.Insights;
 /// Unit tests for <see cref="InsightsSeries{T, U}"/>.
 /// Validates property access, data addition, updating, sorting, and retrieval.
 /// </summary>
+[Component("Insights")]
+[Feature("Insights")]
+[UnitTest]
+[EnrichedTest]
+[FunctionalTest]
 public class InsightsSeriesTests
 {
     /// <summary>

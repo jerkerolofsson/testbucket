@@ -112,6 +112,15 @@
 									</Field>
 								}
 
+								@if(_dataQuery is not null)
+								{
+									<Field Row>
+										<FieldHeader>@insightsLoc["date-format"]</FieldHeader>
+										<MudSpacer />
+										<MudTextField Value="@_dataQuery.DateFormat" T="string" ValueChanged="OnDateFormatChanged" Variant="Variant.Outlined" />
+									</Field>
+								}
+
                                 <Field Row>
                                     <FieldHeader>@insightsLoc["show-legend"]</FieldHeader>
                                     <MudSpacer/>
@@ -169,10 +178,10 @@
 </div>
 
 @code {
-    [Parameter] public TestProject Project { get; set; } = default!;
-    [Parameter] public ApplicationState? State { get; set; }
-    [Parameter] public InsightsVisualizationSpecification? Specification { get; set; }
-    [Parameter] public EventCallback<InsightsVisualizationSpecification> SpecificationChanged { get; set; }
+	[Parameter] public TestProject Project { get; set; } = default!;
+	[Parameter] public ApplicationState? State { get; set; }
+	[Parameter] public InsightsVisualizationSpecification? Specification { get; set; }
+	[Parameter] public EventCallback<InsightsVisualizationSpecification> SpecificationChanged { get; set; }
 
     private InsightsDataQuery? _dataQuery = null;
 
@@ -267,6 +276,14 @@
             await SpecificationChanged.InvokeAsync(Specification);
         }
     }
+	private async Task OnDateFormatChanged(string dateFormat)
+	{
+		if (_dataQuery is not null)
+		{
+			_dataQuery.DateFormat = dateFormat;
+			await SpecificationChanged.InvokeAsync(Specification);
+		}
+	}
 
     private async Task OnTextFormatChanged(string name)
     {

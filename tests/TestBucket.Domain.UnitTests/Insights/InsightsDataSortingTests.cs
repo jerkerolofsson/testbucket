@@ -38,6 +38,88 @@ namespace TestBucket.Domain.UnitTests.Insights
         }
 
         /// <summary>
+        /// Verifies that the labels are returned in the correct order when sorting dates even if DateOnly labels are converted to strings and the format is not
+        /// lexicographically sortable.
+        /// </summary>
+        [Fact]
+        public void SortDateOnlyLabels_ByLabelAscending_AfterStringConversion()
+        {
+            // Arrange
+            var data = new InsightsData<DateOnly, int>();
+            var series = data.Add("series 1");
+            series.Add(new DateOnly(2023, 1, 2), 10);
+            series.Add(new DateOnly(2024, 1, 3), 30);
+            series.Add(new DateOnly(2025, 1, 1), 20);
+            series.SortBy = InsightsSort.LabelAscending;
+
+            // Use a data format that isn't sorted properly as strings
+            var convertedData = data.ConvertToStringLabels(label => label.ToString("MM/dd/yyyy"));
+
+            // Act
+            var labels = convertedData.Series[0].Labels.ToList();
+
+            // Assert
+            Assert.Equal("01/02/2023", labels[0]);
+            Assert.Equal("01/03/2024", labels[1]);
+            Assert.Equal("01/01/2025", labels[2]);
+        }
+
+        /// <summary>
+        /// Verifies that the labels are returned in the correct order when sorting dates even if DateTime labels are converted to strings and the format is not
+        /// lexicographically sortable.
+        /// </summary>
+        [Fact]
+        public void SortDateTimeLabels_ByLabelAscending_AfterStringConversion()
+        {
+            // Arrange
+            var data = new InsightsData<DateTime, int>();
+            var series = data.Add("series 1");
+            series.Add(new DateTime(2023, 1, 2), 10);
+            series.Add(new DateTime(2024, 1, 3), 30);
+            series.Add(new DateTime(2025, 1, 1), 20);
+            series.SortBy = InsightsSort.LabelAscending;
+
+            // Use a data format that isn't sorted properly as strings
+            var convertedData = data.ConvertToStringLabels(label => label.ToString("MM/dd/yyyy"));
+
+            // Act
+            var labels = convertedData.Series[0].Labels.ToList();
+
+            // Assert
+            Assert.Equal("01/02/2023", labels[0]);
+            Assert.Equal("01/03/2024", labels[1]);
+            Assert.Equal("01/01/2025", labels[2]);
+        }
+
+
+        /// <summary>
+        /// Verifies that the labels are returned in the correct order when sorting dates even if DateTimeOffset labels are converted to strings and the format is not
+        /// lexicographically sortable.
+        /// </summary>
+        [Fact]
+        public void SortDateTimeOffsetLabels_ByLabelAscending_AfterStringConversion()
+        {
+            // Arrange
+            var data = new InsightsData<DateTimeOffset, int>();
+            var series = data.Add("series 1");
+            series.Add(new DateTimeOffset(2023, 1, 2, 0,0,0,TimeSpan.Zero), 10);
+            series.Add(new DateTimeOffset(2024, 1, 3, 0, 0, 0, TimeSpan.Zero), 30);
+            series.Add(new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero), 20);
+            series.SortBy = InsightsSort.LabelAscending;
+
+            // Use a data format that isn't sorted properly as strings
+            var convertedData = data.ConvertToStringLabels(label => label.ToString("MM/dd/yyyy"));
+
+            // Act
+            var labels = convertedData.Series[0].Labels.ToList();
+
+            // Assert
+            Assert.Equal("01/02/2023", labels[0]);
+            Assert.Equal("01/03/2024", labels[1]);
+            Assert.Equal("01/01/2025", labels[2]);
+        }
+
+        /// <summary>
         /// Verifies that the labels are returned in the correct order when sorting by label descending.
         /// </summary>
         [Fact]

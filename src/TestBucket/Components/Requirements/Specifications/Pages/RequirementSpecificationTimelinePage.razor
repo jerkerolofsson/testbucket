@@ -3,11 +3,15 @@
 @using MudGantt
 @using TestBucket.Components.Milestones.Controllers
 @using TestBucket.Components.Requirements.Utilities
+@using TestBucket.Domain.Requirements
 @layout RequirementSpecificationLayout
 @inject RequirementBrowser browser
 @inject MilestonesController milestonesController
 @inject AppNavigationManager appNavigationManager
 @inject RequirementEditorController controller
+@implements IRequirementObserver
+@implements IDisposable
+@inject IRequirementManager manager
 
 <MudStack Class="container-fill scroll">
     @if (_specification is not null && Project is not null)
@@ -28,99 +32,153 @@
 </MudStack>
 
 @code {
-    [Parameter] public long Id { get; set; }
-    [Parameter] public string TenantId { get; set; } = "";
-    [CascadingParameter] public Team? Team { get; set; }
-    [CascadingParameter] public TestProject? Project { get; set; }
-    [CascadingParameter] public RequirementSpecification? RequirementSpecification { get; set; }
+	[Parameter] public long Id { get; set; }
+	[Parameter] public string TenantId { get; set; } = "";
+	[CascadingParameter] public Team? Team { get; set; }
+	[CascadingParameter] public TestProject? Project { get; set; }
+	[CascadingParameter] public RequirementSpecification? RequirementSpecification { get; set; }
 
-    private RequirementSpecification? _specification;
-    private Requirement[] _requirements = [];
+	private RequirementSpecification? _specification;
+	private Requirement[] _requirements = [];
 
-    private List<MudGanttTask> _tasks = [];
-    private List<MudGanttEvent> _events = [];
+	private List<MudGanttTask> _tasks = [];
+	private List<MudGanttEvent> _events = [];
 
+	private void OnTaskContextMenuOpening(MudGanttTask task)
+	{
+		if (long.TryParse(task.Id, out var id))
+		{
+			var requirement = _requirements.FirstOrDefault(x => x.Id == id);
+			if (requirement is not null)
+			{
+				appNavigationManager.State.SetSelectedRequirement(requirement);
+			}
+		}
+	}
 
-    private void OnTaskContextMenuOpening(MudGanttTask task)
-    {
-        if (long.TryParse(task.Id, out var id))
-        {
-            var requirement = _requirements.FirstOrDefault(x => x.Id == id);
-            if (requirement is not null)
-            {
-                appNavigationManager.State.SetSelectedRequirement(requirement);
-            }
-        }
+	private void OnTaskClicked(MudGanttTask task)
+	{
+		if (long.TryParse(task.Id, out var id))
+		{
+			var requirement = _requirements.FirstOrDefault(x => x.Id == id);
+			if (requirement is not null)
+			{
+				appNavigationManager.NavigateTo(requirement);
+			}
+		}
+	}
+	private async Task OnProgressChanged(MudGanttTask task)
+	{
+		if (long.TryParse(task.Id, out var id))
+		{
+			var requirement = _requirements.FirstOrDefault(x => x.Id == id);
+			if (requirement is not null)
+			{
+				requirement.Progress = task.Progress;
+				await controller.SaveRequirementAsync(requirement);
+			}
+		}
+	}
+	private async Task OnDatesChanged(MudGanttTask task)
+	{
+		if (long.TryParse(task.Id, out var id))
+		{
+			var requirement = _requirements.FirstOrDefault(x => x.Id == id);
+			if (requirement is not null)
+			{
+				requirement.StartDate = task.StartDate?.ToUniversalTime();
+				requirement.DueDate = task.EndDate?.ToUniversalTime();
+				await controller.SaveRequirementAsync(requirement);
+			}
+		}
+	}
+
+	private async Task ReloadRequirementsAsync()
+	{
+		var result = await browser.SearchRequirementsInSpecificationAsync(_specification.Id, 0, 100);
+		_requirements = result.Items;
+
+		_tasks.AddRange(_requirements.Select(x =>
+			new MudGanttTask
+			{
+				Id = x.Id.ToString(),
+				Name = x.Name,
+				StartDate = x.StartDate ?? DateTime.UtcNow,
+				EndDate = x.DueDate ?? DateTimeOffset.UtcNow.AddDays(1),
+				Progress = x.Progress ?? 0,
+				Links = RequirementGanntHelper.GetDependencies(x),
+				Color = RequirementColors.GetColor(x)
+			}
+		));
+		this.StateHasChanged();
+
+	}
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if(RequirementSpecification is not null && RequirementSpecification.Id != _specification?.Id)
+		{
+			_specification = RequirementSpecification;
+
+			var milestones = await milestonesController.GetMilestonesAsync(Project);
+			_events = milestones.Where(x => x.EndDate != null && !string.IsNullOrWhiteSpace(x.Title)).Select(x => new MudGanttEvent
+			{
+				Name = x.Title ?? "",
+				Date = x.EndDate!.Value,
+				Id = x.Id.ToString(),
+			}).ToList();
+
+			await ReloadRequirementsAsync();
+		}
     }
 
-    private void OnTaskClicked(MudGanttTask task)
-    {
-        if (long.TryParse(task.Id, out var id))
-        {
-            var requirement = _requirements.FirstOrDefault(x => x.Id == id);
-            if (requirement is not null)
-            {
-                appNavigationManager.NavigateTo(requirement);
-            }
-        }
-    }
-    private async Task OnProgressChanged(MudGanttTask task)
-    {
-        if (long.TryParse(task.Id, out var id))
-        {
-            var requirement = _requirements.FirstOrDefault(x => x.Id == id);
-            if (requirement is not null)
-            {
-                requirement.Progress = task.Progress;
-                await controller.SaveRequirementAsync(requirement);
-            }
-        }
-    }
-    private async Task OnDatesChanged(MudGanttTask task)
-    {
-        if (long.TryParse(task.Id, out var id))
-        {
-            var requirement = _requirements.FirstOrDefault(x => x.Id == id);
-            if (requirement is not null)
-            {
-                requirement.StartDate = task.StartDate?.ToUniversalTime();
-                requirement.DueDate = task.EndDate?.ToUniversalTime();
-                await controller.SaveRequirementAsync(requirement);
-            }
-        }
-    }
+	protected override void OnInitialized()
+	{
+		manager.AddObserver(this);
+	}
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if(RequirementSpecification is not null && RequirementSpecification.Id != _specification?.Id)
-        {
-            _specification = RequirementSpecification;
+	public void Dispose()
+	{
+		manager.RemoveObserver(this);
+	}
 
-            var result = await browser.SearchRequirementsInSpecificationAsync(_specification.Id, 0, 100);
-            _requirements = result.Items;
+	public Task OnSpecificationDeletedAsync(RequirementSpecification spec)
+	{
+		if (_specification?.Id == spec.Id)
+		{
+			appNavigationManager.NavigateTo(appNavigationManager.GetRequirementsSearchUrl());
+		}
+		return Task.CompletedTask;
+	}
 
-            var milestones = await milestonesController.GetMilestonesAsync(Project);
-            _events = milestones.Where(x => x.EndDate != null && !string.IsNullOrWhiteSpace(x.Title)).Select(x => new MudGanttEvent
-            {
-                Name = x.Title ?? "",
-                Date = x.EndDate!.Value,
-                Id = x.Id.ToString(),
-            }).ToList();
+	public Task OnRequirementFieldChangedAsync(Requirement requirement) => Task.CompletedTask;
+	public Task OnSpecificationCreatedAsync(RequirementSpecification spec) => Task.CompletedTask;
+	public Task OnSpecificationSavedAsync(RequirementSpecification spec) => Task.CompletedTask;
+	public Task OnFolderCreatedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
+	public Task OnFolderDeletedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
+	public Task OnFolderSavedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
 
-            _tasks.AddRange(_requirements.Select(x =>
-                new MudGanttTask
-                {
-                    Id = x.Id.ToString(),
-                    Name = x.Name,
-                    StartDate = x.StartDate ?? DateTime.UtcNow,
-                    EndDate = x.DueDate ?? DateTimeOffset.UtcNow.AddDays(1),
-                    Progress = x.Progress ?? 0,
-                    Links = RequirementGanntHelper.GetDependencies(x),
-                    Color = RequirementColors.GetColor(x)
-                }
-            ));
-            this.StateHasChanged();
-        }
-    }
+	public async Task OnRequirementCreatedAsync(Requirement requirement)
+	{
+		if (_specification is not null && requirement.RequirementSpecificationId == _specification.Id)
+		{
+			await ReloadRequirementsAsync();
+		}
+	}
 
+	public async Task OnRequirementDeletedAsync(Requirement requirement)
+	{
+		if (_specification is not null && requirement.RequirementSpecificationId == _specification.Id)
+		{
+			await ReloadRequirementsAsync();
+		}
+	}
+
+	public async Task OnRequirementSavedAsync(Requirement requirement)
+	{
+		if (_specification is not null && requirement.RequirementSpecificationId == _specification.Id)
+		{
+			await ReloadRequirementsAsync();
+		}
+	}
 }

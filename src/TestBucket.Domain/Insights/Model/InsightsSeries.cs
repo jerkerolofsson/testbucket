@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 using TestBucket.Contracts.Insights;
+using TestBucket.Domain.Insights.Extensions;
 
 namespace TestBucket.Domain.Insights.Model;
 public class InsightsSeries<T, U> where T : notnull
@@ -41,14 +42,14 @@ public class InsightsSeries<T, U> where T : notnull
         {
             if (SortBy == InsightsSort.LabelAscending)
             {
-                foreach (var point in _data.OrderBy(x => x.Label))
+                foreach (var point in _data.OrderBy(x => x.GetLabelAsSortableString()))
                 {
                     yield return point;
                 }
             }
             else if (SortBy == InsightsSort.LabelDescending)
             {
-                foreach (var point in _data.OrderByDescending(x => x.Label))
+                foreach (var point in _data.OrderByDescending(x => x.GetLabelAsSortableString()))
                 {
                     yield return point;
                 }
@@ -115,9 +116,14 @@ public class InsightsSeries<T, U> where T : notnull
     /// </summary>
     /// <param name="label"></param>
     /// <param name="value"></param>
-    public void Add(T label, U value)
+    public InsightsDataPoint<T, U> Add(T label, U value)
     {
         var point = new InsightsDataPoint<T, U>(label, value);
+        _data.Add(point);
+        return point;
+    }
+    public void Add(InsightsDataPoint<T,U> point)
+    {
         _data.Add(point);
     }
 

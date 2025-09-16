@@ -279,4 +279,7 @@
   <data name="upload-collection-description" xml:space="preserve">
     <value>支持的文件格式：.txt，.md，.zip</value>
   </data>
+  <data name="new-epic" xml:space="preserve">
+    <value />
+  </data>
 </root>

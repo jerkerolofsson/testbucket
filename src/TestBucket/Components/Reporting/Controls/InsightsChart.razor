@@ -109,85 +109,91 @@
 }
 
 @code {
-    [Parameter] public string Title { get; set; } = "";
-    [Parameter] public string UserQuery { get; set; } = "";
-    [Parameter] public bool ReadOnly { get; set; }
-    [Parameter] public InsightsVisualizationSpecification? Spec { get; set; }
-    [Parameter] public EventCallback<InsightsVisualizationSpecification> SpecChanged { get; set; }
-    [Parameter] public EventCallback<InsightsVisualizationSpecification> Delete { get; set; }
-    [Parameter] public TestProject Project { get; set; } = default!;
-    [Parameter] public ApplicationState? State { get; set; }
+	[Parameter] public string Title { get; set; } = "";
+	[Parameter] public string UserQuery { get; set; } = "";
+	[Parameter] public bool ReadOnly { get; set; }
+	[Parameter] public InsightsVisualizationSpecification? Spec { get; set; }
+	[Parameter] public EventCallback<InsightsVisualizationSpecification> SpecChanged { get; set; }
+	[Parameter] public EventCallback<InsightsVisualizationSpecification> Delete { get; set; }
+	[Parameter] public TestProject Project { get; set; } = default!;
+	[Parameter] public ApplicationState? State { get; set; }
 
 
-    private ChartType _chartType = ChartType.Line;
+	private ChartType _chartType = ChartType.Line;
 
-    private PlotlyChart? _chart;
-    private Config? _config = new Config()
+	private PlotlyChart? _chart;
+	private Config? _config = new Config()
     {
         Responsive = true,
 
     };
-    private Layout? _layout;
-    private Dictionary<string, string> _legendTitleColorMap = [];
+	private Layout? _layout;
+	private Dictionary<string, string> _legendTitleColorMap = [];
 
-    // Using of the interface IList is important for the event callback!
-    private readonly IList<ITrace> _data = new List<ITrace>();
+	// Using of the interface IList is important for the event callback!
+	private readonly IList<ITrace> _data = new List<ITrace>();
 
-    private InsightsData<string, double>? _results;
+	private InsightsData<string, double>? _results;
 
-    private Task OnChartTypeChanged(ChartType chartType)
-    {
-        _chartType = chartType;
-        BuildChartData();
-        return Task.CompletedTask;
-    }
+	private Task OnChartTypeChanged(ChartType chartType)
+	{
+		_chartType = chartType;
+		BuildChartData();
+		return Task.CompletedTask;
+	}
 
-    private string? _userQuery;
+	private string? _userQuery;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if(Spec is null)
-        {
-            return;
-        }
-        if (Spec.DataQueries.Count == 0)
-        {
-            return;
-        }
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if(Spec is null)
+		{
+			return;
+		}
+		if (Spec.DataQueries.Count == 0)
+		{
+			return;
+		}
 
-        if(_results is null || _userQuery != UserQuery)
-        {
-            _userQuery = UserQuery;
+		if(_results is null || _userQuery != UserQuery)
+		{
+			_userQuery = UserQuery;
 
-            // Combine the query from the specification and the user
-            var realQueryString = string.Join(" ", Spec.DataQueries[0].Query, UserQuery).Trim();
-            var query = new InsightsDataQuery
+			// Combine the query from the specification and the user
+			var realQueryString = string.Join(" ", Spec.DataQueries[0].Query, UserQuery).Trim();
+			var query = new InsightsDataQuery
                 {
                     Colors = Spec.DataQueries[0].Colors,
                     Query = realQueryString,
                     DataSource = Spec.DataQueries[0].DataSource,
+					DateFormat = Spec.DataQueries[0].DateFormat
                 };
 
-            _results = await controller.GetDataAsync(Project?.Id, query);
-            _chartType = Spec.ChartType;
+			_results = await controller.GetDataAsync(Project?.Id, query);
+			_chartType = Spec.ChartType;
 
-            if (_results is not null)
-            {
-                BuildChartData();
-                await InvokeAsync(this.StateHasChanged);
-            }
-        }
-    }
+			if (_results is not null)
+			{
+				BuildChartData();
+				await InvokeAsync(this.StateHasChanged);
+			}
+		}
+	}
 
-    protected override void OnParametersSet()
-    {
-        if (State is not null)
-        {
-            ConfigureLayout(State.Theme);
-        }
+	private InsightsVisualizationSpecification? _spec;
 
-        _results = null;
-    }
+	protected override void OnParametersSet()
+	{
+		if (Spec is not null && Spec != _spec)
+		{
+			_spec = Spec;
+			_results = null;
+		}
+		if (State is not null)
+		{
+			ConfigureLayout(State.Theme);
+		}
+	}
 
     private List<string> GetColorway(TestBucketBaseTheme theme)
     {

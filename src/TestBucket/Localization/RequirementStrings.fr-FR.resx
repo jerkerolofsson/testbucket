@@ -279,4 +279,7 @@
   <data name="upload-collection-description" xml:space="preserve">
     <value>Formats de fichiers pris en charge: .txt, .md, .zip</value>
   </data>
+  <data name="new-epic" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -33,28 +33,34 @@
 
     <KanbanBoard T="Requirement" ColorHashFunc="GetColorHash" GetColumnFunc="GetState" Items="@_requirements" SetColumnFunc="SetStateAsync" Columns="@_columns">
         <ItemRenderer>
-            <MudStack @onclick="async ()=> await OnClickedAsync(context)">
+			<MudMenu ActivationEvent="@MouseEvent.RightClick" Dense="true" OpenChanged="() => OnMenuOpened(context)">
+				<ActivatorContent>
+					<MudStack @onclick="async () => await OnClickedAsync(context)">
 
-                <MudStack Row AlignItems="AlignItems.Center">
-                    <MudIcon Icon="@RequirementIcons.GetIcon(context)" />
-                    @context.Name
-                </MudStack>
-                <MudStack Row AlignItems="AlignItems.Center" Justify="Justify.FlexEnd">
-                    @if (context.GetMilestone() is not null)
-                    {
-                        <MudStack Row AlignItems="AlignItems.Center" Spacing="0">
-                            <MudIcon Icon="@TbIcons.BoldDuoTone.Flag"/>@context.GetMilestone()
-                        </MudStack>
-                    }
-                    @if (context.AssignedTo is not null)
-                    {
-                        <TestBucket.Components.Shared.Profile.UserProfileImage UserName="@context.AssignedTo" />
-                    }
-                </MudStack>
-            </MudStack>
+						<MudStack Row AlignItems="AlignItems.Center">
+							<MudIcon Icon="@RequirementIcons.GetIcon(context)" />
+							@context.Name
+						</MudStack>
+						<MudStack Row AlignItems="AlignItems.Center" Justify="Justify.FlexEnd">
+							@if (context.GetMilestone() is not null)
+							{
+								<MudStack Row AlignItems="AlignItems.Center" Spacing="0">
+									<MudIcon Icon="@TbIcons.BoldDuoTone.Flag" />@context.GetMilestone()
+								</MudStack>
+							}
+							@if (context.AssignedTo is not null)
+							{
+								<TestBucket.Components.Shared.Profile.UserProfileImage UserName="@context.AssignedTo" />
+							}
+						</MudStack>
+					</MudStack>
+				</ActivatorContent>
+				<ChildContent>
+					<CommandMenuItems TypeNames="Requirement" />
+				</ChildContent>
+			</MudMenu>
         </ItemRenderer>
     </KanbanBoard>
-
 </MudStack>
 
 @code {
@@ -67,6 +73,13 @@
     private string _defaultColumn = RequirementStates.Draft;
 
     private List<Requirement> _requirements = [];
+
+
+	private Task OnMenuOpened(Requirement requirement)
+	{
+		appNavigationManager.State.SetSelectedRequirement(requirement);
+		return Task.CompletedTask;
+	}
 
     private async Task EditAsync(Requirement requirement)
     {

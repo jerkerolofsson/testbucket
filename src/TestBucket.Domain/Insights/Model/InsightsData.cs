@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 namespace TestBucket.Domain.Insights.Model;
-public class InsightsData<T,U> where T : notnull
+
+public class InsightsData<T, U> where T : notnull
 {
-    private readonly List<InsightsSeries<T,U>> _series = [];
+    private readonly List<InsightsSeries<T, U>> _series = [];
     public string? Name { get; set; }
 
     /// <summary>
@@ -31,15 +32,15 @@ public class InsightsData<T,U> where T : notnull
         return series;
     }
 
-    public bool TryGetValue(T key,  [NotNullWhen(true)] out U? value)
+    public bool TryGetValue(T key, [NotNullWhen(true)] out U? value)
     {
         value = default;
 
-        if(_series.Count > 0)
+        if (_series.Count > 0)
         {
-            foreach(var series in _series)
+            foreach (var series in _series)
             {
-                if(series.TryGetValue(key, out value))
+                if (series.TryGetValue(key, out value))
                 {
                     return true;
                 }
@@ -63,7 +64,7 @@ public class InsightsData<T,U> where T : notnull
         var copy = new InsightsData<string, double>();
         copy.Name = this.Name;
 
-        foreach(var series in _series)
+        foreach (var series in _series)
         {
             var newSeries = new InsightsSeries<string, double>()
             {
@@ -72,7 +73,8 @@ public class InsightsData<T,U> where T : notnull
             };
             foreach (var point in series.Data)
             {
-                newSeries.Add(convert(point.Label), point.ToDouble());
+                var newPoint = newSeries.Add(convert(point.Label), point.ToDouble());
+                newPoint.OriginalLabel = point.Label;
             }
             copy.Add(newSeries);
         }

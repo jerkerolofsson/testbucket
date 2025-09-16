@@ -110,7 +110,7 @@
                     <TestCaseRunGrid @bind-Query="_testCaseRunQuery" />
                 </MudTabPanel>
 
-				<MudTabPanel Text="@loc["code-coverage"]">
+				<MudTabPanel Text="@codeLoc["code-coverage"]">
 					<InsightsChart State="State" Project="Project" ReadOnly @bind-Spec="_coverageSpec" />
 				</MudTabPanel>
                 <MudTabPanel Text="@codeLoc["changed-files"]">

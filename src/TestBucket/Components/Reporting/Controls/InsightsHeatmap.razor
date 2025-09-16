@@ -23,7 +23,9 @@
                     <div style="@css" class="item">
                         @if(point.Value != _min)
                         {
-                            <span>@point.Value</span>
+							<MudTooltip Text="@point.Label">
+								<span>@point.Value</span>
+							</MudTooltip>
                         }
                     </div>
                 }

@@ -16,7 +16,7 @@ namespace TestBucket.Domain.Projects.Models;
 
 [Table("projects")]
 [Index(nameof(TenantId), nameof(Slug))]
-public class TestProject
+public record class TestProject
 {
     /// <summary>
     /// DB ID

@@ -2,7 +2,7 @@
 using TestBucket.Contracts.Appearance.Models;
 
 namespace TestBucket.Contracts.Insights;
-public class InsightsVisualizationSpecification
+public record class InsightsVisualizationSpecification
 {
     /// <summary>
     /// Label ID. This will be translated with IStringLocalizer<InsightStrings>

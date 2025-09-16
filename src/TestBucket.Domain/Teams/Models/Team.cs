@@ -11,7 +11,7 @@ using TestBucket.Domain.Tenants.Models;
 namespace TestBucket.Domain.Teams.Models;
 
 [Table("teams")]
-public class Team
+public record class Team
 {
     /// <summary>
     /// DB ID

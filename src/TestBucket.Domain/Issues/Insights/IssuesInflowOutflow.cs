@@ -51,6 +51,16 @@ internal class IssuesInflowOutflow : IInsightsDataSource
         data.Add(created.Series[0]);
         data.Add(closed.Series[0]);
         data.AddMissingDays();
+
+        if(query.DateFormat is not null)
+        {
+            try
+            {
+                return data.ConvertToStringLabels(label => label.ToString(query.DateFormat));
+            }
+            catch(FormatException) {} // user defined format..
+        }
+
         return data.ConvertToStringLabels();
     }
 }

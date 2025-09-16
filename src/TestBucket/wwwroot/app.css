@@ -828,9 +828,16 @@ table.tb-environment-variables {
 
 .settings-radio-lg {
     border: solid 2px transparent;
-    padding: 12px;
+    padding: 0px;
     border-radius: 8px;
 }
+
+
+.settings-radio-lg > div {
+    width: 100%;
+    height: 100%;
+}
+
 
 .settings-radio-lg p svg {
     margin-right: 8px;
@@ -839,6 +846,7 @@ table.tb-environment-variables {
 .settings-radio-lg p {
     display: flex;
     align-items: center;
+    padding: 12px;
 }
 
 .settings-radio-lg:hover {
@@ -1367,6 +1375,7 @@ div.tb-profile-image.tb-background-9 {
 .tb-insights-chart .tb-insights-table {
     margin-top: 16px;
     border: solid 1px var(--mud-palette-lines-inputs);
+    overflow: auto;
 }
 
 .tb-insights-chart .mud-table-root .mud-table-body .mud-table-cell,

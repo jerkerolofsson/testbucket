@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using TestBucket.Domain.Projects.Models;
-
-namespace TestBucket.Domain.Tenants.Models;
-public class Tenant
+﻿namespace TestBucket.Domain.Tenants.Models;
+public record class Tenant
 {
     public required string Id { get; set; }
     public required string Name { get; set; }
@@ -28,6 +20,5 @@ public class Tenant
 
 
     // Navigation
-
     public IEnumerable<TestProject>? TestProjects { get; set; }
 }

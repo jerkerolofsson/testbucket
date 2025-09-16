@@ -1,7 +1,12 @@
 ﻿@attribute [Authorize()]
 @page "/{TenantId}/Requirements/Specifications/{Id:long}/Board"
+@using TestBucket.Domain.Requirements
 @layout RequirementSpecificationLayout
 @inject RequirementBrowser browser
+@implements IRequirementObserver
+@implements IDisposable
+@inject IRequirementManager manager
+@inject AppNavigationManager appNavigationManager
 
 <MudStack Class="container-fill">
     @if (_specification is not null && Project is not null)
@@ -11,26 +16,81 @@
 </MudStack>
 
 @code {
-    [Parameter] public long Id { get; set; }
-    [Parameter] public string TenantId { get; set; } = "";
-    [CascadingParameter] public Team? Team { get; set; }
-    [CascadingParameter] public TestProject? Project { get; set; }
-    [CascadingParameter] public RequirementSpecification? RequirementSpecification { get; set; }
+	[Parameter] public long Id { get; set; }
+	[Parameter] public string TenantId { get; set; } = "";
+	[CascadingParameter] public Team? Team { get; set; }
+	[CascadingParameter] public TestProject? Project { get; set; }
+	[CascadingParameter] public RequirementSpecification? RequirementSpecification { get; set; }
 
-    private RequirementSpecification? _specification;
-    private Requirement[] _requirements = [];
+	private RequirementSpecification? _specification;
+	private Requirement[] _requirements = [];
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if(RequirementSpecification is not null && RequirementSpecification.Id != _specification?.Id)
-        {
-            _specification = RequirementSpecification;
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if(RequirementSpecification is not null && RequirementSpecification.Id != _specification?.Id)
+		{
+			_specification = RequirementSpecification;
+			await ReloadRequirementsAsync();
+		}
+	}
 
-            var result = await browser.SearchRequirementsInSpecificationAsync(_specification.Id, 0, 100);
-            _requirements = result.Items;
+	private async Task ReloadRequirementsAsync()
+	{
+		if (_specification is not null)
+		{
+			var result = await browser.SearchRequirementsInSpecificationAsync(_specification.Id, 0, 100);
+			_requirements = result.Items;
+			this.StateHasChanged();
+		}
+	}
 
-            this.StateHasChanged();
-        }
-    }
+	protected override void OnInitialized()
+	{
+		manager.AddObserver(this);
+	}
 
+	public void Dispose()
+	{
+		manager.RemoveObserver(this);
+	}
+
+	public Task OnSpecificationDeletedAsync(RequirementSpecification spec)
+	{
+		if(_specification?.Id == spec.Id)
+		{
+			appNavigationManager.NavigateTo(appNavigationManager.GetRequirementsSearchUrl());
+		}
+		return Task.CompletedTask;
+	}
+
+	public Task OnRequirementFieldChangedAsync(Requirement requirement) => Task.CompletedTask;
+	public Task OnSpecificationCreatedAsync(RequirementSpecification spec) => Task.CompletedTask;
+	public Task OnSpecificationSavedAsync(RequirementSpecification spec) => Task.CompletedTask;
+	public Task OnFolderCreatedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
+	public Task OnFolderDeletedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
+	public Task OnFolderSavedAsync(RequirementSpecificationFolder folder) => Task.CompletedTask;
+
+	public async Task OnRequirementCreatedAsync(Requirement requirement)
+	{
+		if (_specification is not null && requirement.RequirementSpecificationId == _specification.Id)
+		{
+			await ReloadRequirementsAsync();
+		}
+	}
+
+	public async Task OnRequirementDeletedAsync(Requirement requirement)
+	{
+		if (_specification is not null && requirement.RequirementSpecificationId == _specification.Id)
+		{
+			await ReloadRequirementsAsync();
+		}
+	}
+
+	public async Task OnRequirementSavedAsync(Requirement requirement)
+	{
+		if (_specification is not null && requirement.RequirementSpecificationId == _specification.Id)
+		{
+			await ReloadRequirementsAsync();
+		}
+	}
 }

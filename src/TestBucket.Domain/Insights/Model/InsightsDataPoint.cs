@@ -7,6 +7,14 @@ using System.Threading.Tasks;
 namespace TestBucket.Domain.Insights.Model;
 public record class InsightsDataPoint<T,U>(T Label, U Value)
 {
+    /// <summary>
+    /// The original value before any conversion
+    /// This is used for sorting (if SortMode is InsightsSort.LabelAscending or LabelDescending), but not for display
+    /// 
+    /// If this is null then the label is used for sorting
+    /// </summary>
+    public object? OriginalLabel { get; set; }
+
     public double ToDouble()
     {
         if (Value is double d)

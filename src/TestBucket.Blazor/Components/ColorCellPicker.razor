@@ -2,7 +2,7 @@
 @using TestBucket.Contracts.Appearance.Models
 
 <div class="tb-color-cell-picker" @attributes="@Attributes">
-    <MudTextField T="string" Text="@_color" TextChanged="OnTextChanged" Variant="Variant.Outlined" />
+    <MudTextField T="string" Text="@_color" TextChanged="OnTextChanged" Variant="Variant.Outlined" Placeholder="#RRGGBB"/>
     <ColorCell HighlighyOnHover Color="@_color" Size="Size.Large" OnClick="() => _open = !_open" />
 
     <MudOverlay @bind-Visible="_open" AutoClose />

@@ -62,7 +62,7 @@ public class ImportRunHandler : IRequestHandler<ImportRunRequest, TestRun>
         IProjectManager projectManager,
         ITeamManager teamManager,
         IRequirementManager requirementManager,
-        IProgressManager progressManager,
+        ProgressSystemManager progressManager,
         ILogger<ImportRunHandler> logger,
         IMetricsManager metricsManager)
     {

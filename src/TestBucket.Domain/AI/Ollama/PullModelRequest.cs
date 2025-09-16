@@ -14,7 +14,7 @@ public class PullModelRequestHandler : IRequestHandler<PullModelRequest, bool>
     private readonly ISettingsProvider _settingsProvider;
     private readonly IProgressManager _progressManager;
 
-    public PullModelRequestHandler(ISettingsProvider settingsProvider, IProgressManager manager)
+    public PullModelRequestHandler(ISettingsProvider settingsProvider, ProgressSystemManager manager)
     {
         _settingsProvider = settingsProvider;
         _progressManager = manager;

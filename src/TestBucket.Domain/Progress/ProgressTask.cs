@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace TestBucket.Domain.Progress;
 public class ProgressTask : IAsyncDisposable
 {
-    private readonly ProgressManager _progressManager;
+    private readonly IProgressManager _progressManager;
     private readonly CancellationTokenSource _cts = new();
 
     public string Title { get; private set; }
@@ -19,7 +19,7 @@ public class ProgressTask : IAsyncDisposable
     /// </summary>
     public double Percent { get; private set; } = 0;
 
-    internal ProgressTask(string title, ProgressManager progressManager)
+    internal ProgressTask(string title, IProgressManager progressManager)
     {
         Title = title;
         Status = "";

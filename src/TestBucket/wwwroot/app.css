@@ -1551,3 +1551,30 @@ div.tb-profile-image.tb-background-9 {
 think {
     opacity: 0.8;
 }
+
+footer {
+    display: flex;
+    align-items: center;
+}
+
+footer .tb-progress > div {
+    max-width: 25vw;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    text-wrap: nowrap;
+}
+
+footer .tb-progress > div:nth-child(2) {
+    font-weight: bold;
+    color: var(--mud-palette-primary);
+}
+
+footer .tb-progress {
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 8pt;
+}

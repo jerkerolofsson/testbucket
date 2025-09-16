@@ -15,4 +15,5 @@ public interface IProgressManager
     /// </summary>
     /// <returns></returns>
     ProgressTask CreateProgressTask(string title);
+    Task NotifyAsync(ProgressTask progressTask);
 }

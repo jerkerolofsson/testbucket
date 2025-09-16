@@ -222,6 +222,7 @@ public static class DomainServiceExtensions
         services.AddScoped<ICommandManager, CommandManager>();
         services.AddScoped<IUnifiedSearchManager, UnifiedSearchManager>();
         services.AddScoped<IProgressManager, ProgressManager>();
+        services.AddSingleton<ProgressSystemManager>();
         services.AddScoped<ITestEnvironmentManager, TestEnvironmentManager>();
         services.AddScoped<IHeuristicsManager, HeuristicsManager>();
 

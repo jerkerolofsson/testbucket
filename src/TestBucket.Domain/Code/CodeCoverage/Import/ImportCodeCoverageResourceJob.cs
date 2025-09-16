@@ -5,6 +5,7 @@ using Quartz;
 
 namespace TestBucket.Domain.Code.CodeCoverage.Import;
 
+[DisallowConcurrentExecution]
 public class ImportCodeCoverageResourceJob : IJob
 {
     private readonly CodeCoverageImporter _codeCoverageImporter;

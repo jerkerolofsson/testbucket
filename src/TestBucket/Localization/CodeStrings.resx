@@ -132,6 +132,9 @@
   <data name="changed-files" xml:space="preserve">
     <value>Changed Files</value>
   </data>
+  <data name="code-coverage" xml:space="preserve">
+    <value>Code coverage</value>
+  </data>
   <data name="commited" xml:space="preserve">
     <value>Commited</value>
   </data>
@@ -162,6 +165,12 @@
   </data>
   <data name="import-code-coverage" xml:space="preserve">
     <value>Import code coverage</value>
+  </data>
+  <data name="importing-code-coverage-report" xml:space="preserve">
+    <value>Importing {0}</value>
+  </data>
+  <data name="importing-code-coverage-report-loading" xml:space="preserve">
+    <value>Loading..</value>
   </data>
   <data name="layer" xml:space="preserve">
     <value>Layer</value>

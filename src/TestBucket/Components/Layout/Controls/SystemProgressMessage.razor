@@ -1,0 +1,50 @@
+﻿@using TestBucket.Domain.Progress
+@inject ProgressSystemManager progress
+@implements IProgressObserver
+@implements IDisposable
+
+@if (_title is not null)
+{
+	<div class="tb-progress">
+		<MudProgressCircular Value="_progress" Min="0" Max="100" Color="Color.Primary" Size="Size.Small"></MudProgressCircular>
+		<div>@_title</div>
+		<div>@_status</div>
+	</div>
+}
+
+@code {
+
+	private string? _title;
+	private string? _status;
+	private double _progress;
+
+	public void Dispose()
+	{
+		progress.RemoveObserver(this);
+	}
+
+	protected override void OnInitialized()
+	{
+		progress.AddObserver(this);
+	}
+
+	public async Task NotifyAsync(ProgressTask progressTask)
+	{
+		if(progressTask.Completed)
+		{
+			if (_title is not null)
+			{
+				_title = null;
+				_status = null;
+				await InvokeAsync(StateHasChanged);
+			}
+		}
+		else
+		{
+			_progress = progressTask.Percent;
+			_status = progressTask.Status;
+			_title = progressTask.Title;
+			await InvokeAsync(StateHasChanged);
+		}
+	}
+}

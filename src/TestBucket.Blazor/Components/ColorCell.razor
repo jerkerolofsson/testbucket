@@ -9,7 +9,7 @@
     [Parameter] public EventCallback<string> OnClick { get; set; }
     [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? Attributes { get; set; }
 
-    public string CssStyle => Color is null ? "" : $"background: {Color}";
+	public string CssStyle => Color is null ? "background: var(--tb-palette-input-background)" : $"background: {Color}";
 
     public string CssClass => new CssBuilder("tb-color")
     .AddClass("small", Size == Size.Small)

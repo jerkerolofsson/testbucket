@@ -132,6 +132,9 @@
   <data name="changed-files" xml:space="preserve">
     <value>更改文件</value>
   </data>
+  <data name="code-coverage" xml:space="preserve">
+    <value />
+  </data>
   <data name="commited" xml:space="preserve">
     <value>致力于</value>
   </data>
@@ -162,6 +165,12 @@
   </data>
   <data name="import-code-coverage" xml:space="preserve">
     <value>导入代码覆盖范围</value>
+  </data>
+  <data name="importing-code-coverage-report" xml:space="preserve">
+    <value />
+  </data>
+  <data name="importing-code-coverage-report-loading" xml:space="preserve">
+    <value />
   </data>
   <data name="layer" xml:space="preserve">
     <value>层</value>

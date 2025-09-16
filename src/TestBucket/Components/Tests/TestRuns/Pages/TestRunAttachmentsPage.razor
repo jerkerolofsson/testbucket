@@ -9,7 +9,7 @@
 @if (TestRun is not null)
 {
 	<MudStack Spacing="0" Style="width: 100%" Class="pa-5">
-		<AttachmentGrid AllowUpload TestRunId="@TestRun.Id" Style="width: 100%" />
+		<AttachmentGrid AllowUpload TestRunId="@TestRun.Id" Style="width: 100%" TestProjectId="@Project?.Id"/>
 	</MudStack>
 }
 @code {

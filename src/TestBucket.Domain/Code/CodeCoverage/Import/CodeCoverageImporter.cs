@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Logging;
 
 using TestBucket.CodeCoverage;
+using TestBucket.Contracts.Localization;
 using TestBucket.Domain.Code.CodeCoverage.Models;
 using TestBucket.Domain.Files;
 using TestBucket.Domain.Files.Models;
 using TestBucket.Domain.Identity;
+using TestBucket.Domain.Progress;
 using TestBucket.Domain.Testing.TestRuns;
 using TestBucket.Traits.Core;
 
@@ -12,13 +14,20 @@ namespace TestBucket.Domain.Code.CodeCoverage.Import;
 
 public class CodeCoverageImporter
 {
+    private readonly ProgressSystemManager _progressManager;
+    private readonly IAppLocalization _loc;
     private readonly IFileResourceManager _fileResourceManager;
     private readonly ILogger<CodeCoverageImporter> _logger;
     private readonly ICodeCoverageManager _codeCoverageManager;
     private readonly ITestRunManager _testRunManager;
 
-    public CodeCoverageImporter(IFileResourceManager fileResourceManager, ILogger<CodeCoverageImporter> logger, ICodeCoverageManager codeCoverageManager, ITestRunManager testRunManager)
+    public CodeCoverageImporter(
+        ProgressSystemManager progressManager,
+        IAppLocalization loc,
+        IFileResourceManager fileResourceManager, ILogger<CodeCoverageImporter> logger, ICodeCoverageManager codeCoverageManager, ITestRunManager testRunManager)
     {
+        _progressManager = progressManager;
+        _loc = loc;
         _fileResourceManager = fileResourceManager;
         _logger = logger;
         _codeCoverageManager = codeCoverageManager;
@@ -64,6 +73,11 @@ public class CodeCoverageImporter
             return;
         }
 
+        var title = _loc.Code["importing-code-coverage-report"];
+        var status = _loc.Code["importing-code-coverage-report-loading"];
+        await using var task = _progressManager.CreateProgressTask(string.Format(title, file.Name));
+        await task.ReportStatusAsync(status, 0);
+
         var report = await ParseReportAsync(file, cancellationToken);
         if (report is null)
         {
@@ -74,12 +88,14 @@ public class CodeCoverageImporter
         long projectId = testRun.TestProjectId.Value;
 
         // Save accumulated code coverage for the run
+        await task.ReportStatusAsync(status, 50);
         await SaveCodeCoverageReportAsync(user, file, projectId, CodeCoverageGroupType.TestRun, testRun.Id.ToString(), report, cancellationToken);
 
         // Save accumulated code coverage for the commit
         var commit = testRun.TestRunFields.FirstOrDefault(x => x.FieldDefinition != null && x.FieldDefinition.TraitType == TraitType.Commit);
         if (!string.IsNullOrEmpty(commit?.StringValue))
         {
+            await task.ReportStatusAsync(status, 75);
             await SaveCodeCoverageReportAsync(user, file, projectId, CodeCoverageGroupType.Commit, commit.StringValue, report, cancellationToken);
         }
     }

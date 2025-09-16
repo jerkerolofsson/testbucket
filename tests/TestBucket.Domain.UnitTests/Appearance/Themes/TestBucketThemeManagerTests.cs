@@ -126,7 +126,7 @@ namespace TestBucket.Domain.UnitTests.Appearance.Themes
         /// Verifies that <see cref="TestBucketThemeManager.GetThemeByNameAsync"/> returns the Blue Steel theme when requested by "Le Trigre" name (intentional alias).
         /// </summary>
         [Fact]
-        public async Task GetThemeByNameAsync_WithLeTrigreName_ReturnsBlueSteelTheme()
+        public async Task GetThemeByNameAsync_WithLeTrigreName_ReturnsLeTigreTheme()
         {
             // Arrange
 
@@ -135,7 +135,7 @@ namespace TestBucket.Domain.UnitTests.Appearance.Themes
 
             // Assert
             Assert.NotNull(result);
-            Assert.IsType<BlueSteel>(result);
+            Assert.IsType<LeTigre>(result);
         }
 
         /// <summary>

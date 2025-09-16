@@ -73,8 +73,8 @@ public class CodeCoverageImporter
             return;
         }
 
-        var title = _loc.Code["importing-code-coverage-report"];
-        var status = _loc.Code["importing-code-coverage-report-loading"];
+        var title = _loc.Code["importing-code-coverage-report"] ?? "";
+        var status = _loc.Code["importing-code-coverage-report-loading"] ?? "";
         await using var task = _progressManager.CreateProgressTask(string.Format(title, file.Name));
         await task.ReportStatusAsync(status, 0);
 

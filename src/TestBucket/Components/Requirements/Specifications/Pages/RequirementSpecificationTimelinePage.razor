@@ -95,9 +95,15 @@
 
 	private async Task ReloadRequirementsAsync()
 	{
+		if(_specification is null)
+		{
+			return;
+		}
+
 		var result = await browser.SearchRequirementsInSpecificationAsync(_specification.Id, 0, 100);
 		_requirements = result.Items;
 
+		_tasks.Clear();
 		_tasks.AddRange(_requirements.Select(x =>
 			new MudGanttTask
 			{

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NSubstitute;
 
 using TestBucket.CodeCoverage;
+using TestBucket.Contracts.Localization;
 using TestBucket.Domain.Code.CodeCoverage;
 using TestBucket.Domain.Code.CodeCoverage.Import;
 using TestBucket.Domain.Code.CodeCoverage.Models;
@@ -108,7 +109,7 @@ public class CodeCoverageImporterTests
         var codeCoverageManager = await CreateManagerAsync();
         var logger = Logger;
 
-        var importer = new CodeCoverageImporter(fileResourceManager, logger, codeCoverageManager, testRunManager);
+        var importer = new CodeCoverageImporter(new Domain.Progress.ProgressSystemManager(), Substitute.For<IAppLocalization>(), fileResourceManager, logger, codeCoverageManager, testRunManager);
 
         var userName = "user1";
         var tenantId = "tenant-1";
@@ -157,7 +158,7 @@ public class CodeCoverageImporterTests
         var codeCoverageManager = await CreateManagerAsync();
         var logger = Logger;
 
-        var importer = new CodeCoverageImporter(fileResourceManager, logger, codeCoverageManager, testRunManager);
+        var importer = new CodeCoverageImporter(new Domain.Progress.ProgressSystemManager(), Substitute.For<IAppLocalization>(), fileResourceManager, logger, codeCoverageManager, testRunManager);
 
         var userName = "user1";
         var tenantId = "tenant-1";
@@ -210,7 +211,7 @@ public class CodeCoverageImporterTests
         var codeCoverageManager = await CreateManagerAsync();
         var logger = Logger;
 
-        var importer = new CodeCoverageImporter(fileResourceManager, logger, codeCoverageManager, testRunManager);
+        var importer = new CodeCoverageImporter(new Domain.Progress.ProgressSystemManager(), Substitute.For<IAppLocalization>(), fileResourceManager, logger, codeCoverageManager, testRunManager);
 
         var userName = "user1";
         var tenantId = "tenant-1";
